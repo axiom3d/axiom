@@ -17,7 +17,7 @@ namespace Axiom.Core
             this.className = className;
         }
         public Assembly GetAssembly() {
-            string assemblyFile = Environment.CurrentDirectory + Path.DirectorySeparatorChar + assemblyName;
+            string assemblyFile = Path.Combine(Environment.CurrentDirectory, assemblyName);
 
             // load the requested assembly
             return Assembly.LoadFile(assemblyFile);
