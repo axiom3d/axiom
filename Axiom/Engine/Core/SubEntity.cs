@@ -35,41 +35,56 @@ namespace Axiom.Core {
     ///		Utility class which defines the sub-parts of an Entity.
     /// </summary>
     /// <remarks>
+    ///		<para>
     ///		Just as models are split into meshes, an Entity is made up of
     ///		potentially multiple SubEntities. These are mainly here to provide the
     ///		link between the Material which the SubEntity uses (which may be the
     ///		default Material for the SubMesh or may have been changed for this
     ///		object) and the SubMesh data.
-    ///		<p/>
+    ///		</para>
+    ///		<para>
     ///		SubEntity instances are never created manually. They are created at
     ///		the same time as their parent Entity by the SceneManager method
     ///		CreateEntity.
+    ///		</para>
     /// </remarks>
     public class SubEntity : IRenderable {
-        #region Member variables
+        #region Fields
 
         /// <summary>
         ///    Reference to the parent Entity.
         /// </summary>
-        private Entity parent;
+        protected Entity parent;
         /// <summary>
         ///    Name of the material being used.
         /// </summary>
-        private string materialName;
+        protected string materialName;
         /// <summary>
         ///    Reference to the material being used by this SubEntity.
         /// </summary>
-        private Material material;
+        protected Material material;
         /// <summary>
         ///    Reference to the subMesh that represents the geometry for this SubEntity.
         /// </summary>
-        private SubMesh subMesh;
+        protected SubMesh subMesh;
         /// <summary>
         ///    Detail to be used for rendering this sub entity.
         /// </summary>
-        private SceneDetailLevel renderDetail;
+        protected SceneDetailLevel renderDetail;
+		/// <summary>
+		///		Flag indicating whether this sub entity should be rendered or not.
+		/// </summary>
+		protected bool isVisible;
+		/// <summary>
+		///		Blend buffer details for dedicated geometry.
+		/// </summary>
+		protected internal VertexData blendedVertexData;
+		/// <summary>
+		///		Quick lookup of buffers.
+		/// </summary>
+		protected internal TempBlendedBufferInfo tempBlendedBuffer = new TempBlendedBufferInfo();
 
-        #endregion
+        #endregion Fields
 
         #region Constructor
 
@@ -79,11 +94,22 @@ namespace Axiom.Core {
         internal SubEntity() {
             material = MaterialManager.Instance.GetByName("BaseWhite");
             renderDetail = SceneDetailLevel.Solid;
+
+			isVisible = true;
         }
 
         #endregion
 
         #region Properties
+
+		/// <summary>
+		///		Gets a flag indicating whether or not this sub entity should be rendered or not.
+		/// </summary>
+		public bool IsVisible {
+			get {
+				return isVisible;
+			}
+		}
 
         /// <summary>
         ///		Gets/Sets the name of the material used for this SubEntity.
@@ -108,6 +134,11 @@ namespace Axiom.Core {
 
                 // ensure the material is loaded.  It will skip it if it already is
                 material.Load();
+
+				// since the material has changed, re-evaulate its support of skeletal animation
+				if(parent.Mesh.HasSkeleton) {
+					parent.EvaluateHardwareSkinning();
+				}
             }
         }
 
@@ -136,6 +167,18 @@ namespace Axiom.Core {
         }
 
         #endregion
+
+		#region Methods
+
+		/// <summary>
+		///		Internal method for preparing this sub entity for use in animation.
+		/// </summary>
+		protected internal void PrepareTempBlendBuffers() {
+			blendedVertexData = parent.CloneVertexDataRemoveBlendInfo(subMesh.vertexData);
+			parent.ExtractTempBufferInfo(blendedVertexData, tempBlendedBuffer);
+		}
+
+		#endregion Methods
 
         #region IRenderable Members
 
@@ -173,7 +216,14 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="op"></param>
         public void GetRenderOperation(RenderOperation op) {
+			// use LOD
             subMesh.GetRenderOperation(op, parent.MeshLodIndex);
+
+			// Do we need to use software blended vertex data?
+			if(parent.HasSkeleton && !parent.IsHardwareSkinningEnabled) {
+				op.vertexData = subMesh.useSharedVertices ? 
+					parent.sharedBlendedVertexData : blendedVertexData;
+			}
         }
 
         Material IRenderable.Material {

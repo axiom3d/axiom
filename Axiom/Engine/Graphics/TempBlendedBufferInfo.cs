@@ -70,7 +70,19 @@ namespace Axiom.Graphics {
         ///     Utility method, checks out temporary copies of src into dest.
         /// </summary>
         public void CheckoutTempCopies() {
-            // TODO: Implement CheckoutTempCopies
+            destPositionBuffer = 
+				HardwareBufferManager.Instance.AllocateVertexBufferCopy(
+					srcPositionBuffer,
+					BufferLicenseRelease.Automatic,
+					this);
+
+			if(!posNormalShareBuffer) {
+				destNormalBuffer = 
+					HardwareBufferManager.Instance.AllocateVertexBufferCopy(
+					srcNormalBuffer,
+					BufferLicenseRelease.Automatic,
+					this);
+			}
         }
 
         /// <summary>
@@ -79,7 +91,13 @@ namespace Axiom.Graphics {
         /// <param name="targetData">VertexData object to bind the temp buffers into.</param>
         /// <param name="suppressHardwareUpload"></param>
         public void BindTempCopies(VertexData targetData, bool suppressHardwareUpload) {
-            // TODO: Implement BindTempCopies
+            destPositionBuffer.SuppressHardwareUpdate(suppressHardwareUpload);
+			targetData.vertexBufferBinding.SetBinding(posBindIndex, destPositionBuffer);
+
+			if(!posNormalShareBuffer) {
+				destNormalBuffer.SuppressHardwareUpdate(suppressHardwareUpload);
+				targetData.vertexBufferBinding.SetBinding(normBindIndex, destNormalBuffer);
+			}
         }
 
         #endregion Methods
@@ -91,7 +109,12 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="buffer"></param>
         public void LicenseExpired(HardwareBuffer buffer) {
-            // TODO:  Add TempBlendedBufferInfo.LicenseExpired implementation
+			if(buffer == destPositionBuffer) {
+				destPositionBuffer = null;
+			}
+			if(buffer == destNormalBuffer) {
+				destNormalBuffer = null;
+			}
         }
 
         #endregion

@@ -138,10 +138,6 @@ namespace Axiom.Serialization {
             // see if this mesh has a skeleton
             isSkeletallyAnimated = ReadBoolean();
 
-            // BUG: Work out why dynamic write only buffer chokes when locked
-            if(isSkeletallyAnimated)
-            	mesh.SetVertexBufferPolicy(BufferUsage.DynamicWriteOnly, false);
-
             // read the next chunk ID
             chunkID = ReadChunk();
 
@@ -352,31 +348,20 @@ namespace Axiom.Serialization {
             ushort texCoordSet = 0;
             HardwareVertexBuffer vBuffer = null;
             short bindIdx = 0;
-			
-            if(isSkeletallyAnimated) {
-                vertexData.softwareBlendInfo = new SoftwareBlendInfo();
-                vertexData.softwareBlendInfo.automaticBlend = true;
-            }
 
             vertexData.vertexStart = 0;
             vertexData.vertexCount = ReadInt32();
 
             // vertex buffers
-            vertexData.vertexDeclaration.AddElement(new VertexElement(bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Position));
+            vertexData.vertexDeclaration.AddElement(bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Position);
             vBuffer = HardwareBufferManager.Instance.
                 CreateVertexBuffer(vertexData.vertexDeclaration.GetVertexSize(bindIdx), 
                 vertexData.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer);
 
             IntPtr posData = vBuffer.Lock(BufferLocking.Discard);
 
-            if(isSkeletallyAnimated) {
-                vertexData.softwareBlendInfo.srcPositions = new float[vertexData.vertexCount * 3];
-                ReadFloats(vertexData.vertexCount * 3, posData, vertexData.softwareBlendInfo.srcPositions);
-            }
-            else {
-                // ram the floats into the buffer data
-                ReadFloats(vertexData.vertexCount * 3, posData);
-            }
+			// ram the floats into the buffer data
+            ReadFloats(vertexData.vertexCount * 3, posData);
 
             // unlock the buffer
             vBuffer.Unlock();
@@ -397,7 +382,7 @@ namespace Axiom.Serialization {
                     case MeshChunkID.GeometryNormals:
                         // add an element for normals
                         vertexData.vertexDeclaration.
-                            AddElement(new VertexElement(bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Normal));
+                            AddElement(bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Normal);
 
                         vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
                             vertexData.vertexDeclaration.GetVertexSize(bindIdx),
@@ -408,15 +393,8 @@ namespace Axiom.Serialization {
                         // lock the buffer for editing
                         IntPtr normals = vBuffer.Lock(BufferLocking.Discard);
 
-                        if(isSkeletallyAnimated) {
-                            vertexData.softwareBlendInfo.srcNormals = new float[vertexData.vertexCount * 3];
-                            // stuff the floats into the normal buffer
-                            ReadFloats(vertexData.vertexCount * 3, normals, vertexData.softwareBlendInfo.srcNormals);
-                        }
-                        else {
-                            // stuff the floats into the normal buffer
-                            ReadFloats(vertexData.vertexCount * 3, normals);
-                        }
+                        // stuff the floats into the normal buffer
+                        ReadFloats(vertexData.vertexCount * 3, normals);
 
                         // unlock the buffer to commit
                         vBuffer.Unlock();
@@ -429,7 +407,7 @@ namespace Axiom.Serialization {
                         break;
 
                     case MeshChunkID.GeometryColors:
-                        // TODO: Color geometry, skip for now
+                        // TODO: Color data, skip for now
                         IgnoreCurrentChunk();
                         break;
 
@@ -439,10 +417,10 @@ namespace Axiom.Serialization {
 
                         // add a vertex element for the current tex coord set
                         vertexData.vertexDeclaration.AddElement(
-                            new VertexElement(bindIdx, 0,
+                            bindIdx, 0,
                             VertexElement.MultiplyTypeCount(VertexElementType.Float1, dim),
                             VertexElementSemantic.TexCoords,
-                            texCoordSet));
+                            texCoordSet);
 
                         // create the vertex buffer for the tex coords
                         vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
@@ -709,24 +687,24 @@ namespace Axiom.Serialization {
     ///		Values that mark data chunks in the .mesh file.
     /// </summary>
     public enum MeshChunkID : ushort {
-        Header                                    = 0x1000,
-        Mesh                                       = 0x3000,
-        SubMesh                                = 0x4000,
-        SubMeshOperation               = 0x4010,
-        SubMeshBoneAssignment    = 0x4100,
-        Geometry                                = 0x5000,
-        GeometryNormals                  = 0x5100,    //(Optional)
-        GeometryColors                     = 0x5200,    //(Optional)
-        GeometryTexCoords              = 0x5300,    //(Optional, REPEATABLE, each one adds an extra set)
-        MeshSkeletonLink                 = 0x6000,
-        MeshBoneAssignment           = 0x7000,
-        MeshLOD                               = 0x8000,
-        MeshLODUsage                     = 0x8100,
-        MeshLODManual                  = 0x8110,
-        MeshLODGenerated              = 0x8120,
-        MeshBounds                           = 0x9000,
-        Material                                   = 0x2000,
-        TextureLayer                          = 0x2200 // optional, repeat per layer
+        Header						= 0x1000,
+        Mesh						= 0x3000,
+        SubMesh                     = 0x4000,
+        SubMeshOperation            = 0x4010,
+        SubMeshBoneAssignment		= 0x4100,
+        Geometry                    = 0x5000,
+        GeometryNormals             = 0x5100,    //(Optional)
+        GeometryColors              = 0x5200,    //(Optional)
+        GeometryTexCoords           = 0x5300,    //(Optional, REPEATABLE, each one adds an extra set)
+        MeshSkeletonLink            = 0x6000,
+        MeshBoneAssignment          = 0x7000,
+        MeshLOD                     = 0x8000,
+        MeshLODUsage                = 0x8100,
+        MeshLODManual               = 0x8110,
+        MeshLODGenerated            = 0x8120,
+        MeshBounds                  = 0x9000,
+        Material                    = 0x2000,
+        TextureLayer                = 0x2200 // optional, repeat per layer
         // TODO - scale, offset, effects
 
     };

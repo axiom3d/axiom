@@ -336,6 +336,18 @@ namespace Axiom.RenderSystems.DirectX9 {
                 case VertexElementType.Float3:
                     return D3D.DeclarationType.Float3;
 
+				case VertexElementType.Float4:
+					return D3D.DeclarationType.Float4;
+
+				case VertexElementType.Short2:
+					return D3D.DeclarationType.Short2;
+
+				case VertexElementType.Short4:
+					return D3D.DeclarationType.Short4;
+
+				case VertexElementType.UByte4:
+					return D3D.DeclarationType.Ubyte4;
+
             } // switch
 
             // keep the compiler happy
@@ -366,6 +378,12 @@ namespace Axiom.RenderSystems.DirectX9 {
 
                 case VertexElementSemantic.TexCoords:
                     return D3D.DeclarationUsage.TextureCoordinate;
+
+				case VertexElementSemantic.Binormal:
+					return D3D.DeclarationUsage.BiNormal;
+
+				case VertexElementSemantic.Tangent:
+					return D3D.DeclarationUsage.Tangent;
             } // switch
 
             // keep the compiler happy

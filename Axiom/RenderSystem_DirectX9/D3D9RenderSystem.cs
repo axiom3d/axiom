@@ -169,14 +169,16 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// <summary>
         /// 
         /// </summary>
-        /// DOC
         protected void SetVertexBufferBinding(VertexBufferBinding binding) {
-            // TODO: Optimize to remove foreach
-            foreach(DictionaryEntry bufferBinding in binding.Bindings) {
-                D3DHardwareVertexBuffer buffer = 
-                    (D3DHardwareVertexBuffer)bufferBinding.Value;
+			IEnumerator e = binding.Bindings;
 
-                short stream = (short)bufferBinding.Key;
+            // TODO: Optimize to remove enumeration if possible, although with so few iterations it may never make a difference
+            while(e.MoveNext()) {
+				DictionaryEntry entry = (DictionaryEntry)e.Current;
+                D3DHardwareVertexBuffer buffer = 
+                    (D3DHardwareVertexBuffer)entry.Value;
+
+                short stream = (short)entry.Key;
 
                 device.SetStreamSource(stream, buffer.D3DVertexBuffer, 0, buffer.VertexSize);
 
@@ -184,11 +186,11 @@ namespace Axiom.RenderSystems.DirectX9 {
             }
 
             // Unbind any unused sources
-            for(int i = binding.Bindings.Count; i < numLastStreams; i++) {
+            for(int i = binding.BindingCount; i < numLastStreams; i++) {
                 device.SetStreamSource(i, null, 0, 0);
             }
             
-            numLastStreams = binding.Bindings.Count;
+            numLastStreams = binding.BindingCount;
         }
 
         /// <summary>
@@ -1212,6 +1214,11 @@ namespace Axiom.RenderSystems.DirectX9 {
             if(d3dCaps.RasterCaps.SupportsScissorTest) {
                 caps.SetCap(Capabilities.ScissorTest);
             }
+
+			// some cards, oddly enough, do not support this
+			if(d3dCaps.DeclTypes.SupportsUByte4) {
+				caps.SetCap(Capabilities.VertexFormatUByte4);
+			}
 
             // Anisotropy?
             if(d3dCaps.MaxAnisotropy > 1) {

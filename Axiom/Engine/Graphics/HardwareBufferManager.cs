@@ -26,6 +26,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using System.Diagnostics;
+using Axiom.Collections;
+using Axiom.MathLib.Collections;
 
 namespace Axiom.Graphics {
     /// <summary>
@@ -36,7 +39,30 @@ namespace Axiom.Graphics {
         #region Singleton implementation
 
         static HardwareBufferManager() { Init(); }
-        protected HardwareBufferManager() { instance = this; }
+
+		protected class BufferComparer : IComparer {
+			#region IComparer Members
+
+			public int Compare(object x, object y) {
+				//if(HardwareVertexBuffer.ReferenceEquals(x, y)) {
+				HardwareVertexBuffer a = x as HardwareVertexBuffer;
+				HardwareVertexBuffer b = y as HardwareVertexBuffer;
+
+				if(a.ID == b.ID) {
+					return 0;
+				}
+
+				return -1;
+			}
+			#endregion
+		}
+        
+		protected HardwareBufferManager() { 
+			instance = this; 
+
+			freeTempVertexBufferMap = new Hashtable(null, new BufferComparer());
+		}
+
         protected static HardwareBufferManager instance;
 
         public static HardwareBufferManager Instance {
@@ -67,7 +93,16 @@ namespace Axiom.Graphics {
         ///     A list of index buffers created by this buffer manager.
         /// </summary>
         protected ArrayList indexBuffers = new ArrayList();
-		
+
+		/// <summary>
+		///		Map from original buffer to list of temporary buffers.
+		/// </summary>
+		protected Hashtable freeTempVertexBufferMap;
+		/// <summary>
+		///		List of currently licensed temp buffers.
+		/// </summary>
+		protected ArrayList tempVertexBufferLicenses = new ArrayList();
+
         #endregion Fields
 		
         #region Methods
@@ -200,8 +235,7 @@ namespace Axiom.Graphics {
         public virtual HardwareVertexBuffer AllocateVertexBufferCopy(HardwareVertexBuffer sourceBuffer,
             BufferLicenseRelease licenseType, IHardwareBufferLicensee licensee) {
 
-            // TODO: Implement
-            return null;
+            return AllocateVertexBufferCopy(sourceBuffer, licenseType, licensee, false);
         }
 
         /// <summary>
@@ -229,8 +263,36 @@ namespace Axiom.Graphics {
         public virtual HardwareVertexBuffer AllocateVertexBufferCopy(HardwareVertexBuffer sourceBuffer,
             BufferLicenseRelease licenseType, IHardwareBufferLicensee licensee, bool copyData) {
 
-            // TODO: Implement
-            return null;
+			HardwareVertexBuffer vbuf = null;
+
+			// Locate existing buffer copy in free list
+			IList list = (IList)freeTempVertexBufferMap[sourceBuffer];
+
+			if(list == null) {
+				list = new ArrayList();
+				freeTempVertexBufferMap[sourceBuffer] = list;
+			}
+
+			// Are there any free buffers?
+			if(list.Count == 0) {
+				// copy buffer, use shadow buffer and make dynamic
+				vbuf = MakeBufferCopy(sourceBuffer, BufferUsage.DynamicWriteOnly, true);
+			}
+			else {
+				// grab the available buffer and remove it from the free list
+				int lastIndex = list.Count - 1;
+				vbuf = (HardwareVertexBuffer)list[lastIndex];
+				list.RemoveAt(lastIndex);
+			}
+
+			// Copy data?
+			if(copyData) {
+				vbuf.CopyData(sourceBuffer, 0, 0, sourceBuffer.Size, true);
+			}
+			// Insert copy into licensee list
+			tempVertexBufferLicenses.Add(new VertexBufferLicense(sourceBuffer, licenseType, vbuf, licensee));
+
+			return vbuf;
         }
 
         /// <summary>
@@ -245,6 +307,7 @@ namespace Axiom.Graphics {
         ///     since another user may well begin to modify the contents of the buffer.
         /// </param>
         public virtual void ReleaseVertexBufferCopy(HardwareVertexBuffer bufferCopy) {
+			throw new NotImplementedException();
         }
 
         /// <summary>
@@ -252,7 +315,35 @@ namespace Axiom.Graphics {
         ///     allocated using <see cref="BufferLicenseRelease.Automatic"/> is called by Axiom.
         /// </summary>
         public virtual void ReleaseBufferCopies() {
+			for(int i = tempVertexBufferLicenses.Count - 1; i >= 0; i--) {
+				VertexBufferLicense vbl = 
+					(VertexBufferLicense)tempVertexBufferLicenses[i];
+
+				// only release licenses set to auto release
+				if(vbl.licenseType == BufferLicenseRelease.Automatic) {
+					IList list = (IList)freeTempVertexBufferMap[vbl.originalBuffer];
+
+					Debug.Assert(list != null, "There is no license recorded for this buffer.");
+
+					// push the buffer back into the free list
+					list.Add(vbl.buffer);
+
+					// remove the license for this buffer
+					tempVertexBufferLicenses.RemoveAt(i);
+				}
+			}
         }
+
+		/// <summary>
+		///		Creates  a new buffer as a copy of the source, does not copy data.
+		/// </summary>
+		/// <param name="source">Source vertex buffer.</param>
+		/// <param name="usage">New usage type.</param>
+		/// <param name="useShadowBuffer">New shadow buffer choice.</param>
+		/// <returns>A copy of the vertex buffer, but data is not copied.</returns>
+		protected HardwareVertexBuffer MakeBufferCopy(HardwareVertexBuffer source, BufferUsage usage, bool useShadowBuffer) {
+			return CreateVertexBuffer(source.VertexSize, source.VertexCount, usage, useShadowBuffer);
+		}
 
         #endregion
     }

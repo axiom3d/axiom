@@ -56,6 +56,10 @@ namespace Axiom.Graphics
         ///    Type of program this represents (vertex or fragment).
         /// </summary>
         protected GpuProgramType type;
+		/// <summary>
+		///		Flag indicating whether this program is being used for hardware skinning.
+		/// </summary>
+		protected bool isSkeletalAnimationSupported;
 
         #endregion Fields
 		
@@ -134,11 +138,31 @@ namespace Axiom.Graphics
             }
         }
 
+		/// <summary>
+		///		Gets/Sets whether a vertex program includes the required instructions
+        ///		to perform skeletal animation. 
+		/// </summary>
+		public virtual bool IsSkeletalAnimationIncluded {
+			get {
+				return isSkeletalAnimationSupported;
+			}
+			set {
+				isSkeletalAnimationSupported = value;
+			}
+		}
+
         /// <summary>
         ///    Returns whether this program can be supported on the current renderer and hardware.
         /// </summary>
         public virtual bool IsSupported {
             get {
+				// If skeletal animation is being done, we need support for UBYTE4
+				if(this.IsSkeletalAnimationIncluded &&
+					!Engine.Instance.RenderSystem.Caps.CheckCap(Capabilities.VertexFormatUByte4)) {
+
+					return false;
+				}
+
                 return GpuProgramManager.Instance.IsSyntaxSupported(syntaxCode);
             }
         }

@@ -448,8 +448,8 @@ namespace Axiom.MathLib {
         public static bool operator == (Matrix3 left, Matrix3 right) {
             if( 
                 left.m00 == right.m00 || left.m01 == right.m01 || left.m02 == right.m02 ||
-                left.m10 == right.m10 || left.m11 == right.m11 || left.m12 == right.m02 ||
-                left.m20 == right.m20 || left.m21 == right.m21 || left.m22 == right.m02)
+                left.m10 == right.m10 || left.m11 == right.m11 || left.m12 == right.m12 ||
+                left.m20 == right.m20 || left.m21 == right.m21 || left.m22 == right.m22)
                 return false;
             return true;
         }

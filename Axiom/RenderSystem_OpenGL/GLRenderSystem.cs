@@ -113,6 +113,10 @@ namespace Axiom.RenderSystems.OpenGL {
         protected GLGpuProgram currentVertexProgram;
         protected GLGpuProgram currentFragmentProgram;
 
+		// constants for gl vertex attributes
+		const int BLEND_INDICES = 7;
+		const int BLEND_WEIGHTS = 1;
+
         #endregion Fields
 
         #region Constructors
@@ -1244,19 +1248,18 @@ namespace Axiom.RenderSystems.OpenGL {
 			}
 
             // call base class method first
-            base.Render (op);
-
-            // get a list of the vertex elements for this render operation
-            IList elements = op.vertexData.vertexDeclaration.Elements;
+            base.Render(op);
 
             // will be used to alia either the buffer offset (VBO's) or array data if VBO's are
             // not available
             IntPtr bufferData = IntPtr.Zero;
+
+			VertexDeclaration decl = op.vertexData.vertexDeclaration;
 	
             // loop through and handle each element
-            for(int i = 0; i < elements.Count; i++) {
+            for(int i = 0; i < decl.ElementCount; i++) {
                 // get a reference to the current object in the collection
-                VertexElement element = (VertexElement)elements[i];
+                VertexElement element = decl.GetElement(i);
 
                 // get the current vertex buffer
                 HardwareVertexBuffer vertexBuffer = op.vertexData.vertexBufferBinding.GetBuffer(element.Source);
@@ -1352,6 +1355,34 @@ namespace Axiom.RenderSystems.OpenGL {
                         }
                         break;
 
+					case VertexElementSemantic.BlendIndices:
+						Debug.Assert(caps.CheckCap(Capabilities.VertexPrograms));
+
+						Ext.glVertexAttribPointerARB(
+							BLEND_INDICES, // matrix indices are vertex attribute 7
+							VertexElement.GetTypeCount(element.Type), 
+							GLHelper.ConvertEnum(element.Type),
+							Gl.GL_FALSE, // normalisation disabled
+							vertexBuffer.VertexSize,
+							bufferData);
+
+						Ext.glEnableVertexAttribArrayARB(BLEND_INDICES);
+						break;
+
+					case VertexElementSemantic.BlendWeights:
+						Debug.Assert(caps.CheckCap(Capabilities.VertexPrograms));
+
+						Ext.glVertexAttribPointerARB(
+							BLEND_WEIGHTS, // weights are vertex attribute 1
+							VertexElement.GetTypeCount(element.Type), 
+							GLHelper.ConvertEnum(element.Type),
+							Gl.GL_FALSE, // normalisation disabled
+							vertexBuffer.VertexSize,
+							bufferData);
+
+						Ext.glEnableVertexAttribArrayARB(BLEND_WEIGHTS);
+						break;
+
                     default:
                         break;
                 } // switch
@@ -1423,6 +1454,12 @@ namespace Axiom.RenderSystems.OpenGL {
             Gl.glDisableClientState( Gl.GL_NORMAL_ARRAY );
             Gl.glDisableClientState( Gl.GL_COLOR_ARRAY );
             Gl.glDisableClientState( Gl.GL_SECONDARY_COLOR_ARRAY );
+
+			if (caps.CheckCap(Capabilities.VertexPrograms)) {
+				Ext.glDisableVertexAttribArrayARB(BLEND_INDICES); // disable indices
+				Ext.glDisableVertexAttribArrayARB(BLEND_WEIGHTS); // disable weights
+			}
+
             Gl.glColor4f(1.0f,1.0f,1.0f,1.0f);
         }
 
@@ -1709,11 +1746,11 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="type"></param>
         public override void UnbindGpuProgram(GpuProgramType type) {
             // store the current program in use for eas unbinding later
-            if(type == GpuProgramType.Vertex) {
+            if(type == GpuProgramType.Vertex && currentVertexProgram != null) {
                 currentVertexProgram.Unbind();
                 currentVertexProgram = null;
             }
-            else {
+            else if(type == GpuProgramType.Fragment && currentFragmentProgram != null) {
                 currentFragmentProgram.Unbind();
                 currentFragmentProgram = null;
             }
@@ -1967,6 +2004,9 @@ namespace Axiom.RenderSystems.OpenGL {
 
             // scissor test is standard in GL 1.2 and above
             caps.SetCap(Capabilities.ScissorTest);
+
+			// UBYTE4 is always supported in GL
+			caps.SetCap(Capabilities.VertexFormatUByte4);
 
             // ARB Vertex Programs
             if(GLHelper.SupportsExtension("GL_ARB_vertex_program")) {

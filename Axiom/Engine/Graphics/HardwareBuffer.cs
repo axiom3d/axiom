@@ -106,6 +106,11 @@ namespace Axiom.Graphics {
         ///     Flag indicating whether hardware updates from shadow buffer should be supressed.
         /// </summary>
         protected bool suppressHardwareUpdate;
+		/// <summary>
+		///		Unique id for this buffer.
+		/// </summary>
+		public int ID;
+		protected static int nextID;
 		
         #endregion Fields
 
@@ -121,6 +126,7 @@ namespace Axiom.Graphics {
             this.usage = usage;
             this.useSystemMemory = useSystemMemory;
             this.useShadowBuffer = useShadowBuffer;
+			ID = nextID++;
         }
 
         #endregion

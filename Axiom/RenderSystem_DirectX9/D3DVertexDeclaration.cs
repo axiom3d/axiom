@@ -52,19 +52,34 @@ namespace Axiom.RenderSystems.DirectX9 {
 		
         #region Methods
 
-        public override void AddElement(Axiom.Graphics.VertexElement element) {
-            base.AddElement (element);
-
-            needsRebuild = true;
-        }
-
         public override Axiom.Graphics.VertexElement AddElement(short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index) {
-            Axiom.Graphics.VertexElement element =  base.AddElement (source, offset, type, semantic, index);
+            Axiom.Graphics.VertexElement element = base.AddElement(source, offset, type, semantic, index);
 
             needsRebuild = true;
 
             return element;
         }
+
+		public override Axiom.Graphics.VertexElement InsertElement(int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index)
+		{
+			Axiom.Graphics.VertexElement element = base.InsertElement(position, source, offset, type, semantic, index);
+
+			needsRebuild = true;
+
+			return element;
+		}
+
+		public override void RemoveElement(VertexElementSemantic semantic, int index) {
+			base.RemoveElement(semantic, index);
+
+			needsRebuild = true;
+		}
+
+		public override void RemoveElement(int index) {
+			base.RemoveElement(index);
+
+			needsRebuild = true;
+		}
 
 
         #endregion
@@ -75,7 +90,8 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// 
         /// </summary>
         /// DOC
-        public D3D.VertexDeclaration D3DVertexDecl {
+        public D3D.VertexDeclaration D3DVertexDecl 
+		{
             get {
                 // rebuild declaration if things have changed
                 if(needsRebuild) {
@@ -121,7 +137,6 @@ namespace Axiom.RenderSystems.DirectX9 {
 
                     // reset the flag
                     needsRebuild = false;
-
                 }
 
                 return d3dVertexDecl; 

@@ -136,6 +136,7 @@ namespace Axiom.RenderSystems.OpenGL {
                     return Gl.GL_SHORT;
 
                 case VertexElementType.Color:
+				case VertexElementType.UByte4:
                     return Gl.GL_UNSIGNED_BYTE;
             }
 
@@ -483,6 +484,26 @@ namespace Axiom.RenderSystems.OpenGL {
 
         #endregion GL_EXT_secondary_color
 
+		#region Vertex Attributes
+
+		private static IntPtr vertexAttribPointerARBptr;
+		private static IntPtr enableVertexAttribArrayARBptr;
+		private static IntPtr disableVertexAttribArrayARBptr;
+
+		public static void glVertexAttribPointerARB(int index, int size, int type, int normalized, int stride, IntPtr pointer) {
+			Gl.glVertexAttribPointerARB(vertexAttribPointerARBptr, index, size, type, normalized, stride, pointer);
+		}
+
+		public static void glEnableVertexAttribArrayARB(int index) {
+			Gl.glEnableVertexAttribArrayARB(enableVertexAttribArrayARBptr, index);
+		}
+
+		public static void glDisableVertexAttribArrayARB(int index) {
+			Gl.glDisableVertexAttribArrayARB(disableVertexAttribArrayARBptr, index);
+		}
+
+		#endregion Vertex Attributes
+
         /// <summary>
         ///    Must be fired up after a GL context has been created.
         /// </summary>
@@ -544,6 +565,11 @@ namespace Axiom.RenderSystems.OpenGL {
 
             // GL_EXT_secondary_color
             secondaryColorPointerEXTptr = Wgl.wglGetProcAddress("glSecondaryColorPointerEXT");
+
+			// vertex attributes
+			vertexAttribPointerARBptr = Wgl.wglGetProcAddress("glVertexAttribPointerARB");
+			enableVertexAttribArrayARBptr = Wgl.wglGetProcAddress("glEnableVertexAttribArrayARB");
+			disableVertexAttribArrayARBptr = Wgl.wglGetProcAddress("glDisableVertexAttribArrayARB");
         }
     }
 

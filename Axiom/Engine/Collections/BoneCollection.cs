@@ -93,7 +93,7 @@ namespace Axiom.Collections {
 			base.Add(bone);
 		}
 
-		public Bone this[int index] {
+		public new Bone this[int index] {
 			get {
 				return (Bone)base[index];
 			}

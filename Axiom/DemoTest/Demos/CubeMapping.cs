@@ -328,8 +328,8 @@ namespace Demos {
             VertexBufferBinding newBinding = newData.vertexBufferBinding;
 
             // prepare buffer for each declaration
-            // TODO: Remove elements property and add accessor
-            foreach(VertexElement element in orgData.vertexDeclaration.Elements) {
+            for(int i = 0; i < orgData.vertexDeclaration.ElementCount; i++) {
+				VertexElement element = orgData.vertexDeclaration.GetElement(i);
                 VertexElementSemantic ves = element.Semantic;
                 short source = element.Source;
                 HardwareVertexBuffer orgBuffer = orgData.vertexBufferBinding.GetBuffer(source);

@@ -197,6 +197,13 @@ namespace Axiom.CgPrograms {
         /// </summary>
         public override bool IsSupported {
             get {
+				// If skeletal animation is being done, we need support for UBYTE4
+				if(this.IsSkeletalAnimationIncluded &&
+					!Engine.Instance.RenderSystem.Caps.CheckCap(Capabilities.VertexFormatUByte4)) {
+
+					return false;
+				}
+
                 // see if any profiles are supported
                 for(int i = 0; i < profiles.Length; i++) {
                     if(GpuProgramManager.Instance.IsSyntaxSupported(profiles[i])) {

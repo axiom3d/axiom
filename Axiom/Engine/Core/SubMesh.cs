@@ -133,13 +133,7 @@ namespace Axiom.Core {
                 return;
             }
 
-            // figure out which method of bone assignment compilation to use
-            if(parent.useSoftwareBlending) {
-                parent.CompileBoneAssignmentsSoftware(boneAssignmentList, maxBones, vertexData);
-            }
-            else {
-                parent.CompileBoneAssignmentsHardware(boneAssignmentList, maxBones, vertexData);
-            }
+			parent.CompileBoneAssignments(boneAssignmentList, maxBones, vertexData);
 
             boneAssignmentsOutOfDate = false;
         }

@@ -39,6 +39,16 @@ namespace Axiom.Graphics {
         /// </summary>
         [ScriptEnum("world_matrix")]
         WorldMatrix,
+		/// <summary>
+		///    The current array of world matrices, as a 3x4 matrix, used for blending.
+		/// </summary>
+		[ScriptEnum("world_matrix_array_3x4")]
+		WorldMatrixArray3x4,
+		/// <summary>
+		///    The current array of world matrices, used for blending
+		/// </summary>
+		[ScriptEnum("world_matrix_array")]
+		WorldMatrixArray,
         /// <summary>
         ///    Current view matrix.
         /// </summary>
@@ -49,6 +59,11 @@ namespace Axiom.Graphics {
         /// </summary>
         [ScriptEnum("projection_matrix")]
         ProjectionMatrix,
+		/// <summary>
+		///    The current view & projection matrices concatenated.
+		/// </summary>
+		[ScriptEnum("viewproj_matrix")]
+		ViewProjMatrix,
         /// <summary>
         ///    Current world and view matrices concatenated.
         /// </summary>
@@ -89,6 +104,16 @@ namespace Axiom.Graphics {
         /// </summary>
         [ScriptEnum("light_attenuation")]
         LightAttenuation,
+		/// <summary>
+		///    A light position in world space.  Index determined when setting up auto constants.
+		/// </summary>
+		[ScriptEnum("light_position")]
+		LightPosition,
+		/// <summary>
+		///    A light direction in world space.  Index determined when setting up auto constants.
+		/// </summary>
+		[ScriptEnum("light_direction")]
+		LightDirection,
         /// <summary>
         ///    A light position in object space.  Index determined when setting up auto constants.
         /// </summary>
@@ -198,7 +223,8 @@ namespace Axiom.Graphics {
         TextureCompression              = 0x00000800,
         TextureCompressionDXT           = 0x00001000,
         TextureCompressionVTC           = 0x00002000,
-        ScissorTest                     = 0x00004000
+        ScissorTest                     = 0x00004000,
+		VertexFormatUByte4				= 0x00008000
     }
 
     /// <summary>

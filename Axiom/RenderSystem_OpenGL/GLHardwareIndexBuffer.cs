@@ -102,7 +102,9 @@ namespace Axiom.RenderSystems.OpenGL {
                 if((usage == BufferUsage.WriteOnly ||
                     usage == BufferUsage.StaticWriteOnly ||
                     usage == BufferUsage.DynamicWriteOnly))
-                    throw new Exception("Invalid attempt to lock a write-only vertex buffer as read-only.");
+
+					// TODO: Log this instead, don't throw an exception
+                    //throw new Exception("Invalid attempt to lock a write-only vertex buffer as read-only.");
 
                 access = Gl.GL_READ_ONLY_ARB;
             }

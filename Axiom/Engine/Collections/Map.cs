@@ -68,7 +68,7 @@ namespace Axiom.Collections {
         }
 
         /// <summary>
-        ///     Give a key, Find will return an IEnumerator that allows
+        ///     Given a key, Find will return an IEnumerator that allows
         ///     you to iterate over all items in the bucket associated
         ///     with the key.
         /// </summary>
@@ -82,6 +82,15 @@ namespace Axiom.Collections {
                 return ((ArrayList)buckets[key]).GetEnumerator();
             }
         }
+
+		public IList FindBucket(object key) {
+			if(buckets[key] == null) {
+				return null;
+			}
+			else {
+				return (ArrayList)buckets[key];
+			}
+		}
 
         /// <summary>
         ///     Gets the count of objects mapped to the specified key.

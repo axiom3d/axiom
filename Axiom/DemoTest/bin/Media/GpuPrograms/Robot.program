@@ -1,0 +1,8 @@
+// Basic hardware skinning using one indexed weight per vertex
+vertex_program Ogre/HardwareSkinningOneWeight cg
+{
+   source HardwareSkinning.cg
+   entry_point hardwareSkinningOneWeight_vp
+   profiles vs_1_1 arbvp1
+   includes_skeletal_animation true
+}

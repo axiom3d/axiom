@@ -142,7 +142,7 @@ namespace Axiom.Core {
             lastParentOrientation = Quaternion.Identity;
 
             // init vertex data
-            vertexData.vertexDeclaration.AddElement(new VertexElement(0, 0, VertexElementType.Float3, VertexElementSemantic.Position));
+            vertexData.vertexDeclaration.AddElement(0, 0, VertexElementType.Float3, VertexElementSemantic.Position);
             vertexData.vertexStart = 0;
             vertexData.vertexCount = 24;
             vertexData.vertexBufferBinding.SetBinding(0, 
