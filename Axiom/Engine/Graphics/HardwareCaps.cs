@@ -247,10 +247,9 @@ namespace Axiom.Graphics {
             Trace.WriteLine("Maximum lights available: " + this.MaxLights);
             Trace.WriteLineIf(CheckCap(Capabilities.AnisotropicFiltering), "\t-Anisotropic Filtering");
             Trace.WriteLineIf(CheckCap(Capabilities.CubeMapping), "\t-Cube Mapping");
-            Trace.WriteLineIf(CheckCap(Capabilities.Dot3Bump), "\t-Dot3 Bump Mapping");
+            Trace.WriteLineIf(CheckCap(Capabilities.Dot3), "\t-Dot3 Bump Mapping");
             Trace.WriteLineIf(CheckCap(Capabilities.HardwareMipMaps), "\t-Hardware mip-mapping");
             Trace.WriteLineIf(CheckCap(Capabilities.MultiTexturing), "\t-Multi-texturing");
-            Trace.WriteLineIf(CheckCap(Capabilities.StencilBuffer), string.Format("\t-Stencil Buffer: {0} bits", stencilBufferBits));
             Trace.WriteLineIf(CheckCap(Capabilities.TextureBlending), "\t-Texture Blending");
             Trace.WriteLineIf(CheckCap(Capabilities.TextureCompression), "\t-Texture Compression");
             Trace.WriteLineIf(CheckCap(Capabilities.TextureCompressionDXT), "\t-DXT Texture Compression");
@@ -258,6 +257,12 @@ namespace Axiom.Graphics {
             Trace.WriteLineIf(CheckCap(Capabilities.VertexBuffer), "\t-Vertex Buffer Objects");
             Trace.WriteLineIf(CheckCap(Capabilities.VertexPrograms), string.Format("\t-Vertex Programs, max version: {0}", this.MaxVertexProgramVersion));
             Trace.WriteLineIf(CheckCap(Capabilities.FragmentPrograms), string.Format("\t-Fragment Programs, max version: {0}", this.MaxFragmentProgramVersion));
+			Trace.WriteLineIf(CheckCap(Capabilities.StencilBuffer), string.Format("\t-Stencil Buffer: {0} bits", stencilBufferBits));
+			Trace.WriteLineIf(CheckCap(Capabilities.TwoSidedStencil), "\t\t-Two Sided Stencil");
+			Trace.WriteLineIf(CheckCap(Capabilities.StencilWrap), "\t\t-Stencil Wrap");
+			Trace.WriteLineIf(CheckCap(Capabilities.UserClipPlanes), "\t-User Clip Planes");
+			Trace.WriteLineIf(CheckCap(Capabilities.StencilBuffer), "\t-Hardware Occlusion Queries");
+
         }
 
         #endregion

@@ -239,10 +239,12 @@ namespace Axiom.RenderSystems.DirectX9 {
                     break;
 
                 case LayerBlendOperationEx.DotProduct:
-                    if (Engine.Instance.RenderSystem.Caps.CheckCap(Capabilities.Dot3Bump))
-                        d3dTexOp = D3D.TextureOperation.DotProduct3;
-                    else
-                        d3dTexOp = D3D.TextureOperation.Modulate;
+					if (Engine.Instance.RenderSystem.Caps.CheckCap(Capabilities.Dot3)) {
+						d3dTexOp = D3D.TextureOperation.DotProduct3;
+					}
+					else {
+						d3dTexOp = D3D.TextureOperation.Modulate;
+					}
                     break;
             } // end switch
 
@@ -540,25 +542,44 @@ namespace Axiom.RenderSystems.DirectX9 {
             return 0;
         }
 
+		public static D3D.StencilOperation ConvertEnum(Axiom.Graphics.StencilOperation op) {
+			return ConvertEnum(op, false);
+		}
+
         /// <summary>
         ///    Converts our StencilOperation enum to the D3D StencilOperation equivalent.
         /// </summary>
         /// <param name="op"></param>
         /// <returns></returns>
-        public static D3D.StencilOperation ConvertEnum(Axiom.Graphics.StencilOperation op) {
+        public static D3D.StencilOperation ConvertEnum(Axiom.Graphics.StencilOperation op, bool invert) {
             switch(op) {
+				case Axiom.Graphics.StencilOperation.Keep:
+					return D3D.StencilOperation.Keep;
+
                 case Axiom.Graphics.StencilOperation.Zero:
                     return D3D.StencilOperation.Zero;
+
                 case Axiom.Graphics.StencilOperation.Replace:
                     return D3D.StencilOperation.Replace;
-                case Axiom.Graphics.StencilOperation.Keep:
-                    return D3D.StencilOperation.Keep;
-                case Axiom.Graphics.StencilOperation.Invert:
-                    return D3D.StencilOperation.Invert;
+
                 case Axiom.Graphics.StencilOperation.Increment:
-                    return D3D.StencilOperation.Increment;
+                    return invert ? 
+						D3D.StencilOperation.DecrementSaturation : D3D.StencilOperation.IncrementSaturation;
+
                 case Axiom.Graphics.StencilOperation.Decrement:
-                    return D3D.StencilOperation.Decrement;
+					return invert ? 
+						D3D.StencilOperation.IncrementSaturation : D3D.StencilOperation.DecrementSaturation;
+
+				case Axiom.Graphics.StencilOperation.IncrementWrap:
+					return invert ? 
+						D3D.StencilOperation.Decrement : D3D.StencilOperation.Increment;
+
+				case Axiom.Graphics.StencilOperation.DecrementWrap:
+					return invert ? 
+						D3D.StencilOperation.Increment : D3D.StencilOperation.Decrement;
+
+				case Axiom.Graphics.StencilOperation.Invert:
+					return D3D.StencilOperation.Invert;
             }
 
             return 0;

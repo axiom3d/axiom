@@ -223,52 +223,6 @@ namespace Axiom.Graphics {
         ///	</remarks>
         public abstract bool StencilCheckEnabled { set; }
 
-        /// <summary>
-        ///		Sets the stencil test function.
-        /// </summary>
-        /// <remarks>
-        ///		The stencil test is:
-        ///		(Reference Value & Mask) CompareFunction (Stencil Buffer Value & Mask)
-        ///	</remarks>
-        public abstract CompareFunction StencilBufferFunction { set; }
-
-        /// <summary>
-        ///		Sets the stencil buffer reference value.
-        /// </summary>
-        ///	<remarks>
-        ///		This value is used in the stencil test:
-        ///		(Reference Value & Mask) CompareFunction (Stencil Buffer Value & Mask)
-        ///		It can also be used as the destination value for the stencil buffer if the
-        ///		operation which is performed is StencilOperation.Replace.
-        /// </remarks>
-        public abstract int StencilBufferReferenceValue { set; }
-
-        /// <summary>
-        ///		Sets the stencil buffer mask value.
-        /// </summary>
-        ///<remarks>
-        ///		This is applied thus:
-        ///		(Reference Value & Mask) CompareFunction (Stencil Buffer Value & Mask)
-        ///	</remarks>
-        public abstract int StencilBufferMask { set; }
-
-        /// <summary>
-        ///		Sets the action to perform if the stencil test fails.
-        /// </summary>
-        public abstract StencilOperation StencilBufferFailOperation { set; }
-
-        /// <summary>
-        ///		Sets the action to perform if the stencil test passes, but the depth
-        ///		buffer test fails.
-        /// </summary>
-        public abstract StencilOperation StencilBufferDepthFailOperation { set; }
-
-        /// <summary>
-        ///		Sets the action to perform if both the stencil test and the depth buffer 
-        ///		test passes.
-        /// </summary>
-        public abstract StencilOperation StencilBufferPassOperation { set; }
-
         #endregion
 
         #region Overridable virtual methods
@@ -344,6 +298,24 @@ namespace Axiom.Graphics {
         public abstract RenderWindow CreateRenderWindow(string name, int width, int height, int colorDepth,
             bool isFullscreen, int left, int top, bool depthBuffer, object target);
 
+		/// <summary>
+		///		Builds a perspective projection matrix suitable for this render system.
+		/// </summary>
+		/// <remarks>
+		///		Because different APIs have different requirements (some incompatible) for the
+		///		projection matrix, this method allows each to implement their own correctly and pass
+		///		back a generic Matrix3 for storage in the engine.
+		///	 </remarks>
+		/// <param name="fov">Field of view angle.</param>
+		/// <param name="aspectRatio">Aspect ratio.</param>
+		/// <param name="near">Near clipping plane distance.</param>
+		/// <param name="far">Far clipping plane distance.</param>
+		/// <returns></returns>
+		public Matrix4 MakeProjectionMatrix(float fov, float aspectRatio, float near, float far) {
+			// create without consideration for Gpu programs by default
+			return MakeProjectionMatrix(fov, aspectRatio, near, far, false);
+		}
+
         /// <summary>
         ///		Builds a perspective projection matrix suitable for this render system.
         /// </summary>
@@ -360,24 +332,38 @@ namespace Axiom.Graphics {
         /// <returns></returns>
         public abstract Matrix4 MakeProjectionMatrix(float fov, float aspectRatio, float near, float far, bool forGpuProgram);
 
-        /// <summary>
-        ///		Builds a perspective projection matrix suitable for this render system.
-        /// </summary>
-        /// <remarks>
-        ///		Because different APIs have different requirements (some incompatible) for the
-        ///		projection matrix, this method allows each to implement their own correctly and pass
-        ///		back a generic Matrix3 for storage in the engine.
-        ///	 </remarks>
-        /// <param name="fov">Field of view angle.</param>
-        /// <param name="aspectRatio">Aspect ratio.</param>
-        /// <param name="near">Near clipping plane distance.</param>
-        /// <param name="far">Far clipping plane distance.</param>
-        /// <param name="forGpuProgram"></param>
-        /// <returns></returns>
-        public Matrix4 MakeProjectionMatrix(float fov, float aspectRatio, float near, float far) {
-            // create without consideration for Gpu programs by default
-            return MakeProjectionMatrix(fov, aspectRatio, near, far, false);
-        }
+		/// <summary>
+		///		Builds a orthographic projection matrix suitable for this render system.
+		/// </summary>
+		/// <remarks>
+		///		Because different APIs have different requirements (some incompatible) for the
+		///		projection matrix, this method allows each to implement their own correctly and pass
+		///		back a generic Matrix3 for storage in the engine.
+		///	 </remarks>
+		/// <param name="fov">Field of view angle.</param>
+		/// <param name="aspectRatio">Aspect ratio.</param>
+		/// <param name="near">Near clipping plane distance.</param>
+		/// <param name="far">Far clipping plane distance.</param>
+		/// <returns></returns>
+		public Matrix4 MakeOrthoMatrix(float fov, float aspectRatio, float near, float far) {
+			return MakeOrthoMatrix(fov, aspectRatio, near, far, false);
+		}
+
+		/// <summary>
+		///		Builds an orthographic projection matrix suitable for this render system.
+		/// </summary>
+		/// <remarks>
+		///		Because different APIs have different requirements (some incompatible) for the
+		///		projection matrix, this method allows each to implement their own correctly and pass
+		///		back a generic Matrix3 for storage in the engine.
+		///	 </remarks>
+		/// <param name="fov">Field of view angle.</param>
+		/// <param name="aspectRatio">Aspect ratio.</param>
+		/// <param name="near">Near clipping plane distance.</param>
+		/// <param name="far">Far clipping plane distance.</param>
+		/// <param name="forGpuProgram"></param>
+		/// <returns></returns>
+		public abstract Matrix4 MakeOrthoMatrix(float fov, float aspectRatio, float near, float far, bool forGpuPrograms);
 
         /// <summary>
         /// 
@@ -474,7 +460,126 @@ namespace Axiom.Graphics {
         /// <param name="limit">Max number of lights that can be used from the list currently.</param>
         protected abstract internal void UseLights(LightList lightList, int limit);
 
-        #endregion
+		#region SetStencilBufferParams Overloads 
+
+		/// <summary>
+		///		This method allows you to set all the stencil buffer parameters in one call.
+		/// </summary>
+		/// <remarks>
+		///		<para>
+		///		The stencil buffer is used to mask out pixels in the render target, allowing
+		///		you to do effects like mirrors, cut-outs, stencil shadows and more. Each of
+		///		your batches of rendering is likely to ignore the stencil buffer, 
+		///		update it with new values, or apply it to mask the output of the render.
+		///		The stencil test is:<PRE>
+		///		(Reference Value & Mask) CompareFunction (Stencil Buffer Value & Mask)</PRE>
+		///		The result of this will cause one of 3 actions depending on whether the test fails,
+		///		succeeds but with the depth buffer check still failing, or succeeds with the
+		///		depth buffer check passing too.</para>
+		///		<para>
+		///		Unlike other render states, stencilling is left for the application to turn
+		///		on and off when it requires. This is because you are likely to want to change
+		///		parameters between batches of arbitrary objects and control the ordering yourself.
+		///		In order to batch things this way, you'll want to use OGRE's separate render queue
+		///		groups (see RenderQueue) and register a RenderQueueListener to get notifications
+		///		between batches.</para>
+		///		<para>
+		///		There are individual state change methods for each of the parameters set using 
+		///		this method. 
+		///		Note that the default values in this method represent the defaults at system 
+		///		start up too.</para>
+		/// </remarks>
+		/// <param name="function">The comparison function applied.</param>
+		/// <param name="refValue">The reference value used in the comparison.</param>
+		/// <param name="mask">
+		///		The bitmask applied to both the stencil value and the reference value 
+		///		before comparison.
+		/// </param>
+		/// <param name="stencilFailOp">The action to perform when the stencil check fails.</param>
+		/// <param name="depthFailOp">
+		///		The action to perform when the stencil check passes, but the depth buffer check still fails.
+		/// </param>
+		/// <param name="passOp">The action to take when both the stencil and depth check pass.</param>
+		/// <param name="twoSidedOperation">
+		///		If set to true, then if you render both back and front faces 
+		///		(you'll have to turn off culling) then these parameters will apply for front faces, 
+		///		and the inverse of them will happen for back faces (keep remains the same).
+		/// </param>
+		public abstract void SetStencilBufferParams(CompareFunction function, int refValue, int mask, 
+			StencilOperation stencilFailOp, StencilOperation depthFailOp, StencilOperation passOp, bool twoSidedOperation);
+	
+		public void SetStencilBufferParams() {
+			SetStencilBufferParams(CompareFunction.AlwaysPass, 0, unchecked((int)0xFFFFFFFF), 
+				StencilOperation.Keep, StencilOperation.Keep, StencilOperation.Keep, false);
+		}
+		
+		public void SetStencilBufferParams(CompareFunction function) {
+			SetStencilBufferParams(function, 0, unchecked((int)0xFFFFFFFF), 
+				StencilOperation.Keep, StencilOperation.Keep, StencilOperation.Keep, false);
+		}
+
+		public void SetStencilBufferParams(CompareFunction function, int refValue) {
+			SetStencilBufferParams(function, refValue, unchecked((int)0xFFFFFFFF), 
+				StencilOperation.Keep, StencilOperation.Keep, StencilOperation.Keep, false);
+		}
+
+		public void SetStencilBufferParams(CompareFunction function, int refValue, int mask) {
+			SetStencilBufferParams(function, refValue, mask, 
+				StencilOperation.Keep, StencilOperation.Keep, StencilOperation.Keep, false);
+		}
+
+		public void SetStencilBufferParams(CompareFunction function, int refValue, int mask, 
+			StencilOperation stencilFailOp) {
+
+			SetStencilBufferParams(function, refValue, mask, 
+				stencilFailOp, StencilOperation.Keep, StencilOperation.Keep, false);
+		}
+
+		public void SetStencilBufferParams(CompareFunction function, int refValue, int mask, 
+			StencilOperation stencilFailOp, StencilOperation depthFailOp) {
+
+			SetStencilBufferParams(function, refValue, mask, 
+				stencilFailOp, depthFailOp, StencilOperation.Keep, false);
+		}
+
+		public void SetStencilBufferParams(CompareFunction function, int refValue, int mask, 
+			StencilOperation stencilFailOp, StencilOperation depthFailOp, StencilOperation passOp) {
+
+			SetStencilBufferParams(function, refValue, mask, 
+				stencilFailOp, depthFailOp, passOp, false);
+		}
+
+		#endregion SetStencilBufferParams Overloads 
+
+		#region ClearFrameBuffer Overloads
+
+		/// <summary>
+		///		Clears one or more frame buffers on the active render target.
+		/// </summary>
+		/// <param name="buffers">
+		///		Combination of one or more elements of <see cref="FrameBuffer"/>
+		///		denoting which buffers are to be cleared.
+		/// </param>
+		/// <param name="color">The color to clear the color buffer with, if enabled.</param>
+		/// <param name="depth">The value to initialize the depth buffer with, if enabled.</param>
+		/// <param name="stencil">The value to initialize the stencil buffer with, if enabled.</param>
+		public abstract void ClearFrameBuffer(FrameBuffer buffers, ColorEx color, float depth, int stencil);
+
+		public void ClearFrameBuffer(FrameBuffer buffers, ColorEx color, float depth) {
+			ClearFrameBuffer(buffers, color, depth, 0);
+		}
+
+		public void ClearFrameBuffer(FrameBuffer buffers, ColorEx color) {
+			ClearFrameBuffer(buffers, color, 1.0f, 0);
+		}
+
+		public void ClearFrameBuffer(FrameBuffer buffers) {
+			ClearFrameBuffer(buffers, ColorEx.Black, 1.0f, 0);
+		}
+
+		#endregion ClearFrameBuffer Overloads
+
+        #endregion Abstract Methods
 
         #region Object overrides
 

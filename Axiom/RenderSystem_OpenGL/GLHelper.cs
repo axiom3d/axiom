@@ -174,29 +174,44 @@ namespace Axiom.RenderSystems.OpenGL {
             return 0;
         }
 
+		public static int ConvertEnum(StencilOperation op) {
+			return ConvertEnum(op, false);
+		}
+
         /// <summary>
         ///		Find the GL int value for the StencilOperation enum.
         /// </summary>
         /// <param name="op"></param>
         /// <returns></returns>
-        public static int ConvertEnum(StencilOperation op) {
+        public static int ConvertEnum(StencilOperation op, bool invert) {
             switch(op) {
                 case StencilOperation.Keep:
                     return Gl.GL_KEEP;
+
                 case StencilOperation.Zero:
                     return Gl.GL_ZERO;
+
                 case StencilOperation.Replace:
                     return Gl.GL_REPLACE;
+
                 case StencilOperation.Increment:
-                    return Gl.GL_INCR;
+                    return invert ? Gl.GL_DECR : Gl.GL_INCR;
+
                 case StencilOperation.Decrement:
-                    return Gl.GL_DECR;
+                    return invert ? Gl.GL_INCR : Gl.GL_DECR;
+
+				case StencilOperation.IncrementWrap:
+					return invert ? Gl.GL_DECR_WRAP_EXT : Gl.GL_INCR_WRAP_EXT;
+
+				case StencilOperation.DecrementWrap:
+					return invert ? Gl.GL_INCR_WRAP_EXT : Gl.GL_DECR_WRAP_EXT;
+
                 case StencilOperation.Invert:
                     return Gl.GL_INVERT;
             }
 
             // make the compiler happy
-            return 0;
+            return Gl.GL_KEEP;
         }
 
         public static int ConvertEnum(GpuProgramType type) {
@@ -519,6 +534,16 @@ namespace Axiom.RenderSystems.OpenGL {
 
 		#endregion GL_draw_range_elements
 
+		#region GL_EXT_stencil_two_side
+
+		private static IntPtr activeStencilFaceEXTptr;
+
+		public static void glActiveStencilFaceEXT(int face) {
+			Gl.glActiveStencilFaceEXT(activeStencilFaceEXTptr, face);
+		}
+
+		#endregion GL_EXT_stencil_two_side
+
         /// <summary>
         ///    Must be fired up after a GL context has been created.
         /// </summary>
@@ -589,6 +614,9 @@ namespace Axiom.RenderSystems.OpenGL {
 
 			// GL_draw_range_elements
 			drawRangeElementsptr = Wgl.wglGetProcAddress("glDrawRangeElements");
+
+			// GL_EXT_stencil_two_side
+			activeStencilFaceEXTptr = Wgl.wglGetProcAddress("glActiveStencilFaceEXT");
         }
     }
 

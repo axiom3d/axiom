@@ -34,6 +34,7 @@ using System.Windows.Forms;
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
+using Axiom.Exceptions;
 using Axiom.MathLib;
 using Axiom.Graphics;
 using Axiom.Utility;
@@ -103,10 +104,14 @@ namespace Axiom.RenderSystems.OpenGL {
         protected int lastDepthBias;
         protected bool lastDepthCheck, lastDepthWrite;
         protected CompareFunction lastDepthFunc;
+
+		const int MAX_LIGHTS = 8;
+		protected Light[] lights = new Light[MAX_LIGHTS];
         
         // temp arrays to reduce runtime allocations
         protected float[] tempMatrix = new float[16];
         protected float[] tempColorVals = new float[4];
+		protected float[] tempLightVals = new float[4];
         protected float[] tempProgramFloats = new float[4];
         protected int[] colorWrite = new int[4];
 
@@ -147,6 +152,55 @@ namespace Axiom.RenderSystems.OpenGL {
         #endregion Constructors
 
         #region Implementation of RenderSystem
+
+		public override void ClearFrameBuffer(FrameBuffer buffers, ColorEx color, float depth, int stencil) {
+			int flags = 0;
+
+			if ((buffers & FrameBuffer.Color) > 0) {
+				flags |= Gl.GL_COLOR_BUFFER_BIT;
+			}
+			if ((buffers & FrameBuffer.Depth) > 0) {
+				flags |= Gl.GL_DEPTH_BUFFER_BIT;
+			}
+			if ((buffers & FrameBuffer.Stencil) > 0) {
+				flags |= Gl.GL_STENCIL_BUFFER_BIT;
+			}
+
+			// Enable depth & color buffer for writing if it isn't
+
+			if (!depthWrite) {
+				Gl.glDepthMask(Gl.GL_TRUE);
+			}
+
+			bool colorMask = 
+				colorWrite[0] == 0 
+				|| colorWrite[1] == 0 
+				|| colorWrite[2] == 0 
+				|| colorWrite[3] == 0; 
+
+			if (colorMask) {
+				Gl.glColorMask(Gl.GL_TRUE, Gl.GL_TRUE, Gl.GL_TRUE, Gl.GL_TRUE);
+			}
+
+			// Set values
+			Gl.glClearColor(color.r, color.g, color.b, color.a);
+			Gl.glClearDepth(depth);
+			Gl.glClearStencil(stencil);
+
+			// Clear buffers
+			Gl.glClear(flags);
+
+			// Reset depth write state if appropriate
+			// Enable depth buffer for writing if it isn't
+			if (!depthWrite) {
+				Gl.glDepthMask(Gl.GL_FALSE);
+			}
+
+			if (colorMask) {
+				Gl.glColorMask(colorWrite[0], colorWrite[1], colorWrite[2], colorWrite[3]);
+			}
+		}
+
 
         public override RenderTexture CreateRenderTexture(string name, int width, int height) {
             GLRenderTexture renderTexture = new GLRenderTexture(name, width, height);
@@ -377,78 +431,6 @@ namespace Axiom.RenderSystems.OpenGL {
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        public override StencilOperation StencilBufferDepthFailOperation {
-            set {
-                // Have to use saved values for other params since GL doesn't have 
-                // individual setters
-                stencilZFail = GLHelper.ConvertEnum(value);
-                Gl.glStencilOp(stencilFail, stencilZFail, stencilPass);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public override StencilOperation StencilBufferFailOperation {
-            set {
-                // Have to use saved values for other params since GL doesn't have 
-                // individual setters
-                stencilFail = GLHelper.ConvertEnum(value);
-                Gl.glStencilOp(stencilFail, stencilZFail, stencilPass);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public override CompareFunction StencilBufferFunction {
-            set {
-                // Have to use saved values for other params since GL doesn't have 
-                // individual setters
-                stencilFunc = GLHelper.ConvertEnum(value);
-                Gl.glStencilFunc(stencilFunc, stencilRef, stencilMask);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public override int StencilBufferMask {
-            set {
-                // Have to use saved values for other params since GL doesn't have 
-                // individual setters
-                stencilMask = value;
-                Gl.glStencilFunc(stencilFunc, stencilRef, stencilMask);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public override StencilOperation StencilBufferPassOperation {
-            set {
-                // Have to use saved values for other params since GL doesn't have 
-                // individual setters
-                stencilPass = GLHelper.ConvertEnum(value);
-                Gl.glStencilOp(stencilFail, stencilZFail, stencilPass);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public override int StencilBufferReferenceValue {
-            set {
-                // Have to use saved values for other params since GL doesn't have 
-                // individual setters
-                stencilRef = value;
-                Gl.glStencilFunc(stencilFunc, stencilRef, stencilMask);
-            }
-        }
-
-        /// <summary>
         ///		Specifies whether stencil check should be enabled or not.
         /// </summary>
         public override bool StencilCheckEnabled {
@@ -461,6 +443,25 @@ namespace Axiom.RenderSystems.OpenGL {
 				}
             }
         }
+
+		public override Matrix4 MakeOrthoMatrix(float fov, float aspectRatio, float near, float far, bool forGpuPrograms) {
+			float thetaY = MathUtil.DegreesToRadians(fov / 2.0f);
+            float sinThetaY = MathUtil.Sin(thetaY);
+            float thetaX = thetaY * aspectRatio;
+            float sinThetaX = MathUtil.Sin(thetaX);
+            float w = 1.0f / (sinThetaX * near);
+            float h = 1.0f / (sinThetaY * near);
+            float q = 1.0f / (far - near);
+		
+            Matrix4 dest = Matrix4.Zero;
+            dest.m00 = w;
+            dest.m11 = h;
+            dest.m22 = -q;
+            dest.m33 = 1;
+
+			return dest;
+		}
+
 
         /// <summary>
         ///		Creates a projection matrix specific to OpenGL based on the given params.
@@ -498,48 +499,16 @@ namespace Axiom.RenderSystems.OpenGL {
         protected override void BeginFrame() {
             Debug.Assert(activeViewport != null, "BeingFrame cannot run without an active viewport.");
 
-            if(activeViewport.ClearEveryFrame) {
-                activeViewport.BackgroundColor.ToArrayRGBA(tempColorVals);
+			// clear the viewport if required
+			if(activeViewport.ClearEveryFrame) {
+				// active viewport clipping
+				Gl.glEnable(Gl.GL_SCISSOR_TEST);
 
-                // clear the viewport
-                Gl.glClearColor(tempColorVals[0], tempColorVals[1], tempColorVals[2], tempColorVals[3]);
+				ClearFrameBuffer(FrameBuffer.Color | FrameBuffer.Depth, activeViewport.BackgroundColor);
+			}
 
-                // disable depth write if it isnt
-                if(!depthWrite)
-                    Gl.glDepthMask(Gl.GL_TRUE);
-
-                bool colorMask = colorWrite[0] == 0 || colorWrite[1] == 0 || colorWrite[2] == 0 || colorWrite[3] == 0;
-
-                if(colorMask) {
-                    Gl.glColorMask(1, 1, 1, 1);
-                }
-
-                // clear the color buffer and depth buffer bits
-                Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);	
-
-                // Reset depth write state if appropriate
-                // Enable depth buffer for writing if it isn't
-                if(!depthWrite)
-                    Gl.glDepthMask(Gl.GL_FALSE);
-
-                if(colorMask) {
-                    Gl.glColorMask(1, 1, 1, 1);
-                }
-            }
-            else {
-                // Use Carmack's ztrick to avoid clearing the depth buffer every frame
-                if(zTrickEven) {
-                    this.DepthFunction = CompareFunction.LessEqual;
-                    Gl.glDepthRange(0, 0.499999999);
-                }
-                else {
-                    this.DepthFunction = CompareFunction.GreaterEqual;
-                    Gl.glDepthRange(1, 0.5);
-                }
-
-                // swap the z trick flag
-                zTrickEven = !zTrickEven;
-            }
+			// update light position / directions because GL modifies them
+			SetLights();
         }
 
         /// <summary>
@@ -586,6 +555,40 @@ namespace Axiom.RenderSystems.OpenGL {
                 viewport.IsUpdated = false;
             }
         }
+
+		public override void SetStencilBufferParams(CompareFunction function, int refValue, int mask, StencilOperation stencilFailOp, StencilOperation depthFailOp, StencilOperation passOp, bool twoSidedOperation) {
+			if (twoSidedOperation) {
+				if(!caps.CheckCap(Capabilities.TwoSidedStencil)) {
+					throw new AxiomException("2-sided stencils are not supported on this hardware!");
+				}
+				
+				Ext.glActiveStencilFaceEXT(Gl.GL_FRONT);
+			}
+        
+			Gl.glStencilMask(mask);
+			Gl.glStencilFunc(GLHelper.ConvertEnum(function), refValue, mask);
+			Gl.glStencilOp(GLHelper.ConvertEnum(stencilFailOp), GLHelper.ConvertEnum(depthFailOp), 
+				GLHelper.ConvertEnum(passOp));
+
+			if (twoSidedOperation) {
+				// set everything again, inverted
+				Ext.glActiveStencilFaceEXT(Gl.GL_BACK);
+				Gl.glStencilMask(mask);
+				Gl.glStencilFunc(GLHelper.ConvertEnum(function), refValue, mask);
+				Gl.glStencilOp(
+					GLHelper.ConvertEnum(stencilFailOp, true), 
+					GLHelper.ConvertEnum(depthFailOp, true), 
+					GLHelper.ConvertEnum(passOp, true));
+
+				// reset
+				Ext.glActiveStencilFaceEXT(Gl.GL_FRONT);
+				Gl.glEnable(Gl.GL_STENCIL_TEST_TWO_SIDE_EXT);
+			}
+			else {
+				Gl.glDisable(Gl.GL_STENCIL_TEST_TWO_SIDE_EXT);
+			}
+		}
+
 
         /// <summary>
         /// 
@@ -823,7 +826,7 @@ namespace Axiom.RenderSystems.OpenGL {
                     break;
                 case LayerBlendOperationEx.DotProduct:
                     // Check for Dot3 support
-                    cmd = caps.CheckCap(Capabilities.Dot3Bump) ? Gl.GL_DOT3_RGB : Gl.GL_MODULATE;
+                    cmd = caps.CheckCap(Capabilities.Dot3) ? Gl.GL_DOT3_RGB : Gl.GL_MODULATE;
                     break;
 
                 default:
@@ -1533,6 +1536,9 @@ namespace Axiom.RenderSystems.OpenGL {
                 // load the float array into the ModelView matrix
                 Gl.glLoadMatrixf(tempMatrix);
 
+				// set the lights here everytime the view matrix changes
+				SetLights();
+
                 // convert the internal world matrix
                 MakeGLMatrix(ref worldMatrix, tempMatrix);
 
@@ -1570,10 +1576,12 @@ namespace Axiom.RenderSystems.OpenGL {
 
             for( ; i < limit && i < lightList.Count; i++) {
                 SetGLLight(i, lightList[i]);
+				lights[i] = lightList[i];
             }
 
             for( ; i < numCurrentLights; i++) {
                 SetGLLight(i, null);
+				lights[i] = null;
             }
 
             numCurrentLights = (int)MathUtil.Min(limit, lightList.Count);
@@ -1862,10 +1870,10 @@ namespace Axiom.RenderSystems.OpenGL {
         }
 
         /// <summary>
-        /// 
+        ///		Helper method for setting all the options for a single light.
         /// </summary>
-        /// <param name="index"></param>
-        /// <param name="light"></param>
+        /// <param name="index">Light index.</param>
+        /// <param name="light">Light object.</param>
         private void SetGLLight(int index, Light light) {
             int lightIndex = Gl.GL_LIGHT0 + index;
 
@@ -1894,31 +1902,9 @@ namespace Axiom.RenderSystems.OpenGL {
 
                 // disable ambient light for objects
                 // BUG: Why does this return GL ERROR 1280?
-                //Gl.glLighti(lightIndex, Gl.GL_AMBIENT, 0);
+                Gl.glLighti(lightIndex, Gl.GL_AMBIENT, 0);
 
-                // position (not set for Directional lighting)
-                Vector3 vec;
-
-                if(light.Type != LightType.Directional) {
-                    vec = light.DerivedPosition;
-                    tempColorVals[0] = vec.x;
-                    tempColorVals[1] = vec.y;
-                    tempColorVals[2] = vec.z;
-                    tempColorVals[3] = 1.0f;
-
-                    Gl.glLightfv(lightIndex, Gl.GL_POSITION, tempColorVals);
-                }
-			
-                // direction (not needed for point lights
-                if(light.Type != LightType.Point) {
-                    vec = light.DerivedDirection;
-                    tempColorVals[0] = vec.x;
-                    tempColorVals[1] = vec.y;
-                    tempColorVals[2] = vec.z;
-                    tempColorVals[3] = 1.0f;
-
-                    Gl.glLightfv(lightIndex, Gl.GL_SPOT_DIRECTION, tempColorVals);
-                }
+                SetGLLightPositionDirection(light, index);
 
                 // light attenuation
                 Gl.glLightf(lightIndex, Gl.GL_CONSTANT_ATTENUATION, light.AttenuationConstant);
@@ -1929,6 +1915,41 @@ namespace Axiom.RenderSystems.OpenGL {
                 Gl.glEnable(lightIndex);
             }
         }
+
+		/// <summary>
+		///		Helper method for resetting the position and direction of a light.
+		/// </summary>
+		/// <param name="light">Light to use.</param>
+		/// <param name="index">Index of the light.</param>
+		private void SetGLLightPositionDirection(Light light, int index) {
+			// Use general 4D vector which is the same as GL's approach
+			Vector4 vec4 = light.GetAs4DVector();
+
+			tempLightVals[0] = vec4.x; tempLightVals[1] = vec4.y; 
+			tempLightVals[2] = vec4.z; tempLightVals[3] = vec4.w;
+
+			Gl.glLightfv(Gl.GL_LIGHT0 + index, Gl.GL_POSITION, tempLightVals);
+
+			// set spotlight direction
+			if(light.Type == LightType.Spotlight) {
+				Vector3 vec3 = light.DerivedDirection;
+				tempLightVals[0] = vec3.x; tempLightVals[1] = vec3.y; 
+				tempLightVals[2] = vec3.z; tempLightVals[3] = 0.0f;
+
+				Gl.glLightfv(Gl.GL_LIGHT0 + index, Gl.GL_SPOT_DIRECTION, tempLightVals);
+			}	
+		}
+
+		/// <summary>
+		///		Private helper method for setting all lights.
+		/// </summary>
+		private void SetLights() {
+			for(int i = 0; i < lights.Length; i++) {
+				if(lights[i] != null) {
+					SetGLLightPositionDirection(lights[i], i);
+				}
+			}
+		}
 
         /// <summary>
         ///		Called in constructor to init configuration.
@@ -1994,7 +2015,7 @@ namespace Axiom.RenderSystems.OpenGL {
 
             // check dot3 support
             if(GLHelper.SupportsExtension("GL_ARB_texture_env_dot3")) {
-                caps.SetCap(Capabilities.Dot3Bump);
+                caps.SetCap(Capabilities.Dot3);
             }
 
             // check support for vertex buffers in hardware
@@ -2022,6 +2043,21 @@ namespace Axiom.RenderSystems.OpenGL {
                 caps.SetCap(Capabilities.HardwareMipMaps);
             }
 
+			// Texture Compression
+			if(GLHelper.SupportsExtension("GL_ARB_texture_compression")) {
+				caps.SetCap(Capabilities.TextureCompression);
+
+				// DXT compression
+				if(GLHelper.SupportsExtension("GL_EXT_texture_compression_s3tc")) {
+					caps.SetCap(Capabilities.TextureCompressionDXT);
+				}
+
+				// VTC compression
+				if(GLHelper.SupportsExtension("GL_NV_texture_compression_vtc")) {
+					caps.SetCap(Capabilities.TextureCompressionVTC);
+				}
+			}
+
             // check stencil buffer depth availability
             int stencilBits;
             Gl.glGetIntegerv(Gl.GL_STENCIL_BITS, out stencilBits);
@@ -2032,11 +2068,26 @@ namespace Axiom.RenderSystems.OpenGL {
                 caps.SetCap(Capabilities.StencilBuffer);
             }
 
+			// 2 sided stencil
+			if(GLHelper.SupportsExtension("GL_EXT_stencil_two_side")) {
+				caps.SetCap(Capabilities.TwoSidedStencil);
+			}
+
+			// stencil wrapping
+			if(GLHelper.SupportsExtension("GL_EXT_stencil_wrap")) {
+				caps.SetCap(Capabilities.StencilWrap);
+			}
+
             // scissor test is standard in GL 1.2 and above
             caps.SetCap(Capabilities.ScissorTest);
 
 			// UBYTE4 is always supported in GL
 			caps.SetCap(Capabilities.VertexFormatUByte4);
+
+			// Hardware occlusion queries
+			if(GLHelper.SupportsExtension("GL_NV_occlusion_query")) {
+				caps.SetCap(Capabilities.HardwareOcculusion);
+			}
 
             // ARB Vertex Programs
             if(GLHelper.SupportsExtension("GL_ARB_vertex_program")) {
@@ -2116,21 +2167,6 @@ namespace Axiom.RenderSystems.OpenGL {
 
                 gpuProgramMgr.PushSyntaxCode("fp30");
                 gpuProgramMgr.RegisterProgramFactory("fp30", new Nvidia.NV3xGpuProgramFactory());
-            }
-
-            // Texture Compression
-            if(GLHelper.SupportsExtension("GL_ARB_texture_compression")) {
-                caps.SetCap(Capabilities.TextureCompression);
-
-                // DXT compression
-                if(GLHelper.SupportsExtension("GL_EXT_texture_compression_s3tc")) {
-                    caps.SetCap(Capabilities.TextureCompressionDXT);
-                }
-
-                // VTC compression
-                if(GLHelper.SupportsExtension("GL_NV_texture_compression_vtc")) {
-                    caps.SetCap(Capabilities.TextureCompressionVTC);
-                }
             }
 
             // write info to logs
