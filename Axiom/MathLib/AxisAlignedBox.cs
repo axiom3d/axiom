@@ -150,6 +150,50 @@ namespace Axiom.MathLib {
 
         #endregion
 
+		#region Intersection Methods
+
+		/// <summary>
+		///		Returns whether or not this box intersects another.
+		/// </summary>
+		/// <param name="box2"></param>
+		/// <returns>True if the 2 boxes intersect, false otherwise.</returns>
+		public bool Intersects(AxisAlignedBox box2) {
+			Intersection result = MathUtil.Intersects(this, box2);
+
+			return result != Intersection.None;
+		}
+
+		/// <summary>
+		///		Tests whether this box intersects a sphere.
+		/// </summary>
+		/// <param name="sphere"></param>
+		/// <returns>True if the sphere intersects, false otherwise.</returns>
+		public bool Intersects(Sphere sphere) {
+			return MathUtil.Intersects(sphere, this);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="plane"></param>
+		/// <returns>True if the plane intersects, false otherwise.</returns>
+		public bool Intersects(Plane plane) {
+			return MathUtil.Intersects(plane, this);
+		}
+
+		/// <summary>
+		///		Tests whether the vector point is within this box.
+		/// </summary>
+		/// <param name="vector"></param>
+		/// <returns>True if the vector is within this box, false otherwise.</returns>
+		public bool Intersects(Vector3 vector) {
+			return(vector.x >= minVector.x  &&  vector.x <= maxVector.x  && 
+				vector.y >= minVector.y  &&  vector.y <= maxVector.y  && 
+				vector.z >= minVector.z  &&  vector.z <= maxVector.z);
+		}
+
+		#endregion Intersection Methods
+
         #region Properties
 
         /// <summary>
