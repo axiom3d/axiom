@@ -974,7 +974,7 @@ namespace Axiom.Core {
             // loop through each subentity and set the material up for the clone
             for(int i = 0; i < subEntityList.Count; i++) {
                 SubEntity subEntity = subEntityList[i];
-                clone.GetSubEntity(i).MaterialName = materialName;
+                clone.GetSubEntity(i).MaterialName = subEntity.materialName;
             }
 
             // TODO: Make sure this is the desired effect, since all clones share the same state
