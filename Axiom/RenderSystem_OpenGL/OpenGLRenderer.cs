@@ -342,6 +342,9 @@ namespace RenderSystem_OpenGL
 				}
 			}
 
+			/// <summary>
+			/// 
+			/// </summary>
 			public override TextureFiltering TextureFiltering
 			{
 				set
@@ -443,9 +446,12 @@ namespace RenderSystem_OpenGL
 				ResetLights();
 			}
 
+			/// <summary>
+			/// 
+			/// </summary>
 			protected override void EndFrame()
 			{
-				// TODO: See if we should do something here.
+				// Nothing to do here really
 			}
 
 			/// <summary>
@@ -483,6 +489,370 @@ namespace RenderSystem_OpenGL
 					viewport.IsUpdated = false;
 				}
 			}
+
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <param name="ambient"></param>
+			/// <param name="diffuse"></param>
+			/// <param name="specular"></param>
+			/// <param name="emissive"></param>
+			/// <param name="shininess"></param>
+			protected override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess)
+			{
+				// ambient
+				float[] vals = GlColorArray(ambient);
+				Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_AMBIENT, vals);
+
+				// diffuse
+				vals[0] = diffuse.r; vals[1] = diffuse.g; vals[2] = diffuse.b; vals[3] = diffuse.a;
+				Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_DIFFUSE, vals);
+
+				// specular
+				vals[0] = specular.r; vals[1] = specular.g; vals[2] = specular.b; vals[3] = specular.a;
+				Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_SPECULAR, vals);
+
+				// emissive
+				vals[0] = emissive.r; vals[1] = emissive.g; vals[2] = emissive.b; vals[3] = emissive.a;
+				Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_EMISSION, vals);
+
+				// shininess
+				Gl.glMaterialf(Gl.GL_FRONT_AND_BACK, Gl.GL_SHININESS, shininess);
+			}
+	
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <param name="stage"></param>
+			/// <param name="texAddressingMode"></param>
+			protected override void SetTextureAddressingMode(int stage, TextureAddressing texAddressingMode)
+			{
+				int type = 0;
+
+				// find out the GL equivalent of out TextureAddressing enum
+				switch(texAddressingMode)
+				{
+					case TextureAddressing.Wrap:
+						type = Gl.GL_REPEAT;
+						break;
+
+					case TextureAddressing.Mirror:
+						// TODO: Re-add prefix after switching to Tao
+						type = Gl.GL_MIRRORED_REPEAT;
+						break;
+
+					case TextureAddressing.Clamp:
+						type = Gl.GL_CLAMP_TO_EDGE;
+						break;
+				} // end switch
+
+				// set the GL texture wrap params for the specified unit
+				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0 + stage);
+				Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, type);
+				Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, type);
+				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0);
+			}
+	
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <param name="stage"></param>
+			/// <param name="blendMode"></param>
+			public override void SetTextureBlendMode(int stage, LayerBlendModeEx blendMode)
+			{
+				float[] cv1 = blendMode.colorArg1.ToArrayRGBA();
+				float[] cv2 = blendMode.colorArg2.ToArrayRGBA();
+				float[] av1 = new float[4] {0.0f, 0.0f, 0.0f, blendMode.alphaArg1};
+				float[] av2 = new float[4] {0.0f, 0.0f, 0.0f, blendMode.alphaArg2};
+
+				int src1op, src2op, cmd;
+
+				src1op = src2op = cmd = 0;
+
+				switch(blendMode.source1)
+				{
+					case LayerBlendSource.Current:
+						src1op = Gl.GL_PREVIOUS;
+						break;
+
+					case LayerBlendSource.Texture:
+						src1op = Gl.GL_TEXTURE;
+						break;
+				
+					case LayerBlendSource.Manual:
+						src1op = Gl.GL_CONSTANT;
+						break;
+				
+						// no diffuse or specular equivalent right now
+					default:
+						src1op = 0;
+						break;
+				}
+
+				switch(blendMode.source2)
+				{
+					case LayerBlendSource.Current:
+						src2op = Gl.GL_PREVIOUS;
+						break;
+
+					case LayerBlendSource.Texture:
+						src2op = Gl.GL_TEXTURE;
+						break;
+				
+					case LayerBlendSource.Manual:
+						src2op = Gl.GL_CONSTANT;
+						break;
+				
+						// no diffuse or specular equivalent right now
+					default:
+						src2op = 0;
+						break;
+				}
+
+				switch (blendMode.operation)
+				{
+					case LayerBlendOperationEx.Source1:
+						cmd = Gl.GL_REPLACE;
+						break;
+					case LayerBlendOperationEx.Source2:
+						cmd = Gl.GL_REPLACE;
+						break;
+					case LayerBlendOperationEx.Modulate:
+						cmd = Gl.GL_MODULATE;
+						break;
+					case LayerBlendOperationEx.ModulateX2:
+						cmd = Gl.GL_MODULATE;
+						break;
+					case LayerBlendOperationEx.ModulateX4:
+						cmd = Gl.GL_MODULATE;
+						break;
+					case LayerBlendOperationEx.Add:
+						cmd = Gl.GL_ADD;
+						break;
+					case LayerBlendOperationEx.AddSigned:
+						cmd = Gl.GL_ADD_SIGNED;
+						break;
+					case LayerBlendOperationEx.BlendTextureAlpha:
+						cmd = Gl.GL_INTERPOLATE;
+						break;
+					case LayerBlendOperationEx.BlendCurrentAlpha:
+						cmd = Gl.GL_INTERPOLATE;
+						break;
+					case LayerBlendOperationEx.DotProduct:
+						// Check for Dot3 support
+						cmd = caps.CheckCap(Capabilities.Dot3Bump) ? Gl.GL_DOT3_RGB : Gl.GL_MODULATE;
+						break;
+
+					default:
+						cmd = 0;
+						break;
+				} // end switch
+
+				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0 + stage);
+				Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, (int)Gl.GL_COMBINE);
+
+				if (blendMode.blendType == LayerBlendType.Color)
+				{
+					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_COMBINE_RGB, (int)cmd);
+					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE0_RGB, (int)src1op);
+					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE1_RGB, (int)src2op);
+					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_RGB, (int)Gl.GL_CONSTANT);
+				}
+				else
+				{
+					if (cmd != Gl.GL_DOT3_RGB)
+						Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_COMBINE_ALPHA, (int)cmd);
+
+					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE0_ALPHA, (int)src1op);
+					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE1_ALPHA, (int)src2op);
+					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_ALPHA, (int)Gl.GL_CONSTANT);
+				}
+
+				switch (blendMode.operation)
+				{
+					case LayerBlendOperationEx.BlendTextureAlpha:
+						Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_RGB, (int)Gl.GL_TEXTURE);
+						Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_ALPHA, (int)Gl.GL_TEXTURE);
+						break;
+					case LayerBlendOperationEx.BlendCurrentAlpha:
+						Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_RGB, (int)Gl.GL_PREVIOUS);
+						Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_ALPHA, (int)Gl.GL_PREVIOUS);
+						break;
+					case LayerBlendOperationEx.Modulate:
+						Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, blendMode.blendType == LayerBlendType.Color ? 
+							Gl.GL_RGB_SCALE : Gl.GL_ALPHA_SCALE, 1);
+						break;
+					case LayerBlendOperationEx.ModulateX2:
+						Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, blendMode.blendType == LayerBlendType.Color ? 
+							Gl.GL_RGB_SCALE : Gl.GL_ALPHA_SCALE, 2);
+						break;
+					case LayerBlendOperationEx.ModulateX4:
+						Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, blendMode.blendType == LayerBlendType.Color ? 
+							Gl.GL_RGB_SCALE : Gl.GL_ALPHA_SCALE, 4);
+						break;
+					default:
+						break;
+				}
+
+				Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND0_RGB, Gl.GL_SRC_COLOR);
+				Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND1_RGB, Gl.GL_SRC_COLOR);
+				Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND2_RGB, Gl.GL_SRC_COLOR);
+				Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND0_ALPHA, Gl.GL_SRC_ALPHA);
+				Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND1_ALPHA, Gl.GL_SRC_ALPHA);
+				Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND2_ALPHA, Gl.GL_SRC_ALPHA);
+
+				if (blendMode.blendType == LayerBlendType.Color && blendMode.source1 == LayerBlendSource.Manual)
+					Gl.glTexEnvfv(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_COLOR, cv1);
+				if (blendMode.blendType == LayerBlendType.Color && blendMode.source2 == LayerBlendSource.Manual)
+					Gl.glTexEnvfv(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_COLOR, cv2);
+            
+				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0);
+			}
+	
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <param name="stage"></param>
+			/// <param name="index"></param>
+			protected override void SetTextureCoordSet(int stage, int index)
+			{
+				// TODO:  Add OpenGLRenderer.SetTextureCoordSet implementation
+			}
+
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <param name="stage"></param>
+			/// <param name="method"></param>
+			protected override void SetTextureCoordCalculation(int stage, TexCoordCalcMethod method)
+			{
+				float[] m = new float[16];
+ 
+				// Default to no extra auto texture matrix
+				useAutoTextureMatrix = false;
+
+				Gl.glActiveTextureARB(glActiveTextureARB, Gl.GL_TEXTURE0 + stage );
+
+				switch(method)
+				{
+					case TexCoordCalcMethod.None:
+						Gl.glDisable( Gl.GL_TEXTURE_GEN_S );
+						Gl.glDisable( Gl.GL_TEXTURE_GEN_T );
+						Gl.glDisable( Gl.GL_TEXTURE_GEN_R );
+						Gl.glDisable( Gl.GL_TEXTURE_GEN_Q );
+						break;
+
+					case TexCoordCalcMethod.EnvironmentMap:
+						Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_SPHERE_MAP );
+						Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_SPHERE_MAP );
+
+						Gl.glEnable( Gl.GL_TEXTURE_GEN_S );
+						Gl.glEnable( Gl.GL_TEXTURE_GEN_T );
+						Gl.glDisable( Gl.GL_TEXTURE_GEN_R );
+						Gl.glDisable( Gl.GL_TEXTURE_GEN_Q );
+						break;
+
+					case TexCoordCalcMethod.EnvironmentMapPlanar:            
+						// XXX This doesn't seem right?!
+						if(GLHelper.CheckMinVersion("1.3"))
+						{
+							Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_REFLECTION_MAP );
+							Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_REFLECTION_MAP );
+							Gl.glTexGeni( Gl.GL_R, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_REFLECTION_MAP );
+
+							Gl.glEnable( Gl.GL_TEXTURE_GEN_S );
+							Gl.glEnable( Gl.GL_TEXTURE_GEN_T );
+							Gl.glEnable( Gl.GL_TEXTURE_GEN_R );
+							Gl.glDisable( Gl.GL_TEXTURE_GEN_Q );
+						}
+						else
+						{
+							Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_SPHERE_MAP );
+							Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_SPHERE_MAP );
+
+							Gl.glEnable( Gl.GL_TEXTURE_GEN_S );
+							Gl.glEnable( Gl.GL_TEXTURE_GEN_T );
+							Gl.glDisable( Gl.GL_TEXTURE_GEN_R );
+							Gl.glDisable( Gl.GL_TEXTURE_GEN_Q );
+						}
+						break;
+
+					case TexCoordCalcMethod.EnvironmentMapReflection:
+            
+						Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_REFLECTION_MAP );
+						Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_REFLECTION_MAP );
+						Gl.glTexGeni( Gl.GL_R, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_REFLECTION_MAP );
+
+						Gl.glEnable( Gl.GL_TEXTURE_GEN_S );
+						Gl.glEnable( Gl.GL_TEXTURE_GEN_T );
+						Gl.glEnable( Gl.GL_TEXTURE_GEN_R );
+						Gl.glDisable( Gl.GL_TEXTURE_GEN_Q );
+
+						// We need an extra texture matrix here
+						// This sets the texture matrix to be the inverse of the modelview matrix
+						useAutoTextureMatrix = true;
+
+						Gl.glGetFloatv( Gl.GL_MODELVIEW_MATRIX, m);
+
+						// Transpose 3x3 in order to invert matrix (rotation)
+						// Note that we need to invert the Z _before_ the rotation
+						// No idea why we have to invert the Z at all, but reflection is wrong without it
+						autoTextureMatrix[0] = m[0]; autoTextureMatrix[1] = m[4]; autoTextureMatrix[2] = -m[8];
+						autoTextureMatrix[4] = m[1]; autoTextureMatrix[5] = m[5]; autoTextureMatrix[6] = -m[9];
+						autoTextureMatrix[8] = m[2]; autoTextureMatrix[9] = m[6]; autoTextureMatrix[10] = -m[10];
+						autoTextureMatrix[3] = autoTextureMatrix[7] = autoTextureMatrix[11] = 0.0f;
+						autoTextureMatrix[12] = autoTextureMatrix[13] = autoTextureMatrix[14] = 0.0f;
+						autoTextureMatrix[15] = 1.0f;
+
+						break;
+
+					case TexCoordCalcMethod.EnvironmentMapNormal:
+						Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_NORMAL_MAP );
+						Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_NORMAL_MAP );
+						Gl.glTexGeni( Gl.GL_R, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_NORMAL_MAP );
+
+						Gl.glEnable( Gl.GL_TEXTURE_GEN_S );
+						Gl.glEnable( Gl.GL_TEXTURE_GEN_T );
+						Gl.glEnable( Gl.GL_TEXTURE_GEN_R );
+						Gl.glDisable( Gl.GL_TEXTURE_GEN_Q );
+						break;
+
+					default:
+						break;
+				}
+
+				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0);		
+			}
+	
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <param name="stage"></param>
+			/// <param name="xform"></param>
+			protected override void SetTextureMatrix(int stage, Matrix4 xform)
+			{
+				float[] glMatrix = MakeGLMatrix(xform);
+
+				glMatrix[12] = glMatrix[8];
+				glMatrix[13] = glMatrix[9];
+
+				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0 + stage);
+				Gl.glMatrixMode(Gl.GL_TEXTURE);
+
+				// if texture matrix was precalced, use that
+				if(useAutoTextureMatrix)
+				{
+					Gl.glLoadMatrixf(autoTextureMatrix);
+					Gl.glMultMatrixf(glMatrix);
+				}
+				else
+					Gl.glLoadMatrixf(glMatrix);
+
+				// reset to mesh view matrix and to tex unit 0
+				Gl.glMatrixMode(Gl.GL_MODELVIEW);
+				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0);
+			}
+
 			#endregion
 
 			/// <summary>
@@ -535,6 +905,12 @@ namespace RenderSystem_OpenGL
 
 			}
 
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <param name="stage"></param>
+			/// <param name="enabled"></param>
+			/// <param name="textureName"></param>
 			protected override void SetTexture(int stage, bool enabled, string textureName)
 			{
 				// load the texture
@@ -598,6 +974,10 @@ namespace RenderSystem_OpenGL
 				// TODO: Fog hints maybe?
 			}
 
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <param name="op"></param>
 			public override void Render(RenderOperation op)
 			{
 				// call base class method first
@@ -857,6 +1237,10 @@ namespace RenderSystem_OpenGL
 				}
 			}
 
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <param name="light"></param>
 			protected override void AddLight(Light light)
 			{
 				int lightIndex;
@@ -878,6 +1262,10 @@ namespace RenderSystem_OpenGL
 				SetGLLight(lightIndex, light);			
 			}
 	
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <param name="light"></param>
 			protected override void UpdateLight(Light light)
 			{
 				int lightIndex;
@@ -895,12 +1283,21 @@ namespace RenderSystem_OpenGL
 				SetGLLight(lightIndex, light);
 			}
 
-
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <param name="color"></param>
+			/// <returns></returns>
 			public override int ConvertColor(ColorEx color)
 			{
 				return color.ToABGR();
 			}
 
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <param name="src"></param>
+			/// <param name="dest"></param>
 			protected override void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest)
 			{
 				int srcFactor = ConvertBlendFactor(src);
@@ -918,6 +1315,22 @@ namespace RenderSystem_OpenGL
 			{
 				set
 				{
+					ushort bias = value;
+
+					if (bias > 0)
+					{
+						Gl.glEnable(Gl.GL_POLYGON_OFFSET_FILL);
+						Gl.glEnable(Gl.GL_POLYGON_OFFSET_POINT);
+						Gl.glEnable(Gl.GL_POLYGON_OFFSET_LINE);
+						// Bias is in {0, 16}, scale the unit addition appropriately
+						Gl.glPolygonOffset(1.0f, bias);
+					}
+					else
+					{
+						Gl.glDisable(Gl.GL_POLYGON_OFFSET_FILL);
+						Gl.glDisable(Gl.GL_POLYGON_OFFSET_POINT);
+						Gl.glDisable(Gl.GL_POLYGON_OFFSET_LINE);
+					}
 				}
 			}
 
@@ -928,16 +1341,25 @@ namespace RenderSystem_OpenGL
 			{
 				set
 				{
+					if(value)
+					{
+						// clear the buffer and enable
+						Gl.glClearDepth(1.0f);
+						Gl.glEnable(Gl.GL_DEPTH_TEST);
+					}
+					else
+						Gl.glDisable(Gl.GL_DEPTH_TEST);
 				}
 			}
 
 			/// <summary>
 			/// 
 			/// </summary>
-			protected override bool DepthFunction
+			protected override CompareFunction DepthFunction
 			{
 				set
 				{
+					Gl.glDepthFunc(GLHelper.ConvertEnum(value));
 				}
 			}
 
@@ -955,29 +1377,6 @@ namespace RenderSystem_OpenGL
 					depthWrite = value;
 				}
 			}
-
-			protected override VertexBufferBinding VertexBufferBinding
-			{
-				get
-				{
-					return null;
-				}
-				set
-				{
-				}
-			}
-
-			protected override VertexDeclaration VertexDeclaration
-			{
-				get
-				{
-					return null;
-				}
-				set
-				{
-				}
-			}
-
 
 			#region Private methods
 
@@ -1189,342 +1588,7 @@ namespace RenderSystem_OpenGL
 			}
 
 			#endregion
-	
-			protected override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess)
-			{
-				// ambient
-				float[] vals = GlColorArray(ambient);
-				Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_AMBIENT, vals);
-
-				// diffuse
-				vals[0] = diffuse.r; vals[1] = diffuse.g; vals[2] = diffuse.b; vals[3] = diffuse.a;
-				Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_DIFFUSE, vals);
-
-				// specular
-				vals[0] = specular.r; vals[1] = specular.g; vals[2] = specular.b; vals[3] = specular.a;
-				Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_SPECULAR, vals);
-
-				// emissive
-				vals[0] = emissive.r; vals[1] = emissive.g; vals[2] = emissive.b; vals[3] = emissive.a;
-				Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_EMISSION, vals);
-
-				// shininess
-				Gl.glMaterialf(Gl.GL_FRONT_AND_BACK, Gl.GL_SHININESS, shininess);
-			}
-	
-			protected override void SetTextureAddressingMode(int stage, TextureAddressing texAddressingMode)
-			{
-				int type = 0;
-
-				// find out the GL equivalent of out TextureAddressing enum
-				switch(texAddressingMode)
-				{
-					case TextureAddressing.Wrap:
-						type = Gl.GL_REPEAT;
-						break;
-
-					case TextureAddressing.Mirror:
-						// TODO: Re-add prefix after switching to Tao
-						type = Gl.GL_MIRRORED_REPEAT;
-						break;
-
-					case TextureAddressing.Clamp:
-						type = Gl.GL_CLAMP_TO_EDGE;
-						break;
-				} // end switch
-
-				// set the GL texture wrap params for the specified unit
-				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0 + stage);
-				Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, type);
-				Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, type);
-				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0);
-			}
-	
-			public override void SetTextureBlendMode(int stage, LayerBlendModeEx blendMode)
-			{
-				float[] cv1 = blendMode.colorArg1.ToArrayRGBA();
-				float[] cv2 = blendMode.colorArg2.ToArrayRGBA();
-				float[] av1 = new float[4] {0.0f, 0.0f, 0.0f, blendMode.alphaArg1};
-				float[] av2 = new float[4] {0.0f, 0.0f, 0.0f, blendMode.alphaArg2};
-
-				int src1op, src2op, cmd;
-
-				src1op = src2op = cmd = 0;
-
-				switch(blendMode.source1)
-				{
-					case LayerBlendSource.Current:
-						src1op = Gl.GL_PREVIOUS;
-						break;
-
-					case LayerBlendSource.Texture:
-						src1op = Gl.GL_TEXTURE;
-						break;
-				
-					case LayerBlendSource.Manual:
-						src1op = Gl.GL_CONSTANT;
-						break;
-				
-						// no diffuse or specular equivalent right now
-					default:
-						src1op = 0;
-						break;
-				}
-
-				switch(blendMode.source2)
-				{
-					case LayerBlendSource.Current:
-						src2op = Gl.GL_PREVIOUS;
-						break;
-
-					case LayerBlendSource.Texture:
-						src2op = Gl.GL_TEXTURE;
-						break;
-				
-					case LayerBlendSource.Manual:
-						src2op = Gl.GL_CONSTANT;
-						break;
-				
-						// no diffuse or specular equivalent right now
-					default:
-						src2op = 0;
-						break;
-				}
-
-				switch (blendMode.operation)
-				{
-					case LayerBlendOperationEx.Source1:
-						cmd = Gl.GL_REPLACE;
-						break;
-					case LayerBlendOperationEx.Source2:
-						cmd = Gl.GL_REPLACE;
-						break;
-					case LayerBlendOperationEx.Modulate:
-						cmd = Gl.GL_MODULATE;
-						break;
-					case LayerBlendOperationEx.ModulateX2:
-						cmd = Gl.GL_MODULATE;
-						break;
-					case LayerBlendOperationEx.ModulateX4:
-						cmd = Gl.GL_MODULATE;
-						break;
-					case LayerBlendOperationEx.Add:
-						cmd = Gl.GL_ADD;
-						break;
-					case LayerBlendOperationEx.AddSigned:
-						cmd = Gl.GL_ADD_SIGNED;
-						break;
-					case LayerBlendOperationEx.BlendTextureAlpha:
-						cmd = Gl.GL_INTERPOLATE;
-						break;
-					case LayerBlendOperationEx.BlendCurrentAlpha:
-						cmd = Gl.GL_INTERPOLATE;
-						break;
-					case LayerBlendOperationEx.DotProduct:
-						// Check for Dot3 support
-						cmd = caps.CheckCap(Capabilities.Dot3Bump) ? Gl.GL_DOT3_RGB : Gl.GL_MODULATE;
-						break;
-
-					default:
-						cmd = 0;
-						break;
-				} // end switch
-
-				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0 + stage);
-				Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, (int)Gl.GL_COMBINE);
-
-				if (blendMode.blendType == LayerBlendType.Color)
-				{
-					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_COMBINE_RGB, (int)cmd);
-					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE0_RGB, (int)src1op);
-					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE1_RGB, (int)src2op);
-					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_RGB, (int)Gl.GL_CONSTANT);
-				}
-				else
-				{
-					if (cmd != Gl.GL_DOT3_RGB)
-						Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_COMBINE_ALPHA, (int)cmd);
-
-					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE0_ALPHA, (int)src1op);
-					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE1_ALPHA, (int)src2op);
-					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_ALPHA, (int)Gl.GL_CONSTANT);
-				}
-
-				switch (blendMode.operation)
-				{
-					case LayerBlendOperationEx.BlendTextureAlpha:
-						Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_RGB, (int)Gl.GL_TEXTURE);
-						Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_ALPHA, (int)Gl.GL_TEXTURE);
-						break;
-					case LayerBlendOperationEx.BlendCurrentAlpha:
-						Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_RGB, (int)Gl.GL_PREVIOUS);
-						Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_ALPHA, (int)Gl.GL_PREVIOUS);
-						break;
-					case LayerBlendOperationEx.Modulate:
-						Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, blendMode.blendType == LayerBlendType.Color ? 
-							Gl.GL_RGB_SCALE : Gl.GL_ALPHA_SCALE, 1);
-						break;
-					case LayerBlendOperationEx.ModulateX2:
-						Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, blendMode.blendType == LayerBlendType.Color ? 
-							Gl.GL_RGB_SCALE : Gl.GL_ALPHA_SCALE, 2);
-						break;
-					case LayerBlendOperationEx.ModulateX4:
-						Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, blendMode.blendType == LayerBlendType.Color ? 
-							Gl.GL_RGB_SCALE : Gl.GL_ALPHA_SCALE, 4);
-						break;
-					default:
-						break;
-				}
-
-				Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND0_RGB, Gl.GL_SRC_COLOR);
-				Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND1_RGB, Gl.GL_SRC_COLOR);
-				Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND2_RGB, Gl.GL_SRC_COLOR);
-				Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND0_ALPHA, Gl.GL_SRC_ALPHA);
-				Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND1_ALPHA, Gl.GL_SRC_ALPHA);
-				Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND2_ALPHA, Gl.GL_SRC_ALPHA);
-
-				if (blendMode.blendType == LayerBlendType.Color && blendMode.source1 == LayerBlendSource.Manual)
-					Gl.glTexEnvfv(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_COLOR, cv1);
-				if (blendMode.blendType == LayerBlendType.Color && blendMode.source2 == LayerBlendSource.Manual)
-					Gl.glTexEnvfv(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_COLOR, cv2);
-            
-				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0);
-			}
-	
-			protected override void SetTextureCoordSet(int stage, int index)
-			{
-				// TODO:  Add OpenGLRenderer.SetTextureCoordSet implementation
-			}
-
-			/// <summary>
-			/// 
-			/// </summary>
-			/// <param name="stage"></param>
-			/// <param name="method"></param>
-			protected override void SetTextureCoordCalculation(int stage, TexCoordCalcMethod method)
-			{
-				float[] m = new float[16];
- 
-				// Default to no extra auto texture matrix
-				useAutoTextureMatrix = false;
-
-				Gl.glActiveTextureARB(glActiveTextureARB, Gl.GL_TEXTURE0 + stage );
-
-				switch(method)
-				{
-					case TexCoordCalcMethod.None:
-						Gl.glDisable( Gl.GL_TEXTURE_GEN_S );
-						Gl.glDisable( Gl.GL_TEXTURE_GEN_T );
-						Gl.glDisable( Gl.GL_TEXTURE_GEN_R );
-						Gl.glDisable( Gl.GL_TEXTURE_GEN_Q );
-						break;
-
-					case TexCoordCalcMethod.EnvironmentMap:
-						Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_SPHERE_MAP );
-						Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_SPHERE_MAP );
-
-						Gl.glEnable( Gl.GL_TEXTURE_GEN_S );
-						Gl.glEnable( Gl.GL_TEXTURE_GEN_T );
-						Gl.glDisable( Gl.GL_TEXTURE_GEN_R );
-						Gl.glDisable( Gl.GL_TEXTURE_GEN_Q );
-						break;
-
-					case TexCoordCalcMethod.EnvironmentMapPlanar:            
-						// XXX This doesn't seem right?!
-						if(GLHelper.CheckMinVersion("1.3"))
-						{
-							Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_REFLECTION_MAP );
-							Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_REFLECTION_MAP );
-							Gl.glTexGeni( Gl.GL_R, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_REFLECTION_MAP );
-
-							Gl.glEnable( Gl.GL_TEXTURE_GEN_S );
-							Gl.glEnable( Gl.GL_TEXTURE_GEN_T );
-							Gl.glEnable( Gl.GL_TEXTURE_GEN_R );
-							Gl.glDisable( Gl.GL_TEXTURE_GEN_Q );
-						}
-						else
-						{
-							Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_SPHERE_MAP );
-							Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_SPHERE_MAP );
-
-							Gl.glEnable( Gl.GL_TEXTURE_GEN_S );
-							Gl.glEnable( Gl.GL_TEXTURE_GEN_T );
-							Gl.glDisable( Gl.GL_TEXTURE_GEN_R );
-							Gl.glDisable( Gl.GL_TEXTURE_GEN_Q );
-						}
-						break;
-
-					case TexCoordCalcMethod.EnvironmentMapReflection:
-            
-						Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_REFLECTION_MAP );
-						Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_REFLECTION_MAP );
-						Gl.glTexGeni( Gl.GL_R, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_REFLECTION_MAP );
-
-						Gl.glEnable( Gl.GL_TEXTURE_GEN_S );
-						Gl.glEnable( Gl.GL_TEXTURE_GEN_T );
-						Gl.glEnable( Gl.GL_TEXTURE_GEN_R );
-						Gl.glDisable( Gl.GL_TEXTURE_GEN_Q );
-
-						// We need an extra texture matrix here
-						// This sets the texture matrix to be the inverse of the modelview matrix
-						useAutoTextureMatrix = true;
-
-						Gl.glGetFloatv( Gl.GL_MODELVIEW_MATRIX, m);
-
-						// Transpose 3x3 in order to invert matrix (rotation)
-						// Note that we need to invert the Z _before_ the rotation
-						// No idea why we have to invert the Z at all, but reflection is wrong without it
-						autoTextureMatrix[0] = m[0]; autoTextureMatrix[1] = m[4]; autoTextureMatrix[2] = -m[8];
-						autoTextureMatrix[4] = m[1]; autoTextureMatrix[5] = m[5]; autoTextureMatrix[6] = -m[9];
-						autoTextureMatrix[8] = m[2]; autoTextureMatrix[9] = m[6]; autoTextureMatrix[10] = -m[10];
-						autoTextureMatrix[3] = autoTextureMatrix[7] = autoTextureMatrix[11] = 0.0f;
-						autoTextureMatrix[12] = autoTextureMatrix[13] = autoTextureMatrix[14] = 0.0f;
-						autoTextureMatrix[15] = 1.0f;
-
-						break;
-
-					case TexCoordCalcMethod.EnvironmentMapNormal:
-						Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_NORMAL_MAP );
-						Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_NORMAL_MAP );
-						Gl.glTexGeni( Gl.GL_R, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_NORMAL_MAP );
-
-						Gl.glEnable( Gl.GL_TEXTURE_GEN_S );
-						Gl.glEnable( Gl.GL_TEXTURE_GEN_T );
-						Gl.glEnable( Gl.GL_TEXTURE_GEN_R );
-						Gl.glDisable( Gl.GL_TEXTURE_GEN_Q );
-						break;
-
-					default:
-						break;
-				}
-
-				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0);		
-			}
-	
-			protected override void SetTextureMatrix(int stage, Matrix4 xform)
-			{
-				float[] glMatrix = MakeGLMatrix(xform);
-
-				glMatrix[12] = glMatrix[8];
-				glMatrix[13] = glMatrix[9];
-
-				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0 + stage);
-				Gl.glMatrixMode(Gl.GL_TEXTURE);
-
-				// if texture matrix was precalced, use that
-				if(useAutoTextureMatrix)
-				{
-					Gl.glLoadMatrixf(autoTextureMatrix);
-					Gl.glMultMatrixf(glMatrix);
-				}
-				else
-					Gl.glLoadMatrixf(glMatrix);
-
-				// reset to mesh view matrix and to tex unit 0
-				Gl.glMatrixMode(Gl.GL_MODELVIEW);
-				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0);
-			}
-	
+		
 			/// <summary>
 			///		Helper method to go through and interrogate hardware capabilities.
 			/// </summary>
