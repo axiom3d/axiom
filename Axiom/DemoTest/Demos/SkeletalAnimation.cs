@@ -21,9 +21,6 @@ namespace Demos {
         #region Methods
 
         protected override void CreateScene() {
-            scene.ShadowTechnique = ShadowTechnique.StencilAdditive;
-            scene.ShowDebugShadows = true;
-
             // set some ambient light
             scene.TargetRenderSystem.LightingEnabled = true;
             scene.AmbientLight = ColorEx.Gray;
