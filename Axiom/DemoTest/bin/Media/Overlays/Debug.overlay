@@ -35,6 +35,76 @@ Core/DebugOverlay
 			height 1
 			material Core/StatsBreak
 		}
+		
+		element TextArea(Core/CurrFps)
+		{
+			metrics_mode pixels
+			left 5
+			top 5
+			width 90
+			height 30
+			font_name Tahoma
+			char_height 19
+			caption Current FPS:
+			colour_top 0.7 1 0.7
+			colour_bottom 0.3 0.5 0.3
+		}
+
+		element TextArea(Core/AverageFps)
+		{
+			metrics_mode pixels
+			left 5
+			top 25
+			width 90
+			height 30
+			font_name Tahoma
+			char_height 16
+			caption AVERAGE FPS:
+			colour_top 0.5 0.7 0.5
+			colour_bottom 0.3 0.5 0.3
+		}
+
+		element TextArea(Core/WorstFps)
+		{
+			metrics_mode pixels
+			left 5
+			top 40
+			width 90
+			height 30
+			font_name Verdana
+			char_height 16
+			caption WORST FPS:
+			colour_top 0.5 0.7 0.5
+			colour_bottom 0.3 0.5 0.3
+		}
+
+		element TextArea(Core/BestFps)
+		{
+			metrics_mode pixels
+			left 5
+			top 55
+			width 90
+			height 30
+			font_name Tahoma
+			char_height 16
+			caption BEST FPS:
+			colour_top 0.5 0.7 0.5
+			colour_bottom 0.3 0.5 0.3
+		}
+
+		element TextArea(Core/NumTris)
+		{
+			metrics_mode pixels
+			left 5
+			top 70
+			width 90
+			height 30
+			font_name Tahoma
+			char_height 16
+			caption Triangle Count:
+			colour_top 0.5 0.7 0.5
+			colour_bottom 0.3 0.5 0.3
+		}
 	}
 
 	// engine logo

@@ -14,10 +14,10 @@ namespace Plugin_GuiElements
         public void Start() {
             GuiManager.Instance.AddElementFactory(new PanelFactory());
             GuiManager.Instance.AddElementFactory(new BorderPanelFactory());
+            GuiManager.Instance.AddElementFactory(new TextAreaFactory());
         }
 
         public void Stop() {
-            // TODO:  Add GuiElements.Stop implementation
         }
 
         #endregion

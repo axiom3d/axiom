@@ -281,7 +281,8 @@ namespace Axiom.Gui {
                 }
 
                 ParseHelper.SkipToNextOpenBrace(script);
-                ParseNewElement(script, parms[1 + skipParam], parms[2 + skipParam], true, overlay, isTemplate, templateName, (GuiContainer)parent);
+                bool isContainer = (parms[0 + skipParam] == "container");
+                ParseNewElement(script, parms[1 + skipParam], parms[2 + skipParam], isContainer, overlay, isTemplate, templateName, parent);
             }
 
             return ret;
