@@ -28,6 +28,7 @@ using System;
 using System.Runtime.InteropServices;
 using Microsoft.DirectX.Direct3D;
 using D3D = Microsoft.DirectX.Direct3D;
+using Axiom.Core;
 using Axiom.Graphics;
 
 namespace Axiom.RenderSystems.DirectX9 {
@@ -118,7 +119,7 @@ namespace Axiom.RenderSystems.DirectX9 {
             IntPtr src = this.Lock(offset, length, BufferLocking.ReadOnly);
 			
             // copy that data in there
-            PointerCopy(src, dest, length);
+            Memory.Copy(src, dest, length);
 
             // unlock the buffer
             this.Unlock();
@@ -138,7 +139,7 @@ namespace Axiom.RenderSystems.DirectX9 {
                 discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal);
 			
             // copy that data in there
-            PointerCopy(src, dest, length);
+            Memory.Copy(src, dest, length);
 
             // unlock the buffer
             this.Unlock();

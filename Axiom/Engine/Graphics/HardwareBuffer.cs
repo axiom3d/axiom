@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Axiom.Core;
 
 namespace Axiom.Graphics {
     /// <summary>
@@ -227,7 +228,7 @@ namespace Axiom.Graphics {
                 IntPtr dest = this.LockImpl(lockStart, lockSize, locking);
 
                 // copy the data in directly
-                PointerCopy(src, dest, lockSize);
+                Memory.Copy(src, dest, lockSize);
 
                 // unlock both buffers to commit the write
                 this.UnlockImpl();
@@ -340,21 +341,6 @@ namespace Axiom.Graphics {
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="src"></param>
-        /// <param name="dest"></param>
-        /// <param name="length"></param>
-        // TODO: Move this to a common file since it can be used elsewhere
-        public static unsafe void PointerCopy(IntPtr src, IntPtr dest, int length) {
-            byte* pSrc = (byte*)src.ToPointer();
-            byte* pDest = (byte*)dest.ToPointer();
-
-            for(int i = 0; i < length; i++)
-                pDest[i] = pSrc[i];
-        }
-
-        /// <summary>
         ///     Pass true to suppress hardware upload of shadow buffer changes.
         /// </summary>
         /// <param name="suppress">If true, shadow buffer updates won't be uploaded to hardware.</param>
@@ -412,5 +398,5 @@ namespace Axiom.Graphics {
         }
 
         #endregion
-    }
+	}
 }
