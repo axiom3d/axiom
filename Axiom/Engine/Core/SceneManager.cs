@@ -627,6 +627,60 @@ namespace Axiom.Core {
             // TODO: Implement SceneManager.LoadWorldGeometry
         }
 
+		public void ManualRender(RenderOperation op, Pass pass, Viewport vp, 
+			Matrix4 worldMatrix, Matrix4 viewMatrix, Matrix4 projMatrix) {
+
+			ManualRender(op, pass, vp, worldMatrix, viewMatrix, projMatrix, false);
+		}
+
+		/// <summary>
+		///		Manual rendering method, for advanced users only.
+		/// </summary>
+		/// <remarks>
+		///		This method allows you to send rendering commands through the pipeline on
+		///		demand, bypassing any normal world processing. You should only use this if you
+		///		really know what you're doing; the engine does lots of things for you that you really should
+		///		let it do. However, there are times where it may be useful to have this manual interface,
+		///		for example overlaying something on top of the scene.
+		///		<p/>
+		///		Because this is an instant rendering method, timing is important. The best 
+		///		time to call it is from a RenderTarget event handler.
+		///		<p/>
+		///		Don't call this method a lot, it's designed for rare (1 or 2 times per frame) use. 
+		///		Calling it regularly per frame will cause frame rate drops!
+		/// </remarks>
+		/// <param name="op">A RenderOperation object describing the rendering op.</param>
+		/// <param name="pass">The Pass to use for this render.</param>
+		/// <param name="vp">Reference to the viewport to render to.</param>
+		/// <param name="worldMatrix">The transform to apply from object to world space.</param>
+		/// <param name="viewMatrix">The transform to apply from object to view space.</param>
+		/// <param name="projMatrix">The transform to apply from view to screen space.</param>
+		/// <param name="doBeginEndFrame">
+		///		If true, BeginFrame() and EndFrame() are called, otherwise not. 
+		///		You should leave this as false if you are calling this within the main render loop.
+		/// </param>
+		public virtual void ManualRender(RenderOperation op, Pass pass, Viewport vp, 
+			Matrix4 worldMatrix, Matrix4 viewMatrix, Matrix4 projMatrix, bool doBeginEndFrame) {
+
+			// configure all necessary parameters
+			targetRenderSystem.SetViewport(vp);
+			targetRenderSystem.WorldMatrix = worldMatrix;
+			targetRenderSystem.ViewMatrix = viewMatrix;
+			targetRenderSystem.ProjectionMatrix = projMatrix;
+
+			if (doBeginEndFrame) {
+				targetRenderSystem.BeginFrame();
+			}
+
+			// set the pass and render the object
+			SetPass(pass);
+			targetRenderSystem.Render(op);
+
+			if (doBeginEndFrame) {
+				targetRenderSystem.EndFrame();
+			}
+		}
+
         #endregion
 
         #region Protected methods
