@@ -40,8 +40,7 @@ namespace Axiom.MathLib {
     /// deemed that the System.Math methods are not up to far speed wise.
     /// </summary>
     /// TODO: Add overloads for all methods for all instrinsic data types (i.e. float, short, etc).
-    public class MathUtil {
-
+    public sealed class MathUtil {
         /// <summary>
         ///		Empty private constructor.  This class has nothing but static methods/properties, so a public default
         ///		constructor should not be created by the compiler.  This prevents instance of this class from being
@@ -141,7 +140,7 @@ namespace Axiom.MathLib {
         /// <param name="number"></param>
         /// <returns></returns>
         static public float Abs(float number) {
-            return (float)Math.Abs(number);
+            return Math.Abs(number);
         }
 
         /// <summary>

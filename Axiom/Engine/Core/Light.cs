@@ -33,7 +33,6 @@ namespace Axiom.Core {
     /// <summary>
     /// Summary description for Light.
     /// </summary>
-    // INC: In progress
     public class Light : SceneObject {
         #region Member variables
 

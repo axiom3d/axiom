@@ -41,7 +41,7 @@ namespace Axiom.Core {
     /// respectively), and a constant (D) which is the distance along
     /// the normal you have to go to move the plane back to the origin.
     /// </remarks>
-    public class Plane {
+    public sealed class Plane {
         private Vector3 normal;
         private float d;
 

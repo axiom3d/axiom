@@ -81,37 +81,35 @@ namespace RenderSystem_OpenGL {
             if(isLocked)
                 throw new Exception("Invalid attempt to lock an index buffer that has already been locked.");
 
-            unsafe {
-                // bind this buffer
-                Ext.glBindBufferARB(Gl.GL_ARRAY_BUFFER_ARB, bufferID);
+            // bind this buffer
+            Ext.glBindBufferARB(Gl.GL_ARRAY_BUFFER_ARB, bufferID);
 
-                if(locking == BufferLocking.Discard) {
-                    Ext.glBufferDataARB(Gl.GL_ARRAY_BUFFER_ARB, sizeInBytes, IntPtr.Zero, GLHelper.ConvertEnum(usage));
+            if(locking == BufferLocking.Discard) {
+                Ext.glBufferDataARB(Gl.GL_ARRAY_BUFFER_ARB, sizeInBytes, IntPtr.Zero, GLHelper.ConvertEnum(usage));
 
-                    // find out how we shall access this buffer
-                    access = (usage & BufferUsage.Dynamic) > 0 ? 
-                        Gl.GL_READ_WRITE_ARB : Gl.GL_WRITE_ONLY_ARB;
-                }
-                else if(locking == BufferLocking.ReadOnly) {
-                    if((usage & BufferUsage.WriteOnly) > 0)
-                        throw new Exception("Invalid attempt to lock a write-only vertex buffer as read-only.");
-
-                    access = Gl.GL_READ_ONLY_ARB;
-                }
-                else if (locking == BufferLocking.Normal) {
-                    access = ((usage & BufferUsage.Dynamic) > 0) ?
-                        Gl.GL_READ_WRITE_ARB : Gl.GL_READ_ONLY_ARB;
-                }
-
-                IntPtr ptr = Ext.glMapBufferARB(Gl.GL_ARRAY_BUFFER_ARB, access);
-
-                if(ptr == IntPtr.Zero)
-                    throw new Exception("GL Vertex Buffer: Out of memory");
-
-                isLocked = true;
-
-                return ptr;
+                // find out how we shall access this buffer
+                access = (usage & BufferUsage.Dynamic) > 0 ? 
+                    Gl.GL_READ_WRITE_ARB : Gl.GL_WRITE_ONLY_ARB;
             }
+            else if(locking == BufferLocking.ReadOnly) {
+                if((usage & BufferUsage.WriteOnly) > 0)
+                    throw new Exception("Invalid attempt to lock a write-only vertex buffer as read-only.");
+
+                access = Gl.GL_READ_ONLY_ARB;
+            }
+            else if (locking == BufferLocking.Normal) {
+                access = ((usage & BufferUsage.Dynamic) > 0) ?
+                    Gl.GL_READ_WRITE_ARB : Gl.GL_READ_ONLY_ARB;
+            }
+
+            IntPtr ptr = Ext.glMapBufferARB(Gl.GL_ARRAY_BUFFER_ARB, access);
+
+            if(ptr == IntPtr.Zero)
+                throw new Exception("GL Vertex Buffer: Out of memory");
+
+            isLocked = true;
+
+            return ptr;
         }
 
         /// <summary>
@@ -136,13 +134,11 @@ namespace RenderSystem_OpenGL {
         public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer) {
             Ext.glBindBufferARB(Gl.GL_ARRAY_BUFFER_ARB, bufferID);
 
-            unsafe {
-                if(discardWholeBuffer) {
-                    Ext.glBufferDataARB(Gl.GL_ARRAY_BUFFER_ARB, sizeInBytes, IntPtr.Zero, GLHelper.ConvertEnum(usage));
-                }
-
-                Ext.glBufferSubDataARB(Gl.GL_ARRAY_BUFFER_ARB, offset, length, src);
+            if(discardWholeBuffer) {
+                Ext.glBufferDataARB(Gl.GL_ARRAY_BUFFER_ARB, sizeInBytes, IntPtr.Zero, GLHelper.ConvertEnum(usage));
             }
+
+            Ext.glBufferSubDataARB(Gl.GL_ARRAY_BUFFER_ARB, offset, length, src);
         }
 
         /// <summary>

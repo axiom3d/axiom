@@ -698,18 +698,11 @@ namespace Axiom.SubSystems.Rendering {
         virtual protected internal void SetTextureUnit(int stage, TextureLayer layer) {
             // TODO: Finish this
 
-            // get a reference to the locally cached texture unit
-            TextureLayer current = (TextureLayer)textureUnits[stage].Clone();
-
-            bool isCurrentBlank = current.Blank;
-
             // set the texture if it is different from the current
-            if(isCurrentBlank || current.TextureName != layer.TextureName)
-                SetTexture(stage, true, layer.TextureName);
+            SetTexture(stage, true, layer.TextureName);
 
             // Tex Coord Set
-            if(isCurrentBlank || current.TexCoordSet != layer.TexCoordSet)
-                SetTextureCoordSet(stage, layer.TexCoordSet);
+            SetTextureCoordSet(stage, layer.TexCoordSet);
 
             // TODO: Texture layer filtering
 
@@ -718,16 +711,11 @@ namespace Axiom.SubSystems.Rendering {
             // Texture blend modes
             LayerBlendModeEx newBlend = layer.ColorBlendMode;
 
-            if(isCurrentBlank || current.ColorBlendMode != newBlend) {
-                // set the texture blending mode
-                SetTextureBlendMode(stage, newBlend);
-            }
+            // set the texture blending mode
+            SetTextureBlendMode(stage, newBlend);
 
-            newBlend = layer.AlphaBlendMode;
-            if(isCurrentBlank || current.AlphaBlendMode != newBlend) {
-                // set the texture blending mode
-                SetTextureBlendMode(stage, newBlend);
-            }
+            // set the texture blending mode
+            SetTextureBlendMode(stage, newBlend);
 
             // this must always be set for OpenGL.  DX9 will ignore dupe render states like this (observed in the
             // output window when debugging with high verbosity), so there is no harm
@@ -775,7 +763,6 @@ namespace Axiom.SubSystems.Rendering {
             // set the texture matrix to that of the current layer for any transformations
             SetTextureMatrix(stage, layer.TextureMatrix);
 
-            // store the layer
             textureUnits[stage] = layer;
         }
 

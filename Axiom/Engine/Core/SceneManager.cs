@@ -573,6 +573,9 @@ namespace Axiom.Core {
             // texture units no longer in use
             lastNumTexUnitsUsed = unit;
 
+            if(firstTime)
+                firstTime = false;
+
             return numLayersLeft;
         }
 

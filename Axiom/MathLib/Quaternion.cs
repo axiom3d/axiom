@@ -84,13 +84,23 @@ namespace Axiom.MathLib {
         /// <param name="right"></param>
         /// <returns></returns>
         public static Quaternion operator * (Quaternion left, Quaternion right) {
+            Quaternion q = new Quaternion();
+
+            q.w = left.w * right.w - left.x * right.x - left.y * right.y - left.z * right.z;
+            q.x = left.w * right.x + left.x * right.w + left.y * right.z - left.z * right.y;
+            q.y = left.w * right.y + left.y * right.w + left.z * right.x - left.x * right.z;
+            q.z = left.w * right.z + left.z * right.w + left.x * right.y - left.y * right.x;
+
+            /*
             return new Quaternion
                 (
                 left.w * right.w - left.x * right.x - left.y * right.y - left.z * right.z,
                 left.w * right.x + left.x * right.w + left.y * right.z - left.z * right.y,
                 left.w * right.y + left.y * right.w + left.z * right.x - left.x * right.z,
                 left.w * right.z + left.z * right.w + left.x * right.y - left.y * right.x
-                );
+                ); */
+
+            return q;
         }
 
         /// <summary>

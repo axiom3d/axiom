@@ -60,8 +60,6 @@ namespace Axiom.Core {
     ///		This is useful for implementing more complex Camera / object
     ///		relationships i.e. having a camera attached to a world object.
     /// </remarks>
-
-    // TESTME
     public class Camera : SceneObject {
         #region Protected member variables
 

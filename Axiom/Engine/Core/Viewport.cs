@@ -45,8 +45,7 @@ namespace Axiom.Core {
     ///		viewport on a single render target and they overlap, one must
     ///		obscure the other in some predetermined way.
     ///	</remarks>
-    // TESTME
-    public class Viewport {
+    public sealed class Viewport {
         #region Protected member variables
 		
         protected Camera camera;

@@ -31,7 +31,7 @@ namespace Axiom.Controllers {
     /// <summary>
     /// Summary description for FrameTimeControllerValue.
     /// </summary>
-    public class FrameTimeControllerValue : IControllerValue {
+    public sealed class FrameTimeControllerValue : IControllerValue {
         /// <summary>
         ///		Stores the value of the time elapsed since the last frame.
         /// </summary>

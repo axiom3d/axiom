@@ -123,7 +123,7 @@ namespace RenderSystem_OpenGL {
             //Ext.wglSwapIntervalEXT((uint)sync);
 
              // swap buffers
-            Gdi.SwapBuffers(hDC);
+            Gdi.SwapBuffersFast(hDC);
         }
 
         public override void Update() {

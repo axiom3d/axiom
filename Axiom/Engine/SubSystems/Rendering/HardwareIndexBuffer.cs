@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using System.Runtime.InteropServices;
 
 namespace Axiom.SubSystems.Rendering {
     /// <summary>
@@ -48,13 +49,10 @@ namespace Axiom.SubSystems.Rendering {
             // calc the index buffer size
             sizeInBytes = numIndices;
 
-            // unsafe block for sizeof
-            unsafe {
-                if(type == IndexType.Size32)
-                    sizeInBytes *= sizeof(int);
-                else
-                    sizeInBytes *= sizeof(short);
-            }
+            if(type == IndexType.Size32)
+                sizeInBytes *= Marshal.SizeOf(typeof(int));
+            else
+                sizeInBytes *= Marshal.SizeOf(typeof(short));
         }
 
         #endregion

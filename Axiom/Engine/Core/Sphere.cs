@@ -35,7 +35,7 @@ namespace Axiom.Core {
     ///		x^2 + y^2 + z^2 = r^2 (for sphere's centered on the origin). We store spheres
     ///		simply as a center point and a radius.
     /// </remarks>
-    public class Sphere {
+    public sealed class Sphere {
         #region Protected member variables
 
         protected float radius;

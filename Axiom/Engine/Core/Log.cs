@@ -32,7 +32,7 @@ namespace Axiom.Core {
     /// <summary>
     /// Summary description for Log.
     /// </summary>
-    public class Log : TraceListener, IDisposable {
+    public sealed class Log : TraceListener, IDisposable {
         private static System.IO.FileStream log;
         private static System.IO.StreamWriter	writer;
 

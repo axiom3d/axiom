@@ -381,6 +381,7 @@ namespace RenderSystem_OpenGL {
 
                 // set for all texture units
                 for(int unit = 0; unit < numUnits; unit++) {
+
                     Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + unit);
 
                     switch(value) {
@@ -587,6 +588,11 @@ namespace RenderSystem_OpenGL {
         /// <param name="stage"></param>
         /// <param name="blendMode"></param>
         public override void SetTextureBlendMode(int stage, LayerBlendModeEx blendMode) {
+
+            if(textureUnits[stage].ColorBlendMode == blendMode) {
+                return;
+            }
+
             float[] cv1 = blendMode.colorArg1.ToArrayRGBA();
             float[] cv2 = blendMode.colorArg2.ToArrayRGBA();
             float[] av1 = new float[4] {0.0f, 0.0f, 0.0f, blendMode.alphaArg1};
@@ -919,6 +925,10 @@ namespace RenderSystem_OpenGL {
         /// <param name="enabled"></param>
         /// <param name="textureName"></param>
         protected override void SetTexture(int stage, bool enabled, string textureName) {
+            if(textureUnits[stage].TextureName == textureName) {
+                return;
+            }
+
             // load the texture
             GLTexture texture = (GLTexture)TextureManager.Instance[textureName];
 
@@ -1069,8 +1079,6 @@ namespace RenderSystem_OpenGL {
                                 // set the current active texture unit
                                 Ext.glClientActiveTextureARB(Gl.GL_TEXTURE0 + j); 
 
-                                int tmp = Gl.glIsEnabled(Gl.GL_TEXTURE_2D);
-
                                 if(Gl.glIsEnabled(Gl.GL_TEXTURE_2D) != 0) {
                                     // set the tex coord pointer
                                     Gl.glTexCoordPointer(
@@ -1118,38 +1126,36 @@ namespace RenderSystem_OpenGL {
                     break;
             }
 
-            unsafe {
-                if(op.useIndices) {
-                    // setup a pointer to the index data
-                    IntPtr indexPtr = IntPtr.Zero;
+            if(op.useIndices) {
+                // setup a pointer to the index data
+                IntPtr indexPtr = IntPtr.Zero;
 
-                    // if hardware is supported, expect it is a hardware buffer.  else, fallback to software
-                    if(caps.CheckCap(Capabilities.VertexBuffer)) {
-                        // get the index buffer id
-                        int idxBufferID = ((GLHardwareIndexBuffer)op.indexData.indexBuffer).GLBufferID;
+                // if hardware is supported, expect it is a hardware buffer.  else, fallback to software
+                if(caps.CheckCap(Capabilities.VertexBuffer)) {
+                    // get the index buffer id
+                    int idxBufferID = ((GLHardwareIndexBuffer)op.indexData.indexBuffer).GLBufferID;
 
-                        // bind the current index buffer
-                        Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, idxBufferID);
+                    // bind the current index buffer
+                    Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, idxBufferID);
 
-                        // get the offset pointer to the data in the vbo
-                        indexPtr = BUFFER_OFFSET(op.indexData.indexStart);
-                    }
-                    else {
-                        // get the index data as a direct pointer to the software buffer data
-                        indexPtr = ((SoftwareIndexBuffer)op.indexData.indexBuffer).GetDataPointer(op.indexData.indexStart);
-                    }
-
-                    // find what type of index buffer elements we are using
-                    int indexType = (op.indexData.indexBuffer.Type == IndexType.Size16) 
-                        ? Gl.GL_UNSIGNED_SHORT : Gl.GL_UNSIGNED_INT;
-
-                    // draw the indexed vertex data
-                    Gl.glDrawElements(primType, op.indexData.indexCount, indexType, indexPtr);
-                    // TODO: Use glDrawRangeElements to allow indexStart, indexCount to be used
+                    // get the offset pointer to the data in the vbo
+                    indexPtr = BUFFER_OFFSET(op.indexData.indexStart);
                 }
                 else {
-                    Gl.glDrawArrays(primType, 0, op.vertexData.vertexCount);
+                    // get the index data as a direct pointer to the software buffer data
+                    indexPtr = ((SoftwareIndexBuffer)op.indexData.indexBuffer).GetDataPointer(op.indexData.indexStart);
                 }
+
+                // find what type of index buffer elements we are using
+                int indexType = (op.indexData.indexBuffer.Type == IndexType.Size16) 
+                    ? Gl.GL_UNSIGNED_SHORT : Gl.GL_UNSIGNED_INT;
+
+                // draw the indexed vertex data
+                Gl.glDrawElements(primType, op.indexData.indexCount, indexType, indexPtr);
+                // TODO: Use glDrawRangeElements to allow indexStart, indexCount to be used
+            }
+            else {
+                Gl.glDrawArrays(primType, 0, op.vertexData.vertexCount);
             }
 
             // disable all client states
