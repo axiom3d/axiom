@@ -50,7 +50,7 @@ namespace Axiom.MathLib {
     ///		can get a different result if you concatenate in the wrong order.
     /// 		<p/>
     ///		The use of column vectors and right-to-left ordering is the
-    ///		standard in most mathematical texts, and id the same as used in
+    ///		standard in most mathematical texts, and is the same as used in
     ///		OpenGL. It is, however, the opposite of Direct3D, which has
     ///		inexplicably chosen to differ from the accepted standard and uses
     ///		row vectors and left-to-right matrix multiplication.
@@ -204,8 +204,18 @@ namespace Axiom.MathLib {
 
         #endregion
 
-        #region Operator overloads
+        #region Operator overloads + CLS compliant method equivalents
 
+        /// <summary>
+        ///		Used to multiply (concatenate) two 4x4 Matrices.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Matrix4 Multiply (Matrix4 left, Matrix4 right) {
+        	return left * right;
+        }
+        
         /// <summary>
         ///		Used to multiply (concatenate) two 4x4 Matrices.
         /// </summary>
@@ -249,6 +259,21 @@ namespace Axiom.MathLib {
         /// <param name="matrix">A Matrix4.</param>
         /// <param name="vector">A Vector3.</param>
         /// <returns>A new vector.</returns>
+        public static Vector3 Multiply  (Matrix4 matrix, Vector3 vector) {
+        	return matrix * vector;
+        }
+        
+        /// <summary>
+        ///		Transforms the given 3-D vector by the matrix, projecting the 
+        ///		result back into <i>w</i> = 1.
+        ///		<p/>
+        ///		This means that the initial <i>w</i> is considered to be 1.0,
+        ///		and then all the tree elements of the resulting 3-D vector are
+        ///		divided by the resulting <i>w</i>.
+        /// </summary>
+        /// <param name="matrix">A Matrix4.</param>
+        /// <param name="vector">A Vector3.</param>
+        /// <returns>A new vector.</returns>
         public static Vector3 operator * (Matrix4 matrix, Vector3 vector) {
             Vector3 result = new Vector3();
 
@@ -261,6 +286,16 @@ namespace Axiom.MathLib {
             return result;
         }
 
+        /// <summary>
+        ///		Used to add two matrices together.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Matrix4 Add ( Matrix4 left, Matrix4 right ) {
+        	return left + right;
+        }
+        
         /// <summary>
         ///		Used to add two matrices together.
         /// </summary>
@@ -293,6 +328,16 @@ namespace Axiom.MathLib {
             return result;
         }
 
+        /// <summary>
+        ///		Used to subtract two matrices.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Matrix4 Subtract ( Matrix4 left, Matrix4 right ) {
+        	return left - right;
+        }
+        
         /// <summary>
         ///		Used to subtract two matrices.
         /// </summary>
@@ -357,6 +402,15 @@ namespace Axiom.MathLib {
             return true;
         }
 
+        /// <summary>
+        ///		Used to allow assignment from a Matrix3 to a Matrix4 object.
+        /// </summary>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Matrix4 FromMatrix3(Matrix3 right) {
+        	return right;
+        }
+        
         /// <summary>
         ///		Used to allow assignment from a Matrix3 to a Matrix4 object.
         /// </summary>

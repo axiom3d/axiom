@@ -65,6 +65,9 @@ namespace Axiom.MathLib {
 
         #region Constructors
 
+        /// <summary>
+        ///		Creates a new Positional Spline.
+        /// </summary>
         public PositionalSpline() {
             // intialize the vector collections
             pointList = new Vector3Collection();

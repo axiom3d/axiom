@@ -39,6 +39,9 @@ namespace Axiom.MathLib {
     public class Vector2 {
         public float x, y;
 
+        /// <summary>
+        ///		Creates a new 2 Dimensional Vector.
+        /// </summary>
         public Vector2() {
         }
     }

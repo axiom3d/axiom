@@ -199,7 +199,7 @@ namespace Axiom.MathLib {
 
         #endregion
 
-        #region Operator overloads
+        #region Operator overloads + CLS complient method equivalents
 
         /// <summary>
         /// Multiply (concatenate) two Matrix3 instances together.
@@ -207,7 +207,18 @@ namespace Axiom.MathLib {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
+        public static Matrix3 Multiply (Matrix3 left, Matrix3 right) {
+        	return left * right;
+        }
+        
+        /// <summary>
+        /// Multiply (concatenate) two Matrix3 instances together.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         public static Matrix3 operator * (Matrix3 left, Matrix3 right) {
+        
             Matrix3 result = new Matrix3();
 
             result.m00 = left.m00 * right.m00 + left.m01 * right.m10 + left.m02 * right.m20;
@@ -231,6 +242,16 @@ namespace Axiom.MathLib {
         /// <param name="vector"></param>
         /// <param name="matrix"></param>
         /// <returns></returns>
+        public static Vector3  Multiply (Vector3 vector, Matrix3 matrix) {
+			return vector * matrix;
+        }
+        
+        /// <summary>
+        ///		vector * matrix [1x3 * 3x3 = 1x3]
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <param name="matrix"></param>
+        /// <returns></returns>
         public static Vector3 operator * (Vector3 vector, Matrix3 matrix) {
             Vector3 product = new Vector3();
 
@@ -247,7 +268,17 @@ namespace Axiom.MathLib {
         /// <param name="vector"></param>
         /// <param name="matrix"></param>
         /// <returns></returns>
-        public static Vector3 operator * (Matrix3 matrix, Vector3 vector) {
+        public static Vector3 Multiply (Matrix3 matrix, Vector3 vector) {
+        	return matrix * vector;
+        }
+        
+        /// <summary>
+        ///		matrix * vector [3x3 * 3x1 = 3x1]
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <param name="matrix"></param>
+        /// <returns></returns>
+        public static Vector3  operator * (Matrix3 matrix, Vector3 vector) {
             Vector3 product = new Vector3();
 
             product.x = matrix.m00 * vector.x + matrix.m01 * vector.y + matrix.m02 * vector.z;
@@ -265,6 +296,16 @@ namespace Axiom.MathLib {
             return product;
         }
 
+        /// <summary>
+        /// Multiplies all the items in the Matrix3 by a scalar value.
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <param name="scalar"></param>
+        /// <returns></returns>
+        public static Matrix3 Multiply (Matrix3 matrix, float scalar) {
+        	return matrix * scalar;
+        }
+        
         /// <summary>
         /// Multiplies all the items in the Matrix3 by a scalar value.
         /// </summary>
@@ -293,6 +334,16 @@ namespace Axiom.MathLib {
         /// <param name="matrix"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
+        public static Matrix3 Multiply (float scalar, Matrix3 matrix) {
+        	return scalar * matrix;
+        }
+        
+        /// <summary>
+        /// Multiplies all the items in the Matrix3 by a scalar value.
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <param name="scalar"></param>
+        /// <returns></returns>
         public static Matrix3 operator * (float scalar, Matrix3 matrix) {
             Matrix3 result = new Matrix3();
 
@@ -309,6 +360,16 @@ namespace Axiom.MathLib {
             return result;
         }
 
+        /// <summary>
+        ///		Used to add two matrices together.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Matrix3 Add ( Matrix3 left, Matrix3 right ) {
+        	return left + right;
+        }
+        
         /// <summary>
         ///		Used to add two matrices together.
         /// </summary>
@@ -333,6 +394,16 @@ namespace Axiom.MathLib {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
+        public static Matrix3 Subtract ( Matrix3 left, Matrix3 right ) {
+        	return left - right;
+        }
+        
+        /// <summary>
+        ///		Used to subtract two matrices.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         public static Matrix3 operator - ( Matrix3 left, Matrix3 right ) {
             Matrix3 result = new Matrix3();
 
@@ -345,6 +416,15 @@ namespace Axiom.MathLib {
             return result;
         }
 
+        /// <summary>
+        /// Negates all the items in the Matrix.
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <returns></returns>
+        public static Matrix3 Negate (Matrix3 matrix) {
+        	return -matrix;
+        }
+        
         /// <summary>
         /// Negates all the items in the Matrix.
         /// </summary>
@@ -367,7 +447,7 @@ namespace Axiom.MathLib {
         }
 
         /// <summary>
-        /// 
+        /// 	Test two matrices for (value) equality
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
