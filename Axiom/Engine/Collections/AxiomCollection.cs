@@ -120,6 +120,14 @@ namespace Axiom.Collections {
                 objectList.RemoveAt(index);
         }
 
+		/// <summary>
+		///		Removes an item at the specified index.
+		/// </summary>
+		/// <param name="index"></param>
+		public void RemoveAt(int index) {
+			objectList.RemoveAt(index);
+		}
+
         /// <summary>
         ///		Tests if there is a dupe entry in here.
         /// </summary>

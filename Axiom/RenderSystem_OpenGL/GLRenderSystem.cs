@@ -38,6 +38,7 @@ using Axiom.MathLib;
 using Axiom.Graphics;
 using Axiom.Utility;
 using Tao.OpenGl;
+//using Tao.OpenGl.Debugger;
 using Tao.Platform.Windows;
 
 namespace Axiom.RenderSystems.OpenGL {
@@ -284,7 +285,7 @@ namespace Axiom.RenderSystems.OpenGL {
             set {
                 // create a float[4]  to contain the RGBA data
                 value.ToArrayRGBA(tempColorVals);
-                tempColorVals[3] = 0.0f;
+                tempColorVals[3] = 1.0f;
 
                 // set the ambient color
                 Gl.glLightModelfv(Gl.GL_LIGHT_MODEL_AMBIENT, tempColorVals);
@@ -347,7 +348,11 @@ namespace Axiom.RenderSystems.OpenGL {
                     default:
                         // if all else fails, just use fill
                         mode = Gl.GL_FILL;
-                        break;
+
+						// deactivate viewport clipping
+						Gl.glDisable(Gl.GL_SCISSOR_TEST);
+
+						break;
                 }
 
                 // set the specified polygon mode
@@ -448,10 +453,12 @@ namespace Axiom.RenderSystems.OpenGL {
         /// </summary>
         public override bool StencilCheckEnabled {
             set {
-                if(value)
-                    Gl.glEnable(Gl.GL_STENCIL_TEST);
-                else
-                    Gl.glDisable(Gl.GL_STENCIL_TEST);
+				if(value) {
+					Gl.glEnable(Gl.GL_STENCIL_TEST);
+				}
+				else {
+					Gl.glDisable(Gl.GL_STENCIL_TEST);
+				}
             }
         }
 
@@ -679,9 +686,11 @@ namespace Axiom.RenderSystems.OpenGL {
             }
 
             // get current setting to compare
-            float currentAnisotropy = 0;
+			// HACK: FIX since glGetTexParameterfv causes a 1280
+            float currentAnisotropy = 1;
             float maxSupportedAnisotropy = 0;
-            Gl.glGetFloatv(Gl.GL_TEXTURE_MAX_ANISOTROPY_EXT, out currentAnisotropy);
+			// TODO: Add getCurrentAnistoropy
+            //Gl.glGetTexParameterfv(textureTypes[stage], Gl.GL_TEXTURE_MAX_ANISOTROPY_EXT, out currentAnisotropy);
             Gl.glGetFloatv(Gl.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, out maxSupportedAnisotropy);
 
             if(maxAnisotropy > maxSupportedAnisotropy) {
@@ -744,6 +753,10 @@ namespace Axiom.RenderSystems.OpenGL {
                 case LayerBlendSource.Manual:
                     src1op = Gl.GL_CONSTANT;
                     break;
+
+				case LayerBlendSource.Diffuse:
+					src1op = Gl.GL_PRIMARY_COLOR;
+					break;
 			
                     // no diffuse or specular equivalent right now
                 default:
@@ -763,6 +776,10 @@ namespace Axiom.RenderSystems.OpenGL {
                 case LayerBlendSource.Manual:
                     src2op = Gl.GL_CONSTANT;
                     break;
+
+				case LayerBlendSource.Diffuse:
+					src2op = Gl.GL_PRIMARY_COLOR;
+					break;
 			
                     // no diffuse or specular equivalent right now
                 default:
@@ -792,6 +809,12 @@ namespace Axiom.RenderSystems.OpenGL {
                 case LayerBlendOperationEx.AddSigned:
                     cmd = Gl.GL_ADD_SIGNED;
                     break;
+				case LayerBlendOperationEx.Subtract:
+					cmd = Gl.GL_SUBTRACT;
+					break;
+				case LayerBlendOperationEx.BlendDiffuseAlpha:
+					cmd = Gl.GL_INTERPOLATE;
+					break;
                 case LayerBlendOperationEx.BlendTextureAlpha:
                     cmd = Gl.GL_INTERPOLATE;
                     break;
@@ -862,12 +885,12 @@ namespace Axiom.RenderSystems.OpenGL {
 
             Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND0_RGB, Gl.GL_SRC_COLOR);
             Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND1_RGB, Gl.GL_SRC_COLOR);
-            Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND2_RGB, Gl.GL_SRC_COLOR);
+            Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND2_RGB, Gl.GL_SRC_ALPHA);  // <- TODO: Is that right?
             Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND0_ALPHA, Gl.GL_SRC_ALPHA);
             Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND1_ALPHA, Gl.GL_SRC_ALPHA);
             Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND2_ALPHA, Gl.GL_SRC_ALPHA);
 
-            // check source2 and set colors values appropriately
+            // check source1 and set colors values appropriately
             if (blendMode.source1 == LayerBlendSource.Manual) {
                 if(blendMode.blendType == LayerBlendType.Color) {
                     // color value 1
@@ -1173,7 +1196,10 @@ namespace Axiom.RenderSystems.OpenGL {
                 Gl.glBindTexture(textureTypes[stage], texture.TextureID);
             }
             else {
-                Gl.glDisable(textureTypes[stage]);
+				if(textureTypes[stage] != 0) {
+					Gl.glDisable(textureTypes[stage]);
+				}
+
                 Gl.glTexEnvf(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_MODULATE);
             }
 
@@ -1182,7 +1208,8 @@ namespace Axiom.RenderSystems.OpenGL {
         }
 
         protected override void SetAlphaRejectSettings(int stage, CompareFunction func, byte val) {
-            // TODO: Implement SetAlphaRejectSettings
+			Gl.glEnable(Gl.GL_ALPHA_TEST);
+			Gl.glAlphaFunc(GLHelper.ConvertEnum(func), val / 255.0f);
         }
 
         protected override void SetColorBufferWriteEnabled(bool red, bool green, bool blue, bool alpha) {
@@ -1428,11 +1455,11 @@ namespace Axiom.RenderSystems.OpenGL {
                     Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, idxBufferID);
 
                     // get the offset pointer to the data in the vbo
-                    indexPtr = BUFFER_OFFSET(op.indexData.indexStart);
+                    indexPtr = BUFFER_OFFSET(op.vertexData.vertexStart * op.indexData.indexBuffer.Size);
                 }
                 else {
                     // get the index data as a direct pointer to the software buffer data
-                    indexPtr = ((SoftwareIndexBuffer)op.indexData.indexBuffer).GetDataPointer(op.indexData.indexStart);
+                    indexPtr = ((SoftwareIndexBuffer)op.indexData.indexBuffer).GetDataPointer(op.vertexData.vertexStart * op.indexData.indexBuffer.Size);
                 }
 
                 // find what type of index buffer elements we are using
@@ -1440,12 +1467,15 @@ namespace Axiom.RenderSystems.OpenGL {
                     ? Gl.GL_UNSIGNED_SHORT : Gl.GL_UNSIGNED_INT;
 
                 // draw the indexed vertex data
-                Gl.glDrawElements(primType, op.indexData.indexCount, indexType, indexPtr);
-                
-                // TODO: Use glDrawRangeElements to allow indexStart, indexCount to be used
+				Ext.glDrawRangeElements(
+					primType,
+					op.indexData.indexStart,
+					op.indexData.indexStart + op.indexData.indexCount - 1,
+					op.indexData.indexCount,
+					indexType, indexPtr);
             }
             else {
-                Gl.glDrawArrays(primType, 0, op.vertexData.vertexCount);
+                Gl.glDrawArrays(primType, op.vertexData.vertexStart, op.vertexData.vertexCount);
             }
 
             // disable all client states
@@ -2013,9 +2043,10 @@ namespace Axiom.RenderSystems.OpenGL {
                 caps.SetCap(Capabilities.VertexPrograms);
                 caps.MaxVertexProgramVersion = "arbvp1";
                 caps.VertexProgramConstantIntCount = 0;
-                int maxFloats;
-                Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
-                caps.VertexProgramConstantFloatCount = maxFloats;
+				// TODO: Fix constant float count calcs, glGetIntegerv doesn't work
+                //int maxFloats;
+                //Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
+                //caps.VertexProgramConstantFloatCount = maxFloats;
 
                 // register support for arbvp1
                 gpuProgramMgr.PushSyntaxCode("arbvp1");
@@ -2027,9 +2058,10 @@ namespace Axiom.RenderSystems.OpenGL {
                 caps.SetCap(Capabilities.FragmentPrograms);
                 caps.MaxFragmentProgramVersion = "arbfp1";
                 caps.FragmentProgramConstantIntCount = 0;
-                int maxFloats;
-                Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
-                caps.FragmentProgramConstantFloatCount = maxFloats;
+				// TODO: Fix constant float count calcs, glGetIntegerv doesn't work
+                //int maxFloats;
+                //Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
+                //caps.FragmentProgramConstantFloatCount = maxFloats;
 
                 // register support for arbfp1
                 gpuProgramMgr.PushSyntaxCode("arbfp1");
@@ -2041,9 +2073,10 @@ namespace Axiom.RenderSystems.OpenGL {
                 caps.SetCap(Capabilities.FragmentPrograms);
                 caps.MaxFragmentProgramVersion = "ps_1_4";
                 caps.FragmentProgramConstantIntCount = 0;
-                int maxFloats;
-                Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
-                caps.FragmentProgramConstantFloatCount = maxFloats;
+				// TODO: Fix constant float count calcs, glGetIntegerv doesn't work
+                //int maxFloats;
+                //Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
+                //caps.FragmentProgramConstantFloatCount = maxFloats;
 
                 // register support for ps1.1 - ps1.4
                 gpuProgramMgr.PushSyntaxCode("ps_1_1");

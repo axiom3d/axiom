@@ -376,7 +376,7 @@ namespace Axiom.Utility {
             camera.MoveRelative(cameraVector);
 
             // update performance stats once per second
-            if(statDelay < 0.0f) {
+            if(statDelay < 0.0f && showDebugOverlay) {
                 UpdateStats();
                 statDelay = 1.0f;
             }
