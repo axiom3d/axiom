@@ -662,7 +662,7 @@ namespace Axiom.Core {
 
 				Quaternion rotationQuat;
 
-				if (-zAdjustVec == zAxis) {
+				if ((zAxis + zAdjustVec).LengthSquared < 0.00000001f) {
 					// Oops, a 180 degree turn (infinite possible rotation axes)
 					// Default to yaw i.e. use current UP
 					rotationQuat = Quaternion.FromAngleAxis(MathUtil.PI, yAxis);

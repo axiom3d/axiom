@@ -267,7 +267,7 @@ namespace Axiom.Core {
 		private void OneTimePostWindowInit() {
 			if(firstTime) {
 				// init material manager singleton, which parse sources for materials
-				MaterialManager.Instance.ParseAllSources();
+				MaterialManager.Instance.Initialize();
 
 				// init the particle system manager singleton
 				ParticleSystemManager.Instance.ParseAllSources();

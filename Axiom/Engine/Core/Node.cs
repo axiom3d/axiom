@@ -100,6 +100,8 @@ namespace Axiom.Core {
         /// <summary>SubMesh to be used is this node itself will be rendered (axes, or bones).</summary>
         protected SubMesh nodeSubMesh;
 
+		protected Hashtable customParams = new Hashtable();
+
         #endregion
 
         #region Static member variables
@@ -1194,6 +1196,25 @@ namespace Axiom.Core {
                 return emptyLightList;
             }
         }
+
+		public Vector4 GetCustomParameter(int index) {
+			if(customParams[index] == null) {
+				throw new Exception("A parameter was not found at the given index");
+			}
+			else {
+				return (Vector4)customParams[index];
+			}
+		}
+
+		public void SetCustomParameter(int index, Vector4 val) {
+			customParams[index] = val;
+		}
+
+		public void UpdateCustomGpuParameter(GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams) {
+			if(customParams[entry.data] != null) {
+				gpuParams.SetConstant(entry.index, (Vector4)customParams[entry.data]);
+			}
+		}
 
         #endregion
     }
