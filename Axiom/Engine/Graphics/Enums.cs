@@ -753,6 +753,51 @@ namespace Axiom.Graphics {
 		IncludeDarkCap	= 2
 	}
 
+	/// <summary>
+	///	An enumeration of broad shadow techniques .
+	/// </summary>
+	public enum ShadowTechnique {
+		/// <summary>
+		///		No shadows.
+		/// </summary>
+		None,
+		/// <summary>
+		///		Stencil shadow technique which renders all shadow volumes as
+		///		a modulation after all the non-transparent areas have been 
+		///		rendered. This technique is considerably less fillrate intensive 
+		///		than the additive stencil shadow approach when there are multiple
+		///		lights, but is not an accurate model. 
+		/// </summary>
+		StencilModulative,
+		///	<summary>		
+		///		Stencil shadow technique which renders each light as a separate
+		///		additive pass to the scene. This technique can be very fillrate
+		///		intensive because it requires at least 2 passes of the entire
+		///		scene, more if there are multiple lights. However, it is a more
+		///		accurate model than the modulative stencil approach and this is
+		///		especially apparant when using coloured lights or bump mapping.
+		/// </summary>
+		StencilAdditive,
+		/// <summary>
+		///		Texture-based shadow technique which involves a monochrome render-to-texture
+		///		of the shadow caster and a projection of that texture onto the 
+		///		shadow receivers as a modulative pass.
+		/// </summary>
+		TextureModulative,
+		/// <summary>
+		///		Texture-based shadow technique which involves a render-to-texture
+		///		of the shadow caster and a projection of that texture onto the 
+		///		shadow receivers, followed by a depth test to detect the closest
+		///		fragment to the light.
+		/// </summary>
+		TextureShadowmap,
+		/// <summary>
+		///		Simple shadow technique that simply renders a 'shadow blob' underneath
+		///		a movable object.
+		/// </summary>
+		Decal
+	}
+
     /// <summary>
     ///		Describes the various actions which can be taken on the stencil buffer.
     ///	</summary> 
