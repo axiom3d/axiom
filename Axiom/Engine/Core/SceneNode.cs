@@ -227,7 +227,7 @@ namespace Axiom.Core {
 		///    A SceneObject will not show up in the scene until it is attached to a SceneNode.
 		/// </remarks>
 		/// <param name="obj"></param>
-		public void AttachObject(SceneObject obj) {
+		public virtual void AttachObject(SceneObject obj) {
 			Debug.Assert(obj != null, "obj != null");
 
 			objectList.Add(obj);
@@ -310,7 +310,7 @@ namespace Axiom.Core {
 		/// <remarks>
 		///    Bounds for this SceneNode are also updated.
 		/// </remarks>
-		public void DetachAllObjects() {
+		public virtual void DetachAllObjects() {
 			objectList.Clear();
 
 			UpdateBounds();
@@ -323,7 +323,7 @@ namespace Axiom.Core {
 		///    Bounds for this SceneNode are also updated.
 		/// </remarks>
 		/// <param name="index">Index of the object to remove.</param>
-		public void DetachObject(int index) {
+		public virtual SceneObject DetachObject(int index) {
 			Debug.Assert(index < objectList.Count, "index < objectList.Count");
 
 			SceneObject obj = objectList[index];
@@ -333,7 +333,10 @@ namespace Axiom.Core {
 			// notify the object that it was removed (sending in null sets its parent scene node to null)
 			obj.NotifyAttached(null);
 
-			UpdateBounds();
+			// Make sure bounds get updated (must go right to the top)
+			NeedUpdate();
+
+			return obj;
 		}
 
 		/// <summary>
@@ -343,7 +346,8 @@ namespace Axiom.Core {
 		///    Bounds for this SceneNode are also updated.
 		/// </remarks>
 		/// <param name="obj">Reference to the object to remove.</param>
-		public void DetachObject(SceneObject obj) {
+		public virtual void DetachObject(SceneObject obj) 
+		{
 			Debug.Assert(obj != null, "obj != null");
 
 			objectList.Remove(obj);
@@ -351,7 +355,8 @@ namespace Axiom.Core {
 			// notify the object that it was removed (sending in null sets its parent scene node to null)
 			obj.NotifyAttached(null);
 
-			UpdateBounds();
+			// Make sure bounds get updated (must go right to the top)
+			NeedUpdate();
 		}
 
 		/// <summary>
