@@ -36,9 +36,6 @@ namespace Axiom.Core {
     public class MeshManager : ResourceManager {
         #region Singleton implementation
 
-        static MeshManager() {
-            //Init();
-        }
         protected MeshManager() {}
         protected static MeshManager instance;
 
@@ -47,10 +44,21 @@ namespace Axiom.Core {
         }
 
         public static void Init() {
+            if (instance != null) {
+                throw new ApplicationException("MeshManager initialized twice!");
+            }
             instance = new MeshManager();
             instance.Initialize();
+            GarbageManager.Instance.Add(instance);
         }
-		
+        
+        public override void Dispose() {
+            base.Dispose();
+            if (this == instance) {
+                instance = null;
+            }
+        }
+
         #endregion
 
         /// <summary>

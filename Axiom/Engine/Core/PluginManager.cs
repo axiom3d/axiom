@@ -34,19 +34,16 @@ using System.Reflection;
 using System.Xml;
 using Axiom.Exceptions;
 
-namespace Axiom.Core
-{
+namespace Axiom.Core {
 	/// <summary>
 	/// Summary description for PluginManager.
 	/// </summary>
-	public class PluginManager : IConfigurationSectionHandler {
+	public class PluginManager : IDisposable {
 		#region Singleton implementation
 
-		static PluginManager() {
-			Init();
+		protected PluginManager() {
+			LoadAll();
 		}
-
-		protected PluginManager() {}
 
 		protected static PluginManager instance;
 
@@ -57,7 +54,18 @@ namespace Axiom.Core
 		}
 
 		public static void Init() {
+			if (instance != null) {
+				throw new ApplicationException("PluginManager.Instance is null!");
+			}
 			instance = new PluginManager();
+			GarbageManager.Instance.Add(instance);
+		}
+
+		public void Dispose() {
+			UnloadAll();
+			if (instance == this) {
+				instance = null;
+			}
 		}
 		
 		#endregion
@@ -71,12 +79,17 @@ namespace Axiom.Core
 
 		#endregion Fields
 
+		#region Plugin loading and unloading code
+
 		/// <summary>
 		///		Loads all plugins specified in the plugins section of the app.config file.
 		/// </summary>
 		public void LoadAll() {
 			// trigger load of the plugins app.config section
-			ConfigurationSettings.GetConfig("plugins");
+			ArrayList newPlugins = (ArrayList)ConfigurationSettings.GetConfig("plugins");
+			foreach (ObjectCreator pluginCreator in newPlugins) {
+				plugins.Add(LoadPlugin(pluginCreator));
+			}
 		}
 
 		/// <summary>
@@ -92,9 +105,60 @@ namespace Axiom.Core
 			plugins.Clear();
 		}
 
-		#region IConfigurationSectionHandler Members
+		/// <summary>
+		///		Loads a plugin of the given class name from the given assembly, and calls Start() on it.
+		///		This function does NOT add the plugin to the PluginManager's
+		///		list of plugins.
+		/// </summary>
+		/// <param name="assemblyName">The assembly filename ("xxx.dll")</param>
+		/// <param name="className">The class ("MyNamespace.PluginClassname") that implemented IPlugin.</param>
+		/// <returns>The loaded plugin.</returns>
+		private static IPlugin LoadPlugin(ObjectCreator creator) {
+			// load the requested assembly
+			Assembly pluginAssembly = creator.GetAssembly();
+
+			// find the title of this assembly
+			AssemblyTitleAttribute title = 
+				(AssemblyTitleAttribute)Attribute.GetCustomAttribute(pluginAssembly, typeof(AssemblyTitleAttribute));
+
+			// grab the plugin type from the assembly
+			Type type = pluginAssembly.GetType(creator.className);
+
+			// see if this is a valid plugin first
+			if(type.GetInterface("IPlugin") != null) {
+				try {
+					// create and start the plugin
+					IPlugin plugin = (IPlugin)Activator.CreateInstance(type);
+
+					plugin.Start();
+
+					Trace.WriteLine("Loaded plugin: " + title.Title);
+
+					return plugin;
+				}
+				catch(Exception ex) {
+					Trace.WriteLine(ex.ToString());
+				}
+			}
+			else {
+				throw new PluginException("Class {0} is not a valid plugin.", creator.className);
+			}
+
+			return null;
+		}
+
+		#endregion
+
+	}
+
+	/// <summary>
+	/// The plugin configuration handler
+	/// </summary>
+	public class PluginConfigurationSectionHandler : IConfigurationSectionHandler {
 
 		public object Create(object parent, object configContext, System.Xml.XmlNode section) {
+			ArrayList plugins = new ArrayList();
+
 			// grab the plugin nodes
 			XmlNodeList pluginNodes = section.SelectNodes("plugin");
 
@@ -106,44 +170,11 @@ namespace Axiom.Core
 				XmlAttribute assemblyAttribute = pluginNode.Attributes["assembly"];
 				XmlAttribute classAttribute = pluginNode.Attributes["class"];
 
-				string assemblyFile = assemblyAttribute.Value;
-				assemblyFile = Environment.CurrentDirectory + Path.DirectorySeparatorChar + assemblyFile;
-				string className = classAttribute.Value;
-
-				// load the requested assembly
-				Assembly pluginAssembly = Assembly.LoadFile(assemblyFile);
-
-				// find the title of this assembly
-				AssemblyTitleAttribute title = 
-					(AssemblyTitleAttribute)Attribute.GetCustomAttribute(pluginAssembly, typeof(AssemblyTitleAttribute));
-
-				// grab the plugin type from the assembly
-				Type type = pluginAssembly.GetType(className);
-
-				// see if this is a valid plugin first
-				if(type.GetInterface("IPlugin") != null) {
-                    try {
-                        // create and start the plugin
-                        IPlugin plugin = (IPlugin)Activator.CreateInstance(type);
-
-                        plugin.Start();
-
-                        plugins.Add(plugin);
-
-                        Trace.WriteLine("Loaded plugin: " + title.Title);
-                    }
-                    catch(Exception ex) {
-                        Trace.WriteLine(ex.ToString());
-                    }
-				}
-				else {
-					throw new PluginException("Class {0} is not a valid plugin.", className);
-				}
+				plugins.Add(new ObjectCreator(assemblyAttribute.Value, classAttribute.Value));
 			}
 
-			return null;
+			return plugins;
 		}
-
-		#endregion
 	}
+
 }

@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+using Axiom.Core;
 using System;
 using System.Collections;
 using System.Diagnostics;
@@ -36,11 +37,10 @@ namespace Axiom.Gui {
     ///    GuiManager's job is to manage the lifecycle of GuiElement (subclass)
     ///    instances, and also to register plugin suppliers of new components.
     /// </remarks>
-    public class GuiManager {
+    public class GuiManager : IDisposable {
 
         #region Singleton implementation
 
-        static GuiManager() { Init(); }
         protected GuiManager() {}
         protected static GuiManager instance;
 
@@ -49,9 +49,19 @@ namespace Axiom.Gui {
         }
 
         public static void Init() {
+            if (instance != null) {
+                throw new ApplicationException("GuiManager.Init() called twice!");
+            }
             instance = new GuiManager();
+            GarbageManager.Instance.Add(instance);
         }
-		
+
+        public void Dispose() {
+            if (instance == this) {
+                instance = null;
+            }
+        }
+        
         #endregion
 
         #region Member variables

@@ -1,15 +1,15 @@
 using System;
 using System.Collections;
+using Axiom.Core;
 using Axiom.Exceptions;
 
 namespace Axiom.Media {
 	/// <summary>
 	///    Manages registering/fulfilling requests for codecs that handle various types of media.
 	/// </summary>
-	public class CodecManager {
+	public class CodecManager : IDisposable {
         #region Singleton implementation
 
-        static CodecManager() { Init(); }
         private CodecManager() {}
         private static CodecManager instance;
 
@@ -20,7 +20,11 @@ namespace Axiom.Media {
         }
 
         public static void Init() {
+            if (instance != null) {
+                throw new ApplicationException("CodecManager initialized twice");
+            }
             instance = new CodecManager();
+            GarbageManager.Instance.Add(instance);
 
             // register codecs
             instance.RegisterCodec(new JPGCodec());
@@ -29,7 +33,13 @@ namespace Axiom.Media {
             instance.RegisterCodec(new DDSCodec());
             instance.RegisterCodec(new TGACodec());
         }
-		
+        
+        public void Dispose() {
+            if (instance == this) {
+                instance = null;
+            }
+        }
+
         #endregion
 
         #region Fields

@@ -56,18 +56,26 @@ namespace Axiom.Core {
 
         #region Singleton implementation
 
-        static TextureManager() { Init(); }
-        protected TextureManager() { instance = this; }
+        protected TextureManager() {
+            if (instance != null) {
+                throw new ApplicationException("TextureManager initialized twice");
+            }
+            instance = this;
+            GarbageManager.Instance.Add(instance);
+        }
         protected static TextureManager instance;
 
         public static TextureManager Instance {
             get { return instance; }
         }
 
-        public static void Init() {
-            instance = null;
+        public override void Dispose() {
+            base.Dispose();
+            if (this == instance) {
+                instance = null;
+            }
         }
-		
+
         #endregion
 
         /// <summary>

@@ -3,11 +3,6 @@ using System.Collections;
 
 namespace Axiom.Core {
     /// <summary>
-    ///     Generics: List<IPlugin>
-    /// </summary>
-    public class PluginList : ArrayList {}
-
-    /// <summary>
     ///     Generics: List<MeshLodUsage>
     /// </summary>
     public class MeshLodUsageList : ArrayList {}

@@ -250,6 +250,7 @@ namespace Demos {
             demoTable.Rows.Add(new object[] {18, "Transparency", "Demos.Transparency", "Transparency.jpg", "A high poly scene with transparent entities.", "Demos"});
             demoTable.Rows.Add(new object[] {19, "Tutorial 1", "Demos.Tutorial1", "Tutorial1.jpg", "The obligatory spinning triangle demo using the engine.", "Tutorials"});
             demoTable.Rows.Add(new object[] {20, "Terrain", "Demos.Terrain", "Terrain.jpg", "Simple heightmap terrain example.", "Demos"});
+			demoTable.Rows.Add(new object[] {21, "Smoke", "Demos.Smoke", "Smoke.jpg", "Smoke particle system.", "Demos"});
 
             demoView = new DataView(demoTable);
 

@@ -38,7 +38,6 @@ namespace Axiom.Controllers {
     public class ControllerManager : IDisposable {
         #region Singleton implementation
 
-        static ControllerManager() { Init(); }
         protected ControllerManager() {}
         protected static ControllerManager instance;
 
@@ -47,7 +46,11 @@ namespace Axiom.Controllers {
         }
 
         public static void Init() {
+            if (instance != null) {
+                throw new ApplicationException("ControllerManager.Init() called twice!");
+            }
             instance = new ControllerManager();
+            GarbageManager.Instance.Add(instance);
         }
 		
         #endregion
@@ -270,6 +273,9 @@ namespace Axiom.Controllers {
 
         public void Dispose() {
             controllers.Clear();
+            if (instance == this) {
+                instance = null;
+            }
         }
 
         #endregion

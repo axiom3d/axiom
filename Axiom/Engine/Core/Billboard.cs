@@ -64,7 +64,7 @@ namespace Axiom.Core {
 		/// <summary>
 		///		Needed for particle systems
 		/// </summary>
-		private float rotation = 0;
+		public float rotationInRadians = 0;
 
         #endregion
 
@@ -153,14 +153,17 @@ namespace Axiom.Core {
             ParentSet = owner;
         }
 
+		/// <summary>
+		///		Gets/Sets the rotation in degrees.
+		/// </summary>
 		public float Rotation {
 			get {
-				return rotation * MathUtil.DEGREES_PER_RADIAN;
+				return rotationInRadians * MathUtil.DEGREES_PER_RADIAN;
 			}
 			set {
-				rotation = value * MathUtil.RADIANS_PER_DEGREE;
+				rotationInRadians = value * MathUtil.RADIANS_PER_DEGREE;
 				// Hmmm, we don't have a NotifyBillboardTextureCoordsModified?
-				if(rotation != 0) {
+				if(rotationInRadians != 0) {
 					ParentSet.NotifyBillboardTextureCoordsModified();
 				}
 			}

@@ -26,14 +26,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.IO;
+using System.Collections;
 
 namespace Axiom.FileSystem {
     /// <summary>
-    /// Summary description for Folder.
+    /// Represents a file system folder.
     /// </summary>
     public class Folder : Archive {
 		
-        public Folder(string archiveName) : base(archiveName) {
+        internal Folder(string archiveName) : base(archiveName) {
+            // So that the substring will work out right, we definitely want this string
+            // to end with the directory separator char.
+            if (!this.archiveName.EndsWith(Path.DirectorySeparatorChar.ToString())) {
+                this.archiveName += Path.DirectorySeparatorChar;
+            }
         }
 
         public override void Load() {
@@ -54,16 +60,34 @@ namespace Axiom.FileSystem {
                 pattern = "*" + pattern;
             }
 
-            string[] files = Directory.GetFiles(archiveName, pattern);
+            // Append the start path if there is one
+            string path = Path.Combine(archiveName, startPath);
 
-            // replace the full paths with just the file names
-            for(int i = 0; i < files.Length; i++) {
-                string[] temp = files[i].Split(new char[] { Path.DirectorySeparatorChar });
-                files[i] = temp[temp.Length - 1];
+            // Get the list of files, recursively, into an ArrayList
+            ArrayList files = new ArrayList();
+            GetFilesRecursive(path, pattern, files);
+
+            // Copy the ArrayList into a string[] array suitable for returning.
+            string[] retval = new string[files.Count];
+            for (int i=0; i<files.Count; i++) {
+                retval[i] = ((string)files[i]).Replace('\\', '/');
             }
-
-            return files;
+            return retval;
         }
 
+        private void GetFilesRecursive(string path, string pattern, ArrayList files) {
+
+            string[] newFiles = Directory.GetFiles(path, pattern);
+            foreach (string newFile in newFiles) {
+                if (!newFile.StartsWith(archiveName)) {
+                    throw new ApplicationException("Directory " + newFile + " unexpectedly does not start from path " + archiveName);
+                }
+                files.Add(newFile.Substring(archiveName.Length));
+            }
+
+            foreach (string directory in Directory.GetDirectories(path)) {
+                GetFilesRecursive(directory, pattern, files);
+            }
+        }
     }
 }

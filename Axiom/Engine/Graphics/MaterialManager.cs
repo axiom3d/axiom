@@ -57,7 +57,6 @@ namespace Axiom.Graphics {
     public class MaterialManager : ResourceManager {
         #region Singleton implementation
 
-        static MaterialManager() { Init(); }
         protected MaterialManager() {}
         protected static MaterialManager instance;
 
@@ -66,6 +65,10 @@ namespace Axiom.Graphics {
         }
 
         public static void Init() {
+            if (instance != null) {
+                throw new ApplicationException("MaterialManager.Init() called twice!");
+            }
+
             instance = new MaterialManager();
 
             instance.Initialize();
@@ -79,8 +82,18 @@ namespace Axiom.Graphics {
             instance.defaultMagFilter = FilterOptions.Linear;
             instance.defaultMipFilter = FilterOptions.Point;
             instance.defaultMaxAniso = 1;
+
+            // Cause us to be disposed of when the Engine is
+            GarbageManager.Instance.Add(MaterialManager.Instance);
         }
-		
+        
+        public override void Dispose() {
+            base.Dispose();
+            if (instance == this) {
+                instance = null;
+            }
+        }
+
         #endregion
 
         #region Delegates
