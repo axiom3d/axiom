@@ -365,7 +365,7 @@ namespace Axiom.Core {
                 throw new AxiomException("Cannot initialize - no render system has been selected.");
             }
 
-            GarbageManager.Instance.Add(new ControllerManager());
+            new ControllerManager();
 
 			// initialize the current render system
 			autoWindow = activeRenderSystem.Initialize(autoCreateWindow, windowTitle);
@@ -554,18 +554,6 @@ namespace Axiom.Core {
         public void UpdateAllRenderTargets() {
             activeRenderSystem.UpdateAllRenderTargets();
         }
-
-        private void InitializeSingletons() {
-			// MeshManager is initialized by the render system itself
-			// TODO SceneManager is not disposed of at Shutdown().  (SceneManagerEnumerator could
-			// do it, but they aren't IDisposable yet--conditional cast perhaps?)
-			// TODO the BSP module may need some massaging too
-			// TODO if there are other singleton classes besides Managers, I haven't looked into them.
-			// TODO TextureManager and some others act totally differently from this, setting the instance
-			// from the constructor instead.  These should all act the same way as that, since it is harder
-			// for TextureManager to change to the Init() methodology.
-			// (GpuProgramManager, HardwareBufferManager)
-		}
 
 		/// <summary>
 		///		Gets the number of frames drawn since startup.
