@@ -787,6 +787,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Input\Enums.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Input\InputSystem.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

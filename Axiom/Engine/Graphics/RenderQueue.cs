@@ -100,7 +100,7 @@ namespace Axiom.Graphics {
         /// <param name="item">IRenderable object to add to the queue.</param>
         /// <param name="groupID">Group to add the item to.</param>
         /// <param name="priority"></param>
-        public void AddRenderable(IRenderable item, ushort priority, RenderQueueGroupID groupID) {
+        public void AddRenderable(IRenderable renderable, ushort priority, RenderQueueGroupID groupID) {
             RenderQueueGroup group = null;
 
             // see if there is a current queue group for this group id
@@ -116,8 +116,13 @@ namespace Axiom.Graphics {
                 group = (RenderQueueGroup)renderGroups[groupID];
             }
 
+            // let the material know it has been used, which also forces a recompile if required
+            if(renderable.Material != null) {
+                renderable.Material.Touch();
+            }
+
             // add the renderable to the appropriate group
-            group.AddRenderable(item, priority);
+            group.AddRenderable(renderable, priority);
         }
 
         /// <summary>

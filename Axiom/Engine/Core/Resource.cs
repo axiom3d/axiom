@@ -119,7 +119,7 @@ namespace Axiom.Core {
         /// <summary>
         ///		Indicates this resource has been used.
         /// </summary>
-        public void Touch() {
+        public virtual void Touch() {
             lastAccessed = (ulong)Environment.TickCount;
         }
 

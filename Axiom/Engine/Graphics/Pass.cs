@@ -589,7 +589,9 @@ namespace Axiom.Graphics
         ///    Splits this Pass to one which can be handled in the number of
         ///    texture units specified.
         /// </summary>
-        /// <param name="numUnits">The target number of texture units.</param>
+        /// <param name="numUnits">
+        ///    The target number of texture units.
+        /// </param>
         /// <returns>
         ///    A new Pass which contains the remaining units, and a scene_blend
         ///    setting appropriate to approximate the multitexture. This Pass will be 

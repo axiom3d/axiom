@@ -335,7 +335,7 @@ namespace Axiom.Graphics
                             program.SetParam((string)entry.Key, (string)entry.Value);
                         }
 
-                        program.Load();
+                        //program.Load();
                     }
 
                     return;

@@ -95,7 +95,7 @@ namespace Axiom.Graphics
             // polymorphic load 
             LoadHighLevelImpl();
 
-            // polymorhpic creation of the low level program
+            // polymorphic creation of the low level program
             CreateLowLevelImpl();
 
             Debug.Assert(assemblerProgram != null, "Subclasses of HighLevelGpuProgram MUST initialize the low level assembler program.");
@@ -165,12 +165,17 @@ namespace Axiom.Graphics
         /// </remarks>
         /// <returns>A new set of program parameters.</returns>
         public override GpuProgramParameters CreateParameters() {
-            // make sure parameter definitions are loaded
-            LoadHighLevelImpl();
-
             // create and load named parameters
             GpuProgramParameters parms = GpuProgramManager.Instance.CreateParameters();
-            PopulateParameterNames(parms);
+            
+            // load high level program and parameters if required
+            if(IsSupported) {
+                // make sure parameter definitions are loaded
+                LoadHighLevelImpl();
+
+                PopulateParameterNames(parms);
+            }
+
             return parms;
         }
 

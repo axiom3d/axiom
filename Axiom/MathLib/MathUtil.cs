@@ -200,11 +200,11 @@ namespace Axiom.MathLib {
         #region Intersection Methods
 
         /// <summary>
-        /// 
+        ///    Tests an intersection between a ray and a box.
         /// </summary>
         /// <param name="ray"></param>
         /// <param name="box"></param>
-        /// <returns></returns>
+        /// <returns>A Pair object containing whether the intersection occurred, and the distance between the 2 objects.</returns>
         public static Pair Intersects(Ray ray, AxisAlignedBox box) {
             if(box.IsNull) {
                 return new Pair(false, 0);
@@ -214,24 +214,26 @@ namespace Axiom.MathLib {
             float t;
             bool hit = false;
             Vector3 hitPoint;
+            Vector3 min = box.Minimum;
+            Vector3 max = box.Maximum;
             
             // check origin inside first
-            if(ray.origin > box.minVector && ray.origin < box.maxVector) {
+            if(ray.origin > min && ray.origin < max) {
                 return new Pair(true, 0.0f);
             }
 
             // check each face in turn, only check closest 3
 
             // Min X
-            if(ray.origin.x < box.minVector.x && ray.direction.x > 0) {
-                t = (box.minVector.x - ray.origin.x) / ray.direction.x;
+            if(ray.origin.x < min.x && ray.direction.x > 0) {
+                t = (min.x - ray.origin.x) / ray.direction.x;
 
                 if(t > 0) {
                     // substitue t back into ray and check bounds and distance
                     hitPoint = ray.origin + ray.direction * t;
 
-                    if(hitPoint.y >= box.minVector.y && hitPoint.y <= box.maxVector.y &&
-                        hitPoint.z >= box.minVector.z && hitPoint.z <= box.maxVector.z &&
+                    if(hitPoint.y >= min.y && hitPoint.y <= max.y &&
+                        hitPoint.z >= min.z && hitPoint.z <= max.z &&
                         (!hit || t < lowt)) {
 
                         hit = true;
@@ -241,15 +243,15 @@ namespace Axiom.MathLib {
             }
 
             // Max X
-            if(ray.origin.x > box.maxVector.x && ray.direction.x < 0) {
-                t = (box.maxVector.x - ray.origin.x) / ray.direction.x;
+            if(ray.origin.x > max.x && ray.direction.x < 0) {
+                t = (max.x - ray.origin.x) / ray.direction.x;
 
                 if(t > 0) {
                     // substitue t back into ray and check bounds and distance
                     hitPoint = ray.origin + ray.direction * t;
 
-                    if(hitPoint.y >= box.minVector.y && hitPoint.y <= box.maxVector.y &&
-                        hitPoint.z >= box.minVector.z && hitPoint.z <= box.maxVector.z &&
+                    if(hitPoint.y >= min.y && hitPoint.y <= max.y &&
+                        hitPoint.z >= min.z && hitPoint.z <= max.z &&
                         (!hit || t < lowt)) {
 
                         hit = true;
@@ -259,15 +261,15 @@ namespace Axiom.MathLib {
             }
                 
             // Min Y
-            if(ray.origin.y < box.minVector.y && ray.direction.y > 0) {
-                t = (box.minVector.y - ray.origin.y) / ray.direction.y;
+            if(ray.origin.y < min.y && ray.direction.y > 0) {
+                t = (min.y - ray.origin.y) / ray.direction.y;
 
                 if(t > 0) {
                     // substitue t back into ray and check bounds and distance
                     hitPoint = ray.origin + ray.direction * t;
 
-                    if(hitPoint.x >= box.minVector.x && hitPoint.x <= box.maxVector.x &&
-                        hitPoint.z >= box.minVector.z && hitPoint.z <= box.maxVector.z &&
+                    if(hitPoint.x >= min.x && hitPoint.x <= max.x &&
+                        hitPoint.z >= min.z && hitPoint.z <= max.z &&
                         (!hit || t < lowt)) {
 
                         hit = true;
@@ -277,15 +279,15 @@ namespace Axiom.MathLib {
             }
 
             // Max Y
-            if(ray.origin.y > box.maxVector.y && ray.direction.y < 0) {
-                t = (box.maxVector.y - ray.origin.y) / ray.direction.y;
+            if(ray.origin.y > max.y && ray.direction.y < 0) {
+                t = (max.y - ray.origin.y) / ray.direction.y;
 
                 if(t > 0) {
                     // substitue t back into ray and check bounds and distance
                     hitPoint = ray.origin + ray.direction * t;
 
-                    if(hitPoint.x >= box.minVector.x && hitPoint.x <= box.maxVector.x &&
-                        hitPoint.z >= box.minVector.z && hitPoint.z <= box.maxVector.z &&
+                    if(hitPoint.x >= min.x && hitPoint.x <= max.x &&
+                        hitPoint.z >= min.z && hitPoint.z <= max.z &&
                         (!hit || t < lowt)) {
 
                         hit = true;
@@ -295,15 +297,15 @@ namespace Axiom.MathLib {
             }
 
             // Min Z
-            if(ray.origin.z < box.minVector.z && ray.direction.z > 0) {
-                t = (box.minVector.z - ray.origin.z) / ray.direction.z;
+            if(ray.origin.z < min.z && ray.direction.z > 0) {
+                t = (min.z - ray.origin.z) / ray.direction.z;
 
                 if(t > 0) {
                     // substitue t back into ray and check bounds and distance
                     hitPoint = ray.origin + ray.direction * t;
 
-                    if(hitPoint.x >= box.minVector.x && hitPoint.x <= box.maxVector.x &&
-                        hitPoint.y >= box.minVector.y && hitPoint.y <= box.maxVector.y &&
+                    if(hitPoint.x >= min.x && hitPoint.x <= max.x &&
+                        hitPoint.y >= min.y && hitPoint.y <= max.y &&
                         (!hit || t < lowt)) {
 
                         hit = true;
@@ -313,15 +315,15 @@ namespace Axiom.MathLib {
             }
 
             // Max Z
-            if(ray.origin.z > box.maxVector.z && ray.direction.z < 0) {
-                t = (box.maxVector.z - ray.origin.z) / ray.direction.z;
+            if(ray.origin.z > max.z && ray.direction.z < 0) {
+                t = (max.z - ray.origin.z) / ray.direction.z;
 
                 if(t > 0) {
                     // substitue t back into ray and check bounds and distance
                     hitPoint = ray.origin + ray.direction * t;
 
-                    if(hitPoint.x >= box.minVector.x && hitPoint.x <= box.maxVector.x &&
-                        hitPoint.y >= box.minVector.y && hitPoint.y <= box.maxVector.y &&
+                    if(hitPoint.x >= min.x && hitPoint.x <= max.x &&
+                        hitPoint.y >= min.y && hitPoint.y <= max.y &&
                         (!hit || t < lowt)) {
 
                         hit = true;
@@ -331,6 +333,62 @@ namespace Axiom.MathLib {
             }
 
             return new Pair(hit, lowt);
+        }
+
+        /// <summary>
+        ///    Tests an intersection between two boxes.
+        /// </summary>
+        /// <param name="boxA">
+        ///    The primary box.
+        /// </param>
+        /// <param name="boxB">
+        ///    The box to test intersection with boxA.
+        /// </param>
+        /// <returns>
+        ///    <list type="bullet">
+        ///        <item>
+        ///            <description>None - There was no intersection between the 2 boxes.</description>
+        ///        </item>
+        ///        <item>
+        ///            <description>Contains - boxA is fully within boxB.</description>
+        ///         </item>
+        ///        <item>
+        ///            <description>Partial - boxA is partially intersecting with boxB.</description>
+        ///         </item>
+        ///     </list>
+        /// </returns>
+        /// Submitted by: romout
+        public static Intersection Intersects(AxisAlignedBox boxA, AxisAlignedBox boxB) {
+            // grab the max and mix vectors for both boxes for comparison
+            Vector3 minA = boxA.Minimum; 
+            Vector3 maxA = boxA.Maximum; 
+            Vector3 minB = boxB.Minimum; 
+            Vector3 maxB = boxB.Maximum; 
+
+            if ((minB.x > minA.x) && 
+                (maxB.x < maxA.x) && 
+                (minB.y > minA.y) && 
+                (maxB.y < maxA.y) && 
+                (minB.z > minA.z) && 
+                (maxB.z < maxA.z)) {
+
+                // boxA is within boxb
+                return Intersection.Contained; 
+            }
+
+            if ((minB.x > maxB.x) || 
+                (minB.y > maxB.y) || 
+                (minB.z > maxB.z) || 
+                (maxB.x < minA.x) || 
+                (maxB.y < minA.y) || 
+                (maxB.z < minA.z)) {
+
+                // not interesting at all
+                return Intersection.None; 
+            }
+
+            // if we got this far, they are partially intersecting
+            return Intersection.Partial; 
         }
 
         #endregion Intersection Methods

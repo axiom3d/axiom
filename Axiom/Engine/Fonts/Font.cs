@@ -119,7 +119,7 @@ namespace Axiom.Fonts {
 
         protected void CreateTexture() {
             // create a new bitamp with the size defined
-            Bitmap bitmap = new Bitmap(BITMAP_WIDTH, BITMAP_HEIGHT, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            Bitmap bitmap = new Bitmap(BITMAP_WIDTH, BITMAP_HEIGHT, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
             // get a handles to the graphics context of the bitmap
             System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bitmap);

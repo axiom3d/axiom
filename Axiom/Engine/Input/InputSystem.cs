@@ -83,7 +83,14 @@ namespace Axiom.Input {
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public abstract bool IsKeyPressed(System.Windows.Forms.Keys key);
+        public abstract bool IsKeyPressed(Axiom.Input.KeyCodes key);
+
+        /// <summary>
+        ///    Returns true if the specified mouse button is currently down.
+        /// </summary>
+        /// <param name="button">Mouse button to query.</param>
+        /// <returns>True if the mouse button is down, false otherwise.</returns>
+        public abstract bool IsMousePressed(MouseButtons button);
 
         /// <summary>
         ///		Retrieves the relative (compared to the last input poll) mouse movement

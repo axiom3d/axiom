@@ -450,17 +450,30 @@ namespace Axiom.Graphics {
         }
 
         protected void ParseGpuProgramRef(TextReader script, string name, Pass pass, GpuProgramType type) {
+
             string line = "";
             GpuProgramParameters programParams = null;
 
             switch(type) {
                 case GpuProgramType.Vertex:
                     pass.VertexProgramName = name;
+
+                    if(!pass.VertexProgram.IsSupported) {
+                        ParseHelper.SkipToNextCloseBrace(script);
+                        return;
+                    }
+
                     programParams = pass.VertexProgramParameters;
                     break;
 
                 case GpuProgramType.Fragment:
                     pass.FragmentProgramName = name;
+
+                    if(!pass.FragmentProgram.IsSupported) {
+                        ParseHelper.SkipToNextCloseBrace(script);
+                        return;
+                    }
+
                     programParams = pass.FragmentProgramParameters;
                     break;
             }
@@ -653,17 +666,21 @@ namespace Axiom.Graphics {
                 case 2: 
                     // e.g. scene_blend source_alpha one_minus_source_alpha  
                     // lookup the real enums equivalent to the script values 
-                    object src_val = ScriptEnumAttribute.Lookup(values[0], typeof(SceneBlendFactor)); 
-                    object dest_val = ScriptEnumAttribute.Lookup(values[1], typeof(SceneBlendFactor)); 
+                    object srcVal = ScriptEnumAttribute.Lookup(values[0], typeof(SceneBlendFactor)); 
+                    object destVal = ScriptEnumAttribute.Lookup(values[1], typeof(SceneBlendFactor)); 
        
                     // if both values were found, assign them 
-                    if(src_val != null && dest_val != null) 
-                        pass.SetSceneBlending((SceneBlendFactor)src_val,(SceneBlendFactor)dest_val); 
-                    else 
-                        if (src_val == null) 
-                        ParseHelper.LogParserError("scene_blend", pass.Parent.Parent.Name, "Invalid enum value: " + values[0].ToString()); 
-                    if (dest_val == null) 
-                        ParseHelper.LogParserError("scene_blend", pass.Parent.Parent.Name, "Invalid enum value: " + values[1].ToString()); 
+                    if(srcVal != null && destVal != null) {
+                        pass.SetSceneBlending((SceneBlendFactor)srcVal, (SceneBlendFactor)destVal); 
+                    }
+                    else {
+                        if (srcVal == null) {
+                            ParseHelper.LogParserError("scene_blend", pass.Parent.Parent.Name, "Invalid enum value: " + values[0].ToString()); 
+                        }
+                        if (destVal == null) {
+                            ParseHelper.LogParserError("scene_blend", pass.Parent.Parent.Name, "Invalid enum value: " + values[1].ToString()); 
+                        }
+                    }
                     break; 
                 default: 
                     pass.SetSceneBlending(SceneBlendFactor.Zero,SceneBlendFactor.Zero); 
@@ -726,6 +743,28 @@ namespace Axiom.Graphics {
                 layer.SetColorOperation((LayerBlendOperation)val);
             else
                 ParseHelper.LogParserError("color_op", layer.Parent.Parent.Name, "Invalid enum value");
+        }
+
+        /// Note: Allows both spellings of color :-).
+        [AttributeParser("colour_op_multipass_fallback", TextureUnit)]
+        [AttributeParser("color_op_multipass_fallback", TextureUnit)]
+        public static void ParseColorOpFallback(string[] values, TextureUnitState layer) {
+            // lookup the real enums equivalent to the script values 
+            object srcVal = ScriptEnumAttribute.Lookup(values[0], typeof(SceneBlendFactor)); 
+            object destVal = ScriptEnumAttribute.Lookup(values[1], typeof(SceneBlendFactor)); 
+       
+            // if both values were found, assign them 
+            if(srcVal != null && destVal != null) {
+                layer.SetColorOpMultipassFallback((SceneBlendFactor)srcVal, (SceneBlendFactor)destVal); 
+            }
+            else {
+                if (srcVal == null) {
+                    ParseHelper.LogParserError("color_op_multipass_fallback", layer.Parent.Parent.Name, "Invalid enum value: " + values[0].ToString()); 
+                }
+                if (destVal == null) {
+                    ParseHelper.LogParserError("color_op_multipass_fallback", layer.Parent.Parent.Name, "Invalid enum value: " + values[1].ToString()); 
+                }
+            }
         }
 
         /// Note: Allows both spellings of color :-).

@@ -29,10 +29,11 @@ using System.Collections;
 using System.Windows.Forms;
 using Microsoft.DirectX;
 using Microsoft.DirectX.DirectInput;
-using DInput = Microsoft.DirectX.DirectInput;
 using Axiom.Core;
 using Axiom.Input;
 using Axiom.Graphics;
+using DInput = Microsoft.DirectX.DirectInput;
+using MouseButtons = Axiom.Input.MouseButtons;
 
 namespace InputSystem_DInput {
     /// <summary>
@@ -48,6 +49,7 @@ namespace InputSystem_DInput {
         private int mouseRelX, mouseRelY, mouseRelZ;
         private int mouseAbsX, mouseAbsY, mouseAbsZ;
         private bool	 isInitialised;
+        private int mouseButtons;
 
         #endregion
 
@@ -119,6 +121,18 @@ namespace InputSystem_DInput {
                     mouseRelX = mouseState.X;
                     mouseRelY = mouseState.Y; 
                     mouseRelZ = mouseState.Z; 
+
+                    byte[] buttons = mouseState.GetMouseButtons();
+
+                    // clear the flags
+                    mouseButtons = 0;
+
+                    for(int i = 0; i < buttons.Length; i++) {
+                        if((buttons[i] & 0x80) != 0) {
+                            mouseButtons |= (1 << i);
+                        }
+                    }
+
 
                     //Console.WriteLine("Rel X: {0} Rel Y: {1} Rel Z: {2}", mouseAbsX, mouseAbsY, mouseAbsZ);
                 }
@@ -200,7 +214,7 @@ namespace InputSystem_DInput {
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public override bool IsKeyPressed(System.Windows.Forms.Keys key) {
+        public override bool IsKeyPressed(KeyCodes key) {
             // get the DInput.Key enum from the System.Windows.Forms.Keys enum passed in
             DInput.Key daKey = ConvertKeyEnum(key);
 
@@ -211,145 +225,218 @@ namespace InputSystem_DInput {
             return false;
         }
 
+        /// <summary>
+        ///    Returns true if the specified mouse button is currently down.
+        /// </summary>
+        /// <param name="button">Mouse button to query.</param>
+        /// <returns>True if the mouse button is down, false otherwise.</returns>
+        public override bool IsMousePressed(MouseButtons button) {
+            return (mouseButtons & (int)button) != 0;
+        }
+
         #endregion
 
         /// <summary>
-        ///		Used to convert a System.Windows.Forms.Keys enum vals to a DirectInput.Key enum.
+        ///		Used to convert an Axiom.Input.KeyCodes enum val to a DirectInput.Key enum val.
         /// </summary>
-        /// <param name="winKey"></param>
-        /// <returns></returns>
-        private DInput.Key ConvertKeyEnum(System.Windows.Forms.Keys winKey) {
+        /// <param name="key">Axiom keyboard code to query.</param>
+        /// <returns>The equivalent enum value in the DInput.Key enum.</returns>
+        private DInput.Key ConvertKeyEnum(KeyCodes key) {
+            // TODO: Tilde, Quotes
             DInput.Key dinputKey = 0;
 
-            switch(winKey) {
-                case Keys.A:
+            switch(key) {
+                case KeyCodes.A:
                     dinputKey = DInput.Key.A;
                     break;
-                case Keys.B:
+                case KeyCodes.B:
                     dinputKey = DInput.Key.B;
                     break;
-                case Keys.C:
+                case KeyCodes.C:
                     dinputKey = DInput.Key.C;
                     break;
-                case Keys.D:
+                case KeyCodes.D:
                     dinputKey = DInput.Key.D;
                     break;
-                case Keys.E:
+                case KeyCodes.E:
                     dinputKey = DInput.Key.E;
                     break;
-                case Keys.F:
+                case KeyCodes.F:
                     dinputKey = DInput.Key.F;
                     break;
-                case Keys.G:
+                case KeyCodes.G:
                     dinputKey = DInput.Key.G;
                     break;
-                case Keys.H:
+                case KeyCodes.H:
                     dinputKey = DInput.Key.H;
                     break;
-                case Keys.I:
+                case KeyCodes.I:
                     dinputKey = DInput.Key.I;
                     break;
-                case Keys.J:
+                case KeyCodes.J:
                     dinputKey = DInput.Key.J;
                     break;
-                case Keys.K:
+                case KeyCodes.K:
                     dinputKey = DInput.Key.K;
                     break;
-                case Keys.L:
+                case KeyCodes.L:
                     dinputKey = DInput.Key.L;
                     break;
-                case Keys.M:
+                case KeyCodes.M:
                     dinputKey = DInput.Key.M;
                     break;
-                case Keys.N:
+                case KeyCodes.N:
                     dinputKey = DInput.Key.N;
                     break;
-                case Keys.O:
+                case KeyCodes.O:
                     dinputKey = DInput.Key.O;
                     break;
-                case Keys.P:
+                case KeyCodes.P:
                     dinputKey = DInput.Key.P;
                     break;
-                case Keys.Q:
+                case KeyCodes.Q:
                     dinputKey = DInput.Key.Q;
                     break;
-                case Keys.R:
+                case KeyCodes.R:
                     dinputKey = DInput.Key.R;
                     break;
-                case Keys.S:
+                case KeyCodes.S:
                     dinputKey = DInput.Key.S;
                     break;
-                case Keys.T:
+                case KeyCodes.T:
                     dinputKey = DInput.Key.T;
                     break;
-                case Keys.U:
+                case KeyCodes.U:
                     dinputKey = DInput.Key.U;
                     break;
-                case Keys.V:
+                case KeyCodes.V:
                     dinputKey = DInput.Key.V;
                     break;
-                case Keys.W:
+                case KeyCodes.W:
                     dinputKey = DInput.Key.W;
                     break;
-                case Keys.X:
+                case KeyCodes.X:
                     dinputKey = DInput.Key.X;
                     break;
-                case Keys.Y:
+                case KeyCodes.Y:
                     dinputKey = DInput.Key.Y;
                     break;
-                case Keys.Z:
+                case KeyCodes.Z:
                     dinputKey = DInput.Key.Z;
                     break;
-                case Keys.Left :
+                case KeyCodes.Left :
                     dinputKey = DInput.Key.LeftArrow;
                     break;
-                case Keys.Right:
+                case KeyCodes.Right:
                     dinputKey = DInput.Key.RightArrow;
                     break;
-                case Keys.Up:
+                case KeyCodes.Up:
                     dinputKey = DInput.Key.UpArrow;
                     break;
-                case Keys.Down:
+                case KeyCodes.Down:
                     dinputKey = DInput.Key.DownArrow;
                     break;
-                case Keys.Escape:
+                case KeyCodes.Escape:
                     dinputKey = DInput.Key.Escape;
                     break;
-                case Keys.F1:
+                case KeyCodes.F1:
                     dinputKey = DInput.Key.F1;
                     break;
-                case Keys.F2:
+                case KeyCodes.F2:
                     dinputKey = DInput.Key.F2;
                     break;
-                case Keys.F3:
+                case KeyCodes.F3:
                     dinputKey = DInput.Key.F3;
                     break;
-                case Keys.F4:
+                case KeyCodes.F4:
                     dinputKey = DInput.Key.F4;
                     break;
-                case Keys.F5:
+                case KeyCodes.F5:
                     dinputKey = DInput.Key.F5;
                     break;
-                case Keys.F6:
+                case KeyCodes.F6:
                     dinputKey = DInput.Key.F6;
                     break;
-                case Keys.F7:
+                case KeyCodes.F7:
                     dinputKey = DInput.Key.F7;
                     break;
-                case Keys.F8:
+                case KeyCodes.F8:
                     dinputKey = DInput.Key.F8;
                     break;
-                case Keys.F9:
+                case KeyCodes.F9:
                     dinputKey = DInput.Key.F9;
                     break;
-                case Keys.F10:
+                case KeyCodes.F10:
                     dinputKey = DInput.Key.F10;
                     break;
-                case Keys.F11:
+                case KeyCodes.F11:
                     dinputKey = DInput.Key.F11;
                     break;
-                case Keys.F12:
+                case KeyCodes.F12:
                     dinputKey = DInput.Key.F12;
+                    break;
+                case KeyCodes.Enter:
+                    dinputKey = DInput.Key.Return;
+                    break;
+                case KeyCodes.Tab:
+                    dinputKey = DInput.Key.Tab;
+                    break;
+                case KeyCodes.LeftShift:
+                    dinputKey = DInput.Key.LeftShift;
+                    break;
+                case KeyCodes.RightShift:
+                    dinputKey = DInput.Key.RightShift;
+                    break;
+                case KeyCodes.LeftControl:
+                    dinputKey = DInput.Key.LeftControl;
+                    break;
+                case KeyCodes.RightControl:
+                    dinputKey = DInput.Key.RightControl;
+                    break;
+                case KeyCodes.Period:
+                    dinputKey = DInput.Key.Period;
+                    break;
+                case KeyCodes.Comma:
+                    dinputKey = DInput.Key.Comma;
+                    break;
+                case KeyCodes.Home:
+                    dinputKey = DInput.Key.Home;
+                    break;
+                case KeyCodes.PageUp:
+                    dinputKey = DInput.Key.PageUp;
+                    break;
+                case KeyCodes.PageDown:
+                    dinputKey = DInput.Key.PageDown;
+                    break;
+                case KeyCodes.End:
+                    dinputKey = DInput.Key.End;
+                    break;
+                case KeyCodes.Semicolon:
+                    dinputKey = DInput.Key.SemiColon;
+                    break;
+                case KeyCodes.Subtract:
+                    dinputKey = DInput.Key.Subtract;
+                    break;
+                case KeyCodes.Add:
+                    dinputKey = DInput.Key.Add;
+                    break;
+                case KeyCodes.Backspace:
+                    dinputKey = DInput.Key.BackSpace;
+                    break;
+                case KeyCodes.Delete:
+                    dinputKey = DInput.Key.Delete;
+                    break;
+                case KeyCodes.Insert:
+                    dinputKey = DInput.Key.Insert;
+                    break;
+                case KeyCodes.LeftAlt:
+                    dinputKey = DInput.Key.LeftAlt;
+                    break;
+                case KeyCodes.RightAlt:
+                    dinputKey = DInput.Key.RightAlt;
+                    break;
+                case KeyCodes.Space:
+                    dinputKey = DInput.Key.Space;
                     break;
             }
 
@@ -361,7 +448,9 @@ namespace InputSystem_DInput {
         ///		on the X (horizontal) axis.
         /// </summary>
         public override int RelativeMouseX {
-            get { return mouseRelX; }
+            get { 
+                return mouseRelX; 
+            }
         }
 
         /// <summary>
@@ -369,7 +458,9 @@ namespace InputSystem_DInput {
         ///		on the Y (vertical) axis.
         /// </summary>
         public override int RelativeMouseY {
-            get { return mouseRelY; }
+            get { 
+                return mouseRelY; 
+            }
         }
 
         /// <summary>
@@ -377,34 +468,41 @@ namespace InputSystem_DInput {
         ///		on the Z (mouse wheel) axis.
         /// </summary>
         public override int RelativeMouseZ {
-            get { return mouseRelZ; }
+            get { 
+                return mouseRelZ; 
+            }
         }
 
         /// <summary>
         ///		Retrieves the absolute mouse position on the X (horizontal) axis.
         /// </summary>
         public override int AbsoluteMouseX {
-            get { return mouseAbsX; }
+            get { 
+                return mouseAbsX; 
+            }
         }
 
         /// <summary>
         ///		Retrieves the absolute mouse position on the Y (vertical) axis.
         /// </summary>
         public override int AbsoluteMouseY {
-            get { return mouseAbsY; }
+            get { 
+                return mouseAbsY; 
+            }
         }
 
         /// <summary>
         ///		Retrieves the absolute mouse position on the Z (mouse wheel) axis.
         /// </summary>
         public override int AbsoluteMouseZ {
-            get { return mouseAbsZ; }
+            get { 
+                return mouseAbsZ; 
+            }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// DOC
         private void InitializeImmediateKeyboard(Control handle, bool fullScreen) {
             // Create the device.
             keyboardDevice = new DInput.Device(SystemGuid.Keyboard);
@@ -457,16 +555,14 @@ namespace InputSystem_DInput {
         /// <summary>
         /// 
         /// </summary>
-        /// DOC
         public void Start() {
             // set ourself as the current input system
             Engine.Instance.InputSystem = this;
         }
 
         /// <summary>
-        /// 
+        ///    Called when the plugin is shutting down.  Unacquires all active input devices.
         /// </summary>
-        /// DOC
         public void Stop() {
             // Unacquire all Dinput objects.
             if(isInitialised) {
