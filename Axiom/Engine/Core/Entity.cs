@@ -34,11 +34,40 @@ using Axiom.Graphics;
 
 namespace Axiom.Core {
     /// <summary>
-    ///    The Entity class serves as the base class for all objects in the engine.   
-    ///    It represents the minimum functionality required for an object in a 3D SceneGraph.
+    ///    Defines an instance of a discrete, movable object based on a Mesh.
     /// </summary>
+    /// <remarks>
+    ///		Axiom generally divides renderable objects into 2 groups, discrete
+    ///		(separate) and relatively small objects which move around the world,
+    ///		and large, sprawling geometry which makes up generally immovable
+    ///		scenery, aka 'level geometry'.
+    ///		<para>
+    ///		The <see cref="Mesh"/> and <see cref="SubMesh"/> classes deal with the definition of the geometry
+    ///		used by discrete movable objects. Entities are actual instances of
+    ///		objects based on this geometry in the world. Therefore there is
+    ///		usually a single set <see cref="Mesh"/> for a car, but there may be multiple
+    ///		entities based on it in the world. Entities are able to override
+    ///		aspects of the Mesh it is defined by, such as changing material
+    ///		properties per instance (so you can have many cars using the same
+    ///		geometry but different textures for example). Because a <see cref="Mesh"/> is split
+    ///		into a list of <see cref="SubMesh"/> objects for this purpose, the Entity class is a grouping class
+    ///		(much like the <see cref="Mesh"/> class) and much of the detail regarding
+    ///		individual changes is kept in the <see cref="SubEntity"/> class. There is a 1:1
+    ///		relationship between <see cref="SubEntity"/> instances and the <see cref="SubMesh"/> instances
+    ///		associated with the <see cref="Mesh"/> the Entity is based on.
+    ///		</para>
+    ///		<para>
+    ///		Entity and <see cref="SubEntity"/> classes are never created directly. 
+    ///		Use <see cref="SceneManager.CreateEntity"/> (passing a model name) to
+    ///		create one.
+    ///		</para>
+    ///		<para>
+    ///		Entities are included in the scene by using <see cref="SceneNode.AttachObject"/>
+    ///		to associate them with a scene node.
+    ///		</para>
+    /// </remarks>
     public class Entity : SceneObject, IDisposable {
-        #region Member variables
+        #region Fields
 
         /// <summary>
         ///    3D Mesh that represents this entity.
@@ -100,8 +129,12 @@ namespace Axiom.Core {
         ///    Render detail to be used for this entity (solid, wireframe, point).
         /// </summary>
         protected SceneDetailLevel renderDetail;
+		/// <summary>
+		///		Flag indicating whether or not this entity will cast shadows.
+		/// </summary>
+		protected bool castsShadows;
 
-        #endregion
+        #endregion Fields
 
         #region Constructors
 
@@ -152,6 +185,26 @@ namespace Axiom.Core {
             }
         }
 
+		/// <summary>
+		///		Gets/Sets whether or not this entity will cast shadows.
+		/// </summary>
+		/// <remarks>
+		///		This setting simply allows you to turn off shadows for a given entity. 
+		///		An entity will not cast shadows unless the scene supports it in any case,
+		///		and by default all entities cast shadows if the scene-level feature is enabled. 
+		///		If, however, for some reason you wish to disable this for a single entity then 
+		///		you can do so using this method.
+		///		<seealso cref="SceneManager.SetShadowTechnique"/>
+		/// </remarks>
+		public bool CastsShadows {
+			get {
+				return castsShadows;
+			}
+			set {
+				castsShadows = value;
+			}
+		}
+
         /// <summary>
         ///    Gets/Sets the flag to render the skeleton of this entity.
         /// </summary>
@@ -169,15 +222,21 @@ namespace Axiom.Core {
         /// </summary>
         /// DOC
         public int MeshLodIndex {
-            get { return meshLodIndex; }
-            set { meshLodIndex = value; }
+            get { 
+				return meshLodIndex; 
+			}
+            set { 
+				meshLodIndex = value; 
+			}
         }
 
         /// <summary>
         ///		Gets the 3D mesh associated with this entity.
         /// </summary>
         public Mesh Mesh {
-            get { return mesh; }
+            get { 
+				return mesh; 
+			}
         }
 
         /// <summary>

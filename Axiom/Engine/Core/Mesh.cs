@@ -40,7 +40,7 @@ using Axiom.Graphics;
 
 namespace Axiom.Core {
     /// <summary>
-    ///    Resource holding data about 3D mesh.
+    ///    Resource holding data about a 3D mesh.
     /// </summary>
     /// <remarks>
     ///    This class holds the data used to represent a discrete
@@ -77,15 +77,25 @@ namespace Axiom.Core {
     public class Mesh : Resource {
         #region Fields
 
-        /// <summary>Shared vertex data between multiple meshes.</summary>
+        /// <summary>
+        ///		Shared vertex data between multiple meshes.
+        ///	</summary>
         protected VertexData sharedVertexData;
-        /// <summary>Collection of sub meshes for this mesh.</summary>
+        /// <summary>
+        ///		Collection of sub meshes for this mesh.
+        ///	</summary>
         protected SubMeshCollection subMeshList = new SubMeshCollection();
-        /// <summary>Flag that states whether or not the bounding box for this mesh needs to be re-calced.</summary>
-        protected bool updateBounds = true;
-        /// <summary>Flag that states whether or not this mesh will be loaded from a file, or constructed manually.</summary>
+        /// <summary>
+        ///		Flag that indicates whether or not this mesh will be loaded from a file, or constructed manually.
+        ///	</summary>
         protected bool isManuallyDefined = false;
+		/// <summary>
+		///		Local bounding box of this mesh.
+		/// </summary>
         protected AxisAlignedBox boundingBox = AxisAlignedBox.Null;
+		/// <summary>
+		///		Radius of this mesh's bounding sphere.
+		/// </summary>
         protected float boundingSphereRadius;
 
         /// <summary>Name of the skeleton bound to this mesh.</summary>
@@ -101,17 +111,44 @@ namespace Axiom.Core {
         /// <summary>Option whether to use software or hardware blending, there are tradeoffs to both.</summary>
         protected internal bool useSoftwareBlending;
 
-        // LOD settings, declared internal so OgreMeshReader can use them, nobody else needs access
-        // to them
+		/// <summary>
+		///		Flag indicating the use of manually created LOD meshes.
+		/// </summary>
         protected internal bool isLodManual;
+		/// <summary>
+		///		Number of LOD meshes available.
+		/// </summary>
         protected internal int numLods;
+		/// <summary>
+		///		List of data structures describing LOD usage.
+		/// </summary>
         protected internal MeshLodUsageList lodUsageList = new MeshLodUsageList();
 
-        // vertex buffer settings
+		/// <summary>
+		///		Usage type for the vertex buffer.
+		/// </summary>
         protected BufferUsage vertexBufferUsage;
+		/// <summary>
+		///		Usage type for the index buffer.
+		/// </summary>
         protected BufferUsage indexBufferUsage;
+		/// <summary>
+		///		Use a shadow buffer for the vertex data?
+		/// </summary>
         protected bool useVertexShadowBuffer;
+		/// <summary>
+		///		Use a shadow buffer for the index data?
+		/// </summary>
         protected bool useIndexShadowBuffer;
+
+		/// <summary>
+		///		Edge data for use in shadow volume creation.
+		/// </summary>
+		protected EdgeData edgeData;
+		/// <summary>
+		///		Flag indicating whether precalculation steps to support shadows have been taken.
+		/// </summary>
+		protected bool isPreparedForShadowVolumes;
 
         #endregion
 
@@ -147,9 +184,27 @@ namespace Axiom.Core {
         ///    Bounding spehere radius from this mesh in local coordinates.
         /// </summary>
         public float BoundingSphereRadius {
-            get { return boundingSphereRadius; }
-            set { boundingSphereRadius = value; }
+            get { 
+				return boundingSphereRadius; 
+			}
+            set { 
+				boundingSphereRadius = value; 
+			}
         }
+
+		/// <summary>
+		///		Gets the edge list for this mesh, building it if required. 
+		/// </summary>
+		/// <remarks>
+		///		You must ensure that the Mesh as been prepared for shadow volume 
+		///		rendering if you intend to use this information for that purpose.
+		/// </remarks>
+		public EdgeData EdgeList {
+			get {
+				// TODO: Implement Mesh.EdgeList
+				throw new NotImplementedException();
+			}
+		}
 
         /// <summary>
         ///    Determins whether or not this mesh has a skeleton associated with it.
@@ -161,7 +216,7 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        ///    
+        ///    Gets the usage setting for this meshes index buffers.
         /// </summary>
         public BufferUsage IndexBufferUsage {
             get {
@@ -170,7 +225,7 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        ///    
+        ///    Gets whether or not this meshes index buffers are shadowed.
         /// </summary>
         public bool UseIndexShadowBuffer {
             get {
@@ -182,15 +237,31 @@ namespace Axiom.Core {
         ///		Defines whether this mesh is to be loaded from a resource, or created manually at runtime.
         /// </summary>
         public bool IsManuallyDefined {
-            get { return isManuallyDefined; }
-            set { isManuallyDefined = value; }
+            get { 
+				return isManuallyDefined; 
+			}
+            set { 
+				isManuallyDefined = value; 
+			}
         }
+
+		/// <summary>
+		///		Gets whether this mesh has already had it's geometry prepared for use in 
+		///		rendering shadow volumes.
+		/// </summary>
+		public bool IsPreparedForShadowVolumes {
+			get {
+				return isPreparedForShadowVolumes;
+			}
+		}
 
         /// <summary>
         ///		Gets the current number of Lod levels associated with this mesh.
         /// </summary>
         public int LodLevelCount {
-            get { return lodUsageList.Count; }
+            get { 
+				return lodUsageList.Count; 
+			}
         }
 
         /// <summary>
@@ -223,7 +294,7 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        ///    
+        ///    Gets the usage setting for this meshes vertex buffers.
         /// </summary>
         public BufferUsage VertexBufferUsage {
             get {
@@ -232,7 +303,7 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        ///    
+        ///    Gets whether or not this meshes vertex buffers are shadowed.
         /// </summary>
         public bool UseVertexShadowBuffer {
             get {
@@ -258,6 +329,15 @@ namespace Axiom.Core {
             boneAssignmentList.Insert(boneAssignment.vertexIndex, boneAssignment);
             boneAssignmentsOutOfDate = true;
         }
+
+		/// <summary>
+		///		Builds an edge list for this mesh, which can be used for generating a shadow volume
+		///		among other things.
+		/// </summary>
+		public void BuildEdgeList() {
+			// TODO: Implement Mesh.BuildEdgeList
+			throw new NotImplementedException();
+		}
 
         /// <summary>
         ///     Builds tangent space vector required for accurate bump mapping.
@@ -405,9 +485,17 @@ namespace Axiom.Core {
             } // unsafe
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+		/// <summary>
+		///     Builds tangent space vector required for accurate bump mapping.
+		/// </summary>
+		/// <remarks>
+		///    Adapted from bump mapping tutorials at:
+		///    http://www.paulsprojects.net/tutorials/simplebump/simplebump.html
+		///    author : paul.baker@univ.ox.ac.uk
+		///    <p/>
+		///    Note: Only the tangent vector is calculated, it is assumed the binormal
+		///    will be calculated in a vertex program.
+		/// </remarks>
         public void BuildTangentVectors() {
             // default using the first tex coord set and stuffing the tangent vectors in the 
             BuildTangentVectors(0, 1);
@@ -426,7 +514,7 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        ///    Must be called once to compile bone assignments into geometry buffer.
+        ///    Compile bone assignments into blend index and weight buffers.
         /// </summary>
         protected internal void CompileBoneAssignments() {
             int maxBones = RationalizeBoneAssignments(sharedVertexData.vertexCount, boneAssignmentList);
@@ -670,6 +758,31 @@ namespace Axiom.Core {
             skeletonName = skeleton.Name;
         }
 
+		/// <summary>
+		///		This method prepares the mesh for generating a renderable shadow volume.
+		/// </summary>
+		/// <remarks>
+		///		Preparing a mesh to generate a shadow volume involves firstly ensuring that the 
+		///		vertex buffer containing the positions for the mesh is a standalone vertex buffer,
+		///		with no other components in it. This method will therefore break apart any existing
+		///		vertex buffers this mesh holds if position is sharing a vertex buffer. 
+		///		Secondly, it will double the size of this vertex buffer so that there are 2 copies of 
+		///		the position data for the mesh. The first half is used for the original, and the second 
+		///		half is used for the 'extruded' version of the mesh. The vertex count of the main 
+		///		<see cref="VertexData"/> used to render the mesh will remain the same though, so as not to add any 
+		///		overhead to regular rendering of the object.
+		///		Both copies of the position are required in one buffer because shadow volumes stretch 
+		///		from the original mesh to the extruded version.
+		///		<p/>
+		///		Because shadow volumes are rendered in turn, no additional
+		///		index buffer space is allocated by this method, a shared index buffer allocated by the
+		///		shadow rendering algorithm is used for addressing this extended vertex buffer.
+		/// </remarks>
+		public void PrepareForShadowVolume() {
+			// TODO: Implement Mesh.PrepareForShadowVolume
+			throw new NotImplementedException();
+		}
+
         /// <summary>
         ///     Rationalizes the passed in bone assignment list.
         /// </summary>
@@ -746,10 +859,309 @@ namespace Axiom.Core {
 
         #endregion Methods
 
+		#region Static Methods
+
+		/// <summary>
+		///		Performs a software indexed vertex blend, of the kind used for
+		///		skeletal animation although it can be used for other purposes. 
+		/// </summary>
+		/// <remarks>
+		///		This function is supplied to update vertex data with blends 
+		///		done in software, either because no hardware support is available, 
+		///		or that you need the results of the blend for some other CPU operations.
+		/// </remarks>
+		/// <param name="sourceVertexData">
+		///		<see cref="VertexData"/> class containing positions, normals, blend indices and blend weights.
+		///	</param>
+		/// <param name="targetVertexData">
+		///		<see cref="VertexData"/> class containing target position
+		///		and normal buffers which will be updated with the blended versions.
+		///		Note that the layout of the source and target position / normal 
+		///		buffers must be identical, ie they must use the same buffer indexes.
+		/// </param>
+		/// <param name="matrices">An array of matrices to be used to blend.</param>
+		/// <param name="blendNormals">If true, normals are blended as well as positions.</param>
+		public static void SoftwareVertexBlend(VertexData sourceVertexData, VertexData targetVertexData, Matrix4[] matrices, bool blendNormals) {
+			// Source vectors
+			Vector3 sourceVec = Vector3.Zero;
+			Vector3 sourceNorm = Vector3.Zero;
+			// Accumulation vectors
+			Vector3 accumVecPos = Vector3.Zero;
+			Vector3 accumVecNorm = Vector3.Zero;
+
+			HardwareVertexBuffer srcPosBuf = null, srcNormBuf = null, srcIdxBuf = null, srcWeightBuf = null;
+			HardwareVertexBuffer destPosBuf = null, destNormBuf = null;
+
+			bool srcPosNormShareBuffer = false;
+			bool destPosNormShareBuffer = false;
+			bool weightsIndexesShareBuffer = false;
+
+			IntPtr ptr = IntPtr.Zero;
+
+			// Get elements for source
+			VertexElement srcElemPos = 
+				sourceVertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Position);
+			VertexElement srcElemNorm = 
+				sourceVertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Normal);
+			VertexElement srcElemBlendIndices = 
+				sourceVertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.BlendIndices);
+			VertexElement srcElemBlendWeights = 
+				sourceVertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.BlendWeights);
+
+			Debug.Assert(srcElemPos != null && srcElemBlendIndices != null && srcElemBlendWeights != null, "You must supply at least positions, blend indices and blend weights");
+
+			// Get elements for target
+			VertexElement destElemPos = 
+				targetVertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Position);
+			VertexElement destElemNorm = 
+				targetVertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Normal);
+        
+			// Do we have normals and want to blend them?
+			bool includeNormals = blendNormals && (srcElemNorm != null) && (destElemNorm != null);
+
+			// Get buffers for source
+			srcPosBuf = sourceVertexData.vertexBufferBinding.GetBuffer(srcElemPos.Source);
+			srcIdxBuf = sourceVertexData.vertexBufferBinding.GetBuffer(srcElemBlendIndices.Source);
+			srcWeightBuf = sourceVertexData.vertexBufferBinding.GetBuffer(srcElemBlendWeights.Source);
+
+			if (includeNormals)
+			{
+				srcNormBuf = sourceVertexData.vertexBufferBinding.GetBuffer(srcElemNorm.Source);
+				srcPosNormShareBuffer = (srcPosBuf == srcNormBuf);
+			}
+
+			weightsIndexesShareBuffer = (srcIdxBuf == srcWeightBuf);
+
+			// Get buffers for target
+			destPosBuf = targetVertexData.vertexBufferBinding.GetBuffer(destElemPos.Source);
+
+			if (includeNormals)
+			{
+				destNormBuf = targetVertexData.vertexBufferBinding.GetBuffer(destElemNorm.Source);
+				destPosNormShareBuffer = (destPosBuf == destNormBuf);
+			}
+
+			// Lock source buffers for reading
+			Debug.Assert(srcElemPos.Offset == 0, "Positions must be first element in dedicated buffer!");
+
+			unsafe {
+				float* pSrcPos = null, pSrcNorm = null, pDestPos = null, pDestNorm = null, pBlendWeight = null;
+				byte* pBlendIdx = null;
+			
+				ptr = srcPosBuf.Lock(BufferLocking.ReadOnly);
+				pSrcPos = (float*)ptr.ToPointer();
+
+				if (includeNormals) {
+					if (srcPosNormShareBuffer) {
+						// Same buffer, must be packed directly after position
+						Debug.Assert(srcElemNorm.Offset == (sizeof(float) * 3), "Normals must be packed directly after positions in buffer!");
+						// pSrcNorm will not be used
+					}
+					else {
+						// Different buffer
+						Debug.Assert(srcElemNorm.Offset == 0, "Normals must be first element in dedicated buffer!");
+
+						ptr = srcNormBuf.Lock(BufferLocking.ReadOnly);
+						pSrcNorm = (float*)ptr.ToPointer();
+					}
+				}
+
+				// Indices must be first in a buffer and be 4 bytes
+				Debug.Assert(srcElemBlendIndices.Offset == 0 &&
+					srcElemBlendIndices.Type == VertexElementType.UByte4, 
+					"Blend indices must be first in a buffer and be VET_UBYTE4");
+
+				ptr = srcIdxBuf.Lock(BufferLocking.ReadOnly);
+				pBlendIdx = (byte*)ptr.ToPointer();
+
+				if (weightsIndexesShareBuffer) {
+					// Weights must be packed directly after the indices
+					Debug.Assert(srcElemBlendWeights.Offset == (sizeof(byte) * 4),
+						"Blend weights must be directly after indices in the buffer");
+
+					pBlendWeight = (float*)((byte*)pBlendIdx + srcElemBlendWeights.Offset);
+				}
+				else {
+					// Weights must be at the start of the buffer
+					Debug.Assert(srcElemBlendWeights.Offset == 0, 
+						"Blend weights must be at the start of a dedicated buffer");
+
+					// Lock buffer
+					ptr = srcWeightBuf.Lock(BufferLocking.ReadOnly);
+					pBlendWeight = (float*)ptr.ToPointer();
+				}
+
+				int numWeightsPerVertex = VertexElement.GetTypeCount(srcElemBlendWeights.Type);
+
+				// Lock destination buffers for writing
+				Debug.Assert(destElemPos.Offset == 0,
+					"Positions must be first element in dedicated buffer!");
+
+				ptr = destPosBuf.Lock(BufferLocking.Discard);
+				pDestPos = (float*)ptr.ToPointer();
+
+				if (includeNormals) {
+					if (destPosNormShareBuffer) {
+						// Same buffer, must be packed directly after position
+						Debug.Assert(destElemNorm.Offset == (sizeof(float) * 3), 
+							"Normals must be packed directly after positions in buffer!");
+						// pDestNorm will not be used
+					}
+					else {
+						// Different buffer
+						Debug.Assert(destElemNorm.Offset == 0, 
+							"Normals must be first element in dedicated buffer!");
+
+						ptr = destNormBuf.Lock(BufferLocking.Discard);
+						pDestNorm = (float*)ptr.ToPointer();
+					}
+				}
+
+				// Loop per vertex
+				for(int vertIdx = 0; vertIdx < targetVertexData.vertexCount; vertIdx++) {
+					// Load source vertex elements
+					sourceVec.x = *pSrcPos++;
+					sourceVec.y = *pSrcPos++;
+					sourceVec.z = *pSrcPos++;
+
+					if (includeNormals) {
+						if (srcPosNormShareBuffer) {
+							sourceNorm.x = *pSrcPos++;
+							sourceNorm.y = *pSrcPos++;
+							sourceNorm.z = *pSrcPos++;
+						}
+						else {
+							sourceNorm.x = *pSrcNorm++;
+							sourceNorm.y = *pSrcNorm++;
+							sourceNorm.z = *pSrcNorm++;
+						}
+					}
+					// Load accumulators
+					accumVecPos = Vector3.Zero;
+					accumVecNorm = Vector3.Zero;
+
+					// Loop per blend weight 
+					for (int blendIdx = 0; blendIdx < numWeightsPerVertex; blendIdx++) {
+						// Blend by multiplying source by blend matrix and scaling by weight
+						// Add to accumulator
+						// NB weights must be normalised!!
+						if (*pBlendWeight != 0.0f) {
+							// Blend position, use 3x4 matrix
+							Matrix4 mat = matrices[*pBlendIdx];
+
+							accumVecPos.x += 
+								(mat.m00 * sourceVec.x + 
+								mat.m01 * sourceVec.y + 
+								mat.m02 * sourceVec.z + 
+								mat.m03)
+								* (*pBlendWeight);
+
+							accumVecPos.y += 
+								(mat.m10 * sourceVec.x + 
+								mat.m11 * sourceVec.y + 
+								mat.m12 * sourceVec.z + 
+								mat.m13)
+								* (*pBlendWeight);
+
+							accumVecPos.z += 
+								(mat.m20 * sourceVec.x + 
+								mat.m21 * sourceVec.y + 
+								mat.m22 * sourceVec.z + 
+								mat.m23)
+								* (*pBlendWeight);
+
+							if (includeNormals) {
+								// Blend normal
+								// We should blend by inverse transpose here, but because we're assuming the 3x3
+								// aspect of the matrix is orthogonal (no non-uniform scaling), the inverse transpose
+								// is equal to the main 3x3 matrix
+								// Note because it's a normal we just extract the rotational part, saves us renormalising here
+								accumVecNorm.x += 
+									(mat.m00 * sourceNorm.x + 
+									mat.m01 * sourceNorm.y + 
+									mat.m02 * sourceNorm.z) 
+									* (*pBlendWeight);
+
+								accumVecNorm.y += 
+									(mat.m10 * sourceNorm.x + 
+									mat.m11 * sourceNorm.y + 
+									mat.m12 * sourceNorm.z)
+									* (*pBlendWeight);
+
+								accumVecNorm.z += 
+									(mat.m20 * sourceNorm.x + 
+									mat.m21 * sourceNorm.y + 
+									mat.m22 * sourceNorm.z)
+									* (*pBlendWeight);
+							}
+
+						}
+						++pBlendWeight;
+						++pBlendIdx;
+					}
+
+					// Finish off blend info pointers
+					// Make sure we skip over 4 index elements no matter how many we used
+					pBlendIdx += (4 - numWeightsPerVertex);
+
+					if(weightsIndexesShareBuffer) {
+						// Skip index over weights
+						pBlendIdx += sizeof(float) * numWeightsPerVertex;
+
+						// Re-base weights
+						pBlendWeight = (float*)((byte*)pBlendIdx + srcElemBlendWeights.Offset);
+					}
+
+					// Stored blended vertex in hardware buffer
+					*pDestPos++ = accumVecPos.x;
+					*pDestPos++ = accumVecPos.y;
+					*pDestPos++ = accumVecPos.z;
+
+					// Stored blended vertex in temp buffer
+					if (includeNormals) {
+						// Normalise
+						accumVecNorm.Normalize();
+
+						if (destPosNormShareBuffer) {
+							// Pack into same buffer
+							*pDestPos++ = accumVecNorm.x;
+							*pDestPos++ = accumVecNorm.y;
+							*pDestPos++ = accumVecNorm.z;
+						}
+						else {
+							*pDestNorm++ = accumVecNorm.x;
+							*pDestNorm++ = accumVecNorm.y;
+							*pDestNorm++ = accumVecNorm.z;
+						}
+					}
+				}
+				// Unlock source buffers
+				srcPosBuf.Unlock();
+				srcIdxBuf.Unlock();
+			
+				if (!weightsIndexesShareBuffer) {
+					srcWeightBuf.Unlock();
+				}
+
+				if (includeNormals && !srcPosNormShareBuffer) {
+					srcNormBuf.Unlock();
+				}
+			
+				// Unlock destination buffers
+				destPosBuf.Unlock();
+
+				if (includeNormals && !destPosNormShareBuffer) {
+					destNormBuf.Unlock();
+				}
+			} // unsafe
+		}
+
+		#endregion Static Methods
+
         #region Implementation of Resource
 
         /// <summary>
-        ///		
+        ///		Loads the mesh data.
         /// </summary>
         public override void Load() {
             // unload this first if it is already loaded
@@ -772,7 +1184,7 @@ namespace Axiom.Core {
                 if(ext != "mesh") {
                     data.Close();
 
-                    throw new Exception("Unsupported mesh format '" + ext + "'");
+                    throw new AxiomException("Unsupported mesh format '{0}'", ext);
                 }
 
                 // mesh loading stats
@@ -796,7 +1208,7 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        ///		
+        ///		Unloads the mesh data.
         /// </summary>
         public override void Unload() {
             subMeshList.Clear();
@@ -809,11 +1221,10 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        /// 
+        ///		Creates a new <see cref="SubMesh"/> and gives it a name.
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        // TODO: Create overload which takes no params and auto name the sub mesh
+        /// <param name="name">Name of the new <see cref="SubMesh"/>.</param>
+        /// <returns>A new <see cref="SubMesh"/> with this Mesh as its parent.</returns>
         public SubMesh CreateSubMesh(string name) {
             SubMesh subMesh = new SubMesh(name);
 
@@ -827,9 +1238,14 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        /// 
+        ///		Creates a new <see cref="SubMesh"/>.
         /// </summary>
-        /// <returns></returns>
+        /// <remarks>
+        ///		Method for manually creating geometry for the mesh.
+        ///		Note - use with extreme caution - you must be sure that
+        ///		you have set up the geometry properly.
+        /// </remarks>
+        /// <returns>A new SubMesh with this Mesh as its parent.</returns>
         public SubMesh CreateSubMesh() {
             string name = string.Format("{0}_SubMesh{1}", this.name, subMeshList.Count);
 
@@ -880,13 +1296,16 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        /// 
+        ///		Gets/Sets the bounding box for this mesh.
         /// </summary>
+        /// <remarks>
+        ///		Setting this property is required when building manual meshes now, because Axiom can no longer 
+        ///		update the bounds for you, because it cannot necessarily read vertex data back from 
+        ///		the vertex buffers which this mesh uses (they very well might be write-only, and even
+        ///		if they are not, reading data from a hardware buffer is a bottleneck).
+        /// </remarks>
         public AxisAlignedBox BoundingBox {
             get {
-                //if(updateBounds)
-                //	UpdateBounds();
-
                 // OPTIMIZE: Cloning to prevent direct modification
                 return (AxisAlignedBox)boundingBox.Clone();
             }
@@ -901,114 +1320,59 @@ namespace Axiom.Core {
             }
         }
 
-        /*internal void UpdateBounds()
-        {
-            Vector3 min = new Vector3();
-            Vector3 max = new Vector3();
-
-            bool first = true;
-            bool useShared = false;
-            int vert = 0;
-
-            // loop through sub meshes and get their bound info
-            for(int i = 0; i < meshList.Count; i++)
-            {
-                SubMesh subMesh = meshList[i];
-
-                if(subMesh.useSharedVertices)
-                {
-                    // skip this step and move on to use the shared vertex buffer
-                    useShared = true;
-                }
-                else
-                {
-                    for (vert = 0; vert < subMesh.vertexBuffer.numVertices * 3; vert += (3 + subMesh.vertexBuffer.vertexStride))
-                    {
-                        if (first || mesh.vertexBuffer.vertices[vert] < min.x)
-                        {
-                            min.x = mesh.vertexBuffer.vertices[vert];
-                        }
-                        if (first || mesh.vertexBuffer.vertices[vert+1] < min.y)
-                        {
-                            min.y = mesh.vertexBuffer.vertices[vert+1];
-                        }
-                        if (first || mesh.vertexBuffer.vertices[vert+2] < min.z)
-                        {
-                            min.z = mesh.vertexBuffer.vertices[vert+2];
-                        }
-                        if (first || mesh.vertexBuffer.vertices[vert] > max.x)
-                        {
-                            max.x = mesh.vertexBuffer.vertices[vert];
-                        }
-                        if (first || mesh.vertexBuffer.vertices[vert+1] > max.y)
-                        {
-                            max.y = mesh.vertexBuffer.vertices[vert+1];
-                        }
-                        if (first || mesh.vertexBuffer.vertices[vert+2] > max.z)
-                        {
-                            max.z = mesh.vertexBuffer.vertices[vert+2];
-                        }
-
-                        first = false;
-                    } // end for
-                } // end if
-
-                if(useShared)
-                {
-                    for (vert = 0; vert < sharedBuffer.numVertices * 3; vert += (3 + sharedBuffer.vertexStride))
-                    {
-                        if (first || sharedBuffer.vertices[vert] < min.x)
-                        {
-                            min.x = sharedBuffer.vertices[vert];
-                        }
-                        if (first || sharedBuffer.vertices[vert + 1] < min.y)
-                        {
-                            min.y = sharedBuffer.vertices[vert + 1];
-                        }
-                        if (first || sharedBuffer.vertices[vert + 2] < min.z)
-                        {
-                            min.z = sharedBuffer.vertices[vert + 2];
-                        }
-                        if (first || sharedBuffer.vertices[vert] > max.x)
-                        {
-                            max.x = sharedBuffer.vertices[vert];
-                        }
-                        if (first || sharedBuffer.vertices[vert + 1] > max.y)
-                        {
-                            max.y = sharedBuffer.vertices[vert + 1];
-                        }
-                        if (first || sharedBuffer.vertices[vert + 2] > max.z)
-                        {
-                            max.z = sharedBuffer.vertices[vert + 2];
-                        }
-
-                        first = false;
-                    }
-                }
-            } // end for
-
-            // set the extents of the bounding box
-            boundingBox.SetExtents(min, max);
-            updateBounds = false;
-        } */
-
         /// <summary>
-        /// 
+		///		Sets the policy for the vertex buffers to be used when loading this Mesh.
         /// </summary>
-        /// <param name="usage"></param>
-        /// <param name="useShadowBuffer"></param>
-        /// DOC
+        /// <remarks>
+        ///		By default, when loading the Mesh, static, write-only vertex and index buffers 
+        ///		will be used where possible in order to improve rendering performance. 
+        ///		However, such buffers
+        ///		cannot be manipulated on the fly by CPU code (although shader code can). If you
+        ///		wish to use the CPU to modify these buffers, you should call this method. Note,
+        ///		however, that it only takes effect after the Mesh has been reloaded. Note that you
+        ///		still have the option of manually repacing the buffers in this mesh with your
+        ///		own if you see fit too, in which case you don't need to call this method since it
+        ///		only affects buffers created by the mesh itself.
+        ///		<p/>
+        ///		You can define the approach to a Mesh by changing the default parameters to 
+        ///		<see cref="MeshManager.Load"/> if you wish; this means the Mesh is loaded with those options
+        ///		the first time instead of you having to reload the mesh after changing these options.
+        /// </remarks>
+		/// <param name="usage">The usage flags, which by default are <see cref="BufferUsage.StaticWriteOnly"/></param>
+        /// <param name="useShadowBuffer">
+        ///		If set to true, the vertex buffers will be created with a
+        ///		system memory shadow buffer. You should set this if you want to be able to
+        ///		read from the buffer, because reading from a hardware buffer is a no-no.
+        /// </param>
         public void SetVertexBufferPolicy(BufferUsage usage, bool useShadowBuffer) {
             vertexBufferUsage = usage;
             useVertexShadowBuffer = useShadowBuffer;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="usage"></param>
-        /// <param name="useShadowBuffer"></param>
-        /// DOC
+		/// <summary>
+		///		Sets the policy for the index buffers to be used when loading this Mesh.
+		/// </summary>
+		/// <remarks>
+		///		By default, when loading the Mesh, static, write-only vertex and index buffers 
+		///		will be used where possible in order to improve rendering performance. 
+		///		However, such buffers
+		///		cannot be manipulated on the fly by CPU code (although shader code can). If you
+		///		wish to use the CPU to modify these buffers, you should call this method. Note,
+		///		however, that it only takes effect after the Mesh has been reloaded. Note that you
+		///		still have the option of manually repacing the buffers in this mesh with your
+		///		own if you see fit too, in which case you don't need to call this method since it
+		///		only affects buffers created by the mesh itself.
+		///		<p/>
+		///		You can define the approach to a Mesh by changing the default parameters to 
+		///		<see cref="MeshManager.Load"/> if you wish; this means the Mesh is loaded with those options
+		///		the first time instead of you having to reload the mesh after changing these options.
+		/// </remarks>
+		/// <param name="usage">The usage flags, which by default are <see cref="BufferUsage.StaticWriteOnly"/></param>
+		/// <param name="useShadowBuffer">
+		///		If set to true, the index buffers will be created with a
+		///		system memory shadow buffer. You should set this if you want to be able to
+		///		read from the buffer, because reading from a hardware buffer is a no-no.
+		/// </param>
         public void SetIndexBufferPolicy(BufferUsage usage, bool useShadowBuffer) {
             indexBufferUsage = usage;
             useIndexShadowBuffer = useShadowBuffer;
