@@ -72,8 +72,8 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         ///     Default constructor.
         /// </summary>
 		public Compiler2Pass() {
-            tokenInstructions.Capacity = 100;
-            constants.Capacity = 80;
+            //tokenInstructions.Capacity = 100;
+            //constants.Capacity = 80;
 
             activeContexts = 0xffffffff;
 		}
@@ -95,7 +95,6 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             // scan through Source string and build a token list using TokenInstructions
             // this is a simple brute force lexical scanner/analyzer that also parses the formed
             // token for proper semantics and context in one pass
-
             currentLine = 1;
             charPos = 0;
 
@@ -110,6 +109,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             // assume RootRulePath has pointer to rules so start at index + 1 for first rule path
             // first rule token would be a rule definition so skip over it
             bool passed = ProcessRulePath(0);
+
             // if a symbol in source still exists then the end of source was not reached and there was a problem some where
             if(PositionToNextSymbol()) {
                 passed = false;
@@ -147,22 +147,33 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
             int currPos = charPos;
             string floatString = "";
+            bool firstNonSpace = false;
 
             char c = source[currPos];
-
-            while(Char.IsNumber(c) || c == '.' || c == '-') {
-                floatString += c;
-                c = source[++currPos];
-            }
 
             // have the out param at least set to 0
             val = 0.0f;
             length = 0;
 
+            while(Char.IsNumber(c) || c == '.' || c == '-' || c == ' ') {
+                if(c != ' ' && !firstNonSpace) {
+                    firstNonSpace = true;
+                }
+
+                if(c == ' ' && firstNonSpace) {
+                    break;
+                }
+                else {
+                    length++;
+                }
+
+                floatString += c;
+                c = source[++currPos];
+            }
+
             if(charPos != currPos) {
                 val = float.Parse(floatString);
                 valueFound = true;
-                length = currPos - charPos + 1;
             }
 
             return valueFound;
@@ -259,7 +270,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             bool endFound = false;
 
             // keep following rulepath until the end is reached
-            while (endFound == false) {
+            while (!endFound) {
                 switch (rootRulePath[rulePathIdx].operation) {
 
                     case OperationType.And:
@@ -271,9 +282,9 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
                     case OperationType.Or:
                         // only validate if the previous rule failed
-                        if (passed == false) {
+                        if (!passed) {
                             // clear previous tokens from entry and try again
-                            tokenInstructions.Capacity = tokenContainerOldSize;
+                            tokenInstructions.Resize(tokenContainerOldSize);
                             passed = ValidateToken(rulePathIdx, activeNTTRule);
                         }
                         else { 
@@ -310,13 +321,14 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
                     case OperationType.End:
                         // end of rule found so time to return
                         endFound = true;
-                        if(passed == false) {
+
+                        if(!passed) {
                             // the rule did not validate so get rid of tokens decoded
                             // roll back the token container end position to what it was when rule started
                             // this will get rid of all tokens that had been pushed on the container while
                             // trying to validating this rule
-                            tokenInstructions.Capacity = tokenContainerOldSize;
-                            constants.Capacity = oldConstantsSize;
+                            tokenInstructions.Resize(tokenContainerOldSize);
+                            constants.Resize(oldConstantsSize);
                             charPos = oldCharPos;
                             currentLine = oldLinePos;
                         }
@@ -375,6 +387,10 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         ///     Find the end of line marker and move past it.
         /// </summary>
         protected void SkipEndOfLine() {
+            if(charPos == endOfSource) {
+                return;
+            }
+
             if ((source[charPos] == '\n') || (source[charPos] == '\r')) {
                 currentLine++;
                 charPos++;
@@ -389,6 +405,10 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         ///     Skip all the whitespace which includes spaces and tabs.
         /// </summary>
         protected void SkipWhitespace() {
+            if(charPos == endOfSource) {
+                return;
+            }
+
             // FIX - this method kinda slow
             while((source[charPos] == ' ') || (source[charPos] == '\t')) {
                 charPos++; // find first non white space character

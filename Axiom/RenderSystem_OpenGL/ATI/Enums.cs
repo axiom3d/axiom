@@ -43,18 +43,12 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
     /// </summary>
     [Flags]
     public enum ContextKeyPattern {
-        PS_BASE,
-        PS_1_1,
-        PS_1_2,
-        PS_1_3,
-        PS_1_4,
+        PS_BASE = 0x1,
+        PS_1_1  = 0x2,
+        PS_1_2  = 0x4,
+        PS_1_3  = 0x8,
+        PS_1_4  = 0x10,
         PS_1_4_BASE = PS_BASE + PS_1_4
-    }
-
-    public enum RWAflags {
-        None = 0, 
-        Read = 1, 
-        Write= 2
     }
 
     public enum MachineInstruction {

@@ -20,13 +20,16 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         protected override void LoadFromSource() {
             PixelShader assembler = new PixelShader();
 
-            bool error = false;
+            bool testError = assembler.RunTests();
+
+            bool error = !assembler.Compile(source);
 
             if(!error) {
                 Ext.glBindFragmentShaderATI(programId);
                 Ext.glBeginFragmentShaderATI();
 
-                // TODO: Compile
+                // Compile and issue shader commands
+                error = !assembler.BindAllMachineInstToFragmentShader();
 
                 Ext.glEndFragmentShaderATI();
             }

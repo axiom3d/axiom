@@ -360,6 +360,14 @@ namespace Axiom.RenderSystems.OpenGL {
         private static IntPtr beginFragmentShaderATIptr;
         private static IntPtr endFragmentShaderATIptr;
         private static IntPtr setFragmentShaderConstantATIptr;
+        private static IntPtr colorFragmentOp1ATIptr;
+        private static IntPtr colorFragmentOp2ATIptr;
+        private static IntPtr colorFragmentOp3ATIptr;
+        private static IntPtr alphaFragmentOp1ATIptr;
+        private static IntPtr alphaFragmentOp2ATIptr;
+        private static IntPtr alphaFragmentOp3ATIptr;
+        private static IntPtr passTexCoordATIptr;
+        private static IntPtr sampleMapATIptr;
 
         public static int glGenFragmentShadersATI(int range) {
             return Gl.glGenFragmentShadersATI(genFragmentShadersATIptr, range);
@@ -383,6 +391,38 @@ namespace Axiom.RenderSystems.OpenGL {
 
         public static void glSetFragmentShaderConstantATI(int index, float[] values) {
             Gl.glSetFragmentShaderConstantATI(setFragmentShaderConstantATIptr, index, values);
+        }
+
+        public static void glColorFragmentOp1ATI(int op, int dst, int dstMask, int dstMod, int arg1, int arg1Rep, int arg1Mod) {
+            Gl.glColorFragmentOp1ATI(colorFragmentOp1ATIptr, op, dst, dstMask, dstMod, arg1, arg1Rep, arg1Mod);
+        }
+
+        public static void glColorFragmentOp2ATI(int op, int dst, int dstMask, int dstMod, int arg1, int arg1Rep, int arg1Mod, int arg2, int arg2Rep, int arg2Mod) {
+            Gl.glColorFragmentOp2ATI(colorFragmentOp2ATIptr, op, dst, dstMask, dstMod, arg1, arg1Rep, arg1Mod, arg2, arg2Rep, arg2Mod);
+        }
+
+        public static void glColorFragmentOp3ATI(int op, int dst, int dstMask, int dstMod, int arg1, int arg1Rep, int arg1Mod, int arg2, int arg2Rep, int arg2Mod, int arg3, int arg3Rep, int arg3Mod) {
+            Gl.glColorFragmentOp3ATI(colorFragmentOp3ATIptr, op, dst, dstMask, dstMod, arg1, arg1Rep, arg1Mod, arg2, arg2Rep, arg2Mod, arg3, arg3Rep, arg3Mod);
+        }
+
+        public static void glAlphaFragmentOp1ATI(int op, int dst, int dstMod, int arg1, int arg1Rep, int arg1Mod) {
+            Gl.glAlphaFragmentOp1ATI(alphaFragmentOp1ATIptr, op, dst, dstMod, arg1, arg1Rep, arg1Mod);
+        }
+
+        public static void glAlphaFragmentOp2ATI(int op, int dst, int dstMod, int arg1, int arg1Rep, int arg1Mod, int arg2, int arg2Rep, int arg2Mod) {
+            Gl.glAlphaFragmentOp2ATI(alphaFragmentOp2ATIptr, op, dst, dstMod, arg1, arg1Rep, arg1Mod, arg2, arg2Rep, arg2Mod);
+        }
+
+        public static void glAlphaFragmentOp3ATI(int op, int dst, int dstMod, int arg1, int arg1Rep, int arg1Mod, int arg2, int arg2Rep, int arg2Mod, int arg3, int arg3Rep, int arg3Mod) {
+            Gl.glAlphaFragmentOp3ATI(alphaFragmentOp3ATIptr, op, dst, dstMod, arg1, arg1Rep, arg1Mod, arg2, arg2Rep, arg2Mod, arg3, arg3Rep, arg3Mod);
+        }
+
+        public static void glPassTexCoordATI(int dst, int coord, int swizzle) {
+            Gl.glPassTexCoordATI(passTexCoordATIptr, dst, coord, swizzle);
+        }
+
+        public static void glSampleMapATI(int dst, int interp, int swizzle) {
+            Gl.glSampleMapATI(sampleMapATIptr, dst, interp, swizzle);
         }
 
         #endregion GL_ATI_fragment_shader
@@ -482,6 +522,14 @@ namespace Axiom.RenderSystems.OpenGL {
             beginFragmentShaderATIptr = Wgl.wglGetProcAddress("glBeginFragmentShaderATI");
             endFragmentShaderATIptr = Wgl.wglGetProcAddress("glEndFragmentShaderATI");
             setFragmentShaderConstantATIptr = Wgl.wglGetProcAddress("glSetFragmentShaderConstantATI");
+            colorFragmentOp1ATIptr = Wgl.wglGetProcAddress("glColorFragmentOp1ATI");
+            colorFragmentOp2ATIptr = Wgl.wglGetProcAddress("glColorFragmentOp2ATI");
+            colorFragmentOp3ATIptr = Wgl.wglGetProcAddress("glColorFragmentOp3ATI");
+            alphaFragmentOp1ATIptr = Wgl.wglGetProcAddress("glAlphaFragmentOp1ATI");
+            alphaFragmentOp2ATIptr = Wgl.wglGetProcAddress("glAlphaFragmentOp2ATI");
+            alphaFragmentOp3ATIptr = Wgl.wglGetProcAddress("glAlphaFragmentOp3ATI");
+            passTexCoordATIptr = Wgl.wglGetProcAddress("glPassTexCoordATI");
+            sampleMapATIptr = Wgl.wglGetProcAddress("glSampleMapATI");
 
             // GL_NV_register_combiner
             combinerStageParameterfvNVptr = Wgl.wglGetProcAddress("glCombinerStageParameterfvNV");
