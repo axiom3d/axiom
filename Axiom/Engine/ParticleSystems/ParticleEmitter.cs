@@ -613,6 +613,13 @@ namespace Axiom.ParticleSystems {
             emitter.Angle = float.Parse(values[0]);
         }
 
+        [AttributeParser("position", EMITTER)]
+        public static void ParsePosition(string[] values, params object[] objects) {
+            ParticleEmitter emitter = objects[0] as ParticleEmitter;
+
+            emitter.Position = ParseHelper.ParseVector3(values);
+        }
+
         [AttributeParser("emission_rate", EMITTER)]
         public static void ParseEmissionRate(string[] values, params object[] objects) {
             ParticleEmitter emitter = objects[0] as ParticleEmitter;
@@ -625,6 +632,20 @@ namespace Axiom.ParticleSystems {
             ParticleEmitter emitter = objects[0] as ParticleEmitter;
 
             emitter.TimeToLive = float.Parse(values[0]);
+        }
+
+        [AttributeParser("time_to_live_min", EMITTER)]
+        public static void ParseTTLMin(string[] values, params object[] objects) {
+            ParticleEmitter emitter = objects[0] as ParticleEmitter;
+
+            emitter.MinTimeToLive = float.Parse(values[0]);
+        }
+
+        [AttributeParser("time_to_live_max", EMITTER)]
+        public static void ParseTTLMax(string[] values, params object[] objects) {
+            ParticleEmitter emitter = objects[0] as ParticleEmitter;
+
+            emitter.MaxTimeToLive = float.Parse(values[0]);
         }
 
         [AttributeParser("direction", EMITTER)]
@@ -653,6 +674,48 @@ namespace Axiom.ParticleSystems {
             ParticleEmitter emitter = objects[0] as ParticleEmitter;
 
             emitter.MaxParticleVelocity = float.Parse(values[0]);
+        }
+
+        [AttributeParser("duration", EMITTER)]
+        public static void ParseDuration(string[] values, params object[] objects) {
+            ParticleEmitter emitter = objects[0] as ParticleEmitter;
+
+            emitter.Duration = float.Parse(values[0]);
+        }
+
+        [AttributeParser("duration_min", EMITTER)]
+        public static void ParseDurationMin(string[] values, params object[] objects) {
+            ParticleEmitter emitter = objects[0] as ParticleEmitter;
+
+            emitter.MinDuration = float.Parse(values[0]);
+        }
+
+        [AttributeParser("duration_max", EMITTER)]
+        public static void ParseDirectionMax(string[] values, params object[] objects) {
+            ParticleEmitter emitter = objects[0] as ParticleEmitter;
+
+            emitter.MaxDuration = float.Parse(values[0]);
+        }
+
+        [AttributeParser("repeat_delay", EMITTER)]
+        public static void ParseRepeatDelay(string[] values, params object[] objects) {
+            ParticleEmitter emitter = objects[0] as ParticleEmitter;
+
+            emitter.RepeatDelay = float.Parse(values[0]);
+        }
+
+        [AttributeParser("repeat_delay_min", EMITTER)]
+        public static void ParseRepeatDelayMin(string[] values, params object[] objects) {
+            ParticleEmitter emitter = objects[0] as ParticleEmitter;
+
+            emitter.MinRepeatDelay = float.Parse(values[0]);
+        }
+
+        [AttributeParser("repeat_delay_max", EMITTER)]
+        public static void ParseRepeatDelayMax(string[] values, params object[] objects) {
+            ParticleEmitter emitter = objects[0] as ParticleEmitter;
+
+            emitter.MaxRepeatDelay = float.Parse(values[0]);
         }
 
         [AttributeParser("color_range_start", EMITTER)]
