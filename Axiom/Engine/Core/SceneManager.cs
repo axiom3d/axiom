@@ -794,7 +794,7 @@ namespace Axiom.Core {
                 if(skyBoxNode == null)
                     skyBoxNode = CreateSceneNode("SkyBoxNode");
                 else
-                    skyBoxNode.Objects.Clear();
+                    skyBoxNode.DetachAllObjects();
 	
                 MaterialManager materialMgr = MaterialManager.Instance;
 
@@ -828,7 +828,7 @@ namespace Axiom.Core {
 
                     skyBoxEntities[i].MaterialName = boxMaterial.Name;
 
-                    skyBoxNode.Objects.Add(skyBoxEntities[i]);
+                    skyBoxNode.AttachObject(skyBoxEntities[i]);
                 } // for
             }
         }
@@ -1388,10 +1388,10 @@ namespace Axiom.Core {
                 if(skyPlaneNode == null)
                     skyPlaneNode = CreateSceneNode(meshName + "Node");
                 else
-                    skyPlaneNode.Objects.Clear();
+                    skyPlaneNode.DetachAllObjects();
 
                 // attach the skyplane to the new node
-                skyPlaneNode.Objects.Add(skyPlaneEntity);
+                skyPlaneNode.AttachObject(skyPlaneEntity);
             }
         }
 

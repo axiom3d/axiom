@@ -74,7 +74,7 @@ namespace Demos {
             Entity ogre = sceneMgr.CreateEntity("OgreHead", "ogrehead.mesh");
 
             // attach the ogre to the scene
-            sceneMgr.RootSceneNode.Objects.Add(ogre);
+            sceneMgr.RootSceneNode.AttachObject(ogre);
 
             // create nodes for the billboard sets
             redYellowLightsNode = (SceneNode)sceneMgr.RootSceneNode.CreateChild();
@@ -83,11 +83,11 @@ namespace Demos {
             // create a billboard set for creating billboards
             redYellowLights = new BillboardSet("RedYellowLights", 5);
             redYellowLights.MaterialName = "Particles/Flare";
-            redYellowLightsNode.Objects.Add(redYellowLights);
+            redYellowLightsNode.AttachObject(redYellowLights);
 
             greenBlueLights = new BillboardSet("GreenBlueLights", 5);
             greenBlueLights.MaterialName = "Particles/Flare";
-            greenBlueLightsNode.Objects.Add(greenBlueLights);
+            greenBlueLightsNode.AttachObject(greenBlueLights);
 
             // red light billboard in off set
             Vector3 redLightPos = new Vector3(78, -8, -70);
@@ -109,25 +109,25 @@ namespace Demos {
             redLight = sceneMgr.CreateLight("RedLight");
             redLight.Position = redLightPos;
             redLight.Diffuse = ColorEx.FromColor(Color.Black);
-            redYellowLightsNode.Objects.Add(redLight);
+            redYellowLightsNode.AttachObject(redLight);
 
             // yellow light in off state
             yellowLight = sceneMgr.CreateLight("YellowLight");
             yellowLight.Position = yellowLightPos;
             yellowLight.Diffuse = ColorEx.FromColor(Color.Black);
-            redYellowLightsNode.Objects.Add(yellowLight);
+            redYellowLightsNode.AttachObject(yellowLight);
 
             // green light in off state
             greenLight = sceneMgr.CreateLight("GreenLight");
             greenLight.Position = greenLightPos;
             greenLight.Diffuse = ColorEx.FromColor(Color.Black);
-            greenBlueLightsNode.Objects.Add(greenLight);
+            greenBlueLightsNode.AttachObject(greenLight);
 
             // blue light in off state
             blueLight = sceneMgr.CreateLight("BlueLight");
             blueLight.Position = blueLightPos;
             blueLight.Diffuse = ColorEx.FromColor(Color.Black);
-            greenBlueLightsNode.Objects.Add(blueLight);
+            greenBlueLightsNode.AttachObject(blueLight);
 
             // create controller function
             redLightFlasher = 

@@ -53,11 +53,11 @@ namespace Demos {
 
             // create a scene node for the entity and attach the entity
             SceneNode headNode = (SceneNode)sceneMgr.RootSceneNode.CreateChild();
-            headNode.Objects.Add(ogreHead);
+            headNode.AttachObject(ogreHead);
 
             // create a cool glowing green particle system
             ParticleSystem greenyNimbus = ParticleSystemManager.Instance.CreateSystem("GreenyNimbus", "ParticleSystems/GreenyNimbus");
-            ((SceneNode)sceneMgr.RootSceneNode.CreateChild()).Objects.Add(greenyNimbus);
+            ((SceneNode)sceneMgr.RootSceneNode.CreateChild()).AttachObject(greenyNimbus);
 
             // shared node for the 2 fountains
             fountainNode = (SceneNode)sceneMgr.RootSceneNode.CreateChild();
@@ -67,18 +67,18 @@ namespace Demos {
             SceneNode node = (SceneNode)fountainNode.CreateChild();
             node.Translate(new Vector3(200, -100, 0));
             node.Rotate(Vector3.UnitZ, 20);
-            node.Objects.Add(fountain1);
+            node.AttachObject(fountain1);
 
             // create the second fountain
             ParticleSystem fountain2 = ParticleSystemManager.Instance.CreateSystem("Fountain2", "ParticleSystems/Fountain");
             node = (SceneNode)fountainNode.CreateChild();
             node.Translate(new Vector3(-200, -100, 0));
             node.Rotate(Vector3.UnitZ, -20);
-            node.Objects.Add(fountain2);
+            node.AttachObject(fountain2);
 
             // create a cool glowing green particle system
             ParticleSystem rain = ParticleSystemManager.Instance.CreateSystem("Rain", "ParticleSystems/Rain");
-            ((SceneNode)sceneMgr.RootSceneNode.CreateChild(new Vector3(0, 1000, 0), Quaternion.Identity)).Objects.Add(rain);
+            ((SceneNode)sceneMgr.RootSceneNode.CreateChild(new Vector3(0, 1000, 0), Quaternion.Identity)).AttachObject(rain);
             rain.FastForward(5.0f);
         }
 

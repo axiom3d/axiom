@@ -69,18 +69,18 @@ namespace Demos {
             // create an entity to reference this mesh
             Entity planeEnt = sceneMgr.CreateEntity("Floor", "FloorPlane");
             planeEnt.MaterialName = "Example/RustySteel";
-            ((SceneNode)sceneMgr.RootSceneNode.CreateChild()).Objects.Add(planeEnt);
+            ((SceneNode)sceneMgr.RootSceneNode.CreateChild()).AttachObject(planeEnt);
 
             // create an entity to have follow the path
             Entity ogreHead = sceneMgr.CreateEntity("OgreHead", "ogrehead.mesh");
 
             // create a scene node for the entity and attach the entity
             headNode = (SceneNode)sceneMgr.RootSceneNode.CreateChild("OgreHeadNode", new Vector3(0, 50, 0), Quaternion.Identity);
-            headNode.Objects.Add(ogreHead);
+            headNode.AttachObject(ogreHead);
 
             // create a scene node to attach the camera to
             SceneNode camNode = (SceneNode)sceneMgr.RootSceneNode.CreateChild("CameraNode");
-            camNode.Objects.Add(camera);
+            camNode.AttachObject(camera);
 				
             // create new animation
             Animation anim = sceneMgr.CreateAnimation("OgreHeadAnimation", 10.0f);

@@ -55,7 +55,7 @@ namespace Axiom.Core {
     ///		aspect ratio as the camera to avoid distortion (unless you want it!).
     ///		<p/>
     ///		Note that a Camera can be attached to a SceneNode, using the method
-    ///		SceneNode.Objects.Add. If this is done the Camera will combine it's own
+    ///		SceneNode.AttachObject. If this is done the Camera will combine it's own
     ///		position/orientation settings with it's parent SceneNode. 
     ///		This is useful for implementing more complex Camera / object
     ///		relationships i.e. having a camera attached to a world object.

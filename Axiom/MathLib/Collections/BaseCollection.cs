@@ -14,7 +14,7 @@ namespace Axiom.MathLib.Collections {
         protected ArrayList objectList;
         //		protected int nextUniqueKeyCounter;
 		
-        const int INITIAL_CAPACITY = 20;
+        const int INITIAL_CAPACITY = 50;
 
         #region Constructors
 
@@ -41,9 +41,6 @@ namespace Axiom.MathLib.Collections {
         /// <param name="item"></param>
         protected void Add(object item) {
             objectList.Add(item);
-
-            // fire any event handlers that care when an item is added.
-            OnItemAdded();
         }
 
         /// <summary>
@@ -51,9 +48,6 @@ namespace Axiom.MathLib.Collections {
         /// </summary>
         public void Clear() {
             objectList.Clear();
-
-            // fire any event handlers that care when we are cleared
-            OnCleared();
         }
 
         /// <summary>
@@ -147,31 +141,5 @@ namespace Axiom.MathLib.Collections {
             get { return objectList[position]; }
         }
         #endregion
-
-        #region Events
-
-        /// <summary>An event that is fired when items are added to the collection. </summary>
-        public event System.EventHandler ItemAdded;
-        /// <summary>An event that is fired when the collection is cleared. </summary>
-        public event System.EventHandler Cleared;
-
-        /// <summary>
-        ///		Called to fire the ItemAdded event.
-        /// </summary>
-        public void OnItemAdded() {
-            if(ItemAdded != null)
-                ItemAdded(this, new EventArgs());
-        }
-
-        /// <summary>
-        ///  Called to fire the Cleared event
-        /// </summary>
-        public void OnCleared() {
-            if(Cleared != null)
-                Cleared(this, new EventArgs());
-        }
-
-        #endregion
-
     }
 }

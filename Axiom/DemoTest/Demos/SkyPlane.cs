@@ -58,7 +58,7 @@ namespace Demos {
 
             // stuff a dragon into the scene
             Entity entity = sceneMgr.CreateEntity("dragon", "dragon.mesh");
-            sceneMgr.RootSceneNode.Objects.Add(entity);
+            sceneMgr.RootSceneNode.AttachObject(entity);
         }
 
         #endregion
