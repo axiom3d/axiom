@@ -87,6 +87,8 @@ namespace Axiom.Core {
             queryFlags = unchecked(0xffffffff);
 
             worldAABB = AxisAlignedBox.Null;
+
+            worldBoundingSphere = new Sphere();
         }
 
         #endregion Constructors
