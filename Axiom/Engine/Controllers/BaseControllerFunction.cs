@@ -69,7 +69,7 @@ namespace Axiom.Controllers {
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        virtual protected float AdjustInput(float input) {
+        protected virtual float AdjustInput(float input) {
             if(useDeltaInput) {
                 deltaCount += input;
 

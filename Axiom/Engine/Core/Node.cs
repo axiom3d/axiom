@@ -737,7 +737,7 @@ namespace Axiom.Core {
         /// <summary>
         /// Gets the orientation of the node as derived from all parents.
         /// </summary>
-        internal virtual Quaternion DerivedOrientation {
+        public virtual Quaternion DerivedOrientation {
             get { 
                 if(needParentUpdate) {
                     UpdateFromParent();
@@ -751,7 +751,7 @@ namespace Axiom.Core {
         /// <summary>
         /// Gets the position of the node as derived from all parents.
         /// </summary>
-        internal virtual Vector3 DerivedPosition {
+        public virtual Vector3 DerivedPosition {
             get { 
                 if(needParentUpdate) {
                     UpdateFromParent();
@@ -765,7 +765,7 @@ namespace Axiom.Core {
         /// <summary>
         /// Gets the scaling factor of the node as derived from all parents.
         /// </summary>
-        internal virtual Vector3 DerivedScale {
+        public virtual Vector3 DerivedScale {
             get { 
                 return derivedScale; 
             }

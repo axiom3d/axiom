@@ -446,12 +446,12 @@ namespace Axiom.ParticleSystems {
         /// 
         /// </summary>
         /// <param name="line"></param>
-        /// <param name="?"></param>
+        /// <param name="emitter"></param>
         protected void ParseEmitterAttrib(string line, ParticleEmitter emitter) {
             string[] values = line.Split(new char[] {' '}, 2);
 
             if(!(emitter.SetParam(values[0], values[1]))) {
-                ParseHelper.LogParserError(values[0], emitter.Type, "Bad values.");
+                ParseHelper.LogParserError(values[0], emitter.Type, "Command not found.");
             }
         }
 
@@ -460,12 +460,12 @@ namespace Axiom.ParticleSystems {
         /// 
         /// </summary>
         /// <param name="line"></param>
-        /// <param name="?"></param>
+        /// <param name="affector"></param>
         protected void ParseAffectorAttrib(string line, ParticleAffector affector) {
             string[] values = line.Split(new char[] {' '}, 2);
 
             if(!(affector.SetParam(values[0], values[1]))) {
-                ParseHelper.LogParserError(values[0], affector.Type, "Bad values.");
+                ParseHelper.LogParserError(values[0], affector.Type, "Command not found.");
             }
         }
 

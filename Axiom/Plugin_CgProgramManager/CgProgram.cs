@@ -77,6 +77,9 @@ namespace Plugin_CgProgramManager
             }
         }
 
+        /// <summary>
+        ///    
+        /// </summary>
         protected override void LoadFromSource() {
             SelectProfile();
 
@@ -96,9 +99,11 @@ namespace Plugin_CgProgramManager
         ///    Create as assembler program from the compiled source supplied by the Cg compiler.
         /// </summary>
         protected override void CreateLowLevelImpl() {  
+            // retreive the 
+            string lowLevelSource = Cg.cgGetProgramString(cgProgram, Cg.CG_COMPILED_PROGRAM);
+
             // create a low-level program, with the same name as this one
-            assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString(name, "", type, selectedProfile);
-            assemblerProgram.Source = Cg.cgGetProgramString(cgProgram, Cg.CG_COMPILED_PROGRAM);
+            assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString(name, lowLevelSource, type, selectedProfile);
         }
 
         /// <summary>
@@ -184,7 +189,9 @@ namespace Plugin_CgProgramManager
         /// <param name="val">
         ///    Param value.
         /// </param>
-        public override void SetParam(string name, string val) {
+        public override bool SetParam(string name, string val) {
+            bool handled = true;
+
             switch(name) {
                 case "entry":
                     entry = val;
@@ -196,8 +203,11 @@ namespace Plugin_CgProgramManager
 
                 default:
                     Trace.WriteLine(string.Format("CgProgram: Unrecognized parameter '{0}'", name));
+                    handled = false;
                     break;
             }
+
+            return handled;
         }
 
         #endregion

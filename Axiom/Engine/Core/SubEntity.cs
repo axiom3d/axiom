@@ -48,15 +48,25 @@ namespace Axiom.Core {
     public class SubEntity : IRenderable {
         #region Member variables
 
-        /// <summary>Reference to the parent Entity.</summary>
+        /// <summary>
+        ///    Reference to the parent Entity.
+        /// </summary>
         private Entity parent;
-        /// <summary>Name of the material being used.</summary>
+        /// <summary>
+        ///    Name of the material being used.
+        /// </summary>
         private string materialName;
-        /// <summary>Reference to the material being used by this SubEntity.</summary>
+        /// <summary>
+        ///    Reference to the material being used by this SubEntity.
+        /// </summary>
         private Material material;
-        /// <summary>Reference to the subMesh that represents the geometry for this SubEntity.</summary>
+        /// <summary>
+        ///    Reference to the subMesh that represents the geometry for this SubEntity.
+        /// </summary>
         private SubMesh subMesh;
-        /// <summary>Detail to be used for rendering this sub entity.</summary>
+        /// <summary>
+        ///    Detail to be used for rendering this sub entity.
+        /// </summary>
         private SceneDetailLevel renderDetail;
 
         #endregion
@@ -89,7 +99,7 @@ namespace Axiom.Core {
                 material = MaterialManager.Instance.GetByName(materialName);
 
                 if(material == null) {
-                    System.Diagnostics.Trace.Write(
+                    System.Diagnostics.Trace.WriteLine(
                         string.Format("Cannot assign material '{0}' to SubEntity '{1}' because the material doesn't exist.", materialName, parent.Name));
 
                     // give it base white so we can continue
@@ -105,16 +115,24 @@ namespace Axiom.Core {
         ///		Gets/Sets the subMesh to be used for rendering this SubEntity.
         /// </summary>
         public SubMesh SubMesh {
-            get { return subMesh; }
-            set { subMesh = value; }
+            get { 
+                return subMesh; 
+            }
+            set { 
+                subMesh = value; 
+            }
         }
 
         /// <summary>
         ///		Gets/Sets the parent entity of this SubEntity.
         /// </summary>
         public Entity Parent {
-            get { return parent; }
-            set { parent = value; }
+            get { 
+                return parent; 
+            }
+            set { 
+                parent = value; 
+            }
         }
 
         #endregion
@@ -148,7 +166,6 @@ namespace Axiom.Core {
         /// 
         /// </summary>
         /// <param name="op"></param>
-        /// DOC
         public void GetRenderOperation(RenderOperation op) {
             subMesh.GetRenderOperation(op, parent.MeshLodIndex);
         }

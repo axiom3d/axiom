@@ -34,12 +34,14 @@ namespace Axiom.EventSystem {
     /// Summary description for EventProcessor.
     /// </summary>
     public class EventProcessor {
-        #region Member variables
+        #region Fields
 
-        /// <summary>Holds queued events in a FIFO manner.</summary>
+        /// <summary>
+        ///    Holds queued events in a FIFO manner.
+        /// </summary>
         Queue eventQueue = new Queue();
 
-        #endregion
+        #endregion Fields
 
         public EventProcessor() {
         }
@@ -59,6 +61,8 @@ namespace Axiom.EventSystem {
         }
 
         public void Stop() {
+            // add a frame listener so that we can process events each frame
+            Engine.Instance.FrameStarted -= new FrameEvent(RenderSystem_FrameStarted);
         }
 
         private bool RenderSystem_FrameStarted(object source, FrameEventArgs e) {

@@ -33,27 +33,35 @@ using Axiom.Core;
 using Axiom.MathLib;
 using Axiom.Graphics;
 using Axiom.Utility;
-
+using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
+using DX = Microsoft.DirectX;
+using D3D = Microsoft.DirectX.Direct3D;
 using FogMode = Axiom.Graphics.FogMode;
 using LightType = Axiom.Graphics.LightType;
 using StencilOperation = Axiom.Graphics.StencilOperation;
 using TextureFiltering = Axiom.Graphics.TextureFiltering;
-using Microsoft.DirectX;
-using DX = Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
-using D3D = Microsoft.DirectX.Direct3D;
 
 namespace RenderSystem_DirectX9 {
     /// <summary>
     /// DirectX9 Render System implementation.
     /// </summary>
     public class D3D9RenderSystem : RenderSystem, IPlugin {
+        /// <summary>
+        ///    Reference to the Direct3D device.
+        /// </summary>
         protected D3D.Device device;
+        /// <summary>
+        ///    Direct3D capability structure.
+        /// </summary>
         protected D3D.Caps d3dCaps;
-
-        /// <summary>Signifies whether the current frame being rendered is the first.</summary>
+        /// <summary>
+        ///    Signifies whether the current frame being rendered is the first.
+        /// </summary>
         protected bool isFirstFrame = true;
-        protected int numCurrentLights;
+        /// <summary>
+        ///    Number of streams used last frame, used to unbind any buffers not used during the current operation.
+        /// </summary>
         protected int numLastStreams;
 
         // stores texture stage info locally for convenience
@@ -1414,13 +1422,13 @@ namespace RenderSystem_DirectX9 {
                 caps.SetCap(Capabilities.FragmentPrograms);
                 gpuProgramMgr.PushSyntaxCode("ps_1_1");
 
-                if(fpMinor >= 2) {
+                if(fpMajor > 1 || fpMinor >= 2) {
                     gpuProgramMgr.PushSyntaxCode("ps_1_2");
                 }
-                if(fpMinor >= 3) {
+                if(fpMajor > 1 || fpMinor >= 3) {
                     gpuProgramMgr.PushSyntaxCode("ps_1_3");
                 }
-                if(fpMinor >= 4) {
+                if(fpMajor > 1 || fpMinor >= 4) {
                     gpuProgramMgr.PushSyntaxCode("ps_1_4");
                 }
             }

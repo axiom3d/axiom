@@ -159,6 +159,8 @@
     <File name=".\Graphics\AutoParamDataSource.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\IConfigurable.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Input\Enums.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Scripting\CommandAttribute.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Scripting\ICommand.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References>
     <Reference type="Project" refto="MathLib" localcopy="True" />

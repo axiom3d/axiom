@@ -34,6 +34,10 @@ namespace Axiom.Scripting {
     /// Summary description for GameObject.
     /// </summary>
     public abstract class GameObject {
+        /// <summary>
+        ///    Globally unique ID of this GameObject.
+        /// </summary>
+        protected int id;
         protected IRigidBody body;
         protected SceneObject sceneObject;
         protected SceneNode node;
@@ -43,12 +47,23 @@ namespace Axiom.Scripting {
             this.sceneMgr = sceneManager;
         }
 
+        public int ID {
+            get {
+                return id;
+            }
+            set {
+                id = value;
+            }
+        }
+
         public IRigidBody RigidBody {
             set { 
                 body = value; 
                 body.Position = node.Position;
             }
-            get { return body; }
+            get { 
+                return body; 
+            }
         }
 
         protected void NotifySceneObject(SceneObject sceneObject) {

@@ -182,7 +182,17 @@ namespace Axiom.MathLib {
         }
 
         /// <summary>
-        /// 
+        ///    Returns a random value between the specified min and max values.
+        /// </summary>
+        /// <param name="min">Minimum value.</param>
+        /// <param name="max">Maximum value.</param>
+        /// <returns>A random value in the range [min,max].</returns>
+        public static float RangeRandom(float min, float max) {
+            return (max - min) * UnitRandom() + min;
+        }
+
+        /// <summary>
+        ///    
         /// </summary>
         /// <returns></returns>
         public static float UnitRandom() {

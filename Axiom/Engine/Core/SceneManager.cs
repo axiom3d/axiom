@@ -628,7 +628,7 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="ray"></param>
         /// <returns></returns>
-        public RaySceneQuery CreateRaySceneQuery(Ray ray) {
+        public RaySceneQuery CreateRayQuery(Ray ray) {
             DefaultRaySceneQuery query = new DefaultRaySceneQuery(this, ray);
             // default to return all results
             query.QueryMask = 0xffffffff;
@@ -640,7 +640,7 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="ray"></param>
         /// <returns></returns>
-        public RaySceneQuery CreateRaySceneQuery(Ray ray, ulong mask) {
+        public RaySceneQuery CreateRayQuery(Ray ray, ulong mask) {
             DefaultRaySceneQuery query = new DefaultRaySceneQuery(this, ray);
             query.QueryMask = mask;
             return query;

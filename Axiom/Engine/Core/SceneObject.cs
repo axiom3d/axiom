@@ -85,6 +85,8 @@ namespace Axiom.Core {
             renderQueueID = RenderQueueGroupID.Main;
 
             queryFlags = unchecked(0xffffffff);
+
+            worldAABB = AxisAlignedBox.Null;
         }
 
         #endregion Constructors

@@ -142,8 +142,7 @@ namespace Axiom.ParticleSystems {
         protected float repeatDelayRemain;
 
         static float remainder = 0;
-        protected const string EMITTER = "Emitter";
-        protected Hashtable attribParsers = new Hashtable();
+        protected Hashtable commandTable = new Hashtable();
 
         #endregion Fields
 
@@ -164,7 +163,7 @@ namespace Axiom.ParticleSystems {
             colorRangeEnd = ColorEx.White;
             isEnabled = true;
 
-            RegisterParsers();
+            RegisterCommands();
         }
 
         #endregion
@@ -719,15 +718,11 @@ namespace Axiom.ParticleSystems {
         /// <param name="name"></param>
         /// <param name="value"></param>
         public bool SetParam(string name, string val) {
-            if(attribParsers.ContainsKey(name)) {
-                AttributeParserMethod parser =
-                    (AttributeParserMethod)attribParsers[name];
+            if(commandTable.ContainsKey(name)) {
+                ICommand command = (ICommand)commandTable[name];
 
-                // split up the param by spaces (i.e. for vectors, colors, etc)
-                string[] vals = val.Split(' ');
-
-                parser(vals, this);
-
+                command.Set(this, val);
+ 
                 return true;
             }
             else {
@@ -741,155 +736,311 @@ namespace Axiom.ParticleSystems {
         /// <remarks>
         ///		Methods meant to serve as attribute parsers should use a method attribute to 
         /// </remarks>
-        protected virtual void RegisterParsers() {
-            MethodInfo[] methods = this.GetType().GetMethods(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Static);
+        protected void RegisterCommands() {
+            Type baseType = this.GetType();
+
+            do {
+                Type[] types = baseType.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Public);
 			
-            // loop through all methods and look for ones marked with attributes
-            for(int i = 0; i < methods.Length; i++) {
-                // get the current method in the loop
-                MethodInfo method = methods[i];
+                // loop through all methods and look for ones marked with attributes
+                for(int i = 0; i < types.Length; i++) {
+                    // get the current method in the loop
+                    Type type = types[i];
 				
-                // see if the method should be used to parse one or more material attributes
-                AttributeParserAttribute[] parserAtts = 
-                    (AttributeParserAttribute[])method.GetCustomAttributes(typeof(AttributeParserAttribute), true);
+                    // get as many command attributes as there are on this type
+                    CommandAttribute[] commandAtts = 
+                        (CommandAttribute[])type.GetCustomAttributes(typeof(CommandAttribute), true);
 
-                // loop through each one we found and register its parser
-                for(int j = 0; j < parserAtts.Length; j++) {
-                    AttributeParserAttribute parserAtt = parserAtts[j];
+                    // loop through each one we found and register its command
+                    for(int j = 0; j < commandAtts.Length; j++) {
+                        CommandAttribute commandAtt = commandAtts[j];
 
-                    attribParsers.Add(parserAtt.Name, Delegate.CreateDelegate(typeof(AttributeParserMethod), method));
+                        commandTable.Add(commandAtt.Name, Activator.CreateInstance(type));
+                    } // for
                 } // for
-            } // for
-        }
 
-        [AttributeParser("angle", EMITTER)]
-        public static void ParseAngle(string[] values, params object[] objects) {
-            ParticleEmitter emitter = objects[0] as ParticleEmitter;
+                // get the base type of the current type
+                baseType = baseType.BaseType;
 
-            emitter.Angle = float.Parse(values[0]);
-        }
-
-        [AttributeParser("position", EMITTER)]
-        public static void ParsePosition(string[] values, params object[] objects) {
-            ParticleEmitter emitter = objects[0] as ParticleEmitter;
-
-            emitter.Position = ParseHelper.ParseVector3(values);
-        }
-
-        [AttributeParser("emission_rate", EMITTER)]
-        public static void ParseEmissionRate(string[] values, params object[] objects) {
-            ParticleEmitter emitter = objects[0] as ParticleEmitter;
-
-            emitter.EmissionRate = float.Parse(values[0]);
-        }
-
-        [AttributeParser("time_to_live", EMITTER)]
-        public static void ParseTTL(string[] values, params object[] objects) {
-            ParticleEmitter emitter = objects[0] as ParticleEmitter;
-
-            emitter.TimeToLive = float.Parse(values[0]);
-        }
-
-        [AttributeParser("time_to_live_min", EMITTER)]
-        public static void ParseTTLMin(string[] values, params object[] objects) {
-            ParticleEmitter emitter = objects[0] as ParticleEmitter;
-
-            emitter.MinTimeToLive = float.Parse(values[0]);
-        }
-
-        [AttributeParser("time_to_live_max", EMITTER)]
-        public static void ParseTTLMax(string[] values, params object[] objects) {
-            ParticleEmitter emitter = objects[0] as ParticleEmitter;
-
-            emitter.MaxTimeToLive = float.Parse(values[0]);
-        }
-
-        [AttributeParser("direction", EMITTER)]
-        public static void ParseDirection(string[] values, params object[] objects) {
-            ParticleEmitter emitter = objects[0] as ParticleEmitter;
-
-            emitter.Direction = ParseHelper.ParseVector3(values);
-        }
-
-        [AttributeParser("duration", EMITTER)]
-        public static void ParseDuration(string[] values, params object[] objects) {
-            ParticleEmitter emitter = objects[0] as ParticleEmitter;
-
-            emitter.Duration = float.Parse(values[0]);
-        }
-
-        [AttributeParser("duration_min", EMITTER)]
-        public static void ParseDurationMin(string[] values, params object[] objects) {
-            ParticleEmitter emitter = objects[0] as ParticleEmitter;
-
-            emitter.MinDuration = float.Parse(values[0]);
-        }
-
-        [AttributeParser("duration_max", EMITTER)]
-        public static void ParseDirectionMax(string[] values, params object[] objects) {
-            ParticleEmitter emitter = objects[0] as ParticleEmitter;
-
-            emitter.MaxDuration = float.Parse(values[0]);
-        }
-
-        [AttributeParser("repeat_delay", EMITTER)]
-        public static void ParseRepeatDelay(string[] values, params object[] objects) {
-            ParticleEmitter emitter = objects[0] as ParticleEmitter;
-
-            emitter.RepeatDelay = float.Parse(values[0]);
-        }
-
-        [AttributeParser("repeat_delay_min", EMITTER)]
-        public static void ParseRepeatDelayMin(string[] values, params object[] objects) {
-            ParticleEmitter emitter = objects[0] as ParticleEmitter;
-
-            emitter.MinRepeatDelay = float.Parse(values[0]);
-        }
-
-        [AttributeParser("repeat_delay_max", EMITTER)]
-        public static void ParseRepeatDelayMax(string[] values, params object[] objects) {
-            ParticleEmitter emitter = objects[0] as ParticleEmitter;
-
-            emitter.MaxRepeatDelay = float.Parse(values[0]);
-        }
-
-        [AttributeParser("velocity", EMITTER)]
-        public static void ParseVelocity(string[] values, params object[] objects) {
-            ParticleEmitter emitter = objects[0] as ParticleEmitter;
-
-            emitter.ParticleVelocity = float.Parse(values[0]);
-        }
-
-        [AttributeParser("velocity_min", EMITTER)]
-        public static void ParseVelocityMin(string[] values, params object[] objects) {
-            ParticleEmitter emitter = objects[0] as ParticleEmitter;
-
-            emitter.MinParticleVelocity = float.Parse(values[0]);
-        }
-
-        [AttributeParser("velocity_max", EMITTER)]
-        public static void ParseVelocityMax(string[] values, params object[] objects) {
-            ParticleEmitter emitter = objects[0] as ParticleEmitter;
-
-            emitter.MaxParticleVelocity = float.Parse(values[0]);
-        }
-
-        [AttributeParser("color_range_start", EMITTER)]
-        [AttributeParser("colour_range_start", EMITTER)]
-        public static void ParseColorRangeStart(string[] values, params object[] objects) {
-            ParticleEmitter emitter = objects[0] as ParticleEmitter;
-
-            emitter.ColorRangeStart = ParseHelper.ParseColor(values);
-        }
-
-        [AttributeParser("color_range_end", EMITTER)]
-        [AttributeParser("colour_range_end", EMITTER)]
-        public static void ParseColorRangeEnd(string[] values, params object[] objects) {
-            ParticleEmitter emitter = objects[0] as ParticleEmitter;
-
-            emitter.ColorRangeEnd = ParseHelper.ParseColor(values);
+            } while(baseType != typeof(object));
         }
 
         #endregion Script parser methods
+
+        #region Command definitions
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command("angle", "Angle to emit the particles at.", typeof(ParticleEmitter))]
+        class AngleCommand: ICommand {
+            public void Set(object target, string val) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.Angle = float.Parse(val);
+            }
+            public string Get(object target) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return emitter.Angle.ToString();
+            }
+        }
+
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command("position", "Particle emitter position.", typeof(ParticleEmitter))]
+        class PositionCommand : ICommand {
+            public void Set(object target, string val) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.Position = ParseHelper.ParseVector3(val);
+            }
+            public string Get(object target) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return ParseHelper.ToString(emitter.Position);
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command("emission_rate", "Rate of particle emission.", typeof(ParticleEmitter))]
+        class EmissionRateCommand: ICommand {
+            public void Set(object target, string val) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.EmissionRate = float.Parse(val);
+            }
+            public string Get(object target) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return emitter.EmissionRate.ToString();
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command("time_to_live", "Constant lifespan of a particle.", typeof(ParticleEmitter))]
+        class TtlCommand: ICommand {
+            public void Set(object target, string val) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.TimeToLive = float.Parse(val);
+            }
+            public string Get(object target) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return emitter.TimeToLive.ToString();
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command("time_to_live_min", "Minimum lifespan of a particle.", typeof(ParticleEmitter))]
+        class TtlMinCommand: ICommand {
+            public void Set(object target, string val) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.MinTimeToLive = float.Parse(val);
+            }
+            public string Get(object target) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return emitter.MinTimeToLive.ToString();
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command("time_to_live_max", "Maximum lifespan of a particle.", typeof(ParticleEmitter))]
+        class TtlMaxCommand: ICommand {
+            public void Set(object target, string val) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.MaxTimeToLive = float.Parse(val);
+            }
+            public string Get(object target) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return emitter.MaxTimeToLive.ToString();
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command("direction", "Particle direction.", typeof(ParticleEmitter))]
+        class DirectionCommand : ICommand {
+            public void Set(object target, string val) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.Direction = ParseHelper.ParseVector3(val);
+            }
+            public string Get(object target) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return ParseHelper.ToString(emitter.Direction);
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command("duration", "Constant duration.", typeof(ParticleEmitter))]
+        class DurationCommand : ICommand {
+            public void Set(object target, string val) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.Duration = float.Parse(val);
+            }
+            public string Get(object target) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return emitter.Duration.ToString();
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command("duration_min", "Minimum duration.", typeof(ParticleEmitter))]
+        class MinDurationCommand : ICommand {
+            public void Set(object target, string val) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.MinDuration = float.Parse(val);
+            }
+            public string Get(object target) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return emitter.MinDuration.ToString();
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command("duration_max", "Maximum duration.", typeof(ParticleEmitter))]
+        class MaxDurationCommand : ICommand {
+            public void Set(object target, string val) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.MaxDuration = float.Parse(val);
+            }
+            public string Get(object target) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return emitter.MaxDuration.ToString();
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command("repeat_delay", "Constant delay between repeating durations.", typeof(ParticleEmitter))]
+        class RepeatDelayCommand : ICommand {
+            public void Set(object target, string val) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.RepeatDelay = float.Parse(val);
+            }
+            public string Get(object target) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return emitter.RepeatDelay.ToString();
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command("repeat_delay_min", "Minimum delay between repeating durations.", typeof(ParticleEmitter))]
+        class RepeatDelayMinCommand : ICommand {
+            public void Set(object target, string val) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.MinRepeatDelay = float.Parse(val);
+            }
+            public string Get(object target) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return emitter.MinRepeatDelay.ToString();
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command("repeat_delay_max", "Maximum delay between repeating durations.", typeof(ParticleEmitter))]
+        class RepeatDelayMaxCommand : ICommand {
+            public void Set(object target, string val) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.MaxRepeatDelay = float.Parse(val);
+            }
+            public string Get(object target) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return emitter.MaxRepeatDelay.ToString();
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command("velocity", "Constant particle velocity.", typeof(ParticleEmitter))]
+        class VelocityCommand : ICommand {
+            public void Set(object target, string val) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.ParticleVelocity = float.Parse(val);
+            }
+            public string Get(object target) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return emitter.ParticleVelocity.ToString();
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command("velocity_min", "Minimum particle velocity.", typeof(ParticleEmitter))]
+        class VelocityMinCommand : ICommand {
+            public void Set(object target, string val) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.MinParticleVelocity = float.Parse(val);
+            }
+            public string Get(object target) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return emitter.MinParticleVelocity.ToString();
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command("velocity_max", "Maximum particle velocity.", typeof(ParticleEmitter))]
+        class VelocityMaxCommand : ICommand {
+            public void Set(object target, string val) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.MaxParticleVelocity = float.Parse(val);
+            }
+            public string Get(object target) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return emitter.MaxParticleVelocity.ToString();
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Command("colour_range_start", "Color range start.", typeof(ParticleEmitter))]
+        class ColorRangeStartCommand : ICommand {
+            public void Set(object target, string val) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.ColorRangeStart = ParseHelper.ParseColor(val);
+            }
+            public string Get(object target) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return ParseHelper.ToString(emitter.ColorRangeStart);
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Command("colour_range_end", "Color range end.", typeof(ParticleEmitter))]
+        class ColorRangeEndCommand : ICommand {
+            public void Set(object target, string val) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.ColorRangeEnd = ParseHelper.ParseColor(val);
+            }
+            public string Get(object target) {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return ParseHelper.ToString(emitter.ColorRangeEnd);
+            }
+        }
+
+        #endregion Command definitions
     }
 }

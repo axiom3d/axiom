@@ -130,6 +130,18 @@ namespace Axiom.Core
         }
 
         /// <summary>
+        ///    Gets/Sets the Ray being used for this query.
+        /// </summary>
+        public Ray Ray {
+            get {
+                return ray;
+            }
+            set {
+                ray = value;
+            }
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="source"></param>

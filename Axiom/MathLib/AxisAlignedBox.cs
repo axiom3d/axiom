@@ -225,15 +225,25 @@ namespace Axiom.MathLib {
         ///		Gets/Sets the value of whether this box is null (i.e. not dimensions, etc).
         /// </summary>
         public bool IsNull {
-            get { return isNull; }
-            set { isNull = value; }
+            get { 
+                return isNull; 
+            }
+            set { 
+                isNull = value; 
+            }
         }
 
         /// <summary>
         ///		Returns a null box
         /// </summary>
         public static AxisAlignedBox Null {
-            get { return new AxisAlignedBox(); }
+            get { 
+                AxisAlignedBox nullBox = new AxisAlignedBox();
+                // make sure it is set to null
+                nullBox.IsNull = true;
+
+                return nullBox; 
+            }
         }
 
         #endregion

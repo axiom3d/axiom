@@ -34,14 +34,14 @@ namespace ParticleFX {
     /// Summary description for AreaEmitter.
     /// </summary>
     public abstract class AreaEmitter : ParticleEmitter {
-        #region Member variables
+        #region Fields
 
         protected Vector3 size = Vector3.Zero;
         protected Vector3 xRange;
         protected Vector3 yRange;
         protected Vector3 zRange;
 
-        #endregion
+        #endregion Fields
 
         public AreaEmitter() : base() { }
 
@@ -107,6 +107,5 @@ namespace ParticleFX {
         }
 
         #endregion
-
     }
 }

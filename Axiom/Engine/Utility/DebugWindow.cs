@@ -109,12 +109,16 @@ namespace Axiom.Utility
         }
 
         public override void Write(string message) {
-            debugText.Text += message;
+            if(!debugText.IsDisposed) {
+                debugText.Text += message;
+            }
         }
 
         public override void WriteLine(string message) {
-            debugText.Text += "\r\n" + message;
-            debugText.SelectionStart = debugText.Text.Length;
+            if(!debugText.IsDisposed) {
+                debugText.Text += "\r\n" + message;
+                debugText.SelectionStart = debugText.Text.Length;
+            }
             //debugText.Focus();
         }
     }

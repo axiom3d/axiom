@@ -50,7 +50,7 @@ namespace Axiom.Animating {
         ///	 </summary>
         Average,
         /// <summary>
-        ///		Animations are applied bu calculating a weighted cumulative total.
+        ///		Animations are applied by calculating a weighted cumulative total.
         /// </summary>
         Cumulative
     }
