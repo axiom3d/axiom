@@ -226,7 +226,8 @@ namespace Axiom.Overlays {
             AttributeParserMethod parser = (AttributeParserMethod)attribParsers[param];
             
             // call the parser method, passing in an array of the split val param, and this element for the optional object
-            parser(val.Split(' '), this);
+            // MONO: As of 1.0.5, complains if the second param is not explicitly passed as an object array
+            parser(val.Split(' '), new object[] {this} );
 
             return true;
         }

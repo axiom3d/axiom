@@ -93,9 +93,13 @@ namespace Axiom.Serialization {
 				if(splitCmd.Length >= 2) {
 					cmd = splitCmd[1];
 				}
+				
+				MaterialAttributeParserHandler handler = (MaterialAttributeParserHandler)parsers[splitCmd[0]];
 
 				// Use parser, make sure we have 2 params before using splitCmd[1]
-				return ((MaterialAttributeParserHandler)parsers[splitCmd[0]])(cmd, scriptContext);
+                // MONO: Does not like mangling the above and below lines into a single line (frankly, i don't blame it, but csc takes it).
+                // i.e. (((MaterialAttributeParserHandler)parsers[splitCmd[0]]))(cmd, scriptContext);
+				return handler(cmd, scriptContext);
 			}
 			else {
 				// BAD command, BAD!!
@@ -170,7 +174,11 @@ namespace Axiom.Serialization {
 					// find attribute parser
 					if(programDefaultParamAttribParsers.ContainsKey(splitCmd[0])) {
 						string cmd = splitCmd.Length >= 2 ? splitCmd[1] : string.Empty;
-						((MaterialAttributeParserHandler)programDefaultParamAttribParsers[splitCmd[0]])(cmd, scriptContext);
+						
+						MaterialAttributeParserHandler handler = (MaterialAttributeParserHandler)programDefaultParamAttribParsers[splitCmd[0]];
+
+						// Use parser, make sure we have 2 params before using splitCmd[1]
+						handler(cmd, scriptContext);
 					}
 				}
 
@@ -323,8 +331,11 @@ namespace Axiom.Serialization {
 						// find attribute parser
 						if(programAttribParsers.ContainsKey(splitCmd[0])) {
 							string cmd = splitCmd.Length >= 2 ? splitCmd[1] : string.Empty;
+							
+							MaterialAttributeParserHandler handler = (MaterialAttributeParserHandler)programAttribParsers[splitCmd[0]];
 
-							return ((MaterialAttributeParserHandler)programAttribParsers[splitCmd[0]])(cmd, scriptContext);
+							// Use parser, make sure we have 2 params before using splitCmd[1]
+							return handler(cmd, scriptContext);
 						}
 						else {
 							// custom parameter, use original line
