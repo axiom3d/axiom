@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using System.Diagnostics;
 using Axiom.Collections;
 using Axiom.Core;
 
@@ -166,10 +167,10 @@ namespace Axiom.Animating {
         ///		in expensive reordering processing. Note that a KeyFrame at time index 0.0 is always created
         ///		for you, so you don't need to create this one, just access it using KeyFrames[0];
         /// </remarks>
-        /// <param name="time"></param>
-        /// <returns></returns>
+        /// <param name="time">Time within the animation at which this keyframe will lie.</param>
+        /// <returns>A new KeyFrame.</returns>
         public KeyFrame CreateKeyFrame(float time) {
-            KeyFrame keyFrame = new KeyFrame(time);
+            KeyFrame keyFrame = new KeyFrame(this, time);
 
 			if(time > maxKeyFrameTime || (time == 0 && keyFrameList.Count == 0)) {
 				keyFrameList.Add(keyFrame);
@@ -180,14 +181,15 @@ namespace Axiom.Animating {
 				int i = 0;
 				KeyFrame kf = keyFrameList[i];
 				
-				while(kf.Time > time && i != keyFrameList.Count) {
+				while(kf.Time < time && i != keyFrameList.Count) {
 					i++;
 				}
 
 				keyFrameList.Insert(i, kf);
 			}
 
-            isSplineRebuildNeeded = true;
+			// ensure a spline rebuild takes place
+            OnKeyFrameDataChanged();
 
             return keyFrame;
         }
@@ -208,7 +210,8 @@ namespace Axiom.Animating {
         ///		spherically linearly interpolated (slerp) for the most natural result.
         /// </returns>
         public KeyFrame GetInterpolatedKeyFrame(float time) {
-            KeyFrame result = new KeyFrame(time);
+			// note: this is an un-attached keyframe
+            KeyFrame result = new KeyFrame(null, time);
 
             KeyFrame k1, k2;
             ushort firstKeyIndex;
@@ -385,9 +388,40 @@ namespace Axiom.Animating {
             }
         }
 
+		/// <summary>
+		///		Removes all key frames from this animation track.
+		/// </summary>
+		public void RemoveAllKeyFrames() {
+			keyFrameList.Clear();
+
+			// ensure a spline rebuild takes place
+			OnKeyFrameDataChanged();
+		}
+
+		/// <summary>
+		///		Removes the keyframe at the specified index.
+		/// </summary>
+		/// <param name="index">Index of the keyframe to remove from this track.</param>
+		public void RemoveKeyFrame(int index) {
+			Debug.Assert(index < keyFrameList.Count, "Index of of bounds when removing a key frame.");
+
+			keyFrameList.RemoveAt(index);
+
+			// ensure a spline rebuild takes place
+			OnKeyFrameDataChanged();
+		}
+
         #endregion
 
-        #region Protected methods
+		#region Protected/Internal methods
+
+		/// <summary>
+		///		Called internally when keyframes belonging to this track are changed, in order to
+		///		trigger a rebuild of the animation splines.
+		/// </summary>
+		internal void OnKeyFrameDataChanged() {
+			isSplineRebuildNeeded = true;
+		}
 
         /// <summary>Used to rebuild the internal interpolation splines for translations, rotations, and scaling.</summary>
         protected void BuildInterpolationSplines() {
