@@ -563,7 +563,7 @@ namespace Axiom.Serialization {
 
 			FloatList lodDistances = new FloatList();
 
-			for(int i = 0; i < values.Length - 1; i++) {
+			for(int i = 0; i < values.Length; i++) {
 				lodDistances.Add(float.Parse(values[i]));
 			}
 

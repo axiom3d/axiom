@@ -157,6 +157,18 @@ namespace Axiom.Core {
 		///		List of shadow renderables for this entity.
 		/// </summary>
 		protected ShadowRenderableList shadowRenderables = new ShadowRenderableList();
+		/// <summary>
+		///		LOD bias factor, inverted for optimisation when calculating adjusted depth.
+		/// </summary>
+		protected float materialLodFactorInv;
+		/// <summary>
+		///		Index of minimum detail LOD (NB higher index is lower detail).
+		/// </summary>
+		protected int minMaterialLodIndex;
+		/// <summary>
+		///		Index of maximum detail LOD (NB lower index is higher detail).
+		/// </summary>
+		protected int maxMaterialLodIndex;
 
         #endregion Fields
 
@@ -194,6 +206,14 @@ namespace Axiom.Core {
             meshLodFactorInv = 1.0f;
             // Backwards, remember low value = high detail
             minMeshLodIndex = 99;
+			maxMeshLodIndex = 0;
+
+			// Material LOD default settings
+			materialLodFactorInv = 1.0f;
+			minMaterialLodIndex = 99;
+			maxMaterialLodIndex = 0;
+
+			// TODO: Check to set shadow casting (requires new methods)
         }
 
         #endregion
@@ -588,21 +608,41 @@ namespace Axiom.Core {
         public override void NotifyCurrentCamera(Camera camera) {
             if(parentNode != null) {
                 float squaredDepth = parentNode.GetSquaredViewDepth(camera);
-
+				
                 // Adjust this depth by the entity bias factor
-                squaredDepth = squaredDepth * meshLodFactorInv;
+                float temp = squaredDepth * meshLodFactorInv;
 
                 // Now adjust it by the camera bias
-                squaredDepth = squaredDepth * camera.InverseLodBias;
+                temp = temp * camera.InverseLodBias;
                 
                 // Get the index at this biased depth
-                meshLodIndex = mesh.GetLodIndexSquaredDepth(squaredDepth);
+                meshLodIndex = mesh.GetLodIndexSquaredDepth(temp);
                 
                 // Apply maximum detail restriction (remember lower = higher detail)
                 meshLodIndex = (int)MathUtil.Max(maxMeshLodIndex, meshLodIndex);
                 
                 // Apply minimum detail restriction (remember higher = lower detail)
                 meshLodIndex = (int)MathUtil.Min(minMeshLodIndex, meshLodIndex);
+
+				// now do material LOD
+				// adjust this depth by the entity bias factor
+				temp = squaredDepth * materialLodFactorInv;
+
+				// now adjust it by the camera bias
+				temp = temp * camera.InverseLodBias;
+
+				// apply the material LOD to all sub entities
+				for(int i = 0; i < subEntityList.Count; i++) {
+					// get the index at this biased depth
+					SubEntity subEnt = subEntityList[i];
+
+					int idx = subEnt.Material.GetLodIndexSquaredDepth(temp);
+
+					// Apply maximum detail restriction (remember lower = higher detail)
+					idx = (int)MathUtil.Max(maxMaterialLodIndex, idx);
+					// Apply minimum detail restriction (remember higher = lower detail)
+					subEnt.materialLodIndex = (int)MathUtil.Min(minMaterialLodIndex, idx);
+				}
             }
 
             // Notify child objects (tag points)

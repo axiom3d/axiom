@@ -33,15 +33,12 @@ using Axiom.Core;
 using T = Axiom.Collections.SceneQuerySceneObjectPair;
 // used to alias a key value in the code for easy copying and pasting.  Come on generics!!
 
-namespace Axiom.Collections 
-{
-	public class SceneQuerySceneObjectPair
-	{
+namespace Axiom.Collections {
+	public class SceneQuerySceneObjectPair {
 		public SceneObject first;
 		public SceneObject second;
 
-		public SceneQuerySceneObjectPair(SceneObject first, SceneObject second)
-		{
+		public SceneQuerySceneObjectPair(SceneObject first, SceneObject second) {
 			this.first = first;
 			this.second = second;
 		}
@@ -50,8 +47,7 @@ namespace Axiom.Collections
 	/// <summary>
 	/// Summary description for SceneQuerySceneObjectPairCollection.
 	/// </summary>
-	public class SceneQuerySceneObjectIntersectionList : AxiomCollection 
-	{
+	public class SceneQuerySceneObjectIntersectionList : AxiomCollection {
 		#region Constructors
 
 		/// <summary>
@@ -66,8 +62,7 @@ namespace Axiom.Collections
 		/// <summary>
 		///		Get/Set indexer that allows access to the collection by index.
 		/// </summary>
-		new public T this[int index] 
-		{
+		new public T this[int index] {
 			get { return (T)base[index]; }
 			set { base[index] = value; }
 		}
@@ -76,8 +71,7 @@ namespace Axiom.Collections
 		///		Adds an object to the collection.
 		/// </summary>
 		/// <param name="item"></param>
-		public void Add(T item) 
-		{
+		public void Add(T item) {
 			base.Add(item);
 		}
 		#endregion
