@@ -326,5 +326,39 @@ namespace RenderSystem_DirectX9 {
             return 0;
         }
 
+        /// <summary>
+        ///    Converts our CompareFunction enum to the D3D.Compare equivalent.
+        /// </summary>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        public static D3D.Compare ConvertEnum(CompareFunction func) {
+            switch(func) {
+                case CompareFunction.AlwaysFail:
+                    return D3D.Compare.Never;
+
+                case CompareFunction.AlwaysPass:
+                    return D3D.Compare.Always;
+
+                case CompareFunction.Equal:
+                    return D3D.Compare.Equal;
+
+                case CompareFunction.Greater:
+                    return D3D.Compare.Greater;
+
+                case CompareFunction.GreaterEqual:
+                    return D3D.Compare.GreaterEqual;
+
+                case CompareFunction.Less:
+                    return D3D.Compare.Less;
+
+                case CompareFunction.LessEqual:
+                    return D3D.Compare.LessEqual;
+
+                case CompareFunction.NotEqual:
+                    return D3D.Compare.NotEqual;
+            }
+
+            return 0;
+        }
     }
 }
