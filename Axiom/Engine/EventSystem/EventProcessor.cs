@@ -46,12 +46,6 @@ namespace Axiom.EventSystem {
         public EventProcessor() {
         }
 
-        public void RegisterKeyTarget(IKeyTarget target) {
-        }
-
-        public void RegisterMouseTarget(IMouseTarget target) {
-        }
-
         public void Initialize(RenderWindow window) {
         }
 

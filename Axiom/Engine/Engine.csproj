@@ -713,11 +713,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Gui\GuiControl.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Gui\GuiElement.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
