@@ -52,6 +52,7 @@ namespace Axiom.Utility {
         protected InputSystem input;
         protected Vector3 cameraVector = Vector3.Zero;
         protected float cameraScale;
+        protected bool showDebugOverlay = true;
         #endregion Protected Fields
 
         #region Constructors & Destructors
@@ -73,7 +74,7 @@ namespace Axiom.Utility {
             // show the config dialog
             if(engine.ShowConfigDialog()) {
                 window = engine.Initialize(true);
-                engine.ShowDebugOverlay(true);
+                engine.ShowDebugOverlay(showDebugOverlay);
                 return true;
             }
             else {
@@ -260,6 +261,11 @@ namespace Axiom.Utility {
 
             if(input.IsKeyPressed(Keys.B)) {
                 scene.ShowBoundingBoxes = !scene.ShowBoundingBoxes;
+            }
+
+            if(input.IsKeyPressed(Keys.F)) {
+                showDebugOverlay = !showDebugOverlay;
+                engine.ShowDebugOverlay(showDebugOverlay);
             }
 
             float cameraYaw = -input.RelativeMouseX * 0.13f;

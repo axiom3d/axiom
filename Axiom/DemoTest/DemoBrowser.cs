@@ -10,167 +10,173 @@ namespace Demos {
     /// <summary>
     /// Summary description for DemoBrowser.
     /// </summary>
-    public class DemoBrowser : System.Windows.Forms.Form {
-        private System.ComponentModel.IContainer components = null;
-        private System.Windows.Forms.Label lblInfo;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.ListView demoListView;
-        private System.Data.DataView demoView;
-        private System.Windows.Forms.GroupBox typeGroup;
-        private System.Windows.Forms.CheckBox checkBox3;
-
+    public class DemoBrowser : Form {
+        private IContainer components = null;
+        private Label lblShowTypes;
+        private Panel pnlDemoTypes;
+        private CheckBox chkDemos;
+        private CheckBox chkTutorials;
+        private CheckBox chkTools;
+        private LinkLabel lnkWebsite;
+        private DataView demoView;
         private DataTable demoTable = new DataTable("Demos");
+        private ListView lstDemos;
         private ImageList demoImageList = new ImageList();
+        private Label lblInfo;
 
         public DemoBrowser() {
-            //
-            // Required for Windows Form Designer support
-            //
             InitializeComponent();
-
         }
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        protected override void Dispose( bool disposing ) {
-            if( disposing ) {
+        protected override void Dispose(bool disposing) {
+            if(disposing) {
                 if(components != null) {
                     components.Dispose();
                 }
             }
-            base.Dispose( disposing );
+            base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent() {
-            System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(DemoBrowser));
-            this.demoListView = new System.Windows.Forms.ListView();
-            this.lblInfo = new System.Windows.Forms.Label();
-            this.typeGroup = new System.Windows.Forms.GroupBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.demoView = new System.Data.DataView();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.typeGroup.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.demoView)).BeginInit();
+            this.lstDemos = new ListView();
+            this.lblInfo = new Label();
+            this.chkTools = new CheckBox();
+            this.chkTutorials = new CheckBox();
+            this.chkDemos = new CheckBox();
+            this.demoView = new DataView();
+            this.lblShowTypes = new Label();
+            this.pnlDemoTypes = new Panel();
+            this.lnkWebsite = new LinkLabel();
+            ((ISupportInitialize)(this.demoView)).BeginInit();
+            this.pnlDemoTypes.SuspendLayout();
             this.SuspendLayout();
             // 
-            // demoListView
+            // lstDemos
             // 
-            this.demoListView.Activation = System.Windows.Forms.ItemActivation.OneClick;
-            this.demoListView.BackColor = System.Drawing.Color.Black;
-            this.demoListView.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-            this.demoListView.ForeColor = System.Drawing.Color.White;
-            this.demoListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.demoListView.Location = new System.Drawing.Point(128, 56);
-            this.demoListView.MultiSelect = false;
-            this.demoListView.Name = "demoListView";
-            this.demoListView.Size = new System.Drawing.Size(600, 288);
-            this.demoListView.TabIndex = 0;
-            this.demoListView.Click += new System.EventHandler(this.demoListView_Click);
-            this.demoListView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.demoListView_MouseMove);
+            this.lstDemos.Activation = ItemActivation.OneClick;
+            this.lstDemos.Anchor = ((AnchorStyles)(((AnchorStyles.Top | AnchorStyles.Bottom) | AnchorStyles.Right)));
+            this.lstDemos.BackColor = Color.FromArgb(((Byte)(25)), ((Byte)(35)), ((Byte)(75)));
+            this.lstDemos.BorderStyle = BorderStyle.None;
+            this.lstDemos.Font = new Font("Palatino Linotype", 10F, FontStyle.Bold, GraphicsUnit.Point, ((Byte)(0)));
+            this.lstDemos.ForeColor = Color.White;
+            this.lstDemos.HeaderStyle = ColumnHeaderStyle.None;
+            this.lstDemos.Location = new Point(104, 8);
+            this.lstDemos.MultiSelect = false;
+            this.lstDemos.Name = "lstDemos";
+            this.lstDemos.Size = new Size(584, 392);
+            this.lstDemos.TabIndex = 3;
+            this.lstDemos.Click += new EventHandler(lstDemos_Click);
+            this.lstDemos.MouseMove += new MouseEventHandler(lstDemos_MouseMove);
             // 
             // lblInfo
             // 
-            this.lblInfo.BackColor = System.Drawing.Color.White;
-            this.lblInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lblInfo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.lblInfo.ForeColor = System.Drawing.Color.Navy;
-            this.lblInfo.Location = new System.Drawing.Point(128, 0);
+            this.lblInfo.BackColor = Color.FromArgb(((Byte)(25)), ((Byte)(35)), ((Byte)(75)));
+            this.lblInfo.Dock = DockStyle.Bottom;
+            this.lblInfo.FlatStyle = FlatStyle.Flat;
+            this.lblInfo.Font = new Font("Palatino Linotype", 9F, FontStyle.Regular, GraphicsUnit.Point, ((Byte)(0)));
+            this.lblInfo.ForeColor = Color.White;
+            this.lblInfo.Location = new Point(0, 408);
             this.lblInfo.Name = "lblInfo";
-            this.lblInfo.Size = new System.Drawing.Size(600, 48);
-            this.lblInfo.TabIndex = 2;
+            this.lblInfo.Size = new Size(694, 40);
+            this.lblInfo.TabIndex = 4;
             this.lblInfo.Text = "Select a demo to run.  The description of each demo will appear here as you hover" +
                 " over them with the mouse.";
+            this.lblInfo.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // typeGroup
+            // chkTools
             // 
-            this.typeGroup.Controls.Add(this.checkBox3);
-            this.typeGroup.Controls.Add(this.checkBox2);
-            this.typeGroup.Controls.Add(this.checkBox1);
-            this.typeGroup.Location = new System.Drawing.Point(8, 56);
-            this.typeGroup.Name = "typeGroup";
-            this.typeGroup.Size = new System.Drawing.Size(112, 112);
-            this.typeGroup.TabIndex = 3;
-            this.typeGroup.TabStop = false;
-            this.typeGroup.Text = "Show";
+            this.chkTools.Cursor = Cursors.Hand;
+            this.chkTools.FlatStyle = FlatStyle.Flat;
+            this.chkTools.Location = new Point(8, 56);
+            this.chkTools.Name = "chkTools";
+            this.chkTools.Size = new Size(80, 24);
+            this.chkTools.TabIndex = 2;
+            this.chkTools.Text = "Tools";
+            this.chkTools.CheckedChanged += new EventHandler(this.typeGroup_CheckedChanged);
             // 
-            // checkBox2
+            // chkTutorials
             // 
-            this.checkBox2.Checked = true;
-            this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox2.Location = new System.Drawing.Point(16, 48);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(80, 24);
-            this.checkBox2.TabIndex = 1;
-            this.checkBox2.Text = "Tutorials";
-            this.checkBox2.CheckedChanged += new System.EventHandler(this.typeGroup_CheckedChanged);
+            this.chkTutorials.Checked = true;
+            this.chkTutorials.CheckState = CheckState.Checked;
+            this.chkTutorials.Cursor = Cursors.Hand;
+            this.chkTutorials.FlatStyle = FlatStyle.Flat;
+            this.chkTutorials.Location = new Point(8, 32);
+            this.chkTutorials.Name = "chkTutorials";
+            this.chkTutorials.Size = new Size(80, 24);
+            this.chkTutorials.TabIndex = 1;
+            this.chkTutorials.Text = "Tutorials";
+            this.chkTutorials.CheckedChanged += new EventHandler(this.typeGroup_CheckedChanged);
             // 
-            // checkBox1
+            // chkDemos
             // 
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(16, 24);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(64, 24);
-            this.checkBox1.TabIndex = 0;
-            this.checkBox1.Text = "Demos";
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.typeGroup_CheckedChanged);
+            this.chkDemos.Checked = true;
+            this.chkDemos.CheckState = CheckState.Checked;
+            this.chkDemos.Cursor = Cursors.Hand;
+            this.chkDemos.FlatStyle = FlatStyle.Flat;
+            this.chkDemos.Location = new Point(8, 8);
+            this.chkDemos.Name = "chkDemos";
+            this.chkDemos.Size = new Size(64, 24);
+            this.chkDemos.TabIndex = 0;
+            this.chkDemos.Text = "Demos";
+            this.chkDemos.CheckedChanged += new EventHandler(this.typeGroup_CheckedChanged);
             // 
-            // pictureBox1
+            // lblShowTypes
             // 
-            this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            //this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(8, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(112, 48);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 4;
-            this.pictureBox1.TabStop = false;
+            this.lblShowTypes.FlatStyle = FlatStyle.Flat;
+            this.lblShowTypes.Location = new Point(8, 8);
+            this.lblShowTypes.Name = "lblShowTypes";
+            this.lblShowTypes.Size = new Size(80, 23);
+            this.lblShowTypes.TabIndex = 5;
+            this.lblShowTypes.Text = "Show Types:";
             // 
-            // checkBox3
+            // pnlDemoTypes
             // 
-            this.checkBox3.Location = new System.Drawing.Point(16, 72);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(80, 24);
-            this.checkBox3.TabIndex = 2;
-            this.checkBox3.Text = "Tools";
-            this.checkBox3.CheckedChanged += new System.EventHandler(this.typeGroup_CheckedChanged);
+            this.pnlDemoTypes.Controls.Add(this.chkTools);
+            this.pnlDemoTypes.Controls.Add(this.chkTutorials);
+            this.pnlDemoTypes.Controls.Add(this.chkDemos);
+            this.pnlDemoTypes.Location = new Point(16, 24);
+            this.pnlDemoTypes.Name = "pnlDemoTypes";
+            this.pnlDemoTypes.Size = new Size(80, 88);
+            this.pnlDemoTypes.TabIndex = 6;
+            // 
+            // lnkWebsite
+            // 
+            this.lnkWebsite.ActiveLinkColor = Color.White;
+            this.lnkWebsite.LinkColor = Color.White;
+            this.lnkWebsite.Location = new Point(8, 360);
+            this.lnkWebsite.Name = "lnkWebsite";
+            this.lnkWebsite.Size = new Size(88, 23);
+            this.lnkWebsite.TabIndex = 7;
+            this.lnkWebsite.TabStop = true;
+            this.lnkWebsite.Text = "Axiom Website";
+            this.lnkWebsite.VisitedLinkColor = Color.White;
+            this.lnkWebsite.LinkClicked += new LinkLabelLinkClickedEventHandler(this.lnkWebsite_LinkClicked);
             // 
             // DemoBrowser
             // 
-            this.AutoScaleBaseSize = new System.Drawing.Size(5, 15);
-            this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(730, 346);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.typeGroup);
+            this.AutoScaleBaseSize = new Size(5, 15);
+            this.BackColor = Color.FromArgb(((Byte)(25)), ((Byte)(35)), ((Byte)(75)));
+            this.ClientSize = new Size(694, 448);
+            this.Controls.Add(this.lnkWebsite);
+            this.Controls.Add(this.pnlDemoTypes);
             this.Controls.Add(this.lblInfo);
-            this.Controls.Add(this.demoListView);
-            this.Font = new System.Drawing.Font("Palatino Linotype", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-            this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Controls.Add(this.lstDemos);
+            this.Controls.Add(this.lblShowTypes);
+            this.Font = new Font("Palatino Linotype", 8.25F, FontStyle.Regular, GraphicsUnit.Point, ((Byte)(0)));
+            this.ForeColor = SystemColors.ControlLightLight;
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.Name = "DemoBrowser";
             this.Text = "Axiom Engine - Demo Browser v1.0.0.0";
-            this.Load += new System.EventHandler(this.DemoBrowser_Load);
-            this.typeGroup.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.demoView)).EndInit();
+            this.Load += new EventHandler(this.DemoBrowser_Load);
+            ((ISupportInitialize)(this.demoView)).EndInit();
+            this.pnlDemoTypes.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
-        #endregion
 
-        private void demoListView_Click(object sender, System.EventArgs e) {
-            if(demoListView.SelectedItems.Count > 0) {
+        private void lstDemos_Click(object sender, EventArgs e) {
+            if(lstDemos.SelectedItems.Count > 0) {
                 // get the first one, we only do single select for the demos
-                ListViewItem item = demoListView.SelectedItems[0];
+                ListViewItem item = lstDemos.SelectedItems[0];
 
                 if(item.Tag != null) {
                     // find the class name of the demo
@@ -181,7 +187,7 @@ namespace Demos {
                         Type type = Type.GetType(demoClassName);
 
                         // create an instance of the demo class and start it up
-                        using(TechDemo demo = (TechDemo)Activator.CreateInstance(type)) {
+                        using(TechDemo demo = (TechDemo) Activator.CreateInstance(type)) {
                             demo.Start();
                         }
                     }
@@ -189,10 +195,10 @@ namespace Demos {
             }
         }
 
-        private void demoListView_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e) {
-            ListViewItem item = demoListView.GetItemAt(e.X, e.Y);
+        private void lstDemos_MouseMove(object sender, MouseEventArgs e) {
+            ListViewItem item = lstDemos.GetItemAt(e.X, e.Y);
 
-            if(item != null) {			
+            if(item != null) {
                 if(item.SubItems.Count > 1) {
                     lblInfo.Text = item.SubItems[1].Text;
                 }
@@ -200,9 +206,8 @@ namespace Demos {
         }
 
         private void LoadDemoItems(DataView demoView) {
-
             // make sure the listview is empty
-            demoListView.Items.Clear();
+            lstDemos.Items.Clear();
 
             foreach(DataRowView demo in demoView) {
 
@@ -212,12 +217,11 @@ namespace Demos {
                 item.SubItems.Add((string)demo["Description"]);
                 item.ImageIndex = (int)demo["ImageIndex"];
 
-                demoListView.Items.Add(item);
+                lstDemos.Items.Add(item);
             }
         }
 
-        private void DemoBrowser_Load(object sender, System.EventArgs e) {
-
+        private void DemoBrowser_Load(object sender, EventArgs e) {
             demoTable.Columns.Add("ImageIndex", typeof(int));
             demoTable.Columns.Add("Name");
             demoTable.Columns.Add("ClassName");
@@ -250,38 +254,46 @@ namespace Demos {
             demoImageList.ImageSize = new Size(133, 100);
 
             // set the listview to use the new imagelist for images
-            demoListView.SmallImageList = demoImageList;
-            demoListView.LargeImageList = demoImageList;
-            demoListView.StateImageList = demoImageList;
+            lstDemos.SmallImageList = demoImageList;
+            lstDemos.LargeImageList = demoImageList;
+            lstDemos.StateImageList = demoImageList;
 
             // load the items
             LoadDemoItems(demoView);
         }
 
-        private void typeGroup_CheckedChanged(object sender, System.EventArgs e) {
+        private void typeGroup_CheckedChanged(object sender, EventArgs e) {
             string filter = "";
             bool firstOne = true;
 
             // loop through each type and filter the shown items
-            foreach(CheckBox type in typeGroup.Controls) {
+            foreach(CheckBox type in pnlDemoTypes.Controls) {
                 if(type.Checked) {
-                    if(firstOne)
+                    if(firstOne) {
                         firstOne = false;
-                    else
+                    }
+                    else {
                         filter += " OR ";
-
+                    }
                     filter += string.Format("Type = '{0}'", type.Text);
                 }
             }
 
             // set the filter on the dataview
-            if(filter.Length == 0)
+            if(filter.Length == 0) {
                 demoView.RowFilter = "Type = 'None'";
-            else
+            }
+            else {
                 demoView.RowFilter = filter;
+            }
 
             // reload the demo items
             LoadDemoItems(demoView);
+        }
+
+        private void lnkWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            lnkWebsite.LinkVisited = true;
+            System.Diagnostics.Process.Start("http://axiomengine.sourceforge.net/");
         }
     }
 }
