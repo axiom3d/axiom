@@ -52,16 +52,31 @@ namespace Axiom.Core {
 
         protected long memoryBudget;
         protected long memoryUsage;
-        /// <summary>A cached list of all resources in memory.</summary>
+        /// <summary>
+        ///		A cached list of all resources in memory.
+        ///	</summary>
         protected Hashtable resourceList = System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
-        /// <summary>A lookup table used to find a common archive associated with a filename.</summary>
+		protected Hashtable resourceHandleMap = new Hashtable();
+        /// <summary>
+        ///		A lookup table used to find a common archive associated with a filename.
+        ///	</summary>
         protected Hashtable filePaths = System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
-        /// <summary>A cached list of archives specific to a resource type.</summary>
+        /// <summary>
+        ///		A cached list of archives specific to a resource type.
+        ///	</summary>
         protected ArrayList archives = new ArrayList();
-        /// <summary>A lookup table used to find a archive associated with a filename.</summary>
+        /// <summary>
+        ///		A lookup table used to find a archive associated with a filename.
+        ///	</summary>
         static protected Hashtable commonFilePaths = System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
-        /// <summary>A cached list of archives common to all resource types.</summary>
+        /// <summary>
+        ///		A cached list of archives common to all resource types.
+        ///	</summary>
         static protected ArrayList commonArchives = new ArrayList();
+		/// <summary>
+		///		Next available handle to assign to a new resource.
+		/// </summary>
+		static protected int nextHandle;
 
         #endregion Fields
 
@@ -113,6 +128,22 @@ namespace Axiom.Core {
 
         #region Virtual/Abstract methods
 
+		/// <summary>
+		///		Add a resource to this manager; normally only done by subclasses.
+		/// </summary>
+		/// <param name="resource">Resource to add.</param>
+		public virtual void Add(Resource resource) {
+			resource.Handle = GetNextHandle();
+
+			// note: just overwriting existing for now
+			resourceList[resource.Name] = resource;
+			resourceHandleMap[resource.Handle] = resource;
+		}
+		
+		protected int GetNextHandle() {
+			return nextHandle++;
+		}
+
         /// <summary>
         ///		Loads a resource.  Resource will be subclasses of Resource.
         /// </summary>
@@ -124,7 +155,7 @@ namespace Axiom.Core {
             resource.Touch();
 
             // cache the resource
-            resourceList[resource.Name] = resource;
+			Add(resource);
         }
 
         /// <summary>
@@ -287,6 +318,23 @@ namespace Axiom.Core {
             commonArchives.Add(archive);
 		}
 
+		/// <summary>
+		///		Gets a resource with the given handle.
+		/// </summary>
+		/// <param name="handle">Handle of the resource to retrieve.</param>
+		/// <returns>A reference to a Resource with the given handle.</returns>
+		public virtual Resource GetByHandle(int handle) {
+			Debug.Assert(resourceHandleMap != null, "A resource was being retreived, but the list of Resources is null.", "");
+
+			// find the resource in the Hashtable and return it
+			if(resourceHandleMap[handle] != null) {
+				return (Resource)resourceHandleMap[handle];
+			}
+			else {
+				return null;
+			}
+		}
+
         /// <summary>
         ///    Gets a reference to the specified named resource.
         /// </summary>
@@ -296,10 +344,12 @@ namespace Axiom.Core {
             Debug.Assert(resourceList != null, "A resource was being retreived, but the list of Resources is null.", "");
 
             // find the resource in the Hashtable and return it
-            if(resourceList[name] != null)
-                return (Resource)resourceList[name];
-            else
-                return null;
+			if(resourceList[name] != null) {
+				return (Resource)resourceList[name];
+			}
+			else {
+				return null;
+			}
         }
 
         #endregion

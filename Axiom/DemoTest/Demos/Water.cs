@@ -694,6 +694,10 @@ namespace Demos {
 
 			AxisAlignedBox meshBounds = new AxisAlignedBox(new Vector3(0,0,0), new Vector3(size, 0, size));
 			mesh.BoundingBox = meshBounds;  //	mesh->_setBounds(meshBounds); // najak: can't find _setBounds()
+
+			mesh.Load();
+			mesh.Touch();
+
 		} // end WaterMesh Constructor
 
 		public void UpdateMesh(float timeSinceLastFrame) {

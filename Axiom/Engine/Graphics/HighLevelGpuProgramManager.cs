@@ -46,7 +46,6 @@ namespace Axiom.Graphics
 	///    program provided a plugin is written.
 	/// </remarks>
 	public class HighLevelGpuProgramManager : ResourceManager {
-
         #region Singleton implementation
 
         private HighLevelGpuProgramManager() {}
@@ -120,7 +119,7 @@ namespace Axiom.Graphics
 
             // create the high level program using the factory
             HighLevelGpuProgram program = factory.Create(name, type);
-            resourceList[name] = program;
+            Add(program);
             return program;
         }
 

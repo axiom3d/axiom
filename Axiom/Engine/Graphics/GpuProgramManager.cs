@@ -121,7 +121,7 @@ namespace Axiom.Graphics {
 		public virtual GpuProgram CreateProgram(string name, string fileName, GpuProgramType type, string syntaxCode) {
 			GpuProgram program = Create(name, type, syntaxCode);
 			program.SourceFile = fileName;
-			resourceList[name] = program;
+			Add(program);
 			return program;
 		}
 
@@ -145,7 +145,7 @@ namespace Axiom.Graphics {
 		public virtual GpuProgram CreateProgramFromString(string name, string source, GpuProgramType type, string syntaxCode) {
 			GpuProgram program = Create(name, type, syntaxCode);
 			program.Source = source;
-			resourceList[name] = program;
+			Add(program);
 			return program;
 		}
 
@@ -346,14 +346,20 @@ namespace Axiom.Graphics {
 						program.IsSkeletalAnimationIncluded = hwSkinning;
 					}
 					else {
-						// High level gpu programs
-						HighLevelGpuProgram program = HighLevelGpuProgramManager.Instance.CreateProgram(name, language, programType);
-						program.SourceFile = fileName;
-						program.IsSkeletalAnimationIncluded = hwSkinning;
+						try {
+							// High level gpu programs
+							HighLevelGpuProgram program = HighLevelGpuProgramManager.Instance.CreateProgram(name, language, programType);
+							program.SourceFile = fileName;
+							program.IsSkeletalAnimationIncluded = hwSkinning;
 
-						// set all extra params
-						foreach(DictionaryEntry entry in parmsTable) {
-							program.SetParam((string)entry.Key, (string)entry.Value);
+							// set all extra params
+							foreach(DictionaryEntry entry in parmsTable) {
+								program.SetParam((string)entry.Key, (string)entry.Value);
+							}
+						}
+						catch(Exception ex) {
+							// just log failure to create high level programs to allow us to continue
+							System.Diagnostics.Trace.WriteLine(ex.ToString());
 						}
 					}
 
