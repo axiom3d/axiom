@@ -136,7 +136,7 @@ namespace Axiom.Overlays.Elements {
             binding = renderOp2.vertexData.vertexBufferBinding;
             binding.SetBinding(TEXCOORDS, buffer);
 
-            renderOp2.operationType = RenderMode.TriangleList;
+            renderOp2.operationType = OperationType.TriangleList;
             renderOp2.useIndices = true;
 
             // index data

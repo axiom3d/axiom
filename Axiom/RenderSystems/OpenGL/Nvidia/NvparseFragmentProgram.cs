@@ -121,28 +121,29 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia {
         private static extern void nvparse(string input);
 
         [DllImport(NATIVE_LIB, CallingConvention=CallingConvention.Cdecl, EntryPoint="nvparse_get_errors", CharSet=CharSet.Auto)]
-        private static unsafe extern char** nvparse_get_errorsA();
+        private static unsafe extern byte** nvparse_get_errorsA();
 
         /// <summary>
         ///     
         /// </summary>
         /// <returns></returns>
         // TODO: Only returns first error for now
-        private unsafe string nvparse_get_errors() {
-            char** ret = nvparse_get_errorsA();
+        private string nvparse_get_errors() {
+        	unsafe {
+	            byte** ret = nvparse_get_errorsA();
+                byte* bytes = ret[0];
 
-            byte* bytes = (byte*)&ret[0];
+		        if(bytes != null) {
+		            int i = 0;
+		            string error = "";
 
-            if(bytes != null) {
-                int i = 0;
-                string error = "";
+		            while(bytes[i] != '\0') {
+		                error += (char)bytes[i];
+		                i++;
+		            }
 
-                while(bytes[i] != '\0') {
-                    error += (char)bytes[i];
-                    i++;
-                }
-
-                return error;
+		            return error;
+		        }
             }
 
             return null;

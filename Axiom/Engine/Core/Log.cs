@@ -57,6 +57,7 @@ namespace Axiom.Core {
 				writer.Flush();
 			}
         }
+
         #region IDisposable Members
 
         public new void Dispose() {

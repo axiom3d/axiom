@@ -114,7 +114,7 @@ namespace Axiom.Overlays.Elements {
 
             // no indices, and issue as a tri strip
             renderOp.useIndices = false;
-            renderOp.operationType = RenderMode.TriangleStrip;
+            renderOp.operationType = OperationType.TriangleStrip;
         }
 
         /// <summary>

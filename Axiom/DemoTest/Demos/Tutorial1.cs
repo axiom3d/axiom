@@ -204,7 +204,7 @@ namespace Demos {
         public override void GetRenderOperation(RenderOperation op) {
             op.vertexData = vertexData;
             op.indexData = null;
-            op.operationType = RenderMode.LineList;
+            op.operationType = OperationType.LineList;
             op.useIndices = false;
         }
 
@@ -322,7 +322,7 @@ namespace Demos {
         public override void GetRenderOperation(RenderOperation op) {
             op.vertexData = vertexData;
             op.indexData = null;
-            op.operationType = RenderMode.TriangleList;
+            op.operationType = OperationType.TriangleList;
             op.useIndices = false;
         }
 

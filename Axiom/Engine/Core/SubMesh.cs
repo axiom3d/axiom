@@ -68,7 +68,7 @@ namespace Axiom.Core {
         protected internal bool boneAssignmentsOutOfDate;
 
         /// <summary>Mode used for rendering this submesh.</summary>
-        protected internal Axiom.Graphics.RenderMode operationType;
+        protected internal Axiom.Graphics.OperationType operationType;
         public VertexData vertexData;
         public IndexData indexData = new IndexData();
         /// <summary>Indicates if this submesh shares vertex data with other meshes or whether it has it's own vertices.</summary>
@@ -88,7 +88,7 @@ namespace Axiom.Core {
 
             useSharedVertices = true;
 
-            operationType = RenderMode.TriangleList;
+            operationType = OperationType.TriangleList;
         }
 
         #endregion

@@ -287,6 +287,9 @@ namespace Axiom.RenderSystems.DirectX9 {
 				return device;
 			}
 
+			// we don't care about event handlers
+			Device.IsUsingEventHandlers = false;
+
 			D3D.Device newDevice;
 		
 			// if this is the first window, get the device and do other initialization
@@ -782,27 +785,27 @@ namespace Axiom.RenderSystems.DirectX9 {
 			PrimitiveType primType = 0;
 
 			switch(op.operationType) {
-				case RenderMode.PointList:
+				case OperationType.PointList:
 					primType = PrimitiveType.PointList;
 					primCount = op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount;
 					break;
-				case RenderMode.LineList:
+				case OperationType.LineList:
 					primType = PrimitiveType.LineList;
 					primCount = (op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount) / 2;
 					break;
-				case RenderMode.LineStrip:
+				case OperationType.LineStrip:
 					primType = PrimitiveType.LineStrip;
 					primCount = (op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount) - 1;
 					break;
-				case RenderMode.TriangleList:
+				case OperationType.TriangleList:
 					primType = PrimitiveType.TriangleList;
 					primCount = (op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount) / 3;
 					break;
-				case RenderMode.TriangleStrip:
+				case OperationType.TriangleStrip:
 					primType = PrimitiveType.TriangleStrip;
 					primCount = (op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount) - 2;
 					break;
-				case RenderMode.TriangleFan:
+				case OperationType.TriangleFan:
 					primType = PrimitiveType.TriangleFan;
 					primCount = (op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount) - 2;
 					break;
@@ -1573,7 +1576,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// </summary>
 		private void CheckCaps(D3D.Device device) {
 			// get the number of possible texture units
-			caps.NumTextureUnits = d3dCaps.MaxSimultaneousTextures;
+			caps.TextureUnitCount = d3dCaps.MaxSimultaneousTextures;
 
 			// max active lights
 			caps.MaxLights = d3dCaps.MaxActiveLights;

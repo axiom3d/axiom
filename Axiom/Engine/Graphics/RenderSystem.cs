@@ -321,16 +321,16 @@ namespace Axiom.Graphics {
 
 			// calculate faces
 			switch (op.operationType) {
-				case RenderMode.TriangleList:
+				case OperationType.TriangleList:
 					numFaces += val / 3;
 					break;
-				case RenderMode.TriangleStrip:
-				case RenderMode.TriangleFan:
+				case OperationType.TriangleStrip:
+				case OperationType.TriangleFan:
 					numFaces += val - 2;
 					break;
-				case RenderMode.PointList:
-				case RenderMode.LineList:
-				case RenderMode.LineStrip:
+				case OperationType.PointList:
+				case OperationType.LineList:
+				case OperationType.LineStrip:
 					break;
 			}
 
@@ -965,7 +965,7 @@ namespace Axiom.Graphics {
 		///		Note that this method is called by SetMaterial.
 		/// </summary>
 		/// <param name="stage">The index of the texture unit to modify. Multitexturing hardware
-		//		can support multiple units (see NumTextureUnits)</param>
+		//		can support multiple units (see TextureUnitCount)</param>
 		/// <param name="enabled">Boolean to turn the unit on/off</param>
 		/// <param name="textureName">The name of the texture to use - this should have
 		///		already been loaded with TextureManager.Load.</param>

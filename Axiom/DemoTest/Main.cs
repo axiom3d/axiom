@@ -38,7 +38,7 @@ namespace Demos {
 				//}
 
 				// Change me to whatever demo you want to run for the meantime until the new browser is done
-				Type demoType = Type.GetType("Demos.CameraTrack");
+				Type demoType = Type.GetType("Demos.Shadows");
 
 				using(TechDemo demo = (TechDemo)Activator.CreateInstance(demoType)) {
 					demo.Start();

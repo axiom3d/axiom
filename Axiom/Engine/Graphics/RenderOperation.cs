@@ -43,7 +43,7 @@ namespace Axiom.Graphics {
         ///		Type of operation to perform.
         /// </summary>
         /// TODO: Rename the enum to OperationType
-        public RenderMode operationType;
+        public OperationType operationType;
 
         /// <summary>
         ///		Contains a list of hardware vertex buffers for this complete render operation.

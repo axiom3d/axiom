@@ -160,7 +160,7 @@ namespace Axiom.Graphics {
         /// <summary>
         ///		Reports on the number of texture units the graphics hardware has available.
         /// </summary>
-        public int NumTextureUnits {
+        public int TextureUnitCount {
             get { 
                 return numTextureUnits; 
             }
@@ -243,7 +243,7 @@ namespace Axiom.Graphics {
         /// </summary>
         public void Log() { 
             Trace.WriteLine("---Hardware Capabilities---");
-            Trace.WriteLine("Available texture units: " + this.NumTextureUnits);
+            Trace.WriteLine("Available texture units: " + this.TextureUnitCount);
             Trace.WriteLine("Maximum lights available: " + this.MaxLights);
             Trace.WriteLineIf(CheckCap(Capabilities.AnisotropicFiltering), "\t-Anisotropic Filtering");
             Trace.WriteLineIf(CheckCap(Capabilities.CubeMapping), "\t-Cube Mapping");

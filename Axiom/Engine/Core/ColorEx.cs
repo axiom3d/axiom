@@ -55,6 +55,8 @@ namespace Axiom.Core {
 
         #endregion
 
+        #region Constructors
+
         /// <summary>
         ///		Default constructor.
         /// </summary>
@@ -84,6 +86,8 @@ namespace Axiom.Core {
             this.g = g;
             this.b = b;
         }
+
+        #endregion Constructors
 
         #region Methods
 
