@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.Scripting;
 using Axiom.MathLib;
@@ -93,11 +94,11 @@ namespace Axiom.ParticleFX {
 
 			public string Get(object target) {
 				RotationAffector affector = target as RotationAffector;
-				return affector.rotationSpeedRangeStart.ToString();
+				return StringConverter.ToString(affector.rotationSpeedRangeStart);
 			}
 			public void Set(object target, string val) {
 				RotationAffector affector = target as RotationAffector;
-				affector.rotationSpeedRangeStart = ParseHelper.ParseFloat(val);
+				affector.rotationSpeedRangeStart = StringConverter.ParseFloat(val);
 			}
 
 			#endregion
@@ -109,11 +110,11 @@ namespace Axiom.ParticleFX {
 
 			public string Get(object target) {
 				RotationAffector affector = target as RotationAffector;
-				return affector.rotationSpeedRangeEnd.ToString();
+				return StringConverter.ToString(affector.rotationSpeedRangeEnd);
 			}
 			public void Set(object target, string val) {
 				RotationAffector affector = target as RotationAffector;
-				affector.rotationSpeedRangeEnd = ParseHelper.ParseFloat(val);
+				affector.rotationSpeedRangeEnd = StringConverter.ParseFloat(val);
 			}
 
 			#endregion
@@ -125,11 +126,11 @@ namespace Axiom.ParticleFX {
 
 			public string Get(object target) {
 				RotationAffector affector = target as RotationAffector;
-				return affector.rotationRangeStart.ToString();
+				return StringConverter.ToString(affector.rotationRangeStart);
 			}
 			public void Set(object target, string val) {
 				RotationAffector affector = target as RotationAffector;
-				affector.rotationRangeStart = ParseHelper.ParseFloat(val);
+				affector.rotationRangeStart = StringConverter.ParseFloat(val);
 			}
 
 			#endregion
@@ -142,11 +143,11 @@ namespace Axiom.ParticleFX {
 
 			public string Get(object target) {
 				RotationAffector affector = target as RotationAffector;
-				return affector.rotationRangeEnd.ToString();
+				return StringConverter.ToString(affector.rotationRangeEnd);
 			}
 			public void Set(object target, string val) {
 				RotationAffector affector = target as RotationAffector;
-				affector.rotationRangeEnd = ParseHelper.ParseFloat(val);
+				affector.rotationRangeEnd = StringConverter.ParseFloat(val);
 			}
 
 			#endregion

@@ -613,7 +613,7 @@ namespace Axiom.ParticleSystems {
                 return;
             }
 
-            system.CommonDirection = ParseHelper.ParseVector3(values);
+            system.CommonDirection = StringConverter.ParseVector3(values);
         }
 
         [AttributeParser("cull_each", PARTICLE)]
@@ -623,7 +623,7 @@ namespace Axiom.ParticleSystems {
                 return;
             }
 			
-            system.CullIndividual = ParseHelper.ParseBool(values[0]);
+            system.CullIndividual = StringConverter.ParseBool(values[0]);
         }
 
         [AttributeParser("particle_height", PARTICLE)]
@@ -633,7 +633,7 @@ namespace Axiom.ParticleSystems {
                 return;
             }
 
-            system.DefaultHeight = ParseHelper.ParseFloat(values[0]);
+            system.DefaultHeight = StringConverter.ParseFloat(values[0]);
         }
 
         [AttributeParser("material", PARTICLE)]
@@ -663,7 +663,7 @@ namespace Axiom.ParticleSystems {
                 return;
             }
 
-            system.DefaultWidth = ParseHelper.ParseFloat(values[0]);
+            system.DefaultWidth = StringConverter.ParseFloat(values[0]);
         }
 
         #endregion

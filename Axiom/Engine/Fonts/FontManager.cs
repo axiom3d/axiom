@@ -182,10 +182,10 @@ namespace Axiom.Fonts {
                     // set the texcoords for this glyph
                     font.SetGlyphTexCoords(
                         glyph, 
-                        ParseHelper.ParseFloat(parms[2]),
-                        ParseHelper.ParseFloat(parms[3]),
-                        ParseHelper.ParseFloat(parms[4]),
-                        ParseHelper.ParseFloat(parms[5]));
+                        StringConverter.ParseFloat(parms[2]),
+                        StringConverter.ParseFloat(parms[3]),
+                        StringConverter.ParseFloat(parms[4]),
+                        StringConverter.ParseFloat(parms[5]));
 
                     break;
 

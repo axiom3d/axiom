@@ -105,11 +105,11 @@ namespace Axiom.ParticleFX {
 			class WidthCommand: ICommand {
 			public void Set(object target, string val) {
 				RingEmitter emitter = target as RingEmitter;
-				emitter.Width = ParseHelper.ParseFloat(val);
+				emitter.Width = StringConverter.ParseFloat(val);
 			}
 			public string Get(object target) {
 				RingEmitter emitter = target as RingEmitter;
-				return emitter.Width.ToString();
+				return StringConverter.ToString(emitter.Width);
 			}
 		}
 
@@ -120,11 +120,11 @@ namespace Axiom.ParticleFX {
 			class HeightCommand: ICommand {
 			public void Set(object target, string val) {
 				RingEmitter emitter = target as RingEmitter;
-				emitter.Height = ParseHelper.ParseFloat(val);
+				emitter.Height = StringConverter.ParseFloat(val);
 			}
 			public string Get(object target) {
 				RingEmitter emitter = target as RingEmitter;
-				return emitter.Height.ToString();
+				return StringConverter.ToString(emitter.Height);
 			}
 		}
 
@@ -135,11 +135,11 @@ namespace Axiom.ParticleFX {
 			class DepthCommand: ICommand {
 			public void Set(object target, string val) {
 				RingEmitter emitter = target as RingEmitter;
-				emitter.Depth = ParseHelper.ParseFloat(val);
+				emitter.Depth = StringConverter.ParseFloat(val);
 			}
 			public string Get(object target) {
 				RingEmitter emitter = target as RingEmitter;
-				return emitter.Depth.ToString();
+				return StringConverter.ToString(emitter.Depth);
 			}
 		}
 
@@ -150,11 +150,11 @@ namespace Axiom.ParticleFX {
 			class InnerWidthCommand: ICommand {
 			public void Set(object target, string val) {
 				RingEmitter emitter = target as RingEmitter;
-				emitter.InnerX = ParseHelper.ParseFloat(val);
+				emitter.InnerX = StringConverter.ParseFloat(val);
 			}
 			public string Get(object target) {
 				RingEmitter emitter = target as RingEmitter;
-				return emitter.InnerX.ToString();
+				return StringConverter.ToString(emitter.InnerX);
 			}
 		}
 
@@ -165,11 +165,11 @@ namespace Axiom.ParticleFX {
 			class InnerHeightCommand: ICommand {
 			public void Set(object target, string val) {
 				RingEmitter emitter = target as RingEmitter;
-				emitter.InnerY = ParseHelper.ParseFloat(val);
+				emitter.InnerY = StringConverter.ParseFloat(val);
 			}
 			public string Get(object target) {
 				RingEmitter emitter = target as RingEmitter;
-				return emitter.InnerY.ToString();
+				return StringConverter.ToString(emitter.InnerY);
 			}
 		}
 

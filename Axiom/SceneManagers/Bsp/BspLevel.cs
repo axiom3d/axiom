@@ -761,7 +761,7 @@ namespace Axiom.SceneManagers.Bsp
 				{
 					float[] vector = new float[3];
 					for (int v = 0; v < 3; v++)
-						vector[v] = ParseHelper.ParseFloat(paramList[v + 1]);
+						vector[v] = StringConverter.ParseFloat(paramList[v + 1]);
 
 					q3lvl.TransformVector(vector);
 
@@ -769,7 +769,7 @@ namespace Axiom.SceneManagers.Bsp
 				}
 
 				if(paramList[0] == "angle")
-					angle = ParseHelper.ParseFloat(paramList[1]);
+					angle = StringConverter.ParseFloat(paramList[1]);
 
 				if((paramList[0] == "classname") && (paramList[1] == "info_player_deathmatch"))
 					isPlayerStart = true;

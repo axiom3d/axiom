@@ -580,14 +580,14 @@ namespace Axiom.Overlays.Elements {
         public static void  ParseCharHeight(string[] parms, params object[] objects) {
             TextArea textArea = (TextArea)objects[0];
 
-            textArea.CharHeight = ParseHelper.ParseFloat(parms[0]);
+            textArea.CharHeight = StringConverter.ParseFloat(parms[0]);
         }
 
         [AttributeParser("space_width", "TextArea")]
         public static void  ParseSpaceWidth(string[] parms, params object[] objects) {
             TextArea textArea = (TextArea)objects[0];
 
-            textArea.SpaceWidth = ParseHelper.ParseFloat(parms[0]);
+            textArea.SpaceWidth = StringConverter.ParseFloat(parms[0]);
         }
 
         [AttributeParser("font_name", "TextArea")]
@@ -602,7 +602,7 @@ namespace Axiom.Overlays.Elements {
         public static void  ParseColor(string[] parms, params object[] objects) {
             TextArea textArea = (TextArea)objects[0];
 
-            textArea.Color = ParseHelper.ParseColor(parms);
+            textArea.Color = StringConverter.ParseColor(parms);
         }
 
         [AttributeParser("color_top", "TextArea")]
@@ -610,7 +610,7 @@ namespace Axiom.Overlays.Elements {
         public static void  ParseColorTop(string[] parms, params object[] objects) {
             TextArea textArea = (TextArea)objects[0];
 
-            textArea.ColorTop = ParseHelper.ParseColor(parms);
+            textArea.ColorTop = StringConverter.ParseColor(parms);
         }
 
         [AttributeParser("color_bottom", "TextArea")]
@@ -618,7 +618,7 @@ namespace Axiom.Overlays.Elements {
         public static void  ParseColorBottom(string[] parms, params object[] objects) {
             TextArea textArea = (TextArea)objects[0];
 
-            textArea.ColorBottom = ParseHelper.ParseColor(parms);
+            textArea.ColorBottom = StringConverter.ParseColor(parms);
         }
 
         #endregion

@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.Scripting;
 
@@ -83,11 +84,11 @@ namespace Axiom.ParticleFX {
 
 			public string Get(object target) {
 				ScaleAffector affector = target as ScaleAffector;
-				return affector.ScaleAdjust.ToString();
+				return StringConverter.ToString(affector.ScaleAdjust);
 			}
 			public void Set(object target, string val) {
 				ScaleAffector affector = target as ScaleAffector;
-				affector.ScaleAdjust = ParseHelper.ParseFloat(val);
+				affector.ScaleAdjust = StringConverter.ParseFloat(val);
 			}
 
 			#endregion

@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.Scripting;
 
@@ -157,11 +158,11 @@ namespace Axiom.ParticleFX {
 
 			public string Get(object target) {
 				ColorFaderAffector2 affector = target as ColorFaderAffector2;
-				return affector.RedAdjust1.ToString();
+				return StringConverter.ToString(affector.RedAdjust1);
 			}
 			public void Set(object target, string val) {
 				ColorFaderAffector2 affector = target as ColorFaderAffector2;
-				affector.RedAdjust1 = ParseHelper.ParseFloat(val);
+				affector.RedAdjust1 = StringConverter.ParseFloat(val);
 			}
 
 			#endregion
@@ -173,11 +174,11 @@ namespace Axiom.ParticleFX {
 
 			public string Get(object target) {
 				ColorFaderAffector2 affector = target as ColorFaderAffector2;
-				return affector.RedAdjust2.ToString();
+				return StringConverter.ToString(affector.RedAdjust2);
 			}
 			public void Set(object target, string val) {
 				ColorFaderAffector2 affector = target as ColorFaderAffector2;
-				affector.RedAdjust2 = ParseHelper.ParseFloat(val);
+				affector.RedAdjust2 = StringConverter.ParseFloat(val);
 			}
 
 			#endregion
@@ -189,11 +190,11 @@ namespace Axiom.ParticleFX {
 
 			public string Get(object target) {
 				ColorFaderAffector2 affector = target as ColorFaderAffector2;
-				return affector.GreenAdjust1.ToString();
+				return StringConverter.ToString(affector.GreenAdjust1);
 			}
 			public void Set(object target, string val) {
 				ColorFaderAffector2 affector = target as ColorFaderAffector2;
-				affector.GreenAdjust1 = ParseHelper.ParseFloat(val);
+				affector.GreenAdjust1 = StringConverter.ParseFloat(val);
 			}
 
 			#endregion
@@ -205,11 +206,11 @@ namespace Axiom.ParticleFX {
 
 			public string Get(object target) {
 				ColorFaderAffector2 affector = target as ColorFaderAffector2;
-				return affector.GreenAdjust2.ToString();
+				return StringConverter.ToString(affector.GreenAdjust2);
 			}
 			public void Set(object target, string val) {
 				ColorFaderAffector2 affector = target as ColorFaderAffector2;
-				affector.GreenAdjust2 = ParseHelper.ParseFloat(val);
+				affector.GreenAdjust2 = StringConverter.ParseFloat(val);
 			}
 
 			#endregion
@@ -221,11 +222,11 @@ namespace Axiom.ParticleFX {
 
 			public string Get(object target) {
 				ColorFaderAffector2 affector = target as ColorFaderAffector2;
-				return affector.BlueAdjust1.ToString();
+				return StringConverter.ToString(affector.BlueAdjust1);
 			}
 			public void Set(object target, string val) {
 				ColorFaderAffector2 affector = target as ColorFaderAffector2;
-				affector.BlueAdjust1 = ParseHelper.ParseFloat(val);
+				affector.BlueAdjust1 = StringConverter.ParseFloat(val);
 			}
 
 			#endregion
@@ -237,11 +238,11 @@ namespace Axiom.ParticleFX {
 
 			public string Get(object target) {
 				ColorFaderAffector2 affector = target as ColorFaderAffector2;
-				return affector.BlueAdjust2.ToString();
+				return StringConverter.ToString(affector.BlueAdjust2);
 			}
 			public void Set(object target, string val) {
 				ColorFaderAffector2 affector = target as ColorFaderAffector2;
-				affector.BlueAdjust2 = ParseHelper.ParseFloat(val);
+				affector.BlueAdjust2 = StringConverter.ParseFloat(val);
 			}
 
 			#endregion
@@ -253,11 +254,11 @@ namespace Axiom.ParticleFX {
 
 			public string Get(object target) {
 				ColorFaderAffector2 affector = target as ColorFaderAffector2;
-				return affector.AlphaAdjust1.ToString();
+				return StringConverter.ToString(affector.AlphaAdjust1);
 			}
 			public void Set(object target, string val) {
 				ColorFaderAffector2 affector = target as ColorFaderAffector2;
-				affector.AlphaAdjust1 = ParseHelper.ParseFloat(val);
+				affector.AlphaAdjust1 = StringConverter.ParseFloat(val);
 			}
 
 			#endregion
@@ -269,11 +270,11 @@ namespace Axiom.ParticleFX {
 
 			public string Get(object target) {
 				ColorFaderAffector2 affector = target as ColorFaderAffector2;
-				return affector.AlphaAdjust2.ToString();
+				return StringConverter.ToString(affector.AlphaAdjust2);
 			}
 			public void Set(object target, string val) {
 				ColorFaderAffector2 affector = target as ColorFaderAffector2;
-				affector.AlphaAdjust2 = ParseHelper.ParseFloat(val);
+				affector.AlphaAdjust2 = StringConverter.ParseFloat(val);
 			}
 
 			#endregion
@@ -285,11 +286,11 @@ namespace Axiom.ParticleFX {
 
 			public string Get(object target) {
 				ColorFaderAffector2 affector = target as ColorFaderAffector2;
-				return affector.StateChangeVal.ToString();
+				return StringConverter.ToString(affector.StateChangeVal);
 			}
 			public void Set(object target, string val) {
 				ColorFaderAffector2 affector = target as ColorFaderAffector2;
-				affector.StateChangeVal = ParseHelper.ParseFloat(val);
+				affector.StateChangeVal = StringConverter.ParseFloat(val);
 			}
 
 			#endregion
