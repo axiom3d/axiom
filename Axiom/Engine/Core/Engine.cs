@@ -514,6 +514,8 @@ namespace Axiom.Core {
             System.Diagnostics.Trace.WriteLine("   Highest FPS - " + highestFPS);
             System.Diagnostics.Trace.WriteLine("   Average FPS: " + averageFPS);
             System.Diagnostics.Trace.WriteLine("   Lowest FPS: " + lowestFPS);
+
+            engineLog.Dispose();
         }
 
         private void InitializeSingletons() {
