@@ -5,7 +5,6 @@
     <File name=".\GLTexture.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\GLTextureManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\GLWindow.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\OpenGLExtensions.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\OpenGLRenderer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\GLHardwareVertexBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\GLHardwareBufferManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
@@ -15,6 +14,8 @@
     <Reference type="Project" refto="Engine" localcopy="True" />
     <Reference type="Project" refto="MathLib" localcopy="True" />
     <Reference type="Assembly" refto="..\Solution Items\csgl.dll" localcopy="True" />
+    <Reference type="Assembly" refto="..\Solution Items\Tao.Platform.Windows.dll" localcopy="True" />
+    <Reference type="Assembly" refto="..\Solution Items\Tao.OpenGl.dll" localcopy="True" />
   </References>
   <DeploymentInformation target="" script="" strategy="File" />
   <Configuration runwithwarnings="True" name="Debug">
