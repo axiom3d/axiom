@@ -20,7 +20,7 @@ namespace Axiom.Core
             string assemblyFile = Path.Combine(Environment.CurrentDirectory, assemblyName);
 
             // load the requested assembly
-            return Assembly.LoadFile(assemblyFile);
+            return Assembly.LoadFrom(assemblyFile);
         }
         public new Type GetType() {
             return GetAssembly().GetType(className);
