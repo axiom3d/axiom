@@ -38,7 +38,6 @@ namespace Demos {
         }
 
         private void InitializeComponent() {
-            System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(DemoBrowser));
             this.lstDemos = new System.Windows.Forms.ListView();
             this.lblInfo = new System.Windows.Forms.Label();
             this.chkTools = new System.Windows.Forms.CheckBox();
@@ -69,6 +68,7 @@ namespace Demos {
             this.lstDemos.TabIndex = 3;
             this.lstDemos.Click += new System.EventHandler(this.lstDemos_Click);
             this.lstDemos.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lstDemos_MouseMove);
+            this.lstDemos.MouseLeave += new System.EventHandler(this.lstDemos_MouseLeave);
             // 
             // lblInfo
             // 
@@ -167,7 +167,6 @@ namespace Demos {
             this.Font = new System.Drawing.Font("Palatino Linotype", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
             this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = new Icon("Media/Icons/AxiomIcon.ico");
             this.MaximizeBox = false;
             this.Name = "DemoBrowser";
             this.Text = "Axiom Engine - Demo Browser v1.0.0.0";
@@ -201,13 +200,13 @@ namespace Demos {
         }
 
         private void lstDemos_MouseMove(object sender, MouseEventArgs e) {
-            ListViewItem item = lstDemos.GetItemAt(e.X, e.Y);
-
-            if(item != null) {
-                if(item.SubItems.Count > 1) {
-                    lblInfo.Text = item.SubItems[1].Text;
-                }
-            }
+            ListViewItem item = lstDemos.GetItemAt(e.X, e.Y); 
+            if(item != null && item.SubItems.Count > 1) { 
+                lblInfo.Text = item.SubItems[1].Text; 
+            } 
+            else { 
+                lblInfo.Text = "Select a demo to run.  The description of each demo will appear here as you hover over them with the mouse."; 
+            } 
         }
 
         private void LoadDemoItems(DataView demoView) {
@@ -299,6 +298,10 @@ namespace Demos {
         private void lnkWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             lnkWebsite.LinkVisited = true;
             System.Diagnostics.Process.Start("http://axiomengine.sourceforge.net/");
+        }
+
+        private void lstDemos_MouseLeave(object sender, System.EventArgs e) {
+            lblInfo.Text = "Select a demo to run.  The description of each demo will appear here as you hover over them with the mouse."; 
         }
     }
 }

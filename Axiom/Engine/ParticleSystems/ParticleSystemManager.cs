@@ -589,8 +589,7 @@ namespace Axiom.ParticleSystems {
                 return;
             }
 
-            system.DefaultDimensions = 
-                new System.Drawing.Size(system.DefaultDimensions.Width, int.Parse(values[0]));
+            system.DefaultHeight = float.Parse(values[0]);
         }
 
         [AttributeParser("material", PARTICLE)]
@@ -620,8 +619,7 @@ namespace Axiom.ParticleSystems {
                 return;
             }
 
-            system.DefaultDimensions = 
-                new System.Drawing.Size(int.Parse(values[0]), system.DefaultDimensions.Height);
+            system.DefaultWidth = float.Parse(values[0]);
         }
 
         #endregion
