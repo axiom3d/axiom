@@ -1,3 +1,6 @@
+12-06-2004
+- Added support for 'receive_shadows' and 'transparency_casts_shadows' to Material and the .material parser.
+
 12-05-2004
 - Fixed W Buffer check in D3D to only apply for 16 bit color.
 - Updated RenderToTexture demo!  Shows off texture projection and oblique depth projection for acheiving reflection without advanced hardware features.

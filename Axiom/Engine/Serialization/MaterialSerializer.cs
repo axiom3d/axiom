@@ -572,6 +572,28 @@ namespace Axiom.Serialization {
 			return false;
 		}
 
+		[MaterialAttributeParser("receive_shadows", MaterialScriptSection.Material)]
+		protected static bool ParseReceiveShadows(string parameters, MaterialScriptContext context) {
+			if(parameters != "on" && parameters != "off") {
+				LogParseError(context, "Bad receive_shadows attribute, valid parameters are 'on' or 'off'.");
+			}
+
+			context.material.ReceiveShadows = ParseHelper.ParseBool(parameters);
+
+			return false;
+		}
+
+		[MaterialAttributeParser("transparency_casts_shadows", MaterialScriptSection.Material)]
+		protected static bool ParseTransparencyCastsShadows(string parameters, MaterialScriptContext context) {
+			if(parameters != "on" && parameters != "off") {
+				LogParseError(context, "Bad transparency_casts_shadows attribute, valid parameters are 'on' or 'off'.");
+			}
+
+			context.material.TransparencyCastsShadows = ParseHelper.ParseBool(parameters);
+
+			return false;
+		}
+
 		#endregion Material
 
 		#region Technique
