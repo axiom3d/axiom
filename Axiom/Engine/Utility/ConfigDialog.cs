@@ -62,7 +62,6 @@ namespace Axiom.Utility {
         }
 
         private void InitializeComponent() {
-            System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(ConfigDialog));
             this.lblResolution = new Label();
             this.btnCancel = new Button();
             this.picLogo = new PictureBox();
@@ -103,7 +102,7 @@ namespace Axiom.Utility {
             // 
             // picLogo
             // 
-            this.picLogo.Image = ((Image)(resources.GetObject("picLogo.Image")));
+            this.picLogo.Image = Bitmap.FromFile("Media/Textures/AxiomLogo.png", true);
             this.picLogo.Location = new Point(94, -14);
             this.picLogo.Name = "picLogo";
             this.picLogo.Size = new Size(256, 128);
