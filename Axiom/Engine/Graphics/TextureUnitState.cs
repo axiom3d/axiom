@@ -752,13 +752,8 @@ namespace Axiom.Graphics
                 frames[i] = textureNames[i];
             }
 
-            if(IsLoaded) {
-                // load immediately if parent is loaded
-                Load();     
-
-                // tell parent to recalc the hash code
-                parent.RecalculateHash();
-            }
+            // tell parent we need recompiling, will cause reload too
+            parent.NotifyNeedsRecompile();
         }
 
         /// <summary>
@@ -883,7 +878,7 @@ namespace Axiom.Graphics
         /// </summary>
         /// <param name="operation">The operation to be used, e.g. modulate (multiply), add, subtract.</param>
         public void SetColorOperationEx(LayerBlendOperationEx operation) {
-            SetColorOperationEx(operation, LayerBlendSource.Texture, LayerBlendSource.Current, ColorEx.FromColor(System.Drawing.Color.White), ColorEx.FromColor(System.Drawing.Color.White), 0.0f);
+            SetColorOperationEx(operation, LayerBlendSource.Texture, LayerBlendSource.Current, ColorEx.White, ColorEx.White, 0.0f);
         }
 
         /// <summary>
@@ -893,7 +888,7 @@ namespace Axiom.Graphics
         /// <param name="source1">The source of the first color to the operation e.g. texture color.</param>
         /// <param name="source2">The source of the second color to the operation e.g. current surface color.</param>
         public void SetColorOperationEx(LayerBlendOperationEx operation, LayerBlendSource source1, LayerBlendSource source2) {
-            SetColorOperationEx(operation, source1, source2, ColorEx.FromColor(System.Drawing.Color.White), ColorEx.FromColor(System.Drawing.Color.White), 0.0f);
+            SetColorOperationEx(operation, source1, source2, ColorEx.White, ColorEx.White, 0.0f);
         }
 
         /// <summary>
@@ -1420,8 +1415,8 @@ namespace Axiom.Graphics
         public LayerBlendOperationEx operation;
         public LayerBlendSource source1;
         public LayerBlendSource source2;
-        public ColorEx colorArg1 = ColorEx.FromColor(System.Drawing.Color.White);
-        public ColorEx colorArg2 = ColorEx.FromColor(System.Drawing.Color.White);
+        public ColorEx colorArg1 = ColorEx.White;
+        public ColorEx colorArg2 = ColorEx.White;
         public float alphaArg1 = 1.0f;
         public float alphaArg2 = 1.0f;
         public float blendFactor;

@@ -54,6 +54,9 @@ namespace Axiom.Graphics
 
 		#region Fields
 		
+        /// <summary>
+        ///    Collection of syntax codes that this program manager supports.
+        /// </summary>
         protected StringCollection syntaxCodes = new StringCollection();
 
 		#endregion
@@ -61,15 +64,75 @@ namespace Axiom.Graphics
 		#region Methods
 		
         public override Resource Create(string name) {
-            throw new AxiomException("You need to create a program using the Load method.");
+            throw new AxiomException("You need to create a program using the Load or Create* methods.");
         }
 
         /// <summary>
-        ///    Creates a new gpu program of the specified type.
+        ///    Creates a new GpuProgram.
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
+        /// <param name="name">
+        ///    Name of the program to create.
+        /// </param>
+        /// <param name="type">
+        ///    Type of the program to create, i.e. vertex or fragment.
+        /// </param>
+        /// <param name="syntaxCode">
+        ///    Syntax of the program, i.e. vs_1_1, arbvp1, etc.
+        /// </param>
+        /// <returns>
+        ///    A new instance of GpuProgram.
+        /// </returns>
         public abstract GpuProgram Create(string name, GpuProgramType type, string syntaxCode);
+
+        /// <summary>
+        ///    Create a new, unloaded GpuProgram from a file of assembly.
+        /// </summary>
+        /// <remarks>
+        ///    Use this method in preference to the 'load' methods if you wish to define
+        ///    a GpuProgram, but not load it yet; useful for saving memory.
+        /// </remarks>
+        /// <param name="name">
+        ///    The name of the program.
+        /// </param>
+        /// <param name="fileName">
+        ///    The file to load.
+        /// </param>
+        /// <param name="syntaxCode">
+        ///    Name of the syntax to use for the program, i.e. vs_1_1, arbvp1, etc.
+        /// </param>
+        /// <returns>
+        ///    An unloaded GpuProgram instance.
+        /// </returns>
+        public virtual GpuProgram CreateProgram(string name, string fileName, GpuProgramType type, string syntaxCode) {
+            GpuProgram program = Create(name, type, syntaxCode);
+            program.SourceFile = fileName;
+            resourceList[name] = program;
+            return program;
+        }
+
+        /// <summary>
+        ///    Create a new, unloaded GpuProgram from a string of assembly code.
+        /// </summary>
+        /// <remarks>
+        ///    Use this method in preference to the 'load' methods if you wish to define
+        ///    a GpuProgram, but not load it yet; useful for saving memory.
+        /// </remarks>
+        /// <param name="name">
+        ///    The name of the program.
+        /// </param>
+        /// <param name="source">
+        ///    The asm source of the program to create.
+        /// </param>
+        /// <param name="syntaxCode">
+        ///    Name of the syntax to use for the program, i.e. vs_1_1, arbvp1, etc.
+        /// </param>
+        /// <returns>An unloaded GpuProgram instance.</returns>
+        public virtual GpuProgram CreateProgramFromString(string name, string source, GpuProgramType type, string syntaxCode) {
+            GpuProgram program = Create(name, type, syntaxCode);
+            program.Source = source;
+            resourceList[name] = program;
+            return program;
+        }
 
         /// <summary>
         ///    Creates a new GpuProgramParameters instance which can be used to bind parameters 
@@ -98,10 +161,19 @@ namespace Axiom.Graphics
         ///    As with all types of ResourceManager, this class will search for the file in
         ///    all resource locations it has been configured to look in.
         /// </remarks>
-        /// <param name="fileName">The file to load, which will also become the 
-        ///    identifying name of the GpuProgram which is returned.</param>
-        /// <param name="type">Type of program to create.</param>
-        public virtual GpuProgram Load(string fileName, GpuProgramType type, string syntaxCode) {
+        /// <param name="name">
+        ///    Identifying name of the program to load.
+        /// </param>
+        /// <param name="fileName">
+        ///    The file to load.
+        /// </param>
+        /// <param name="type">
+        ///    Type of program to create.
+        /// </param>
+        /// <param name="syntaxCode">
+        ///    Syntax code of the program, i.e. vs_1_1, arbvp1, etc.
+        /// </param>
+        public virtual GpuProgram Load(string name, string fileName, GpuProgramType type, string syntaxCode) {
             GpuProgram program = Create(fileName, type, syntaxCode);
             base.Load(program, 1);
             return program;
@@ -115,12 +187,22 @@ namespace Axiom.Graphics
         ///    As with all types of ResourceManager, this class will search for the file in
         ///    all resource locations it has been configured to look in.
         /// </remarks>
-        /// <param name="name">Name used to identify this program.</param>
-        /// <param name="type">Type of program to create.</param>
-        public virtual GpuProgram Load(string name, string source, GpuProgramType type, string syntaxCode) {
+        /// <param name="name">
+        ///    Name used to identify this program.
+        /// </param>
+        /// <param name="source">
+        ///    Source code of the program to load.
+        /// </param>
+        /// <param name="type">
+        ///    Type of program to create.
+        /// </param>
+        /// <param name="syntaxCode">
+        ///    Syntax code of the program, i.e. vs_1_1, arbvp1, etc.
+        /// </param>
+        public virtual GpuProgram LoadFromString(string name, string source, GpuProgramType type, string syntaxCode) {
             GpuProgram program = Create(name, type, syntaxCode);
-            base.Load(program, 1);
             program.Source = source;
+            base.Load(program, 1);
             return program;
         }
 
@@ -134,22 +216,25 @@ namespace Axiom.Graphics
 
 		#endregion
 		
+        #region Properties
+		
+        #endregion
+
         #region Implementation of ResourceManager
 
-        /// <summary>
-        ///    New version of the ResourceManager indexer, returning a typed GpuProgram.
-        /// </summary>
-        public new GpuProgram this[string name] {
-            get {
-                return (GpuProgram)resourceList[name];
+        public new GpuProgram GetByName(string name) {
+            // look for a high level program first
+            GpuProgram program = HighLevelGpuProgramManager.Instance.GetByName(name);
+
+            // return if found
+            if(program != null) {
+                return program;
             }
+
+            // return low level program
+            return (GpuProgram)base.GetByName(name);
         }
 
         #endregion
-
-		#region Properties
-		
-		#endregion
-
 	}
 }

@@ -70,6 +70,11 @@ namespace Axiom.Graphics {
         [ScriptEnum("INVERSE_WORLDVIEW_MATRIX")]
         InverseWorldViewMatrix,
         /// <summary>
+        ///    Global ambient light color.
+        /// </summary>
+        [ScriptEnum("AMBIENT_LIGHT_COLOR")]
+        AmbientLightColor,
+        /// <summary>
         ///    Light diffuse color.  Index determined when setting up auto constants.
         /// </summary>
         [ScriptEnum("LIGHT_DIFFUSE_COLOR")]     

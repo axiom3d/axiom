@@ -33,10 +33,13 @@ namespace Axiom.Graphics
 	/// <summary>
 	/// 	Defines a program which runs on the GPU such as a vertex or fragment program.
 	/// </summary>
-	public abstract class GpuProgram : Resource
-	{
-		#region Fields
+    public abstract class GpuProgram : Resource {
+        #region Fields
 		
+        /// <summary>
+        ///    The name of the file to load from source (may be blank).
+        /// </summary>
+        protected string fileName;
         /// <summary>
         ///    The assembler source of this program.
         /// </summary>
@@ -54,25 +57,25 @@ namespace Axiom.Graphics
         /// </summary>
         protected GpuProgramType type;
 
-		#endregion Fields
+        #endregion Fields
 		
-		#region Constructors
+        #region Constructors
 		
         /// <summary>
         ///    Constructor for creating
         /// </summary>
         /// <param name="name"></param>
         /// <param name="type"></param>
-		public GpuProgram(string name, GpuProgramType type, string syntaxCode) {
+        public GpuProgram(string name, GpuProgramType type, string syntaxCode) {
             this.type = type;
             this.name = name;
             this.syntaxCode = syntaxCode;
             this.loadFromFile = true;
-		}
+        }
 		
         #endregion Constructors
 		
-		#region Methods
+        #region Methods
 		
         /// <summary>
         ///    
@@ -84,7 +87,7 @@ namespace Axiom.Graphics
 
             // load from file and get the source string from it
             if(loadFromFile) {
-                Stream stream = GpuProgramManager.Instance.FindResourceData(name);
+                Stream stream = GpuProgramManager.Instance.FindResourceData(fileName);
                 StreamReader reader = new StreamReader(stream, System.Text.Encoding.ASCII);
                 source = reader.ReadToEnd();
             }
@@ -100,20 +103,63 @@ namespace Axiom.Graphics
         /// </summary>
         protected abstract void LoadFromSource();    
     
-		#endregion
+        #endregion
 		
-		#region Properties
+        #region Properties
+
+        /// <summary>
+        ///    Returns the GpuProgram which should be bound to the pipeline.
+        /// </summary>
+        /// <remarks>
+        ///    This method is simply to allow some subclasses of GpuProgram to delegate
+        ///    the program which is bound to the pipeline to a delegate, if required.
+        /// </remarks>
+        public virtual GpuProgram BindingDelegate {
+            get {
+                return this;
+            }
+        }
+
+        /// <summary>
+        ///    Returns whether this program can be supported on the current renderer and hardware.
+        /// </summary>
+        public virtual bool IsSupported {
+            get {
+                return GpuProgramManager.Instance.IsSyntaxSupported(syntaxCode);
+            }
+        }
 		
         /// <summary>
-        ///    Gets the source assembler code for this program.
+        ///    Gets/Sets the source assembler code for this program.
         /// </summary>
+        /// <remarks>
+        ///    Setting this will have no effect until you (re)load the program.
+        /// </remarks>
         public string Source {
             get {
                 return source;
             }
             set {
                 source = value;
+                fileName = "";
                 loadFromFile = false;
+            }
+        }
+
+        /// <summary>
+        ///    Gets/Sets the source file for this program.
+        /// </summary>
+        /// <remarks>
+        ///    Setting this will have no effect until you (re)load the program.
+        /// </remarks>
+        public string SourceFile {
+            get {
+                return fileName;
+            }
+            set {
+                fileName = value;
+                source = "";
+                loadFromFile = true;
             }
         }
 

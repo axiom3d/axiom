@@ -212,10 +212,10 @@ namespace Axiom.Graphics
             this.index = index;
 
             // color defaults
-            ambient = ColorEx.FromColor(System.Drawing.Color.White);
-            diffuse = ColorEx.FromColor(System.Drawing.Color.White);
-            specular = ColorEx.FromColor(System.Drawing.Color.Black);
-            emissive = ColorEx.FromColor(System.Drawing.Color.Black);
+            ambient = ColorEx.White;
+            diffuse = ColorEx.White;
+            specular = ColorEx.Black;
+            emissive = ColorEx.Black;
             
             // default blending (overwrite)
             sourceBlendFactor = SceneBlendFactor.One;
@@ -462,7 +462,7 @@ namespace Axiom.Graphics
         ///    If you specify false, so other parameters are necessary, and this is the default behaviour for passs.
         /// </param>
         public void SetFog(bool overrideScene) {
-            SetFog(overrideScene, FogMode.None, ColorEx.FromColor(System.Drawing.Color.White), 0.001f, 0.0f, 1.0f);
+            SetFog(overrideScene, FogMode.None, ColorEx.White, 0.001f, 0.0f, 1.0f);
         }
 
         /// <summary>
@@ -478,7 +478,7 @@ namespace Axiom.Graphics
         ///    defined in the enum FogMode.
         /// </param>
         public void SetFog(bool overrideScene, FogMode mode) {
-            SetFog(overrideScene, mode, ColorEx.FromColor(System.Drawing.Color.White), 0.001f, 0.0f, 1.0f);
+            SetFog(overrideScene, mode, ColorEx.White, 0.001f, 0.0f, 1.0f);
         }
 
         /// <summary>

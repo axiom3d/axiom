@@ -29,8 +29,6 @@ using System.Collections;
 
 namespace Axiom.Collections {
 
-    public delegate bool CollectionHandler(object source, System.EventArgs e);
-
     /// <summary>
     ///		Serves as a basis for strongly typed collections in the engine.
     /// </summary>

@@ -339,7 +339,7 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="show"></param>
         public void ShowDebugOverlay(bool show) {
-            Overlay o = OverlayManager.Instance["Core/DebugOverlay"];
+            Overlay o = OverlayManager.Instance.GetByName("Core/DebugOverlay");
 
             if(o == null) {
                 throw new Exception(string.Format("Could not find overlay named '{0}'.", "Core/DebugOverlay"));
@@ -528,6 +528,7 @@ namespace Axiom.Core {
             SceneManagerList.Init();
             OverlayManager.Init();
             GuiManager.Init();
+            HighLevelGpuProgramManager.Init();
 
             GarbageManager.Instance.Add(ParticleSystemManager.Instance);
             GarbageManager.Instance.Add(MaterialManager.Instance);
@@ -539,28 +540,36 @@ namespace Axiom.Core {
         ///		Exposes FPS stats to anyone who cares.
         /// </summary>
         public int CurrentFPS {
-            get { return (int)currentFPS; }
+            get { 
+                return (int)currentFPS; 
+            }
         }
 
         /// <summary>
         ///		Exposes FPS stats to anyone who cares.
         /// </summary>
         public int BestFPS {
-            get { return (int)highestFPS; }
+            get { 
+                return (int)highestFPS; 
+            }
         }
 
         /// <summary>
         ///		Exposes FPS stats to anyone who cares.
         /// </summary>
         public int WorstFPS {
-            get { return (int)lowestFPS; }
+            get { 
+                return (int)lowestFPS; 
+            }
         }
 
         /// <summary>
         ///		Exposes FPS stats to anyone who cares.
         /// </summary>
         public int AverageFPS {
-            get { return (int)averageFPS; }
+            get { 
+                return (int)averageFPS; 
+            }
         }
 
         #region Implementation of IDisposable
@@ -581,7 +590,7 @@ namespace Axiom.Core {
         /// <summary>
         ///		Used to manually fire the FrameStarted event.
         /// </summary>
-        /// <param name="pEventArgs"></param>
+        /// <param name="eventArgs"></param>
         protected bool OnFrameStarted(FrameEventArgs eventArgs) {
             // call the event, which automatically fires all registered handlers
             if(this.FrameStarted != null) {
@@ -595,7 +604,7 @@ namespace Axiom.Core {
         /// <summary>
         ///		Used to manually fire the FrameEnded event.
         /// </summary>
-        /// <param name="pEventArgs"></param>
+        /// <param name="eventArgs"></param>
         protected bool OnFrameEnded(FrameEventArgs eventArgs) {
             // call the event, which automatically fires all registered handlers
             if(this.FrameEnded != null) {

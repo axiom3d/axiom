@@ -35,6 +35,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin_GuiElements", "Plugi
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin_CgProgramManager", "Plugin_CgProgramManager\Plugin_CgProgramManager.csproj", "{D61C988B-DECE-491C-965B-296EA135D68E}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -77,6 +81,10 @@ Global
 		{A70A137F-FD72-4045-BBC4-1171B9E828A2}.Debug.Build.0 = Debug|.NET
 		{A70A137F-FD72-4045-BBC4-1171B9E828A2}.Release.ActiveCfg = Release|.NET
 		{A70A137F-FD72-4045-BBC4-1171B9E828A2}.Release.Build.0 = Release|.NET
+		{D61C988B-DECE-491C-965B-296EA135D68E}.Debug.ActiveCfg = Debug|.NET
+		{D61C988B-DECE-491C-965B-296EA135D68E}.Debug.Build.0 = Debug|.NET
+		{D61C988B-DECE-491C-965B-296EA135D68E}.Release.ActiveCfg = Release|.NET
+		{D61C988B-DECE-491C-965B-296EA135D68E}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(SolutionItems) = postSolution
 		Solution Items\ode.dll = Solution Items\ode.dll

@@ -1,33 +1,51 @@
-Particles/Flare
+
+material Particles/Flare
 {
-	lighting off
-	scene_blend add
-	depth_write off
-	
-	// texture 0
+	technique
 	{
-		texture Flare.png
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture Flare.png
+			}
+		}
 	}
 }
-
-Particles/Flare2
+material Particles/Flare2
 {
-	lighting off
-	scene_blend add
-	depth_write off
-	
-	// texture 0
+	technique
 	{
-		texture flaretrail.png
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture flaretrail.png
+			}
+		}
 	}
 }
-
-Particles/Rain
+material Particles/Rain
 {
-    	diffuse 1.0 1.0 1.0
-	depth_write off
-	scene_blend modulate
+	technique
 	{
-		texture basic_droplet.png
+		pass
+		{
+			scene_blend modulate
+			depth_write off
+
+			texture_unit
+			{
+				texture basic_droplet.png
+			}
+		}
 	}
 }

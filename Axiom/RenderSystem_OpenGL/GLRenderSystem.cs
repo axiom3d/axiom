@@ -580,7 +580,7 @@ namespace RenderSystem_OpenGL {
             float[] vals = tempColorVals;
             
             // ambient
-            //if(lastAmbient == null || lastAmbient != ambient) {
+            //if(lastAmbient == null || lastAmbient.CompareTo(ambient) != 0) {
                 ambient.ToArrayRGBA(vals);
                 Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_AMBIENT, vals);
                 
@@ -588,7 +588,7 @@ namespace RenderSystem_OpenGL {
             //}
 
             // diffuse
-            //if(lastDiffuse == null || lastDiffuse != diffuse) {
+            //if(lastDiffuse == null || lastDiffuse.CompareTo(diffuse) != 0) {
                 vals[0] = diffuse.r; vals[1] = diffuse.g; vals[2] = diffuse.b; vals[3] = diffuse.a;
                 Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_DIFFUSE, vals);
 
@@ -596,27 +596,27 @@ namespace RenderSystem_OpenGL {
             //}
 
             // specular
-            if(lastSpecular == null || lastSpecular != specular) {
+            //if(lastSpecular == null || lastSpecular.CompareTo(specular) != 0) {
                 vals[0] = specular.r; vals[1] = specular.g; vals[2] = specular.b; vals[3] = specular.a;
                 Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_SPECULAR, vals);
 
                 lastSpecular = specular;
-            }
+            //}
 
             // emissive
-            if(lastEmissive == null || lastEmissive != emissive) {
+            //if(lastEmissive == null || lastEmissive.CompareTo(emissive) != 0) {
                 vals[0] = emissive.r; vals[1] = emissive.g; vals[2] = emissive.b; vals[3] = emissive.a;
                 Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_EMISSION, vals);
 
                 lastEmissive = emissive;
-            }
+            //}
 
             // shininess
-            if(lastShininess != shininess) {
+            //if(lastShininess != shininess) {
                 Gl.glMaterialf(Gl.GL_FRONT_AND_BACK, Gl.GL_SHININESS, shininess);
 
                 lastShininess = shininess;
-            }
+            //}
         }
 
         /// <summary>
@@ -1109,7 +1109,7 @@ namespace RenderSystem_OpenGL {
         /// <param name="textureName"></param>
         protected override void SetTexture(int stage, bool enabled, string textureName) {
             // load the texture
-            GLTexture texture = (GLTexture)TextureManager.Instance[textureName];
+            GLTexture texture = (GLTexture)TextureManager.Instance.GetByName(textureName);
 
             int lastTextureType = textureTypes[stage];
 

@@ -915,7 +915,7 @@ namespace Axiom.Core {
         public Material Material {
             get {
                 if(nodeMaterial == null) {
-                    nodeMaterial = MaterialManager.Instance["Core/NodeMaterial"];
+                    nodeMaterial = MaterialManager.Instance.GetByName("Core/NodeMaterial");
                     
                     if(nodeMaterial == null) {
                         throw new Exception("Could not find material 'Core/NodeMaterial'");

@@ -1,59 +1,68 @@
-// Skybox borrowed from the free Cg SDK (http://www.nvidia.com/cg)
-Skybox/CloudyHills
-{
-	// No dynamic lighting, fully lit
-	lighting off
-	// Depth writing off (always display stuff in front of it)
-	depth_write off
 
-	// Texture layer 0
+material Skybox/CloudyHills
+{
+	technique
 	{
-		// 6-sided texture, CloudyHills_fr.jpg, CloudyHills_up.jpg etc
-		cubic_texture CloudyHills.png separateUV
-		// clamp to avoid fuzziness at edges due to filtering
-		tex_address_mode clamp
+		pass
+		{
+			lighting off
+			depth_write off
+
+			texture_unit
+			{
+				cubic_texture CloudyHills_fr.png CloudyHills_bk.png CloudyHills_lf.png CloudyHills_rt.png CloudyHills_up.png CloudyHills_dn.png separateUV
+				tex_address_mode clamp
+			}
+		}
 	}
 }
-
-Skybox/Space
+material Skybox/Space
 {
-	// No dynamic lighting, fully lit
-	lighting off
-	// Depth writing off (always display stuff in front of it)
-	depth_write off
-
-	// Texture layer 0
+	technique
 	{
-		// 6-sided texture		
-		cubic_texture stevecube.jpg separateUV
-		// clamp to avoid fuzziness at edges due to filtering
-		tex_address_mode clamp
-	}	
+		pass
+		{
+			lighting off
+			depth_write off
+
+			texture_unit
+			{
+				cubic_texture stevecube_fr.jpg stevecube_bk.jpg stevecube_lf.jpg stevecube_rt.jpg stevecube_up.jpg stevecube_dn.jpg separateUV
+				tex_address_mode clamp
+			}
+		}
+	}
 }
-
-Skyplane/Space
+material Skyplane/Space
 {
-	// No dynamic lighting, fully lit
-	lighting off
-	// Depth writing off (always display stuff in front of it)
-	depth_write off
-
+	technique
 	{
-		texture spacesky.jpg
-	}	
+		pass
+		{
+			lighting off
+			depth_write off
+
+			texture_unit
+			{
+				texture spacesky.jpg
+			}
+		}
+	}
 }
-
-// Scrolling cloudy sky
-Examples/CloudySky
+material Examples/CloudySky
 {
-	// No dynamic lighting, fully lit
-	lighting off
-	// Depth writing off (always display stuff in front of it)
-	depth_write off
-
-	// Texture layer 0
+	technique
 	{
-		texture clouds.jpg
-		scroll_anim 0.15 0
+		pass
+		{
+			lighting off
+			depth_write off
+
+			texture_unit
+			{
+				texture clouds.jpg
+				scroll_anim 0.15 0
+			}
+		}
 	}
 }

@@ -67,7 +67,7 @@ namespace Axiom.MathLib {
         /// </summary>
         /// <param name="degrees"></param>
         /// <returns></returns>
-        static public float DegreesToRadians(float degrees) {
+        public static float DegreesToRadians(float degrees) {
             return degrees * RADIANS_PER_DEGREE;
         }
 
@@ -76,7 +76,7 @@ namespace Axiom.MathLib {
         /// </summary>
         /// <param name="radians"></param>
         /// <returns></returns>
-        static public float RadiansToDegrees(float radians) {
+        public static float RadiansToDegrees(float radians) {
             return radians * DEGREES_PER_RADIAN;
         }
 
@@ -85,7 +85,7 @@ namespace Axiom.MathLib {
         /// </summary>
         /// <param name="angle"></param>
         /// <returns></returns>
-        static public float Sin(float angle) {
+        public static float Sin(float angle) {
             return (float)Math.Sin(angle);
         }
 
@@ -94,7 +94,7 @@ namespace Axiom.MathLib {
         /// </summary>
         /// <param name="angle"></param>
         /// <returns></returns>
-        static public float Cos(float angle) {
+        public static float Cos(float angle) {
             return (float)Math.Cos(angle);
         }
 
@@ -103,7 +103,7 @@ namespace Axiom.MathLib {
         /// </summary>
         /// <param name="angle"></param>
         /// <returns></returns>
-        static public float ACos(float angle) {
+        public static float ACos(float angle) {
            
             // HACK: Ok, this needs to be looked at.  The decimal precision of float values can sometimes be 
             // *slightly* off from what is loaded from .skeleton files.  In some scenarios when we end up having 
@@ -120,7 +120,7 @@ namespace Axiom.MathLib {
         /// </summary>
         /// <param name="angle"></param>
         /// <returns></returns>
-        static public float ASin(float angle) {
+        public static float ASin(float angle) {
             return (float)Math.Asin(angle);
         }
 
@@ -139,7 +139,7 @@ namespace Axiom.MathLib {
         /// <remarks>This is one of the more expensive math operations.  Avoid when possible.</remarks>
         /// <param name="number"></param>
         /// <returns></returns>
-        static public float Sqrt(float number) {
+        public static float Sqrt(float number) {
             return (float)Math.Sqrt(number);
         }
 
@@ -148,7 +148,7 @@ namespace Axiom.MathLib {
         /// </summary>
         /// <param name="number"></param>
         /// <returns></returns>
-        static public float Abs(float number) {
+        public static float Abs(float number) {
             return Math.Abs(number);
         }
 
@@ -157,7 +157,7 @@ namespace Axiom.MathLib {
         /// </summary>
         /// <param name="angle"></param>
         /// <returns></returns>
-        static public float Tan(float angle) {
+        public static float Tan(float angle) {
             return (float)Math.Tan(angle);
         }
 
@@ -167,7 +167,7 @@ namespace Axiom.MathLib {
         /// <param name="value1"></param>
         /// <param name="value2"></param>
         /// <returns></returns>
-        static public float Max(float value1, float value2) {
+        public static float Max(float value1, float value2) {
             return Math.Max(value1, value2);
         }
 
@@ -177,7 +177,7 @@ namespace Axiom.MathLib {
         /// <param name="value1"></param>
         /// <param name="value2"></param>
         /// <returns></returns>
-        static public float Min(float value1, float value2) {
+        public static float Min(float value1, float value2) {
             return Math.Min(value1, value2);
         }
 
@@ -185,7 +185,7 @@ namespace Axiom.MathLib {
         /// 
         /// </summary>
         /// <returns></returns>
-        static public float UnitRandom() {
+        public static float UnitRandom() {
             return (float)random.Next(Int32.MaxValue) / (float)Int32.MaxValue;
         }
 
@@ -193,7 +193,7 @@ namespace Axiom.MathLib {
         /// 
         /// </summary>
         /// <returns></returns>
-        static public float SymmetricRandom() {
+        public static float SymmetricRandom() {
             return 2.0f * UnitRandom() - 1.0f;
         }
 
@@ -205,7 +205,7 @@ namespace Axiom.MathLib {
         /// <param name="ray"></param>
         /// <param name="box"></param>
         /// <returns></returns>
-        static public Pair Intersects(Ray ray, AxisAlignedBox box) {
+        public static Pair Intersects(Ray ray, AxisAlignedBox box) {
             if(box.IsNull) {
                 return new Pair(false, 0);
             }

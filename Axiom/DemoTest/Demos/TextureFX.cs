@@ -47,7 +47,7 @@ namespace Demos {
 
             // set some ambient light
             scene.TargetRenderSystem.LightingEnabled = true;
-            scene.AmbientLight = ColorEx.FromColor(Color.Gray);
+            scene.AmbientLight = ColorEx.Gray;
 
             // create a point light (default)
             Light light = scene.CreateLight("MainLight");

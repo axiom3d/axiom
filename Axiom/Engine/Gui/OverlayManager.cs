@@ -67,13 +67,8 @@ namespace Axiom.Gui {
 
         #endregion
 
-        /// <summary>
-        ///    Indexer that gets a material by name.
-        /// </summary>
-        public new Overlay this[string name] {
-            get {
-                return (Overlay)base[name];
-            }
+        public new Overlay GetByName(string name) {
+            return (Overlay)base.GetByName(name);
         }
 
         /// <summary>

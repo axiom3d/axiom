@@ -60,15 +60,15 @@ namespace Demos {
         protected override void CreateScene() {
 
             // create a 3d line
-            Line3d line = new Line3d(new Vector3(0, 0, 30), Vector3.UnitY, 50, ColorEx.FromColor(System.Drawing.Color.Blue));
+            Line3d line = new Line3d(new Vector3(0, 0, 30), Vector3.UnitY, 50, ColorEx.Blue);
 
             Triangle tri = new Triangle(
                 new Vector3(-25, 0, 0),
                 new Vector3(0, 50, 0),
                 new Vector3(25, 0, 0),
-                ColorEx.FromColor(Color.Red),
-                ColorEx.FromColor(Color.Blue),
-                ColorEx.FromColor(Color.Green));
+                ColorEx.Red,
+                ColorEx.Blue,
+                ColorEx.Green);
 
             // create a node for the line
             SceneNode node = (SceneNode)scene.RootSceneNode.CreateChild();

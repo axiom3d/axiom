@@ -78,7 +78,7 @@ namespace Axiom.Animating {
         /// <param name="fileName"></param>
         /// <param name="priority"></param>
         public Skeleton Load(string fileName, int priority) {
-            Skeleton skeleton = this[fileName];
+            Skeleton skeleton = GetByName(fileName);
 
             if(skeleton == null) {
                 // create and load the skeleton
@@ -89,13 +89,8 @@ namespace Axiom.Animating {
             return skeleton;
         }
 
-        /// <summary>
-        ///    Indexer for lookup up skeletons by name.
-        /// </summary>
-        public new Skeleton this[string name] {
-            get {
-                return (Skeleton)base[name];
-            }
+        public new Skeleton GetByName(string name) {
+            return (Skeleton)base.GetByName(name);
         }
 
         #endregion Implementation of ResourceManager

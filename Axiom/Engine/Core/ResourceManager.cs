@@ -121,7 +121,7 @@ namespace Axiom.Core {
             resource.Touch();
 
             // cache the resource
-            resourceList.Add(resource.Name, resource);
+            resourceList[resource.Name] = resource;
         }
 
         /// <summary>
@@ -187,12 +187,12 @@ namespace Axiom.Core {
         ///		applies to ALL resources, not just the one managed by the subclass in question.
         /// </remarks>
         /// <param name="path"></param>
-        static public void AddCommonSearchPath(string path) {
+        public static void AddCommonSearchPath(string path) {
             // record the common file path
             AddCommonArchive(path, "Folder");
         }
 
-        static public StringCollection GetAllCommonNamesLike(string startPath, string extension) {
+        public static StringCollection GetAllCommonNamesLike(string startPath, string extension) {
             StringCollection allFiles = new StringCollection();
 
             for(int i = 0; i < commonArchives.Count; i++) {
@@ -244,7 +244,7 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="name"></param>
         /// <param name="type"></param>
-        static public void AddCommonArchive(string name, string type) {
+        public static void AddCommonArchive(string name, string type) {
             Archive archive = null;
 
             switch(type) {
@@ -268,6 +268,21 @@ namespace Axiom.Core {
 
             // add the archive to the common archives
             commonArchives.Add(archive);
+        }
+
+        /// <summary>
+        ///    Gets a reference to the specified named resource.
+        /// </summary>
+        /// <param name="name">Name of the resource to retreive.</param>
+        /// <returns></returns>
+        public virtual Resource GetByName(string name) {
+            Debug.Assert(resourceList != null, "A resource was being retreived, but the list of Resources is null.", "");
+
+            // find the resource in the Hashtable and return it
+            if(resourceList[name] != null)
+                return (Resource)resourceList[name];
+            else
+                return null;
         }
 
         #endregion
@@ -312,7 +327,7 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        static public Stream FindCommonResourceData(string fileName) {
+        public static Stream FindCommonResourceData(string fileName) {
 
             // search common file cache			
             if(commonFilePaths.ContainsKey(fileName)) {
@@ -324,25 +339,6 @@ namespace Axiom.Core {
 			
             // TODO: Load resources manually
             throw new Axiom.Exceptions.AxiomException(string.Format("Resource '{0}' could not be found.  Be sure it is located in a known directory.", fileName));
-        }
-
-        #endregion
-
-        #region Operator overloads
-
-        /// <summary>
-        ///		
-        /// </summary>
-        public virtual Resource this[string name] {
-            get {
-                Debug.Assert(resourceList != null, "A resource was being retreived, but the list of Resources is null.", "");
-
-                // find the resource in the Hashtable and return it
-                if(resourceList.ContainsKey(name))
-                    return (Resource)resourceList[name];
-                else
-                    return null;
-            }
         }
 
         #endregion

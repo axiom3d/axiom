@@ -74,8 +74,8 @@ namespace Plugin_GuiElements
             isTransparent = false;
             alignment = HorizontalAlignment.Left;
 
-            colorTop = ColorEx.FromColor(System.Drawing.Color.White);
-            colorBottom = ColorEx.FromColor(System.Drawing.Color.White);
+            colorTop = ColorEx.White;
+            colorBottom = ColorEx.White;
             haveColorsChanged = true;
 
             charHeight = 0.02f;
@@ -464,7 +464,7 @@ namespace Plugin_GuiElements
                 font = (Font)FontManager.Instance.Create(value);
                 font.Load();
                 // note: font materials are created with lighting and depthcheck disabled by default
-                material = MaterialManager.Instance["Fonts." + value];
+                material = MaterialManager.Instance.GetByName("Fonts." + value);
                 material.Load();
 
                 geomPositionsOutOfDate = true;

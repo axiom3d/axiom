@@ -85,10 +85,10 @@ namespace Axiom.Core {
             // bind the color buffer
             binding.SetBinding(COLOR, buffer);
 
-            Material mat = MaterialManager.Instance["Core/WireBB"];
+            Material mat = MaterialManager.Instance.GetByName("Core/WireBB");
 
             if(mat == null) {
-                mat = MaterialManager.Instance["BaseWhite"];
+                mat = MaterialManager.Instance.GetByName("BaseWhite");
                 mat = mat.Clone("Core/WireBB");
                 mat.Lighting = false;
             }
@@ -123,7 +123,7 @@ namespace Axiom.Core {
                 int* pCol = (int*)colPtr.ToPointer();
 
                 for(int i = 0; i < vertexData.vertexCount; i++)
-                    pCol[i] = Engine.Instance.ConvertColor(ColorEx.FromColor(System.Drawing.Color.Red));
+                    pCol[i] = Engine.Instance.ConvertColor(ColorEx.Red);
             }
 
             // unlock the buffer

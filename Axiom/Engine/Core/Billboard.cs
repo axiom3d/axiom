@@ -60,7 +60,7 @@ namespace Axiom.Core {
         public Vector3 Position = Vector3.Zero;
         public Vector3 Direction = Vector3.Zero;
         public BillboardSet ParentSet;
-        public ColorEx Color = ColorEx.FromColor(System.Drawing.Color.White);
+        public ColorEx Color = ColorEx.White;
 
         #endregion
 
@@ -80,7 +80,7 @@ namespace Axiom.Core {
         public Billboard(Vector3 position, BillboardSet owner) {
             this.Position = position;
             this.ParentSet = owner;
-            this.Color = ColorEx.FromColor(System.Drawing.Color.White);
+            this.Color = ColorEx.White;
         }
 
         /// <summary>

@@ -95,7 +95,7 @@ namespace Axiom.Core {
         /// <param name="priority"></param>
         /// <returns></returns>
         public Texture Load(string name, TextureType type, int numMipMaps, float gamma, int priority) {
-            Texture texture = (Texture)this[name];
+            Texture texture = GetByName(name);
 
             if(texture == null) {
                 // create a new texture
@@ -155,9 +155,13 @@ namespace Axiom.Core {
             texture.LoadImage(image);
 
             // add the texture to the resource list
-            resourceList.Add(texture.Name, texture);
+            resourceList[texture.Name] = texture;
 
             return texture;
+        }
+
+        public new Texture GetByName(string name) {
+            return (Texture)base.GetByName(name);
         }
     }
 }

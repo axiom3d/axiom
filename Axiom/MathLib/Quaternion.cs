@@ -218,20 +218,81 @@ namespace Axiom.MathLib {
 
         #endregion
 
-        #region Static Properties
+        #region Properties
 
         /// <summary>
-        /// An Identity Quaternion.
+        ///    An Identity Quaternion.
         /// </summary>
-        static public Quaternion Identity {
-            get { return identityQuat; }
+        public static Quaternion Identity {
+            get { 
+                return identityQuat; 
+            }
         }
 
         /// <summary>
-        /// A Quaternion with all elements set to 0.0f;
+        ///    A Quaternion with all elements set to 0.0f;
         /// </summary>
-        static public Quaternion Zero {
-            get { return zeroQuat; }
+        public static Quaternion Zero {
+            get { 
+                return zeroQuat; 
+            }
+        }
+
+        /// <summary>
+        ///    Local X-axis portion of this rotation.
+        /// </summary>
+        public Vector3 XAxis {
+            get {
+                float fTx  = 2.0f * x;
+                float fTy  = 2.0f * y;
+                float fTz  = 2.0f * z;
+                float fTwy = fTy * w;
+                float fTwz = fTz * w;
+                float fTxy = fTy * x;
+                float fTxz = fTz * x;
+                float fTyy = fTy * y;
+                float fTzz = fTz * z;
+
+                return new Vector3(1.0f - (fTyy + fTzz), fTxy + fTwz, fTxz - fTwy);
+            }
+        }
+
+        /// <summary>
+        ///    Local Y-axis portion of this rotation.
+        /// </summary>
+        public Vector3 YAxis {
+            get {
+                float fTx  = 2.0f * x;
+                float fTy  = 2.0f * y;
+                float fTz  = 2.0f * z;
+                float fTwx = fTx * w;
+                float fTwz = fTz * w;
+                float fTxx = fTx * x;
+                float fTxy = fTy * x;
+                float fTyz = fTz * y;
+                float fTzz = fTz * z;
+
+                return new Vector3(fTxy - fTwz, 1.0f - (fTxx + fTzz), fTyz + fTwx);
+            }
+        }
+
+        /// <summary>
+        ///    Local Z-axis portion of this rotation.
+        /// </summary>
+        public Vector3 ZAxis {
+            get {
+                float fTx  = 2.0f * x;
+                float fTy  = 2.0f * y;
+                float fTz  = 2.0f * z;
+                float fTwx = fTx * w;
+                float fTwy = fTy * w;
+                float fTxx = fTx * x;
+                float fTxz = fTz * x;
+                float fTyy = fTy * y;
+                float fTyz = fTz * y;
+
+                return new Vector3(fTxz + fTwy, fTyz - fTwx, 1.0f - (fTxx+fTyy));
+            }
         }
 
         #endregion
@@ -245,7 +306,7 @@ namespace Axiom.MathLib {
         /// <param name="quatA"></param>
         /// <param name="quatB"></param>
         /// <returns></returns>
-        static public Quaternion Slerp(float time, Quaternion quatA, Quaternion quatB) {
+        public static Quaternion Slerp(float time, Quaternion quatA, Quaternion quatB) {
             // TODO: Add support for shortest path interpolation, change also required to KeyFrame and AnimationTrack
             float cos = quatA.Dot(quatB);
 
@@ -267,7 +328,7 @@ namespace Axiom.MathLib {
         /// <param name="angle">Value of an angle in radians.</param>
         /// <param name="axis">Arbitrary axis vector.</param>
         /// <returns></returns>
-        static public Quaternion FromAngleAxis(float angle, Vector3 axis) {
+        public static Quaternion FromAngleAxis(float angle, Vector3 axis) {
             Quaternion quat = new Quaternion();
 
             float halfAngle = 0.5f * angle;
@@ -290,7 +351,7 @@ namespace Axiom.MathLib {
         /// <param name="b"></param>
         /// <param name="q"></param>
         /// <returns></returns>
-        static public Quaternion Squad(float t, Quaternion p, Quaternion a, Quaternion b, Quaternion q) {
+        public static Quaternion Squad(float t, Quaternion p, Quaternion a, Quaternion b, Quaternion q) {
             float slerpT = 2.0f * t * (1.0f - t);
 
             // use spherical linear interpolation

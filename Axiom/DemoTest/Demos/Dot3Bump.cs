@@ -100,7 +100,7 @@ namespace Demos {
 
             // set ambient light and fog
             scene.AmbientLight = new ColorEx(1.0f, 1, 0.2f, 0.2f);
-            scene.SetFog(FogMode.Exp, ColorEx.FromColor(Color.White), 0.0002f, 0, 1);
+            scene.SetFog(FogMode.Exp, ColorEx.White, 0.0002f, 0, 1);
 
             // create a skydome
             scene.SetSkyDome(true, "Examples/DP3Sky", 5, 8, 4000, true, Quaternion.Identity);
@@ -146,7 +146,7 @@ namespace Demos {
             camera.LookAt(Vector3.Zero);
 
             // show overlay
-            Overlay overlay = OverlayManager.Instance["Example/DP3Overlay"];
+            Overlay overlay = OverlayManager.Instance.GetByName("Example/DP3Overlay");
             overlay.Show();
         }
 

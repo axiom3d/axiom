@@ -78,7 +78,9 @@ namespace RenderSystem_DirectX9
         public override void Unload() {
             base.Unload ();
 
-            vertexShader.Dispose();
+            if(vertexShader != null) {
+                vertexShader.Dispose();
+            }
         }
 
         /// <summary>
@@ -119,7 +121,9 @@ namespace RenderSystem_DirectX9
         public override void Unload() {
             base.Unload();
 
-            pixelShader.Dispose();
+            if(pixelShader != null) {
+                pixelShader.Dispose();
+            }
         }
 
         /// <summary>

@@ -96,7 +96,7 @@ namespace Axiom.Core {
             this.relativeHeight = height;
             this.zOrder = zOrder;
 
-            this.backColor = ColorEx.FromColor(System.Drawing.Color.Black);
+            this.backColor = ColorEx.Black;
             this.clearEveryFrame = true;
 
             // Calculate actual dimensions

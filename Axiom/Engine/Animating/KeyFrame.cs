@@ -64,7 +64,7 @@ namespace Axiom.Animating {
         /// Creates a new keyframe with the specified time.  
         /// Should really be created by AnimationTrack.CreateKeyFrame() instead.
         /// </summary>
-        /// <param name="pTime"></param>
+        /// <param name="time"></param>
         public KeyFrame(float time) {
             this.time = time;
             this.translate = new Vector3();

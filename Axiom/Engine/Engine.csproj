@@ -422,6 +422,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Core\IConfigurable.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Core\IPlugin.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

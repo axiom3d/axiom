@@ -123,9 +123,6 @@ namespace Axiom.Graphics {
         public Material(string name) {
             this.name = name;
             compilationRequired = true;
-
-            // TODO: Handle using a default mechanism
-            CreateTechnique().CreatePass();
         }
 
         #endregion
