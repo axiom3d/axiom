@@ -48,6 +48,9 @@ namespace Axiom.MathLib {
 
         #region Constructors
 
+        /// <summary>
+        ///		Creates a new 4 dimensional Vector.
+        /// </summary>
         public Vector4(float x, float y, float z, float w) {
             this.x = x;
             this.y = y;
@@ -57,8 +60,17 @@ namespace Axiom.MathLib {
 
         #endregion
 
-        #region Operator overloads
+        #region Operator overloads + CLS compliant method equivalents
 
+        /// <summary>
+        ///		
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <param name="matrix"></param>
+        /// <returns></returns>
+        public static Vector4 Multiply (Vector4 vector, Matrix4 matrix) {
+        	return vector * matrix;
+        }
         /// <summary>
         ///		
         /// </summary>

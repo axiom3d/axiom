@@ -67,6 +67,9 @@ namespace Axiom.MathLib {
 
         #region Constructors
 
+        /// <summary>
+        ///		Creates a new 3 dimensional Vector.
+        /// </summary>
         public Vector3(float x, float y, float z) {
             this.x = x;
             this.y = y;
@@ -75,7 +78,7 @@ namespace Axiom.MathLib {
 
         #endregion
 
-        #region Overloaded operators
+        #region Overloaded operators + CLS compliant method equivalents
 
         /// <summary>
         ///		User to compare two Vector3 instances for equality.
@@ -103,10 +106,30 @@ namespace Axiom.MathLib {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
+        public static Vector3 Multiply (Vector3 left, Vector3 right) {
+        	return left * right;
+        }
+        
+        /// <summary>
+        ///		Used when a Vector3 is multiplied by another vector.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         public static Vector3 operator * (Vector3 left, Vector3 right) {
             return new Vector3(left.x * right.x, left.y * right.y, left.z * right.z);
         }
 
+        /// <summary>
+        /// Used to divide a vector by a scalar value.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="scalar"></param>
+        /// <returns></returns>
+        public static Vector3 Divide (Vector3 left, float scalar) {
+        	return left / scalar;
+        }
+        
         /// <summary>
         /// Used to divide a vector by a scalar value.
         /// </summary>
@@ -134,10 +157,30 @@ namespace Axiom.MathLib {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
+        public static Vector3 Add (Vector3 left, Vector3 right) {
+        	return left + right;
+        }
+        
+        /// <summary>
+        ///		Used when a Vector3 is added to another Vector3.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         public static Vector3 operator + (Vector3 left, Vector3 right) {
             return new Vector3(left.x + right.x, left.y + right.y, left.z + right.z);
         }
 
+        /// <summary>
+        ///		Used when a Vector3 is multiplied by a scalar value.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="scalar"></param>
+        /// <returns></returns>
+        public static Vector3 Multiply (Vector3 left, float scalar) {
+        	return left * scalar;
+        }
+        
         /// <summary>
         ///		Used when a Vector3 is multiplied by a scalar value.
         /// </summary>
@@ -151,13 +194,33 @@ namespace Axiom.MathLib {
         /// <summary>
         ///		Used when a scalar value is multiplied by a Vector3.
         /// </summary>
-        /// <param name="left"></param>
         /// <param name="scalar"></param>
+        /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 operator * (float scalar, Vector3 left) {
-            return new Vector3(left.x * scalar, left.y * scalar, left.z * scalar);
+        public static Vector3 Multiply (float scalar, Vector3 right) {
+        	return scalar * right;
+        }
+        
+        /// <summary>
+        ///		Used when a scalar value is multiplied by a Vector3.
+        /// </summary>
+        /// <param name="scalar"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Vector3 operator * (float scalar, Vector3 right) {
+            return new Vector3(right.x * scalar, right.y * scalar, right.z * scalar);
         }
 
+        /// <summary>
+        ///		Used to subtract a Vector3 from another Vector3.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Vector3 Subtract (Vector3 left, Vector3 right) {
+        	return left - right;
+        }
+        
         /// <summary>
         ///		Used to subtract a Vector3 from another Vector3.
         /// </summary>
@@ -168,6 +231,19 @@ namespace Axiom.MathLib {
             return new Vector3(left.x - right.x, left.y - right.y, left.z - right.z);
         }
 
+
+        /// <summary>
+        ///		Used to negate the elements of a vector.
+        /// </summary>
+        /// <remarks>
+        ///		Uses unsafe pointer arithmetic to reduce the code required.
+        ///	</remarks>
+        /// <param name="left"></param>
+        /// <returns></returns>
+        public static Vector3 Negate (Vector3 left) {
+        	return -left;
+        }
+        
         /// <summary>
         ///		Used to negate the elements of a vector.
         /// </summary>

@@ -71,6 +71,9 @@ namespace Axiom.MathLib {
 
         #region Constructors
 
+        /// <summary>
+        ///		Creates a new Rotational Spline.
+        /// </summary>
         public RotationalSpline() {
             // intialize the vector collections
             pointList = new QuaternionCollection();

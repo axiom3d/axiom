@@ -57,6 +57,9 @@ namespace Axiom.MathLib {
         //			this.w = 1.0f;
         //		}
 
+        /// <summary>
+        ///		Creates a new Quaternion.
+        /// </summary>
         public Quaternion(float w, float x, float y, float z) {
             this.w = w;
             this.x = x;
@@ -66,7 +69,21 @@ namespace Axiom.MathLib {
 
         #endregion
 
-        #region Operator Overloads
+        #region Operator Overloads + CLS compliant method equivalents
+
+        /// <summary>
+        /// Used to multiply 2 Quaternions together.
+        /// </summary>
+        /// <remarks>
+        ///		Quaternion multiplication is not communative in most cases.
+        ///		i.e. p*q != q*p
+        /// </remarks>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Quaternion Multiply (Quaternion left, Quaternion right) {
+        	return left * right;
+        }
 
         /// <summary>
         /// Used to multiply 2 Quaternions together.
@@ -98,6 +115,17 @@ namespace Axiom.MathLib {
             return q;
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="quat"></param>
+        /// <param name="vector"></param>
+        /// <returns></returns>
+        public static Vector3 Multiply (Quaternion quat, Vector3 vector) {
+			return quat * vector;
+        }
+        
         /// <summary>
         /// 
         /// </summary>
@@ -126,6 +154,16 @@ namespace Axiom.MathLib {
         /// <param name="scalar"></param>
         /// <param name="right"></param>
         /// <returns></returns>
+        public static Quaternion Multiply (float scalar, Quaternion right) {
+        	return scalar * right;
+        }
+        
+        /// <summary>
+        /// Used when a float value is multiplied by a Quaternion.
+        /// </summary>
+        /// <param name="scalar"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         public static Quaternion operator*(float scalar, Quaternion right) {
             return new Quaternion(scalar * right.w, scalar * right.x, scalar * right.y, scalar * right.z);
         }
@@ -136,10 +174,30 @@ namespace Axiom.MathLib {
         /// <param name="left"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
+        public static Quaternion Multiply (Quaternion left, float scalar) {
+        	return left * scalar;
+        }
+        
+        /// <summary>
+        /// Used when a Quaternion is multiplied by a float value.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="scalar"></param>
+        /// <returns></returns>
         public static Quaternion operator*(Quaternion left, float scalar) {
             return new Quaternion(scalar * left.w, scalar * left.x, scalar * left.y, scalar * left.z);
         }
 
+        /// <summary>
+        /// Used when a Quaternion is added to another Quaternion.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Quaternion Add (Quaternion left, Quaternion right) {
+        	return left + right;
+        }
+        
         /// <summary>
         /// Used when a Quaternion is added to another Quaternion.
         /// </summary>
