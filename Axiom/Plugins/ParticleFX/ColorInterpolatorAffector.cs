@@ -206,7 +206,7 @@ namespace Axiom.ParticleFX {
 			public void Set(object target, string val) {
 				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
-				affector.timeAdj[0] = float.Parse(val);
+				affector.timeAdj[0] = ParseHelper.ParseFloat(val);
 			}
 
 			#endregion
@@ -224,7 +224,7 @@ namespace Axiom.ParticleFX {
 			public void Set(object target, string val) {
 				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
-				affector.timeAdj[1] = float.Parse(val);
+				affector.timeAdj[1] = ParseHelper.ParseFloat(val);
 			}
 
 			#endregion
@@ -242,7 +242,7 @@ namespace Axiom.ParticleFX {
 			public void Set(object target, string val) {
 				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
-				affector.timeAdj[2] = float.Parse(val);
+				affector.timeAdj[2] = ParseHelper.ParseFloat(val);
 			}
 
 			#endregion
@@ -260,7 +260,7 @@ namespace Axiom.ParticleFX {
 			public void Set(object target, string val) {
 				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
-				affector.timeAdj[3] = float.Parse(val);
+				affector.timeAdj[3] = ParseHelper.ParseFloat(val);
 			}
 
 			#endregion
@@ -278,7 +278,7 @@ namespace Axiom.ParticleFX {
 			public void Set(object target, string val) {
 				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
-				affector.timeAdj[4] = float.Parse(val);
+				affector.timeAdj[4] = ParseHelper.ParseFloat(val);
 			}
 
 			#endregion
@@ -296,7 +296,7 @@ namespace Axiom.ParticleFX {
 			public void Set(object target, string val) {
 				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
-				affector.timeAdj[5] = float.Parse(val);
+				affector.timeAdj[5] = ParseHelper.ParseFloat(val);
 			}
 
 			#endregion

@@ -194,7 +194,7 @@ namespace Axiom.SceneManagers.Bsp
 					if(attribParams[2] == "full")
 						shader.CloudHeight = 512;
 					else
-						shader.CloudHeight = float.Parse(attribParams[2]);
+						shader.CloudHeight = ParseHelper.ParseFloat(attribParams[2]);
 				}
 
 				// nearbox not supported
@@ -219,7 +219,7 @@ namespace Axiom.SceneManagers.Bsp
 
 				/*shader.Fog = true;
 				shader.FogColour = ParseHelper.ParseColor(fogValues);
-				shader.FogDistance = float.Parse(attribParams[4]);*/
+				shader.FogDistance = ParseHelper.ParseFloat(attribParams[4]);*/
 			}
 		}
 
@@ -257,7 +257,7 @@ namespace Axiom.SceneManagers.Bsp
 			// ANIMMAP
 			else if(attribParams[0] == "animmap")
 			{
-				pass.animFps = float.Parse(attribParams[1]);
+				pass.animFps = ParseHelper.ParseFloat(attribParams[1]);
 				pass.animNumFrames = attribParams.Length - 2;
 
 				for(uint frame = 0; frame < pass.animNumFrames; frame++)
@@ -331,17 +331,17 @@ namespace Axiom.SceneManagers.Bsp
 			{
 				if(attribParams[1] == "rotate")
 				{
-					pass.tcModRotate = -float.Parse(attribParams[2]) / 360; // +ve is clockwise degrees in Q3 shader, anticlockwise complete rotations in Ogre
+					pass.tcModRotate = -ParseHelper.ParseFloat(attribParams[2]) / 360; // +ve is clockwise degrees in Q3 shader, anticlockwise complete rotations in Ogre
 				}
 				else if(attribParams[1] == "scroll")
 				{
-					pass.tcModScroll[0] = float.Parse(attribParams[2]);
-					pass.tcModScroll[1] = float.Parse(attribParams[3]);
+					pass.tcModScroll[0] = ParseHelper.ParseFloat(attribParams[2]);
+					pass.tcModScroll[1] = ParseHelper.ParseFloat(attribParams[3]);
 				}
 				else if(attribParams[1] == "scale")
 				{
-					pass.tcModScale[0] = float.Parse(attribParams[2]);
-					pass.tcModScale[1] = float.Parse(attribParams[3]);
+					pass.tcModScale[0] = ParseHelper.ParseFloat(attribParams[2]);
+					pass.tcModScale[1] = ParseHelper.ParseFloat(attribParams[3]);
 				}
 				else if(attribParams[1] == "stretch")
 				{
@@ -356,20 +356,20 @@ namespace Axiom.SceneManagers.Bsp
 					else if(attribParams[2] == "inversesawtooth")
 						pass.tcModStretchWave = ShaderWaveType.InverseSawtooth;
 
-					pass.tcModStretchParams[0] = float.Parse(attribParams[3]);
-					pass.tcModStretchParams[1] = float.Parse(attribParams[4]);
-					pass.tcModStretchParams[2] = float.Parse(attribParams[5]);
-					pass.tcModStretchParams[3] = float.Parse(attribParams[6]);
+					pass.tcModStretchParams[0] = ParseHelper.ParseFloat(attribParams[3]);
+					pass.tcModStretchParams[1] = ParseHelper.ParseFloat(attribParams[4]);
+					pass.tcModStretchParams[2] = ParseHelper.ParseFloat(attribParams[5]);
+					pass.tcModStretchParams[3] = ParseHelper.ParseFloat(attribParams[6]);
 				}
 			}
 			// TURB
 			else if(attribParams[0] == "turb")
 			{
 				pass.tcModTurbOn = true;
-				pass.tcModTurb[0] = float.Parse(attribParams[2]);
-				pass.tcModTurb[1] = float.Parse(attribParams[3]);
-				pass.tcModTurb[2] = float.Parse(attribParams[4]);
-				pass.tcModTurb[3] = float.Parse(attribParams[5]);
+				pass.tcModTurb[0] = ParseHelper.ParseFloat(attribParams[2]);
+				pass.tcModTurb[1] = ParseHelper.ParseFloat(attribParams[3]);
+				pass.tcModTurb[2] = ParseHelper.ParseFloat(attribParams[4]);
+				pass.tcModTurb[3] = ParseHelper.ParseFloat(attribParams[5]);
 			}
 			// DEPTHFUNC
 			else if(attribParams[0] == "depthfunc")

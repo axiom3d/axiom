@@ -337,7 +337,7 @@ namespace Axiom.Overlays.Elements {
         public static void ParseTiling(string[] parms, params object[] objects) {
             Panel panel = (Panel)objects[0];
 
-            panel.SetTiling(float.Parse(parms[0]), float.Parse(parms[1]), int.Parse(parms[2]));
+            panel.SetTiling(ParseHelper.ParseFloat(parms[0]), ParseHelper.ParseFloat(parms[1]), int.Parse(parms[2]));
         }
 
         [AttributeParser("transparent", "Panel")]

@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using Axiom.Core;
@@ -9,6 +10,11 @@ namespace Axiom.Scripting {
     /// 	Class contining helper methods for parsing text files.
     /// </summary>
     public class ParseHelper {
+		/// <summary>
+		///		Culture info to use for parsing numeric data.
+		/// </summary>
+		private static CultureInfo englishCulture = new CultureInfo("en-US");
+
         #region Methods
 		
         /// <summary>
@@ -66,10 +72,10 @@ namespace Axiom.Scripting {
         /// <param name="val"></param>
         public static ColorEx ParseColor(string[] values) {
             ColorEx color = new ColorEx();
-            color.r = float.Parse(values[0]);
-            color.g = float.Parse(values[1]);
-            color.b = float.Parse(values[2]);
-            color.a = (values.Length > 3) ? float.Parse(values[3]) : 1.0f;
+            color.r = ParseFloat(values[0]);
+            color.g = ParseFloat(values[1]);
+            color.b = ParseFloat(values[2]);
+            color.a = (values.Length > 3) ? ParseFloat(values[3]) : 1.0f;
 
             return color;
         }
@@ -82,10 +88,10 @@ namespace Axiom.Scripting {
             ColorEx color = new ColorEx();
             string[] vals = val.Split(' ');
 
-            color.r = float.Parse(vals[0]);
-            color.g = float.Parse(vals[1]);
-            color.b = float.Parse(vals[2]);
-            color.a = (vals.Length == 4) ? float.Parse(vals[3]) : 1.0f;
+            color.r = ParseFloat(vals[0]);
+            color.g = ParseFloat(vals[1]);
+            color.b = ParseFloat(vals[2]);
+            color.a = (vals.Length == 4) ? ParseFloat(vals[3]) : 1.0f;
 
             return color;
         }
@@ -96,9 +102,9 @@ namespace Axiom.Scripting {
         /// <param name="val"></param>
         public static Vector3 ParseVector3(string[] values) {
             Vector3 vec = new Vector3();
-            vec.x = float.Parse(values[0]);
-            vec.y = float.Parse(values[1]);
-            vec.z = float.Parse(values[2]);
+            vec.x = ParseFloat(values[0]);
+            vec.y = ParseFloat(values[1]);
+            vec.z = ParseFloat(values[2]);
 
             return vec;
         }
@@ -111,9 +117,9 @@ namespace Axiom.Scripting {
             string[] values = val.Split(' ');
             
             Vector3 vec = new Vector3();
-            vec.x = float.Parse(values[0]);
-            vec.y = float.Parse(values[1]);
-            vec.z = float.Parse(values[2]);
+            vec.x = ParseFloat(values[0]);
+            vec.y = ParseFloat(values[1]);
+            vec.z = ParseFloat(values[2]);
 
             return vec;
         }
@@ -124,13 +130,26 @@ namespace Axiom.Scripting {
         /// <param name="val"></param>
         public static Vector4 ParseVector4(string[] values) {
             Vector4 vec = new Vector4();
-            vec.x = float.Parse(values[0]);
-            vec.y = float.Parse(values[1]);
-            vec.z = float.Parse(values[2]);
-            vec.w = float.Parse(values[3]);
+            vec.x = ParseFloat(values[0]);
+            vec.y = ParseFloat(values[1]);
+            vec.z = ParseFloat(values[2]);
+            vec.w = ParseFloat(values[3]);
 
             return vec;
         }
+
+		/// <summary>
+		///		Parse a float value from a string.
+		/// </summary>
+		/// <remarks>
+		///		Since our file formats assume the 'en-US' style format for numbers, we need to
+		///		let the framework know that where numbers are being parsed.
+		/// </remarks>
+		/// <param name="val">String value holding the float.</param>
+		/// <returns>A float representation of the string value.</returns>
+		public static float ParseFloat(string val) {
+			return float.Parse(val, englishCulture);
+		}
 
         /// <summary>
         ///		Helper method to nip/tuck the string before parsing it.  This includes trimming spaces from the beginning
