@@ -1715,7 +1715,8 @@ namespace Axiom.Serialization {
 
 				if(nextIsOpenBrace) {
 					if(line != "{") {
-						LogParseError(scriptContext, "Expecting 'left brace' but got {0} instead", line);
+                        // MONO: Couldn't put a literal "{" in the format string
+						LogParseError(scriptContext, "Expecting '{0}' but got {1} instead", "{", line);
 					}
 
 					nextIsOpenBrace = false;
