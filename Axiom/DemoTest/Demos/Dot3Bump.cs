@@ -179,28 +179,19 @@ namespace Demos {
             // switch materials
             if(input.IsKeyPressed(Keys.F1)) {
                 materialName = "Examples/DP3Mat1";
-
-                // set material
-                activeEntity.MaterialName = materialName;
             }
             if(input.IsKeyPressed(Keys.F2)) {
                 materialName = "Examples/DP3Mat2";
-
-                // set material
-                activeEntity.MaterialName = materialName;
             }
             if(input.IsKeyPressed(Keys.F3)) {
                 materialName = "Examples/DP3Mat3";
-
-                // set material
-                activeEntity.MaterialName = materialName;
             }
             if(input.IsKeyPressed(Keys.F4)) {
                 materialName = "Examples/DP3Mat4";
-
-                // set material
-                activeEntity.MaterialName = materialName;
             }
+
+            // set material
+            activeEntity.MaterialName = materialName;
 
             // update the light position, the light is projected and follows the camera
             light.Position = camera.Position;
