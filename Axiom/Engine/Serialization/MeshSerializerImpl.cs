@@ -76,8 +76,34 @@ namespace Axiom.Serialization {
 		#region Protected
 
 		protected virtual void ReadSubMeshNameTable(BinaryReader reader) {
-			IgnoreCurrentChunk(reader);
-		}
+            if (!IsEOF(reader)) {
+                MeshChunkID chunkID = ReadChunk(reader);
+
+                while(!IsEOF(reader) && (chunkID == MeshChunkID.SubMeshNameTableElement)) {
+                    // i'm not bothering with the name table business here, I don't see what the purpose is
+                    // since we can simply name the submesh.  it appears this section always comes after all submeshes
+                    // are read, so it should be safe
+                    short index = ReadShort(reader);
+                    string name = ReadString(reader);
+
+                    SubMesh sub = mesh.GetSubMesh(index);
+
+                    if(sub != null) {
+                        sub.name = name;
+                    }
+
+                    // If we're not end of file get the next chunk ID
+                    if(!IsEOF(reader)) {
+                        chunkID = ReadChunk(reader);
+                    }
+                }
+
+                // backpedal to the start of the chunk
+				if(!IsEOF(reader)) {
+					Seek(reader, -ChunkOverheadSize);
+				}
+            }
+        }
 
 		protected virtual void ReadMesh(BinaryReader reader) {
 			MeshChunkID chunkID;
@@ -368,13 +394,13 @@ namespace Axiom.Serialization {
 					mesh.VertexBufferUsage,
 					mesh.UseVertexShadowBuffer);
 
-			IntPtr bufferPtr = buffer.Lock(BufferLocking.Discard);
+            IntPtr bufferPtr = buffer.Lock(BufferLocking.Discard);
 
-			ReadBytes(reader, data.vertexCount * vertexSize, bufferPtr);
+            ReadBytes(reader, data.vertexCount * vertexSize, bufferPtr);
 
-			buffer.Unlock();
+            buffer.Unlock();
 
-			// set binding
+            // set binding
 			data.vertexBufferBinding.SetBinding(bindIdx, buffer);
 		}
 

@@ -83,7 +83,7 @@ namespace Axiom.Serialization {
 				throw new AxiomException("Cannot find serializer implementation for version '{0}'.", fileVersion);
 			}
 
-            System.Diagnostics.Debug.WriteLine(string.Format("Mesh: Loading '{0}'...", mesh.Name));
+            LogManager.Instance.Write("Mesh: Loading '{0}'...", mesh.Name);
 
             // call implementation
 			MeshSerializerImpl serializer = (MeshSerializerImpl)implementations[fileVersion];
@@ -91,7 +91,7 @@ namespace Axiom.Serialization {
 
 			// warn on old version of mesh
 			if(fileVersion != currentVersion) {
-				System.Diagnostics.Trace.WriteLine(string.Format("WARNING: {0} is an older format ({1}); you should upgrade it as soon as possible using the OgreMeshUpdate tool.", mesh.Name, fileVersion));
+				LogManager.Instance.Write("WARNING: {0} is an older format ({1}); you should upgrade it as soon as possible using the OgreMeshUpdate tool.", mesh.Name, fileVersion);
 			}
 		}
 
