@@ -29,6 +29,65 @@ using System.Reflection;
 using Axiom.Scripting;
 
 namespace Axiom.Graphics {
+
+    /// <summary>
+    ///    Parameters that are available via the engine and automatically caclulated for use in GPU programs.
+    /// </summary>
+    public enum AutoConstants {
+        /// <summary>
+        ///    Current world matrix.
+        /// </summary>
+        WorldMatrix,
+        /// <summary>
+        ///    Current view matrix.
+        /// </summary>
+        ViewMatrix,
+        /// <summary>
+        ///    Current projection matrix.
+        /// </summary>
+        ProjectionMatrix,
+        /// <summary>
+        ///    Current world and view matrices concatenated.
+        /// </summary>
+        WorldViewMatrix,
+        /// <summary>
+        ///    Current world, view, and projection matrics concatenated.
+        /// </summary>
+        WorldViewProjMatrix,
+        /// <summary>
+        ///    Current world matrix, inverted.
+        /// </summary>
+        InverseWorldMatrix,
+        /// <summary>
+        ///    Current world and view matrices concatenated, then inverted.
+        /// </summary>
+        InverseWorldViewMatrix,
+        /// <summary>
+        ///    Light diffuse color.  Index determined when setting up auto constants.
+        /// </summary>
+        LightDiffuseColor,
+        /// <summary>
+        ///    Light specular color.  Index determined when setting up auto constants.
+        /// </summary>
+        LightSpecularColor,
+        /// <summary>
+        ///    Light attenuation.  Vector4(range, constant, linear, quadratic).
+        /// </summary>
+        LightAttenuation,
+        /// <summary>
+        ///    A light position in object space.  Index determined when setting up auto constants.
+        /// </summary>
+        LightPositionObjectSpace,
+        /// <summary>
+        ///    A light direction in object space.  Index determined when setting up auto constants.
+        /// </summary>
+        LightDirectionObjectSpace,
+        /// <summary>
+        ///    The current camera's position in object space.
+        /// </summary>
+        CameraPositionObjectSpace
+    }
+
     /// <summary>
     ///		Describes how a vertex buffer should act when it is locked.
     /// </summary>
@@ -93,14 +152,18 @@ namespace Axiom.Graphics {
     /// </summary>
     [Flags]
     public enum Capabilities {
-        StencilBuffer = 1,
-        TextureBlending = 2,
-        VertexBlending = 4,
-        AnisotropicFiltering = 8,
-        Dot3Bump = 16,
-        VertexBuffer = 32,
-        MultiTexturing = 64,
-        HardwareMipMaps = 128
+        StencilBuffer               = 0x00000001,
+        TextureBlending         = 0x00000002,
+        VertexBlending          = 0x00000004,
+        AnisotropicFiltering   = 0x00000008,
+        Dot3Bump                  = 0x00000010,
+        VertexBuffer               = 0x00000020,
+        MultiTexturing           = 0x00000040,
+        HardwareMipMaps   = 0x00000080,
+        CubeMapping            = 0x00000100,
+        TextureCompression = 0x00000200,
+        VertexPrograms         = 0x00000400,
+        FragmentPrograms    = 0x00000800,
     }
 
     /// <summary>

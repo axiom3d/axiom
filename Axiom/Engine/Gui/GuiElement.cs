@@ -2,8 +2,9 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
+using Axiom.Collections;
 using Axiom.Core;
-
+using Axiom.MathLib;
 using Axiom.Scripting;
 using Axiom.Graphics;
 
@@ -67,6 +68,7 @@ namespace Axiom.Gui
         protected bool isEnabled;
         /// <summary>Parser method lookup for script parameters.</summary>
         protected Hashtable attribParsers = new Hashtable();
+        protected LightList emptyLightList = new LightList();
 
         #endregion
 		
@@ -769,6 +771,30 @@ namespace Axiom.Gui
         /// <returns></returns>
         public float GetSquaredViewDepth(Camera camera) {
             return 10000 - this.ZOrder;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Quaternion WorldOrientation {
+            get {
+                return overlay.DerivedOrientation;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Vector3 WorldPosition {
+            get {
+                return overlay.DerivedPosition;
+            }
+        }
+
+        public LightList Lights {
+            get {
+                return emptyLightList;
+            }
         }
 
         #endregion

@@ -41,23 +41,6 @@ namespace RenderSystem_DirectX9
 		
 		public D3DGpuProgramManager(D3D.Device device) : base() {
             this.device = device;
-
-            // Vertex Shader 1.1 (DirectX 8.1)
-            syntaxCodes.Add("vs_1_1");
-            // Vertex Shader 1.x (DirectX 8.1)
-            syntaxCodes.Add("vs_1_x");
-            // Vertex Shader 2.0 (DirectX 9)
-            syntaxCodes.Add("vs_2_0");
-            // Vertex Shader 2.0 (DirectX 9)
-            syntaxCodes.Add("vs_2_x");
-            // Pixel Shader 1.1 (DirectX 8.1)
-            syntaxCodes.Add("ps_1_1");
-            // Pixel Shader 1.3 (DirectX 8.1)
-            syntaxCodes.Add("ps_1_3");
-            // Pixel Shader 1.4 (DirectX 8.1)
-            syntaxCodes.Add("ps_1_4");
-            // Pixel Shader 2.0 (DirectX 9)
-            syntaxCodes.Add("ps_2_0");
 		}
 
         /// <summary>
@@ -66,13 +49,13 @@ namespace RenderSystem_DirectX9
         /// <param name="name"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public override GpuProgram Create(string name, GpuProgramType type) {
+        public override GpuProgram Create(string name, GpuProgramType type, string syntaxCode) {
             switch(type) {
                 case GpuProgramType.Vertex:
-                    return new D3DVertexProgram(name, device);
+                    return new D3DVertexProgram(name, device, syntaxCode);
 
                 case GpuProgramType.Fragment:
-                    return new D3DFragmentProgram(name, device);
+                    return new D3DFragmentProgram(name, device, syntaxCode);
             }
 
             // if this line is ever reached, I will eat a plate of shit.
@@ -84,7 +67,7 @@ namespace RenderSystem_DirectX9
         /// </summary>
         /// <returns></returns>
         public override GpuProgramParameters CreateParameters() {
-            return new D3DGpuProgramParameters();
+            return new GpuProgramParameters();
         }
 	}
 }

@@ -26,9 +26,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Runtime.InteropServices;
+using Axiom.Collections;
 using Axiom.Core;
-
 using Axiom.Gui;
+using Axiom.MathLib;
 using Axiom.Scripting;
 using Axiom.Graphics;
 
@@ -651,6 +652,8 @@ namespace Plugin_GuiElements
 
             protected BorderPanel parent;
 
+            private LightList emptyLightList = new LightList();
+
             #endregion Member variables
 
             #region Constructors
@@ -718,6 +721,23 @@ namespace Plugin_GuiElements
                 }
             }
 
+            public Quaternion WorldOrientation {
+                get {
+                    return Quaternion.Identity;
+                }
+            }
+
+            public Vector3 WorldPosition {
+                get {
+                    return Vector3.Zero;
+                }
+            }
+
+            public LightList Lights {
+                get {
+                    return emptyLightList;
+                }
+            }
             #endregion
 
         }

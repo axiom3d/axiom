@@ -592,6 +592,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Graphics\AutoParamDataSource.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Graphics\Enums.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

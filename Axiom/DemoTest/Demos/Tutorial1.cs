@@ -77,7 +77,7 @@ namespace Demos {
             triNode.Position = new Vector3(50, 0, 0);
 
             // add the line to the scene
-            //lineNode.AttachObject(line);
+            lineNode.AttachObject(line);
             triNode.AttachObject(tri);
 
             // create a node rotation controller value, which will mark the specified scene node as a target of the rotation

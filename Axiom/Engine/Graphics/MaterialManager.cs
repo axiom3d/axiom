@@ -55,7 +55,8 @@ namespace Axiom.Graphics {
             instance.Initialize();
 
             // just create the default BaseWhite material
-            instance.Create("BaseWhite");
+            Material baseWhite = (Material)instance.Create("BaseWhite");
+            baseWhite.Lighting = false;
 
             instance.defaultTextureFiltering = TextureFiltering.Bilinear;
             instance.defaultAnisotropy = 1;
@@ -99,9 +100,10 @@ namespace Axiom.Graphics {
             set {
                 defaultAnisotropy = value;
 
+                // TODO: Fix me dammit, need aniso on material
                 // reset for all current textures
-                for(int i = 0; i < resourceList.Count; i++) {
-                    ((Material)resourceList[i]).TextureFiltering = defaultTextureFiltering;
+                foreach(Material material in resourceList.Values) {
+                    material.TextureFiltering = defaultTextureFiltering;
                 }
             }
         }

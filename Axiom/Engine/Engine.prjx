@@ -156,6 +156,7 @@
     <File name=".\Graphics\TextureUnitState.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Utility\DebugWindow.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\CoreEnums.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\AutoParamDataSource.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References>
     <Reference type="Project" refto="MathLib" localcopy="True" />

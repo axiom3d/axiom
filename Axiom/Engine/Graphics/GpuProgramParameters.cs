@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using Axiom.Core;
 using Axiom.MathLib;
 
 namespace Axiom.Graphics
@@ -55,18 +56,24 @@ namespace Axiom.Graphics
 	///    on certain boundaries, e.g. in sets of 4 values for example. Again, see
 	///    Capabilities for full details.
 	/// </remarks>
-	public abstract class GpuProgramParameters
+	public class GpuProgramParameters
 	{
 		#region Fields
         /// <summary>
         ///    Packed list of integer constants
         /// </summary>
 		protected ArrayList intContants = new ArrayList();
-
         /// <summary>
         ///    Packed list of floating-point constants
         /// </summary>
         protected ArrayList floatContants = new ArrayList();
+        /// <summary>
+        ///    List of automatically updated parameters.
+        /// </summary>
+        protected ArrayList autoConstantList = new ArrayList();
+
+        // Temp float array for making Matrix4 floats to reduce allocations
+        protected float[] matrixFloats = new float[16];
 
 		#endregion
 		
@@ -78,6 +85,48 @@ namespace Axiom.Graphics
 		#endregion
 		
 		#region Methods
+
+        /// <summary>
+        ///    Clears all the existing automatic constants.
+        /// </summary>
+        public void ClearAutoConstants() {
+            autoConstantList.Clear();
+        }
+
+        /// <summary>
+        ///    Sets up a constant which will automatically be updated by the engine.
+        /// </summary>
+        /// <remarks>
+        ///    Vertex and fragment programs often need parameters which are to do with the
+        ///    current render state, or particular values which may very well change over time,
+        ///    and often between objects which are being rendered. This feature allows you 
+        ///    to set up a certain number of predefined parameter mappings that are kept up to 
+        ///    date for you.
+        /// </remarks>
+        /// <param name="type">The type of automatic constant to set.</param>
+        /// <param name="index">
+        ///    The location in the constant list to place this updated constant every time
+        ///    it is changed. Note that because of the nature of the types, we know how big the 
+        ///    parameter details will be so you don't need to set that like you do for manual constants.
+        /// </param>
+        public void SetAutoConstant(int index, AutoConstants type) {
+            SetAutoConstant(index, type, 0);
+        }
+
+        /// <summary>
+        ///    Overloaded method.
+        /// </summary>
+        /// <param name="type">The type of automatic constant to set.</param>
+        /// <param name="index">
+        ///    The location in the constant list to place this updated constant every time
+        ///    it is changed. Note that because of the nature of the types, we know how big the 
+        ///    parameter details will be so you don't need to set that like you do for manual constants.
+        /// </param>
+        /// <param name="extraInfo">If the constant type needs more information (like a light index) put it here.</param>
+        public void SetAutoConstant(int index, AutoConstants type, int extraInfo) {
+            AutoConstantEntry entry = new AutoConstantEntry(type, index, extraInfo);
+            autoConstantList.Add(entry);
+        }
 
         /// <summary>
         ///    Sends a single value constant floating-point parameter to the program.
@@ -99,7 +148,12 @@ namespace Axiom.Graphics
         /// <param name="index">Index of the contant register.</param>
         /// <param name="val">Single value to set.</param>
         public virtual void SetConstant(int index, int val) {
-            intContants[index] = val;
+            if(index >= intContants.Count) {
+                intContants.Insert(index, val);
+            }
+            else {
+                intContants[index] = val;
+            }
         }
 
         /// <summary>
@@ -107,7 +161,7 @@ namespace Axiom.Graphics
         /// </summary>
         /// <param name="index">Index of the contant register.</param>
         /// <param name="val">Structure containing 4 packed float values.</param>
-        public virtual void SetConstant(int index, ref Vector4 val) {
+        public virtual void SetConstant(int index, Vector4 val) {
             SetConstant(index++, val.x);
             SetConstant(index++, val.y);
             SetConstant(index++, val.z);
@@ -119,10 +173,25 @@ namespace Axiom.Graphics
         /// </summary>
         /// <param name="index">Index of the contant register.</param>
         /// <param name="val">Structure containing 3 packed float values.</param>
-        public virtual void SetConstant(int index, ref Vector3 val) {
+        public virtual void SetConstant(int index, Vector3 val) {
             SetConstant(index++, val.x);
             SetConstant(index++, val.y);
             SetConstant(index++, val.z);
+
+            // just to be safe, some API's don't like non-4d vectors
+            SetConstant(index++, 1.0f);
+        }
+
+        /// <summary>
+        ///    Sends 4 packed floating-point RGBA color values to the program.
+        /// </summary>
+        /// <param name="index">Index of the contant register.</param>
+        /// <param name="color">Structure containing 4 packed RGBA color values.</param>
+        public virtual void SetConstant(int index, ColorEx color) {
+            SetConstant(index++, color.r);
+            SetConstant(index++, color.g);
+            SetConstant(index++, color.b);
+            SetConstant(index++, color.a);
         }
 
         /// <summary>
@@ -133,7 +202,26 @@ namespace Axiom.Graphics
         /// </remarks>
         /// <param name="index">Index of the contant register.</param>
         /// <param name="val">Structure containing 3 packed float values.</param>
-        public abstract void SetConstant(int index, ref Matrix4 val);
+        public virtual void SetConstant(int index, Matrix4 val) {
+            val.MakeFloatArray(matrixFloats);
+            SetConstant(index, matrixFloats);
+//            SetConstant(index++, val.m00);
+//            SetConstant(index++, val.m10);
+//            SetConstant(index++, val.m20);
+//            SetConstant(index++, val.m30);
+//            SetConstant(index++, val.m01);
+//            SetConstant(index++, val.m11);
+//            SetConstant(index++, val.m21);
+//            SetConstant(index++, val.m31);
+//            SetConstant(index++, val.m02);
+//            SetConstant(index++, val.m12);
+//            SetConstant(index++, val.m22);
+//            SetConstant(index++, val.m32);
+//            SetConstant(index++, val.m03);
+//            SetConstant(index++, val.m13);
+//            SetConstant(index++, val.m23);
+//            SetConstant(index++, val.m33);
+        }
 
         /// <summary>
         ///    Sets an array of int values starting at the specified index.
@@ -141,7 +229,9 @@ namespace Axiom.Graphics
         /// <param name="index">Index of the contant register to start at.</param>
         /// <param name="ints">Array of ints.</param>
         public virtual void SetConstant(int index, int[] ints) {
-            intContants.SetRange(index, ints);
+            for(int i = index; i < ints.Length; i++) {
+                SetConstant(i, ints[i]);
+            }
         }
 
         /// <summary>
@@ -150,13 +240,108 @@ namespace Axiom.Graphics
         /// <param name="index">Index of the contant register to start at.</param>
         /// <param name="floats">Array of floats.</param>
         public virtual void SetConstant(int index, float[] floats) {
-            floatContants.SetRange(index, floats);
+            for(int i = index, j = 0; j < floats.Length; i++, j++) {
+                SetConstant(i, floats[j]);
+            }
+        }
+
+        /// <summary>
+        ///    Updates the automatic parameters based on the details provided.
+        /// </summary>
+        /// <param name="source">
+        ///    A source containing all the updated data to be made available for auto updating
+        ///    the GPU program constants.
+        /// </param>
+        public virtual void UpdateAutoParams(AutoParamDataSource source) {
+            // return if no constants
+            if(!this.HasAutoConstants) {
+                return;
+            }
+
+            // loop through and update all constants based on their type
+            for(int i = 0; i < autoConstantList.Count; i++) {
+                AutoConstantEntry entry = (AutoConstantEntry)autoConstantList[i];
+
+                Vector3 vec3;
+                Vector4 vec4 = new Vector4();
+
+                switch(entry.type) {
+                    case AutoConstants.WorldMatrix:
+                        SetConstant(entry.index, source.WorldMatrix);
+                        break;
+
+                    case AutoConstants.ViewMatrix:
+                        SetConstant(entry.index, source.ViewMatrix);
+                        break;
+
+                    case AutoConstants.ProjectionMatrix:
+                        SetConstant(entry.index, source.ProjectionMatrix);
+                        break;
+
+                    case AutoConstants.WorldViewMatrix:
+                        SetConstant(entry.index, source.WorldViewMatrix);
+                        break;
+
+                    case AutoConstants.WorldViewProjMatrix:
+                        SetConstant(entry.index, source.WorldViewProjMatrix);
+                        break;
+
+                    case AutoConstants.InverseWorldMatrix:
+                        SetConstant(entry.index, source.InverseWorldMatrix);
+                        break;
+
+                    case AutoConstants.InverseWorldViewMatrix:
+                        SetConstant(entry.index, source.InverseWorldViewMatrix);
+                        break;
+
+                    case AutoConstants.LightDiffuseColor:
+                        SetConstant(entry.index, source.GetLight(entry.data).Diffuse);
+                        break;
+
+                    case AutoConstants.LightSpecularColor:
+                        SetConstant(entry.index, source.GetLight(entry.data).Specular);
+                        break;
+
+                    case AutoConstants.LightPositionObjectSpace:
+                        SetConstant(entry.index, source.InverseWorldMatrix * source.GetLight(entry.data).DerivedPosition);
+                        break;
+
+                    case AutoConstants.LightDirectionObjectSpace:
+                        vec3 = source.InverseWorldMatrix * source.GetLight(entry.data).DerivedDirection;
+                        vec3.Normalize();
+                        SetConstant(entry.index, new Vector4(vec3.x, vec3.y, vec3.z, 1.0f));
+                        break;
+
+                    case AutoConstants.CameraPositionObjectSpace:
+                        SetConstant(entry.index, source.CameraPositionObjectSpace);
+                        break;
+
+                    case AutoConstants.LightAttenuation:
+                        Light light = source.GetLight(entry.data);
+                        vec4.x = light.AttenuationRange;
+                        vec4.y = light.AttenuationConstant;
+                        vec4.z = light.AttenuationLinear;
+                        vec4.w = light.AttenuationQuadratic;
+
+                        SetConstant(entry.index, vec4);
+                        break;
+                }
+            }
         }
 
 		#endregion
 		
 		#region Properties
 		
+        /// <summary>
+        ///    Returns true if this instance contains any automatic constants.
+        /// </summary>
+        public bool HasAutoConstants {
+            get {
+                return autoConstantList.Count > 0;
+            }
+        }
+
         /// <summary>
         ///    Returns true if int constants have been set.
         /// </summary>
@@ -216,5 +401,39 @@ namespace Axiom.Graphics
         }
 
 		#endregion Properties
+
+        #region Inner classes
+
+        /// <summary>
+        ///    A structure for recording the use of automatic parameters.
+        /// </summary>
+        class AutoConstantEntry {
+            /// <summary>
+            ///    The type of the parameter.
+            /// </summary>
+            public AutoConstants type;
+            /// <summary>
+            ///    The target index.
+            /// </summary>
+            public int index;
+            /// <summary>
+            ///    Any additional info to go with the parameter.
+            /// </summary>
+            public int data;
+
+            /// <summary>
+            ///    Default constructor.
+            /// </summary>
+            /// <param name="type">Type of auto param (i.e. WorldViewMatrix, etc)</param>
+            /// <param name="index">Index of the param.</param>
+            /// <param name="data">Any additional info to go with the parameter.</param>
+            public AutoConstantEntry(AutoConstants type, int index, int data) {
+                this.type = type;
+                this.index = index;
+                this.data = data;
+            }
+        }
+
+        #endregion
 	}
 }

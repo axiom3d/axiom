@@ -56,6 +56,14 @@ namespace Axiom.Core {
         /// <summary>Bounding box.  Updated through Update.</summary>
         protected AxisAlignedBox worldAABB = AxisAlignedBox.Null;
         protected Sphere worldBoundingSphere = new Sphere();
+        /// <summary>
+        ///    List of lights within range of this node.
+        /// </summary>
+        protected LightList lightList = new LightList();
+        /// <summary>
+        ///    Keeps track of whether the list of lights located near this node needs updating.
+        /// </summary>
+        protected bool lightListDirty;
 
         #endregion
 
@@ -72,6 +80,8 @@ namespace Axiom.Core {
             this.creator = creator;
 
             NeedUpdate();
+
+            lightListDirty = true;
         }
 
         /// <summary>
@@ -82,9 +92,9 @@ namespace Axiom.Core {
         public SceneNode(SceneManager creator, string name) : base(name) {
             this.creator = creator;
 
-            worldAABB = AxisAlignedBox.Null;
-
             NeedUpdate();
+
+            lightListDirty = true;
         }
 
         #endregion
@@ -213,6 +223,8 @@ namespace Axiom.Core {
             base.Update(updateChildren, hasParentChanged);
 
             UpdateBounds();
+
+            lightListDirty = true;
         }
 
         /// <summary>
@@ -334,6 +346,26 @@ namespace Axiom.Core {
         protected override Node CreateChildImpl(string name) {
             SceneNode newNode = creator.CreateSceneNode(name);
             return newNode;
+        }
+
+        /// <summary>
+        ///    Allows retrieval of the nearest lights to the centre of this SceneNode.
+        /// </summary>
+        /// <remarks>
+        ///    This method allows a list of lights, ordered by proximity to the center of
+        ///    this SceneNode, to be retrieved. Multiple access to this method when neither 
+        ///    the node nor the lights have moved will result in the same list being returned
+        ///    without recalculation. Can be useful when implementing IRenderable.Lights.
+        /// </remarks>
+        public LightList Lights {
+            get {
+                if(lightListDirty) {
+                    creator.PopulateLightList(this.DerivedPosition, lightList);
+                    lightListDirty = false;
+                }
+
+                return lightList;
+            }
         }
 
         #endregion

@@ -36,18 +36,6 @@ namespace RenderSystem_OpenGL
 	public class GLGpuProgramManager : GpuProgramManager
 	{	
 		public GLGpuProgramManager() : base() {
-            // ARB vertex program
-            syntaxCodes.Add("arbvp1");
-            // ARB fragment program
-            syntaxCodes.Add("arbfp1");
-            // nVidia vertex program 2.0
-            syntaxCodes.Add("vp20");
-            // nVidia fragment program 2.0
-            syntaxCodes.Add("fp20");
-            // nVidia vertex program 3.0
-            syntaxCodes.Add("vp30");
-            // nVidia fragment program 3.0
-            syntaxCodes.Add("fp30");
 		}
 
         /// <summary>
@@ -56,10 +44,10 @@ namespace RenderSystem_OpenGL
         /// <param name="name"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public override GpuProgram Create(string name, GpuProgramType type) {
+        public override GpuProgram Create(string name, GpuProgramType type, string syntaxCode) {
             int glType = GLHelper.ConvertEnum(type);
 
-            return new GLGpuProgram(name, type);
+            return new GLGpuProgram(name, type, syntaxCode);
         }
 
         /// <summary>
@@ -67,7 +55,7 @@ namespace RenderSystem_OpenGL
         /// </summary>
         /// <returns></returns>
         public override GpuProgramParameters CreateParameters() {
-            return new GLGpuProgramParameters();
+            return new GpuProgramParameters();
         }
 	}
 }

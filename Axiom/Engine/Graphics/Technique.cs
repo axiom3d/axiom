@@ -96,6 +96,9 @@ namespace Axiom.Graphics
         ///    into extra passes if the hardware does not have enough available units.
         /// </param>
         internal void Compile(bool autoManageTextureUnits) {
+            // assume not supported unles it proves otherwise
+            isSupported = false;    
+                
             // grab a ref to the current hardware caps
             HardwareCaps caps = Engine.Instance.RenderSystem.Caps;
             int numAvailTexUnits = caps.NumTextureUnits;
@@ -110,32 +113,45 @@ namespace Axiom.Graphics
                     // check texture units
                     if(numTexUnitsRequested > numAvailTexUnits) {
                         // can't do this, since programmable passes cannot be split automatically
-                        isSupported = false;
                         return;
                     }
 
                     // check fragment program version
                     if(!GpuProgramManager.Instance.IsSyntaxSupported(pass.FragmentProgram.SyntaxCode)) {
                         // can't do this one
-                        isSupported = false;
-                        return;
-                    }
-                }
-
-                if(pass.HasVertexProgram) {
-                    // check vertex program version
-                    if(!GpuProgramManager.Instance.IsSyntaxSupported(pass.VertexProgram.SyntaxCode)) {
-                        // can't do this one
-                        isSupported = false;
                         return;
                     }
                 }
                 else {
+                    // check support for a few fixed function options while we are here
+                    for(int j = 0; j < pass.NumTextureUnitStages; j++) {
+                        TextureUnitState texUnit = pass.GetTextureUnitState(j);
+
+                        // check to make sure we have some cube mapping support
+                        if(texUnit.Is3D && !caps.CheckCap(Capabilities.CubeMapping)) {
+                            return;
+                        }
+
+                        // if this is a Dot3 blending layer, make sure we can support it
+                        if(texUnit.ColorBlendMode.operation == LayerBlendOperationEx.DotProduct && !caps.CheckCap(Capabilities.Dot3Bump)) {
+                            return;
+                        }
+                    }
+
                     // keep splitting until the texture units required for this pass are available
                     while(numTexUnitsRequested > numAvailTexUnits) {
                         // split this pass up into more passes
                         pass = pass.Split(numAvailTexUnits);
                         numTexUnitsRequested = pass.NumTextureUnitStages;
+                    }
+                }
+
+                // if this has a vertex program, check the syntax code to be sure the hardware supports it
+                if(pass.HasVertexProgram) {
+                    // check vertex program version
+                    if(!GpuProgramManager.Instance.IsSyntaxSupported(pass.VertexProgram.SyntaxCode)) {
+                        // can't do this one
+                        return;
                     }
                 }
             } // for
