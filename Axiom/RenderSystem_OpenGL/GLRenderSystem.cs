@@ -550,20 +550,20 @@ namespace RenderSystem_OpenGL {
             float[] vals = tempColorVals;
             
             // ambient
-            if(lastAmbient == null || lastAmbient != ambient) {
+            //if(lastAmbient == null || lastAmbient != ambient) {
                 ambient.ToArrayRGBA(vals);
                 Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_AMBIENT, vals);
                 
                 lastAmbient = ambient;
-            }
+            //}
 
             // diffuse
-            if(lastDiffuse == null || lastDiffuse != diffuse) {
+            //if(lastDiffuse == null || lastDiffuse != diffuse) {
                 vals[0] = diffuse.r; vals[1] = diffuse.g; vals[2] = diffuse.b; vals[3] = diffuse.a;
                 Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_DIFFUSE, vals);
 
                 lastDiffuse = diffuse;
-            }
+            //}
 
             // specular
             if(lastSpecular == null || lastSpecular != specular) {
@@ -595,9 +595,9 @@ namespace RenderSystem_OpenGL {
         /// <param name="stage"></param>
         /// <param name="texAddressingMode"></param>
         protected override void SetTextureAddressingMode(int stage, TextureAddressing texAddressingMode) {
-            if(textureUnits[stage].TextureAddressing == texAddressingMode) {
-                return;
-            }
+            //if(textureUnits[stage].TextureAddressing == texAddressingMode) {
+           //     return;
+           // }
 
             int type = 0;
 
@@ -630,16 +630,13 @@ namespace RenderSystem_OpenGL {
         /// <param name="stage"></param>
         /// <param name="blendMode"></param>
         public override void SetTextureBlendMode(int stage, LayerBlendModeEx blendMode) {
-            if(caps.CheckCap(Capabilities.TextureBlending)) {
+            if(!caps.CheckCap(Capabilities.TextureBlending)) {
                 return;
             }
 
             if(textureUnits[stage].ColorBlendMode == blendMode) {
                 return;
             }
-
-            //float[] av1 = new float[4] {0.0f, 0.0f, 0.0f, blendMode.alphaArg1};
-            //float[] av2 = new float[4] {0.0f, 0.0f, 0.0f, blendMode.alphaArg2};
 
             int src1op, src2op, cmd;
 
@@ -771,17 +768,32 @@ namespace RenderSystem_OpenGL {
             Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND1_ALPHA, Gl.GL_SRC_ALPHA);
             Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND2_ALPHA, Gl.GL_SRC_ALPHA);
 
-            // color value 1
-            blendMode.colorArg1.ToArrayRGBA(tempColorVals);
+            // check source2 and set colors values appropriately
+            if (blendMode.source1 == LayerBlendSource.Manual) {
+                if(blendMode.blendType == LayerBlendType.Color) {
+                    // color value 1
+                    blendMode.colorArg1.ToArrayRGBA(tempColorVals);
+                }
+                else {
+                    // alpha value 1
+                    tempColorVals[0] = 0.0f; tempColorVals[1] = 0.0f; tempColorVals[2] = 0.0f; tempColorVals[3] = blendMode.alphaArg1;
+                }
 
-            if (blendMode.blendType == LayerBlendType.Color && blendMode.source1 == LayerBlendSource.Manual)
                 Gl.glTexEnvfv(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_COLOR, tempColorVals);
+            }
 
-            // color value 2
-            blendMode.colorArg2.ToArrayRGBA(tempColorVals);
-
-            if (blendMode.blendType == LayerBlendType.Color && blendMode.source2 == LayerBlendSource.Manual)
+            // check source2 and set colors values appropriately
+            if (blendMode.source2 == LayerBlendSource.Manual) {
+                if(blendMode.blendType == LayerBlendType.Color) {
+                    // color value 2
+                    blendMode.colorArg2.ToArrayRGBA(tempColorVals);
+                }
+                else {
+                    // alpha value 2
+                    tempColorVals[0] = 0.0f; tempColorVals[1] = 0.0f; tempColorVals[2] = 0.0f; tempColorVals[3] = blendMode.alphaArg2;
+                }
                 Gl.glTexEnvfv(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_COLOR, tempColorVals);
+            }
         
             Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
         }
