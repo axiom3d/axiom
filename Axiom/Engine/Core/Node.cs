@@ -890,7 +890,7 @@ namespace Axiom.Core {
         ///	 </summary>
         public void GetRenderOperation(RenderOperation op) {
             if(nodeSubMesh == null) {
-                Mesh nodeMesh = MeshManager.Instance.Load("axes.mesh", 1);
+                Mesh nodeMesh = MeshManager.Instance.Load("axes.mesh");
                 nodeSubMesh = nodeMesh.GetSubMesh(0);
             }
             // return the render operation of the submesh itself
