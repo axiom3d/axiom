@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.IO;
 using System.Collections;
+using System.Runtime.InteropServices;
 
 using Axiom.Core;
 using Axiom.MathLib;
@@ -73,7 +74,7 @@ namespace Axiom.SceneManagers.Bsp
 		protected RenderOperation aaBGeometry = new RenderOperation();
 
 
-		protected Map matFaceGroupMap = new Map();
+		protected Map matFaceGroupMap = new Map(new MaterialComparer());
 		protected SceneObjectCollection objectsForRendering = new SceneObjectCollection();
 		#endregion
 
@@ -118,7 +119,6 @@ namespace Axiom.SceneManagers.Bsp
 			level = BspResourceManager.Instance.Load(filename);
 
 			// Init static render operation
-			renderOp.vertexData = new VertexData();
 			renderOp.vertexData = level.VertexData;
 			
 			// index data is per-frame
@@ -141,7 +141,6 @@ namespace Axiom.SceneManagers.Bsp
 		/// </summary>
 		public override ViewPoint GetSuggestedViewpoint(bool random)
 		{
-			
 			if((level == null) || (level.PlayerStarts.Length == 0))
 			{
 				return base.GetSuggestedViewpoint(random);
@@ -415,7 +414,7 @@ namespace Axiom.SceneManagers.Bsp
 				
 				// Get Material reference by handle
 				Material mat = GetMaterial(faceGroup.materialHandle);
-			
+
 				// Check normal (manual culling)
 				ManualCullingMode cullMode = mat.GetTechnique(0).GetPass(0).ManualCullMode;
 
@@ -429,19 +428,19 @@ namespace Axiom.SceneManagers.Bsp
 				}
 
 				faceGroupSet.Add(realIndex);
-
 				// Try to insert, will find existing if already there
 				matFaceGroupMap.Insert(mat, faceGroup);
 			}
 
+			// TODO BspNode.IntersectingObjectSet
 			// Add movables to render queue, provided it hasn't been seen already.			
-			for(int i = 0; i < leaf.Objects.Count; i++)
+			/*for(int i = 0; i < leaf.Objects.Count; i++)
 			{
 				if(!objectsForRendering.ContainsKey(leaf.Objects[i]))
 				{
 					SceneObject obj = leaf.Objects[i];
 
-					if(obj.IsVisible && camera.IsVisible)
+					if(obj.IsVisible && camera.IsObjectVisible(obj.BoundingBox))
 					{
 						obj.NotifyCurrentCamera(camera);
 						obj.UpdateRenderQueue(this.renderQueue);
@@ -449,7 +448,7 @@ namespace Axiom.SceneManagers.Bsp
 						objectsForRendering.Add(obj);
 					}
 				}
-			}
+			}*/
 		}
 
 		/// <summary>
@@ -480,7 +479,10 @@ namespace Axiom.SceneManagers.Bsp
 
 			unsafe
 			{
-				uint *src = (uint*) level.Indexes.Lock(idxStart * 4, numIdx * 4, BufferLocking.ReadOnly).ToPointer();
+				uint *src = (uint*) level.Indexes.Lock(
+					idxStart * Marshal.SizeOf(typeof(uint)), 
+					numIdx * Marshal.SizeOf(typeof(uint)), 
+					BufferLocking.ReadOnly).ToPointer();
 				uint *pIndexes = (uint*) indexes.ToPointer();
 
 				// Offset the indexes here
@@ -522,7 +524,7 @@ namespace Axiom.SceneManagers.Bsp
 			{
 				// Get Material
 				Material thisMaterial = (Material) ((Pair) mapEnu.Current).first;
-				StaticFaceGroup faceGrp = (StaticFaceGroup)((Pair) mapEnu.Current).second;
+				StaticFaceGroup[] faceGrp = (StaticFaceGroup[]) ((ArrayList) ((Pair) mapEnu.Current).second).ToArray(typeof(StaticFaceGroup));
 
 				// Empty existing cache
 				renderOp.indexData.indexCount = 0;
@@ -532,13 +534,13 @@ namespace Axiom.SceneManagers.Bsp
 				{
 					uint *pIdx = (uint *) renderOp.indexData.indexBuffer.Lock(BufferLocking.Discard).ToPointer();
 
-					//for(int i = 0; i < faceGrp.Length; i++)
-					//{
+					for(int i = 0; i < faceGrp.Length; i++)
+					{
 						// Cache each
-						int numElems = CacheGeometry((IntPtr) pIdx, faceGrp);
+						int numElems = CacheGeometry((IntPtr) pIdx, faceGrp[i]);
 						renderOp.indexData.indexCount += numElems;
 						pIdx += numElems;
-					//}
+					}
 
 					// Unlock the buffer
 					renderOp.indexData.indexBuffer.Unlock();
@@ -547,9 +549,9 @@ namespace Axiom.SceneManagers.Bsp
 				// Skip if no faces to process (we're not doing flare types yet)
 				if(renderOp.indexData.indexCount == 0)
 					continue;
-
+			
 				for(int i = 0; i < thisMaterial.GetTechnique(0).NumPasses; i++)
-				{
+				{		
 					SetPass(thisMaterial.GetTechnique(0).GetPass(i));
 					targetRenderSystem.Render(renderOp);
 				}
@@ -669,4 +671,29 @@ namespace Axiom.SceneManagers.Bsp
 		}
 		#endregion
 	}*/
+
+	public class MaterialComparer : IComparer
+	{
+		#region IComparer methods
+		public int Compare(object x, object y)
+		{
+			Material matX = x as Material;
+			Material matY = y as Material;
+
+			if((matX == null) || (matY == null))
+				throw new ArgumentException();
+
+			return String.Compare(matX.Name, matY.Name);
+			/*// If x transparent and y not, x > y (since x has to overlap y)
+			if(matX.IsTransparent && !matY.IsTransparent)
+				return 1;
+			// If y is transparent and x not, x < y
+			if(!matX.IsTransparent && matY.IsTransparent)
+				return -1;
+			else 
+				return 0;*/
+		}
+		#endregion
+	}
+
 }

@@ -172,9 +172,7 @@ namespace Axiom.SceneManagers.Bsp
 		public BspLevel(string name)
 		{
 			this.name = name;
-			this.nodes = null;
 			this.objectToNodeMap = new Map();
-			this.brushes = null;
 		}
 		#endregion
 
@@ -213,19 +211,16 @@ namespace Axiom.SceneManagers.Bsp
 			return (result != 0);
 			*/
 
-			unsafe
-			{
-				fixed(byte *vData = visData.tableData)
-				{
-					return ((int) (vData + (from.VisCluster * visData.rowLength) + ((to.VisCluster) >> 3)) & (1 << ((to.VisCluster) & 7))) != 0;
-				}
-			}
+			byte visSet = visData.tableData[(from.VisCluster * visData.rowLength) + (to.VisCluster >> 3)];
+			int result = visSet & (1 << ((to.VisCluster) & 7)); 
+
+			return (result != 0);
 		}
 
 
 		/// <summary>
 		///		Walks the entire BSP tree and returns the leaf which contains the given point.
-		/// </summary>
+		/// </summary>r
 		public BspNode FindLeaf(Vector3 point)
 		{
 			BspNode node = nodes[0];
@@ -243,17 +238,16 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			IEnumerator nodes = objectToNodeMap.Find(obj);
 			
-			if(nodes == null)
-				return;
+			if(nodes != null)
+			{
+				while(nodes.MoveNext())
+					((BspNode) nodes.Current).RemoveObject(obj);
 
-			while(nodes.MoveNext())
-				((BspNode) nodes.Current).RemoveObject(obj);
-
-			// TODO
-			//objectToNodeMap.Clear(obj);
-			nodes.Reset();
+				objectToNodeMap.Clear(obj);
+			}
 
 			TagNodesWithObject((BspNode) nodes.Current, obj, pos);
+
 		}
 
 		/// <summary>
@@ -269,8 +263,7 @@ namespace Axiom.SceneManagers.Bsp
 			while(nodes.MoveNext())
 				((BspNode) nodes.Current).RemoveObject(obj);
 
-			// TODO
-			//objectToNodeMap.Clear(obj);
+			objectToNodeMap.Clear(obj);
 		}
 		#endregion
 
@@ -323,9 +316,7 @@ namespace Axiom.SceneManagers.Bsp
 			// Lock just the non-patch area for now.
 
 			unsafe
-			{
-				//vbuf.Lock(0, q3lvl.NumVertices * Marshal.SizeOf(typeof(BspVertex)), BufferLocking.Discard).ToPointer();
-        
+			{    
 				// Keep another base pointer for use later in patch building
 				for(int v = 0; v < q3lvl.NumVertices; v++)
 				{
@@ -341,8 +332,6 @@ namespace Axiom.SceneManagers.Bsp
 						ptr
 						);
 				}
-	
-				//vbuf.Unlock();
 			}
 
 			// Setup binding
@@ -373,7 +362,7 @@ namespace Axiom.SceneManagers.Bsp
 				);
 
 			// Write main indexes
-			indexes.WriteData(0, q3lvl.NumElements, q3lvl.Elements, true);
+			indexes.WriteData(0, Marshal.SizeOf(typeof(uint)) * q3lvl.NumElements, q3lvl.Elements, true);
 
 			// now build patch information
 			BuildQuake3Patches(q3lvl.NumVertices, q3lvl.NumElements);
@@ -396,7 +385,6 @@ namespace Axiom.SceneManagers.Bsp
 			// it can be used with multiple lightmaps)
 			string shaderName;
 			int face = q3lvl.Faces.Length;
-			int matHandle = 0;
 
 			while(face-- > 0)
 			{
@@ -404,12 +392,11 @@ namespace Axiom.SceneManagers.Bsp
 				// Format shader#lightmap
 				int shadIdx = q3lvl.Faces[face].shader;
 				shaderName = String.Format("{0}#{1}", q3lvl.Shaders[shadIdx].name, q3lvl.Faces[face].lmTexture);
+				
 				Material shadMat = sm.GetMaterial(shaderName);
 
 				if(shadMat == null)
 				{
-					Material mat = new Material(shaderName);
-
 					// Colour layer
 					// NB no extension in Q3A(doh), have to try shader, .jpg, .tga
 					string tryName = q3lvl.Shaders[shadIdx].name;
@@ -420,7 +407,6 @@ namespace Axiom.SceneManagers.Bsp
 					if(shader != null)
 					{
 						shadMat = shader.CreateAsMaterial(sm, q3lvl.Faces[face].lmTexture);
-						matHandle = shadMat.Handle;
 					}
 					else
 					{
@@ -430,6 +416,7 @@ namespace Axiom.SceneManagers.Bsp
 
 						// Try jpg
 						TextureUnitState tex = shadPass.CreateTextureUnitState(tryName + ".jpg");
+						tex.Load();
 						
 						if(tex.IsBlank)
 						{
@@ -444,9 +431,8 @@ namespace Axiom.SceneManagers.Bsp
 						if(q3lvl.Faces[face].lmTexture != -1)
 						{
 							// Add lightmap, additive blending
-							string lightmapName = String.Format("@lightmap{0}", q3lvl.Faces[face].lmTexture);
-							tex = shadPass.CreateTextureUnitState(lightmapName);
-							
+							tex = shadPass.CreateTextureUnitState(String.Format("@lightmap{0}", q3lvl.Faces[face].lmTexture));
+			
 							// Blend
 							tex.SetColorOperation(LayerBlendOperation.Modulate);
 							
@@ -461,8 +447,8 @@ namespace Axiom.SceneManagers.Bsp
 						shadMat.Lighting = false;
 					}
 				}
-	
-				matHandle = shadMat.Handle;
+
+				shadMat.Load();
 				
 				// Copy face data
 				StaticFaceGroup dest = new StaticFaceGroup();
@@ -473,7 +459,7 @@ namespace Axiom.SceneManagers.Bsp
 				else
 					dest.isSky = false;
 
-				dest.materialHandle = matHandle;
+				dest.materialHandle = shadMat.Handle;
 				dest.elementStart = src.elemStart;
 				dest.numElements = src.elemCount;
 				dest.numVertices = src.vertCount;
@@ -502,7 +488,7 @@ namespace Axiom.SceneManagers.Bsp
 					// groups eg repeating small details have the same relative vertex data but
 					// use the same index data.
 				}
-				else if(src.type == BspFaceType.Patch)
+				/*else if(src.type == BspFaceType.Patch)
 				{
 					// Seems to be some crap in the Q3 level where vertex count = 0 or num control points = 0?
 					if((dest.numVertices == 0) || (src.meshCtrl[0] == 0))
@@ -520,7 +506,7 @@ namespace Axiom.SceneManagers.Bsp
 
 						dest.patchSurf = (PatchSurface) patches[face];
 					}
-				}
+				}*/
 				else if(src.type == BspFaceType.Mesh)
 				{
 					dest.type = FaceGroup.FaceList;
@@ -545,7 +531,7 @@ namespace Axiom.SceneManagers.Bsp
 			numLeaves = q3lvl.NumLeaves;
 			leafStart = q3lvl.NumNodes;
 
-			// Run through an initialize the array so front/back node pointers 
+			// Run through and initialize the array so front/back node pointers 
 			// aren't null.
 			for(int i = 0; i < nodes.Length; i++)
 				nodes[i] = new BspNode();
@@ -857,7 +843,6 @@ namespace Axiom.SceneManagers.Bsp
 
 				ps.Build(vbuf, currVertOffset, indexes, currIndexOffset);
 
-				// No need for control points anymore
 				currVertOffset += ps.RequiredVertexCount;
 				currIndexOffset += ps.RequiredIndexCount;
 			}
@@ -876,6 +861,8 @@ namespace Axiom.SceneManagers.Bsp
 			q3.LoadFromStream(chunk);
 			LoadQuake3Level(q3);
 			chunk.Close();
+
+			isLoaded = true;
 		}
 
 		/// <summary>
@@ -902,7 +889,7 @@ namespace Axiom.SceneManagers.Bsp
 		///		details of this marvellous(not) feature.
 		///	</remarks>
 		[StructLayout(LayoutKind.Sequential)]
-			public struct BspVertex
+		public struct BspVertex
 		{
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst=3)]
 			public float[] position;
@@ -936,7 +923,7 @@ namespace Axiom.SceneManagers.Bsp
 		///		As many will notice, this is lifted directly from the Quake implementation of PVS.
 		///	</remarks>
 		[StructLayout(LayoutKind.Sequential)]	
-			public struct VisData
+		public struct VisData
 		{
 			public byte[] tableData;
 			public int numClusters;

@@ -85,8 +85,6 @@ namespace Axiom.SceneManagers.Bsp
 		public SceneObject DetachObject(ushort index)
 		{
 			SceneObject ret = this.objectList[index];
-			
-			base.DetachObject(index);
 			((BspSceneManager) this.Creator).NotifyObjectDetached(ret);
 		
 			return ret;
@@ -94,9 +92,7 @@ namespace Axiom.SceneManagers.Bsp
 
 		public SceneObject DetachObject(string name)
 		{
-			SceneObject ret = this.objectList[name];
-			
-			base.DetachObject(ret);
+			SceneObject ret = this.objectList[name];	
 			((BspSceneManager) this.Creator).NotifyObjectDetached(ret);
 
 			return ret;
