@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using Tao.Cg;
 
 namespace Plugin_CgProgramManager
@@ -13,17 +14,27 @@ namespace Plugin_CgProgramManager
         /// </summary>
         /// <param name="potentialError">Message to use if an error has indeed occurred.</param>
         /// <param name="context">Current Cg context.</param>
-        internal static void CheckCgError(string potentialError, int context) {
+        internal static void CheckCgError(string potentialError, IntPtr context) {
+            StringBuilder sb = new StringBuilder();
+
             // check for a Cg error
             int error = Cg.cgGetError();
 
-            // TODO: CG_NO_ERROR const
-            if(error != 0) {
-                string msg = potentialError + Cg.cgGetErrorString(error);
+            if(error != Cg.CG_NO_ERROR) {
+                sb.Append(Environment.NewLine);
+                sb.Append(potentialError);
+                sb.Append(Environment.NewLine);
 
-                // TODO: Check for compiler error, need CG_COMPILER_ERROR const
+                sb.Append(Cg.cgGetErrorString(error));
+                sb.Append(Environment.NewLine);
 
-                throw new Exception(msg);
+                // Check for compiler error, need CG_COMPILER_ERROR const
+                if(error == Cg.CG_COMPILER_ERROR) {
+                    sb.Append(Cg.cgGetLastListing(context));
+                    sb.Append(Environment.NewLine);
+                }
+
+                throw new Exception(sb.ToString());
             }
         }
 	}

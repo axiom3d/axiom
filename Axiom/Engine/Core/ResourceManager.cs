@@ -303,7 +303,6 @@ namespace Axiom.Core {
         /// <param name="fileName"></param>
         /// <returns></returns>
         public Stream FindResourceData(string fileName) {
-
             // look in local file cache first
             if(filePaths.ContainsKey(fileName)) {
                 Archive archive = (Archive)filePaths[fileName];

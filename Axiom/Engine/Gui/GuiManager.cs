@@ -174,7 +174,7 @@ namespace Axiom.Gui {
         public GuiElement GetElement(string name) {
             Hashtable elements = GetElementTable(false);
 
-            Debug.Assert(elements.ContainsKey(name), string.Format("GuiElement with the name'{0}' was not found.", name));
+            Debug.Assert(elements[name] != null, string.Format("GuiElement with the name'{0}' was not found.", name));
 
             return (GuiElement)elements[name];
         }
@@ -188,7 +188,7 @@ namespace Axiom.Gui {
         public GuiElement GetElement(string name, bool isTemplate) {
             Hashtable elements = GetElementTable(isTemplate);
 
-            Debug.Assert(elements.ContainsKey(name), string.Format("GuiElement with the name'{0}' was not found.", name));
+            Debug.Assert(elements[name] != null, string.Format("GuiElement with the name'{0}' was not found.", name));
 
             return (GuiElement)elements[name];
         }

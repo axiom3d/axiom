@@ -229,6 +229,9 @@ namespace Axiom.Graphics {
         public void ParseAllSources() {
             string extension = ".material";
 
+            // parse gpu programs first
+            GpuProgramManager.Instance.ParseAllSources();
+
             // search archives
             for(int i = 0; i < archives.Count; i++) {
                 Archive archive = (Archive)archives[i];
@@ -273,36 +276,7 @@ namespace Axiom.Graphics {
                     continue;
                 }
 
-                // Vertex Programs
-                if(line.StartsWith("vertex_program")) {
-                    string[] parms = line.Split(' ');
-
-                    if(parms.Length != 3) {
-                        ParseHelper.LogParserError("vertex_program", "Top level", "Vertex program declarations must include a type and name.");
-                        // skip this one
-                        ParseHelper.SkipToNextCloseBrace(script);
-                        continue;
-                    }
-
-                    ParseHelper.SkipToNextOpenBrace(script);
-                    ParseGpuProgram(script, parms[2], parms[1], GpuProgramType.Vertex);
-                }
-                // Fragment Programs
-                else if(line.StartsWith("fragment_program")) {
-                    string[] parms = line.Split(' ');
-
-                    if(parms.Length != 3) {
-                        ParseHelper.LogParserError("vertex_program", "Top level", "Fragment program declarations must include a type and name.");
-                        // skip this one
-                        ParseHelper.SkipToNextCloseBrace(script);
-                        continue;
-                    }
-
-                    ParseHelper.SkipToNextOpenBrace(script);
-                    ParseGpuProgram(script, parms[2], parms[1], GpuProgramType.Fragment);
-                }
-                // Materials
-                else if(line.StartsWith("material")) {
+                if(line.StartsWith("material")) {
                     string[] parms = line.Split(new char[] {' '}, 2);
 
                     if(parms.Length != 2) {
@@ -319,59 +293,6 @@ namespace Axiom.Graphics {
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="script"></param>
-        /// <param name="name"></param>
-        /// <param name="type"></param>
-        /// <param name="programType"></param>
-        protected void ParseGpuProgram(TextReader script, string name, string language, GpuProgramType programType) {
-
-            string line = string.Empty;
-            string fileName = string.Empty;
-            string profiles = string.Empty;
-            Hashtable parmsTable = new Hashtable();
-
-            while((line = ParseHelper.ReadLine(script)) != null) {
-                // ignore blank lines and comments
-                if(line.Length == 0 || line.StartsWith("//")) {
-                    continue;
-                }
-
-                if(line == "}") {
-                    if(language == "asm") {
-                        string profile = (string)parmsTable["profile"];
-
-                        GpuProgramManager.Instance.CreateProgram(name, fileName, programType, profile);
-                    }
-                    else {
-                        // High level gpu programs
-                        HighLevelGpuProgram program = HighLevelGpuProgramManager.Instance.CreateProgram(name, language, programType);
-                        program.SourceFile = fileName;
-
-                        // set all extra params
-                        foreach(DictionaryEntry entry in parmsTable) {
-                            program.SetParam((string)entry.Key, (string)entry.Value);
-                        }
-
-                        program.Load();
-                    }
-
-                    return;
-                }
-                
-                string[] atts = line.Split(new char[]{' '}, 2);
-
-                if(atts[0] == "source") {
-                    fileName = atts[1];
-                }
-                else {
-                    // store the param for parsing later
-                    parmsTable.Add(atts[0], atts[1]);
-                }
-            }
-        }
 
         protected void ParseMaterial(TextReader script, string name) {
             // create a new material
@@ -535,21 +456,11 @@ namespace Axiom.Graphics {
             switch(type) {
                 case GpuProgramType.Vertex:
                     pass.VertexProgramName = name;
-
-                    if(pass.VertexProgram is HighLevelGpuProgram) {
-                        pass.VertexProgramParameters = ((HighLevelGpuProgram)pass.VertexProgram).CreateParameters();
-                    }
-
                     programParams = pass.VertexProgramParameters;
                     break;
 
                 case GpuProgramType.Fragment:
                     pass.FragmentProgramName = name;
-
-                    if(pass.FragmentProgram is HighLevelGpuProgram) {
-                        pass.FragmentProgramParameters = ((HighLevelGpuProgram)pass.FragmentProgram).CreateParameters();
-                    }
-
                     programParams = pass.FragmentProgramParameters;
                     break;
             }
@@ -599,6 +510,23 @@ namespace Axiom.Graphics {
                             ParseHelper.LogParserError("vertex_program_ref", pass.Parent.Parent.Name, "Unrecognized auto contant type.");
                         }
 
+                        break;
+
+                    case "param_named":
+                        name = parms[1];
+                        dataType = parms[2];
+
+                        if(dataType == "float4") {
+                            if(parms.Length != 7) {
+                                ParseHelper.LogParserError("param_named", pass.Parent.Parent.Name, "Float4 gpu program params must have 4 components specified.");
+                                ParseHelper.SkipToNextCloseBrace(script);
+                                return;
+                            }
+
+                            Vector4 vec = new Vector4(float.Parse(parms[3]), float.Parse(parms[4]), float.Parse(parms[5]), float.Parse(parms[6]));
+                            programParams.SetNamedConstant(name, vec);
+                        }
+                        // TODO: more types
                         break;
 
                     case "param_named_auto":

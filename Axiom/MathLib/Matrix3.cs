@@ -72,7 +72,6 @@ namespace Axiom.MathLib {
         private static readonly Matrix3 zeroMatrix = new Matrix3(0,0,0,
             0,0,0,
             0,0,0);
-        const float EPSILON = 1e-06f;
 
         #endregion
 
@@ -109,7 +108,9 @@ namespace Axiom.MathLib {
         /// Identity Matrix
         /// </summary>
         public static Matrix3 Identity {
-            get { return identityMatrix; }
+            get { 
+                return identityMatrix; 
+            }
         }
 
         /// <summary>
@@ -284,14 +285,6 @@ namespace Axiom.MathLib {
             product.x = matrix.m00 * vector.x + matrix.m01 * vector.y + matrix.m02 * vector.z;
             product.y = matrix.m10 * vector.x + matrix.m11 * vector.y + matrix.m12 * vector.z;
             product.z = matrix.m20 * vector.x + matrix.m21 * vector.y + matrix.m22 * vector.z;
-
-            //for (int row = 0; row < 3; row++)
-            //{
-            //	product[row] =
-            //		matrix[row,0] * vector[0] +
-            //		matrix[row,1] * vector[1] +
-            //		matrix[row,2] * vector[2];
-            //}
 
             return product;
         }

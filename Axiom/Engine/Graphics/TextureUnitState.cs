@@ -592,11 +592,11 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        ///    Sets the multipass fallback operation for this layer, if you used TextureUnitState.SetColourOperationEx
+        ///    Sets the multipass fallback operation for this layer, if you used TextureUnitState.SetColorOperationEx
         ///    and not enough multitexturing hardware is available.
         /// </summary>
         /// <remarks>
-        ///    Because some effects exposed using TextureUnitState.SetColourOperationEx are only supported under
+        ///    Because some effects exposed using TextureUnitState.SetColorOperationEx are only supported under
         ///    multitexturing hardware, if the hardware is lacking the system must fallback on multipass rendering,
         ///    which unfortunately doesn't support as many effects. This method is for you to specify the fallback
         ///    operation which most suits you.
@@ -606,7 +606,7 @@ namespace Axiom.Graphics
         ///    of the last using the same mechanism as making an object transparent, it's just being rendered
         ///    in the same place repeatedly to get the multitexture effect.
         ///    <p/>
-        ///    If you use the simpler (and hence less flexible) TextureUnitState.SetColourOperation method you
+        ///    If you use the simpler (and hence less flexible) TextureUnitState.SetColorOperation method you
         ///    don't need to call this as the system sets up the fallback for you.
         ///    <p/>
         ///    This option has no effect in the programmable pipeline, because there is no multipass fallback
@@ -806,7 +806,7 @@ namespace Axiom.Graphics
         ///    For setting advanced blending options.
         /// </summary>
         /// <remarks>
-        ///    This is an extended version of the <see cref="TextureUnitState.SetColourOperation"/> method which allows
+        ///    This is an extended version of the <see cref="TextureUnitState.SetColorOperation"/> method which allows
         ///    extremely detailed control over the blending applied between this and earlier layers.
         ///    See the IMPORTANT note below about the issues between mulitpass and multitexturing that
         ///    using this method can create.

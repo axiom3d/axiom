@@ -316,7 +316,7 @@ namespace RenderSystem_OpenGL {
         }
 
         public static bool glIsProgramARB(int programId) {
-            return Gl.glIsProgramARB(isProgramARBPtr, programId);
+            return Gl.glIsProgramARB(isProgramARBPtr, programId) != 0;
         }
 
         public static void glProgramLocalParameter4vfARB(int type, int index, float[] values) {
