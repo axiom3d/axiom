@@ -582,6 +582,8 @@ namespace Axiom.Animating {
             }
 
             data.Close();
+
+            isLoaded = true;
         }
 
         /// <summary>
