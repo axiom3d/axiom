@@ -74,6 +74,5 @@ namespace Axiom.Core {
 		}
 		
 		#endregion
-
 	}
 }

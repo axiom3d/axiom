@@ -70,19 +70,6 @@ namespace Axiom.Core {
         Down
     }
 
-
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public enum DynamicsBodyType {
-        /// <summary></summary>
-        Box,
-        /// <summary></summary>
-        Sphere,
-
-    }
-
     /// <summary>
     /// Defines the 6 planes the make up a frustum.  
     /// </summary>
@@ -95,6 +82,24 @@ namespace Axiom.Core {
         Bottom,
         /// <summary>Used for methods that require returning a value of this type but cannot return null.</summary>
         None
+    }
+
+    /// <summary>
+    ///     The level of detail in which the log will go into.
+    /// </summary>
+    public enum LoggingLevel {
+        Low = 1,
+        Normal,
+        BoreMe
+    }
+
+    /// <summary>
+    ///     The importance of a logged message.
+    /// </summary>
+    public enum LogMessageLevel {
+        Trivial,
+        Normal,
+        Critical
     }
 
     /// <summary>

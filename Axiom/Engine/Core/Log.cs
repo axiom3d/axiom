@@ -30,13 +30,52 @@ using System.IO;
 
 namespace Axiom.Core {
     /// <summary>
-    /// Summary description for Log.
+    ///     Log class for writing debug/log data to files.
     /// </summary>
-    public sealed class Log : TraceListener, IDisposable {
-        private static System.IO.FileStream log;
-        private static System.IO.StreamWriter	writer;
+    public sealed class Log : IDisposable {
+        #region Fields
 
-        public Log(string fileName) {
+        /// <summary>
+        ///     File stream used for kepping the log file open.
+        /// </summary>
+        private FileStream log;
+        /// <summary>
+        ///     Writer used for writing to the log file.
+        /// </summary>
+        private StreamWriter writer;
+        /// <summary>
+        ///     Level of detail for this log.
+        /// </summary>
+        private LoggingLevel logLevel;
+        /// <summary>
+        ///     Debug output enabled?
+        /// </summary>
+        private bool debugOutput;
+
+        /// <summary>
+        ///     LogMessageLevel + LoggingLevel > LOG_THRESHOLD = message logged.
+        /// </summary>
+        const int LogThreshold = 4;
+
+        #endregion Fields
+
+        #region Constructors
+
+        /// <summary>
+        ///     Constructor.  Creates a log file that also logs debug output.
+        /// </summary>
+        /// <param name="fileName">Name of the log file to open.</param>
+        public Log(string fileName) : this(fileName, true) {}
+
+        /// <summary>
+        ///     Constructor.
+        /// </summary>
+        /// <param name="fileName">Name of the log file to open.</param>
+        /// <param name="debugOutput">Write log messages to the debug output?</param>
+        public Log(string fileName, bool debugOutput) {
+            this.debugOutput = debugOutput;
+            logLevel = LoggingLevel.Normal;
+
             // create the log file, or ope
             log = File.Open(fileName, FileMode.Create);
 
@@ -44,24 +83,98 @@ namespace Axiom.Core {
             writer = new StreamWriter(log);
         }
 
-        public override void Write(string message) {
-			if(writer.BaseStream != null) {
-				writer.WriteLine(message);
+        #endregion Constructors
+
+        #region Properties
+
+        /// <summary>
+        ///     Gets/Sets the level of the detail for this log.
+        /// </summary>
+        /// <value></value>
+        public LoggingLevel LogDetail {
+            get {
+                return logLevel;
+            }
+            set {
+                logLevel = value;
+            }
+        }
+
+        #endregion Properties
+
+        #region Methods 
+
+        /// <summary>
+        ///     Write a message to the log.
+        /// </summary>
+        /// <remarks>
+        ///     Message is written with a LogMessageLevel of Normal, and debug output is not written.
+        /// </remarks>
+        /// <param name="message">Message to write, which can include string formatting tokens.</param>
+        /// <param name="substitutions">
+        ///     When message includes string formatting tokens, these are the values to 
+        ///     inject into the formatted string.
+        /// </param>
+        public void Write(string message, params object[] substitutions) {
+            Write(LogMessageLevel.Normal, false, message, substitutions);
+        }
+
+        /// <summary>
+        ///     Write a message to the log.
+        /// </summary>
+        /// <remarks>
+        ///     Message is written with a LogMessageLevel of Normal, and debug output is not written.
+        /// </remarks>
+        /// <param name="maskDebug">If true, debug output will not be written.</param>
+        /// <param name="message">Message to write, which can include string formatting tokens.</param>
+        /// <param name="substitutions">
+        ///     When message includes string formatting tokens, these are the values to 
+        ///     inject into the formatted string.
+        /// </param>
+        public void Write(bool maskDebug, string message, params object[] substitutions) {
+            Write(LogMessageLevel.Normal, maskDebug, message, substitutions);
+        }
+
+        /// <summary>
+        ///     Write a message to the log.
+        /// </summary>
+        /// <param name="level">Importance of this logged message.</param>
+        /// <param name="maskDebug">If true, debug output will not be written.</param>
+        /// <param name="message">Message to write, which can include string formatting tokens.</param>
+        /// <param name="substitutions">
+        ///     When message includes string formatting tokens, these are the values to 
+        ///     inject into the formatted string.
+        /// </param>
+        public void Write(LogMessageLevel level, bool maskDebug, string message, params object[] substitutions) {
+			if(writer.BaseStream != null && (((int)logLevel + (int)level) > LogThreshold)) {
+                // construct the log message
+                string msg = string.Format(message, substitutions);
+
+                // write the the debug output if requested
+                if (debugOutput && !maskDebug) {
+                    System.Diagnostics.Debug.WriteLine(msg);
+                }
+
+                // prepend the current time to the message
+                msg = DateTime.Now.ToString("hh:mm:ss") + msg;
+
+                // write the message and flush the buffer
+                writer.WriteLine(msg);
 				writer.Flush();
 			}
         }
 
-        public override void WriteLine(string message) {
-			if(writer.BaseStream != null) {
-				writer.WriteLine(message);
-				writer.Flush();
-			}
-        }
+        #endregion Methods
 
         #region IDisposable Members
 
-        public new void Dispose() {
-            
+        /// <summary>
+        ///     Called to dispose of this objects resources.
+        /// </summary>
+        /// <remarks>
+        ///     For the log, closes any open file streams and file writers.
+        /// </remarks>
+        public void Dispose() {
             writer.Close();
             log.Close();
         }
