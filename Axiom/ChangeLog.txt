@@ -1,3 +1,10 @@
+3-4-2004
+- Added SceneNode.CreateChildSceneNode (and overloads) to allow for creating scene nodes without having to do createChild with a cast.
+- Fixed nasty bug in hardware buffers causing stream source indexes to go above what some hardware can support.  Caused Dot3 and Offset to throw an
+  exception on lower end cards.
+- Modified all demos to use SceneNode.CreateChildSceneNode.
+- Added more overloads to Node.CreateChild.
+
 3-2-2004
 - Added default texture filtering options to TextureUnitState and MaterialManager.
 - Added texture filter toggling ('T') to the TechDemo class.  Right now, the effect is most noticable on the demos that have the box in it (Frustum, Physics, etc).
