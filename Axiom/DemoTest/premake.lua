@@ -32,6 +32,6 @@ package.links = {
 
 package.files = { 
 	matchfiles("*.cs"),
-	matchfiles("Demos/*.cs"),
-	"app.config"
+	matchfiles("Demos/*.cs")
+	--"app.config"
 }
