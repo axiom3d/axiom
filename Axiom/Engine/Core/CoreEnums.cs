@@ -176,26 +176,27 @@ namespace Axiom.Core {
     ///    has decided which SceneManager specialization to use, it is expected that 
     ///    it will know which type of world geometry abstraction is available to it.
     /// </summary>
+    [Flags]
     public enum WorldFragmentType {
         /// <summary>
         ///    Return no world geometry hits at all.
         /// </summary>
-        None,
+        None				= 0x01,
         /// <summary>
         ///    Return references to convex plane-bounded regions.
         /// </summary>
-        PlaneBoundedRegion,
+        PlaneBoundedRegion	= 0x02,
         /// <summary>
         ///    Return a single intersection point (typically RaySceneQuery only)
         /// </summary>
-        SingleIntersection,
+        SingleIntersection	= 0x04,
         /// <summary>
         ///    Custom geometry as defined by the SceneManger.
         /// </summary>
-        CustomGeometry,
+        CustomGeometry		= 0x08,
         /// <summary>
         ///    General RenderOperation structure.
         /// </summary>
-        RenderOperation
+        RenderOperation		= 0x10
     }
 }

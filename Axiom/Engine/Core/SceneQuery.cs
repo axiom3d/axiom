@@ -25,16 +25,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using System.Collections;
+using Axiom.Collections;
+using Axiom.Graphics;
 using Axiom.MathLib;
 using Axiom.MathLib.Collections;
 
-namespace Axiom.Core
-{
-    /// <summary>
-    /// 
-    /// </summary>
-    public delegate bool RaySceneQueryResultEventHandler(object source, RayQueryResultEventArgs e);
-
+namespace Axiom.Core {
+	#region Base Query Implementation
 	/// <summary>
 	/// 	A class for performing queries on a scene.
 	/// </summary>
@@ -62,35 +60,49 @@ namespace Axiom.Core
 	/// 	using the SceneManager interfaces for the type of query required, e.g.
 	/// 	SceneManager.CreateRaySceneQuery.
 	/// </remarks>
-	public abstract class SceneQuery
-	{
+	public abstract class SceneQuery {
         #region Fields
 
+		/// <summary>
+		///		Reference to the SceneManager that this query was created by.
+		/// </summary>
         protected SceneManager creator;
+		/// <summary>
+		///		User definable query bit mask which can be used to filter the results of a query.
+		/// </summary>
         protected ulong queryMask;
+		/// <summary>
+		///		A flag enum which holds the world fragment types supported by this query.
+		/// </summary>
+		protected WorldFragmentType worldFragmentTypes;
 
-        #endregion
+        #endregion Fields
 		
 		#region Constructors
 		
         /// <summary>
-        ///    
+        ///		Internal constructor.
         /// </summary>
-        /// <param name="creator"></param>
+        /// <param name="creator">Reference to the scene manager who created this query.</param>
 		internal SceneQuery(SceneManager creator) {
             this.creator = creator;
+
+			// default to no world fragments queried
+			AddWorldFragmentType(WorldFragmentType.None);
 		}
 		
-		#endregion
+		#endregion Constructor
 		
 		#region Methods
 
         /// <summary>
-        /// 
+        ///		Used to add a supported world fragment type to this query.
         /// </summary>
-        public abstract void Execute();
+		public void AddWorldFragmentType(WorldFragmentType fragmentType) {
+			worldFragmentTypes |= fragmentType;
+		}
 		
-		#endregion
+		#endregion Methods
 		
 		#region Properties
 		
@@ -98,7 +110,7 @@ namespace Axiom.Core
         ///    Sets the mask for results of this query.
         /// </summary>
         /// <remarks>
-        ///    This method allows you to set a 'mask' to limit the results of this
+        ///    This property allows you to set a 'mask' to limit the results of this
         ///    query to certain types of result. The actual meaning of this value is
         ///    up to the application; basically SceneObject instances will only be returned
         ///    from this query if a bitwise AND operation between this mask value and the
@@ -115,19 +127,223 @@ namespace Axiom.Core
         }
 
 		#endregion
+
+		#region Nested Structs
+
+		/// <summary>
+		///		Represents part of the world geometry that is a result of a <see cref="SceneQuery"/>.
+		/// </summary>
+		/// <remarks>
+		///		Since world geometry is normally vast and sprawling, we need a way of
+		///		retrieving parts of it based on a query. That is what this struct is for;
+		///		note there are potentially as many data structures for world geometry as there
+		///		are SceneManagers, however this structure includes a few common abstractions as 
+		///		well as a more general format.
+		///		<p/>
+		///		The type of world fragment that is returned from a query depends on the
+		///		SceneManager, and the fragment types are supported on the query.
+		/// </remarks>
+		public class WorldFragment {
+			/// <summary>
+			///		The type of this world fragment.
+			/// </summary>
+			public WorldFragmentType FragmentType;
+			/// <summary>
+			///		Single intersection point, only applicable for <see cref="WorldFragmentType.SingleIntersection"/>.
+			/// </summary>
+			public Vector3 SingleIntersection;
+			/// <summary>
+			///		Planes bounding a convex region, only applicable for <see cref="WorldFragmentType.PlaneBoundedRegion"/>.
+			/// </summary>
+			PlaneList Planes;
+			/// <summary>
+			///		General render operation structure.  Fallback if nothing else is available.
+			/// </summary>
+			RenderOperation RenderOp;
+		}
+
+		#endregion Nested Structs
 	}
 
+	/// <summary>
+	///		Abstract class defining a query which returns single results from within a region.
+	/// </summary>
+	/// <remarks>
+	///		This class is simply a generalization of the subtypes of query that return 
+	///		a set of individual results in a region. See the <see cref="SceneQuery"/> class for 
+	///		abstract information, and subclasses for the detail of each query type.
+	/// </remarks>
+	public abstract class RegionSceneQuery : SceneQuery, ISceneQueryListener  {
+		#region Fields
+
+		/// <summary>
+		///		List of results from the last non-listener query.
+		/// </summary>
+		protected SceneQueryResult lastResult = new SceneQueryResult();
+
+		#endregion Fields
+
+		#region Constructor
+
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		/// <param name="creator">SceneManager who created this query.</param>
+		internal RegionSceneQuery(SceneManager creator) : base(creator) {}
+
+		#endregion Constructor
+
+		#region Methods
+
+		/// <summary>
+		///		Clears out any cached results from the last query.
+		/// </summary>
+		public virtual void ClearResults() {
+			lastResult.objects.Clear();
+			lastResult.worldFragments.Clear();
+		}
+
+		/// <summary>
+		///		Executes the query, returning the results back in one list.
+		/// </summary>
+		/// <remarks>
+		///		This method executes the scene query as configured, gathers the results
+		///		into one structure and returns a reference to that structure. These
+		///		results will also persist in this query object until the next query is
+		///		executed, or <see cref="ClearResults"/> is called. An more lightweight version of
+		///		this method that returns results through a listener is also available.
+		/// </remarks>
+		/// <returns></returns>
+		public virtual SceneQueryResult Execute() {
+			ClearResults();
+
+			// invoke callback method with ourself as the listener
+			Execute(this);
+
+			return lastResult;
+		}
+
+		/// <summary>
+		///		Executes the query and returns each match through a listener interface.
+		/// </summary>
+		/// <remarks>
+		///		Note that this method does not store the results of the query internally 
+		///		so does not update the 'last result' value. This means that this version of
+		///		execute is more lightweight and therefore more efficient than the version 
+		///		which returns the results as a collection.
+		/// </remarks>
+		/// <param name="listener"></param>
+		public abstract void Execute(ISceneQueryListener listener);
+
+		#endregion Methods
+
+		#region ISceneQueryListener Members
+
+		/// <summary>
+		///		Self-callback in order to deal with execute which returns collection.
+		/// </summary>
+		/// <param name="sceneObject"></param>
+		/// <returns></returns>
+		public bool OnQueryResult(SceneObject sceneObject) {
+			lastResult.objects.Add(sceneObject);
+
+			// continue
+			return true;
+		}
+
+		/// <summary>
+		///		Self-callback in order to deal with execute which returns collection.
+		/// </summary>
+		/// <param name="fragment"></param>
+		/// <returns></returns>
+		public bool OnQueryResult(Axiom.Core.SceneQuery.WorldFragment fragment) {
+			lastResult.worldFragments.Add(fragment);
+
+			// continue
+			return true;
+		}
+
+		#endregion
+	}
+
+	/// <summary>
+	///		Holds the results of a single scene query.
+	/// </summary>
+	public class SceneQueryResult {
+		/// <summary>
+		///		List of scene objects in the query (entities, particle systems etc).
+		/// </summary>
+		public SceneObjectCollection objects = new SceneObjectCollection();
+		/// <summary>
+		///		List of world fragments.
+		/// </summary>
+		public ArrayList worldFragments = new ArrayList();
+	}
+
+	/// <summary>
+	///		This optional class allows you to receive per-result callbacks from
+	///		SceneQuery executions instead of a single set of consolidated results.
+	/// </summary>
+	public interface ISceneQueryListener {
+		/// <summary>
+		///		Called when a <see cref="SceneObject"/> is returned by a query.
+		/// </summary>
+		/// <remarks>
+		///		The implementor should return 'true' to continue returning objects,
+		///		or 'false' to abandon any further results from this query.
+		/// </remarks>
+		/// <param name="sceneObject">Object found by the query.</param>
+		/// <returns></returns>
+		bool OnQueryResult(SceneObject sceneObject);
+
+		/// <summary>
+		///		Called when a <see cref="SceneQuery.WorldFragment"/> is returned by a query.
+		/// </summary>
+		/// <param name="fragment">Fragment found by the query.</param>
+		/// <returns></returns>
+		bool OnQueryResult(SceneQuery.WorldFragment fragment);
+	}
+
+	#endregion Base Query Implementation
+
+	#region RaySceneQuery Implementation
+
     /// <summary>
-    /// 
+    ///		Specializes the SceneQuery class for querying for objects along a ray.
     /// </summary>
-    public abstract class RaySceneQuery : SceneQuery {
+    public abstract class RaySceneQuery : SceneQuery, IRaySceneQueryListener {
+		#region Fields
 
-        public event RaySceneQueryResultEventHandler QueryResult;
+		/// <summary>
+		///		Reference to a ray to use for this query.
+		/// </summary>
         protected Ray ray;
+		/// <summary>
+		///		If true, results returned in the list 
+		/// </summary>
+		protected bool sortByDistance;
+		/// <summary>
+		///		Maximum results to return when executing the query.
+		/// </summary>
+		protected int maxResults;
+		/// <summary>
+		///		List of query results from the last execution of this query.
+		/// </summary>
+		protected ArrayList lastResults;
 
-        public RaySceneQuery(SceneManager creator, Ray ray) : base(creator) { 
-            this.ray = ray;
-        }
+		#endregion Fields
+
+		#region Constructor
+
+		/// <summary>
+		///		Constructor.
+		/// </summary>
+		/// <param name="creator">Scene manager who created this query.</param>
+        internal RaySceneQuery(SceneManager creator) : base(creator) {}
+
+		#endregion Constructor
+
+		#region Properties
 
         /// <summary>
         ///    Gets/Sets the Ray being used for this query.
@@ -141,64 +357,239 @@ namespace Axiom.Core
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
-        internal void OnQueryResult(object source, RayQueryResultEventArgs e) {
-            if(QueryResult != null) {
-                QueryResult(source, e);
-            }
-        }
-    }
+		/// <summary>
+		///		Gets/Sets whether this queries results are sorted by distance.
+		/// </summary>
+		/// <remarks>
+		///		Often you want to know what was the first object a ray intersected with, and this 
+		///		method allows you to ask the query to sort the results so that the nearest results
+		///		are listed first.
+		///		<p/>
+		///		Note that because the query returns results based on bounding volumes, the ray may not
+		///		actually intersect the detail of the objects returned from the query, just their 
+		///		bounding volumes. For this reason the caller is advised to use more detailed 
+		///		intersection tests on the results if a more accurate result is required; we use 
+		///		bounds checking in order to give the most speedy results since not all applications 
+		///		need extreme accuracy.
+		/// </remarks>
+		public bool SortByDistance {
+			get {
+				return sortByDistance;
+			}
+			set { 
+				sortByDistance = value;
+			}
+		}
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public class QueryResultEventArgs : System.EventArgs {
-        protected SceneObject hitObject;
+		/// <summary>
+		///		Gets/Sets the maximum number of results to return from this query when 
+		///		sorting is enabled.
+		/// </summary>
+		/// <remarks>
+		///		If sorting by distance is not enabled, then this value has no affect.
+		/// </remarks>
+		public int MaxResults {
+			get {
+				return maxResults;
+			}
+			set {
+				maxResults = value;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="hitObject"></param>
-        protected internal QueryResultEventArgs(SceneObject hitObject) {
-            this.hitObject = hitObject;
-        }
+				// size the arraylist to hold the maximum results
+				lastResults.Capacity = maxResults;
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public SceneObject HitObject {
-            get {
-                return hitObject;
-            }
-        }
-    }
+		#endregion Properties
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public class RayQueryResultEventArgs : QueryResultEventArgs {
-        protected float distance;
+		#region Methods
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="hitObject"></param>
-        /// <param name="distance"></param>
-        protected internal RayQueryResultEventArgs(SceneObject hitObject, float distance) : base(hitObject) {
-            this.distance = distance;
-        }
+		/// <summary>
+		///		Clears out any cached results from the last query.
+		/// </summary>
+		public virtual void ClearResults() {
+			lastResults.Clear();
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public float Distance {
-            get {
-                return distance;
-            }
-        }
-    }
+		/// <summary>
+		///		Executes the query, returning the results back in one list.
+		/// </summary>
+		/// <remarks>
+		///		This method executes the scene query as configured, gathers the results
+		///		into one structure and returns a reference to that structure. These
+		///		results will also persist in this query object until the next query is
+		///		executed, or <see cref="ClearResults"/>. A more lightweight version of
+		///		this method that returns results through a listener is also available.
+		/// </remarks>
+		/// <returns></returns>
+		public virtual ArrayList Execute() {
+			ClearResults();
+
+			// execute the callback version using ourselves as the listener
+			Execute(this);
+
+			if(sortByDistance) {
+				lastResults.Sort();
+
+				if(maxResults != 0 && lastResults.Count > maxResults) {
+					// remove the results greater than the desired amount
+					lastResults.RemoveRange(maxResults - 1, lastResults.Count - maxResults);
+				}
+			}
+
+			return lastResults;
+		}
+
+		/// <summary>
+		///		Executes the query and returns each match through a listener interface.
+		/// </summary>
+		/// <remarks>
+		///		Note that this method does not store the results of the query internally 
+		///		so does not update the 'last result' value. This means that this version of
+		///		execute is more lightweight and therefore more efficient than the version 
+		///		which returns the results as a collection.
+		/// </remarks>
+		/// <param name="listener">Listener object to handle the result callbacks.</param>
+		public abstract void Execute(IRaySceneQueryListener listener);
+
+		#endregion Methods
+
+		#region IRaySceneQueryListener Members
+
+		public bool OnQueryResult(SceneObject sceneObject, float distance) {
+			// create an entry and add it to the cached result list
+			RaySceneQueryResultEntry entry = new RaySceneQueryResultEntry();
+			entry.Distance = distance;
+			entry.SceneObject = sceneObject;
+			entry.worldFragment = null;
+			lastResults.Add(entry);
+
+			// continue gathering results
+			return true;
+		}
+
+		bool Axiom.Core.IRaySceneQueryListener.OnQueryResult(SceneQuery.WorldFragment fragment, float distance) {
+			// create an entry and add it to the cached result list
+			RaySceneQueryResultEntry entry = new RaySceneQueryResultEntry();
+			entry.Distance = distance;
+			entry.SceneObject = null;
+			entry.worldFragment = fragment;
+			lastResults.Add(entry);
+
+			// continue gathering results
+			return true;
+		}
+
+		#endregion
+	}
+
+	/// <summary>
+	///		Alternative listener interface for dealing with <see cref="RaySceneQuery"/>.
+	/// </summary>
+	public interface IRaySceneQueryListener {
+		/// <summary>
+		///		Called when a scene objects intersect the ray.
+		/// </summary>
+		/// <param name="sceneObject">Reference to the object hit by the ray.</param>
+		/// <param name="distance">Distance from the origin of the ray where the intersection took place.</param>
+		/// <returns>Should return false to abandon returning additional results, or true to continue.</returns>
+		bool OnQueryResult(SceneObject sceneObject, float distance);
+
+		/// <summary>
+		///		Called when a world fragment is intersected by the ray.
+		/// </summary>
+		/// <param name="fragment">World fragment hit by the ray.</param>
+		/// <param name="distance">Distance from the origin of the ray where the intersection took place.</param>
+		/// <returns>Should return false to abandon returning additional results, or true to continue.</returns>
+		bool OnQueryResult(SceneQuery.WorldFragment fragment, float distance);
+	}
+
+	/// <summary>
+	///		This struct allows a single comparison of result data no matter what the type.
+	/// </summary>
+	public class RaySceneQueryResultEntry : IComparable {
+		/// <summary>
+		///		Distance along the ray.
+		/// </summary>
+		public float Distance;
+		/// <summary>
+		///		The object, or null if this is not a scene object result.
+		/// </summary>
+		public SceneObject SceneObject;
+		/// <summary>
+		///		The world fragment, or null if this is not a fragment result.
+		/// </summary>
+		public SceneQuery.WorldFragment worldFragment;
+
+		#region IComparable Members
+
+		/// <summary>
+		///		Implemented to allow sorting of results based on distance.
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <returns></returns>
+		public int CompareTo(object obj) {
+			RaySceneQueryResultEntry entry = obj as RaySceneQueryResultEntry;
+
+			if(Distance < entry.Distance) {
+				// this result is less than
+				return -1;
+			}
+			else if(Distance > entry.Distance) {
+				// this result is greater than
+				return 1;
+			}
+
+			// they are equal
+			return 0;
+		}
+
+		#endregion
+	}
+
+	#endregion RaySceneQuery Implementation
+
+	#region SphereRegionSceneQuery Implementation
+
+	/// <summary>
+	///		Specializes the SceneQuery class for querying items within a sphere.
+	/// </summary>
+	public abstract class SphereRegionSceneQuery : RegionSceneQuery {
+		#region Fields
+
+		/// <summary>
+		///		Sphere to query items within.
+		/// </summary>
+		protected Sphere sphere;
+
+		#endregion Fields
+
+		#region Constructor
+
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		/// <param name="creator">SceneManager who created this query.</param>
+		internal SphereRegionSceneQuery(SceneManager creator) : base(creator) {}
+
+		#endregion Constructor
+
+		#region Properties
+
+		/// <summary>
+		///		Gets/Sets the sphere to use for the query.
+		/// </summary>
+		public Sphere Sphere {
+			get {
+				return sphere;
+			}
+			set {
+				sphere = value;
+			}
+		}
+
+		#endregion Properties
+	}
+
+	#endregion SphereRegionSceneQuery Implementation
 }

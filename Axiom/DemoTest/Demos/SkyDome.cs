@@ -114,20 +114,5 @@ namespace Demos {
         }
 
         #endregion
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
-        /// <returns></returns>
-        private bool rayQuery_QueryResult(object source, RayQueryResultEventArgs e) {
-            
-            if(e.Distance != 0.0f && e.HitObject is Entity) {
-                e.HitObject.ShowBoundingBox = true;
-            }
-
-            return true;
-        }
     }
 }

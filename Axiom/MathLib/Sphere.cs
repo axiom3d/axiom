@@ -92,5 +92,18 @@ namespace Axiom.MathLib {
         }
 
         #endregion
+
+		#region Methods
+
+		/// <summary>
+		///		Tests for intersection between this sphere and another sphere.
+		/// </summary>
+		/// <param name="sphere">Other sphere.</param>
+		/// <returns>True if the spheres interest, false otherwise.</returns>
+		public bool Intersects(Sphere sphere) {
+			return ((sphere.center - center).Length <= (sphere.radius + radius));
+		}
+
+		#endregion Methods
     }
 }
