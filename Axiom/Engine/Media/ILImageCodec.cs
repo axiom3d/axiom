@@ -45,10 +45,12 @@ namespace Axiom.Media {
             byte bytesPerPixel = (byte)((int)formatBpp.second);
 
             // stuff the data into the image
-            Il.ilTexImage(data.width, data.height, data.depth, bytesPerPixel, format, Il.IL_UNSIGNED_BYTE, buffer);
+            Il.ilTexImage(data.width, data.height, 1, bytesPerPixel, format, Il.IL_UNSIGNED_BYTE, buffer);
 
-            // flip the image
-            Ilu.iluFlipImage();
+            if (data.flip) {
+                // flip the image
+                Ilu.iluFlipImage();
+            }
 
             // save the image to file
             Il.ilSaveImage(fileName);
