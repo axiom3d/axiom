@@ -241,7 +241,7 @@ namespace Axiom.Serialization {
 
         public void ReadSubMeshOperation(SubMesh subMesh) {
             short op = ReadInt16();
-            subMesh.operationType = (RenderMode)op;
+            subMesh.operationType = (OperationType)op;
         }
 
         public void ReadSubMesh() {
@@ -683,29 +683,4 @@ namespace Axiom.Serialization {
         #endregion
     }
 
-    /// <summary>
-    ///		Values that mark data chunks in the .mesh file.
-    /// </summary>
-    public enum MeshChunkID : ushort {
-        Header						= 0x1000,
-        Mesh						= 0x3000,
-        SubMesh                     = 0x4000,
-        SubMeshOperation            = 0x4010,
-        SubMeshBoneAssignment		= 0x4100,
-        Geometry                    = 0x5000,
-        GeometryNormals             = 0x5100,    //(Optional)
-        GeometryColors              = 0x5200,    //(Optional)
-        GeometryTexCoords           = 0x5300,    //(Optional, REPEATABLE, each one adds an extra set)
-        MeshSkeletonLink            = 0x6000,
-        MeshBoneAssignment          = 0x7000,
-        MeshLOD                     = 0x8000,
-        MeshLODUsage                = 0x8100,
-        MeshLODManual               = 0x8110,
-        MeshLODGenerated            = 0x8120,
-        MeshBounds                  = 0x9000,
-        Material                    = 0x2000,
-        TextureLayer                = 0x2200 // optional, repeat per layer
-        // TODO - scale, offset, effects
-
-    };
 }
