@@ -34,7 +34,7 @@ namespace Axiom.Controllers {
     ///		Controller classes are used to manage the values of object automatically based
     ///		on the value of some input. For example, a Controller could animate a texture
     ///		by controlling the current frame of the texture based on time, or a different Controller
-    ///		could change the colour of a material used for a spaceship shield mesh based on the remaining
+    ///		could change the color of a material used for a spaceship shield mesh based on the remaining
     ///		shield power level of the ship.
     ///		<p/>
     ///		The Controller is an intentionally abstract concept - it can generate values

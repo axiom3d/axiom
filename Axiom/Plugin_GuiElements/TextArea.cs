@@ -465,6 +465,7 @@ namespace Plugin_GuiElements
                 font.Load();
                 // note: font materials are created with lighting and depthcheck disabled by default
                 material = MaterialManager.Instance["Fonts." + value];
+                material.Load();
 
                 geomPositionsOutOfDate = true;
             }

@@ -68,6 +68,27 @@ namespace Axiom.Graphics
 		#region Methods
 
         /// <summary>
+        ///    Clones this Technique.
+        /// </summary>
+        /// <param name="parent">Material that will own this technique.</param>
+        /// <returns></returns>
+        public Technique Clone(Material parent) {
+            Technique newTechnique = (Technique)this.MemberwiseClone();
+            newTechnique.parent = parent;
+            // TODO: Watch out for other object refs copied...
+            newTechnique.passes = new ArrayList();
+
+            // clone each pass and add that to the new technique
+            for(int i = 0; i < passes.Count; i++) {
+                Pass pass = (Pass)passes[i];
+                Pass newPass = pass.Clone(this, pass.Index);
+                newTechnique.passes.Add(newPass);
+            }
+
+            return newTechnique;
+        }
+
+        /// <summary>
         ///    Compilation method for Techniques.  See <see cref="Axiom.Core.Material"/>
         /// </summary>
         /// <param name="autoManageTextureUnits">
@@ -136,7 +157,7 @@ namespace Axiom.Graphics
         /// </param>
         /// <returns>A new Pass object reference.</returns>
         public Pass CreatePass(bool programmable) {
-            Pass pass = new Pass(this, programmable);
+            Pass pass = new Pass(this, passes.Count, programmable);
             passes.Add(pass);
             return pass;
         }
@@ -183,6 +204,20 @@ namespace Axiom.Graphics
             passes.Remove(pass);
         }
 
+        public void SetSceneBlending(SceneBlendType blendType) {
+            // load each pass
+            for(int i = 0; i < passes.Count; i++) {
+                ((Pass)passes[i]).SetSceneBlending(blendType);
+            }
+        }
+
+        public void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest) {
+            // load each pass
+            for(int i = 0; i < passes.Count; i++) {
+                ((Pass)passes[i]).SetSceneBlending(src, dest);
+            }
+        }
+
         /// <summary>
         ///    Unloads resources used by this Technique.
         /// </summary>
@@ -196,7 +231,47 @@ namespace Axiom.Graphics
 		#endregion
 		
 		#region Properties
-		
+
+        public ColorEx Ambient {
+            set {
+                for(int i = 0; i < passes.Count; i++) {
+                    ((Pass)passes[i]).Ambient = value;
+                }
+            }
+        }
+
+        public CullingMode CullingMode {
+            set {
+                for(int i = 0; i < passes.Count; i++) {
+                    ((Pass)passes[i]).CullMode = value;
+                }
+            }
+        }
+
+        public bool DepthCheck {
+            set {
+                for(int i = 0; i < passes.Count; i++) {
+                    ((Pass)passes[i]).DepthCheck = value;
+                }
+            }
+        }
+
+        public bool DepthWrite {
+            set {
+                for(int i = 0; i < passes.Count; i++) {
+                    ((Pass)passes[i]).DepthWrite = value;
+                }
+            }
+        }
+
+        public ColorEx Diffuse {
+            set {
+                for(int i = 0; i < passes.Count; i++) {
+                    ((Pass)passes[i]).Diffuse = value;
+                }
+            }
+        }
+
         /// <summary>
         ///    Returns true if this Technique has already been loaded.
         /// </summary>
@@ -242,6 +317,25 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public bool Lighting {
+            set {
+                for(int i = 0; i < passes.Count; i++) {
+                    ((Pass)passes[i]).LightingEnabled = value;
+                }
+            }
+        }
+
+        public ManualCullingMode ManualCullMode {
+            set {
+                for(int i = 0; i < passes.Count; i++) {
+                    ((Pass)passes[i]).ManualCullMode = value;
+                }
+            }
+        }
+
+        /// <summary>
         ///    Gets the number of passes within this Technique.
         /// </summary>
         public int NumPasses {
@@ -256,6 +350,14 @@ namespace Axiom.Graphics
         public Material Parent {
             get {
                 return parent;
+            }
+        }
+
+        public TextureFiltering TextureFiltering {
+            set {
+                for(int i = 0; i < passes.Count; i++) {
+                    ((Pass)passes[i]).TextureFiltering = value;
+                }
             }
         }
 

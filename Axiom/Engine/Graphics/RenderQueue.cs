@@ -28,7 +28,6 @@ using System.Collections;
 using System.Diagnostics;
 using Axiom.Collections;
 using Axiom.Core;
-
 using Axiom.Graphics;
 
 namespace Axiom.Graphics {
@@ -83,10 +82,12 @@ namespace Axiom.Graphics {
         }
 
         /// <summary>
-        ///		
+        ///    Gets the number of render queue groups contained within this queue.
         /// </summary>
-        public HashList QueueGroups {
-            get { return renderGroups; }
+        public int NumRenderQueueGroups {
+            get {
+                return renderGroups.Count;
+            }
         }
 
         #endregion
@@ -148,6 +149,23 @@ namespace Axiom.Graphics {
                 // clear the RenderQueueGroup
                 group.Clear();
             }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        internal RenderQueueGroup GetRenderQueueGroup(int index) {
+            Debug.Assert(index < renderGroups.Count, "index < renderGroups.Count");
+
+            return (RenderQueueGroup)renderGroups[index];
+        }
+
+        internal RenderQueueGroupID GetRenderQueueGroupID(int index) {
+            Debug.Assert(index < renderGroups.Count, "index < renderGroups.Count");
+
+            return (RenderQueueGroupID)renderGroups.GetKeyAt(index);
         }
 
         #endregion
@@ -220,15 +238,28 @@ namespace Axiom.Graphics {
             }
         }
 
+        /// <summary>
+        ///    Gets the hashlist entry for the priority group at the specified index.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public RenderPriorityGroup GetPriorityGroup(int index) {
+            Debug.Assert(index < priorityGroups.Count, "index < priorityGroups.Count");
+
+            return (RenderPriorityGroup)priorityGroups[index];
+        }
+
         #endregion
 
         #region Properties
 
         /// <summary>
-        ///		Gets an Enumerator that can be used to iterate through the priority groups.
+        ///    Gets the number of priority groups within this queue group.
         /// </summary>
-        public HashList PriorityGroups {
-            get { return priorityGroups; }
+        public int NumPriorityGroups {
+            get {
+                return priorityGroups.Count;
+            }
         }
 
         #endregion
@@ -247,9 +278,8 @@ namespace Axiom.Graphics {
     internal class RenderPriorityGroup {
         #region Member variables
 			
-        protected ArrayList transparentObjectList = new ArrayList();
-        /// <summary>List of renderable lists, indexed by material.</summary>
-        protected Hashtable materialGroups = new Hashtable();
+        protected ArrayList transparentPasses = new ArrayList();
+        protected ArrayList solidPasses = new ArrayList();
 
         #endregion
 
@@ -260,30 +290,22 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="item"></param>
         public void AddRenderable(IRenderable item) {
-            Material material = item.Material;
+            Debug.Assert(item.Material != null && item.Technique != null, "Cannot add a IRenderable to the queue if it has a null Material or Technique.");
 
-            Debug.Assert(material != null, "Cannot add a IRenderable to the queue if it has a null Material.");
+            Technique t = item.Technique;
 
-            // add transparent objects to the transparent object list
-            if(material.IsTransparent)
-                transparentObjectList.Add(item);
+            // loop through each pass and queue it up
+            if(t.IsTransparent) {
+                for(int i = 0; i < t.NumPasses; i++) {
+                    // add to transparent list
+                    transparentPasses.Add(new RenderablePass(item, t.GetPass(i)));
+                }
+            }
             else {
-                ArrayList renderableList;
-				
-                // look material up by name
-                // TODO: make sure using Material itself as a key works ok, may need to implement GetHashCode on Material if not
-                if(materialGroups[material] != null) {
-                    // get the existing material group
-                    renderableList = (ArrayList)materialGroups[material];
+                for(int i = 0; i < t.NumPasses; i++) {
+                    // add to solid list
+                    solidPasses.Add(new RenderablePass(item, t.GetPass(i)));
                 }
-                else {
-                    // create a new list for the renderables and add it to the material list
-                    renderableList = new ArrayList();
-                    materialGroups.Add(material, renderableList);
-                }
-
-                // add the item to the renderable list
-                renderableList.Add(item);
             }
         }
 
@@ -291,34 +313,97 @@ namespace Axiom.Graphics {
         ///		Clears all the internal lists.
         /// </summary>
         public void Clear() {
-            materialGroups.Clear();
-            transparentObjectList.Clear();
+            transparentPasses.Clear();
+            solidPasses.Clear();
         }
 
-        public void SortTransparentObjects(Camera camera) {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public RenderablePass GetSolidPass(int index) {
+            Debug.Assert(index < solidPasses.Count, "index < solidPasses.Count");
+            return (RenderablePass)solidPasses[index];
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public RenderablePass GetTransparentPass(int index) {
+            Debug.Assert(index < transparentPasses.Count, "index < transparentPasses.Count");
+            return (RenderablePass)transparentPasses[index];
+        }
+
+        /// <summary>
+        ///    Sorts the objects which have been added to the queue; transparent objects by their 
+        ///    depth in relation to the passed in Camera, solid objects in order to minimize
+        ///    render state changes.
+        /// </summary>
+        /// <param name="camera"></param>
+        public void Sort(Camera camera) {
             // sort the transparent objects using the custom IComparer
-            transparentObjectList.Sort(new TransparencySort(camera));
+            transparentPasses.Sort(new TransparencySort(camera));
+            solidPasses.Sort(new SolidSort());
         }
 
         #endregion
 
         #region Properties
-
+            
         /// <summary>
-        /// 
+        ///    Gets the number of non-transparent passes for this priority group.
         /// </summary>
-        public Hashtable MaterialGroups {
-            get { return materialGroups; }
+        public int NumSolidPasses {
+            get {
+                return solidPasses.Count;
+            }
         }
 
         /// <summary>
-        /// 
+        ///    Gets the number of transparent passes for this priority group.
         /// </summary>
-        public ArrayList TransparentObjects {
-            get { return transparentObjectList; }
+        public int NumTransparentPasses {
+            get {
+                return transparentPasses.Count;
+            }
         }
 
         #endregion
+
+        #region Internal classes
+
+        /// <summary>
+        /// 
+        /// </summary>
+        class SolidSort : IComparer {
+            #region IComparer Members
+
+            public int Compare(object x, object y) {
+                // TODO: Should these ever be null?
+                if(x == null  || y == null)
+                    return 0;
+
+                // if they are the same, return 0
+                if(x == y)
+                    return 0;
+
+                RenderablePass a = x as RenderablePass;
+                RenderablePass b = y as RenderablePass;
+
+                // sorting by pass hash
+                if(a.pass.GetHashCode() < b.pass.GetHashCode()) {
+                    return 1;
+                }
+                else {
+                    return -1;
+                }
+            }
+
+            #endregion            
+        }
 
         /// <summary>
         ///		Nested class that implements IComparer for transparency sorting.
@@ -341,17 +426,45 @@ namespace Axiom.Graphics {
                 if(x == y)
                     return 0;
 
-                IRenderable a = x as IRenderable;
-                IRenderable b = y as IRenderable;
+                RenderablePass a = x as RenderablePass;
+                RenderablePass b = y as RenderablePass;
 
-                // sort descending by depth, meaning further objects get drawn first
-                if(a.GetSquaredViewDepth(camera) > b.GetSquaredViewDepth(camera))
-                    return 1;
-                else
-                    return -1;
+                float adepth = a.renderable.GetSquaredViewDepth(camera);
+                float bdepth = b.renderable.GetSquaredViewDepth(camera);
+
+                if(adepth == bdepth) {
+                    if(a.pass.GetHashCode() < b.pass.GetHashCode()) {
+                        return 1;
+                    }
+                    else {
+                        return -1;
+                    }
+                }
+                else {
+                    // sort descending by depth, meaning further objects get drawn first
+                    if(adepth > bdepth)
+                        return 1;
+                    else
+                        return -1;
+                }
             }
 
             #endregion
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    ///    Internal structure for reflecting a single Pass for a Renderable.
+    /// </summary>
+    public class RenderablePass {
+        public IRenderable renderable;
+        public Pass pass;
+
+        public RenderablePass(IRenderable renderable, Pass pass) {
+            this.renderable = renderable;
+            this.pass = pass;
         }
     }
 }

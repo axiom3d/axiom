@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using Axiom.Core;
+using Axiom.Graphics;
 using Axiom.MathLib;
 
 namespace Axiom.Controllers.Canned {
@@ -40,22 +41,22 @@ namespace Axiom.Controllers.Canned {
         protected bool scaleU;
         protected bool scaleV;
         protected bool rotate;
-        protected TextureLayer texLayer;
+        protected TextureUnitState texUnit;
 		
         #endregion
 
-        public TexCoordModifierControllerValue(TextureLayer layer) {
-            this.texLayer = layer;
+        public TexCoordModifierControllerValue(TextureUnitState texUnit) {
+            this.texUnit = texUnit;
         }
 
-        public TexCoordModifierControllerValue(TextureLayer layer, bool scrollU, bool scrollV) {
-            this.texLayer = layer;
+        public TexCoordModifierControllerValue(TextureUnitState texUnit, bool scrollU, bool scrollV) {
+            this.texUnit = texUnit;
             this.transU = scrollU;
             this.transV = scrollV;
         }
 
-        public TexCoordModifierControllerValue(TextureLayer layer, bool scrollU, bool scrollV, bool scaleU, bool scaleV, bool rotate) {
-            this.texLayer = layer;
+        public TexCoordModifierControllerValue(TextureUnitState texUnit, bool scrollU, bool scrollV, bool scaleU, bool scaleV, bool rotate) {
+            this.texUnit = texUnit;
             this.transU = scrollU;
             this.transV = scrollV;
             this.scaleU = scaleU;
@@ -67,7 +68,7 @@ namespace Axiom.Controllers.Canned {
 
         public float Value {
             get {
-                Matrix4 trans = texLayer.TextureMatrix;
+                Matrix4 trans = texUnit.TextureMatrix;
 
                 if(transU)
                     return trans.m03;
@@ -83,31 +84,31 @@ namespace Axiom.Controllers.Canned {
             }
             set {
                 if(transU)
-                    texLayer.SetTextureScrollU(value);
+                    texUnit.SetTextureScrollU(value);
 
                 if(transV)
-                    texLayer.SetTextureScrollV(value);
+                    texUnit.SetTextureScrollV(value);
 
                 if(scaleU) {
                     if(value >= 0) {
-                        texLayer.SetTextureScaleU(1 + value);
+                        texUnit.SetTextureScaleU(1 + value);
                     }
                     else {
-                        texLayer.SetTextureScaleU(1 / -value);
+                        texUnit.SetTextureScaleU(1 / -value);
                     }
                 }
 
                 if(scaleV) {
                     if(value >= 0) {
-                        texLayer.SetTextureScaleV(1 + value);
+                        texUnit.SetTextureScaleV(1 + value);
                     }
                     else {
-                        texLayer.SetTextureScaleV(1 / -value);
+                        texUnit.SetTextureScaleV(1 / -value);
                     }
                 }
 
                 if(rotate)
-                    texLayer.SetTextureRotate(value * 360);
+                    texUnit.SetTextureRotate(value * 360);
             }
         }
 

@@ -205,6 +205,11 @@ namespace Axiom.Graphics
         /// <param name="textureName"></param>
         /// <param name="texCoordSet"></param>
         protected void Construct(Pass parent, string textureName, int texCoordSet) {
+            this.parent = parent;
+            // texture params
+            TextureName = textureName;
+            TextureCoordSet = texCoordSet;
+
             isBlank = true;
 
             colorBlendMode.blendType = LayerBlendType.Color;
@@ -229,10 +234,6 @@ namespace Axiom.Graphics
             texMatrix = Matrix4.Identity;
             alphaRejectFunction = CompareFunction.AlwaysPass;
             alphaRejectValue = 0;
-
-            // texture params
-            TextureName = textureName;
-            TexCoordSet = texCoordSet;
         }
 
         #endregion
@@ -262,6 +263,7 @@ namespace Axiom.Graphics
         /// </summary>
         public byte AlphaRejectValue {
             get {
+                return alphaRejectValue;
             }
         }
 
@@ -289,28 +291,6 @@ namespace Axiom.Graphics
         public LayerBlendModeEx ColorBlendMode {
             get { 
                 return colorBlendMode; 
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public int DefaultAnisotropy {
-            set {
-                if(isDefaultAnisotropy) {
-                    maxAnisotropy = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public TextureFiltering DefaultTextureFiltering {
-            set {
-                if(isDefaultFiltering) {
-                    texFiltering = value;
-                }
             }
         }
 
@@ -457,8 +437,10 @@ namespace Axiom.Graphics
         /// </summary>
         public bool IsBlank {
             get {
+                return isBlank;
             }
             set {
+                isBlank = value;
             }
         }
 
@@ -492,6 +474,15 @@ namespace Axiom.Graphics
         public bool IsLoaded {
             get {
                 return parent.IsLoaded;
+            }
+        }
+
+        /// <summary>
+        ///    Gets the number of effects currently tied to this texture stage.
+        /// </summary>
+        public int NumEffects {
+            get {
+                return effectList.Count;
             }
         }
 
@@ -1245,7 +1236,7 @@ namespace Axiom.Graphics
 
             // create controller
             if(IsLoaded)
-                CreateEffectController(ref effect);
+                CreateEffectController(effect);
 
             // add to internal list
             effectList.Add(effect);
@@ -1348,7 +1339,7 @@ namespace Axiom.Graphics
 
         #endregion
 
-        #region ICloneable Members
+        #region Object cloning
 
         /// <summary>
         ///		Used to clone a texture layer.  Mainly used during a call to Clone on a Material.
@@ -1364,16 +1355,35 @@ namespace Axiom.Graphics
                 object srcVal = prop.GetValue(this);
                 prop.SetValue(layer, srcVal);
             }
+    
+            layer.frames = new string[MAX_ANIMATION_FRAMES];
+                
+            // copy over animation frame texture names
+            for(int i = 0; i < MAX_ANIMATION_FRAMES; i++) {
+                layer.frames[i] = frames[i];
+            }
         }
 
         /// <summary>
-        ///		Used to clone a texture layer.  Mainly used during a call to Clone on a Material.
+        ///		Used to clone a texture layer.  Mainly used during a call to Clone on a Material or Pass.
         /// </summary>
         /// <returns></returns>
-        public object Clone() {
-            TextureLayer newLayer = (TextureLayer)this.MemberwiseClone();
+        public TextureUnitState Clone(Pass parent) {
+            TextureUnitState newLayer = (TextureUnitState)this.MemberwiseClone();
+
+            newLayer.frames = new string[MAX_ANIMATION_FRAMES];
+
+            // copy over animation frame texture names
+            for(int i = 0; i < MAX_ANIMATION_FRAMES; i++) {
+                newLayer.frames[i] = frames[i];
+            }
+
+            // TODO: Revisit to clone these as well
             newLayer.colorBlendMode = colorBlendMode;
             newLayer.alphaBlendMode = alphaBlendMode;
+
+            // set the manually specified parent for this new texture state
+            newLayer.parent = parent;
 
             return newLayer;
         }

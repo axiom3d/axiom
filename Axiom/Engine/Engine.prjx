@@ -68,7 +68,6 @@
     <File name=".\Core\Sphere.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\SubEntity.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Texture.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\Core\TextureLayer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\TextureManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Viewport.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\WireBoundingBox.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
@@ -113,8 +112,6 @@
     <File name=".\Utility\DefaultForm.resources" subtype="Code" buildaction="EmbedAsResource" dependson="" data="" />
     <File name=".\Utility\Axiom.Utility.ConfigDialog.resources" subtype="Code" buildaction="EmbedAsResource" dependson="" data="" />
     <File name=".\Serialization\OgreMeshReader.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\Core\Material.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\Core\MaterialManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\MeshManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Scripting\ScriptEnumAttribute.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\SubMesh.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
@@ -128,7 +125,6 @@
     <File name=".\Gui\GuiElement.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Gui\IGuiElementFactory.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\SceneQuery.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\Core\Enums.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Graphics\RenderSystem.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Graphics\RenderTarget.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Graphics\RenderWindow.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
@@ -152,6 +148,14 @@
     <File name=".\Graphics\IRenderable.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Graphics\RenderOperation.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Graphics\RenderQueue.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\GpuProgramUsage.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\Material.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\MaterialManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\Pass.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\Technique.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\TextureUnitState.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Utility\DebugWindow.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\CoreEnums.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References>
     <Reference type="Project" refto="MathLib" localcopy="True" />
@@ -159,13 +163,13 @@
   </References>
   <DeploymentInformation target="" script="" strategy="File" />
   <Configuration runwithwarnings="True" name="Debug">
-    <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="0" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
+    <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="1" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
     <Execution commandlineparameters="" consolepause="True" />
     <Output directory=".\bin\Debug" assembly="AxiomEngine" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
   </Configuration>
   <Configurations active="Debug">
     <Configuration runwithwarnings="True" name="Debug">
-      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="0" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
+      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="1" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
       <Execution commandlineparameters="" consolepause="True" />
       <Output directory=".\bin\Debug" assembly="AxiomEngine" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
     </Configuration>

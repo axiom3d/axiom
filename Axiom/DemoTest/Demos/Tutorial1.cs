@@ -40,6 +40,23 @@ namespace Demos {
     public class Tutorial1 : TechDemo {	
         #region Methods
 
+        private Vector4 color = new Vector4(1, 0, 0, 1);
+
+        protected override bool OnFrameStarted(object source, FrameEventArgs e) {
+            base.OnFrameStarted (source, e);
+
+            color.x += e.TimeSinceLastFrame * .6f;
+            if(color.x > 1) color.x = 0;
+
+            color.y += e.TimeSinceLastFrame * .6f;
+            if(color.y > 1) color.y = 0;
+
+            color.z += e.TimeSinceLastFrame * .6f;
+            if(color.z > 1) color.z = 0;
+
+            return false;
+        }
+
         protected override void CreateScene() {
 
             // create a 3d line
@@ -60,7 +77,7 @@ namespace Demos {
             triNode.Position = new Vector3(50, 0, 0);
 
             // add the line to the scene
-            lineNode.AttachObject(line);
+            //lineNode.AttachObject(line);
             triNode.AttachObject(tri);
 
             // create a node rotation controller value, which will mark the specified scene node as a target of the rotation

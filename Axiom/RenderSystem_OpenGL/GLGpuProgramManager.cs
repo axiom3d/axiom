@@ -24,7 +24,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-
 using System;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -37,6 +36,18 @@ namespace RenderSystem_OpenGL
 	public class GLGpuProgramManager : GpuProgramManager
 	{	
 		public GLGpuProgramManager() : base() {
+            // ARB vertex program
+            syntaxCodes.Add("arbvp1");
+            // ARB fragment program
+            syntaxCodes.Add("arbfp1");
+            // nVidia vertex program 2.0
+            syntaxCodes.Add("vp20");
+            // nVidia fragment program 2.0
+            syntaxCodes.Add("fp20");
+            // nVidia vertex program 3.0
+            syntaxCodes.Add("vp30");
+            // nVidia fragment program 3.0
+            syntaxCodes.Add("fp30");
 		}
 
         /// <summary>

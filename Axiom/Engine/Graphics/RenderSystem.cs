@@ -72,9 +72,6 @@ namespace Axiom.Graphics {
         protected Viewport activeViewport;
         protected RenderTarget activeRenderTarget;
 
-        // Store record of texture unit settings for efficient alterations
-        protected TextureLayer[] textureUnits = new TextureLayer[Config.MaxTextureLayers];
-
         protected int numFaces, numVertices;
 
         // used to determine capabilies of the hardware
@@ -99,10 +96,6 @@ namespace Axiom.Graphics {
             // This means CULL clockwise vertices, i.e. front of poly is counter-clockwise
             // This makes it the same as OpenGL and other right-handed systems
             this.cullingMode = Axiom.Graphics.CullingMode.Clockwise; 
-
-            // init the texture layer array
-            for(int i = 0; i < Config.MaxTextureLayers; i++)
-                textureUnits[i] = new TextureLayer();
         }
 
         #endregion
@@ -178,7 +171,7 @@ namespace Axiom.Graphics {
         /// <summary>
         ///		Sets the type of light shading required (default = Gouraud).
         /// </summary>
-        public abstract Shading ShadingType { set; }
+        public abstract Shading ShadingMode { set; }
 
         /// <summary>
         ///		Sets the type of texture filtering used when rendering
@@ -328,6 +321,14 @@ namespace Axiom.Graphics {
         abstract internal protected void UpdateLight(Light light);
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stage"></param>
+        /// <param name="func"></param>
+        /// <param name="val"></param>
+        internal protected abstract void SetAlphaRejectSettings(int stage, CompareFunction func, byte val);
+
+        /// <summary>
         ///		Sets the fog with the given params.
         /// </summary>
         /// <param name="mode"></param>
@@ -352,8 +353,8 @@ namespace Axiom.Graphics {
         ///		Each of the factors is specified as one of a number of options, as specified in the SceneBlendFactor
         ///		enumerated type.
         /// </summary>
-        /// <param name="src">The source factor in the above calculation, i.e. multiplied by the texture colour components.</param>
-        /// <param name="dest">The destination factor in the above calculation, i.e. multiplied by the pixel colour components.</param>
+        /// <param name="src">The source factor in the above calculation, i.e. multiplied by the texture color components.</param>
+        /// <param name="dest">The destination factor in the above calculation, i.e. multiplied by the pixel color components.</param>
         abstract internal protected void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest);
 
         /// <summary>
@@ -552,7 +553,7 @@ namespace Axiom.Graphics {
         /// <summary>
         /// 
         /// </summary>
-        abstract protected internal ushort DepthBias { set; }
+        abstract protected internal int DepthBias { set; }
 
         /// <summary>Sets the current view matrix.</summary>
         abstract protected internal Matrix4 ViewMatrix	{ set; }
@@ -724,18 +725,18 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="textureUnit">Index of the texture unit to configure</param>
         /// <param name="layer">Reference to a TextureLayer object which defines all the settings.</param>
-        virtual protected internal void SetTextureUnit(int stage, TextureLayer layer) {
+        virtual protected internal void SetTextureUnit(int stage, TextureUnitState layer) {
             // set the texture if it is different from the current
             SetTexture(stage, true, layer.TextureName);
 
             // Tex Coord Set
-            SetTextureCoordSet(stage, layer.TexCoordSet);
+            SetTextureCoordSet(stage, layer.TextureCoordSet);
 
             // Texture layer filtering
             SetTextureLayerFiltering(stage, layer.TextureFiltering);
 
             // Texture layer anistropy
-            SetTextureLayerAnisotropy(stage, layer.Anisotropy);
+            SetTextureLayerAnisotropy(stage, layer.TextureAnisotropy);
 
             // set the texture blending mode
             SetTextureBlendMode(stage, layer.ColorBlendMode);
@@ -749,8 +750,8 @@ namespace Axiom.Graphics {
 
             bool anyCalcs = false;
 
-            for(int i = 0; i < layer.Effects.Count; i++) {
-                TextureEffect effect = (TextureEffect)layer.Effects[i];
+            for(int i = 0; i < layer.NumEffects; i++) {
+                TextureEffect effect = layer.GetEffect(i);
 
                 switch(effect.type) {
                     case TextureEffectType.EnvironmentMap:
@@ -783,13 +784,14 @@ namespace Axiom.Graphics {
             // Ensure any previous texcoord calc settings are reset if there are now none
             if(!anyCalcs) {
                 SetTextureCoordCalculation(stage, TexCoordCalcMethod.None);
-                SetTextureCoordSet(stage, layer.TexCoordSet);
+                SetTextureCoordSet(stage, layer.TextureCoordSet);
             }
 
             // set the texture matrix to that of the current layer for any transformations
             SetTextureMatrix(stage, layer.TextureMatrix);
 
-            textureUnits[stage] = layer;
+            // set alpha rejection
+            SetAlphaRejectSettings(stage, layer.AlphaRejectFunction, layer.AlphaRejectValue);
         }
 
         /// <summary>
@@ -807,7 +809,6 @@ namespace Axiom.Graphics {
         /// <param name="textureUnit"></param>
         virtual protected internal void DisableTextureUnit(int textureUnit) {
             SetTexture(textureUnit, false, "");
-            textureUnits[textureUnit].Blank = true;
         }
 
         /// <summary>

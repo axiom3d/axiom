@@ -141,6 +141,10 @@ namespace Axiom.Graphics {
     /// <summary>
     ///		Specifes the type of environment mapping to use.
     /// </summary>
+    /// <remarks>
+    ///    Note that these have no effect when using the programmable pipeline, since their
+    ///    effect is overridden by the vertex / fragment programs.
+    /// </remarks>
     public enum EnvironmentMap {
         /// <summary>
         ///		Envmap based on vector from camera to vertex position, good for planar geometry.
@@ -354,7 +358,7 @@ namespace Axiom.Graphics {
         /// <summary>
         ///		Based on diffuse color of the texture.
         /// </summary>
-        [ScriptEnum("colour")]
+        [ScriptEnum("color")]
         Color,
         /// <summary>
         ///		Based on the alpha value of the texture.
@@ -574,6 +578,9 @@ namespace Axiom.Graphics {
     /// <summary>
     /// Texture addressing modes - default is Wrap.
     /// </summary>
+    /// <remarks>
+    ///    These settings are relevant in both the fixed-function and programmable pipeline.
+    /// </remarks>
     public enum TextureAddressing {
         /// <summary>
         ///		Texture wraps at values over 1.0 
@@ -625,8 +632,12 @@ namespace Axiom.Graphics {
     }
 
     /// <summary>
-    /// Definition of the broad types of texture effect you can apply to a texture layer.
+    ///    Definition of the broad types of texture effect you can apply to a texture layer.
     /// </summary>
+    /// <remarks>
+    ///    Note that these have no effect when using the programmable pipeline, since their
+    ///    effect is overridden by the vertex / fragment programs.
+    /// </remarks>
     public enum TextureEffectType {
         /// <summary>
         ///		Bump mapping.
@@ -679,6 +690,10 @@ namespace Axiom.Graphics {
     /// <summary>
     /// Useful enumeration when dealing with procedural transforms.
     /// </summary>
+    /// <remarks>
+    ///    Note that these have no effect when using the programmable pipeline, since their
+    ///    effect is overridden by the vertex / fragment programs.
+    /// </remarks>
     public enum TextureTransform {
         /// <summary>
         /// 

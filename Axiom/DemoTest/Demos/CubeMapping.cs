@@ -231,6 +231,8 @@ namespace Demos {
 
             // setting the material here propogates it down to cloned sub entites, no need to clone them
             objectEntity.MaterialName = material.Name;
+
+            Pass pass = material.GetTechnique(0).GetPass(0);
             
             // add original sub mesh texture layers after the new cube map recently added
             for(int i = 0; i < clonedMesh.SubMeshCount; i++) {
@@ -241,15 +243,18 @@ namespace Demos {
                 if(subMesh.IsMaterialInitialized) {
                     string matName = subMesh.MaterialName;
                     Material subMat = MaterialManager.Instance[matName];
-                    Material cloned = subMat.Clone(string.Format("CubeMapTempMaterial#{0}", i));
 
                     if(subMat != null) {
                         subMat.Load();
 
+                        // Clone the sub entities material
+                        Material cloned = subMat.Clone(string.Format("CubeMapTempMaterial#{0}", i));
+                        Pass clonedPass = cloned.GetTechnique(0).GetPass(0);
+
                         // add global texture layers to the existing material of the entity
-                        for(int j = 0; j < subMat.NumTextureLayers; j++) {
-                            TextureLayer orgLayer = material.TextureLayers[j];
-                            TextureLayer newLayer = cloned.AddTextureLayer(orgLayer.TextureName);
+                        for(int j = 0; j < pass.NumTextureUnitStages; j++) {
+                            TextureUnitState orgLayer = pass.GetTextureUnitState(j);
+                            TextureUnitState newLayer = clonedPass.CreateTextureUnitState(orgLayer.TextureName);
                             orgLayer.CopyTo(newLayer);
                             newLayer.SetColorOperationEx(currentLbx);
                         }
@@ -573,27 +578,27 @@ namespace Demos {
             string cubeMapName = cubeMaps[currentCubeIndex];
 
             // toast the existing textures
-            for(int i = 0; i < material.TextureLayers[0].NumFrames; i++) {
-                string texName = material.TextureLayers[0].GetFrameTextureName(i);
+            for(int i = 0; i < material.GetTechnique(0).GetPass(0).GetTextureUnitState(0).NumFrames; i++) {
+                string texName = material.GetTechnique(0).GetPass(0).GetTextureUnitState(0).GetFrameTextureName(i);
                 Texture tex = (Texture)TextureManager.Instance[texName];
                 TextureManager.Instance.Unload(tex);
             }
 
             // set the current entity material to the new cubemap texture
-            material.TextureLayers[0].SetCubicTexture(cubeMapName, true);
+            material.GetTechnique(0).GetPass(0).GetTextureUnitState(0).SetCubicTexture(cubeMapName, true);
 
             // get the current skybox cubemap and change it to the new one
             Material skyBoxMat = MaterialManager.Instance[SKYBOX_MATERIAL];
 
             // toast the existing textures
-            for(int i = 0; i < skyBoxMat.TextureLayers[0].NumFrames; i++) {
-                string texName = skyBoxMat.TextureLayers[0].GetFrameTextureName(i);
+            for(int i = 0; i < skyBoxMat.GetTechnique(0).GetPass(0).GetTextureUnitState(0).NumFrames; i++) {
+                string texName = skyBoxMat.GetTechnique(0).GetPass(0).GetTextureUnitState(0).GetFrameTextureName(i);
                 Texture tex = (Texture)TextureManager.Instance[texName];
                 TextureManager.Instance.Unload(tex);
             }
 
             // set the new cube texture for the skybox
-            skyBoxMat.TextureLayers[0].SetCubicTexture(cubeMapName, false);
+            skyBoxMat.GetTechnique(0).GetPass(0).GetTextureUnitState(0).SetCubicTexture(cubeMapName, false);
 
             // reset the entity based on the new cubemap
             PrepareEntity(meshes[currentMeshIndex]);
