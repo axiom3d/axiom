@@ -1037,8 +1037,6 @@ namespace Axiom.RenderSystems.DirectX9 {
 			}
 		}
 
-
-
 		#region Private methods
 
 		/// <summary>
@@ -1088,7 +1086,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 				device.Lights[index].Attenuation1 = light.AttenuationLinear;
 				device.Lights[index].Attenuation2 = light.AttenuationQuadratic;
 
-				device.Lights[index].Commit();
+				device.Lights[index].Update();
 				device.Lights[index].Enabled = true;
 			} // if
 		}

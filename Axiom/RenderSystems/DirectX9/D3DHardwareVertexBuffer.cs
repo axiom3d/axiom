@@ -94,7 +94,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 			
             // return an IntPtr to the first element of the locked array
             //return Marshal.UnsafeAddrOfPinnedArrayElement(data, 0);
-			GraphicsStream s = d3dBuffer.Lock(offset, length, d3dLocking);
+			Microsoft.DirectX.GraphicsStream s = d3dBuffer.Lock(offset, length, d3dLocking);
 			return s.InternalData;
         }
 
