@@ -189,6 +189,7 @@ namespace Axiom.RenderSystems.DirectX9 {
                 case TextureType.CubeMap:
                     LoadCubeTexture();
                     break;
+
                 default:
                     throw new Exception("Unsupported texture type!");
             }
@@ -197,43 +198,45 @@ namespace Axiom.RenderSystems.DirectX9 {
         }
 
         public override void LoadImage(Image image) {
-            throw new NotImplementedException("LoadImage not currently implemented for DirectX9.");
-//            //image.RotateFlip(RotateFlipType.RotateNoneFlipY);
-//
-//            // log a quick message
-//            Trace.WriteLine(string.Format("D3DTexture: Loading {0} with {1} mipmaps from an Image.", name, numMipMaps));
-//
-//            // get the images pixel format
-//            PixelFormat pixFormat = image.Format;
-//
-//            // get dimensions
-//            srcWidth = image.Width;
-//            srcHeight = image.Height;
-//            width = srcWidth;
-//            height = srcHeight;
-//				
-//            if(pixFormat.ToString().IndexOf("Format16") != -1)
-//                srcBpp = 16;
-//            else if(pixFormat.ToString().IndexOf("Format24") != -1 || pixFormat.ToString().IndexOf("Format32") != -1)
-//                srcBpp = 32;
-//			
-////            // do we have alpha?
-////            if((pixFormat & PixelFormat.Alpha) > 0)
-////                hasAlpha = true;
-//		
-//            D3D.Usage usage = Usage.Dynamic;
-//
-//            // create the D3D Texture using D3DX, and auto gen mipmaps
-//            if(CanAutoGenMipMaps(0, ResourceType.Textures, ChooseD3DFormat())) {
-//                usage |= Usage.AutoGenerateMipMap;
-//            }
-//
-//            //texture = D3D.Texture.FromBitmap(device, image, usage, Pool.Default);
-//            Stream stream = TextureManager.Instance.FindResourceData(name);
-//            texture = TextureLoader.FromStream(device, stream, (int)stream.Length);
-//
-//            // Get the surface to check it's dimensions
-//            D3D.Surface surface = ((D3D.Texture)texture).GetSurfaceLevel(0);
+            // log a quick message
+            Trace.WriteLine(string.Format("D3DTexture: Loading {0} with {1} mipmaps from an Image.", name, numMipMaps));
+
+            // get the images pixel format
+            PixelFormat pixFormat = image.Format;
+
+			// get dimensions
+            srcWidth = image.Width;
+            srcHeight = image.Height;
+            width = srcWidth;
+            height = srcHeight;
+			
+			if(pixFormat.ToString().IndexOf("Format16") != -1) {
+				srcBpp = 16;
+			}
+			else if(pixFormat.ToString().IndexOf("Format24") != -1 || pixFormat.ToString().IndexOf("Format32") != -1) {
+				srcBpp = 32;
+			}
+			
+            // do we have alpha?
+			if(Image.FormatHasAlpha(pixFormat)) {
+				hasAlpha = true;
+			}
+		
+            D3D.Usage usage = 0;
+
+            // create the D3D Texture using D3DX, and auto gen mipmaps
+            if(CanAutoGenMipMaps(0, ResourceType.Textures, ChooseD3DFormat())) {
+                usage |= D3D.Usage.AutoGenerateMipMap;
+            }
+
+			texture = new D3D.Texture(device, srcWidth, srcHeight, 1, usage, D3D.Format.A8R8G8B8, D3D.Pool.Managed);
+
+			// Get the surface to check it's dimensions
+			D3D.Surface surface = ((D3D.Texture)texture).GetSurfaceLevel(0);
+
+			GraphicsStream graphicsStream = surface.LockRectangle(D3D.LockFlags.None);
+			graphicsStream.Write(image.Data);
+			surface.UnlockRectangle();
 //
 //            // texture dimensions may have been altered during load
 //            if(surface.Description.Width != srcWidth || surface.Description.Height != srcHeight) {
@@ -241,8 +244,8 @@ namespace Axiom.RenderSystems.DirectX9 {
 //            }
 //
 //            // record the final width and height (may have been modified)
-//            width = surface.Description.Width;
-//            height = surface.Description.Height;
+            width = surface.Description.Width;
+            height = surface.Description.Height;
         }
 
         /// <summary>
@@ -400,6 +403,11 @@ namespace Axiom.RenderSystems.DirectX9 {
                 numMipMaps = 0;
                 numMips = 1;
             }
+
+			// HACK: Why does Managed D3D report R8G8B8 as an invalid format....
+			if(d3dPixelFormat == D3D.Format.R8G8B8) {
+				d3dPixelFormat = D3D.Format.A8R8G8B8;
+			}
 
             // create the cube texture
             cubeTexture = new D3D.CubeTexture(
