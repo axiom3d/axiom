@@ -190,8 +190,6 @@ namespace Demos {
                 timeDelay = 0.1f;
             }
 
-            Console.WriteLine(timeDelay);
-
             // animate the lights
             for(int i = 0; i < NUM_LIGHTS; i++) {
                 lightPivots[i].Rotate(Vector3.UnitZ, lightSpeeds[i] * e.TimeSinceLastFrame);

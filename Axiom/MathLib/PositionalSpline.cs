@@ -85,8 +85,12 @@ namespace Axiom.MathLib {
         ///		Specifies whether or not to recalculate tangents as each control point is added.
         /// </summary>
         public bool AutoCalculate {
-            get { return autoCalculateTangents; }
-            set { autoCalculateTangents = value; }
+            get { 
+                return autoCalculateTangents; 
+            }
+            set { 
+                autoCalculateTangents = value; 
+            }
         }
 
         /// <summary>
@@ -218,7 +222,11 @@ namespace Axiom.MathLib {
         public void RecalculateTangents() {
             // Catmull-Rom approach
             // tangent[i] = 0.5 * (point[i+1] - point[i-1])
+
+            // TODO: Resize tangent list and use existing elements rather than clear/readd every time.
  
+            tangentList.Clear();
+
             int i, numPoints;
             bool isClosed;
 

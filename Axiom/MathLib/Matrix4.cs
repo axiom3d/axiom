@@ -408,12 +408,13 @@ namespace Axiom.MathLib {
         /// <returns>true if the Matrix 4 instances are equal, false otherwise.</returns>
         public static bool operator == (Matrix4 left, Matrix4 right) {
             if( 
-                left.m00 == right.m00 || left.m01 == right.m01 || left.m02 == right.m02 || left.m03 == right.m03 ||
-                left.m10 == right.m10 || left.m11 == right.m11 || left.m12 == right.m02 || left.m13 == right.m03 ||
-                left.m20 == right.m20 || left.m21 == right.m21 || left.m22 == right.m02 || left.m23 == right.m03 ||
-                left.m30 == right.m30 || left.m31 == right.m31 || left.m32 == right.m02 || left.m33 == right.m03 )
-                return false;
-            return true;
+                left.m00 == right.m00 && left.m01 == right.m01 && left.m02 == right.m02 && left.m03 == right.m03 ||
+                left.m10 == right.m10 && left.m11 == right.m11 && left.m12 == right.m12 && left.m13 == right.m13 ||
+                left.m20 == right.m20 && left.m21 == right.m21 && left.m22 == right.m22 && left.m23 == right.m23 ||
+                left.m30 == right.m30 && left.m31 == right.m31 && left.m32 == right.m32 && left.m33 == right.m33 )
+                return true;
+
+            return false;
         }
 
         /// <summary>
@@ -423,13 +424,7 @@ namespace Axiom.MathLib {
         /// <param name="right"></param>
         /// <returns>true if the Matrix 4 instances are not equal, false otherwise.</returns>
         public static bool operator != (Matrix4 left, Matrix4 right) {
-            if( 
-                left.m00 != right.m00 || left.m01 != right.m01 || left.m02 != right.m02 || left.m03 != right.m03 ||
-                left.m10 != right.m10 || left.m11 != right.m11 || left.m12 != right.m02 || left.m13 != right.m03 ||
-                left.m20 != right.m20 || left.m21 != right.m21 || left.m22 != right.m02 || left.m23 != right.m03 ||
-                left.m30 != right.m30 || left.m31 != right.m31 || left.m32 != right.m02 || left.m33 != right.m03 )
-                return false;
-            return true;
+            return !(left == right);
         }
 
         /// <summary>
