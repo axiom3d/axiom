@@ -308,6 +308,9 @@ namespace Axiom.Utility {
 
             element = GuiManager.Instance.GetElement("Core/NumTris", false);
             element.Text = string.Format("Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered);
+
+            element = GuiManager.Instance.GetElement("Core/DebugText", false);
+            element.Text = window.DebugText;
         }
 
         public static void GlobalErrorHandler(Object source, ThreadExceptionEventArgs e) {
