@@ -5,10 +5,10 @@
     <File name=".\GLTexture.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\GLTextureManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\GLWindow.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\OpenGLRenderer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\GLHardwareVertexBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\GLHardwareBufferManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\GLHardwareIndexBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\GLRenderSystem.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References>
     <Reference type="Project" refto="Engine" localcopy="True" />

@@ -53,7 +53,7 @@ namespace RenderSystem_OpenGL {
     /// <summary>
     /// Summary description for OpenGLRenderer.
     /// </summary>
-    public class OpenGLRenderer : RenderSystem, IPlugin {
+    public class GLRenderSystem : RenderSystem, IPlugin {
         #region Member variables
 
         /// <summary>OpenGL Context (from CsGL)</summary>
@@ -91,7 +91,7 @@ namespace RenderSystem_OpenGL {
         /// <summary>
         ///		Default constructor.
         /// </summary>
-        public OpenGLRenderer() {
+        public GLRenderSystem() {
             viewMatrix = Matrix4.Identity;
             worldMatrix = Matrix4.Identity;
             textureMatrix = Matrix4.Identity;

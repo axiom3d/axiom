@@ -25,6 +25,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using System.Collections;
+using System.Diagnostics;
+using Axiom.Collections;
+using Axiom.Core;
+using Axiom.MathLib;
 
 namespace Axiom.Animating {
     /// <summary>
@@ -54,9 +59,38 @@ namespace Axiom.Animating {
     ///		Skeleton definitions are loaded from datafiles, namely the .xsf file format. They
     ///		are loaded on demand, especially when referenced by a Mesh.
     /// </remarks>
-    public class Skeleton {
+    /// TODO: Add tag point functionality
+    public class Skeleton : Resource {
+
+        #region Member variables
+        
+        /// <summary>Mode of animation blending to use.</summary>
+        protected SkeletalAnimBlendMode blendMode;
+        /// <summary>Internal list of bones attached to this skeleton, indexed by handle.</summary>
+        protected BoneCollection boneList = new BoneCollection();
+        /// <summary>Internal list of bones attached to this skeleton, indexed by name.</summary>
+        protected Hashtable namedBoneList = new Hashtable();
+        /// <summary>The entity that is currently updating this skeleton.</summary>
+        protected Entity currentEntity;
+        /// <summary>Reference to the root bone of this skeleton.</summary>
+        protected Bone rootBone;
+        /// <summary>Used for auto generated handles to ensure they are unique.</summary>
+        protected ushort nextAutoHandle;
+        /// <summary>Used for auto generated tag point handles to ensure they are unique.</summary>
+        protected ushort nextTagPointAutoHandle;
+        /// <summary>Lookup table for animations related to this skeleton.</summary>
+        protected AnimationCollection animationList = new AnimationCollection();
+        /// <summary>Saved version of the last animation.</summary>
+        protected AnimationStateCollection animationStateList = new AnimationStateCollection();
+
+        #endregion Member variables
+
+        #region Constants
+
         /// <summary>Maximum total available bone matrices that are available during blending.</summary>
         public const int MAX_BONE_COUNT = 256;
+
+        #endregion Constants
 
         #region Constructors
 
@@ -74,28 +108,269 @@ namespace Axiom.Animating {
         #region Methods
 
         /// <summary>
-        /// Creates a new bone.
+        ///    Creates a new Animation object for animating this skeleton.
         /// </summary>
+        /// <param name="name">The name of this animation</param>
+        /// <param name="length">The length of the animation in seconds</param>
+        /// <returns></returns>
+        public Animation CreateAnimation(string name, float length) {
+            return null;
+        }
+
+        /// <summary>
+        ///    Creates a brand new Bone owned by this Skeleton. 
+        /// </summary>
+        /// <remarks>
+        ///    This method creates an unattached new Bone for this skeleton. Unless this is to
+        ///    be the root bone (there must only be one of these), you must
+        ///    attach it to another Bone in the skeleton using addChild for it to be any use. 
+        ///    For this reason you will likely be better off creating child bones using the
+        ///    Bone.CreateChild method instead, once you have created the root bone. 
+        ///    <p/>
+        ///    Note that this method automatically generates a handle for the bone, which you
+        ///    can retrieve using Bone.Handle. If you wish the new Bone to have a specific
+        ///    handle, use the alternate form of this method which takes a handle as a parameter,
+        ///    although you should note the restrictions.
+        /// </remarks>
         public Bone CreateBone() {
             return null;
         }
 
         /// <summary>
-        /// Creates a new bone.
+        ///    Creates a brand new Bone owned by this Skeleton. 
         /// </summary>
-        /// <param name="name">Name of the bone to create.</param>
+        /// <remarks>
+        ///    This method creates an unattached new Bone for this skeleton. Unless this is to
+        ///    be the root bone (there must only be one of these), you must
+        ///    attach it to another Bone in the skeleton using addChild for it to be any use. 
+        ///    For this reason you will likely be better off creating child bones using the
+        ///    Bone.CreateChild method instead, once you have created the root bone. 
+        /// </remarks>
+        /// <param name="name">
+        ///    The name to give to this new bone - must be unique within this skeleton. 
+        ///    Note that the way the engine looks up bones is via a numeric handle, so if you name a
+        ///    Bone this way it will be given an automatic sequential handle. The name is just
+        ///    for your convenience, although it is recommended that you only use the handle to 
+        ///    retrieve the bone in performance-critical code.
+        /// </param>
         public Bone CreateBone(string name) {
             return null;
         }
 
         /// <summary>
-        /// Creates a new bone.
+        ///    Creates a brand new Bone owned by this Skeleton. 
         /// </summary>
-        /// <param name="handle">Numeric handle of the bone to create.</param>
+        /// <param name="handle">
+        ///    The handle to give to this new bone - must be unique within this skeleton. 
+        ///    You should also ensure that all bone handles are eventually contiguous (this is to simplify
+        ///    their compilation into an indexed array of transformation matrices). For this reason
+        ///    it is advised that you use the simpler createBone method which automatically assigns a
+        ///    sequential handle starting from 0.
+        /// </param>
         public Bone CreateBone(ushort handle) {
             return null;
         }
 
+        /// <summary>
+        ///    Internal method which parses the bones to derive the root bone.
+        /// </summary>
+        protected void DeriveRootBone() {
+            if(boneList.Count == 0) {
+                throw new Exception("Cannot derive the root bone for a skeleton that has no bones.");
+            }
+
+            // TODO: Verify this works
+
+            // get the first bone in the list
+            Bone currentBone = boneList[0];
+            
+            // keep walking the tree upwards until we hit a bone that has no parent
+            while(currentBone.Parent != null) {
+                currentBone = (Bone)currentBone.Parent;
+            }
+
+            // store a reference to the root bone
+            rootBone = currentBone;
+        }
+
+        /// <summary>
+        ///    Returns the animation with the specified index.
+        /// </summary>
+        /// <param name="name">Name of the animation to retrieve.</param>
+        /// <returns></returns>
+        /// TODO: Vertify this works
+        public Animation GetAnimation(int index) {
+            Debug.Assert(index < animationList.Count, "index < animationList.Count");
+
+            return animationList[index];
+        }
+
+        /// <summary>
+        ///    Gets a bone by its handle.
+        /// </summary>
+        /// <param name="handle">Handle of the bone to retrieve.</param>
+        /// <returns></returns>
+        public Bone GetBone(ushort handle) {
+            if(!boneList.ContainsKey(handle)) {
+                throw new Exception("Bone with the handle " + handle + " not found.");
+            }
+
+            return (Bone)boneList[handle];
+        }
+
+        /// <summary>
+        ///    Gets a bone by its name.
+        /// </summary>
+        /// <param name="name">Name of the bone to retrieve.</param>
+        /// <returns></returns>
+        public Bone GetBone(string name) {
+            if(!namedBoneList.ContainsKey(name)) {
+                throw new Exception("Bone with the name '" + name + "' not found.");
+            }
+
+            return (Bone)namedBoneList[name];
+        }
+
+        /// <summary>
+        ///    Populates the passed in array with the bone matrices based on the current position.
+        /// </summary>
+        /// <remarks>
+        ///    Internal use only. The array passed in must
+        ///    be at least as large as the number of bones.
+        ///    Assumes animation has already been updated.
+        /// </remarks>
+        /// <param name="matrices"></param>
+        internal void GetBoneMatrices(Matrix4[] matrices) {
+            // update derived transforms
+            this.RootBone.Update(true, false);
+
+            /* 
+                Calculating the bone matrices
+                -----------------------------
+                Now that we have the derived orientations & positions in the Bone nodes, we have
+                to compute the Matrix4 to apply to the vertices of a mesh.
+                Because any modification of a vertex has to be relative to the bone, we must first
+                reverse transform by the Bone's original derived position/orientation, then transform
+                by the new derived position / orientation.
+            */
+
+            for(int i = 0; i < boneList.Count; i++) {
+                matrices[i] = boneList[i].FullTransform * boneList[i].BindDerivedInverseTransform;
+            }
+        }
+
+        /// <summary>
+        ///    Initialise an animation set suitable for use with this mesh. 
+        /// </summary>
+        /// <remarks>
+        ///    Only recommended for use inside the engine, not by applications.
+        /// </remarks>
+        /// <param name="anim"></param>
+        public void InitAnimationState(AnimationStateCollection anim) {
+        }
+
+        /// <summary>
+        ///    Removes the animation with the specified name from this skeleton.
+        /// </summary>
+        /// <param name="name">Name of the animation to remove.</param>
+        /// <returns></returns>
+        public void RemoveAnimation(string name) {
+        }
+
+        /// <summary>
+        ///    Resets the position and orientation of all bones in this skeleton to their original binding position.
+        /// </summary>
+        /// <remarks>
+        ///    A skeleton is bound to a mesh in a binding pose. Bone positions are then modified from this
+        ///    position during animation. This method returns all the bones to their original position and
+        ///    orientation.
+        /// </remarks>
+        public void Reset() {
+        }
+
+        /// <summary>
+        ///    Sets the current position / orientation to be the 'binding pose' ie the layout in which 
+        ///    bones were originally bound to a mesh.
+        /// </summary>
+        public void SetBindingPose() {
+        }
+
         #endregion Methods
+
+        #region Properties
+
+        /// <summary>
+        ///    Gets the number of animations associated with this skeleton.
+        /// </summary>
+        public int AnimationCount {
+            get {
+                return animationList.Count;
+            }
+        }
+
+        /// <summary>
+        ///    Gets/Sets the animation blending mode which this skeleton will use.
+        /// </summary>
+        public SkeletalAnimBlendMode BlendMode {
+            get {
+                return blendMode;
+            }
+            set {
+                blendMode = value;
+            }
+        }
+
+        /// <summary>
+        ///    Gets the number of bones in this skeleton.
+        /// </summary>
+        public int BoneCount {
+            get {
+                return boneList.Count;
+            }
+        }
+
+        /// <summary>
+        ///    Gets the root bone of the skeleton.
+        /// </summary>
+        /// <remarks>
+        ///    The system derives the root bone the first time you ask for it. The root bone is the
+        ///    only bone in the skeleton which has no parent. The system locates it by taking the
+        ///    first bone in the list and going up the bone tree until there are no more parents,
+        ///    and saves this top bone as the root. If you are building the skeleton manually using
+        ///    CreateBone then you must ensure there is only one bone which is not a child of 
+        ///    another bone, otherwise your skeleton will not work properly. If you use CreateBone
+        ///    only once, and then use Bone.CreateChild from then on, then inherently the first
+        ///    bone you create will by default be the root.
+        /// </remarks>
+        public Bone RootBone {
+            get {
+                if(rootBone == null) {
+                    DeriveRootBone();
+                }
+
+                return rootBone;
+            }
+        }
+
+        #endregion Properties
+
+        #region Implementation of Resource
+
+        /// <summary>
+        ///    Generic load, called by SkeletonManager.
+        /// </summary>
+        public override void Load() {
+
+        }
+
+        /// <summary>
+        ///    Generic unload, called by SkeletonManager.
+        /// </summary>
+        public override void Unload() {
+            base.Unload ();
+        }
+
+
+        #endregion Implementation of Resource
     }
 }
