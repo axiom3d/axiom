@@ -361,7 +361,7 @@ namespace Axiom.Graphics {
         /// <param name="index"></param>
         /// <returns></returns>
         public Viewport GetViewport(int index) {
-            Debug.Assert(index > 0);
+            Debug.Assert(index >= 0 && index < viewportList.Count);
 
             return viewportList[index];
         }
