@@ -6,7 +6,9 @@ using System.Runtime.InteropServices;
 
 namespace Axiom.Graphics {
 	/// <summary>
-	/// Summary description for BufferStream.
+	///     This class is intended to allow a clean stream interface for writing to hardware buffers.
+	///     An instance of this would be returned by one of the HardwareBuffer.Lock methods, which would
+	///     allow easily and safely writing to a hardware buffer without having to use unsafe code.
 	/// </summary>
 	public class BufferStream {
 		#region Fields
