@@ -198,7 +198,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 			this.width = width;
 
 			if(!isFullScreen) {
-				PresentParameters p = new PresentParameters(swapChain.PresentParamters);
+				PresentParameters p = new PresentParameters(swapChain.PresentParameters);
 				p.BackBufferHeight = height;
 				p.BackBufferWidth = width;
 				swapChain.Dispose();

@@ -47,7 +47,7 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// <summary>
         ///     Microsode set externally, most likely from the HLSL compiler.
         /// </summary>
-        protected D3D.GraphicsStream externalMicrocode;
+        protected Microsoft.DirectX.GraphicsStream externalMicrocode;
 
         #endregion Fields
 
@@ -110,7 +110,7 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// <param name="microcode">
         ///     GraphicsStream that contains the assembler instructions for the program.
         /// </param>
-        protected abstract void LoadFromMicrocode(D3D.GraphicsStream microcode);
+        protected abstract void LoadFromMicrocode(Microsoft.DirectX.GraphicsStream microcode);
 
         #endregion Methods
 
@@ -125,7 +125,7 @@ namespace Axiom.RenderSystems.DirectX9 {
         ///     level microcode, which can then be loaded into a low level GPU
         ///     program.
         /// </remarks>
-        internal D3D.GraphicsStream ExternalMicrocode {
+        internal Microsoft.DirectX.GraphicsStream ExternalMicrocode {
             get {
                 return externalMicrocode;
             }

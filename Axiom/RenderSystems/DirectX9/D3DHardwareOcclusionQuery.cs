@@ -106,7 +106,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 			lastFragmentCount = 100000;
 
 			if(isSupported) {
-				lastFragmentCount = query.GetOcclusionData(flush);
+				lastFragmentCount = (int)query.GetData(typeof(int), flush);
 			}
 
 			return lastFragmentCount;

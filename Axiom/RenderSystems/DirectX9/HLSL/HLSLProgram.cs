@@ -24,7 +24,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL {
         /// <summary>
         ///     Holds the low level program instructions after the compile.
         /// </summary>
-        protected D3D.GraphicsStream microcode;
+        protected Microsoft.DirectX.GraphicsStream microcode;
         /// <summary>
         ///     Holds information about shader constants.
         /// </summary>
@@ -79,7 +79,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL {
                     null, 
                     null, 
                     target, 
-                    (int)ShaderFlags.PackMatrixRowMajor, 
+                    ShaderFlags.PackMatrixRowMajor, 
                     out errors,
                     out constantTable);
 
