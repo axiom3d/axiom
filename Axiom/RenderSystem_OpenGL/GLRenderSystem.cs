@@ -1607,23 +1607,19 @@ namespace RenderSystem_OpenGL {
         public override void BindGpuProgramParameters(GpuProgramType type, GpuProgramParameters parms) {
             int glType = GLHelper.ConvertEnum(type);
 
-            if((parms.FloatConstantCount % 4) != 0) {
-                throw new Exception("OpenGL only supports 4d vectors for gpu program parameters.");
-            }
-
             if(parms.HasFloatConstants) {
-                float[] paramVals = parms.FloatConstants;
 
-                int count = parms.FloatConstantCount / 4;
+                for(int i = 0; i < parms.FloatConstantCount; i++) {
+                    int index = parms.GetFloatConstantIndex(i);
+                    Axiom.MathLib.Vector4 vec4 = parms.GetFloatConstant(i);
 
-                for(int i = 0; i < count; i++) {
-                    tempProgramFloats[0] = paramVals[i * 4];
-                    tempProgramFloats[1] = paramVals[i * 4 + 1];
-                    tempProgramFloats[2] = paramVals[i * 4 + 2];
-                    tempProgramFloats[3] = paramVals[i * 4 + 3];
+                    tempProgramFloats[0] = vec4.x;
+                    tempProgramFloats[1] = vec4.y;
+                    tempProgramFloats[2] = vec4.z;
+                    tempProgramFloats[3] = vec4.w;
 
                     // send the params 4 at a time
-                    Ext.glProgramLocalParameter4vfARB(glType, i, tempProgramFloats);
+                    Ext.glProgramLocalParameter4vfARB(glType, index, tempProgramFloats);
                 }
             }
         }
