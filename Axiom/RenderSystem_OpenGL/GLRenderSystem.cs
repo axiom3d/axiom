@@ -1814,6 +1814,26 @@ namespace Axiom.RenderSystems.OpenGL {
             }
         }
 
+		/// <summary>
+		///		
+		/// </summary>
+		public override float HorizontalTexelOffset {
+			get {
+				// No offset in GL
+				return 0.0f;
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public override float VerticalTexelOffset {
+			get {
+				// No offset in GL
+				return 0.0f;
+			}
+		}
+
         /// <summary>
         ///    Binds the specified GpuProgram to the future rendering operations.
         /// </summary>
