@@ -75,7 +75,7 @@ namespace Axiom.Core {
 		/// <summary>
 		///		Current LOD index to use.
 		/// </summary>
-		protected int materialLodIndex;
+		internal int materialLodIndex;
 		/// <summary>
 		///		Flag indicating whether this sub entity should be rendered or not.
 		/// </summary>
