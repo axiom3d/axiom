@@ -19,7 +19,6 @@
 				<DebugInformation>false</DebugInformation>
 			</Options>
 		</Configuration>
-		<!--
 		<Project 
 			name="Demos" 
 			type="Exe" 
@@ -45,7 +44,7 @@
 			<Files>
 				<Match pattern="*.cs" path="." recurse="true"/>
 			</Files>
-		</Project> -->
+		</Project>
 		<Project 
 			name="Axiom.MathLib" 
 			type="Library" 
@@ -225,6 +224,23 @@
 			runtime="Microsoft" >
 			
 			<ReferencePath>..\..\Dependencies\Managed</ReferencePath>
+
+			<Reference name="System" />
+			<Reference name="System.Data" />
+			<Reference name="System.Xml" />
+			<Reference name="Axiom.Engine" localCopy="true"/>
+			<Reference name="Axiom.MathLib" localCopy="true"/>
+			
+			<Files>
+				<Match pattern="*.cs" path="." recurse="true"/>
+			</Files>
+		</Project>
+		<Project 
+			name="Axiom.SceneManagers.Bsp" 
+			type="Library" 
+			path="SceneManagers\Bsp" 
+			language="C#" 
+			runtime="Microsoft" >
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
