@@ -161,7 +161,7 @@ namespace Axiom.SubSystems.Rendering {
 
                 // copy the src data to the destination buffer
                 for(int i = 0; i < length; i++)
-                    *pDest++ = data[offset + i];
+                    pDest[offset + i] = data[offset + i];
             }
         }
 
@@ -182,7 +182,7 @@ namespace Axiom.SubSystems.Rendering {
 
                 // copy the src data to the destination buffer
                 for(int i = 0; i < length; i++)
-                    data[offset + i] = *pSrc++;
+                    data[offset + i] = pSrc[offset + i];
             }
         }
 
@@ -253,7 +253,7 @@ namespace Axiom.SubSystems.Rendering {
 
                 // copy the src data to the destination buffer
                 for(int i = 0; i < length; i++)
-                    *pDest++ = data[offset + i];
+                    pDest[offset + i] = data[offset + i];
             }
         }
 

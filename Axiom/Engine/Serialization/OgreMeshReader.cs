@@ -273,7 +273,7 @@ namespace Axiom.Serialization {
                     mesh.IndexBufferUsage,
                     mesh.UseIndexShadowBuffer);
 
-                IntPtr indices = idxBuffer.Lock(0, subMesh.indexData.indexCount, BufferLocking.Discard);
+                IntPtr indices = idxBuffer.Lock(BufferLocking.Discard);
 
                 // read the ints into the buffer data
                 ReadInts(subMesh.indexData.indexCount, indices);
@@ -291,7 +291,7 @@ namespace Axiom.Serialization {
                     mesh.IndexBufferUsage,
                     mesh.UseIndexShadowBuffer);
 
-                IntPtr indices = idxBuffer.Lock(0, subMesh.indexData.indexCount, BufferLocking.Discard);
+                IntPtr indices = idxBuffer.Lock(BufferLocking.Discard);
 
                 // read the shorts into the buffer data
                 ReadShorts(subMesh.indexData.indexCount, indices);
@@ -357,7 +357,7 @@ namespace Axiom.Serialization {
                 CreateVertexBuffer(vertexData.vertexDeclaration.GetVertexSize(bindIdx), 
                 vertexData.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer);
 
-            IntPtr posData = vBuffer.Lock(0, vertexData.vertexCount * 3, BufferLocking.Discard);
+            IntPtr posData = vBuffer.Lock(BufferLocking.Discard);
 
             if(isSkeletallyAnimated) {
                 vertexData.softwareBlendInfo.srcPositions = new float[vertexData.vertexCount * 3];
@@ -396,7 +396,7 @@ namespace Axiom.Serialization {
                             mesh.UseVertexShadowBuffer);
 
                         // lock the buffer for editing
-                        IntPtr normals = vBuffer.Lock(0, vertexData.vertexCount * 3, BufferLocking.Discard);
+                        IntPtr normals = vBuffer.Lock(BufferLocking.Discard);
 
                         if(isSkeletallyAnimated) {
                             vertexData.softwareBlendInfo.srcNormals = new float[vertexData.vertexCount * 3];
@@ -442,7 +442,7 @@ namespace Axiom.Serialization {
                             mesh.UseVertexShadowBuffer);
 
                         // lock the vertex buffer
-                        IntPtr texCoords = vBuffer.Lock(0, vertexData.vertexCount * dim, BufferLocking.Discard);
+                        IntPtr texCoords = vBuffer.Lock(BufferLocking.Discard);
 
                         // blast the tex coord data into the buffer
                         ReadFloats(vertexData.vertexCount * dim, texCoords);

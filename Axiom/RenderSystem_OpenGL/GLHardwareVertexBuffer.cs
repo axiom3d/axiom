@@ -85,7 +85,7 @@ namespace RenderSystem_OpenGL {
             Ext.glBindBufferARB(Gl.GL_ARRAY_BUFFER_ARB, bufferID);
 
             if(locking == BufferLocking.Discard) {
-                Ext.glBufferDataARB(Gl.GL_ARRAY_BUFFER_ARB, sizeInBytes, IntPtr.Zero, GLHelper.ConvertEnum(usage));
+                Ext.glBufferDataARB(Gl.GL_ARRAY_BUFFER_ARB, length, IntPtr.Zero, GLHelper.ConvertEnum(usage));
 
                 // find out how we shall access this buffer
                 access = (usage & BufferUsage.Dynamic) > 0 ? 
