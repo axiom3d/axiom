@@ -23,7 +23,11 @@ package.links = {
 	"Axiom.Dynamics.ODE",
 	"Axiom.CgPrograms",
 	"Axiom.RenderSystems.OpenGL",
-	"Axiom.RenderSystems.DirectX9"
+	"Axiom.RenderSystems.DirectX9",
+	"Axiom.SceneManagers.Octree",
+	"Axiom.Platforms.Win32",
+	"Axiom.Gui.Elements",
+	"Axiom.ParticleFX"
 }
 
 package.files = { 
