@@ -51,6 +51,7 @@ namespace Axiom.SceneManagers.Octree {
         protected int numMipMaps;
         protected int size;
         protected float[] minLevelDistSqr;
+		protected Hashtable customParams = new Hashtable();
 
         const int POSITION = 0;
         const int NORMAL = 1;
@@ -720,6 +721,25 @@ namespace Axiom.SceneManagers.Octree {
                 return 1;
             }
         }
+
+		public Vector4 GetCustomParameter(int index) {
+			if(customParams[index] == null) {
+				throw new Exception("A parameter was not found at the given index");
+			}
+			else {
+				return (Vector4)customParams[index];
+			}
+		}
+
+		public void SetCustomParameter(int index, Vector4 val) {
+			customParams[index] = val;
+		}
+
+		public void UpdateCustomGpuParameter(GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams) {
+			if(customParams[entry.data] != null) {
+				gpuParams.SetConstant(entry.index, (Vector4)customParams[entry.data]);
+			}
+		}
 
         #endregion
     }
