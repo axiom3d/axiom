@@ -112,11 +112,24 @@ namespace Axiom.MathLib {
 		/// <param name="v3"></param>
 		/// <returns></returns>
 		public static Vector4 CalculateFaceNormal(Vector3 v1, Vector3 v2, Vector3 v3) {
-		    Vector3 normal = (v2 - v1).Cross(v3 - v1);
-		    normal.Normalize();
+		    Vector3 normal = CalculateBasicFaceNormal(v1, v2, v3);
 
 		    // Now set up the w (distance of tri from origin
 		    return new Vector4(normal.x, normal.y, normal.z, -(normal.Dot(v1)));
+		}
+
+		/// <summary>
+		///		Calculate a face normal, no w-information.
+		/// </summary>
+		/// <param name="v1"></param>
+		/// <param name="v2"></param>
+		/// <param name="v3"></param>
+		/// <returns></returns>
+		public static Vector3 CalculateBasicFaceNormal(Vector3 v1, Vector3 v2, Vector3 v3) {
+			Vector3 normal = (v2 - v1).Cross(v3 - v1);
+			normal.Normalize();
+
+			return normal;
 		}
 
         /// <summary>
@@ -326,9 +339,9 @@ namespace Axiom.MathLib {
         /// <param name="ray"></param>
         /// <param name="box"></param>
         /// <returns>A Pair object containing whether the intersection occurred, and the distance between the 2 objects.</returns>
-        public static Pair Intersects(Ray ray, AxisAlignedBox box) {
+        public static IntersectResult Intersects(Ray ray, AxisAlignedBox box) {
             if(box.IsNull) {
-                return new Pair(false, 0);
+                return new IntersectResult(false, 0);
             }
 
             float lowt = 0.0f;
@@ -340,7 +353,7 @@ namespace Axiom.MathLib {
             
             // check origin inside first
             if(ray.origin > min && ray.origin < max) {
-                return new Pair(true, 0.0f);
+                return new IntersectResult(true, 0.0f);
             }
 
             // check each face in turn, only check closest 3
@@ -453,8 +466,9 @@ namespace Axiom.MathLib {
                 }
             }
 
-            return new Pair(hit, lowt);
+            return new IntersectResult(hit, lowt);
         }
+
 
         /// <summary>
         ///    Tests an intersection between two boxes.
@@ -526,6 +540,160 @@ namespace Axiom.MathLib {
             return Intersection.Partial; 
         }
 
+
+		public static IntersectResult Intersects(Ray ray, Sphere sphere) {
+			return Intersects(ray, sphere, false);
+		}
+
+		/// <summary>
+		///		Ray/Sphere intersection test.
+		/// </summary>
+		/// <param name="ray"></param>
+		/// <param name="sphere"></param>
+		/// <param name="discardInside"></param>
+		/// <returns>Struct that contains a bool (hit?) and distance.</returns>
+		public static IntersectResult Intersects(Ray ray, Sphere sphere, bool discardInside) {
+			Vector3 rayDir = ray.Direction;
+			//Adjust ray origin relative to sphere center
+			Vector3 rayOrig = ray.Origin - sphere.Center;
+			float radius = sphere.Radius;
+
+			// check origin inside first
+			if((rayOrig.LengthSquared <= radius * radius) && discardInside) {
+				return new IntersectResult(true, 0);
+			}
+
+			// mmm...sweet quadratics
+			// Build coeffs which can be used with std quadratic solver
+			// ie t = (-b +/- sqrt(b*b* + 4ac)) / 2a
+			float a = rayDir.Dot(rayDir);
+			float b = 2 * rayOrig.Dot(rayDir);
+			float c = rayOrig.Dot(rayOrig) - (radius * radius);
+
+			// calc determinant
+			float d = (b * b) - (4 * a * c);
+
+			if(d < 0) {
+				// no intersection
+				return new IntersectResult(false, 0);
+			}
+			else {
+				// BTW, if d=0 there is one intersection, if d > 0 there are 2
+				// But we only want the closest one, so that's ok, just use the 
+				// '-' version of the solver
+				float t = ( -b - MathUtil.Sqrt(d) ) / (2 * a);
+
+				if (t < 0) {
+					t = ( -b + MathUtil.Sqrt(d)) / (2 * a);
+				}
+
+				return new IntersectResult(true, t);
+			}
+		}
+
+		/// <summary>
+		///		Ray/Plane intersection test.
+		/// </summary>
+		/// <param name="ray"></param>
+		/// <param name="plane"></param>
+		/// <returns>Struct that contains a bool (hit?) and distance.</returns>
+		public static IntersectResult Intersects(Ray ray, Plane plane) {
+			float denom = plane.Normal.Dot(ray.Direction);
+
+			if(MathUtil.Abs(denom) < float.Epsilon) {
+				// Parellel
+				return new IntersectResult(false, 0);
+			}
+			else {
+				float nom = plane.Normal.Dot(ray.Origin) + plane.D;
+				float t = -(nom/denom);
+				return new IntersectResult(t >= 0, t);
+			}
+		}
+
+		/// <summary>
+		///		Sphere/Box intersection test.
+		/// </summary>
+		/// <param name="sphere"></param>
+		/// <param name="box"></param>
+		/// <returns>True if there was an intersection, false otherwise.</returns>
+		public static bool Intersects(Sphere sphere, AxisAlignedBox box) {
+			if (box.IsNull) return false;
+
+			// Use splitting planes
+			Vector3 center = sphere.Center;
+			float radius = sphere.Radius;
+			Vector3 min = box.Minimum;
+			Vector3 max = box.Maximum;
+
+			// just test facing planes, early fail if sphere is totally outside
+			if (center.x < min.x && 
+				min.x - center.x > radius) {
+				return false;
+			}
+			if (center.x > max.x && 
+				center.x  - max.x > radius) {
+				return false;
+			}
+
+			if (center.y < min.y && 
+				min.y - center.y > radius) {
+				return false;
+			}
+			if (center.y > max.y && 
+				center.y  - max.y > radius) {
+				return false;
+			}
+
+			if (center.z < min.z && 
+				min.z - center.z > radius) {
+				return false;
+			}
+			if (center.z > max.z && 
+				center.z  - max.z > radius) {
+				return false;
+			}
+
+			// Must intersect
+			return true;
+		}
+
+		/// <summary>
+		///		Plane/Box intersection test.
+		/// </summary>
+		/// <param name="plane"></param>
+		/// <param name="box"></param>
+		/// <returns>True if there was an intersection, false otherwise.</returns>
+		public static bool Intersects(Plane plane, AxisAlignedBox box) {
+			if (box.IsNull) return false;
+
+			// Get corners of the box
+			Vector3[] corners = box.Corners;
+
+			// Test which side of the plane the corners are
+			// Intersection occurs when at least one corner is on the 
+			// opposite side to another
+			PlaneSide lastSide = plane.GetSide(corners[0]);
+
+			for (int corner = 1; corner < 8; corner++) {
+				if (plane.GetSide(corners[corner]) != lastSide) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		///		Sphere/Plane intersection test.
+		/// </summary>
+		/// <param name="sphere"></param>
+		/// <param name="plane"></param>
+		/// <returns>True if there was an intersection, false otherwise.</returns>
+		public static bool Intersects(Sphere sphere, Plane plane) {
+			return MathUtil.Abs(plane.Normal.Dot(sphere.Center)) <= sphere.Radius;
+		}
+
         #endregion Intersection Methods
 
         #endregion Static Methods
@@ -533,7 +701,40 @@ namespace Axiom.MathLib {
         #region Static properties
 
         #endregion
-
     }
 
+	#region Return result structures
+
+	/// <summary>
+	///		Simple struct to allow returning a complex intersection result.
+	/// </summary>
+	public struct IntersectResult {
+		#region Fields
+		
+		/// <summary>
+		///		Did the intersection test result in a hit?
+		/// </summary>
+		public bool Hit;
+
+		/// <summary>
+		///		If Hit was true, this will hold a query specific distance value.
+		///		i.e. for a Ray-Box test, the distance will be the distance from the start point
+		///		of the ray to the point of intersection.
+		/// </summary>
+		public float Distance;
+
+		#endregion Fields
+
+		/// <summary>
+		///		Constructor.
+		/// </summary>
+		/// <param name="hit"></param>
+		/// <param name="distance"></param>
+		public IntersectResult(bool hit, float distance) {
+			this.Hit = hit;
+			this.Distance = distance;
+		}
+	}
+
+	#endregion Return result structures
 }

@@ -93,17 +93,44 @@ namespace Axiom.MathLib {
 
         #endregion
 
-		#region Methods
+		#region Intersection methods
 
 		/// <summary>
 		///		Tests for intersection between this sphere and another sphere.
 		/// </summary>
 		/// <param name="sphere">Other sphere.</param>
-		/// <returns>True if the spheres interest, false otherwise.</returns>
+		/// <returns>True if the spheres intersect, false otherwise.</returns>
 		public bool Intersects(Sphere sphere) {
 			return ((sphere.center - center).Length <= (sphere.radius + radius));
 		}
 
-		#endregion Methods
+		/// <summary>
+		///		Returns whether or not this sphere interects a box.
+		/// </summary>
+		/// <param name="box"></param>
+		/// <returns>True if the box intersects, false otherwise.</returns>
+		public bool Intersects(AxisAlignedBox box) {
+			return MathUtil.Intersects(this, box);
+		}
+
+		/// <summary>
+		///		Returns whether or not this sphere interects a plane.
+		/// </summary>
+		/// <param name="plane"></param>
+		/// <returns>True if the plane intersects, false otherwise.</returns>
+		public bool Intersects(Plane plane) {
+			return MathUtil.Intersects(this, plane);
+		}
+
+		/// <summary>
+		///		Returns whether or not this sphere interects a Vector3.
+		/// </summary>
+		/// <param name="vector"></param>
+		/// <returns>True if the vector intersects, false otherwise.</returns>
+		public bool Intersects(Vector3 vector) {
+			return (vector - center).Length <= radius;
+		}
+
+		#endregion Intersection methods
     }
 }
