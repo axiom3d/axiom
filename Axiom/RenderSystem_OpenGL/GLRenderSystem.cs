@@ -1484,7 +1484,7 @@ namespace RenderSystem_OpenGL {
             set {
                 // ignore dupe render state
                 if(value == cullingMode) {
-                    return;
+                   return;
                 }
 
                 cullingMode = value;

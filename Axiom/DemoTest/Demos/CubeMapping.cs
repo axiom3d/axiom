@@ -42,7 +42,7 @@ namespace Demos {
         #region Perlin noise data and algorithms
 
         private float Lerp(float t, float a, float b) {
-            return (a + t) * (b - a);
+            return ((a)+(t)*((b)-(a)));
         }
 
         private float Fade(float t) {
@@ -118,12 +118,10 @@ namespace Demos {
         private float keyDelay = 0.0f;
         private string[] meshes = 
             {   "ogrehead.mesh", 
-                "geosphere4500.mesh", 
                 "razor.mesh", 
                 "geosphere12500.mesh", 
                 "knot.mesh", 
                 "geosphere19220.mesh", 
-                //"RZR-002.mesh", 
                 "geosphere1000.mesh", 
                 "geosphere8000.mesh", 
                 "sphere.mesh"
@@ -140,6 +138,10 @@ namespace Demos {
         private SceneNode objectNode;
         private Material material;
         private ArrayList clonedMaterials = new ArrayList();
+        private float displacement = 0.1f;
+        private float density = 50.0f;
+        private float timeDensity = 5.0f;
+        private float tm = 0.0f;
 
         const string ENTITY_NAME = "CubeMappedEntity";
         const string MESH_NAME = "CubeMappedMesh";
@@ -159,7 +161,7 @@ namespace Demos {
         #region Methods
 		
         protected override void CreateScene() {
-            scene.AmbientLight = new ColorEx(1.0f, 0.5f, 0.5f, 0.5f);
+            scene.AmbientLight = new ColorEx(1.0f, 0.2f, 0.2f, 0.2f);
 
             // create a default point light
             Light light = scene.CreateLight("MainLight");
@@ -363,7 +365,171 @@ namespace Demos {
         /// <summary>
         ///    
         /// </summary>
-        private void UpdateNoise() {
+        private unsafe void UpdateNoise() {
+            float* sharedNormals = null;
+
+            for(int i = 0; i < clonedMesh.SubMeshCount; i++) {
+                SubMesh subMesh = clonedMesh.GetSubMesh(i);
+                SubMesh orgSubMesh = originalMesh.GetSubMesh(i);
+
+                if(subMesh.useSharedVertices) {
+                    if(sharedNormals == null) {
+                        sharedNormals = NormalsGetCleared(clonedMesh.SharedVertexData);
+                    }
+
+                    UpdateVertexDataNoiseAndNormals(
+                        clonedMesh.SharedVertexData,
+                        originalMesh.SharedVertexData,
+                        subMesh.indexData,
+                        sharedNormals);
+                }
+                else {
+                    float* normals = NormalsGetCleared(subMesh.vertexData);
+
+                    UpdateVertexDataNoiseAndNormals(
+                        subMesh.vertexData,
+                        orgSubMesh.vertexData,
+                        subMesh.indexData,
+                        normals);
+                }
+            } // for
+
+            if(sharedNormals != null) {
+                NormalsSaveNormalized(clonedMesh.SharedVertexData, sharedNormals);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dstData"></param>
+        /// <param name="orgdata"></param>
+        /// <param name="indexData"></param>
+        /// <param name="normals"></param>
+        private unsafe void UpdateVertexDataNoiseAndNormals(VertexData dstData, VertexData orgData, IndexData indexData, float* normals) {
+            // destination vertex buffer
+            VertexElement dstPosElement = dstData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Position);
+            HardwareVertexBuffer dstPosBuffer = dstData.vertexBufferBinding.GetBuffer(dstPosElement.Source);
+
+            // source vertex buffer
+            VertexElement orgPosElement = orgData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Position);
+            HardwareVertexBuffer orgPosBuffer = orgData.vertexBufferBinding.GetBuffer(orgPosElement.Source);
+
+            // lock the buffers
+            IntPtr dstPosData = dstPosBuffer.Lock(BufferLocking.Discard);
+            IntPtr orgPosData = orgPosBuffer.Lock(BufferLocking.ReadOnly);
+
+            // get some raw pointer action goin on
+            float* dstPosPtr = (float*)dstPosData.ToPointer();
+            float* orgPosPtr = (float*)orgPosData.ToPointer();
+
+            // make noise
+            int numVerts = orgPosBuffer.VertexCount;
+
+            for(int i = 0; i < 3 * numVerts; i += 3) {
+                float n = 1 + displacement * 
+                    Noise3(orgPosPtr[i] / density + tm,
+                                orgPosPtr[i + 1] / density + tm,
+                                orgPosPtr[i + 2] / density + tm);
+
+                dstPosPtr[i] = orgPosPtr[i] * n;
+                dstPosPtr[i + 1] = orgPosPtr[i + 1] * n;
+                dstPosPtr[i + 2] = orgPosPtr[i + 2] * n;
+            } // for
+
+            // unlock the original position buffer
+            orgPosBuffer.Unlock();
+
+            // calculate normals
+            HardwareIndexBuffer indexBuffer = indexData.indexBuffer;
+
+            short* vertexIndices = (short*)indexBuffer.Lock(BufferLocking.ReadOnly);
+            int numFaces = indexData.indexCount / 3;
+
+            for(int i = 0, index = 0; i < numFaces; i++, index += 3) {
+                int p0 = vertexIndices[index];
+                int p1 = vertexIndices[index + 1];
+                int p2 = vertexIndices[index + 2];
+
+                Vector3 v0 = new Vector3(dstPosPtr[3 * p0], dstPosPtr[3 * p0 + 1], dstPosPtr[3 * p0 + 2]);
+                Vector3 v1 = new Vector3(dstPosPtr[3 * p1], dstPosPtr[3 * p1 + 1], dstPosPtr[3 * p1 + 2]);
+                Vector3 v2 = new Vector3(dstPosPtr[3 * p2], dstPosPtr[3 * p2 + 1], dstPosPtr[3 * p2 + 2]);
+
+                Vector3 diff1 = v1 - v2;
+                Vector3 diff2 = v1 - v0;
+                Vector3 fn = diff1.Cross(diff2);
+
+                normals[3 * p0] += -fn.x;
+                normals[3 * p1] += -fn.y;
+                normals[3 * p2] += -fn.z;
+            }
+
+            // unlock index buffer
+            indexBuffer.Unlock();
+
+            // unlock destination vertex buffer
+            dstPosBuffer.Unlock();
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        /// <param name="vertexData"></param>
+        /// <returns></returns>
+        private unsafe float* NormalsGetCleared(VertexData vertexData) {
+            VertexElement element = vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Normal);
+            HardwareVertexBuffer buffer = vertexData.vertexBufferBinding.GetBuffer(element.Source);
+            IntPtr data = buffer.Lock(BufferLocking.Discard);
+            float* normPtr = (float*)data.ToPointer();
+
+            for(int i = 0; i < buffer.VertexCount; i++) {
+                normPtr[i] = 0.0f;
+            }
+
+            return normPtr;
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        /// <param name="vertexData"></param>
+        /// <param name="normals"></param>
+        private unsafe void NormalsSaveNormalized(VertexData vertexData, float* normals) {
+            VertexElement element = vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Normal);
+            HardwareVertexBuffer buffer = vertexData.vertexBufferBinding.GetBuffer(element.Source);
+
+            int numVerts = buffer.VertexCount;
+
+            for(int i = 0, index = 0; i < numVerts; i++, index+=3) {
+                Vector3 n = new Vector3(normals[index], normals[index + 1], normals[index + 2]);
+                n.Normalize();
+
+                normals[index] = n.x;
+                normals[index + 1] = n.y;
+                normals[index + 2] = n.z;
+            }
+
+            // don't forget to unlock!
+            buffer.Unlock();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="numVertices"></param>
+        /// <param name="dstVertices"></param>
+        /// <param name="defaultVertices"></param>
+        private unsafe void UpdatePositionNoise(int numVertices, float* dstVertices, float* defaultVertices) {
+            for(int i = 0; i < 3 * numVertices; i++) {
+                float n = 1 + displacement * 
+                    Noise3(defaultVertices[i] / density + tm,
+                                defaultVertices[i + 1] / density + tm,
+                                defaultVertices[i + 2] / density + tm);
+
+                dstVertices[i + 0] = defaultVertices[i + 0] * n;
+                dstVertices[i + 1] = defaultVertices[i + 1] * n;
+                dstVertices[i + 2] = defaultVertices[i + 2] * n;
+            }
         }
 
         /// <summary>
@@ -462,6 +628,12 @@ namespace Demos {
         /// <returns></returns>
         protected override bool OnFrameStarted(object source, FrameEventArgs e) {
             base.OnFrameStarted (source, e);
+
+            tm += e.TimeSinceLastFrame / timeDensity ;
+
+            if(noiseOn) {
+                UpdateNoise();
+            }
 
             if(keyDelay > 0.0f) {
                 keyDelay -= e.TimeSinceLastFrame;

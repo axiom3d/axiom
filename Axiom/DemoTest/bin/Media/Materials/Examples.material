@@ -280,6 +280,8 @@ Material #9
 
 Ground_Grass_sub2
 {
+	// double-sided
+	cull_hardware clockwise
 	{
 		texture terr_dirt-grass.jpg
 	}
