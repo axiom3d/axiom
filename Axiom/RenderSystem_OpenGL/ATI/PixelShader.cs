@@ -1,4 +1,7 @@
 /**
+ * DX8.1 Pixel Shader to ATI Fragment Shader compiler
+ * Original Author: NFZ
+ * 
 	A number of invaluable references were used to put together this ps.1.x compiler for ATI_fragment_shader execution
 
 	References:
@@ -1160,10 +1163,6 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             int instIDX = 0;
             int instCount = PassMachineInstructions.Count;
             bool error = false;
-
-            for(int i = 0; i < PassMachineInstructions.Count; i++) {
-                Console.WriteLine("{0}", PassMachineInstructions[i]);
-            }
 
             while ((instIDX < instCount) && !error) {
                 switch((MachineInstruction)PassMachineInstructions[instIDX]) {

@@ -1,7 +1,10 @@
 using System;
 using System.Diagnostics;
 
-/// Original Author: nfz
+/**
+ * DX8.1 Pixel Shader to ATI Fragment Shader compiler
+ * Original Author: NFZ (nfuzz@hotmail.com)
+ */
 
 namespace Axiom.RenderSystems.OpenGL.ATI {
 	/// <summary>
