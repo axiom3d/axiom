@@ -27,8 +27,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
+using System.IO;
 using Axiom.Core;
 using Axiom.Collections;
+using Axiom.Media;
 
 namespace Axiom.Graphics {
 
@@ -438,6 +440,45 @@ namespace Axiom.Graphics {
         public virtual void ResetStatistics() {
             // TODO: Implement RenderTarget.ResetStatistics
         }
+
+		/// <summary>
+		///		Saves window contents to file (i.e. screenshot);
+		/// </summary>
+		public void Save(string fileName) {
+			// create a memory stream, setting the initial capacity
+			MemoryStream bufferStream = new MemoryStream(width * height * 3);
+
+			// save the data to the memory stream
+			Save(bufferStream);
+
+			int pos = fileName.LastIndexOf('.');
+
+			// grab the file extension
+			string extension = fileName.Substring(pos + 1);
+
+			// grab the codec for the requested file extension
+			ICodec codec = CodecManager.Instance.GetCodec(extension);
+
+			// setup the image file information
+			ImageCodec.ImageData imageData = new ImageCodec.ImageData();
+			imageData.width = width;
+			imageData.height = height;
+			imageData.format = PixelFormat.R8G8B8;
+
+			// reset the stream position
+			bufferStream.Position = 0;
+
+			// finally, save to file as an image
+			codec.EncodeToFile(bufferStream, fileName, imageData);
+
+			bufferStream.Close();
+		}
+
+		/// <summary>
+		///		Saves the contents of this render target to the specified stream.
+		/// </summary>
+		/// <param name="stream">Stream to write the contents of this render target to.</param>
+		public abstract void Save(Stream stream);
 
 		#endregion Methods
 

@@ -71,7 +71,7 @@ namespace Axiom.Media {
 
             // create a temp buffer and write the stream into it
             byte[] buffer = new byte[input.Length];
-            input.Read(buffer, 0, buffer.Length);
+			input.Read(buffer, 0, buffer.Length);
 
             // load the data into DevIL
             Il.ilLoadL(this.ILType, buffer, buffer.Length);

@@ -123,11 +123,6 @@ namespace Axiom.Graphics {
         ///</param>
         public abstract void SwapBuffers(bool waitForVSync);
 
-        /// <summary>
-        ///		Saves window contents to file (i.e. screenshot);
-        /// </summary>
-        public abstract void SaveToFile(string fileName);
-
         #endregion
 
         #region Virtual methods and properties

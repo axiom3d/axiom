@@ -107,6 +107,27 @@ namespace Axiom.Media {
 			}
 		}
 
+		/// <summary>
+		///		Flips this image around the Y axis.
+		/// </summary>
+		public void FlipAroundX() {
+			int bytes = GetNumElemBytes(format);
+			int rowSpan = width * bytes;
+
+			byte[] tempBuffer = new byte[rowSpan * height];
+
+			int srcOffset = 0, dstOffset = tempBuffer.Length - rowSpan;
+
+			for(short y = 0; y < height; y++) {
+				Array.Copy(buffer, srcOffset, tempBuffer, dstOffset, rowSpan);
+
+				srcOffset += rowSpan;
+				dstOffset -= rowSpan;
+			}
+
+			buffer = tempBuffer;
+		}
+
         /// <summary>
         ///    Checks the specified image format to determine if it contains an alpha
         ///    component.
@@ -198,6 +219,26 @@ namespace Axiom.Media {
 
             return image;
         }
+
+		/// <summary>
+		///    Loads raw image data from a byte array.
+		/// </summary>
+		/// <param name="buffer">Raw image buffer.</param>
+		/// <param name="width">Width of this image data (in pixels).</param>
+		/// <param name="height">Height of this image data (in pixels).</param>
+		/// <param name="format">Pixel format used in this texture.</param>
+		/// <returns>A new instance of Image containing the raw data supplied.</returns>
+		public static Image FromDynamicImage(byte[] buffer, int width, int height, PixelFormat format) {
+			Image image = new Image();
+
+			image.width = width;
+			image.height = height;
+			image.format = format;
+			image.size = width * height * GetNumElemBytes(format);
+			image.buffer = buffer;
+
+			return image;
+		}
 
         /// <summary>
         ///    Loads an image from a stream.
