@@ -23,7 +23,7 @@ namespace TerrainDemo {
 		bool humanSpeed = false;
 
 		// keep camera 2m above the ground
-		bool followTerrain = true;
+		bool followTerrain = false;
 
         protected override void ChooseSceneManager() {
             scene = SceneManagerEnumerator.Instance.GetSceneManager(SceneType.ExteriorFar);
@@ -126,9 +126,10 @@ namespace TerrainDemo {
 				toggleDelay = 1;
 			}
 
-			if(input.IsKeyPressed(KeyCodes.G))
+			if(input.IsKeyPressed(KeyCodes.G) && toggleDelay < 0)
 			{
 				followTerrain = !followTerrain;
+				toggleDelay = 1;
 			}
 
 			if(input.IsKeyPressed(KeyCodes.A)) 
