@@ -77,8 +77,12 @@ namespace Axiom.Graphics {
         ///		Gets/Sets the default priority for rendering objects in the queue.
         /// </summary>
         public RenderQueueGroupID DefaultRenderGroup {
-            get { return defaultGroup; }
-            set { defaultGroup = value; }
+            get { 
+				return defaultGroup; 
+			}
+            set { 
+				defaultGroup = value; 
+			}
         }
 
         /// <summary>
@@ -141,6 +145,9 @@ namespace Axiom.Graphics {
                 // clear the RenderQueueGroup
                 group.Clear();
             }
+
+			// trigger the pending pass updates
+			Pass.ProcessPendingUpdates();
         }
 
 		/// <summary>
@@ -387,13 +394,46 @@ namespace Axiom.Graphics {
         ///		Clears all the internal lists.
         /// </summary>
         public void Clear() {
-            transparentPasses.Clear();
-            
-            // loop through and clear the renderable containers for the stored passes
-            for(int i = 0; i < solidPassMap.Count; i++) {
-                ((RenderableList)solidPassMap.GetByIndex(i)).Clear();
-            }
+			PassList graveyardList = Pass.GraveyardList;
+
+			// Delete queue groups which are using passes which are to be
+			// deleted, we won't need these any more and they clutter up 
+			// the list and can cause problems with future clones
+			for(int i = 0; i < graveyardList.Count; i++) {
+				RemoveSolidPassEntry((Pass)graveyardList[i]);
+			}
+
+			// Now remove any dirty passes, these will have their hashes recalculated
+			// by the parent queue after all groups have been processed
+			// If we don't do this, the std::map will become inconsistent for new insterts
+			PassList dirtyList = Pass.DirtyList;
+
+			// Delete queue groups which are using passes which are to be
+			// deleted, we won't need these any more and they clutter up 
+			// the list and can cause problems with future clones
+			for(int i = 0; i < dirtyList.Count; i++) {
+				RemoveSolidPassEntry((Pass)dirtyList[i]);
+			}
+           
+			// We do NOT clear the graveyard or the dirty list here, because 
+			// it needs to be acted on for all groups, the parent queue takes 
+			// care of this afterwards
+
+			// We do not clear the unchanged solid pass maps, only the contents of each list
+			// This is because we assume passes are reused a lot and it saves resorting
+            ClearSolidPassMap(solidPassMap);
+			// TODO: Additional maps
+
+			// Always empty the transparents list
+			transparentPasses.Clear();
         }
+
+		public void ClearSolidPassMap(SortedList list) {
+			// loop through and clear the renderable containers for the stored passes
+			for(int i = 0; i < list.Count; i++) {
+				((RenderableList)list.GetByIndex(i)).Clear();
+			}
+		}
 
         /// <summary>
         /// 
@@ -438,6 +478,18 @@ namespace Axiom.Graphics {
             // sort the transparent objects using the custom IComparer
             transparentPasses.Sort(new TransparencySort(camera));
         }
+
+		/// <summary>
+		///		Remove a pass entry from all solid pass maps
+		/// </summary>
+		/// <param name="pass">Reference to the pass to remove.</param>
+		public void RemoveSolidPassEntry(Pass pass) {
+			if(solidPassMap[pass] != null) {
+				solidPassMap.Remove(pass);
+			}
+
+			// TODO: Additional solid pass lists
+		}
 
         #endregion
 

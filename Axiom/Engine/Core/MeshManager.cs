@@ -31,9 +31,8 @@ using Axiom.Graphics;
 
 namespace Axiom.Core {
     /// <summary>
-    /// Summary description for MeshManager.
+    ///		Handles the management of mesh resources.
     /// </summary>
-    // TODO: Ensure ALL meshes are created with shadow buffers by default.
     public class MeshManager : ResourceManager {
         #region Singleton implementation
 
@@ -90,7 +89,7 @@ namespace Axiom.Core {
 		#endregion Properties
 
         /// <summary>
-        ///	
+        ///		Called internally to initialize this manager.
         /// </summary>
         public void Initialize() {
             CreatePrefabPlane();
@@ -131,11 +130,11 @@ namespace Axiom.Core {
         /// <param name="height">Height in world coordinates.</param>
         /// <returns></returns>
         public Mesh CreatePlane(string name, Plane plane, int width, int height) {
-            return CreatePlane(name, plane, width, height, 1, 1, true, 1, 1.0f, 1.0f, Vector3.UnitY, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, false, false);
+            return CreatePlane(name, plane, width, height, 1, 1, true, 1, 1.0f, 1.0f, Vector3.UnitY, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, true, true);
         }
 
         public Mesh CreatePlane(string name, Plane plane, float width, float height, int xSegments, int ySegments, bool normals, int numTexCoordSets, float uTile, float vTile, Vector3 upVec) {
-            return CreatePlane(name, plane, width, height, xSegments, ySegments, normals, numTexCoordSets, uTile, vTile, upVec, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, false, false);
+            return CreatePlane(name, plane, width, height, xSegments, ySegments, normals, numTexCoordSets, uTile, vTile, upVec, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, true, true);
         }
 
         /// <summary>
@@ -540,7 +539,6 @@ namespace Axiom.Core {
         }
 
         private void CreatePrefabPlane() {
-            
             Mesh mesh = (Mesh) Create("Prefab_Plane");
             SubMesh subMesh = mesh.CreateSubMesh("Prefab_Plane_Submesh");
 

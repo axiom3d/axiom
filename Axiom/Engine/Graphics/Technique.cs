@@ -225,8 +225,23 @@ namespace Axiom.Graphics
         public void RemovePass(Pass pass) {
             Debug.Assert(pass != null, "pass != null");
 
+			pass.QueueForDeletion();
+
             passes.Remove(pass);
         }
+
+		/// <summary>
+		///		Removes all passes from this technique and queues them for deletion.
+		/// </summary>
+		public void RemoveAllPasses() {
+			// load each pass
+			for(int i = 0; i < passes.Count; i++) {
+				Pass pass = (Pass)passes[i];
+				pass.QueueForDeletion();
+			}
+
+			passes.Clear();
+		}
 
         public void SetSceneBlending(SceneBlendType blendType) {
             // load each pass
