@@ -260,7 +260,7 @@ namespace Axiom.SubSystems.Rendering {
             byte* pDest = (byte*)dest.ToPointer();
 
             for(int i = 0; i < length; i++)
-                *pDest = *pSrc;
+                pDest[i] = pSrc[i];
         }
 
         #endregion
