@@ -39,8 +39,9 @@ using Axiom.MathLib;
 using Axiom.Graphics;
 using Axiom.Utility;
 using Tao.OpenGl;
-//using Tao.OpenGl.Debugger;
 using Tao.Platform.Windows;
+
+// TODO: Cache property values and implement property getters
 
 namespace Axiom.RenderSystems.OpenGL {
 
@@ -344,7 +345,10 @@ namespace Axiom.RenderSystems.OpenGL {
         }
 
         public override ColorEx AmbientLight {
-            set {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
                 // create a float[4]  to contain the RGBA data
                 value.ToArrayRGBA(tempColorVals);
                 tempColorVals[3] = 1.0f;
@@ -358,7 +362,10 @@ namespace Axiom.RenderSystems.OpenGL {
         ///		Gets/Sets the global lighting setting.
         /// </summary>
         public override bool LightingEnabled {
-            set {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
                 if(lightingEnabled == value)
                     return;
 
@@ -375,7 +382,10 @@ namespace Axiom.RenderSystems.OpenGL {
         /// 
         /// </summary>
         public override bool NormalizeNormals {
-            set {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
                 if(value) {
                     Gl.glEnable(Gl.GL_NORMALIZE);
                 }
@@ -388,8 +398,11 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <summary>
         ///		Sets the mode to use for rendering
         /// </summary>
-        protected override SceneDetailLevel RasterizationMode {
-            set {
+        public override SceneDetailLevel RasterizationMode {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
                 if(value == lastRasterizationMode) {
                     return;
                 }
@@ -425,7 +438,10 @@ namespace Axiom.RenderSystems.OpenGL {
         }
 
         public override Shading ShadingMode {
-            // OpenGL supports Flat and Smooth shaded primitives
+			get {
+				throw new NotImplementedException();
+			}
+			// OpenGL supports Flat and Smooth shaded primitives
             set {
                 switch(value) {
                     case Shading.Flat:
@@ -442,7 +458,10 @@ namespace Axiom.RenderSystems.OpenGL {
         ///		Specifies whether stencil check should be enabled or not.
         /// </summary>
         public override bool StencilCheckEnabled {
-            set {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
 				if(value) {
 					Gl.glEnable(Gl.GL_STENCIL_TEST);
 				}
@@ -504,7 +523,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <summary>
         ///		Executes right before each frame is rendered.
         /// </summary>
-        protected override void BeginFrame() {
+        public override void BeginFrame() {
             Debug.Assert(activeViewport != null, "BeingFrame cannot run without an active viewport.");
 
 			// clear the viewport if required
@@ -519,7 +538,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <summary>
         /// 
         /// </summary>
-        protected override void EndFrame() {
+        public override void EndFrame() {
             // clear stored blend modes, to ensure they gets set properly in multi texturing scenarios
             // overall this will still reduce the number of blend mode changes
             for(int i = 1; i < Config.MaxTextureLayers; i++) {
@@ -532,7 +551,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// 
         /// </summary>
         /// <param name="viewport"></param>
-        protected override void SetViewport(Viewport viewport) {
+        public override void SetViewport(Viewport viewport) {
             if(activeViewport != viewport || viewport.IsUpdated) {
                 // store this viewport and it's target
                 activeViewport = viewport;
@@ -603,7 +622,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="specular"></param>
         /// <param name="emissive"></param>
         /// <param name="shininess"></param>
-        protected override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess) {
+        public override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess) {
             float[] vals = tempColorVals;
             
             // ambient
@@ -651,7 +670,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// </summary>
         /// <param name="stage"></param>
         /// <param name="texAddressingMode"></param>
-        protected override void SetTextureAddressingMode(int stage, TextureAddressing texAddressingMode) {
+        public override void SetTextureAddressingMode(int stage, TextureAddressing texAddressingMode) {
             if(lastAddressingMode[stage] == texAddressingMode) {
                 //return;
             }
@@ -688,7 +707,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// </summary>
         /// <param name="stage"></param>
         /// <param name="maxAnisotropy"></param>
-        protected override void SetTextureLayerAnisotropy(int stage, int maxAnisotropy) {
+        public override void SetTextureLayerAnisotropy(int stage, int maxAnisotropy) {
             if(!caps.CheckCap(Capabilities.AnisotropicFiltering)) {
                 return;
             }
@@ -934,7 +953,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="unit"></param>
         /// <param name="type"></param>
         /// <param name="filter"></param>
-        protected override void SetTextureUnitFiltering(int unit, FilterType type, FilterOptions filter) {
+        public override void SetTextureUnitFiltering(int unit, FilterType type, FilterOptions filter) {
             // set the current texture unit
             Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + unit);
 
@@ -988,7 +1007,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// </summary>
         /// <param name="stage"></param>
         /// <param name="index"></param>
-        protected override void SetTextureCoordSet(int stage, int index) {
+        public override void SetTextureCoordSet(int stage, int index) {
             texCoordIndex[stage] = index;
         }
 
@@ -997,7 +1016,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// </summary>
         /// <param name="stage"></param>
         /// <param name="method"></param>
-        protected override void SetTextureCoordCalculation(int stage, TexCoordCalcMethod method) {
+        public override void SetTextureCoordCalculation(int stage, TexCoordCalcMethod method) {
             // Default to no extra auto texture matrix
             useAutoTextureMatrix = false;
 
@@ -1111,7 +1130,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// </summary>
         /// <param name="stage"></param>
         /// <param name="xform"></param>
-        protected override void SetTextureMatrix(int stage, Matrix4 xform) {
+        public override void SetTextureMatrix(int stage, Matrix4 xform) {
             
             MakeGLMatrix(ref xform, tempMatrix);
 
@@ -1183,7 +1202,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="stage"></param>
         /// <param name="enabled"></param>
         /// <param name="textureName"></param>
-        protected override void SetTexture(int stage, bool enabled, string textureName) {
+        public override void SetTexture(int stage, bool enabled, string textureName) {
             // load the texture
             GLTexture texture = (GLTexture)TextureManager.Instance.GetByName(textureName);
 
@@ -1224,12 +1243,12 @@ namespace Axiom.RenderSystems.OpenGL {
             Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
         }
 
-        protected override void SetAlphaRejectSettings(int stage, CompareFunction func, byte val) {
+        public override void SetAlphaRejectSettings(int stage, CompareFunction func, byte val) {
 			Gl.glEnable(Gl.GL_ALPHA_TEST);
 			Gl.glAlphaFunc(GLHelper.ConvertEnum(func), val / 255.0f);
         }
 
-        protected override void SetColorBufferWriteEnabled(bool red, bool green, bool blue, bool alpha) {
+        public override void SetColorBufferWriteEnabled(bool red, bool green, bool blue, bool alpha) {
             // record this for later
             colorWrite[0] = red ? 1 : 0;
             colorWrite[1] = green ? 1 : 0;
@@ -1239,7 +1258,13 @@ namespace Axiom.RenderSystems.OpenGL {
             Gl.glColorMask(colorWrite[0], colorWrite[1], colorWrite[2], colorWrite[3]);
         }
 
-        /// <summary>
+		public override void SetDepthBufferParams(bool depthTest, bool depthWrite, CompareFunction depthFunction) {
+			this.DepthCheck = depthTest;
+			this.DepthWrite = depthWrite;
+			this.DepthFunction = depthFunction;
+		}
+
+		/// <summary>
         /// 
         /// </summary>
         /// <param name="mode"></param>
@@ -1247,7 +1272,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="density"></param>
         /// <param name="start"></param>
         /// <param name="end"></param>
-        protected override void SetFog(FogMode mode, ColorEx color, float density, float start, float end) {
+        public override void SetFog(FogMode mode, ColorEx color, float density, float start, float end) {
             int fogMode;
 
             switch(mode) {
@@ -1514,7 +1539,10 @@ namespace Axiom.RenderSystems.OpenGL {
         ///		
         /// </summary>
         public override Matrix4 ProjectionMatrix {
-            set {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
                 // create a float[16] from our Matrix4
                 MakeGLMatrix(ref value, tempMatrix);
 
@@ -1538,7 +1566,10 @@ namespace Axiom.RenderSystems.OpenGL {
         ///		
         /// </summary>
         public override Matrix4 ViewMatrix {
-            set {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
                 viewMatrix = value;
 
                 // create a float[16] from our Matrix4
@@ -1561,7 +1592,10 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <summary>
         /// </summary>
         public override Matrix4 WorldMatrix {
-            set {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
                 //store the new world matrix locally
                 worldMatrix = value;
 
@@ -1582,7 +1616,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// </summary>
         /// <param name="lightList"></param>
         /// <param name="limit"></param>
-        protected override void UseLights(LightList lightList, int limit) {
+        public override void UseLights(LightList lightList, int limit) {
 			// save previous modelview matrix
 			Gl.glMatrixMode(Gl.GL_MODELVIEW);
 			Gl.glPushMatrix();
@@ -1669,7 +1703,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// </summary>
         /// <param name="src"></param>
         /// <param name="dest"></param>
-        protected override void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest) {
+        public override void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest) {
             if(src == lastBlendSrc && dest == lastBlendDest) {
                 return;
             }
@@ -1688,8 +1722,11 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <summary>
         /// 
         /// </summary>
-        protected override int DepthBias {
-            set {
+        public override int DepthBias {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
                 // reduce dupe state changes
                 if(lastDepthBias == value) {
                     return;
@@ -1715,8 +1752,11 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <summary>
         /// 
         /// </summary>
-        protected override bool DepthCheck {
-            set {
+        public override bool DepthCheck {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
                 // reduce dupe state changes
                 if(lastDepthCheck == value) {
                     return;
@@ -1737,8 +1777,11 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <summary>
         /// 
         /// </summary>
-        protected override CompareFunction DepthFunction {
-            set {
+        public override CompareFunction DepthFunction {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
                 // reduce dupe state changes
                 if(lastDepthFunc == value) {
                     return;
@@ -1752,8 +1795,11 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <summary>
         /// 
         /// </summary>
-        protected override bool DepthWrite {
-            set {
+        public override bool DepthWrite {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
                 // reduce dupe state changes
                 if(lastDepthWrite == value) {
                     return;
