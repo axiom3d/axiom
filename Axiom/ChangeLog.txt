@@ -1,3 +1,8 @@
+4-10-2004
+**Important changes**
+- Refactored the SceneQuery interface to use interface based listeners rather that .Net events, which ended up making more sense in this scenario, which proved to be a cleaner and more flexible implementation.  Anyone using the RaySceneQuery will need to make modifications to use the new interface, which isn't a drastic change but is a breaking change.
+- Added the SphereRegionSceneQuery and a default implementation, which allows you to query for objects that intersect with a specified sphere.  They can be created via the scene managers CreateSphereRegionQuery method.  An example of its initial usage will be to find objects that fall within the attenuation range of point lights to determine potential shadow casters.
+
 4-8-2004
 - Playing catchup on shadow functionality.  VertexData and Mesh are up to date.
 - Fixed long outstanding bug with vertex bone assignments, which caused the infamous bug with the fish in the fresnel demo where a single vertex would be way off to the side of the fish.  Woohoo!
