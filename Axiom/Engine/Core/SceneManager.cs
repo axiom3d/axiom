@@ -1086,17 +1086,24 @@ namespace Axiom.Core {
 		///		available texture units in the hardware.
 		///	</returns>
 		protected void SetPass(Pass pass) {
+			bool passSurfaceAndLightParams = true;
+
 			// vertex pipline
 			if(pass.HasVertexProgram) {
 				targetRenderSystem.BindGpuProgram(pass.VertexProgram.BindingDelegate);
 				lastUsedVertexProgram = true;
+
+				// does the vertex program want surface and light params passed to rendersystem?
+				passSurfaceAndLightParams = pass.VertexProgram.PassSurfaceAndLightStates;
 			}
 			else {
 				if(lastUsedVertexProgram) {
 					targetRenderSystem.UnbindGpuProgram(GpuProgramType.Vertex);
 					lastUsedVertexProgram = false;
 				}
+			}
 
+			if(passSurfaceAndLightParams) {
 				// set the material surface params, only if lighting is enabled
 				if(pass.LightingEnabled) {
 					// set the surface params of the render system

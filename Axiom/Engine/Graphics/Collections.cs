@@ -41,12 +41,23 @@ namespace Axiom.Graphics {
 	///     Generics: List<AutoConstantEntry>
 	/// </summary>
 	public class FloatConstantEntryList : ArrayList {
+		public void Resize(int size) {
+			while(this.Count < size) {
+				Add(new GpuProgramParameters.FloatConstantEntry());
+			}
+		}
 	}
 
 	/// <summary>
 	///     Generics: List<AutoConstantEntry>
 	/// </summary>
-	public class IntConstantEntryList : ArrayList {}
+	public class IntConstantEntryList : ArrayList {
+		public void Resize(int size) {
+			while(this.Count < size) {
+				Add(new GpuProgramParameters.IntConstantEntry());
+			}
+		}
+	}
 
     /// <summary>
     ///     Generics: List<IRenderable>

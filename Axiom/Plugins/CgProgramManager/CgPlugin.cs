@@ -15,6 +15,7 @@ namespace Axiom.CgPrograms {
         public void Start() {
             // register our Cg Program Factory
             factory = new CgProgramFactory(); 
+
             HighLevelGpuProgramManager.Instance.AddFactory(factory);
         }
 
