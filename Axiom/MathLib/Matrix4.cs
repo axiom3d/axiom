@@ -31,10 +31,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using System.ComponentModel;			// for TypeConverterAttribute
-using System.Diagnostics;				// mostly for Debug.Assert(...)
-using System.Runtime.InteropServices;	// for StructLayoutAttribute
-using System.Xml.Serialization;			// for various Xml attributes
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Axiom.MathLib {
@@ -71,9 +69,7 @@ namespace Axiom.MathLib {
     ///		| m[2][0]  m[2][1]  m[2][2]  m[2][3] |   {z}
     ///		| m[3][0]  m[3][1]  m[3][2]  m[3][3] |   {1}
     ///	</remarks>
-    // TESTME
-    [XmlType("Matrix4"),StructLayout(LayoutKind.Sequential),
-    Serializable,TypeConverter(typeof(ExpandableObjectConverter))]
+    [StructLayout(LayoutKind.Sequential)]
     public struct Matrix4 {
         #region Member variables
 

@@ -31,10 +31,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using System.ComponentModel;			// for TypeConverterAttribute
-using System.Diagnostics;				// mostly for Debug.Assert(...)
-using System.Runtime.InteropServices;	// for StructLayoutAttribute
-using System.Xml.Serialization;			// for various Xml attributes
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace Axiom.MathLib {
     /// <summary>
@@ -46,20 +44,15 @@ namespace Axiom.MathLib {
     ///	scaling factors can be represented by a vector, depending on how
     ///	you interpret the values.
     /// </remarks>
-    // TESTME
-    [XmlType("Vector3"),StructLayout(LayoutKind.Sequential),
-    Serializable,TypeConverter(typeof(ExpandableObjectConverter))]
+    [StructLayout(LayoutKind.Sequential)]
     public struct Vector3 {
         #region Member variables
 
         /// <summary></summary>
-        [XmlElement(typeof(System.Single))]
         public float x;
         /// <summary></summary>
-        [XmlElement(typeof(System.Single))]
         public float y;
         /// <summary></summary>
-        [XmlElement(typeof(System.Single))]
         public float z;
 
         private static readonly Vector3 zeroVector = new Vector3(0.0f, 0.0f, 0.0f);
