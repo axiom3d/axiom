@@ -329,7 +329,7 @@ namespace Axiom.Core {
 		/// <summary>
 		///		List of query results from the last execution of this query.
 		/// </summary>
-		protected ArrayList lastResults;
+		protected ArrayList lastResults = new ArrayList();
 
 		#endregion Fields
 
