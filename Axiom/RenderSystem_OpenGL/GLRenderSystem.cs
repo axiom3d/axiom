@@ -506,9 +506,6 @@ namespace Axiom.RenderSystems.OpenGL {
 
 				ClearFrameBuffer(FrameBuffer.Color | FrameBuffer.Depth, activeViewport.BackgroundColor);
 			}
-
-			// update light position / directions because GL modifies them
-			SetLights();
         }
 
         /// <summary>
@@ -1188,15 +1185,24 @@ namespace Axiom.RenderSystems.OpenGL {
             Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + stage);
 
             // enable and bind the texture if necessary
-            if(enabled && texture != null) {
-                textureTypes[stage] = texture.GLTextureType;
+            if(enabled) {
+				if(texture != null) {
+					textureTypes[stage] = texture.GLTextureType;
+				}
+				else {
+					// assume 2D
+					textureTypes[stage] = Gl.GL_TEXTURE_2D;
+				}
 
                 if(lastTextureType != textureTypes[stage] && lastTextureType != 0) {
                     Gl.glDisable(lastTextureType);
                 }
 
                 Gl.glEnable(textureTypes[stage]);
-                Gl.glBindTexture(textureTypes[stage], texture.TextureID);
+
+				if(texture != null) {
+					Gl.glBindTexture(textureTypes[stage], texture.TextureID);
+				}
             }
             else {
 				if(textureTypes[stage] != 0) {
@@ -1536,9 +1542,6 @@ namespace Axiom.RenderSystems.OpenGL {
                 // load the float array into the ModelView matrix
                 Gl.glLoadMatrixf(tempMatrix);
 
-				// set the lights here everytime the view matrix changes
-				SetLights();
-
                 // convert the internal world matrix
                 MakeGLMatrix(ref worldMatrix, tempMatrix);
 
@@ -1572,6 +1575,13 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="lightList"></param>
         /// <param name="limit"></param>
         protected override void UseLights(LightList lightList, int limit) {
+			// save previous modelview matrix
+			Gl.glMatrixMode(Gl.GL_MODELVIEW);
+			Gl.glPushMatrix();
+			// load the view matrix
+			MakeGLMatrix(ref viewMatrix, tempMatrix);
+			Gl.glLoadMatrixf(tempMatrix);
+
             int i = 0;
 
             for( ; i < limit && i < lightList.Count; i++) {
@@ -1585,6 +1595,11 @@ namespace Axiom.RenderSystems.OpenGL {
             }
 
             numCurrentLights = (int)MathUtil.Min(limit, lightList.Count);
+
+			SetLights();
+
+			// restore the previous matrix
+			Gl.glPopMatrix();
         }
 
         /// <summary>

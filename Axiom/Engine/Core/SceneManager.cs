@@ -591,7 +591,7 @@ namespace Axiom.Core {
 					lightsAffectingFrustum.Add(light);
 				}
 				else {
-					// NB treating spotlight as point for simplicity
+					// treating spotlight as point for simplicity
 					// Just see if the lights attenuation range is within the frustum
 					sphere.Center = light.DerivedPosition;
 					sphere.Radius = light.AttenuationRange;
@@ -1439,6 +1439,9 @@ namespace Axiom.Core {
 
                     // create an entity for this plane
                     skyBoxEntities[i] = CreateEntity(entityName, planeModel.Name);
+
+					// skyboxes don't cast shadows
+					skyBoxEntities[i].CastShadows = false;
 
                     Material boxMaterial = MaterialManager.Instance.GetByName(entityName);
 
