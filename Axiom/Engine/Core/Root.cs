@@ -352,13 +352,13 @@ namespace Axiom.Core {
 
 			alreadySetup = true;
 
-			// create a new engine log
-			engineLog = new Log("AxiomEngine.log");
+            // TODO: Temporary for introduction of LogManager, will be relocated shortly after across the board Singleton cleanup is done
+            new LogManager();
 
-			// add the log to the list of trace listeners to capture output
-			System.Diagnostics.Trace.Listeners.Add(engineLog);
+            // create a new engine log
+            engineLog = LogManager.Instance.CreateLog("AxiomEngine.log");
 
-			// initialize all singletons, resetting them in the case of running more than once within the same AppDomain
+            // initialize all singletons, resetting them in the case of running more than once within the same AppDomain
 			InitializeSingletons();
 
 			// create a new timer
