@@ -148,9 +148,27 @@ namespace Axiom.Core {
             UpdateCorners();
         }
 
+        /// <summary>
+        ///    Scales the size of the box by the supplied factor.
+        /// </summary>
+        /// <param name="factor">Factor of scaling to apply to the box.</param>
+        public void Scale(Vector3 factor) {
+            minVector = minVector * factor;
+            maxVector = maxVector * factor;
+        }
+
         #endregion
 
         #region Properties
+
+        /// <summary>
+        ///    Gets the center point of this bounding box.
+        /// </summary>
+        public Vector3 Center {
+            get {
+                return (minVector + maxVector) * 0.5f;
+            }
+        }
 
         /// <summary>
         ///		Gets/Sets the maximum corner of the box.

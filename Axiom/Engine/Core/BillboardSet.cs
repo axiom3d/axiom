@@ -153,11 +153,12 @@ namespace Axiom.Core {
 
             Sphere sphere = new Sphere();
 
-            // HACK: Fix this
-            Matrix4 world = this.WorldTransforms[0];
+            // get the world matrix of this billboard set
+            Matrix4[] world = new Matrix4[1];
+            GetWorldTransforms(world);
 
             // get the center of the bounding sphere
-            sphere.Center = world * billboard.Position;
+            sphere.Center = world[0] * billboard.Position;
 
             // calculate the radius of the bounding sphere for the billboard
             if(billboard.HasOwnDimensions) {
@@ -663,7 +664,7 @@ namespace Axiom.Core {
                 materialName = value;
 				
                 // find the requested material
-                material = (Material)MaterialManager.Instance[materialName];
+                material = MaterialManager.Instance[materialName];
 
                 if(material != null) {
                     // make sure it is loaded
@@ -770,26 +771,47 @@ namespace Axiom.Core {
             op.indexData.indexCount = numVisibleBillboards * 6;
         }		
 
-        public virtual Axiom.MathLib.Matrix4[] WorldTransforms {
-            get { return new Matrix4[] {parentNode.FullTransform}; }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="matrices"></param>
+        public virtual void GetWorldTransforms(Matrix4[] matrices) {
+            matrices[0] = parentNode.FullTransform;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public virtual ushort NumWorldTransforms {
             get { return 1;	}
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool UseIdentityProjection {
             get { return false; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool UseIdentityView {
             get { return false; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SceneDetailLevel RenderDetail {
             get { return SceneDetailLevel.Solid; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="camera"></param>
+        /// <returns></returns>
         public virtual float GetSquaredViewDepth(Camera camera) {
             Debug.Assert(parentNode != null, "BillboardSet must have a parent scene node to get the squared view depth.");
 

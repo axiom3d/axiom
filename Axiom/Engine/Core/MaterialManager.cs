@@ -53,6 +53,9 @@ namespace Axiom.Core {
             instance = new MaterialManager();
 
             instance.Initialize();
+
+            // just create the default BaseWhite material
+            instance.Create("BaseWhite");
         }
 		
         #endregion
@@ -122,6 +125,15 @@ namespace Axiom.Core {
         }
 
         #region Implementation of ResourceManager
+
+        /// <summary>
+        ///    Indexer that gets a material by name.
+        /// </summary>
+        public Material this[string name] {
+            get {
+                return (Material)base[name];
+            }
+        }
 
         /// <summary>
         /// 

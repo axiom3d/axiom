@@ -25,7 +25,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-
+using System.Collections;
+using Axiom.Animating;
+using Axiom.Configuration;
 using Axiom.Enumerations;
 using Axiom.SubSystems.Rendering;
 
@@ -55,7 +57,6 @@ namespace Axiom.Core {
         /// <summary>Name of this SubMesh.</summary>
         protected String name;
         /// <summary>Indicates if this submesh shares vertex data with other meshes or whether it has it's own vertices.</summary>
-        // TODO: Is this the right answer?
         protected internal bool useSharedVertices;
         /// <summary></summary>
         protected bool isMaterialInitialized;
@@ -64,6 +65,13 @@ namespace Axiom.Core {
         /// <summary>Indices to use for parent geometry when using shared vertices.</summary>
         protected internal short[] faceIndices;
 		
+        /// <summary>List of bone assignment for this mesh.</summary>
+        protected SortedList boneAssignmentList = new SortedList();
+        /// <summary>Flag indicating that bone assignments need to be recompiled.</summary>
+        protected internal bool boneAssignmentsOutOfDate;
+
+        /// <summary>Mode used for rendering this submesh.</summary>
+        protected internal Axiom.SubSystems.Rendering.RenderMode operationType;
         public VertexData vertexData;
         public IndexData indexData = new IndexData();
 
@@ -79,9 +87,87 @@ namespace Axiom.Core {
             this.name = name;
 
             useSharedVertices = true;
+
+            operationType = RenderMode.TriangleList;
         }
 
         #endregion
+
+        #region Methods
+
+        /// <summary>
+        ///    Assigns a vertex to a bone with a given weight, for skeletal animation. 
+        /// </summary>
+        /// <remarks>
+        ///    This method is only valid after calling setSkeletonName.
+        ///    You should not need to modify bone assignments during rendering (only the positions of bones) 
+        ///    and the engine reserves the right to do some internal data reformatting of this information, 
+        ///    depending on render system requirements.
+        /// </remarks>
+        /// <param name="boneAssignment"></param>
+        public void AddBoneAssignment(ref VertexBoneAssignment boneAssignment) {
+            boneAssignmentList.Add(boneAssignment.vertexIndex, boneAssignment);
+            boneAssignmentsOutOfDate = true;
+        }
+
+        /// <summary>
+        ///    Removes all bone assignments for this mesh. 
+        /// </summary>
+        /// <remarks>
+        ///    This method is for modifying weights to the shared geometry of the Mesh. To assign
+        ///    weights to the per-SubMesh geometry, see the equivalent methods on SubMesh.
+        /// </remarks>
+        public void ClearBoneAssignments() {
+            boneAssignmentList.Clear();
+            boneAssignmentsOutOfDate = true;
+        }
+
+        /// <summary>
+        ///    Must be called once to compile bone assignments into geometry buffer.
+        /// </summary>
+        protected internal void CompileBoneAssignments() {
+            short maxBones = 0;
+            short currentBones = 0;
+            ushort lastVertexIndex = ushort.MaxValue;
+
+            // find the largest number of bones per vertex
+            for(int i = 0; i < boneAssignmentList.Count; i++) {
+                VertexBoneAssignment boneAssignment =
+                    (VertexBoneAssignment)boneAssignmentList.GetByIndex(i);
+
+                if(lastVertexIndex != boneAssignment.vertexIndex) {
+                    if(maxBones < currentBones) {
+                        maxBones = currentBones;
+                    }
+                    currentBones = 0;
+                } // if
+
+                currentBones++;
+
+                lastVertexIndex = (ushort)boneAssignment.vertexIndex;
+            } // for
+
+            if(maxBones > Config.MaxBlendWeights) {
+                throw new Exception("SubMesh '" + name + "' has too many bone assignments per vertex.");
+            }
+
+            // no bone assignments?  get outta here
+            if(maxBones == 0) {
+                return;
+            }
+
+            // figure out which method of bone assignment compilation to use
+            if(parent.useSoftwareBlending) {
+                parent.CompileBoneAssignmentsSoftware(boneAssignmentList, maxBones, vertexData);
+            }
+            else {
+                parent.CompileBoneAssignmentsHardware(boneAssignmentList, maxBones, vertexData);
+            }
+
+            boneAssignmentsOutOfDate = false;
+        }
+
+        #endregion Methods
 
         #region Properties
 
@@ -112,12 +198,10 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        /// 
+        ///    Fills a RenderOperation structure required to render this mesh.
         /// </summary>
-        /// <param name="op"></param>
-        /// <param name="lodIndex"></param>
-        /// <returns></returns>
-        /// DOC
+        /// <param name="op">Reference to a RenderOperation structure to populate.</param>
+        /// <param name="lodIndex">The index of the LOD to use.</param>
         public void GetRenderOperation(RenderOperation op, int lodIndex) {
             // meshes always use indices
             op.useIndices = true;
@@ -128,8 +212,8 @@ namespace Axiom.Core {
             else
                 op.indexData = indexData;
 			
-            // indexed meshes use tri lists
-            op.operationType = RenderMode.TriangleList;
+            // set the operation type
+            op.operationType = operationType;
 
             // set the vertex data correctly
             op.vertexData = useSharedVertices? parent.SharedVertexData : vertexData;

@@ -44,7 +44,7 @@ namespace Axiom.Animating {
         /// <summary>Numeric handle of this bone.</summary>
         protected ushort handle;
         /// <summary>Bones set as manuallyControlled are not reseted in Skeleton.Reset().</summary>
-        protected bool manuallyControlled;
+        protected bool isManuallyControlled;
         /// <summary>The skeleton that created this bone.</summary>
         protected Skeleton creator;
         /// <summary>The inverse derived transform of the bone in the binding pose.</summary>
@@ -59,7 +59,7 @@ namespace Axiom.Animating {
         /// </summary>
         public Bone(ushort handle, Skeleton creator) : base() {
             this.handle = handle;
-            this.manuallyControlled = false;
+            this.isManuallyControlled = false;
             this.creator = creator;
         }
 
@@ -68,7 +68,7 @@ namespace Axiom.Animating {
         /// </summary>
         public Bone(string name, ushort handle, Skeleton creator) : base(name) {
             this.handle = handle;
-            this.manuallyControlled = false;
+            this.isManuallyControlled = false;
             this.creator = creator;
         }
 
@@ -152,10 +152,10 @@ namespace Axiom.Animating {
         /// <summary>
         ///		Determines whether this bone is controlled at runtime.
         /// </summary>
-        public bool ManuallyControlled {
-            get { return manuallyControlled; }
+        public bool IsManuallyControlled {
+            get { return isManuallyControlled; }
             set {
-                manuallyControlled = value;
+                isManuallyControlled = value;
             }
         }
 
@@ -190,8 +190,8 @@ namespace Axiom.Animating {
     ///		per vertex if blended vertex assignments are allowed.
     /// </remarks>
     public struct VertexBoneAssignment {
-        ushort vertexIndex;
-        ushort boneIndex;
-        float weight;
+        public int vertexIndex;
+        public ushort boneIndex;
+        public float weight;
     }
 }

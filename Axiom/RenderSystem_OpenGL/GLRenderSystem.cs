@@ -1524,8 +1524,9 @@ namespace RenderSystem_OpenGL {
                 caps.SetCap(Capabilities.VertexBuffer);
 
             // check support for hardware vertex blending
-            if(GLHelper.SupportsExtension("GL_ARB_vertex_blend"))
-                caps.SetCap(Capabilities.VertexBlending);
+            // TODO: Dont check this cap yet, wait for vertex shader support so that software blending is always used
+            //if(GLHelper.SupportsExtension("GL_ARB_vertex_blend"))
+            //    caps.SetCap(Capabilities.VertexBlending);
 
             // check if the hardware supports anisotropic filtering
             if(GLHelper.SupportsExtension("GL_EXT_texture_filter_anisotropic"))

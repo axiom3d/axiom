@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using Axiom.Collections;
+using Axiom.Configuration;
 using Axiom.Controllers;
 using Axiom.Animating;
 using Axiom.Enumerations;
@@ -82,6 +83,8 @@ namespace Axiom.Core {
         protected AnimationCollection animationList;
         /// <summary>A list of animation states for easy lookup.</summary>
         protected AnimationStateCollection animationStateList;
+
+        protected Matrix4[] xform = new Matrix4[256];
 
         /// <summary>A reference to the current camera being used for rendering.</summary>
         protected Camera camInProgress;
@@ -772,7 +775,7 @@ namespace Axiom.Core {
             isSkyBoxEnabled = enable;
 
             if(enable) {
-                Material m = (Material)MaterialManager.Instance[materialName];
+                Material m = MaterialManager.Instance[materialName];
 
                 if(m == null)
                     throw new AxiomException(String.Format("Could not find skybox material '{0}'", materialName));
@@ -809,7 +812,7 @@ namespace Axiom.Core {
 
                     // find the material for this plane
                     // TODO: can we assume there is never a case where it already exists?  it shouldnt
-                    //Material boxMaterial = (Material)materialMgr[entityName];
+                    //Material boxMaterial = materialMgr[entityName];
 
                     // close the material
                     Material boxMaterial = (Material)m.Clone(entityName);
@@ -1114,7 +1117,6 @@ namespace Axiom.Core {
 
                         renderCount++;
 
-                        Matrix4[] xform;
                         RenderOperation op = new RenderOperation();
                         int materialLayersLeft;
                         Material currentMaterial = null;
@@ -1144,7 +1146,7 @@ namespace Axiom.Core {
                                     IRenderable renderable = (IRenderable)renderableList[l];
 
                                     // get world transforms
-                                    xform = renderable.WorldTransforms;
+                                    renderable.GetWorldTransforms(xform);
                                     numMatrices = renderable.NumWorldTransforms;
 
                                     // set the world matrices in the render system
@@ -1202,7 +1204,7 @@ namespace Axiom.Core {
 
                                 // set world transforms
                                 // get world transforms
-                                xform = transObject.WorldTransforms;
+                                transObject.GetWorldTransforms(xform);
                                 numMatrices = transObject.NumWorldTransforms;
 
                                 // set the world matrices in the render system
@@ -1270,21 +1272,21 @@ namespace Axiom.Core {
 
             if(isSkyPlaneEnabled) {
                 qid = isSkyPlaneDrawnFirst ? RenderQueueGroupID.One : RenderQueueGroupID.Nine;
-                renderQueue.AddRenderable(skyPlaneEntity.SubEntities[0], 1, qid);
+                renderQueue.AddRenderable(skyPlaneEntity.GetSubEntity(0), 1, qid);
             }
 
             if(isSkyBoxEnabled) {
                 qid = isSkyBoxDrawnFirst ? RenderQueueGroupID.One : RenderQueueGroupID.Nine;
 
                 for(int plane = 0; plane < 6; plane++)
-                    renderQueue.AddRenderable(skyBoxEntities[plane].SubEntities[0], 1, qid);
+                    renderQueue.AddRenderable(skyBoxEntities[plane].GetSubEntity(0), 1, qid);
             }
 
             if(isSkyDomeEnabled) {
                 qid = isSkyDomeDrawnFirst ? RenderQueueGroupID.One : RenderQueueGroupID.Nine;
 
                 for(int plane = 0; plane < 5; plane++)
-                    renderQueue.AddRenderable(skyDomeEntities[plane].SubEntities[0], 1, qid);
+                    renderQueue.AddRenderable(skyDomeEntities[plane].GetSubEntity(0), 1, qid);
             }
         }
 
@@ -1345,7 +1347,7 @@ namespace Axiom.Core {
                 string meshName = "SkyPlane";
                 skyPlane = plane;
 
-                Material m = (Material)MaterialManager.Instance[materialName];
+                Material m = MaterialManager.Instance[materialName];
 
                 if(m == null)
                     throw new Exception(string.Format("Skyplane material '{0}' not found.", materialName));

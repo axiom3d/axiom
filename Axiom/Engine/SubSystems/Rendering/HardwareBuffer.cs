@@ -88,6 +88,7 @@ namespace Axiom.SubSystems.Rendering {
                 }
 
                 data = shadowBuffer.Lock(offset, length, locking);
+                isLocked = true;
             }
             else {
                 // lock the real deal and flag it as locked

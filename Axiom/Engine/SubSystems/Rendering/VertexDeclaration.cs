@@ -49,6 +49,11 @@ namespace Axiom.SubSystems.Rendering {
             elements.Add(element);
         }
 
+        public VertexElement FindElementBySemantic(VertexElementSemantic semantic) {
+            // call overload with a default of index 0
+            return FindElementBySemantic(semantic, 0);
+        }
+
         /// <summary>
         /// 
         /// </summary>

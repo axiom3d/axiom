@@ -91,8 +91,8 @@ namespace Axiom.Utility {
             this.btnOK = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.cboResolution = new System.Windows.Forms.ComboBox();
             this.cboRenderSystems = new System.Windows.Forms.ComboBox();
+            this.cboResolution = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -127,11 +127,10 @@ namespace Axiom.Utility {
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
             this.pictureBox1.Location = new System.Drawing.Point(126, 15);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(80, 80);
+            this.pictureBox1.Size = new System.Drawing.Size(200, 80);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
-			
             // 
             // chkFullScreen
             // 
@@ -157,7 +156,7 @@ namespace Axiom.Utility {
             this.btnOK.Location = new System.Drawing.Point(109, 296);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(96, 24);
-            this.btnOK.TabIndex = 2;
+            this.btnOK.TabIndex = 0;
             this.btnOK.Text = "Start";
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
@@ -187,15 +186,6 @@ namespace Axiom.Utility {
             this.label1.Text = "Driver:";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // cboResolution
-            // 
-            this.cboResolution.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboResolution.Font = new System.Drawing.Font("Palatino Linotype", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-            this.cboResolution.Location = new System.Drawing.Point(144, 64);
-            this.cboResolution.Name = "cboResolution";
-            this.cboResolution.Size = new System.Drawing.Size(176, 24);
-            this.cboResolution.TabIndex = 6;
-            // 
             // cboRenderSystems
             // 
             this.cboRenderSystems.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -205,6 +195,15 @@ namespace Axiom.Utility {
             this.cboRenderSystems.Size = new System.Drawing.Size(176, 24);
             this.cboRenderSystems.TabIndex = 8;
             this.cboRenderSystems.SelectedIndexChanged += new System.EventHandler(this.cboRenderSystems_SelectedIndexChanged);
+            // 
+            // cboResolution
+            // 
+            this.cboResolution.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboResolution.Font = new System.Drawing.Font("Palatino Linotype", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+            this.cboResolution.Location = new System.Drawing.Point(144, 64);
+            this.cboResolution.Name = "cboResolution";
+            this.cboResolution.Size = new System.Drawing.Size(176, 24);
+            this.cboResolution.TabIndex = 6;
             // 
             // ConfigDialog
             // 
@@ -227,6 +226,7 @@ namespace Axiom.Utility {
             this.Load += new System.EventHandler(this.ConfigDialog_Load);
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
+
         }
         #endregion
 

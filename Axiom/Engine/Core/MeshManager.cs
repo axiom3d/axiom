@@ -76,7 +76,7 @@ namespace Axiom.Core {
 
             if(mesh == null) {
                 mesh = (Mesh)Create(name);
-                mesh.ManuallyDefined = true;
+                mesh.IsManuallyDefined = true;
                 base.Load(mesh, 0);
             }
 

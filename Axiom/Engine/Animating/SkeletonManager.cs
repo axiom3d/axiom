@@ -25,17 +25,79 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using Axiom.Animating;
+using Axiom.Core;
 
-namespace Axiom.Core {
+namespace Axiom.Animating {
     /// <summary>
     /// Summary description for SkeletonManager.
     /// </summary>
-    public class SkeletonManager {
+    public class SkeletonManager : ResourceManager {
 
-        public SkeletonManager() {
-            //
-            // TODO: Add constructor logic here
-            //
+        #region Singleton implementation
+
+        static SkeletonManager() { Init(); }
+        protected SkeletonManager() {}
+        protected static SkeletonManager instance;
+
+        public static SkeletonManager Instance {
+            get { return instance; }
         }
+
+        public static void Init() {
+            instance = new SkeletonManager();
+        }
+		
+        #endregion Singleton implementation
+
+        #region Implementation of ResourceManager
+
+        /// <summary>
+        ///    Creates a new skeleton object.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public override Resource Create(string name) {
+            return new Skeleton(name);
+        }
+
+        /// <summary>
+        ///    Overloaded method.  Call overload with default of priority 1.
+        /// </summary>
+        /// <param name="fileName">Name of the skeleton file to load.</param>
+        public Skeleton Load(string fileName) {
+            return Load(fileName, 1);
+        }
+
+        /// <summary>
+        ///    Load a skeleton.  Creates one if it doesn't exists, else return the cached version.
+        /// </summary>
+        /// <remarks>
+        ///    Creates one if it doesn't exists, else return the cached version.
+        /// </remarks>
+        /// <param name="fileName"></param>
+        /// <param name="priority"></param>
+        public Skeleton Load(string fileName, int priority) {
+            Skeleton skeleton = this[fileName];
+
+            if(skeleton == null) {
+                // create and load the skeleton
+                skeleton = (Skeleton)Create(fileName);
+                base.Load (skeleton, priority);
+            }
+
+            return skeleton;
+        }
+
+        /// <summary>
+        ///    Indexer for lookup up skeletons by name.
+        /// </summary>
+        public Skeleton this[string name] {
+            get {
+                return (Skeleton)base[name];
+            }
+        }
+
+        #endregion Implementation of ResourceManager
     }
 }

@@ -368,6 +368,14 @@ namespace Axiom.Core {
         }
 
         /// <summary>
+        ///    
+        /// </summary>
+        /// <param name="matrices"></param>
+        public void GetWorldTransforms(Matrix4[] matrices) {
+            matrices[0] = this.FullTransform;
+        }
+
+        /// <summary>
         ///		To be called in the event of transform changes to this node that require it's recalculation.
         /// </summary>
         /// <remarks>
@@ -848,7 +856,7 @@ namespace Axiom.Core {
         public void GetRenderOperation(RenderOperation op) {
             if(nodeSubMesh == null) {
                 Mesh nodeMesh = MeshManager.Instance.Load("axes.mesh", 1);
-                nodeSubMesh = nodeMesh.SubMeshes[0];
+                nodeSubMesh = nodeMesh.GetSubMesh(0);
             }
             // return the render operation of the submesh itself
             nodeSubMesh.GetRenderOperation(op);
@@ -862,25 +870,10 @@ namespace Axiom.Core {
         ///		for SceneNodes at SceneManager.DisplaySceneNodes, and for entities based on skeletal 
         ///		models using Entity.DisplaySkeleton = true.
         /// </remarks>
-        public Matrix4[] WorldTransforms {
-            get {
-                // return the local full transformation
-                return new Matrix4[] {FullTransform};
-            }
-        }
-	
-        /// <summary>
-        ///		
-        /// </summary>
-        /// <remarks>
-        ///		This is only used if the SceneManager chooses to render the node. This option can be set
-        ///		for SceneNodes at SceneManager.DisplaySceneNodes, and for entities based on skeletal 
-        ///		models using Entity.DisplaySkeleton = true.
-        /// </remarks>
         public Material Material {
             get {
                 if(nodeMaterial == null) {
-                    nodeMaterial = (Material)MaterialManager.Instance["Core/NodeMaterial"];
+                    nodeMaterial = MaterialManager.Instance["Core/NodeMaterial"];
                     
                     if(nodeMaterial == null) {
                         throw new Exception("Could not find material 'Core/NodeMaterial'");
@@ -927,19 +920,36 @@ namespace Axiom.Core {
 
         #region IRenderable Members
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ushort NumWorldTransforms {
-            // TODO: Finish
-            get { return 1; }
+            get { 
+                return 1; 
+            }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool UseIdentityProjection {
-            get { return false; }
+            get { 
+                return false; 
+            }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool UseIdentityView {
-            get { return false; }
+            get { 
+                return false; 
+            }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SceneDetailLevel RenderDetail {
             get { return SceneDetailLevel.Solid;	}
         }

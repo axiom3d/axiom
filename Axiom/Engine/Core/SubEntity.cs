@@ -56,7 +56,7 @@ namespace Axiom.Core {
         private Material material;
         /// <summary>Reference to the subMesh that represents the geometry for this SubEntity.</summary>
         private SubMesh subMesh;
-        /// <summary></summary>
+        /// <summary>Detail to be used for rendering this sub entity.</summary>
         private SceneDetailLevel renderDetail;
 
         #endregion
@@ -67,6 +67,7 @@ namespace Axiom.Core {
         ///		Internal constructor, only allows creation of SubEntities within the engine core.
         /// </summary>
         internal SubEntity() {
+            material = MaterialManager.Instance["BaseWhite"];
             renderDetail = SceneDetailLevel.Solid;
         }
 
@@ -78,16 +79,22 @@ namespace Axiom.Core {
         ///		Gets/Sets the name of the material used for this SubEntity.
         /// </summary>
         public String MaterialName {
-            get { return materialName; }
-            // TODO: Implement setter on MaterialName to load material from material manager.
+            get { 
+                return materialName; 
+            }
             set { 
                 materialName = value; 
 
                 // load the material from the material manager (it should already exist
-                material = (Material)MaterialManager.Instance[materialName];
+                material = MaterialManager.Instance[materialName];
 
-                if(material == null)
-                    throw new Axiom.Exceptions.AxiomException(String.Format("Cannot assign material '{0}' to SubEntity '{1}' because the material doesn't exist.", materialName, parent.Name));
+                if(material == null) {
+                    System.Diagnostics.Trace.Write(
+                        String.Format("Cannot assign material '{0}' to SubEntity '{1}' because the material doesn't exist.", materialName, parent.Name));
+
+                    // give it base white so we can continue
+                    material = MaterialManager.Instance["BaseWhite"];
+                }
 
                 // ensure the material is loaded.  It will skip it if it already is
                 material.Load();
@@ -140,37 +147,71 @@ namespace Axiom.Core {
             get { return material; }
         }
 
-        public Axiom.MathLib.Matrix4[] WorldTransforms {
-            get {
-                return new Matrix4[] { parent.ParentNode.FullTransform };
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="matrices"></param>
+        public void GetWorldTransforms(Matrix4[] matrices) {
+            if(parent.numBoneMatrices == 0) {
+                matrices[0] = parent.ParentNode.FullTransform;
+            }
+            else {
+                // use cached bone matrices of the parent entity
+                for(int i = 0; i < parent.numBoneMatrices; i++) {
+                    matrices[i] = parent.boneMatrices[i];
+                }
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ushort NumWorldTransforms {
             get {
-                // TODO:  Add SubEntity.NumWorldTransforms getter implementation
-                return 1;
+                if(parent.numBoneMatrices == 0) {
+                    return 1;
+                }
+                else {
+                    return (ushort)parent.numBoneMatrices;
+                }
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool UseIdentityProjection {
             get {
-                // TODO:  Add SubEntity.UseIdentityProjection getter implementation
                 return false;
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool UseIdentityView {
             get {
-                // TODO:  Add SubEntity.UseIdentityView getter implementation
                 return false;
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SceneDetailLevel RenderDetail {
-            get { return SceneDetailLevel.Solid;	}
+            get { 
+                return renderDetail;	
+            }
+            set {
+                renderDetail = value;
+            }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="camera"></param>
+        /// <returns></returns>
         public float GetSquaredViewDepth(Camera camera) {
             // get the parent entitie's parent node
             Node node = parent.ParentNode;

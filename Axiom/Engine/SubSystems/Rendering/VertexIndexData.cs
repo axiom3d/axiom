@@ -38,6 +38,9 @@ namespace Axiom.SubSystems.Rendering {
         public int vertexStart;
         public int vertexCount;
 
+        // dont intialize, will only be done if the mesh being read has a skeleton
+        public SoftwareBlendInfo softwareBlendInfo;
+
         #endregion
 
         public VertexData() {
@@ -53,6 +56,69 @@ namespace Axiom.SubSystems.Rendering {
         }
 
         #endregion
+    }
+
+    /// <summary>
+    ///    Software vertex blend information.
+    /// </summary>
+    /// <remarks>
+    ///    This data is here in order to allow the creator of the VertexData 
+    ///    to request a software vertex blend, ie a blend using information which you
+    ///    do not want to be passed to the GPU.
+    ///    <p/>
+    ///    The assumption here is that you have a Postion and Normal elements in 
+    ///    your declaration which you wish to update with a blended version of 
+    ///    positions / normals from a system-memory location. We advise that 
+    ///    if you're blending a lot, you set the hardware vertex buffer 
+    ///    to DynamicWriteOnly, with no shadow buffer. 
+    ///    <p/>
+    ///    Note that future versions of the engine are likely to support vertex shader
+    ///    based animation so there will be a hardware alternative; however, note that sometimes
+    ///    you may still want to perform blending in software, for example when you need to read
+    ///    back the blended positions in applications such as shadow volume construction.
+    ///    <p/>
+    ///    In order to apply this blending, the world matrices must be set and 
+    ///    RenderSystem.SoftwareVertexBlend called. This is done automatically for skeletally
+    ///    animated entities, but this can be done manually if required. After calling this
+    ///    method, the vertex buffers are updated with the blended positions and the blend does
+    ///    not need to be called again unless it's basis changes.
+    /// </remarks>
+    public class SoftwareBlendInfo {
+        /// <summary>
+        ///    If true, the RenderSystem will automatically apply the blend when rendering 
+        ///    with this VertexData, otherwise the user of the vertex data must call 
+        ///    RenderSystem.SofwareVertexBlend manually as required.
+        /// </summary>
+        public bool automaticBlend;
+        /// <summary>
+        ///    Array of source positions.
+        /// </summary>
+        public float[] srcPositions;
+        /// <summary>
+        ///    Array of source normals, could be null if vertex data does not include normals.
+        /// </summary>
+        public float[] srcNormals;
+        /// <summary>
+        ///    The number of blending weights per vertex
+        /// </summary>
+        public ushort numWeightsPerVertex;
+        /// <summary>
+        ///    Array of blend weights.
+        /// </summary>
+        public float[] blendWeights;
+        /// <summary>
+        ///    Array of blending indexes (index into world matrices)
+        /// </summary>
+        public byte[] blendIndices;
+
+        /// <summary>
+        ///    Default constructor.
+        /// </summary>
+        public SoftwareBlendInfo() {
+            // default to automatic blending handled by the render system
+            automaticBlend = true;
+            numWeightsPerVertex = 1;
+        }
     }
 
     /// <summary>

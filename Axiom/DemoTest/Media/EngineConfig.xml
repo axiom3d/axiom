@@ -3,6 +3,7 @@
 	<FilePath src="..\..\Media\Textures"/>
 	<FilePath src="..\..\Media\Sounds"/>
 	<FilePath src="..\..\Media\Meshes"/>
+	<FilePath src="..\..\Media\Skeletons"/>
 	<FilePath src="..\..\Media\Materials"/>
 </EngineConfig>
  

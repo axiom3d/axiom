@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Reflection;
 using Axiom.Core;
 using Axiom.Collections;
@@ -394,8 +395,135 @@ namespace Axiom.SubSystems.Rendering {
         ///		temporary vertex buffer is used for the result, which is then used in the
         ///		VertexBuffer instead of the original passed in vertex data.
         /// </remarks>
-        protected void SoftwareVertexBlend(RenderOperation op, Matrix4[] matrices) {
-            // TODO: Implementation of RenderSystem.SoftwareVertexBlend
+        protected unsafe void SoftwareVertexBlend(VertexData vertexData, Matrix4[] matrices) {
+
+            Vector3 sourceVec = new Vector3();
+            Vector3 accumVecPos;
+            Vector3 accumVecNorm = new Vector3();
+            Matrix3 rot3x3;
+
+            // pointers to the locked vertex buffer data
+            IntPtr destPosPtr, destNormPtr;
+            float* pDestPos, pDestNorm = null;
+            
+            bool posNormShareBuffer = false;
+
+            // look for the position and normal elements
+            VertexElement posElement =
+                vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Position);
+            VertexElement normElement =
+                vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Normal);
+
+            HardwareVertexBuffer posBuffer, normBuffer = null;
+
+            // get the position buffer
+            posBuffer = vertexData.vertexBufferBinding.GetBuffer(posElement.Source);
+            
+            if(normElement != null) {
+                normBuffer = vertexData.vertexBufferBinding.GetBuffer(normElement.Source);
+                posNormShareBuffer = (posElement.Source == normElement.Source);
+            }
+
+            // lock buffers for writing
+            Debug.Assert(posElement.Offset == 0, "Positions must be the first element in a dedicated buffer");
+
+            // lock buffer writing
+            destPosPtr = posBuffer.Lock(BufferLocking.Discard);
+            pDestPos = (float*)destPosPtr.ToPointer();
+
+            // deal with normal buffer if it is available
+            if(normElement != null) {
+                if(posNormShareBuffer) {
+                    Debug.Assert(normElement.Offset == (sizeof(float) * 3), "Normals must be packed directly after positions in a shared buffer!");
+                    // seperate normal buffer will not be used
+                }
+                else {
+                    Debug.Assert(normElement.Offset == 0, "Normals must be first element in dedicated buffer!");
+                    destNormPtr = normBuffer.Lock(BufferLocking.Discard);
+                    pDestNorm = (float*)destNormPtr.ToPointer();
+                } // if
+            } // if
+
+            // index values for walking through each array
+            int srcPosIdx, srcNormIdx, blendIndicesIdx, blendWeightIdx; 
+            int destPosIdx, destNormIdx;
+            srcPosIdx = srcNormIdx = blendIndicesIdx = blendWeightIdx = destPosIdx = destNormIdx = 0; 
+
+            // get references to the 4 array for convenience
+            float[] srcPos = vertexData.softwareBlendInfo.srcPositions;
+            float[] srcNorm = vertexData.softwareBlendInfo.srcNormals;
+            float[] blendWeights = vertexData.softwareBlendInfo.blendWeights;
+            byte[] blendIndices = vertexData.softwareBlendInfo.blendIndices;
+
+            // time for some blending
+            for(int i = 0; i < vertexData.vertexCount; i++) {
+                sourceVec.x = srcPos[srcPosIdx++];
+                sourceVec.y = srcPos[srcPosIdx++];
+                sourceVec.z = srcPos[srcPosIdx++];
+
+                if(normElement != null) {
+                    accumVecNorm.x = srcNorm[srcNormIdx++];
+                    accumVecNorm.y = srcNorm[srcNormIdx++];
+                    accumVecNorm.z = srcNorm[srcNormIdx++];
+                }
+
+                // reset accumulator
+                accumVecPos = Vector3.Zero;
+
+                // loop per blend weight
+                for(ushort blendIdx = 0; blendIdx < vertexData.softwareBlendInfo.numWeightsPerVertex; blendIdx++) {
+                    // Blend by multiplying source by blend matrix and scaling by weight
+                    // Add to accumulator
+                    // weights must be normalized!!
+                    if(blendWeights[blendWeightIdx] != 0.0f) {
+                        int matrixIndex = blendIndices[blendIndicesIdx];
+                        // blend position
+                        accumVecPos += (matrices[matrixIndex] * sourceVec) * blendWeights[blendWeightIdx];
+
+                        if(normElement != null) {
+                            // Blend normal
+                            // We should blend by inverse transpose here, but because we're assuming the 3x3
+                            // aspect of the matrix is orthogonal (no non-uniform scaling), the inverse transpose
+                            // is equal to the main 3x3 matrix
+                            // Note because it's a normal we just extract the rotational part, saves us renormalising
+
+                            rot3x3 = matrices[matrixIndex].GetMatrix3();
+                            accumVecNorm = (rot3x3 * blendWeights[blendWeightIdx]) * accumVecNorm;
+                        } // if
+                    } // if
+                    
+                    // increment the index counters
+                    blendWeightIdx++;
+                    blendIndicesIdx++;
+                } // for blend weights
+
+                //store blended vertex in hardware buffer
+                pDestPos[destPosIdx++] = accumVecPos.x;
+                pDestPos[destPosIdx++] = accumVecPos.y;
+                pDestPos[destPosIdx++] = accumVecPos.z;
+
+                if(normElement != null) {
+                    if(posNormShareBuffer) {
+                        // pack into the same buffer
+                        pDestPos[destPosIdx++] = accumVecNorm.x;
+                        pDestPos[destPosIdx++] = accumVecNorm.y;
+                        pDestPos[destPosIdx++] = accumVecNorm.z;
+                    }
+                    else {
+                        pDestNorm[destNormIdx++] = accumVecNorm.x;
+                        pDestNorm[destNormIdx++] = accumVecNorm.y;
+                        pDestNorm[destNormIdx++] = accumVecNorm.z;
+                    }
+                } // if normElement
+            } // for vertices
+
+            // unlock position buffer
+            posBuffer.Unlock();
+
+            // unlock normal buffer if available
+            if(normElement != null && !posNormShareBuffer) {
+                normBuffer.Unlock();
+            }
         }
 
         #endregion
@@ -535,7 +663,7 @@ namespace Axiom.SubSystems.Rendering {
 
             // if hardware vertex blending isn't supported, check if we need to do
             // it in software
-            if(!Caps.CheckCap(Capabilities.VertexBlending)) {
+            /*if(!Caps.CheckCap(Capabilities.VertexBlending)) {
                 bool vertexBlend = false;
 
                 IList elements = op.vertexData.vertexDeclaration.Elements;
@@ -553,6 +681,10 @@ namespace Axiom.SubSystems.Rendering {
 
                 if(vertexBlend)
                     SoftwareVertexBlend(op, worldMatrices);
+               */
+                
+            if(op.vertexData.softwareBlendInfo != null && op.vertexData.softwareBlendInfo.automaticBlend) {
+                SoftwareVertexBlend(op.vertexData, worldMatrices);
             }
         }
 
