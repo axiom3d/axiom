@@ -1,0 +1,64 @@
+2-9-2004
+- Updated controller documentation.
+- Animated textures!  Added fuctionality to support the anim_texture attribute for texture_unit blocks in .material files.
+
+2-6-2004
+- Fixed a long standing bug with Mesh LOD.  Functionality has now been re-enabled.
+
+2-1-2004
+
+Big update!
+
+New Features:
+- Shader support: Cg, DirectX HLSL, Assembler.  
+ Current profiles supported are 
+	Direct3D: ps1.1, ps1.2, ps1.3, ps1.4, ps2.0, vs1.1, vs2.0
+	OpenGL: arbvp1, arbfp1, fp20(via Nvparse), vp30/fp30 (GeForceFX)
+
+	See http://www.ogre3d.org/docs/manual/manual_16.html#SEC25 for documentation on the .material file format.
+
+- Image loading with DevIL, now supporting .dds and .tga images.  Using Tao.DevIl library.
+- Volume and cube supported via .dds files, even in OpenGL.
+- Render to texture capability
+- Octree Scene Manager (beta)
+- Easier use of Axiom outside the built in render loop.
+
+New Dependencies:
+- DevIL (devil.dll, ilu.dll, ilut.dll).  Required for cross platform image loading and support for a wider range of image formats.
+- nvparse.dll - Dynamically linkable version of the nVidia Nvparse utility which converts DX8 pixel shaders
+  to register and texture combiner instructions that can run on GeForce3/4 hardware.  The .dll version was made
+  available by Tom Nuydens over at http://www.delphi3d.net
+
+New/Modified Demos:
+- Render To Texture: Simple example of rendering the scene contents into a texture and mapping the texture to a plane.
+- Cel Shading: Cartoon shading technique, requiring fragment program support.
+- Dot3 Bump Mapping: Shows the use of vertex/fragment programs to accomplish bump mapping.  Fixed function Dot3 bump mapping is also included as a fallback for hardware that doesn't support fragment programs.
+- Fresnel: Advanced fragment program used to create ultra realistic water, with reflection of objects above water as well as refraction of objects   below the water.
+- Tutorial 1: Now uses much easier, and also CLS compliant means of writing data to vertex buffers for custom geometry.
+
+Core Changes:
+- FrameStarted and FrameEnded event handlers no longer return boolean.  The FrameEventArgs structure now has a RequestShutdown property that can be set to true to cause the render loop to stop and for the engine to begin shutdown.
+- The 'v' texture coordinate has been flipped so that the origin is now in the top-left, this removes the need to flip textures and improves loading times as well as making compressed texture support feasible. 1.10 .mesh files will be converted on the fly automatically, but you should use OgreMeshUpgrade to fix it permanently and start using 1.20.
+- More stuff I'm sure, I only just recently started recording this log :).
+
+Bugs Fixed:
+- Taking screenshots now works in D3D.
+- Bug in skeletons with multiple blending weights fixed.
+- Texture loading in D3D should be more stable with a recent overhaul of the managed code.
+- Fixed problem with .zip files not resetting the stream position when returning uncompressed file data.
+
+Known Problems:
+- Even though the most widespread issue with the glDrawArrays exception in OpenGL on nVidia cards was
+  temporarily fixed via a modifications to one of the overlays, the problem still exists and has popped up
+  in at least one other place, namely the Fresnel demo.  Comment out the following line in GLRenderSystem.CheckCaps()
+  to prevent it from happening in the meantime:
+
+            if(GLHelper.SupportsExtension("GL_ARB_vertex_buffer_object")) {
+                caps.SetCap(Capabilities.VertexBuffer);
+            }
+  This should be resolved fairly soon.
+
+In the works:
+- Support for loading individual plugins, or scanning a directory via app.config entries.
+- Ability to run DX8 pixel shaders on Radeon 8500+ under OpenGL via the ATI_fragment_shader extension.
+- Terrain Demo: Shows the use of a simple heightmap with an extension to the Octree scene manager.
