@@ -475,6 +475,12 @@ namespace Axiom.SceneManagers.Octree {
 
         #region IRenderable Members
 
+		public bool CastsShadows {
+			get {
+				return false;
+			}
+		}
+
         public float GetSquaredViewDepth(Camera camera) {
             Vector3 diff = center - camera.DerivedPosition;
 

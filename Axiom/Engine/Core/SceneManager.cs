@@ -918,6 +918,9 @@ namespace Axiom.Core {
 				//extrudeInSoftware = false;
 			}
 
+			LightList tempLightList = new LightList();
+			tempLightList.Add(light);
+
 			// Turn off color writing and depth writing
 			targetRenderSystem.SetColorBufferWriteEnabled(false, false, false, false);
 			targetRenderSystem.DepthWrite = false;
@@ -925,7 +928,7 @@ namespace Axiom.Core {
 			targetRenderSystem.DepthFunction = CompareFunction.Less;
 
 			float extrudeDistance = (light.Type == LightType.Directional) ? 
-			shadowDirLightExtudeDist : light.AttenuationRange;
+				shadowDirLightExtudeDist : light.AttenuationRange;
 
 			// get the near clip volume
 			PlaneBoundedVolume nearClipVol = light.GetNearClipVolume(camera);
@@ -976,7 +979,7 @@ namespace Axiom.Core {
 					ShadowRenderable sr = (ShadowRenderable)renderables.Current;
 
 					// render volume, including dark and (maybe) light caps
-					RenderSingleShadowVolumeToStencil(sr, zfailAlgo, stencil2sided);
+					RenderSingleShadowVolumeToStencil(sr, zfailAlgo, stencil2sided, tempLightList);
 
 					// optionally render separate light cap
 					if (sr.IsLightCapSeperate && ((flags & (int)ShadowRenderableFlags.IncludeLightCap)) > 0) {
@@ -985,7 +988,7 @@ namespace Axiom.Core {
 
 						Debug.Assert(sr.LightCapRenderable != null, "Shadow renderable is missing a separate light cap renderable!");
 
-						RenderSingleShadowVolumeToStencil(sr.LightCapRenderable, zfailAlgo, stencil2sided);
+						RenderSingleShadowVolumeToStencil(sr.LightCapRenderable, zfailAlgo, stencil2sided, tempLightList);
 						// reset depth function
 						targetRenderSystem.DepthFunction = CompareFunction.Less;
 					}
@@ -1043,12 +1046,13 @@ namespace Axiom.Core {
 		/// <param name="sr"></param>
 		/// <param name="zfail"></param>
 		/// <param name="stencil2sided"></param>
-		protected void RenderSingleShadowVolumeToStencil(ShadowRenderable sr, bool zfail, bool stencil2sided) {
+		/// <param name="manualLightList"></param>
+		protected void RenderSingleShadowVolumeToStencil(ShadowRenderable sr, bool zfail, bool stencil2sided, LightList manualLightList) {
 			// Render a shadow volume here
 			//  - if we have 2-sided stencil, one render with no culling
 			//  - otherwise, 2 renders, one with each culling method and invert the ops
 			SetShadowVolumeStencilState(false, zfail, stencil2sided);
-			RenderSingleObject(sr, shadowStencilPass, false);
+			RenderSingleObject(sr, shadowStencilPass, false, manualLightList);
 
 			if (!stencil2sided) {
 				// Second pass
@@ -1061,7 +1065,7 @@ namespace Axiom.Core {
 				// reset stencil & colour ops
 				targetRenderSystem.SetStencilBufferParams();
 				SetPass(shadowDebugPass);
-				RenderSingleObject(sr, shadowDebugPass, false);
+				RenderSingleObject(sr, shadowDebugPass, false, manualLightList);
 				targetRenderSystem.SetColorBufferWriteEnabled(false, false, false, false);
 			}
 		}
@@ -1183,6 +1187,8 @@ namespace Axiom.Core {
 
 			// Culling Mode
 			targetRenderSystem.CullingMode = pass.CullMode;
+
+			//System.Diagnostics.Debug.WriteLine("Material: " + pass.Parent.Parent.Name + " Cull mode: " + pass.CullMode);
 
 			// Shading mode
 			targetRenderSystem.ShadingMode = pass.ShadingMode;
@@ -1361,6 +1367,53 @@ namespace Axiom.Core {
 
 			// reset this flag so the view/proj wont be updated again this frame
 			hasCameraChanged = false;
+		}
+
+		/// <summary>
+		///		Internal method to validate whether a Pass should be allowed to render.
+		/// </summary>
+		/// <remarks>
+		///		Called just before a pass is about to be used for rendering a group to
+		///		allow the SceneManager to omit it if required. A return value of false
+		///		skips this pass.
+		/// </remarks>
+		/// <param name="pass">Pass to verify via the scene manager.</param>
+		/// <returns>True if the pass is valid for rendering, false otherwise.</returns>
+		protected bool ValidatePassForRendering(Pass pass) {
+			// Bypass if we're doing a texture shadow render and 
+			// this pass is after the first (only 1 pass needed for shadow texture)
+			if((illuminationStage == IlluminationRenderStage.RenderToTexture || 
+				illuminationStage == IlluminationRenderStage.RenderModulativePass) && pass.Index > 0) {
+
+				return false;
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		///		Internal method to validate whether a Renderable should be allowed to render.
+		/// </summary>
+		/// <remarks>
+		///		Called just before a pass is about to be used for rendering a Renderable to
+		///		allow the SceneManager to omit it if required. A return value of false
+		///		skips it. 
+		/// </remarks>
+		/// <param name="pass"></param>
+		/// <param name="renderable"></param>
+		/// <returns></returns>
+		protected bool ValidateRenderableForRendering(Pass pass, IRenderable renderable) {
+			// Skip this renderable if we're doing texture shadows, it casts shadows
+			// and we're doing the render receivers pass
+			// TODO: Add IRenderable.CastsShadows
+			if(shadowTechnique == ShadowTechnique.TextureModulative && 
+				illuminationStage == IlluminationRenderStage.RenderModulativePass &&
+				renderable.CastsShadows) {
+
+				return false;
+			}
+
+			return true;
 		}
 
 		/// <summary>
@@ -2465,11 +2518,15 @@ namespace Axiom.Core {
 			}
 		}
 
+		protected void RenderSolidObjects(SortedList list, bool doLightIteration) {
+			RenderSolidObjects(list, doLightIteration, null);
+		}
+
 		/// <summary>
 		///		Renders a set of solid objects.
 		/// </summary>
 		/// <param name="list">List of solid objects.</param>
-		protected virtual void RenderSolidObjects(SortedList list) {
+		protected virtual void RenderSolidObjects(SortedList list, bool doLightIteration, LightList manualLightList) {
 			// ----- SOLIDS LOOP -----
 			for(int i = 0; i < list.Count; i++) {
 				RenderableList renderables = (RenderableList)list.GetByIndex(i);
@@ -2481,6 +2538,11 @@ namespace Axiom.Core {
 
 				Pass pass = (Pass)list.GetKey(i);
 
+				// give SM a chance to eliminate this pass
+				if(!ValidatePassForRendering(pass)) {
+					continue;
+				}
+
 				// set the pass for the list of renderables to be processed
 				SetPass(pass);
 
@@ -2488,17 +2550,26 @@ namespace Axiom.Core {
 				for(int r = 0; r < renderables.Count; r++) {
 					IRenderable renderable = (IRenderable)renderables[r];
 
+					// give SM a chance to eliminate
+					if(!ValidateRenderableForRendering(pass, renderable)) {
+						continue;
+					}
+
 					// Render a single object, this will set up auto params if required
-					RenderSingleObject(renderable, pass, true);
+					RenderSingleObject(renderable, pass, doLightIteration, manualLightList);
 				}
 			}
+		}
+
+		protected void RenderTransparentObjects(ArrayList list, bool doLightIteration) {
+			RenderTransparentObjects(list, doLightIteration, null);
 		}
 
 		/// <summary>
 		///		Renders a set of transparent objects.
 		/// </summary>
 		/// <param name="list"></param>
-		protected virtual void RenderTransparentObjects(ArrayList list) {
+		protected virtual void RenderTransparentObjects(ArrayList list, bool doLightIteration, LightList manualLightList) {
 			// ----- TRANSPARENT LOOP -----
 			// This time we render by Z, not by material
 			// The transparent objects set needs to be ordered first
@@ -2509,7 +2580,7 @@ namespace Axiom.Core {
 				SetPass(rp.pass);
 
 				// render the transparent object
-				RenderSingleObject(rp.renderable, rp.pass, true);
+				RenderSingleObject(rp.renderable, rp.pass, doLightIteration, manualLightList);
 			}
 		}
 
@@ -2541,7 +2612,7 @@ namespace Axiom.Core {
 				priorityGroup.Sort(camInProgress);
 
 				// do solids
-				RenderSolidObjects(priorityGroup.solidPasses);
+				RenderSolidObjects(priorityGroup.solidPasses, true);
 			}
 
 			// iterate over lights, rendering all volumes to the stencil buffer
@@ -2578,18 +2649,36 @@ namespace Axiom.Core {
 			for(int i = 0; i < group.NumPriorityGroups; i++) {
 				RenderPriorityGroup priorityGroup = group.GetPriorityGroup(i);
 
-				// sort the group first
-				priorityGroup.Sort(camInProgress);
-
 				// do solids
-				RenderSolidObjects(priorityGroup.solidPassesNoShadow);
+				RenderSolidObjects(priorityGroup.solidPassesNoShadow, true);
 			}
 
 			for(int i = 0; i < group.NumPriorityGroups; i++) {
 				RenderPriorityGroup priorityGroup = group.GetPriorityGroup(i);
 
 				// do transparents
-				RenderTransparentObjects(priorityGroup.transparentPasses);
+				RenderTransparentObjects(priorityGroup.transparentPasses, true);
+			} // for each priority
+		}
+
+		/// <summary>
+		///		
+		/// </summary>
+		/// <param name="group"></param>
+		protected virtual void RenderBasicQueueGroupObjects(RenderQueueGroup group) {
+			// Basic render loop
+			// Iterate through priorities
+			for(int i = 0; i < group.NumPriorityGroups; i++) {
+				RenderPriorityGroup priorityGroup = group.GetPriorityGroup(i);
+
+				// sort the group first
+				priorityGroup.Sort(camInProgress);
+
+				// do solids
+				RenderSolidObjects(priorityGroup.solidPasses, true);
+
+				// do transparents
+				RenderTransparentObjects(priorityGroup.transparentPasses, true);
 			} // for each priority
 		}
 
@@ -2606,20 +2695,7 @@ namespace Axiom.Core {
 				RenderModulativeStencilShadowedQueueGroupObjects(group);
 			}
 			else {
-				// Basic render loop
-				// Iterate through priorities
-				for(int i = 0; i < group.NumPriorityGroups; i++) {
-					RenderPriorityGroup priorityGroup = group.GetPriorityGroup(i);
-
-					// sort the group first
-					priorityGroup.Sort(camInProgress);
-
-					// do solids
-					RenderSolidObjects(priorityGroup.solidPasses);
-
-					// do transparents
-					RenderTransparentObjects(priorityGroup.transparentPasses);
-				} // for each priority
+				RenderBasicQueueGroupObjects(group);
 			}
 		}
 

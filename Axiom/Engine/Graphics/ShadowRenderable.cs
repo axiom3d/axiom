@@ -100,6 +100,12 @@ namespace Axiom.Graphics {
 
         #region IRenderable Members
 
+		public bool CastsShadows {
+			get {
+				return false;
+			}
+		}
+
 		/// <summary>
 		///		Gets/Sets the material to use for this shadow renderable.
 		/// </summary>

@@ -703,6 +703,12 @@ namespace Axiom.Overlays {
 
         #region IRenderable Members
 
+		public bool CastsShadows {
+			get {
+				return false;
+			}
+		}
+
         public Material Material {
             get {
                 return material;

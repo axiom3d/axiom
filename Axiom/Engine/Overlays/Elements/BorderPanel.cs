@@ -670,6 +670,12 @@ namespace Axiom.Overlays.Elements {
 
             #region IRenderable Members
 
+			public bool CastsShadows {
+				get {
+					return false;
+				}
+			}
+
             public float GetSquaredViewDepth(Camera camera) {
                 return parent.GetSquaredViewDepth(camera);
             }

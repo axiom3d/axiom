@@ -778,6 +778,12 @@ namespace Axiom.Core {
 
         #region IRenderable Members
 
+		public bool CastsShadows {
+			get {
+				return false;
+			}
+		}
+
         /// <summary>
         ///     Returns the material to use when rendering this frustum.
         /// </summary>
