@@ -41,7 +41,7 @@ namespace Axiom.Collections {
     /// <summary>
     /// Summary description for KeyFrameCollection.
     /// </summary>
-    public class KeyFrameCollection : AxiomCollection {
+    public class KeyFrameCollection : ArrayList {
         #region Constructors
 
         /// <summary>
@@ -81,17 +81,12 @@ namespace Axiom.Collections {
         /// </summary>
         /// <param name="item"></param>
         public void Add(T item) {
-            Add(item);
+            base.Add(item);
         }
 
-        /// <summary>
-        ///		Adds a named object to the collection.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="item"></param>
-        public void Add(K key, T item) {
-            base.Add(key, item);
-        }
+		public void Insert(int pos, T item) {
+			base.Insert(pos, item);
+		}
 
         #endregion
 
