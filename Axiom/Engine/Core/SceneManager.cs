@@ -129,6 +129,8 @@ namespace Axiom.Core {
 
         protected bool lastUsedFallback;
         protected static int lastNumTexUnitsUsed = 0;
+        protected static RenderOperation op = new RenderOperation();
+        protected static bool lastPassWasProgrammable = false;
 
         // cached fog settings
         protected static FogMode oldFogMode;
@@ -454,104 +456,84 @@ namespace Axiom.Core {
         ///		The number of layers unprocessed because of insufficient
         ///		available texture units in the hardware.
         ///	</returns>
-        protected int SetMaterial(Material material, int numLayersLeft) {
-            // TODO: Complete Implementation of SetMaterial
+        protected void SetPass(Pass pass) {
+            if(pass.IsProgrammable) {
+                // vertex program
+                targetRenderSystem.BindGpuProgram(pass.VertexProgram);
+                targetRenderSystem.BindGpuProgramParameters(GpuProgramType.Vertex, pass.VertexProgramParameters);
 
-            // set the surface params of the render system
-            targetRenderSystem.SetSurfaceParams(material.Ambient, material.Diffuse, material.Specular, material.Emissive, material.Shininess);
+                // fragment program
+                targetRenderSystem.BindGpuProgram(pass.FragmentProgram);
+                targetRenderSystem.BindGpuProgramParameters(GpuProgramType.Fragment, pass.FragmentProgramParameters);
 
-            // Scene Blending
-            targetRenderSystem.SetSceneBlending(material.SourceBlendFactor, material.DestBlendFactor);
-
-            // FOG
-            ColorEx newFogColor;
-            FogMode newFogMode;
-            float newFogDensity, newFogStart, newFogEnd;
-
-            // does the material wan't to override the fog mode?
-            if(material.FogOverride) {
-                newFogMode = material.FogMode;
-                newFogColor = material.FogColor;
-                newFogDensity = material.FogDensity;
-                newFogStart = material.FogStart;
-                newFogEnd = material.FogEnd;
+                lastPassWasProgrammable = true;
             }
             else {
-                newFogMode = fogMode;
-                newFogColor = fogColor;
-                newFogDensity = fogDensity;
-                newFogStart = fogStart;
-                newFogEnd = fogEnd;
-            }
+                // Not programmable, set those things which are only of use in non-programmable mode
 
-            // set fog using the render system
-            targetRenderSystem.SetFog(newFogMode, newFogColor, newFogDensity, newFogStart, newFogEnd);
+                // unbind programs if they were used last
+                if(lastPassWasProgrammable) {
+                    targetRenderSystem.UnbindGpuProgram(GpuProgramType.Vertex);
+                    targetRenderSystem.UnbindGpuProgram(GpuProgramType.Fragment);
+                    lastPassWasProgrammable = false;
+                }
 
-            // Texture layers
-            int texLayer = material.NumTextureLayers - numLayersLeft;
-            int requestedUnits = numLayersLeft;
-            int texUnits = targetRenderSystem.Caps.NumTextureUnits;
+                // set the surface params of the render system
+                targetRenderSystem.SetSurfaceParams(pass.Ambient, pass.Diffuse, pass.Specular, pass.Emissive, pass.Shininess);
 
-            lastUsedFallback = false;
+                // Fog
+                ColorEx newFogColor;
+                FogMode newFogMode;
+                float newFogDensity, newFogStart, newFogEnd;
 
-            int unit;
-
-            for(unit = 0; 
-                (unit < lastNumTexUnitsUsed || unit < requestedUnits) && unit < texUnits; unit++, texLayer++) {
-                if(unit >= requestedUnits) {
-                    // ran out of texture layers before we ran out of units
-                    // disable texturing for this unit
-                    targetRenderSystem.DisableTextureUnit(unit);
+                // does the pass want to override the fog mode?
+                if(pass.FogOverride) {
+                    newFogMode = pass.FogMode;
+                    newFogColor = pass.FogColor;
+                    newFogDensity = pass.FogDensity;
+                    newFogStart = pass.FogStart;
+                    newFogEnd = pass.FogEnd;
                 }
                 else {
-                    TextureLayer layer = material.TextureLayers[texLayer];
+                    newFogMode = fogMode;
+                    newFogColor = fogColor;
+                    newFogDensity = fogDensity;
+                    newFogStart = fogStart;
+                    newFogEnd = fogEnd;
+                }
 
-                    // still have texture layers to add to this unit
-                    if(unit == 0 && requestedUnits > 0 && requestedUnits < material.NumTextureLayers) {
-                        // if we got here, we are on the second or more pass of the render
-						
-                        lastUsedFallback = true;
+                // set fog using the render system
+                targetRenderSystem.SetFog(newFogMode, newFogColor, newFogDensity, newFogStart, newFogEnd);
 
-                        TextureLayer tmpLayer = (TextureLayer)layer.Clone();
+                // dynamic lighting
+                targetRenderSystem.LightingEnabled = pass.LightingEnabled;
+            }
 
-                        tmpLayer.SetColorOperation(LayerBlendOperation.Replace);
+            // Scene Blending
+            targetRenderSystem.SetSceneBlending(pass.SourceBlendFactor, pass.DestBlendFactor);
 
-                        targetRenderSystem.SetSceneBlending(tmpLayer.ColorBlendFallbackSource, tmpLayer.ColorBlendFallbackDest);
+            // set all required texture units for this pass, and disable ones not being used
+            for(int i = 0; i < targetRenderSystem.Caps.NumTextureUnits; i++) {
+                if(i < pass.NumTextureUnitStages) {
+                    targetRenderSystem.SetTextureUnit(i, pass.GetTextureUnitState(i));
+                }
+                else {
+                    // disable this unit
+                    targetRenderSystem.DisableTextureUnit(i);
+                }
+            }
 
-                        // set the texture layer for the current unit
-                        targetRenderSystem.SetTextureUnit(unit, tmpLayer);
-                    }
-                    else {
-                        if(lastUsedFallback)
-                            layer.SetAlphaOperation(LayerBlendOperationEx.Add);
-
-                        // set the texture layer for the current unit
-                        targetRenderSystem.SetTextureUnit(unit, layer);
-                    }
-
-                    numLayersLeft--;
-                } // if (unit....
-            } // for
-
-            // DEPTH SETTINGS
-            targetRenderSystem.DepthWrite = material.DepthWrite;
-            targetRenderSystem.DepthCheck = material.DepthCheck;
-            targetRenderSystem.DepthFunction = material.DepthFunction;
-            targetRenderSystem.DepthBias = material.DepthBias;
+            // Depth Settings
+            targetRenderSystem.DepthWrite = pass.DepthWrite;
+            targetRenderSystem.DepthCheck = pass.DepthCheck;
+            targetRenderSystem.DepthFunction = pass.DepthFunction;
+            targetRenderSystem.DepthBias = pass.DepthBias;
 
             // Culling Mode
-            targetRenderSystem.CullingMode = material.CullingMode;
+            targetRenderSystem.CullingMode = pass.CullMode;
 
-            // lighting enabled?
-            targetRenderSystem.LightingEnabled = material.Lighting;
-
-            // TODO: SHADING MODE
-
-            // remeber how many layers this material had for the next material so we can disable
-            // texture units no longer in use
-            lastNumTexUnitsUsed = unit;
-
-            return numLayersLeft;
+            // Shading mode
+            targetRenderSystem.ShadingMode = pass.ShadingMode;
         }
 
         /// <summary>
@@ -900,7 +882,7 @@ namespace Axiom.Core {
                 //m.DepthWrite = false;
 
                 // ensure texture clamping to reduce fuzzy edges when using filtering
-                m.TextureLayers[0].TextureAddressing = TextureAddressing.Clamp;
+                m.GetTechnique(0).GetPass(0).GetTextureUnitState(0).TextureAddressing = TextureAddressing.Clamp;
 
                 // load yourself numbnuts!
                 m.Load();
@@ -935,7 +917,7 @@ namespace Axiom.Core {
                     boxMaterial = (Material)m.Clone(entityName);
 
                     // set the current frame
-                    boxMaterial.TextureLayers[0].CurrentFrame = i;
+                    boxMaterial.GetTechnique(0).GetPass(0).GetTextureUnitState(0).CurrentFrame = i;
 
                     skyBoxEntities[i].MaterialName = boxMaterial.Name;
 
@@ -1259,180 +1241,113 @@ namespace Axiom.Core {
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="renderable"></param>
+        /// <param name="pass"></param>
+        protected virtual void RenderSingleObject(IRenderable renderable, Pass pass) {
+            ushort numMatrices = 0;
+                
+            // grab the current scene detail level and init the last detail level used
+            SceneDetailLevel camDetailLevel = camInProgress.SceneDetail;
+            SceneDetailLevel lastDetailLevel = camDetailLevel;
+        
+            // update auto params if this is a programmable pass
+            if(pass.IsProgrammable) {
+                pass.UpdateAutoParams(renderable, camInProgress);
+            }
+
+            // get the world matrices and the count
+            renderable.GetWorldTransforms(xform);
+            numMatrices = renderable.NumWorldTransforms;
+
+            // set the world matrices in the render system
+            if(numMatrices > 1)
+                targetRenderSystem.SetWorldMatrices(xform, numMatrices);
+            else
+                targetRenderSystem.WorldMatrix = xform[0];        
+
+            // issue view/projection changes (if any)
+            UseRenderableViewProjection(renderable);
+
+            // Set up the pass state
+            // Note that we deliberately do this after setting the world matrix, some GL state 
+            // is dependent on that ordering
+            SetPass(pass);
+
+            // TODO: Normalize normals!
+
+            // override solid/wireframe rendering
+            SceneDetailLevel requestedDetail = renderable.RenderDetail;
+
+            if(requestedDetail != lastDetailLevel) {
+                // dont go from wireframe to solid, only downgrade
+                if(requestedDetail > camDetailLevel)
+                    requestedDetail = camDetailLevel;
+										
+                // update the render systems rasterization mode
+                targetRenderSystem.RasterizationMode = requestedDetail;
+
+                lastDetailLevel = requestedDetail;
+            }
+
+            // get the renderables render operation
+            renderable.GetRenderOperation(op);
+
+            // render the object as long as it has vertices
+            if(op.vertexData.vertexCount > 0)
+                targetRenderSystem.Render(op);
+        }
+
+        /// <summary>
         ///		Sends visible objects found in FindVisibleObjects to the rendering engine.
         /// </summary>
         internal virtual void RenderVisibleObjects() {
             int renderCount = 0;
 
-            // grab the current scene detail level and init the last detail level used
-            SceneDetailLevel camDetailLevel = camInProgress.SceneDetail;
-            SceneDetailLevel lastDetailLevel = camDetailLevel;
-
             // loop through each main render group ( which is already sorted)
-            for(int i = 0; i < renderQueue.QueueGroups.Count; i++) {
-				
-                // get the current queue values
-                RenderQueueGroupID groupID = (RenderQueueGroupID)renderQueue.QueueGroups.GetKeyAt(i);
-                RenderQueueGroup group = (RenderQueueGroup)renderQueue.QueueGroups[i];
+            for(int i = 0; i < renderQueue.NumRenderQueueGroups; i++) {
+                RenderQueueGroupID queueID = renderQueue.GetRenderQueueGroupID(i);
+                RenderQueueGroup queueGroup = renderQueue.GetRenderQueueGroup(i);
 
-                // listeners to render queue events can return true, which signifies the queue should be repeated
                 bool repeatQueue = false;
 
-                // do as long as the current queue is to be repeated
-                do {
-                    // if an event handler returns true, this queue will be skipped
-                    if(OnRenderQueueStarted(groupID))
+                // repeat
+                do { 
+                    if(OnRenderQueueStarted(queueID)) {
+                        // someone requested we skip this queue
                         continue;
+                    }
 
-                    // iterate through priority groups
-                    for(int j = 0; j < group.PriorityGroups.Count; j++) {
-                        // get the current priorty group
-                        RenderPriorityGroup priority = (RenderPriorityGroup)group.PriorityGroups[j];
-
+                    // iterate through the priority queues
+                    for(int j = 0; j < queueGroup.NumPriorityGroups; j++) {
                         renderCount++;
+                        
+                        RenderPriorityGroup priorityGroup = queueGroup.GetPriorityGroup(j);
 
-                        RenderOperation op = new RenderOperation();
-                        int materialLayersLeft;
-                        Material currentMaterial = null;
-                        ushort numMatrices;
+                        // sort the current priorty groups
+                        priorityGroup.Sort(camInProgress);
 
-                        // *** Non Transparent Entity Loop ***
-                        //for(int k = 0; k < priority.MaterialGroups.Count; k++)
-                        foreach(DictionaryEntry materialGroup in priority.MaterialGroups) {
+                        // ----- SOLIDS LOOP -----
+                        for(int k = 0; k < priorityGroup.NumSolidPasses; k++) {
+                            RenderablePass rp = priorityGroup.GetSolidPass(k);
+                            RenderSingleObject(rp.renderable, rp.pass);
+                        }
 
-                            bool isMaterialSet = false;
+                        // ----- TRANSPARENT LOOP -----
+                        // This time we render by Z, not by material
+                        // The mTransparentObjects set needs to be ordered first
+                        for(int k = 0; k < priorityGroup.NumTransparentPasses; k++) {
+                            RenderablePass rp = priorityGroup.GetTransparentPass(k);
+                            RenderSingleObject(rp.renderable, rp.pass);
+                        }
+                    } // for each priority
 
-                            // get material info for the current iteration
-                            currentMaterial = (Material)materialGroup.Key;
-                            materialLayersLeft = currentMaterial.NumTextureLayers;
+                    // true if someone requested that we repeat this queue
+                    repeatQueue = OnRenderQueueEnded(queueID);
 
-                            // do at least one rendering pass, even if no texture layers.  Not all materials have textures.
-                            do {
-                                // returns non-zero if multipass required, so loop will continue
-                                materialLayersLeft = currentMaterial.NumTextureLayers;
-
-                                // get list of renderables from the material group
-                                ArrayList renderableList = (ArrayList)materialGroup.Value;
-
-                                // iterate through renderables and render
-                                // may happen multiple times for multipass
-                                for(int l = 0; l < renderableList.Count; l++) {
-                                    IRenderable renderable = (IRenderable)renderableList[l];
-
-                                    // get world transforms
-                                    renderable.GetWorldTransforms(xform);
-                                    numMatrices = renderable.NumWorldTransforms;
-
-                                    // set the world matrices in the render system
-                                    if(numMatrices > 1)
-                                        targetRenderSystem.SetWorldMatrices(xform, numMatrices);
-                                    else
-                                        targetRenderSystem.WorldMatrix = xform[0];
-
-                                    // use the renderable view/projection (if any)
-                                    UseRenderableViewProjection(renderable);
-
-                                    // Set material - will return non-zero if multipass required so loop will continue, 0 otherwise
-                                    if(!isMaterialSet) {
-                                        // returns non-zero if multipass required, so loop will continue
-                                        materialLayersLeft = SetMaterial(currentMaterial, materialLayersLeft);
-                                        isMaterialSet = true;
-                                    }
-
-                                    // TODO: Add normal normalization
-
-                                    // override solid/wireframe rendering
-                                    SceneDetailLevel requestedDetail = renderable.RenderDetail;
-
-                                    if(requestedDetail != lastDetailLevel) {
-                                        // dont go from wireframe to solid, only downgrade
-                                        if(requestedDetail > camDetailLevel)
-                                            requestedDetail = camDetailLevel;
-										
-                                        // update the render systems rasterization mode
-                                        targetRenderSystem.RasterizationMode = requestedDetail;
-
-                                        lastDetailLevel = requestedDetail;
-                                    }
-
-                                    // get the renderables render operation
-                                    renderable.GetRenderOperation(op);
-
-                                    // render the object as long as it has vertices
-                                    if(op.vertexData.vertexCount > 0)
-                                        targetRenderSystem.Render(op);
-
-                                } // foreach renderableList
-
-                            } while(materialLayersLeft > 0);
-
-                        } // foreach MaterialGroups
-
-                        // *** Transparent Entity Loop ***
-                        // sort the transparent objects
-                        priority.SortTransparentObjects(camInProgress);
-
-                        // loop through transparent object groups
-                        for(int t = 0; t < priority.TransparentObjects.Count; t++) {
-                            IRenderable transObject = (IRenderable)priority.TransparentObjects[t];
-
-                            // get current iteration info
-                            currentMaterial = transObject.Material;
-                            materialLayersLeft = currentMaterial.NumTextureLayers;
-
-                            // do at least one pass (no layers in untextured objects)
-                            do {
-                                // set world transforms
-                                // get world transforms
-                                transObject.GetWorldTransforms(xform);
-                                numMatrices = transObject.NumWorldTransforms;
-
-                                // set the world matrices in the render system
-                                if(numMatrices > 1) {
-                                    targetRenderSystem.SetWorldMatrices(xform, numMatrices);
-                                }
-                                else {
-                                    targetRenderSystem.WorldMatrix = xform[0];
-                                }
-
-                                // use the renderable view/projection (if any)
-                                UseRenderableViewProjection(transObject);
-
-                                // returns non-zero if multipass is required
-                                materialLayersLeft = SetMaterial(currentMaterial, materialLayersLeft);
-
-                                // override solid/wireframe rendering
-                                SceneDetailLevel requestedDetail = transObject.RenderDetail;
-
-                                if(requestedDetail != lastDetailLevel) {
-                                    // dont go from wireframe to solid, only downgrade
-                                    if(requestedDetail > camDetailLevel)
-                                        requestedDetail = camDetailLevel;
-										
-                                    // update the render systems rasterization mode
-                                    targetRenderSystem.RasterizationMode = requestedDetail;
-
-                                    lastDetailLevel = requestedDetail;
-                                }
-
-                                // get the renderables vertex buffer
-                                transObject.GetRenderOperation(op);
-
-                                // render the object as long as it has vertices
-                                if(op.vertexData.vertexCount > 0)
-                                    targetRenderSystem.Render(op);
-
-                            } while(materialLayersLeft > 0);
-
-                        } // for TransparencyGroups
-
-                    } // for PriorityGroups
-
-                    // true if we need to repeat this queue, false otherwise
-                    repeatQueue = OnRenderQueueEnded(groupID);
-
-                } while (repeatQueue);
-            }
+                } while(repeatQueue);
+            } // for each queue group
         }
 
         /// <summary>

@@ -341,7 +341,7 @@ namespace Axiom.Core {
             initialScale = scale;
         }
         /// <summary>
-        /// Creates a new name child node.
+        ///    Creates a new name child node.
         /// </summary>
         /// <param name="pName"></param>
         public virtual Node CreateChild(string name) {
@@ -354,7 +354,7 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        /// Creates a new named child node.
+        ///    Creates a new named child node.
         /// </summary>
         /// <param name="name">Name of the node.</param>
         /// <param name="translate">A vector to specify the position relative to the parent.</param>
@@ -370,7 +370,7 @@ namespace Axiom.Core {
         }
 		
         /// <summary>
-        /// Creates a new Child node.
+        ///    Creates a new Child node.
         /// </summary>
         public virtual Node CreateChild() {
             Node newChild = CreateChildImpl();
@@ -382,7 +382,7 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        /// Creates a new child node.
+        ///    Creates a new child node.
         /// </summary>
         /// <param name="translate">A vector to specify the position relative to the parent.</param>
         /// <param name="rotate">A quaternion to specify the orientation relative to the parent.</param>
@@ -395,7 +395,6 @@ namespace Axiom.Core {
 
             return newChild;
         }
-
 
         /// <summary>
         /// 
@@ -497,10 +496,12 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        /// A Quaternion representing the nodes orientation.
+        ///    A Quaternion representing the nodes orientation.
         /// </summary>
         public virtual Quaternion Orientation {
-            get { return orientation; }
+            get { 
+                return orientation; 
+            }
             set { 
                 orientation = value; 
                 NeedUpdate();
@@ -511,7 +512,9 @@ namespace Axiom.Core {
         /// The position of the node relative to its parent.
         /// </summary>
         public virtual Vector3 Position {
-            get { return position; }
+            get { 
+                return position; 
+            }
             set {	
                 position = value;  
                 NeedUpdate();
@@ -919,6 +922,12 @@ namespace Axiom.Core {
                 }
 
                 return nodeMaterial;
+            }
+        }
+
+        public Technique Technique {
+            get {
+                return this.Material.BestTechnique;
             }
         }
 

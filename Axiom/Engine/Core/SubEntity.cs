@@ -130,8 +130,18 @@ namespace Axiom.Core {
         ///		same SubMesh instance, but want to shade it different.
         /// </remarks>
         public Material Material {
-            get { return material; }
-            set { material = value; }
+            get { 
+                return material; 
+            }
+            set { 
+                material = value; 
+            }
+        }
+
+        public Technique Technique {
+            get {
+                return material.BestTechnique;
+            }
         }
 
         /// <summary>

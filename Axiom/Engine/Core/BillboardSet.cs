@@ -742,6 +742,12 @@ namespace Axiom.Core {
             get { return material; }
         }
 
+        public Technique Technique {
+            get {
+                return material.BestTechnique;
+            }
+        }
+
         public void GetRenderOperation(RenderOperation op) {
             // fill the render operation with our vertex and index data
 
