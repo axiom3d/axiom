@@ -337,9 +337,51 @@ namespace Axiom.Graphics {
 					if(effect.subtype == (System.Enum)EnvironmentMap.Reflection) {
 						return true;
 					}
+
+					if (effect.type == TextureEffectType.ProjectiveTexture) {
+						return true;
+					}
 				}
 
 				return false;
+			}
+		}
+
+		/// <summary>
+		///    Enables or disables projective texturing on this texture unit.
+		/// </summary>
+		/// <remarks>
+		///	   <p>
+		///	   Projective texturing allows you to generate texture coordinates 
+		///	   based on a Frustum, which gives the impression that a texture is
+		///	   being projected onto the surface. Note that once you have called
+		///	   this method, the texture unit continues to monitor the Frustum you 
+		///	   passed in and the projection will change if you can alter it. It also
+		///	   means that the Frustum object you pass remains in existence for as long
+		///	   as this TextureUnitState does.
+		///	   </p>
+		///    <p>
+		///	   This effect cannot be combined with other texture generation effects, 
+		///	   such as environment mapping. It also has no effect on passes which 
+		///	   have a vertex program enabled - projective texturing has to be done
+		///	   in the vertex program instead.
+		///    </p>
+		/// </remarks>
+		/// <param name="enable">
+		///    Whether to enable / disable
+		/// </param>
+		/// <param name="projectionSettings">
+		///    The Frustum which will be used to derive the projection parameters.
+		/// </param>
+		public void SetProjectiveTexturing(bool enable, Frustum projectionSettings) {
+			if (enable) {
+				TextureEffect effect = new TextureEffect();
+				effect.type = TextureEffectType.ProjectiveTexture;
+				effect.frustum = projectionSettings;
+				AddEffect(effect);
+			}
+			else {
+				RemoveEffect(TextureEffectType.ProjectiveTexture);
 			}
 		}
 
@@ -354,7 +396,7 @@ namespace Axiom.Graphics {
 		///    Applies to both fixed-function and programmable pipeline.
 		/// </remarks>
 		public string TextureName {
-			get { 
+			get {
 				return frames[currentFrame]; 
 			}
 		}
@@ -966,12 +1008,12 @@ namespace Axiom.Graphics {
 		///    which require manual blend e.g. LayerBlendOperationEx.BlendManual.
 		/// </param>
 		public void SetAlphaOperation(LayerBlendOperationEx operation, LayerBlendSource source1, LayerBlendSource source2, float arg1, float arg2, float blendFactor) {
-			colorBlendMode.operation = operation;
-			colorBlendMode.source1 = source1;
-			colorBlendMode.source2 = source2;
-			colorBlendMode.alphaArg1 = arg1;
-			colorBlendMode.alphaArg2 = arg2;
-			colorBlendMode.blendFactor = blendFactor;
+			alphaBlendMode.operation = operation;
+			alphaBlendMode.source1 = source1;
+			alphaBlendMode.source2 = source2;
+			alphaBlendMode.alphaArg1 = arg1;
+			alphaBlendMode.alphaArg2 = arg2;
+			alphaBlendMode.blendFactor = blendFactor;
 		}
 
 		/// <summary>
@@ -1048,6 +1090,7 @@ namespace Axiom.Graphics {
 		/// <returns>The name of the texture at the specified frame index.</returns>
 		public string GetFrameTextureName(int frame) {
 			Debug.Assert(frame < numFrames, "Attempted to access a frame which is out of range.");
+
 			return frames[frame];
 		}
 
@@ -1534,7 +1577,8 @@ namespace Axiom.Graphics {
 			// these effects must be unique, so remove any existing
 			if(effect.type == TextureEffectType.EnvironmentMap ||
 				effect.type == TextureEffectType.Scroll ||
-				effect.type == TextureEffectType.Rotate) {
+				effect.type == TextureEffectType.Rotate ||
+				effect.type == TextureEffectType.ProjectiveTexture) {
 
 				for(int i = 0; i < effectList.Count; i++) {
 					if(((TextureEffect)effectList[i]).type == effect.type) {
@@ -1559,8 +1603,9 @@ namespace Axiom.Graphics {
 		private void RemoveEffect(TextureEffectType type) {
 			// TODO: Verify this works correctly since we are removing items during a loop
 			for(int i = 0; i < effectList.Count; i++) {
-				if(((TextureEffect)effectList[i]).type == type)
+				if(((TextureEffect)effectList[i]).type == type) {
 					effectList.RemoveAt(i);
+				}
 			}
 		}
 
@@ -1826,6 +1871,7 @@ namespace Axiom.Graphics {
 		public float phase;
 		public float amplitude;
 		public Controller controller;
+		public Frustum frustum;
 	};
 
 	#endregion TextureEffect class declaration

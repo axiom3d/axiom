@@ -35,25 +35,25 @@ using Axiom.Utility;
 using Axiom.MathLib;
 
 namespace Axiom.Graphics {
-    /// <summary>
-    ///    Defines the functionality of a 3D API
-    /// </summary>
-    ///	<remarks>
-    ///		The RenderSystem class provides a base class
-    ///		which abstracts the general functionality of the 3D API
-    ///		e.g. Direct3D or OpenGL. Whilst a few of the general
-    ///		methods have implementations, most of this class is
-    ///		abstract, requiring a subclass based on a specific API
-    ///		to be constructed to provide the full functionality.
-    ///		<p/>
-    ///		Note there are 2 levels to the interface - one which
-    ///		will be used often by the caller of the engine library,
-    ///		and one which is at a lower level and will be used by the
-    ///		other classes provided by the engine. These lower level
-    ///		methods are marked as internal, and are not accessible outside
-    ///		of the Core library.
-    ///	</remarks>
-    public abstract class RenderSystem : IDisposable {
+	/// <summary>
+	///    Defines the functionality of a 3D API
+	/// </summary>
+	///	<remarks>
+	///		The RenderSystem class provides a base class
+	///		which abstracts the general functionality of the 3D API
+	///		e.g. Direct3D or OpenGL. Whilst a few of the general
+	///		methods have implementations, most of this class is
+	///		abstract, requiring a subclass based on a specific API
+	///		to be constructed to provide the full functionality.
+	///		<p/>
+	///		Note there are 2 levels to the interface - one which
+	///		will be used often by the caller of the engine library,
+	///		and one which is at a lower level and will be used by the
+	///		other classes provided by the engine. These lower level
+	///		methods are marked as internal, and are not accessible outside
+	///		of the Core library.
+	///	</remarks>
+	public abstract class RenderSystem : IDisposable {
 		#region Constants
 
 		/// <summary>
@@ -63,89 +63,89 @@ namespace Axiom.Graphics {
 
 		#endregion Constants
 
-        #region Fields
+		#region Fields
 
 		/// <summary>
 		///		List of current render targets (i.e. a <see cref="RenderWindow"/>, or a<see cref="RenderTexture"/>)
 		/// </summary>
-        protected RenderTargetList renderTargets = new RenderTargetList();
+		protected RenderTargetList renderTargets = new RenderTargetList();
 		/// <summary>
 		///		A reference to the texture management class specific to this implementation.
 		/// </summary>
-        protected TextureManager textureMgr;
+		protected TextureManager textureMgr;
 		/// <summary>
 		///		A reference to the hardware vertex/index buffer manager specific to this API.
 		/// </summary>
-        protected HardwareBufferManager hardwareBufferManager;
+		protected HardwareBufferManager hardwareBufferManager;
 		/// <summary>
 		///		Current hardware culling mode.
 		/// </summary>
-        protected CullingMode cullingMode;
+		protected CullingMode cullingMode;
 		/// <summary>
 		///		Are we syncing frames with the refresh rate of the screen?
 		/// </summary>
-        protected bool isVSync;
+		protected bool isVSync;
 		/// <summary>
 		///		Current depth write setting.
 		/// </summary>
-        protected bool depthWrite;
+		protected bool depthWrite;
 		/// <summary>
 		///		Number of current active lights.
 		/// </summary>
-        protected int numCurrentLights;
-        /// <summary>
-        ///		Reference to the config options for the graphics engine.
-        /// </summary>
-        protected EngineConfig engineConfig = new EngineConfig();
+		protected int numCurrentLights;
+		/// <summary>
+		///		Reference to the config options for the graphics engine.
+		/// </summary>
+		protected EngineConfig engineConfig = new EngineConfig();
 		/// <summary>
 		///		Active viewport (dest for future rendering operations) and target.
 		/// </summary>
-        protected Viewport activeViewport;
+		protected Viewport activeViewport;
 		/// <summary>
 		///		Active render target.
 		/// </summary>
-        protected RenderTarget activeRenderTarget;
+		protected RenderTarget activeRenderTarget;
 		/// <summary>
 		///		Number of faces currently rendered this frame.
 		/// </summary>
-        protected int numFaces;
+		protected int numFaces;
 		/// <summary>
 		///		Number of faces currently rendered this frame.
 		/// </summary>
 		protected int numVertices;
-        /// <summary>
-        ///		Capabilites of the current hardware (populated at startup).
-        /// </summary>
-        protected HardwareCaps caps = new HardwareCaps();
-        /// <summary>
+		/// <summary>
+		///		Capabilites of the current hardware (populated at startup).
+		/// </summary>
+		protected HardwareCaps caps = new HardwareCaps();
+		/// <summary>
 		///		Saved set of world matrices.
 		/// </summary>
-        protected Matrix4[] worldMatrices = new Matrix4[256];
-        /// <summary>
-        ///     Flag for whether vertex winding needs to be inverted, useful for reflections.
-        /// </summary>
-        protected bool invertVertexWinding;
+		protected Matrix4[] worldMatrices = new Matrix4[256];
+		/// <summary>
+		///     Flag for whether vertex winding needs to be inverted, useful for reflections.
+		/// </summary>
+		protected bool invertVertexWinding;
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Constructor
+		#region Constructor
 
 		/// <summary>
 		///		Base constructor.
 		/// </summary>
-        public RenderSystem() {		
-            // default to true
-            isVSync = true;
+		public RenderSystem() {		
+			// default to true
+			isVSync = true;
 
-            // default to true
-            depthWrite = true;
+			// default to true
+			depthWrite = true;
 
-            // This means CULL clockwise vertices, i.e. front of poly is counter-clockwise
-            // This makes it the same as OpenGL and other right-handed systems
-            cullingMode = Axiom.Graphics.CullingMode.Clockwise; 
-        }
+			// This means CULL clockwise vertices, i.e. front of poly is counter-clockwise
+			// This makes it the same as OpenGL and other right-handed systems
+			cullingMode = Axiom.Graphics.CullingMode.Clockwise; 
+		}
 
-        #endregion
+		#endregion
 
 		#region Virtual Members
 
@@ -250,7 +250,20 @@ namespace Axiom.Graphics {
 		/// </summary>
 		/// <param name="name">Name of the render target to detach.</param>
 		public virtual void DetachRenderTarget(string name) {
-			throw new NotImplementedException();
+			RenderTarget target = null;
+
+			for(int i = 0; i < renderTargets.Count; i++) {
+				RenderTarget tmp = (RenderTarget)renderTargets[i];
+
+				if(tmp.Name == name) {
+					target = tmp;
+					break;
+				}
+			}
+
+			if(target != null) {
+				DetachRenderTarget(target);
+			}
 		}
 
 		/// <summary>
@@ -258,7 +271,8 @@ namespace Axiom.Graphics {
 		/// </summary>
 		/// <param name="target">Reference to the render target to detach.</param>
 		public virtual void DetachRenderTarget(RenderTarget target) {
-			throw new NotImplementedException();
+			// TODO: Remove prioritized render targets
+			renderTargets.Remove(target);
 		}
 
 		/// <summary>
@@ -387,6 +401,11 @@ namespace Axiom.Graphics {
 					case TextureEffectType.Rotate:
 					case TextureEffectType.Transform:
 						break;
+
+					case TextureEffectType.ProjectiveTexture:
+						SetTextureCoordCalculation(unit, TexCoordCalcMethod.ProjectiveTexture, effect.frustum);
+						anyCalcs = true;
+						break;
 				} // switch
 			} // for
 
@@ -461,7 +480,7 @@ namespace Axiom.Graphics {
 				RenderTarget target = (RenderTarget) renderTargets[i];
 
 				// only update if it is active
-				if (target.IsActive) {
+				if (target.IsActive && target.IsAutoUpdated) {
 					target.Update();
 				}
 			}
@@ -852,6 +871,10 @@ namespace Axiom.Graphics {
 		/// <param name="bottom">Bottom corner (in pixels).</param>
 		public abstract void SetScissorTest(bool enable, int left, int top, int right, int bottom);
 
+		public void SetScissorTest(bool enable) {
+			SetScissorTest(enable, 0, 0, 800, 600);
+		}
+
 		/// <summary>
 		///		This method allows you to set all the stencil buffer parameters in one call.
 		/// </summary>
@@ -944,7 +967,8 @@ namespace Axiom.Graphics {
 		/// </summary>
 		/// <param name="stage">Texture stage to modify.</param>
 		/// <param name="method">Calculation method to use</param>
-		public abstract void SetTextureCoordCalculation(int stage, TexCoordCalcMethod method);
+		/// <param name="frustum">Frustum, only used for projective effects</param>
+		public abstract void SetTextureCoordCalculation(int stage, TexCoordCalcMethod method, Frustum frustum);
 
 		/// <summary>
 		///		Sets the index into the set of tex coords that will be currently used by the render system.
@@ -1001,7 +1025,7 @@ namespace Axiom.Graphics {
 
 		#endregion Abstract Members
 
-        #region Overloaded Methods
+		#region Overloaded Methods
 
 		/// <summary>
 		///		Builds a perspective projection matrix suitable for this render system.
@@ -1045,6 +1069,15 @@ namespace Axiom.Graphics {
 		/// <returns>A RenderWindow implementation specific to this RenderSystem.</returns>
 		public RenderWindow Initialize(bool autoCreateWindow) {
 			return Initialize(autoCreateWindow, DefaultWindowTitle);
+		}
+
+		/// <summary>
+		///		Sets a method for automatically calculating texture coordinates for a stage.
+		/// </summary>
+		/// <param name="stage">Texture stage to modify.</param>
+		/// <param name="method">Calculation method to use</param>
+		public void SetTextureCoordCalculation(int stage, TexCoordCalcMethod method) {
+			SetTextureCoordCalculation(stage, method, null);
 		}
 
 		#region SetDepthBufferParams()
@@ -1126,28 +1159,28 @@ namespace Axiom.Graphics {
 
 		#endregion Overloaded Methods
 
-        #region Object overrides
+		#region Object overrides
 
-        /// <summary>
-        /// Returns the name of this RenderSystem.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString() {
-            return this.Name;
-        }
+		/// <summary>
+		/// Returns the name of this RenderSystem.
+		/// </summary>
+		/// <returns></returns>
+		public override string ToString() {
+			return this.Name;
+		}
 
-        #endregion
+		#endregion
 
-        #region IDisposable Members
+		#region IDisposable Members
 
 		/// <summary>
 		///		Override to dispose of resources on shutdown if needed.
 		/// </summary>
-        public virtual void Dispose() {
+		public virtual void Dispose() {
 			// no default implementation
-        }
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 
 }

@@ -31,30 +31,30 @@ using Axiom.Core;
 using Axiom.Graphics;
 
 namespace Axiom.Graphics {
-    /// <summary>
-    ///		Class to manage the scene object rendering queue.
-    /// </summary>
-    /// <remarks>
-    ///		Objects are grouped by material to minimize rendering state changes. The map from
-    ///		material to renderable object is wrapped in a class for ease of use.
-    ///		<p/>
-    ///		This class includes the concept of 'queue groups' which allows the application
-    ///		adding the renderable to specifically schedule it so that it is included in 
-    ///		a discrete group. Good for separating renderables into the main scene,
-    ///		backgrounds and overlays, and also could be used in the future for more
-    ///		complex multipass routines like stenciling.
-    /// </remarks>
-    public class RenderQueue {
-        #region Fields
+	/// <summary>
+	///		Class to manage the scene object rendering queue.
+	/// </summary>
+	/// <remarks>
+	///		Objects are grouped by material to minimize rendering state changes. The map from
+	///		material to renderable object is wrapped in a class for ease of use.
+	///		<p/>
+	///		This class includes the concept of 'queue groups' which allows the application
+	///		adding the renderable to specifically schedule it so that it is included in 
+	///		a discrete group. Good for separating renderables into the main scene,
+	///		backgrounds and overlays, and also could be used in the future for more
+	///		complex multipass routines like stenciling.
+	/// </remarks>
+	public class RenderQueue {
+		#region Fields
 
-        /// <summary>
-        ///		Cached list of render groups, indexed by RenderQueueGroupID.
-        ///	</summary>
-        protected SortedList renderGroups = new SortedList();
-        /// <summary>
-        ///		Default render group for this queue.
-        ///	</summary>
-        protected RenderQueueGroupID defaultGroup;
+		/// <summary>
+		///		Cached list of render groups, indexed by RenderQueueGroupID.
+		///	</summary>
+		protected SortedList renderGroups = new SortedList();
+		/// <summary>
+		///		Default render group for this queue.
+		///	</summary>
+		protected RenderQueueGroupID defaultGroup;
 		/// <summary>
 		///		Should passes be split by their lighting stage?
 		/// </summary>
@@ -64,52 +64,52 @@ namespace Axiom.Graphics {
 		/// </summary>
 		protected bool splitNoShadowPasses;
 
-        /// <summary>
-        ///		Default priority of items added to the render queue.
-        ///	</summary>
-        public const int DEFAULT_PRIORITY = 100;
+		/// <summary>
+		///		Default priority of items added to the render queue.
+		///	</summary>
+		public const int DEFAULT_PRIORITY = 100;
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Constructors
+		#region Constructors
 
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public RenderQueue() {
-            // set the default queue group for this queue
-            defaultGroup = RenderQueueGroupID.Main;
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		public RenderQueue() {
+			// set the default queue group for this queue
+			defaultGroup = RenderQueueGroupID.Main;
 
-            // create the main queue group up front
-            renderGroups.Add(
+			// create the main queue group up front
+			renderGroups.Add(
 				RenderQueueGroupID.Main, 
 				new RenderQueueGroup(this, splitPassesByLightingType, splitNoShadowPasses));
-        }
+		}
 
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
 
-        /// <summary>
-        ///		Gets/Sets the default priority for rendering objects in the queue.
-        /// </summary>
-        public RenderQueueGroupID DefaultRenderGroup {
-            get { 
+		/// <summary>
+		///		Gets/Sets the default priority for rendering objects in the queue.
+		/// </summary>
+		public RenderQueueGroupID DefaultRenderGroup {
+			get { 
 				return defaultGroup; 
 			}
-            set { 
+			set { 
 				defaultGroup = value; 
 			}
-        }
+		}
 
-        /// <summary>
-        ///    Gets the number of render queue groups contained within this queue.
-        /// </summary>
-        public int NumRenderQueueGroups {
-            get {
-                return renderGroups.Count;
-            }
-        }
+		/// <summary>
+		///    Gets the number of render queue groups contained within this queue.
+		/// </summary>
+		public int NumRenderQueueGroups {
+			get {
+				return renderGroups.Count;
+			}
+		}
 
 		/// <summary>
 		///		Gets/Sets whether or not the queue will split passes by their lighting type,
@@ -148,61 +148,61 @@ namespace Axiom.Graphics {
 			}
 		}
 
-        #endregion
+		#endregion
 
-        #region Public methods
+		#region Public methods
 
-        /// <summary>
-        ///		Adds a renderable item to the queue.
-        /// </summary>
-        /// <param name="item">IRenderable object to add to the queue.</param>
-        /// <param name="groupID">Group to add the item to.</param>
-        /// <param name="priority"></param>
-        public void AddRenderable(IRenderable renderable, ushort priority, RenderQueueGroupID groupID) {
-            RenderQueueGroup group = GetQueueGroup(groupID);
+		/// <summary>
+		///		Adds a renderable item to the queue.
+		/// </summary>
+		/// <param name="item">IRenderable object to add to the queue.</param>
+		/// <param name="groupID">Group to add the item to.</param>
+		/// <param name="priority"></param>
+		public void AddRenderable(IRenderable renderable, ushort priority, RenderQueueGroupID groupID) {
+			RenderQueueGroup group = GetQueueGroup(groupID);
 
-            // let the material know it has been used, which also forces a recompile if required
-            if(renderable.Material != null) {
-                renderable.Material.Touch();
-            }
+			// let the material know it has been used, which also forces a recompile if required
+			if(renderable.Material != null) {
+				renderable.Material.Touch();
+			}
 
-            // add the renderable to the appropriate group
-            group.AddRenderable(renderable, priority);
-        }
+			// add the renderable to the appropriate group
+			group.AddRenderable(renderable, priority);
+		}
 
-        /// <summary>
-        ///		Overloaded method.
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="groupID"></param>
-        public void AddRenderable(IRenderable item, ushort priority) {
-            AddRenderable(item, priority, defaultGroup);
-        }
+		/// <summary>
+		///		Overloaded method.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <param name="groupID"></param>
+		public void AddRenderable(IRenderable item, ushort priority) {
+			AddRenderable(item, priority, defaultGroup);
+		}
 
-        /// <summary>
-        ///		Overloaded method.
-        /// </summary>
-        /// <param name="item"></param>
-        public void AddRenderable(IRenderable item) {
-            AddRenderable(item, DEFAULT_PRIORITY);
-        }
+		/// <summary>
+		///		Overloaded method.
+		/// </summary>
+		/// <param name="item"></param>
+		public void AddRenderable(IRenderable item) {
+			AddRenderable(item, DEFAULT_PRIORITY);
+		}
 
-        /// <summary>
-        ///		Clears all 
-        /// </summary>
-        public void Clear() {
-            // loop through each queue and clear it's items.  We don't wanna clear the group
-            // list because it probably won't change frame by frame.
-            for(int i = 0; i < renderGroups.Count; i++) {
-                RenderQueueGroup group = (RenderQueueGroup)renderGroups.GetByIndex(i);
+		/// <summary>
+		///		Clears all 
+		/// </summary>
+		public void Clear() {
+			// loop through each queue and clear it's items.  We don't wanna clear the group
+			// list because it probably won't change frame by frame.
+			for(int i = 0; i < renderGroups.Count; i++) {
+				RenderQueueGroup group = (RenderQueueGroup)renderGroups.GetByIndex(i);
 
-                // clear the RenderQueueGroup
-                group.Clear();
-            }
+				// clear the RenderQueueGroup
+				group.Clear();
+			}
 
 			// trigger the pending pass updates
 			Pass.ProcessPendingUpdates();
-        }
+		}
 
 		/// <summary>
 		///		Get a render queue group.
@@ -232,38 +232,38 @@ namespace Axiom.Graphics {
 			return group;
 		}
 
-        /// <summary>
-        ///    
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        internal RenderQueueGroup GetQueueGroupByIndex(int index) {
-            Debug.Assert(index < renderGroups.Count, "index < renderGroups.Count");
+		/// <summary>
+		///    
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		internal RenderQueueGroup GetQueueGroupByIndex(int index) {
+			Debug.Assert(index < renderGroups.Count, "index < renderGroups.Count");
 
-            return (RenderQueueGroup)renderGroups.GetByIndex(index);
-        }
+			return (RenderQueueGroup)renderGroups.GetByIndex(index);
+		}
 
-        internal RenderQueueGroupID GetRenderQueueGroupID(int index) {
-            Debug.Assert(index < renderGroups.Count, "index < renderGroups.Count");
+		internal RenderQueueGroupID GetRenderQueueGroupID(int index) {
+			Debug.Assert(index < renderGroups.Count, "index < renderGroups.Count");
 
-            return (RenderQueueGroupID)renderGroups.GetKey(index);
-        }
+			return (RenderQueueGroupID)renderGroups.GetKey(index);
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 
 
-    /// <summary>
-    ///		A grouping level underneath RenderQueue which groups renderables
-    ///		to be issued at coarsely the same time to the renderer.	
-    /// </summary>
-    /// <remarks>
-    ///		Each instance of this class itself hold RenderPriorityGroup instances, 
-    ///		which are the groupings of renderables by priority for fine control
-    ///		of ordering (not required for most instances).
-    /// </remarks>
-    public class RenderQueueGroup {
-        #region Fields
+	/// <summary>
+	///		A grouping level underneath RenderQueue which groups renderables
+	///		to be issued at coarsely the same time to the renderer.	
+	/// </summary>
+	/// <remarks>
+	///		Each instance of this class itself hold RenderPriorityGroup instances, 
+	///		which are the groupings of renderables by priority for fine control
+	///		of ordering (not required for most instances).
+	/// </remarks>
+	public class RenderQueueGroup {
+		#region Fields
 
 		/// <summary>
 		///		Render queue that this queue group belongs to.
@@ -277,15 +277,15 @@ namespace Axiom.Graphics {
 		/// <summary>
 		///		List of priority groups.
 		/// </summary>
-        protected HashList priorityGroups = new HashList();
+		protected HashList priorityGroups = new HashList();
 		/// <summary>
 		///		Are shadows enabled for this group?
 		/// </summary>
 		protected bool shadowsEnabled;
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Constructor
+		#region Constructor
 
 		/// <summary>
 		///		Default constructor.
@@ -302,72 +302,72 @@ namespace Axiom.Graphics {
 			this.parent = parent;
 		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="priority"></param>
-        public void AddRenderable(IRenderable item, ushort priority) {
-            RenderPriorityGroup group = null;
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="item"></param>
+		/// <param name="priority"></param>
+		public void AddRenderable(IRenderable item, ushort priority) {
+			RenderPriorityGroup group = null;
 
-            // see if there is a current queue group for this group id
-            if(!priorityGroups.ContainsKey(priority)) {
-                // create a new queue group for this group id
-                group = new RenderPriorityGroup();
+			// see if there is a current queue group for this group id
+			if(!priorityGroups.ContainsKey(priority)) {
+				// create a new queue group for this group id
+				group = new RenderPriorityGroup(splitPassesByLightingType, splitNoShadowPasses);
 
-                // add the new group to cached render group
-                priorityGroups.Add(priority, group);
-            }
-            else {
-                // retreive the existing queue group
-                group = (RenderPriorityGroup)priorityGroups.GetByKey(priority);
-            }
+				// add the new group to cached render group
+				priorityGroups.Add(priority, group);
+			}
+			else {
+				// retreive the existing queue group
+				group = (RenderPriorityGroup)priorityGroups.GetByKey(priority);
+			}
 
-            // add the renderable to the appropriate group
-            group.AddRenderable(item);			
-        }
+			// add the renderable to the appropriate group
+			group.AddRenderable(item);			
+		}
 
-        /// <summary>
-        ///		Clears all the priority groups within this group.
-        /// </summary>
-        public void Clear() {
-            // loop through each priority group and clear it's items.  We don't wanna clear the group
-            // list because it probably won't change frame by frame.
-            for(int i = 0; i < priorityGroups.Count; i++) {
-                RenderPriorityGroup group = (RenderPriorityGroup)priorityGroups[i];
+		/// <summary>
+		///		Clears all the priority groups within this group.
+		/// </summary>
+		public void Clear() {
+			// loop through each priority group and clear it's items.  We don't wanna clear the group
+			// list because it probably won't change frame by frame.
+			for(int i = 0; i < priorityGroups.Count; i++) {
+				RenderPriorityGroup group = (RenderPriorityGroup)priorityGroups[i];
 
-                // clear the RenderPriorityGroup
-                group.Clear();
-            }
-        }
+				// clear the RenderPriorityGroup
+				group.Clear();
+			}
+		}
 
-        /// <summary>
-        ///    Gets the hashlist entry for the priority group at the specified index.
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public RenderPriorityGroup GetPriorityGroup(int index) {
-            Debug.Assert(index < priorityGroups.Count, "index < priorityGroups.Count");
+		/// <summary>
+		///    Gets the hashlist entry for the priority group at the specified index.
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		public RenderPriorityGroup GetPriorityGroup(int index) {
+			Debug.Assert(index < priorityGroups.Count, "index < priorityGroups.Count");
 
-            return (RenderPriorityGroup)priorityGroups[index];
-        }
+			return (RenderPriorityGroup)priorityGroups[index];
+		}
 
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
 
-        /// <summary>
-        ///    Gets the number of priority groups within this queue group.
-        /// </summary>
-        public int NumPriorityGroups {
-            get {
-                return priorityGroups.Count;
-            }
-        }
+		/// <summary>
+		///    Gets the number of priority groups within this queue group.
+		/// </summary>
+		public int NumPriorityGroups {
+			get {
+				return priorityGroups.Count;
+			}
+		}
 
 		/// <summary>
 		///		Indicate whether a given queue group will be doing any shadow setup.
@@ -428,27 +428,27 @@ namespace Axiom.Graphics {
 			}
 		}
 
-        #endregion
-    }
+		#endregion
+	}
 
-    /// <summary>
-    ///		IRenderables in the queue grouped by priority.
-    /// </summary>
-    /// <remarks>
-    ///		This class simply groups renderables for rendering. All the 
-    ///		renderables contained in this class are destined for the same
-    ///		RenderQueueGroup (coarse groupings like those between the main
-    ///		scene and overlays) and have the same priority (fine groupings
-    ///		for detailed overlap control).
-    /// </remarks>
-    public class RenderPriorityGroup {
-        #region Fields
+	/// <summary>
+	///		IRenderables in the queue grouped by priority.
+	/// </summary>
+	/// <remarks>
+	///		This class simply groups renderables for rendering. All the 
+	///		renderables contained in this class are destined for the same
+	///		RenderQueueGroup (coarse groupings like those between the main
+	///		scene and overlays) and have the same priority (fine groupings
+	///		for detailed overlap control).
+	/// </remarks>
+	public class RenderPriorityGroup {
+		#region Fields
 			
-        protected internal ArrayList transparentPasses = new ArrayList();
+		protected internal ArrayList transparentPasses = new ArrayList();
 		/// <summary>
 		///		Solid pass list, used when no shadows, modulative shadows, or ambient passes for additive.
 		/// </summary>
-        protected internal SortedList solidPasses;
+		protected internal SortedList solidPasses;
 		/// <summary>
 		///		Solid per-light pass list, used with additive shadows.
 		/// </summary>
@@ -467,43 +467,45 @@ namespace Axiom.Graphics {
 		protected bool splitPassesByLightingType;
 		protected bool splitNoShadowPasses;
 
-        #endregion Fields
+		#endregion Fields
 
-        /// <summary>
-        ///    Default constructor.
-        /// </summary>
-        internal RenderPriorityGroup() {
-            // sorted list, using Pass as a key (sorted based on hashcode), and IRenderable as the value
-            solidPasses = new SortedList(new SolidSort(), 50);
+		/// <summary>
+		///    Default constructor.
+		/// </summary>
+		internal RenderPriorityGroup(bool splitPassesByLightingType, bool splitNoShadowPasses) {
+			// sorted list, using Pass as a key (sorted based on hashcode), and IRenderable as the value
+			solidPasses = new SortedList(new SolidSort(), 50);
 			solidPassesDiffuseSpecular = new SortedList(new SolidSort(), 50);
 			solidPassesDecal = new SortedList(new SolidSort(), 50);
 			solidPassesNoShadow = new SortedList(new SolidSort(), 50);
-        }
+			this.splitPassesByLightingType = splitPassesByLightingType;
+			this.splitNoShadowPasses = splitNoShadowPasses;
+		}
 
-        #region Methods
+		#region Methods
 
-        /// <summary>
-        ///		Add a renderable to this group.
-        /// </summary>
-        /// <param name="renderable">Renderable to add to the queue.</param>
-        public void AddRenderable(IRenderable renderable) {
-            Technique t = null;
+		/// <summary>
+		///		Add a renderable to this group.
+		/// </summary>
+		/// <param name="renderable">Renderable to add to the queue.</param>
+		public void AddRenderable(IRenderable renderable) {
+			Technique t = null;
                 
-            // Check material & technique supplied (the former since the default implementation
-            // of Technique is based on it for backwards compatibility
-            if(renderable.Material == null || renderable.Technique == null) {
-                // use default if not found
-                t = MaterialManager.Instance.GetByName("BaseWhite").GetTechnique(0);
-            }
-            else {
-                t = renderable.Technique;
-            }
+			// Check material & technique supplied (the former since the default implementation
+			// of Technique is based on it for backwards compatibility
+			if(renderable.Material == null || renderable.Technique == null) {
+				// use default if not found
+				t = MaterialManager.Instance.GetByName("BaseWhite").GetTechnique(0);
+			}
+			else {
+				t = renderable.Technique;
+			}
 
-            // loop through each pass and queue it up
-            if(t.IsTransparent) {
+			// Transparent and depth settings mean depth sorting is required?
+			if(t.IsTransparent && !(t.DepthWrite && t.DepthCheck) ) {
 				AddTransparentRenderable(t, renderable);
-            }
-            else {
+			}
+			else {
 				if(splitNoShadowPasses && !t.Parent.ReceiveShadows) {
 					// Add solid renderable and add passes to no-shadow group
 					AddSolidRenderable(t, renderable, true);
@@ -516,8 +518,8 @@ namespace Axiom.Graphics {
 						AddSolidRenderable(t, renderable, false);
 					}
 				}
-            }
-        }
+			}
+		}
 
 		/// <summary>
 		///		Internal method for adding a solid renderable
@@ -556,8 +558,34 @@ namespace Axiom.Graphics {
 		/// <param name="technique">Technique to use for this renderable.</param>
 		/// <param name="renderable">Renderable to add to the queue.</param>
 		protected void AddSolidRenderableSplitByLightType(Technique technique, IRenderable renderable) {
-			// TODO
-			throw new NotImplementedException();
+			// Divide the passes into the 3 categories
+			for (int i = 0; i < technique.NumIlluminationPasses; i++) {
+				// Insert into solid list
+				IlluminationPass illpass = technique.GetIlluminationPass(i);
+				SortedList passMap = null;
+
+				switch(illpass.Stage) {
+					case IlluminationStage.Ambient:
+						passMap = solidPasses;
+						break;
+					case IlluminationStage.PerLight:
+						passMap = solidPassesDiffuseSpecular;
+						break;
+					case IlluminationStage.Decal:
+						passMap = solidPassesDecal;
+						break;
+				}
+
+				RenderableList solidList = (RenderableList) passMap[illpass.Pass];
+
+				if (solidList == null) {
+					// add a new list to hold renderables for this pass
+					solidList = new RenderableList();
+					passMap.Add(illpass.Pass, solidList);
+				}
+
+				solidList.Add(renderable);
+			}
 		}
 
 		/// <summary>
@@ -572,10 +600,10 @@ namespace Axiom.Graphics {
 			}
 		}
 
-        /// <summary>
-        ///		Clears all the internal lists.
-        /// </summary>
-        public void Clear() {
+		/// <summary>
+		///		Clears all the internal lists.
+		/// </summary>
+		public void Clear() {
 			PassList graveyardList = Pass.GraveyardList;
 
 			// Delete queue groups which are using passes which are to be
@@ -603,14 +631,14 @@ namespace Axiom.Graphics {
 
 			// We do not clear the unchanged solid pass maps, only the contents of each list
 			// This is because we assume passes are reused a lot and it saves resorting
-            ClearSolidPassMap(solidPasses);
+			ClearSolidPassMap(solidPasses);
 			ClearSolidPassMap(solidPassesDiffuseSpecular);
 			ClearSolidPassMap(solidPassesDecal);
 			ClearSolidPassMap(solidPassesNoShadow);
 
 			// Always empty the transparents list
 			transparentPasses.Clear();
-        }
+		}
 
 		public void ClearSolidPassMap(SortedList list) {
 			// loop through and clear the renderable containers for the stored passes
@@ -619,49 +647,49 @@ namespace Axiom.Graphics {
 			}
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public Pass GetSolidPass(int index) {
-            Debug.Assert(index < solidPasses.Count, "index < solidPasses.Count");
-            return (Pass)solidPasses.GetKey(index);
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		public Pass GetSolidPass(int index) {
+			Debug.Assert(index < solidPasses.Count, "index < solidPasses.Count");
+			return (Pass)solidPasses.GetKey(index);
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public RenderableList GetSolidPassRenderables(int index) {
-            Debug.Assert(index < solidPasses.Count, "index < solidPasses.Count");
-            return (RenderableList)solidPasses.GetByIndex(index);
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		public RenderableList GetSolidPassRenderables(int index) {
+			Debug.Assert(index < solidPasses.Count, "index < solidPasses.Count");
+			return (RenderableList)solidPasses.GetByIndex(index);
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public RenderablePass GetTransparentPass(int index) {
-            Debug.Assert(index < transparentPasses.Count, "index < transparentPasses.Count");
-            return (RenderablePass)transparentPasses[index];
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		public RenderablePass GetTransparentPass(int index) {
+			Debug.Assert(index < transparentPasses.Count, "index < transparentPasses.Count");
+			return (RenderablePass)transparentPasses[index];
+		}
 
-        /// <summary>
-        ///    Sorts the objects which have been added to the queue; transparent objects by their 
-        ///    depth in relation to the passed in Camera, solid objects in order to minimize
-        ///    render state changes.
-        /// </summary>
-        /// <remarks>
-        ///    Solid passes are already stored in a sorted structure, so nothing extra needed here.
-        /// </remarks>
-        /// <param name="camera">Current camera to use for depth sorting.</param>
-        public void Sort(Camera camera) {
-            // sort the transparent objects using the custom IComparer
-            transparentPasses.Sort(new TransparencySort(camera));
-        }
+		/// <summary>
+		///    Sorts the objects which have been added to the queue; transparent objects by their 
+		///    depth in relation to the passed in Camera, solid objects in order to minimize
+		///    render state changes.
+		/// </summary>
+		/// <remarks>
+		///    Solid passes are already stored in a sorted structure, so nothing extra needed here.
+		/// </remarks>
+		/// <param name="camera">Current camera to use for depth sorting.</param>
+		public void Sort(Camera camera) {
+			// sort the transparent objects using the custom IComparer
+			transparentPasses.Sort(new TransparencySort(camera));
+		}
 
 		/// <summary>
 		///		Remove a pass entry from all solid pass maps
@@ -685,27 +713,27 @@ namespace Axiom.Graphics {
 			}
 		}
 
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
             
-        /// <summary>
-        ///    Gets the number of non-transparent passes for this priority group.
-        /// </summary>
-        public int NumSolidPasses {
-            get {
-                return solidPasses.Count;
-            }
-        }
+		/// <summary>
+		///    Gets the number of non-transparent passes for this priority group.
+		/// </summary>
+		public int NumSolidPasses {
+			get {
+				return solidPasses.Count;
+			}
+		}
 
-        /// <summary>
-        ///    Gets the number of transparent passes for this priority group.
-        /// </summary>
-        public int NumTransparentPasses {
-            get {
-                return transparentPasses.Count;
-            }
-        }
+		/// <summary>
+		///    Gets the number of transparent passes for this priority group.
+		/// </summary>
+		public int NumTransparentPasses {
+			get {
+				return transparentPasses.Count;
+			}
+		}
 
 		/// <summary>
 		///		Gets/Sets whether or not the queue will split passes by their lighting type,
@@ -734,98 +762,98 @@ namespace Axiom.Graphics {
 			}
 		}
 
-        #endregion
+		#endregion
 
-        #region Internal classes
+		#region Internal classes
 
-        /// <summary>
-        /// 
-        /// </summary>
-        class SolidSort : IComparer {
-            #region IComparer Members
+		/// <summary>
+		/// 
+		/// </summary>
+		class SolidSort : IComparer {
+			#region IComparer Members
 
-            public int Compare(object x, object y) {
-                if(x == null  || y == null)
-                    return 0;
+			public int Compare(object x, object y) {
+				if(x == null  || y == null)
+					return 0;
 
-                // if they are the same, return 0
-                if(x == y)
-                    return 0;
+				// if they are the same, return 0
+				if(x == y)
+					return 0;
 
-                Pass a = x as Pass;
-                Pass b = y as Pass;
+				Pass a = x as Pass;
+				Pass b = y as Pass;
 
-                // sorting by pass hash
-                if(a.GetHashCode() < b.GetHashCode()) {
-                    return -1;
-                }
-                else {
-                    return 1;
-                }
-            }
+				// sorting by pass hash
+				if(a.GetHashCode() < b.GetHashCode()) {
+					return -1;
+				}
+				else {
+					return 1;
+				}
+			}
 
-            #endregion            
-        }
+			#endregion            
+		}
 
-        /// <summary>
-        ///		Nested class that implements IComparer for transparency sorting.
-        /// </summary>
-        class TransparencySort : IComparer {
-            private Camera camera;
+		/// <summary>
+		///		Nested class that implements IComparer for transparency sorting.
+		/// </summary>
+		class TransparencySort : IComparer {
+			private Camera camera;
 
-            public TransparencySort(Camera camera) {
-                this.camera = camera;
-            }
+			public TransparencySort(Camera camera) {
+				this.camera = camera;
+			}
 
-            #region IComparer Members
+			#region IComparer Members
 
-            public int Compare(object x, object y) {
-                if(x == null  || y == null)
-                    return 0;
+			public int Compare(object x, object y) {
+				if(x == null  || y == null)
+					return 0;
 
-                // if they are the same, return 0
-                if(x == y)
-                    return 0;
+				// if they are the same, return 0
+				if(x == y)
+					return 0;
 
-                RenderablePass a = x as RenderablePass;
-                RenderablePass b = y as RenderablePass;
+				RenderablePass a = x as RenderablePass;
+				RenderablePass b = y as RenderablePass;
 
-                float adepth = a.renderable.GetSquaredViewDepth(camera);
-                float bdepth = b.renderable.GetSquaredViewDepth(camera);
+				float adepth = a.renderable.GetSquaredViewDepth(camera);
+				float bdepth = b.renderable.GetSquaredViewDepth(camera);
 
-                if(adepth == bdepth) {
-                    if(a.pass.GetHashCode() < b.pass.GetHashCode()) {
-                        return 1;
-                    }
-                    else {
-                        return -1;
-                    }
-                }
-                else {
-                    // sort descending by depth, meaning further objects get drawn first
-                    if(adepth > bdepth)
-                        return 1;
-                    else
-                        return -1;
-                }
-            }
+				if(adepth == bdepth) {
+					if(a.pass.GetHashCode() < b.pass.GetHashCode()) {
+						return 1;
+					}
+					else {
+						return -1;
+					}
+				}
+				else {
+					// sort descending by depth, meaning further objects get drawn first
+					if(adepth > bdepth)
+						return 1;
+					else
+						return -1;
+				}
+			}
 
-            #endregion
-        }
+			#endregion
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 
-    /// <summary>
-    ///    Internal structure reflecting a single Pass for a Renderable
-    /// </summary>
-    public class RenderablePass {
-        public IRenderable renderable;
-        public Pass pass;
+	/// <summary>
+	///    Internal structure reflecting a single Pass for a Renderable
+	/// </summary>
+	public class RenderablePass {
+		public IRenderable renderable;
+		public Pass pass;
 
-        public RenderablePass(IRenderable renderable, Pass pass) {
-            this.renderable = renderable;
-            this.pass = pass;
-        }
-    }
+		public RenderablePass(IRenderable renderable, Pass pass) {
+			this.renderable = renderable;
+			this.pass = pass;
+		}
+	}
 }

@@ -1,3 +1,9 @@
+11-26-2004
+- Modulative stencil shadows fully working with all light types.
+- Initial port of Additive and Texture shadows by Bekas; still a work in progress.
+- GLSL support added for the OpenGL render system.
+- Bug fixed in Material.Clone, which causes issues anywhere material cloning was used (Tutorial1, creatings skyboxes, etc).  Skyboxes work again.
+
 11-19-2004
 - Default GPU params support.
 - Per entity custom GPU parameters.

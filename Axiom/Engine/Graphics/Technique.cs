@@ -34,32 +34,32 @@ namespace Axiom.Graphics {
 	/// 	Class representing an approach to rendering a particular Material. 
 	/// </summary>
 	/// <remarks>
-    ///    The engine will attempt to use the best technique supported by the active hardware, 
-    ///    unless you specifically request a lower detail technique (say for distant rendering)
+	///    The engine will attempt to use the best technique supported by the active hardware, 
+	///    unless you specifically request a lower detail technique (say for distant rendering)
 	/// </remarks>
 	public class Technique {
 		#region Fields
 
-        /// <summary>
-        ///    The material that owns this technique.
-        /// </summary>
-        protected Material parent;
-        /// <summary>
-        ///    The list of passes (fixed function or programmable) contained in this technique.
-        /// </summary>
-        protected PassList passes = new PassList();
+		/// <summary>
+		///    The material that owns this technique.
+		/// </summary>
+		protected Material parent;
+		/// <summary>
+		///    The list of passes (fixed function or programmable) contained in this technique.
+		/// </summary>
+		protected PassList passes = new PassList();
 		/// <summary>
 		///		List of derived passes, categorized (and ordered) into illumination stages.
 		/// </summary>
 		protected ArrayList illuminationPasses = new ArrayList();
-        /// <summary>
-        ///    Flag that states whether or not this technique is supported on the current hardware.
-        /// </summary>
-        protected bool isSupported;
-        /// <summary>
-        ///    Name of this technique.
-        /// </summary>
-        protected string name;
+		/// <summary>
+		///    Flag that states whether or not this technique is supported on the current hardware.
+		/// </summary>
+		protected bool isSupported;
+		/// <summary>
+		///    Name of this technique.
+		/// </summary>
+		protected string name;
 		/// <summary>
 		///		Level of detail index for this technique.
 		/// </summary>
@@ -70,7 +70,7 @@ namespace Axiom.Graphics {
 		#region Constructors
 		
 		public Technique(Material parent) {
-            this.parent = parent;
+			this.parent = parent;
 		}
 		
 		#endregion
@@ -92,105 +92,105 @@ namespace Axiom.Graphics {
 			illuminationPasses.Clear();
 		}
 
-        /// <summary>
-        ///    Clones this Technique.
-        /// </summary>
-        /// <param name="parent">Material that will own this technique.</param>
-        /// <returns></returns>
-        public Technique Clone(Material parent) {
-            Technique newTechnique = (Technique)this.MemberwiseClone();
-            newTechnique.parent = parent;
+		/// <summary>
+		///    Clones this Technique.
+		/// </summary>
+		/// <param name="parent">Material that will own this technique.</param>
+		/// <returns></returns>
+		public Technique Clone(Material parent) {
+			Technique newTechnique = (Technique)this.MemberwiseClone();
+			newTechnique.parent = parent;
 
-            // TODO: Watch out for other object refs copied...
-            newTechnique.passes = new PassList();
+			// TODO: Watch out for other object refs copied...
+			newTechnique.passes = new PassList();
 
-            // clone each pass and add that to the new technique
-            for(int i = 0; i < passes.Count; i++) {
-                Pass pass = (Pass)passes[i];
-                Pass newPass = pass.Clone(newTechnique, pass.Index);
-                newTechnique.passes.Add(newPass);
-            }
+			// clone each pass and add that to the new technique
+			for(int i = 0; i < passes.Count; i++) {
+				Pass pass = (Pass)passes[i];
+				Pass newPass = pass.Clone(newTechnique, pass.Index);
+				newTechnique.passes.Add(newPass);
+			}
 
 			// recompile illumination passes
 			newTechnique.CompileIlluminationPasses();
 
-            return newTechnique;
-        }
+			return newTechnique;
+		}
 
-        /// <summary>
-        ///    Compilation method for Techniques.  See <see cref="Axiom.Core.Material"/>
-        /// </summary>
-        /// <param name="autoManageTextureUnits">
-        ///    Determines whether or not the engine should split up extra texture unit requests
-        ///    into extra passes if the hardware does not have enough available units.
-        /// </param>
-        internal void Compile(bool autoManageTextureUnits) {
-            // assume not supported unles it proves otherwise
-            isSupported = false;    
+		/// <summary>
+		///    Compilation method for Techniques.  See <see cref="Axiom.Core.Material"/>
+		/// </summary>
+		/// <param name="autoManageTextureUnits">
+		///    Determines whether or not the engine should split up extra texture unit requests
+		///    into extra passes if the hardware does not have enough available units.
+		/// </param>
+		internal void Compile(bool autoManageTextureUnits) {
+			// assume not supported unles it proves otherwise
+			isSupported = false;    
                 
-            // grab a ref to the current hardware caps
-            HardwareCaps caps = Root.Instance.RenderSystem.Caps;
-            int numAvailTexUnits = caps.NumTextureUnits;
+			// grab a ref to the current hardware caps
+			HardwareCaps caps = Root.Instance.RenderSystem.Caps;
+			int numAvailTexUnits = caps.NumTextureUnits;
 
-            // check requirements for each pass
-            for(int i = 0; i < passes.Count; i++) {
-                Pass pass = (Pass)passes[i];
+			// check requirements for each pass
+			for(int i = 0; i < passes.Count; i++) {
+				Pass pass = (Pass)passes[i];
 
-                int numTexUnitsRequested = pass.NumTextureUnitStages;
+				int numTexUnitsRequested = pass.NumTextureUnitStages;
 
-                if(pass.HasFragmentProgram) {
-                    // check texture units
-                    if(numTexUnitsRequested > numAvailTexUnits) {
-                        // can't do this, since programmable passes cannot be split automatically
-                        return;
-                    }
+				if(pass.HasFragmentProgram) {
+					// check texture units
+					if(numTexUnitsRequested > numAvailTexUnits) {
+						// can't do this, since programmable passes cannot be split automatically
+						return;
+					}
 
-                    // check fragment program version
-                    if(!pass.FragmentProgram.IsSupported) {
-                        // can't do this one
-                        return;
-                    }
-                }
-                else {
-                    // check support for a few fixed function options while we are here
-                    for(int j = 0; j < pass.NumTextureUnitStages; j++) {
-                        TextureUnitState texUnit = pass.GetTextureUnitState(j);
+					// check fragment program version
+					if(!pass.FragmentProgram.IsSupported) {
+						// can't do this one
+						return;
+					}
+				}
+				else {
+					// check support for a few fixed function options while we are here
+					for(int j = 0; j < pass.NumTextureUnitStages; j++) {
+						TextureUnitState texUnit = pass.GetTextureUnitState(j);
 
-                        // check to make sure we have some cube mapping support
-                        if(texUnit.Is3D && !caps.CheckCap(Capabilities.CubeMapping)) {
-                            return;
-                        }
+						// check to make sure we have some cube mapping support
+						if(texUnit.Is3D && !caps.CheckCap(Capabilities.CubeMapping)) {
+							return;
+						}
 
-                        // if this is a Dot3 blending layer, make sure we can support it
-                        if(texUnit.ColorBlendMode.operation == LayerBlendOperationEx.DotProduct && !caps.CheckCap(Capabilities.Dot3)) {
-                            return;
-                        }
-                    }
+						// if this is a Dot3 blending layer, make sure we can support it
+						if(texUnit.ColorBlendMode.operation == LayerBlendOperationEx.DotProduct && !caps.CheckCap(Capabilities.Dot3)) {
+							return;
+						}
+					}
 
-                    // keep splitting until the texture units required for this pass are available
-                    while(numTexUnitsRequested > numAvailTexUnits) {
-                        // split this pass up into more passes
-                        pass = pass.Split(numAvailTexUnits);
-                        numTexUnitsRequested = pass.NumTextureUnitStages;
-                    }
-                }
+					// keep splitting until the texture units required for this pass are available
+					while(numTexUnitsRequested > numAvailTexUnits) {
+						// split this pass up into more passes
+						pass = pass.Split(numAvailTexUnits);
+						numTexUnitsRequested = pass.NumTextureUnitStages;
+					}
+				}
 
-                // if this has a vertex program, check the syntax code to be sure the hardware supports it
-                if(pass.HasVertexProgram) {
-                    // check vertex program version
-                    if(!pass.VertexProgram.IsSupported) {
-                        // can't do this one
-                        return;
-                    }
-                }
-            } // for
+				// if this has a vertex program, check the syntax code to be sure the hardware supports it
+				if(pass.HasVertexProgram) {
+					// check vertex program version
+					if(!pass.VertexProgram.IsSupported) {
+						// can't do this one
+						return;
+					}
+				}
+			} // for
 
-            // if we made it this far, we are good to go!
-            isSupported = true;
+			// if we made it this far, we are good to go!
+			isSupported = true;
 
 			// Now compile for categorised illumination, in case we need it later
 			CompileIlluminationPasses();
-        }
+		}
 
 		/// <summary>
 		///		Internal method for splitting the passes into illumination passes.
@@ -378,71 +378,81 @@ namespace Axiom.Graphics {
 			}
 		}
 
-        /// <summary>
-        ///    Creates a new Pass for this technique.
-        /// </summary>
-        /// <remarks>
-        ///    A Pass is a single rendering pass, ie a single draw of the given material.
-        ///    Note that if you create a non-programmable pass, during compilation of the
-        ///    material the pass may be split into multiple passes if the graphics card cannot
-        ///    handle the number of texture units requested. For programmable passes, however, 
-        ///    the number of passes you create will never be altered, so you have to make sure 
-        ///    that you create an alternative fallback Technique for if a card does not have 
-        ///    enough facilities for what you're asking for.
-        /// </remarks>
-        /// <param name="programmable">
-        ///    True if programmable via vertex or fragment programs, false if fixed function.
-        /// </param>
-        /// <returns>A new Pass object reference.</returns>
-        public Pass CreatePass() {
-            Pass pass = new Pass(this, passes.Count);
-            passes.Add(pass);
-            return pass;
-        }
+		/// <summary>
+		///    Creates a new Pass for this technique.
+		/// </summary>
+		/// <remarks>
+		///    A Pass is a single rendering pass, ie a single draw of the given material.
+		///    Note that if you create a non-programmable pass, during compilation of the
+		///    material the pass may be split into multiple passes if the graphics card cannot
+		///    handle the number of texture units requested. For programmable passes, however, 
+		///    the number of passes you create will never be altered, so you have to make sure 
+		///    that you create an alternative fallback Technique for if a card does not have 
+		///    enough facilities for what you're asking for.
+		/// </remarks>
+		/// <param name="programmable">
+		///    True if programmable via vertex or fragment programs, false if fixed function.
+		/// </param>
+		/// <returns>A new Pass object reference.</returns>
+		public Pass CreatePass() {
+			Pass pass = new Pass(this, passes.Count);
+			passes.Add(pass);
+			return pass;
+		}
 
-        /// <summary>
-        ///    Retreives the Pass at the specified index.
-        /// </summary>
-        /// <param name="index">Index of the Pass to retreive.</param>
-        public Pass GetPass(int index) {
-            Debug.Assert(index < passes.Count, "index < passes.Count");
+		/// <summary>
+		///    Retreives the Pass at the specified index.
+		/// </summary>
+		/// <param name="index">Index of the Pass to retreive.</param>
+		public Pass GetPass(int index) {
+			Debug.Assert(index < passes.Count, "index < passes.Count");
 
-            return (Pass)passes[index];
-        }
+			return (Pass)passes[index];
+		}
 
-        /// <summary>
-        ///    Loads resources required by this Technique.
-        /// </summary>
-        public void Load() {
-            Debug.Assert(isSupported, "This technique is not supported.");
+		/// <summary>
+		///    Retreives the IlluminationPass at the specified index.
+		/// </summary>
+		/// <param name="index">Index of the IlluminationPass to retreive.</param>
+		public IlluminationPass GetIlluminationPass(int index) {
+			Debug.Assert(index < illuminationPasses.Count, "index < illuminationPasses.Count");
 
-            // load each pass
-            for(int i = 0; i < passes.Count; i++) {
-                ((Pass)passes[i]).Load();
-            }
-        }
+			return (IlluminationPass)illuminationPasses[index];
+		}
 
-        /// <summary>
-        ///    Forces this Technique to recompile.
-        /// </summary>
-        /// <remarks>
-        ///    The parent Material is asked to recompile to accomplish this.
-        /// </remarks>
-        internal void NotifyNeedsRecompile() {
-            parent.NotifyNeedsRecompile();
-        }
+		/// <summary>
+		///    Loads resources required by this Technique.
+		/// </summary>
+		public void Load() {
+			Debug.Assert(isSupported, "This technique is not supported.");
 
-        /// <summary>
-        ///    Removes the specified Pass from this Technique.
-        /// </summary>
-        /// <param name="pass">A reference to the Pass to be removed.</param>
-        public void RemovePass(Pass pass) {
-            Debug.Assert(pass != null, "pass != null");
+			// load each pass
+			for(int i = 0; i < passes.Count; i++) {
+				((Pass)passes[i]).Load();
+			}
+		}
+
+		/// <summary>
+		///    Forces this Technique to recompile.
+		/// </summary>
+		/// <remarks>
+		///    The parent Material is asked to recompile to accomplish this.
+		/// </remarks>
+		internal void NotifyNeedsRecompile() {
+			parent.NotifyNeedsRecompile();
+		}
+
+		/// <summary>
+		///    Removes the specified Pass from this Technique.
+		/// </summary>
+		/// <param name="pass">A reference to the Pass to be removed.</param>
+		public void RemovePass(Pass pass) {
+			Debug.Assert(pass != null, "pass != null");
 
 			pass.QueueForDeletion();
 
-            passes.Remove(pass);
-        }
+			passes.Remove(pass);
+		}
 
 		/// <summary>
 		///		Removes all passes from this technique and queues them for deletion.
@@ -457,128 +467,146 @@ namespace Axiom.Graphics {
 			passes.Clear();
 		}
 
-        public void SetSceneBlending(SceneBlendType blendType) {
-            // load each pass
-            for(int i = 0; i < passes.Count; i++) {
-                ((Pass)passes[i]).SetSceneBlending(blendType);
-            }
-        }
+		public void SetSceneBlending(SceneBlendType blendType) {
+			// load each pass
+			for(int i = 0; i < passes.Count; i++) {
+				((Pass)passes[i]).SetSceneBlending(blendType);
+			}
+		}
 
-        public void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest) {
-            // load each pass
-            for(int i = 0; i < passes.Count; i++) {
-                ((Pass)passes[i]).SetSceneBlending(src, dest);
-            }
-        }
+		public void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest) {
+			// load each pass
+			for(int i = 0; i < passes.Count; i++) {
+				((Pass)passes[i]).SetSceneBlending(src, dest);
+			}
+		}
 
-        /// <summary>
-        ///    Unloads resources used by this Technique.
-        /// </summary>
-        public void Unload() {
-            // load each pass
-            for(int i = 0; i < passes.Count; i++) {
-                ((Pass)passes[i]).Unload();
-            }
-        }
+		/// <summary>
+		///    Unloads resources used by this Technique.
+		/// </summary>
+		public void Unload() {
+			// load each pass
+			for(int i = 0; i < passes.Count; i++) {
+				((Pass)passes[i]).Unload();
+			}
+		}
 		
 		#endregion
 		
 		#region Properties
 
-        public ColorEx Ambient {
-            set {
-                for(int i = 0; i < passes.Count; i++) {
-                    ((Pass)passes[i]).Ambient = value;
-                }
-            }
-        }
+		public ColorEx Ambient {
+			set {
+				for(int i = 0; i < passes.Count; i++) {
+					((Pass)passes[i]).Ambient = value;
+				}
+			}
+		}
 
-        public CullingMode CullingMode {
-            set {
-                for(int i = 0; i < passes.Count; i++) {
-                    ((Pass)passes[i]).CullMode = value;
-                }
-            }
-        }
+		public CullingMode CullingMode {
+			set {
+				for(int i = 0; i < passes.Count; i++) {
+					((Pass)passes[i]).CullMode = value;
+				}
+			}
+		}
 
-        public bool DepthCheck {
-            set {
-                for(int i = 0; i < passes.Count; i++) {
-                    ((Pass)passes[i]).DepthCheck = value;
-                }
-            }
-        }
+		public bool DepthCheck {
+			set {
+				for(int i = 0; i < passes.Count; i++) {
+					((Pass)passes[i]).DepthCheck = value;
+				}
+			}
+			get {
+				if (passes.Count == 0) {
+					return false;
+				}
+				else {
+					// Base decision on the depth settings of the first pass
+					return ((Pass)passes[0]).DepthCheck;
+				}
+			}
+		}
 
-        public bool DepthWrite {
-            set {
-                for(int i = 0; i < passes.Count; i++) {
-                    ((Pass)passes[i]).DepthWrite = value;
-                }
-            }
-        }
+		public bool DepthWrite {
+			set {
+				for(int i = 0; i < passes.Count; i++) {
+					((Pass)passes[i]).DepthWrite = value;
+				}
+			}
+			get {
+				if (passes.Count == 0) {
+					return false;
+				}
+				else {
+					// Base decision on the depth settings of the first pass
+					return ((Pass)passes[0]).DepthWrite;
+				}
+			}
+		}
 
-        public ColorEx Diffuse {
-            set {
-                for(int i = 0; i < passes.Count; i++) {
-                    ((Pass)passes[i]).Diffuse = value;
-                }
-            }
-        }
+		public ColorEx Diffuse {
+			set {
+				for(int i = 0; i < passes.Count; i++) {
+					((Pass)passes[i]).Diffuse = value;
+				}
+			}
+		}
 
-        /// <summary>
-        ///    Returns true if this Technique has already been loaded.
-        /// </summary>
-        public bool IsLoaded {
-            get {
-                return parent.IsLoaded;
-            }
-        }
+		/// <summary>
+		///    Returns true if this Technique has already been loaded.
+		/// </summary>
+		public bool IsLoaded {
+			get {
+				return parent.IsLoaded;
+			}
+		}
 
-        /// <summary>
-        ///    Flag that states whether or not this technique is supported on the current hardware.
-        /// </summary>
-        /// <remarks>
-        ///    This will only be correct after the Technique has been compiled, which is
-        ///    usually triggered in Material.Compile.
-        /// </remarks>
-        public bool IsSupported {
-            get {
-                return isSupported;
-            }
-        }
+		/// <summary>
+		///    Flag that states whether or not this technique is supported on the current hardware.
+		/// </summary>
+		/// <remarks>
+		///    This will only be correct after the Technique has been compiled, which is
+		///    usually triggered in Material.Compile.
+		/// </remarks>
+		public bool IsSupported {
+			get {
+				return isSupported;
+			}
+		}
 
-        /// <summary>
-        ///    Returns true if this Technique involves transparency.
-        /// </summary>
-        /// <remarks>
-        ///    This basically boils down to whether the first pass
-        ///    has a scene blending factor. Even if the other passes 
-        ///    do not, the base color, including parts of the original 
-        ///    scene, may be used for blending, therefore we have to treat
-        ///    the whole Technique as transparent.
-        /// </remarks>
-        public bool IsTransparent {
-            get {
-                if(passes.Count == 0) {
-                    return false;
-                }
-                else {
-                    // based on the transparency of the first pass
-                    return ((Pass)passes[0]).IsTransparent;
-                }
-            }
-        }
+		/// <summary>
+		///    Returns true if this Technique involves transparency.
+		/// </summary>
+		/// <remarks>
+		///    This basically boils down to whether the first pass
+		///    has a scene blending factor. Even if the other passes 
+		///    do not, the base color, including parts of the original 
+		///    scene, may be used for blending, therefore we have to treat
+		///    the whole Technique as transparent.
+		/// </remarks>
+		public bool IsTransparent {
+			get {
+				if(passes.Count == 0) {
+					return false;
+				}
+				else {
+					// based on the transparency of the first pass
+					return ((Pass)passes[0]).IsTransparent;
+				}
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool Lighting {
-            set {
-                for(int i = 0; i < passes.Count; i++) {
-                    ((Pass)passes[i]).LightingEnabled = value;
-                }
-            }
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool Lighting {
+			set {
+				for(int i = 0; i < passes.Count; i++) {
+					((Pass)passes[i]).LightingEnabled = value;
+				}
+			}
+		}
 
 		/// <summary>
 		///		Assigns a level-of-detail (LOD) index to this Technique.
@@ -608,34 +636,34 @@ namespace Axiom.Graphics {
 			}
 		}
 
-        public ManualCullingMode ManualCullMode {
-            set {
-                for(int i = 0; i < passes.Count; i++) {
-                    ((Pass)passes[i]).ManualCullMode = value;
-                }
-            }
-        }
+		public ManualCullingMode ManualCullMode {
+			set {
+				for(int i = 0; i < passes.Count; i++) {
+					((Pass)passes[i]).ManualCullMode = value;
+				}
+			}
+		}
 
-        /// <summary>
-        ///    Gets/Sets the name of this technique.
-        /// </summary>
-        public string Name {
-            get {
-                return name;
-            }
-            set {
-                name = value;
-            }
-        }
+		/// <summary>
+		///    Gets/Sets the name of this technique.
+		/// </summary>
+		public string Name {
+			get {
+				return name;
+			}
+			set {
+				name = value;
+			}
+		}
 
-        /// <summary>
-        ///    Gets the number of passes within this Technique.
-        /// </summary>
-        public int NumPasses {
-            get {
-                return passes.Count;
-            }
-        }
+		/// <summary>
+		///    Gets the number of passes within this Technique.
+		/// </summary>
+		public int NumPasses {
+			get {
+				return passes.Count;
+			}
+		}
 
 		/// <summary>
 		///		Gets the number of illumination passes compiled from this technique.
@@ -646,22 +674,22 @@ namespace Axiom.Graphics {
 			}
 		}
 
-        /// <summary>
-        ///    Gets a reference to the Material that owns this Technique.
-        /// </summary>
-        public Material Parent {
-            get {
-                return parent;
-            }
-        }
+		/// <summary>
+		///    Gets a reference to the Material that owns this Technique.
+		/// </summary>
+		public Material Parent {
+			get {
+				return parent;
+			}
+		}
 
-        public TextureFiltering TextureFiltering {
-            set {
-                for(int i = 0; i < passes.Count; i++) {
-                    ((Pass)passes[i]).TextureFiltering = value;
-                }
-            }
-        }
+		public TextureFiltering TextureFiltering {
+			set {
+				for(int i = 0; i < passes.Count; i++) {
+					((Pass)passes[i]).TextureFiltering = value;
+				}
+			}
+		}
 
 		#endregion
 	}

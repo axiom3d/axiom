@@ -31,48 +31,48 @@ using Axiom.MathLib;
 using Axiom.Scripting;
 
 namespace Axiom.Core {
-    /// <summary>
-    ///		Abstract class definining a movable object in a scene.
-    /// </summary>
-    /// <remarks>
-    ///		Instances of this class are discrete, relatively small, movable objects
-    ///		which are attached to SceneNode objects to define their position.						  
-    /// </remarks>
-    public abstract class SceneObject : ShadowCaster {
-        #region Fields
+	/// <summary>
+	///		Abstract class definining a movable object in a scene.
+	/// </summary>
+	/// <remarks>
+	///		Instances of this class are discrete, relatively small, movable objects
+	///		which are attached to SceneNode objects to define their position.						  
+	/// </remarks>
+	public abstract class SceneObject : ShadowCaster {
+		#region Fields
 
-        /// <summary>
-        ///    Node that this node is attached to.
-        /// </summary>
-        protected Node parentNode;
-        /// <summary>
-        ///    Is this object visible?
-        /// </summary>
-        protected bool isVisible;
-        /// <summary>
-        ///    Name of this object.
-        /// </summary>
-        protected string name;
-        /// <summary>
-        ///    The render queue to use when rendering this object.
-        /// </summary>
-        protected RenderQueueGroupID renderQueueID;
-        /// <summary>
-        ///    Flags determining whether this object is included/excluded from scene queries.
-        /// </summary>
-        protected ulong queryFlags;
-        /// <summary>
-        ///    Cached world bounding box of this object.
-        /// </summary>
-        protected AxisAlignedBox worldAABB;
-        /// <summary>
-        ///    Cached world bounding spehere.
-        /// </summary>
-        protected Sphere worldBoundingSphere = new Sphere();
-        /// <summary>
-        ///    A link back to a GameObject (or subclass thereof) that may be associated with this SceneObject.
-        /// </summary>
-        protected object userData;
+		/// <summary>
+		///    Node that this node is attached to.
+		/// </summary>
+		protected Node parentNode;
+		/// <summary>
+		///    Is this object visible?
+		/// </summary>
+		protected bool isVisible;
+		/// <summary>
+		///    Name of this object.
+		/// </summary>
+		protected string name;
+		/// <summary>
+		///    The render queue to use when rendering this object.
+		/// </summary>
+		protected RenderQueueGroupID renderQueueID;
+		/// <summary>
+		///    Flags determining whether this object is included/excluded from scene queries.
+		/// </summary>
+		protected ulong queryFlags;
+		/// <summary>
+		///    Cached world bounding box of this object.
+		/// </summary>
+		protected AxisAlignedBox worldAABB;
+		/// <summary>
+		///    Cached world bounding spehere.
+		/// </summary>
+		protected Sphere worldBoundingSphere = new Sphere();
+		/// <summary>
+		///    A link back to a GameObject (or subclass thereof) that may be associated with this SceneObject.
+		/// </summary>
+		protected object userData;
 		/// <summary>
 		///		Flag which indicates whether this objects parent is a <see cref="TagPoint"/>.
 		/// </summary>
@@ -88,110 +88,110 @@ namespace Axiom.Core {
 
 		protected ShadowRenderableList dummyList = new ShadowRenderableList();
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Constructors
+		#region Constructors
 
 		/// <summary>
 		///		Default constructor.
 		/// </summary>
-        public SceneObject() {
-            isVisible = true;
+		public SceneObject() {
+			isVisible = true;
 
-            // set default RenderQueueGroupID for this movable object
-            renderQueueID = RenderQueueGroupID.Main;
+			// set default RenderQueueGroupID for this movable object
+			renderQueueID = RenderQueueGroupID.Main;
 
-            queryFlags = unchecked(0xffffffff);
+			queryFlags = unchecked(0xffffffff);
 
-            worldAABB = AxisAlignedBox.Null;
+			worldAABB = AxisAlignedBox.Null;
 
 			castShadows = true;
-        }
+		}
 
-        #endregion Constructors
+		#endregion Constructors
 
-        #region Properties
+		#region Properties
 
-        /// <summary>
-        ///		An abstract method required by subclasses to return the bounding box of this object in local coordinates.
-        /// </summary>
-        public abstract AxisAlignedBox BoundingBox {
-            get;
-        }
+		/// <summary>
+		///		An abstract method required by subclasses to return the bounding box of this object in local coordinates.
+		/// </summary>
+		public abstract AxisAlignedBox BoundingBox {
+			get;
+		}
 
-        /// <summary>
-        ///		An abstract method required by subclasses to return the bounding box of this object in local coordinates.
-        /// </summary>
-        public abstract float BoundingRadius {
-            get;
-        }
+		/// <summary>
+		///		An abstract method required by subclasses to return the bounding box of this object in local coordinates.
+		/// </summary>
+		public abstract float BoundingRadius {
+			get;
+		}
 
-        /// <summary>
-        ///     Get/Sets a link back to a GameObject (or subclass thereof, such as Entity) that may be associated with this SceneObject.
-        /// </summary>
-        public object UserData {
-            get {
-                return userData;
-            }
-            set {
-                userData = value;
-            }
-        }
+		/// <summary>
+		///     Get/Sets a link back to a GameObject (or subclass thereof, such as Entity) that may be associated with this SceneObject.
+		/// </summary>
+		public object UserData {
+			get {
+				return userData;
+			}
+			set {
+				userData = value;
+			}
+		}
 
-        /// <summary>
-        ///		Gets the parent node that this object is attached to.
-        /// </summary>
-        public Node ParentNode {
-            get {
-                return parentNode;
-            }
-        }
+		/// <summary>
+		///		Gets the parent node that this object is attached to.
+		/// </summary>
+		public Node ParentNode {
+			get {
+				return parentNode;
+			}
+		}
 
-        /// <summary>
-        ///		See if this object is attached to another node.
-        /// </summary>
-        public bool IsAttached {
-            get {
-                return (parentNode != null);
-            }
-        }
+		/// <summary>
+		///		See if this object is attached to another node.
+		/// </summary>
+		public bool IsAttached {
+			get {
+				return (parentNode != null);
+			}
+		}
 
-        /// <summary>
-        ///		States whether or not this object should be visible.
-        /// </summary>
-        public virtual bool IsVisible {
-            get {
-                return isVisible;
-            }
-            set {
-                isVisible = value;
-            }
-        }
+		/// <summary>
+		///		States whether or not this object should be visible.
+		/// </summary>
+		public virtual bool IsVisible {
+			get {
+				return isVisible;
+			}
+			set {
+				isVisible = value;
+			}
+		}
 
-        /// <summary>
-        ///		Name of this SceneObject.
-        /// </summary>
-        public string Name {
-            get { 
-                return name;
-            }
-            set { 
-                name = value; 
-            }
-        }
+		/// <summary>
+		///		Name of this SceneObject.
+		/// </summary>
+		public string Name {
+			get { 
+				return name;
+			}
+			set { 
+				name = value; 
+			}
+		}
 
-        /// <summary>
-        ///    		Returns the full transformation of the parent SceneNode or the attachingPoint node
-        /// </summary>
-        public virtual Matrix4 ParentFullTransform {
-            get {
-                if(parentNode != null)
-                    return parentNode.FullTransform;
+		/// <summary>
+		///    		Returns the full transformation of the parent SceneNode or the attachingPoint node
+		/// </summary>
+		public virtual Matrix4 ParentFullTransform {
+			get {
+				if(parentNode != null)
+					return parentNode.FullTransform;
                 
-                // identity if no parent
-                return Matrix4.Identity;
-            }
-        }
+				// identity if no parent
+				return Matrix4.Identity;
+			}
+		}
 
 		/// <summary>
 		///		Gets the full transformation of the parent SceneNode or TagPoint.
@@ -226,20 +226,20 @@ namespace Axiom.Core {
 			}
 		}
 
-        /// <summary>
-        ///    Allows showing the bounding box of an invidual SceneObject.
-        /// </summary>
-        /// <remarks>
-        ///    This shows the bounding box of the SceneNode that the SceneObject is currently attached to.
-        /// </remarks>
-        public bool ShowBoundingBox {
-            get {
-                return ((SceneNode)parentNode).ShowBoundingBox;
-            }
-            set {
-                ((SceneNode)parentNode).ShowBoundingBox = value;
-            }
-        }
+		/// <summary>
+		///    Allows showing the bounding box of an invidual SceneObject.
+		/// </summary>
+		/// <remarks>
+		///    This shows the bounding box of the SceneNode that the SceneObject is currently attached to.
+		/// </remarks>
+		public bool ShowBoundingBox {
+			get {
+				return ((SceneNode)parentNode).ShowBoundingBox;
+			}
+			set {
+				((SceneNode)parentNode).ShowBoundingBox = value;
+			}
+		}
 
 		/// <summary>
 		///		Gets/Sets the render queue group this entity will be rendered through.
@@ -260,9 +260,9 @@ namespace Axiom.Core {
 			}
 		}
 
-        #endregion Properties
+		#endregion Properties
 
-        #region Methods
+		#region Methods
 
 		/// <summary>
 		///		Appends the specified flags to the current flags for this object.
@@ -272,40 +272,40 @@ namespace Axiom.Core {
 			queryFlags |= flags;
 		}
 
-        /// <summary>
-        ///    Retrieves the axis-aligned bounding box for this object in world coordinates.
-        /// </summary>
-        /// <returns></returns>
-        public override AxisAlignedBox GetWorldBoundingBox(bool derive) {
-            if(derive) {
-                worldAABB = this.BoundingBox;
-                worldAABB.Transform(this.ParentFullTransform);
-            }
+		/// <summary>
+		///    Retrieves the axis-aligned bounding box for this object in world coordinates.
+		/// </summary>
+		/// <returns></returns>
+		public override AxisAlignedBox GetWorldBoundingBox(bool derive) {
+			if(derive) {
+				worldAABB = this.BoundingBox;
+				worldAABB.Transform(this.ParentFullTransform);
+			}
 
 			return worldAABB;
-        }
+		}
 
-        /// <summary>
-        ///    Overloaded method.  Calls the overload with a default of not deriving the transform.
-        /// </summary>
-        /// <returns></returns>
-        public Sphere GetWorldBoundingSphere() {
-            return GetWorldBoundingSphere(false);
-        }
+		/// <summary>
+		///    Overloaded method.  Calls the overload with a default of not deriving the transform.
+		/// </summary>
+		/// <returns></returns>
+		public Sphere GetWorldBoundingSphere() {
+			return GetWorldBoundingSphere(false);
+		}
 
-        /// <summary>
-        ///    Retrieves the worldspace bounding sphere for this object.
-        /// </summary>
-        /// <param name="derive">Whether or not to derive from parent transforms.</param>
-        /// <returns></returns>
-        public virtual Sphere GetWorldBoundingSphere(bool derive) {
-            if(derive) {
-                worldBoundingSphere.Radius = this.BoundingRadius;
-                worldBoundingSphere.Center = parentNode.DerivedPosition;
-            }
+		/// <summary>
+		///    Retrieves the worldspace bounding sphere for this object.
+		/// </summary>
+		/// <param name="derive">Whether or not to derive from parent transforms.</param>
+		/// <returns></returns>
+		public virtual Sphere GetWorldBoundingSphere(bool derive) {
+			if(derive) {
+				worldBoundingSphere.Radius = this.BoundingRadius;
+				worldBoundingSphere.Center = parentNode.DerivedPosition;
+			}
 
-            return worldBoundingSphere;
-        }
+			return worldBoundingSphere;
+		}
 
 		/// <summary>
 		///		Removes the specified flags from the current flags for this object.
@@ -315,7 +315,7 @@ namespace Axiom.Core {
 			queryFlags ^= flags;
 		}
 
-        #endregion Methods
+		#endregion Methods
 
 		#region ShadowCaster Members
 
@@ -367,25 +367,35 @@ namespace Axiom.Core {
 			return dummyList.GetEnumerator();
 		}
 
+		public override IEnumerator GetLastShadowVolumeRenderableEnumerator() {
+			return dummyList.GetEnumerator();
+		}
+
+		/// <summary>
+		///		Get the distance to extrude for a point/spot light
+		/// </summary>
+		/// <param name="light"></param>
+		/// <returns></returns>
 		public override float GetPointExtrusionDistance(Light light) {
-			if(parentNode != null) {
+			if (parentNode != null) {
 				return GetExtrusionDistance(parentNode.DerivedPosition, light);
 			}
-
-			return 0;
+			else {
+				return 0;
+			}
 		}
 
 		#endregion ShadowCast Members
 
-        #region Internal engine methods
+		#region Internal engine methods
 
-        /// <summary>
-        ///		Internal method called to notify the object that it has been attached to a node.
-        /// </summary>
-        /// <param name="node">Scene node to notify.</param>
-        internal virtual void NotifyAttached(Node node) {
-            NotifyAttached(node, false);
-        }
+		/// <summary>
+		///		Internal method called to notify the object that it has been attached to a node.
+		/// </summary>
+		/// <param name="node">Scene node to notify.</param>
+		internal virtual void NotifyAttached(Node node) {
+			NotifyAttached(node, false);
+		}
 
 		/// <summary>
 		///		Internal method called to notify the object that it has been attached to a node.
@@ -396,23 +406,23 @@ namespace Axiom.Core {
 			parentIsTagPoint = isTagPoint;
 		}
 
-        /// <summary>
-        ///		Internal method to notify the object of the camera to be used for the next rendering operation.
-        /// </summary>
-        /// <remarks>
-        ///		Certain objects may want to do specific processing based on the camera position. This method notifies
-        ///		them incase they wish to do this.
-        /// </remarks>
-        /// <param name="camera">Reference to the Camera being used for the current rendering operation.</param>
-        public abstract void NotifyCurrentCamera(Camera camera);
+		/// <summary>
+		///		Internal method to notify the object of the camera to be used for the next rendering operation.
+		/// </summary>
+		/// <remarks>
+		///		Certain objects may want to do specific processing based on the camera position. This method notifies
+		///		them incase they wish to do this.
+		/// </remarks>
+		/// <param name="camera">Reference to the Camera being used for the current rendering operation.</param>
+		public abstract void NotifyCurrentCamera(Camera camera);
 
-        /// <summary>
-        ///		An abstract method that causes the specified RenderQueue to update itself.  
-        /// </summary>
-        /// <remarks>This is an internal method used by the engine assembly only.</remarks>
-        /// <param name="queue">The render queue that this object should be updated in.</param>
-        public abstract void UpdateRenderQueue(RenderQueue queue);
+		/// <summary>
+		///		An abstract method that causes the specified RenderQueue to update itself.  
+		/// </summary>
+		/// <remarks>This is an internal method used by the engine assembly only.</remarks>
+		/// <param name="queue">The render queue that this object should be updated in.</param>
+		public abstract void UpdateRenderQueue(RenderQueue queue);
 
-        #endregion Internal engine methods
-    }
+		#endregion Internal engine methods
+	}
 }

@@ -169,14 +169,27 @@ namespace Axiom.Core {
             return texture;
         }
 
+		/// <summary>
+		///		Overloaded method.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="image"></param>
+		/// <returns></returns>
+		public Texture LoadImage(string name, Image image) 
+		{
+			return LoadImage(name, image, TextureType.TwoD, -1, 1.0f, 1);
+		}
+
         /// <summary>
         ///		Overloaded method.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="image"></param>
-        /// <returns></returns>
-        public Texture LoadImage(string name, Image image) {
-            return LoadImage(name, image, -1, 1.0f, 1);
+		/// <param name="texType"></param>
+		/// <returns></returns>
+        public Texture LoadImage(string name, Image image, TextureType texType) 
+		{
+            return LoadImage(name, image, texType, -1, 1.0f, 1);
         }
 
         /// <summary>
@@ -188,9 +201,9 @@ namespace Axiom.Core {
         /// <param name="gamma"></param>
         /// <param name="priority"></param>
         /// <returns></returns>
-        public Texture LoadImage(string name, Image image, int numMipMaps, float gamma, int priority) {
+        public Texture LoadImage(string name, Image image, TextureType texType, int numMipMaps, float gamma, int priority) {
             // create a new texture
-            Texture texture = (Texture)Create(name);
+            Texture texture = (Texture)Create(name, texType);
 
             // set the number of mipmaps to use for this texture
             if(numMipMaps == -1) {

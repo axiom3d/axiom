@@ -7,7 +7,6 @@ namespace Axiom.Graphics {
 	///    Custom RenderTarget that allows for rendering a scene to a texture.
 	/// </summary>
 	public abstract class RenderTexture : RenderTarget {
-
         #region Fields
 
         /// <summary>
@@ -16,12 +15,6 @@ namespace Axiom.Graphics {
         protected Texture texture;
 
         #endregion Fields
-
-        #region Events
-
-        
-
-        #endregion Events
 
         #region Constructors
 
@@ -43,11 +36,10 @@ namespace Axiom.Graphics {
         #region Methods
 
         protected override void OnAfterUpdate() {
-            base.OnAfterUpdate ();
+            base.OnAfterUpdate();
 
             CopyToTexture();
         }
-
 
         /// <summary>
         ///    

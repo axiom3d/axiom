@@ -156,7 +156,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// <summary>
 		///		Overriden from SceneManager.
 		/// </summary>
-		public override void FindVisibleObjects(Camera camera)
+		public override void FindVisibleObjects(Camera camera, bool onlyShadowCasters)
 		{
 			// Clear unique list of movables for this frame
 			objectsForRendering.Clear();
