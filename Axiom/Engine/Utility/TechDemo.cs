@@ -244,6 +244,9 @@ namespace Axiom.Utility
 			if(inputReader.IsKeyPressed(Keys.P))
 				TakeScreenshot();
 
+			if(inputReader.IsKeyPressed(Keys.B))
+				sceneMgr.ShowBoundingBoxes = !sceneMgr.ShowBoundingBoxes;
+
 			float camYaw = -inputReader.RelativeMouseX * 0.13f;
 			float camPitch = -inputReader.RelativeMouseY * 0.13f;
 
