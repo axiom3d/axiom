@@ -41,6 +41,8 @@ namespace Axiom.RenderSystems.DirectX9 {
 
         public D3DTextureManager(D3D.Device device) : base() {
             this.device = device;
+
+			is32Bit = true;
         }
 	       
         public override Axiom.Core.Texture Create(string name, TextureType type) {
