@@ -124,14 +124,17 @@ namespace Axiom.SubSystems.Rendering {
         /// <summary>
         ///		Draw everything (2 sided geometry).
         ///	 </summary>
+        [ScriptEnum("none")]
         None,
         /// <summary>
         ///		Only draw geomtry where vertices were specified in clockwise order.
         ///	 </summary>
+        [ScriptEnum("clockwise")]
         Clockwise,
         /// <summary>
         ///		Only draw geomtry where vertices were specified in counterclockwise order.
         ///	 </summary>
+        [ScriptEnum("anticlockwise")]
         CounterClockwise
     }
 
@@ -353,14 +356,17 @@ namespace Axiom.SubSystems.Rendering {
         /// <summary>
         ///		No culling so everything is sent to the hardware.
         ///	 </summary>
+        [ScriptEnum("none")]
         None = 1,
         /// <summary>
         ///		Cull triangles whose normal is pointing away from the camera (default).
         ///	 </summary>
+        [ScriptEnum("back")]
         Back = 2,
         /// <summary>
         ///		Cull triangles whose normal is pointing towards the camera.
         ///	 </summary>
+        [ScriptEnum("front")]
         Front = 3
     }
 

@@ -1048,6 +1048,8 @@ namespace RenderSystem_OpenGL {
                 newWindow.Show();
             }
 
+            this.CullingMode = this.cullingMode;
+
             return renderWindow;
         }
 
@@ -1434,6 +1436,37 @@ namespace RenderSystem_OpenGL {
         /// <returns></returns>
         public override int ConvertColor(ColorEx color) {
             return color.ToABGR();
+        }
+
+        public override CullingMode CullingMode {
+            get {
+                return cullingMode;
+            }
+            set {
+                // ignore dupe render state
+                if(value == cullingMode) {
+                    return;
+                }
+
+                cullingMode = value;
+
+                int cullMode = Gl.GL_CW;
+
+                switch(value) {
+                    case CullingMode.None:
+                        Gl.glDisable(Gl.GL_CULL_FACE);
+                        return;
+                    case CullingMode.Clockwise:
+                        cullMode = Gl.GL_CCW;
+                        break;
+                    case CullingMode.CounterClockwise:
+                        cullMode = Gl.GL_CW;
+                        break;
+                }
+
+                Gl.glEnable(Gl.GL_CULL_FACE);
+                Gl.glFrontFace(cullMode);
+            }
         }
 
         /// <summary>

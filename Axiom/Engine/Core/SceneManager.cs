@@ -540,7 +540,8 @@ namespace Axiom.Core {
             targetRenderSystem.DepthFunction = material.DepthFunction;
             targetRenderSystem.DepthBias = material.DepthBias;
 
-            // TODO: CULLING
+            // Culling Mode
+            targetRenderSystem.CullingMode = material.CullingMode;
 
             // lighting enabled?
             targetRenderSystem.LightingEnabled = material.Lighting;

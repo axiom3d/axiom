@@ -704,6 +704,33 @@ namespace RenderSystem_DirectX9 {
         /// <summary>
         /// 
         /// </summary>
+        public override CullingMode CullingMode {
+            get {
+                return cullingMode;
+            }
+            set {
+                cullingMode = value;
+
+                switch(value) {
+                    case CullingMode.None:
+                        device.RenderState.CullMode = D3D.Cull.None;
+                        break;
+
+                    case CullingMode.Clockwise:
+                         device.RenderState.CullMode = D3D.Cull.Clockwise;
+                        break;
+
+                    case CullingMode.CounterClockwise:
+                        device.RenderState.CullMode = D3D.Cull.CounterClockwise;
+                        break;
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
         protected override ushort DepthBias {
             set {
                 device.RenderState.DepthBias = (float)value;
