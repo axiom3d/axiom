@@ -31,6 +31,8 @@ namespace Axiom.RenderSystems.OpenGL.GLSL {
 
 		#endregion Fields
 
+		#region Constructor
+
 		public GLSLGpuProgram(GLSLProgram parent) : base(parent.Name, parent.Type, "glsl") {
 			// store off the reference to the parent program
 			glslProgram = parent;
@@ -45,6 +47,8 @@ namespace Axiom.RenderSystems.OpenGL.GLSL {
 			// there is nothing to load
 			loadFromFile = false;
 		}
+
+		#endregion Constructor
 
 		#region Properties
 

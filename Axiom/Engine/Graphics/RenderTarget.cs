@@ -342,7 +342,7 @@ namespace Axiom.Graphics {
 				OnBeforeViewportUpdate(viewport);                
 
 				viewportList[i].Update();
-				numFaces += viewportList[i].Camera.NumRenderedFaces;
+				numFaces += viewportList[i].Camera.RenderedFaceCount;
 
 				// notify event handlers the the viewport is updated
 				OnAfterViewportUpdate(viewport);

@@ -34,7 +34,6 @@ namespace Axiom.RenderSystems.OpenGL {
 	/// 	Specialization of vertex/fragment programs for OpenGL.
 	/// </summary>
 	public abstract class GLGpuProgram : GpuProgram {
-
         #region Fields
 
         /// <summary>

@@ -115,6 +115,23 @@ namespace Axiom.MathLib {
 			return result;
 		}
 
+		/// <summary>
+		///		Multiplies a Vector4 by a scalar value.
+		/// </summary>
+		/// <param name="vector"></param>
+		/// <param name="scalar"></param>
+		/// <returns></returns>
+		public static Vector4 operator * (Vector4 vector, float scalar) {
+			Vector4 result = new Vector4();
+
+			result.x = vector.x * scalar;
+			result.y = vector.y * scalar;
+			result.z = vector.z * scalar;
+			result.w = vector.w * scalar;
+
+			return result;
+		}
+
         /// <summary>
         ///		User to compare two Vector4 instances for equality.
         /// </summary>

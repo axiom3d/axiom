@@ -70,7 +70,6 @@ namespace Axiom.RenderSystems.DirectX9 {
 			// mMiscParams[1] = D3DRenderSystem.Driver
 			// mMiscParams[2] = Axiom.Core.RenderWindow
  		
-			Driver driver = null;
 			Control targetControl = null;
 
 			/// get the Direct3D.Device params

@@ -19,29 +19,29 @@ namespace Axiom.Platforms.Win32
 		/// <summary>
 		///		Holds a snapshot of DirectInput keyboard state.
 		/// </summary>
-		private KeyboardState keyboardState;
+		protected KeyboardState keyboardState;
 		/// <summary>
 		///		Holds a snapshot of DirectInput mouse state.
 		/// </summary>
-		private MouseState mouseState;
+		protected MouseState mouseState;
 		/// <summary>
 		///		DirectInput keyboard device.
 		/// </summary>
-		private DInput.Device keyboardDevice;
+		protected DInput.Device keyboardDevice;
 		/// <summary>
 		///		DirectInput mouse device.
 		/// </summary>
-		private DInput.Device mouseDevice;
-		private int mouseRelX, mouseRelY, mouseRelZ;
-		private int mouseAbsX, mouseAbsY, mouseAbsZ;
-		private bool isInitialized = false;
-		private bool useMouse, useKeyboard, useGamepad;
-		private int mouseButtons;
+		protected DInput.Device mouseDevice;
+		protected int mouseRelX, mouseRelY, mouseRelZ;
+		protected int mouseAbsX, mouseAbsY, mouseAbsZ;
+		protected bool isInitialized;
+		protected bool useMouse, useKeyboard, useGamepad;
+		protected int mouseButtons;
 		/// <summary>
 		///		Active host control that reserves control over the input.
 		/// </summary>
-		private System.Windows.Forms.Control control;
-		private bool ownMouse;
+		protected System.Windows.Forms.Control control;
+		protected bool ownMouse;
 
 		#endregion Fields
 		

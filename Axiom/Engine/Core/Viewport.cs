@@ -48,6 +48,9 @@ namespace Axiom.Core {
 	public sealed class Viewport {
 		#region Protected member variables
 		
+		/// <summary>
+		///		Camera that this viewport is attached to.
+		/// </summary>
 		private Camera camera;
 		private RenderTarget target;
 		private float relativeLeft, relativeTop, relativeWidth, relativeHeight;
@@ -68,13 +71,13 @@ namespace Axiom.Core {
 		///		changes in the target's size: e.g. to fill the whole area,
 		///		values of 0,0,100,100 are appropriate.
 		/// </summary>
-		/// <param name="pCamera">Pointer to a camera to be the source for the image.</param>
-		/// <param name="pTarget">Pointer to the render target to be the destination for the rendering.</param>
+		/// <param name="camera">Pointer to a camera to be the source for the image.</param>
+		/// <param name="target">Pointer to the render target to be the destination for the rendering.</param>
 		/// <param name="left">Left</param>
 		/// <param name="top">Top</param>
 		/// <param name="width">Width</param>
 		/// <param name="height">Height</param>
-		/// <param name="pZOrder">Relative Z-order on the target. Lower = further to the front.</param>
+		/// <param name="zOrder">Relative Z-order on the target. Lower = further to the front.</param>
 		public Viewport(Camera camera, RenderTarget target, float left, float top, float width, float height, int zOrder) {
 			Debug.Assert(camera != null, "Cannot use a null Camera to create a viewport.");
 			Debug.Assert(target != null, "Cannor use a null RenderTarget to create a viewport.");
@@ -90,22 +93,23 @@ namespace Axiom.Core {
 			this.camera = camera;
 			this.target = target;
 
-			this.relativeLeft = left;
-			this.relativeTop = top;
-			this.relativeWidth = width;
-			this.relativeHeight = height;
-			this.zOrder = zOrder;
+			relativeLeft = left;
+			relativeTop = top;
+			relativeWidth = width;
+			relativeHeight = height;
+			zOrder = zOrder;
 
-			this.backColor = ColorEx.Black;
-			this.clearEveryFrame = true;
+			backColor = ColorEx.Black;
+			clearEveryFrame = true;
 
 			// Calculate actual dimensions
 			UpdateDimensions();
 
-			this.isUpdated = true;
-			this.showOverlays = true;
+			isUpdated = true;
+			showOverlays = true;
 
-			// TODO: Add Camera.NotifyViewport
+			// notify camera
+			camera.NotifyViewport(this);
 		}
 
 		#endregion
@@ -133,11 +137,9 @@ namespace Axiom.Core {
 			// If it's false the camera remains unchanged.
 			// This allows cameras to be used to render to many viewports,
 			// which can have their own dimensions and aspect ratios.
-
-			// TODO: Implement Camera.AutoAspectRatio
-			//if (camera.AutoAspectRatio) {
-			//	camera.AspectRatio = actualWidth / actualHeight;
-			//}
+			if (camera.AutoAspectRatio) {
+				camera.AspectRatio = actualWidth / actualHeight;
+			}
 
 			string message = string.Format("Viewport for camera '{0}' - actual dimensions L:{1},T:{2},W:{3},H:{4}",
 				camera.Name, actualLeft, actualTop, actualWidth, actualHeight);
@@ -307,9 +309,9 @@ namespace Axiom.Core {
 		/// <summary>
 		///		Returns the number of faces rendered to this viewport during the last frame.
 		/// </summary>
-		public int NumRenderedFaces {
+		public int RenderedFaceCount {
 			get { 
-				return camera.NumRenderedFaces; 
+				return camera.RenderedFaceCount; 
 			}
 		}
 

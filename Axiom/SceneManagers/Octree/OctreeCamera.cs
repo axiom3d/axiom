@@ -36,6 +36,8 @@ using Axiom.Input;
 using Axiom.Graphics;
 using Axiom.Collections;
 
+// TODO: Update with infinite far plane and such.
+
 namespace Axiom.SceneManagers.Octree {
     public enum Visibility {
         None,

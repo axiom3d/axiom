@@ -103,7 +103,6 @@ namespace Axiom.Graphics {
         #region Properties
 		
         #endregion
-
     }
 
     /// <summary>
@@ -113,8 +112,6 @@ namespace Axiom.Graphics {
         #region Member variables
 		
         protected byte[] data;
-
-		GCHandle handle;
 		
         #endregion
 
@@ -206,7 +203,6 @@ namespace Axiom.Graphics {
         }
 
         #endregion
-
     }
 
     /// <summary>

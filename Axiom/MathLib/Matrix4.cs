@@ -276,9 +276,19 @@ namespace Axiom.MathLib {
         /// <param name="matrix">A Matrix4.</param>
         /// <param name="vector">A Vector3.</param>
         /// <returns>A new vector.</returns>
-        public static Vector3 Multiply  (Matrix4 matrix, Vector3 vector) {
+        public static Vector3 Multiply (Matrix4 matrix, Vector3 vector) {
         	return matrix * vector;
         }
+
+		/// <summary>
+		///		Transforms a plane using the specified transform.
+		/// </summary>
+		/// <param name="matrix">Transformation matrix.</param>
+		/// <param name="plane">Plane to transform.</param>
+		/// <returns>A transformed plane.</returns>
+		public static Plane Multiply(Matrix4 matrix, Plane plane) {
+			return matrix * plane;
+		}
         
         /// <summary>
         ///		Transforms the given 3-D vector by the matrix, projecting the 
@@ -334,6 +344,30 @@ namespace Axiom.MathLib {
 
             return result;
         }
+
+		/// <summary>
+		///		Used to multiply a transformation to a Plane.
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="plane"></param>
+		/// <returns></returns>
+		public static Plane operator * (Matrix4 left, Plane plane) {
+			Plane result = new Plane();
+
+			Vector3 planeNormal = plane.Normal;
+
+			result.Normal = new Vector3(
+				left.m00 * planeNormal.x + left.m01 * planeNormal.y + left.m02 * planeNormal.z,
+				left.m10 * planeNormal.x + left.m11 * planeNormal.y + left.m12 * planeNormal.z,
+				left.m20 * planeNormal.x + left.m21 * planeNormal.y + left.m22 * planeNormal.z);
+
+			Vector3 pt = planeNormal * -plane.D;
+			pt = left * pt;
+
+			result.D = -pt.Dot(result.Normal);
+
+			return result;
+		}
 
         /// <summary>
         ///		Used to add two matrices together.

@@ -1,3 +1,11 @@
+12-04-2004
+- Shadow volumes are now extruded to infinity on hardware that supports it.
+- Added hardware acceleration of shadow volume extrusion using vertex programs.  Performance has increased for stencil shadows almost 2x in some cases.
+- Frustum, Camera, and Viewport classes are up to date with Ogre (as of 0.15.0).
+- Plane is now a struct instead of a class.
+- Assorted other modifications to the Math library.
+- Added oblique near plane projection (untested; will be modifying Render To Texture demo to utilize it).
+
 11-27-2004
 - Big Change: Viewports width/height are now range [0.0, 1.0], as opposed to [0.0, 100.0].  Any Camera.AddViewport calls need to be updated for this.
 - Texture Modulative shadows working, with only a slight artifact in GL at the moment, but still working.
