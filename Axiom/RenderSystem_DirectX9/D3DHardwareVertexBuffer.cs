@@ -90,10 +90,10 @@ namespace Axiom.RenderSystems.DirectX9 {
 
             // lock the buffer, which returns an array
             // TODO: no *working* overload takes length, revisit this
-            data = d3dBuffer.Lock(offset, d3dLocking);
+            data = d3dBuffer.Lock(0, d3dLocking);
 			
             // return an IntPtr to the first element of the locked array
-            return Marshal.UnsafeAddrOfPinnedArrayElement(data, 0);
+            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
         }
 
         /// <summary>
