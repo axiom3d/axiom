@@ -50,7 +50,7 @@ namespace Axiom.Core {
     /// <summary>
     ///		Used to supply info to the FrameStarted and FrameEnded events.
     /// </summary>
-    public struct FrameEventArgs {
+    public class FrameEventArgs {
         public float TimeSinceLastEvent;
         public float TimeSinceLastFrame;
     }
@@ -363,6 +363,9 @@ namespace Axiom.Core {
 
             // add the log to the list of trace listeners to capture output
             System.Diagnostics.Trace.Listeners.Add(engineLog);
+            DebugWindow debugWindow = new DebugWindow();
+            debugWindow.Show();
+            System.Diagnostics.Trace.Listeners.Add(debugWindow);
 
             // initialize all singletons, resetting them in the case of running more than once within the same AppDomain
             InitializeSingletons();
@@ -377,6 +380,9 @@ namespace Axiom.Core {
             System.Diagnostics.Trace.WriteLine("---- Copyright " + this.Copyright + " ---");
             System.Diagnostics.Trace.WriteLine("----- Version: " + this.Version + " ------");
             System.Diagnostics.Trace.WriteLine("Engine initializing...");
+            System.Diagnostics.Trace.WriteLine(string.Format("Operating System: {0}", Environment.OSVersion.ToString()));
+            System.Diagnostics.Trace.WriteLine(string.Format(".Net Framework: {0}", Environment.Version.ToString()));
+            //System.Diagnostics.Trace.WriteLine("Engine initializing...");
 
             // dynamically load plugins
             this.LoadPlugins();

@@ -40,35 +40,65 @@ namespace Axiom.Core {
     public class Entity : SceneObject, IDisposable {
         #region Member variables
 
-        /// <summary>3D Mesh that represents this entity</summary>
+        /// <summary>
+        ///    3D Mesh that represents this entity.
+        /// </summary>
         protected Mesh mesh;
-        /// <summary>List of sub entities.</summary>
+        /// <summary>
+        ///    List of sub entities.
+        /// </summary>
         protected SubEntityCollection subEntityList = new SubEntityCollection();
-        /// <summary>SceneManager responsible for creating this entity.</summary>
+        /// <summary>
+        ///    SceneManager responsible for creating this entity.
+        /// </summary>
         protected SceneManager sceneMgr;
-        /// <summary>Name of the material to be used for this entity.</summary>
+        /// <summary>
+        ///    Name of the material to be used for this entity.
+        /// </summary>
         protected string materialName;
-        /// <summary>Bounding box that 'contains' all the meshes of each child entity</summary>
+        /// <summary>
+        ///    Bounding box that 'contains' all the meshes of each child entity.
+        /// </summary>
         protected AxisAlignedBox fullBoundingBox;
-        /// <summary>State of animation for animable meshes</summary>
+        /// <summary>
+        ///    State of animation for animable meshes.
+        /// </summary>
         protected AnimationStateCollection animationState = new AnimationStateCollection();
-        /// <summary>Cached bone matrices, including and world transforms.</summary>
+        /// <summary>
+        ///    Cached bone matrices, including and world transforms.
+        /// </summary>
         protected internal Matrix4[] boneMatrices;
-        /// <summary>Number of matrices associated with this entity.</summary>
+        /// <summary>
+        ///    Number of matrices associated with this entity.
+        /// </summary>
         protected internal int numBoneMatrices;
-        /// <summary>Flag determines whether or not to display skeleton</summary>
+        /// <summary>
+        ///    Flag that determines whether or not to display skeleton.
+        /// </summary>
         protected bool displaySkeleton;
-        /// <summary>The LOD number of the mesh to use, calculated by NotifyCurrentCamera</summary>
+        /// <summary>
+        ///    The LOD number of the mesh to use, calculated by NotifyCurrentCamera.
+        /// </summary>
         protected int meshLodIndex;
-        /// <summary>LOD bias factor, inverted for optimization when calculating adjusted depth.</summary>
+        /// <summary>
+        ///    LOD bias factor, inverted for optimization when calculating adjusted depth.
+        /// </summary>
         protected float meshLodFactorInv;
-        /// <summary>Index of minimum detail LOD (higher index is lower detail)</summary>
+        /// <summary>
+        ///    Index of minimum detail LOD (higher index is lower detail).
+        /// </summary>
         protected int minMeshLodIndex;
-        /// <summary>Index of maximum detail LOD (lower index is higher detail)</summary>
+        /// <summary>
+        ///    Index of maximum detail LOD (lower index is higher detail).
+        /// </summary>
         protected int maxMeshLodIndex;
-        /// <summary>Flag indicating that mesh uses manual LOD and so might have multiple SubEntity versions</summary>
+        /// <summary>
+        ///    Flag indicating that mesh uses manual LOD and so might have multiple SubEntity versions.
+        /// </summary>
         protected bool usingManualLod;
-        /// <summary>Render detail to be used for this entity (solid, wireframe, point).</summary>
+        /// <summary>
+        ///    Render detail to be used for this entity (solid, wireframe, point).
+        /// </summary>
         protected SceneDetailLevel renderDetail;
 
         #endregion
