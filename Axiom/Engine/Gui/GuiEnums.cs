@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using Axiom.Scripting;
 
 namespace Axiom.Gui {
     /// <summary>
@@ -32,8 +33,10 @@ namespace Axiom.Gui {
     /// </summary>
     public enum MetricsMode {
         /// <summary>'left', 'top', 'height' and 'width' are parametrics from 0.0 to 1.0</summary>
+        [ScriptEnum("relative")]
         Relative,
         /// <summary>Positions & sizes are in absolute pixels.</summary>
+        [ScriptEnum("pixels")]
         Pixels
     }
 
@@ -41,8 +44,20 @@ namespace Axiom.Gui {
     ///		Describes where '0' is in relation to the parent in the horizontal dimension.  Affects how 'left' is interpreted.
     /// </summary>
     public enum HorizontalAlignment {
+        /// <summary>
+        /// 
+        /// </summary>
+        [ScriptEnum("left")]
         Left,
+        /// <summary>
+        /// 
+        /// </summary>
+        [ScriptEnum("center")]
         Center,
+        /// <summary>
+        /// 
+        /// </summary>
+        [ScriptEnum("right")]
         Right
     }
 
@@ -50,8 +65,20 @@ namespace Axiom.Gui {
     ///		Describes where '0' is in relation to the parent in the vertical dimension.  Affects how 'top' is interpreted.
     /// </summary>
     public enum VerticalAlignment {
+        /// <summary>
+        /// 
+        /// </summary>
+        [ScriptEnum("top")]
         Top,
+        /// <summary>
+        /// 
+        /// </summary>
+        [ScriptEnum("center")]
         Center,
+        /// <summary>
+        ///
+        /// </summary>
+        [ScriptEnum("bottom")]
         Bottom
     }
 }

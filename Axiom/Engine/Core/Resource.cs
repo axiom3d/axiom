@@ -119,7 +119,6 @@ namespace Axiom.Core {
         /// <summary>
         ///		Indicates this resource has been used.
         /// </summary>
-        // TODO: Pass in time from HighResolutionTimer in the main loop?  Or stick with this?
         public void Touch() {
             lastAccessed = (ulong)Environment.TickCount;
         }

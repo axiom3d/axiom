@@ -59,8 +59,6 @@
     <File name=".\Core\Log.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Mesh.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Node.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\Core\Overlay.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\Core\OverlayManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Plane.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Resource.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\ResourceManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
@@ -144,6 +142,11 @@
     <File name=".\Collections\BoneCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Serialization\OgreSkeletonReader.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Collections\SceneObjectCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Gui\Overlay.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Gui\OverlayManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Gui\GuiContainer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Gui\GuiElement.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Gui\IGuiElementFactory.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References>
     <Reference type="Project" refto="MathLib" localcopy="True" />
@@ -152,18 +155,18 @@
   <Configuration runwithwarnings="True" name="Debug">
     <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="0" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
     <Execution commandlineparameters="" consolepause="True" />
-    <Output directory=".\bin\Debug\" assembly="AxiomEngine" executeBeforeBuild="" executeAfterBuild="" />
+    <Output directory="..\DemoTest\bin\" assembly="AxiomEngine" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
   </Configuration>
   <Configurations active="Debug">
     <Configuration runwithwarnings="True" name="Debug">
       <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="0" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
       <Execution commandlineparameters="" consolepause="True" />
-      <Output directory=".\bin\Debug\" assembly="AxiomEngine" executeBeforeBuild="" executeAfterBuild="" />
+      <Output directory="..\DemoTest\bin\" assembly="AxiomEngine" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
     </Configuration>
     <Configuration runwithwarnings="True" name="Release">
       <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="False" optimize="True" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="TRACE" generatexmldocumentation="False" win32Icon="" />
       <Execution commandlineparameters="" consolepause="True" />
-      <Output directory=".\Release\" assembly="AxiomEngine" executeBeforeBuild="" executeAfterBuild="" />
+      <Output directory="..\DemoTest\bin\" assembly="AxiomEngine" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
     </Configuration>
   </Configurations>
 </Project>

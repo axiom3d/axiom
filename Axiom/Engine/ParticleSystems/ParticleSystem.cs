@@ -55,6 +55,8 @@ namespace Axiom.ParticleSystems {
         protected ArrayList emitterList = new ArrayList();
         /// <summary>List of affectors for this system.</summary>
         protected ArrayList affectorList = new ArrayList();
+        /// <summary>Cached for less memory usage during emitter processing.</summary>
+        protected ArrayList requested = new ArrayList(60);
 
         #endregion
 
@@ -225,8 +227,7 @@ namespace Axiom.ParticleSystems {
         /// </summary>
         /// <param name="timeElapsed"></param>
         protected void TriggerEmitters(float timeElapsed) {
-            // TODO: Optimize this if possible
-            ArrayList requested = new ArrayList();
+            requested.Clear();
 
             ParticleEmitter emitter = null;
 

@@ -457,16 +457,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Core\Overlay.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Core\OverlayManager.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Core\Plane.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -617,7 +607,17 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Gui\GuiContainer.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Gui\GuiControl.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Gui\GuiElement.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -628,6 +628,21 @@
                 />
                 <File
                     RelPath = "Gui\GuiManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Gui\IGuiElementFactory.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Gui\Overlay.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Gui\OverlayManager.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
