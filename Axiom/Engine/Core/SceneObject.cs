@@ -282,7 +282,7 @@ namespace Axiom.Core {
                 worldAABB.Transform(this.ParentFullTransform);
             }
 
-            return worldAABB;
+			return worldAABB;
         }
 
         /// <summary>
@@ -347,7 +347,8 @@ namespace Axiom.Core {
 
 		public override AxisAlignedBox GetDarkCapBounds(Light light, float dirLightExtrusionDist) {
 			// Extrude own light cap bounds
-			worldDarkCapBounds = GetLightCapBounds();
+			// need a clone to avoid modifying the original bounding box
+			AxisAlignedBox tmpBox = (AxisAlignedBox)GetLightCapBounds().Clone();
 
 			float extrusionDistance = 
 				(light.Type == LightType.Directional) ? dirLightExtrusionDist : light.AttenuationRange;

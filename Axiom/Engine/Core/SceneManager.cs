@@ -198,6 +198,23 @@ namespace Axiom.Core {
 		///		Explicit extrusion distance for directional lights.
 		/// </summary>
 		protected float shadowDirLightExtudeDist;
+		/// <summary>
+		///		Sphere region query to find shadow casters within the attenuation range of a point/spot light.
+		/// </summary>
+		protected SphereRegionSceneQuery shadowCasterQuery;
+		/// <summary>
+		///		Listener to use when finding shadow casters for a light within a scene.
+		/// </summary>
+		protected ShadowCasterSceneQueryListener shadowCasterQueryListener = 
+			new ShadowCasterSceneQueryListener();
+		/// <summary>
+		///		Farthest distance from the camera at which to render shadows.
+		/// </summary>
+		protected float shadowFarDistance;
+		/// <summary>
+		///		shadowFarDistance ^ 2
+		/// </summary>
+		protected float shadowFarDistanceSquared;
 
         #endregion Fields
 
@@ -666,33 +683,33 @@ namespace Axiom.Core {
 
 				// eliminate early if camera cannot see light sphere
 				if (camera.IsObjectVisible(s)) {
-					// HACK: Bypassing for testing, adding em all for now
-					for(int i = 0; i < entityList.Count; i++) {
-						if(entityList[i].CastShadows)
-							shadowCasterList.Add(entityList[i]);
+					// create or init a sphere region query
+					if(shadowCasterQuery == null) {
+						shadowCasterQuery = CreateSphereRegionQuery(s);
+					}
+					else {
+						shadowCasterQuery.Sphere = s;
 					}
 
-//					if (!mShadowCasterSphereQuery) {
-//						shadowCasterSphereQuery = CreateSphereRegionQuery(s);
-//					}
-//					else {
-//						mShadowCasterSphereQuery->setSphere(s);
-//					}
-//
-//					// Determine if light is inside or outside the frustum
-//					bool lightInFrustum = camera->isVisible(light->getPosition());
-//					const PlaneBoundedVolumeList* volList = 0;
-//					if (!lightInFrustum)
-//					{
-//						// Only worth building an external volume list if
-//						// light is outside the frustum
-//						volList = &(light->_getFrustumClipVolumes(camera));
-//					}
-//
-//					// Execute, use callback
-//					mShadowCasterQueryListener.prepare(lightInFrustum, 
-//						volList, camera, &mShadowCasterList);
-//					mShadowCasterSphereQuery->execute(&mShadowCasterQueryListener);
+					// TODO: Ogre has as Position, should be DerivedPosition methinks
+					bool lightInFrustum = camera.IsObjectVisible(light.DerivedPosition);
+
+					PlaneBoundedVolumeList volumeList = null;
+
+					// Only worth building an external volume list if
+					// light is outside the frustum
+					if(!lightInFrustum) {
+						volumeList = light.GetFrustumClipVolumes(camera);
+					}
+
+					// prepare the query and execute using the callback
+					shadowCasterQueryListener.Prepare(
+						lightInFrustum, volumeList, 
+						light, camera, 
+						shadowCasterList, 
+						shadowFarDistanceSquared);
+
+					shadowCasterQuery.Execute(shadowCasterQueryListener);
 				}
 			}
 
@@ -824,6 +841,7 @@ namespace Axiom.Core {
 				if(nearClipVol.Intersects(caster.GetWorldBoundingBox())) {
 					// We have a zfail case, we must use zfail for all objects
 					zfailAlgo = true;
+
 					break;
 				}
 			}
@@ -926,12 +944,12 @@ namespace Axiom.Core {
 			//  - if we have 2-sided stencil, one render with no culling
 			//  - otherwise, 2 renders, one with each culling method and invert the ops
 			SetShadowVolumeStencilState(false, zfail, stencil2sided);
-			RenderSingleObject(sr, shadowStencilPass);//, false);
+			RenderSingleObject(sr, shadowStencilPass, false);
 
 			if (!stencil2sided) {
 				// Second pass
 				SetShadowVolumeStencilState(true, zfail, false);
-				RenderSingleObject(sr, shadowStencilPass);//, false);
+				RenderSingleObject(sr, shadowStencilPass, false);
 			}
 
 			// Do we need to render a debug shadow marker?
@@ -939,7 +957,7 @@ namespace Axiom.Core {
 				// reset stencil & colour ops
 				targetRenderSystem.SetStencilBufferParams();
 				SetPass(shadowDebugPass);
-				RenderSingleObject(sr, shadowDebugPass); //, false);
+				RenderSingleObject(sr, shadowDebugPass, false);
 				targetRenderSystem.SetColorBufferWriteEnabled(false, false, false, false);
 			}
 		}
@@ -1743,6 +1761,32 @@ namespace Axiom.Core {
 		}
 
 		/// <summary>
+		///		Sets the maximum distance away from the camera that shadows will be visible.
+		/// </summary>
+		/// <remarks>
+		///		Shadow techniques can be expensive, therefore it is a good idea
+		///		to limit them to being rendered close to the camera if possible,
+		///		and to skip the expense of rendering shadows for distance objects.
+		///		This method allows you to set the distance at which shadows will no
+		///		longer be rendered.
+		///		Note:
+		///		Each shadow technique can interpret this subtely differently.
+		///		For example, one technique may use this to eliminate casters,
+		///		another might use it to attenuate the shadows themselves.
+		///		You should tweak this value to suit your chosen shadow technique
+		///		and scene setup.
+		/// </remarks>
+		public float ShadowFarDistance {
+			get {
+				return shadowFarDistance;
+			}
+			set {
+				shadowFarDistance = value;
+				shadowFarDistanceSquared = shadowFarDistance * shadowFarDistance;
+			}
+		}
+
+		/// <summary>
 		///		Sets the general shadow technique to be used in this scene.
 		/// </summary>
 		/// <remarks>
@@ -2047,12 +2091,23 @@ namespace Axiom.Core {
             }
         }
 
+		protected void RenderSingleObject(IRenderable renderable, Pass pass, bool doLightIteration) {
+			RenderSingleObject(renderable, pass, doLightIteration, null);
+		}
+
         /// <summary>
-        /// 
+        ///		Internal utility method for rendering a single object.
         /// </summary>
-        /// <param name="renderable"></param>
-        /// <param name="pass"></param>
-        protected virtual void RenderSingleObject(IRenderable renderable, Pass pass) {
+        /// <param name="renderable">The renderable to issue to the pipeline.</param>
+        /// <param name="pass">The pass which is being used.</param>
+        /// <param name="doLightIteration">If true, this method will issue the renderable to
+        /// the pipeline possibly multiple times, if the pass indicates it should be
+        /// done once per light.</param>
+        /// <param name="manualLightList">Only applicable if 'doLightIteration' is false, this
+        /// method allows you to pass in a previously determined set of lights
+        /// which will be used for a single render of this object.</param>
+        protected virtual void RenderSingleObject(IRenderable renderable, Pass pass, 
+			bool doLightIteration, LightList manualLightList) {
             ushort numMatrices = 0;
                 
             // grab the current scene detail level and init the last detail level used
@@ -2070,20 +2125,21 @@ namespace Axiom.Core {
             numMatrices = renderable.NumWorldTransforms;
 
             // set the world matrices in the render system
-            if(numMatrices > 1)
-                targetRenderSystem.SetWorldMatrices(xform, numMatrices);
-            else
-                targetRenderSystem.WorldMatrix = xform[0];        
+			if(numMatrices > 1) {
+				targetRenderSystem.SetWorldMatrices(xform, numMatrices);
+			}
+			else {
+				targetRenderSystem.WorldMatrix = xform[0];
+			}
 
             // issue view/projection changes (if any)
             UseRenderableViewProjection(renderable);
 
-            // set up the texture units for this pass
-            for(int i = 0; i < pass.NumTextureUnitStages; i++) {
+			// issue texture units that depend on updated view matrix
+			// reflective env mapping is one case
+			for(int i = 0; i < pass.NumTextureUnitStages; i++) {
                 TextureUnitState texUnit = pass.GetTextureUnitState(i);
 
-                // issue texture units that depend on updated view matrix
-                // reflective env mapping is one case
                 if(texUnit.HasViewRelativeTexCoordGen) {
                     targetRenderSystem.SetTextureUnit(i, texUnit);
                 }
@@ -2111,63 +2167,98 @@ namespace Axiom.Core {
                 lastDetailLevel = requestedDetail;
             }
 
-            // Here's where we issue the rendering operation to the render system
-            // Note that we may do this once per light, therefore it's in a loop
-            // and the light parameters are updated once per traversal through the
-            // loop
+			// TODO: Set clip planes
 
-            LightList rendLightList = renderable.Lights;
-            bool iteratePerLight = pass.RunOncePerLight;
-            int numIterations = iteratePerLight ? rendLightList.Count : 1;
-            LightList lightListToUse = null;
+			// get the renderables render operation
+			renderable.GetRenderOperation(op);
+			
+			if(doLightIteration) {
 
-            // get the renderables render operation
-            renderable.GetRenderOperation(op);
+				// Here's where we issue the rendering operation to the render system
+				// Note that we may do this once per light, therefore it's in a loop
+				// and the light parameters are updated once per traversal through the
+				// loop
+				LightList rendLightList = renderable.Lights;
+				bool iteratePerLight = pass.RunOncePerLight;
+				int numIterations = iteratePerLight ? rendLightList.Count : 1;
+				LightList lightListToUse = null;
 
-            for(int i = 0; i < numIterations; i++) {
-                // determine light list to use
-                if(iteratePerLight) {
-                    localLightList.Clear();
+				for(int i = 0; i < numIterations; i++) {
+					// determine light list to use
+					if(iteratePerLight) {
+						localLightList.Clear();
 
-                    // check whether we need to filter this one out
-                    if(pass.RunOnlyOncePerLightType && pass.OnlyLightType != rendLightList[i].Type) {
-                        // skip this one
-                        continue;
-                    }
+						// check whether we need to filter this one out
+						if(pass.RunOnlyOncePerLightType && pass.OnlyLightType != rendLightList[i].Type) {
+							// skip this one
+							continue;
+						}
 
-                    localLightList.Add(rendLightList[i]);
-                    lightListToUse = localLightList;
-                }
-                else {
-                    // use complete light list
-                    lightListToUse = rendLightList;
-                }
+						localLightList.Add(rendLightList[i]);
+						lightListToUse = localLightList;
+					}
+					else {
+						// use complete light list
+						lightListToUse = rendLightList;
+					}
 
-                if(pass.IsProgrammable) {
-                    // Update any automatic gpu params for lights
-                    // Other bits of information will have to be looked up
-                    autoParamDataSource.SetCurrentLightList(lightListToUse);
-                    pass.UpdateAutoParamsLightsOnly(autoParamDataSource);
+					if(pass.IsProgrammable) {
+						// Update any automatic gpu params for lights
+						// Other bits of information will have to be looked up
+						autoParamDataSource.SetCurrentLightList(lightListToUse);
+						pass.UpdateAutoParamsLightsOnly(autoParamDataSource);
 
-                    // note: parameters must be bound after auto params are updated
-                    if(pass.HasVertexProgram) {
-                        targetRenderSystem.BindGpuProgramParameters(GpuProgramType.Vertex, pass.VertexProgramParameters);
-                    }
-                    if(pass.HasFragmentProgram) {
-                        targetRenderSystem.BindGpuProgramParameters(GpuProgramType.Fragment, pass.FragmentProgramParameters);
-                    }
-                }
+						// note: parameters must be bound after auto params are updated
+						if(pass.HasVertexProgram) {
+							targetRenderSystem.BindGpuProgramParameters(GpuProgramType.Vertex, pass.VertexProgramParameters);
+						}
+						if(pass.HasFragmentProgram) {
+							targetRenderSystem.BindGpuProgramParameters(GpuProgramType.Fragment, pass.FragmentProgramParameters);
+						}
+					}
 
-                // Do we need to update light states? 
-                // Only do this if fixed-function vertex lighting applies
-                if(pass.LightingEnabled && !pass.HasVertexProgram) {
-                    targetRenderSystem.UseLights(renderable.Lights, pass.MaxLights);
-                }
+					// Do we need to update light states? 
+					// Only do this if fixed-function vertex lighting applies
+					if(pass.LightingEnabled && !pass.HasVertexProgram) {
+						targetRenderSystem.UseLights(renderable.Lights, pass.MaxLights);
+					}
 
-                // render the object as long as it has vertices
-                if(op.vertexData.vertexCount > 0)
-                    targetRenderSystem.Render(op);
-            } // iterate per light
+					// render the object as long as it has vertices
+					if(op.vertexData.vertexCount > 0) {
+						targetRenderSystem.Render(op);
+					}
+				} // iterate per light
+			}
+			else {
+				// do we need to update GPU program parameters?
+				if(pass.IsProgrammable) {
+					// do we have a manual light list
+					if(manualLightList != null) {
+						// Update any automatic gpu params for lights
+						// Other bits of information will have to be looked up
+						autoParamDataSource.SetCurrentLightList(manualLightList);
+						pass.UpdateAutoParamsLightsOnly(autoParamDataSource);
+					}
+
+					// note: parameters must be bound after auto params are updated
+					if(pass.HasVertexProgram) {
+						targetRenderSystem.BindGpuProgramParameters(GpuProgramType.Vertex, pass.VertexProgramParameters);
+					}
+					if(pass.HasFragmentProgram) {
+						targetRenderSystem.BindGpuProgramParameters(GpuProgramType.Fragment, pass.FragmentProgramParameters);
+					}
+				}
+
+				// Use manual lights if present, and not using vertex programs
+				if(manualLightList != null && pass.LightingEnabled && !pass.HasVertexProgram) {
+					targetRenderSystem.UseLights(manualLightList, pass.MaxLights);
+				}
+
+				// render the object as long as it has vertices
+				if(op.vertexData.vertexCount > 0) {
+					targetRenderSystem.Render(op);
+				}
+			}
         }
 
 		/// <summary>
@@ -2194,7 +2285,7 @@ namespace Axiom.Core {
 					IRenderable renderable = (IRenderable)renderables[r];
 
 					// Render a single object, this will set up auto params if required
-					RenderSingleObject(renderable, pass);
+					RenderSingleObject(renderable, pass, true);
 				}
 			}
 		}
@@ -2214,7 +2305,7 @@ namespace Axiom.Core {
 				SetPass(rp.pass);
 
 				// render the transparent object
-				RenderSingleObject(rp.renderable, rp.pass);
+				RenderSingleObject(rp.renderable, rp.pass, true);
 			}
 		}
 
@@ -2266,7 +2357,7 @@ namespace Axiom.Core {
 
 					// we render where the stencil is not equal to zero to render shadows, not lit areas
 					targetRenderSystem.SetStencilBufferParams(CompareFunction.NotEqual, 0);
-					RenderSingleObject(fullScreenQuad, shadowModulativePass);
+					RenderSingleObject(fullScreenQuad, shadowModulativePass, false);
 
 					// reset stencil buffer params
 					targetRenderSystem.SetStencilBufferParams();
@@ -2535,6 +2626,100 @@ namespace Axiom.Core {
 		}
 
         #endregion
+
+		#region ShadowCasterSceneQueryListener Class
+		/// <summary>
+		///		Nested class to use as a callback for shadow caster scene query.
+		/// </summary>
+		protected class ShadowCasterSceneQueryListener : ISceneQueryListener {
+			#region Fields
+
+			protected ArrayList casterList = new ArrayList();
+			protected bool isLightInFrustum;
+			protected PlaneBoundedVolumeList lightClipVolumeList = new PlaneBoundedVolumeList();
+			protected Camera camera;
+			protected Light light;
+			protected float farDistSquared;
+
+			#endregion Fields
+
+			#region Methods
+
+			/// <summary>
+			///		Prepare the listener for use with a set of parameters.
+			/// </summary>
+			/// <param name="lightInFrustum"></param>
+			/// <param name="lightClipVolumes"></param>
+			/// <param name="light"></param>
+			/// <param name="camera"></param>
+			/// <param name="shadowCasterList"></param>
+			/// <param name="farDistSquared"></param>
+			public void Prepare(bool lightInFrustum, PlaneBoundedVolumeList lightClipVolumes, Light light, 
+				Camera camera, ArrayList shadowCasterList, float farDistSquared) {
+
+				this.casterList = shadowCasterList;
+				this.isLightInFrustum = lightInFrustum;
+				this.lightClipVolumeList = lightClipVolumes;
+				this.camera = camera;
+				this.light = light;
+				this.farDistSquared = farDistSquared;
+			}
+
+			#endregion Methods
+
+			#region ISceneQueryListener Members
+
+			public bool OnQueryResult(SceneObject sceneObject) {
+				if (sceneObject.CastShadows && sceneObject.IsVisible) {
+					if (farDistSquared > 0) {
+						// Check object is within the shadow far distance
+						Vector3 toObj = sceneObject.ParentNode.DerivedPosition - camera.DerivedPosition;
+						float radius = sceneObject.GetWorldBoundingSphere().Radius;
+						float dist = toObj.LengthSquared;
+
+						if (dist - (radius * radius) > farDistSquared) {
+							// skip, beyond max range
+							return true;
+						}
+					}
+
+					// If the object is in the frustum, we can always see the shadow
+					if (camera.IsObjectVisible(sceneObject.GetWorldBoundingBox())) {
+						casterList.Add(sceneObject);
+						return true;
+					}
+
+					// Otherwise, object can only be casting a shadow into our view if
+					// the light is outside the frustum (or it's a directional light, 
+					// which are always outside), and the object is intersecting
+					// on of the volumes formed between the edges of the frustum and the
+					// light
+					if (!isLightInFrustum || light.Type == LightType.Directional) {
+						// Iterate over volumes
+						for (int i = 0; i < lightClipVolumeList.Count; i++) {
+							PlaneBoundedVolume pbv = (PlaneBoundedVolume)lightClipVolumeList[i];
+
+							if (pbv.Intersects(sceneObject.GetWorldBoundingBox())) {
+								casterList.Add(sceneObject);
+								return true;
+							}
+						}
+					}
+				}
+
+				return true;
+			}
+
+			public bool OnQueryResult(SceneQuery.WorldFragment fragment) {
+				// don't deal with world fragments by default
+				return true;
+			}
+
+			#endregion
+
+		}
+
+		#endregion
     }
 
 	#region Default SceneQuery Implementations
