@@ -130,6 +130,9 @@ namespace Axiom.Utility {
 
             //show the config dialog and collect options
             if(!Configure()) {
+                // shutting right back down
+                engine.Shutdown();
+                
                 return false;
             }
 
@@ -159,7 +162,8 @@ namespace Axiom.Utility {
 
             // interrogate the available resource paths
             foreach(EngineConfig.FilePathRow row in config.FilePath) {
-                ResourceManager.AddCommonSearchPath(row.src);
+                string fullPath = Application.StartupPath + Path.DirectorySeparatorChar + row.src;
+                ResourceManager.AddCommonSearchPath(fullPath);
             }
         }
 
@@ -190,6 +194,10 @@ namespace Axiom.Utility {
         public void Dispose() {
             // ask the engine to dispose of itself
             engine.Dispose();
+
+            // remove event handlers
+            engine.FrameStarted -= new FrameEvent(OnFrameStarted);
+            engine.FrameEnded -= new FrameEvent(OnFrameEnded);
         }
 
         #endregion Public Methods

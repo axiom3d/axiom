@@ -467,9 +467,6 @@ namespace RenderSystem_DirectX9 {
 
                 D3D.Viewport d3dvp = new D3D.Viewport();
 
-                // HACK: Do the right way
-                device.RenderState.CullMode = Cull.None;
-
                 // set viewport dimensions
                 d3dvp.X = viewport.ActualLeft;
                 d3dvp.Y = viewport.ActualTop;

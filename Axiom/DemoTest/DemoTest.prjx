@@ -27,6 +27,9 @@
     <Reference type="Project" refto="InputSystem_DInput" localcopy="True" />
     <Reference type="Project" refto="ParticleFX" localcopy="True" />
     <Reference type="Project" refto="Plugin_GuiElements" localcopy="True" />
+    <Reference type="Assembly" refto="..\Solution Items\ode.dll" localcopy="True" />
+    <Reference type="Assembly" refto="..\Solution Items\Tao.OpenGl.dll" localcopy="True" />
+    <Reference type="Assembly" refto="..\Solution Items\Tao.Platform.Windows.dll" localcopy="True" />
   </References>
   <DeploymentInformation target="" script="" strategy="File" />
   <Configuration runwithwarnings="True" name="Debug">

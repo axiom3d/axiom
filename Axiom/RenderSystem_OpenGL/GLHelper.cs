@@ -78,7 +78,11 @@ namespace RenderSystem_OpenGL {
                 // get the OpenGL version string and vendor name
                 glVersion = Gl.glGetString(Gl.GL_VERSION);
                 vendor = Gl.glGetString(Gl.GL_VENDOR);
-                vendor = vendor.Substring(0, vendor.IndexOf(" "));
+
+                // parse out the first piece of the vendor string if there are spaces in it
+                if(vendor.IndexOf(" ") != -1) {
+                    vendor = vendor.Substring(0, vendor.IndexOf(" "));
+                }
 
                 // create a new extension list
                 extensionList = new StringCollection();
