@@ -11,7 +11,7 @@ material Examples/OffsetMapping/Specular
       { 
        
          // Vertex program reference 
-         vertex_program_ref Examples/OffsetMapping_VP 
+         vertex_program_ref Examples/OffsetMappingVP 
          { 
             param_named_auto lightPosition light_position_object_space 0 
             param_named_auto eyePosition camera_position_object_space 
@@ -19,7 +19,7 @@ material Examples/OffsetMapping/Specular
          } 
 
          // Fragment program 
-         fragment_program_ref Examples/OffsetMapping_PS 
+         fragment_program_ref Examples/OffsetMappingPS 
          { 
             param_indexed_auto 0 light_diffuse_colour 0 
             param_indexed_auto 1 light_specular_colour 0 
