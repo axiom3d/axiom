@@ -81,6 +81,7 @@
                 <Reference
                     Name = "ode"
                     AssemblyName = "ode"
+                    HintPath = "..\Solution Items\ode.dll"
                 />
             </References>
         </Build>
