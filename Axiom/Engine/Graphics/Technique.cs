@@ -365,7 +365,6 @@ namespace Axiom.Graphics {
 							}
 							else {
 								// Copy the pass and tweak away the lighting parts
-								//Pass newPass = pass.Clone(this, pass.Index);
 								Pass newPass = new Pass(this, pass.Index);
 								pass.CopyTo(newPass);
 								newPass.Ambient = ColorEx.Black;
@@ -686,7 +685,7 @@ namespace Axiom.Graphics {
 		/// <summary>
 		///		Gets the number of illumination passes compiled from this technique.
 		/// </summary>
-		public int NumIlluminationPasses {
+		public int IlluminationPassCount {
 			get {
 				return illuminationPasses.Count;
 			}

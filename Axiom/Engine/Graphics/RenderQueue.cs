@@ -563,7 +563,7 @@ namespace Axiom.Graphics {
 		/// <param name="renderable">Renderable to add to the queue.</param>
 		protected void AddSolidRenderableSplitByLightType(Technique technique, IRenderable renderable) {
 			// Divide the passes into the 3 categories
-			for (int i = 0; i < technique.NumIlluminationPasses; i++) {
+			for (int i = 0; i < technique.IlluminationPassCount; i++) {
 				// Insert into solid list
 				IlluminationPass illpass = technique.GetIlluminationPass(i);
 				SortedList passMap = null;
