@@ -46,19 +46,22 @@ namespace Axiom.MathLib {
     /// </remarks>
     [StructLayout(LayoutKind.Sequential)]
     public struct Vector3 {
-        #region Member variables
+        #region Fields
 
-        /// <summary></summary>
+        /// <summary>X component.</summary>
         public float x;
-        /// <summary></summary>
+        /// <summary>Y component.</summary>
         public float y;
-        /// <summary></summary>
+        /// <summary>Z component.</summary>
         public float z;
 
         private static readonly Vector3 zeroVector = new Vector3(0.0f, 0.0f, 0.0f);
-        private static readonly Vector3 unitVectorX = new Vector3(1.0f, 0.0f, 0.0f);
-        private static readonly Vector3 unitVectorY = new Vector3(0.0f, 1.0f, 0.0f);
-        private static readonly Vector3 unitVectorZ = new Vector3(0.0f, 0.0f, 1.0f);
+        private static readonly Vector3 unitX = new Vector3(1.0f, 0.0f, 0.0f);
+        private static readonly Vector3 unitY = new Vector3(0.0f, 1.0f, 0.0f);
+        private static readonly Vector3 unitZ = new Vector3(0.0f, 0.0f, 1.0f);
+		private static readonly Vector3 negativeUnitX = new Vector3(-1.0f, 0.0f, 0.0f);
+		private static readonly Vector3 negativeUnitY = new Vector3(0.0f, -1.0f, 0.0f);
+		private static readonly Vector3 negativeUnitZ = new Vector3(0.0f, 0.0f, -1.0f);
         private static readonly Vector3 unitVector = new Vector3(1.0f, 1.0f, 1.0f);
 
         #endregion
@@ -554,7 +557,7 @@ namespace Axiom.MathLib {
         /// </summary>
         public static Vector3 UnitX {
             get { 
-                return unitVectorX; 
+                return unitX; 
             }
         }
 
@@ -563,7 +566,7 @@ namespace Axiom.MathLib {
         /// </summary>
         public static Vector3 UnitY {
             get { 
-                return unitVectorY; 
+                return unitY; 
             }
         }
 
@@ -572,9 +575,37 @@ namespace Axiom.MathLib {
         /// </summary>
         public static Vector3 UnitZ {
             get { 
-                return unitVectorZ; 
+                return unitZ; 
             }
         }
+
+		/// <summary>
+		///		Gets a Vector3 with the X set to -1, and the others set to 0.
+		/// </summary>
+		public static Vector3 NegativeUnitX {
+			get { 
+				return negativeUnitX; 
+			}
+		}
+
+		/// <summary>
+		///		Gets a Vector3 with the Y set to -1, and the others set to 0.
+		/// </summary>
+		public static Vector3 NegativeUnitY {
+			get { 
+				return negativeUnitY; 
+			}
+		}
+
+		/// <summary>
+		///		Gets a Vector3 with the Z set to -1, and the others set to 0.
+		/// </summary>
+		public static Vector3 NegativeUnitZ {
+			get { 
+				return negativeUnitZ; 
+			}
+		}
+
         #endregion
 
         #region Object overloads

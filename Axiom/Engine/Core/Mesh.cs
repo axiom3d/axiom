@@ -165,6 +165,10 @@ namespace Axiom.Core {
             vertexBufferUsage = BufferUsage.StaticWriteOnly;
             indexBufferUsage = BufferUsage.StaticWriteOnly;
 
+			// default to having shadow buffers
+			useVertexShadowBuffer = true;
+			useIndexShadowBuffer = true;
+
             numLods = 1;
             MeshLodUsage lod = new MeshLodUsage();
             lod.fromSquaredDepth = 0.0f;
