@@ -22,6 +22,7 @@
     <File name=".\Demos\RenderToTexture.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Demos\CelShading.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Demos\Fresnel.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Demos\Terrain.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References>
     <Reference type="Project" refto="Engine" localcopy="True" />

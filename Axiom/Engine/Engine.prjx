@@ -45,10 +45,12 @@
     <File name=".\Controllers\FrameTimeControllerValue.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Controllers\IControllerFunction.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Controllers\IControllerValue.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Controllers\Canned\AnimationControllerFunction.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Controllers\Canned\FloatGpuParamControllerValue.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Controllers\Canned\MultiplyControllerFunction.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Controllers\Canned\NodeRotationControllerValue.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Controllers\Canned\TexCoordModifierControllerValue.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Controllers\Canned\TextureFrameControllerValue.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Controllers\Canned\WaveformControllerFunction.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Billboard.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\BillboardSet.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
@@ -68,6 +70,8 @@
     <File name=".\Core\Mesh.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\MeshManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Node.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\PatchMesh.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\PatchSurface.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\PlatformManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\PluginManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Resource.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
