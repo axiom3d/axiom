@@ -636,22 +636,41 @@ namespace Axiom.Graphics {
             }
         }
 
-        [AttributeParser("scene_blend", Pass)]
-        public static void ParseSceneBlend(string[] values, Pass pass) {
-            if(values.Length != 1) {
-                ParseHelper.LogParserError("scene_blend", pass.Parent.Name, "Expected 1 param.");
-                return;
-            }
-
-            // lookup the real enum equivalent to the script value
-            object val = ScriptEnumAttribute.Lookup(values[0], typeof(SceneBlendType));
-
-            // if a value was found, assign it
-            if(val != null)
-                pass.SetSceneBlending((SceneBlendType)val);
-            else
-                ParseHelper.LogParserError("scene_blend", pass.Parent.Name, "Invalid enum value");
-        }
+        [AttributeParser("scene_blend", Pass)] 
+        public static void ParseSceneBlend(string[] values, Material material) {           
+            switch (values.Length) { 
+                case 1: 
+                    // e.g. scene_blend add 
+                    // lookup the real enum equivalent to the script value 
+                    object val = ScriptEnumAttribute.Lookup(values[0], typeof(SceneBlendType)); 
+          
+                    // if a value was found, assign it 
+                    if(val != null) 
+                        material.SetSceneBlending((SceneBlendType)val); 
+                    else 
+                        ParseHelper.LogParserError("scene_blend", material.Name, "Invalid enum value"); 
+                    break; 
+                case 2: 
+                    // e.g. scene_blend source_alpha one_minus_source_alpha  
+                    // lookup the real enums equivalent to the script values 
+                    object src_val = ScriptEnumAttribute.Lookup(values[0], typeof(SceneBlendFactor)); 
+                    object dest_val = ScriptEnumAttribute.Lookup(values[1], typeof(SceneBlendFactor)); 
+       
+                    // if both values were found, assign them 
+                    if(src_val != null && dest_val != null) 
+                        material.SetSceneBlending((SceneBlendFactor)src_val,(SceneBlendFactor)dest_val); 
+                    else 
+                        if (src_val == null) 
+                        ParseHelper.LogParserError("scene_blend", material.Name, "Invalid enum value: " + values[0].ToString()); 
+                    if (dest_val == null) 
+                        ParseHelper.LogParserError("scene_blend", material.Name, "Invalid enum value: " + values[1].ToString()); 
+                    break; 
+                default: 
+                    material.SetSceneBlending(SceneBlendFactor.Zero,SceneBlendFactor.Zero); 
+                    ParseHelper.LogParserError("scene_blend", material.Name, "Expected 1 or 2 params."); 
+                    return; 
+            } 
+        } 
 
         [AttributeParser("cull_hardware", Pass)]
         public static void ParseCullHardware(string[] values, Pass pass) {
