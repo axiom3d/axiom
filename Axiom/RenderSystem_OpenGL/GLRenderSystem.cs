@@ -37,8 +37,6 @@ using Axiom.Enumerations;
 using Axiom.MathLib;
 using Axiom.SubSystems.Rendering;
 using Axiom.Utility;
-using CsGL.OpenGL;
-using CsGL.Util;
 using Tao.OpenGl;
 using Tao.Platform.Windows;
 
@@ -50,8 +48,14 @@ namespace RenderSystem_OpenGL {
     public class GLRenderSystem : RenderSystem, IPlugin {
         #region Member variables
 
-        /// <summary>OpenGL Context (from CsGL)</summary>
-        protected OpenGLContext context;
+        /// <summary>Retains initial screen settings.</summary>        
+        protected Gdi.DEVMODE intialScreenSettings;
+        /// <summary>GDI Device Context</summary>
+        private static IntPtr hDC = IntPtr.Zero;
+        /// <summary>Rendering context.</summary>
+        private static IntPtr hRC = IntPtr.Zero;
+        /// <summary>Window handle.</summary>
+        private static IntPtr hWnd = IntPtr.Zero;
 
         /// <summary>Internal view matrix.</summary>
         protected Matrix4 viewMatrix;
@@ -104,11 +108,72 @@ namespace RenderSystem_OpenGL {
             RenderWindow window = new GLWindow();
 
             // see if a OpenGLContext has been created yet
-            if(context == null) {
-                // assign a new context for this target and create it
-                context = new ControlGLContext(target);
-                context.Create(new DisplayType(0, 0), null);
-                context.Grab();
+            if(hDC == IntPtr.Zero) {
+
+                // grab the current display settings
+                User.EnumDisplaySettings(null, User.ENUM_CURRENT_SETTINGS, out intialScreenSettings);
+
+                if(isFullscreen) {
+
+                    Gdi.DEVMODE screenSettings = new Gdi.DEVMODE();
+                    screenSettings.dmSize = (short)Marshal.SizeOf(screenSettings);
+                    screenSettings.dmPelsWidth = width;                         // Selected Screen Width
+                    screenSettings.dmPelsHeight = height;                       // Selected Screen Height
+                    screenSettings.dmBitsPerPel = colorDepth;                         // Selected Bits Per Pixel
+                    screenSettings.dmFields = Gdi.DM_BITSPERPEL | Gdi.DM_PELSWIDTH | Gdi.DM_PELSHEIGHT;
+
+                    // Try To Set Selected Mode And Get Results.  NOTE: CDS_FULLSCREEN Gets Rid Of Start Bar.
+                    int result = User.ChangeDisplaySettings(ref screenSettings, User.CDS_FULLSCREEN);
+
+                    if(result != User.DISP_CHANGE_SUCCESSFUL) {
+                        throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
+                    }
+                }
+
+                // grab the HWND from the supplied target control
+                hWnd = target.Handle;             
+   
+                Gdi.PIXELFORMATDESCRIPTOR pfd = new Gdi.PIXELFORMATDESCRIPTOR();
+                pfd.Size = (short)Marshal.SizeOf(pfd);
+                pfd.Version = 1;
+                pfd.Flags = Gdi.PFD_DRAW_TO_WINDOW |
+                                        Gdi.PFD_SUPPORT_OPENGL |
+                                        Gdi.PFD_DOUBLEBUFFER;
+                pfd.PixelType = (byte) Gdi.PFD_TYPE_RGBA;
+                pfd.ColorBits = (byte) colorDepth;
+                pfd.DepthBits = 16;
+                // TODO: Find the best setting and use that
+                pfd.StencilBits = 0;
+                pfd.LayerType = (byte) Gdi.PFD_MAIN_PLANE;
+
+                // get the device context
+                hDC = User.GetDC(hWnd);
+
+                if(hDC == IntPtr.Zero) {
+                    throw new Exception("Cannot create a GL device context.");
+                }
+
+                // attempt to find an appropriate pixel format
+                int pixelFormat = Gdi.ChoosePixelFormat(hDC, ref pfd);
+
+                if(pixelFormat == 0) {
+                    throw new Exception("Unable to find a suitable pixel format.");
+                }
+
+                if(!Gdi.SetPixelFormat(hDC, pixelFormat, ref pfd)) {
+                    throw new Exception("Unable to set the pixel format.");
+                }
+
+                // attempt to get the rendering context
+                hRC = Wgl.wglCreateContext(hDC);
+
+                if(hRC == IntPtr.Zero) {
+                    throw new Exception("Unable to create a GL rendering context.");
+                }
+
+                if(!Wgl.wglMakeCurrent(hDC, hRC)) {
+                    throw new Exception("Unable to activate the GL rendering context.");
+                }
 
                 // intialize GL extensions and check capabilites
                 GLHelper.InitializeExtensions();
@@ -125,13 +190,6 @@ namespace RenderSystem_OpenGL {
                 foreach(String ext in GLHelper.Extensions)
                     System.Diagnostics.Trace.WriteLine(ext);
 
-                ScreenSetting[] settings = ScreenSetting.CompatibleDisplay;
-
-                if(isFullscreen) {
-                    ScreenSetting setting = new ScreenSetting(width, height, colorDepth);
-                    setting.Set();
-                }
-
                 // init the GL context
                 Gl.glShadeModel(Gl.GL_SMOOTH);							// Enable Smooth Shading
                 Gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f);				// Black Background
@@ -146,7 +204,7 @@ namespace RenderSystem_OpenGL {
             }
 
             // create the window
-            window.Create(name, target, width, height, colorDepth, isFullscreen, left, top, depthBuffer, context);
+            window.Create(name, target, width, height, colorDepth, isFullscreen, left, top, depthBuffer, hDC, hRC);
 
             // add the new window to the RenderWindow collection
             this.renderWindows.Add(window);
@@ -847,12 +905,11 @@ namespace RenderSystem_OpenGL {
             // call base Shutdown implementation
             base.Shutdown();
 
-            if(context != null) {
+           // if(context != null) {
                 // drop and dispose of the context
-                context.Drop();
-                context.Dispose();
-            }
-
+          //      context.Drop();
+          //      context.Dispose();
+          //  }
         }
 
         /// <summary>
@@ -1441,16 +1498,27 @@ namespace RenderSystem_OpenGL {
         ///		Called in constructor to init configuration.
         /// </summary>
         private void InitConfigOptions() {
-            ScreenSetting[] settings = ScreenSetting.CompatibleDisplay;
 
-            for(int i = 0; i < settings.Length; i++) {
-                ScreenSetting setting = settings[i];
+            Gdi.DEVMODE setting;
+            int i = 0;
+            int width, height, bpp, freq;
+            
+            bool go = User.EnumDisplaySettings(null, i++, out setting);
+
+            while(go) {
+                width = setting.dmPelsWidth;
+                height = setting.dmPelsHeight;
+                bpp = setting.dmBitsPerPel;
+                freq = setting.dmDisplayFrequency;
 			
-                // filter out the lower resolutions
-                if(setting.Width >= 640 && setting.Height >= 480) {
+                // filter out the lower resolutions and dupe frequencies, assuming 60 is always available for now
+                if((width >= 640 && height >= 480 && bpp >= 16) && freq == 60) {
                     // add a new row to the display settings table
-                    engineConfig.DisplayMode.AddDisplayModeRow(setting.Width, setting.Height, setting.CDepth, false, false);
+                    engineConfig.DisplayMode.AddDisplayModeRow(width, height, bpp, false, false);
                 }
+
+                // grab the current display settings
+                go = User.EnumDisplaySettings(null, i++, out setting);
             }
         }
 

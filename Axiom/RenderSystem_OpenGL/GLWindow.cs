@@ -30,16 +30,17 @@ using System.Drawing.Imaging;
 using System.Windows.Forms;
 using Axiom.Core;
 using Axiom.SubSystems.Rendering;
-using CsGL.OpenGL;
-using Gl = CsGL.OpenGL.GL;
+using Tao.OpenGl;
+using Tao.Platform.Windows;
 
 namespace RenderSystem_OpenGL {
     /// <summary>
     /// Summary description for GLWindow.
     /// </summary>
     public class GLWindow : RenderWindow {
-        protected OpenGLContext context;
-        protected Ext Ext = new Ext();
+        //protected OpenGLContext context;
+        private IntPtr hDC = IntPtr.Zero;
+        private IntPtr hRC = IntPtr.Zero;
         private bool isActive;
 
         public GLWindow() {
@@ -49,8 +50,12 @@ namespace RenderSystem_OpenGL {
 
         public override void Create(String name, System.Windows.Forms.Control target, int width, int height, int colorDepth, bool isFullScreen, int left, int top, bool depthBuffer, params object[] miscParams) {
             // get the GL context if it was passed in
-            if(miscParams.Length > 0) {
-                context = (OpenGLContext)miscParams[0];
+            if(miscParams.Length != 2) {
+                throw new Exception("Creating of a GL window requires both a device context and rendering context.");
+            }
+            else {
+                hDC = (IntPtr)miscParams[0];
+                hRC = (IntPtr)miscParams[1];
             }
 
             // set the params of the window
@@ -70,6 +75,22 @@ namespace RenderSystem_OpenGL {
 
         public override void Destroy() {
             Form form = null;
+
+            if(hRC != IntPtr.Zero) {                                        // Do We Not Have A Rendering Context?
+                if(!Wgl.wglMakeCurrent(IntPtr.Zero, IntPtr.Zero)) {         // Are We Able To Release The DC And RC Contexts?
+                    MessageBox.Show("Release Of DC And RC Failed.", "SHUTDOWN ERROR", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                if(!Wgl.wglDeleteContext(hRC)) {                            // Are We Not Able To Delete The RC?
+                    MessageBox.Show("Release Rendering Context Failed.", "SHUTDOWN ERROR", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                hRC = IntPtr.Zero;                                          // Set RC To NULL
+            }
+
+            if(hDC != IntPtr.Zero && !User.ReleaseDC(control.Handle, hDC)) {          // Are We Not Able To Release The DC
+                MessageBox.Show("Release Device Context Failed.", "SHUTDOWN ERROR", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                hDC = IntPtr.Zero;                                          // Set DC To NULL
+            }
 
             // if the control is a form, then close it
             if(control is System.Windows.Forms.Form) {
@@ -101,8 +122,8 @@ namespace RenderSystem_OpenGL {
             //int sync = waitForVSync ? 1: 0;
             //Ext.wglSwapIntervalEXT((uint)sync);
 
-            // swap buffers
-            context.SwapBuffer();
+             // swap buffers
+            Gdi.SwapBuffers(hDC);
         }
 
         public override void Update() {
@@ -141,7 +162,7 @@ namespace RenderSystem_OpenGL {
             BitmapData bitmapData = bitmap.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
 
             // read the pixels from the GL buffer
-            Gl.glReadPixels(0, 0, width, height, Gl.GL_BGR_EXT, Gl.GL_UNSIGNED_BYTE, bitmapData.Scan0); 
+            Gl.glReadPixels(0, 0, width, height, Gl.GL_BGR, Gl.GL_UNSIGNED_BYTE, bitmapData.Scan0); 
  
             // unlock the bitmap
             bitmap.UnlockBits(bitmapData); 

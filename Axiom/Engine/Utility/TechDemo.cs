@@ -111,7 +111,7 @@ namespace Axiom.Utility {
 	
             // load the config file
             // relative from the location of debug and releases executables
-            config.ReadXml(@"..\..\Media\EngineConfig.xml");
+            config.ReadXml("EngineConfig.xml");
 
             // interrogate the available resource paths
             foreach(EngineConfig.FilePathRow row in config.FilePath) {
