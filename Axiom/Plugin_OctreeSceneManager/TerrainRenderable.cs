@@ -62,13 +62,13 @@ namespace Axiom.SceneManagers.Octree {
             int offset = 0;
 
             // Position/Normal
-            decl.AddElement(new VertexElement(POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position));
-            decl.AddElement(new VertexElement(NORMAL, 0, VertexElementType.Float3, VertexElementSemantic.Normal));
+            decl.AddElement(POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position);
+            decl.AddElement(NORMAL, 0, VertexElementType.Float3, VertexElementSemantic.Normal);
 
             // TexCoords
-            decl.AddElement(new VertexElement(TEXCOORD, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0));
+            decl.AddElement(TEXCOORD, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0);
             offset += VertexElement.GetTypeSize(VertexElementType.Float2);
-            decl.AddElement(new VertexElement(TEXCOORD, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 1));
+            decl.AddElement(TEXCOORD, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 1);
             offset += VertexElement.GetTypeSize(VertexElementType.Float2);
             // TODO: Color
 

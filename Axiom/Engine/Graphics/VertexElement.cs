@@ -211,7 +211,7 @@ namespace Axiom.Graphics {
         }
 
         /// <summary>
-        /// 
+        ///     Gets the offset into the buffer where this element starts.
         /// </summary>
         public int Offset {
             get { 
@@ -220,7 +220,7 @@ namespace Axiom.Graphics {
         }
 
         /// <summary>
-        /// 
+        ///     Gets the data format of this element.
         /// </summary>
         public VertexElementType Type {
             get { 
@@ -229,7 +229,7 @@ namespace Axiom.Graphics {
         }
 
         /// <summary>
-        /// 
+        ///     Gets the meaning of this element.
         /// </summary>
         public VertexElementSemantic Semantic {
             get { 
@@ -238,7 +238,7 @@ namespace Axiom.Graphics {
         }
 
         /// <summary>
-        /// 
+        ///     Gets the index of this element, only applicable for repeating elements (like texcoords).
         /// </summary>
         public int Index {
             get { 
@@ -247,7 +247,7 @@ namespace Axiom.Graphics {
         }
 
         /// <summary>
-        /// 
+        ///     Gets the size of this element in bytes.
         /// </summary>
         public int Size {
             get { 

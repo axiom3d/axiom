@@ -69,9 +69,9 @@ namespace Demos {
 
             // Create patch with positions, normals, and 1 set of texcoords
             patchDeclaration = HardwareBufferManager.Instance.CreateVertexDeclaration();
-            patchDeclaration.AddElement(new VertexElement(0, 0, VertexElementType.Float3, VertexElementSemantic.Position));
-            patchDeclaration.AddElement(new VertexElement(0, 12, VertexElementType.Float3, VertexElementSemantic.Normal));
-            patchDeclaration.AddElement(new VertexElement(0, 24, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0));
+            patchDeclaration.AddElement(0, 0, VertexElementType.Float3, VertexElementSemantic.Position);
+            patchDeclaration.AddElement(0, 12, VertexElementType.Float3, VertexElementSemantic.Normal);
+            patchDeclaration.AddElement(0, 24, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0);
 
             // Patch data
             PatchVertex[] patchVertices = new PatchVertex[9];

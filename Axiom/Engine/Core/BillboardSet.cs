@@ -532,9 +532,9 @@ namespace Axiom.Core {
 
                     // create the 3 vertex elements we need
                     int offset = 0;
-                    decl.AddElement(new VertexElement(POSITION, offset, VertexElementType.Float3, VertexElementSemantic.Position));
-                    decl.AddElement(new VertexElement(COLOR, offset, VertexElementType.Color, VertexElementSemantic.Diffuse));
-                    decl.AddElement(new VertexElement(TEXCOORD, 0, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0));
+                    decl.AddElement(POSITION, offset, VertexElementType.Float3, VertexElementSemantic.Position);
+                    decl.AddElement(COLOR, offset, VertexElementType.Color, VertexElementSemantic.Diffuse);
+                    decl.AddElement(TEXCOORD, 0, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0);
 
                     // create position buffer
                     HardwareVertexBuffer vBuffer = 

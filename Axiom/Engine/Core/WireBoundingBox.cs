@@ -53,7 +53,6 @@ namespace Axiom.Core {
         ///    Default constructor.
         /// </summary>
         public WireBoundingBox() {
-            
             vertexData = new VertexData();
             vertexData.vertexCount = 24;
             vertexData.vertexStart = 0;
@@ -63,8 +62,8 @@ namespace Axiom.Core {
             VertexBufferBinding binding = vertexData.vertexBufferBinding;
 
             // add elements for position and color only
-            decl.AddElement(new VertexElement(POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position));
-            decl.AddElement(new VertexElement(COLOR, 0, VertexElementType.Color, VertexElementSemantic.Diffuse));
+            decl.AddElement(POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position);
+            decl.AddElement(COLOR, 0, VertexElementType.Color, VertexElementSemantic.Diffuse);
 
             // create a new hardware vertex buffer for the position data
             HardwareVertexBuffer buffer  =
