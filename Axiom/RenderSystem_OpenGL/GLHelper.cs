@@ -281,6 +281,45 @@ namespace RenderSystem_OpenGL {
 
         #endregion ARB_vertex_buffer_object
 
+        #region ARB_vertex_program/ARB_fragment_program
+
+        private static IntPtr bindProgramARBPtr;
+        private static IntPtr deleteProgramsARBPtr;
+        private static IntPtr genProgramsARBPtr;
+        private static IntPtr programStringARBPtr;
+        private static IntPtr isProgramARBPtr;
+        private static IntPtr programLocalParameter4fvPtr;
+
+        public static void glGenProgramsARB(int number, out int program) {
+            // HACK: Make compiler happy until this is implemented
+            program = 0;
+            // Gl.glGenProgramsARB(genProgramsARBPtr, number, out program);
+        }
+
+        public static void glBindProgramARB(int type, int programId) {
+            // Gl.glBindProgramARB(bindProgramARBPtr, type, programId);
+        }
+
+        public static void glDeleteProgramsARB(int number, ref int program) {
+            // Gl.glDeleteProgramsARB(deleteProgramsARBPtr, number, ref program);
+        }
+
+        public static void glProgramStringARB(int type, int program, int length, string source) {
+            // Gl.glProgramStringARB(programStringARBPtr, type, program, length, source);
+        }
+
+        public static bool glIsProgramARB(int programId) {
+            // return Gl.glIsProgramARB(programId);
+            // HACK: Make compiler happy until this is implemented
+            return true;
+        }
+
+        public static void glProgramLocalParameter4vfARB(int type, int index, float[] values) {
+            // Gl.glProgramLocalParameter4fv(type, index, values);
+        }
+
+        #endregion
+
         /// <summary>
         ///    Must be fired up after a GL context has been created.
         /// </summary>
@@ -298,6 +337,14 @@ namespace RenderSystem_OpenGL {
             // ARB_multitexture
             activeTextureARB = Wgl.wglGetProcAddress("glActiveTextureARB");
             clientActiveTextureARB = Wgl.wglGetProcAddress("glClientActiveTextureARB");
+
+            // ARB_vertex_program/ARB_fragment_program
+            bindProgramARBPtr = Wgl.wglGetProcAddress("glBindProgramARB");
+            genProgramsARBPtr = Wgl.wglGetProcAddress("glGenProgramsARB");
+            deleteProgramsARBPtr = Wgl.wglGetProcAddress("glDeleteProgramsARB");
+            programStringARBPtr = Wgl.wglGetProcAddress("glProgramStringARB");
+            isProgramARBPtr = Wgl.wglGetProcAddress("glIsProgramARB");
+            programLocalParameter4fvPtr = Wgl.wglGetProcAddress("glProgramLocalParameter4fv");
         }
     }
 
