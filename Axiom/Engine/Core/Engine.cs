@@ -268,12 +268,12 @@ namespace Axiom.Core
 			// initialize the current render system
 			RenderWindow window = activeRenderSystem.Initialize(autoCreateWindow);
 
-			// have the render system check the hardware capabilities
-			activeRenderSystem.CheckCaps();
-
 			// if they chose to auto create a window, also initialize several subsystems
 			if(autoCreateWindow)
 			{
+				// have the render system check the hardware capabilities
+				activeRenderSystem.CheckCaps();
+
 				// init material manager singleton, which parse sources for materials
 				MaterialManager.Init();
 
@@ -335,6 +335,8 @@ namespace Axiom.Core
 			// is this the first window being created?
 			if(activeRenderSystem.RenderWindows.Count == 1)
 			{
+				activeRenderSystem.CheckCaps();
+
 				// init the material manager singleton
 				MaterialManager.Init();
 
