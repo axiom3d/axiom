@@ -121,7 +121,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia {
         private static extern void nvparse(string input);
 
         [DllImport(NATIVE_LIB, CallingConvention=CallingConvention.Cdecl, EntryPoint="nvparse_get_errors", CharSet=CharSet.Auto)]
-        private static extern char** nvparse_get_errorsA();
+        private static unsafe extern char** nvparse_get_errorsA();
 
         /// <summary>
         ///     
