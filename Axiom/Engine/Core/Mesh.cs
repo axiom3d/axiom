@@ -32,7 +32,6 @@ using System.Runtime.InteropServices;
 using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Configuration;
-using Axiom.Exceptions;
 using Axiom.MathLib;
 using Axiom.MathLib.Collections;
 using Axiom.Serialization;

@@ -31,7 +31,6 @@ using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Controllers;
-using Axiom.Exceptions;
 using Axiom.Overlays;
 using Axiom.MathLib;
 using Axiom.MathLib.Collections;
@@ -368,11 +367,13 @@ namespace Axiom.Core {
         /// <returns></returns>
         public virtual AnimationState CreateAnimationState(string animationName) {
             // do we have this already?
-            if(animationStateList.ContainsKey(animationName))
-                throw new Axiom.Exceptions.AxiomException("Cannot create a duplicate AnimationState for an Animation.");
+			if(animationStateList.ContainsKey(animationName)) {
+				throw new AxiomException("Cannot create a duplicate AnimationState for an Animation.");
+			}
 
-            if(!animationList.ContainsKey(animationName))
-                throw new Axiom.Exceptions.AxiomException(string.Format("The name of a valid animation must be supplied when creating an AnimationState.  Animation '{0}' does not exist.", animationName));
+			if(!animationList.ContainsKey(animationName)) {
+				throw new AxiomException(string.Format("The name of a valid animation must be supplied when creating an AnimationState.  Animation '{0}' does not exist.", animationName));
+			}
 
             // get a reference to the sepcified animation
             Animation anim = animationList[animationName];
@@ -436,7 +437,7 @@ namespace Axiom.Core {
         /// <returns></returns>
         public virtual Entity CreateEntity(string name, string meshName) {
             if(entityList.ContainsKey(name))
-                throw new Axiom.Exceptions.AxiomException(string.Format("An entity with the name '{0}' already exists in the scene.", name));
+                throw new AxiomException(string.Format("An entity with the name '{0}' already exists in the scene.", name));
 
             Mesh mesh = MeshManager.Instance.Load(meshName);
 

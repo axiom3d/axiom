@@ -383,17 +383,17 @@ namespace Axiom.Core {
 		/// <param name="offsetPosition">An adjustment to the position of the attached object, relative to the bone.</param>
 		public TagPoint AttachObjectToBone(string boneName, SceneObject sceneObject, Quaternion offsetOrientation, Vector3 offsetPosition) {
 			if(sceneObject.IsAttached) {
-				throw new Axiom.Exceptions.AxiomException("SceneObject '{0}' is already attached to '{1}'", sceneObject.Name, sceneObject.ParentNode.Name);
+				throw new AxiomException("SceneObject '{0}' is already attached to '{1}'", sceneObject.Name, sceneObject.ParentNode.Name);
 			}
 
 			if(!this.HasSkeleton) {
-				throw new Axiom.Exceptions.AxiomException("Entity '{0}' has no skeleton to attach an object to.", this.name);
+				throw new AxiomException("Entity '{0}' has no skeleton to attach an object to.", this.name);
 			}
 
 			Bone bone = skeletonInstance.GetBone(boneName);
 
 			if(bone == null) {
-				throw new Axiom.Exceptions.AxiomException("Entity '{0}' does not have a skeleton with a bone named '{1}'.", this.name, boneName);
+				throw new AxiomException("Entity '{0}' does not have a skeleton with a bone named '{1}'.", this.name, boneName);
 			}
 
 			TagPoint tagPoint = 

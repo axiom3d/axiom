@@ -29,7 +29,6 @@ using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
 using Axiom.Collections;
-using Axiom.Exceptions;
 using Axiom.Graphics;
 using Axiom.MathLib;
 
@@ -447,7 +446,7 @@ namespace Axiom.Core {
                 if(autoExtendPool)
                     this.PoolSize = this.PoolSize * 2;
                 else
-                    throw new Axiom.Exceptions.AxiomException("Could not create a billboard with AutoSize disabled and an empty pool.");
+                    throw new AxiomException("Could not create a billboard with AutoSize disabled and an empty pool.");
             }
 
             // get the next free billboard from the queue

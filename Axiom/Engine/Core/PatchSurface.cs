@@ -753,7 +753,7 @@ namespace Axiom.Core {
             }
 
             if(!found) {
-                throw new Axiom.Exceptions.AxiomException("Can't find suitable control points for determining U subdivision level");
+                throw new AxiomException("Can't find suitable control points for determining U subdivision level");
             }
 
             return FindLevel(ref a, ref b, ref c);
@@ -797,7 +797,7 @@ namespace Axiom.Core {
                 }
             }
             if(!found) {
-                throw new Axiom.Exceptions.AxiomException("Can't find suitable control points for determining U subdivision level");
+                throw new AxiomException("Can't find suitable control points for determining U subdivision level");
             }
 
             return FindLevel(ref a, ref b, ref c);

@@ -32,7 +32,6 @@ using System.IO;
 using System.Threading;
 using Axiom.Configuration;
 using Axiom.Core;
-using Axiom.Exceptions;
 using Axiom.Input;
 using Axiom.Overlays;
 using Axiom.MathLib;

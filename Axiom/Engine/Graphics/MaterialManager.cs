@@ -296,7 +296,7 @@ namespace Axiom.Graphics {
         /// <returns></returns>
         public override Resource Create(string name) {
             if(resourceList[name] != null)
-                throw new Axiom.Exceptions.AxiomException(string.Format("Cananot create a duplicate material named '{0}'.", name));
+                throw new AxiomException(string.Format("Cananot create a duplicate material named '{0}'.", name));
 
             // create a material
             Material material = new Material(name);

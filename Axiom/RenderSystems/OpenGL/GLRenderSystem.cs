@@ -30,7 +30,6 @@ using System.Diagnostics;
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
-using Axiom.Exceptions;
 using Axiom.MathLib;
 using Axiom.Graphics;
 using Axiom.Utility;

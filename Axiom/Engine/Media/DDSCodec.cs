@@ -1,6 +1,5 @@
 using System;
 using Axiom.Core;
-using Axiom.Exceptions;
 using Axiom.Graphics;
 using Tao.DevIl;
 

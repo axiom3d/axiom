@@ -28,10 +28,8 @@ using System;
 using System.Configuration;
 using System.IO;
 using System.Reflection;
-using Axiom.Exceptions;
 
-namespace Axiom.Core
-{
+namespace Axiom.Core {
 	/// <summary>
 	///		Class which manages the platform settings required to run.
 	/// </summary>

@@ -10,7 +10,8 @@ Here are a few tidbits for the curious:
 - Redid folder structure to match the namespace layout.
 - Refactored GL render system to abstract all Win32 specific code into a Win32 window implementation, and now includes an SDL implementation.
 - Removed the need for app.config.
-- Axiom.Physics namespace removed; 
+- Axiom.Physics namespace removed.
+- Axiom.Exceptions namespace removed; existing exceptions moved to Axiom.Core.
 - GuiElements plugin removed, and the existing basic widgets are available in the core.  All current .overlay scripts will continue to work.  Axiom.Gui namespace is now Axiom.Overlays, and the Panel, BorderPanel, and TextArea widgets are under Axiom.Overlays.Elements.  This will be left as-is with no plans for future additions, in favor of using the much better C# port of CrazyEdsGUI.
 
 

@@ -205,7 +205,7 @@ namespace Axiom.Core {
             xAxis = yAxis.Cross(zAxis);
 
             if(xAxis.Length == 0)
-                throw new Axiom.Exceptions.AxiomException("The up vector for a plane cannot be parallel to the planes normal.");
+                throw new AxiomException("The up vector for a plane cannot be parallel to the planes normal.");
 
             rot3x3.FromAxes(xAxis, yAxis, zAxis);
             rotation = rot3x3;
@@ -320,7 +320,7 @@ namespace Axiom.Core {
             PatchMesh mesh = (PatchMesh)GetByName(name);
 
             if(mesh != null) {
-                throw new Axiom.Exceptions.AxiomException("A mesh with the name {0} already exists!", name);
+                throw new AxiomException("A mesh with the name {0} already exists!", name);
             }
 
             mesh = new PatchMesh(name, controlPointBuffer, declaration, width, height, 
@@ -424,7 +424,7 @@ namespace Axiom.Core {
             yAxis.Normalize();
             xAxis = yAxis.Cross(zAxis);
             if(xAxis.Length == 0) {
-                throw new Axiom.Exceptions.AxiomException("The up vector for a plane cannot be parallel to the planes normal.");
+                throw new AxiomException("The up vector for a plane cannot be parallel to the planes normal.");
             }
 
             rot3.FromAxes(xAxis, yAxis, zAxis);

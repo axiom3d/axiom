@@ -30,7 +30,6 @@ using System.Diagnostics;
 using System.Reflection;
 using Axiom.Controllers;
 using Axiom.Core;
-using Axiom.Exceptions;
 using Axiom.MathLib;
 
 namespace Axiom.Graphics {

@@ -32,7 +32,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Xml;
-using Axiom.Exceptions;
 
 namespace Axiom.Core {
 	/// <summary>
