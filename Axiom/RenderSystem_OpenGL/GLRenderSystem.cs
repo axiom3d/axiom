@@ -149,7 +149,7 @@ namespace RenderSystem_OpenGL {
                     int result = User.ChangeDisplaySettings(ref screenSettings, User.CDS_FULLSCREEN);
 
                     if(result != User.DISP_CHANGE_SUCCESSFUL) {
-                        throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
+                        throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error(), "Unable to change user display settings.");
                     }
                 }
 
@@ -164,9 +164,9 @@ namespace RenderSystem_OpenGL {
                                         Gdi.PFD_DOUBLEBUFFER;
                 pfd.PixelType = (byte) Gdi.PFD_TYPE_RGBA;
                 pfd.ColorBits = (byte) colorDepth;
-                pfd.DepthBits = 16;
+                pfd.DepthBits = 24;
                 // TODO: Find the best setting and use that
-                pfd.StencilBits = 0;
+                pfd.StencilBits = 8;
                 pfd.LayerType = (byte) Gdi.PFD_MAIN_PLANE;
 
                 // get the device context
@@ -180,22 +180,22 @@ namespace RenderSystem_OpenGL {
                 int pixelFormat = Gdi.ChoosePixelFormat(hDC, ref pfd);
 
                 if(pixelFormat == 0) {
-                    throw new Exception("Unable to find a suitable pixel format.");
+                    throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error(), "Unable to find a suitable pixel format.");
                 }
 
                 if(!Gdi.SetPixelFormat(hDC, pixelFormat, ref pfd)) {
-                    throw new Exception("Unable to set the pixel format.");
+                    throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error(), "Unable to set the pixel format.");
                 }
 
                 // attempt to get the rendering context
                 hRC = Wgl.wglCreateContext(hDC);
 
                 if(hRC == IntPtr.Zero) {
-                    throw new Exception("Unable to create a GL rendering context.");
+                    throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error(), "Unable to create a GL rendering context.");
                 }
 
                 if(!Wgl.wglMakeCurrent(hDC, hRC)) {
-                    throw new Exception("Unable to activate the GL rendering context.");
+                    throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error(), "Unable to activate the GL rendering context.");
                 }
 
                 // intialize GL extensions and check capabilites
@@ -220,10 +220,6 @@ namespace RenderSystem_OpenGL {
                 Gl.glEnable(Gl.GL_DEPTH_TEST);							// Enables Depth Testing
                 Gl.glDepthFunc(Gl.GL_LEQUAL);								// The Type Of Depth Testing To Do
                 Gl.glHint(Gl.GL_PERSPECTIVE_CORRECTION_HINT, Gl.GL_NICEST);	// Really Nice Perspective Calculations
-
-                // swap out existing memory.  drops the memory consumption of the app drastically.  equivalent
-                // to the ol' minimize/maximize trick.
-                Kernel.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
             }
 
             // create the window
