@@ -37,54 +37,67 @@ namespace Axiom.Graphics {
         /// <summary>
         ///    Current world matrix.
         /// </summary>
+        [ScriptEnum("WORLD_MATRIX")]
         WorldMatrix,
         /// <summary>
         ///    Current view matrix.
         /// </summary>
+        [ScriptEnum("VIEW_MATRIX")]
         ViewMatrix,
         /// <summary>
         ///    Current projection matrix.
         /// </summary>
+        [ScriptEnum("PROJECTION_MATRIX")]
         ProjectionMatrix,
         /// <summary>
         ///    Current world and view matrices concatenated.
         /// </summary>
+        [ScriptEnum("WORLDVIEW_MATRIX")]
         WorldViewMatrix,
         /// <summary>
         ///    Current world, view, and projection matrics concatenated.
         /// </summary>
+        [ScriptEnum("WORLDVIEWPROJ_MATRIX")]
         WorldViewProjMatrix,
         /// <summary>
         ///    Current world matrix, inverted.
         /// </summary>
+        [ScriptEnum("INVERSE_WORLD_MATRIX")]
         InverseWorldMatrix,
         /// <summary>
         ///    Current world and view matrices concatenated, then inverted.
         /// </summary>
+        [ScriptEnum("INVERSE_WORLDVIEW_MATRIX")]
         InverseWorldViewMatrix,
         /// <summary>
         ///    Light diffuse color.  Index determined when setting up auto constants.
         /// </summary>
+        [ScriptEnum("LIGHT_DIFFUSE_COLOR")]     
         LightDiffuseColor,
         /// <summary>
         ///    Light specular color.  Index determined when setting up auto constants.
         /// </summary>
+        [ScriptEnum("LIGHT_SPECULAR_COLOR")]  
         LightSpecularColor,
         /// <summary>
         ///    Light attenuation.  Vector4(range, constant, linear, quadratic).
         /// </summary>
+        [ScriptEnum("LIGHT_ATTENUATION")]
         LightAttenuation,
         /// <summary>
         ///    A light position in object space.  Index determined when setting up auto constants.
         /// </summary>
+        [ScriptEnum("LIGHT_POSITION_OBJECT_SPACE")]
         LightPositionObjectSpace,
         /// <summary>
         ///    A light direction in object space.  Index determined when setting up auto constants.
         /// </summary>
+        [ScriptEnum("LIGHT_DIRECTION_OBJECT_SPACE")]
         LightDirectionObjectSpace,
         /// <summary>
         ///    The current camera's position in object space.
         /// </summary>
+        [ScriptEnum("CAMERA_POSITION_OBJECT_SPACE")]
         CameraPositionObjectSpace
     }
 
@@ -490,7 +503,7 @@ namespace Axiom.Graphics {
         /// <summary>
         ///		Render the vertices as individual points.
         /// </summary>
-        PointList,
+        PointList = 1,
         /// <summary>
         ///		Render the vertices as a series of individual lines.
         /// </summary>
