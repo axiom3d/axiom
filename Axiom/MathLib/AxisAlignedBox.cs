@@ -318,9 +318,7 @@ namespace Axiom.MathLib {
         /// <summary>
         ///		Allows for merging two boxes together (combining).
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
+        /// <param name="box">Source box.</param>
         public void Merge(AxisAlignedBox box) {
             // nothing to merge with in this case, just return
             if(box.IsNull) {

@@ -479,28 +479,42 @@ namespace Axiom.Core {
         ///		Update the bounds of the BillboardSet.
         /// </summary>
         public virtual void UpdateBounds() {
-            Vector3 min = new Vector3(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
-            Vector3 max = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
-
-            for(int i = 0; i < activeBillboards.Count; i++) {
-                Billboard billboard = (Billboard)activeBillboards[i];
-
-                min.Floor(billboard.Position);
-                max.Ceil(billboard.Position);
+            if (activeBillboards.Count == 0) {
+                // no billboards, so the bounding box is null
+                aab.IsNull = true;
+                boundingRadius = 0.0f;
             }
+            else {
+                float maxSqLen = -1.0f;
+                Vector3 min = new Vector3(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
+                Vector3 max = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
 
-            // adjust for billboard size
-            float adjust = MathUtil.Max(defaultParticleWidth, defaultParticleHeight);
-            Vector3 vecAdjust = new Vector3(adjust, adjust, adjust);
-            min -= vecAdjust;
-            max += vecAdjust;
+                for (int i = 0; i < activeBillboards.Count; i++) {
+                    Billboard billboard = (Billboard)activeBillboards[i];
 
-            // update our local aabb
-            aab.SetExtents(min, max);
+                    Vector3 pos = billboard.Position;
 
-            // if we have a parent node, ask it to update us
-            if(parentNode != null) {
-                parentNode.NeedUpdate();
+                    min.Floor(pos);
+                    max.Ceil(pos);
+
+                    maxSqLen = MathUtil.Max(maxSqLen, pos.LengthSquared);
+                }
+
+                // adjust for billboard size
+                float adjust = MathUtil.Max(defaultParticleWidth, defaultParticleHeight);
+                Vector3 vecAdjust = new Vector3(adjust, adjust, adjust);
+                min -= vecAdjust;
+                max += vecAdjust;
+
+                // update our local aabb
+                aab.SetExtents(min, max);
+
+                boundingRadius = MathUtil.Sqrt(maxSqLen);
+
+                // if we have a parent node, ask it to update us
+                if (parentNode != null) {
+                    parentNode.NeedUpdate();
+                }
             }
         }
 
