@@ -35,174 +35,174 @@ using Microsoft.DirectX.Direct3D;
 using D3D = Microsoft.DirectX.Direct3D;
 
 namespace Axiom.RenderSystems.DirectX9 {
-    /// <summary>
-    /// Summary description for D3DTexture.
-    /// </summary>
-    public class D3DTexture : Axiom.Core.Texture {
-        #region Fields
+	/// <summary>
+	/// Summary description for D3DTexture.
+	/// </summary>
+	public class D3DTexture : Axiom.Core.Texture {
+		#region Fields
 
-        /// <summary>
-        ///     Direct3D device reference.
-        /// </summary>
-        private D3D.Device device;
-        /// <summary>
-        ///     Actual texture reference.
-        /// </summary>
-        private D3D.BaseTexture texture;
-        /// <summary>
-        ///     1D/2D normal texture.
-        /// </summary>
-        private D3D.Texture normTexture;
-        /// <summary>
-        ///     Cubic texture reference.
-        /// </summary>
-        private D3D.CubeTexture cubeTexture;
-        /// <summary>
-        ///     Temporary 1D/2D normal texture.
-        /// </summary>
-        private D3D.Texture tempNormTexture;
-        /// <summary>
-        ///     Temporary cubic texture reference.
-        /// </summary>
-        private D3D.CubeTexture tempCubeTexture;
-        /// <summary>
-        ///     3D volume texture.
-        /// </summary>
-        private D3D.VolumeTexture volumeTexture;
-        /// <summary>
-        ///     Render surface depth/stencil buffer. 
-        /// </summary>
-        private D3D.Surface depthBuffer;
-        /// <summary>
-        ///     Back buffer pixel format.
-        /// </summary>
-        private D3D.Format bbPixelFormat;
-        /// <summary>
-        ///     Direct3D device creation parameters.
-        /// </summary>
-        private D3D.DeviceCreationParameters devParms;
-        /// <summary>
-        ///     Direct3D device capability structure.
-        /// </summary>
-        private D3D.Caps devCaps;
-        /// <summary>
-        ///     Array to hold texture names used for loading cube textures.
-        /// </summary>
-        private string[] cubeFaceNames = new string[6];
+		/// <summary>
+		///     Direct3D device reference.
+		/// </summary>
+		private D3D.Device device;
+		/// <summary>
+		///     Actual texture reference.
+		/// </summary>
+		private D3D.BaseTexture texture;
+		/// <summary>
+		///     1D/2D normal texture.
+		/// </summary>
+		private D3D.Texture normTexture;
+		/// <summary>
+		///     Cubic texture reference.
+		/// </summary>
+		private D3D.CubeTexture cubeTexture;
+		/// <summary>
+		///     Temporary 1D/2D normal texture.
+		/// </summary>
+		private D3D.Texture tempNormTexture;
+		/// <summary>
+		///     Temporary cubic texture reference.
+		/// </summary>
+		private D3D.CubeTexture tempCubeTexture;
+		/// <summary>
+		///     3D volume texture.
+		/// </summary>
+		private D3D.VolumeTexture volumeTexture;
+		/// <summary>
+		///     Render surface depth/stencil buffer. 
+		/// </summary>
+		private D3D.Surface depthBuffer;
+		/// <summary>
+		///     Back buffer pixel format.
+		/// </summary>
+		private D3D.Format bbPixelFormat;
+		/// <summary>
+		///     Direct3D device creation parameters.
+		/// </summary>
+		private D3D.DeviceCreationParameters devParms;
+		/// <summary>
+		///     Direct3D device capability structure.
+		/// </summary>
+		private D3D.Caps devCaps;
+		/// <summary>
+		///     Array to hold texture names used for loading cube textures.
+		/// </summary>
+		private string[] cubeFaceNames = new string[6];
 
-        #endregion Fields
+		#endregion Fields
 		
-        public D3DTexture(string name, D3D.Device device, TextureUsage usage, TextureType type)
-            : this(name, device, type, 0, 0, 0, PixelFormat.Unknown, usage) {}
+		public D3DTexture(string name, D3D.Device device, TextureUsage usage, TextureType type)
+			: this(name, device, type, 0, 0, 0, PixelFormat.Unknown, usage) {}
 
-        public D3DTexture(string name, D3D.Device device, TextureType type, int width, int height, int numMipMaps, Axiom.Media.PixelFormat format, TextureUsage usage) {
-            Debug.Assert(device != null, "Cannot create a texture without a valid D3D Device.");
+		public D3DTexture(string name, D3D.Device device, TextureType type, int width, int height, int numMipMaps, Axiom.Media.PixelFormat format, TextureUsage usage) {
+			Debug.Assert(device != null, "Cannot create a texture without a valid D3D Device.");
 
-            this.name = name;
-            this.usage = usage;
-            this.textureType = type;
+			this.name = name;
+			this.usage = usage;
+			this.textureType = type;
 
-            // set the name of the cubemap faces
-            if(this.TextureType == TextureType.CubeMap) {
-                ConstructCubeFaceNames(name);
-            }
+			// set the name of the cubemap faces
+			if(this.TextureType == TextureType.CubeMap) {
+				ConstructCubeFaceNames(name);
+			}
 
 			// get device caps
 			devCaps = device.DeviceCaps;
 
 			// save off the params used to create the Direct3D device
-            this.device = device;
-            devParms = device.CreationParameters;
+			this.device = device;
+			devParms = device.CreationParameters;
 
-            // get the pixel format of the back buffer
-            D3D.Surface back = device.GetBackBuffer(0, 0, D3D.BackBufferType.Mono);
-            bbPixelFormat = back.Description.Format;
+			// get the pixel format of the back buffer
+			D3D.Surface back = device.GetBackBuffer(0, 0, D3D.BackBufferType.Mono);
+			bbPixelFormat = back.Description.Format;
 
-            SetSrcAttributes(width, height, 1, format);
+			SetSrcAttributes(width, height, 1, format);
 
-            // if render target, create the texture up front
-            if(usage == TextureUsage.RenderTarget) {
-                CreateTexture();
-                isLoaded = true;
-            }
-        }
+			// if render target, create the texture up front
+			if(usage == TextureUsage.RenderTarget) {
+				CreateTexture();
+				isLoaded = true;
+			}
+		}
 
-        #region Properties
+		#region Properties
 
-        /// <summary>
-        ///		Gets the D3D Texture that is contained withing this Texture.
-        /// </summary>
-        public D3D.BaseTexture DXTexture {
-            get { 
-                return texture; 
-            }
-        }
+		/// <summary>
+		///		Gets the D3D Texture that is contained withing this Texture.
+		/// </summary>
+		public D3D.BaseTexture DXTexture {
+			get { 
+				return texture; 
+			}
+		}
 
-        public D3D.Texture NormalTexture {
-            get {
-                return normTexture;
-            }
-        }
+		public D3D.Texture NormalTexture {
+			get {
+				return normTexture;
+			}
+		}
 
-        public D3D.CubeTexture CubeTexture {
-            get {
-                return cubeTexture;
-            }
-        }
+		public D3D.CubeTexture CubeTexture {
+			get {
+				return cubeTexture;
+			}
+		}
 
-        public D3D.VolumeTexture VolumeTexture {
-            get {
-                return volumeTexture;
-            }
-        }
+		public D3D.VolumeTexture VolumeTexture {
+			get {
+				return volumeTexture;
+			}
+		}
 
-        public D3D.Surface DepthStencil {
-            get {
-                return depthBuffer;
-            }
-        }
+		public D3D.Surface DepthStencil {
+			get {
+				return depthBuffer;
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        public override void Load() {
-            // unload if loaded already
-            if(isLoaded)
-                Unload();
+		public override void Load() {
+			// unload if loaded already
+			if(isLoaded)
+				Unload();
 
-            // create a render texture if need be
-            if(usage == TextureUsage.RenderTarget) {
-                CreateTexture();
-                isLoaded = true;
-                return;
-            }
+			// create a render texture if need be
+			if(usage == TextureUsage.RenderTarget) {
+				CreateTexture();
+				isLoaded = true;
+				return;
+			}
 
-            // create a regular texture
-            switch(this.TextureType) {
-                case TextureType.OneD:
-                case TextureType.TwoD:
-                    LoadNormalTexture();
-                    break;
+			// create a regular texture
+			switch(this.TextureType) {
+				case TextureType.OneD:
+				case TextureType.TwoD:
+					LoadNormalTexture();
+					break;
 
-                case TextureType.ThreeD:
-                    LoadVolumeTexture();
-                    break;
+				case TextureType.ThreeD:
+					LoadVolumeTexture();
+					break;
 
-                case TextureType.CubeMap:
-                    LoadCubeTexture();
-                    break;
+				case TextureType.CubeMap:
+					LoadCubeTexture();
+					break;
 
-                default:
-                    throw new Exception("Unsupported texture type!");
-            }
+				default:
+					throw new Exception("Unsupported texture type!");
+			}
 
-            isLoaded = true;
-        }
+			isLoaded = true;
+		}
 
-        public override void LoadImage(Image image) {
-            // log a quick message
-            Trace.WriteLine(string.Format("D3DTexture: Loading {0} with {1} mipmaps from an Image.", name, numMipMaps));
+		public override void LoadImage(Image image) {
+			// log a quick message
+			Trace.WriteLine(string.Format("D3DTexture: Loading {0} with {1} mipmaps from an Image.", name, numMipMaps));
 
 			// we need src image info
 			this.SetSrcAttributes(image.Width, image.Height, 1, image.Format);
@@ -212,237 +212,224 @@ namespace Axiom.RenderSystems.DirectX9 {
 			Image.ApplyGamma(image.Data, this.gamma, image.Size, image.BitsPerPixel);
 			this.BlitImageToNormalTexture(image);
 			isLoaded = true;
-        }
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public override void Dispose() {
-            base.Dispose ();
+		/// <summary>
+		/// 
+		/// </summary>
+		public override void Dispose() {
+			base.Dispose ();
 
-            if(texture != null)
-                texture.Dispose();
-        }
+			if(texture != null)
+				texture.Dispose();
+		}
 
-        /// <summary>
-        ///    
-        /// </summary>
-        private void ConstructCubeFaceNames(string name) {
-            string baseName, ext;
-            string[] postfixes = {"_rt", "_lf", "_up", "_dn", "_fr", "_bk"};
+		/// <summary>
+		///    
+		/// </summary>
+		private void ConstructCubeFaceNames(string name) {
+			string baseName, ext;
+			string[] postfixes = {"_rt", "_lf", "_up", "_dn", "_fr", "_bk"};
 
-            int pos = name.LastIndexOf(".");
+			int pos = name.LastIndexOf(".");
 
-            baseName = name.Substring(0, pos);
-            ext = name.Substring(pos);
+			baseName = name.Substring(0, pos);
+			ext = name.Substring(pos);
 
-            for(int i = 0; i < 6; i++) {
-                cubeFaceNames[i] = baseName + postfixes[i] + ext;
-            }
-        }
+			for(int i = 0; i < 6; i++) {
+				cubeFaceNames[i] = baseName + postfixes[i] + ext;
+			}
+		}
 
-        /// <summary>
-        ///    
-        /// </summary>
-        private void LoadNormalTexture() {
-            Debug.Assert(textureType == TextureType.OneD || textureType == TextureType.TwoD);
+		/// <summary>
+		///    
+		/// </summary>
+		private void LoadNormalTexture() {
+			Debug.Assert(textureType == TextureType.OneD || textureType == TextureType.TwoD);
 
-            Stream stream = TextureManager.Instance.FindResourceData(name);
+			Stream stream = TextureManager.Instance.FindResourceData(name);
 
-            // use D3DX to load the image directly from the stream
-            normTexture = TextureLoader.FromStream(device, stream);
+			// use D3DX to load the image directly from the stream
+			normTexture = TextureLoader.FromStream(device, stream);
 
-            // store a ref for the base texture interface
-            texture = normTexture;
+			// store a ref for the base texture interface
+			texture = normTexture;
 
-            // set the image data attributes
-            SurfaceDescription desc = normTexture.GetLevelDescription(0);
-            SetSrcAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
-            SetFinalAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
+			// set the image data attributes
+			SurfaceDescription desc = normTexture.GetLevelDescription(0);
+			SetSrcAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
+			SetFinalAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
 
-            isLoaded = true;
-        }
+			isLoaded = true;
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private void LoadCubeTexture() {
-            Debug.Assert(this.TextureType == TextureType.CubeMap, "this.TextureType == TextureType.CubeMap");
+		/// <summary>
+		/// 
+		/// </summary>
+		private void LoadCubeTexture() {
+			Debug.Assert(this.TextureType == TextureType.CubeMap, "this.TextureType == TextureType.CubeMap");
 
-            if(name.EndsWith(".dds")) {
-                Stream stream = TextureManager.Instance.FindResourceData(name);
+			if(name.EndsWith(".dds")) {
+				Stream stream = TextureManager.Instance.FindResourceData(name);
 
-                // load the cube texture from the image data stream directly
-                cubeTexture = TextureLoader.FromCubeStream(device, stream);
+				// load the cube texture from the image data stream directly
+				cubeTexture = TextureLoader.FromCubeStream(device, stream);
 
-                // store off a base reference
-                texture = cubeTexture;
+				// store off a base reference
+				texture = cubeTexture;
 
-                // set src and dest attributes to the same, we can't know
-                D3D.SurfaceDescription desc = cubeTexture.GetLevelDescription(0);
-                SetSrcAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
-                SetFinalAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
-            }
-            else {
-                Image[] images = new Image[6];
+				// set src and dest attributes to the same, we can't know
+				D3D.SurfaceDescription desc = cubeTexture.GetLevelDescription(0);
+				SetSrcAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
+				SetFinalAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
+			}
+			else {
+				Image[] images = new Image[6];
 
-                images[0] = Image.FromFile(cubeFaceNames[0]);
-                SetSrcAttributes(images[0].Width, images[0].Height, 1, images[0].Format);
+				images[0] = Image.FromFile(cubeFaceNames[0]);
+				SetSrcAttributes(images[0].Width, images[0].Height, 1, images[0].Format);
 
-                // create the memory for the cube texture
-                CreateCubeTexture();
+				// create the memory for the cube texture
+				CreateCubeTexture();
 
-//                for(int i = 0; i < 6; i++) {
-//                    if(i > 0) {
-//                        images[i] = Image.FromFile(cubeFaceNames[i]);
-//                    }
-//
-//                    // apply gamma first
-//                    Image.ApplyGamma(images[i].Data, this.Gamma, images[i].Size, images[i].BitsPerPixel);
-//                }
+				//                for(int i = 0; i < 6; i++) {
+				//                    if(i > 0) {
+				//                        images[i] = Image.FromFile(cubeFaceNames[i]);
+				//                    }
+				//
+				//                    // apply gamma first
+				//                    Image.ApplyGamma(images[i].Data, this.Gamma, images[i].Size, images[i].BitsPerPixel);
+				//                }
 
-                // load each face texture into the cube face of the cube texture
-                BlitImagesToCubeTex();
-            }
+				// load each face texture into the cube face of the cube texture
+				BlitImagesToCubeTex();
+			}
 
-            isLoaded = true;
-        }
+			isLoaded = true;
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private void LoadVolumeTexture() {
-            Debug.Assert(this.TextureType == TextureType.ThreeD);
+		/// <summary>
+		/// 
+		/// </summary>
+		private void LoadVolumeTexture() {
+			Debug.Assert(this.TextureType == TextureType.ThreeD);
 
-            Stream stream = TextureManager.Instance.FindResourceData(name);
+			Stream stream = TextureManager.Instance.FindResourceData(name);
 
-            // load the cube texture from the image data stream directly
-            volumeTexture = TextureLoader.FromVolumeStream(device, stream);
+			// load the cube texture from the image data stream directly
+			volumeTexture = TextureLoader.FromVolumeStream(device, stream);
 
-            // store off a base reference
-            texture = volumeTexture;
+			// store off a base reference
+			texture = volumeTexture;
 
-            // set src and dest attributes to the same, we can't know
-            D3D.VolumeDescription desc = volumeTexture.GetLevelDescription(0);
-            SetSrcAttributes(desc.Width, desc.Height, desc.Depth, ConvertFormat(desc.Format));
-            SetFinalAttributes(desc.Width, desc.Height, desc.Depth, ConvertFormat(desc.Format));
-        }
+			// set src and dest attributes to the same, we can't know
+			D3D.VolumeDescription desc = volumeTexture.GetLevelDescription(0);
+			SetSrcAttributes(desc.Width, desc.Height, desc.Depth, ConvertFormat(desc.Format));
+			SetFinalAttributes(desc.Width, desc.Height, desc.Depth, ConvertFormat(desc.Format));
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private void CreateCubeTexture() {
-            Debug.Assert(srcWidth > 0 && srcHeight > 0);
+		/// <summary>
+		/// 
+		/// </summary>
+		private void CreateCubeTexture() {
+			Debug.Assert(srcWidth > 0 && srcHeight > 0);
 
-            // use current back buffer format for render textures, else use the one
-            // defined by this texture format
-            D3D.Format d3dPixelFormat = 
-                (usage == TextureUsage.RenderTarget) ? bbPixelFormat : ChooseD3DFormat();
+			// use current back buffer format for render textures, else use the one
+			// defined by this texture format
+			D3D.Format d3dPixelFormat = 
+				(usage == TextureUsage.RenderTarget) ? bbPixelFormat : ChooseD3DFormat();
 
-            // set the appropriate usage based on the usage of this texture
-            D3D.Usage d3dUsage = 
-                (usage == TextureUsage.RenderTarget) ? D3D.Usage.RenderTarget : 0;
+			// set the appropriate usage based on the usage of this texture
+			D3D.Usage d3dUsage = 
+				(usage == TextureUsage.RenderTarget) ? D3D.Usage.RenderTarget : 0;
 
-            // how many mips to use?  make sure its at least one
-            int numMips = (numMipMaps > 0) ? numMipMaps : 1;
+			// how many mips to use?  make sure its at least one
+			int numMips = (numMipMaps > 0) ? numMipMaps : 1;
 
-            if(devCaps.TextureCaps.SupportsMipCubeMap) {
-                if(this.CanAutoGenMipMaps(d3dUsage, ResourceType.CubeTexture, d3dPixelFormat)) {
-                    d3dUsage |= D3D.Usage.AutoGenerateMipMap;
-                    numMips = 0;
-                }
-                else {
-                    if(usage != TextureUsage.RenderTarget) {
-                        // we must create a temp. texture in SYSTEM MEMORY if no auto gen. mip map is present
-                        tempCubeTexture = new CubeTexture(
-                            device,
-                            srcWidth,
-                            numMips,
-                            d3dUsage,
-                            d3dPixelFormat,
-                            Pool.SystemMemory);
-                    }
-                }
-            }
-            else {
-                // no mip map support for this kind of texture
-                numMipMaps = 0;
-                numMips = 1;
-            }
+			if(devCaps.TextureCaps.SupportsMipCubeMap) {
+				if(this.CanAutoGenMipMaps(d3dUsage, ResourceType.CubeTexture, d3dPixelFormat)) {
+					d3dUsage |= D3D.Usage.AutoGenerateMipMap;
+					numMips = 0;
+				}
+			}
+			else {
+				// no mip map support for this kind of texture
+				numMipMaps = 0;
+				numMips = 1;
+			}
 
 			// HACK: Why does Managed D3D report R8G8B8 as an invalid format....
 			if(d3dPixelFormat == D3D.Format.R8G8B8) {
 				d3dPixelFormat = D3D.Format.A8R8G8B8;
 			}
 
-            // create the cube texture
-            cubeTexture = new D3D.CubeTexture(
-                device, 
-                srcWidth, 
-                numMips, 
-                d3dUsage, 
-                d3dPixelFormat, 
-                Pool.Default);
+			// create the cube texture
+			cubeTexture = new D3D.CubeTexture(
+				device, 
+				srcWidth, 
+				numMips, 
+				d3dUsage, 
+				d3dPixelFormat, 
+				(usage == TextureUsage.RenderTarget) ? Pool.Default : Pool.Managed);
 
-            // set the final texture attributes
-            D3D.SurfaceDescription desc = cubeTexture.GetLevelDescription(0);
-            SetFinalAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
+			// set the final texture attributes
+			D3D.SurfaceDescription desc = cubeTexture.GetLevelDescription(0);
+			SetFinalAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
 
-            // store base reference to the texture
-            texture = cubeTexture;
+			// store base reference to the texture
+			texture = cubeTexture;
 
-            if(usage == TextureUsage.RenderTarget) {
-                CreateDepthStencil();
-            }
-        }
+			if(usage == TextureUsage.RenderTarget) {
+				CreateDepthStencil();
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private void CreateDepthStencil() {
-            // Get the format of the depth stencil surface of our main render target.
-            D3D.Surface surface = device.DepthStencilSurface;
-            D3D.SurfaceDescription desc = surface.Description;
+		/// <summary>
+		/// 
+		/// </summary>
+		private void CreateDepthStencil() {
+			// Get the format of the depth stencil surface of our main render target.
+			D3D.Surface surface = device.DepthStencilSurface;
+			D3D.SurfaceDescription desc = surface.Description;
 
-            // Create a depth buffer for our render target, it must be of
-		    // the same format as other targets !!!
-            depthBuffer = device.CreateDepthStencilSurface(
-                srcWidth,
-                srcHeight,
-                // TODO: Verify this goes through, this is ridiculous
-                (D3D.DepthFormat)desc.Format,
-                desc.MultiSampleType,
-                desc.MultiSampleQuality,
-                false);
-        }
+			// Create a depth buffer for our render target, it must be of
+			// the same format as other targets !!!
+			depthBuffer = device.CreateDepthStencilSurface(
+				srcWidth,
+				srcHeight,
+				// TODO: Verify this goes through, this is ridiculous
+				(D3D.DepthFormat)desc.Format,
+				desc.MultiSampleType,
+				desc.MultiSampleQuality,
+				false);
+		}
 
-        private void CreateNormalTexture() {
-            Debug.Assert(srcWidth > 0 && srcHeight > 0);
+		private void CreateNormalTexture() {
+			Debug.Assert(srcWidth > 0 && srcHeight > 0);
 
-            // use current back buffer format for render textures, else use the one
-            // defined by this texture format
-            D3D.Format d3dPixelFormat = 
-                (usage == TextureUsage.RenderTarget) ? bbPixelFormat : ChooseD3DFormat();
+			// use current back buffer format for render textures, else use the one
+			// defined by this texture format
+			D3D.Format d3dPixelFormat = 
+				(usage == TextureUsage.RenderTarget) ? bbPixelFormat : ChooseD3DFormat();
 
-            // set the appropriate usage based on the usage of this texture
-            D3D.Usage d3dUsage = 
-                (usage == TextureUsage.RenderTarget) ? D3D.Usage.RenderTarget : 0;
+			// set the appropriate usage based on the usage of this texture
+			D3D.Usage d3dUsage = 
+				(usage == TextureUsage.RenderTarget) ? D3D.Usage.RenderTarget : 0;
 
-            // how many mips to use?  make sure its at least one
-            int numMips = (numMipMaps > 0) ? numMipMaps : 1;
+			// how many mips to use?  make sure its at least one
+			int numMips = (numMipMaps > 0) ? numMipMaps : 1;
 
 			D3D.TextureRequirements texRequire = new D3D.TextureRequirements();
 			texRequire.Width = srcWidth;
 			texRequire.Height = srcHeight;
 
-            if(devCaps.TextureCaps.SupportsMipMap) 
-			{
-                if(this.CanAutoGenMipMaps(d3dUsage, ResourceType.Textures, d3dPixelFormat)) {
-                    d3dUsage |= D3D.Usage.AutoGenerateMipMap;
-                    numMips = 0;
-                }
-                else {
-                    if(usage != TextureUsage.RenderTarget) {
+			if(devCaps.TextureCaps.SupportsMipMap) {
+				if(this.CanAutoGenMipMaps(d3dUsage, ResourceType.Textures, d3dPixelFormat)) {
+					d3dUsage |= D3D.Usage.AutoGenerateMipMap;
+					numMips = 0;
+				}
+				else {
+					if(usage != TextureUsage.RenderTarget) {
 						// check texture requirements
 						texRequire.NumberMipLevels = numMips;
 						texRequire.Format = d3dPixelFormat;
@@ -452,21 +439,21 @@ namespace Axiom.RenderSystems.DirectX9 {
 
 						// we must create a temp. texture in SYSTEM MEMORY if no auto gen. mip map is present
 						tempNormTexture = new D3D.Texture(
-                            device,
-                            srcWidth,
-                            srcHeight,
-                            numMips,
-                            d3dUsage,
-                            d3dPixelFormat,
-                            Pool.SystemMemory);
-                    }
-                }
-            }
-            else {
-                // no mip map support for this kind of texture
-                numMipMaps = 0;
-                numMips = 1;
-            }
+							device,
+							srcWidth,
+							srcHeight,
+							numMips,
+							d3dUsage,
+							d3dPixelFormat,
+							Pool.SystemMemory);
+					}
+				}
+			}
+			else {
+				// no mip map support for this kind of texture
+				numMipMaps = 0;
+				numMips = 1;
+			}
 
 			// check texture requirements
 			texRequire.NumberMipLevels = numMips;
@@ -476,29 +463,28 @@ namespace Axiom.RenderSystems.DirectX9 {
 			d3dPixelFormat = texRequire.Format;
 
 			// create the texture
-            normTexture = new D3D.Texture(
-                device, 
-                srcWidth, 
-                srcHeight,
-                numMips, 
-                d3dUsage, 
-                d3dPixelFormat, 
-                Pool.Default);
+			normTexture = new D3D.Texture(
+				device, 
+				srcWidth, 
+				srcHeight,
+				numMips, 
+				d3dUsage, 
+				d3dPixelFormat, 
+				Pool.Default);
 
-            // set the final texture attributes
-            D3D.SurfaceDescription desc = normTexture.GetLevelDescription(0);
-            SetFinalAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
+			// set the final texture attributes
+			D3D.SurfaceDescription desc = normTexture.GetLevelDescription(0);
+			SetFinalAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
 
-            // store base reference to the texture
-            texture = normTexture;
+			// store base reference to the texture
+			texture = normTexture;
 
-            if(usage == TextureUsage.RenderTarget) {
-                CreateDepthStencil();
-            }
-        }
+			if(usage == TextureUsage.RenderTarget) {
+				CreateDepthStencil();
+			}
+		}
 
-		private void BlitImageToNormalTexture(Image image)
-		{
+		private void BlitImageToNormalTexture(Image image) {
 			D3D.Format srcFormat = ConvertFormat(image.Format);
 			D3D.Format dstFormat = ChooseD3DFormat();
 
@@ -518,13 +504,11 @@ namespace Axiom.RenderSystems.DirectX9 {
 			// This will be a temp texture for s/w filtering and the final one for h/w filtering
 			// This will perform any size conversion (inc stretching)
 			D3D.Surface dstSurface;
-			if (tempNormTexture != null)
-			{
+			if (tempNormTexture != null) {
 				// s/w mipmaps, use temp texture
 				dstSurface = tempNormTexture.GetSurfaceLevel(0);
 			}
-			else
-			{
+			else {
 				// h/w mipmaps, use the final texture
 				dstSurface = normTexture.GetSurfaceLevel(0);
 			}
@@ -532,16 +516,14 @@ namespace Axiom.RenderSystems.DirectX9 {
 			// copy surfaces
 			SurfaceLoader.FromSurface(dstSurface, srcSurface, D3D.Filter.Triangle | D3D.Filter.Dither, 0);
 
-			if (tempNormTexture != null)
-			{
+			if (tempNormTexture != null) {
 				// Software filtering
 				// Now update the texture & filter the results
 				// we will use D3DX to create the mip map levels
 				TextureLoader.FilterTexture(tempNormTexture, 0, D3D.Filter.Box);
 				device.UpdateTexture(tempNormTexture, normTexture);
 			}
-			else
-			{
+			else {
 				// Hardware mipmapping
 				// use best filtering method supported by hardware
 				texture.AutoGenerateFilterType = GetBestFilterMethod();
@@ -549,8 +531,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 			}
 		}
 
-		private void CopyMemoryToSurface(byte[] buffer, D3D.Surface surface)
-		{
+		private void CopyMemoryToSurface(byte[] buffer, D3D.Surface surface) {
 			// Copy the image from the buffer to the temporary surface.
 			// We have to do our own colour conversion here since we don't 
 			// have a DC to do it for us
@@ -569,15 +550,12 @@ namespace Axiom.RenderSystems.DirectX9 {
 			GraphicsStream stream = surface.LockRectangle(D3D.LockFlags.NoSystemLock, out pitch);
 			// loop through data and do conv.
 			pBuf8 = 0;
-			for( iRow = 0; iRow < srcHeight; iRow++ )
-			{
+			for( iRow = 0; iRow < srcHeight; iRow++ ) {
 				stream.Position = iRow * pitch;
-				for( iCol = 0; iCol < srcWidth; iCol++ )
-				{
+				for( iCol = 0; iCol < srcWidth; iCol++ ) {
 					// Read RGBA values from buffer
 					data32 = 0;
-					if( srcBpp >= 24 )
-					{
+					if( srcBpp >= 24 ) {
 						// Data in buffer is in RGB(A) format
 						// Read into a 32-bit structure
 						// Uses bytes for 24-bit compatibility
@@ -586,8 +564,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 						data32 |= (uint)buffer[pBuf8++] << 16;
 						data32 |= (uint)buffer[pBuf8++] << 8;
 					}
-					else if( srcBpp == 8 ) // Greyscale, not palettised (palettised NOT supported)
-					{
+					else if( srcBpp == 8 ) { // Greyscale, not palettised (palettised NOT supported)
 						// Duplicate same greyscale value across R,G,B
 						data32 |= (uint)buffer[pBuf8] << 24;
 						data32 |= (uint)buffer[pBuf8] << 16;
@@ -611,15 +588,14 @@ namespace Axiom.RenderSystems.DirectX9 {
 					// Blue
 					out32 |= convertBitPattern( data32, 0x0000FF00, bMask );
 					// Alpha
-					if( aMask > 0 )
-					{
+					if( aMask > 0 ) {
 						out32 |= convertBitPattern( data32, 0x000000FF, aMask );
 					}
 					// Assign results to surface pixel
 					// Write up to 4 bytes
 					// Surfaces are little-endian (low byte first)
 					if( rgbBitCount >= 8 )
-                        stream.WriteByte((byte)out32);
+						stream.WriteByte((byte)out32);
 					if( rgbBitCount >= 16 )
 						stream.WriteByte((byte)(out32 >> 8));
 					if( rgbBitCount >= 24 )
@@ -632,8 +608,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 			surface.UnlockRectangle();
 		}
 
-		private uint convertBitPattern(uint srcValue, uint srcBitMask, uint destBitMask)
-		{
+		private uint convertBitPattern(uint srcValue, uint srcBitMask, uint destBitMask) {
 			// Mask off irrelevant source value bits (if any)
 			srcValue = srcValue & srcBitMask;
 
@@ -653,25 +628,21 @@ namespace Axiom.RenderSystems.DirectX9 {
 			return (destValue << destBitShift);
 		}
 
-		private int getBitShift(uint mask)
-		{
+		private int getBitShift(uint mask) {
 			if (mask == 0)
 				return 0;
 
 			int result = 0;
-			while ((mask & 1) == 0) 
-			{
+			while ((mask & 1) == 0) {
 				++result;
 				mask >>= 1;
 			}
 			return result;
 		}
 
-		private void GetColorMasks(D3D.Format format, out uint red, out uint green, out uint blue, out uint alpha, out uint rgbBitCount)
-		{
+		private void GetColorMasks(D3D.Format format, out uint red, out uint green, out uint blue, out uint alpha, out uint rgbBitCount) {
 			// we choose the format of the D3D texture so check only for our pf types...
-			switch (format)
-			{
+			switch (format) {
 				case D3D.Format.X8B8G8R8:
 					red = 0x00FF0000; green = 0x0000FF00; blue = 0x000000FF; alpha = 0x00000000;
 					rgbBitCount = 32;
@@ -701,86 +672,85 @@ namespace Axiom.RenderSystems.DirectX9 {
 			}
 		}
 
-		private D3D.TextureFilter GetBestFilterMethod()
-		{
+		private D3D.TextureFilter GetBestFilterMethod() {
 			// TODO : do it really :)
 			return D3D.TextureFilter.Point;
 		}
 
-        /// <summary>
-        ///     
-        /// </summary>
-        /// <param name="images"></param>
-        /// <returns></returns>
-        private void BlitImagesToCubeTex() {
-            for(int i = 0; i < 6; i++) {
-                // get a reference to the current cube surface for this iteration
-                D3D.Surface dstSurface;
+		/// <summary>
+		///     
+		/// </summary>
+		/// <param name="images"></param>
+		/// <returns></returns>
+		private void BlitImagesToCubeTex() {
+			for(int i = 0; i < 6; i++) {
+				// get a reference to the current cube surface for this iteration
+				D3D.Surface dstSurface;
 
-                // Now we need to copy the source surface (where our image is) to 
-                // either the the temp. texture level 0 surface (for s/w mipmaps)
-                // or the final texture (for h/w mipmaps)
-                if(tempCubeTexture != null) {
-                    dstSurface = tempCubeTexture.GetCubeMapSurface((CubeMapFace)i, 0);
-                }
-                else {
-                    dstSurface = cubeTexture.GetCubeMapSurface((CubeMapFace)i, 0);
-                }
+				// Now we need to copy the source surface (where our image is) to 
+				// either the the temp. texture level 0 surface (for s/w mipmaps)
+				// or the final texture (for h/w mipmaps)
+				if(tempCubeTexture != null) {
+					dstSurface = tempCubeTexture.GetCubeMapSurface((CubeMapFace)i, 0);
+				}
+				else {
+					dstSurface = cubeTexture.GetCubeMapSurface((CubeMapFace)i, 0);
+				}
 
-                // copy the image data to a memory stream
-                Stream stream = TextureManager.Instance.FindResourceData(cubeFaceNames[i]);
+				// copy the image data to a memory stream
+				Stream stream = TextureManager.Instance.FindResourceData(cubeFaceNames[i]);
 
-                // load the stream into the cubemap surface
-                SurfaceLoader.FromStream(dstSurface, stream, Filter.Point, 0);
-            }
+				// load the stream into the cubemap surface
+				SurfaceLoader.FromStream(dstSurface, stream, Filter.Point, 0);
+			}
 
-            // After doing all the faces, we generate mipmaps
-            // For s/w mipmaps this involves an extra copying step
-            // TODO: Find best filtering method for this hardware, currently hardcoded to Point
-            if(tempCubeTexture != null) {
-                TextureLoader.FilterTexture(tempCubeTexture, 0, Filter.Point);
-                device.UpdateTexture(tempCubeTexture, cubeTexture);
+			// After doing all the faces, we generate mipmaps
+			// For s/w mipmaps this involves an extra copying step
+			// TODO: Find best filtering method for this hardware, currently hardcoded to Point
+			if(tempCubeTexture != null) {
+				TextureLoader.FilterTexture(tempCubeTexture, 0, Filter.Point);
+				device.UpdateTexture(tempCubeTexture, cubeTexture);
 
-                tempCubeTexture.Dispose();
-            }
-            else {
-                cubeTexture.AutoGenerateFilterType = TextureFilter.Point;
-                cubeTexture.GenerateMipSubLevels();
-            }
-        }
+				tempCubeTexture.Dispose();
+			}
+			else {
+				cubeTexture.AutoGenerateFilterType = TextureFilter.Point;
+				cubeTexture.GenerateMipSubLevels();
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="usage"></param>
-        /// <param name="type"></param>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        private bool CanAutoGenMipMaps(D3D.Usage srcUsage, D3D.ResourceType srcType, D3D.Format srcFormat) {
-            Debug.Assert(device != null);
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="usage"></param>
+		/// <param name="type"></param>
+		/// <param name="format"></param>
+		/// <returns></returns>
+		private bool CanAutoGenMipMaps(D3D.Usage srcUsage, D3D.ResourceType srcType, D3D.Format srcFormat) {
+			Debug.Assert(device != null);
 
-            if(device.DeviceCaps.DriverCaps.CanAutoGenerateMipMap) {
-                // make sure we can do it!
-                return D3D.Manager.CheckDeviceFormat(
-                    devParms.AdapterOrdinal,
-                    devParms.DeviceType,
-                    bbPixelFormat,
-                    srcUsage | D3D.Usage.AutoGenerateMipMap,
-                    srcType,
-                    srcFormat);
-            }
+			if(device.DeviceCaps.DriverCaps.CanAutoGenerateMipMap) {
+				// make sure we can do it!
+				return D3D.Manager.CheckDeviceFormat(
+					devParms.AdapterOrdinal,
+					devParms.DeviceType,
+					bbPixelFormat,
+					srcUsage | D3D.Usage.AutoGenerateMipMap,
+					srcType,
+					srcFormat);
+			}
 
-            return false;
-        }
+			return false;
+		}
 
-        public void CopyToTexture(Axiom.Core.Texture target) {
-            // TODO: Check usage and format, need Usage property on Texture
+		public void CopyToTexture(Axiom.Core.Texture target) {
+			// TODO: Check usage and format, need Usage property on Texture
 
-            D3DTexture texture = (D3DTexture)target;
+			D3DTexture texture = (D3DTexture)target;
 
-            if(target.TextureType == TextureType.TwoD) {
+			if(target.TextureType == TextureType.TwoD) {
 				using(D3D.Surface srcSurface = normTexture.GetSurfaceLevel(0),
-						dstSurface = texture.NormalTexture.GetSurfaceLevel(0)) {
+						  dstSurface = texture.NormalTexture.GetSurfaceLevel(0)) {
 
 					System.Drawing.Rectangle srcRect = new System.Drawing.Rectangle(0, 0, this.Width, this.Height);
 					System.Drawing.Rectangle destRect = new System.Drawing.Rectangle(0, 0, target.Width, target.Height);
@@ -793,178 +763,178 @@ namespace Axiom.RenderSystems.DirectX9 {
 						destRect, 
 						TextureFilter.None);
 				}
-            }
-            else {
-                // TODO: Cube render targets
-            }
-        }
+			}
+			else {
+				// TODO: Cube render targets
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private void CreateTexture() {
-            Debug.Assert(srcWidth > 0 && srcHeight > 0);
+		/// <summary>
+		/// 
+		/// </summary>
+		private void CreateTexture() {
+			Debug.Assert(srcWidth > 0 && srcHeight > 0);
 
-            switch(this.TextureType) {
-                case TextureType.OneD:
-                case TextureType.TwoD:
-                    CreateNormalTexture();
-                    break;
+			switch(this.TextureType) {
+				case TextureType.OneD:
+				case TextureType.TwoD:
+					CreateNormalTexture();
+					break;
 
-                case TextureType.CubeMap:
-                    CreateCubeTexture();
-                    break;
+				case TextureType.CubeMap:
+					CreateCubeTexture();
+					break;
 
-                default:
-                    throw new Exception("Unknown texture type!");
-            }
-        }
+				default:
+					throw new Exception("Unknown texture type!");
+			}
+		}
 
-        private D3D.Format ChooseD3DFormat() {
-            if(finalBpp > 16 && hasAlpha) {
-                return D3D.Format.A8R8G8B8;
-            }
-            else if (finalBpp > 16 && !hasAlpha) {
-                return D3D.Format.R8G8B8;
-            }
-            else if(finalBpp == 16 && hasAlpha) {
-                return D3D.Format.A4R4G4B4;
-            }
-            else if(finalBpp == 16 && !hasAlpha) {
-                return D3D.Format.R5G6B5;
-            }
-            else {
-                throw new Exception("Unknown pixel format!");
-            }
-        }
+		private D3D.Format ChooseD3DFormat() {
+			if(finalBpp > 16 && hasAlpha) {
+				return D3D.Format.A8R8G8B8;
+			}
+			else if (finalBpp > 16 && !hasAlpha) {
+				return D3D.Format.R8G8B8;
+			}
+			else if(finalBpp == 16 && hasAlpha) {
+				return D3D.Format.A4R4G4B4;
+			}
+			else if(finalBpp == 16 && !hasAlpha) {
+				return D3D.Format.R5G6B5;
+			}
+			else {
+				throw new Exception("Unknown pixel format!");
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        public PixelFormat ConvertFormat(D3D.Format format) {
-            switch(format) {
-                case D3D.Format.A8:
-                    return PixelFormat.A8;
-                case D3D.Format.A4L4:
-                    return PixelFormat.A4L4;
-                case D3D.Format.A4R4G4B4:
-                    return PixelFormat.A4R4G4B4;
-                case D3D.Format.A8R8G8B8:
-                    return PixelFormat.A8R8G8B8;
-                case D3D.Format.A2R10G10B10:
-                    return PixelFormat.A2R10G10B10;
-                case D3D.Format.L8:
-                    return PixelFormat.L8;
-                case D3D.Format.X1R5G5B5:
-                case D3D.Format.R5G6B5:
-                    return PixelFormat.R5G6B5;
-                case D3D.Format.X8R8G8B8:
-                case D3D.Format.R8G8B8:
-                    return PixelFormat.R8G8B8;
-            }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="format"></param>
+		/// <returns></returns>
+		public PixelFormat ConvertFormat(D3D.Format format) {
+			switch(format) {
+				case D3D.Format.A8:
+					return PixelFormat.A8;
+				case D3D.Format.A4L4:
+					return PixelFormat.A4L4;
+				case D3D.Format.A4R4G4B4:
+					return PixelFormat.A4R4G4B4;
+				case D3D.Format.A8R8G8B8:
+					return PixelFormat.A8R8G8B8;
+				case D3D.Format.A2R10G10B10:
+					return PixelFormat.A2R10G10B10;
+				case D3D.Format.L8:
+					return PixelFormat.L8;
+				case D3D.Format.X1R5G5B5:
+				case D3D.Format.R5G6B5:
+					return PixelFormat.R5G6B5;
+				case D3D.Format.X8R8G8B8:
+				case D3D.Format.R8G8B8:
+					return PixelFormat.R8G8B8;
+			}
 
-            return PixelFormat.Unknown;
-        }
+			return PixelFormat.Unknown;
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        public D3D.Format ConvertFormat(PixelFormat format) {
-            switch(format) {
-                case PixelFormat.L8:
-                    return D3D.Format.L8;
-                case PixelFormat.A8:
-                    return D3D.Format.A8;
-                case PixelFormat.B5G6R5:
-                case PixelFormat.R5G6B5:
-                    return D3D.Format.R5G6B5;
-                case PixelFormat.B4G4R4A4:
-                case PixelFormat.A4R4G4B4:
-                    return D3D.Format.A4R4G4B4;
-                case PixelFormat.B8G8R8:
-                case PixelFormat.R8G8B8:
-                    return D3D.Format.R8G8B8;
-                case PixelFormat.B8G8R8A8:
-                case PixelFormat.A8R8G8B8:
-                    return D3D.Format.A8R8G8B8;
-                case PixelFormat.L4A4:
-                case PixelFormat.A4L4:
-                    return D3D.Format.A4L4;
-                case PixelFormat.B10G10R10A2:
-                case PixelFormat.A2R10G10B10:
-                    return D3D.Format.A2R10G10B10;
-            }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="format"></param>
+		/// <returns></returns>
+		public D3D.Format ConvertFormat(PixelFormat format) {
+			switch(format) {
+				case PixelFormat.L8:
+					return D3D.Format.L8;
+				case PixelFormat.A8:
+					return D3D.Format.A8;
+				case PixelFormat.B5G6R5:
+				case PixelFormat.R5G6B5:
+					return D3D.Format.R5G6B5;
+				case PixelFormat.B4G4R4A4:
+				case PixelFormat.A4R4G4B4:
+					return D3D.Format.A4R4G4B4;
+				case PixelFormat.B8G8R8:
+				case PixelFormat.R8G8B8:
+					return D3D.Format.R8G8B8;
+				case PixelFormat.B8G8R8A8:
+				case PixelFormat.A8R8G8B8:
+					return D3D.Format.A8R8G8B8;
+				case PixelFormat.L4A4:
+				case PixelFormat.A4L4:
+					return D3D.Format.A4L4;
+				case PixelFormat.B10G10R10A2:
+				case PixelFormat.A2R10G10B10:
+					return D3D.Format.A2R10G10B10;
+			}
 
-            return D3D.Format.Unknown;
-        }
+			return D3D.Format.Unknown;
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="depth"></param>
-        /// <param name="format"></param>
-        private void SetSrcAttributes(int width, int height, int depth, PixelFormat format) {
-            srcWidth = width;
-            srcHeight = height;
-            srcBpp = Image.GetNumElemBits(format);
-            hasAlpha = Image.FormatHasAlpha(format);
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="depth"></param>
+		/// <param name="format"></param>
+		private void SetSrcAttributes(int width, int height, int depth, PixelFormat format) {
+			srcWidth = width;
+			srcHeight = height;
+			srcBpp = Image.GetNumElemBits(format);
+			hasAlpha = Image.FormatHasAlpha(format);
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="depth"></param>
-        /// <param name="format"></param>
-        private void SetFinalAttributes(int width, int height, int depth, PixelFormat format) {
-            // set target texture attributes
-            this.height = height; 
-            this.width = width; 
-            this.depth = depth;
-            this.format = format; 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="depth"></param>
+		/// <param name="format"></param>
+		private void SetFinalAttributes(int width, int height, int depth, PixelFormat format) {
+			// set target texture attributes
+			this.height = height; 
+			this.width = width; 
+			this.depth = depth;
+			this.format = format; 
 
-            // Update size (the final size, not including temp space)
-            // this is needed in Resource class
-            int bytesPerPixel = finalBpp >> 3;
-            if(!hasAlpha && finalBpp == 32) {
-                bytesPerPixel--;
-            }
+			// Update size (the final size, not including temp space)
+			// this is needed in Resource class
+			int bytesPerPixel = finalBpp >> 3;
+			if(!hasAlpha && finalBpp == 32) {
+				bytesPerPixel--;
+			}
 
-            size = width * height * depth * bytesPerPixel * ((textureType == TextureType.CubeMap)? 6 : 1);
-        }
+			size = width * height * depth * bytesPerPixel * ((textureType == TextureType.CubeMap)? 6 : 1);
+		}
 
-        public override void Unload() {
-            base.Unload();
+		public override void Unload() {
+			base.Unload();
 
-            if(isLoaded) {
-                if(texture != null) {
-                    texture.Dispose();
-                }
-                if(normTexture != null) {
-                    normTexture.Dispose();
-                }
-                if(cubeTexture != null) {
-                    cubeTexture.Dispose();
-                }
-                if(volumeTexture != null) {
-                    volumeTexture.Dispose();
-                }
-                if(depthBuffer != null) {
-                    depthBuffer.Dispose();
-                }
+			if(isLoaded) {
+				if(texture != null) {
+					texture.Dispose();
+				}
+				if(normTexture != null) {
+					normTexture.Dispose();
+				}
+				if(cubeTexture != null) {
+					cubeTexture.Dispose();
+				}
+				if(volumeTexture != null) {
+					volumeTexture.Dispose();
+				}
+				if(depthBuffer != null) {
+					depthBuffer.Dispose();
+				}
 
-                isLoaded = false;
-            }
-        }
+				isLoaded = false;
+			}
+		}
 
-        #endregion
+		#endregion
 
-    }
+	}
 }
