@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace Axiom.SubSystems.Rendering {
     /// <summary>
@@ -180,6 +181,30 @@ namespace Axiom.SubSystems.Rendering {
         /// DOC
         public void WriteData(int offset, int length, IntPtr src) {
             WriteData(offset, length, src, false);
+        }
+
+        /// <summary>
+        ///    Allows passing in a managed array of data to fill the vertex buffer.
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="data"></param>
+        public void WriteData(int offset, int length, System.Array data) {
+            IntPtr dataPtr = Marshal.UnsafeAddrOfPinnedArrayElement(data, 0);
+
+            WriteData(offset, length, dataPtr);
+        }
+
+        /// <summary>
+        ///    Allows passing in a managed array of data to fill the vertex buffer.
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <param name="data"></param>
+        public void WriteData(int offset, int length, System.Array data, bool discardWholeBuffer) {
+            IntPtr dataPtr = Marshal.UnsafeAddrOfPinnedArrayElement(data, 0);
+
+            WriteData(offset, length, dataPtr, discardWholeBuffer);
         }
 
         /// <summary>
