@@ -1381,6 +1381,7 @@ namespace Axiom.Core {
 		protected virtual void RenderShadowVolumesToStencil(Light light, Camera camera) {
 			// Set up scissor test (point & spot lights only)
 			bool scissored = false;
+
 			if (light.Type != LightType.Directional && 
 				targetRenderSystem.Caps.CheckCap(Capabilities.ScissorTest)) {
 				// Project the sphere onto the camera
@@ -1659,13 +1660,11 @@ namespace Axiom.Core {
 			bool passSurfaceAndLightParams = true;
 
 			if(pass.HasVertexProgram) {
-				/*
 				targetRenderSystem.BindGpuProgram(pass.VertexProgram.BindingDelegate);
 				// bind parameters later since they can be per-object
 				lastUsedVertexProgram = true;
 				// does the vertex program want surface and light params passed to rendersystem?
 				passSurfaceAndLightParams = pass.VertexProgram.PassSurfaceAndLightStates;
-				*/
 			}
 			else {
 				// Unbind program?

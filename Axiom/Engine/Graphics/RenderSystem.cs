@@ -281,6 +281,7 @@ namespace Axiom.Graphics {
 		/// <param name="stage"></param>
 		public virtual void DisableTextureUnit(int stage) {
 			SetTexture(stage, false, "");
+			SetTextureMatrix(stage, Matrix4.Identity);
 		}
 
 		/// <summary>

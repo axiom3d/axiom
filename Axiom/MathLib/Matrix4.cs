@@ -138,6 +138,12 @@ namespace Axiom.MathLib {
 			}
         }
 
+		public static Matrix4 ClipSpace2DToImageSpace {
+			get {
+				return clipSpace2dToImageSpace;
+			}
+		}
+
         #endregion
 
         #region Public properties

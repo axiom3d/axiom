@@ -465,11 +465,13 @@ namespace Axiom.RenderSystems.DirectX9 {
                     return (int)D3D.TextureCoordinateIndex.CameraSpaceNormal;
 
                 case TexCoordCalcMethod.EnvironmentMap:
-                    if(caps.VertexProcessingCaps.SupportsTextureGenerationSphereMap)
-                        return (int)D3D.TextureCoordinateIndex.SphereMap;
-                    else
-                        // fall back on camera space normal if sphere map isnt supported
-                        return (int)D3D.TextureCoordinateIndex.CameraSpaceNormal;
+					if(caps.VertexProcessingCaps.SupportsTextureGenerationSphereMap) {
+						return (int)D3D.TextureCoordinateIndex.SphereMap;
+					}
+					else {
+						// fall back on camera space normal if sphere map isnt supported
+						return (int)D3D.TextureCoordinateIndex.CameraSpaceNormal;
+					}
 
 				case TexCoordCalcMethod.ProjectiveTexture:
 					return (int)D3D.TextureCoordinateIndex.CameraSpacePosition;
@@ -491,6 +493,22 @@ namespace Axiom.RenderSystems.DirectX9 {
 
             return D3DTexType.None;
         }
+
+		public static D3D.TextureAddress ConvertEnum(TextureAddressing type) {
+			// convert from ours to D3D
+			switch(type) {
+				case TextureAddressing.Wrap:
+					return D3D.TextureAddress.Wrap;
+
+				case TextureAddressing.Mirror:
+					return D3D.TextureAddress.Mirror;
+
+				case TextureAddressing.Clamp:
+					return D3D.TextureAddress.Clamp;
+			} // end switch
+
+			return 0;
+		}
 
         /// <summary>
         ///    Converts our CompareFunction enum to the D3D.Compare equivalent.

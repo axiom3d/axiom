@@ -64,6 +64,12 @@ namespace Axiom.RenderSystems.DirectX9 {
 
         }
 
+		public override bool RequiresTextureFlipping {
+			get {
+				return false;
+			}
+		}
+
         public override void Destroy() {
             base.Destroy();
 

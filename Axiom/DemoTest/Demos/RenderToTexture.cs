@@ -58,7 +58,7 @@ namespace Demos {
 
             // create a render texture
             RenderTexture rttTex = Root.Instance.RenderSystem.CreateRenderTexture("RttTex", 512, 512);
-            Viewport viewport = rttTex.AddViewport(rttCam, 0, 0, 100, 100, 0);
+            Viewport viewport = rttTex.AddViewport(rttCam, 0, 0, 1.0f, 1.0f, 0);
             viewport.ClearEveryFrame = true;
             viewport.OverlaysEnabled = false;
             viewport.BackgroundColor = ColorEx.White;

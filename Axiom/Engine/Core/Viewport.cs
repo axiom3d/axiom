@@ -105,6 +105,7 @@ namespace Axiom.Core {
 			this.isUpdated = true;
 			this.showOverlays = true;
 
+			// TODO: Add Camera.NotifyViewport
 		}
 
 		#endregion
@@ -122,20 +123,21 @@ namespace Axiom.Core {
 			float height = (float)target.Height;
 			float width = (float)target.Width;
 
-			actualLeft = (int) ((relativeLeft * width) / 100.0f);
-			actualTop = (int) ((relativeTop * height) / 100.0f);
-			actualWidth = (int) ((relativeWidth * width) / 100.0f);
-			actualHeight = (int) ((relativeHeight * height) / 100.0f);
+			actualLeft = (int)(relativeLeft * width);
+			actualTop = (int)(relativeTop * height);
+			actualWidth = (int)(relativeWidth * width);
+			actualHeight = (int)(relativeHeight * height);
 
-			// Note that we don't propagate any changes to the Camera
-			// This is because the Camera projects into a space with
-			// range (-1,1), which then gets extrapolated to the viewport
-			// dimensions. Note that if the aspect ratio of the camera
-			// is not the same as that of the viewport, the image will
-			// be distorted in some way.
-
+			// This will check if  the cameras getAutoAspectRation() property is set.
+			// If it's true its aspect ratio is fit to the current viewport
+			// If it's false the camera remains unchanged.
 			// This allows cameras to be used to render to many viewports,
 			// which can have their own dimensions and aspect ratios.
+
+			// TODO: Implement Camera.AutoAspectRatio
+			//if (camera.AutoAspectRatio) {
+			//	camera.AspectRatio = actualWidth / actualHeight;
+			//}
 
 			string message = string.Format("Viewport for camera '{0}' - actual dimensions L:{1},T:{2},W:{3},H:{4}",
 				camera.Name, actualLeft, actualTop, actualWidth, actualHeight);
@@ -143,7 +145,6 @@ namespace Axiom.Core {
 			System.Diagnostics.Trace.WriteLine(message);
 
 			isUpdated = true;
-
 		}
 
 		#endregion
@@ -154,86 +155,116 @@ namespace Axiom.Core {
 		/// Retrieves a reference to the render target for this viewport.
 		/// </summary>
 		public RenderTarget Target {
-			get { return target; }
-			set { target = value; }
+			get { 
+				return target; 
+			}
+			set { 
+				target = value; 
+			}
 		}
 
 		/// <summary>
 		/// Retrieves a reference to the camera for this viewport.
 		/// </summary>
 		public Camera Camera {
-			get { return camera; }
-			set { camera = value; }
+			get { 
+				return camera; 
+			}
+			set { 
+				camera = value; 
+			}
 		}
 
 		/// <summary>
 		/// Gets and sets the background color which will be used to clear the screen every frame.
 		/// </summary>
 		public ColorEx BackgroundColor {
-			get { return backColor; }
-			set { backColor = value; }
+			get { 
+				return backColor; 
+			}
+			set { 
+				backColor = value; 
+			}
 		}
 		/// <summary>
 		/// Gets one of the relative dimensions of the viewport, a value between 0.0 and 1.0.
 		/// </summary>
 		public float Top {
-			get { return relativeTop; }
+			get { 
+				return relativeTop; 
+			}
 		}
 
 		/// <summary>
 		/// Gets one of the relative dimensions of the viewport, a value between 0.0 and 1.0.
 		/// </summary>
 		public float Left {
-			get { return relativeLeft; }
+			get { 
+				return relativeLeft; 
+			}
 		}
 
 		/// <summary>
 		/// Gets one of the relative dimensions of the viewport, a value between 0.0 and 1.0.
 		/// </summary>
 		public float Width {
-			get { return relativeWidth; }
+			get { 
+				return relativeWidth; 
+			}
 		}
 
 		/// <summary>
 		/// Gets one of the relative dimensions of the viewport, a value between 0.0 and 1.0.
 		/// </summary>
 		public float Height {
-			get { return relativeHeight; }
+			get { 
+				return relativeHeight; 
+			}
 		}
 
 		/// <summary>
 		/// Gets the ZOrder of this viewport.
 		/// </summary>
 		public int ZOrder {
-			get { return zOrder; }
+			get { 
+				return zOrder; 
+			}
 		}
 
 		/// <summary>
 		/// Gets one of the actual dimensions of the viewport, a value in pixels.
 		/// </summary>
 		public int ActualTop {
-			get { return actualTop; }
+			get { 
+				return actualTop; 
+			}
 		}
 
 		/// <summary>
 		/// Gets one of the actual dimensions of the viewport, a value in pixels.
 		/// </summary>
 		public int ActualLeft {
-			get { return actualLeft; }
+			get { 
+				return actualLeft; 
+			}
 		}
 
 		/// <summary>
 		/// Gets one of the actual dimensions of the viewport, a value in pixels.
 		/// </summary>
 		public int ActualWidth {
-			get { return actualWidth; }
+			get { 
+				return actualWidth; 
+			}
 		}
 
 		/// <summary>
 		/// Gets one of the actual dimensions of the viewport, a value in pixels.
 		/// </summary>
 		public int ActualHeight {
-			get { return actualHeight; }
+			get { 
+				return actualHeight; 
+			}
 		}
 
 		/// <summary>
@@ -246,8 +277,12 @@ namespace Axiom.Core {
 		///		method (the default is to clear every frame).
 		///	</remarks>
 		public bool ClearEveryFrame {
-			get { return clearEveryFrame; }
-			set { clearEveryFrame = value; }
+			get { 
+				return clearEveryFrame; 
+			}
+			set { 
+				clearEveryFrame = value; 
+			}
 		}
 
 		/// <summary>
@@ -261,23 +296,33 @@ namespace Axiom.Core {
 		///		have overlays of it's own. In this case you can turn off overlays on this viewport
 		///		by calling this method.
 		public bool OverlaysEnabled {
-			get { return showOverlays; }
-			set { showOverlays = value; }
+			get { 
+				return showOverlays; 
+			}
+			set { 
+				showOverlays = value; 
+			}
 		}
 
 		/// <summary>
 		///		Returns the number of faces rendered to this viewport during the last frame.
 		/// </summary>
 		public int NumRenderedFaces {
-			get { return camera.NumRenderedFaces; }
+			get { 
+				return camera.NumRenderedFaces; 
+			}
 		}
 
 		/// <summary>
 		/// Gets and sets the IsUpdated value.
 		/// </summary>
 		public bool IsUpdated {
-			get { return isUpdated; }
-			set { isUpdated = value; }
+			get { 
+				return isUpdated; 
+			}
+			set { 
+				isUpdated = value; 
+			}
 		}
 
 		#endregion
