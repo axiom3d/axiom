@@ -215,6 +215,7 @@ namespace Axiom.Utility {
             if(input.IsKeyPressed(Keys.Escape)) {
                 // returning false from the FrameStart event will cause the engine's render loop to shut down
                 Engine.Instance.Shutdown();
+                return false;
             }
 
             if(input.IsKeyPressed(Keys.A)) {

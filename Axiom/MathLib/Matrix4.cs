@@ -82,9 +82,6 @@ namespace Axiom.MathLib {
         public float m20, m21, m22, m23;
         public float m30, m31, m32, m33;
 
-        // temp array for returning the matrix as a float array
-        private static float[] floats = new float[16];
-
         private readonly static Matrix4 zeroMatrix = new Matrix4(	0,0,0,0,
             0,0,0,0,
             0,0,0,0,
@@ -421,7 +418,7 @@ namespace Axiom.MathLib {
         /// 
         /// </summary>
         /// <returns></returns>
-        public float[] MakeFloatArray() {
+        public float[] MakeFloatArray(float[] floats) {
             
             unsafe {
                 fixed(float* p = &m00) {

@@ -566,6 +566,38 @@ namespace RenderSystem_DirectX9 {
             }
         }
 
+        protected override void SetTextureLayerFiltering(int stage, TextureFiltering filtering) {
+            // get a reference to the current sampler for this tex unit
+            D3D.Sampler sampler = device.SamplerState[stage];
+
+            // set the sampler states appropriately
+            switch(filtering) {
+                case Axiom.SubSystems.Rendering.TextureFiltering.None:
+                    sampler.MagFilter = TextureFilter.Point;
+                    sampler.MinFilter = TextureFilter.Point;
+                    sampler.MipFilter = TextureFilter.None;
+                    break;
+
+                case Axiom.SubSystems.Rendering.TextureFiltering.Bilinear:
+                    if(d3dCaps.TextureFilterCaps.SupportsMinifyLinear) {
+                        sampler.MagFilter = TextureFilter.Linear;
+                        sampler.MinFilter = TextureFilter.Linear;
+                        sampler.MipFilter = TextureFilter.Point;
+                    }
+
+                    break;
+
+                case Axiom.SubSystems.Rendering.TextureFiltering.Trilinear:
+                    if(d3dCaps.TextureFilterCaps.SupportsMipMapLinear) {
+                        sampler.MagFilter = TextureFilter.Linear;
+                        sampler.MinFilter = TextureFilter.Linear;
+                        sampler.MipFilter = TextureFilter.Linear;
+                    }
+
+                    break;
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>

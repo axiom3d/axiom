@@ -45,7 +45,6 @@ namespace Axiom.SubSystems.Rendering {
     ///		backgrounds and overlays, and also could be used in the future for more
     ///		complex multipass routines like stenciling.
     /// </remarks>
-    // TESTME
     public class RenderQueue {
         #region Member variables
 
@@ -104,7 +103,7 @@ namespace Axiom.SubSystems.Rendering {
             RenderQueueGroup group = null;
 
             // see if there is a current queue group for this group id
-            if(!renderGroups.ContainsKey(groupID)) {
+            if(renderGroups[groupID] == null) {
                 // create a new queue group for this group id
                 group = new RenderQueueGroup();
 
@@ -273,7 +272,7 @@ namespace Axiom.SubSystems.Rendering {
 				
                 // look material up by name
                 // TODO: make sure using Material itself as a key works ok, may need to implement GetHashCode on Material if not
-                if(materialGroups.ContainsKey(material)) {
+                if(materialGroups[material] != null) {
                     // get the existing material group
                     renderableList = (ArrayList)materialGroups[material];
                 }
