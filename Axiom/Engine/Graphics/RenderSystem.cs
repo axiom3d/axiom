@@ -56,7 +56,7 @@ namespace Axiom.Graphics {
     public abstract class RenderSystem : IDisposable {
         #region Fields
 
-        protected ArrayList renderTargets = new ArrayList();
+        protected RenderTargetList renderTargets = new RenderTargetList();
         protected TextureManager textureMgr;
         protected HardwareBufferManager hardwareBufferManager;
         protected CullingMode cullingMode;

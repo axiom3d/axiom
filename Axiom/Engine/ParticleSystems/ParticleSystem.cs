@@ -28,6 +28,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
+using Axiom.Collections;
 using Axiom.Core;
 
 using Axiom.MathLib;
@@ -53,11 +54,11 @@ namespace Axiom.ParticleSystems {
         #region Member variables
 
         /// <summary>List of emitters for this system.</summary>
-        protected ArrayList emitterList = new ArrayList();
+        protected EmitterList emitterList = new EmitterList();
         /// <summary>List of affectors for this system.</summary>
-        protected ArrayList affectorList = new ArrayList();
+        protected AffectorList affectorList = new AffectorList();
         /// <summary>Cached for less memory usage during emitter processing.</summary>
-        protected ArrayList requested = new ArrayList(60);
+        protected EmitterList requested = new EmitterList();
 
         #endregion
 
@@ -449,7 +450,7 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         /// 
         /// </summary>
-        public ArrayList Particles {
+        public BillboardList Particles {
             get { 
                 return activeBillboards; 
             }

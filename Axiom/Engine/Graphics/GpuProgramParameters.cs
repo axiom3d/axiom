@@ -63,7 +63,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///    Packed list of integer constants
         /// </summary>
-		protected ArrayList intContants = new ArrayList();
+		protected ArrayList intConstants = new ArrayList();
         /// <summary>
         ///    Table of Vector4 constants by index.
         /// </summary>
@@ -71,7 +71,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///    List of automatically updated parameters.
         /// </summary>
-        protected ArrayList autoConstantList = new ArrayList();
+        protected AutoConstantEntryList autoConstantList = new AutoConstantEntryList();
         /// <summary>
         ///    Lookup of constant indicies for named parameters.
         /// </summary>
@@ -196,11 +196,11 @@ namespace Axiom.Graphics
         /// <param name="index">Index of the contant register.</param>
         /// <param name="val">Single value to set.</param>
         public void SetConstant(int index, int val) {
-            if(index >= intContants.Count) {
-                intContants.Insert(index, val);
+            if(index >= intConstants.Count) {
+                intConstants.Insert(index, val);
             }
             else {
-                intContants[index] = val;
+                intConstants[index] = val;
             }
         }
 
@@ -482,7 +482,7 @@ namespace Axiom.Graphics
         /// </summary>
         public bool HasIntConstants {
             get {
-                return intContants.Count > 0;
+                return intConstants.Count > 0;
             }
         }
 
@@ -500,8 +500,8 @@ namespace Axiom.Graphics
         /// </summary>
         public int[] IntConstants {
             get {
-                int[] ints = new int[intContants.Count];
-                intContants.CopyTo(ints);
+                int[] ints = new int[intConstants.Count];
+                intConstants.CopyTo(ints);
                 return ints;
             }
         }
@@ -511,7 +511,7 @@ namespace Axiom.Graphics
         /// </summary>
         public int IntConstantCount {
             get {
-                return intContants.Count;
+                return intConstants.Count;
             }
         }
 

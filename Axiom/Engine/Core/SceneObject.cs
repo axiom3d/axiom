@@ -79,7 +79,7 @@ namespace Axiom.Core {
         #region Constructors
 
         public SceneObject() {
-            this.isVisible = true;
+            isVisible = true;
 
             // set default RenderQueueGroupID for this movable object
             renderQueueID = RenderQueueGroupID.Main;

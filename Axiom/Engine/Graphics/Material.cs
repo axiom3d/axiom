@@ -78,11 +78,11 @@ namespace Axiom.Graphics {
         /// <summary>
         ///    A list of techniques that exist within this Material.
         /// </summary>
-        protected ArrayList techniques = new ArrayList();
+        protected TechniqueList techniques = new TechniqueList();
         /// <summary>
         ///    A list of the techniques of this material that are supported by the current hardware.
         /// </summary>
-        protected ArrayList supportedTechniques = new ArrayList();
+        protected TechniqueList supportedTechniques = new TechniqueList();
         /// <summary>
         ///    Flag noting whether or not this Material needs to be re-compiled.
         /// </summary>
@@ -501,8 +501,8 @@ namespace Axiom.Graphics {
         public Material Clone(string name) {
             Material newMaterial = (Material)this.MemberwiseClone();
             // TODO: Watch out for other copied references...
-            newMaterial.supportedTechniques = new ArrayList();
-            newMaterial.techniques = new ArrayList();
+            newMaterial.supportedTechniques = new TechniqueList();
+            newMaterial.techniques = new TechniqueList();
 
             // TODO: When adding global resource handles, create new one here and assign
 

@@ -1,10 +1,20 @@
-package.name = "PlatformManager_Win32"
+package.name = "Axiom.Platforms.Win32"
 package.language = "c#"
 package.kind = "dll"
 package.target = "Axiom.Platforms.Win32"
 package.defines = { "TRACE" } 
 package.config["Debug"].defines = { "DEBUG" }
-package.links = { "System", "System.Drawing", "System.Windows.Forms", "Engine" }
+
+-- output paths
+package.config["Debug"].bindir = "bin/Debug"
+package.config["Release"].bindir = "bin/Release"
+
+package.links = { 
+	"System", 
+	"System.Drawing", 
+	"System.Windows.Forms", 
+	"Axiom.Engine" 
+}
 
 -- get the target since we need to do something special for SharpDevelop
 local i, target = next(options.target, nil)

@@ -1,11 +1,17 @@
-package.name = "Engine"
+package.name = "Axiom.Engine"
 package.language = "c#"
 package.kind = "dll"
 package.buildflags = { "unsafe" }
 package.defines = { "TRACE" } 
 package.config["Debug"].defines = { "DEBUG" }
-package.target = "Axiom"
+
+-- output paths
+package.config["Debug"].bindir = "bin/Debug"
+package.config["Release"].bindir = "bin/Release"
+
+package.target = "Axiom.Engine"
 package.libpaths = { "../Solution Items" }
+
 package.links = { 
 	"System", 
 	"System.Data", 
@@ -13,7 +19,7 @@ package.links = {
 	"System.Drawing", 
 	"System.Windows.Forms", 
 	"System.XML", 
-	"MathLib", 
+	"Axiom.MathLib", 
 	"ICSharpCode.SharpZipLib",
 	"Tao.DevIl"  
 }

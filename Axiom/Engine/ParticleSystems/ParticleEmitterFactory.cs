@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using Axiom.Collections;
 
 namespace Axiom.ParticleSystems {
     /// <summary>
@@ -44,7 +45,7 @@ namespace Axiom.ParticleSystems {
     public abstract class ParticleEmitterFactory {
         #region Member variables
 
-        protected ArrayList emitterList = new ArrayList();
+        protected EmitterList emitterList = new EmitterList();
 			
         #endregion
 

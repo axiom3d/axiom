@@ -105,7 +105,7 @@ namespace Axiom.Core {
         // to them
         protected internal bool isLodManual;
         protected internal int numLods;
-        protected internal ArrayList lodUsageList = new ArrayList();
+        protected internal MeshLodUsageList lodUsageList = new MeshLodUsageList();
 
         // vertex buffer settings
         protected BufferUsage vertexBufferUsage;

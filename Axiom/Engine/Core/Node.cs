@@ -55,7 +55,7 @@ namespace Axiom.Core {
         /// <summary>Collection of this nodes child nodes.</summary>
         protected NodeCollection childNodes;
         /// <summary>Collection of this nodes child nodes.</summary>
-        protected ArrayList childrenToUpdate;
+        protected NodeCollection childrenToUpdate;
         /// <summary>Flag to indicate own transform from parent is out of date.</summary>
         protected bool needParentUpdate;
         /// <summary>Flag to indicate all children need to be updated.</summary>
@@ -134,7 +134,7 @@ namespace Axiom.Core {
             accumAnimWeight = 0.0f;
 
             childNodes = new NodeCollection();
-            childrenToUpdate = new ArrayList();
+            childrenToUpdate = new NodeCollection();
 
             NeedUpdate();
         }
@@ -157,7 +157,7 @@ namespace Axiom.Core {
             accumAnimWeight = 0.0f;
 
             childNodes = new NodeCollection();
-            childrenToUpdate = new ArrayList();
+            childrenToUpdate = new NodeCollection();
 
             NeedUpdate();
         }
@@ -198,7 +198,22 @@ namespace Axiom.Core {
         /// <param name="name"></param>
         /// <returns></returns>
         public Node GetChild(string name) {
-            return childNodes[name];
+            // TODO: optimize
+
+            Node node = null;
+
+            for(int i = 0; i < childNodes.Count; i++) {
+                Node child = childNodes[i];
+                if(child.name == name) {
+                    break;
+                }
+            }
+
+            if(node == null) {
+                throw new Axiom.Exceptions.AxiomException("Node named '{0}' not found.!", name);
+            }
+
+            return node;
         }
 
         /// <summary>
@@ -218,7 +233,20 @@ namespace Axiom.Core {
         /// <param name="name"></param>
         /// <returns></returns>
         public virtual Node RemoveChild(string name) {
-            Node node = childNodes[name];
+            // TODO: optimize
+
+            Node node = null;
+
+            for(int i = 0; i < childNodes.Count; i++) {
+                Node child = childNodes[i];
+                if(child.name == name) {
+                    break;
+                }
+            }
+
+            if(node == null) {
+                throw new Axiom.Exceptions.AxiomException("Node named '{0}' not found.!", name);
+            }
 			
             CancelUpdate(node);
             childNodes.Remove(node);

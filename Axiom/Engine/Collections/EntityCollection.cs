@@ -33,26 +33,18 @@ using Axiom.Core;
 using T = Axiom.Core.Entity;
 // used to alias a key value in the code for easy copying and pasting.  Come on generics!!
 using K = System.String;
-// used to alias a parent type in the code for easy copying and pasting.  Come on generics!!
-using P = Axiom.Core.Entity;
 
 namespace Axiom.Collections {
     /// <summary>
     /// Summary description for EntityCollection.
     /// </summary>
-    public class EntityCollection : AxiomCollection {
+    public class EntityList : AxiomCollection {
         #region Constructors
 
         /// <summary>
         ///		Default constructor.
         /// </summary>
-        public EntityCollection() : base() {}
-
-        /// <summary>
-        ///		Constructor that takes a parent object to, and calls the base class constructor to 
-        /// </summary>
-        /// <param name="entity"></param>
-        public EntityCollection(P parent) : base(parent) {}
+        public EntityList() : base() {}
 
         #endregion
 

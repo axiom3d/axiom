@@ -12,6 +12,7 @@ dopackage("Plugin_OctreeSceneManager")
 if(OS == "windows") then
 	dopackage("RenderSystem_DirectX9")
 	dopackage("PlatformManager_Win32")
+	dopackage("DemoTest")
 end
 
 if(OS == "linux") then

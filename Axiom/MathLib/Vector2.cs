@@ -34,15 +34,33 @@ using System;
 
 namespace Axiom.MathLib {
     /// <summary>
-    /// Summary description for Vector2.
+    ///     2 dimensional vector.
     /// </summary>
     public class Vector2 {
+        #region Fields
+
         public float x, y;
 
+        #endregion Fields
+
+        #region Constructors
+
         /// <summary>
-        ///		Creates a new 2 Dimensional Vector.
+        ///		Default constructor.
         /// </summary>
         public Vector2() {
         }
+
+        /// <summary>
+        ///     Constructor.
+        /// </summary>
+        /// <param name="x">X position.</param>
+        /// <param name="y">Y position</param>
+        public Vector2(float x, float y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        #endregion Constructors
     }
 }

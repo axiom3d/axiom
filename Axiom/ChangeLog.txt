@@ -1,5 +1,9 @@
-?
+3-1-2004
+- *Significant Change* - Project files no longer included, and can be auto-generated via the included premake batch files.
 - Frustum demo, shows a frustum visually and allows you to move it around and clip objects.
+- Started pulling out expliciy usage of loosely typed collection and using subclasses that will eventually get replaced with generic version in Whidbey.
+- Added another constructor to Vector2D (thanks metaphaze).
+- Added a few core methods required for the BSP Scene Manager to progress.
 
 2-23-2004 (continued)
 - Fixed assert bug in RenderTarget.GetViewport().

@@ -36,8 +36,7 @@ namespace Axiom.Collections {
     ///		<b>GODDAMIT WHY DO WE HAVE TO GO THROUGH THIS SHIT!</b>
     ///		Can't wait for Generics in .Net Framework 2.0!   
     /// </remarks>
-    // BUG: Problem with enumerators, fix later as they dont need to be used in the engine anyway.
-    public abstract class AxiomCollection : ICollection, IEnumerable, IEnumerator {
+    public abstract class AxiomCollection : ICollection, IEnumerable {
         /// <summary></summary>
         protected SortedList objectList;
         /// <summary></summary>
@@ -160,41 +159,52 @@ namespace Axiom.Collections {
         #region Implementation of IEnumerable
 
         public System.Collections.IEnumerator GetEnumerator() {
-            return (IEnumerator)this;
+            return new Enumerator(this);
         }
 
         #endregion
 
         #region Implementation of IEnumerator
 
-        private int position = -1;
+        public class Enumerator : IEnumerator {
+            private int position = -1;
+            private AxiomCollection list;
 
-        /// <summary>
-        ///		Resets the in progress enumerator.
-        /// </summary>
-        public void Reset() {
-            // reset the enumerator position
-            position = -1;
-        }
+            public Enumerator(AxiomCollection list) {
+                this.list = list;
+            }
 
-        /// <summary>
-        ///		Moves to the next item in the enumeration if there is one.
-        /// </summary>
-        /// <returns></returns>
-        public bool MoveNext() {
-            position += 1;
+            /// <summary>
+            ///		Resets the in progress enumerator.
+            /// </summary>
+            public void Reset() {
+                // reset the enumerator position
+                position = -1;
+            }
 
-            if(position >= objectList.Count)
-                return false;
-            else
-                return true;
-        }
+            /// <summary>
+            ///		Moves to the next item in the enumeration if there is one.
+            /// </summary>
+            /// <returns></returns>
+            public bool MoveNext() {
+                position += 1;
 
-        /// <summary>
-        ///		Returns the current object in the enumeration.
-        /// </summary>
-        public object Current {
-            get { return objectList.GetByIndex(position); }
+                if(position >= list.objectList.Count) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+
+            /// <summary>
+            ///		Returns the current object in the enumeration.
+            /// </summary>
+            public object Current {
+                get { 
+                    return list.objectList.GetByIndex(position); 
+                }
+            }
         }
         #endregion
 

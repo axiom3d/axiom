@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Axiom;
+using Axiom.Collections;
 using Axiom.Core;
 using Axiom.MathLib;
 using Axiom.Graphics;
@@ -61,16 +62,6 @@ namespace Axiom.SceneManagers.Octree {
         public OctreeSceneManager(AxisAlignedBox box, int max_depth){
             Init(box, max_depth);
         }
-
-        /*public System.Collections.ArrayList FindNodesInBox(SceneManager scene, AxisAlignedBox box, SceneNode exclude)
-        {
-			
-        }
-
-        public System.Collections.ArrayList FindNodesInSphere(SceneManager scene, Sphere sphere, SceneNode exclude)
-        {
-            //TODO: Finish
-        }*/
 
         public Intersection Intersect(AxisAlignedBox box1, AxisAlignedBox box2) {
             intersect++;			
@@ -445,7 +436,7 @@ namespace Axiom.SceneManagers.Octree {
 
         /** Resizes the octree to the given size */
         public void Resize(AxisAlignedBox box) {
-            System.Collections.ArrayList nodes = new System.Collections.ArrayList();
+            NodeCollection nodes = new NodeCollection();
 
             FindNodes(this.octree.Box,base.sceneNodeList,null,true,this.octree);
 

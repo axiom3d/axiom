@@ -71,11 +71,11 @@ namespace Axiom.Core {
         /// <summary>The ambient color, cached from the RenderSystem</summary>
         protected ColorEx ambientColor;
         /// <summary>A list of the valid cameras for this scene for easy lookup.</summary>
-        protected CameraCollection cameraList;
+        protected CameraList cameraList;
         /// <summary>A list of lights in the scene for easy lookup.</summary>
         protected LightList lightList;
         /// <summary>A list of entities in the scene for easy lookup.</summary>
-        protected internal EntityCollection entityList;
+        protected internal EntityList entityList;
         /// <summary>A list of scene nodes (includes all in the scene graph).</summary>
         protected SceneNodeCollection sceneNodeList;
         /// <summary>A list of billboard set for easy lookup.</summary>
@@ -165,9 +165,9 @@ namespace Axiom.Core {
         public SceneManager() {
             // initialize all collections
             renderQueue = new RenderQueue();
-            cameraList = new CameraCollection();
+            cameraList = new CameraList();
             lightList = new LightList();
-            entityList = new EntityCollection();
+            entityList = new EntityList();
             sceneNodeList = new SceneNodeCollection();
             billboardSetList = new BillboardSetCollection();
             animationList = new AnimationCollection();
@@ -459,6 +459,15 @@ namespace Axiom.Core {
         }
 
         /// <summary>
+        ///     Returns the material with the specified name.
+        /// </summary>
+        /// <param name="name">Name of the material to retrieve.</param>
+        /// <returns></returns>
+        public Material GetMaterial(string name) {
+            return MaterialManager.Instance.GetByName(name);
+        }
+
+        /// <summary>
         ///     Retreives the scene node with the specified name.
         /// </summary>
         /// <param name="name"></param>
@@ -469,6 +478,30 @@ namespace Axiom.Core {
             }
 
             return sceneNodeList[name];
+        }
+
+        /// <summary>
+        ///     Asks the SceneManager to provide a suggested viewpoint from which the scene should be viewed.
+        /// </summary>
+        /// <remarks>
+        ///     Typically this method returns the origin unless a) world geometry has been loaded using
+        ///     <see cref="SceneManager.LoadWorldGeometry"/> and b) that world geometry has suggested 'start' points.
+        ///     If there is more than one viewpoint which the scene manager can suggest, it will always suggest
+        ///     the first one unless the random parameter is true.
+        /// </remarks>
+        /// <param name="random">
+        ///     If true, and there is more than one possible suggestion, a random one will be used. If false
+        ///     the same one will always be suggested.
+        /// </param>
+        /// <returns>Optimal ViewPoint defined by the scene manager.</returns>
+        public virtual ViewPoint GetSuggestedViewpoint(bool random) {
+            ViewPoint vp;
+
+            // by default, return the origin.  leave up to subclasses to define
+            vp.position = Vector3.Zero;
+            vp.orientation = Quaternion.Identity;
+
+            return vp;
         }
 
         /// <summary>
@@ -1510,7 +1543,7 @@ namespace Axiom.Core {
                             }
 
                             Pass pass = priorityGroup.GetSolidPass(k);
-                            ArrayList renderables = priorityGroup.GetSolidPassRenderables(k);
+                            RenderableList renderables = priorityGroup.GetSolidPassRenderables(k);
 
                             // set the pass for the list of renderables to be processed
                             SetPass(pass);
@@ -1738,5 +1771,13 @@ namespace Axiom.Core {
                 }
             }
         }
+    }
+
+    /// <summary>
+    ///     Structure for holding a position & orientation pair.
+    /// </summary>
+    public struct ViewPoint {
+        public Vector3 position;
+        public Quaternion orientation;
     }
 }

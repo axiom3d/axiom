@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Axiom.Animating;
+using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.MathLib;
@@ -15,8 +16,8 @@ namespace Demos {
 
         Camera theCam;
         Entity planeEnt;
-        ArrayList aboveWaterEnts = new ArrayList();
-        ArrayList belowWaterEnts = new ArrayList();
+        EntityList aboveWaterEnts = new EntityList();
+        EntityList belowWaterEnts = new EntityList();
 
         const int NUM_FISH = 30;
         const int NUM_FISH_WAYPOINTS = 10;

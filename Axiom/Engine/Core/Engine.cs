@@ -78,12 +78,12 @@ namespace Axiom.Core {
         #region Singleton implementation
         static Engine() {}
         private Engine() {
-            pluginList = new ArrayList();
+            pluginList = new PluginList();
         }
         public static readonly Engine Instance = new Engine();
         #endregion
 
-        private ArrayList pluginList;
+        private PluginList pluginList;
 
         private SceneManager sceneManager;
         private SceneManagerList sceneManagerList;

@@ -328,11 +328,11 @@ namespace Axiom.Graphics {
 
                     if(solidPassMap[pass] == null) {
                         // add a new list to hold renderables for this pass
-                        solidPassMap.Add(pass, new ArrayList());
+                        solidPassMap.Add(pass, new RenderableList());
                     }
 
                     // add to solid list for this pass
-                    ArrayList solidList = (ArrayList)solidPassMap[pass];
+                    RenderableList solidList = (RenderableList)solidPassMap[pass];
                     solidList.Add(item);
                 }
             }
@@ -346,7 +346,7 @@ namespace Axiom.Graphics {
             
             // loop through and clear the renderable containers for the stored passes
             for(int i = 0; i < solidPassMap.Count; i++) {
-                ((ArrayList)solidPassMap.GetByIndex(i)).Clear();
+                ((RenderableList)solidPassMap.GetByIndex(i)).Clear();
             }
         }
 
@@ -365,9 +365,9 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public ArrayList GetSolidPassRenderables(int index) {
+        public RenderableList GetSolidPassRenderables(int index) {
             Debug.Assert(index < solidPassMap.Count, "index < solidPasses.Count");
-            return (ArrayList)solidPassMap.GetByIndex(index);
+            return (RenderableList)solidPassMap.GetByIndex(index);
         }
 
         /// <summary>

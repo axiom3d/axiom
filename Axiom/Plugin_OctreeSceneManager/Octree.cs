@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Axiom;
+using Axiom.Collections;
 using Axiom.Core;
 using Axiom.MathLib;
 
@@ -17,7 +18,7 @@ namespace Axiom.SceneManagers.Octree {
 
         /** Public list of SceneNodes attached to this particular octree
         */
-        protected System.Collections.ArrayList nodeList = new ArrayList();
+        protected NodeCollection nodeList = new NodeCollection();
 
         /** The bounding box of the octree
         @remarks
@@ -49,7 +50,7 @@ namespace Axiom.SceneManagers.Octree {
             set{numNodes = value;}
         }
 
-        public System.Collections.ArrayList NodeList {
+        public NodeCollection NodeList {
             get{return nodeList;}
             //set{nodeList = value;}
         }
@@ -105,7 +106,7 @@ namespace Axiom.SceneManagers.Octree {
 
                 if(check == node) {
                     node.Octant = null;
-                    NodeList.RemoveAt(i);
+                    //NodeList.RemoveAt(i);
                     this.UnRef();
                 }
             }
