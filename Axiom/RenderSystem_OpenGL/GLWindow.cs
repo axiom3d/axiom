@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -38,9 +39,18 @@ namespace Axiom.RenderSystems.OpenGL {
     /// Summary description for GLWindow.
     /// </summary>
     public class GLWindow : RenderWindow {
-        //protected OpenGLContext context;
-        private IntPtr hDC = IntPtr.Zero;
-        private IntPtr hRC = IntPtr.Zero;
+		#region Fields
+
+		/// <summary>Window handle.</summary>
+		private static IntPtr hWnd = IntPtr.Zero;
+		/// <summary>GDI Device Context</summary>
+		private IntPtr hDC = IntPtr.Zero;
+		/// <summary>Rendering context.</summary>
+		private IntPtr hRC = IntPtr.Zero;
+		/// <summary>Retains initial screen settings.</summary>        
+		private Gdi.DEVMODE intialScreenSettings;
+
+		#endregion Fields
 
         public GLWindow() : base() {
         }
@@ -48,14 +58,93 @@ namespace Axiom.RenderSystems.OpenGL {
         #region Implementation of RenderWindow
 
         public override void Create(string name, int width, int height, int colorDepth, bool isFullScreen, int left, int top, bool depthBuffer, params object[] miscParams) {
-            // get the GL context if it was passed in
-            if(miscParams.Length != 2) {
-                throw new Exception("Creating of a GL window requires both a device context and rendering context.");
-            }
-            else {
-                hDC = (IntPtr)miscParams[0];
-                hRC = (IntPtr)miscParams[1];
-            }
+			// see if a OpenGLContext has been created yet
+			if(hDC == IntPtr.Zero) {
+				// grab the current display settings
+				User.EnumDisplaySettings(null, User.ENUM_CURRENT_SETTINGS, out intialScreenSettings);
+
+				if(isFullScreen) {
+					Gdi.DEVMODE screenSettings = new Gdi.DEVMODE();
+					screenSettings.dmSize = (short)Marshal.SizeOf(screenSettings);
+					screenSettings.dmPelsWidth = width;                         // Selected Screen Width
+					screenSettings.dmPelsHeight = height;                       // Selected Screen Height
+					screenSettings.dmBitsPerPel = colorDepth;                         // Selected Bits Per Pixel
+					screenSettings.dmFields = Gdi.DM_BITSPERPEL | Gdi.DM_PELSWIDTH | Gdi.DM_PELSHEIGHT;
+
+					// Try To Set Selected Mode And Get Results.  NOTE: CDS_FULLSCREEN Gets Rid Of Start Bar.
+					int result = User.ChangeDisplaySettings(ref screenSettings, User.CDS_FULLSCREEN);
+
+					if(result != User.DISP_CHANGE_SUCCESSFUL) {
+						throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error(), "Unable to change user display settings.");
+					}
+				}
+
+				// grab the HWND from the supplied target control
+				hWnd = (IntPtr)((Control)this.Handle).Handle;
+   
+				Gdi.PIXELFORMATDESCRIPTOR pfd = new Gdi.PIXELFORMATDESCRIPTOR();
+				pfd.Size = (short)Marshal.SizeOf(pfd);
+				pfd.Version = 1;
+				pfd.Flags = Gdi.PFD_DRAW_TO_WINDOW |
+					Gdi.PFD_SUPPORT_OPENGL |
+					Gdi.PFD_DOUBLEBUFFER;
+				pfd.PixelType = (byte) Gdi.PFD_TYPE_RGBA;
+				pfd.ColorBits = (byte) colorDepth;
+				pfd.DepthBits = 32;
+				// TODO: Find the best setting and use that
+				pfd.StencilBits = 8;
+				pfd.LayerType = (byte) Gdi.PFD_MAIN_PLANE;
+
+				// get the device context
+				hDC = User.GetDC(hWnd);
+
+				if(hDC == IntPtr.Zero) {
+					throw new Exception("Cannot create a GL device context.");
+				}
+
+				// attempt to find an appropriate pixel format
+				int pixelFormat = Gdi.ChoosePixelFormat(hDC, ref pfd);
+
+				if(pixelFormat == 0) {
+					throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error(), "Unable to find a suitable pixel format.");
+				}
+
+				if(!Gdi.SetPixelFormat(hDC, pixelFormat, ref pfd)) {
+					throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error(), "Unable to set the pixel format.");
+				}
+
+				// attempt to get the rendering context
+				hRC = Wgl.wglCreateContext(hDC);
+
+				if(hRC == IntPtr.Zero) {
+					throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error(), "Unable to create a GL rendering context.");
+				}
+
+				if(!Wgl.wglMakeCurrent(hDC, hRC)) {
+					throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error(), "Unable to activate the GL rendering context.");
+				}
+
+				// intialize GL extensions and check capabilites
+				GLHelper.InitializeExtensions();
+
+				// log hardware info
+				System.Diagnostics.Trace.WriteLine(string.Format("Vendor: {0}", GLHelper.Vendor));
+				System.Diagnostics.Trace.WriteLine(string.Format("Video Board: {0}", GLHelper.VideoCard));
+				System.Diagnostics.Trace.WriteLine(string.Format("Version: {0}", GLHelper.Version));
+			
+				System.Diagnostics.Trace.WriteLine("Extensions supported:");
+
+				foreach(string ext in GLHelper.Extensions)
+					System.Diagnostics.Trace.WriteLine(ext);
+
+				// init the GL context
+				Gl.glShadeModel(Gl.GL_SMOOTH);							// Enable Smooth Shading
+				Gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f);				// Black Background
+				Gl.glClearDepth(1.0f);									// Depth Buffer Setup
+				Gl.glEnable(Gl.GL_DEPTH_TEST);							// Enables Depth Testing
+				Gl.glDepthFunc(Gl.GL_LEQUAL);								// The Type Of Depth Testing To Do
+				Gl.glHint(Gl.GL_PERSPECTIVE_CORRECTION_HINT, Gl.GL_NICEST);	// Really Nice Perspective Calculations
+			}
 
             // set the params of the window
             // TODO: deal with depth buffer
@@ -73,8 +162,6 @@ namespace Axiom.RenderSystems.OpenGL {
         }
 
         public override void Destroy() {
-            Form form = null;
-
             if(hRC != IntPtr.Zero) {                                        // Do We Not Have A Rendering Context?
                 if(!Wgl.wglMakeCurrent(IntPtr.Zero, IntPtr.Zero)) {         // Are We Able To Release The DC And RC Contexts?
                     MessageBox.Show("Release Of DC And RC Failed.", "SHUTDOWN ERROR", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -125,21 +212,13 @@ namespace Axiom.RenderSystems.OpenGL {
             Gdi.SwapBuffersFast(hDC);
         }
 
-        public override void Update() {
-            base.Update ();
-        }
-
-
-        public override bool IsFullScreen {
-            get {
-                return base.IsFullScreen;
-            }
-        }
-
-
         public override bool IsActive {
-            get { return isActive; }
-            set { isActive = value; }
+            get { 
+				return isActive; 
+			}
+            set { 
+				isActive = value; 
+			}
         }
 
         /// <summary>

@@ -34,6 +34,7 @@ namespace Axiom.RenderSystems.OpenGL {
     /// </summary>
     public class GLTextureManager : TextureManager {
         public GLTextureManager() {
+			is32Bit = true;
         }
 	
         public override Texture Create(string name, TextureType type) {

@@ -30,7 +30,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
@@ -39,26 +38,15 @@ using Axiom.MathLib;
 using Axiom.Graphics;
 using Axiom.Utility;
 using Tao.OpenGl;
-using Tao.Platform.Windows;
 
 // TODO: Cache property values and implement property getters
 
 namespace Axiom.RenderSystems.OpenGL {
-
     /// <summary>
     /// Summary description for OpenGLRenderer.
     /// </summary>
     public class GLRenderSystem : RenderSystem, IPlugin {
         #region Fields
-
-        /// <summary>Retains initial screen settings.</summary>        
-        protected Gdi.DEVMODE intialScreenSettings;
-        /// <summary>GDI Device Context</summary>
-        private static IntPtr hDC = IntPtr.Zero;
-        /// <summary>Rendering context.</summary>
-        private static IntPtr hRC = IntPtr.Zero;
-        /// <summary>Window handle.</summary>
-        private static IntPtr hWnd = IntPtr.Zero;
 
         /// <summary>Internal view matrix.</summary>
         protected Matrix4 viewMatrix;
@@ -223,100 +211,9 @@ namespace Axiom.RenderSystems.OpenGL {
             RenderWindow window = new GLWindow();
 
             window.Handle = target;
-            Control targetControl = (Control)target;
-
-            // see if a OpenGLContext has been created yet
-            if(renderTargets.Count == 0) {
-
-                // grab the current display settings
-                User.EnumDisplaySettings(null, User.ENUM_CURRENT_SETTINGS, out intialScreenSettings);
-
-                if(isFullscreen) {
-
-                    Gdi.DEVMODE screenSettings = new Gdi.DEVMODE();
-                    screenSettings.dmSize = (short)Marshal.SizeOf(screenSettings);
-                    screenSettings.dmPelsWidth = width;                         // Selected Screen Width
-                    screenSettings.dmPelsHeight = height;                       // Selected Screen Height
-                    screenSettings.dmBitsPerPel = colorDepth;                         // Selected Bits Per Pixel
-                    screenSettings.dmFields = Gdi.DM_BITSPERPEL | Gdi.DM_PELSWIDTH | Gdi.DM_PELSHEIGHT;
-
-                    // Try To Set Selected Mode And Get Results.  NOTE: CDS_FULLSCREEN Gets Rid Of Start Bar.
-                    int result = User.ChangeDisplaySettings(ref screenSettings, User.CDS_FULLSCREEN);
-
-                    if(result != User.DISP_CHANGE_SUCCESSFUL) {
-                        throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error(), "Unable to change user display settings.");
-                    }
-                }
-
-                // grab the HWND from the supplied target control
-                hWnd = (IntPtr)targetControl.Handle;
-   
-                Gdi.PIXELFORMATDESCRIPTOR pfd = new Gdi.PIXELFORMATDESCRIPTOR();
-                pfd.Size = (short)Marshal.SizeOf(pfd);
-                pfd.Version = 1;
-                pfd.Flags = Gdi.PFD_DRAW_TO_WINDOW |
-                                        Gdi.PFD_SUPPORT_OPENGL |
-                                        Gdi.PFD_DOUBLEBUFFER;
-                pfd.PixelType = (byte) Gdi.PFD_TYPE_RGBA;
-                pfd.ColorBits = (byte) colorDepth;
-                pfd.DepthBits = 32;
-                // TODO: Find the best setting and use that
-                pfd.StencilBits = 8;
-                pfd.LayerType = (byte) Gdi.PFD_MAIN_PLANE;
-
-                // get the device context
-                hDC = User.GetDC(hWnd);
-
-                if(hDC == IntPtr.Zero) {
-                    throw new Exception("Cannot create a GL device context.");
-                }
-
-                // attempt to find an appropriate pixel format
-                int pixelFormat = Gdi.ChoosePixelFormat(hDC, ref pfd);
-
-                if(pixelFormat == 0) {
-                    throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error(), "Unable to find a suitable pixel format.");
-                }
-
-                if(!Gdi.SetPixelFormat(hDC, pixelFormat, ref pfd)) {
-                    throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error(), "Unable to set the pixel format.");
-                }
-
-                // attempt to get the rendering context
-                hRC = Wgl.wglCreateContext(hDC);
-
-                if(hRC == IntPtr.Zero) {
-                    throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error(), "Unable to create a GL rendering context.");
-                }
-
-                if(!Wgl.wglMakeCurrent(hDC, hRC)) {
-                    throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error(), "Unable to activate the GL rendering context.");
-                }
-
-                // intialize GL extensions and check capabilites
-                GLHelper.InitializeExtensions();
-
-                // log hardware info
-                System.Diagnostics.Trace.WriteLine(string.Format("Vendor: {0}", GLHelper.Vendor));
-                System.Diagnostics.Trace.WriteLine(string.Format("Video Board: {0}", GLHelper.VideoCard));
-                System.Diagnostics.Trace.WriteLine(string.Format("Version: {0}", GLHelper.Version));
-			
-                System.Diagnostics.Trace.WriteLine("Extensions supported:");
-
-                foreach(string ext in GLHelper.Extensions)
-                    System.Diagnostics.Trace.WriteLine(ext);
-
-                // init the GL context
-                Gl.glShadeModel(Gl.GL_SMOOTH);							// Enable Smooth Shading
-                Gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f);				// Black Background
-                Gl.glClearDepth(1.0f);									// Depth Buffer Setup
-                Gl.glEnable(Gl.GL_DEPTH_TEST);							// Enables Depth Testing
-                Gl.glDepthFunc(Gl.GL_LEQUAL);								// The Type Of Depth Testing To Do
-                Gl.glHint(Gl.GL_PERSPECTIVE_CORRECTION_HINT, Gl.GL_NICEST);	// Really Nice Perspective Calculations
-            }
 
             // create the window
-            window.Create(name, width, height, colorDepth, isFullscreen, left, top, depthBuffer, hDC, hRC);
+            window.Create(name, width, height, colorDepth, isFullscreen, left, top, depthBuffer);
 
             // add the new render target
             AttachRenderTarget(window);
@@ -332,13 +229,14 @@ namespace Axiom.RenderSystems.OpenGL {
 
             // create a specialized instance, which registers itself as the singleton instance of HardwareBufferManager
             // use software buffers as a fallback, which operate as regular vertex arrays
-            if(caps.CheckCap(Capabilities.VertexBuffer))
-                hardwareBufferManager = new GLHardwareBufferManager();
-            else
-                hardwareBufferManager = new GLSoftwareBufferManager();
+			if(caps.CheckCap(Capabilities.VertexBuffer)) {
+				hardwareBufferManager = new GLHardwareBufferManager();
+			}
+			else {
+				hardwareBufferManager = new GLSoftwareBufferManager();
+			}
 
-            // initialize the mesh manager here, since it relies on the render system already establishing a
-            // HardwareBufferManager
+            // initialize the mesh manager here, since it relies on the render system already establishing a HardwareBufferManager
             MeshManager.Init();
 
             return window;
