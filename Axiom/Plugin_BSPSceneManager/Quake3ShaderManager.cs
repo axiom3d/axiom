@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.IO;
 using System.Text;
+using System.Diagnostics;
 using System.Collections.Specialized;
 
 using Axiom.Core;
@@ -81,11 +82,14 @@ namespace Axiom.SceneManagers.Bsp
 
 			while((line = file.ReadLine()) != null)
 			{
+				line = line.Trim();
+
 				// Ignore comments & blanks
-				if(!(line == String.Empty) || line.StartsWith("//"))
+				if((line != String.Empty) && !line.StartsWith("//"))
 				{
 					if(shader == null)
 					{
+						Trace.WriteLine(String.Format("Creating {0}...", line));
 						// No current shader
 						// So first valid data should be a shader name
 						shader = (Quake3Shader) Create(line);
@@ -97,11 +101,20 @@ namespace Axiom.SceneManagers.Bsp
 					{
 						// Already in a shader
 						if(line == "}")
+						{
+							Trace.WriteLine(String.Format("End of shader."));
 							shader = null;
+						}
 						else if(line == "{")
-							ParseNewShaderPass(stream, shader);
+						{
+							Trace.WriteLine("New pass...");
+							ParseNewShaderPass(file, shader);
+						}
 						else
+						{
+							Trace.WriteLine(String.Format("New attrib, {0}...", line));
 							ParseShaderAttrib(line.ToLower(), shader);
+						}
 					}
 				}
 			}
@@ -121,52 +134,51 @@ namespace Axiom.SceneManagers.Bsp
 			}
 		}
 
-		protected void ParseNewShaderPass(Stream stream, Quake3Shader shader)
+		protected void ParseNewShaderPass(StreamReader stream, Quake3Shader shader)
 		{
 			string line;
-			int passIdx;
-			StreamReader chunk = new StreamReader(stream, Encoding.ASCII);
-
-			passIdx = shader.NumPasses;
-			shader.NumPasses++;
+			ShaderPass pass = new ShaderPass();
 
 			// Default pass details
-			shader.Pass[passIdx].animNumFrames = 0;
-			shader.Pass[passIdx].blend = LayerBlendOperation.Replace;
-			shader.Pass[passIdx].blendDest = SceneBlendFactor.Zero;
-			shader.Pass[passIdx].depthFunc = CompareFunction.LessEqual;
-			shader.Pass[passIdx].flags = 0;
-			shader.Pass[passIdx].rgbGenFunc = ShaderGen.Identity;
-			shader.Pass[passIdx].tcModRotate = 0;
-			shader.Pass[passIdx].tcModScale[0] = shader.Pass[passIdx].tcModScale[1] = 1.0f;
-			shader.Pass[passIdx].tcModScroll[0] = shader.Pass[passIdx].tcModScroll[1] = 0.0f;
-			shader.Pass[passIdx].tcModStretchWave = ShaderWaveType.None;
-			shader.Pass[passIdx].tcModTransform[0] = shader.Pass[passIdx].tcModTransform[1] = 0.0f;
-			shader.Pass[passIdx].tcModTurbOn = false;
-			shader.Pass[passIdx].tcModTurb[0] = shader.Pass[passIdx].tcModTurb[1] 
-				= shader.Pass[passIdx].tcModTurb[2] = shader.Pass[passIdx].tcModTurb[3] = 0.0f;
-			shader.Pass[passIdx].texGen = ShaderTextureGen.Base;
-			shader.Pass[passIdx].addressMode = TextureAddressing.Wrap;
-			shader.Pass[passIdx].customBlend = false;
-			shader.Pass[passIdx].alphaVal = 0;
-			shader.Pass[passIdx].alphaFunc = CompareFunction.AlwaysPass;
+			pass.animNumFrames = 0;
+			pass.blend = LayerBlendOperation.Replace;
+			pass.blendDest = SceneBlendFactor.Zero;
+			pass.depthFunc = CompareFunction.LessEqual;
+			pass.flags = 0;
+			pass.rgbGenFunc = ShaderGen.Identity;
+			pass.tcModRotate = 0;
+			pass.tcModScale[0] = pass.tcModScale[1] = 1.0f;
+			pass.tcModScroll[0] = pass.tcModScroll[1] = 0.0f;
+			pass.tcModStretchWave = ShaderWaveType.None;
+			pass.tcModTransform[0] = pass.tcModTransform[1] = 0.0f;
+			pass.tcModTurbOn = false;
+			pass.tcModTurb[0] = pass.tcModTurb[1] = pass.tcModTurb[2] = pass.tcModTurb[3] = 0.0f;
+			pass.texGen = ShaderTextureGen.Base;
+			pass.addressMode = TextureAddressing.Wrap;
+			pass.customBlend = false;
+			pass.alphaVal = 0;
+			pass.alphaFunc = CompareFunction.AlwaysPass;
 
-			while((line = chunk.ReadLine()) != null)
+			shader.Pass.Add(pass);
+
+			while((line = stream.ReadLine()) != null)
 			{
+				line = line.Trim();
+
 				// Ignore comments & blanks
-				if((line.Length != 0) && (line.Substring(0, 2) != "//"))
+				if((line != String.Empty) && !line.StartsWith("//"))
 				{
 					if(line == "}")
 						return;
 					else
-						ParseShaderPassAttrib(line, shader, ref shader.Pass[passIdx]);
+						ParseShaderPassAttrib(line, shader, pass);
 				}
 			}
 		}
 
 		protected void ParseShaderAttrib(string line, Quake3Shader shader)
 		{
-			string[] attribParams = line.Split(' ', '\t');
+			string[] attribParams = line.Replace("(", "").Replace(")", "").Split(' ', '\t');
 
 			if(attribParams[0] == "skyparms")
 			{
@@ -177,8 +189,13 @@ namespace Axiom.SceneManagers.Bsp
 				}
 				if(attribParams[2] != "-")
 				{
+					Console.WriteLine("height: " + attribParams[2]);
 					shader.SkyDome = true;
-					shader.CloudHeight = float.Parse(attribParams[2]);
+
+					if(attribParams[2] == "full")
+						shader.CloudHeight = 512;
+					else
+						shader.CloudHeight = float.Parse(attribParams[2]);
 				}
 
 				// nearbox not supported
@@ -198,17 +215,21 @@ namespace Axiom.SceneManagers.Bsp
 			}
 			else if(attribParams[0] == "fogparms")
 			{
-				shader.Fog = true;
-				shader.FogColour = ParseHelper.ParseColor(attribParams);
-				shader.FogDistance = float.Parse(attribParams[4]);
+				string[] fogValues = new string[4];
+				Array.Copy(attribParams, 1, fogValues, 0, 4);
+
+				/*shader.Fog = true;
+				shader.FogColour = ParseHelper.ParseColor(fogValues);
+				shader.FogDistance = float.Parse(attribParams[4]);*/
 			}
 		}
 
-		protected void ParseShaderPassAttrib(string line, Quake3Shader shader, ref ShaderPass pass)
+		protected void ParseShaderPassAttrib(string line, Quake3Shader shader, ShaderPass pass)
 		{
 			string[] attribParams = line.Split(' ', '\t');
 			attribParams[0] = attribParams[0].ToLower();
 
+			Trace.WriteLine(String.Format("Attrib {0}", attribParams[0]));
 			if((attribParams[0] != "map") && (attribParams[0] != "clampmap") && (attribParams[0] != "animmap"))
 			{
 				// lower case all except textures
@@ -217,7 +238,7 @@ namespace Axiom.SceneManagers.Bsp
 			}
 
 			// MAP
-			if(attribParams[0] == "map")
+			 else if(attribParams[0] == "map")
 			{
 				pass.textureName = attribParams[1];
 
@@ -225,7 +246,7 @@ namespace Axiom.SceneManagers.Bsp
 					pass.texGen = ShaderTextureGen.Lightmap;
 			}
 			// CLAMPMAP
-			if(attribParams[0] == "clampmap")
+			else if(attribParams[0] == "clampmap")
 			{
 				pass.textureName = attribParams[1];
 
@@ -311,20 +332,24 @@ namespace Axiom.SceneManagers.Bsp
 			{
 				if(attribParams[1] == "rotate")
 				{
+					Console.WriteLine("{0}, {1}, {2}", line, attribParams[2], attribParams[3]);
 					pass.tcModRotate = -float.Parse(attribParams[2]) / 360; // +ve is clockwise degrees in Q3 shader, anticlockwise complete rotations in Ogre
 				}
 				else if(attribParams[1] == "scroll")
 				{
+					Console.WriteLine("{0}, {1}, {2}", line, attribParams[2], attribParams[3]);
 					pass.tcModScroll[0] = float.Parse(attribParams[2]);
 					pass.tcModScroll[1] = float.Parse(attribParams[3]);
 				}
 				else if(attribParams[1] == "scale")
 				{
+					Console.WriteLine("{0}, {1}, {2}", line, attribParams[2], attribParams[3]);
 					pass.tcModScale[0] = float.Parse(attribParams[2]);
 					pass.tcModScale[1] = float.Parse(attribParams[3]);
 				}
 				else if(attribParams[1] == "stretch")
 				{
+					Console.WriteLine("{0}, {1}, {2}", line, attribParams[2], attribParams[3]);
 					if(attribParams[2] == "sin")
 						pass.tcModStretchWave = ShaderWaveType.Sin;
 					else if(attribParams[2] == "triangle")

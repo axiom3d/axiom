@@ -213,20 +213,21 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			chunk.Seek(header.lumps[(int) Quake3LumpType.Lightmaps].offset, SeekOrigin.Begin);
 			int numLightmaps = header.lumps[(int) Quake3LumpType.Lightmaps].size / BspLevel.LightmapSize;
-return;
+			return;
 			// Lightmaps are always 128x128x24 (RGB).
 			for(int i = 0; i < numLightmaps; i++)
 			{
-				string name = String.Format("@lightmap%d", i);
+				string name = String.Format("@lightmap{0}", i);
 				byte[] buffer = new byte[BspLevel.LightmapSize];
 				chunk.Read(buffer, 0, BspLevel.LightmapSize);
+
 
 				// Load, no mipmaps, brighten by factor 2.5
 				Image.ApplyGamma(buffer, 2.5f, BspLevel.LightmapSize, 24);
 				MemoryStream stream = new MemoryStream(buffer);		
 				
 				Image img = Image.FromRawStream(stream, 128, 128, PixelFormat.R8G8B8);				
-				TextureManager.Instance.LoadImage(name, img, 0, 3.0f, 1);
+				TextureManager.Instance.LoadImage(name, img, 0, 3.0f, 1);				
 			}
 		}
 
@@ -253,7 +254,7 @@ return;
 			Trace.WriteLine("-= Shaders =-");
 
 			for(int i = 0; i < shaders.Length; i++)
-				Trace.WriteLine(String.Format("Shader {0}: {1}", i, shaders[i].name));
+				Trace.WriteLine(String.Format("Shader {0}: {1:x}", i, shaders[i].name));
 
 			Trace.WriteLine("");
 			Trace.WriteLine("-= Entities =-");

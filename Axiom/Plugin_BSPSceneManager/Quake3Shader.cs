@@ -34,6 +34,8 @@ using Axiom.MathLib;
 using Axiom.Graphics;
 using Axiom.Controllers;
 
+using Axiom.SceneManagers.Bsp.Collections;
+
 namespace Axiom.SceneManagers.Bsp
 {
 	/// <summary>
@@ -52,7 +54,7 @@ namespace Axiom.SceneManagers.Bsp
 		#region Protected members
 		protected uint flags;
 		protected int numPasses;
-		protected ShaderPass[] pass;
+		protected ShaderPassCollection pass;
 		protected bool farBox;            // Skybox
 		protected string farBoxName;
 		protected bool skyDome;
@@ -75,29 +77,39 @@ namespace Axiom.SceneManagers.Bsp
 
 		public int NumPasses
 		{
-			get { return numPasses; }
-			set 
+			get { return pass.Count; }
+			/*set 
 			{ 
-				// Resize the array, cleaner interface than using
-				// an ArrayList or a homegrown collection.
-				if(value <= 0)
+				if(value < 0)
 					throw new ArgumentOutOfRangeException("NumPasses", value.ToString());
 				
 				if(numPasses > value)
 					numPasses = value;
 				
 				ShaderPass[] newPasses = new ShaderPass[value];
-				Array.Copy(pass, 0, newPasses, 0, numPasses);
+
+				// Initialize each element to stop null references.
+				for(int i = 0; i < value; i++)
+					newPasses[i] = new ShaderPass();
+
+				if(pass.Length > 0)
+					Array.Copy(pass, 0, newPasses, 0, numPasses);
 
 				pass = newPasses;
 				numPasses = value; 
-			}
+			}*/
 		}
 
-		public ShaderPass[] Pass
+		public ShaderPassCollection Pass
 		{
-			get { return pass; }
-			set { pass = value; }
+			get 
+			{ 
+				return pass;
+			}
+			set 
+			{ 
+				pass = value;
+			}
 		}
 
 		public bool Farbox
@@ -169,16 +181,10 @@ namespace Axiom.SceneManagers.Bsp
 		public Quake3Shader(string name)
 		{
 			this.name = name;
-			flags = 0;
-			numPasses = 0;
-			pass = null;
 			deformFunc = ShaderDeformFunc.None;
-			farBox = false;
-			farBoxName = "";
-			skyDome = false;
-			fog = false;
 			deformParams = new float[5];
 			cullMode = ManualCullingMode.Back;
+			pass = new ShaderPassCollection();
 		}
 		#endregion
 
@@ -207,7 +213,7 @@ namespace Axiom.SceneManagers.Bsp
 			string materialName = String.Format("{0}#{1}", name, lightmapNumber);
 			Material material = sm.CreateMaterial(materialName);
 
-			System.Diagnostics.Trace.Write("Using Q3 shader " + name);
+			System.Diagnostics.Trace.WriteLine("Using Q3 shader " + name);
 			
 			for(int p = 0; p < numPasses; ++p)
 			{
@@ -437,8 +443,7 @@ namespace Axiom.SceneManagers.Bsp
 		#endregion
 	}
 
-	[StructLayout(LayoutKind.Sequential)]
-	public struct ShaderPass 
+	public class ShaderPass 
 	{
 		public uint flags;
 		public string textureName;
@@ -457,21 +462,21 @@ namespace Axiom.SceneManagers.Bsp
 		// TODO - alphaFunc
 		public ShaderGen rgbGenFunc;
 		public ShaderWaveType rgbGenWave;
-		public float[] rgbGenParams;    // base, amplitude, phase, frequency
-		public float[] tcModScale;
+		public float[] rgbGenParams = new float[4]; // base, amplitude, phase, frequency
+		public float[] tcModScale = new float[2];
 		public float tcModRotate;
-		public float[] tcModScroll;
-		public float[] tcModTransform;
+		public float[] tcModScroll = new float[2];
+		public float[] tcModTransform = new float[6];
 		public bool tcModTurbOn;
-		public float[] tcModTurb;
+		public float[] tcModTurb = new float[4];
 		public ShaderWaveType tcModStretchWave;
-		public float[] tcModStretchParams;    // base, amplitude, phase, frequency
+		public float[] tcModStretchParams = new float[4];    // base, amplitude, phase, frequency
 		public CompareFunction alphaFunc;
 		public byte alphaVal;
 
 		public float animFps;
 		public int animNumFrames;
-		public string[] frames;
+		public string[] frames = new string[32];
 	};
 
 	[Flags]
