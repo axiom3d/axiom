@@ -509,6 +509,29 @@ namespace Axiom.Core {
 		}
 
 		/// <summary>
+		///		Internal method - given vertex data which could be from the Mesh or 
+		///		any SubMesh, finds the corresponding SubEntity.
+		/// </summary>
+		/// <param name="original"></param>
+		/// <returns></returns>
+		protected SubEntity FindSubEntityForVertexData(VertexData original) {
+			if(original == mesh.SharedVertexData) {
+				return null;
+			}
+
+			for(int i = 0; i < subEntityList.Count; i++) {
+				SubEntity subEnt = subEntityList[i];
+
+				if(original == subEnt.SubMesh.vertexData) {
+					return subEnt;
+				}
+			}
+
+			// none found
+			return null;
+		}
+
+		/// <summary>
 		///		Perform all the updates required for an animated entity.
 		/// </summary>
 		protected void UpdateAnimation() {
@@ -957,10 +980,14 @@ namespace Axiom.Core {
 						data = egi.vertexData;
 					}
 
+					// Try to find corresponding SubEntity; this allows the 
+					// linkage of visibility between ShadowRenderable and SubEntity
+					SubEntity subEntity = FindSubEntityForVertexData(egi.vertexData);
+
 					// Create a new renderable, create a separate light cap if
 					// we're using hardware skinning since otherwise we get
 					// depth-fighting on the light cap
-					esr = new EntityShadowRenderable(this, indexBuffer, data, useHardwareSkinning);
+					esr = new EntityShadowRenderable(this, indexBuffer, data, useHardwareSkinning, subEntity);
 
 					shadowRenderables.Add(esr);
 				}
@@ -1085,17 +1112,21 @@ namespace Axiom.Core {
 			///		Original position buffer source binding.
 			/// </summary>
 			protected short originalPosBufferBinding;
+			/// <summary>
+			///		Link to SubEntity, only present if SubEntity has it's own geometry.
+			/// </summary>
+			protected SubEntity subEntity;
 
 			#endregion Fields
 
 			#region Constructor
 
 			public EntityShadowRenderable(Entity parent, HardwareIndexBuffer indexBuffer, 
-				VertexData vertexData, bool createSeperateLightCap)
-				: this(parent, indexBuffer, vertexData, createSeperateLightCap, false) {}
+				VertexData vertexData, bool createSeperateLightCap, SubEntity subEntity)
+				: this(parent, indexBuffer, vertexData, createSeperateLightCap, subEntity, false) {}
 
 			public EntityShadowRenderable(Entity parent, HardwareIndexBuffer indexBuffer, 
-				VertexData vertexData, bool createSeparateLightCap, bool isLightCap) {
+				VertexData vertexData, bool createSeparateLightCap, SubEntity subEntity, bool isLightCap) {
 
 				this.parent = parent;
 
@@ -1144,7 +1175,7 @@ namespace Axiom.Core {
 						vertexData.vertexCount * 2;
 					if(createSeparateLightCap) {
 						// Create child light cap
-						lightCap = new EntityShadowRenderable(parent, indexBuffer, vertexData, false, true);
+						lightCap = new EntityShadowRenderable(parent, indexBuffer, vertexData, false, subEntity, true);
 					}
 				}
 			}
@@ -1212,6 +1243,17 @@ namespace Axiom.Core {
 					return parent.ParentNode.DerivedPosition;
 				}
 			}
+
+			public override bool IsVisible {
+				get {
+					if(subEntity != null) {
+						return subEntity.IsVisible;
+					}
+
+					return base.IsVisible;
+				}
+			}
+
 
 			#endregion ShadowRenderable Members
 		}

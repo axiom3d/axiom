@@ -363,33 +363,57 @@ namespace Axiom.Graphics {
 			Vector3 extrusionDir = Vector3.Zero;
 
 			if (lightPosition.w == 0) {
-				extrusionDir.x = lightPosition.x;
-				extrusionDir.y = lightPosition.y;
-				extrusionDir.z = lightPosition.z;
+				extrusionDir.x = -lightPosition.x;
+				extrusionDir.y = -lightPosition.y;
+				extrusionDir.z = -lightPosition.z;
 				extrusionDir.Normalize();
 				extrusionDir *= extrudeDistance;
 				box.SetExtents(box.Minimum + extrusionDir, box.Maximum + extrusionDir);
 			}
 			else {
-				Vector3 vmin = box.Minimum;
-				extrusionDir.x = vmin.x - lightPosition.x;
-				extrusionDir.y = vmin.y - lightPosition.y;
-				extrusionDir.z = vmin.z - lightPosition.z;
-				extrusionDir.Normalize();
-				extrusionDir *= extrudeDistance;
-				vmin += extrusionDir;
+				Vector3[] corners = box.Corners;
+				Vector3 vmin = new Vector3();
+				Vector3 vmax = new Vector3();
 
-				Vector3 vmax = box.Maximum;
-				extrusionDir.x = vmax.x - lightPosition.x;
-				extrusionDir.y = vmax.y - lightPosition.y;
-				extrusionDir.z = vmax.z - lightPosition.z;
-				extrusionDir.Normalize();
-				extrusionDir *= extrudeDistance;
-				vmax += extrusionDir;
+				for(int i = 0; i < 8; i++) {
+					extrusionDir.x = corners[i].x - lightPosition.x;
+					extrusionDir.y = corners[i].y - lightPosition.y;
+					extrusionDir.z = corners[i].z - lightPosition.z;
+					extrusionDir.Normalize();
+					extrusionDir *= extrudeDistance;
+					Vector3 res = corners[i] + extrusionDir;
+
+					if(i == 0) {
+						vmin = res;
+						vmax = res;
+					}
+					else {
+						vmin.Floor(res);
+						vmax.Ceil(res);
+					}
+				}
 
 				box.SetExtents(vmin, vmax);
 			}
 		}
+
+		/// <summary>
+		///		Helper moethod for calculating extrusion distance.
+		/// </summary>
+		/// <param name="objectPos">Current position of the object in question.</param>
+		/// <param name="light">Light to use for extrusion calcs.</param>
+		/// <returns></returns>
+		protected float GetExtrusionDistance(Vector3 objectPos, Light light) {
+			Vector3 diff = objectPos - light.DerivedPosition;
+			return light.AttenuationRange - diff.Length;
+		}
+
+		/// <summary>
+		///		Get the distance to extrude for a point/spot light.
+		/// </summary>
+		/// <param name="light"></param>
+		/// <returns></returns>
+		public abstract float GetPointExtrusionDistance(Light light);
 
 		#endregion Methods
 	}

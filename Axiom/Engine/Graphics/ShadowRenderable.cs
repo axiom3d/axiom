@@ -84,6 +84,15 @@ namespace Axiom.Graphics {
 			}
 		}
 
+		/// <summary>
+		///		Should this ShadowRenderable be treated as visible?
+		/// </summary>
+		public virtual bool IsVisible {
+			get {
+				return true;
+			}
+		}
+
 		#endregion Properties
 
 		#region Methods

@@ -927,8 +927,12 @@ namespace Axiom.Core {
 			targetRenderSystem.StencilCheckEnabled = true;
 			targetRenderSystem.DepthFunction = CompareFunction.Less;
 
-			float extrudeDistance = (light.Type == LightType.Directional) ? 
-				shadowDirLightExtudeDist : light.AttenuationRange;
+			// calculate extrusion distance
+			float extrudeDistance = 0;
+			
+			if(light.Type == LightType.Directional) {
+				extrudeDistance = shadowDirLightExtudeDist;
+			}
 
 			// get the near clip volume
 			PlaneBoundedVolume nearClipVol = light.GetNearClipVolume(camera);
@@ -956,20 +960,27 @@ namespace Axiom.Core {
 			for(int i = 0; i < casters.Count; i++) {
 				ShadowCaster caster = (ShadowCaster)casters[i];
 
+				flags = 0;
+
+				if(light.Type != LightType.Directional) {
+					extrudeDistance = caster.GetPointExtrusionDistance(light);
+				}
+
 				if(zfailAlgo) {
 					// We need to include the light and / or dark cap
 					// But only if they will be visible
 					if(camera.IsObjectVisible(caster.GetLightCapBounds())) {
 						flags |= (int)ShadowRenderableFlags.IncludeLightCap;
 					}
-					// Dark caps are not needed for directional lights if
-					// extrusion is done in hardware (since extruded to infinity)
-					if((light.Type != LightType.Directional || extrudeInSoftware)
-						&& camera.IsObjectVisible(caster.GetDarkCapBounds(light, extrudeDistance))) {
-
-						flags |= (int)ShadowRenderableFlags.IncludeDarkCap;
-					}
 				} // if zfail
+
+				// Dark caps are not needed for directional lights if
+				// extrusion is done in hardware (since extruded to infinity)
+				if((light.Type != LightType.Directional || extrudeInSoftware)
+					&& camera.IsObjectVisible(caster.GetDarkCapBounds(light, extrudeDistance))) {
+
+					flags |= (int)ShadowRenderableFlags.IncludeDarkCap;
+				}
 
 				// get shadow renderables
 				IEnumerator renderables = caster.GetShadowVolumeRenderableEnumerator(
@@ -978,19 +989,22 @@ namespace Axiom.Core {
 				while(renderables.MoveNext()) {
 					ShadowRenderable sr = (ShadowRenderable)renderables.Current;
 
-					// render volume, including dark and (maybe) light caps
-					RenderSingleShadowVolumeToStencil(sr, zfailAlgo, stencil2sided, tempLightList);
+					// omit hidden renderables
+					if(sr.IsVisible) {
+						// render volume, including dark and (maybe) light caps
+						RenderSingleShadowVolumeToStencil(sr, zfailAlgo, stencil2sided, tempLightList);
 
-					// optionally render separate light cap
-					if (sr.IsLightCapSeperate && ((flags & (int)ShadowRenderableFlags.IncludeLightCap)) > 0) {
-						// must always fail depth check
-						targetRenderSystem.DepthFunction = CompareFunction.AlwaysFail;
+						// optionally render separate light cap
+						if (sr.IsLightCapSeperate && ((flags & (int)ShadowRenderableFlags.IncludeLightCap)) > 0) {
+							// must always fail depth check
+							targetRenderSystem.DepthFunction = CompareFunction.AlwaysFail;
 
-						Debug.Assert(sr.LightCapRenderable != null, "Shadow renderable is missing a separate light cap renderable!");
+							Debug.Assert(sr.LightCapRenderable != null, "Shadow renderable is missing a separate light cap renderable!");
 
-						RenderSingleShadowVolumeToStencil(sr.LightCapRenderable, zfailAlgo, stencil2sided, tempLightList);
-						// reset depth function
-						targetRenderSystem.DepthFunction = CompareFunction.Less;
+							RenderSingleShadowVolumeToStencil(sr.LightCapRenderable, zfailAlgo, stencil2sided, tempLightList);
+							// reset depth function
+							targetRenderSystem.DepthFunction = CompareFunction.Less;
+						}
 					}
 				}
 			}

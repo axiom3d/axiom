@@ -345,13 +345,16 @@ namespace Axiom.Core {
 			return GetWorldBoundingBox();
 		}
 
-		public override AxisAlignedBox GetDarkCapBounds(Light light, float dirLightExtrusionDist) {
+		/// <summary>
+		///		
+		/// </summary>
+		/// <param name="light"></param>
+		/// <param name="extrusionDistance"></param>
+		/// <returns></returns>
+		public override AxisAlignedBox GetDarkCapBounds(Light light, float extrusionDistance) {
 			// Extrude own light cap bounds
 			// need a clone to avoid modifying the original bounding box
-			AxisAlignedBox tmpBox = (AxisAlignedBox)GetLightCapBounds().Clone();
-
-			float extrusionDistance = 
-				(light.Type == LightType.Directional) ? dirLightExtrusionDist : light.AttenuationRange;
+			worldDarkCapBounds = (AxisAlignedBox)GetLightCapBounds().Clone();
 
 			ExtrudeBounds(worldDarkCapBounds, light.GetAs4DVector(), extrusionDistance);
 
@@ -362,6 +365,14 @@ namespace Axiom.Core {
 			HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, int flags) {
 
 			return dummyList.GetEnumerator();
+		}
+
+		public override float GetPointExtrusionDistance(Light light) {
+			if(parentNode != null) {
+				return GetExtrusionDistance(parentNode.DerivedPosition, light);
+			}
+
+			return 0;
 		}
 
 		#endregion ShadowCast Members
