@@ -802,11 +802,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Input\.#InputSystem.removed.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Input\Enums.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -974,11 +969,6 @@
                 <File
                     RelPath = "Text\TextManager.cs"
                     SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Utility\.#DebugWindow.removed.cs"
-                    SubType = "Form"
                     BuildAction = "Compile"
                 />
                 <File
