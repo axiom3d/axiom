@@ -637,13 +637,13 @@ namespace Axiom.Graphics {
         protected abstract internal int DepthBias { set; }
 
         /// <summary>Sets the current view matrix.</summary>
-        protected abstract internal Matrix4 ViewMatrix	{ set; }
+        public abstract Matrix4 ViewMatrix	{ set; }
 
         /// <summary>Sets the current world matrix.</summary>
-        protected abstract internal Matrix4 WorldMatrix { set; }
+        public abstract Matrix4 WorldMatrix { set; }
 
         /// <summary>Sets the current projection matrix.</summary>
-        protected abstract internal Matrix4 ProjectionMatrix { set; }
+        public abstract Matrix4 ProjectionMatrix { set; }
 
         /// <summary>
         ///		Sets how to rasterise triangles, as points, wireframe or solid polys.

@@ -155,11 +155,11 @@ namespace Axiom.Core {
 			/// <summary>
 			///		Planes bounding a convex region, only applicable for <see cref="WorldFragmentType.PlaneBoundedRegion"/>.
 			/// </summary>
-			PlaneList Planes;
+			public PlaneList Planes;
 			/// <summary>
 			///		General render operation structure.  Fallback if nothing else is available.
 			/// </summary>
-			RenderOperation RenderOp;
+			public RenderOperation RenderOp;
 		}
 
 		#endregion Nested Structs

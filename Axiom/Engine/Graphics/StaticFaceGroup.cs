@@ -53,26 +53,26 @@ namespace Axiom.Graphics {
         /// <summary>
         ///     Type of face group.
         /// </summary>
-        FaceGroup type;
+        public FaceGroup type;
 
         /// <summary>
         ///     Is this a sky surface?
         /// </summary>
-        bool isSky;
+        public bool isSky;
 
         /// <summary>
         ///     Index into a buffer containing vertex definitions. Because we're
         ///     dealing with subsets of large levels this is likely to be part-way
         ///     through a huge vertex buffer.
         /// </summary>
-        int vertexStart;
+        public int vertexStart;
 
         /// <summary>
         ///     The range of vertices in the buffer this facegroup references.
         ///     This is really for copying purposes only, so that we know which
         ///     subset of vertices to copy from our large-level buffer into the rendering buffer.
         /// </summary>
-        int numVertices;
+        public int numVertices;
 
         /// <summary>
         ///     Index into a buffer containing vertex indices. This buffer
@@ -82,25 +82,25 @@ namespace Axiom.Graphics {
         ///     when copying data into rendering buffers.
         ///     This is only applicable to FaceGroup.FaceList face groups.
         /// </summary>
-        int elementStart;
+        public int elementStart;
 
         /// <summary>
         ///     The number of vertex indices. This is only applicable to FaceGroup.FaceList face group types.
         /// </summary>
-        int numElements;
+        public int numElements;
 
         /// <summary>
         ///     Handle to material used by this group.
         ///     Note the use of the material handle rather than the material
         ///     name - this is for efficiency since there will be many of these.
         /// </summary>
-        int materialHandle;
+        public int materialHandle;
 
-        Plane plane;
+        public Plane plane;
 
         /// <remarks>
         ///     Patch surface (only applicable when type == FaceGroup.Patch)
         /// </remarks>
-        PatchSurface patchSurf;
+        public PatchSurface patchSurf;
 	}
 }
