@@ -165,11 +165,8 @@ namespace Axiom.ParticleSystems {
                 Update(interval);
         }
 
-        /// <summary>
-        ///		Overriden.
-        /// </summary>
-        public override Axiom.MathLib.Matrix4[] WorldTransforms {
-            get { return new Matrix4[] { Matrix4.Identity }; 	}
+        public override void GetWorldTransforms(Matrix4[] matrices) {
+            matrices[0] = Matrix4.Identity;
         }
 
         /// <summary>

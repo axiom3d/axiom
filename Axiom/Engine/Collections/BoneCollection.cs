@@ -33,7 +33,7 @@ using Axiom.Core;
 // used to alias a type in the code for easy copying and pasting.  Come on generics!!
 using T = Axiom.Animating.Bone;
 // used to alias a key value in the code for easy copying and pasting.  Come on generics!!
-using K = System.String;
+using K = System.UInt16;
 
 namespace Axiom.Collections {
     /// <summary>

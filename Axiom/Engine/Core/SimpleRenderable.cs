@@ -57,7 +57,7 @@ namespace Axiom.Core {
         /// </summary>
         public SimpleRenderable() {
             materialName = "BaseWhite";
-            material = (Material)MaterialManager.Instance["BaseWhite"];
+            material = MaterialManager.Instance["BaseWhite"];
             name = "SimpleRenderable" + nextAutoGenName++;
 
             material.Load();
@@ -104,49 +104,65 @@ namespace Axiom.Core {
             get { return material; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="op"></param>
         public abstract void GetRenderOperation(RenderOperation op);
 
         /// <summary>
         /// 
         /// </summary>
-        public virtual Axiom.MathLib.Matrix4[] WorldTransforms {
-            get {
-                return new Matrix4[] {worldTransform * parentNode.FullTransform};
-            }
+        /// <param name="matrices"></param>
+        public virtual void GetWorldTransforms(Matrix4[] matrices) {
+            matrices[0] = worldTransform * parentNode.FullTransform;
         }
 
         #endregion
 
         #region IRenderable Members
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ushort NumWorldTransforms {
             get {
-                // TODO:  Add SimpleRenderable.NumWorldTransforms getter implementation
                 return 1;
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool UseIdentityProjection {
             get {
-                // TODO:  Add SimpleRenderable.UseIdentityProjection getter implementation
                 return false;
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool UseIdentityView {
             get {
-                // TODO:  Add SimpleRenderable.UseIdentityView getter implementation
                 return false;
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SceneDetailLevel RenderDetail {
             get {
-                // TODO:  Add SimpleRenderable.RenderDetail getter implementation
                 return SceneDetailLevel.Solid;
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="camera"></param>
+        /// <returns></returns>
         public virtual float GetSquaredViewDepth(Camera camera) {
             // TODO:  Add SimpleRenderable.GetSquaredViewDepth implementation
             return 0;

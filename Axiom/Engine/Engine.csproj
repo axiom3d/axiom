@@ -726,6 +726,11 @@
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
+                <File
+                    RelPath = "Serialization\OgreSkeletonReader.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
                 <Folder RelPath = "SubSystems\Dynamics\" />
                 <Folder RelPath = "SubSystems\Networking\" />
                 <File

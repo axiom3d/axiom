@@ -69,9 +69,7 @@ namespace Axiom.SubSystems.Rendering {
         ///  does use vertex blending it will fill the passed in pointer with an array of matrices,
         ///  the length being the value returned from getNumWorldTransforms.
         /// </remarks>
-        Matrix4[] WorldTransforms {
-            get;
-        }
+        void GetWorldTransforms(Matrix4[] matrices);
 
         /// <summary>
         /// Gets the number of world transformations that will be used for this object.

@@ -77,7 +77,6 @@ namespace Axiom.MathLib {
     public struct Matrix4 {
         #region Member variables
 
-        //private float[,] m = new float[4,4];
         public float m00, m01, m02, m03;
         public float m10, m11, m12, m13;
         public float m20, m21, m22, m23;
@@ -175,6 +174,18 @@ namespace Axiom.MathLib {
         #endregion
 
         #region Public methods
+
+        /// <summary>
+        ///    Returns a 3x3 portion of this 4x4 matrix.
+        /// </summary>
+        /// <returns></returns>
+        public Matrix3 GetMatrix3() {
+            return
+                new Matrix3(
+                    this.m00, this.m01, this.m02,
+                    this.m10, this.m11, this.m12,
+                    this.m20, this.m21, this.m22);
+        }
 
         /// <summary>
         /// Swap the rows of the matrix with the columns.

@@ -47,6 +47,7 @@ namespace Axiom.SubSystems.Rendering {
         #region Constructors
 		
         public HardwareCaps() {
+            caps = 0;
         }
 		
         #endregion

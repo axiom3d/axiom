@@ -143,6 +143,7 @@
     <File name=".\Core\SubMesh.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Scripting\ParseHelper.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Collections\BoneCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Serialization\OgreSkeletonReader.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References>
     <Reference type="Project" refto="MathLib" localcopy="True" />

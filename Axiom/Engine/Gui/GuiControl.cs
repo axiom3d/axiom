@@ -29,6 +29,7 @@ using System.Collections;
 using Axiom.Core;
 using Axiom.Enumerations;
 using Axiom.EventSystem;
+using Axiom.MathLib;
 using Axiom.SubSystems.Rendering;
 
 namespace Axiom.Gui {
@@ -67,11 +68,8 @@ namespace Axiom.Gui {
             // TODO: Implement GetRenderOperation
         }		
 
-        public Axiom.MathLib.Matrix4[] WorldTransforms {
-            get {
-                // TODO:  Add GuiControl.WorldTransforms getter implementation
-                return null;
-            }
+        public void GetWorldTransforms(Matrix4[] matrices) {
+            // TODO: Implement GuiControl.GetWorldTransformsw
         }
 
         public ushort NumWorldTransforms {

@@ -51,7 +51,7 @@ namespace Demos {
             knotEntity.MaterialName = "Examples/TransparentTest";
 
             // get a reference to the material for modification
-            Material material = (Material)MaterialManager.Instance["Examples/TransparentTest"];
+            Material material = MaterialManager.Instance["Examples/TransparentTest"];
 
             // lower the ambient light to make the knots more transparent
             material.Ambient = new ColorEx(1.0f, 0.2f, 0.2f, 0.2f);

@@ -26,16 +26,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using System.Diagnostics;
+using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.MathLib;
 using Axiom.SubSystems.Rendering;
 
 namespace Axiom.Core {
     /// <summary>
-    /// The Entity class serves as the base class for all objects in the engine.   
-    /// It represents the minimum functionality required for an object in a 3D SceneGraph.
+    ///    The Entity class serves as the base class for all objects in the engine.   
+    ///    It represents the minimum functionality required for an object in a 3D SceneGraph.
     /// </summary>
-    // TODO: Add LOD and skeletal animation
+    // TODO: Add LOD usage
     public class Entity : SceneObject, IDisposable {
         #region Member variables
 
@@ -45,10 +47,22 @@ namespace Axiom.Core {
         protected SubEntityCollection subEntityList = new SubEntityCollection();
         /// <summary>SceneManager responsible for creating this entity.</summary>
         protected SceneManager sceneMgr;
-
+        /// <summary>Name of the material to be used for this entity.</summary>
         protected string materialName;
-
+        /// <summary>Bounding box that 'contains' all the meshes of each child entity</summary>
+        protected AxisAlignedBox fullBoundingBox;
+        /// <summary>State of animation for animable meshes</summary>
+        protected AnimationStateCollection animationState = new AnimationStateCollection();
+        /// <summary>Cached bone matrices, including and world transforms.</summary>
+        protected internal Matrix4[] boneMatrices;
+        /// <summary>Number of matrices associated with this entity.</summary>
+        protected internal int numBoneMatrices;
+        /// <summary>Flag determines whether or not to display skeleton</summary>
+        protected bool displaySkeleton;
+        /// <summary>The LOD number of the mesh to use, calculated by NotifyCurrentCamera</summary>
         protected int meshLODIndex;
+        /// <summary>Render detail to be used for this entity (solid, wireframe, point).</summary>
+        protected SceneDetailLevel renderDetail;
 
         #endregion
 
@@ -68,49 +82,19 @@ namespace Axiom.Core {
             BuildSubEntities();
 
             // TODO: Determine LOD usage
+
+            // init the AnimationState, if the mesh is animated
+            if(mesh.HasSkeleton) {
+                mesh.InitAnimationState(animationState);
+                numBoneMatrices = mesh.BoneMatrixCount;
+                boneMatrices = new Matrix4[numBoneMatrices];
+            }
         }
 
         #endregion
 
         #region Properties
 		
-        /// <summary>
-        /// 
-        /// </summary>
-        /// DOC
-        public int MeshLODIndex {
-            get { return meshLODIndex; }
-            set { meshLODIndex = value; }
-        }
-
-        /// <summary>
-        ///		Gets the 3D mesh associated with this entity.
-        /// </summary>
-        public Mesh Mesh {
-            get { return mesh; }
-        }
-
-        /// <summary>
-        ///		Gets the collection of sub entities belonging to this entity.
-        /// </summary>
-        public SubEntityCollection SubEntities {
-            get { return subEntityList; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public String MaterialName {
-            set {
-                materialName = value;
-
-                // assign the material name to all sub entities
-                for(int i = 0; i < subEntityList.Count; i++)
-                    subEntityList[i].MaterialName = materialName;
-
-            }
-        }
-
         /// <summary>
         ///    Local bounding radius of this entity.
         /// </summary>
@@ -128,6 +112,73 @@ namespace Axiom.Core {
             }
         }
 
+        /// <summary>
+        ///    Gets/Sets the flag to render the skeleton of this entity.
+        /// </summary>
+        public bool DisplaySkeleton {
+            get {
+                return displaySkeleton;
+            }
+            set {
+                displaySkeleton = value;
+            }
+        }
+            
+        /// <summary>
+        /// 
+        /// </summary>
+        /// DOC
+        public int MeshLODIndex {
+            get { return meshLODIndex; }
+            set { meshLODIndex = value; }
+        }
+
+        /// <summary>
+        ///		Gets the 3D mesh associated with this entity.
+        /// </summary>
+        public Mesh Mesh {
+            get { return mesh; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public String MaterialName {
+            set {
+                materialName = value;
+
+                // assign the material name to all sub entities
+                for(int i = 0; i < subEntityList.Count; i++)
+                    subEntityList[i].MaterialName = materialName;
+            }
+        }
+
+        /// <summary>
+        ///    Sets the rendering detail of this entire entity (solid, wireframe etc).
+        /// </summary>
+        public SceneDetailLevel RenderDetail {
+            get {
+                return renderDetail;
+            }
+            set {
+                renderDetail = value;
+
+                // also set for all sub entities
+                for(int i = 0; i < subEntityList.Count; i++) {
+                    GetSubEntity(i).RenderDetail = renderDetail;
+                }
+            }
+        }
+
+        /// <summary>
+        ///    Gets the number of sub entities that belong to this entity.
+        /// </summary>
+        public int SubEntityCount {
+            get {
+                return subEntityList.Count;
+            }
+        }
+
         #endregion
 
         #region Private methods
@@ -137,8 +188,8 @@ namespace Axiom.Core {
         /// </summary>
         public void BuildSubEntities() {
             // loop through the models meshes and create sub entities from them
-            for(int i = 0; i < mesh.SubMeshes.Count; i++) {
-                SubMesh subMesh = mesh.SubMeshes[i];
+            for(int i = 0; i < mesh.SubMeshCount; i++) {
+                SubMesh subMesh = mesh.GetSubMesh(i);
                 SubEntity sub = new SubEntity();
                 sub.Parent = this;
                 sub.SubMesh = subMesh;
@@ -164,8 +215,92 @@ namespace Axiom.Core {
 
         #region Implementation of SceneObject
 
+        /// <summary>
+        ///    
+        /// </summary>
+        protected void CacheBoneMatrices() {
+            Mesh theMesh = null;
+
+            // Get the appropriate meshes skeleton here
+            // Can use lower LOD mesh skeleton if mesh LOD is manual
+            // We make the assumption that lower LOD meshes will have
+            //   fewer bones than the full LOD, therefore marix stack will be
+            //   big enough.
+
+            // TODO: Check for LOD usage
+
+            theMesh = this.mesh;
+
+            // tell the skeleton who is making a call to update it
+            theMesh.Skeleton.CurrentEntity = this;
+
+            theMesh.GetBoneMatrices(animationState, boneMatrices);
+
+            // reset the skeleton to 'no caller'
+            theMesh.Skeleton.CurrentEntity = null;
+
+            // apply the current world transforms to these too, since these are used as
+            // replacement world matrices
+            Matrix4 worldXform = this.ParentFullTransform;
+            numBoneMatrices = theMesh.BoneMatrixCount;
+
+            for(int i = 0; i < numBoneMatrices; i++) {
+                boneMatrices[i] = worldXform * boneMatrices[i];
+            }
+        }
+
+        /// <summary>
+        ///    For entities based on animated meshes, gets the AnimationState object for a single animation.
+        /// </summary>
+        /// <remarks>
+        ///    You animate an entity by updating the animation state objects. Each of these represents the
+        ///    current state of each animation available to the entity. The AnimationState objects are
+        ///    initialized from the Mesh object.
+        /// </remarks>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public AnimationStateCollection GetAllAnimationStates() {
+            return animationState;
+        }
+
+        /// <summary>
+        ///    For entities based on animated meshes, gets the AnimationState object for a single animation.
+        /// </summary>
+        /// <remarks>
+        ///    You animate an entity by updating the animation state objects. Each of these represents the
+        ///    current state of each animation available to the entity. The AnimationState objects are
+        ///    initialized from the Mesh object.
+        /// </remarks>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public AnimationState GetAnimationState(string name) {
+            Debug.Assert(animationState.ContainsKey(name), "animationState.ContainsKey(name)");
+
+            return animationState[name];
+        }
+
         internal override void NotifyCurrentCamera(Axiom.Core.Camera camera) {
             // TODO: Use camera to determine updated LOD info
+        }
+
+        /// <summary>
+        ///    Merge all the child object Bounds and return it.
+        /// </summary>
+        /// <returns></returns>
+        public AxisAlignedBox GetChildObjectsBoundingBox() {
+            // TODO: Implement Entity.GetChildObjectsBoundingBox after adding TagPoints
+            return AxisAlignedBox.Null;
+        }
+
+        /// <summary>
+        ///    Gets the SubEntity at the specified index.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public SubEntity GetSubEntity(int index) {
+            Debug.Assert(index < subEntityList.Count, "index < subEntityList.Count");
+
+            return subEntityList[index];
         }
 
         /// <summary>
@@ -176,11 +311,31 @@ namespace Axiom.Core {
             // add all sub entities to the render queue
             for(int i = 0; i < subEntityList.Count; i++)
                 queue.AddRenderable(subEntityList[i], RenderQueue.DEFAULT_PRIORITY, renderQueueID);
+
+            // Since we know we're going to be rendered, take this opportunity to 
+            // cache bone matrices & apply world matrix to them
+            if(mesh.HasSkeleton) {
+                CacheBoneMatrices();
+
+                // TODO: Update render queue with child objects (tag points)
+            }
+
+            // TODO: Add skeleton itself to the render queue
         }
 
         public override Axiom.Core.AxisAlignedBox BoundingBox {
             // return the bounding box of our mesh
-            get {	 return mesh.BoundingBox; }
+            get {	 
+                fullBoundingBox = mesh.BoundingBox;
+                fullBoundingBox.Merge(GetChildObjectsBoundingBox());
+
+                // scale by parent
+                if(parentNode != null) {
+                    fullBoundingBox.Scale(parentNode.DerivedScale);
+                }
+
+                return fullBoundingBox;
+            }
         }
 
         #endregion
@@ -199,8 +354,11 @@ namespace Axiom.Core {
             // loop through each subentity and set the material up for the clone
             for(int i = 0; i < subEntityList.Count; i++) {
                 SubEntity subEntity = subEntityList[i];
-                clone.SubEntities[i].MaterialName = materialName;
+                clone.GetSubEntity(i).MaterialName = materialName;
             }
+
+            // TODO: Make sure this is the desired effect, since all clones share the same state
+            clone.animationState = animationState;
 
             return clone;
         }

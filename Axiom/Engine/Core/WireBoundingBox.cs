@@ -89,8 +89,12 @@ namespace Axiom.Core {
 
         #region Implementation of SimpleRenderable
 
-        public override Axiom.MathLib.Matrix4[] WorldTransforms {
-            get { return new Matrix4[] { Matrix4.Identity }; }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="matrices"></param>
+        public override void GetWorldTransforms(Matrix4[] matrices) {
+            matrices[0] = Matrix4.Identity;
         }
 		
         public void InitAABB(AxisAlignedBox box) {
