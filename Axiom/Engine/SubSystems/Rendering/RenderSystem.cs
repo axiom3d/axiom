@@ -59,6 +59,7 @@ namespace Axiom.SubSystems.Rendering {
 
         protected RenderWindowCollection renderWindows;
         protected TextureManager textureMgr;
+        protected GpuProgramManager gpuProgramMgr;
         protected HardwareBufferManager hardwareBufferManager;
         protected CullingMode cullingMode;
         protected bool isVSync;
@@ -572,6 +573,28 @@ namespace Axiom.SubSystems.Rendering {
         ///		several times per complete frame if multiple viewports exist.
         /// </summary>
         abstract protected internal void BeginFrame();
+
+        /// <summary>
+        ///    Binds a given GpuProgram (but not the parameters). 
+        /// </summary>
+        /// <remarks>
+        ///    Only one GpuProgram of each type can be bound at once, binding another
+        ///    one will simply replace the existing one.
+        /// </remarks>
+        /// <param name="program"></param>
+        public abstract void BindGpuProgram(GpuProgram program);
+
+        /// <summary>
+        ///    Bind Gpu program parameters.
+        /// </summary>
+        /// <param name="parms"></param>
+        public abstract void BindGpuProgramParameters(GpuProgramType type, GpuProgramParameters parms);
+
+        /// <summary>
+        ///    Unbinds the current GpuProgram of a given GpuProgramType.
+        /// </summary>
+        /// <param name="type"></param>
+        public abstract void UnbindGpuProgram(GpuProgramType type);
 
         /// <summary>
         ///		Ends rendering of a frame to the current viewport.

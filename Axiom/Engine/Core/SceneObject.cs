@@ -38,7 +38,6 @@ namespace Axiom.Core {
     /// </remarks>
     // TODO: Add local OBB / convex hull
     public abstract class SceneObject {
-
         #region Member variables 
 
         /// <summary>Node that this node is attached to.</summary>
@@ -135,6 +134,21 @@ namespace Axiom.Core {
                 
                 // identity if no parent
                 return Matrix4.Identity;
+            }
+        }
+
+        /// <summary>
+        ///    Allows showing the bounding box of an invidual SceneObject.
+        /// </summary>
+        /// <remarks>
+        ///    This shows the bounding box of the SceneNode that the SceneObject is currently attached to.
+        /// </remarks>
+        public bool ShowBoundingBox {
+            get {
+                return parentNode.ShowBoundingBox;
+            }
+            set {
+                parentNode.ShowBoundingBox = true;
             }
         }
 

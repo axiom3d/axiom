@@ -34,6 +34,7 @@ using Axiom.Enumerations;
 using Axiom.Exceptions;
 using Axiom.Gui;
 using Axiom.MathLib;
+using Axiom.MathLib.Collections;
 using Axiom.SubSystems.Rendering;
 
 namespace Axiom.Core {
@@ -75,7 +76,7 @@ namespace Axiom.Core {
         /// <summary>A list of lights in the scene for easy lookup.</summary>
         protected LightCollection lightList;
         /// <summary>A list of entities in the scene for easy lookup.</summary>
-        protected EntityCollection entityList;
+        protected internal EntityCollection entityList;
         /// <summary>A list of scene nodes (includes all in the scene graph).</summary>
         protected SceneNodeCollection sceneNodeList;
         /// <summary>A list of billboard set for easy lookup.</summary>
@@ -620,7 +621,38 @@ namespace Axiom.Core {
             return modelMgr.CreatePlane(meshName, p, planeSize, planeSize, 1, 1, false, 1, 1, 1, up);
         }
 
+        /// <summary>
+        ///    Creates 
+        /// </summary>
+        /// <param name="ray"></param>
+        /// <returns></returns>
+        public RaySceneQuery CreateRaySceneQuery(Ray ray) {
+            DefaultRaySceneQuery query = new DefaultRaySceneQuery(this, ray);
+            // default to return all results
+            query.QueryMask = 0xffffffff;
+            return query;
+        }
 
+        /// <summary>
+        ///    Creates 
+        /// </summary>
+        /// <param name="ray"></param>
+        /// <returns></returns>
+        public RaySceneQuery CreateRaySceneQuery(Ray ray, ulong mask) {
+            DefaultRaySceneQuery query = new DefaultRaySceneQuery(this, ray);
+            query.QueryMask = mask;
+            return query;
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        /// <param name="plane"></param>
+        /// <param name="curvature"></param>
+        /// <param name="tiling"></param>
+        /// <param name="distance"></param>
+        /// <param name="orientation"></param>
+        /// <returns></returns>
         protected Mesh CreateSkyDomePlane(BoxPlane plane, float curvature, float tiling, float distance, Quaternion orientation) {
             Plane p = new Plane();
             Vector3 up = Vector3.Zero;
@@ -1544,5 +1576,30 @@ namespace Axiom.Core {
         }
 
         #endregion
+    }
+
+    /// <summary>
+    ///    Default implementation of RaySceneQuery.
+    /// </summary>
+    public class DefaultRaySceneQuery : RaySceneQuery {
+        public DefaultRaySceneQuery(SceneManager creator, Ray ray) : base(creator, ray) {}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public override void Execute() {
+            for(int i = 0; i < creator.entityList.Count; i++) {
+                Entity entity = creator.entityList[i];
+
+                // test the intersection
+                Pair results = MathUtil.Intersects(ray, entity.BoundingBox);
+
+                // if the results came back positive, fire the event handler
+                if((bool)results.object1 == true) {
+                    OnQueryResult(creator, new RayQueryResultEventArgs(entity, (float)results.object2));
+                }
+            }
+        }
+
     }
 }

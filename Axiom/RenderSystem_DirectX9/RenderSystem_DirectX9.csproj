@@ -149,6 +149,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "D3DGpuProgram.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "D3DGpuProgramManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "D3DHardwareBufferManager.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

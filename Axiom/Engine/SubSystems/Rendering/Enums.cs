@@ -187,6 +187,21 @@ namespace Axiom.SubSystems.Rendering {
     }
 
     /// <summary>
+    ///    Enumerates the types of programs which can run on the GPU.
+    /// </summary>
+    public enum GpuProgramType {
+        /// <summary>
+        ///    Executes for each vertex passed through the pipeline while this program is active.
+        /// </summary>
+        Vertex,
+        /// <summary>
+        ///    Executes for each fragment (or pixel) for primitives that are passed through the pipeline
+        ///    while this program is active..
+        /// </summary>
+        Fragment
+    }
+
+    /// <summary>
     ///		Type of index buffer to use.
     /// </summary>
     /// <remarks>

@@ -109,6 +109,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "AxisAlignedBox.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "MathUtil.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -134,6 +139,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Ray.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "RotationalSpline.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -155,6 +165,11 @@
                 />
                 <File
                     RelPath = "Collections\BaseCollection.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Collections\Pair.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -292,6 +292,9 @@ namespace RenderSystem_DirectX9 {
             // by creating our texture manager, singleton TextureManager will hold our implementation
             textureMgr = new D3DTextureManager(device);
 
+            // by creating our Gpu program manager, singleton GpuProgramManager will hold our implementation
+            gpuProgramMgr = new D3DGpuProgramManager(device);
+
             // intializes the HardwareBufferManager singleton
             hardwareBufferManager = new D3DHardwareBufferManager(device);
 
@@ -638,6 +641,55 @@ namespace RenderSystem_DirectX9 {
             // if not present we've already set it through SetTextureCoordSet
             if(method != TexCoordCalcMethod.None)
                 device.TextureState[stage].TextureCoordinateIndex = D3DHelper.ConvertEnum(method, d3dCaps);
+        }
+
+        public override void BindGpuProgram(GpuProgram program) {
+            switch(program.Type) {
+                case GpuProgramType.Vertex:
+                    device.VertexShader = ((D3DVertexProgram)program).VertexShader;
+                    break;
+
+                case GpuProgramType.Fragment:
+                    device.PixelShader = ((D3DFragmentProgram)program).PixelShader;
+                    break;
+            }            
+        }
+
+        public override void BindGpuProgramParameters(GpuProgramType type, GpuProgramParameters parms) {
+            Debug.Assert(parms.IntConstantCount % 4 == 0 && parms.FloatConstantCount % 4 == 0, "int and float constant params must be in multiples of 4.");
+
+            switch(type) {
+                case GpuProgramType.Vertex:
+                    if(parms.HasIntConstants) { 
+                        device.SetVertexShaderConstant(0, parms.IntConstants);
+                    }
+                    if(parms.HasFloatConstants) {
+                        device.SetVertexShaderConstant(0, parms.FloatConstants);
+                    }
+
+                    break;
+
+                case GpuProgramType.Fragment:
+                    if(parms.HasIntConstants) { 
+                        device.SetPixelShaderConstant(0, parms.IntConstants);
+                    }
+                    if(parms.HasFloatConstants) {
+                        device.SetPixelShaderConstant(0, parms.FloatConstants);
+                    }
+                    break;
+            }          
+        }
+
+        public override void UnbindGpuProgram(GpuProgramType type) {
+            switch(type) {
+                case GpuProgramType.Vertex:
+                    device.VertexShader = null;
+                    break;
+
+                case GpuProgramType.Fragment:
+                    device.PixelShader = null;
+                    break;
+            }
         }
 
         #endregion

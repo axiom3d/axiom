@@ -95,11 +95,6 @@ namespace RenderSystem_OpenGL {
 
 		
         #endregion
-		
-        #region Properties
-		
-        #endregion
-
     }
 
     public class GLSoftwareBufferManager : SoftwareBufferManager {

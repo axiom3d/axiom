@@ -13,6 +13,8 @@
     <File name=".\D3DHardwareVertexBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\D3DVertexDeclaration.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\D3D9RenderSystem.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\D3DGpuProgramManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\D3DGpuProgram.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References>
     <Reference type="Gac" refto="Microsoft.DirectX.Direct3D, Version=1.0.900.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" localcopy="True" />

@@ -37,7 +37,6 @@ namespace Axiom.Core {
     ///    The Entity class serves as the base class for all objects in the engine.   
     ///    It represents the minimum functionality required for an object in a 3D SceneGraph.
     /// </summary>
-    // TODO: Add LOD usage
     public class Entity : SceneObject, IDisposable {
         #region Member variables
 
@@ -388,7 +387,7 @@ namespace Axiom.Core {
             // TODO: Add skeleton itself to the render queue
         }
 
-        public override Axiom.Core.AxisAlignedBox BoundingBox {
+        public override AxisAlignedBox BoundingBox {
             // return the bounding box of our mesh
             get {	 
                 fullBoundingBox = mesh.BoundingBox;

@@ -79,7 +79,9 @@ namespace Demos {
             return true;
         }
 
+
         #region Methods
+
         protected override void CreateScene() {
             // since whole screen is being redrawn every frame, dont bother clearing
             // option works for GL right now, uncomment to test it out.  huge fps increase
@@ -109,7 +111,32 @@ namespace Demos {
 
             Entity ogre = scene.CreateEntity("Ogre", "ogrehead.mesh");
             ((SceneNode) scene.RootSceneNode.CreateChild()).AttachObject(ogre);
+            
+            Vector3 start = new Vector3(0, 0, 300);
+            Vector3 direction = -Vector3.UnitZ;
+
+            Line3d line = new Line3d(start, direction, 1000, ColorEx.FromColor(Color.Blue));
+            ((SceneNode) scene.RootSceneNode.CreateChild()).AttachObject(line);
+
+            RaySceneQuery rayQuery = scene.CreateRaySceneQuery(new Ray(start, direction));
+            rayQuery.QueryResult +=new RaySceneQueryResultEventHandler(rayQuery_QueryResult);
+            rayQuery.Execute();
         }
         #endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        private bool rayQuery_QueryResult(object source, RayQueryResultEventArgs e) {
+            if(e.Distance != 0.0f && e.HitObject is Entity) {
+                Console.WriteLine("Object hit!  Name: {0} Distance: {1}", e.HitObject.Name, e.Distance);
+                e.HitObject.ShowBoundingBox = true;
+            }
+
+            return true;
+        }
     }
 }

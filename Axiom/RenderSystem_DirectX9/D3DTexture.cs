@@ -77,12 +77,17 @@ namespace RenderSystem_DirectX9 {
             switch(usage) {
                 case TextureUsage.Default:
                     // load the resource data and 
-                    Stream stream = TextureManager.Instance.FindResourceData(name);
-                    Bitmap image = (Bitmap)Bitmap.FromStream(stream);
+                    try {
+                        Stream stream = TextureManager.Instance.FindResourceData(name);
+                        Bitmap image = (Bitmap)Bitmap.FromStream(stream);
 
-                    LoadImage(image);
+                        LoadImage(image);
 
-                    image.Dispose();
+                        image.Dispose();
+                    }
+                    catch(Exception ex) {
+                        // HACK: Ignoring exceptions for loading cube maps, will be fixed when cube mapping is working in D3D.
+                    }
 
                     break;
                 case TextureUsage.RenderTarget:

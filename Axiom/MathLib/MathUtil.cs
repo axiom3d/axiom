@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using Axiom.MathLib.Collections;
 
 namespace Axiom.MathLib {
     /// <summary>
@@ -59,7 +60,7 @@ namespace Axiom.MathLib {
 
         #endregion
 
-        #region Static methods
+        #region Static Methods
 
         /// <summary>
         ///		Converts degrees to radians.
@@ -196,7 +197,145 @@ namespace Axiom.MathLib {
             return 2.0f * UnitRandom() - 1.0f;
         }
 
-        #endregion
+        #region Intersection Methods
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ray"></param>
+        /// <param name="box"></param>
+        /// <returns></returns>
+        static public Pair Intersects(Ray ray, AxisAlignedBox box) {
+            if(box.IsNull) {
+                return new Pair(false, 0);
+            }
+
+            float lowt = 0.0f;
+            float t;
+            bool hit = false;
+            Vector3 hitPoint;
+            
+            // check origin inside first
+            if(ray.origin > box.minVector && ray.origin < box.maxVector) {
+                return new Pair(true, 0.0f);
+            }
+
+            // check each face in turn, only check closest 3
+
+            // Min X
+            if(ray.origin.x < box.minVector.x && ray.direction.x > 0) {
+                t = (box.minVector.x - ray.origin.x) / ray.direction.x;
+
+                if(t > 0) {
+                    // substitue t back into ray and check bounds and distance
+                    hitPoint = ray.origin + ray.direction * t;
+
+                    if(hitPoint.y >= box.minVector.y && hitPoint.y <= box.maxVector.y &&
+                        hitPoint.z >= box.minVector.z && hitPoint.z <= box.maxVector.z &&
+                        (!hit || t < lowt)) {
+
+                        hit = true;
+                        lowt = t;
+                    }
+                }
+            }
+
+            // Max X
+            if(ray.origin.x > box.maxVector.x && ray.direction.x < 0) {
+                t = (box.maxVector.x - ray.origin.x) / ray.direction.x;
+
+                if(t > 0) {
+                    // substitue t back into ray and check bounds and distance
+                    hitPoint = ray.origin + ray.direction * t;
+
+                    if(hitPoint.y >= box.minVector.y && hitPoint.y <= box.maxVector.y &&
+                        hitPoint.z >= box.minVector.z && hitPoint.z <= box.maxVector.z &&
+                        (!hit || t < lowt)) {
+
+                        hit = true;
+                        lowt = t;
+                    }
+                }
+            }
+                
+            // Min Y
+            if(ray.origin.y < box.minVector.y && ray.direction.y > 0) {
+                t = (box.minVector.y - ray.origin.y) / ray.direction.y;
+
+                if(t > 0) {
+                    // substitue t back into ray and check bounds and distance
+                    hitPoint = ray.origin + ray.direction * t;
+
+                    if(hitPoint.x >= box.minVector.x && hitPoint.x <= box.maxVector.x &&
+                        hitPoint.z >= box.minVector.z && hitPoint.z <= box.maxVector.z &&
+                        (!hit || t < lowt)) {
+
+                        hit = true;
+                        lowt = t;
+                    }
+                }
+            }
+
+            // Max Y
+            if(ray.origin.y > box.maxVector.y && ray.direction.y < 0) {
+                t = (box.maxVector.y - ray.origin.y) / ray.direction.y;
+
+                if(t > 0) {
+                    // substitue t back into ray and check bounds and distance
+                    hitPoint = ray.origin + ray.direction * t;
+
+                    if(hitPoint.x >= box.minVector.x && hitPoint.x <= box.maxVector.x &&
+                        hitPoint.z >= box.minVector.z && hitPoint.z <= box.maxVector.z &&
+                        (!hit || t < lowt)) {
+
+                        hit = true;
+                        lowt = t;
+                    }
+                }
+            }
+
+            // Min Z
+            if(ray.origin.z < box.minVector.z && ray.direction.z > 0) {
+                t = (box.minVector.z - ray.origin.z) / ray.direction.z;
+
+                if(t > 0) {
+                    // substitue t back into ray and check bounds and distance
+                    hitPoint = ray.origin + ray.direction * t;
+
+                    if(hitPoint.x >= box.minVector.x && hitPoint.x <= box.maxVector.x &&
+                        hitPoint.y >= box.minVector.y && hitPoint.y <= box.maxVector.y &&
+                        (!hit || t < lowt)) {
+
+                        hit = true;
+                        lowt = t;
+                    }
+                }
+            }
+
+            // Max Z
+            if(ray.origin.z > box.maxVector.z && ray.direction.z < 0) {
+                t = (box.maxVector.z - ray.origin.z) / ray.direction.z;
+
+                if(t > 0) {
+                    // substitue t back into ray and check bounds and distance
+                    hitPoint = ray.origin + ray.direction * t;
+
+                    if(hitPoint.x >= box.minVector.x && hitPoint.x <= box.maxVector.x &&
+                        hitPoint.y >= box.minVector.y && hitPoint.y <= box.maxVector.y &&
+                        (!hit || t < lowt)) {
+
+                        hit = true;
+                        lowt = t;
+                    }
+                }
+            }
+
+            return new Pair(hit, lowt);
+        }
+
+        #endregion Intersection Methods
+
+        #endregion Static Methods
 
         #region Static properties
 
