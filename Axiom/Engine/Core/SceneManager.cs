@@ -155,6 +155,34 @@ namespace Axiom.Core {
 		///		Current shadow technique in use in the scene.
 		/// </summary>
 		protected ShadowTechnique shadowTechnique;
+		/// <summary>
+		///		If true, shadow volumes will be visible in the scene.
+		/// </summary>
+		protected bool showDebugShadows;
+		/// <summary>
+		///		Pass to use for rendering debug shadows.
+		/// </summary>
+		protected Pass shadowDebugPass;
+		/// <summary>
+		///		
+		/// </summary>
+		protected Pass shadowStencilPass;
+		/// <summary>
+		/// 
+		/// </summary>
+		protected Pass shadowModulativePass;
+		/// <summary>
+		///		List of lights in view that could cast shadows.
+		/// </summary>
+		protected LightList lightsAffectingFrustum = new LightList();
+		/// <summary>
+		///		Full screen rectangle to use for rendering stencil shadows.
+		/// </summary>
+		protected Rectangle2D fullScreenQuad;
+		/// <summary>
+		///		Current list of shadow casters within the view of the camera.
+		/// </summary>
+		protected ArrayList shadowCasterList = new ArrayList();
 
         #endregion Fields
 
@@ -535,6 +563,54 @@ namespace Axiom.Core {
 
         #region Protected methods
 
+		/// <summary>
+		///		Internal method for locating a list of lights which could be affecting the frustum.
+		/// </summary>
+		/// <remarks>
+		///		Custom scene managers are encouraged to override this method to make use of their
+		///		scene partitioning scheme to more efficiently locate lights, and to eliminate lights
+		///		which may be occluded by word geometry.
+		/// </remarks>
+		/// <param name="camera">Camera to find lights within it's view.</param>
+		protected virtual void FindLightsAffectingFrustum(Camera camera) {
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		///		Internal method for setting up materials for shadows.
+		/// </summary>
+		protected virtual void InitShadowVolumeMaterials() {
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		///		Internal method for rendering all the objects for a given light into the stencil buffer.
+		/// </summary>
+		/// <param name="light">The light source.</param>
+		/// <param name="camera">The camera being viewed from.</param>
+		protected virtual void RenderShadowVolumesToStencil(Light light, Camera camera) {
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		///		Internal utility method for setting stencil state for rendering shadow volumes.
+		/// </summary>
+		/// <param name="secondPass">Is this the second pass?</param>
+		/// <param name="zfail">Should we be using the zfail method?</param>
+		/// <param name="twoSided">Should we use a 2-sided stencil?</param>
+		protected virtual void SetShadowVolumeStencilState(bool secondPass, bool zfail, bool twoSided) {
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		///		Render a single shadow volume to the stencil buffer.
+		/// </summary>
+		/// <param name="sr"></param>
+		/// <param name="zfail"></param>
+		/// <param name="stencil2sided"></param>
+		protected void RenderSingleShadowVolumeToStencil(ShadowRenderable sr, bool zfail, bool stencil2sided) {
+		}
+
         /// <summary>Internal method for setting a material for subsequent rendering.</summary>
         /// <remarks>
         ///		If this method returns a non-zero value, it means that not all
@@ -718,29 +794,6 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        ///    Creates 
-        /// </summary>
-        /// <param name="ray"></param>
-        /// <returns></returns>
-        public RaySceneQuery CreateRayQuery(Ray ray) {
-            DefaultRaySceneQuery query = new DefaultRaySceneQuery(this, ray);
-            // default to return all results
-            query.QueryMask = 0xffffffff;
-            return query;
-        }
-
-        /// <summary>
-        ///    Creates 
-        /// </summary>
-        /// <param name="ray"></param>
-        /// <returns></returns>
-        public RaySceneQuery CreateRayQuery(Ray ray, ulong mask) {
-            DefaultRaySceneQuery query = new DefaultRaySceneQuery(this, ray);
-            query.QueryMask = mask;
-            return query;
-        }
-
-        /// <summary>
         ///    
         /// </summary>
         /// <param name="plane"></param>
@@ -804,7 +857,13 @@ namespace Axiom.Core {
             // create new
             float planeSize = distance * 2;
             int segments = 16;
-            return planeMesh = meshManager.CreateCurvedIllusionPlane(meshName, p, planeSize, planeSize, curvature, segments, segments, false, 1, tiling, tiling, up, orientation, BufferUsage.DynamicWriteOnly, BufferUsage.StaticWriteOnly, false, false);
+			planeMesh = 
+				meshManager.CreateCurvedIllusionPlane(
+					meshName, p, planeSize, planeSize, curvature, segments, segments, 
+					false, 1, tiling, tiling, up, orientation, 
+					BufferUsage.DynamicWriteOnly, BufferUsage.StaticWriteOnly, true, true);
+
+            return planeMesh;
         }
 
         /// <summary>
@@ -871,6 +930,78 @@ namespace Axiom.Core {
         #endregion
 
         #region Public methods
+
+		/// <summary>
+		///    Creates a query to return objects found along the ray.
+		/// </summary>
+		/// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
+		public RaySceneQuery CreateRayQuery() {
+			return CreateRayQuery(new Ray(), 0xffffffff);
+		}
+
+		/// <summary>
+		///    Creates a query to return objects found along the ray.
+		/// </summary>
+		/// <param name="ray">Ray to use for the intersection query.</param>
+		/// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
+		public RaySceneQuery CreateRayQuery(Ray ray) {
+			return CreateRayQuery(ray, 0xffffffff);
+		}
+
+		/// <summary>
+		///    Creates a query to return objects found along the ray. 
+		/// </summary>
+		/// <param name="ray">Ray to use for the intersection query.</param>
+		/// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
+		public virtual RaySceneQuery CreateRayQuery(Ray ray, ulong mask) {
+			DefaultRaySceneQuery query = new DefaultRaySceneQuery(this);
+			query.Ray = ray;
+			query.QueryMask = mask;
+			return query;
+		}
+
+		/// <summary>
+		///		Creates a <see cref="SphereRegionSceneQuery"/> for this scene manager. 
+		/// </summary>
+		/// <remarks>
+		///		This method creates a new instance of a query object for this scene manager, 
+		///		for querying for objects within a spherical region.
+		/// </remarks>
+		/// <returns>A specialized implementation of SphereRegionSceneQuery for this scene manager.</returns>
+		public SphereRegionSceneQuery CreateSphereRegionQuery() {
+			return CreateSphereRegionQuery(new Sphere(), 0xffffffff);
+		}
+
+		/// <summary>
+		///		Creates a <see cref="SphereRegionSceneQuery"/> for this scene manager. 
+		/// </summary>
+		/// <remarks>
+		///		This method creates a new instance of a query object for this scene manager, 
+		///		for querying for objects within a spherical region.
+		/// </remarks>
+		/// <param name="sphere">Sphere to use for the region query.</param>
+		/// <returns>A specialized implementation of SphereRegionSceneQuery for this scene manager.</returns>
+		public SphereRegionSceneQuery CreateSphereRegionQuery(Sphere sphere) {
+			return CreateSphereRegionQuery(sphere, 0xffffffff);
+		}
+
+		/// <summary>
+		///		Creates a <see cref="SphereRegionSceneQuery"/> for this scene manager. 
+		/// </summary>
+		/// <remarks>
+		///		This method creates a new instance of a query object for this scene manager, 
+		///		for querying for objects within a spherical region.
+		/// </remarks>
+		/// <param name="sphere">Sphere to use for the region query.</param>
+		/// <param name="mask">Custom user defined flags to use for the query.</param>
+		/// <returns>A specialized implementation of SphereRegionSceneQuery for this scene manager.</returns>
+		public virtual SphereRegionSceneQuery CreateSphereRegionQuery(Sphere sphere, ulong mask) {
+			DefaultSphereRegionSceneQuery query = new DefaultSphereRegionSceneQuery(this);
+			query.Sphere = sphere;
+			query.QueryMask = mask;
+
+			return query;
+		}
 
         /// <summary>
         ///    Removes the specified entity from the scene.
@@ -1766,16 +1897,23 @@ namespace Axiom.Core {
         #endregion
     }
 
+	#region Default SceneQuery Implementations
+
     /// <summary>
     ///    Default implementation of RaySceneQuery.
     /// </summary>
     public class DefaultRaySceneQuery : RaySceneQuery {
-        public DefaultRaySceneQuery(SceneManager creator, Ray ray) : base(creator, ray) {}
+        internal DefaultRaySceneQuery(SceneManager creator) : base(creator) {}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public override void Execute() {
+        public override void Execute(IRaySceneQueryListener listener) {
+			// Note that becuase we have no scene partitioning, we actually
+			// perform a complete scene search even if restricted results are
+			// requested; smarter scene manager queries can utilise the paritioning 
+			// of the scene in order to reduce the number of intersection tests 
+			// required to fulfil the query
+
+			// TODO: BillboardSets? Will need per-billboard collision most likely
+			// Entities only for now
             for(int i = 0; i < creator.entityList.Count; i++) {
                 Entity entity = creator.entityList[i];
 
@@ -1784,11 +1922,39 @@ namespace Axiom.Core {
 
                 // if the results came back positive, fire the event handler
                 if((bool)results.first == true) {
-                    OnQueryResult(creator, new RayQueryResultEventArgs(entity, (float)results.second));
+                    listener.OnQueryResult(entity, (float)results.second);
                 }
             }
         }
     }
+
+	/// <summary>
+	///		Default implementation of a SphereRegionSceneQuery.
+	/// </summary>
+	public class DefaultSphereRegionSceneQuery : SphereRegionSceneQuery {
+        internal DefaultSphereRegionSceneQuery(SceneManager creator) : base(creator) {}
+
+		public override void Execute(ISceneQueryListener listener) {
+			// TODO: BillboardSets? Will need per-billboard collision most likely
+			// Entities only for now
+			Sphere testSphere = new Sphere();
+
+			for(int i = 0; i < creator.entityList.Count; i++) {
+				Entity entity = creator.entityList[i];
+
+				testSphere.Center = entity.ParentNode.DerivedPosition;
+				testSphere.Radius = entity.BoundingRadius;
+
+				// if the results came back positive, fire the event handler
+				if(sphere.Intersects(testSphere)) {
+					listener.OnQueryResult(entity);
+				}
+			}
+		}
+
+	}
+
+	#endregion Default SceneQuery Implementations
 
     /// <summary>
     ///     Structure for holding a position & orientation pair.
