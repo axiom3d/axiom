@@ -637,7 +637,7 @@ namespace Axiom.Graphics {
         }
 
         [AttributeParser("scene_blend", Pass)] 
-        public static void ParseSceneBlend(string[] values, Material material) {           
+        public static void ParseSceneBlend(string[] values, Pass pass) {           
             switch (values.Length) { 
                 case 1: 
                     // e.g. scene_blend add 
@@ -646,9 +646,9 @@ namespace Axiom.Graphics {
           
                     // if a value was found, assign it 
                     if(val != null) 
-                        material.SetSceneBlending((SceneBlendType)val); 
+                        pass.SetSceneBlending((SceneBlendType)val); 
                     else 
-                        ParseHelper.LogParserError("scene_blend", material.Name, "Invalid enum value"); 
+                        ParseHelper.LogParserError("scene_blend", pass.Parent.Parent.Name, "Invalid enum value"); 
                     break; 
                 case 2: 
                     // e.g. scene_blend source_alpha one_minus_source_alpha  
@@ -658,16 +658,16 @@ namespace Axiom.Graphics {
        
                     // if both values were found, assign them 
                     if(src_val != null && dest_val != null) 
-                        material.SetSceneBlending((SceneBlendFactor)src_val,(SceneBlendFactor)dest_val); 
+                        pass.SetSceneBlending((SceneBlendFactor)src_val,(SceneBlendFactor)dest_val); 
                     else 
                         if (src_val == null) 
-                        ParseHelper.LogParserError("scene_blend", material.Name, "Invalid enum value: " + values[0].ToString()); 
+                        ParseHelper.LogParserError("scene_blend", pass.Parent.Parent.Name, "Invalid enum value: " + values[0].ToString()); 
                     if (dest_val == null) 
-                        ParseHelper.LogParserError("scene_blend", material.Name, "Invalid enum value: " + values[1].ToString()); 
+                        ParseHelper.LogParserError("scene_blend", pass.Parent.Parent.Name, "Invalid enum value: " + values[1].ToString()); 
                     break; 
                 default: 
-                    material.SetSceneBlending(SceneBlendFactor.Zero,SceneBlendFactor.Zero); 
-                    ParseHelper.LogParserError("scene_blend", material.Name, "Expected 1 or 2 params."); 
+                    pass.SetSceneBlending(SceneBlendFactor.Zero,SceneBlendFactor.Zero); 
+                    ParseHelper.LogParserError("scene_blend", pass.Parent.Parent.Name, "Expected 1 or 2 params."); 
                     return; 
             } 
         } 
