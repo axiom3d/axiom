@@ -1680,7 +1680,7 @@ namespace Axiom.Serialization {
 
 		#endregion Parser Methods
 
-		/// <summary>
+        /// <summary>
 		///		Parses a Material script file passed in the specified stream.
 		/// </summary>
 		/// <param name="data">Stream containing the material file data.</param></param>

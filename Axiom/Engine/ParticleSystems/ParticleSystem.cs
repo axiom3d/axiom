@@ -203,7 +203,7 @@ namespace Axiom.ParticleSystems {
         public override void UpdateBounds() {
             base.UpdateBounds();
 
-            if(parentNode != null) {
+            if(parentNode != null && !aab.IsNull) {
                 // Have to override because bounds are supposed to be in local node space
                 // but we've already put particles in world space to decouple them from the
                 // node transform, so reverse transform back
