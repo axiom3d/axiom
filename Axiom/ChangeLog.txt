@@ -2,6 +2,7 @@
 - Fixed OpenGL problem where ARB programs were being created by default, even through they were not supported.
 - Added StringConverter class for parsing back and forth between strings and other types (float, etc).
 - Fixed issue where float.ToString was being called in the particle system and non-US cultures were interpreting the values wrong.
+- Fixed bug in BillboardSet.UpdateBounds where sets with no active billboards would result in box extents with Infinite components. (aka. the "Space Pirates" disappearing box bug")
 
 1-6-2005
 - RenderWindow.SaveToFile renamed to Save and moved up to RenderTarget base class.
