@@ -312,6 +312,14 @@ namespace Axiom.Graphics {
             bool isFullscreen, int left, int top, bool depthBuffer, object target);
 
 		/// <summary>
+		///		Requests an API implementation of a hardware occlusion query used to test for the number
+		///		of fragments rendered between calls to <see cref="IHardwareOcclusionQuery.Begin"/> and 
+		///		<see cref="IHardwareOcclusionQuery.End"/> that pass the depth buffer test.
+		/// </summary>
+		/// <returns>An API specific implementation of an occlusion query.</returns>
+		public abstract IHardwareOcclusionQuery CreateHardwareOcclusionQuery();
+
+		/// <summary>
 		///		Builds a perspective projection matrix suitable for this render system.
 		/// </summary>
 		/// <remarks>

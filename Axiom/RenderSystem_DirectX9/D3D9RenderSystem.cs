@@ -211,6 +211,14 @@ namespace Axiom.RenderSystems.DirectX9 {
             return renderTexture;
         }
 
+		/// <summary>
+		///		Returns a Direct3D implementation of a hardware occlusion query.
+		/// </summary>
+		/// <returns></returns>
+		public override IHardwareOcclusionQuery CreateHardwareOcclusionQuery() {
+			return new D3DHardwareOcclusionQuery(device);
+		}
+
         public override RenderWindow CreateRenderWindow(string name, int width, int height, int colorDepth, bool isFullscreen, int left, int top, bool depthBuffer, object target) {
             RenderWindow window = new D3DWindow();
 
@@ -1300,7 +1308,19 @@ namespace Axiom.RenderSystems.DirectX9 {
 				caps.SetCap(Capabilities.StencilWrap);
 			}
 
-			// TODO: Check for hardware occlusion
+			// Hardware Occlusion
+			try {
+				D3D.Query test = new D3D.Query(device, QueryType.Occlusion);
+
+				// if we made it this far, it is supported
+				caps.SetCap(Capabilities.HardwareOcculusion);
+
+				test.Dispose();
+			}
+			catch {
+				// eat it, this is not supported
+				// TODO: Isn't there a better way to check for D3D occlusion query support?
+			}
 
 			if(d3dCaps.MaxUserClipPlanes > 0) {
 				caps.SetCap(Capabilities.UserClipPlanes);
