@@ -72,7 +72,6 @@ namespace Axiom.Graphics {
     ///    Material returned from this method will apply to any materials created 
     ///    from this point onward.
     /// </summary>
-    // TODO: Material LOD
     public class Material : Resource, IComparable {
         #region Member variables
 
