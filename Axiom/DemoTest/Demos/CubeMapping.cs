@@ -461,8 +461,17 @@ namespace Demos {
                 Vector3 diff2 = v1 - v0;
                 Vector3 fn = diff1.Cross(diff2);
 
+                // update the normal of each vertex in the current face
                 normals[3 * p0] += fn.x;
+                normals[3 * p0 + 1] += fn.y;
+                normals[3 * p0 + 2] += fn.z;
+
+                normals[3 * p1] += fn.x;
                 normals[3 * p1 + 1] += fn.y;
+                normals[3 * p1 + 2] += fn.z;
+
+                normals[3 * p2] += fn.x;
+                normals[3 * p2 + 1] += fn.y;
                 normals[3 * p2 + 2] += fn.z;
             }
 
