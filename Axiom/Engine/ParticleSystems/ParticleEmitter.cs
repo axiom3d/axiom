@@ -549,14 +549,6 @@ namespace Axiom.ParticleSystems {
                 object srcVal = prop.GetValue(this, null);
                 prop.SetValue(emitter, srcVal, null);
             }
-            /*
-            emitter.Angle = this.Angle;
-            emitter.ColorRangeStart = this.ColorRangeStart;
-            emitter.ColorRangeEnd = this.ColorRangeEnd;
-            emitter.Direction = this.Direction;
-            emitter.MinDuration = this.MinDuration;
-            emitter.MaxDuration = this.MaxDuration;
-            emitter.*/
         }
 
         #endregion

@@ -226,7 +226,6 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="autoCreateWindow"></param>
         /// <returns></returns>
-        // TODO: Revisit this
         public RenderWindow Initialize(bool autoCreateWindow) {			
             Debug.Assert(activeRenderSystem != null, "Engine cannot be initialized if a valid RenderSystem is not also initialized.");
 
@@ -247,8 +246,6 @@ namespace Axiom.Core {
                 // init overlay manager
                 OverlayManager.Instance.ParseAllSources();
             }
-
-            //LoadPlugins();
 
             return window;
         }
@@ -342,8 +339,19 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="makeVisible"></param>
         // TODO: Implementation
-        public void ShowDebugOverlay(bool makeVisible) {
+        public void ShowDebugOverlay(bool show) {
+            Overlay o = OverlayManager.Instance["Core/DebugOverlay"];
 
+            if(o == null) {
+                throw new Exception(string.Format("Could not find overlay named '{0}'.", "Core/DebugOverlay"));
+            }
+
+            if(show) {
+                o.Show();
+            }
+            else {
+                o.Hide();
+            }
         }
 
         /// <summary>
@@ -514,6 +522,7 @@ namespace Axiom.Core {
             ParticleSystemManager.Init();
             SceneManagerList.Init();
             OverlayManager.Init();
+            GuiManager.Init();
 
             GarbageManager.Instance.Add(ParticleSystemManager.Instance);
             GarbageManager.Instance.Add(MaterialManager.Instance);
@@ -576,8 +585,6 @@ namespace Axiom.Core {
         /// </summary>
         internal void LoadPlugins() {
             // get a list of .dll files in the current directory
-
-            // TODO: Figure out how to make searching for assemblies cross platform compatible.  Linux, XBox likely dont use ".dll" extensions.
             string[] files = Directory.GetFiles(Environment.CurrentDirectory, "*.dll");
 			
             // loop through and load the assemblies 

@@ -409,7 +409,6 @@ namespace Axiom.SubSystems.Rendering {
     ///		SceneBlendType that you like, then you can specify the blending factors directly to affect the
     ///		combination of object and the existing scene. See Material.SceneBlending for more details.
     /// </summary>
-    // TODO: Comment types
     public enum SceneBlendFactor {
         /// <summary></summary>
         One,
@@ -674,7 +673,6 @@ namespace Axiom.SubSystems.Rendering {
     ///		Implemented with the Flags attribute to treat this enum with bitwise addition
     ///		and comparisons.
     /// </remarks>
-    // TODO: Verify ordering
     [Flags]
     public enum VertexFlags {
         /// <summary>

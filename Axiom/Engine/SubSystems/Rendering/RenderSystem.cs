@@ -82,11 +82,6 @@ namespace Axiom.SubSystems.Rendering {
         /// Saved set of world matrices
         protected Matrix4[] worldMatrices = new Matrix4[256];
 
-        /// Temporary buffer for vertex blending in software
-        /// TODO: Revisit this when software vertex blending gets implemented
-        protected float[] tempVertexBlendBuffer;
-        protected float[] tempNormalBlendBuffer;
-
         #endregion
 
         #region Constructor

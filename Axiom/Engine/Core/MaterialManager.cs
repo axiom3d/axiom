@@ -34,7 +34,6 @@ using Axiom.FileSystem;
 using Axiom.Scripting;
 using Axiom.SubSystems.Rendering;
 
-// BUG: Calling the indexer for MaterialManager with a non-existant material name, will return null and not notify of a missing material
 namespace Axiom.Core {
     /// <summary>
     /// Summary description for MaterialManager.
@@ -373,6 +372,26 @@ namespace Axiom.Core {
             }
 
             material.Diffuse = ParseHelper.ParseColor(values);
+        }
+
+        [AttributeParser("depth_check", MATERIAL)]
+        public static void ParseDepthCheck(string[] values, Material material) {
+            if(values.Length != 1) {
+                ParseHelper.LogParserError("depth_check", material.Name, "Expected param 'on' or 'off'");
+                return;
+            }
+
+            switch(values[0]) {
+                case "on":
+                    material.DepthCheck = true;
+                    break;
+                case "off":
+                    material.DepthCheck = false;
+                    break;
+                default:
+                    ParseHelper.LogParserError("depth_check", material.Name, "Invalid depth_check value, must be 'on' or 'off'");
+                    return;
+            }
         }
 
         [AttributeParser("lighting", MATERIAL)]

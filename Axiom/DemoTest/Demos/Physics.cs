@@ -91,6 +91,9 @@ namespace Demos {
 
             // setup the skybox
             sceneMgr.SetSkyBox(true, "Skybox/CloudyHills", 2000.0f);
+
+            camera.Position = new Vector3(0, 200, 700);
+            camera.LookAt(Vector3.Zero);
         }
 
         protected override bool OnFrameStarted(object source, FrameEventArgs e) {
@@ -107,7 +110,7 @@ namespace Demos {
             if(inputReader.IsKeyPressed(Keys.K))
                 box.RigidBody.AddForce(0, 0, force);
 
-            UpdateDynamics(3 * e.TimeSinceLastFrame);
+            UpdateDynamics(4 * e.TimeSinceLastFrame);
 
             box.UpdateFromDynamics();
             box2.UpdateFromDynamics();
@@ -140,7 +143,7 @@ namespace Demos {
         /// </summary>
         /// <param name="sceneManager"></param>
         public Box(SceneManager sceneManager): base(sceneManager) {
-            entity = sceneMgr.CreateEntity("Box" + nextNum++, "robot.mesh");
+            entity = sceneMgr.CreateEntity("Box" + nextNum++, "cube.mesh");
             node = (SceneNode)sceneMgr.RootSceneNode.CreateChild("BoxEntNode" + nextNum++);
             node.AttachObject(entity);
         }

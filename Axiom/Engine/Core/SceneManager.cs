@@ -130,12 +130,13 @@ namespace Axiom.Core {
         private static Material lastMaterialUsed;
         private static bool firstTime = true;
         protected bool lastUsedFallback;
-        private static int lastNumTexUnitsUsed = 0;
+        protected static int lastNumTexUnitsUsed = 0;
 
         // cached fog settings
-        private static FogMode oldFogMode;
-        private static ColorEx oldFogColor;
-        private static float oldFogStart, oldFogEnd, oldFogDensity;
+        protected static FogMode oldFogMode;
+        protected static ColorEx oldFogColor;
+        protected static float oldFogStart, oldFogEnd, oldFogDensity;
+        protected bool lastViewWasIdentity, lastProjectionWasIdentity;
 
         #endregion
 
@@ -549,6 +550,15 @@ namespace Axiom.Core {
             if(firstTime || lastMaterialUsed.DepthWrite != material.DepthWrite) {
                 targetRenderSystem.DepthWrite = material.DepthWrite;
             }
+            if(firstTime || lastMaterialUsed.DepthCheck != material.DepthCheck) {
+                targetRenderSystem.DepthCheck = material.DepthCheck;
+            }
+            if(firstTime || lastMaterialUsed.DepthFunction != material.DepthFunction) {
+                targetRenderSystem.DepthFunction = material.DepthFunction;
+            }
+            if(firstTime || lastMaterialUsed.DepthBias != material.DepthBias) {
+                targetRenderSystem.DepthBias = material.DepthBias;
+            }
 
             // TODO: CULLING
 
@@ -661,10 +671,27 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="renderable"></param>
         protected void UseRenderableViewProjection(IRenderable renderable) {
-            // only change view/proj if the cam has changed 
-            if(hasCameraChanged) {
+            bool useIdentityView = renderable.UseIdentityView;
+            bool useIdentityProj = renderable.UseIdentityProjection;
+
+            if(useIdentityView && (hasCameraChanged || !lastViewWasIdentity)) {
+                // using identity view now, so change it
+                targetRenderSystem.ViewMatrix = Matrix4.Identity;
+                lastViewWasIdentity = true;
+            }
+            else {
                 targetRenderSystem.ViewMatrix = camInProgress.ViewMatrix;
+                lastViewWasIdentity = false;
+            }
+
+            if(useIdentityProj && (hasCameraChanged || !lastProjectionWasIdentity)) {
+                // using identity view now, so change it
+                targetRenderSystem.ProjectionMatrix = Matrix4.Identity;
+                lastProjectionWasIdentity = true;
+            }
+            else {
                 targetRenderSystem.ProjectionMatrix = camInProgress.ProjectionMatrix;
+                lastProjectionWasIdentity = false;
             }
 
             // reset this flag so the view/proj wont be updated again this frame
@@ -1290,19 +1317,6 @@ namespace Axiom.Core {
                 for(int plane = 0; plane < 5; plane++)
                     renderQueue.AddRenderable(skyDomeEntities[plane].GetSubEntity(0), 1, qid);
             }
-        }
-
-        /// <summary>
-        ///		Internal method for issuing geometry for a subMesh to the RenderSystem pipeline.
-        /// </summary>
-        /// <remarks>
-        ///		Not recommended for manual usage, leave the engine to use this one as appropriate!
-        ///		<p/>
-        ///		It's assumed that material and world / view / projection transforms have already been set.
-        /// </remarks>
-        /// <param name="subMesh"></param>
-        internal virtual void RenderSubMesh(SubMesh subMesh) {
-            // TODO: Implement RenderSubMesh
         }
 
         /// <summary>
