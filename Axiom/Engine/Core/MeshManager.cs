@@ -115,7 +115,7 @@ namespace Axiom.Core {
             if(mesh == null) {
                 mesh = (Mesh)Create(name);
                 mesh.IsManuallyDefined = true;
-                base.Load(mesh, 0);
+                Add(mesh);
             }
 
             return mesh;
@@ -289,6 +289,9 @@ namespace Axiom.Core {
             // generate bounds for the mesh
             mesh.BoundingBox = new AxisAlignedBox(min, max);
             mesh.BoundingSphereRadius = MathUtil.Sqrt(maxSquaredLength);
+
+			mesh.Load();
+			mesh.Touch();
 
             return mesh;
         }
@@ -534,6 +537,9 @@ namespace Axiom.Core {
             // generate bounds for the mesh
             mesh.BoundingBox = new AxisAlignedBox(min, max);
             mesh.BoundingSphereRadius = MathUtil.Sqrt(maxSquaredLength);
+
+			mesh.Load();
+			mesh.Touch();
 
             return mesh;
         }

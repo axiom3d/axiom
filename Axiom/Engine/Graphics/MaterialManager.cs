@@ -301,7 +301,7 @@ namespace Axiom.Graphics {
             // create a material
             Material material = new Material(name);
 
-            resourceList[name] = material;
+            Add(material);
 				
             return material;
         }

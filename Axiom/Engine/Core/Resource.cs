@@ -46,14 +46,30 @@ namespace Axiom.Core {
     ///			Each must check & update the isLoaded flag.
     /// </remarks>
     public abstract class Resource : IDisposable {
-        #region Member variables
+        #region Fields
 
+		/// <summary>
+		///		Name of this resource.
+		/// </summary>
         protected string name;
+		/// <summary>
+		///		Has this resource been loaded yet?
+		/// </summary>
         protected bool isLoaded;
+		/// <summary>
+		///		 Size (in bytes) that this resource takes up in memory.
+		/// </summary>
         protected long size;
+		/// <summary>
+		///		Timestamp of the last time this resource was accessed.
+		/// </summary>
         protected long lastAccessed;
+		/// <summary>
+		///		Unique handle of this resource.
+		/// </summary>
+		protected int handle;
 
-        #endregion
+        #endregion Fields
 
         #region Constructors
 
@@ -120,6 +136,18 @@ namespace Axiom.Core {
                 return lastAccessed; 
             }
         }
+
+		/// <summary>
+		///		Gets/Sets the unique handle of this resource.
+		/// </summary>
+		public int Handle {
+			get {
+				return handle;
+			}
+			set {
+				handle = value;
+			}
+		}
 
         #endregion
 
