@@ -2298,7 +2298,7 @@ namespace Axiom.Core {
             // loop through each main render group ( which is already sorted)
             for(int i = 0; i < renderQueue.NumRenderQueueGroups; i++) {
                 RenderQueueGroupID queueID = renderQueue.GetRenderQueueGroupID(i);
-                RenderQueueGroup queueGroup = renderQueue.GetRenderQueueGroup(i);
+                RenderQueueGroup queueGroup = renderQueue.GetQueueGroupByIndex(i);
 
                 bool repeatQueue = false;
 

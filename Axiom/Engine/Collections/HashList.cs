@@ -59,7 +59,7 @@ namespace Axiom.Collections {
         }
 
         public object GetKeyAt(int index) {
-            return itemKeys[index];
+            return itemList.GetKey(index);
         }
 
         public object GetByKey(object key) {
@@ -89,11 +89,16 @@ namespace Axiom.Collections {
         #region Operators
 
         public object this[int index] {
-            get { return itemList.GetByIndex(index); }
+            get { 
+				return itemList.GetByIndex(index); 
+			}
         }
 
         public object this[object key] {
-            get { return itemTable[key]; }
+            get { 
+				return itemList[key];
+				//return itemTable[key]; 
+			}
         }
 
         #endregion

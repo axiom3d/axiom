@@ -48,7 +48,7 @@ namespace Axiom.Graphics {
         #region Member variables
 
         /// <summary>Cached list of render groups, indexed by RenderQueueGroupID</summary>
-        protected HashList renderGroups = new HashList();
+        protected SortedList renderGroups = new SortedList();
         /// <summary>Default render group for this queue.</summary>
         protected RenderQueueGroupID defaultGroup;
         /// <summary>Default priority of items added to the render queue.</summary>
@@ -140,7 +140,7 @@ namespace Axiom.Graphics {
             // loop through each queue and clear it's items.  We don't wanna clear the group
             // list because it probably won't change frame by frame.
             for(int i = 0; i < renderGroups.Count; i++) {
-                RenderQueueGroup group = (RenderQueueGroup)renderGroups[i];
+                RenderQueueGroup group = (RenderQueueGroup)renderGroups.GetByIndex(i);
 
                 // clear the RenderQueueGroup
                 group.Clear();
@@ -183,16 +183,16 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        internal RenderQueueGroup GetRenderQueueGroup(int index) {
+        internal RenderQueueGroup GetQueueGroupByIndex(int index) {
             Debug.Assert(index < renderGroups.Count, "index < renderGroups.Count");
 
-            return (RenderQueueGroup)renderGroups[index];
+            return (RenderQueueGroup)renderGroups.GetByIndex(index);
         }
 
         internal RenderQueueGroupID GetRenderQueueGroupID(int index) {
             Debug.Assert(index < renderGroups.Count, "index < renderGroups.Count");
 
-            return (RenderQueueGroupID)renderGroups.GetKeyAt(index);
+            return (RenderQueueGroupID)renderGroups.GetKey(index);
         }
 
         #endregion
