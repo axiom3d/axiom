@@ -242,17 +242,17 @@ namespace Demos {
             demoTable.Rows.Add(new object[] {10, "ParticleFX", "Demos.ParticleFX", "ParticleFX.jpg", "Several types of particle systems in action.", "Demos"});
             demoTable.Rows.Add(new object[] {11, "Physics", "Demos.Physics", "Physics.jpg", "Collidable objects with real time physics.", "Demos"});
             demoTable.Rows.Add(new object[] {12, "Render To Texture", "Demos.RenderToTexture", "RenderToTexture.jpg", "Rendering the scene to a texture.", "Demos"});
-            demoTable.Rows.Add(new object[] {13, "Skeletal Animation", "Demos.SkeletalAnimation", "SkeletalAnimation.jpg", "Skeletal animation.", "Demos"});
-            demoTable.Rows.Add(new object[] {14, "Sky Box", "Demos.SkyBox", "SkyBox.jpg", "A scene with a skybox.", "Demos"});
-            demoTable.Rows.Add(new object[] {15, "Sky Dome", "Demos.SkyDome", "SkyDome.jpg", "A scene with a skydome.", "Demos"});
-            demoTable.Rows.Add(new object[] {16, "Sky Plane", "Demos.SkyPlane", "SkyPlane.jpg", "A scene with a skyplane.", "Demos"});
-            demoTable.Rows.Add(new object[] {17, "Smoke", "Demos.Smoke", "Smoke.jpg", "Smoke particle system.", "Demos"});
-            demoTable.Rows.Add(new object[] {18, "Terrain", "Demos.Terrain", "Terrain.jpg", "Simple heightmap terrain example.", "Demos"});
-            demoTable.Rows.Add(new object[] {19, "TextureFX", "Demos.TextureFX", "TextureFX.jpg", "Various texture effects including scrolling and rotating.", "Demos"});
-            demoTable.Rows.Add(new object[] {20, "Transparency", "Demos.Transparency", "Transparency.jpg", "A high poly scene with transparent entities.", "Demos"});
-            demoTable.Rows.Add(new object[] {21, "Tutorial 1", "Demos.Tutorial1", "Tutorial1.jpg", "The obligatory spinning triangle demo using the engine.", "Tutorials"});
-			demoTable.Rows.Add(new object[] {22, "Water", "Demos.Water", "Water.jpg", "Demo showing rippling water with various material effects.", "Demos"});
-			//demoTable.Rows.Add(new object[] {23, "Shadows", "Demos.Shadows", "Tutorial1.jpg", "The obligatory spinning triangle demo using the engine.", "Tutorials"});
+			demoTable.Rows.Add(new object[] {13, "Shadows", "Demos.Shadows", "Tutorial1.jpg", "Shows the use of various shadow techniques in the scene.", "Demos"});
+			demoTable.Rows.Add(new object[] {14, "Skeletal Animation", "Demos.SkeletalAnimation", "SkeletalAnimation.jpg", "Skeletal animation.", "Demos"});
+            demoTable.Rows.Add(new object[] {15, "Sky Box", "Demos.SkyBox", "SkyBox.jpg", "A scene with a skybox.", "Demos"});
+            demoTable.Rows.Add(new object[] {16, "Sky Dome", "Demos.SkyDome", "SkyDome.jpg", "A scene with a skydome.", "Demos"});
+            demoTable.Rows.Add(new object[] {17, "Sky Plane", "Demos.SkyPlane", "SkyPlane.jpg", "A scene with a skyplane.", "Demos"});
+            demoTable.Rows.Add(new object[] {18, "Smoke", "Demos.Smoke", "Smoke.jpg", "Smoke particle system.", "Demos"});
+            demoTable.Rows.Add(new object[] {19, "Terrain", "Demos.Terrain", "Terrain.jpg", "Simple heightmap terrain example.", "Demos"});
+            demoTable.Rows.Add(new object[] {20, "TextureFX", "Demos.TextureFX", "TextureFX.jpg", "Various texture effects including scrolling and rotating.", "Demos"});
+            demoTable.Rows.Add(new object[] {21, "Transparency", "Demos.Transparency", "Transparency.jpg", "A high poly scene with transparent entities.", "Demos"});
+            demoTable.Rows.Add(new object[] {22, "Tutorial 1", "Demos.Tutorial1", "Tutorial1.jpg", "The obligatory spinning triangle demo using the engine.", "Tutorials"});
+			demoTable.Rows.Add(new object[] {23, "Water", "Demos.Water", "Water.jpg", "Demo showing rippling water with various material effects.", "Demos"});
 			//demoTable.Rows.Add(new object[] {24, "Occlusion", "Demos.HardwareOcclusion", "Tutorial1.jpg", "The obligatory spinning triangle demo using the engine.", "Tutorials"});
 
 

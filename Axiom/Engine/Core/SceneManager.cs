@@ -205,8 +205,7 @@ namespace Axiom.Core {
 		/// <summary>
 		///		Listener to use when finding shadow casters for a light within a scene.
 		/// </summary>
-		protected ShadowCasterSceneQueryListener shadowCasterQueryListener = 
-			new ShadowCasterSceneQueryListener();
+		protected ShadowCasterSceneQueryListener shadowCasterQueryListener = new ShadowCasterSceneQueryListener();
 		/// <summary>
 		///		Farthest distance from the camera at which to render shadows.
 		/// </summary>
@@ -215,6 +214,14 @@ namespace Axiom.Core {
 		///		shadowFarDistance ^ 2
 		/// </summary>
 		protected float shadowFarDistanceSquared;
+		/// <summary>
+		///		The maximum size of the index buffer used to render shadow primitives.
+		/// </summary>
+		protected int shadowIndexBufferSize;
+		/// <summary>
+		///		Current stage of rendering.
+		/// </summary>
+		protected IlluminationRenderStage illuminationStage;
 
         #endregion Fields
 
@@ -228,8 +235,6 @@ namespace Axiom.Core {
         #region Constructors
 
         public SceneManager() {
-            // initialize all collections
-            renderQueue = new RenderQueue();
             cameraList = new CameraList();
             lightList = new LightList();
             entityList = new EntityList();
@@ -247,12 +252,10 @@ namespace Axiom.Core {
 			// no shadows by default
 			shadowTechnique = ShadowTechnique.None;
 
-			renderQueue.GetQueueGroup(RenderQueueGroupID.Background).ShadowsEnabled = false;
-			renderQueue.GetQueueGroup(RenderQueueGroupID.Overlay).ShadowsEnabled = false;
-			renderQueue.GetQueueGroup(RenderQueueGroupID.SkiesEarly).ShadowsEnabled = false;
-			renderQueue.GetQueueGroup(RenderQueueGroupID.SkiesLate).ShadowsEnabled = false;
+			illuminationStage = IlluminationRenderStage.None;
 
 			shadowDirLightExtudeDist = 10000;
+			shadowIndexBufferSize = 51200;
         }
 
         #endregion
@@ -569,6 +572,37 @@ namespace Axiom.Core {
 		/// <returns>A reference to a Material.</returns>
 		public Material GetMaterial(int handle) {
 			return (Material)MaterialManager.Instance.GetByHandle(handle);
+		}
+
+		/// <summary>
+		///		Retrieves the internal render queue.
+		/// </summary>
+		/// <returns>
+		///		The render queue in use by this scene manager.
+		///		Note: The queue is created if it doesn't already exist.
+		/// </returns>
+		protected virtual RenderQueue GetRenderQueue() {
+			if(renderQueue == null) {
+				InitRenderQueue();
+			}
+
+			return renderQueue;
+		}
+
+		/// <summary>
+		///		Internal method for initializing the render queue.
+		/// </summary>
+		/// <remarks>
+		///		Subclasses can use this to install their own <see cref="RenderQueue"/> implementation.
+		/// </remarks>
+		protected virtual void InitRenderQueue() {
+			renderQueue = new RenderQueue();
+
+			// init render queues that do not need shadows
+			renderQueue.GetQueueGroup(RenderQueueGroupID.Background).ShadowsEnabled = false;
+			renderQueue.GetQueueGroup(RenderQueueGroupID.Overlay).ShadowsEnabled = false;
+			renderQueue.GetQueueGroup(RenderQueueGroupID.SkiesEarly).ShadowsEnabled = false;
+			renderQueue.GetQueueGroup(RenderQueueGroupID.SkiesLate).ShadowsEnabled = false;
 		}
 
         /// <summary>
@@ -1850,6 +1884,48 @@ namespace Axiom.Core {
 		}
 
 		/// <summary>
+		///		Sets the maximum size of the index buffer used to render shadow primitives.
+		/// </summary>
+		/// <remarks>
+		///		This property allows you to tweak the size of the index buffer used
+		///		to render shadow primitives (including stencil shadow volumes). The
+		///		default size is 51,200 entries, which is 100k of GPU memory, or
+		///		enough to render approximately 17,000 triangles. You can reduce this
+		///		as long as you do not have any models / world geometry chunks which 
+		///		could require more than the amount you set.
+		///		<p/>
+		///		The maximum number of triangles required to render a single shadow 
+		///		volume (including light and dark caps when needed) will be 3x the 
+		///		number of edges on the light silhouette, plus the number of 
+		///		light-facing triangles.	On average, half the 
+		///		triangles will be facing toward the light, but the number of 
+		///		triangles in the silhouette entirely depends on the mesh - 
+		///		angular meshes will have a higher silhouette tris/mesh tris
+		///		ratio than a smooth mesh. You can estimate the requirements for
+		///		your particular mesh by rendering it alone in a scene with shadows
+		///		enabled and a single light - rotate it or the light and make a note
+		///		of how high the triangle count goes (remembering to subtract the 
+		///		mesh triangle count)
+		/// </remarks>
+		public int ShadowIndexBufferSize {
+			get {
+				return shadowIndexBufferSize;
+			}
+			set {
+				if(shadowIndexBuffer != null || value != shadowIndexBufferSize) {
+
+					// create an shadow index buffer
+					shadowIndexBuffer = 
+						HardwareBufferManager.Instance.CreateIndexBuffer(
+						IndexType.Size16, shadowIndexBufferSize,
+						BufferUsage.DynamicWriteOnly, false);
+				}
+
+				shadowIndexBufferSize = value;
+			}
+		}
+
+		/// <summary>
 		///		Sets the general shadow technique to be used in this scene.
 		/// </summary>
 		/// <remarks>
@@ -1889,17 +1965,39 @@ namespace Axiom.Core {
 			set {
 				shadowTechnique = value;
 
+				// do initial setup for stencil shadows if needed
 				if(shadowTechnique == ShadowTechnique.StencilAdditive ||
 					shadowTechnique == ShadowTechnique.StencilModulative) {
 
-					// create an estimated sized shadow index buffer
-					shadowIndexBuffer = 
-						HardwareBufferManager.Instance.CreateIndexBuffer(
-							IndexType.Size16, 50000,
+					// Firstly check that we have a stencil. Otherwise, forget it!
+					if(!targetRenderSystem.Caps.CheckCap(Capabilities.StencilBuffer)) {
+						Debug.WriteLine("WARNING: Stencil shadows were requested, but the current hardware does not support them.  Disabling.");
+						
+						shadowTechnique = ShadowTechnique.None;
+					}
+					else if(shadowIndexBuffer == null) {
+						// create an shadow index buffer
+						shadowIndexBuffer = 
+							HardwareBufferManager.Instance.CreateIndexBuffer(
+							IndexType.Size16, shadowIndexBufferSize,
 							BufferUsage.DynamicWriteOnly, false);
 
-					// tell all the meshes to prepare shadow volumes
-					MeshManager.Instance.PrepareAllMeshesForShadowVolumes = true;
+						// tell all the meshes to prepare shadow volumes
+						MeshManager.Instance.PrepareAllMeshesForShadowVolumes = true;
+					}
+				}
+
+				// If Additive stencil, we need to split everything by illumination stage
+				GetRenderQueue().SplitPassesByLightingType = 
+					(shadowTechnique == ShadowTechnique.StencilAdditive);
+
+				// If any type of shadowing is used, tell render queue to split off non-shadowable materials
+				GetRenderQueue().SplitNoShadowPasses = 
+					(shadowTechnique != ShadowTechnique.None);
+
+				// create new textures for texture based shadows
+				if(shadowTechnique == ShadowTechnique.TextureModulative) {
+					// TODO: Add CreateTextureShadows
 				}
 			}
 		}
@@ -2044,7 +2142,7 @@ namespace Axiom.Core {
             targetRenderSystem.InvertVertexWinding = camera.IsReflected;
 
             // clear the current render queue
-            renderQueue.Clear();
+            GetRenderQueue().Clear();
 
 			// Are we using any shadows at all?
 			if(shadowTechnique != ShadowTechnique.None) {
@@ -2063,7 +2161,7 @@ namespace Axiom.Core {
 
             if(viewport.OverlaysEnabled) {
                 // Queue overlays for rendering
-                OverlayManager.Instance.QueueOverlaysForRendering(camera, renderQueue, viewport);
+                OverlayManager.Instance.QueueOverlaysForRendering(camera, GetRenderQueue(), viewport);
             }
 
             // queue overlays and skyboxes for rendering
@@ -2126,7 +2224,7 @@ namespace Axiom.Core {
         /// <param name="camera"></param>
         public virtual void FindVisibleObjects(Camera camera) {
             // ask the root node to iterate through and find visible objects in the scene
-            rootSceneNode.FindVisibleObjects(camera, renderQueue, true, displayNodes);
+            rootSceneNode.FindVisibleObjects(camera, GetRenderQueue(), true, displayNodes);
         }
 
         /// <summary>
@@ -2400,7 +2498,7 @@ namespace Axiom.Core {
 				priorityGroup.Sort(camInProgress);
 
 				// do solids
-				RenderSolidObjects(priorityGroup.solidPassMap);
+				RenderSolidObjects(priorityGroup.solidPasses);
 			}
 
 			// iterate over lights, rendering all volumes to the stencil buffer
@@ -2437,6 +2535,16 @@ namespace Axiom.Core {
 			for(int i = 0; i < group.NumPriorityGroups; i++) {
 				RenderPriorityGroup priorityGroup = group.GetPriorityGroup(i);
 
+				// sort the group first
+				priorityGroup.Sort(camInProgress);
+
+				// do solids
+				RenderSolidObjects(priorityGroup.solidPassesNoShadow);
+			}
+
+			for(int i = 0; i < group.NumPriorityGroups; i++) {
+				RenderPriorityGroup priorityGroup = group.GetPriorityGroup(i);
+
 				// do transparents
 				RenderTransparentObjects(priorityGroup.transparentPasses);
 			} // for each priority
@@ -2464,7 +2572,7 @@ namespace Axiom.Core {
 					priorityGroup.Sort(camInProgress);
 
 					// do solids
-					RenderSolidObjects(priorityGroup.solidPassMap);
+					RenderSolidObjects(priorityGroup.solidPasses);
 
 					// do transparents
 					RenderTransparentObjects(priorityGroup.transparentPasses);
@@ -2477,9 +2585,9 @@ namespace Axiom.Core {
         /// </summary>
         protected internal virtual void RenderVisibleObjects() {
             // loop through each main render group ( which is already sorted)
-            for(int i = 0; i < renderQueue.NumRenderQueueGroups; i++) {
-                RenderQueueGroupID queueID = renderQueue.GetRenderQueueGroupID(i);
-                RenderQueueGroup queueGroup = renderQueue.GetQueueGroupByIndex(i);
+            for(int i = 0; i < GetRenderQueue().NumRenderQueueGroups; i++) {
+                RenderQueueGroupID queueID = GetRenderQueue().GetRenderQueueGroupID(i);
+                RenderQueueGroup queueGroup = GetRenderQueue().GetQueueGroupByIndex(i);
 
                 bool repeatQueue = false;
 
@@ -2522,21 +2630,21 @@ namespace Axiom.Core {
 
             if(isSkyPlaneEnabled) {
                 qid = isSkyPlaneDrawnFirst ? RenderQueueGroupID.SkiesEarly : RenderQueueGroupID.SkiesLate;
-                renderQueue.AddRenderable(skyPlaneEntity.GetSubEntity(0), 1, qid);
+                GetRenderQueue().AddRenderable(skyPlaneEntity.GetSubEntity(0), 1, qid);
             }
 
             if(isSkyBoxEnabled) {
                 qid = isSkyBoxDrawnFirst ? RenderQueueGroupID.SkiesEarly : RenderQueueGroupID.SkiesLate;
 
                 for(int plane = 0; plane < 6; plane++)
-                    renderQueue.AddRenderable(skyBoxEntities[plane].GetSubEntity(0), 1, qid);
+                    GetRenderQueue().AddRenderable(skyBoxEntities[plane].GetSubEntity(0), 1, qid);
             }
 
             if(isSkyDomeEnabled) {
                 qid = isSkyDomeDrawnFirst ? RenderQueueGroupID.SkiesEarly : RenderQueueGroupID.SkiesLate;
 
                 for(int plane = 0; plane < 5; ++plane)
-                    renderQueue.AddRenderable(skyDomeEntities[plane].GetSubEntity(0), 1, qid);
+                    GetRenderQueue().AddRenderable(skyDomeEntities[plane].GetSubEntity(0), 1, qid);
             }
         }
 

@@ -234,10 +234,10 @@ namespace Axiom.RenderSystems.DirectX9 {
 			// Get the surface to check it's dimensions
 			D3D.Surface surface = ((D3D.Texture)texture).GetSurfaceLevel(0);
 
-			GraphicsStream graphicsStream = surface.LockRectangle(D3D.LockFlags.None);
+			GraphicsStream graphicsStream = surface.LockRectangle(D3D.LockFlags.Discard);
 			graphicsStream.Write(image.Data);
 			surface.UnlockRectangle();
-//
+
 //            // texture dimensions may have been altered during load
 //            if(surface.Description.Width != srcWidth || surface.Description.Height != srcHeight) {
 //                System.Diagnostics.Trace.WriteLine(string.Format("Texture dimensions altered by the renderer to fit power of 2 format. Name: {0}", name));

@@ -87,6 +87,11 @@ namespace Axiom.Graphics {
         ///    Flag noting whether or not this Material needs to be re-compiled.
         /// </summary>
         protected bool compilationRequired;
+		/// <summary>
+		///		Should objects using this material receive shadows?
+		/// </summary>
+		protected bool receiveShadows;
+
         /// <summary>
         ///    A reference to a precreated Material that contains all the default settings.
         /// </summary>
@@ -110,6 +115,7 @@ namespace Axiom.Graphics {
         public Material() {
             this.name = String.Format("_Material{0}", autoNumber++);
             compilationRequired = true;
+			receiveShadows = true;
         }
 
         /// <summary>
@@ -123,6 +129,7 @@ namespace Axiom.Graphics {
         public Material(string name) {
             this.name = name;
             compilationRequired = true;
+			receiveShadows = true;
         }
 
         #endregion
@@ -237,6 +244,28 @@ namespace Axiom.Graphics {
                 }
             }
         }
+
+		/// <summary>
+		///		Sets whether objects using this material will receive shadows.
+		/// </summary>
+		/// <remarks>
+		///		This method allows a material to opt out of receiving shadows, if
+		///		it would otherwise do so. Shadows will not be cast on any objects
+		///		unless the scene is set up to support shadows and not all techniques 
+		///		cast shadows on all objects. In any case, if you have a need to prevent
+		///		shadows being received by material, this is the method you call to do it.
+		///		Note: Transparent materials never receive shadows despite this setting. 
+		///		The default is to receive shadows.
+		///		<seealso cref="SceneManager.ShadowTechnique"/>
+		/// </remarks>
+		public bool ReceiveShadows {
+			get {
+				return receiveShadows;
+			}
+			set {
+				receiveShadows = value;
+			}
+		}
 
         #endregion
 
@@ -439,6 +468,7 @@ namespace Axiom.Graphics {
 		/// </remarks>
 		/// </summary>
 		public Technique GetBestTechnique(int lodIndex) {
+			// TODO: Actually use the lodIndex
 			if(supportedTechniques.Count > 0) {
 				return (Technique)supportedTechniques[0];
 			}

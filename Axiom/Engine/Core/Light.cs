@@ -141,7 +141,7 @@ namespace Axiom.Core {
 			type = LightType.Point;
 			diffuse = ColorEx.White;
 			specular = ColorEx.Black;
-			range = 1000;
+			range = 100000;
 			attenuationConst = 1.0f;
 			attenuationLinear = 0.0f;
 			attenuationQuad = 0.0f;

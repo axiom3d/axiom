@@ -107,7 +107,9 @@ namespace Axiom.Core {
         ///		Width and height of this billboard, if it has it's own.
         /// </summary>
         public float Width {
-            get { return width; }
+            get { 
+				return width; 
+			}
             set {
                 hasOwnDimensions = true;
                 width = value; 
@@ -119,7 +121,9 @@ namespace Axiom.Core {
         ///		Width and height of this billboard, if it has it's own.
         /// </summary>
         public float Height {
-            get { return height; }
+            get { 
+				return height; 
+			}
             set {
                 hasOwnDimensions = true;
                 height = value; 
@@ -131,7 +135,9 @@ namespace Axiom.Core {
         ///		Sepcifies whether or not this billboard has different dimensions than the rest in the set.
         /// </summary>
         public bool HasOwnDimensions {
-            get { return hasOwnDimensions; }
+            get { 
+				return hasOwnDimensions; 
+			}
         }
 
         #endregion
@@ -144,6 +150,18 @@ namespace Axiom.Core {
         public virtual void ResetDimensions() {
             hasOwnDimensions = false;
         }
+
+		/// <summary>
+		///		Sets the width and height for this billboard.
+		/// </summary>
+		/// <param name="width">Width of the billboard.</param>
+		/// <param name="height">Height of the billboard.</param>
+		public virtual void SetDimensions(float width, float height) {
+			hasOwnDimensions = true;
+			this.width = width;
+			this.height = height;
+			ParentSet.NotifyBillboardResized();
+		}
 
         /// <summary>
         ///		Internal method for notifying a billboard of it's owner.

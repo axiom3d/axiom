@@ -29,8 +29,7 @@ using System.Collections;
 using System.Diagnostics;
 using Axiom.Core;
 
-namespace Axiom.Graphics
-{
+namespace Axiom.Graphics {
 	/// <summary>
 	/// 	Class representing an approach to rendering a particular Material. 
 	/// </summary>
@@ -38,9 +37,8 @@ namespace Axiom.Graphics
     ///    The engine will attempt to use the best technique supported by the active hardware, 
     ///    unless you specifically request a lower detail technique (say for distant rendering)
 	/// </remarks>
-	public class Technique
-	{
-		#region Member variables
+	public class Technique {
+		#region Fields
 
         /// <summary>
         ///    The material that owns this technique.
@@ -50,6 +48,10 @@ namespace Axiom.Graphics
         ///    The list of passes (fixed function or programmable) contained in this technique.
         /// </summary>
         protected PassList passes = new PassList();
+		/// <summary>
+		///		List of derived passes, categorized (and ordered) into illumination stages.
+		/// </summary>
+		protected ArrayList illuminationPasses = new ArrayList();
         /// <summary>
         ///    Flag that states whether or not this technique is supported on the current hardware.
         /// </summary>
@@ -58,6 +60,10 @@ namespace Axiom.Graphics
         ///    Name of this technique.
         /// </summary>
         protected string name;
+		/// <summary>
+		///		Level of detail index for this technique.
+		/// </summary>
+		protected int lodIndex;
 		
 		#endregion
 		
@@ -71,6 +77,21 @@ namespace Axiom.Graphics
 		
 		#region Methods
 
+		/// <summary>
+		///		Internal method for clearing the illumination pass list.
+		/// </summary>
+		protected void ClearIlluminationPasses() {
+			for(int i = 0; i < illuminationPasses.Count; i++) {
+				IlluminationPass iPass = (IlluminationPass)illuminationPasses[i];
+
+				if(iPass.DestroyOnShutdown) {
+					iPass.Pass.QueueForDeletion();
+				}
+			}
+
+			illuminationPasses.Clear();
+		}
+
         /// <summary>
         ///    Clones this Technique.
         /// </summary>
@@ -79,6 +100,7 @@ namespace Axiom.Graphics
         public Technique Clone(Material parent) {
             Technique newTechnique = (Technique)this.MemberwiseClone();
             newTechnique.parent = parent;
+
             // TODO: Watch out for other object refs copied...
             newTechnique.passes = new PassList();
 
@@ -88,6 +110,9 @@ namespace Axiom.Graphics
                 Pass newPass = pass.Clone(newTechnique, pass.Index);
                 newTechnique.passes.Add(newPass);
             }
+
+			// recompile illumination passes
+			newTechnique.CompileIlluminationPasses();
 
             return newTechnique;
         }
@@ -162,7 +187,196 @@ namespace Axiom.Graphics
 
             // if we made it this far, we are good to go!
             isSupported = true;
+
+			// Now compile for categorised illumination, in case we need it later
+			CompileIlluminationPasses();
         }
+
+		/// <summary>
+		///		Internal method for splitting the passes into illumination passes.
+		/// </summary>
+		public void CompileIlluminationPasses() {
+			ClearIlluminationPasses();
+
+			// don't need to split transparent passes since they are rendered seperately
+			if(this.IsTransparent) {
+				return;
+			}
+
+			// start off with ambient passes
+			IlluminationStage stage = IlluminationStage.Ambient;
+
+			bool hasAmbient = false;
+
+			for(int i = 0; i < passes.Count; /* increment in logic */) {
+				Pass pass = (Pass)passes[i];
+				IlluminationPass iPass;
+
+				switch(stage) {
+					case IlluminationStage.Ambient:
+						// keep looking for ambient only
+						if(pass.IsAmbientOnly) {
+							iPass = new IlluminationPass();
+							iPass.OriginalPass = pass;
+							iPass.Pass = pass;
+							iPass.Stage = stage;
+							illuminationPasses.Add(iPass);
+							hasAmbient = true;
+
+							// progress to the next pass
+							i++;
+						}
+						else {
+							// split off any ambient part
+							if(pass.Ambient.CompareTo(ColorEx.Black) != 0 || 
+								pass.Emissive.CompareTo(ColorEx.Black) != 0) {
+
+								Pass newPass = pass.Clone(this, pass.Index);
+								// remove any texture units
+								newPass.RemoveAllTextureUnitStates();
+
+								// also remove any fragment program
+								if(newPass.HasFragmentProgram) {
+									newPass.FragmentProgramName = "";
+								}
+
+								// We have to leave vertex program alone (if any) and
+								// just trust that the author is using light bindings, which 
+								// we will ensure there are none in the ambient pass
+								newPass.Diffuse = ColorEx.Black;
+								newPass.Specular = ColorEx.Black;
+
+								// if ambient and emissive are zero, then color write isn't needed
+								if(newPass.Ambient.CompareTo(ColorEx.Black) == 0 &&
+									newPass.Emissive.CompareTo(ColorEx.Black) == 0) {
+
+									newPass.ColorWrite = false;
+								}
+
+								iPass = new IlluminationPass();
+								iPass.DestroyOnShutdown = true;
+								iPass.OriginalPass = pass;
+								iPass.Pass = newPass;
+								iPass.Stage = stage;
+
+								illuminationPasses.Add(iPass);
+								hasAmbient = true;
+							}
+
+							if(!hasAmbient) {
+								// make up a new basic pass
+								Pass newPass = new Pass(this, pass.Index);
+								newPass.Ambient = ColorEx.Black;
+								newPass.Diffuse = ColorEx.Black;
+								iPass = new IlluminationPass();
+								iPass.DestroyOnShutdown = true;
+								iPass.OriginalPass = pass;
+								iPass.Pass = newPass;
+								iPass.Stage = stage;
+								illuminationPasses.Add(iPass);
+								hasAmbient = true;
+							}
+
+							// this means we are done with ambients, progress to per-light
+							stage = IlluminationStage.PerLight;
+						}
+
+						break;
+
+					case IlluminationStage.PerLight:
+						if(pass.RunOncePerLight) {
+							// if this is per-light already, use it directly
+							iPass = new IlluminationPass();
+							iPass.DestroyOnShutdown = false;
+							iPass.OriginalPass = pass;
+							iPass.Pass = pass;
+							iPass.Stage = stage;
+							illuminationPasses.Add(iPass);
+
+							// progress to the next pass
+							i++;
+						}
+						else {
+							// split off per-light details (can only be done for one)
+							if(pass.LightingEnabled &&
+								(pass.Diffuse.CompareTo(ColorEx.Black) != 0 ||
+								pass.Specular.CompareTo(ColorEx.Black) != 0)) {
+
+								// copy existing pass
+								Pass newPass = pass.Clone(this, pass.Index);
+								newPass.RemoveAllTextureUnitStates();
+
+								// also remove any fragment program
+								if(newPass.HasFragmentProgram) {
+									newPass.FragmentProgramName = "";
+								}
+
+								// Cannot remove vertex program, have to assume that
+								// it will process diffuse lights, ambient will be turned off
+								newPass.Ambient = ColorEx.Black;
+								newPass.Emissive = ColorEx.Black;
+
+								// must be additive
+								newPass.SetSceneBlending(SceneBlendFactor.One, SceneBlendFactor.One);
+
+								iPass = new IlluminationPass();
+								iPass.DestroyOnShutdown = true;
+								iPass.OriginalPass = pass;
+								iPass.Pass = pass;
+								iPass.Stage = stage;
+
+								illuminationPasses.Add(iPass);
+							}
+
+							// This means the end of per-light passes
+							stage = IlluminationStage.Decal;
+						}
+
+						break;
+
+					case IlluminationStage.Decal:
+						// We just want a 'lighting off' pass to finish off
+						// and only if there are texture units
+						if(pass.NumTextureUnitStages > 0) {
+							if(!pass.LightingEnabled) {
+								// we assume this pass already combines as required with the scene
+								iPass = new IlluminationPass();
+								iPass.DestroyOnShutdown = false;
+								iPass.OriginalPass = pass;
+								iPass.Pass = pass;
+								iPass.Stage = stage;
+								illuminationPasses.Add(iPass);
+							}
+							else {
+								// Copy the pass and tweak away the lighting parts
+								Pass newPass = pass.Clone(this, pass.Index);
+								newPass.Ambient = ColorEx.Black;
+								newPass.Diffuse = ColorEx.Black;
+								newPass.Specular = ColorEx.Black;
+								newPass.Emissive = ColorEx.Black;
+								newPass.LightingEnabled = false;
+								// modulate
+								newPass.SetSceneBlending(SceneBlendFactor.DestColor, SceneBlendFactor.Zero);
+
+								// there is nothing we can do about vertex & fragment
+								// programs here, so people will just have to make their
+								// programs friendly-like if they want to use this technique
+								iPass = new IlluminationPass();
+								iPass.DestroyOnShutdown = true;
+								iPass.OriginalPass = pass;
+								iPass.Pass = newPass;
+								iPass.Stage = stage;
+								illuminationPasses.Add(iPass);
+							}
+						}
+
+						// always increment on decal, since nothing more to do with this pass
+						i++;
+
+						break;
+				}
+			}
+		}
 
         /// <summary>
         ///    Creates a new Pass for this technique.
@@ -366,6 +580,34 @@ namespace Axiom.Graphics
             }
         }
 
+		/// <summary>
+		///		Assigns a level-of-detail (LOD) index to this Technique.
+		/// </summary>
+		/// <remarks>
+		///		As noted previously, as well as providing fallback support for various
+		///		graphics cards, multiple Technique objects can also be used to implement
+		///		material LOD, where the detail of the material diminishes with distance to 
+		///		save rendering power.
+		///		<p/>
+		///		By default, all Techniques have a LOD index of 0, which means they are the highest
+		///		level of detail. Increasing LOD indexes are lower levels of detail. You can 
+		///		assign more than one Technique to the same LOD index, meaning that the best 
+		///		Technique that is supported at that LOD index is used. 
+		///		<p/>
+		///		You should not leave gaps in the LOD sequence; the engine will allow you to do this
+		///		and will continue to function as if the LODs were sequential, but it will 
+		///		confuse matters.
+		/// </remarks>
+		public int LodIndex {
+			get {
+				return lodIndex;
+			}
+			set {
+				lodIndex = value;
+				NotifyNeedsRecompile();
+			}
+		}
+
         public ManualCullingMode ManualCullMode {
             set {
                 for(int i = 0; i < passes.Count; i++) {
@@ -394,6 +636,15 @@ namespace Axiom.Graphics
                 return passes.Count;
             }
         }
+
+		/// <summary>
+		///		Gets the number of illumination passes compiled from this technique.
+		/// </summary>
+		public int NumIlluminationPasses {
+			get {
+				return illuminationPasses.Count;
+			}
+		}
 
         /// <summary>
         ///    Gets a reference to the Material that owns this Technique.

@@ -88,12 +88,16 @@ namespace Axiom.Fonts {
 
         #endregion
 
+		#region Constructor
+
         /// <summary>
         ///		Constructor, should be called through FontManager.Create.
         /// </summary>
         public Font(string name) {
             this.name = name;
         }
+
+		#endregion Constructor
 
         #region Implementation of Resource
 

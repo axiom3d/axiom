@@ -1176,6 +1176,22 @@ namespace Axiom.Graphics
             }
         }
 
+		/// <summary>
+		///		Gets a flag indicating whether this pass is ambient only.
+		/// </summary>
+		public bool IsAmbientOnly {
+			get {
+				// treat as ambient if lighting is off, or color write is off, 
+				// or all non-ambient (& emissive) colors are black
+				// NB a vertex program could override this, but passes using vertex
+				// programs are expected to indicate they are ambient only by 
+				// setting the state so it matches one of the conditions above, even 
+				// though this state is not used in rendering.
+				return (!lightingEnabled || !colorWrite ||
+					(diffuse == ColorEx.Black && specular == ColorEx.Black));
+			}
+		}
+
         /// <summary>
         ///    Returns true if this pass is loaded.
         /// </summary>
@@ -1495,5 +1511,35 @@ namespace Axiom.Graphics
 		}
 
         #endregion
+	}
+
+	/// <summary>
+	///		Struct recording a pass which can be used for a specific illumination stage.
+	/// </summary>
+	/// <remarks>
+	///		This structure is used to record categorized passes which fit into a 
+	///		number of distinct illumination phases - ambient, diffuse / specular 
+	///		(per-light) and decal (post-lighting texturing).
+	///		An original pass may fit into one of these categories already, or it
+	///		may require splitting into its component parts in order to be categorized 
+	///		properly.
+	/// </remarks>
+	public struct IlluminationPass {
+		/// <summary>
+		///		The stage at which this pass is relevant.
+		/// </summary>
+		public IlluminationStage Stage;
+		/// <summary>
+		///		The pass to use in this stage.
+		/// </summary>
+		public Pass Pass;
+		/// <summary>
+		///		Whether this pass is one which should be deleted itself.
+		/// </summary>
+		public bool DestroyOnShutdown;
+		/// <summary>
+		///		The original pass which spawned this one.
+		/// </summary>
+		public Pass OriginalPass;
 	}
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Diagnostics;
 using Axiom.MathLib.Collections;
 
 namespace Axiom.Collections {
@@ -67,6 +68,12 @@ namespace Axiom.Collections {
             buckets.Clear();
 			count = 0;
         }
+
+		public object GetKey(int index) {
+			Debug.Assert(index < buckets.Keys.Count);
+
+			return buckets.GetKey(index);
+		}
 
         /// <summary>
         ///     Given a key, Find will return an IEnumerator that allows
@@ -138,6 +145,15 @@ namespace Axiom.Collections {
                 return count;
             }
         }
+
+		/// <summary>
+		///		Gets the number of keys in this map.
+		/// </summary>
+		public int KeyCount {
+			get {
+				return buckets.Count;
+			}
+		}
 
         #region IEnumerable Members
 
