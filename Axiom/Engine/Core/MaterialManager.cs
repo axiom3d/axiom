@@ -129,7 +129,7 @@ namespace Axiom.Core {
         /// <summary>
         ///    Indexer that gets a material by name.
         /// </summary>
-        public Material this[string name] {
+        public new Material this[string name] {
             get {
                 return (Material)base[name];
             }
@@ -165,7 +165,7 @@ namespace Axiom.Core {
             Material material = new Material(name, true);
 
             // add to the internal resource list
-            resourceList.Add(name.ToLower(), material);
+            resourceList.Add(name, material);
 
             // defer load until first use
 

@@ -95,7 +95,7 @@ namespace Axiom.Core {
         ///		Name of this resource.
         /// </summary>
         public String Name {
-            get { return name.ToLower(); }
+            get { return name; }
         }
 
         /// <summary>

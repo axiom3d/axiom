@@ -92,7 +92,7 @@ namespace Axiom.Animating {
         /// <summary>
         ///    Indexer for lookup up skeletons by name.
         /// </summary>
-        public Skeleton this[string name] {
+        public new Skeleton this[string name] {
             get {
                 return (Skeleton)base[name];
             }

@@ -261,19 +261,17 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="name"></param>
         /// <param name="priority"></param>
-        // TODO: Indexer?
         public Mesh Load(string name, int priority) {
             Mesh mesh = null;
-            string lowerName = name.ToLower();
 
             // if the resource isn't cached, create it
-            if(!resourceList.ContainsKey(lowerName)) {
-                mesh = (Mesh)Create(lowerName);
+            if(!resourceList.ContainsKey(name)) {
+                mesh = (Mesh)Create(name);
                 base.Load(mesh, priority);
             }
             else {
                 // get the cached version
-                mesh = (Mesh)resourceList[lowerName];
+                mesh = (Mesh)resourceList[name];
             }
 
             return mesh;

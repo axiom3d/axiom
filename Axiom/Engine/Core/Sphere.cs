@@ -38,8 +38,8 @@ namespace Axiom.Core {
     public sealed class Sphere {
         #region Protected member variables
 
-        protected float radius;
-        protected Vector3 center;
+        private float radius;
+        private Vector3 center;
 
         #endregion
 

@@ -75,7 +75,6 @@ namespace Axiom.Core {
         private SceneManagerList sceneManagerList;
         private RenderSystemCollection renderSystemList;
         private RenderSystem activeRenderSystem;
-        private TextureManager textureManager;
         private Log engineLog;
         private InputSystem inputSystem;
 
@@ -194,15 +193,6 @@ namespace Axiom.Core {
 
                 // Tell scene managers
                 SceneManagerList.Instance.RegisterRenderSystem(activeRenderSystem);
-            }
-        }
-
-        /// <summary>
-        ///		Gets/Sets the current texture manager.  Should be set in RenderSystem plugins.
-        /// </summary>
-        public TextureManager TextureManager {
-            get {
-                return textureManager;
             }
         }
 

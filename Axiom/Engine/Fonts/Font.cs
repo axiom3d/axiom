@@ -47,7 +47,6 @@ namespace Axiom.Fonts {
         const int BITMAP_WIDTH = 512;
         const int START_CHAR = 33;
         const int END_CHAR = 256;
-        const bool SHOW_LINES = false;
 
         #endregion
 
@@ -67,6 +66,8 @@ namespace Axiom.Fonts {
 
         /// <summary>Material create for use on entities by this font.</summary>
         protected Material material;
+
+        protected bool showLines = false;
 
         #endregion
 
@@ -149,7 +150,7 @@ namespace Axiom.Fonts {
                     x = 0;
                     maxHeight = 0;
 
-                    if(SHOW_LINES) {
+                    if(showLines) {
                         // draw a horizontal line underneath this row
                         g.DrawLine(linePen, 0, y, BITMAP_WIDTH, y);
                     }
@@ -176,13 +177,13 @@ namespace Axiom.Fonts {
                 if(maxHeight < (int)metrics.Height)
                     maxHeight = (int)metrics.Height;
 
-                if(SHOW_LINES) {
+                if(showLines) {
                     // draw a vertical line after this char
                     g.DrawLine(linePen, x, y, x, y + font.Height);
                 }
             }  // for
 
-            if(SHOW_LINES) {
+            if(showLines) {
                 // draw the last horizontal line
                 g.DrawLine(linePen, 0, y + font.Height, BITMAP_WIDTH, y + font.Height);
             }

@@ -11,7 +11,7 @@ namespace Demos {
     /// Summary description for DemoBrowser.
     /// </summary>
     public class DemoBrowser : System.Windows.Forms.Form {
-        private System.ComponentModel.IContainer components;
+        private System.ComponentModel.IContainer components = null;
         private System.Windows.Forms.Label lblInfo;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.CheckBox checkBox2;

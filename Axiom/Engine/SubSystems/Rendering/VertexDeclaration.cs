@@ -146,5 +146,31 @@ namespace Axiom.SubSystems.Rendering {
 
         #endregion
 
+        #region Object overloads
+
+        /// <summary>
+        ///    Override to determine equality between 2 VertexDeclaration objects,
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj) {
+            VertexDeclaration decl = obj as VertexDeclaration;
+
+            return (decl == this);
+        }
+
+        /// <summary>
+        ///    Override GetHashCode.
+        /// </summary>
+        /// <remarks>
+        ///    Done mainly to quash warnings, no real need for it.
+        /// </remarks>
+        /// <returns></returns>
+        // TODO: Does this need to be implemented, dont think we are stuffing these into hashtables.
+        public override int GetHashCode() {
+            return 0;
+        }
+
+        #endregion Object overloads
     }
 }

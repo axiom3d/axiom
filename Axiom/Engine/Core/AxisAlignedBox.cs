@@ -43,12 +43,12 @@ namespace Axiom.Core {
     public sealed class AxisAlignedBox : ICloneable {
         #region Protected member variables
 
-        protected Vector3 minVector = new Vector3(-0.5f, -0.5f, -0.5f);
-        protected Vector3 maxVector = new Vector3(0.5f, 0.5f, 0.5f);
-        protected Vector3[] corners = new Vector3[8];
-        protected readonly static Vector3[] blankCorners = new Vector3[8];
-        protected bool isNull;
-        protected static readonly AxisAlignedBox nullBox = new AxisAlignedBox();
+        private Vector3 minVector = new Vector3(-0.5f, -0.5f, -0.5f);
+        private Vector3 maxVector = new Vector3(0.5f, 0.5f, 0.5f);
+        private Vector3[] corners = new Vector3[8];
+        private readonly static Vector3[] blankCorners = new Vector3[8];
+        private bool isNull;
+        private static readonly AxisAlignedBox nullBox = new AxisAlignedBox();
 
         #endregion
 
@@ -116,7 +116,7 @@ namespace Axiom.Core {
         /// <summary>
         /// 
         /// </summary>
-        protected void UpdateCorners() {
+        private void UpdateCorners() {
             // The order of these items is, using right-handed co-ordinates:
             // Minimum Z face, starting with Min(all), then anticlockwise
             //   around face (looking onto the face)
