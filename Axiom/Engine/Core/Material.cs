@@ -361,17 +361,6 @@ namespace Axiom.Core {
             // copy settings
             sourceBlendFactor = src;
             destBlendFactor = dest;
-
-            if(src == SceneBlendFactor.One && dest == SceneBlendFactor.Zero ||
-                src == SceneBlendFactor.Zero && dest == SceneBlendFactor.One) {
-                // solid, do nothing yet
-            }
-            else {
-                // transparent, so disable the depth buffer for this material
-                // without this, things like particles will overlay each other and look odd at some
-                // camera angles
-                depthWrite = false;
-            }
         }
 
         /// <summary>
