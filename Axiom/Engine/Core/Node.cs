@@ -568,7 +568,8 @@ namespace Axiom.Core {
                 return;
 
             // add to the list of children that need updating
-            childrenToUpdate.Add(child);
+            if(!childrenToUpdate.ContainsKey(child.name))
+            	childrenToUpdate.Add(child);
 
             // request to update me
             if(parent != null && !isParentNotified) {
