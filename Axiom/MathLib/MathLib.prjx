@@ -16,6 +16,7 @@
     <File name=".\AxisAlignedBox.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Ray.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Collections\Pair.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Enums.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References />
   <DeploymentInformation target="" script="" strategy="File" />
