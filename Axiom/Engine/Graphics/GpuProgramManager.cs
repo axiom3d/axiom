@@ -31,6 +31,7 @@ using System.IO;
 using Axiom.Core;
 using Axiom.FileSystem;
 using Axiom.Scripting;
+using Axiom.MathLib;
 
 namespace Axiom.Graphics {
 	/// <summary>
@@ -327,6 +328,7 @@ namespace Axiom.Graphics {
 			string fileName = string.Empty;
 			string profiles = string.Empty;
 			bool hwSkinning = false;
+			ArrayList defParamsList = null;
 			Hashtable parmsTable = new Hashtable();
 
 			while((line = ParseHelper.ReadLine(script)) != null) {
@@ -343,6 +345,8 @@ namespace Axiom.Graphics {
 							GpuProgramManager.Instance.CreateProgram(name, fileName, programType, profile);
 
 						program.IsSkeletalAnimationIncluded = hwSkinning;
+						if(defParamsList != null)
+							SetupDefaultParams(defParamsList, program);
 					}
 					else {
 						try {
@@ -355,14 +359,21 @@ namespace Axiom.Graphics {
 							foreach(DictionaryEntry entry in parmsTable) {
 								program.SetParam((string)entry.Key, (string)entry.Value);
 							}
+							if(defParamsList != null)
+								SetupDefaultParams(defParamsList, program);
 						}
 						catch(Exception ex) {
 							// just log failure to create high level programs to allow us to continue
 							System.Diagnostics.Trace.WriteLine(ex.ToString());
 						}
 					}
-
 					return;
+				}
+
+				if(line.StartsWith("default_params")) {
+					ParseHelper.SkipToNextOpenBrace(script);
+					defParamsList = ParseGpuProgramDefaults(script);
+					continue;
 				}
                 
 				string[] atts = line.Split(new char[]{' '}, 2);
@@ -378,6 +389,126 @@ namespace Axiom.Graphics {
 					parmsTable.Add(atts[0], atts[1]);
 				}
 			}
+		}
+
+		protected void SetupDefaultParams(ArrayList paramList, GpuProgram program) {
+			GpuProgramParameters param = program.DefaultParameters;
+			foreach(string s in paramList) {
+				ParseGpuProgramParameter(s, param, program.Name);
+			}
+		}
+
+		protected ArrayList ParseGpuProgramDefaults(TextReader script) {
+			string line = string.Empty;
+			ArrayList lineList = new ArrayList();
+			while((line = ParseHelper.ReadLine(script)) != null) {
+				if(line == "}") {
+					break;
+				}
+				lineList.Add(line);
+			}
+			return lineList;
+		}
+
+		public bool ParseGpuProgramParameter(string line, GpuProgramParameters programParams, string context) {
+			string[] parms = line.Split(' ');
+			string name = string.Empty;
+			int index = 0;
+
+			switch(parms[0]) {
+				case "param_indexed":
+					index = int.Parse(parms[1]);
+					string dataType = parms[2];
+
+					if(dataType == "float4") {
+						if(parms.Length != 7) {
+							ParseHelper.LogParserError("param_indexed", context, "Float4 gpu program params must have 4 components specified.");
+							return false;
+						}
+
+						Vector4 vec = new Vector4(float.Parse(parms[3]), float.Parse(parms[4]), float.Parse(parms[5]), float.Parse(parms[6]));
+						programParams.SetConstant(index, vec);
+						programParams.AddParameterToDefaultsList(GpuProgramParameterType.Indexed, index.ToString());
+					}
+					// TODO: more types
+					break;
+
+				case "param_indexed_auto":
+					index = int.Parse(parms[1]);
+					string constant = parms[2];
+					int extraInfo = (parms.Length == 4) ? int.Parse(parms[3]) : 0;
+
+					object val = ScriptEnumAttribute.Lookup(constant, typeof(AutoConstants));
+
+					if(val != null) {
+						AutoConstants autoConstant = (AutoConstants)val;
+						programParams.SetAutoConstant(index, autoConstant, extraInfo);
+						programParams.AddParameterToDefaultsList(GpuProgramParameterType.IndexedAuto, index.ToString());
+					}
+					else {
+						ParseHelper.LogParserError("vertex_program_ref", context, string.Format("Unrecognized auto contant type '{0}'", constant));
+					}
+
+					break;
+
+				case "param_named":
+					name = parms[1];
+					dataType = parms[2];
+
+					if(dataType == "float4") {
+						if(parms.Length != 7) {
+							ParseHelper.LogParserError("param_named", context, "Float4 gpu program params must have 4 components specified.");
+							return false;
+						}
+
+						Vector4 vec = new Vector4(float.Parse(parms[3]), float.Parse(parms[4]), float.Parse(parms[5]), float.Parse(parms[6]));
+						programParams.SetNamedConstant(name, vec);
+						programParams.AddParameterToDefaultsList(GpuProgramParameterType.Named, name);
+					}
+					// TODO: more types
+					break;
+
+				case "param_named_auto":
+
+					string paramName = parms[1];
+					constant = parms[2];
+					extraInfo = 0;
+
+					programParams.AddParameterToDefaultsList(GpuProgramParameterType.NamedAuto, paramName);
+
+					// time is a special case here
+					if(constant == "time") {
+						float factor = 1.0f;
+                            
+						if(parms.Length == 4) {
+							factor = float.Parse(parms[3]);
+
+							programParams.SetNamedConstantFromTime(paramName, factor);
+						}
+
+						return true;
+					}
+					else {
+						extraInfo = (parms.Length == 4) ? int.Parse(parms[3]) : 0;
+					}
+
+					val = ScriptEnumAttribute.Lookup(constant, typeof(AutoConstants));
+
+					if(val != null) {
+						AutoConstants autoConstant = (AutoConstants)val;
+						programParams.SetNamedAutoConstant(paramName, autoConstant, extraInfo);
+					}
+					else {
+						ParseHelper.LogParserError("vertex_program_ref", context, string.Format("Unrecognized auto contant type '{0}'", constant));
+					}
+
+					break;
+
+				default:
+					ParseHelper.LogParserError("vertex_program_ref", context, "Unknown vertex program ref param");
+					break;
+			}
+			return true;
 		}
 
 		#endregion
