@@ -101,20 +101,7 @@ namespace Axiom.Graphics {
         /// <param name="groupID">Group to add the item to.</param>
         /// <param name="priority"></param>
         public void AddRenderable(IRenderable renderable, ushort priority, RenderQueueGroupID groupID) {
-            RenderQueueGroup group = null;
-
-            // see if there is a current queue group for this group id
-            if(renderGroups[groupID] == null) {
-                // create a new queue group for this group id
-                group = new RenderQueueGroup();
-
-                // add the new group to cached render group
-                renderGroups.Add(groupID, group);
-            }
-            else {
-                // retreive the existing queue group
-                group = (RenderQueueGroup)renderGroups[groupID];
-            }
+            RenderQueueGroup group = GetQueueGroup(groupID);
 
             // let the material know it has been used, which also forces a recompile if required
             if(renderable.Material != null) {
@@ -155,6 +142,34 @@ namespace Axiom.Graphics {
                 group.Clear();
             }
         }
+
+		/// <summary>
+		///		Get a render queue group.
+		/// </summary>
+		/// <remarks>
+		///		New queue groups are registered as they are requested, 
+		///		therefore this method will always return a valid group.
+		/// </remarks>
+		/// <param name="queueID">ID of the queue group to retreive.</param>
+		/// <returns></returns>
+		public RenderQueueGroup GetQueueGroup(RenderQueueGroupID queueID) {
+			RenderQueueGroup group = null;
+
+			// see if there is a current queue group for this group id
+			if(renderGroups[queueID] == null) {
+				// create a new queue group for this group id
+				group = new RenderQueueGroup();
+
+				// add the new group to cached render group
+				renderGroups.Add(queueID, group);
+			}
+			else {
+				// retreive the existing queue group
+				group = (RenderQueueGroup)renderGroups[queueID];
+			}
+
+			return group;
+		}
 
         /// <summary>
         ///    

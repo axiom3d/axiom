@@ -470,8 +470,10 @@ namespace Axiom.Core {
 					// Figure out light dir
 					lightDir = lightPos3 - (corners[i] * lightPos.w);
 					// Cross with anticlockwise corner, therefore normal points in
-					// TODO: Verify this mod difference
-					normal = (corners[i] - corners[i > 0 ? ((i - 1) % 4) : 0]).Cross(lightDir);
+					// Note: C++ mod returns 3 for the first case where C# returns -1
+					int test = i > 0 ? ((i - 1) % 4) : 3;
+
+					normal = (corners[i] - corners[test]).Cross(lightDir);
 					normal.Normalize();
 
 					if (d < THRESHOLD) {

@@ -218,6 +218,11 @@ namespace Axiom.Core {
 
 			// no shadows by default
 			shadowTechnique = ShadowTechnique.None;
+
+			renderQueue.GetQueueGroup(RenderQueueGroupID.Background).ShadowsEnabled = false;
+			renderQueue.GetQueueGroup(RenderQueueGroupID.Overlay).ShadowsEnabled = false;
+			renderQueue.GetQueueGroup(RenderQueueGroupID.SkiesEarly).ShadowsEnabled = false;
+			renderQueue.GetQueueGroup(RenderQueueGroupID.SkiesLate).ShadowsEnabled = false;
         }
 
         #endregion
@@ -765,6 +770,13 @@ namespace Axiom.Core {
 			// get the near clip volume
 			PlaneBoundedVolume nearClipVol = light.GetNearClipVolume(camera);
 
+//			Console.WriteLine("---");
+//			foreach(Plane plane in nearClipVol.planes) {
+//				Console.WriteLine("Normal {0} D: {1}", plane.Normal, plane.D);
+//			}
+//
+//			Console.WriteLine("---");
+
 			// get the shadow caster list
 			IList casters = FindShadowCastersForLight(light, camera);
 
@@ -847,8 +859,8 @@ namespace Axiom.Core {
 			// Second pass, do back faces if zpass
 			// Invert if zfail
 			// this is to ensure we always increment before decrement
-			if ((secondPass || zfail) && !(secondPass && zfail)) {
-				targetRenderSystem.CullingMode = twoSided? CullingMode.None : CullingMode.CounterClockwise;
+			if ((secondPass ^ zfail)) {
+				targetRenderSystem.CullingMode = twoSided ? CullingMode.None : CullingMode.CounterClockwise;
 				targetRenderSystem.SetStencilBufferParams(
 					CompareFunction.AlwaysPass, // always pass stencil check
 					0, // no ref value (no compare)
@@ -859,14 +871,14 @@ namespace Axiom.Core {
 					twoSided);
 			}
 			else {
-				targetRenderSystem.CullingMode = twoSided? CullingMode.None : CullingMode.Clockwise;
+				targetRenderSystem.CullingMode = twoSided ? CullingMode.None : CullingMode.Clockwise;
 				targetRenderSystem.SetStencilBufferParams(
 					CompareFunction.AlwaysPass, // always pass stencil check
 					0, // no ref value (no compare)
 					unchecked((int)0xffffffff), // no mask
 					StencilOperation.Keep, // stencil test will never fail
-					zfail? (twoSided? StencilOperation.DecrementWrap : StencilOperation.Decrement) : StencilOperation.Keep, // front face depth fail
-					zfail? StencilOperation.Keep : (twoSided? StencilOperation.IncrementWrap : StencilOperation.Increment), // front face pass
+					zfail ? (twoSided ? StencilOperation.DecrementWrap : StencilOperation.Decrement) : StencilOperation.Keep, // front face depth fail
+					zfail ? StencilOperation.Keep : (twoSided ? StencilOperation.IncrementWrap : StencilOperation.Increment), // front face pass
 					twoSided);
 			}
 		}
@@ -1440,7 +1452,7 @@ namespace Axiom.Core {
                     // create an entity for this plane
                     skyBoxEntities[i] = CreateEntity(entityName, planeModel.Name);
 
-					// skyboxes don't cast shadows
+					// skyboxes need not cast shadows
 					skyBoxEntities[i].CastShadows = false;
 
                     Material boxMaterial = MaterialManager.Instance.GetByName(entityName);
@@ -1521,6 +1533,8 @@ namespace Axiom.Core {
 
                     skyDomeEntities[i] = CreateEntity(entityName, planeMesh.Name);
                     skyDomeEntities[i].MaterialName = material.Name;
+					// Sky entities need not cast shadows
+					skyDomeEntities[i].CastShadows = false;
 
                     // attach to node
                     skyDomeNode.AttachObject(skyDomeEntities[i]);
@@ -2249,19 +2263,19 @@ namespace Axiom.Core {
             RenderQueueGroupID qid;
 
             if(isSkyPlaneEnabled) {
-                qid = isSkyPlaneDrawnFirst ? RenderQueueGroupID.One : RenderQueueGroupID.Nine;
+                qid = isSkyPlaneDrawnFirst ? RenderQueueGroupID.SkiesEarly : RenderQueueGroupID.SkiesLate;
                 renderQueue.AddRenderable(skyPlaneEntity.GetSubEntity(0), 1, qid);
             }
 
             if(isSkyBoxEnabled) {
-                qid = isSkyBoxDrawnFirst ? RenderQueueGroupID.One : RenderQueueGroupID.Nine;
+                qid = isSkyBoxDrawnFirst ? RenderQueueGroupID.SkiesEarly : RenderQueueGroupID.SkiesLate;
 
                 for(int plane = 0; plane < 6; plane++)
                     renderQueue.AddRenderable(skyBoxEntities[plane].GetSubEntity(0), 1, qid);
             }
 
             if(isSkyDomeEnabled) {
-                qid = isSkyDomeDrawnFirst ? RenderQueueGroupID.One : RenderQueueGroupID.Nine;
+                qid = isSkyDomeDrawnFirst ? RenderQueueGroupID.SkiesEarly : RenderQueueGroupID.SkiesLate;
 
                 for(int plane = 0; plane < 5; ++plane)
                     renderQueue.AddRenderable(skyDomeEntities[plane].GetSubEntity(0), 1, qid);
@@ -2379,6 +2393,8 @@ namespace Axiom.Core {
                 // create entity for the plane, using the mesh name
                 skyPlaneEntity = CreateEntity(meshName, meshName);
                 skyPlaneEntity.MaterialName = materialName;
+				// sky entities need not cast shadows
+				skyPlaneEntity.CastShadows = false;
 
                 if(skyPlaneNode == null)
                     skyPlaneNode = CreateSceneNode(meshName + "Node");
