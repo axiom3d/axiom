@@ -471,9 +471,12 @@ namespace Axiom.MathLib {
         ///            <description>None - There was no intersection between the 2 boxes.</description>
         ///        </item>
         ///        <item>
-        ///            <description>Contains - boxA is fully within boxB.</description>
+        ///            <description>Contained - boxA is fully within boxB.</description>
         ///         </item>
-        ///        <item>
+		///        <item>
+		///            <description>Contains - boxB is fully within boxA.</description>
+		///         </item>
+		///        <item>
         ///            <description>Partial - boxA is partially intersecting with boxB.</description>
         ///         </item>
         ///     </list>
@@ -486,6 +489,17 @@ namespace Axiom.MathLib {
             Vector3 minB = boxB.Minimum; 
             Vector3 maxB = boxB.Maximum; 
 
+			if ((minB.x < minA.x) &&
+				(maxB.x > maxA.x) &&
+				(minB.y < minA.y) &&
+				(maxB.y > maxA.y) &&
+				(minB.z < minA.z) &&
+				(maxB.z > maxA.z)) {
+
+				// boxA is within boxB
+				return Intersection.Contained;
+			} 
+
             if ((minB.x > minA.x) && 
                 (maxB.x < maxA.x) && 
                 (minB.y > minA.y) && 
@@ -493,8 +507,8 @@ namespace Axiom.MathLib {
                 (minB.z > minA.z) && 
                 (maxB.z < maxA.z)) {
 
-                // boxA is within boxb
-                return Intersection.Contained; 
+                // boxB is within boxA
+                return Intersection.Contains; 
             }
 
             if ((minB.x > maxA.x) || 
