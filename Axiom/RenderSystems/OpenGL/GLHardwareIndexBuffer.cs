@@ -35,15 +35,24 @@ namespace Axiom.RenderSystems.OpenGL {
     /// 	Summary description for GLHardwareIndexBuffer.
     /// </summary>
     public class GLHardwareIndexBuffer : HardwareIndexBuffer {
-        #region Member variables
+        #region Fields
 		
-        /// <summary>Saves the GL buffer ID for this buffer.</summary>
+        /// <summary>
+        ///     Saves the GL buffer ID for this buffer.
+        /// </summary>
         private int bufferID;
 
         #endregion
 		
         #region Constructors
 		
+        /// <summary>
+        ///     Constructor.
+        /// </summary>
+        /// <param name="type">Index type (16 or 32 bit).</param>
+        /// <param name="numIndices">Number of indices in the buffer.</param>
+        /// <param name="usage">Usage flags.</param>
+        /// <param name="useShadowBuffer">Should this buffer be backed by a software shadow buffer?</param>
         public GLHardwareIndexBuffer(IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer) 
             : base(type, numIndices, usage, false, useShadowBuffer) {
 
@@ -62,15 +71,11 @@ namespace Axiom.RenderSystems.OpenGL {
                 IntPtr.Zero, 
                 GLHelper.ConvertEnum(usage));
         }
-
-        ~GLHardwareIndexBuffer() {
-            //Gl.glDeleteBuffersARB(1, ref bufferID);
-        }
 		
         #endregion
-		
-        #region Methods
-		
+
+        #region HardwareIndexBuffer Implementation
+
         /// <summary>
         /// 
         /// </summary>
@@ -102,7 +107,7 @@ namespace Axiom.RenderSystems.OpenGL {
             }
             else if(locking == BufferLocking.ReadOnly) {
 				if(usage == BufferUsage.WriteOnly) {
-					System.Diagnostics.Debug.WriteLine("Invalid attempt to lock a write-only vertex buffer as read-only.");
+					LogManager.Instance.Write("Invalid attempt to lock a write-only vertex buffer as read-only.");
 				}
 
                 access = Gl.GL_READ_ONLY_ARB;
@@ -200,8 +205,14 @@ namespace Axiom.RenderSystems.OpenGL {
 			}
         }
 
+        /// <summary>
+        ///     Called to destroy this buffer.
+        /// </summary>
+        public override void Dispose() {
+            Gl.glDeleteBuffersARB(1, ref bufferID);
+        }
 
-        #endregion
+        #endregion HardwareIndexBuffer Implementation
 		
         #region Properties
 

@@ -39,7 +39,7 @@ namespace Axiom.Input {
 	///		refactored into a better design when I get time to look at it
 	///		properly. For now it's a quick-and-dirty way to get what I need.
 	/// </remarks>
-	public abstract class InputReader {
+	public abstract class InputReader : IDisposable {
 		#region Fields
 
 		/// <summary>
@@ -375,7 +375,16 @@ namespace Axiom.Input {
 		#endregion Trigger Methods
 
 		#endregion Events
-	}
+
+        #region IDisposable Members
+
+        /// <summary>
+        ///     Called to destroy this input reader.
+        /// </summary>
+        public abstract void Dispose();
+
+        #endregion IDisposable Members
+    }
 
 	#region Delegates
 

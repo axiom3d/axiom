@@ -132,8 +132,8 @@ namespace Axiom.Core {
                 material = MaterialManager.Instance.GetByName(materialName);
 
                 if(material == null) {
-                    System.Diagnostics.Trace.WriteLine(
-                        string.Format("Cannot assign material '{0}' to SubEntity '{1}' because the material doesn't exist.", materialName, parent.Name));
+                    LogManager.Instance.Write(
+                        "Cannot assign material '{0}' to SubEntity '{1}' because the material doesn't exist.", materialName, parent.Name);
 
                     // give it base white so we can continue
                     material = MaterialManager.Instance.GetByName("BaseWhite");

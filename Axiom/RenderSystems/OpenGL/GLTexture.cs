@@ -175,7 +175,7 @@ namespace Axiom.RenderSystems.OpenGL {
             bool useSoftwareMipMaps = true;
 
             if(isLoaded) {
-                Trace.WriteLine(string.Format("Unloading image '{0}'...", name));
+                LogManager.Instance.Write("Unloading image '{0}'...", name);
                 Unload();
             }
 
@@ -186,7 +186,7 @@ namespace Axiom.RenderSystems.OpenGL {
             Gl.glBindTexture(this.GLTextureType, glTextureID);
 
             // log a quick message
-            Trace.WriteLine(string.Format("GLTexture: Loading {0} with {1} mipmaps from an Image.", name, numMipMaps));
+            LogManager.Instance.Write("GLTexture: Loading {0} with {1} mipmaps from an Image.", name, numMipMaps);
 
             if(numMipMaps > 0 && Root.Instance.RenderSystem.Caps.CheckCap(Capabilities.HardwareMipMaps)) {
                 Gl.glTexParameteri(this.GLTextureType, Gl.GL_GENERATE_MIPMAP, Gl.GL_TRUE);

@@ -268,9 +268,9 @@ namespace Demos {
 				}
 
 				// Check for Shutdown request and reset the Input Timer
-				if(input.IsKeyPressed(KeyCodes.Escape)) { 
-					e.RequestShutdown = true; 
-				}
+				if(input.IsKeyPressed(KeyCodes.Escape)) {
+                    Root.Instance.QueueEndRendering();
+                }
 
 				inputTimer = 0f;
 			}
@@ -526,8 +526,8 @@ namespace Demos {
 		protected void HandleUserModeInput(string logText) {
 			window.DebugText = logText;
 			UpdateStats();
-			Console.WriteLine(logText);
-			modeTimer = 0f;
+            LogManager.Instance.Write(logText);
+            modeTimer = 0f;
 		}
 
 		protected new void UpdateStats() {

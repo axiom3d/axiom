@@ -242,33 +242,33 @@ namespace Axiom.SceneManagers.Bsp
 		/// </summary>
 		public void DumpContents()
 		{
-			Debug.WriteLine("Quake3 level statistics");
-			Debug.WriteLine("-----------------------");
-			Debug.WriteLine("Entities		: " + entities.Length.ToString());
-			Debug.WriteLine("Faces			: " + faces.Length.ToString());
-			Debug.WriteLine("Leaf Faces		: " + leafFaces.Length.ToString());
-			Debug.WriteLine("Leaves			: " + leaves.Length.ToString());
-			Debug.WriteLine("Lightmaps		: " + header.lumps[(int) Quake3LumpType.Lightmaps].size / BspLevel.LightmapSize);
-			Debug.WriteLine("Elements		: " + elements.Length.ToString());
-			Debug.WriteLine("Models			: " + models.Length.ToString());
-			Debug.WriteLine("Nodes			: " + nodes.Length.ToString());
-			Debug.WriteLine("Planes			: " + planes.Length.ToString());
-			Debug.WriteLine("Shaders		: " + shaders.Length.ToString());
-			Debug.WriteLine("Vertices		: " + vertices.Length.ToString());
-			Debug.WriteLine("Vis Clusters	: " + visData.clusterCount.ToString());
-			Debug.WriteLine("");
-			Debug.WriteLine("-= Shaders =-");
+			LogManager.Instance.Write("Quake3 level statistics");
+			LogManager.Instance.Write("-----------------------");
+			LogManager.Instance.Write("Entities		: " + entities.Length.ToString());
+			LogManager.Instance.Write("Faces			: " + faces.Length.ToString());
+			LogManager.Instance.Write("Leaf Faces		: " + leafFaces.Length.ToString());
+			LogManager.Instance.Write("Leaves			: " + leaves.Length.ToString());
+			LogManager.Instance.Write("Lightmaps		: " + header.lumps[(int) Quake3LumpType.Lightmaps].size / BspLevel.LightmapSize);
+			LogManager.Instance.Write("Elements		: " + elements.Length.ToString());
+			LogManager.Instance.Write("Models			: " + models.Length.ToString());
+			LogManager.Instance.Write("Nodes			: " + nodes.Length.ToString());
+			LogManager.Instance.Write("Planes			: " + planes.Length.ToString());
+			LogManager.Instance.Write("Shaders		: " + shaders.Length.ToString());
+			LogManager.Instance.Write("Vertices		: " + vertices.Length.ToString());
+			LogManager.Instance.Write("Vis Clusters	: " + visData.clusterCount.ToString());
+			LogManager.Instance.Write("");
+			LogManager.Instance.Write("-= Shaders =-");
 
 			for(int i = 0; i < shaders.Length; i++)
-				Debug.WriteLine(String.Format("Shader {0}: {1:x}", i, shaders[i].name));
+				LogManager.Instance.Write(String.Format("Shader {0}: {1:x}", i, shaders[i].name));
 
-			Debug.WriteLine("");
-			Debug.WriteLine("-= Entities =-");
+			LogManager.Instance.Write("");
+			LogManager.Instance.Write("-= Entities =-");
 
 			string[] ents = entities.Split('\0');
 
 			for(int i = 0; i < ents.Length; i++)
-				Debug.WriteLine(ents[i]);
+				LogManager.Instance.Write(ents[i]);
 		}
 
 		private void ReadEntities(InternalBspLump lump, BinaryReader reader)

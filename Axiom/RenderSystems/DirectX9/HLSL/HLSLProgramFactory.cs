@@ -6,7 +6,6 @@ namespace Axiom.RenderSystems.DirectX9.HLSL {
 	/// Summary description for HLSLProgramFactory.
 	/// </summary>
     public class HLSLProgramFactory : IHighLevelGpuProgramFactory {
-
         #region Fields
 
         private string language = "hlsl";
@@ -14,10 +13,6 @@ namespace Axiom.RenderSystems.DirectX9.HLSL {
         #endregion
 
         #region IHighLevelGpuProgramFactory Members
-
-        public void Destroy(HighLevelGpuProgram program) {
-            // TODO:  Add HLSLProgramFactory.Destroy implementation
-        }
 
         public HighLevelGpuProgram Create(string name, Axiom.Graphics.GpuProgramType type) {
             return new HLSLProgram(name, type, language);

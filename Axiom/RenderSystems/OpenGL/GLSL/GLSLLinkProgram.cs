@@ -8,7 +8,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL {
 	/// <summary>
 	///		Encapsulation of GLSL Program Object.
 	/// </summary>
-	public class GLSLLinkProgram {
+	public class GLSLLinkProgram : IDisposable {
 		#region Structs
 
 		/// <summary>
@@ -64,11 +64,6 @@ namespace Axiom.RenderSystems.OpenGL.GLSL {
 			glHandle = Gl.glCreateProgramObjectARB();
 
 			GLSLHelper.CheckForGLSLError("Error Creating GLSL Program Object", 0);
-		}
-
-		~GLSLLinkProgram() {
-			// TODO: whack the object
-			//TODO: Gl.glDeleteObjectARB(glHandle);
 		}
 
 		#endregion Constructor
@@ -268,5 +263,16 @@ namespace Axiom.RenderSystems.OpenGL.GLSL {
 		}
 
 		#endregion Methods
-	}
+
+        #region IDisposable Members
+
+        /// <summary>
+        ///     Called to destroy the program used by this link program.
+        /// </summary>
+        public void Dispose() {
+            Gl.glDeleteObjectARB(glHandle);
+        }
+
+        #endregion
+    }
 }

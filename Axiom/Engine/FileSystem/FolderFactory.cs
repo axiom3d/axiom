@@ -2,29 +2,30 @@ using System;
 
 namespace Axiom.FileSystem {
 	/// <summary>
-	/// Summary description for FolderFactory.
-	/// </summary>
+    ///     Specialization of IArchiveFactory for file system folders.
+    /// </summary>
 	public class FolderFactory : IArchiveFactory {
-		#region Singleton implementation
+		#region IArchiveFactory Implementation
 
-		private static FolderFactory instance = new FolderFactory();
-
-		internal FolderFactory() { }
-
-		#endregion
-
-		#region IArchiveFactory implementation
-
+        /// <summary>
+        ///     Creates a new Folder archive.
+        /// </summary>
+        /// <param name="name">Name of the archive to create.</param>
+        /// <returns>A new instance of a folder archive.</returns>
 		public Archive CreateArchive(string name) {
 			return new Folder(name);
 		}
 
+        /// <summary>
+        ///     Type of archive this factory creates.
+        /// </summary>
+        /// <value></value>
 		public string Type {
 			get {
 				return "Folder";
 			}
-		}
+        }
 
-		#endregion IArchiveFactory implementation
-	}
+        #endregion IArchiveFactory Implementation
+    }
 }

@@ -202,9 +202,9 @@ namespace Axiom.SceneManagers.Bsp
 			string materialName = String.Format("{0}#{1}", name, lightmapNumber);
 			Material material = sm.CreateMaterial(materialName);
 
-			System.Diagnostics.Trace.WriteLine("Using Q3 shader " + name);
-			
-			for(int p = 0; p < pass.Count; ++p)
+            LogManager.Instance.Write("Using Q3 shader {0}", name);
+
+            for(int p = 0; p < pass.Count; ++p)
 			{
 				TextureUnitState t;
 				

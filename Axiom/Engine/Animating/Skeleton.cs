@@ -562,7 +562,7 @@ namespace Axiom.Animating {
                 isLoaded = false;
             }
 
-            System.Diagnostics.Trace.WriteLine("Skeleton: Loading '" + name + "'...");
+            LogManager.Instance.Write("Skeleton: Loading '{0}'...", name);
 
             // load the skeleton file
             Stream data = SkeletonManager.Instance.FindResourceData(name);
@@ -578,7 +578,7 @@ namespace Axiom.Animating {
             else {
                 data.Close();
 
-                throw new Exception("Unsupported skeleton file format '" + extension + "'");
+                throw new AxiomException("Unsupported skeleton file format '{0}'", extension);
             }
 
             data.Close();

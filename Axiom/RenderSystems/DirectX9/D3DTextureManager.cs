@@ -39,7 +39,7 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// <summary>Reference to the D3D device.</summary>
         private D3D.Device device;
 
-        public D3DTextureManager(D3D.Device device) : base() {
+        public D3DTextureManager(D3D.Device device) {
             this.device = device;
 
 			is32Bit = true;

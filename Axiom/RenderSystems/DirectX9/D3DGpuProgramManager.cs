@@ -37,7 +37,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 	public class D3DGpuProgramManager : GpuProgramManager {
         protected D3D.Device device;
 		
-		public D3DGpuProgramManager(D3D.Device device) : base() {
+		internal D3DGpuProgramManager(D3D.Device device) {
             this.device = device;
 		}
 

@@ -64,7 +64,7 @@ namespace Axiom.Graphics {
     ///     the buffer of the type you require (see <see cref="HardwareBufferManager"/>) to enable this feature.
     ///     <seealso cref="HardwareBufferManager"/>
     /// </remarks>
-    public abstract class HardwareBuffer {
+    public abstract class HardwareBuffer : IDisposable {
         #region Fields
 		
         /// <summary>
@@ -133,6 +133,10 @@ namespace Axiom.Graphics {
         #endregion
 			
         #region Methods
+
+        public BufferStream LockStream(BufferLocking locking) {
+            return new BufferStream(this, Lock(locking));
+        }
 
         /// <summary>
         ///		Convenient overload to allow locking the entire buffer with only having
@@ -404,5 +408,16 @@ namespace Axiom.Graphics {
         }
 
         #endregion
-	}
+
+        #region IDisposable Implementation
+
+        /// <summary>
+        ///     Called to destroy resources used by this hardware buffer.
+        /// </summary>
+        public virtual void Dispose() {
+            // do nothing by default
+        }
+
+        #endregion IDisposable Implementation
+    }
 }

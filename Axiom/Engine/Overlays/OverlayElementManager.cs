@@ -34,48 +34,58 @@ namespace Axiom.Overlays {
     ///    This class acts as a repository and regitrar of overlay components.
     /// </summary>
     /// <remarks>
-    ///    GuiManager's job is to manage the lifecycle of OverlayElement (subclass)
+    ///    OverlayElementManager's job is to manage the lifecycle of OverlayElement (subclass)
     ///    instances, and also to register plugin suppliers of new components.
     /// </remarks>
-    public class OverlayElementManager : IDisposable {
+    public sealed class OverlayElementManager : IDisposable {
         #region Singleton implementation
 
-        protected OverlayElementManager() {}
-        protected static OverlayElementManager instance;
+        /// <summary>
+        ///     Singleton instance of this class.
+        /// </summary>
+        private static OverlayElementManager instance;
 
+        /// <summary>
+        ///     Internal constructor.  This class cannot be instantiated externally.
+        /// </summary>
+        internal OverlayElementManager() {
+            if (instance == null) {
+                instance = this;
+
+                // register the default overlay element factories
+			    instance.AddElementFactory(new Elements.BorderPanelFactory());
+			    instance.AddElementFactory(new Elements.TextAreaFactory());
+			    instance.AddElementFactory(new Elements.PanelFactory());
+            }
+        }
+
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
         public static OverlayElementManager Instance {
-            get { return instance; }
-        }
-
-        public static void Init() {
-            if (instance != null) {
-                throw new ApplicationException("OverlayElementManager.Init() called twice!");
-            }
-
-            instance = new OverlayElementManager();
-            GarbageManager.Instance.Add(instance);
-
-			// register the default overlay element factories
-			instance.AddElementFactory(new Elements.BorderPanelFactory());
-			instance.AddElementFactory(new Elements.TextAreaFactory());
-			instance.AddElementFactory(new Elements.PanelFactory());
-        }
-
-        public void Dispose() {
-            if (instance == this) {
-                instance = null;
+            get { 
+                return instance; 
             }
         }
-        
-        #endregion
 
-        #region Member variables
+        #endregion Singleton implementation
 
+        #region Fields
+
+        /// <summary>
+        ///     List of OverlayElement factories.
+        /// </summary>
         private Hashtable factories = new Hashtable();
+        /// <summary>
+        ///     List of created elements.
+        /// </summary>
         private Hashtable instances = new Hashtable();
+        /// <summary>
+        ///     List of template elements.
+        /// </summary>
         private Hashtable templates = new Hashtable();
 
-        #endregion
+        #endregion Fields
 
         #region Methods
 
@@ -90,7 +100,7 @@ namespace Axiom.Overlays {
         public void AddElementFactory(IOverlayElementFactory factory) {
             factories.Add(factory.Type, factory);
 
-            Trace.WriteLine(string.Format("OverlayElementFactory for type '{0}' registered.", factory.Type));
+            LogManager.Instance.Write("OverlayElementFactory for type '{0}' registered.", factory.Type);
         }
 
         /// <summary>
@@ -116,7 +126,7 @@ namespace Axiom.Overlays {
             Hashtable elements = GetElementTable(isTemplate);
 
             if(elements.ContainsKey(instanceName)) {
-                throw new Exception(string.Format("OverlayElement with the name '{0}' already exists.")); 
+                throw new AxiomException("OverlayElement with the name '{0}' already exists.", instanceName);
             }
 
             OverlayElement element = CreateElementFromFactory(typeName, instanceName);
@@ -139,7 +149,7 @@ namespace Axiom.Overlays {
         /// <returns></returns>
         public OverlayElement CreateElementFromFactory(string typeName, string instanceName) {
             if(!factories.ContainsKey(typeName)) {
-                throw new Exception(string.Format("Cannot locate factory for element type '{0}'", typeName));
+                throw new AxiomException("Cannot locate factory for element type '{0}'", typeName);
             }
 
             // create the element
@@ -218,5 +228,16 @@ namespace Axiom.Overlays {
         }
 
         #endregion Methods
+
+        #region IDisposable Implementation
+
+        /// <summary>
+        ///     Called when the engine is shutting down.
+        /// </summary>
+        public void Dispose() {
+            instance = null;
+        }
+
+        #endregion IDisposable Implementation
     }
 }

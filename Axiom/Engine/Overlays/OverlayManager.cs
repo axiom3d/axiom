@@ -39,41 +39,42 @@ namespace Axiom.Overlays {
     ///    Manages Overlay objects, parsing them from Ogre .overlay files and
     ///    storing a lookup library of them.
     /// </summary>
-    public class OverlayManager : ResourceManager {
+    public sealed class OverlayManager : ResourceManager {
         #region Singleton implementation
 
-        protected OverlayManager() {}
-        protected static OverlayManager instance;
+        /// <summary>
+        ///     Singleton instance of this class.
+        /// </summary>
+        private static OverlayManager instance;
 
-        public static OverlayManager Instance {
-            get { return instance; }
-        }
-
-        public static void Init() {
-            if (instance != null) {
-                throw new ApplicationException("OverlayManager.Init() called twice!");
+        /// <summary>
+        ///     Internal constructor.  This class cannot be instantiated externally.
+        /// </summary>
+        internal OverlayManager() {
+            if (instance == null) {
+                instance = this;
             }
-            instance = new OverlayManager();
-            GarbageManager.Instance.Add(instance);
-        }
-        
-        public override void Dispose() {
-            base.Dispose();
-            instance = null;
         }
 
-        #endregion
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
+        public static OverlayManager Instance {
+            get { 
+                return instance; 
+            }
+        }
 
-        #region Member variables
+        #endregion Singleton implementation
+
+        #region Fields
 	
-        protected int lastViewportWidth;
-        protected int lastViewportHeight;
-        protected bool viewportDimensionsChanged;
-        protected Overlay cursorLevelOverlay;
-        protected OverlayElementContainer cursorGuiRegistered;
-        protected StringCollection loadedOverlays = new StringCollection();
+        private int lastViewportWidth;
+        private int lastViewportHeight;
+        private bool viewportDimensionsChanged;
+        private StringCollection loadedOverlays = new StringCollection();
 
-        #endregion
+        #endregion Fields
 
         public new Overlay GetByName(string name) {
             return (Overlay)base.GetByName(name);
@@ -113,6 +114,11 @@ namespace Axiom.Overlays {
             foreach(Overlay overlay in resourceList.Values) {
                 overlay.FindVisibleObjects(camera, queue);
             }
+        }
+
+        public override void Dispose() {
+            base.Dispose();
+            instance = null;
         }
 
         #region Properties
@@ -156,7 +162,7 @@ namespace Axiom.Overlays {
         /// <param name="fileName"></param>
         public void LoadAndParseOverlayFile(string fileName) {
             if(loadedOverlays.Contains(fileName)) {
-                Trace.WriteLine(string.Format("Skipping load of overlay include: {0}, as it is already loaded.", fileName));
+                LogManager.Instance.Write("Skipping load of overlay include: {0}, as it is already loaded.", fileName);
                 return;
             }
 
@@ -216,7 +222,7 @@ namespace Axiom.Overlays {
         /// </summary>
         /// <param name="line"></param>
         /// <param name="overlay"></param>
-        protected void ParseAttrib(string line, Overlay overlay) {
+        private void ParseAttrib(string line, Overlay overlay) {
             string[] parms = line.Split(' ');
 
             if(parms[0].ToLower() == "zorder") {
@@ -236,7 +242,7 @@ namespace Axiom.Overlays {
         /// <param name="isTemplate"></param>
         /// <param name="parent"></param>
         /// <returns></returns>
-        protected bool ParseChildren(TextReader script, string line, Overlay overlay, bool isTemplate, OverlayElementContainer parent) {
+        private bool ParseChildren(TextReader script, string line, Overlay overlay, bool isTemplate, OverlayElementContainer parent) {
             bool ret = false;
             int skipParam = 0;
 
@@ -264,12 +270,12 @@ namespace Axiom.Overlays {
                 // nested container/element
                 if(parms.Length > 3 + skipParam) {
                     if(parms.Length != 5 + skipParam) {
-                        Trace.WriteLine(string.Format("Bad element/container line: {0} in {1} - {2}, expecting ':' templateName", line, parent.Type, parent.Name)); 
+                        LogManager.Instance.Write("Bad element/container line: {0} in {1} - {2}, expecting ':' templateName", line, parent.Type, parent.Name); 
                         ParseHelper.SkipToNextCloseBrace(script);
                         return ret;
                     }
                     if(parms[3 + skipParam] != ":") {
-                        Trace.WriteLine(string.Format("Bad element/container line: {0} in {1} - {2}, expecting ':' for element inheritance.", line, parent.Type, parent.Name)); 
+                        LogManager.Instance.Write("Bad element/container line: {0} in {1} - {2}, expecting ':' for element inheritance.", line, parent.Type, parent.Name);
                         ParseHelper.SkipToNextCloseBrace(script);
                         return ret;
                     }
@@ -278,7 +284,7 @@ namespace Axiom.Overlays {
                     templateName = parms[4 + skipParam];
                 }
                 else if(parms.Length != 3 + skipParam) {
-                    Trace.WriteLine(string.Format("Bad element/container line: {0} in {1} - {2}, expecting 'element type(name)'.", line, parent.Type, parent.Name)); 
+                    LogManager.Instance.Write("Bad element/container line: {0} in {1} - {2}, expecting 'element type(name)'.", line, parent.Type, parent.Name);
                     ParseHelper.SkipToNextCloseBrace(script);
                     return ret;
                 }
@@ -297,7 +303,7 @@ namespace Axiom.Overlays {
         /// <param name="line"></param>
         /// <param name="overlay"></param>
         /// <param name="element"></param>
-        protected void ParseElementAttrib(string line, Overlay overlay, OverlayElement element) {
+        private void ParseElementAttrib(string line, Overlay overlay, OverlayElement element) {
             string[] parms = line.Split(' ');
 
             // get a string containing only the params
@@ -305,7 +311,7 @@ namespace Axiom.Overlays {
 
             // set the param, and hopefully it exists
             if(!element.SetParam(parms[0].ToLower(), paramLine)) {
-                Trace.WriteLine(string.Format("Bad element attribute line: {0} for element '{1}'", line, element.Name));
+                LogManager.Instance.Write("Bad element attribute line: {0} for element '{1}'", line, element.Name);
             }
         }
 
@@ -318,7 +324,7 @@ namespace Axiom.Overlays {
         /// <param name="isContainer"></param>
         /// <param name="overlay"></param>
         /// <param name="isTemplate"></param>
-        protected void ParseNewElement(TextReader script, string type, string name, bool isContainer, Overlay overlay, bool isTemplate) {
+        private void ParseNewElement(TextReader script, string type, string name, bool isContainer, Overlay overlay, bool isTemplate) {
             ParseNewElement(script, type, name, isContainer, overlay, isTemplate, "", null);
         }
 
@@ -333,7 +339,7 @@ namespace Axiom.Overlays {
         /// <param name="isTemplate"></param>
         /// <param name="templateName"></param>
         /// <param name="parent"></param>
-        protected void ParseNewElement(TextReader script, string type, string name, bool isContainer, Overlay overlay, bool isTemplate, 
+        private void ParseNewElement(TextReader script, string type, string name, bool isContainer, Overlay overlay, bool isTemplate,
             string templateName, OverlayElementContainer parent) {
         
             string line;

@@ -54,9 +54,13 @@ namespace Axiom.RenderSystems.OpenGL.ARB {
         ///     Unload GL gpu programs.
         /// </summary>
         public override void Unload() {
-            base.Unload ();
+            base.Unload();
 
-            Gl.glDeleteProgramsARB(1, ref programId);
+            if (isLoaded) {
+                Gl.glDeleteProgramsARB(1, ref programId);
+
+                isLoaded = false;
+            }
         }
 
         #endregion Implementation of GpuProgram

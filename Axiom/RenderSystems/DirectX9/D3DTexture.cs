@@ -169,10 +169,14 @@ namespace Axiom.RenderSystems.DirectX9 {
 
 		public override void Load() {
 			// unload if loaded already
-			if(isLoaded)
-				Unload();
+            if (isLoaded) {
+                Unload();
+            }
 
-			// create a render texture if need be
+            // log a quick message
+            LogManager.Instance.Write("D3DTexture: Loading {0} with {1} mipmaps from an Image.", name, numMipMaps);
+
+            // create a render texture if need be
 			if(usage == TextureUsage.RenderTarget) {
 				CreateTexture();
 				isLoaded = true;
@@ -202,9 +206,6 @@ namespace Axiom.RenderSystems.DirectX9 {
 		}
 
 		public override void LoadImage(Image image) {
-			// log a quick message
-			Trace.WriteLine(string.Format("D3DTexture: Loading {0} with {1} mipmaps from an Image.", name, numMipMaps));
-
 			// we need src image info
 			this.SetSrcAttributes(image.Width, image.Height, 1, image.Format);
 			// create a blank texture

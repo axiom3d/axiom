@@ -185,7 +185,6 @@ namespace Axiom.Configuration {
                 }
                 this.Prefix = table.Prefix;
                 this.MinimumCapacity = table.MinimumCapacity;
-                this.DisplayExpression = table.DisplayExpression;
             }
             
             [System.ComponentModel.Browsable(false)]
@@ -418,7 +417,6 @@ namespace Axiom.Configuration {
                 }
                 this.Prefix = table.Prefix;
                 this.MinimumCapacity = table.MinimumCapacity;
-                this.DisplayExpression = table.DisplayExpression;
             }
             
             [System.ComponentModel.Browsable(false)]

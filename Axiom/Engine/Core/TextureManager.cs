@@ -40,6 +40,37 @@ namespace Axiom.Core {
     ///		has been created.
     /// </remarks>
     public abstract class TextureManager : ResourceManager {
+        #region Singleton implementation
+
+        /// <summary>
+        ///     Singleton instance of this class.
+        /// </summary>
+        private static TextureManager instance;
+
+        /// <summary>
+        ///     Internal constructor.  This class cannot be instantiated externally.
+        /// </summary>
+        /// <remarks>
+        ///     Protected internal because this singleton will actually hold the instance of a subclass
+        ///     created by a render system plugin.
+        /// </remarks>
+        protected internal TextureManager() {
+            if (instance == null) {
+                instance = this;
+            }
+        }
+
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
+        public static TextureManager Instance {
+            get { 
+                return instance; 
+            }
+        }
+
+        #endregion Singleton implementation
+
         #region Fields
 
         /// <summary>
@@ -54,32 +85,10 @@ namespace Axiom.Core {
 
         #endregion Fields
 
-        #region Singleton implementation
-
-        protected TextureManager() {
-            if (instance != null) {
-                throw new ApplicationException("TextureManager initialized twice");
-            }
-            instance = this;
-            GarbageManager.Instance.Add(instance);
-        }
-        protected static TextureManager instance;
-
-        public static TextureManager Instance {
-            get { return instance; }
-        }
-
-        public override void Dispose() {
-            base.Dispose();
-            if (this == instance) {
-                instance = null;
-            }
-        }
-
-        #endregion
+        #region Properties
 
         /// <summary>
-        ///    Sets the default number of mipmaps to be used for loaded textures.
+        ///    Gets/Sets the default number of mipmaps to be used for loaded textures.
         /// </summary>
         public int DefaultNumMipMaps {
             get { 
@@ -89,13 +98,19 @@ namespace Axiom.Core {
                 defaultNumMipMaps = value; 
             }
         }
+
+        #endregion Properties
         
         #region Methods
 
+        /// <summary>
+        ///     Creates a new texture.
+        /// </summary>
+        /// <param name="name">Name of the texture to create, which is the filename.</param>
+        /// <returns>A newly created texture object, API dependent.</returns>
         public override Resource Create(string name) {
             return Create(name, TextureType.TwoD);
         }
-
 
         /// <summary>
         /// 
@@ -153,10 +168,12 @@ namespace Axiom.Core {
                 // create a new texture
                 texture = (Texture)Create(name, type);
 
-                if(numMipMaps == -1)
+                if (numMipMaps == -1) {
                     texture.NumMipMaps = defaultNumMipMaps;
-                else
-                    texture.NumMipMaps = numMipMaps;              
+                }
+                else {
+                    texture.NumMipMaps = numMipMaps;
+                }
 
                 // set bit depth and gamma
                 texture.Gamma = gamma;
@@ -233,6 +250,17 @@ namespace Axiom.Core {
         /// <returns></returns>
         public new Texture GetByName(string name) {
             return (Texture)base.GetByName(name);
+        }
+
+        /// <summary>
+        ///     Called when the engine is shutting down.    
+        /// </summary>
+        public override void Dispose() {
+            base.Dispose();
+
+            if (this == instance) {
+                instance = null;
+            }
         }
 
         #endregion Methods

@@ -89,7 +89,7 @@ namespace Axiom.Overlays {
             this.scaleY = 1.0f;
             this.isTransformOutOfDate = true;
             this.zOrder = 100;
-            rootNode = Root.Instance.SceneManagers[SceneType.Generic].CreateSceneNode();
+            rootNode = new SceneNode(null);
         }
 
         #endregion Constructors

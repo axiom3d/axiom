@@ -70,8 +70,8 @@ namespace Axiom.RenderSystems.DirectX9 {
 			}
 		}
 
-        public override void Destroy() {
-            base.Destroy();
+        public override void Dispose() {
+            base.Dispose();
 
             privateTex.Dispose();
         }

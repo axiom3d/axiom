@@ -49,8 +49,6 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// <param name="device"></param>
         public D3DHardwareBufferManager(D3D.Device device) {
             this.device = device;
-
-
         }
 		
         #endregion
@@ -63,7 +61,9 @@ namespace Axiom.RenderSystems.DirectX9 {
         }
 
         public override Axiom.Graphics.HardwareIndexBuffer CreateIndexBuffer(IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer) {
-            return new D3DHardwareIndexBuffer(type, numIndices, usage, device, false, useShadowBuffer);
+            D3DHardwareIndexBuffer buffer = new D3DHardwareIndexBuffer(type, numIndices, usage, device, false, useShadowBuffer);
+            indexBuffers.Add(buffer);
+            return buffer;
         }
 
         public override HardwareVertexBuffer CreateVertexBuffer(int vertexSize, int numVerts, BufferUsage usage) {
@@ -72,7 +72,9 @@ namespace Axiom.RenderSystems.DirectX9 {
         }
 
         public override HardwareVertexBuffer CreateVertexBuffer(int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer) {
-            return new D3DHardwareVertexBuffer(vertexSize, numVerts, usage, device, false, useShadowBuffer);
+            D3DHardwareVertexBuffer buffer = new D3DHardwareVertexBuffer(vertexSize, numVerts, usage, device, false, useShadowBuffer);
+            vertexBuffers.Add(buffer);
+            return buffer;
         }
 
         public override Axiom.Graphics.VertexDeclaration CreateVertexDeclaration() {

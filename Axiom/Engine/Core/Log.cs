@@ -146,7 +146,7 @@ namespace Axiom.Core {
         ///     inject into the formatted string.
         /// </param>
         public void Write(LogMessageLevel level, bool maskDebug, string message, params object[] substitutions) {
-			if(writer.BaseStream != null && (((int)logLevel + (int)level) > LogThreshold)) {
+			if(writer.BaseStream != null && (((int)logLevel + (int)level) >= LogThreshold)) {
                 // construct the log message
                 string msg = string.Format(message, substitutions);
 
@@ -156,7 +156,7 @@ namespace Axiom.Core {
                 }
 
                 // prepend the current time to the message
-                msg = DateTime.Now.ToString("hh:mm:ss") + msg;
+                msg = string.Format("[{0}] {1}", DateTime.Now.ToString("hh:mm:ss"), msg);
 
                 // write the message and flush the buffer
                 writer.WriteLine(msg);

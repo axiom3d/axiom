@@ -60,14 +60,10 @@ namespace Axiom.RenderSystems.OpenGL {
                 // initialize this buffer.  we dont have data yet tho
                 Gl.glBufferDataARB(Gl.GL_ARRAY_BUFFER_ARB, sizeInBytes, IntPtr.Zero, GLHelper.ConvertEnum(usage));
         }
-
-        ~GLHardwareVertexBuffer() {
-            //Gl.glDeleteBuffersARB(1, ref bufferID);
-        }
 		
         #endregion
 		
-        #region Methods
+        #region GLHardwareVertexBuffer Implementation
 
         /// <summary>
         /// 
@@ -95,9 +91,9 @@ namespace Axiom.RenderSystems.OpenGL {
                     Gl.GL_READ_WRITE_ARB : Gl.GL_WRITE_ONLY_ARB;
             }
             else if(locking == BufferLocking.ReadOnly) {
-				if(usage == BufferUsage.WriteOnly) {   
-					System.Diagnostics.Debug.WriteLine("Invalid attempt to lock a write-only vertex buffer as read-only.");
-				}
+				if(usage == BufferUsage.WriteOnly) {
+                    LogManager.Instance.Write("Invalid attempt to lock a write-only vertex buffer as read-only.");
+                }
 
                 access = Gl.GL_READ_ONLY_ARB;
             }
@@ -195,8 +191,14 @@ namespace Axiom.RenderSystems.OpenGL {
 			}
         }
 
+        /// <summary>
+        ///     Called to destroy this buffer.
+        /// </summary>
+        public override void Dispose() {
+            Gl.glDeleteBuffersARB(1, ref bufferID);
+        }
 
-        #endregion
+        #endregion GLHardwareVertexBuffer Implementation
 		
         #region Properties
 

@@ -259,7 +259,7 @@ namespace Axiom.CgPrograms {
                     break;
 
                 default:
-                    Trace.WriteLine(string.Format("CgProgram: Unrecognized parameter '{0}'", name));
+                    LogManager.Instance.Write("CgProgram: Unrecognized parameter '{0}'", name);
                     handled = false;
                     break;
             }

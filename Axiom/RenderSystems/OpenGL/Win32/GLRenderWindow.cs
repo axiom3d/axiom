@@ -153,7 +153,9 @@ namespace Axiom.RenderSystems.OpenGL {
             this.isActive = true;
         }
 
-        public override void Destroy() {
+        public override void Dispose() {
+            base.Dispose();
+
             if(hRC != IntPtr.Zero) {                                        // Do We Not Have A Rendering Context?
                 if(!Wgl.wglMakeCurrent(IntPtr.Zero, IntPtr.Zero)) {         // Are We Able To Release The DC And RC Contexts?
                     MessageBox.Show("Release Of DC And RC Failed.", "SHUTDOWN ERROR", MessageBoxButtons.OK, MessageBoxIcon.Information);

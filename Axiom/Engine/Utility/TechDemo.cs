@@ -69,9 +69,6 @@ namespace Axiom.Utility {
 		#region Constructors & Destructors
 
 		public TechDemo() {
-			// add event handlers for frame events
-			Root.Instance.FrameStarted += new FrameEvent(OnFrameStarted);
-			Root.Instance.FrameEnded += new FrameEvent(OnFrameEnded);
 		}
 
 		#endregion Constructors & Destructors
@@ -86,7 +83,7 @@ namespace Axiom.Utility {
 			//mode.FullScreen = true;
 			mode.Selected = true;
 
-			window = Root.Instance.Initialize(true);
+			window = Root.Instance.Initialize(true, "Axiom Engine Window");
 			ShowDebugOverlay(showDebugOverlay);
 			return true;
 		}
@@ -131,7 +128,7 @@ namespace Axiom.Utility {
 		protected virtual void ChooseSceneManager() {
 			// Get the SceneManager, a generic one by default
 			// REFACTOR: Create SceneManagerFactories and have them register their supported type?
-			scene = engine.SceneManagers[SceneType.Generic];
+			scene = engine.SceneManagers.GetSceneManager(SceneType.Generic);
 		}
 
 		protected virtual void CreateViewports() {
@@ -143,13 +140,14 @@ namespace Axiom.Utility {
 		}
 
 		protected virtual bool Setup() {
-			// get a reference to the engine singleton
-			engine = Root.Instance;
+            // instantiate the Root singleton
+            engine = new Root("EngineConfig.xml", "AxiomEngine.log");
 
-			// setup the engine
-			engine.Setup();
+            // add event handlers for frame events
+            engine.FrameStarted += new FrameEvent(OnFrameStarted);
+            engine.FrameEnded += new FrameEvent(OnFrameEnded);
 
-			// allow for setting up resource gathering
+            // allow for setting up resource gathering
 			SetupResources();
 
 			//show the config dialog and collect options
@@ -217,11 +215,11 @@ namespace Axiom.Utility {
 		}
 
 		public void Dispose() {
-			engine.Shutdown();
+            // remove event handlers
+            engine.FrameStarted -= new FrameEvent(OnFrameStarted);
+            engine.FrameEnded -= new FrameEvent(OnFrameEnded);
 
-			// remove event handlers
-			engine.FrameStarted -= new FrameEvent(OnFrameStarted);
-			engine.FrameEnded -= new FrameEvent(OnFrameEnded);
+            engine.Dispose();
 		}
 
 		#endregion Public Methods
@@ -244,9 +242,9 @@ namespace Axiom.Utility {
 			input.Capture();
 
 			if(input.IsKeyPressed(KeyCodes.Escape)) {
-				e.RequestShutdown = true;               
+                Root.Instance.QueueEndRendering();
 
-				return;
+                return;
 			}
 
 			if(input.IsKeyPressed(KeyCodes.A)) {
@@ -389,7 +387,10 @@ namespace Axiom.Utility {
 			else if(debugTextDelay > 0.0f) {
 				debugTextDelay -= e.TimeSinceLastFrame;
 			}
-		}
+
+            OverlayElement element = OverlayElementManager.Instance.GetElement("Core/DebugText");
+            element.Text = window.DebugText;
+        }
 
 		protected void UpdateStats() {
 			// TODO: Replace with CEGUI
@@ -407,9 +408,6 @@ namespace Axiom.Utility {
 
 			element = OverlayElementManager.Instance.GetElement("Core/NumTris");
 			element.Text = string.Format("Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered);
-
-			element = OverlayElementManager.Instance.GetElement("Core/DebugText");
-			element.Text = window.DebugText;
 		}
 
 		public static void GlobalErrorHandler(Exception ex) {
@@ -418,8 +416,10 @@ namespace Axiom.Utility {
 			Console.WriteLine(ex.ToString());
 
 			// log the error
-			System.Diagnostics.Trace.WriteLine(ex.ToString());
-		}
+            if (LogManager.Instance != null) {
+                LogManager.Instance.Write(ex.ToString());
+            }
+        }
 
 		#endregion Event Handlers
 	}

@@ -130,15 +130,10 @@ namespace Axiom.Core {
 			Debug.Assert(camera != null, "Cannot use a null Camera to create a viewport.");
 			Debug.Assert(target != null, "Cannor use a null RenderTarget to create a viewport.");
 
-			string message;
+            LogManager.Instance.Write("Creating viewport rendering from camera '{0}', relative dimensions L:{1},T:{2},W:{3},H:{4}, Z-Order:{5}",
+                camera.Name, left, top, width, height, zOrder);
 
-			message = string.Format("Creating viewport rendering from camera " +
-				"'{0}', relative dimensions L:{1},T:{2},W:{3},H:{4}, Z-Order:{5}",
-				camera.Name, left, top, width, height, zOrder);
-
-			System.Diagnostics.Trace.WriteLine(message);
-
-			this.camera = camera;
+            this.camera = camera;
 			this.target = target;
 			this.zOrder = zOrder;
 
@@ -189,12 +184,10 @@ namespace Axiom.Core {
 				camera.AspectRatio = actualWidth / actualHeight;
 			}
 
-			string message = string.Format("Viewport for camera '{0}' - actual dimensions L:{1},T:{2},W:{3},H:{4}",
-				camera.Name, actualLeft, actualTop, actualWidth, actualHeight);
+            LogManager.Instance.Write("Viewport for camera '{0}' - actual dimensions L:{1},T:{2},W:{3},H:{4}",
+                camera.Name, actualLeft, actualTop, actualWidth, actualHeight);
 
-			System.Diagnostics.Trace.WriteLine(message);
-
-			isUpdated = true;
+            isUpdated = true;
 		}
 
 		#endregion

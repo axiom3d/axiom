@@ -73,7 +73,7 @@ namespace Axiom.Graphics {
 	///		render target could be a window on a screen, or another
 	///		offscreen surface like a render texture.
 	///	</remarks>
-	public abstract class RenderTarget {
+	public abstract class RenderTarget : IDisposable {
 		#region Fields
 
 		/// <summary>
@@ -84,6 +84,9 @@ namespace Axiom.Graphics {
 		///    Width of this render target.
 		/// </summary>
 		protected int width;
+        /// <summary>
+        ///     Color depth of this render target.
+        /// </summary>
 		protected int colorDepth;
 		/// <summary>
 		///    Indicates the priority of this render target.  Higher priority targets will get processed first.
@@ -108,25 +111,30 @@ namespace Axiom.Graphics {
 		/// <summary>
 		///    Custom attributes that can be assigned to this target.
 		/// </summary>
-		protected Hashtable customAttributes;
+		protected Hashtable customAttributes = new Hashtable();
 		/// <summary>
 		///    Flag that states whether this target is active or not.
 		/// </summary>
 		protected bool isActive = true;
+        /// <summary>
+        ///     Is this render target updated automatically each frame?
+        /// </summary>
 		protected bool isAutoUpdated = true;
 
 		#endregion Fields
 
 		#region Constructor
 
+        /// <summary>
+        ///     Default constructor.
+        /// </summary>
 		public RenderTarget() {
 			this.viewportList = new ViewportCollection(this);
-			this.customAttributes = new Hashtable();
 
-			this.numFaces = 0;
+			numFaces = 0;
 		}
 
-		#endregion
+		#endregion Constructor
 
 		#region Event handling
 
@@ -353,15 +361,10 @@ namespace Axiom.Graphics {
 		}
 
 		/// <summary>
-		///		Destroys the RenderTarget.
-		/// </summary>
-		public abstract void Destroy();
-
-		/// <summary>
 		///		Adds a viewport to the rendering target.
 		/// </summary>
 		/// <remarks>
-		///		A viewport is the rectangle into which redering output is sent. This method adds
+		///		A viewport is the rectangle into which rendering output is sent. This method adds
 		///		a viewport to the render target, rendering from the supplied camera. The
 		///		rest of the parameters are only required if you wish to add more than one viewport
 		///		to a single rendering target. Note that size information passed to this method is
@@ -385,6 +388,11 @@ namespace Axiom.Graphics {
 			return viewport;
 		}
 
+        /// <summary>
+        ///     Adds a viewport to the rendering target.
+        /// </summary>
+        /// <param name="camera"></param>
+        /// <returns></returns>
 		public Viewport AddViewport(Camera camera) {
 			return AddViewport(camera, 0, 0, 1.0f, 1.0f, 0);
 		}
@@ -427,6 +435,24 @@ namespace Axiom.Graphics {
 			}
 		}
 
+        public virtual void ResetStatistics() {
+            // TODO: Implement RenderTarget.ResetStatistics
+        }
+
 		#endregion Methods
-	}
+
+        #region IDisposable Members
+
+        /// <summary>
+        ///     Called when a render target is being destroyed.
+        /// </summary>
+        public virtual void Dispose() {
+            // TODO: Track stats per render target and report on shutdown
+            // Write final performance stats
+            //LogManager.Instance.Write("Final Stats:");
+            //LogManager.Instance.Write("Axiom Framerate Average FPS: " + averageFPS.ToString("0.000000") + " Best FPS: " + highestFPS.ToString("0.000000") + " Worst FPS: " + lowestFPS.ToString("0.000000"));
+        }
+
+#endregion
+    }
 }

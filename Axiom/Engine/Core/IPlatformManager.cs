@@ -7,7 +7,7 @@ namespace Axiom.Core
 	/// <summary>
 	/// Summary description for IPlatformManager.
 	/// </summary>
-	public interface IPlatformManager {
+	public interface IPlatformManager : IDisposable {
 
 		/// <summary>
 		///		Creates a new input reader implementation specific to this platform.

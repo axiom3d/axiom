@@ -1,3 +1,16 @@
+12-30-2004 *Significat commit*
+- FrameEventArgs.RequestShutdown removed; use Root.Instance.QueueEndRendering() from now on.  Root.OnFrameStarted/Ended no longer return bool.
+- Root.Setup removed; you must create an instance of Root using "new" to initialize the singleton.  See TechDemo.
+- Removed useless classes: Axiom.Scripting.AutoAttribute and Axiom.Scripting.State.
+- SceneManagerList renamed to SceneManagerEnumerator like Ogre.  Accessor removed and replaced with GetSceneManager/SetSceneManager.s
+- Root now controls instantiation of singleton instances, using a "deterministic instantiation" process.
+- Fixed issue with LogManager not actually writing message.
+- Made many fixes to ensure resources get destroyed (meshes, hardware buffers, gpu programs, etc) get disposed of on shutdown.
+- Overhauled the use of singletons across the board to be cleaner and more deterministic.
+- Fixed bug in ZebierPatch demo where the material was not being applied to the patch.
+- Mofidied all prior usage of Debug.WriteLine or Trace.WriteLine to use the LogManager.
+- *REFER TO TechDemo FOR ENGINE INIT CHANGES*
+
 12-29-2004
 - Added LogManager.
 - Fixed D3D crash in fullscreen mode.

@@ -33,19 +33,7 @@ namespace Axiom.Graphics {
     /// 	Summary description for SoftwareBufferManager.
     /// </summary>
     // TODO: Switch go using GCHandle for array pointer after resolving stack overflow in TerrainSceneManager.
-    public class SoftwareBufferManager : HardwareBufferManager {
-        #region Singleton implementation
-
-        static SoftwareBufferManager() {}
-
-        protected SoftwareBufferManager() { }
-
-        #endregion
-
-        #region Member variables
-		
-        #endregion
-		
+    public class SoftwareBufferManager : HardwareBufferManager {	
         #region Methods
 
         /// <summary>
@@ -109,11 +97,14 @@ namespace Axiom.Graphics {
     /// 
     /// </summary>
     public class SoftwareVertexBuffer : HardwareVertexBuffer {
-        #region Member variables
+        #region Fields
 		
+        /// <summary>
+        ///     Holds the buffer data.
+        /// </summary>
         protected byte[] data;
 		
-        #endregion
+        #endregion Fields
 
         #region Constructors
 		
@@ -163,8 +154,9 @@ namespace Axiom.Graphics {
                 byte* pDest = (byte*)dest.ToPointer();
 
                 // copy the src data to the destination buffer
-                for(int i = 0; i < length; i++)
+                for (int i = 0; i < length; i++) {
                     pDest[offset + i] = data[offset + i];
+                }
             }
         }
 
@@ -188,8 +180,9 @@ namespace Axiom.Graphics {
                 byte* pSrc = (byte*)src.ToPointer();
 
                 // copy the src data to the destination buffer
-                for(int i = 0; i < length; i++)
+                for (int i = 0; i < length; i++) {
                     data[offset + i] = pSrc[offset + i];
+                }
             }
         }
 
@@ -210,7 +203,10 @@ namespace Axiom.Graphics {
     /// </summary>
     public class SoftwareIndexBuffer : HardwareIndexBuffer {
         #region Member variables
-		
+
+        /// <summary>
+        ///     Holds the buffer data.
+        /// </summary>
         protected byte[] data;
 		
         #endregion
@@ -259,8 +255,9 @@ namespace Axiom.Graphics {
                 byte* pDest = (byte*)dest.ToPointer();
 
                 // copy the src data to the destination buffer
-                for(int i = 0; i < length; i++)
+                for (int i = 0; i < length; i++) {
                     pDest[offset + i] = data[offset + i];
+                }
             }
         }
 
@@ -280,8 +277,9 @@ namespace Axiom.Graphics {
                 byte* pSrc = (byte*)src.ToPointer();
 
                 // copy the src data to the destination buffer
-                for(int i = 0; i < length; i++)
-                    data[offset + i] = pSrc[offset + i];	
+                for (int i = 0; i < length; i++) {
+                    data[offset + i] = pSrc[offset + i];
+                }
             }
         }
 

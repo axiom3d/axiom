@@ -57,49 +57,35 @@ namespace Axiom.Graphics {
     public class MaterialManager : ResourceManager {
         #region Singleton implementation
 
-        protected MaterialManager() {}
-        protected static MaterialManager instance;
+        /// <summary>
+        ///     Singleton instance of this class.
+        /// </summary>
+        private static MaterialManager instance;
 
+        /// <summary>
+        ///     Internal constructor.  This class cannot be instantiated externally.
+        /// </summary>
+        internal MaterialManager() {
+            if (instance == null) {
+                instance = this;
+
+                defaultMinFilter = FilterOptions.Linear;
+                defaultMagFilter = FilterOptions.Linear;
+                defaultMipFilter = FilterOptions.Point;
+                defaultMaxAniso = 1;
+            }
+        }
+
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
         public static MaterialManager Instance {
-            get { return instance; }
-        }
-
-        public static void Init() {
-            if (instance != null) {
-                throw new ApplicationException("MaterialManager.Init() called twice!");
-            }
-
-            instance = new MaterialManager();
-
-            //instance.Initialize();
-
-			// Set up default material - don't use name contructor as we want to avoid applying defaults
-			Material.defaultSettings = new Material();
-			Material.defaultSettings.SetName("DefaultSettings");
-			// Add a single technique and pass, non-programmable
-			Material.defaultSettings.CreateTechnique().CreatePass();
-
-			// just create the default BaseWhite material
-            Material baseWhite = (Material)instance.Create("BaseWhite");
-            baseWhite.Lighting = false;
-
-            instance.defaultMinFilter = FilterOptions.Linear;
-            instance.defaultMagFilter = FilterOptions.Linear;
-            instance.defaultMipFilter = FilterOptions.Point;
-            instance.defaultMaxAniso = 1;
-
-            // Cause us to be disposed of when the Engine is
-            GarbageManager.Instance.Add(MaterialManager.Instance);
-        }
-        
-        public override void Dispose() {
-            base.Dispose();
-            if (instance == this) {
-                instance = null;
+            get { 
+                return instance; 
             }
         }
 
-        #endregion
+        #endregion Singleton implementation
 
         #region Delegates
 
@@ -152,6 +138,26 @@ namespace Axiom.Graphics {
         #endregion Properties
 
         #region Methods
+
+        /// <summary>
+        ///     Sets up default materials and parses all material scripts.
+        /// </summary>
+        public void Initialize() {
+            // Set up default material - don't use name contructor as we want to avoid applying defaults
+            Material.defaultSettings = new Material();
+            Material.defaultSettings.SetName("DefaultSettings");
+            // Add a single technique and pass, non-programmable
+            Material.defaultSettings.CreateTechnique().CreatePass();
+
+            // just create the default BaseWhite material
+            Material baseWhite = (Material)instance.Create("BaseWhite");
+            baseWhite.Lighting = false;
+
+            // parse all material scripts.
+            // programs are parsed first since they may be referenced by materials
+            ParseAllSources(".program");
+            ParseAllSources(".material");
+        }
 
         /// <summary>
         ///     Sets the default texture filtering to be used for loaded textures, for when textures are
@@ -234,18 +240,41 @@ namespace Axiom.Graphics {
             return FilterOptions.None;
         }
 
-        #endregion Methods
-
         /// <summary>
-        /// 
+        ///		Look for material scripts in all known sources and parse them.
         /// </summary>
-        public void Initialize() {
-            // register all attribute parsers
-            ParseAllSources(".program");
-			ParseAllSources(".material");
+        /// <param name="extension">Extension to parse (i.e. ".material").</param>
+        public void ParseAllSources(string extension) {
+            // search archives
+            for (int i = 0; i < archives.Count; i++) {
+                Archive archive = (Archive)archives[i];
+                string[] files = archive.GetFileNamesLike("", extension);
+
+                for (int j = 0; j < files.Length; j++) {
+                    Stream data = archive.ReadFile(files[j]);
+
+                    // parse the materials
+                    serializer.ParseScript(data, files[j]);
+                }
+            }
+
+            // search common archives
+            for (int i = 0; i < commonArchives.Count; i++) {
+                Archive archive = (Archive)commonArchives[i];
+                string[] files = archive.GetFileNamesLike("", extension);
+
+                for (int j = 0; j < files.Length; j++) {
+                    Stream data = archive.ReadFile(files[j]);
+
+                    // parse the materials
+                    serializer.ParseScript(data, files[j]);
+                }
+            }
         }
 
-        #region Implementation of ResourceManager
+        #endregion Methods
+
+        #region ResourceManager Implementation
 
 		/// <summary>
 		///		Gets a material with the specified name.
@@ -296,37 +325,16 @@ namespace Axiom.Graphics {
         }
 
         /// <summary>
-        ///		Look for material scripts in all known sources and parse them.
+        ///     Called when the engine is shutting down.
         /// </summary>
-        /// <param name="extension"></param>
-        public void ParseAllSources(string extension) {
-            // search archives
-            for(int i = 0; i < archives.Count; i++) {
-                Archive archive = (Archive)archives[i];
-                string[] files = archive.GetFileNamesLike("", extension);
+        public override void Dispose() {
+            base.Dispose();
 
-                for(int j = 0; j < files.Length; j++) {
-                    Stream data = archive.ReadFile(files[j]);
-
-                    // parse the materials
-                    serializer.ParseScript(data, files[j]);
-                }
-            }
-
-            // search common archives
-            for(int i = 0; i < commonArchives.Count; i++) {
-                Archive archive = (Archive)commonArchives[i];
-                string[] files = archive.GetFileNamesLike("", extension);
-
-                for(int j = 0; j < files.Length; j++) {
-                    Stream data = archive.ReadFile(files[j]);
-
-                    // parse the materials
-                    serializer.ParseScript(data, files[j]);
-                }
+            if (instance == this) {
+                instance = null;
             }
         }
 
-        #endregion
+        #endregion ResourceManager Implementation
     }
 }

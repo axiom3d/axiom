@@ -6,40 +6,39 @@ namespace Axiom.Media {
 	/// <summary>
 	///    Manages registering/fulfilling requests for codecs that handle various types of media.
 	/// </summary>
-	public class CodecManager : IDisposable {
+	public sealed class CodecManager : IDisposable {
         #region Singleton implementation
 
-        private CodecManager() {}
+        /// <summary>
+        ///     Singleton instance of this class.
+        /// </summary>
         private static CodecManager instance;
 
+        /// <summary>
+        ///     Internal constructor.  This class cannot be instantiated externally.
+        /// </summary>
+        internal CodecManager() {
+            if (instance == null) {
+                instance = this;
+            }
+        }
+
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
         public static CodecManager Instance {
             get { 
                 return instance; 
             }
         }
 
-        public static void Init() {
-            if (instance != null) {
-                throw new ApplicationException("CodecManager initialized twice");
-            }
-            instance = new CodecManager();
-            GarbageManager.Instance.Add(instance);
+        #endregion Singleton implementation
 
-            // register codecs
-            instance.RegisterCodec(new JPGCodec());
-            instance.RegisterCodec(new BMPCodec());
-            instance.RegisterCodec(new PNGCodec());
-            instance.RegisterCodec(new DDSCodec());
-            instance.RegisterCodec(new TGACodec());
-        }
-        
         public void Dispose() {
             if (instance == this) {
                 instance = null;
             }
         }
-
-        #endregion
 
         #region Fields
 
@@ -49,6 +48,18 @@ namespace Axiom.Media {
         private Hashtable codecs = System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
 
         #endregion Fields
+
+        /// <summary>
+        ///     Register all default IL image codecs.
+        /// </summary>
+        public void RegisterCodecs() {
+            // register codecs
+            RegisterCodec(new JPGCodec());
+            RegisterCodec(new BMPCodec());
+            RegisterCodec(new PNGCodec());
+            RegisterCodec(new DDSCodec());
+            RegisterCodec(new TGACodec());
+        }
 
         /// <summary>
         ///    Registers a new codec that can handle a particular type of media files.

@@ -38,36 +38,32 @@ namespace Axiom.Core {
 	/// Summary description for PluginManager.
 	/// </summary>
 	public class PluginManager : IDisposable {
-		#region Singleton implementation
+        #region Singleton implementation
 
-		protected PluginManager() {
-			LoadAll();
-		}
+        /// <summary>
+        ///     Singleton instance of this class.
+        /// </summary>
+        private static PluginManager instance;
 
-		protected static PluginManager instance;
+        /// <summary>
+        ///     Internal constructor.  This class cannot be instantiated externally.
+        /// </summary>
+        internal PluginManager() {
+            if (instance == null) {
+                instance = this;
+            }
+        }
 
-		public static PluginManager Instance {
-			get { 
-				return instance; 
-			}
-		}
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
+        public static PluginManager Instance {
+            get { 
+                return instance; 
+            }
+        }
 
-		public static void Init() {
-			if (instance != null) {
-				throw new ApplicationException("PluginManager.Instance is null!");
-			}
-			instance = new PluginManager();
-			GarbageManager.Instance.Add(instance);
-		}
-
-		public void Dispose() {
-			UnloadAll();
-			if (instance == this) {
-				instance = null;
-			}
-		}
-		
-		#endregion
+        #endregion Singleton implementation
 
 		#region Fields
 
@@ -78,7 +74,7 @@ namespace Axiom.Core {
 
 		#endregion Fields
 
-		#region Plugin loading and unloading code
+		#region Methods
 
 		/// <summary>
 		///		Loads all plugins specified in the plugins section of the app.config file.
@@ -132,7 +128,15 @@ namespace Axiom.Core {
 		public void UnloadAll() {
 			// loop through and stop all loaded plugins
 			for(int i = 0; i < plugins.Count; i++) {
-				((IPlugin)plugins[i]).Stop();
+                IPlugin plugin = (IPlugin)plugins[i];
+
+                // find the title of this assembly
+                AssemblyTitleAttribute title =
+                    (AssemblyTitleAttribute)Attribute.GetCustomAttribute(plugin.GetType().Assembly, typeof(AssemblyTitleAttribute));
+
+                LogManager.Instance.Write("Unloding plugin: {0}", title.Title);
+
+                plugin.Stop();
 			}
 
 			// clear the plugin list
@@ -166,13 +170,13 @@ namespace Axiom.Core {
 
 					plugin.Start();
 
-					Trace.WriteLine("Loaded plugin: " + title.Title);
+                    LogManager.Instance.Write("Loaded plugin: {0}", title.Title);
 
-					return plugin;
+                    return plugin;
 				}
 				catch(Exception ex) {
-					Trace.WriteLine(ex.ToString());
-				}
+                    LogManager.Instance.Write(ex.ToString());
+                }
 			}
 			else {
 				throw new PluginException("Class {0} is not a valid plugin.", creator.className);
@@ -181,10 +185,22 @@ namespace Axiom.Core {
 			return null;
 		}
 
-		#endregion
-	}
+		#endregion Methods
 
-	/// <summary>
+        #region IDisposable Implementation
+
+        public void Dispose() {
+            if (instance != null) {
+                instance = null;
+
+                UnloadAll();
+            }
+        }
+
+        #endregion IDiposable Implementation
+    }
+
+    /// <summary>
 	/// The plugin configuration handler
 	/// </summary>
 	public class PluginConfigurationSectionHandler : IConfigurationSectionHandler {

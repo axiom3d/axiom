@@ -33,33 +33,33 @@ namespace Axiom.Core {
     /// <summary>
     ///		Handles the management of mesh resources.
     /// </summary>
-    public class MeshManager : ResourceManager {
+    public sealed class MeshManager : ResourceManager {
         #region Singleton implementation
 
-        protected MeshManager() {}
-        protected static MeshManager instance;
+        /// <summary>
+        ///     Singleton instance of this class.
+        /// </summary>
+        private static MeshManager instance;
 
+        /// <summary>
+        ///     Internal constructor.  This class cannot be instantiated externally.
+        /// </summary>
+        internal MeshManager() {
+            if (instance == null) {
+                instance = this;
+            }
+        }
+
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
         public static MeshManager Instance {
-            get { return instance; }
-        }
-
-        public static void Init() {
-            if (instance != null) {
-                throw new ApplicationException("MeshManager initialized twice!");
-            }
-            instance = new MeshManager();
-            instance.Initialize();
-            GarbageManager.Instance.Add(instance);
-        }
-        
-        public override void Dispose() {
-            base.Dispose();
-            if (this == instance) {
-                instance = null;
+            get { 
+                return instance; 
             }
         }
 
-        #endregion
+        #endregion Singleton implementation
 
 		#region Fields
 
@@ -67,7 +67,7 @@ namespace Axiom.Core {
 		///		Flag indicating whether newly loaded meshes should also be prepared for 
 		///		shadow volumes.
 		/// </summary>
-		protected bool prepAllMeshesForShadowVolumes;
+        private bool prepAllMeshesForShadowVolumes;
 
 		#endregion Fields
 
@@ -204,8 +204,9 @@ namespace Axiom.Core {
             yAxis.Normalize();
             xAxis = yAxis.Cross(zAxis);
 
-            if(xAxis.Length == 0)
+            if (xAxis.Length == 0) {
                 throw new AxiomException("The up vector for a plane cannot be parallel to the planes normal.");
+            }
 
             rot3x3.FromAxes(xAxis, yAxis, zAxis);
             rotation = rot3x3;

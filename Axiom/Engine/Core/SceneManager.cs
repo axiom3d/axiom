@@ -2802,9 +2802,9 @@ namespace Axiom.Core {
 
 					// Firstly check that we have a stencil. Otherwise, forget it!
 					if(!targetRenderSystem.Caps.CheckCap(Capabilities.StencilBuffer)) {
-						Debug.WriteLine("WARNING: Stencil shadows were requested, but the current hardware does not support them.  Disabling.");
-						
-						shadowTechnique = ShadowTechnique.None;
+                        LogManager.Instance.Write("WARNING: Stencil shadows were requested, but the current hardware does not support them.  Disabling.");
+
+                        shadowTechnique = ShadowTechnique.None;
 					}
 					else if(shadowIndexBuffer == null) {
 						// create an shadow index buffer

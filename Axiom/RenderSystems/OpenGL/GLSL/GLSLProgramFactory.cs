@@ -6,21 +6,33 @@ namespace Axiom.RenderSystems.OpenGL.GLSL {
 	/// <summary>
 	///		Factory class for GLSL programs.
 	/// </summary>
-	public class GLSLProgramFactory : IHighLevelGpuProgramFactory {
+	public sealed class GLSLProgramFactory : IHighLevelGpuProgramFactory, IDisposable {
         #region Fields
 
         /// <summary>
         ///     Language string.
         /// </summary>
-		protected static string languageName = "glsl";
+		private static string languageName = "glsl";
+        /// <summary>
+        ///     Reference to the link program manager we create.
+        /// </summary>
+        private GLSLLinkProgramManager glslLinkProgramMgr;
 
         #endregion Fields
 
-		#region IHighLevelGpuProgramFactory Members
+        #region Constructor
 
-		public void Destroy(HighLevelGpuProgram program) {
-			// TODO:  Add GLSLProgramFactory.Destroy implementation
-		}
+        /// <summary>
+        ///     Default constructor.
+        /// </summary>
+        internal GLSLProgramFactory() {
+            // instantiate the singleton
+            glslLinkProgramMgr = new GLSLLinkProgramManager();
+        }
+
+        #endregion Constructor
+
+        #region IHighLevelGpuProgramFactory Implementation
 
 		/// <summary>
 		///		Creates and returns a new GLSL program object.
@@ -39,8 +51,21 @@ namespace Axiom.RenderSystems.OpenGL.GLSL {
 			get {
 				return languageName;
 			}
-		}
+        }
 
-		#endregion
-	}
+        #endregion IHighLevelGpuProgramFactory Implementation
+
+        #region IDisposable Implementation
+
+        /// <summary>
+        ///     Called when the engine is shutting down.
+        /// </summary>
+        public void Dispose() {
+            if (glslLinkProgramMgr != null) {
+                glslLinkProgramMgr.Dispose();
+            }
+        }
+
+        #endregion IDisposable Implementation
+    }
 }

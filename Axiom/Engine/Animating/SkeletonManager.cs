@@ -32,34 +32,35 @@ namespace Axiom.Animating {
     /// <summary>
     /// Summary description for SkeletonManager.
     /// </summary>
-    public class SkeletonManager : ResourceManager {
-
+    public sealed class SkeletonManager : ResourceManager {
         #region Singleton implementation
 
-        protected SkeletonManager() {}
-        protected static SkeletonManager instance;
+        /// <summary>
+        ///     Singleton instance of this class.
+        /// </summary>
+        private static SkeletonManager instance;
 
+        /// <summary>
+        ///     Internal constructor.  This class cannot be instantiated externally.
+        /// </summary>
+        internal SkeletonManager() {
+            if (instance == null) {
+                instance = this;
+            }
+        }
+
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
         public static SkeletonManager Instance {
-            get { return instance; }
-        }
-
-        public static void Init() {
-            if (instance != null) {
-                throw new ApplicationException("SkeletonManager initialized twice!");
-            }
-            instance = new SkeletonManager();
-            GarbageManager.Instance.Add(instance);
-        }
-
-        public override void Dispose() {
-            if (instance == this) {
-                instance = null;
+            get { 
+                return instance; 
             }
         }
-        
+
         #endregion Singleton implementation
 
-        #region Implementation of ResourceManager
+        #region ResourceManager Implementation
 
         /// <summary>
         ///    Creates a new skeleton object.
@@ -102,6 +103,6 @@ namespace Axiom.Animating {
             return (Skeleton)base.GetByName(name);
         }
 
-        #endregion Implementation of ResourceManager
+        #endregion ResourceManager Implementation
     }
 }

@@ -14,40 +14,52 @@ namespace Axiom.RenderSystems.OpenGL.GLSL {
 	///		vertex and fragment program.  Previously created program objects are stored along with a unique
 	///		key in a hash_map for quick retrieval the next time the program object is required.
 	/// </summary>
-	public class GLSLLinkProgramManager {
-		#region Singleton implementation
+	public sealed class GLSLLinkProgramManager : IDisposable {
+        #region Singleton implementation
 
-		protected static GLSLLinkProgramManager instance = new GLSLLinkProgramManager();
+        /// <summary>
+        ///     Singleton instance of this class.
+        /// </summary>
+        private static GLSLLinkProgramManager instance;
 
-		protected GLSLLinkProgramManager() {
-		}
+        /// <summary>
+        ///     Internal constructor.  This class cannot be instantiated externally.
+        /// </summary>
+        internal GLSLLinkProgramManager() {
+            if (instance == null) {
+                instance = this;
+            }
+        }
 
-		public static GLSLLinkProgramManager Instance {
-			get { 
-				return instance; 
-			}
-		}
-	
-		#endregion
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
+        public static GLSLLinkProgramManager Instance {
+            get { 
+                return instance; 
+            }
+        }
+
+        #endregion Singleton implementation
 
 		#region Fields
 
 		/// <summary>
 		///		List holding previously created program objects.
 		/// </summary>
-		protected Hashtable linkPrograms = new Hashtable();
+		private Hashtable linkPrograms = new Hashtable();
 		/// <summary>
 		///		Currently active vertex GPU program.
 		/// </summary>
-		protected GLSLGpuProgram activeVertexProgram;
-		/// <summary>
+        private GLSLGpuProgram activeVertexProgram;
+        /// <summary>
 		///		Currently active fragment GPU program.
 		/// </summary>
-		protected GLSLGpuProgram activeFragmentProgram;
-		/// <summary>
+        private GLSLGpuProgram activeFragmentProgram;
+        /// <summary>
 		///		Currently active link program.
 		/// </summary>
-		protected GLSLLinkProgram activeLinkProgram;
+        private GLSLLinkProgram activeLinkProgram;
 
 		#endregion Fields
 
@@ -152,5 +164,20 @@ namespace Axiom.RenderSystems.OpenGL.GLSL {
 		}
 
 		#endregion Methods
-	}
+
+        #region IDisposable Members
+
+        /// <summary>
+        ///     Called when the engine is shutting down.
+        /// </summary>
+        public void Dispose() {
+            foreach (GLSLLinkProgram program in linkPrograms.Values) {
+                program.Dispose();
+            }
+
+            linkPrograms.Clear();
+        }
+
+        #endregion IDisposable Members
+    }
 }

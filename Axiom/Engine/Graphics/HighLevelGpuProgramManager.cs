@@ -34,9 +34,10 @@ namespace Axiom.Graphics {
 	/// </summary>
 	/// <remarks>
 	///    High-level vertex and fragment programs can be used instead of assembler programs
-	///    as managed by GpuProgramManager; however they typically result in a GpuProgram
-	///    being created as a derivative of the high-level program. High-level programs are
-	///    easier to write, and can often be API-independent, unlike assembler programs. 
+    ///    as managed by <see cref="GpuProgramManager"/>; however they typically result in a 
+    ///    <see cref="GpuProgram"/> being created as a derivative of the high-level program. 
+    ///    High-level programs are easier to write, and can often be API-independent, 
+    ///    unlike assembler programs. 
 	///    <p/>
 	///    This class not only manages the programs themselves, it also manages the factory
 	///    classes which allow the creation of high-level programs using a variety of high-level
@@ -45,35 +46,32 @@ namespace Axiom.Graphics {
 	///    program provided a plugin is written.
 	/// </remarks>
 	public class HighLevelGpuProgramManager : ResourceManager {
-		#region Singleton implementation
+        #region Singleton implementation
 
-		private HighLevelGpuProgramManager() {}
-		private static HighLevelGpuProgramManager instance;
+        /// <summary>
+        ///     Singleton instance of this class.
+        /// </summary>
+        private static HighLevelGpuProgramManager instance;
 
-		public static HighLevelGpuProgramManager Instance {
-			get { return instance; }
-		}
+        /// <summary>
+        ///     Internal constructor.  This class cannot be instantiated externally.
+        /// </summary>
+        internal HighLevelGpuProgramManager() {
+            if (instance == null) {
+                instance = this;
+            }
+        }
 
-		public static void Init() {
-			if (instance != null) {
-				throw new ApplicationException("HighLevelGpuProgramManager.Init() called twice!");
-			}
-			instance = new HighLevelGpuProgramManager();
-			instance.Initialize();
-			GarbageManager.Instance.Add(instance);
-		}
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
+        public static HighLevelGpuProgramManager Instance {
+            get { 
+                return instance; 
+            }
+        }
 
-		public void Initialize() {
-		}
-        
-		public override void Dispose() {
-			base.Dispose();
-			if (instance == this) {
-				instance = null;
-			}
-		}
-
-		#endregion
+        #endregion Singleton implementation
 
 		#region Fields
 
@@ -154,7 +152,7 @@ namespace Axiom.Graphics {
 		
 		#endregion Properties
 
-		#region Implementation of ResourceManager
+		#region ResourceManager Implementation
 
 		/// <summary>
 		///    Overridden to throw an exception since this Create method isn't sufficient enough
@@ -163,18 +161,31 @@ namespace Axiom.Graphics {
 		/// <param name="name"></param>
 		/// <returns></returns>
 		public override Resource Create(string name) {
-			throw new Exception("The more specific method, CreateProgram should be used.");
+			throw new AxiomException("The more specific method, CreateProgram should be used.");
 		}
 
+        /// <summary>
+        ///     Gets a HighLevelGpuProgram with the specified name.
+        /// </summary>
+        /// <param name="name">Name of the program to retrieve.</param>
+        /// <returns>The high level gpu program with the specified name.</returns>
 		public new HighLevelGpuProgram GetByName(string name) {
 			return (HighLevelGpuProgram)base.GetByName(name);
 		}
 
-		#endregion
+        /// <summary>
+        ///     Called when the engine is shutting down.
+        /// </summary>
+        public override void Dispose() {
+            base.Dispose();
 
-	}
+            instance = null;
+        }
 
-	/// <summary>
+        #endregion ResourceManager Implementation
+    }
+
+    /// <summary>
 	///    Interface definition for factories that create instances of HighLevelGpuProgram.
 	/// </summary>
 	public interface IHighLevelGpuProgramFactory {
@@ -193,15 +204,7 @@ namespace Axiom.Graphics {
 		/// <returns>
 		///    A newly created instance of HighLevelGpuProgram.
 		/// </returns>
-		HighLevelGpuProgram Create(string name, GpuProgramType type);
-
-		/// <summary>
-		///    Must be implemented to determine how to destroy a HighLevelGpuProgram object.
-		/// </summary>
-		/// <param name="program">
-		///    Reference to the HighLevelGpuProgram to destroy.
-		/// </param>
-		void Destroy(HighLevelGpuProgram program);
+        HighLevelGpuProgram Create(string name, GpuProgramType type);
 
 		#endregion Methods
 
