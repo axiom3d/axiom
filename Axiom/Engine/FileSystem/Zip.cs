@@ -123,7 +123,7 @@ namespace Axiom.FileSystem {
             while (entry != null) {
 
                 // get the full path for the output file
-                string file = Path.GetFileName(entry.Name);
+                string file = entry.Name;
 				
                 if(file.EndsWith(pattern)) {
                     fileList.Add(file);
