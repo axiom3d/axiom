@@ -84,8 +84,14 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 						data2D[ i ][ j ] = new Data2D_HeightField();
 					}
 				}
-
 			}
+            else if (Options.Instance.Data2DFormat == "ClientGen") {
+                for (j = 0; j < h; j++) {
+                    for (i = 0; i < w; i++) {
+                        data2D[i][j] = new Data2D_ClientGen((int)i, (int)j);
+                    }
+                }
+            }
 /*
 			else if ( Options.Instance.Data2DFormat == "HeightFieldTC" )
 			{
@@ -498,16 +504,23 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 			long dataX, dataZ;
 			GetPageIndices(pos, out dataX, out dataZ);
 
-			if ( !(data2D[ dataX ][ dataZ ].IsLoaded ))
-				return 0.0f;
+			if ( data2D[dataX][dataZ].Dynamic ) 
+			{
+				return GetRealPageHeight (x, z, dataX, dataZ, 0);
+			} 
+			else 
+			{
+				if ( !(data2D[ dataX ][ dataZ ].IsLoaded ))
+					return 0.0f;
 
-			// figure out which tile the point is on
-			Tile.Tile t = PageManager.Instance.GetTile (pos, dataX, dataZ);
-			long Lod = 0;
-			if (t != null && t.IsLoaded )
-				Lod = t.Renderable.RenderLevel;
+				// figure out which tile the point is on
+				Tile.Tile t = PageManager.Instance.GetTile (pos, dataX, dataZ);
+				long Lod = 0;
+				if (t != null && t.IsLoaded )
+					Lod = t.Renderable.RenderLevel;
 
-			return GetRealPageHeight (x, z, dataX, dataZ, Lod);
+				return GetRealPageHeight (x, z, dataX, dataZ, Lod);
+			}
 		}
 
 		public float GetRealWorldHeight( float x,  float z, TileInfo info)
@@ -682,10 +695,18 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 			if (x >= w) 
 			{
 				x = w - 1;
+			} 
+			else if ( x < 0 ) 
+			{
+				x = 0;
 			}
 			if (z >= h) 
 			{
 				z = h - 1;
+			} 
+			else if ( z < 0 ) 
+			{
+				z = 0;
 			}
 		}
         
