@@ -104,7 +104,6 @@ namespace Plugin_CgProgramManager
 
             // Note use of 'leaf' format so we only get bottom-level params, not structs
             IntPtr param = Cg.cgGetFirstLeafParameter(cgProgram, Cg.CG_PROGRAM);
-            int offset = 0;
 
             // loop through the rest of the params
             while(param != IntPtr.Zero) {
@@ -114,29 +113,22 @@ namespace Plugin_CgProgramManager
                 // be optimized out and therefore not in the indexed versions
                 if(Cg.cgIsParameterReferenced(param) != 0
                     && Cg.cgGetParameterVariability(param) == Cg.CG_UNIFORM
-                    && Cg.cgGetParameterDirection(param) != Cg.CG_OUT) {
+                    && Cg.cgGetParameterDirection(param) != Cg.CG_OUT
+                    && Cg.cgGetParameterType(param) != Cg.CG_SAMPLER1D
+                    && Cg.cgGetParameterType(param) != Cg.CG_SAMPLER2D
+                    && Cg.cgGetParameterType(param) != Cg.CG_SAMPLER3D
+                    && Cg.cgGetParameterType(param) != Cg.CG_SAMPLERCUBE
+                    && Cg.cgGetParameterType(param) != Cg.CG_SAMPLERRECT) {                 
 
-                    // ignore sampler parameters
-                    if(Cg.cgGetParameterType(param) == Cg.CG_SAMPLER1D
-                        || Cg.cgGetParameterType(param) == Cg.CG_SAMPLER2D
-                        || Cg.cgGetParameterType(param) == Cg.CG_SAMPLER3D
-                        || Cg.cgGetParameterType(param) == Cg.CG_SAMPLERCUBE
-                        || Cg.cgGetParameterType(param) == Cg.CG_SAMPLERRECT) {
+                    // get the name and index of the program param
+                    string name = Cg.cgGetParameterName(param);
+                    int index = Cg.cgGetParameterResourceIndex(param);
 
-                        // increment the offset to avoid sampler params from skewing index 
-                        // of the app supplied params
-                        offset++;
-                    }                        
-                    else {
-                        // get the name and index of the program param
-                        string name = Cg.cgGetParameterName(param);
-                        int index = Cg.cgGetParameterResourceIndex(param) - offset;
-
-                        // map the param to the index
-                        parms.MapParamNameToIndex(name, index);
-                    }
+                    // map the param to the index
+                    parms.MapParamNameToIndex(name, index);
                 }
 
+                // get the next param
                 param = Cg.cgGetNextLeafParameter(param);
             }
         }

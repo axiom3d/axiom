@@ -153,7 +153,7 @@ namespace Axiom.Graphics
                 lightListDirty = false;
             }
 
-            if(lightList.Count < index) {
+            if(lightList.Count == 0 || lightList.Count < index) {
                 return blankLight;
             }
             else {
