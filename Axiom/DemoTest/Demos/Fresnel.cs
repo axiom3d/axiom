@@ -51,6 +51,8 @@ namespace Demos {
                 throw new Exception("Your hardware does not support advanced pixel shaders, so you cannot run this demo.  Time to go to Best Buy ;)");
             }
 
+            Animation.DefaultInterpolationMode = InterpolationMode.Linear;
+
             theCam = camera;
             theCam.Position = new Vector3(-100, 20, 700);
 

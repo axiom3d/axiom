@@ -25,42 +25,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using System.Diagnostics;
-using System.IO;
 
-namespace Axiom.Core {
-    /// <summary>
-    /// Summary description for Log.
-    /// </summary>
-    public sealed class Log : TraceListener, IDisposable {
-        private static System.IO.FileStream log;
-        private static System.IO.StreamWriter	writer;
-
-        public Log(string fileName) {
-            // create the log file, or ope
-            log = File.Open(fileName, FileMode.Create);
-
-            // get a stream writer using the file stream
-            writer = new StreamWriter(log);
-        }
-
-        public override void Write(string message) {
-            writer.WriteLine(message);
-            writer.Flush();
-        }
-
-        public override void WriteLine(string message) {
-            writer.WriteLine(message);
-            writer.Flush();
-        }
-        #region IDisposable Members
-
-        public new void Dispose() {
-            
-            writer.Close();
-            log.Close();
-        }
-
-        #endregion
-    }
+namespace Axiom.Graphics {
+	/// <summary>
+	/// Summary description for EdgeListBuilder.
+	/// </summary>
+	public class EdgeListBuilder {
+		public EdgeListBuilder() {
+		}
+	}
 }

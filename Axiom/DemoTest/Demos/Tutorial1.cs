@@ -216,6 +216,7 @@ namespace Demos {
 
     }
 
+
     /// <summary>
     ///		A class for rendering a simple triangle with colored vertices.
     /// </summary>

@@ -118,7 +118,7 @@ namespace Axiom.RenderSystems.OpenGL {
 
             isLocked = true;
 
-            return ptr;
+            return new IntPtr(ptr.ToInt32() + offset);
         }
 
         /// <summary>

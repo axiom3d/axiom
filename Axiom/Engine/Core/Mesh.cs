@@ -823,11 +823,33 @@ namespace Axiom.Core {
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public SubMesh CreateSubMesh() {
+            string name = string.Format("{0}_SubMesh{1}", this.name, subMeshList.Count);
+
+            SubMesh subMesh = new SubMesh(name);
+
+            // set the parent of the subMesh to us
+            subMesh.Parent = this;
+
+            // add to the list of child meshes
+            subMeshList.Add(subMesh);
+
+            return subMesh;
+        }
+
+        /// <summary>
         ///		Gets/Sets the shared VertexData for this mesh.
         /// </summary>
         public VertexData SharedVertexData {
-            get { return sharedVertexData; }
-            set { sharedVertexData = value; }
+            get { 
+                return sharedVertexData; 
+            }
+            set { 
+                sharedVertexData = value; 
+            }
         }
 
         /// <summary>

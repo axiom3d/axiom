@@ -280,6 +280,7 @@ namespace Demos {
             demoTable.Rows.Add(new object[] {15, "Fresnel", "Demos.Fresnel", "Fresnel.jpg", "Fresnel reflection/refraction and perlin noise applied to produce realistic water.", "Demos"});
             demoTable.Rows.Add(new object[] {16, "Cel Shading", "Demos.CelShading", "CelShading.jpg", "Cartoon like non-photorealistic rendering technique.", "Demos"});
             demoTable.Rows.Add(new object[] {17, "Terrain", "Demos.Terrain", "Terrain.jpg", "Simple heightmap terrain example.", "Demos"});
+            demoTable.Rows.Add(new object[] {18, "Bezier", "Demos.BezierPatch", "BezierPatch.jpg", "Use of bezier patches to create curved surfaces.", "Demos"});
 
 
             demoView = new DataView(demoTable);

@@ -259,10 +259,83 @@ namespace Axiom.Core {
             return mesh;
         }
 
+        /// <summary>
+        ///     Creates a Bezier patch based on an array of control vertices.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="controlPointBuffer"></param>
+        /// <param name="declaration"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="uMaxSubdivisionLevel"></param>
+        /// <param name="uMaxSubdivisionLevel"></param>
+        /// <param name="visibleSide"></param>
+        /// <param name="vbUsage"></param>
+        /// <param name="ibUsage"></param>
+        /// <param name="vbUseShadow"></param>
+        /// <param name="ibUseShadow"></param>
+        /// <returns></returns>
+        public PatchMesh CreateBezierPatch(string name, System.Array controlPointBuffer, VertexDeclaration declaration,
+            int width, int height, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide,
+            BufferUsage vbUsage, BufferUsage ibUsage, bool vbUseShadow, bool ibUseShadow) {
+
+            PatchMesh mesh = (PatchMesh)GetByName(name);
+
+            if(mesh != null) {
+                throw new Axiom.Exceptions.AxiomException("A mesh with the name {0} already exists!", name);
+            }
+
+            mesh = new PatchMesh(name, controlPointBuffer, declaration, width, height, 
+                uMaxSubdivisionLevel, vMaxSubdivisionLevel, visibleSide, vbUsage, ibUsage, vbUseShadow, ibUseShadow);
+
+            mesh.IsManuallyDefined = true;
+
+            base.Load(mesh, 0);
+
+            return mesh;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="plane"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="curvature"></param>
+        /// <param name="xSegments"></param>
+        /// <param name="ySegments"></param>
+        /// <param name="normals"></param>
+        /// <param name="numberOfTexCoordSets"></param>
+        /// <param name="uTiles"></param>
+        /// <param name="vTiles"></param>
+        /// <param name="upVector"></param>
+        /// <returns></returns>
         public Mesh CreateCurvedIllusionPlane(string name, Plane plane, float width, float height, float curvature, int xSegments, int ySegments, bool normals, int numberOfTexCoordSets, float uTiles, float vTiles, Vector3 upVector) {
             return CreateCurvedIllusionPlane(name, plane, width, height, curvature, xSegments, ySegments, normals, numberOfTexCoordSets, uTiles, vTiles, upVector, Quaternion.Identity, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, false, false);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="plane"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="curvature"></param>
+        /// <param name="xSegments"></param>
+        /// <param name="ySegments"></param>
+        /// <param name="normals"></param>
+        /// <param name="numberOfTexCoordSets"></param>
+        /// <param name="uTiles"></param>
+        /// <param name="vTiles"></param>
+        /// <param name="upVector"></param>
+        /// <param name="orientation"></param>
+        /// <param name="vertexBufferUsage"></param>
+        /// <param name="indexBufferUsage"></param>
+        /// <param name="vertexShadowBuffer"></param>
+        /// <param name="indexShadowBuffer"></param>
+        /// <returns></returns>
         public Mesh CreateCurvedIllusionPlane(string name, Plane plane, float width, float height, float curvature, int xSegments, int ySegments, bool normals, int numberOfTexCoordSets, float uTiles, float vTiles, Vector3 upVector, Quaternion orientation, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer) {
             Mesh mesh = CreateManual(name);
             SubMesh subMesh = mesh.CreateSubMesh(name + "SubMesh");

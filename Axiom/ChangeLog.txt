@@ -1,3 +1,10 @@
+2-22-2004
+- Implemented normal normalization capability in the render systems.
+- Added explicit scissor test capability to the render systems.
+- Added secondary color support in GL now that Tao has all the extensions done.
+- BezierPatch demo and all supporting functionality added.
+- Fixed a bug where not all output was being flushed to the log file.
+
 2-15-2004
 - Completed heightmap terrain functionality in the OctreeSceneManager plugin.
 - Added Terrain demo.

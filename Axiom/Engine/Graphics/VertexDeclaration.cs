@@ -32,7 +32,7 @@ namespace Axiom.Graphics {
     /// 	Summary description for VertexDeclaration.
     /// </summary>
     /// DOC
-    public class VertexDeclaration {
+    public class VertexDeclaration : ICloneable {
         #region Member variables
 
         protected ArrayList elements = new ArrayList();
@@ -172,5 +172,20 @@ namespace Axiom.Graphics {
         }
 
         #endregion Object overloads
+
+        #region ICloneable Members
+
+        public object Clone() {
+            VertexDeclaration clone = HardwareBufferManager.Instance.CreateVertexDeclaration();
+
+            for(int i = 0; i < elements.Count; i++) {
+                VertexElement element = (VertexElement)elements[i];
+                clone.AddElement((VertexElement)element.Clone());
+            }
+
+            return clone;
+        }
+
+        #endregion
     }
 }
