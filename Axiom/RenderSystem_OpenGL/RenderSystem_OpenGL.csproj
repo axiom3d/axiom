@@ -192,7 +192,17 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "ATI\Lists.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "ATI\PixelShader.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ATI\Structures.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
