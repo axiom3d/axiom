@@ -121,7 +121,7 @@ namespace Demos {
             patchEntity = scene.CreateEntity("Entity1", "Bezier1");
 
             Material material = (Material)MaterialManager.Instance.Create("TextMat");
-            material.CreateTechnique().CreatePass().CreateTextureUnitState("BumpyMetal.jpg");
+            material.GetTechnique(0).GetPass(0).CreateTextureUnitState("BumpyMetal.jpg");
             patchEntity.MaterialName = "TextMat";
 
             // Attach the entity to the root of the scene

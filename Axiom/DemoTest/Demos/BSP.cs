@@ -15,7 +15,7 @@ namespace Demos {
 	/// </summary>
 	public class Bsp : TechDemo {
 		protected override void ChooseSceneManager() {
-			scene = engine.SceneManagers[SceneType.Interior];
+			scene = SceneManagerEnumerator.Instance.GetSceneManager(SceneType.Interior);
 		}
 
 		protected override void CreateScene() {

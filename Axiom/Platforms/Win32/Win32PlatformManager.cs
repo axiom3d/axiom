@@ -57,6 +57,13 @@ namespace Axiom.Platforms.Win32
 			}
 		}
 
+        /// <summary>
+        ///     Called when the engine is being shutdown.
+        /// </summary>
+        public void Dispose() {
+            inputReader.Dispose();
+        }
+
 		#endregion
 
 		#region P/Invoke Declarations

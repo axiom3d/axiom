@@ -32,77 +32,120 @@ using Axiom.Graphics;
 
 namespace Axiom.Core {
     /// <summary>
-    /// Summary description for SceneManagerEnumerator.
+    ///     Enumerates the SceneManager classes available to applications.
     /// </summary>
-    public class SceneManagerList : IDisposable {
+    /// <remarks>
+    ///     As described in the SceneManager class, SceneManagers are responsible
+    ///     for organizing the scene and issuing rendering commands to the
+    ///     RenderSystem. Certain scene types can benefit from different
+    ///     rendering approaches, and it is intended that subclasses will
+    ///     be created to special case this.
+    ///     <p/>
+    ///     In order to give applications easy access to these implementations,
+    ///     the Root object has a GetSceneManager method to retrieve a SceneManager
+    ///     which is appropriate to the scene type. However, this is the class
+    ///     which implements this behavior and defines the scene types, because
+    ///     it is intended that the Root class is not customized by everybody
+    ///     (and it may be restricted access in the future).
+    /// </remarks>
+    // TODO: Class name no longer matches file name.
+    public sealed class SceneManagerEnumerator {
         #region Singleton implementation
 
-        protected SceneManagerList() {}
-        protected static SceneManagerList instance;
-
-        public static SceneManagerList Instance {
-            get { return instance; }
-        }
-
-        public void Dispose() {
-            if (instance == this) {
-                instance = null;
-            }
-        }
-
-        public static void Init() {
-            if (instance != null) {
-                throw new ApplicationException("ParticleSystemManager.Init() called twice!");
-            }
-            instance = new SceneManagerList();
-            instance.Initialize();
-            GarbageManager.Instance.Add(instance);
-        }
-
-        #endregion
-
-        private SceneManager defaultSceneManager;
-        private Hashtable mSceneManagers = new Hashtable();
-
-        #region Operator overloads
+        /// <summary>
+        ///     Singleton instance of this class.
+        /// </summary>
+        private static SceneManagerEnumerator instance;
 
         /// <summary>
-        /// Indexer to allow easy access to the scene manager list.
+        ///     Internal constructor.  This class cannot be instantiated externally.
         /// </summary>
-        public SceneManager this[SceneType pType] {
-            get {
-                return (SceneManager)mSceneManagers[pType];
-            }
-            set {
-                mSceneManagers[pType] = value;
+        internal SceneManagerEnumerator() {
+            if (instance == null) {
+                instance = this;
+
+                // by default, use the standard scene manager.
+                defaultSceneManager = new SceneManager();
+
+                // by default, all scenetypes use the default Scene Manager.  Note: These can be overridden by plugins.
+                SetSceneManager(SceneType.Generic, defaultSceneManager);
+                SetSceneManager(SceneType.ExteriorClose, defaultSceneManager);
+                SetSceneManager(SceneType.ExteriorFar, defaultSceneManager);
+                SetSceneManager(SceneType.Interior, defaultSceneManager);
+                SetSceneManager(SceneType.Overhead, defaultSceneManager);
             }
         }
 
-        #endregion
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
+        public static SceneManagerEnumerator Instance {
+            get { 
+                return instance; 
+            }
+        }
+
+        #endregion Singleton implementation
+
+        #region Fields
+
+        /// <summary>
+        ///     Standard scene manager for default management.
+        /// </summary>
+        private SceneManager defaultSceneManager;
+        /// <summary>
+        ///     Collection of loaded scene managers, keyed by scene type.
+        /// </summary>
+        private Hashtable sceneManagers = new Hashtable();
+
+        #endregion Fields
 
         #region Methods
 
         /// <summary>
-        /// Register a new render system with the SceneManagerList.
+        ///     Gets a reference to the scene manager of the specified type.
         /// </summary>
-        /// <param name="pSystem"></param>
-        public void RegisterRenderSystem(RenderSystem pSystem) {
+        /// <param name="type">Type of scene manager to retrieve.</param>
+        /// <returns>A reference to the scene manager of the specified type.</returns>
+        public SceneManager GetSceneManager(SceneType type) {
+            if (sceneManagers[type] == null) {
+                throw new AxiomException("Cannot find scene manager for type '{0}'", type);
+            }
+
+            return (SceneManager)sceneManagers[type];
+        }
+
+        /// <summary>
+        ///     Notifies all SceneManagers of the destination rendering system.
+        /// </summary>
+        /// <param name="system">Current destination render system.</param>
+        public void SetRenderSystem(RenderSystem system) {
             // loop through each scene manager and set the new render system
-            foreach(SceneManager sceneManager in mSceneManagers.Values) {
-                sceneManager.TargetRenderSystem = pSystem;
+            foreach(SceneManager sceneManager in sceneManagers.Values) {
+                sceneManager.TargetRenderSystem = system;
             }
         }
 
-        public void Initialize() {
-            // by default, use the standard scene manager.
-            defaultSceneManager = new SceneManager();
+        /// <summary>
+        ///     Sets a scene manager implementation for the given type.
+        /// </summary>
+        /// <param name="type">Type of scene this manager implements.</param>
+        /// <param name="manager">Reference to the scene manager.</param>
+        public void SetSceneManager(SceneType type, SceneManager manager) {
+            sceneManagers[type] = manager;
 
-            // by default, all scenetypes use the default Scene Manager.  Note: These can be overridden by plugins.
-            this[SceneType.Generic] = defaultSceneManager;
-            this[SceneType.ExteriorClose] = defaultSceneManager;
-            this[SceneType.ExteriorFar] = defaultSceneManager;
-            this[SceneType.Interior] = defaultSceneManager;
-            this[SceneType.Overhead] = defaultSceneManager;
+            // Set rendersystem, incase this one is late & rendersystem already picked
+            manager.TargetRenderSystem = Root.Instance.RenderSystem;
+        }
+
+        /// <summary>
+        ///     Shuts down all registered scene managers.
+        /// </summary>
+        public void ShutdownAll() {
+            // clear the scene of each registered scene manager
+            foreach (SceneManager manager in sceneManagers.Values) {
+                manager.ClearScene();
+            }
         }
 
         #endregion

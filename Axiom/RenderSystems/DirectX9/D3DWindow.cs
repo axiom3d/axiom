@@ -95,8 +95,6 @@ namespace Axiom.RenderSystems.DirectX9 {
 	       
 			device.DeviceReset += new EventHandler(OnResetDevice);
 			this.OnResetDevice(device, null);
-			device.DeviceLost += new EventHandler(device_DeviceLost);
-			
 
 			/*
 			 * CMH 4/24/2004 - Note: The device initialization code has been moved to initDevice()
@@ -175,8 +173,10 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void Destroy() {
-			// if the control is a form, then close it
+        public override void Dispose() {
+            base.Dispose();
+
+            // if the control is a form, then close it
 			if(targetHandle is System.Windows.Forms.Form) {
 				Form form = targetHandle as System.Windows.Forms.Form;
 				form.Close();
@@ -391,17 +391,11 @@ namespace Axiom.RenderSystems.DirectX9 {
 		private void OnResetDevice(object sender, EventArgs e) {
 			Device resetDevice = (Device)sender;
 
-			Console.WriteLine("Device has been reset!");
-
 			// Turn off culling, so we see the front and back of the triangle
 			resetDevice.RenderState.CullMode = Cull.None;
 			// Turn on the ZBuffer
 			resetDevice.RenderState.ZBufferEnable = true;
 			resetDevice.RenderState.Lighting = true;    //make sure lighting is enabled
-		}
-
-		private void device_DeviceLost(object sender, EventArgs e) {
-			Console.WriteLine("Device has been lost!");
 		}
 
 		#endregion

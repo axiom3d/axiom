@@ -29,9 +29,13 @@ using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Text;
+using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Controllers;
+using Axiom.FileSystem;
 using Axiom.Fonts;
+using Axiom.Media;
 using Axiom.Overlays;
 using Axiom.Input;
 using Axiom.ParticleSystems;
@@ -40,44 +44,81 @@ using Axiom.Graphics;
 
 namespace Axiom.Core {
 	/// <summary>
-	///		A delegate for defining frame events.
-	/// </summary>
-	public delegate void FrameEvent(object source, FrameEventArgs e);
-
-	/// <summary>
-	///		Used to supply info to the FrameStarted and FrameEnded events.
-	/// </summary>
-	public class FrameEventArgs : System.EventArgs {
-		/// <summary>
-		///    Time elapsed (in milliseconds) since the last frame event.
-		/// </summary>
-		public float TimeSinceLastEvent;
-
-		/// <summary>
-		///    Time elapsed (in milliseconds) since the last frame.
-		/// </summary>
-		public float TimeSinceLastFrame;
-
-		/// <summary>
-		///    Event handlers should set this to true if they wish to stop the render loop and begin shutdown.
-		/// </summary>
-		public bool RequestShutdown;
-	}
-
-	public enum FrameEventType {
-		Start,
-		End
-	}
-
-	/// <summary>
 	///		The Engine class is the main container of all the subsystems.  This includes the RenderSystem, various ResourceManagers, etc.
 	/// </summary>
-	public class Root : IDisposable {
+	public sealed class Root : IDisposable {
 		#region Singleton implementation
-		
-		private Root() {}
-		private static readonly Root instance = new Root();
 
+        /// <summary>
+        ///     Singleton instance of Root.
+        /// </summary>
+        private static Root instance;
+
+        /// <summary>
+        ///     Constructor.
+        /// </summary>
+        /// <remarks>
+        ///     This public contructor is intended for the user to decide when the Root object gets instantiated.
+        ///     This is a critical step in preparing the engine for use.
+        /// </remarks>
+        /// <param name="configFileName">Name of the config file to load.</param>
+        /// <param name="logFileName">Name of the default log file.</param>
+        public Root(string configFileName, string logFileName) {
+            if (instance == null) {
+                instance = this;
+
+                this.configFileName = configFileName;
+
+                StringBuilder info = new StringBuilder();
+
+                // write the initial info at the top of the log
+                info.AppendFormat("*********{0} Log *************{1}", this.Name, Environment.NewLine);
+                info.AppendFormat("Copyright {0}{1}", this.Copyright, Environment.NewLine);
+                info.AppendFormat("Version: {0}{1}", this.Version, Environment.NewLine);
+                info.AppendFormat("Operating System: {0}{1}", Environment.OSVersion.ToString(), Environment.NewLine);
+                info.AppendFormat(".Net Framework: {0}{1}", Environment.Version.ToString(), Environment.NewLine);
+
+                // Initializes the Log Manager singleton
+                LogManager logMgr = new LogManager();
+
+                // create a new default log
+                logMgr.CreateLog(logFileName, true, true);
+
+                logMgr.Write(info.ToString());
+                logMgr.Write("*-*-* Axiom Intializing");
+
+                new ArchiveManager();
+                sceneManagerList = new SceneManagerEnumerator();
+                new MaterialManager();
+                new MeshManager();
+                new SkeletonManager();
+                new ParticleSystemManager();
+                new PlatformManager();
+
+                // create a new timer
+			    timer = PlatformManager.Instance.CreateTimer();
+
+                new OverlayManager();
+                new OverlayElementManager();
+                new FontManager();
+                new ZipArchiveFactory();
+                new CodecManager();
+
+                // register all build in codecs
+                CodecManager.Instance.RegisterCodecs();
+
+                new HighLevelGpuProgramManager();
+
+                new PluginManager();
+
+                PluginManager.Instance.LoadAll();
+            }
+        }
+
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
+        /// <value></value>
 		public static Root Instance {
 			get {
 				return instance;
@@ -86,40 +127,84 @@ namespace Axiom.Core {
 
 		#endregion
 
-		private SceneManager sceneManager;
-		private SceneManagerList sceneManagerList;
-		private RenderSystemCollection renderSystemList;
-		private RenderSystem activeRenderSystem;
-		private Log engineLog;
-		private ITimer timer;
+        #region Fields
 
-		// Framerate Related State
-		private long lastStartTime, lastEndTime;
-		private long lastCalculationTime;							// The Last Time We Calculated Framerate
-		private long frameCount;									// Frames Drawn Counter For FPS Calculations
-		private float currentFPS;									// Current FPS
-		private float highestFPS;									// Highest FPS
-		private float lowestFPS = 9999;								// Lowest FPS
+        /// <summary>
+        ///     Current active scene manager.
+        /// </summary>
+		private SceneManager sceneManager;
+        /// <summary>
+        ///     List of available scene managers.
+        /// </summary>
+		private SceneManagerEnumerator sceneManagerList;
+        /// <summary>
+        ///     List of available render systems.
+        /// </summary>
+		private RenderSystemCollection renderSystemList = new RenderSystemCollection();
+        /// <summary>
+        ///     Current active render system.
+        /// </summary>
+		private RenderSystem activeRenderSystem;
+	    /// <summary>
+	    ///     Current active timer.
+	    /// </summary>
+		private ITimer timer;
+        /// <summary>
+        ///     Auto created window (if one was created).
+        /// </summary>
+        private RenderWindow autoWindow;
+        /// <summary>
+        ///     Name of the file containing configuration info.
+        /// </summary>
+        private string configFileName;
+
+		/// <summary>
+		///     Start time of last frame.
+		/// </summary>
+		private long lastStartTime;
+        /// <summary>
+        ///     End time of last frame.
+        /// </summary>
+        private long lastEndTime;
+        /// <summary>
+        ///     The last time we calculated the framerate.
+        /// </summary>
+		private long lastCalculationTime;
+        /// <summary>
+        ///     Frames drawn counter for FPS calculations.
+        /// </summary>
+		private long frameCount;
+        /// <summary>
+        ///     Current frames per second.
+        /// </summary>
+		private float currentFPS;
+        /// <summary>
+        ///     Highest recorded frames per second.
+        /// </summary>
+		private float highestFPS;
+        /// <summary>
+        ///     Lowest recorded frames per second.
+        /// </summary>
+		private float lowestFPS = 9999;
+        /// <summary>
+        ///     Average frames per second.
+        /// </summary>
 		private float averageFPS;
 
 		/// <summary>
 		///		Global frame count since startup.
 		/// </summary>
 		private ulong currentFrameCount;
-
 		/// <summary>
-		///    Has the first render window been created yet?
-		/// </summary>
-		private bool firstTime = true;
-
-		/// <summary>
-		/// Has the Setup() method been called yet?
-		/// </summary>
-		private bool alreadySetup = false;
-		/// <summary>
+        ///    In case multiple render windows are created, only once are the resources loaded.
+        /// </summary>
+        private bool firstTimePostWindowInit = true;
+        /// <summary>
 		///		True if a request has been made to shutdown the rendering engine.
 		/// </summary>
 		private bool queuedEnd;
+
+        #endregion Fields
 
 		#region Events
 		
@@ -191,7 +276,7 @@ namespace Axiom.Core {
 		/// <summary>
 		///		
 		/// </summary>
-		public SceneManagerList SceneManagers {
+		public SceneManagerEnumerator SceneManagers {
 			get {
 				return sceneManagerList;
 			}
@@ -218,7 +303,7 @@ namespace Axiom.Core {
 				activeRenderSystem = value;
 
 				// Tell scene managers
-				SceneManagerList.Instance.RegisterRenderSystem(activeRenderSystem);
+				SceneManagerEnumerator.Instance.SetRenderSystem(activeRenderSystem);
 			}
 		}
 
@@ -242,35 +327,70 @@ namespace Axiom.Core {
 
 		#endregion
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="autoCreateWindow"></param>
-		/// <returns></returns>
-		public RenderWindow Initialize(bool autoCreateWindow) {			
-			Debug.Assert(activeRenderSystem != null, "Engine cannot be initialized if a valid RenderSystem is not also initialized.");
+        /// <summary>
+        ///    Initializes the renderer.
+        /// </summary>
+        /// <remarks>
+        ///     This method can only be called after a renderer has been
+        ///     selected with <see cref="Root.RenderSystem"/>, and it will initialize
+        ///     the selected rendering system ready for use.
+        /// </remarks>
+        /// <param name="autoCreateWindow">
+        ///     If true, a rendering window will automatically be created (saving a call to
+        ///     <see cref="RenderSystem.CreateRenderWindow"/>). The window will be
+        ///     created based on the options currently set on the render system.
+        /// </param>
+        /// <returns>A reference to the automatically created window (if requested), or null otherwise.</returns>
+		public RenderWindow Initialize(bool autoCreateWindow) {
+	        return Initialize(autoCreateWindow, "Axiom Render Window");
+		}
+
+        /// <summary>
+        ///    Initializes the renderer.
+        /// </summary>
+        /// <remarks>
+        ///     This method can only be called after a renderer has been
+        ///     selected with <see cref="Root.RenderSystem"/>, and it will initialize
+        ///     the selected rendering system ready for use.
+        /// </remarks>
+        /// <param name="autoCreateWindow">
+        ///     If true, a rendering window will automatically be created (saving a call to
+        ///     <see cref="RenderSystem.CreateRenderWindow"/>). The window will be
+        ///     created based on the options currently set on the render system.
+        /// </param>
+        /// <param name="windowTitle">Title to use by the window.</param>
+        /// <returns>A reference to the automatically created window (if requested), or null otherwise.</returns>
+        public RenderWindow Initialize(bool autoCreateWindow, string windowTitle) {
+            if(activeRenderSystem == null) {
+                throw new AxiomException("Cannot initialize - no render system has been selected.");
+            }
+
+            GarbageManager.Instance.Add(new ControllerManager());
 
 			// initialize the current render system
-			RenderWindow window = activeRenderSystem.Initialize(autoCreateWindow);
+			autoWindow = activeRenderSystem.Initialize(autoCreateWindow, windowTitle);
 
 			// if they chose to auto create a window, also initialize several subsystems
 			if(autoCreateWindow) {
 				OneTimePostWindowInit();
 			}
 
-			return window;
-		}
+            // initialize timer
+            timer.Reset();
+
+			return autoWindow;
+        }
 
 		/// <summary>
 		///    Internal method for one-time tasks after first window creation.
 		/// </summary>
 		private void OneTimePostWindowInit() {
-			if(firstTime) {
-				// init material manager singleton, which parse sources for materials
+            if (firstTimePostWindowInit) {
+                // init material manager singleton, which parse sources for materials
 				MaterialManager.Instance.Initialize();
 
 				// init the particle system manager singleton
-				ParticleSystemManager.Instance.ParseAllSources();
+				ParticleSystemManager.Instance.Initialize();
 
 				// init font manager singletons
 				FontManager.Instance.ParseAllSources();
@@ -278,8 +398,11 @@ namespace Axiom.Core {
 				// init overlay manager
 				OverlayManager.Instance.ParseAllSources();
 
-				firstTime = false;
-			}
+                // init mesh manager
+                MeshManager.Instance.Initialize();
+
+                firstTimePostWindowInit = false;
+            }
 		}
 
 		/// <summary>
@@ -341,45 +464,17 @@ namespace Axiom.Core {
 			return activeRenderSystem.ConvertColor(color);
 		}
 
-		/// <summary>
-		/// Used to setup the engine and all it's dependencies.  
-		/// This should be called before anything else is.
-		/// </summary>
-		public void Setup() {
-			if (alreadySetup) {
-				throw new ApplicationException("Root.Setup() called twice!");
-			}
+        /// <summary>
+        ///     
+        /// </summary>
+        /// <param name="target"></param>
+        public void DetachRenderTarget(RenderTarget target) {
+            if(activeRenderSystem == null) {
+                throw new AxiomException("Cannot detach render target - no render system has been selected.");
+            }
 
-			alreadySetup = true;
-
-            // TODO: Temporary for introduction of LogManager, will be relocated shortly after across the board Singleton cleanup is done
-            new LogManager();
-
-            // create a new engine log
-            engineLog = LogManager.Instance.CreateLog("AxiomEngine.log");
-
-            // initialize all singletons, resetting them in the case of running more than once within the same AppDomain
-			InitializeSingletons();
-
-			// create a new timer
-			timer = PlatformManager.Instance.CreateTimer();
-
-			// get the singleton instance of the SceneManagerList
-			sceneManagerList = SceneManagerList.Instance;
-
-			renderSystemList = new RenderSystemCollection();
-
-			// write the initial info at the top of the log
-			System.Diagnostics.Trace.WriteLine("*********" + this.Name + " Log *************");
-			System.Diagnostics.Trace.WriteLine("---- Copyright " + this.Copyright + " ---");
-			System.Diagnostics.Trace.WriteLine("----- Version: " + this.Version + " ------");
-			System.Diagnostics.Trace.WriteLine("Engine initializing...");
-			System.Diagnostics.Trace.WriteLine(string.Format("Operating System: {0}", Environment.OSVersion.ToString()));
-			System.Diagnostics.Trace.WriteLine(string.Format(".Net Framework: {0}", Environment.Version.ToString()));
-
-			// Load ze plugins please
-			PluginManager.Init();
-		}
+            activeRenderSystem.DetachRenderTarget(target);
+        }
 
 		/// <summary>
 		///		Renders one frame.
@@ -388,17 +483,20 @@ namespace Axiom.Core {
 		///		Updates all the render targets automatically and then returns, raising frame events before and after.
 		/// </remarks>
 		/// <returns>True if execution should continue, false if a quit was requested.</returns>
-		public bool RenderOneFrame() {
+		public void RenderOneFrame() {
 			// Stop rendering if frame callback says so
-			if(!OnFrameStarted()) {
-				return false;
-			}
+            OnFrameStarted();
 
-			// update all current render targets
-			activeRenderSystem.UpdateAllRenderTargets();
+            // bail out before continuing
+            if (queuedEnd) {
+                return;
+            }
+
+            // update all current render targets
+			UpdateAllRenderTargets();
 
 			// Stop rendering if frame callback says so
-			return OnFrameEnded();
+			OnFrameEnded();
 		}
 		
 		/// <summary>
@@ -407,8 +505,7 @@ namespace Axiom.Core {
 		public void StartRendering() {
 			Debug.Assert(activeRenderSystem != null, "Engine cannot start rendering without an active RenderSystem.");
 
-			// start the internal timer
-			timer.Reset();
+            activeRenderSystem.InitRenderTargets();
 
 			// initialize the vars
 			lastStartTime = lastEndTime = timer.Milliseconds;
@@ -420,9 +517,7 @@ namespace Axiom.Core {
 				// allow OS events to process (if the platform requires it
 				PlatformManager.Instance.DoEvents();
 
-				if(!RenderOneFrame()) {
-					break;
-				}
+				RenderOneFrame();
 			}
 		}
 
@@ -430,29 +525,12 @@ namespace Axiom.Core {
 		///		Shuts down the engine and unloads plugins.
 		/// </summary>
 		public void Shutdown() {
-			System.Diagnostics.Trace.WriteLine("***** " + this.Name + " Shutdown Initiated. ****");
-
-			// shutdown the current render system if there is one
-			if(activeRenderSystem != null)
-				activeRenderSystem.Shutdown();
-
-			// trigger a disposal of all resources
-			// destroy all textures
-			if(TextureManager.Instance != null)
-				TextureManager.Instance.Dispose();
-
-			// destroy all disposable objects
-			GarbageManager.Instance.DisposeAll();
-
-			// Write final performance stats
-			System.Diagnostics.Trace.WriteLine("Final Stats:");
-			System.Diagnostics.Trace.WriteLine("Axiom Framerate Average FPS: " + averageFPS.ToString("0.000000") + " Best FPS: " + highestFPS.ToString("0.000000") + " Worst FPS: " + lowestFPS.ToString("0.000000"));
+            SceneManagerEnumerator.Instance.ShutdownAll();
             
-			engineLog.Dispose();
+            // destroy all auto created GPU programs
+            ShadowVolumeExtrudeProgram.Shutdown();
 
-			firstTime = true;
-			alreadySetup = false;
-			QueueEndRendering();
+            LogManager.Instance.Write("*-*-* Axiom Shutdown");
 		}
 
 		/// <summary>
@@ -462,22 +540,24 @@ namespace Axiom.Core {
 			queuedEnd = true;
 		}
 
-		private void InitializeSingletons() {
-			Axiom.FileSystem.ArchiveManager.Init();
-			PlatformManager.Init();
-			MaterialManager.Init();
-			ParticleSystemManager.Init();
-			SceneManagerList.Init();
-			OverlayManager.Init();
-			OverlayElementManager.Init();
-			HighLevelGpuProgramManager.Init();
-			ControllerManager.Init();
-			FontManager.Init();
-			Axiom.Animating.SkeletonManager.Init();
-			Axiom.Media.CodecManager.Init();
+        /// <summary>
+        ///     Internal method used for updating all <see cref="RenderTarget"/> objects (windows, 
+        ///     renderable textures etc) which are set to auto-update.
+        /// </summary>
+        /// <remarks>
+        ///     You don't need to use this method if you're using Axiom's own internal
+        ///     rendering loop (<see cref="Root.StartRendering"/>). If you're running your own loop
+        ///     you may wish to call it to update all the render targets which are
+        ///     set to auto update (<see cref="RenderTarget.AutoUpdated"/>). You can also update
+        ///     individual <see cref="RenderTarget"/> instances using their own Update() method.
+        /// </remarks>
+        public void UpdateAllRenderTargets() {
+            activeRenderSystem.UpdateAllRenderTargets();
+        }
 
+        private void InitializeSingletons() {
 			// MeshManager is initialized by the render system itself
-			// TODO SceneManager is not disposed of at Shutdown().  (SceneManagerList could
+			// TODO SceneManager is not disposed of at Shutdown().  (SceneManagerEnumerator could
 			// do it, but they aren't IDisposable yet--conditional cast perhaps?)
 			// TODO the BSP module may need some massaging too
 			// TODO if there are other singleton classes besides Managers, I haven't looked into them.
@@ -541,8 +621,21 @@ namespace Axiom.Core {
 			// force the engine to shutdown
 			Shutdown();
 
-			engineLog.Dispose();
-		}
+            OverlayManager.Instance.Dispose();
+            OverlayElementManager.Instance.Dispose();
+            FontManager.Instance.Dispose();
+            ArchiveManager.Instance.Dispose();
+            SkeletonManager.Instance.Dispose();
+            MeshManager.Instance.Dispose();
+            ParticleSystemManager.Instance.Dispose();
+            ControllerManager.Instance.Dispose();
+            HighLevelGpuProgramManager.Instance.Dispose();
+            PluginManager.Instance.Dispose();
+            Pass.ProcessPendingUpdates();
+            PlatformManager.Instance.Dispose();
+            LogManager.Instance.Dispose();
+        }
+
 		#endregion
 
 		#region Internal Engine Methods
@@ -619,13 +712,13 @@ namespace Axiom.Core {
 		///    time. If you want to specify elapsed times yourself you should call the other 
 		///    version of this method which takes event details as a parameter.
 		/// </remarks>
-		public bool OnFrameStarted() {
+		public void OnFrameStarted() {
 			FrameEventArgs e = new FrameEventArgs();
 			long now = timer.Milliseconds;
 			e.TimeSinceLastFrame = CalculateEventTime(now, FrameEventType.Start);
 
 			// if any event handler set this to true, that will signal the engine to shutdown
-			return !OnFrameStarted(e);
+			OnFrameStarted(e);
 		}
 
 		/// <summary>
@@ -642,13 +735,13 @@ namespace Axiom.Core {
 		///    time. If you want to specify elapsed times yourself you should call the other 
 		///    version of this method which takes event details as a parameter.
 		/// </remarks>
-		public bool OnFrameEnded() {
+		public void OnFrameEnded() {
 			FrameEventArgs e = new FrameEventArgs();
 			long now = timer.Milliseconds;
 			e.TimeSinceLastFrame = CalculateEventTime(now, FrameEventType.End);
 
 			// if any event handler set this to true, that will signal the engine to shutdown
-			return !OnFrameEnded(e);
+			OnFrameEnded(e);
 		}
 
 		/// <summary>
@@ -670,19 +763,13 @@ namespace Axiom.Core {
 		///    calculated.  RequestShutdown should be checked after each call, because that means
 		///    an event handler is requesting that shudown begin for one reason or another.
 		/// </param>
-		public bool OnFrameStarted(FrameEventArgs e) {
+		public void OnFrameStarted(FrameEventArgs e) {
 			// increment the current frame count
 			currentFrameCount++;
 
 			// call the event, which automatically fires all registered handlers
 			if(this.FrameStarted != null) {
 				FrameStarted(this, e);
-
-				return e.RequestShutdown;
-			}
-			else {
-				// just return false, meaning the loop should continue
-				return false;
 			}
 		}
 
@@ -705,22 +792,47 @@ namespace Axiom.Core {
 		///    calculated.  RequestShutdown should be checked after each call, because that means
 		///    an event handler is requesting that shudown begin for one reason or another.
 		/// </param>
-		public bool OnFrameEnded(FrameEventArgs e) {
-			// Tell buffer manager to free temp buffers used this frame
-			// CMH 9/1/04 - Needs to be be called each frame!
-			HardwareBufferManager.Instance.ReleaseBufferCopies();
-
+		public void OnFrameEnded(FrameEventArgs e) {
 			// call the event, which automatically fires all registered handlers
 			if(this.FrameEnded != null) {
 				FrameEnded(this, e);
-				return e.RequestShutdown;
 			}
-			else {
-				// just return false, meaning the loop should continue
-				return false;
-			}
+
+            // Tell buffer manager to free temp buffers used this frame
+			if(HardwareBufferManager.Instance != null) {
+			    HardwareBufferManager.Instance.ReleaseBufferCopies();
+            }
 		}
 
 		#endregion
 	}
+
+    #region Frame Events
+
+	/// <summary>
+	///		A delegate for defining frame events.
+	/// </summary>
+	public delegate void FrameEvent(object source, FrameEventArgs e);
+
+	/// <summary>
+	///		Used to supply info to the FrameStarted and FrameEnded events.
+	/// </summary>
+	public class FrameEventArgs : System.EventArgs {
+		/// <summary>
+		///    Time elapsed (in milliseconds) since the last frame event.
+		/// </summary>
+		public float TimeSinceLastEvent;
+
+		/// <summary>
+		///    Time elapsed (in milliseconds) since the last frame.
+		/// </summary>
+		public float TimeSinceLastFrame;
+	}
+
+	public enum FrameEventType {
+		Start,
+		End
+	}
+
+    #endregion Frame Events
 }

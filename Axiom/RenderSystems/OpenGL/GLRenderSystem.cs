@@ -242,15 +242,15 @@ namespace Axiom.RenderSystems.OpenGL {
 			glSupport.InitializeExtensions();
 
 			// log hardware info
-			System.Diagnostics.Trace.WriteLine(string.Format("Vendor: {0}", glSupport.Vendor));
-			System.Diagnostics.Trace.WriteLine(string.Format("Video Board: {0}", glSupport.VideoCard));
-			System.Diagnostics.Trace.WriteLine(string.Format("Version: {0}", glSupport.Version));
-			
-			System.Diagnostics.Trace.WriteLine("Extensions supported:");
+            LogManager.Instance.Write("Vendor: {0}", glSupport.Vendor);
+            LogManager.Instance.Write("Video Board: {0}", glSupport.VideoCard);
+            LogManager.Instance.Write("Version: {0}", glSupport.Version);
 
-			foreach(string ext in glSupport.Extensions) {
-				System.Diagnostics.Trace.WriteLine(ext);
-			}
+            LogManager.Instance.Write("Extensions supported:");
+
+            foreach(string ext in glSupport.Extensions) {
+                LogManager.Instance.Write(ext);
+            }
 			
 			// create our special program manager
 			gpuProgramMgr = new GLGpuProgramManager();
@@ -269,9 +269,6 @@ namespace Axiom.RenderSystems.OpenGL {
 
 			// by creating our texture manager, singleton TextureManager will hold our implementation
 			textureMgr = new GLTextureManager();
-
-			// initialize the mesh manager here, since it relies on the render system already establishing a HardwareBufferManager
-			MeshManager.Init();
 
 			isGLInitialized = true;
 		}
@@ -1216,7 +1213,17 @@ namespace Axiom.RenderSystems.OpenGL {
 		public override void Shutdown() {
 			// call base Shutdown implementation
 			base.Shutdown();
-		}
+
+            if (gpuProgramMgr != null) {
+                gpuProgramMgr.Dispose();
+            }
+            if (hardwareBufferManager != null) {
+                hardwareBufferManager.Dispose();
+            }
+            if (textureMgr != null) {
+                textureMgr.Dispose();
+            }
+        }
 
 		/// <summary>
 		/// 

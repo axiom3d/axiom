@@ -89,7 +89,7 @@ namespace Axiom.SceneManagers.Bsp
 				{
 					if(shader == null)
 					{
-						Trace.WriteLine(String.Format("Creating {0}...", line));
+						LogManager.Instance.Write("Creating {0}...", line);
 						// No current shader
 						// So first valid data should be a shader name
 						shader = (Quake3Shader) Create(line);
@@ -102,17 +102,17 @@ namespace Axiom.SceneManagers.Bsp
 						// Already in a shader
 						if(line == "}")
 						{
-							Trace.WriteLine(String.Format("End of shader."));
+							LogManager.Instance.Write("End of shader.");
 							shader = null;
 						}
 						else if(line == "{")
 						{
-							Trace.WriteLine("New pass...");
-							ParseNewShaderPass(file, shader);
+                            LogManager.Instance.Write("New pass...");
+                            ParseNewShaderPass(file, shader);
 						}
 						else
 						{
-							Trace.WriteLine(String.Format("New attrib, {0}...", line));
+							LogManager.Instance.Write("New attrib, {0}...", line);
 							ParseShaderAttrib(line.ToLower(), shader);
 						}
 					}
@@ -228,22 +228,24 @@ namespace Axiom.SceneManagers.Bsp
 			string[] attribParams = line.Split(' ', '\t');
 			attribParams[0] = attribParams[0].ToLower();
 
-			Trace.WriteLine(String.Format("Attrib {0}", attribParams[0]));
+			LogManager.Instance.Write("Attrib {0}", attribParams[0]);
 			if((attribParams[0] != "map") && (attribParams[0] != "clampmap") && (attribParams[0] != "animmap"))
 			{
 				// lower case all except textures
-				for(int i = 1; i < attribParams.Length; i++)
-					attribParams[i] = attribParams[i].ToLower();
-			}
+                for (int i = 1; i < attribParams.Length; i++) {
+                    attribParams[i] = attribParams[i].ToLower();
+                }
+            }
 
 			// MAP
 			if(attribParams[0] == "map")
 			{
 				pass.textureName = attribParams[1];
 
-				if(attribParams[1].ToLower() == "$lightmap")
-					pass.texGen = ShaderTextureGen.Lightmap;
-			}
+                if (attribParams[1].ToLower() == "$lightmap") {
+                    pass.texGen = ShaderTextureGen.Lightmap;
+                }
+            }
 			// CLAMPMAP
 			else if(attribParams[0] == "clampmap")
 			{

@@ -97,7 +97,7 @@ namespace Axiom.Core {
     ///     The importance of a logged message.
     /// </summary>
     public enum LogMessageLevel {
-        Trivial,
+        Trivial = 1,
         Normal,
         Critical
     }

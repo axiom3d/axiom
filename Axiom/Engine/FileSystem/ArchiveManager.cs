@@ -5,61 +5,50 @@ using Axiom.Core;
 
 namespace Axiom.FileSystem {
 	/// <summary>
-	/// Summary description for ArchiveManager.
-	/// </summary>
-	public class ArchiveManager : IDisposable {
-		#region Singleton implementation
+    ///     ResourceManager specialization to handle Archive plug-ins.
+    /// </summary>
+	public sealed class ArchiveManager : IDisposable {
+        #region Singleton implementation
 
-		protected static ArchiveManager instance;
+        /// <summary>
+        ///     Singleton instance of this class.
+        /// </summary>
+        private static ArchiveManager instance;
 
-		/// <summary>
-		/// The single instance of the ArchiveManager (only one may exist at a time)
-		/// </summary>
-		public static ArchiveManager Instance {
-			get { 
-				return instance; 
-			}
-		}
+        /// <summary>
+        ///     Internal constructor.  This class cannot be instantiated externally.
+        /// </summary>
+        internal ArchiveManager() {
+            if (instance == null) {
+                instance = this;
 
-		public void Dispose() {
-			factories.Clear();
-			if (instance == this) {
-				instance = null;
-			}
-		}
+                // add zip and folder factories by default
+                instance.AddArchiveFactory(new ZipArchiveFactory());
+                instance.AddArchiveFactory(new FolderFactory());
+            }
+        }
 
-		public static void Init() {
-			if (instance != null) {
-				throw new ApplicationException("ArchiveManager.Init() called twice!");
-			}
-			instance = new ArchiveManager();
-			GarbageManager.Instance.Add(instance);
-			// Make sure we always have a folder and zip factory
-			
-			// add zip and folder factories by default
-			instance.AddArchiveFactory(new ZipFactory());
-			instance.AddArchiveFactory(new FolderFactory());
-		}
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
+        public static ArchiveManager Instance {
+            get { 
+                return instance; 
+            }
+        }
 
-		#endregion
+        #endregion Singleton implementation
 
 		#region Fields
 
 		/// <summary>
 		/// The list of factories
 		/// </summary>
-		protected Hashtable factories = System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
+        private Hashtable factories = System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
 
 		#endregion
 
-		#region Constructor
-
-		private ArchiveManager() {
-		}
-
-		#endregion
-
-		#region ArchiveManager methods
+		#region Methods
 
 		/// <summary>
 		/// Add an archive factory to the list
@@ -68,8 +57,8 @@ namespace Axiom.FileSystem {
 		/// <param name="factory">The factory itself</param>
 		public void AddArchiveFactory(IArchiveFactory factory) {
 			if (factories[factory.Type] != null) {
-				throw new ApplicationException("Attempted to add the " + factory.Type + " factory to ArchiveManager more than once");
-			}
+                throw new AxiomException("Attempted to add the {0} factory to ArchiveManager more than once.", factory.Type);
+            }
 
 			factories.Add(factory.Type, factory);
 		}
@@ -83,6 +72,19 @@ namespace Axiom.FileSystem {
 			return (IArchiveFactory)factories[type];
 		}
 
-		#endregion
-	}
+		#endregion Methods
+
+        #region IDisposable Implementation
+
+        /// <summary>
+        ///     Called when the engine is shutting down.
+        /// </summary>
+        public void Dispose() {
+            factories.Clear();
+
+            instance = null;
+        }
+
+        #endregion IDisposable Implementation
+    }
 }

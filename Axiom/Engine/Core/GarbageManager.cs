@@ -34,10 +34,10 @@ namespace Axiom.Core {
     /// 	be registered with this manager to ensure it will get disposed of 
     /// 	immediately on shutdown.
     /// </summary>
-    public class GarbageManager {
+    public sealed class GarbageManager {
         #region Singleton implementation
         static GarbageManager() {}
-        protected GarbageManager() {}
+        internal GarbageManager() {}
         public static readonly GarbageManager Instance = new GarbageManager();
         #endregion
 

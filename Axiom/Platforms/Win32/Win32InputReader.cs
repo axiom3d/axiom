@@ -285,6 +285,24 @@ namespace Axiom.Platforms.Win32
 			return (mouseButtons & (int)button) != 0;
 		}
 
+        /// <summary>
+        ///     Called when the platform manager is shutting down.
+        /// </summary>
+        public override void Dispose() {
+            if (keyboardDevice != null) {
+                keyboardDevice.Unacquire();
+                keyboardDevice.Dispose();
+                keyboardDevice = null;
+            }
+
+            if (mouseDevice != null) {
+                mouseDevice.Unacquire();
+                mouseDevice.Dispose();
+                mouseDevice = null;
+            }
+        }
+
+
 		#endregion Methods
 
 		#endregion InputReader implementation

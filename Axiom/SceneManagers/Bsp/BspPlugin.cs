@@ -33,9 +33,9 @@ namespace Axiom.SceneManagers.Bsp
 	public class BspPlugin : IPlugin 
 	{ 
 		public void Start() 
-		{ 
-			Root.Instance.SceneManagers[SceneType.Interior] = new BspSceneManager();
-		} 
+		{
+            Root.Instance.SceneManagers.SetSceneManager(SceneType.Interior, new BspSceneManager());
+        } 
 
 		public void Stop() 
 		{ 

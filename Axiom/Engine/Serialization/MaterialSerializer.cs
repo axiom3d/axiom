@@ -152,7 +152,7 @@ namespace Axiom.Serialization {
 					}
 				}
 				catch(Exception ex) {
-					System.Diagnostics.Debug.WriteLine(string.Format("Could not create GPU program '{0}'. error reported was: {1}.", def.name, ex.Message));
+					LogManager.Instance.Write("Could not create GPU program '{0}'. error reported was: {1}.", def.name, ex.Message);
 				}
 			}
 
@@ -219,9 +219,8 @@ namespace Axiom.Serialization {
 				}
 			}
 
-			// TODO: LogManager!
-			System.Diagnostics.Debug.WriteLine(errorBuilder.ToString());
-		}
+            LogManager.Instance.Write(errorBuilder.ToString());
+        }
 
 		/// <summary>
 		///		Internal method for parsing a material.

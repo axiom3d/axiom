@@ -33,10 +33,6 @@ namespace Axiom.CgPrograms {
 
         #region IHighLevelGpuProgramFactory Members
 
-        public void Destroy(HighLevelGpuProgram program) {
-            // TODO:  Add CgProgramFactory.Destroy implementation
-        }
-
         /// <summary>
         ///    Creates and returns a specialized CgProgram instance.
         /// </summary>

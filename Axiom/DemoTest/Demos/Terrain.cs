@@ -17,7 +17,7 @@ namespace Demos {
         const float FLOW_SPEED = 0.2f;
 
         protected override void ChooseSceneManager() {
-            scene = Root.Instance.SceneManagers[SceneType.ExteriorClose];
+            scene = SceneManagerEnumerator.Instance.GetSceneManager(SceneType.ExteriorClose);
         }
 
         protected override void CreateCamera() {

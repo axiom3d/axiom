@@ -12,15 +12,18 @@ namespace Demos {
     public class SkeletalAnimation : TechDemo {
         #region Fields
 		
-		const int NUM_ROBOTS = 10;
-		AnimationState[] animState = new AnimationState[NUM_ROBOTS];		
-		float[] animationSpeed = new float[NUM_ROBOTS];
+		const int NumRobots = 10;
+		AnimationState[] animState = new AnimationState[NumRobots];		
+		float[] animationSpeed = new float[NumRobots];
 
         #endregion Fields
 			
         #region Methods
 
         protected override void CreateScene() {
+            scene.ShadowTechnique = ShadowTechnique.StencilAdditive;
+            scene.ShowDebugShadows = true;
+
             // set some ambient light
             scene.TargetRenderSystem.LightingEnabled = true;
             scene.AmbientLight = ColorEx.Gray;
@@ -28,11 +31,11 @@ namespace Demos {
 			Entity entity = null;
 
             // create the robot entity
-			for(int i = 0; i < NUM_ROBOTS; i++) { 
+			for(int i = 0; i < NumRobots; i++) { 
 				string robotName = string.Format("Robot{0}", i);
 				entity = scene.CreateEntity(robotName, "robot.mesh");
 				scene.RootSceneNode.CreateChildSceneNode(
-					new Vector3(0, 0, (i * 50) - (NUM_ROBOTS * 50 / 2))).AttachObject(entity);
+					new Vector3(0, 0, (i * 50) - (NumRobots * 50 / 2))).AttachObject(entity);
 				animState[i] = entity.GetAnimationState("Walk");
 				animState[i].IsEnabled = true;
 				animationSpeed[i] = MathUtil.RangeRandom(0.5f, 1.5f);
@@ -42,9 +45,9 @@ namespace Demos {
             light.Position = new Vector3(-200, -80, -100);
             light.Diffuse = new ColorEx(1.0f, .5f, .5f, 1.0f);
 
-            light = scene.CreateLight("GreenLight");
-            light.Position = new Vector3(0, 0, -100);
-            light.Diffuse = new ColorEx(1.0f, 0.5f, 1.0f, 0.5f);
+            //light = scene.CreateLight("GreenLight");
+            //light.Position = new Vector3(0, 0, -100);
+            //light.Diffuse = new ColorEx(1.0f, 0.5f, 1.0f, 0.5f);
 
             // setup the camera for a nice view of the robot
             camera.Position = new Vector3(100, 50, 100);
@@ -62,7 +65,7 @@ namespace Demos {
         }
 
         protected override void OnFrameStarted(object source, FrameEventArgs e) {
-			for(int i = 0; i < NUM_ROBOTS; i++) {
+			for(int i = 0; i < NumRobots; i++) {
 				// add time to the robot animation
 				animState[i].AddTime(e.TimeSinceLastFrame * animationSpeed[i]);
 			}

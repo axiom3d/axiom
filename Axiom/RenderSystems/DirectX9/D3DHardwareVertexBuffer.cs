@@ -57,10 +57,6 @@ namespace Axiom.RenderSystems.DirectX9 {
                 0, 
                 useSystemMemory ? Pool.SystemMemory : Pool.Default);
         }
-
-        ~D3DHardwareVertexBuffer() {
-            d3dBuffer.Dispose();
-        }
 		
         #endregion
 		
@@ -88,12 +84,6 @@ namespace Axiom.RenderSystems.DirectX9 {
                 d3dLocking = D3DHelper.ConvertEnum(locking);
             }
 
-            // lock the buffer, which returns an array
-            // TODO: no *working* overload takes length, revisit this
-            //data = d3dBuffer.Lock(offset, d3dLocking);
-			
-            // return an IntPtr to the first element of the locked array
-            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, 0);
 			Microsoft.DirectX.GraphicsStream s = d3dBuffer.Lock(offset, length, d3dLocking);
 			return s.InternalData;
         }
@@ -143,6 +133,10 @@ namespace Axiom.RenderSystems.DirectX9 {
 
             // unlock the buffer
             this.Unlock();
+        }
+
+        public override void Dispose() {
+            d3dBuffer.Dispose();
         }
 
         #endregion

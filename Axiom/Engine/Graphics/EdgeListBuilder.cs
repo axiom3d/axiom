@@ -266,7 +266,7 @@ namespace Axiom.Graphics {
 
                 // Log alternate techniques
                 if (technique > 1) {
-                    System.Diagnostics.Debug.WriteLine(string.Format("Trying alternative edge building technique {0}", technique));
+                    LogManager.Instance.Write("Trying alternative edge building technique {0}", technique);
                 }
 
                 try {
@@ -312,8 +312,8 @@ namespace Axiom.Graphics {
             // Stage 2: Link edges.
             ConnectEdges();
 
-            //edgeData.DebugLog();
-            //DebugLog();
+            //edgeData.DebugLog(LogManager.Instance.CreateLog("EdgeListBuilder.log"));
+            //DebugLog(LogManager.Instance.CreateLog("EdgeData.log"));
         }
 
         /// <summary>
@@ -592,21 +592,21 @@ namespace Axiom.Graphics {
 			return newCommon.index;
 		}
 
-		public unsafe void DebugLog() {
-			WL("EdgeListBuilder Log");
-			WL("-------------------");
-			WL("Number of vertex sets: {0}", vertexDataList.Count);
-			WL("Number of index sets: {0}", indexDataList.Count);
-	        
-			int i, j;
+		public unsafe void DebugLog(Log log) {
+			log.Write("EdgeListBuilder Log");
+            log.Write("-------------------");
+            log.Write("Number of vertex sets: {0}", vertexDataList.Count);
+            log.Write("Number of index sets: {0}", indexDataList.Count);
+
+            int i, j;
 
 			// Log original vertex data
 			for(i = 0; i < vertexDataList.Count; i++) {
 				VertexData vData = (VertexData)vertexDataList[i];
-				WL(".");
-				WL("Original vertex set {0} - vertex count {1}", i, vData.vertexCount);
+                log.Write(".");
+                log.Write("Original vertex set {0} - vertex count {1}", i, vData.vertexCount);
 
-				VertexElement posElem = 
+                VertexElement posElem = 
 					vData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Position);
 				HardwareVertexBuffer vbuf = 
 					vData.vertexBufferBinding.GetBuffer(posElem.Source);
@@ -621,9 +621,9 @@ namespace Axiom.Graphics {
 				for (j = 0; j < vData.vertexCount; j++) {
 					pReal = (float*)(pBaseVertex + posElem.Offset);
 
-					WL("Vertex {0}: ({1}, {2}, {3})", j, pReal[0], pReal[1], pReal[2]);
+                    log.Write("Vertex {0}: ({1}, {2}, {3})", j, pReal[0], pReal[1], pReal[2]);
 
-					pBaseVertex += vbuf.VertexSize;
+                    pBaseVertex += vbuf.VertexSize;
 				}
 
 				vbuf.Unlock();
@@ -632,9 +632,9 @@ namespace Axiom.Graphics {
 			// Log original index data
 			for(i = 0; i < indexDataList.Count; i += 3) {
 				IndexData iData = (IndexData)indexDataList[i];
-				WL(".");
-				WL("Original triangle set {0} - index count {1} - vertex set {2})", 
-					i, iData.indexCount, indexDataVertexDataSetList[i]);
+                log.Write(".");
+                log.Write("Original triangle set {0} - index count {1} - vertex set {2})",
+                    i, iData.indexCount, indexDataVertexDataSetList[i]);
 
 				// Get the indexes ready for reading
 				short* p16Idx = null;
@@ -651,30 +651,26 @@ namespace Axiom.Graphics {
 
 				for (j = 0; j < iData.indexCount / 3; j++) {
 					if (iData.indexBuffer.Type == IndexType.Size32) {
-						WL("Triangle {0}: ({1}, {2}, {3})", j, *p32Idx++, *p32Idx++, *p32Idx++);
-					}
+                        log.Write("Triangle {0}: ({1}, {2}, {3})", j, *p32Idx++, *p32Idx++, *p32Idx++);
+                    }
 					else {
-						WL("Triangle {0}: ({1}, {2}, {3})", j, *p16Idx++, *p16Idx++, *p16Idx++);
-					}
+                        log.Write("Triangle {0}: ({1}, {2}, {3})", j, *p16Idx++, *p16Idx++, *p16Idx++);
+                    }
 				}
 
 				iData.indexBuffer.Unlock();
 
 				// Log common vertex list
-				WL(".");
-				WL("Common vertex list - vertex count {0}", vertices.Count);
+                log.Write(".");
+                log.Write("Common vertex list - vertex count {0}", vertices.Count);
 
-				for (i = 0; i < vertices.Count; i++) {
+                for (i = 0; i < vertices.Count; i++) {
 					CommonVertex c = (CommonVertex)vertices[i];
 
-					WL("Common vertex {0}: (vertexSet={1}, originalIndex={2}, position={3}", 
-						i, c.vertexSet, c.index, c.position);
+                    log.Write("Common vertex {0}: (vertexSet={1}, originalIndex={2}, position={3}",
+                        i, c.vertexSet, c.index, c.position);
 				}
 			}
-		}
-
-		private void WL(string msg, params object[] args) {
-			Debug.WriteLine(string.Format(msg, args));
 		}
 
         #endregion Methods

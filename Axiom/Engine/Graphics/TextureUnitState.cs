@@ -1666,9 +1666,9 @@ namespace Axiom.Graphics {
 						isBlank = false;
 					}
 					catch(Exception ex) {
-						Trace.WriteLine(string.Format("Error loading texture {0}.  Layer will be left blank.", frames[i]));
-						Trace.WriteLine(ex.ToString());
-						isBlank = true;
+						LogManager.Instance.Write("Error loading texture {0}.  Layer will be left blank.", frames[i]);
+                        LogManager.Instance.Write(ex.ToString());
+                        isBlank = true;
 					}
 				}
 			}

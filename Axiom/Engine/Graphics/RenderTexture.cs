@@ -49,7 +49,9 @@ namespace Axiom.Graphics {
         /// <summary>
         ///    Ensures texture is destroyed.
         /// </summary>
-        public override void Destroy() {
+        public override void Dispose() {
+            base.Dispose();
+
             TextureManager.Instance.Unload(texture);
         }
 

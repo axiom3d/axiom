@@ -66,7 +66,9 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="useShadowBuffer"></param>
         /// <returns></returns>
         public override HardwareIndexBuffer CreateIndexBuffer(IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer) {
-            return new GLHardwareIndexBuffer(type, numIndices, usage, useShadowBuffer);
+            GLHardwareIndexBuffer buffer = new GLHardwareIndexBuffer(type, numIndices, usage, useShadowBuffer);
+            indexBuffers.Add(buffer);
+            return buffer;
         }
 
         /// <summary>
@@ -89,7 +91,9 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="useShadowBuffer"></param>
         /// <returns></returns>
         public override HardwareVertexBuffer CreateVertexBuffer(int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer) {
-            return new GLHardwareVertexBuffer(vertexSize, numVerts, usage, useShadowBuffer);
+            GLHardwareVertexBuffer buffer = new GLHardwareVertexBuffer(vertexSize, numVerts, usage, useShadowBuffer);
+            vertexBuffers.Add(buffer);
+            return buffer;
         }
 
 		

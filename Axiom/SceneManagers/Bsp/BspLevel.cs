@@ -278,7 +278,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// </summary>
 		protected void LoadQuake3Level(Quake3Level q3lvl)
 		{
-			SceneManager sm = SceneManagerList.Instance[SceneType.Interior];
+			SceneManager sm = SceneManagerEnumerator.Instance.GetSceneManager(SceneType.Interior);
 			LoadEntities(q3lvl);
 
 			Quake3ShaderManager.Instance.ParseAllSources(".shader");
@@ -567,8 +567,8 @@ namespace Axiom.SceneManagers.Bsp
 				}
 				else
 				{
-					System.Diagnostics.Trace.WriteLine("!!! Unknown face type !!!");
-				}
+                    LogManager.Instance.Write("!!! Unknown face type !!!");
+                }
 
 				faceGroups[face] = dest;
 			}
@@ -916,7 +916,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// </summary>
 		public override void Load()
 		{
-			Hashtable options = SceneManagerList.Instance[SceneType.Interior].Options;
+			Hashtable options = SceneManagerEnumerator.Instance.GetSceneManager(SceneType.Interior).Options;
 
 			if (options.ContainsKey("SetYAxisUp"))
 				bspOptions.setYAxisUp = (bool)options["SetYAxisUp"];
@@ -947,7 +947,7 @@ namespace Axiom.SceneManagers.Bsp
 		}
 
 		/// <summary>
-		///		Generic unload - called by <see cref="Plugin_BSPSceneManager.BspResourceManager"/>.
+		///		Generic unload - called by <see cref="BspResourceManager"/>.
 		/// </summary>
 		public override void Unload()
 		{

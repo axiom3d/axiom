@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
+using Axiom.Core;
 using Axiom.MathLib;
 
 namespace Axiom.Graphics {
@@ -111,27 +112,28 @@ namespace Axiom.Graphics {
 			positionBuffer.Unlock();
 		}
 
-		public void DebugLog() {
-			Debug.WriteLine("Edge Data");
-			Debug.WriteLine("---------");
+		public void DebugLog(Log log) {
+            // TODO: 
+            log.Write("Edge Data");
+            log.Write("---------");
 
-			for (int i = 0; i < triangles.Count; i++) {
+            for (int i = 0; i < triangles.Count; i++) {
 				Triangle t = (Triangle)triangles[i];
 
-				Debug.WriteLine(string.Format("Triangle {0} = [indexSet={1}, vertexSet={2}, v0={3}, v1={4}, v2={5}]", 
-					i, t.indexSet, t.vertexSet, t.vertIndex[0], t.vertIndex[1], t.vertIndex[2]));
+				log.Write("Triangle {0} = [indexSet={1}, vertexSet={2}, v0={3}, v1={4}, v2={5}]", 
+					i, t.indexSet, t.vertexSet, t.vertIndex[0], t.vertIndex[1], t.vertIndex[2]);
 			}
 
 			for (int i = 0; i < edgeGroups.Count; i++) {
 				EdgeGroup group = (EdgeGroup)edgeGroups[i];
 
-				Debug.WriteLine(string.Format("Edge Group vertexSet={0}", group.vertexSet));
+				log.Write("Edge Group vertexSet={0}", group.vertexSet);
 
 				for (int j = 0; j < group.edges.Count; j++) {
 					Edge e = (Edge)group.edges[j];
 
-					Debug.WriteLine(string.Format("Edge {0} = [\ntri0={1}, \ntri1={2}, \nv0={3}, \nv1={4}, \n degenerate={5}\n]", 
-						j, e.triIndex[0], e.triIndex[1], e.vertIndex[0], e.vertIndex[1], e.isDegenerate)); 
+					log.Write("Edge {0} = [\ntri0={1}, \ntri1={2}, \nv0={3}, \nv1={4}, \n degenerate={5}\n]", 
+						j, e.triIndex[0], e.triIndex[1], e.vertIndex[0], e.vertIndex[1], e.isDegenerate); 
 				}
 			}
 		}

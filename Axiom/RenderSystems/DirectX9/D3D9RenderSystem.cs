@@ -384,10 +384,6 @@ namespace Axiom.RenderSystems.DirectX9 {
 		
 			CheckCaps(newDevice);
 		
-			// initialize the mesh manager here, since it relies on the render system already establishing a
-			// HardwareBufferManager
-			MeshManager.Init();
-		
 			return newDevice;
 		}
 
@@ -398,7 +394,17 @@ namespace Axiom.RenderSystems.DirectX9 {
 			if(device != null) {
 				device.Dispose();
 			}
-		}
+
+            if (gpuProgramMgr != null) {
+                gpuProgramMgr.Dispose();
+            }
+            if (hardwareBufferManager != null) {
+                hardwareBufferManager.Dispose();
+            }
+            if (textureMgr != null) {
+                textureMgr.Dispose();
+            }
+        }
 
 		/// <summary>
 		///		Sets the rasterization mode to use during rendering.

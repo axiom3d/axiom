@@ -645,6 +645,21 @@ namespace Axiom.Graphics {
 			}
 		}
 
+        /// <summary>
+        ///     Called on engine shutdown; destroys all auto created gpu programs.
+        /// </summary>
+        public static void Shutdown() {
+            if (isInitialized) {
+                // destroy shadow volume extruders
+                foreach (string programName in programNames) {
+                    // TODO: Toast the programs
+                    //GpuProgramManager.Instance.Remove(programName);
+                }
+
+                isInitialized = false;
+            }
+        }
+
 		#endregion Methods
 	}
 }

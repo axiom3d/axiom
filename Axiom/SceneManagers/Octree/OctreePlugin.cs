@@ -31,9 +31,9 @@ using Axiom.Core;
 namespace Axiom.SceneManagers.Octree {
 	public class OctreePlugin : IPlugin { 
 		public void Start() { 
-			//Engine.Instance.SceneManagers[SceneType.Generic] = new OctreeSceneManager(); 
-            Root.Instance.SceneManagers[SceneType.ExteriorClose] = new TerrainSceneManager();
-		} 
+            //SceneManagerEnumerator.Instance.SetSceneManager(SceneType.Generic, new OctreeSceneManager());
+            SceneManagerEnumerator.Instance.SetSceneManager(SceneType.ExteriorClose, new TerrainSceneManager());
+        } 
 
 		public void Stop() { 
 		} 

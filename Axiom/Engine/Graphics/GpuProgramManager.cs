@@ -38,34 +38,36 @@ namespace Axiom.Graphics {
 	/// 	Summary description for GpuProgramManager.
 	/// </summary>
 	public abstract class GpuProgramManager : ResourceManager {
-		#region Singleton implementation
+        #region Singleton implementation
 
-		protected static GpuProgramManager instance;
+        /// <summary>
+        ///     Singleton instance of this class.
+        /// </summary>
+        private static GpuProgramManager instance;
 
-         	protected GpuProgramManager() {
-             		if (instance != null) {
-                 		throw new ApplicationException("GpuProgramManager initialized twice!");
-             		}
-             		instance = this;
-             		GarbageManager.Instance.Add(instance);
-         	}
+        /// <summary>
+        ///     Internal constructor.  This class cannot be instantiated externally.
+        /// </summary>
+        /// <remarks>
+        ///     Protected internal because this singleton will actually hold the instance of a subclass
+        ///     created by a render system plugin.
+        /// </remarks>
+        protected internal GpuProgramManager() {
+            if (instance == null) {
+                instance = this;
+            }
+        }
 
-		public static GpuProgramManager Instance {
-			get { 
-				return instance; 
-			}
-		}
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
+        public static GpuProgramManager Instance {
+            get { 
+                return instance; 
+            }
+        }
 
-         	public override void Dispose() {
-             		base.Dispose();
-             		
-             		if (this == instance) {
-                 		instance = null;
-                 	}
-             	}
-
-		
-		#endregion
+        #endregion Singleton implementation
 
 		#region Fields
 		
@@ -78,6 +80,11 @@ namespace Axiom.Graphics {
 				
 		#region Methods
 		
+        /// <summary>
+        ///     Overrides the base Create method to enforce the use of Load or Create instead.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
 		public override Resource Create(string name) {
 			throw new AxiomException("You need to create a program using the Load or Create* methods.");
 		}
@@ -233,6 +240,11 @@ namespace Axiom.Graphics {
 
 		#region Implementation of ResourceManager
 
+        /// <summary>
+        ///     Gets a GpuProgram with the specified name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
 		public new GpuProgram GetByName(string name) {
 			// look for a high level program first
 			GpuProgram program = HighLevelGpuProgramManager.Instance.GetByName(name);
@@ -245,6 +257,15 @@ namespace Axiom.Graphics {
 			// return low level program
 			return (GpuProgram)base.GetByName(name);
 		}
+
+        /// <summary>
+        ///     Called when the engine is shutting down.
+        /// </summary>
+        public override void Dispose() {
+            base.Dispose();
+
+            instance = null;
+        }
 
 		#endregion
 	}

@@ -49,7 +49,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia {
                 string error = nvparse_get_errors();
 
                 if(error != null && error.Length > 0) {
-                    Trace.WriteLine("nvparse error: " + error);
+                    LogManager.Instance.Write("nvparse error: {0}", error);
                 }
 
                 pos = newPos;

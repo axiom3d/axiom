@@ -1271,9 +1271,7 @@ namespace Axiom.Core {
 
             // Warn that we've reduced bone assignments
             if(maxBones > Config.MaxBlendWeights) {
-                string msg = 
-                    string.Format("WARNING: Mesh '{0}' includes vertices with more than {1} bone assignments.  The lowest weighted assignments beyond this limit have been removed.", name, Config.MaxBlendWeights);
-                Trace.WriteLine(msg);
+                LogManager.Instance.Write("WARNING: Mesh '{0}' includes vertices with more than {1} bone assignments.  The lowest weighted assignments beyond this limit have been removed.", name, Config.MaxBlendWeights);
 
                 maxBones = Config.MaxBlendWeights;
             }
@@ -1740,12 +1738,6 @@ namespace Axiom.Core {
             // TODO: Remove LOD levels
             isPreparedForShadowVolumes = false;
             isLoaded = false;
-        }
-
-        /// <summary>
-        ///		
-        /// </summary>
-        public override void Dispose() {
         }
 
         #endregion

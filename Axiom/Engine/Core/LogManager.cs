@@ -9,12 +9,12 @@ namespace Axiom.Core {
         #region Singleton implementation
 
         /// <summary>
-        ///     Singlton instance of this class.
+        ///     Singleton instance of this class.
         /// </summary>
         private static LogManager instance;
 
         /// <summary>
-        ///     Private constructor.  This class cannot be instantiated externally.
+        ///     Internal constructor.  This class cannot be instantiated externally.
         /// </summary>
         internal LogManager() {
             if (instance == null) {
@@ -25,14 +25,13 @@ namespace Axiom.Core {
         /// <summary>
         ///     Gets the singleton instance of this class.
         /// </summary>
-        /// <value></value>
         public static LogManager Instance {
             get { 
                 return instance; 
             }
         }
 
-        #endregion
+        #endregion Singleton implementation
 
         #region Fields
 

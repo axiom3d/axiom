@@ -35,37 +35,45 @@ namespace Axiom.Controllers {
     /// <summary>
     /// Summary description for ControllerManager.
     /// </summary>
-    public class ControllerManager : IDisposable {
+    public sealed class ControllerManager : IDisposable {
         #region Singleton implementation
 
-        protected ControllerManager() {}
-        protected static ControllerManager instance;
+        /// <summary>
+        ///     Singleton instance of this class.
+        /// </summary>
+        private static ControllerManager instance;
 
-        public static ControllerManager Instance {
-            get { return instance; }
-        }
-
-        public static void Init() {
-            if (instance != null) {
-                throw new ApplicationException("ControllerManager.Init() called twice!");
+        /// <summary>
+        ///     Internal constructor.  This class cannot be instantiated externally.
+        /// </summary>
+        internal ControllerManager() {
+            if (instance == null) {
+                instance = this;
             }
-            instance = new ControllerManager();
-            GarbageManager.Instance.Add(instance);
         }
-		
-        #endregion
+
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
+        public static ControllerManager Instance {
+            get { 
+                return instance; 
+            }
+        }
+
+        #endregion Singleton implementation
 
         #region Member variables
 
         /// <summary>
         ///		List of references to controllers in a scene.
         /// </summary>
-        protected ControllerList controllers = new ControllerList();
+        private ControllerList controllers = new ControllerList();
 
         /// <summary>
         ///		Local instance of a FrameTimeControllerValue to be used for time based controllers.
         /// </summary>
-        protected FrameTimeControllerValue frameTimeController = new FrameTimeControllerValue();
+        private FrameTimeControllerValue frameTimeController = new FrameTimeControllerValue();
 
         #endregion
 
@@ -269,15 +277,17 @@ namespace Axiom.Controllers {
 
         #endregion
 
-        #region IDisposable Members
+        #region IDisposable Implementation
 
+        /// <summary>
+        ///     Called when the engine is shutting down.
+        /// </summary>
         public void Dispose() {
             controllers.Clear();
-            if (instance == this) {
-                instance = null;
-            }
+
+            instance = null;
         }
 
-        #endregion
+        #endregion IDisposable Implementation
     }
 }

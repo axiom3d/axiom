@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using Axiom.Core;
 
 namespace Axiom.Graphics {
     /// <summary>
@@ -241,28 +242,61 @@ namespace Axiom.Graphics {
         /// <summary>
         ///    Write all hardware capability information to registered listeners.
         /// </summary>
-        public void Log() { 
-            Trace.WriteLine("---Hardware Capabilities---");
-            Trace.WriteLine("Available texture units: " + this.TextureUnitCount);
-            Trace.WriteLine("Maximum lights available: " + this.MaxLights);
-            Trace.WriteLineIf(CheckCap(Capabilities.AnisotropicFiltering), "\t-Anisotropic Filtering");
-            Trace.WriteLineIf(CheckCap(Capabilities.CubeMapping), "\t-Cube Mapping");
-            Trace.WriteLineIf(CheckCap(Capabilities.Dot3), "\t-Dot3 Bump Mapping");
-            Trace.WriteLineIf(CheckCap(Capabilities.HardwareMipMaps), "\t-Hardware mip-mapping");
-            Trace.WriteLineIf(CheckCap(Capabilities.MultiTexturing), "\t-Multi-texturing");
-            Trace.WriteLineIf(CheckCap(Capabilities.TextureBlending), "\t-Texture Blending");
-            Trace.WriteLineIf(CheckCap(Capabilities.TextureCompression), "\t-Texture Compression");
-            Trace.WriteLineIf(CheckCap(Capabilities.TextureCompressionDXT), "\t-DXT Texture Compression");
-            Trace.WriteLineIf(CheckCap(Capabilities.TextureCompressionVTC), "\t-VTC Texture Compression");
-            Trace.WriteLineIf(CheckCap(Capabilities.VertexBuffer), "\t-Vertex Buffer Objects");
-            Trace.WriteLineIf(CheckCap(Capabilities.VertexPrograms), string.Format("\t-Vertex Programs, max version: {0}", this.MaxVertexProgramVersion));
-            Trace.WriteLineIf(CheckCap(Capabilities.FragmentPrograms), string.Format("\t-Fragment Programs, max version: {0}", this.MaxFragmentProgramVersion));
-			Trace.WriteLineIf(CheckCap(Capabilities.StencilBuffer), string.Format("\t-Stencil Buffer: {0} bits", stencilBufferBits));
-			Trace.WriteLineIf(CheckCap(Capabilities.TwoSidedStencil), "\t\t-Two Sided Stencil");
-			Trace.WriteLineIf(CheckCap(Capabilities.StencilWrap), "\t\t-Stencil Wrap");
-			Trace.WriteLineIf(CheckCap(Capabilities.UserClipPlanes), "\t-User Clip Planes");
-			Trace.WriteLineIf(CheckCap(Capabilities.HardwareOcculusion), "\t-Hardware Occlusion Queries");
-			Trace.WriteLineIf(CheckCap(Capabilities.InfiniteFarPlane), "\t-Infinite Far Plane");
+        public void Log() {
+            LogManager logMgr = LogManager.Instance;
+
+            logMgr.Write("---RenderSystem capabilities---");
+            logMgr.Write("\t-Available texture units: {0}", this.TextureUnitCount);
+            logMgr.Write("\t-Maximum lights available: {0}", this.MaxLights);
+            logMgr.Write("\t-Hardware generation of mip-maps: {0}", ConvertBool(CheckCap(Capabilities.HardwareMipMaps)));
+            logMgr.Write("\t-Texture blending: {0}", ConvertBool(CheckCap(Capabilities.TextureBlending)));
+            logMgr.Write("\t-Anisotropic texture filtering: {0}", ConvertBool(CheckCap(Capabilities.AnisotropicFiltering)));
+            logMgr.Write("\t-Dot product texture operation: {0}", ConvertBool(CheckCap(Capabilities.Dot3)));
+            logMgr.Write("\t-Cube Mapping: {0}", ConvertBool(CheckCap(Capabilities.CubeMapping)));
+
+            logMgr.Write("\t-Hardware stencil buffer: {0}", ConvertBool(CheckCap(Capabilities.StencilBuffer)));
+
+            if (CheckCap(Capabilities.StencilBuffer)) {
+                logMgr.Write("\t\t-Stencil depth: {0} bits", stencilBufferBits);
+                logMgr.Write("\t\t-Two sided stencil support: {0}", ConvertBool(CheckCap(Capabilities.TwoSidedStencil)));
+                logMgr.Write("\t\t-Wrap stencil values: {0}", ConvertBool(CheckCap(Capabilities.StencilWrap)));
+            }
+
+            logMgr.Write("\t-Hardware vertex/index buffers: {0}", ConvertBool(CheckCap(Capabilities.VertexBuffer)));
+
+            logMgr.Write("\t-Vertex programs: {0}", ConvertBool(CheckCap(Capabilities.VertexPrograms)));
+
+            if(CheckCap(Capabilities.VertexPrograms)) {
+                logMgr.Write("\t\t-Max vertex program version: {0}", this.MaxVertexProgramVersion);
+            }
+
+            logMgr.Write("\t-Fragment programs: {0}", ConvertBool(CheckCap(Capabilities.FragmentPrograms)));
+
+            if (CheckCap(Capabilities.FragmentPrograms)) {
+                logMgr.Write("\t\t-Max fragment program version: {0}", this.MaxVertexProgramVersion);
+            }
+
+            logMgr.Write("\t-Texture compression: {0}", ConvertBool(CheckCap(Capabilities.TextureCompression)));
+
+            if (CheckCap(Capabilities.TextureCompression)) {
+                logMgr.Write("\t\t-DXT: {0}", ConvertBool(CheckCap(Capabilities.TextureCompressionDXT)));
+                logMgr.Write("\t\t-VTC: {0}", ConvertBool(CheckCap(Capabilities.TextureCompressionVTC)));
+            }
+
+            logMgr.Write("\t-Scissor rectangle: {0}", ConvertBool(CheckCap(Capabilities.ScissorTest)));
+            logMgr.Write("\t-Hardware Occlusion Query: {0}", ConvertBool(CheckCap(Capabilities.HardwareOcculusion)));
+            logMgr.Write("\t-User clip planes: {0}", ConvertBool(CheckCap(Capabilities.UserClipPlanes)));
+            logMgr.Write("\t-VertexElementType.UBYTE4: {0}", ConvertBool(CheckCap(Capabilities.VertexFormatUByte4)));
+            logMgr.Write("\t-Infinite far plane projection: {0}", ConvertBool(CheckCap(Capabilities.InfiniteFarPlane)));
+        }
+
+        /// <summary>
+        ///     Helper method to convert true/false to yes/no.
+        /// </summary>
+        /// <param name="val">Bool bal.</param>
+        /// <returns>"yes" if true, else "no".</returns>
+        private string ConvertBool(bool val) {
+            return val ? "yes" : "no";
         }
 
         #endregion

@@ -39,46 +39,36 @@ namespace Axiom.Graphics {
     public abstract class HardwareBufferManager : IDisposable {
         #region Singleton implementation
 
-		protected class BufferComparer : IComparer {
-			#region IComparer Members
+        /// <summary>
+        ///     Singleton instance of this class.
+        /// </summary>
+        private static HardwareBufferManager instance;
 
-			public int Compare(object x, object y) {
-				HardwareVertexBuffer a = x as HardwareVertexBuffer;
-				HardwareVertexBuffer b = y as HardwareVertexBuffer;
+        /// <summary>
+        ///     Internal constructor.  This class cannot be instantiated externally.
+        /// </summary>
+        /// <remarks>
+        ///     Protected internal because this singleton will actually hold the instance of a subclass
+        ///     created by a render system plugin.
+        /// </remarks>
+        protected internal HardwareBufferManager() {
+            if (instance == null) {
+                instance = this;
 
-				if(a.ID == b.ID) {
-					return 0;
-				}
-
-				return -1;
-			}
-			#endregion
-		}
-        
-        protected HardwareBufferManager() { 
-            if (instance != null) {
-                throw new ApplicationException("HardwareBufferManager initialized twice");
+                freeTempVertexBufferMap = new Hashtable(null, new BufferComparer());
             }
-            instance = this; 
-            GarbageManager.Instance.Add(instance);
-            freeTempVertexBufferMap = new Hashtable(null, new BufferComparer());
         }
 
-        protected static HardwareBufferManager instance;
-
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
         public static HardwareBufferManager Instance {
-            get { return instance; }
-        }
-
-        public void Dispose() {
-			// TODO: Destroy all necessary objects
-
-            if (instance == this) {
-                instance = null;
+            get { 
+                return instance; 
             }
         }
 
-        #endregion
+        #endregion Singleton implementation
 
         #region Fields
 
@@ -402,5 +392,55 @@ namespace Axiom.Graphics {
 		}
 
         #endregion
+
+        #region IDisposable Implementation
+
+        /// <summary>
+        ///     Called when the engine is shutting down.
+        /// </summary>
+        public virtual void Dispose() {
+            instance = null;
+
+            // Destroy all necessary objects
+            vertexDeclarations.Clear();
+            vertexBufferBindings.Clear();
+
+            // destroy all vertex buffers
+            foreach (HardwareBuffer buffer in vertexBuffers) {
+                buffer.Dispose();
+            }
+
+            // destroy all index buffers
+            foreach (HardwareBuffer buffer in indexBuffers) {
+                buffer.Dispose();
+            }
+        }
+
+        #endregion IDisposable Implementation
+
+        /// <summary>
+        ///     Used for buffer comparison.
+        /// </summary>
+        protected class BufferComparer : IComparer {
+            #region IComparer Implementation
+
+            /// <summary>
+            ///     Comparse 2 HardwareBuffers for equality.
+            /// </summary>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <returns></returns>
+            public int Compare(object x, object y) {
+                HardwareBuffer a = x as HardwareBuffer;
+                HardwareBuffer b = y as HardwareBuffer;
+            
+                if (a.ID == b.ID) {
+                    return 0;
+                }
+
+                return -1;
+            }
+            #endregion IComparer Implementation
+        }
     }
 }

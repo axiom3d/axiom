@@ -284,7 +284,17 @@ namespace Axiom.Graphics {
 			SetTextureMatrix(stage, Matrix4.Identity);
 		}
 
-		/// <summary>
+        /// <summary>
+        ///     Utility method for initializing all render targets attached to this rendering system.
+        /// </summary>
+        public virtual void InitRenderTargets() {
+            // init stats for each render target
+            foreach (RenderTarget target in renderTargets) {
+                target.ResetStatistics();
+            }
+        }
+
+        /// <summary>
 		///		Utility method to notify all render targets that a camera has been removed, 
 		///		incase they were referring to it as their viewer. 
 		/// </summary>
@@ -461,7 +471,7 @@ namespace Axiom.Graphics {
 		public virtual void Shutdown() {
 			// destroy each render window
 			foreach (RenderTarget target in renderTargets) {
-				target.Destroy();
+				target.Dispose();
 			}
 
 			// Clear the render window list

@@ -215,7 +215,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL {
                     break;
 
                 default:
-                    Trace.WriteLine(string.Format("HLSLProgram: Unrecognized parameter '{0}'", name));
+                    LogManager.Instance.Write("HLSLProgram: Unrecognized parameter '{0}'", name);
                     handled = false;
                     break;
             }

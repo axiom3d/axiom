@@ -483,7 +483,7 @@ namespace Axiom.Graphics {
 
 			// Did we find any?
 			if(supportedTechniques.Count == 0) {
-				System.Diagnostics.Trace.WriteLine(string.Format("Warning: Material '{0}' has no supportable Techniques on this hardware.  Will be rendered blank.", name));
+				LogManager.Instance.Write("Warning: Material '{0}' has no supportable Techniques on this hardware.  Will be rendered blank.", name);
 			}
 		}
 

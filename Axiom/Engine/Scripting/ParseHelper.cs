@@ -44,7 +44,7 @@ namespace Axiom.Scripting {
         public static void LogParserError(string attribute, string context, string reason) {
             string error = string.Format("Bad {0} attribute in block '{1}'. Reason: {2}", attribute, context, reason);
 
-            System.Diagnostics.Trace.WriteLine(error);
+            LogManager.Instance.Write(error);
         }
 
         /// <summary>

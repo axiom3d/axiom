@@ -139,8 +139,26 @@ namespace Axiom.Core {
 			resourceList[resource.Name] = resource;
 			resourceHandleMap[resource.Handle] = resource;
 		}
-		
-		protected int GetNextHandle() {
+
+        /// <summary>
+        ///		Creates a new blank resource, compatible with this manager.
+        /// </summary>
+        /// <remarks>
+        ///		Resource managers handle disparate types of resources. This method returns a pointer to a
+        ///		valid new instance of the kind of resource managed here. The caller should  complete the
+        ///		details of the returned resource and call ResourceManager.Load to load the resource. Note
+        ///		that it is the CALLERS responsibility to destroy this object when it is no longer required
+        ///		(after calling ResourceManager.Unload if it had been loaded).
+        /// </remarks>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public abstract Resource Create(string name);
+
+        /// <summary>
+        ///     Gets the next available unique resource handle.
+        /// </summary>
+        /// <returns></returns>
+        protected int GetNextHandle() {
 			return nextHandle++;
 		}
 
@@ -413,27 +431,16 @@ namespace Axiom.Core {
 
         #endregion
 
+        #region IDisposable Implementation
+
         /// <summary>
-        ///		Creates a new blank resource, compatible with this manager.
+        ///     Called when the engine is shutting down.
         /// </summary>
-        /// <remarks>
-        ///		Resource managers handle disparate types of resources. This method returns a pointer to a
-        ///		valid new instance of the kind of resource managed here. The caller should  complete the
-        ///		details of the returned resource and call ResourceManager.Load to load the resource. Note
-        ///		that it is the CALLERS responsibility to destroy this object when it is no longer required
-        ///		(after calling ResourceManager.Unload if it had been loaded).
-        /// </remarks>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public abstract Resource Create(string name);
-
-        #region Implementation of IDisposable
-
         public virtual void Dispose() {
             // unload and destroy all resources
             UnloadAndDestroyAll();
         }
 
-        #endregion
+        #endregion IDisposable Implementation
     }
 }

@@ -33,46 +33,56 @@ namespace Axiom.Core {
 	/// <summary>
 	///		Class which manages the platform settings required to run.
 	/// </summary>
-	public class PlatformManager {
-		#region Singleton implementation
+	public sealed class PlatformManager {
+        #region Singleton implementation
 
-		protected PlatformManager() {}
+        /// <summary>
+        ///     Singleton instance of this class.
+        /// </summary>
+        private static IPlatformManager instance;
 
-		protected static IPlatformManager instance;
+        /// <summary>
+        ///     Internal constructor.  This class cannot be instantiated externally.
+        /// </summary>
+        internal PlatformManager() {
+            if (instance == null) {
+                // find and load a platform manager assembly
+                string[] files = Directory.GetFiles(".", "Axiom.Platforms.*.dll");
 
-		public static IPlatformManager Instance {
-			get { 
-				return instance; 
-			}
-		}
+                // make sure there is 1 platform manager available
+                if (files.Length == 0) {
+                    throw new PluginException("A PlatformManager was not found in the execution path, and is required.");
+                }
+                else if (files.Length > 1) {
+                    throw new PluginException("Only 1 PlatformManager can exist in the execution path.");
+                }
 
-		public static void Init() {
-			if (instance == null) {
-				string[] files = Directory.GetFiles(".", "Axiom.Platforms.*.dll");
+                string path = Path.Combine(Environment.CurrentDirectory, files[0]);
 
-				// make sure there is 1 platform manager available
-				if(files.Length == 0) {
-					throw new PluginException("A PlatformManager was not found in the execution path, and is required.");
-				}
-				else if(files.Length > 1) {
-					throw new PluginException("Only 1 PlatformManager can exist in the execution path.");
-				}
+                // TODO: AssemblyManager?
+                Assembly assembly = Assembly.LoadFile(path);
 
-				string path = Path.Combine(Environment.CurrentDirectory, files[0]);
+                // look for the type in the loaded assembly that implements IPlatformManager
+                foreach (Type type in assembly.GetTypes()) {
+                    if (type.GetInterface("IPlatformManager") != null) {
+                        instance = (IPlatformManager)assembly.CreateInstance(type.FullName);
+                        return;
+                    }
+                }
 
-				Assembly assembly = Assembly.LoadFile(path);
+                throw new PluginException("The available Platform assembly did not contain any subclasses of PlatformManager, which is required.");
+            }
+        }
 
-				foreach(Type type in assembly.GetTypes()) {
-					if(type.GetInterface("IPlatformManager") != null) {
-						instance = (IPlatformManager)assembly.CreateInstance(type.FullName);
-						return;
-					}
-				}
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
+        public static IPlatformManager Instance {
+            get { 
+                return instance; 
+            }
+        }
 
-				throw new PluginException("The available Platform assembly did not contain any subclasses of PlatformManager, which is required.");
-			}
-		}
-		
-		#endregion
+        #endregion Singleton implementation
 	}
 }
