@@ -204,8 +204,7 @@ namespace Axiom.Graphics {
                 float* pReal = null;
 
                 // iterate over all the groups of 3 indices
-                // TODO: Ogre has this as count + iterations, warn them
-                edgeData.triangles.Capacity = edgeData.triangles.Count * iterations;
+                edgeData.triangles.Capacity = edgeData.triangles.Count + iterations;
 
                 for(int t = 0; t < iterations; t++) {
                     EdgeData.Triangle tri = new EdgeData.Triangle();
