@@ -1,7 +1,7 @@
 <VisualStudioProject>
     <CSHARP LastOpenVersion = "7.10.3077" >
         <Build>
-            <Settings ReferencePath = "E:\GameProgramming\AxiomEngine\Solution Items\;E:\GameProgramming\AxiomEngine\ode\ode\Debug\;E:\GameProgramming\ODE\C#\ode\ode\Debug\;D:\GameProgramming\AxiomEngine\Solution Items\;D:\GameProgramming\Axiom\Solution Items\" >
+            <Settings ReferencePath = "E:\GameProgramming\AxiomEngine\Solution Items\;E:\GameProgramming\AxiomEngine\ode\ode\Debug\;E:\GameProgramming\ODE\C#\ode\ode\Debug\;D:\GameProgramming\AxiomEngine\Solution Items\;D:\GameProgramming\Axiom\Solution Items\;D:\GameProgramming\AxiomEngine\Axiom\Solution Items\" >
                 <Config
                     Name = "Debug"
                     EnableASPDebugging = "false"

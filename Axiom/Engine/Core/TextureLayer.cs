@@ -36,7 +36,7 @@ namespace Axiom.Core {
     /// <summary>
     /// Summary description for TextureLayer.
     /// </summary>
-    public class TextureLayer : ICloneable {
+    public sealed class TextureLayer : ICloneable {
         #region Member variables
 
         public const int MAX_ANIMATION_FRAMES = 32;

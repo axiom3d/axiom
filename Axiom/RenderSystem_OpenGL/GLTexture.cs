@@ -100,32 +100,30 @@ namespace RenderSystem_OpenGL {
             // grab the raw bitmap data
             BitmapData data = image.LockBits(rect, ImageLockMode.ReadOnly, format);
 
-            unsafe {
-                // generate the texture
-                Gl.glGenTextures(1, out textureID);
+            // generate the texture
+            Gl.glGenTextures(1, out textureID);
 
-                // bind the texture
-                Gl.glBindTexture(Gl.GL_TEXTURE_2D, textureID);
+            // bind the texture
+            Gl.glBindTexture(Gl.GL_TEXTURE_2D, textureID);
 
-                // TODO: Apply gamma?
-				
-                // send the data to GL
-                Gl.glTexImage2D(Gl.GL_TEXTURE_2D, 0, hasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, width, height, 0, hasAlpha ? Gl.GL_BGRA : Gl.GL_BGR, Gl.GL_UNSIGNED_BYTE, data.Scan0);
+            // TODO: Apply gamma?
+			
+            // send the data to GL
+            Gl.glTexImage2D(Gl.GL_TEXTURE_2D, 0, hasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, width, height, 0, hasAlpha ? Gl.GL_BGRA : Gl.GL_BGR, Gl.GL_UNSIGNED_BYTE, data.Scan0);
 
-                GenerateMipMaps(data.Scan0);
+            GenerateMipMaps(data.Scan0);
 
-                // unlock image data and dispose of it
-                image.UnlockBits(data);
-                image.Dispose();
+            // unlock image data and dispose of it
+            image.UnlockBits(data);
+            image.Dispose();
 
-                // update the size
-                short bytesPerPixel = (short)(bpp >> 3);
-				
-                if(!hasAlpha && bpp == 32)
-                    bytesPerPixel--;
+            // update the size
+            short bytesPerPixel = (short)(bpp >> 3);
+			
+            if(!hasAlpha && bpp == 32)
+                bytesPerPixel--;
 
-                size = (ulong)(width * height * bytesPerPixel);
-            }
+            size = (ulong)(width * height * bytesPerPixel);
 
             isLoaded = true;
         }

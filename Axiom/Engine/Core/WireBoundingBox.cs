@@ -33,7 +33,7 @@ namespace Axiom.Core {
     /// <summary>
     /// Summary description for WireBoundingBox.
     /// </summary>
-    public class WireBoundingBox : SimpleRenderable {
+    public sealed class WireBoundingBox : SimpleRenderable {
         #region Member variables
     
         protected float radius;

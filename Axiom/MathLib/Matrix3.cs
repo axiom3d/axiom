@@ -228,14 +228,6 @@ namespace Axiom.MathLib {
             product.y = matrix.m10 * vector.x + matrix.m11 * vector.y + matrix.m12 * vector.z;
             product.z = matrix.m20 * vector.x + matrix.m21 * vector.y + matrix.m22 * vector.z;
 
-            //for (int row = 0; row < 3; row++)
-            //{
-            //	product[row] =
-            //		matrix[row,0] * vector[0] +
-            //		matrix[row,1] * vector[1] +
-            //		matrix[row,2] * vector[2];
-            //}
-
             return product;
         }
 
@@ -272,10 +264,15 @@ namespace Axiom.MathLib {
         public static Matrix3 operator * (Matrix3 matrix, float scalar) {
             Matrix3 result = new Matrix3();
 
-            for (int row = 0; row < 3; row++) {
-                for (int col = 0; col < 3; col++)
-                    result[row,col] = scalar * matrix[row,col];
-            }
+            result.m00 = matrix.m00 * scalar;
+            result.m01 = matrix.m01 * scalar;
+            result.m02 = matrix.m02 * scalar;
+            result.m10 = matrix.m10 * scalar;
+            result.m11 = matrix.m11 * scalar;
+            result.m12 = matrix.m12 * scalar;
+            result.m20 = matrix.m20 * scalar;
+            result.m21 = matrix.m21 * scalar;
+            result.m22 = matrix.m22 * scalar;
 
             return result;
         }
@@ -289,10 +286,15 @@ namespace Axiom.MathLib {
         public static Matrix3 operator * (float scalar, Matrix3 matrix) {
             Matrix3 result = new Matrix3();
 
-            for (int row = 0; row < 3; row++) {
-                for (int col = 0; col < 3; col++)
-                    result[row,col] = scalar * matrix[row,col];
-            }
+            result.m00 = matrix.m00 * scalar;
+            result.m01 = matrix.m01 * scalar;
+            result.m02 = matrix.m02 * scalar;
+            result.m10 = matrix.m10 * scalar;
+            result.m11 = matrix.m11 * scalar;
+            result.m12 = matrix.m12 * scalar;
+            result.m20 = matrix.m20 * scalar;
+            result.m21 = matrix.m21 * scalar;
+            result.m22 = matrix.m22 * scalar;
 
             return result;
         }
@@ -350,12 +352,6 @@ namespace Axiom.MathLib {
             result.m20 = -matrix.m20;
             result.m21 = -matrix.m21;
             result.m22 = -matrix.m22;
-
-            //for (int row = 0; row < 3; row++)
-            //{
-            //	for (int col = 0; col < 3; col++)
-            //		result[row,col] = -matrix[row,col];
-            //}
 
             return result;
         }

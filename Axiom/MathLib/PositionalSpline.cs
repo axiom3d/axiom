@@ -46,7 +46,7 @@ namespace Axiom.MathLib {
     ///		Derivation of the hermite polynomial can be found here: 
     ///		<a href="http://www.cs.unc.edu/~hoff/projects/comp236/curves/papers/hermite.html">Hermite splines.</a>
     /// </remarks>
-    public class PositionalSpline {
+    public sealed class PositionalSpline {
         #region Member variables
 
         readonly private Matrix4 hermitePoly = new Matrix4(	2, -2,  1,  1,

@@ -40,8 +40,7 @@ namespace Axiom.Core {
     ///	    for an axis-aligned bounding box (AABB) for collision and
     ///	    visibility determination.
     /// </remarks>
-    // TESTME
-    public class AxisAlignedBox : ICloneable {
+    public sealed class AxisAlignedBox : ICloneable {
         #region Protected member variables
 
         protected Vector3 minVector = new Vector3(-0.5f, -0.5f, -0.5f);

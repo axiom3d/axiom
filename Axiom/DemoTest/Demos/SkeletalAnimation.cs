@@ -12,7 +12,6 @@ namespace Demos {
         #region Member variables
 		
         private AnimationState animState;
-        private AnimationState animState2;
 
         #endregion
 			

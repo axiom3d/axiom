@@ -52,8 +52,7 @@ namespace Axiom.MathLib {
     ///		generate an extra quaternion in between each actual quaternion which when take with 
     ///		the original quaternion forms the 'tangent' of that quaternion.
     /// </remarks>
-    /// TESTME: Done but not tested
-    public class RotationalSpline {
+    public sealed class RotationalSpline {
         #region Member variables
 
         readonly private Matrix4 hermitePoly = new Matrix4(	2, -2,  1,  1,

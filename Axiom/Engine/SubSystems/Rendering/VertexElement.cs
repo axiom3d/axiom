@@ -70,39 +70,38 @@ namespace Axiom.SubSystems.Rendering {
         /// </summary>
         /// DOC
         public static int GetTypeSize(VertexElementType type) {
-            unsafe {
-                switch(type) {
-                    case VertexElementType.Color:
-                        return sizeof(int);
 
-                    case VertexElementType.Float1:
-                        return sizeof(float);						
+            switch(type) {
+                case VertexElementType.Color:
+                    return Marshal.SizeOf(typeof(int));
 
-                    case VertexElementType.Float2:
-                        return sizeof(float) * 2;
+                case VertexElementType.Float1:
+                    return Marshal.SizeOf(typeof(float));						
 
-                    case VertexElementType.Float3:
-                        return sizeof(float) * 3;
+                case VertexElementType.Float2:
+                    return Marshal.SizeOf(typeof(float)) * 2;
 
-                    case VertexElementType.Float4:
-                        return sizeof(float) * 4;
+                case VertexElementType.Float3:
+                    return Marshal.SizeOf(typeof(float)) * 3;
 
-                    case VertexElementType.Short1:
-                        return sizeof(short);
+                case VertexElementType.Float4:
+                    return Marshal.SizeOf(typeof(float)) * 4;
 
-                    case VertexElementType.Short2:
-                        return sizeof(short) * 2;
+                case VertexElementType.Short1:
+                    return Marshal.SizeOf(typeof(short));
 
-                    case VertexElementType.Short3:
-                        return sizeof(short) * 3;
+                case VertexElementType.Short2:
+                    return Marshal.SizeOf(typeof(short)) * 2;
 
-                    case VertexElementType.Short4:
-                        return sizeof(short) * 4;
-                } // end switch
+                case VertexElementType.Short3:
+                    return Marshal.SizeOf(typeof(short)) * 3;
 
-                // keep the compiler happy
-                return 0;
-            }
+                case VertexElementType.Short4:
+                    return Marshal.SizeOf(typeof(short)) * 4;
+            } // end switch
+
+            // keep the compiler happy
+            return 0;
         }
 
         /// <summary>
