@@ -188,6 +188,19 @@ namespace Axiom.Graphics
         ///    Details on the fragment program to be used for this pass.
         /// </summary>
         protected GpuProgramUsage fragmentProgramUsage;
+		/// <summary>
+		///		Is this pass queued for deletion?
+		/// </summary>
+		protected bool queuedForDeletion;
+
+		/// <summary>
+		///		List of passes with dirty hashes.
+		/// </summary>
+		protected static PassList dirtyHashList = new PassList();
+		/// <summary>
+		///		List of passes queued for deletion.
+		/// </summary>
+		protected static PassList graveyardList = new PassList();
 
 		#endregion
 		
@@ -199,46 +212,39 @@ namespace Axiom.Graphics
         /// <param name="parent">Technique that owns this Pass.</param>
         /// <param name="index">Index of this pass.</param>
         public Pass(Technique parent, int index) {
-            Construct(parent, index);
-        }
+			this.parent = parent;
+			this.index = index;
 
-        /// <summary>
-        ///    Helper method to allow for unique object construction.
-        /// </summary>
-        /// <param name="parent">Reference to the technique that owns this pass.</param>
-        /// <param name="index">Index of this pass.</param>
-        private void Construct(Technique parent, int index) {
-            this.parent = parent;
-            this.index = index;
-
-            // color defaults
-            ambient = ColorEx.White;
-            diffuse = ColorEx.White;
-            specular = ColorEx.Black;
-            emissive = ColorEx.Black;
+			// color defaults
+			ambient = ColorEx.White;
+			diffuse = ColorEx.White;
+			specular = ColorEx.Black;
+			emissive = ColorEx.Black;
             
-            // default blending (overwrite)
-            sourceBlendFactor = SceneBlendFactor.One;
-            destBlendFactor = SceneBlendFactor.Zero;
+			// default blending (overwrite)
+			sourceBlendFactor = SceneBlendFactor.One;
+			destBlendFactor = SceneBlendFactor.Zero;
 
-            // depth buffer settings
-            depthCheck = true;
-            depthWrite = true;
-            colorWrite = true;
-            depthFunc = CompareFunction.LessEqual;
+			// depth buffer settings
+			depthCheck = true;
+			depthWrite = true;
+			colorWrite = true;
+			depthFunc = CompareFunction.LessEqual;
 
-            // cull settings
-            cullMode = CullingMode.Clockwise;
-            manualCullMode = ManualCullingMode.Back;
+			// cull settings
+			cullMode = CullingMode.Clockwise;
+			manualCullMode = ManualCullingMode.Back;
 
-            // light settings
-            lightingEnabled = true;
-            shadeOptions = Shading.Gouraud;
-            runOnlyForOneLightType = true;
-            onlyLightType = LightType.Point;
+			// light settings
+			lightingEnabled = true;
+			runOnlyForOneLightType = true;
+			onlyLightType = LightType.Point;
+			shadeOptions = Shading.Gouraud;
 
-            // Default max lights to the global max
-            maxLights = Config.MaxSimultaneousLights;
+			// Default max lights to the global max
+			maxLights = Config.MaxSimultaneousLights;
+
+			DirtyHash();
         }
 		
 		#endregion
@@ -254,6 +260,7 @@ namespace Axiom.Graphics
 
             // needs recompilation
             parent.NotifyNeedsRecompile();
+			DirtyHash();
         }
 
         /// <summary>
@@ -277,6 +284,9 @@ namespace Axiom.Graphics
                 newPass.textureUnitStates.Add(newState);
             }
 
+			// dirty the hash on the new pass
+			newPass.DirtyHash();
+
             return newPass;
         }
 
@@ -290,6 +300,7 @@ namespace Axiom.Graphics
 			textureUnitStates.Add(state);
 			// needs recompilation
 			parent.NotifyNeedsRecompile();
+			DirtyHash();
 			return state;
 		}	
 
@@ -320,6 +331,7 @@ namespace Axiom.Graphics
             textureUnitStates.Add(state);
             // needs recompilation
             parent.NotifyNeedsRecompile();
+			DirtyHash();
             return state;
         }
 
@@ -357,7 +369,7 @@ namespace Axiom.Graphics
             }
 
             // recalculate hash code
-            RecalculateHash();
+            DirtyHash();
         }
 
         /// <summary>
@@ -398,8 +410,12 @@ namespace Axiom.Graphics
         public void RemoveAllTextureUnitStates() {
             textureUnitStates.Clear();
 
-            // needs recompilation
-            parent.NotifyNeedsRecompile();
+			if(!queuedForDeletion) {
+				// needs recompilation
+				parent.NotifyNeedsRecompile();
+			}
+
+			DirtyHash();
         }
 
         /// <summary>
@@ -409,8 +425,12 @@ namespace Axiom.Graphics
         public void RemoveTextureUnitState(TextureUnitState state) {
             textureUnitStates.Remove(state);
 
-            // needs recompilation
-            parent.NotifyNeedsRecompile();
+			if(!queuedForDeletion) {
+				// needs recompilation
+				parent.NotifyNeedsRecompile();
+			}
+
+			DirtyHash();
         }
 
         /// <summary>
@@ -734,6 +754,44 @@ namespace Axiom.Graphics
                 fragmentProgramUsage.Params.UpdateAutoParamsNoLights(source);
             }
         }
+
+		/// <summary>
+		///		Mark the hash for this pass as dirty.	
+		/// </summary>
+		public void DirtyHash() {
+			dirtyHashList.Add(this);
+		}
+
+		/// <summary>
+		///		Queue this pass for deletion when appropriate.
+		/// </summary>
+		public void QueueForDeletion() {
+			queuedForDeletion = true;
+
+			RemoveAllTextureUnitStates();
+
+			// remove from the dirty list
+			dirtyHashList.Remove(this);
+
+			graveyardList.Add(this);
+		}
+
+		/// <summary>
+		///		Process all dirty and pending deletion passes.
+		/// </summary>
+		public static void ProcessPendingUpdates() {
+			// clear the graveyard
+			graveyardList.Clear();
+
+			// recalc the hashcode for each pass
+			for(int i = 0; i < dirtyHashList.Count; i++) {
+				Pass pass = (Pass)dirtyHashList[i];
+				pass.RecalculateHash();
+			}
+
+			// clear out the dirty list
+			dirtyHashList.Clear();
+		}
 		
 		#endregion
 
@@ -1417,7 +1475,25 @@ namespace Axiom.Graphics
                 vertexProgramUsage.Params = value;
             }
         }
+
+		/// <summary>
+		///		Gets a list of dirty passes.
+		/// </summary>
+		internal static PassList DirtyList {
+			get {
+				return dirtyHashList;
+			}
+		}
         
+		/// <summary>
+		///		Gets a list of passes queued for deletion.
+		/// </summary>
+		internal static PassList GraveyardList {
+			get {
+				return graveyardList;
+			}
+		}
+
         #endregion
 	}
 }

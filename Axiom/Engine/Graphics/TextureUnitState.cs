@@ -33,8 +33,7 @@ using Axiom.Core;
 using Axiom.Exceptions;
 using Axiom.MathLib;
 
-namespace Axiom.Graphics
-{
+namespace Axiom.Graphics {
 	/// <summary>
 	/// 	Class representing the state of a single texture unit during a Pass of a
 	/// 	Technique, of a Material.
@@ -53,8 +52,7 @@ namespace Axiom.Graphics
 	/// 	pipeline means that for this pass you are using vertex or fragment programs.
 	/// </remarks>
 	/// TODO: Destroy controllers
-	public class TextureUnitState
-	{
+	public class TextureUnitState {
         #region Fields
 
         /// <summary>
@@ -249,6 +247,8 @@ namespace Axiom.Graphics
             alphaRejectFunction = CompareFunction.AlwaysPass;
             alphaRejectValue = 0;
             textureType = TextureType.TwoD;
+
+			parent.DirtyHash();
         }
 
         #endregion
@@ -441,7 +441,7 @@ namespace Axiom.Graphics
                 currentFrame = value;
 
                 // this will affect the passes hashcode because of the texture name change
-                parent.RecalculateHash();
+                parent.DirtyHash();
             }
         }
 
@@ -1103,7 +1103,7 @@ namespace Axiom.Graphics
                 Load();
 
                 // tell parent to recalculate the hash
-                parent.RecalculateHash();
+                parent.DirtyHash();
             }
         }
 
@@ -1372,7 +1372,7 @@ namespace Axiom.Graphics
                     Load();
 
                     // tell parent to recalc hash (for sorting)
-                    parent.RecalculateHash();
+                    parent.DirtyHash();
                 }
             }
         }
@@ -1642,6 +1642,8 @@ namespace Axiom.Graphics
 
             // set the manually specified parent for this new texture state
             newLayer.parent = parent;
+
+			parent.DirtyHash();
 
             return newLayer;
         }
