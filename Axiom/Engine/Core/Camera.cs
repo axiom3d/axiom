@@ -183,7 +183,7 @@ namespace Axiom.Core {
                     } break;
                     case Projection.Orthographic: {
 						// ORTHOGRAPHIC projection, API specific 
-						Root.Instance.RenderSystem.MakeOrthoMatrix(
+						projectionMatrix = Root.Instance.RenderSystem.MakeOrthoMatrix(
 							fieldOfView, aspectRatio, nearDistance, farDistance);
 
 						float thetaY = MathUtil.DegreesToRadians(fieldOfView * 0.5f);
