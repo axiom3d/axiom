@@ -153,9 +153,10 @@ namespace Axiom.Platforms.SDL {
 					// MOUSEBUTTONUP and a MOUSEBUTTONDOWN event)
 
 					// fetch all mouse related events
-					int count = 
-						Sdl.SDL_PeepEvents(events, BufferSize, Sdl.SDL_GETEVENT, 
-							Sdl.SDL_MOUSEMOTIONMASK | Sdl.SDL_MOUSEBUTTONDOWNMASK | Sdl.SDL_MOUSEBUTTONUPMASK);
+					// TODO: SDL_PeepEvents throwing exceptions, investigate
+					int count = 0;
+						//Sdl.SDL_PeepEvents(events, BufferSize, Sdl.SDL_GETEVENT, 
+						//	Sdl.SDL_MOUSEMOTIONMASK | Sdl.SDL_MOUSEBUTTONDOWNMASK | Sdl.SDL_MOUSEBUTTONUPMASK);
 
 					if(count > 0) {
 						for(int i = 0; i < count; i++) {
@@ -188,9 +189,10 @@ namespace Axiom.Platforms.SDL {
 		public override void Initialize(Axiom.Graphics.RenderWindow parent, bool useKeyboard, bool useMouse, bool useGamepad, bool ownMouse) {
 			if(useMouse && ownMouse) {
 				// hide the cursor
-				Sdl.SDL_ShowCursor(0);
+				// TODO: Commented out for easier debugging
+				//Sdl.SDL_ShowCursor(0);
 
-				Sdl.SDL_WM_GrabInput(Sdl.SDL_GRAB_ON);
+				//Sdl.SDL_WM_GrabInput(Sdl.SDL_GRAB_ON);
 			}
 
 			// mouse starts out in the center of the window

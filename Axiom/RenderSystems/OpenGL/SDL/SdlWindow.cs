@@ -46,11 +46,11 @@ namespace Axiom.RenderSystems.OpenGL {
 			}
 
 			// we want double buffering
-			Sdl.SDL_GL_SetAttribute( Sdl.SDL_GLattr.SDL_GL_DOUBLEBUFFER, 1 );
+			Sdl.SDL_GL_SetAttribute( Sdl.SDL_GL_DOUBLEBUFFER, 1 );
 
 			// request good stencil size if 32-bit color
 			if (colorDepth == 32 && depthBuffer) {
-				Sdl.SDL_GL_SetAttribute( Sdl.SDL_GLattr.SDL_GL_STENCIL_SIZE, 8);
+				Sdl.SDL_GL_SetAttribute( Sdl.SDL_GL_STENCIL_SIZE, 8);
 			}
 
 			// set the video mode (and create the surface)
