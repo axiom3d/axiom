@@ -1,0 +1,43 @@
+<Project name="DemoTest" description="" newfilesearch="None" enableviewstate="True" version="1.1" projecttype="C#">
+  <Contents>
+    <File name=".\AssemblyInfo.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\DemoBrowser.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\PlasmaGun.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\DemoTest.DemoBrowser.resources" subtype="Code" buildaction="EmbedAsResource" dependson="" data="" />
+    <File name="..\Engine\Utility\Axiom.Utility.ConfigDialog.resources" subtype="Code" buildaction="EmbedAsResource" dependson="" data="" />
+    <File name=".\CSharpForm.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Demos\Transparency.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Demos\CameraTrack.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Demos\Lights.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Demos\ParticleFX.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Demos\TextureFX.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Main.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+  </Contents>
+  <References>
+    <Reference type="Project" refto="Engine" />
+    <Reference type="Project" refto="MathLib" />
+  </References>
+  <DeploymentInformation target="" script="" strategy="File" />
+  <Configuration runwithwarnings="True" name="Debug">
+    <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="1" includedebuginformation="True" optimize="False" unsafecodeallowed="False" generateoverflowchecks="False" mainclass="" target="WinExe" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon=".\App.ico" />
+    <Execution commandlineparameters="" consolepause="True" />
+    <Output directory=".\bin\Debug\" assembly="DemoTest" />
+  </Configuration>
+  <Configurations active="Debug">
+    <Configuration runwithwarnings="True" name="Debug">
+      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="1" includedebuginformation="True" optimize="False" unsafecodeallowed="False" generateoverflowchecks="False" mainclass="" target="WinExe" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon=".\App.ico" />
+      <Execution commandlineparameters="" consolepause="True" />
+      <Output directory=".\bin\Debug\" assembly="DemoTest" />
+    </Configuration>
+    <Configuration runwithwarnings="True" name="Release">
+      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="False" optimize="True" unsafecodeallowed="False" generateoverflowchecks="False" mainclass="" target="WinExe" definesymbols="TRACE" generatexmldocumentation="False" win32Icon=".\App.ico" />
+      <Execution commandlineparameters="" consolepause="True" />
+      <Output directory=".\Release\" assembly="DemoTest" />
+    </Configuration>
+    <Configuration runwithwarnings="True" name="EngineDebug">
+      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="True" optimize="False" unsafecodeallowed="False" generateoverflowchecks="False" mainclass="" target="WinExe" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon=".\App.ico" />
+      <Execution commandlineparameters="" consolepause="True" />
+      <Output directory=".\Debug\" assembly="DemoTest" />
+    </Configuration>
+  </Configurations>
+</Project>
