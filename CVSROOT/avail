@@ -5,8 +5,7 @@ unavail
 avail|leedgitar
 
 # Permission to change specific source folders
-avail|rridge|Axiom
-avail|iainmckay|Axiom/Plugin_BSPSceneManager
+avail|iainmckay|Axiom/SceneManagers/Bsp
 
 # must have linefeed at the end!!
 
