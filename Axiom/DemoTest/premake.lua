@@ -9,7 +9,7 @@ package.config["Debug"].defines = { "DEBUG" }
 -- output paths
 package.config["Debug"].bindir = "bin"
 package.config["Release"].bindir = "bin"
-
+package.libpaths = { "../Solution Items" }
 package.target = "Demos"
 
 package.links = { 
@@ -27,7 +27,9 @@ package.links = {
 	"Axiom.SceneManagers.Octree",
 	"Axiom.Platforms.Win32",
 	"Axiom.Gui.Elements",
-	"Axiom.ParticleFX"
+	"Axiom.ParticleFX",
+	"ICSharpCode.SharpZipLib",
+	"ode"
 }
 
 package.files = { 
