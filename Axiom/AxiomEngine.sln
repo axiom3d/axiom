@@ -81,6 +81,8 @@ Global
 	GlobalSection(SolutionItems) = postSolution
 		Solution Items\csgl.dll = Solution Items\csgl.dll
 		Solution Items\ode.dll = Solution Items\ode.dll
+		Solution Items\Tao.OpenGl.dll = Solution Items\Tao.OpenGl.dll
+		Solution Items\Tao.Platform.Windows.dll = Solution Items\Tao.Platform.Windows.dll
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
