@@ -726,16 +726,27 @@ namespace Axiom.RenderSystems.DirectX9 {
 				activeRenderTarget = viewport.Target;
 
 				// get the back buffer surface for this viewport
-				// CMH - 4/24/2004 - Start
-				// get the back buffer surface for this viewport
-				// Do NOT remove this using statement! For the reason, see here:
-				// http://blogs.msdn.com/tmiller/archive/2003/11/14/57531.aspx
-				using (D3D.Surface back = (D3D.Surface)activeRenderTarget.GetCustomAttribute("D3DBACKBUFFER")) {
-					device.SetRenderTarget(0, back);
-				}
-				// CMH - End
+                D3D.Surface back = (D3D.Surface)activeRenderTarget.GetCustomAttribute("D3DBACKBUFFER");
+                device.SetRenderTarget(0, back);
 
-				D3D.Surface depth = (D3D.Surface)activeRenderTarget.GetCustomAttribute("D3DZBUFFER");
+                // we cannot dipose of the back buffer in fullscreen mode, since we have a direct reference to
+                // the main back buffer.  all other surfaces are safe to dispose
+                bool disposeBackBuffer = true;
+
+                if (activeRenderTarget is D3DWindow) {
+                    D3DWindow window = activeRenderTarget as D3DWindow;
+
+                    if (window.IsFullScreen) {
+                        disposeBackBuffer = false;
+                    }
+                }
+
+                // be sure to destroy the surface we had
+                if (disposeBackBuffer) {
+                    back.Dispose();
+                }
+
+                D3D.Surface depth = (D3D.Surface)activeRenderTarget.GetCustomAttribute("D3DZBUFFER");
 
 				// set the render target and depth stencil for the surfaces beloning to the viewport
 				device.DepthStencilSurface = depth;

@@ -132,7 +132,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 					device.PresentationParameters.MultiSample,
 					device.PresentationParameters.MultiSampleQuality, 
 					false);
-			}
+            }
 			// CMH - End
 
 			// set the params of the window
@@ -154,15 +154,15 @@ namespace Axiom.RenderSystems.DirectX9 {
 					return device;
 
 				case "D3DZBUFFER":
-					return stencilBuffer;
+                    return stencilBuffer;
 
-				case "D3DBACKBUFFER":
+                case "D3DBACKBUFFER":
 					// CMH - 4/24/2004 - Start
 
-					// if we're in windowed mode, we want to get our own backbuffer.
+                    // if we're in windowed mode, we want to get our own backbuffer.
 					if(isFullScreen) {
-						return backBuffer;
-					}
+                        return backBuffer;
+                    }
 					else {
 						return swapChain.GetBackBuffer(0, BackBufferType.Mono);
 					}
@@ -182,7 +182,17 @@ namespace Axiom.RenderSystems.DirectX9 {
 				form.Close();
 			}
 
-			// make sure this window is no longer active
+            // dispopse of our back buffer if need be
+            if (backBuffer != null && !backBuffer.Disposed) {
+                backBuffer.Dispose();
+            }
+
+            // dispose of our stencil buffer if need be
+            if (stencilBuffer != null && !stencilBuffer.Disposed) {
+                stencilBuffer.Dispose();
+            }
+
+            // make sure this window is no longer active
 			isActive = false;
 		}
 
