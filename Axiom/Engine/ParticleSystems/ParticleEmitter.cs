@@ -57,58 +57,95 @@ namespace Axiom.ParticleSystems {
     ///		with literally infinite combinations of emitter and affector types, and parameters within those
     ///		types.
     /// </remarks>
-    public abstract class ParticleEmitter {
-        #region Member variables
+    public abstract class ParticleEmitter : IConfigurable {
+        #region Fields
 
-        /// <summary>Position relative to the center of the ParticleSystem</summary>
+        /// <summary>
+        ///    Position relative to the center of the ParticleSystem.
+        /// </summary>
         protected Vector3 position;
-        ///<summary> Rate in particles per second at which this emitter wishes to emit particles</summary>
+        ///<summary>
+        ///    Rate in particles per second at which this emitter wishes to emit particles.
+        /// </summary>
         protected float emissionRate;
-        /// <summary>Name of the type of emitter, MUST be initialized by subclasses</summary>
+        /// <summary>
+        ///    Name of the type of emitter, MUST be initialized by subclasses.
+        /// </summary>
         protected string type;
-        /// <summary>Base direction of the emitter, may not be used by some emitters</summary>
+        /// <summary>
+        ///    Base direction of the emitter, may not be used by some emitters.
+        /// </summary>
         protected Vector3 direction;
-        /// <summary>Notional up vector, just used to speed up generation of variant directions</summary>
+        /// <summary>
+        ///    Notional up vector, just used to speed up generation of variant directions.
+        /// </summary>
         protected Vector3 up;
-        /// <summary>Angle around direction which particles may be emitted, internally radians but degrees for interface</summary>
+        /// <summary>
+        ///    Angle around direction which particles may be emitted, internally radians but degrees for interface.
+        /// </summary>
         protected float angle;
-        /// <summary>Min speed of particles</summary>
+        /// <summary>
+        ///    Min speed of particles.
+        /// </summary>
         protected float minSpeed;
-        /// <summary>Max speed of particles</summary>
+        /// <summary>
+        ///    Max speed of particles.
+        /// </summary>
         protected float maxSpeed;
-        /// <summary>Initial time-to-live of particles (min)</summary>
+        /// <summary>
+        ///    Initial time-to-live of particles (min).
+        /// </summary>
         protected float minTTL;
-        /// <summary>Initial time-to-live of particles (max)</summary>
+        /// <summary>
+        ///    Initial time-to-live of particles (max).
+        /// </summary>
         protected float maxTTL;
-        /// <summary>Initial color of particles (range start)</summary>
+        /// <summary>
+        ///    Initial color of particles (range start).
+        /// </summary>
         protected ColorEx colorRangeStart;
-        /// <summary>Initial color of particles (range end)</summary>
+        /// <summary>
+        ///    Initial color of particles (range end).
+        /// </summary>
         protected ColorEx colorRangeEnd;
-
-        /// <summary>Whether this emitter is currently enabled (defaults to true)</summary>
+        /// <summary>
+        ///    Whether this emitter is currently enabled (defaults to true).
+        /// </summary>
         protected bool isEnabled;
-
-        /// <summary>Start time (in seconds from start of first call to ParticleSystem to update)</summary>
+        /// <summary>
+        ///    Start time (in seconds from start of first call to ParticleSystem to update).
+        /// </summary>
         protected float startTime;
-        /// <summary>Minimum length of time emitter will run for (0 = forever)</summary>
+        /// <summary>
+        ///    Minimum length of time emitter will run for (0 = forever).
+        /// </summary>
         protected float durationMin;
-        /// <summary>Maximum length of time the emitter will run for (0 = forever)</summary>
+        /// <summary>
+        ///    Maximum length of time the emitter will run for (0 = forever).
+        /// </summary>
         protected float durationMax;
-        /// <summary>Current duration remainder</summary>
+        /// <summary>
+        ///    Current duration remainder.
+        /// </summary>
         protected float durationRemain;
-
-        /// <summary>Time between each repeat</summary>
+        /// <summary>
+        ///    Minimum time between each repeat.
+        /// </summary>
         protected float repeatDelayMin;
+        /// <summary>
+        ///    Maximum time between each repeat.
+        /// </summary>
         protected float repeatDelayMax;
-        /// <summary>Repeat delay left</summary>
+        /// <summary>
+        ///    Repeat delay left.
+        /// </summary>
         protected float repeatDelayRemain;
 
         static float remainder = 0;
-
         protected const string EMITTER = "Emitter";
         protected Hashtable attribParsers = new Hashtable();
 
-        #endregion
+        #endregion Fields
 
         #region Constructors
 
@@ -126,7 +163,6 @@ namespace Axiom.ParticleSystems {
             colorRangeStart = ColorEx.White;
             colorRangeEnd = ColorEx.White;
             isEnabled = true;
-            durationMax = 0;
 
             RegisterParsers();
         }
@@ -139,8 +175,12 @@ namespace Axiom.ParticleSystems {
         ///		Gets/Sets the position of this emitter relative to the center of the particle system.
         /// </summary>
         public virtual Vector3 Position {
-            get { return position; }
-            set { position = value; }
+            get { 
+                return position; 
+            }
+            set { 
+                position = value; 
+            }
         }
 
         /// <summary>
@@ -153,7 +193,9 @@ namespace Axiom.ParticleSystems {
         ///		the angle property.
         /// </remarks>
         public virtual Vector3 Direction {
-            get { return direction; }
+            get { 
+                return direction; 
+            }
             set {
                 direction = value;
                 direction.Normalize();
@@ -175,8 +217,12 @@ namespace Axiom.ParticleSystems {
         ///		will be emitted in a sphere, i.e. in all directions.
         /// </remarks>
         public virtual float Angle {
-            get { return MathUtil.RadiansToDegrees(angle); }
-            set { angle = MathUtil.DegreesToRadians(value); }
+            get { 
+                return MathUtil.RadiansToDegrees(angle); 
+            }
+            set { 
+                angle = MathUtil.DegreesToRadians(value); 
+            }
         }
 
         /// <summary>
@@ -188,24 +234,36 @@ namespace Axiom.ParticleSystems {
         ///		choose a speed between the minimum and maximum for each particle.
         /// </remarks>
         public virtual float ParticleVelocity {
-            get { return minSpeed; }
-            set { minSpeed = maxSpeed = value; }
+            get { 
+                return minSpeed; 
+            }
+            set { 
+                minSpeed = maxSpeed = value; 
+            }
         }
 
         /// <summary>
         ///		Gets/Sets the minimum velocity of particles emitted.
         /// </summary>
         public virtual float MinParticleVelocity {
-            get { return minSpeed; }
-            set { minSpeed = value; }
+            get { 
+                return minSpeed; 
+            }
+            set { 
+                minSpeed = value; 
+            }
         }
 
         /// <summary>
         ///		Gets/Sets the maximum velocity of particles emitted.
         /// </summary>
         public virtual float MaxParticleVelocity {
-            get { return maxSpeed; }
-            set { maxSpeed = value; }
+            get { 
+                return maxSpeed; 
+            }
+            set { 
+                maxSpeed = value; 
+            }
         }
 
         /// <summary>
@@ -218,8 +276,12 @@ namespace Axiom.ParticleSystems {
         ///		for example. This is controlled by the emitter's EmissionCount property.
         /// </remarks>
         public virtual float EmissionRate {
-            get { return emissionRate; }
-            set { emissionRate = value; }
+            get { 
+                return emissionRate; 
+            }
+            set { 
+                emissionRate = value; 
+            }
         }
 
         /// <summary>
@@ -234,24 +296,35 @@ namespace Axiom.ParticleSystems {
         ///		have the TTL vary per particle.
         /// </remarks>
         public virtual float TimeToLive {
-            get { return minTTL; }
-            set { minTTL = maxTTL = value; }
+            get { 
+                return minTTL; }
+            set { 
+                minTTL = maxTTL = value; 
+            }
         }
 
         /// <summary>
         ///		Gets/Sets the minimum time each particle will live for.
         /// </summary>
         public virtual float MinTimeToLive {
-            get { return minTTL; }
-            set { minTTL = value; }
+            get { 
+                return minTTL; 
+            }
+            set { 
+                minTTL = value; 
+            }
         }
 
         /// <summary>
         ///		Gets/Sets the maximum time each particle will live for.
         /// </summary>
         public virtual float MaxTimeToLive {
-            get { return maxTTL; }
-            set { maxTTL = value; }
+            get { 
+                return maxTTL; 
+            }
+            set { 
+                maxTTL = value; 
+            }
         }
 
         /// <summary>
@@ -263,32 +336,48 @@ namespace Axiom.ParticleSystems {
         ///		a range of colors to be assigned to particles.
         /// </remarks>
         public virtual ColorEx Color {
-            get { return colorRangeStart; }
-            set { colorRangeStart = colorRangeEnd = value; }
+            get { 
+                return colorRangeStart; 
+            }
+            set { 
+                colorRangeStart = colorRangeEnd = value; 
+            }
         }
 
         /// <summary>
         ///		Gets/Sets the color that a particle starts out when it is created.
         /// </summary>
         public virtual ColorEx ColorRangeStart {
-            get { return colorRangeStart; }
-            set { colorRangeStart = value; }
+            get { 
+                return colorRangeStart; 
+            }
+            set { 
+                colorRangeStart = value; 
+            }
         }
 
         /// <summary>
         ///		Gets/Sets the color that a particle ends at just before it's TTL expires.
         /// </summary>
         public virtual ColorEx ColorRangeEnd {
-            get { return colorRangeEnd; }
-            set { colorRangeEnd = value; }
+            get { 
+                return colorRangeEnd; 
+            }
+            set { 
+                colorRangeEnd = value; 
+            }
         }
 
         /// <summary>
         ///		Gets the name of the type of emitter. 
         /// </summary>
         public string Type {
-            get { return type; }
-            set { type = value; }
+            get { 
+                return type; 
+            }
+            set { 
+                type = value; 
+            }
         }
 
         /// <summary>
@@ -298,27 +387,12 @@ namespace Axiom.ParticleSystems {
         ///		Setting this property to false will turn the emitter off completely.
         /// </remarks>
         public virtual bool IsEnabled {
-            get { return isEnabled; }
+            get { 
+                return isEnabled; 
+            }
             set { 
                 isEnabled = value; 
-                if (isEnabled) {
-                    // Reset duration 
-                    if (durationMin == durationMax) {
-                        durationRemain = durationMin;
-                    }
-                    else {
-                        durationRemain =  MathUtil.UnitRandom() * (durationMax - durationMin);
-                    }
-                }
-                else {
-                    // Reset repeat
-                    if (repeatDelayMin == repeatDelayMax) {
-                        repeatDelayRemain = repeatDelayMin;
-                    }
-                    else {
-                        repeatDelayRemain = MathUtil.UnitRandom() * (repeatDelayMax - repeatDelayMin);
-                    }
-                }
+                InitDurationRepeat();
             }
         }
 
@@ -331,8 +405,13 @@ namespace Axiom.ParticleSystems {
         ///		that the emitter does not 'kick in' until later.
         /// </remarks>
         public virtual float StartTime {
-            get { return startTime; }
-            set { startTime = value; }
+            get { 
+                return startTime; 
+            }
+            set { 
+                this.IsEnabled = false;
+                startTime = value; 
+            }
         }
 
         /// <summary>
@@ -348,48 +427,77 @@ namespace Axiom.ParticleSystems {
         ///		a random variable duration.
         /// </remarks>
         public virtual float Duration {
-            get { return durationMin; }
-            set { durationMin = durationMax = value; }
+            get { 
+                return durationMin; 
+            }
+            set { 
+                SetDuration(value, value);
+            }
         }
 
         /// <summary>
         ///		Gets/Sets the minimum running time of this emitter.
         /// </summary>
         public virtual float MinDuration {
-            get { return durationMin; }
-            set { durationMin = value; }
+            get { 
+                return durationMin; 
+            }
+            set { 
+                durationMin = value; 
+                InitDurationRepeat();
+            }
         }
 
         /// <summary>
         ///		Gets/Sets the maximum running time of this emitter.
         /// </summary>
         public virtual float MaxDuration {
-            get { return durationMax; }
-            set { durationMax = value; }
-        }
-
-        /// <summary>
-        ///		Gets/Sets the time between repeats of the emitter.
-        /// </summary>
-        public virtual float RepeatDelay {
-            get { return repeatDelayMin; }
-            set { repeatDelayMin = repeatDelayMax = value; }
-        }
-
-        /// <summary>
-        ///		Gets/Sets the minimum repeat delay for the emitter.
-        /// </summary>
-        public virtual float MinRepeatDelay {
-            get { return repeatDelayMin; }
-            set { repeatDelayMin = value; }
+            get { 
+                return durationMax; 
+            }
+            set { 
+                durationMax = value;
+                InitDurationRepeat();
+            }
         }
 
         /// <summary>
         ///		Gets/Sets the maximum repeat delay for the emitter.
         /// </summary>
         public virtual float MaxRepeatDelay {
-            get { return repeatDelayMax; }
-            set { repeatDelayMax = value; }
+            get { 
+                return repeatDelayMax; 
+            }
+            set { 
+                repeatDelayMax = value;
+                InitDurationRepeat();
+            }
+        }
+
+        /// <summary>
+        ///		Gets/Sets the minimum repeat delay for the emitter.
+        /// </summary>
+        public virtual float MinRepeatDelay {
+            get { 
+                return repeatDelayMin; 
+            }
+            set { 
+                repeatDelayMin = value; 
+                InitDurationRepeat();
+            }
+        }
+
+        /// <summary>
+        ///		Gets/Sets the time between repeats of the emitter.
+        /// </summary>
+        public virtual float RepeatDelay {
+            get { 
+                return repeatDelayMin; 
+            }
+            set { 
+                repeatDelayMin = repeatDelayMax = value;
+                InitDurationRepeat();
+            }
         }
 
         #endregion
@@ -430,7 +538,7 @@ namespace Axiom.ParticleSystems {
         ///		Utility method for generating particle exit direction
         /// </summary>
         /// <param name="dest">Normalized vector dictating new direction.</param>
-        virtual protected void GenerateEmissionDirection(ref Vector3 dest) {
+        protected virtual void GenerateEmissionDirection(ref Vector3 dest) {
             if(angle != 0.0f) {
                 float tempAngle = MathUtil.UnitRandom() * angle;
 
@@ -444,10 +552,10 @@ namespace Axiom.ParticleSystems {
         }
 
         /// <summary>
-        ///		Utility method to applu velocity to a particle direction.
+        ///		Utility method to apply velocity to a particle direction.
         /// </summary>
         /// <param name="dest">The normalized vector to scale by a randomly generated scale between min and max speed.</param>
-        virtual protected void GenerateEmissionVelocity(ref Vector3 dest) {
+        protected virtual void GenerateEmissionVelocity(ref Vector3 dest) {
             float scalar;
 
             if (minSpeed != maxSpeed) {
@@ -464,7 +572,7 @@ namespace Axiom.ParticleSystems {
         ///		Utility method for generating a time-to-live for a particle.
         /// </summary>
         /// <returns></returns>
-        virtual protected float GenerateEmissionTTL() {
+        protected virtual float GenerateEmissionTTL() {
             if (maxTTL != minTTL) {
                 return minTTL + (MathUtil.UnitRandom() * (maxTTL - minTTL));
             }
@@ -507,6 +615,15 @@ namespace Axiom.ParticleSystems {
                         this.IsEnabled = true;
                     }
                 }
+                if(startTime > 0.0f) {
+                    startTime -= timeElapsed;
+
+                    if(startTime <= 0.0f) {
+                        this.IsEnabled = true;
+                        startTime = 0;
+                    }
+                }
+
                 return 0;
             }
         }
@@ -517,7 +634,7 @@ namespace Axiom.ParticleSystems {
         /// <param name="color">
         ///    The color object that will be altered depending on the method of generating the particle color.
         /// </param>
-        virtual protected void GenerateEmissionColor(ColorEx color) {
+        protected virtual void GenerateEmissionColor(ColorEx color) {
             if (colorRangeStart.CompareTo(colorRangeEnd) != 0) {
                 color.r = colorRangeStart.r + MathUtil.UnitRandom() * (colorRangeEnd.r - colorRangeStart.r);
                 color.g = colorRangeStart.g + MathUtil.UnitRandom() * (colorRangeEnd.g - colorRangeStart.g);
@@ -535,12 +652,51 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         /// 
         /// </summary>
+        protected void InitDurationRepeat() {
+            if(isEnabled) {
+                if(durationMin == durationMax) {
+                    durationRemain = durationMin;
+                }
+                else {
+                    durationRemain = MathUtil.RangeRandom(durationMin, durationMax);
+                }
+            }
+            else {
+                // reset repeat
+                if(repeatDelayMin == repeatDelayMax) {
+                    repeatDelayRemain = repeatDelayMin;
+                }
+                else {
+                    repeatDelayRemain = MathUtil.RangeRandom(repeatDelayMin, repeatDelayMax);
+                }
+            }
+        }
+    
+        /// <summary>
+        ///    Sets the min/max duration range for this emitter.
+        /// </summary>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        public void SetDuration(float min, float max) {
+            durationMin = min;
+            durationMax = max;
+            InitDurationRepeat();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="emitter"></param>
         public virtual void CopyTo(ParticleEmitter emitter) {
             PropertyInfo[] props = this.GetType().GetProperties();
 
             for(int i = 0; i < props.Length; i++) {
                 PropertyInfo prop = props[i];
+
+                // HACK: This property should not be set during a copy, revisit param parsing
+                if(prop.Name == "StartTime" || prop.Name == "RepeatDelay") {
+                    continue;
+                }
 
                 // if the prop is not settable, then skip
                 if(!prop.CanWrite || !prop.CanRead) {
@@ -655,27 +811,6 @@ namespace Axiom.ParticleSystems {
             emitter.Direction = ParseHelper.ParseVector3(values);
         }
 
-        [AttributeParser("velocity", EMITTER)]
-        public static void ParseVelocity(string[] values, params object[] objects) {
-            ParticleEmitter emitter = objects[0] as ParticleEmitter;
-
-            emitter.ParticleVelocity = float.Parse(values[0]);
-        }
-
-        [AttributeParser("velocity_min", EMITTER)]
-        public static void ParseVelocityMin(string[] values, params object[] objects) {
-            ParticleEmitter emitter = objects[0] as ParticleEmitter;
-
-            emitter.MinParticleVelocity = float.Parse(values[0]);
-        }
-
-        [AttributeParser("velocity_max", EMITTER)]
-        public static void ParseVelocityMax(string[] values, params object[] objects) {
-            ParticleEmitter emitter = objects[0] as ParticleEmitter;
-
-            emitter.MaxParticleVelocity = float.Parse(values[0]);
-        }
-
         [AttributeParser("duration", EMITTER)]
         public static void ParseDuration(string[] values, params object[] objects) {
             ParticleEmitter emitter = objects[0] as ParticleEmitter;
@@ -716,6 +851,27 @@ namespace Axiom.ParticleSystems {
             ParticleEmitter emitter = objects[0] as ParticleEmitter;
 
             emitter.MaxRepeatDelay = float.Parse(values[0]);
+        }
+
+        [AttributeParser("velocity", EMITTER)]
+        public static void ParseVelocity(string[] values, params object[] objects) {
+            ParticleEmitter emitter = objects[0] as ParticleEmitter;
+
+            emitter.ParticleVelocity = float.Parse(values[0]);
+        }
+
+        [AttributeParser("velocity_min", EMITTER)]
+        public static void ParseVelocityMin(string[] values, params object[] objects) {
+            ParticleEmitter emitter = objects[0] as ParticleEmitter;
+
+            emitter.MinParticleVelocity = float.Parse(values[0]);
+        }
+
+        [AttributeParser("velocity_max", EMITTER)]
+        public static void ParseVelocityMax(string[] values, params object[] objects) {
+            ParticleEmitter emitter = objects[0] as ParticleEmitter;
+
+            emitter.MaxParticleVelocity = float.Parse(values[0]);
         }
 
         [AttributeParser("color_range_start", EMITTER)]
