@@ -962,6 +962,28 @@ namespace Axiom.RenderSystems.DirectX9 {
 			}
 		}
 
+		/// <summary>
+		///		
+		/// </summary>
+		public override float HorizontalTexelOffset {
+			get {
+				// D3D considers the origin to be in the center of a pixel
+				return -0.5f;
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public override float VerticalTexelOffset {
+			get {
+				// D3D considers the origin to be in the center of a pixel
+				return -0.5f;
+			}
+		}
+
+
+
 		#region Private methods
 
 		/// <summary>
