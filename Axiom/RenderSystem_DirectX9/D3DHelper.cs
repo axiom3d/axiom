@@ -283,10 +283,12 @@ namespace RenderSystem_DirectX9 {
         public static D3D.LockFlags ConvertEnum(BufferLocking locking) {
             D3D.LockFlags d3dLockFlags = 0;
 
-            if((locking & BufferLocking.Discard) > 0)
+            if(locking == BufferLocking.Discard)
                 d3dLockFlags |= D3D.LockFlags.Discard;
-            if((locking & BufferLocking.ReadOnly) > 0)
+            if(locking == BufferLocking.ReadOnly)
                 d3dLockFlags |= D3D.LockFlags.ReadOnly;
+            if(locking == BufferLocking.NoOverwrite)
+                d3dLockFlags |= D3D.LockFlags.NoOverwrite;
 
             return d3dLockFlags;
         }
@@ -300,7 +302,15 @@ namespace RenderSystem_DirectX9 {
                     return (int)D3D.TextureCoordinateIndex.CameraSpaceReflectionVector;
 
                 case TexCoordCalcMethod.EnvironmentMapPlanar:
-                    return (int)D3D.TextureCoordinateIndex.CameraSpacePosition;
+                    //return (int)D3D.TextureCoordinateIndex.CameraSpacePosition;
+                    if(caps.VertexProcessingCaps.SupportsTextureGenerationSphereMap) {
+                        // use sphere map if available
+                        return (int)D3D.TextureCoordinateIndex.SphereMap;
+                    }
+                    else {
+                        // If not, fall back on camera space reflection vector which isn't as good
+                        return (int)D3D.TextureCoordinateIndex.CameraSpaceReflectionVector;
+                    }
 
                 case TexCoordCalcMethod.EnvironmentMapNormal:
                     return (int)D3D.TextureCoordinateIndex.CameraSpaceNormal;

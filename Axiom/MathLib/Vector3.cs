@@ -459,7 +459,7 @@ namespace Axiom.MathLib {
         /// </summary>
         /// <returns>A string representation of a vector3.</returns>
         public override string ToString() {
-            return String.Format("<{0},{1},{2}>", this.x, this.y, this.z);
+            return String.Format("Vector3({0}, {1}, {2})", this.x, this.y, this.z);
         }
 
         /// <summary>

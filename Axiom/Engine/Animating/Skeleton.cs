@@ -235,8 +235,6 @@ namespace Axiom.Animating {
                 throw new Exception("Cannot derive the root bone for a skeleton that has no bones.");
             }
 
-            // TODO: Verify this works
-
             // get the first bone in the list
             Bone currentBone = boneList[0];
             
@@ -321,7 +319,6 @@ namespace Axiom.Animating {
                 reverse transform by the Bone's original derived position/orientation, then transform
                 by the new derived position / orientation.
             */
-
             for(int i = 0; i < boneList.Count; i++) {
                 Bone bone = boneList[i];
                 matrices[i] = bone.FullTransform * bone.BindDerivedInverseTransform;
@@ -554,5 +551,67 @@ namespace Axiom.Animating {
         }
 
         #endregion Implementation of Resource
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        public void DumpContents(string fileName) {
+            FileStream fs = File.Open(fileName, FileMode.Create);
+            StreamWriter writer = new StreamWriter(fs);
+            writer.AutoFlush = true;
+            
+            writer.WriteLine("-= Debug output of skeleton  {0} =-", this.name);
+            writer.WriteLine("");
+            writer.WriteLine("== Bones ==");
+            writer.WriteLine("Number of bones: {0}", boneList.Count);
+
+            Quaternion q = new Quaternion();
+            float angle = 0;
+            Vector3 axis = new Vector3();
+
+            // write each bone out
+            foreach(Bone bone in boneList) {
+                writer.WriteLine("-- Bone {0} --", bone.Handle);
+                writer.Write("Position: {0}", bone.Position);
+                q = bone.Orientation;
+                writer.Write("Rotation: {0}", q);
+                q.ToAngleAxis(ref angle, ref axis);
+                writer.Write(" = {0} radians around axis {1}", angle, axis);
+                writer.WriteLine(""); writer.WriteLine("");
+            }
+
+            writer.WriteLine("== Animations ==");
+            writer.WriteLine("Number of animations: {0}", animationList.Count);
+
+            // animations
+            foreach(Animation anim in animationList) {
+                writer.WriteLine("-- Animation '{0}' (length {1}) --", anim.Name, anim.Length);
+                writer.WriteLine("Number of tracks: {0}", anim.Tracks.Count);
+
+                // tracks
+                foreach(AnimationTrack track in anim.Tracks) {
+                    writer.WriteLine("  -- AnimationTrack {0} --", track.Index);
+                    writer.WriteLine("  Affects bone: {0}", ((Bone)track.TargetNode).Handle);
+                    writer.WriteLine("  Number of keyframes: {0}", track.KeyFrames.Count);
+
+                    // key frames
+                    int kf = 0;
+                    foreach(KeyFrame keyFrame in track.KeyFrames) {
+                        writer.WriteLine("    -- KeyFrame {0} --", kf++);
+                        writer.Write("    Time index: {0}", keyFrame.Time);
+                        writer.WriteLine("    Translation: {0}", keyFrame.Translate);
+                        q = keyFrame.Rotation;
+                        writer.Write("    Rotation: {0}", q);
+                        q.ToAngleAxis(ref angle, ref axis);
+                        writer.WriteLine(" = {0} radians around axis {1}", angle, axis);
+                    }
+                }
+            }
+
+            writer.Close();
+            fs.Close();
+        }
+
     }
 }

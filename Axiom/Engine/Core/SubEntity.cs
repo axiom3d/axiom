@@ -153,7 +153,7 @@ namespace Axiom.Core {
         /// <param name="matrices"></param>
         public void GetWorldTransforms(Matrix4[] matrices) {
             if(parent.numBoneMatrices == 0) {
-                matrices[0] = parent.ParentNode.FullTransform;
+                matrices[0] = parent.ParentFullTransform;
             }
             else {
                 // use cached bone matrices of the parent entity

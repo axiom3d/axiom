@@ -185,6 +185,16 @@ namespace Axiom.MathLib {
         static public Quaternion Slerp(float time, Quaternion quatA, Quaternion quatB) {
             float cos = quatA.Dot(quatB);
 
+            // clamp
+            // HACK: Ok, this needs to be looked at.  The decimal precision can sometimes be *slightly* off
+            // from what is loaded from .skeleton files.  In some scenarios when we end up having a cos value
+            // calculated above that is just over 1 (i.e. 1.000000012), which the ACos of is Nan, thus completly
+            // throwing off node transformations and rotations associated with an animation.
+            if(cos > 1.0f)
+                cos = 1.0f;
+            else if(cos < -1.0f)
+                cos = -1.0f;
+
             float angle = MathUtil.ACos(cos);
 
             if ( MathUtil.Abs(angle) < EPSILON )
@@ -248,6 +258,32 @@ namespace Axiom.MathLib {
         /// <returns></returns>
         public float Dot(Quaternion quat) {
             return this.w * quat.w + this.x * quat.x + this.y * quat.y + this.z * quat.z;
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        /// <param name="angle"></param>
+        /// <param name="axis"></param>
+        /// <returns></returns>
+        public void ToAngleAxis(ref float angle, ref Vector3 axis) {
+            // The quaternion representing the rotation is
+            //   q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k)
+
+            float sqrLength = x * x + y * y + z * z;
+            if(sqrLength >0.0f) {
+                angle = 2.0f * MathUtil.ACos(w);
+                float invLength = MathUtil.InvSqrt(sqrLength);
+                axis.x = x * invLength;
+                axis.y = y * invLength;
+                axis.z = z * invLength;
+            }
+            else {
+                angle = 0.0f;
+                axis.x = 1.0f;
+                axis.y = 0.0f;
+                axis.z = 0.0f;
+            }
         }
 
         /// <summary>
@@ -476,7 +512,7 @@ namespace Axiom.MathLib {
         /// </summary>
         /// <returns>A string representation of a Quaternion.</returns>
         public override String ToString() {
-            return String.Format("(Angle: {0}, <{1},{2},{3})>, )", this.w, this.x, this.y, this.z);
+            return String.Format("Quaternion({0}, {1}, {2}, {3})", this.x, this.y, this.z, this.w);
         }
 		
         public override int GetHashCode() {

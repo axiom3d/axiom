@@ -60,7 +60,7 @@ namespace Demos {
             SceneNode rootNode = sceneMgr.RootSceneNode;
             //rootNode.Objects.Add(knotEntity);
 
-            Entity clone;
+            Entity clone = null;
 
             for(int i = 0; i < 10; i++) {
                 SceneNode node = sceneMgr.CreateSceneNode();
@@ -86,7 +86,6 @@ namespace Demos {
                 node.Objects.Add(clone);
             } 
         } 
-
 		
         #endregion
     }

@@ -145,6 +145,7 @@
                 />
                 <File
                     RelPath = "D3D9RenderSystem.cs"
+                    SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File

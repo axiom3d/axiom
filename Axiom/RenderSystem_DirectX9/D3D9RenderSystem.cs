@@ -1066,10 +1066,7 @@ namespace RenderSystem_DirectX9 {
 
                 // note: int values of D3D.TextureTransform correspond directly with tex dimension, so direct conversion is possible
                 // i.e. Count1 = 1, Count2 = 2, etc
-                if(texStageDesc[stage].autoTexCoordType == TexCoordCalcMethod.EnvironmentMapPlanar)
-                    device.TextureState[stage].TextureTransform = D3D.TextureTransform.Projected | (D3D.TextureTransform)texCoordDim;
-                else
-                    device.TextureState[stage].TextureTransform = (D3D.TextureTransform)texCoordDim;
+                device.TextureState[stage].TextureTransform = (D3D.TextureTransform)texCoordDim;
 
                 // set the manually calculated texture matrix
                 device.SetTransform(d3dTransType, d3dMat);

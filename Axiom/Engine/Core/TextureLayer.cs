@@ -211,8 +211,6 @@ namespace Axiom.Core {
         /// </summary>
         public bool Blank {
             get { 
-                //if(isBlank)
-                //Console.WriteLine("Get Value: " + this.TextureName); 
                 return isBlank;  
             }
             set { isBlank = value; }

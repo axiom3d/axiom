@@ -486,7 +486,6 @@ namespace Axiom.SubSystems.Rendering {
                             // aspect of the matrix is orthogonal (no non-uniform scaling), the inverse transpose
                             // is equal to the main 3x3 matrix
                             // Note because it's a normal we just extract the rotational part, saves us renormalising
-
                             rot3x3 = matrices[matrixIndex].GetMatrix3();
                             accumVecNorm = (rot3x3 * blendWeights[blendWeightIdx]) * accumVecNorm;
                         } // if
