@@ -219,11 +219,13 @@ namespace Axiom.Utility {
 		}
 
 		public void Dispose() {
-            // remove event handlers
-            engine.FrameStarted -= new FrameEvent(OnFrameStarted);
-            engine.FrameEnded -= new FrameEvent(OnFrameEnded);
+			if(engine != null) {
+				// remove event handlers
+				engine.FrameStarted -= new FrameEvent(OnFrameStarted);
+				engine.FrameEnded -= new FrameEvent(OnFrameEnded);
 
-            engine.Dispose();
+				engine.Dispose();
+			}
 		}
 
 		#endregion Public Methods
