@@ -687,24 +687,15 @@ namespace Axiom.ParticleSystems {
         /// </summary>
         /// <param name="emitter"></param>
         public virtual void CopyTo(ParticleEmitter emitter) {
-            PropertyInfo[] props = this.GetType().GetProperties();
+            // loop through all registered commands and copy from this instance to the target instance
+            foreach(DictionaryEntry entry in commandTable) {
+                string name = (string)entry.Key;
 
-            for(int i = 0; i < props.Length; i++) {
-                PropertyInfo prop = props[i];
+                // get the value of the param from this instance
+                string val = ((ICommand)entry.Value).Get(this);
 
-                // HACK: This property should not be set during a copy, revisit param parsing
-                if(prop.Name == "StartTime" || prop.Name == "RepeatDelay") {
-                    continue;
-                }
-
-                // if the prop is not settable, then skip
-                if(!prop.CanWrite || !prop.CanRead) {
-                    Console.WriteLine(prop.Name);
-                    continue;
-                }
-
-                object srcVal = prop.GetValue(this, null);
-                prop.SetValue(emitter, srcVal, null);
+                // set the param on the target instance
+                emitter.SetParam(name, val);
             }
         }
 
