@@ -41,7 +41,7 @@ namespace RenderSystem_OpenGL
 	public class GLWindow : RenderWindow
 	{
 		protected OpenGLContext context;
-		protected OpenGLExtensions Ext = new OpenGLExtensions();
+		protected Ext Ext = new Ext();
 		private bool isActive;
 
 		public GLWindow()

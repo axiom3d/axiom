@@ -124,6 +124,16 @@
                     AssemblyName = "csgl"
                     HintPath = "..\Solution Items\csgl.dll"
                 />
+                <Reference
+                    Name = "Tao.Platform.Windows"
+                    AssemblyName = "Tao.Platform.Windows"
+                    HintPath = "..\Solution Items\Tao.Platform.Windows.dll"
+                />
+                <Reference
+                    Name = "Tao.OpenGl"
+                    AssemblyName = "Tao.OpenGl"
+                    HintPath = "..\Solution Items\Tao.OpenGl.dll"
+                />
             </References>
         </Build>
         <Files>
@@ -165,11 +175,6 @@
                 />
                 <File
                     RelPath = "GLWindow.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "OpenGLExtensions.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

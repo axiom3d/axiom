@@ -27,7 +27,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Specialized;
 using Axiom.SubSystems.Rendering;
-using Gl = CsGL.OpenGL.GL;
+//using Gl = CsGL.OpenGL.GL;
+using Gl = Tao.OpenGl.Gl;
 
 namespace RenderSystem_OpenGL
 {
@@ -36,6 +37,15 @@ namespace RenderSystem_OpenGL
 	/// </summary>
 	public class GLHelper
 	{
+		const uint GL_STATIC_DRAW_ARB = 0x88E4; 
+		const uint GL_ARRAY_BUFFER_ARB = 0x8892;
+		const uint GL_READ_ONLY_ARB = 0x88B8;
+		const uint GL_ELEMENT_ARRAY_BUFFER_ARB = 0x8893;
+		const uint GL_STATIC_COPY_ARB = 0x88E6; 
+		const uint GL_DYNAMIC_DRAW_ARB = 0x88E8;
+		const uint GL_WRITE_ONLY_ARB = 0x88B9;
+		const uint GL_READ_WRITE_ARB = 0x88BA;
+
 		static StringCollection extensionList;
 
 		/// <summary>
@@ -89,18 +99,18 @@ namespace RenderSystem_OpenGL
 		/// </summary>
 		/// <param name="usage"></param>
 		/// <returns></returns>
-		public static uint ConvertEnum(BufferUsage usage)
+		public static int ConvertEnum(BufferUsage usage)
 		{
 			switch(usage)
 			{
 				case BufferUsage.Static:
 				//case BufferUsage.StaticWriteOnly:
-					return Gl.GL_STATIC_DRAW_ARB;
+					return (int)GL_STATIC_DRAW_ARB;
 
 				case BufferUsage.Dynamic:
 				case BufferUsage.DynamicWriteOnly:
 				default:
-					return Gl.GL_DYNAMIC_DRAW_ARB;
+					return (int)GL_DYNAMIC_DRAW_ARB;
 			}
 		}
 
@@ -109,7 +119,7 @@ namespace RenderSystem_OpenGL
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public static uint ConvertEnum(VertexElementType type)
+		public static int ConvertEnum(VertexElementType type)
 		{
 			switch(type)
 			{
