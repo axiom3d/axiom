@@ -418,7 +418,12 @@ namespace Axiom.Gui
         /// </summary>
         public float Height {
             get {
-                return height;
+                if(metricsMode == MetricsMode.Pixels) {
+                    return pixelHeight;
+                }
+                else {
+                    return height;
+                }
             }
             set {
                 if(metricsMode == MetricsMode.Pixels) {
@@ -494,7 +499,12 @@ namespace Axiom.Gui
         /// </summary>
         public float Left {
             get {
-                return left;
+                if(metricsMode == MetricsMode.Pixels) {
+                    return pixelLeft;
+                }
+                else {
+                    return left;
+                }
             }
             set {
                 if(metricsMode == MetricsMode.Pixels) {
@@ -599,7 +609,12 @@ namespace Axiom.Gui
         /// </summary>
         public float Top {
             get {
-                return top;
+                if(metricsMode == MetricsMode.Pixels) {
+                    return pixelTop;
+                }
+                else {
+                    return top;
+                }
             }
             set {
                 if(metricsMode == MetricsMode.Pixels) {
@@ -653,7 +668,12 @@ namespace Axiom.Gui
         /// </summary>
         public float Width {
             get {
-                return width;
+                if(metricsMode == MetricsMode.Pixels) {
+                    return pixelWidth;
+                }
+                else {
+                    return width;
+                }
             }
             set {
                 if(metricsMode == MetricsMode.Pixels) {
