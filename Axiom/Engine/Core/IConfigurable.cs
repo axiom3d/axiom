@@ -18,6 +18,9 @@ namespace Axiom.Core
         /// <param name="val">
         ///    Value of the parameter.
         /// </param>
-		void SetParam(string name, string val);
+        /// <returns>
+        ///    False if the param was not dealt with, True if it was.
+        /// </returns>
+		bool SetParam(string name, string val);
 	}
 }
