@@ -975,7 +975,7 @@ namespace RenderSystem_OpenGL {
                 // get the type of this buffer
                 int type = GLHelper.ConvertEnum(element.Type);
 
-                unsafe {
+            //    unsafe {
                     // set pointer usage based on the use of this buffer
                     switch(element.Semantic) {
                         case VertexElementSemantic.Position:
@@ -1028,7 +1028,6 @@ namespace RenderSystem_OpenGL {
                                 // only set if this textures index if it is supposed to
                                 if(texCoordIndex[j] == element.Index) {
                                     // set the current active texture unit
-                                    //Ext.glClientActiveTextureARB(Gl.GL_TEXTURE0 + (uint)j);
                                     Gl.glClientActiveTextureARB(glClientActiveTextureARB, Gl.GL_TEXTURE0 + j); 
 
                                     int tmp = Gl.glIsEnabled(Gl.GL_TEXTURE_2D);
@@ -1051,7 +1050,7 @@ namespace RenderSystem_OpenGL {
                         default:
                             break;
                     } // switch
-                } // unsafe
+               // } // unsafe
             } // for
 
             // reset to texture unit 0
