@@ -152,6 +152,24 @@ namespace Axiom.Core {
     }
 
     /// <summary>
+    ///     Denotes the spaces which a transform can be relative to.
+    /// </summary>
+    public enum TransformSpace {
+        /// <summary>
+        ///     Transform is relative to the local space.
+        /// </summary>
+        Local,
+        /// <summary>
+        ///     Transform is relative to the space of the parent node.
+        /// </summary>
+        Parent,
+        /// <summary>
+        ///     Transform is relative to world space.
+        /// </summary>
+        World
+    };
+
+    /// <summary>
     ///    This type can be used by collaborating applications & SceneManagers to 
     ///    agree on the type of world geometry to be returned from queries. Not all
     ///    these types will be supported by all SceneManagers; once the application

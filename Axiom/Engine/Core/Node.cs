@@ -263,10 +263,41 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="scale">Vector with x,y,z values representing the translation.</param>
         public virtual void Translate(Vector3 translate) {
-            position = position + translate;
-            NeedUpdate();
+            Translate(translate, TransformSpace.Parent);
         }
 		
+        /// <summary>
+        /// Moves the node along the cartesian axes.
+        ///
+        ///	This method moves the node by the supplied vector along the
+        ///	world cartesian axes, i.e. along world x,y,z
+        /// </summary>
+        /// <param name="scale">Vector with x,y,z values representing the translation.</param>
+        public virtual void Translate(Vector3 translate, TransformSpace relativeTo) {
+            switch(relativeTo) {
+                case TransformSpace.Local:
+                    // position is relative to parent so transform downwards
+                    position += orientation * translate;
+                    break;
+
+                case TransformSpace.World:
+                    if(parent != null) {
+                        position += parent.DerivedOrientation.Inverse() * translate;
+                    }
+                    else {
+                        position += translate;
+                    }
+
+                    break;
+
+                case TransformSpace.Parent:
+                    position = position + translate;
+                    break;
+            }
+
+            NeedUpdate();
+        }
+
         /// <summary>
         /// Moves the node along arbitrary axes.
         /// </summary>
@@ -285,6 +316,25 @@ namespace Axiom.Core {
         public virtual void Translate(Matrix3 axes, Vector3 move) {
             Vector3 derived = axes * move;
             Translate(derived);
+        }
+
+        /// <summary>
+        /// Moves the node along arbitrary axes.
+        /// </summary>
+        /// <remarks>
+        ///	This method translates the node by a vector which is relative to
+        ///	a custom set of axes.
+        ///	</remarks>
+        /// <param name="pAxes">3x3 Matrix containg 3 column vectors each representing the
+        ///	X, Y and Z axes respectively. In this format the standard cartesian axes would be expressed as:
+        ///		1 0 0
+        ///		0 1 0
+        ///		0 0 1
+        ///		i.e. The Identity matrix.
+        ///	</param>
+        /// <param name="move">Vector relative to the supplied axes.</param>
+        public virtual void Translate(Matrix3 axes, Vector3 move, TransformSpace relativeTo) {
+            Translate(axes, move, TransformSpace.Parent);
         }
 
 

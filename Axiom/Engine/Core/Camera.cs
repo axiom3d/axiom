@@ -60,92 +60,59 @@ namespace Axiom.Core {
     ///		This is useful for implementing more complex Camera / object
     ///		relationships i.e. having a camera attached to a world object.
     /// </remarks>
-    public class Camera : SceneObject {
-        #region Protected member variables
+    public class Camera : Frustum {
+        #region Fields
 
-        protected Frustum				frustum;
         protected SceneManager	sceneManager;
-        protected Quaternion			orientation;
-        protected Vector3				position;
-        protected Quaternion			lastParentOrientation;
-        protected Vector3				lastParentPosition;
-        protected Quaternion			derivedOrientation;
-        protected Vector3				derivedPosition;				
-        protected float fieldOfView, farDistance, nearDistance, aspectRatio;
-        protected bool					isYawFixed;
-        protected Vector3				yawFixedAxis;
-        protected Projection			projectionType;
+        protected Quaternion orientation;
+        protected Vector3 position;
+        protected Quaternion derivedOrientation;
+        protected Vector3 derivedPosition;				
+        protected bool isYawFixed;
+        protected Vector3 yawFixedAxis;
+        protected Projection projectionType;
         protected SceneDetailLevel sceneDetail;
-        protected Matrix4				projectionMatrix;
-        protected Matrix4              standardProjMatrix;
-        protected Matrix4				viewMatrix;
-        protected bool					recalculateFrustum;
-        protected bool					recalculateView;
-        protected int						numFacesRenderedLastFrame;
-        protected SceneNode			autoTrackTarget;
-        protected Vector3				autoTrackOffset;	
-        protected float                   sceneLodFactor;
-        protected float                    invSceneLodFactor;
-
+        protected int numFacesRenderedLastFrame;
+        protected SceneNode autoTrackTarget;
+        protected Vector3 autoTrackOffset;	
+        protected float sceneLodFactor;
+        protected float invSceneLodFactor;
         protected bool isReflected;
         protected Matrix4 reflectionMatrix;
         protected Plane reflectionPlane;
 
-        /** Temp coefficient values calculated from a frustum change,
-            used when establishing the frustum planes when the view changes. */
-        float[] coeffL = new float[2];
-        float[] coeffR = new float[2];
-        float[] coeffB = new float[2];
-        float[] coeffT = new float[2];
-
-        #endregion
+        #endregion Fields
 
         #region Constructors
 
-        public Camera(string name, SceneManager sceneManager) {
+        public Camera(string name, SceneManager sceneManager) : base() {
             // Init camera location & direction
 
             // Locate at (0,0,0)
-            this.position = Vector3.Zero;
-            this.lastParentPosition = Vector3.Zero;
-            this.derivedPosition = Vector3.Zero;
+            position = Vector3.Zero;
+            derivedPosition = Vector3.Zero;
 
             // Point down -Z axis
-            this.orientation = Quaternion.Identity;
-            this.lastParentOrientation = Quaternion.Identity;
-            this.derivedOrientation = Quaternion.Identity;
+            orientation = Quaternion.Identity;
+            derivedOrientation = Quaternion.Identity;
 
             // Reasonable defaults to camera params
-            this.frustum = new Frustum();
-            this.fieldOfView = MathUtil.RadiansToDegrees(MathUtil.PI / 4.0f);
-            this.nearDistance = 100.0f;
-            this.farDistance = 100000.0f;
-            this.aspectRatio = 1.33333333333333f;
-            this.projectionType = Projection.Perspective;
-            this.sceneDetail = SceneDetailLevel.Solid;
+            projectionType = Projection.Perspective;
+            sceneDetail = SceneDetailLevel.Solid;
 
             // Default to fixed yaw (freelook)
             this.FixedYawAxis = Vector3.UnitY;
-			
-            this.recalculateFrustum = true;
-            this.recalculateView = true;
-
-            // Init matrices
-            this.viewMatrix = Matrix4.Zero;
-            this.projectionMatrix = Matrix4.Zero;
 
             // Record name & SceneManager
             this.name = name;
             this.sceneManager = sceneManager;
 
             // Init no tracking
-            this.autoTrackTarget = null;
-            this.autoTrackOffset = Vector3.Zero;
+            autoTrackTarget = null;
+            autoTrackOffset = Vector3.Zero;
 
             // default these to 1 so Lod default to normal
-            this.sceneLodFactor = this.invSceneLodFactor = 1.0f;
-
-            UpdateView();
+            sceneLodFactor = this.invSceneLodFactor = 1.0f;
         }
 
         #endregion
@@ -155,7 +122,7 @@ namespace Axiom.Core {
         /// <summary>
         ///		Updates the frustum data.
         /// </summary>
-        protected void UpdateFrustum() {
+        protected override void UpdateFrustum() {
             if(recalculateFrustum) {
                 switch(projectionType) {
                     case Projection.Perspective: {
@@ -215,9 +182,9 @@ namespace Axiom.Core {
         /// <summary>
         ///		Updates the view matrix.
         /// </summary>
-        protected void UpdateView() {
+        protected override void UpdateView() {
             // check if the view is out of date
-            if(IsViewOutOfDate()) {
+            if(this.IsViewOutOfDate) {
                 // View matrix is:
                 //
                 //  [ Lx  Uy  Dz  Tx  ]
@@ -262,28 +229,28 @@ namespace Axiom.Core {
                 float distance = camDirection.Dot(derivedPosition);
 
                 // left plane
-                frustum[FrustumPlane.Left].Normal = coeffL[0] * left + 	coeffL[1] * camDirection;
-                frustum[FrustumPlane.Left].D = -derivedPosition.Dot(frustum[FrustumPlane.Left].Normal);
+                planes[(int)FrustumPlane.Left].Normal = coeffL[0] * left + 	coeffL[1] * camDirection;
+                planes[(int)FrustumPlane.Left].D = -derivedPosition.Dot(planes[(int)FrustumPlane.Left].Normal);
 
                 // right plane
-                frustum[FrustumPlane.Right].Normal = coeffR[0] * left + coeffR[1] * camDirection;
-                frustum[FrustumPlane.Right].D = -derivedPosition.Dot(frustum[FrustumPlane.Right].Normal);
+                planes[(int)FrustumPlane.Right].Normal = coeffR[0] * left + coeffR[1] * camDirection;
+                planes[(int)FrustumPlane.Right].D = -derivedPosition.Dot(planes[(int)FrustumPlane.Right].Normal);
 
                 // bottom plane
-                frustum[FrustumPlane.Bottom].Normal = coeffB[0] * up + coeffB[1] * camDirection;
-                frustum[FrustumPlane.Bottom].D = -derivedPosition.Dot(frustum[FrustumPlane.Bottom].Normal);
+                planes[(int)FrustumPlane.Bottom].Normal = coeffB[0] * up + coeffB[1] * camDirection;
+                planes[(int)FrustumPlane.Bottom].D = -derivedPosition.Dot(planes[(int)FrustumPlane.Bottom].Normal);
 
                 // top plane
-                frustum[FrustumPlane.Top].Normal = coeffT[0] * up + coeffT[1] * camDirection;
-                frustum[FrustumPlane.Top].D = -derivedPosition.Dot(frustum[FrustumPlane.Top].Normal);
+                planes[(int)FrustumPlane.Top].Normal = coeffT[0] * up + coeffT[1] * camDirection;
+                planes[(int)FrustumPlane.Top].D = -derivedPosition.Dot(planes[(int)FrustumPlane.Top].Normal);
 
                 // far plane
-                frustum[FrustumPlane.Far].Normal = -camDirection;
-                frustum[FrustumPlane.Far].D = distance + farDistance;
+                planes[(int)FrustumPlane.Far].Normal = -camDirection;
+                planes[(int)FrustumPlane.Far].D = distance + farDistance;
 
                 // near plane
-                frustum[FrustumPlane.Near].Normal = camDirection;
-                frustum[FrustumPlane.Near].D = -(distance + nearDistance);
+                planes[(int)FrustumPlane.Near].Normal = camDirection;
+                planes[(int)FrustumPlane.Near].D = -(distance + nearDistance);
 
                 // Deal with reflection on frustum planes
                 if (isReflected) {
@@ -291,18 +258,17 @@ namespace Axiom.Core {
                     Vector3 dir = camDirection.Reflect(reflectionPlane.Normal);
                     distance = dir.Dot(pos);
                     for(int i = 0; i < 6; i++) {
-                        FrustumPlane fp = (FrustumPlane)i;
-                        frustum[fp].Normal = frustum[fp].Normal.Reflect(reflectionPlane.Normal);
+                        planes[i].Normal = planes[i].Normal.Reflect(reflectionPlane.Normal);
                         // Near / far plane dealt with differently since they don't pass through camera
-                        switch(fp) {
+                        switch((FrustumPlane)i) {
                         case FrustumPlane.Near:
-                            frustum[fp].D = -(distance + nearDistance);
+                            planes[i].D = -(distance + nearDistance);
                             break;
                         case FrustumPlane.Far:
-                            frustum[fp].D = distance + farDistance;
+                            planes[i].D = distance + farDistance;
                             break;
                         default:
-                            frustum[fp].D = -pos.Dot(frustum[fp].Normal);
+                            planes[i].D = -pos.Dot(planes[i].Normal);
                             break;
                         }
                     }
@@ -311,42 +277,6 @@ namespace Axiom.Core {
                 // update since we have now recalculated everything
                 recalculateView = false;
             }
-        }
-
-        /// <summary>
-        ///		Evaluates whether or not the view matrix is out of date.
-        /// </summary>
-        /// <returns></returns>
-        protected bool IsViewOutOfDate() {
-            // are we attached to another node?
-            if(parentNode != null) {
-                if(!recalculateView && parentNode.DerivedOrientation == lastParentOrientation &&
-                    parentNode.DerivedPosition == lastParentPosition) {
-                    return false;
-                }
-                else {
-                    // we are out of date with the parent scene node
-                    lastParentOrientation = parentNode.DerivedOrientation;
-                    lastParentPosition = parentNode.DerivedPosition;
-                    derivedOrientation = lastParentOrientation * orientation;
-                    derivedPosition = (lastParentOrientation * position) + lastParentPosition;
-                    return true;
-                }
-            }
-            else {
-                // rely on own updates
-                derivedOrientation = orientation;
-                derivedPosition = position;
-                return recalculateView;
-            }
-        }
-
-        /// <summary>
-        ///		Evaluates whether or not the view frustum is out of date.
-        /// </summary>
-        /// <returns></returns>
-        protected bool IsFrustumOutOfDate() {
-            return recalculateFrustum;
         }
 
         #endregion
@@ -436,36 +366,6 @@ namespace Axiom.Core {
             }
             set { 
                 sceneDetail = value; 
-            }
-        }
-
-        /// <summary>
-        ///    Gets the 'standard' projection matrix for this camera, ie the 
-        ///    projection matrix which conforms to standard right-handed rules.
-        /// </summary>
-        /// <remarks>
-        ///    This differs from the rendering-API dependent ProjectionMatrix
-        ///    in that it always returns a right-handed projection matrix result 
-        ///    no matter what rendering API is being used - this is required for
-        ///    vertex and fragment programs for example. However, the resulting depth
-        ///    range may still vary between render systems since D3D uses [0,1] and 
-        ///    GL uses [-1,1], and the range must be kept the same between programmable
-        ///    and fixed-function pipelines.
-        /// </remarks>
-        public Matrix4 StandardProjectionMatrix {
-            get {
-                UpdateFrustum();
-
-                return standardProjMatrix;
-            }
-        }
-
-        /// <summary>
-        ///		Gets the viewing frustum of this camera.
-        /// </summary>
-        public Frustum Frustum {
-            get { 
-                return frustum; 
             }
         }
 
@@ -621,119 +521,6 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        ///		Sets the Y-dimension Field Of View (FOV) of the camera.
-        /// </summary>
-        /// <remarks>
-        ///		Field Of View (FOV) is the angle made between the camera's position, and the left & right edges
-        ///		of the 'screen' onto which the scene is projected. High values (90+) result in a wide-angle,
-        ///		fish-eye kind of view, low values (30-) in a stretched, telescopic kind of view. Typical values
-        ///		are between 45 and 60.
-        ///		<p/>
-        ///		This value represents the HORIZONTAL field-of-view. The vertical field of view is calculated from
-        ///		this depending on the dimensions of the viewport (they will only be the same if the viewport is square).
-        /// </remarks>
-        public float FOV {
-            get { 
-                return fieldOfView; 
-            } 
-            set {
-                fieldOfView = value;
-                recalculateFrustum = true;
-            }
-        }
-
-        /// <summary>
-        ///		Gets/Sets the position of the near clipping plane.
-        ///	</summary>
-        ///	<remarks>
-        ///		The position of the near clipping plane is the distance from the cameras position to the screen
-        ///		on which the world is projected. The near plane distance, combined with the field-of-view and the
-        ///		aspect ratio, determines the size of the viewport through which the world is viewed (in world
-        ///		co-ordinates). Note that this world viewport is different to a screen viewport, which has it's
-        ///		dimensions expressed in pixels. The cameras viewport should have the same aspect ratio as the
-        ///		screen viewport it renders into to avoid distortion.
-        /// </remarks>
-        public float Near {
-            get { 
-                return nearDistance; 
-            }
-            set {
-                Debug.Assert(value > 0, "Near clip distance must be greater than zero.");
-
-                nearDistance = value;
-                recalculateFrustum = true;
-            }
-        }
-
-        /// <summary>
-        ///		Gets/Sets the distance to the far clipping plane.
-        ///	 </summary>
-        ///	 <remarks>
-        ///		The view frustrum is a pyramid created from the camera position and the edges of the viewport.
-        ///		This frustrum does not extend to infinity - it is cropped near to the camera and there is a far
-        ///		plane beyond which nothing is displayed. This method sets the distance for the far plane. Different
-        ///		applications need different values: e.g. a flight sim needs a much further far clipping plane than
-        ///		a first-person shooter. An important point here is that the larger the gap between near and far
-        ///		clipping planes, the lower the accuracy of the Z-buffer used to depth-cue pixels. This is because the
-        ///		Z-range is limited to the size of the Z buffer (16 or 32-bit) and the max values must be spread over
-        ///		the gap between near and far clip planes. The bigger the range, the more the Z values will
-        ///		be approximated which can cause artifacts when lots of objects are close together in the Z-plane. So
-        ///		make sure you clip as close to the camera as you can - don't set a huge value for the sake of
-        ///		it.
-        /// </remarks>
-        public float Far {
-            get { 
-                return farDistance; 
-            }
-            set {
-                farDistance = value;
-                recalculateFrustum = true;
-            }
-        }
-
-        /// <summary>
-        ///		Gets/Sets the aspect ratio to use for the camera viewport.
-        /// </summary>
-        /// <remarks>
-        ///		The ratio between the x and y dimensions of the rectangular area visible through the camera
-        ///		is known as aspect ratio: aspect = width / height .
-        ///		<p/>
-        ///		The default for most fullscreen windows is 1.3333f - this is also assumed unless you
-        ///		use this property to state otherwise.
-        /// </remarks>
-        public float AspectRatio {
-            get { 
-                return aspectRatio; 
-            }
-            set {
-                aspectRatio = value;
-                recalculateFrustum = true;
-            }
-        }
-
-        /// <summary>
-        /// Gets the projection matrix for this camera.
-        /// </summary>
-        public Matrix4 ProjectionMatrix {
-            get {
-                UpdateFrustum();
-
-                return projectionMatrix;
-            }
-        }
-
-        /// <summary>
-        ///     Gets the view matrix for this camera.
-        /// </summary>
-        public Matrix4 ViewMatrix {
-            get {
-                UpdateView();
-
-                return viewMatrix;
-            }
-        }
-
-        /// <summary>
         ///		Gets the derived orientation of the camera.
         /// </summary>
         public Quaternion DerivedOrientation {
@@ -766,11 +553,33 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        ///    Local bounding radius of this camera.
+        ///		Evaluates whether or not the view matrix is out of date.
         /// </summary>
-        public override float BoundingRadius {
+        /// <returns></returns>
+        protected override bool IsViewOutOfDate {
             get {
-                return nearDistance;
+                // Overridden from Frustum to use local orientation / position offsets
+                // are we attached to another node?
+                if(parentNode != null) {
+                    if(!recalculateView && parentNode.DerivedOrientation == lastParentOrientation &&
+                        parentNode.DerivedPosition == lastParentPosition) {
+                        return false;
+                    }
+                    else {
+                        // we are out of date with the parent scene node
+                        lastParentOrientation = parentNode.DerivedOrientation;
+                        lastParentPosition = parentNode.DerivedPosition;
+                        derivedOrientation = lastParentOrientation * orientation;
+                        derivedPosition = (lastParentOrientation * position) + lastParentPosition;
+                        return true;
+                    }
+                }
+                else {
+                    // rely on own updates
+                    derivedOrientation = orientation;
+                    derivedPosition = position;
+                    return recalculateView;
+                }
             }
         }
 
@@ -894,154 +703,6 @@ namespace Axiom.Core {
         public void Rotate(Vector3 axis, float degrees) {
             Quaternion q = Quaternion.FromAngleAxis(MathUtil.DegreesToRadians(degrees), axis);
             Rotate(q);
-
-        }
-
-        /// <summary>
-        ///		Overloaded method.
-        /// </summary>
-        /// <param name="box"></param>
-        /// <returns></returns>
-        public bool IsObjectVisible(AxisAlignedBox box) {
-            // this overload doesnt care about the clipping plane, but we gotta
-            // pass in something to the out param anyway
-            FrustumPlane dummy;
-            return IsObjectVisible(box, out dummy);
-        }
-
-        /// <summary>
-        ///		Tests whether the given box is visible in the Frustum.
-        ///	 </summary>
-        /// <param name="box"> Bounding box to be checked.</param>
-        /// <param name="culledBy">
-        ///		Optional FrustrumPlane params which will be filled by the plane which culled
-        ///		the box if the result was false.
-        ///	</param>
-        /// <returns>True if the box is visible, otherwise false.</returns>
-        public bool IsObjectVisible(AxisAlignedBox box, out FrustumPlane culledBy) {
-            // Null boxes are always invisible
-            if (box.IsNull) {
-                culledBy = FrustumPlane.None;
-                return false;
-            }
-
-            // Make any pending updates to the calculated frustum
-            UpdateView();
-
-            // Get corners of the box
-            Vector3[] corners = box.Corners;
-
-            // For each plane, see if all points are on the negative side
-            // If so, object is not visible
-            for (int i = 0; i < 6; i++) {
-                // to make this loop easier, get the enum type based on the current plane
-                FrustumPlane plane = (FrustumPlane)i;
-
-                if (frustum[plane].GetSide(corners[0]) == PlaneSide.Negative &&
-                    frustum[plane].GetSide(corners[1]) == PlaneSide.Negative &&
-                    frustum[plane].GetSide(corners[2]) == PlaneSide.Negative &&
-                    frustum[plane].GetSide(corners[3]) == PlaneSide.Negative &&
-                    frustum[plane].GetSide(corners[4]) == PlaneSide.Negative &&
-                    frustum[plane].GetSide(corners[5]) == PlaneSide.Negative &&
-                    frustum[plane].GetSide(corners[6]) == PlaneSide.Negative &&
-                    frustum[plane].GetSide(corners[7]) == PlaneSide.Negative) {
-                    // ALL corners on negative side therefore out of view
-                    culledBy = plane;
-                    return false;
-                }
-            }
-
-            // box is not culled
-            culledBy = FrustumPlane.None;
-            return true;
-        }
-
-        /// <summary>
-        ///		Overloaded method.
-        /// </summary>
-        /// <param name="box"></param>
-        /// <returns></returns>
-        public bool IsObjectVisible(Sphere sphere) {
-            // this overload doesnt care about the clipping plane, but we gotta
-            // pass in something to the out param anyway
-            FrustumPlane dummy;
-            return IsObjectVisible(sphere, out dummy);
-        }
-
-        /// <summary>
-        ///		Tests whether the given sphere is in the viewing frustum.
-        /// </summary>
-        /// <param name="sphere">Bounding sphere to be checked.</param>
-        /// <param name="culledBy">
-        ///		Optional FrustrumPlane params which will be filled by the plane which culled
-        ///		the box if the result was false.
-        ///	</param>
-        /// <returns>True if the box is visible, otherwise false.</returns>
-        public bool IsObjectVisible(Sphere sphere, out FrustumPlane culledBy) {
-            // Make any pending updates to the calculated frustum
-            UpdateView();
-
-            // For each plane, see if sphere is on negative side
-            // If so, object is not visible
-            for (int i = 0; i < 6; i++) {
-                // to make this loop easier, get the enum type based on the current plane
-                FrustumPlane plane = (FrustumPlane)i;
-
-                // If the distance from sphere center to plane is negative, and 'more negative' 
-                // than the radius of the sphere, sphere is outside frustum
-                if (frustum[plane].GetDistance(sphere.Center) < -sphere.Radius) {
-                    // ALL corners on negative side therefore out of view
-                    culledBy = plane;
-                    return false;
-                }
-            }
-
-            // sphere is not culled
-            culledBy = FrustumPlane.None;
-            return true;
-        }
-
-        /// <summary>
-        ///		Overloaded method.
-        /// </summary>
-        /// <param name="box"></param>
-        /// <returns></returns>
-        public bool IsObjectVisible(Vector3 vertex) {
-            // this overload doesnt care about the clipping plane, but we gotta
-            // pass in something to the out param anyway
-            FrustumPlane dummy;
-            return IsObjectVisible(vertex, out dummy);
-        }
-
-        /// <summary>
-        ///		Tests whether the given 3D point is in the viewing frustum.
-        /// </summary>
-        /// <param name="vector">3D point to check for frustum visibility.</param>
-        /// <param name="culledBy">
-        ///		Optional FrustrumPlane params which will be filled by the plane which culled
-        ///		the box if the result was false.
-        ///	</param>
-        /// <returns>True if the box is visible, otherwise false.</returns>
-        public bool IsObjectVisible(Vector3 vertex, out FrustumPlane culledBy) {
-            // Make any pending updates to the calculated frustum
-            UpdateView();
-
-            // For each plane, see if all points are on the negative side
-            // If so, object is not visible
-            for (int i = 0; i < 6; i++) {
-                // to make this loop easier, get the enum type based on the current plane
-                FrustumPlane plane = (FrustumPlane)i;
-
-                if (frustum[plane].GetSide(vertex) == PlaneSide.Negative) {
-                    // ALL corners on negative side therefore out of view
-                    culledBy = plane;
-                    return false;
-                }
-            }
-
-            // vertex is not culled
-            culledBy = FrustumPlane.None;
-            return true;
         }
 
         /// <summary>
@@ -1150,6 +811,5 @@ namespace Axiom.Core {
         }
 
         #endregion
-
     }
 }
