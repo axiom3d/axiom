@@ -461,12 +461,12 @@ namespace Axiom.RenderSystems.OpenGL {
 
 				tempData = new byte[newImageSize];
 
-				IntPtr srcPtr = System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(src.Data, 0);
-				IntPtr tmpPtr = System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(tempData, 0);
+				//IntPtr srcPtr = System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(src.Data, 0);
+				//IntPtr tmpPtr = System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(tempData, 0);
 
 				if(Glu.gluScaleImage(this.GLFormat, srcWidth, srcHeight,
-					Gl.GL_UNSIGNED_BYTE, srcPtr, newWidth, newHeight, 
-					Gl.GL_UNSIGNED_BYTE, tmpPtr) != 0) {
+					Gl.GL_UNSIGNED_BYTE, src.Data, newWidth, newHeight, 
+					Gl.GL_UNSIGNED_BYTE, tempData) != 0) {
 
 					throw new AxiomException("Error while rescaling image!");
 				}

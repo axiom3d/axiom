@@ -170,14 +170,10 @@ namespace Axiom.RenderSystems.OpenGL.GLSL {
 								break;
 
 							case Gl.GL_INT:
-							// TODO: GL_SAMPLER_1D_ARB
-							case 0x8B5D:
-							// TODO: GL_SAMPLER_2D_ARB
-							case 0x8B5E:
-							// TODO: GL_SAMPLER_3D_ARB
-							case 0x8B5F:
-							// TODO: GL_SAMPLER_CUBE_ARB
-							case 0x8B60:
+							case Gl.GL_SAMPLER_1D_ARB:
+							case Gl.GL_SAMPLER_2D_ARB:
+							case Gl.GL_SAMPLER_3D_ARB:
+							case Gl.GL_SAMPLER_CUBE_ARB:
 								newUniformReference.isFloat = false;
 								newUniformReference.elementCount = 1;
 								break;
