@@ -17,4 +17,10 @@ namespace Axiom.Graphics {
     public class AutoConstantEntryList : ArrayList {}
 
     public class RenderableList : ArrayList {}
+
+    public class TriangleList : ArrayList {}
+
+    public class EdgeList : ArrayList {}
+
+    public class EdgeGroupList : ArrayList {}
 }
