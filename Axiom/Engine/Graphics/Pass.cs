@@ -328,19 +328,19 @@ namespace Axiom.Graphics {
 
 			// vertex program
 			if(vertexProgramUsage != null) {
-				vertexProgramUsage = vertexProgramUsage.Clone();
-			}
+                target.vertexProgramUsage = vertexProgramUsage.Clone();
+            }
 			else {
-				vertexProgramUsage = null;
-			}
+                target.vertexProgramUsage = null;
+            }
 
 			// fragment program
 			if(fragmentProgramUsage != null) {
-				fragmentProgramUsage = fragmentProgramUsage.Clone();
-			}
+                target.fragmentProgramUsage = fragmentProgramUsage.Clone();
+            }
 			else {
-				fragmentProgramUsage = null;
-			}
+                target.fragmentProgramUsage = null;
+            }
 
 			// TODO: Shadow caster/receiver program usage
 
