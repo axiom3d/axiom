@@ -5,6 +5,7 @@ unavail
 avail|leedgitar
 
 # Permission to change specific source folders
+avail|antiarc|Axiom
 avail|iainmckay|Axiom/SceneManagers/Bsp
 avail|xeonx|Axiom/SceneManagers/Octree
 
