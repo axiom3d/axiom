@@ -45,7 +45,7 @@ namespace RenderSystem_DirectX9 {
         }
 	
         public override Axiom.Core.Resource Create(string name) {
-            D3DTexture texture = new D3DTexture(name, device, TextureUsage.Default);
+            D3DTexture texture = new D3DTexture(name, device, TextureUsage.Default, TextureType.TwoD);
 			
             // TODO: Handle 32-bit texture settings
 
@@ -53,7 +53,7 @@ namespace RenderSystem_DirectX9 {
         }
         
         public override Axiom.Core.Resource Create(string name, TextureType type) {
-            D3DTexture texture = new D3DTexture(name, device, TextureUsage.Default);
+            D3DTexture texture = new D3DTexture(name, device, TextureUsage.Default, type);
 			
             // TODO: Implement this
 

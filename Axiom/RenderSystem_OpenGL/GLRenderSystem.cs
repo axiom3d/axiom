@@ -1617,7 +1617,7 @@ namespace RenderSystem_OpenGL {
         }
 
         /// <summary>
-        /// 
+        ///    Binds the specified GpuProgram to the future rendering operations.
         /// </summary>
         /// <param name="program"></param>
         public override void BindGpuProgram(GpuProgram program) {
@@ -1628,7 +1628,7 @@ namespace RenderSystem_OpenGL {
         }
 
         /// <summary>
-        /// 
+        ///    Binds the supplied parameters to programs of the specified type for future rendering operations.
         /// </summary>
         /// <param name="type"></param>
         /// <param name="parms"></param>
@@ -1641,7 +1641,7 @@ namespace RenderSystem_OpenGL {
         }
 
         /// <summary>
-        /// 
+        ///    Unbinds programs of the specified type.
         /// </summary>
         /// <param name="type"></param>
         public override void UnbindGpuProgram(GpuProgramType type) {
