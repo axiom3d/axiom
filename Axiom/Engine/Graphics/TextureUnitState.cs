@@ -984,72 +984,6 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        ///     Sets the default texture filtering to be used for loaded textures, for when textures are
-        ///     loaded automatically (e.g. by Material class) or when 'load' is called with the default
-        ///     parameters by the application.
-        /// </summary>
-        /// <param name="options">Default options to use.</param>
-        public virtual void SetDefaultTextureFiltering(TextureFiltering filtering) {
-            switch (filtering) {
-                case TextureFiltering.None:
-                    SetDefaultTextureFiltering(FilterOptions.Point, FilterOptions.Point, FilterOptions.None);
-                    break;
-                case TextureFiltering.Bilinear:
-                    SetDefaultTextureFiltering(FilterOptions.Linear, FilterOptions.Linear, FilterOptions.Point);
-                    break;
-                case TextureFiltering.Trilinear:
-                    SetDefaultTextureFiltering(FilterOptions.Linear, FilterOptions.Linear, FilterOptions.Linear);
-                    break;
-                case TextureFiltering.Anisotropic:
-                    SetDefaultTextureFiltering(FilterOptions.Anisotropic, FilterOptions.Anisotropic, FilterOptions.Linear);
-                    break;
-            }
-
-            isDefaultAniso = false;
-        }
-
-        /// <summary>
-        ///     Sets the default texture filtering to be used for loaded textures, for when textures are
-        ///     loaded automatically (e.g. by Material class) or when 'load' is called with the default
-        ///     parameters by the application.
-        /// </summary>
-        /// <param name="type">Type to configure.</param>
-        /// <param name="options">Options to set for the specified type.</param>
-        public void SetDefaultTextureFiltering(FilterType type, FilterOptions options) {
-            switch(type) {
-                case FilterType.Min:
-                    this.minFilter = options;
-                    break;
-
-                case FilterType.Mag:
-                    this.magFilter = options;
-                    break;
-
-                case FilterType.Mip:
-                    this.mipFilter = options;
-                    break;
-            }
-
-            isDefaultAniso = false;
-        }
-
-        /// <summary>
-        ///     Sets the default texture filtering to be used for loaded textures, for when textures are
-        ///     loaded automatically (e.g. by Material class) or when 'load' is called with the default
-        ///     parameters by the application.
-        /// </summary>
-        /// <param name="minFilter">Minification filter.</param>
-        /// <param name="magFilter">Magnification filter.</param>
-        /// <param name="mipFilter">Map filter.</param>
-        public void SetDefaultTextureFiltering(FilterOptions minFilter, FilterOptions magFilter, FilterOptions mipFilter) {
-            this.minFilter = minFilter;
-            this.magFilter = magFilter;
-            this.mipFilter = mipFilter;
-
-            isDefaultAniso = false;
-        }
-
-        /// <summary>
         ///    Gets the texture filtering for the given type.
         /// </summary>
         /// <param name="type">Type of filtering options to retreive.</param>
@@ -1343,6 +1277,9 @@ namespace Axiom.Graphics
                     SetTextureFiltering(FilterOptions.Anisotropic, FilterOptions.Anisotropic, FilterOptions.Linear);
                     break;
             }
+
+			// no longer set to current default
+			isDefaultFiltering = false;
         }
 
         /// <summary>
@@ -1368,7 +1305,10 @@ namespace Axiom.Graphics
                     mipFilter = options;
                     break;
             }
-        }
+
+			// no longer set to current default
+			isDefaultFiltering = false;		
+		}
 
         /// <summary>
         ///    Set a the detailed filtering options on this texture unit.
@@ -1386,6 +1326,9 @@ namespace Axiom.Graphics
             SetTextureFiltering(FilterType.Min, minFilter);
             SetTextureFiltering(FilterType.Mag, magFilter);
             SetTextureFiltering(FilterType.Mip, mipFilter);
+
+			// no longer set to current default
+			isDefaultFiltering = false;
         }
 
         /// <summary>
