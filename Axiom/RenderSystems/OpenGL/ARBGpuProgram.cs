@@ -67,18 +67,13 @@ namespace Axiom.RenderSystems.OpenGL.ARB {
 
         public override void BindParameters(GpuProgramParameters parms) {
             if(parms.HasFloatConstants) {
+                for(int index = 0; index < parms.FloatConstantCount; index++) {
+                    GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant(index);
 
-                for(int i = 0; i < parms.FloatConstantCount; i++) {
-                    int index = parms.GetFloatConstantIndex(i);
-                    Axiom.MathLib.Vector4 vec4 = parms.GetFloatConstant(i);
-
-                    tempProgramFloats[0] = vec4.x;
-                    tempProgramFloats[1] = vec4.y;
-                    tempProgramFloats[2] = vec4.z;
-                    tempProgramFloats[3] = vec4.w;
-
-                    // send the params 4 at a time
-                    Gl.glProgramLocalParameter4fvARB(programType, index, tempProgramFloats);
+					if(entry.isSet) {
+						// send the params 4 at a time
+						Gl.glProgramLocalParameter4fvARB(programType, index, entry.val);
+					}
                 }
             }            
         }

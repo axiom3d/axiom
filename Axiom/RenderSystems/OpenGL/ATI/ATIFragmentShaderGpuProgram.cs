@@ -57,20 +57,14 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         public override void BindParameters(GpuProgramParameters parms) {
             // program constants done internally by compiler for local
             if(parms.HasFloatConstants) {
-                for(int i = 0; i < parms.FloatConstantCount; i++) {
-                    int index = parms.GetFloatConstantIndex(i);
+				for(int index = 0; index < parms.FloatConstantCount; index++) {
+					GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant(index);
 
-                    Axiom.MathLib.Vector4 vec4 = parms.GetFloatConstant(i);
-
-                    tempProgramFloats[0] = vec4.x;
-                    tempProgramFloats[1] = vec4.y;
-                    tempProgramFloats[2] = vec4.z;
-                    tempProgramFloats[3] = vec4.w;
-
-                    // send the params 4 at a time
-                    Gl.glSetFragmentShaderConstantATI(Gl.GL_CON_0_ATI + index, tempProgramFloats);
-                    //index++;
-                }
+					if(entry.isSet) {
+						// send the params 4 at a time
+						Gl.glSetFragmentShaderConstantATI(Gl.GL_CON_0_ATI + index, entry.val);
+					}
+				}
             }   
         }
 

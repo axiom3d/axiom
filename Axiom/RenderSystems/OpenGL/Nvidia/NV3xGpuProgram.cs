@@ -110,18 +110,13 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia {
         /// <param name="parms"></param>
         public override void BindParameters(GpuProgramParameters parms) {
             if(parms.HasFloatConstants) {
-                for(int i = 0; i < parms.FloatConstantCount; i++) {
-                    int index = parms.GetFloatConstantIndex(i);
+				for(int index = 0; index < parms.FloatConstantCount; index++) {
+					GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant(index);
 
-                    Axiom.MathLib.Vector4 vec4 = parms.GetFloatConstant(i);
-
-                    tempProgramFloats[0] = vec4.x;
-                    tempProgramFloats[1] = vec4.y;
-                    tempProgramFloats[2] = vec4.z;
-                    tempProgramFloats[3] = vec4.w;
-
-                    // send the params 4 at a time
-                    Gl.glProgramParameter4fvNV(programType, index, tempProgramFloats);
+					if(entry.isSet) {
+						// send the params 4 at a time
+						Gl.glProgramParameter4fvNV(programType, index, entry.val);
+					}
                 }
             }  
         }
@@ -160,13 +155,13 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia {
         /// <param name="parms"></param>
         public override void BindParameters(GpuProgramParameters parms) {
             if(parms.HasFloatConstants) {
-                for(int i = 0; i < parms.FloatConstantCount; i++) {
-                    int index = parms.GetFloatConstantIndex(i);
+                for(int index = 0; index < parms.FloatConstantCount; index++) {
                     string name = parms.GetNameByIndex(index);
-                    Axiom.MathLib.Vector4 vec4 = parms.GetFloatConstant(i);
+
+                    GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant(index);
 
                     // send the params 4 at a time
-                    Gl.glProgramNamedParameter4fNV(programId, name.Length, name, vec4.x, vec4.y, vec4.z, vec4.w);
+                    Gl.glProgramNamedParameter4fvNV(programId, name.Length, name, entry.val);
                 }
             }  
         }
