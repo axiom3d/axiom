@@ -8,6 +8,7 @@ dopackage("Plugin_CgProgramManager")
 dopackage("Plugin_GuiElements")
 dopackage("RenderSystem_OpenGL")
 dopackage("Plugin_OctreeSceneManager")
+dopackage("Plugin_BSPSceneManager")
 
 if(OS == "windows") then
 	dopackage("RenderSystem_DirectX9")
