@@ -44,18 +44,13 @@ namespace Demos
 	
 		#endregion
 		
-		#region Constructors
-		
-		public CameraTrack()
-		{
-		}
-		
-		#endregion
-		
 		#region Methods
 		
 		protected override void CreateScene()
 		{
+			// since whole screen is being redrawn every frame, dont bother clearing
+			mainViewport.ClearEveryFrame = false;
+
 			// set some ambient light
 			sceneMgr.TargetRenderSystem.LightingEnabled = true;
 			sceneMgr.AmbientLight = ColorEx.FromColor(System.Drawing.Color.Gray);
@@ -119,7 +114,7 @@ namespace Demos
 			animState.IsEnabled = true; 
 
 			// set a basic skybox
-			sceneMgr.SetSkyBox(true, "Skybox/CloudyHills", 2000.0f);
+			sceneMgr.SetSkyBox(true, "Skybox/CloudyHills", 3000.0f);
 
 			// always watch the ogre!
 			camera.SetAutoTracking(true, headNode, Vector3.Zero);
@@ -136,8 +131,6 @@ namespace Demos
 		}
 
 
-		#endregion
-		
-
+		#endregion		
 	}
 }

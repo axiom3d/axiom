@@ -78,6 +78,8 @@ namespace RenderSystem_OpenGL
 			// local array of light objects to reference during light updating, disabling, etc
 			protected Light[] lights;
 
+			protected bool zTrickEven;
+
 			public OpenGLRenderer()
 			{
 				viewMatrix = Matrix4.Identity;
@@ -440,6 +442,23 @@ namespace RenderSystem_OpenGL
 					// Enable depth buffer for writing if it isn't
 					if(!depthWrite)
 						Gl.glDepthMask(Gl.GL_FALSE);
+				}
+				else
+				{
+					// Use Carmack's ztrick to avoid clearing the depth buffer every frame
+					if(zTrickEven)
+					{
+						this.DepthFunction = CompareFunction.LessEqual;
+						Gl.glDepthRange(0, 0.499999999);
+					}
+					else
+					{
+						this.DepthFunction = CompareFunction.GreaterEqual;
+						Gl.glDepthRange(1, 0.5);
+					}
+
+					// swap the z trick flag
+					zTrickEven = !zTrickEven;
 				}
 
 				// Reset all lights

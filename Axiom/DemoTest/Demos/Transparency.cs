@@ -42,6 +42,8 @@ namespace Demos
 
 		protected override void CreateScene()
 		{
+			mainViewport.ClearEveryFrame = false;
+
 			// set some ambient light
 			sceneMgr.AmbientLight = new ColorEx(1.0f, 0.5f, 0.5f, 0.5f);
 
