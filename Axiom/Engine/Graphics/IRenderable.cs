@@ -46,6 +46,13 @@ namespace Axiom.Graphics {
     public interface IRenderable {	
         #region Properties
 
+		/// <summary>
+		///		Gets whether this renderable would normally cast a shadow. 
+		/// </summary>
+		bool CastsShadows {
+			get;
+		}
+
         /// <summary>
         ///    Get the material associated with this renderable object.
         /// </summary>

@@ -434,7 +434,7 @@ namespace Axiom.Core {
 		/// <param name="camera"></param>
 		/// <returns></returns>
 		internal PlaneBoundedVolume GetNearClipVolume(Camera camera) {
-			const float THRESHOLD = float.Epsilon;
+			const float THRESHOLD = -1e-06f;
 
 			float n = camera.Near;
 
@@ -488,12 +488,16 @@ namespace Axiom.Core {
 				if (d > THRESHOLD) {
 					// In front of near plane
 					// remember the -d negation in plane constructor
-					nearClipVolume.planes.Add(new Plane(eyeToWorld * -Vector3.UnitZ, n));
+					normal = eyeToWorld * -Vector3.UnitZ;
+					normal.Normalize();
+					nearClipVolume.planes.Add(new Plane(normal, -normal.Dot(camera.DerivedPosition)));
 				}
 				else {
 					// Behind near plane
 					// remember the -d negation in plane constructor
-					nearClipVolume.planes.Add(new Plane(eyeToWorld * Vector3.UnitZ, -n));
+					normal = eyeToWorld * Vector3.UnitZ;
+					normal.Normalize();
+					nearClipVolume.planes.Add(new Plane(normal, -normal.Dot(camera.DerivedPosition)));
 				}
 
 				// Finally, for a point/spot light we can add a sixth plane

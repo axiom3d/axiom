@@ -189,6 +189,12 @@ namespace Axiom.Core {
 
         #region IRenderable Members
 
+		public bool CastsShadows {
+			get {
+				return parent.CastShadows;;
+			}
+		}
+
         /// <summary>
         ///		Gets/Sets a reference to the material being used by this SubEntity.
         /// </summary>

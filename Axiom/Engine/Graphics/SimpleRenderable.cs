@@ -105,6 +105,12 @@ namespace Axiom.Graphics {
 
         #region IRenderable Members
 
+		public bool CastsShadows {
+			get {
+				return false;
+			}
+		}
+
         /// <summary>
         /// 
         /// </summary>

@@ -1083,6 +1083,12 @@ namespace Axiom.Core {
 	
         #region IRenderable implementation
 
+		public bool CastsShadows {
+			get {
+				return false;
+			}
+		}
+
         /// <summary>
         ///		This is only used if the SceneManager chooses to render the node. This option can be set
         ///		for SceneNodes at SceneManager.DisplaySceneNodes, and for entities based on skeletal 
