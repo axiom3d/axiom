@@ -2915,11 +2915,11 @@ namespace Axiom.Core {
                 Entity entity = creator.entityList[i];
 
                 // test the intersection against the world bounding box of the entity
-                Pair results = MathUtil.Intersects(ray, entity.GetWorldBoundingBox());
+                IntersectResult results = MathUtil.Intersects(ray, entity.GetWorldBoundingBox());
 
                 // if the results came back positive, fire the event handler
-                if((bool)results.first == true) {
-                    listener.OnQueryResult(entity, (float)results.second);
+                if(results.Hit == true) {
+                    listener.OnQueryResult(entity, results.Distance);
                 }
             }
         }
