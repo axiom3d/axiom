@@ -10,7 +10,7 @@ fragment_program Examples/FresnelRefractReflectFP cg
 	source Example_Fresnel.cg
 	entry_point main_fp
 	// sorry, ps_1_1 and fp20 can't do this
-	profiles ps_2_0 arbfp1
+	profiles ps_2_0 fp30 arbfp1
 }
 
 fragment_program Examples/FresnelRefractReflectPS asm 
