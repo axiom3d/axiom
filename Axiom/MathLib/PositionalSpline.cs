@@ -49,7 +49,8 @@ namespace Axiom.MathLib {
     public sealed class PositionalSpline {
         #region Member variables
 
-        readonly private Matrix4 hermitePoly = new Matrix4(	2, -2,  1,  1,
+        readonly private Matrix4 hermitePoly = new Matrix4(	
+			2, -2,  1,  1,
             -3,  3, -2, -1,
             0,  0,  1,  0,
             1,  0,  0,  0);
@@ -199,22 +200,22 @@ namespace Axiom.MathLib {
             Matrix4 point = new Matrix4();
 
             // create the matrix 4 with the 2 point and tangent values
-            point[0,0] = point1.x;
-            point[0,1] = point1.y;
-            point[0,2] = point1.z;
-            point[0,3] = 1.0f;
-            point[1,0] = point2.x;
-            point[1,1] = point2.y;
-            point[1,2] = point2.z;
-            point[1,3] = 1.0f;
-            point[2,0] = tangent1.x;
-            point[2,1] = tangent1.y;
-            point[2,2] = tangent1.z;
-            point[2,3] = 1.0f;
-            point[3,0] = tangent2.x;
-            point[3,1] = tangent2.y;
-            point[3,2] = tangent2.z;
-            point[3,3] = 1.0f;
+            point.m00 = point1.x;
+            point.m01 = point1.y;
+            point.m02 = point1.z;
+            point.m03 = 1.0f;
+            point.m10 = point2.x;
+            point.m11 = point2.y;
+            point.m12 = point2.z;
+            point.m13 = 1.0f;
+            point.m20 = tangent1.x;
+            point.m21 = tangent1.y;
+            point.m22 = tangent1.z;
+            point.m23 = 1.0f;
+            point.m30 = tangent2.x;
+            point.m31 = tangent2.y;
+            point.m32 = tangent2.z;
+            point.m33 = 1.0f;
 
             // get the final result in a Vector4
             Vector4 result = powers * hermitePoly * point;
