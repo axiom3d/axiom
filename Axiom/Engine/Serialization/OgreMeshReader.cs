@@ -609,6 +609,9 @@ namespace Axiom.Serialization {
 
                     // stuff the data into the index buffer
                     ReadInts(indexData.indexCount, data);
+
+                    // unlock the index buffer
+                    indexData.indexBuffer.Unlock();
                 }
                 else {
                     indexData.indexBuffer = 
@@ -623,6 +626,9 @@ namespace Axiom.Serialization {
 
                     // stuff the data into the index buffer
                     ReadShorts(indexData.indexCount, data);
+
+                    // unlock the index buffer
+                    indexData.indexBuffer.Unlock();
                 }
             }
         }
