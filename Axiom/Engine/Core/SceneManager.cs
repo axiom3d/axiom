@@ -163,11 +163,6 @@ namespace Axiom.Core {
 
             // default to no fog
             fogMode = FogMode.None;
-
-            // light list events
-            lightList.Cleared +=new CollectionHandler(lightList_Cleared);
-            lightList.ItemAdded += new CollectionHandler(lightList_ItemAdded);
-            lightList.ItemRemoved += new CollectionHandler(lightList_ItemRemoved);
         }
 
         #endregion
@@ -388,8 +383,11 @@ namespace Axiom.Core {
             // create a new light and add it to our internal list
             Light light = new Light(name);
 			
-            // adding the light to the list fire an event which will add it to the render system
+            // add the light to the list
             lightList.Add(name, light);
+
+            // add the light to the target render system
+            targetRenderSystem.AddLight(light);
 
             return light;
         }
@@ -1403,27 +1401,6 @@ namespace Axiom.Core {
         public virtual void SetSkyPlane(bool enable, Plane plane, String materialName) {
             // call the overloaded method
             SetSkyPlane(enable, plane, materialName, 1000.0f, 10.0f, true, 0);
-        }
-
-        #endregion
-
-        #region Light collection event handlers
-
-        virtual protected bool lightList_Cleared(object source, EventArgs e) {
-            return false;
-        }
-
-        virtual protected bool lightList_ItemAdded(object source, EventArgs e) {
-            Light light = source as Light;
-
-            // add the light to the target render system
-            targetRenderSystem.AddLight(light);
-
-            return false;
-        }
-
-        virtual protected bool lightList_ItemRemoved(object source, EventArgs e) {
-            return false;
         }
 
         #endregion

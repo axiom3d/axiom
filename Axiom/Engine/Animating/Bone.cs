@@ -113,7 +113,7 @@ namespace Axiom.Animating {
             Bone bone = creator.CreateBone(handle);
             bone.Translate(translate);
             bone.Rotate(rotate);
-            this.ChildNodes.Add(bone);
+            this.AddChild(bone);
 
             return bone;
         }

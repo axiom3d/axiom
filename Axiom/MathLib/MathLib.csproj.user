@@ -1,7 +1,7 @@
 <VisualStudioProject>
     <CSHARP LastOpenVersion = "7.10.3077" >
         <Build>
-            <Settings ReferencePath = "D:\Program Files\NUnit V2.0\bin\" >
+            <Settings ReferencePath = "D:\Program Files\NUnit V2.0\bin\;C:\Documents and Settings\Chris\My Documents\Visual Studio Projects\FastMath\release\" >
                 <Config
                     Name = "Debug"
                     EnableASPDebugging = "false"

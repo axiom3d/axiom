@@ -594,8 +594,16 @@ namespace Axiom.Core {
                 if(files[i].Equals("AxiomEngine.dll"))
                     continue;
 
+                Assembly assembly = null;
+
                 // load the assembly
-                Assembly assembly = Assembly.LoadFrom(files[i]);
+                try{
+                    assembly = Assembly.LoadFrom(files[i]);
+                }
+                catch(BadImageFormatException) {
+                    Trace.WriteLine(string.Format("Skipping load of non assemly....", files[i]));
+                    continue;
+                }
 
                 // get the list of types within the assembly
                 Type[] types = assembly.GetTypes();
