@@ -625,7 +625,7 @@ namespace RenderSystem_OpenGL {
         /// <param name="texAddressingMode"></param>
         protected override void SetTextureAddressingMode(int stage, TextureAddressing texAddressingMode) {
             if(lastAddressingMode[stage] == texAddressingMode) {
-                return;
+                //return;
             }
 
             lastAddressingMode[stage] = texAddressingMode;
@@ -993,7 +993,7 @@ namespace RenderSystem_OpenGL {
                     // This sets the texture matrix to be the inverse of the modelview matrix
                     useAutoTextureMatrix = true;
 
-                    Gl.glGetFloatv( Gl.GL_MODELVIEW_MATRIX, tempMatrix);
+                    Gl.glGetFloatv(Gl.GL_MODELVIEW_MATRIX, tempMatrix);
 
                     // Transpose 3x3 in order to invert matrix (rotation)
                     // Note that we need to invert the Z _before_ the rotation
@@ -1036,6 +1036,9 @@ namespace RenderSystem_OpenGL {
 
             tempMatrix[12] = tempMatrix[8];
             tempMatrix[13] = tempMatrix[9];
+
+            //float[] m = autoTextureMatrix;
+            //Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15}", m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8], m[9], m[10], m[11], m[12], m[13], m[14], m[15]);
 
             Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + stage);
             Gl.glMatrixMode(Gl.GL_TEXTURE);

@@ -184,6 +184,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Demos\CubeMapping.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Demos\Dot3Bump.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Demos\EnvMapping.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

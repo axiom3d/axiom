@@ -113,6 +113,70 @@ Examples/EnvMappedRustySteel
 	}
 }
 
+Examples/SceneSkyBox1
+{
+    // No dynamic lighting, fully lit
+    lighting off
+    // Depth writing off (always display stuff in front of it)
+    depth_write off 
+    
+    // Texture layer 0
+    {
+        // 6-sided texture, cubemap_fr.jpg, cubemap_up.jpg etc
+        cubic_texture cubemap.jpg separateUV
+        // clamp to avoid fuzziness at edges due to filtering
+        tex_address_mode clamp
+    }
+}
+
+Examples/SceneCubeMap1
+{
+    // No dynamic lighting, fully lit
+    lighting off
+    
+    // Texture layer 0
+    {
+        // 6-sided texture, cubemap_fr.jpg, cubemap_up.jpg etc
+        cubic_texture cubemap.jpg combinedUVW
+        // set reflection environment map
+        env_map cubic_reflection
+        // clamp to avoid fuzziness at edges due to filtering
+        tex_address_mode clamp
+    }
+}
+
+Examples/SceneSkyBox2
+{
+    // No dynamic lighting, fully lit
+    lighting off
+    // Depth writing off (always display stuff in front of it)
+    depth_write off 
+    
+    // Texture layer 0
+    {
+        // 6-sided texture, cubemap_fr.jpg, cubemap_up.jpg etc
+        cubic_texture cubescene.jpg separateUV
+        // clamp to avoid fuzziness at edges due to filtering
+        tex_address_mode clamp
+    }
+}
+
+Examples/SceneCubeMap2
+{
+    // No dynamic lighting, fully lit
+    lighting off
+    
+    // Texture layer 0
+    {
+        // 6-sided texture, cubemap_fr.jpg, cubemap_up.jpg etc
+        cubic_texture cubescene.jpg combinedUVW
+        // set reflection environment map
+        env_map cubic_reflection
+        // clamp to avoid fuzziness at edges due to filtering
+        tex_address_mode clamp
+    }
+}
+
 
 // Rotation and wave scale
 TextureFX/BumpyMetal

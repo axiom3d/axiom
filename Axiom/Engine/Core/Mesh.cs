@@ -71,7 +71,6 @@ namespace Axiom.Core {
     ///    share the same scene node as the parent.
     /// </remarks>
     /// TODO: Add Clone method
-    /// TODO: LOD Usage
     public class Mesh : Resource {
         #region Member variables
 

@@ -56,11 +56,11 @@ namespace Axiom.Core {
         /// <summary>A cached list of all resources in memory.</summary>
         protected Hashtable resourceList									= System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
         /// <summary>A lookup table used to find a common archive associated with a filename.</summary>
-        protected Hashtable filePaths										= new Hashtable();
+        protected Hashtable filePaths										= System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
         /// <summary>A cached list of archives specific to a resource type.</summary>
         protected ArrayList archives											= new ArrayList();
         /// <summary>A lookup table used to find a archive associated with a filename.</summary>
-        static protected Hashtable commonFilePaths				= new Hashtable();
+        static protected Hashtable commonFilePaths				= System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
         /// <summary>A cached list of archives common to all resource types.</summary>
         static protected ArrayList commonArchives				= new ArrayList();
 

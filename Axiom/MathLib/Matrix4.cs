@@ -188,6 +188,14 @@ namespace Axiom.MathLib {
         }
 
         /// <summary>
+        ///    Inverts the matrix.
+        /// </summary>
+        /// <returns></returns>
+        public Matrix4 Inverse() {
+            return new Matrix4();
+        }
+
+        /// <summary>
         /// Swap the rows of the matrix with the columns.
         /// </summary>
         /// <returns>A transposed Matrix.</returns>

@@ -26,31 +26,36 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using Axiom.Core;
-using Axiom.SubSystems.Rendering;
+using Axiom.MathLib;
+using Axiom.Utility;
 
-namespace RenderSystem_OpenGL {
+namespace Demos {
     /// <summary>
-    /// Summary description for GLTextureManager.
+    /// 	Summary description for EnvMapping.
     /// </summary>
-    public class GLTextureManager : TextureManager {
-        public GLTextureManager() {
-        }
-	
-        public override Resource Create(string name) {
-            return Create(name, TextureType.TwoD);
+    public class CubeMapping : TechDemo {
+        #region Methods
+		
+        protected override void CreateScene() {
+            scene.AmbientLight = new ColorEx(1.0f, 0.5f, 0.5f, 0.5f);
+
+            // create a default point light
+            Light light = scene.CreateLight("MainLight");
+            light.Position = new Vector3(20, 80, 50);
+
+            // create an ogre head, assigning it a material manually
+            Entity entity = scene.CreateEntity("Head", "ogrehead.mesh");
+
+            // make the ogre look nice and shiny
+            entity.MaterialName = "Examples/SceneCubeMap2";
+
+            scene.SetSkyBox(true, "Examples/SceneSkyBox2", 2000.0f);
+
+            // attach the ogre to the scene
+            SceneNode node = (SceneNode)scene.RootSceneNode.CreateChild();
+            node.AttachObject(entity);
         }
 
-        public override Resource Create(string name, TextureType type) {
-            GLTexture texture = new GLTexture(name, type);
-            texture.Enable32Bit(is32Bit);
-
-            return texture;
-        }
-
-        // TODO: Finish
-        public override void UnloadAndDestroyAll() {
-            base.UnloadAndDestroyAll ();
-        }
-
+        #endregion
     }
 }

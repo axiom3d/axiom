@@ -296,6 +296,15 @@ namespace Axiom.Core {
         }
 
         /// <summary>
+        ///    Returns true if this layer is a cubic texture.
+        /// </summary>
+        public bool Is3D {
+            get {
+                return isCubic && numFrames == 1;
+            }
+        }
+
+        /// <summary>
         ///		
         /// </summary>
         public int NumFrames {
@@ -771,7 +780,13 @@ namespace Axiom.Core {
             for(int i = 0; i < numFrames; i++) {
                 if(frames[i] != string.Empty) {
                     // force a load of the texture
-                    TextureManager.Instance.Load(frames[i]);
+                    if(Is3D) {
+                        TextureManager.Instance.Load(frames[i], TextureType.CubeMap);
+                    }
+                    else {
+                        TextureManager.Instance.Load(frames[i]);
+                    }
+
                     isBlank = false;
                 }
             }

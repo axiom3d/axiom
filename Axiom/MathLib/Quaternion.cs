@@ -193,6 +193,7 @@ namespace Axiom.MathLib {
         /// <param name="quatB"></param>
         /// <returns></returns>
         static public Quaternion Slerp(float time, Quaternion quatA, Quaternion quatB) {
+            // TODO: Add support for shortest path interpolation, change also required to KeyFrame and AnimationTrack
             float cos = quatA.Dot(quatB);
 
             float angle = MathUtil.ACos(cos);

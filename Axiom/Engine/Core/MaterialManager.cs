@@ -117,8 +117,8 @@ namespace Axiom.Core {
                 defaultTextureFiltering = value;
 
                 // reset for all current textures
-                for(int i = 0; i < resourceList.Count; i++) {
-                    ((Material)resourceList[i]).TextureFiltering = defaultTextureFiltering;
+                foreach(Material material in resourceList.Values) {
+                    material.TextureFiltering = defaultTextureFiltering;
                 }
             }
         }
@@ -564,12 +564,12 @@ namespace Axiom.Core {
                 }
 
                 if(src1 == LayerBlendSource.Manual) {
-                    int paramIndex = 4;
+                    int paramIndex = 3;
                     if(op == LayerBlendOperationEx.BlendManual) {
                         paramIndex++;
                     }
 
-                    if(values.Length < paramIndex + 3) {
+                    if(values.Length < paramIndex + 2) {
                         ParseHelper.LogParserError("color_op_ex", material.Name, "Wrong number of params.");
                         return;
                     }
@@ -580,13 +580,13 @@ namespace Axiom.Core {
                 }
 
                 if(src2 == LayerBlendSource.Manual) {
-                    int paramIndex = 4;
+                    int paramIndex = 3;
 
                     if(op == LayerBlendOperationEx.BlendManual) {
                         paramIndex++;
                     }
 
-                    if(values.Length < paramIndex + 3) {
+                    if(values.Length < paramIndex + 2) {
                         ParseHelper.LogParserError("color_op_ex", material.Name, "Wrong number of params.");
                         return;
                     }

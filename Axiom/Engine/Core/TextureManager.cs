@@ -73,6 +73,8 @@ namespace Axiom.Core {
         public Texture Load(string name) {
             return Load(name, TextureType.TwoD);
         }
+        
+        public abstract  Resource Create(string name, TextureType type);
 
         /// <summary>
         /// 
@@ -97,7 +99,7 @@ namespace Axiom.Core {
 
             if(texture == null) {
                 // create a new texture
-                texture = (Texture)Create(name);
+                texture = (Texture)Create(name, type);
 
                 if(numMipMaps == -1)
                     texture.NumMipMaps = defaultNumMipMaps;
