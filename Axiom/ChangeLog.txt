@@ -1,3 +1,7 @@
+12-29-2004
+- Added LogManager.
+- Fixed D3D crash in fullscreen mode.
+
 12-27-2004
 - Finished support for 1.30 meshes (minus submesh names at the moment).
 - Added 1.30 versions of existing meshes.
