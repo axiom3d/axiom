@@ -1030,6 +1030,8 @@ namespace Axiom.Core {
 
                             // 12 = sizeof(float) * 3
                             Memory.Copy(srcPtr, destPtr, 12 * egi.vertexData.vertexCount);
+
+                            esr.PositionBuffer.Unlock();
                         }
 
                         if (egi.vertexData == mesh.SharedVertexData) {
