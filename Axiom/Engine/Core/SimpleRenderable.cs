@@ -77,7 +77,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return null;
+				return box;
 			}
 		}
 
@@ -112,10 +112,7 @@ namespace Axiom.Core
 			get { return material; }
 		}
 
-		public virtual void GetRenderOperation(RenderOperation op)
-		{
-			// TODO: Implement GetRenderOperation
-		}		
+		public abstract void GetRenderOperation(RenderOperation op);
 
 		/// <summary>
 		/// 

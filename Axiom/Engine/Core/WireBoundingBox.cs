@@ -89,7 +89,7 @@ namespace Axiom.Core
 				int* pCol = (int*)colPtr.ToPointer();
 
 				for(int i = 0; i < vertexData.vertexCount; i++)
-					pCol[i] = System.Drawing.Color.Black.ToArgb();
+					pCol[i] = Engine.Instance.ConvertColor(ColorEx.FromColor(System.Drawing.Color.Red));
 			}
 
 			buffer.Unlock();
@@ -231,6 +231,8 @@ namespace Axiom.Core
 			op.indexData = null;
 			op.operationType = RenderMode.LineList;
 			op.useIndices = false;
+			
+			Engine.Instance.RenderSystem.LightingEnabled = false;
 		}
 
 

@@ -16,6 +16,7 @@
     <File name=".\Demos\TextureFX.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Demos\Transparency.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Demos\ParticleFX.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Demos\Tutorial1.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References>
     <Reference type="Project" refto="Engine" localcopy="True" />
@@ -23,18 +24,18 @@
   </References>
   <DeploymentInformation target="" script="" strategy="File" />
   <Configuration runwithwarnings="True" name="Debug">
-    <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="1" includedebuginformation="True" optimize="False" unsafecodeallowed="False" generateoverflowchecks="False" mainclass="" target="WinExe" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon=".\App.ico" />
+    <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="1" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="WinExe" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon=".\App.ico" />
     <Execution commandlineparameters="" consolepause="True" />
     <Output directory=".\bin\Debug\" assembly="DemoTest" executeBeforeBuild="" executeAfterBuild="" />
   </Configuration>
   <Configurations active="Debug">
     <Configuration runwithwarnings="True" name="Debug">
-      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="1" includedebuginformation="True" optimize="False" unsafecodeallowed="False" generateoverflowchecks="False" mainclass="" target="WinExe" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon=".\App.ico" />
+      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="1" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="WinExe" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon=".\App.ico" />
       <Execution commandlineparameters="" consolepause="True" />
       <Output directory=".\bin\Debug\" assembly="DemoTest" executeBeforeBuild="" executeAfterBuild="" />
     </Configuration>
     <Configuration runwithwarnings="True" name="Release">
-      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="False" optimize="True" unsafecodeallowed="False" generateoverflowchecks="False" mainclass="" target="WinExe" definesymbols="TRACE" generatexmldocumentation="False" win32Icon=".\App.ico" />
+      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="False" optimize="True" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="WinExe" definesymbols="TRACE" generatexmldocumentation="False" win32Icon=".\App.ico" />
       <Execution commandlineparameters="" consolepause="True" />
       <Output directory=".\Release\" assembly="DemoTest" executeBeforeBuild="" executeAfterBuild="" />
     </Configuration>

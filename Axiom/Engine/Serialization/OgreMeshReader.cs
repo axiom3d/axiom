@@ -530,7 +530,6 @@ namespace Axiom.Serialization
 		#region Properties
 		
 		#endregion
-
 	}
 
 	/// <summary>
@@ -539,83 +538,22 @@ namespace Axiom.Serialization
 	public enum MeshChunkID : ushort
 	{
 		Header                = 0x1000,
-		// char*          version           : Version number check
 		Mesh                = 0x3000,
-		// bool skeletallyAnimated   // important flag which affects h/w buffer policies
-		// Optional M_GEOMETRY chunk
 		SubMesh             = 0x4000, 
-		// char* materialName
-		// bool useSharedVertices
-		// unsigned int indexCount
-		// bool indexes32Bit
-		// unsigned int* faceVertexIndices (indexCount)
-		// OR
-		// unsigned short* faceVertexIndices (indexCount)
-		// M_GEOMETRY chunk (Optional: present only if useSharedVertices = false)
 		SubMeshBoneAssignment = 0x4100,
-		// Optional bone weights (repeating section)
-		// unsigned int vertexIndex;
-		// unsigned short boneIndex;
-		// Real weight;
-		Geometry          = 0x5000, // NB this chunk is embedded within M_MESH and M_SUBMESH
-		// unsigned int vertexCount
-		// Real* pVertices (x, y, z order x numVertices)
+		Geometry          = 0x5000,
 		GeometryNormals = 0x5100,    //(Optional)
-		// Real* pNormals (x, y, z order x numVertices)
 		GeometryColors = 0x5200,    //(Optional)
-		// unsigned long* pColours (RGBA 8888 format x numVertices)
 		GeometryTexCoords = 0x5300,    //(Optional, REPEATABLE, each one adds an extra set)
-		// unsigned short dimensions    (1 for 1D, 2 for 2D, 3 for 3D)
-		// Real* pTexCoords  (u [v] [w] order, dimensions x numVertices)
 		MeshSkeletonLink = 0x6000,
-		// Optional link to skeleton
-		// char* skeletonName           : name of .skeleton to use
 		MeshBoneAssignment = 0x7000,
-		// Optional bone weights (repeating section)
-		// unsigned int vertexIndex;
-		// unsigned short boneIndex;
-		// Real weight;
 		MeshLOD = 0x8000,
-		// Optional LOD information
-		// unsigned short numLevels;
-		// bool manual;  (true for manual alternate meshes, false for generated)
 		MeshLODUsage = 0x8100,
-		// Repeating section, ordered in increasing depth
-		// NB LOD 0 (full detail from 0 depth) is omitted
-		// Real fromSquaredDepth;
 		MeshLODManual = 0x8110,
-		// Required if M_MESH_LOD section manual = true
-		// String manualMeshName;
 		MeshLODGenerated = 0x8120,
-		// Required if M_MESH_LOD section manual = false
-		// Repeating section (1 per submesh)
-		// unsigned int indexCount;
-		// bool indexes32Bit
-		// unsigned short* faceIndexes;  (indexCount)
-		// OR
-		// unsigned int* faceIndexes;  (indexCount)
 		MeshBounds = 0x9000,
-		// Real minx, miny, minz
-		// Real maxx, maxy, maxz
-		// Real radius
-                    
-                    
-        
-		// --> Phased out definitions
-		// Definitions required for loading 1.0 meshes, but no longer supported 
-		// (see 1.0 format below)
 		Material            = 0x2000,
-		// char* name 
-		// AMBIENT
-		// Real r, g, b
-		// DIFFUSE
-		// Real r, g, b
-		// SPECULAR
-		// Real r, g, b
-		// SHININESS
-		// Real val;
 		TextureLayer    = 0x2200 // optional, repeat per layer
-		// char* name 
 		// TODO - scale, offset, effects
 
 	};

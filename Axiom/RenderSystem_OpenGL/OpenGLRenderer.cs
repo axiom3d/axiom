@@ -1197,7 +1197,7 @@ namespace RenderSystem_OpenGL
 			Gl.glDisableClientState( Gl.GL_NORMAL_ARRAY );
 			Gl.glDisableClientState( Gl.GL_COLOR_ARRAY );
 			//Gl.glDisableClientState( Gl.GL_SECONDARY_COLOR_ARRAY );
-			Gl.glColor4f(1.0f,1.0f,1.0f,1.0f);
+			//Gl.glColor4f(1.0f,1.0f,1.0f,1.0f);
 		}
 
 		/// <summary>
