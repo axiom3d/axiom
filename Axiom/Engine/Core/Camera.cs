@@ -787,6 +787,38 @@ namespace Axiom.Core {
             }
         }
 
+        /// <summary>
+        ///     Gets a world space ray as cast from the camera through a viewport position.
+        /// </summary>
+        /// <param name="screenX">
+        ///     The x position at which the ray should intersect the viewport, 
+        ///     in normalised screen coordinates [0,1].
+        /// </param>
+        /// <param name="screenY">
+        ///     The y position at which the ray should intersect the viewport, 
+        ///     in normalised screen coordinates [0,1].
+        /// </param>
+        /// <returns></returns>
+        public Ray GetCameraToViewportRay(float screenX, float screenY) {
+            float centeredScreenX = (screenX - 0.5f);
+            float centeredScreenY = (0.5f - screenY);
+     
+            float normalizedSlope = MathUtil.Tan(MathUtil.DegreesToRadians(fieldOfView * 0.5f));
+            float viewportYToWorldY = normalizedSlope * nearDistance * 2;
+            float viewportXToWorldX = viewportYToWorldY * aspectRatio;
+     
+            Vector3 rayDirection = 
+                new Vector3(
+                    centeredScreenX * viewportXToWorldX, 
+                    centeredScreenY * viewportYToWorldY,
+                    -nearDistance);
+
+            rayDirection = this.DerivedOrientation * rayDirection;
+            rayDirection.Normalize();
+     
+            return new Ray(this.DerivedPosition, rayDirection);
+        }
+
         #endregion
 
         #region Internal engine methods
