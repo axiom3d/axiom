@@ -86,7 +86,7 @@ namespace RenderSystem_OpenGL {
         
         // temp arrays to reduce runtime allocations
         protected float[] tempMatrix = new float[16];
-        protected float[] tempLightVals = new float[4];
+        protected float[] tempColorVals = new float[4];
 
         #endregion Member variables
 
@@ -235,11 +235,11 @@ namespace RenderSystem_OpenGL {
         public override ColorEx AmbientLight {
             set {
                 // create a float[4]  to contain the RGBA data
-                float[] ambient = value.ToArrayRGBA();
-                ambient[3] = 0.0f;
+                value.ToArrayRGBA(tempColorVals);
+                tempColorVals[3] = 0.0f;
 
                 // set the ambient color
-                Gl.glLightModelfv(Gl.GL_LIGHT_MODEL_AMBIENT, ambient);
+                Gl.glLightModelfv(Gl.GL_LIGHT_MODEL_AMBIENT, tempColorVals);
             }
         }
 
@@ -461,10 +461,10 @@ namespace RenderSystem_OpenGL {
             Debug.Assert(activeViewport != null, "BeingFrame cannot run without an active viewport.");
 
             if(activeViewport.ClearEveryFrame) {
-                float[] color = activeViewport.BackgroundColor.ToArrayRGBA();
+                activeViewport.BackgroundColor.ToArrayRGBA(tempColorVals);
 
                 // clear the viewport
-                Gl.glClearColor(color[0], color[1], color[2], color[3]);
+                Gl.glClearColor(tempColorVals[0], tempColorVals[1], tempColorVals[2], tempColorVals[3]);
 
                 // disable depth write if it isnt
                 if(!depthWrite)
@@ -547,11 +547,11 @@ namespace RenderSystem_OpenGL {
         /// <param name="emissive"></param>
         /// <param name="shininess"></param>
         protected override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess) {
-            float[] vals = null;
+            float[] vals = tempColorVals;
             
             // ambient
             if(lastAmbient == null || lastAmbient != ambient) {
-                vals = ambient.ToArrayRGBA();
+                ambient.ToArrayRGBA(vals);
                 Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_AMBIENT, vals);
                 
                 lastAmbient = ambient;
@@ -635,8 +635,6 @@ namespace RenderSystem_OpenGL {
                 return;
             }
 
-            float[] cv1 = blendMode.colorArg1.ToArrayRGBA();
-            float[] cv2 = blendMode.colorArg2.ToArrayRGBA();
             float[] av1 = new float[4] {0.0f, 0.0f, 0.0f, blendMode.alphaArg1};
             float[] av2 = new float[4] {0.0f, 0.0f, 0.0f, blendMode.alphaArg2};
 
@@ -770,10 +768,17 @@ namespace RenderSystem_OpenGL {
             Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND1_ALPHA, Gl.GL_SRC_ALPHA);
             Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND2_ALPHA, Gl.GL_SRC_ALPHA);
 
+            // color value 1
+            blendMode.colorArg1.ToArrayRGBA(tempColorVals);
+
             if (blendMode.blendType == LayerBlendType.Color && blendMode.source1 == LayerBlendSource.Manual)
-                Gl.glTexEnvfv(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_COLOR, cv1);
+                Gl.glTexEnvfv(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_COLOR, tempColorVals);
+
+            // color value 2
+            blendMode.colorArg2.ToArrayRGBA(tempColorVals);
+
             if (blendMode.blendType == LayerBlendType.Color && blendMode.source2 == LayerBlendSource.Manual)
-                Gl.glTexEnvfv(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_COLOR, cv2);
+                Gl.glTexEnvfv(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_COLOR, tempColorVals);
         
             Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
         }
@@ -1025,8 +1030,9 @@ namespace RenderSystem_OpenGL {
 
             Gl.glEnable(Gl.GL_FOG);
             Gl.glFogi(Gl.GL_FOG_MODE, (int)fogMode);
-            float[] fogColor = color.ToArrayRGBA();
-            Gl.glFogfv(Gl.GL_FOG_COLOR, fogColor);
+            // fog color values
+            color.ToArrayRGBA(tempColorVals);
+            Gl.glFogfv(Gl.GL_FOG_COLOR, tempColorVals);
             Gl.glFogf(Gl.GL_FOG_DENSITY, density);
             Gl.glFogf(Gl.GL_FOG_START, start);
             Gl.glFogf(Gl.GL_FOG_END, end);
@@ -1486,12 +1492,12 @@ namespace RenderSystem_OpenGL {
                 }
 
                 // light color
-                float[] color = light.Diffuse.ToArrayRGBA();
-                Gl.glLightfv(lightIndex, Gl.GL_DIFFUSE, color);
+                light.Diffuse.ToArrayRGBA(tempColorVals);
+                Gl.glLightfv(lightIndex, Gl.GL_DIFFUSE, tempColorVals);
 
                 // specular color
-                float[] specular = light.Specular.ToArrayRGBA();
-                Gl.glLightfv(lightIndex, Gl.GL_SPECULAR, specular);
+                light.Specular.ToArrayRGBA(tempColorVals);
+                Gl.glLightfv(lightIndex, Gl.GL_SPECULAR, tempColorVals);
 
                 // disable ambient light for objects
                 // BUG: Why does this return GL ERROR 1280?
@@ -1502,23 +1508,23 @@ namespace RenderSystem_OpenGL {
 
                 if(light.Type != LightType.Directional) {
                     vec = light.DerivedPosition;
-                    tempLightVals[0] = vec.x;
-                    tempLightVals[1] = vec.y;
-                    tempLightVals[2] = vec.z;
-                    tempLightVals[3] = 1.0f;
+                    tempColorVals[0] = vec.x;
+                    tempColorVals[1] = vec.y;
+                    tempColorVals[2] = vec.z;
+                    tempColorVals[3] = 1.0f;
 
-                    Gl.glLightfv(lightIndex, Gl.GL_POSITION, tempLightVals);
+                    Gl.glLightfv(lightIndex, Gl.GL_POSITION, tempColorVals);
                 }
 			
                 // direction (not needed for point lights
                 if(light.Type != LightType.Point) {
                     vec = light.DerivedDirection;
-                    tempLightVals[0] = vec.x;
-                    tempLightVals[1] = vec.y;
-                    tempLightVals[2] = vec.z;
-                    tempLightVals[3] = 1.0f;
+                    tempColorVals[0] = vec.x;
+                    tempColorVals[1] = vec.y;
+                    tempColorVals[2] = vec.z;
+                    tempColorVals[3] = 1.0f;
 
-                    Gl.glLightfv(lightIndex, Gl.GL_SPOT_DIRECTION, tempLightVals);
+                    Gl.glLightfv(lightIndex, Gl.GL_SPOT_DIRECTION, tempColorVals);
                 }
 
                 // light attenuation
@@ -1572,20 +1578,20 @@ namespace RenderSystem_OpenGL {
 
                     if (lt.Type != LightType.Directional) {
                         vec = lt.DerivedPosition;
-                        tempLightVals[0] = vec.x;
-                        tempLightVals[1] = vec.y;
-                        tempLightVals[2] = vec.z;
-                        tempLightVals[3] = 1.0f;
-                        Gl.glLightfv(Gl.GL_LIGHT0 + i, Gl.GL_POSITION, tempLightVals);
+                        tempColorVals[0] = vec.x;
+                        tempColorVals[1] = vec.y;
+                        tempColorVals[2] = vec.z;
+                        tempColorVals[3] = 1.0f;
+                        Gl.glLightfv(Gl.GL_LIGHT0 + i, Gl.GL_POSITION, tempColorVals);
                     }
                     // Direction (not needed for point lights)
                     if (lt.Type != LightType.Point) {
                         vec = lt.DerivedDirection;
-                        tempLightVals[0] = vec.x;
-                        tempLightVals[1] = vec.y;
-                        tempLightVals[2] = vec.z;
-                        tempLightVals[3] = 0.0f;
-                        Gl.glLightfv(Gl.GL_LIGHT0 + i, Gl.GL_SPOT_DIRECTION, tempLightVals);
+                        tempColorVals[0] = vec.x;
+                        tempColorVals[1] = vec.y;
+                        tempColorVals[2] = vec.z;
+                        tempColorVals[3] = 0.0f;
+                        Gl.glLightfv(Gl.GL_LIGHT0 + i, Gl.GL_SPOT_DIRECTION, tempColorVals);
                     }
                 }
             }
