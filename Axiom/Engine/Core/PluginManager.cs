@@ -106,7 +106,7 @@ namespace Axiom.Core {
 
 			foreach(string file in files) {
 				// TODO: Temp fix, allow exlusions in the app.config
-				if(file != "Axiom.Root.dll" && file.IndexOf("Axiom.") != -1) {
+				if(file != "Axiom.Engine.dll" && file.IndexOf("Axiom.") != -1) {
 					try {
 						string fullPath = Path.GetFullPath(file);
 
