@@ -19,6 +19,7 @@
 				<DebugInformation>false</DebugInformation>
 			</Options>
 		</Configuration>
+		<!--
 		<Project 
 			name="Demos" 
 			type="Exe" 
@@ -44,7 +45,7 @@
 			<Files>
 				<Match pattern="*.cs" path="." recurse="true"/>
 			</Files>
-		</Project>
+		</Project> -->
 		<Project 
 			name="Axiom.MathLib" 
 			type="Library" 
