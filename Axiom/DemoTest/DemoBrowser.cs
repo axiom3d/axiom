@@ -251,7 +251,7 @@ namespace Demos {
             demoTable.Rows.Add(new object[] {19, "TextureFX", "Demos.TextureFX", "TextureFX.jpg", "Various texture effects including scrolling and rotating.", "Demos"});
             demoTable.Rows.Add(new object[] {20, "Transparency", "Demos.Transparency", "Transparency.jpg", "A high poly scene with transparent entities.", "Demos"});
             demoTable.Rows.Add(new object[] {21, "Tutorial 1", "Demos.Tutorial1", "Tutorial1.jpg", "The obligatory spinning triangle demo using the engine.", "Tutorials"});
-			demoTable.Rows.Add(new object[] {22, "Shadows", "Demos.Shadows", "Tutorial1.jpg", "The obligatory spinning triangle demo using the engine.", "Tutorials"});
+			//demoTable.Rows.Add(new object[] {22, "Shadows", "Demos.Shadows", "Tutorial1.jpg", "The obligatory spinning triangle demo using the engine.", "Tutorials"});
 
             demoView = new DataView(demoTable);
 
