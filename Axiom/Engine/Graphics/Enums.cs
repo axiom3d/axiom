@@ -170,20 +170,21 @@ namespace Axiom.Graphics {
     /// </summary>
     [Flags]
     public enum Capabilities {
-        StencilBuffer                       = 0x00000001,
+        StencilBuffer                   = 0x00000001,
         TextureBlending                 = 0x00000002,
         VertexBlending                  = 0x00000004,
-        AnisotropicFiltering           = 0x00000008,
-        Dot3Bump                          = 0x00000010,
-        VertexBuffer                       = 0x00000020,
-        MultiTexturing                   = 0x00000040,
-        HardwareMipMaps           = 0x00000080,
-        CubeMapping                    = 0x00000100,
-        VertexPrograms                 = 0x00000200,
-        FragmentPrograms            = 0x00000400,
-        TextureCompression         = 0x00000800,
-        TextureCompressionDXT = 0x00001000,
-        TextureCompressionVTC = 0x00002000
+        AnisotropicFiltering            = 0x00000008,
+        Dot3Bump                        = 0x00000010,
+        VertexBuffer                    = 0x00000020,
+        MultiTexturing                  = 0x00000040,
+        HardwareMipMaps                 = 0x00000080,
+        CubeMapping                     = 0x00000100,
+        VertexPrograms                  = 0x00000200,
+        FragmentPrograms                = 0x00000400,
+        TextureCompression              = 0x00000800,
+        TextureCompressionDXT           = 0x00001000,
+        TextureCompressionVTC           = 0x00002000,
+        ScissorTest                     = 0x00004000
     }
 
     /// <summary>
@@ -249,6 +250,15 @@ namespace Axiom.Graphics {
         /// </summary>
         [ScriptEnum("cubic_normal")]
         Normal
+    }
+
+    /// <summary>
+    ///     A type of face group, i.e. face list of procedural etc
+    /// </summary>
+    public enum FaceGroup {
+        FaceList,
+        Patch,
+        Unknown
     }
 
     /// <summary>

@@ -433,6 +433,16 @@ namespace Axiom.RenderSystems.OpenGL {
 
         #endregion GL_NV_fragment_program/GL_NV_vertex_program2
 
+        #region GL_EXT_secondary_color
+
+        private static IntPtr secondaryColorPointerEXTptr;
+
+        public static void glSecondaryColorPointerEXT(int size, int type, int stride, IntPtr pointer) {
+            Gl.glSecondaryColorPointerEXT(secondaryColorPointerEXTptr, size, type, stride, pointer);
+        }
+
+        #endregion GL_EXT_secondary_color
+
         /// <summary>
         ///    Must be fired up after a GL context has been created.
         /// </summary>
@@ -483,6 +493,9 @@ namespace Axiom.RenderSystems.OpenGL {
             loadProgramNVptr = Wgl.wglGetProcAddress("glLoadProgramNV");
             programNamedParameter4fNVptr = Wgl.wglGetProcAddress("glProgramNamedParameter4fNV");
             programParameter4fvNVptr = Wgl.wglGetProcAddress("glProgramParameter4fvNV");
+
+            // GL_EXT_secondary_color
+            secondaryColorPointerEXTptr = Wgl.wglGetProcAddress("glSecondaryColorPointerEXT");
         }
     }
 

@@ -99,6 +99,7 @@
     <File name=".\Fonts\FontEnums.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Fonts\FontManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Graphics\AutoParamDataSource.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\EdgeListBuilder.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Graphics\Enums.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Graphics\GpuProgram.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Graphics\GpuProgramManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
@@ -121,8 +122,11 @@
     <File name=".\Graphics\RenderTarget.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Graphics\RenderTexture.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Graphics\RenderWindow.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\ShadowCaster.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\ShadowRenderable.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Graphics\SimpleRenderable.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Graphics\SoftwareBufferManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\StaticFaceGroup.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Graphics\Technique.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Graphics\TextureUnitState.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Graphics\VertexBufferBinding.cs" subtype="Code" buildaction="Compile" dependson="" data="" />

@@ -309,7 +309,12 @@ namespace Axiom.RenderSystems.OpenGL {
         /// </summary>
         public override bool NormalizeNormals {
             set {
-                // TODO: Implement NormalizeNormals
+                if(value) {
+                    Gl.glEnable(Gl.GL_NORMALIZE);
+                }
+                else {
+                    Gl.glDisable(Gl.GL_NORMALIZE);
+                }
             }
         }
 
@@ -1300,26 +1305,34 @@ namespace Axiom.RenderSystems.OpenGL {
                         break;
 				
                     case VertexElementSemantic.Diffuse:
-                        // set the pointer data
+                        // set the color pointer data
                         Gl.glColorPointer(
                             4,
                             type, 
                             vertexBuffer.VertexSize,
                             bufferData);
 
-                        // enable the normal array client state
+                        // enable the color array client state
                         Gl.glEnableClientState(Gl.GL_COLOR_ARRAY);
 
                         break;
 				
                     case VertexElementSemantic.Specular:
-                        // TODO: Add glSecondaryColorPointer to Tao
+                        // set the secondary color pointer data
+                        Ext.glSecondaryColorPointerEXT(
+                            4,
+                            type, 
+                            vertexBuffer.VertexSize,
+                            bufferData);
+
+                        // enable the secondary color array client state
+                        Gl.glEnableClientState(Gl.GL_SECONDARY_COLOR_ARRAY);
+
                         break;
 
                     case VertexElementSemantic.TexCoords:
                         // this ignores vertex element index and sets tex array for each available texture unit
                         // this allows for multitexturing on entities whose mesh only has a single set of tex coords
-
                         for(int j = 0; j < caps.NumTextureUnits; j++) {
                             // only set if this textures index if it is supposed to
                             if(texCoordIndex[j] == element.Index) {
@@ -1409,7 +1422,7 @@ namespace Axiom.RenderSystems.OpenGL {
             Gl.glDisableClientState( Gl.GL_TEXTURE_COORD_ARRAY );
             Gl.glDisableClientState( Gl.GL_NORMAL_ARRAY );
             Gl.glDisableClientState( Gl.GL_COLOR_ARRAY );
-            //Gl.glDisableClientState( Gl.GL_SECONDARY_COLOR_ARRAY );
+            Gl.glDisableClientState( Gl.GL_SECONDARY_COLOR_ARRAY );
             Gl.glColor4f(1.0f,1.0f,1.0f,1.0f);
         }
 
@@ -1706,6 +1719,17 @@ namespace Axiom.RenderSystems.OpenGL {
             }
         }
 
+        public override void SetScissorTest(bool enable, int left, int top, int right, int bottom) {
+            if(enable) {
+                Gl.glEnable(Gl.GL_SCISSOR_TEST);
+                // GL uses width / height rather than right / bottom
+                Gl.glScissor(left, top, right - left, bottom - top);
+            }
+            else {
+                Gl.glDisable(Gl.GL_SCISSOR_TEST);
+            }
+        }
+
         #endregion Implementation of RenderSystem
 
         #region Private methods
@@ -1940,6 +1964,9 @@ namespace Axiom.RenderSystems.OpenGL {
             if(stencilBits > 0) {
                 caps.SetCap(Capabilities.StencilBuffer);
             }
+
+            // scissor test is standard in GL 1.2 and above
+            caps.SetCap(Capabilities.ScissorTest);
 
             // ARB Vertex Programs
             if(GLHelper.SupportsExtension("GL_ARB_vertex_program")) {

@@ -32,7 +32,7 @@ namespace Axiom.Graphics {
     /// 	Summary description for VertexElement.
     /// </summary>
     /// DOC
-    public class VertexElement {
+    public class VertexElement : ICloneable {
         #region Member variables
 		
         protected ushort source;
@@ -217,5 +217,16 @@ namespace Axiom.Graphics {
 
         #endregion
 
+        #region ICloneable Members
+
+        /// <summary>
+        ///     Simple memberwise clone since all local fields are value types.
+        /// </summary>
+        /// <returns></returns>
+        public object Clone() {
+            return this.MemberwiseClone();
+        }
+
+        #endregion
     }
 }

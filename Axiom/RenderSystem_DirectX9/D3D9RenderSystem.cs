@@ -114,7 +114,7 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// </summary>
         public override bool NormalizeNormals {
             set {
-                // TODO: Implement NormalizeNormals
+                device.RenderState.NormalizeNormals = value;
             }
         }
 
@@ -588,14 +588,6 @@ namespace Axiom.RenderSystems.DirectX9 {
         protected override void SetTextureCoordCalculation(int stage, TexCoordCalcMethod method) {
             // save this for texture matrix calcs later
             texStageDesc[stage].autoTexCoordType = method;
-
-            // choose normalization method
-            if(method == TexCoordCalcMethod.EnvironmentMapNormal ||
-                method == TexCoordCalcMethod.EnvironmentMap) {
-                device.RenderState.NormalizeNormals = true;
-            }
-            else
-                device.RenderState.NormalizeNormals = false;
 
             // set auto texcoord gen mode if present
             // if not present we've already set it through SetTextureCoordSet
@@ -1187,6 +1179,16 @@ namespace Axiom.RenderSystems.DirectX9 {
                 device.SetTransform(d3dTransType, DX.Matrix.Identity);
             }
         }
+
+        public override void SetScissorTest(bool enable, int left, int top, int right, int bottom) {
+            if(enable) {
+                device.ScissorRectangle = new System.Drawing.Rectangle(left, top, right - left, bottom - top);
+                device.RenderState.ScissorTestEnable = true;
+            }
+            else {
+                device.RenderState.ScissorTestEnable = false;
+            }
+        }
 	
         /// <summary>
         ///		Helper method to go through and interrogate hardware capabilities.
@@ -1204,6 +1206,11 @@ namespace Axiom.RenderSystems.DirectX9 {
                 caps.SetCap(Capabilities.StencilBuffer);
                 // always 8 here
                 caps.StencilBufferBits = 8;
+            }
+
+            // Scissor test
+            if(d3dCaps.RasterCaps.SupportsScissorTest) {
+                caps.SetCap(Capabilities.ScissorTest);
             }
 
             // Anisotropy?

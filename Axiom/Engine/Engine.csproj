@@ -599,6 +599,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Graphics\EdgeListBuilder.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Graphics\Enums.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -709,12 +714,27 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Graphics\ShadowCaster.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Graphics\ShadowRenderable.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Graphics\SimpleRenderable.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "Graphics\SoftwareBufferManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Graphics\StaticFaceGroup.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -432,6 +432,23 @@ namespace Axiom.Graphics {
         protected abstract internal void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest);
 
         /// <summary>
+        ///     Sets the 'scissor region' ie the region of the target in which rendering can take place.
+        /// </summary>
+        /// <remarks>
+        ///     This method allows you to 'mask off' rendering in all but a given rectangular area
+        ///     as identified by the parameters to this method.
+        ///     <p/>
+        ///     Not all systems support this method. Check the <see cref="Axiom.Graphics.Capabilites"/> enum for the
+        ///     ScissorTest capability to see if it is supported.
+        /// </remarks>
+        /// <param name="enabled">True to enable the scissor test, false to disable it.</param>
+        /// <param name="left">Left corner (in pixels).</param>
+        /// <param name="top">Top corner (in pixels).</param>
+        /// <param name="right">Right corner (in pixels).</param>
+        /// <param name="bottom">Bottom corner (in pixels).</param>
+        public abstract void SetScissorTest(bool enable, int left, int top, int right, int bottom);
+
+        /// <summary>
         ///		Sets the surface parameters to be used during rendering an object.
         /// </summary>
         /// <param name="ambient"></param>
