@@ -216,42 +216,17 @@ namespace Axiom.RenderSystems.OpenGL {
         }
 
         /// <summary>
-        ///		Saves RenderWindow contents to disk.
+        ///		Saves RenderWindow contents to a stream.
         /// </summary>
-        /// <param name="fileName"></param>
-        public override void SaveToFile(string fileName) {
+        /// <param name="stream">Target stream to save the window contents to.</param>
+        public override void Save(Stream stream) {
             // create a RGB buffer
             byte[] buffer = new byte[width * height * 3];
 
 			// read the pixels from the GL buffer
-            Gl.glReadPixels(0, 0, width, height, Gl.GL_RGB, Gl.GL_UNSIGNED_BYTE, buffer);
+            Gl.glReadPixels(0, 0, width - 1, height - 1, Gl.GL_RGB, Gl.GL_UNSIGNED_BYTE, buffer);
 
-            MemoryStream stream = new MemoryStream(buffer);
-
-            // load the RGB image from the new stream
-            Image image = Image.FromRawStream(stream, width, height, PixelFormat.R8G8B8);
-
-            int pos = fileName.LastIndexOf('.');
-
-            // grab the file extension
-            string extension = fileName.Substring(pos + 1);
-
-            // grab the codec for the requested file extension
-            ICodec codec = CodecManager.Instance.GetCodec(extension);
-
-            // setup the image file information
-            ImageCodec.ImageData imageData = new ImageCodec.ImageData();
-            imageData.width = width;
-            imageData.height = height;
-            imageData.format = PixelFormat.R8G8B8;
-
-            // reset the stream position
-            stream.Position = 0;
-
-            // finally, save to file as an image
-            codec.EncodeToFile(stream, fileName, imageData);
-
-            stream.Close();
+			stream.Write(buffer, 0, buffer.Length);
         }
 
         #endregion

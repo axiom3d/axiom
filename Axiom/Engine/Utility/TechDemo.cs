@@ -60,18 +60,10 @@ namespace Axiom.Utility {
 		protected Vector3 camVelocity = Vector3.Zero;
 		protected Vector3 camAccel = Vector3.Zero;
 		protected float camSpeed = 2.5f;
-
 		protected int aniso = 1;
 		protected TextureFiltering filtering = TextureFiltering.Bilinear;
 
 		#endregion Protected Fields
-
-		#region Constructors & Destructors
-
-		public TechDemo() {
-		}
-
-		#endregion Constructors & Destructors
 
 		#region Protected Methods
 
@@ -84,7 +76,9 @@ namespace Axiom.Utility {
 			mode.Selected = true;
 
 			window = Root.Instance.Initialize(true, "Axiom Engine Window");
+
 			ShowDebugOverlay(showDebugOverlay);
+			
 			return true;
 		}
 
@@ -118,7 +112,7 @@ namespace Axiom.Utility {
 		}
 
 		protected void TakeScreenshot(string fileName) {
-			window.SaveToFile(fileName);
+			window.Save(fileName);
 		}
 
 		#endregion Protected Methods
@@ -127,7 +121,6 @@ namespace Axiom.Utility {
 
 		protected virtual void ChooseSceneManager() {
 			// Get the SceneManager, a generic one by default
-			// REFACTOR: Create SceneManagerFactories and have them register their supported type?
 			scene = engine.SceneManagers.GetSceneManager(SceneType.Generic);
 		}
 
@@ -175,6 +168,9 @@ namespace Axiom.Utility {
 			return true;
 		}
 
+		/// <summary>
+		///		Loads default resource configuration if one exists.
+		/// </summary>
 		protected virtual void SetupResources() {
 			string resourceConfigPath = Path.GetFullPath("EngineConfig.xml");
 
@@ -187,9 +183,7 @@ namespace Axiom.Utility {
 
 				// interrogate the available resource paths
 				foreach(EngineConfig.FilePathRow row in config.FilePath) {
-					string fullPath = row.src; //Environment.CurrentDirectory + Path.DirectorySeparatorChar + row.src;
-
-					ResourceManager.AddCommonArchive(fullPath, row.type);
+					ResourceManager.AddCommonArchive(row.src, row.type);
 				}
 			}
 		}
@@ -341,10 +335,10 @@ namespace Axiom.Utility {
 				string[] temp = Directory.GetFiles(Environment.CurrentDirectory, "screenshot*.jpg");
 				string fileName = string.Format("screenshot{0}.jpg", temp.Length + 1);
                 
+				TakeScreenshot(fileName);
+
 				// show briefly on the screen
 				window.DebugText = string.Format("Wrote screenshot '{0}'.", fileName);
-
-				TakeScreenshot(fileName);
 
 				// show for 2 seconds
 				debugTextDelay = 2.0f;

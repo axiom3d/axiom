@@ -281,10 +281,10 @@ namespace Axiom.RenderSystems.DirectX9 {
 		}
 
 		/// <summary>
-		///     Saves the back buffer to disk.
+		///     Saves the window contents to a stream.
 		/// </summary>
-		/// <param name="file"></param>
-		public override void SaveToFile(string fileName) {		
+		/// <param name="stream">Stream to write the window contents to.</param>
+		public override void Save(Stream stream) {		
             DisplayMode mode = device.DisplayMode;
 
             SurfaceDescription desc = new SurfaceDescription();
@@ -292,31 +292,36 @@ namespace Axiom.RenderSystems.DirectX9 {
             desc.Height = mode.Height;
             desc.Format = Format.A8R8G8B8;
 
+			// create a temp surface which will hold the screen image
             Surface surface = device.CreateOffscreenPlainSurface(
                 mode.Width, mode.Height, Format.A8R8G8B8, Pool.SystemMemory);
 
+			// get the entire front buffer.  This is SLOW!!
             device.GetFrontBufferData(0, surface);
 
+			// if not fullscreen, the front buffer contains the entire desktop image.  we need to grab only the portion
+			// that contains our render window
             if (!IsFullScreen) {
-                Form form = null;
+				// whatever our target control is, we need to walk up the chain and find the parent form
+                Control control = (Control)targetHandle;
 
-                if(targetHandle is Form) {
-                    form = targetHandle as Form;
-                }
-                else if (targetHandle is PictureBox) {
-                    form = (Form)((PictureBox)targetHandle).Parent;
-                }
-                else {
-                    throw new AxiomException("A Direct3D window can only be bound to either a Form or a PictureBox.");
+                while(!(control is Form)) {
+                    control = control.Parent;
                 }
 
+				Form form = control as Form;
+
+				// get the actual screen location of the form
                 System.Drawing.Rectangle rect = form.RectangleToScreen(form.ClientRectangle);
 
                 desc.Width = width;
                 desc.Height = height;
                 desc.Format = Format.A8R8G8B8;
 
+				// create a temp surface that is sized the same as our target control
                 Surface tmpSurface = device.CreateOffscreenPlainSurface(rect.Width, rect.Height, Format.A8R8G8B8, Pool.Default);
+
+				// copy the data from the front buffer to the window sized surface
                 device.UpdateSurface(surface, rect, tmpSurface);
 
                 // dispose of the prior surface
@@ -328,15 +333,16 @@ namespace Axiom.RenderSystems.DirectX9 {
             int pitch;
 
             // lock the surface to grab the data
-            GraphicsStream stream = surface.LockRectangle(LockFlags.ReadOnly | LockFlags.NoSystemLock, out pitch);
+            GraphicsStream graphStream = surface.LockRectangle(LockFlags.ReadOnly | LockFlags.NoSystemLock, out pitch);
 
             // create an RGB buffer
             byte[] buffer = new byte[width * height * 3];
 
             int offset = 0, line = 0, count = 0;
 
+			// gotta copy that data manually since it is in another format (sheesh!)
             unsafe {
-                byte* data = (byte*)stream.InternalData;
+                byte* data = (byte*)graphStream.InternalData;
 
                 for (int y = 0; y < desc.Height; y++) {
                     line = y * pitch;
@@ -359,33 +365,12 @@ namespace Axiom.RenderSystems.DirectX9 {
             // dispose of the surface
             surface.Dispose();
 
-            MemoryStream bufferStream = new MemoryStream(buffer);
+			// gotta flip the image real fast
+			Image image = Image.FromDynamicImage(buffer, width, height, PixelFormat.R8G8B8);
+			image.FlipAroundX();
 
-            // load the RGB image from the new stream
-            Image image = Image.FromRawStream(bufferStream, width, height, PixelFormat.R8G8B8);
-
-            int pos = fileName.LastIndexOf('.');
-
-            // grab the file extension
-            string extension = fileName.Substring(pos + 1);
-
-            // grab the codec for the requested file extension
-            ICodec codec = CodecManager.Instance.GetCodec(extension);
-
-            // setup the image file information
-            ImageCodec.ImageData imageData = new ImageCodec.ImageData();
-            imageData.width = width;
-            imageData.height = height;
-            imageData.format = PixelFormat.R8G8B8;
-            imageData.flip = true;
-
-            // reset the stream position
-            bufferStream.Position = 0;
-
-            // finally, save to file as an image
-            codec.EncodeToFile(bufferStream, fileName, imageData);
-
-            stream.Close();
+			// write the data to the stream provided
+			stream.Write(image.Data, 0, image.Data.Length);
 		}
 
 		private void OnResetDevice(object sender, EventArgs e) {
