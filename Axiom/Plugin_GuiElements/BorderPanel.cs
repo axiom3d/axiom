@@ -310,6 +310,7 @@ namespace Axiom.Gui.Elements {
         ///    Overriden from Panel.
         /// </summary>
         public override void Update() {
+            base.Update();
 
             if (metricsMode == MetricsMode.Pixels && 
                 (OverlayManager.Instance.HasViewportChanged || geomPositionsOutOfDate))
@@ -325,8 +326,6 @@ namespace Axiom.Gui.Elements {
                 bottomBorderSize = (float)pixelBottomBorderSize / vpHeight;
                 geomPositionsOutOfDate = true;
             }
-
-            base.Update ();
         }
 
         /// <summary>

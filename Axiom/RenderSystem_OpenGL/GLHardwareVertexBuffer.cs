@@ -87,28 +87,26 @@ namespace Axiom.RenderSystems.OpenGL {
                 //Ext.glBufferDataARB(Gl.GL_ARRAY_BUFFER_ARB, length, IntPtr.Zero, GLHelper.ConvertEnum(usage));
 
                 // find out how we shall access this buffer
-                access = (usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly) ? 
+                access = (usage == BufferUsage.Dynamic) ? 
                     Gl.GL_READ_WRITE_ARB : Gl.GL_WRITE_ONLY_ARB;
             }
             else if(locking == BufferLocking.ReadOnly) {
-                if(usage == BufferUsage.WriteOnly ||
-                    usage == BufferUsage.StaticWriteOnly ||
-                    usage == BufferUsage.DynamicWriteOnly)
-                    
-					// TODO: Log this instead, don't throw an exception
-					//throw new Exception("Invalid attempt to lock a write-only vertex buffer as read-only.");
+				if(usage == BufferUsage.WriteOnly) {   
+					System.Diagnostics.Debug.WriteLine("Invalid attempt to lock a write-only vertex buffer as read-only.");
+				}
 
                 access = Gl.GL_READ_ONLY_ARB;
             }
             else if(locking == BufferLocking.Normal || locking == BufferLocking.NoOverwrite) {
-                access = (usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly) ?
+                access = (usage == BufferUsage.Dynamic) ?
                     Gl.GL_READ_WRITE_ARB : Gl.GL_WRITE_ONLY_ARB;
             }
-
+		
             IntPtr ptr = Ext.glMapBufferARB(Gl.GL_ARRAY_BUFFER_ARB, access);
 
-            if(ptr == IntPtr.Zero)
-                throw new Exception("GL Vertex Buffer: Out of memory");
+			if(ptr == IntPtr.Zero) {
+				throw new Exception("GL Vertex Buffer: Out of memory");
+			}
 
             isLocked = true;
 
@@ -122,7 +120,9 @@ namespace Axiom.RenderSystems.OpenGL {
             Ext.glBindBufferARB(Gl.GL_ARRAY_BUFFER_ARB, bufferID);
 
             // Unmap the buffer to unlock it
-            Ext.glUnmapBufferARB(Gl.GL_ARRAY_BUFFER_ARB);
+			if(Ext.glUnmapBufferARB(Gl.GL_ARRAY_BUFFER_ARB) == 0) {
+				throw new Exception("Buffer data currupted!");
+			}
 
             isLocked = false;
         }
@@ -174,7 +174,9 @@ namespace Axiom.RenderSystems.OpenGL {
         ///		Gets the GL buffer ID for this buffer.
         /// </summary>
         public int GLBufferID {
-            get { return bufferID; }
+            get { 
+				return bufferID; 
+			}
         }
 		
         #endregion

@@ -756,18 +756,22 @@ namespace Axiom.Graphics {
 
         [AttributeParser("specular", PASS)]
         public static void ParseSpecular(string[] values, Pass pass) {
-            if(values.Length != 3 && values.Length != 4) {
+            if(values.Length != 4 && values.Length != 5) {
                 ParseHelper.LogParserError("emissive", pass.Parent.Name, "Bad specular attribute, expected 4 or 5 params");
                 return;
             }
 
             pass.Specular = ParseHelper.ParseColor(values);
+
+			if(values.Length == 5) {
+				pass.Shininess = float.Parse(values[4]);
+			}
         }
 
         [AttributeParser("emissive", PASS)]
         public static void ParseEmissive(string[] values, Pass pass) {
-            if(values.Length != 3 && values.Length != 4) {
-                ParseHelper.LogParserError("emissive", pass.Parent.Name, "Expected 3-4 params");
+            if(values.Length != 4) {
+                ParseHelper.LogParserError("emissive", pass.Parent.Name, "Expected 4 params");
                 return;
             }
 

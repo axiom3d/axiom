@@ -235,23 +235,22 @@ namespace Axiom.Core {
         /// <returns></returns>
         public virtual Node RemoveChild(string name) {
             // TODO: optimize
-
-            Node node = null;
+            Node child = null;
 
             for(int i = 0; i < childNodes.Count; i++) {
-                Node child = childNodes[i];
+                child = childNodes[i];
                 if(child.name == name) {
                     break;
                 }
             }
 
-            if(node == null) {
+            if(child == null) {
                 throw new Axiom.Exceptions.AxiomException("Node named '{0}' not found.!", name);
             }
 			
-            CancelUpdate(node);
-            childNodes.Remove(node);
-            return node;
+            CancelUpdate(child);
+            childNodes.Remove(child);
+            return child;
         }
 
         /// <summary>

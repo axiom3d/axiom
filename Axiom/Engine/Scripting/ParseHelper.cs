@@ -69,7 +69,7 @@ namespace Axiom.Scripting {
             color.r = float.Parse(values[0]);
             color.g = float.Parse(values[1]);
             color.b = float.Parse(values[2]);
-            color.a = (values.Length == 4) ? float.Parse(values[3]) : 1.0f;
+            color.a = (values.Length > 3) ? float.Parse(values[3]) : 1.0f;
 
             return color;
         }

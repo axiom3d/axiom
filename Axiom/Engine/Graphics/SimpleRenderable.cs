@@ -152,7 +152,7 @@ namespace Axiom.Graphics {
         /// <summary>
         /// 
         /// </summary>
-        public bool UseIdentityProjection {
+        public virtual bool UseIdentityProjection {
             get {
                 return false;
             }
@@ -161,7 +161,7 @@ namespace Axiom.Graphics {
         /// <summary>
         /// 
         /// </summary>
-        public bool UseIdentityView {
+        public virtual bool UseIdentityView {
             get {
                 return false;
             }
@@ -186,7 +186,7 @@ namespace Axiom.Graphics {
         /// <summary>
         /// 
         /// </summary>
-        public Quaternion WorldOrientation {
+        public virtual Quaternion WorldOrientation {
             get {
                 return parentNode.DerivedOrientation;
             }
@@ -195,7 +195,7 @@ namespace Axiom.Graphics {
         /// <summary>
         /// 
         /// </summary>
-        public Vector3 WorldPosition {
+        public virtual Vector3 WorldPosition {
             get {
                 return parentNode.DerivedPosition;
             }

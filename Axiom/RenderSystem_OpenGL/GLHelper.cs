@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Specialized;
+using Axiom.Exceptions;
 using Axiom.Graphics;
 using Tao.OpenGl;
 using Tao.Platform.Windows;
@@ -106,7 +107,7 @@ namespace Axiom.RenderSystems.OpenGL {
         public static int ConvertEnum(BufferUsage usage) {
             switch(usage) {
                 case BufferUsage.Static:
-                    //case BufferUsage.StaticWriteOnly:
+                case BufferUsage.StaticWriteOnly:
                     return (int)Gl.GL_STATIC_DRAW_ARB;
 
                 case BufferUsage.Dynamic:
@@ -261,6 +262,7 @@ namespace Axiom.RenderSystems.OpenGL {
         private static IntPtr getBufferSubDataARBPtr;      
         private static IntPtr mapBufferARBPtr;
         private static IntPtr unmapBufferARBPtr;
+		private static IntPtr getBufferParameterivARBptr;
 
         public static void glBindBufferARB(int target, int buffer) {
             Gl.glBindBufferARB(bindBufferARBPtr, target, buffer);
@@ -276,7 +278,7 @@ namespace Axiom.RenderSystems.OpenGL {
 
         public static void glDeleteBuffersARB(int number, ref int buffer) {
             // TODO: Fix, currently does nothing
-            //Gl.glDeleteBuffersARB(deleteBuffersARBPtr, number, ref buffer);
+			//Gl.glDeleteBuffersARB(deleteBuffersARBPtr, number, new int[]{buffer});
         }
 
         public static void glGenBuffersARB(int number, out int buffer) {
@@ -291,9 +293,13 @@ namespace Axiom.RenderSystems.OpenGL {
             return Gl.glMapBufferARB(mapBufferARBPtr, target, access);
         }
 
-        public static void glUnmapBufferARB(int target) {
-            Gl.glUnmapBufferARB(unmapBufferARBPtr, target);
+        public static int glUnmapBufferARB(int target) {
+			return Gl.glUnmapBufferARB(unmapBufferARBPtr, target);
         }
+
+		public static void glGetBufferParameterivARB(int target, int name, int[] parameters) {
+			Gl.glGetBufferParameterivARB(getBufferParameterivARBptr, target, name, parameters);
+		}
 
         #endregion GL_ARB_vertex_buffer_object
 
@@ -316,7 +322,7 @@ namespace Axiom.RenderSystems.OpenGL {
 
         public static void glDeleteProgramsARB(int number, ref int program) {
             // TODO: Fix
-            //Gl.glDeleteProgramsARB(deleteProgramsARBPtr, number, ref program);
+            Gl.glDeleteProgramsARB(deleteProgramsARBPtr, number, ref program);
         }
 
         public static void glProgramStringARB(int type, int format, int length, string source) {
@@ -468,7 +474,6 @@ namespace Axiom.RenderSystems.OpenGL {
         }
        
         public static void glProgramParameter4fvNV(int target, int index, float[] vals) {
-            //Gl.gl
             Gl.glProgramParameter4fvNV(programParameter4fvNVptr, target, index, vals);
         }
 
@@ -504,6 +509,16 @@ namespace Axiom.RenderSystems.OpenGL {
 
 		#endregion Vertex Attributes
 
+		#region GL_draw_range_elements
+
+		private static IntPtr drawRangeElementsptr;
+
+		public static void glDrawRangeElements(int mode, int start, int end, int count, int type, IntPtr indices) {
+			Gl.glDrawRangeElements(drawRangeElementsptr, mode, start, end, count, type, indices);
+		}
+
+		#endregion GL_draw_range_elements
+
         /// <summary>
         ///    Must be fired up after a GL context has been created.
         /// </summary>
@@ -517,6 +532,7 @@ namespace Axiom.RenderSystems.OpenGL {
             getBufferSubDataARBPtr = Wgl.wglGetProcAddress("glGetBufferSubDataARB");        
             mapBufferARBPtr = Wgl.wglGetProcAddress("glMapBufferARB");
             unmapBufferARBPtr = Wgl.wglGetProcAddress("glUnmapBufferARB");
+			getBufferParameterivARBptr = Wgl.wglGetProcAddress("glGetBufferParameterivARB");
 
             // ARB_multitexture
             activeTextureARB = Wgl.wglGetProcAddress("glActiveTextureARB");
@@ -570,6 +586,9 @@ namespace Axiom.RenderSystems.OpenGL {
 			vertexAttribPointerARBptr = Wgl.wglGetProcAddress("glVertexAttribPointerARB");
 			enableVertexAttribArrayARBptr = Wgl.wglGetProcAddress("glEnableVertexAttribArrayARB");
 			disableVertexAttribArrayARBptr = Wgl.wglGetProcAddress("glDisableVertexAttribArrayARB");
+
+			// GL_draw_range_elements
+			drawRangeElementsptr = Wgl.wglGetProcAddress("glDrawRangeElements");
         }
     }
 
