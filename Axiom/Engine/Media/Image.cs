@@ -157,7 +157,7 @@ namespace Axiom.Media {
 
             // create a new buffer and write the image data directly to it
             image.buffer = new byte[image.size];
-            stream.Write(image.buffer, 0, image.size);
+            stream.Read(image.buffer, 0, image.size);
 
             return image;
         }
