@@ -40,6 +40,7 @@ using Axiom.Utility;
 using CsGL.OpenGL;
 using CsGL.Util;
 using Tao.OpenGl;
+using Tao.Platform.Windows;
 
 namespace RenderSystem_OpenGL
 {
@@ -63,6 +64,9 @@ namespace RenderSystem_OpenGL
 			protected OpenGLContext context;
 			/// <summary>Object that allows for calls to OpenGL extensions.  Named all upper for consistency since GL calls are static through GL class.</summary>
 			protected OpenGL_Extension Ext;
+
+			protected IntPtr glClientActiveTextureARB;
+			protected IntPtr glActiveTextureARB;
 
 			/// <summary>Internal view matrix.</summary>
 			protected Matrix4 viewMatrix;
@@ -160,6 +164,9 @@ namespace RenderSystem_OpenGL
 
 				// create a specialized instance, which registers itself as the singleton instance of HardwareBufferManager
 				hardwareBufferManager = new GLHardwareBufferManager();
+
+				glActiveTextureARB = Wgl.wglGetProcAddress("glActiveTextureARB");
+				glClientActiveTextureARB = Wgl.wglGetProcAddress("glClientActiveTextureARB");
 
 				return window;
 			}
@@ -306,9 +313,9 @@ namespace RenderSystem_OpenGL
 					int numUnits = caps.NumTextureUnits;
 
 					// set for all texture units
-					for(uint unit = 0; unit < numUnits; unit++)
+					for(int unit = 0; unit < numUnits; unit++)
 					{
-						Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + unit);
+						Gl.glActiveTextureARB(glActiveTextureARB, Gl.GL_TEXTURE0 + unit);
 
 						switch(value)
 						{
@@ -336,7 +343,7 @@ namespace RenderSystem_OpenGL
 					} // for
 
 					// reset texture unit
-					Ext.glActiveTextureARB( Gl.GL_TEXTURE0 );
+					Gl.glActiveTextureARB(glActiveTextureARB, Gl.GL_TEXTURE0 );
 				}
 			}
 
@@ -487,7 +494,7 @@ namespace RenderSystem_OpenGL
 				GLTexture texture = (GLTexture)TextureManager.Instance[textureName];
 
 				// set the active texture
-				Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + (uint)stage);
+				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0 + stage);
 
 				// enable and bind the texture if necessary
 				if(enabled && texture != null)
@@ -502,7 +509,7 @@ namespace RenderSystem_OpenGL
 				}
 
 				// reset active texture to unit 0
-				Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
+				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0);
 			}
 	
 			/// <summary>
@@ -618,10 +625,10 @@ namespace RenderSystem_OpenGL
 								// this ignores vertex element index and sets tex array for each available texture unit
 								// this allows for multitexturing on entities whose mesh only has a single set of tex coords
  
-								for(uint j = 0; j < caps.NumTextureUnits; j++)
+								for(int j = 0; j < caps.NumTextureUnits; j++)
 								{
 									// set the current active texture unit
-									Ext.glClientActiveTextureARB(Gl.GL_TEXTURE0 + j);
+									Gl.glClientActiveTextureARB(glClientActiveTextureARB, Gl.GL_TEXTURE0 + j);
 
 									if(Gl.glIsEnabled(Gl.GL_TEXTURE_2D) > 0)
 									{
@@ -645,7 +652,7 @@ namespace RenderSystem_OpenGL
 				} // for
 
 				// reset to texture unit 0
-				Ext.glClientActiveTextureARB(Gl.GL_TEXTURE0);
+				Gl.glClientActiveTextureARB(glClientActiveTextureARB, Gl.GL_TEXTURE0);
 
 				int primType = 0;
 
@@ -1144,10 +1151,10 @@ namespace RenderSystem_OpenGL
 				} // end switch
 
 				// set the GL texture wrap params for the specified unit
-				Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + (uint)stage);
+				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0 + stage);
 				Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, type);
 				Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, type);
-				Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
+				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0);
 			}
 	
 			public override void SetTextureBlendMode(int stage, LayerBlendModeEx blendMode)
@@ -1240,7 +1247,7 @@ namespace RenderSystem_OpenGL
 						break;
 				} // end switch
 
-				Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + (uint)stage);
+				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0 + stage);
 				Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, (int)Gl.GL_COMBINE);
 
 				if (blendMode.blendType == LayerBlendType.Color)
@@ -1298,7 +1305,7 @@ namespace RenderSystem_OpenGL
 				if (blendMode.blendType == LayerBlendType.Color && blendMode.source2 == LayerBlendSource.Manual)
 					Gl.glTexEnvfv(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_COLOR, cv2);
             
-				Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
+				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0);
 			}
 	
 			protected override void SetTextureCoordSet(int stage, int index)
@@ -1318,7 +1325,7 @@ namespace RenderSystem_OpenGL
 				// Default to no extra auto texture matrix
 				useAutoTextureMatrix = false;
 
-				Ext.glActiveTextureARB( Gl.GL_TEXTURE0 + (uint)stage );
+				Gl.glActiveTextureARB(glActiveTextureARB, Gl.GL_TEXTURE0 + stage );
 
 				switch(method)
 				{
@@ -1406,7 +1413,7 @@ namespace RenderSystem_OpenGL
 						break;
 				}
 
-				Ext.glActiveTextureARB(Gl.GL_TEXTURE0);		
+				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0);		
 			}
 	
 			protected override void SetTextureMatrix(int stage, Matrix4 xform)
@@ -1416,7 +1423,7 @@ namespace RenderSystem_OpenGL
 				glMatrix[12] = glMatrix[8];
 				glMatrix[13] = glMatrix[9];
 
-				Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + (uint)stage);
+				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0 + stage);
 				Gl.glMatrixMode(Gl.GL_TEXTURE);
 
 				// if texture matrix was precalced, use that
@@ -1430,7 +1437,7 @@ namespace RenderSystem_OpenGL
 
 				// reset to mesh view matrix and to tex unit 0
 				Gl.glMatrixMode(Gl.GL_MODELVIEW);
-				Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
+				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0);
 			}
 	
 			public override void CheckCaps()
