@@ -553,7 +553,7 @@ namespace Axiom.Core {
             Matrix3 xform = Matrix3.Identity;
 
             // texture scaling
-            if(scaleU > 0 || scaleV > 0) {
+            if(scaleU != 0 || scaleV != 0) {
                 // offset to the center of the texture
                 xform.m00 = 1 / scaleU;
                 xform.m11 = 1 / scaleV;
@@ -564,7 +564,7 @@ namespace Axiom.Core {
             }
 
             // texture translation
-            if(transU > 0 || transV > 0) {
+            if(transU != 0 || transV != 0) {
                 Matrix3 xlate = Matrix3.Identity;
 
                 xlate.m02 = transU;

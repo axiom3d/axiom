@@ -104,7 +104,7 @@ namespace Axiom.Controllers {
         /// <returns></returns>
         public Controller CreateTextureRotator(TextureLayer layer, float speed) {
             IControllerValue val = new TexCoordModifierControllerValue(layer, false, false, false, false, true);
-            IControllerFunction func = new MultipyControllerFunction(speed, true);
+            IControllerFunction func = new MultipyControllerFunction(-speed, true);
 
             return CreateController(val, func);
         }
@@ -125,7 +125,7 @@ namespace Axiom.Controllers {
             if(speedU != 0 && (speedU == speedV)) {
                 // create the value and function
                 val = new TexCoordModifierControllerValue(layer, true, true);
-                func = new MultipyControllerFunction(speedU, true);
+                func = new MultipyControllerFunction(-speedU, true);
 
                 // create the controller (uses FrameTime for source by default)
                 controller = CreateController(val, func);
@@ -135,7 +135,7 @@ namespace Axiom.Controllers {
                 if(speedU != 0) {
                     // create the value and function
                     val = new TexCoordModifierControllerValue(layer, true, false);
-                    func = new MultipyControllerFunction(speedU, true);
+                    func = new MultipyControllerFunction(-speedU, true);
 
                     // create the controller (uses FrameTime for source by default)
                     controller = CreateController(val, func);
@@ -145,7 +145,7 @@ namespace Axiom.Controllers {
                 if(speedV != 0) {
                     // create the value and function
                     val = new TexCoordModifierControllerValue(layer, false, true);
-                    func = new MultipyControllerFunction(speedV, true);
+                    func = new MultipyControllerFunction(-speedV, true);
 
                     // create the controller (uses FrameTime for source by default)
                     controller = CreateController(val, func);
