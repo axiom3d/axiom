@@ -83,7 +83,16 @@ namespace Axiom.SceneManagers.PagingLandscape.Texture
 				{
 					for ( i = 0; i < w; i++ )
 					{
-						textures[ j ][ i ] = new Texture_Image();
+                        textures[i][j] = new Texture_Image();
+                    }
+				}
+			} else if ( Options.Instance.TextureFormat == "Splatting5" )
+			{
+				for ( j = 0; j < h; j++ )
+				{
+					for ( i = 0; i < w; i++ )
+					{
+						textures[i][j] = new Texture_Splatting5();
 					}
 				}
 			}
