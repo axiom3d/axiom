@@ -316,13 +316,21 @@ namespace Axiom.Graphics {
 	///  Comparison functions, for things such as stencil buffer or depth comparisons.
 	/// </summary>
 	public enum CompareFunction {
+        [ScriptEnum("always_fail")]
 		AlwaysFail,
+        [ScriptEnum("always_pass")]
 		AlwaysPass,
+        [ScriptEnum("less")]
 		Less,
+        [ScriptEnum("less_equal")]
 		LessEqual,
+        [ScriptEnum("equal")]
 		Equal,
+        [ScriptEnum("not_equal")]
 		NotEqual,
+        [ScriptEnum("greater_equal")]
 		GreaterEqual,
+        [ScriptEnum("greater")]
 		Greater
 	};
 
