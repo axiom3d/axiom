@@ -1609,7 +1609,7 @@ namespace Axiom.Graphics {
 		/// <summary>
 		///    Internal method for loading this texture stage as part of Material.Load.
 		/// </summary>
-		internal void Load() {
+		public void Load() {
 			// load all textures
 			for(int i = 0; i < numFrames; i++) {
 				if(frames[i].Length > 0) {
