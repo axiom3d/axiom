@@ -76,7 +76,7 @@ namespace Demos {
                 node.Position = nodePos;
 
                 // attach this node to the root node
-                rootNode.ChildNodes.Add(node);
+                rootNode.AddChild(node);
 
                 // clone the knot
                 string cloneName = string.Format("Knot{0}", i);

@@ -701,7 +701,13 @@ namespace Axiom.Core {
                 }
             }
 
-            // TODO: Init texture effects here
+            // TODO: Init animated textures
+
+            // initialize texture effects
+            for(int i = 0; i < effectList.Count; i++) {
+                TextureEffect effect = (TextureEffect)effectList[i];
+                CreateEffectController(ref effect);
+            }
         }
 
         #endregion

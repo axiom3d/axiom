@@ -164,7 +164,10 @@ namespace Axiom.Core {
             // create a deferred material
             Material material = new Material(name, true);
 
-            base.Load(material, 1);
+            // add to the internal resource list
+            resourceList.Add(name.ToLower(), material);
+
+            // defer load until first use
 
             return material;
         }

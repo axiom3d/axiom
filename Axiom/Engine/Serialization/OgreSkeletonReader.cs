@@ -167,7 +167,7 @@ namespace Axiom.Serialization {
             child = skeleton.GetBone((ushort)childHandle);
 
             // attach the child to the parent
-            parent.ChildNodes.Add(child);
+            parent.AddChild(child);
         }
 
         /// <summary>

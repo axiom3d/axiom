@@ -54,7 +54,7 @@ namespace Axiom.Core {
         protected ulong memoryBudget;
         protected ulong memoryUsage;
         /// <summary>A cached list of all resources in memory.</summary>
-        protected Hashtable resourceList									= new Hashtable();
+        protected Hashtable resourceList									= System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
         /// <summary>A lookup table used to find a common archive associated with a filename.</summary>
         protected Hashtable filePaths										= new Hashtable();
         /// <summary>A cached list of archives specific to a resource type.</summary>

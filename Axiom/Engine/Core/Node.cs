@@ -111,6 +111,9 @@ namespace Axiom.Core {
 
         #region Constructors
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Node() {
             this.name = "Unnamed_" + nextUnnamedNodeExtNum++;
 
@@ -126,17 +129,16 @@ namespace Axiom.Core {
 
             accumAnimWeight = 0.0f;
 
-            childNodes = new NodeCollection(this);
+            childNodes = new NodeCollection();
             childrenToUpdate = new ArrayList();
-
-            // add events for the child collection
-            childNodes.Cleared += new CollectionHandler(this.ChildrenCleared);
-            childNodes.ItemAdded += new CollectionHandler(this.ChildAdded);
-            childNodes.ItemRemoved += new CollectionHandler(this.ChildRemoved);
 
             NeedUpdate();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
         public Node(String name) {
             this.name = name;
 
@@ -150,13 +152,8 @@ namespace Axiom.Core {
 
             accumAnimWeight = 0.0f;
 
-            childNodes = new NodeCollection(this);
+            childNodes = new NodeCollection();
             childrenToUpdate = new ArrayList();
-
-            // add events for the child collection
-            childNodes.Cleared += new CollectionHandler(this.ChildrenCleared);
-            childNodes.ItemAdded += new CollectionHandler(this.ChildAdded);
-            childNodes.ItemRemoved += new CollectionHandler(this.ChildRemoved);
 
             NeedUpdate();
         }
@@ -165,6 +162,44 @@ namespace Axiom.Core {
         #endregion
 
         #region Public methods
+
+        /// <summary>
+        ///    Adds a node to the list of children of this node.
+        /// </summary>
+        /// <param name="node"></param>
+        public void AddChild(Node child) {
+            childNodes.Add(child);
+
+            child.Parent = this;
+        }
+
+        /// <summary>
+        ///    Gets a child node by index.
+        /// </summary>
+        /// <param name="index"></param>
+        public Node GetChild(int index) {
+            return childNodes[index];
+        }
+
+        /// <summary>
+        ///    Gets a child node by name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public Node GetChild(string name) {
+            return childNodes[name];
+        }
+
+        /// <summary>
+        ///    Removes the specifed node as a child of this node.
+        /// </summary>
+        /// <param name="child"></param>
+        public void RemoveChild(Node child) {
+            // cancel any pending updates to this child
+            CancelUpdate(child);
+
+            childNodes.Remove(child);
+        }
 
         /// <summary>
         /// Scales the node, combining it's current scale with the passed in scaling factor. 
@@ -306,7 +341,7 @@ namespace Axiom.Core {
             Node newChild = CreateChildImpl(name);
             newChild.Translate(Vector3.Zero);
             newChild.Rotate(Quaternion.Identity);
-            ChildNodes.Add(newChild);
+            AddChild(newChild);
 
             return newChild;
         }
@@ -322,7 +357,7 @@ namespace Axiom.Core {
             Node newChild = CreateChildImpl(name);
             newChild.Translate(translate);
             newChild.Rotate(rotate);
-            ChildNodes.Add(newChild);
+            AddChild(newChild);
 
             return newChild;
         }
@@ -334,7 +369,7 @@ namespace Axiom.Core {
             Node newChild = CreateChildImpl();
             newChild.Translate(Vector3.Zero);
             newChild.Rotate(Quaternion.Identity);
-            ChildNodes.Add(newChild);
+            AddChild(newChild);
 
             return newChild;
         }
@@ -349,7 +384,7 @@ namespace Axiom.Core {
             Node newChild = CreateChildImpl();
             newChild.Translate(translate);
             newChild.Rotate(rotate);
-            ChildNodes.Add(newChild);
+            AddChild(newChild);
 
             return newChild;
         }
@@ -454,13 +489,6 @@ namespace Axiom.Core {
                 isParentNotified = false;
                 NeedUpdate();
             }
-        }
-
-        /// <summary>
-        /// A list of child nodes for this Node object.
-        /// </summary>
-        public NodeCollection ChildNodes {
-            get { return childNodes; }
         }
 
         /// <summary>
@@ -888,35 +916,6 @@ namespace Axiom.Core {
                 return nodeMaterial;
             }
         }
-
-        #endregion
-
-        #region Event handlers
-
-        public bool ChildAdded(object sender, EventArgs e) {
-            Node child = (Node)sender;
-
-            child.Parent = this;
-
-            return false;
-        }
-
-        public bool ChildRemoved(object sender, EventArgs e) {
-            Node child = (Node)sender;
-
-            // TODO: Think about affects of other Nodes besides the root being null.
-            //child.Parent = null;
-
-            // cancel any pending updates to this child
-            CancelUpdate(child);
-
-            return false;
-        }
-
-        public bool ChildrenCleared(object sender, EventArgs e) {
-            return false;
-        }
-
 
         #endregion
 
