@@ -1,3 +1,21 @@
+3-30-2004
+Big Commit
+- Hardware skinning now support.  
+- Skeletal animation demo updated to include more robots for stressing the new code.  Hardware skinning is used by default if vertex programs are available.
+- Software animation revamped to use blend weights and indices, replacing the old SoftwareBlendInfo struct.
+- Temporary buffer licensing in place for storing per frame post-blended vertex position, which is used for software animation, and will be used to generate shadow volumes for hardware skinned meshes.
+- Entities now have their own copy of a skeleton rather than then multiple entities using the same skeleton sharing a single skeleton instance
+- Various sparsly documented classes updated with XML docs (this is a continual work in progress).
+- Render to texture memory leak in D3D fix from najak.
+- Fixed issue with loading the free Ninja model (a multiple bone per vertex issue).
+
+Issues:
+- Startup/shutdown issues exist, but are being worked on by the community (namely jkeiser).
+- Fresnel crashes on some hardware configurations in OpenGL when VBO's are used.
+
+Still Todo:
+- Profile and optimize the latest skeletal animation updates.
+
 3-20-2004
 - Implemented TagPoint functionality, which allows you to attach objects to bones when using an entity that
   has a skeleton.  An example would be attaching a gun to a player's hand, where the gun will move with the players
