@@ -115,6 +115,7 @@ Core/DebugOverlay
         element TextArea(Core/DebugText)
         {
             metrics_mode pixels
+            caption Demo
             left 230
             top 70
             width 200
