@@ -1216,7 +1216,7 @@ namespace Axiom.RenderSystems.OpenGL {
             Gl.glFogf(Gl.GL_FOG_DENSITY, density);
             Gl.glFogf(Gl.GL_FOG_START, start);
             Gl.glFogf(Gl.GL_FOG_END, end);
-
+			fogEnabled = true;
             // TODO: Fog hints maybe?
         }
 
