@@ -60,6 +60,21 @@ namespace Axiom.MathLib {
 
         #endregion
 
+        #region Methods
+
+        /// <summary>
+        ///     Calculates the dot (scalar) product of this vector with another.
+        /// </summary>
+        /// <param name="vec">
+        ///     Vector with which to calculate the dot product (together with this one).
+        /// </param>
+        /// <returns>A float representing the dot product value.</returns>
+        public float Dot(Vector4 vec) {
+            return x * vec.x + y * vec.y + z * vec.z + w * vec.w;
+        }
+
+        #endregion Methods
+
         #region Operator overloads + CLS compliant method equivalents
 
         /// <summary>
