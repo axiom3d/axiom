@@ -25,9 +25,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using System.IO;
 using System.Windows.Forms;
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Media;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using D3D = Microsoft.DirectX.Direct3D;
@@ -37,12 +39,16 @@ namespace Axiom.RenderSystems.DirectX9 {
 	/// The Direct3D implementation of the RenderWindow class.
 	/// </summary>
 	public class D3DWindow : RenderWindow {
-		/// <summary>A handle to the Direct3D device of the DirectX9RenderSystem.</summary>
-		private D3D.Device device;
+        #region Fields
+
+        /// <summary>A handle to the Direct3D device of the DirectX9RenderSystem.</summary>
+        private D3D.Device device;
 		/// <summary>Used to provide support for multiple RenderWindows per device.</summary>
 		private D3D.Surface backBuffer;
 		private D3D.Surface stencilBuffer;
 		private D3D.SwapChain swapChain;
+
+        #endregion Fields
 	
 		#region Constructor
 	
@@ -268,24 +274,108 @@ namespace Axiom.RenderSystems.DirectX9 {
 		///     Saves the back buffer to disk.
 		/// </summary>
 		/// <param name="file"></param>
-		public override void SaveToFile(string file) {		
-			// get a reference to the back buffer surface
-			// CMH 4/24/2004 - Start
-			Surface surface;
+		public override void SaveToFile(string fileName) {		
+            DisplayMode mode = device.DisplayMode;
 
-			if(isFullScreen) {
-				surface = device.GetBackBuffer(0, 0, BackBufferType.Mono);
-			}
-			else {
-				surface = swapChain.GetBackBuffer(0, BackBufferType.Mono);
-			}
-			// CMH - End
+            SurfaceDescription desc = new SurfaceDescription();
+            desc.Width = mode.Width;
+            desc.Height = mode.Height;
+            desc.Format = Format.A8R8G8B8;
 
-			// save the surface to disk
-			SurfaceLoader.Save(file, ImageFileFormat.Jpg, surface);
+            Surface surface = device.CreateOffscreenPlainSurface(
+                mode.Width, mode.Height, Format.A8R8G8B8, Pool.SystemMemory);
 
-			// dispose of the surface
-			surface.Dispose();
+            device.GetFrontBufferData(0, surface);
+
+            if (!IsFullScreen) {
+                Form form = null;
+
+                if(targetHandle is Form) {
+                    form = targetHandle as Form;
+                }
+                else if (targetHandle is PictureBox) {
+                    form = (Form)((PictureBox)targetHandle).Parent;
+                }
+                else {
+                    throw new AxiomException("A Direct3D window can only be bound to either a Form or a PictureBox.");
+                }
+
+                System.Drawing.Rectangle rect = form.RectangleToScreen(form.ClientRectangle);
+
+                desc.Width = width;
+                desc.Height = height;
+                desc.Format = Format.A8R8G8B8;
+
+                Surface tmpSurface = device.CreateOffscreenPlainSurface(rect.Width, rect.Height, Format.A8R8G8B8, Pool.Default);
+                device.UpdateSurface(surface, rect, tmpSurface);
+
+                // dispose of the prior surface
+                surface.Dispose();
+
+                surface = tmpSurface;
+            }
+
+            int pitch;
+
+            // lock the surface to grab the data
+            GraphicsStream stream = surface.LockRectangle(LockFlags.ReadOnly | LockFlags.NoSystemLock, out pitch);
+
+            // create an RGB buffer
+            byte[] buffer = new byte[width * height * 3];
+
+            int offset = 0, line = 0, count = 0;
+
+            unsafe {
+                byte* data = (byte*)stream.InternalData;
+
+                for (int y = 0; y < desc.Height; y++) {
+                    line = y * pitch;
+
+                    for (int x = 0; x < desc.Width; x++) {
+                        offset = x * 4;
+
+                        int pixel = line + offset;
+
+                        // Actual format is BRGA for some reason
+                        buffer[count++] = data[pixel + 2];
+                        buffer[count++] = data[pixel + 1];
+                        buffer[count++] = data[pixel + 0];
+                    }
+                }
+            }
+
+            surface.UnlockRectangle();
+
+            // dispose of the surface
+            surface.Dispose();
+
+            MemoryStream bufferStream = new MemoryStream(buffer);
+
+            // load the RGB image from the new stream
+            Image image = Image.FromRawStream(bufferStream, width, height, PixelFormat.R8G8B8);
+
+            int pos = fileName.LastIndexOf('.');
+
+            // grab the file extension
+            string extension = fileName.Substring(pos + 1);
+
+            // grab the codec for the requested file extension
+            ICodec codec = CodecManager.Instance.GetCodec(extension);
+
+            // setup the image file information
+            ImageCodec.ImageData imageData = new ImageCodec.ImageData();
+            imageData.width = width;
+            imageData.height = height;
+            imageData.format = PixelFormat.R8G8B8;
+            imageData.flip = true;
+
+            // reset the stream position
+            bufferStream.Position = 0;
+
+            // finally, save to file as an image
+            codec.EncodeToFile(bufferStream, fileName, imageData);
+
+            stream.Close();
 		}
 
 		private void OnResetDevice(object sender, EventArgs e) {
