@@ -94,6 +94,8 @@ namespace Demos {
             this.chkTools.Size = new System.Drawing.Size(80, 24);
             this.chkTools.TabIndex = 2;
             this.chkTools.Text = "Tools";
+            this.chkTools.MouseEnter += new System.EventHandler(this.chkTools_MouseEnter);
+            this.chkTools.MouseLeave += new System.EventHandler(this.chkTools_MouseLeave);
             this.chkTools.CheckedChanged += new System.EventHandler(this.typeGroup_CheckedChanged);
             // 
             // chkTutorials
@@ -107,6 +109,8 @@ namespace Demos {
             this.chkTutorials.Size = new System.Drawing.Size(80, 24);
             this.chkTutorials.TabIndex = 1;
             this.chkTutorials.Text = "Tutorials";
+            this.chkTutorials.MouseEnter += new System.EventHandler(this.chkTutorials_MouseEnter);
+            this.chkTutorials.MouseLeave += new System.EventHandler(this.chkTutorials_MouseLeave);
             this.chkTutorials.CheckedChanged += new System.EventHandler(this.typeGroup_CheckedChanged);
             // 
             // chkDemos
@@ -120,6 +124,8 @@ namespace Demos {
             this.chkDemos.Size = new System.Drawing.Size(64, 24);
             this.chkDemos.TabIndex = 0;
             this.chkDemos.Text = "Demos";
+            this.chkDemos.MouseEnter += new System.EventHandler(this.chkDemos_MouseEnter);
+            this.chkDemos.MouseLeave += new System.EventHandler(this.chkDemos_MouseLeave);
             this.chkDemos.CheckedChanged += new System.EventHandler(this.typeGroup_CheckedChanged);
             // 
             // lblShowTypes
@@ -153,6 +159,8 @@ namespace Demos {
             this.lnkWebsite.Text = "Axiom Website";
             this.lnkWebsite.VisitedLinkColor = System.Drawing.Color.White;
             this.lnkWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkWebsite_LinkClicked);
+            this.lnkWebsite.MouseEnter += new System.EventHandler(this.lnkWebsite_MouseEnter);
+            this.lnkWebsite.MouseLeave += new System.EventHandler(this.lnkWebsite_MouseLeave);
             // 
             // DemoBrowser
             // 
@@ -168,7 +176,6 @@ namespace Demos {
             this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.Icon = new Icon("Media/Icons/AxiomIcon.ico");
             this.Name = "DemoBrowser";
             this.Text = "Axiom Engine - Demo Browser v1.0.0.0";
             this.Load += new System.EventHandler(this.DemoBrowser_Load);
@@ -201,7 +208,7 @@ namespace Demos {
         }
 
         private void lstDemos_MouseMove(object sender, MouseEventArgs e) {
-            ListViewItem item = lstDemos.GetItemAt(e.X, e.Y); 
+            ListViewItem item = lstDemos.GetItemAt(e.X, e.Y);
             if(item != null && item.SubItems.Count > 1) { 
                 lblInfo.Text = item.SubItems[1].Text; 
             } 
@@ -303,6 +310,38 @@ namespace Demos {
         }
 
         private void lstDemos_MouseLeave(object sender, System.EventArgs e) {
+            lblInfo.Text = "Select a demo to run.  The description of each demo will appear here as you hover over them with the mouse."; 
+        }
+
+        private void chkDemos_MouseEnter(object sender, System.EventArgs e) {
+            lblInfo.Text = "Check to display available demos.";
+        }
+
+        private void chkDemos_MouseLeave(object sender, System.EventArgs e) {
+            lblInfo.Text = "Select a demo to run.  The description of each demo will appear here as you hover over them with the mouse."; 
+        }
+
+        private void chkTutorials_MouseEnter(object sender, System.EventArgs e) {
+            lblInfo.Text = "Check to display available tutorials.";
+        }
+
+        private void chkTutorials_MouseLeave(object sender, System.EventArgs e) {
+            lblInfo.Text = "Select a demo to run.  The description of each demo will appear here as you hover over them with the mouse."; 
+        }
+
+        private void chkTools_MouseEnter(object sender, System.EventArgs e) {
+            lblInfo.Text = "Check to display available tools.";
+        }
+
+        private void chkTools_MouseLeave(object sender, System.EventArgs e) {
+            lblInfo.Text = "Select a demo to run.  The description of each demo will appear here as you hover over them with the mouse."; 
+        }
+
+        private void lnkWebsite_MouseEnter(object sender, System.EventArgs e) {
+            lblInfo.Text = "Visit the Axiom website!";
+        }
+
+        private void lnkWebsite_MouseLeave(object sender, System.EventArgs e) {
             lblInfo.Text = "Select a demo to run.  The description of each demo will appear here as you hover over them with the mouse."; 
         }
     }

@@ -52,6 +52,7 @@ namespace Axiom.SubSystems.Rendering {
 
         protected int height, width, colorDepth;
         protected string name;
+        protected string debugText = "";
         protected ViewportCollection viewportList;
         protected int numFaces;
         protected Hashtable customAttributes;
@@ -77,6 +78,18 @@ namespace Axiom.SubSystems.Rendering {
         public string Name {
             get { return this.name; }
             set { this.name = value; }
+        }
+
+        /// <summary>
+        /// Gets/Sets the debug text of this render target.
+        /// </summary>
+        public string DebugText {
+            get {
+                return this.debugText;
+            }
+            set {
+                this.debugText = value;
+            }
         }
 
         /// <summary>
