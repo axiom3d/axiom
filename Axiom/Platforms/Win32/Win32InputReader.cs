@@ -43,6 +43,9 @@ namespace Axiom.Platforms.Win32
 		protected System.Windows.Forms.Control control;
 		protected bool ownMouse;
 
+		protected RenderWindow window;
+		protected bool lastWindowActive;
+
 		#endregion Fields
 		
 		#region Constants
@@ -178,21 +181,23 @@ namespace Axiom.Platforms.Win32
 		///		Captures the state of all active input controllers.
 		/// </summary>
 		public override void Capture() {
-			if(useKeyboard) {
-				if(useKeyboardEvents) {
-					ReadBufferedKeyboardData();
+			if(VerifyInputAcquired()) {
+				if(useKeyboard) {
+					if(useKeyboardEvents) {
+						ReadBufferedKeyboardData();
+					}
+					else {
+						// TODO: Grab keyboard modifiers
+						CaptureKeyboard();
+					}
 				}
-				else {
-					// TODO: Grab keyboard modifiers
-					CaptureKeyboard();
-				}
-			}
 
-			if(useMouse) {
-				if(useMouseEvents) {
-				}
-				else {
-					CaptureMouse();
+				if(useMouse) {
+					if(useMouseEvents) {
+					}
+					else {
+						CaptureMouse();
+					}
 				}
 			}
 		}
@@ -209,6 +214,7 @@ namespace Axiom.Platforms.Win32
 			this.useMouse = useMouse;
 			this.useGamepad = useGamepad;
 			this.ownMouse = ownMouse;
+			this.window = window;
 
 			// for Windows, this should be a S.W.F.Control
 			control = window.Handle as System.Windows.Forms.Control;
@@ -250,11 +256,13 @@ namespace Axiom.Platforms.Win32
 		/// <param name="key"></param>
 		/// <returns></returns>
 		public override bool IsKeyPressed(KeyCodes key) {
-			// get the DInput.Key enum from the System.Windows.Forms.Keys enum passed in
-			DInput.Key daKey = ConvertKeyEnum(key);
+			if(keyboardState != null) {
+				// get the DInput.Key enum from the System.Windows.Forms.Keys enum passed in
+				DInput.Key daKey = ConvertKeyEnum(key);
 
-			if(keyboardState[daKey]) {
-				return true;
+				if(keyboardState[daKey]) {
+					return true;
+				}
 			}
             
 			return false;
@@ -402,53 +410,14 @@ namespace Axiom.Platforms.Win32
 		///		Captures an immediate keyboard state snapshot (for non-buffered data).
 		/// </summary>
 		private void CaptureKeyboard() {
-			// capture the current keyboard state
-			try {
-				keyboardState =  keyboardDevice.GetCurrentKeyboardState();		
-			}
-			catch (InputException) {
-				// DirectInput may be telling us that the input stream has been
-				// interrupted.  We aren't tracking any state between polls, so
-				// we don't have any special reset that needs to be done.
-				// We just re-acquire and try again.
-	        
-				// If input is lost then acquire and keep trying.
-				InputException ie;
-
-				bool loop = true;
-				do {
-					try {
-						// attempt to re-acquire the device
-						keyboardDevice.Acquire();
-
-						// grab the fresh keyboard state
-						// not doing so produces unpredictable results, mainly keys pressed that
-						// really are not
-						keyboardState = keyboardDevice.GetCurrentKeyboardState();		
-
-						loop = false;
-					}
-					catch(InputLostException) {
-						loop = true;
-					}
-					catch(InputException inputException) {
-						ie = inputException;
-						loop = false;
-					}
-					catch(Exception) {}
-				} while (loop);
-
-				// Exception may be OtherApplicationHasPriorityException or other exceptions.
-				// This may occur when the app is minimized or in the process of 
-				// switching, so just try again later.
-				return; 
-			}
+			keyboardState = keyboardDevice.GetCurrentKeyboardState();
 		}
 
 		/// <summary>
 		///		Captures the mouse input based on the preffered input mode.
 		/// </summary>
 		private void CaptureMouse() {
+			// determine whether to used immediate or buffered mouse input
 			if(useMouseEvents) {
 				CaptureBufferedMouse();
 			}
@@ -468,67 +437,62 @@ namespace Axiom.Platforms.Win32
 		///		Takes a snapshot of the mouse state for immediate input checking.
 		/// </summary>
 		private void CaptureImmediateMouse() {
-			try {
-				// try to capture the current mouse state
-				mouseState = mouseDevice.CurrentMouseState;
+			// capture the current mouse state
+			mouseState = mouseDevice.CurrentMouseState;
 
-				// store the updated absolute values
-				mouseAbsX += mouseState.X;
-				mouseAbsY += mouseState.Y;
-				mouseAbsZ += mouseState.Z;
+			// store the updated absolute values
+			mouseAbsX += mouseState.X;
+			mouseAbsY += mouseState.Y;
+			mouseAbsZ += mouseState.Z;
 
-				// calc relative deviance from center
-				mouseRelX = mouseState.X;
-				mouseRelY = mouseState.Y; 
-				mouseRelZ = mouseState.Z; 
+			// calc relative deviance from center
+			mouseRelX = mouseState.X;
+			mouseRelY = mouseState.Y; 
+			mouseRelZ = mouseState.Z; 
 
-				byte[] buttons = mouseState.GetMouseButtons();
+			byte[] buttons = mouseState.GetMouseButtons();
 
-				// clear the flags
-				mouseButtons = 0;
+			// clear the flags
+			mouseButtons = 0;
 
-				for(int i = 0; i < buttons.Length; i++) {
-					if((buttons[i] & 0x80) != 0) {
-						mouseButtons |= (1 << i);
-					}
+			for(int i = 0; i < buttons.Length; i++) {
+				if((buttons[i] & 0x80) != 0) {
+					mouseButtons |= (1 << i);
 				}
 			}
-			catch (DirectXException) {
-				// DirectInput may be telling us that the input stream has been
-				// interrupted.  We aren't tracking any state between polls, so
-				// we don't have any special reset that needs to be done.
-				// We just re-acquire and try again.
-        
-				// If input is lost then acquire and keep trying.
-				InputException ie;
+		}
 
-				bool loop = true;
-				do {
-					try {
-						// attempt to re-acquire the device
-						mouseDevice.Acquire();
+		/// <summary>
+		///		Verifies the state of the host window and reacquires input if the window was
+		///		previously minimized and has been brought back into focus.
+		/// </summary>
+		/// <returns>True if the input devices are acquired and input capturing can proceed, false otherwise.</returns>
+		protected bool VerifyInputAcquired() {
+			// if the window is coming back from being deactivated, lets grab input again
+			if(window.IsActive && !lastWindowActive) {
+				// no exceptions right now, thanks anyway
+				DirectXException.IgnoreExceptions();
 
-						// grab the fresh keyboard state
-						// not doing so produces unpredictable results, mainly keys pressed that
-						// really are not
-						mouseState = mouseDevice.CurrentMouseState;		
+				// acquire and capture keyboard input
+				if(useKeyboard) {
+					keyboardDevice.Acquire();
+					CaptureKeyboard();
+				}
 
-						loop = false;
-					}
-					catch(InputLostException) {
-						loop = true;
-					}
-					catch(InputException inputException) {
-						ie = inputException;
-						loop = false;
-					}
-				} while (loop);
+				// acquire and capture mouse input
+				if(useMouse) {
+					mouseDevice.Acquire();
+					CaptureMouse();
+				}
 
-				// Exception may be OtherApplicationHasPriorityException or other exceptions.
-				// This may occur when the app is minimized or in the process of 
-				// switching, so just try again later.
-				return; 
+				// wait...i like exceptions!
+				DirectXException.EnableExceptions();
 			}
+
+			// store the current window state
+			lastWindowActive = window.IsActive;
+
+			return lastWindowActive;
 		}
 
 		#region Keycode Conversions
