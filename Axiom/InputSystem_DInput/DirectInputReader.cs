@@ -315,6 +315,42 @@ namespace InputSystem_DInput {
                 case Keys.Escape:
                     dinputKey = DInput.Key.Escape;
                     break;
+                case Keys.F1:
+                    dinputKey = DInput.Key.F1;
+                    break;
+                case Keys.F2:
+                    dinputKey = DInput.Key.F2;
+                    break;
+                case Keys.F3:
+                    dinputKey = DInput.Key.F3;
+                    break;
+                case Keys.F4:
+                    dinputKey = DInput.Key.F4;
+                    break;
+                case Keys.F5:
+                    dinputKey = DInput.Key.F5;
+                    break;
+                case Keys.F6:
+                    dinputKey = DInput.Key.F6;
+                    break;
+                case Keys.F7:
+                    dinputKey = DInput.Key.F7;
+                    break;
+                case Keys.F8:
+                    dinputKey = DInput.Key.F8;
+                    break;
+                case Keys.F9:
+                    dinputKey = DInput.Key.F9;
+                    break;
+                case Keys.F10:
+                    dinputKey = DInput.Key.F10;
+                    break;
+                case Keys.F11:
+                    dinputKey = DInput.Key.F11;
+                    break;
+                case Keys.F12:
+                    dinputKey = DInput.Key.F12;
+                    break;
             }
 
             return dinputKey;

@@ -51,5 +51,13 @@ namespace RenderSystem_DirectX9 {
 
             return texture;
         }
+        
+        public override Axiom.Core.Resource Create(string name, TextureType type) {
+            D3DTexture texture = new D3DTexture(name, device, TextureUsage.Default);
+			
+            // TODO: Implement this
+
+            return texture;
+        }
     }
 }

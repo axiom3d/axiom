@@ -46,8 +46,7 @@ namespace Demos {
             // create an ogre head, assigning it a material manually
             Entity entity = scene.CreateEntity("Head", "ogrehead.mesh");
 
-            // make the ogre look shiny
-            //entity.SubEntities[1].MaterialName = "Ogre/SkinEnv";
+            // make the ogre look nice and shiny
             entity.MaterialName = "Examples/EnvMappedRustySteel";
 
             // attach the ogre to the scene

@@ -1,4 +1,4 @@
-﻿#region LGPL License
+#region LGPL License
 /*
 Axiom Game Engine Library
 Copyright (C) 2003  Axiom Project Team

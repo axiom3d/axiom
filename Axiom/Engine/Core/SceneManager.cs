@@ -126,8 +126,6 @@ namespace Axiom.Core {
         /// <summary>Hashtable of options that can be used by this or any other scene manager.</summary>
         protected Hashtable optionList = new Hashtable();
 
-        /// <summary>Cache the last material used during SetMaterial so we can comapare and reduce state changes.</summary>
-        private static Material lastMaterialUsed;
         protected bool lastUsedFallback;
         protected static int lastNumTexUnitsUsed = 0;
 
@@ -548,9 +546,6 @@ namespace Axiom.Core {
 
             // TODO: SHADING MODE
 
-            // save the last material used for comparison next time this is called
-            lastMaterialUsed = material;
-
             // remeber how many layers this material had for the next material so we can disable
             // texture units no longer in use
             lastNumTexUnitsUsed = unit;
@@ -629,7 +624,7 @@ namespace Axiom.Core {
         protected Mesh CreateSkyDomePlane(BoxPlane plane, float curvature, float tiling, float distance, Quaternion orientation) {
             Plane p = new Plane();
             Vector3 up = Vector3.Zero;
-            string meshName = "SkyDomePlane_";;
+            string meshName = "SkyDomePlane_";
 
             // set up plane equation
             p.D = distance;
@@ -888,13 +883,7 @@ namespace Axiom.Core {
                     Material boxMaterial = (Material)m.Clone(entityName);
 
                     // set the current frame
-                    // first 2 cases swap the front and back textures
-                    if(i == (int)TextureCubeFace.Back)
-                        boxMaterial.TextureLayers[0].CurrentFrame = (int)TextureCubeFace.Front;
-                    else if(i == (int)TextureCubeFace.Front)
-                        boxMaterial.TextureLayers[0].CurrentFrame = (int)TextureCubeFace.Back;
-                    else
-                        boxMaterial.TextureLayers[0].CurrentFrame = i;
+                    boxMaterial.TextureLayers[0].CurrentFrame = i;
 
                     skyBoxEntities[i].MaterialName = boxMaterial.Name;
 
@@ -1127,8 +1116,10 @@ namespace Axiom.Core {
             // find camera's visible objects
             FindVisibleObjects(camera);
 
-            // Queue overlays for rendering
-            OverlayManager.Instance.QueueOverlaysForRendering(camera, renderQueue, viewport);
+            if(viewport.OverlaysEnabled) {
+                // Queue overlays for rendering
+                OverlayManager.Instance.QueueOverlaysForRendering(camera, renderQueue, viewport);
+            }
 
             // queue overlays and skyboxes for rendering
             QueueSkiesForRendering(camera);
@@ -1257,16 +1248,16 @@ namespace Axiom.Core {
                         //for(int k = 0; k < priority.MaterialGroups.Count; k++)
                         foreach(DictionaryEntry materialGroup in priority.MaterialGroups) {
 
+                            bool isMaterialSet = false;
+
                             // get material info for the current iteration
                             currentMaterial = (Material)materialGroup.Key;
-
-                            //currentMaterial = (Material)priority.MaterialGroups.GetKeyAt(k);
                             materialLayersLeft = currentMaterial.NumTextureLayers;
 
                             // do at least one rendering pass, even if no texture layers.  Not all materials have textures.
                             do {
                                 // returns non-zero if multipass required, so loop will continue
-                                materialLayersLeft = SetMaterial(currentMaterial, materialLayersLeft);
+                                materialLayersLeft = currentMaterial.NumTextureLayers;
 
                                 // get list of renderables from the material group
                                 ArrayList renderableList = (ArrayList)materialGroup.Value;
@@ -1288,6 +1279,15 @@ namespace Axiom.Core {
 
                                     // use the renderable view/projection (if any)
                                     UseRenderableViewProjection(renderable);
+
+                                    // Set material - will return non-zero if multipass required so loop will continue, 0 otherwise
+                                    if(!isMaterialSet) {
+                                        // returns non-zero if multipass required, so loop will continue
+                                        materialLayersLeft = SetMaterial(currentMaterial, materialLayersLeft);
+                                        isMaterialSet = true;
+                                    }
+
+                                    // TODO: Add normal normalization
 
                                     // override solid/wireframe rendering
                                     SceneDetailLevel requestedDetail = renderable.RenderDetail;
@@ -1330,9 +1330,6 @@ namespace Axiom.Core {
 
                             // do at least one pass (no layers in untextured objects)
                             do {
-                                // returns non-zero if multipass is required
-                                materialLayersLeft = SetMaterial(currentMaterial, materialLayersLeft);
-
                                 // set world transforms
                                 // get world transforms
                                 transObject.GetWorldTransforms(xform);
@@ -1348,6 +1345,9 @@ namespace Axiom.Core {
 
                                 // use the renderable view/projection (if any)
                                 UseRenderableViewProjection(transObject);
+
+                                // returns non-zero if multipass is required
+                                materialLayersLeft = SetMaterial(currentMaterial, materialLayersLeft);
 
                                 // override solid/wireframe rendering
                                 SceneDetailLevel requestedDetail = transObject.RenderDetail;

@@ -206,17 +206,17 @@ namespace Demos {
                         // get the type of the demo class
                         Type type = Type.GetType(demoClassName);
 
-                        this.Hide();
-                        this.WindowState = FormWindowState.Minimized;
-
-                        // create an instance of the demo class and start it up
-                        using(TechDemo demo = (TechDemo) Activator.CreateInstance(type)) {
-                            demo.Start();
-                        }
-
-                        GC.Collect();
-                        Kernel.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
-                        this.WindowState = FormWindowState.Normal;
+                        this.Hide(); 
+                        this.WindowState = FormWindowState.Minimized; 
+ 
+                        // create an instance of the demo class and start it up 
+                        using(TechDemo demo = (TechDemo) Activator.CreateInstance(type)) { 
+                            demo.Start(); 
+                        } 
+ 
+                        GC.Collect(); 
+                        Kernel.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1); 
+                        this.WindowState = FormWindowState.Normal; 
                         this.Show();
                     }
                 }
@@ -261,17 +261,19 @@ namespace Demos {
             demoTable.Columns.Add("Type");
 
             demoTable.Rows.Add(new object[] {0, "Camera Track", "Demos.CameraTrack", "CameraTrack.jpg", "Demonstrates a camera following a defined spline path while maintaining focus on an object.", "Demos"});
-            demoTable.Rows.Add(new object[] {1, "Environment Mapping", "Demos.EnvMapping", "EnvMapping.jpg", "Demonstrates an environment mapped entity.", "Demos"});
-            demoTable.Rows.Add(new object[] {2, "Lights", "Demos.Lights", "Lights.jpg", "Demonstrates creating a scene with lights and billboards.", "Demos"});
-            demoTable.Rows.Add(new object[] {3, "ParticleFX", "Demos.ParticleFX", "ParticleFX.jpg", "Demonstrates various particle systems.", "Demos"});
-            demoTable.Rows.Add(new object[] {4, "Physics", "Demos.Physics", "Physics.jpg", "Demonstrates collidable objects with real time physics.", "Demos"});
-            demoTable.Rows.Add(new object[] {5, "Skeletal Animation", "Demos.SkeletalAnimation", "SkeletalAnimation.jpg", "Demonstrates skeletal animation techniques.", "Demos"});
-            demoTable.Rows.Add(new object[] {6, "Sky Box", "Demos.SkyBox", "SkyBox.jpg", "Demonstrates creating a scene with a skybox.", "Demos"});
-            demoTable.Rows.Add(new object[] {7, "Sky Dome", "Demos.SkyDome", "SkyDome.jpg", "Demonstrates creating a scene with a skydome.", "Demos"});
-            demoTable.Rows.Add(new object[] {8, "Sky Plane", "Demos.SkyPlane", "SkyPlane.jpg", "Demonstrates creating a scene with a skyplane.", "Demos"});
-            demoTable.Rows.Add(new object[] {9, "TextureFX", "Demos.TextureFX", "TextureFX.jpg", "Demonstrates the usage of various texture effects including scrolling and rotating.", "Demos"});
-            demoTable.Rows.Add(new object[] {10, "Transparency", "Demos.Transparency", "Transparency.jpg", "Demonstrates a high poly scene with transparent entities.", "Demos"});
-            demoTable.Rows.Add(new object[] {11, "Tutorial 1", "Demos.Tutorial1", "Tutorial1.jpg", "Demonstrates the typical spinning triangle demo using the engine.", "Tutorials"});
+            demoTable.Rows.Add(new object[] {1, "Cube Mapping", "Demos.CubeMapping", "CubeMapping.jpg", "Demonstrates cube mapping techniques.", "Demos"});
+            demoTable.Rows.Add(new object[] {2, "Dot3 Bump Mapping", "Demos.Dot3Bump", "CameraTrack.jpg", "Demonstrates dot3 bump mapping entities.", "Demos"});
+            demoTable.Rows.Add(new object[] {3, "Environment Mapping", "Demos.EnvMapping", "EnvMapping.jpg", "Demonstrates an environment mapped entity.", "Demos"});
+            demoTable.Rows.Add(new object[] {4, "Lights", "Demos.Lights", "Lights.jpg", "Demonstrates creating a scene with lights and billboards.", "Demos"});
+            demoTable.Rows.Add(new object[] {5, "ParticleFX", "Demos.ParticleFX", "ParticleFX.jpg", "Demonstrates various particle systems.", "Demos"});
+            demoTable.Rows.Add(new object[] {6, "Physics", "Demos.Physics", "Physics.jpg", "Demonstrates collidable objects with real time physics.", "Demos"});
+            demoTable.Rows.Add(new object[] {7, "Skeletal Animation", "Demos.SkeletalAnimation", "SkeletalAnimation.jpg", "Demonstrates skeletal animation techniques.", "Demos"});
+            demoTable.Rows.Add(new object[] {8, "Sky Box", "Demos.SkyBox", "SkyBox.jpg", "Demonstrates creating a scene with a skybox.", "Demos"});
+            demoTable.Rows.Add(new object[] {9, "Sky Dome", "Demos.SkyDome", "SkyDome.jpg", "Demonstrates creating a scene with a skydome.", "Demos"});
+            demoTable.Rows.Add(new object[] {10, "Sky Plane", "Demos.SkyPlane", "SkyPlane.jpg", "Demonstrates creating a scene with a skyplane.", "Demos"});
+            demoTable.Rows.Add(new object[] {11, "TextureFX", "Demos.TextureFX", "TextureFX.jpg", "Demonstrates the usage of various texture effects including scrolling and rotating.", "Demos"});
+            demoTable.Rows.Add(new object[] {12, "Transparency", "Demos.Transparency", "Transparency.jpg", "Demonstrates a high poly scene with transparent entities.", "Demos"});
+            demoTable.Rows.Add(new object[] {13, "Tutorial 1", "Demos.Tutorial1", "Tutorial1.jpg", "Demonstrates the typical spinning triangle demo using the engine.", "Tutorials"});
 
             demoView = new DataView(demoTable);
 

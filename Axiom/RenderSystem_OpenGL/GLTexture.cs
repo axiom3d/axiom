@@ -210,7 +210,7 @@ namespace RenderSystem_OpenGL {
                     Bitmap image;
                     string baseName, ext;
                     ArrayList images = new ArrayList();
-                    string[] postfixes = {"_fr", "_bk", "_lf", "_rt", "_up", "_dn"};
+                    string[] postfixes = {"_rt", "_lf", "_up", "_dn", "_fr", "_bk"};
 
                     int pos = name.LastIndexOf(".");
 
@@ -222,7 +222,7 @@ namespace RenderSystem_OpenGL {
                         string fullName = baseName + postfixes[i] + ext;
 
                         // load the resource data and 
-                        Stream stream = TextureManager.Instance.FindResourceData(name);
+                        Stream stream = TextureManager.Instance.FindResourceData(fullName);
 
                         // load from stream with color management to ensure alpha info is read properly
                         image = (Bitmap)Bitmap.FromStream(stream, true);
@@ -246,8 +246,7 @@ namespace RenderSystem_OpenGL {
         protected void GenerateMipMaps(IntPtr data, bool useSoftware, int faceNum) {
             // use regular type, unless cubemap, then specify which face of the cubemap we
             // are dealing with here
-            int type = textureType == 
-                TextureType.CubeMap ? Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_X + faceNum : this.GLTextureType;
+            int type = (textureType == TextureType.CubeMap) ? Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_X + faceNum : this.GLTextureType;
 
             if(useSoftware && numMipMaps > 0) {
                 // build the mipmaps

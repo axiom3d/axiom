@@ -17,7 +17,7 @@ Examples/DP3Mat1
 
 	//Texture layer #3, the decal...
 	{
-		texture Decal.png
+		texture RustySteel.jpg
 	}
 }
 
