@@ -423,6 +423,12 @@ namespace RenderSystem_OpenGL {
                     Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + unit);
 
                     switch(value) {
+                        case Axiom.SubSystems.Rendering.TextureFiltering.Anisotropic: {
+                            Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
+                            Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_LINEAR);
+
+                        } break;
+
                         case Axiom.SubSystems.Rendering.TextureFiltering.Trilinear: {
                             Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
                             Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_LINEAR);
@@ -651,6 +657,36 @@ namespace RenderSystem_OpenGL {
             Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_WRAP_T, type);
             Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_WRAP_R, type);
             Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stage"></param>
+        /// <param name="maxAnisotropy"></param>
+        protected override void SetTextureLayerAnisotropy(int stage, int maxAnisotropy) {
+            if(!caps.CheckCap(Capabilities.AnisotropicFiltering)) {
+                return;
+            }
+
+            // TODO: Get these added to Tao
+            const int GL_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FE;
+            const int GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FF;
+
+            // get current setting to compare
+            float currentAnisotropy = 0;
+            float maxSupportedAnisotropy = 0;
+            Gl.glGetFloatv(GL_TEXTURE_MAX_ANISOTROPY_EXT, out currentAnisotropy);
+            Gl.glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, out maxSupportedAnisotropy);
+
+            if(maxAnisotropy > maxSupportedAnisotropy) {
+                maxAnisotropy = 
+                    (int)maxSupportedAnisotropy > 0 ? (int)maxSupportedAnisotropy : 1;
+            }
+
+            if(currentAnisotropy != maxAnisotropy) {
+                Gl.glTexParameterf(textureTypes[stage], GL_TEXTURE_MAX_ANISOTROPY_EXT, (float)maxAnisotropy);
+            }
         }
 
         /// <summary>
@@ -1791,6 +1827,11 @@ namespace RenderSystem_OpenGL {
             // check texture blending
             if(GLHelper.SupportsExtension("GL_EXT_texture_env_combine") || GLHelper.SupportsExtension("GL_ARB_texture_env_combine"))
                 caps.SetCap(Capabilities.TextureBlending);
+
+            // anisotropic filtering
+            if(GLHelper.SupportsExtension("GL_EXT_texture_filter_anisotropic")) {
+                caps.SetCap(Capabilities.AnisotropicFiltering);
+            }
 
             // check dot3 support
             if(GLHelper.SupportsExtension("GL_ARB_texture_env_dot3"))

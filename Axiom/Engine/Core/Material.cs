@@ -85,6 +85,9 @@ namespace Axiom.Core {
 
         /// <summary></summary>
         protected TextureFiltering textureFiltering;
+        protected int maxAnisotropy;
+        protected bool isDefaultFiltering;
+        protected bool isDefaultAnisotropy;
 
         /// <summary></summary>
         protected bool fogOverride;
@@ -138,6 +141,12 @@ namespace Axiom.Core {
             // default culling
             manualCullMode = ManualCullingMode.Back;
             cullMode = CullingMode.Clockwise;
+
+            // texture filtering
+            textureFiltering = MaterialManager.Instance.DefaultTextureFiltering;
+            maxAnisotropy = MaterialManager.Instance.DefaultAnisotropy;
+            isDefaultFiltering = true;
+            isDefaultAnisotropy = true;
         }
 
         public Material(string name, bool deferLoad) {
@@ -167,11 +176,66 @@ namespace Axiom.Core {
             // fog defaults
             fogMode = FogMode.None;
             fogColor = ColorEx.FromColor(Color.White);
+
+            // default culling
+            manualCullMode = ManualCullingMode.Back;
+            cullMode = CullingMode.Clockwise;
+
+            // texture filtering
+            textureFiltering = MaterialManager.Instance.DefaultTextureFiltering;
+            maxAnisotropy = MaterialManager.Instance.DefaultAnisotropy;
+            isDefaultFiltering = true;
+            isDefaultAnisotropy = true;
         }
 
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int Anisotropy {
+            set {
+                maxAnisotropy = value;
+
+                for(int i = 0; i < textureLayers.Length; i++) {
+                    textureLayers[i].DefaultAnisotropy = maxAnisotropy;
+                }
+
+                isDefaultAnisotropy = false;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int DefaultAnisotropy {
+            set {
+                if(isDefaultAnisotropy) {
+                    maxAnisotropy = value;
+
+                    for(int i = 0; i < textureLayers.Length; i++) {
+                        textureLayers[i].DefaultAnisotropy = maxAnisotropy;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public TextureFiltering DefaultTextureFiltering {
+            set {
+                if(isDefaultFiltering) {
+                    textureFiltering = value;
+
+                    for(int i = 0; i < textureLayers.Length; i++) {
+                        textureLayers[i].DefaultTextureFiltering = textureFiltering;
+                    }
+                }
+            }
+        }
 
         /// <summary>
         ///		
@@ -243,8 +307,18 @@ namespace Axiom.Core {
         ///		
         /// </summary>
         public TextureFiltering TextureFiltering {
-            get { return textureFiltering; }
-            set { textureFiltering = value; }
+            get { 
+                return textureFiltering; 
+            }
+            set { 
+                textureFiltering = value; 
+
+                for(int i = 0; i < textureLayers.Length; i++) {
+                    textureLayers[i].DefaultTextureFiltering = textureFiltering;
+                }
+
+                isDefaultFiltering = false;
+            }
         }
 
         /// <summary>
@@ -458,7 +532,8 @@ namespace Axiom.Core {
             textureLayers[numTextureLayers].DeferredLoad = deferLoad;
             textureLayers[numTextureLayers].TextureName = textureName;
             textureLayers[numTextureLayers].TexCoordSet = texCoordSet;
-            // TODO: Add per layer texture filtering
+            textureLayers[numTextureLayers].DefaultTextureFiltering = textureFiltering;
+            textureLayers[numTextureLayers].DefaultAnisotropy = maxAnisotropy;
 
             return textureLayers[numTextureLayers++];
         }

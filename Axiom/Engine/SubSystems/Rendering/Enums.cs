@@ -232,58 +232,72 @@ namespace Axiom.SubSystems.Rendering {
         /// <summary>
         ///		Use source 1 as is.
         /// </summary>
+        [ScriptEnum("source1")]
         Source1,
         /// <summary>
         ///		Use source 2 as is.
         /// </summary>
+        [ScriptEnum("source2")]
         Source2,
         /// <summary>
         ///		Multiply source 1 and source 2 together.
         /// </summary>
+        [ScriptEnum("modulate")]
         Modulate,
         /// <summary>
         ///		Same as Modulate, but brightens as a result.
         /// </summary>
+        [ScriptEnum("modulate_x2")]
         ModulateX2,
         /// <summary>
         ///		Same as ModuleX2, but brightens even more as a result.
         /// </summary>
+        [ScriptEnum("modulate_x4")]
         ModulateX4,
         /// <summary>
         ///		Add source 1 and source 2 together.
         /// </summary>
+        [ScriptEnum("add")]
         Add,
         /// <summary>
         ///		Same as Add, but subtracts 0.5 from the result.
         /// </summary>
+        [ScriptEnum("add_signed")]
         AddSigned,
         /// <summary>
         ///		Same as Add, but subtracts the product from the sum.
         /// </summary>
+        [ScriptEnum("add_smooth")]
         AddSmooth,
         /// <summary>
         ///		Subtract source 2 from source 1.
         /// </summary>
+        [ScriptEnum("subtract")]
         Subtract,
         /// <summary>
         ///		Use interpolated alpha value from vertices to scale source 1, then add source 2 scaled by 1 - alpha
         /// </summary>
+        [ScriptEnum("blend_diffuse_alpha")]
         BlendDiffuseAlpha,
         /// <summary>
         ///		Same as BlendDiffuseAlpha, but uses current alpha from the texture.
         /// </summary>
+        [ScriptEnum("blend_texture_alpha")]
         BlendTextureAlpha,
         /// <summary>
         ///		Same as BlendDiffuseAlpha, but uses current alpha from previous stages.
         /// </summary>
+        [ScriptEnum("blend_current_alpha")]
         BlendCurrentAlpha,
         /// <summary>
         ///		Sames as BlendDiffuseAlpha, but uses a constant manual blend value from [0.0,1.0]
         /// </summary>
+        [ScriptEnum("blend_manual")]
         BlendManual,
         /// <summary>
         ///		Takes the dot product of color 1 and color 2.
         /// </summary>
+        [ScriptEnum("dotproduct")]
         DotProduct
     }
 
@@ -294,22 +308,27 @@ namespace Axiom.SubSystems.Rendering {
         /// <summary>
         ///		The color as built up from previous stages.
         /// </summary>
+        [ScriptEnum("src_current")]
         Current,
         /// <summary>
         ///		The color derived from the texture assigned to the current layer.
         /// </summary>
+        [ScriptEnum("src_texture")]
         Texture,
         /// <summary>
         ///		The interpolated diffuse color from the vertices.
         /// </summary>
+        [ScriptEnum("src_diffuse")]
         Diffuse,
         /// <summary>
         ///		The interpolated specular color from the vertices.
         /// </summary>
+        [ScriptEnum("src_specular")]
         Specular,
         /// <summary>
         ///		A color supplied manually as a seperate argument.
         /// </summary>
+        [ScriptEnum("src_manual")]
         Manual
     }
 
@@ -320,10 +339,12 @@ namespace Axiom.SubSystems.Rendering {
         /// <summary>
         ///		Based on diffuse color of the texture.
         /// </summary>
+        [ScriptEnum("colour")]
         Color,
         /// <summary>
         ///		Based on the alpha value of the texture.
         /// </summary>
+        [ScriptEnum("alpha")]
         Alpha
     }
 
@@ -417,29 +438,35 @@ namespace Axiom.SubSystems.Rendering {
     /// </summary>
     public enum SceneBlendFactor {
         /// <summary></summary>
+        [ScriptEnum("one")]
         One,
         /// <summary></summary>
+        [ScriptEnum("zero")]
         Zero,
         /// <summary></summary>
+        [ScriptEnum("dest_colour")]
         DestColor,
         /// <summary></summary>
+        [ScriptEnum("src_colour")]
         SourceColor,
         /// <summary></summary>
+        [ScriptEnum("one_minus_dest_colour")]
         OneMinusDestColor,
         /// <summary></summary>
+        [ScriptEnum("one_minus_src_colour")]
         OneMinusSourceColor,
         /// <summary></summary>
+        [ScriptEnum("dest_alpha")]
         DestAlpha,
         /// <summary></summary>
+        [ScriptEnum("src_alpha")]
         SourceAlpha,
         /// <summary></summary>
+        [ScriptEnum("one_minus_dest_alpha")]
         OneMinusDestAlpha,
         /// <summary></summary>
-        OneMinusSourceAlpha,
-        /// <summary>
-        ///		Blend pixels together by taking the dot product of the color values being blended.
-        /// </summary>
-        Dot3
+        [ScriptEnum("one_minus_src_alpha")]
+        OneMinusSourceAlpha
     }
 
     /// <summary>
@@ -615,15 +642,23 @@ namespace Axiom.SubSystems.Rendering {
         /// <summary>
         ///		No filtering.
         ///	 </summary>
+        [ScriptEnum("none")]
         None,
         /// <summary>
         ///		Good lookin, slower than none.
         ///	 </summary>
+        [ScriptEnum("bilinear")]
         Bilinear,
         /// <summary>
         ///		Even better looking, but even slower than bilinear.
         ///	 </summary>
-        Trilinear
+        [ScriptEnum("trilinear")]
+        Trilinear,
+        /// <summary>
+        ///    Highest quality filtering known to man, but the slowest of all the options as well.
+        /// </summary>
+        [ScriptEnum("anisotropic")]
+        Anisotropic
     }
 
     /// <summary>

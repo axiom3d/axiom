@@ -56,6 +56,9 @@ namespace Axiom.Core {
 
             // just create the default BaseWhite material
             instance.Create("BaseWhite");
+
+            instance.defaultTextureFiltering = TextureFiltering.Bilinear;
+            instance.defaultAnisotropy = 1;
         }
 		
         #endregion
@@ -72,12 +75,55 @@ namespace Axiom.Core {
         /// <summary>Lookup table of methods that can be used to parse material attributes.</summary>
         protected Hashtable attribParsers = new Hashtable();
         protected Hashtable layerAttribParsers = new Hashtable();
+
+        protected TextureFiltering defaultTextureFiltering;
+        protected int defaultAnisotropy;
 		
         // constants for material section types
         const string TEX_LAYER = "TextureLayer";
         const string MATERIAL = "Material";
 
         #endregion
+
+        #region Properties
+
+        /// <summary>
+        ///    Sets the default anisotropy level to be used for loaded textures, for when textures are
+        ///    loaded automatically (e.g. by Material class) or when 'Load' is called with the default
+        ///    parameters by the application.
+        /// </summary>
+        public int DefaultAnisotropy {
+            get {
+                return defaultAnisotropy;
+            }
+            set {
+                defaultAnisotropy = value;
+
+                // reset for all current textures
+                for(int i = 0; i < resourceList.Count; i++) {
+                    ((Material)resourceList[i]).TextureFiltering = defaultTextureFiltering;
+                }
+            }
+        }
+
+        /// <summary>
+        ///    Sets the default texture filtering to use for all textures in the engine.
+        /// </summary>
+        public TextureFiltering DefaultTextureFiltering {
+            get {
+                return defaultTextureFiltering;
+            }
+            set {
+                defaultTextureFiltering = value;
+
+                // reset for all current textures
+                for(int i = 0; i < resourceList.Count; i++) {
+                    ((Material)resourceList[i]).TextureFiltering = defaultTextureFiltering;
+                }
+            }
+        }
+
+        #endregion Properties
 
         /// <summary>
         /// 
@@ -487,6 +533,76 @@ namespace Axiom.Core {
                 ParseHelper.LogParserError("color_op", material.Name, "Invalid enum value");
         }
 
+        /// Note: Allows both spellings of color :-).
+        [AttributeParser("color_op_ex", TEX_LAYER)]
+        [AttributeParser("colour_op_ex", TEX_LAYER)]
+        public static void ParseColorOpEx(string[] values, Material material, TextureLayer layer) {
+            if(values.Length < 3 || values.Length > 12) {
+                ParseHelper.LogParserError("color_op_ex", material.Name, "Expected either 3 or 10 params.");
+                return;
+            }
+
+            LayerBlendOperationEx op = 0;
+            LayerBlendSource src1 = 0;
+            LayerBlendSource src2 = 0;
+            float manual = 0.0f;
+            ColorEx colSrc1 = ColorEx.FromColor(System.Drawing.Color.White);
+            ColorEx colSrc2 = ColorEx.FromColor(System.Drawing.Color.White);
+
+            try {
+                op = (LayerBlendOperationEx)ScriptEnumAttribute.Lookup(values[0], typeof(LayerBlendOperationEx));
+                src1 = (LayerBlendSource)ScriptEnumAttribute.Lookup(values[1], typeof(LayerBlendSource));
+                src2 = (LayerBlendSource)ScriptEnumAttribute.Lookup(values[2], typeof(LayerBlendSource));
+
+                if(op == LayerBlendOperationEx.BlendManual) {
+                    if(values.Length < 4) {
+                        ParseHelper.LogParserError("color_op_ex", material.Name, "Expected 4 params for manual blending.");
+                        return;
+                    }
+
+                    manual = int.Parse(values[3]);
+                }
+
+                if(src1 == LayerBlendSource.Manual) {
+                    int paramIndex = 4;
+                    if(op == LayerBlendOperationEx.BlendManual) {
+                        paramIndex++;
+                    }
+
+                    if(values.Length < paramIndex + 3) {
+                        ParseHelper.LogParserError("color_op_ex", material.Name, "Wrong number of params.");
+                        return;
+                    }
+
+                    colSrc1.r = float.Parse(values[paramIndex++]);
+                    colSrc1.g = float.Parse(values[paramIndex++]);
+                    colSrc1.b = float.Parse(values[paramIndex]);
+                }
+
+                if(src2 == LayerBlendSource.Manual) {
+                    int paramIndex = 4;
+
+                    if(op == LayerBlendOperationEx.BlendManual) {
+                        paramIndex++;
+                    }
+
+                    if(values.Length < paramIndex + 3) {
+                        ParseHelper.LogParserError("color_op_ex", material.Name, "Wrong number of params.");
+                        return;
+                    }
+
+                    colSrc2.r = float.Parse(values[paramIndex++]);
+                    colSrc2.g = float.Parse(values[paramIndex++]);
+                    colSrc2.b = float.Parse(values[paramIndex]);
+                }
+            }
+            catch(Exception ex) {
+                ParseHelper.LogParserError("color_op_ex", material.Name, ex.Message);
+            }
+
+            layer.SetColorOperationEx(op, src1, src2, colSrc1, colSrc2, manual);
+        }
+
         [AttributeParser("cubic_texture", TEX_LAYER)]
         public static void ParseCubicTexture(string[] values, Material material, TextureLayer layer) {
             bool useUVW;
@@ -540,6 +656,23 @@ namespace Axiom.Core {
             }
         }
 
+        [AttributeParser("tex_filtering", TEX_LAYER)]
+        public static void ParseLayerFiltering(string[] values, Material material, TextureLayer layer) {
+            if(values.Length != 1) {
+                ParseHelper.LogParserError("tex_filtering", material.Name, "Expected 1 param.");
+                return;
+            }
+
+            // lookup the real enum equivalent to the script value
+            object val = ScriptEnumAttribute.Lookup(values[0], typeof(TextureFiltering));
+
+            // if a value was found, assign it
+            if(val != null)
+                layer.TextureFiltering = (TextureFiltering)val;
+            else
+                ParseHelper.LogParserError("tex_filtering", material.Name, "Invalid enum value");
+        }
+
         [AttributeParser("rotate", TEX_LAYER)]
         public static void ParseRotate(string[] values, Material material, TextureLayer layer) {
             if(values.Length != 1) {
@@ -558,6 +691,16 @@ namespace Axiom.Core {
             }
 
             layer.SetRotateAnimation(float.Parse(values[0]));
+        }
+
+        [AttributeParser("scale", TEX_LAYER)]
+        public static void ParseScale(string[] values, Material material, TextureLayer layer) {
+            if(values.Length != 2) {
+                ParseHelper.LogParserError("scale", material.Name, "Expected 2 params.");
+                return;
+            }
+			
+            layer.SetTextureScale(float.Parse(values[0]), float.Parse(values[1]));
         }
 
         [AttributeParser("scroll", TEX_LAYER)]
@@ -595,6 +738,16 @@ namespace Axiom.Core {
                 layer.TextureAddressing = (TextureAddressing)val;
             else
                 ParseHelper.LogParserError("tex_address_mode", material.Name, "Invalid enum value");
+        }
+
+        [AttributeParser("tex_coord_set", TEX_LAYER)]
+        public static void ParseTexCoordSet(string[] values, Material material, TextureLayer layer) {
+            if(values.Length != 1) {
+                ParseHelper.LogParserError("tex_coord_set", material.Name, "Expected texture name");
+                return;
+            }
+			
+            layer.TexCoordSet = int.Parse(values[0]);
         }
 
         [AttributeParser("texture", TEX_LAYER)]
