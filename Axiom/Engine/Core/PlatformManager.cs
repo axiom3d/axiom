@@ -35,12 +35,8 @@ namespace Axiom.Core
 	/// <summary>
 	///		Class which manages the platform settings required to run.
 	/// </summary>
-	public class PlatformManager : IConfigurationSectionHandler {
+	public class PlatformManager {
 		#region Singleton implementation
-
-		static PlatformManager() {
-			Init();
-		}
 
 		protected PlatformManager() {}
 
@@ -53,35 +49,27 @@ namespace Axiom.Core
 		}
 
 		public static void Init() {
-			// Load platform manager plugin
-			ConfigurationSettings.GetConfig("PlatformManager");
+			// Because of the nature of the platform manager plugin--we don't know if it's
+			// really gone or not when we overwrite the reference--we don't *ever* bother
+			// destroying the reference.  Therefore we keep the one object around for
+			// eternity, and deal with double Init() by not reloading the platform manager.
+			// TODO: once it is determined how to properly release the device instance, we
+			// should do so, deacquiring keyboard and mouse and such; then we can possibly
+			// dispose and reinitialize the instance every time.
+			if (instance == null) {
+				// Load platform manager plugin
+				ObjectCreator creator = (ObjectCreator)ConfigurationSettings.GetConfig("PlatformManager");
+				instance = (IPlatformManager)creator.CreateInstance();
+			}
 		}
 		
 		#endregion
 
-		#region IConfigurationSectionHandler Members
+	}
 
+	public class PlatformConfigurationSectionHandler : IConfigurationSectionHandler {
 		public object Create(object parent, object configContext, System.Xml.XmlNode section) {
-			// grab the plugin nodes
-			string assemblyFile = section.Attributes["assembly"].Value;
-			string className = section.Attributes["class"].Value;
-
-			assemblyFile = Environment.CurrentDirectory + Path.DirectorySeparatorChar + assemblyFile;
-
-			// TODO: Clean this up
-			try {
-				Assembly assembly = Assembly.LoadFile(assemblyFile);
-				Type type = assembly.GetType(className);
-
-				instance = (IPlatformManager)Activator.CreateInstance(type);
-			}
-			catch(Exception ex) {
-				System.Diagnostics.Trace.WriteLine(ex.ToString());
-			}
-
-			return null;
+			return new ObjectCreator(section.Attributes["assembly"].Value, section.Attributes["class"].Value);
 		}
-
-		#endregion
 	}
 }

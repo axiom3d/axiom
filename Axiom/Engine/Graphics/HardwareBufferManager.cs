@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
+using Axiom.Core;
 using Axiom.Collections;
 using Axiom.MathLib.Collections;
 
@@ -35,10 +36,8 @@ namespace Axiom.Graphics {
     /// 	Abstract singleton class for managing hardware buffers, a concrete instance
     ///		of this will be created by the RenderSystem.
     /// </summary>
-    public abstract class HardwareBufferManager {
+    public abstract class HardwareBufferManager : IDisposable {
         #region Singleton implementation
-
-        static HardwareBufferManager() { Init(); }
 
 		protected class BufferComparer : IComparer {
 			#region IComparer Members
@@ -57,11 +56,14 @@ namespace Axiom.Graphics {
 			#endregion
 		}
         
-		protected HardwareBufferManager() { 
-			instance = this; 
-
-			freeTempVertexBufferMap = new Hashtable(null, new BufferComparer());
-		}
+        protected HardwareBufferManager() { 
+            if (instance != null) {
+                throw new ApplicationException("HardwareBufferManager initialized twice");
+            }
+            instance = this; 
+            GarbageManager.Instance.Add(instance);
+            freeTempVertexBufferMap = new Hashtable(null, new BufferComparer());
+        }
 
         protected static HardwareBufferManager instance;
 
@@ -69,10 +71,12 @@ namespace Axiom.Graphics {
             get { return instance; }
         }
 
-        public static void Init() {
-            instance = null;
+        public void Dispose() {
+            if (instance == this) {
+                instance = null;
+            }
         }
-		
+
         #endregion
 
         #region Fields

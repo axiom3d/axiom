@@ -8,7 +8,6 @@ namespace Axiom.CgPrograms {
 	/// 	Summary description for CgProgramFactory.
 	/// </summary>
 	public class CgProgramFactory : IHighLevelGpuProgramFactory, IDisposable {
-
         #region Fields
 
         /// <summary>

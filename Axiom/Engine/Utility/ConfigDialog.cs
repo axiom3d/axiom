@@ -51,7 +51,7 @@ namespace Axiom.Utility {
         public ConfigDialog() {
             this.SetStyle(ControlStyles.DoubleBuffer, true);
             InitializeComponent();
-            this.Icon = new Icon("Media/Icons/AxiomIcon.ico");
+            this.Icon = new Icon(ResourceManager.FindCommonResourceData("AxiomIcon.ico"));
         }
 
         protected override void Dispose(bool disposing) {
@@ -104,7 +104,7 @@ namespace Axiom.Utility {
             // 
             // picLogo
             // 
-            this.picLogo.Image = Bitmap.FromFile("Media/Textures/AxiomLogo.png", true);
+            this.picLogo.Image = Bitmap.FromStream(ResourceManager.FindCommonResourceData("AxiomLogo.png"), true);
             this.picLogo.Location = new Point(94, -14);
             this.picLogo.Name = "picLogo";
             this.picLogo.Size = new Size(256, 128);
@@ -231,7 +231,7 @@ namespace Axiom.Utility {
                 cboRenderSystems.Items.Add(renderSystem);
             }
 
-           XmlTextReader settingsReader = null;
+            XmlTextReader settingsReader = null;
 
             try {
                 string temp = string.Empty;
@@ -271,7 +271,7 @@ namespace Axiom.Utility {
                     }
                 }
             }
-            catch {
+            catch(System.IO.FileNotFoundException) {
                 // HACK: Trying to force Tao.OpenGl to be listed first.
                 if(cboRenderSystems.Items.Count > 1) {
                     cboRenderSystems.SelectedIndex = 1;

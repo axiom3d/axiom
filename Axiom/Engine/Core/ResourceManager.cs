@@ -211,36 +211,30 @@ namespace Axiom.Core {
             return allFiles;
         }
 
+        private static Archive CreateArchive(string name, string type) {
+            IArchiveFactory factory = ArchiveManager.Instance.GetArchiveFactory(type);
+            if (factory == null) {
+                throw new Axiom.Exceptions.AxiomException(string.Format("Archive type {0} is not a valid archive type.", type));
+            }
+            return factory.CreateArchive(name);
+        }
+
         /// <summary>
         ///		Adds an archive to 
         /// </summary>
         /// <param name="name"></param>
         /// <param name="type"></param>
         public void AddArchive(string name, string type) {
-            Archive archive = null;
-
-            switch(type) {
-                case "Folder":
-                    archive = new Folder(name);
-                    break;
-                case "ZipFile":
-                    archive = new Zip(name);
-                    break;
-                default: 
-                    throw new Axiom.Exceptions.AxiomException(string.Format("Archive type {0} is not a valid archive type.", type));
-            }
-
-            // get a list of all files in the archive
-            string[] files = archive.GetFileNamesLike("", "");
+            Archive archive = CreateArchive(name, type);
 
             // add a lookup for all these files so they know what archive they are in
-            for(int i = 0; i < files.Length; i++) {
-                filePaths[files[i]] = archive;
+            foreach (string file in archive.GetFileNamesLike("", "")) {
+                filePaths[file] = archive;
             }
 
             // add the archive to the common archives
             archives.Add(archive);
-        }
+		}
 
         /// <summary>
         ///		Adds an archive to 
@@ -248,30 +242,16 @@ namespace Axiom.Core {
         /// <param name="name"></param>
         /// <param name="type"></param>
         public static void AddCommonArchive(string name, string type) {
-            Archive archive = null;
-
-            switch(type) {
-                case "Folder":
-                    archive = new Folder(name);
-                    break;
-                case "ZipFile":
-                    archive = new Zip(name);
-                    break;
-                default: 
-                    throw new Axiom.Exceptions.AxiomException(string.Format("Archive type {0} is not a valid archive type.", type));
-            }
-
-            // get a list of all files in the archive
-            string[] files = archive.GetFileNamesLike("", "");
+            Archive archive = CreateArchive(name, type);
 
             // add a lookup for all these files so they know what archive they are in
-            for(int i = 0; i < files.Length; i++) {
-                commonFilePaths[files[i]] = archive;
+            foreach (string file in archive.GetFileNamesLike("", "")) {
+                commonFilePaths[file] = archive;
             }
 
             // add the archive to the common archives
             commonArchives.Add(archive);
-        }
+		}
 
         /// <summary>
         ///    Gets a reference to the specified named resource.
@@ -361,7 +341,7 @@ namespace Axiom.Core {
 
         #region Implementation of IDisposable
 
-        public void Dispose() {
+        public virtual void Dispose() {
             // unload and destroy all resources
             UnloadAndDestroyAll();
         }

@@ -342,7 +342,7 @@ namespace Axiom.Core {
        			if (!fixedTextureCoords) {
 					float* pTex = (float*)texPtr.ToPointer();
 
-					float rotation = billboard.Rotation;
+					float rotation = billboard.rotationInRadians;
 					float cosRot = MathUtil.Cos(rotation);
 					float sinRot = MathUtil.Sin(rotation);
 				

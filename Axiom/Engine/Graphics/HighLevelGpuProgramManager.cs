@@ -47,11 +47,8 @@ namespace Axiom.Graphics
 	/// </remarks>
 	public class HighLevelGpuProgramManager : ResourceManager {
 
-        #region Singleton Implementation
-
         #region Singleton implementation
 
-        static HighLevelGpuProgramManager() { Init(); }
         private HighLevelGpuProgramManager() {}
         private static HighLevelGpuProgramManager instance;
 
@@ -60,17 +57,25 @@ namespace Axiom.Graphics
         }
 
         public static void Init() {
+            if (instance != null) {
+                throw new ApplicationException("HighLevelGpuProgramManager.Init() called twice!");
+            }
             instance = new HighLevelGpuProgramManager();
-
             instance.Initialize();
+            GarbageManager.Instance.Add(instance);
         }
 
         public void Initialize() {
         }
-		
-        #endregion
+        
+        public override void Dispose() {
+            base.Dispose();
+            if (instance == this) {
+                instance = null;
+            }
+        }
 
-        #endregion Singleton Implementation
+        #endregion
 
 		#region Fields
 
@@ -159,6 +164,7 @@ namespace Axiom.Graphics
         }
 
         #endregion
+
 	}
 
     /// <summary>

@@ -22,7 +22,7 @@ namespace Axiom.CgPrograms {
         ///    Called when the plugin is stopped.
         /// </summary>
         public void Stop() {
-            factory.Dispose();
+            //factory.Dispose();
         }
 	}
 }

@@ -17,4 +17,7 @@ package.links = {
 	"Axiom.MathLib" 
 }
 
-package.files = { matchfiles("*.cs") }
+package.files = { 
+	matchfiles("*.cs"),
+	matchfiles("Factories/*.cs")
+}

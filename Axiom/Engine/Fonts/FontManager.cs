@@ -38,24 +38,31 @@ namespace Axiom.Fonts {
     public class FontManager : ResourceManager {
         #region Singleton implementation
 
-		private static FontManager instance;
+        private static FontManager instance;
         
-		static FontManager() { 
-			Init(); 
-		}
-
         private FontManager() {}
 
         public static FontManager Instance {
             get { 
-				return instance; 
-			}
+                return instance; 
+            }
         }
 
         public static void Init() {
+            if (instance != null) {
+                throw new ApplicationException("FontManager initialized twice!");
+            }
             instance = new FontManager();
+            GarbageManager.Instance.Add(instance);
         }
-		
+        
+        public override void Dispose() {
+            base.Dispose();
+            if (instance == this) {
+                instance = null;
+            }
+        }
+
         #endregion
 
         #region Methods
@@ -240,6 +247,6 @@ namespace Axiom.Fonts {
             }
         }
 
-        #endregion
+		#endregion
     }
 }

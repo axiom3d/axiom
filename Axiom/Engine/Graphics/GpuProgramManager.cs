@@ -40,17 +40,30 @@ namespace Axiom.Graphics {
 	public abstract class GpuProgramManager : ResourceManager {
 		#region Singleton implementation
 
-		static GpuProgramManager() { Init(); }
-		protected GpuProgramManager() { instance = this; }
 		protected static GpuProgramManager instance;
 
+         	protected GpuProgramManager() {
+             		if (instance != null) {
+                 		throw new ApplicationException("GpuProgramManager initialized twice!");
+             		}
+             		instance = this;
+             		GarbageManager.Instance.Add(instance);
+         	}
+
 		public static GpuProgramManager Instance {
-			get { return instance; }
+			get { 
+				return instance; 
+			}
 		}
 
-		public static void Init() {
-			instance = null;
-		}
+         	public override void Dispose() {
+             		base.Dispose();
+             		
+             		if (this == instance) {
+                 		instance = null;
+                 	}
+             	}
+
 		
 		#endregion
 

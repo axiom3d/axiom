@@ -34,10 +34,9 @@ namespace Axiom.Core {
     /// <summary>
     /// Summary description for SceneManagerEnumerator.
     /// </summary>
-    public class SceneManagerList {
+    public class SceneManagerList : IDisposable {
         #region Singleton implementation
 
-        static SceneManagerList() { Init(); }
         protected SceneManagerList() {}
         protected static SceneManagerList instance;
 
@@ -45,10 +44,19 @@ namespace Axiom.Core {
             get { return instance; }
         }
 
-        public static void Init() {
-            instance = new SceneManagerList();
+        public void Dispose() {
+            if (instance == this) {
+                instance = null;
+            }
+        }
 
+        public static void Init() {
+            if (instance != null) {
+                throw new ApplicationException("ParticleSystemManager.Init() called twice!");
+            }
+            instance = new SceneManagerList();
             instance.Initialize();
+            GarbageManager.Instance.Add(instance);
         }
 
         #endregion

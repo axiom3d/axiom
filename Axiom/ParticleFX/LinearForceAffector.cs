@@ -100,8 +100,10 @@ namespace Axiom.ParticleFX {
 			public string Get(object target) {
 				LinearForceAffector affector = target as LinearForceAffector;
 
+				Vector3 vec = affector.Force;
+
 				// TODO: Common way for vector string rep, maybe modify ToString
-				return affector.Force.ToString();
+				return string.Format("{0}, {1}, {2}", vec.x, vec.y, vec.z);
 			}
 			public void Set(object target, string val) {
 				LinearForceAffector affector = target as LinearForceAffector;

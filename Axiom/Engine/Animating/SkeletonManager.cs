@@ -36,7 +36,6 @@ namespace Axiom.Animating {
 
         #region Singleton implementation
 
-        static SkeletonManager() { Init(); }
         protected SkeletonManager() {}
         protected static SkeletonManager instance;
 
@@ -45,9 +44,19 @@ namespace Axiom.Animating {
         }
 
         public static void Init() {
+            if (instance != null) {
+                throw new ApplicationException("SkeletonManager initialized twice!");
+            }
             instance = new SkeletonManager();
+            GarbageManager.Instance.Add(instance);
         }
-		
+
+        public override void Dispose() {
+            if (instance == this) {
+                instance = null;
+            }
+        }
+        
         #endregion Singleton implementation
 
         #region Implementation of ResourceManager

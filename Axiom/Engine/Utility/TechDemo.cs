@@ -59,6 +59,9 @@ namespace Axiom.Utility {
         protected float statDelay = 0.0f;
         protected float debugTextDelay = 0.0f;
         protected float toggleDelay = 0.0f;
+		protected Vector3 camVelocity = Vector3.Zero;
+		protected Vector3 camAccel = Vector3.Zero;
+		protected float camSpeed = 2.5f;
 
         protected int aniso = 1;
         protected TextureFiltering filtering = TextureFiltering.Bilinear;
@@ -83,7 +86,7 @@ namespace Axiom.Utility {
         protected bool Configure() {
             // show the config dialog
             if(engine.ShowConfigDialog()) {
-                window = engine.Initialize(true);
+                window = Engine.Instance.Initialize(true);
                 ShowDebugOverlay(showDebugOverlay);
                 return true;
             }
@@ -148,11 +151,11 @@ namespace Axiom.Utility {
             // get a reference to the engine singleton
             engine = Engine.Instance;
 
-            // allow for setting up resource gathering
-            SetupResources();
-
             // setup the engine
             engine.Setup();
+
+            // allow for setting up resource gathering
+            SetupResources();
 
             //show the config dialog and collect options
             if(!Configure()) {
@@ -173,7 +176,7 @@ namespace Axiom.Utility {
             CreateScene();
 
             // retreive and initialize the input system
-			input = PlatformManager.Instance.CreateInputReader();
+		input = PlatformManager.Instance.CreateInputReader();
             input.Initialize(window, null, true, true, false);
 
             return true;
@@ -190,16 +193,7 @@ namespace Axiom.Utility {
             foreach(EngineConfig.FilePathRow row in config.FilePath) {
                 string fullPath = Application.StartupPath + Path.DirectorySeparatorChar + row.src;
 
-                switch(row.type) {
-                    case "Folder":
-                        ResourceManager.AddCommonSearchPath(fullPath);
-                        break;
-                    case "ZipFile":
-                        ResourceManager.AddCommonArchive(fullPath, "ZipFile");
-                        break;
-                    default:
-                        throw new Exception(string.Format("Archives of type '{0}' are not supported.", row.type));
-                }
+                ResourceManager.AddCommonArchive(fullPath, row.type);
             }
         }
 
@@ -228,6 +222,7 @@ namespace Axiom.Utility {
         }
 
         public void Dispose() {
+            engine.Shutdown();
             // remove event handlers
             engine.FrameStarted -= new FrameEvent(OnFrameStarted);
             engine.FrameEnded -= new FrameEvent(OnFrameEnded);
@@ -241,10 +236,10 @@ namespace Axiom.Utility {
         }
 
         protected virtual void OnFrameStarted(Object source, FrameEventArgs e) {
-            // reset the camera
-            cameraVector.x = 0;
-            cameraVector.y = 0;
-            cameraVector.z = 0;
+			float scaleMove = 200 * e.TimeSinceLastFrame;
+
+			// reset acceleration zero
+			camAccel = Vector3.Zero;
 
             // set the scaling of camera motion
             cameraScale = 100 * e.TimeSinceLastFrame;
@@ -259,20 +254,22 @@ namespace Axiom.Utility {
             }
 
             if(input.IsKeyPressed(KeyCodes.A)) {
-                cameraVector.x = -cameraScale;
+                camAccel.x = -0.5f;
             }
 
             if(input.IsKeyPressed(KeyCodes.D)) {
-                cameraVector.x = cameraScale;
+                camAccel.x = 0.5f;
             }
 
             if(input.IsKeyPressed(KeyCodes.W)) {
-                cameraVector.z = -cameraScale;
+                camAccel.z = -1.0f;
             }
 
             if(input.IsKeyPressed(KeyCodes.S)) {
-                cameraVector.z = cameraScale;
+                camAccel.z = 1.0f;
             }
+
+			camAccel.y += (float)(input.RelativeMouseZ * 0.1f);
 
             if(input.IsKeyPressed(KeyCodes.Left)) {
                 camera.Yaw(cameraScale);
@@ -359,11 +356,9 @@ namespace Axiom.Utility {
                 viewport.OverlaysEnabled = !viewport.OverlaysEnabled;
             }
 
-            cameraVector.z += -input.RelativeMouseZ * 0.13f;
-
             if(!input.IsMousePressed(MouseButtons.Button0)) {
-                float cameraYaw = -input.RelativeMouseX * 0.13f;
-                float cameraPitch = -input.RelativeMouseY * 0.13f;
+                float cameraYaw = -input.RelativeMouseX * .13f;
+                float cameraPitch = -input.RelativeMouseY * .13f;
                 
                 camera.Yaw(cameraYaw);
                 camera.Pitch(cameraPitch);
@@ -372,8 +367,15 @@ namespace Axiom.Utility {
                 cameraVector.x += input.RelativeMouseX * 0.13f;
             }
 
+			camVelocity += (camAccel * scaleMove * camSpeed);
+
             // move the camera based on the accumulated movement vector
-            camera.MoveRelative(cameraVector);
+            camera.MoveRelative(camVelocity * e.TimeSinceLastFrame);
+
+			// Now dampen the Velocity - only if user is not accelerating
+			if (camAccel == Vector3.Zero) { 
+				camVelocity *= (1 - (6 * e.TimeSinceLastFrame)); 
+			}
 
             // update performance stats once per second
             if(statDelay < 0.0f && showDebugOverlay) {

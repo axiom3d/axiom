@@ -76,14 +76,9 @@ namespace Axiom.Core {
     /// </summary>
     public class Engine : IDisposable {
         #region Singleton implementation
-        static Engine() {}
-        private Engine() {
-            pluginList = new PluginList();
-        }
+        private Engine() {}
         public static readonly Engine Instance = new Engine();
         #endregion
-
-        private PluginList pluginList;
 
         private SceneManager sceneManager;
         private SceneManagerList sceneManagerList;
@@ -111,6 +106,11 @@ namespace Axiom.Core {
         ///    Has the first render window been created yet?
         /// </summary>
         private bool firstTime = true;
+
+        /// <summary>
+        /// Has the Setup() method been called yet?
+        /// </summary>
+        private bool alreadySetup = false;
 
         #region Events
 		
@@ -351,6 +351,12 @@ namespace Axiom.Core {
         /// This should be called before anything else is.
         /// </summary>
         public void Setup() {
+            if (alreadySetup) {
+                throw new ApplicationException("Engine.Setup() called twice!");
+            }
+
+            alreadySetup = true;
+
             // create a new engine log
             engineLog = new Log("AxiomEngine.log");
 
@@ -376,8 +382,8 @@ namespace Axiom.Core {
             System.Diagnostics.Trace.WriteLine(string.Format("Operating System: {0}", Environment.OSVersion.ToString()));
             System.Diagnostics.Trace.WriteLine(string.Format(".Net Framework: {0}", Environment.Version.ToString()));
 
-            // dynamically load plugins
-            this.LoadPlugins();
+            // Load ze plugins please
+            PluginManager.Init();
         }
 		
         /// <summary>
@@ -415,29 +421,30 @@ namespace Axiom.Core {
         public void Shutdown() {
             System.Diagnostics.Trace.WriteLine("***** " + this.Name + " Shutdown Initiated. ****");
 
+            // shutdown the current render system if there is one
+            if(activeRenderSystem != null)
+                activeRenderSystem.Shutdown();
+
             // trigger a disposal of all resources
             // destroy all textures
             if(TextureManager.Instance != null)
                 TextureManager.Instance.Dispose();
 
-            // shutdown the current render system if there is one
-            if(activeRenderSystem != null)
-                activeRenderSystem.Shutdown();
-
             // destroy all disposable objects
             GarbageManager.Instance.DisposeAll();
-
-            // unload all plugins that were loaded at engine start
-            UnloadPlugins();
 
             // Write final performance stats
             System.Diagnostics.Trace.WriteLine("Final Stats:");
             System.Diagnostics.Trace.WriteLine("Axiom Framerate Average FPS: " + averageFPS.ToString("0.000000") + " Best FPS: " + highestFPS.ToString("0.000000") + " Worst FPS: " + lowestFPS.ToString("0.000000"));
             
             engineLog.Dispose();
+
+            firstTime = true;
+            alreadySetup = false;
         }
 
         private void InitializeSingletons() {
+            Axiom.FileSystem.ArchiveManager.Init();
             PlatformManager.Init();
             MaterialManager.Init();
             ParticleSystemManager.Init();
@@ -445,11 +452,20 @@ namespace Axiom.Core {
             OverlayManager.Init();
             GuiManager.Init();
             HighLevelGpuProgramManager.Init();
+            ControllerManager.Init();
+            FontManager.Init();
+            Axiom.Animating.SkeletonManager.Init();
+            Axiom.Media.CodecManager.Init();
 
-            GarbageManager.Instance.Add(ParticleSystemManager.Instance);
-            GarbageManager.Instance.Add(MaterialManager.Instance);
-            GarbageManager.Instance.Add(ControllerManager.Instance);
-            GarbageManager.Instance.Add(OverlayManager.Instance);
+            // MeshManager is initialized by the render system itself
+            // TODO SceneManager is not disposed of at Shutdown().  (SceneManagerList could
+            // do it, but they aren't IDisposable yet--conditional cast perhaps?)
+            // TODO the BSP module may need some massaging too
+            // TODO if there are other singleton classes besides Managers, I haven't looked into them.
+            // TODO TextureManager and some others act totally differently from this, setting the instance
+            // from the constructor instead.  These should all act the same way as that, since it is harder
+            // for TextureManager to change to the Init() methodology.
+            // (GpuProgramManager, HardwareBufferManager)
         }
 
 		/// <summary>
@@ -685,22 +701,6 @@ namespace Axiom.Core {
                 return false;
             }
         }
-
-        /// <summary>
-        /// Searches for IPlugin implementations for the engine and loads them.
-        /// </summary>
-        internal void LoadPlugins() {
-			// load all registered plugins
-			PluginManager.Instance.LoadAll();
-        }
-
-        /// <summary>
-        /// Used to unload any previously loaded plugins.
-        /// </summary>
-        internal void UnloadPlugins() {
-			PluginManager.Instance.UnloadAll();
-        }
-
 
         #endregion
     }

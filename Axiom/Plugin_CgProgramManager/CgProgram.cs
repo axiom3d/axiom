@@ -182,10 +182,12 @@ namespace Axiom.CgPrograms {
         ///    Unloads the Cg program.
         /// </summary>
         protected override void UnloadImpl() {
-            // destroy this program
-            Cg.cgDestroyProgram(cgProgram);
+            // destroy this program if it had been loaded
+			if(cgProgram != IntPtr.Zero) {
+				Cg.cgDestroyProgram(cgProgram);
 
-            CgHelper.CheckCgError(string.Format("Error unloading CgProgram named '{0}'", this.name), cgContext);
+				CgHelper.CheckCgError(string.Format("Error unloading CgProgram named '{0}'", this.name), cgContext);
+			}
         }
 
 		#endregion

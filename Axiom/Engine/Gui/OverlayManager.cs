@@ -42,7 +42,6 @@ namespace Axiom.Gui {
     public class OverlayManager : ResourceManager {
         #region Singleton implementation
 
-        static OverlayManager() { Init(); }
         protected OverlayManager() {}
         protected static OverlayManager instance;
 
@@ -51,9 +50,18 @@ namespace Axiom.Gui {
         }
 
         public static void Init() {
+            if (instance != null) {
+                throw new ApplicationException("OverlayManager.Init() called twice!");
+            }
             instance = new OverlayManager();
+            GarbageManager.Instance.Add(instance);
         }
-		
+        
+        public override void Dispose() {
+            base.Dispose();
+            instance = null;
+        }
+
         #endregion
 
         #region Member variables

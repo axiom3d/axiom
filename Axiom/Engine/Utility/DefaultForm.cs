@@ -110,7 +110,7 @@ namespace Axiom.Utility {
         }
 
         private void DefaultForm_Load(object sender, System.EventArgs e) {
-            this.Icon = new Icon("Media/Icons/AxiomIcon.ico");
+            this.Icon = new Icon(ResourceManager.FindCommonResourceData("AxiomIcon.ico"));
         }
 
         /// <summary>

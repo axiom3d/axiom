@@ -59,7 +59,6 @@ namespace Axiom.ParticleSystems {
     public class ParticleSystemManager : IDisposable {
         #region Singleton implementation
 
-        static ParticleSystemManager() { Init(); }
         private ParticleSystemManager() {}
         private static ParticleSystemManager instance;
 
@@ -68,11 +67,15 @@ namespace Axiom.ParticleSystems {
         }
 
         public static void Init() {
-            instance = new ParticleSystemManager();
+            if (instance != null) {
+                throw new ApplicationException("ParticleSystemManager.Init() called twice!");
+            }
 
+            instance = new ParticleSystemManager();
             instance.Initialize();
+            GarbageManager.Instance.Add(instance);
         }
-		
+        
         #endregion
 
         #region Delegates
@@ -308,7 +311,7 @@ namespace Axiom.ParticleSystems {
         ///		Parses all particle system script files in resource folders and archives.
         /// </summary>
         protected internal void ParseAllSources() {
-            StringCollection particleFiles = ResourceManager.GetAllCommonNamesLike("./", "*.particle");
+            StringCollection particleFiles = ResourceManager.GetAllCommonNamesLike("", "*.particle");
 
             foreach(string file in particleFiles) {
                 Stream data = ResourceManager.FindCommonResourceData(file);
@@ -651,6 +654,9 @@ namespace Axiom.ParticleSystems {
             affectorFactoryList.Clear();
             systemList.Clear();
             systemTemplateList.Clear();
+            if (instance == this) {
+                instance = null;
+            }
         }
 
         #endregion

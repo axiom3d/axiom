@@ -114,6 +114,8 @@ namespace Axiom.Graphics {
         #region Member variables
 		
         protected byte[] data;
+
+		GCHandle handle;
 		
         #endregion
 
@@ -142,14 +144,19 @@ namespace Axiom.Graphics {
             isLocked = true;
 
             // return the offset into the array as a pointer
-            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+
+			handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+			return handle.AddrOfPinnedObject();
         }
 
         protected override IntPtr LockImpl(int offset, int length, BufferLocking locking) {
             isLocked = true;
 
             // return the offset into the array as a pointer
-            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+			handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+			return handle.AddrOfPinnedObject();
         }
 
         public override void ReadData(int offset, int length, IntPtr dest) {
@@ -167,10 +174,14 @@ namespace Axiom.Graphics {
 
         public override void Unlock() {
             isLocked = false;
+
+			handle.Free();
         }
 
         public override void UnlockImpl() {
             isLocked = false;
+
+			handle.Free();
         }
 
         public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer) {
@@ -191,7 +202,8 @@ namespace Axiom.Graphics {
         ///		buffer is software and not hardware.
         /// </summary>
         public IntPtr GetDataPointer(int offset) {
-            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+			return handle.AddrOfPinnedObject();
         }
 
         #endregion
