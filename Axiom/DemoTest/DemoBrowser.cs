@@ -38,94 +38,96 @@ namespace Demos {
         }
 
         private void InitializeComponent() {
-            this.lstDemos = new ListView();
-            this.lblInfo = new Label();
-            this.chkTools = new CheckBox();
-            this.chkTutorials = new CheckBox();
-            this.chkDemos = new CheckBox();
-            this.demoView = new DataView();
-            this.lblShowTypes = new Label();
-            this.pnlDemoTypes = new Panel();
-            this.lnkWebsite = new LinkLabel();
-            ((ISupportInitialize)(this.demoView)).BeginInit();
+            System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(DemoBrowser));
+            this.lstDemos = new System.Windows.Forms.ListView();
+            this.lblInfo = new System.Windows.Forms.Label();
+            this.chkTools = new System.Windows.Forms.CheckBox();
+            this.chkTutorials = new System.Windows.Forms.CheckBox();
+            this.chkDemos = new System.Windows.Forms.CheckBox();
+            this.demoView = new System.Data.DataView();
+            this.lblShowTypes = new System.Windows.Forms.Label();
+            this.pnlDemoTypes = new System.Windows.Forms.Panel();
+            this.lnkWebsite = new System.Windows.Forms.LinkLabel();
+            ((System.ComponentModel.ISupportInitialize)(this.demoView)).BeginInit();
             this.pnlDemoTypes.SuspendLayout();
             this.SuspendLayout();
             // 
             // lstDemos
             // 
-            this.lstDemos.Activation = ItemActivation.OneClick;
-            this.lstDemos.Anchor = ((AnchorStyles)(((AnchorStyles.Top | AnchorStyles.Bottom) | AnchorStyles.Right)));
-            this.lstDemos.BackColor = Color.FromArgb(((Byte)(25)), ((Byte)(35)), ((Byte)(75)));
-            this.lstDemos.BorderStyle = BorderStyle.None;
-            this.lstDemos.Font = new Font("Palatino Linotype", 10F, FontStyle.Bold, GraphicsUnit.Point, ((Byte)(0)));
-            this.lstDemos.ForeColor = Color.White;
-            this.lstDemos.HeaderStyle = ColumnHeaderStyle.None;
-            this.lstDemos.Location = new Point(104, 8);
+            this.lstDemos.Activation = System.Windows.Forms.ItemActivation.OneClick;
+            this.lstDemos.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstDemos.BackColor = System.Drawing.Color.FromArgb(((System.Byte)(25)), ((System.Byte)(35)), ((System.Byte)(75)));
+            this.lstDemos.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lstDemos.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+            this.lstDemos.ForeColor = System.Drawing.Color.White;
+            this.lstDemos.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.lstDemos.Location = new System.Drawing.Point(104, 8);
             this.lstDemos.MultiSelect = false;
             this.lstDemos.Name = "lstDemos";
-            this.lstDemos.Size = new Size(584, 392);
+            this.lstDemos.Size = new System.Drawing.Size(584, 392);
             this.lstDemos.TabIndex = 3;
-            this.lstDemos.Click += new EventHandler(lstDemos_Click);
-            this.lstDemos.MouseMove += new MouseEventHandler(lstDemos_MouseMove);
+            this.lstDemos.Click += new System.EventHandler(this.lstDemos_Click);
+            this.lstDemos.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lstDemos_MouseMove);
             // 
             // lblInfo
             // 
-            this.lblInfo.BackColor = Color.FromArgb(((Byte)(25)), ((Byte)(35)), ((Byte)(75)));
-            this.lblInfo.Dock = DockStyle.Bottom;
-            this.lblInfo.FlatStyle = FlatStyle.Flat;
-            this.lblInfo.Font = new Font("Palatino Linotype", 9F, FontStyle.Regular, GraphicsUnit.Point, ((Byte)(0)));
-            this.lblInfo.ForeColor = Color.White;
-            this.lblInfo.Location = new Point(0, 408);
+            this.lblInfo.BackColor = System.Drawing.Color.FromArgb(((System.Byte)(25)), ((System.Byte)(35)), ((System.Byte)(75)));
+            this.lblInfo.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lblInfo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.lblInfo.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+            this.lblInfo.ForeColor = System.Drawing.Color.White;
+            this.lblInfo.Location = new System.Drawing.Point(0, 408);
             this.lblInfo.Name = "lblInfo";
-            this.lblInfo.Size = new Size(694, 40);
+            this.lblInfo.Size = new System.Drawing.Size(694, 40);
             this.lblInfo.TabIndex = 4;
             this.lblInfo.Text = "Select a demo to run.  The description of each demo will appear here as you hover" +
                 " over them with the mouse.";
-            this.lblInfo.TextAlign = ContentAlignment.MiddleCenter;
+            this.lblInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // chkTools
             // 
-            this.chkTools.Cursor = Cursors.Hand;
-            this.chkTools.FlatStyle = FlatStyle.Flat;
-            this.chkTools.Location = new Point(8, 56);
+            this.chkTools.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.chkTools.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.chkTools.Location = new System.Drawing.Point(8, 56);
             this.chkTools.Name = "chkTools";
-            this.chkTools.Size = new Size(80, 24);
+            this.chkTools.Size = new System.Drawing.Size(80, 24);
             this.chkTools.TabIndex = 2;
             this.chkTools.Text = "Tools";
-            this.chkTools.CheckedChanged += new EventHandler(this.typeGroup_CheckedChanged);
+            this.chkTools.CheckedChanged += new System.EventHandler(this.typeGroup_CheckedChanged);
             // 
             // chkTutorials
             // 
             this.chkTutorials.Checked = true;
-            this.chkTutorials.CheckState = CheckState.Checked;
-            this.chkTutorials.Cursor = Cursors.Hand;
-            this.chkTutorials.FlatStyle = FlatStyle.Flat;
-            this.chkTutorials.Location = new Point(8, 32);
+            this.chkTutorials.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkTutorials.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.chkTutorials.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.chkTutorials.Location = new System.Drawing.Point(8, 32);
             this.chkTutorials.Name = "chkTutorials";
-            this.chkTutorials.Size = new Size(80, 24);
+            this.chkTutorials.Size = new System.Drawing.Size(80, 24);
             this.chkTutorials.TabIndex = 1;
             this.chkTutorials.Text = "Tutorials";
-            this.chkTutorials.CheckedChanged += new EventHandler(this.typeGroup_CheckedChanged);
+            this.chkTutorials.CheckedChanged += new System.EventHandler(this.typeGroup_CheckedChanged);
             // 
             // chkDemos
             // 
             this.chkDemos.Checked = true;
-            this.chkDemos.CheckState = CheckState.Checked;
-            this.chkDemos.Cursor = Cursors.Hand;
-            this.chkDemos.FlatStyle = FlatStyle.Flat;
-            this.chkDemos.Location = new Point(8, 8);
+            this.chkDemos.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkDemos.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.chkDemos.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.chkDemos.Location = new System.Drawing.Point(8, 8);
             this.chkDemos.Name = "chkDemos";
-            this.chkDemos.Size = new Size(64, 24);
+            this.chkDemos.Size = new System.Drawing.Size(64, 24);
             this.chkDemos.TabIndex = 0;
             this.chkDemos.Text = "Demos";
-            this.chkDemos.CheckedChanged += new EventHandler(this.typeGroup_CheckedChanged);
+            this.chkDemos.CheckedChanged += new System.EventHandler(this.typeGroup_CheckedChanged);
             // 
             // lblShowTypes
             // 
-            this.lblShowTypes.FlatStyle = FlatStyle.Flat;
-            this.lblShowTypes.Location = new Point(8, 8);
+            this.lblShowTypes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.lblShowTypes.Location = new System.Drawing.Point(8, 8);
             this.lblShowTypes.Name = "lblShowTypes";
-            this.lblShowTypes.Size = new Size(80, 23);
+            this.lblShowTypes.Size = new System.Drawing.Size(80, 23);
             this.lblShowTypes.TabIndex = 5;
             this.lblShowTypes.Text = "Show Types:";
             // 
@@ -134,43 +136,46 @@ namespace Demos {
             this.pnlDemoTypes.Controls.Add(this.chkTools);
             this.pnlDemoTypes.Controls.Add(this.chkTutorials);
             this.pnlDemoTypes.Controls.Add(this.chkDemos);
-            this.pnlDemoTypes.Location = new Point(16, 24);
+            this.pnlDemoTypes.Location = new System.Drawing.Point(16, 24);
             this.pnlDemoTypes.Name = "pnlDemoTypes";
-            this.pnlDemoTypes.Size = new Size(80, 88);
+            this.pnlDemoTypes.Size = new System.Drawing.Size(80, 88);
             this.pnlDemoTypes.TabIndex = 6;
             // 
             // lnkWebsite
             // 
-            this.lnkWebsite.ActiveLinkColor = Color.White;
-            this.lnkWebsite.LinkColor = Color.White;
-            this.lnkWebsite.Location = new Point(8, 360);
+            this.lnkWebsite.ActiveLinkColor = System.Drawing.Color.White;
+            this.lnkWebsite.LinkColor = System.Drawing.Color.White;
+            this.lnkWebsite.Location = new System.Drawing.Point(8, 360);
             this.lnkWebsite.Name = "lnkWebsite";
-            this.lnkWebsite.Size = new Size(88, 23);
+            this.lnkWebsite.Size = new System.Drawing.Size(88, 23);
             this.lnkWebsite.TabIndex = 7;
             this.lnkWebsite.TabStop = true;
             this.lnkWebsite.Text = "Axiom Website";
-            this.lnkWebsite.VisitedLinkColor = Color.White;
-            this.lnkWebsite.LinkClicked += new LinkLabelLinkClickedEventHandler(this.lnkWebsite_LinkClicked);
+            this.lnkWebsite.VisitedLinkColor = System.Drawing.Color.White;
+            this.lnkWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkWebsite_LinkClicked);
             // 
             // DemoBrowser
             // 
-            this.AutoScaleBaseSize = new Size(5, 15);
-            this.BackColor = Color.FromArgb(((Byte)(25)), ((Byte)(35)), ((Byte)(75)));
-            this.ClientSize = new Size(694, 448);
+            this.AutoScaleBaseSize = new System.Drawing.Size(5, 15);
+            this.BackColor = System.Drawing.Color.FromArgb(((System.Byte)(25)), ((System.Byte)(35)), ((System.Byte)(75)));
+            this.ClientSize = new System.Drawing.Size(694, 448);
             this.Controls.Add(this.lnkWebsite);
             this.Controls.Add(this.pnlDemoTypes);
             this.Controls.Add(this.lblInfo);
             this.Controls.Add(this.lstDemos);
             this.Controls.Add(this.lblShowTypes);
-            this.Font = new Font("Palatino Linotype", 8.25F, FontStyle.Regular, GraphicsUnit.Point, ((Byte)(0)));
-            this.ForeColor = SystemColors.ControlLightLight;
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.Font = new System.Drawing.Font("Palatino Linotype", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+            this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "DemoBrowser";
             this.Text = "Axiom Engine - Demo Browser v1.0.0.0";
-            this.Load += new EventHandler(this.DemoBrowser_Load);
-            ((ISupportInitialize)(this.demoView)).EndInit();
+            this.Load += new System.EventHandler(this.DemoBrowser_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.demoView)).EndInit();
             this.pnlDemoTypes.ResumeLayout(false);
             this.ResumeLayout(false);
+
         }
 
         private void lstDemos_Click(object sender, EventArgs e) {
