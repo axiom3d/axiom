@@ -842,7 +842,24 @@ namespace Axiom.Graphics {
         }
         #endregion
 
-        #region Layer attribute parser methods
+        #region Texture unit attribute parser methods
+
+        [AttributeParser("anim_texture", TextureUnit)]
+        public static void ParseAnimTexture(string[] values, TextureUnitState layer) {
+            if(values.Length < 3) {
+                ParseHelper.LogParserError("anim_texture", layer.Parent.Parent.Parent.Name, "Must have at least 3 params");
+                return;
+            }
+
+            if(values.Length == 3 && int.Parse(values[1]) != 0) {
+                // first form using the base name and number of frames
+                layer.SetAnimatedTextureName(values[0], int.Parse(values[1]), float.Parse(values[2]));
+            }
+            else {
+                // second form using individual names
+                layer.SetAnimatedTextureName(values, values.Length - 1, float.Parse(values[values.Length - 1]));
+            }
+        }
 
         /// Note: Allows both spellings of color :-).
         [AttributeParser("color_op", TextureUnit)]
@@ -1180,6 +1197,6 @@ namespace Axiom.Graphics {
                 float.Parse(values[5]));
         }
 
-        #endregion
+        #endregion Texture unit attribute parsing methods
     }
 }
