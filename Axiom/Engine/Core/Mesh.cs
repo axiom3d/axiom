@@ -324,7 +324,7 @@ namespace Axiom.Core {
                         p3DTC[j] = 0;
                     } 
 
-                    VertexElement elem2DTC = decl.FindElementBySemantic(VertexElementSemantic.TexCoords, (ushort)sourceTexCoordSet);
+                    VertexElement elem2DTC = decl.FindElementBySemantic(VertexElementSemantic.TexCoords, sourceTexCoordSet);
                     
                     // make sure we have some 2D tex coords to deal with
                     if(elem2DTC == null || elem2DTC.Type != VertexElementType.Float2) {
@@ -557,7 +557,7 @@ namespace Axiom.Core {
             VertexBufferBinding binding = vertexData.vertexBufferBinding;
 
             // see if we already have a 3D tex coord buffer
-            VertexElement tex3d = decl.FindElementBySemantic(VertexElementSemantic.TexCoords, (ushort)texCoordSet);
+            VertexElement tex3d = decl.FindElementBySemantic(VertexElementSemantic.TexCoords, texCoordSet);
 
             if(tex3d == null) {
                 needsToBeCreated = true;
@@ -581,9 +581,9 @@ namespace Axiom.Core {
                     true);
 
                 // bind the new buffer accordingly
-                ushort source = binding.NextIndex;
+                short source = binding.NextIndex;
                 binding.SetBinding(source, buff3D);
-                decl.AddElement(new VertexElement(source, 0, VertexElementType.Float3, VertexElementSemantic.TexCoords, (ushort)texCoordSet));
+                decl.AddElement(new VertexElement(source, 0, VertexElementType.Float3, VertexElementSemantic.TexCoords, texCoordSet));
             }
             else {
                 buff3D = binding.GetBuffer(tex3d.Source);

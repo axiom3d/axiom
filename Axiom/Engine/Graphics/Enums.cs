@@ -107,6 +107,20 @@ namespace Axiom.Graphics {
     }
 
     /// <summary>
+    ///     Describes types of hardware buffer licenses.
+    /// </summary>
+    public enum BufferLicenseRelease {
+        /// <summary>
+        ///     Licensee will only release buffer when it says so.
+        /// </summary>
+        Manual,
+        /// <summary>
+        ///     Licensee can have license revoked.
+        /// </summary>
+        Automatic
+    }
+
+    /// <summary>
     ///		Describes how a vertex buffer should act when it is locked.
     /// </summary>
     public enum BufferLocking {
@@ -895,7 +909,7 @@ namespace Axiom.Graphics {
         ///    3D cube map, used in combination with 3D texture coordinates.
         /// </summary>
         [ScriptEnum("cubic")]
-        CubeMap = 4,
+        CubeMap = 4
     }
 
     /// <summary>
@@ -947,28 +961,54 @@ namespace Axiom.Graphics {
         /// <summary>
         ///		Specular color for this vertex.
         ///	 </summary>
-        Specular = 32,
-
+        Specular = 32
     }
 
     /// <summary>
-    /// 
+    ///     Vertex element semantics, used to identify the meaning of vertex buffer contents.
     /// </summary>
-    /// DOC
     public enum VertexElementSemantic {
+        /// <summary>
+        ///     Position, 3 reals per vertex.
+        /// </summary>
         Position,
+        /// <summary>
+        ///     Normal, 3 reals per vertex.
+        /// </summary>
         Normal,
+        /// <summary>
+        ///     Blending weights.
+        /// </summary>
         BlendWeights,
+        /// <summary>
+        ///     Blending indices.
+        /// </summary>
         BlendIndices,
+        /// <summary>
+        ///     Diffuse colors.
+        /// </summary>
         Diffuse,
+        /// <summary>
+        ///     Specular colors.
+        /// </summary>
         Specular,
-        TexCoords
+        /// <summary>
+        ///     Texture coordinates.
+        /// </summary>
+        TexCoords,
+        /// <summary>
+        ///     Binormal (Y axis if normal is Z).
+        /// </summary>
+        Binormal,
+        /// <summary>
+        ///     Tangent (X axis if normal is Z).
+        /// </summary>
+        Tangent
     }
 
     /// <summary>
-    /// 
+    ///     Vertex element type, used to identify the base types of the vertex contents.
     /// </summary>
-    /// DOC
     public enum VertexElementType {
         Float1,
         Float2,
@@ -978,6 +1018,7 @@ namespace Axiom.Graphics {
         Short1,
         Short2,
         Short3,
-        Short4
+        Short4,
+        UByte4
     }
 }

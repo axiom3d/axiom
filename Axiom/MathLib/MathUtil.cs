@@ -180,11 +180,8 @@ namespace Axiom.MathLib {
             // *slightly* off from what is loaded from .skeleton files.  In some scenarios when we end up having 
             // a cos value calculated above that is just over 1 (i.e. 1.000000012), which the ACos of is Nan, thus 
             // completly throwing off node transformations and rotations associated with an animation.
-            if(angle > 1)
+            if(angle > 1) {
                 angle = 1.0f;
-
-            if(angle < 0) {
-                string test = "";
             }
                 
             return (float)Math.Acos(angle);

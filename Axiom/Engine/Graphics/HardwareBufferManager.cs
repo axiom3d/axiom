@@ -49,25 +49,57 @@ namespace Axiom.Graphics {
 		
         #endregion
 
-        #region Member variables
+        #region Fields
 
+        /// <summary>
+        ///     A list of vertex declarations created by this buffer manager.
+        /// </summary>
         protected ArrayList vertexDeclarations = new ArrayList();
+        /// <summary>
+        ///     A list of vertex buffer bindings created by this buffer manager.
+        /// </summary>
         protected ArrayList vertexBufferBindings = new ArrayList();
+        /// <summary>
+        ///     A list of vertex buffers created by this buffer manager.
+        /// </summary>
+        protected ArrayList vertexBuffers = new ArrayList();
+        /// <summary>
+        ///     A list of index buffers created by this buffer manager.
+        /// </summary>
+        protected ArrayList indexBuffers = new ArrayList();
 		
-        #endregion
+        #endregion Fields
 		
         #region Methods
 
         /// <summary>
-        ///		Overloaded method.
+        ///		Creates a hardware vertex buffer.
         /// </summary>
-        /// <param name="vertexSize"></param>
-        /// <param name="numVerts"></param>
-        /// <param name="usage"></param>
+        /// <remarks>
+        ///		This method creates a new vertex buffer; this will act as a source of geometry
+        ///		data for rendering objects. Note that because the meaning of the contents of
+        ///		the vertex buffer depends on the usage, this method does not specify a
+        ///		vertex format; the user of this buffer can actually insert whatever data 
+        ///		they wish, in any format. However, in order to use this with a RenderOperation,
+        ///		the data in this vertex buffer will have to be associated with a semantic element
+        ///		of the rendering pipeline, e.g. a position, or texture coordinates. This is done 
+        ///		using the VertexDeclaration class, which itself contains VertexElement structures
+        ///		referring to the source data.
+        ///		<p/>
+        ///		Note that because vertex buffers can be shared, they are reference
+        ///		counted so you do not need to worry about destroying themm this will be done
+        ///		automatically.
+        /// </remarks>
+        /// <param name="vertexSize">The size in bytes of each vertex in this buffer; you must calculate
+        ///		this based on the kind of data you expect to populate this buffer with.</param>
+        /// <param name="numVerts">The number of vertices in this buffer.</param>
+        /// <param name="usage">One or more members of the BufferUsage enumeration; you are
+        ///		strongly advised to use StaticWriteOnly wherever possible, if you need to 
+        ///		update regularly, consider WriteOnly and useShadowBuffer=true.</param>
         public abstract HardwareVertexBuffer CreateVertexBuffer(int vertexSize, int numVerts, BufferUsage usage);
 
         /// <summary>
-        ///		Create a hardware vertex buffer.
+        ///		Creates a hardware vertex buffer.
         /// </summary>
         /// <remarks>
         ///		This method creates a new vertex buffer; this will act as a source of geometry
@@ -94,31 +126,41 @@ namespace Axiom.Graphics {
         public abstract HardwareVertexBuffer CreateVertexBuffer(int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer);
 		
         /// <summary>
-        ///		Overloaded method.
+        ///     Create a hardware index buffer.
         /// </summary>
-        /// <param name="type"></param>
-        /// <param name="numIndices"></param>
-        /// <param name="usage"></param>
-        /// <param name="useShadowBuffer"></param>
+        /// <param name="type">
+        ///     The type in index, either 16- or 32-bit, depending on how many vertices
+        ///     you need to be able to address.
+        /// </param>
+        /// <param name="numIndices">The number of indexes in the buffer.</param>
+        /// <param name="usage">One or more members of the <see cref="BufferUsage"/> enumeration.</param>
         /// <returns></returns>
-        /// DOC
         public abstract HardwareIndexBuffer CreateIndexBuffer(IndexType type, int numIndices, BufferUsage usage);
 
         /// <summary>
-        /// 
+        ///     Create a hardware index buffer.
         /// </summary>
-        /// <param name="type"></param>
-        /// <param name="numIndices"></param>
-        /// <param name="usage"></param>
-        /// <param name="useShadowBuffer"></param>
+        /// <param name="type">
+        ///     The type in index, either 16- or 32-bit, depending on how many vertices
+        ///     you need to be able to address.
+        /// </param>
+        /// <param name="numIndices">The number of indexes in the buffer.</param>
+        /// <param name="usage">One or more members of the <see cref="BufferUsage"/> enumeration.</param>
+        /// <param name="useShadowBuffer">
+        ///     If set to true, this buffer will be 'shadowed' by one stored in 
+        ///     system memory rather than GPU or AGP memory. You should set this flag if you intend 
+        ///     to read data back from the index buffer, because reading data from a buffer
+        ///     in the GPU or AGP memory is very expensive, and is in fact impossible if you
+        ///     specify <see cref="BufferUsage.WriteOnly"/> for the main buffer. If you use this option, all 
+        ///     reads and writes will be done to the shadow buffer, and the shadow buffer will
+        ///     be synchronised with the real buffer at an appropriate time.
+        /// </param>
         /// <returns></returns>
-        /// DOC
         public abstract HardwareIndexBuffer CreateIndexBuffer(IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer);
 
         /// <summary>
-        /// 
+        ///     Creates a vertex declaration, may be overridden by certain rendering APIs.
         /// </summary>
-        /// DOC
         public virtual VertexDeclaration CreateVertexDeclaration() {
             VertexDeclaration decl = new VertexDeclaration();
             vertexDeclarations.Add(decl);
@@ -126,19 +168,92 @@ namespace Axiom.Graphics {
         }
 
         /// <summary>
-        /// 
+        ///     Creates a new VertexBufferBinding.
         /// </summary>
-        /// DOC
         public virtual VertexBufferBinding CreateVertexBufferBinding() {
             VertexBufferBinding binding = new VertexBufferBinding();
             vertexBufferBindings.Add(binding);
             return binding;
         }
 
-        #endregion
-		
-        #region Properties
-		
+        /// <summary>
+        ///     Allocates a copy of a given vertex buffer.
+        /// </summary>
+        /// <remarks>
+        ///     This method allocates a temporary copy of an existing vertex buffer.
+        ///     This buffer is subsequently stored and can be made available for 
+        ///     other purposes later without incurring the cost of construction / 
+        ///     destruction.
+        /// </remarks>
+        /// <param name="sourceBuffer">The source buffer to use as a copy.</param>
+        /// <param name="licenseType">
+        ///     The type of license required on this buffer - automatic
+        ///     release causes this class to release licenses every frame so that 
+        ///     they can be reallocated anew.
+        /// </param>
+        /// <param name="licensee">
+        ///     Reference back to the class requesting the copy, which must
+        ///     implement <see cref="IHardwareBufferLicense"/> in order to be notified when the license
+        ///     expires.
+        /// </param>
+        /// <returns></returns>
+        public virtual HardwareVertexBuffer AllocateVertexBufferCopy(HardwareVertexBuffer sourceBuffer,
+            BufferLicenseRelease licenseType, IHardwareBufferLicensee licensee) {
+
+            // TODO: Implement
+            return null;
+        }
+
+        /// <summary>
+        ///     Allocates a copy of a given vertex buffer.
+        /// </summary>
+        /// <remarks>
+        ///     This method allocates a temporary copy of an existing vertex buffer.
+        ///     This buffer is subsequently stored and can be made available for 
+        ///     other purposes later without incurring the cost of construction / 
+        ///     destruction.
+        /// </remarks>
+        /// <param name="sourceBuffer">The source buffer to use as a copy.</param>
+        /// <param name="licenseType">
+        ///     The type of license required on this buffer - automatic
+        ///     release causes this class to release licenses every frame so that 
+        ///     they can be reallocated anew.
+        /// </param>
+        /// <param name="licensee">
+        ///     Reference back to the class requesting the copy, which must
+        ///     implement <see cref="IHardwareBufferLicense"/> in order to be notified when the license
+        ///     expires.
+        /// </param>
+        /// <param name="copyData">If true, the current data is copied as well as the structure of the buffer.</param>
+        /// <returns></returns>
+        public virtual HardwareVertexBuffer AllocateVertexBufferCopy(HardwareVertexBuffer sourceBuffer,
+            BufferLicenseRelease licenseType, IHardwareBufferLicensee licensee, bool copyData) {
+
+            // TODO: Implement
+            return null;
+        }
+
+        /// <summary>
+        ///     Manually release a vertex buffer copy for others to subsequently use.
+        /// </summary>
+        /// <remarks>
+        ///     Only required if the original call to <see cref="AllocateVertexBufferCopy"/>
+        ///     included a licenseType of <see cref="BufferLicenseRelease.Manual"/>. 
+        /// </remarks>
+        /// <param name="bufferCopy">
+        ///     The buffer copy. The caller is expected to no longer use this reference, 
+        ///     since another user may well begin to modify the contents of the buffer.
+        /// </param>
+        public virtual void ReleaseVertexBufferCopy(HardwareVertexBuffer bufferCopy) {
+        }
+
+        /// <summary>
+        ///     Internal method for releasing all temporary buffers which have been 
+        ///     allocated using <see cref="BufferLicenseRelease.Automatic"/> is called by Axiom.
+        /// </summary>
+        public virtual void ReleaseBufferCopies() {
+        }
+
         #endregion
     }
 }

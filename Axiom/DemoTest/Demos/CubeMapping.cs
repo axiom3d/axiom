@@ -331,7 +331,7 @@ namespace Demos {
             // TODO: Remove elements property and add accessor
             foreach(VertexElement element in orgData.vertexDeclaration.Elements) {
                 VertexElementSemantic ves = element.Semantic;
-                ushort source = element.Source;
+                short source = element.Source;
                 HardwareVertexBuffer orgBuffer = orgData.vertexBufferBinding.GetBuffer(source);
 
                 // check usage for the new buffer

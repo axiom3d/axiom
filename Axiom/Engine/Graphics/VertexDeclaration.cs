@@ -58,7 +58,7 @@ namespace Axiom.Graphics {
         /// 
         /// </summary>
         /// DOC
-        public virtual VertexElement FindElementBySemantic(VertexElementSemantic semantic, ushort index) {
+        public virtual VertexElement FindElementBySemantic(VertexElementSemantic semantic, short index) {
             for(int i = 0; i < elements.Count; i++) {
                 VertexElement element = (VertexElement)elements[i];
 
@@ -95,7 +95,7 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="source"></param>
         /// DOC
-        public virtual int GetVertexSize(ushort source) {
+        public virtual int GetVertexSize(short source) {
             int size = 0;
 
             for(int i = 0; i < elements.Count; i++) {

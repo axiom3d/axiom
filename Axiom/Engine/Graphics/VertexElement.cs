@@ -29,31 +29,56 @@ using System.Runtime.InteropServices;
 
 namespace Axiom.Graphics {
     /// <summary>
-    /// 	Summary description for VertexElement.
+    /// 	This class declares the usage of a single vertex buffer as a component
+    /// 	of a complete <see cref="VertexDeclaration"/>. 
     /// </summary>
-    /// DOC
     public class VertexElement : ICloneable {
-        #region Member variables
+        #region Fields
 		
-        protected ushort source;
+        /// <summary>
+        ///     The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding"/>.
+        /// </summary>
+        protected short source;
+        /// <summary>
+        ///     The offset in the buffer that this element starts at.
+        /// </summary>
         protected int offset;
+        /// <summary>
+        ///     The type of element.
+        /// </summary>
         protected VertexElementType type;
+        /// <summary>
+        ///     The meaning of the element.
+        /// </summary>
         protected VertexElementSemantic semantic;
-        protected ushort index;
+        /// <summary>
+        ///     Index of the item, only applicable for some elements like texture coords.
+        /// </summary>
+        protected int index;
 
-        #endregion
+        #endregion Fields
 		
         #region Constructors
 		
-        public VertexElement(ushort source, int offset, VertexElementType type, VertexElementSemantic semantic) {
-            this.source = source;
-            this.offset = offset;
-            this.type = type;
-            this.semantic = semantic;
-            this.index = 0; 
-        }
+        /// <summary>
+        ///     Constructor.
+        /// </summary>
+        /// <param name="source">The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding"/>.</param>
+        /// <param name="offset">The offset in the buffer that this element starts at.</param>
+        /// <param name="type">The type of element.</param>
+        /// <param name="semantic">The meaning of the element.</param>
+        public VertexElement(short source, int offset, VertexElementType type, VertexElementSemantic semantic) 
+            : this(source, offset, type, semantic, 0) {}
 
-        public VertexElement(ushort source, int offset, VertexElementType type, VertexElementSemantic semantic, ushort index) {
+        /// <summary>
+        ///     Constructor.
+        /// </summary>
+        /// <param name="source">The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding"/>.</param>
+        /// <param name="offset">The offset in the buffer that this element starts at.</param>
+        /// <param name="type">The type of element.</param>
+        /// <param name="semantic">The meaning of the element.</param>
+        /// <param name="index">Index of the item, only applicable for some elements like texture coords.</param>
+        public VertexElement(short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index) {
             this.source = source;
             this.offset = offset;
             this.type = type;
@@ -66,9 +91,8 @@ namespace Axiom.Graphics {
         #region Methods
 		
         /// <summary>
-        /// 
+        ///     Utility method for helping to calculate offsets.
         /// </summary>
-        /// DOC
         public static int GetTypeSize(VertexElementType type) {
 
             switch(type) {
@@ -98,6 +122,9 @@ namespace Axiom.Graphics {
 
                 case VertexElementType.Short4:
                     return Marshal.SizeOf(typeof(short)) * 4;
+
+                case VertexElementType.UByte4:
+                    return Marshal.SizeOf(typeof(byte)) * 4;
             } // end switch
 
             // keep the compiler happy
@@ -105,9 +132,8 @@ namespace Axiom.Graphics {
         }
 
         /// <summary>
-        /// 
+        ///     Utility method which returns the count of values in a given type.
         /// </summary>
-        /// DOC
         public static int GetTypeCount(VertexElementType type) {
             switch(type) {
                 case VertexElementType.Color:
@@ -136,6 +162,9 @@ namespace Axiom.Graphics {
 
                 case VertexElementType.Short4:
                     return 4;
+
+                case VertexElementType.UByte4:
+                    return 4;
             } // end switch			
 
             // keep the compiler happy
@@ -148,9 +177,14 @@ namespace Axiom.Graphics {
         ///		of texture dimensions at runtime, and when creating the VertexBuffer you will
         ///		have to get a VertexElementType based on that amount to creating the VertexElement.
         /// </summary>
-        /// <param name="type"></param>
-        /// <param name="count"></param>
-        /// <returns></returns>
+        /// <param name="type">Data type.</param>
+        /// <param name="count">Multiplier.</param>
+        /// <returns>
+        ///     A <see cref="VertexElementType"/> that represents the requested type and count.
+        /// </returns>
+        /// <example>
+        ///     MultiplyTypeCount(VertexElementType.Float1, 3) returns VertexElementType.Float3.
+        /// </example>
         public static VertexElementType MultiplyTypeCount(VertexElementType type, int count) {
             switch(type) {
                 case VertexElementType.Float1:
@@ -170,49 +204,55 @@ namespace Axiom.Graphics {
         /// <summary>
         /// 
         /// </summary>
-        /// DOC
-        public ushort Source {
-            get { return source; }
+        public short Source {
+            get { 
+                return source; 
+            }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// DOC
         public int Offset {
-            get { return offset; }
+            get { 
+                return offset; 
+            }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// DOC
         public VertexElementType Type {
-            get { return type; }
+            get { 
+                return type; 
+            }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// DOC
         public VertexElementSemantic Semantic {
-            get { return semantic; }
+            get { 
+                return semantic; 
+            }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// DOC
-        public ushort Index {
-            get { return index; }
+        public int Index {
+            get { 
+                return index; 
+            }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// DOC
         public int Size {
-            get { return GetTypeSize(type); }
+            get { 
+                return GetTypeSize(type); 
+            }
         }
 
         #endregion

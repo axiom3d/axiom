@@ -42,7 +42,6 @@ namespace Axiom.Graphics {
 	///     to a single vertex buffer though (this is required in order to render the edge).
 	/// </remarks>
 	public class EdgeListBuilder {
-
         #region Fields
 
         protected IndexDataList indexDataList = new IndexDataList();

@@ -232,7 +232,7 @@ namespace Axiom.Gui.Elements {
                     int offset = VertexElement.GetTypeSize(VertexElementType.Float2) * numTexCoords;
 
                     for(int i = numTexCoords; i < numLayers; i++) {
-                        decl.AddElement(new VertexElement(TEXTURE_COORDS, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, (ushort)i));
+                        decl.AddElement(new VertexElement(TEXTURE_COORDS, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, i));
                         offset += VertexElement.GetTypeSize(VertexElementType.Float2);
                     } // for
                 } // if
