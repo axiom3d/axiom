@@ -10,6 +10,7 @@
 	<FilePath type="Folder" src="Media\Overlays"/>
 	<FilePath type="Folder" src="Media\GpuPrograms"/>
 	<FilePath type="ZipFile" src="Media\Archives\Fresnel.zip"/>
+	<FilePath type="ZipFile" src="Media\Archives\Water.zip"/>
 	<FilePath type="ZipFile" src="Media\Textures\SkyBoxes.zip"/>
 </EngineConfig>
  

@@ -318,27 +318,46 @@ namespace Axiom.MathLib {
 
         #region Static methods
 
+		public static Quaternion Slerp(float time, Quaternion quatA, Quaternion quatB) {
+			return Slerp(time, quatA, quatB, false);
+		}
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="time"></param>
         /// <param name="quatA"></param>
         /// <param name="quatB"></param>
+        /// <param name="useShortestPath"></param>
         /// <returns></returns>
-        public static Quaternion Slerp(float time, Quaternion quatA, Quaternion quatB) {
-            // TODO: Add support for shortest path interpolation, change also required to KeyFrame and AnimationTrack
+        public static Quaternion Slerp(float time, Quaternion quatA, Quaternion quatB, bool useShortestPath) {
             float cos = quatA.Dot(quatB);
 
             float angle = MathUtil.ACos(cos);
 
-            if ( MathUtil.Abs(angle) < EPSILON )
-                return quatA;
+			if(MathUtil.Abs(angle) < EPSILON) {
+				return quatA;
+			}
 
             float sin = MathUtil.Sin(angle);
             float inverseSin = 1.0f / sin;
-            float coeff0 = MathUtil.Sin((1.0f-time) * angle) * inverseSin;
+            float coeff0 = MathUtil.Sin((1.0f - time) * angle) * inverseSin;
             float coeff1 = MathUtil.Sin(time * angle) * inverseSin;
-            return (coeff0 * quatA + coeff1 * quatB);
+
+			Quaternion result;
+
+			if(cos < 0.0f && useShortestPath) {
+				coeff0 = -coeff0;
+				// taking the complement requires renormalisation
+				Quaternion t = coeff0 * quatA + coeff1 * quatB;
+				t.Normalize();
+				result = t;
+			}
+			else {
+				result = (coeff0 * quatA + coeff1 * quatB);
+			}
+
+			return result;
         }
 
         /// <summary>
@@ -361,6 +380,10 @@ namespace Axiom.MathLib {
             return quat;
         }
 
+		public static Quaternion Squad(float t, Quaternion p, Quaternion a, Quaternion b, Quaternion q) {
+			return Squad(t, p, a, b, q, false);
+		}
+
         /// <summary>
         ///		Performs spherical quadratic interpolation.
         /// </summary>
@@ -370,11 +393,11 @@ namespace Axiom.MathLib {
         /// <param name="b"></param>
         /// <param name="q"></param>
         /// <returns></returns>
-        public static Quaternion Squad(float t, Quaternion p, Quaternion a, Quaternion b, Quaternion q) {
+        public static Quaternion Squad(float t, Quaternion p, Quaternion a, Quaternion b, Quaternion q, bool useShortestPath) {
             float slerpT = 2.0f * t * (1.0f - t);
 
             // use spherical linear interpolation
-            Quaternion slerpP = Slerp(t, p, q);
+            Quaternion slerpP = Slerp(t, p, q, useShortestPath);
             Quaternion slerpQ = Slerp(t, a, b);
 
             // run another Slerp on the results of the first 2, and return the results
