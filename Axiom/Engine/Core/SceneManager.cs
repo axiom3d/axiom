@@ -573,7 +573,7 @@ namespace Axiom.Core {
             // TODO: SHADING MODE
 
             // texture filtering
-            if(firstTime || lastMaterialUsed.TextureFiltering != material.TextureFiltering)
+            //if(firstTime || lastMaterialUsed.TextureFiltering != material.TextureFiltering)
                 targetRenderSystem.TextureFiltering = material.TextureFiltering;
 
             // save the last material used for comparison next time this is called

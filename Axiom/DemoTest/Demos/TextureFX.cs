@@ -73,7 +73,7 @@ namespace Demos {
             // create a prefab plane
             Entity plane = scene.CreateEntity("Plane", PrefabEntity.Plane);
             // give the plane a texture
-            plane.MaterialName = "Examples/TextureEffect1";
+            plane.MaterialName = "TextureFX/BumpyMetal";
             // add entity to the root scene node
             SceneNode node = (SceneNode) scene.RootSceneNode.CreateChild(new Vector3(-250, -40, -100), Quaternion.Identity);
             node.AttachObject(plane);
@@ -81,7 +81,7 @@ namespace Demos {
 
         private void CreateScrollingKnot() {
             Entity knot = scene.CreateEntity("knot", "knot.mesh");
-            knot.MaterialName = "Examples/TextureEffect2";
+            knot.MaterialName = "TextureFX/Knot";
             // add entity to the root scene node
             SceneNode node = (SceneNode) scene.RootSceneNode.CreateChild(new Vector3(200, 50, 150), Quaternion.Identity);
             node.AttachObject(knot);
@@ -91,7 +91,7 @@ namespace Demos {
             // create a prefab plane
             Entity plane = scene.CreateEntity("WaterPlane", PrefabEntity.Plane);
             // give the plane a texture
-            plane.MaterialName = "Examples/TextureEffect3";
+            plane.MaterialName = "TextureFX/Water";
             // add entity to the root scene node
             scene.RootSceneNode.AttachObject(plane);
         }
