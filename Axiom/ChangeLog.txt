@@ -1,3 +1,9 @@
+11-27-2004
+- Big Change: Viewports width/height are now range [0.0, 1.0], as opposed to [0.0, 100.0].  Any Camera.AddViewport calls need to be updated for this.
+- Texture Modulative shadows working, with only a slight artifact in GL at the moment, but still working.
+- Assorted D3D Render system updates.
+- Fix to FP30GPUProgram which didn't check for null named parameters before setting them.
+
 11-26-2004
 - Modulative stencil shadows fully working with all light types.
 - Initial port of Additive and Texture shadows by Bekas; still a work in progress.

@@ -553,18 +553,30 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// <returns></returns>
 		public override Matrix4 MakeOrthoMatrix(float fov, float aspectRatio, float near, float far, bool forGpuPrograms) {
 			float thetaY = MathUtil.DegreesToRadians(fov / 2.0f);
-			float sinThetaY = MathUtil.Sin(thetaY);
-			float thetaX = thetaY * aspectRatio;
-			float sinThetaX = MathUtil.Sin(thetaX);
-			float w = 1.0f / (sinThetaX * near);
-			float h = 1.0f / (sinThetaY * near);
-			float q = 1.0f / (far - near);
+			float tanThetaY = MathUtil.Tan(thetaY);
+			float tanThetaX = tanThetaY * aspectRatio;
+
+			float halfW = tanThetaX * near;
+			float halfH = tanThetaY * near;
+
+			float w = 1.0f / (halfW);
+			float h = 1.0f / (halfH);
+			float q = 0;
+			
+			if(far != 0) {
+				q = 1.0f / (far - near);
+			}
 
 			Matrix4 dest = Matrix4.Zero;
 			dest.m00 = w;
 			dest.m11 = h;
 			dest.m22 = q;
+			dest.m23 = -near / (far - near);
 			dest.m33 = 1;
+
+			if(forGpuPrograms) {
+				dest.m22 = - dest.m22;
+			}
 
 			return dest;
 		}
@@ -579,31 +591,38 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// <param name="forGpuProgram"></param>
 		/// <returns></returns>
 		public override Axiom.MathLib.Matrix4 MakeProjectionMatrix(float fov, float aspectRatio, float near, float far, bool forGpuProgram) {
-			Matrix d3dMatrix;
+			float theta = MathUtil.DegreesToRadians(fov * 0.5f);
+			float h = 1 / MathUtil.Tan(theta);
+			float w = h / aspectRatio;
+			float q = 0;
+			float qn = 0;
 
-			if(forGpuProgram) {
-				d3dMatrix = Matrix.PerspectiveFovRH(MathUtil.DegreesToRadians(fov), aspectRatio, near, far);
+			if(far == 0) {
+				q = 1 - Frustum.InfinitFarPlaneAdjust;
+				qn = near * (Frustum.InfinitFarPlaneAdjust - 1);
 			}
 			else {
-				d3dMatrix = Matrix.PerspectiveFovLH(MathUtil.DegreesToRadians(fov), aspectRatio, near, far);
+				q = far / (far - near);
+				qn = -q * near;
 			}
 
-			return ConvertD3DMatrix(ref d3dMatrix);
+			Matrix4 dest = Matrix4.Zero;
 
-			//            Matrix4 matrix = Matrix4.Zero;
-			//
-			//            float theta = MathUtil.DegreesToRadians(fov * 0.5f);
-			//            float h = 1 / MathUtil.Tan(theta);
-			//            float w = h / aspectRatio;
-			//            float q = far / (far - near);
-			//
-			//            matrix[0,0] = w;
-			//            matrix[1,1] = h;
-			//            matrix[2,2] = q;
-			//            matrix[2,3] = -q * near;
-			//            matrix[3,2] = 1.0f;
-			//
-			//            return matrix;
+			dest.m00 = w;
+			dest.m11 = h;
+
+			if(forGpuProgram) {
+				dest.m22 = -q;
+				dest.m32 = -1.0f;
+			}
+			else {
+				dest.m22 = q;
+				dest.m32 = 1.0f;
+			}
+
+			dest.m23 = qn;
+
+			return dest;
 		}
 
 		/// <summary>
@@ -659,8 +678,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 				}
 				// CMH - End
 
-				D3D.Surface depth =
-					(D3D.Surface)activeRenderTarget.GetCustomAttribute("D3DZBUFFER");
+				D3D.Surface depth = (D3D.Surface)activeRenderTarget.GetCustomAttribute("D3DZBUFFER");
 
 				// set the render target and depth stencil for the surfaces beloning to the viewport
 				device.DepthStencilSurface = depth;
@@ -753,7 +771,6 @@ namespace Axiom.RenderSystems.DirectX9 {
 				// draw vertices without indices
 				device.DrawPrimitives(primType, op.vertexData.vertexStart, primCount);
 			}
-
 		}
 
 		/// <summary>
@@ -765,11 +782,24 @@ namespace Axiom.RenderSystems.DirectX9 {
 		public override void SetTexture(int stage, bool enabled, string textureName) {
 			D3DTexture texture = (D3DTexture)TextureManager.Instance.GetByName(textureName);
 
-			if(enabled && texture != null)
+			if(enabled && texture != null) {
 				device.SetTexture(stage, texture.DXTexture);
+
+				// set stage description
+				texStageDesc[stage].tex = texture.DXTexture;
+				texStageDesc[stage].texType = D3DHelper.ConvertEnum(texture.TextureType);
+			}
 			else {
-				device.SetTexture(stage, null);
-				device.TextureState[stage].ColorOperation = D3D.TextureOperation.Disable;
+				if(texStageDesc[stage].tex != null) {
+					device.SetTexture(stage, null);
+					device.TextureState[stage].ColorOperation = D3D.TextureOperation.Disable;
+				}
+
+				// set stage description to defaults
+				texStageDesc[stage].tex = null;
+				texStageDesc[stage].autoTexCoordType = TexCoordCalcMethod.None;
+				texStageDesc[stage].coordIndex = 0;
+				texStageDesc[stage].texType = D3DTexType.Normal;
 			}
 		}
 
@@ -798,11 +828,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 			texStageDesc[stage].autoTexCoordType = method;
 			texStageDesc[stage].frustum = frustum;
 
-			// set auto texcoord gen mode if present
-			// if not present we've already set it through SetTextureCoordSet
-			if(method != TexCoordCalcMethod.None) {
-				device.TextureState[stage].TextureCoordinateIndex = D3DHelper.ConvertEnum(method, d3dCaps) | texStageDesc[stage].coordIndex;
-			}
+			device.TextureState[stage].TextureCoordinateIndex = D3DHelper.ConvertEnum(method, d3dCaps) | texStageDesc[stage].coordIndex;
 		}
 
 		public override void BindGpuProgram(GpuProgram program) {
@@ -829,6 +855,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 							}
 						}
 					}
+
 					if(parms.HasFloatConstants) {
 						for(int index = 0; index < parms.FloatConstantCount; index++) {
 							GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant(index);
@@ -851,6 +878,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 							}
 						}
 					}
+
 					if(parms.HasFloatConstants) {
 						for(int index = 0; index < parms.FloatConstantCount; index++) {
 							GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant(index);
@@ -913,7 +941,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 				Matrix mat = MakeD3DMatrix(value);
 
 				if(activeRenderTarget.RequiresTextureFlipping) {
-					mat.M22 = - mat.M22;
+					mat.M22 = -mat.M22;
 				}
 
 				device.Transform.Projection = mat;
@@ -1211,10 +1239,13 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// <param name="emissive"></param>
 		/// <param name="shininess"></param>
 		public override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess) {
+			// TODO: Cache color values to prune unneccessary setting
+
 			// create a new material based on the supplied params
 			D3D.Material mat = new D3D.Material();
 			mat.Ambient = ambient.ToColor();
 			mat.Diffuse = diffuse.ToColor();
+			mat.Emissive = emissive.ToColor();
 			mat.Specular = specular.ToColor();
 			mat.SpecularSharpness = shininess;
 
@@ -1228,34 +1259,21 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// <param name="stage"></param>
 		/// <param name="texAddressingMode"></param>
 		public override void SetTextureAddressingMode(int stage, TextureAddressing texAddressingMode) {
-			D3D.TextureAddress d3dMode = 0;
-
-			// convert from ours to D3D
-			switch(texAddressingMode) {
-				case TextureAddressing.Wrap:
-					d3dMode = D3D.TextureAddress.Wrap;
-					break;
-
-				case TextureAddressing.Mirror:
-					d3dMode = D3D.TextureAddress.Mirror;
-					break;
-
-				case TextureAddressing.Clamp:
-					d3dMode = D3D.TextureAddress.Clamp;
-					break;
-			} // end switch
+			D3D.TextureAddress d3dMode = D3DHelper.ConvertEnum(texAddressingMode);
 
 			// set the device sampler states accordingly
 			device.SamplerState[stage].AddressU = d3dMode;
 			device.SamplerState[stage].AddressV = d3dMode;
+			device.SamplerState[stage].AddressW = d3dMode;
 		}
 	
 		public override void SetTextureBlendMode(int stage, LayerBlendModeEx blendMode) {
 			D3D.TextureOperation d3dTexOp = D3DHelper.ConvertEnum(blendMode.operation);
 
 			// TODO: Verify byte ordering
-			if(blendMode.operation == LayerBlendOperationEx.BlendManual)
+			if(blendMode.operation == LayerBlendOperationEx.BlendManual) {
 				device.RenderState.TextureFactor = (new ColorEx(blendMode.blendFactor, 0, 0, 0)).ToARGB();
+			}
 
 			if( blendMode.blendType == LayerBlendType.Color ) {
 				// Make call to set operation
@@ -1283,25 +1301,31 @@ namespace Axiom.RenderSystems.DirectX9 {
 				D3D.TextureArgument d3dTexArg = D3DHelper.ConvertEnum(blendSource);
 
 				// set the texture blend factor if this is manual blending
-				if(blendSource == LayerBlendSource.Manual)
+				if(blendSource == LayerBlendSource.Manual) {
 					device.RenderState.TextureFactor = manualD3D.ToARGB();
+				}
 
 				// pick proper argument settings
 				if( blendMode.blendType == LayerBlendType.Color ) {
-					if(i == 0)
+					if(i == 0) {
 						device.TextureState[stage].ColorArgument1 = d3dTexArg;
-					else if (i ==1)
+					}
+					else if (i ==1) {
 						device.TextureState[stage].ColorArgument2 = d3dTexArg;
+					}
 				}
 				else if( blendMode.blendType == LayerBlendType.Alpha ) {
-					if(i == 0)
+					if(i == 0) {
 						device.TextureState[stage].AlphaArgument1 = d3dTexArg;
-					else if (i ==1)
+					}
+					else if (i ==1) {
 						device.TextureState[stage].AlphaArgument2 = d3dTexArg;
+					}
 				}
 
 				// Source2
 				blendSource = blendMode.source2;
+
 				if( blendMode.blendType == LayerBlendType.Color ) {
 					manualD3D = new ColorEx(manualD3D.a, blendMode.colorArg2.r, blendMode.colorArg2.g, blendMode.colorArg2.b);
 				}
@@ -1317,10 +1341,10 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// <param name="stage"></param>
 		/// <param name="index"></param>
 		public override void SetTextureCoordSet(int stage, int index) {
-			device.TextureState[stage].TextureCoordinateIndex = index;
-
 			// store
 			texStageDesc[stage].coordIndex = index;
+
+			device.TextureState[stage].TextureCoordinateIndex = D3DHelper.ConvertEnum(texStageDesc[stage].autoTexCoordType, d3dCaps) | index;
 		}
 
 		/// <summary>
@@ -1329,21 +1353,21 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// <param name="unit"></param>
 		/// <param name="type"></param>
 		/// <param name="filter"></param>
-		public override void SetTextureUnitFiltering(int unit, FilterType type, FilterOptions filter) {
-			D3DTexType texType = texStageDesc[unit].texType;
+		public override void SetTextureUnitFiltering(int stage, FilterType type, FilterOptions filter) {
+			D3DTexType texType = texStageDesc[stage].texType;
 			D3D.TextureFilter texFilter = D3DHelper.ConvertEnum(type, filter, d3dCaps, texType);
 
 			switch(type) {
 				case FilterType.Min:
-					device.SamplerState[unit].MinFilter = texFilter;
+					device.SamplerState[stage].MinFilter = texFilter;
 					break;
 
 				case FilterType.Mag:
-					device.SamplerState[unit].MagFilter = texFilter;
+					device.SamplerState[stage].MagFilter = texFilter;
 					break;
 
 				case FilterType.Mip:
-					device.SamplerState[unit].MipFilter = texFilter;
+					device.SamplerState[stage].MipFilter = texFilter;
 					break;
 			}
 		}
@@ -1364,11 +1388,9 @@ namespace Axiom.RenderSystems.DirectX9 {
 			but it's the best approximation we have in the absence of a proper spheremap */
 			if(texStageDesc[stage].autoTexCoordType == TexCoordCalcMethod.EnvironmentMap) {
 				if(d3dCaps.VertexProcessingCaps.SupportsTextureGenerationSphereMap) {
-
 					// inverts the texture for a spheremap
 					Matrix4 matEnvMap = Matrix4.Identity;
 					matEnvMap.m11 = -1.0f;
-					newMat = newMat * matEnvMap;
 
 					// concatenate 
 					newMat = newMat * matEnvMap;
@@ -1379,15 +1401,9 @@ namespace Axiom.RenderSystems.DirectX9 {
 					reference the envmap properly. This isn't exactly the same as spheremap
 					(it looks nasty on flat areas because the camera space normals are the same)
 					but it's the best approximation we have in the absence of a proper spheremap */
-					Matrix4 matEnvMap = Matrix4.Identity;
-					// set env_map values
-					matEnvMap.m00 = 0.5f;
-					matEnvMap.m03 = 0.5f;
-					matEnvMap.m11 = -0.5f;
-					matEnvMap.m13 = 0.5f;
 
 					// concatenate with the xForm
-					newMat = newMat * matEnvMap;
+					newMat = newMat * Matrix4.ClipSpace2DToImageSpace;
 				}
 			}
 
@@ -1430,6 +1446,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 				newMat = viewMatrix.Inverse() * newMat;
 				newMat = texStageDesc[stage].frustum.ViewMatrix * newMat;
 				newMat = texStageDesc[stage].frustum.ProjectionMatrix * newMat;
+
 				if (texStageDesc[stage].frustum.ProjectionType == Projection.Perspective) {
 					newMat = ProjectionClipSpace2DToImageSpacePerspective * newMat;
 				}
@@ -1457,16 +1474,16 @@ namespace Axiom.RenderSystems.DirectX9 {
 				// tell D3D the dimension of tex. coord
 				int texCoordDim = 0;
 				if (texStageDesc[stage].autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture) {
-					texCoordDim = 256 | 3;
+					texCoordDim = (int)D3D.TextureTransform.Projected | (int)D3D.TextureTransform.Count3;
 				}
 				else {
 					switch(texStageDesc[stage].texType) {
 						case D3DTexType.Normal:
-							texCoordDim = 2;
+							texCoordDim = (int)D3D.TextureTransform.Count2;
 							break;
 						case D3DTexType.Cube:
 						case D3DTexType.Volume:
-							texCoordDim = 3;
+							texCoordDim = (int)D3D.TextureTransform.Count3;
 							break;
 					}
 				}
@@ -1508,8 +1525,10 @@ namespace Axiom.RenderSystems.DirectX9 {
 			caps.MaxLights = d3dCaps.MaxActiveLights;
 
 			D3D.Surface surface = device.DepthStencilSurface;
+			D3D.SurfaceDescription surfaceDesc = surface.Description;
+			surface.Dispose();
      
-			if(surface.Description.Format == D3D.Format.D24S8 || surface.Description.Format == D3D.Format.D24X8) {
+			if(surfaceDesc.Format == D3D.Format.D24S8 || surfaceDesc.Format == D3D.Format.D24X8) {
 				caps.SetCap(Capabilities.StencilBuffer);
 				// always 8 here
 				caps.StencilBufferBits = 8;
@@ -1771,7 +1790,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// Frustum, used if the above is projection
 		public Frustum frustum;
 		/// texture 
-		public D3D.Texture tex;
+		public D3D.BaseTexture tex;
 	}
 
 	/// <summary>

@@ -40,6 +40,12 @@ namespace Axiom.Core {
 	/// </summary>
 	// TODO: Review attaching object in the scene and making them no longer require a name.
 	public class Frustum : SceneObject, IRenderable {
+		#region Constants
+
+		public const float InfinitFarPlaneAdjust = 0.00001f;
+
+		#endregion Constants
+
 		#region Fields
         
 		/// <summary>

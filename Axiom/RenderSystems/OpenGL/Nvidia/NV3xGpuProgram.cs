@@ -158,10 +158,12 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia {
                 for(int index = 0; index < parms.FloatConstantCount; index++) {
                     string name = parms.GetNameByIndex(index);
 
-                    GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant(index);
+					if(name != null) {
+						GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant(index);
 
-                    // send the params 4 at a time
-                    Gl.glProgramNamedParameter4fvNV(programId, name.Length, name, entry.val);
+						// send the params 4 at a time
+						Gl.glProgramNamedParameter4fvNV(programId, name.Length, name, entry.val);
+					}
                 }
             }  
         }
@@ -184,7 +186,5 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia {
         }
 
         #endregion
-
     }
-
 }
