@@ -1,3 +1,12 @@
+5-21-2004
+- Give the RenderSystem class a much needed cleanup.  All previous protected internal methods are now public like they should have been, so they can be accessible to plugins and such.
+- Fixed a bug in the DrawEmitter for systems attached to a node.  For anyone using this, it will be renamed to MagneticEmitter soon.
+- Added updated mesh files.
+
+4-19-2004 through 5-20-2004
+- Fixed nasty GL bug with VBO's which caused problems with some non-recent cards.
+<whole bunch of crap I never bothered to enter here because I'm lazy ;) >
+
 4-18-2004
 - Several bug fixes/optimizations in the shadow code.
 - Added robustness to pass hash code recalculation.
