@@ -1864,10 +1864,7 @@ namespace Axiom.RenderSystems.OpenGL {
                 caps.SetCap(Capabilities.Dot3Bump);
 
             // check support for vertex buffers in hardware
-            // NOTE: GeForce2 MX and GeForce3 report support, but simply doesn't work
-            if(GLHelper.SupportsExtension("GL_ARB_vertex_buffer_object")
-                && GLHelper.VideoCard.IndexOf("GeForce2 MX") == -1
-                && GLHelper.VideoCard.IndexOf("GeForce3") == -1)
+            if(GLHelper.SupportsExtension("GL_ARB_vertex_buffer_object"))
                 caps.SetCap(Capabilities.VertexBuffer);
 
             if(GLHelper.SupportsExtension("GL_ARB_texture_cube_map")
