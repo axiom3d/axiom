@@ -332,6 +332,26 @@ namespace Axiom.Core {
             UpdateBounds();
         }
 
+		/// <summary>
+		/// Returns a scene object attached to this node by name. Node that this method
+		/// is O(n), whereas the integer overload of this method is O(1). Use the integer
+		/// version of this method if speed is important.
+		/// </summary>
+		/// <param name="name">The name of the object to return.</param>
+		/// <returns>SceneObject if found. Throws exception of not found.</returns>
+		public SceneObject GetObject(string name) {
+			foreach(SceneObject obj in this.objectList) {
+				if(obj.Name == name)
+					return obj;
+			}
+			throw new IndexOutOfRangeException("Invalid key specified.");
+		}
+
+		public SceneObject GetObject(int index) {
+			if(objectList.Count <= index) return null;
+			return objectList[index];
+		}
+
         /// <summary>
         ///		Internal method to update the Node.
         /// </summary>
