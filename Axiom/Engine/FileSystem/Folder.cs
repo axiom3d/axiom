@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.IO;
 using System.Collections;
+using Axiom.Core;
 
 namespace Axiom.FileSystem {
     /// <summary>
@@ -37,31 +38,35 @@ namespace Axiom.FileSystem {
         internal Folder(string archiveName) : base(archiveName) {
             // So that the substring will work out right, we definitely want this string
             // to end with the directory separator char.
-            if (!this.archiveName.EndsWith(Path.DirectorySeparatorChar.ToString())) {
-                this.archiveName += Path.DirectorySeparatorChar;
-            }
+            //if (!name.EndsWith(Path.DirectorySeparatorChar.ToString())) {
+            //    name += Path.DirectorySeparatorChar;
+            ///}
         }
 
         public override void Load() {
+			LogManager.Instance.Write("FileSystem codec for {0} created.", name);
+
+			isLoaded = true;
         }
 
         public override Stream ReadFile(string fileName) {
-            FileStream file = File.OpenRead(this.archiveName + Path.DirectorySeparatorChar + fileName);
+            FileStream file = File.OpenRead(name + Path.DirectorySeparatorChar + fileName);
 
             return file;
         }
 
         public override string[] GetFileNamesLike(string startPath, string pattern) {
             // replace with wildcard if empty
-            if(pattern.Length == 0)
-                pattern = "*.*";
-            // otherwise prefix with a star as a wildcard
-            else if(pattern.IndexOf("*") == -1) {
-                pattern = "*" + pattern;
-            }
+			if(pattern.Length == 0) {
+				pattern = "*.*";
+			}
+				// otherwise prefix with a star as a wildcard
+			else if(pattern.IndexOf("*") == -1) {
+				pattern = "*" + pattern;
+			}
 
             // Append the start path if there is one
-            string path = Path.Combine(archiveName, startPath);
+            string path = Path.Combine(name, startPath);
 
             // Get the list of files, recursively, into an ArrayList
             ArrayList files = new ArrayList();
@@ -69,20 +74,23 @@ namespace Axiom.FileSystem {
 
             // Copy the ArrayList into a string[] array suitable for returning.
             string[] retval = new string[files.Count];
-            for (int i=0; i<files.Count; i++) {
+
+            for (int i=0; i < files.Count; i++) {
                 retval[i] = ((string)files[i]).Replace('\\', '/');
             }
+
             return retval;
         }
 
         private void GetFilesRecursive(string path, string pattern, ArrayList files) {
-
             string[] newFiles = Directory.GetFiles(path, pattern);
+
             foreach (string newFile in newFiles) {
-                if (!newFile.StartsWith(archiveName)) {
-                    throw new ApplicationException("Directory " + newFile + " unexpectedly does not start from path " + archiveName);
+                if (!newFile.StartsWith(name)) {
+                    throw new AxiomException("Directory {0} unexpectedly does not start from path {1}", newFile, name);
                 }
-                files.Add(newFile.Substring(archiveName.Length));
+
+                files.Add(newFile.Substring(name.Length + 1));
             }
 
             foreach (string directory in Directory.GetDirectories(path)) {

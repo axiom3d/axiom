@@ -31,6 +31,7 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.IO;
+using Axiom.Core;
 using ICSharpCode.SharpZipLib.Zip;
 
 namespace Axiom.FileSystem {
@@ -46,18 +47,20 @@ namespace Axiom.FileSystem {
         }
 
         public override void Load() {
-            // do nothing
+			LogManager.Instance.Write("Zip Archive codec for {0} created.", name);
+
+            isLoaded = true;
         }
 
         /// <summary>
         ///    Reads a file with the specified name in the .zip file and returns the
         ///    file as a MemoryStream.
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="fileName"></param>
         /// <returns></returns>
-        public override Stream ReadFile(string name) {
+        public override Stream ReadFile(string fileName) {
             // read the open the zip archive
-            FileStream fs = File.OpenRead(archiveName);
+            FileStream fs = File.OpenRead(name);
             fs.Position = 0;
 
             // get a input stream from the zip file
@@ -72,8 +75,7 @@ namespace Axiom.FileSystem {
 
             // loop through all the entries until we find the requested one
             while (entry != null) {
-                
-                if(entry.Name.ToLower() == name.ToLower()) {
+                if(entry.Name.ToLower() == fileName.ToLower()) {
                     break;
                 }
 
@@ -112,7 +114,7 @@ namespace Axiom.FileSystem {
         /// <param name="pattern"></param>
         /// <returns></returns>
         public override string[] GetFileNamesLike(string startPath, string pattern) {
-            FileStream fs = File.OpenRead(archiveName);
+            FileStream fs = File.OpenRead(name);
             fs.Position = 0;
             ZipInputStream s = new ZipInputStream(fs);
             ZipEntry entry;

@@ -176,17 +176,21 @@ namespace Axiom.Utility {
 		}
 
 		protected virtual void SetupResources() {
-			EngineConfig config = new EngineConfig();
+			string resourceConfigPath = Path.GetFullPath("EngineConfig.xml");
 
-			// load the config file
-			// relative from the location of debug and releases executables
-			config.ReadXml("EngineConfig.xml");
+			if(File.Exists(resourceConfigPath)) {
+				EngineConfig config = new EngineConfig();
 
-			// interrogate the available resource paths
-			foreach(EngineConfig.FilePathRow row in config.FilePath) {
-				string fullPath = Environment.CurrentDirectory + Path.DirectorySeparatorChar + row.src;
+				// load the config file
+				// relative from the location of debug and releases executables
+				config.ReadXml("EngineConfig.xml");
 
-				ResourceManager.AddCommonArchive(fullPath, row.type);
+				// interrogate the available resource paths
+				foreach(EngineConfig.FilePathRow row in config.FilePath) {
+					string fullPath = row.src; //Environment.CurrentDirectory + Path.DirectorySeparatorChar + row.src;
+
+					ResourceManager.AddCommonArchive(fullPath, row.type);
+				}
 			}
 		}
 
