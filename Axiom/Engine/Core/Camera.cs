@@ -117,7 +117,7 @@ namespace Axiom.Core
 			this.frustum = new Frustum();
 			this.fieldOfView = 45.0f;
 			this.nearDistance = 0.1f;
-			this.farDistance = 7000.0f;
+			this.farDistance = 10000.0f;
 			this.aspectRatio = 1.33333333333333f;
 			this.projectionType = Projection.Perspective;
 			this.sceneDetail = SceneDetailLevel.Solid;
