@@ -50,7 +50,7 @@ namespace Axiom.Core {
     /// <summary>
     ///		Used to supply info to the FrameStarted and FrameEnded events.
     /// </summary>
-    public class FrameEventArgs {
+    public class FrameEventArgs : System.EventArgs {
         public float TimeSinceLastEvent;
         public float TimeSinceLastFrame;
     }

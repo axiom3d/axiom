@@ -39,10 +39,7 @@ namespace Axiom.Graphics
     ///    Rendering can be repeated with many passes for more complex effects.
     ///    Each pass is either a fixed-function pass (meaning it does not use
     ///    a vertex or fragment program) or a programmable pass (meaning it does
-    ///    use a vertex and fragment program). Note that because of the nature of
-    ///    the custom inputs and outputs of the programmable pipeline, you must use
-    ///    both a vertex and fragment program, not just one or the other, if you
-    ///    decide to use a programmable pass.
+    ///    use either a vertex or a fragment program, or both). 
     ///    <p/>
     ///    Programmable passes are complex to define, because they require custom
     ///    programs and you have to set all constant inputs to the programs (like
@@ -57,7 +54,7 @@ namespace Axiom.Graphics
 	/// </remarks>
 	public class Pass {
 		#region Fields
-	
+
         /// <summary>
         ///    A reference to the technique that owns this Pass.
         /// </summary>
@@ -70,10 +67,6 @@ namespace Axiom.Graphics
         ///    Pass hash, used for sorting passes.
         /// </summary>
         protected int hashCode;
-        /// <summary>
-        ///    Is this a programmable rendering pass?
-        /// </summary>
-        protected bool isProgrammable;
         /// <summary>
         ///    Ambient color in fixed function passes.
         /// </summary>
@@ -201,29 +194,17 @@ namespace Axiom.Graphics
         /// <param name="parent">Technique that owns this Pass.</param>
         /// <param name="index">Index of this pass.</param>
         public Pass(Technique parent, int index) {
-            Construct(parent, index, false);
+            Construct(parent, index);
         }
-
-        /// <summary>
-        ///    Default constructor.
-        /// </summary>
-        /// <param name="parent">Technique that owns this Pass.</param>
-        /// <param name="index">Index of this pass.</param>
-        /// <param name="isProgrammable">Programmable or fixed-function?</param>
-		public Pass(Technique parent, int index, bool isProgrammable) {
-            Construct(parent, index, isProgrammable);
-		}
 
         /// <summary>
         ///    Helper method to allow for unique object construction.
         /// </summary>
-        /// <param name="parent"></param>
-        /// <param name="index"></param>
-        /// <param name="isProgrammable"></param>
-        private void Construct(Technique parent, int index, bool isProgrammable) {
+        /// <param name="parent">Reference to the technique that owns this pass.</param>
+        /// <param name="index">Index of this pass.</param>
+        private void Construct(Technique parent, int index) {
             this.parent = parent;
             this.index = index;
-            this.isProgrammable = isProgrammable;
 
             // color defaults
             ambient = ColorEx.FromColor(System.Drawing.Color.White);
@@ -254,12 +235,6 @@ namespace Axiom.Graphics
             maxAniso = MaterialManager.Instance.DefaultAnisotropy;
             isDefaultFiltering = true;
             isDefaultAniso = true;
-
-            // initialize vertex and fragment program usage if necessary
-            if(isProgrammable) {
-                vertexProgramUsage = new GpuProgramUsage(GpuProgramType.Vertex, "");
-                fragmentProgramUsage = new GpuProgramUsage(GpuProgramType.Fragment, "");
-            }
         }
 		
 		#endregion
@@ -349,10 +324,12 @@ namespace Axiom.Graphics
             }
 
             // load programs
-            if(isProgrammable) {
+            if(this.HasVertexProgram) {
                 // load vertex program
                 vertexProgramUsage.Load();
+            }
 
+            if(this.HasFragmentProgram) {
                 // load vertex program
                 fragmentProgramUsage.Load();
             }
@@ -386,10 +363,10 @@ namespace Axiom.Graphics
             int count = NumTextureUnitStages;
 
             if(count > 0) {
-                hashCode += (((TextureUnitState)textureUnitStates[0]).TextureName.GetHashCode() % (2 ^ 14)) << 14;
+                hashCode += (((TextureUnitState)textureUnitStates[0]).TextureName.GetHashCode() % (1 << 14)) << 14;
             }
             if(count > 1) {
-                hashCode += (((TextureUnitState)textureUnitStates[0]).TextureName.GetHashCode() % (2 ^ 14));
+                hashCode += (((TextureUnitState)textureUnitStates[0]).TextureName.GetHashCode() % (1 << 14));
             }
         }
 
@@ -602,14 +579,14 @@ namespace Axiom.Graphics
         /// TODO: Verify indexing
         public Pass Split(int numUnits) {
             // can't split programmable passes
-            if(isProgrammable) {
-                throw new Exception("Programmable passes cannot be automatically split.  Define a fallback technique instead");
+            if(fragmentProgramUsage != null) {
+                throw new Exception("Passes with fragment programs cannot be automatically split.  Define a fallback technique instead");
             }
 
             if(textureUnitStates.Count > numUnits) {
                 int start = textureUnitStates.Count - numUnits;
 
-                Pass newPass = parent.CreatePass(false);
+                Pass newPass = parent.CreatePass();
 
                 // get a reference ot the texture unit state at the split position
                 TextureUnitState state = (TextureUnitState)textureUnitStates[start];
@@ -639,11 +616,6 @@ namespace Axiom.Graphics
             // load each texture unit state
             for(int i = 0; i < textureUnitStates.Count; i++) {
                 ((TextureUnitState)textureUnitStates[i]).Unload();
-            }
-
-            // load programs
-            if(isProgrammable) {
-                // TODO: Do what?
             }
         }
 
@@ -948,7 +920,7 @@ namespace Axiom.Graphics
         /// </remarks>
         public GpuProgram FragmentProgram {
             get {
-                Debug.Assert(isProgrammable, "This pass is not programmable!");
+                Debug.Assert(this.HasFragmentProgram, "This pass is not programmable!");
                 return fragmentProgramUsage.Program;
             }
         }
@@ -966,12 +938,27 @@ namespace Axiom.Graphics
         /// </remarks>
         public string FragmentProgramName {
             get {
-                Debug.Assert(isProgrammable, "This pass is not programmable!");
-                return fragmentProgramUsage.ProgramName;
+                // return blank if there is no fragment program in this pass
+                if(this.HasFragmentProgram) {
+                    return fragmentProgramUsage.ProgramName;
+                }
+                else {
+                    return String.Empty;
+                }
             }
             set {
-                Debug.Assert(isProgrammable, "This pass is not programmable!");
-                fragmentProgramUsage.ProgramName = value;
+                // turn off fragment programs when the name is set to null
+                if(value.Length == 0) {
+                    fragmentProgramUsage = null;
+                }
+                else {
+                    // create a new usage object
+                    if(!this.HasFragmentProgram) {
+                        fragmentProgramUsage = new GpuProgramUsage(GpuProgramType.Fragment);
+                    }
+
+                    fragmentProgramUsage.ProgramName = value;
+                }
             }
         }
 
@@ -985,12 +972,30 @@ namespace Axiom.Graphics
         /// </remarks>
         public GpuProgramParameters FragmentProgramParameters {
             get {
-                Debug.Assert(isProgrammable, "This pass is not programmable!");
+                Debug.Assert(this.HasFragmentProgram, "This pass is not programmable!");
                 return fragmentProgramUsage.Params;
             }
             set {
-                Debug.Assert(isProgrammable, "This pass is not programmable!");
+                Debug.Assert(this.HasFragmentProgram, "This pass is not programmable!");
                 fragmentProgramUsage.Params = value;
+            }
+        }
+
+        /// <summary>
+        ///    Returns true if this Pass uses the programmable fragment pipeline.
+        /// </summary>
+        public bool HasFragmentProgram {
+            get {
+                return fragmentProgramUsage != null;
+            }
+        }
+
+        /// <summary>
+        ///    Returns true if this Pass uses the programmable vertex pipeline.
+        /// </summary>
+        public bool HasVertexProgram {
+            get {
+                return vertexProgramUsage != null;
             }
         }
 
@@ -1013,14 +1018,11 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        ///    Returns true if this pass is programmable ie supports vertex and fragment programs.
+        ///    Returns true if this pass is programmable ie includes either a vertex or fragment program.
         /// </summary>
         public bool IsProgrammable {
             get {
-                return isProgrammable;
-            }
-            set {
-                isProgrammable = value;
+                return vertexProgramUsage != null || fragmentProgramUsage != null;
             }
         }
 
@@ -1196,7 +1198,7 @@ namespace Axiom.Graphics
         /// </remarks>
         public GpuProgram VertexProgram {
             get {
-                Debug.Assert(isProgrammable, "This pass is not programmable!");
+                Debug.Assert(this.HasVertexProgram, "This pass is not programmable!");
                 return vertexProgramUsage.Program;
             }
         }
@@ -1214,12 +1216,26 @@ namespace Axiom.Graphics
         /// </remarks>
         public string VertexProgramName {
             get {
-                Debug.Assert(isProgrammable, "This pass is not programmable!");
-                return vertexProgramUsage.ProgramName;
+                if(this.HasVertexProgram) {
+                    return vertexProgramUsage.ProgramName;
+                }
+                else {
+                    return String.Empty;
+                }
             }
             set {
-                Debug.Assert(isProgrammable, "This pass is not programmable!");
-                vertexProgramUsage.ProgramName = value;
+                // turn off vertex programs when the name is set to null
+                if(value.Length == 0) {
+                    vertexProgramUsage = null;
+                }
+                else {
+                    // create a new usage object
+                    if(!this.HasVertexProgram) {
+                        vertexProgramUsage = new GpuProgramUsage(GpuProgramType.Vertex);
+                    }
+
+                    vertexProgramUsage.ProgramName = value;
+                }
             }
         }
 
@@ -1233,11 +1249,11 @@ namespace Axiom.Graphics
         /// </remarks>
         public GpuProgramParameters VertexProgramParameters {
             get {
-                Debug.Assert(isProgrammable, "This pass is not programmable!");
+                Debug.Assert(this.HasVertexProgram, "This pass is not programmable!");
                 return vertexProgramUsage.Params;
             }
             set {
-                Debug.Assert(isProgrammable, "This pass is not programmable!");
+                Debug.Assert(this.HasVertexProgram, "This pass is not programmable!");
                 vertexProgramUsage.Params = value;
             }
         }

@@ -38,6 +38,7 @@ namespace RenderSystem_OpenGL {
         private static StringCollection extensionList;
         private static string glVersion;
         private static string vendor;
+        private static string videoCard;
 
         /// <summary>
         /// 
@@ -77,6 +78,7 @@ namespace RenderSystem_OpenGL {
 
                 // get the OpenGL version string and vendor name
                 glVersion = Gl.glGetString(Gl.GL_VERSION);
+                videoCard = Gl.glGetString(Gl.GL_RENDERER);
                 vendor = Gl.glGetString(Gl.GL_VENDOR);
 
                 // parse out the first piece of the vendor string if there are spaces in it
@@ -212,6 +214,13 @@ namespace RenderSystem_OpenGL {
             get { return vendor; }
         }
 
+        public static string VideoCard {
+            get { return videoCard; }
+        }
+
+        public static string Version {
+            get { return glVersion; }
+        }
     }
 
     /// <summary>

@@ -295,6 +295,25 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
+        ///    Returns true if this texture unit requires an updated view matrix
+        ///    to allow for proper texture matrix generation.
+        /// </summary>
+        public bool HasViewRelativeTexCoordGen {
+            get {
+                // TODO: Optimize this to hopefully eliminate the search every time
+                for(int i = 0; i < effectList.Count; i++) {
+                    TextureEffect effect = (TextureEffect)effectList[i];
+
+                    if(effect.subtype == (System.Enum)EnvironmentMap.Reflection) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        /// <summary>
         ///		Gets/Sets the name of the texture for this texture pass.
         /// </summary>
         /// <remarks>
@@ -429,6 +448,9 @@ namespace Axiom.Graphics
             set {
                 Debug.Assert(value < numFrames, "Cannot set the current frame of a texture layer to be greater than the number of frames in the layer.");
                 currentFrame = value;
+
+                // this will affect the passes hashcode because of the texture name change
+                parent.RecalculateHash();
             }
         }
 
@@ -952,7 +974,7 @@ namespace Axiom.Graphics
                 TextureEffect effect = new TextureEffect();
                 effect.type = TextureEffectType.EnvironmentMap;
                 effect.subtype = envMap;
-                AddEffect(ref effect);
+                AddEffect(effect);
             }
             else {
                 // remove it from the list
@@ -1045,7 +1067,7 @@ namespace Axiom.Graphics
             effect.arg2 = vSpeed;
 
             // add this effect to the list of effects for this texture stage.
-            AddEffect(ref effect);
+            AddEffect(effect);
         }
 
         /// <summary>
@@ -1062,7 +1084,7 @@ namespace Axiom.Graphics
             effect.type = TextureEffectType.Rotate;
             effect.arg1 = speed;
 
-            AddEffect(ref effect);
+            AddEffect(effect);
         }
 
         /// <summary>
@@ -1090,7 +1112,7 @@ namespace Axiom.Graphics
             effect.phase = phase;
             effect.amplitude = amplitude;
 
-            AddEffect(ref effect);
+            AddEffect(effect);
         }
 
         /// <summary>
@@ -1218,7 +1240,7 @@ namespace Axiom.Graphics
         ///    more intuitive specialized methods such as SetEnvironmentMap and SetScroll.
         /// </remarks>
         /// <param name="effect"></param>
-        public void AddEffect(ref TextureEffect effect) {
+        public void AddEffect(TextureEffect effect) {
             effect.controller = null;
 
             // these effects must be unique, so remove any existing
@@ -1296,7 +1318,7 @@ namespace Axiom.Graphics
         internal void Load() {
             // load all textures
             for(int i = 0; i < numFrames; i++) {
-                if(frames[i] != string.Empty) {
+                if(frames[i].Length > 0) {
                     try {
                         // ensure the texture is loaded
                         if(Is3D) {
@@ -1308,7 +1330,7 @@ namespace Axiom.Graphics
 
                         isBlank = false;
                     }
-                    catch(Exception ex) {
+                    catch(Exception) {
                         Trace.WriteLine(string.Format("Error loading texture {0}.  Layer will be left blank.", frames[i]));
                         isBlank = true;
                     }

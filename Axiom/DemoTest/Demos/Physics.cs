@@ -143,9 +143,10 @@ namespace Demos {
         /// </summary>
         /// <param name="sceneManager"></param>
         public Box(SceneManager sceneManager): base(sceneManager) {
-            entity = sceneMgr.CreateEntity("Box" + nextNum++, "cube.mesh");
+            sceneObject = sceneMgr.CreateEntity("Box" + nextNum++, "cube.mesh");
             node = (SceneNode)sceneMgr.RootSceneNode.CreateChild("BoxEntNode" + nextNum++);
-            node.AttachObject(entity);
+            node.AttachObject(sceneObject);
+            NotifySceneObject(sceneObject);
         }
     }
 }

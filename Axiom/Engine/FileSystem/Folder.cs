@@ -47,7 +47,7 @@ namespace Axiom.FileSystem {
 
         public override string[] GetFileNamesLike(string startPath, string pattern) {
             // replace with wildcard if empty
-            if(pattern == string.Empty)
+            if(pattern.Length == 0)
                 pattern = "*.*";
             // otherwise prefix with a star as a wildcard
             else if(pattern.IndexOf("*") == -1) {

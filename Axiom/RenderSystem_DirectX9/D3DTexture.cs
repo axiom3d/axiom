@@ -76,7 +76,9 @@ namespace RenderSystem_DirectX9 {
         ///		Gets the D3D Texture that is contained withing this Texture.
         /// </summary>
         public D3D.BaseTexture DXTexture {
-            get { return texture; }
+            get { 
+                return texture; 
+            }
         }
 
         #endregion
@@ -133,8 +135,14 @@ namespace RenderSystem_DirectX9 {
             if((pixFormat & PixelFormat.Alpha) > 0)
                 hasAlpha = true;
 		
+            D3D.Usage usage = Usage.Dynamic;
+
             // create the D3D Texture using D3DX, and auto gen mipmaps
-            texture = D3D.Texture.FromBitmap(device, image, Usage.Dynamic | Usage.AutoGenerateMipMap, Pool.Default);
+            if(CanAutoGenMipMaps(0, ResourceType.Textures, ChooseD3DFormat())) {
+                usage |= Usage.AutoGenerateMipMap;
+            }
+
+            texture = D3D.Texture.FromBitmap(device, image, usage, Pool.Default);
 
             // Get the surface to check it's dimensions
             D3D.Surface surface = ((D3D.Texture)texture).GetSurfaceLevel(0);
