@@ -101,6 +101,10 @@ namespace Axiom.Core {
         ///     Material to use when rendering this frustum.
         /// </summary>
         protected Material material;
+		/// <summary>
+		///		Frustum corners in world space.
+		/// </summary>
+		protected Vector3[] worldSpaceCorners = new Vector3[8];
 
         /** Temp coefficient values calculated from a frustum change,
             used when establishing the frustum planes when the view changes. */
@@ -680,6 +684,23 @@ namespace Axiom.Core {
                 this[FrustumPlane.Near].Normal = camDirection;
                 this[FrustumPlane.Near].D = -(distance + nearDistance);
 
+				// Update worldspace corners
+				Matrix4 eyeToWorld = viewMatrix.Inverse();
+				// Get worldspace frustum corners
+				float y = MathUtil.Tan(fieldOfView * 0.5f);
+				float x = aspectRatio * y;
+
+				// near
+				worldSpaceCorners[0] = eyeToWorld * new Vector3( x,  y, -nearDistance);
+				worldSpaceCorners[1] = eyeToWorld * new Vector3(-x,  y, -nearDistance);
+				worldSpaceCorners[2] = eyeToWorld * new Vector3(-x, -y, -nearDistance);
+				worldSpaceCorners[3] = eyeToWorld * new Vector3( x, -y, -nearDistance);
+				// far
+				worldSpaceCorners[4] = eyeToWorld * new Vector3( x,  y, -farDistance);
+				worldSpaceCorners[5] = eyeToWorld * new Vector3(-x,  y, -farDistance);
+				worldSpaceCorners[6] = eyeToWorld * new Vector3(-x, -y, -farDistance);
+				worldSpaceCorners[7] = eyeToWorld * new Vector3( x, -y, -farDistance);
+
                 // update since we have now recalculated everything
                 recalculateView = false;
             }
@@ -693,7 +714,11 @@ namespace Axiom.Core {
         ///		An indexer that accepts a FrustumPlane enum value and return the appropriate plane side of the Frustum.
         /// </summary>
         public Plane this[FrustumPlane plane] {
-            get {	
+            get {
+				// make any pending updates to the calculated frustum
+				// TODO: Was causing a stack overflow, revisit
+				//UpdateView();
+
                 // convert the incoming plan enum type to a int
                 int index = (int)plane;
 
@@ -839,6 +864,12 @@ namespace Axiom.Core {
                 }
             }
         }
+
+		public Vector3[] WorldSpaceCorners {
+			get {
+				return worldSpaceCorners;
+			}
+		}
 
         public float GetSquaredViewDepth(Camera camera) {
             if(parentNode != null) {

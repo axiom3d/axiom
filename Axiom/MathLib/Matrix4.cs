@@ -115,14 +115,18 @@ namespace Axiom.MathLib {
         ///    | 0,0,0,1 |
         /// </summary>
         public static Matrix4 Identity {
-            get { return identityMatrix; }
+            get { 
+				return identityMatrix; 
+			}
         }
 
         /// <summary>
         ///    Returns a matrix with all elements set to 0.
         /// </summary>
         public static Matrix4 Zero {
-            get { return zeroMatrix; }
+            get { 
+				return zeroMatrix; 
+			}
         }
 
         #endregion
