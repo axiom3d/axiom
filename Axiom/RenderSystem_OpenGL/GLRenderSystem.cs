@@ -975,82 +975,80 @@ namespace RenderSystem_OpenGL {
                 // get the type of this buffer
                 int type = GLHelper.ConvertEnum(element.Type);
 
-            //    unsafe {
-                    // set pointer usage based on the use of this buffer
-                    switch(element.Semantic) {
-                        case VertexElementSemantic.Position:
-                            // set the pointer data
-                            Gl.glVertexPointer(
-                                VertexElement.GetTypeCount(element.Type),
-                                type,
-                                vertexBuffer.VertexSize,
-                                bufferData);
+                // set pointer usage based on the use of this buffer
+                switch(element.Semantic) {
+                    case VertexElementSemantic.Position:
+                        // set the pointer data
+                        Gl.glVertexPointer(
+                            VertexElement.GetTypeCount(element.Type),
+                            type,
+                            vertexBuffer.VertexSize,
+                            bufferData);
 
-                            // enable the vertex array client state
-                            Gl.glEnableClientState(Gl.GL_VERTEX_ARRAY);
+                        // enable the vertex array client state
+                        Gl.glEnableClientState(Gl.GL_VERTEX_ARRAY);
 
-                            break;
+                        break;
 				
-                        case VertexElementSemantic.Normal:
-                            // set the pointer data
-                            Gl.glNormalPointer(
-                                type, 
-                                vertexBuffer.VertexSize,
-                                bufferData);
+                    case VertexElementSemantic.Normal:
+                        // set the pointer data
+                        Gl.glNormalPointer(
+                            type, 
+                            vertexBuffer.VertexSize,
+                            bufferData);
 
-                            // enable the normal array client state
-                            Gl.glEnableClientState(Gl.GL_NORMAL_ARRAY);
+                        // enable the normal array client state
+                        Gl.glEnableClientState(Gl.GL_NORMAL_ARRAY);
 
-                            break;
+                        break;
 				
-                        case VertexElementSemantic.Diffuse:
-                            // set the pointer data
-                            Gl.glColorPointer(
-                                4,
-                                type, 
-                                vertexBuffer.VertexSize,
-                                bufferData);
+                    case VertexElementSemantic.Diffuse:
+                        // set the pointer data
+                        Gl.glColorPointer(
+                            4,
+                            type, 
+                            vertexBuffer.VertexSize,
+                            bufferData);
 
-                            // enable the normal array client state
-                            Gl.glEnableClientState(Gl.GL_COLOR_ARRAY);
+                        // enable the normal array client state
+                        Gl.glEnableClientState(Gl.GL_COLOR_ARRAY);
 
-                            break;
+                        break;
 				
-                        case VertexElementSemantic.Specular:
-                            // TODO: Add glSecondaryColorPointer to CsGL
-                            break;
+                    case VertexElementSemantic.Specular:
+                        // TODO: Add glSecondaryColorPointer to CsGL
+                        break;
 
-                        case VertexElementSemantic.TexCoords:
-                            // this ignores vertex element index and sets tex array for each available texture unit
-                            // this allows for multitexturing on entities whose mesh only has a single set of tex coords
+                    case VertexElementSemantic.TexCoords:
+                        // this ignores vertex element index and sets tex array for each available texture unit
+                        // this allows for multitexturing on entities whose mesh only has a single set of tex coords
 
-                            for(int j = 0; j < caps.NumTextureUnits; j++) {
-                                // only set if this textures index if it is supposed to
-                                if(texCoordIndex[j] == element.Index) {
-                                    // set the current active texture unit
-                                    Gl.glClientActiveTextureARB(glClientActiveTextureARB, Gl.GL_TEXTURE0 + j); 
+                        for(int j = 0; j < caps.NumTextureUnits; j++) {
+                            // only set if this textures index if it is supposed to
+                            if(texCoordIndex[j] == element.Index) {
+                                // set the current active texture unit
+                                Gl.glClientActiveTextureARB(glClientActiveTextureARB, Gl.GL_TEXTURE0 + j); 
 
-                                    int tmp = Gl.glIsEnabled(Gl.GL_TEXTURE_2D);
+                                int tmp = Gl.glIsEnabled(Gl.GL_TEXTURE_2D);
 
-                                    if(Gl.glIsEnabled(Gl.GL_TEXTURE_2D) != 0) {
-                                        // set the tex coord pointer
-                                        Gl.glTexCoordPointer(
-                                            VertexElement.GetTypeCount(element.Type),
-                                            type,
-                                            vertexBuffer.VertexSize,
-                                            bufferData);
-                                    }
-
-                                    // enable texture coord state
-                                    Gl.glEnableClientState(Gl.GL_TEXTURE_COORD_ARRAY);
+                                if(Gl.glIsEnabled(Gl.GL_TEXTURE_2D) != 0) {
+                                    // set the tex coord pointer
+                                    Gl.glTexCoordPointer(
+                                        VertexElement.GetTypeCount(element.Type),
+                                        type,
+                                        vertexBuffer.VertexSize,
+                                        bufferData);
                                 }
-                            }
-                            break;
 
-                        default:
-                            break;
-                    } // switch
-               // } // unsafe
+                                // enable texture coord state
+                                Gl.glEnableClientState(Gl.GL_TEXTURE_COORD_ARRAY);
+                            }
+                        }
+                        break;
+
+                    default:
+                        break;
+                } // switch
             } // for
 
             // reset to texture unit 0
