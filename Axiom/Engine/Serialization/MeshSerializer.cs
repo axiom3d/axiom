@@ -41,7 +41,7 @@ namespace Axiom.Serialization {
 			// add the supported .mesh versions
 			implementations.Add("[MeshSerializer_v1.10]", new MeshSerializerImplv11());
 			implementations.Add("[MeshSerializer_v1.20]", new MeshSerializerImplv12());
-			implementations.Add(currentVersion, new MeshSerializerImpl());
+			//implementations.Add(currentVersion, new MeshSerializerImpl());
 		}
 
 		#endregion Constructor
