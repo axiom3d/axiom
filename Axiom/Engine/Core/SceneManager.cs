@@ -1731,8 +1731,8 @@ namespace Axiom.Core {
 			targetRenderSystem.SetSceneBlending(pass.SourceBlendFactor, pass.DestBlendFactor);
 
 			// set all required texture units for this pass, and disable ones not being used
-			for(int i = 0; i < targetRenderSystem.Caps.NumTextureUnits; i++) {
-				if(i < pass.NumTextureUnitStages) {
+            for (int i = 0; i < targetRenderSystem.Caps.NumTextureUnits; i++) {
+                if(i < pass.NumTextureUnitStages) {
 					TextureUnitState texUnit = pass.GetTextureUnitState(i);
 					targetRenderSystem.SetTextureUnit(i, texUnit);
 				}
@@ -4195,7 +4195,7 @@ namespace Axiom.Core {
 		/// <param name="position">The position at which to evaluate the list of lights</param>
 		/// <param name="radius">The bounding radius to test</param>
 		/// <param name="destList">List to be populated with ordered set of lights; will be cleared by this method before population.</param>
-		internal virtual void PopulateLightList(Vector3 position, float radius, LightList destList) {
+		protected internal virtual void PopulateLightList(Vector3 position, float radius, LightList destList) {
 			// Really basic trawl of the lights, then sort
 			// Subclasses could do something smarter
 			destList.Clear();
