@@ -29,7 +29,7 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using D3D = Microsoft.DirectX.Direct3D;
 
-namespace RenderSystem_DirectX9 {
+namespace Axiom.RenderSystems.DirectX9 {
     /// <summary>
     /// Summary description for D3DVideoMode.
     /// </summary>

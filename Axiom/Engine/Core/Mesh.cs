@@ -28,9 +28,11 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Configuration;
+using Axiom.Exceptions;
 using Axiom.MathLib;
 using Axiom.Serialization;
 using Axiom.Graphics;
@@ -245,7 +247,7 @@ namespace Axiom.Core {
         ///    Assigns a vertex to a bone with a given weight, for skeletal animation. 
         /// </summary>
         /// <remarks>
-        ///    This method is only valid after calling setSkeletonName.
+        ///    This method is only valid after setting SkeletonName.
         ///    You should not need to modify bone assignments during rendering (only the positions of bones) 
         ///    and the engine reserves the right to do some internal data reformatting of this information, 
         ///    depending on render system requirements.
@@ -254,6 +256,164 @@ namespace Axiom.Core {
         public void AddBoneAssignment(ref VertexBoneAssignment boneAssignment) {
             boneAssignmentList.Add(boneAssignment.vertexIndex, boneAssignment);
             boneAssignmentsOutOfDate = true;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        ///    Adapted from bump mapping tutorials at:
+        ///    http://www.paulsprojects.net/tutorials/simplebump/simplebump.html
+        ///    author : paul.baker@univ.ox.ac.uk
+        /// </remarks>
+        /// <param name="sourceTexCoordSet"></param>
+        /// <param name="destTexCoordSet"></param>
+        public void BuildTangentVectors(short sourceTexCoordSet, short destTexCoordSet) {
+            // temp data buffers
+            ushort[] vertIdx = new ushort[3];
+            Vector3[] vertPos = new Vector3[3];
+            float[] u = new float[3];
+            float[] v = new float[3];
+
+            // TODO: rename to NumSubMeshes?
+            int numSubMeshes = this.SubMeshCount;
+
+            unsafe {
+                // setup a new 3D tex coord buffer for every submesh
+                for(int i = 0; i < numSubMeshes; i++) {
+                    // the face indices buffer, read only
+                    ushort* pIdx = null;
+                    // pointer to 2D tex.coords, read only
+                    float* p2DTC = null;
+                    // pointer to 3D tex.coords, write/read (discard)
+                    float* p3DTC = null;
+                    // vertex position buffer, read only
+                    float* pVPos = null;
+
+                    SubMesh subMesh = GetSubMesh(i);
+
+                    // get index buffer pointer
+                    IndexData idxData = subMesh.indexData;
+                    HardwareIndexBuffer buffIdx = idxData.indexBuffer;
+                    IntPtr indices = buffIdx.Lock(BufferLocking.ReadOnly);
+                    pIdx = (ushort*)indices.ToPointer();
+
+                    // get vertex pointer
+                    VertexData vertexData;
+
+                    if(subMesh.useSharedVertices) {
+                        vertexData = sharedVertexData; 
+                    }
+                    else {
+                        vertexData = subMesh.vertexData;
+                    }
+
+                    VertexDeclaration decl = vertexData.vertexDeclaration;
+                    VertexBufferBinding binding = vertexData.vertexBufferBinding;
+
+                    // get a 3D tex coord buffer, creating one if it doesn't already exist
+                    HardwareVertexBuffer buff3D = GetTangentBuffer(vertexData, destTexCoordSet);
+
+                    // clear it out
+                    IntPtr texCoords3D = buff3D.Lock(BufferLocking.Discard);
+                    p3DTC = (float*)texCoords3D.ToPointer();
+
+                    // TODO: Create a memset like function
+                    for(int j = 0; j < buff3D.Size / Marshal.SizeOf(typeof(float)); j++) {
+                        p3DTC[j] = 0;
+                    } 
+
+                    VertexElement elem2DTC = decl.FindElementBySemantic(VertexElementSemantic.TexCoords, (ushort)sourceTexCoordSet);
+                    
+                    // make sure we have some 2D tex coords to deal with
+                    if(elem2DTC == null || elem2DTC.Type != VertexElementType.Float2) {
+                        // TODO: Add Name property to SubMesh
+                        throw new AxiomException("SubMesh '{0}' of Mesh '{1}' has no 2D texture coordinates.", "<FIXME>", this.name);
+                    }
+
+                    // get the 2D tex coord buffer
+                    HardwareVertexBuffer buff2D = binding.GetBuffer(elem2DTC.Source);
+                    IntPtr locked2DBuffer = buff2D.Lock(BufferLocking.ReadOnly);
+                    p2DTC = (float*)locked2DBuffer.ToPointer();
+
+                    // get the vertex position buffer
+                    VertexElement elemVPos = decl.FindElementBySemantic(VertexElementSemantic.Position);
+                    HardwareVertexBuffer buffVPos = binding.GetBuffer(elemVPos.Source);
+                    IntPtr lockedPosBuffer = buffVPos.Lock(BufferLocking.ReadOnly);
+                    pVPos = (float*)lockedPosBuffer.ToPointer();
+
+                    int numFaces = idxData.indexCount / 3;
+                    int vCount = 0;
+
+                    // loop through all faces to calculate the tangents
+                    for(int n = 0; n < numFaces; n++) {
+                        for(int a = 0; a < 3; a++) {
+                            // get indices of vertices that form a polygon in the position buffer
+                            vertIdx[a] = pIdx[vCount++];
+                            
+                            // get the vertex positions from the position buffer
+                            vertPos[a].x = pVPos[3 * vertIdx[a] + 0];
+                            vertPos[a].y = pVPos[3 * vertIdx[a] + 1];
+                            vertPos[a].z = pVPos[3 * vertIdx[a] + 2];
+
+                            // get the vertex tex coords from the 2D tex coord buffer
+                            u[a] = p2DTC[2 * vertIdx[a] + 0];
+                            v[a] = p2DTC[2 * vertIdx[a] + 1];
+                        } // for v = 1 to 3
+
+                        // calculate the tangent space vector
+                        Vector3 tangent = 
+                            MathUtil.CalculateTangentSpaceVector(
+                                vertPos[0], vertPos[1], vertPos[2],
+                                u[0], v[0], u[1], v[1], u[2], v[2]);
+
+                        //Console.WriteLine(string.Format("Indices {0} {1} {2}", vertIdx[0].ToString(), vertIdx[1].ToString(), vertIdx[2].ToString()));
+                        //Console.WriteLine("Tangent " + vCount.ToString() + ": " + tangent.ToString());
+
+                        if(float.IsNaN(tangent.x) || float.IsNaN(tangent.y) || float.IsNaN(tangent.z)) {
+                            string test = "";
+                        }
+
+                        // write the new tex coords
+                        // only tangent is written, the binormal should be derived in the vertex program
+                        for(int t = 0; t < 3; t++) {
+                            p3DTC[3 * vertIdx[t] + 0] += tangent.x;
+                            p3DTC[3 * vertIdx[t] + 1] += tangent.y;
+                            p3DTC[3 * vertIdx[t] + 2] += tangent.z;
+                        } // for v = 1 to 3
+                    } // for each face
+
+                    int numVerts = vertexData.vertexCount;
+                    
+                    // loop through and normalize all 3d tex coords
+                    for(int q = 0; q < numVerts * 3; q += 3) {
+                        // read the 3d tex coord
+                        Vector3 temp = new Vector3(p3DTC[q + 0], p3DTC[q + 1], p3DTC[q + 2]);
+
+                        // normalize the tex coord
+                        temp.Normalize();
+
+                        // write it back to the buffer
+                        p3DTC[q + 0] = temp.x;
+                        p3DTC[q + 1] = temp.y;
+                        p3DTC[q + 2] = temp.z;
+                    }
+
+                    // unlock all used buffers
+                    buff2D.Unlock();
+                    buff3D.Unlock();
+                    buffVPos.Unlock();
+                    buffIdx.Unlock();
+                } // for each subMesh
+            } // unsafe
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void BuildTangentVectors() {
+            // default using the first tex coord set and stuffing the tangent vectors in the 
+            BuildTangentVectors(0, 1);
         }
 
         /// <summary>
@@ -408,6 +568,55 @@ namespace Axiom.Core {
             }
 
             return usage;
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        /// <param name="vertexData"></param>
+        /// <param name="texCoordSet"></param>
+        /// <returns></returns>
+        public HardwareVertexBuffer GetTangentBuffer(VertexData vertexData, short texCoordSet) {
+            bool needsToBeCreated = false;
+
+            // grab refs to the declarations and bindings
+            VertexDeclaration decl = vertexData.vertexDeclaration;
+            VertexBufferBinding binding = vertexData.vertexBufferBinding;
+
+            // see if we already have a 3D tex coord buffer
+            VertexElement tex3d = decl.FindElementBySemantic(VertexElementSemantic.TexCoords, (ushort)texCoordSet);
+
+            if(tex3d == null) {
+                needsToBeCreated = true;
+            }
+            else if(tex3d.Type != VertexElementType.Float3) {
+                // TODO: Implement RemoveElement
+                // decl.RemoveElement(VertexElementSemantic.TexCoords, texCoordSet);
+                binding.UnsetBinding(tex3d.Source);
+
+                needsToBeCreated = true;
+            }
+
+            HardwareVertexBuffer buff3D;
+                
+            if(needsToBeCreated) {
+                // create the 3D tex coord buffer
+                buff3D = HardwareBufferManager.Instance.CreateVertexBuffer(
+                    3 * Marshal.SizeOf(typeof(float)),
+                    vertexData.vertexCount,
+                    BufferUsage.DynamicWriteOnly,
+                    true);
+
+                // bind the new buffer accordingly
+                ushort source = (ushort)(binding.NextIndex + 1);
+                binding.SetBinding(source, buff3D);
+                decl.AddElement(new VertexElement(source, 0, VertexElementType.Float3, VertexElementSemantic.TexCoords, (ushort)texCoordSet));
+            }
+            else {
+                buff3D = binding.GetBuffer(tex3d.Source);
+            }
+
+            return buff3D;
         }
 
         /// <summary>

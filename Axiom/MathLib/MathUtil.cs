@@ -90,6 +90,62 @@ namespace Axiom.MathLib {
         }
 
         /// <summary>
+        ///    Calculates the tangent space vector for a given set of positions / texture coords.
+        /// </summary>
+        /// <remarks>
+        ///    Adapted from bump mapping tutorials at:
+        ///    http://www.paulsprojects.net/tutorials/simplebump/simplebump.html
+        ///    author : paul.baker@univ.ox.ac.uk
+        /// </remarks>
+        /// <param name="position1"></param>
+        /// <param name="position2"></param>
+        /// <param name="position3"></param>
+        /// <param name="u1"></param>
+        /// <param name="v1"></param>
+        /// <param name="u2"></param>
+        /// <param name="v2"></param>
+        /// <param name="u3"></param>
+        /// <param name="v3"></param>
+        /// <returns></returns>
+        public static Vector3 CalculateTangentSpaceVector(
+            Vector3 position1, Vector3 position2, Vector3 position3, float u1, float v1, float u2, float v2, float u3, float v3) {
+
+            // side0 is the vector along one side of the triangle of vertices passed in, 
+            // and side1 is the vector along another side. Taking the cross product of these returns the normal.
+            Vector3 side0 = position1 - position2;
+            Vector3 side1 = position3 - position1;
+            // Calculate face normal
+            Vector3 normal = side1.Cross(side0);
+            normal.Normalize();
+
+            // Now we use a formula to calculate the tangent. 
+            float deltaV0 = v1 - v2;
+            float deltaV1 = v3 - v1;
+            Vector3 tangent = deltaV1 * side0 - deltaV0 * side1;
+            tangent.Normalize();
+
+            // Calculate binormal
+            float deltaU0 = u1 - u2;
+            float deltaU1 = u3 - u1;
+            Vector3 binormal = deltaU1 * side0 - deltaU0 * side1;
+            binormal.Normalize();
+
+            // Now, we take the cross product of the tangents to get a vector which 
+            // should point in the same direction as our normal calculated above. 
+            // If it points in the opposite direction (the dot product between the normals is less than zero), 
+            // then we need to reverse the s and t tangents. 
+            // This is because the triangle has been mirrored when going from tangent space to object space.
+            // reverse tangents if necessary.
+            Vector3 tangentCross = tangent.Cross(binormal);
+            if (tangentCross.Dot(normal) < 0.0f) {
+                tangent = -tangent;
+                binormal = -binormal;
+            }
+
+            return tangent;
+        }
+
+        /// <summary>
         ///		Returns the cosine of the angle.
         /// </summary>
         /// <param name="angle"></param>

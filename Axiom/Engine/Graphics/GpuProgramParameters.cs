@@ -304,13 +304,13 @@ namespace Axiom.Graphics
         #endregion
 
         /// <summary>
-        ///    Updates the automatic parameters based on the details provided.
+        ///    Updates the automatic parameters (except lights) based on the details provided.
         /// </summary>
         /// <param name="source">
         ///    A source containing all the updated data to be made available for auto updating
         ///    the GPU program constants.
         /// </param>
-        public void UpdateAutoParams(AutoParamDataSource source) {
+        public void UpdateAutoParamsNoLights(AutoParamDataSource source) {
             // return if no constants
             if(!this.HasAutoConstants) {
                 return;
@@ -356,6 +356,34 @@ namespace Axiom.Graphics
                         SetConstant(entry.index, source.AmbientLight);
                         break;
 
+                    case AutoConstants.CameraPositionObjectSpace:
+                        SetConstant(entry.index, source.CameraPositionObjectSpace);
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        ///    Updates the automatic light parameters based on the details provided.
+        /// </summary>
+        /// <param name="source">
+        ///    A source containing all the updated data to be made available for auto updating
+        ///    the GPU program constants.
+        /// </param>
+        public void UpdateAutoParamsLightsOnly(AutoParamDataSource source) {
+            // return if no constants
+            if(!this.HasAutoConstants) {
+                return;
+            }
+
+            // loop through and update all constants based on their type
+            for(int i = 0; i < autoConstantList.Count; i++) {
+                AutoConstantEntry entry = (AutoConstantEntry)autoConstantList[i];
+
+                Vector3 vec3;
+                Vector4 vec4 = new Vector4();
+
+                switch(entry.type) {
                     case AutoConstants.LightDiffuseColor:
                         SetConstant(entry.index, source.GetLight(entry.data).Diffuse);
                         break;
@@ -372,10 +400,6 @@ namespace Axiom.Graphics
                         vec3 = source.InverseWorldMatrix * source.GetLight(entry.data).DerivedDirection;
                         vec3.Normalize();
                         SetConstant(entry.index, new Vector4(vec3.x, vec3.y, vec3.z, 1.0f));
-                        break;
-
-                    case AutoConstants.CameraPositionObjectSpace:
-                        SetConstant(entry.index, source.CameraPositionObjectSpace);
                         break;
 
                     case AutoConstants.LightAttenuation:

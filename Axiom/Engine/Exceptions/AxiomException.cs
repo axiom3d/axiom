@@ -30,7 +30,7 @@ namespace Axiom.Exceptions {
     /// Summary description for AxiomException.
     /// </summary>
     public class AxiomException : ApplicationException {
-        public AxiomException(string message) : base(message) {
+        public AxiomException(string message, params object[] args) : base(string.Format(message, args)) {
         }
     }
 }

@@ -3,13 +3,13 @@
         ProjectType = "Local"
         ProductVersion = "7.10.3077"
         SchemaVersion = "2.0"
-        ProjectGuid = "{33DDA650-92ED-429F-8D2B-F4B9495454AF}"
+        ProjectGuid = "{76F1B76C-4CAC-704D-84BC-01A4E9E74CF8}"
     >
         <Build>
             <Settings
                 ApplicationIcon = ""
                 AssemblyKeyContainerName = ""
-                AssemblyName = "AxiomEngine"
+                AssemblyName = "Axiom"
                 AssemblyOriginatorKeyFile = ""
                 DefaultClientScript = "JScript"
                 DefaultHTMLPageLayout = "Grid"
@@ -18,7 +18,7 @@
                 OutputType = "Library"
                 PreBuildEvent = ""
                 PostBuildEvent = ""
-                RootNamespace = "Axiom"
+                RootNamespace = "Engine"
                 RunPostBuildEvent = "OnBuildSuccess"
                 StartupObject = ""
             >
@@ -28,7 +28,7 @@
                     BaseAddress = "285212672"
                     CheckForOverflowUnderflow = "false"
                     ConfigurationOverrideFile = ""
-                    DefineConstants = "DEBUG;TRACE"
+                    DefineConstants = "TRACE"
                     DocumentationFile = ""
                     DebugSymbols = "true"
                     FileAlignment = "4096"
@@ -52,7 +52,7 @@
                     DocumentationFile = ""
                     DebugSymbols = "false"
                     FileAlignment = "4096"
-                    IncrementalBuild = "false"
+                    IncrementalBuild = "true"
                     NoStdLib = "false"
                     NoWarn = ""
                     Optimize = "true"
@@ -62,62 +62,36 @@
                     TreatWarningsAsErrors = "false"
                     WarningLevel = "4"
                 />
-                <Config
-                    Name = "EngineDebug"
-                    AllowUnsafeBlocks = "true"
-                    BaseAddress = "285212672"
-                    CheckForOverflowUnderflow = "false"
-                    ConfigurationOverrideFile = ""
-                    DefineConstants = "DEBUG;TRACE"
-                    DocumentationFile = "EngineDocs.xml"
-                    DebugSymbols = "true"
-                    FileAlignment = "4096"
-                    IncrementalBuild = "false"
-                    NoStdLib = "false"
-                    NoWarn = ""
-                    Optimize = "false"
-                    OutputPath = "bin\Debug\"
-                    RegisterForComInterop = "false"
-                    RemoveIntegerChecks = "false"
-                    TreatWarningsAsErrors = "false"
-                    WarningLevel = "0"
-                />
             </Settings>
             <References>
                 <Reference
                     Name = "System"
                     AssemblyName = "System"
-                    HintPath = "D:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.dll"
                 />
                 <Reference
                     Name = "System.Data"
                     AssemblyName = "System.Data"
-                    HintPath = "D:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Data.dll"
                 />
                 <Reference
-                    Name = "System.XML"
+                    Name = "System.Xml"
                     AssemblyName = "System.Xml"
-                    HintPath = "D:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.XML.dll"
-                />
-                <Reference
-                    Name = "System.Windows.Forms"
-                    AssemblyName = "System.Windows.Forms"
-                    HintPath = "D:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Windows.Forms.dll"
                 />
                 <Reference
                     Name = "System.Drawing"
                     AssemblyName = "System.Drawing"
-                    HintPath = "D:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Drawing.dll"
+                />
+                <Reference
+                    Name = "System.Windows.Forms"
+                    AssemblyName = "System.Windows.Forms"
                 />
                 <Reference
                     Name = "MathLib"
-                    Project = "{5E33B605-D629-4AD1-B99E-EF852BE0E107}"
+                    Project = "{E6AC8079-93CC-1444-AD68-C09835E5682D}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
                     Name = "ICSharpCode.SharpZipLib"
                     AssemblyName = "ICSharpCode.SharpZipLib"
-                    HintPath = "..\Solution Items\ICSharpCode.SharpZipLib.dll"
                 />
             </References>
         </Build>
@@ -299,27 +273,9 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Configuration\EngineConfig.xml"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "Configuration\EngineConfig.xsd"
-                    BuildAction = "Content"
-                    Generator = "MSDataSetGenerator"
-                    LastGenOutput = "EngineConfig.cs"
-                />
-                <File
                     RelPath = "Configuration\EngineConfig.cs"
-                    DependentUpon = "EngineConfig.xsd"
-                    SubType = "code"
+                    SubType = "Code"
                     BuildAction = "Compile"
-                    DesignTime = "True"
-                    AutoGen = "True"
-                />
-                <File
-                    RelPath = "Configuration\EngineConfig.xsx"
-                    DependentUpon = "EngineConfig.xsd"
-                    BuildAction = "None"
                 />
                 <File
                     RelPath = "Controllers\BaseControllerFunction.cs"
@@ -427,7 +383,17 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Core\IPlatformManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Core\IPlugin.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Core\ITimer.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -458,6 +424,16 @@
                 />
                 <File
                     RelPath = "Core\Plane.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Core\PlatformManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Core\PluginManager.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -532,22 +508,22 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "EventSystem\.#IKeyTarget.removed.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "EventSystem\.#IMouseTarget.removed.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "EventSystem\.#IScriptTarget.removed.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "EventSystem\EventProcessor.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EventSystem\IKeyTarget.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EventSystem\IMouseTarget.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EventSystem\IScriptTarget.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -792,7 +768,17 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Input\InputSystem.cs"
+                    RelPath = "Input\IInputReader.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Media\CodecManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Media\ICodec.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -828,11 +814,6 @@
                 />
                 <File
                     RelPath = "ParticleSystems\ParticleSystemManager.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Patterns\IObjectFactory.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -907,38 +888,18 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Utility\.#HighResolutionTimer.removed.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Utility\ConfigDialog.cs"
                     SubType = "Form"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Utility\ConfigDialog.resx"
-                    DependentUpon = "ConfigDialog.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Utility\DebugWindow.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Utility\DebugWindow.resx"
-                    DependentUpon = "DebugWindow.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
                     RelPath = "Utility\DefaultForm.cs"
                     SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Utility\DefaultForm.resx"
-                    DependentUpon = "DefaultForm.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Utility\HighResolutionTimer.cs"
-                    SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File

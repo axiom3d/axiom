@@ -36,7 +36,7 @@ using Axiom.MathLib;
 
 namespace Axiom.Graphics {
     /// <summary>
-    /// Defines the functionality of a 3D API
+    ///    Defines the functionality of a 3D API
     /// </summary>
     ///	<remarks>
     ///		The RenderSystem class provides a base class
@@ -53,7 +53,6 @@ namespace Axiom.Graphics {
     ///		methods are marked as internal, and are not accessible outside
     ///		of the Core library.
     ///	</remarks>
-    // INC: In progress
     public abstract class RenderSystem : IDisposable {
         #region Member variables
 
@@ -123,36 +122,48 @@ namespace Axiom.Graphics {
         /// before drawing the next frame.
         /// </summary>
         public bool IsVSync {
-            get { return this.isVSync; }
-            set { this.isVSync = value; }
+            get { 
+                return isVSync; 
+            }
+            set { 
+                isVSync = value; 
+            }
         }
 
         /// <summary>
         ///		Gets a set of hardware capabilities queryed by the current render system.
         /// </summary>
         public HardwareCaps Caps {
-            get { return caps; }
+            get { 
+                return caps; 
+            }
         }
 
         /// <summary>
         /// Gets a dataset with the options set for the rendering system.
         /// </summary>
         public EngineConfig ConfigOptions {
-            get { return this.engineConfig; }
+            get { 
+                return this.engineConfig; 
+            }
         }
 
         /// <summary>
         /// Gets a collection of the RenderSystems list of RenderWindows.
         /// </summary>
         public RenderWindowCollection RenderWindows {
-            get { return this.renderWindows; }
+            get { 
+                return this.renderWindows; 
+            }
         }
 
         /// <summary>
         /// 
         /// </summary>
         public int FacesRendered {
-            get { return numFaces; }
+            get { 
+                return numFaces; 
+            }
         }
 
         #endregion
@@ -175,22 +186,26 @@ namespace Axiom.Graphics {
         public abstract Shading ShadingMode { set; }
 
         /// <summary>
-        ///		Sets the type of texture filtering used when rendering
-        ///	</summary>
-        ///	<remarks>
-        ///		This method sets the kind of texture filtering applied when rendering textures onto
-        ///		primitives. Filtering covers how the effects of minification and magnification are
-        ///		disguised by resampling.
-        /// </remarks>
-        public abstract TextureFiltering TextureFiltering { set; }
-
-        /// <summary>
         ///		Sets whether or not dynamic lighting is enabled.
         ///		<p/>
         ///		If true, dynamic lighting is performed on geometry with normals supplied, geometry without
         ///		normals will not be displayed. If false, no lighting is applied and all geometry will be full brightness.
         /// </summary>
         public abstract bool LightingEnabled { set; }
+
+        /// <summary>
+        ///    Sets whether or not normals are to be automatically normalized.
+        /// </summary>
+        /// <remarks>
+        ///    This is useful when, for example, you are scaling SceneNodes such that
+        ///    normals may not be unit-length anymore. Note though that this has an
+        ///    overhead so should not be turn on unless you really need it.
+        ///    <p/>
+        ///    You should not normally call this direct unless you are rendering
+        ///    world geometry; set it on the Renderable because otherwise it will be
+        ///    overridden by material settings. 
+        /// </remarks>
+        public abstract bool NormalizeNormals { set; }
 
         /// <summary>
         ///		Turns stencil buffer checking on or off. 
@@ -277,22 +292,33 @@ namespace Axiom.Graphics {
 
         #region Abstract methods
 
-        /// <summary>
-        /// Creates a new rendering window.
-        /// </summary>
-        /// <remarks>
-        ///	This method creates a new rendering window as specified
-        ///	by the paramteters. The rendering system could be
-        ///	responible for only a single window (e.g. in the case
-        ///	of a game), or could be in charge of multiple ones (in the
-        ///	case of a level editor). The option to create the window
-        ///	as a child of another is therefore given.
-        ///	This method will create an appropriate subclass of
-        /// RenderWindow depending on the API and platform implementation.
-        /// </remarks>
-        /// <returns></returns>
-        public abstract RenderWindow CreateRenderWindow(string name, System.Windows.Forms.Control target, int width, int height, int colorDepth,
-            bool isFullscreen, int left, int top, bool depthBuffer, RenderWindow parent);
+		/// <summary>
+		///		Creates a new render window.
+		/// </summary>
+		/// <remarks>
+		///		This method creates a new rendering window as specified
+		///		by the paramteters. The rendering system could be
+		///		responible for only a single window (e.g. in the case
+		///		of a game), or could be in charge of multiple ones (in the
+		///		case of a level editor). The option to create the window
+		///		as a child of another is therefore given.
+		///		This method will create an appropriate subclass of
+		///		RenderWindow depending on the API and platform implementation.
+		/// </remarks>
+		/// <param name="name"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="colorDepth"></param>
+		/// <param name="isFullscreen"></param>
+		/// <param name="left"></param>
+		/// <param name="top"></param>
+		/// <param name="depthBuffer"></param>
+		/// <param name="target">
+		///		A handle to a pre-created window to be used for the rendering target.
+		///	</param>
+		/// <returns></returns>
+        public abstract RenderWindow CreateRenderWindow(string name, int width, int height, int colorDepth,
+            bool isFullscreen, int left, int top, bool depthBuffer, object target);
 
         /// <summary>
         ///		Builds a perspective projection matrix suitable for this render system.
@@ -302,12 +328,32 @@ namespace Axiom.Graphics {
         ///		projection matrix, this method allows each to implement their own correctly and pass
         ///		back a generic Matrix3 for storage in the engine.
         ///	 </remarks>
-        /// <param name="fov"></param>
-        /// <param name="aspectRatio"></param>
-        /// <param name="near"></param>
-        /// <param name="far"></param>
+        /// <param name="fov">Field of view angle.</param>
+        /// <param name="aspectRatio">Aspect ratio.</param>
+        /// <param name="near">Near clipping plane distance.</param>
+        /// <param name="far">Far clipping plane distance.</param>
+        /// <param name="forGpuProgram"></param>
         /// <returns></returns>
-        public abstract Matrix4 MakeProjectionMatrix(float fov, float aspectRatio, float near, float far);
+        public abstract Matrix4 MakeProjectionMatrix(float fov, float aspectRatio, float near, float far, bool forGpuProgram);
+
+        /// <summary>
+        ///		Builds a perspective projection matrix suitable for this render system.
+        /// </summary>
+        /// <remarks>
+        ///		Because different APIs have different requirements (some incompatible) for the
+        ///		projection matrix, this method allows each to implement their own correctly and pass
+        ///		back a generic Matrix3 for storage in the engine.
+        ///	 </remarks>
+        /// <param name="fov">Field of view angle.</param>
+        /// <param name="aspectRatio">Aspect ratio.</param>
+        /// <param name="near">Near clipping plane distance.</param>
+        /// <param name="far">Far clipping plane distance.</param>
+        /// <param name="forGpuProgram"></param>
+        /// <returns></returns>
+        public Matrix4 MakeProjectionMatrix(float fov, float aspectRatio, float near, float far) {
+            // create without consideration for Gpu programs by default
+            return MakeProjectionMatrix(fov, aspectRatio, near, far, false);
+        }
 
         /// <summary>
         /// 
@@ -315,7 +361,22 @@ namespace Axiom.Graphics {
         /// <param name="stage"></param>
         /// <param name="func"></param>
         /// <param name="val"></param>
-        internal protected abstract void SetAlphaRejectSettings(int stage, CompareFunction func, byte val);
+        protected internal abstract void SetAlphaRejectSettings(int stage, CompareFunction func, byte val);
+
+        /// <summary>
+        ///    Sets whether or not color buffer writing is enabled, and for which channels. 
+        /// </summary>
+        /// <remarks>
+        ///    For some advanced effects, you may wish to turn off the writing of certain color
+        ///    channels, or even all of the color channels so that only the depth buffer is updated
+        ///    in a rendering pass. However, the chances are that you really want to use this option
+        ///    through the Material class.
+        /// </remarks>
+        /// <param name="red">Writing enabled for red channel.</param>
+        /// <param name="green">Writing enabled for green channel.</param>
+        /// <param name="blue">Writing enabled for blue channel.</param>
+        /// <param name="alpha">Writing enabled for alpha channel.</param>
+        protected internal abstract void SetColorBufferWriteEnabled(bool red, bool green, bool blue, bool alpha);
 
         /// <summary>
         ///		Sets the fog with the given params.
@@ -325,10 +386,10 @@ namespace Axiom.Graphics {
         /// <param name="density"></param>
         /// <param name="start"></param>
         /// <param name="end"></param>
-        abstract internal protected void SetFog(FogMode mode, ColorEx color, float density, float start, float end);
+        protected abstract internal void SetFog(FogMode mode, ColorEx color, float density, float start, float end);
 
         /// <summary>
-        ///		Converts the System.Drawing.Color value to a uint.  Each API may need the 
+        ///		Converts the System.Drawing.Color value to a int.  Each API may need the 
         ///		bytes of the packed color data in different orders. i.e. OpenGL - ABGR, D3D - ARGB
         /// </summary>
         /// <param name="color"></param>
@@ -344,7 +405,7 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="src">The source factor in the above calculation, i.e. multiplied by the texture color components.</param>
         /// <param name="dest">The destination factor in the above calculation, i.e. multiplied by the pixel color components.</param>
-        abstract internal protected void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest);
+        protected abstract internal void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest);
 
         /// <summary>
         ///		Sets the surface parameters to be used during rendering an object.
@@ -354,14 +415,14 @@ namespace Axiom.Graphics {
         /// <param name="specular"></param>
         /// <param name="emissive"></param>
         /// <param name="shininess"></param>
-        abstract internal protected void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess);
+        protected abstract internal void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess);
 
         /// <summary>
         ///		Tells the hardware how to treat texture coordinates.
         /// </summary>
         /// <param name="stage"></param>
         /// <param name="texAddressingMode"></param>
-        abstract internal protected void SetTextureAddressingMode(int stage, TextureAddressing texAddressingMode);
+        protected abstract internal void SetTextureAddressingMode(int stage, TextureAddressing texAddressingMode);
 
         /// <summary>
         ///    Tells the rendersystem to use the attached set of lights (and no others) 
@@ -536,42 +597,42 @@ namespace Axiom.Graphics {
         /// <summary>
         /// 
         /// </summary>
-        abstract protected internal bool DepthWrite { set; }
+        protected abstract internal bool DepthWrite { set; }
 
         /// <summary>
         /// 
         /// </summary>
-        abstract protected internal bool DepthCheck { set; }
+        protected abstract internal bool DepthCheck { set; }
 
         /// <summary>
         /// 
         /// </summary>
-        abstract protected internal CompareFunction DepthFunction { set; }
+        protected abstract internal CompareFunction DepthFunction { set; }
 
         /// <summary>
         /// 
         /// </summary>
-        abstract protected internal int DepthBias { set; }
+        protected abstract internal int DepthBias { set; }
 
         /// <summary>Sets the current view matrix.</summary>
-        abstract protected internal Matrix4 ViewMatrix	{ set; }
+        protected abstract internal Matrix4 ViewMatrix	{ set; }
 
         /// <summary>Sets the current world matrix.</summary>
-        abstract protected internal Matrix4 WorldMatrix { set; }
+        protected abstract internal Matrix4 WorldMatrix { set; }
 
         /// <summary>Sets the current projection matrix.</summary>
-        abstract protected internal Matrix4 ProjectionMatrix { set; }
+        protected abstract internal Matrix4 ProjectionMatrix { set; }
 
         /// <summary>
         ///		Sets how to rasterise triangles, as points, wireframe or solid polys.
         /// </summary>
-        abstract protected internal SceneDetailLevel RasterizationMode { set; }
+        protected abstract internal SceneDetailLevel RasterizationMode { set; }
 
         /// <summary>
         ///		Signifies the beginning of a frame, ie the start of rendering on a single viewport. Will occur
         ///		several times per complete frame if multiple viewports exist.
         /// </summary>
-        abstract protected internal void BeginFrame();
+        protected abstract internal void BeginFrame();
 
         /// <summary>
         ///    Binds a given GpuProgram (but not the parameters). 
@@ -598,7 +659,7 @@ namespace Axiom.Graphics {
         /// <summary>
         ///		Ends rendering of a frame to the current viewport.
         /// </summary>
-        abstract protected internal void EndFrame();
+        protected abstract internal void EndFrame();
 
         /// <summary>
         ///		Sets the details of a texture stage, to be used for all primitives
@@ -613,35 +674,63 @@ namespace Axiom.Graphics {
         /// <param name="enabled">Boolean to turn the unit on/off</param>
         /// <param name="textureName">The name of the texture to use - this should have
         ///		already been loaded with TextureManager.Load.</param>
-        abstract protected internal void SetTexture(int stage, bool enabled, string textureName);
+        protected abstract internal void SetTexture(int stage, bool enabled, string textureName);
 
         /// <summary>
         ///		Sets a method for automatically calculating texture coordinates for a stage.
         /// </summary>
         /// <param name="stage">Texture stage to modify.</param>
         /// <param name="method">Calculation method to use</param>
-        abstract protected internal void SetTextureCoordCalculation(int stage, TexCoordCalcMethod method);
+        protected abstract internal void SetTextureCoordCalculation(int stage, TexCoordCalcMethod method);
 
         /// <summary>
         ///		Sets the index into the set of tex coords that will be currently used by the render system.
         /// </summary>
         /// <param name="stage"></param>
         /// <param name="index"></param>
-        abstract protected internal void SetTextureCoordSet(int stage, int index);
+        protected abstract internal void SetTextureCoordSet(int stage, int index);
 
         /// <summary>
-        ///		Sets the filtering level to use for textures in the specified unit.
+        ///    Sets the filtering options for a given texture unit.
         /// </summary>
-        /// <param name="stage"></param>
-        /// <param name="index"></param>
-        abstract protected internal void SetTextureLayerFiltering(int stage, TextureFiltering filtering);
+        /// <param name="unit">
+        ///    The texture unit to set the filtering options for.
+        /// </param>
+        /// <param name="minFilter">
+        ///    The filter used when a texture is reduced in size.
+        /// </param>
+        /// <param name="magFilter">
+        ///    The filter used when a texture is magnified.
+        /// </param>
+        /// <param name="mipFilter">
+        ///    The filter used between mipmap levels, FilterOptions.None disables mipmapping
+        /// </param>
+        protected void SetTextureUnitFiltering(int unit, FilterOptions minFilter, FilterOptions magFilter, FilterOptions mipFilter) {
+            SetTextureUnitFiltering(unit, FilterType.Min, minFilter);
+            SetTextureUnitFiltering(unit, FilterType.Mag, magFilter);
+            SetTextureUnitFiltering(unit, FilterType.Mip, mipFilter);
+        }
+
+        /// <summary>
+        ///    Sets a single filter for a given texture unit.
+        /// </summary>
+        /// <param name="unit">
+        ///    The texture unit to set the filtering options for.
+        /// </param>
+        /// <param name="type">
+        ///    The filter type.
+        /// </param>
+        /// <param name="filter">
+        ///    The filter to be used.
+        /// </param>
+        protected abstract void SetTextureUnitFiltering(int unit, FilterType type, FilterOptions filter);
 
         /// <summary>
         ///		Sets the maximal anisotropy for the specified texture unit.
         /// </summary>
         /// <param name="stage"></param>
         /// <param name="index">maxAnisotropy</param>
-        abstract protected internal void SetTextureLayerAnisotropy(int stage, int maxAnisotropy);
+        protected abstract internal void SetTextureLayerAnisotropy(int stage, int maxAnisotropy);
 
         /// <summary>
         ///		Sets the texture matrix for the specified stage.  Used to apply rotations, translations,
@@ -649,13 +738,13 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="stage"></param>
         /// <param name="xform"></param>
-        abstract protected internal void SetTextureMatrix(int stage, Matrix4 xform);
+        protected abstract internal void SetTextureMatrix(int stage, Matrix4 xform);
 
         /// <summary>
         ///		Sets the current viewport that will be rendered to.
         /// </summary>
         /// <param name="viewport"></param>
-        abstract protected internal void SetViewport(Viewport viewport);
+        protected abstract internal void SetViewport(Viewport viewport);
 
         /// <summary>
         /// 
@@ -723,55 +812,58 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="textureUnit">Index of the texture unit to configure</param>
         /// <param name="layer">Reference to a TextureLayer object which defines all the settings.</param>
-        protected virtual internal void SetTextureUnit(int stage, TextureUnitState layer) {
+        protected virtual internal void SetTextureUnit(int unit, TextureUnitState unitState) {
             // set the texture if it is different from the current
-            SetTexture(stage, true, layer.TextureName);
+            SetTexture(unit, true, unitState.TextureName);
 
             // Tex Coord Set
-            SetTextureCoordSet(stage, layer.TextureCoordSet);
+            SetTextureCoordSet(unit, unitState.TextureCoordSet);
 
             // Texture layer filtering
-            SetTextureLayerFiltering(stage, layer.TextureFiltering);
+            SetTextureUnitFiltering(
+                unit, 
+                unitState.GetTextureFiltering(FilterType.Min),
+                unitState.GetTextureFiltering(FilterType.Mag),
+                unitState.GetTextureFiltering(FilterType.Mip));
 
             // Texture layer anistropy
-            SetTextureLayerAnisotropy(stage, layer.TextureAnisotropy);
+            SetTextureLayerAnisotropy(unit, unitState.TextureAnisotropy);
 
             // set the texture blending mode
-            SetTextureBlendMode(stage, layer.ColorBlendMode);
+            SetTextureBlendMode(unit, unitState.ColorBlendMode);
 
             // set the texture blending mode
-            SetTextureBlendMode(stage, layer.AlphaBlendMode);
+            SetTextureBlendMode(unit, unitState.AlphaBlendMode);
 
             // this must always be set for OpenGL.  DX9 will ignore dupe render states like this (observed in the
             // output window when debugging with high verbosity), so there is no harm
-            SetTextureAddressingMode(stage, layer.TextureAddressing);
+            SetTextureAddressingMode(unit, unitState.TextureAddressing);
 
             bool anyCalcs = false;
 
-            for(int i = 0; i < layer.NumEffects; i++) {
-                TextureEffect effect = layer.GetEffect(i);
+            for(int i = 0; i < unitState.NumEffects; i++) {
+                TextureEffect effect = unitState.GetEffect(i);
 
                 switch(effect.type) {
                     case TextureEffectType.EnvironmentMap:
                         if((EnvironmentMap)effect.subtype == EnvironmentMap.Curved) {
-                            SetTextureCoordCalculation(stage, TexCoordCalcMethod.EnvironmentMap);
+                            SetTextureCoordCalculation(unit, TexCoordCalcMethod.EnvironmentMap);
                             anyCalcs = true;
                         }
                         else if((EnvironmentMap)effect.subtype == EnvironmentMap.Planar) {
-                            SetTextureCoordCalculation(stage, TexCoordCalcMethod.EnvironmentMapPlanar);
+                            SetTextureCoordCalculation(unit, TexCoordCalcMethod.EnvironmentMapPlanar);
                             anyCalcs = true;
                         }
                         else if((EnvironmentMap)effect.subtype == EnvironmentMap.Reflection) {
-                            SetTextureCoordCalculation(stage, TexCoordCalcMethod.EnvironmentMapReflection);
+                            SetTextureCoordCalculation(unit, TexCoordCalcMethod.EnvironmentMapReflection);
                             anyCalcs = true;
                         }
                         else if((EnvironmentMap)effect.subtype == EnvironmentMap.Normal) {
-                            SetTextureCoordCalculation(stage, TexCoordCalcMethod.EnvironmentMapNormal);
+                            SetTextureCoordCalculation(unit, TexCoordCalcMethod.EnvironmentMapNormal);
                             anyCalcs = true;
                         }
                         break;
 
-                    case TextureEffectType.BumpMap:
                     case TextureEffectType.Scroll:
                     case TextureEffectType.Rotate:
                     case TextureEffectType.Transform:
@@ -781,15 +873,15 @@ namespace Axiom.Graphics {
 
             // Ensure any previous texcoord calc settings are reset if there are now none
             if(!anyCalcs) {
-                SetTextureCoordCalculation(stage, TexCoordCalcMethod.None);
-                SetTextureCoordSet(stage, layer.TextureCoordSet);
+                SetTextureCoordCalculation(unit, TexCoordCalcMethod.None);
+                SetTextureCoordSet(unit, unitState.TextureCoordSet);
             }
 
             // set the texture matrix to that of the current layer for any transformations
-            SetTextureMatrix(stage, layer.TextureMatrix);
+            SetTextureMatrix(unit, unitState.TextureMatrix);
 
             // set alpha rejection
-            SetAlphaRejectSettings(stage, layer.AlphaRejectFunction, layer.AlphaRejectValue);
+            SetAlphaRejectSettings(unit, unitState.AlphaRejectFunction, unitState.AlphaRejectValue);
         }
 
         /// <summary>
@@ -799,14 +891,14 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="stage">Texture unit.</param>
         /// <param name="blendMode">Details of the blending modes.</param>
-        public abstract void SetTextureBlendMode(int stage, LayerBlendModeEx blendMode);
+        public abstract void SetTextureBlendMode(int unit, LayerBlendModeEx blendMode);
 
         /// <summary>
         ///		Turns off a texture unit if not needed.
         /// </summary>
         /// <param name="textureUnit"></param>
-        protected virtual internal void DisableTextureUnit(int textureUnit) {
-            SetTexture(textureUnit, false, "");
+        protected virtual internal void DisableTextureUnit(int unit) {
+            SetTexture(unit, false, "");
         }
 
         /// <summary>

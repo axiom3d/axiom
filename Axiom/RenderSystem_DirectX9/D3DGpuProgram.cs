@@ -34,13 +34,11 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using D3D = Microsoft.DirectX.Direct3D;
 
-namespace RenderSystem_DirectX9
-{
+namespace Axiom.RenderSystems.DirectX9 {
 	/// <summary>
 	/// 	Direct3D implementation of a few things common to low-level vertex & fragment programs
 	/// </summary>
-	public abstract class D3DGpuProgram : GpuProgram
-	{
+	public abstract class D3DGpuProgram : GpuProgram {
         /// <summary>
         ///    Reference to the current D3D device object.
         /// </summary>

@@ -25,7 +25,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using System.Drawing.Text;
 using Axiom.Core;
 using Axiom.Exceptions;
 
@@ -36,24 +35,23 @@ namespace Axiom.Fonts {
     public class FontManager : ResourceManager {
         #region Singleton implementation
 
-        static FontManager() { Init(); }
+		private static FontManager instance;
+        
+		static FontManager() { 
+			Init(); 
+		}
+
         private FontManager() {}
-        private static FontManager instance;
 
         public static FontManager Instance {
-            get { return instance; }
+            get { 
+				return instance; 
+			}
         }
 
         public static void Init() {
             instance = new FontManager();
         }
-		
-        #endregion
-
-        #region Member variables
-
-        /// <summary>Local list of manually loaded TrueType fonts.</summary>
-        protected PrivateFontCollection fontList = new PrivateFontCollection();
 		
         #endregion
 
@@ -79,6 +77,5 @@ namespace Axiom.Fonts {
         }
 
         #endregion
-
     }
 }

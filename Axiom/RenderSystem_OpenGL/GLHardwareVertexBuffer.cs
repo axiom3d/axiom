@@ -28,9 +28,8 @@ using System;
 using System.Runtime.InteropServices;
 using Axiom.Graphics;
 using Tao.OpenGl;
-using Tao.Platform.Windows;
 
-namespace RenderSystem_OpenGL {
+namespace Axiom.RenderSystems.OpenGL {
     /// <summary>
     /// 	Summary description for GLHardwareVertexBuffer.
     /// </summary>
@@ -39,8 +38,6 @@ namespace RenderSystem_OpenGL {
 
         /// <summary>Saves the GL buffer ID for this buffer.</summary>
         private int bufferID;
-
-        static IntPtr glBufferSubDataARB = Wgl.wglGetProcAddress("glBufferSubDataARB");
 		
         #endregion
 		

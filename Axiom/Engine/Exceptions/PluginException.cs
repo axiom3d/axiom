@@ -30,8 +30,8 @@ namespace Axiom.Exceptions {
     /// <summary>
     /// Summary description for PluginException.
     /// </summary>
-    public class PluginException : ApplicationException {
-        public PluginException(string message) : base(message) {
+    public class PluginException : AxiomException {
+        public PluginException(string message, params object[] args) : base(string.Format(message, args)) {
         }
     }
 }

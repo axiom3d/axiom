@@ -100,7 +100,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///    List of lights that are in the scene and near the current renderable.
         /// </summary>
-        protected LightList lightList = new LightList();
+        protected LightList currentLightList = new LightList();
         /// <summary>
         ///    Blank light to use when a higher index light is requested than is available.
         /// </summary>
@@ -113,7 +113,6 @@ namespace Axiom.Graphics
         protected bool inverseWorldViewMatrixDirty;
         protected bool inverseViewMatrixDirty;
         protected bool cameraPositionObjectSpaceDirty;
-        protected bool lightListDirty;
 
 		#endregion Fields
 		
@@ -130,7 +129,6 @@ namespace Axiom.Graphics
             inverseWorldViewMatrixDirty = true;
             inverseViewMatrixDirty = true;
             cameraPositionObjectSpaceDirty = true;
-            lightListDirty = true;
 
             // defaults for the blank light
             blankLight.Diffuse = ColorEx.Black;
@@ -148,17 +146,19 @@ namespace Axiom.Graphics
         /// <param name="index">Ordinal value signifying the light to retreive, with 0 being closest, 1 being next closest, etc.</param>
         /// <returns>A light located near the current renderable.</returns>
         public Light GetLight(int index) {
-            if(lightListDirty) {
-                lightList = renderable.Lights;
-                lightListDirty = false;
-            }
-
-            if(lightList.Count <= index) {
+            if(currentLightList.Count <= index) {
                 return blankLight;
             }
             else {
-                return lightList[index];
+                return currentLightList[index];
             }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        public void SetCurrentLightList(LightList lightList) {
+            currentLightList = lightList;
         }
 
 		#endregion
@@ -182,7 +182,6 @@ namespace Axiom.Graphics
                 inverseWorldMatrixDirty = true;
                 inverseViewMatrixDirty = true;
                 cameraPositionObjectSpaceDirty = true;
-                lightListDirty = true;
             }
 		}
 

@@ -3,7 +3,7 @@
         ProjectType = "Local"
         ProductVersion = "7.10.3077"
         SchemaVersion = "2.0"
-        ProjectGuid = "{B683B6E1-1729-D142-B55B-07CD593946BA}"
+        ProjectGuid = "{850FEFAE-B5D6-D044-9E87-A30351FEA9FB}"
     >
         <Build>
             <Settings
@@ -78,7 +78,7 @@
                 />
                 <Reference
                     Name = "Engine"
-                    Project = "{36FEE5C9-B105-6442-A6B9-48B999F66155}"
+                    Project = "{76F1B76C-4CAC-704D-84BC-01A4E9E74CF8}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference

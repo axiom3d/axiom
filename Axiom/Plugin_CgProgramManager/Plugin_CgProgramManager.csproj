@@ -3,13 +3,13 @@
         ProjectType = "Local"
         ProductVersion = "7.10.3077"
         SchemaVersion = "2.0"
-        ProjectGuid = "{D61C988B-DECE-491C-965B-296EA135D68E}"
+        ProjectGuid = "{B00EF0A6-6B6B-384C-B1DD-FD8CDB5078EA}"
     >
         <Build>
             <Settings
                 ApplicationIcon = ""
                 AssemblyKeyContainerName = ""
-                AssemblyName = "Plugin_CgProgramManager"
+                AssemblyName = "Axiom.CgPrograms"
                 AssemblyOriginatorKeyFile = ""
                 DefaultClientScript = "JScript"
                 DefaultHTMLPageLayout = "Grid"
@@ -28,11 +28,11 @@
                     BaseAddress = "285212672"
                     CheckForOverflowUnderflow = "false"
                     ConfigurationOverrideFile = ""
-                    DefineConstants = "DEBUG;TRACE"
+                    DefineConstants = "TRACE"
                     DocumentationFile = ""
                     DebugSymbols = "true"
                     FileAlignment = "4096"
-                    IncrementalBuild = "false"
+                    IncrementalBuild = "true"
                     NoStdLib = "false"
                     NoWarn = ""
                     Optimize = "false"
@@ -52,7 +52,7 @@
                     DocumentationFile = ""
                     DebugSymbols = "false"
                     FileAlignment = "4096"
-                    IncrementalBuild = "false"
+                    IncrementalBuild = "true"
                     NoStdLib = "false"
                     NoWarn = ""
                     Optimize = "true"
@@ -67,27 +67,15 @@
                 <Reference
                     Name = "System"
                     AssemblyName = "System"
-                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.dll"
-                />
-                <Reference
-                    Name = "System.Data"
-                    AssemblyName = "System.Data"
-                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Data.dll"
-                />
-                <Reference
-                    Name = "System.XML"
-                    AssemblyName = "System.XML"
-                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.XML.dll"
                 />
                 <Reference
                     Name = "Engine"
-                    Project = "{33DDA650-92ED-429F-8D2B-F4B9495454AF}"
+                    Project = "{76F1B76C-4CAC-704D-84BC-01A4E9E74CF8}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
                     Name = "Tao.Cg"
                     AssemblyName = "Tao.Cg"
-                    HintPath = "..\Solution Items\Tao.Cg.dll"
                 />
             </References>
         </Build>

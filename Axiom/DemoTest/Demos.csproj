@@ -110,49 +110,54 @@
                     HintPath = "D:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.XML.dll"
                 />
                 <Reference
+                    Name = "Tao.Platform.Windows"
+                    AssemblyName = "Tao.Platform.Windows"
+                    HintPath = "..\Solution Items\Tao.Platform.Windows.dll"
+                />
+                <Reference
+                    Name = "DynamicsSystem_ODE"
+                    Project = "{54AE5D74-A7F0-C94A-BDEF-E42370057D3A}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
+                <Reference
                     Name = "Engine"
-                    Project = "{33DDA650-92ED-429F-8D2B-F4B9495454AF}"
+                    Project = "{76F1B76C-4CAC-704D-84BC-01A4E9E74CF8}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
                     Name = "MathLib"
-                    Project = "{5E33B605-D629-4AD1-B99E-EF852BE0E107}"
+                    Project = "{E6AC8079-93CC-1444-AD68-C09835E5682D}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
-                    Name = "RenderSystem_OpenGL"
-                    Project = "{25A4B73D-B0B3-445D-AE0D-DD0EA9320197}"
+                    Name = "ParticleFX"
+                    Project = "{56143703-9EB1-D340-BF1F-953D247DCC4C}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
-                    Name = "DynamicsSystem_ODE"
-                    Project = "{550EAA92-9CAC-4B19-B54B-762989B7A983}"
+                    Name = "PlatformManager_Win32"
+                    Project = "{850FEFAE-B5D6-D044-9E87-A30351FEA9FB}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
-                    Name = "AxiomParticleFX"
-                    Project = "{9C504B43-E58E-4915-8336-E005C6500797}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
-                />
-                <Reference
-                    Name = "RenderSystem_DirectX9"
-                    Project = "{875E732D-8A8A-4AA0-AFCC-54E001805A10}"
+                    Name = "Plugin_CgProgramManager"
+                    Project = "{B00EF0A6-6B6B-384C-B1DD-FD8CDB5078EA}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
                     Name = "Plugin_GuiElements"
-                    Project = "{A70A137F-FD72-4045-BBC4-1171B9E828A2}"
+                    Project = "{822F6913-8806-CC44-8C27-CFAEDDE5CE23}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
-                    Name = "InputSystem_DInput"
-                    Project = "{FDAF263D-095D-4217-AC87-3F1B20A49146}"
+                    Name = "RenderSystem_DirectX9"
+                    Project = "{638E4832-A3D7-1E45-B78B-8D9D65119F1F}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
-                    Name = "Tao.Platform.Windows"
-                    AssemblyName = "Tao.Platform.Windows"
-                    HintPath = "..\Solution Items\Tao.Platform.Windows.dll"
+                    Name = "RenderSystem_OpenGL"
+                    Project = "{968EF85F-6D75-5F42-AC43-FA7395FFB0D0}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
             </References>
         </Build>

@@ -2,13 +2,11 @@ using System;
 using System.Text;
 using Tao.Cg;
 
-namespace Plugin_CgProgramManager
-{
+namespace Axiom.CgPrograms {
 	/// <summary>
 	/// 	Helper class with common methods for use in the Cg plugin.
 	/// </summary>
-	public class CgHelper
-	{
+	public class CgHelper {
         /// <summary>
         ///    Used to check for a recent Cg error and handle it accordingly.
         /// </summary>

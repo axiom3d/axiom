@@ -28,13 +28,11 @@ using System;
 using Axiom.Core;
 using Axiom.Graphics;
 
-namespace RenderSystem_OpenGL
-{
+namespace Axiom.RenderSystems.OpenGL {
 	/// <summary>
 	/// 	Summary description for GLGpuProgramManager.
 	/// </summary>
-	public class GLGpuProgramManager : GpuProgramManager
-	{	
+	public class GLGpuProgramManager : GpuProgramManager {	
 		public GLGpuProgramManager() : base() {
 		}
 

@@ -97,13 +97,9 @@ namespace Axiom.Graphics
         /// </summary>
         private bool isBlank;
         /// <summary>
-        ///    Flags whether this layer is cubic texture.
+        ///    Is this a series of 6 2D textures to make up a cube?
         /// </summary>
         private bool isCubic;
-        /// <summary>
-        ///    Flags whether this is a 3 dimensional texture.
-        /// </summary>
-        private bool is3D;
         /// <summary>
         ///    Number of frames for this layer.
         /// </summary>
@@ -154,9 +150,21 @@ namespace Axiom.Graphics
         /// </summary>
         private ArrayList effectList = new ArrayList();
         /// <summary>
-        ///    Texture filtering mode to use for this stage.
+        ///    Type of texture this is.
         /// </summary>
-        private TextureFiltering texFiltering;
+        private TextureType textureType;
+        /// <summary>
+        ///    Texture filtering - minification.
+        /// </summary>
+        private FilterOptions minFilter;
+        /// <summary>
+        ///    Texture filtering - magnification.
+        /// </summary>
+        private FilterOptions magFilter;
+        /// <summary>
+        ///    Texture filtering - mipmapping.
+        /// </summary>
+        private FilterOptions mipFilter;
         /// <summary>
         ///    Anisotropy setting for this stage.
         /// </summary>
@@ -207,8 +215,9 @@ namespace Axiom.Graphics
         protected void Construct(Pass parent, string textureName, int texCoordSet) {
             this.parent = parent;
             // texture params
-            TextureName = textureName;
-            TextureCoordSet = texCoordSet;
+            SetTextureName(textureName);
+
+            this.TextureCoordSet = texCoordSet;
 
             isBlank = true;
 
@@ -223,7 +232,9 @@ namespace Axiom.Graphics
             alphaBlendMode.source2 = LayerBlendSource.Current;
 
             // default filtering and anisotropy
-            texFiltering = MaterialManager.Instance.DefaultTextureFiltering;
+            minFilter = FilterOptions.Linear;
+            magFilter = FilterOptions.Linear;
+            mipFilter = FilterOptions.Point;
             maxAnisotropy = MaterialManager.Instance.DefaultAnisotropy;
 
             // texture modification params
@@ -234,6 +245,7 @@ namespace Axiom.Graphics
             texMatrix = Matrix4.Identity;
             alphaRejectFunction = CompareFunction.AlwaysPass;
             alphaRejectValue = 0;
+            textureType = TextureType.TwoD;
         }
 
         #endregion
@@ -327,24 +339,14 @@ namespace Axiom.Graphics
             get { 
                 return frames[currentFrame]; 
             }
-            set { 
-                frames[0] = value; 
-                numFrames = 1;
-                currentFrame = 0;
-                isCubic = false;
-				
-                if(value.Length == 0) {
-                    isBlank = true;
-                    return;
-                }
+        }
 
-                if(this.IsLoaded) {
-                    // reload
-                    Load();
-
-                    // tell parent to recalc hash (for sorting)
-                    parent.RecalculateHash();
-                }
+        /// <summary>
+        ///    Gets the type of texture this unit has.
+        /// </summary>
+        public TextureType TextureType {
+            get {
+                return textureType;
             }
         }
 
@@ -379,21 +381,6 @@ namespace Axiom.Graphics
             }
             set { 
                 texAddressingMode = value; 
-            }
-        }
-
-        /// <summary>
-        ///		Get/Set the texture filtering mode for this layer.
-        /// </summary>
-        /// <remarks>
-        ///    This option applies in both the fixed function and the programmable pipeline.
-        /// </remarks>
-        public TextureFiltering TextureFiltering {
-            get { 
-                return texFiltering; 
-            }
-            set { 
-                texFiltering = value; 
             }
         }
 
@@ -467,7 +454,9 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        ///    Returns true if this layer is a cubic texture.
+        ///    Returns true if this texture unit is either a series of 6 2D textures, each 
+        ///    in it's own frame, or is a full 3D cube map. You can tell which by checking 
+        ///    TextureType. 
         /// </summary>
         /// <remarks>
         ///    Applies to both fixed-function and programmable pipeline.
@@ -486,7 +475,7 @@ namespace Axiom.Graphics
         /// </remarks>
         public bool Is3D {
             get {
-                return is3D;
+                return textureType == TextureType.CubeMap;
             }
         }
 
@@ -703,7 +692,7 @@ namespace Axiom.Graphics
         ///    <p/>
         ///    Cubic maps can be used either for skyboxes (complete wrap-around skies, like space) or as environment
         ///    maps to simulate reflections. The system deals with these 2 scenarios in different ways:
-        ///    <ol>
+        ///    <ul>
         ///    <li>
         ///    <p>
         ///    For cubic environment maps, the 6 textures are combined into a single 'cubic' texture map which
@@ -746,7 +735,7 @@ namespace Axiom.Graphics
             numFrames = forUVW ? 1 : 6;
             currentFrame = 0;
             isCubic = true;
-            is3D = forUVW;
+            textureType = forUVW ? TextureType.CubeMap : TextureType.TwoD;
 
             for(int i = 0; i < numFrames; i++) {
                 frames[i] = textureNames[i];
@@ -991,6 +980,27 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
+        ///    Gets the texture filtering for the given type.
+        /// </summary>
+        /// <param name="type">Type of filtering options to retreive.</param>
+        /// <returns></returns>
+        public FilterOptions GetTextureFiltering(FilterType type) {
+            switch(type) {
+                case FilterType.Min:
+                    return minFilter;
+
+                case FilterType.Mag:
+                    return magFilter;
+
+                case FilterType.Mip:
+                    return mipFilter;
+            }
+
+            // should never get here, but makes the compiler happy
+            return 0;
+        }
+
+        /// <summary>
         ///    Sets the way the layer will have use alpha to totally reject pixels from the pipeline.
         /// </summary>
         /// <remarks>
@@ -1154,6 +1164,128 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
+        ///    Set the texture filtering for this unit, using the simplified interface.
+        /// </summary>
+        /// <remarks>
+        ///    You also have the option of specifying the minification, magnification 
+        ///    and mip filter individually if you want more control over filtering 
+        ///    options. See the SetTextureFiltering overloads for details. 
+        ///    <p/>
+        ///    Note: This option applies in both the fixed function and programmable pipeline.
+        /// </remarks>
+        /// <param name="filter">
+        ///    The high-level filter type to use.
+        /// </param>
+        public void SetTextureFiltering(TextureFiltering filter) {
+            switch(filter) {
+                case TextureFiltering.None:
+                    SetTextureFiltering(FilterOptions.Point, FilterOptions.Point, FilterOptions.None);
+                    break;
+
+                case TextureFiltering.Bilinear:
+                    SetTextureFiltering(FilterOptions.Linear, FilterOptions.Linear, FilterOptions.Point);
+                    break;
+
+                case TextureFiltering.Trilinear:
+                    SetTextureFiltering(FilterOptions.Linear, FilterOptions.Linear, FilterOptions.Linear);
+                    break;
+
+                case TextureFiltering.Anisotropic:
+                    SetTextureFiltering(FilterOptions.Anisotropic, FilterOptions.Anisotropic, FilterOptions.Linear);
+                    break;
+            }
+        }
+
+        /// <summary>
+        ///    Set a single filtering option on this texture unit.
+        /// </summary>
+        /// <param name="type">
+        ///    The filtering type to set.
+        /// </param>
+        /// <param name="options">
+        ///    The filtering options to set.
+        /// </param>
+        public void SetTextureFiltering(FilterType type, FilterOptions options) {
+            switch(type) {
+                case FilterType.Min:
+                    minFilter = options;
+                    break;
+
+                case FilterType.Mag:
+                    magFilter = options;
+                    break;
+
+                case FilterType.Mip:
+                    mipFilter = options;
+                    break;
+            }
+        }
+
+        /// <summary>
+        ///    Set a the detailed filtering options on this texture unit.
+        /// </summary>
+        /// <param name="minFilter">
+        ///    The filtering to use when reducing the size of the texture. Can be Point, Linear or Anisotropic.
+        /// </param>
+        /// <param name="magFilter">
+        ///    The filtering to use when increasing the size of the texture. Can be Point, Linear or Anisotropic.
+        /// </param>
+        /// <param name="mipFilter">
+        ///    The filtering to use between mipmap levels. Can be None (no mipmap), Point or Linear (trilinear).
+        /// </param>
+        public void SetTextureFiltering(FilterOptions minFilter, FilterOptions magFilter, FilterOptions mipFilter) {
+            SetTextureFiltering(FilterType.Min, minFilter);
+            SetTextureFiltering(FilterType.Mag, magFilter);
+            SetTextureFiltering(FilterType.Mip, mipFilter);
+        }
+
+        /// <summary>
+        ///    Sets this texture layer to use a single texture, given the name of the texture to use on this layer.
+        /// </summary>
+        /// <remarks>
+        ///    Applies to both fixed-function and programmable pipeline.
+        /// </remarks>
+        /// <param name="name">Name of the texture.</param>
+        /// <param name="type">Type of texture this is.</param>
+        public void SetTextureName(string name, TextureType type) {
+            if(type == TextureType.CubeMap) {
+                // delegate to cube texture implementation
+                SetCubicTexture(name, true);
+            }
+            else {
+                frames[0] = name; 
+                numFrames = 1;
+                currentFrame = 0;
+                isCubic = false;
+                textureType = type;
+				
+                if(name.Length == 0) {
+                    isBlank = true;
+                    return;
+                }
+
+                if(this.IsLoaded) {
+                    // reload
+                    Load();
+
+                    // tell parent to recalc hash (for sorting)
+                    parent.RecalculateHash();
+                }
+            }
+        }
+
+        /// <summary>
+        ///    Sets this texture layer to use a single texture, given the name of the texture to use on this layer.
+        /// </summary>
+        /// <remarks>
+        ///    Applies to both fixed-function and programmable pipeline.
+        /// </remarks>
+        /// <param name="name">Name of the texture.</param>
+        public void SetTextureName(string name) {
+            SetTextureName(name, TextureType.TwoD);
+        }
+
+        /// <summary>
         ///    Sets the counter-clockwise rotation factor applied to texture coordinates.
         /// </summary>
         /// <remarks>
@@ -1212,8 +1344,8 @@ namespace Axiom.Graphics
                 // offset the center of rotation to the center of the texture
                 float cosThetaOff = cosTheta * -0.5f;
                 float sinThetaOff = sinTheta * -0.5f;
-                rotation.m02 = cosThetaOff - sinThetaOff;
-                rotation.m12 = sinThetaOff + cosThetaOff;
+                rotation.m02 = 0.5f + ((-0.5f * cosTheta) - (-0.5f * sinTheta));
+                rotation.m12 = 0.5f + ((-0.5f * sinTheta) + (-0.5f * cosTheta));
 
                 // multiply the rotation and transformation matrices
                 xform = xform * rotation;
@@ -1302,7 +1434,6 @@ namespace Axiom.Graphics
                     break;
 
                 case TextureEffectType.EnvironmentMap:
-                case TextureEffectType.BumpMap:
                     break;
             }
         }
@@ -1316,12 +1447,7 @@ namespace Axiom.Graphics
                 if(frames[i].Length > 0) {
                     try {
                         // ensure the texture is loaded
-                        if(Is3D) {
-                            TextureManager.Instance.Load(frames[i], TextureType.CubeMap);
-                        }
-                        else {
-                            TextureManager.Instance.Load(frames[i]);
-                        }
+                        TextureManager.Instance.Load(frames[i], textureType);
 
                         isBlank = false;
                     }

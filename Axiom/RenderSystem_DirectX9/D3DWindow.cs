@@ -32,7 +32,7 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using Direct3D = Microsoft.DirectX.Direct3D;
 
-namespace RenderSystem_DirectX9 {
+namespace Axiom.RenderSystems.DirectX9 {
     /// <summary>
     /// The Direct3D implementation of the RenderWindow class.
     /// </summary>
@@ -66,13 +66,12 @@ namespace RenderSystem_DirectX9 {
         /// <param name="depthBuffer"></param>height
         /// <param name="miscParams"></param>
         // TODO: Think about an overload for this that doesn't take a Control param.
-        public override void Create(string name, System.Windows.Forms.Control target, int width, int height, int colorDepth, bool isFullScreen, int left, int top, bool depthBuffer, params object[] miscParams) {
+        public override void Create(string name, int width, int height, int colorDepth, bool isFullScreen, int left, int top, bool depthBuffer, params object[] miscParams) {
             // mMiscParams[0] = Direct3D.Device
             // mMiscParams[1] = D3DRenderSystem.Driver
             // mMiscParams[2] = Axiom.Core.RenderWindow
 		
             Driver driver = null;
-            RenderWindow parent = null;
 
             /// get the Direct3D.Device params
             if(miscParams.Length > 0)
@@ -81,17 +80,6 @@ namespace RenderSystem_DirectX9 {
             /// get the D3DDriver params
             if(miscParams.Length > 1)
                 driver = (Driver)miscParams[1];
-
-            // get the parent window params
-            if(miscParams.Length > 2)
-                parent = (RenderWindow)miscParams[2];			
-
-            if(target is System.Windows.Forms.Form) {
-                System.Windows.Forms.Form form = target as System.Windows.Forms.Form;
-
-                //if(isFullScreen) 
-                //form.TopMost = true;
-            }
 			
             // set the params of the window
             // TODO: deal with depth buffer
@@ -102,7 +90,6 @@ namespace RenderSystem_DirectX9 {
             this.isFullScreen = isFullScreen;
             this.top = top;
             this.left = left;
-            this.control = target;
 
             // TODO: Make sure this is the right place to do it
             this.isActive = true;
@@ -126,17 +113,17 @@ namespace RenderSystem_DirectX9 {
         /// 
         /// </summary>
         public override void Destroy() {
-            // if the control is a form, then close it
-            if(control is System.Windows.Forms.Form) {
-                Form form = control as System.Windows.Forms.Form;
+//            // if the control is a form, then close it
+            if(targetHandle is System.Windows.Forms.Form) {
+                Form form = targetHandle as System.Windows.Forms.Form;
                 form.Close();
             }
-            else {
-                if(control.Parent != null) {
-                    Form form = (Form)control.Parent;
-                    form.Close();
-                }
-            }
+//            else {
+//                if(control.Parent != null) {
+//                    Form form = (Form)control.Parent;
+//                    form.Close();
+//                }
+//            }
 
             // make sure this window is no longer active
             this.isActive = false;
@@ -182,8 +169,12 @@ namespace RenderSystem_DirectX9 {
         /// 
         /// </summary>
         public override bool IsActive {
-            get { return isActive; }
-            set { isActive = value;	}
+            get { 
+				return isActive; 
+			}
+            set { 
+				isActive = value;	
+			}
         }
 
         /// <summary>
@@ -197,9 +188,16 @@ namespace RenderSystem_DirectX9 {
         }
 
         public override void SaveToFile(string file) {		
-            Surface surface = device.CreateOffscreenPlainSurface(this.width, this.height, Format.A8R8G8B8, Pool.SystemMemory);
+            Surface surface;
 
-            device.GetFrontBufferData(0, surface);
+            if(isFullScreen) {
+                surface = device.GetBackBuffer(0, 0, BackBufferType.Mono);
+            }
+            else {
+                // TODO: Does not work, so fix it :)
+                 surface = device.CreateOffscreenPlainSurface(this.width, this.height, Format.A8R8G8B8, Pool.SystemMemory);
+                device.GetFrontBufferData(0, surface);
+            }
 
             SurfaceLoader.Save(file, ImageFileFormat.Jpg, surface);
         }

@@ -26,7 +26,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
-using System.Drawing;
 using Axiom.Core;
 using Axiom.Fonts;
 using Axiom.Gui;
@@ -34,13 +33,11 @@ using Axiom.Scripting;
 using Axiom.Graphics;
 using Font = Axiom.Fonts.Font;
 
-namespace Plugin_GuiElements
-{
+namespace Axiom.Gui.Elements {
 	/// <summary>
 	/// 	Label type control that can be used to display text using a specified font.
 	/// </summary>
-	public class TextArea : GuiElement
-	{
+	public class TextArea : GuiElement {
 		#region Member variables
 		
         protected Font font;
@@ -287,6 +284,8 @@ namespace Plugin_GuiElements
                     left = this.DerivedLeft * 2.0f - 1.0f;
                     top -= charHeight * 2.0f;
                     newLine = true;
+					// reduce tri count
+					renderOp.vertexData.vertexCount -= 6;
                     continue;
                 }
 

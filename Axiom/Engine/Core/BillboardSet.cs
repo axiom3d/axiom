@@ -841,7 +841,15 @@ namespace Axiom.Core {
 	
         public override AxisAlignedBox BoundingBox {
             // cloning to prevent direct modification
-            get { return (AxisAlignedBox)aab.Clone(); }
+            get { 
+                return (AxisAlignedBox)aab.Clone(); 
+            }
+        }
+
+        public bool NormalizeNormals {
+            get {
+                return false;
+            }
         }
 	
         /// <summary>

@@ -157,24 +157,14 @@ namespace Axiom.Core {
                 switch(projectionType) {
                     case Projection.Perspective: {
 
-                        // recreate the projection matrix
+                        // PERSPECTIVE transform, API specific
                         projectionMatrix = Engine.Instance.RenderSystem.MakeProjectionMatrix(fieldOfView, aspectRatio, nearDistance, farDistance);
+
+                        // PERSPECTIVE transform, API specific for GPU programs
+                        standardProjMatrix = Engine.Instance.RenderSystem.MakeProjectionMatrix(fieldOfView, aspectRatio, nearDistance, farDistance, true);
 
                         float thetaY = MathUtil.DegreesToRadians(fieldOfView * 0.5f);
                         float tanThetaY = MathUtil.Tan(thetaY);
-
-                        // Calculate the standard projection matrix
-                        float w = (1.0f / tanThetaY) / aspectRatio;
-                        float h = 1.0f / tanThetaY;
-                        float q = -(farDistance + nearDistance) / (farDistance - nearDistance);
-                        float qn = -2 * (farDistance * nearDistance) / (farDistance - nearDistance);
-
-                        standardProjMatrix = Matrix4.Zero;
-                        standardProjMatrix.m00 = w;
-                        standardProjMatrix.m11 = h;
-                        standardProjMatrix.m22 = q;
-                        standardProjMatrix.m23 = qn;
-                        standardProjMatrix.m32 = -1;
 
                         // Calculate co-efficients for the frustum planes
                         // Special-cased for L = -R and B = -T i.e. viewport centered 
@@ -410,8 +400,12 @@ namespace Axiom.Core {
         /// </summary>
         /// <remarks>
         ///    This differs from the rendering-API dependent ProjectionMatrix
-        ///    in that it always returns the same result no matter what rendering API
-        ///    is being used.
+        ///    in that it always returns a right-handed projection matrix result 
+        ///    no matter what rendering API is being used - this is required for
+        ///    vertex and fragment programs for example. However, the resulting depth
+        ///    range may still vary between render systems since D3D uses [0,1] and 
+        ///    GL uses [-1,1], and the range must be kept the same between programmable
+        ///    and fixed-function pipelines.
         /// </remarks>
         public Matrix4 StandardProjectionMatrix {
             get {

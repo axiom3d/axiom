@@ -28,9 +28,8 @@ using System;
 using System.Runtime.InteropServices;
 using Axiom.Graphics;
 using Tao.OpenGl;
-using Tao.Platform.Windows;
 
-namespace RenderSystem_OpenGL {
+namespace Axiom.RenderSystems.OpenGL {
     /// <summary>
     /// 	Summary description for GLHardwareIndexBuffer.
     /// </summary>

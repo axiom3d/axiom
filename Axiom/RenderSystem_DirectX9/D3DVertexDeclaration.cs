@@ -29,7 +29,7 @@ using Microsoft.DirectX.Direct3D;
 using D3D = Microsoft.DirectX.Direct3D;
 using Axiom.Graphics;
 
-namespace RenderSystem_DirectX9 {
+namespace Axiom.RenderSystems.DirectX9 {
     /// <summary>
     /// 	Summary description for D3DVertexDeclaration.
     /// </summary>

@@ -4,8 +4,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Tao.Cg;
 
-namespace Plugin_CgProgramManager
-{
+namespace Axiom.CgPrograms {
 	/// <summary>
 	/// 	Specialization of HighLevelGpuProgram to provide support for nVidia's Cg language.
 	/// </summary>
@@ -193,11 +192,11 @@ namespace Plugin_CgProgramManager
             bool handled = true;
 
             switch(name) {
-                case "entry":
+                case "entry_point":
                     entry = val;
                     break;
                 
-                case "profile":
+                case "profiles":
                     profiles = val.Split(' ');
                     break;
 

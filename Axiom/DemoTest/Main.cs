@@ -39,7 +39,7 @@ namespace Demos {
                         Environment.Exit(-1);
                     }
                     else {
-                        Application.CurrentCulture = new System.Globalization.CultureInfo("");
+                        Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("");
                         Application.Run(new DemoBrowser());
                     }
                 }

@@ -32,7 +32,7 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using D3D = Microsoft.DirectX.Direct3D;
 
-namespace RenderSystem_DirectX9 {
+namespace Axiom.RenderSystems.DirectX9 {
     /// <summary>
     ///		Helper class for Direct3D that includes conversion functions and things that are
     ///		specific to D3D.
@@ -70,6 +70,109 @@ namespace RenderSystem_DirectX9 {
             }
 
             return driver;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="options"></param>
+        /// <param name="caps"></param>
+        /// <param name="texType"></param>
+        /// <returns></returns>
+        public static D3D.TextureFilter ConvertEnum(FilterType type, FilterOptions options, D3D.Caps devCaps, D3DTexType texType) {
+            // setting a default val here to keep compiler from complaining about using unassigned value types
+            D3D.FilterCaps filterCaps = devCaps.TextureFilterCaps;
+
+            switch(texType) {
+                case D3DTexType.Normal:
+                    filterCaps = devCaps.TextureFilterCaps;
+                    break;
+                case D3DTexType.Cube:
+                    filterCaps = devCaps.CubeTextureFilterCaps;
+                    break;
+                case D3DTexType.Volume:
+                    filterCaps = devCaps.VolumeTextureFilterCaps;
+                    break;
+            }
+
+            switch(type) {
+                case FilterType.Min: {
+                    switch(options) {
+                        case FilterOptions.Anisotropic:
+                            if(filterCaps.SupportsMinifyAnisotropic) {
+                                return D3D.TextureFilter.Anisotropic;
+                            }
+                            else {
+                                return D3D.TextureFilter.Linear;
+                            }
+
+                        case FilterOptions.Linear:
+                            if(filterCaps.SupportsMinifyLinear) {
+                                return D3D.TextureFilter.Linear;
+                            }
+                            else {
+                                return D3D.TextureFilter.Point;
+                            }
+
+                        case FilterOptions.Point:
+                        case FilterOptions.None:
+                            return D3D.TextureFilter.Point;
+                    }
+                    break;
+                }
+                case FilterType.Mag: {
+                    switch(options) {
+                        case FilterOptions.Anisotropic:
+                            if(filterCaps.SupportsMagnifyAnisotropic) {
+                                return D3D.TextureFilter.Anisotropic;
+                            }
+                            else {
+                                return D3D.TextureFilter.Linear;
+                            }
+
+                        case FilterOptions.Linear:
+                            if(filterCaps.SupportsMagnifyLinear) {
+                                return D3D.TextureFilter.Linear;
+                            }
+                            else {
+                                return D3D.TextureFilter.Point;
+                            }
+
+                        case FilterOptions.Point:
+                        case FilterOptions.None:
+                            return D3D.TextureFilter.Point;
+                    }
+                    break;
+                }
+                case FilterType.Mip: {
+                    switch(options) {
+                        case FilterOptions.Anisotropic:
+                        case FilterOptions.Linear:
+                            if(filterCaps.SupportsMipMapLinear) {
+                                return D3D.TextureFilter.Linear;
+                            }
+                            else {
+                                return D3D.TextureFilter.Point;
+                            }
+
+                        case FilterOptions.Point:
+                            if(filterCaps.SupportsMipMapPoint) {
+                                return D3D.TextureFilter.Point;
+                            }
+                            else {
+                                return D3D.TextureFilter.None;
+                            }
+
+                        case FilterOptions.None:
+                            return D3D.TextureFilter.None;
+                    }
+                    break;
+                }
+            }
+
+            // should never get here
+            return 0;
         }
 
         /// <summary>
@@ -350,6 +453,20 @@ namespace RenderSystem_DirectX9 {
             } // switch
 
             return 0;
+        }
+
+        public static D3DTexType ConvertEnum(TextureType type) {
+            switch(type) {
+                case TextureType.OneD:
+                case TextureType.TwoD:
+                    return D3DTexType.Normal;
+                case TextureType.CubeMap:
+                    return D3DTexType.Cube;
+                case TextureType.ThreeD:
+                    return D3DTexType.Volume;
+            }
+
+            return D3DTexType.None;
         }
 
         /// <summary>

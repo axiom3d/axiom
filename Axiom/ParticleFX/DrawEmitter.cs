@@ -4,13 +4,11 @@ using Axiom.MathLib;
 using Axiom.ParticleSystems;
 using Axiom.Scripting;
 
-namespace ParticleFX
-{
+namespace Axiom.ParticleFX {
 	/// <summary>
 	/// 	Summary description for DrawEmitter.
 	/// </summary>
-	public class DrawEmitter : ParticleEmitter
-	{
+	public class DrawEmitter : ParticleEmitter {
         protected float distance;
 
         #region Constructors

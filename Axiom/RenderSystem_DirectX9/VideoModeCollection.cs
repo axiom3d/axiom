@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 
-namespace RenderSystem_DirectX9 {
+namespace Axiom.RenderSystems.DirectX9 {
     /// <summary>
     /// Summary description for D3DVideoModeCollection.
     /// </summary>

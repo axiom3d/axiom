@@ -721,14 +721,14 @@ namespace Axiom.Core {
         /// Must be overridden in subclasses.  Specifies how a Node is created.  CreateChild uses this to create a new one and add it
         /// to the list of child nodes.  This allows subclasses to not have to override CreateChild and duplicate all its functionality.
         /// </summary>
-        abstract protected Node CreateChildImpl();
+        protected abstract Node CreateChildImpl();
 
         /// <summary>
         /// Must be overridden in subclasses.  Specifies how a Node is created.  CreateChild uses this to create a new one and add it
         /// to the list of child nodes.  This allows subclasses to not have to override CreateChild and duplicate all its functionality.
         /// </summary>
         /// <param name="name">The name of the node to add.</param>
-        abstract protected Node CreateChildImpl(string name);
+        protected abstract Node CreateChildImpl(string name);
 
         #endregion
 
@@ -926,6 +926,12 @@ namespace Axiom.Core {
                 }
 
                 return nodeMaterial;
+            }
+        }
+
+        public bool NormalizeNormals {
+            get {
+                return false;
             }
         }
 
