@@ -1254,39 +1254,39 @@ namespace Axiom.Graphics {
 		/// <summary>
 		///     Position, 3 reals per vertex.
 		/// </summary>
-		Position,
-		/// <summary>
-		///     Normal, 3 reals per vertex.
-		/// </summary>
-		Normal,
+		Position = 1,
 		/// <summary>
 		///     Blending weights.
 		/// </summary>
-		BlendWeights,
+		BlendWeights = 2,
 		/// <summary>
 		///     Blending indices.
 		/// </summary>
-		BlendIndices,
-		/// <summary>
+		BlendIndices = 3,
+        /// <summary>
+        ///     Normal, 3 reals per vertex.
+        /// </summary>
+        Normal = 4,
+        /// <summary>
 		///     Diffuse colors.
 		/// </summary>
-		Diffuse,
+		Diffuse = 5,
 		/// <summary>
 		///     Specular colors.
 		/// </summary>
-		Specular,
+		Specular = 6,
 		/// <summary>
 		///     Texture coordinates.
 		/// </summary>
-		TexCoords,
+		TexCoords = 7,
 		/// <summary>
 		///     Binormal (Y axis if normal is Z).
 		/// </summary>
-		Binormal,
+		Binormal = 8,
 		/// <summary>
 		///     Tangent (X axis if normal is Z).
 		/// </summary>
-		Tangent
+		Tangent = 9
 	}
 
 	/// <summary>

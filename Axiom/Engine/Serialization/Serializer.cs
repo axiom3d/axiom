@@ -120,7 +120,15 @@ namespace Axiom.Serialization {
 			return reader.ReadUInt32();
 		}
 
-		protected short ReadShort(BinaryReader reader) {
+        protected long ReadLong(BinaryReader reader) {
+            return reader.ReadInt64();
+        }
+
+        protected ulong ReadULong(BinaryReader reader) {
+            return reader.ReadUInt64();
+        }
+
+        protected short ReadShort(BinaryReader reader) {
 			return reader.ReadInt16();
 		}
 
@@ -217,7 +225,22 @@ namespace Axiom.Serialization {
 			return vector;
 		}
 
-		/// <summary>
+        /// <summary>
+        ///    Reads and returns a Vector4 structure.
+        /// </summary>
+        /// <returns></returns>
+        protected Vector4 ReadVector4(BinaryReader reader) {
+            Vector4 vector = new Vector4();
+
+            vector.x = ReadFloat(reader);
+            vector.y = ReadFloat(reader);
+            vector.z = ReadFloat(reader);
+            vector.w = ReadFloat(reader);
+
+            return vector;
+        }
+
+        /// <summary>
 		///		Reads a chunk ID and chunk size.
 		/// </summary>
 		/// <returns>The chunk ID at the current location.</returns>

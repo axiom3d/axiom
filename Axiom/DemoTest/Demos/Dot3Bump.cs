@@ -109,8 +109,12 @@ namespace Demos {
                     BufferUsage.StaticWriteOnly,
                     true, true, 1); //so we can still read it
 
-                // Build tangent vectors, all our meshes use only 1 texture coordset 
-                mesh.BuildTangentVectors();
+                // Build tangent vectors, all our meshes use only 1 texture coordset
+                short srcIdx, destIdx;
+
+                if (!mesh.SuggestTangentVectorBuildParams(out srcIdx, out destIdx)) {
+                    mesh.BuildTangentVectors(srcIdx, destIdx);
+                }
 
                 // Create entity
                 entities[mn] = scene.CreateEntity("Ent" + mn.ToString(), entityMeshes[mn]);

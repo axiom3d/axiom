@@ -146,7 +146,7 @@ namespace Axiom.Core {
         /// <param name="priority"></param>
         /// <returns></returns>
         public Texture Load(string name, TextureType type, int numMipMaps, float gamma, int priority) {
-            // does this texture exist laready?
+            // does this texture exist already?
             Texture texture = GetByName(name);
 
             if(texture == null) {

@@ -165,8 +165,13 @@ namespace Axiom.Media {
             image.flags = data.flags;
             image.numMipMaps = data.numMipMaps;
 
-            // grab the buffer data as an array
-            image.buffer = decoded.ToArray();
+            // stuff the image data into an array
+            byte[] buffer = new byte[decoded.Length];
+            decoded.Position = 0;
+            decoded.Read(buffer, 0, buffer.Length);
+            decoded.Close();
+
+            image.buffer = buffer;
 
             return image;
         }
@@ -224,8 +229,13 @@ namespace Axiom.Media {
             image.flags = data.flags;
             image.numMipMaps = data.numMipMaps;
 
-            // grab the buffer data as an array
-            image.buffer = decoded.ToArray();
+            // stuff the image data into an array
+            byte[] buffer = new byte[decoded.Length];
+            decoded.Position = 0;
+            decoded.Read(buffer, 0, buffer.Length);
+            decoded.Close();
+
+            image.buffer = buffer;
 
             return image;
         }

@@ -485,17 +485,24 @@ namespace Axiom.Core {
         /// <param name="sourceTexCoordSet">Source texcoord set that holds the current UV texcoords.</param>
         /// <param name="destTexCoordSet">Destination texcoord set to hold the tangent vectors.</param>
         public void BuildTangentVectors(short sourceTexCoordSet, short destTexCoordSet) {
+            if (destTexCoordSet == 0) {
+                throw new AxiomException("Destination texture coordinate set must be greater than 0.");
+            }
+
             // temp data buffers
             ushort[] vertIdx = new ushort[3];
             Vector3[] vertPos = new Vector3[3];
             float[] u = new float[3];
             float[] v = new float[3];
 
+            // setup a new 3D texture coord-set buffer for every sub mesh
             int numSubMeshes = this.SubMeshCount;
+
+            bool sharedGeometryDone = false;
 
             unsafe {
                 // setup a new 3D tex coord buffer for every submesh
-                for(int i = 0; i < numSubMeshes; i++) {
+                for(int sm = 0; sm < numSubMeshes; sm++) {
                     // the face indices buffer, read only
                     ushort* pIdx = null;
                     // pointer to 2D tex.coords, read only
@@ -505,7 +512,7 @@ namespace Axiom.Core {
                     // vertex position buffer, read only
                     float* pVPos = null;
 
-                    SubMesh subMesh = GetSubMesh(i);
+                    SubMesh subMesh = GetSubMesh(sm);
 
                     // get index buffer pointer
                     IndexData idxData = subMesh.indexData;
@@ -514,66 +521,105 @@ namespace Axiom.Core {
                     pIdx = (ushort*)indices.ToPointer();
 
                     // get vertex pointer
-                    VertexData vertexData;
+                    VertexData usedVertexData;
 
                     if(subMesh.useSharedVertices) {
-                        vertexData = sharedVertexData; 
+                        // don't do shared geometry more than once
+                        if (sharedGeometryDone) {
+                            continue;
+                        }
+
+                        usedVertexData = sharedVertexData;
+                        sharedGeometryDone = true;
                     }
                     else {
-                        vertexData = subMesh.vertexData;
+                        usedVertexData = subMesh.vertexData;
                     }
 
-                    VertexDeclaration decl = vertexData.vertexDeclaration;
-                    VertexBufferBinding binding = vertexData.vertexBufferBinding;
+                    VertexDeclaration decl = usedVertexData.vertexDeclaration;
+                    VertexBufferBinding binding = usedVertexData.vertexBufferBinding;
 
-                    // get a 3D tex coord buffer, creating one if it doesn't already exist
-                    HardwareVertexBuffer buff3D = GetTangentBuffer(vertexData, destTexCoordSet);
+                    // make sure we have a 3D coord to place data in
+                    OrganizeTangentsBuffer(usedVertexData, destTexCoordSet);
 
-                    // clear it out
-                    IntPtr texCoords3D = buff3D.Lock(BufferLocking.Discard);
-                    p3DTC = (float*)texCoords3D.ToPointer();
+                    // get the target element
+                    VertexElement destElem = decl.FindElementBySemantic(VertexElementSemantic.TexCoords, destTexCoordSet);
+                    // get the source element
+                    VertexElement srcElem = decl.FindElementBySemantic(VertexElementSemantic.TexCoords, sourceTexCoordSet);
 
-                    // TODO: Create a memset like function
-                    for(int j = 0; j < buff3D.Size / Marshal.SizeOf(typeof(float)); j++) {
-                        p3DTC[j] = 0;
-                    } 
-
-                    VertexElement elem2DTC = decl.FindElementBySemantic(VertexElementSemantic.TexCoords, sourceTexCoordSet);
-                    
-                    // make sure we have some 2D tex coords to deal with
-                    if(elem2DTC == null || elem2DTC.Type != VertexElementType.Float2) {
-                        // TODO: Add Name property to SubMesh
-                        throw new AxiomException("SubMesh '{0}' of Mesh '{1}' has no 2D texture coordinates.", "<FIXME>", this.name);
+                    if (srcElem == null || srcElem.Type != VertexElementType.Float2) {
+                        // TODO: SubMesh names
+                        throw new AxiomException("SubMesh '{0}' of Mesh '{1}' has no 2D texture coordinates at the selected set, therefore we cannot calculate tangents.", "<TODO: SubMesh name>", name);
                     }
 
-                    // get the 2D tex coord buffer
-                    HardwareVertexBuffer buff2D = binding.GetBuffer(elem2DTC.Source);
-                    IntPtr locked2DBuffer = buff2D.Lock(BufferLocking.ReadOnly);
-                    p2DTC = (float*)locked2DBuffer.ToPointer();
+                    HardwareVertexBuffer srcBuffer = null, destBuffer = null, posBuffer = null;
 
-                    // get the vertex position buffer
-                    VertexElement elemVPos = decl.FindElementBySemantic(VertexElementSemantic.Position);
-                    HardwareVertexBuffer buffVPos = binding.GetBuffer(elemVPos.Source);
-                    IntPtr lockedPosBuffer = buffVPos.Lock(BufferLocking.ReadOnly);
-                    pVPos = (float*)lockedPosBuffer.ToPointer();
+                    IntPtr srcPtr, destPtr, posPtr;
+                    int srcInc, destInc, posInc;
 
+                    srcBuffer = binding.GetBuffer(srcElem.Source);
+
+                    // Is the source and destination buffer the same?
+                    if (srcElem.Source == destElem.Source) {
+                        // lock source for read and write
+                        srcPtr = srcBuffer.Lock(BufferLocking.Normal);
+
+                        srcInc = srcBuffer.VertexSize;
+                        destPtr = srcPtr;
+                        destInc = srcInc;
+                    }
+                    else {
+                        srcPtr = srcBuffer.Lock(BufferLocking.ReadOnly);
+                        srcInc = srcBuffer.VertexSize;
+                        destBuffer = binding.GetBuffer(destElem.Source);
+                        destInc = destBuffer.VertexSize;
+                        destPtr = destBuffer.Lock(BufferLocking.Normal);
+                    }
+
+                    VertexElement elemPos = decl.FindElementBySemantic(VertexElementSemantic.Position);
+
+                    if (elemPos.Source == srcElem.Source) {
+                        posPtr = srcPtr;
+                        posInc = srcInc;
+                    }
+                    else if (elemPos.Source == destElem.Source) {
+                        posPtr = destPtr;
+                        posInc = destInc;
+                    }
+                    else {
+                        // a different buffer
+                        posBuffer = binding.GetBuffer(elemPos.Source);
+                        posPtr = posBuffer.Lock(BufferLocking.ReadOnly);
+                        posInc = posBuffer.VertexSize;
+                    }
+
+                    // loop through all faces to calculate the tangents and normals
                     int numFaces = idxData.indexCount / 3;
                     int vCount = 0;
 
                     // loop through all faces to calculate the tangents
                     for(int n = 0; n < numFaces; n++) {
-                        for(int a = 0; a < 3; a++) {
+                        int i = 0;
+
+                        for(i = 0; i < 3; i++) {
                             // get indices of vertices that form a polygon in the position buffer
-                            vertIdx[a] = pIdx[vCount++];
-                            
+                            vertIdx[i] = pIdx[vCount++];
+
+                            IntPtr tmpPtr = new IntPtr(posPtr.ToInt32() + elemPos.Offset + (posInc * vertIdx[i]));
+
+                            pVPos = (float*)tmpPtr.ToPointer();
+
                             // get the vertex positions from the position buffer
-                            vertPos[a].x = pVPos[3 * vertIdx[a] + 0];
-                            vertPos[a].y = pVPos[3 * vertIdx[a] + 1];
-                            vertPos[a].z = pVPos[3 * vertIdx[a] + 2];
+                            vertPos[i].x = pVPos[0];
+                            vertPos[i].y = pVPos[1];
+                            vertPos[i].z = pVPos[2];
 
                             // get the vertex tex coords from the 2D tex coord buffer
-                            u[a] = p2DTC[2 * vertIdx[a] + 0];
-                            v[a] = p2DTC[2 * vertIdx[a] + 1];
+                            tmpPtr = new IntPtr(srcPtr.ToInt32() + srcElem.Offset + (srcInc * vertIdx[i]));
+                            p2DTC = (float*)tmpPtr.ToPointer();
+
+                            u[i] = p2DTC[0];
+                            v[i] = p2DTC[1];
                         } // for v = 1 to 3
 
                         // calculate the tangent space vector
@@ -582,35 +628,61 @@ namespace Axiom.Core {
                                 vertPos[0], vertPos[1], vertPos[2],
                                 u[0], v[0], u[1], v[1], u[2], v[2]);
 
-                        // write the new tex coords
-                        // only tangent is written, the binormal should be derived in the vertex program
-                        for(int t = 0; t < 3; t++) {
-                            p3DTC[3 * vertIdx[t] + 0] += tangent.x;
-                            p3DTC[3 * vertIdx[t] + 1] += tangent.y;
-                            p3DTC[3 * vertIdx[t] + 2] += tangent.z;
+                        // write new tex.coords 
+                        // note we only write the tangent, not the binormal since we can calculate
+                        // the binormal in the vertex program
+                        byte* vBase = (byte*)destPtr.ToPointer();
+
+                        for(i = 0; i < 3; i++) {
+                            // write values (they must be 0 and we must add them so we can average
+                            // all the contributions from all the faces
+                            IntPtr tmpPtr = new IntPtr(destPtr.ToInt32() + destElem.Offset + (destInc * vertIdx[i]));
+
+                            p3DTC = (float*)tmpPtr.ToPointer();
+
+                            p3DTC[0] += tangent.x;
+                            p3DTC[1] += tangent.y;
+                            p3DTC[2] += tangent.z;
                         } // for v = 1 to 3
                     } // for each face
 
-                    int numVerts = vertexData.vertexCount;
-                    
+                    int numVerts = usedVertexData.vertexCount;
+
+                    int offset = 0;
+
+                    byte* qBase = (byte*)destPtr.ToPointer();
+
                     // loop through and normalize all 3d tex coords
-                    for(int q = 0; q < numVerts * 3; q += 3) {
+                    for(int n = 0; n < numVerts; n++) {
+                        IntPtr tmpPtr = new IntPtr(destPtr.ToInt32() + destElem.Offset + offset);
+
+                        p3DTC = (float*)tmpPtr.ToPointer();
+
                         // read the 3d tex coord
-                        Vector3 temp = new Vector3(p3DTC[q + 0], p3DTC[q + 1], p3DTC[q + 2]);
+                        Vector3 temp = new Vector3(p3DTC[0], p3DTC[1], p3DTC[2]);
 
                         // normalize the tex coord
                         temp.Normalize();
 
                         // write it back to the buffer
-                        p3DTC[q + 0] = temp.x;
-                        p3DTC[q + 1] = temp.y;
-                        p3DTC[q + 2] = temp.z;
+                        p3DTC[0] = temp.x;
+                        p3DTC[1] = temp.y;
+                        p3DTC[2] = temp.z;
+
+                        offset += destInc;
                     }
 
                     // unlock all used buffers
-                    buff2D.Unlock();
-                    buff3D.Unlock();
-                    buffVPos.Unlock();
+                    srcBuffer.Unlock();
+
+                    if (destBuffer != null) {
+                        destBuffer.Unlock();
+                    }
+
+                    if (posBuffer != null) {
+                        posBuffer.Unlock();
+                    }
+
                     buffIdx.Unlock();
                 } // for each subMesh
             } // unsafe
@@ -801,12 +873,11 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        ///    
+        ///    Internal method for making the space for a 3D texture coord buffer to hold tangents.
         /// </summary>
-        /// <param name="vertexData"></param>
-        /// <param name="texCoordSet"></param>
-        /// <returns></returns>
-        public HardwareVertexBuffer GetTangentBuffer(VertexData vertexData, short texCoordSet) {
+        /// <param name="vertexData">Target vertex data.</param>
+        /// <param name="destCoordSet">Destination texture coordinate set.</param>
+        protected void OrganizeTangentsBuffer(VertexData vertexData, short destCoordSet) {
             bool needsToBeCreated = false;
 
             // grab refs to the declarations and bindings
@@ -814,39 +885,169 @@ namespace Axiom.Core {
             VertexBufferBinding binding = vertexData.vertexBufferBinding;
 
             // see if we already have a 3D tex coord buffer
-            VertexElement tex3d = decl.FindElementBySemantic(VertexElementSemantic.TexCoords, texCoordSet);
+            VertexElement tex3d = decl.FindElementBySemantic(VertexElementSemantic.TexCoords, destCoordSet);
 
             if(tex3d == null) {
                 needsToBeCreated = true;
             }
             else if(tex3d.Type != VertexElementType.Float3) {
-                // TODO: Implement RemoveElement
-                // decl.RemoveElement(VertexElementSemantic.TexCoords, texCoordSet);
-                binding.UnsetBinding(tex3d.Source);
-
-                needsToBeCreated = true;
+                // tex coord buffer exists, but is not 3d.
+                throw new AxiomException("Texture coordinate set {0} already exists but is not 3D, therefore cannot contain tangents. Pick an alternative destination coordinate set.", destCoordSet);
             }
-
-            HardwareVertexBuffer buff3D;
                 
             if(needsToBeCreated) {
-                // create the 3D tex coord buffer
-                buff3D = HardwareBufferManager.Instance.CreateVertexBuffer(
-                    3 * Marshal.SizeOf(typeof(float)),
+                // What we need to do, to be most efficient with our vertex streams, 
+                // is to tack the new 3D coordinate set onto the same buffer as the 
+                // previous texture coord set
+                VertexElement prevTexCoordElem = 
+                    vertexData.vertexDeclaration.FindElementBySemantic(
+                        VertexElementSemantic.TexCoords, (short)(destCoordSet - 1));
+
+                if (prevTexCoordElem == null) {
+                    throw new AxiomException("Cannot locate the texture coordinate element preceding the destination texture coordinate set to which to append the new tangents.");
+                }
+
+                // find the buffer associated with this element
+                HardwareVertexBuffer origBuffer = vertexData.vertexBufferBinding.GetBuffer(prevTexCoordElem.Source);
+
+                // Now create a new buffer, which includes the previous contents
+                // plus extra space for the 3D coords
+                HardwareVertexBuffer newBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
+                    origBuffer.VertexSize + (3 * Marshal.SizeOf(typeof(float))),
                     vertexData.vertexCount,
-                    BufferUsage.DynamicWriteOnly,
-                    true);
+                    origBuffer.Usage,
+                    origBuffer.HasShadowBuffer);
 
-                // bind the new buffer accordingly
-                short source = binding.NextIndex;
-                binding.SetBinding(source, buff3D);
-                decl.AddElement(source, 0, VertexElementType.Float3, VertexElementSemantic.TexCoords, texCoordSet);
-            }
-            else {
-                buff3D = binding.GetBuffer(tex3d.Source);
-            }
+                // add the new element
+                decl.AddElement(
+                    prevTexCoordElem.Source, 
+                    origBuffer.VertexSize, 
+                    VertexElementType.Float3, 
+                    VertexElementSemantic.TexCoords, 
+                    destCoordSet);
 
-            return buff3D;
+                // now copy the original data across
+                IntPtr srcPtr = origBuffer.Lock(BufferLocking.ReadOnly);
+                IntPtr destPtr = newBuffer.Lock(BufferLocking.Discard);
+
+                int vertSize = origBuffer.VertexSize;
+
+                // size of the element to skip
+                int elemSize = Marshal.SizeOf(typeof(float)) * 3;
+
+                for (int i = 0, srcOffset = 0, dstOffset = 0; i < vertexData.vertexCount; i++) {
+                    // copy original vertex data
+                    Memory.Copy(srcPtr, destPtr, srcOffset, dstOffset, vertSize);
+
+                    srcOffset += vertSize;
+                    dstOffset += vertSize;
+
+                    // Set the new part to 0 since we'll accumulate in this
+                    Memory.Set(destPtr, dstOffset, elemSize);
+                    dstOffset += elemSize;
+                }
+
+                // unlock those buffers!
+                origBuffer.Unlock();
+                newBuffer.Unlock();
+
+                // rebind the new buffer
+                binding.SetBinding(prevTexCoordElem.Source, newBuffer);
+            }
+        }
+
+        /// <summary>
+        ///     Ask the mesh to suggest parameters to a future <see cref="BuildTangentVectors"/> call.
+        /// </summary>
+        /// <remarks>
+        ///     This helper method will suggest source and destination texture coordinate sets
+        ///     for a call to <see cref="BuildTangentVectors"/>. It will detect when there are inappropriate
+        ///     conditions (such as multiple geometry sets which don't agree). 
+        ///     Moreover, it will return 'true' if it detects that there are aleady 3D 
+        ///     coordinates in the mesh, and therefore tangents may have been prepared already.
+        /// </remarks>
+        /// <param name="sourceCoordSet">A source texture coordinate set which will be populated.</param>
+        /// <param name="destCoordSet">A destination texture coordinate set which will be populated.</param>
+        public bool SuggestTangentVectorBuildParams(out short sourceCoordSet, out short destCoordSet) {
+            // initialize out params
+            sourceCoordSet = 0;
+            destCoordSet = 0;
+
+            // Go through all the vertex data and locate source and dest (must agree)
+            bool sharedGeometryDone = false;
+            bool foundExisting = false;
+            bool firstOne = true;
+
+            for (int i = 0; i < subMeshList.Count; i++) {
+                SubMesh sm = subMeshList[i];
+
+                VertexData vertexData;
+
+                if (sm.useSharedVertices) {
+                    if (sharedGeometryDone) {
+                        continue;
+                    }
+
+                    vertexData = sharedVertexData;
+                    sharedGeometryDone = true;
+                }
+                else {
+                    vertexData = sm.vertexData;
+                }
+
+                VertexElement sourceElem = null;
+
+                short t = 0;
+
+                for ( ; t < Config.MaxTextureCoordSets; t++) {
+                    VertexElement testElem = 
+                        vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.TexCoords, t);
+
+                    if (testElem == null) {
+                        // finish if we've run out, t will be the target
+                        break;
+                    }
+
+                    if (sourceElem == null) {
+                        // We're still looking for the source texture coords
+                        if (testElem.Type == VertexElementType.Float2) {
+                            // ok, we found it!
+                            sourceElem = testElem;
+                        }
+                    }
+                    else {
+                        // We're looking for the destination
+                        // Check to see if we've found a possible
+                        if (testElem.Type == VertexElementType.Float3) {
+                            // This is a 3D set, might be tangents
+                            foundExisting = true;
+                        }
+                    }
+                } // for t
+
+                // After iterating, we should have a source and a possible destination (t)
+                if (sourceElem == null) {
+                    throw new AxiomException("Cannot locate an appropriate 2D texture coordinate set for all the vertex data in this mesh to create tangents from.");
+                }
+
+                // Check that we agree with previous decisions, if this is not the first one
+                if (!firstOne) {
+                    if (sourceElem.Index != sourceCoordSet) {
+                        throw new AxiomException("Multiple sets of vertex data in this mesh disagree on the appropriate index to use for the source texture coordinates. This ambiguity must be rectified before tangents can be generated.");
+                    }
+                    if (t != destCoordSet) {
+                        throw new AxiomException("Multiple sets of vertex data in this mesh disagree on the appropriate index to use for the target texture coordinates. This ambiguity must be rectified before tangents can be generated.");
+                    }
+                }
+
+                // Otherwise, save this result
+                sourceCoordSet = (short)sourceElem.Index;
+                destCoordSet = t;
+
+                firstOne = false;
+            } // for i
+
+            return foundExisting;
         }
 
         /// <summary>

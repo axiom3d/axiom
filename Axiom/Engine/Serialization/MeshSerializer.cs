@@ -41,7 +41,7 @@ namespace Axiom.Serialization {
 			// add the supported .mesh versions
 			implementations.Add("[MeshSerializer_v1.10]", new MeshSerializerImplv11());
 			implementations.Add("[MeshSerializer_v1.20]", new MeshSerializerImplv12());
-			//implementations.Add(currentVersion, new MeshSerializerImpl());
+			implementations.Add(currentVersion, new MeshSerializerImpl());
 		}
 
 		#endregion Constructor
@@ -83,7 +83,9 @@ namespace Axiom.Serialization {
 				throw new AxiomException("Cannot find serializer implementation for version '{0}'.", fileVersion);
 			}
 
-			// call implementation
+            System.Diagnostics.Debug.WriteLine(string.Format("Mesh: Loading '{0}'...", mesh.Name));
+
+            // call implementation
 			MeshSerializerImpl serializer = (MeshSerializerImpl)implementations[fileVersion];
 			serializer.ImportMesh(stream, mesh);
 
