@@ -90,7 +90,7 @@ namespace Axiom.RenderSystems.OpenGL {
 
             if(locking == BufferLocking.Discard) {
                 // commented out to fix ATI issues
-               /* Ext.glBufferDataARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB,
+               /*Ext.glBufferDataARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB,
                     sizeInBytes,
                     IntPtr.Zero,
                     GLHelper.ConvertEnum(usage));
@@ -146,6 +146,18 @@ namespace Axiom.RenderSystems.OpenGL {
         public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer) {
             Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
 
+			if(useShadowBuffer) {
+				// lock the buffer for reading
+				IntPtr dest = shadowBuffer.Lock(offset, length, 
+					discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal);
+			
+				// copy that data in there
+				Memory.Copy(src, dest, length);
+
+				// unlock the buffer
+				shadowBuffer.Unlock();
+			}
+
             if(discardWholeBuffer) {
                 Ext.glBufferDataARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB,
                     sizeInBytes,
@@ -167,22 +179,25 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="length"></param>
         /// <param name="dest"></param>
         public override void ReadData(int offset, int length, IntPtr dest) {
-//            Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
-//
-//            Ext.glGetBufferSubDataARB(
-//                Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, 
-//                offset, 
-//                length, 
-//                dest);
-
-            // lock the buffer for reading
-            IntPtr src = this.Lock(offset, length, BufferLocking.ReadOnly);
+			if(useShadowBuffer) {
+				// lock the buffer for reading
+				IntPtr src = shadowBuffer.Lock(offset, length, BufferLocking.ReadOnly);
 			
-            // copy that data in there
-            Memory.Copy(src, dest, length);
+				// copy that data in there
+				Memory.Copy(src, dest, length);
 
-            // unlock the buffer
-            this.Unlock();
+				// unlock the buffer
+				shadowBuffer.Unlock();
+			}
+			else {
+				Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
+	
+				Ext.glGetBufferSubDataARB(
+				    Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, 
+				    offset, 
+				    length, 
+				    dest);
+			}
         }
 
 

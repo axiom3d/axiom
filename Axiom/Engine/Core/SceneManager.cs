@@ -557,10 +557,19 @@ namespace Axiom.Core {
         ///     Returns the material with the specified name.
         /// </summary>
         /// <param name="name">Name of the material to retrieve.</param>
-        /// <returns></returns>
+        /// <returns>A reference to a Material.</returns>
         public Material GetMaterial(string name) {
             return MaterialManager.Instance.GetByName(name);
         }
+
+		/// <summary>
+		///     Returns the material with the specified handle.
+		/// </summary>
+		/// <param name="name">Handle of the material to retrieve.</param>
+		/// <returns>A reference to a Material.</returns>
+		public Material GetMaterial(int handle) {
+			return (Material)MaterialManager.Instance.GetByHandle(handle);
+		}
 
         /// <summary>
         ///     Retreives the scene node with the specified name.
