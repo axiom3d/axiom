@@ -134,7 +134,7 @@ namespace Axiom.SceneManagers.Octree {
 
                 localAABB.Merge(obj.BoundingBox);
 
-                worldAABB.Merge(obj.GetWorldBoundingBox(true));
+                worldAABB = obj.GetWorldBoundingBox(true);
             }
 
             if(!worldAABB.IsNull) {
