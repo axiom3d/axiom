@@ -128,6 +128,14 @@ namespace Axiom.MathLib {
             tangentList.Clear();
         }
 
+		public Quaternion Interpolate(float t) {
+			return Interpolate(t, true);
+		}
+
+		public Quaternion Interpolate(int index, float t) {
+			return Interpolate(index, t, true);
+		}
+
         /// <summary>
         ///		Returns an interpolated point based on a parametric value over the whole series.
         /// </summary>
@@ -136,8 +144,9 @@ namespace Axiom.MathLib {
         ///		whole length of the spline, this method returns an interpolated point.
         /// </remarks>
         /// <param name="t">Parametric value.</param>
+        /// <param name="useShortestPath">True forces rotations to use the shortest path.</param>
         /// <returns>An interpolated point along the spline.</returns>
-        public Quaternion Interpolate(float t) {
+        public Quaternion Interpolate(float t, bool useShortestPath) {
             // This does not take into account that points may not be evenly spaced.
             // This will cause a change in velocity for interpolation.
 
@@ -149,7 +158,7 @@ namespace Axiom.MathLib {
             t = segment - segIndex;
 
             // call the overloaded method
-            return Interpolate(segIndex, t);
+            return Interpolate(segIndex, t, useShortestPath);
         }
 
         /// <summary>
@@ -158,7 +167,7 @@ namespace Axiom.MathLib {
         /// <param name="index">The point index to treat as t=0. index + 1 is deemed to be t=1</param>
         /// <param name="t">Parametric value</param>
         /// <returns>An interpolated point along the spline.</returns>
-        public Quaternion Interpolate(int index, float t) {
+        public Quaternion Interpolate(int index, float t, bool useShortestPath) {
             Debug.Assert(index >= 0 && index < pointList.Count, "Spline point index overrun.");
 
             if((index + 1) == pointList.Count) {
@@ -167,10 +176,12 @@ namespace Axiom.MathLib {
             }
 
             // quick special cases
-            if(t == 0.0f)
-                return pointList[index];
-            else if(t == 1.0f)
-                return pointList[index + 1];
+			if(t == 0.0f) {
+				return pointList[index];
+			}
+			else if(t == 1.0f) {
+				return pointList[index + 1];
+			}
 
             // Time for real interpolation
 
@@ -181,7 +192,7 @@ namespace Axiom.MathLib {
             Quaternion b = tangentList[index + 1];
 
             // return the final result
-            return Quaternion.Squad(t, p, a, b, q);
+            return Quaternion.Squad(t, p, a, b, q, useShortestPath);
         }
 
         /// <summary>

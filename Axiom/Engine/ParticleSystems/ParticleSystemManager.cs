@@ -311,7 +311,7 @@ namespace Axiom.ParticleSystems {
         ///		Parses all particle system script files in resource folders and archives.
         /// </summary>
         protected internal void ParseAllSources() {
-            StringCollection particleFiles = ResourceManager.GetAllCommonNamesLike("", "*.particle");
+            StringCollection particleFiles = ResourceManager.GetAllCommonNamesLike("", ".particle");
 
             foreach(string file in particleFiles) {
                 Stream data = ResourceManager.FindCommonResourceData(file);

@@ -49,28 +49,50 @@ namespace Axiom.Animating {
     ///		is called.
     /// </remarks>
     public class AnimationTrack {
-        #region Member variables
+        #region Fields
 
-        /// <summary>Handle of this animation track.</summary>
+        /// <summary>
+        ///		Handle of this animation track.
+        ///	</summary>
         protected short handle;
-        /// <summary>Animation that owns this track.</summary>
+        /// <summary>
+        ///		Animation that owns this track.
+        ///	</summary>
         protected Animation parent;
-        /// <summary>Target node to be animated.</summary>
+        /// <summary>
+        ///		Target node to be animated.
+        ///	</summary>
         protected Node target;
-        /// <summary>Maximum keyframe time.</summary>
+        /// <summary>
+        ///		Maximum keyframe time.
+        ///	</summary>
         protected float maxKeyFrameTime;
-        /// <summary>Collection of key frames in this track.</summary>
-        protected KeyFrameCollection keyFrameList;
-        /// <summary>Flag indicating we need to rebuild the splines next time.</summary>
+        /// <summary>
+        ///		Collection of key frames in this track.
+        ///	</summary>
+        protected KeyFrameCollection keyFrameList = new KeyFrameCollection();
+        /// <summary>
+        ///		Flag indicating we need to rebuild the splines next time.
+        ///	</summary>
         protected bool isSplineRebuildNeeded;
-        /// <summary>Spline for position interpolation.</summary>
-        protected PositionalSpline positionSpline;
-        /// <summary>Spline for scale interpolation.</summary>
-        protected PositionalSpline scaleSpline;
-        /// <summary>Spline for rotation interpolation.</summary>
-        protected RotationalSpline rotationSpline;
+        /// <summary>
+        ///		Spline for position interpolation.
+        ///	</summary>
+        protected PositionalSpline positionSpline = new PositionalSpline();
+        /// <summary>
+        ///		Spline for scale interpolation.
+        ///	</summary>
+        protected PositionalSpline scaleSpline = new PositionalSpline();
+        /// <summary>
+        ///		Spline for rotation interpolation.
+        ///	</summary>
+        protected RotationalSpline rotationSpline = new RotationalSpline();
+		/// <summary>
+		///		Defines if rotation is done using shortest path
+		/// </summary>
+		protected bool useShortestPath;
 
-        #endregion
+        #endregion Fields
 
         #region Constructors
 
@@ -78,15 +100,8 @@ namespace Axiom.Animating {
         ///		Internal constructor, to prevent direction instantiation.  Should be created
         ///		via a call to the CreateTrack method of an Animation.
         /// </summary>
-        internal AnimationTrack(Animation parent) {
-            this.parent = parent;
-            keyFrameList = new KeyFrameCollection();
-            this.maxKeyFrameTime = -1;
-
-            positionSpline = new PositionalSpline();
-            scaleSpline = new PositionalSpline();
-            rotationSpline = new RotationalSpline();
-        }
+        internal AnimationTrack(Animation parent) 
+			: this(parent, null) {}
 
         /// <summary>
         ///		Internal constructor, to prevent direction instantiation.  Should be created
@@ -95,12 +110,11 @@ namespace Axiom.Animating {
         internal AnimationTrack(Animation parent, Node target) {
             this.parent = parent;
             this.target = target;
-            keyFrameList = new KeyFrameCollection();
-            this.maxKeyFrameTime = -1;
 
-            positionSpline = new PositionalSpline();
-            scaleSpline = new PositionalSpline();
-            rotationSpline = new RotationalSpline();
+            maxKeyFrameTime = -1;
+
+			// use shortest path rotation by default
+			useShortestPath = true;
         }
 
         #endregion
@@ -214,7 +228,7 @@ namespace Axiom.Animating {
                 switch(mode) {
                     case InterpolationMode.Linear: {
                         // linear interoplation
-                        result.Rotation = Quaternion.Slerp(t, k1.Rotation, k2.Rotation);
+                        result.Rotation = Quaternion.Slerp(t, k1.Rotation, k2.Rotation, useShortestPath);
                         result.Translate = k1.Translate + ((k2.Translate - k1.Translate) * t);
                         result.Scale = k1.Scale + ((k2.Scale - k1.Scale) * t);
 
@@ -225,7 +239,7 @@ namespace Axiom.Animating {
 							BuildInterpolationSplines();
 						}
 
-                        result.Rotation = rotationSpline.Interpolate(firstKeyIndex, t);
+                        result.Rotation = rotationSpline.Interpolate(firstKeyIndex, t, useShortestPath);
                         result.Translate = positionSpline.Interpolate(firstKeyIndex, t);
                         result.Scale = scaleSpline.Interpolate(firstKeyIndex, t);
                     }	break;
