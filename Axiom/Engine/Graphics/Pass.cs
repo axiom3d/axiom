@@ -149,21 +149,9 @@ namespace Axiom.Graphics
         /// </summary>
         protected Shading shadeOptions;
         /// <summary>
-        ///    Texture filtering for this pass.
-        /// </summary>
-        protected TextureFiltering textureFiltering;
-        /// <summary>
         ///    Texture anisotropy level.
         /// </summary>
         protected int maxAniso;
-        /// <summary>
-        ///    Is the filtering level the default?
-        /// </summary>
-        protected bool isDefaultFiltering;
-        /// <summary>
-        ///    Is anisotropy the default?
-        /// </summary>
-        protected bool isDefaultAniso;
         /// <summary>
         ///    Does this pass override global fog settings?
         /// </summary>
@@ -248,12 +236,6 @@ namespace Axiom.Graphics
             shadeOptions = Shading.Gouraud;
             runOnlyForOneLightType = true;
             onlyLightType = LightType.Point;
-
-            // texture filtering options
-            textureFiltering = MaterialManager.Instance.DefaultTextureFiltering;
-            maxAniso = MaterialManager.Instance.DefaultAnisotropy;
-            isDefaultFiltering = true;
-            isDefaultAniso = true;
 
             // Default max lights to the global max
             maxLights = Config.MaxSimultaneousLights;

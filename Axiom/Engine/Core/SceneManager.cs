@@ -48,15 +48,15 @@ namespace Axiom.Core {
     #endregion
 
     /// <summary>
-    /// Manages the rendering of a 'scene' i.e. a collection of primitives.
+    ///     Manages the rendering of a 'scene' i.e. a collection of primitives.
     /// </summary>
     /// <remarks>
     ///		This class defines the basic behavior of the 'Scene Manager' family. These classes will
-    ///		organise the objects in the scene and send them to the rendering system, a subclass of
-    ///		RenderSystem. This basic superclass does no sorting, culling or organising of any sort.
+    ///		organize the objects in the scene and send them to the rendering system, a subclass of
+    ///		RenderSystem. This basic superclass only does basic bounding box frustum culling.
     ///    <p/>
     ///		Subclasses may use various techniques to organise the scene depending on how they are
-    ///		designed (e.g. BSPs, octrees etc). As with other classes, methods marked as interanl are 
+    ///		designed (e.g. BSPs, octrees etc). As with other classes, methods marked as internal are 
     ///		designed to be called by other classes in the engine, not by user applications.
     ///	 </remarks>
     public class SceneManager {

@@ -46,6 +46,7 @@ namespace Axiom.Utility {
     /// </summary>
     public abstract class TechDemo : IDisposable {
         #region Protected Fields
+
         protected Engine engine;
         protected Camera camera;
         protected Viewport viewport;
@@ -57,6 +58,11 @@ namespace Axiom.Utility {
         protected bool showDebugOverlay = true;
         protected float statDelay = 0.0f;
         protected float debugTextDelay = 0.0f;
+        protected float toggleDelay = 0.0f;
+
+        protected int aniso = 1;
+        protected TextureFiltering filtering = TextureFiltering.Bilinear;
+
         #endregion Protected Fields
 
         #region Constructors & Destructors
@@ -230,6 +236,7 @@ namespace Axiom.Utility {
         #endregion Public Methods
 
         #region Event Handlers
+
         protected virtual void OnFrameEnded(Object source, FrameEventArgs e) {
         }
 
@@ -283,12 +290,51 @@ namespace Axiom.Utility {
                 camera.Pitch(-cameraScale);
             }
 
-            if(input.IsKeyPressed(KeyCodes.T)) {
-                camera.SceneDetail = SceneDetailLevel.Wireframe;
+            // subtract the time since last frame to delay specific key presses
+            toggleDelay -= e.TimeSinceLastFrame;
+
+            // toggle rendering mode
+            if(input.IsKeyPressed(KeyCodes.R) && toggleDelay < 0) {
+                if(camera.SceneDetail == SceneDetailLevel.Points) {
+                    camera.SceneDetail = SceneDetailLevel.Solid;
+                }
+                else if(camera.SceneDetail == SceneDetailLevel.Solid) {
+                    camera.SceneDetail = SceneDetailLevel.Wireframe;
+                }
+                else {
+                    camera.SceneDetail = SceneDetailLevel.Points;
+                }
+
+                Console.WriteLine("Rendering mode changed to '{0}'.", camera.SceneDetail);
+
+                toggleDelay = 1;
             }
 
-            if(input.IsKeyPressed(KeyCodes.Y)) {
-                camera.SceneDetail = SceneDetailLevel.Solid;
+            if(input.IsKeyPressed(KeyCodes.T) && toggleDelay < 0) {
+                // toggle the texture settings
+                switch(filtering)
+                {
+                case TextureFiltering.Bilinear:
+                    filtering = TextureFiltering.Trilinear;
+                    aniso = 1;
+                    break;
+                case TextureFiltering.Trilinear:
+                    filtering = TextureFiltering.Anisotropic;
+                    aniso = 8;
+                    break;
+                case TextureFiltering.Anisotropic:
+                    filtering = TextureFiltering.Bilinear;
+                    aniso = 1;
+                    break;
+                }
+
+                Console.WriteLine("Texture Filtering changed to '{0}'.", filtering);
+
+                // set the new default
+                MaterialManager.Instance.SetDefaultTextureFiltering(filtering);
+                MaterialManager.Instance.DefaultAnisotropy = aniso;
+                
+                toggleDelay = 1;
             }
 
             if(input.IsKeyPressed(KeyCodes.P)) {
