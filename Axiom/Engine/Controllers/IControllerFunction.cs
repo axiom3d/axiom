@@ -11,7 +11,7 @@ namespace Axiom.Controllers
 		///		Called by a controller every frame to have this function run and return on the supplied
 		///		source value and return the result.
 		/// </summary>
-		/// <param name="val"></param>
+		/// <param name="sourceValue"></param>
 		float Execute(float sourceValue);
 	}
 }
