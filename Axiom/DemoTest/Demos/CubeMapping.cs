@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using Axiom.Core;
+using Axiom.Gui;
 using Axiom.MathLib;
 using Axiom.Utility;
 
@@ -54,6 +55,10 @@ namespace Demos {
             // attach the ogre to the scene
             SceneNode node = (SceneNode)scene.RootSceneNode.CreateChild();
             node.AttachObject(entity);
+
+		    // show overlay
+		    Overlay overlay = OverlayManager.Instance["Example/CubeMappingOverlay"];
+		    overlay.Show();
         }
 
         #endregion
