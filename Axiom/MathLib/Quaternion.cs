@@ -35,7 +35,7 @@ using System.Diagnostics;
 
 namespace Axiom.MathLib {
     /// <summary>
-    /// Summary description for Quaternion.
+    ///		Summary description for Quaternion.
     /// </summary>
     public struct Quaternion {
         #region Private member variables and constants
@@ -248,6 +248,15 @@ namespace Axiom.MathLib {
             }
         }
 
+		/// <summary>
+		///		Squared 'length' of this quaternion.
+		/// </summary>
+		public float Norm {
+			get {
+				return x * x + y * y + z * z + w * w;
+			}
+		}
+
         /// <summary>
         ///    Local X-axis portion of this rotation.
         /// </summary>
@@ -384,6 +393,18 @@ namespace Axiom.MathLib {
         public float Dot(Quaternion quat) {
             return this.w * quat.w + this.x * quat.x + this.y * quat.y + this.z * quat.z;
         }
+
+		/// <summary>
+		///		Normalizes elements of this quaterion to the range [0,1].
+		/// </summary>
+		public void Normalize() {
+			float factor = 1.0f / MathUtil.Sqrt(this.Norm);
+
+			w = w / factor;
+			x = x / factor;
+			y = y / factor;
+			z = z / factor;
+		}
 
         /// <summary>
         ///    
