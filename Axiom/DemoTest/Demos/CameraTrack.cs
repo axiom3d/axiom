@@ -47,8 +47,7 @@ namespace Demos {
         protected override void CreateScene() {
 
             // set some ambient light
-            scene.TargetRenderSystem.LightingEnabled = true;
-            scene.AmbientLight = new ColorEx(0.0f, 0.2f, 0.2f, 0.2f);
+            scene.AmbientLight = new ColorEx(1.0f, 0.2f, 0.2f, 0.2f);
 
             // create a skydome
             scene.SetSkyDome(true, "Examples/CloudySky", 5, 8);
@@ -63,7 +62,7 @@ namespace Demos {
             plane.D = 200;
 
             // create a plane mesh
-            MeshManager.Instance.CreatePlane("FloorPlane", plane, 20000, 20000, 20, 20, true, 1, 50, 50, Vector3.UnitZ);
+            MeshManager.Instance.CreatePlane("FloorPlane", plane, 200000, 200000, 20, 20, true, 1, 50, 50, Vector3.UnitZ);
 
             // create an entity to reference this mesh
             Entity planeEntity = scene.CreateEntity("Floor", "FloorPlane");
@@ -74,7 +73,7 @@ namespace Demos {
             Entity ogreHead = scene.CreateEntity("OgreHead", "ogrehead.mesh");
 
             // create a scene node for the entity and attach the entity
-            headNode = (SceneNode) scene.RootSceneNode.CreateChild("OgreHeadNode", new Vector3(0, 50, 0), Quaternion.Identity);
+            headNode = (SceneNode) scene.RootSceneNode.CreateChild("OgreHeadNode", Vector3.Zero, Quaternion.Identity);
             headNode.AttachObject(ogreHead);
 
             // make sure the camera tracks this node
@@ -121,12 +120,10 @@ namespace Demos {
 
         #region Protected Override Event Handlers
         protected override bool OnFrameStarted(Object source, FrameEventArgs e) {
-            base.OnFrameStarted (source, e);
-
             // add time to the animation which is driven off of rendering time per frame
             animationState.AddTime(e.TimeSinceLastFrame);
 
-            return true;
+            return base.OnFrameStarted (source, e);
         }
         #endregion Protected Override Event Handlers
     }

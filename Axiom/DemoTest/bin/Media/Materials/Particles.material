@@ -24,11 +24,10 @@ Particles/Flare2
 
 Particles/Rain
 {
-	lighting off
-	scene_blend add
+    	diffuse 1.0 1.0 1.0
 	depth_write off
-
+	scene_blend modulate
 	{
-		texture raindrop.png
+		texture basic_droplet.png
 	}
 }

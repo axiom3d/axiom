@@ -72,12 +72,12 @@ namespace RenderSystem_DirectX9 {
         /// <returns></returns>
         /// DOC
         protected override IntPtr LockImpl(int offset, int length, BufferLocking locking) {
-            // use the graphics stream overload to supply offset and length
-            GraphicsStream gs = d3dBuffer.Lock(0, length, D3DHelper.ConvertEnum(locking));
+            // lock the buffer, which returns an array
+            // TODO: no *working* overload takes length, revisit this
+            System.Array data = d3dBuffer.Lock(offset, D3DHelper.ConvertEnum(locking));
 			
-            // return the graphics streams internal data
-            // TODO: Beware if this is taken out of future versions
-            return gs.InternalData;
+            // return an IntPtr to the first element of the locked array
+            return Marshal.UnsafeAddrOfPinnedArrayElement(data, 0);
         }
 
         /// <summary>

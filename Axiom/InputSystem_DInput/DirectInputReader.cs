@@ -434,13 +434,13 @@ namespace InputSystem_DInput {
         public void Stop() {
             // Unacquire all Dinput objects.
             if(isInitialised) {
-                if(useKeyboard) {
+                if(useKeyboard && keyboardDevice != null) {
                     keyboardDevice.Unacquire();		
                     keyboardDevice.Dispose();
                     keyboardDevice = null;
                 }
 
-                if(useMouse) {
+                if(useMouse && mouseDevice != null) {
                     mouseDevice.Unacquire();		
                     mouseDevice.Dispose();
                     mouseDevice = null;

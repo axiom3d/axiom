@@ -192,9 +192,6 @@ namespace Axiom.Utility {
         }
 
         public void Dispose() {
-            // ask the engine to dispose of itself
-            engine.Dispose();
-
             // remove event handlers
             engine.FrameStarted -= new FrameEvent(OnFrameStarted);
             engine.FrameEnded -= new FrameEvent(OnFrameEnded);

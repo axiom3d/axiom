@@ -47,7 +47,7 @@ ParticleSystems/Rain
     material        Particles/Rain
     particle_width  20
     particle_height 100
-    cull_each       false
+    cull_each       true
     quota           3000
     // Make common direction straight down (faster than self oriented)
     billboard_type  oriented_common

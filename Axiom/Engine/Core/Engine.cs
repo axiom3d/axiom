@@ -449,15 +449,15 @@ namespace Axiom.Core {
                 if((time - lastCalculationTime) > timerFrequency) { 
 				 		// Is It Time To Update Our Calculations?
                     // Calculate New Framerate
-                    currentFPS = (framesDrawn * timerFrequency) / (time - lastCalculationTime);
+                    currentFPS = (float) (framesDrawn * timerFrequency) / (float) (time - lastCalculationTime);
 
                     // calculate the averge framerate
                     if(averageFPS == 0)
                         averageFPS = currentFPS;
                     else
-                        averageFPS = (averageFPS + currentFPS) / 2;
+                        averageFPS = (averageFPS + currentFPS) / 2.0f;
 
-                    if(currentFPS < lowestFPS || lowestFPS == 0) { 
+                    if(currentFPS < lowestFPS || (int) lowestFPS == 0) { 
 					 						// Is The New Framerate A New Low?
                         lowestFPS = currentFPS;							// Set It To The New Low
                     }
@@ -511,11 +511,7 @@ namespace Axiom.Core {
 
             // Write final performance stats
             System.Diagnostics.Trace.WriteLine("Final Stats:");
-            System.Diagnostics.Trace.WriteLine("   Highest FPS - " + highestFPS);
-            System.Diagnostics.Trace.WriteLine("   Average FPS: " + averageFPS);
-            System.Diagnostics.Trace.WriteLine("   Lowest FPS: " + lowestFPS);
-
-            engineLog.Dispose();
+            System.Diagnostics.Trace.WriteLine("Axiom Framerate Average FPS: " + averageFPS.ToString("0.000000") + " Best FPS: " + highestFPS.ToString("0.000000") + " Worst FPS: " + lowestFPS.ToString("0.000000"));
         }
 
         private void InitializeSingletons() {
