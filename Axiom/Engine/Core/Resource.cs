@@ -160,7 +160,8 @@ namespace Axiom.Core {
             lastAccessed = Engine.Instance.Timer.Milliseconds;
 
 			if(!isLoaded) {
-				Load();
+				// TODO: Debug loading, with respect to shadow volume generation
+				//Load();
 			}
         }
 

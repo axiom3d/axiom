@@ -182,30 +182,6 @@ namespace Axiom.Graphics {
         }
 
         /// <summary>
-        ///    Gets the best supported technique. 
-        /// </summary>
-        /// <remarks>
-        ///    This method returns the lowest-index supported Technique in this material
-        ///    (since lower-indexed Techniques are considered to be better than higher-indexed
-        ///    ones).
-        ///    <p/>
-        ///    The best supported technique is only available after this material has been compiled,
-        ///    which typically happens on loading the material. Therefore, if this method returns
-        ///    null, try calling Material.Load.
-        /// </remarks>
-        /// </summary>
-        public Technique BestTechnique {
-            get {
-                if(supportedTechniques.Count > 0) {
-                    return (Technique)supportedTechniques[0];
-                }
-                else {
-                    return null;
-                }
-            }
-        }
-
-        /// <summary>
         ///		Determines if the material has any transparency with the rest of the scene (derived from 
         ///    whether any Techniques say they involve transparency).
         /// </summary>
@@ -444,6 +420,32 @@ namespace Axiom.Graphics {
             compilationRequired = true;
             return t;
         }
+
+		public Technique GetBestTechnique() {
+			return GetBestTechnique(0);
+		}
+
+		/// <summary>
+		///    Gets the best supported technique. 
+		/// </summary>
+		/// <remarks>
+		///    This method returns the lowest-index supported Technique in this material
+		///    (since lower-indexed Techniques are considered to be better than higher-indexed
+		///    ones).
+		///    <p/>
+		///    The best supported technique is only available after this material has been compiled,
+		///    which typically happens on loading the material. Therefore, if this method returns
+		///    null, try calling Material.Load.
+		/// </remarks>
+		/// </summary>
+		public Technique GetBestTechnique(int lodIndex) {
+			if(supportedTechniques.Count > 0) {
+				return (Technique)supportedTechniques[0];
+			}
+			else {
+				return null;
+			}
+		}
 
         /// <summary>
         ///    Gets the technique at the specified index.

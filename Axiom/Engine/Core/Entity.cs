@@ -635,7 +635,7 @@ namespace Axiom.Core {
 				Material m = subEntity.Material;
 				m.Load();
 
-				Technique t = m.BestTechnique;
+				Technique t = m.GetBestTechnique();
 
 				if(t == null) {
 					// no supported techniques

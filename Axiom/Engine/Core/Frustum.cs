@@ -789,7 +789,7 @@ namespace Axiom.Core {
         /// </summary>
         public Technique Technique {
             get {
-                return material.BestTechnique;
+                return material.GetBestTechnique();
             }
         }
 

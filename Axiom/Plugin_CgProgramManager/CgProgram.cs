@@ -190,6 +190,16 @@ namespace Axiom.CgPrograms {
 			}
         }
 
+		/// <summary>
+		///		Only bother with supported programs.
+		/// </summary>
+		public override void Touch() {
+			if(this.IsSupported) {
+				base.Touch ();
+			}
+		}
+
+
 		#endregion
 		
 		#region Properties
