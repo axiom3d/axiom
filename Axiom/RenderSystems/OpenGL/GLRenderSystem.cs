@@ -1487,23 +1487,23 @@ namespace Axiom.RenderSystems.OpenGL {
 
 			// which type of render operation is this?
 			switch(op.operationType) {
-				case RenderMode.PointList:
-					primType = Gl.GL_POINTS;
+                case RenderMode.PointList:
+                    primType = Gl.GL_POINTS;
 					break;
-				case RenderMode.LineList:
-					primType = Gl.GL_LINES;
+                case RenderMode.LineList:
+                    primType = Gl.GL_LINES;
 					break;
-				case RenderMode.LineStrip:
-					primType = Gl.GL_LINE_STRIP;
+                case RenderMode.LineStrip:
+                    primType = Gl.GL_LINE_STRIP;
 					break;
-				case RenderMode.TriangleList:
-					primType = Gl.GL_TRIANGLES;
+                case RenderMode.TriangleList:
+                    primType = Gl.GL_TRIANGLES;
 					break;
-				case RenderMode.TriangleStrip:
-					primType = Gl.GL_TRIANGLE_STRIP;
+                case RenderMode.TriangleStrip:
+                    primType = Gl.GL_TRIANGLE_STRIP;
 					break;
-				case RenderMode.TriangleFan:
-					primType = Gl.GL_TRIANGLE_FAN;
+                case RenderMode.TriangleFan:
+                    primType = Gl.GL_TRIANGLE_FAN;
 					break;
 			}
 
@@ -1520,11 +1520,11 @@ namespace Axiom.RenderSystems.OpenGL {
 					Gl.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, idxBufferID);
 
 					// get the offset pointer to the data in the vbo
-					indexPtr = BUFFER_OFFSET(op.indexData.indexStart * op.indexData.indexBuffer.Size);
+					indexPtr = BUFFER_OFFSET(op.indexData.indexStart * op.indexData.indexBuffer.IndexSize);
 				}
 				else {
 					// get the index data as a direct pointer to the software buffer data
-					indexPtr = ((SoftwareIndexBuffer)op.indexData.indexBuffer).GetDataPointer(op.indexData.indexStart * op.indexData.indexBuffer.Size);
+					indexPtr = ((SoftwareIndexBuffer)op.indexData.indexBuffer).GetDataPointer(op.indexData.indexStart * op.indexData.indexBuffer.IndexSize);
 				}
 
 				// find what type of index buffer elements we are using
@@ -1532,13 +1532,14 @@ namespace Axiom.RenderSystems.OpenGL {
 					? Gl.GL_UNSIGNED_SHORT : Gl.GL_UNSIGNED_INT;
 
 				// draw the indexed vertex data
-				Gl.glDrawRangeElementsEXT(
-					primType,
-					op.indexData.indexStart,
-					op.indexData.indexStart + op.indexData.indexCount - 1,
-					op.indexData.indexCount,
-					indexType, indexPtr);
-			}
+//				Gl.glDrawRangeElementsEXT(
+//					primType,
+//					op.indexData.indexStart,
+//					op.indexData.indexStart + op.indexData.indexCount - 1,
+//					op.indexData.indexCount,
+//					indexType, indexPtr);
+                Gl.glDrawElements(primType, op.indexData.indexCount, indexType, indexPtr);
+            }
 			else {
 				Gl.glDrawArrays(primType, op.vertexData.vertexStart, op.vertexData.vertexCount);
 			}

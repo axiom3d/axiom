@@ -42,6 +42,10 @@ namespace Axiom.Graphics {
 		///		Number of indices in this buffer.
 		/// </summary>
         protected int numIndices;
+        /// <summary>
+        ///     Size of each index.
+        /// </summary>
+        protected int indexSize;
 
         #endregion
 
@@ -63,10 +67,14 @@ namespace Axiom.Graphics {
             // calc the index buffer size
             sizeInBytes = numIndices;
 
-            if(type == IndexType.Size32)
-                sizeInBytes *= Marshal.SizeOf(typeof(int));
-            else
-                sizeInBytes *= Marshal.SizeOf(typeof(short));
+            if (type == IndexType.Size32) {
+                indexSize = Marshal.SizeOf(typeof(int));
+            }
+            else {
+                indexSize = Marshal.SizeOf(typeof(short));
+            }
+
+            sizeInBytes *= indexSize;
 
             // create a shadow buffer if required
             if(useShadowBuffer) {
@@ -95,6 +103,16 @@ namespace Axiom.Graphics {
 				return numIndices;
 			}
 		}
+
+        /// <summary>
+        ///     Gets the size (in bytes) of each index element.
+        /// </summary>
+        /// <value></value>
+        public int IndexSize {
+            get {
+                return indexSize;
+            }
+        }
 
         #endregion
     }
