@@ -1,3 +1,8 @@
+4-8-2004
+- Playing catchup on shadow functionality.  VertexData and Mesh are up to date.
+- Fixed long outstanding bug with vertex bone assignments, which caused the infamous bug with the fish in the fresnel demo where a single vertex would be way off to the side of the fish.  Woohoo!
+- Added new Memory class for handling memory copying throughout the engine (and potentially other things down the road).
+
 4-7-2004
 Major patch from jkeiser
 - Fixes all initialization issues.  The DemoBrowser now works with running demos over and over.
