@@ -28,45 +28,40 @@ using System;
 using Axiom.Core;
 using Axiom.ParticleSystems;
 
-namespace ParticleFX
-{
-	/// <summary>
-	/// Summary description for ParticleFX.
-	/// </summary>
-	public class ParticleFX : IPlugin
-	{
-		public ParticleFX()
-		{
-		}
-		#region IPlugin Members
+namespace ParticleFX {
+    /// <summary>
+    /// Summary description for ParticleFX.
+    /// </summary>
+    public class ParticleFX : IPlugin {
+        public ParticleFX() {
+        }
+        #region IPlugin Members
 
-		public void Start()
-		{
-			ParticleEmitterFactory emitterFactory;
-			ParticleAffectorFactory affectorFactory;
+        public void Start() {
+            ParticleEmitterFactory emitterFactory;
+            ParticleAffectorFactory affectorFactory;
 
-			// box emitter
-			emitterFactory = new BoxEmitterFactory();
-			ParticleSystemManager.Instance.AddEmitterFactory(emitterFactory);
+            // box emitter
+            emitterFactory = new BoxEmitterFactory();
+            ParticleSystemManager.Instance.AddEmitterFactory(emitterFactory);
 
-			// point emitter
-			emitterFactory = new PointEmitterFactory();
-			ParticleSystemManager.Instance.AddEmitterFactory(emitterFactory);
+            // point emitter
+            emitterFactory = new PointEmitterFactory();
+            ParticleSystemManager.Instance.AddEmitterFactory(emitterFactory);
 
-			// linear force affector
-			affectorFactory = new LinearForceAffectorFactory();
-			ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
+            // linear force affector
+            affectorFactory = new LinearForceAffectorFactory();
+            ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
 
-			// color fader affector
-			affectorFactory = new ColorFaderAffectorFactory();
-			ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
-		}
+            // color fader affector
+            affectorFactory = new ColorFaderAffectorFactory();
+            ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
+        }
 
-		public void Stop()
-		{
-			// TODO:  Add ParticleFX.Stop implementation
-		}
+        public void Stop() {
+            // TODO:  Add ParticleFX.Stop implementation
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

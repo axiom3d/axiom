@@ -27,34 +27,29 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 
-namespace RenderSystem_DirectX9
-{
-	/// <summary>
-	/// Summary description for D3DVideoModeCollection.
-	/// </summary>
-	public class VideoModeCollection : IEnumerable
-	{
-		private ArrayList videoModes;
+namespace RenderSystem_DirectX9 {
+    /// <summary>
+    /// Summary description for D3DVideoModeCollection.
+    /// </summary>
+    public class VideoModeCollection : IEnumerable {
+        private ArrayList videoModes;
 
-		public VideoModeCollection()
-		{
-			videoModes = new ArrayList();
-		}
+        public VideoModeCollection() {
+            videoModes = new ArrayList();
+        }
 
-		public void Add(VideoMode mode)
-		{
-			videoModes.Add(mode);
-		}
+        public void Add(VideoMode mode) {
+            videoModes.Add(mode);
+        }
 
-		#region Implementation of IEnumerable
+        #region Implementation of IEnumerable
 
-		public System.Collections.IEnumerator GetEnumerator()
-		{
-			return videoModes.GetEnumerator();
-		}
+        public System.Collections.IEnumerator GetEnumerator() {
+            return videoModes.GetEnumerator();
+        }
 
-		#endregion
+        #endregion
 
 
-	}
+    }
 }

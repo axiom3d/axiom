@@ -29,77 +29,64 @@ using Axiom.Core;
 using Axiom.Physics;
 using Axiom.MathLib;
 
-namespace Axiom.Scripting
-{
-	/// <summary>
-	/// Summary description for GameObject.
-	/// </summary>
-	public abstract class GameObject
-	{
-		protected IRigidBody body;
-		protected Entity entity;
-		protected SceneNode node;
-		protected SceneManager sceneMgr;
+namespace Axiom.Scripting {
+    /// <summary>
+    /// Summary description for GameObject.
+    /// </summary>
+    public abstract class GameObject {
+        protected IRigidBody body;
+        protected Entity entity;
+        protected SceneNode node;
+        protected SceneManager sceneMgr;
 
-		public GameObject(SceneManager sceneManager)
-		{
-			this.sceneMgr = sceneManager;
-		}
+        public GameObject(SceneManager sceneManager) {
+            this.sceneMgr = sceneManager;
+        }
 
-		public IRigidBody RigidBody
-		{
-			set 
-			{ 
-				body = value; 
-				body.Position = node.Position;
-			}
-			get { return body; }
-		}
+        public IRigidBody RigidBody {
+            set { 
+                body = value; 
+                body.Position = node.Position;
+            }
+            get { return body; }
+        }
 
-		public void Move(float x, float y, float z)
-		{
-			node.Translate(new Vector3(x, y, z));
-			//body.Position = node.Position;
-			//body.AddTorque(120.0f, 0.0f, 0.0f);
-		}
+        public void Move(float x, float y, float z) {
+            node.Translate(new Vector3(x, y, z));
+            //body.Position = node.Position;
+            //body.AddTorque(120.0f, 0.0f, 0.0f);
+        }
 
-		public void Rotate(Vector3 axis, float angle)
-		{
-			node.Rotate(axis, angle);
-		}
+        public void Rotate(Vector3 axis, float angle) {
+            node.Rotate(axis, angle);
+        }
 
-		public void Scale(float x, float y, float z)
-		{
-			node.Scale(new Vector3(x, y, z));
-		}
+        public void Scale(float x, float y, float z) {
+            node.Scale(new Vector3(x, y, z));
+        }
 
-		public Vector3 Position
-		{
-			get { return node.Position; }
-			set { node.Position = value; }
-		}
+        public Vector3 Position {
+            get { return node.Position; }
+            set { node.Position = value; }
+        }
 
-		public Quaternion Orientation
-		{
-			get { return node.Orientation; }
-			set { 	node.Orientation = value;
-			}
-		}
+        public Quaternion Orientation {
+            get { return node.Orientation; }
+            set { 	node.Orientation = value;
+            }
+        }
 
-		public Node Node
-		{
-			get { return node; }
-		}
+        public Node Node {
+            get { return node; }
+        }
 
-		public AxisAlignedBox BoundingBox
-		{
-			get { return entity.BoundingBox; }
-		}
+        public AxisAlignedBox BoundingBox {
+            get { return entity.BoundingBox; }
+        }
 
-		public void UpdateFromDynamics()
-		{
-			this.Position = body.Position;
-			this.Orientation = body.Orientation;
-		}
-	}
+        public void UpdateFromDynamics() {
+            this.Position = body.Position;
+            this.Orientation = body.Orientation;
+        }
+    }
 }

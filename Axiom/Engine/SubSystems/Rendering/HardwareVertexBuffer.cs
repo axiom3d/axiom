@@ -27,61 +27,55 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom.MathLib;
 
-namespace Axiom.SubSystems.Rendering
-{
-	/// <summary>
-	///		Describes the graphics API independent functionality required by a hardware
-	///		vertex buffer.  
-	/// </summary>
-	/// <remarks>
-	///		
-	/// </remarks>
-	public abstract class HardwareVertexBuffer : HardwareBuffer
-	{
+namespace Axiom.SubSystems.Rendering {
+    /// <summary>
+    ///		Describes the graphics API independent functionality required by a hardware
+    ///		vertex buffer.  
+    /// </summary>
+    /// <remarks>
+    ///		
+    /// </remarks>
+    public abstract class HardwareVertexBuffer : HardwareBuffer {
 
-		#region Member variables
+        #region Member variables
 
-		protected int numVertices;
-		protected int vertexSize;
+        protected int numVertices;
+        protected int vertexSize;
 
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 		
-		public HardwareVertexBuffer(int vertexSize, int numVertices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer) 
-			: base(usage, useSystemMemory, useShadowBuffer)
-		{	
-			this.vertexSize = vertexSize;
-			this.numVertices = numVertices;
+        public HardwareVertexBuffer(int vertexSize, int numVertices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer) 
+            : base(usage, useSystemMemory, useShadowBuffer) {	
+            this.vertexSize = vertexSize;
+            this.numVertices = numVertices;
 
-			// calculate the size in bytes of this buffer
-			sizeInBytes = vertexSize * numVertices;
+            // calculate the size in bytes of this buffer
+            sizeInBytes = vertexSize * numVertices;
 
-			// create a shadow buffer if required
-			if(useShadowBuffer)
-			{
-				shadowBuffer = new SoftwareVertexBuffer(vertexSize, numVertices, BufferUsage.Dynamic);
-			}
-		}
+            // create a shadow buffer if required
+            if(useShadowBuffer) {
+                shadowBuffer = new SoftwareVertexBuffer(vertexSize, numVertices, BufferUsage.Dynamic);
+            }
+        }
 		
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// DOC
-		public int VertexSize
-		{
-			get { return vertexSize; }
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// DOC
+        public int VertexSize {
+            get { return vertexSize; }
+        }
 
-		public int VertexCount
-		{
-			get { return numVertices; }
-		}
+        public int VertexCount {
+            get { return numVertices; }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

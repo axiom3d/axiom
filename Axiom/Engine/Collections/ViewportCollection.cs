@@ -37,65 +37,61 @@ using K = System.Int32;
 // type of parent of this collection (if any)
 using P = Axiom.SubSystems.Rendering.RenderTarget;
 
-namespace Axiom.Collections
-{
-	/// <summary>
-	/// Summary description for ViewportCollection.
-	/// </summary>
-	public class ViewportCollection : AxiomCollection
-	{
-		#region Constructors
+namespace Axiom.Collections {
+    /// <summary>
+    /// Summary description for ViewportCollection.
+    /// </summary>
+    public class ViewportCollection : AxiomCollection {
+        #region Constructors
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		public ViewportCollection() : base() {}
+        /// <summary>
+        ///		Default constructor.
+        /// </summary>
+        public ViewportCollection() : base() {}
 
-		/// <summary>
-		///		Constructor that takes a parent object to, and calls the base class constructor to 
-		/// </summary>
-		/// <param name="entity"></param>
-		public ViewportCollection(P parent) : base(parent) {}
+        /// <summary>
+        ///		Constructor that takes a parent object to, and calls the base class constructor to 
+        /// </summary>
+        /// <param name="entity"></param>
+        public ViewportCollection(P parent) : base(parent) {}
 
-		#endregion
+        #endregion
 
-		#region Strongly typed methods and indexers
+        #region Strongly typed methods and indexers
 
-		/// <summary>
-		///		Get/Set indexer that allows access to the collection by index.
-		/// </summary>
-		new public T this[int index]
-		{
-			get { return (T)base[index]; }
-			set { base[index] = value; }
-		}
+        /// <summary>
+        ///		Get/Set indexer that allows access to the collection by index.
+        /// </summary>
+        new public T this[int index] {
+            get { return (T)base[index]; }
+            set { base[index] = value; }
+        }
 
-		/// <summary>
-		///		Adds an object to the collection.
-		/// </summary>
-		/// <param name="item"></param>
-		public void Add(T item)
-		{
-			Debug.Assert(!objectList.ContainsKey(item.ZOrder), "A viewport with the specified ZOrder " + item.ZOrder + " already exists.");
+        /// <summary>
+        ///		Adds an object to the collection.
+        /// </summary>
+        /// <param name="item"></param>
+        public void Add(T item) {
+            Debug.Assert(!objectList.ContainsKey(item.ZOrder), "A viewport with the specified ZOrder " + item.ZOrder + " already exists.");
 
-			// assign this viewport to the parent RenderTarget
-			item.Target = (P)parent;
+            // assign this viewport to the parent RenderTarget
+            item.Target = (P)parent;
 
-			// add the viewport
-			base.Add(item.ZOrder, item);
-		}
+            // add the viewport
+            base.Add(item.ZOrder, item);
+        }
 
-		/// <summary>
-		///		Adds a named object to the collection.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="item"></param>
-		//public void Add(string name, T item)
-		//{
-		//	base.Add(name, item);
-		//}
+        /// <summary>
+        ///		Adds a named object to the collection.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="item"></param>
+        //public void Add(string name, T item)
+        //{
+        //	base.Add(name, item);
+        //}
 
-		#endregion
+        #endregion
 
-	}
+    }
 }

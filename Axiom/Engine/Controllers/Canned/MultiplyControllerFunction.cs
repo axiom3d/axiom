@@ -26,29 +26,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.Controllers.Canned
-{
-	/// <summary>
-	/// Summary description for MultiplyControllerValue.
-	/// </summary>
-	public class MultipyControllerFunction : BaseControllerFunction
-	{
-		private float rate = 10.0f;
+namespace Axiom.Controllers.Canned {
+    /// <summary>
+    /// Summary description for MultiplyControllerValue.
+    /// </summary>
+    public class MultipyControllerFunction : BaseControllerFunction {
+        private float rate = 10.0f;
 
-		public MultipyControllerFunction(float rate) : base(false)
-		{
-			this.rate = rate;
-		}
+        public MultipyControllerFunction(float rate) : base(false) {
+            this.rate = rate;
+        }
 
-		public MultipyControllerFunction(float rate, bool useDelta) : base(useDelta)
-		{
-			this.rate = rate;
-		}
+        public MultipyControllerFunction(float rate, bool useDelta) : base(useDelta) {
+            this.rate = rate;
+        }
 
-		public override float Execute(float sourceValue)
-		{
-			return AdjustInput(sourceValue * rate);
-		}
+        public override float Execute(float sourceValue) {
+            return AdjustInput(sourceValue * rate);
+        }
 
-	}
+    }
 }

@@ -27,21 +27,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Windows.Forms;
 
-namespace Axiom.EventSystem
-{
-	/// <summary>
-	/// Summary description for IKeyTarget.
-	/// </summary>
-	public interface IKeyTarget
-	{
-		/// <summary>
-		/// 
-		/// </summary>
-		event KeyEventHandler KeyUp;
+namespace Axiom.EventSystem {
+    /// <summary>
+    /// Summary description for IKeyTarget.
+    /// </summary>
+    public interface IKeyTarget {
+        /// <summary>
+        /// 
+        /// </summary>
+        event KeyEventHandler KeyUp;
 
-		/// <summary>
-		///		
-		/// </summary>
-		event KeyPressEventHandler KeyDown;
-	}
+        /// <summary>
+        ///		
+        /// </summary>
+        event KeyPressEventHandler KeyDown;
+    }
 }

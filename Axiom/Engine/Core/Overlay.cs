@@ -26,43 +26,37 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.Core
-{
-	/// <summary>
-	/// Summary description for Overlay.
-	/// </summary>
-	public class Overlay : Resource
-	{
-		public Overlay(String name)
-		{
-			this.name = name;
-		}
+namespace Axiom.Core {
+    /// <summary>
+    /// Summary description for Overlay.
+    /// </summary>
+    public class Overlay : Resource {
+        public Overlay(String name) {
+            this.name = name;
+        }
 
-		#region Implementation of Resource
+        #region Implementation of Resource
 
-		/// <summary>
-		///		
-		/// </summary>
-		public override void Load()
-		{
+        /// <summary>
+        ///		
+        /// </summary>
+        public override void Load() {
 		
-		}
+        }
 
-		/// <summary>
-		///		
-		/// </summary>
-		public override void Unload()
-		{
+        /// <summary>
+        ///		
+        /// </summary>
+        public override void Unload() {
 		
-		}
+        }
 
-		/// <summary>
-		///		
-		/// </summary>
-		public override void Dispose()
-		{
-		}
+        /// <summary>
+        ///		
+        /// </summary>
+        public override void Dispose() {
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

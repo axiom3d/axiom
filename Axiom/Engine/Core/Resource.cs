@@ -26,128 +26,118 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.IO;
 
-namespace Axiom.Core
-{
-	/// <summary>
-	///		Abstract class reprensenting a loadable resource (e.g. textures, sounds etc)
-	/// </summary>
-	/// <remarks>
-	///		Resources are generally passive constructs, handled through the
-	///		ResourceManager abstract class for the appropriate subclass.
-	///		The main thing is that Resources can be loaded or unloaded by the
-	///		ResourceManager to stay within a defined memory budget. Therefore,
-	///		all Resources must be able to load, unload (whilst retainin enough
-	///		info about themselves to be reloaded later), and state how big they are.
-	///
-	///		Subclasses must implement:
-	///		1. A constructor, with at least a mandatory name param.
-	///			This constructor must set name and optionally size.
-	///		2. The Load() and Unload() methods - size must be set after Load()
-	///			Each must check & update the isLoaded flag.
-	/// </remarks>
-    public abstract class Resource : IDisposable
-    {
-		#region Member variables
+namespace Axiom.Core {
+    /// <summary>
+    ///		Abstract class reprensenting a loadable resource (e.g. textures, sounds etc)
+    /// </summary>
+    /// <remarks>
+    ///		Resources are generally passive constructs, handled through the
+    ///		ResourceManager abstract class for the appropriate subclass.
+    ///		The main thing is that Resources can be loaded or unloaded by the
+    ///		ResourceManager to stay within a defined memory budget. Therefore,
+    ///		all Resources must be able to load, unload (whilst retainin enough
+    ///		info about themselves to be reloaded later), and state how big they are.
+    ///
+    ///		Subclasses must implement:
+    ///		1. A constructor, with at least a mandatory name param.
+    ///			This constructor must set name and optionally size.
+    ///		2. The Load() and Unload() methods - size must be set after Load()
+    ///			Each must check & update the isLoaded flag.
+    /// </remarks>
+    public abstract class Resource : IDisposable {
+        #region Member variables
 
-		protected String name;
-		protected bool isLoaded;
-		protected ulong size;
-		protected ulong lastAccessed;
+        protected String name;
+        protected bool isLoaded;
+        protected ulong size;
+        protected ulong lastAccessed;
 
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		/// <remarks>Subclasses must initialize name and size.</remarks>
-        public Resource()
-        {
-			isLoaded = false;
-			size = 0;
+        /// <summary>
+        ///		Default constructor.
+        /// </summary>
+        /// <remarks>Subclasses must initialize name and size.</remarks>
+        public Resource() {
+            isLoaded = false;
+            size = 0;
         }
 
-		#endregion
+        #endregion
 
-		#region Virtual/Abstract methods
+        #region Virtual/Abstract methods
 
-		/// <summary>
-		///		Loads the resource, if not loaded already.
-		/// </summary>
-		abstract public void Load();
+        /// <summary>
+        ///		Loads the resource, if not loaded already.
+        /// </summary>
+        public abstract void Load();
 
-		/// <summary>
-		///		Unloads the resource data, but retains enough info. to be able to recreate it
-		///		on demand.
-		/// </summary>
-		virtual public void Unload() {}
+        /// <summary>
+        ///		Unloads the resource data, but retains enough info. to be able to recreate it
+        ///		on demand.
+        /// </summary>
+        public virtual void Unload() {}
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		///		Size of this resource.
-		/// </summary>
-		public ulong Size
-		{
-			get { return size; }
-		}
+        /// <summary>
+        ///		Size of this resource.
+        /// </summary>
+        public ulong Size {
+            get { return size; }
+        }
 
-		/// <summary>
-		///		Name of this resource.
-		/// </summary>
-		public String Name
-		{
-			get { return name.ToLower(); }
-		}
+        /// <summary>
+        ///		Name of this resource.
+        /// </summary>
+        public String Name {
+            get { return name.ToLower(); }
+        }
 
-		/// <summary>
-		///		Is this resource loaded?
-		/// </summary>
-		public bool IsLoaded
-		{
-			get { return isLoaded; }
-		}
+        /// <summary>
+        ///		Is this resource loaded?
+        /// </summary>
+        public bool IsLoaded {
+            get { return isLoaded; }
+        }
 
-		/// <summary>
-		///		The time the resource was last touched.
-		/// </summary>
-		public ulong LastAccessed
-		{
-			get { return lastAccessed; }
-		}
+        /// <summary>
+        ///		The time the resource was last touched.
+        /// </summary>
+        public ulong LastAccessed {
+            get { return lastAccessed; }
+        }
 
-		#endregion
+        #endregion
 
-		#region Public methods
+        #region Public methods
 
-		/// <summary>
-		///		Indicates this resource has been used.
-		/// </summary>
-		// TODO: Pass in time from HighResolutionTimer in the main loop?  Or stick with this?
-		public void Touch()
-		{
-			lastAccessed = (ulong)Environment.TickCount;
-		}
+        /// <summary>
+        ///		Indicates this resource has been used.
+        /// </summary>
+        // TODO: Pass in time from HighResolutionTimer in the main loop?  Or stick with this?
+        public void Touch() {
+            lastAccessed = (ulong)Environment.TickCount;
+        }
 
-		#endregion
+        #endregion
 
-		#region Implementation of IDisposable
+        #region Implementation of IDisposable
 
-		/// <summary>
-		///		Dispose method.  Made virtual to allow subclasses to destroy resources their own way.
-		/// </summary>
-		virtual public void Dispose()
-		{
-			if(isLoaded)
-			{
-				// unload this resource
-				Unload();
-			}
-		}
+        /// <summary>
+        ///		Dispose method.  Made virtual to allow subclasses to destroy resources their own way.
+        /// </summary>
+        public virtual void Dispose() {
+            if(isLoaded) {
+                // unload this resource
+                Unload();
+            }
+        }
 
-		#endregion
+        #endregion
     }
 }

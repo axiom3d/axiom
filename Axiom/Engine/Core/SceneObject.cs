@@ -25,119 +25,195 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 using System;
 using Axiom.Enumerations;
+using Axiom.MathLib;
 using Axiom.SubSystems.Rendering;
 
-namespace Axiom.Core
-{
-	/// <summary>
-	/// Abstract class definining a movable object in a scene.
-	/// </summary>
-	/// <remarks>
-	/// Instances of this class are discrete, relatively small, movable objects
-	/// which are attached to SceneNode objects to define their position.						  
-	/// </remarks>
-	// TODO: Add local OBB / convex hull
-	public abstract class SceneObject
-	{
-		protected SceneNode parentNode;
-		protected bool isVisible;
-		protected String name;
-		protected RenderQueueGroupID renderQueueID;
+namespace Axiom.Core {
+    /// <summary>
+    /// Abstract class definining a movable object in a scene.
+    /// </summary>
+    /// <remarks>
+    /// Instances of this class are discrete, relatively small, movable objects
+    /// which are attached to SceneNode objects to define their position.						  
+    /// </remarks>
+    // TODO: Add local OBB / convex hull
+    public abstract class SceneObject {
 
-		public SceneObject()
-		{
-			this.isVisible = true;
+        #region Member variables 
 
-			// set default RenderQueueGroupID for this movable object
-			renderQueueID = RenderQueueGroupID.Main;
-		}
+        /// <summary>Node that this node is attached to.</summary>
+        protected SceneNode parentNode;
+        /// <summary>Is this object visible?</summary>
+        protected bool isVisible;
+        /// <summary>Name of this object.</summary>
+        protected String name;
+        /// <summary>The render queue to use when rendering this object.</summary>
+        protected RenderQueueGroupID renderQueueID;
+        /// <summary>Flags determining whether this object is included/excluded from scene queries.</summary>
+        protected ulong queryFlags;
+        /// <summary>Cached world bounding box of this object.</summary>
+        protected AxisAlignedBox worldAABB;
+        /// <summary>Cached world bounding spehere.</summary>
+        protected Sphere worldBoundingSphere;
 
-		#region Properties
+        #endregion Member variables 
 
-		/// <summary>
-		///		An abstract method required by subclasses to return the bounding box of this object.
-		/// </summary>
-		public abstract AxisAlignedBox BoundingBox
-		{
-			get;
-		}
+        #region Constructors
 
-		/// <summary>
-		///		Gets the parent node that this object is attached to.
-		/// </summary>
-		public SceneNode ParentNode
-		{
-			get
-			{
-				return parentNode;
-			}
-		}
+        public SceneObject() {
+            this.isVisible = true;
 
-		/// <summary>
-		///		See if this object is attached to another node.
-		/// </summary>
-		public bool IsAttached
-		{
-			get
-			{
-				return (parentNode == null);
-			}
-		}
+            // set default RenderQueueGroupID for this movable object
+            renderQueueID = RenderQueueGroupID.Main;
 
-		/// <summary>
-		///		States whether or not this object should be visible.
-		/// </summary>
-		virtual public bool IsVisible
-		{
-			get
-			{
-				return isVisible;
-			}
-			set
-			{
-				isVisible = value;
-			}
-		}
+            queryFlags = unchecked(0xffffffff);
+        }
 
-		/// <summary>
-		///		Name of this SceneObject.
-		/// </summary>
-		public String Name
-		{
-			get { return name;}
-			set { name = value; }
-		}
+        #endregion Constructors
 
-		#endregion
+        #region Properties
 
-		#region Internal engine methods
-		
-		/// <summary>
-		///		An abstract method that causes the specified RenderQueue to update itself.  
-		/// </summary>
-		/// <remarks>This is an internal method used by the engine assembly only.</remarks>
-		/// <param name="queue">The render queue that this object should be updated in.</param>
-		internal abstract void UpdateRenderQueue(RenderQueue queue);
+        /// <summary>
+        ///		An abstract method required by subclasses to return the bounding box of this object in local coordinates.
+        /// </summary>
+        public abstract AxisAlignedBox BoundingBox {
+            get;
+        }
 
-		/// <summary>
-		///		Internal method called to notify the object that it has been attached to a node.
-		/// </summary>
-		/// <param name="node">Scene node to notify.</param>
-		internal virtual void NotifyAttached(SceneNode node)
-		{
-			parentNode = node;
-		}
+        /// <summary>
+        ///		An abstract method required by subclasses to return the bounding box of this object in local coordinates.
+        /// </summary>
+        public abstract float BoundingRadius {
+            get;
+        }
 
-		/// <summary>
-		///		Internal method to notify the object of the camera to be used for the next rendering operation.
-		/// </summary>
-		/// <remarks>
-		///		Certain objects may want to do specific processing based on the camera position. This method notifies
-		///		them incase they wish to do this.
-		/// </remarks>
-		/// <param name="camera"></param>
-		internal abstract void NotifyCurrentCamera(Camera camera);
+        /// <summary>
+        ///		Gets the parent node that this object is attached to.
+        /// </summary>
+        public SceneNode ParentNode {
+            get {
+                return parentNode;
+            }
+        }
 
-		#endregion
-	}
+        /// <summary>
+        ///		See if this object is attached to another node.
+        /// </summary>
+        public bool IsAttached {
+            get {
+                return (parentNode == null);
+            }
+        }
+
+        /// <summary>
+        ///		States whether or not this object should be visible.
+        /// </summary>
+        public virtual bool IsVisible {
+            get {
+                return isVisible;
+            }
+            set {
+                isVisible = value;
+            }
+        }
+
+        /// <summary>
+        ///		Name of this SceneObject.
+        /// </summary>
+        public String Name {
+            get { return name;}
+            set { name = value; }
+        }
+
+        /// <summary>
+        ///    Returns the full transformation of the parent SceneNode or the attachingPoint node
+        /// </summary>
+        public virtual Matrix4 ParentFullTransform {
+            get {
+                if(parentNode != null)
+                    return parentNode.FullTransform;
+                
+                // identity if no parent
+                return Matrix4.Identity;
+            }
+        }
+
+        #endregion Properties
+
+        #region Methods
+
+        /// <summary>
+        ///    Overloaded method.  Calls the overload with a default of not deriving the transform.
+        /// </summary>
+        /// <returns></returns>
+        public AxisAlignedBox GetWorldBoundingBox() {
+            return GetWorldBoundingBox(false);
+        }
+
+        /// <summary>
+        ///    Retrieves the axis-aligned bounding box for this object in world coordinates.
+        /// </summary>
+        /// <returns></returns>
+        public virtual AxisAlignedBox GetWorldBoundingBox(bool derive) {
+            if(derive) {
+                worldAABB = this.BoundingBox;
+                worldAABB.Transform(this.ParentFullTransform);
+            }
+
+            return worldAABB;
+        }
+
+        /// <summary>
+        ///    Overloaded method.  Calls the overload with a default of not deriving the transform.
+        /// </summary>
+        /// <returns></returns>
+        public Sphere GetWorldBoundingSphere() {
+            return GetWorldBoundingSphere(false);
+        }
+
+        /// <summary>
+        ///    Retrieves the worldspace bounding sphere for this object.
+        /// </summary>
+        /// <param name="derive">Whether or not to derive from parent transforms.</param>
+        /// <returns></returns>
+        public virtual Sphere GetWorldBoundingSphere(bool derive) {
+            if(derive) {
+                worldBoundingSphere.Radius = this.BoundingRadius;
+                worldBoundingSphere.Center = parentNode.DerivedPosition;
+            }
+
+            return worldBoundingSphere;
+        }
+
+        #endregion Methods
+
+        #region Internal engine methods
+
+        /// <summary>
+        ///		Internal method called to notify the object that it has been attached to a node.
+        /// </summary>
+        /// <param name="node">Scene node to notify.</param>
+        internal virtual void NotifyAttached(SceneNode node) {
+            parentNode = node;
+        }
+
+        /// <summary>
+        ///		Internal method to notify the object of the camera to be used for the next rendering operation.
+        /// </summary>
+        /// <remarks>
+        ///		Certain objects may want to do specific processing based on the camera position. This method notifies
+        ///		them incase they wish to do this.
+        /// </remarks>
+        /// <param name="camera"></param>
+        internal abstract void NotifyCurrentCamera(Camera camera);
+
+        /// <summary>
+        ///		An abstract method that causes the specified RenderQueue to update itself.  
+        /// </summary>
+        /// <remarks>This is an internal method used by the engine assembly only.</remarks>
+        /// <param name="queue">The render queue that this object should be updated in.</param>
+        internal abstract void UpdateRenderQueue(RenderQueue queue);
+
+        #endregion Internal engine methods
+    }
 }

@@ -22,33 +22,30 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom.Exceptions;
 
-namespace Axiom.Physics
-{
-	/// <summary>
-	/// Summary description for DynamicsSystem.
-	/// </summary>
-	public abstract class DynamicsSystem : IDisposable
-	{
-		#region Member variables
+namespace Axiom.Physics {
+    /// <summary>
+    /// Summary description for DynamicsSystem.
+    /// </summary>
+    public abstract class DynamicsSystem : IDisposable {
+        #region Member variables
 		
-		static protected DynamicsSystem instance;
+        static protected DynamicsSystem instance;
 		
-		#endregion
+        #endregion
 
-		/// <summary>
-		///		
-		/// </summary>
-		/// <returns></returns>
-		abstract public IWorld CreateWorld();
+        /// <summary>
+        ///		
+        /// </summary>
+        /// <returns></returns>
+        public abstract IWorld CreateWorld();
 
-		#region IDisposable Members
+        #region IDisposable Members
 
-		public void Dispose()
-		{
-			// TODO: Redo this for the love of god
-			instance = null;
-		}
+        public void Dispose() {
+            // TODO: Redo this for the love of god
+            instance = null;
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

@@ -26,94 +26,85 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.SubSystems.Rendering
-{
-	/// <summary>
-	/// 	This serves as a way to query information about the capabilies of a 3D API and the
-	/// 	users hardware configuration.  A RenderSystem should create and initialize an instance
-	/// 	of this class during startup so that it will be available for use ASAP for checking caps.
-	/// </summary>
-	public class HardwareCaps
-	{
-		#region Member variables
+namespace Axiom.SubSystems.Rendering {
+    /// <summary>
+    /// 	This serves as a way to query information about the capabilies of a 3D API and the
+    /// 	users hardware configuration.  A RenderSystem should create and initialize an instance
+    /// 	of this class during startup so that it will be available for use ASAP for checking caps.
+    /// </summary>
+    public class HardwareCaps {
+        #region Member variables
 		
-		private Capabilities caps;
-		private int numTextureUnits;
-		private int stencilBufferBits;
-		private int numIndexedMatrices;
-		private int maxLights;
-		private string vendor;
+        private Capabilities caps;
+        private int numTextureUnits;
+        private int stencilBufferBits;
+        private int numIndexedMatrices;
+        private int maxLights;
+        private string vendor;
 
-		#endregion
+        #endregion
 		
-		#region Constructors
+        #region Constructors
 		
-		public HardwareCaps()
-		{
-		}
+        public HardwareCaps() {
+        }
 		
-		#endregion
+        #endregion
 		
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		///		Maximum number of lights supported in the scene at once by the API and/or hardware.
-		/// </summary>
-		public int MaxLights
-		{
-			get { return maxLights; }
-			set { maxLights = value; }
-		}
+        /// <summary>
+        ///		Maximum number of lights supported in the scene at once by the API and/or hardware.
+        /// </summary>
+        public int MaxLights {
+            get { return maxLights; }
+            set { maxLights = value; }
+        }
 
-		/// <summary>
-		///		Reports on the number of texture units the graphics hardware has available.
-		/// </summary>
-		public int NumTextureUnits
-		{
-			get { return numTextureUnits; }
-			set { numTextureUnits = value; }
-		}
+        /// <summary>
+        ///		Reports on the number of texture units the graphics hardware has available.
+        /// </summary>
+        public int NumTextureUnits {
+            get { return numTextureUnits; }
+            set { numTextureUnits = value; }
+        }
 
-		/// <summary>
-		///		Number of stencil buffer bits suppported by the hardware.
-		/// </summary>
-		public int StencilBufferBits
-		{
-			get { return stencilBufferBits; }
-			set { stencilBufferBits = value; }
-		}
+        /// <summary>
+        ///		Number of stencil buffer bits suppported by the hardware.
+        /// </summary>
+        public int StencilBufferBits {
+            get { return stencilBufferBits; }
+            set { stencilBufferBits = value; }
+        }
 
-		/// <summary>
-		///		Gets/Sets the vendor of the current video card.
-		/// </summary>
-		public string Vendor
-		{
-			get { return vendor; }
-			set { vendor = value; }
-		}
+        /// <summary>
+        ///		Gets/Sets the vendor of the current video card.
+        /// </summary>
+        public string Vendor {
+            get { return vendor; }
+            set { vendor = value; }
+        }
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		public bool CheckCap(Capabilities cap)
-		{
-			return (caps & cap) > 0;
-		}
+        public bool CheckCap(Capabilities cap) {
+            return (caps & cap) > 0;
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="cap"></param>
-		public void SetCap(Capabilities cap)
-		{
-			caps |= cap;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cap"></param>
+        public void SetCap(Capabilities cap) {
+            caps |= cap;
 
-			// write out to the debug console
-			System.Diagnostics.Debug.WriteLine(String.Format("Hardware Cap: {0}", cap.ToString()));
-		}
+            // write out to the debug console
+            System.Diagnostics.Debug.WriteLine(String.Format("Hardware Cap: {0}", cap.ToString()));
+        }
 
-		#endregion
+        #endregion
 
-	}
+    }
 }

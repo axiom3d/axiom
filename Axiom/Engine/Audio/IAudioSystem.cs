@@ -24,18 +24,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-namespace Axiom.Audio
-{
-	/// <summary>
-	/// Summary description for IAudioSystem.
-	/// </summary>
-	public interface IAudioSystem
-	{
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		ISound CreateSound(string name);
-	}
+namespace Axiom.Audio {
+    /// <summary>
+    /// Summary description for IAudioSystem.
+    /// </summary>
+    public interface IAudioSystem {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        ISound CreateSound(string name);
+    }
 }

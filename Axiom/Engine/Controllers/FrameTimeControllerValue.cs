@@ -27,81 +27,73 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom.Core;
 
-namespace Axiom.Controllers
-{
-	/// <summary>
-	/// Summary description for FrameTimeControllerValue.
-	/// </summary>
-	public class FrameTimeControllerValue : IControllerValue
-	{
-		/// <summary>
-		///		Stores the value of the time elapsed since the last frame.
-		/// </summary>
-		private float frameTime;
+namespace Axiom.Controllers {
+    /// <summary>
+    /// Summary description for FrameTimeControllerValue.
+    /// </summary>
+    public class FrameTimeControllerValue : IControllerValue {
+        /// <summary>
+        ///		Stores the value of the time elapsed since the last frame.
+        /// </summary>
+        private float frameTime;
 
-		/// <summary>
-		///		Float value that should be used to scale controller time.
-		/// </summary>
-		private float timeFactor;
+        /// <summary>
+        ///		Float value that should be used to scale controller time.
+        /// </summary>
+        private float timeFactor;
 
-		public FrameTimeControllerValue()
-		{
-			// add a frame started event handler
-			Engine.Instance.FrameStarted += new FrameEvent(RenderSystem_FrameStarted);
+        public FrameTimeControllerValue() {
+            // add a frame started event handler
+            Engine.Instance.FrameStarted += new FrameEvent(RenderSystem_FrameStarted);
 
-			frameTime = 0;
+            frameTime = 0;
 
-			// default to 1 for standard timing
-			timeFactor = 1;
-		}
+            // default to 1 for standard timing
+            timeFactor = 1;
+        }
 
-		#region IControllerValue Members
+        #region IControllerValue Members
 
-		/// <summary>
-		///		Gets a time scaled value to use for controller functions.
-		/// </summary>
-		float IControllerValue.Value
-		{
-			get
-			{
-				return frameTime;
-			}
-			set 
-			{ 
-				// Do nothing			
-			}
-		}
+        /// <summary>
+        ///		Gets a time scaled value to use for controller functions.
+        /// </summary>
+        float IControllerValue.Value {
+            get {
+                return frameTime;
+            }
+            set { 
+                // Do nothing			
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		///		Float value that should be used to scale controller time.  This could be used
-		///		to either speed up or slow down controller functions independent of slowing
-		///		down the render loop.
-		/// </summary>
-		public float TimeFactor
-		{
-			get { return timeFactor; }
-			set { timeFactor = value; }
-		}
+        /// <summary>
+        ///		Float value that should be used to scale controller time.  This could be used
+        ///		to either speed up or slow down controller functions independent of slowing
+        ///		down the render loop.
+        /// </summary>
+        public float TimeFactor {
+            get { return timeFactor; }
+            set { timeFactor = value; }
+        }
 
-		#endregion
+        #endregion
 
-		/// <summary>
-		///		Event handler to the Frame Started event so that we can capture the
-		///		time since last frame to use for controller functions.
-		/// </summary>
-		/// <param name="source"></param>
-		/// <param name="e"></param>
-		/// <returns></returns>
-		private bool RenderSystem_FrameStarted(object source, FrameEventArgs e)
-		{
-			// apply the time factor to the time since last frame and save it
-			frameTime = timeFactor * e.TimeSinceLastFrame;
+        /// <summary>
+        ///		Event handler to the Frame Started event so that we can capture the
+        ///		time since last frame to use for controller functions.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        private bool RenderSystem_FrameStarted(object source, FrameEventArgs e) {
+            // apply the time factor to the time since last frame and save it
+            frameTime = timeFactor * e.TimeSinceLastFrame;
 
-			return true;
-		}
-	}
+            return true;
+        }
+    }
 }

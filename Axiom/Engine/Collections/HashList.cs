@@ -27,87 +27,76 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 
-namespace Axiom.Collections
-{
-	/// <summary>
-	/// 	Summary description for HashList.
-	/// </summary>
-	public class HashList
-	{
-		Hashtable itemTable = new Hashtable();
-		SortedList itemList = new SortedList();
-		ArrayList itemKeys = new ArrayList();
+namespace Axiom.Collections {
+    /// <summary>
+    /// 	Summary description for HashList.
+    /// </summary>
+    public class HashList {
+        Hashtable itemTable = new Hashtable();
+        SortedList itemList = new SortedList();
+        ArrayList itemKeys = new ArrayList();
 
-		#region Member variables
+        #region Member variables
 		
-		#endregion
+        #endregion
 		
-		#region Constructors
+        #region Constructors
 		
-		public HashList()
-		{
-			//
-			// TODO: Add constructor logic here
-			//
-		}
+        public HashList() {
+            //
+            // TODO: Add constructor logic here
+            //
+        }
 		
-		#endregion
+        #endregion
 		
-		#region Methods
+        #region Methods
 		
-		public void Add(object key, object item)
-		{
-			itemTable.Add(key, item);
-			itemList.Add(key, item);
-			itemKeys.Add(key);
-		}
+        public void Add(object key, object item) {
+            itemTable.Add(key, item);
+            itemList.Add(key, item);
+            itemKeys.Add(key);
+        }
 
-		public object GetKeyAt(int index)
-		{
-			return itemKeys[index];
-		}
+        public object GetKeyAt(int index) {
+            return itemKeys[index];
+        }
 
-		public object GetByKey(object key)
-		{
-			return itemTable[key];
-		}
+        public object GetByKey(object key) {
+            return itemTable[key];
+        }
 
-		public bool ContainsKey(object key)
-		{
-			return itemTable.ContainsKey(key);
-		}
+        public bool ContainsKey(object key) {
+            return itemTable.ContainsKey(key);
+        }
 
-		public void Clear()
-		{
-			itemTable.Clear();
-			itemList.Clear();
-			itemKeys.Clear();
-		}
+        public void Clear() {
+            itemTable.Clear();
+            itemList.Clear();
+            itemKeys.Clear();
+        }
 
-		#endregion
+        #endregion
 		
-		#region Properties
+        #region Properties
 		
-		public int Count
-		{
-			get { return itemList.Count; }
-		}
+        public int Count {
+            get { return itemList.Count; }
+        }
 
-		#endregion
+        #endregion
 
-		#region Operators
+        #region Operators
 
-		public object this[int index]
-		{
-			get { return itemList.GetByIndex(index); }
-		}
+        public object this[int index] {
+            get { return itemList.GetByIndex(index); }
+        }
 
-		public object this[object key]
-		{
-			get { return itemTable[key]; }
-		}
+        public object this[object key] {
+            get { return itemTable[key]; }
+        }
 
-		#endregion
+        #endregion
 
-	}
+    }
 }

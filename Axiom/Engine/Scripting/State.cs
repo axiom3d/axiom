@@ -28,60 +28,56 @@ using System;
 
 using Axiom.Core;
 
-namespace Axiom.Scripting
-{
-	/// <summary>
-	/// The state class is an abstract class that specifies abstract methods for all even methods that
-	/// an entitie's nested state classes can implement.
-	/// </summary>
-	public abstract class State
-	{
+namespace Axiom.Scripting {
+    /// <summary>
+    /// The state class is an abstract class that specifies abstract methods for all even methods that
+    /// an entitie's nested state classes can implement.
+    /// </summary>
+    public abstract class State {
 
-		# region Protected variables
+        # region Protected variables
 
-		protected Entity mOwner;
+        protected Entity mOwner;
 
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 
-		public State() {}
+        public State() {}
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		/// Returns the Entity object that own this state class.
-		/// NOTE: Due to the .Net implementation of all "nested" classes as static, we must keep
-		/// a local reference to our owner class in order to access it.
-		/// </summary>
-		public Entity Me
-		{
-			get { return mOwner; }
-			set { mOwner = value; }
-		}
+        /// <summary>
+        /// Returns the Entity object that own this state class.
+        /// NOTE: Due to the .Net implementation of all "nested" classes as static, we must keep
+        /// a local reference to our owner class in order to access it.
+        /// </summary>
+        public Entity Me {
+            get { return mOwner; }
+            set { mOwner = value; }
+        }
 
-		#endregion
+        #endregion
 
-		#region Virtual State methods
+        #region Virtual State methods
 
-		virtual public void Touch(Entity source){}
+        public virtual void Touch(Entity source){}
 
-		virtual public void TriggerOn(Entity source){}
+        public virtual void TriggerOn(Entity source){}
 		
-		virtual public void TriggerOff(Entity source){}
+        public virtual void TriggerOff(Entity source){}
 
-		#endregion
+        #endregion
 
-		#region Overridden base class methods
+        #region Overridden base class methods
 
-		public override string ToString()
-		{
-			return this.GetType().Name;
-		}
+        public override string ToString() {
+            return this.GetType().Name;
+        }
 
-		#endregion
+        #endregion
 
-	}
+    }
 }

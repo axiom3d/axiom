@@ -27,30 +27,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom.Core;
 
-namespace RenderSystem_OpenGL
-{
-	/// <summary>
-	/// Summary description for GLTextureManager.
-	/// </summary>
-	public class GLTextureManager : TextureManager 
-	{
-		public GLTextureManager()
-		{
-		}
+namespace RenderSystem_OpenGL {
+    /// <summary>
+    /// Summary description for GLTextureManager.
+    /// </summary>
+    public class GLTextureManager : TextureManager {
+        public GLTextureManager() {
+        }
 	
-		public override Resource Create(string name)
-		{
-			GLTexture texture = new GLTexture(name);
-			texture.Enable32Bit(is32Bit);
+        public override Resource Create(string name) {
+            GLTexture texture = new GLTexture(name);
+            texture.Enable32Bit(is32Bit);
 
-			return texture;
-		}
+            return texture;
+        }
 
-		// TODO: Finish
-		public override void UnloadAndDestroyAll()
-		{
-			base.UnloadAndDestroyAll ();
-		}
+        // TODO: Finish
+        public override void UnloadAndDestroyAll() {
+            base.UnloadAndDestroyAll ();
+        }
 
-	}
+    }
 }

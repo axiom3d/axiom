@@ -3,32 +3,31 @@ using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.Scripting;
 
-namespace ParticleFX
-{
-	/// <summary>
-	/// 	Summary description for PointEmitterFactory.
-	/// </summary>
-	public class PointEmitterFactory : ParticleEmitterFactory {
+namespace ParticleFX {
+    /// <summary>
+    /// 	Summary description for PointEmitterFactory.
+    /// </summary>
+    public class PointEmitterFactory : ParticleEmitterFactory {
 	
-		#region Methods
+        #region Methods
 
-		public override ParticleEmitter Create() {
-			PointEmitter emitter = new PointEmitter();
-			emitterList.Add(emitter);
-			return emitter;
-		}
+        public override ParticleEmitter Create() {
+            PointEmitter emitter = new PointEmitter();
+            emitterList.Add(emitter);
+            return emitter;
+        }
 		
-		#endregion
+        #endregion
 		
-		#region Properties
+        #region Properties
 
-		public override string Name	{
-			get {
-				return "Point";
-			}
-		}
+        public override string Name	{
+            get {
+                return "Point";
+            }
+        }
 	
-		#endregion
+        #endregion
 
-	}
+    }
 }

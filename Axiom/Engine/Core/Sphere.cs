@@ -26,69 +26,63 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom.MathLib;
 
-namespace Axiom.Core
-{
-	/// <summary>
-	///		A standard sphere, used mostly for bounds checking.
-	/// </summary>
-	/// <remarks>
-	///		A sphere in math texts is normally represented by the function
-	///		x^2 + y^2 + z^2 = r^2 (for sphere's centered on the origin). We store spheres
-	///		simply as a center point and a radius.
-	/// </remarks>
-	public class Sphere
-	{
-		#region Protected member variables
+namespace Axiom.Core {
+    /// <summary>
+    ///		A standard sphere, used mostly for bounds checking.
+    /// </summary>
+    /// <remarks>
+    ///		A sphere in math texts is normally represented by the function
+    ///		x^2 + y^2 + z^2 = r^2 (for sphere's centered on the origin). We store spheres
+    ///		simply as a center point and a radius.
+    /// </remarks>
+    public class Sphere {
+        #region Protected member variables
 
-		protected float radius;
-		protected Vector3 center;
+        protected float radius;
+        protected Vector3 center;
 
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 
-		/// <summary>
-		///		Creates a unit sphere centered at the origin.
-		/// </summary>
-		public Sphere()
-		{	
-			radius = 1.0f;
-			center = Vector3.Zero;
-		}
+        /// <summary>
+        ///		Creates a unit sphere centered at the origin.
+        /// </summary>
+        public Sphere() {	
+            radius = 1.0f;
+            center = Vector3.Zero;
+        }
 
-		/// <summary>
-		/// Creates an arbitrary spehere.
-		/// </summary>
-		/// <param name="center">Center point of the sphere.</param>
-		/// <param name="radius">Radius of the sphere.</param>
-		public Sphere(Vector3 center, float radius)
-		{
-			this.center = center;
-			this.radius = radius;
-		}
+        /// <summary>
+        /// Creates an arbitrary spehere.
+        /// </summary>
+        /// <param name="center">Center point of the sphere.</param>
+        /// <param name="radius">Radius of the sphere.</param>
+        public Sphere(Vector3 center, float radius) {
+            this.center = center;
+            this.radius = radius;
+        }
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		///		Gets/Sets the center of the sphere.
-		/// </summary>
-		public Vector3 Center
-		{
-			get { return center; }
-			set { center = value; }
-		}
+        /// <summary>
+        ///		Gets/Sets the center of the sphere.
+        /// </summary>
+        public Vector3 Center {
+            get { return center; }
+            set { center = value; }
+        }
 
-		/// <summary>
-		///		Gets/Sets the radius of the sphere.
-		/// </summary>
-		public float Radius
-		{
-			get { return radius; }
-			set { radius = value; }
-		}
+        /// <summary>
+        ///		Gets/Sets the radius of the sphere.
+        /// </summary>
+        public float Radius {
+            get { return radius; }
+            set { radius = value; }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

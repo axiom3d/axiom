@@ -30,147 +30,128 @@ using Axiom.Enumerations;
 using Axiom.MathLib;
 using Axiom.SubSystems.Rendering;
 
-namespace Axiom.Core
-{
-	/// <summary>
-	/// Summary description for SimpleRenderable.
-	/// </summary>
-	public abstract class SimpleRenderable : SceneObject, IRenderable
-	{
-		#region Member variables
+namespace Axiom.Core {
+    /// <summary>
+    /// Summary description for SimpleRenderable.
+    /// </summary>
+    public abstract class SimpleRenderable : SceneObject, IRenderable {
+        #region Member variables
 
-		protected Matrix4 worldTransform = Matrix4.Identity;
-		protected AxisAlignedBox box;
-		protected String materialName;
-		protected Material material;
-		protected SceneManager sceneMgr;
-		protected Camera camera;
-		static protected long nextAutoGenName;
+        protected Matrix4 worldTransform = Matrix4.Identity;
+        protected AxisAlignedBox box;
+        protected String materialName;
+        protected Material material;
+        protected SceneManager sceneMgr;
+        protected Camera camera;
+        static protected long nextAutoGenName;
 
-		protected VertexData vertexData;
-		protected IndexData indexData;
+        protected VertexData vertexData;
+        protected IndexData indexData;
 
-		#endregion
+        #endregion
 
-		#region Constructor
+        #region Constructor
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		public SimpleRenderable()
-		{
-			materialName = "BaseWhite";
-			material = (Material)MaterialManager.Instance["BaseWhite"];
-			name = "SimpleRenderable" + nextAutoGenName++;
+        /// <summary>
+        ///		Default constructor.
+        /// </summary>
+        public SimpleRenderable() {
+            materialName = "BaseWhite";
+            material = (Material)MaterialManager.Instance["BaseWhite"];
+            name = "SimpleRenderable" + nextAutoGenName++;
 
-			material.Load();
-		}
+            material.Load();
+        }
 
-		#endregion
+        #endregion
 
-		#region Implementation of SceneObject
+        #region Implementation of SceneObject
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public override AxisAlignedBox BoundingBox
-		{
-			get
-			{
-				return box;
-			}
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public override AxisAlignedBox BoundingBox {
+            get {
+                return box;
+            }
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="camera"></param>
-		internal override void NotifyCurrentCamera(Camera camera)
-		{
-			this.camera = camera;
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="camera"></param>
+        internal override void NotifyCurrentCamera(Camera camera) {
+            this.camera = camera;
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="queue"></param>
-		internal override void UpdateRenderQueue(RenderQueue queue)
-		{
-			// add ourself to the render queue
-			queue.AddRenderable(this);
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="queue"></param>
+        internal override void UpdateRenderQueue(RenderQueue queue) {
+            // add ourself to the render queue
+            queue.AddRenderable(this);
+        }
 
-		#endregion
+        #endregion
 
-		#region IRenderable Members
+        #region IRenderable Members
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public Material Material
-		{
-			get { return material; }
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public Material Material {
+            get { return material; }
+        }
 
-		public abstract void GetRenderOperation(RenderOperation op);
+        public abstract void GetRenderOperation(RenderOperation op);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		virtual public Axiom.MathLib.Matrix4[] WorldTransforms
-		{
-			get
-			{
-				return new Matrix4[] {worldTransform * parentNode.FullTransform};
-			}
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual Axiom.MathLib.Matrix4[] WorldTransforms {
+            get {
+                return new Matrix4[] {worldTransform * parentNode.FullTransform};
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region IRenderable Members
+        #region IRenderable Members
 
-		public ushort NumWorldTransforms
-		{
-			get
-			{
-				// TODO:  Add SimpleRenderable.NumWorldTransforms getter implementation
-				return 1;
-			}
-		}
+        public ushort NumWorldTransforms {
+            get {
+                // TODO:  Add SimpleRenderable.NumWorldTransforms getter implementation
+                return 1;
+            }
+        }
 
-		public bool UseIdentityProjection
-		{
-			get
-			{
-				// TODO:  Add SimpleRenderable.UseIdentityProjection getter implementation
-				return false;
-			}
-		}
+        public bool UseIdentityProjection {
+            get {
+                // TODO:  Add SimpleRenderable.UseIdentityProjection getter implementation
+                return false;
+            }
+        }
 
-		public bool UseIdentityView
-		{
-			get
-			{
-				// TODO:  Add SimpleRenderable.UseIdentityView getter implementation
-				return false;
-			}
-		}
+        public bool UseIdentityView {
+            get {
+                // TODO:  Add SimpleRenderable.UseIdentityView getter implementation
+                return false;
+            }
+        }
 
-		public SceneDetailLevel RenderDetail
-		{
-			get
-			{
-				// TODO:  Add SimpleRenderable.RenderDetail getter implementation
-				return SceneDetailLevel.Solid;
-			}
-		}
+        public SceneDetailLevel RenderDetail {
+            get {
+                // TODO:  Add SimpleRenderable.RenderDetail getter implementation
+                return SceneDetailLevel.Solid;
+            }
+        }
 
-		virtual public float GetSquaredViewDepth(Camera camera)
-		{
-			// TODO:  Add SimpleRenderable.GetSquaredViewDepth implementation
-			return 0;
-		}
+        public virtual float GetSquaredViewDepth(Camera camera) {
+            // TODO:  Add SimpleRenderable.GetSquaredViewDepth implementation
+            return 0;
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

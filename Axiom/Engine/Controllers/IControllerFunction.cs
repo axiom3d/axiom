@@ -26,18 +26,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.Controllers
-{
-	/// <summary>
-	///		Interface describing the required methods of a Controller Function.
-	/// </summary>
-	public interface IControllerFunction
-	{
-		/// <summary>
-		///		Called by a controller every frame to have this function run and return on the supplied
-		///		source value and return the result.
-		/// </summary>
-		/// <param name="sourceValue"></param>
-		float Execute(float sourceValue);
-	}
+namespace Axiom.Controllers {
+    /// <summary>
+    ///		Interface describing the required methods of a Controller Function.
+    /// </summary>
+    public interface IControllerFunction {
+        /// <summary>
+        ///		Called by a controller every frame to have this function run and return on the supplied
+        ///		source value and return the result.
+        /// </summary>
+        /// <param name="sourceValue"></param>
+        float Execute(float sourceValue);
+    }
 }

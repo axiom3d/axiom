@@ -26,44 +26,39 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom.Core;
 
-namespace Axiom.Audio
-{
-	/// <summary>
-	/// Summary description for Audio.
-	/// </summary>
-	public abstract class AudioSystem : ResourceManager, IAudioSystem
-	{
-		#region Singleton implementation
-		// TODO: Revisit and see if deferred singleton is the right answer
-		private static AudioSystem instance;
+namespace Axiom.Audio {
+    /// <summary>
+    /// Summary description for Audio.
+    /// </summary>
+    public abstract class AudioSystem : ResourceManager, IAudioSystem {
+        #region Singleton implementation
+        // TODO: Revisit and see if deferred singleton is the right answer
+        private static AudioSystem instance;
 
-		static AudioSystem() {}
-		protected AudioSystem() 
-		{ 
-			// assure this only happens once
-			if(instance == null)
-				instance = this; 
-		}
+        static AudioSystem() {}
+        protected AudioSystem() { 
+            // assure this only happens once
+            if(instance == null)
+                instance = this; 
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		static public AudioSystem Instance
-		{
-			get { return instance; }
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        static public AudioSystem Instance {
+            get { return instance; }
+        }
 
-		#endregion
+        #endregion
 
-		#region IAudioSystem Members
+        #region IAudioSystem Members
 
-		abstract public ISound CreateSound(string name);
+        public abstract ISound CreateSound(string name);
 
-		public override Resource Create(string name)
-		{
-			return null;
-		}
+        public override Resource Create(string name) {
+            return null;
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

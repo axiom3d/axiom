@@ -27,25 +27,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Threading;
 
-namespace Axiom.Text
-{
-	/// <summary>
-	/// Summary description for TextManager.
-	/// </summary>
-	public class TextManager
-	{
-		static TextManager()
-		{
-		}
+namespace Axiom.Text {
+    /// <summary>
+    /// Summary description for TextManager.
+    /// </summary>
+    public class TextManager {
+        static TextManager() {
+        }
 
-		/// <summary>
-		/// Used to retreive a text resource by passing a key.  
-		/// </summary>
-		/// <param name="keyName"></param>
-		/// <returns></returns>
-		public static String GetString(String keyName)
-		{
-			return keyName;
-		}
-	}
+        /// <summary>
+        /// Used to retreive a text resource by passing a key.  
+        /// </summary>
+        /// <param name="keyName"></param>
+        /// <returns></returns>
+        public static String GetString(String keyName) {
+            return keyName;
+        }
+    }
 }

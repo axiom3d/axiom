@@ -28,27 +28,24 @@ using System;
 using System.IO;
 using Axiom.Core;
 
-namespace Axiom.FileSystem
-{
-	/// <summary>
-	/// Summary description for Archive.
-	/// </summary>
-	public abstract class Archive : Resource
-	{
-		/// <summary>Name of archive, can be folder path, zip name, etc.</summary>
-		protected String archiveName;
+namespace Axiom.FileSystem {
+    /// <summary>
+    /// Summary description for Archive.
+    /// </summary>
+    public abstract class Archive : Resource {
+        /// <summary>Name of archive, can be folder path, zip name, etc.</summary>
+        protected String archiveName;
 
-		public Archive(String archiveName)
-		{
-			this.archiveName = archiveName;
-		}
+        public Archive(String archiveName) {
+            this.archiveName = archiveName;
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="name"></param>
-		abstract public Stream ReadFile(string fileName);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        public abstract Stream ReadFile(string fileName);
 
-		abstract public String[] GetFileNamesLike(string startPath, string pattern);
-	}
+        public abstract String[] GetFileNamesLike(string startPath, string pattern);
+    }
 }

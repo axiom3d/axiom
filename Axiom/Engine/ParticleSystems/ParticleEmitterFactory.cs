@@ -27,68 +27,65 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 
-namespace Axiom.ParticleSystems
-{
-	/// <summary>
-	///		Abstract class defining the interface to be implemented by creators of ParticleEmitter subclasses.
-	///	 </summary>
-	///	 <remarks>
-	///		Plugins or 3rd party applications can add new types of particle emitters by creating
-	///		subclasses of the ParticleEmitter class. Because multiple instances of these emitters may be
-	///		required, a factory class to manage the instances is also required. 
-	///		<p/>
-	///		ParticleEmitterFactory subclasses must allow the creation and destruction of ParticleEmitter
-	///		subclasses. They must also be registered with the ParticleSystemManager. All factories have
-	///		a name which identifies them, examples might be 'Point', 'Cone', or 'Box', and these can be 
-	///		also be used from XML particle system scripts.
-	/// </summary>
-	public abstract class ParticleEmitterFactory
-	{
-		#region Member variables
+namespace Axiom.ParticleSystems {
+    /// <summary>
+    ///		Abstract class defining the interface to be implemented by creators of ParticleEmitter subclasses.
+    ///	 </summary>
+    ///	 <remarks>
+    ///		Plugins or 3rd party applications can add new types of particle emitters by creating
+    ///		subclasses of the ParticleEmitter class. Because multiple instances of these emitters may be
+    ///		required, a factory class to manage the instances is also required. 
+    ///		<p/>
+    ///		ParticleEmitterFactory subclasses must allow the creation and destruction of ParticleEmitter
+    ///		subclasses. They must also be registered with the ParticleSystemManager. All factories have
+    ///		a name which identifies them, examples might be 'Point', 'Cone', or 'Box', and these can be 
+    ///		also be used from XML particle system scripts.
+    /// </summary>
+    public abstract class ParticleEmitterFactory {
+        #region Member variables
 
-		protected ArrayList emitterList = new ArrayList();
+        protected ArrayList emitterList = new ArrayList();
 			
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 
-		/// <summary>
-		///		Default constructor
-		/// </summary>
-		public ParticleEmitterFactory() { }
+        /// <summary>
+        ///		Default constructor
+        /// </summary>
+        public ParticleEmitterFactory() { }
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		///		Returns the name of the factory, which identifies which type of emitter this factory creates.
-		/// </summary>
-		abstract public String Name { get; }
+        /// <summary>
+        ///		Returns the name of the factory, which identifies which type of emitter this factory creates.
+        /// </summary>
+        public abstract String Name { get; }
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		/// <summary>
-		///		Creates a new instance of an emitter.
-		/// </summary>
-		/// <remarks>
-		///		Subclasses must add newly created emitters to the emitterList.
-		/// </remarks>
-		/// <returns></returns>
-		abstract public ParticleEmitter Create();
+        /// <summary>
+        ///		Creates a new instance of an emitter.
+        /// </summary>
+        /// <remarks>
+        ///		Subclasses must add newly created emitters to the emitterList.
+        /// </remarks>
+        /// <returns></returns>
+        public abstract ParticleEmitter Create();
 
-		/// <summary>
-		///		Destroys the emitter referenced by the parameter.
-		/// </summary>
-		/// <param name="emitter"></param>
-		virtual public void Destroy(ParticleEmitter emitter)
-		{
-			// remove the emitter from the list
-			emitterList.Remove(emitter);
-		}
+        /// <summary>
+        ///		Destroys the emitter referenced by the parameter.
+        /// </summary>
+        /// <param name="emitter"></param>
+        public virtual void Destroy(ParticleEmitter emitter) {
+            // remove the emitter from the list
+            emitterList.Remove(emitter);
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

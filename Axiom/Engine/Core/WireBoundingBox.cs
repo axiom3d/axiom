@@ -29,213 +29,249 @@ using Axiom.Enumerations;
 using Axiom.MathLib;
 using Axiom.SubSystems.Rendering;
 
-namespace Axiom.Core
-{
-	/// <summary>
-	/// Summary description for WireBoundingBox.
-	/// </summary>
-	public class WireBoundingBox : SimpleRenderable
-	{
-		const int POSITION = 0;
-		const int COLOR = 1;
+namespace Axiom.Core {
+    /// <summary>
+    /// Summary description for WireBoundingBox.
+    /// </summary>
+    public class WireBoundingBox : SimpleRenderable {
+        #region Member variables
+    
+        protected float radius;
+            
+        #endregion Member variables
 
-		public WireBoundingBox()
-		{
-			vertexData = new VertexData();
-			vertexData.vertexCount = 24;
-			vertexData.vertexStart = 0;
+        #region Constants
+
+        const int POSITION = 0;
+        const int COLOR = 1;
+
+        #endregion Constants
+
+        #region Constructors
+
+        /// <summary>
+        ///    Default constructor.
+        /// </summary>
+        public WireBoundingBox() {
+            vertexData = new VertexData();
+            vertexData.vertexCount = 24;
+            vertexData.vertexStart = 0;
 			
-			VertexDeclaration decl = vertexData.vertexDeclaration;
-			VertexBufferBinding binding = vertexData.vertexBufferBinding;
+            // get a reference to the vertex declaration and buffer binding
+            VertexDeclaration decl = vertexData.vertexDeclaration;
+            VertexBufferBinding binding = vertexData.vertexBufferBinding;
 
-			decl.AddElement(new VertexElement(POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position));
-			decl.AddElement(new VertexElement(COLOR, 0, VertexElementType.Color, VertexElementSemantic.Diffuse));
+            // add elements for position and color only
+            decl.AddElement(new VertexElement(POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position));
+            decl.AddElement(new VertexElement(COLOR, 0, VertexElementType.Color, VertexElementSemantic.Diffuse));
 
-			HardwareVertexBuffer buffer  =
-				HardwareBufferManager.Instance.CreateVertexBuffer(
-					decl.GetVertexSize(POSITION), 
-					vertexData.vertexCount, 
-					BufferUsage.StaticWriteOnly);
+            // create a new hardware vertex buffer for the position data
+            HardwareVertexBuffer buffer  =
+                HardwareBufferManager.Instance.CreateVertexBuffer(
+                decl.GetVertexSize(POSITION), 
+                vertexData.vertexCount, 
+                BufferUsage.StaticWriteOnly);
 
-			binding.SetBinding(POSITION, buffer);
+            // bind the position buffer
+            binding.SetBinding(POSITION, buffer);
 
-			buffer  = 	HardwareBufferManager.Instance.CreateVertexBuffer(
-				decl.GetVertexSize(COLOR), 
-				vertexData.vertexCount, 
-				BufferUsage.StaticWriteOnly);
+            // create a new hardware vertex buffer for the color data
+            buffer  = 	HardwareBufferManager.Instance.CreateVertexBuffer(
+                decl.GetVertexSize(COLOR), 
+                vertexData.vertexCount, 
+                BufferUsage.StaticWriteOnly);
 
-			binding.SetBinding(COLOR, buffer);
-		}
+            // bind the color buffer
+            binding.SetBinding(COLOR, buffer);
+        }
 
-		#region Implementation of SimpleRenderable
+        #endregion Constructors
 
-		public override Axiom.MathLib.Matrix4[] WorldTransforms
-		{
-			get { return new Matrix4[] { Matrix4.Identity }; }
-		}
+        #region Implementation of SimpleRenderable
 
+        public override Axiom.MathLib.Matrix4[] WorldTransforms {
+            get { return new Matrix4[] { Matrix4.Identity }; }
+        }
 		
-		public void InitAABB(AxisAlignedBox box)
-		{
-			SetupAABBVertices(box);
+        public void InitAABB(AxisAlignedBox box) {
+            SetupAABBVertices(box);
 
-			HardwareVertexBuffer buffer =
-				vertexData.vertexBufferBinding.GetBuffer(COLOR);
+            // get a reference to the color buffer
+            HardwareVertexBuffer buffer =
+                vertexData.vertexBufferBinding.GetBuffer(COLOR);
 
-			IntPtr colPtr = buffer.Lock(BufferLocking.Discard);
+            // lock the buffer
+            IntPtr colPtr = buffer.Lock(BufferLocking.Discard);
 
-			unsafe
-			{
-				int* pCol = (int*)colPtr.ToPointer();
+            // load the color buffer with the specified color for each element
+            unsafe {
+                int* pCol = (int*)colPtr.ToPointer();
 
-				for(int i = 0; i < vertexData.vertexCount; i++)
-					pCol[i] = Engine.Instance.ConvertColor(ColorEx.FromColor(System.Drawing.Color.Red));
-			}
+                for(int i = 0; i < vertexData.vertexCount; i++)
+                    pCol[i] = Engine.Instance.ConvertColor(ColorEx.FromColor(System.Drawing.Color.Red));
+            }
 
-			buffer.Unlock();
+            // unlock the buffer
+            buffer.Unlock();
 
-			// HACK: USe BoundingBox property
-			this.box = box; 
-		}
+            // store the bounding box locally
+            this.box = box; 
+        }
 
-		private void SetupAABBVertices(AxisAlignedBox aab)
-		{
-			Vector3 vmax = aab.Maximum;
-			Vector3 vmin = aab.Minimum;
+        private void SetupAABBVertices(AxisAlignedBox aab) {
+            Vector3 max = aab.Maximum;
+            Vector3 min = aab.Minimum;
 
-			// TODO: Add bounding sphere radius and set here
+            // set bounding sphere radius
+            float lengthSquared = MathUtil.Max(max.LengthSquared, min.LengthSquared);
+            radius = MathUtil.Sqrt(lengthSquared);
 
-			float maxx = vmax.x + 1.0f;
-			float maxy = vmax.y + 1.0f;
-			float maxz = vmax.z + 1.0f;
+            float maxx = max.x + 1.0f;
+            float maxy = max.y + 1.0f;
+            float maxz = max.z + 1.0f;
 		
-			float minx = vmin.x - 1.0f;
-			float miny = vmin.y - 1.0f;
-			float minz = vmin.z - 1.0f;
+            float minx = min.x - 1.0f;
+            float miny = min.y - 1.0f;
+            float minz = min.z - 1.0f;
 		
-			int i = 0;
+            int i = 0;
 
-			HardwareVertexBuffer buffer =
-				vertexData.vertexBufferBinding.GetBuffer(POSITION);
+            HardwareVertexBuffer buffer =
+                vertexData.vertexBufferBinding.GetBuffer(POSITION);
 
-			IntPtr posPtr = buffer.Lock(BufferLocking.Discard);
+            IntPtr posPtr = buffer.Lock(BufferLocking.Discard);
 
-			unsafe
-			{
-				float* pPos = (float*)posPtr.ToPointer();
+            unsafe {
+                float* pPos = (float*)posPtr.ToPointer();
 
-				// fill in the Vertex array: 12 lines with 2 endpoints each make up a box
-				// line 0
-				pPos[i++] = minx;
-				pPos[i++] = miny;
-				pPos[i++] = minz;
-				pPos[i++] = maxx;
-				pPos[i++] = miny;
-				pPos[i++] = minz;
-				// line 1
-				pPos[i++] = minx;
-				pPos[i++] = miny;
-				pPos[i++] = minz;
-				pPos[i++] = minx;
-				pPos[i++] = miny;
-				pPos[i++] = maxz;
-				// line 2
-				pPos[i++] = minx;
-				pPos[i++] = miny;
-				pPos[i++] = minz;
-				pPos[i++] = minx;
-				pPos[i++] = maxy;
-				pPos[i++] = minz;
-				// line 3
-				pPos[i++] = minx;
-				pPos[i++] = maxy;
-				pPos[i++] = minz;
-				pPos[i++] = minx;
-				pPos[i++] = maxy;
-				pPos[i++] = maxz;
-				// line 4
-				pPos[i++] = minx;
-				pPos[i++] = maxy;
-				pPos[i++] = minz;
-				pPos[i++] = maxx;
-				pPos[i++] = maxy;
-				pPos[i++] = minz;
-				// line 5
-				pPos[i++] = maxx;
-				pPos[i++] = miny;
-				pPos[i++] = minz;
-				pPos[i++] = maxx;
-				pPos[i++] = miny;
-				pPos[i++] = maxz;
-				// line 6
-				pPos[i++] = maxx;
-				pPos[i++] = miny;
-				pPos[i++] = minz;
-				pPos[i++] = maxx;
-				pPos[i++] = maxy;
-				pPos[i++] = minz;
-				// line 7
-				pPos[i++] = minx;
-				pPos[i++] = maxy;
-				pPos[i++] = maxz;
-				pPos[i++] = maxx;
-				pPos[i++] = maxy;
-				pPos[i++] = maxz;
-				// line 8
-				pPos[i++] = minx;
-				pPos[i++] = maxy;
-				pPos[i++] = maxz;
-				pPos[i++] = minx;
-				pPos[i++] = miny;
-				pPos[i++] = maxz;
-				// line 9
-				pPos[i++] = maxx;
-				pPos[i++] = maxy;
-				pPos[i++] = minz;
-				pPos[i++] = maxx;
-				pPos[i++] = maxy;
-				pPos[i++] = maxz;
-				// line 10
-				pPos[i++] = maxx;
-				pPos[i++] = miny;
-				pPos[i++] = maxz;
-				pPos[i++] = maxx;
-				pPos[i++] = maxy;
-				pPos[i++] = maxz;
-				// line 11
-				pPos[i++] = minx;
-				pPos[i++] = miny;
-				pPos[i++] = maxz;
-				pPos[i++] = maxx;
-				pPos[i++] = miny;
-				pPos[i++] = maxz;
-			}
+                // fill in the Vertex array: 12 lines with 2 endpoints each make up a box
+                // line 0
+                pPos[i++] = minx;
+                pPos[i++] = miny;
+                pPos[i++] = minz;
+                pPos[i++] = maxx;
+                pPos[i++] = miny;
+                pPos[i++] = minz;
+                // line 1
+                pPos[i++] = minx;
+                pPos[i++] = miny;
+                pPos[i++] = minz;
+                pPos[i++] = minx;
+                pPos[i++] = miny;
+                pPos[i++] = maxz;
+                // line 2
+                pPos[i++] = minx;
+                pPos[i++] = miny;
+                pPos[i++] = minz;
+                pPos[i++] = minx;
+                pPos[i++] = maxy;
+                pPos[i++] = minz;
+                // line 3
+                pPos[i++] = minx;
+                pPos[i++] = maxy;
+                pPos[i++] = minz;
+                pPos[i++] = minx;
+                pPos[i++] = maxy;
+                pPos[i++] = maxz;
+                // line 4
+                pPos[i++] = minx;
+                pPos[i++] = maxy;
+                pPos[i++] = minz;
+                pPos[i++] = maxx;
+                pPos[i++] = maxy;
+                pPos[i++] = minz;
+                // line 5
+                pPos[i++] = maxx;
+                pPos[i++] = miny;
+                pPos[i++] = minz;
+                pPos[i++] = maxx;
+                pPos[i++] = miny;
+                pPos[i++] = maxz;
+                // line 6
+                pPos[i++] = maxx;
+                pPos[i++] = miny;
+                pPos[i++] = minz;
+                pPos[i++] = maxx;
+                pPos[i++] = maxy;
+                pPos[i++] = minz;
+                // line 7
+                pPos[i++] = minx;
+                pPos[i++] = maxy;
+                pPos[i++] = maxz;
+                pPos[i++] = maxx;
+                pPos[i++] = maxy;
+                pPos[i++] = maxz;
+                // line 8
+                pPos[i++] = minx;
+                pPos[i++] = maxy;
+                pPos[i++] = maxz;
+                pPos[i++] = minx;
+                pPos[i++] = miny;
+                pPos[i++] = maxz;
+                // line 9
+                pPos[i++] = maxx;
+                pPos[i++] = maxy;
+                pPos[i++] = minz;
+                pPos[i++] = maxx;
+                pPos[i++] = maxy;
+                pPos[i++] = maxz;
+                // line 10
+                pPos[i++] = maxx;
+                pPos[i++] = miny;
+                pPos[i++] = maxz;
+                pPos[i++] = maxx;
+                pPos[i++] = maxy;
+                pPos[i++] = maxz;
+                // line 11
+                pPos[i++] = minx;
+                pPos[i++] = miny;
+                pPos[i++] = maxz;
+                pPos[i++] = maxx;
+                pPos[i++] = miny;
+                pPos[i++] = maxz;
+            }
 
-			buffer.Unlock();
-		}
+            // unlock the buffer
+            buffer.Unlock();
+        }
 
-		public override float GetSquaredViewDepth(Camera camera)
-		{
-			Vector3 min, max, mid, dist;
-			min = box.Minimum;
-			max = box.Maximum;
-			mid = ((min - max) * 0.5f) + min;
-			dist = camera.DerivedPosition - mid;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="camera"></param>
+        /// <returns></returns>
+        public override float GetSquaredViewDepth(Camera camera) {
+            Vector3 min, max, mid, dist;
+            min = box.Minimum;
+            max = box.Maximum;
+            mid = ((min - max) * 0.5f) + min;
+            dist = camera.DerivedPosition - mid;
 
-			return dist.LengthSquared;
-		}
+            return dist.LengthSquared;
+        }
 
-		public override void GetRenderOperation(RenderOperation op)
-		{
-			op.vertexData = vertexData;
-			op.indexData = null;
-			op.operationType = RenderMode.LineList;
-			op.useIndices = false;
+        /// <summary>
+        ///    Gets the rendering operation required to render the wire box.
+        /// </summary>
+        /// <param name="op">A reference to a precreate RenderOpertion to be modifed here.</param>
+        public override void GetRenderOperation(RenderOperation op) {
+            op.vertexData = vertexData;
+            op.indexData = null;
+            op.operationType = RenderMode.LineList;
+            op.useIndices = false;
 			
-			Engine.Instance.RenderSystem.LightingEnabled = false;
-		}
+            Engine.Instance.RenderSystem.LightingEnabled = false;
+        }
 
+        /// <summary>
+        ///    Get the local bounding radius of the wire bounding box.
+        /// </summary>
+        public override float BoundingRadius {
+            get {
+                return radius;
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

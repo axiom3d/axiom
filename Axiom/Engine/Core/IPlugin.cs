@@ -47,25 +47,23 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.Core
-{
-	/// <summary>
-	///		Any class that wants to entend the functionality of the engine can implement this
-	///		interface.  Classes implementing this interface will automatically be loaded and
-	///		started by the engine during the initialization phase.  Examples of plugins would be
-	///		RenderSystems, SceneManagers, etc, which can register themself using the 
-	///		singleton instance of the Engine class.
-	/// </summary>
-	public interface IPlugin
-	{
-		/// <summary>
-		/// Called to start the plugin.
-		/// </summary>
-		void Start();
+namespace Axiom.Core {
+    /// <summary>
+    ///		Any class that wants to entend the functionality of the engine can implement this
+    ///		interface.  Classes implementing this interface will automatically be loaded and
+    ///		started by the engine during the initialization phase.  Examples of plugins would be
+    ///		RenderSystems, SceneManagers, etc, which can register themself using the 
+    ///		singleton instance of the Engine class.
+    /// </summary>
+    public interface IPlugin {
+        /// <summary>
+        /// Called to start the plugin.
+        /// </summary>
+        void Start();
 
-		/// <summary>
-		/// Called while the engine is shutting down.
-		/// </summary>
-		void Stop();
-	}
+        /// <summary>
+        /// Called while the engine is shutting down.
+        /// </summary>
+        void Stop();
+    }
 }

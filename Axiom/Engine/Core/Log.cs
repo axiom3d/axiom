@@ -28,42 +28,36 @@ using System;
 using System.Diagnostics;
 using System.IO;
 
-namespace Axiom.Core
-{
-	/// <summary>
-	/// Summary description for Log.
-	/// </summary>
-	public class Log : TraceListener, IDisposable
-	{
-		private static System.IO.FileStream log;
-		private static System.IO.StreamWriter	writer;
+namespace Axiom.Core {
+    /// <summary>
+    /// Summary description for Log.
+    /// </summary>
+    public class Log : TraceListener, IDisposable {
+        private static System.IO.FileStream log;
+        private static System.IO.StreamWriter	writer;
 
-		public Log(String fileName)
-		{
-			// create the log file, or ope
-			log = File.Open(fileName, FileMode.Create);
+        public Log(String fileName) {
+            // create the log file, or ope
+            log = File.Open(fileName, FileMode.Create);
 
-			// get a stream writer using the file stream
-			writer = new StreamWriter(log);
-		}
+            // get a stream writer using the file stream
+            writer = new StreamWriter(log);
+        }
 
-		public override void Write(string message)
-		{
-			writer.WriteLine(message);
-		}
+        public override void Write(string message) {
+            writer.WriteLine(message);
+        }
 
-		public override void WriteLine(string message)
-		{
-			writer.WriteLine(message);
-		}
-		#region IDisposable Members
+        public override void WriteLine(string message) {
+            writer.WriteLine(message);
+        }
+        #region IDisposable Members
 
-		public void Dispose()
-		{
-			writer.Close();
-			log.Close();
-		}
+        public void Dispose() {
+            writer.Close();
+            log.Close();
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

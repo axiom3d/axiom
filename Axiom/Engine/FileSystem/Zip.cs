@@ -27,31 +27,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.IO;
 
-namespace Axiom.FileSystem
-{
-	/// <summary>
-	/// Summary description for Zip.
-	/// </summary>
-	public class Zip : Archive
-	{
-		public Zip(string archiveName) : base(archiveName)
-		{
-		}
+namespace Axiom.FileSystem {
+    /// <summary>
+    /// Summary description for Zip.
+    /// </summary>
+    public class Zip : Archive {
+        public Zip(string archiveName) : base(archiveName) {
+        }
 
-		public override void Load()
-		{
-		}
+        public override void Load() {
+        }
 
-		public override Stream ReadFile(string name)
-		{
-			// TODO: Implement Zip.ReadFile
-			return null;
-		}
+        public override Stream ReadFile(string name) {
+            // TODO: Implement Zip.ReadFile
+            return null;
+        }
 
-		public override String[] GetFileNamesLike(string startPath, string pattern)
-		{
-			return null;
-		}
+        public override String[] GetFileNamesLike(string startPath, string pattern) {
+            return null;
+        }
 
-	}
+    }
 }

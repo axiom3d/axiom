@@ -21,19 +21,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.Patterns
-{
-	/// <summary>
-	///		Interface that implements the Abstract Factory design pattern.
-	/// </summary>
-	public interface IObjectFactory
-	{
-		/// <summary>
-		///		Method to create an object based on the passed in name.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		Object Create(string name);
+namespace Axiom.Patterns {
+    /// <summary>
+    ///		Interface that implements the Abstract Factory design pattern.
+    /// </summary>
+    public interface IObjectFactory {
+        /// <summary>
+        ///		Method to create an object based on the passed in name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        Object Create(string name);
 
-	}
+    }
 }

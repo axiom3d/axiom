@@ -28,117 +28,104 @@ using System;
 using Axiom.ParticleSystems;
 using Axiom.Scripting;
 
-namespace ParticleFX
-{
-	/// <summary>
-	/// Summary description for ColorFaderAffector.
-	/// </summary>
-	public class ColorFaderAffector : ParticleAffector
-	{
-		protected float alphaAdjust;
-		protected float redAdjust;
-		protected float greenAdjust;
-		protected float blueAdjust;
+namespace ParticleFX {
+    /// <summary>
+    /// Summary description for ColorFaderAffector.
+    /// </summary>
+    public class ColorFaderAffector : ParticleAffector {
+        protected float alphaAdjust;
+        protected float redAdjust;
+        protected float greenAdjust;
+        protected float blueAdjust;
 
-		const string COLOR_FADER = "ColorFader";
+        const string COLOR_FADER = "ColorFader";
 
-		public ColorFaderAffector()
-		{
-			this.type = "ColourFader";
-		}
+        public ColorFaderAffector() {
+            this.type = "ColourFader";
+        }
 
-		public float AlphaAdjust
-		{
-			get { return alphaAdjust; }
-			set { alphaAdjust = value; }
-		}
+        public float AlphaAdjust {
+            get { return alphaAdjust; }
+            set { alphaAdjust = value; }
+        }
 
-		public float RedAdjust
-		{
-			get { return redAdjust; }
-			set { redAdjust = value; }
-		}
+        public float RedAdjust {
+            get { return redAdjust; }
+            set { redAdjust = value; }
+        }
 
-		public float GreenAdjust
-		{
-			get { return greenAdjust; }
-			set { greenAdjust = value; }
-		}
+        public float GreenAdjust {
+            get { return greenAdjust; }
+            set { greenAdjust = value; }
+        }
 
-		public float BlueAdjust
-		{
-			get { return blueAdjust; }
-			set { blueAdjust = value; }
-		}
+        public float BlueAdjust {
+            get { return blueAdjust; }
+            set { blueAdjust = value; }
+        }
 
-		protected void AdjustWithClamp(ref float component, float adjust)
-		{
-			component += adjust;
+        protected void AdjustWithClamp(ref float component, float adjust) {
+            component += adjust;
 
-			// limit to range [0,1]
-			if(component < 0.0f)
-				component = 0.0f;
-			else if(component > 1.0f)
-				component = 1.0f;
-		}
+            // limit to range [0,1]
+            if(component < 0.0f)
+                component = 0.0f;
+            else if(component > 1.0f)
+                component = 1.0f;
+        }
 
-		public override void AffectParticles(ParticleSystem system, float timeElapsed)
-		{
-			float da, dr, dg, db;
+        public override void AffectParticles(ParticleSystem system, float timeElapsed) {
+            float da, dr, dg, db;
 
-			da = alphaAdjust * timeElapsed;
-			dr = redAdjust * timeElapsed;
-			dg = greenAdjust * timeElapsed;
-			db = blueAdjust * timeElapsed;
+            da = alphaAdjust * timeElapsed;
+            dr = redAdjust * timeElapsed;
+            dg = greenAdjust * timeElapsed;
+            db = blueAdjust * timeElapsed;
 
-			// loop through the particles
+            // loop through the particles
 
-			for(int i = 0; i < system.Particles.Count; i++)
-			{
-				Particle p = (Particle)system.Particles[i];
+            for(int i = 0; i < system.Particles.Count; i++) {
+                Particle p = (Particle)system.Particles[i];
 
-				// adjust the values with clamping ([0,1] in this case)
-				AdjustWithClamp(ref p.Color.a, da);
-				AdjustWithClamp(ref p.Color.r, dr);
-				AdjustWithClamp(ref p.Color.g, dg);
-				AdjustWithClamp(ref p.Color.b, db);
+                // adjust the values with clamping ([0,1] in this case)
+                AdjustWithClamp(ref p.Color.a, da);
+                AdjustWithClamp(ref p.Color.r, dr);
+                AdjustWithClamp(ref p.Color.g, dg);
+                AdjustWithClamp(ref p.Color.b, db);
 
-			}
-		}
+            }
+        }
 
-		#region Script parser methods
+        #region Script parser methods
 
-		[AttributeParser("red", COLOR_FADER)]
-		public static void ParseRed(string[] values, params object[] objects) {
-			ColorFaderAffector affector = objects[0] as ColorFaderAffector;
+        [AttributeParser("red", COLOR_FADER)]
+        public static void ParseRed(string[] values, params object[] objects) {
+            ColorFaderAffector affector = objects[0] as ColorFaderAffector;
 
-			affector.RedAdjust = float.Parse(values[0]);
-		}
+            affector.RedAdjust = float.Parse(values[0]);
+        }
 
-		[AttributeParser("green", COLOR_FADER)]
-		public static void ParseGreen(string[] values, params object[] objects) 
-		{
-			ColorFaderAffector affector = objects[0] as ColorFaderAffector;
+        [AttributeParser("green", COLOR_FADER)]
+        public static void ParseGreen(string[] values, params object[] objects) {
+            ColorFaderAffector affector = objects[0] as ColorFaderAffector;
 
-			affector.GreenAdjust = float.Parse(values[0]);
-		}
+            affector.GreenAdjust = float.Parse(values[0]);
+        }
 
-		[AttributeParser("blue", COLOR_FADER)]
-		public static void ParseBlue(string[] values, params object[] objects) 
-		{
-			ColorFaderAffector affector = objects[0] as ColorFaderAffector;
+        [AttributeParser("blue", COLOR_FADER)]
+        public static void ParseBlue(string[] values, params object[] objects) {
+            ColorFaderAffector affector = objects[0] as ColorFaderAffector;
 
-			affector.BlueAdjust = float.Parse(values[0]);
-		}
+            affector.BlueAdjust = float.Parse(values[0]);
+        }
 
-		[AttributeParser("alpha", COLOR_FADER)]
-		public static void ParseAlpha(string[] values, params object[] objects) 
-		{
-			ColorFaderAffector affector = objects[0] as ColorFaderAffector;
+        [AttributeParser("alpha", COLOR_FADER)]
+        public static void ParseAlpha(string[] values, params object[] objects) {
+            ColorFaderAffector affector = objects[0] as ColorFaderAffector;
 
-			affector.AlphaAdjust = float.Parse(values[0]);
-		}
+            affector.AlphaAdjust = float.Parse(values[0]);
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

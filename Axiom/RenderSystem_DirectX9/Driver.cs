@@ -29,82 +29,74 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using D3D = Microsoft.DirectX.Direct3D;
 
-namespace RenderSystem_DirectX9
-{
-	/// <summary>
-	///		Helper class for dealing with D3D Drivers.
-	/// </summary>
-	public class Driver
-	{
-		#region Member variables
+namespace RenderSystem_DirectX9 {
+    /// <summary>
+    ///		Helper class for dealing with D3D Drivers.
+    /// </summary>
+    public class Driver {
+        #region Member variables
 
-		private int adapterNum;
-		private D3D.DisplayMode desktopMode;
-		private VideoModeCollection videoModeList;
-		private String name;
-		private String description;
+        private int adapterNum;
+        private D3D.DisplayMode desktopMode;
+        private VideoModeCollection videoModeList;
+        private String name;
+        private String description;
 
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		public Driver(D3D.AdapterInformation adapterInfo)
-		{
-			this.desktopMode = adapterInfo.CurrentDisplayMode;
-			this.name = adapterInfo.Information.DriverName;
-			this.description = adapterInfo.Information.Description;
-			this.adapterNum = adapterInfo.Adapter;
+        /// <summary>
+        ///		Default constructor.
+        /// </summary>
+        public Driver(D3D.AdapterInformation adapterInfo) {
+            this.desktopMode = adapterInfo.CurrentDisplayMode;
+            this.name = adapterInfo.Information.DriverName;
+            this.description = adapterInfo.Information.Description;
+            this.adapterNum = adapterInfo.Adapter;
 
-			videoModeList = new VideoModeCollection();
-		}
+            videoModeList = new VideoModeCollection();
+        }
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public String Name
-		{
-			get { return name; }
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public String Name {
+            get { return name; }
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public String Description
-		{
-			get { return description; }
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public String Description {
+            get { return description; }
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public int AdapterNumber
-		{
-			get { return adapterNum; }
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public int AdapterNumber {
+            get { return adapterNum; }
+        }
 
-		/// <summary>
-		///		
-		/// </summary>
-		public D3D.DisplayMode DesktopMode
-		{
-			get { return desktopMode; }
-		}
+        /// <summary>
+        ///		
+        /// </summary>
+        public D3D.DisplayMode DesktopMode {
+            get { return desktopMode; }
+        }
 
-		/// <summary>
-		///		
-		/// </summary>
-		public VideoModeCollection VideoModes
-		{
-			get { return videoModeList; } 
-		}
+        /// <summary>
+        ///		
+        /// </summary>
+        public VideoModeCollection VideoModes {
+            get { return videoModeList; } 
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

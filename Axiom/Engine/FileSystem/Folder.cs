@@ -27,48 +27,41 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.IO;
 
-namespace Axiom.FileSystem
-{
-	/// <summary>
-	/// Summary description for Folder.
-	/// </summary>
-	public class Folder : Archive
-	{
+namespace Axiom.FileSystem {
+    /// <summary>
+    /// Summary description for Folder.
+    /// </summary>
+    public class Folder : Archive {
 		
-		public Folder(String archiveName) : base(archiveName)
-		{
-		}
+        public Folder(String archiveName) : base(archiveName) {
+        }
 
-		public override void Load()
-		{
-		}
+        public override void Load() {
+        }
 
-		public override Stream ReadFile(string fileName)
-		{
-			FileStream file = File.OpenRead(this.archiveName + Path.DirectorySeparatorChar + fileName);
+        public override Stream ReadFile(string fileName) {
+            FileStream file = File.OpenRead(this.archiveName + Path.DirectorySeparatorChar + fileName);
 
-			return file;
-		}
+            return file;
+        }
 
-		public override String[] GetFileNamesLike(string startPath, string pattern)
-		{
-			// TODO: Fix me
+        public override String[] GetFileNamesLike(string startPath, string pattern) {
+            // TODO: Fix me
 
-			// replace with wildcard if empty
-			if(pattern == String.Empty)
-				pattern = "*.*";
+            // replace with wildcard if empty
+            if(pattern == String.Empty)
+                pattern = "*.*";
 
-			string[] files = Directory.GetFiles(archiveName, pattern);
+            string[] files = Directory.GetFiles(archiveName, pattern);
 
-			// replace the full paths with just the file names
-			for(int i = 0; i < files.Length; i++)
-			{
-				string[] temp = files[i].Split(new char[] { Path.DirectorySeparatorChar });
-				files[i] = temp[temp.Length - 1];
-			}
+            // replace the full paths with just the file names
+            for(int i = 0; i < files.Length; i++) {
+                string[] temp = files[i].Split(new char[] { Path.DirectorySeparatorChar });
+                files[i] = temp[temp.Length - 1];
+            }
 
-			return files;
-		}
+            return files;
+        }
 
-	}
+    }
 }
