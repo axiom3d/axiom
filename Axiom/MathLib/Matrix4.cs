@@ -457,8 +457,12 @@ namespace Axiom.MathLib {
         }
 
         /// <summary>
-        /// Allows the Matrix to be accessed like a 2d array (i.e. matrix.m23)
+        ///    Allows the Matrix to be accessed like a 2d array (i.e. matrix[2,3])
         /// </summary>
+        /// <remarks>
+        ///    This indexer is only provided as a convenience, and is <b>not</b> recommended for use in
+        ///    intensive applications.  
+        /// </remarks>
         public float this[int row, int col] {
             get {
                 //Debug.Assert((row >= 0 && row < 4) && (col >= 0 && col < 4), "Attempt to access Matrix4 indexer out of bounds.");
@@ -481,6 +485,10 @@ namespace Axiom.MathLib {
         /// <summary>
         ///		Allows the Matrix to be accessed linearly (m[0] -> m[15]).  
         /// </summary>
+        /// <remarks>
+        ///    This indexer is only provided as a convenience, and is <b>not</b> recommended for use in
+        ///    intensive applications.  
+        /// </remarks>
         public float this[int index] {
             get {
                 //Debug.Assert(index >= 0 && index < 16, "Attempt to access Matrix4 linear indexer out of bounds.");
@@ -515,22 +523,27 @@ namespace Axiom.MathLib {
             }
         }
 
+        /// <summary>
+        ///    Gets the determinant of this matrix.
+        /// </summary>
         public float Determinant {
             get {
+            // note: this is an expanded version of the Ogre determinant() method, to give better performance in C#. Generated using a script
                 float result = m00 * m11 * (m22 * m33 - m32 * m23) - m12 * (m21 * m33 - m31 * m23) + m13 * (m21 * m32 - m31 * m22) - 
 	                m01 * (m10 * (m22 * m33 - m32 * m23) - m12 * (m20 * m33 - m30 * m23) + m13 * (m20 * m32 - m30 * m22)) + 
 	                m02 * (m10 * (m21 * m33 - m31 * m23) - m11 * (m20 * m33 - m30 * m23) + m13 * (m20 * m31 - m30 * m21)) - 
 	                m03 * (m10 * (m21 * m32 - m31 * m22) - m11 * (m20 * m32 - m30 * m22) + m12 * (m20 * m31 - m30 * m21));
 
                 return result;
-//                return this[0,0] * Minor(1, 2, 3, 1, 2, 3) -
-//                    this[0,1] * Minor(1, 2, 3, 0, 2, 3) +
-//                    this[0,2] * Minor(1, 2, 3, 0, 1, 3) -
-//                    this[0,3] * Minor(1, 2, 3, 0, 1, 2);
             }
         }
 
+        /// <summary>
+        ///    Used to generate the adjoint of this matrix.  Used internally for <see cref="Inverse"/>.
+        /// </summary>
+        /// <returns>The adjoint matrix of the current instance.</returns>
         private Matrix4 Adjoint() {
+            // note: this is an expanded version of the Ogre adjoint() method, to give better performance in C#. Generated using a script
             float val0 = m11 * (m22 * m33 - m32 * m23) - m12 * (m21 * m33 - m31 * m23) + m13 * (m21 * m32 - m31 * m22);
             float val1 = -(m01 * (m22 * m33 - m32 * m23) - m02 * (m21 * m33 - m31 * m23) + m03 * (m21 * m32 - m31 * m22));
             float val2 = m01 * (m12 * m33 - m32 * m13) - m02 * (m11 * m33 - m31 * m13) + m03 * (m11 * m32 - m31 * m12);
@@ -549,34 +562,7 @@ namespace Axiom.MathLib {
             float val15 = m00 * (m11 * m22 - m21 * m12) - m01 * (m10 * m22 - m20 * m12) + m02 * (m10 * m21 - m20 * m11);
 
             return new Matrix4(val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14, val15);
-
-//            return new Matrix4(
-//                Minor(1, 2, 3, 1, 2, 3),
-//                -Minor(0, 2, 3, 1, 2, 3),
-//                Minor(0, 1, 3, 1, 2, 3),
-//                -Minor(0, 1, 2, 1, 2, 3),
-//
-//                -Minor(1, 2, 3, 0, 2, 3),
-//                Minor(0, 2, 3, 0, 2, 3),
-//                -Minor(0, 1, 3, 0, 2, 3),
-//                Minor(0, 1, 2, 0, 2, 3),
-//
-//                Minor(1, 2, 3, 0, 1, 3),
-//                -Minor(0, 2, 3, 0, 1, 3),
-//                Minor(0, 1, 3, 0, 1, 3),
-//                -Minor(0, 1, 2, 0, 1, 3),
-//
-//                -Minor(1, 2, 3, 0, 1, 2),
-//                Minor(0, 2, 3, 0, 1, 2),
-//                -Minor(0, 1, 3, 0, 1, 2),
-//                Minor(0, 1, 2, 0, 1, 2));
         }
-
-//        private float Minor(int r0, int r1, int r2, int c0, int c1, int c2) {
-//            return this[r0,c0] * (this[r1,c1] * this[r2,c2] - this[r2,c1] * this[r1,c2]) -
-//                this[r0,c1] * (this[r1,c0] * this[r2,c2] - this[r2,c0] * this[r1,c2]) +
-//                this[r0,c2] * (this[r1,c0] * this[r2,c1] - this[r2,c0] * this[r1,c1]);
-//        }
 
         #endregion
 
