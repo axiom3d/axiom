@@ -84,15 +84,16 @@ namespace Axiom.Core
 		private InputSystem inputSystem;
 
 		protected HighResolutionTimer timer;
+
 		// Framerate Related State
-		protected static bool framerateReady = false;										// Do We Have A Calculated Framerate?
+		protected static bool framerateReady;										// Do We Have A Calculated Framerate?
 		protected static ulong timerFrequency;											// The Frequency Of The Timer
-		//protected static ulong currentFrameTime;											// The Current Frame Time
 		protected static ulong lastCalculationTime;										// The Last Time We Calculated Framerate
 		protected static ulong framesDrawn;												// Frames Drawn Counter For FPS Calculations
-		protected static float currentFramerate;											// Current FPS
-		protected static float highestFramerate;											// Highest FPS
-		protected static float lowestFramerate = 999999999;								// Lowest FPS
+		protected static float currentFPS;											// Current FPS
+		protected static float highestFPS;											// Highest FPS
+		protected static float lowestFPS = 999999999;								// Lowest FPS
+		protected static float avergeFPS;
 
 		protected bool stopRendering;
 
@@ -271,9 +272,6 @@ namespace Axiom.Core
 			// if they chose to auto create a window, also initialize several subsystems
 			if(autoCreateWindow)
 			{
-				// have the render system check the hardware capabilities
-				activeRenderSystem.CheckCaps();
-
 				// init material manager singleton, which parse sources for materials
 				MaterialManager.Init();
 
@@ -335,8 +333,6 @@ namespace Axiom.Core
 			// is this the first window being created?
 			if(activeRenderSystem.RenderWindows.Count == 1)
 			{
-				activeRenderSystem.CheckCaps();
-
 				// init the material manager singleton
 				MaterialManager.Init();
 
@@ -495,21 +491,26 @@ namespace Axiom.Core
 				if((time - lastCalculationTime) > timerFrequency) 
 				{		// Is It Time To Update Our Calculations?
 					// Calculate New Framerate
-					currentFramerate = (framesDrawn * timerFrequency) / (time - lastCalculationTime);
+					currentFPS = (framesDrawn * timerFrequency) / (time - lastCalculationTime);
 
-					if(currentFramerate < lowestFramerate || lowestFramerate == 0) 
+					// calculate the averge framerate
+					if(avergeFPS == 0)
+						avergeFPS = currentFPS;
+					else
+						avergeFPS = (avergeFPS + currentFPS) / 2;
+
+					if(currentFPS < lowestFPS || lowestFPS == 0) 
 					{						// Is The New Framerate A New Low?
-						lowestFramerate = currentFramerate;							// Set It To The New Low
+						lowestFPS = currentFPS;							// Set It To The New Low
 					}
 
-					if(currentFramerate > highestFramerate) 
+					if(currentFPS > highestFPS) 
 					{						// Is The New Framerate A New High?
-						highestFramerate = currentFramerate;						// Set It To The New High
+						highestFPS = currentFPS;						// Set It To The New High
 					}
 
 					lastCalculationTime = time;							// Update Our Last Frame Time To Now
 					framesDrawn = 0;												// Reset Our Frame Count
-
 				}
 
 
@@ -538,15 +539,13 @@ namespace Axiom.Core
 			System.Diagnostics.Trace.WriteLine("***** " + this.Name + " Shutdown Initiated. ****");
 
 			// trigger a disposal of all resources
-			// TODO: This actually will do all resources (not just textures) because it calls the base class Dispose, which calls UnloadAndDestroyAll on all resources.
+			// destroy all textures
 			if(TextureManager.Instance != null)
 				TextureManager.Instance.Dispose();
 
+			// shutdown the current render system if there is one
 			if(activeRenderSystem != null)
-			{
-				// shutdown the current render system
 				activeRenderSystem.Shutdown();
-			}
 
 			// destroy all disposable objects
 			GarbageManager.Instance.DisposeAll();
@@ -555,7 +554,10 @@ namespace Axiom.Core
 			UnloadPlugins();
 
 			// Write final performance stats
-			System.Diagnostics.Trace.WriteLine("Final Stats:\r\nHighest FPS - " + highestFramerate + "\r\nLowest FPS: " + lowestFramerate);
+			System.Diagnostics.Trace.WriteLine("Final Stats:");
+			System.Diagnostics.Trace.WriteLine("   Highest FPS - " + highestFPS);
+			System.Diagnostics.Trace.WriteLine("   Average FPS: " + avergeFPS);
+			System.Diagnostics.Trace.WriteLine("   Lowest FPS: " + lowestFPS);
 		}
 
 		private void InitializeSingletons()
@@ -576,7 +578,7 @@ namespace Axiom.Core
 		/// </summary>
 		public int CurrentFPS
 		{
-			get { return (int)currentFramerate; }
+			get { return (int)currentFPS; }
 		}
 
 		#region Implementation of IDisposable

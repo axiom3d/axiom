@@ -218,15 +218,6 @@ namespace Axiom.SubSystems.Rendering
 		abstract public bool StencilCheckEnabled { set; }
 
 		/// <summary>
-		///		Determines the bit depth of the hardware accelerated stencil buffer, if supported.
-		/// </summary>
-		/// <remarks>
-		///		If hardware stencilling is not supported, the software will provide an 8-bit 
-		///		software stencil.
-		///	</remarks>
-		abstract public short StencilBufferBitDepth { get; }
-
-		/// <summary>
 		///		Sets the stencil test function.
 		/// </summary>
 		/// <remarks>
@@ -244,7 +235,7 @@ namespace Axiom.SubSystems.Rendering
 		///		It can also be used as the destination value for the stencil buffer if the
 		///		operation which is performed is StencilOperation.Replace.
 		/// </remarks>
-		abstract public long StencilBufferReferenceValue { set; }
+		abstract public int StencilBufferReferenceValue { set; }
 
 		/// <summary>
 		///		Sets the stencil buffer mask value.
@@ -253,7 +244,7 @@ namespace Axiom.SubSystems.Rendering
 		///		This is applied thus:
 		///		(Reference Value & Mask) CompareFunction (Stencil Buffer Value & Mask)
 		///	</remarks>
-		abstract public long StencilBufferMask { set; }
+		abstract public int StencilBufferMask { set; }
 
 		/// <summary>
 		///		Sets the action to perform if the stencil test fails.
@@ -310,12 +301,6 @@ namespace Axiom.SubSystems.Rendering
 		#endregion
 
 		#region Abstract methods
-
-		/// <summary>
-		///		Should be implemented by each subclass to interogate the caps of the hardware using
-		///		the specific API.
-		/// </summary>
-		abstract public void CheckCaps();
 
 		/// <summary>
 		/// Creates a new rendering window.

@@ -110,11 +110,10 @@ namespace RenderSystem_OpenGL
 
 		public override void SwapBuffers(bool waitForVSync)
 		{
-			// swap buffers
-			//contExt.Grab();
-			int sync = waitForVSync ? 1: 0;
-
+			//int sync = waitForVSync ? 1: 0;
 			//Ext.wglSwapIntervalEXT((uint)sync);
+
+			// swap buffers
 			context.SwapBuffer();
 		}
 
@@ -161,13 +160,14 @@ namespace RenderSystem_OpenGL
 			// read the pixels from the GL buffer
 			Gl.glReadPixels(0, 0, width, height, Gl.GL_BGR_EXT, Gl.GL_UNSIGNED_BYTE, bitmapData.Scan0); 
  
-			// unlock the bitmap and flip the image
+			// unlock the bitmap
 			bitmap.UnlockBits(bitmapData); 
+
+			// flip the image
 			bitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
 
 			// save the final product
 			bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Jpeg);
-
 		}
 
 		#endregion

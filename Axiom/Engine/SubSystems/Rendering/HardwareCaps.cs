@@ -39,9 +39,11 @@ namespace Axiom.SubSystems.Rendering
 		
 		private Capabilities caps;
 		private int numTextureUnits;
+		private int stencilBufferBits;
 		private float pixelMaterialVersion;
 		private float vertexMaterialVersion;
 		private int numIndexedMatrices;
+		private int maxLights;
 		private string vendor;
 
 		#endregion
@@ -57,12 +59,30 @@ namespace Axiom.SubSystems.Rendering
 		#region Properties
 
 		/// <summary>
+		///		Maximum number of lights supported in the scene at once by the API and/or hardware.
+		/// </summary>
+		public int MaxLights
+		{
+			get { return maxLights; }
+			set { maxLights = value; }
+		}
+
+		/// <summary>
 		///		Reports on the number of texture units the graphics hardware has available.
 		/// </summary>
 		public int NumTextureUnits
 		{
 			get { return numTextureUnits; }
 			set { numTextureUnits = value; }
+		}
+
+		/// <summary>
+		///		Number of stencil buffer bits suppported by the hardware.
+		/// </summary>
+		public int StencilBufferBits
+		{
+			get { return stencilBufferBits; }
+			set { stencilBufferBits = value; }
 		}
 
 		/// <summary>
