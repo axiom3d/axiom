@@ -119,7 +119,7 @@ namespace Demos {
             emitter1.Position = new Vector3(5.7f, 0, 0);
             emitter2.Position = new Vector3(-18, 0, 0);
 
-            ((SceneNode) scene.RootSceneNode.CreateChild(new Vector3(0, 6.5f, -67), Quaternion.Identity)).AttachObject(thrusters);
+            scene.RootSceneNode.CreateChildSceneNode(new Vector3(0, 6.5f, -67), Quaternion.Identity).AttachObject(thrusters);
         }
         #endregion
     }

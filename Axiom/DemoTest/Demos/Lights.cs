@@ -80,8 +80,8 @@ namespace Demos {
             scene.RootSceneNode.AttachObject(ogre);
 
             // create nodes for the billboard sets
-            redYellowLightsNode = (SceneNode)scene.RootSceneNode.CreateChild();
-            greenBlueLightsNode = (SceneNode)scene.RootSceneNode.CreateChild();
+            redYellowLightsNode = scene.RootSceneNode.CreateChildSceneNode();
+            greenBlueLightsNode = scene.RootSceneNode.CreateChildSceneNode();
 
             // create a billboard set for creating billboards
             redYellowLights = new BillboardSet("RedYellowLights", 20);

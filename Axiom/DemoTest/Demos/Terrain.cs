@@ -57,7 +57,7 @@ namespace Demos {
             Entity waterEntity  = scene.CreateEntity("Water", "WaterPlane");
             waterEntity.MaterialName = "Terrain/WaterPlane";
 
-            waterNode = (SceneNode)scene.RootSceneNode.CreateChild("WaterNode");
+            waterNode = scene.RootSceneNode.CreateChildSceneNode("WaterNode");
             waterNode.AttachObject(waterEntity);
             waterNode.Translate(new Vector3(1000, 0, 1000));
         }

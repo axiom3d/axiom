@@ -68,9 +68,9 @@ namespace Demos {
                 ColorEx.Green);
 
             // create a node for the line
-            SceneNode node = (SceneNode)scene.RootSceneNode.CreateChild();
-            SceneNode lineNode = (SceneNode)node.CreateChild();
-            SceneNode triNode = (SceneNode)node.CreateChild();
+            SceneNode node = scene.RootSceneNode.CreateChildSceneNode();
+            SceneNode lineNode = node.CreateChildSceneNode();
+            SceneNode triNode = node.CreateChildSceneNode();
             triNode.Position = new Vector3(50, 0, 0);
 
             // add the line and triangle to the scene

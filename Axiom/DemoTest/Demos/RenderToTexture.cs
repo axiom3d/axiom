@@ -45,10 +45,10 @@ namespace Demos {
 
             SceneNode rootNode = scene.RootSceneNode;
 
-            headNode = (SceneNode)rootNode.CreateChild("Head");
+            headNode = rootNode.CreateChildSceneNode("Head");
             headNode.AttachObject(head);
 
-            planeNode = (SceneNode)rootNode.CreateChild();
+            planeNode = rootNode.CreateChildSceneNode();
             planeNode.AttachObject(planeEnt);
 
             rttCam = scene.CreateCamera("RttCam");

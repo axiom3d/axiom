@@ -160,6 +160,61 @@ namespace Axiom.Core {
         }
 
         /// <summary>
+        ///    Creates a new name child node.
+        /// </summary>
+        /// <param name="name"></param>
+        public virtual SceneNode CreateChildSceneNode(string name) {
+            return CreateChildSceneNode(name, Vector3.Zero, Quaternion.Identity);
+        }
+
+        /// <summary>
+        ///    Creates a new named child scene node.
+        /// </summary>
+        /// <param name="name">Name of the node.</param>
+        /// <param name="translate">A vector to specify the position relative to the parent.</param>
+        /// <returns></returns>
+        public virtual SceneNode CreateChildSceneNode(string name, Vector3 translate) {
+            return CreateChildSceneNode(name, translate, Quaternion.Identity);
+        }
+
+        /// <summary>
+        ///    Creates a new named child scene node.
+        /// </summary>
+        /// <param name="name">Name of the node.</param>
+        /// <param name="translate">A vector to specify the position relative to the parent.</param>
+        /// <param name="rotate">A quaternion to specify the orientation relative to the parent.</param>
+        /// <returns></returns>
+        public virtual SceneNode CreateChildSceneNode(string name, Vector3 translate, Quaternion rotate) {
+            return (SceneNode)CreateChild(name, translate, rotate);
+        }
+
+        /// <summary>
+        ///    Creates a new child scene node.
+        /// </summary>
+        public virtual SceneNode CreateChildSceneNode() {
+            return CreateChildSceneNode(Vector3.Zero, Quaternion.Identity);
+        }
+
+        /// <summary>
+        ///    Creates a new child scene node.
+        /// </summary>
+        /// <param name="translate">A vector to specify the position relative to the parent.</param>
+        /// <returns></returns>
+        public virtual SceneNode CreateChildSceneNode(Vector3 translate) {
+            return CreateChildSceneNode(translate, Quaternion.Identity);
+        }
+
+        /// <summary>
+        ///    Creates a new child scene node.
+        /// </summary>
+        /// <param name="translate">A vector to specify the position relative to the parent.</param>
+        /// <param name="rotate">A quaternion to specify the orientation relative to the parent.</param>
+        /// <returns></returns>
+        public virtual SceneNode CreateChildSceneNode(Vector3 translate, Quaternion rotate) {
+            return (SceneNode)CreateChild(translate, rotate);
+        }
+
+        /// <summary>
         ///    Removes all currently attached SceneObjects from this SceneNode.
         /// </summary>
         /// <remarks>

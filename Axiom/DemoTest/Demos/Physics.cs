@@ -69,7 +69,7 @@ namespace Demos {
             // create an entity to reference this mesh
             Entity planeEnt = scene.CreateEntity("Floor", "GrassPlane");
             planeEnt.MaterialName = "Examples/RustySteel";
-            ((SceneNode)scene.RootSceneNode.CreateChild()).AttachObject(planeEnt);
+            scene.RootSceneNode.CreateChildSceneNode().AttachObject(planeEnt);
 
             // set ambient light to white
             scene.TargetRenderSystem.LightingEnabled = true;
@@ -141,7 +141,7 @@ namespace Demos {
         /// <param name="sceneManager"></param>
         public Box(SceneManager sceneManager): base(sceneManager) {
             sceneObject = sceneMgr.CreateEntity("Box" + nextNum++, "cube.mesh");
-            node = (SceneNode)sceneMgr.RootSceneNode.CreateChild("BoxEntNode" + nextNum++);
+            node = sceneMgr.RootSceneNode.CreateChildSceneNode("BoxEntNode" + nextNum++);
             node.AttachObject(sceneObject);
             NotifySceneObject(sceneObject);
         }

@@ -93,11 +93,11 @@ namespace Demos {
 
             planeEnt = scene.CreateEntity("Plane", "ReflectionPlane");
             planeEnt.MaterialName = "Examples/FresnelReflectionRefraction";
-            ((SceneNode)scene.RootSceneNode.CreateChild()).AttachObject(planeEnt);
+            scene.RootSceneNode.CreateChildSceneNode().AttachObject(planeEnt);
 
             scene.SetSkyBox(true, "Examples/CloudyNoonSkyBox", 2000);
 
-            SceneNode myRootNode = (SceneNode)scene.RootSceneNode.CreateChild();
+            SceneNode myRootNode = scene.RootSceneNode.CreateChildSceneNode();
 
             Entity ent;
 
@@ -131,7 +131,7 @@ namespace Demos {
 
             for (int fishNo = 0; fishNo < NUM_FISH; fishNo++) {
                 ent = scene.CreateEntity(string.Format("fish{0}", fishNo), "fish.mesh");
-                fishNodes[fishNo] = (SceneNode)myRootNode.CreateChild();
+                fishNodes[fishNo] = myRootNode.CreateChildSceneNode();
                 fishAnimations[fishNo] = ent.GetAnimationState("swim");
                 fishAnimations[fishNo].IsEnabled = true;
                 fishNodes[fishNo].AttachObject(ent);

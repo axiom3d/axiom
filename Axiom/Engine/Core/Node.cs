@@ -448,17 +448,23 @@ namespace Axiom.Core {
             initialPosition = position;
             initialScale = scale;
         }
+
         /// <summary>
         ///    Creates a new name child node.
         /// </summary>
-        /// <param name="pName"></param>
+        /// <param name="name"></param>
         public virtual Node CreateChild(string name) {
-            Node newChild = CreateChildImpl(name);
-            newChild.Translate(Vector3.Zero);
-            newChild.Rotate(Quaternion.Identity);
-            AddChild(newChild);
+            return CreateChild(name, Vector3.Zero, Quaternion.Identity);
+        }
 
-            return newChild;
+        /// <summary>
+        ///    Creates a new named child node.
+        /// </summary>
+        /// <param name="name">Name of the node.</param>
+        /// <param name="translate">A vector to specify the position relative to the parent.</param>
+        /// <returns></returns>
+        public virtual Node CreateChild(string name, Vector3 translate) {
+            return CreateChild(name, translate, Quaternion.Identity);
         }
 
         /// <summary>
@@ -476,17 +482,21 @@ namespace Axiom.Core {
 
             return newChild;
         }
-		
+
         /// <summary>
         ///    Creates a new Child node.
         /// </summary>
         public virtual Node CreateChild() {
-            Node newChild = CreateChildImpl();
-            newChild.Translate(Vector3.Zero);
-            newChild.Rotate(Quaternion.Identity);
-            AddChild(newChild);
+            return CreateChild(Vector3.Zero, Quaternion.Identity);
+        }
 
-            return newChild;
+        /// <summary>
+        ///    Creates a new child node.
+        /// </summary>
+        /// <param name="translate">A vector to specify the position relative to the parent.</param>
+        /// <returns></returns>
+        public virtual Node CreateChild(Vector3 translate) {
+            return CreateChild(translate, Quaternion.Identity);
         }
 
         /// <summary>

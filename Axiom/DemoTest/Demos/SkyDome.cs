@@ -107,10 +107,10 @@ namespace Demos {
             // add the floor entity
             Entity floor = scene.CreateEntity("Floor", "FloorPlane");
             floor.MaterialName = "Examples/RustySteel";
-            ((SceneNode) scene.RootSceneNode.CreateChild()).AttachObject(floor);
+            scene.RootSceneNode.CreateChildSceneNode().AttachObject(floor);
 
             ogre = scene.CreateEntity("Ogre", "ogrehead.mesh");
-            ((SceneNode) scene.RootSceneNode.CreateChild()).AttachObject(ogre);
+            scene.RootSceneNode.CreateChildSceneNode().AttachObject(ogre);
         }
 
         #endregion
