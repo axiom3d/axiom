@@ -29,35 +29,85 @@ using System.Collections;
 
 namespace Axiom.Graphics {
     /// <summary>
-    /// 	Summary description for VertexDeclaration.
+    /// 	This class declares the format of a set of vertex inputs, which
+    /// 	can be issued to the rendering API through a <see cref="RenderOperation"/>. 
     /// </summary>
-    /// DOC
     public class VertexDeclaration : ICloneable {
-        #region Member variables
+        #region Fields
 
+        /// <summary>
+        ///     List of elements that make up this declaration.
+        /// </summary>
         protected VertexElementList elements = new VertexElementList();
 
-        #endregion
+        #endregion Fields
 
         #region Methods
 		
         /// <summary>
-        /// 
+        ///     Adds a new <see cref="VertexElement"/> to this declaration.
         /// </summary>
-        /// DOC
         public virtual void AddElement(VertexElement element) {
             elements.Add(element);
         }
 
+        /// <summary>
+        ///     Adds a new VertexElement to this declaration.
+        /// </summary>
+        /// <remarks>
+        ///     This method adds a single element (positions, normals etc) to the
+        ///     vertex declaration. <b>Please read the information in <see cref="VertexDeclaration"/> about
+        ///     the importance of ordering and structure for compatibility with older D3D drivers</b>.
+        /// </remarks>
+        /// <param name="source">
+        ///     The binding index of HardwareVertexBuffer which will provide the source for this element.
+        /// </param>
+        /// <param name="offset">The offset in bytes where this element is located in the buffer.</param>
+        /// <param name="type">The data format of the element (3 floats, a color etc).</param>
+        /// <param name="semantic">The meaning of the data (position, normal, diffuse color etc).</param>
+        public virtual VertexElement AddElement(short source, int offset, VertexElementType type, VertexElementSemantic semantic) {
+            return AddElement(source, offset, type, semantic, 0);
+        }
+
+        /// <summary>
+        ///     Adds a new VertexElement to this declaration.
+        /// </summary>
+        /// <remarks>
+        ///     This method adds a single element (positions, normals etc) to the
+        ///     vertex declaration. <b>Please read the information in <see cref="VertexDeclaration"/> about
+        ///     the importance of ordering and structure for compatibility with older D3D drivers</b>.
+        /// </remarks>
+        /// <param name="source">
+        ///     The binding index of HardwareVertexBuffer which will provide the source for this element.
+        /// </param>
+        /// <param name="offset">The offset in bytes where this element is located in the buffer.</param>
+        /// <param name="type">The data format of the element (3 floats, a color etc).</param>
+        /// <param name="semantic">The meaning of the data (position, normal, diffuse color etc).</param>
+        /// <param name="index">Optional index for multi-input elements like texture coordinates.</param>
+        public virtual VertexElement AddElement(short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index) {
+            VertexElement element = new VertexElement(source, offset, type, semantic, index);
+            elements.Add(element);
+            return element;
+        }
+
+        /// <summary>
+        ///     Finds a <see cref="VertexElement"/> with the given semantic, and index if there is more than 
+        ///     one element with the same semantic. 
+        /// </summary>
+        /// <param name="semantic">Semantic to search for.</param>
+        /// <returns>If the element is not found, this method returns null.</returns>
         public VertexElement FindElementBySemantic(VertexElementSemantic semantic) {
             // call overload with a default of index 0
             return FindElementBySemantic(semantic, 0);
         }
 
         /// <summary>
-        /// 
+        ///     Finds a <see cref="VertexElement"/> with the given semantic, and index if there is more than 
+        ///     one element with the same semantic. 
         /// </summary>
-        /// DOC
+        /// <param name="semantic">Semantic to search for.</param>
+        /// <param name="index">Index of item to looks for using the supplied semantic (applicable to tex coords and colors).</param>
+        /// <returns>If the element is not found, this method returns null.</returns>
         public virtual VertexElement FindElementBySemantic(VertexElementSemantic semantic, short index) {
             for(int i = 0; i < elements.Count; i++) {
                 VertexElement element = (VertexElement)elements[i];
@@ -72,9 +122,8 @@ namespace Axiom.Graphics {
         }
 
         /// <summary>
-        /// 
+        ///     Gets a list of elements which use a given source.
         /// </summary>
-        /// DOC
         public virtual VertexElementList FindElementBySource(ushort source) {
             VertexElementList elements = new VertexElementList();
 
@@ -91,10 +140,9 @@ namespace Axiom.Graphics {
         }
 
         /// <summary>
-        /// 
+        ///     Gets the vertex size defined by this declaration for a given source.
         /// </summary>
-        /// <param name="source"></param>
-        /// DOC
+        /// <param name="source">The buffer binding index for which to get the vertex size.</param>
         public virtual int GetVertexSize(short source) {
             int size = 0;
 
@@ -110,6 +158,12 @@ namespace Axiom.Graphics {
             return size;
         }
 
+        /// <summary>
+        ///     Tests equality of 2 <see cref="VertexElement"/> objects.
+        /// </summary>
+        /// <param name="left">A <see cref="VertexElement"/></param>
+        /// <param name="right">A <see cref="VertexElement"/></param>
+        /// <returns>true if equal, false otherwise.</returns>
         public static bool operator == (VertexDeclaration left, VertexDeclaration right) {
             // if element lists are different sizes, they can't be equal
             if(left.elements.Count != right.elements.Count)
@@ -128,6 +182,12 @@ namespace Axiom.Graphics {
             return true;
         }
 
+        /// <summary>
+        ///     Tests in-equality of 2 <see cref="VertexElement"/> objects.
+        /// </summary>
+        /// <param name="left">A <see cref="VertexElement"/></param>
+        /// <param name="right">A <see cref="VertexElement"/></param>
+        /// <returns>true if not equal, false otherwise.</returns>
         public static bool operator != (VertexDeclaration left, VertexDeclaration right) {
             return !(left == right);
         }
@@ -137,11 +197,12 @@ namespace Axiom.Graphics {
         #region Properties
 		
         /// <summary>
-        /// 
+        ///     Gets a <b>read-only</b> list of elements.
         /// </summary>
-        /// DOC
         public IList Elements {
-            get { return elements; }
+            get { 
+                return VertexElementList.ReadOnly(elements);
+            }
         }
 
         #endregion
@@ -175,6 +236,10 @@ namespace Axiom.Graphics {
 
         #region ICloneable Members
 
+        /// <summary>
+        ///     Clonses this declaration, including a copy of all <see cref="VertexElement"/> objects this declaration holds.
+        /// </summary>
+        /// <returns></returns>
         public object Clone() {
             VertexDeclaration clone = HardwareBufferManager.Instance.CreateVertexDeclaration();
 

@@ -149,14 +149,14 @@ namespace Axiom.Gui.Elements {
             int offset = 0;
 
             // positions
-            decl.AddElement(new VertexElement(POSITION_TEXCOORD, offset, VertexElementType.Float3, VertexElementSemantic.Position));
+            decl.AddElement(POSITION_TEXCOORD, offset, VertexElementType.Float3, VertexElementSemantic.Position);
             offset += VertexElement.GetTypeSize(VertexElementType.Float3);
 
             // texcoords
-            decl.AddElement(new VertexElement(POSITION_TEXCOORD, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0));
+            decl.AddElement(POSITION_TEXCOORD, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0);
             
             // colors, stored in seperate buffer since they change less often
-            decl.AddElement(new VertexElement(COLORS, 0, VertexElementType.Color, VertexElementSemantic.Diffuse));
+            decl.AddElement(COLORS, 0, VertexElementType.Color, VertexElementSemantic.Diffuse);
 
             renderOp.operationType = RenderMode.TriangleList;
             renderOp.useIndices = false;

@@ -130,18 +130,18 @@ namespace Axiom.Core {
             int currOffset = 0;
 
             // add position data
-            decl.AddElement(new VertexElement(0, currOffset, VertexElementType.Float3, VertexElementSemantic.Position));
+            decl.AddElement(0, currOffset, VertexElementType.Float3, VertexElementSemantic.Position);
             currOffset += VertexElement.GetTypeSize(VertexElementType.Float3);
 
             // normals are optional
             if(normals) {
-                decl.AddElement(new VertexElement(0, currOffset, VertexElementType.Float3, VertexElementSemantic.Normal));
+                decl.AddElement(0, currOffset, VertexElementType.Float3, VertexElementSemantic.Normal);
                 currOffset += VertexElement.GetTypeSize(VertexElementType.Float3);
             }
 
             // add texture coords
             for(ushort i = 0; i < numTexCoordSets; i++) {
-                decl.AddElement(new VertexElement(0, currOffset, VertexElementType.Float2, VertexElementSemantic.TexCoords, i));
+                decl.AddElement(0, currOffset, VertexElementType.Float2, VertexElementSemantic.TexCoords, i);
                 currOffset += VertexElement.GetTypeSize(VertexElementType.Float2);
             }
 

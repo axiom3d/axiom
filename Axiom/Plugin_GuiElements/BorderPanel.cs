@@ -111,8 +111,8 @@ namespace Axiom.Gui.Elements {
             VertexDeclaration decl = renderOp2.vertexData.vertexDeclaration;
             // Position and texture coords each have their own buffers to allow
             // each to be edited separately with the discard flag
-            decl.AddElement(new VertexElement(POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position));
-            decl.AddElement(new VertexElement(TEXCOORDS, 0, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0));
+            decl.AddElement(POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position);
+            decl.AddElement(TEXCOORDS, 0, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0);
 
             // position buffer
             HardwareVertexBuffer buffer =

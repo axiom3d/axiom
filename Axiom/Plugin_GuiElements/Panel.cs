@@ -99,7 +99,7 @@ namespace Axiom.Gui.Elements {
             // Vertex declaration: 1 position, add texcoords later depending on #layers
             // Create as separate buffers so we can lock & discard separately
             VertexDeclaration decl = renderOp.vertexData.vertexDeclaration;
-            decl.AddElement(new VertexElement(POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position));
+            decl.AddElement(POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position);
             renderOp.vertexData.vertexStart = 0;
             renderOp.vertexData.vertexCount = 4;
             
@@ -232,7 +232,7 @@ namespace Axiom.Gui.Elements {
                     int offset = VertexElement.GetTypeSize(VertexElementType.Float2) * numTexCoords;
 
                     for(int i = numTexCoords; i < numLayers; i++) {
-                        decl.AddElement(new VertexElement(TEXTURE_COORDS, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, i));
+                        decl.AddElement(TEXTURE_COORDS, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, i);
                         offset += VertexElement.GetTypeSize(VertexElementType.Float2);
                     } // for
                 } // if

@@ -362,7 +362,7 @@ namespace Demos {
                 }
 
                 // add the new element to the declaration
-                newDecl.AddElement(new VertexElement(source, element.Offset, element.Type, ves, element.Index));
+                newDecl.AddElement(source, element.Offset, element.Type, ves, element.Index);
             } // foreach
 
             return newData;

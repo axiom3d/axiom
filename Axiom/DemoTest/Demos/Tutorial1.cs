@@ -133,8 +133,8 @@ namespace Demos {
             VertexBufferBinding binding = vertexData.vertexBufferBinding;
 
             // add a position and color element to the declaration
-            decl.AddElement(new VertexElement(POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position));
-            decl.AddElement(new VertexElement(COLOR, 0, VertexElementType.Color, VertexElementSemantic.Diffuse));
+            decl.AddElement(POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position);
+            decl.AddElement(COLOR, 0, VertexElementType.Color, VertexElementSemantic.Diffuse);
 
             // create a vertex buffer for the position
             HardwareVertexBuffer buffer  =
@@ -240,8 +240,8 @@ namespace Demos {
             VertexBufferBinding binding = vertexData.vertexBufferBinding;
 
             // add a position and color element to the declaration
-            decl.AddElement(new VertexElement(POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position));
-            decl.AddElement(new VertexElement(COLOR, 0, VertexElementType.Color, VertexElementSemantic.Diffuse));
+            decl.AddElement(POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position);
+            decl.AddElement(COLOR, 0, VertexElementType.Color, VertexElementSemantic.Diffuse);
 
             // POSITIONS
             // create a vertex buffer for the position
