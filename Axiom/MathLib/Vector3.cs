@@ -591,9 +591,9 @@ namespace Axiom.MathLib {
         ///		member variables.
         /// </summary>
         /// <returns></returns>
-        public override int GetHashCode() {
-            return (int)this.x ^ (int)this.y ^ (int)this.z;
-        }
+        public override int GetHashCode() { 
+            return x.GetHashCode() ^ (y.GetHashCode() ^ (~z.GetHashCode())); 
+        } 
 
         /// <summary>
         ///		Compares this Vector to another object.  This should be done because the 
