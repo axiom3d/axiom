@@ -89,7 +89,6 @@ namespace Axiom.SubSystems.Rendering {
                 }
 
                 data = shadowBuffer.Lock(offset, length, locking);
-                isLocked = true;
             }
             else {
                 // lock the real deal and flag it as locked
@@ -118,7 +117,7 @@ namespace Axiom.SubSystems.Rendering {
         ///		memory.
         /// </summary>
         public virtual void Unlock() {
-            Debug.Assert(isLocked, "Cannot unlock this buffer if it isn't locked to begin with.");
+            Debug.Assert(this.IsLocked, "Cannot unlock this buffer if it isn't locked to begin with.");
 
             if(useShadowBuffer && shadowBuffer.IsLocked) {
                 shadowBuffer.Unlock();
@@ -148,12 +147,15 @@ namespace Axiom.SubSystems.Rendering {
             if(useShadowBuffer && shadowUpdated) {
                 // do this manually to avoid locking problems
                 IntPtr src = shadowBuffer.LockImpl(lockStart, lockSize, BufferLocking.ReadOnly);
-                IntPtr dest = this.LockImpl(lockStart, lockSize, BufferLocking.Discard);
 
-                // copy the src to the dest
-                //Array.Copy(src, dest, lockSize);
+                // Lock with discard if the whole buffer was locked, otherwise normal
+                BufferLocking locking = 
+                    (lockStart == 0 && lockSize == sizeInBytes) ? BufferLocking.Discard : BufferLocking.Normal;
 
-                PointerCopy(src, dest, sizeInBytes);
+                IntPtr dest = this.LockImpl(lockStart, lockSize, locking);
+
+                // copy the data in directly
+                PointerCopy(src, dest, lockSize);
 
                 // unlock both buffers to commit the write
                 this.UnlockImpl();

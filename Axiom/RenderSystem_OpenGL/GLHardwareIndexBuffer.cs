@@ -124,7 +124,6 @@ namespace RenderSystem_OpenGL {
         public override void UnlockImpl() {
             Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
 
-            // TODO: Remap CsGL to return a val from this method (bool)
             Ext.glUnmapBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB);
 
             isLocked = false;

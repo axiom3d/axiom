@@ -175,7 +175,7 @@ namespace Plugin_GuiElements
                 // only add this panel to the render queue if it is not transparent
                 // that would mean the panel should be a virtual container of sorts,
                 // and the children would still be rendered
-                if(!isTransparent) {
+                if(!isTransparent && material != null) {
                     base.UpdateRenderQueue (queue);
                 }
 

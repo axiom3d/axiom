@@ -171,6 +171,20 @@ namespace Axiom.Gui {
         /// <param name="name">Name of the element to retrieve.</param>
         /// <param name="isTemplate"></param>
         /// <returns></returns>
+        public GuiElement GetElement(string name) {
+            Hashtable elements = GetElementTable(false);
+
+            Debug.Assert(elements.ContainsKey(name), string.Format("GuiElement with the name'{0}' was not found.", name));
+
+            return (GuiElement)elements[name];
+        }
+
+        /// <summary>
+        ///    Gets a reference to an existing element.
+        /// </summary>
+        /// <param name="name">Name of the element to retrieve.</param>
+        /// <param name="isTemplate"></param>
+        /// <returns></returns>
         public GuiElement GetElement(string name, bool isTemplate) {
             Hashtable elements = GetElementTable(isTemplate);
 
