@@ -38,11 +38,11 @@ namespace Axiom.Graphics {
         /// <summary>
         ///     List of triangles.
         /// </summary>
-        protected TriangleList triangles = new TriangleList();
+        protected internal TriangleList triangles = new TriangleList();
         /// <summary>
         ///     List of edge groups.
         /// </summary>
-        protected EdgeGroupList edgeGroups = new EdgeGroupList();
+        protected internal EdgeGroupList edgeGroups = new EdgeGroupList();
 
         #endregion Fields
 		

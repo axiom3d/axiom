@@ -53,7 +53,7 @@ namespace Axiom.Graphics {
     public class EdgeList : ArrayList {}
 
     /// <summary>
-    ///     Generics: List<EdgeList>
+    ///     Generics: List<EdgeGroup>
     /// </summary>
     public class EdgeGroupList : ArrayList {}
 

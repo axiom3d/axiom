@@ -27,6 +27,8 @@ namespace Axiom.Collections {
     ///     enumeration of them all (with unboxing of the value type stored in the map) took between 16-30ms.
     /// </remarks>
     public class Map : IEnumerable {
+        #region Fields
+
         /// <summary>
         ///     Number of total items currently in this map.
         /// </summary>
@@ -35,7 +37,28 @@ namespace Axiom.Collections {
         /// <summary>
         ///     A sorted list of buckets.
         /// </summary>
-        protected SortedList buckets = new SortedList();
+        protected SortedList buckets;
+
+        #endregion Fields
+
+        #region Constructor
+
+        /// <summary>
+        ///     Default constructor.
+        /// </summary>
+        public Map() {
+            buckets = new SortedList();
+        }
+
+        /// <summary>
+        ///     Constructor, takes the comparer to use for the bucket list.
+        /// </summary>
+        /// <param name="comparer">Custom <see cref="IComparable"/>implmentation to use to sort.</param>
+        public Map(IComparer comparer) {
+            buckets = new SortedList(comparer);
+        }
+
+        #endregion Constructor
 
         /// <summary>
         ///     Clears this map of all contained objects.
