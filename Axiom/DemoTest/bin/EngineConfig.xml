@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <EngineConfig xmlns="http://tempuri.org/EngineConfig.xsd">
-	<FilePath src="Media\Textures"/>
-	<FilePath src="Media\Sounds"/>
-	<FilePath src="Media\Meshes"/>
-	<FilePath src="Media\Skeletons"/>
-	<FilePath src="Media\Materials"/>
-	<FilePath src="Media\Overlays"/>
+	<FilePath type="Folder" src="Media\Textures"/>
+	<FilePath type="Folder" src="Media\Sounds"/>
+	<FilePath type="Folder" src="Media\Meshes"/>
+	<FilePath type="Folder" src="Media\Skeletons"/>
+	<FilePath type="Folder" src="Media\Materials"/>
+	<FilePath type="Folder" src="Media\Overlays"/>
+	<FilePath type="ZipFile" src="Media\Archives\cubemapsJS.zip"/>
+	<FilePath type="ZipFile" src="Media\Archives\RZR-002.zip"/>
 </EngineConfig>
  

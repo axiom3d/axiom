@@ -163,7 +163,17 @@ namespace Axiom.Utility {
             // interrogate the available resource paths
             foreach(EngineConfig.FilePathRow row in config.FilePath) {
                 string fullPath = Application.StartupPath + Path.DirectorySeparatorChar + row.src;
-                ResourceManager.AddCommonSearchPath(fullPath);
+
+                switch(row.type) {
+                    case "Folder":
+                        ResourceManager.AddCommonSearchPath(fullPath);
+                        break;
+                    case "ZipFile":
+                        ResourceManager.AddCommonArchive(fullPath, "ZipFile");
+                        break;
+                    default:
+                        throw new Exception(string.Format("Archives of type '{0}' are not supported.", row.type));
+                }
             }
         }
 

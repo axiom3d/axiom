@@ -56,8 +56,6 @@ namespace Axiom.Core {
         protected string materialName;
         /// <summary>Name of this SubMesh.</summary>
         protected string name;
-        /// <summary>Indicates if this submesh shares vertex data with other meshes or whether it has it's own vertices.</summary>
-        protected internal bool useSharedVertices;
         /// <summary></summary>
         protected bool isMaterialInitialized;
         /// <summary>Number of faces in this subMesh.</summary>
@@ -72,6 +70,8 @@ namespace Axiom.Core {
         protected internal Axiom.SubSystems.Rendering.RenderMode operationType;
         public VertexData vertexData;
         public IndexData indexData = new IndexData();
+        /// <summary>Indicates if this submesh shares vertex data with other meshes or whether it has it's own vertices.</summary>
+        public bool useSharedVertices;
         protected internal ArrayList lodFaceList = new ArrayList();
 
         #endregion

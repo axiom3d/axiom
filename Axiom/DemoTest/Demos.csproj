@@ -248,42 +248,6 @@
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
-                <File
-                    RelPath = "Demos\images\CameraTrack.jpg"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "Demos\images\EnvMapping.jpg"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "Demos\images\Lights.jpg"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "Demos\images\ParticleFX.jpg"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "Demos\images\SkyBox.jpg"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "Demos\images\SkyPlane.jpg"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "Demos\images\TextureFX.jpg"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "Demos\images\Transparency.jpg"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "Demos\images\Tutorial1.jpg"
-                    BuildAction = "Content"
-                />
             </Include>
         </Files>
     </CSHARP>

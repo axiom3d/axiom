@@ -745,6 +745,25 @@ namespace Axiom.Core {
         #region Public methods
 
         /// <summary>
+        ///    Removes the specified entity from the scene.
+        /// </summary>
+        /// <param name="entity"></param>
+        public void RemoveEntity(Entity entity) {
+            entityList.Remove(entity);
+        }
+
+        /// <summary>
+        ///    Removes the entity with the specified name from the scene.
+        /// </summary>
+        /// <param name="entity"></param>
+        public void RemoveEntity(string name) {
+            Entity entity = entityList[name];
+            if(entity != null) {
+                entityList.Remove(entity);
+            }
+        }
+
+        /// <summary>
         ///		Sets the fogging mode applied to the scene.
         /// </summary>
         /// <remarks>
@@ -860,8 +879,6 @@ namespace Axiom.Core {
                     skyBoxNode = CreateSceneNode("SkyBoxNode");
                 else
                     skyBoxNode.DetachAllObjects();
-	
-                MaterialManager materialMgr = MaterialManager.Instance;
 
                 // need to create 6 plane entities for each side of the skybox
                 for(int i = 0; i < 6; i++) {
@@ -869,18 +886,21 @@ namespace Axiom.Core {
                     string entityName = "SkyBoxPlane" + i;
 
                     if(skyBoxEntities[i] != null) {
-                        // TODO: Remove the entity dammit
+                        RemoveEntity(skyBoxEntities[i]);
                     }
 
                     // create an entity for this plane
                     skyBoxEntities[i] = CreateEntity(entityName, planeModel.Name);
 
-                    // find the material for this plane
-                    // TODO: can we assume there is never a case where it already exists?  it shouldnt
-                    //Material boxMaterial = materialMgr[entityName];
+                    Material boxMaterial = MaterialManager.Instance[entityName];
 
-                    // close the material
-                    Material boxMaterial = (Material)m.Clone(entityName);
+                    // if already exists, remove it first
+                    if(boxMaterial != null) {
+                        MaterialManager.Instance.Unload(boxMaterial);
+                    }
+
+                    // clone the material
+                    boxMaterial = (Material)m.Clone(entityName);
 
                     // set the current frame
                     boxMaterial.TextureLayers[0].CurrentFrame = i;

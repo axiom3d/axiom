@@ -250,7 +250,7 @@ namespace Axiom.Core {
             // search archives
             for(int i = 0; i < archives.Count; i++) {
                 Archive archive = (Archive)archives[i];
-                string[] files = archive.GetFileNamesLike("", "*" + extension);
+                string[] files = archive.GetFileNamesLike("", extension);
 
                 for(int j = 0; j < files.Length; j++) {
                     Stream data = archive.ReadFile(files[j]);
@@ -263,7 +263,7 @@ namespace Axiom.Core {
             // search common archives
             for(int i = 0; i < commonArchives.Count; i++) {
                 Archive archive = (Archive)commonArchives[i];
-                string[] files = archive.GetFileNamesLike("", "*" + extension);
+                string[] files = archive.GetFileNamesLike("", extension);
 
                 for(int j = 0; j < files.Length; j++) {
                     Stream data = archive.ReadFile(files[j]);

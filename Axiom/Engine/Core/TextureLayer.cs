@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Reflection;
 using Axiom.Controllers;
 using Axiom.Enumerations;
 using Axiom.MathLib;
@@ -443,6 +444,16 @@ namespace Axiom.Core {
         /// <param name="operation"></param>
         /// <param name="source1"></param>
         /// <param name="source2"></param>
+        public void SetColorOperationEx(LayerBlendOperationEx operation) {
+            SetColorOperationEx(operation, LayerBlendSource.Texture, LayerBlendSource.Current, ColorEx.FromColor(System.Drawing.Color.White), ColorEx.FromColor(System.Drawing.Color.White), 0.0f);
+        }
+
+        /// <summary>
+        ///		
+        /// </summary>
+        /// <param name="operation"></param>
+        /// <param name="source1"></param>
+        /// <param name="source2"></param>
         public void SetColorOperationEx(LayerBlendOperationEx operation, LayerBlendSource source1, LayerBlendSource source2) {
             SetColorOperationEx(operation, source1, source2, ColorEx.FromColor(System.Drawing.Color.White), ColorEx.FromColor(System.Drawing.Color.White), 0.0f);
         }
@@ -798,11 +809,29 @@ namespace Axiom.Core {
                 TextureEffect effect = (TextureEffect)effectList[i];
                 CreateEffectController(ref effect);
             }
+
+           deferredLoad = false;
         }
 
         #endregion
 
         #region ICloneable Members
+
+        /// <summary>
+        ///		Used to clone a texture layer.  Mainly used during a call to Clone on a Material.
+        /// </summary>
+        /// <returns></returns>
+        public void CopyTo(TextureLayer layer) {
+
+            FieldInfo[] props = layer.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+
+            for(int i = 0; i < props.Length; i++) {
+                FieldInfo prop = props[i];
+
+                object srcVal = prop.GetValue(this);
+                prop.SetValue(layer, srcVal);
+            }
+        }
 
         /// <summary>
         ///		Used to clone a texture layer.  Mainly used during a call to Clone on a Material.

@@ -165,6 +165,8 @@ namespace Axiom.Configuration {
             
             private DataColumn columnsrc;
             
+            private DataColumn columntype;
+            
             internal FilePathDataTable() : 
                     base("FilePath") {
                 this.InitClass();
@@ -199,6 +201,12 @@ namespace Axiom.Configuration {
                 }
             }
             
+            internal DataColumn typeColumn {
+                get {
+                    return this.columntype;
+                }
+            }
+            
             public FilePathRow this[int index] {
                 get {
                     return ((FilePathRow)(this.Rows[index]));
@@ -217,10 +225,11 @@ namespace Axiom.Configuration {
                 this.Rows.Add(row);
             }
             
-            public FilePathRow AddFilePathRow(string src) {
+            public FilePathRow AddFilePathRow(string src, string type) {
                 FilePathRow rowFilePathRow = ((FilePathRow)(this.NewRow()));
                 rowFilePathRow.ItemArray = new object[] {
-                        src};
+                        src,
+                        type};
                 this.Rows.Add(rowFilePathRow);
                 return rowFilePathRow;
             }
@@ -241,12 +250,16 @@ namespace Axiom.Configuration {
             
             internal void InitVars() {
                 this.columnsrc = this.Columns["src"];
+                this.columntype = this.Columns["type"];
             }
             
             private void InitClass() {
                 this.columnsrc = new DataColumn("src", typeof(string), null, System.Data.MappingType.Attribute);
                 this.Columns.Add(this.columnsrc);
+                this.columntype = new DataColumn("type", typeof(string), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columntype);
                 this.columnsrc.Namespace = "";
+                this.columntype.Namespace = "";
             }
             
             public FilePathRow NewFilePathRow() {
@@ -318,12 +331,34 @@ namespace Axiom.Configuration {
                 }
             }
             
+            public string type {
+                get {
+                    try {
+                        return ((string)(this[this.tableFilePath.typeColumn]));
+                    }
+                    catch (InvalidCastException e) {
+                        throw new StrongTypingException("Cannot get value because it is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableFilePath.typeColumn] = value;
+                }
+            }
+            
             public bool IssrcNull() {
                 return this.IsNull(this.tableFilePath.srcColumn);
             }
             
             public void SetsrcNull() {
                 this[this.tableFilePath.srcColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IstypeNull() {
+                return this.IsNull(this.tableFilePath.typeColumn);
+            }
+            
+            public void SettypeNull() {
+                this[this.tableFilePath.typeColumn] = System.Convert.DBNull;
             }
         }
         
