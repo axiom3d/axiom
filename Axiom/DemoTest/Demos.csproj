@@ -144,6 +144,11 @@
                     Project = "{875E732D-8A8A-4AA0-AFCC-54E001805A10}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
+                <Reference
+                    Name = "Plugin_GuiElements"
+                    Project = "{A70A137F-FD72-4045-BBC4-1171B9E828A2}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
             </References>
         </Build>
         <Files>

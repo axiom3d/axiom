@@ -187,6 +187,28 @@ namespace Axiom.MathLib {
             SetColumn(2, zAxis);
         }
 
+        /// <summary>
+        ///    Constructs this Matrix from 3 euler angles, in degrees.
+        /// </summary>
+        /// <param name="yaw"></param>
+        /// <param name="pitch"></param>
+        /// <param name="roll"></param>
+        public void FromEulerAnglesXYZ(float yaw, float pitch, float roll) {
+            float cos = MathUtil.Cos(yaw);
+            float sin = MathUtil.Sin(yaw);
+            Matrix3 xMat = new Matrix3(1, 0, 0, 0, cos, -sin, 0, sin, cos);
+
+            cos = MathUtil.Cos(pitch);
+            sin = MathUtil.Sin(pitch);
+            Matrix3 yMat = new Matrix3(cos, 0, sin, 0, 1, 0, sin, 0, cos);
+
+            cos = MathUtil.Cos(roll);
+            sin = MathUtil.Sin(roll);
+            Matrix3 zMat = new Matrix3(cos, -sin, 0, sin, 0, 0, 0, 0, 1);
+
+            this = xMat * (yMat * zMat);
+        }
+
         #endregion
 
         #region Operator overloads

@@ -151,15 +151,6 @@ namespace Axiom.Enumerations {
     }
 
     /// <summary>
-    /// The types of resources that the engine can make use of.
-    /// </summary>
-    public enum Resource {
-        All,
-        Textures,
-        Meshes
-    }
-
-    /// <summary>
     /// The different types of scenes types that can be handled by the engine.  The various types can
     /// be altered by plugin functionality (i.e. BSP for interior, OctTree for Exterior, etc).
     /// </summary>

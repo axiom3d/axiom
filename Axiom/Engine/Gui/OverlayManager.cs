@@ -209,7 +209,72 @@ namespace Axiom.Gui {
         /// <param name="parent"></param>
         /// <returns></returns>
         protected bool ParseChildren(TextReader script, string line, Overlay overlay, bool isTemplate, GuiContainer parent) {
-            return false;
+            bool ret = false;
+            int skipParam = 0;
+
+            string[] parms = line.Split(' ', '(', ')');
+            
+            // split on lines with a ) will have an extra blank array element, so lets get rid of it
+            if(parms[parms.Length - 1] == "") {
+                string[] tmp = new string[parms.Length - 1];
+                Array.Copy(parms, 0, tmp, 0, parms.Length - 1);
+                parms = tmp;
+            }
+
+            if(isTemplate) {
+                // the first param = 'template' on a new child element
+                if(parms[0] == "template") {
+                    skipParam++;
+                }
+            }
+
+            // top level component cannot be an element, it must be a container unless it is a template
+            if(parms[0 + skipParam] == "container" || (parms[0 + skipParam] == "element" && isTemplate || parent != null)) {
+                string templateName = "";
+                ret = true;
+
+                // nested container/element
+                if(parms.Length > 3 + skipParam) {
+                    if(parms.Length != 5 + skipParam) {
+                        Trace.WriteLine(string.Format("Bad element/container line: {0} in {1} - {2}, expecting ':' templateName", line, parent.Type, parent.Name)); 
+                        ParseHelper.SkipToNextCloseBrace(script);
+                        return ret;
+                    }
+                    if(parms[3 + skipParam] != ":") {
+                        Trace.WriteLine(string.Format("Bad element/container line: {0} in {1} - {2}, expecting ':' for element inheritance.", line, parent.Type, parent.Name)); 
+                        ParseHelper.SkipToNextCloseBrace(script);
+                        return ret;
+                    }
+
+                    // get the template name
+                    templateName = parms[4 + skipParam];
+                }
+                else if(parms.Length != 3 + skipParam) {
+                    Trace.WriteLine(string.Format("Bad element/container line: {0} in {1} - {2}, expecting 'element type(name)'.", line, parent.Type, parent.Name)); 
+                    ParseHelper.SkipToNextCloseBrace(script);
+                    return ret;
+                }
+
+                ParseHelper.SkipToNextOpenBrace(script);
+                ParseNewElement(script, parms[1 + skipParam], parms[2 + skipParam], true, overlay, isTemplate, templateName, (GuiContainer)parent);
+            }
+
+            return ret;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="overlay"></param>
+        /// <param name="element"></param>
+        protected void ParseElementAttrib(string line, Overlay overlay, GuiElement element) {
+            string[] parms = line.Split(' ');
+
+            // set the param, and hopefully it exists
+            if(!element.SetParam(parms[0].ToLower(), parms[1].ToLower())) {
+                Trace.WriteLine(string.Format("Bad element attribute line: {0} for element '{1}'", line, element.Name));
+            }
         }
 
         /// <summary>
@@ -239,7 +304,35 @@ namespace Axiom.Gui {
         protected void ParseNewElement(TextReader script, string type, string name, bool isContainer, Overlay overlay, bool isTemplate, 
             string templateName, GuiContainer parent) {
         
-            
+            string line;
+            GuiElement element = GuiManager.Instance.CreateElementFromTemplate(templateName, type, name, isTemplate);
+
+            if(parent != null) {
+                // add this element to the parent container
+                parent.AddChild(element);
+            }
+            else if(overlay != null) {
+                overlay.AddElement((GuiContainer)element);
+            }
+
+            while((line = ParseHelper.ReadLine(script)) != null) {
+                // inore blank lines and comments
+                if(line.Length > 0 && !line.StartsWith("//")) {
+                    if(line == "}") {
+                        // finished element
+                        break;
+                    }
+                    else {
+                        if(isContainer && ParseChildren(script, line, overlay, isTemplate, parent)) {
+                            // nested children, so don't reparse it
+                        }
+                        else {
+                            // element attribute
+                            ParseElementAttrib(line, overlay, element);
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -292,6 +385,13 @@ namespace Axiom.Gui {
                     if(overlay != null || isTemplate) {
                         // already in overlay
                         string[] parms = line.Split(' ', '(', ')');
+                        
+                        // split on lines with a ) will have an extra blank array element, so lets get rid of it
+                        if(parms[parms.Length - 1] == "") {
+                            string[] tmp = new string[parms.Length - 1];
+                            Array.Copy(parms, 0, tmp, 0, parms.Length - 1);
+                            parms = tmp;
+                        }
 
                         if(line == "}") {
                             // finished overlay
