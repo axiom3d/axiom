@@ -290,7 +290,7 @@ namespace Axiom.Graphics {
 
         #endregion
 
-        #region Public methods
+        #region Methods
 
         /// <summary>
         ///		Tells the target to update it's contents.
@@ -377,6 +377,22 @@ namespace Axiom.Graphics {
             return customAttributes[attribute];
         }
 
-        #endregion
+		/// <summary>
+		///		Utility method to notify a render target that a camera has been removed, 
+		///		incase it was referring to it as a viewer.
+		/// </summary>
+		/// <param name="camera"></param>
+		internal void NotifyCameraRemoved(Camera camera) {
+			for(int i = 0; i < viewportList.Count; i++) {
+				Viewport viewport = viewportList[i];
+
+				// remove the link to this camera
+				if(viewport.Camera == camera) {
+					viewport.Camera = null;
+				}
+			}
+		}
+
+        #endregion Methods
     }
 }

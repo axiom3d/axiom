@@ -248,6 +248,19 @@ namespace Axiom.Graphics {
             // dispose of the render system
             this.Dispose();
         }
+
+		/// <summary>
+		///		Utility method to notify all render targets that a camera has been removed, 
+		///		incase they were referring to it as their viewer. 
+		/// </summary>
+		/// <param name="camera">Camera being removed.</param>
+		internal virtual void NotifyCameraRemoved(Camera camera) {
+			for(int i = 0; i < renderTargets.Count; i++) {
+				RenderTarget target = (RenderTarget)renderTargets[i];
+				target.NotifyCameraRemoved(camera);
+			}
+		}
+
         #endregion
 
         #region Abstract methods

@@ -361,7 +361,7 @@ namespace Axiom.Core {
 
         #region SceneObject Implementation
 
-        public override void UpdateRenderQueue(RenderQueue pQueue) {
+        public override void UpdateRenderQueue(RenderQueue queue) {
             // Do nothing
         }
 
@@ -371,6 +371,17 @@ namespace Axiom.Core {
                 return AxisAlignedBox.Null;
             }
         }
+
+		/// <summary>
+		///		Overridden to return a proper bounding radius for the camera.
+		/// </summary>
+		public override float BoundingRadius {
+			get {
+				// return a little bigger than the near distance
+				// just to keep things just outside
+				return nearDistance * 1.5f;
+			}
+		}
 
         public override void NotifyCurrentCamera(Axiom.Core.Camera pCamera) {
             // Do nothing

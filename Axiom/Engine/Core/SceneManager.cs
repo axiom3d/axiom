@@ -60,6 +60,8 @@ namespace Axiom.Core {
     ///		designed to be called by other classes in the engine, not by user applications.
     ///	 </remarks>
     /// TODO: Thoroughly review node removal/cleanup.
+    /// TODO: Ensure methods for removing all types of items from the scene (single and all at once).
+    /// TODO: Review of method visibility/virtuality to ensure consistency.
     public class SceneManager {
         #region Fields
 
@@ -470,7 +472,10 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        ///		Empties the entire scene, inluding all SceneNodes, Cameras, Entities and Lights etc.
+        ///		Empties the entire scene, inluding all SceneNodes, Entities, Lights, 
+        ///		BillboardSets etc. Cameras are not deleted at this stage since
+        ///		they are still referenced by viewports, which are not destroyed during
+        ///		this process.
         /// </summary>
         public virtual void ClearScene() {
             // TODO: Finish ClearScene
@@ -1326,19 +1331,63 @@ namespace Axiom.Core {
 			return query;
 		}
 
+		/// <summary>
+		///		Removes all cameras from the scene.
+		/// </summary>
+		public virtual void RemoveAllCameras() {
+			// notify the render system of each camera being removed
+			for(int i = 0; i < cameraList.Count; i++) {
+				targetRenderSystem.NotifyCameraRemoved(cameraList[i]);
+			}
+
+			// clear the list
+			cameraList.Clear();
+		}
+
+		/// <summary>
+		///		Removes the specified camera from the scene.
+		/// </summary>
+		/// <remarks>
+		///		This method removes a previously added camera from the scene.
+		///		The camera is deleted so the caller must ensure no references
+		///		to it's previous instance (e.g. in a SceneNode) are used.
+		/// </remarks>
+		/// <param name="camera">Reference to the camera to remove.</param>
+		public virtual void RemoveCamera(Camera camera) {
+			cameraList.Remove(camera);
+
+			// notify all render targets
+			targetRenderSystem.NotifyCameraRemoved(camera);
+		}
+
+		/// <summary>
+		///		Removes a camera from the scene with the specified name.
+		/// </summary>
+		/// <remarks>
+		///		This method removes a previously added camera from the scene.
+		///		The camera is deleted so the caller must ensure no references
+		///		to it's previous instance (e.g. in a SceneNode) are used.
+		/// </remarks>
+		/// <param name="name">Name of the camera to remove.</param>
+		public virtual void RemoveCamera(string name) {
+			Debug.Assert(cameraList.ContainsKey(name), string.Format("Camera '{0}' does not exist in the scene.", name));
+
+			RemoveCamera(cameraList[name]);
+		}
+
         /// <summary>
         ///    Removes the specified entity from the scene.
         /// </summary>
-        /// <param name="entity"></param>
-        public void RemoveEntity(Entity entity) {
+        /// <param name="entity">Entity to remove from the scene.</param>
+        public virtual void RemoveEntity(Entity entity) {
             entityList.Remove(entity);
         }
 
         /// <summary>
         ///    Removes the entity with the specified name from the scene.
         /// </summary>
-        /// <param name="entity"></param>
-        public void RemoveEntity(string name) {
+        /// <param name="entity">Entity to remove from the scene.</param>
+        public virtual void RemoveEntity(string name) {
             Entity entity = entityList[name];
             if(entity != null) {
                 entityList.Remove(entity);

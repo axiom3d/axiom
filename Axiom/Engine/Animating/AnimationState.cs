@@ -149,17 +149,14 @@ namespace Axiom.Animating {
         /// <summary>
         ///		Modifies the time position, adjusting for animation length.
         /// </summary>
-        /// <param name="offset"></param>
+        /// <param name="offset">Offset from the current time position.</param>
         public void AddTime(float offset) {
-            time = time + offset;
+			// TODO: Add MathUtil function for this?
+			time = (float)Math.IEEERemainder(time + offset, length);
 
-            // Wrap over upper bound
-            while(time >= length)
-                time -= length;
-
-            // Wrap over lower bound
-            while(time < 0)
-                time += length;
+			if(time < 0) {
+				time += length;
+			}
         }
 
         #endregion
