@@ -17,8 +17,7 @@ package.links = {
 	"System.Data", 
 	"System.Xml", 
 	"System.Drawing", 
-	"System.Windows.Forms", 
-	"System.XML", 
+	"System.Windows.Forms",
 	"Axiom.MathLib", 
 	"ICSharpCode.SharpZipLib",
 	"Tao.DevIl"  

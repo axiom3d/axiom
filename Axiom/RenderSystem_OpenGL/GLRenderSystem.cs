@@ -208,6 +208,14 @@ namespace Axiom.RenderSystems.OpenGL {
             return renderTexture;
         }
 
+		/// <summary>
+		///		Returns an OpenGL implementation of a hardware occlusion query.
+		/// </summary>
+		/// <returns></returns>
+		public override IHardwareOcclusionQuery CreateHardwareOcclusionQuery() {
+			return new GLHardwareOcclusionQuery();
+		}
+
         public override RenderWindow CreateRenderWindow(string name, int width, int height, int colorDepth,
             bool isFullscreen, int left, int top, bool depthBuffer, object target) {
 
@@ -686,11 +694,11 @@ namespace Axiom.RenderSystems.OpenGL {
             }
 
             // get current setting to compare
-			// HACK: FIX since glGetTexParameterfv causes a 1280
             float currentAnisotropy = 1;
             float maxSupportedAnisotropy = 0;
+
 			// TODO: Add getCurrentAnistoropy
-            //Gl.glGetTexParameterfv(textureTypes[stage], Gl.GL_TEXTURE_MAX_ANISOTROPY_EXT, out currentAnisotropy);
+            Gl.glGetTexParameterfv(textureTypes[stage], Gl.GL_TEXTURE_MAX_ANISOTROPY_EXT, out currentAnisotropy);
             Gl.glGetFloatv(Gl.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, out maxSupportedAnisotropy);
 
             if(maxAnisotropy > maxSupportedAnisotropy) {
@@ -2091,6 +2099,11 @@ namespace Axiom.RenderSystems.OpenGL {
 			// stencil wrapping
 			if(GLHelper.SupportsExtension("GL_EXT_stencil_wrap")) {
 				caps.SetCap(Capabilities.StencilWrap);
+			}
+
+			// Check for hardware occlusion support
+			if(GLHelper.SupportsExtension("GL_NV_occlusion_query")) {
+				caps.SetCap(Capabilities.HardwareOcculusion);
 			}
 
             // scissor test is standard in GL 1.2 and above
