@@ -54,9 +54,9 @@ namespace Axiom.MathLib {
             this.d = plane.d;
         }
 
-        public Plane(Vector3 normal, float d) {
+        public Plane(Vector3 normal, float constant) {
             this.normal = normal;
-            this.d = d;
+            this.d = -constant;
         }
 
         public Plane(Vector3 normal, Vector3 point) {

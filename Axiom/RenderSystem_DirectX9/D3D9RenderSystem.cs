@@ -1067,7 +1067,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 			// configure standard version of the stencil operations
 			device.RenderState.StencilFunction = D3DHelper.ConvertEnum(function);
 			device.RenderState.ReferenceStencil = refValue;
-			device.RenderState.StencilWriteMask = mask;
+			device.RenderState.StencilMask = mask;
 			device.RenderState.StencilFail = D3DHelper.ConvertEnum(stencilFailOp);
 			device.RenderState.StencilZBufferFail = D3DHelper.ConvertEnum(depthFailOp);
 			device.RenderState.StencilPass = D3DHelper.ConvertEnum(passOp);

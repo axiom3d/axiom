@@ -871,6 +871,8 @@ namespace Axiom.Core {
 
 		public Vector3[] WorldSpaceCorners {
 			get {
+				UpdateView();
+
 				return worldSpaceCorners;
 			}
 		}

@@ -434,7 +434,7 @@ namespace Axiom.Core {
 		/// <param name="camera"></param>
 		/// <returns></returns>
 		internal PlaneBoundedVolume GetNearClipVolume(Camera camera) {
-			const float THRESHOLD = 1e-6f;
+			const float THRESHOLD = float.Epsilon;
 
 			float n = camera.Near;
 
@@ -612,7 +612,11 @@ namespace Axiom.Core {
 						lightDir = lightPos3 - (clockwiseVerts[i] * lightPos.w);
 
 						// Cross with anticlockwise corner, therefore normal points in
-						normal = (clockwiseVerts[i] - clockwiseVerts[(i-1)%4]).Cross(lightDir);
+						// Note: C++ mod returns 3 for the first case where C# returns -1
+						int test = i > 0 ? ((i - 1) % 4) : 3;
+
+						// Cross with anticlockwise corner, therefore normal points in
+						normal = (clockwiseVerts[i] - clockwiseVerts[test]).Cross(lightDir);
 						normal.Normalize();
 
 						// NB last param to Plane constructor is negated because it's -d

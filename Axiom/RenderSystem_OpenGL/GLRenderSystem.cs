@@ -734,7 +734,7 @@ namespace Axiom.RenderSystems.OpenGL {
             // is the same, and if no special texture coord calcs are required
             if( lastOp == blendMode.operation && 
                 lastTexCalMethods[stage] == TexCoordCalcMethod.None)  {
-               return;
+               //return;
             }
 
             // remember last setting
