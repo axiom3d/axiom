@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using Axiom.Core;
@@ -69,9 +70,32 @@ namespace Demos {
         #endregion
 
         #region Methods
+        private HardwareVertexBuffer Get3dTexCoordBuffer(VertexData vertexData) {
+            VertexDeclaration vertexDeclaration = vertexData.vertexDeclaration;
+            VertexBufferBinding vertexBinding = vertexData.vertexBufferBinding;
+            VertexElement texture2d = vertexDeclaration.FindElementBySemantic(VertexElementSemantic.TexCoords, 0);
+
+            Debug.Assert(texture2d != null, "Geometry data must have at least one 2D texture coordinate buffer.");
+
+            VertexElement texture3d = vertexDeclaration.FindElementBySemantic(VertexElementSemantic.TexCoords, 1);
+            bool needsToBeCreated = false;
+
+            // no texture coordinates with index 1
+            if(texture3d == null) {
+                needsToBeCreated = true;
+            }
+            else if(texture3d.Type == VertexElementType.Float3) {
+                //                vertexDeclaration.
+                //                vertexBinding.
+                needsToBeCreated = true;
+            }
+
+            return null;
+        }
+
         protected override void CreateScene() {
             // set default filtering/anisotropy
-            MaterialManager.Instance.DefaultTextureFiltering = TextureFiltering.Bilinear;
+            MaterialManager.Instance.DefaultTextureFiltering = TextureFiltering.Anisotropic;
 
             // set ambient light and fog
             scene.AmbientLight = new ColorEx(1.0f, 1, 0.2f, 0.2f);
@@ -99,7 +123,7 @@ namespace Demos {
             string[] meshNames = {"knot.mesh", "cube.mesh", "ogrehead.mesh", "ball.mesh"};
             for(int meshIndex = 0; meshIndex < meshNames.Length; meshIndex++) {
                 // TODO: Look at HBU options
-                MeshManager.Instance.Load(meshNames[meshIndex]);
+                MeshManager.Instance.Load(meshNames[meshIndex], BufferUsage.DynamicWriteOnly, BufferUsage.StaticWriteOnly, true, false, 1);
             }
 
             // create the meshes
@@ -109,6 +133,7 @@ namespace Demos {
             ball = scene.CreateEntity("Ball", "ball.mesh");
 
             // attach entities to child of the root node
+
             sceneNode = (SceneNode) scene.RootSceneNode.CreateChild();
             sceneNode.AttachObject(knot);
             sceneNode.AttachObject(cube);
@@ -154,19 +179,28 @@ namespace Demos {
             // switch materials
             if(input.IsKeyPressed(Keys.F1)) {
                 materialName = "Examples/DP3Mat1";
+
+                // set material
+                activeEntity.MaterialName = materialName;
             }
             if(input.IsKeyPressed(Keys.F2)) {
                 materialName = "Examples/DP3Mat2";
+
+                // set material
+                activeEntity.MaterialName = materialName;
             }
             if(input.IsKeyPressed(Keys.F3)) {
                 materialName = "Examples/DP3Mat3";
+
+                // set material
+                activeEntity.MaterialName = materialName;
             }
             if(input.IsKeyPressed(Keys.F4)) {
                 materialName = "Examples/DP3Mat4";
-            }
 
-            // set material
-            activeEntity.MaterialName = materialName;
+                // set material
+                activeEntity.MaterialName = materialName;
+            }
 
             // update the light position, the light is projected and follows the camera
             light.Position = camera.Position;

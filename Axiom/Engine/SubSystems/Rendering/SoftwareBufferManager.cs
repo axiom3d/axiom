@@ -139,13 +139,17 @@ namespace Axiom.SubSystems.Rendering {
         #region Methods
 
         public override IntPtr Lock(int offset, int length, BufferLocking locking) {
+            isLocked = true;
+
             // return the offset into the array as a pointer
             return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
         }
 
         protected override IntPtr LockImpl(int offset, int length, BufferLocking locking) {
-            // do nothing
-            return IntPtr.Zero;
+            isLocked = true;
+
+            // return the offset into the array as a pointer
+            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
         }
 
         public override void ReadData(int offset, int length, IntPtr dest) {
@@ -162,11 +166,11 @@ namespace Axiom.SubSystems.Rendering {
         }
 
         public override void Unlock() {
-            // TODO: Store temp data from lock and update local data here?
+            isLocked = false;
         }
 
         public override void UnlockImpl() {
-            // do nothing
+            isLocked = false;
         }
 
         public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer) {
@@ -226,14 +230,18 @@ namespace Axiom.SubSystems.Rendering {
         #region Methods
 
         public override IntPtr Lock(int offset, int length, BufferLocking locking) {
+            isLocked = true;
+
             // return the offset into the array as a pointer
             return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
         }
 
 
         protected override IntPtr LockImpl(int offset, int length, BufferLocking locking) {
-            // do nothing
-            return IntPtr.Zero;
+            isLocked = true;
+
+            // return the offset into the array as a pointer
+            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
         }
 
         public override void ReadData(int offset, int length, IntPtr dest) {
@@ -250,11 +258,11 @@ namespace Axiom.SubSystems.Rendering {
         }
 
         public override void Unlock() {
-            // TODO: Store temp data from lock and update local data here?
+            isLocked = false;
         }
 
         public override void UnlockImpl() {
-            // do nothing
+            isLocked = false;
         }
 
         public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer) {

@@ -53,6 +53,11 @@ namespace Axiom.SubSystems.Rendering {
                 sizeInBytes *= Marshal.SizeOf(typeof(int));
             else
                 sizeInBytes *= Marshal.SizeOf(typeof(short));
+
+            // create a shadow buffer if required
+            if(useShadowBuffer) {
+                shadowBuffer = new SoftwareIndexBuffer(type, numIndices, BufferUsage.Dynamic);
+            }
         }
 
         #endregion
