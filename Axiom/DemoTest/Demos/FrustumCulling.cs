@@ -100,7 +100,7 @@ namespace Demos
         protected override void CreateViewports() {
             base.CreateViewports();
 
-            viewport2 = window.AddViewport(camera2, 60, 0, 0.4f, 0.4f, 102);
+            viewport2 = window.AddViewport(camera2, 0.6f, 0, 0.4f, 0.4f, 102);
             viewport2.OverlaysEnabled = false;
             viewport2.BackgroundColor = ColorEx.Blue;
         }
