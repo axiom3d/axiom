@@ -50,6 +50,14 @@ void main_vp(float4 position   : POSITION,
    oHalfAngle = normalize(eyeDir + lightDir); 
 }
 
+// General functions
+
+// Expand a range-compressed vector
+float3 expand(float3 v)
+{
+	return (v - 0.5) * 2;
+}
+
 void main_fp(float2 uv : TEXCOORD0,
 	float3 lightDir : TEXCOORD1,
 	float3 eyeDir : TEXCOORD2,
@@ -77,11 +85,11 @@ void main_fp(float2 uv : TEXCOORD0,
 	float2 newTexCoord = ((eyeDir * displacement) + uv2).xy;
 	
 	// get the new normal and diffuse values
-	float3 normal = tex2D(normalHeightMap, newTexCoord).xyz;
-	float3 diffuse = tex2D(diffuseMap, newTexCoord).xyz;
+	float3 normal = expand(tex2D(normalHeightMap, newTexCoord).xyz);
+	float3 diffuse = expand(tex2D(diffuseMap, newTexCoord).xyz);
 	
-	float3 specular = pow(dot(normal, halfAngle), 3) * lightSpecular;
-	float3 col = ((diffuse * dot(normal, lightDir)) * lightDiffuse) + specular;
+	float3 specular = pow(saturate(dot(normal, halfAngle)), 32) * lightSpecular;
+	float3 col = diffuse * saturate(dot(normal, lightDir)) * lightDiffuse + specular;
 		
 	oColor = float4(col, 1);
 }
