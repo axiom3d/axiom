@@ -438,6 +438,33 @@ namespace Axiom.Graphics {
     }
 
 	/// <summary>
+	///    Enumerates the types of parameters that can be specified for shaders
+	/// </summary>
+	public enum GpuProgramParameterType {
+		/// <summary>
+		///    Parameter is passed in by index. Used for ASM shaders.
+		/// </summary>
+		Indexed,
+
+		/// <summary>
+		///    Parameter is managed by Axiom and passed in by index. Used for ASM shaders.
+		/// </summary>
+
+		IndexedAuto,
+
+		/// <summary>
+		///    Parameter is passed in by name. Used for high-level shaders.
+		/// </summary>
+		Named,
+
+		/// <summary>
+		///    Parameter is managed by Axiom and passed in by name. Used for HL shaders.
+		/// </summary>
+		NamedAuto
+	}
+
+
+	/// <summary>
 	///		Defines the frame buffers which can be cleared.
 	/// </summary>
 	[Flags]
@@ -903,7 +930,7 @@ namespace Axiom.Graphics {
 		///		shadow receivers, followed by a depth test to detect the closest
 		///		fragment to the light.
 		/// </summary>
-		//TextureShadowmap,
+		// TextureShadowmap,
 		/// <summary>
 		///		Simple shadow technique that simply renders a 'shadow blob' underneath
 		///		a movable object.
