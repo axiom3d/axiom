@@ -86,7 +86,7 @@ void main_fp(float2 uv : TEXCOORD0,
 	
 	// get the new normal and diffuse values
 	float3 normal = expand(tex2D(normalHeightMap, newTexCoord).xyz);
-	float3 diffuse = expand(tex2D(diffuseMap, newTexCoord).xyz);
+	float3 diffuse = tex2D(diffuseMap, newTexCoord).xyz;
 	
 	float3 specular = pow(saturate(dot(normal, halfAngle)), 32) * lightSpecular;
 	float3 col = diffuse * saturate(dot(normal, lightDir)) * lightDiffuse + specular;
