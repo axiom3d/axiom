@@ -3,6 +3,9 @@
 - Texture Modulative shadows working, with only a slight artifact in GL at the moment, but still working.
 - Assorted D3D Render system updates.
 - Fix to FP30GPUProgram which didn't check for null named parameters before setting them.
+- Additive stencil shadows working.
+- Assorted fixes across the core code.
+- Fixed Material cloning once and for all.
 
 11-26-2004
 - Modulative stencil shadows fully working with all light types.
