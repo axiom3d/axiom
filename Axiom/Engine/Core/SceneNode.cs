@@ -97,6 +97,10 @@ namespace Axiom.Core {
 		///		Local 'normal' direction vector.
 		/// </summary>
 		protected Vector3 autoTrackLocalDirection = Vector3.NegativeUnitZ;
+		/// <summary>
+		///		Determines whether node and children are visible or not.
+		/// </summary>
+		protected bool visible = true;
 
         #endregion
 
@@ -204,7 +208,15 @@ namespace Axiom.Core {
 			}
 		}
 
-        #endregion
+		/// <summary>
+		///		Sets visibility for this node. If invisible, child nodes will be invisible, too.
+		/// </summary>
+		public bool Visible {
+			get { return this.visible; }
+			set { this.visible = value; }
+		}
+		
+		#endregion
 
         #region Methods
 
@@ -419,7 +431,8 @@ namespace Axiom.Core {
                 // ask all child nodes to update the render queue with visible objects
                 for(int i = 0; i < childNodes.Count; i++) {
                     SceneNode childNode = (SceneNode)childNodes[i];
-                    childNode.FindVisibleObjects(camera, queue, includeChildren, displayNodes);
+                    if(childNode.Visible)
+                    	childNode.FindVisibleObjects(camera, queue, includeChildren, displayNodes);
                 }
             }
 
