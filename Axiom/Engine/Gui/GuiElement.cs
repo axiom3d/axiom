@@ -717,7 +717,7 @@ namespace Axiom.Gui
 
         public Technique Technique {
             get {
-                return material.BestTechnique;
+                return material.GetBestTechnique();
             }
         }
 

@@ -705,7 +705,7 @@ namespace Axiom.SceneManagers.Octree {
 
         public Technique Technique {
             get {
-                return material.BestTechnique;
+                return material.GetBestTechnique();
             }
         }
 

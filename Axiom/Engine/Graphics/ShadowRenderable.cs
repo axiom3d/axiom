@@ -114,7 +114,7 @@ namespace Axiom.Graphics {
 
         public Technique Technique {
             get {
-                return this.Material.BestTechnique;
+                return this.Material.GetBestTechnique();
             }
         }
 

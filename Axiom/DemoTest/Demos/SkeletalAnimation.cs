@@ -50,7 +50,7 @@ namespace Demos {
             camera.Position = new Vector3(100, 50, 100);
             camera.LookAt(new Vector3(0, 50, 0));
 
-			Technique t = entity.GetSubEntity(0).Material.BestTechnique;
+			Technique t = entity.GetSubEntity(0).Material.GetBestTechnique();
 			Pass p = t.GetPass(0);
 			
 			if(p.HasVertexProgram && p.VertexProgram.IsSkeletalAnimationIncluded) {

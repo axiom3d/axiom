@@ -448,6 +448,36 @@ namespace Axiom.Graphics {
 	}
 
 	/// <summary>
+	///		Describes the stage of rendering when performing complex illumination.
+	/// </summary>
+	public enum IlluminationRenderStage {
+		/// <summary>
+		///		No special illumination stage.
+		/// </summary>
+		None,
+		/// <summary>
+		///		Ambient stage, when background light is added.
+		/// </summary>
+		Ambient,
+		/// <summary>
+		///		Diffuse / specular stage, when individual light contributions are added.
+		/// </summary>
+		PerLight,
+		/// <summary>
+		///		Decal stage, when texture detail is added to the lit base.
+		/// </summary>
+		Decal,
+		/// <summary>
+		///		Render to texture stage, used for texture based shadows.
+		/// </summary>
+		RenderToTexture,
+		/// <summary>
+		///		Modulative render from shadow texture stage.
+		/// </summary>
+		RenderModulativePass
+	}
+
+	/// <summary>
 	///		Possible stages of illumination during the rendering process.
 	/// </summary>
 	public enum IlluminationStage {
@@ -462,11 +492,7 @@ namespace Axiom.Graphics {
 		/// <summary>
 		///		Post-lighting rendering.
 		/// </summary>
-		Decal,
-		/// <summary>
-		///		Null value.
-		/// </summary>
-		None
+		Decal
 	}
 
     /// <summary>

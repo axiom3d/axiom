@@ -290,8 +290,9 @@ namespace Axiom.Core {
             mesh.BoundingBox = new AxisAlignedBox(min, max);
             mesh.BoundingSphereRadius = MathUtil.Sqrt(maxSquaredLength);
 
-			mesh.Load();
-			mesh.Touch();
+			// TODO: Shadow volume preparation for combined buffers needs to be debugged
+			//mesh.Load();
+			//mesh.Touch();
 
             return mesh;
         }
@@ -538,8 +539,9 @@ namespace Axiom.Core {
             mesh.BoundingBox = new AxisAlignedBox(min, max);
             mesh.BoundingSphereRadius = MathUtil.Sqrt(maxSquaredLength);
 
-			mesh.Load();
-			mesh.Touch();
+			// TODO: Shadow volume preparation for combined buffers needs to be debugged
+			//mesh.Load();
+			//mesh.Touch();
 
             return mesh;
         }

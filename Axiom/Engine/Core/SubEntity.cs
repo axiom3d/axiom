@@ -72,6 +72,10 @@ namespace Axiom.Core {
         /// </summary>
         protected SceneDetailLevel renderDetail;
 		/// <summary>
+		///		Current LOD index to use.
+		/// </summary>
+		protected int materialLodIndex;
+		/// <summary>
 		///		Flag indicating whether this sub entity should be rendered or not.
 		/// </summary>
 		protected bool isVisible;
@@ -207,7 +211,7 @@ namespace Axiom.Core {
 
         public Technique Technique {
             get {
-                return material.BestTechnique;
+                return material.GetBestTechnique(materialLodIndex);
             }
         }
 
