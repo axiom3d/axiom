@@ -55,6 +55,14 @@ namespace Axiom.Graphics {
         ///    Current camera being used for rendering.
         /// </summary>
         protected Camera camera;
+		/// <summary>
+		///		Current frustum used for texture projection.
+		/// </summary>
+		protected Frustum currentTextureProjector;
+		/// <summary>
+		///		Current active render target.
+		/// </summary>
+		protected RenderTarget currentRenderTarget;
         /// <summary>
         ///    Current view matrix;
         /// </summary>
@@ -95,6 +103,14 @@ namespace Axiom.Graphics {
         ///    Inverse of the current view matrix.
         /// </summary>
         protected Matrix4 inverseViewMatrix;
+		/// <summary>
+		///		Current texture view projection matrix.
+		/// </summary>
+		protected Matrix4 textureViewProjMatrix;
+		/// <summary>
+		///		Distance to extrude shadow volume vertices.
+		/// </summary>
+		protected float dirLightExtrusionDistance;
         /// <summary>
         ///    Position of the current camera in object space relative to the current renderable.
         /// </summary>
@@ -120,6 +136,13 @@ namespace Axiom.Graphics {
         protected bool inverseWorldViewMatrixDirty;
         protected bool inverseViewMatrixDirty;
         protected bool cameraPositionObjectSpaceDirty;
+		protected bool textureViewProjMatrixDirty;
+
+		protected Matrix4 ProjectionClipSpace2DToImageSpacePerspective = new Matrix4(
+			0.5f,    0,  0, -0.5f, 
+			0, -0.5f,  0, -0.5f, 
+			0,    0,  0,   1,
+			0,    0,  0,   1);
 
 		#endregion Fields
 		
@@ -137,6 +160,7 @@ namespace Axiom.Graphics {
             inverseWorldViewMatrixDirty = true;
             inverseViewMatrixDirty = true;
             cameraPositionObjectSpaceDirty = true;
+			textureViewProjMatrixDirty = true;
 
             // defaults for the blank light
             blankLight.Diffuse = ColorEx.Black;
@@ -168,6 +192,14 @@ namespace Axiom.Graphics {
         public void SetCurrentLightList(LightList lightList) {
             currentLightList = lightList;
         }
+
+		/// <summary>
+		///		Sets the constant extrusion distance for directional lights.
+		/// </summary>
+		/// <param name="distance"></param>
+		public void SetShadowDirLightExtrusionDistance(float distance) {
+			dirLightExtrusionDistance = distance;
+		}
 
 		#endregion
 		
@@ -212,6 +244,31 @@ namespace Axiom.Graphics {
                 inverseViewMatrixDirty = true;
                 cameraPositionObjectSpaceDirty = true;
 		    }
+		}
+
+		/// <summary>
+		///		Get/Set the current frustum used for texture projection.
+		/// </summary>
+		public Frustum TextureProjector {
+			get {
+				return currentTextureProjector;
+			}
+			set {
+				currentTextureProjector = value;
+				textureViewProjMatrixDirty = true;
+			}
+		}
+
+		/// <summary>
+		///		Get/Set the current active render target in use.
+		/// </summary>
+		public RenderTarget RenderTarget {
+			get {
+				return currentRenderTarget;
+			}
+			set {
+				currentRenderTarget = value;
+			}
 		}
 
         /// <summary>
@@ -354,7 +411,14 @@ namespace Axiom.Graphics {
         /// </summary>
         public Matrix4 ProjectionMatrix {
             get {
-                return camera.StandardProjectionMatrix;
+				projectionMatrix = camera.StandardProjectionMatrix;
+
+				// // Because we're not using setProjectionMatrix, this needs to be done here
+				if(currentRenderTarget != null && currentRenderTarget.RequiresTextureFlipping) {
+					projectionMatrix.m11 = -projectionMatrix.m11;
+				}
+
+                return projectionMatrix;
             }
         }
 
@@ -378,6 +442,45 @@ namespace Axiom.Graphics {
 				}
 
 				return viewProjMatrix;
+			}
+		}
+
+		/// <summary>
+		///		Gets the current texture * view * projection matrix.
+		/// </summary>
+		public Matrix4 TextureViewProjectionMatrix {
+			get {
+				if(textureViewProjMatrixDirty) {
+					textureViewProjMatrix = 
+						ProjectionClipSpace2DToImageSpacePerspective *
+						currentTextureProjector.ViewMatrix *
+						currentTextureProjector.StandardProjectionMatrix;
+
+					textureViewProjMatrixDirty = false;
+				}
+
+				return textureViewProjMatrix;
+			}
+		}
+
+		/// <summary>
+		///		Get the extrusion distance for shadow volume vertices.
+		/// </summary>
+		public float ShadowExtrusionDistance {
+			get {
+				// only ever applies to one light at once
+				Light light = GetLight(0);
+
+				if(light.Type == LightType.Directional) {
+					// use constant value
+					return dirLightExtrusionDistance;
+				}
+				else {
+					// Calculate based on object space light distance
+					// compared to light attenuation range
+					Vector3 objPos = this.InverseWorldMatrix * light.DerivedPosition;
+					return light.AttenuationRange - objPos.Length;
+				}
 			}
 		}
 		

@@ -248,7 +248,7 @@ namespace Axiom.Graphics {
 
 								// also remove any fragment program
 								if(newPass.HasFragmentProgram) {
-									newPass.FragmentProgramName = "";
+									newPass.SetFragmentProgram("");
 								}
 
 								// We have to leave vertex program alone (if any) and
@@ -324,7 +324,7 @@ namespace Axiom.Graphics {
 
 								// also remove any fragment program
 								if(newPass.HasFragmentProgram) {
-									newPass.FragmentProgramName = "";
+									newPass.SetFragmentProgram("");
 								}
 
 								// Cannot remove vertex program, have to assume that

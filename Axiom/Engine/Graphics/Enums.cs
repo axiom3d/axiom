@@ -125,6 +125,22 @@ namespace Axiom.Graphics {
 		[ScriptEnum("light_direction_object_space")]
 		LightDirectionObjectSpace,
 		/// <summary>
+		///    The distance of the light from the center of the object a useful approximation as an 
+		///    alternative to per-vertex distance calculations.
+		/// </summary>
+		[ScriptEnum("light_distance_object_space")]
+		LightDistanceObjectSpace,
+		/// <summary>
+		///    The distance a shadow volume should be extruded when using finite extrusion programs.
+		/// </summary>
+		[ScriptEnum("shadow_extrusion_distance")]
+		ShadowExtrusionDistance,
+		/// <summary>
+		///    The distance a shadow volume should be extruded when using finite extrusion programs.
+		/// </summary>
+		[ScriptEnum("texture_viewproj_matrix")]
+		TextureViewProjMatrix,
+		/// <summary>
 		///    The current camera's position in object space.
 		/// </summary>
 		[ScriptEnum("camera_position_object_space")]

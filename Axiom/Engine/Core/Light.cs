@@ -558,10 +558,17 @@ namespace Axiom.Core {
 			// Get worldspace frustum corners
 			Vector3[] corners = camera.WorldSpaceCorners;
 
+			bool infiniteViewDistance = (camera.Far == 0);
+
 			frustumClipVolumes.Clear();
 
 			for (int n = 0; n < 6; n++) {
 				FrustumPlane frustumPlane = (FrustumPlane)n;
+
+				// skip far plane if infinite view frustum
+				if(infiniteViewDistance && (frustumPlane == FrustumPlane.Far)) {
+					continue;
+				}
 
 				Plane plane = camera[frustumPlane];
 
