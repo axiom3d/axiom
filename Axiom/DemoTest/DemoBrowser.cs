@@ -246,11 +246,11 @@ namespace Demos {
             demoTable.Rows.Add(new object[] {14, "Sky Box", "Demos.SkyBox", "SkyBox.jpg", "A scene with a skybox.", "Demos"});
             demoTable.Rows.Add(new object[] {15, "Sky Dome", "Demos.SkyDome", "SkyDome.jpg", "A scene with a skydome.", "Demos"});
             demoTable.Rows.Add(new object[] {16, "Sky Plane", "Demos.SkyPlane", "SkyPlane.jpg", "A scene with a skyplane.", "Demos"});
-            demoTable.Rows.Add(new object[] {17, "TextureFX", "Demos.TextureFX", "TextureFX.jpg", "Various texture effects including scrolling and rotating.", "Demos"});
-            demoTable.Rows.Add(new object[] {18, "Transparency", "Demos.Transparency", "Transparency.jpg", "A high poly scene with transparent entities.", "Demos"});
-            demoTable.Rows.Add(new object[] {19, "Tutorial 1", "Demos.Tutorial1", "Tutorial1.jpg", "The obligatory spinning triangle demo using the engine.", "Tutorials"});
-            demoTable.Rows.Add(new object[] {20, "Terrain", "Demos.Terrain", "Terrain.jpg", "Simple heightmap terrain example.", "Demos"});
-			demoTable.Rows.Add(new object[] {21, "Smoke", "Demos.Smoke", "Smoke.jpg", "Smoke particle system.", "Demos"});
+            demoTable.Rows.Add(new object[] {17, "Smoke", "Demos.Smoke", "Smoke.jpg", "Smoke particle system.", "Demos"});
+            demoTable.Rows.Add(new object[] {18, "Terrain", "Demos.Terrain", "Terrain.jpg", "Simple heightmap terrain example.", "Demos"});
+            demoTable.Rows.Add(new object[] {19, "TextureFX", "Demos.TextureFX", "TextureFX.jpg", "Various texture effects including scrolling and rotating.", "Demos"});
+            demoTable.Rows.Add(new object[] {20, "Transparency", "Demos.Transparency", "Transparency.jpg", "A high poly scene with transparent entities.", "Demos"});
+            demoTable.Rows.Add(new object[] {21, "Tutorial 1", "Demos.Tutorial1", "Tutorial1.jpg", "The obligatory spinning triangle demo using the engine.", "Tutorials"});
 
             demoView = new DataView(demoTable);
 
