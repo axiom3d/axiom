@@ -148,6 +148,9 @@ namespace Axiom.Core {
 
             // TODO: Set gamma
 
+            // set bit depth
+            texture.Enable32Bit(is32Bit);
+
             // load image data
             texture.LoadImage(image);
 

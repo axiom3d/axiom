@@ -35,7 +35,7 @@ namespace Axiom.Scripting {
     /// </summary>
     public abstract class GameObject {
         protected IRigidBody body;
-        protected Entity entity;
+        protected SceneObject sceneObject;
         protected SceneNode node;
         protected SceneManager sceneMgr;
 
@@ -49,6 +49,10 @@ namespace Axiom.Scripting {
                 body.Position = node.Position;
             }
             get { return body; }
+        }
+
+        protected void NotifySceneObject(SceneObject sceneObject) {
+            sceneObject.GameObject = this;
         }
 
         public void Move(float x, float y, float z) {
@@ -81,7 +85,7 @@ namespace Axiom.Scripting {
         }
 
         public AxisAlignedBox BoundingBox {
-            get { return entity.BoundingBox; }
+            get { return sceneObject.BoundingBox; }
         }
 
         public void UpdateFromDynamics() {

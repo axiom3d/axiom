@@ -125,7 +125,7 @@ namespace Axiom.Graphics {
             compilationRequired = true;
 
             // TODO: Handle using a default mechanism
-            CreateTechnique().CreatePass(false);
+            CreateTechnique().CreatePass();
         }
 
         #endregion

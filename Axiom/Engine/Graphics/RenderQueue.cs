@@ -279,9 +279,17 @@ namespace Axiom.Graphics {
         #region Member variables
 			
         protected ArrayList transparentPasses = new ArrayList();
-        protected ArrayList solidPasses = new ArrayList();
+        protected SortedList solidPassMap;
 
         #endregion
+
+        /// <summary>
+        ///    Default constructor.
+        /// </summary>
+        internal RenderPriorityGroup() {
+            // sorted list, using Pass as a key (sorted based on hashcode), and IRenderable as the value
+            solidPassMap = new SortedList(new SolidSort(), 50);
+        }
 
         #region Methods
 
@@ -303,8 +311,16 @@ namespace Axiom.Graphics {
             }
             else {
                 for(int i = 0; i < t.NumPasses; i++) {
-                    // add to solid list
-                    solidPasses.Add(new RenderablePass(item, t.GetPass(i)));
+                    Pass pass = t.GetPass(i);
+
+                    if(solidPassMap[pass] == null) {
+                        // add a new list to hold renderables for this pass
+                        solidPassMap.Add(pass, new ArrayList());
+                    }
+
+                    // add to solid list for this pass
+                    ArrayList solidList = (ArrayList)solidPassMap[pass];
+                    solidList.Add(item);
                 }
             }
         }
@@ -314,7 +330,11 @@ namespace Axiom.Graphics {
         /// </summary>
         public void Clear() {
             transparentPasses.Clear();
-            solidPasses.Clear();
+            
+            // loop through and clear the renderable containers for the stored passes
+            for(int i = 0; i < solidPassMap.Count; i++) {
+                ((ArrayList)solidPassMap.GetByIndex(i)).Clear();
+            }
         }
 
         /// <summary>
@@ -322,9 +342,19 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public RenderablePass GetSolidPass(int index) {
-            Debug.Assert(index < solidPasses.Count, "index < solidPasses.Count");
-            return (RenderablePass)solidPasses[index];
+        public Pass GetSolidPass(int index) {
+            Debug.Assert(index < solidPassMap.Count, "index < solidPasses.Count");
+            return (Pass)solidPassMap.GetKey(index);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public ArrayList GetSolidPassRenderables(int index) {
+            Debug.Assert(index < solidPassMap.Count, "index < solidPasses.Count");
+            return (ArrayList)solidPassMap.GetByIndex(index);
         }
 
         /// <summary>
@@ -342,11 +372,13 @@ namespace Axiom.Graphics {
         ///    depth in relation to the passed in Camera, solid objects in order to minimize
         ///    render state changes.
         /// </summary>
-        /// <param name="camera"></param>
+        /// <remarks>
+        ///    Solid passes are already stored in a sorted structure, so nothing extra needed here.
+        /// </remarks>
+        /// <param name="camera">Current camera to use for depth sorting.</param>
         public void Sort(Camera camera) {
             // sort the transparent objects using the custom IComparer
             transparentPasses.Sort(new TransparencySort(camera));
-            solidPasses.Sort(new SolidSort());
         }
 
         #endregion
@@ -358,7 +390,7 @@ namespace Axiom.Graphics {
         /// </summary>
         public int NumSolidPasses {
             get {
-                return solidPasses.Count;
+                return solidPassMap.Count;
             }
         }
 
@@ -390,11 +422,11 @@ namespace Axiom.Graphics {
                 if(x == y)
                     return 0;
 
-                RenderablePass a = x as RenderablePass;
-                RenderablePass b = y as RenderablePass;
+                Pass a = x as Pass;
+                Pass b = y as Pass;
 
                 // sorting by pass hash
-                if(a.pass.GetHashCode() < b.pass.GetHashCode()) {
+                if(a.GetHashCode() < b.GetHashCode()) {
                     return 1;
                 }
                 else {
@@ -456,7 +488,7 @@ namespace Axiom.Graphics {
     }
 
     /// <summary>
-    ///    Internal structure for reflecting a single Pass for a Renderable.
+    ///    Internal structure reflecting a single Pass for a Renderable
     /// </summary>
     public class RenderablePass {
         public IRenderable renderable;

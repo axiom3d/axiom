@@ -156,8 +156,8 @@ namespace Axiom.Graphics
         ///    True if programmable via vertex or fragment programs, false if fixed function.
         /// </param>
         /// <returns>A new Pass object reference.</returns>
-        public Pass CreatePass(bool programmable) {
-            Pass pass = new Pass(this, passes.Count, programmable);
+        public Pass CreatePass() {
+            Pass pass = new Pass(this, passes.Count);
             passes.Add(pass);
             return pass;
         }

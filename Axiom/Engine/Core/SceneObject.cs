@@ -23,10 +23,11 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
-using System;
 
-using Axiom.MathLib;
+using System;
 using Axiom.Graphics;
+using Axiom.MathLib;
+using Axiom.Scripting;
 
 namespace Axiom.Core {
     /// <summary>
@@ -40,20 +41,38 @@ namespace Axiom.Core {
     public abstract class SceneObject {
         #region Member variables 
 
-        /// <summary>Node that this node is attached to.</summary>
+        /// <summary>
+        ///    Node that this node is attached to.
+        /// </summary>
         protected SceneNode parentNode;
-        /// <summary>Is this object visible?</summary>
+        /// <summary>
+        ///    Is this object visible?
+        /// </summary>
         protected bool isVisible;
-        /// <summary>Name of this object.</summary>
+        /// <summary>
+        ///    Name of this object.
+        /// </summary>
         protected string name;
-        /// <summary>The render queue to use when rendering this object.</summary>
+        /// <summary>
+        ///    The render queue to use when rendering this object.
+        /// </summary>
         protected RenderQueueGroupID renderQueueID;
-        /// <summary>Flags determining whether this object is included/excluded from scene queries.</summary>
+        /// <summary>
+        ///    Flags determining whether this object is included/excluded from scene queries.
+        /// </summary>
         protected ulong queryFlags;
-        /// <summary>Cached world bounding box of this object.</summary>
+        /// <summary>
+        ///    Cached world bounding box of this object.
+        /// </summary>
         protected AxisAlignedBox worldAABB;
-        /// <summary>Cached world bounding spehere.</summary>
+        /// <summary>
+        ///    Cached world bounding spehere.
+        /// </summary>
         protected Sphere worldBoundingSphere;
+        /// <summary>
+        ///    A link back to a GameObject (or subclass thereof, such as Entity) that may be associated with this SceneObject.
+        /// </summary>
+        protected GameObject gameObject;
 
         #endregion Member variables 
 
@@ -84,6 +103,18 @@ namespace Axiom.Core {
         /// </summary>
         public abstract float BoundingRadius {
             get;
+        }
+
+        /// <summary>
+        ///    Get/Sets a link back to a GameObject (or subclass thereof, such as Entity) that may be associated with this SceneObject.
+        /// </summary>
+        public GameObject GameObject {
+            get {
+                return gameObject;
+            }
+            set {
+                gameObject = value;
+            }
         }
 
         /// <summary>

@@ -240,7 +240,7 @@ namespace Axiom.Gui {
             string[] parms = line.Split(' ', '(', ')');
             
             // split on lines with a ) will have an extra blank array element, so lets get rid of it
-            if(parms[parms.Length - 1] == "") {
+            if(parms[parms.Length - 1].Length == 0) {
                 string[] tmp = new string[parms.Length - 1];
                 Array.Copy(parms, 0, tmp, 0, parms.Length - 1);
                 parms = tmp;
@@ -416,7 +416,7 @@ namespace Axiom.Gui {
                         string[] parms = line.Split(' ', '(', ')');
                         
                         // split on lines with a ) will have an extra blank array element, so lets get rid of it
-                        if(parms[parms.Length - 1] == "") {
+                        if(parms[parms.Length - 1].Length == 0) {
                             string[] tmp = new string[parms.Length - 1];
                             Array.Copy(parms, 0, tmp, 0, parms.Length - 1);
                             parms = tmp;

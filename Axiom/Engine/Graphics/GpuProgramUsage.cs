@@ -65,6 +65,18 @@ namespace Axiom.Graphics
         ///    Default constructor.
         /// </summary>
         /// <param name="type">Type of program to link to.</param>
+        public GpuProgramUsage(GpuProgramType type) {
+            this.type = type;
+            this.deferValidation = true;
+
+            // Create a set of parameters incase we don't want to share the params
+            lowLevelParams = GpuProgramManager.Instance.CreateParameters();
+        }
+
+        /// <summary>
+        ///    Default constructor.
+        /// </summary>
+        /// <param name="type">Type of program to link to.</param>
         /// <param name="programName">
         ///    The name of the program to use. Note that at this stage the program is
         ///    <strong>not</strong> looked up, so there is really no validation of this parameter

@@ -51,7 +51,7 @@ namespace Axiom.Core {
     /// Manages the rendering of a 'scene' i.e. a collection of primitives.
     /// </summary>
     /// <remarks>
-    ///		This class defines the basic behaviour of the 'Scene Manager' family. These classes will
+    ///		This class defines the basic behavior of the 'Scene Manager' family. These classes will
     ///		organise the objects in the scene and send them to the rendering system, a subclass of
     ///		RenderSystem. This basic superclass does no sorting, culling or organising of any sort.
     ///    <p/>
@@ -59,7 +59,6 @@ namespace Axiom.Core {
     ///		designed (e.g. BSPs, octrees etc). As with other classes, methods marked as interanl are 
     ///		designed to be called by other classes in the engine, not by user applications.
     ///	 </remarks>
-    // INC: In progress
     public class SceneManager {
         #region Member variables
 
@@ -130,7 +129,8 @@ namespace Axiom.Core {
         protected bool lastUsedFallback;
         protected static int lastNumTexUnitsUsed = 0;
         protected static RenderOperation op = new RenderOperation();
-        protected static bool lastPassWasProgrammable = false;
+        protected static bool lastUsedVertexProgram;
+        protected static bool lastUsedFragmentProgram;
 
         // cached fog settings
         protected static FogMode oldFogMode;
@@ -457,29 +457,36 @@ namespace Axiom.Core {
         ///		available texture units in the hardware.
         ///	</returns>
         protected void SetPass(Pass pass) {
-            if(pass.IsProgrammable) {
-                // vertex program
+            // vertex pipline
+            if(pass.HasVertexProgram) {
                 targetRenderSystem.BindGpuProgram(pass.VertexProgram);
                 targetRenderSystem.BindGpuProgramParameters(GpuProgramType.Vertex, pass.VertexProgramParameters);
-
-                // fragment program
-                targetRenderSystem.BindGpuProgram(pass.FragmentProgram);
-                targetRenderSystem.BindGpuProgramParameters(GpuProgramType.Fragment, pass.FragmentProgramParameters);
-
-                lastPassWasProgrammable = true;
+                lastUsedVertexProgram = true;
             }
             else {
-                // Not programmable, set those things which are only of use in non-programmable mode
-
-                // unbind programs if they were used last
-                if(lastPassWasProgrammable) {
+                if(lastUsedVertexProgram) {
                     targetRenderSystem.UnbindGpuProgram(GpuProgramType.Vertex);
-                    targetRenderSystem.UnbindGpuProgram(GpuProgramType.Fragment);
-                    lastPassWasProgrammable = false;
+                    lastUsedVertexProgram = false;
                 }
 
                 // set the surface params of the render system
                 targetRenderSystem.SetSurfaceParams(pass.Ambient, pass.Diffuse, pass.Specular, pass.Emissive, pass.Shininess);
+
+                // dynamic lighting
+                targetRenderSystem.LightingEnabled = pass.LightingEnabled;
+            }
+
+            // fragment pipeline
+            if(pass.HasFragmentProgram) {
+                targetRenderSystem.BindGpuProgram(pass.FragmentProgram);
+                targetRenderSystem.BindGpuProgramParameters(GpuProgramType.Fragment, pass.FragmentProgramParameters);
+                lastUsedFragmentProgram = true;
+            }
+            else {
+                if(lastUsedFragmentProgram) {
+                    targetRenderSystem.UnbindGpuProgram(GpuProgramType.Fragment);
+                    lastUsedFragmentProgram = false;
+                }
 
                 // Fog
                 ColorEx newFogColor;
@@ -504,9 +511,6 @@ namespace Axiom.Core {
 
                 // set fog using the render system
                 targetRenderSystem.SetFog(newFogMode, newFogColor, newFogDensity, newFogStart, newFogEnd);
-
-                // dynamic lighting
-                targetRenderSystem.LightingEnabled = pass.LightingEnabled;
             }
 
             // Scene Blending
@@ -515,7 +519,13 @@ namespace Axiom.Core {
             // set all required texture units for this pass, and disable ones not being used
             for(int i = 0; i < targetRenderSystem.Caps.NumTextureUnits; i++) {
                 if(i < pass.NumTextureUnitStages) {
-                    targetRenderSystem.SetTextureUnit(i, pass.GetTextureUnitState(i));
+                    TextureUnitState texUnit = pass.GetTextureUnitState(i);
+
+                    // issue settings for texture units that don't rely on an updated view matrix
+                    // those will be handled in RenderSingleObject specifically
+                    if(!texUnit.HasViewRelativeTexCoordGen) {
+                        targetRenderSystem.SetTextureUnit(i, texUnit);
+                    }
                 }
                 else {
                     // disable this unit
@@ -1270,10 +1280,16 @@ namespace Axiom.Core {
             // issue view/projection changes (if any)
             UseRenderableViewProjection(renderable);
 
-            // Set up the pass state
-            // Note that we deliberately do this after setting the world matrix, some GL state 
-            // is dependent on that ordering
-            SetPass(pass);
+            // set up the texture units for this pass
+            for(int i = 0; i < pass.NumTextureUnitStages; i++) {
+                TextureUnitState texUnit = pass.GetTextureUnitState(i);
+
+                // issue texture units that depend on updated view matrix
+                // reflective env mapping is one case
+                if(texUnit.HasViewRelativeTexCoordGen) {
+                    targetRenderSystem.SetTextureUnit(i, texUnit);
+                }
+            }
 
             // TODO: Normalize normals!
 
@@ -1330,8 +1346,17 @@ namespace Axiom.Core {
 
                         // ----- SOLIDS LOOP -----
                         for(int k = 0; k < priorityGroup.NumSolidPasses; k++) {
-                            RenderablePass rp = priorityGroup.GetSolidPass(k);
-                            RenderSingleObject(rp.renderable, rp.pass);
+                            Pass pass = priorityGroup.GetSolidPass(k);
+                            ArrayList renderables = priorityGroup.GetSolidPassRenderables(k);
+
+                            // set the pass for the list of renderables to be processed
+                            SetPass(pass);
+
+                            // render each object associated with this rendering pass
+                            for(int r = 0; r < renderables.Count; r++) {
+                                IRenderable renderable = (IRenderable)renderables[r];
+                                RenderSingleObject(renderable, pass);
+                            }
                         }
 
                         // ----- TRANSPARENT LOOP -----
@@ -1339,6 +1364,11 @@ namespace Axiom.Core {
                         // The mTransparentObjects set needs to be ordered first
                         for(int k = 0; k < priorityGroup.NumTransparentPasses; k++) {
                             RenderablePass rp = priorityGroup.GetTransparentPass(k);
+
+                            // set the pass first
+                            SetPass(rp.pass);
+
+                            // render the transparent object
                             RenderSingleObject(rp.renderable, rp.pass);
                         }
                     } // for each priority

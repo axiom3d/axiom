@@ -205,8 +205,8 @@ namespace RenderSystem_OpenGL {
 
                 // log hardware info
                 System.Diagnostics.Trace.WriteLine(string.Format("Vendor: {0}", GLHelper.Vendor));
-                System.Diagnostics.Trace.WriteLine(string.Format("Video Board: {0}", Gl.glGetString(Gl.GL_RENDERER)));
-                System.Diagnostics.Trace.WriteLine(string.Format("Version: {0}", Gl.glGetString(Gl.GL_VERSION)));
+                System.Diagnostics.Trace.WriteLine(string.Format("Video Board: {0}", GLHelper.VideoCard));
+                System.Diagnostics.Trace.WriteLine(string.Format("Version: {0}", GLHelper.Version));
 			
                 System.Diagnostics.Trace.WriteLine("Extensions supported:");
 
@@ -1878,7 +1878,9 @@ namespace RenderSystem_OpenGL {
                 caps.SetCap(Capabilities.Dot3Bump);
 
             // check support for vertex buffers in hardware
-            if(GLHelper.SupportsExtension("GL_ARB_vertex_buffer_object"))
+            // NOTE: GeForce2 MX reports support, but simply doesn't work
+            if(GLHelper.SupportsExtension("GL_ARB_vertex_buffer_object")
+                && GLHelper.VideoCard.IndexOf("GeForce2 MX") == -1)
                 caps.SetCap(Capabilities.VertexBuffer);
 
             // check support for hardware vertex blending
@@ -1892,7 +1894,8 @@ namespace RenderSystem_OpenGL {
 
             // check hardware mip mapping
             // TODO: Only enable this for non-ATI cards temporarily until drivers are fixed
-            if(GLHelper.Vendor != "ATI" && GLHelper.SupportsExtension("GL_SGIS_generate_mipmap"))
+            if(GLHelper.SupportsExtension("GL_SGIS_generate_mipmap")
+                && GLHelper.Vendor != "ATI")
                 caps.SetCap(Capabilities.HardwareMipMaps);
 
             // check stencil buffer depth availability

@@ -38,6 +38,11 @@ namespace Demos {
         private float curvature = 1;
         private float tiling = 15;
         private float timeDelay = 0;
+        private float angle = 0;
+        private Line3d line;
+        private Entity ogre;
+        private Vector3 start = new Vector3(100, 0, 300);
+
         #endregion Fields
 
         protected override bool OnFrameStarted(Object source, FrameEventArgs e) {
@@ -76,9 +81,18 @@ namespace Demos {
                 scene.SetSkyDome(true, "Examples/CloudySky", curvature, tiling);
             }
 
+            line.ParentNode.Rotate(Vector3.UnitY, .014f);
+
+            Vector3 lineDirection = line.ParentNode.Orientation * -Vector3.UnitZ;
+
+            ogre.ShowBoundingBox = false;
+
+            RaySceneQuery rayQuery = scene.CreateRaySceneQuery(new Ray(start, lineDirection));
+            rayQuery.QueryResult +=new RaySceneQueryResultEventHandler(rayQuery_QueryResult);
+            rayQuery.Execute();
+
             return true;
         }
-
 
         #region Methods
 
@@ -109,19 +123,15 @@ namespace Demos {
             floor.MaterialName = "Examples/RustySteel";
             ((SceneNode) scene.RootSceneNode.CreateChild()).AttachObject(floor);
 
-            Entity ogre = scene.CreateEntity("Ogre", "ogrehead.mesh");
+            ogre = scene.CreateEntity("Ogre", "ogrehead.mesh");
             ((SceneNode) scene.RootSceneNode.CreateChild()).AttachObject(ogre);
             
-            Vector3 start = new Vector3(0, 0, 300);
             Vector3 direction = -Vector3.UnitZ;
 
-            Line3d line = new Line3d(start, direction, 1000, ColorEx.FromColor(Color.Blue));
+            line = new Line3d(start, direction, 1000, ColorEx.FromColor(Color.Blue));
             ((SceneNode) scene.RootSceneNode.CreateChild()).AttachObject(line);
-
-            RaySceneQuery rayQuery = scene.CreateRaySceneQuery(new Ray(start, direction));
-            rayQuery.QueryResult +=new RaySceneQueryResultEventHandler(rayQuery_QueryResult);
-            rayQuery.Execute();
         }
+
         #endregion
 
         /// <summary>
@@ -131,8 +141,8 @@ namespace Demos {
         /// <param name="e"></param>
         /// <returns></returns>
         private bool rayQuery_QueryResult(object source, RayQueryResultEventArgs e) {
+            
             if(e.Distance != 0.0f && e.HitObject is Entity) {
-                Console.WriteLine("Object hit!  Name: {0} Distance: {1}", e.HitObject.Name, e.Distance);
                 e.HitObject.ShowBoundingBox = true;
             }
 
