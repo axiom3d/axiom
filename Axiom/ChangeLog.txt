@@ -1,3 +1,16 @@
+11-19-2004
+- Default GPU params support.
+- Per entity custom GPU parameters.
+- New Class: MaterialSerializer.  Seperates all .program and .material parsing into its own class, and is now context based and more robust.
+- Material parsing updated to include several missing pass/technique/texture unit attributes.
+- Cel Shading demo updated to take advantage of default params and custom params.
+- Merged core changes required for BSP support.
+- Checked in update BSP scene manager.  Demo to follow soon once another kink gets worked out with shaders.
+
+11-3-2004
+- Merged in Axiom core changes made to support the latest and greatest BSP scene manager.
+- Added support for per-renderable custom GPU parameters.  Eliminates the need to define multiple materials for objects that only vary by a few params, which can now be set at runtime.
+
 10-30-2004
 - Updated MathLib with missing intersection tests, plus convenience methods on some of the math classes.
 - Modified Math intersection tests that returned the untyped Pair class to now return an IntersectResult struct.

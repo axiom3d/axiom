@@ -213,7 +213,7 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			chunk.Seek(header.lumps[(int) Quake3LumpType.Lightmaps].offset, SeekOrigin.Begin);
 			int numLightmaps = header.lumps[(int) Quake3LumpType.Lightmaps].size / BspLevel.LightmapSize;
-			return;
+
 			// Lightmaps are always 128x128x24 (RGB).
 			for(int i = 0; i < numLightmaps; i++)
 			{
@@ -221,13 +221,13 @@ namespace Axiom.SceneManagers.Bsp
 				byte[] buffer = new byte[BspLevel.LightmapSize];
 				chunk.Read(buffer, 0, BspLevel.LightmapSize);
 
-
-				// Load, no mipmaps, brighten by factor 2.5
-				Image.ApplyGamma(buffer, 2.5f, BspLevel.LightmapSize, 24);
+				// Load, no mipmaps, brighten by factor 4
+				// Set gamma explicitly, OpenGL doesn't apply it
+				// CHECK: Make OpenGL apply gamma at LoadImage
+				Image.ApplyGamma(buffer, 4, buffer.Length, 24);
 				MemoryStream stream = new MemoryStream(buffer);		
-				
-				Image img = Image.FromRawStream(stream, 128, 128, PixelFormat.R8G8B8);				
-				TextureManager.Instance.LoadImage(name, img, 0, 3.0f, 1);				
+				Image img = Image.FromRawStream(stream, 128, 128, PixelFormat.R8G8B8);
+				TextureManager.Instance.LoadImage(name, img, 0, 1, 1);				
 			}
 		}
 
@@ -236,33 +236,33 @@ namespace Axiom.SceneManagers.Bsp
 		/// </summary>
 		public void DumpContents()
 		{
-			Trace.WriteLine("Quake3 level statistics");
-			Trace.WriteLine("-----------------------");
-			Trace.WriteLine("Entities		: " + entities.Length.ToString());
-			Trace.WriteLine("Faces			: " + faces.Length.ToString());
-			Trace.WriteLine("Leaf Faces		: " + leafFaces.Length.ToString());
-			Trace.WriteLine("Leaves			: " + leaves.Length.ToString());
-			Trace.WriteLine("Lightmaps		: " + header.lumps[(int) Quake3LumpType.Lightmaps].size / BspLevel.LightmapSize);
-			Trace.WriteLine("Elements		: " + elements.Length.ToString());
-			Trace.WriteLine("Models			: " + models.Length.ToString());
-			Trace.WriteLine("Nodes			: " + nodes.Length.ToString());
-			Trace.WriteLine("Planes			: " + planes.Length.ToString());
-			Trace.WriteLine("Shaders		: " + shaders.Length.ToString());
-			Trace.WriteLine("Vertices		: " + vertices.Length.ToString());
-			Trace.WriteLine("Vis Clusters	: " + visData.clusterCount.ToString());
-			Trace.WriteLine("");
-			Trace.WriteLine("-= Shaders =-");
+			Debug.WriteLine("Quake3 level statistics");
+			Debug.WriteLine("-----------------------");
+			Debug.WriteLine("Entities		: " + entities.Length.ToString());
+			Debug.WriteLine("Faces			: " + faces.Length.ToString());
+			Debug.WriteLine("Leaf Faces		: " + leafFaces.Length.ToString());
+			Debug.WriteLine("Leaves			: " + leaves.Length.ToString());
+			Debug.WriteLine("Lightmaps		: " + header.lumps[(int) Quake3LumpType.Lightmaps].size / BspLevel.LightmapSize);
+			Debug.WriteLine("Elements		: " + elements.Length.ToString());
+			Debug.WriteLine("Models			: " + models.Length.ToString());
+			Debug.WriteLine("Nodes			: " + nodes.Length.ToString());
+			Debug.WriteLine("Planes			: " + planes.Length.ToString());
+			Debug.WriteLine("Shaders		: " + shaders.Length.ToString());
+			Debug.WriteLine("Vertices		: " + vertices.Length.ToString());
+			Debug.WriteLine("Vis Clusters	: " + visData.clusterCount.ToString());
+			Debug.WriteLine("");
+			Debug.WriteLine("-= Shaders =-");
 
 			for(int i = 0; i < shaders.Length; i++)
-				Trace.WriteLine(String.Format("Shader {0}: {1:x}", i, shaders[i].name));
+				Debug.WriteLine(String.Format("Shader {0}: {1:x}", i, shaders[i].name));
 
-			Trace.WriteLine("");
-			Trace.WriteLine("-= Entities =-");
+			Debug.WriteLine("");
+			Debug.WriteLine("-= Entities =-");
 
 			string[] ents = entities.Split('\0');
 
 			for(int i = 0; i < ents.Length; i++)
-				Trace.WriteLine(ents[i]);
+				Debug.WriteLine(ents[i]);
 		}
 
 		private void ReadEntities(InternalBspLump lump, BinaryReader reader)

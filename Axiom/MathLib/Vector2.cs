@@ -36,7 +36,8 @@ namespace Axiom.MathLib {
     /// <summary>
     ///     2 dimensional vector.
     /// </summary>
-    public struct  Vector2 {
+    //[StructLayout(LayoutKind.Sequential)]
+    public struct Vector2 {
         #region Fields
 
         public float x, y;

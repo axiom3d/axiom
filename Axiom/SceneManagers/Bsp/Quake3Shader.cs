@@ -53,7 +53,6 @@ namespace Axiom.SceneManagers.Bsp
 	{
 		#region Protected members
 		protected uint flags;
-		protected int numPasses;
 		protected ShaderPassCollection pass;
 		protected bool farBox;            // Skybox
 		protected string farBoxName;
@@ -78,26 +77,6 @@ namespace Axiom.SceneManagers.Bsp
 		public int NumPasses
 		{
 			get { return pass.Count; }
-			/*set 
-			{ 
-				if(value < 0)
-					throw new ArgumentOutOfRangeException("NumPasses", value.ToString());
-				
-				if(numPasses > value)
-					numPasses = value;
-				
-				ShaderPass[] newPasses = new ShaderPass[value];
-
-				// Initialize each element to stop null references.
-				for(int i = 0; i < value; i++)
-					newPasses[i] = new ShaderPass();
-
-				if(pass.Length > 0)
-					Array.Copy(pass, 0, newPasses, 0, numPasses);
-
-				pass = newPasses;
-				numPasses = value; 
-			}*/
 		}
 
 		public ShaderPassCollection Pass
@@ -191,11 +170,21 @@ namespace Axiom.SceneManagers.Bsp
 		#region Methods
 		protected string GetAlternateName(string textureName)
 		{
-			// Get alternative JPG to TGA and vice versa.
-			if(Path.GetExtension(textureName).ToLower() == "jpg")			
-				return Path.GetFileNameWithoutExtension(textureName) + ".tga";
+			// Get alternative JPG to TGA and vice versa
+			int pos;
+			string ext, baseName;
+
+			pos = textureName.LastIndexOf(".");
+			ext = textureName.Substring(pos,4).ToLower();
+			baseName = textureName.Substring(0,pos);
+			if (ext == ".jpg")
+			{
+				return baseName + ".tga";
+			}
 			else
-				return Path.GetFileNameWithoutExtension(textureName) + ".jpg";
+			{
+				return baseName + ".jpg";
+			}
 		}
 
 		/// <summary>
@@ -215,7 +204,7 @@ namespace Axiom.SceneManagers.Bsp
 
 			System.Diagnostics.Trace.WriteLine("Using Q3 shader " + name);
 			
-			for(int p = 0; p < numPasses; ++p)
+			for(int p = 0; p < pass.Count; ++p)
 			{
 				TextureUnitState t;
 				
@@ -316,7 +305,6 @@ namespace Axiom.SceneManagers.Bsp
 					}
 					else
 					{
-						// simple layer blend
 						t.SetColorOperation(pass[p].blend);
 					}
 				}
@@ -365,10 +353,9 @@ namespace Axiom.SceneManagers.Bsp
 						}
 					}
 
-					WaveformType wft = WaveformType.Sine;
-
 					if(pass[p].tcModStretchWave != ShaderWaveType.None)
 					{
+						WaveformType wft = WaveformType.Sine;
 						switch(pass[p].tcModStretchWave)
 						{
 							case ShaderWaveType.Sin:
@@ -423,7 +410,7 @@ namespace Axiom.SceneManagers.Bsp
 
 			material.CullingMode = Axiom.Graphics.CullingMode.None;
 			material.ManualCullMode = cullMode;
-			material.Lighting = true;
+			material.Lighting = false;
 			material.Load();
 
 			return material;

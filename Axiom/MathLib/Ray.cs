@@ -105,6 +105,18 @@ namespace Axiom.MathLib {
 			return MathUtil.Intersects(this, sphere);
 		}
 
+		/// <summary>
+		///		Tests whether this ray intersects the given PlaneBoundedVolume. 
+		/// </summary>
+		/// <param name="volume"></param>
+		/// <returns>
+		///		Struct containing info on whether there was a hit, and the distance from the 
+		///		origin of this ray where the intersect happened.
+		///	</returns>
+		public IntersectResult Intersects(PlaneBoundedVolume volume) {
+			return MathUtil.Intersects(this, volume);
+		}
+
 		#endregion Intersection Methods
 
 		#region Operator Overloads

@@ -63,7 +63,9 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			bool checkMovables = false;
 	
-			if(this.needParentUpdate || this.needParentUpdate)
+			//needChildUpdate is more appropriate than needParentUpdate. needParentUpdate
+			//is set to false when there is a DerivedPosition/DerivedOrientation.
+			if(this.needChildUpdate || parentHasChanged)
 				checkMovables = true;
 
 			base.Update(updateChildren, parentHasChanged);

@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Reflection;
+using System.Text;
 
 namespace Axiom.Scripting {
     #region Delegates
@@ -100,6 +101,41 @@ namespace Axiom.Scripting {
             //	invalid enum value
             return null;
         }
+
+		/// <summary>
+		///		Returns a string describing the legal values for a particular enum.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns>
+		///		A string containing legal values for script file.  
+		///		i.e. "'none', 'clockwise', 'anticlockwise'"
+		/// </returns>
+		public static string GetLegalValues(Type type) {
+			StringBuilder legalValues = new StringBuilder();
+
+			// get the list of fields in the enum
+			FieldInfo[] fields = type.GetFields();
+
+			// loop through each one and see if it is mapped to the supplied value
+			for(int i = 0; i < fields.Length; i++) {
+				FieldInfo field = fields[i];
+				
+				// find custom attributes declared for this field
+				object[] atts = field.GetCustomAttributes(typeof(ScriptEnumAttribute), false);
+
+				// if we found 1, take a look at it
+				if(atts.Length > 0) {
+					// convert the first element to the right type (assume there is only 1 attribute)
+					ScriptEnumAttribute scriptAtt = (ScriptEnumAttribute)atts[0];
+
+					// if the values match
+					legalValues.AppendFormat("'{0}',", scriptAtt.ScriptValue);
+				} // if
+			} // for
+
+			// return the full string
+			return legalValues.ToString(0, legalValues.Length - 1);
+		}
     }
 
     /// <summary>

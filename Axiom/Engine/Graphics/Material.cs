@@ -72,6 +72,7 @@ namespace Axiom.Graphics {
     ///    Material returned from this method will apply to any materials created 
     ///    from this point onward.
     /// </summary>
+    // TODO: Material LOD
     public class Material : Resource, IComparable {
         #region Member variables
 
@@ -91,6 +92,14 @@ namespace Axiom.Graphics {
 		///		Should objects using this material receive shadows?
 		/// </summary>
 		protected bool receiveShadows;
+		/// <summary>
+		///		List of LOD distances specified for this material.
+		/// </summary>
+		protected FloatList lodDistances = new FloatList();
+		/// <summary>
+		///		
+		/// </summary>
+		protected Hashtable bestTechniqueList = new Hashtable();
 
         /// <summary>
         ///    A reference to a precreated Material that contains all the default settings.
@@ -237,6 +246,15 @@ namespace Axiom.Graphics {
             }
         }
 
+		/// <summary>
+		///		Gets the number of levels-of-detail this material has.
+		/// </summary>
+		public int NumLodLevels {
+			get {
+				return bestTechniqueList.Count;
+			}
+		}
+
         public TextureFiltering TextureFiltering {
             set {
                 for(int i = 0; i < techniques.Count; i++) {
@@ -356,6 +374,7 @@ namespace Axiom.Graphics {
                 Compile();
             }
 
+			// call base class
             base.Touch();
         }
 
@@ -401,9 +420,9 @@ namespace Axiom.Graphics {
         ///    this situation arises, an Exception will be thrown.
         /// </param>
         public void Compile(bool autoManageTextureUnits) {
-           
             // clear current list of supported techniques
             supportedTechniques.Clear();
+			bestTechniqueList.Clear();
 
             // compile each technique, adding supported ones to the list of supported techniques
             for(int i = 0; i < techniques.Count; i++) {
@@ -415,8 +434,15 @@ namespace Axiom.Graphics {
                 // if supported, add it to the list
                 if(t.IsSupported) {
                     supportedTechniques.Add(t);
+
+					// don't wanna insert if it is already present
+					if(bestTechniqueList[t.LodIndex] == null) {
+						bestTechniqueList[t.LodIndex] = t;
+					}
                 }
             }
+
+			// TODO: Order best techniques
 
             compilationRequired = false;
 
@@ -468,13 +494,44 @@ namespace Axiom.Graphics {
 		/// </remarks>
 		/// </summary>
 		public Technique GetBestTechnique(int lodIndex) {
-			// TODO: Actually use the lodIndex
 			if(supportedTechniques.Count > 0) {
-				return (Technique)supportedTechniques[0];
+				if(bestTechniqueList[lodIndex] == null) {
+					throw new AxiomException("Lod index {0} not found for material '{1}'", lodIndex, name);
+				}
+				else{
+					return (Technique)bestTechniqueList[lodIndex];
+				}
 			}
 			else {
 				return null;
 			}
+		}
+
+		/// <summary>
+		///		Gets the LOD index to use at the given distance.
+		/// </summary>
+		/// <param name="distance"></param>
+		/// <returns></returns>
+		public int GetLodIndex(float distance) {
+			return GetLodIndexSquaredDepth(distance * distance);
+		}
+
+		/// <summary>
+		///		Gets the LOD index to use at the given squared distance.
+		/// </summary>
+		/// <param name="squaredDistance"></param>
+		/// <returns></returns>
+		public int GetLodIndexSquaredDepth(float squaredDistance) {
+			for(int i = 0; i < lodDistances.Count; i++) {
+				float val = (float)lodDistances[i];
+
+				if(val > squaredDistance) {
+					return i - 1;
+				}
+			}
+
+			// if we fall all the way through, use the highest value
+			return lodDistances.Count - 1;
 		}
 
         /// <summary>
@@ -508,8 +565,48 @@ namespace Axiom.Graphics {
             // remove from the list, and force a rebuild of supported techniques
             techniques.Remove(t);
             supportedTechniques.Clear();
+			bestTechniqueList.Clear();
             compilationRequired = true;
         }
+
+		/// <summary>
+		///		Removes all techniques from this material.
+		/// </summary>
+		public void RemoveAllTechniques() {
+			techniques.Clear();
+			supportedTechniques.Clear();
+			bestTechniqueList.Clear();
+			compilationRequired = true;
+		}
+
+		/// <summary>
+		///		Sets the distance at which level-of-detail (LOD) levels come into effect.
+		/// </summary>
+		/// <remarks>
+		///		You should only use this if you have assigned LOD indexes to the Technique
+		///		instances attached to this Material. If you have done so, you should call this
+		///		method to determine the distance at which the lowe levels of detail kick in.
+		///		The decision about what distance is actually used is a combination of this
+		///		and the LOD bias applied to both the current Camera and the current Entity.
+		/// </remarks>
+		/// <param name="lodDistances">
+		///		A list of floats which indicate the distance at which to 
+		///		switch to lower details. They are listed in LOD index order, starting at index
+		///		1 (ie the first level down from the highest level 0, which automatically applies
+		///		from a distance of 0).
+		/// </param>
+		public void SetLodLevels(FloatList lodDistanceList) {
+			// clear and add the 0 distance entry
+			lodDistances.Clear();
+			lodDistances.Add(0.0f);
+
+			for(int i = 0; i < lodDistanceList.Count; i++) {
+				float val = (float)lodDistanceList[i];
+
+				// squared distance
+				lodDistances.Add(val * val);
+			}
+		}
 
         public void SetSceneBlending(SceneBlendType blendType) {
             // load each technique

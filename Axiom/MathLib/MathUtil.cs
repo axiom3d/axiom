@@ -331,6 +331,82 @@ namespace Axiom.MathLib {
             return 2.0f * UnitRandom() - 1.0f;
         }
 
+		/// <summary>
+		///		Checks wether a given point is inside a triangle, in a
+		///		2-dimensional (Cartesian) space.
+		/// </summary>
+		/// <remarks>
+		///		The vertices of the triangle must be given in either
+		///		trigonometrical (anticlockwise) or inverse trigonometrical
+		///		(clockwise) order.
+		/// </remarks>
+		/// <param name="px">
+		///    The X-coordinate of the point.
+		/// </param>
+		/// <param name="py">
+		///    The Y-coordinate of the point.
+		/// </param>
+		/// <param name="ax">
+		///    The X-coordinate of the triangle's first vertex.
+		/// </param>
+		/// <param name="ay">
+		///    The Y-coordinate of the triangle's first vertex.
+		/// </param>
+		/// <param name="bx">
+		///    The X-coordinate of the triangle's second vertex.
+		/// </param>
+		/// <param name="by">
+		///    The Y-coordinate of the triangle's second vertex.
+		/// </param>
+		/// <param name="cx">
+		///    The X-coordinate of the triangle's third vertex.
+		/// </param>
+		/// <param name="cy">
+		///    The Y-coordinate of the triangle's third vertex.
+		/// </param>
+		/// <returns>
+		///    <list type="bullet">
+		///        <item>
+		///            <description><b>true</b> - the point resides in the triangle.</description>
+		///        </item>
+		///        <item>
+		///            <description><b>false</b> - the point is outside the triangle</description>
+		///         </item>
+		///     </list>
+		/// </returns>
+		public static bool PointInTri2D( float px, float py, float ax, float ay, float bx, float by, float cx, float cy ) {
+			float v1x, v2x, v1y, v2y;
+			bool bClockwise;
+
+			v1x = bx - ax;
+			v1y = by - ay;
+
+			v2x = px - bx;
+			v2y = py - by;
+
+			bClockwise = ( v1x * v2y - v1y * v2x >= 0.0 );
+
+			v1x = cx - bx;
+			v1y = cy - by;
+
+			v2x = px - cx;
+			v2y = py - cy;
+
+			if( ( v1x * v2y - v1y * v2x >= 0.0 ) != bClockwise )
+				return false;
+
+			v1x = ax - cx;
+			v1y = ay - cy;
+
+			v2x = px - ax;
+			v2y = py - ay;
+
+			if( ( v1x * v2y - v1y * v2x >= 0.0 ) != bClockwise )
+				return false;
+
+			return true;
+		}
+
         #region Intersection Methods
 
         /// <summary>
@@ -692,6 +768,64 @@ namespace Axiom.MathLib {
 		/// <returns>True if there was an intersection, false otherwise.</returns>
 		public static bool Intersects(Sphere sphere, Plane plane) {
 			return MathUtil.Abs(plane.Normal.Dot(sphere.Center)) <= sphere.Radius;
+		}
+
+		/// <summary>
+		///    Ray/PlaneBoundedVolume intersection test.
+		/// </summary>
+		/// <param name="ray"></param>
+		/// <param name="volume"></param>
+		/// <returns>Struct that contains a bool (hit?) and distance.</returns>
+		public static IntersectResult Intersects(Ray ray, PlaneBoundedVolume volume) {
+			PlaneList planes = volume.planes;
+
+			float maxExtDist = 0.0f;
+			float minIntDist = float.PositiveInfinity;
+            
+			float dist, denom, nom;
+
+			for (int i=0; i < planes.Count; i++) {
+				Plane plane = (Plane)planes[i];
+
+				denom = plane.Normal.Dot(ray.Direction);
+				if (MathUtil.Abs(denom) < float.Epsilon) {
+					// Parallel
+					if (plane.GetSide(ray.Origin) == volume.outside)
+						return new IntersectResult(false, 0);
+
+					continue;
+				}
+
+				nom = plane.Normal.Dot(ray.Origin) + plane.D;
+				dist = -(nom/denom);
+
+				if (volume.outside == PlaneSide.Negative)
+					nom = -nom;
+
+				if (dist > 0.0f) {
+					if (nom > 0.0f) {
+						if (maxExtDist < dist)
+							maxExtDist = dist;
+					}
+					else {
+						if (minIntDist > dist)
+							minIntDist = dist;
+					}
+				}
+				else {
+					//Ray points away from plane
+					if (volume.outside == PlaneSide.Negative)
+						denom = -denom;
+
+					if (denom > 0.0f)
+						return new IntersectResult(false, 0);
+				}
+			}
+
+			if (maxExtDist > minIntDist)
+				return new IntersectResult(false, 0);
+
+			return new IntersectResult(true, maxExtDist);
 		}
 
         #endregion Intersection Methods

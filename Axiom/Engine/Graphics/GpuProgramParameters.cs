@@ -30,8 +30,7 @@ using Axiom.Controllers;
 using Axiom.Core;
 using Axiom.MathLib;
 
-namespace Axiom.Graphics
-{
+namespace Axiom.Graphics {
 	/// <summary>
 	/// 	Collects together the program parameters used for a GpuProgram.
 	/// </summary>
@@ -57,37 +56,38 @@ namespace Axiom.Graphics
 	///    on certain boundaries, e.g. in sets of 4 values for example. Again, see
 	///    Capabilities for full details.
 	/// </remarks>
-	public class GpuProgramParameters
-	{
+	public class GpuProgramParameters {
 		#region Structs
+
 		public struct ParameterEntry {
 			public GpuProgramParameterType ParameterType;
 			public string ParameterName;
 		}
+
 		#endregion
 		
 		#region Fields
-        /// <summary>
-        ///    Packed list of integer constants
-        /// </summary>
+		/// <summary>
+		///    Packed list of integer constants
+		/// </summary>
 		protected ArrayList intConstants = new ArrayList();
-        /// <summary>
-        ///    Table of Vector4 constants by index.
-        /// </summary>
-        protected SortedList floatConstants = new SortedList(256);
-        /// <summary>
-        ///    List of automatically updated parameters.
-        /// </summary>
-        protected AutoConstantEntryList autoConstantList = new AutoConstantEntryList();
-        /// <summary>
-        ///    Lookup of constant indicies for named parameters.
-        /// </summary>
-        protected Hashtable namedParams = new Hashtable();
-        /// <summary>
-        ///     Specifies whether matrices need to be transposed prior to
-        ///     being sent to the hardware.
-        /// </summary>
-        protected bool transposeMatrices;
+		/// <summary>
+		///    Table of Vector4 constants by index.
+		/// </summary>
+		protected SortedList floatConstants = new SortedList(256);
+		/// <summary>
+		///    List of automatically updated parameters.
+		/// </summary>
+		protected AutoConstantEntryList autoConstantList = new AutoConstantEntryList();
+		/// <summary>
+		///    Lookup of constant indicies for named parameters.
+		/// </summary>
+		protected Hashtable namedParams = new Hashtable();
+		/// <summary>
+		///     Specifies whether matrices need to be transposed prior to
+		///     being sent to the hardware.
+		/// </summary>
+		protected bool transposeMatrices;
 
 		protected ArrayList paramTypeList = new ArrayList();
 
@@ -111,183 +111,194 @@ namespace Axiom.Graphics
 			paramTypeList.Add(p);
 		}
 
-        /// <summary>
-        ///    Clears all the existing automatic constants.
-        /// </summary>
-        public void ClearAutoConstants() {
-            autoConstantList.Clear();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="n"></param>
-        /// <returns></returns>
-        public int GetFloatConstantIndex(int n) {
-            return (int)floatConstants.GetKey(n);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="n"></param>
-        /// <returns></returns>
-        public Vector4 GetFloatConstant(int n) {
-            return (Vector4)floatConstants.GetByIndex(n);
-        }
-
-        /// <summary>
-        ///    Gets the constant index of the specified named param.
-        /// </summary>
-        /// <param name="name">
-        ///    Name of the param.
-        /// </param>
-        /// <returns>
-        ///    Constant index.
-        /// </returns>
-        protected int GetParamIndex(string name) {
-            if(namedParams[name] == null) {
-                throw new Exception(string.Format("Cannot find a param index for a param named '{0}'.", name));
-            }
-
-            return (int)namedParams[name];
-        }
-
-        public string GetNameByIndex(int index) {
-            foreach(DictionaryEntry entry in namedParams) {
-                if((int)entry.Value == index) {
-                    return (string)entry.Key;
-                }
-            }
-
-            return null;
-        }
-
-		public int GetIndexByName(string name) {
-            foreach(DictionaryEntry entry in namedParams) {
-                if((string)entry.Key == name) {
-                    return (int)entry.Value;
-                }
-            }
-
-            return -1;
+		/// <summary>
+		///    Clears all the existing automatic constants.
+		/// </summary>
+		public void ClearAutoConstants() {
+			autoConstantList.Clear();
 		}
 
-        /// <summary>
-        ///    Maps a parameter name to the specified constant index.
-        /// </summary>
-        /// <param name="name">Name of the param.</param>
-        /// <param name="index">Constant index of the param.</param>
-        public void MapParamNameToIndex(string name, int index) {
-            // map the param name to a constant register index
-            namedParams[name] = index;
-        }
+		/// <summary>
+		///		Copies the values of all constants (including auto constants) from another <see cref="GpuProgramParameters"/> object.
+		/// </summary>
+		/// <param name="source">Set of params to use as the source.</param>
+		public void CopyConstantsFrom(GpuProgramParameters source) {
+			int i = 0;
 
-        /// <summary>
-        ///    Sets up a constant which will automatically be updated by the engine.
-        /// </summary>
-        /// <remarks>
-        ///    Vertex and fragment programs often need parameters which are to do with the
-        ///    current render state, or particular values which may very well change over time,
-        ///    and often between objects which are being rendered. This feature allows you 
-        ///    to set up a certain number of predefined parameter mappings that are kept up to 
-        ///    date for you.
-        /// </remarks>
-        /// <param name="type">The type of automatic constant to set.</param>
-        /// <param name="index">
-        ///    The location in the constant list to place this updated constant every time
-        ///    it is changed. Note that because of the nature of the types, we know how big the 
-        ///    parameter details will be so you don't need to set that like you do for manual constants.
-        /// </param>
-        public void SetAutoConstant(int index, AutoConstants type) {
-            SetAutoConstant(index, type, 0);
-        }
+			// copy those float and int constants right on in
+			floatConstants = (SortedList)source.floatConstants.Clone();
+			intConstants = (ArrayList)source.intConstants.Clone();
 
-        /// <summary>
-        ///    Overloaded method.
-        /// </summary>
-        /// <param name="type">The type of automatic constant to set.</param>
-        /// <param name="index">
-        ///    The location in the constant list to place this updated constant every time
-        ///    it is changed. Note that because of the nature of the types, we know how big the 
-        ///    parameter details will be so you don't need to set that like you do for manual constants.
-        /// </param>
-        /// <param name="extraInfo">If the constant type needs more information (like a light index) put it here.</param>
-        public void SetAutoConstant(int index, AutoConstants type, int extraInfo) {
-            AutoConstantEntry entry = new AutoConstantEntry(type, index, extraInfo);
-            autoConstantList.Add(entry);
-        }
+			// Iterate over auto parameters
+			// Clear existing auto constants
+			ClearAutoConstants();
+
+			for(i = 0; i < source.autoConstantList.Count; i++) {
+				AutoConstantEntry entry = (AutoConstantEntry)source.autoConstantList[i];
+				SetAutoConstant(entry.index, entry.type, entry.data);
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="n"></param>
+		/// <returns></returns>
+		public int GetFloatConstantIndex(int n) {
+			return (int)floatConstants.GetKey(n);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="n"></param>
+		/// <returns></returns>
+		public Vector4 GetFloatConstant(int n) {
+			return (Vector4)floatConstants.GetByIndex(n);
+		}
+
+		/// <summary>
+		///    Gets the constant index of the specified named param.
+		/// </summary>
+		/// <param name="name">
+		///    Name of the param.
+		/// </param>
+		/// <returns>
+		///    Constant index.
+		/// </returns>
+		public int GetParamIndex(string name) {
+			if(namedParams[name] == null) {
+				throw new Exception(string.Format("Cannot find a param index for a param named '{0}'.", name));
+			}
+
+			return (int)namedParams[name];
+		}
+
+		public string GetNameByIndex(int index) {
+			foreach(DictionaryEntry entry in namedParams) {
+				if((int)entry.Value == index) {
+					return (string)entry.Key;
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///    Maps a parameter name to the specified constant index.
+		/// </summary>
+		/// <param name="name">Name of the param.</param>
+		/// <param name="index">Constant index of the param.</param>
+		public void MapParamNameToIndex(string name, int index) {
+			// map the param name to a constant register index
+			namedParams[name] = index;
+		}
+
+		/// <summary>
+		///    Sets up a constant which will automatically be updated by the engine.
+		/// </summary>
+		/// <remarks>
+		///    Vertex and fragment programs often need parameters which are to do with the
+		///    current render state, or particular values which may very well change over time,
+		///    and often between objects which are being rendered. This feature allows you 
+		///    to set up a certain number of predefined parameter mappings that are kept up to 
+		///    date for you.
+		/// </remarks>
+		/// <param name="type">The type of automatic constant to set.</param>
+		/// <param name="index">
+		///    The location in the constant list to place this updated constant every time
+		///    it is changed. Note that because of the nature of the types, we know how big the 
+		///    parameter details will be so you don't need to set that like you do for manual constants.
+		/// </param>
+		public void SetAutoConstant(int index, AutoConstants type) {
+			SetAutoConstant(index, type, 0);
+		}
+
+		/// <summary>
+		///    Overloaded method.
+		/// </summary>
+		/// <param name="type">The type of automatic constant to set.</param>
+		/// <param name="index">
+		///    The location in the constant list to place this updated constant every time
+		///    it is changed. Note that because of the nature of the types, we know how big the 
+		///    parameter details will be so you don't need to set that like you do for manual constants.
+		/// </param>
+		/// <param name="extraInfo">If the constant type needs more information (like a light index) put it here.</param>
+		public void SetAutoConstant(int index, AutoConstants type, int extraInfo) {
+			AutoConstantEntry entry = new AutoConstantEntry(type, index, extraInfo);
+			autoConstantList.Add(entry);
+		}
 	
-        /// <summary>
-        ///    Sends a single value constant integer parameter to the program.
-        /// </summary>
-        /// <param name="index">Index of the contant register.</param>
-        /// <param name="val">Single value to set.</param>
-        public void SetConstant(int index, int val) {
-            if(index >= intConstants.Count) {
-                intConstants.Insert(index, val);
-            }
-            else {
-                intConstants[index] = val;
-            }
-        }
+		/// <summary>
+		///    Sends a single value constant integer parameter to the program.
+		/// </summary>
+		/// <param name="index">Index of the contant register.</param>
+		/// <param name="val">Single value to set.</param>
+		public void SetConstant(int index, int val) {
+			if(index >= intConstants.Count) {
+				intConstants.Insert(index, val);
+			}
+			else {
+				intConstants[index] = val;
+			}
+		}
 
-        /// <summary>
-        ///    Sends 4 packed floating-point values to the program.
-        /// </summary>
-        /// <param name="index">Index of the contant register.</param>
-        /// <param name="val">Structure containing 4 packed float values.</param>
-        public void SetConstant(int index, Vector4 val) {
-            // store the float4 constant for this index
-            floatConstants[index] = val;
-        }
+		/// <summary>
+		///    Sends 4 packed floating-point values to the program.
+		/// </summary>
+		/// <param name="index">Index of the contant register.</param>
+		/// <param name="val">Structure containing 4 packed float values.</param>
+		public void SetConstant(int index, Vector4 val) {
+			// store the float4 constant for this index
+			floatConstants[index] = val;
+		}
 
-        /// <summary>
-        ///    Sends 3 packed floating-point values to the program.
-        /// </summary>
-        /// <param name="index">Index of the contant register.</param>
-        /// <param name="val">Structure containing 3 packed float values.</param>
-        public void SetConstant(int index, Vector3 val) {
-            SetConstant(index, new Vector4(val.x, val.y, val.z, 1.0f));
-        }
+		/// <summary>
+		///    Sends 3 packed floating-point values to the program.
+		/// </summary>
+		/// <param name="index">Index of the contant register.</param>
+		/// <param name="val">Structure containing 3 packed float values.</param>
+		public void SetConstant(int index, Vector3 val) {
+			SetConstant(index, new Vector4(val.x, val.y, val.z, 1.0f));
+		}
 
-        /// <summary>
-        ///    Sends 4 packed floating-point RGBA color values to the program.
-        /// </summary>
-        /// <param name="index">Index of the contant register.</param>
-        /// <param name="color">Structure containing 4 packed RGBA color values.</param>
-        public void SetConstant(int index, ColorEx color) {
-            // verify order of color components
-            SetConstant(index++, new Vector4(color.r, color.g, color.b, color.a));
-        }
+		/// <summary>
+		///    Sends 4 packed floating-point RGBA color values to the program.
+		/// </summary>
+		/// <param name="index">Index of the contant register.</param>
+		/// <param name="color">Structure containing 4 packed RGBA color values.</param>
+		public void SetConstant(int index, ColorEx color) {
+			// verify order of color components
+			SetConstant(index++, new Vector4(color.r, color.g, color.b, color.a));
+		}
 
-        /// <summary>
-        ///    Sends a multiple value constant floating-point parameter to the program.
-        /// </summary>
-        /// <remarks>
-        ///     This method is made virtual to allow GpuProgramManagers, or even individual
-        ///     GpuProgram implementations to supply their own implementation if need be.
-        ///     An example would be where a Matrix needs to be transposed to row-major format
-        ///     before passing to the hardware.
-        /// </remarks>
-        /// <param name="index">Index of the contant register.</param>
-        /// <param name="val">Structure containing 3 packed float values.</param>
-        public void SetConstant(int index, Matrix4 val) {
-            Matrix4 mat;
+		/// <summary>
+		///    Sends a multiple value constant floating-point parameter to the program.
+		/// </summary>
+		/// <remarks>
+		///     This method is made virtual to allow GpuProgramManagers, or even individual
+		///     GpuProgram implementations to supply their own implementation if need be.
+		///     An example would be where a Matrix needs to be transposed to row-major format
+		///     before passing to the hardware.
+		/// </remarks>
+		/// <param name="index">Index of the contant register.</param>
+		/// <param name="val">Structure containing 3 packed float values.</param>
+		public void SetConstant(int index, Matrix4 val) {
+			Matrix4 mat;
 
-            // transpose the matrix if need be
-            if(transposeMatrices) {
-                mat = val.Transpose();
-            }
-            else {
-                mat = val;
-            }
+			// transpose the matrix if need be
+			if(transposeMatrices) {
+				mat = val.Transpose();
+			}
+			else {
+				mat = val;
+			}
 
-            SetConstant(index++, new Vector4(mat.m00, mat.m01, mat.m02, mat.m03));
-            SetConstant(index++, new Vector4(mat.m10, mat.m11, mat.m12, mat.m13));
-            SetConstant(index++, new Vector4(mat.m20, mat.m21, mat.m22, mat.m23));
-            SetConstant(index, new Vector4(mat.m30, mat.m31, mat.m32, mat.m33));
-        }
+			SetConstant(index++, new Vector4(mat.m00, mat.m01, mat.m02, mat.m03));
+			SetConstant(index++, new Vector4(mat.m10, mat.m11, mat.m12, mat.m13));
+			SetConstant(index++, new Vector4(mat.m20, mat.m21, mat.m22, mat.m23));
+			SetConstant(index, new Vector4(mat.m30, mat.m31, mat.m32, mat.m33));
+		}
 
 		/// <summary>
 		///    Sends a multiple matrix values to the program.
@@ -300,86 +311,99 @@ namespace Axiom.Graphics
 			}
 		}
 
-        /// <summary>
-        ///    Sets an array of int values starting at the specified index.
-        /// </summary>
-        /// <param name="index">Index of the contant register to start at.</param>
-        /// <param name="ints">Array of ints.</param>
-        public void SetConstant(int index, int[] ints) {
-            for(int i = index; i < ints.Length; i++) {
-                SetConstant(i, ints[i]);
-            }
-        }
+		/// <summary>
+		///    Sets an array of int values starting at the specified index.
+		/// </summary>
+		/// <param name="index">Index of the contant register to start at.</param>
+		/// <param name="ints">Array of ints.</param>
+		public void SetConstant(int index, int[] ints) {
+			for(int i = index; i < ints.Length; i++) {
+				SetConstant(i, ints[i]);
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="factor"></param>
-        public void SetConstantFromTime(int index, float factor) {
-            ControllerManager.Instance.CreateGpuProgramTimerParam(this, index, factor);
-        }
+		/// <summary>
+		///    Sets an array of int values starting at the specified index.
+		/// </summary>
+		/// <param name="index">Index of the contant register to start at.</param>
+		/// <param name="ints">Array of ints.</param>
+		public void SetConstant(int index, float[] floats) {
+			// copy floats in chunks of 4
+			for(int i = 0; i < floats.Length; i += 4) {
+				Vector4 vec = new Vector4(floats[i], floats[i + 1], floats[i + 2], floats[i + 3]);
+				SetConstant(index++, vec);
+			}
+		}
 
-        #region Named parameters
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="index"></param>
+		/// <param name="factor"></param>
+		public void SetConstantFromTime(int index, float factor) {
+			ControllerManager.Instance.CreateGpuProgramTimerParam(this, index, factor);
+		}
 
-        /// <summary>
-        ///    Sets up a constant which will automatically be updated by the engine.
-        /// </summary>
-        /// <remarks>
-        ///    Vertex and fragment programs often need parameters which are to do with the
-        ///    current render state, or particular values which may very well change over time,
-        ///    and often between objects which are being rendered. This feature allows you 
-        ///    to set up a certain number of predefined parameter mappings that are kept up to 
-        ///    date for you.
-        /// </remarks>
-        /// <param name="name">
-        ///    Name of the param.
-        /// </param>
-        /// <param name="type">
-        ///    The type of automatic constant to set.
-        /// </param>
-        /// <param name="extraInfo">
-        ///    Any extra infor needed by the auto constant (i.e. light index, etc).
-        /// </param>
-        public void SetNamedAutoConstant(string name, AutoConstants type, int extraInfo) {
-            SetAutoConstant(GetParamIndex(name), type, extraInfo);
-        }
+		#region Named parameters
 
-        /// <summary>
-        ///    Sends 4 packed floating-point values to the program.
-        /// </summary>
-        /// <param name="index">Index of the contant register.</param>
-        /// <param name="val">Structure containing 4 packed float values.</param>
-        public void SetNamedConstant(string name, Vector4 val) {
-            SetConstant(GetParamIndex(name), val);
-        }
+		/// <summary>
+		///    Sets up a constant which will automatically be updated by the engine.
+		/// </summary>
+		/// <remarks>
+		///    Vertex and fragment programs often need parameters which are to do with the
+		///    current render state, or particular values which may very well change over time,
+		///    and often between objects which are being rendered. This feature allows you 
+		///    to set up a certain number of predefined parameter mappings that are kept up to 
+		///    date for you.
+		/// </remarks>
+		/// <param name="name">
+		///    Name of the param.
+		/// </param>
+		/// <param name="type">
+		///    The type of automatic constant to set.
+		/// </param>
+		/// <param name="extraInfo">
+		///    Any extra infor needed by the auto constant (i.e. light index, etc).
+		/// </param>
+		public void SetNamedAutoConstant(string name, AutoConstants type, int extraInfo) {
+			SetAutoConstant(GetParamIndex(name), type, extraInfo);
+		}
 
-        /// <summary>
-        ///    Sends 3 packed floating-point values to the program.
-        /// </summary>
-        /// <param name="name">Name of the param.</param>
-        /// <param name="val">Structure containing 3 packed float values.</param>
-        public void SetNamedConstant(string name, Vector3 val) {
-            SetConstant(GetParamIndex(name), val);
-        }
+		/// <summary>
+		///    Sends 4 packed floating-point values to the program.
+		/// </summary>
+		/// <param name="index">Index of the contant register.</param>
+		/// <param name="val">Structure containing 4 packed float values.</param>
+		public void SetNamedConstant(string name, Vector4 val) {
+			SetConstant(GetParamIndex(name), val);
+		}
 
-        /// <summary>
-        ///    Sends 4 packed floating-point RGBA color values to the program.
-        /// </summary>
-        /// <param name="name">Name of the param.</param>
-        /// <param name="color">Structure containing 4 packed RGBA color values.</param>
-        public void SetNamedConstant(string name, ColorEx color) {
-            SetConstant(GetParamIndex(name), color);
-        }
+		/// <summary>
+		///    Sends 3 packed floating-point values to the program.
+		/// </summary>
+		/// <param name="name">Name of the param.</param>
+		/// <param name="val">Structure containing 3 packed float values.</param>
+		public void SetNamedConstant(string name, Vector3 val) {
+			SetConstant(GetParamIndex(name), val);
+		}
 
-        /// <summary>
-        ///    Sends a multiple value constant floating-point parameter to the program.
-        /// </summary>
-        /// <param name="name">Name of the param.</param>
-        /// <param name="val">Structure containing 3 packed float values.</param>
-        public void SetNamedConstant(string name, Matrix4 val) {
-            SetConstant(GetParamIndex(name), val);
-        }
+		/// <summary>
+		///    Sends 4 packed floating-point RGBA color values to the program.
+		/// </summary>
+		/// <param name="name">Name of the param.</param>
+		/// <param name="color">Structure containing 4 packed RGBA color values.</param>
+		public void SetNamedConstant(string name, ColorEx color) {
+			SetConstant(GetParamIndex(name), color);
+		}
+
+		/// <summary>
+		///    Sends a multiple value constant floating-point parameter to the program.
+		/// </summary>
+		/// <param name="name">Name of the param.</param>
+		/// <param name="val">Structure containing 3 packed float values.</param>
+		public void SetNamedConstant(string name, Matrix4 val) {
+			SetConstant(GetParamIndex(name), val);
+		}
 
 		/// <summary>
 		///    Sends multiple matrices into a program.
@@ -390,43 +414,43 @@ namespace Axiom.Graphics
 			SetConstant(GetParamIndex(name), matrices, count);
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="factor"></param>
-        public void SetNamedConstantFromTime(string name, float factor) {
-            SetConstantFromTime(GetParamIndex(name), factor);
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="factor"></param>
+		public void SetNamedConstantFromTime(string name, float factor) {
+			SetConstantFromTime(GetParamIndex(name), factor);
+		}
 
-        #endregion
+		#endregion
 
-        /// <summary>
-        ///    Updates the automatic parameters (except lights) based on the details provided.
-        /// </summary>
-        /// <param name="source">
-        ///    A source containing all the updated data to be made available for auto updating
-        ///    the GPU program constants.
-        /// </param>
-        public void UpdateAutoParamsNoLights(AutoParamDataSource source) {
-            // return if no constants
-            if(!this.HasAutoConstants) {
-                return;
-            }
+		/// <summary>
+		///    Updates the automatic parameters (except lights) based on the details provided.
+		/// </summary>
+		/// <param name="source">
+		///    A source containing all the updated data to be made available for auto updating
+		///    the GPU program constants.
+		/// </param>
+		public void UpdateAutoParamsNoLights(AutoParamDataSource source) {
+			// return if no constants
+			if(!this.HasAutoConstants) {
+				return;
+			}
 
-            // loop through and update all constants based on their type
-            for(int i = 0; i < autoConstantList.Count; i++) {
-                AutoConstantEntry entry = (AutoConstantEntry)autoConstantList[i];
+			// loop through and update all constants based on their type
+			for(int i = 0; i < autoConstantList.Count; i++) {
+				AutoConstantEntry entry = (AutoConstantEntry)autoConstantList[i];
 
-                Vector4 vec4 = new Vector4();
+				Vector4 vec4 = new Vector4();
 				Matrix4[] matrices = null;
 				int numMatrices = 0;
 				int index = 0;
 
-                switch(entry.type) {
-                    case AutoConstants.WorldMatrix:
-                        SetConstant(entry.index, source.WorldMatrix);
-                        break;
+				switch(entry.type) {
+					case AutoConstants.WorldMatrix:
+						SetConstant(entry.index, source.WorldMatrix);
+						break;
 
 					case AutoConstants.WorldMatrixArray:
 						SetConstant(entry.index, source.WorldMatrixArray, source.WorldMatrixCount);
@@ -445,73 +469,77 @@ namespace Axiom.Graphics
 
 						break;
 
-                    case AutoConstants.ViewMatrix:
-                        SetConstant(entry.index, source.ViewMatrix);
-                        break;
+					case AutoConstants.ViewMatrix:
+						SetConstant(entry.index, source.ViewMatrix);
+						break;
 
-                    case AutoConstants.ProjectionMatrix:
-                        SetConstant(entry.index, source.ProjectionMatrix);
-                        break;
+					case AutoConstants.ProjectionMatrix:
+						SetConstant(entry.index, source.ProjectionMatrix);
+						break;
 
 					case AutoConstants.ViewProjMatrix:
 						SetConstant(entry.index, source.ViewProjectionMatrix);
 						break;
 
-                    case AutoConstants.WorldViewMatrix:
-                        SetConstant(entry.index, source.WorldViewMatrix);
-                        break;
+					case AutoConstants.WorldViewMatrix:
+						SetConstant(entry.index, source.WorldViewMatrix);
+						break;
 
-                    case AutoConstants.WorldViewProjMatrix:
-                        SetConstant(entry.index, source.WorldViewProjMatrix);
-                        break;
+					case AutoConstants.WorldViewProjMatrix:
+						SetConstant(entry.index, source.WorldViewProjMatrix);
+						break;
 
-                    case AutoConstants.InverseWorldMatrix:
-                        SetConstant(entry.index, source.InverseWorldMatrix);
-                        break;
+					case AutoConstants.InverseWorldMatrix:
+						SetConstant(entry.index, source.InverseWorldMatrix);
+						break;
 
-                    case AutoConstants.InverseWorldViewMatrix:
-                        SetConstant(entry.index, source.InverseWorldViewMatrix);
-                        break;
+					case AutoConstants.InverseWorldViewMatrix:
+						SetConstant(entry.index, source.InverseWorldViewMatrix);
+						break;
 
-                    case AutoConstants.AmbientLightColor:
-                        SetConstant(entry.index, source.AmbientLight);
-                        break;
+					case AutoConstants.AmbientLightColor:
+						SetConstant(entry.index, source.AmbientLight);
+						break;
 
-                    case AutoConstants.CameraPositionObjectSpace:
-                        SetConstant(entry.index, source.CameraPositionObjectSpace);
-                        break;
-                }
-            }
-        }
+					case AutoConstants.CameraPositionObjectSpace:
+						SetConstant(entry.index, source.CameraPositionObjectSpace);
+						break;
 
-        /// <summary>
-        ///    Updates the automatic light parameters based on the details provided.
-        /// </summary>
-        /// <param name="source">
-        ///    A source containing all the updated data to be made available for auto updating
-        ///    the GPU program constants.
-        /// </param>
-        public void UpdateAutoParamsLightsOnly(AutoParamDataSource source) {
-            // return if no constants
-            if(!this.HasAutoConstants) {
-                return;
-            }
+					case AutoConstants.Custom:
+						source.Renderable.UpdateCustomGpuParameter(entry, this);
+						break;
+				}
+			}
+		}
 
-            // loop through and update all constants based on their type
-            for(int i = 0; i < autoConstantList.Count; i++) {
-                AutoConstantEntry entry = (AutoConstantEntry)autoConstantList[i];
+		/// <summary>
+		///    Updates the automatic light parameters based on the details provided.
+		/// </summary>
+		/// <param name="source">
+		///    A source containing all the updated data to be made available for auto updating
+		///    the GPU program constants.
+		/// </param>
+		public void UpdateAutoParamsLightsOnly(AutoParamDataSource source) {
+			// return if no constants
+			if(!this.HasAutoConstants) {
+				return;
+			}
 
-                Vector3 vec3;
-                Vector4 vec4 = new Vector4();
+			// loop through and update all constants based on their type
+			for(int i = 0; i < autoConstantList.Count; i++) {
+				AutoConstantEntry entry = (AutoConstantEntry)autoConstantList[i];
 
-                switch(entry.type) {
-                    case AutoConstants.LightDiffuseColor:
-                        SetConstant(entry.index, source.GetLight(entry.data).Diffuse);
-                        break;
+				Vector3 vec3;
+				Vector4 vec4 = new Vector4();
 
-                    case AutoConstants.LightSpecularColor:
-                        SetConstant(entry.index, source.GetLight(entry.data).Specular);
-                        break;
+				switch(entry.type) {
+					case AutoConstants.LightDiffuseColor:
+						SetConstant(entry.index, source.GetLight(entry.data).Diffuse);
+						break;
+
+					case AutoConstants.LightSpecularColor:
+						SetConstant(entry.index, source.GetLight(entry.data).Specular);
+						break;
 
 					case AutoConstants.LightPosition:
 						SetConstant(entry.index, source.GetLight(entry.data).DerivedPosition);
@@ -522,144 +550,148 @@ namespace Axiom.Graphics
 						SetConstant(entry.index, new Vector4(vec3.x, vec3.y, vec3.z, 1.0f));
 						break;
 
-                    case AutoConstants.LightPositionObjectSpace:
-                        SetConstant(entry.index, source.InverseWorldMatrix * source.GetLight(entry.data).DerivedPosition);
-                        break;
+					case AutoConstants.LightPositionObjectSpace:
+						SetConstant(entry.index, source.InverseWorldMatrix * source.GetLight(entry.data).DerivedPosition);
+						break;
 
-                    case AutoConstants.LightDirectionObjectSpace:
-                        vec3 = source.InverseWorldMatrix * source.GetLight(entry.data).DerivedDirection;
-                        vec3.Normalize();
-                        SetConstant(entry.index, new Vector4(vec3.x, vec3.y, vec3.z, 1.0f));
-                        break;
+					case AutoConstants.LightDirectionObjectSpace:
+						vec3 = source.InverseWorldMatrix * source.GetLight(entry.data).DerivedDirection;
+						vec3.Normalize();
+						SetConstant(entry.index, new Vector4(vec3.x, vec3.y, vec3.z, 1.0f));
+						break;
 
-                    case AutoConstants.LightAttenuation:
-                        Light light = source.GetLight(entry.data);
-                        vec4.x = light.AttenuationRange;
-                        vec4.y = light.AttenuationConstant;
-                        vec4.z = light.AttenuationLinear;
-                        vec4.w = light.AttenuationQuadratic;
+					case AutoConstants.LightAttenuation:
+						Light light = source.GetLight(entry.data);
+						vec4.x = light.AttenuationRange;
+						vec4.y = light.AttenuationConstant;
+						vec4.z = light.AttenuationLinear;
+						vec4.w = light.AttenuationQuadratic;
 
-                        SetConstant(entry.index, vec4);
-                        break;
-                }
-            }
-        }
+						SetConstant(entry.index, vec4);
+						break;
+				}
+			}
+		}
 
 		#endregion
 		
 		#region Properties
 		
 		public ArrayList ParameterInfo {
-			get { return this.paramTypeList; }
+			get { 
+				return this.paramTypeList; 
+			}
 		}
 
-        /// <summary>
-        ///    Returns true if this instance contains any automatic constants.
-        /// </summary>
-        public bool HasAutoConstants {
-            get {
-                return autoConstantList.Count > 0;
-            }
-        }
+		/// <summary>
+		///    Returns true if this instance contains any automatic constants.
+		/// </summary>
+		public bool HasAutoConstants {
+			get {
+				return autoConstantList.Count > 0;
+			}
+		}
 
-        /// <summary>
-        ///    Returns true if int constants have been set.
-        /// </summary>
-        public bool HasIntConstants {
-            get {
-                return intConstants.Count > 0;
-            }
-        }
+		/// <summary>
+		///    Returns true if int constants have been set.
+		/// </summary>
+		public bool HasIntConstants {
+			get {
+				return intConstants.Count > 0;
+			}
+		}
 
-        /// <summary>
-        ///    Returns true if floating-point constants have been set.
-        /// </summary>
-        public bool HasFloatConstants {
-            get {
-                return floatConstants.Count > 0;
-            }
-        }
+		/// <summary>
+		///    Returns true if floating-point constants have been set.
+		/// </summary>
+		public bool HasFloatConstants {
+			get {
+				return floatConstants.Count > 0;
+			}
+		}
 
-        /// <summary>
-        ///    Gets a packed array of all current integer contants.
-        /// </summary>
-        public int[] IntConstants {
-            get {
-                int[] ints = new int[intConstants.Count];
-                intConstants.CopyTo(ints);
-                return ints;
-            }
-        }
+		/// <summary>
+		///    Gets a packed array of all current integer contants.
+		/// </summary>
+		public int[] IntConstants {
+			get {
+				int[] ints = new int[intConstants.Count];
+				intConstants.CopyTo(ints);
+				return ints;
+			}
+		}
 
-        /// <summary>
-        ///    Gets the number of int contants values currently set.
-        /// </summary>
-        public int IntConstantCount {
-            get {
-                return intConstants.Count;
-            }
-        }
+		/// <summary>
+		///    Gets the number of int contants values currently set.
+		/// </summary>
+		public int IntConstantCount {
+			get {
+				return intConstants.Count;
+			}
+		}
 
-        /// <summary>
-        ///    Gets the number of floating-point contant values currently set.
-        /// </summary>
-        public int FloatConstantCount {
-            get {
-                return floatConstants.Count;
-            }
-        }
+		/// <summary>
+		///    Gets the number of floating-point contant values currently set.
+		/// </summary>
+		public int FloatConstantCount {
+			get {
+				return floatConstants.Count;
+			}
+		}
 
 		public int NamedParamCount {
-			get { return this.namedParams.Count; }
+			get { 
+				return this.namedParams.Count; 
+			}
 		}
 
-        /// <summary>
-        ///     Specifies whether matrices need to be transposed prior to
-        ///     being sent to the hardware.
-        /// </summary>
-        public bool TransposeMatrices {
-            get {
-                return transposeMatrices;
-            }
-            set {
-                transposeMatrices = value;
-            }
-        }
+		/// <summary>
+		///     Specifies whether matrices need to be transposed prior to
+		///     being sent to the hardware.
+		/// </summary>
+		public bool TransposeMatrices {
+			get {
+				return transposeMatrices;
+			}
+			set {
+				transposeMatrices = value;
+			}
+		}
 
 		#endregion Properties
 
-        #region Inner classes
+		#region Inner classes
 
-        /// <summary>
-        ///    A structure for recording the use of automatic parameters.
-        /// </summary>
-        public class AutoConstantEntry {
-            /// <summary>
-            ///    The type of the parameter.
-            /// </summary>
-            public AutoConstants type;
-            /// <summary>
-            ///    The target index.
-            /// </summary>
-            public int index;
-            /// <summary>
-            ///    Any additional info to go with the parameter.
-            /// </summary>
-            public int data;
+		/// <summary>
+		///    A structure for recording the use of automatic parameters.
+		/// </summary>
+		public class AutoConstantEntry {
+			/// <summary>
+			///    The type of the parameter.
+			/// </summary>
+			public AutoConstants type;
+			/// <summary>
+			///    The target index.
+			/// </summary>
+			public int index;
+			/// <summary>
+			///    Any additional info to go with the parameter.
+			/// </summary>
+			public int data;
 
-            /// <summary>
-            ///    Default constructor.
-            /// </summary>
-            /// <param name="type">Type of auto param (i.e. WorldViewMatrix, etc)</param>
-            /// <param name="index">Index of the param.</param>
-            /// <param name="data">Any additional info to go with the parameter.</param>
-            public AutoConstantEntry(AutoConstants type, int index, int data) {
-                this.type = type;
-                this.index = index;
-                this.data = data;
-            }
-        }
+			/// <summary>
+			///    Default constructor.
+			/// </summary>
+			/// <param name="type">Type of auto param (i.e. WorldViewMatrix, etc)</param>
+			/// <param name="index">Index of the param.</param>
+			/// <param name="data">Any additional info to go with the parameter.</param>
+			public AutoConstantEntry(AutoConstants type, int index, int data) {
+				this.type = type;
+				this.index = index;
+				this.data = data;
+			}
+		}
 
-        #endregion
+		#endregion
 	}
 }

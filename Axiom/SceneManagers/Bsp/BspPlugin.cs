@@ -34,7 +34,7 @@ namespace Axiom.SceneManagers.Bsp
 	{ 
 		public void Start() 
 		{ 
-			Engine.Instance.SceneManagers[SceneType.Interior] = new BspSceneManager();
+			Root.Instance.SceneManagers[SceneType.Interior] = new BspSceneManager();
 		} 
 
 		public void Stop() 
