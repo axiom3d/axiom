@@ -173,6 +173,17 @@ namespace Axiom.Core {
 		///		Index of maximum detail LOD (NB lower index is higher detail).
 		/// </summary>
 		protected int maxMaterialLodIndex;
+        /// <summary>
+        ///     Frame the bones were last update.
+        /// </summary>
+        /// <remarks>
+        ///     Stored as an array so the reference can be shared amongst skeleton instances.
+        /// </remarks>
+        protected ulong[] frameBonesLastUpdated = new ulong[] { 0 };
+        /// <summary>
+        ///     List of entities with various levels of detail.
+        /// </summary>
+        protected EntityList lodEntityList = new EntityList();
 
 		#endregion Fields
 
@@ -196,7 +207,18 @@ namespace Axiom.Core {
 
 			BuildSubEntities();
 
-			// init the AnimationState, if the mesh is animated
+            // Check if mesh is using manual LOD
+            if (mesh.IsLodManual) {
+                for (int i = 1; i < mesh.LodLevelCount; i++) {
+                    MeshLodUsage usage = mesh.GetLodLevel(i);
+
+                    // manually create entity
+                    Entity lodEnt = new Entity(string.Format("{0}Lod{1}", name, i), usage.manualMesh, creator);
+                    lodEntityList.Add(lodEnt);
+                }
+            }
+
+            // init the AnimationState, if the mesh is animated
 			if(mesh.HasSkeleton) {
 				mesh.InitAnimationState(animationState);
 				numBoneMatrices = skeletonInstance.BoneCount;
@@ -214,11 +236,14 @@ namespace Axiom.Core {
 
 			// Material LOD default settings
 			materialLodFactorInv = 1.0f;
-			minMaterialLodIndex = 99;
-			maxMaterialLodIndex = 0;
+            maxMaterialLodIndex = 0;
+            minMaterialLodIndex = 99;
 
-			// TODO: Check to set shadow casting (requires new methods)
-		}
+            // Do we have a mesh where edge lists are not going to be available?
+            if (!mesh.IsEdgeListBuilt && !mesh.AutoBuildEdgeLists) {
+                this.CastShadows = false;
+            }
+        }
 
 		#endregion
 
@@ -333,9 +358,10 @@ namespace Axiom.Core {
 				materialName = value;
 
 				// assign the material name to all sub entities
-				for(int i = 0; i < subEntityList.Count; i++)
-					subEntityList[i].MaterialName = materialName;
-			}
+                for (int i = 0; i < subEntityList.Count; i++) {
+                    subEntityList[i].MaterialName = materialName;
+                }
+            }
 		}
 
 		/// <summary>
@@ -459,16 +485,34 @@ namespace Axiom.Core {
 		///    Protected method to cache bone matrices from a skeleton.
 		/// </summary>
 		protected void CacheBoneMatrices() {
-			// Get the appropriate meshes skeleton here
+            ulong currentFrameCount = Root.Instance.CurrentFrameCount;
+
+            if (frameBonesLastUpdated[0] == currentFrameCount) {
+                return;
+            }
+
+            // Get the appropriate meshes skeleton here
 			// Can use lower LOD mesh skeleton if mesh LOD is manual
 			// We make the assumption that lower LOD meshes will have
 			//   fewer bones than the full LOD, therefore marix stack will be
 			//   big enough.
 
-			// TODO: Check for LOD usage
+			// Check for LOD usage
+            if (mesh.IsLodManual && meshLodIndex > 1) {
+                // use lower detail skeleton
+                Mesh lodMesh = mesh.GetLodLevel(meshLodIndex).manualMesh;
 
-			skeletonInstance.SetAnimationState(animationState);
+                if (!lodMesh.HasSkeleton) {
+                    numBoneMatrices = 0;
+                    return;
+                }
+            }
+
+            skeletonInstance.SetAnimationState(animationState);
 			skeletonInstance.GetBoneMatrices(boneMatrices);
+            frameBonesLastUpdated[0] = currentFrameCount;
+
+            // TODO: Skeleton instance sharing
 
 			// update the child object's transforms
 			for(int i = 0; i < childObjectList.Count; i++) {
@@ -689,7 +733,25 @@ namespace Axiom.Core {
 			return subEntityList[index];
 		}
 
-		/// <summary>
+        /// <summary>
+        ///     Gets a sub entity of this mesh with the specified name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public SubEntity GetSubEntity(string name) {
+            for (int i = 0; i < subEntityList.Count; i++) {
+                SubEntity sub = subEntityList[i];
+
+                if (sub.SubMesh.name == name) {
+                    return sub;
+                }
+            }
+
+            // not found
+            throw new AxiomException("A SubEntity with the name '{0}' does not exist in Entity '{1}'", name, this.name);
+        }
+
+        /// <summary>
 		///		Trigger an evaluation of whether hardware skinning is supported for this entity.
 		/// </summary>
 		protected internal void ReevaluateVertexProcessing() {
@@ -808,14 +870,52 @@ namespace Axiom.Core {
 			minMeshLodIndex = minDetailIndex;
 		}
 
-		/// <summary>
+        /// <summary>
+        ///     Copies a subset of animation states from source to target.
+        /// </summary>
+        /// <remarks>
+        ///     This routine assume target is a subset of source, it will copy all animation state
+        ///     of the target with the settings from source.
+        /// </remarks>
+        /// <param name="target">Reference to animation state set which will receive the states.</param>
+        /// <param name="source">Reference to animation state set which will use as source.</param>
+        public void CopyAnimationStateSubset(AnimationStateCollection target, AnimationStateCollection source) {
+            for (int i = 0; i < target.Count; i++) {
+                AnimationState targetState = target[i];
+                AnimationState sourceState = source[targetState.Name];
+
+                if (sourceState == null) {
+                    throw new AxiomException("No animation entry found named '{0}'.", targetState.Name);
+                }
+                else {
+                    sourceState.CopyTo(targetState);
+                }
+            }
+        }
+
+        /// <summary>
 		///		
 		/// </summary>
 		/// <param name="queue"></param>
 		public override void UpdateRenderQueue(RenderQueue queue) {
-			// TODO: Manual LOD sub entities
+			// Manual LOD sub entities
+            if (meshLodIndex > 0 && mesh.IsLodManual) {
+                Debug.Assert(meshLodIndex - 1 < lodEntityList.Count, "No LOD EntityList - did you build the manual LODs after creating the entity?");
 
-			// add all visible sub entities to the render queue
+                Entity lodEnt = lodEntityList[meshLodIndex - 1];
+
+                // index - 1 as we skip index 0 (original LOD)
+                if (this.HasSkeleton && lodEnt.HasSkeleton) {
+                    // Copy the animation state set to lod entity, we assume the lod
+                    // entity only has a subset animation states
+                    CopyAnimationStateSubset(lodEnt.animationState, animationState);
+                }
+
+                lodEnt.UpdateRenderQueue(queue);
+                return;
+            }
+
+            // add all visible sub entities to the render queue
 			for(int i = 0; i < subEntityList.Count; i++) {
 				if(subEntityList[i].IsVisible) {
 					queue.AddRenderable(subEntityList[i], RenderQueue.DEFAULT_PRIORITY, renderQueueID);
@@ -823,15 +923,18 @@ namespace Axiom.Core {
 			}
 
 			// Since we know we're going to be rendered, take this opportunity to 
-			// cache bone matrices & apply world matrix to them
+			// update the animation
 			if(mesh.HasSkeleton) {
 				UpdateAnimation();
 
 				// Update render queue with child objects (tag points)
 				for(int i = 0; i < childObjectList.Count; i++) {
 					SceneObject child = childObjectList[i];
-					child.UpdateRenderQueue(queue);
-				}
+
+                    if (child.IsVisible) {
+                        child.UpdateRenderQueue(queue);
+                    }
+                }
 			}
 
 			// TODO: Add skeleton itself to the render queue
@@ -888,7 +991,12 @@ namespace Axiom.Core {
 			ret.vertexDeclaration.RemoveElement(VertexElementSemantic.BlendIndices);
 			ret.vertexDeclaration.RemoveElement(VertexElementSemantic.BlendWeights);
 
-			return ret;
+            // copy reference to w-coord buffer
+            if (source.hardwareShadowVolWBuffer != null) {
+                ret.hardwareShadowVolWBuffer = source.hardwareShadowVolWBuffer;
+            }
+
+            return ret;
 		}
 
 		/// <summary>
@@ -929,7 +1037,7 @@ namespace Axiom.Core {
 		public override IEnumerator GetShadowVolumeRenderableEnumerator(ShadowTechnique technique, Light light, 
 			HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, int flags) {
 
-			Debug.Assert(indexBuffer != null, "Only external index buffers are supported right now");
+            Debug.Assert(indexBuffer != null, "Only external index buffers are supported right now");
 			Debug.Assert(indexBuffer.Type == IndexType.Size16, "Only 16-bit indexes supported for now");
 
 			// Prep mesh if required
@@ -1027,7 +1135,7 @@ namespace Axiom.Core {
                         // with the latest animated positions
                         if (!extrudeVertices) {
                             IntPtr srcPtr = esr.PositionBuffer.Lock(BufferLocking.Normal);
-                            IntPtr destPtr = new IntPtr(srcPtr.ToInt32() + (egi.vertexData.vertexCount * 3));
+                            IntPtr destPtr = new IntPtr(srcPtr.ToInt32() + (egi.vertexData.vertexCount * 12));
 
                             // 12 = sizeof(float) * 3
                             Memory.Copy(srcPtr, destPtr, 12 * egi.vertexData.vertexCount);
@@ -1099,9 +1207,9 @@ namespace Axiom.Core {
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public Entity Clone(string name) {
+		public Entity Clone(string newName) {
 			// create a new entity using the current mesh (uses same instance, not a copy for speed)
-			Entity clone = sceneMgr.CreateEntity(name, mesh.Name);
+			Entity clone = sceneMgr.CreateEntity(newName, mesh.Name);
 
 			// loop through each subentity and set the material up for the clone
 			for(int i = 0; i < subEntityList.Count; i++) {
@@ -1109,10 +1217,12 @@ namespace Axiom.Core {
 				clone.GetSubEntity(i).MaterialName = subEntity.MaterialName;
 			}
 
-			// TODO: Make sure this is the desired effect, since all clones share the same state
-			clone.animationState = animationState;
+			// copy the animation state as well
+            if (animationState != null) {
+                clone.animationState = animationState.Clone();
+            }
 
-			return clone;
+            return clone;
 		}
 
 		#endregion

@@ -56,7 +56,7 @@ namespace Axiom.Core {
         /// <summary>Name of the material assigned to this subMesh.</summary>
         protected string materialName;
         /// <summary>Name of this SubMesh.</summary>
-        protected string name;
+        internal string name;
         /// <summary></summary>
         protected bool isMaterialInitialized;
         /// <summary>Number of faces in this subMesh.</summary>

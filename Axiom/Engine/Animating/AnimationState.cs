@@ -23,8 +23,9 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
-using System;
 
+using System;
+using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Controllers;
 
@@ -157,6 +158,29 @@ namespace Axiom.Animating {
 			if(time < 0) {
 				time += length;
 			}
+        }
+
+        /// <summary>
+        ///     Clones this instance of AnimationState.
+        /// </summary>
+        /// <returns>A copy of this AnimationState object.</returns>
+//        public AnimationState Clone() {
+//            AnimationState newState = new AnimationState();
+//            CopyTo(newState);
+//            return newState;
+//        }
+
+        /// <summary>
+        ///     Copies the details of this AnimationState instance to another instance.
+        /// </summary>
+        /// <param name="target">Target instance to copy our details to.</param>
+        public void CopyTo(AnimationState target) {
+            target.time = time;
+            target.animationName = animationName;
+            target.inverseLength = inverseLength;
+            target.length = length;
+            target.time = time;
+            target.weight = weight;
         }
 
         #endregion
