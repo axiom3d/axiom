@@ -424,7 +424,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 			texRequire.Width = srcWidth;
 			texRequire.Height = srcHeight;
 
-			if(devCaps.TextureCaps.SupportsMipMap) {
+			if(devCaps.TextureCaps.SupportsMipMap && numMipMaps > 0) {
 				if(this.CanAutoGenMipMaps(d3dUsage, ResourceType.Textures, d3dPixelFormat)) {
 					d3dUsage |= D3D.Usage.AutoGenerateMipMap;
 					numMips = 0;
@@ -593,15 +593,15 @@ namespace Axiom.RenderSystems.DirectX9 {
 					// Will be reduced to size later
 
 					// Red
-					out32 = convertBitPattern( data32, 0xFF000000, rMask );
+					out32 = ConvertBitPattern( data32, 0xFF000000, rMask );
 					// Green
-					out32 |= convertBitPattern( data32, 0x00FF0000, gMask );
+					out32 |= ConvertBitPattern( data32, 0x00FF0000, gMask );
 					// Blue
-					out32 |= convertBitPattern( data32, 0x0000FF00, bMask );
+					out32 |= ConvertBitPattern( data32, 0x0000FF00, bMask );
 
 					// Alpha
 					if( aMask > 0 ) {
-						out32 |= convertBitPattern( data32, 0x000000FF, aMask );
+						out32 |= ConvertBitPattern( data32, 0x000000FF, aMask );
 					}
 
 					// Assign results to surface pixel
@@ -625,19 +625,19 @@ namespace Axiom.RenderSystems.DirectX9 {
 			surface.UnlockRectangle();
 		}
 
-		private uint convertBitPattern(uint srcValue, uint srcBitMask, uint destBitMask) {
+		private uint ConvertBitPattern(uint srcValue, uint srcBitMask, uint destBitMask) {
 			// Mask off irrelevant source value bits (if any)
 			srcValue = srcValue & srcBitMask;
 
 			// Shift source down to bottom of DWORD
-			int srcBitShift = getBitShift(srcBitMask);
+			int srcBitShift = GetBitShift(srcBitMask);
 			srcValue >>= srcBitShift;
 
 			// Get max value possible in source from srcMask
 			uint srcMax = srcBitMask >> srcBitShift;
 
 			// Get max avaiable in dest
-			int destBitShift = getBitShift(destBitMask);
+			int destBitShift = GetBitShift(destBitMask);
 			uint destMax = destBitMask >> destBitShift;
 
 			// Scale source value into destination, and shift back
@@ -645,7 +645,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 			return (destValue << destBitShift);
 		}
 
-		private int getBitShift(uint mask) {
+		private int GetBitShift(uint mask) {
 			if (mask == 0)
 				return 0;
 
@@ -660,8 +660,8 @@ namespace Axiom.RenderSystems.DirectX9 {
 		private void GetColorMasks(D3D.Format format, out uint red, out uint green, out uint blue, out uint alpha, out uint rgbBitCount) {
 			// we choose the format of the D3D texture so check only for our pf types...
 			switch (format) {
-				case D3D.Format.X8B8G8R8:
-					red = 0x00FF0000; green = 0x0000FF00; blue = 0x000000FF; alpha = 0x00000000;
+                case D3D.Format.X8R8G8B8:
+                    red = 0x00FF0000; green = 0x0000FF00; blue = 0x000000FF; alpha = 0x00000000;
 					rgbBitCount = 32;
 					break;
 				case D3D.Format.R8G8B8:
@@ -814,7 +814,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 				return D3D.Format.A8R8G8B8;
 			}
 			else if (finalBpp > 16 && !hasAlpha) {
-				return D3D.Format.R8G8B8;
+				return D3D.Format.X8R8G8B8;
 			}
 			else if(finalBpp == 16 && hasAlpha) {
 				return D3D.Format.A4R4G4B4;
