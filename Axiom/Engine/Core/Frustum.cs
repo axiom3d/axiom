@@ -509,7 +509,7 @@ namespace Axiom.Core {
 		///		<p>This technique only works for perspective projection.</p>
 		/// </remarks>
 		/// <param name="plane">The plane to link to to perform the clipping.</param>
-		public virtual void EnabledCustomNearClipPlane(MovablePlane plane) {
+		public virtual void EnableCustomNearClipPlane(MovablePlane plane) {
 			useObliqueDepthProjection = true;
 			linkedObliqueProjPlane = plane;
 			obliqueProjPlane = plane.DerivedPlane;
@@ -543,7 +543,7 @@ namespace Axiom.Core {
 		///		<p>This technique only works for perspective projection.</p>
 		/// </remarks>
 		/// <param name="plane">The plane to link to to perform the clipping.</param>
-		public virtual void EnabledCustomNearClipPlane(Plane plane) {
+		public virtual void EnableCustomNearClipPlane(Plane plane) {
 			useObliqueDepthProjection = true;
 			linkedObliqueProjPlane = null;
 			obliqueProjPlane = plane;
