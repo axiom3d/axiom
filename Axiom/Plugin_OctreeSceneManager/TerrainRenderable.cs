@@ -17,7 +17,6 @@ namespace Axiom.SceneManagers.Octree {
         protected AxisAlignedBox box = new AxisAlignedBox();
         protected TerrainOptions options;
         protected VertexData terrain;
-        protected ArrayList indexCache = new ArrayList();
         protected IndexData[,] levelIndex = new IndexData[16,16];
         protected int renderLevel;
         protected int forcedRenderLevel;
@@ -513,7 +512,7 @@ namespace Axiom.SceneManagers.Octree {
                     newLength, 
                     BufferUsage.StaticWriteOnly);
 
-                indexCache.Add(indexData);
+                //indexCache.Add(indexData);
 
                 numIndexes = 0;
 

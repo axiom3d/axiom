@@ -70,9 +70,9 @@ namespace Axiom.Core {
         protected bool autoExtendPool = true;
 
         // various collections for pooling billboards
-        protected ArrayList activeBillboards = new ArrayList();
+        protected BillboardList activeBillboards = new BillboardList();
         protected Queue freeBillboards = new Queue();
-        protected ArrayList billboardPool = new ArrayList();
+        protected BillboardList billboardPool = new BillboardList();
 
         // Geometry data.
         protected VertexData vertexData = new VertexData();
@@ -746,7 +746,7 @@ namespace Axiom.Core {
         /// <summary>
         ///		Gets the list of active billboards.
         /// </summary>
-        public ArrayList Billboards {
+        public BillboardList Billboards {
             get { 
                 return activeBillboards; 
             }

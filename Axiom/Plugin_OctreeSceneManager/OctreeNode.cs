@@ -1,5 +1,6 @@
 using System;
 using Axiom;
+using Axiom.Collections;
 using Axiom.Core;
 using Axiom.MathLib;
 using Axiom.Graphics;
@@ -19,7 +20,7 @@ namespace Axiom.SceneManagers.Octree {
         protected AxisAlignedBox localAABB = new AxisAlignedBox();
         //protected OctreeSceneManager creator;
 
-        protected System.Collections.ArrayList Children;
+        protected NodeCollection Children = new NodeCollection();
         #endregion
 
         #region Properties

@@ -27,6 +27,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
+using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
@@ -157,7 +158,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="image"></param>
         public override void LoadImage(Image image) {
             // create a list with one texture to pass it in to the common loading method
-            ArrayList images = new ArrayList();
+            ImageList images = new ImageList();
             images.Add(image);
             
             // load this image
@@ -171,7 +172,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// 
         /// </summary>
         /// <param name="images"></param>
-        public void LoadImages(ArrayList images) {
+        public void LoadImages(ImageList images) {
             bool useSoftwareMipMaps = true;
 
             if(isLoaded) {
@@ -252,7 +253,7 @@ namespace Axiom.RenderSystems.OpenGL {
                     Image image = Image.FromFile(name);
 
                     if(name.EndsWith(".dds") && image.HasFlag(ImageFlags.CubeMap)) {
-                        ArrayList images = new ArrayList(6);
+                        ImageList images = new ImageList();
 
                         // all 6 images are in a single data buffer, so we will pull out all 6 pieces
                         int imageSize = image.Size / 6;
@@ -288,7 +289,7 @@ namespace Axiom.RenderSystems.OpenGL {
                 }
                 else if(textureType == TextureType.CubeMap) {
                     string baseName, ext;
-                    ArrayList images = new ArrayList(6);
+                    ImageList images = new ImageList();
                     string[] postfixes = {"_rt", "_lf", "_up", "_dn", "_fr", "_bk"};
 
                     int pos = name.LastIndexOf(".");

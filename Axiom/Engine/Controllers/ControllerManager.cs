@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Controllers.Canned;
 using Axiom.Graphics;
@@ -56,7 +57,7 @@ namespace Axiom.Controllers {
         /// <summary>
         ///		List of references to controllers in a scene.
         /// </summary>
-        protected ArrayList controllers = new ArrayList();
+        protected ControllerList controllers = new ControllerList();
 
         /// <summary>
         ///		Local instance of a FrameTimeControllerValue to be used for time based controllers.

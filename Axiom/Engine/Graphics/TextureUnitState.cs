@@ -149,7 +149,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///    List of effects to apply during this texture stage.
         /// </summary>
-        private ArrayList effectList = new ArrayList();
+        private TextureEffectList effectList = new TextureEffectList();
         /// <summary>
         ///    Type of texture this is.
         /// </summary>

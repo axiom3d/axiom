@@ -28,6 +28,7 @@ using System;
 using System.Collections;
 using System.Drawing;
 using Axiom.Animating;
+using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Input;
 using Axiom.MathLib;
@@ -42,7 +43,7 @@ namespace Demos
 	// TODO: Make sure recalculateView is being set properly for frustum updates.
 	public class FrustumCulling : TechDemo {
 
-        ArrayList entityList = new ArrayList();
+        EntityList entityList = new EntityList();
         Frustum frustum;
         SceneNode frustumNode;
         Viewport viewport2;

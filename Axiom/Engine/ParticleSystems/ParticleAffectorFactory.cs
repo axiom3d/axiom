@@ -44,7 +44,7 @@ namespace Axiom.ParticleSystems {
     public abstract class ParticleAffectorFactory {
         #region Member variables
 
-        protected ArrayList affectorList = new ArrayList();
+        protected AffectorList affectorList = new AffectorList();
 
         #endregion
 

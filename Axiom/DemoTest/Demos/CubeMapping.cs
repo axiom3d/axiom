@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Gui;
 using Axiom.Input;
@@ -137,7 +138,7 @@ namespace Demos {
         private Entity objectEntity;
         private SceneNode objectNode;
         private Material material;
-        private ArrayList clonedMaterials = new ArrayList();
+        private MaterialList clonedMaterials = new MaterialList();
         private float displacement = 0.1f;
         private float density = 50.0f;
         private float timeDensity = 5.0f;

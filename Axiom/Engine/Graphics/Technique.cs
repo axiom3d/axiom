@@ -49,7 +49,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///    The list of passes (fixed function or programmable) contained in this technique.
         /// </summary>
-        protected ArrayList passes = new ArrayList();
+        protected PassList passes = new PassList();
         /// <summary>
         ///    Flag that states whether or not this technique is supported on the current hardware.
         /// </summary>
@@ -80,7 +80,7 @@ namespace Axiom.Graphics
             Technique newTechnique = (Technique)this.MemberwiseClone();
             newTechnique.parent = parent;
             // TODO: Watch out for other object refs copied...
-            newTechnique.passes = new ArrayList();
+            newTechnique.passes = new PassList();
 
             // clone each pass and add that to the new technique
             for(int i = 0; i < passes.Count; i++) {

@@ -175,6 +175,5 @@ namespace Axiom.RenderSystems.OpenGL {
         }
 		
         #endregion
-
     }
 }

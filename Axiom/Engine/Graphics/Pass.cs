@@ -191,7 +191,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///    List of fixed function texture unit states for this pass.
         /// </summary>
-        protected ArrayList textureUnitStates = new ArrayList();
+        protected TextureUnitStateList textureUnitStates = new TextureUnitStateList();
         /// <summary>
         ///    Details on the vertex program to be used for this pass.
         /// </summary>
@@ -282,7 +282,7 @@ namespace Axiom.Graphics
         public Pass Clone(Technique parent, int index) {
             Pass newPass = (Pass)this.MemberwiseClone();
             // TODO: Watch out for copied references...
-            newPass.textureUnitStates = new ArrayList();
+            newPass.textureUnitStates = new TextureUnitStateList();
 
             newPass.index = index;
 

@@ -72,7 +72,7 @@ namespace Demos {
             this.lstDemos.Name = "lstDemos";
             this.lstDemos.Size = new System.Drawing.Size(584, 392);
             this.lstDemos.TabIndex = 3;
-            this.lstDemos.Click += new System.EventHandler(this.lstDemos_Click);
+            this.lstDemos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lstDemos_MouseUp);
             this.lstDemos.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lstDemos_MouseMove);
             this.lstDemos.MouseLeave += new System.EventHandler(this.lstDemos_MouseLeave);
             // 
@@ -87,7 +87,7 @@ namespace Demos {
             this.lblInfo.Name = "lblInfo";
             this.lblInfo.Size = new System.Drawing.Size(694, 40);
             this.lblInfo.TabIndex = 4;
-            this.lblInfo.Text = "Select a demo to run.  The description of each demo will appear here as you hover" +
+            this.lblInfo.Text = "Left click a demo to run, right click for larger preview image.\nThe description of each demo will appear here as you hover" +
                 " over them with the mouse.";
             this.lblInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -192,46 +192,13 @@ namespace Demos {
 
         }
 
-        private void lstDemos_Click(object sender, EventArgs e) {
-            if(lstDemos.SelectedItems.Count > 0) {
-                // get the first one, we only do single select for the demos
-                ListViewItem item = lstDemos.SelectedItems[0];
-
-                if(item.Tag != null) {
-                    // find the class name of the demo
-                    string demoClassName = item.Tag.ToString();
-
-                    if(demoClassName.Length != 0) {
-                        // get the type of the demo class
-                        Type type = Type.GetType(demoClassName);
-
-                        try { 
-                            this.Hide(); 
-                            this.WindowState = FormWindowState.Minimized; 
- 
-                            // create an instance of the demo class and start it up 
-                            using(TechDemo demo = (TechDemo) Activator.CreateInstance(type)) { 
-                                demo.Start(); 
-                            } 
-                        } 
-                        finally { 
-                            GC.Collect(); 
-                            //Kernel.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1); 
-                            this.WindowState = FormWindowState.Normal; 
-                            this.Show(); 
-                        }
-                    }
-                }
-            }
-        }
-
         private void lstDemos_MouseMove(object sender, MouseEventArgs e) {
             ListViewItem item = lstDemos.GetItemAt(e.X, e.Y);
             if(item != null && item.SubItems.Count > 1) { 
                 lblInfo.Text = item.SubItems[1].Text; 
             } 
             else { 
-                lblInfo.Text = "Select a demo to run.  The description of each demo will appear here as you hover over them with the mouse."; 
+                lblInfo.Text = "Left click a demo to run, right click for larger preview image.\nThe description of each demo will appear here as you hover over them with the mouse."; 
             } 
         }
 
@@ -262,26 +229,27 @@ namespace Demos {
             demoTable.Columns.Add("Description");
             demoTable.Columns.Add("Type");
 
-            demoTable.Rows.Add(new object[] {0, "Camera Track", "Demos.CameraTrack", "CameraTrack.jpg", "Shows a camera following a defined spline path while maintaining focus on an object.", "Demos"});
-            demoTable.Rows.Add(new object[] {1, "Cube Mapping", "Demos.CubeMapping", "CubeMapping.jpg", "Cubic environment mapping with various skyboxes.", "Demos"});
-            demoTable.Rows.Add(new object[] {2, "Dot3 Bump Mapping", "Demos.Dot3Bump", "Dot3Bump.jpg", "Use of vertex/fragment shaders to accomplish bump mapping.", "Demos"});
-            demoTable.Rows.Add(new object[] {3, "Environment Mapping", "Demos.EnvMapping", "EnvMapping.jpg", "An environment mapped entity.", "Demos"});
-            demoTable.Rows.Add(new object[] {4, "Lights", "Demos.Lights", "Lights.jpg", "A scene with lights and billboards.", "Demos"});
-            demoTable.Rows.Add(new object[] {5, "ParticleFX", "Demos.ParticleFX", "ParticleFX.jpg", "Several types of particle systems in action.", "Demos"});
-            demoTable.Rows.Add(new object[] {6, "Physics", "Demos.Physics", "Physics.jpg", "Collidable objects with real time physics.", "Demos"});
-            demoTable.Rows.Add(new object[] {7, "Skeletal Animation", "Demos.SkeletalAnimation", "SkeletalAnimation.jpg", "Skeletal animation.", "Demos"});
-            demoTable.Rows.Add(new object[] {8, "Sky Box", "Demos.SkyBox", "SkyBox.jpg", "A scene with a skybox.", "Demos"});
-            demoTable.Rows.Add(new object[] {9, "Sky Dome", "Demos.SkyDome", "SkyDome.jpg", "A scene with a skydome.", "Demos"});
-            demoTable.Rows.Add(new object[] {10, "Sky Plane", "Demos.SkyPlane", "SkyPlane.jpg", "A scene with a skyplane.", "Demos"});
-            demoTable.Rows.Add(new object[] {11, "TextureFX", "Demos.TextureFX", "TextureFX.jpg", "Various texture effects including scrolling and rotating.", "Demos"});
-            demoTable.Rows.Add(new object[] {12, "Transparency", "Demos.Transparency", "Transparency.jpg", "A high poly scene with transparent entities.", "Demos"});
-            demoTable.Rows.Add(new object[] {13, "Tutorial 1", "Demos.Tutorial1", "Tutorial1.jpg", "The obligatory spinning triangle demo using the engine.", "Tutorials"});
-            demoTable.Rows.Add(new object[] {14, "Render To Texture", "Demos.RenderToTexture", "RenderToTexture.jpg", "Rendering the scene to a texture.", "Demos"});
-            demoTable.Rows.Add(new object[] {15, "Fresnel", "Demos.Fresnel", "Fresnel.jpg", "Fresnel reflection/refraction and perlin noise applied to produce realistic water.", "Demos"});
-            demoTable.Rows.Add(new object[] {16, "Cel Shading", "Demos.CelShading", "CelShading.jpg", "Cartoon like non-photorealistic rendering technique.", "Demos"});
-            demoTable.Rows.Add(new object[] {17, "Terrain", "Demos.Terrain", "Terrain.jpg", "Simple heightmap terrain example.", "Demos"});
-            demoTable.Rows.Add(new object[] {18, "Bezier", "Demos.BezierPatch", "BezierPatch.jpg", "Use of bezier patches to create curved surfaces.", "Demos"});
-            demoTable.Rows.Add(new object[] {19, "Frustum", "Demos.FrustumCulling", "BezierPatch.jpg", "Allows you to visualize a frustum and bounding box culling.", "Demos"});
+            demoTable.Rows.Add(new object[] {0, "Bezier", "Demos.BezierPatch", "BezierPatch.jpg", "Use of bezier patches to create curved surfaces.", "Demos"});
+            demoTable.Rows.Add(new object[] {1, "Camera Track", "Demos.CameraTrack", "CameraTrack.jpg", "Shows a camera following a defined spline path while maintaining focus on an object.", "Demos"});
+            demoTable.Rows.Add(new object[] {2, "Cel Shading", "Demos.CelShading", "CelShading.jpg", "Cartoon like non-photorealistic rendering technique.", "Demos"});
+            demoTable.Rows.Add(new object[] {3, "Cube Mapping", "Demos.CubeMapping", "CubeMapping.jpg", "Cubic environment mapping with various skyboxes.", "Demos"});
+            demoTable.Rows.Add(new object[] {4, "Dot3 Bump Mapping", "Demos.Dot3Bump", "Dot3Bump.jpg", "Use of vertex/fragment shaders to accomplish bump mapping.", "Demos"});
+            demoTable.Rows.Add(new object[] {5, "Environment Mapping", "Demos.EnvMapping", "EnvMapping.jpg", "An environment mapped entity.", "Demos"});
+            demoTable.Rows.Add(new object[] {6, "Fresnel", "Demos.Fresnel", "Fresnel.jpg", "Fresnel reflection/refraction and perlin noise applied to produce realistic water.", "Demos"});
+            demoTable.Rows.Add(new object[] {7, "Frustum", "Demos.FrustumCulling", "Frustum.jpg", "Allows you to visualize a frustum and bounding box culling.", "Demos"});
+            demoTable.Rows.Add(new object[] {8, "Lights", "Demos.Lights", "Lights.jpg", "A scene with lights and billboards.", "Demos"});
+            demoTable.Rows.Add(new object[] {9, "Offset Mapping", "Demos.OffsetMapping", "OffsetMapping.jpg", "Offset mapping.", "Demos"});
+            demoTable.Rows.Add(new object[] {10, "ParticleFX", "Demos.ParticleFX", "ParticleFX.jpg", "Several types of particle systems in action.", "Demos"});
+            demoTable.Rows.Add(new object[] {11, "Physics", "Demos.Physics", "Physics.jpg", "Collidable objects with real time physics.", "Demos"});
+            demoTable.Rows.Add(new object[] {12, "Render To Texture", "Demos.RenderToTexture", "RenderToTexture.jpg", "Rendering the scene to a texture.", "Demos"});
+            demoTable.Rows.Add(new object[] {13, "Skeletal Animation", "Demos.SkeletalAnimation", "SkeletalAnimation.jpg", "Skeletal animation.", "Demos"});
+            demoTable.Rows.Add(new object[] {14, "Sky Box", "Demos.SkyBox", "SkyBox.jpg", "A scene with a skybox.", "Demos"});
+            demoTable.Rows.Add(new object[] {15, "Sky Dome", "Demos.SkyDome", "SkyDome.jpg", "A scene with a skydome.", "Demos"});
+            demoTable.Rows.Add(new object[] {16, "Sky Plane", "Demos.SkyPlane", "SkyPlane.jpg", "A scene with a skyplane.", "Demos"});
+            demoTable.Rows.Add(new object[] {17, "TextureFX", "Demos.TextureFX", "TextureFX.jpg", "Various texture effects including scrolling and rotating.", "Demos"});
+            demoTable.Rows.Add(new object[] {18, "Transparency", "Demos.Transparency", "Transparency.jpg", "A high poly scene with transparent entities.", "Demos"});
+            demoTable.Rows.Add(new object[] {19, "Tutorial 1", "Demos.Tutorial1", "Tutorial1.jpg", "The obligatory spinning triangle demo using the engine.", "Tutorials"});
+            demoTable.Rows.Add(new object[] {20, "Terrain", "Demos.Terrain", "Terrain.jpg", "Simple heightmap terrain example.", "Demos"});
 
             demoView = new DataView(demoTable);
 
@@ -339,7 +307,7 @@ namespace Demos {
         }
 
         private void lstDemos_MouseLeave(object sender, System.EventArgs e) {
-            lblInfo.Text = "Select a demo to run.  The description of each demo will appear here as you hover over them with the mouse."; 
+            lblInfo.Text = "Left click a demo to run, right click for larger preview image.\nThe description of each demo will appear here as you hover over them with the mouse."; 
         }
 
         private void chkDemos_MouseEnter(object sender, System.EventArgs e) {
@@ -347,7 +315,7 @@ namespace Demos {
         }
 
         private void chkDemos_MouseLeave(object sender, System.EventArgs e) {
-            lblInfo.Text = "Select a demo to run.  The description of each demo will appear here as you hover over them with the mouse."; 
+            lblInfo.Text = "Left click a demo to run, right click for larger preview image.\nThe description of each demo will appear here as you hover over them with the mouse."; 
         }
 
         private void chkTutorials_MouseEnter(object sender, System.EventArgs e) {
@@ -355,7 +323,7 @@ namespace Demos {
         }
 
         private void chkTutorials_MouseLeave(object sender, System.EventArgs e) {
-            lblInfo.Text = "Select a demo to run.  The description of each demo will appear here as you hover over them with the mouse."; 
+            lblInfo.Text = "Left click a demo to run, right click for larger preview image.\nThe description of each demo will appear here as you hover over them with the mouse."; 
         }
 
         private void chkTools_MouseEnter(object sender, System.EventArgs e) {
@@ -363,7 +331,7 @@ namespace Demos {
         }
 
         private void chkTools_MouseLeave(object sender, System.EventArgs e) {
-            lblInfo.Text = "Select a demo to run.  The description of each demo will appear here as you hover over them with the mouse."; 
+            lblInfo.Text = "Left click a demo to run, right click for larger preview image.\nThe description of each demo will appear here as you hover over them with the mouse."; 
         }
 
         private void lnkWebsite_MouseEnter(object sender, System.EventArgs e) {
@@ -371,7 +339,50 @@ namespace Demos {
         }
 
         private void lnkWebsite_MouseLeave(object sender, System.EventArgs e) {
-            lblInfo.Text = "Select a demo to run.  The description of each demo will appear here as you hover over them with the mouse."; 
+            lblInfo.Text = "Left click a demo to run, right click for larger preview image.\nThe description of each demo will appear here as you hover over them with the mouse."; 
+        }
+
+        private void lstDemos_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e) {
+            if(e.Button == MouseButtons.Left) {
+                if(lstDemos.SelectedItems.Count > 0) {
+                    // get the first one, we only do single select for the demos
+                    ListViewItem item = lstDemos.SelectedItems[0];
+
+                    if(item.Tag != null) {
+                        // find the class name of the demo
+                        string demoClassName = item.Tag.ToString();
+
+                        if(demoClassName.Length != 0) {
+                            // get the type of the demo class
+                            Type type = Type.GetType(demoClassName);
+
+                            try { 
+                                this.Hide(); 
+                                this.WindowState = FormWindowState.Minimized; 
+     
+                                // create an instance of the demo class and start it up 
+                                using(TechDemo demo = (TechDemo) Activator.CreateInstance(type)) { 
+                                    demo.Start(); 
+                                } 
+                            } 
+                            finally { 
+                                GC.Collect(); 
+                                //Kernel.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1); 
+                                this.WindowState = FormWindowState.Normal; 
+                                this.Show(); 
+                            }
+                        }
+                    }
+                }
+            }
+            else if(e.Button == MouseButtons.Right) {
+                if(lstDemos.SelectedItems.Count > 0) {
+                    DataRowView demo = demoView[lstDemos.SelectedItems[0].Index];
+                    using(DemoPreview preview = new DemoPreview(demo["Name"].ToString(), "BrowserImages/" + demo["ImageFile"].ToString())) {
+                        preview.ShowDialog();
+                    }
+                }
+            }
         }
     }
 }

@@ -1,5 +1,5 @@
 package = newpackage()
-package.name = "RenderSystem_OpenGL"
+package.name = "Axiom.RenderSystems.OpenGL"
 package.language = "c#"
 package.kind = "dll"
 package.buildflags = { "unsafe" }
@@ -8,14 +8,18 @@ package.config["Debug"].defines = { "DEBUG" }
 package.target = "Axiom.RenderSystems.OpenGL"
 package.libpaths = { "../Solution Items" }
 
+-- output paths
+package.config["Debug"].bindir = "bin/Debug"
+package.config["Release"].bindir = "bin/Release"
+
 package.links = { 
 	"System", 
 	"System.Data", 
 	"System.Xml", 
 	"System.Drawing", 
 	"System.Windows.Forms", 
-	"Engine", 
-	"MathLib", 
+	"Axiom.Engine", 
+	"Axiom.MathLib", 
 	"Tao.OpenGL", 
 	"Tao.Platform.Windows" 
 }

@@ -1996,26 +1996,25 @@ namespace Axiom.RenderSystems.OpenGL {
                 gpuProgramMgr.RegisterProgramFactory("arbfp1", new ARB.ARBGpuProgramFactory());
             }
 
-            // ATI Fragment Programs (supported via conversion from ps1.4 shaders)
-            // NOTE: Not done yet, still in progress
-//            if(GLHelper.SupportsExtension("GL_ATI_fragment_shader")) {
-//                caps.SetCap(Capabilities.FragmentPrograms);
-//                caps.MaxFragmentProgramVersion = "ps1.4";
-//                caps.FragmentProgramConstantIntCount = 0;
-//                int maxFloats;
-//                Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
-//                caps.FragmentProgramConstantFloatCount = maxFloats;
-//
-//                // register support for ps1.1 - ps1.4
-//                gpuProgramMgr.PushSyntaxCode("ps1.1");
-//                gpuProgramMgr.PushSyntaxCode("ps1.2");
-//                gpuProgramMgr.PushSyntaxCode("ps1.3");
-//                gpuProgramMgr.PushSyntaxCode("ps1.4");
-//                gpuProgramMgr.RegisterProgramFactory("ps1.1", new ATI.ATIFragmentShaderFactory());
-//                gpuProgramMgr.RegisterProgramFactory("ps1.2", new ATI.ATIFragmentShaderFactory());
-//                gpuProgramMgr.RegisterProgramFactory("ps1.3", new ATI.ATIFragmentShaderFactory());
-//                gpuProgramMgr.RegisterProgramFactory("ps1.4", new ATI.ATIFragmentShaderFactory());
-//            }
+            // ATI Fragment Programs (supported via conversion from DX ps1.1 - ps1.4 shaders)
+            if(GLHelper.SupportsExtension("GL_ATI_fragment_shader")) {
+                caps.SetCap(Capabilities.FragmentPrograms);
+                caps.MaxFragmentProgramVersion = "ps_1_4";
+                caps.FragmentProgramConstantIntCount = 0;
+                int maxFloats;
+                Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
+                caps.FragmentProgramConstantFloatCount = maxFloats;
+
+                // register support for ps1.1 - ps1.4
+                gpuProgramMgr.PushSyntaxCode("ps_1_1");
+                gpuProgramMgr.PushSyntaxCode("ps_1_2");
+                gpuProgramMgr.PushSyntaxCode("ps_1_3");
+                gpuProgramMgr.PushSyntaxCode("ps_1_4");
+                gpuProgramMgr.RegisterProgramFactory("ps_1_1", new ATI.ATIFragmentShaderFactory());
+                gpuProgramMgr.RegisterProgramFactory("ps_1_2", new ATI.ATIFragmentShaderFactory());
+                gpuProgramMgr.RegisterProgramFactory("ps_1_3", new ATI.ATIFragmentShaderFactory());
+                gpuProgramMgr.RegisterProgramFactory("ps_1_4", new ATI.ATIFragmentShaderFactory());
+            }
 
             // GeForce3/4 Register Combiners/Texture Shaders
             if(GLHelper.SupportsExtension("GL_NV_register_combiners2") &&

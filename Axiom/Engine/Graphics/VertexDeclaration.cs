@@ -35,7 +35,7 @@ namespace Axiom.Graphics {
     public class VertexDeclaration : ICloneable {
         #region Member variables
 
-        protected ArrayList elements = new ArrayList();
+        protected VertexElementList elements = new VertexElementList();
 
         #endregion
 
@@ -75,8 +75,8 @@ namespace Axiom.Graphics {
         /// 
         /// </summary>
         /// DOC
-        public virtual ArrayList FindElementBySource(ushort source) {
-            ArrayList elements = new ArrayList();
+        public virtual VertexElementList FindElementBySource(ushort source) {
+            VertexElementList elements = new VertexElementList();
 
             for(int i = 0; i < elements.Count; i++) {
                 VertexElement element = (VertexElement)elements[i];
