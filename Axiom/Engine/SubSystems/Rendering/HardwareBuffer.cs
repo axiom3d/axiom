@@ -144,6 +144,7 @@ namespace Axiom.SubSystems.Rendering {
         /// </summary>
         /// DOC
         protected void UpdateFromShadow() {
+            // HACK: Change sizeInBytes to lockSize!!!
             if(useShadowBuffer && shadowUpdated) {
                 // do this manually to avoid locking problems
                 IntPtr src = shadowBuffer.LockImpl(lockStart, lockSize, BufferLocking.ReadOnly);
