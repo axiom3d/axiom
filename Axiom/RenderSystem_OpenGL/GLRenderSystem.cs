@@ -174,6 +174,7 @@ namespace RenderSystem_OpenGL {
             else
                 hardwareBufferManager = new GLSoftwareBufferManager();
 
+            // handles to OpenGL extensions
             glActiveTextureARB = Wgl.wglGetProcAddress("glActiveTextureARB");
             glClientActiveTextureARB = Wgl.wglGetProcAddress("glClientActiveTextureARB");
 
@@ -1027,7 +1028,8 @@ namespace RenderSystem_OpenGL {
                                 // only set if this textures index if it is supposed to
                                 if(texCoordIndex[j] == element.Index) {
                                     // set the current active texture unit
-                                    Ext.glClientActiveTextureARB(Gl.GL_TEXTURE0 + (uint)j);
+                                    //Ext.glClientActiveTextureARB(Gl.GL_TEXTURE0 + (uint)j);
+                                    Gl.glClientActiveTextureARB(glClientActiveTextureARB, Gl.GL_TEXTURE0 + j); 
 
                                     int tmp = Gl.glIsEnabled(Gl.GL_TEXTURE_2D);
 
@@ -1053,7 +1055,7 @@ namespace RenderSystem_OpenGL {
             } // for
 
             // reset to texture unit 0
-            Ext.glClientActiveTextureARB(Gl.GL_TEXTURE0);
+            Gl.glClientActiveTextureARB(glClientActiveTextureARB, Gl.GL_TEXTURE0); 
 
             int primType = 0;
 
