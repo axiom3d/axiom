@@ -108,7 +108,7 @@ namespace RenderSystem_OpenGL {
             RenderWindow window = new GLWindow();
 
             // see if a OpenGLContext has been created yet
-            if(hDC == IntPtr.Zero) {
+            if(renderWindows.Count == 0) {
 
                 // grab the current display settings
                 User.EnumDisplaySettings(null, User.ENUM_CURRENT_SETTINGS, out intialScreenSettings);
@@ -1556,6 +1556,21 @@ namespace RenderSystem_OpenGL {
         ///		Helper method to go through and interrogate hardware capabilities.
         /// </summary>
         private void CheckCaps() {
+
+            // find out how many lights we have to play with, then create a light array to keep locally
+            int maxLights;
+            Gl.glGetIntegerv(Gl.GL_MAX_LIGHTS, out maxLights);
+            caps.MaxLights = maxLights;
+            lights = new Light[caps.MaxLights];
+            Trace.WriteLine("Maximum lights available: " + caps.MaxLights);
+
+            // check the number of texture units available
+            int numTextureUnits = 0;
+            Gl.glGetIntegerv(Gl.GL_MAX_TEXTURE_UNITS, out numTextureUnits);
+            caps.NumTextureUnits = numTextureUnits;
+
+            Trace.WriteLine("Available texture units: " + caps.NumTextureUnits);
+
             // check multitexturing
             if(GLHelper.SupportsExtension("GL_ARB_multitexture"))
                 caps.SetCap(Capabilities.MultiTexturing);
@@ -1567,11 +1582,6 @@ namespace RenderSystem_OpenGL {
             // check dot3 support
             if(GLHelper.SupportsExtension("GL_ARB_texture_env_dot3"))
                 caps.SetCap(Capabilities.Dot3Bump);
-
-            // check the number of texture units available
-            int numTextureUnits = 0;
-            Gl.glGetIntegerv(Gl.GL_MAX_TEXTURE_UNITS, out numTextureUnits);
-            caps.NumTextureUnits = numTextureUnits;
 
             // check support for vertex buffers in hardware
             if(GLHelper.SupportsExtension("GL_ARB_vertex_buffer_object"))
@@ -1591,20 +1601,16 @@ namespace RenderSystem_OpenGL {
             if(GLHelper.Vendor != "ATI" && GLHelper.SupportsExtension("GL_SGIS_generate_mipmap"))
                 caps.SetCap(Capabilities.HardwareMipMaps);
 
-            // find out how many lights we have to play with, then create a light array to keep locally
-            int maxLights;
-            Gl.glGetIntegerv(Gl.GL_MAX_LIGHTS, out maxLights);
-            caps.MaxLights = maxLights;
-            lights = new Light[caps.MaxLights];
-
             // check stencil buffer depth availability
             int stencilBits;
             Gl.glGetIntegerv(Gl.GL_STENCIL_BITS, out stencilBits);
             caps.StencilBufferBits = stencilBits;
 
             // if stencil bits are available, enable stencil buffering
-            if(stencilBits > 0)
+            if(stencilBits > 0) {
                 caps.SetCap(Capabilities.StencilBuffer);
+                Trace.WriteLine("Available stencil bits: " + caps.StencilBufferBits);
+            }
         }
 
         /// <summary>
