@@ -618,9 +618,9 @@ namespace Axiom.SceneManagers.PagingLandscape
 		/// <param name="result">where it intersects with terrain</param>
 		/// <returns></returns>
 		/// <remarks>Intersect mainly with Landscape</remarks>
-		public bool IntersectSegment( Vector3 start, Vector3 end, Vector3 result)
+		public bool IntersectSegment( Vector3 start, Vector3 end, ref Vector3 result)
 		{
-			return IntersectSegment( start, end, result, false);
+			return IntersectSegment( start, end, ref result, false);
 		}
 
 		/// <summary>
@@ -632,7 +632,7 @@ namespace Axiom.SceneManagers.PagingLandscape
 		/// <param name="modif">If it does modify the terrain</param>
 		/// <returns></returns>
 		/// <remarks>Intersect mainly with Landscape</remarks>
-		public bool IntersectSegment( Vector3 start, Vector3 end, Vector3 result, bool modif )
+		public bool IntersectSegment( Vector3 start, Vector3 end, ref Vector3 result, bool modif )
 		{
 			Vector3 begin = start;
 			Vector3 dir = end - start;
