@@ -651,7 +651,7 @@ namespace Axiom.Core {
         ///    calculated.  RequestShutdown should be checked after each call, because that means
         ///    an event handler is requesting that shudown begin for one reason or another.
         /// </param>
-        protected bool OnFrameStarted(FrameEventArgs e) {
+        public bool OnFrameStarted(FrameEventArgs e) {
 			// increment the current frame count
 			currentFrameCount++;
 
@@ -686,7 +686,7 @@ namespace Axiom.Core {
         ///    calculated.  RequestShutdown should be checked after each call, because that means
         ///    an event handler is requesting that shudown begin for one reason or another.
         /// </param>
-        protected bool OnFrameEnded(FrameEventArgs e) {
+        public bool OnFrameEnded(FrameEventArgs e) {
             // call the event, which automatically fires all registered handlers
             if(this.FrameEnded != null) {
                 FrameEnded(this, e);
