@@ -556,8 +556,12 @@ namespace Axiom.Core {
             set { 
                 yawFixedAxis = value; 
 
-                if(yawFixedAxis != Vector3.Zero)
+                if(yawFixedAxis != Vector3.Zero) {
                     isYawFixed = true;
+                }
+                else {
+               	    isYawFixed = false;
+                }
             }
         }
         
