@@ -5,6 +5,7 @@ Some bug fixes:
    - platform manager trying to dispose of a null input reader
    - check singletons for null before calling Dispose.
    - crash bug in Skeletal Animation under Direct3D.
+   - fixed old crash/strangeness bug in Particle Systems with high particle quotas.
 Bugs
 [ 951772 ] Assembly.LoadFile -> Assembly.LoadFrom for .Net 1.0 compat.
 [ 1090878 ] OverlayElement was parsing potential float values as ints.
