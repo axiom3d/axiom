@@ -1251,13 +1251,12 @@ namespace Axiom.Core {
                 // instantiate a mesh reader and pass in the stream data
                 OgreMeshReader meshReader = new OgreMeshReader(data);
 
-                string[] parts = name.Split('.');
-                string ext = parts[1];
+                string extension = Path.GetExtension( name );
 
-                if(ext != "mesh") {
+                if(extension != ".mesh") {
                     data.Close();
 
-                    throw new AxiomException("Unsupported mesh format '{0}'", ext);
+                    throw new AxiomException("Unsupported mesh format '{0}'", extension);
                 }
 
                 // mesh loading stats
