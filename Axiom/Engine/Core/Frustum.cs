@@ -689,17 +689,21 @@ namespace Axiom.Core {
 				// Get worldspace frustum corners
 				float y = MathUtil.Tan(fieldOfView * 0.5f);
 				float x = aspectRatio * y;
+				float neary = y * nearDistance;
+				float fary = y * farDistance;
+				float nearx = x * nearDistance;
+				float farx = x * farDistance;
 
 				// near
-				worldSpaceCorners[0] = eyeToWorld * new Vector3( x,  y, -nearDistance);
-				worldSpaceCorners[1] = eyeToWorld * new Vector3(-x,  y, -nearDistance);
-				worldSpaceCorners[2] = eyeToWorld * new Vector3(-x, -y, -nearDistance);
-				worldSpaceCorners[3] = eyeToWorld * new Vector3( x, -y, -nearDistance);
+				worldSpaceCorners[0] = eyeToWorld * new Vector3(nearx, neary, -nearDistance);
+				worldSpaceCorners[1] = eyeToWorld * new Vector3(-nearx,  neary, -nearDistance);
+				worldSpaceCorners[2] = eyeToWorld * new Vector3(-nearx, -neary, -nearDistance);
+				worldSpaceCorners[3] = eyeToWorld * new Vector3(nearx, -neary, -nearDistance);
 				// far
-				worldSpaceCorners[4] = eyeToWorld * new Vector3( x,  y, -farDistance);
-				worldSpaceCorners[5] = eyeToWorld * new Vector3(-x,  y, -farDistance);
-				worldSpaceCorners[6] = eyeToWorld * new Vector3(-x, -y, -farDistance);
-				worldSpaceCorners[7] = eyeToWorld * new Vector3( x, -y, -farDistance);
+				worldSpaceCorners[4] = eyeToWorld * new Vector3(farx, fary, -farDistance);
+				worldSpaceCorners[5] = eyeToWorld * new Vector3(-farx, fary, -farDistance);
+				worldSpaceCorners[6] = eyeToWorld * new Vector3(-farx, -fary, -farDistance);
+				worldSpaceCorners[7] = eyeToWorld * new Vector3(farx, -fary, -farDistance);
 
                 // update since we have now recalculated everything
                 recalculateView = false;

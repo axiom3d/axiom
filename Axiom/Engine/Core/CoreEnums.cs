@@ -115,27 +115,39 @@ namespace Axiom.Core {
     ///		Priorities that can be assigned to renderable objects for sorting.
     /// </summary>
     public enum RenderQueueGroupID {
-        /// <summary>Objects that must be rendered first (like backgrounds).</summary>
+        /// <summary>
+        ///		Objects that must be rendered first (like backgrounds).
+        ///	</summary>
         Background = 0,
-        /// <summary></summary>
+		/// <summary>
+		///		First queue (after backgrounds), used for skyboxes if rendered first.
+		/// </summary>
+		SkiesEarly = 5,
+        /// <summary>All purpose queue.</summary>
         One = 10,
-        /// <summary></summary>
+        /// <summary>All purpose queue.</summary>
         Two = 20,
-        /// <summary></summary>
+        /// <summary>All purpose queue.</summary>
         Three = 30,
-        /// <summary></summary>
+        /// <summary>All purpose queue.</summary>
         Four = 40,
         /// <summary>Default queue.</summary>
         Main = 50,
-        /// <summary></summary>
+        /// <summary>All purpose queue.</summary>
         Six = 60,
-        /// <summary></summary>
+        /// <summary>All purpose queue.</summary>
         Seven = 70,
-        /// <summary></summary>
+        /// <summary>All purpose queue.</summary>
         Eight = 80,
-        /// <summary>Last queue before overlays, used for skyboxes if rendered last.</summary>
+        /// <summary>All purpose queue.</summary>
         Nine = 90,
-        /// <summary>Use this queue for objects which must be rendered last e.g. overlays</summary>
+		/// <summary>
+		///		Last queue before overlays, used for skyboxes if rendered last.
+		/// </summary>
+		SkiesLate = 95,
+        /// <summary>
+        ///		Use this queue for objects which must be rendered last e.g. overlays.
+        ///	</summary>
         Overlay = 100
     }
 

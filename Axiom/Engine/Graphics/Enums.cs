@@ -447,6 +447,28 @@ namespace Axiom.Graphics {
 		Stencil = 0x4
 	}
 
+	/// <summary>
+	///		Possible stages of illumination during the rendering process.
+	/// </summary>
+	public enum IlluminationStage {
+		/// <summary>
+		///		Part of the rendering which occurs without any kind of direct lighting.
+		/// </summary>
+		Ambient,
+		/// <summary>
+		///		Part of the rendering which occurs per light.
+		/// </summary>
+		PerLight,
+		/// <summary>
+		///		Post-lighting rendering.
+		/// </summary>
+		Decal,
+		/// <summary>
+		///		Null value.
+		/// </summary>
+		None
+	}
+
     /// <summary>
     ///		Type of index buffer to use.
     /// </summary>
