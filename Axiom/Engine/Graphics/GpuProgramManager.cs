@@ -311,6 +311,7 @@ namespace Axiom.Graphics
             string line = string.Empty;
             string fileName = string.Empty;
             string profiles = string.Empty;
+			bool hwSkinning = false;
             Hashtable parmsTable = new Hashtable();
 
             while((line = ParseHelper.ReadLine(script)) != null) {
@@ -323,12 +324,16 @@ namespace Axiom.Graphics
                     if(language == "asm") {
                         string profile = (string)parmsTable["syntax"];
 
-                        GpuProgramManager.Instance.CreateProgram(name, fileName, programType, profile);
+                        GpuProgram program = 
+							GpuProgramManager.Instance.CreateProgram(name, fileName, programType, profile);
+
+						program.IsSkeletalAnimationIncluded = hwSkinning;
                     }
                     else {
                         // High level gpu programs
                         HighLevelGpuProgram program = HighLevelGpuProgramManager.Instance.CreateProgram(name, language, programType);
                         program.SourceFile = fileName;
+						program.IsSkeletalAnimationIncluded = hwSkinning;
 
                         // set all extra params
                         foreach(DictionaryEntry entry in parmsTable) {
@@ -341,13 +346,16 @@ namespace Axiom.Graphics
                 
                 string[] atts = line.Split(new char[]{' '}, 2);
 
-                if(atts[0] == "source") {
-                    fileName = atts[1];
-                }
-                else {
-                    // store the param for parsing later
-                    parmsTable.Add(atts[0], atts[1]);
-                }
+				if(atts[0] == "source") {
+					fileName = atts[1];
+				}
+				else if(atts[0] == "includes_skeletal_animation") {
+					hwSkinning = bool.Parse(atts[1]);
+				}
+				else {
+					// store the param for parsing later
+					parmsTable.Add(atts[0], atts[1]);
+				}
             }
         }
 

@@ -523,13 +523,7 @@ namespace Axiom.Core {
                 return;
             }
 
-            // figure out which method of bone assignment compilation to use
-            if(useSoftwareBlending) {
-                CompileBoneAssignmentsSoftware(boneAssignmentList, numBlendWeightsPerVertex, sharedVertexData);
-            }
-            else {
-                CompileBoneAssignmentsHardware(boneAssignmentList, numBlendWeightsPerVertex, sharedVertexData);
-            }
+			CompileBoneAssignments(boneAssignmentList, maxBones, sharedVertexData);
 
             boneAssignmentsOutOfDate = false;
         }
@@ -537,56 +531,108 @@ namespace Axiom.Core {
         /// <summary>
         ///    Software blending oriented bone assignment compilation.
         /// </summary>
-        protected internal void CompileBoneAssignmentsSoftware(Map boneAssignments, int numBlendWeightsPerVertex, VertexData targetVertexData) {
-            SoftwareBlendInfo blendInfo = targetVertexData.softwareBlendInfo;
+        protected internal void CompileBoneAssignments(Map boneAssignments, int numBlendWeightsPerVertex, VertexData targetVertexData) {
+			// Create or reuse blend weight / indexes buffer
+			// Indices are always a UBYTE4 no matter how many weights per vertex
+			// Weights are more specific though since they are Reals
+			VertexDeclaration decl = targetVertexData.vertexDeclaration;
+			VertexBufferBinding bind = targetVertexData.vertexBufferBinding;
+			short bindIndex;
 
-            // create new data buffers
-            blendInfo.blendIndices = 
-                new byte[targetVertexData.vertexCount * numBlendWeightsPerVertex];
-            blendInfo.blendWeights = 
-                new float[targetVertexData.vertexCount * numBlendWeightsPerVertex];
+			VertexElement testElem = decl.FindElementBySemantic(VertexElementSemantic.BlendIndices);
 
-            // get the first element of the bone assignment list
-            IEnumerator iter = boneAssignments.GetEnumerator();
+			if (testElem != null) {
+				// Already have a buffer, unset it & delete elements
+				bindIndex = testElem.Source;
 
-            // move to the first position
-            iter.MoveNext();
-            
-            VertexBoneAssignment boneAssignment = (VertexBoneAssignment)((Pair)iter.Current).second;
+				// unset will cause deletion of buffer
+				bind.UnsetBinding(bindIndex);
+				decl.RemoveElement(VertexElementSemantic.BlendIndices);
+				decl.RemoveElement(VertexElementSemantic.BlendWeights);
+			}
+			else {
+				// Get new binding
+				bindIndex = bind.NextIndex;
+			}
 
-            int index = 0;
-                
-            // interate through each vertex
-            for(int v = 0; v < targetVertexData.vertexCount; v++) {
-                for(int b = 0; b < numBlendWeightsPerVertex; b++) {
-                    if(boneAssignment.vertexIndex == v) {
-                        blendInfo.blendWeights[index] = boneAssignment.weight;
-                        blendInfo.blendIndices[index] = (byte)boneAssignment.boneIndex;
+			int bufferSize = Marshal.SizeOf(typeof(byte)) * 4;
+			bufferSize += Marshal.SizeOf(typeof(float)) * numBlendWeightsPerVertex; 
 
-                        iter.MoveNext();
-                        boneAssignment = (VertexBoneAssignment)((Pair)iter.Current).second;
-                    }
-                    else {
-                        // Ran out of assignments for this vertex, use weight 0 to indicate empty
-                        blendInfo.blendWeights[index] = 0.0f;
-                        blendInfo.blendIndices[index] = 0;
-                    }
+			HardwareVertexBuffer vbuf = 
+				HardwareBufferManager.Instance.CreateVertexBuffer(
+					bufferSize,
+					targetVertexData.vertexCount, 
+					BufferUsage.StaticWriteOnly,
+					true); // use shadow buffer
+	                
+			// bind new buffer
+			bind.SetBinding(bindIndex, vbuf);
+	        
+			VertexElement idxElem, weightElem;
 
-                    // increment the index to be used for the data array indexes
-                    index++;
-                } // for
-            } // for
+			// add new vertex elements
+			// Note, insert directly after position to abide by pre-Dx9 format restrictions
+			if(decl.GetElement(0).Semantic == VertexElementSemantic.Position) {
+				idxElem = decl.InsertElement(1, bindIndex, 0, VertexElementType.UByte4, 
+					VertexElementSemantic.BlendIndices);
 
-            // record the number of weights per vertex
-            targetVertexData.softwareBlendInfo.numWeightsPerVertex = (ushort)numBlendWeightsPerVertex;
-        }
+				weightElem = decl.InsertElement(2, bindIndex, Marshal.SizeOf(typeof(byte)) * 4, 
+					VertexElement.MultiplyTypeCount(VertexElementType.Float1, numBlendWeightsPerVertex),
+					VertexElementSemantic.BlendWeights);
+			}
+			else
+			{
+				// Position is not the first semantic, therefore this declaration is
+				// not pre-Dx9 compatible anyway, so just tack it on the end
+				idxElem = decl.AddElement(bindIndex, 0, VertexElementType.UByte4, VertexElementSemantic.BlendIndices);
+				weightElem = decl.AddElement(bindIndex, Marshal.SizeOf(typeof(byte)) * 4, 
+					VertexElement.MultiplyTypeCount(VertexElementType.Float1, numBlendWeightsPerVertex),
+					VertexElementSemantic.BlendWeights);
+			}
 
-        /// <summary>
-        ///    Hardware blending oriented bone assignment compilation.
-        /// </summary>
-        protected internal void CompileBoneAssignmentsHardware(Map boneAssignments, int numBlendWeightsPerVertex, VertexData targetVertexData) {
-            // TODO: Implementation of Mesh.CompileBoneAssignmentsHardware
-            throw new NotImplementedException();
+			// get the bone assignment enumerator and move to the first one in the list
+			IEnumerator i = boneAssignments.GetEnumerator();
+			i.MoveNext();
+
+			// Assign data
+			IntPtr ptr = vbuf.Lock(BufferLocking.Discard);
+
+			unsafe {
+				byte* pBase = (byte*)ptr.ToPointer();
+
+				// Iterate by vertex
+				float* pWeight;
+				byte* pIndex;
+
+				for (int v = 0; v < targetVertexData.vertexCount; v++) {
+					/// Convert to specific pointers
+					pWeight = (float*)((byte*)pBase + weightElem.Offset);
+					pIndex = pBase + idxElem.Offset;
+
+					for (int bone = 0; bone < numBlendWeightsPerVertex; bone++) {
+						Pair result = (Pair)i.Current;
+						VertexBoneAssignment ba = (VertexBoneAssignment)result.second;
+
+						// Do we still have data for this vertex?
+						if (ba.vertexIndex == v) {
+							// If so, write weight
+							*pWeight++ = ba.weight;
+							*pIndex++ = (byte)ba.boneIndex;
+
+							i.MoveNext();
+						}
+						else {
+							// Ran out of assignments for this vertex, use weight 0 to indicate empty
+							*pWeight++ = 0.0f;
+							*pIndex++ = 0;
+						}
+					}
+
+					pBase += vbuf.VertexSize;
+				}
+			}
+
+			vbuf.Unlock();
         }
 
         /// <summary>
@@ -929,6 +975,7 @@ namespace Axiom.Core {
 				srcPosNormShareBuffer = (srcPosBuf == srcNormBuf);
 			}
 
+			// note: reference comparison
 			weightsIndexesShareBuffer = (srcIdxBuf == srcWeightBuf);
 
 			// Get buffers for target
@@ -993,6 +1040,7 @@ namespace Axiom.Core {
 				int numWeightsPerVertex = VertexElement.GetTypeCount(srcElemBlendWeights.Type);
 
 				// Lock destination buffers for writing
+
 				Debug.Assert(destElemPos.Offset == 0,
 					"Positions must be first element in dedicated buffer!");
 
@@ -1035,6 +1083,7 @@ namespace Axiom.Core {
 							sourceNorm.z = *pSrcNorm++;
 						}
 					}
+
 					// Load accumulators
 					accumVecPos = Vector3.Zero;
 					accumVecNorm = Vector3.Zero;

@@ -576,19 +576,20 @@ namespace Axiom.RenderSystems.DirectX9 {
             D3DTexture texture = (D3DTexture)target;
 
             if(target.TextureType == TextureType.TwoD) {
-                D3D.Surface srcSurface = normTexture.GetSurfaceLevel(0);
-                D3D.Surface dstSurface = texture.NormalTexture.GetSurfaceLevel(0);
+				using(D3D.Surface srcSurface = normTexture.GetSurfaceLevel(0),
+						dstSurface = texture.NormalTexture.GetSurfaceLevel(0)) {
 
-                System.Drawing.Rectangle srcRect = new System.Drawing.Rectangle(0, 0, this.Width, this.Height);
-                System.Drawing.Rectangle destRect = new System.Drawing.Rectangle(0, 0, target.Width, target.Height);
+					System.Drawing.Rectangle srcRect = new System.Drawing.Rectangle(0, 0, this.Width, this.Height);
+					System.Drawing.Rectangle destRect = new System.Drawing.Rectangle(0, 0, target.Width, target.Height);
     
-                // copy this texture surface to the target
-                device.StretchRectangle(
-                    srcSurface, 
-                    srcRect, 
-                    dstSurface, 
-                    destRect, 
-                    TextureFilter.None);
+					// copy this texture surface to the target
+					device.StretchRectangle(
+						srcSurface, 
+						srcRect, 
+						dstSurface, 
+						destRect, 
+						TextureFilter.None);
+				}
             }
             else {
                 // TODO: Cube render targets

@@ -261,6 +261,19 @@ namespace Axiom.Graphics
             SetConstant(index, new Vector4(mat.m30, mat.m31, mat.m32, mat.m33));
         }
 
+		/// <summary>
+		///    Sends a multiple matrix values to the program.
+		/// </summary>
+		/// <param name="index">Index of the contant register.</param>
+		/// <param name="val">Structure containing 3 packed float values.</param>
+		public void SetConstant(int index, Matrix4[] matrices, int count) {
+			Matrix4 mat;
+
+			for(int i = 0; i < count; i++) {
+				SetConstant(index++, matrices[i]);
+			}
+		}
+
         /// <summary>
         ///    Sets an array of int values starting at the specified index.
         /// </summary>
@@ -342,6 +355,15 @@ namespace Axiom.Graphics
             SetConstant(GetParamIndex(name), val);
         }
 
+		/// <summary>
+		///    Sends multiple matrices into a program.
+		/// </summary>
+		/// <param name="name">Name of the param.</param>
+		/// <param name="matrices">Array of matrices.</param>
+		public void SetNamedConstant(string name, Matrix4[] matrices, int count) {
+			SetConstant(GetParamIndex(name), matrices, count);
+		}
+
         /// <summary>
         /// 
         /// </summary>
@@ -371,11 +393,31 @@ namespace Axiom.Graphics
                 AutoConstantEntry entry = (AutoConstantEntry)autoConstantList[i];
 
                 Vector4 vec4 = new Vector4();
+				Matrix4[] matrices = null;
+				int numMatrices = 0;
+				int index = 0;
 
                 switch(entry.type) {
                     case AutoConstants.WorldMatrix:
                         SetConstant(entry.index, source.WorldMatrix);
                         break;
+
+					case AutoConstants.WorldMatrixArray:
+						SetConstant(entry.index, source.WorldMatrixArray, source.WorldMatrixCount);
+						break;
+
+					case AutoConstants.WorldMatrixArray3x4:
+						matrices = source.WorldMatrixArray;
+						numMatrices = source.WorldMatrixCount;
+						index = entry.index;
+
+						for(int j = 0; j < numMatrices; j++) {
+							SetConstant(index++, new Vector4(matrices[j].m00, matrices[j].m01, matrices[j].m02, matrices[j].m03));
+							SetConstant(index++, new Vector4(matrices[j].m10, matrices[j].m11, matrices[j].m12, matrices[j].m13));
+							SetConstant(index++, new Vector4(matrices[j].m20, matrices[j].m21, matrices[j].m22, matrices[j].m23));
+						}
+
+						break;
 
                     case AutoConstants.ViewMatrix:
                         SetConstant(entry.index, source.ViewMatrix);
@@ -384,6 +426,10 @@ namespace Axiom.Graphics
                     case AutoConstants.ProjectionMatrix:
                         SetConstant(entry.index, source.ProjectionMatrix);
                         break;
+
+					case AutoConstants.ViewProjMatrix:
+						SetConstant(entry.index, source.ViewProjectionMatrix);
+						break;
 
                     case AutoConstants.WorldViewMatrix:
                         SetConstant(entry.index, source.WorldViewMatrix);
@@ -440,6 +486,15 @@ namespace Axiom.Graphics
                     case AutoConstants.LightSpecularColor:
                         SetConstant(entry.index, source.GetLight(entry.data).Specular);
                         break;
+
+					case AutoConstants.LightPosition:
+						SetConstant(entry.index, source.GetLight(entry.data).DerivedPosition);
+						break;
+
+					case AutoConstants.LightDirection:
+						vec3 = source.GetLight(1).DerivedDirection;
+						SetConstant(entry.index, new Vector4(vec3.x, vec3.y, vec3.z, 1.0f));
+						break;
 
                     case AutoConstants.LightPositionObjectSpace:
                         SetConstant(entry.index, source.InverseWorldMatrix * source.GetLight(entry.data).DerivedPosition);

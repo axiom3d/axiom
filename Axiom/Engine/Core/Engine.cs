@@ -93,6 +93,7 @@ namespace Axiom.Core {
         private ITimer timer;
 
         // Framerate Related State
+		// TODO: These shouldn't be static
         private static long lastStartTime, lastEndTime;
         private static long lastCalculationTime;										// The Last Time We Calculated Framerate
         private static long frameCount;												// Frames Drawn Counter For FPS Calculations
@@ -100,6 +101,11 @@ namespace Axiom.Core {
         private static float highestFPS;											// Highest FPS
         private static float lowestFPS = 9999;								// Lowest FPS
         private static float averageFPS;
+
+		/// <summary>
+		///		Global frame count since startup.
+		/// </summary>
+		private ulong currentFrameCount;
 
         /// <summary>
         ///    Has the first render window been created yet?
@@ -446,6 +452,15 @@ namespace Axiom.Core {
             GarbageManager.Instance.Add(OverlayManager.Instance);
         }
 
+		/// <summary>
+		///		Gets the number of frames drawn since startup.
+		/// </summary>
+		public ulong CurrentFrameCount {
+			get {
+				return currentFrameCount;
+			}
+		}
+
         /// <summary>
         ///		Exposes FPS stats to anyone who cares.
         /// </summary>
@@ -621,6 +636,9 @@ namespace Axiom.Core {
         ///    an event handler is requesting that shudown begin for one reason or another.
         /// </param>
         protected bool OnFrameStarted(FrameEventArgs e) {
+			// increment the current frame count
+			currentFrameCount++;
+
             // call the event, which automatically fires all registered handlers
             if(this.FrameStarted != null) {
                 FrameStarted(this, e);
@@ -656,6 +674,9 @@ namespace Axiom.Core {
             // call the event, which automatically fires all registered handlers
             if(this.FrameEnded != null) {
                 FrameEnded(this, e);
+
+				// Tell buffer manager to free temp buffers used this fram
+				HardwareBufferManager.Instance.ReleaseBufferCopies();
 
                 return e.RequestShutdown;
             }

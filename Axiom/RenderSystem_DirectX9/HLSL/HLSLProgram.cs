@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using Axiom.Core;
 using Axiom.Exceptions;
 using Axiom.Graphics;
 using Microsoft.DirectX;
@@ -116,6 +117,13 @@ namespace Axiom.RenderSystems.DirectX9.HLSL {
 
         public override bool IsSupported {
             get {
+				// If skeletal animation is being done, we need support for UBYTE4
+				if(this.IsSkeletalAnimationIncluded &&
+					!Engine.Instance.RenderSystem.Caps.CheckCap(Capabilities.VertexFormatUByte4)) {
+
+					return false;
+				}
+
                 return GpuProgramManager.Instance.IsSyntaxSupported(target);
             }
         }

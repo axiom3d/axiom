@@ -188,10 +188,30 @@ namespace Axiom.Graphics {
         public static VertexElementType MultiplyTypeCount(VertexElementType type, int count) {
             switch(type) {
                 case VertexElementType.Float1:
-                    return (VertexElementType)Enum.Parse(type.GetType(), "Float" + count, true);
+					switch(count) {
+						case 1:
+							return VertexElementType.Float1;
+						case 2:
+							return VertexElementType.Float2;
+						case 3:
+							return VertexElementType.Float3;
+						case 4:
+							return VertexElementType.Float4;
+					}
+					break;
 
                 case VertexElementType.Short1:
-                    return (VertexElementType)Enum.Parse(type.GetType(), "Short" + count, true);
+					switch(count) {
+						case 1:
+							return VertexElementType.Short1;
+						case 2:
+							return VertexElementType.Short2;
+						case 3:
+							return VertexElementType.Short3;
+						case 4:
+							return VertexElementType.Short4;
+					}
+					break;
             }
 
             throw new Exception("Cannot multiply base vertex element type: " + type.ToString());

@@ -31,8 +31,7 @@ using Axiom.Collections;
 using Axiom.Core;
 using Axiom.MathLib;
 
-namespace Axiom.Graphics
-{
+namespace Axiom.Graphics {
 	/// <summary>
     /// 	This utility class is used to hold the information used to generate the matrices
     /// 	and other information required to automatically populate GpuProgramParameters.
@@ -45,8 +44,7 @@ namespace Axiom.Graphics
     /// 	matrices when they are requested more than once when the underlying information has
     /// 	not altered.
 	/// </remarks>
-	public class AutoParamDataSource
-	{
+	public class AutoParamDataSource {
 		#region Fields
 
         /// <summary>
@@ -66,9 +64,17 @@ namespace Axiom.Graphics
         /// </summary>
         protected Matrix4 projectionMatrix;
 		/// <summary>
+		///    Current view and projection matrices concatenated.
+		/// </summary>
+		protected Matrix4 viewProjMatrix;
+		/// <summary>
 		///    Array of world matrices for the current renderable.
 		/// </summary>
         protected Matrix4[] worldMatrix = new Matrix4[256];
+		/// <summary>
+		///		Current count of matrices in the world matrix array.
+		/// </summary>
+		protected int worldMatrixCount;
         /// <summary>
         ///    Current concatenated world and view matrices.
         /// </summary>
@@ -106,6 +112,7 @@ namespace Axiom.Graphics
         /// </summary>
         protected Light blankLight = new Light();
 
+		protected bool viewProjMatrixDirty;
         protected bool worldMatrixDirty;
         protected bool worldViewMatrixDirty;
         protected bool worldViewProjMatrixDirty;
@@ -125,6 +132,7 @@ namespace Axiom.Graphics
             worldMatrixDirty = true;
             worldViewMatrixDirty = true;
             worldViewProjMatrixDirty = true;
+			viewProjMatrixDirty = true;
             inverseWorldMatrixDirty = true;
             inverseWorldViewMatrixDirty = true;
             inverseViewMatrixDirty = true;
@@ -179,6 +187,7 @@ namespace Axiom.Graphics
                 worldMatrixDirty = true;
                 worldViewMatrixDirty = true;
                 worldViewProjMatrixDirty = true;
+				viewProjMatrixDirty = true;
                 inverseWorldMatrixDirty = true;
                 inverseViewMatrixDirty = true;
                 cameraPositionObjectSpaceDirty = true;
@@ -198,6 +207,7 @@ namespace Axiom.Graphics
                 // set the dirty flags to force updates
                 worldViewMatrixDirty = true;
                 worldViewProjMatrixDirty = true;
+				viewProjMatrixDirty = true;
                 inverseWorldMatrixDirty = true;
                 inverseViewMatrixDirty = true;
                 cameraPositionObjectSpaceDirty = true;
@@ -223,12 +233,43 @@ namespace Axiom.Graphics
             get {
                 if(worldMatrixDirty) {
                     renderable.GetWorldTransforms(worldMatrix);
+					worldMatrixCount = renderable.NumWorldTransforms;
                     worldMatrixDirty = false;
                 }
 
                 return worldMatrix[0];
             }
         }
+
+		/// <summary>
+		///    Gets the number of current world matrices.
+		/// </summary>
+		public int WorldMatrixCount {
+			get {
+				if(worldMatrixDirty) {
+					renderable.GetWorldTransforms(worldMatrix);
+					worldMatrixCount = renderable.NumWorldTransforms;
+					worldMatrixDirty = false;
+				}
+
+				return worldMatrixCount;
+			}
+		}
+
+		/// <summary>
+		///		Gets an array with all the current world matrix transforms.
+		/// </summary>
+		public Matrix4[] WorldMatrixArray {
+			get {
+				if(worldMatrixDirty) {
+					renderable.GetWorldTransforms(worldMatrix);
+					worldMatrixCount = renderable.NumWorldTransforms;
+					worldMatrixDirty = false;
+				}
+
+				return worldMatrix;
+			}
+		}
 
         /// <summary>
         ///    Gets/Sets the current concatenated world and view matrices.
@@ -325,6 +366,20 @@ namespace Axiom.Graphics
                 return camera.ViewMatrix;
             }
         }
+
+		/// <summary>
+		///		Gets the projection and view matrices concatenated.
+		/// </summary>
+		public Matrix4 ViewProjectionMatrix {
+			get {
+				if(viewProjMatrixDirty) {
+					viewProjMatrix = this.ProjectionMatrix * this.ViewMatrix;
+					viewProjMatrixDirty = false;
+				}
+
+				return viewProjMatrix;
+			}
+		}
 		
 		#endregion
 	}

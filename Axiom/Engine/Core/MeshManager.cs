@@ -349,18 +349,18 @@ namespace Axiom.Core {
             int currentOffset = 0;
 
             // always need positions
-            vertexDeclaration.AddElement(new VertexElement(0, currentOffset, VertexElementType.Float3, VertexElementSemantic.Position));
+            vertexDeclaration.AddElement(0, currentOffset, VertexElementType.Float3, VertexElementSemantic.Position);
             currentOffset += VertexElement.GetTypeSize(VertexElementType.Float3);
 
             // optional normals
             if(normals) {
-                vertexDeclaration.AddElement(new VertexElement(0, currentOffset, VertexElementType.Float3, VertexElementSemantic.Normal));
+                vertexDeclaration.AddElement(0, currentOffset, VertexElementType.Float3, VertexElementSemantic.Normal);
                 currentOffset += VertexElement.GetTypeSize(VertexElementType.Float3);
             }
 
             for(ushort i = 0; i < numberOfTexCoordSets; i++) {
                 // assumes 2d texture coordinates
-                vertexDeclaration.AddElement(new VertexElement(0, currentOffset, VertexElementType.Float2, VertexElementSemantic.TexCoords, i));
+                vertexDeclaration.AddElement(0, currentOffset, VertexElementType.Float2, VertexElementSemantic.TexCoords, i);
                 currentOffset += VertexElement.GetTypeSize(VertexElementType.Float2);
             }
 
@@ -531,13 +531,13 @@ namespace Axiom.Core {
 
             int offset = 0;
 
-            vertexDeclaration.AddElement(new VertexElement(0, offset, VertexElementType.Float3, VertexElementSemantic.Position));
+            vertexDeclaration.AddElement(0, offset, VertexElementType.Float3, VertexElementSemantic.Position);
             offset += VertexElement.GetTypeSize(VertexElementType.Float3);
 
-            vertexDeclaration.AddElement(new VertexElement(0, offset, VertexElementType.Float3, VertexElementSemantic.Normal));
+            vertexDeclaration.AddElement(0, offset, VertexElementType.Float3, VertexElementSemantic.Normal);
             offset += VertexElement.GetTypeSize(VertexElementType.Float3);
 
-            vertexDeclaration.AddElement(new VertexElement(0, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0));
+            vertexDeclaration.AddElement(0, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0);
             offset += VertexElement.GetTypeSize(VertexElementType.Float2);
 
             // allocate vertex buffer
@@ -569,7 +569,7 @@ namespace Axiom.Core {
         /// <param name="name"></param>
         /// <param name="priority"></param>
         public Mesh Load(string name) {
-            return Load(name, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, false, false, 1);
+            return Load(name, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, true, true, 1);
         }
 
         /// <summary>
@@ -578,17 +578,17 @@ namespace Axiom.Core {
         /// <param name="name"></param>
         /// <param name="priority"></param>
         public Mesh Load(string name, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage) {
-            return Load(name, vertexBufferUsage, indexBufferUsage, false, false, 1);
+            return Load(name, vertexBufferUsage, indexBufferUsage, true, true, 1);
         }
 
-        public Mesh Load(string name, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexBufferSysMem, bool indexBufferSysMem, int priority) {
+        public Mesh Load(string name, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexBufferShadowed, bool indexBufferShadowed, int priority) {
             Mesh mesh = null;
 
             // if the resource isn't cached, create it
             if(!resourceList.ContainsKey(name)) {
                 mesh = (Mesh)Create(name);
-                mesh.SetVertexBufferPolicy(vertexBufferUsage, vertexBufferSysMem);
-                mesh.SetIndexBufferPolicy(indexBufferUsage, indexBufferSysMem);
+                mesh.SetVertexBufferPolicy(vertexBufferUsage, vertexBufferShadowed);
+                mesh.SetIndexBufferPolicy(indexBufferUsage, indexBufferShadowed);
                 base.Load(mesh, priority);
             }
             else {

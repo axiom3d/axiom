@@ -199,7 +199,7 @@ namespace Axiom.Animating {
             KeyFrame k1, k2;
             ushort firstKeyIndex;
 
-            float t = this.GetKeyFramesAtTime(time, out k1, out k2, out firstKeyIndex);
+            float t = GetKeyFramesAtTime(time, out k1, out k2, out firstKeyIndex);
 
             if(t == 0.0f) {
                 // just use k1

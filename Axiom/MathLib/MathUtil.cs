@@ -104,6 +104,21 @@ namespace Axiom.MathLib {
                 0,                                  0,                                  0,                                  1);
         }
 
+		/// <summary>
+		///		Calculate a face normal, including the w component which is the offset from the origin.
+		/// </summary>
+		/// <param name="v1"></param>
+		/// <param name="v2"></param>
+		/// <param name="v3"></param>
+		/// <returns></returns>
+		public static Vector4 CalculateFaceNormal(Vector3 v1, Vector3 v2, Vector3 v3) {
+		    Vector3 normal = (v2 - v1).Cross(v3 - v1);
+		    normal.Normalize();
+
+		    // Now set up the w (distance of tri from origin
+		    return new Vector4(normal.x, normal.y, normal.z, -(normal.Dot(v1)));
+		}
+
         /// <summary>
         ///    Calculates the tangent space vector for a given set of positions / texture coords.
         /// </summary>

@@ -136,11 +136,11 @@ namespace Axiom.Core {
 		/// <summary>
 		///		Temp blend buffer details for shared geometry.
 		/// </summary>
-		protected TempBlendedBufferInfo tempBlendedBuffer;
+		protected TempBlendedBufferInfo tempBlendedBuffer = new TempBlendedBufferInfo();
 		/// <summary>
 		///		Temp blend buffer details for shared geometry.
 		/// </summary>
-		protected VertexData sharedBlendedVertexData;
+		protected internal VertexData sharedBlendedVertexData;
 		/// <summary>
 		///		Flag indicating whether hardware skinning is supported by this entity's materials.
 		/// </summary>
@@ -148,7 +148,7 @@ namespace Axiom.Core {
 		/// <summary>
 		///		Records the last frame in which animation was updated.
 		/// </summary>
-		protected ulong framAnimationLastUpdated;
+		protected ulong frameAnimationLastUpdated;
 		/// <summary>
 		///		This entity's personal copy of a master skeleton.
 		/// </summary>
@@ -173,7 +173,7 @@ namespace Axiom.Core {
             this.mesh = mesh;
             this.sceneMgr = creator;
 
-			if(mesh.HasSkeleton) {
+			if(mesh.HasSkeleton && mesh.Skeleton != null) {
 				skeletonInstance = new SkeletonInstance(mesh.Skeleton);
 				skeletonInstance.Load();
 			}
@@ -185,7 +185,10 @@ namespace Axiom.Core {
 				mesh.InitAnimationState(animationState);
 				numBoneMatrices = mesh.BoneMatrixCount;
 				boneMatrices = new Matrix4[numBoneMatrices];
+				PrepareTempBlendedBuffers();
 			}
+
+			EvaluateHardwareSkinning();
 
             // LOD default settings
             meshLodFactorInv = 1.0f;
@@ -275,6 +278,23 @@ namespace Axiom.Core {
 		public bool HasSkeleton {
 			get {
 				return skeletonInstance != null;
+			}
+		}
+
+		/// <summary>
+		///		Returns whether or not hardware skinning is enabled.
+		/// </summary>
+		/// <remarks>
+		///		Because fixed-function indexed vertex blending is rarely supported
+		///		by existing graphics cards, hardware skinning can only be done if
+		///		the vertex programs in the materials used to render an entity support
+		///		it. Therefore, this method will only return true if all the materials
+		///		assigned to this entity have vertex programs assigned, and all those
+		///		vertex programs must support 'include_skeletal_animation true'.
+		/// </remarks>
+		public bool IsHardwareSkinningEnabled {
+			get {
+				return useHardwareSkinning;
 			}
 		}
             
@@ -475,23 +495,50 @@ namespace Axiom.Core {
 		///		Perform all the updates required for an animated entity.
 		/// </summary>
 		protected void UpdateAnimation() {
-			CacheBoneMatrices();
+			// we only do these tasks if they have not already been done this frame
+			ulong currentFrameNumber = Engine.Instance.CurrentFrameCount;
 
-			// TODO: Complete implementation
+			if(frameAnimationLastUpdated != currentFrameNumber) {
+				CacheBoneMatrices();
 
-			bool blendNormals = true;
+				// software blend?
+				bool hwSkinning = this.IsHardwareSkinningEnabled;
 
-			if(mesh.SharedVertexData != null) {
-				RenderSystem.SoftwareVertexBlend(mesh.SharedVertexData, boneMatrices);
-			}
-			else {
-				for(int i = 0; i < subEntityList.Count; i++) {
-					RenderSystem.SoftwareVertexBlend(subEntityList[i].SubMesh.vertexData, boneMatrices);
+				// TODO: Check for current shadow technique
+				if(!hwSkinning) {
+					// Ok, we need to do a software blend
+					// Blend normals in s/w only if we're not using h/w skinning,
+					// since shadows only require positions
+					bool blendNormals = !hwSkinning;
+
+					if(sharedBlendedVertexData != null) {
+						// blend shared geometry
+						tempBlendedBuffer.CheckoutTempCopies();
+						tempBlendedBuffer.BindTempCopies(sharedBlendedVertexData, hwSkinning);
+
+						Mesh.SoftwareVertexBlend(mesh.SharedVertexData, sharedBlendedVertexData, boneMatrices, blendNormals);
+					}
+
+					// blend dedicated geometry for each submesh if need be
+					for(int i = 0; i < subEntityList.Count; i++) {
+						SubEntity subEntity = subEntityList[i];
+
+						if(subEntity.IsVisible && subEntity.blendedVertexData != null) {
+							subEntity.tempBlendedBuffer.CheckoutTempCopies();
+							subEntity.tempBlendedBuffer.BindTempCopies(subEntity.blendedVertexData, hwSkinning);
+
+							Mesh.SoftwareVertexBlend(subEntity.SubMesh.vertexData, subEntity.blendedVertexData, boneMatrices, blendNormals);
+						}
+					}
 				}
-			}
 
-			if(childObjectList.Count != 0) {
-				parentNode.NeedUpdate();
+				// trigger update of bounding box if necessary
+				if(childObjectList.Count != 0) {
+					parentNode.NeedUpdate();
+				}
+
+				// remember the last frame count
+				frameAnimationLastUpdated = currentFrameNumber;
 			}
 		}
 			
@@ -577,6 +624,46 @@ namespace Axiom.Core {
             return subEntityList[index];
         }
 
+		/// <summary>
+		///		Trigger an evaluation of whether hardware skinning is supported for this entity.
+		/// </summary>
+		protected internal void EvaluateHardwareSkinning() {
+			// check for each sub entity
+			for(int i = 0; i < this.SubEntityCount; i++) {
+				SubEntity subEntity = GetSubEntity(i);
+
+				// grab the material and make sure it is loaded first
+				Material m = subEntity.Material;
+				m.Load();
+
+				Technique t = m.BestTechnique;
+
+				if(t == null) {
+					// no supported techniques
+					useHardwareSkinning = false;
+					return;
+				}
+
+				Pass p = t.GetPass(0);
+
+				if(p == null) {
+					// no passes, so invalid
+					useHardwareSkinning = false;
+					return;
+				}
+
+				if(!p.HasVertexProgram || !p.VertexProgram.IsSkeletalAnimationIncluded) {
+					// if one material does not support skeletal animation, then treat
+					// them all the same
+					useHardwareSkinning = false;
+					return;
+				}
+
+				// if we got this far, all materials support hardware skinning!
+				useHardwareSkinning = true;
+			}
+		}
+
         /// <summary>
         ///    Sets a level-of-detail bias on this entity.
         /// </summary>
@@ -619,12 +706,11 @@ namespace Axiom.Core {
         public override void UpdateRenderQueue(RenderQueue queue) {
 			// TODO: Manual LOD sub entities
 
-            // add all sub entities to the render queue
+            // add all visible sub entities to the render queue
 			for(int i = 0; i < subEntityList.Count; i++) {
-				// TODO: Add SubEntity.IsVisible
-				//if(subEntityList[i].IsVisible) {
+				if(subEntityList[i].IsVisible) {
 					queue.AddRenderable(subEntityList[i], RenderQueue.DEFAULT_PRIORITY, renderQueueID);
-				//}
+				}
 			}
 
             // Since we know we're going to be rendered, take this opportunity to 
@@ -642,19 +728,115 @@ namespace Axiom.Core {
             // TODO: Add skeleton itself to the render queue
         }
 
-        public override AxisAlignedBox BoundingBox {
-            // return the bounding box of our mesh
-            get {	 
-                fullBoundingBox = mesh.BoundingBox;
-                fullBoundingBox.Merge(this.ChildObjectsBoundingBox);
+		/// <summary>
+		///		Internal method for preparing this Entity for use in animation.
+		/// </summary>
+		protected internal void PrepareTempBlendedBuffers() {
+			if(this.HasSkeleton) {
+				// shared data
+				if(mesh.SharedVertexData != null) {
+					// Create temporary vertex blend info
+					// Prepare temp vertex data if needed
+					// Clone without copying data, remove blending info
+					// (since blend is performed in software)
+					sharedBlendedVertexData = CloneVertexDataRemoveBlendInfo(mesh.SharedVertexData);
+					ExtractTempBufferInfo(sharedBlendedVertexData, tempBlendedBuffer);
+				}
+
+				// prepare temp blending buffers for subentites as well
+				for(int i = 0; i < this.SubEntityCount; i++) {
+					subEntityList[i].PrepareTempBlendBuffers();
+				}
+			}
+		}
+
+		/// <summary>
+		///		Internal method to clone vertex data definitions but to remove blend buffers.
+		/// </summary>
+		/// <param name="sourceData">Vertex data to clone.</param>
+		/// <returns>A cloned instance of 'source' without blending information.</returns>
+		protected internal VertexData CloneVertexDataRemoveBlendInfo(VertexData source) {
+			// Clone without copying data
+			VertexData ret = source.Clone(false);
+			VertexElement blendIndexElem = 
+					  source.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.BlendIndices);
+			VertexElement blendWeightElem = 
+					  source.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.BlendWeights);
+
+			// Remove blend index
+			if (blendIndexElem != null) {
+				// Remove buffer reference
+				ret.vertexBufferBinding.UnsetBinding(blendIndexElem.Source);
+			}
+
+			if (blendWeightElem != null && 
+				blendWeightElem.Source != blendIndexElem.Source) {
+
+				// Remove buffer reference
+				ret.vertexBufferBinding.UnsetBinding(blendWeightElem.Source);
+			}
+			// remove elements from declaration
+			ret.vertexDeclaration.RemoveElement(VertexElementSemantic.BlendIndices);
+			ret.vertexDeclaration.RemoveElement(VertexElementSemantic.BlendWeights);
+
+			return ret;
+		}
+
+		/// <summary>
+		///		Internal method for extracting metadata out of source vertex data
+		///		for fast assignment of temporary buffers later.
+		/// </summary>
+		/// <param name="sourceData"></param>
+		/// <param name="info"></param>
+		protected internal void ExtractTempBufferInfo(VertexData sourceData, TempBlendedBufferInfo info) {
+			VertexDeclaration decl = sourceData.vertexDeclaration;
+			VertexBufferBinding bind = sourceData.vertexBufferBinding;
+			VertexElement posElem = decl.FindElementBySemantic(VertexElementSemantic.Position);
+			VertexElement normElem = decl.FindElementBySemantic(VertexElementSemantic.Normal);
+
+			Debug.Assert(posElem != null, "Positions are required!");
+
+			info.posBindIndex = posElem.Source;
+			info.srcPositionBuffer = bind.GetBuffer(info.posBindIndex);
+
+			if (normElem == null) {
+				info.posNormalShareBuffer = false;
+				info.srcNormalBuffer = null;
+			}
+			else {
+				info.normBindIndex = normElem.Source;
+
+				if (info.normBindIndex == info.posBindIndex) {
+					info.posNormalShareBuffer = true;
+					info.srcNormalBuffer = null;
+				}
+				else {
+					info.posNormalShareBuffer = false;
+					info.srcNormalBuffer = bind.GetBuffer(info.normBindIndex);
+				}
+			}
+		}
+
+        #endregion Methods
+
+		#region Properties
+
+		/// <summary>
+		///		Gets the full local bounding box of this entity.
+		/// </summary>
+		public override AxisAlignedBox BoundingBox {
+			// return the bounding box of our mesh
+			get {	 
+				fullBoundingBox = mesh.BoundingBox;
+				fullBoundingBox.Merge(this.ChildObjectsBoundingBox);
 
 				// don't need to scale here anymore
 
-                return fullBoundingBox;
-            }
-        }
+				return fullBoundingBox;
+			}
+		}
 
-        #endregion
+		#endregion Properties
 
         #region ICloneable Members
 

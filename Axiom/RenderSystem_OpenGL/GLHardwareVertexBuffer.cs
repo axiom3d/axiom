@@ -48,8 +48,9 @@ namespace Axiom.RenderSystems.OpenGL {
 
                 Ext.glGenBuffersARB(1, out bufferID);
 
-                if(bufferID == 0)
-                    throw new Exception("Cannot create GL vertex buffer");
+				if(bufferID == 0) {
+					throw new Exception("Cannot create GL vertex buffer");
+				}
 
                 Ext.glBindBufferARB(Gl.GL_ARRAY_BUFFER_ARB, bufferID);
 
@@ -93,13 +94,15 @@ namespace Axiom.RenderSystems.OpenGL {
                 if(usage == BufferUsage.WriteOnly ||
                     usage == BufferUsage.StaticWriteOnly ||
                     usage == BufferUsage.DynamicWriteOnly)
-                    throw new Exception("Invalid attempt to lock a write-only vertex buffer as read-only.");
+                    
+					// TODO: Log this instead, don't throw an exception
+					//throw new Exception("Invalid attempt to lock a write-only vertex buffer as read-only.");
 
                 access = Gl.GL_READ_ONLY_ARB;
             }
-            else if (locking == BufferLocking.Normal) {
+            else if(locking == BufferLocking.Normal || locking == BufferLocking.NoOverwrite) {
                 access = (usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly) ?
-                    Gl.GL_READ_WRITE_ARB : Gl.GL_READ_ONLY_ARB;
+                    Gl.GL_READ_WRITE_ARB : Gl.GL_WRITE_ONLY_ARB;
             }
 
             IntPtr ptr = Ext.glMapBufferARB(Gl.GL_ARRAY_BUFFER_ARB, access);
