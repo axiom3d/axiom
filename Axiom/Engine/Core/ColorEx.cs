@@ -122,14 +122,14 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        ///		Returns the color components in a 4 elements array in RGBA order.
+        ///		Populates the color components in a 4 elements array in RGBA order.
         /// </summary>
         /// <remarks>
         ///		Primarily used to help in OpenGL.
         /// </remarks>
         /// <returns></returns>
-        public float[] ToArrayRGBA() {
-            return new float[] {r, g, b, a};
+        public void ToArrayRGBA(float[] vals) {
+            vals[0] = r; vals[1] = g; vals[2] = b; vals[3] = a;
         }
 
         /// <summary>
