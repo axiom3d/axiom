@@ -51,7 +51,7 @@ namespace Axiom.Core {
     ///		by other classes to create effects.
     /// </remarks>
     public class BillboardSet : SceneObject, IRenderable {
-        #region Member variables
+        #region Fields
 
         /// <summary>Bounds of all billboards in this set</summary>
         protected AxisAlignedBox aab = new AxisAlignedBox();
@@ -89,33 +89,44 @@ namespace Axiom.Core {
 		
         protected int numVisibleBillboards;
 
+		/// <summary>
+		///		Are tex coords fixed?  If not they have been modified.
+		/// </summary>
+		protected bool fixedTextureCoords;
+
         protected Matrix4[] world = new Matrix4[1];
         protected Sphere sphere = new Sphere();
 
         // used to keep track of current index in GenerateVertices
-        static protected int posIndex = 0;
-        static protected int colorIndex = 0;
+        protected int posIndex = 0;
+        protected int colorIndex = 0;
+		protected int texIndex = 0;
 
         const int POSITION = 0;
         const int COLOR = 1;
         const int TEXCOORD = 2;
 
-        #endregion
+
+		// Template texcoord data
+		float[] texData = new float[8] {
+										   -0.5f, 0.5f,
+										   0.5f, 0.5f,
+										   -0.5f,-0.5f,
+										   0.5f,-0.5f };
+
+        #endregion Fields
 
         #region Constructors
 
         /// <summary>
-        ///		
-        /// </summary>
-        protected BillboardSet() {
-        }
-
-        /// <summary>
         ///		Public constructor.  Should not be created manually, must be created using a SceneManager.
         /// </summary>
-        public BillboardSet( string name, int poolSize) {
+        internal BillboardSet( string name, int poolSize) {
             this.name = name;
             this.PoolSize = poolSize;
+
+			// default to fixed
+			fixedTextureCoords = true;
         }
 
         #endregion
@@ -125,9 +136,17 @@ namespace Axiom.Core {
         /// <summary>
         ///		Callback used by Billboards to notify their parent that they have been resized.
         /// </summary>
-        public void NotifyBillboardResized() {
+        protected internal void NotifyBillboardResized() {
             allDefaultSize = false;
         }
+
+		/// <summary>
+		///		Notifies the billboardset that texture coordinates will be modified
+		///		for this set.
+		/// </summary>
+		protected internal void NotifyBillboardTextureCoordsModified() {
+			fixedTextureCoords = false;
+		}
 
         /// <summary>
         ///		Internal method for increasing pool size.
@@ -315,9 +334,32 @@ namespace Axiom.Core {
         /// <param name="colors">Vertex colors</param>
         /// <param name="offsets">Array of 4 Vector3 offsets.</param>
         /// <param name="billboard">A billboard.</param>
-        protected void GenerateVertices(IntPtr posPtr, IntPtr colPtr, Vector3[] offsets, Billboard billboard) {
+        protected void GenerateVertices(IntPtr posPtr, IntPtr colPtr, IntPtr texPtr, Vector3[] offsets, Billboard billboard) {
             unsafe {
-                float* positions = (float*)posPtr.ToPointer();
+				// Texcoords
+
+				// pText comes as an IntPtr in to this function
+       			if (!fixedTextureCoords) {
+					float* pTex = (float*)texPtr.ToPointer();
+
+					float rotation = billboard.Rotation;
+					float cosRot = MathUtil.Cos(rotation);
+					float sinRot = MathUtil.Sin(rotation);
+				
+					pTex[texIndex++] = (cosRot * texData[0]) + (sinRot * texData[1]) + 0.5f;
+					pTex[texIndex++] = (sinRot * texData[0]) - (cosRot * texData[1]) + 0.5f;
+
+					pTex[texIndex++] = (cosRot * texData[2]) + (sinRot * texData[3]) + 0.5f;
+					pTex[texIndex++] = (sinRot * texData[2]) - (cosRot * texData[3]) + 0.5f;
+			        
+					pTex[texIndex++] = (cosRot * texData[4]) + (sinRot * texData[5]) + 0.5f;
+					pTex[texIndex++] = (sinRot * texData[4]) - (cosRot * texData[5]) + 0.5f;
+			        
+					pTex[texIndex++] = (cosRot * texData[6]) + (sinRot * texData[7]) + 0.5f;
+					pTex[texIndex++] = (sinRot * texData[6]) - (cosRot * texData[7]) + 0.5f;
+				}
+
+				float* positions = (float*)posPtr.ToPointer();
                 int* colors = (int*)colPtr.ToPointer();
 
                 // Left-top
@@ -924,14 +966,23 @@ namespace Axiom.Core {
             // get a reference to the vertex buffers to update
             HardwareVertexBuffer posBuffer = vertexData.vertexBufferBinding.GetBuffer(POSITION);
             HardwareVertexBuffer colBuffer = vertexData.vertexBufferBinding.GetBuffer(COLOR);
+			HardwareVertexBuffer texBuffer = vertexData.vertexBufferBinding.GetBuffer(TEXCOORD);
 
             // lock the buffers
             IntPtr posPtr = posBuffer.Lock(BufferLocking.Discard);
             IntPtr colPtr = colBuffer.Lock(BufferLocking.Discard);
 
-            // reset the static index counters
+			IntPtr texPtr = IntPtr.Zero;
+
+			// do we need to update the tex coords?
+			if(!fixedTextureCoords) {
+				texPtr = texBuffer.Lock(BufferLocking.Discard);
+			}
+
+            // reset the global index counters
             posIndex = 0;
             colorIndex = 0;
+			texIndex = 0;
 
             // if they are all the same size...
             if(allDefaultSize) {
@@ -949,7 +1000,7 @@ namespace Axiom.Core {
                     }
 
                     // generate the billboard vertices
-                    GenerateVertices(posPtr, colPtr, vecOffsets, b);
+                    GenerateVertices(posPtr, colPtr, texPtr, vecOffsets, b);
 
                     numVisibleBillboards++;
                 }
@@ -975,7 +1026,7 @@ namespace Axiom.Core {
                     }
 
                     // generate the billboard vertices
-                    GenerateVertices(posPtr, colPtr, vecOffsets, b);
+                    GenerateVertices(posPtr, colPtr, texPtr, vecOffsets, b);
 
                     numVisibleBillboards++;
                 }
@@ -984,6 +1035,11 @@ namespace Axiom.Core {
             // unlock the buffers
             posBuffer.Unlock();
             colBuffer.Unlock();
+
+			// unlock this one only if it was updated
+			if(!fixedTextureCoords) {
+				texBuffer.Unlock();
+			}
         }
 	
         /// <summary>

@@ -27,14 +27,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom.Core;
 using Axiom.ParticleSystems;
+using Axiom.ParticleFX.Factories;
 
 namespace Axiom.ParticleFX {
     /// <summary>
     /// Summary description for ParticleFX.
     /// </summary>
     public class ParticleFX : IPlugin {
-        public ParticleFX() {
-        }
         #region IPlugin Members
 
         public void Start() {
@@ -53,14 +52,50 @@ namespace Axiom.ParticleFX {
             emitterFactory = new DrawEmitterFactory();
             ParticleSystemManager.Instance.AddEmitterFactory(emitterFactory);
 
-            // linear force affector
+			// cylinder emitter
+			emitterFactory = new CylinderEmitterFactory();
+			ParticleSystemManager.Instance.AddEmitterFactory(emitterFactory);
+			
+			// ellipsoid emitter
+			emitterFactory = new EllipsoidEmitterFactory();
+			ParticleSystemManager.Instance.AddEmitterFactory(emitterFactory);
+			
+			// hollow ellipsoid emitter
+			emitterFactory = new HollowEllipsoidEmitterFactory();
+			ParticleSystemManager.Instance.AddEmitterFactory(emitterFactory);
+
+			// ring emitter
+			emitterFactory = new RingEmitterFactory();
+			ParticleSystemManager.Instance.AddEmitterFactory(emitterFactory);
+
+			// linear force affector
             affectorFactory = new LinearForceAffectorFactory();
             ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
 
             // color fader affector
             affectorFactory = new ColorFaderAffectorFactory();
             ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
-        }
+
+			// color fader 2 affector
+			affectorFactory = new ColorFaderAffector2Factory();
+			ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
+
+			// color image affector
+			affectorFactory = new ColorImageAffectorFactory();
+			ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
+
+			// color interpolator affector
+			affectorFactory = new ColorInterpolatorAffectorFactory();
+			ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
+
+			// scale affector
+			affectorFactory = new ScaleAffectorFactory();
+			ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
+
+			// scale affector
+			affectorFactory = new RotationAffectorFactory();
+			ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
+		}
 
         public void Stop() {
             // TODO:  Add ParticleFX.Stop implementation

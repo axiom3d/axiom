@@ -51,13 +51,14 @@ namespace Axiom.ParticleSystems {
     ///		types.
     /// </summary>
     public abstract class ParticleAffector {
-        #region Member variables
+        #region Fields
 
         /// <summary>Name of the affector type.  Must be initialized by subclasses.</summary>
         protected string type;
-        protected Hashtable attribParsers = new Hashtable();
+        
+		protected Hashtable commandTable = new Hashtable();
 
-        #endregion
+        #endregion Fields
 
         #region Constructors
 
@@ -65,7 +66,7 @@ namespace Axiom.ParticleSystems {
         ///		Default constructor
         /// </summary>
         public ParticleAffector() {
-            RegisterParsers();
+			RegisterCommands();
         }
 
         #endregion
@@ -96,76 +97,93 @@ namespace Axiom.ParticleSystems {
         /// <param name="timeElapsed">The number of seconds which have elapsed since the last call.</param>
         public abstract void AffectParticles(ParticleSystem system, float timeElapsed);
 
-        public virtual void CopyTo(ParticleAffector affector) {
-            PropertyInfo[] props = this.GetType().GetProperties();
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="emitter"></param>
+		public virtual void CopyTo(ParticleAffector affector) {
+			// loop through all registered commands and copy from this instance to the target instance
+			foreach(DictionaryEntry entry in commandTable) {
+				string name = (string)entry.Key;
 
-            for(int i = 0; i < props.Length; i++) {
-                PropertyInfo prop = props[i];
+				// get the value of the param from this instance
+				string val = ((ICommand)entry.Value).Get(this);
 
-                // if the prop is not settable, then skip
-                if(!prop.CanWrite || !prop.CanRead) {
-                    Console.WriteLine(prop.Name);
-                    continue;
-                }
+				// set the param on the target instance
+				affector.SetParam(name, val);
+			}
+		}
 
-                object srcVal = prop.GetValue(this, null);
-                prop.SetValue(affector, srcVal, null);
-            }
-        }
-
-        #endregion
+		/// <summary>
+		///		Method called to allow the affector to 'do it's stuff' on all active particles in the system.
+		/// </summary>
+		/// <remarks>
+		///		This is where the affector gets the chance to apply it's effects to the particles of a system.
+		///		The affector is expected to apply it's effect to some or all of the particles in the system
+		///		passed to it, depending on the affector's approach.
+		/// </remarks>
+		/// <param name="system">Reference to a ParticleSystem to affect.</param>
+		/// <param name="timeElapsed">The number of seconds which have elapsed since the last call.</param>
+		public virtual void InitParticle(ref Particle particle ) {
+			// do nothing by default
+		}
 		
-        #region Script parser methods
+		#endregion
+		
+		#region Script parser methods
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
-        public bool SetParam(string name, string val) {
-            if(attribParsers.ContainsKey(name)) {
-                AttributeParserMethod parser =
-                    (AttributeParserMethod)attribParsers[name];
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
+		public bool SetParam(string name, string val) {
+			if(commandTable.ContainsKey(name)) {
+				ICommand command = (ICommand)commandTable[name];
 
-                // split up the param by spaces (i.e. for vectors, colors, etc)
-                string[] vals = val.Split(' ');
+				command.Set(this, val);
+ 
+				return true;
+			}
 
-                parser(vals, this);
+			return false;
+		}
 
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
+		/// <summary>
+		///		Registers all attribute names with their respective parser.
+		/// </summary>
+		/// <remarks>
+		///		Methods meant to serve as attribute parsers should use a method attribute to 
+		/// </remarks>
+		protected void RegisterCommands() {
+			Type baseType = GetType();
 
-        /// <summary>
-        ///		Registers all attribute names with their respective parser.
-        /// </summary>
-        /// <remarks>
-        ///		Methods meant to serve as attribute parsers should use a method attribute to 
-        /// </remarks>
-        protected virtual void RegisterParsers() {
-            MethodInfo[] methods = this.GetType().GetMethods(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Static);
+			do {
+				Type[] types = baseType.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Public);
 			
-            // loop through all methods and look for ones marked with attributes
-            for(int i = 0; i < methods.Length; i++) {
-                // get the current method in the loop
-                MethodInfo method = methods[i];
+				// loop through all methods and look for ones marked with attributes
+				for(int i = 0; i < types.Length; i++) {
+					// get the current method in the loop
+					Type type = types[i];
 				
-                // see if the method should be used to parse one or more material attributes
-                AttributeParserAttribute[] parserAtts = 
-                    (AttributeParserAttribute[])method.GetCustomAttributes(typeof(AttributeParserAttribute), true);
+					// get as many command attributes as there are on this type
+					CommandAttribute[] commandAtts = 
+						(CommandAttribute[])type.GetCustomAttributes(typeof(CommandAttribute), true);
 
-                // loop through each one we found and register its parser
-                for(int j = 0; j < parserAtts.Length; j++) {
-                    AttributeParserAttribute parserAtt = parserAtts[j];
+					// loop through each one we found and register its command
+					for(int j = 0; j < commandAtts.Length; j++) {
+						CommandAttribute commandAtt = commandAtts[j];
 
-                    attribParsers.Add(parserAtt.Name, Delegate.CreateDelegate(typeof(AttributeParserMethod), method));
-                } // for
-            } // for
-        }		
+						commandTable.Add(commandAtt.Name, Activator.CreateInstance(type));
+					} // for
+				} // for
 
-        #endregion Script parser methods
+				// get the base type of the current type
+				baseType = baseType.BaseType;
+
+			} while(baseType != typeof(object));
+		}
+
+		#endregion Script parser methods
     }
 }

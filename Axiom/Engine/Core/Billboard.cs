@@ -61,6 +61,10 @@ namespace Axiom.Core {
         public Vector3 Direction = Vector3.Zero;
         public BillboardSet ParentSet;
         public ColorEx Color = ColorEx.White;
+		/// <summary>
+		///		Needed for particle systems
+		/// </summary>
+		private float rotation = 0;
 
         #endregion
 
@@ -149,6 +153,19 @@ namespace Axiom.Core {
             ParentSet = owner;
         }
 
-        #endregion
+		public float Rotation {
+			get {
+				return rotation * MathUtil.DEGREES_PER_RADIAN;
+			}
+			set {
+				rotation = value * MathUtil.RADIANS_PER_DEGREE;
+				// Hmmm, we don't have a NotifyBillboardTextureCoordsModified?
+				if(rotation != 0) {
+					ParentSet.NotifyBillboardTextureCoordsModified();
+				}
+			}
+		}
+
+		#endregion
     }
 }

@@ -84,11 +84,11 @@ namespace Demos {
             greenBlueLightsNode = scene.RootSceneNode.CreateChildSceneNode();
 
             // create a billboard set for creating billboards
-            redYellowLights = new BillboardSet("RedYellowLights", 20);
+            redYellowLights = scene.CreateBillboardSet("RedYellowLights", 20);
             redYellowLights.MaterialName = "Particles/Flare";
             redYellowLightsNode.AttachObject(redYellowLights);
 
-            greenBlueLights = new BillboardSet("GreenBlueLights", 20);
+            greenBlueLights = scene.CreateBillboardSet("GreenBlueLights", 20);
             greenBlueLights.MaterialName = "Particles/Flare";
             greenBlueLightsNode.AttachObject(greenBlueLights);
 
