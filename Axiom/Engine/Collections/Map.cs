@@ -65,6 +65,7 @@ namespace Axiom.Collections {
         /// </summary>
         public void Clear() {
             buckets.Clear();
+			count = 0;
         }
 
         /// <summary>
@@ -220,6 +221,10 @@ namespace Axiom.Collections {
             /// </summary>
             /// <returns></returns>
             public bool MoveNext() {
+				if(map.buckets.Count == 0) {
+					return false;
+				}
+
                 // we've reached the end
                 if((totalPos + 1) == map.count) {
                     return false;

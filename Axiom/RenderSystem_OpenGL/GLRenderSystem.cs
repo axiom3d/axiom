@@ -1513,7 +1513,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <summary>
         ///		
         /// </summary>
-        protected override Matrix4 ProjectionMatrix {
+        public override Matrix4 ProjectionMatrix {
             set {
                 // create a float[16] from our Matrix4
                 MakeGLMatrix(ref value, tempMatrix);
@@ -1537,7 +1537,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <summary>
         ///		
         /// </summary>
-        protected override Matrix4 ViewMatrix {
+        public override Matrix4 ViewMatrix {
             set {
                 viewMatrix = value;
 
@@ -1560,7 +1560,7 @@ namespace Axiom.RenderSystems.OpenGL {
 
         /// <summary>
         /// </summary>
-        protected override Matrix4 WorldMatrix {
+        public override Matrix4 WorldMatrix {
             set {
                 //store the new world matrix locally
                 worldMatrix = value;

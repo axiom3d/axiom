@@ -799,13 +799,13 @@ namespace Axiom.RenderSystems.DirectX9 {
 		}
 		#endregion
 
-		protected override Axiom.MathLib.Matrix4 WorldMatrix {
+		public override Axiom.MathLib.Matrix4 WorldMatrix {
 			set {
 				device.Transform.World = MakeD3DMatrix(value);
 			}
 		}
 
-		protected override Axiom.MathLib.Matrix4 ViewMatrix {
+		public override Axiom.MathLib.Matrix4 ViewMatrix {
 			set {
 				// flip the transform portion of the matrix for DX and its left-handed coord system
 				DX.Matrix dxView = MakeD3DMatrix(value);
@@ -818,7 +818,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 			}
 		}
 
-		protected override Axiom.MathLib.Matrix4 ProjectionMatrix {
+		public override Axiom.MathLib.Matrix4 ProjectionMatrix {
 			set {
 				Matrix mat = MakeD3DMatrix(value);
 
