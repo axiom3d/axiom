@@ -285,10 +285,13 @@ namespace Axiom.Core {
         #region Public methods
 
         /// <summary>
-        /// Instructs the viewport to updates its contents.
+        ///		Instructs the viewport to updates its contents from the viewpoint of
+        ///		the current camera.
         /// </summary>
         public void Update() {
-            camera.RenderScene(this, showOverlays);
+			if(camera != null) {
+				camera.RenderScene(this, showOverlays);
+			}
         }
 
         /// <summary>

@@ -492,34 +492,6 @@ namespace Axiom.Graphics {
             public int vertexSet;
         }
 
-        /// <summary>
-        ///     Class used to compare 2 vectors.
-        /// </summary>
-        /// TODO: Move into MathLib.
-        public class Vector3Comparer : IComparer {
-            #region IComparer Members
-
-            /// <summary>
-            ///     Compares 2 vectors.
-            /// </summary>
-            /// <param name="x">Vector 1.</param>
-            /// <param name="y">Vector 2</param>
-            /// <returns>-1 if x is less than y.  0 if equal, or 1 if y > x.</returns>
-            public int Compare(object x, object y) {
-                Vector3 v1 = (Vector3)x;
-                Vector3 v2 = (Vector3)y;
-
-                if (v1.x < v2.x) return -1;
-                if (v1.x == v2.x && v1.y < v2.y) return -1;
-                if (v1.x == v2.x && v1.y == v2.y && v1.z < v2.z) return -1;
-                if(v1 == v2) return 0;
-
-                return 1;
-            }
-
-            #endregion
-        }
-
         public class CommonVertexList : ArrayList {}
 
         #endregion Structs
