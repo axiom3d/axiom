@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Text;
 using Axiom.Graphics;
 using Axiom.RenderSystems.OpenGL;
 using Tao.OpenGl;
@@ -9,8 +10,9 @@ namespace Axiom.RenderSystems.OpenGL.ARB {
 	/// Summary description for ARBGpuProgram.
 	/// </summary>
 	public class ARBGpuProgram : GLGpuProgram {
+        #region Constructor
 
-		public ARBGpuProgram(string name, GpuProgramType type, string syntaxCode)
+        public ARBGpuProgram(string name, GpuProgramType type, string syntaxCode)
             : base(name, type, syntaxCode) {
 
             // set the type of program for ARB
@@ -18,7 +20,9 @@ namespace Axiom.RenderSystems.OpenGL.ARB {
 
             // generate a new program
             Gl.glGenProgramsARB(1, out programId);
-		}
+        }
+
+        #endregion Constructor
 
         #region Implementation of GpuProgram
 
@@ -27,8 +31,12 @@ namespace Axiom.RenderSystems.OpenGL.ARB {
         /// </summary>
         protected override void LoadFromSource() {
             Gl.glBindProgramARB(programType, programId);
-     
-            Gl.glProgramStringARB(programType, Gl.GL_PROGRAM_FORMAT_ASCII_ARB, source.Length, source);
+
+            // MONO: Cannot compile programs when passing in the string as is for whatever reason.
+            // would get "Invalid vertex program header", which I assume means the source got mangled along the way
+            byte[] bytes = Encoding.ASCII.GetBytes(source);
+            IntPtr sourcePtr = Marshal.UnsafeAddrOfPinnedArrayElement(bytes, 0);
+            Gl.glProgramStringARB(programType, Gl.GL_PROGRAM_FORMAT_ASCII_ARB, source.Length, sourcePtr);
 
             // check for any errors
             if(Gl.glGetError() == Gl.GL_INVALID_OPERATION) {
@@ -71,9 +79,10 @@ namespace Axiom.RenderSystems.OpenGL.ARB {
                     GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant(index);
 
 					if(entry.isSet) {
-						// send the params 4 at a time
-						Gl.glProgramLocalParameter4fvARB(programType, index, entry.val);
-					}
+						// MONO: the 4fv version does not work
+                        float[] vals = entry.val;
+                        Gl.glProgramLocalParameter4fARB(programType, index, vals[0], vals[1], vals[2], vals[3]);
+                    }
                 }
             }            
         }
@@ -85,8 +94,12 @@ namespace Axiom.RenderSystems.OpenGL.ARB {
     ///     Creates a new ARB gpu program.
     /// </summary>
     public class ARBGpuProgramFactory : IOpenGLGpuProgramFactory {
+        #region IOpenGLGpuProgramFactory Implementation
+
         public GLGpuProgram Create(string name, GpuProgramType type, string syntaxCode) {
             return new ARBGpuProgram(name, type, syntaxCode);
         }
+
+        #endregion IOpenGLGpuProgramFactory Implementation
     }
 }
