@@ -799,36 +799,51 @@ namespace Axiom.RenderSystems.OpenGL {
 				case LayerBlendOperationEx.Source1:
 					cmd = Gl.GL_REPLACE;
 					break;
+
 				case LayerBlendOperationEx.Source2:
 					cmd = Gl.GL_REPLACE;
 					break;
+
 				case LayerBlendOperationEx.Modulate:
 					cmd = Gl.GL_MODULATE;
 					break;
+
 				case LayerBlendOperationEx.ModulateX2:
 					cmd = Gl.GL_MODULATE;
 					break;
+
 				case LayerBlendOperationEx.ModulateX4:
 					cmd = Gl.GL_MODULATE;
 					break;
+
 				case LayerBlendOperationEx.Add:
 					cmd = Gl.GL_ADD;
 					break;
+
 				case LayerBlendOperationEx.AddSigned:
 					cmd = Gl.GL_ADD_SIGNED;
 					break;
+
 				case LayerBlendOperationEx.Subtract:
 					cmd = Gl.GL_SUBTRACT;
 					break;
+
 				case LayerBlendOperationEx.BlendDiffuseAlpha:
 					cmd = Gl.GL_INTERPOLATE;
 					break;
+
 				case LayerBlendOperationEx.BlendTextureAlpha:
 					cmd = Gl.GL_INTERPOLATE;
 					break;
+
 				case LayerBlendOperationEx.BlendCurrentAlpha:
 					cmd = Gl.GL_INTERPOLATE;
 					break;
+
+				case LayerBlendOperationEx.BlendManual:
+					cmd = Gl.GL_INTERPOLATE;
+					break;
+
 				case LayerBlendOperationEx.DotProduct:
 					// Check for Dot3 support
 					cmd = caps.CheckCap(Capabilities.Dot3) ? Gl.GL_DOT3_RGB : Gl.GL_MODULATE;
@@ -861,14 +876,23 @@ namespace Axiom.RenderSystems.OpenGL {
 					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_RGB, Gl.GL_PRIMARY_COLOR);
 					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_ALPHA, Gl.GL_PRIMARY_COLOR);
 					break;
+
 				case LayerBlendOperationEx.BlendTextureAlpha:
 					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_RGB, Gl.GL_TEXTURE);
 					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_ALPHA, Gl.GL_TEXTURE);
 					break;
+
 				case LayerBlendOperationEx.BlendCurrentAlpha:
 					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_RGB, Gl.GL_PREVIOUS);
 					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_ALPHA, Gl.GL_PREVIOUS);
 					break;
+
+				case LayerBlendOperationEx.BlendManual:
+					tempColorVals[0] = 0; tempColorVals[1] = 0; 
+					tempColorVals[2] = 0; tempColorVals[3] = blendMode.blendFactor;
+					Gl.glTexEnvfv(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_COLOR, tempColorVals);
+					break;
+
 				default:
 					break;
 			}
@@ -881,10 +905,12 @@ namespace Axiom.RenderSystems.OpenGL {
 					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, blendMode.blendType == LayerBlendType.Color ? 
 						Gl.GL_RGB_SCALE : Gl.GL_ALPHA_SCALE, 2);
 					break;
+
 				case LayerBlendOperationEx.ModulateX4:
 					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, blendMode.blendType == LayerBlendType.Color ? 
 						Gl.GL_RGB_SCALE : Gl.GL_ALPHA_SCALE, 4);
 					break;
+
 				default:
 					Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, blendMode.blendType == LayerBlendType.Color ? 
 						Gl.GL_RGB_SCALE : Gl.GL_ALPHA_SCALE, 1);
@@ -893,7 +919,7 @@ namespace Axiom.RenderSystems.OpenGL {
 
 			Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND0_RGB, Gl.GL_SRC_COLOR);
 			Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND1_RGB, Gl.GL_SRC_COLOR);
-			Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND2_RGB, Gl.GL_SRC_ALPHA);  // <- TODO: Is that right?
+			Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND2_RGB, Gl.GL_SRC_ALPHA);
 			Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND0_ALPHA, Gl.GL_SRC_ALPHA);
 			Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND1_ALPHA, Gl.GL_SRC_ALPHA);
 			Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND2_ALPHA, Gl.GL_SRC_ALPHA);
@@ -922,6 +948,7 @@ namespace Axiom.RenderSystems.OpenGL {
 					// alpha value 2
 					tempColorVals[0] = 0.0f; tempColorVals[1] = 0.0f; tempColorVals[2] = 0.0f; tempColorVals[3] = blendMode.alphaArg2;
 				}
+
 				Gl.glTexEnvfv(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_COLOR, tempColorVals);
 			}
         
