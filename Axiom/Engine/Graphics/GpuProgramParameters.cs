@@ -59,6 +59,13 @@ namespace Axiom.Graphics
 	/// </remarks>
 	public class GpuProgramParameters
 	{
+		#region Structs
+		public struct ParameterEntry {
+			public GpuProgramParameterType ParameterType;
+			public string ParameterName;
+		}
+		#endregion
+		
 		#region Fields
         /// <summary>
         ///    Packed list of integer constants
@@ -82,6 +89,10 @@ namespace Axiom.Graphics
         /// </summary>
         protected bool transposeMatrices;
 
+		protected ArrayList paramTypeList = new ArrayList();
+
+		protected ArrayList paramIndexTypes = new ArrayList();
+
 		#endregion
 		
 		#region Constructors
@@ -92,6 +103,13 @@ namespace Axiom.Graphics
 		#endregion
 		
 		#region Methods
+
+		public void AddParameterToDefaultsList(GpuProgramParameterType type, string name) {
+			ParameterEntry p = new ParameterEntry();
+			p.ParameterType = type;
+			p.ParameterName = name;
+			paramTypeList.Add(p);
+		}
 
         /// <summary>
         ///    Clears all the existing automatic constants.
@@ -144,6 +162,16 @@ namespace Axiom.Graphics
 
             return null;
         }
+
+		public int GetIndexByName(string name) {
+            foreach(DictionaryEntry entry in namedParams) {
+                if((string)entry.Key == name) {
+                    return (int)entry.Value;
+                }
+            }
+
+            return -1;
+		}
 
         /// <summary>
         ///    Maps a parameter name to the specified constant index.
@@ -521,6 +549,10 @@ namespace Axiom.Graphics
 		
 		#region Properties
 		
+		public ArrayList ParameterInfo {
+			get { return this.paramTypeList; }
+		}
+
         /// <summary>
         ///    Returns true if this instance contains any automatic constants.
         /// </summary>
@@ -577,6 +609,10 @@ namespace Axiom.Graphics
             }
         }
 
+		public int NamedParamCount {
+			get { return this.namedParams.Count; }
+		}
+
         /// <summary>
         ///     Specifies whether matrices need to be transposed prior to
         ///     being sent to the hardware.
@@ -597,7 +633,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///    A structure for recording the use of automatic parameters.
         /// </summary>
-        class AutoConstantEntry {
+        public class AutoConstantEntry {
             /// <summary>
             ///    The type of the parameter.
             /// </summary>
