@@ -60,7 +60,7 @@ namespace Axiom.Core {
     ///		designed to be called by other classes in the engine, not by user applications.
     ///	 </remarks>
     public class SceneManager {
-        #region Member variables
+        #region Fields
 
         /// <summary>A queue of objects for rendering.</summary>
         protected RenderQueue renderQueue;
@@ -151,7 +151,12 @@ namespace Axiom.Core {
         protected static float oldFogStart, oldFogEnd, oldFogDensity;
         protected bool lastViewWasIdentity, lastProjectionWasIdentity;
 
-        #endregion
+		/// <summary>
+		///		Current shadow technique in use in the scene.
+		/// </summary>
+		protected ShadowTechnique shadowTechnique;
+
+        #endregion Fields
 
         #region Public events
         /// <summary>An event that will fire when a render queue is starting to be rendered.</summary>
@@ -178,6 +183,9 @@ namespace Axiom.Core {
 
             // default to no fog
             fogMode = FogMode.None;
+
+			// no shadows by default
+			shadowTechnique = ShadowTechnique.None;
         }
 
         #endregion
@@ -1168,6 +1176,15 @@ namespace Axiom.Core {
                 return optionList; 
             }
         }
+
+		public ShadowTechnique ShadowTechnique {
+			get {
+				return shadowTechnique;
+			}
+			set {
+				shadowTechnique = value;
+			}
+		}
 
         /// <summary>
         ///		Gets/Sets a value that forces all nodes to render their bounding boxes.

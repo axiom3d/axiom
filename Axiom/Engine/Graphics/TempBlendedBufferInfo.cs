@@ -61,29 +61,46 @@ namespace Axiom.Graphics {
         ///     Index at which the normals are bound in the buffer.
         /// </summary>
         public short normBindIndex;
+		/// <summary>
+		///		
+		/// </summary>
+		public bool bindPositions;
+		/// <summary>
+		///		
+		/// </summary>
+		public bool bindNormals;
 
         #endregion Fields
 
         #region Methods
 
-        /// <summary>
-        ///     Utility method, checks out temporary copies of src into dest.
-        /// </summary>
-        public void CheckoutTempCopies() {
-            destPositionBuffer = 
-				HardwareBufferManager.Instance.AllocateVertexBufferCopy(
+		/// <summary>
+		///     Utility method, checks out temporary copies of src into dest.
+		/// </summary>
+		public void CheckoutTempCopies(bool positions, bool normals) {
+			bindPositions = positions;
+			bindNormals = normals;
+
+			if(bindPositions) {
+				destPositionBuffer = 
+					HardwareBufferManager.Instance.AllocateVertexBufferCopy(
 					srcPositionBuffer,
 					BufferLicenseRelease.Automatic,
 					this);
+			}
 
-			if(!posNormalShareBuffer) {
+			if(bindNormals && srcNormalBuffer != null && !posNormalShareBuffer) {
 				destNormalBuffer = 
 					HardwareBufferManager.Instance.AllocateVertexBufferCopy(
 					srcNormalBuffer,
 					BufferLicenseRelease.Automatic,
 					this);
 			}
-        }
+		}
+
+		public void CheckoutTempCopies() {
+			CheckoutTempCopies(true, true);
+		}
 
         /// <summary>
         ///     Utility method, binds dest copies into a given VertexData.
@@ -94,7 +111,7 @@ namespace Axiom.Graphics {
             destPositionBuffer.SuppressHardwareUpdate(suppressHardwareUpload);
 			targetData.vertexBufferBinding.SetBinding(posBindIndex, destPositionBuffer);
 
-			if(!posNormalShareBuffer) {
+			if(bindNormals && !posNormalShareBuffer) {
 				destNormalBuffer.SuppressHardwareUpdate(suppressHardwareUpload);
 				targetData.vertexBufferBinding.SetBinding(normBindIndex, destNormalBuffer);
 			}

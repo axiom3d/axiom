@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using System.Diagnostics;
 using Axiom.MathLib;
 
 namespace Axiom.Graphics {
@@ -73,6 +74,50 @@ namespace Axiom.Graphics {
                 triangles[i] = tri;
             }
         }
+
+		/// <summary>
+		///		Updates the face normals for this edge list based on (changed)
+		///		position information, useful for animated objects. 
+		/// </summary>
+		/// <param name="vertexSet">The vertex set we are updating.</param>
+		/// <param name="positionBuffer">The updated position buffer, must contain ONLY xyz.</param>
+		public void UpdateFaceNormals(int vertexSet, HardwareVertexBuffer positionBuffer) {
+			unsafe {
+				Debug.Assert(positionBuffer.VertexSize == sizeof(float) * 3, "Position buffer should contain only positions!");
+
+				// Lock buffer for reading
+				IntPtr posPtr = positionBuffer.Lock(BufferLocking.ReadOnly);
+				float* pVert = (float*)posPtr.ToPointer();
+
+				// Iterate over the triangles
+				for (int i = 0; i < triangles.Count; i++) {
+					Triangle t = (Triangle)triangles[i];
+
+					// Only update tris which are using this vertex set
+					if (t.vertexSet == vertexSet) {
+						int offset = t.vertIndex[0] * 3;
+
+						Vector3 v1 = 
+							new Vector3(pVert[offset], pVert[offset + 1], pVert[offset + 2]);
+
+						offset = t.vertIndex[1]*3;
+
+						Vector3 v2 = 
+							new Vector3(pVert[offset], pVert[offset + 1], pVert[offset + 2]);
+
+						offset = t.vertIndex[2]*3;
+
+						Vector3 v3 = 
+							new Vector3(pVert[offset], pVert[offset + 1], pVert[offset + 2]);
+
+						t.normal = MathUtil.CalculateFaceNormal(v1, v2, v3);
+					}
+				}
+			}
+
+			// unlock the buffer
+			positionBuffer.Unlock();
+		}
 
         #endregion Methods
 
@@ -125,16 +170,20 @@ namespace Axiom.Graphics {
             ///     indexes run *counter* clockwise along the edge. Indexes must be
             ///     reversed for tri 1.
             /// </summary>
-            int[] triIndex;
+            public int[] triIndex;
             /// <summary>
             ///     The vertex indices for this edge. Note that both vertices will be in the vertex
             ///     set as specified in 'vertexSet', which will also be the same as tri 0.
             /// </summary>
-            int[] vertIndex;
+            public int[] vertIndex;
             /// <summary>
             ///     Vertex indices as used in the shared vertex list, not exposed.
             /// </summary>
-            int[] sharedVertIndex;
+            public int[] sharedVertIndex;
+			/// <summary>
+			///		Indicates if this is a degenerate edge, ie it does not have 2 triangles.
+			/// </summary>
+			public bool isDegenerate;
 
             #endregion Fields
         }
@@ -142,7 +191,7 @@ namespace Axiom.Graphics {
         /// <summary>
         ///     A group of edges sharing the same vertex data.
         /// </summary>
-        struct EdgeGroup {
+        public struct EdgeGroup {
             #region Fields
 
             /// <summary>

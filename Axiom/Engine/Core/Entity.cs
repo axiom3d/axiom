@@ -130,10 +130,6 @@ namespace Axiom.Core {
         /// </summary>
         protected SceneDetailLevel renderDetail;
 		/// <summary>
-		///		Flag indicating whether or not this entity will cast shadows.
-		/// </summary>
-		protected bool castsShadows;
-		/// <summary>
 		///		Temp blend buffer details for shared geometry.
 		/// </summary>
 		protected TempBlendedBufferInfo tempBlendedBuffer = new TempBlendedBufferInfo();
@@ -157,6 +153,10 @@ namespace Axiom.Core {
 		///		List of child objects attached to this entity.
 		/// </summary>
 		protected SceneObjectCollection childObjectList = new SceneObjectCollection();
+		/// <summary>
+		///		List of shadow renderables for this entity.
+		/// </summary>
+		protected ShadowRenderableList shadowRenderables = new ShadowRenderableList();
 
         #endregion Fields
 
@@ -183,7 +183,7 @@ namespace Axiom.Core {
 			// init the AnimationState, if the mesh is animated
 			if(mesh.HasSkeleton) {
 				mesh.InitAnimationState(animationState);
-				numBoneMatrices = mesh.BoneMatrixCount;
+				numBoneMatrices = skeletonInstance.BoneCount;
 				boneMatrices = new Matrix4[numBoneMatrices];
 				PrepareTempBlendedBuffers();
 			}
@@ -216,26 +216,6 @@ namespace Axiom.Core {
                 return radius;
             }
         }
-
-		/// <summary>
-		///		Gets/Sets whether or not this entity will cast shadows.
-		/// </summary>
-		/// <remarks>
-		///		This setting simply allows you to turn off shadows for a given entity. 
-		///		An entity will not cast shadows unless the scene supports it in any case,
-		///		and by default all entities cast shadows if the scene-level feature is enabled. 
-		///		If, however, for some reason you wish to disable this for a single entity then 
-		///		you can do so using this method.
-		///		<seealso cref="SceneManager.SetShadowTechnique"/>
-		/// </remarks>
-		public bool CastsShadows {
-			get {
-				return castsShadows;
-			}
-			set {
-				castsShadows = value;
-			}
-		}
 
 		/// <summary>
 		///    Merge all the child object Bounds and return it.
@@ -504,8 +484,10 @@ namespace Axiom.Core {
 				// software blend?
 				bool hwSkinning = this.IsHardwareSkinningEnabled;
 
-				// TODO: Check for current shadow technique
-				if(!hwSkinning) {
+				if(!hwSkinning 
+					|| Engine.Instance.SceneManager.ShadowTechnique == ShadowTechnique.StencilAdditive
+					|| Engine.Instance.SceneManager.ShadowTechnique == ShadowTechnique.StencilModulative) {
+
 					// Ok, we need to do a software blend
 					// Blend normals in s/w only if we're not using h/w skinning,
 					// since shadows only require positions
@@ -513,7 +495,7 @@ namespace Axiom.Core {
 
 					if(sharedBlendedVertexData != null) {
 						// blend shared geometry
-						tempBlendedBuffer.CheckoutTempCopies();
+						tempBlendedBuffer.CheckoutTempCopies(true, blendNormals);
 						tempBlendedBuffer.BindTempCopies(sharedBlendedVertexData, hwSkinning);
 
 						Mesh.SoftwareVertexBlend(mesh.SharedVertexData, sharedBlendedVertexData, boneMatrices, blendNormals);
@@ -524,7 +506,7 @@ namespace Axiom.Core {
 						SubEntity subEntity = subEntityList[i];
 
 						if(subEntity.IsVisible && subEntity.blendedVertexData != null) {
-							subEntity.tempBlendedBuffer.CheckoutTempCopies();
+							subEntity.tempBlendedBuffer.CheckoutTempCopies(true, blendNormals);
 							subEntity.tempBlendedBuffer.BindTempCopies(subEntity.blendedVertexData, hwSkinning);
 
 							Mesh.SoftwareVertexBlend(subEntity.SubMesh.vertexData, subEntity.blendedVertexData, boneMatrices, blendNormals);
@@ -817,9 +799,124 @@ namespace Axiom.Core {
 			}
 		}
 
+		public override IEnumerator GetShadowVolumeRenderableEnumerator(ShadowTechnique technique, Light light, HardwareIndexBuffer indexBuffer, bool extrudeVertices, int flags) {
+			Debug.Assert(indexBuffer != null, "Only external index buffers are supported right now");
+			Debug.Assert(indexBuffer.Type == IndexType.Size16, "Only 16-bit indexes supported for now");
+
+			// Prep mesh if required
+			// NB This seems to result in memory corruptions, having problems
+			// tracking them down. For now, ensure that shadows are enabled
+			// before any entities are created
+			if(!mesh.IsPreparedForShadowVolumes) {
+				mesh.PrepareForShadowVolume();
+				// reset frame last updated to force update of buffers
+				frameAnimationLastUpdated = 0;
+				// re-prepare buffers
+				PrepareTempBlendedBuffers();
+			}
+
+			// Update any animation 
+			if(this.HasSkeleton) {
+				UpdateAnimation();
+			}
+
+			// Calculate the object space light details
+			Vector4 lightPos = light.GetAs4DVector();
+
+			// Only use object-space light if we're not doing transforms
+			// Since when animating the positions are already transformed into 
+			// world space so we need world space light position
+			if (!this.HasSkeleton) {
+				Matrix4 world2Obj = parentNode.FullTransform.Inverse();
+				lightPos = lightPos * world2Obj; 
+			}
+
+			// We need to search the edge list for silhouette edges
+			EdgeData edgeList = this.EdgeList;
+
+			// Init shadow renderable list if required
+			bool init = (shadowRenderables.Count == 0);
+
+			if(init) {
+				shadowRenderables.Capacity = edgeList.edgeGroups.Count;
+			}
+
+			bool updatedSharedGeomNormals = false;
+
+			EntityShadowRenderable esr = null;
+			EdgeData.EdgeGroup egi;
+
+			for(int i = 0; i < shadowRenderables.Count; i++) {
+				esr = (EntityShadowRenderable)shadowRenderables[i];
+				egi = (EdgeData.EdgeGroup)edgeList.edgeGroups[i];
+
+				if (init) {
+					VertexData data = null;
+
+					if(this.HasSkeleton) {
+						// Use temp buffers
+						data = FindBlendedVertexData(egi.vertexData);
+					}
+					else {
+						data = egi.vertexData;
+					}
+
+					// Create a new renderable, create a separate light cap if
+					// we're using hardware skinning since otherwise we get
+					// depth-fighting on the light cap
+					esr = new EntityShadowRenderable(this, indexBuffer, data, useHardwareSkinning);
+
+					shadowRenderables[i] = esr;
+				}
+				else if (this.HasSkeleton) {
+					// If we have a skeleton, we have no guarantee that the position
+					// buffer we used last frame is the same one we used last frame
+					// since a temporary buffer is requested each frame
+					// therefore, we need to update the EntityShadowRenderable
+					// with the current position buffer
+					esr.RebindPositionBuffer();
+				}
+
+				// For animated entities we need to recalculate the face normals
+				if(this.HasSkeleton) {
+					if (egi.vertexData != mesh.SharedVertexData || !updatedSharedGeomNormals) {
+						// recalculate face normals
+						edgeList.UpdateFaceNormals(egi.vertexSet, esr.PositionBuffer);
+						if (egi.vertexData == mesh.SharedVertexData) {
+							updatedSharedGeomNormals = true;
+						}
+					}
+				}
+				// Extrude vertices in software if required
+				if(extrudeVertices) {
+					ExtrudeVertices(esr.PositionBuffer, egi.vertexData.vertexCount, lightPos, light.AttenuationRange);
+				}
+
+				// Stop suppressing hardware update now, if we were
+				esr.PositionBuffer.SuppressHardwareUpdate(false);
+			}
+
+			// Calc triangle light facing
+			UpdateEdgeListLightFacing(edgeList, lightPos);
+
+			// Generate indexes and update renderables
+			GenerateShadowVolume(edgeList, indexBuffer, light, shadowRenderables, flags);
+
+			return shadowRenderables.GetEnumerator();
+		}
+
         #endregion Methods
 
 		#region Properties
+
+		/// <summary>
+		///		Gets the number of bone matrices for this entity if it has a skeleton attached.
+		/// </summary>
+		public int BoneMatrixCount {
+			get {
+				return numBoneMatrices;
+			}
+		}
 
 		/// <summary>
 		///		Gets the full local bounding box of this entity.
@@ -862,5 +959,163 @@ namespace Axiom.Core {
         }
 
         #endregion
+
+		#region Nested Classes
+
+		/// <summary>
+		///		Nested class to allow entity shadows.
+		/// </summary>
+		protected class EntityShadowRenderable : ShadowRenderable {
+			#region Fields
+
+			protected Entity parent;
+			/// <summary>
+			///		Shared ref to the position buffer.
+			/// </summary>
+			protected HardwareVertexBuffer positionBuffer;
+			/// <summary>
+			///		Shared ref to w-coord buffer (optional).
+			/// </summary>
+			protected HardwareVertexBuffer wBuffer;
+			/// <summary>
+			///		Ref to original vertex data.
+			/// </summary>
+			protected VertexData originalVertexData;
+			/// <summary>
+			///		Original position buffer source binding.
+			/// </summary>
+			protected short originalPosBufferBinding;
+
+			#endregion Fields
+
+			#region Constructor
+
+			public EntityShadowRenderable(Entity parent, HardwareIndexBuffer indexBuffer, 
+				VertexData vertexData, bool createSeperateLightCap)
+				: this(parent, indexBuffer, vertexData, createSeperateLightCap, false) {}
+
+			public EntityShadowRenderable(Entity parent, HardwareIndexBuffer indexBuffer, 
+				VertexData vertexData, bool createSeparateLightCap, bool isLightCap) {
+
+				this.parent = parent;
+
+				// Save link to vertex data
+				originalVertexData = vertexData;
+
+				// Initialise render op
+				renderOp.indexData = new IndexData();
+				renderOp.indexData.indexBuffer = indexBuffer;
+				renderOp.indexData.indexStart = 0;
+				// index start and count are sorted out later
+
+				// Create vertex data which just references position component (and 2 component)
+				renderOp.vertexData = new VertexData();
+				renderOp.vertexData.vertexDeclaration = 
+					HardwareBufferManager.Instance.CreateVertexDeclaration();
+				renderOp.vertexData.vertexBufferBinding = 
+					HardwareBufferManager.Instance.CreateVertexBufferBinding();
+
+				// Map in position data
+				renderOp.vertexData.vertexDeclaration.AddElement(0, 0, VertexElementType.Float3, VertexElementSemantic.Position);
+				originalPosBufferBinding = 
+					vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Position).Source;
+
+				positionBuffer = vertexData.vertexBufferBinding.GetBuffer(originalPosBufferBinding);
+				renderOp.vertexData.vertexBufferBinding.SetBinding(0, positionBuffer);
+
+				// Map in w-coord buffer (if present)
+				if(vertexData.hardwareShadowVolWBuffer != null) {
+					renderOp.vertexData.vertexDeclaration.AddElement(1, 0, VertexElementType.Float1, VertexElementSemantic.TexCoords, 0);
+					wBuffer = vertexData.hardwareShadowVolWBuffer;
+					renderOp.vertexData.vertexBufferBinding.SetBinding(1, wBuffer);
+				}
+
+				// Use same vertex start as input
+				renderOp.vertexData.vertexStart = vertexData.vertexStart;
+
+				if (isLightCap) {
+					// Use original vertex count, no extrusion
+					renderOp.vertexData.vertexCount = vertexData.vertexCount;
+				}
+				else {
+					// Vertex count must take into account the doubling of the buffer,
+					// because second half of the buffer is the extruded copy
+					renderOp.vertexData.vertexCount = 
+						vertexData.vertexCount * 2;
+					if(createSeparateLightCap) {
+						// Create child light cap
+						lightCap = new EntityShadowRenderable(parent, indexBuffer, vertexData, false, true);
+					}
+				}
+			}
+
+			#endregion Constructor
+
+			#region Properties
+
+			/// <summary>
+			///		Gets a reference to the position buffer in use by this renderable.
+			/// </summary>
+			public HardwareVertexBuffer PositionBuffer {
+				get {
+					return positionBuffer;
+				}
+			}
+
+			/// <summary>
+			///		Gets a reference to the w-buffer in use by this renderable.
+			/// </summary>
+			public HardwareVertexBuffer WBuffer {
+				get {
+					return wBuffer;
+				}
+			}
+
+			#endregion Properties
+
+			#region Methods
+
+			/// <summary>
+			///		Rebind the source positions for temp buffer users.
+			/// </summary>
+			public void RebindPositionBuffer() {
+				positionBuffer = originalVertexData.vertexBufferBinding.GetBuffer(originalPosBufferBinding);
+				renderOp.vertexData.vertexBufferBinding.SetBinding(0, positionBuffer);
+
+				if(lightCap != null) {
+					((EntityShadowRenderable)lightCap).RebindPositionBuffer();
+				}
+			}
+
+			#endregion Methods
+
+			#region ShadowRenderable Members
+
+			public override void GetWorldTransforms(Matrix4[] matrices) {
+				if(parent.BoneMatrixCount > 0) {
+					matrices[0] = parent.ParentNodeFullTransform;
+				}
+				else {
+					// pretransformed
+					matrices[0] = Matrix4.Identity;
+				}
+			}
+
+			public override Quaternion WorldOrientation {
+				get {
+					return parent.ParentNode.DerivedOrientation;
+				}
+			}
+
+			public override Vector3 WorldPosition {
+				get {
+					return parent.ParentNode.DerivedPosition;
+				}
+			}
+
+			#endregion ShadowRenderable Members
+		}
+
+		#endregion Nested Classes
     }
 }

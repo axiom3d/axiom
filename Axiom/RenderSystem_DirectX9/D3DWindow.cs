@@ -110,8 +110,13 @@ namespace Axiom.RenderSystems.DirectX9 {
                     }
                 }
                 else {
-                    // <flair>Woooooooooo!</flair>
-                    presentParams.AutoDepthStencilFormat = DepthFormat.D24S8;
+					// <flair>Woooooooooo!</flair>
+					if(D3D.Manager.CheckDepthStencilMatch(0, DeviceType.Hardware, presentParams.BackBufferFormat, presentParams.BackBufferFormat, D3D.DepthFormat.D24S8)) {
+						presentParams.AutoDepthStencilFormat = DepthFormat.D24S8;
+					}
+					else {
+						presentParams.AutoDepthStencilFormat = DepthFormat.D24X8;
+					}
                 }
             }
             else {

@@ -250,7 +250,7 @@ namespace Axiom.RenderSystems.OpenGL {
                                         Gdi.PFD_DOUBLEBUFFER;
                 pfd.PixelType = (byte) Gdi.PFD_TYPE_RGBA;
                 pfd.ColorBits = (byte) colorDepth;
-                pfd.DepthBits = 24;
+                pfd.DepthBits = 32;
                 // TODO: Find the best setting and use that
                 pfd.StencilBits = 8;
                 pfd.LayerType = (byte) Gdi.PFD_MAIN_PLANE;

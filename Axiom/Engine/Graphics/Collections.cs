@@ -66,4 +66,9 @@ namespace Axiom.Graphics {
     ///     Generics: List<IndexData>
     /// </summary>
     public class IndexDataList : ArrayList {}
+
+	/// <summary>
+	///     Generics: List<ShadowRenderable>
+	/// </summary>
+	public class ShadowRenderableList : ArrayList {}
 }

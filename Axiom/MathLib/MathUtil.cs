@@ -256,7 +256,7 @@ namespace Axiom.MathLib {
         /// <param name="tolerance"></param>
         /// <returns></returns>
         public static bool FloatEqual(float a, float b, float tolerance) {
-            if ((b < (a + tolerance)) && (b > (a - tolerance))) {
+            if (Math.Abs(b - a) <= tolerance) {
                 return true;
             }
             

@@ -67,7 +67,7 @@ namespace Axiom.Core {
         /// <summary>
         ///    Cached world bounding spehere.
         /// </summary>
-        protected Sphere worldBoundingSphere;
+        protected Sphere worldBoundingSphere = new Sphere();
         /// <summary>
         ///    A link back to a GameObject (or subclass thereof) that may be associated with this SceneObject.
         /// </summary>
@@ -76,11 +76,24 @@ namespace Axiom.Core {
 		///		Flag which indicates whether this objects parent is a <see cref="TagPoint"/>.
 		/// </summary>
 		protected bool parentIsTagPoint;
+		/// <summary>
+		///		World space AABB of this object's dark cap.
+		/// </summary>
+		protected AxisAlignedBox worldDarkCapBounds = AxisAlignedBox.Null;
+		/// <summary>
+		///		Does this object cast shadows?
+		/// </summary>
+		protected bool castShadows;
+
+		protected ShadowRenderableList dummyList = new ShadowRenderableList();
 
         #endregion Fields
 
         #region Constructors
 
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
         public SceneObject() {
             isVisible = true;
 
@@ -91,7 +104,7 @@ namespace Axiom.Core {
 
             worldAABB = AxisAlignedBox.Null;
 
-            worldBoundingSphere = new Sphere();
+			castShadows = true;
         }
 
         #endregion Constructors
@@ -259,18 +272,10 @@ namespace Axiom.Core {
 		}
 
         /// <summary>
-        ///    Overloaded method.  Calls the overload with a default of not deriving the transform.
-        /// </summary>
-        /// <returns></returns>
-        public AxisAlignedBox GetWorldBoundingBox() {
-            return GetWorldBoundingBox(false);
-        }
-
-        /// <summary>
         ///    Retrieves the axis-aligned bounding box for this object in world coordinates.
         /// </summary>
         /// <returns></returns>
-        public virtual AxisAlignedBox GetWorldBoundingBox(bool derive) {
+        public override AxisAlignedBox GetWorldBoundingBox(bool derive) {
             if(derive) {
                 worldAABB = this.BoundingBox;
                 worldAABB.Transform(this.ParentFullTransform);
@@ -310,6 +315,48 @@ namespace Axiom.Core {
 		}
 
         #endregion Methods
+
+		#region ShadowCaster Members
+
+		/// <summary>
+		///		Overridden.
+		/// </summary>
+		public override bool CastShadows {
+			get {
+				return castShadows;
+			}
+			set {
+				castShadows = value;
+			}
+		}
+
+		/// <summary>
+		///		Overridden.  Returns null by default.
+		/// </summary>
+		public override EdgeData EdgeList {
+			get {
+				return null;
+			}
+		}
+
+		public override AxisAlignedBox GetLightCapBounds() {
+			// same as original bounds
+			return GetWorldBoundingBox();
+		}
+
+		public override AxisAlignedBox GetDarkCapBounds(Light light) {
+			// Extrude own light cap bounds
+			worldDarkCapBounds = GetLightCapBounds();
+			ExtrudeBounds(worldDarkCapBounds, light.GetAs4DVector(), light.AttenuationRange);
+
+			return worldDarkCapBounds;
+		}
+
+		public override System.Collections.IEnumerator GetShadowVolumeRenderableEnumerator(ShadowTechnique technique, Light light, HardwareIndexBuffer indexBuffer, bool extrudeVertices, int flags) {
+			return dummyList.GetEnumerator();
+		}
+
+		#endregion ShadowCast Members
 
         #region Internal engine methods
 
