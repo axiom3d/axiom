@@ -1,3 +1,9 @@
+?
+- Renamed Engine to Root.
+- Redid folder structure.
+- Refactored GL render system to abstract all Win32 specific code into a Win32 window implementation.
+- Removed the need for app.config.
+
 5-21-2004
 - Give the RenderSystem class a much needed cleanup.  All previous protected internal methods are now public like they should have been, so they can be accessible to plugins and such.
 - Fixed a bug in the DrawEmitter for systems attached to a node.  For anyone using this, it will be renamed to MagneticEmitter soon.

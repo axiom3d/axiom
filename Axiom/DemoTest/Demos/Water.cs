@@ -532,10 +532,10 @@ namespace Demos {
 
 		protected new void UpdateStats() {
 			statsTimer = 0f; // reset Stats Timer
-			GuiManager.Instance.GetElement("Core/CurrFps").Text = string.Format("Current FPS: {0}", Engine.Instance.CurrentFPS);
-			GuiManager.Instance.GetElement("Core/BestFps").Text = string.Format("Best FPS: {0}", Engine.Instance.BestFPS);
-			GuiManager.Instance.GetElement("Core/WorstFps").Text = string.Format("Worst FPS: {0}", Engine.Instance.WorstFPS);
-			GuiManager.Instance.GetElement("Core/AverageFps").Text = string.Format("Average FPS: {0}", Engine.Instance.AverageFPS);
+			GuiManager.Instance.GetElement("Core/CurrFps").Text = string.Format("Current FPS: {0}", Root.Instance.CurrentFPS);
+			GuiManager.Instance.GetElement("Core/BestFps").Text = string.Format("Best FPS: {0}", Root.Instance.BestFPS);
+			GuiManager.Instance.GetElement("Core/WorstFps").Text = string.Format("Worst FPS: {0}", Root.Instance.WorstFPS);
+			GuiManager.Instance.GetElement("Core/AverageFps").Text = string.Format("Average FPS: {0}", Root.Instance.AverageFPS);
 			GuiManager.Instance.GetElement("Core/NumTris").Text = string.Format("Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered);
 			GuiManager.Instance.GetElement("Core/DebugText").Text = window.DebugText;
 		}

@@ -67,7 +67,7 @@ namespace Demos {
             Material mat = MaterialManager.Instance.GetByName("Examples/FresnelReflectionRefraction");
 
             // Refraction texture
-            RenderTexture rttTex = Engine.Instance.RenderSystem.CreateRenderTexture("Refraction", 512, 512); 
+            RenderTexture rttTex = Root.Instance.RenderSystem.CreateRenderTexture("Refraction", 512, 512); 
             {
                 Viewport vp = rttTex.AddViewport(camera, 0, 0, 100, 100, 0);
                 vp.OverlaysEnabled = false;
@@ -77,7 +77,7 @@ namespace Demos {
             }
 
             // Reflection texture
-            rttTex = Engine.Instance.RenderSystem.CreateRenderTexture("Reflection", 512, 512); 
+            rttTex = Root.Instance.RenderSystem.CreateRenderTexture("Reflection", 512, 512); 
             {
                 Viewport vp = rttTex.AddViewport(camera, 0, 0, 100, 100, 0);
                 vp.OverlaysEnabled = false;

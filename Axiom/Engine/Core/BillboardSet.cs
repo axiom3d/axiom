@@ -380,7 +380,7 @@ namespace Axiom.Core {
                 positions[posIndex++] = offsets[3].z + billboard.Position.z;
 				
                 // Update colors
-                int colorVal = Engine.Instance.ConvertColor(billboard.Color);
+                int colorVal = Root.Instance.ConvertColor(billboard.Color);
 
                 colors[colorIndex++] = colorVal;
                 colors[colorIndex++] = colorVal;

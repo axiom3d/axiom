@@ -46,7 +46,7 @@ namespace Demos {
             }
             catch(Exception ex) {
                 // call the existing global exception handler
-                TechDemo.GlobalErrorHandler(null, new System.Threading.ThreadExceptionEventArgs(ex));
+                TechDemo.GlobalErrorHandler(ex);
             }
         }
     }

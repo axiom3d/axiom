@@ -301,7 +301,7 @@ namespace Axiom.ParticleSystems {
         /// </remarks>
         protected internal void Initialize() {
             // add ourself as a listener for the frame started event
-            Engine.Instance.FrameStarted += new FrameEvent(RenderSystem_FrameStarted);
+            Root.Instance.FrameStarted += new FrameEvent(RenderSystem_FrameStarted);
 
             // discover and register local attribute parsers
             RegisterParsers();

@@ -26,7 +26,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using Axiom.Core;
-using Axiom.Physics;
 using Axiom.MathLib;
 
 namespace Axiom.Scripting {
@@ -38,7 +37,6 @@ namespace Axiom.Scripting {
         ///    Globally unique ID of this GameObject.
         /// </summary>
         protected int id;
-        protected IRigidBody body;
         protected SceneObject sceneObject;
         protected SceneNode node;
         protected SceneManager sceneMgr;
@@ -53,16 +51,6 @@ namespace Axiom.Scripting {
             }
             set {
                 id = value;
-            }
-        }
-
-        public IRigidBody RigidBody {
-            set { 
-                body = value; 
-                body.Position = node.Position;
-            }
-            get { 
-                return body; 
             }
         }
 
@@ -167,11 +155,6 @@ namespace Axiom.Scripting {
             get { 
                 return sceneObject.BoundingBox; 
             }
-        }
-
-        public void UpdateFromDynamics() {
-            this.Position = body.Position;
-            this.Orientation = body.Orientation;
         }
     }
 }

@@ -189,7 +189,7 @@ namespace Axiom.RenderSystems.OpenGL {
             // log a quick message
             Trace.WriteLine(string.Format("GLTexture: Loading {0} with {1} mipmaps from an Image.", name, numMipMaps));
 
-            if(numMipMaps > 0 && Engine.Instance.RenderSystem.Caps.CheckCap(Capabilities.HardwareMipMaps)) {
+            if(numMipMaps > 0 && Root.Instance.RenderSystem.Caps.CheckCap(Capabilities.HardwareMipMaps)) {
                 Gl.glTexParameteri(this.GLTextureType, Gl.GL_GENERATE_MIPMAP, Gl.GL_TRUE);
                 useSoftwareMipMaps = false;
             }
@@ -384,7 +384,7 @@ namespace Axiom.RenderSystems.OpenGL {
                         data);
                 }
                 else {
-                    if(isCompressed && Engine.Instance.RenderSystem.Caps.CheckCap(Capabilities.TextureCompressionDXT)) {
+                    if(isCompressed && Root.Instance.RenderSystem.Caps.CheckCap(Capabilities.TextureCompressionDXT)) {
                         int blockSize = (format == PixelFormat.DXT1) ? 8 : 16;
                         int size = ((width + 3) / 4)*((height + 3) / 4) * blockSize;
 

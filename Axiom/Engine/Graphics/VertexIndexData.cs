@@ -192,7 +192,7 @@ namespace Axiom.Graphics {
 			*/
 
 			// Upfront, lets check whether we have vertex program capability
-			RenderSystem renderSystem = Engine.Instance.RenderSystem;
+			RenderSystem renderSystem = Root.Instance.RenderSystem;
 			bool useVertexPrograms = false;
 
 			if (renderSystem != null && renderSystem.Caps.CheckCap(Capabilities.VertexPrograms)) {

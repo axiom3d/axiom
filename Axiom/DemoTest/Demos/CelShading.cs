@@ -18,8 +18,8 @@ namespace Demos {
         #endregion Fields
 
         protected override void CreateScene() {
-            if( !Engine.Instance.RenderSystem.Caps.CheckCap(Capabilities.VertexPrograms) ||
-                !Engine.Instance.RenderSystem.Caps.CheckCap(Capabilities.FragmentPrograms)) {
+            if( !Root.Instance.RenderSystem.Caps.CheckCap(Capabilities.VertexPrograms) ||
+                !Root.Instance.RenderSystem.Caps.CheckCap(Capabilities.FragmentPrograms)) {
 
                 throw new Exception("Your hardware does not support vertex and fragment programs, so you cannot run this demo.");
             }

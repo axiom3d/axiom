@@ -7,7 +7,6 @@ namespace Axiom.RenderSystems.OpenGL {
 	///    the need to pass them in manually.
 	/// </summary>
 	public class Ext {
-
 		#region GL_ARB_multitexture
 
 		private static IntPtr activeTextureARB;
@@ -333,83 +332,83 @@ namespace Axiom.RenderSystems.OpenGL {
 		/// <summary>
 		///    Must be fired up after a GL context has been created.
 		/// </summary>
-		public static void Init() {
+		public static void Init(BaseGLSupport glSupport) {
 			// ARB_vertex_buffer_object
-			bindBufferARBPtr = Wgl.wglGetProcAddress("glBindBufferARB");
-			bufferDataARBPtr = Wgl.wglGetProcAddress("glBufferDataARB");        
-			bufferSubDataARBPtr = Wgl.wglGetProcAddress("glBufferSubDataARB"); 
-			deleteBuffersARBPtr = Wgl.wglGetProcAddress("glDeleteBuffersARB");       
-			genBuffersARBPtr = Wgl.wglGetProcAddress("glGenBuffersARB");
-			getBufferSubDataARBPtr = Wgl.wglGetProcAddress("glGetBufferSubDataARB");        
-			mapBufferARBPtr = Wgl.wglGetProcAddress("glMapBufferARB");
-			unmapBufferARBPtr = Wgl.wglGetProcAddress("glUnmapBufferARB");
-			getBufferParameterivARBptr = Wgl.wglGetProcAddress("glGetBufferParameterivARB");
+			bindBufferARBPtr = glSupport.GetProcAddress("glBindBufferARB");
+			bufferDataARBPtr = glSupport.GetProcAddress("glBufferDataARB");        
+			bufferSubDataARBPtr = glSupport.GetProcAddress("glBufferSubDataARB"); 
+			deleteBuffersARBPtr = glSupport.GetProcAddress("glDeleteBuffersARB");       
+			genBuffersARBPtr = glSupport.GetProcAddress("glGenBuffersARB");
+			getBufferSubDataARBPtr = glSupport.GetProcAddress("glGetBufferSubDataARB");        
+			mapBufferARBPtr = glSupport.GetProcAddress("glMapBufferARB");
+			unmapBufferARBPtr = glSupport.GetProcAddress("glUnmapBufferARB");
+			getBufferParameterivARBptr = glSupport.GetProcAddress("glGetBufferParameterivARB");
 
 			// ARB_multitexture
-			activeTextureARB = Wgl.wglGetProcAddress("glActiveTextureARB");
-			clientActiveTextureARB = Wgl.wglGetProcAddress("glClientActiveTextureARB");
+			activeTextureARB = glSupport.GetProcAddress("glActiveTextureARB");
+			clientActiveTextureARB = glSupport.GetProcAddress("glClientActiveTextureARB");
 
 			// ARB_vertex_program/ARB_fragment_program
-			bindProgramARBPtr = Wgl.wglGetProcAddress("glBindProgramARB");
-			genProgramsARBPtr = Wgl.wglGetProcAddress("glGenProgramsARB");
-			deleteProgramsARBPtr = Wgl.wglGetProcAddress("glDeleteProgramsARB");
-			programStringARBPtr = Wgl.wglGetProcAddress("glProgramStringARB");
-			isProgramARBPtr = Wgl.wglGetProcAddress("glIsProgramARB");
-			programLocalParameter4fvARBPtr = Wgl.wglGetProcAddress("glProgramLocalParameter4fvARB");
+			bindProgramARBPtr = glSupport.GetProcAddress("glBindProgramARB");
+			genProgramsARBPtr = glSupport.GetProcAddress("glGenProgramsARB");
+			deleteProgramsARBPtr = glSupport.GetProcAddress("glDeleteProgramsARB");
+			programStringARBPtr = glSupport.GetProcAddress("glProgramStringARB");
+			isProgramARBPtr = glSupport.GetProcAddress("glIsProgramARB");
+			programLocalParameter4fvARBPtr = glSupport.GetProcAddress("glProgramLocalParameter4fvARB");
 
 			// GL_EXT_texture3D
-			texImage3DEXTPtr = Wgl.wglGetProcAddress("glTexImage3DEXT");
+			texImage3DEXTPtr = glSupport.GetProcAddress("glTexImage3DEXT");
 
 			// GL_ARB_texture_compression
-			compressedTexImage2DARB = Wgl.wglGetProcAddress("glCompressedTexImage2DARB");
+			compressedTexImage2DARB = glSupport.GetProcAddress("glCompressedTexImage2DARB");
 
 			// GL_ATI_fragment_shader
-			genFragmentShadersATIptr = Wgl.wglGetProcAddress("glGenFragmentShadersATI");
-			bindFragmentShaderATIptr = Wgl.wglGetProcAddress("glBindFragmentShaderATI");
-			deleteFragmentShaderATIptr = Wgl.wglGetProcAddress("glDeleteFragmentShaderATI");
-			beginFragmentShaderATIptr = Wgl.wglGetProcAddress("glBeginFragmentShaderATI");
-			endFragmentShaderATIptr = Wgl.wglGetProcAddress("glEndFragmentShaderATI");
-			setFragmentShaderConstantATIptr = Wgl.wglGetProcAddress("glSetFragmentShaderConstantATI");
-			colorFragmentOp1ATIptr = Wgl.wglGetProcAddress("glColorFragmentOp1ATI");
-			colorFragmentOp2ATIptr = Wgl.wglGetProcAddress("glColorFragmentOp2ATI");
-			colorFragmentOp3ATIptr = Wgl.wglGetProcAddress("glColorFragmentOp3ATI");
-			alphaFragmentOp1ATIptr = Wgl.wglGetProcAddress("glAlphaFragmentOp1ATI");
-			alphaFragmentOp2ATIptr = Wgl.wglGetProcAddress("glAlphaFragmentOp2ATI");
-			alphaFragmentOp3ATIptr = Wgl.wglGetProcAddress("glAlphaFragmentOp3ATI");
-			passTexCoordATIptr = Wgl.wglGetProcAddress("glPassTexCoordATI");
-			sampleMapATIptr = Wgl.wglGetProcAddress("glSampleMapATI");
+			genFragmentShadersATIptr = glSupport.GetProcAddress("glGenFragmentShadersATI");
+			bindFragmentShaderATIptr = glSupport.GetProcAddress("glBindFragmentShaderATI");
+			deleteFragmentShaderATIptr = glSupport.GetProcAddress("glDeleteFragmentShaderATI");
+			beginFragmentShaderATIptr = glSupport.GetProcAddress("glBeginFragmentShaderATI");
+			endFragmentShaderATIptr = glSupport.GetProcAddress("glEndFragmentShaderATI");
+			setFragmentShaderConstantATIptr = glSupport.GetProcAddress("glSetFragmentShaderConstantATI");
+			colorFragmentOp1ATIptr = glSupport.GetProcAddress("glColorFragmentOp1ATI");
+			colorFragmentOp2ATIptr = glSupport.GetProcAddress("glColorFragmentOp2ATI");
+			colorFragmentOp3ATIptr = glSupport.GetProcAddress("glColorFragmentOp3ATI");
+			alphaFragmentOp1ATIptr = glSupport.GetProcAddress("glAlphaFragmentOp1ATI");
+			alphaFragmentOp2ATIptr = glSupport.GetProcAddress("glAlphaFragmentOp2ATI");
+			alphaFragmentOp3ATIptr = glSupport.GetProcAddress("glAlphaFragmentOp3ATI");
+			passTexCoordATIptr = glSupport.GetProcAddress("glPassTexCoordATI");
+			sampleMapATIptr = glSupport.GetProcAddress("glSampleMapATI");
 
 			// GL_NV_register_combiner
-			combinerStageParameterfvNVptr = Wgl.wglGetProcAddress("glCombinerStageParameterfvNV");
+			combinerStageParameterfvNVptr = glSupport.GetProcAddress("glCombinerStageParameterfvNV");
 
 			// GL_NV_vertex_program2/GL_NV_fragment_program
-			genProgramsNVptr = Wgl.wglGetProcAddress("glGenProgramsNV");
-			bindProgramNVptr = Wgl.wglGetProcAddress("glBindProgramNV");
-			deleteProgramsNVptr = Wgl.wglGetProcAddress("glDeleteProgramsNV");
-			loadProgramNVptr = Wgl.wglGetProcAddress("glLoadProgramNV");
-			programNamedParameter4fNVptr = Wgl.wglGetProcAddress("glProgramNamedParameter4fNV");
-			programParameter4fvNVptr = Wgl.wglGetProcAddress("glProgramParameter4fvNV");
+			genProgramsNVptr = glSupport.GetProcAddress("glGenProgramsNV");
+			bindProgramNVptr = glSupport.GetProcAddress("glBindProgramNV");
+			deleteProgramsNVptr = glSupport.GetProcAddress("glDeleteProgramsNV");
+			loadProgramNVptr = glSupport.GetProcAddress("glLoadProgramNV");
+			programNamedParameter4fNVptr = glSupport.GetProcAddress("glProgramNamedParameter4fNV");
+			programParameter4fvNVptr = glSupport.GetProcAddress("glProgramParameter4fvNV");
 
 			// GL_EXT_secondary_color
-			secondaryColorPointerEXTptr = Wgl.wglGetProcAddress("glSecondaryColorPointerEXT");
+			secondaryColorPointerEXTptr = glSupport.GetProcAddress("glSecondaryColorPointerEXT");
 
 			// vertex attributes
-			vertexAttribPointerARBptr = Wgl.wglGetProcAddress("glVertexAttribPointerARB");
-			enableVertexAttribArrayARBptr = Wgl.wglGetProcAddress("glEnableVertexAttribArrayARB");
-			disableVertexAttribArrayARBptr = Wgl.wglGetProcAddress("glDisableVertexAttribArrayARB");
+			vertexAttribPointerARBptr = glSupport.GetProcAddress("glVertexAttribPointerARB");
+			enableVertexAttribArrayARBptr = glSupport.GetProcAddress("glEnableVertexAttribArrayARB");
+			disableVertexAttribArrayARBptr = glSupport.GetProcAddress("glDisableVertexAttribArrayARB");
 
 			// GL_draw_range_elements
-			drawRangeElementsptr = Wgl.wglGetProcAddress("glDrawRangeElements");
+			drawRangeElementsptr = glSupport.GetProcAddress("glDrawRangeElements");
 
 			// GL_EXT_stencil_two_side
-			activeStencilFaceEXTptr = Wgl.wglGetProcAddress("glActiveStencilFaceEXT");
+			activeStencilFaceEXTptr = glSupport.GetProcAddress("glActiveStencilFaceEXT");
 
 			// NV_occlusion_query
-			glGenOcclusionQueriesNVptr = Wgl.wglGetProcAddress("glGenOcclusionQueriesNV");
-			glDeleteOcclusionQueriesNVptr = Wgl.wglGetProcAddress("glDeleteOcclusionQueriesNV");
-			glBeginOcclusionQueryNVptr = Wgl.wglGetProcAddress("glBeginOcclusionQueryNV");
-			glEndOcclusionQueryNVptr = Wgl.wglGetProcAddress("glEndOcclusionQueryNV");
-			glGetOcclusionQueryivNVptr = Wgl.wglGetProcAddress("glGetOcclusionQueryivNV");
+			glGenOcclusionQueriesNVptr = glSupport.GetProcAddress("glGenOcclusionQueriesNV");
+			glDeleteOcclusionQueriesNVptr = glSupport.GetProcAddress("glDeleteOcclusionQueriesNV");
+			glBeginOcclusionQueryNVptr = glSupport.GetProcAddress("glBeginOcclusionQueryNV");
+			glEndOcclusionQueryNVptr = glSupport.GetProcAddress("glEndOcclusionQueryNV");
+			glGetOcclusionQueryivNVptr = glSupport.GetProcAddress("glGetOcclusionQueryivNV");
 		}
 	}
 }

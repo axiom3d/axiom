@@ -46,7 +46,7 @@ namespace Axiom.Utility {
     public abstract class TechDemo : IDisposable {
         #region Protected Fields
 
-        protected Engine engine;
+        protected Root engine;
         protected Camera camera;
         protected Viewport viewport;
         protected SceneManager scene; 
@@ -70,12 +70,9 @@ namespace Axiom.Utility {
         #region Constructors & Destructors
 
         public TechDemo() {
-            // set the global error handler for this applications thread of execution.
-            Application.ThreadException += new ThreadExceptionEventHandler(GlobalErrorHandler);
-
             // add event handlers for frame events
-            Engine.Instance.FrameStarted += new FrameEvent(OnFrameStarted);
-            Engine.Instance.FrameEnded += new FrameEvent(OnFrameEnded);
+            Root.Instance.FrameStarted += new FrameEvent(OnFrameStarted);
+            Root.Instance.FrameEnded += new FrameEvent(OnFrameEnded);
         }
 
         #endregion Constructors & Destructors
@@ -83,16 +80,22 @@ namespace Axiom.Utility {
         #region Protected Methods
 
         protected bool Configure() {
+			// HACK: Temporary
+			RenderSystem renderSystem = Root.Instance.RenderSystems[1];
+			Root.Instance.RenderSystem = renderSystem;
+			EngineConfig.DisplayModeRow mode = renderSystem.ConfigOptions.DisplayMode[0];
+			mode.Selected = true;
+
             // show the config dialog
-            if(engine.ShowConfigDialog()) {
-                window = Engine.Instance.Initialize(true);
-                ShowDebugOverlay(showDebugOverlay);
+//            if(engine.ShowConfigDialog()) {
+                window = Root.Instance.Initialize(true);
+                //ShowDebugOverlay(showDebugOverlay);
                 return true;
-            }
-            else {
-                // cancel configuration
-                return false;
-            }
+//            }
+//            else {
+//                // cancel configuration
+//                return false;
+//            }
         }
 
         protected virtual void CreateCamera() {
@@ -148,7 +151,7 @@ namespace Axiom.Utility {
 
         protected virtual bool Setup() {
             // get a reference to the engine singleton
-            engine = Engine.Instance;
+            engine = Root.Instance;
 
             // setup the engine
             engine.Setup();
@@ -190,7 +193,7 @@ namespace Axiom.Utility {
 
             // interrogate the available resource paths
             foreach(EngineConfig.FilePathRow row in config.FilePath) {
-                string fullPath = Application.StartupPath + Path.DirectorySeparatorChar + row.src;
+                string fullPath = Environment.CurrentDirectory + Path.DirectorySeparatorChar + row.src;
 
                 ResourceManager.AddCommonArchive(fullPath, row.type);
             }
@@ -396,31 +399,33 @@ namespace Axiom.Utility {
         }
 
         protected void UpdateStats() {
-            GuiElement element = GuiManager.Instance.GetElement("Core/CurrFps");
-            element.Text = string.Format("Current FPS: {0}", Engine.Instance.CurrentFPS);
-
-            element = GuiManager.Instance.GetElement("Core/BestFps");
-            element.Text = string.Format("Best FPS: {0}", Engine.Instance.BestFPS);
-
-            element = GuiManager.Instance.GetElement("Core/WorstFps");
-            element.Text = string.Format("Worst FPS: {0}", Engine.Instance.WorstFPS);
-
-            element = GuiManager.Instance.GetElement("Core/AverageFps");
-            element.Text = string.Format("Average FPS: {0}", Engine.Instance.AverageFPS);
-
-            element = GuiManager.Instance.GetElement("Core/NumTris");
-            element.Text = string.Format("Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered);
-
-            element = GuiManager.Instance.GetElement("Core/DebugText");
-            element.Text = window.DebugText;
+			// TODO: Replace with CEGUI
+//            GuiElement element = GuiManager.Instance.GetElement("Core/CurrFps");
+//            element.Text = string.Format("Current FPS: {0}", Root.Instance.CurrentFPS);
+//
+//            element = GuiManager.Instance.GetElement("Core/BestFps");
+//            element.Text = string.Format("Best FPS: {0}", Root.Instance.BestFPS);
+//
+//            element = GuiManager.Instance.GetElement("Core/WorstFps");
+//            element.Text = string.Format("Worst FPS: {0}", Root.Instance.WorstFPS);
+//
+//            element = GuiManager.Instance.GetElement("Core/AverageFps");
+//            element.Text = string.Format("Average FPS: {0}", Root.Instance.AverageFPS);
+//
+//            element = GuiManager.Instance.GetElement("Core/NumTris");
+//            element.Text = string.Format("Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered);
+//
+//            element = GuiManager.Instance.GetElement("Core/DebugText");
+//            element.Text = window.DebugText;
         }
 
-        public static void GlobalErrorHandler(Object source, ThreadExceptionEventArgs e) {
+        public static void GlobalErrorHandler(Exception ex) {
+			// TODO: Redo
             // show the error
-            MessageBox.Show("An exception has occured.  Please check the log file for more information.\n\nError:\n" + e.Exception.ToString(), "Exception!");
+            //MessageBox.Show("An exception has occured.  Please check the log file for more information.\n\nError:\n" + ex.ToString(), "Exception!");
 
             // log the error
-            //System.Diagnostics.Trace.WriteLine(e.Exception.ToString());
+            System.Diagnostics.Trace.WriteLine(ex.ToString());
         }
 
         #endregion Event Handlers
