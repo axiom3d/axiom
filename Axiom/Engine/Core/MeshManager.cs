@@ -33,6 +33,7 @@ namespace Axiom.Core {
     /// <summary>
     /// Summary description for MeshManager.
     /// </summary>
+    // TODO: Ensure ALL meshes are created with shadow buffers by default.
     public class MeshManager : ResourceManager {
         #region Singleton implementation
 
@@ -65,7 +66,6 @@ namespace Axiom.Core {
         ///	
         /// </summary>
         public void Initialize() {
-            // TODO: Setup Prefab nodes here
             CreatePrefabPlane();
         }
 	
@@ -320,7 +320,7 @@ namespace Axiom.Core {
         /// <param name="upVector"></param>
         /// <returns></returns>
         public Mesh CreateCurvedIllusionPlane(string name, Plane plane, float width, float height, float curvature, int xSegments, int ySegments, bool normals, int numberOfTexCoordSets, float uTiles, float vTiles, Vector3 upVector) {
-            return CreateCurvedIllusionPlane(name, plane, width, height, curvature, xSegments, ySegments, normals, numberOfTexCoordSets, uTiles, vTiles, upVector, Quaternion.Identity, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, false, false);
+            return CreateCurvedIllusionPlane(name, plane, width, height, curvature, xSegments, ySegments, normals, numberOfTexCoordSets, uTiles, vTiles, upVector, Quaternion.Identity, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, true, true);
         }
 
         /// <summary>

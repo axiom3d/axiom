@@ -158,7 +158,7 @@ namespace Axiom.Animating {
         ///    for your convenience, although it is recommended that you only use the handle to 
         ///    retrieve the bone in performance-critical code.
         /// </param>
-        public Bone CreateBone(string name) {
+        public virtual Bone CreateBone(string name) {
             if(boneList.Count == MAX_BONE_COUNT) {
                 throw new Exception("Skeleton exceeded the maximum amount of bones.");
             }
@@ -181,7 +181,7 @@ namespace Axiom.Animating {
         ///    it is advised that you use the simpler createBone method which automatically assigns a
         ///    sequential handle starting from 0.
         /// </param>
-        public Bone CreateBone(ushort handle) {
+        public virtual Bone CreateBone(ushort handle) {
             if(boneList.Count == MAX_BONE_COUNT) {
                 throw new Exception("Skeleton exceeded the maximum amount of bones.");
             }
@@ -211,7 +211,7 @@ namespace Axiom.Animating {
         ///    it is advised that you use the simpler createBone method which automatically assigns a
         ///    sequential handle starting from 0.
         /// </param>
-        public Bone CreateBone(string name, ushort handle) {
+        public virtual Bone CreateBone(string name, ushort handle) {
             if(boneList.Count == MAX_BONE_COUNT) {
                 throw new Exception("Skeleton exceeded the maximum amount of bones.");
             }
@@ -276,7 +276,7 @@ namespace Axiom.Animating {
         /// </summary>
         /// <param name="handle">Handle of the bone to retrieve.</param>
         /// <returns></returns>
-        public Bone GetBone(ushort handle) {
+        public virtual Bone GetBone(ushort handle) {
             if(!boneList.ContainsKey(handle)) {
                 throw new Exception("Bone with the handle " + handle + " not found.");
             }
@@ -289,7 +289,7 @@ namespace Axiom.Animating {
         /// </summary>
         /// <param name="name">Name of the bone to retrieve.</param>
         /// <returns></returns>
-        public Bone GetBone(string name) {
+        public virtual Bone GetBone(string name) {
             if(!namedBoneList.ContainsKey(name)) {
                 throw new Exception("Bone with the name '" + name + "' not found.");
             }
@@ -302,7 +302,7 @@ namespace Axiom.Animating {
 		/// </summary>
 		/// <param name="index">Index of the root bone to return.</param>
 		/// <returns>Root bone at the specified index, or null if the index is out of bounds.</returns>
-		public Bone GetRootBone(int index) {
+		public virtual Bone GetRootBone(int index) {
 			if(index < rootBones.Count) {
 				return rootBones[index];
 			}
@@ -319,7 +319,7 @@ namespace Axiom.Animating {
         ///    Assumes animation has already been updated.
         /// </remarks>
         /// <param name="matrices"></param>
-        internal void GetBoneMatrices(Matrix4[] matrices) {
+        internal virtual void GetBoneMatrices(Matrix4[] matrices) {
             // update derived transforms
             this.RootBone.Update(true, false);
 
@@ -345,7 +345,7 @@ namespace Axiom.Animating {
         ///    Only recommended for use inside the engine, not by applications.
         /// </remarks>
         /// <param name="animSet"></param>
-        public void InitAnimationState(AnimationStateCollection animSet) {
+        public virtual void InitAnimationState(AnimationStateCollection animSet) {
             animSet.Clear();
 
             // loop through all the internal animations and add new animation states to the passed in
@@ -386,7 +386,7 @@ namespace Axiom.Animating {
 		///    position during animation. This method returns all the bones to their original position and
 		///    orientation.
 		/// </remarks>
-		public void Reset(bool resetManualBones) {
+		public virtual void Reset(bool resetManualBones) {
 			// set all bones back to their binding pose
 			for(int i = 0; i < boneList.Count; i++) {
 				if(!boneList[i].IsManuallyControlled || resetManualBones) {
@@ -399,7 +399,7 @@ namespace Axiom.Animating {
         ///    
         /// </summary>
         /// <param name="animSet"></param>
-        public void SetAnimationState(AnimationStateCollection animSet) {
+        public virtual void SetAnimationState(AnimationStateCollection animSet) {
             /* 
         Algorithm:
           1. Check if animation state is any different from last, if not do nothing
@@ -448,7 +448,7 @@ namespace Axiom.Animating {
         ///    Sets the current position / orientation to be the 'binding pose' ie the layout in which 
         ///    bones were originally bound to a mesh.
         /// </summary>
-        public void SetBindingPose() {
+        public virtual void SetBindingPose() {
 			// update the derived transforms
             UpdateTransforms();
 
@@ -461,7 +461,7 @@ namespace Axiom.Animating {
 		/// <summary>
 		///		Updates all the derived transforms in the skeleton.
 		/// </summary>
-		public void UpdateTransforms() {
+		public virtual void UpdateTransforms() {
 			for(int i = 0; i < rootBones.Count; i++) {
 				rootBones[i].Update(true, false);
 			}

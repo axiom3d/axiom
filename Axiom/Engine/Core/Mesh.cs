@@ -663,24 +663,6 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        ///    Applies the animation set passed in, and populates the passed in array of bone matrices.
-        /// </summary>
-        /// <remarks>
-        ///    Internal use only.
-        ///    The array of passed in Matrix4 objects must have enough 'slots' for the number
-        ///    of bone matrices required (see BoneMatrixCount).
-        /// </remarks>
-        /// <param name="animSet"></param>
-        /// <param name="matrices"></param>
-        public void GetBoneMatrices(AnimationStateCollection animSet, Matrix4[] matrices) {
-            Debug.Assert(skeleton != null, "Skeleton not present.");
-
-            // delegate down to the skeleton
-            skeleton.SetAnimationState(animSet);
-            skeleton.GetBoneMatrices(matrices);
-        }
-
-        /// <summary>
         ///    Retrieves the level of detail index for the given depth value.
         /// </summary>
         /// <param name="depth"></param>
@@ -1366,20 +1348,6 @@ namespace Axiom.Core {
         public int SubMeshCount {
             get {
                 return subMeshList.Count;
-            }
-        }
-
-        /// <summary>
-        ///    Returns the number of bone matrices this mesh uses.
-        /// </summary>
-        /// <remarks>
-        ///    Only applicable if HasSkeleton is true, for internal use only.
-        /// </remarks>
-        public int BoneMatrixCount {
-            get {
-                Debug.Assert(skeleton != null, "Skeleton not present.");
-  
-                return skeleton.BoneCount;
             }
         }
 

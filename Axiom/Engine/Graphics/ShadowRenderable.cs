@@ -30,92 +30,149 @@ using Axiom.Core;
 
 namespace Axiom.Graphics {
 	/// <summary>
-	/// Summary description for ShadowRenderable.
+	///		Class which represents the renderable aspects of a set of shadow volume faces.
 	/// </summary>
-	public class ShadowRenderable : IRenderable {
-		public ShadowRenderable() {
+	/// <remarks>
+	///		Note that for casters comprised of more than one set of vertex buffers (e.g. SubMeshes each
+	///		using their own geometry), it will take more than one <see cref="ShadowRenderable"/> to render the 
+	///		shadow volume. Therefore for shadow caster geometry, it is best to stick to one set of
+	///		vertex buffers (not necessarily one buffer, but the positions for the entire geometry 
+	///		should come from one buffer if possible)
+	/// </remarks>
+	public abstract class ShadowRenderable : IRenderable {
+		#region Fields
+
+		protected Material material;
+		protected RenderOperation renderOp;
+		/// <summary>
+		///		Used only if IsLightCapSeparate == true.
+		/// </summary>
+		protected ShadowRenderable lightCap;
+		protected LightList dummyLightList = new LightList();
+
+		#endregion Fields
+
+		#region Properties
+
+		/// <summary>
+		///		Does this renderable require a separate light cap?
+		/// </summary>
+		/// <remarks>
+		///		If possible, the light cap (when required) should be contained in the
+		///		usual geometry of the shadow renderable. However, if for some reason
+		///		the normal depth function (less than) could cause artefacts, then a
+		///		separate light cap with a depth function of 'always fail' can be used 
+		///		instead. The primary example of this is when there are floating point
+		///		inaccuracies caused by calculating the shadow geometry separately from
+		///		the real geometry. 
+		/// </remarks>
+		public bool IsLightCapSeperate {
+			get {
+				return lightCap != null;
+			}
 		}
-	
+
+		/// <summary>
+		///		Get the light cap version of this renderable.
+		/// </summary>
+		public ShadowRenderable LightCapRenderable {
+			get {
+				return lightCap;
+			}
+		}
+
+		#endregion Properties
+
+		#region Methods
+
+		/// <summary>
+		///		Gets the internal render operation for setup.
+		/// </summary>
+		/// <returns></returns>
+		public RenderOperation GetRenderOperationForUpdate() {
+			return renderOp;
+		}
+
+		#endregion Methods
+
         #region IRenderable Members
 
+		/// <summary>
+		///		Gets/Sets the material to use for this shadow renderable.
+		/// </summary>
+		/// <remarks>
+		///		Should be set by the caller before adding to a render queue.
+		/// </remarks>
         public Material Material {
             get {
-                // TODO:  Add ShadowRenderable.Material getter implementation
-                return null;
+                return material;
             }
+			set {
+				material = value;
+			}
         }
 
         public Technique Technique {
             get {
-                // TODO:  Add ShadowRenderable.Technique getter implementation
-                return null;
+                return this.Material.BestTechnique;
             }
         }
 
+		/// <summary>
+		///		Gets the render operation for this shadow renderable.
+		/// </summary>
+		/// <param name="op"></param>
         public void GetRenderOperation(RenderOperation op) {
-            // TODO:  Add ShadowRenderable.GetRenderOperation implementation
+            op.indexData = renderOp.indexData;
+			op.useIndices = renderOp.useIndices;
+			op.operationType = renderOp.operationType;
+			op.vertexData = renderOp.vertexData;
         }
 
-        public void GetWorldTransforms(Axiom.MathLib.Matrix4[] matrices) {
-            // TODO:  Add ShadowRenderable.GetWorldTransforms implementation
-        }
+        public abstract void GetWorldTransforms(Axiom.MathLib.Matrix4[] matrices);
 
         public LightList Lights {
             get {
-                // TODO:  Add ShadowRenderable.Lights getter implementation
-                return null;
+                return dummyLightList;
             }
         }
 
         public bool NormalizeNormals {
             get {
-                // TODO:  Add ShadowRenderable.NormalizeNormals getter implementation
                 return false;
             }
         }
 
-        public ushort NumWorldTransforms {
+        public virtual ushort NumWorldTransforms {
             get {
                 // TODO:  Add ShadowRenderable.NumWorldTransforms getter implementation
                 return 0;
             }
         }
 
-        public bool UseIdentityProjection {
+        public virtual bool UseIdentityProjection {
             get {
-                // TODO:  Add ShadowRenderable.UseIdentityProjection getter implementation
                 return false;
             }
         }
 
-        public bool UseIdentityView {
+        public virtual bool UseIdentityView {
             get {
-                // TODO:  Add ShadowRenderable.UseIdentityView getter implementation
                 return false;
             }
         }
 
-        public SceneDetailLevel RenderDetail {
+        public virtual SceneDetailLevel RenderDetail {
             get {
                 return SceneDetailLevel.Solid;
             }
         }
 
-        public Axiom.MathLib.Quaternion WorldOrientation {
-            get {
-                // TODO:  Add ShadowRenderable.WorldOrientation getter implementation
-                return new Axiom.MathLib.Quaternion ();
-            }
-        }
+        public abstract Axiom.MathLib.Quaternion WorldOrientation { get; }
 
-        public Axiom.MathLib.Vector3 WorldPosition {
-            get {
-                // TODO:  Add ShadowRenderable.WorldPosition getter implementation
-                return new Axiom.MathLib.Vector3 ();
-            }
-        }
+        public abstract Axiom.MathLib.Vector3 WorldPosition { get; }
 
-        public float GetSquaredViewDepth(Camera camera) {
+        public virtual float GetSquaredViewDepth(Camera camera) {
             return 0;
         }
 
