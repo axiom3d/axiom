@@ -523,10 +523,10 @@ namespace Axiom.Overlays.Elements {
         public static void ParserLeftBorderUV(string[] parms, params object[] objects) {
             BorderPanel borderPanel = (BorderPanel)objects[0];
             
-            float u1 = ParseHelper.ParseFloat(parms[0]);
-            float v1 = ParseHelper.ParseFloat(parms[1]);
-            float u2 = ParseHelper.ParseFloat(parms[2]);
-            float v2 = ParseHelper.ParseFloat(parms[3]);
+            float u1 = StringConverter.ParseFloat(parms[0]);
+            float v1 = StringConverter.ParseFloat(parms[1]);
+            float u2 = StringConverter.ParseFloat(parms[2]);
+            float v2 = StringConverter.ParseFloat(parms[3]);
 
             borderPanel.SetCellUV(BorderCell.Left, u1, v1, u2, v2);
         }
@@ -535,10 +535,10 @@ namespace Axiom.Overlays.Elements {
         public static void ParserRightBorderUV(string[] parms, params object[] objects) {
             BorderPanel borderPanel = (BorderPanel)objects[0];
             
-            float u1 = ParseHelper.ParseFloat(parms[0]);
-            float v1 = ParseHelper.ParseFloat(parms[1]);
-            float u2 = ParseHelper.ParseFloat(parms[2]);
-            float v2 = ParseHelper.ParseFloat(parms[3]);
+            float u1 = StringConverter.ParseFloat(parms[0]);
+            float v1 = StringConverter.ParseFloat(parms[1]);
+            float u2 = StringConverter.ParseFloat(parms[2]);
+            float v2 = StringConverter.ParseFloat(parms[3]);
 
             borderPanel.SetCellUV(BorderCell.Right, u1, v1, u2, v2);
         }
@@ -547,10 +547,10 @@ namespace Axiom.Overlays.Elements {
         public static void ParserTopBorderUV(string[] parms, params object[] objects) {
             BorderPanel borderPanel = (BorderPanel)objects[0];
             
-            float u1 = ParseHelper.ParseFloat(parms[0]);
-            float v1 = ParseHelper.ParseFloat(parms[1]);
-            float u2 = ParseHelper.ParseFloat(parms[2]);
-            float v2 = ParseHelper.ParseFloat(parms[3]);
+            float u1 = StringConverter.ParseFloat(parms[0]);
+            float v1 = StringConverter.ParseFloat(parms[1]);
+            float u2 = StringConverter.ParseFloat(parms[2]);
+            float v2 = StringConverter.ParseFloat(parms[3]);
 
             borderPanel.SetCellUV(BorderCell.Top, u1, v1, u2, v2);
         }
@@ -559,10 +559,10 @@ namespace Axiom.Overlays.Elements {
         public static void ParserBottomBorderUV(string[] parms, params object[] objects) {
             BorderPanel borderPanel = (BorderPanel)objects[0];
             
-            float u1 = ParseHelper.ParseFloat(parms[0]);
-            float v1 = ParseHelper.ParseFloat(parms[1]);
-            float u2 = ParseHelper.ParseFloat(parms[2]);
-            float v2 = ParseHelper.ParseFloat(parms[3]);
+            float u1 = StringConverter.ParseFloat(parms[0]);
+            float v1 = StringConverter.ParseFloat(parms[1]);
+            float u2 = StringConverter.ParseFloat(parms[2]);
+            float v2 = StringConverter.ParseFloat(parms[3]);
 
             borderPanel.SetCellUV(BorderCell.Bottom, u1, v1, u2, v2);
         }
@@ -571,10 +571,10 @@ namespace Axiom.Overlays.Elements {
         public static void ParserTopLeftBorderUV(string[] parms, params object[] objects) {
             BorderPanel borderPanel = (BorderPanel)objects[0];
             
-            float u1 = ParseHelper.ParseFloat(parms[0]);
-            float v1 = ParseHelper.ParseFloat(parms[1]);
-            float u2 = ParseHelper.ParseFloat(parms[2]);
-            float v2 = ParseHelper.ParseFloat(parms[3]);
+            float u1 = StringConverter.ParseFloat(parms[0]);
+            float v1 = StringConverter.ParseFloat(parms[1]);
+            float u2 = StringConverter.ParseFloat(parms[2]);
+            float v2 = StringConverter.ParseFloat(parms[3]);
 
             borderPanel.SetCellUV(BorderCell.TopLeft, u1, v1, u2, v2);
         }
@@ -583,10 +583,10 @@ namespace Axiom.Overlays.Elements {
         public static void ParserTopRightBorderUV(string[] parms, params object[] objects) {
             BorderPanel borderPanel = (BorderPanel)objects[0];
             
-            float u1 = ParseHelper.ParseFloat(parms[0]);
-            float v1 = ParseHelper.ParseFloat(parms[1]);
-            float u2 = ParseHelper.ParseFloat(parms[2]);
-            float v2 = ParseHelper.ParseFloat(parms[3]);
+            float u1 = StringConverter.ParseFloat(parms[0]);
+            float v1 = StringConverter.ParseFloat(parms[1]);
+            float u2 = StringConverter.ParseFloat(parms[2]);
+            float v2 = StringConverter.ParseFloat(parms[3]);
 
             borderPanel.SetCellUV(BorderCell.TopRight, u1, v1, u2, v2);
         }
@@ -595,10 +595,10 @@ namespace Axiom.Overlays.Elements {
         public static void ParserBottomLeftBorderUV(string[] parms, params object[] objects) {
             BorderPanel borderPanel = (BorderPanel)objects[0];
             
-            float u1 = ParseHelper.ParseFloat(parms[0]);
-            float v1 = ParseHelper.ParseFloat(parms[1]);
-            float u2 = ParseHelper.ParseFloat(parms[2]);
-            float v2 = ParseHelper.ParseFloat(parms[3]);
+            float u1 = StringConverter.ParseFloat(parms[0]);
+            float v1 = StringConverter.ParseFloat(parms[1]);
+            float u2 = StringConverter.ParseFloat(parms[2]);
+            float v2 = StringConverter.ParseFloat(parms[3]);
 
             borderPanel.SetCellUV(BorderCell.BottomLeft, u1, v1, u2, v2);
         }
@@ -607,10 +607,10 @@ namespace Axiom.Overlays.Elements {
         public static void ParserBottomRightBorderUV(string[] parms, params object[] objects) {
             BorderPanel borderPanel = (BorderPanel)objects[0];
             
-            float u1 = ParseHelper.ParseFloat(parms[0]);
-            float v1 = ParseHelper.ParseFloat(parms[1]);
-            float u2 = ParseHelper.ParseFloat(parms[2]);
-            float v2 = ParseHelper.ParseFloat(parms[3]);
+            float u1 = StringConverter.ParseFloat(parms[0]);
+            float v1 = StringConverter.ParseFloat(parms[1]);
+            float u2 = StringConverter.ParseFloat(parms[2]);
+            float v2 = StringConverter.ParseFloat(parms[3]);
 
             borderPanel.SetCellUV(BorderCell.BottomRight, u1, v1, u2, v2);
         }
@@ -619,10 +619,10 @@ namespace Axiom.Overlays.Elements {
         public static void ParserBorderSize(string[] parms, params object[] objects) {
             BorderPanel borderPanel = (BorderPanel)objects[0];
 
-            float left = ParseHelper.ParseFloat(parms[0]);
-            float right = ParseHelper.ParseFloat(parms[1]);
-            float top = ParseHelper.ParseFloat(parms[2]);
-            float bottom = ParseHelper.ParseFloat(parms[3]);
+            float left = StringConverter.ParseFloat(parms[0]);
+            float right = StringConverter.ParseFloat(parms[1]);
+            float top = StringConverter.ParseFloat(parms[2]);
+            float bottom = StringConverter.ParseFloat(parms[3]);
 
             borderPanel.SetBorderSize(left, right, top, bottom);
         }

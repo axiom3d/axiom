@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.Scripting;
 
@@ -121,11 +122,11 @@ namespace Axiom.ParticleFX {
 
 			public string Get(object target) {
 				ColorFaderAffector affector = target as ColorFaderAffector;
-				return affector.RedAdjust.ToString();
+				return StringConverter.ToString(affector.RedAdjust);
 			}
 			public void Set(object target, string val) {
 				ColorFaderAffector affector = target as ColorFaderAffector;
-				affector.RedAdjust = ParseHelper.ParseFloat(val);
+				affector.RedAdjust = StringConverter.ParseFloat(val);
 			}
 
 			#endregion
@@ -137,11 +138,11 @@ namespace Axiom.ParticleFX {
 
 			public string Get(object target) {
 				ColorFaderAffector affector = target as ColorFaderAffector;
-				return affector.GreenAdjust.ToString();
+				return StringConverter.ToString(affector.GreenAdjust);
 			}
 			public void Set(object target, string val) {
 				ColorFaderAffector affector = target as ColorFaderAffector;
-				affector.GreenAdjust = ParseHelper.ParseFloat(val);
+				affector.GreenAdjust = StringConverter.ParseFloat(val);
 			}
 
 			#endregion
@@ -153,11 +154,11 @@ namespace Axiom.ParticleFX {
 
 			public string Get(object target) {
 				ColorFaderAffector affector = target as ColorFaderAffector;
-				return affector.BlueAdjust.ToString();
+				return StringConverter.ToString(affector.BlueAdjust);
 			}
 			public void Set(object target, string val) {
 				ColorFaderAffector affector = target as ColorFaderAffector;
-				affector.BlueAdjust = ParseHelper.ParseFloat(val);
+				affector.BlueAdjust = StringConverter.ParseFloat(val);
 			}
 
 			#endregion
@@ -169,11 +170,11 @@ namespace Axiom.ParticleFX {
 
 			public string Get(object target) {
 				ColorFaderAffector affector = target as ColorFaderAffector;
-				return affector.AlphaAdjust.ToString();
+				return StringConverter.ToString(affector.AlphaAdjust);
 			}
 			public void Set(object target, string val) {
 				ColorFaderAffector affector = target as ColorFaderAffector;
-				affector.AlphaAdjust = ParseHelper.ParseFloat(val);
+				affector.AlphaAdjust = StringConverter.ParseFloat(val);
 			}
 
 			#endregion

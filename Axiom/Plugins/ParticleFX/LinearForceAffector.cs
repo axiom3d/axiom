@@ -108,7 +108,7 @@ namespace Axiom.ParticleFX {
 			public void Set(object target, string val) {
 				LinearForceAffector affector = target as LinearForceAffector;
 
-				affector.Force = ParseHelper.ParseVector3(val);
+				affector.Force = StringConverter.ParseVector3(val);
 			}
 
 			#endregion

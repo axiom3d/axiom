@@ -177,7 +177,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             }
 
             if(charPos != currPos) {
-                val = ParseHelper.ParseFloat(floatString);
+                val = StringConverter.ParseFloat(floatString);
                 valueFound = true;
             }
 

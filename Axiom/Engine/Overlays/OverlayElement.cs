@@ -859,28 +859,28 @@ namespace Axiom.Overlays {
         public static void ParseTop(string[] parms, params object[] objects) {
             OverlayElement element = (OverlayElement)objects[0];
 
-            element.Top = ParseHelper.ParseFloat(parms[0]);
+            element.Top = StringConverter.ParseFloat(parms[0]);
         }
 
         [AttributeParser("left", "OverlayElement")]
         public static void ParseLeft(string[] parms, params object[] objects) {
             OverlayElement element = (OverlayElement)objects[0];
 
-            element.Left = ParseHelper.ParseFloat(parms[0]);
+            element.Left = StringConverter.ParseFloat(parms[0]);
         }
 
         [AttributeParser("width", "OverlayElement")]
         public static void ParseWidth(string[] parms, params object[] objects) {
             OverlayElement element = (OverlayElement)objects[0];
 
-            element.Width = ParseHelper.ParseFloat(parms[0]);
+            element.Width = StringConverter.ParseFloat(parms[0]);
         }
 
         [AttributeParser("height", "OverlayElement")]
         public static void ParseHeight(string[] parms, params object[] objects) {
             OverlayElement element = (OverlayElement)objects[0];
 
-            element.Height = ParseHelper.ParseFloat(parms[0]);
+            element.Height = StringConverter.ParseFloat(parms[0]);
         }
 
         [AttributeParser("caption", "OverlayElement")]

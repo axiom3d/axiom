@@ -69,11 +69,11 @@ namespace Axiom.ParticleFX {
 
             public string Get(object target) {
                 DrawEmitter emitter = target as DrawEmitter;
-                return emitter.Distance.ToString();
+                return StringConverter.ToString(emitter.Distance);
             }
             public void Set(object target, string val) {
                 DrawEmitter emitter = target as DrawEmitter;
-                emitter.Distance = ParseHelper.ParseFloat(val);
+                emitter.Distance = StringConverter.ParseFloat(val);
             }
 
             #endregion
