@@ -45,7 +45,7 @@
 			<?if OS = "Win32" ?>
 				<Reference name="Axiom.Platforms.Win32" localCopy="true"/>
 				<Reference name="Axiom.RenderSystems.DirectX9" localCopy="true"/>
-			<? else ?>
+			<?else ?>
 				<Reference name="Axiom.Platforms.SDL" localCopy="true"/>
 			<?endif ?>
 			
