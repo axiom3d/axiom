@@ -31,10 +31,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParticleFX", "ParticleFX\Pa
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioSystem_DirectSound", "AudioSystem_DirectSound\AudioSystem_DirectSound.csproj", "{3C5EDCEC-BC19-4395-B8FF-9ADCB1871CFF}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -73,10 +69,6 @@ Global
 		{9C504B43-E58E-4915-8336-E005C6500797}.Debug.Build.0 = Debug|.NET
 		{9C504B43-E58E-4915-8336-E005C6500797}.Release.ActiveCfg = Release|.NET
 		{9C504B43-E58E-4915-8336-E005C6500797}.Release.Build.0 = Release|.NET
-		{3C5EDCEC-BC19-4395-B8FF-9ADCB1871CFF}.Debug.ActiveCfg = Debug|.NET
-		{3C5EDCEC-BC19-4395-B8FF-9ADCB1871CFF}.Debug.Build.0 = Debug|.NET
-		{3C5EDCEC-BC19-4395-B8FF-9ADCB1871CFF}.Release.ActiveCfg = Release|.NET
-		{3C5EDCEC-BC19-4395-B8FF-9ADCB1871CFF}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(SolutionItems) = postSolution
 		Solution Items\csgl.dll = Solution Items\csgl.dll
