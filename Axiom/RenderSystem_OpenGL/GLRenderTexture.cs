@@ -23,17 +23,6 @@ namespace Axiom.RenderSystems.OpenGL
         ///     
         /// </summary>
         protected override void CopyToTexture() {
-            if(this.NumViewports != 1) {
-                Trace.WriteLine("GLRenderTexture:  A render texture must have only one viewport attached to it.");
-                return;
-            }
-
-            // get the first viewport
-            Viewport viewport = GetViewport(0);
-
-            // render the scene so the color buffer can be copied to a texture
-            viewport.Camera.RenderScene(viewport, false);
-
             int textureID = ((GLTexture)texture).TextureID;
 
             // bind our texture as active
@@ -44,8 +33,8 @@ namespace Axiom.RenderSystems.OpenGL
                 Gl.GL_TEXTURE_2D,
                 texture.NumMipMaps,
                 0, 0,
-                viewport.ActualLeft, viewport.ActualTop,
-                viewport.ActualWidth, viewport.ActualHeight);
+                0, 0,
+                width, height);
         }
 
         /// <summary>
