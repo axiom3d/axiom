@@ -111,23 +111,33 @@ namespace Axiom.Animating {
         ///		The name of this animation track.
         /// </summary>
         public short Index {
-            get { return index; }
-            set { index = value; }
+            get { 
+				return index; 
+			}
+            set { 
+				index = value; 
+			}
         }
 
         /// <summary>
         ///		Collection of the KeyFrames present in this AnimationTrack.
         /// </summary>
         public KeyFrameCollection KeyFrames {
-            get { return keyFrameList; }
+            get { 
+				return keyFrameList; 
+			}
         }
 
         /// <summary>
         ///		Gets/Sets the target node that this track is associated with.
         /// </summary>
         public Node TargetNode {
-            get { return target; }
-            set { target = value; }
+            get { 
+				return target; 
+			}
+            set { 
+				target = value; 
+			}
         }
 
         #endregion
@@ -147,12 +157,21 @@ namespace Axiom.Animating {
         public KeyFrame CreateKeyFrame(float time) {
             KeyFrame keyFrame = new KeyFrame(time);
 
-            // adds sorted by time
-            keyFrameList.Add(keyFrame.Time, keyFrame);
+			if(time > maxKeyFrameTime || (time == 0 && keyFrameList.Count == 0)) {
+				keyFrameList.Add(keyFrame);
+				maxKeyFrameTime = time;
+			}
+			else {
+				// search for the correct place to insert the keyframe
+				int i = 0;
+				KeyFrame kf = keyFrameList[i];
+				
+				while(kf.Time > time && i != keyFrameList.Count) {
+					i++;
+				}
 
-            // update max keyframe time if necessary
-            if(time > maxKeyFrameTime)
-                maxKeyFrameTime = time;
+				keyFrameList.Insert(i, kf);
+			}
 
             isSplineRebuildNeeded = true;
 
