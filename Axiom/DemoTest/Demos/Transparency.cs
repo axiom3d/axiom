@@ -41,8 +41,6 @@ namespace Demos {
         protected override void CreateScene() {
             // set some ambient light
             sceneMgr.AmbientLight = new ColorEx(1.0f, 0.5f, 0.5f, 0.5f);
-    
-            sceneMgr.DisplayNodes = true;
 
             // create a point light (default)
             Light light = sceneMgr.CreateLight("MainLight");

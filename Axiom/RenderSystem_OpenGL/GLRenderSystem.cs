@@ -76,8 +76,14 @@ namespace RenderSystem_OpenGL {
         // local array of light objects to reference during light updating, disabling, etc
         protected Light[] lights;
 
-        protected bool zTrickEven;
+        protected bool zTrickEven;      
 
+        protected SceneDetailLevel lastRasterizationMode;
+        protected ColorEx lastDiffuse, lastAmbient, lastSpecular, lastEmissive;
+        protected float lastShininess;
+        protected TexCoordCalcMethod[] lastTexCalMethods = new TexCoordCalcMethod[Config.MaxTextureLayers];
+        protected bool fogEnabled;
+        
         #endregion Member variables
 
         #region Constructors
@@ -250,6 +256,10 @@ namespace RenderSystem_OpenGL {
         /// </summary>
         protected override SceneDetailLevel RasterizationMode {
             set {
+                if(value == lastRasterizationMode) {
+                    return;
+                }
+
                 // default to fill to make compiler happy
                 int mode = Gl.GL_FILL;
 
@@ -271,6 +281,8 @@ namespace RenderSystem_OpenGL {
 
                 // set the specified polygon mode
                 Gl.glPolygonMode(Gl.GL_FRONT_AND_BACK, mode);
+
+                lastRasterizationMode = value;
             }
         }
 
@@ -531,24 +543,46 @@ namespace RenderSystem_OpenGL {
         /// <param name="emissive"></param>
         /// <param name="shininess"></param>
         protected override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess) {
+            float[] vals = null;
+            
             // ambient
-            float[] vals = GlColorArray(ambient);
-            Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_AMBIENT, vals);
+            if(lastAmbient == null || lastAmbient != ambient) {
+                vals = GlColorArray(ambient);
+                Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_AMBIENT, vals);
+                
+                lastAmbient = ambient;
+            }
 
             // diffuse
-            vals[0] = diffuse.r; vals[1] = diffuse.g; vals[2] = diffuse.b; vals[3] = diffuse.a;
-            Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_DIFFUSE, vals);
+            if(lastDiffuse == null || lastDiffuse != diffuse) {
+                vals[0] = diffuse.r; vals[1] = diffuse.g; vals[2] = diffuse.b; vals[3] = diffuse.a;
+                Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_DIFFUSE, vals);
+
+                lastDiffuse = diffuse;
+            }
 
             // specular
-            vals[0] = specular.r; vals[1] = specular.g; vals[2] = specular.b; vals[3] = specular.a;
-            Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_SPECULAR, vals);
+            if(lastSpecular == null || lastSpecular != specular) {
+                vals[0] = specular.r; vals[1] = specular.g; vals[2] = specular.b; vals[3] = specular.a;
+                Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_SPECULAR, vals);
+
+                lastSpecular = specular;
+            }
 
             // emissive
-            vals[0] = emissive.r; vals[1] = emissive.g; vals[2] = emissive.b; vals[3] = emissive.a;
-            Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_EMISSION, vals);
+            if(lastEmissive == null || lastEmissive != emissive) {
+                vals[0] = emissive.r; vals[1] = emissive.g; vals[2] = emissive.b; vals[3] = emissive.a;
+                Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_EMISSION, vals);
+
+                lastEmissive = emissive;
+            }
 
             // shininess
-            Gl.glMaterialf(Gl.GL_FRONT_AND_BACK, Gl.GL_SHININESS, shininess);
+            if(lastShininess != shininess) {
+                Gl.glMaterialf(Gl.GL_FRONT_AND_BACK, Gl.GL_SHININESS, shininess);
+
+                lastShininess = shininess;
+            }
         }
 
         /// <summary>
@@ -557,6 +591,10 @@ namespace RenderSystem_OpenGL {
         /// <param name="stage"></param>
         /// <param name="texAddressingMode"></param>
         protected override void SetTextureAddressingMode(int stage, TextureAddressing texAddressingMode) {
+            if(textureUnits[stage].TextureAddressing == texAddressingMode) {
+                return;
+            }
+
             int type = 0;
 
             // find out the GL equivalent of out TextureAddressing enum
@@ -760,10 +798,15 @@ namespace RenderSystem_OpenGL {
 
             switch(method) {
                 case TexCoordCalcMethod.None:
-                    Gl.glDisable( Gl.GL_TEXTURE_GEN_S );
-                    Gl.glDisable( Gl.GL_TEXTURE_GEN_T );
-                    Gl.glDisable( Gl.GL_TEXTURE_GEN_R );
-                    Gl.glDisable( Gl.GL_TEXTURE_GEN_Q );
+
+                    if(lastTexCalMethods[stage] != method) {
+                        Gl.glDisable( Gl.GL_TEXTURE_GEN_S );
+                        Gl.glDisable( Gl.GL_TEXTURE_GEN_T );
+                        Gl.glDisable( Gl.GL_TEXTURE_GEN_R );
+                        Gl.glDisable( Gl.GL_TEXTURE_GEN_Q );
+
+                        lastTexCalMethods[stage] = method;
+                    }
                     break;
 
                 case TexCoordCalcMethod.EnvironmentMap:
@@ -971,7 +1014,10 @@ namespace RenderSystem_OpenGL {
                     fogMode = Gl.GL_LINEAR;
                     break;
                 default:
-                    Gl.glDisable(Gl.GL_FOG);
+                    if(fogEnabled) {
+                        Gl.glDisable(Gl.GL_FOG);
+                        fogEnabled = false;
+                    }
                     return;
             } // switch
 

@@ -48,15 +48,15 @@ namespace Axiom.Core {
     public sealed class Viewport {
         #region Protected member variables
 		
-        protected Camera camera;
-        protected RenderTarget target;
-        protected float relativeLeft, relativeTop, relativeWidth, relativeHeight;
-        protected int actualLeft, actualTop, actualWidth, actualHeight;
-        protected int zOrder;
-        protected ColorEx backColor;
-        protected bool clearEveryFrame;
-        protected bool isUpdated;
-        protected bool showOverlays;
+        private Camera camera;
+        private RenderTarget target;
+        private float relativeLeft, relativeTop, relativeWidth, relativeHeight;
+        private int actualLeft, actualTop, actualWidth, actualHeight;
+        private int zOrder;
+        private ColorEx backColor;
+        private bool clearEveryFrame;
+        private bool isUpdated;
+        private bool showOverlays;
 		
         #endregion
 

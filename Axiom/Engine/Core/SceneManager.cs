@@ -455,11 +455,8 @@ namespace Axiom.Core {
         protected int SetMaterial(Material material, int numLayersLeft) {
             // TODO: Complete Implementation of SetMaterial
 
-            // Surface
-            if(firstTime || !material.CompareSurfaceParams(lastMaterialUsed)) {
-                // set the surface params of the render system
-                targetRenderSystem.SetSurfaceParams(material.Ambient, material.Diffuse, material.Specular, material.Emissive, material.Shininess);
-            }
+            // set the surface params of the render system
+            targetRenderSystem.SetSurfaceParams(material.Ambient, material.Diffuse, material.Specular, material.Emissive, material.Shininess);
 
             // Scene Blending
             if(firstTime || lastUsedFallback ||
