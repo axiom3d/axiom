@@ -1,6 +1,8 @@
 12-05-2004
 - Fixed W Buffer check in D3D to only apply for 16 bit color.
 - Updated RenderToTexture demo!  Shows off texture projection and oblique depth projection for acheiving reflection without advanced hardware features.
+- Added support for non power of 2 texture in OpenGL, which was long overdue as a TODO.  As a result, for anyone who ever noticed the Ogre tusks 
+  looked incorrect in GL can rejoice since this is now fixed.  
 
 12-04-2004
 - Shadow volumes are now extruded to infinity on hardware that supports it.
