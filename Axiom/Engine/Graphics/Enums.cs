@@ -445,18 +445,22 @@ namespace Axiom.Graphics {
 		/// <summary>
 		///		No fog.
 		///	 </summary>
+		[ScriptEnum("none")]
 		None,
 		/// <summary>
 		///		Fog density increases exponentially from the camera (fog = 1/e^(distance * density)).
 		///	 </summary>
+		[ScriptEnum("exp")]
 		Exp,
 		/// <summary>
 		///		Fog density increases at the square of FOG_EXP, i.e. even quicker (fog = 1/e^(distance * density)^2).
 		///	 </summary>
+		[ScriptEnum("exp2")]
 		Exp2,
 		/// <summary>
 		///		Fog density increases linearly between the start and end distances.
 		///	 </summary>
+		[ScriptEnum("linear")]
 		Linear
 	}
 
@@ -906,14 +910,17 @@ namespace Axiom.Graphics {
 		/// <summary>
 		///		Draw with a single color.
 		///	 </summary>
+		[ScriptEnum("flat")]
 		Flat,
 		/// <summary>
 		///		Interpolate color across primitive vertices.
 		///	 </summary>
+		[ScriptEnum("gouraud")]
 		Gouraud,
 		/// <summary>
 		///		Draw everything (2 sided geometry).
 		///	 </summary>
+		[ScriptEnum("phong")]
 		Phong
 	}
 
