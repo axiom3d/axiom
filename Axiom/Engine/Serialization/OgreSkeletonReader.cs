@@ -64,8 +64,6 @@ namespace Axiom.Serialization {
                 } // while
             }
             catch(EndOfStreamException) {
-                skeleton.DumpContents(@"D:\skeleton.txt");
-
                 // assume bones are stored in binding pose
                 skeleton.SetBindingPose();
             }
