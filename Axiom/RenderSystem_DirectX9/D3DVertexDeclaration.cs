@@ -58,6 +58,15 @@ namespace Axiom.RenderSystems.DirectX9 {
             needsRebuild = true;
         }
 
+        public override Axiom.Graphics.VertexElement AddElement(short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index) {
+            Axiom.Graphics.VertexElement element =  base.AddElement (source, offset, type, semantic, index);
+
+            needsRebuild = true;
+
+            return element;
+        }
+
+
         #endregion
 		
         #region Properties
