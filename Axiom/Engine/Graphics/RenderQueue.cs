@@ -298,9 +298,17 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="item"></param>
         public void AddRenderable(IRenderable item) {
-            Debug.Assert(item.Material != null && item.Technique != null, "Cannot add a IRenderable to the queue if it has a null Material or Technique.");
-
-            Technique t = item.Technique;
+            Technique t = null;
+                
+            // Check material & technique supplied (the former since the default implementation
+            // of getTechnique is based on it for backwards compatibility
+            if(item.Material == null || item.Technique == null) {
+                // use default if not found
+                t = MaterialManager.Instance["BaseWhite"].GetTechnique(0);
+            }
+            else {
+                t = item.Technique;
+            }
 
             // loop through each pass and queue it up
             if(t.IsTransparent) {

@@ -106,21 +106,25 @@ namespace Axiom.Graphics
 
                 int numTexUnitsRequested = pass.NumTextureUnitStages;
 
-                if(pass.IsProgrammable) {
+                if(pass.HasFragmentProgram) {
                     // check texture units
                     if(numTexUnitsRequested > numAvailTexUnits) {
                         // can't do this, since programmable passes cannot be split automatically
                         isSupported = false;
                         return;
                     }
-                    // check vertex program version
-                    if(!GpuProgramManager.Instance.IsSyntaxSupported(pass.VertexProgram.SyntaxCode)) {
+
+                    // check fragment program version
+                    if(!GpuProgramManager.Instance.IsSyntaxSupported(pass.FragmentProgram.SyntaxCode)) {
                         // can't do this one
                         isSupported = false;
                         return;
                     }
-                    // check fragment program version
-                    if(!GpuProgramManager.Instance.IsSyntaxSupported(pass.FragmentProgram.SyntaxCode)) {
+                }
+
+                if(pass.HasVertexProgram) {
+                    // check vertex program version
+                    if(!GpuProgramManager.Instance.IsSyntaxSupported(pass.VertexProgram.SyntaxCode)) {
                         // can't do this one
                         isSupported = false;
                         return;

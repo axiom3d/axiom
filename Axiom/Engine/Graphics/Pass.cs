@@ -247,6 +247,9 @@ namespace Axiom.Graphics
         /// <param name="state">TextureUnitState to add to this pass.</param>
         public void AddTextureUnitState(TextureUnitState state) {
             textureUnitStates.Add(state);
+
+            // needs recompilation
+            parent.NotifyNeedsRecompile();
         }
 
         /// <summary>
@@ -298,6 +301,8 @@ namespace Axiom.Graphics
             state.TextureName = textureName;
             state.TextureCoordSet = texCoordSet;
             textureUnitStates.Add(state);
+            // needs recompilation
+            parent.NotifyNeedsRecompile();
             return state;
         }
 
@@ -375,6 +380,9 @@ namespace Axiom.Graphics
         /// </summary>
         public void RemoveAllTextureUnitStates() {
             textureUnitStates.Clear();
+
+            // needs recompilation
+            parent.NotifyNeedsRecompile();
         }
 
         /// <summary>
@@ -383,6 +391,9 @@ namespace Axiom.Graphics
         /// <param name="state">A reference to the TextureUnitState to remove from this pass.</param>
         public void RemoveTextureUnitState(TextureUnitState state) {
             textureUnitStates.Remove(state);
+
+            // needs recompilation
+            parent.NotifyNeedsRecompile();
         }
 
         /// <summary>
@@ -959,6 +970,9 @@ namespace Axiom.Graphics
 
                     fragmentProgramUsage.ProgramName = value;
                 }
+
+                // needs recompilation
+                parent.NotifyNeedsRecompile();
             }
         }
 
@@ -1236,6 +1250,9 @@ namespace Axiom.Graphics
 
                     vertexProgramUsage.ProgramName = value;
                 }
+
+                // needs recompilation
+                parent.NotifyNeedsRecompile();
             }
         }
 
