@@ -20,10 +20,11 @@ namespace Axiom.Platforms.Win32
 		private DInput.Device mouseDevice;
 		private int mouseRelX, mouseRelY, mouseRelZ;
 		private int mouseAbsX, mouseAbsY, mouseAbsZ;
-		private bool	 isInitialised;
+		private bool isInitialised;
 		private bool useMouse, useKeyboard, useGamepad;
 		private int mouseButtons;
 		private System.Windows.Forms.Control control;
+		private bool ownMouse;
 
 		public Win32InputReader() {
 		}
@@ -152,19 +153,25 @@ namespace Axiom.Platforms.Win32
 		/// <param name="useKeyboard"></param>
 		/// <param name="useMouse"></param>
 		/// <param name="useGamepad"></param>
-		public void Initialize(RenderWindow window, Queue eventQueue, bool useKeyboard, bool useMouse, bool useGamepad) {
+		public void Initialize(RenderWindow window, Queue eventQueue, bool useKeyboard, bool useMouse, bool useGamepad, bool ownMouse) {
 			this.useKeyboard = useKeyboard;
 			this.useMouse = useMouse;
 			this.useGamepad = useGamepad;
+			this.ownMouse = ownMouse;
 
 			control = window.Handle as System.Windows.Forms.Control;
 
-            if(control is System.Windows.Forms.Form)
-                control = control;
-            else if(control is System.Windows.Forms.PictureBox)
-                control = control.Parent;
-            else
-                throw new Axiom.Exceptions.AxiomException("Input subsystem must have either a Form or PictureBox to set coop level.");
+			if(control is System.Windows.Forms.Form) {
+				control = control;
+			}
+			else if(control is System.Windows.Forms.PictureBox) {
+				while(!(control is System.Windows.Forms.Form) && control != null) {
+					control = control.Parent;
+				}
+			}
+			else {
+				throw new Axiom.Exceptions.AxiomException("Input subsystem must have either a Form or PictureBox to set coop level.");
+			}
 
 
 			if(useKeyboard)
@@ -506,7 +513,7 @@ namespace Axiom.Platforms.Win32
 			keyboardDevice = new DInput.Device(SystemGuid.Keyboard);
 
 			// grab the keyboard non-exclusively
-			keyboardDevice.SetCooperativeLevel(control, CooperativeLevelFlags.NonExclusive | CooperativeLevelFlags.Background);
+			keyboardDevice.SetCooperativeLevel(null, CooperativeLevelFlags.NonExclusive | CooperativeLevelFlags.Background);
 
 			// Set the data format to the keyboard pre-defined format.
 			keyboardDevice.SetDataFormat(DeviceDataFormat.Keyboard);
@@ -532,7 +539,12 @@ namespace Axiom.Platforms.Win32
 			mouseDevice.SetDataFormat(DeviceDataFormat.Mouse);
 
 			// set cooperation level
-			mouseDevice.SetCooperativeLevel(control, CooperativeLevelFlags.Exclusive | CooperativeLevelFlags.Foreground);
+			if(ownMouse) {
+				mouseDevice.SetCooperativeLevel(control, CooperativeLevelFlags.Exclusive | CooperativeLevelFlags.Foreground);
+			}
+			else {
+				mouseDevice.SetCooperativeLevel(null, CooperativeLevelFlags.NonExclusive | CooperativeLevelFlags.Background);
+			}
 
 			// note: dont acquire yet, wait till capture
 		}
