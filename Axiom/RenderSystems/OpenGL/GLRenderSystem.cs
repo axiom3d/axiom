@@ -27,7 +27,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
@@ -158,7 +157,6 @@ namespace Axiom.RenderSystems.OpenGL {
 				return glSupport.ConfigOptions;
 			}
 		}
-
 
 		public override void ClearFrameBuffer(FrameBuffer buffers, ColorEx color, float depth, int stencil) {
 			int flags = 0;
