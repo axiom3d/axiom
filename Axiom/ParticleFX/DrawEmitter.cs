@@ -36,7 +36,7 @@ namespace Axiom.ParticleFX {
             pos.z = MathUtil.SymmetricRandom() * distance;
 
             // point emitter emits starting from its own position
-            particle.Position = pos;
+            particle.Position = pos + particle.ParentSet.WorldPosition;
 
             GenerateEmissionColor(particle.Color);
             particle.Direction = particle.ParentSet.WorldPosition - particle.Position;

@@ -103,12 +103,18 @@ namespace Axiom.RenderSystems.DirectX9 {
 		#region Implementation of RenderSystem
 
 		public override ColorEx AmbientLight {
+			get {
+				throw new NotImplementedException();
+			}
 			set {
 				device.RenderState.Ambient = value.ToColor();
 			}
 		}
 	
 		public override bool LightingEnabled {
+			get {
+				throw new NotImplementedException();
+			}
 			set {
 				if(lightingEnabled == value) {
 					//return;
@@ -122,18 +128,27 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// 
 		/// </summary>
 		public override bool NormalizeNormals {
+			get {
+				throw new NotImplementedException();
+			}
 			set {
 				device.RenderState.NormalizeNormals = value;
 			}
 		}
 
 		public override Shading ShadingMode {
+			get {
+				throw new NotImplementedException();
+			}
 			set {
 				device.RenderState.ShadeMode = D3DHelper.ConvertEnum(value);
 			}
 		}
 	
 		public override bool StencilCheckEnabled {
+			get {
+				throw new NotImplementedException();
+			}
 			set {
 				device.RenderState.StencilEnable = value;
 			}
@@ -365,7 +380,10 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// <summary>
 		///		Sets the rasterization mode to use during rendering.
 		/// </summary>
-		protected override SceneDetailLevel RasterizationMode {
+		public override SceneDetailLevel RasterizationMode {
+			get {
+				throw new NotImplementedException();
+			}
 			set {
 				switch(value) {
 					case SceneDetailLevel.Points:
@@ -387,13 +405,13 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// <param name="stage"></param>
 		/// <param name="func"></param>
 		/// <param name="val"></param>
-		protected override void SetAlphaRejectSettings(int stage, CompareFunction func, byte val) {
+		public override void SetAlphaRejectSettings(int stage, CompareFunction func, byte val) {
 			device.RenderState.AlphaTestEnable = (func != CompareFunction.AlwaysPass);
 			device.RenderState.AlphaFunction = D3DHelper.ConvertEnum(func);
 			device.RenderState.ReferenceAlpha = val;
 		}
 
-		protected override void SetColorBufferWriteEnabled(bool red, bool green, bool blue, bool alpha) {
+		public override void SetColorBufferWriteEnabled(bool red, bool green, bool blue, bool alpha) {
 			D3D.ColorWriteEnable val = 0;
 
 			if(red) {
@@ -421,7 +439,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// <param name="density"></param>
 		/// <param name="start"></param>
 		/// <param name="end"></param>
-		protected override void SetFog(Axiom.Graphics.FogMode mode, ColorEx color, float density, float start, float end) {
+		public override void SetFog(Axiom.Graphics.FogMode mode, ColorEx color, float density, float start, float end) {
 			// disable fog if set to none
 			if(mode == FogMode.None) {
 				device.RenderState.FogTableMode = D3D.FogMode.None;
@@ -520,7 +538,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override void BeginFrame() {
+		public override void BeginFrame() {
 			Debug.Assert(activeViewport != null, "BeingFrame cannot run without an active viewport.");
 
 			// clear the device if need be
@@ -545,7 +563,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override void EndFrame() {
+		public override void EndFrame() {
 			// end the D3D scene
 			device.EndScene();
 		}
@@ -554,7 +572,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// 
 		/// </summary>
 		/// <param name="viewport"></param>
-		protected override void SetViewport(Axiom.Core.Viewport viewport) {
+		public override void SetViewport(Axiom.Core.Viewport viewport) {
 			if(activeViewport != viewport || viewport.IsUpdated) {
 				// store this viewport and it's target
 				activeViewport = viewport;
@@ -673,7 +691,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// <param name="stage"></param>
 		/// <param name="enabled"></param>
 		/// <param name="textureName"></param>
-		protected override void SetTexture(int stage, bool enabled, string textureName) {
+		public override void SetTexture(int stage, bool enabled, string textureName) {
 			D3DTexture texture = (D3DTexture)TextureManager.Instance.GetByName(textureName);
 
 			if(enabled && texture != null)
@@ -689,7 +707,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// </summary>
 		/// <param name="stage"></param>
 		/// <param name="maxAnisotropy"></param>
-		protected override void SetTextureLayerAnisotropy(int stage, int maxAnisotropy) {
+		public override void SetTextureLayerAnisotropy(int stage, int maxAnisotropy) {
 			if(maxAnisotropy > d3dCaps.MaxAnisotropy) {
 				maxAnisotropy = d3dCaps.MaxAnisotropy;
 			}
@@ -704,7 +722,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// </summary>
 		/// <param name="stage"></param>
 		/// <param name="method"></param>
-		protected override void SetTextureCoordCalculation(int stage, TexCoordCalcMethod method) {
+		public override void SetTextureCoordCalculation(int stage, TexCoordCalcMethod method) {
 			// save this for texture matrix calcs later
 			texStageDesc[stage].autoTexCoordType = method;
 
@@ -800,12 +818,18 @@ namespace Axiom.RenderSystems.DirectX9 {
 		#endregion
 
 		public override Axiom.MathLib.Matrix4 WorldMatrix {
+			get {
+				throw new NotImplementedException();
+			}
 			set {
 				device.Transform.World = MakeD3DMatrix(value);
 			}
 		}
 
 		public override Axiom.MathLib.Matrix4 ViewMatrix {
+			get {
+				throw new NotImplementedException();
+			}
 			set {
 				// flip the transform portion of the matrix for DX and its left-handed coord system
 				DX.Matrix dxView = MakeD3DMatrix(value);
@@ -819,6 +843,9 @@ namespace Axiom.RenderSystems.DirectX9 {
 		}
 
 		public override Axiom.MathLib.Matrix4 ProjectionMatrix {
+			get {
+				throw new NotImplementedException();
+			}
 			set {
 				Matrix mat = MakeD3DMatrix(value);
 
@@ -835,7 +862,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// </summary>
 		/// <param name="lightList"></param>
 		/// <param name="limit"></param>
-		protected override void UseLights(LightList lightList, int limit) {
+		public override void UseLights(LightList lightList, int limit) {
 			int i = 0;
 
 			for( ; i < limit && i < lightList.Count; i++) {
@@ -853,7 +880,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 			return color.ToARGB();
 		}
 
-		protected override void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest) {
+		public override void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest) {
 			// set the render states after converting the incoming values to D3D.Blend
 			device.RenderState.SourceBlend = D3DHelper.ConvertEnum(src);
 			device.RenderState.DestinationBlend = D3DHelper.ConvertEnum(dest);
@@ -879,7 +906,10 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override int DepthBias {
+		public override int DepthBias {
+			get {
+				throw new NotImplementedException();
+			}
 			set {
 				device.RenderState.DepthBias = (float)value;
 			}
@@ -888,7 +918,10 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override bool DepthCheck {
+		public override bool DepthCheck {
+			get {
+				throw new NotImplementedException();
+			}
 			set {
 				if(value) {
 					// use w-buffer if available
@@ -908,7 +941,10 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override CompareFunction DepthFunction {
+		public override CompareFunction DepthFunction {
+			get {
+				throw new NotImplementedException();
+			}
 			set {
 				device.RenderState.ZBufferFunction = D3DHelper.ConvertEnum(value);
 			}
@@ -917,7 +953,10 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override bool DepthWrite {
+		public override bool DepthWrite {
+			get {
+				return device.RenderState.ZBufferWriteEnable;
+			}
 			set {
 				device.RenderState.ZBufferWriteEnable = value;
 			}
@@ -1045,7 +1084,13 @@ namespace Axiom.RenderSystems.DirectX9 {
 		}
 
 		#endregion
-	
+
+		public override void SetDepthBufferParams(bool depthTest, bool depthWrite, CompareFunction depthFunction) {
+			this.DepthCheck = depthTest;
+			this.DepthWrite = depthWrite;
+			this.DepthFunction = depthFunction;
+		}
+
 		public override void SetStencilBufferParams(CompareFunction function, int refValue, int mask, StencilOperation stencilFailOp, StencilOperation depthFailOp, StencilOperation passOp, bool twoSidedOperation) {
 			// 2 sided operation?
 			if(twoSidedOperation) {
@@ -1082,7 +1127,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// <param name="specular"></param>
 		/// <param name="emissive"></param>
 		/// <param name="shininess"></param>
-		protected override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess) {
+		public override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess) {
 			// create a new material based on the supplied params
 			D3D.Material mat = new D3D.Material();
 			mat.Ambient = ambient.ToColor();
@@ -1099,7 +1144,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// </summary>
 		/// <param name="stage"></param>
 		/// <param name="texAddressingMode"></param>
-		protected override void SetTextureAddressingMode(int stage, TextureAddressing texAddressingMode) {
+		public override void SetTextureAddressingMode(int stage, TextureAddressing texAddressingMode) {
 			D3D.TextureAddress d3dMode = 0;
 
 			// convert from ours to D3D
@@ -1187,7 +1232,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// </summary>
 		/// <param name="stage"></param>
 		/// <param name="index"></param>
-		protected override void SetTextureCoordSet(int stage, int index) {
+		public override void SetTextureCoordSet(int stage, int index) {
 			device.TextureState[stage].TextureCoordinateIndex = index;
 
 			// store
@@ -1200,7 +1245,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// <param name="unit"></param>
 		/// <param name="type"></param>
 		/// <param name="filter"></param>
-		protected override void SetTextureUnitFiltering(int unit, FilterType type, FilterOptions filter) {
+		public override void SetTextureUnitFiltering(int unit, FilterType type, FilterOptions filter) {
 			D3DTexType texType = texStageDesc[unit].texType;
 			D3D.TextureFilter texFilter = D3DHelper.ConvertEnum(type, filter, d3dCaps, texType);
 
@@ -1224,7 +1269,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// </summary>
 		/// <param name="stage"></param>
 		/// <param name="xform"></param>
-		protected override void SetTextureMatrix(int stage, Matrix4 xform) {
+		public override void SetTextureMatrix(int stage, Matrix4 xform) {
 			DX.Matrix d3dMat = DX.Matrix.Identity;
 			Matrix4 newMat = xform;
 
