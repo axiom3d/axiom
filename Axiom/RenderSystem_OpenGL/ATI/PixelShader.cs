@@ -774,8 +774,8 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             new RegModOffset(33, Symbol.C_BASE, 2)
         };
 
-        static MacroRegModify texm3x3tex_MacroMods =
-            new MacroRegModify(texm3x3tex, texm3xxtex_RegMods);
+        static MacroRegModify texm3x3spec_MacroMods =
+            new MacroRegModify(texm3x3spec, texm3x3spec_RegMods);
 
         #endregion Static Fields
 
