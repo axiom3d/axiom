@@ -28,7 +28,7 @@ using System;
 using System.Collections;
 using Axiom.Core;
 using Axiom.Controllers.Canned;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 
 namespace Axiom.Controllers {
     /// <summary>

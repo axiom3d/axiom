@@ -30,7 +30,7 @@ using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Gui;
 using Axiom.Scripting;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 
 namespace Plugin_GuiElements
 {
@@ -85,7 +85,7 @@ namespace Plugin_GuiElements
         ///    Returns the geometry to use during rendering.
         /// </summary>
         /// <param name="op"></param>
-        public override void GetRenderOperation(Axiom.SubSystems.Rendering.RenderOperation op) {
+        public override void GetRenderOperation(Axiom.Graphics.RenderOperation op) {
             op.vertexData = renderOp.vertexData;
             op.operationType = renderOp.operationType;
             op.useIndices = renderOp.useIndices;

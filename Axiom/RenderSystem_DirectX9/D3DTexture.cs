@@ -30,8 +30,8 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using Axiom.Core;
-using Axiom.Enumerations;
-using Axiom.SubSystems.Rendering;
+
+using Axiom.Graphics;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using D3D = Microsoft.DirectX.Direct3D;

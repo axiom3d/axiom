@@ -29,7 +29,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
 using Axiom.Core;
-using Axiom.Enumerations;
+
 using Axiom.MathLib;
 
 namespace Axiom.ParticleSystems {

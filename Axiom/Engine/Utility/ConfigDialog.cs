@@ -33,7 +33,7 @@ using System.Xml;
 using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Exceptions;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 
 namespace Axiom.Utility {
     public class ConfigDialog : Form {

@@ -29,9 +29,8 @@ using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
 using Axiom.Collections;
-using Axiom.Enumerations;
 using Axiom.MathLib;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 
 namespace Axiom.Core {
     /// <summary>

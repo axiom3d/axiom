@@ -29,7 +29,7 @@ using System.Drawing;
 using Axiom.Animating;
 using Axiom.Core;
 using Axiom.MathLib;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 using Axiom.Utility;
 
 namespace Demos {

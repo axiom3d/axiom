@@ -33,7 +33,7 @@ using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.MathLib;
 using Axiom.Serialization;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 
 namespace Axiom.Core {
     /// <summary>

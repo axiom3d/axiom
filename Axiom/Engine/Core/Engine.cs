@@ -39,7 +39,7 @@ using Axiom.Physics;
 using Axiom.Input;
 using Axiom.ParticleSystems;
 using Axiom.Utility;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 
 namespace Axiom.Core {
     /// <summary>

@@ -65,7 +65,6 @@
     <File name=".\Core\SceneManagerList.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\SceneNode.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\SceneObject.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\Core\SimpleRenderable.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Sphere.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\SubEntity.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Texture.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
@@ -73,7 +72,6 @@
     <File name=".\Core\TextureManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Viewport.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\WireBoundingBox.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\Enumerations\Enums.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\EventSystem\EventProcessor.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\EventSystem\IKeyTarget.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\EventSystem\IMouseTarget.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
@@ -106,14 +104,6 @@
     <File name=".\Scripting\AutoAttribute.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Scripting\GameObject.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Scripting\State.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\Enums.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\HardwareCaps.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\IRenderable.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\RenderOperation.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\RenderQueue.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\RenderSystem.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\RenderTarget.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\RenderWindow.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Text\TextManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Utility\ConfigDialog.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Utility\DefaultForm.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
@@ -123,15 +113,6 @@
     <File name=".\Utility\DefaultForm.resources" subtype="Code" buildaction="EmbedAsResource" dependson="" data="" />
     <File name=".\Utility\Axiom.Utility.ConfigDialog.resources" subtype="Code" buildaction="EmbedAsResource" dependson="" data="" />
     <File name=".\Serialization\OgreMeshReader.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\SoftwareBufferManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\VertexBufferBinding.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\VertexDeclaration.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\VertexElement.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\VertexIndexData.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\HardwareBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\HardwareBufferManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\HardwareIndexBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\HardwareVertexBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Material.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\MaterialManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\MeshManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
@@ -147,9 +128,30 @@
     <File name=".\Gui\GuiElement.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Gui\IGuiElementFactory.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\SceneQuery.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\GpuProgramParameters.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\GpuProgram.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\GpuProgramManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\Enums.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\RenderSystem.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\RenderTarget.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\RenderWindow.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\SimpleRenderable.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\SoftwareBufferManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\VertexBufferBinding.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\VertexDeclaration.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\VertexElement.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\VertexIndexData.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\Enums.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\GpuProgram.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\GpuProgramManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\GpuProgramParameters.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\HardwareBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\HardwareBufferManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\HardwareCaps.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\HardwareIndexBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\HardwareVertexBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\HighLevelGpuProgram.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\HighLevelGpuProgramManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\IRenderable.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\RenderOperation.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Graphics\RenderQueue.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References>
     <Reference type="Project" refto="MathLib" localcopy="True" />

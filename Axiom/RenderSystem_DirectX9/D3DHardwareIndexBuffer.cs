@@ -28,7 +28,7 @@ using System;
 using System.Runtime.InteropServices;
 using Microsoft.DirectX.Direct3D;
 using D3D = Microsoft.DirectX.Direct3D;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 
 namespace RenderSystem_DirectX9 {
     /// <summary>

@@ -35,7 +35,7 @@ using T = Axiom.Core.Viewport;
 // type of object to be used for the key
 using K = System.Int32;
 // type of parent of this collection (if any)
-using P = Axiom.SubSystems.Rendering.RenderTarget;
+using P = Axiom.Graphics.RenderTarget;
 
 namespace Axiom.Collections {
     /// <summary>

@@ -31,7 +31,7 @@ using Axiom.Controllers;
 using Axiom.Controllers.Canned;
 using Axiom.Core;
 using Axiom.MathLib;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 using Axiom.Utility;
 
 namespace Demos {

@@ -27,13 +27,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Microsoft.DirectX.Direct3D;
 using D3D = Microsoft.DirectX.Direct3D;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 
 namespace RenderSystem_DirectX9 {
     /// <summary>
     /// 	Summary description for D3DVertexDeclaration.
     /// </summary>
-    public class D3DVertexDeclaration : Axiom.SubSystems.Rendering.VertexDeclaration {
+    public class D3DVertexDeclaration : Axiom.Graphics.VertexDeclaration {
         #region Member variables
 
         protected D3D.Device device;
@@ -52,7 +52,7 @@ namespace RenderSystem_DirectX9 {
 		
         #region Methods
 
-        public override void AddElement(Axiom.SubSystems.Rendering.VertexElement element) {
+        public override void AddElement(Axiom.Graphics.VertexElement element) {
             base.AddElement (element);
 
             needsRebuild = true;
@@ -78,8 +78,8 @@ namespace RenderSystem_DirectX9 {
 	
                     // loop through and configure each element for D3D
                     for(int i = 0; i < elements.Count; i++) {
-                        Axiom.SubSystems.Rendering.VertexElement element = 
-                            (Axiom.SubSystems.Rendering.VertexElement)elements[i];
+                        Axiom.Graphics.VertexElement element = 
+                            (Axiom.Graphics.VertexElement)elements[i];
 
                         d3dElements[i].DeclarationMethod = D3D.DeclarationMethod.Default;
                         d3dElements[i].Offset = (short)element.Offset;

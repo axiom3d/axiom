@@ -31,7 +31,7 @@ using Axiom.Core;
 using Axiom.Fonts;
 using Axiom.Gui;
 using Axiom.Scripting;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 using Font = Axiom.Fonts.Font;
 
 namespace Plugin_GuiElements

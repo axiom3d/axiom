@@ -29,15 +29,15 @@ using System.Collections;
 using System.Diagnostics;
 using Axiom.Configuration;
 using Axiom.Core;
-using Axiom.Enumerations;
+
 using Axiom.MathLib;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 using Axiom.Utility;
 
-using FogMode = Axiom.SubSystems.Rendering.FogMode;
-using LightType = Axiom.SubSystems.Rendering.LightType;
-using StencilOperation = Axiom.SubSystems.Rendering.StencilOperation;
-using TextureFiltering = Axiom.SubSystems.Rendering.TextureFiltering;
+using FogMode = Axiom.Graphics.FogMode;
+using LightType = Axiom.Graphics.LightType;
+using StencilOperation = Axiom.Graphics.StencilOperation;
+using TextureFiltering = Axiom.Graphics.TextureFiltering;
 using Microsoft.DirectX;
 using DX = Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
@@ -126,7 +126,7 @@ namespace RenderSystem_DirectX9 {
             }
         }
 	
-        public override Axiom.SubSystems.Rendering.StencilOperation StencilBufferPassOperation {
+        public override Axiom.Graphics.StencilOperation StencilBufferPassOperation {
             set {
                 device.RenderState.StencilPass = D3DHelper.ConvertEnum(value);
             }
@@ -166,7 +166,7 @@ namespace RenderSystem_DirectX9 {
         /// 
         /// </summary>
         /// DOC
-        protected void SetVertexDeclaration(Axiom.SubSystems.Rendering.VertexDeclaration decl) {
+        protected void SetVertexDeclaration(Axiom.Graphics.VertexDeclaration decl) {
             // TODO: Check for duplicate setting and avoid setting if dupe
             D3DVertexDeclaration d3dVertDecl = (D3DVertexDeclaration)decl;
 
@@ -186,13 +186,13 @@ namespace RenderSystem_DirectX9 {
 
                     // set the sampler states appropriately
                     switch(value) {
-                        case Axiom.SubSystems.Rendering.TextureFiltering.None:
+                        case Axiom.Graphics.TextureFiltering.None:
                             sampler.MagFilter = TextureFilter.Point;
                             sampler.MinFilter = TextureFilter.Point;
                             sampler.MipFilter = TextureFilter.None;
                             break;
 
-                        case Axiom.SubSystems.Rendering.TextureFiltering.Bilinear:
+                        case Axiom.Graphics.TextureFiltering.Bilinear:
                             if(d3dCaps.TextureFilterCaps.SupportsMinifyLinear) {
                                 sampler.MagFilter = TextureFilter.Linear;
                                 sampler.MinFilter = TextureFilter.Linear;
@@ -201,7 +201,7 @@ namespace RenderSystem_DirectX9 {
 
                             break;
 
-                        case Axiom.SubSystems.Rendering.TextureFiltering.Trilinear:
+                        case Axiom.Graphics.TextureFiltering.Trilinear:
                             if(d3dCaps.TextureFilterCaps.SupportsMipMapLinear) {
                                 sampler.MagFilter = TextureFilter.Linear;
                                 sampler.MinFilter = TextureFilter.Linear;
@@ -333,7 +333,7 @@ namespace RenderSystem_DirectX9 {
             }
         }
 
-        protected override void SetFog(Axiom.SubSystems.Rendering.FogMode mode, ColorEx color, float density, float start, float end) {
+        protected override void SetFog(Axiom.Graphics.FogMode mode, ColorEx color, float density, float start, float end) {
             // disable fog if set to none
             if(mode == FogMode.None) {
                 device.RenderState.FogTableMode = D3D.FogMode.None;
@@ -594,13 +594,13 @@ namespace RenderSystem_DirectX9 {
 
             // set the sampler states appropriately
             switch(filtering) {
-                case Axiom.SubSystems.Rendering.TextureFiltering.None:
+                case Axiom.Graphics.TextureFiltering.None:
                     sampler.MagFilter = TextureFilter.Point;
                     sampler.MinFilter = TextureFilter.Point;
                     sampler.MipFilter = TextureFilter.None;
                     break;
 
-                case Axiom.SubSystems.Rendering.TextureFiltering.Bilinear:
+                case Axiom.Graphics.TextureFiltering.Bilinear:
                     if(d3dCaps.TextureFilterCaps.SupportsMinifyLinear) {
                         sampler.MagFilter = TextureFilter.Linear;
                         sampler.MinFilter = TextureFilter.Linear;
@@ -609,7 +609,7 @@ namespace RenderSystem_DirectX9 {
 
                     break;
 
-                case Axiom.SubSystems.Rendering.TextureFiltering.Trilinear:
+                case Axiom.Graphics.TextureFiltering.Trilinear:
                     if(d3dCaps.TextureFilterCaps.SupportsMipMapLinear) {
                         sampler.MagFilter = TextureFilter.Linear;
                         sampler.MinFilter = TextureFilter.Linear;

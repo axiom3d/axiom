@@ -30,12 +30,12 @@ using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Controllers;
-using Axiom.Enumerations;
+
 using Axiom.Exceptions;
 using Axiom.Gui;
 using Axiom.MathLib;
 using Axiom.MathLib.Collections;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 
 namespace Axiom.Core {
 

@@ -30,8 +30,8 @@ using System.Drawing;
 using System.IO;
 using Axiom.Core;
 using Axiom.Configuration;
-using Axiom.Enumerations;
-using Axiom.SubSystems.Rendering;
+
+using Axiom.Graphics;
 
 namespace Axiom.Core {
     /// <summary>
