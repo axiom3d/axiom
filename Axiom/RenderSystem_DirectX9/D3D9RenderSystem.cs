@@ -47,7 +47,7 @@ namespace RenderSystem_DirectX9 {
     /// <summary>
     /// DirectX9 Render System implementation.
     /// </summary>
-    public class DirectX9Renderer : RenderSystem, IPlugin {
+    public class D3D9RenderSystem : RenderSystem, IPlugin {
         protected D3D.Device device;
         protected D3D.Caps d3dCaps;
 
@@ -63,7 +63,7 @@ namespace RenderSystem_DirectX9 {
         protected int primCount;
         protected int renderCount = 0;
 
-        public DirectX9Renderer() {
+        public D3D9RenderSystem() {
             InitConfigOptions();
 
             // init the texture stage descriptions
@@ -603,7 +603,7 @@ namespace RenderSystem_DirectX9 {
 
         public void Start() {
             // add an instance of this plugin to the list of available RenderSystems
-            Engine.Instance.RenderSystems.Add("DirectX9", this);
+            Engine.Instance.RenderSystems.Add("Direct3D9", this);
         }
         public void Stop() {
             // dispose of the D3D device

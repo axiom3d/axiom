@@ -214,6 +214,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Collections\BoneCollection.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Collections\CameraCollection.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

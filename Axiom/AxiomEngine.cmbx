@@ -8,7 +8,6 @@
     <Execute entry="RenderSystem_OpenGL" type="None" />
     <Execute entry="DynamicsSystem_ODE" type="None" />
     <Execute entry="ParticleFX" type="None" />
-    <Execute entry="AudioSystem_DirectSound" type="None" />
   </StartMode>
   <Entries>
     <Entry filename=".\DemoTest\DemoTest.prjx" />
@@ -19,7 +18,6 @@
     <Entry filename=".\RenderSystem_OpenGL\RenderSystem_OpenGL.prjx" />
     <Entry filename=".\DynamicsSystem_ODE\DynamicsSystem_ODE.prjx" />
     <Entry filename=".\ParticleFX\ParticleFX.prjx" />
-    <Entry filename=".\AudioSystem_DirectSound\AudioSystem_DirectSound.prjx" />
   </Entries>
   <Configurations active="Debug">
     <Configuration name="EngineDebug">
@@ -31,7 +29,6 @@
       <Entry name="RenderSystem_OpenGL" configurationname="Debug" build="False" />
       <Entry name="DynamicsSystem_ODE" configurationname="Debug" build="False" />
       <Entry name="ParticleFX" configurationname="Debug" build="False" />
-      <Entry name="AudioSystem_DirectSound" configurationname="Debug" build="False" />
     </Configuration>
     <Configuration name="Release">
       <Entry name="Demos" configurationname="Debug" build="False" />
@@ -42,7 +39,6 @@
       <Entry name="RenderSystem_OpenGL" configurationname="Debug" build="False" />
       <Entry name="DynamicsSystem_ODE" configurationname="Debug" build="False" />
       <Entry name="ParticleFX" configurationname="Debug" build="False" />
-      <Entry name="AudioSystem_DirectSound" configurationname="Debug" build="False" />
     </Configuration>
     <Configuration name="Debug">
       <Entry name="Demos" configurationname="Debug" build="False" />
@@ -53,7 +49,6 @@
       <Entry name="RenderSystem_OpenGL" configurationname="Debug" build="False" />
       <Entry name="DynamicsSystem_ODE" configurationname="Debug" build="False" />
       <Entry name="ParticleFX" configurationname="Debug" build="False" />
-      <Entry name="AudioSystem_DirectSound" configurationname="Debug" build="False" />
     </Configuration>
   </Configurations>
 </Combine>

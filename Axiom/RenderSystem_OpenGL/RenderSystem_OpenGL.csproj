@@ -164,6 +164,10 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "GLRenderSystem.cs"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "GLTexture.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -175,11 +179,6 @@
                 />
                 <File
                     RelPath = "GLWindow.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "OpenGLRenderer.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

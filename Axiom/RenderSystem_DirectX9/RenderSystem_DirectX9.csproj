@@ -144,6 +144,10 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "D3D9RenderSystem.cs"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "D3DHardwareBufferManager.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -180,11 +184,6 @@
                 />
                 <File
                     RelPath = "D3DWindow.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "DirectX9Renderer.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
