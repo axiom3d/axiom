@@ -1148,7 +1148,7 @@ namespace RenderSystem_OpenGL
 					if(op.useIndices)
 					{
 						// setup a pointer to the index data
-						IntPtr indexData = IntPtr.Zero;
+						IntPtr indexPtr = IntPtr.Zero;
 
 						// if hardware is supported, expect it is a hardware buffer.  else, fallback to software
 						if(caps.CheckCap(Capabilities.VertexBuffer))
@@ -1160,16 +1160,20 @@ namespace RenderSystem_OpenGL
 							Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, idxBufferID);
 
 							// get the offset pointer to the data in the vbo
-							indexData = BUFFER_OFFSET(0);
+							indexPtr = BUFFER_OFFSET(op.indexData.indexStart);
 						}
 						else
 						{
 							// get the index data as a direct pointer to the software buffer data
-							indexData = ((SoftwareIndexBuffer)op.indexData.indexBuffer).GetDataPointer(0);
+							indexPtr = ((SoftwareIndexBuffer)op.indexData.indexBuffer).GetDataPointer(op.indexData.indexStart);
 						}
 
+						// find what type of index buffer elements we are using
+						int indexType = (op.indexData.indexBuffer.Type == IndexType.Size16) 
+							? Gl.GL_UNSIGNED_SHORT : Gl.GL_UNSIGNED_INT;
+
 						// draw the indexed vertex data
-						Gl.glDrawElements(primType, op.indexData.indexCount, Gl.GL_UNSIGNED_SHORT, indexData);
+						Gl.glDrawElements(primType, op.indexData.indexCount, indexType, indexPtr);
 					}
 					else
 					{

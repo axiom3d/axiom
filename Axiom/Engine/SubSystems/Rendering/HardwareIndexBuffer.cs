@@ -62,5 +62,17 @@ namespace Axiom.SubSystems.Rendering
 		}
 
 		#endregion
+
+		#region Properties
+
+		/// <summary>
+		///		Gets an enum specifying whether this index buffer is 16 or 32 bit elements.
+		/// </summary>
+		public IndexType Type
+		{
+			get { return type; }
+		}
+
+		#endregion
 	}
 }
