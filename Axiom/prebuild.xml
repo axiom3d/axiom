@@ -191,6 +191,7 @@
 				<Match pattern="*.cs" path="." />
 				<Match pattern="*.cs" path="./ATI" />
 				<Match pattern="*.cs" path="./Nvidia" />
+				<Match pattern="*.cs" path="./GLSL" />
 				<?if OS = "Win32" ?>
 					<Match pattern="*.cs" path="./Win32" />
 				<?else ?>
