@@ -221,8 +221,9 @@ namespace Axiom.Animating {
                     }	break;
                     case InterpolationMode.Spline: {
                         // spline interpolation
-                        if(isSplineRebuildNeeded)
-                            BuildInterpolationSplines();
+						if(isSplineRebuildNeeded) {
+							BuildInterpolationSplines();
+						}
 
                         result.Rotation = rotationSpline.Interpolate(firstKeyIndex, t);
                         result.Translate = positionSpline.Interpolate(firstKeyIndex, t);
@@ -398,6 +399,8 @@ namespace Axiom.Animating {
             positionSpline.RecalculateTangents();
             rotationSpline.RecalculateTangents();
             scaleSpline.RecalculateTangents();
+
+			isSplineRebuildNeeded = false;
         }
 
         #endregion
