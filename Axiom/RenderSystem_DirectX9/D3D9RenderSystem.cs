@@ -685,7 +685,7 @@ namespace RenderSystem_DirectX9 {
         /// </summary>
         protected override ushort DepthBias {
             set {
-                // TODO: D3D DepthBias
+                device.RenderState.DepthBias = (float)value;
             }
         }
 
@@ -694,7 +694,18 @@ namespace RenderSystem_DirectX9 {
         /// </summary>
         protected override bool DepthCheck {
             set {
-                // TODO: D3D DepthCheck
+                if(value) {
+                    // use w-buffer if available
+                    if(d3dCaps.RasterCaps.SupportsWBuffer) {
+                        device.RenderState.UseWBuffer = true;
+                    }
+                    else {
+                        device.RenderState.ZBufferEnable = true;
+                    }
+                }
+                else {
+                    device.RenderState.ZBufferEnable = false;
+                }
             }
         }
 
@@ -703,7 +714,7 @@ namespace RenderSystem_DirectX9 {
         /// </summary>
         protected override CompareFunction DepthFunction {
             set {
-                // TODO: D3D DepthFunction
+                device.RenderState.ZBufferFunction = D3DHelper.ConvertEnum(value);
             }
         }
 
