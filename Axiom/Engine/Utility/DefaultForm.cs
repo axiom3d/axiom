@@ -90,6 +90,7 @@ namespace Axiom.Utility {
             this.ClientSize = new System.Drawing.Size(292, 266);
             this.Controls.Add(this.pictureBox1);
             this.Name = "DefaultForm";
+            this.Load += new System.EventHandler(this.DefaultForm_Load);
             this.ResumeLayout(false);
 
         }
@@ -106,6 +107,10 @@ namespace Axiom.Utility {
             // remove it from the list of render windows, which will halt the rendering loop
             // since there should now be 0 windows left
             Engine.Instance.RenderSystem.RenderWindows.Remove(renderWindow);
+        }
+
+        private void DefaultForm_Load(object sender, System.EventArgs e) {
+            this.Icon = new Icon("Media/Icons/AxiomIcon.ico");
         }
 
         /// <summary>

@@ -89,6 +89,9 @@ namespace Axiom.Core {
 		
         protected int numVisibleBillboards;
 
+        protected Matrix4[] world = new Matrix4[1];
+        protected Sphere sphere = new Sphere();
+
         // used to keep track of current index in GenerateVertices
         static protected int posIndex = 0;
         static protected int colorIndex = 0;
@@ -152,10 +155,7 @@ namespace Axiom.Core {
             if(!cullIndividual)
                 return true;
 
-            Sphere sphere = new Sphere();
-
             // get the world matrix of this billboard set
-            Matrix4[] world = new Matrix4[1];
             GetWorldTransforms(world);
 
             // get the center of the bounding sphere

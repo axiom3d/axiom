@@ -91,6 +91,9 @@ namespace Demos {
 
             camera.Position = new Vector3(0, 200, 700);
             camera.LookAt(Vector3.Zero);
+
+            // put a message up to explain how it works
+            window.DebugText = "Press J,I,K,L to push a box around.";
         }
 
         protected override bool OnFrameStarted(object source, FrameEventArgs e) {

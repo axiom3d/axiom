@@ -31,6 +31,7 @@ using Axiom.Controllers;
 using Axiom.Controllers.Canned;
 using Axiom.Core;
 using Axiom.MathLib;
+using Axiom.SubSystems.Rendering;
 using Axiom.Utility;
 
 namespace Demos {
@@ -62,13 +63,15 @@ namespace Demos {
         private IControllerValue blueLightFlasher;
 
         #endregion
-	
+
         #region Methods
-		
+
         protected override void CreateScene() {
             // set some ambient light
-            scene.TargetRenderSystem.LightingEnabled = true;
-            scene.AmbientLight = ColorEx.FromColor(System.Drawing.Color.Gray);
+            scene.AmbientLight = new ColorEx(1, 0.1f, 0.1f, 0.1f);
+
+            // set a basic skybox
+            scene.SetSkyBox(true, "Skybox/Space", 5000.0f);
 
             // create the ogre head
             Entity ogre = scene.CreateEntity("OgreHead", "ogrehead.mesh");
@@ -81,11 +84,11 @@ namespace Demos {
             greenBlueLightsNode = (SceneNode)scene.RootSceneNode.CreateChild();
 
             // create a billboard set for creating billboards
-            redYellowLights = new BillboardSet("RedYellowLights", 5);
+            redYellowLights = new BillboardSet("RedYellowLights", 20);
             redYellowLights.MaterialName = "Particles/Flare";
             redYellowLightsNode.AttachObject(redYellowLights);
 
-            greenBlueLights = new BillboardSet("GreenBlueLights", 5);
+            greenBlueLights = new BillboardSet("GreenBlueLights", 20);
             greenBlueLights.MaterialName = "Particles/Flare";
             greenBlueLightsNode.AttachObject(greenBlueLights);
 
@@ -98,33 +101,37 @@ namespace Demos {
             yellowLightBoard = redYellowLights.CreateBillboard(yellowLightPos, ColorEx.FromColor(Color.Black));
 
             // blue light billboard in off set
-            Vector3 blueLightPos = new Vector3(90, -8, -70);
+            Vector3 blueLightPos = new Vector3(-90, -8, -70);
             blueLightBoard = greenBlueLights.CreateBillboard(blueLightPos, ColorEx.FromColor(Color.Black));
 
             // green light billboard in off set
             Vector3 greenLightPos = new Vector3(50, 70, 80);
-            greenLightBoard = greenBlueLights.CreateBillboard(redLightPos, ColorEx.FromColor(Color.Black));
+            greenLightBoard = greenBlueLights.CreateBillboard(greenLightPos, ColorEx.FromColor(Color.Black));
 
             // red light in off state
             redLight = scene.CreateLight("RedLight");
             redLight.Position = redLightPos;
+            redLight.Type = LightType.Point;
             redLight.Diffuse = ColorEx.FromColor(Color.Black);
             redYellowLightsNode.AttachObject(redLight);
 
             // yellow light in off state
             yellowLight = scene.CreateLight("YellowLight");
+            yellowLight.Type = LightType.Point;
             yellowLight.Position = yellowLightPos;
             yellowLight.Diffuse = ColorEx.FromColor(Color.Black);
             redYellowLightsNode.AttachObject(yellowLight);
 
             // green light in off state
             greenLight = scene.CreateLight("GreenLight");
+            greenLight.Type = LightType.Point;
             greenLight.Position = greenLightPos;
             greenLight.Diffuse = ColorEx.FromColor(Color.Black);
             greenBlueLightsNode.AttachObject(greenLight);
 
             // blue light in off state
             blueLight = scene.CreateLight("BlueLight");
+            blueLight.Type = LightType.Point;
             blueLight.Position = blueLightPos;
             blueLight.Diffuse = ColorEx.FromColor(Color.Black);
             greenBlueLightsNode.AttachObject(blueLight);
@@ -140,19 +147,16 @@ namespace Demos {
                 new LightFlasherControllerValue(blueLight, blueLightBoard, ColorEx.FromColor(System.Drawing.Color.Blue));
 
             // set up the controller value and function for flashing
-            redLightFunc = new WaveformControllerFunction(WaveformType.Sine, 0, .75f, 0, 1);
-            yellowLightFunc = new WaveformControllerFunction(WaveformType.Sawtooth, 0, .3f, 0, 1);
-            greenLightFunc = new WaveformControllerFunction(WaveformType.InverseSawtooth, 0, .55f, 0, 1);
-            blueLightFunc = new WaveformControllerFunction(WaveformType.Sine, 0, .5f, 0, 1);
+            redLightFunc = new WaveformControllerFunction(WaveformType.Sine, 0, 0.5f, 0, 1);
+            yellowLightFunc = new WaveformControllerFunction(WaveformType.Triangle, 0, 0.25f, 0, 1);
+            greenLightFunc = new WaveformControllerFunction(WaveformType.Sine, 0, 0.25f, 0.5f, 1);
+            blueLightFunc = new WaveformControllerFunction(WaveformType.Sine, 0, 0.75f, 0.5f, 1);
 
             // set up the controllers
             ControllerManager.Instance.CreateController(redLightFlasher, redLightFunc);
             ControllerManager.Instance.CreateController(yellowLightFlasher, yellowLightFunc);
             ControllerManager.Instance.CreateController(greenLightFlasher, greenLightFunc);
             ControllerManager.Instance.CreateController(blueLightFlasher, blueLightFunc);
-
-            // set a basic skybox
-            scene.SetSkyBox(true, "Skybox/Space", 2000.0f);
         }
 
         protected override bool OnFrameStarted(object source, FrameEventArgs e) {

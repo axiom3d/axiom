@@ -180,6 +180,7 @@ namespace Demos {
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "DemoBrowser";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Axiom Engine - Demo Browser v1.0.0.0";
             this.Load += new System.EventHandler(this.DemoBrowser_Load);
             ((System.ComponentModel.ISupportInitialize)(this.demoView)).EndInit();
@@ -251,7 +252,7 @@ namespace Demos {
             demoTable.Rows.Add(new object[] {4, "Physics", "Demos.Physics", "Physics.jpg", "Demonstrates collidable objects with real time physics.", "Demos"});
             demoTable.Rows.Add(new object[] {5, "Skeletal Animation", "Demos.SkeletalAnimation", "SkeletalAnimation.jpg", "Demonstrates skeletal animation techniques.", "Demos"});
             demoTable.Rows.Add(new object[] {6, "Sky Box", "Demos.SkyBox", "SkyBox.jpg", "Demonstrates creating a scene with a skybox.", "Demos"});
-            demoTable.Rows.Add(new object[] {7, "Sky Dome", "Demos.SkyDome", "CameraTrack.jpg", "Demonstrates creating a scene with a skydome.", "Demos"});
+            demoTable.Rows.Add(new object[] {7, "Sky Dome", "Demos.SkyDome", "SkyDome.jpg", "Demonstrates creating a scene with a skydome.", "Demos"});
             demoTable.Rows.Add(new object[] {8, "Sky Plane", "Demos.SkyPlane", "SkyPlane.jpg", "Demonstrates creating a scene with a skyplane.", "Demos"});
             demoTable.Rows.Add(new object[] {9, "TextureFX", "Demos.TextureFX", "TextureFX.jpg", "Demonstrates the usage of various texture effects including scrolling and rotating.", "Demos"});
             demoTable.Rows.Add(new object[] {10, "Transparency", "Demos.Transparency", "Transparency.jpg", "Demonstrates a high poly scene with transparent entities.", "Demos"});

@@ -229,15 +229,19 @@ namespace Axiom.Utility {
                 cboRenderSystems.Items.Add(renderSystem);
             }
 
+           XmlTextReader settingsReader = null;
+
             try {
-                string temp;
-                XmlTextReader settingsReader = new XmlTextReader("DisplayConfig.xml");
+                string temp = string.Empty;
+                
+                settingsReader = new XmlTextReader("DisplayConfig.xml");
+
                 while(settingsReader.Read()) {
                     if(settingsReader.NodeType == XmlNodeType.Element) {
                         if(settingsReader.LocalName.Equals("RenderSystem")) {
                             temp = settingsReader.ReadString();
-                            if(cboRenderSystems.Items.Count > Int32.Parse(temp)) {
-                                cboRenderSystems.SelectedIndex = Int32.Parse(temp);
+                            if(cboRenderSystems.Items.Count > int.Parse(temp)) {
+                                cboRenderSystems.SelectedIndex = int.Parse(temp);
                             }
                             else {
                                 cboRenderSystems.SelectedIndex = 1;
@@ -246,8 +250,8 @@ namespace Axiom.Utility {
 
                         if(settingsReader.LocalName.Equals("Resolution")) {
                             temp = settingsReader.ReadString();
-                            if(cboResolution.Items.Count > Int32.Parse(temp)) {
-                                cboResolution.SelectedIndex = Int32.Parse(temp);
+                            if(cboResolution.Items.Count > int.Parse(temp)) {
+                                cboResolution.SelectedIndex = int.Parse(temp);
                             }
                             else {
                                 cboResolution.SelectedIndex = (cboResolution.Items.Count - 1);
@@ -275,6 +279,11 @@ namespace Axiom.Utility {
                 }
 
                 cboResolution.SelectedIndex = 0;
+            }
+            finally {
+                if(settingsReader != null) {
+                    settingsReader.Close();
+                }
             }
         }
 
