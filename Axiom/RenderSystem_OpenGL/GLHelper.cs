@@ -544,6 +544,36 @@ namespace Axiom.RenderSystems.OpenGL {
 
 		#endregion GL_EXT_stencil_two_side
 
+		#region NV_occlusion_query
+
+		private static IntPtr glGenOcclusionQueriesNVptr;
+		private static IntPtr glDeleteOcclusionQueriesNVptr;
+		private static IntPtr glBeginOcclusionQueryNVptr;
+		private static IntPtr glEndOcclusionQueryNVptr;
+		private static IntPtr glGetOcclusionQueryivNVptr;
+
+		public static void glGenOcclusionQueriesNV(int n, out int id) {
+			Gl.glGenOcclusionQueriesNV(glGenOcclusionQueriesNVptr, n, out id);
+		}
+
+		public static void glDeleteOcclusionQueriesNV(int n, ref int id) {
+			Gl.glDeleteOcclusionQueriesNV(glDeleteOcclusionQueriesNVptr, n, ref id);
+		}
+
+		public static void glBeginOcclusionQueriesNV(int id) {
+			Gl.glBeginOcclusionQueryNV(glBeginOcclusionQueryNVptr, id);
+		}
+
+		public static void glEndOcclusionQueriesNV() {
+			Gl.glEndOcclusionQueryNV(glEndOcclusionQueryNVptr);
+		}
+
+		public static void glGetOcclusionQueryivNV(int id, int pname, out int val) {
+			Gl.glGetOcclusionQueryivNV(glGetOcclusionQueryivNVptr, id, pname, out val);
+		}
+
+		#endregion NV_occlusion_query
+
         /// <summary>
         ///    Must be fired up after a GL context has been created.
         /// </summary>
@@ -617,6 +647,13 @@ namespace Axiom.RenderSystems.OpenGL {
 
 			// GL_EXT_stencil_two_side
 			activeStencilFaceEXTptr = Wgl.wglGetProcAddress("glActiveStencilFaceEXT");
+
+			// NV_occlusion_query
+			glGenOcclusionQueriesNVptr = Wgl.wglGetProcAddress("glGenOcclusionQueriesNV");
+			glDeleteOcclusionQueriesNVptr = Wgl.wglGetProcAddress("glDeleteOcclusionQueriesNV");
+			glBeginOcclusionQueryNVptr = Wgl.wglGetProcAddress("glBeginOcclusionQueryNV");
+			glEndOcclusionQueryNVptr = Wgl.wglGetProcAddress("glEndOcclusionQueryNV");
+			glGetOcclusionQueryivNVptr = Wgl.wglGetProcAddress("glGetOcclusionQueryivNV");
         }
     }
 
