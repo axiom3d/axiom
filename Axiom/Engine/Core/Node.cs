@@ -29,7 +29,6 @@ using System.Collections;
 using System.Diagnostics;
 using Axiom.Collections;
 using Axiom.Core;
-
 using Axiom.MathLib;
 using Axiom.Graphics;
 
@@ -46,6 +45,7 @@ namespace Axiom.Core {
     ///		This is an abstract class - concrete classes are based on this for specific purposes,
     ///		e.g. SceneNode, Bone
     ///	</remarks>
+    ///	<ogre headerVersion="1.39" sourceVersion="1.53" />
     public abstract class Node : IRenderable {
         #region Protected member variables
 
@@ -227,6 +227,8 @@ namespace Axiom.Core {
             CancelUpdate(child);
 
             childNodes.Remove(child);
+
+			child.Parent = null;
         }
 
         /// <summary>
@@ -367,45 +369,97 @@ namespace Axiom.Core {
             Translate(derived, relativeTo);
         }
 
+		/// <summary>
+		/// Rotate the node around the X-axis.
+		/// </summary>
+		/// <param name="degrees"></param>
+		public virtual void Pitch(float degrees, TransformSpace relativeTo) {
+			Rotate(Vector3.UnitX, degrees, relativeTo);
+		}
 
         /// <summary>
         /// Rotate the node around the X-axis.
         /// </summary>
         /// <param name="degrees"></param>
         public virtual void Pitch(float degrees) {
-            Rotate(Vector3.UnitX, degrees);
+            Rotate(Vector3.UnitX, degrees, TransformSpace.Local);
         }		
 		
         /// <summary>
         /// Rotate the node around the Z-axis.
         /// </summary>
         /// <param name="degrees"></param>
-        public virtual void Roll(float degrees) {
-            Rotate(Vector3.UnitZ, degrees);
+        public virtual void Roll(float degrees, TransformSpace relativeTo) {
+            Rotate(Vector3.UnitZ, degrees, relativeTo);
         }
+
+		/// <summary>
+		/// Rotate the node around the Z-axis.
+		/// </summary>
+		/// <param name="degrees"></param>
+		public virtual void Roll(float degrees) {
+			Rotate(Vector3.UnitZ, degrees, TransformSpace.Local);
+		}
+
+		/// <summary>
+		/// Rotate the node around the Y-axis.
+		/// </summary>
+		/// <param name="degrees"></param>
+		public virtual void Yaw(float degrees, TransformSpace relativeTo) {
+			Rotate(Vector3.UnitY, degrees, relativeTo);
+		}
 
         /// <summary>
         /// Rotate the node around the Y-axis.
         /// </summary>
         /// <param name="degrees"></param>
         public virtual void Yaw(float degrees) {
-            Rotate(Vector3.UnitY, degrees);
+            Rotate(Vector3.UnitY, degrees, TransformSpace.Local);
         }
+
+		/// <summary>
+		/// Rotate the node around an arbitrary axis.
+		/// </summary>
+		public virtual void Rotate(Vector3 axis, float degrees, TransformSpace relativeTo) {
+			Quaternion q = Quaternion.FromAngleAxis(MathUtil.DegreesToRadians(degrees), axis);
+			Rotate(q, relativeTo);
+		}
 
         /// <summary>
         /// Rotate the node around an arbitrary axis.
         /// </summary>
         public virtual void Rotate(Vector3 axis, float degrees) {
-            Quaternion q = Quaternion.FromAngleAxis(MathUtil.DegreesToRadians(degrees), axis);
-            Rotate(q);
+            Rotate(axis, degrees, TransformSpace.Local);
         }
+
+		/// <summary>
+		/// Rotate the node around an arbitrary axis using a Quaternion.
+		/// </summary>
+		public virtual void Rotate(Quaternion rotation, TransformSpace relativeTo) {
+			switch(relativeTo) {
+				case TransformSpace.Parent:
+					// Rotations are normally relative to local axes, transform up
+					orientation = rotation * orientation;
+					break;
+
+				case TransformSpace.World:
+					orientation = orientation * DerivedOrientation.Inverse() * rotation * DerivedOrientation;
+					break;
+
+				case TransformSpace.Local:
+					// Note the order of the mult, i.e. q comes after
+					orientation = orientation * rotation;
+					break;
+			}
+
+			NeedUpdate();
+		}
 
         /// <summary>
         /// Rotate the node around an arbitrary axis using a Quaternion.
         /// </summary>
         public virtual void Rotate(Quaternion rotation) {
-            orientation = orientation * rotation;
-            NeedUpdate();
+            Rotate(rotation, TransformSpace.Local);
         }
 
         /// <summary>
