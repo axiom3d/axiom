@@ -73,12 +73,12 @@ namespace Demos {
             // create an entity to reference this mesh
             Entity metal = sceneMgr.CreateEntity("BumpyMetal", "ExamplePlane");
             metal.MaterialName = "TextureFX/BumpyMetal";
-            ((SceneNode)sceneMgr.RootSceneNode.CreateChild(new Vector3(-250, -40, -100), Quaternion.Identity)).Objects.Add(metal);
+            ((SceneNode)sceneMgr.RootSceneNode.CreateChild(new Vector3(-250, -40, -100), Quaternion.Identity)).AttachObject(metal);
 
             // create an entity to reference this mesh
             Entity water = sceneMgr.CreateEntity("Water", "ExamplePlane");
             water.MaterialName = "TextureFX/Water";
-            ((SceneNode)sceneMgr.RootSceneNode.CreateChild()).Objects.Add(water);
+            ((SceneNode)sceneMgr.RootSceneNode.CreateChild()).AttachObject(water);
 
             // set a basic skybox
             sceneMgr.SetSkyBox(true, "Skybox/CloudyHills", 3000.0f);

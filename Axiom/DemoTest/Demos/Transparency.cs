@@ -58,7 +58,7 @@ namespace Demos {
 
             // add the objects to the scene
             SceneNode rootNode = sceneMgr.RootSceneNode;
-            //rootNode.Objects.Add(knotEntity);
+            //rootNode.AttachObject(knotEntity);
 
             Entity clone = null;
 
@@ -83,7 +83,7 @@ namespace Demos {
                 clone = knotEntity.Clone(cloneName);
 
                 // add the cloned knot to the scene
-                node.Objects.Add(clone);
+                node.AttachObject(clone);
             } 
         } 
 		

@@ -72,7 +72,7 @@ namespace Demos {
             // create an entity to reference this mesh
             Entity planeEnt = sceneMgr.CreateEntity("Floor", "GrassPlane");
             planeEnt.MaterialName = "Example.GrassyPlane";
-            ((SceneNode)sceneMgr.RootSceneNode.CreateChild()).Objects.Add(planeEnt);
+            ((SceneNode)sceneMgr.RootSceneNode.CreateChild()).AttachObject(planeEnt);
 
             // set ambient light to white
             sceneMgr.TargetRenderSystem.LightingEnabled = true;

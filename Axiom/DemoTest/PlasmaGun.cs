@@ -38,7 +38,7 @@ namespace Demos {
         public PlasmaGun(SceneManager sceneManager): base(sceneManager) {
             entity = sceneMgr.CreateEntity("Plasma" + nextNum++, "plasma.xmf");
             node = (SceneNode)sceneMgr.RootSceneNode.CreateChild("PlasmaEntNode" + nextNum++);
-            node.Objects.Add(entity);
+            node.AttachObject(entity);
         }
     }
 
@@ -48,7 +48,7 @@ namespace Demos {
         public RailGun(SceneManager sceneManager) : base(sceneManager) {
             entity = sceneMgr.CreateEntity("RailGun" + nextNum++, "railgun.xmf");
             node = (SceneNode)sceneMgr.RootSceneNode.CreateChild("RailgunEntNode" + nextNum++);
-            node.Objects.Add(entity);
+            node.AttachObject(entity);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Demos {
             animState = entity.GetAnimationState("Walk");
             animState.IsEnabled = true;
 
-            ((SceneNode)sceneMgr.RootSceneNode.CreateChild()).Objects.Add(entity);
+            ((SceneNode)sceneMgr.RootSceneNode.CreateChild()).AttachObject(entity);
 
             Light light = sceneMgr.CreateLight("BlueLight");
             light.Position = new Vector3(-200, -80, -100);

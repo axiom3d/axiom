@@ -52,7 +52,7 @@ namespace Demos {
 
             // attach the ogre to the scene
             SceneNode node = (SceneNode)sceneMgr.RootSceneNode.CreateChild();
-            node.Objects.Add(entity);
+            node.AttachObject(entity);
         }
 
         #endregion

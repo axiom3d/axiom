@@ -362,17 +362,17 @@ namespace Axiom.Animating {
             rotationSpline.AutoCalculate = false;
             scaleSpline.AutoCalculate = false;
 
-            positionSpline.Points.Clear();
-            rotationSpline.Points.Clear();
-            scaleSpline.Points.Clear();
+            positionSpline.Clear();
+            rotationSpline.Clear();
+            scaleSpline.Clear();
 
             // add spline control points for each keyframe in the list
             for(int i = 0; i < keyFrameList.Count; i++) {
                 KeyFrame keyFrame = keyFrameList[i];
 
-                positionSpline.Points.Add(keyFrame.Translate);
-                rotationSpline.Points.Add(keyFrame.Rotation);
-                scaleSpline.Points.Add(keyFrame.Scale);
+                positionSpline.AddPoint(keyFrame.Translate);
+                rotationSpline.AddPoint(keyFrame.Rotation);
+                scaleSpline.AddPoint(keyFrame.Scale);
             }
 
             // recalculate all spline tangents now

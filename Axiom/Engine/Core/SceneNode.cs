@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using System.Diagnostics;
 using Axiom.Collections;
 using Axiom.MathLib;
 using Axiom.SubSystems.Rendering;
@@ -45,7 +46,7 @@ namespace Axiom.Core {
         #region Member variables
 
         /// <summary>A collection of all objects attached to this scene node.</summary>
-        protected MovableObjectCollection objectList;
+        protected SceneObjectCollection objectList = new SceneObjectCollection();
         /// <summary>Reference to the scene manager who created me.</summary>
         protected SceneManager creator;
         /// <summary>Renderable bounding box for this node.</summary>
@@ -70,13 +71,6 @@ namespace Axiom.Core {
         public SceneNode(SceneManager creator) : base() {
             this.creator = creator;
 
-            objectList = new MovableObjectCollection();
-
-            // set up event handlers so we know when items are added, removed, and cleared.
-            objectList.Cleared += new CollectionHandler(this.ObjectsCleared);
-            objectList.ItemAdded += new CollectionHandler(this.ObjectAttached);
-            objectList.ItemRemoved += new CollectionHandler(this.ObjectRemoved);
-
             NeedUpdate();
         }
 
@@ -88,13 +82,6 @@ namespace Axiom.Core {
         public SceneNode(SceneManager creator, String name) : base(name) {
             this.creator = creator;
 
-            objectList = new MovableObjectCollection();
-
-            // set up event handlers so we know when items are added, removed, and cleared.
-            objectList.Cleared += new CollectionHandler(this.ObjectsCleared);
-            objectList.ItemAdded += new CollectionHandler(this.ObjectAttached);
-            objectList.ItemRemoved += new CollectionHandler(this.ObjectRemoved);
-
             worldAABB = AxisAlignedBox.Null;
 
             NeedUpdate();
@@ -105,21 +92,20 @@ namespace Axiom.Core {
         #region Properties
 
         /// <summary>
+        ///    Gets the number of SceneObjects currently attached to this node.
+        /// </summary>
+        public int ObjectCount {
+            get {
+                return objectList.Count;
+            }
+        }
+
+        /// <summary>
         ///		Gets/Sets whether or not to display the bounding box for this node.
         /// </summary>
         public bool ShowBoundingBox {
             get { return showBoundingBox; }
             set { showBoundingBox = value; }
-        }
-
-        /// <summary>
-        ///		Gets a MovableObjectCollection containing this SceneNode's attached objects.
-        /// </summary>
-        /// <remarks>
-        ///		Use this property for adding and removing objects.
-        /// </remarks>
-        public MovableObjectCollection Objects {
-            get { return objectList; }
         }
 
         /// <summary>
@@ -143,6 +129,75 @@ namespace Axiom.Core {
         #endregion
 
         #region Methods
+
+        /// <summary>
+        ///    Attaches a SceneObject to this scene node.
+        /// </summary>
+        /// <remarks>
+        ///    A SceneObject will not show up in the scene until it is attached to a SceneNode.
+        /// </remarks>
+        /// <param name="obj"></param>
+        public void AttachObject(SceneObject obj) {
+            Debug.Assert(obj != null, "obj != null");
+
+            this.objectList.Add(obj);
+
+            // notify the object that it was attached to us
+            obj.NotifyAttached(this);
+
+            // make sure bounds get updated
+            NeedUpdate();
+        }
+
+        /// <summary>
+        ///    Removes all currently attached SceneObjects from this SceneNode.
+        /// </summary>
+        /// <remarks>
+        ///    Bounds for this SceneNode are also updated.
+        /// </remarks>
+        public void DetachAllObjects() {
+            objectList.Clear();
+
+            UpdateBounds();
+        }
+
+        /// <summary>
+        ///    Removes the specifed object from this scene node.
+        /// </summary>
+        /// <remarks>
+        ///    Bounds for this SceneNode are also updated.
+        /// </remarks>
+        /// <param name="index">Index of the object to remove.</param>
+        public void DetachObject(int index) {
+            Debug.Assert(index < objectList.Count, "index < objectList.Count");
+
+            SceneObject obj = objectList[index];
+
+            objectList.Remove(obj);
+
+            // notify the object that it was removed (sending in null sets its parent scene node to null)
+            obj.NotifyAttached(null);
+
+            UpdateBounds();
+        }
+
+        /// <summary>
+        ///    Removes the specifed object from this scene node.
+        /// </summary>
+        /// <remarks>
+        ///    Bounds for this SceneNode are also updated.
+        /// </remarks>
+        /// <param name="obj">Reference to the object to remove.</param>
+        public void DetachObject(SceneObject obj) {
+            Debug.Assert(obj != null, "obj != null");
+
+            objectList.Remove(obj);
+
+            // notify the object that it was removed (sending in null sets its parent scene node to null)
+            obj.NotifyAttached(null);
+
+            UpdateBounds();
+        }
 
         /// <summary>
         ///		Internal method to update the Node.
@@ -257,58 +312,6 @@ namespace Axiom.Core {
                 worldBoundingSphere.Radius = 
                     MathUtil.Max(worldBoundingSphere.Radius, child.worldBoundingSphere.Radius);
             }
-        }
-
-        #endregion
-
-        #region Event handlers
-
-        /// <summary>
-        ///		New object attached.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public bool ObjectAttached(object sender, EventArgs e) {
-            // get the object that was attached
-            SceneObject obj = (SceneObject)sender;
-
-            // notify the object that it was attached to us
-            obj.NotifyAttached(this);
-
-            // make sure bounds get updated
-            NeedUpdate();
-
-            return false;
-        }
-
-        /// <summary>
-        ///		Object removed.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public bool ObjectRemoved(object sender, EventArgs e) {
-            // get the object that was removed
-            SceneObject obj = (SceneObject)sender;
-
-            // notify the object that it was removed (sending in null sets its parent scene node to null)
-            obj.NotifyAttached(null);
-
-            // make sure bounds get updated
-            NeedUpdate();
-
-            return false;
-        }
-
-        /// <summary>
-        ///		Object list cleared.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public bool ObjectsCleared(object sender, EventArgs e) {
-            // update everything
-            NeedUpdate();
-
-            return false;
         }
 
         #endregion

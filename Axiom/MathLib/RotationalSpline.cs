@@ -78,22 +78,11 @@ namespace Axiom.MathLib {
 
             // do not auto calculate tangents by default
             autoCalculateTangents = false;
-
-            // add event handlers for the points collection
-            pointList.Cleared += new System.EventHandler(this.PointsCleared);
-            pointList.ItemAdded += new System.EventHandler(this.PointAdded);
         }
 
         #endregion
 
         #region Public properties
-
-        /// <summary>
-        ///		Exposes the collection of points.  Can be added to, cleared, and accessed by index.
-        /// </summary>
-        public QuaternionCollection Points {
-            get { return pointList; }
-        }
 
         /// <summary>
         ///		Specifies whether or not to recalculate tangents as each control point is added.
@@ -103,9 +92,38 @@ namespace Axiom.MathLib {
             set { autoCalculateTangents = value; }
         }
 
+        /// <summary>
+        ///    Gets the number of control points in this spline.
+        /// </summary>
+        public int PointCount {
+            get {
+                return pointList.Count;
+            }
+        }
+
         #endregion
 
         #region Public methods
+
+        /// <summary>
+        ///    Adds a control point to the end of the spline.
+        /// </summary>
+        /// <param name="point"></param>
+        public void AddPoint(Quaternion point) {
+            pointList.Add(point);
+  
+            // recalc tangents if necessary
+            if(autoCalculateTangents)
+                RecalculateTangents();
+        }
+
+        /// <summary>
+        ///    Removes all current control points from this spline.
+        /// </summary>
+        public void Clear() {
+            pointList.Clear();
+            tangentList.Clear();
+        }
 
         /// <summary>
         ///		Returns an interpolated point based on a parametric value over the whole series.
@@ -228,21 +246,6 @@ namespace Axiom.MathLib {
                 preExp = -0.25f * (part1 + part2);
                 tangentList.Add(p * preExp.Exp());
             }
-        }
-
-        #endregion
-
-        #region Event handlers
-
-        private void PointAdded(object source, System.EventArgs e) {
-            // recalc tangents if necessary
-            if(autoCalculateTangents)
-                RecalculateTangents();
-        }
-
-        private void PointsCleared(object source, System.EventArgs e) {
-            // clear the tangents list when the points are cleared
-            tangentList.Clear();
         }
 
         #endregion
