@@ -272,9 +272,14 @@ namespace RenderSystem_DirectX9 {
         public static D3D.Usage ConvertEnum(BufferUsage usage) {
             D3D.Usage d3dUsage = 0;
 
-            if((usage & BufferUsage.Dynamic) > 0)
+            if(usage == BufferUsage.Dynamic || 
+                usage == BufferUsage.DynamicWriteOnly)
+
                 d3dUsage |= D3D.Usage.Dynamic;
-            if((usage & BufferUsage.WriteOnly) > 0)
+            if(usage == BufferUsage.WriteOnly || 
+                usage == BufferUsage.StaticWriteOnly || 
+                usage == BufferUsage.DynamicWriteOnly)
+
                 d3dUsage |= D3D.Usage.WriteOnly;
 
             return d3dUsage;
@@ -380,6 +385,40 @@ namespace RenderSystem_DirectX9 {
             }
 
             return 0;
+        }
+
+        /// <summary>
+        ///    Checks D3D matrix to see if it an identity matrix.
+        /// </summary>
+        /// <remarks>
+        ///    For whatever reason, the equality operator overloads for the D3D Matrix
+        ///    struct are extremely slow....
+        /// </remarks>
+        /// <param name="matrix"></param>
+        /// <returns></returns>
+        public static bool IsIdentity(ref Microsoft.DirectX.Matrix matrix) {
+            if(matrix.M11 == 1.0f &&
+                matrix.M12 == 0.0f &&
+                matrix.M13 == 0.0f &&
+                matrix.M14 == 0.0f &&
+                matrix.M21 == 0.0f &&
+                matrix.M22 == 1.0f &&
+                matrix.M23 == 0.0f &&
+                matrix.M24 == 0.0f &&
+                matrix.M31 == 0.0f &&
+                matrix.M32 == 0.0f &&
+                matrix.M33 == 1.0f &&
+                matrix.M34 == 0.0f &&
+                matrix.M41 == 0.0f &&
+                matrix.M42 == 0.0f &&
+                matrix.M43 == 0.0f &&
+                matrix.M44 == 1.0f) {
+
+                return true;
+            }
+            else {
+                return false;
+            }
         }
     }
 }
