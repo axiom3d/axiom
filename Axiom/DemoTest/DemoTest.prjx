@@ -15,6 +15,7 @@
     <File name=".\Demos\Lights.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Demos\TextureFX.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Demos\Transparency.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Demos\ParticleFX.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References>
     <Reference type="Project" refto="Engine" localcopy="True" />

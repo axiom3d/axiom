@@ -63,11 +63,6 @@ namespace Axiom.ParticleSystems
 		#region Constructors
 
 		/// <summary>
-		///		Default constructor
-		/// </summary>
-		public ParticleSystem() { }
-
-		/// <summary>
 		///		Creates a particle system with no emitters or affectors.
 		/// </summary>
 		/// <remarks>
@@ -84,8 +79,6 @@ namespace Axiom.ParticleSystems
 			this.DefaultDimensions = new Size(100, 100);
 			this.MaterialName = "BaseWhite";
 			this.PoolSize = 10;
-
-			// TODO: Init parameters for loading from scripts
 		}
 
 		/// <summary>

@@ -302,54 +302,6 @@ namespace Axiom.Utility
 		}
 		#endregion GetCurrentCount()
 
-		// --- Methods ---
-		#region Main()
-		/*
-		/// <summary>
-		/// Test the High Resolution Timer as a console application.
-		/// </summary>
-		[STAThread]
-		public static void Main(string[] args) {
-			HighResolutionTimer timer = new HighResolutionTimer();
-			Console.WriteLine("-----");
-			Console.WriteLine("Timer Type: {0} in use.", timer.Type);
-			Console.WriteLine(" Frequency: {0:N0} ticks per second.", timer.Frequency);
-			Console.WriteLine("Resolution: {0:G} (1/{1}) seconds.", timer.Resolution, timer.Frequency);
-			Console.WriteLine("   Is Running: {0}.", timer.IsRunning);
-			Console.WriteLine("Current Count: {0:N0} ticks.", timer.Count);
-			Console.WriteLine("-----");
-			Console.WriteLine("Starting Timer...");
-			timer.Start();
-			Console.WriteLine("   Is Running: {0}.", timer.IsRunning);
-			Console.WriteLine("Sleeping for 5 seconds...");
-			System.Threading.Thread.Sleep(5000);
-			timer.Stop();
-			Console.WriteLine("Stopped Timer...");
-			Console.WriteLine("-----");
-			Console.WriteLine("Start Count: {0:N0} ticks.", timer.StartCount);
-			Console.WriteLine("  End Count: {0:N0} ticks.", timer.EndCount);
-			Console.WriteLine(" Difference: {0:N0} ticks.", timer.Difference);
-			Console.WriteLine("    Elapsed: {0:G} seconds.", timer.Elapsed);
-			Console.WriteLine("-----");
-			Console.WriteLine("Timing overhead for 1,000,000 Start()/Stop() calls...");
-			float tmp = 0;
-			int i = 0;
-			for(i=0; i < 1000000; i++) {
-				timer.Start();
-				timer.Stop();
-				tmp += (float) timer.Difference;
-			}
-			tmp = (float) tmp / (float) i;
-			Console.WriteLine("Overhead: {0:N0} ticks ({1:G} seconds).", tmp,  ((float) tmp / (float) timer.Frequency));
-
-			//Make the console window wait.
-			Console.WriteLine();
-			Console.Write("Press Enter to finish ... ");
-			Console.Read();
-		}
-		*/
-		#endregion Main()
-
 		#region Start()
 		/// <summary>
 		/// Start this instance's timer.

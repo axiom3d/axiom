@@ -39,16 +39,10 @@ namespace Demos
 	{
 		#region Member variables
 		
-		#endregion
+		private SceneNode fountainNode;
 		
-		#region Constructors
-		
-		public ParticleFX()
-		{
-		}
-		
-		#endregion
-		
+		#endregion Member variables
+
 		#region Methods
 		
 		protected override void CreateScene()
@@ -58,32 +52,46 @@ namespace Demos
 			sceneMgr.AmbientLight = ColorEx.FromColor(System.Drawing.Color.Gray);
 
 			// create an entity to have follow the path
-			Entity skull = sceneMgr.CreateEntity("TheSkull", "skull.xmf");
+			Entity ogreHead = sceneMgr.CreateEntity("OgreHead", "ogrehead.mesh");
 
 			// create a scene node for the entity and attach the entity
-			SceneNode skullNode = (SceneNode)sceneMgr.RootSceneNode.CreateChild("SkullNode", new Vector3(0, 50, 0), Quaternion.Identity);
-			skullNode.Scale(new Vector3(4.0f, 4.0f, 4.0f));
-			skullNode.Objects.Add(skull);
+			SceneNode headNode = (SceneNode)sceneMgr.RootSceneNode.CreateChild();
+			headNode.Objects.Add(ogreHead);
 
-			// make this skull red
-			Material skullMaterial = (Material)MaterialManager.Instance["Skins.Skull"];
-			skullMaterial.Ambient = ColorEx.FromColor(System.Drawing.Color.Red);
+			// create a cool glowing green particle system
+			ParticleSystem greenyNimbus = ParticleSystemManager.Instance.CreateSystem("GreenyNimbus", "ParticleSystems/GreenyNimbus");
+			((SceneNode)sceneMgr.RootSceneNode.CreateChild()).Objects.Add(greenyNimbus);
 
-			// create a rain particle system
-			ParticleSystem rainSystem = ParticleSystemManager.Instance.CreateSystem("RainSystem", "ParticleSystems.Rain");
+			// shared node for the 2 fountains
+			fountainNode = (SceneNode)sceneMgr.RootSceneNode.CreateChild();
 
-			SceneNode rainNode = (SceneNode)sceneMgr.RootSceneNode.CreateChild(new Vector3(0, 1000, 0), Quaternion.Identity);
-			rainNode.Objects.Add(rainSystem);
+			// create the first fountain
+			ParticleSystem fountain1 = ParticleSystemManager.Instance.CreateSystem("Fountain1", "ParticleSystems/Fountain");
+			SceneNode node = (SceneNode)fountainNode.CreateChild();
+			node.Translate(new Vector3(200, -100, 0));
+			node.Rotate(Vector3.UnitZ, 20);
+			node.Objects.Add(fountain1);
 
-			// fast forward to make it look like it has already been raining for a while
-			rainSystem.FastForward(5.0f);
+			// create the second fountain
+			ParticleSystem fountain2 = ParticleSystemManager.Instance.CreateSystem("Fountain2", "ParticleSystems/Fountain");
+			node = (SceneNode)fountainNode.CreateChild();
+			node.Translate(new Vector3(-200, -100, 0));
+			node.Rotate(Vector3.UnitZ, -20);
+			node.Objects.Add(fountain2);
 
-			// create a fire particle system
-			ParticleSystem fireSystem = ParticleSystemManager.Instance.CreateSystem("FireSystem", "ParticleSystems.Fire");
-			skullNode.Objects.Add(fireSystem);
+			// create a cool glowing green particle system
+			ParticleSystem rain = ParticleSystemManager.Instance.CreateSystem("Rain", "ParticleSystems/Rain");
+			((SceneNode)sceneMgr.RootSceneNode.CreateChild(new Vector3(0, 1000, 0), Quaternion.Identity)).Objects.Add(rain);
+			rain.FastForward(5.0f);
+		}
 
-			// set a basic skybox
-			sceneMgr.SetSkyBox(true, "Skybox.CloudyHills", 2000.0f);
+		protected override bool OnFrameStarted(object source, FrameEventArgs e)
+		{
+			// rotate fountains
+			fountainNode.Yaw(e.TimeSinceLastFrame * 30);
+
+			// call base method
+			return base.OnFrameStarted (source, e);
 		}
 
 

@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using Axiom.ParticleSystems;
+using Axiom.Scripting;
 
 namespace ParticleFX
 {
@@ -39,9 +40,11 @@ namespace ParticleFX
 		protected float greenAdjust;
 		protected float blueAdjust;
 
+		const string COLOR_FADER = "ColorFader";
+
 		public ColorFaderAffector()
 		{
-			this.type = "ColorFader";
+			this.type = "ColourFader";
 		}
 
 		public float AlphaAdjust
@@ -103,5 +106,39 @@ namespace ParticleFX
 			}
 		}
 
+		#region Script parser methods
+
+		[AttributeParser("red", COLOR_FADER)]
+		public static void ParseRed(string[] values, params object[] objects) {
+			ColorFaderAffector affector = objects[0] as ColorFaderAffector;
+
+			affector.RedAdjust = float.Parse(values[0]);
+		}
+
+		[AttributeParser("green", COLOR_FADER)]
+		public static void ParseGreen(string[] values, params object[] objects) 
+		{
+			ColorFaderAffector affector = objects[0] as ColorFaderAffector;
+
+			affector.GreenAdjust = float.Parse(values[0]);
+		}
+
+		[AttributeParser("blue", COLOR_FADER)]
+		public static void ParseBlue(string[] values, params object[] objects) 
+		{
+			ColorFaderAffector affector = objects[0] as ColorFaderAffector;
+
+			affector.BlueAdjust = float.Parse(values[0]);
+		}
+
+		[AttributeParser("alpha", COLOR_FADER)]
+		public static void ParseAlpha(string[] values, params object[] objects) 
+		{
+			ColorFaderAffector affector = objects[0] as ColorFaderAffector;
+
+			affector.AlphaAdjust = float.Parse(values[0]);
+		}
+
+		#endregion
 	}
 }

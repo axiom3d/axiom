@@ -259,6 +259,10 @@
                     BuildAction = "None"
                 />
                 <File
+                    RelPath = "Media\Materials\Example.particle"
+                    BuildAction = "None"
+                />
+                <File
                     RelPath = "Media\Materials\Examples.material"
                     BuildAction = "None"
                 />

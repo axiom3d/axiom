@@ -25,9 +25,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using System.Collections;
 using System.Drawing;
 using Axiom.Core;
 using Axiom.MathLib;
+using Axiom.Scripting;
 using System.Reflection;
 
 namespace Axiom.ParticleSystems
@@ -105,6 +107,9 @@ namespace Axiom.ParticleSystems
 
 		static float remainder = 0;
 
+		protected const string EMITTER = "Emitter";
+		protected Hashtable attribParsers = new Hashtable();
+
 		#endregion
 
 		#region Constructors
@@ -125,6 +130,8 @@ namespace Axiom.ParticleSystems
 			colorRangeEnd = ColorEx.FromColor(System.Drawing.Color.White);
 			isEnabled = true;
 			durationMax = 0;
+
+			RegisterParsers();
 		}
 
 		#endregion
@@ -438,7 +445,7 @@ namespace Axiom.ParticleSystems
 		///	 </remarks>
 		/// <param name="timeElapsed"></param>
 		/// <returns></returns>
-		abstract public ushort GetEmissionCount(float timeElapsed);
+		public abstract ushort GetEmissionCount(float timeElapsed);
 
 		/// <summary>
 		///		Initializes a particle based on the emitter's approach and parameters.
@@ -448,7 +455,9 @@ namespace Axiom.ParticleSystems
 		///		'requested' emissions and actual initialized particles.
 		/// </remarks>
 		/// <param name="particle">Reference to a particle which must be initialized based on how this emitter starts particles</param>
-		abstract public void InitParticle(Particle particle);
+		public virtual void InitParticle(Particle particle) {
+			particle.ResetDimensions();
+		}
 
 		/// <summary>
 		///		Utility method for generating particle exit direction
@@ -573,7 +582,11 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
-		virtual public void CopyTo(ParticleEmitter emitter)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="emitter"></param>
+		public virtual void CopyTo(ParticleEmitter emitter)
 		{
 			PropertyInfo[] props = this.GetType().GetProperties();
 
@@ -602,5 +615,134 @@ namespace Axiom.ParticleSystems
 		}
 
 		#endregion
+
+		#region Script parser methods
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
+		public bool SetParam(string name, string val)
+		{
+			if(attribParsers.ContainsKey(name)) {
+				AttributeParserMethod parser =
+					(AttributeParserMethod)attribParsers[name];
+
+				// split up the param by spaces (i.e. for vectors, colors, etc)
+				string[] vals = val.Split(' ');
+
+				parser(vals, this);
+
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+
+		/// <summary>
+		///		Registers all attribute names with their respective parser.
+		/// </summary>
+		/// <remarks>
+		///		Methods meant to serve as attribute parsers should use a method attribute to 
+		/// </remarks>
+		protected virtual void RegisterParsers() 
+		{
+			MethodInfo[] methods = this.GetType().GetMethods(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Static);
+			
+			// loop through all methods and look for ones marked with attributes
+			for(int i = 0; i < methods.Length; i++) {
+				// get the current method in the loop
+				MethodInfo method = methods[i];
+				
+				// see if the method should be used to parse one or more material attributes
+				AttributeParserAttribute[] parserAtts = 
+					(AttributeParserAttribute[])method.GetCustomAttributes(typeof(AttributeParserAttribute), true);
+
+				// loop through each one we found and register its parser
+				for(int j = 0; j < parserAtts.Length; j++) {
+					AttributeParserAttribute parserAtt = parserAtts[j];
+
+					attribParsers.Add(parserAtt.Name, Delegate.CreateDelegate(typeof(AttributeParserMethod), method));
+				} // for
+			} // for
+		}
+
+		[AttributeParser("angle", EMITTER)]
+		public static void ParseAngle(string[] values, params object[] objects)
+		{
+			ParticleEmitter emitter = objects[0] as ParticleEmitter;
+
+			emitter.Angle = float.Parse(values[0]);
+		}
+
+		[AttributeParser("emission_rate", EMITTER)]
+		public static void ParseEmissionRate(string[] values, params object[] objects)
+		{
+			ParticleEmitter emitter = objects[0] as ParticleEmitter;
+
+			emitter.EmissionRate = float.Parse(values[0]);
+		}
+
+		[AttributeParser("time_to_live", EMITTER)]
+		public static void ParseTTL(string[] values, params object[] objects)
+		{
+			ParticleEmitter emitter = objects[0] as ParticleEmitter;
+
+			emitter.TimeToLive = float.Parse(values[0]);
+		}
+
+		[AttributeParser("direction", EMITTER)]
+		public static void ParseDirection(string[] values, params object[] objects)
+		{
+			ParticleEmitter emitter = objects[0] as ParticleEmitter;
+
+			emitter.Direction = ParseHelper.ParseVector3(values);
+		}
+
+		[AttributeParser("velocity", EMITTER)]
+		public static void ParseVelocity(string[] values, params object[] objects)
+		{
+			ParticleEmitter emitter = objects[0] as ParticleEmitter;
+
+			emitter.ParticleVelocity = float.Parse(values[0]);
+		}
+
+		[AttributeParser("velocity_min", EMITTER)]
+		public static void ParseVelocityMin(string[] values, params object[] objects)
+		{
+			ParticleEmitter emitter = objects[0] as ParticleEmitter;
+
+			emitter.MinParticleVelocity = float.Parse(values[0]);
+		}
+
+		[AttributeParser("velocity_max", EMITTER)]
+		public static void ParseVelocityMax(string[] values, params object[] objects)
+		{
+			ParticleEmitter emitter = objects[0] as ParticleEmitter;
+
+			emitter.MaxParticleVelocity = float.Parse(values[0]);
+		}
+
+		[AttributeParser("color_range_start", EMITTER)]
+		[AttributeParser("colour_range_start", EMITTER)]
+		public static void ParseColorRangeStart(string[] values, params object[] objects)
+		{
+			ParticleEmitter emitter = objects[0] as ParticleEmitter;
+
+			emitter.ColorRangeStart = ParseHelper.ParseColor(values);
+		}
+
+		[AttributeParser("color_range_end", EMITTER)]
+		[AttributeParser("colour_range_end", EMITTER)]
+		public static void ParseColorRangeEnd(string[] values, params object[] objects)
+		{
+			ParticleEmitter emitter = objects[0] as ParticleEmitter;
+
+			emitter.ColorRangeEnd = ParseHelper.ParseColor(values);
+		}
+
+		#endregion Script parser methods
 	}
 }

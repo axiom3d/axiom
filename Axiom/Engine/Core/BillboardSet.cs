@@ -696,8 +696,13 @@ namespace Axiom.Core
 				// find the requested material
 				material = (Material)MaterialManager.Instance[materialName];
 
-				// make sure it is loaded
-				material.Load();
+				if(material != null)
+				{
+					// make sure it is loaded
+					material.Load();
+				}
+				else
+					throw new Exception(string.Format("Material '{0}' could not be found.", materialName)); 
 			}
 		}
 
@@ -787,12 +792,12 @@ namespace Axiom.Core
 			op.useIndices = true;
 
 			op.vertexData = vertexData;
-			op.vertexData.vertexCount = numVisibleBillboards * 4;
 			op.vertexData.vertexStart = 0;
+			op.vertexData.vertexCount = numVisibleBillboards * 4;
 
 			op.indexData = indexData;
-			op.indexData.indexCount = numVisibleBillboards * 6;
 			op.indexData.indexStart = 0;
+			op.indexData.indexCount = numVisibleBillboards * 6;
 		}		
 
 		virtual public Axiom.MathLib.Matrix4[] WorldTransforms
@@ -829,7 +834,7 @@ namespace Axiom.Core
 
 		#endregion
 
-		#region Implementation of MovableObjects
+		#region Implementation of SceneObject
 	
 		public override AxisAlignedBox BoundingBox
 		{
@@ -843,8 +848,6 @@ namespace Axiom.Core
 		/// <param name="camera"></param>
 		internal override void NotifyCurrentCamera(Camera camera)
 		{
-			uint j;
-
 			// Take the reverse transform of the camera world axes into billboard space for efficiency
 
 			// parametrics offsets of the origin
@@ -938,11 +941,11 @@ namespace Axiom.Core
 
 					numVisibleBillboards++;
 				}
-
-				// unlock the buffers
-				posBuffer.Unlock();
-				colBuffer.Unlock();
 			}
+
+			// unlock the buffers
+			posBuffer.Unlock();
+			colBuffer.Unlock();
 		}
 	
 		internal override void UpdateRenderQueue(RenderQueue queue)

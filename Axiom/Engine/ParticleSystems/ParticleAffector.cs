@@ -24,7 +24,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 using System;
+using System.Collections;
 using System.Reflection;
+using Axiom.Scripting;
 
 namespace Axiom.ParticleSystems
 {
@@ -42,7 +44,7 @@ namespace Axiom.ParticleSystems
 	///		and also creating a subclass of ParticleAffectorFactory which is responsible for creating instances 
 	///		of your new affector type. You register this factory with the ParticleSystemManager using
 	///		AddAffectorFactory, and from then on affectors of this type can be created either from code or through
-	///		XML particle scripts by naming the type.
+	///		.particle scripts by naming the type.
 	///		<p/>
 	///		This same approach is used for ParticleEmitters (which are the source of particles in a system).
 	///		This means that the engine is particularly flexible when it comes to creating particle system effects,
@@ -55,6 +57,7 @@ namespace Axiom.ParticleSystems
 
 		/// <summary>Name of the affector type.  Must be initialized by subclasses.</summary>
 		protected String type;
+		protected Hashtable attribParsers = new Hashtable();
 
 		#endregion
 
@@ -63,7 +66,10 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///		Default constructor
 		/// </summary>
-		public ParticleAffector() { }
+		public ParticleAffector() 
+		{
+			RegisterParsers();
+		}
 
 		#endregion
 
@@ -115,5 +121,64 @@ namespace Axiom.ParticleSystems
 		}
 
 		#endregion
+		
+		#region Script parser methods
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
+		public bool SetParam(string name, string val)
+		{
+			if(attribParsers.ContainsKey(name)) 
+			{
+				AttributeParserMethod parser =
+					(AttributeParserMethod)attribParsers[name];
+
+				// split up the param by spaces (i.e. for vectors, colors, etc)
+				string[] vals = val.Split(' ');
+
+				parser(vals, this);
+
+				return true;
+			}
+			else 
+			{
+				return false;
+			}
+		}
+
+		/// <summary>
+		///		Registers all attribute names with their respective parser.
+		/// </summary>
+		/// <remarks>
+		///		Methods meant to serve as attribute parsers should use a method attribute to 
+		/// </remarks>
+		protected virtual void RegisterParsers() 
+		{
+			MethodInfo[] methods = this.GetType().GetMethods(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Static);
+			
+			// loop through all methods and look for ones marked with attributes
+			for(int i = 0; i < methods.Length; i++) 
+			{
+				// get the current method in the loop
+				MethodInfo method = methods[i];
+				
+				// see if the method should be used to parse one or more material attributes
+				AttributeParserAttribute[] parserAtts = 
+					(AttributeParserAttribute[])method.GetCustomAttributes(typeof(AttributeParserAttribute), true);
+
+				// loop through each one we found and register its parser
+				for(int j = 0; j < parserAtts.Length; j++) 
+				{
+					AttributeParserAttribute parserAtt = parserAtts[j];
+
+					attribParsers.Add(parserAtt.Name, Delegate.CreateDelegate(typeof(AttributeParserMethod), method));
+				} // for
+			} // for
+		}		
+
+		#endregion Script parser methods
 	}
 }

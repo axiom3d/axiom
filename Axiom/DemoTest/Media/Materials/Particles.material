@@ -8,3 +8,24 @@ Particles/Flare
 		texture Flare.png
 	}
 }
+
+Particles/Flare2
+{
+	lighting off
+	scene_blend add
+	
+	// texture 0
+	{
+		texture flaretrail.png
+	}
+}
+
+Particles/Rain
+{
+	lighting off
+	scene_blend add
+
+	{
+		texture raindrop.png
+	}
+}

@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using Axiom.Scripting;
 
 namespace Axiom.Enumerations
 {
@@ -50,10 +51,13 @@ namespace Axiom.Enumerations
 	public enum BillboardType
 	{
 		/// <summary>Standard point billboard (default), always faces the camera completely and is always upright</summary>
+		[ScriptEnum("point")]
 		Point,
 		/// <summary>Billboards are oriented around a shared direction vector (used as Y axis) and only rotate around this to face the camera</summary>
+		[ScriptEnum("oriented_common")]
 		OrientedCommon,
 		/// <summary>Billboards are oriented around their own direction vector (their own Y axis) and only rotate around this to face the camera</summary>
+		[ScriptEnum("oriented_self")]
 		OrientedSelf
 	}
 

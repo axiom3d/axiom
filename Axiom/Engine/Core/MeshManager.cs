@@ -285,17 +285,18 @@ namespace Axiom.Core
 		public Mesh Load(string name, int priority)
 		{
 			Mesh mesh = null;
+			string lowerName = name.ToLower();
 
 			// if the resource isn't cached, create it
-			if(!resourceList.ContainsKey(name))
+			if(!resourceList.ContainsKey(lowerName))
 			{
-				mesh = (Mesh)Create(name);
+				mesh = (Mesh)Create(lowerName);
 				base.Load(mesh, priority);
 			}
 			else
 			{
 				// get the cached version
-				mesh = (Mesh)resourceList[name];
+				mesh = (Mesh)resourceList[lowerName];
 			}
 
 			return mesh;

@@ -47,8 +47,8 @@ namespace Axiom.Core
 		protected Camera camera;
 		static protected long nextAutoGenName;
 
-		protected float[] vertexData;
-		protected int[] colorData;
+		protected VertexData vertexData;
+		protected IndexData indexData;
 
 		#endregion
 
@@ -112,7 +112,7 @@ namespace Axiom.Core
 			get { return material; }
 		}
 
-		public void GetRenderOperation(RenderOperation op)
+		public virtual void GetRenderOperation(RenderOperation op)
 		{
 			// TODO: Implement GetRenderOperation
 		}		
