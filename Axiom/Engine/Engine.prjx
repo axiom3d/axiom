@@ -56,7 +56,6 @@
     <File name=".\Core\Frustum.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\GarbageManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\IPlugin.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\Core\ISubSystem.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Light.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Log.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Mesh.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
@@ -114,9 +113,6 @@
     <File name=".\SubSystems\Rendering\Enums.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\SubSystems\Rendering\HardwareCaps.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\SubSystems\Rendering\IRenderable.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\IRenderSystem.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\IRenderWindow.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\SubSystems\Rendering\RenderingEnums.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\SubSystems\Rendering\RenderOperation.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\SubSystems\Rendering\RenderQueue.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\SubSystems\Rendering\RenderSystem.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
