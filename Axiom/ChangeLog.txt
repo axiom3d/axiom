@@ -4,6 +4,7 @@ Some bug fixes:
    - make sure original exception gets logged when something bad happens.
    - platform manager trying to dispose of a null input reader
    - check singletons for null before calling Dispose.
+[ 951772 ] Assembly.LoadFile -> Assembly.LoadFrom for .Net 1.0 compat.
 
 12-31-2004 *Significant commit*
 - FrameEventArgs.RequestShutdown removed; use Root.Instance.QueueEndRendering() from now on.  Root.OnFrameStarted/Ended no longer return bool.

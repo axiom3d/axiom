@@ -72,7 +72,7 @@ namespace Axiom.Core {
                 StringBuilder info = new StringBuilder();
 
                 // write the initial info at the top of the log
-                info.AppendFormat("*********{0} Log *************{1}", this.Name, Environment.NewLine);
+                info.AppendFormat("*********Axiom 3D Engine Log *************{0}", Environment.NewLine);
                 info.AppendFormat("Copyright {0}{1}", this.Copyright, Environment.NewLine);
                 info.AppendFormat("Version: {0}{1}", this.Version, Environment.NewLine);
                 info.AppendFormat("Operating System: {0}{1}", Environment.OSVersion.ToString(), Environment.NewLine);
@@ -221,20 +221,6 @@ namespace Axiom.Core {
 		#endregion
 
 		#region Properties
-		/// <summary>
-		/// Specifies the name of the engine that will be used where needed (i.e. log files, etc).  
-		/// </summary>
-		public string Name {
-			get {
-				AssemblyTitleAttribute attribute = 
-					(AssemblyTitleAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyTitleAttribute), false);
-
-				if(attribute != null)
-					return attribute.Title;
-				else
-					return "Not Found";
-			}
-		}
 
 		/// <summary>
 		/// Specifies the name of the engine that will be used where needed (i.e. log files, etc).  
@@ -244,11 +230,13 @@ namespace Axiom.Core {
 				AssemblyCopyrightAttribute attribute = 
 					(AssemblyCopyrightAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyCopyrightAttribute), false);
 
-				if(attribute != null)
-					return attribute.Copyright;
-				else
-					return "Not Found";
-			}
+                if (attribute != null) {
+                    return attribute.Copyright;
+                }
+                else {
+                    return "Not Found";
+                }
+            }
 		}
 
 		/// <summary>

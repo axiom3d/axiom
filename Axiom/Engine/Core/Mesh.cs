@@ -1238,7 +1238,11 @@ namespace Axiom.Core {
 
                 // does the number of bone assignments exceed limit?
                 if(currentBones > Config.MaxBlendWeights) {
-                    // TODO: Handle balancing of too many weights
+                    ArrayList sortedList = (ArrayList)assignments.FindBucket(i);
+
+                    sortedList.Sort();
+                    sortedList.RemoveRange(0, currentBones - Config.MaxBlendWeights);
+                    assignments.TotalCount -= (currentBones - Config.MaxBlendWeights);
                 }
 
                 float totalWeight = 0.0f;
@@ -1260,10 +1264,10 @@ namespace Axiom.Core {
 
                 // Now normalise if total weight is outside tolerance
                 if(!MathUtil.FloatEqual(totalWeight, 1.0f)) {
-					// TODO: This is not correct, shouldn't be advancing the current iterator
-					// Need to have another one that starts at the same position as the current
-                    while(iter.MoveNext()) {
-                        VertexBoneAssignment vba = (VertexBoneAssignment)iter.Current;
+                    IEnumerator normalizeriter = assignments.Find(i);
+
+                    while (normalizeriter.MoveNext()) {
+                        VertexBoneAssignment vba = (VertexBoneAssignment)normalizeriter.Current;
                         vba.weight /= totalWeight;
                     }
                 }
