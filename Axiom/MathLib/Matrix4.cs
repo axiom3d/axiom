@@ -69,6 +69,7 @@ namespace Axiom.MathLib {
     ///		| m[2][0]  m[2][1]  m[2][2]  m[2][3] |   {z}
     ///		| m[3][0]  m[3][1]  m[3][2]  m[3][3] |   {1}
     ///	</remarks>
+    ///	<ogre headerVersion="1.18" sourceVersion="1.8" />
     [StructLayout(LayoutKind.Sequential)]
     public struct Matrix4 {
         #region Member variables
@@ -78,14 +79,22 @@ namespace Axiom.MathLib {
         public float m20, m21, m22, m23;
         public float m30, m31, m32, m33;
 
-        private readonly static Matrix4 zeroMatrix = new Matrix4(	0,0,0,0,
+        private readonly static Matrix4 zeroMatrix = new Matrix4(	
+			0,0,0,0,
             0,0,0,0,
             0,0,0,0,
             0,0,0,0);
-        private readonly static Matrix4 identityMatrix = new Matrix4(	1,0,0,0,
+        private readonly static Matrix4 identityMatrix = new Matrix4(	
+			1,0,0,0,
             0,1,0,0,
             0,0,1,0,
             0,0,0,1);
+
+		private readonly static Matrix4 clipSpace2dToImageSpace = new Matrix4( 
+			0.5f,		0,		0,		0.5f, 
+			0,		-0.5f,		0,		0.5f, 
+			0,			0,		1,		0,
+			0,			0,		0,		1);
 
         #endregion
 
