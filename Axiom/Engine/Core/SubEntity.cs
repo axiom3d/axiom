@@ -144,8 +144,8 @@ namespace Axiom.Core {
 
 				// since the material has changed, re-evaulate its support of skeletal animation
 				if(parent.Mesh.HasSkeleton) {
-					parent.EvaluateHardwareSkinning();
-				}
+                    parent.EvaluateHardwareSkinning();
+                }
             }
         }
 
@@ -191,7 +191,7 @@ namespace Axiom.Core {
 
 		public bool CastsShadows {
 			get {
-				return parent.CastShadows;;
+				return parent.CastShadows;
 			}
 		}
 
