@@ -62,6 +62,17 @@ namespace Axiom.SubSystems.Rendering
 		#region Methods
 
 		/// <summary>
+		///		Convenient overload to allow locking the entire buffer with only having
+		///		to supply the locking type.
+		/// </summary>
+		/// <param name="locking"></param>
+		/// <returns></returns>
+		public IntPtr Lock(BufferLocking locking)
+		{
+			return Lock(0, sizeInBytes, locking);
+		}
+
+		/// <summary>
 		///		Used to lock a vertex buffer in hardware memory in order to make modifications.
 		/// </summary>
 		/// <param name="offset">Starting index in the buffer to lock.</param>

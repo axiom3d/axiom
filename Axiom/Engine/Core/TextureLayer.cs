@@ -329,7 +329,7 @@ namespace Axiom.Core
 		{
 			if(forUVW)
 			{
-				// TODO: single subic textures, rather than 6 seperate ones
+				// TODO: single cubic textures, rather than 6 seperate ones
 			}
 			else
 			{
@@ -349,7 +349,7 @@ namespace Axiom.Core
 							TextureManager.Instance.Load(frames[i]);
 							isBlank = false;
 						}
-						catch(Exception ex)
+						catch(Exception)
 						{
 							System.Diagnostics.Trace.WriteLine(String.Format("Error loading texture {0}.  Texture layer will be left blank.", frames[i]));
 							isBlank = true;

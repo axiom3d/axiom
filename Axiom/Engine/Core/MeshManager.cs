@@ -207,7 +207,7 @@ namespace Axiom.Core
 			unsafe
 			{
 				// lock the vertex buffer
-				IntPtr data = vbuf.Lock(0, vbuf.Size, BufferLocking.Discard);
+				IntPtr data = vbuf.Lock(BufferLocking.Discard);
 
 				float* pData = (float*)data.ToPointer();
 
@@ -215,7 +215,6 @@ namespace Axiom.Core
 				{
 					for(int x = 0; x <= xSegments; x++)
 					{
-						int index = (((y * (xSegments + 1)) + x) * 3);
 						// centered on origin
 						vec.x = (x * xSpace) - halfWidth;
 						vec.y = (y * ySpace) - halfHeight;
@@ -332,7 +331,7 @@ namespace Axiom.Core
 			HardwareIndexBuffer idxBuffer = subMesh.indexData.indexBuffer;
 
 			// lock the whole index buffer
-			IntPtr data = idxBuffer.Lock(0, idxBuffer.Size, BufferLocking.Discard);
+			IntPtr data = idxBuffer.Lock(BufferLocking.Discard);
 
 			unsafe
 			{

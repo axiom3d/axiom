@@ -423,7 +423,7 @@ namespace Axiom.Serialization
 							mesh.vertexBufferUsage,
 							mesh.vertexShadowBuffer);
 
-						//float[] texCoords = (float[])vBuffer.Lock(0, vertexData.vertexCount * dim, BufferLocking.Discard);
+						// lock the vertex buffer
 						IntPtr texCoords = vBuffer.Lock(0, vertexData.vertexCount * dim, BufferLocking.Discard);
 
 						// blast the tex coord data into the buffer

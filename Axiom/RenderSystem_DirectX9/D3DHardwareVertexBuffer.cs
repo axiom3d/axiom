@@ -83,11 +83,6 @@ namespace RenderSystem_DirectX9
 			// return the graphics streams internal data
 			// TODO: Beware if this is taken out of future versions
 			return gs.InternalData;
-
-			// lock the buffer and get an array of the data
-			//System.Array data = d3dBuffer.Lock(offset, D3DHelper.ConvertEnum(locking));
-
-			//return Marshal.UnsafeAddrOfPinnedArrayElement(data, 0);
 		}
 
 		/// <summary>

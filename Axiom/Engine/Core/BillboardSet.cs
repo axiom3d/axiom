@@ -609,13 +609,13 @@ namespace Axiom.Core
 																	1.0f, 1.0f};
 
 					// lock the index buffer
-					IntPtr idxPtr = indexData.indexBuffer.Lock(0, indexData.indexBuffer.Size, BufferLocking.Discard);
+					IntPtr idxPtr = indexData.indexBuffer.Lock(BufferLocking.Discard);
 
 					// get the texcoord buffer
 					vBuffer = vertexData.vertexBufferBinding.GetBuffer(TEXCOORD);
 
 					// lock the texcoord buffer
-					IntPtr texPtr = vBuffer.Lock(0, vBuffer.Size, BufferLocking.Discard);
+					IntPtr texPtr = vBuffer.Lock(BufferLocking.Discard);
 
 					unsafe
 					{
@@ -878,8 +878,8 @@ namespace Axiom.Core
 			HardwareVertexBuffer colBuffer = vertexData.vertexBufferBinding.GetBuffer(COLOR);
 
 			// lock the buffers
-			IntPtr posPtr = posBuffer.Lock(0, posBuffer.Size, BufferLocking.Discard);
-			IntPtr colPtr = colBuffer.Lock(0, colBuffer.Size, BufferLocking.Discard);
+			IntPtr posPtr = posBuffer.Lock(BufferLocking.Discard);
+			IntPtr colPtr = colBuffer.Lock(BufferLocking.Discard);
 
 			// reset the static index counters
 			posIndex = 0;

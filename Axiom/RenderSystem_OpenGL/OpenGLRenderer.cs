@@ -162,8 +162,14 @@ namespace RenderSystem_OpenGL
 				// by creating our texture manager, singleton TextureManager will hold our implementation
 				textureMgr = new GLTextureManager();
 
+				// TODO: Do this elsewhere
+				CheckCaps();
+
 				// create a specialized instance, which registers itself as the singleton instance of HardwareBufferManager
-				hardwareBufferManager = new GLHardwareBufferManager();
+				if(caps.CheckCap(Capabilities.VertexBuffer))
+					hardwareBufferManager = new GLHardwareBufferManager();
+				else
+					hardwareBufferManager = new GLSoftwareBufferManager();
 
 				glActiveTextureARB = Wgl.wglGetProcAddress("glActiveTextureARB");
 				glClientActiveTextureARB = Wgl.wglGetProcAddress("glClientActiveTextureARB");
@@ -556,7 +562,12 @@ namespace RenderSystem_OpenGL
 				// call base class method first
 				base.Render (op);
 	
+				// get a list of the vertex elements for this render operation
 				IList elements = op.vertexData.vertexDeclaration.Elements;
+
+				// will be used to alia either the buffer offset (VBO's) or array data if VBO's are
+				// not available
+				IntPtr bufferData = IntPtr.Zero;
 		
 				// loop through and handle each element
 				for(int i = 0; i < elements.Count; i++)
@@ -565,11 +576,22 @@ namespace RenderSystem_OpenGL
 					VertexElement element = (VertexElement)elements[i];
 
 					// get the current vertex buffer
-					GLHardwareVertexBuffer vertexBuffer = 
-						(GLHardwareVertexBuffer)op.vertexData.vertexBufferBinding.GetBuffer(element.Source);
+					HardwareVertexBuffer vertexBuffer = 	op.vertexData.vertexBufferBinding.GetBuffer(element.Source);
 
-					// bind the current vertex buffer
-					Ext.glBindBufferARB(GL_ARRAY_BUFFER_ARB, vertexBuffer.GLBufferID);
+					if(caps.CheckCap(Capabilities.VertexBuffer))
+					{
+						// get the buffer id
+						uint bufferId = ((GLHardwareVertexBuffer)vertexBuffer).GLBufferID;
+
+						// bind the current vertex buffer
+						Ext.glBindBufferARB(GL_ARRAY_BUFFER_ARB, bufferId);
+						bufferData = BUFFER_OFFSET(element.Offset);
+					}
+					else
+					{
+						// get a direct pointer to the software buffer data for using standard vertex arrays
+						bufferData = ((SoftwareVertexBuffer)vertexBuffer).GetDataPointer(element.Offset);
+					}
 
 					// get the type of this buffer
 					int type = GLHelper.ConvertEnum(element.Type);
@@ -585,7 +607,7 @@ namespace RenderSystem_OpenGL
 									VertexElement.GetTypeCount(element.Type),
 									type,
 									vertexBuffer.VertexSize,
-									BUFFER_OFFSET(element.Offset));
+									bufferData);
 
 								// enable the vertex array client state
 								Gl.glEnableClientState(Gl.GL_VERTEX_ARRAY);
@@ -597,7 +619,7 @@ namespace RenderSystem_OpenGL
 								Gl.glNormalPointer(
 									type, 
 									vertexBuffer.VertexSize,
-									BUFFER_OFFSET(element.Offset));
+									bufferData);
 
 								// enable the normal array client state
 								Gl.glEnableClientState(Gl.GL_NORMAL_ARRAY);
@@ -610,7 +632,7 @@ namespace RenderSystem_OpenGL
 									4,
 									type, 
 									vertexBuffer.VertexSize,
-									BUFFER_OFFSET(element.Offset));
+									bufferData);
 
 								// enable the normal array client state
 								Gl.glEnableClientState(Gl.GL_COLOR_ARRAY);
@@ -628,16 +650,18 @@ namespace RenderSystem_OpenGL
 								for(int j = 0; j < caps.NumTextureUnits; j++)
 								{
 									// set the current active texture unit
-									Gl.glClientActiveTextureARB(glClientActiveTextureARB, Gl.GL_TEXTURE0 + j);
+									Ext.glClientActiveTextureARB(Gl.GL_TEXTURE0 + (uint)j);
 
-									if(Gl.glIsEnabled(Gl.GL_TEXTURE_2D) > 0)
+									int tmp = Gl.glIsEnabled(Gl.GL_TEXTURE_2D);
+
+									if(Gl.glIsEnabled(Gl.GL_TEXTURE_2D) != 0)
 									{
 										// set the tex coord pointer
 										Gl.glTexCoordPointer(
 											VertexElement.GetTypeCount(element.Type),
 											type,
 											vertexBuffer.VertexSize,
-											BUFFER_OFFSET(element.Offset));
+											bufferData);
 									}
 
 									// enable texture coord state
@@ -652,7 +676,7 @@ namespace RenderSystem_OpenGL
 				} // for
 
 				// reset to texture unit 0
-				Gl.glClientActiveTextureARB(glClientActiveTextureARB, Gl.GL_TEXTURE0);
+				Ext.glClientActiveTextureARB(Gl.GL_TEXTURE0);
 
 				int primType = 0;
 
@@ -683,11 +707,29 @@ namespace RenderSystem_OpenGL
 				{
 					if(op.useIndices)
 					{
-						uint idxBufferID = ((GLHardwareIndexBuffer)op.indexData.indexBuffer).GLBufferID;
+						// setup a pointer to the index data
+						IntPtr indexData = IntPtr.Zero;
 
-						Ext.glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, idxBufferID);
+						// if hardware is supported, expect it is a hardware buffer.  else, fallback to software
+						if(caps.CheckCap(Capabilities.VertexBuffer))
+						{
+							// get the index buffer id
+							uint idxBufferID = ((GLHardwareIndexBuffer)op.indexData.indexBuffer).GLBufferID;
 
-						Gl.glDrawElements(primType, op.indexData.indexCount, Gl.GL_UNSIGNED_SHORT, BUFFER_OFFSET(0));
+							// bind the current index buffer
+							Ext.glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, idxBufferID);
+
+							// get the offset pointer to the data in the vbo
+							indexData = BUFFER_OFFSET(0);
+						}
+						else
+						{
+							// get the index data as a direct pointer to the software buffer data
+							indexData = ((SoftwareIndexBuffer)op.indexData.indexBuffer).GetDataPointer(0);
+						}
+
+						// draw the indexed vertex data
+						Gl.glDrawElements(primType, op.indexData.indexCount, Gl.GL_UNSIGNED_SHORT, indexData);
 					}
 					else
 					{
