@@ -35,7 +35,7 @@ namespace Axiom.SubSystems.Rendering {
     public class SoftwareBufferManager : HardwareBufferManager {
         #region Singleton implementation
 
-        protected static SoftwareBufferManager Instance = new SoftwareBufferManager();
+        protected static new SoftwareBufferManager Instance = new SoftwareBufferManager();
 
         static SoftwareBufferManager() {}
 

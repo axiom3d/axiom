@@ -51,8 +51,6 @@ namespace Axiom.Core {
         private SceneBlendFactor colorBlendFallbackSrc;
         private SceneBlendFactor colorBlendFallbackDest;
         private LayerBlendOperation colorOp;
-        private EnvironmentMap envMap;
-
         /// <summary>Is this a blank layer?</summary>
         private bool isBlank;
         /// <summary>Number of frames for this layer.</summary>
@@ -60,7 +58,6 @@ namespace Axiom.Core {
         private int currentFrame;
         /// <summary>store names of textures for animation frames.</summary>
         private String[] frames = new String[MAX_ANIMATION_FRAMES];
-        private bool isCubic;
 
         // texture animation parameters
         private bool recalcTexMatrix;
@@ -86,7 +83,6 @@ namespace Axiom.Core {
             this.deferredLoad = false;
 
             isBlank = true;
-            isCubic = false;
 
             colorBlendMode.blendType = LayerBlendType.Color;
             SetColorOperation(LayerBlendOperation.Modulate);
@@ -110,7 +106,6 @@ namespace Axiom.Core {
             texAddressingMode = TextureAddressing.Wrap;
 
             isBlank = true;
-            isCubic = false;
 
             colorBlendMode.blendType = LayerBlendType.Color;
             SetColorOperation(LayerBlendOperation.Modulate);
@@ -135,7 +130,6 @@ namespace Axiom.Core {
                 frames[0] = value; 
                 numFrames = 1;
                 currentFrame = 0;
-                isCubic = false;
 				
                 if(value.Length == 0)
                     isBlank = true;
@@ -299,7 +293,6 @@ namespace Axiom.Core {
             else {
                 numFrames = 6;
                 currentFrame = 0;
-                isCubic = true;
 
                 for(int i = 0; i < 6; i++) {
                     frames[i] = textureNames[i];

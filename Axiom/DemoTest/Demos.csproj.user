@@ -1,7 +1,7 @@
 <VisualStudioProject>
     <CSHARP LastOpenVersion = "7.10.3077" >
         <Build>
-            <Settings ReferencePath = "E:\GameProgramming\AxiomEngine\Common\;E:\GameProgramming\AxiomEngine\ode\ode\Debug\" >
+            <Settings ReferencePath = "E:\GameProgramming\AxiomEngine\ode\ode\Debug\;" >
                 <Config
                     Name = "Debug"
                     EnableASPDebugging = "false"

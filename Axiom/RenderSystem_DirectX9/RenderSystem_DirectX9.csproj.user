@@ -1,7 +1,7 @@
 <VisualStudioProject>
     <CSHARP LastOpenVersion = "7.10.3077" >
         <Build>
-            <Settings ReferencePath = "E:\GameProgramming\AxiomEngine\Common\;C:\WINDOWS\Microsoft.NET\Managed DirectX\v4.09.00.0900\" >
+            <Settings ReferencePath = "C:\WINDOWS\Microsoft.NET\Managed DirectX\v4.09.00.0900\;" >
                 <Config
                     Name = "Debug"
                     EnableASPDebugging = "false"
