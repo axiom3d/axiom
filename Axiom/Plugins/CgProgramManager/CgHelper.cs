@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using Axiom.Core;
 using Tao.Cg;
 
 namespace Axiom.CgPrograms {
@@ -32,7 +33,7 @@ namespace Axiom.CgPrograms {
                     sb.Append(Environment.NewLine);
                 }
 
-                throw new Exception(sb.ToString());
+                throw new AxiomException(sb.ToString());
             }
         }
 	}

@@ -61,7 +61,9 @@ namespace Axiom.Platforms.Win32
         ///     Called when the engine is being shutdown.
         /// </summary>
         public void Dispose() {
-            inputReader.Dispose();
+            if (inputReader != null) {
+                inputReader.Dispose();
+            }
         }
 
 		#endregion

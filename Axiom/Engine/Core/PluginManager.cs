@@ -134,7 +134,7 @@ namespace Axiom.Core {
                 AssemblyTitleAttribute title =
                     (AssemblyTitleAttribute)Attribute.GetCustomAttribute(plugin.GetType().Assembly, typeof(AssemblyTitleAttribute));
 
-                LogManager.Instance.Write("Unloding plugin: {0}", title.Title);
+                LogManager.Instance.Write("Unloading plugin: {0}", title.Title);
 
                 plugin.Stop();
 			}

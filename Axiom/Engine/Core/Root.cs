@@ -609,19 +609,45 @@ namespace Axiom.Core {
 			// force the engine to shutdown
 			Shutdown();
 
-            OverlayManager.Instance.Dispose();
-            OverlayElementManager.Instance.Dispose();
-            FontManager.Instance.Dispose();
-            ArchiveManager.Instance.Dispose();
-            SkeletonManager.Instance.Dispose();
-            MeshManager.Instance.Dispose();
-            ParticleSystemManager.Instance.Dispose();
-            ControllerManager.Instance.Dispose();
-            HighLevelGpuProgramManager.Instance.Dispose();
-            PluginManager.Instance.Dispose();
+            if (OverlayManager.Instance != null) {
+                OverlayManager.Instance.Dispose();
+            }
+            if (OverlayElementManager.Instance != null) {
+                OverlayElementManager.Instance.Dispose();
+            }
+            if (FontManager.Instance != null) {
+                FontManager.Instance.Dispose();
+            }
+            if (ArchiveManager.Instance != null) {
+                ArchiveManager.Instance.Dispose();
+            }
+            if (SkeletonManager.Instance != null) {
+                SkeletonManager.Instance.Dispose();
+            }
+            if (MeshManager.Instance != null) {
+                MeshManager.Instance.Dispose();
+            }
+            if (ParticleSystemManager.Instance != null) {
+                ParticleSystemManager.Instance.Dispose();
+            }
+            if (ControllerManager.Instance != null) {
+                ControllerManager.Instance.Dispose();
+            }
+            if (HighLevelGpuProgramManager.Instance != null) {
+                HighLevelGpuProgramManager.Instance.Dispose();
+            }
+            if (PluginManager.Instance != null) {
+                PluginManager.Instance.Dispose();
+            }
+
             Pass.ProcessPendingUpdates();
-            PlatformManager.Instance.Dispose();
-            LogManager.Instance.Dispose();
+
+            if (PlatformManager.Instance != null) {
+                PlatformManager.Instance.Dispose();
+            }
+            if (LogManager.Instance != null) {
+                LogManager.Instance.Dispose();
+            }
         }
 
 		#endregion

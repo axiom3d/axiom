@@ -203,15 +203,19 @@ namespace Axiom.Utility {
 
 		#region Public Methods
 
-		public bool Start() {
-			if(!Setup()) {
-				return false;
-			}
-
-			// start the engines rendering loop
-			engine.StartRendering();
-
-			return true;
+		public void Start() {
+            try {
+                if (Setup()) {
+                    // start the engines rendering loop
+                    engine.StartRendering();
+                }
+            }
+            catch (Exception ex) {
+                // try logging the error here first, before Root is disposed of
+                if (LogManager.Instance != null) {
+                    LogManager.Instance.Write(ex.ToString());
+                }
+            }
 		}
 
 		public void Dispose() {
@@ -409,17 +413,6 @@ namespace Axiom.Utility {
 			element = OverlayElementManager.Instance.GetElement("Core/NumTris");
 			element.Text = string.Format("Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered);
 		}
-
-		public static void GlobalErrorHandler(Exception ex) {
-			// TODO: Redo
-
-			Console.WriteLine(ex.ToString());
-
-			// log the error
-            if (LogManager.Instance != null) {
-                LogManager.Instance.Write(ex.ToString());
-            }
-        }
 
 		#endregion Event Handlers
 	}
