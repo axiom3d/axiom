@@ -195,6 +195,19 @@ namespace RenderSystem_OpenGL {
             return 0;
         }
 
+        public static int ConvertEnum(GpuProgramType type) {
+//            switch(type) {
+//                case GpuProgramType.Vertex:
+//                    return GL_VERTEX_PROGRAM_ARB;
+//
+//                case GpuProgramType.Fragment:
+//                    return GL_FRAGMENT_PROGRAM_ARB;
+//            }
+
+            // make the compiler happy
+            return 0;
+        }
+
         public static string Vendor {
             get { return vendor; }
         }
