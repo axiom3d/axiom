@@ -280,6 +280,19 @@ namespace Axiom.Graphics
             return newPass;
         }
 
+		/// <summary>
+		///    Overloaded method.
+		/// </summary>
+		/// <param name="textureName">The basic name of the texture (i.e. brickwall.jpg)</param>
+		/// <returns></returns>
+		public TextureUnitState CreateTextureUnitState() {
+			TextureUnitState state = new TextureUnitState(this);
+			textureUnitStates.Add(state);
+			// needs recompilation
+			parent.NotifyNeedsRecompile();
+			return state;
+		}	
+
         /// <summary>
         ///    Overloaded method.
         /// </summary>

@@ -110,6 +110,31 @@ namespace Axiom.Graphics {
 			positionBuffer.Unlock();
 		}
 
+		public void DebugLog() {
+			Debug.WriteLine("Edge Data");
+			Debug.WriteLine("---------");
+
+			for (int i = 0; i < triangles.Count; i++) {
+				Triangle t = (Triangle)triangles[i];
+
+				Debug.WriteLine(string.Format("Triangle {0} = [indexSet={1}, vertexSet={2}, v0={3}, v1={4}, v2={5}]", 
+					i, t.indexSet, t.vertexSet, t.vertIndex[0], t.vertIndex[1], t.vertIndex[2]));
+			}
+
+			for (int i = 0; i < edgeGroups.Count; i++) {
+				EdgeGroup group = (EdgeGroup)edgeGroups[i];
+
+				Debug.WriteLine(string.Format("Edge Group vertexSet={0}", group.vertexSet));
+
+				for (int j = 0; j < group.edges.Count; j++) {
+					Edge e = (Edge)group.edges[j];
+
+					Debug.WriteLine(string.Format("Edge {0} = [\ntri0={1}, \ntri1={2}, \nv0={3}, \nv1={4}, \n degenerate={5}\n]", 
+						j, e.triIndex[0], e.triIndex[1], e.vertIndex[0], e.vertIndex[1], e.isDegenerate)); 
+				}
+			}
+		}
+
         #endregion Methods
 
         #region Structures
@@ -159,6 +184,13 @@ namespace Axiom.Graphics {
 				sharedVertIndex = new int[3];
 			}
 
+			public override string ToString() {
+				return string.Format("IndexSet {0} VertexSet {1} VertIndices({2},{3},{4}) SharedVerts({5},{6},{7}) Normal({8},{9},{10},{11}) LightFacing {12})",
+					indexSet, vertexSet, vertIndex[0], vertIndex[1], vertIndex[2], sharedVertIndex[0], sharedVertIndex[1], sharedVertIndex[2],
+					normal.x, normal.y, normal.z, normal.w, lightFacing);
+			}
+
+
             #endregion Fields
         }
 
@@ -198,6 +230,12 @@ namespace Axiom.Graphics {
 				vertIndex = new int[2];
 				sharedVertIndex = new int[2];
 			}
+
+			public override string ToString() {
+				return string.Format("TriIndex({0},{1}) VertIndex({2},{3}) SharedVertIndex({4},{5}) IsDegenerate = {6}",
+					triIndex[0], triIndex[1], vertIndex[0], vertIndex[1], sharedVertIndex[0], sharedVertIndex[1], isDegenerate);
+			}
+
         }
 
         /// <summary>

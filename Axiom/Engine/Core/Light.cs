@@ -115,7 +115,7 @@ namespace Axiom.Core {
 		/// <summary>
 		///		Stored version of the last near clip volume tested.
 		/// </summary>
-		protected PlaneBoundedVolume nearClipVolume;
+		protected PlaneBoundedVolume nearClipVolume = new PlaneBoundedVolume();
 		/// <summary>
 		///		
 		/// </summary>
@@ -470,7 +470,8 @@ namespace Axiom.Core {
 					// Figure out light dir
 					lightDir = lightPos3 - (corners[i] * lightPos.w);
 					// Cross with anticlockwise corner, therefore normal points in
-					normal = (corners[i] - corners[(i - 1) % 4]).Cross(lightDir);
+					// TODO: Verify this mod difference
+					normal = (corners[i] - corners[i > 0 ? ((i - 1) % 4) : 0]).Cross(lightDir);
 					normal.Normalize();
 
 					if (d < THRESHOLD) {

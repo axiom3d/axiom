@@ -744,7 +744,6 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// <summary>
         /// 
         /// </summary>
-        // TODO: Modify for texture flipping and culling
         public override CullingMode CullingMode {
             get {
                 return cullingMode;
@@ -949,7 +948,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 
 			// configure standard version of the stencil operations
 			device.RenderState.StencilFunction = D3DHelper.ConvertEnum(function);
-			device.RenderState.StencilMask = refValue;
+			device.RenderState.ReferenceStencil = refValue;
 			device.RenderState.StencilWriteMask = mask;
 			device.RenderState.StencilFail = D3DHelper.ConvertEnum(stencilFailOp);
 			device.RenderState.StencilZBufferFail = D3DHelper.ConvertEnum(depthFailOp);

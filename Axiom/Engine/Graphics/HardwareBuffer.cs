@@ -346,6 +346,12 @@ namespace Axiom.Graphics {
         /// <param name="suppress">If true, shadow buffer updates won't be uploaded to hardware.</param>
         public void SuppressHardwareUpdate(bool suppress) {
             suppressHardwareUpdate = suppress;
+
+			// if disabling future shadow updates, then update from what is current in the buffer now
+			// this is needed for shadow volumes
+			if(!suppress) {
+				UpdateFromShadow();
+			}
         }
 
         #endregion

@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using System.Diagnostics;
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.MathLib;
@@ -102,8 +103,6 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <returns>All edge data from the vertex/index data recognized by the builder.</returns>
         public EdgeData Build() {
-            // TODO: Implementation
-
             /* Ok, here's the algorithm:
             For each set of indices in turn
               // First pass, create triangles and create edges
@@ -167,6 +166,9 @@ namespace Axiom.Graphics {
 
             // Stage 2: Link edges.
             ConnectEdges();
+
+			//edgeData.DebugLog();
+			//DebugLog();
 
             return edgeData;
         }
@@ -255,6 +257,9 @@ namespace Axiom.Graphics {
 						e.vertIndex[0] = tri.vertIndex[0];
 						e.vertIndex[1] = tri.vertIndex[1];
 						((EdgeData.EdgeGroup)edgeData.edgeGroups[vertexSet]).edges.Add(e);
+
+						e = new EdgeData.Edge();
+						//e.isDegenerate = true;
 					}
 					if (tri.sharedVertIndex[1] < tri.sharedVertIndex[2]) {
 						// Set only first tri, the other will be completed in connectEdges
@@ -264,6 +269,9 @@ namespace Axiom.Graphics {
 						e.vertIndex[0] = tri.vertIndex[1];
 						e.vertIndex[1] = tri.vertIndex[2];
 						((EdgeData.EdgeGroup)edgeData.edgeGroups[vertexSet]).edges.Add(e);
+
+						e = new EdgeData.Edge();
+						//e.isDegenerate = true;
 					}
 					if (tri.sharedVertIndex[2] < tri.sharedVertIndex[0]) {
 						// Set only first tri, the other will be completed in connectEdges
@@ -273,6 +281,9 @@ namespace Axiom.Graphics {
 						e.vertIndex[0] = tri.vertIndex[2];
 						e.vertIndex[1] = tri.vertIndex[0];
 						((EdgeData.EdgeGroup)edgeData.edgeGroups[vertexSet]).edges.Add(e);
+
+						e = new EdgeData.Edge();
+						//e.isDegenerate = true;
 					}
                 } // for iterations
             } // unsafe
@@ -290,7 +301,7 @@ namespace Axiom.Graphics {
 
 			for (int i = 0; i < edgeData.triangles.Count; i++, triIndex++) {
 				EdgeData.Triangle tri = (EdgeData.Triangle)edgeData.triangles[i];
-				EdgeData.Edge e;
+				EdgeData.Edge e = null;
 
 				if (tri.sharedVertIndex[0] > tri.sharedVertIndex[1]) {
 					e = FindEdge(tri.sharedVertIndex[1], tri.sharedVertIndex[0]);
@@ -314,7 +325,6 @@ namespace Axiom.Graphics {
 						e.isDegenerate = false;
 					}
 				}
-
 			}
 		}
 
@@ -370,6 +380,91 @@ namespace Axiom.Graphics {
 			vertices.Add(newCommon);
 
 			return newCommon.index;
+		}
+
+		public unsafe void DebugLog() {
+			WL("EdgeListBuilder Log");
+			WL("-------------------");
+			WL("Number of vertex sets: {0}", vertexDataList.Count);
+			WL("Number of index sets: {0}", indexDataList.Count);
+	        
+			int i, j;
+
+			// Log original vertex data
+			for(i = 0; i < vertexDataList.Count; i++) {
+				VertexData vData = (VertexData)vertexDataList[i];
+				WL(".");
+				WL("Original vertex set {0} - vertex count {1}", i, vData.vertexCount);
+
+				VertexElement posElem = 
+					vData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Position);
+				HardwareVertexBuffer vbuf = 
+					vData.vertexBufferBinding.GetBuffer(posElem.Source);
+
+				// lock the buffer for reading
+				IntPtr basePtr = vbuf.Lock(BufferLocking.ReadOnly);
+
+				byte* pBaseVertex = (byte*)basePtr.ToPointer();
+
+				float* pReal;
+
+				for (j = 0; j < vData.vertexCount; j++) {
+					pReal = (float*)(pBaseVertex + posElem.Offset);
+
+					WL("Vertex {0}: ({1}, {2}, {3})", j, pReal[0], pReal[1], pReal[2]);
+
+					pBaseVertex += vbuf.VertexSize;
+				}
+
+				vbuf.Unlock();
+			}
+
+			// Log original index data
+			for(i = 0; i < indexDataList.Count; i += 3) {
+				IndexData iData = (IndexData)indexDataList[i];
+				WL(".");
+				WL("Original triangle set {0} - index count {1} - vertex set {2})", 
+					i, iData.indexCount, indexDataVertexDataSetList[i]);
+
+				// Get the indexes ready for reading
+				short* p16Idx = null;
+				int* p32Idx = null;
+
+				IntPtr idxPtr = iData.indexBuffer.Lock(BufferLocking.ReadOnly);
+
+				if (iData.indexBuffer.Type == IndexType.Size32) {
+					p32Idx = (int*)idxPtr.ToPointer();
+				}
+				else {
+					p16Idx = (short*)idxPtr.ToPointer();
+				}
+
+				for (j = 0; j < iData.indexCount / 3; j++) {
+					if (iData.indexBuffer.Type == IndexType.Size32) {
+						WL("Triangle {0}: ({1}, {2}, {3})", j, *p32Idx++, *p32Idx++, *p32Idx++);
+					}
+					else {
+						WL("Triangle {0}: ({1}, {2}, {3})", j, *p16Idx++, *p16Idx++, *p16Idx++);
+					}
+				}
+
+				iData.indexBuffer.Unlock();
+
+				// Log common vertex list
+				WL(".");
+				WL("Common vertex list - vertex count {0}", vertices.Count);
+
+				for (i = 0; i < vertices.Count; i++) {
+					CommonVertex c = (CommonVertex)vertices[i];
+
+					WL("Common vertex {0}: (vertexSet={1}, originalIndex={2}, position={3}", 
+						i, c.vertexSet, c.index, c.position);
+				}
+			}
+		}
+
+		private void WL(string msg, params object[] args) {
+			Debug.WriteLine(string.Format(msg, args));
 		}
 
         #endregion Methods

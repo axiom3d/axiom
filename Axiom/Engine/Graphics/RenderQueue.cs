@@ -186,19 +186,27 @@ namespace Axiom.Graphics {
     ///		which are the groupings of renderables by priority for fine control
     ///		of ordering (not required for most instances).
     /// </remarks>
-    internal class RenderQueueGroup {
-        #region Member variables 
+    public class RenderQueueGroup {
+        #region Fields
 
         protected HashList priorityGroups = new HashList();
 
-        #endregion
+		/// <summary>
+		///		Are shadows enabled for this group?
+		/// </summary>
+		protected bool shadowsEnabled;
+
+        #endregion Fields
 
         #region Constructor
 
         /// <summary>
         ///		Default constructor.
         /// </summary>
-        public RenderQueueGroup() {}
+        public RenderQueueGroup() {
+			// shadows enabled by default
+			shadowsEnabled = true;
+		}
 
         #endregion
 
@@ -267,6 +275,28 @@ namespace Axiom.Graphics {
             }
         }
 
+		/// <summary>
+		///		Indicate whether a given queue group will be doing any shadow setup.
+		/// </summary>
+		/// <remarks>
+		///		This method allows you to inform the queue about a queue group, and to 
+		///		indicate whether this group will require shadow processing of any sort.
+		///		In order to preserve rendering order, Axiom/Ogre has to treat queue groups
+		///		as very separate elements of the scene, and this can result in it
+		///		having to duplicate shadow setup for each group. Therefore, if you
+		///		know that a group which you are using will never need shadows, you
+		///		should preregister the group using this method in order to improve
+		///		the performance.
+		/// </remarks>
+		public bool ShadowsEnabled {
+			get {
+				return shadowsEnabled;
+			}
+			set {
+				shadowsEnabled = value;
+			}
+		}
+
         #endregion
     }
 
@@ -280,11 +310,11 @@ namespace Axiom.Graphics {
     ///		scene and overlays) and have the same priority (fine groupings
     ///		for detailed overlap control).
     /// </remarks>
-    internal class RenderPriorityGroup {
+    public class RenderPriorityGroup {
         #region Member variables
 			
-        protected ArrayList transparentPasses = new ArrayList();
-        protected SortedList solidPassMap;
+        protected internal ArrayList transparentPasses = new ArrayList();
+        protected internal SortedList solidPassMap;
 
         #endregion
 

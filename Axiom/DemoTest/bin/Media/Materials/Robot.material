@@ -32,7 +32,6 @@ material Examples/Robot
 			}
 		}
 	}
-
 	// standard fallback
 	technique
 	{

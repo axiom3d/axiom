@@ -1114,13 +1114,15 @@ namespace Axiom.Core {
 			#region ShadowRenderable Members
 
 			public override void GetWorldTransforms(Matrix4[] matrices) {
-				if(parent.BoneMatrixCount > 0) {
-					matrices[0] = parent.ParentNodeFullTransform;
-				}
-				else {
+				// TODO: Find out why parent full transform appears to be double what it should
+				// i.e. a tag points and shadow volumes move twice as fast as their parent entity
+				//if(parent.BoneMatrixCount > 0) {
+					//matrices[0] = parent.ParentNodeFullTransform;
+				//}
+				//else {
 					// pretransformed
 					matrices[0] = Matrix4.Identity;
-				}
+				//}
 			}
 
 			public override Quaternion WorldOrientation {

@@ -69,7 +69,6 @@ namespace Demos {
 			box2 = new Box(scene); box2.Position = new Vector3(0, 100, 200);
 
 			// HACK: Decouple this and register objects with the World
-			//  TODO: Huh? What does this Hack memo mean?  What should we do?
 			box.RigidBody = world.CreateBody(box, DynamicsBodyType.Box, 0.0f);
 			box2.RigidBody = world.CreateBody(box2, DynamicsBodyType.Box, 0.0f);
 
