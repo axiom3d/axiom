@@ -47,7 +47,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 	/// <summary>
 	/// DirectX9 Render System implementation.
 	/// </summary>
-	public class D3D9RenderSystem : RenderSystem, IPlugin {
+	public class D3D9RenderSystem : RenderSystem {
 		/// <summary>
 		///    Reference to the Direct3D device.
 		/// </summary>
@@ -858,19 +858,6 @@ namespace Axiom.RenderSystems.DirectX9 {
 			}
 		}
 
-		#endregion
-
-		#region Implementation of IPlugin
-
-		public void Start() {
-			// add an instance of this plugin to the list of available RenderSystems
-			Root.Instance.RenderSystems.Add("Direct3D9", this);
-		}
-		public void Stop() {
-			// dispose of the D3D device
-			// TODO: Find out why this hangs
-			//device.Dispose();
-		}
 		#endregion
 
 		public override Axiom.MathLib.Matrix4 WorldMatrix {
@@ -1693,9 +1680,6 @@ namespace Axiom.RenderSystems.DirectX9 {
 					gpuProgramMgr.PushSyntaxCode("ps_3_x");
 				}
 			}
-
-			// register the HLSL program manager
-			HighLevelGpuProgramManager.Instance.AddFactory(new HLSL.HLSLProgramFactory());
 
 			// write hardware capabilities to registered log listeners
 			caps.Log();
