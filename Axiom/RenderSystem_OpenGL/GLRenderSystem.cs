@@ -608,7 +608,6 @@ namespace RenderSystem_OpenGL {
                     break;
 
                 case TextureAddressing.Mirror:
-                    // TODO: Re-add prefix after switching to Tao
                     type = Gl.GL_MIRRORED_REPEAT;
                     break;
 
@@ -1130,7 +1129,7 @@ namespace RenderSystem_OpenGL {
                         break;
 				
                     case VertexElementSemantic.Specular:
-                        // TODO: Add glSecondaryColorPointer to CsGL
+                        // TODO: Add glSecondaryColorPointer to Tao
                         break;
 
                     case VertexElementSemantic.TexCoords:

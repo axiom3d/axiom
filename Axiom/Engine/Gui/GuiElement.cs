@@ -1,6 +1,10 @@
 using System;
+using System.Collections;
+using System.Diagnostics;
+using System.Reflection;
 using Axiom.Core;
 using Axiom.Enumerations;
+using Axiom.Scripting;
 using Axiom.SubSystems.Rendering;
 
 namespace Axiom.Gui
@@ -61,11 +65,13 @@ namespace Axiom.Gui
         protected int zOrder;
 
         protected bool isEnabled;
+        /// <summary>Parser method lookup for script parameters.</summary>
+        protected Hashtable attribParsers = new Hashtable();
 
         #endregion
 		
         #region Constructors
-		
+
         /// <summary>
         /// 
         /// </summary>
@@ -82,6 +88,8 @@ namespace Axiom.Gui
             vertAlign = VerticalAlignment.Top;
             geomPositionsOutOfDate = true;
             isEnabled = true;
+
+            RegisterParsers();
         }
 		
         #endregion
@@ -93,7 +101,21 @@ namespace Axiom.Gui
         /// </summary>
         /// <param name="template"></param>
         /// <returns></returns>
-        public void CopyFromTemplate(GuiElement template) {
+        public virtual void CopyFromTemplate(GuiElement template) {
+            PropertyInfo[] props = template.GetType().GetProperties();
+
+            for(int i = 0; i < props.Length; i++) {
+                PropertyInfo prop = props[i];
+
+                // if the prop is not settable, then skip
+                if(!prop.CanWrite || !prop.CanRead) {
+                    Console.WriteLine(prop.Name);
+                    continue;
+                }
+
+                object srcVal = prop.GetValue(template, null);
+                prop.SetValue(this, srcVal, null);
+            }
         }
 
         /// <summary>
@@ -143,6 +165,33 @@ namespace Axiom.Gui
         }
 
         /// <summary>
+        ///		Registers all attribute names with their respective parser.
+        /// </summary>
+        /// <remarks>
+        ///		Methods meant to serve as attribute parsers should use a method attribute to 
+        /// </remarks>
+        protected virtual void RegisterParsers() {
+            MethodInfo[] methods = this.GetType().GetMethods(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Static);
+			
+            // loop through all methods and look for ones marked with attributes
+            for(int i = 0; i < methods.Length; i++) {
+                // get the current method in the loop
+                MethodInfo method = methods[i];
+				
+                // see if the method should be used to parse one or more material attributes
+                AttributeParserAttribute[] parserAtts = 
+                    (AttributeParserAttribute[])method.GetCustomAttributes(typeof(AttributeParserAttribute), true);
+
+                // loop through each one we found and register its parser
+                for(int j = 0; j < parserAtts.Length; j++) {
+                    AttributeParserAttribute parserAtt = parserAtts[j];
+
+                    attribParsers.Add(parserAtt.Name, Delegate.CreateDelegate(typeof(AttributeParserMethod), method));
+                } // for
+            } // for
+        }
+
+        /// <summary>
         ///    
         /// </summary>
         /// <param name="width"></param>
@@ -168,6 +217,15 @@ namespace Axiom.Gui
         /// <param name="param"></param>
         /// <param name="val"></param>
         public bool SetParam(string param, string val) {
+            if(!attribParsers.ContainsKey(param)) {
+                return false;
+            }
+
+            AttributeParserMethod parser = (AttributeParserMethod)attribParsers[param];
+            
+            // call the parser method, passing in an array of the param and val, and this element for the optional object
+            parser(new string[] {param, val}, this);
+
             return true;
         }
 
@@ -454,7 +512,7 @@ namespace Axiom.Gui
         /// <summary>
         ///    Gets/Sets the name of the material in use by this element.
         /// </summary>
-        public string MaterialName {
+        public virtual string MaterialName {
             get {
                 return materialName;
             }
@@ -466,10 +524,6 @@ namespace Axiom.Gui
                     throw new Exception(string.Format("Could not find material '{0}'.", materialName));
                 }
                 material.Load();
-
-                // set the prerequisites to be sure
-                material.Lighting = false;
-                material.DepthCheck = false;
             }
         }
 
@@ -628,37 +682,54 @@ namespace Axiom.Gui
 
         public Material Material {
             get {
-                // TODO:  Add GuiElement.Material getter implementation
-                return null;
+                return material;
             }
         }
 
-        public void GetRenderOperation(RenderOperation op) {
-            // TODO:  Add GuiElement.GetRenderOperation implementation
-        }
+        /// <summary>
+        ///    Abstract.  Force subclasses to implement this.
+        /// </summary>
+        /// <param name="op"></param>
+        public abstract void GetRenderOperation(RenderOperation op);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="matrices"></param>
         public void GetWorldTransforms(Axiom.MathLib.Matrix4[] matrices) {
             overlay.GetWorldTransforms(matrices);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ushort NumWorldTransforms {
             get {
                 return 1;
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool UseIdentityProjection {
             get {
                 return true;
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool UseIdentityView {
             get {
                 return true;
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Axiom.SubSystems.Rendering.SceneDetailLevel RenderDetail {
             get {
                 return SceneDetailLevel.Solid;
@@ -675,5 +746,65 @@ namespace Axiom.Gui
         }
 
         #endregion
+
+        #region Script parser methods
+
+        [AttributeParser("metrics_mode", "GuiElement")]
+        public static void ParseMetricsMode(string[] parms, params object[] objects) {
+            GuiElement element = (GuiElement)objects[0];
+
+            element.MetricsMode = (MetricsMode)ScriptEnumAttribute.Lookup(parms[1], typeof(MetricsMode));
+        }
+
+        [AttributeParser("horz_align", "GuiElement")]
+        public static void ParseHorzAlign(string[] parms, params object[] objects) {
+            GuiElement element = (GuiElement)objects[0];
+
+            element.HorizontalAlignment = (HorizontalAlignment)ScriptEnumAttribute.Lookup(parms[1], typeof(HorizontalAlignment));
+        }
+
+        [AttributeParser("vert_align", "GuiElement")]
+        public static void ParseVertAlign(string[] parms, params object[] objects) {
+            GuiElement element = (GuiElement)objects[0];
+
+            element.VerticalAlignment = (VerticalAlignment)ScriptEnumAttribute.Lookup(parms[1], typeof(VerticalAlignment));
+        }
+
+        [AttributeParser("top", "GuiElement")]
+        public static void ParseTop(string[] parms, params object[] objects) {
+            GuiElement element = (GuiElement)objects[0];
+
+            element.Top = int.Parse(parms[1]);
+        }
+
+        [AttributeParser("left", "GuiElement")]
+        public static void ParseLeft(string[] parms, params object[] objects) {
+            GuiElement element = (GuiElement)objects[0];
+
+            element.Left = int.Parse(parms[1]);
+        }
+
+        [AttributeParser("width", "GuiElement")]
+        public static void ParseWidth(string[] parms, params object[] objects) {
+            GuiElement element = (GuiElement)objects[0];
+
+            element.Width = int.Parse(parms[1]);
+        }
+
+        [AttributeParser("height", "GuiElement")]
+        public static void ParseHeight(string[] parms, params object[] objects) {
+            GuiElement element = (GuiElement)objects[0];
+
+            element.Height = int.Parse(parms[1]);
+        }
+
+        [AttributeParser("material", "GuiElement")]
+        public static void ParseMaterial(string[] parms, params object[] objects) {
+            GuiElement element = (GuiElement)objects[0];
+
+            element.MaterialName = parms[1];
+        }
+
+        #endregion Script parser methods
     }
 }

@@ -335,6 +335,9 @@ namespace Axiom.Core {
                     index++;
                 } // for
             } // for
+
+            // record the number of weights per vertex
+            targetVertexData.softwareBlendInfo.numWeightsPerVertex = (ushort)numBlendWeightsPerVertex;
         }
 
         /// <summary>

@@ -10,3 +10,16 @@ Core/NodeMaterial
 		texture axes.png
 	}
 }
+
+Core/AxiomLogo
+{
+	lighting off
+	depth_check off
+	scene_blend alpha_blend
+	
+	// texture layer 1
+	{
+		texture AxiomLogo.png
+	}
+	
+}

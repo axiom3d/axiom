@@ -164,15 +164,6 @@ namespace Axiom.MathLib {
             this[0, col] = vector.x;
             this[1, col] = vector.y;
             this[2, col] = vector.z;
-
-            unsafe {
-                //fixed(float* pM = &m00)
-                //{
-                //	*(pM + col) = vector.x;
-                //	*(pM + 3 + col) = vector.y;
-                //	*(pM + 6 + col) = vector.z;
-                //}
-            }
         }
 
         /// <summary>
@@ -200,11 +191,11 @@ namespace Axiom.MathLib {
 
             cos = MathUtil.Cos(pitch);
             sin = MathUtil.Sin(pitch);
-            Matrix3 yMat = new Matrix3(cos, 0, sin, 0, 1, 0, sin, 0, cos);
+            Matrix3 yMat = new Matrix3(cos, 0, sin, 0, 1, 0, -sin, 0, cos);
 
             cos = MathUtil.Cos(roll);
             sin = MathUtil.Sin(roll);
-            Matrix3 zMat = new Matrix3(cos, -sin, 0, sin, 0, 0, 0, 0, 1);
+            Matrix3 zMat = new Matrix3(cos, -sin, 0, sin, cos, 0, 0, 0, 1);
 
             this = xMat * (yMat * zMat);
         }

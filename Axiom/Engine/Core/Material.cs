@@ -268,6 +268,30 @@ namespace Axiom.Core {
         /// <summary>
         /// 
         /// </summary>
+        public ushort DepthBias {
+            get {
+                return depthBias;
+            }
+            set {
+                depthBias = value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public CompareFunction DepthFunction {
+            get {
+                return depthFunc;
+            }
+            set {
+                depthFunc = value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public bool DepthWrite {
             get { return depthWrite; }
             set { depthWrite = value; }
@@ -344,10 +368,10 @@ namespace Axiom.Core {
                     SetSceneBlending(SceneBlendFactor.One, SceneBlendFactor.One);
                     break;
                 case SceneBlendType.TransparentAlpha:
-                    SetSceneBlending(SceneBlendFactor.SourceAlpha, SceneBlendFactor.SourceAlpha);
+                    SetSceneBlending(SceneBlendFactor.SourceAlpha, SceneBlendFactor.OneMinusSourceAlpha);
                     break;
                 case SceneBlendType.TransparentColor:
-                    SetSceneBlending(SceneBlendFactor.SourceColor, SceneBlendFactor.SourceColor);
+                    SetSceneBlending(SceneBlendFactor.SourceColor, SceneBlendFactor.OneMinusSourceColor);
                     break;
             }
         }

@@ -186,6 +186,13 @@ Material__25
 		texture texmap2.jpg
 	}
 }
+// Cube
+1 - Default
+{
+	{
+		texture 10points.png
+	}
+}
 // Knot
 2 - Default
 {

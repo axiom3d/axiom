@@ -68,6 +68,15 @@ namespace Axiom.Gui {
         #endregion
 
         /// <summary>
+        ///    Indexer that gets a material by name.
+        /// </summary>
+        public new Overlay this[string name] {
+            get {
+                return (Overlay)base[name];
+            }
+        }
+
+        /// <summary>
         ///		Creates and return a new overlay.
         /// </summary>
         /// <param name="name"></param>
@@ -85,6 +94,22 @@ namespace Axiom.Gui {
         /// <param name="queue"></param>
         /// <param name="viewport"></param>
         internal void QueueOverlaysForRendering(Camera camera, RenderQueue queue, Viewport viewport) {
+            // Flag for update pixel-based GuiElements if viewport has changed dimensions
+            if(lastViewportWidth != viewport.ActualWidth ||
+                lastViewportHeight != viewport.ActualHeight) {
+
+                viewportDimensionsChanged = true;
+                lastViewportWidth = viewport.ActualWidth;
+                lastViewportHeight = viewport.ActualHeight;
+            }
+            else {
+                viewportDimensionsChanged = false;
+            }
+
+            // TODO: optimize this resource list to avoid the foreach
+            foreach(Overlay overlay in resourceList.Values) {
+                overlay.FindVisibleObjects(camera, queue);
+            }
         }
 
         #region Properties

@@ -68,8 +68,6 @@ namespace Axiom.Core {
         private float rotate;
         private Matrix4 texMatrix = Matrix4.Identity;
 
-        // TODO: make this a hashtable to something else with type as a key
-        // .Net doesnt have a nonunique key hashtable like structure
         private ArrayList effectList = new ArrayList();
 
         #endregion

@@ -3,13 +3,11 @@
     <File name=".\AssemblyInfo.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\DemoBrowser.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name="..\Engine\Utility\Axiom.Utility.ConfigDialog.resources" subtype="Code" buildaction="EmbedAsResource" dependson="" data="" />
-    <File name=".\CSharpForm.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Main.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Demos\EnvMapping.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Demos\Physics.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Demos\SkyBox.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Demos\SkyPlane.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\PlasmaGun.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Demos\CameraTrack.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Demos\Lights.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Demos\TextureFX.cs" subtype="Code" buildaction="Compile" dependson="" data="" />

@@ -37,7 +37,7 @@ namespace Axiom.Gui {
     /// <summary>
     ///		Abstract class used to derive controls that can be placed in an overlay (GUI).
     /// </summary>
-    public abstract class GuiControl : IRenderable, IMouseTarget {
+    public abstract class GuiControl : IMouseTarget {
         #region Member variables
         /// <summary>A list of child controls within this control.</summary>
         protected ArrayList childControls = new ArrayList();
@@ -52,55 +52,6 @@ namespace Axiom.Gui {
         ///		Default constructor.
         /// </summary>
         public GuiControl() {
-        }
-
-        #endregion
-
-        #region IRenderable Members
-
-        public Material Material {
-            get {
-                // TODO:  Add GuiControl.Material getter implementation
-                return null;
-            }
-        }
-
-        public void GetRenderOperation(RenderOperation op) {
-            // TODO: Implement GetRenderOperation
-        }		
-
-        public void GetWorldTransforms(Matrix4[] matrices) {
-            // TODO: Implement GuiControl.GetWorldTransformsw
-        }
-
-        public ushort NumWorldTransforms {
-            get {
-                // TODO:  Add GuiControl.NumWorldTransforms getter implementation
-                return 0;
-            }
-        }
-
-        public bool UseIdentityProjection {
-            get {
-                // TODO:  Add GuiControl.UseIdentityProjection getter implementation
-                return false;
-            }
-        }
-
-        public bool UseIdentityView {
-            get {
-                // TODO:  Add GuiControl.UseIdentityView getter implementation
-                return false;
-            }
-        }
-
-        public SceneDetailLevel RenderDetail {
-            get { return SceneDetailLevel.Solid; }
-        }
-
-        public float GetSquaredViewDepth(Camera camera) {
-            // TODO:  Add GuiControl.GetSquaredViewDepth implementation
-            return 0;
         }
 
         #endregion

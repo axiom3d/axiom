@@ -178,11 +178,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "PlasmaGun.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Demos\CameraTrack.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

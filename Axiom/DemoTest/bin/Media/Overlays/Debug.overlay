@@ -1,0 +1,18 @@
+// Ogre overlay scripts
+Core/DebugOverlay
+{
+	zorder 500
+	// Stats block
+
+	container Panel(Core/LogoPanel)
+	{	
+		metrics_mode pixels
+		horz_align right
+		vert_align bottom
+		top -75
+		left -200
+		width 200
+		height 80
+		material Core/AxiomLogo
+	}
+}

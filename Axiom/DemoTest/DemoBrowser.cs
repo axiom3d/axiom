@@ -234,7 +234,7 @@ namespace Demos {
             demoTable.Rows.Add(new object[] {6, "Lights", "Demos.Lights", "Lights.jpg", "Example of creating a scene with lights and billboards.", "Demos"});
             demoTable.Rows.Add(new object[] {7, "ParticleFX", "Demos.ParticleFX", "ParticleFX.jpg", "Demonstrates the various type of particle systems that the engine supports.", "Demos"});
             demoTable.Rows.Add(new object[] {8, "Skeletal Animation", "Demos.SkeletalAnimation", "SkeletalAnimation.jpg", "Demonstrates skeletal animation techniques.", "Demos"});
-            demoTable.Rows.Add(new object[] {9, "Physics", "Demos.Physics", "Tutorial1.jpg", "Demonstrates collidable objects.", "Demos"});
+            demoTable.Rows.Add(new object[] {9, "Physics", "Demos.Physics", "Physics.jpg", "Demonstrates collidable objects with real time physics.", "Demos"});
             demoTable.Rows.Add(new object[] {10, "Tutorial 1", "Demos.Tutorial1", "Tutorial1.jpg", "Demonstrates the typical spinning triangle demo using the engine.", "Tutorials"});
 
             demoView = new DataView(demoTable);
