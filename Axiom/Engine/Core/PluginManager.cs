@@ -105,7 +105,7 @@ namespace Axiom.Core {
 					try {
 						string fullPath = Path.GetFullPath(file);
 
-						Assembly assembly = Assembly.LoadFile(fullPath);
+						Assembly assembly = Assembly.LoadFrom(fullPath);
 
 						foreach(Type type in assembly.GetTypes()) {
 							if(type.GetInterface("IPlugin") != null) {
