@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Drawing;
 using Axiom.Core;
 using Axiom.Enumerations;
@@ -119,6 +120,28 @@ namespace Axiom.ParticleSystems {
             affectorList.Add(affector);
 
             return affector;
+        }
+
+        /// <summary>
+        ///    Get a particle affector assigned to this particle system by index.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public ParticleAffector GetAffector(int index) {
+            Debug.Assert(index < affectorList.Count, "index < affectorList.Count");
+
+            return (ParticleAffector)emitterList[index];
+        }
+
+        /// <summary>
+        ///    Get a particle emitter assigned to this particle system by index.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public ParticleEmitter GetEmitter(int index) {
+            Debug.Assert(index < emitterList.Count, "index < emitterList.Count");
+
+            return (ParticleEmitter)emitterList[index];
         }
 
         #endregion
