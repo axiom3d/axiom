@@ -97,10 +97,12 @@
                 <Reference
                     Name = "Tao.OpenGL"
                     AssemblyName = "Tao.OpenGl"
+                    HintPath = "..\Solution Items\Tao.OpenGl.dll"
                 />
                 <Reference
                     Name = "Tao.Platform.Windows"
                     AssemblyName = "Tao.Platform.Windows"
+                    HintPath = "..\Solution Items\Tao.Platform.Windows.dll"
                 />
             </References>
         </Build>

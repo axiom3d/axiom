@@ -76,6 +76,7 @@
                 <Reference
                     Name = "Tao.Cg"
                     AssemblyName = "Tao.Cg"
+                    HintPath = "..\Solution Items\Tao.Cg.dll"
                 />
             </References>
         </Build>

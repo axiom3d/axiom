@@ -92,6 +92,7 @@
                 <Reference
                     Name = "ICSharpCode.SharpZipLib"
                     AssemblyName = "ICSharpCode.SharpZipLib"
+                    HintPath = "..\Solution Items\ICSharpCode.SharpZipLib.dll"
                 />
             </References>
         </Build>
