@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -83,15 +84,16 @@ namespace Axiom.RenderSystems.OpenGL
 			RenderWindow autoWindow = null;
 
 			if(autoCreateWindow) {
-				EngineConfig.DisplayModeRow[] modes = 
-					(EngineConfig.DisplayModeRow[])engineConfig.DisplayMode.Select("Selected = true");
+				// MONO: Could not cast result of Select to strongly typed data row
+				DataRow[] modes = 
+					(DataRow[])engineConfig.DisplayMode.Select("Selected = true");
 
-				EngineConfig.DisplayModeRow mode = modes[0];
+				DataRow mode = modes[0];
 
-				int width = mode.Width;
-				int height = mode.Height;
-				int bpp = mode.Bpp;
-				bool fullscreen = mode.FullScreen;
+				int width = (int)mode["Width"];
+				int height = (int)mode["Height"];
+				int bpp = (int)mode["Bpp"];
+				bool fullscreen = (bool)mode["FullScreen"];
 
 				// create the window with the default form as the target
 				autoWindow = renderSystem.CreateRenderWindow(windowTitle, width, height, 32, fullscreen, 0, 0, true, false, null);

@@ -80,7 +80,7 @@ namespace Axiom.Utility {
 
 		protected bool Configure() {
 			// HACK: Temporary
-			RenderSystem renderSystem = Root.Instance.RenderSystems[1];
+			RenderSystem renderSystem = Root.Instance.RenderSystems[0];
 			Root.Instance.RenderSystem = renderSystem;
 			EngineConfig.DisplayModeRow mode = renderSystem.ConfigOptions.DisplayMode[0];
 			//mode.FullScreen = true;
