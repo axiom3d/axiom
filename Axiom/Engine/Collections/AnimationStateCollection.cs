@@ -92,7 +92,16 @@ namespace Axiom.Collections {
             base.Add(key, item);
         }
 
-        #endregion
+        public AnimationStateCollection Clone() {
+            AnimationStateCollection newCol = new AnimationStateCollection();
 
+            foreach(DictionaryEntry entry in this) {
+                newCol.Add(entry.Key, entry.Value);
+            }
+
+            return newCol;
+        }
+
+        #endregion
     }
 }

@@ -310,6 +310,29 @@ namespace Axiom.Core {
         }
 
         /// <summary>
+        ///     Returns whether this mesh has an attached edge list.
+        /// </summary>
+        public bool IsEdgeListBuilt {
+            get {
+                return edgeListsBuilt;
+            }
+        }
+
+        /// <summary>
+        ///     Returns true if this mesh is using manual LOD.
+        /// </summary>
+        /// <remarks>
+        ///     A mesh can either use automatically generated LOD, or it can use alternative
+        ///     meshes as provided by an artist. A mesh can only use either all manual LODs 
+        ///     or all generated LODs, not a mixture of both.
+        /// </remarks>
+        public bool IsLodManual {
+            get {
+                return isLodManual;
+            }
+        }
+
+        /// <summary>
         ///		Defines whether this mesh is to be loaded from a resource, or created manually at runtime.
         /// </summary>
         public bool IsManuallyDefined {
@@ -1080,6 +1103,24 @@ namespace Axiom.Core {
             Debug.Assert(index < subMeshList.Count, "index < subMeshList.Count");
 
             return subMeshList[index];
+        }
+
+        /// <summary>
+        ///     Gets the sub mesh with the specified name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public SubMesh GetSubMesh(string name) {
+            for (int i = 0; i < subMeshList.Count; i++) {
+                SubMesh sub = subMeshList[i];
+
+                if (sub.name == name) {
+                    return sub;
+                }
+            }
+
+            // not found
+            throw new AxiomException("A SubMesh with the name '{0}' does not exist in mesh '{1}'", name, this.name);
         }
 
         /// <summary>
