@@ -452,6 +452,7 @@ namespace Axiom.Core {
 
 			firstTime = true;
 			alreadySetup = false;
+			QueueEndRendering();
 		}
 
 		/// <summary>
