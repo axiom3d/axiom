@@ -91,7 +91,7 @@ namespace Axiom.Gui {
             this.scaleY = 1.0f;
             this.isTransformOutOfDate = true;
             this.zOrder = 100;
-            rootNode = Engine.Instance.SceneManagers[SceneType.Generic].CreateSceneNode();
+            rootNode = Root.Instance.SceneManagers[SceneType.Generic].CreateSceneNode();
         }
 
         #endregion Constructors

@@ -239,7 +239,7 @@ namespace Axiom.RenderSystems.DirectX9 {
                     break;
 
                 case LayerBlendOperationEx.DotProduct:
-					if (Engine.Instance.RenderSystem.Caps.CheckCap(Capabilities.Dot3)) {
+					if (Root.Instance.RenderSystem.Caps.CheckCap(Capabilities.Dot3)) {
 						d3dTexOp = D3D.TextureOperation.DotProduct3;
 					}
 					else {

@@ -493,7 +493,7 @@ namespace Axiom.Core {
 		/// </summary>
 		protected void UpdateAnimation() {
 			// we only do these tasks if they have not already been done this frame
-			ulong currentFrameNumber = Engine.Instance.CurrentFrameCount;
+			ulong currentFrameNumber = Root.Instance.CurrentFrameCount;
 
 			if(frameAnimationLastUpdated != currentFrameNumber) {
 				CacheBoneMatrices();
@@ -502,8 +502,8 @@ namespace Axiom.Core {
 				bool hwSkinning = this.IsHardwareSkinningEnabled;
 
 				if(!hwSkinning 
-					|| Engine.Instance.SceneManager.ShadowTechnique == ShadowTechnique.StencilAdditive
-					|| Engine.Instance.SceneManager.ShadowTechnique == ShadowTechnique.StencilModulative) {
+					|| Root.Instance.SceneManager.ShadowTechnique == ShadowTechnique.StencilAdditive
+					|| Root.Instance.SceneManager.ShadowTechnique == ShadowTechnique.StencilModulative) {
 
 					// Ok, we need to do a software blend
 					// Blend normals in s/w only if we're not using h/w skinning,

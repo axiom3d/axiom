@@ -157,7 +157,7 @@ namespace Demos {
                 vertexData.vertexCount, 
                 BufferUsage.StaticWriteOnly);
 
-            int colorValue = Engine.Instance.RenderSystem.ConvertColor(color);
+            int colorValue = Root.Instance.RenderSystem.ConvertColor(color);
 
             int[] colors = new int[] { colorValue, colorValue };
 
@@ -270,9 +270,9 @@ namespace Demos {
             // note: these must be converted to the current API's
             // preferred packed int format
             int[] colors = new int[] {
-                Engine.Instance.RenderSystem.ConvertColor(c1),
-                Engine.Instance.RenderSystem.ConvertColor(c2),
-                Engine.Instance.RenderSystem.ConvertColor(c3)
+                Root.Instance.RenderSystem.ConvertColor(c1),
+                Root.Instance.RenderSystem.ConvertColor(c2),
+                Root.Instance.RenderSystem.ConvertColor(c3)
             };
 
             // write the colors to the color buffer

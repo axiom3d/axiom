@@ -139,10 +139,10 @@ namespace Axiom.Core {
                     case Projection.Perspective: {
 
                         // PERSPECTIVE transform, API specific
-                        projectionMatrix = Engine.Instance.RenderSystem.MakeProjectionMatrix(fieldOfView, aspectRatio, nearDistance, farDistance);
+                        projectionMatrix = Root.Instance.RenderSystem.MakeProjectionMatrix(fieldOfView, aspectRatio, nearDistance, farDistance);
 
                         // PERSPECTIVE transform, API specific for GPU programs
-                        standardProjMatrix = Engine.Instance.RenderSystem.MakeProjectionMatrix(fieldOfView, aspectRatio, nearDistance, farDistance, true);
+                        standardProjMatrix = Root.Instance.RenderSystem.MakeProjectionMatrix(fieldOfView, aspectRatio, nearDistance, farDistance, true);
 
                         float thetaY = MathUtil.DegreesToRadians(fieldOfView * 0.5f);
                         float tanThetaY = MathUtil.Tan(thetaY);
@@ -183,7 +183,7 @@ namespace Axiom.Core {
                     } break;
                     case Projection.Orthographic: {
 						// ORTHOGRAPHIC projection, API specific 
-						Engine.Instance.RenderSystem.MakeOrthoMatrix(
+						Root.Instance.RenderSystem.MakeOrthoMatrix(
 							fieldOfView, aspectRatio, nearDistance, farDistance);
 
 						float thetaY = MathUtil.DegreesToRadians(fieldOfView * 0.5f);

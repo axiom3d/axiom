@@ -157,7 +157,7 @@ namespace Axiom.Core {
         ///		Indicates this resource has been used.
         /// </summary>
         public virtual void Touch() {
-            lastAccessed = Engine.Instance.Timer.Milliseconds;
+            lastAccessed = Root.Instance.Timer.Milliseconds;
 
 			if(!isLoaded) {
 				// TODO: Debug loading, with respect to shadow volume generation

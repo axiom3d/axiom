@@ -27,8 +27,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using Axiom.Collections;
 using Axiom.Configuration;
@@ -47,6 +45,16 @@ namespace Axiom.RenderSystems.OpenGL {
     /// </summary>
     public class GLRenderSystem : RenderSystem, IPlugin {
         #region Fields
+
+		/// <summary>
+		///		GLSupport class providing platform specific implementation.
+		/// </summary>
+		private BaseGLSupport glSupport;
+
+		/// <summary>
+		///		Flag that remembers if GL has been initialized yet.
+		/// </summary>
+		private bool isGLInitialized;
 
         /// <summary>Internal view matrix.</summary>
         protected Matrix4 viewMatrix;
@@ -135,12 +143,22 @@ namespace Axiom.RenderSystems.OpenGL {
             minFilter = FilterOptions.Linear;
             mipFilter = FilterOptions.Point;
 
+			// create 
+			glSupport = new GLSupport();
+
             InitConfigOptions();
         }
 
         #endregion Constructors
 
         #region Implementation of RenderSystem
+
+		public override EngineConfig ConfigOptions {
+			get {
+				return glSupport.ConfigOptions;
+			}
+		}
+
 
 		public override void ClearFrameBuffer(FrameBuffer buffers, ColorEx color, float depth, int stencil) {
 			int flags = 0;
@@ -206,29 +224,45 @@ namespace Axiom.RenderSystems.OpenGL {
 		}
 
         public override RenderWindow CreateRenderWindow(string name, int width, int height, int colorDepth,
-            bool isFullscreen, int left, int top, bool depthBuffer, object target) {
+            bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, object target) {
 
-            RenderWindow window = new GLWindow();
+			// TODO: Check for dupe windows
 
-            window.Handle = target;
+			RenderWindow window = glSupport.NewWindow(name, width, height, colorDepth, isFullscreen, left, top, depthBuffer, vsync, target);
 
-            // create the window
-            window.Create(name, width, height, colorDepth, isFullscreen, left, top, depthBuffer);
+			if(!isGLInitialized) {
+				InitGL();
+			}
 
             // add the new render target
             AttachRenderTarget(window);
 
-            // by creating our texture manager, singleton TextureManager will hold our implementation
-            textureMgr = new GLTextureManager();
+            return window;
+        }
 
-            // create our special program manager
-            gpuProgramMgr = new GLGpuProgramManager();
+		protected void InitGL() {
+			// intialize GL extensions and check capabilites
+			glSupport.InitializeExtensions();
 
-            // query hardware capabilites
-            CheckCaps();
+			// log hardware info
+			System.Diagnostics.Trace.WriteLine(string.Format("Vendor: {0}", glSupport.Vendor));
+			System.Diagnostics.Trace.WriteLine(string.Format("Video Board: {0}", glSupport.VideoCard));
+			System.Diagnostics.Trace.WriteLine(string.Format("Version: {0}", glSupport.Version));
+			
+			System.Diagnostics.Trace.WriteLine("Extensions supported:");
 
-            // create a specialized instance, which registers itself as the singleton instance of HardwareBufferManager
-            // use software buffers as a fallback, which operate as regular vertex arrays
+			foreach(string ext in glSupport.Extensions) {
+				System.Diagnostics.Trace.WriteLine(ext);
+			}
+			
+			// create our special program manager
+			gpuProgramMgr = new GLGpuProgramManager();
+
+			// query hardware capabilites
+			CheckCaps();
+
+			// create a specialized instance, which registers itself as the singleton instance of HardwareBufferManager
+			// use software buffers as a fallback, which operate as regular vertex arrays
 			if(caps.CheckCap(Capabilities.VertexBuffer)) {
 				hardwareBufferManager = new GLHardwareBufferManager();
 			}
@@ -236,11 +270,14 @@ namespace Axiom.RenderSystems.OpenGL {
 				hardwareBufferManager = new GLSoftwareBufferManager();
 			}
 
-            // initialize the mesh manager here, since it relies on the render system already establishing a HardwareBufferManager
-            MeshManager.Init();
+			// by creating our texture manager, singleton TextureManager will hold our implementation
+			textureMgr = new GLTextureManager();
 
-            return window;
-        }
+			// initialize the mesh manager here, since it relies on the render system already establishing a HardwareBufferManager
+			MeshManager.Init();
+
+			isGLInitialized = true;
+		}
 
         public override ColorEx AmbientLight {
 			get {
@@ -955,7 +992,7 @@ namespace Axiom.RenderSystems.OpenGL {
 
                 case TexCoordCalcMethod.EnvironmentMapPlanar:            
                     // XXX This doesn't seem right?!
-                    if(GLHelper.CheckMinVersion("1.3")) {
+                    if(glSupport.CheckMinVersion("1.3")) {
                         Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_REFLECTION_MAP );
                         Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_REFLECTION_MAP );
                         Gl.glTexGeni( Gl.GL_R, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_REFLECTION_MAP );
@@ -1042,12 +1079,13 @@ namespace Axiom.RenderSystems.OpenGL {
             Gl.glMatrixMode(Gl.GL_TEXTURE);
 
             // if texture matrix was precalced, use that
-            if(useAutoTextureMatrix) {
-                Gl.glLoadMatrixf(autoTextureMatrix);
-                Gl.glMultMatrixf(tempMatrix);
-            }
-            else
-                Gl.glLoadMatrixf(tempMatrix);
+			if(useAutoTextureMatrix) {
+				Gl.glLoadMatrixf(autoTextureMatrix);
+				Gl.glMultMatrixf(tempMatrix);
+			}
+			else {
+				Gl.glLoadMatrixf(tempMatrix);
+			}
 
             // reset to mesh view matrix and to tex unit 0
             Gl.glMatrixMode(Gl.GL_MODELVIEW);
@@ -1058,32 +1096,14 @@ namespace Axiom.RenderSystems.OpenGL {
         /// 
         /// </summary>
         /// <param name="autoCreateWindow"></param>
+        /// <param name="windowTitle">Title of the window to create.</param>
         /// <returns></returns>
-        public override RenderWindow Initialize(bool autoCreateWindow) {
-
-            RenderWindow renderWindow = null;
-
-            if(autoCreateWindow) {
-                EngineConfig.DisplayModeRow[] modes = 
-                    (EngineConfig.DisplayModeRow[])engineConfig.DisplayMode.Select("Selected = true");
-
-                EngineConfig.DisplayModeRow mode = modes[0];
-
-                DefaultForm newWindow = RenderWindow.CreateDefaultForm(0, 0, mode.Width, mode.Height, mode.FullScreen);
-
-                // create a new render window
-                renderWindow = this.CreateRenderWindow("Main Window", mode.Width, mode.Height, mode.Bpp, mode.FullScreen, 0, 0, true, newWindow.Target);
-
-                // set the default form's renderwindow so it can access it internally
-                newWindow.RenderWindow = renderWindow;
-
-                // show the window
-                newWindow.Show();
-            }
+        public override RenderWindow Initialize(bool autoCreateWindow, string windowTitle) {
+            RenderWindow autoWindow = glSupport.CreateWindow(autoCreateWindow, this, windowTitle);
 
             this.CullingMode = this.cullingMode;
 
-            return renderWindow;
+            return autoWindow;
         }
 
         /// <summary>
@@ -1942,38 +1962,13 @@ namespace Axiom.RenderSystems.OpenGL {
         ///		Called in constructor to init configuration.
         /// </summary>
         private void InitConfigOptions() {
-
-            Gdi.DEVMODE setting;
-            int i = 0;
-            int width, height, bpp, freq;
-            
-            bool go = User.EnumDisplaySettings(null, i++, out setting);
-
-            while(go) {
-                width = setting.dmPelsWidth;
-                height = setting.dmPelsHeight;
-                bpp = setting.dmBitsPerPel;
-                freq = setting.dmDisplayFrequency;
-			
-                // filter out the lower resolutions and dupe frequencies
-                if(width >= 640 && height >= 480 && bpp >= 16) {
-                    string query = string.Format("Width = {0} AND Height= {1} AND Bpp = {2}", width, height, bpp);
-                    if(engineConfig.DisplayMode.Select(query).Length == 0) {
-                        // add a new row to the display settings table
-                        engineConfig.DisplayMode.AddDisplayModeRow(width, height, bpp, false, false);
-                    }
-                }
-
-                // grab the current display settings
-                go = User.EnumDisplaySettings(null, i++, out setting);
-            }
-        }
+			glSupport.AddConfig();
+		}
 
         /// <summary>
         ///		Helper method to go through and interrogate hardware capabilities.
         /// </summary>
         private void CheckCaps() {
-
             // find out how many lights we have to play with, then create a light array to keep locally
             int maxLights;
             Gl.glGetIntegerv(Gl.GL_MAX_LIGHTS, out maxLights);
@@ -1985,62 +1980,62 @@ namespace Axiom.RenderSystems.OpenGL {
             caps.NumTextureUnits = numTextureUnits;
 
             // check multitexturing
-            if(GLHelper.SupportsExtension("GL_ARB_multitexture")) {
+            if(glSupport.CheckExtension("GL_ARB_multitexture")) {
                 caps.SetCap(Capabilities.MultiTexturing);
             }
 
             // check texture blending
-            if(GLHelper.SupportsExtension("GL_EXT_texture_env_combine") || 
-                GLHelper.SupportsExtension("GL_ARB_texture_env_combine")) {
+            if(glSupport.CheckExtension("GL_EXT_texture_env_combine") || 
+                glSupport.CheckExtension("GL_ARB_texture_env_combine")) {
                 caps.SetCap(Capabilities.TextureBlending);
             }
 
             // anisotropic filtering
-            if(GLHelper.SupportsExtension("GL_EXT_texture_filter_anisotropic")) {
+            if(glSupport.CheckExtension("GL_EXT_texture_filter_anisotropic")) {
                 caps.SetCap(Capabilities.AnisotropicFiltering);
             }
 
             // check dot3 support
-            if(GLHelper.SupportsExtension("GL_ARB_texture_env_dot3")) {
+            if(glSupport.CheckExtension("GL_ARB_texture_env_dot3")) {
                 caps.SetCap(Capabilities.Dot3);
             }
 
             // check support for vertex buffers in hardware
-            if(GLHelper.SupportsExtension("GL_ARB_vertex_buffer_object")) {
+            if(glSupport.CheckExtension("GL_ARB_vertex_buffer_object")) {
                 caps.SetCap(Capabilities.VertexBuffer);
             }
 
-            if(GLHelper.SupportsExtension("GL_ARB_texture_cube_map")
-                || GLHelper.SupportsExtension("GL_EXT_texture_cube_map")) {
+            if(glSupport.CheckExtension("GL_ARB_texture_cube_map")
+                || glSupport.CheckExtension("GL_EXT_texture_cube_map")) {
                 caps.SetCap(Capabilities.CubeMapping);
             }
 
             // check support for hardware vertex blending
             // TODO: Dont check this cap yet, wait for vertex shader support so that software blending is always used
-            //if(GLHelper.SupportsExtension("GL_ARB_vertex_blend"))
+            //if(GLHelper.CheckExtension("GL_ARB_vertex_blend"))
             //    caps.SetCap(Capabilities.VertexBlending);
 
             // check if the hardware supports anisotropic filtering
-            if(GLHelper.SupportsExtension("GL_EXT_texture_filter_anisotropic")) {
+            if(glSupport.CheckExtension("GL_EXT_texture_filter_anisotropic")) {
                 caps.SetCap(Capabilities.AnisotropicFiltering);
             }
 
             // check hardware mip mapping
-            if(GLHelper.SupportsExtension("GL_SGIS_generate_mipmap")) {
+            if(glSupport.CheckExtension("GL_SGIS_generate_mipmap")) {
                 caps.SetCap(Capabilities.HardwareMipMaps);
             }
 
 			// Texture Compression
-			if(GLHelper.SupportsExtension("GL_ARB_texture_compression")) {
+			if(glSupport.CheckExtension("GL_ARB_texture_compression")) {
 				caps.SetCap(Capabilities.TextureCompression);
 
 				// DXT compression
-				if(GLHelper.SupportsExtension("GL_EXT_texture_compression_s3tc")) {
+				if(glSupport.CheckExtension("GL_EXT_texture_compression_s3tc")) {
 					caps.SetCap(Capabilities.TextureCompressionDXT);
 				}
 
 				// VTC compression
-				if(GLHelper.SupportsExtension("GL_NV_texture_compression_vtc")) {
+				if(glSupport.CheckExtension("GL_NV_texture_compression_vtc")) {
 					caps.SetCap(Capabilities.TextureCompressionVTC);
 				}
 			}
@@ -2056,17 +2051,17 @@ namespace Axiom.RenderSystems.OpenGL {
             }
 
 			// 2 sided stencil
-			if(GLHelper.SupportsExtension("GL_EXT_stencil_two_side")) {
+			if(glSupport.CheckExtension("GL_EXT_stencil_two_side")) {
 				caps.SetCap(Capabilities.TwoSidedStencil);
 			}
 
 			// stencil wrapping
-			if(GLHelper.SupportsExtension("GL_EXT_stencil_wrap")) {
+			if(glSupport.CheckExtension("GL_EXT_stencil_wrap")) {
 				caps.SetCap(Capabilities.StencilWrap);
 			}
 
 			// Check for hardware occlusion support
-			if(GLHelper.SupportsExtension("GL_NV_occlusion_query")) {
+			if(glSupport.CheckExtension("GL_NV_occlusion_query")) {
 				caps.SetCap(Capabilities.HardwareOcculusion);
 			}
 
@@ -2077,12 +2072,12 @@ namespace Axiom.RenderSystems.OpenGL {
 			caps.SetCap(Capabilities.VertexFormatUByte4);
 
 			// Hardware occlusion queries
-			if(GLHelper.SupportsExtension("GL_NV_occlusion_query")) {
+			if(glSupport.CheckExtension("GL_NV_occlusion_query")) {
 				caps.SetCap(Capabilities.HardwareOcculusion);
 			}
 
             // ARB Vertex Programs
-            if(GLHelper.SupportsExtension("GL_ARB_vertex_program")) {
+            if(glSupport.CheckExtension("GL_ARB_vertex_program")) {
                 caps.SetCap(Capabilities.VertexPrograms);
                 caps.MaxVertexProgramVersion = "arbvp1";
                 caps.VertexProgramConstantIntCount = 0;
@@ -2097,7 +2092,7 @@ namespace Axiom.RenderSystems.OpenGL {
             }
 
             // ARB Fragment Programs
-            if(GLHelper.SupportsExtension("GL_ARB_fragment_program")) {
+            if(glSupport.CheckExtension("GL_ARB_fragment_program")) {
                 caps.SetCap(Capabilities.FragmentPrograms);
                 caps.MaxFragmentProgramVersion = "arbfp1";
                 caps.FragmentProgramConstantIntCount = 0;
@@ -2112,7 +2107,7 @@ namespace Axiom.RenderSystems.OpenGL {
             }
 
             // ATI Fragment Programs (supported via conversion from DX ps1.1 - ps1.4 shaders)
-            if(GLHelper.SupportsExtension("GL_ATI_fragment_shader")) {
+            if(glSupport.CheckExtension("GL_ATI_fragment_shader")) {
                 caps.SetCap(Capabilities.FragmentPrograms);
                 caps.MaxFragmentProgramVersion = "ps_1_4";
                 caps.FragmentProgramConstantIntCount = 0;
@@ -2133,8 +2128,8 @@ namespace Axiom.RenderSystems.OpenGL {
             }
 
             // GeForce3/4 Register Combiners/Texture Shaders
-            if(GLHelper.SupportsExtension("GL_NV_register_combiners2") &&
-                GLHelper.SupportsExtension("GL_NV_texture_shader")) {
+            if(glSupport.CheckExtension("GL_NV_register_combiners2") &&
+                glSupport.CheckExtension("GL_NV_texture_shader")) {
 
                 caps.SetCap(Capabilities.FragmentPrograms);
                 caps.MaxFragmentProgramVersion = "fp20";
@@ -2144,7 +2139,7 @@ namespace Axiom.RenderSystems.OpenGL {
             }
 
             // GeForceFX vp30 Vertex Programs
-            if(GLHelper.SupportsExtension("GL_NV_vertex_program2")) {
+            if(glSupport.CheckExtension("GL_NV_vertex_program2")) {
                 caps.SetCap(Capabilities.VertexPrograms);
                 caps.MaxVertexProgramVersion = "vp30";
 
@@ -2153,7 +2148,7 @@ namespace Axiom.RenderSystems.OpenGL {
             }
 
             // GeForceFX fp30 Fragment Programs
-            if(GLHelper.SupportsExtension("GL_NV_fragment_program")) {
+            if(glSupport.CheckExtension("GL_NV_fragment_program")) {
                 caps.SetCap(Capabilities.FragmentPrograms);
                 caps.MaxFragmentProgramVersion = "fp30";
 
@@ -2223,7 +2218,7 @@ namespace Axiom.RenderSystems.OpenGL {
 
         public void Start() {
             // add an instance of this plugin to the list of available RenderSystems
-            Engine.Instance.RenderSystems.Add("OpenGL", this);
+            Root.Instance.RenderSystems.Add("OpenGL", this);
         }
 
         public void Stop() {

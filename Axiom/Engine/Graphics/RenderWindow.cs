@@ -48,8 +48,6 @@ namespace Axiom.Graphics {
     ///		in the window for effects like rear-view mirrors and
     ///		picture-in-picture views (see Viewport and Camera).
     ///	</remarks>
-    ///		
-    // INC: In progress
     public abstract class RenderWindow : RenderTarget {
         #region Protected member variables
 		
@@ -150,7 +148,7 @@ namespace Axiom.Graphics {
             // Update statistics (always on top)
             //UpdateStats();
 
-            SwapBuffers(Engine.Instance.RenderSystem.IsVSync);
+            SwapBuffers(Root.Instance.RenderSystem.IsVSync);
         }
 
         /// <summary>
@@ -169,48 +167,6 @@ namespace Axiom.Graphics {
 			set {
 				targetHandle = value;
 			}
-        }
-
-        #endregion
-
-        #region Static methods
-        /// <summary>
-        /// Creates a default window to use for a RenderWindow if none are provided.
-        /// </summary>
-        /// <param name="top"></param>
-        /// <param name="left"></param>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="fullScreen"></param>
-        /// <returns></returns>
-        public static Axiom.Utility.DefaultForm CreateDefaultForm(int top, int left, int width, int height, bool fullScreen) {
-            DefaultForm form = new DefaultForm();
-
-            form.ClientSize = new System.Drawing.Size(width,height);
-            form.MaximizeBox = false;
-            form.MinimizeBox = false;
-            form.StartPosition = FormStartPosition.CenterScreen;
-
-            if(fullScreen) {
-                form.Top = 0;
-                form.Left = 0;
-                form.FormBorderStyle = FormBorderStyle.None;
-                form.WindowState = FormWindowState.Maximized;
-                form.TopMost = true;
-                form.TopLevel = true;
-            }
-            else {
-                form.Top = top;
-                form.Left = left;
-                form.FormBorderStyle = FormBorderStyle.FixedSingle;
-                form.WindowState = FormWindowState.Normal;
-                form.Text = Engine.Instance.Name + " Window";
-            }
-
-            // make sure they cant resize it any smaller than this
-            //form.MinimumSize = new System.Drawing.Size(200, 200);
-
-            return form;
         }
 
         #endregion

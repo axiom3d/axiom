@@ -44,7 +44,7 @@ namespace Axiom.Controllers {
 
         public FrameTimeControllerValue() {
             // add a frame started event handler
-            Engine.Instance.FrameStarted += new FrameEvent(RenderSystem_FrameStarted);
+            Root.Instance.FrameStarted += new FrameEvent(RenderSystem_FrameStarted);
 
             frameTime = 0;
 

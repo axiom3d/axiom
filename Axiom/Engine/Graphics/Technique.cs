@@ -129,7 +129,7 @@ namespace Axiom.Graphics {
             isSupported = false;    
                 
             // grab a ref to the current hardware caps
-            HardwareCaps caps = Engine.Instance.RenderSystem.Caps;
+            HardwareCaps caps = Root.Instance.RenderSystem.Caps;
             int numAvailTexUnits = caps.NumTextureUnits;
 
             // check requirements for each pass

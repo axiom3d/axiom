@@ -239,7 +239,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 			return new D3DHardwareOcclusionQuery(device);
 		}
 
-		public override RenderWindow CreateRenderWindow(string name, int width, int height, int colorDepth, bool isFullscreen, int left, int top, bool depthBuffer, object target) {
+		public override RenderWindow CreateRenderWindow(string name, int width, int height, int colorDepth, bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, object target) {
 			if(device == null) {
 				if(isFullscreen) {
 					device = InitDevice(isFullscreen, depthBuffer, width, height, colorDepth, (Control)target);
@@ -458,7 +458,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 			}
 		}
 
-		public override RenderWindow Initialize(bool autoCreateWindow) {
+		public override RenderWindow Initialize(bool autoCreateWindow, string windowTitle) {
 			RenderWindow renderWindow = null;
 
 			if(autoCreateWindow) {
@@ -471,10 +471,10 @@ namespace Axiom.RenderSystems.DirectX9 {
 				EngineConfig.DisplayModeRow mode = (EngineConfig.DisplayModeRow)modes[0];
 
 				// create a default form window
-				DefaultForm newWindow = RenderWindow.CreateDefaultForm(0, 0, mode.Width, mode.Height, mode.FullScreen);
+				DefaultForm newWindow = CreateDefaultForm(windowTitle, 0, 0, mode.Width, mode.Height, mode.FullScreen);
 
 				// create the render window
-				renderWindow = this.CreateRenderWindow("Main Window", mode.Width, mode.Height, mode.Bpp, mode.FullScreen, 0, 0, true, newWindow);
+				renderWindow = CreateRenderWindow("Main Window", mode.Width, mode.Height, mode.Bpp, mode.FullScreen, 0, 0, true, false, newWindow);
 				
 				newWindow.Target.Visible = false;
 
@@ -482,12 +482,60 @@ namespace Axiom.RenderSystems.DirectX9 {
 				
 				// set the default form's renderwindow so it can access it internally
 				newWindow.RenderWindow = renderWindow;
-
 			}
 
 			return renderWindow;
 		}
 
+		/// <summary>
+		///		Creates a default form to use for a rendering target.
+		/// </summary>
+		/// <remarks>
+		///		This is used internally whenever <see cref="Initialize"/> is called and autoCreateWindow is set to true.
+		/// </remarks>
+		/// <param name="windowTitle">Title of the window.</param>
+		/// <param name="top">Top position of the window.</param>
+		/// <param name="left">Left position of the window.</param>
+		/// <param name="width">Width of the window.</param>
+		/// <param name="height">Height of the window</param>
+		/// <param name="fullScreen">Prepare the form for fullscreen mode?</param>
+		/// <returns>A form suitable for using as a rendering target.</returns>
+		private DefaultForm CreateDefaultForm(string windowTitle, int top, int left, int width, int height, bool fullScreen) {
+			DefaultForm form = new DefaultForm();
+
+			form.ClientSize = new System.Drawing.Size(width,height);
+			form.MaximizeBox = false;
+			form.MinimizeBox = false;
+			form.StartPosition = FormStartPosition.CenterScreen;
+
+			if(fullScreen) {
+				form.Top = 0;
+				form.Left = 0;
+				form.FormBorderStyle = FormBorderStyle.None;
+				form.WindowState = FormWindowState.Maximized;
+				form.TopMost = true;
+				form.TopLevel = true;
+			}
+			else {
+				form.Top = top;
+				form.Left = left;
+				form.FormBorderStyle = FormBorderStyle.FixedSingle;
+				form.WindowState = FormWindowState.Normal;
+				form.Text = windowTitle;
+			}
+
+			return form;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="fov"></param>
+		/// <param name="aspectRatio"></param>
+		/// <param name="near"></param>
+		/// <param name="far"></param>
+		/// <param name="forGpuPrograms"></param>
+		/// <returns></returns>
 		public override Matrix4 MakeOrthoMatrix(float fov, float aspectRatio, float near, float far, bool forGpuPrograms) {
 			float thetaY = MathUtil.DegreesToRadians(fov / 2.0f);
 			float sinThetaY = MathUtil.Sin(thetaY);
@@ -506,8 +554,16 @@ namespace Axiom.RenderSystems.DirectX9 {
 			return dest;
 		}
 
+		/// <summary>
+		///		
+		/// </summary>
+		/// <param name="fov"></param>
+		/// <param name="aspectRatio"></param>
+		/// <param name="near"></param>
+		/// <param name="far"></param>
+		/// <param name="forGpuProgram"></param>
+		/// <returns></returns>
 		public override Axiom.MathLib.Matrix4 MakeProjectionMatrix(float fov, float aspectRatio, float near, float far, bool forGpuProgram) {
-
 			Matrix d3dMatrix;
 
 			if(forGpuProgram) {
@@ -808,7 +864,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 
 		public void Start() {
 			// add an instance of this plugin to the list of available RenderSystems
-			Engine.Instance.RenderSystems.Add("Direct3D9", this);
+			Root.Instance.RenderSystems.Add("Direct3D9", this);
 		}
 		public void Stop() {
 			// dispose of the D3D device

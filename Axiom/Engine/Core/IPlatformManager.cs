@@ -20,5 +20,14 @@ namespace Axiom.Core
 		/// </summary>
 		/// <returns>A timer implementation.</returns>
 		ITimer CreateTimer();
+
+		/// <summary>
+		///		Implement to allow the host operating system to process pending events
+		///		for other processes.
+		/// </summary>
+		/// <remarks>
+		///		May not be relevant on all platforms.
+		/// </remarks>
+		void DoEvents();
 	}
 }

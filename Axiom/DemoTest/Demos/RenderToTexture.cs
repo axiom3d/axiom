@@ -57,7 +57,7 @@ namespace Demos {
             rttCam.Direction = new Vector3(0.0f, 0.0f, 100.0f);
 
             // create a render texture
-            RenderTexture rttTex = Engine.Instance.RenderSystem.CreateRenderTexture("RttTex", 512, 512);
+            RenderTexture rttTex = Root.Instance.RenderSystem.CreateRenderTexture("RttTex", 512, 512);
             Viewport viewport = rttTex.AddViewport(rttCam, 0, 0, 100, 100, 0);
             viewport.ClearEveryFrame = true;
             viewport.OverlaysEnabled = false;

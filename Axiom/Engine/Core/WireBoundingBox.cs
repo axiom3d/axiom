@@ -122,7 +122,7 @@ namespace Axiom.Core {
                 int* pCol = (int*)colPtr.ToPointer();
 
                 for(int i = 0; i < vertexData.vertexCount; i++)
-                    pCol[i] = Engine.Instance.ConvertColor(ColorEx.Red);
+                    pCol[i] = Root.Instance.ConvertColor(ColorEx.Red);
             }
 
             // unlock the buffer

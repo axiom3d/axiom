@@ -24,11 +24,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-
 using System;
 using System.Configuration;
 using System.IO;
 using System.Reflection;
+using Axiom.Exceptions;
 
 namespace Axiom.Core
 {
@@ -49,27 +49,33 @@ namespace Axiom.Core
 		}
 
 		public static void Init() {
-			// Because of the nature of the platform manager plugin--we don't know if it's
-			// really gone or not when we overwrite the reference--we don't *ever* bother
-			// destroying the reference.  Therefore we keep the one object around for
-			// eternity, and deal with double Init() by not reloading the platform manager.
-			// TODO: once it is determined how to properly release the device instance, we
-			// should do so, deacquiring keyboard and mouse and such; then we can possibly
-			// dispose and reinitialize the instance every time.
 			if (instance == null) {
-				// Load platform manager plugin
-				ObjectCreator creator = (ObjectCreator)ConfigurationSettings.GetConfig("PlatformManager");
-				instance = (IPlatformManager)creator.CreateInstance();
+				string[] files = Directory.GetFiles(".", "Axiom.Platforms.*.dll");
+
+				// make sure there is 1 platform manager available
+				if(files.Length == 0) {
+					throw new PluginException("A PlatformManager was not found in the execution path, and is required.");
+				}
+				else if(files.Length > 1) {
+					throw new PluginException("Only 1 PlatformManager can exist in the execution path.");
+				}
+
+				string path = Path.Combine(Environment.CurrentDirectory, files[0]);
+
+				Assembly assembly = Assembly.LoadFile(path);
+
+				foreach(Type type in assembly.GetTypes()) {
+					if(type.GetInterface("IPlatformManager") != null) {
+						instance = (IPlatformManager)assembly.CreateInstance(type.FullName);
+						return;
+					}
+				}
+
+				throw new PluginException("The available Platform assembly did not contain any subclasses of PlatformManager, which is required.");
 			}
 		}
 		
 		#endregion
 
-	}
-
-	public class PlatformConfigurationSectionHandler : IConfigurationSectionHandler {
-		public object Create(object parent, object configContext, System.Xml.XmlNode section) {
-			return new ObjectCreator(section.Attributes["assembly"].Value, section.Attributes["class"].Value);
-		}
 	}
 }

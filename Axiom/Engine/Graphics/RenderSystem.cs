@@ -54,6 +54,15 @@ namespace Axiom.Graphics {
     ///		of the Core library.
     ///	</remarks>
     public abstract class RenderSystem : IDisposable {
+		#region Constants
+
+		/// <summary>
+		///		Default window title if one is not specified upon a call to <see cref="Initialize"/>.
+		/// </summary>
+		const string DefaultWindowTitle = "Axiom Window";
+
+		#endregion Constants
+
         #region Fields
 
 		/// <summary>
@@ -156,7 +165,7 @@ namespace Axiom.Graphics {
 		/// </summary>
 		public virtual EngineConfig ConfigOptions {
 			get {
-				return this.engineConfig;
+				return engineConfig;
 			}
 		}
 
@@ -702,12 +711,13 @@ namespace Axiom.Graphics {
 		/// <param name="left"></param>
 		/// <param name="top"></param>
 		/// <param name="depthBuffer"></param>
+		/// <param name="vsync"></param>
 		/// <param name="target">
 		///		A handle to a pre-created window to be used for the rendering target.
 		///	</param>
 		/// <returns></returns>
 		public abstract RenderWindow CreateRenderWindow(string name, int width, int height, int colorDepth,
-			bool isFullscreen, int left, int top, bool depthBuffer, object target);
+			bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, object target);
 
 		/// <summary>
 		///		Requests an API implementation of a hardware occlusion query used to test for the number
@@ -726,7 +736,7 @@ namespace Axiom.Graphics {
 		/// 
 		/// </summary>
 		/// <param name="autoCreateWindow"></param>
-		public abstract RenderWindow Initialize(bool autoCreateWindow);
+		public abstract RenderWindow Initialize(bool autoCreateWindow, string windowTitle);
 
 		/// <summary>
 		///		Builds an orthographic projection matrix suitable for this render system.
@@ -1026,6 +1036,15 @@ namespace Axiom.Graphics {
 		/// <returns></returns>
 		public Matrix4 MakeOrthoMatrix(float fov, float aspectRatio, float near, float far) {
 			return MakeOrthoMatrix(fov, aspectRatio, near, far, false);
+		}
+
+		/// <summary>
+		///		Initialize the rendering engine.
+		/// </summary>
+		/// <param name="autoCreateWindow">If true, a default window is created to serve as a rendering target.</param>
+		/// <returns>A RenderWindow implementation specific to this RenderSystem.</returns>
+		public RenderWindow Initialize(bool autoCreateWindow) {
+			return Initialize(autoCreateWindow, DefaultWindowTitle);
 		}
 
 		#region SetDepthBufferParams()

@@ -182,6 +182,9 @@ namespace Axiom.Gui {
         ///    Parses all overlay files in resource folders and archives.
         /// </summary>
         public void ParseAllSources() {
+			// HACK: Remove once overlay functionality moved into the core
+			return;
+
             string extension = ".overlay";
 
             // search archives

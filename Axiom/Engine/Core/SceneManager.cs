@@ -2107,7 +2107,7 @@ namespace Axiom.Core {
         /// <param name="showOverlays">Whether or not any overlay objects should be rendered</param>
         internal void RenderScene(Camera camera, Viewport viewport, bool showOverlays) {
 			// let the engine know this is the current scene manager
-			Engine.Instance.SceneManager = this;
+			Root.Instance.SceneManager = this;
 
 			// initialize shadow volume materials
 			InitShadowVolumeMaterials();
