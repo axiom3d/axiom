@@ -34,7 +34,7 @@ using Axiom.FileSystem;
 using Axiom.Scripting;
 using Axiom.Graphics;
 
-namespace Axiom.Gui {
+namespace Axiom.Overlays {
     /// <summary>
     ///    Manages Overlay objects, parsing them from Ogre .overlay files and
     ///    storing a lookup library of them.
@@ -70,7 +70,7 @@ namespace Axiom.Gui {
         protected int lastViewportHeight;
         protected bool viewportDimensionsChanged;
         protected Overlay cursorLevelOverlay;
-        protected GuiContainer cursorGuiRegistered;
+        protected OverlayElementContainer cursorGuiRegistered;
         protected StringCollection loadedOverlays = new StringCollection();
 
         #endregion
@@ -97,7 +97,7 @@ namespace Axiom.Gui {
         /// <param name="queue"></param>
         /// <param name="viewport"></param>
         internal void QueueOverlaysForRendering(Camera camera, RenderQueue queue, Viewport viewport) {
-            // Flag for update pixel-based GuiElements if viewport has changed dimensions
+            // Flag for update pixel-based OverlayElements if viewport has changed dimensions
             if(lastViewportWidth != viewport.ActualWidth ||
                 lastViewportHeight != viewport.ActualHeight) {
 
@@ -182,9 +182,6 @@ namespace Axiom.Gui {
         ///    Parses all overlay files in resource folders and archives.
         /// </summary>
         public void ParseAllSources() {
-			// HACK: Remove once overlay functionality moved into the core
-			return;
-
             string extension = ".overlay";
 
             // search archives
@@ -239,7 +236,7 @@ namespace Axiom.Gui {
         /// <param name="isTemplate"></param>
         /// <param name="parent"></param>
         /// <returns></returns>
-        protected bool ParseChildren(TextReader script, string line, Overlay overlay, bool isTemplate, GuiContainer parent) {
+        protected bool ParseChildren(TextReader script, string line, Overlay overlay, bool isTemplate, OverlayElementContainer parent) {
             bool ret = false;
             int skipParam = 0;
 
@@ -300,7 +297,7 @@ namespace Axiom.Gui {
         /// <param name="line"></param>
         /// <param name="overlay"></param>
         /// <param name="element"></param>
-        protected void ParseElementAttrib(string line, Overlay overlay, GuiElement element) {
+        protected void ParseElementAttrib(string line, Overlay overlay, OverlayElement element) {
             string[] parms = line.Split(' ');
 
             // get a string containing only the params
@@ -337,17 +334,17 @@ namespace Axiom.Gui {
         /// <param name="templateName"></param>
         /// <param name="parent"></param>
         protected void ParseNewElement(TextReader script, string type, string name, bool isContainer, Overlay overlay, bool isTemplate, 
-            string templateName, GuiContainer parent) {
+            string templateName, OverlayElementContainer parent) {
         
             string line;
-            GuiElement element = GuiManager.Instance.CreateElementFromTemplate(templateName, type, name, isTemplate);
+            OverlayElement element = OverlayElementManager.Instance.CreateElementFromTemplate(templateName, type, name, isTemplate);
 
             if(parent != null) {
                 // add this element to the parent container
                 parent.AddChild(element);
             }
             else if(overlay != null) {
-                overlay.AddElement((GuiContainer)element);
+                overlay.AddElement((OverlayElementContainer)element);
             }
 
             while((line = ParseHelper.ReadLine(script)) != null) {
@@ -358,7 +355,7 @@ namespace Axiom.Gui {
                         break;
                     }
                     else {
-                        if(isContainer && ParseChildren(script, line, overlay, isTemplate, (GuiContainer)element)) {
+                        if(isContainer && ParseChildren(script, line, overlay, isTemplate, (OverlayElementContainer)element)) {
                             // nested children, so don't reparse it
                         }
                         else {

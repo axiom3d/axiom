@@ -89,17 +89,17 @@ namespace Axiom.RenderSystems.OpenGL {
 				hWnd = (IntPtr)((Control)this.Handle).Handle;
    
 				Gdi.PIXELFORMATDESCRIPTOR pfd = new Gdi.PIXELFORMATDESCRIPTOR();
-				pfd.Size = (short)Marshal.SizeOf(pfd);
-				pfd.Version = 1;
-				pfd.Flags = Gdi.PFD_DRAW_TO_WINDOW |
+				pfd.nSize = (short)Marshal.SizeOf(pfd);
+				pfd.nVersion = 1;
+				pfd.dwFlags = Gdi.PFD_DRAW_TO_WINDOW |
 					Gdi.PFD_SUPPORT_OPENGL |
 					Gdi.PFD_DOUBLEBUFFER;
-				pfd.PixelType = (byte) Gdi.PFD_TYPE_RGBA;
-				pfd.ColorBits = (byte) colorDepth;
-				pfd.DepthBits = 32;
+				pfd.iPixelType = (byte) Gdi.PFD_TYPE_RGBA;
+				pfd.cColorBits = (byte) colorDepth;
+				pfd.cDepthBits = 32;
 				// TODO: Find the best setting and use that
-				pfd.StencilBits = 8;
-				pfd.LayerType = (byte) Gdi.PFD_MAIN_PLANE;
+				pfd.cStencilBits = 8;
+				pfd.iLayerType = (byte) Gdi.PFD_MAIN_PLANE;
 
 				// get the device context
 				hDC = User.GetDC(hWnd);

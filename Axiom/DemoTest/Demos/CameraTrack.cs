@@ -37,15 +37,16 @@ namespace Demos {
     ///     Spline pathed camera tracking sample.
     /// </summary>
     public class CameraTrack : TechDemo {
-
         #region Private Fields
+
         private AnimationState animationState = null;
         private SceneNode headNode = null;
+
         #endregion Private Fields
 
         #region Protected Override Methods
-        protected override void CreateScene() {
 
+        protected override void CreateScene() {
             // set some ambient light
             scene.AmbientLight = new ColorEx(1.0f, 0.2f, 0.2f, 0.2f);
 
@@ -119,6 +120,7 @@ namespace Demos {
         #endregion Protected Override Methods
 
         #region Protected Override Event Handlers
+
         protected override void OnFrameStarted(object source, FrameEventArgs e) {
             base.OnFrameStarted(source, e);
 

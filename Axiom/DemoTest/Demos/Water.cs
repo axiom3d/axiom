@@ -9,7 +9,7 @@ using Axiom.Media;
 using Axiom.MathLib;
 using Axiom.Utility;
 using Axiom.ParticleSystems;
-using Axiom.Gui;
+using Axiom.Overlays;
 using Axiom.Input;
 using MouseButtons = Axiom.Input.MouseButtons;
 
@@ -23,7 +23,7 @@ namespace Demos {
 		protected static float PLANE_SIZE = 3000.0f;
 
 		// General Fields
-		protected GuiManager GuiMgr;
+		protected OverlayElementManager GuiMgr;
 		protected Overlay waterOverlay;
 		protected ParticleSystem particleSystem;
 		protected ParticleEmitter particleEmitter;
@@ -70,7 +70,7 @@ namespace Demos {
 		// Just override the mandatory create scene method
 		protected override void CreateScene() {
 			RAND = new Random(0); // najak: use a time-based seed
-			GuiMgr = GuiManager.Instance;
+			GuiMgr = OverlayElementManager.Instance;
 			scene.AmbientLight = new ColorEx(0.75f, 0.75f, 0.75f); // default Ambient Light
 
 			// Customize Controls - speed up camera and slow down the input update rate
@@ -532,12 +532,12 @@ namespace Demos {
 
 		protected new void UpdateStats() {
 			statsTimer = 0f; // reset Stats Timer
-			GuiManager.Instance.GetElement("Core/CurrFps").Text = string.Format("Current FPS: {0}", Root.Instance.CurrentFPS);
-			GuiManager.Instance.GetElement("Core/BestFps").Text = string.Format("Best FPS: {0}", Root.Instance.BestFPS);
-			GuiManager.Instance.GetElement("Core/WorstFps").Text = string.Format("Worst FPS: {0}", Root.Instance.WorstFPS);
-			GuiManager.Instance.GetElement("Core/AverageFps").Text = string.Format("Average FPS: {0}", Root.Instance.AverageFPS);
-			GuiManager.Instance.GetElement("Core/NumTris").Text = string.Format("Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered);
-			GuiManager.Instance.GetElement("Core/DebugText").Text = window.DebugText;
+			OverlayElementManager.Instance.GetElement("Core/CurrFps").Text = string.Format("Current FPS: {0}", Root.Instance.CurrentFPS);
+			OverlayElementManager.Instance.GetElement("Core/BestFps").Text = string.Format("Best FPS: {0}", Root.Instance.BestFPS);
+			OverlayElementManager.Instance.GetElement("Core/WorstFps").Text = string.Format("Worst FPS: {0}", Root.Instance.WorstFPS);
+			OverlayElementManager.Instance.GetElement("Core/AverageFps").Text = string.Format("Average FPS: {0}", Root.Instance.AverageFPS);
+			OverlayElementManager.Instance.GetElement("Core/NumTris").Text = string.Format("Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered);
+			OverlayElementManager.Instance.GetElement("Core/DebugText").Text = window.DebugText;
 		}
 
 		#endregion Water Class EVENT HANDLERS

@@ -34,7 +34,7 @@ using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Exceptions;
 using Axiom.Input;
-using Axiom.Gui;
+using Axiom.Overlays;
 using Axiom.MathLib;
 using Axiom.Graphics;
 using MouseButtons = Axiom.Input.MouseButtons;
@@ -89,7 +89,7 @@ namespace Axiom.Utility {
             // show the config dialog
 //            if(engine.ShowConfigDialog()) {
                 window = Root.Instance.Initialize(true);
-                //ShowDebugOverlay(showDebugOverlay);
+                ShowDebugOverlay(showDebugOverlay);
                 return true;
 //            }
 //            else {
@@ -400,29 +400,29 @@ namespace Axiom.Utility {
 
         protected void UpdateStats() {
 			// TODO: Replace with CEGUI
-//            GuiElement element = GuiManager.Instance.GetElement("Core/CurrFps");
-//            element.Text = string.Format("Current FPS: {0}", Root.Instance.CurrentFPS);
-//
-//            element = GuiManager.Instance.GetElement("Core/BestFps");
-//            element.Text = string.Format("Best FPS: {0}", Root.Instance.BestFPS);
-//
-//            element = GuiManager.Instance.GetElement("Core/WorstFps");
-//            element.Text = string.Format("Worst FPS: {0}", Root.Instance.WorstFPS);
-//
-//            element = GuiManager.Instance.GetElement("Core/AverageFps");
-//            element.Text = string.Format("Average FPS: {0}", Root.Instance.AverageFPS);
-//
-//            element = GuiManager.Instance.GetElement("Core/NumTris");
-//            element.Text = string.Format("Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered);
-//
-//            element = GuiManager.Instance.GetElement("Core/DebugText");
-//            element.Text = window.DebugText;
+            OverlayElement element = OverlayElementManager.Instance.GetElement("Core/CurrFps");
+            element.Text = string.Format("Current FPS: {0}", Root.Instance.CurrentFPS);
+
+            element = OverlayElementManager.Instance.GetElement("Core/BestFps");
+            element.Text = string.Format("Best FPS: {0}", Root.Instance.BestFPS);
+
+            element = OverlayElementManager.Instance.GetElement("Core/WorstFps");
+            element.Text = string.Format("Worst FPS: {0}", Root.Instance.WorstFPS);
+
+            element = OverlayElementManager.Instance.GetElement("Core/AverageFps");
+            element.Text = string.Format("Average FPS: {0}", Root.Instance.AverageFPS);
+
+            element = OverlayElementManager.Instance.GetElement("Core/NumTris");
+            element.Text = string.Format("Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered);
+
+            element = OverlayElementManager.Instance.GetElement("Core/DebugText");
+            element.Text = window.DebugText;
         }
 
         public static void GlobalErrorHandler(Exception ex) {
 			// TODO: Redo
-            // show the error
-            //MessageBox.Show("An exception has occured.  Please check the log file for more information.\n\nError:\n" + ex.ToString(), "Exception!");
+
+			Console.WriteLine(ex.ToString());
 
             // log the error
             System.Diagnostics.Trace.WriteLine(ex.ToString());

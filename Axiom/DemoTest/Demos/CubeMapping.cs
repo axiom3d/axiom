@@ -28,7 +28,7 @@ using System;
 using System.Collections;
 using Axiom.Collections;
 using Axiom.Core;
-using Axiom.Gui;
+using Axiom.Overlays;
 using Axiom.Input;
 using Axiom.MathLib;
 using Axiom.Graphics;
@@ -39,7 +39,6 @@ namespace Demos {
     /// 	Summary description for EnvMapping.
     /// </summary>
     public class CubeMapping : TechDemo {
-
         #region Perlin noise data and algorithms
 
         private float Lerp(float t, float a, float b) {
@@ -564,7 +563,7 @@ namespace Demos {
             PrepareEntity(meshes[currentMeshIndex]);
 
             // update the UI
-            GuiManager.Instance.GetElement("Example/CubeMapping/Material").Text = 
+            OverlayElementManager.Instance.GetElement("Example/CubeMapping/Material").Text = 
                 string.Format("[M] Material: {0}", blendModes[currentLbxIndex]);
         }
 
@@ -608,7 +607,7 @@ namespace Demos {
             scene.SetSkyBox(true, SKYBOX_MATERIAL, 2000.0f);
 
             // update the UI
-            GuiManager.Instance.GetElement("Example/CubeMapping/CubeMap").Text = 
+            OverlayElementManager.Instance.GetElement("Example/CubeMapping/CubeMap").Text = 
                 string.Format("[C] CubeMap: {0}", cubeMapName);
         }
 
@@ -618,7 +617,7 @@ namespace Demos {
         private void ToggleNoise() {
             noiseOn = !noiseOn;
 
-            GuiManager.Instance.GetElement("Example/CubeMapping/Noise").Text = 
+            OverlayElementManager.Instance.GetElement("Example/CubeMapping/Noise").Text = 
                 string.Format("[N] Noise: {0}", noiseOn ? "on" : "off");
         }
 
@@ -633,7 +632,7 @@ namespace Demos {
             string meshName = meshes[currentMeshIndex];
             PrepareEntity(meshName);
 
-            GuiManager.Instance.GetElement("Example/CubeMapping/Object").Text = 
+            OverlayElementManager.Instance.GetElement("Example/CubeMapping/Object").Text = 
                 string.Format("[O] Object: {0}", meshName);
         }
 

@@ -36,8 +36,6 @@ namespace Axiom.Graphics {
     public class SoftwareBufferManager : HardwareBufferManager {
         #region Singleton implementation
 
-        protected static new SoftwareBufferManager Instance = new SoftwareBufferManager();
-
         static SoftwareBufferManager() {}
 
         protected SoftwareBufferManager() { }

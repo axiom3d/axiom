@@ -21,8 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Globalization;
-using System.Threading;
-using System.Windows.Forms;
 using Axiom.Utility;
 
 namespace Demos {
@@ -34,19 +32,21 @@ namespace Demos {
         [STAThread]
         private static void Main(string[] args) {
             try {
-                using(Mutex mutex = new Mutex(false, "AxiomDemoBrowser")) {
-                    if(!mutex.WaitOne(0, false)) {
-                        Environment.Exit(-1);
-                    }
-                    else {
-                        Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("");
-                        Application.Run(new DemoBrowser());
-                    }
-                }
+				// get the type of the demo class
+				Type type = Type.GetType("Demos.Lights");
+
+				// create an instance of the demo class and start it up 
+				using(TechDemo demo = (TechDemo)Activator.CreateInstance(type)) { 
+					demo.Start();
+				}
             }
             catch(Exception ex) {
                 // call the existing global exception handler
                 TechDemo.GlobalErrorHandler(ex);
+
+				Console.WriteLine("");
+				Console.WriteLine("Press enter to continue...");
+				Console.ReadLine();
             }
         }
     }
