@@ -505,7 +505,7 @@ namespace Axiom.Core {
         ///		this process.
         /// </summary>
         public virtual void ClearScene() {
-            // TODO: Finish ClearScene
+			// TODO: Clear skies
             rootSceneNode.Clear();
             cameraList.Clear();
             entityList.Clear();

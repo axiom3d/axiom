@@ -72,7 +72,7 @@ namespace Axiom.Core {
         /// <summary>
         ///    A link back to a GameObject (or subclass thereof) that may be associated with this SceneObject.
         /// </summary>
-        protected GameObject gameObject;
+        protected object userData;
 		/// <summary>
 		///		Flag which indicates whether this objects parent is a <see cref="TagPoint"/>.
 		/// </summary>
@@ -129,12 +129,12 @@ namespace Axiom.Core {
         /// <summary>
         ///     Get/Sets a link back to a GameObject (or subclass thereof, such as Entity) that may be associated with this SceneObject.
         /// </summary>
-        public GameObject GameObject {
+        public object UserData {
             get {
-                return gameObject;
+                return userData;
             }
             set {
-                gameObject = value;
+                userData = value;
             }
         }
 
