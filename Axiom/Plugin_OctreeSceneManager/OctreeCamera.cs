@@ -27,12 +27,9 @@ namespace Axiom.SceneManagers.Octree {
     ///than the default.
     /// </summary>
     public class OctreeCamera : Camera {
-        #region Member Variables	
+        #region Fields	
 
         Vector3[] Corners;
-
-        float[] VertexData;
-        float[] IndexData;
 
         protected bool useIdentityProj;
         protected bool useIdentityView;
@@ -52,7 +49,7 @@ namespace Axiom.SceneManagers.Octree {
 //        Axiom.Core.FrustumPlane[] planes = {Axiom.Core.FrustumPlane.Top, Axiom.Core.FrustumPlane.Bottom,
 //                                               Axiom.Core.FrustumPlane.Left, Axiom.Core.FrustumPlane.Right,
 //                                               Axiom.Core.FrustumPlane.Far, Axiom.Core.FrustumPlane.Near };
-        #endregion
+        #endregion Fields
 
         public OctreeCamera(string name, SceneManager scene) : base(name, scene) {
             this.material = MaterialManager.Instance.GetByName("BaseWhite");

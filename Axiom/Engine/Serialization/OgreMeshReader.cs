@@ -351,7 +351,7 @@ namespace Axiom.Serialization {
         public void ReadGeometry(VertexData vertexData) {
             ushort texCoordSet = 0;
             HardwareVertexBuffer vBuffer = null;
-            ushort bindIdx = 0;
+            short bindIdx = 0;
 			
             if(isSkeletallyAnimated) {
                 vertexData.softwareBlendInfo = new SoftwareBlendInfo();

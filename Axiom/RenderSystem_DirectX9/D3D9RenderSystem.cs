@@ -176,7 +176,7 @@ namespace Axiom.RenderSystems.DirectX9 {
                 D3DHardwareVertexBuffer buffer = 
                     (D3DHardwareVertexBuffer)bufferBinding.Value;
 
-                ushort stream = (ushort)bufferBinding.Key;
+                short stream = (short)bufferBinding.Key;
 
                 device.SetStreamSource(stream, buffer.D3DVertexBuffer, 0, buffer.VertexSize);
 

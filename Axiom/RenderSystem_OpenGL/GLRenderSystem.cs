@@ -67,7 +67,7 @@ namespace Axiom.RenderSystems.OpenGL {
         // used for manual texture matrix calculations, for things like env mapping
         protected bool useAutoTextureMatrix;
         protected float[] autoTextureMatrix = new float[16];
-        protected ushort[] texCoordIndex = new ushort[Config.MaxTextureLayers];
+        protected int[] texCoordIndex = new int[Config.MaxTextureLayers];
 
         // keeps track of type for each stage (2d, 3d, cube, etc)
         protected int[] textureTypes = new int[Config.MaxTextureLayers];
@@ -954,7 +954,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="stage"></param>
         /// <param name="index"></param>
         protected override void SetTextureCoordSet(int stage, int index) {
-            texCoordIndex[stage] = (ushort)index;
+            texCoordIndex[stage] = index;
         }
 
         /// <summary>

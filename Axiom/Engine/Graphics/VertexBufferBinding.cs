@@ -46,7 +46,7 @@ namespace Axiom.Graphics {
         #region Fields
 		
         protected Hashtable bindingMap = new Hashtable();
-        protected ushort highIndex;
+        protected short highIndex;
 		
         #endregion Fields
 
@@ -58,16 +58,15 @@ namespace Axiom.Graphics {
         /// <param name="index"></param>
         /// <param name="buffer"></param>
         /// DOC
-        public virtual void SetBinding(ushort index, HardwareVertexBuffer buffer) {
+        public virtual void SetBinding(short index, HardwareVertexBuffer buffer) {
             bindingMap[index] = buffer;
-            highIndex = (ushort)MathUtil.Max(highIndex, index + 1);
+            highIndex = (short)MathUtil.Max(highIndex, index + 1);
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// DOC
-        public virtual void UnsetBinding(ushort index) {
+        public virtual void UnsetBinding(short index) {
             Debug.Assert(bindingMap.ContainsKey(index), "Cannot find buffer for index" + index);
 
             bindingMap.Remove(index);
@@ -77,12 +76,16 @@ namespace Axiom.Graphics {
         /// <summary>
         /// 
         /// </summary>
-        /// DOC
         public virtual void UnsetAllBindings() {
             bindingMap.Clear();
         }
 
-        public virtual HardwareVertexBuffer GetBuffer(ushort index) {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public virtual HardwareVertexBuffer GetBuffer(short index) {
             Debug.Assert(bindingMap.ContainsKey(index), "No buffer is bound to index " + index);
 
             return (HardwareVertexBuffer)bindingMap[index];
@@ -105,7 +108,7 @@ namespace Axiom.Graphics {
         /// <summary>
         /// 
         /// </summary>
-        public virtual ushort NextIndex {
+        public virtual short NextIndex {
             get { 
                 return highIndex++; 
             }
