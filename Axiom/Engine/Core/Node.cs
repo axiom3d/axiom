@@ -181,7 +181,7 @@ namespace Axiom.Core {
         /// <summary>
         ///    Removes all child nodes from this node.
         /// </summary>
-        public void Clear() {
+        public virtual void Clear() {
             childNodes.Clear();
         }
 

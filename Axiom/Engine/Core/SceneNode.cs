@@ -218,7 +218,7 @@ namespace Axiom.Core {
         public void AttachObject(SceneObject obj) {
             Debug.Assert(obj != null, "obj != null");
 
-            this.objectList.Add(obj);
+            objectList.Add(obj);
 
             // notify the object that it was attached to us
             obj.NotifyAttached(this);
@@ -226,6 +226,16 @@ namespace Axiom.Core {
             // make sure bounds get updated
             NeedUpdate();
         }
+
+		/// <summary>
+		///		Need to clear list of child objects in addition to base class functionality.
+		/// </summary>
+		public override void Clear() {
+			base.Clear();
+
+			objectList.Clear();
+		}
+
 
         /// <summary>
         ///    Creates a new name child node.

@@ -423,10 +423,10 @@ namespace Axiom.MathLib {
 		public void Normalize() {
 			float factor = 1.0f / MathUtil.Sqrt(this.Norm);
 
-			w = w / factor;
-			x = x / factor;
-			y = y / factor;
-			z = z / factor;
+			w = w * factor;
+			x = x * factor;
+			y = y * factor;
+			z = z * factor;
 		}
 
         /// <summary>
@@ -440,6 +440,7 @@ namespace Axiom.MathLib {
             //   q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k)
 
             float sqrLength = x * x + y * y + z * z;
+
             if(sqrLength >0.0f) {
                 angle = 2.0f * MathUtil.ACos(w);
                 float invLength = MathUtil.InvSqrt(sqrLength);
