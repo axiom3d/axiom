@@ -724,22 +724,24 @@ namespace Axiom.Core {
             bool useIdentityView = renderable.UseIdentityView;
             bool useIdentityProj = renderable.UseIdentityProjection;
 
+            // View
             if(useIdentityView && (hasCameraChanged || !lastViewWasIdentity)) {
                 // using identity view now, so change it
                 targetRenderSystem.ViewMatrix = Matrix4.Identity;
                 lastViewWasIdentity = true;
             }
-            else {
+            else if (!useIdentityView && (hasCameraChanged || lastViewWasIdentity)){
                 targetRenderSystem.ViewMatrix = camInProgress.ViewMatrix;
                 lastViewWasIdentity = false;
             }
 
+            // Projection
             if(useIdentityProj && (hasCameraChanged || !lastProjectionWasIdentity)) {
                 // using identity view now, so change it
                 targetRenderSystem.ProjectionMatrix = Matrix4.Identity;
                 lastProjectionWasIdentity = true;
             }
-            else {
+            else if(!useIdentityProj && (hasCameraChanged || lastProjectionWasIdentity)) {
                 targetRenderSystem.ProjectionMatrix = camInProgress.ProjectionMatrix;
                 lastProjectionWasIdentity = false;
             }

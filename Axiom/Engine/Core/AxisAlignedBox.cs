@@ -46,8 +46,7 @@ namespace Axiom.Core {
         private Vector3 minVector = new Vector3(-0.5f, -0.5f, -0.5f);
         private Vector3 maxVector = new Vector3(0.5f, 0.5f, 0.5f);
         private Vector3[] corners = new Vector3[8];
-        private readonly static Vector3[] blankCorners = new Vector3[8];
-        private bool isNull;
+        private bool isNull = true;
         private static readonly AxisAlignedBox nullBox = new AxisAlignedBox();
 
         #endregion
@@ -55,16 +54,7 @@ namespace Axiom.Core {
         #region Constructors
 
         public AxisAlignedBox() {
-            // init the corners array
-            if(blankCorners == null) {
-                for(int i = 0; i < 8; i++)
-                    blankCorners[i] = new Vector3();
-            }
-
-            //Array.Copy(blankCorners, corners, 8);
-
             SetExtents(minVector, maxVector);
-            isNull = true;
         }
 
         public AxisAlignedBox(Vector3 min, Vector3 max) {
@@ -91,7 +81,7 @@ namespace Axiom.Core {
             bool isFirst = true;
             int i;
 
-            for( i = 0; i < 8; ++i ) {
+            for( i = 0; i < corners.Length; i++ ) {
                 // Transform and check extents
                 temp = matrix * corners[i];
                 if( isFirst || temp.x > max.x )

@@ -1568,8 +1568,6 @@ namespace RenderSystem_OpenGL {
                 height = setting.dmPelsHeight;
                 bpp = setting.dmBitsPerPel;
                 freq = setting.dmDisplayFrequency;
-
-                Trace.WriteLine(string.Format("{0}x{1}@{2}bpp - {3}Hz", width, height, bpp, freq));
 			
                 // filter out the lower resolutions and dupe frequencies, assuming 60 is always available for now
                 if((width >= 640 && height >= 480 && bpp >= 16) && freq == 60) {

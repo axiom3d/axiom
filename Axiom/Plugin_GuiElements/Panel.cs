@@ -314,14 +314,14 @@ namespace Plugin_GuiElements
         public static void ParseTiling(string[] parms, params object[] objects) {
             Panel panel = (Panel)objects[0];
 
-            panel.SetTiling(float.Parse(parms[1]), float.Parse(parms[2]), int.Parse(parms[3]));
+            panel.SetTiling(float.Parse(parms[0]), float.Parse(parms[1]), int.Parse(parms[2]));
         }
 
         [AttributeParser("transparent", "Panel")]
         public static void ParseTransparent(string[] parms, params object[] objects) {
             Panel panel = (Panel)objects[0];
 
-            panel.IsTransparent = bool.Parse(parms[1]);
+            panel.IsTransparent = bool.Parse(parms[0]);
         }
 
         #endregion Script parser methods

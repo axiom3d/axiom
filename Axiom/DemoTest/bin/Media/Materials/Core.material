@@ -23,3 +23,35 @@ Core/AxiomLogo
 	}
 	
 }
+
+Core/StatsBlockBorder
+{
+	lighting off
+	depth_check off
+	scene_blend alpha_blend
+	{
+		texture Border.png
+	}
+}
+
+
+
+Core/StatsBlockCenter
+{
+	lighting off
+	depth_check off
+	scene_blend alpha_blend
+	{
+		texture Border_Center.png
+	}
+}
+
+Core/StatsBreak
+{
+	lighting off
+	depth_check off
+	scene_blend alpha_blend
+	{
+		texture Border_Break.png
+	}
+}

@@ -254,7 +254,7 @@ namespace Axiom.Gui {
             }
 
             // top level component cannot be an element, it must be a container unless it is a template
-            if(parms[0 + skipParam] == "container" || (parms[0 + skipParam] == "element" && isTemplate || parent != null)) {
+            if(parms[0 + skipParam] == "container" || (parms[0 + skipParam] == "element" && (isTemplate || parent != null))) {
                 string templateName = "";
                 ret = true;
 
@@ -296,8 +296,11 @@ namespace Axiom.Gui {
         protected void ParseElementAttrib(string line, Overlay overlay, GuiElement element) {
             string[] parms = line.Split(' ');
 
+            // get a string containing only the params
+            string paramLine = line.Substring(line.IndexOf(' ', 0) + 1);
+
             // set the param, and hopefully it exists
-            if(!element.SetParam(parms[0].ToLower(), parms[1].ToLower())) {
+            if(!element.SetParam(parms[0].ToLower(), paramLine)) {
                 Trace.WriteLine(string.Format("Bad element attribute line: {0} for element '{1}'", line, element.Name));
             }
         }
@@ -348,7 +351,7 @@ namespace Axiom.Gui {
                         break;
                     }
                     else {
-                        if(isContainer && ParseChildren(script, line, overlay, isTemplate, parent)) {
+                        if(isContainer && ParseChildren(script, line, overlay, isTemplate, (GuiContainer)element)) {
                             // nested children, so don't reparse it
                         }
                         else {
