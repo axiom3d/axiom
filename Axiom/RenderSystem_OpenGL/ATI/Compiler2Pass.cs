@@ -1,6 +1,6 @@
 using System;
 using System.Diagnostics;
-
+using Axiom.Core;
 /**
  * DX8.1 Pixel Shader to ATI Fragment Shader compiler
  * Original Author: NFZ (nfuzz@hotmail.com)

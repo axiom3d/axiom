@@ -17,6 +17,7 @@
 */
 
 using System;
+using Axiom.Core;
 using Tao.OpenGl;
 
 namespace Axiom.RenderSystems.OpenGL.ATI {
