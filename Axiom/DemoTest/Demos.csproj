@@ -159,6 +159,10 @@
         <Files>
             <Include>
                 <File
+                    RelPath = "app.config"
+                    BuildAction = "None"
+                />
+                <File
                     RelPath = "AssemblyInfo.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
