@@ -36,7 +36,7 @@ namespace Axiom.MathLib {
     /// <summary>
     ///     2 dimensional vector.
     /// </summary>
-    public class Vector2 {
+    public struct  Vector2 {
         #region Fields
 
         public float x, y;
@@ -44,12 +44,6 @@ namespace Axiom.MathLib {
         #endregion Fields
 
         #region Constructors
-
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public Vector2() {
-        }
 
         /// <summary>
         ///     Constructor.
