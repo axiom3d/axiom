@@ -579,7 +579,7 @@ namespace Axiom.SceneManagers.Bsp
 
 		protected void InitTextureLighting()
 		{
-			Trace.WriteLineIf(targetRenderSystem.Caps.NumTextureUnits < 2, "--WARNING--At least 2 available texture units are required for BSP dynamic lighting!");
+			Trace.WriteLineIf(targetRenderSystem.Caps.TextureUnitCount < 2, "--WARNING--At least 2 available texture units are required for BSP dynamic lighting!");
 
 			Texture texLight = TextureLight.CreateTexture();
 
