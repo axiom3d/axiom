@@ -333,7 +333,7 @@ namespace Axiom.Core {
         ///	This method translates the node by a vector which is relative to
         ///	a custom set of axes.
         ///	</remarks>
-        /// <param name="pAxes">3x3 Matrix containg 3 column vectors each representing the
+        /// <param name="axes">3x3 Matrix containg 3 column vectors each representing the
         ///	X, Y and Z axes respectively. In this format the standard cartesian axes would be expressed as:
         ///		1 0 0
         ///		0 1 0
@@ -343,7 +343,7 @@ namespace Axiom.Core {
         /// <param name="move">Vector relative to the supplied axes.</param>
         public virtual void Translate(Matrix3 axes, Vector3 move) {
             Vector3 derived = axes * move;
-            Translate(derived);
+            Translate(derived, TransformSpace.Parent);
         }
 
         /// <summary>
@@ -353,7 +353,7 @@ namespace Axiom.Core {
         ///	This method translates the node by a vector which is relative to
         ///	a custom set of axes.
         ///	</remarks>
-        /// <param name="pAxes">3x3 Matrix containg 3 column vectors each representing the
+        /// <param name="axes">3x3 Matrix containg 3 column vectors each representing the
         ///	X, Y and Z axes respectively. In this format the standard cartesian axes would be expressed as:
         ///		1 0 0
         ///		0 1 0
@@ -362,7 +362,8 @@ namespace Axiom.Core {
         ///	</param>
         /// <param name="move">Vector relative to the supplied axes.</param>
         public virtual void Translate(Matrix3 axes, Vector3 move, TransformSpace relativeTo) {
-            Translate(axes, move, TransformSpace.Parent);
+			Vector3 derived = axes * move;
+            Translate(derived, relativeTo);
         }
 
 
