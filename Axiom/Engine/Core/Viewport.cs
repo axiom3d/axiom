@@ -92,12 +92,12 @@ namespace Axiom.Core {
 
 			this.camera = camera;
 			this.target = target;
+			this.zOrder = zOrder;
 
 			relativeLeft = left;
 			relativeTop = top;
 			relativeWidth = width;
 			relativeHeight = height;
-			zOrder = zOrder;
 
 			backColor = ColorEx.Black;
 			clearEveryFrame = true;
