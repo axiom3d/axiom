@@ -28,8 +28,8 @@ namespace Demos {
             Light light = scene.CreateLight("MainLight");
             light.Position = new Vector3(20, 80, 50);
 
-            rotNode = (SceneNode)scene.RootSceneNode.CreateChild();
-            ((SceneNode)rotNode.CreateChild(new Vector3(20, 40, 50), Quaternion.Identity)).AttachObject(light);
+            rotNode = scene.RootSceneNode.CreateChildSceneNode();
+            rotNode.CreateChildSceneNode(new Vector3(20, 40, 50), Quaternion.Identity).AttachObject(light);
 
             Entity entity = scene.CreateEntity("Head", "ogrehead.mesh");
 
@@ -41,7 +41,7 @@ namespace Demos {
             entity.GetSubEntity(2).MaterialName = "Examples/OgreCelShading/Earring";
             entity.GetSubEntity(3).MaterialName = "Examples/OgreCelShading/Teeth";
 
-            ((SceneNode)scene.RootSceneNode.CreateChild()).AttachObject(entity);
+            scene.RootSceneNode.CreateChildSceneNode().AttachObject(entity);
 
             window.GetViewport(0).BackgroundColor = ColorEx.White;
         }

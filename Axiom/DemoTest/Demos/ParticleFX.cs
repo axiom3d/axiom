@@ -51,33 +51,33 @@ namespace Demos {
             Entity ogreHead = scene.CreateEntity("OgreHead", "ogrehead.mesh");
 
             // create a scene node for the entity and attach the entity
-            SceneNode headNode = (SceneNode) scene.RootSceneNode.CreateChild();
+            SceneNode headNode = scene.RootSceneNode.CreateChildSceneNode();
             headNode.AttachObject(ogreHead);
 
             // create a cool glowing green particle system
             ParticleSystem greenyNimbus = ParticleSystemManager.Instance.CreateSystem("GreenyNimbus", "ParticleSystems/GreenyNimbus");
-            ((SceneNode)scene.RootSceneNode.CreateChild()).AttachObject(greenyNimbus);
+            scene.RootSceneNode.CreateChildSceneNode().AttachObject(greenyNimbus);
 
             // shared node for the 2 fountains
-            fountainNode = (SceneNode) scene.RootSceneNode.CreateChild();
+            fountainNode = scene.RootSceneNode.CreateChildSceneNode();
 
             // create the first fountain
             ParticleSystem fountain1 = ParticleSystemManager.Instance.CreateSystem("Fountain1", "ParticleSystems/Fountain");
-            SceneNode node = (SceneNode)fountainNode.CreateChild();
+            SceneNode node = fountainNode.CreateChildSceneNode();
             node.Translate(new Vector3(200, -100, 0));
             node.Rotate(Vector3.UnitZ, 20);
             node.AttachObject(fountain1);
 
             // create the second fountain
             ParticleSystem fountain2 = ParticleSystemManager.Instance.CreateSystem("Fountain2", "ParticleSystems/Fountain");
-            node = (SceneNode)fountainNode.CreateChild();
+            node = fountainNode.CreateChildSceneNode();
             node.Translate(new Vector3(-200, -100, 0));
             node.Rotate(Vector3.UnitZ, -20);
             node.AttachObject(fountain2);
 
             // create a rainstorm
             ParticleSystem rain = ParticleSystemManager.Instance.CreateSystem("Rain", "ParticleSystems/Rain");
-            ((SceneNode)scene.RootSceneNode.CreateChild(new Vector3(0, 1000, 0), Quaternion.Identity)).AttachObject(rain);
+            scene.RootSceneNode.CreateChildSceneNode(new Vector3(0, 1000, 0), Quaternion.Identity).AttachObject(rain);
             rain.FastForward(5.0f);
         }
 

@@ -99,8 +99,8 @@ namespace Demos {
         protected override void CreateScene() {
             scene.AmbientLight = ColorEx.Black;
 
-            // TODO: Implement SceneManager.CreateChildSceneNode()
-            mainNode = (SceneNode)scene.RootSceneNode.CreateChild();
+            // create scene node
+            mainNode = scene.RootSceneNode.CreateChildSceneNode();
 
             // Load the meshes with non-default HBU options
             for(int mn = 0; mn < entityMeshes.Length; mn++) {
@@ -128,7 +128,7 @@ namespace Demos {
             }
 
             for (int i = 0; i < NUM_LIGHTS; i++) {
-                lightPivots[i] = (SceneNode)scene.RootSceneNode.CreateChild();
+                lightPivots[i] = scene.RootSceneNode.CreateChildSceneNode();
                 lightPivots[i].Rotate(lightRotationAxes[i], lightRotationAngles[i]);
 
                 // Create a light, use default parameters

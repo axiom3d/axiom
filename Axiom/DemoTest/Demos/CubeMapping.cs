@@ -172,7 +172,7 @@ namespace Demos {
             scene.SetSkyBox(true, SKYBOX_MATERIAL, 2000.0f);
 
             // create a node that will be used to attach the objects to
-            objectNode = (SceneNode)scene.RootSceneNode.CreateChild();
+            objectNode = scene.RootSceneNode.CreateChildSceneNode();
 
 		    // show overlay
 		    Overlay overlay = OverlayManager.Instance.GetByName("Example/CubeMappingOverlay");

@@ -50,7 +50,7 @@ namespace Demos {
             entity.MaterialName = "Examples/EnvMappedRustySteel";
 
             // attach the ogre to the scene
-            SceneNode node = (SceneNode)scene.RootSceneNode.CreateChild();
+            SceneNode node = scene.RootSceneNode.CreateChildSceneNode();
             node.AttachObject(entity);
         }
 

@@ -58,19 +58,19 @@ namespace Demos
 
             Entity head = scene.CreateEntity("OgreHead", "ogrehead.mesh");
             entityList.Add(head);
-            ((SceneNode)scene.RootSceneNode.CreateChild()).AttachObject(head);
+            scene.RootSceneNode.CreateChildSceneNode().AttachObject(head);
 
             Entity box = scene.CreateEntity("Box1", "cube.mesh");
             entityList.Add(box);
-            ((SceneNode)scene.RootSceneNode.CreateChild(new Vector3(-100, 0, 0), Quaternion.Identity)).AttachObject(box);
+            scene.RootSceneNode.CreateChildSceneNode(new Vector3(-100, 0, 0), Quaternion.Identity).AttachObject(box);
 
             box = scene.CreateEntity("Box2", "cube.mesh");
             entityList.Add(box);
-            ((SceneNode)scene.RootSceneNode.CreateChild(new Vector3(100, 0, -300), Quaternion.Identity)).AttachObject(box);
+            scene.RootSceneNode.CreateChildSceneNode(new Vector3(100, 0, -300), Quaternion.Identity).AttachObject(box);
 
             box = scene.CreateEntity("Box3", "cube.mesh");
             entityList.Add(box);
-            ((SceneNode)scene.RootSceneNode.CreateChild(new Vector3(-200, 100, -200), Quaternion.Identity)).AttachObject(box);
+            scene.RootSceneNode.CreateChildSceneNode(new Vector3(-200, 100, -200), Quaternion.Identity).AttachObject(box);
 
             frustum = new Frustum();
             frustum.Near = 10;
@@ -78,7 +78,7 @@ namespace Demos
             frustum.Name = "PlayFrustum";
 
             // create a node for the frustum and attach it
-            frustumNode = (SceneNode)scene.RootSceneNode.CreateChild(new Vector3(0, 0, 200), Quaternion.Identity);
+            frustumNode = scene.RootSceneNode.CreateChildSceneNode(new Vector3(0, 0, 200), Quaternion.Identity);
 
             // set the camera in a convenient position
             camera.Position = new Vector3(0, 759, 680);

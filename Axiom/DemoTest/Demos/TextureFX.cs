@@ -75,7 +75,7 @@ namespace Demos {
             // give the plane a texture
             plane.MaterialName = "TextureFX/BumpyMetal";
             // add entity to the root scene node
-            SceneNode node = (SceneNode) scene.RootSceneNode.CreateChild(new Vector3(-250, -40, -100), Quaternion.Identity);
+            SceneNode node = scene.RootSceneNode.CreateChildSceneNode(new Vector3(-250, -40, -100), Quaternion.Identity);
             node.AttachObject(plane);
         }
 
@@ -83,7 +83,7 @@ namespace Demos {
             Entity knot = scene.CreateEntity("knot", "knot.mesh");
             knot.MaterialName = "TextureFX/Knot";
             // add entity to the root scene node
-            SceneNode node = (SceneNode) scene.RootSceneNode.CreateChild(new Vector3(200, 50, 150), Quaternion.Identity);
+            SceneNode node = scene.RootSceneNode.CreateChildSceneNode(new Vector3(200, 50, 150), Quaternion.Identity);
             node.AttachObject(knot);
         }
 

@@ -50,7 +50,7 @@ namespace Axiom.Utility {
         protected Engine engine;
         protected Camera camera;
         protected Viewport viewport;
-        protected SceneManager scene;
+        protected SceneManager scene; 
         protected RenderWindow window;
         protected IInputReader input;
         protected Vector3 cameraVector = Vector3.Zero;
