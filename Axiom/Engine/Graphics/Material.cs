@@ -511,7 +511,7 @@ namespace Axiom.Graphics {
             // clone a copy of all the techniques
             for(int i = 0; i < techniques.Count; i++) {
                 Technique technique = (Technique)techniques[i];
-                Technique newTechnique = technique.Clone(this);
+                Technique newTechnique = technique.Clone(newMaterial);
 
                 // add this to the list of techniques
                 newMaterial.techniques.Add(newTechnique);
