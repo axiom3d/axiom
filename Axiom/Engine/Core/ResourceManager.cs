@@ -368,7 +368,6 @@ namespace Axiom.Core {
             // find the resource in the Hashtable and return it
 			if(resourceList[name] != null) {
 				resource = (Resource)resourceList[name];
-				resource.Touch();
 			}
 
 			return resource;

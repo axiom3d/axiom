@@ -161,7 +161,7 @@ namespace Axiom.Core {
 
 			if(!isLoaded) {
 				// TODO: Debug loading, with respect to shadow volume generation
-				//Load();
+				Load();
 			}
         }
 

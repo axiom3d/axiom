@@ -148,19 +148,21 @@ namespace Axiom.Core {
         public void Write(LogMessageLevel level, bool maskDebug, string message, params object[] substitutions) {
 			if(writer.BaseStream != null && (((int)logLevel + (int)level) >= LogThreshold)) {
                 // construct the log message
-                string msg = string.Format(message, substitutions);
+                if (substitutions != null && substitutions.Length > 0) {
+                    message = string.Format(message, substitutions);
+                }
 
                 // write the the debug output if requested
                 if (debugOutput && !maskDebug) {
-                    System.Diagnostics.Debug.WriteLine(msg);
+                    System.Diagnostics.Debug.WriteLine(message);
                 }
 
                 // prepend the current time to the message
-                msg = string.Format("[{0}] {1}", DateTime.Now.ToString("hh:mm:ss"), msg);
+                message = string.Format("[{0}] {1}", DateTime.Now.ToString("hh:mm:ss"), message);
 
                 // write the message and flush the buffer
-                writer.WriteLine(msg);
-				writer.Flush();
+                writer.WriteLine(message);
+                writer.Flush();
 			}
         }
 
