@@ -37,21 +37,21 @@ namespace Demos {
         #region Methods
 		
         protected override void CreateScene() {
-            sceneMgr.AmbientLight = new ColorEx(1.0f, 0.5f, 0.5f, 0.5f);
+            scene.AmbientLight = new ColorEx(1.0f, 0.5f, 0.5f, 0.5f);
 
             // create a default point light
-            Light light = sceneMgr.CreateLight("MainLight");
+            Light light = scene.CreateLight("MainLight");
             light.Position = new Vector3(20, 80, 50);
 
             // create an ogre head, assigning it a material manually
-            Entity entity = sceneMgr.CreateEntity("Head", "ogrehead.mesh");
+            Entity entity = scene.CreateEntity("Head", "ogrehead.mesh");
 
             // make the ogre look shiny
             //entity.SubEntities[1].MaterialName = "Ogre/SkinEnv";
             entity.MaterialName = "Examples/EnvMappedRustySteel";
 
             // attach the ogre to the scene
-            SceneNode node = (SceneNode)sceneMgr.RootSceneNode.CreateChild();
+            SceneNode node = (SceneNode)scene.RootSceneNode.CreateChild();
             node.AttachObject(entity);
         }
 

@@ -182,8 +182,8 @@ namespace Axiom.ParticleSystems {
                 // but we've already put particles in world space to decouple them from the
                 // node transform, so reverse transform back
 
-                Vector3 min = new Vector3(Single.PositiveInfinity, Single.PositiveInfinity, Single.PositiveInfinity);
-                Vector3 max = new Vector3(Single.NegativeInfinity, Single.NegativeInfinity, Single.NegativeInfinity);
+                Vector3 min = new Vector3(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
+                Vector3 max = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
                 Vector3 temp;
 
                 Vector3[] corners = aab.Corners;
