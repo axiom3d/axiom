@@ -1,0 +1,13 @@
+vertex_program cg CelShadingVP
+{
+	source CelShading.cg
+	entry CelShadingVP
+	profile vs_1_1
+}
+
+fragment_program cg CelShadingFP
+{
+	source CelShading.cg
+	entry CelShadingFP
+	profile ps_1_3
+}
