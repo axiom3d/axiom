@@ -265,6 +265,14 @@ namespace Axiom.Core {
 		/// </summary>
 		protected bool shadowUseInfiniteFarPlane;
 		/// <summary>
+		///		Program parameters for infinite extrusion programs.
+		/// </summary>
+		protected GpuProgramParameters infiniteExtrusionParams;
+		/// <summary>
+		///		Program parameters for finite extrusion programs.
+		/// </summary>
+		protected GpuProgramParameters finiteExtrusionParams;
+		/// <summary>
 		///		If set, only this scene node (and children) will be rendered.
 		///		If null, root node is used.
 		/// </summary>
@@ -1124,18 +1132,15 @@ namespace Axiom.Core {
 					shadowDebugPass.CullMode = CullingMode.None;
 
 					if(targetRenderSystem.Caps.CheckCap(Capabilities.VertexPrograms)) {
-						// TODO: Add hardware extrusion program
-						/*						
-						ShadowVolumeExtrudeProgram.Initialise();
+						ShadowVolumeExtrudeProgram.Initialize();
 
 						// Enable the (infinite) point light extruder for now, just to get some params
-						shadowDebugPass.VertexProgram = ShadowVolumeExtrudeProgram.ProgramNames[ShadowVolumeExtrudeProgram.POINT_LIGHT];
+						shadowDebugPass.SetVertexProgram(
+							ShadowVolumeExtrudeProgram.GetProgramName(ShadowVolumeExtrudeProgram.Programs.PointLight));
+						
 						infiniteExtrusionParams = shadowDebugPass.VertexProgramParameters;
-						infiniteExtrusionParams.SetAutoConstant(0, 
-							GpuProgramParameters.WorldViewProjMatrix);
-						infiniteExtrusionParams.SetAutoConstant(4, 
-							GpuProgramParameters.LightPositionObjectSpace);
-						*/
+						infiniteExtrusionParams.SetAutoConstant(0, AutoConstants.WorldViewProjMatrix);
+						infiniteExtrusionParams.SetAutoConstant(4, AutoConstants.LightPositionObjectSpace);
 					}
 
 					matDebug.Compile();
@@ -1154,21 +1159,14 @@ namespace Axiom.Core {
 					shadowStencilPass = matStencil.GetTechnique(0).GetPass(0);
 
 					if(targetRenderSystem.Caps.CheckCap(Capabilities.VertexPrograms)) {
-						// TODO: Add hardware extrusion program
-						/*
 						// Enable the finite point light extruder for now, just to get some params
-						shadowStencilPass.VertexProgram = 
-							ShadowVolumeExtrudeProgram.ProgramNames[ShadowVolumeExtrudeProgram.POINT_LIGHT_FINITE]);
-						finiteExtrusionParams = 
-							shadowStencilPass.VertexProgramParameters;
-						finiteExtrusionParams.SetAutoConstant(0, 
-							GpuProgramParameters.WorldViewProjMatrix);
-						finiteExtrusionParams.SetAutoConstant(4, 
-							GpuProgramParameters.LightPositionObjectSpace);
-						// Note extra parameter
-						finiteExtrusionParams.SetAutoConstant(5, 
-							GpuProgramParameters.ShadowExtrusionDistance);
-						*/
+						shadowStencilPass.SetVertexProgram(
+							ShadowVolumeExtrudeProgram.GetProgramName(ShadowVolumeExtrudeProgram.Programs.PointLightFinite));
+
+						finiteExtrusionParams = shadowStencilPass.VertexProgramParameters;
+						finiteExtrusionParams.SetAutoConstant(0, AutoConstants.WorldViewProjMatrix);
+						finiteExtrusionParams.SetAutoConstant(4, AutoConstants.LightPositionObjectSpace);
+						finiteExtrusionParams.SetAutoConstant(5, AutoConstants.ShadowExtrusionDistance);
 					}
 					matStencil.Compile();
 					// Nothing else, we don't use this like a 'real' pass anyway,
@@ -1307,7 +1305,7 @@ namespace Axiom.Core {
 					}
 					else if (shadowCasterPlainBlackPass.HasVertexProgram) {
 						// reset
-						shadowCasterPlainBlackPass.VertexProgramName = "";
+						shadowCasterPlainBlackPass.SetVertexProgram("");
 					}
 					return shadowCasterPlainBlackPass;
 					/*
@@ -1359,7 +1357,7 @@ namespace Axiom.Core {
 					}
 					else if (shadowReceiverPass.HasVertexProgram) {
 						// reset
-						shadowReceiverPass.VertexProgramName = "";
+						shadowReceiverPass.SetVertexProgram("");
 					}
 
 					return shadowReceiverPass;
@@ -1416,45 +1414,39 @@ namespace Axiom.Core {
 
 			// Do we have access to vertex programs?
 			bool extrudeInSoftware = true;
+
 			bool finiteExtrude = !shadowUseInfiniteFarPlane || 
 				!targetRenderSystem.Caps.CheckCap(Capabilities.InfiniteFarPlane);
 
 			if (targetRenderSystem.Caps.CheckCap(Capabilities.VertexPrograms)) {
-				// TODO: Add hardware extrusion program
-				/*
 				extrudeInSoftware = false;
 				// attach the appropriate extrusion vertex program
 				// Note we never unset it because support for vertex programs is constant
-				// TODO: OGRE uses setProgramName( name, false ) where false is resetParams
-				shadowStencilPass.VertexProgramName =
-					ShadowVolumeExtrudeProgram.GetProgramName(light.Type, finiteExtrude, false);
+				shadowStencilPass.SetVertexProgram(
+					ShadowVolumeExtrudeProgram.GetProgramName(light.Type, finiteExtrude, false));
+
 				// Set params
-				if (finiteExtrude)
-				{
+				if (finiteExtrude) {
 					shadowStencilPass.VertexProgramParameters = finiteExtrusionParams;
 				}
-				else
-				{
+				else {
 					shadowStencilPass.VertexProgramParameters = infiniteExtrusionParams;
 				}
-				if (debugShadows != null)
-				{
-					// TODO: OGRE uses setProgramName( name, false ) where false is resetParams
-					shadowDebugPass.VertexProgramName =
-						ShadowVolumeExtrudeProgram.GetProgramName(light.Type, finiteExtrude, true);
+
+				if(showDebugShadows) {
+					shadowDebugPass.SetVertexProgram(
+						ShadowVolumeExtrudeProgram.GetProgramName(light.Type, finiteExtrude, true));
+
 					// Set params
-					if (finiteExtrude)
-					{
+					if (finiteExtrude) {
 						shadowDebugPass.VertexProgramParameters = finiteExtrusionParams;
 					}
-					else
-					{
+					else {
 						shadowDebugPass.VertexProgramParameters = infiniteExtrusionParams;
 					}
 				}
 
 				targetRenderSystem.BindGpuProgram(shadowStencilPass.VertexProgram);
-				*/
 			}
 			else {
 				targetRenderSystem.UnbindGpuProgram(GpuProgramType.Vertex);
@@ -2842,6 +2834,53 @@ namespace Axiom.Core {
 		}
 
 		/// <summary>
+		///		Sets whether we should use an inifinite camera far plane
+		///		when rendering stencil shadows.
+		/// </summary>
+		/// <remarks>
+		///		Stencil shadow coherency is very reliant on the shadow volume
+		///		not being clipped by the far plane. If this clipping happens, you
+		///		get a kind of 'negative' shadow effect. The best way to achieve
+		///		coherency is to move the far plane of the camera out to infinity,
+		///		thus preventing the far plane from clipping the shadow volumes.
+		///		When combined with vertex program extrusion of the volume to 
+		///		infinity, which	Axiom does when available, this results in very
+		///		robust shadow volumes. For this reason, when you enable stencil 
+		///		shadows, Ogre automatically changes your camera settings to 
+		///		project to infinity if the card supports it. You can disable this
+		///		behavior if you like by setting this property; although you can 
+		///		never enable infinite projection if the card does not support it.
+		///		<p/>
+		///		If you disable infinite projection, or it is not available, 
+		///		you need to be far more careful with your light attenuation /
+		///		directional light extrusion distances to avoid clipping artefacts
+		///		at the far plane.
+		///		<p/>
+		///		Recent cards will generally support infinite far plane projection.
+		///		However, we have found some cases where they do not, especially
+		///		on Direct3D. There is no standard capability we can check to 
+		///		validate this, so we use some heuristics based on experience:
+		///		<UL>
+		///		<LI>OpenGL always seems to support it no matter what the card</LI>
+		///		<LI>Direct3D on non-vertex program capable systems (including 
+		///		vertex program capable cards on Direct3D7) does not
+		///		support it</LI>
+		///		<LI>Direct3D on GeForce3 and GeForce4 Ti does not seem to support
+		///		infinite projection<LI>
+		///		</UL>
+		///		Therefore in the RenderSystem implementation, we may veto the use
+		///		of an infinite far plane based on these heuristics. 
+		/// </remarks>
+		public bool ShadowUseInfiniteFarPlane {
+			get {
+				return shadowUseInfiniteFarPlane;
+			}
+			set {
+				shadowUseInfiniteFarPlane = value;
+			}
+		}
+
+		/// <summary>
 		///		Gets/Sets a value that forces all nodes to render their bounding boxes.
 		/// </summary>
 		public bool ShowBoundingBoxes {
@@ -2990,6 +3029,7 @@ namespace Axiom.Core {
 
 			// initialize shadow volume materials
 			InitShadowVolumeMaterials();
+
 			// Perform a quick pre-check to see whether we should override far distance
 			// When using stencil volumes we have to use infinite far distance
 			// to prevent dark caps getting clipped
@@ -2998,8 +3038,9 @@ namespace Axiom.Core {
 				camera.Far != 0 && 
 				targetRenderSystem.Caps.CheckCap(Capabilities.InfiniteFarPlane) &&
 				shadowUseInfiniteFarPlane) {
+
 				// infinite far distance
-				camera.Far = 0;
+				camera.Far = 0.0f;
 			}
 
 			camInProgress = camera;
@@ -3061,16 +3102,15 @@ namespace Axiom.Core {
 
 			// set the current camera for use in the auto GPU program params
 			autoParamDataSource.Camera = camera;
+
 			// Set autoparams for finite dir light extrusion
-			// TODO: Add ShadowDirLightExtrusionDistance to AutoParamDataSource
-			// autoParamDataSource.ShadowDirLightExtrusionDistance = shadowDirLightExtrudeDist;
+			autoParamDataSource.SetShadowDirLightExtrusionDistance(shadowDirLightExtrudeDist);
 
 			// sets the current ambient light color for use in auto GPU program params
 			autoParamDataSource.AmbientLight = ambientColor;
 
 			// Tell params about render target
-			// TODO: Add CurrentRenderTarget to AutoParamDataSource
-			// autoParamDataSource.CurrentRenderTarget = viewport.Target;
+			autoParamDataSource.RenderTarget = viewport.Target;
 
 			// Set camera window clipping planes (if any)
 			if (targetRenderSystem.Caps.CheckCap(Capabilities.UserClipPlanes)) {
@@ -3565,6 +3605,7 @@ namespace Axiom.Core {
 					if(pass.HasVertexProgram) {
 						targetRenderSystem.BindGpuProgramParameters(GpuProgramType.Vertex, pass.VertexProgramParameters);
 					}
+
 					if(pass.HasFragmentProgram) {
 						targetRenderSystem.BindGpuProgramParameters(GpuProgramType.Fragment, pass.FragmentProgramParameters);
 					}
@@ -3815,9 +3856,9 @@ namespace Axiom.Core {
 				// Do solids, override light list incase any vertex programs use them
 				RenderSolidObjects(priorityGroup.solidPasses, false, nullLightList);
 				RenderSolidObjects(priorityGroup.solidPassesNoShadow, false, nullLightList);
+
 				// Do transparents that cast shadows
-				RenderTransparentShadowCasterObjects(
-					priorityGroup.transparentPasses, false, nullLightList);
+				RenderTransparentShadowCasterObjects(priorityGroup.transparentPasses, false, nullLightList);
 			}// for each priority
 
 			// reset ambient light
@@ -3868,16 +3909,17 @@ namespace Axiom.Core {
 					// Hook up projection frustum
 					shadowReceiverPass.GetTextureUnitState(0).SetProjectiveTexturing(
 						true, shadowTex.GetViewport(0).Camera);
-					// TODO: Add TextureProjector to AutoParamDataSource.cs
-					//autoParamDataSource.TextureProjector(shadowTex.GetViewport(0).Camera);
+					autoParamDataSource.TextureProjector = shadowTex.GetViewport(0).Camera;
+
 					// if this light is a spotlight, we need to add the spot fader layer
 					if (light.Type == LightType.Spotlight) {
 						// Add spot fader if not present already
 						if (shadowReceiverPass.NumTextureUnitStages == 1) {
 							TextureUnitState tex = 
 								shadowReceiverPass.CreateTextureUnitState("spot_shadow_fade.png");
-							tex.SetProjectiveTexturing(
-								true, shadowTex.GetViewport(0).Camera);
+
+							tex.SetProjectiveTexturing(true, shadowTex.GetViewport(0).Camera);
+
 							tex.SetColorOperation(LayerBlendOperation.Add);
 							tex.TextureAddressing = TextureAddressing.Clamp;
 						}
@@ -3893,6 +3935,7 @@ namespace Axiom.Core {
 						// remove spot fader layer
 						shadowReceiverPass.RemoveTextureUnitState(1);
 					}
+
 					shadowReceiverPass.Load();
 
 					if (light.CastShadows && group.ShadowsEnabled) {
@@ -3900,11 +3943,9 @@ namespace Axiom.Core {
 					}
 
 					++sti;
-
 				}// for each light
 
 				illuminationStage = IlluminationRenderStage.None;
-
 			}
 
 			// Iterate again
@@ -3913,7 +3954,6 @@ namespace Axiom.Core {
 
 				// Do transparents
 				RenderTransparentObjects(priorityGroup.transparentPasses, true);
-
 			}// for each priority
 		}
 
