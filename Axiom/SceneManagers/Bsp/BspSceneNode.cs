@@ -28,6 +28,7 @@ using System;
 
 using Axiom;
 using Axiom.Core;
+using Axiom.MathLib;
 
 namespace Axiom.SceneManagers.Bsp
 {
@@ -73,7 +74,16 @@ namespace Axiom.SceneManagers.Bsp
 			if(checkMovables)
 			{
 				for(int i = 0; i < this.objectList.Count; i++)
-					((BspSceneManager) this.Creator).NotifyObjectMoved(this.objectList[i], this.DerivedPosition);
+				{
+					SceneObject obj = this.objectList[i];
+					if (obj is TextureLight)
+					{
+						// the notification of BspSceneManager when the position of
+						// the light is changed, is taken care of at TextureLight.Update()
+						continue;
+					}
+					((BspSceneManager) this.Creator).NotifyObjectMoved(obj, this.DerivedPosition);
+				}
 			}
 		}
 
@@ -84,28 +94,38 @@ namespace Axiom.SceneManagers.Bsp
 		///		Detaches by index, see the alternate version to detach by name. Object indexes
 		///		may change as other objects are added / removed.
 		/// </remarks>
-		public SceneObject DetachObject(ushort index)
+		public override SceneObject DetachObject(int index)
 		{
-			SceneObject ret = this.objectList[index];
-			((BspSceneManager) this.Creator).NotifyObjectDetached(ret);
-		
-			return ret;
+			SceneObject obj = base.DetachObject(index);
+
+			// TextureLights are detached only when removed at the BspSceneManager
+			if (!(obj is TextureLight))
+				((BspSceneManager) this.Creator).NotifyObjectDetached(obj);
+
+			return obj;
 		}
 
-		public SceneObject DetachObject(string name)
+		public override void DetachObject(SceneObject obj)
 		{
-			SceneObject ret = this.objectList[name];	
-			((BspSceneManager) this.Creator).NotifyObjectDetached(ret);
+			// TextureLights are detached only when removed at the BspSceneManager
+			if (!(obj is TextureLight))
+				((BspSceneManager) this.Creator).NotifyObjectDetached(obj);
 
-			return ret;
+			base.DetachObject(obj);
 		}
 
-		public new void DetachAllObjects()
+		public override void DetachAllObjects()
 		{
 			BspSceneManager mgr = (BspSceneManager) this.Creator;
 
 			for(int i = 0; i < this.objectList.Count; i++)
+			{
+				// TextureLights are detached only when removed at the BspSceneManager
+				if (this.objectList[i] is TextureLight)
+					continue;
+
 				mgr.NotifyObjectDetached(this.objectList[i]);
+			}
 
 			base.DetachAllObjects();
 		}

@@ -25,12 +25,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using System.Collections;
 using System.IO;
 using System.Text;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 using Axiom.Core;
+using Axiom.MathLib;
 using Axiom.Media;
 using Axiom.Graphics;
 
@@ -110,6 +112,8 @@ namespace Axiom.SceneManagers.Bsp
 		private InternalBspVis visData;
 		private InternalBspBrush[] brushes;
 		private InternalBspBrushSide[] brushSides;
+
+		protected BspOptions options;
 		#endregion
 
 		#region Properties
@@ -120,6 +124,7 @@ namespace Axiom.SceneManagers.Bsp
 		public int NumNodes { get { return nodes.Length; } }
 		public int NumLeaves { get { return leaves.Length; } }
 		public int NumBrushes { get { return brushes.Length; } }
+		public BspOptions Options { get { return options; } }
 
 		public int[] LeafFaces { get { return leafFaces; } }
 		public int[] LeafBrushes { get { return leafBrushes; } }
@@ -137,8 +142,9 @@ namespace Axiom.SceneManagers.Bsp
 		#endregion
 
 		#region Constructor
-		public Quake3Level()
+		public Quake3Level(BspOptions options)
 		{
+			this.options = options;
 		}
 		#endregion
 
@@ -227,7 +233,7 @@ namespace Axiom.SceneManagers.Bsp
 				Image.ApplyGamma(buffer, 4, buffer.Length, 24);
 				MemoryStream stream = new MemoryStream(buffer);		
 				Image img = Image.FromRawStream(stream, 128, 128, PixelFormat.R8G8B8);
-				TextureManager.Instance.LoadImage(name, img, TextureType.TwoD, 0, 1, 1);				
+				TextureManager.Instance.LoadImage(name, img, TextureType.TwoD, -1, 1, 1);				
 			}
 		}
 
@@ -309,6 +315,10 @@ namespace Axiom.SceneManagers.Bsp
 
 				faces[i].normal = new float[] { reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle() };
 				faces[i].meshCtrl = new int[] { reader.ReadInt32(), reader.ReadInt32() };
+
+				TransformBoundingBox(faces[i].bbox);
+				TransformVector(faces[i].org);
+				TransformVector(faces[i].normal, true);
 			}
 		}
 
@@ -341,6 +351,8 @@ namespace Axiom.SceneManagers.Bsp
 				leaves[i].faceCount = reader.ReadInt32();
 				leaves[i].brushStart = reader.ReadInt32();
 				leaves[i].brushCount = reader.ReadInt32();
+
+				TransformBoundingBox(leaves[i].bbox);
 			}
 		}
 
@@ -361,6 +373,8 @@ namespace Axiom.SceneManagers.Bsp
 				models[i].faceCount = reader.ReadInt32();
 				models[i].brushStart = reader.ReadInt32();
 				models[i].brushCount = reader.ReadInt32();
+
+				TransformBoundingBox(models[i].bbox);
 			}
 		}
 
@@ -379,6 +393,8 @@ namespace Axiom.SceneManagers.Bsp
 
 				for(int j = 0; j < nodes[i].bbox.Length; j++)
 					nodes[i].bbox[j] = reader.ReadInt32();
+
+				TransformBoundingBox(nodes[i].bbox);
 			}
 		}
 
@@ -392,6 +408,8 @@ namespace Axiom.SceneManagers.Bsp
 				planes[i] = new InternalBspPlane();
 				planes[i].normal = new float[] { reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle() };
 				planes[i].distance = reader.ReadSingle();
+
+				TransformPlane(planes[i].normal, ref planes[i].distance);
 			}
 		}
 
@@ -441,6 +459,9 @@ namespace Axiom.SceneManagers.Bsp
 				vertices[i].lightMap = new float[] { reader.ReadSingle(), reader.ReadSingle() };
 				vertices[i].normal = new float[] { reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle() };
 				vertices[i].color = reader.ReadInt32();
+
+				TransformVector(vertices[i].point);
+				TransformVector(vertices[i].normal, true);
 			}
 		}
 
@@ -478,6 +499,85 @@ namespace Axiom.SceneManagers.Bsp
 				brushSides[i].planeNum = reader.ReadInt32();
 				brushSides[i].content = reader.ReadInt32();
 			}
+		}
+
+		internal void TransformVector(float[] v, bool isNormal, int pos)
+		{
+			if (options.setYAxisUp)
+			{
+				Swap(ref v[pos + 1], ref v[pos + 2]);
+				v[pos + 2] = -v[pos + 2];
+			}
+            
+			if (!isNormal)
+			{
+				for (int i = pos; i < pos + 3; i++)
+					v[i] *= options.scale;
+
+				Vector3 move = options.move;
+				v[pos] += options.move.x;
+				v[pos + 1] += options.move.y;
+				v[pos + 2] += options.move.z;
+			}
+		}
+
+		internal void TransformVector(float[] v, bool isNormal)
+		{
+			TransformVector(v, isNormal, 0);
+		}
+
+		internal void TransformVector(float[] v, int pos)
+		{
+			TransformVector(v, false, pos);
+		}
+
+		internal void TransformVector(float[] v)
+		{
+			TransformVector(v, false, 0);
+		}
+
+		internal void TransformPlane(float[] norm, ref float dist)
+		{
+			TransformVector(norm, true);
+			dist *= options.scale;
+			Vector3 normal = new Vector3(norm[0], norm[1], norm[2]);
+			Vector3 point = normal * dist;
+            point += options.move;
+			dist = normal.Dot(point);
+		}
+
+		internal void TransformBoundingBox(float[] bb)
+		{
+			TransformVector(bb, 0);
+			TransformVector(bb, 3);
+			if (options.setYAxisUp)
+				Swap(ref bb[2], ref bb[5]);
+		}
+
+		internal void TransformBoundingBox(int[] bb)
+		{
+			float[] floatbb = new float[6];
+			for (int i = 0; i < 6; i++)
+				floatbb[i] = (float)bb[i];
+
+			TransformBoundingBox(floatbb);
+
+			for (int i = 0; i < 6; i++)
+				bb[i] = Convert.ToInt32(floatbb[i]);
+		}
+
+		private void Swap(ref float num1, ref float num2)
+		{
+			float tmp = num1;
+			num1 = num2;
+			num2 = tmp;
+		}
+
+		private void Swap(ref int num1, ref int num2)
+		{
+			int tmp = num1;
+			num1 = num2;
+			num2 = tmp;
 		}
 		#endregion
 	}

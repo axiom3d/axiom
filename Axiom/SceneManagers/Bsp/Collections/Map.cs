@@ -99,12 +99,30 @@ namespace Axiom.SceneManagers.Bsp.Collections {
 			}
 		}
 
+		/// <summary>
+		///     Given a key, FindFirst will return the first item in the bucket
+		///     associated with the key.
+		/// </summary>
+		/// <param name="key">Key to look for.</param>
+		public object FindFirst(object key) 
+		{
+			if(buckets[key] == null) 
+			{
+				return null;
+			}
+			else 
+			{
+				return ((ArrayList)buckets[key])[0];
+			}
+		}
+
         /// <summary>
         ///     Gets the count of objects mapped to the specified key.
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public int Count(object key) {
+        public int Count(object key) 
+		{
             if(buckets[key] != null) {
                 return ((ArrayList)buckets[key]).Count;
             }
