@@ -665,7 +665,7 @@ namespace Axiom.Core {
 		/// </remarks>
 		/// <param name="fileName"></param>
 		public virtual void LoadWorldGeometry(string fileName) {
-			// no default implenentation
+			// no default implementation
 		}
 
 		public void ManualRender(RenderOperation op, Pass pass, Viewport vp, 

@@ -799,46 +799,47 @@ namespace Axiom.RenderSystems.DirectX9 {
 			}            
 		}
 
-		
-
 		public override void BindGpuProgramParameters(GpuProgramType type, GpuProgramParameters parms) {
-
 			switch(type) {
 				case GpuProgramType.Vertex:
-					if(parms.HasIntConstants) { 
-						device.SetVertexShaderConstant(0, parms.IntConstants);
+					if(parms.HasIntConstants) {
+						for(int index = 0; index < parms.FloatConstantCount; index++) {
+							GpuProgramParameters.IntConstantEntry entry = parms.GetIntConstant(index);
+
+							if(entry.isSet) {
+								device.SetVertexShaderConstant(index, entry.val);
+							}
+						}
 					}
 					if(parms.HasFloatConstants) {
-						for(int i = 0; i < parms.FloatConstantCount; i++) {
-							int index = parms.GetFloatConstantIndex(i);
-							Axiom.MathLib.Vector4 vec4 = parms.GetFloatConstant(i);
+						for(int index = 0; index < parms.FloatConstantCount; index++) {
+							GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant(index);
 
-							tempVec.X = vec4.x;
-							tempVec.Y = vec4.y;
-							tempVec.Z = vec4.z;
-							tempVec.W = vec4.w;
-
-							device.SetVertexShaderConstant(index, tempVec);
+							if(entry.isSet) {
+								device.SetVertexShaderConstant(index, entry.val);
+							}
 						}
 					}
 
 					break;
 
 				case GpuProgramType.Fragment:
-					if(parms.HasIntConstants) { 
-						device.SetPixelShaderConstant(0, parms.IntConstants);
+					if(parms.HasIntConstants) {
+						for(int index = 0; index < parms.FloatConstantCount; index++) {
+							GpuProgramParameters.IntConstantEntry entry = parms.GetIntConstant(index);
+
+							if(entry.isSet) {
+								device.SetPixelShaderConstant(index, entry.val);
+							}
+						}
 					}
 					if(parms.HasFloatConstants) {
-						for(int i = 0; i < parms.FloatConstantCount; i++) {
-							int index = parms.GetFloatConstantIndex(i);
-							Axiom.MathLib.Vector4 vec4 = parms.GetFloatConstant(i);
+						for(int index = 0; index < parms.FloatConstantCount; index++) {
+							GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant(index);
 
-							tempVec.X = vec4.x;
-							tempVec.Y = vec4.y;
-							tempVec.Z = vec4.z;
-							tempVec.W = vec4.w;
-
-							device.SetPixelShaderConstant(index, tempVec);
+							if(entry.isSet) {
+								device.SetPixelShaderConstant(index, entry.val);
+							}
 						}
 					}
 					break;

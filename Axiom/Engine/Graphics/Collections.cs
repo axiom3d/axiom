@@ -37,6 +37,17 @@ namespace Axiom.Graphics {
     /// </summary>
     public class AutoConstantEntryList : ArrayList {}
 
+	/// <summary>
+	///     Generics: List<AutoConstantEntry>
+	/// </summary>
+	public class FloatConstantEntryList : ArrayList {
+	}
+
+	/// <summary>
+	///     Generics: List<AutoConstantEntry>
+	/// </summary>
+	public class IntConstantEntryList : ArrayList {}
+
     /// <summary>
     ///     Generics: List<IRenderable>
     /// </summary>

@@ -70,11 +70,11 @@ namespace Axiom.Graphics {
 		/// <summary>
 		///    Packed list of integer constants
 		/// </summary>
-		protected ArrayList intConstants = new ArrayList();
+		protected IntConstantEntryList intConstants = new IntConstantEntryList();
 		/// <summary>
 		///    Table of Vector4 constants by index.
 		/// </summary>
-		protected SortedList floatConstants = new SortedList(256);
+		protected FloatConstantEntryList floatConstants = new FloatConstantEntryList();
 		/// <summary>
 		///    List of automatically updated parameters.
 		/// </summary>
@@ -90,13 +90,17 @@ namespace Axiom.Graphics {
 		protected bool transposeMatrices;
 
 		protected ArrayList paramTypeList = new ArrayList();
-
 		protected ArrayList paramIndexTypes = new ArrayList();
+
+		protected float[] tmpVals = new float[4];
 
 		#endregion
 		
 		#region Constructors
 		
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
 		public GpuProgramParameters(){
 		}
 		
@@ -125,9 +129,15 @@ namespace Axiom.Graphics {
 		public void CopyConstantsFrom(GpuProgramParameters source) {
 			int i = 0;
 
+			FloatConstantEntry[] floatEntries = new FloatConstantEntry[source.floatConstants.Count];
+			IntConstantEntry[] intEntries = new IntConstantEntry[source.intConstants.Count];
+
 			// copy those float and int constants right on in
-			floatConstants = (SortedList)source.floatConstants.Clone();
-			intConstants = (ArrayList)source.intConstants.Clone();
+			source.floatConstants.CopyTo(floatEntries);
+			source.intConstants.CopyTo(intEntries);
+
+			floatConstants.AddRange(floatEntries);
+			intConstants.AddRange(intEntries);
 
 			// Iterate over auto parameters
 			// Clear existing auto constants
@@ -142,19 +152,27 @@ namespace Axiom.Graphics {
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="n"></param>
+		/// <param name="i"></param>
 		/// <returns></returns>
-		public int GetFloatConstantIndex(int n) {
-			return (int)floatConstants.GetKey(n);
+		public FloatConstantEntry GetFloatConstant(int i) {
+			if(i < floatConstants.Count) {
+				return (FloatConstantEntry)floatConstants[i];
+			}
+
+			return null;
 		}
 
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="n"></param>
+		/// <param name="i"></param>
 		/// <returns></returns>
-		public Vector4 GetFloatConstant(int n) {
-			return (Vector4)floatConstants.GetByIndex(n);
+		public IntConstantEntry GetIntConstant(int i) {
+			if(i < intConstants.Count) {
+				return (IntConstantEntry)intConstants[i];
+			}
+
+			return null;
 		}
 
 		/// <summary>
@@ -174,6 +192,11 @@ namespace Axiom.Graphics {
 			return (int)namedParams[name];
 		}
 
+		/// <summary>
+		///		Given an index, this function will return the name of the paramater at that index.
+		/// </summary>
+		/// <param name="index">Index of the parameter to look up.</param>
+		/// <returns>Name of the param at the specified index.</returns>
 		public string GetNameByIndex(int index) {
 			foreach(DictionaryEntry entry in namedParams) {
 				if((int)entry.Value == index) {
@@ -228,20 +251,6 @@ namespace Axiom.Graphics {
 			AutoConstantEntry entry = new AutoConstantEntry(type, index, extraInfo);
 			autoConstantList.Add(entry);
 		}
-	
-		/// <summary>
-		///    Sends a single value constant integer parameter to the program.
-		/// </summary>
-		/// <param name="index">Index of the contant register.</param>
-		/// <param name="val">Single value to set.</param>
-		public void SetConstant(int index, int val) {
-			if(index >= intConstants.Count) {
-				intConstants.Insert(index, val);
-			}
-			else {
-				intConstants[index] = val;
-			}
-		}
 
 		/// <summary>
 		///    Sends 4 packed floating-point values to the program.
@@ -250,7 +259,12 @@ namespace Axiom.Graphics {
 		/// <param name="val">Structure containing 4 packed float values.</param>
 		public void SetConstant(int index, Vector4 val) {
 			// store the float4 constant for this index
-			floatConstants[index] = val;
+			tmpVals[0] = val.x;
+			tmpVals[1] = val.y;
+			tmpVals[2] = val.z;
+			tmpVals[3] = val.w;
+
+			SetConstant(index, tmpVals); 
 		}
 
 		/// <summary>
@@ -317,8 +331,20 @@ namespace Axiom.Graphics {
 		/// <param name="index">Index of the contant register to start at.</param>
 		/// <param name="ints">Array of ints.</param>
 		public void SetConstant(int index, int[] ints) {
-			for(int i = index; i < ints.Length; i++) {
-				SetConstant(i, ints[i]);
+			int count = ints.Length / 4;
+			int srcIndex = 0;
+
+			// resize if necessary
+			while(intConstants.Count < index + count) {
+				intConstants.Add(new IntConstantEntry());
+			}
+
+			// copy in chunks of 4
+			while(count-- > 0) {
+				IntConstantEntry entry = (IntConstantEntry)intConstants[index++];
+				entry.isSet = true;
+				Array.Copy(ints, srcIndex, entry.val, 0, 4);
+				srcIndex += 4;
 			}
 		}
 
@@ -328,10 +354,19 @@ namespace Axiom.Graphics {
 		/// <param name="index">Index of the contant register to start at.</param>
 		/// <param name="ints">Array of ints.</param>
 		public void SetConstant(int index, float[] floats) {
-			// copy floats in chunks of 4
-			for(int i = 0; i < floats.Length; i += 4) {
-				Vector4 vec = new Vector4(floats[i], floats[i + 1], floats[i + 2], floats[i + 3]);
-				SetConstant(index++, vec);
+			int count = floats.Length / 4;
+			int srcIndex = 0;
+
+			while(floatConstants.Count < index + count) {
+				floatConstants.Add(new FloatConstantEntry());
+			}
+
+			// copy in chunks of 4
+			while(count-- > 0) {
+				FloatConstantEntry entry = (FloatConstantEntry)floatConstants[index++];
+				entry.isSet = true;
+				Array.Copy(floats, srcIndex, entry.val, 0, 4);
+				srcIndex += 4;
 			}
 		}
 
@@ -639,6 +674,9 @@ namespace Axiom.Graphics {
 			}
 		}
 
+		/// <summary>
+		///		Gets the number of named parameters in this param set.
+		/// </summary>
 		public int NamedParamCount {
 			get { 
 				return this.namedParams.Count; 
@@ -690,6 +728,28 @@ namespace Axiom.Graphics {
 				this.index = index;
 				this.data = data;
 			}
+		}
+
+		/// <summary>
+		///		Float parameter entry; contains both a group of 4 values and 
+		///		an indicator to say if it's been set or not. This allows us to 
+		///		filter out constant entries which have not been set by the renderer
+		///		and may actually be being used internally by the program.
+		/// </summary>
+		public class FloatConstantEntry {
+			public float[] val = new float[4];
+			public bool	isSet = false;
+		}
+
+		/// <summary>
+		///		Int parameter entry; contains both a group of 4 values and 
+		///		an indicator to say if it's been set or not. This allows us to 
+		///		filter out constant entries which have not been set by the renderer
+		///		and may actually be being used internally by the program.
+		/// </summary>
+		public class IntConstantEntry {
+			public int[] val = new int[4];
+			public bool	isSet = false;
 		}
 
 		#endregion

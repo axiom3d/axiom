@@ -97,20 +97,16 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia {
             // Register combiners uses 2 constants per texture stage (0 and 1)
             // We have stored these as (stage * 2) + const_index
             if(parms.HasFloatConstants) {
-                for(int i = 0; i < parms.FloatConstantCount; i++) {
-                    int index = parms.GetFloatConstantIndex(i);
-                    Axiom.MathLib.Vector4 vec4 = parms.GetFloatConstant(i);
+                for(int index = 0; index < parms.FloatConstantCount; index++) {
+                    GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant(index);
 
-                    int combinerStage = Gl.GL_COMBINER0_NV + (index / 2);
-                    int pname = Gl.GL_CONSTANT_COLOR0_NV + (index % 2);
+					if(entry.isSet) {
+						int combinerStage = Gl.GL_COMBINER0_NV + (index / 2);
+						int pname = Gl.GL_CONSTANT_COLOR0_NV + (index % 2);
 
-                    tempProgramFloats[0] = vec4.x;
-                    tempProgramFloats[1] = vec4.y;
-                    tempProgramFloats[2] = vec4.z;
-                    tempProgramFloats[3] = vec4.w;
-
-                    // send the params 4 at a time
-                    Gl.glCombinerStageParameterfvNV(combinerStage, pname, tempProgramFloats);
+						// send the params 4 at a time
+						Gl.glCombinerStageParameterfvNV(combinerStage, pname, entry.val);
+					}
                 }
             }  
         }
