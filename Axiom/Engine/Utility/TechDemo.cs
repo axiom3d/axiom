@@ -291,8 +291,8 @@ namespace Axiom.Utility {
             }
 
             if(input.IsKeyPressed(Keys.F)) {
-                showDebugOverlay = !showDebugOverlay;
-                engine.ShowDebugOverlay(showDebugOverlay);
+                // hide all overlays, includes ones besides the debug overlay
+                viewport.OverlaysEnabled = !viewport.OverlaysEnabled;
             }
 
             float cameraYaw = -input.RelativeMouseX * 0.13f;
