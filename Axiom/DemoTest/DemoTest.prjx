@@ -36,6 +36,7 @@
     <Reference type="Assembly" refto="..\Solution Items\Tao.Platform.Windows.dll" localcopy="True" />
     <Reference type="Assembly" refto="..\Solution Items\ICSharpCode.SharpZipLib.dll" localcopy="True" />
     <Reference type="Project" refto="PlatformManager_Win32" localcopy="True" />
+    <Reference type="Project" refto="Plugin_OctreeSceneManager" localcopy="True" />
   </References>
   <DeploymentInformation target="" script="" strategy="File" />
   <Configuration runwithwarnings="True" name="Debug">

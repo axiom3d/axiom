@@ -7,6 +7,7 @@
     <Execute entry="Plugin_CgProgramManager" type="None" />
     <Execute entry="Plugin_GuiElements" type="None" />
     <Execute entry="RenderSystem_OpenGL" type="None" />
+    <Execute entry="Plugin_OctreeSceneManager" type="None" />
     <Execute entry="RenderSystem_DirectX9" type="None" />
     <Execute entry="PlatformManager_Win32" type="None" />
     <Execute entry="Demos" type="None" />
@@ -19,6 +20,7 @@
     <Entry filename=".\Plugin_CgProgramManager\Plugin_CgProgramManager.prjx" />
     <Entry filename=".\Plugin_GuiElements\Plugin_GuiElements.prjx" />
     <Entry filename=".\RenderSystem_OpenGL\RenderSystem_OpenGL.prjx" />
+    <Entry filename=".\Plugin_OctreeSceneManager\Plugin_OctreeSceneManager.prjx" />
     <Entry filename=".\RenderSystem_DirectX9\RenderSystem_DirectX9.prjx" />
     <Entry filename=".\PlatformManager_Win32\PlatformManager_Win32.prjx" />
     <Entry filename=".\DemoTest\DemoTest.prjx" />
@@ -32,6 +34,7 @@
       <Entry name="Plugin_CgProgramManager" configurationname="Release" build="True" />
       <Entry name="Plugin_GuiElements" configurationname="Release" build="True" />
       <Entry name="RenderSystem_OpenGL" configurationname="Release" build="True" />
+      <Entry name="Plugin_OctreeSceneManager" configurationname="Release" build="True" />
       <Entry name="RenderSystem_DirectX9" configurationname="Release" build="True" />
       <Entry name="PlatformManager_Win32" configurationname="Release" build="True" />
       <Entry name="Demos" configurationname="Debug" build="False" />
@@ -44,6 +47,7 @@
       <Entry name="Plugin_CgProgramManager" configurationname="Debug" build="True" />
       <Entry name="Plugin_GuiElements" configurationname="Debug" build="True" />
       <Entry name="RenderSystem_OpenGL" configurationname="Debug" build="True" />
+      <Entry name="Plugin_OctreeSceneManager" configurationname="Debug" build="True" />
       <Entry name="RenderSystem_DirectX9" configurationname="Debug" build="True" />
       <Entry name="PlatformManager_Win32" configurationname="Debug" build="True" />
       <Entry name="Demos" configurationname="Debug" build="False" />
