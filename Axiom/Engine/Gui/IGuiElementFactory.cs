@@ -36,7 +36,7 @@ namespace Axiom.Gui
         ///    Classes that implement this interface should return the name of the GuiElement that it will be
         ///    responsible for creating.
         /// </summary>
-        String Type {
+        string Type {
             get;
         }
 		

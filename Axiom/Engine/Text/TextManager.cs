@@ -40,7 +40,7 @@ namespace Axiom.Text {
         /// </summary>
         /// <param name="keyName"></param>
         /// <returns></returns>
-        public static String GetString(String keyName) {
+        public static string GetString(string keyName) {
             return keyName;
         }
     }

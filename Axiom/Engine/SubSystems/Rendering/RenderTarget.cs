@@ -74,7 +74,7 @@ namespace Axiom.SubSystems.Rendering {
         /// <summary>
         /// Gets/Sets the name of this render target.
         /// </summary>
-        public String Name {
+        public string Name {
             get { return this.name; }
             set { this.name = value; }
         }

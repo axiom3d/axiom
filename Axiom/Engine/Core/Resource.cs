@@ -47,7 +47,7 @@ namespace Axiom.Core {
     public abstract class Resource : IDisposable {
         #region Member variables
 
-        protected String name;
+        protected string name;
         protected bool isLoaded;
         protected ulong size;
         protected ulong lastAccessed;
@@ -94,7 +94,7 @@ namespace Axiom.Core {
         /// <summary>
         ///		Name of this resource.
         /// </summary>
-        public String Name {
+        public string Name {
             get { return name; }
         }
 

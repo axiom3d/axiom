@@ -43,7 +43,7 @@ namespace Axiom.FileSystem {
             return null;
         }
 
-        public override String[] GetFileNamesLike(string startPath, string pattern) {
+        public override string[] GetFileNamesLike(string startPath, string pattern) {
             return null;
         }
 

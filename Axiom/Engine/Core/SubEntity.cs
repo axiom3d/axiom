@@ -51,7 +51,7 @@ namespace Axiom.Core {
         /// <summary>Reference to the parent Entity.</summary>
         private Entity parent;
         /// <summary>Name of the material being used.</summary>
-        private String materialName;
+        private string materialName;
         /// <summary>Reference to the material being used by this SubEntity.</summary>
         private Material material;
         /// <summary>Reference to the subMesh that represents the geometry for this SubEntity.</summary>
@@ -78,7 +78,7 @@ namespace Axiom.Core {
         /// <summary>
         ///		Gets/Sets the name of the material used for this SubEntity.
         /// </summary>
-        public String MaterialName {
+        public string MaterialName {
             get { 
                 return materialName; 
             }
@@ -90,7 +90,7 @@ namespace Axiom.Core {
 
                 if(material == null) {
                     System.Diagnostics.Trace.Write(
-                        String.Format("Cannot assign material '{0}' to SubEntity '{1}' because the material doesn't exist.", materialName, parent.Name));
+                        string.Format("Cannot assign material '{0}' to SubEntity '{1}' because the material doesn't exist.", materialName, parent.Name));
 
                     // give it base white so we can continue
                     material = MaterialManager.Instance["BaseWhite"];

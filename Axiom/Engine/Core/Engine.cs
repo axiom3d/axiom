@@ -114,7 +114,7 @@ namespace Axiom.Core {
         /// <summary>
         /// Specifies the name of the engine that will be used where needed (i.e. log files, etc).  
         /// </summary>
-        public String Name {
+        public string Name {
             get {
                 AssemblyTitleAttribute attribute = 
                     (AssemblyTitleAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyTitleAttribute), false);
@@ -129,7 +129,7 @@ namespace Axiom.Core {
         /// <summary>
         /// Specifies the name of the engine that will be used where needed (i.e. log files, etc).  
         /// </summary>
-        public String Copyright {
+        public string Copyright {
             get {
                 AssemblyCopyrightAttribute attribute = 
                     (AssemblyCopyrightAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyCopyrightAttribute), false);
@@ -144,7 +144,7 @@ namespace Axiom.Core {
         /// <summary>
         /// Returns the current version of the Engine assembly.
         /// </summary>
-        public String Version {
+        public string Version {
             get {
                 // returns the file version of this assembly
                 return Assembly.GetExecutingAssembly().GetName().Version.ToString();

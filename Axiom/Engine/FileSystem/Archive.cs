@@ -34,9 +34,9 @@ namespace Axiom.FileSystem {
     /// </summary>
     public abstract class Archive : Resource {
         /// <summary>Name of archive, can be folder path, zip name, etc.</summary>
-        protected String archiveName;
+        protected string archiveName;
 
-        public Archive(String archiveName) {
+        public Archive(string archiveName) {
             this.archiveName = archiveName;
         }
 
@@ -46,6 +46,6 @@ namespace Axiom.FileSystem {
         /// <param name="name"></param>
         public abstract Stream ReadFile(string fileName);
 
-        public abstract String[] GetFileNamesLike(string startPath, string pattern);
+        public abstract string[] GetFileNamesLike(string startPath, string pattern);
     }
 }

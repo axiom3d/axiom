@@ -111,7 +111,7 @@ namespace Axiom.SubSystems.Rendering {
         /// <summary>
         /// Gets the name of this RenderSystem based on it's assembly attribute Title.
         /// </summary>
-        public virtual String Name {
+        public virtual string Name {
             get {
                 AssemblyTitleAttribute attribute = 
                     (AssemblyTitleAttribute)Attribute.GetCustomAttribute(this.GetType().Assembly, typeof(AssemblyTitleAttribute), false);
@@ -291,7 +291,7 @@ namespace Axiom.SubSystems.Rendering {
         /// RenderWindow depending on the API and platform implementation.
         /// </remarks>
         /// <returns></returns>
-        public abstract RenderWindow CreateRenderWindow(String name, System.Windows.Forms.Control target, int width, int height, int colorDepth,
+        public abstract RenderWindow CreateRenderWindow(string name, System.Windows.Forms.Control target, int width, int height, int colorDepth,
             bool isFullscreen, int left, int top, bool depthBuffer, RenderWindow parent);
 
         /// <summary>
@@ -520,7 +520,7 @@ namespace Axiom.SubSystems.Rendering {
         /// Returns the name of this RenderSystem.
         /// </summary>
         /// <returns></returns>
-        public override String ToString() {
+        public override string ToString() {
             return this.Name;
         }
 
@@ -586,7 +586,7 @@ namespace Axiom.SubSystems.Rendering {
         /// <param name="enabled">Boolean to turn the unit on/off</param>
         /// <param name="textureName">The name of the texture to use - this should have
         ///		already been loaded with TextureManager.Load.</param>
-        abstract protected internal void SetTexture(int stage, bool enabled, String textureName);
+        abstract protected internal void SetTexture(int stage, bool enabled, string textureName);
 
         /// <summary>
         ///		Sets a method for automatically calculating texture coordinates for a stage.

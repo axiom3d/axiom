@@ -45,7 +45,7 @@ namespace Axiom.Animating {
         #region Member variables
 		
         /// <summary>Name of this animation.</summary>
-        protected String name;
+        protected string name;
         /// <summary>The total length of this animation (sum of the tracks).</summary>
         protected float length;
         /// <summary>Collection of AnimationTracks.</summary>
@@ -70,7 +70,7 @@ namespace Axiom.Animating {
         ///		<p/>
         ///		Animations should be created within objects that can own them (skeletons, scene managers, etc).
         /// </summary>
-        internal Animation(String name, float length) {
+        internal Animation(string name, float length) {
             this.name = name;
             this.length = length;
 
@@ -88,7 +88,7 @@ namespace Axiom.Animating {
         /// <summary>
         ///		Gets the name of this animation.
         /// </summary>
-        public String Name {
+        public string Name {
             get { return name; }
         }
 

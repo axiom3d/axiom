@@ -101,7 +101,7 @@ namespace Axiom.SubSystems.Rendering {
             caps |= cap;
 
             // write out to the debug console
-            System.Diagnostics.Debug.WriteLine(String.Format("Hardware Cap: {0}", cap.ToString()));
+            System.Diagnostics.Debug.WriteLine(string.Format("Hardware Cap: {0}", cap.ToString()));
         }
 
         #endregion

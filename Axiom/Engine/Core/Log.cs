@@ -36,7 +36,7 @@ namespace Axiom.Core {
         private static System.IO.FileStream log;
         private static System.IO.StreamWriter	writer;
 
-        public Log(String fileName) {
+        public Log(string fileName) {
             // create the log file, or ope
             log = File.Open(fileName, FileMode.Create);
 

@@ -48,7 +48,7 @@ namespace RenderSystem_OpenGL {
 
         #region Implementation of RenderWindow
 
-        public override void Create(String name, System.Windows.Forms.Control target, int width, int height, int colorDepth, bool isFullScreen, int left, int top, bool depthBuffer, params object[] miscParams) {
+        public override void Create(string name, System.Windows.Forms.Control target, int width, int height, int colorDepth, bool isFullScreen, int left, int top, bool depthBuffer, params object[] miscParams) {
             // get the GL context if it was passed in
             if(miscParams.Length != 2) {
                 throw new Exception("Creating of a GL window requires both a device context and rendering context.");
@@ -147,7 +147,7 @@ namespace RenderSystem_OpenGL {
         ///		Saves RenderWindow contents to disk.
         /// </summary>
         /// <param name="fileName"></param>
-        public override void SaveToFile(String fileName) {
+        public override void SaveToFile(string fileName) {
             // capture the dimensions of the client drawing area
             int width = control.ClientSize.Width; 
             int height = control.ClientSize.Height;

@@ -50,9 +50,6 @@ namespace Demos {
         #region Constructors
 		
         public Physics() {
-            //
-            // TODO: Add constructor logic here
-            //
         }
 		
         #endregion
@@ -72,7 +69,7 @@ namespace Demos {
 
             // create an entity to reference this mesh
             Entity planeEnt = scene.CreateEntity("Floor", "GrassPlane");
-            planeEnt.MaterialName = "Example/RustySteel";
+            planeEnt.MaterialName = "Examples/RustySteel";
             ((SceneNode)scene.RootSceneNode.CreateChild()).AttachObject(planeEnt);
 
             // set ambient light to white

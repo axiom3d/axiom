@@ -70,7 +70,7 @@ namespace Axiom.ParticleSystems {
         ///		You should use the ParticleSystemManager to create systems, rather than doing it directly.
         /// </remarks>
         /// <param name="name"></param>
-        public ParticleSystem(String name) {
+        public ParticleSystem(string name) {
             autoExtendPool = true;
             allDefaultSize = true;
             originType = BillboardOrigin.Center;
@@ -90,12 +90,12 @@ namespace Axiom.ParticleSystems {
         ///		class for more details.
         /// </remarks>
         /// <param name="emitterType">
-        ///		String identifying the emitter type to create. Emitter types are defined
+        ///		string identifying the emitter type to create. Emitter types are defined
         ///		by registering new factories with the manager - see ParticleEmitterFactory for more details.
         ///		Emitter types can be extended by plugin authors.
         /// </param>
         /// <returns></returns>
-        public ParticleEmitter AddEmitter(String emitterType) {
+        public ParticleEmitter AddEmitter(string emitterType) {
             ParticleEmitter emitter = ParticleSystemManager.Instance.CreateEmitter(emitterType);
             emitterList.Add(emitter);
 
@@ -110,12 +110,12 @@ namespace Axiom.ParticleSystems {
         ///		class for more details.
         /// </remarks>
         /// <param name="emitterType">
-        ///		String identifying the affector type to create. Affector types are defined
+        ///		string identifying the affector type to create. Affector types are defined
         ///		by registering new factories with the manager - see ParticleAffectorFactory for more details.
         ///		Affector types can be extended by plugin authors.
         /// </param>
         /// <returns></returns>
-        public ParticleAffector AddAffector(String affectorType) {
+        public ParticleAffector AddAffector(string affectorType) {
             ParticleAffector affector = ParticleSystemManager.Instance.CreateAffector(affectorType);
             affectorList.Add(affector);
 

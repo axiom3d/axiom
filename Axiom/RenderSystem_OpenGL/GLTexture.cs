@@ -74,7 +74,7 @@ namespace RenderSystem_OpenGL {
             image.RotateFlip(RotateFlipType.RotateNoneFlipY);
 
             // log a quick message
-            System.Diagnostics.Trace.WriteLine(String.Format("GLTexture: Loading {0} with {1} mipmaps from an Image.", name, numMipMaps));
+            System.Diagnostics.Trace.WriteLine(string.Format("GLTexture: Loading {0} with {1} mipmaps from an Image.", name, numMipMaps));
 
             // get the images pixel format
             PixelFormat format = image.PixelFormat;

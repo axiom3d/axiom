@@ -16,6 +16,7 @@
     <File name=".\Demos\Tutorial1.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\DemoBrowser.resources" subtype="Code" buildaction="EmbedAsResource" dependson="" data="" />
     <File name=".\Demos\SkeletalAnimation.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Demos\SkyDome.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References>
     <Reference type="Project" refto="Engine" localcopy="True" />

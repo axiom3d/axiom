@@ -617,7 +617,7 @@ namespace Axiom.Gui
         /// <summary>
         ///    Type name of this element.
         /// </summary>
-        public abstract String Type {
+        public abstract string Type {
             get;
         }
 

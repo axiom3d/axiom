@@ -65,7 +65,7 @@ namespace Axiom.ParticleSystems {
         ///<summary> Rate in particles per second at which this emitter wishes to emit particles</summary>
         protected float emissionRate;
         /// <summary>Name of the type of emitter, MUST be initialized by subclasses</summary>
-        protected String type;
+        protected string type;
         /// <summary>Base direction of the emitter, may not be used by some emitters</summary>
         protected Vector3 direction;
         /// <summary>Notional up vector, just used to speed up generation of variant directions</summary>
@@ -286,7 +286,7 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         ///		Gets the name of the type of emitter. 
         /// </summary>
-        public String Type {
+        public string Type {
             get { return type; }
             set { type = value; }
         }

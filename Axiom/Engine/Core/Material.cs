@@ -408,7 +408,7 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="textureName"></param>
         /// <returns></returns>
-        public TextureLayer AddTextureLayer(String textureName) {
+        public TextureLayer AddTextureLayer(string textureName) {
             // default to tex coord set of 0
             return AddTextureLayer(textureName, 0);
         }
@@ -418,7 +418,7 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="textureName"></param>
         /// <param name="stage"></param>
-        public TextureLayer AddTextureLayer(String textureName, int texCoordSet) {
+        public TextureLayer AddTextureLayer(string textureName, int texCoordSet) {
             textureLayers[numTextureLayers].DeferredLoad = deferLoad;
             textureLayers[numTextureLayers].TextureName = textureName;
             textureLayers[numTextureLayers].TexCoordSet = texCoordSet;

@@ -62,7 +62,7 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         ///		Returns the name of the factory, which identifies the affector type this factory creates.
         /// </summary>
-        public abstract String Name { 	get; 	}
+        public abstract string Name { 	get; 	}
 
         /// <summary>
         ///		Creates a new affector instance.

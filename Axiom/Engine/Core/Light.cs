@@ -98,7 +98,7 @@ namespace Axiom.Core {
         ///		Normal constructor. Should not be called directly, but rather the SceneManager.CreateLight method should be used.
         /// </summary>
         /// <param name="name"></param>
-        public Light(String name) {
+        public Light(string name) {
             this.name = name;
 
             type = LightType.Point;

@@ -120,7 +120,7 @@ namespace Axiom.Core {
 
         #region Object overrides
 
-        public override String ToString() {
+        public override string ToString() {
             // TODO: Implementation
             return "";
         }

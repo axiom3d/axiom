@@ -45,14 +45,13 @@ namespace Demos {
 		
         protected override void CreateScene() {
             // set some ambient light
-            scene.TargetRenderSystem.LightingEnabled = true;
             scene.AmbientLight = ColorEx.FromColor(System.Drawing.Color.Gray);
 
             // create an entity to have follow the path
             Entity ogreHead = scene.CreateEntity("OgreHead", "ogrehead.mesh");
 
             // create a scene node for the entity and attach the entity
-            SceneNode headNode = (SceneNode)scene.RootSceneNode.CreateChild();
+            SceneNode headNode = (SceneNode) scene.RootSceneNode.CreateChild();
             headNode.AttachObject(ogreHead);
 
             // create a cool glowing green particle system
@@ -60,7 +59,7 @@ namespace Demos {
             ((SceneNode)scene.RootSceneNode.CreateChild()).AttachObject(greenyNimbus);
 
             // shared node for the 2 fountains
-            fountainNode = (SceneNode)scene.RootSceneNode.CreateChild();
+            fountainNode = (SceneNode) scene.RootSceneNode.CreateChild();
 
             // create the first fountain
             ParticleSystem fountain1 = ParticleSystemManager.Instance.CreateSystem("Fountain1", "ParticleSystems/Fountain");
@@ -76,7 +75,7 @@ namespace Demos {
             node.Rotate(Vector3.UnitZ, -20);
             node.AttachObject(fountain2);
 
-            // create a cool glowing green particle system
+            // create a rainstorm
             ParticleSystem rain = ParticleSystemManager.Instance.CreateSystem("Rain", "ParticleSystems/Rain");
             ((SceneNode)scene.RootSceneNode.CreateChild(new Vector3(0, 1000, 0), Quaternion.Identity)).AttachObject(rain);
             rain.FastForward(5.0f);

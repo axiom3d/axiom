@@ -168,6 +168,7 @@ namespace Demos {
             this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
+            this.Icon = new Icon("Media/Icons/AxiomIcon.ico");
             this.Name = "DemoBrowser";
             this.Text = "Axiom Engine - Demo Browser v1.0.0.0";
             this.Load += new System.EventHandler(this.DemoBrowser_Load);
@@ -233,17 +234,18 @@ namespace Demos {
             demoTable.Columns.Add("Description");
             demoTable.Columns.Add("Type");
 
-            demoTable.Rows.Add(new object[] {0, "Camera Track", "Demos.CameraTrack", "CameraTrack.jpg", "Watch the camera follow a defined spline path while maintaining focus on an object in the scene.", "Demos"});
-            demoTable.Rows.Add(new object[] {1, "TextureFX", "Demos.TextureFX", "TextureFX.jpg", "Demonstrates the usage of various texture effects, including scrolling and rotating.", "Demos"});
-            demoTable.Rows.Add(new object[] {2, "Transparency", "Demos.Transparency", "Transparency.jpg", "A high poly scene with transparent entities showing how scene blending works.", "Demos"});
-            demoTable.Rows.Add(new object[] {3, "Environment Mapping", "Demos.EnvMapping", "EnvMapping.jpg", "Small example of an environment mapped entity.", "Demos"});
-            demoTable.Rows.Add(new object[] {4, "Sky Plane", "Demos.SkyPlane", "SkyPlane.jpg", "Example of creating a scene with a skyplane.", "Demos"});
-            demoTable.Rows.Add(new object[] {5, "Sky Box", "Demos.SkyBox", "SkyBox.jpg", "Example of creating a scene with a skybox.", "Demos"});
-            demoTable.Rows.Add(new object[] {6, "Lights", "Demos.Lights", "Lights.jpg", "Example of creating a scene with lights and billboards.", "Demos"});
-            demoTable.Rows.Add(new object[] {7, "ParticleFX", "Demos.ParticleFX", "ParticleFX.jpg", "Demonstrates the various type of particle systems that the engine supports.", "Demos"});
-            demoTable.Rows.Add(new object[] {8, "Skeletal Animation", "Demos.SkeletalAnimation", "SkeletalAnimation.jpg", "Demonstrates skeletal animation techniques.", "Demos"});
-            demoTable.Rows.Add(new object[] {9, "Physics", "Demos.Physics", "Physics.jpg", "Demonstrates collidable objects with real time physics.", "Demos"});
-            demoTable.Rows.Add(new object[] {10, "Tutorial 1", "Demos.Tutorial1", "Tutorial1.jpg", "Demonstrates the typical spinning triangle demo using the engine.", "Tutorials"});
+            demoTable.Rows.Add(new object[] {0, "Camera Track", "Demos.CameraTrack", "CameraTrack.jpg", "Demonstrates a camera following a defined spline path while maintaining focus on an object.", "Demos"});
+            demoTable.Rows.Add(new object[] {1, "Environment Mapping", "Demos.EnvMapping", "EnvMapping.jpg", "Demonstrates an environment mapped entity.", "Demos"});
+            demoTable.Rows.Add(new object[] {2, "Lights", "Demos.Lights", "Lights.jpg", "Demonstrates creating a scene with lights and billboards.", "Demos"});
+            demoTable.Rows.Add(new object[] {3, "ParticleFX", "Demos.ParticleFX", "ParticleFX.jpg", "Demonstrates various particle systems.", "Demos"});
+            demoTable.Rows.Add(new object[] {4, "Physics", "Demos.Physics", "Physics.jpg", "Demonstrates collidable objects with real time physics.", "Demos"});
+            demoTable.Rows.Add(new object[] {5, "Skeletal Animation", "Demos.SkeletalAnimation", "SkeletalAnimation.jpg", "Demonstrates skeletal animation techniques.", "Demos"});
+            demoTable.Rows.Add(new object[] {6, "Sky Box", "Demos.SkyBox", "SkyBox.jpg", "Demonstrates creating a scene with a skybox.", "Demos"});
+            demoTable.Rows.Add(new object[] {7, "Sky Dome", "Demos.SkyDome", "CameraTrack.jpg", "Demonstrates creating a scene with a skydome.", "Demos"});
+            demoTable.Rows.Add(new object[] {8, "Sky Plane", "Demos.SkyPlane", "SkyPlane.jpg", "Demonstrates creating a scene with a skyplane.", "Demos"});
+            demoTable.Rows.Add(new object[] {9, "TextureFX", "Demos.TextureFX", "TextureFX.jpg", "Demonstrates the usage of various texture effects including scrolling and rotating.", "Demos"});
+            demoTable.Rows.Add(new object[] {10, "Transparency", "Demos.Transparency", "Transparency.jpg", "Demonstrates a high poly scene with transparent entities.", "Demos"});
+            demoTable.Rows.Add(new object[] {11, "Tutorial 1", "Demos.Tutorial1", "Tutorial1.jpg", "Demonstrates the typical spinning triangle demo using the engine.", "Tutorials"});
 
             demoView = new DataView(demoTable);
 

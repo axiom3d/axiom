@@ -209,6 +209,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Demos\SkyDome.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Demos\SkyPlane.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

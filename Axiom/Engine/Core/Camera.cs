@@ -98,7 +98,7 @@ namespace Axiom.Core {
 
         #region Constructors
 
-        public Camera(String name, SceneManager sceneManager) {
+        public Camera(string name, SceneManager sceneManager) {
             // Init camera location & direction
 
             // Locate at (0,0,0)

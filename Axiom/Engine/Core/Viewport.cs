@@ -81,7 +81,7 @@ namespace Axiom.Core {
 
             string message;
 
-            message = String.Format("Creating viewport rendering from camera " +
+            message = string.Format("Creating viewport rendering from camera " +
                 "'{0}', relative dimensions L:{1},T:{2},W:{3},H:{4}, Z-Order:{5}",
                 camera.Name, left, top, width, height, zOrder);
 
@@ -137,7 +137,7 @@ namespace Axiom.Core {
             // This allows cameras to be used to render to many viewports,
             // which can have their own dimensions and aspect ratios.
 
-            string message = String.Format("Viewport for camera '{0}' - actual dimensions L:{1},T:{2},W:{3},H:{4}",
+            string message = string.Format("Viewport for camera '{0}' - actual dimensions L:{1},T:{2},W:{3},H:{4}",
                 camera.Name, actualLeft, actualTop, actualWidth, actualHeight);
 
             System.Diagnostics.Trace.WriteLine(message);

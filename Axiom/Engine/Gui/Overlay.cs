@@ -85,7 +85,7 @@ namespace Axiom.Gui {
         ///    Constructor: do not call direct, use SceneManager.CreateOverlay
         /// </summary>
         /// <param name="name"></param>
-        internal Overlay(String name) {
+        internal Overlay(string name) {
             this.name = name;
             this.scaleX = 1.0f;
             this.scaleY = 1.0f;

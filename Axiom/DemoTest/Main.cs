@@ -48,7 +48,7 @@ namespace Demos {
     /// </summary>
     public class DemoTest {
         [STAThread]
-        private static void Main(String[] args) {
+        private static void Main(string[] args) {
             try {
                 Application.Run(new DemoBrowser());
             }

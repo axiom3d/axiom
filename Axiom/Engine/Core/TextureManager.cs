@@ -74,7 +74,7 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public Texture Load(String name) {
+        public Texture Load(string name) {
             // load the texture by default with -1 mipmaps (uses default), gamma of 1, priority of 1
             return Load(name, -1, 1.0f, 1);
         }
@@ -87,7 +87,7 @@ namespace Axiom.Core {
         /// <param name="gamma"></param>
         /// <param name="priority"></param>
         /// <returns></returns>
-        public Texture Load(String name, int numMipMaps, float gamma, int priority) {
+        public Texture Load(string name, int numMipMaps, float gamma, int priority) {
             Texture texture = (Texture)this[name];
 
             if(texture == null) {
@@ -117,7 +117,7 @@ namespace Axiom.Core {
         /// <param name="name"></param>
         /// <param name="image"></param>
         /// <returns></returns>
-        public Texture LoadImage(String name, Bitmap image) {
+        public Texture LoadImage(string name, Bitmap image) {
             return LoadImage(name, image, -1, 1.0f, 1);
         }
 
@@ -130,7 +130,7 @@ namespace Axiom.Core {
         /// <param name="gamma"></param>
         /// <param name="priority"></param>
         /// <returns></returns>
-        public Texture LoadImage(String name, Bitmap image, int numMipMaps, float gamma, int priority) {
+        public Texture LoadImage(string name, Bitmap image, int numMipMaps, float gamma, int priority) {
             // create a new texture
             Texture texture = (Texture)Create(name);
 

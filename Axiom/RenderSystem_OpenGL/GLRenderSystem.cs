@@ -113,7 +113,7 @@ namespace RenderSystem_OpenGL {
 
         #region Implementation of RenderSystem
 
-        public override RenderWindow CreateRenderWindow(String name, System.Windows.Forms.Control target, int width, int height, int colorDepth,
+        public override RenderWindow CreateRenderWindow(string name, System.Windows.Forms.Control target, int width, int height, int colorDepth,
             bool isFullscreen, int left, int top, bool depthBuffer, RenderWindow parent) {
             RenderWindow window = new GLWindow();
 
@@ -191,13 +191,13 @@ namespace RenderSystem_OpenGL {
                 CheckCaps();
 
                 // log hardware info
-                System.Diagnostics.Trace.WriteLine(String.Format("Vendor: {0}", GLHelper.Vendor));
-                System.Diagnostics.Trace.WriteLine(String.Format("Video Board: {0}", Gl.glGetString(Gl.GL_RENDERER)));
-                System.Diagnostics.Trace.WriteLine(String.Format("Version: {0}", Gl.glGetString(Gl.GL_VERSION)));
+                System.Diagnostics.Trace.WriteLine(string.Format("Vendor: {0}", GLHelper.Vendor));
+                System.Diagnostics.Trace.WriteLine(string.Format("Video Board: {0}", Gl.glGetString(Gl.GL_RENDERER)));
+                System.Diagnostics.Trace.WriteLine(string.Format("Version: {0}", Gl.glGetString(Gl.GL_VERSION)));
 			
                 System.Diagnostics.Trace.WriteLine("Extensions supported:");
 
-                foreach(String ext in GLHelper.Extensions)
+                foreach(string ext in GLHelper.Extensions)
                     System.Diagnostics.Trace.WriteLine(ext);
 
                 // init the GL context

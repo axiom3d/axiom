@@ -33,7 +33,7 @@ namespace Axiom.FileSystem {
     /// </summary>
     public class Folder : Archive {
 		
-        public Folder(String archiveName) : base(archiveName) {
+        public Folder(string archiveName) : base(archiveName) {
         }
 
         public override void Load() {
@@ -45,11 +45,11 @@ namespace Axiom.FileSystem {
             return file;
         }
 
-        public override String[] GetFileNamesLike(string startPath, string pattern) {
+        public override string[] GetFileNamesLike(string startPath, string pattern) {
             // TODO: Fix me
 
             // replace with wildcard if empty
-            if(pattern == String.Empty)
+            if(pattern == string.Empty)
                 pattern = "*.*";
 
             string[] files = Directory.GetFiles(archiveName, pattern);

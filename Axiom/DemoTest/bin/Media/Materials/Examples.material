@@ -59,7 +59,7 @@ Ogre/SkinEnv
 	}
 }
 
-Example/RustySteel
+Examples/RustySteel
 {
 	{
 		texture RustySteel.jpg

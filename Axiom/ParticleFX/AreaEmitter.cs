@@ -89,7 +89,7 @@ namespace ParticleFX {
             zRange = direction * (size.z * 0.5f);
         }
 
-        protected void InitDefaults(String type) {
+        protected void InitDefaults(string type) {
             // TODO: Revisit this
             direction = Vector3.UnitZ;
             up = Vector3.UnitZ;

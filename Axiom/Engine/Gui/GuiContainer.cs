@@ -164,7 +164,7 @@ namespace Axiom.Gui
             }
         }
 
-        public override String Type {
+        public override string Type {
             get {
                 return "GuiContainer";
             }

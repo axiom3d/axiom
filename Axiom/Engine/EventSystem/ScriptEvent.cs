@@ -33,7 +33,7 @@ namespace Axiom.EventSystem {
     /// Summary description for ScriptEvent.
     /// </summary>
     public class ScriptEventArgs {
-        protected String commandName;
+        protected string commandName;
 
         public ScriptEventArgs() {
         }

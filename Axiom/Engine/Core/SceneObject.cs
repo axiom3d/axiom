@@ -46,7 +46,7 @@ namespace Axiom.Core {
         /// <summary>Is this object visible?</summary>
         protected bool isVisible;
         /// <summary>Name of this object.</summary>
-        protected String name;
+        protected string name;
         /// <summary>The render queue to use when rendering this object.</summary>
         protected RenderQueueGroupID renderQueueID;
         /// <summary>Flags determining whether this object is included/excluded from scene queries.</summary>
@@ -120,7 +120,7 @@ namespace Axiom.Core {
         /// <summary>
         ///		Name of this SceneObject.
         /// </summary>
-        public String Name {
+        public string Name {
             get { return name;}
             set { name = value; }
         }

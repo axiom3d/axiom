@@ -71,7 +71,7 @@ namespace Demos {
 
             // create an entity to reference this mesh
             Entity planeEntity = scene.CreateEntity("Floor", "FloorPlane");
-            planeEntity.MaterialName = "Example/RustySteel";
+            planeEntity.MaterialName = "Examples/RustySteel";
             ((SceneNode) scene.RootSceneNode.CreateChild()).AttachObject(planeEntity);
 
             // create an entity to have follow the path

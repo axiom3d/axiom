@@ -53,9 +53,9 @@ namespace Axiom.Core {
         /// <summary>The parent mesh that this subMesh belongs to.</summary>
         protected Mesh parent;
         /// <summary>Name of the material assigned to this subMesh.</summary>
-        protected String materialName;
+        protected string materialName;
         /// <summary>Name of this SubMesh.</summary>
-        protected String name;
+        protected string name;
         /// <summary>Indicates if this submesh shares vertex data with other meshes or whether it has it's own vertices.</summary>
         protected internal bool useSharedVertices;
         /// <summary></summary>
@@ -81,7 +81,7 @@ namespace Axiom.Core {
         ///		Basic contructor.
         /// </summary>
         /// <param name="name"></param>
-        public SubMesh(String name) {
+        public SubMesh(string name) {
             this.name = name;
 
             useSharedVertices = true;
@@ -172,7 +172,7 @@ namespace Axiom.Core {
         /// <summary>
         ///		Gets/Sets the name of the material this SubMesh will be using.
         /// </summary>
-        public String MaterialName {
+        public string MaterialName {
             get { return materialName; }
             set { materialName = value; isMaterialInitialized = true; }
         }

@@ -142,7 +142,7 @@ namespace Axiom.Core {
         /// <returns></returns>
         public override Resource Create(string name) {
             if(resourceList[name] != null)
-                throw new Axiom.Exceptions.AxiomException(String.Format("Cananot create a duplicate material named '{0}'.", name));
+                throw new Axiom.Exceptions.AxiomException(string.Format("Cananot create a duplicate material named '{0}'.", name));
 
             // create a material
             Material material = new Material(name);
@@ -159,7 +159,7 @@ namespace Axiom.Core {
         /// <returns></returns>
         public Material CreateDeferred(string name) {
             if(resourceList[name] != null)
-                throw new Axiom.Exceptions.AxiomException(String.Format("Cananot create a duplicate material named '{0}'.", name));
+                throw new Axiom.Exceptions.AxiomException(string.Format("Cananot create a duplicate material named '{0}'.", name));
 
             // create a deferred material
             Material material = new Material(name, true);
