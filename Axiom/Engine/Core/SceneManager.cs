@@ -547,8 +547,29 @@ namespace Axiom.Core {
 				}
 			}
 
-            // removes the node from the list
-            sceneNodeList.Remove(node);
+			 /* CMH 7/18/2004 */
+			 // Destroy child nodes
+			 // We can't use a for loop here, since the recursion mutates node.ChildCount
+			 while(node.ChildCount > 0) {
+				 DestroySceneNode(node.GetChild(0).Name);
+			 }
+
+			 for(int j=0; j<node.ObjectCount; j++) {
+				 SceneObject obj = node.GetObject(j);
+				 if(obj is Camera)
+					 cameraList.Remove(obj);
+				 else if(obj is Light)
+					 lightList.Remove(obj);
+				 else if(obj is Entity)
+					 entityList.Remove(obj);
+				 else if(obj is BillboardSet)
+					 billboardSetList.Remove(obj);
+			 }
+			 // Remove this node from its parent
+			 node.Parent.RemoveChild(node);
+
+			 // removes the node from the list
+			 sceneNodeList.Remove(node);
         }
 
         /// <summary>
