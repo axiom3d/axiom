@@ -47,7 +47,7 @@ namespace Axiom.MathLib {
 		/// <param name="box">Box to test.</param>
 		/// <returns>True if interesecting, false otherwise.</returns>
 		public bool Intersects(AxisAlignedBox box) {
-			if (box.IsNull) {
+			if(box.IsNull) {
 				return false;
 			}
 

@@ -123,9 +123,10 @@ namespace Axiom.Graphics {
 		/// </summary>
 		/// <param name="op"></param>
         public void GetRenderOperation(RenderOperation op) {
+			// TODO: Ensure all other places throughout the engine set these properly
             op.indexData = renderOp.indexData;
-			op.useIndices = renderOp.useIndices;
-			op.operationType = renderOp.operationType;
+			op.useIndices = true;
+			op.operationType = RenderMode.TriangleList;
 			op.vertexData = renderOp.vertexData;
         }
 
@@ -145,8 +146,7 @@ namespace Axiom.Graphics {
 
         public virtual ushort NumWorldTransforms {
             get {
-                // TODO:  Add ShadowRenderable.NumWorldTransforms getter implementation
-                return 0;
+                return 1;
             }
         }
 

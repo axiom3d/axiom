@@ -134,8 +134,11 @@ namespace Axiom.Graphics {
 				// updating the latter because you can't have 2 locks on the same
 				// buffer
 				IntPtr srcPtr = vertexBuffer.Lock(BufferLocking.Normal);
+				IntPtr destPtr = new IntPtr(srcPtr.ToInt32() + (originalVertexCount * 3 * 4));
 				float* pSrc = (float*)srcPtr.ToPointer();
-				float* pDest = pSrc + originalVertexCount * 3;
+				float* pDest = (float*)destPtr.ToPointer();
+
+				int destCount = 0, srcCount = 0;
 
 				// Assume directional light, extrusion is along light direction
 				Vector3 extrusionDir = new Vector3(lightPosition.x, lightPosition.y, lightPosition.z);
@@ -145,16 +148,16 @@ namespace Axiom.Graphics {
 				for (int vert = 0; vert < originalVertexCount; vert++) {
 					if (lightPosition.w != 0.0f) {
 						// Point light, adjust extrusionDir
-						extrusionDir.x = pSrc[0] - lightPosition.x;
-						extrusionDir.y = pSrc[1] - lightPosition.y;
-						extrusionDir.z = pSrc[2] - lightPosition.z;
+						extrusionDir.x = pSrc[srcCount + 0] - lightPosition.x;
+						extrusionDir.y = pSrc[srcCount + 1] - lightPosition.y;
+						extrusionDir.z = pSrc[srcCount + 2] - lightPosition.z;
 						extrusionDir.Normalize();
 						extrusionDir *= extrudeDistance;
 					}
 
-					*pDest++ = *pSrc++ + extrusionDir.x;
-					*pDest++ = *pSrc++ + extrusionDir.y;
-					*pDest++ = *pSrc++ + extrusionDir.z;
+					pDest[destCount++] = pSrc[srcCount++] + extrusionDir.x;
+					pDest[destCount++] = pSrc[srcCount++] + extrusionDir.y;
+					pDest[destCount++] = pSrc[srcCount++] + extrusionDir.z;
 				}
 			}
 
@@ -200,12 +203,10 @@ namespace Axiom.Graphics {
 				// TODO: Will currently cause an overflow for 32 bit indices, revisit
 				short* pIdx = (short*)idxPtr.ToPointer();
 				int indexStart = 0;
+				int count = 0;
 
 				// Iterate over the groups and form renderables for each based on their
 				// lightFacing
-				//si = shadowRenderables.begin();
-				//egiend = edgeData->edgeGroups.end();
-				//for (egi = edgeData->edgeGroups.begin(); egi != egiend; ++egi, ++si) {
 				for(int groupCount = 0; groupCount < edgeData.edgeGroups.Count; groupCount++) {
 					EdgeData.EdgeGroup eg = (EdgeData.EdgeGroup)edgeData.edgeGroups[groupCount];
 					ShadowRenderable si = (ShadowRenderable)shadowRenderables[groupCount];
@@ -244,16 +245,16 @@ namespace Axiom.Graphics {
 							because 'far' verts are in the second half of the 
 							buffer
 							*/
-							*pIdx++ = (short)edge.vertIndex[1];
-							*pIdx++ = (short)edge.vertIndex[0];
-							*pIdx++ = (short)(edge.vertIndex[0] + originalVertexCount);
+							pIdx[count++] = (short)edge.vertIndex[1];
+							pIdx[count++] = (short)edge.vertIndex[0];
+							pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
 							shadOp.indexData.indexCount += 3;
 
 							if (lightType != LightType.Directional) {
 								// additional tri to make quad
-								*pIdx++ = (short)(edge.vertIndex[0] + originalVertexCount);
-								*pIdx++ = (short)(edge.vertIndex[1] + originalVertexCount);
-								*pIdx++ = (short)edge.vertIndex[1];
+								pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
+								pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
+								pIdx[count++] = (short)edge.vertIndex[1];
 								shadOp.indexData.indexCount += 3;
 							}
 
@@ -266,9 +267,9 @@ namespace Axiom.Graphics {
 									firstDarkCapTri = false;
 								}
 								else {
-									*pIdx++ = (short)darkCapStart;
-									*pIdx++ = (short)(edge.vertIndex[1] + originalVertexCount);
-									*pIdx++ = (short)(edge.vertIndex[0] + originalVertexCount);
+									pIdx[count++] = (short)darkCapStart;
+									pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
+									pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
 									shadOp.indexData.indexCount += 3;
 								}
 							}
@@ -276,16 +277,16 @@ namespace Axiom.Graphics {
 						else if (!t1.lightFacing && (edge.isDegenerate || t2.lightFacing)) {
 							// Silhouette edge, second tri facing the light
 							// Note edge indexes inverse of when t1 is light facing 
-							*pIdx++ = (short)edge.vertIndex[0];
-							*pIdx++ = (short)edge.vertIndex[1];
-							*pIdx++ = (short)(edge.vertIndex[1] + originalVertexCount);
+							pIdx[count++] = (short)edge.vertIndex[0];
+							pIdx[count++] = (short)edge.vertIndex[1];
+							pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
 							shadOp.indexData.indexCount += 3;
 
 							if (lightType != LightType.Directional) {
 								// additional tri to make quad
-								*pIdx++ = (short)(edge.vertIndex[1] + originalVertexCount);
-								*pIdx++ = (short)(edge.vertIndex[0] + originalVertexCount);
-								*pIdx++ = (short)edge.vertIndex[0];
+								pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
+								pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
+								pIdx[count++] = (short)edge.vertIndex[0];
 								shadOp.indexData.indexCount += 3;
 							}
 
@@ -298,9 +299,9 @@ namespace Axiom.Graphics {
 									firstDarkCapTri = false;
 								}
 								else {
-									*pIdx++ = (short)darkCapStart;
-									*pIdx++ = (short)(edge.vertIndex[0] + originalVertexCount);
-									*pIdx++ = (short)(edge.vertIndex[1] + originalVertexCount);
+									pIdx[count++] = (short)darkCapStart;
+									pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
+									pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
 									shadOp.indexData.indexCount += 3;
 								}
 							}
@@ -328,9 +329,9 @@ namespace Axiom.Graphics {
 
 							// Light facing, and vertex set matches
 							if (t.lightFacing && t.vertexSet == eg.vertexSet) {
-								*pIdx++ = (short)t.vertIndex[0];
-								*pIdx++ = (short)t.vertIndex[1];
-								*pIdx++ = (short)t.vertIndex[2];
+								pIdx[count++] = (short)t.vertIndex[0];
+								pIdx[count++] = (short)t.vertIndex[1];
+								pIdx[count++] = (short)t.vertIndex[2];
 
 								if(lightShadOp != null) {
 									lightShadOp.indexData.indexCount += 3;

@@ -367,9 +367,27 @@ namespace Axiom.Graphics {
 		///		been changed in some fundamental way, and the owner of the original 
 		///		wishes to make that known so that new copies will reflect the changes.
 		/// </remarks>
-		/// <param name="buffer">Buffer to release temp copies of.</param>
-		internal void ForceReleaseBufferCopies(HardwareVertexBuffer buffer) {
-			//throw new NotImplementedException();
+		/// <param name="sourceBuffer">Buffer to release temp copies of.</param>
+		internal void ForceReleaseBufferCopies(HardwareVertexBuffer sourceBuffer) {
+			// erase the copies which are licensed out
+			for(int i = tempVertexBufferLicenses.Count - 1; i >= 0; i--) {
+				VertexBufferLicense vbl = 
+					(VertexBufferLicense)tempVertexBufferLicenses[i];
+
+				if(vbl.originalBuffer == sourceBuffer) {
+					// Just tell the owner that this is being released
+					vbl.licensee.LicenseExpired(vbl.buffer);
+					tempVertexBufferLicenses.RemoveAt(i);
+				}
+			}
+
+			// TODO: Verify this works
+			foreach(DictionaryEntry entry in freeTempVertexBufferMap) {
+				if(entry.Key == sourceBuffer) {
+					ArrayList list = (ArrayList)entry.Value;
+					list.Clear();
+				}
+			}
 		}
 
 		/// <summary>

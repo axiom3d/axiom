@@ -577,14 +577,157 @@ namespace Axiom.Core {
 		/// </remarks>
 		/// <param name="camera">Camera to find lights within it's view.</param>
 		protected virtual void FindLightsAffectingFrustum(Camera camera) {
-			throw new NotImplementedException();
+			// Basic iteration for this scene manager
+			lightsAffectingFrustum.Clear();
+
+			// sphere to use for testing
+			Sphere sphere = new Sphere();
+
+			for (int i = 0; i < lightList.Count; i++) {
+				Light light = lightList[i];
+
+				if(light.Type == LightType.Directional) {
+					// Always visible
+					lightsAffectingFrustum.Add(light);
+				}
+				else {
+					// NB treating spotlight as point for simplicity
+					// Just see if the lights attenuation range is within the frustum
+					sphere.Center = light.DerivedPosition;
+					sphere.Radius = light.AttenuationRange;
+
+					if (camera.IsObjectVisible(sphere)) {
+						lightsAffectingFrustum.Add(light);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		///		Internal method for locating a list of shadow casters which 
+		///		could be affecting the frustum for a given light. 
+		/// </summary>
+		/// <remarks>
+		///		Custom scene managers are encouraged to override this method to add optimizations, 
+		///		and to add their own custom shadow casters (perhaps for world geometry)
+		/// </remarks>
+		/// <param name="light"></param>
+		/// <param name="camera"></param>
+		protected virtual IList FindShadowCastersForLight(Light light, Camera camera) {
+			shadowCasterList.Clear();
+
+			if (light.Type == LightType.Directional) {
+				// Hmm, how to efficiently locate shadow casters for an infinite light?
+				// TODO
+			}
+			else {
+				Sphere s = new Sphere(light.DerivedPosition, light.AttenuationRange);
+
+				// eliminate early if camera cannot see light sphere
+				if (camera.IsObjectVisible(s)) {
+					// HACK: Bypassing for testing, adding em all for now
+					for(int i = 0; i < entityList.Count; i++) {
+						if(entityList[i].CastShadows)
+							shadowCasterList.Add(entityList[i]);
+					}
+
+//					if (!mShadowCasterSphereQuery) {
+//						shadowCasterSphereQuery = CreateSphereRegionQuery(s);
+//					}
+//					else {
+//						mShadowCasterSphereQuery->setSphere(s);
+//					}
+//
+//					// Determine if light is inside or outside the frustum
+//					bool lightInFrustum = camera->isVisible(light->getPosition());
+//					const PlaneBoundedVolumeList* volList = 0;
+//					if (!lightInFrustum)
+//					{
+//						// Only worth building an external volume list if
+//						// light is outside the frustum
+//						volList = &(light->_getFrustumClipVolumes(camera));
+//					}
+//
+//					// Execute, use callback
+//					mShadowCasterQueryListener.prepare(lightInFrustum, 
+//						volList, camera, &mShadowCasterList);
+//					mShadowCasterSphereQuery->execute(&mShadowCasterQueryListener);
+				}
+			}
+
+			return shadowCasterList;
 		}
 
 		/// <summary>
 		///		Internal method for setting up materials for shadows.
 		/// </summary>
 		protected virtual void InitShadowVolumeMaterials() {
-			throw new NotImplementedException();
+			Material matDebug = MaterialManager.Instance.GetByName("Ogre/Debug/ShadowVolumes");
+
+			if(matDebug == null) {
+				// Create
+				matDebug = (Material)MaterialManager.Instance.Create("Ogre/Debug/ShadowVolumes");
+				shadowDebugPass = matDebug.CreateTechnique().CreatePass();
+				shadowDebugPass.SetSceneBlending(SceneBlendType.Add); 
+				shadowDebugPass.LightingEnabled = false;
+				shadowDebugPass.DepthWrite = false;
+				TextureUnitState t = shadowDebugPass.CreateTextureUnitState();
+				t.SetColorOperationEx(
+					LayerBlendOperationEx.Modulate, 
+					LayerBlendSource.Manual, 
+					LayerBlendSource.Current, 
+					new ColorEx(0.7f, 0.0f, 0.2f));
+
+				shadowDebugPass.CullMode = CullingMode.None;
+
+				if(targetRenderSystem.Caps.CheckCap(Capabilities.VertexPrograms)) {
+					// TODO, add hardware extrusion program
+				}
+
+				matDebug.Compile();
+			}
+
+			Material matStencil = MaterialManager.Instance.GetByName("Ogre/StencilShadowVolumes");
+
+			if(matStencil == null) {
+				// Create
+				matStencil = (Material)MaterialManager.Instance.Create("Ogre/StencilShadowVolumes");
+				shadowStencilPass = matStencil.CreateTechnique().CreatePass();
+
+				if(targetRenderSystem.Caps.CheckCap(Capabilities.VertexPrograms)) {
+					// TODO, add hardware extrusion program
+				}
+
+				// Nothing else, we don't use this like a 'real' pass anyway,
+				// it's more of a placeholder
+			}
+
+			Material matModStencil = 
+				MaterialManager.Instance.GetByName("Ogre/StencilShadowModulationPass");
+
+			if(matModStencil == null) {
+				// Create
+				matModStencil = 
+					(Material)MaterialManager.Instance.Create("Ogre/StencilShadowModulationPass");
+
+				shadowModulativePass = matModStencil.CreateTechnique().CreatePass();
+				shadowModulativePass.SetSceneBlending(SceneBlendFactor.DestColor, SceneBlendFactor.Zero); 
+				shadowModulativePass.LightingEnabled = false;
+				shadowModulativePass.DepthWrite = false;
+				shadowModulativePass.DepthCheck = false;
+				TextureUnitState t = shadowModulativePass.CreateTextureUnitState();
+				t.SetColorOperationEx(
+					LayerBlendOperationEx.Modulate, 
+					LayerBlendSource.Manual, 
+					LayerBlendSource.Current, 
+					new ColorEx(0.25f, 0.25f, 0.25f));
+			}
+
+			// Also init full screen quad while we're at it
+			if(fullScreenQuad == null) {
+				fullScreenQuad = new Rectangle2D();
+				fullScreenQuad.SetCorners(-1, 1, 1, -1);
+			}
 		}
 
 		/// <summary>
@@ -593,7 +736,104 @@ namespace Axiom.Core {
 		/// <param name="light">The light source.</param>
 		/// <param name="camera">The camera being viewed from.</param>
 		protected virtual void RenderShadowVolumesToStencil(Light light, Camera camera) {
-			throw new NotImplementedException();
+			// must disable gpu programs for the time being
+			targetRenderSystem.UnbindGpuProgram(GpuProgramType.Vertex);
+			targetRenderSystem.UnbindGpuProgram(GpuProgramType.Fragment);
+
+			// Can we do a 2-sided stencil?
+			bool stencil2sided = false;
+
+			if (targetRenderSystem.Caps.CheckCap(Capabilities.TwoSidedStencil) && 
+				targetRenderSystem.Caps.CheckCap(Capabilities.StencilWrap)) {
+				// enable
+				stencil2sided = true;
+			}
+
+			// Do we have access to vertex programs?
+			bool extrudeInSoftware = true;
+			if (targetRenderSystem.Caps.CheckCap(Capabilities.VertexPrograms)) {
+				// TODO
+				//extrudeInSoftware = false;
+			}
+
+			// Turn off color writing and depth writing
+			targetRenderSystem.SetColorBufferWriteEnabled(false, false, false, false);
+			targetRenderSystem.DepthWrite = false;
+			targetRenderSystem.StencilCheckEnabled = true;
+			targetRenderSystem.DepthFunction = CompareFunction.Less;
+
+			// get the near clip volume
+			PlaneBoundedVolume nearClipVol = light.GetNearClipVolume(camera);
+
+			// get the shadow caster list
+			IList casters = FindShadowCastersForLight(light, camera);
+
+			// Determine whether zfail is required
+			// We need to use zfail for ALL objects if we find a single object which
+			// requires it
+			bool zfailAlgo = false;
+			int flags = 0;
+
+			for(int i = 0; i < casters.Count; i++) {
+				ShadowCaster caster = (ShadowCaster)casters[i];
+
+				if(nearClipVol.Intersects(caster.GetWorldBoundingBox())) {
+					// We have a zfail case, we must use zfail for all objects
+					zfailAlgo = true;
+					break;
+				}
+			}
+
+			for(int i = 0; i < casters.Count; i++) {
+				ShadowCaster caster = (ShadowCaster)casters[i];
+
+				if(zfailAlgo) {
+					// We need to include the light and / or dark cap
+					// But only if they will be visible
+					if(camera.IsObjectVisible(caster.GetLightCapBounds())) {
+						flags |= (int)ShadowRenderableFlags.IncludeLightCap;
+					}
+					// Dark caps are not needed for directional lights if
+					// extrusion is done in hardware (since extruded to infinity)
+					if((light.Type != LightType.Directional || extrudeInSoftware)
+						&& camera.IsObjectVisible(caster.GetDarkCapBounds(light))) {
+
+						flags |= (int)ShadowRenderableFlags.IncludeDarkCap;
+					}
+				} // if zfail
+
+				// get shadow renderables
+				IEnumerator renderables = caster.GetShadowVolumeRenderableEnumerator(
+					shadowTechnique, light, shadowIndexBuffer, extrudeInSoftware, flags);
+
+				while(renderables.MoveNext()) {
+					ShadowRenderable sr = (ShadowRenderable)renderables.Current;
+
+					// render volume, including dark and (maybe) light caps
+					RenderSingleShadowVolumeToStencil(sr, zfailAlgo, stencil2sided);
+
+					// optionally render separate light cap
+					if (sr.IsLightCapSeperate && ((flags & (int)ShadowRenderableFlags.IncludeLightCap)) > 0) {
+						// must always fail depth check
+						targetRenderSystem.DepthFunction = CompareFunction.AlwaysFail;
+
+						Debug.Assert(sr.LightCapRenderable != null, "Shadow renderable is missing a separate light cap renderable!");
+
+						RenderSingleShadowVolumeToStencil(sr.LightCapRenderable, zfailAlgo, stencil2sided);
+						// reset depth function
+						targetRenderSystem.DepthFunction = CompareFunction.Less;
+					}
+				}
+			}
+			// revert colour write state
+			targetRenderSystem.SetColorBufferWriteEnabled(true, true, true, true);
+			// revert depth state
+			//targetRenderSystem.SetDepthBufferParams();
+			targetRenderSystem.DepthCheck = true;
+			targetRenderSystem.DepthWrite = true;
+			targetRenderSystem.DepthFunction = CompareFunction.LessEqual;
+
+			targetRenderSystem.StencilCheckEnabled = false;
 		}
 
 		/// <summary>
@@ -603,7 +843,32 @@ namespace Axiom.Core {
 		/// <param name="zfail">Should we be using the zfail method?</param>
 		/// <param name="twoSided">Should we use a 2-sided stencil?</param>
 		protected virtual void SetShadowVolumeStencilState(bool secondPass, bool zfail, bool twoSided) {
-			throw new NotImplementedException();
+			// First pass, do front faces if zpass
+			// Second pass, do back faces if zpass
+			// Invert if zfail
+			// this is to ensure we always increment before decrement
+			if ((secondPass || zfail) && !(secondPass && zfail)) {
+				targetRenderSystem.CullingMode = twoSided? CullingMode.None : CullingMode.CounterClockwise;
+				targetRenderSystem.SetStencilBufferParams(
+					CompareFunction.AlwaysPass, // always pass stencil check
+					0, // no ref value (no compare)
+					unchecked((int)0xffffffff), // no mask
+					StencilOperation.Keep, // stencil test will never fail
+					zfail ? (twoSided ? StencilOperation.IncrementWrap : StencilOperation.Increment) : StencilOperation.Keep, // back face depth fail
+					zfail ? StencilOperation.Keep : (twoSided ? StencilOperation.DecrementWrap : StencilOperation.Decrement), // back face pass
+					twoSided);
+			}
+			else {
+				targetRenderSystem.CullingMode = twoSided? CullingMode.None : CullingMode.Clockwise;
+				targetRenderSystem.SetStencilBufferParams(
+					CompareFunction.AlwaysPass, // always pass stencil check
+					0, // no ref value (no compare)
+					unchecked((int)0xffffffff), // no mask
+					StencilOperation.Keep, // stencil test will never fail
+					zfail? (twoSided? StencilOperation.DecrementWrap : StencilOperation.Decrement) : StencilOperation.Keep, // front face depth fail
+					zfail? StencilOperation.Keep : (twoSided? StencilOperation.IncrementWrap : StencilOperation.Increment), // front face pass
+					twoSided);
+			}
 		}
 
 		/// <summary>
@@ -613,6 +878,26 @@ namespace Axiom.Core {
 		/// <param name="zfail"></param>
 		/// <param name="stencil2sided"></param>
 		protected void RenderSingleShadowVolumeToStencil(ShadowRenderable sr, bool zfail, bool stencil2sided) {
+			// Render a shadow volume here
+			//  - if we have 2-sided stencil, one render with no culling
+			//  - otherwise, 2 renders, one with each culling method and invert the ops
+			SetShadowVolumeStencilState(false, zfail, stencil2sided);
+			RenderSingleObject(sr, shadowStencilPass);//, false);
+
+			if (!stencil2sided) {
+				// Second pass
+				SetShadowVolumeStencilState(true, zfail, false);
+				RenderSingleObject(sr, shadowStencilPass);//, false);
+			}
+
+			// Do we need to render a debug shadow marker?
+			if(showDebugShadows) {
+				// reset stencil & colour ops
+				targetRenderSystem.SetStencilBufferParams();
+				SetPass(shadowDebugPass);
+				RenderSingleObject(sr, shadowDebugPass); //, false);
+				targetRenderSystem.SetColorBufferWriteEnabled(false, false, false, false);
+			}
 		}
 
         /// <summary>Internal method for setting a material for subsequent rendering.</summary>
@@ -1501,6 +1786,11 @@ namespace Axiom.Core {
         /// <param name="viewport">The target viewport</param>
         /// <param name="showOverlays">Whether or not any overlay objects should be rendered</param>
         internal void RenderScene(Camera camera, Viewport viewport, bool showOverlays) {
+			Engine.Instance.SceneManager = this;
+
+			// initialize shadow volume materials
+			InitShadowVolumeMaterials();
+
             camInProgress = camera;
             hasCameraChanged = true;
 
@@ -1527,6 +1817,18 @@ namespace Axiom.Core {
 
             // clear the current render queue
             renderQueue.Clear();
+
+			// Are we using any shadows at all?
+			if(shadowTechnique != ShadowTechnique.None) {
+				// Locate any lights which could be affecting the frustum
+				FindLightsAffectingFrustum(camera);
+			}
+
+			// Deal with shadow setup
+			if (shadowTechnique == ShadowTechnique.StencilAdditive) {
+				// Additive stencil, we need to split everything by light
+				// TODO: add a different queue handler to do this
+			}
 
             // find camera's visible objects
             FindVisibleObjects(camera);
@@ -1747,12 +2049,158 @@ namespace Axiom.Core {
             } // iterate per light
         }
 
+		/// <summary>
+		///		Renders a set of solid objects.
+		/// </summary>
+		/// <param name="list">List of solid objects.</param>
+		protected virtual void RenderSolidObjects(SortedList list) {
+			// ----- SOLIDS LOOP -----
+			for(int i = 0; i < list.Count; i++) {
+				RenderableList renderables = (RenderableList)list.GetByIndex(i);
+
+				// bypass if this group is empty
+				if(renderables.Count == 0) {
+					continue;
+				}
+
+				Pass pass = (Pass)list.GetKey(i);
+
+				// set the pass for the list of renderables to be processed
+				SetPass(pass);
+
+				// render each object associated with this rendering pass
+				for(int r = 0; r < renderables.Count; r++) {
+					IRenderable renderable = (IRenderable)renderables[r];
+
+					// Render a single object, this will set up auto params if required
+					RenderSingleObject(renderable, pass);
+				}
+			}
+		}
+
+		/// <summary>
+		///		Renders a set of transparent objects.
+		/// </summary>
+		/// <param name="list"></param>
+		protected virtual void RenderTransparentObjects(ArrayList list) {
+			// ----- TRANSPARENT LOOP -----
+			// This time we render by Z, not by material
+			// The transparent objects set needs to be ordered first
+			for(int i = 0; i < list.Count; i++) {
+				RenderablePass rp = (RenderablePass)list[i];
+
+				// set the pass first
+				SetPass(rp.pass);
+
+				// render the transparent object
+				RenderSingleObject(rp.renderable, rp.pass);
+			}
+		}
+
+		/// <summary>
+		///		Render a group with the added complexity of additive stencil shadows.
+		/// </summary>
+		/// <param name="group">Render queue group.</param>
+		protected virtual void RenderAdditiveStencilShadowedQueueGroupObjects(RenderQueueGroup group) {
+			throw new NotImplementedException("Additive stencil shadows are not yet implemented.");
+		}
+
+		/// <summary>
+		///		Render a group with the added complexity of modulative stencil shadows.
+		/// </summary>
+		/// <param name="group">Render queue group.</param>
+		protected virtual void RenderModulativeStencilShadowedQueueGroupObjects(RenderQueueGroup group) {
+			/* For each light, we need to render all the solids from each group, 
+			then do the modulative shadows, then render the transparents from
+			each group.
+			Now, this means we are going to reorder things more, but that it required
+			if the shadows are to look correct. The overall order is preserved anyway,
+			it's just that all the transparents are at the end instead of them being
+			interleaved as in the normal rendering loop. 
+			*/
+			for(int i = 0; i < group.NumPriorityGroups; i++) {
+				RenderPriorityGroup priorityGroup = group.GetPriorityGroup(i);
+
+				// sort the group first
+				priorityGroup.Sort(camInProgress);
+
+				// do solids
+				RenderSolidObjects(priorityGroup.solidPassMap);
+			}
+
+			// iterate over lights, rendering all volumes to the stencil buffer
+			for(int i = 0; i < lightsAffectingFrustum.Count; i++) {
+				Light light = lightsAffectingFrustum[i];
+
+				if(light.CastShadows) {
+					// clear the stencil buffer
+					targetRenderSystem.ClearFrameBuffer(FrameBuffer.Stencil);
+					RenderShadowVolumesToStencil(light, camInProgress);
+
+					// render full-screen shadow modulator for all lights
+					SetPass(shadowModulativePass);
+
+					// turn the stencil check on
+					targetRenderSystem.StencilCheckEnabled = true;
+
+					// we render where the stencil is not equal to zero to render shadows, not lit areas
+					targetRenderSystem.SetStencilBufferParams(CompareFunction.NotEqual, 0);
+					RenderSingleObject(fullScreenQuad, shadowModulativePass);
+
+					// reset stencil buffer params
+					targetRenderSystem.SetStencilBufferParams();
+					targetRenderSystem.StencilCheckEnabled = false;
+
+					// reset depth buffer params
+					// TODO: Add RenderSystem.SetDepthBufferParams for convenience
+					targetRenderSystem.DepthCheck = true;
+					targetRenderSystem.DepthWrite = true;
+					targetRenderSystem.DepthFunction = CompareFunction.LessEqual;
+				}
+			}
+
+			for(int i = 0; i < group.NumPriorityGroups; i++) {
+				RenderPriorityGroup priorityGroup = group.GetPriorityGroup(i);
+
+				// do transparents
+				RenderTransparentObjects(priorityGroup.transparentPasses);
+			} // for each priority
+		}
+
+		/// <summary>
+		///		Render the objects in a given queue group.
+		/// </summary>
+		/// <param name="group">Group containing the objects to render.</param>
+		protected virtual void RenderQueueGroupObjects(RenderQueueGroup group) {
+			// Redirect to alternate versions if stencil shadows in use
+			if(group.ShadowsEnabled && shadowTechnique == ShadowTechnique.StencilAdditive) {
+				RenderAdditiveStencilShadowedQueueGroupObjects(group);
+			}
+			else if(group.ShadowsEnabled && shadowTechnique == ShadowTechnique.StencilModulative) {
+				RenderModulativeStencilShadowedQueueGroupObjects(group);
+			}
+			else {
+				// Basic render loop
+				// Iterate through priorities
+				for(int i = 0; i < group.NumPriorityGroups; i++) {
+					RenderPriorityGroup priorityGroup = group.GetPriorityGroup(i);
+
+					// sort the group first
+					priorityGroup.Sort(camInProgress);
+
+					// do solids
+					RenderSolidObjects(priorityGroup.solidPassMap);
+
+					// do transparents
+					RenderTransparentObjects(priorityGroup.transparentPasses);
+				} // for each priority
+			}
+		}
+
         /// <summary>
-        ///		Sends visible objects found in FindVisibleObjects to the rendering engine.
+        ///		Sends visible objects found in <see cref="FindVisibleObjects"/> to the rendering engine.
         /// </summary>
         protected internal virtual void RenderVisibleObjects() {
-            int renderCount = 0;
-
             // loop through each main render group ( which is already sorted)
             for(int i = 0; i < renderQueue.NumRenderQueueGroups; i++) {
                 RenderQueueGroupID queueID = renderQueue.GetRenderQueueGroupID(i);
@@ -1767,48 +2215,10 @@ namespace Axiom.Core {
                         continue;
                     }
 
-                    // iterate through the priority queues
-                    for(int j = 0; j < queueGroup.NumPriorityGroups; j++) {
-                        renderCount++;
-                        
-                        RenderPriorityGroup priorityGroup = queueGroup.GetPriorityGroup(j);
-
-                        // sort the current priorty groups
-                        priorityGroup.Sort(camInProgress);
-
-                        // ----- SOLIDS LOOP -----
-                        for(int k = 0; k < priorityGroup.NumSolidPasses; k++) {
-                            // skip this iteration if there are no solid passes
-                            if(priorityGroup.NumSolidPasses == 0) {
-                                continue;
-                            }
-
-                            Pass pass = priorityGroup.GetSolidPass(k);
-                            RenderableList renderables = priorityGroup.GetSolidPassRenderables(k);
-
-                            // set the pass for the list of renderables to be processed
-                            SetPass(pass);
-
-                            // render each object associated with this rendering pass
-                            for(int r = 0; r < renderables.Count; r++) {
-                                IRenderable renderable = (IRenderable)renderables[r];
-                                RenderSingleObject(renderable, pass);
-                            }
-                        }
-
-                        // ----- TRANSPARENT LOOP -----
-                        // This time we render by Z, not by material
-                        // The mTransparentObjects set needs to be ordered first
-                        for(int k = 0; k < priorityGroup.NumTransparentPasses; k++) {
-                            RenderablePass rp = priorityGroup.GetTransparentPass(k);
-
-                            // set the pass first
-                            SetPass(rp.pass);
-
-                            // render the transparent object
-                            RenderSingleObject(rp.renderable, rp.pass);
-                        }
-                    } // for each priority
+					if(queueGroup.NumPriorityGroups > 0) {
+						// render objects in all groups
+						RenderQueueGroupObjects(queueGroup);
+					}
 
                     // true if someone requested that we repeat this queue
                     repeatQueue = OnRenderQueueEnded(queueID);
@@ -2057,3 +2467,4 @@ namespace Axiom.Core {
         public Quaternion orientation;
     }
 }
+

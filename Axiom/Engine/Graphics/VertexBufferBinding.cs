@@ -100,7 +100,9 @@ namespace Axiom.Graphics {
         public virtual HardwareVertexBuffer GetBuffer(short index) {
             Debug.Assert(bindingMap.ContainsKey(index), "No buffer is bound to index " + index);
 
-            return (HardwareVertexBuffer)bindingMap[index];
+			HardwareVertexBuffer buf = (HardwareVertexBuffer)bindingMap[index];
+
+            return buf;
         }
 
         #endregion

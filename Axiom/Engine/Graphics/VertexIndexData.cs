@@ -227,6 +227,7 @@ namespace Axiom.Graphics {
 				// Allocate new position buffer, will be FLOAT3 and 2x the size
 				int oldVertexCount = vbuf.VertexCount;
 				int newVertexCount = oldVertexCount * 2;
+
 				newPosBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
 					VertexElement.GetTypeSize(VertexElementType.Float3), 
 					newVertexCount, vbuf.Usage, vbuf.HasShadowBuffer);
@@ -237,7 +238,7 @@ namespace Axiom.Graphics {
 				// Point first destination pointer at the start of the new position buffer,
 				// the other one half way along
 				IntPtr destPtr = newPosBuffer.Lock(BufferLocking.Discard);
-				IntPtr dest2Ptr = new IntPtr(destPtr.ToInt32() + (oldVertexCount * 3));
+				IntPtr dest2Ptr = new IntPtr(destPtr.ToInt32() + (oldVertexCount * 3 * 4));
 
 				int prePosVertexSize = 0;
 				int postPosVertexSize = 0;
@@ -267,6 +268,8 @@ namespace Axiom.Graphics {
 						for (int v = 0; v < oldVertexCount; v++) {
 							// Copy position, into both buffers
 							pSrc = (float*)((byte*)baseSrcPtr.ToPointer() + posElem.Offset);
+							pDest = (float*)destPtr.ToPointer();
+							pDest2 = pDest + (oldVertexCount * 3);
 
 							pDest[destCount++] = pDest2[dest2Count++] = pSrc[srcCount++];
 							pDest[destCount++] = pDest2[dest2Count++] = pSrc[srcCount++];

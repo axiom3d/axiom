@@ -509,17 +509,17 @@ namespace Axiom.Graphics {
 			StencilOperation stencilFailOp, StencilOperation depthFailOp, StencilOperation passOp, bool twoSidedOperation);
 	
 		public void SetStencilBufferParams() {
-			SetStencilBufferParams(CompareFunction.AlwaysPass, 0, unchecked((int)0xFFFFFFFF), 
+			SetStencilBufferParams(CompareFunction.AlwaysPass, 0, unchecked((int)0xffffffff), 
 				StencilOperation.Keep, StencilOperation.Keep, StencilOperation.Keep, false);
 		}
 		
 		public void SetStencilBufferParams(CompareFunction function) {
-			SetStencilBufferParams(function, 0, unchecked((int)0xFFFFFFFF), 
+			SetStencilBufferParams(function, 0, unchecked((int)0xffffffff), 
 				StencilOperation.Keep, StencilOperation.Keep, StencilOperation.Keep, false);
 		}
 
 		public void SetStencilBufferParams(CompareFunction function, int refValue) {
-			SetStencilBufferParams(function, refValue, unchecked((int)0xFFFFFFFF), 
+			SetStencilBufferParams(function, refValue, unchecked((int)0xffffffff), 
 				StencilOperation.Keep, StencilOperation.Keep, StencilOperation.Keep, false);
 		}
 
