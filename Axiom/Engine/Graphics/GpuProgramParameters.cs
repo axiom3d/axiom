@@ -64,9 +64,9 @@ namespace Axiom.Graphics
         /// </summary>
 		protected ArrayList intContants = new ArrayList();
         /// <summary>
-        ///    Packed list of floating-point constants
+        ///    Table of Vector4 constants by index.
         /// </summary>
-        protected ArrayList floatContants = new ArrayList();
+        protected SortedList floatConstants = new SortedList(256);
         /// <summary>
         ///    List of automatically updated parameters.
         /// </summary>
@@ -75,10 +75,6 @@ namespace Axiom.Graphics
         ///    Lookup of constant indicies for named parameters.
         /// </summary>
         protected Hashtable namedParams = new Hashtable();
-        /// <summary>
-        ///     Temp float array for making Matrix4 floats to reduce allocations
-        /// </summary>
-        protected float[] matrixFloats = new float[16];
 
 		#endregion
 		
@@ -96,6 +92,14 @@ namespace Axiom.Graphics
         /// </summary>
         public void ClearAutoConstants() {
             autoConstantList.Clear();
+        }
+
+        public int GetFloatConstantIndex(int n) {
+            return (int)floatConstants.GetKey(n);
+        }
+
+        public Vector4 GetFloatConstant(int n) {
+            return (Vector4)floatConstants.GetByIndex(n);
         }
 
         /// <summary>
@@ -121,8 +125,8 @@ namespace Axiom.Graphics
         /// <param name="name">Name of the param.</param>
         /// <param name="index">Constant index of the param.</param>
         public void MapParamNameToIndex(string name, int index) {
-            // TODO: Alter the index here?  Doing it for now
-            namedParams[name] = index * 4;
+            // map the param name to a constant register index
+            namedParams[name] = index;
         }
 
         /// <summary>
@@ -159,21 +163,7 @@ namespace Axiom.Graphics
             AutoConstantEntry entry = new AutoConstantEntry(type, index, extraInfo);
             autoConstantList.Add(entry);
         }
-
-        /// <summary>
-        ///    Sends a single value constant floating-point parameter to the program.
-        /// </summary>
-        /// <param name="index">Index of the contant register.</param>
-        /// <param name="val">Single value to set.</param>
-        public virtual void SetConstant(int index, float val) {
-            if(index >= floatContants.Count) {
-                floatContants.Insert(index, val);
-            }
-            else {
-                floatContants[index] = val;
-            }
-        }
-		
+	
         /// <summary>
         ///    Sends a single value constant integer parameter to the program.
         /// </summary>
@@ -194,10 +184,8 @@ namespace Axiom.Graphics
         /// <param name="index">Index of the contant register.</param>
         /// <param name="val">Structure containing 4 packed float values.</param>
         public virtual void SetConstant(int index, Vector4 val) {
-            SetConstant(index++, val.x);
-            SetConstant(index++, val.y);
-            SetConstant(index++, val.z);
-            SetConstant(index++, val.w);
+            // store the float4 constant for this index
+            floatConstants[index] = val;
         }
 
         /// <summary>
@@ -206,12 +194,7 @@ namespace Axiom.Graphics
         /// <param name="index">Index of the contant register.</param>
         /// <param name="val">Structure containing 3 packed float values.</param>
         public virtual void SetConstant(int index, Vector3 val) {
-            SetConstant(index++, val.x);
-            SetConstant(index++, val.y);
-            SetConstant(index++, val.z);
-
-            // just to be safe, some API's don't like non-4d vectors
-            SetConstant(index++, 1.0f);
+            SetConstant(index, new Vector4(val.x, val.y, val.z, 1.0f));
         }
 
         /// <summary>
@@ -220,10 +203,8 @@ namespace Axiom.Graphics
         /// <param name="index">Index of the contant register.</param>
         /// <param name="color">Structure containing 4 packed RGBA color values.</param>
         public virtual void SetConstant(int index, ColorEx color) {
-            SetConstant(index++, color.r);
-            SetConstant(index++, color.g);
-            SetConstant(index++, color.b);
-            SetConstant(index++, color.a);
+            // verify order of color components
+            SetConstant(index++, new Vector4(color.r, color.g, color.b, color.a));
         }
 
         /// <summary>
@@ -232,8 +213,10 @@ namespace Axiom.Graphics
         /// <param name="index">Index of the contant register.</param>
         /// <param name="val">Structure containing 3 packed float values.</param>
         public virtual void SetConstant(int index, Matrix4 val) {
-            val.MakeFloatArray(matrixFloats);
-            SetConstant(index, matrixFloats);
+            SetConstant(index++, new Vector4(val.m00, val.m01, val.m02, val.m03));
+            SetConstant(index++, new Vector4(val.m10, val.m11, val.m12, val.m13));
+            SetConstant(index++, new Vector4(val.m20, val.m21, val.m22, val.m23));
+            SetConstant(index++, new Vector4(val.m30, val.m31, val.m32, val.m33));
         }
 
         /// <summary>
@@ -244,17 +227,6 @@ namespace Axiom.Graphics
         public virtual void SetConstant(int index, int[] ints) {
             for(int i = index; i < ints.Length; i++) {
                 SetConstant(i, ints[i]);
-            }
-        }
-
-        /// <summary>
-        ///    Sets an array of float values starting at the specified index.
-        /// </summary>
-        /// <param name="index">Index of the contant register to start at.</param>
-        /// <param name="floats">Array of floats.</param>
-        public virtual void SetConstant(int index, float[] floats) {
-            for(int i = index, j = 0; j < floats.Length; i++, j++) {
-                SetConstant(i, floats[j]);
             }
         }
 
@@ -436,7 +408,7 @@ namespace Axiom.Graphics
         /// </summary>
         public bool HasFloatConstants {
             get {
-                return floatContants.Count > 0;
+                return floatConstants.Count > 0;
             }
         }
 
@@ -461,22 +433,11 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        ///    Gets a packed array of all current floating-point contants.
-        /// </summary>
-        public float[] FloatConstants {
-            get {
-                float[] floats = new float[floatContants.Count];
-                floatContants.CopyTo(floats);
-                return floats;
-            }
-        }
-
-        /// <summary>
         ///    Gets the number of floating-point contant values currently set.
         /// </summary>
         public int FloatConstantCount {
             get {
-                return floatContants.Count;
+                return floatConstants.Count;
             }
         }
 

@@ -111,25 +111,30 @@ namespace Plugin_CgProgramManager
 
                 // Look for uniform parameters only
                 // Don't bother enumerating unused parameters, especially since they will
-                // be optimised out and therefore not in the indexed versions
+                // be optimized out and therefore not in the indexed versions
                 if(Cg.cgIsParameterReferenced(param) != 0
                     && Cg.cgGetParameterVariability(param) == Cg.CG_UNIFORM
-                    && Cg.cgGetParameterDirection(param) == Cg.CG_IN) {
-                    
+                    && Cg.cgGetParameterDirection(param) != Cg.CG_OUT) {
+
+                    // ignore sampler parameters
                     if(Cg.cgGetParameterType(param) == Cg.CG_SAMPLER1D
                         || Cg.cgGetParameterType(param) == Cg.CG_SAMPLER2D
                         || Cg.cgGetParameterType(param) == Cg.CG_SAMPLER3D
                         || Cg.cgGetParameterType(param) == Cg.CG_SAMPLERCUBE
                         || Cg.cgGetParameterType(param) == Cg.CG_SAMPLERRECT) {
 
+                        // increment the offset to avoid sampler params from skewing index 
+                        // of the app supplied params
                         offset++;
-                        param = Cg.cgGetNextLeafParameter(param);
-                        continue;
+                    }                        
+                    else {
+                        // get the name and index of the program param
+                        string name = Cg.cgGetParameterName(param);
+                        int index = Cg.cgGetParameterResourceIndex(param) - offset;
+
+                        // map the param to the index
+                        parms.MapParamNameToIndex(name, index);
                     }
-                        
-                    string name = Cg.cgGetParameterName(param);
-                    int index = Cg.cgGetParameterResourceIndex(param) - offset;
-                    parms.MapParamNameToIndex(name, index);
                 }
 
                 param = Cg.cgGetNextLeafParameter(param);

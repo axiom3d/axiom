@@ -407,10 +407,13 @@ namespace RenderSystem_DirectX9 {
             RenderWindow renderWindow = null;
 
             if(autoCreateWindow) {
-                EngineConfig.DisplayModeRow[] modes = 
-                    (EngineConfig.DisplayModeRow[])engineConfig.DisplayMode.Select("Selected = true");
+            	System.Data.DataRow[] modes = engineConfig.DisplayMode.Select("Selected = true");
+            	
+            	if(modes == null || modes.Length == 0) {
+        	    throw new Exception("No video mode is selected");
+            	}
 
-                EngineConfig.DisplayModeRow mode = modes[0];
+                EngineConfig.DisplayModeRow mode = (EngineConfig.DisplayModeRow)modes[0];
 
                 // create a default form window
                 DefaultForm newWindow = RenderWindow.CreateDefaultForm(0, 0, mode.Width, mode.Height, mode.FullScreen);
@@ -697,7 +700,6 @@ namespace RenderSystem_DirectX9 {
         }
 
         public override void BindGpuProgramParameters(GpuProgramType type, GpuProgramParameters parms) {
-            Debug.Assert(parms.IntConstantCount % 4 == 0 && parms.FloatConstantCount % 4 == 0, "int and float constant params must be in multiples of 4.");
 
             switch(type) {
                 case GpuProgramType.Vertex:
@@ -705,7 +707,12 @@ namespace RenderSystem_DirectX9 {
                         device.SetVertexShaderConstant(0, parms.IntConstants);
                     }
                     if(parms.HasFloatConstants) {
-                        device.SetVertexShaderConstant(0, parms.FloatConstants);
+                        for(int i = 0; i < parms.FloatConstantCount; i++) {
+                            int index = parms.GetFloatConstantIndex(i);
+                            Axiom.MathLib.Vector4 vec4 = parms.GetFloatConstant(i);
+
+                            device.SetVertexShaderConstant(index, new Microsoft.DirectX.Vector4(vec4.x, vec4.y, vec4.z, vec4.w));
+                        }
                     }
 
                     break;
@@ -715,7 +722,12 @@ namespace RenderSystem_DirectX9 {
                         device.SetPixelShaderConstant(0, parms.IntConstants);
                     }
                     if(parms.HasFloatConstants) {
-                        device.SetPixelShaderConstant(0, parms.FloatConstants);
+                        for(int i = 0; i < parms.FloatConstantCount; i++) {
+                            int index = parms.GetFloatConstantIndex(i);
+                            Axiom.MathLib.Vector4 vec4 = parms.GetFloatConstant(i);
+
+                            device.SetPixelShaderConstant(index, new Microsoft.DirectX.Vector4(vec4.x, vec4.y, vec4.z, vec4.w));
+                        }
                     }
                     break;
             }          
