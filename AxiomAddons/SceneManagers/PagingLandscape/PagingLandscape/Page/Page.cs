@@ -359,7 +359,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Page
 				for ( long j = 0; j < numTiles; j++ )
 				{
 					Debug.Assert (tiles[ i ][ j ] != null);
-					tiles[ i ][ j ].Dispose();
+					tiles[ i ][ j ].Release();
 					tiles[ i ][ j ] = null;
 				}
 				//mTiles[ i ].clear();
@@ -374,6 +374,11 @@ namespace Axiom.SceneManagers.PagingLandscape.Page
 
 				//mPageNode->getParent()->removeChild( mPageNode->getName() );
 				//delete mPageNode;
+
+				// jsw - we need to call both of these to delete the scene node.  The first
+				//  one removes it from the SceneManager's list of all nodes, and the 2nd one 
+				//  removes it from the tree of scene nodes.
+				pageNode.Creator.DestroySceneNode(pageNode.Name);
 				pageNode.Parent.RemoveChild( pageNode.Name );
 				pageNode = null;
 			}
