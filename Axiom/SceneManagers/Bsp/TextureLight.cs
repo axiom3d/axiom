@@ -15,6 +15,7 @@ namespace Axiom.SceneManagers.Bsp
 		protected bool isTextureLight;
 		protected ColorEx textureColor;
 		protected LightIntensity intensity;
+		protected int priority;
 
 		public bool IsTextureLight
 		{
@@ -26,6 +27,12 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get { return intensity; }
 			set { intensity = value; }
+		}
+
+		public int Priority
+		{
+			get { return priority; }
+			set { priority = value; }
 		}
 
 		// used in BspSceneManager.PopulateLightList method
@@ -53,6 +60,7 @@ namespace Axiom.SceneManagers.Bsp
 			diffuse = ColorEx.White;
             textureColor = ColorEx.White;
 			intensity = LightIntensity.Normal;
+			priority = 100;
 		}
 
 		public bool AffectsFaceGroup(StaticFaceGroup faceGroup, ManualCullingMode cullMode)
@@ -98,8 +106,8 @@ namespace Axiom.SceneManagers.Bsp
 					if (MathUtil.Abs(lightDist) < range)
 					{
 						angle = faceGroup.plane.Normal.Dot(this.DerivedDirection);
-						if (MathUtil.Abs(angle) > ((this.spotOuter + 3) / 180) &&
-                            ((lightDist < 0 && angle > 0) || (lightDist > 0 && angle < 0)))
+						if (((lightDist < 0 && angle > 0) || (lightDist > 0 && angle < 0)) &&
+							MathUtil.Abs(angle) >= MathUtil.Cos(this.spotOuter * 0.5f))
 							affects = true;
 					}
 					break;
