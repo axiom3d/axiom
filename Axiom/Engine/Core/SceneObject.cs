@@ -70,7 +70,7 @@ namespace Axiom.Core {
         /// </summary>
         protected Sphere worldBoundingSphere;
         /// <summary>
-        ///    A link back to a GameObject (or subclass thereof, such as Entity) that may be associated with this SceneObject.
+        ///    A link back to a GameObject (or subclass thereof) that may be associated with this SceneObject.
         /// </summary>
         protected GameObject gameObject;
 
@@ -106,7 +106,7 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        ///    Get/Sets a link back to a GameObject (or subclass thereof, such as Entity) that may be associated with this SceneObject.
+        ///    		Get/Sets a link back to a GameObject (or subclass thereof, such as Entity) that may be associated with this SceneObject.
         /// </summary>
         public GameObject GameObject {
             get {
@@ -156,7 +156,7 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        ///    Returns the full transformation of the parent SceneNode or the attachingPoint node
+        ///    		Returns the full transformation of the parent SceneNode or the attachingPoint node
         /// </summary>
         public virtual Matrix4 ParentFullTransform {
             get {
