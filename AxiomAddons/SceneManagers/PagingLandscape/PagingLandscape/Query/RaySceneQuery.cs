@@ -41,7 +41,7 @@ using Axiom.SceneManagers.PagingLandscape.Data2D;
 
 namespace Axiom.SceneManagers.PagingLandscape.Query
 {
-	enum  RaySceneQueryType : ulong
+	public enum  RaySceneQueryType : ulong
 	{
 		// Height will return the height at the origin
 		// Distance will always be 0
@@ -95,7 +95,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Query
 			ulong mask = QueryMask;
 			SceneQuery.WorldFragment frag;
 
-			if ( (mask & (ulong)RaySceneQueryType.Height) == 0)
+			if ( (mask & (ulong)RaySceneQueryType.Height) != 0)
 			{
 				// we don't want to bother checking for entities because a 
 				// UNIT_Y ray is assumed to be a height test, not a ray test
@@ -106,34 +106,34 @@ namespace Axiom.SceneManagers.PagingLandscape.Query
 				Vector3 origin = this.Ray.Origin;
 				origin.y = 0; // ensure that it's within bounds
 				frag.SingleIntersection = getHeightAt( origin );
-				listener.OnQueryResult( frag, 0 );
+				listener.OnQueryResult( frag, Math.Abs(frag.SingleIntersection.y - this.Ray.Origin.y) );
 			}
 			else
 			{
 				// Check for entity contacts
-				if ( (mask & (ulong)RaySceneQueryType.Entities) == 0 )
+				if ( (mask & (ulong)RaySceneQueryType.Entities) != 0 )
 				{
 					base.Execute( listener );
 				}
 
-				if ( (mask & (ulong)RaySceneQueryType.AllTerrain) == 0 || (mask & (ulong)RaySceneQueryType.FirstTerrain) ==0 )
+				if ( (mask & (ulong)RaySceneQueryType.AllTerrain) != 0 || (mask & (ulong)RaySceneQueryType.FirstTerrain) !=0 )
 				{
 					Vector3 ray = Ray.Origin;
 					Vector3 land = getHeightAt( ray );
 					float dist = 0, resFactor = 1;
 
 					// Only bother if the non-default mask has been set
-					if ( ( mask & (ulong)RaySceneQueryType.OnexRes ) == 0 )
+					if ( ( mask & (ulong)RaySceneQueryType.OnexRes ) != 0 )
 					{
-						if ( (mask & (ulong)RaySceneQueryType.TwoxRes) == 0 )
+						if ( (mask & (ulong)RaySceneQueryType.TwoxRes) != 0 )
 						{
 							resFactor = 0.5F;
 						}
-						else if ( (mask & (ulong)RaySceneQueryType.FourxRes) ==0 )
+						else if ( (mask & (ulong)RaySceneQueryType.FourxRes) !=0 )
 						{
 							resFactor = 0.25F;
 						}
-						else if ( (mask & (ulong)RaySceneQueryType.EightxRes) == 0 )
+						else if ( (mask & (ulong)RaySceneQueryType.EightxRes) != 0 )
 						{
 							resFactor = 0.125F;
 						}
@@ -154,7 +154,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Query
 							frag.SingleIntersection = land;
 							listener.OnQueryResult( frag, dist );
 
-							if ( (mask & (ulong)RaySceneQueryType.FirstTerrain )== 0)
+							if ( (mask & (ulong)RaySceneQueryType.FirstTerrain )!= 0)
 							{
 								return;
 							}
