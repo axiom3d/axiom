@@ -33,11 +33,8 @@ namespace Axiom.FileSystem {
     ///    Summary description for Archive.
     /// </summary>
     public abstract class Archive : Resource {
-        /// <summary>Name of archive, can be folder path, zip name, etc.</summary>
-        protected string archiveName;
-
         public Archive(string archiveName) {
-            this.archiveName = archiveName;
+            this.name = archiveName;
         }
 
         /// <summary>

@@ -244,40 +244,6 @@ namespace Axiom.Core {
             AddCommonArchive(path, "Folder");
         }
 
-		/// <summary>
-		///		Convenience method for returning
-		/// </summary>
-		/// <param name="extension"></param>
-		/// <returns>
-		///		A list of Axiom.MathLib.Collections.Pair objects that contain the filename and
-		///		it's associated stream.
-		/// </returns>
-		public ArrayList GetMatchingFileStreams(string extension) {
-			ArrayList retVal = new ArrayList();
-
-			for(int i = 0; i < archives.Count; i++) {
-				Archive archive = (Archive)archives[i];
-				string[] files = archive.GetFileNamesLike("", extension);
-
-				for(int j = 0; j < files.Length; j++) {
-					Stream data = archive.ReadFile(files[j]);
-					retVal.Add(new Axiom.MathLib.Collections.Pair(data, files[j]));
-				}
-			}
-
-			// search common archives
-			for(int i = 0; i < commonArchives.Count; i++) {
-				Archive archive = (Archive)commonArchives[i];
-				string[] files = archive.GetFileNamesLike("", extension);
-
-				for(int j = 0; j < files.Length; j++) {
-					Stream data = archive.ReadFile(files[j]);
-					retVal.Add(new Axiom.MathLib.Collections.Pair(data, files[j]));
-				}
-			}
-			return retVal;
-		}
-
         public static StringCollection GetAllCommonNamesLike(string startPath, string extension) {
             StringCollection allFiles = new StringCollection();
 
@@ -296,10 +262,18 @@ namespace Axiom.Core {
 
         private static Archive CreateArchive(string name, string type) {
             IArchiveFactory factory = ArchiveManager.Instance.GetArchiveFactory(type);
+
             if (factory == null) {
                 throw new AxiomException(string.Format("Archive type {0} is not a valid archive type.", type));
             }
-            return factory.CreateArchive(name);
+			
+			Archive archive = factory.CreateArchive(name);
+
+			// TODO: Shouldn't be calling this manually here, but good enough until the resource loading is rewritten
+			archive.Load();
+			archive.Touch();
+
+            return archive;
         }
 
         /// <summary>
