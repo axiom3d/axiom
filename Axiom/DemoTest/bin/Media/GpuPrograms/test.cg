@@ -1,0 +1,15 @@
+struct MyOutput {
+   float4 position : POSITION;
+   float4 color : COLOR;
+   float2 texCoord : TEXCOORD0;
+};
+
+MyOutput main(	float2 position : POSITION, float2 texCoord : TEXCOORD0, uniform float4 color) {
+   MyOutput OUT;
+   
+   OUT.position = float4(position, 0, 1);
+   OUT.color = color;
+   OUT.texCoord = texCoord;
+   
+   return OUT;
+}
