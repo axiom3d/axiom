@@ -106,7 +106,7 @@ namespace Axiom.SceneManagers.Octree {
 
                 if(check == node) {
                     node.Octant = null;
-                    //NodeList.RemoveAt(i);
+                    NodeList.RemoveAt(i);
                     this.UnRef();
                 }
             }
