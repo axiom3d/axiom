@@ -786,6 +786,36 @@ namespace Axiom.Platforms.Win32
 				case KeyCodes.Backslash:
 					dinputKey = DInput.Key.BackSlash;
 					break;
+				case KeyCodes.NumPad0:
+					dinputKey = DInput.Key.NumPad0;
+					break;
+				case KeyCodes.NumPad1:
+					dinputKey = DInput.Key.NumPad1;
+					break;
+				case KeyCodes.NumPad2:
+					dinputKey = DInput.Key.NumPad2;
+					break;
+				case KeyCodes.NumPad3:
+					dinputKey = DInput.Key.NumPad3;
+					break;
+				case KeyCodes.NumPad4:
+					dinputKey = DInput.Key.NumPad4;
+					break;
+				case KeyCodes.NumPad5:
+					dinputKey = DInput.Key.NumPad5;
+					break;
+				case KeyCodes.NumPad6:
+					dinputKey = DInput.Key.NumPad6;
+					break;
+				case KeyCodes.NumPad7:
+					dinputKey = DInput.Key.NumPad7;
+					break;
+				case KeyCodes.NumPad8:
+					dinputKey = DInput.Key.NumPad8;
+					break;
+				case KeyCodes.NumPad9:
+					dinputKey = DInput.Key.NumPad9;
+					break;
 			}
 
 			return dinputKey;
@@ -1046,6 +1076,36 @@ namespace Axiom.Platforms.Win32
 					break;
 				case DInput.Key.BackSlash:
 					axiomKey = KeyCodes.Backslash;
+					break;
+				case DInput.Key.NumPad0:
+					axiomKey = Axiom.Input.KeyCodes.NumPad0;
+					break;
+				case DInput.Key.NumPad1:
+					axiomKey = Axiom.Input.KeyCodes.NumPad1;
+					break;
+				case DInput.Key.NumPad2:
+					axiomKey = Axiom.Input.KeyCodes.NumPad2;
+					break;
+				case DInput.Key.NumPad3:
+					axiomKey = Axiom.Input.KeyCodes.NumPad3;
+					break;
+				case DInput.Key.NumPad4:
+					axiomKey = Axiom.Input.KeyCodes.NumPad4;
+					break;
+				case DInput.Key.NumPad5:
+					axiomKey = Axiom.Input.KeyCodes.NumPad5;
+					break;
+				case DInput.Key.NumPad6:
+					axiomKey = Axiom.Input.KeyCodes.NumPad6;
+					break;
+				case DInput.Key.NumPad7:
+					axiomKey = Axiom.Input.KeyCodes.NumPad7;
+					break;
+				case DInput.Key.NumPad8:
+					axiomKey = Axiom.Input.KeyCodes.NumPad8;
+					break;
+				case DInput.Key.NumPad9:
+					axiomKey = Axiom.Input.KeyCodes.NumPad9;
 					break;
 			}
 

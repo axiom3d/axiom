@@ -35,7 +35,6 @@ namespace Axiom.Graphics
 	/// 	Defines a program which runs on the GPU such as a vertex or fragment program.
 	/// </summary>
     public abstract class GpuProgram : Resource {
-		
 		#region Fields
 		
         /// <summary>
@@ -99,7 +98,14 @@ namespace Axiom.Graphics
         /// </remarks>
         /// <returns></returns>
         public virtual GpuProgramParameters CreateParameters() {
-            return GpuProgramManager.Instance.CreateParameters();
+            GpuProgramParameters newParams = GpuProgramManager.Instance.CreateParameters();
+
+			// copy the default parameters if they exist
+			if(defaultParams != null) {
+				newParams.CopyConstantsFrom(defaultParams);
+			}
+
+			return newParams;
         }
 		
         /// <summary>

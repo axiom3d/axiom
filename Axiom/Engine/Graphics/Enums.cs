@@ -128,7 +128,17 @@ namespace Axiom.Graphics {
         ///    The current camera's position in object space.
         /// </summary>
         [ScriptEnum("camera_position_object_space")]
-        CameraPositionObjectSpace
+        CameraPositionObjectSpace,
+		/// <summary>
+		///    A custom parameter which will come from the renderable, using 'data' as the identifier.
+		/// </summary>
+		[ScriptEnum("custom")]
+		Custom,
+		/// <summary>
+		///		Specifies that the time elapsed since last frame will be passed along to the program.
+		/// </summary>
+		[ScriptEnum("time")]
+		Time
     }
 
     /// <summary>

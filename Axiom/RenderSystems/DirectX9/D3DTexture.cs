@@ -60,7 +60,7 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// <summary>
         ///     Temporary 1D/2D normal texture.
         /// </summary>
-        private D3D.Texture tempNormTexure;
+        private D3D.Texture tempNormTexture;
         /// <summary>
         ///     Temporary cubic texture reference.
         /// </summary>
@@ -107,7 +107,10 @@ namespace Axiom.RenderSystems.DirectX9 {
                 ConstructCubeFaceNames(name);
             }
 
-            // save off the params used to create the Direct3D device
+			// get device caps
+			devCaps = device.DeviceCaps;
+
+			// save off the params used to create the Direct3D device
             this.device = device;
             devParms = device.CreationParameters;
 
@@ -201,51 +204,14 @@ namespace Axiom.RenderSystems.DirectX9 {
             // log a quick message
             Trace.WriteLine(string.Format("D3DTexture: Loading {0} with {1} mipmaps from an Image.", name, numMipMaps));
 
-            // get the images pixel format
-            PixelFormat pixFormat = image.Format;
-
-			// get dimensions
-            srcWidth = image.Width;
-            srcHeight = image.Height;
-            width = srcWidth;
-            height = srcHeight;
-			
-			if(pixFormat.ToString().IndexOf("Format16") != -1) {
-				srcBpp = 16;
-			}
-			else if(pixFormat.ToString().IndexOf("Format24") != -1 || pixFormat.ToString().IndexOf("Format32") != -1) {
-				srcBpp = 32;
-			}
-			
-            // do we have alpha?
-			if(Image.FormatHasAlpha(pixFormat)) {
-				hasAlpha = true;
-			}
-		
-            D3D.Usage usage = 0;
-
-            // create the D3D Texture using D3DX, and auto gen mipmaps
-            if(CanAutoGenMipMaps(0, ResourceType.Textures, ChooseD3DFormat())) {
-                usage |= D3D.Usage.AutoGenerateMipMap;
-            }
-
-			texture = new D3D.Texture(device, srcWidth, srcHeight, 1, usage, D3D.Format.A8R8G8B8, D3D.Pool.Managed);
-
-			// Get the surface to check it's dimensions
-			D3D.Surface surface = ((D3D.Texture)texture).GetSurfaceLevel(0);
-
-			GraphicsStream graphicsStream = surface.LockRectangle(D3D.LockFlags.Discard);
-			graphicsStream.Write(image.Data);
-			surface.UnlockRectangle();
-
-//            // texture dimensions may have been altered during load
-//            if(surface.Description.Width != srcWidth || surface.Description.Height != srcHeight) {
-//                System.Diagnostics.Trace.WriteLine(string.Format("Texture dimensions altered by the renderer to fit power of 2 format. Name: {0}", name));
-//            }
-//
-//            // record the final width and height (may have been modified)
-            width = surface.Description.Width;
-            height = surface.Description.Height;
+			// we need src image info
+			this.SetSrcAttributes(image.Width, image.Height, 1, image.Format);
+			// create a blank texture
+			this.CreateNormalTexture();
+			// set gamma prior to blitting
+			Image.ApplyGamma(image.Data, this.gamma, image.Size, image.BitsPerPixel);
+			this.BlitImageToNormalTexture(image);
+			isLoaded = true;
         }
 
         /// <summary>
@@ -465,15 +431,27 @@ namespace Axiom.RenderSystems.DirectX9 {
             // how many mips to use?  make sure its at least one
             int numMips = (numMipMaps > 0) ? numMipMaps : 1;
 
-            if(devCaps.TextureCaps.SupportsMipMap) {
+			D3D.TextureRequirements texRequire = new D3D.TextureRequirements();
+			texRequire.Width = srcWidth;
+			texRequire.Height = srcHeight;
+
+            if(devCaps.TextureCaps.SupportsMipMap) 
+			{
                 if(this.CanAutoGenMipMaps(d3dUsage, ResourceType.Textures, d3dPixelFormat)) {
                     d3dUsage |= D3D.Usage.AutoGenerateMipMap;
                     numMips = 0;
                 }
                 else {
                     if(usage != TextureUsage.RenderTarget) {
-                        // we must create a temp. texture in SYSTEM MEMORY if no auto gen. mip map is present
-                        tempNormTexure = new D3D.Texture(
+						// check texture requirements
+						texRequire.NumberMipLevels = numMips;
+						texRequire.Format = d3dPixelFormat;
+						TextureLoader.CheckTextureRequirements(device, d3dUsage, Pool.SystemMemory, out texRequire);
+						numMips = texRequire.NumberMipLevels;
+						d3dPixelFormat = texRequire.Format;
+
+						// we must create a temp. texture in SYSTEM MEMORY if no auto gen. mip map is present
+						tempNormTexture = new D3D.Texture(
                             device,
                             srcWidth,
                             srcHeight,
@@ -490,7 +468,14 @@ namespace Axiom.RenderSystems.DirectX9 {
                 numMips = 1;
             }
 
-            // create the cube texture
+			// check texture requirements
+			texRequire.NumberMipLevels = numMips;
+			texRequire.Format = d3dPixelFormat;
+			TextureLoader.CheckTextureRequirements(device, d3dUsage, Pool.Default, out texRequire);
+			numMips = texRequire.NumberMipLevels;
+			d3dPixelFormat = texRequire.Format;
+
+			// create the texture
             normTexture = new D3D.Texture(
                 device, 
                 srcWidth, 
@@ -511,6 +496,216 @@ namespace Axiom.RenderSystems.DirectX9 {
                 CreateDepthStencil();
             }
         }
+
+		private void BlitImageToNormalTexture(Image image)
+		{
+			D3D.Format srcFormat = ConvertFormat(image.Format);
+			D3D.Format dstFormat = ChooseD3DFormat();
+
+			// this surface will hold our temp conversion image
+			// We need this in all cases because we can't lock 
+			// the main texture surfaces in all cards
+			// Also , this cannot be the temp texture because we'd like D3DX to resize it for us
+			// with the D3DxLoadSurfaceFromSurface
+			D3D.Surface srcSurface;
+			srcSurface = device.CreateOffscreenPlainSurface(image.Width, image.Height, dstFormat, D3D.Pool.Scratch);
+
+			// copy the buffer to our surface, 
+			// copyMemoryToSurface will do color conversion and flipping
+			CopyMemoryToSurface(image.Data, srcSurface);
+
+			// Now we need to copy the source surface (where our image is) to the texture
+			// This will be a temp texture for s/w filtering and the final one for h/w filtering
+			// This will perform any size conversion (inc stretching)
+			D3D.Surface dstSurface;
+			if (tempNormTexture != null)
+			{
+				// s/w mipmaps, use temp texture
+				dstSurface = tempNormTexture.GetSurfaceLevel(0);
+			}
+			else
+			{
+				// h/w mipmaps, use the final texture
+				dstSurface = normTexture.GetSurfaceLevel(0);
+			}
+
+			// copy surfaces
+			SurfaceLoader.FromSurface(dstSurface, srcSurface, D3D.Filter.Triangle | D3D.Filter.Dither, 0);
+
+			if (tempNormTexture != null)
+			{
+				// Software filtering
+				// Now update the texture & filter the results
+				// we will use D3DX to create the mip map levels
+				TextureLoader.FilterTexture(tempNormTexture, 0, D3D.Filter.Box);
+				device.UpdateTexture(tempNormTexture, normTexture);
+			}
+			else
+			{
+				// Hardware mipmapping
+				// use best filtering method supported by hardware
+				texture.AutoGenerateFilterType = GetBestFilterMethod();
+				normTexture.GenerateMipSubLevels();
+			}
+		}
+
+		private void CopyMemoryToSurface(byte[] buffer, D3D.Surface surface)
+		{
+			// Copy the image from the buffer to the temporary surface.
+			// We have to do our own colour conversion here since we don't 
+			// have a DC to do it for us
+			// NOTE - only non-palettised surfaces supported for now
+			D3D.SurfaceDescription desc;
+			int pBuf8, pitch;
+			uint data32, out32;
+			int iRow, iCol;
+			// NOTE - dimensions of surface may differ from buffer
+			// dimensions (e.g. power of 2 or square adjustments)
+			// Lock surface
+			desc = surface.Description;
+			uint aMask, rMask, gMask, bMask, rgbBitCount;
+			GetColorMasks(desc.Format, out rMask, out gMask, out bMask, out aMask, out rgbBitCount);
+			// lock our surface to acces raw memory
+			GraphicsStream stream = surface.LockRectangle(D3D.LockFlags.NoSystemLock, out pitch);
+			// loop through data and do conv.
+			pBuf8 = 0;
+			for( iRow = 0; iRow < srcHeight; iRow++ )
+			{
+				stream.Position = iRow * pitch;
+				for( iCol = 0; iCol < srcWidth; iCol++ )
+				{
+					// Read RGBA values from buffer
+					data32 = 0;
+					if( srcBpp >= 24 )
+					{
+						// Data in buffer is in RGB(A) format
+						// Read into a 32-bit structure
+						// Uses bytes for 24-bit compatibility
+						// NOTE: buffer is big-endian
+						data32 |= (uint)buffer[pBuf8++] << 24;
+						data32 |= (uint)buffer[pBuf8++] << 16;
+						data32 |= (uint)buffer[pBuf8++] << 8;
+					}
+					else if( srcBpp == 8 ) // Greyscale, not palettised (palettised NOT supported)
+					{
+						// Duplicate same greyscale value across R,G,B
+						data32 |= (uint)buffer[pBuf8] << 24;
+						data32 |= (uint)buffer[pBuf8] << 16;
+						data32 |= (uint)buffer[pBuf8++] << 8;
+					}
+					// check for alpha
+					if( hasAlpha )
+						data32 |= buffer[pBuf8++];
+					else
+						data32 |= 0xFF;	// Set opaque
+					// Write RGBA values to surface
+					// Data in surface can be in varying formats
+					// Use bit concersion function
+					// NOTE: we use a 32-bit value to manipulate
+					// Will be reduced to size later
+
+					// Red
+					out32 = convertBitPattern( data32, 0xFF000000, rMask );
+					// Green
+					out32 |= convertBitPattern( data32, 0x00FF0000, gMask );
+					// Blue
+					out32 |= convertBitPattern( data32, 0x0000FF00, bMask );
+					// Alpha
+					if( aMask > 0 )
+					{
+						out32 |= convertBitPattern( data32, 0x000000FF, aMask );
+					}
+					// Assign results to surface pixel
+					// Write up to 4 bytes
+					// Surfaces are little-endian (low byte first)
+					if( rgbBitCount >= 8 )
+                        stream.WriteByte((byte)out32);
+					if( rgbBitCount >= 16 )
+						stream.WriteByte((byte)(out32 >> 8));
+					if( rgbBitCount >= 24 )
+						stream.WriteByte((byte)(out32 >> 16));
+					if( rgbBitCount >= 32 )
+						stream.WriteByte((byte)(out32 >> 24));
+				} // for( iCol...
+			} // for( iRow...
+			// unlock the surface
+			surface.UnlockRectangle();
+		}
+
+		private uint convertBitPattern(uint srcValue, uint srcBitMask, uint destBitMask)
+		{
+			// Mask off irrelevant source value bits (if any)
+			srcValue = srcValue & srcBitMask;
+
+			// Shift source down to bottom of DWORD
+			int srcBitShift = getBitShift(srcBitMask);
+			srcValue >>= srcBitShift;
+
+			// Get max value possible in source from srcMask
+			uint srcMax = srcBitMask >> srcBitShift;
+
+			// Get max avaiable in dest
+			int destBitShift = getBitShift(destBitMask);
+			uint destMax = destBitMask >> destBitShift;
+
+			// Scale source value into destination, and shift back
+			uint destValue = (srcValue * destMax) / srcMax;
+			return (destValue << destBitShift);
+		}
+
+		private int getBitShift(uint mask)
+		{
+			if (mask == 0)
+				return 0;
+
+			int result = 0;
+			while ((mask & 1) == 0) 
+			{
+				++result;
+				mask >>= 1;
+			}
+			return result;
+		}
+
+		private void GetColorMasks(D3D.Format format, out uint red, out uint green, out uint blue, out uint alpha, out uint rgbBitCount)
+		{
+			// we choose the format of the D3D texture so check only for our pf types...
+			switch (format)
+			{
+				case D3D.Format.X8B8G8R8:
+					red = 0x00FF0000; green = 0x0000FF00; blue = 0x000000FF; alpha = 0x00000000;
+					rgbBitCount = 32;
+					break;
+				case D3D.Format.R8G8B8:
+					red = 0x00FF0000; green = 0x0000FF00; blue = 0x000000FF; alpha = 0x00000000;
+					rgbBitCount = 24;
+					break;
+				case D3D.Format.A8R8G8B8:
+					red = 0x00FF0000; green = 0x0000FF00; blue = 0x000000FF; alpha = 0xFF000000;
+					rgbBitCount = 32;
+					break;
+				case D3D.Format.X1R5G5B5:
+					red = 0x00007C00; green = 0x000003E0; blue = 0x0000001F; alpha = 0x00000000;
+					rgbBitCount = 16;
+					break;
+				case D3D.Format.R5G6B5:
+					red = 0x0000F800; green = 0x000007E0; blue = 0x0000001F; alpha = 0x00000000;
+					rgbBitCount = 16;
+					break;
+				case D3D.Format.A4R4G4B4:
+					red = 0x00000F00; green = 0x000000F0; blue = 0x0000000F; alpha = 0x0000F000;
+					rgbBitCount = 16;
+					break;
+				default:
+					throw new AxiomException("Unknown D3D pixel format, this should not happen !!!");
+			}
+		}
+
+		private D3D.TextureFilter GetBestFilterMethod()
+		{
+			// TODO : do it really :)
+			return D3D.TextureFilter.Point;
+		}
 
         /// <summary>
         ///     

@@ -9,15 +9,15 @@ using T = Axiom.MathLib.Vector3;
 
 namespace Axiom.MathLib.Collections {
     /// <summary>
-    /// Summary description for Vector3Collection.
+    /// Summary description for Vector3List.
     /// </summary>
- /*   public class Vector3Collection : BaseCollection {
+ /*   public class Vector3List : BaseCollection {
         #region Constructors
 
         /// <summary>
         ///		Default constructor.
         /// </summary>
-        public Vector3Collection() : base() {}
+        public Vector3List() : base() {}
 
         #endregion
 
@@ -46,12 +46,12 @@ namespace Axiom.MathLib.Collections {
         ///		A strongly-typed collection of <see cref="Vector3"/> objects.
         /// </summary>
         [Serializable]
-        public class Vector3Collection : ICollection, IList, IEnumerable, ICloneable {
+        public class Vector3List : ICollection, IList, IEnumerable, ICloneable {
             #region Interfaces
             /// <summary>
-            ///		Supports type-safe iteration over a <see cref="Vector3Collection"/>.
+            ///		Supports type-safe iteration over a <see cref="Vector3List"/>.
             /// </summary>
-            public interface IVector3CollectionEnumerator {
+            public interface IVector3ListEnumerator {
                 /// <summary>
                 ///		Gets the current element in the collection.
                 /// </summary>
@@ -88,67 +88,67 @@ namespace Axiom.MathLib.Collections {
             #region Static Wrappers
             /// <summary>
             ///		Creates a synchronized (thread-safe) wrapper for a 
-            ///     <c>Vector3Collection</c> instance.
+            ///     <c>Vector3List</c> instance.
             /// </summary>
             /// <returns>
-            ///     An <c>Vector3Collection</c> wrapper that is synchronized (thread-safe).
+            ///     An <c>Vector3List</c> wrapper that is synchronized (thread-safe).
             /// </returns>
-            public static Vector3Collection Synchronized(Vector3Collection list) {
+            public static Vector3List Synchronized(Vector3List list) {
                 if(list==null)
                     throw new ArgumentNullException("list");
-                return new SyncVector3Collection(list);
+                return new SyncVector3List(list);
             }
         
             /// <summary>
             ///		Creates a read-only wrapper for a 
-            ///     <c>Vector3Collection</c> instance.
+            ///     <c>Vector3List</c> instance.
             /// </summary>
             /// <returns>
-            ///     An <c>Vector3Collection</c> wrapper that is read-only.
+            ///     An <c>Vector3List</c> wrapper that is read-only.
             /// </returns>
-            public static Vector3Collection ReadOnly(Vector3Collection list) {
+            public static Vector3List ReadOnly(Vector3List list) {
                 if(list==null)
                     throw new ArgumentNullException("list");
-                return new ReadOnlyVector3Collection(list);
+                return new ReadOnlyVector3List(list);
             }
             #endregion
 
             #region Construction
             /// <summary>
-            ///		Initializes a new instance of the <c>Vector3Collection</c> class
+            ///		Initializes a new instance of the <c>Vector3List</c> class
             ///		that is empty and has the default initial capacity.
             /// </summary>
-            public Vector3Collection() {
+            public Vector3List() {
                 m_array = new Vector3[DEFAULT_CAPACITY];
             }
 		
             /// <summary>
-            ///		Initializes a new instance of the <c>Vector3Collection</c> class
+            ///		Initializes a new instance of the <c>Vector3List</c> class
             ///		that has the specified initial capacity.
             /// </summary>
             /// <param name="capacity">
-            ///		The number of elements that the new <c>Vector3Collection</c> is initially capable of storing.
+            ///		The number of elements that the new <c>Vector3List</c> is initially capable of storing.
             ///	</param>
-            public Vector3Collection(int capacity) {
+            public Vector3List(int capacity) {
                 m_array = new Vector3[capacity];
             }
 
             /// <summary>
-            ///		Initializes a new instance of the <c>Vector3Collection</c> class
-            ///		that contains elements copied from the specified <c>Vector3Collection</c>.
+            ///		Initializes a new instance of the <c>Vector3List</c> class
+            ///		that contains elements copied from the specified <c>Vector3List</c>.
             /// </summary>
-            /// <param name="c">The <c>Vector3Collection</c> whose elements are copied to the new collection.</param>
-            public Vector3Collection(Vector3Collection c) {
+            /// <param name="c">The <c>Vector3List</c> whose elements are copied to the new collection.</param>
+            public Vector3List(Vector3List c) {
                 m_array = new Vector3[c.Count];
                 AddRange(c);
             }
 
             /// <summary>
-            ///		Initializes a new instance of the <c>Vector3Collection</c> class
+            ///		Initializes a new instance of the <c>Vector3List</c> class
             ///		that contains elements copied from the specified <see cref="Vector3"/> array.
             /// </summary>
             /// <param name="a">The <see cref="Vector3"/> array whose elements are copied to the new list.</param>
-            public Vector3Collection(Vector3[] a) {
+            public Vector3List(Vector3[] a) {
                 m_array = new Vector3[a.Length];
                 AddRange(a);
             }
@@ -157,21 +157,21 @@ namespace Axiom.MathLib.Collections {
                 Default
             }
 
-            protected Vector3Collection(Tag t) {
+            protected Vector3List(Tag t) {
                 m_array = null;
             }
             #endregion
 		
             #region Operations (type-safe ICollection)
             /// <summary>
-            ///		Gets the number of elements actually contained in the <c>Vector3Collection</c>.
+            ///		Gets the number of elements actually contained in the <c>Vector3List</c>.
             /// </summary>
             public virtual int Count {
                 get { return m_count; }
             }
 
             /// <summary>
-            ///		Copies the entire <c>Vector3Collection</c> to a one-dimensional
+            ///		Copies the entire <c>Vector3List</c> to a one-dimensional
             ///		<see cref="Vector3"/> array.
             /// </summary>
             /// <param name="array">The one-dimensional <see cref="Vector3"/> array to copy to.</param>
@@ -180,7 +180,7 @@ namespace Axiom.MathLib.Collections {
             }
 
             /// <summary>
-            ///		Copies the entire <c>Vector3Collection</c> to a one-dimensional
+            ///		Copies the entire <c>Vector3List</c> to a one-dimensional
             ///		<see cref="Vector3"/> array, starting at the specified index of the target array.
             /// </summary>
             /// <param name="array">The one-dimensional <see cref="Vector3"/> array to copy to.</param>
@@ -216,7 +216,7 @@ namespace Axiom.MathLib.Collections {
             /// <exception cref="ArgumentOutOfRangeException">
             ///		<para><paramref name="index"/> is less than zero</para>
             ///		<para>-or-</para>
-            ///		<para><paramref name="index"/> is equal to or greater than <see cref="Vector3Collection.Count"/>.</para>
+            ///		<para><paramref name="index"/> is equal to or greater than <see cref="Vector3List.Count"/>.</para>
             /// </exception>
             public virtual Vector3 this[int index] {
                 get {
@@ -231,9 +231,9 @@ namespace Axiom.MathLib.Collections {
             }
 
             /// <summary>
-            ///		Adds a <see cref="Vector3"/> to the end of the <c>Vector3Collection</c>.
+            ///		Adds a <see cref="Vector3"/> to the end of the <c>Vector3List</c>.
             /// </summary>
-            /// <param name="item">The <see cref="Vector3"/> to be added to the end of the <c>Vector3Collection</c>.</param>
+            /// <param name="item">The <see cref="Vector3"/> to be added to the end of the <c>Vector3List</c>.</param>
             /// <returns>The index at which the value has been added.</returns>
             public virtual int Add(Vector3 item) {
                 if (m_count == m_array.Length)
@@ -246,7 +246,7 @@ namespace Axiom.MathLib.Collections {
             }
 		
             /// <summary>
-            ///		Removes all elements from the <c>Vector3Collection</c>.
+            ///		Removes all elements from the <c>Vector3List</c>.
             /// </summary>
             public virtual void Clear() {
                 ++m_version;
@@ -255,10 +255,10 @@ namespace Axiom.MathLib.Collections {
             }
 		
             /// <summary>
-            ///		Creates a shallow copy of the <see cref="Vector3Collection"/>.
+            ///		Creates a shallow copy of the <see cref="Vector3List"/>.
             /// </summary>
             public virtual object Clone() {
-                Vector3Collection newColl = new Vector3Collection(m_count);
+                Vector3List newColl = new Vector3List(m_count);
                 Array.Copy(m_array, 0, newColl.m_array, 0, m_count);
                 newColl.m_count = m_count;
                 newColl.m_version = m_version;
@@ -267,10 +267,10 @@ namespace Axiom.MathLib.Collections {
             }
 
             /// <summary>
-            ///		Determines whether a given <see cref="Vector3"/> is in the <c>Vector3Collection</c>.
+            ///		Determines whether a given <see cref="Vector3"/> is in the <c>Vector3List</c>.
             /// </summary>
             /// <param name="item">The <see cref="Vector3"/> to check for.</param>
-            /// <returns><c>true</c> if <paramref name="item"/> is found in the <c>Vector3Collection</c>; otherwise, <c>false</c>.</returns>
+            /// <returns><c>true</c> if <paramref name="item"/> is found in the <c>Vector3List</c>; otherwise, <c>false</c>.</returns>
             public virtual bool Contains(Vector3 item) {
                 for (int i=0; i != m_count; ++i)
                     if (m_array[i].Equals(item))
@@ -280,12 +280,12 @@ namespace Axiom.MathLib.Collections {
 
             /// <summary>
             ///		Returns the zero-based index of the first occurrence of a <see cref="Vector3"/>
-            ///		in the <c>Vector3Collection</c>.
+            ///		in the <c>Vector3List</c>.
             /// </summary>
-            /// <param name="item">The <see cref="Vector3"/> to locate in the <c>Vector3Collection</c>.</param>
+            /// <param name="item">The <see cref="Vector3"/> to locate in the <c>Vector3List</c>.</param>
             /// <returns>
             ///		The zero-based index of the first occurrence of <paramref name="item"/> 
-            ///		in the entire <c>Vector3Collection</c>, if found; otherwise, -1.
+            ///		in the entire <c>Vector3List</c>, if found; otherwise, -1.
             ///	</returns>
             public virtual int IndexOf(Vector3 item) {
                 for (int i=0; i != m_count; ++i)
@@ -295,14 +295,14 @@ namespace Axiom.MathLib.Collections {
             }
 
             /// <summary>
-            ///		Inserts an element into the <c>Vector3Collection</c> at the specified index.
+            ///		Inserts an element into the <c>Vector3List</c> at the specified index.
             /// </summary>
             /// <param name="index">The zero-based index at which <paramref name="item"/> should be inserted.</param>
             /// <param name="item">The <see cref="Vector3"/> to insert.</param>
             /// <exception cref="ArgumentOutOfRangeException">
             ///		<para><paramref name="index"/> is less than zero</para>
             ///		<para>-or-</para>
-            ///		<para><paramref name="index"/> is equal to or greater than <see cref="Vector3Collection.Count"/>.</para>
+            ///		<para><paramref name="index"/> is equal to or greater than <see cref="Vector3List.Count"/>.</para>
             /// </exception>
             public virtual void Insert(int index, Vector3 item) {
                 ValidateIndex(index, true); // throws
@@ -320,11 +320,11 @@ namespace Axiom.MathLib.Collections {
             }
 
             /// <summary>
-            ///		Removes the first occurrence of a specific <see cref="Vector3"/> from the <c>Vector3Collection</c>.
+            ///		Removes the first occurrence of a specific <see cref="Vector3"/> from the <c>Vector3List</c>.
             /// </summary>
-            /// <param name="item">The <see cref="Vector3"/> to remove from the <c>Vector3Collection</c>.</param>
+            /// <param name="item">The <see cref="Vector3"/> to remove from the <c>Vector3List</c>.</param>
             /// <exception cref="ArgumentException">
-            ///		The specified <see cref="Vector3"/> was not found in the <c>Vector3Collection</c>.
+            ///		The specified <see cref="Vector3"/> was not found in the <c>Vector3List</c>.
             /// </exception>
             public virtual void Remove(Vector3 item) {		   
                 int i = IndexOf(item);
@@ -336,13 +336,13 @@ namespace Axiom.MathLib.Collections {
             }
 
             /// <summary>
-            ///		Removes the element at the specified index of the <c>Vector3Collection</c>.
+            ///		Removes the element at the specified index of the <c>Vector3List</c>.
             /// </summary>
             /// <param name="index">The zero-based index of the element to remove.</param>
             /// <exception cref="ArgumentOutOfRangeException">
             ///		<para><paramref name="index"/> is less than zero</para>
             ///		<para>-or-</para>
-            ///		<para><paramref name="index"/> is equal to or greater than <see cref="Vector3Collection.Count"/>.</para>
+            ///		<para><paramref name="index"/> is equal to or greater than <see cref="Vector3List.Count"/>.</para>
             /// </exception>
             public virtual void RemoveAt(int index) {
                 ValidateIndex(index); // throws
@@ -381,10 +381,10 @@ namespace Axiom.MathLib.Collections {
             #region Operations (type-safe IEnumerable)
 		
             /// <summary>
-            ///		Returns an enumerator that can iterate through the <c>Vector3Collection</c>.
+            ///		Returns an enumerator that can iterate through the <c>Vector3List</c>.
             /// </summary>
-            /// <returns>An <see cref="Enumerator"/> for the entire <c>Vector3Collection</c>.</returns>
-            public virtual IVector3CollectionEnumerator GetEnumerator() {
+            /// <returns>An <see cref="Enumerator"/> for the entire <c>Vector3List</c>.</returns>
+            public virtual IVector3ListEnumerator GetEnumerator() {
                 return new Enumerator(this);
             }
             #endregion
@@ -392,7 +392,7 @@ namespace Axiom.MathLib.Collections {
             #region Public helpers (just to mimic some nice features of ArrayList)
 		
             /// <summary>
-            ///		Gets or sets the number of elements the <c>Vector3Collection</c> can contain.
+            ///		Gets or sets the number of elements the <c>Vector3List</c> can contain.
             /// </summary>
             public virtual int Capacity {
                 get { return m_array.Length; }
@@ -415,11 +415,11 @@ namespace Axiom.MathLib.Collections {
             }
 
             /// <summary>
-            ///		Adds the elements of another <c>Vector3Collection</c> to the current <c>Vector3Collection</c>.
+            ///		Adds the elements of another <c>Vector3List</c> to the current <c>Vector3List</c>.
             /// </summary>
-            /// <param name="x">The <c>Vector3Collection</c> whose elements should be added to the end of the current <c>Vector3Collection</c>.</param>
-            /// <returns>The new <see cref="Vector3Collection.Count"/> of the <c>Vector3Collection</c>.</returns>
-            public virtual int AddRange(Vector3Collection x) {
+            /// <param name="x">The <c>Vector3List</c> whose elements should be added to the end of the current <c>Vector3List</c>.</param>
+            /// <returns>The new <see cref="Vector3List.Count"/> of the <c>Vector3List</c>.</returns>
+            public virtual int AddRange(Vector3List x) {
                 if (m_count + x.Count >= m_array.Length)
                     EnsureCapacity(m_count + x.Count);
 			
@@ -431,10 +431,10 @@ namespace Axiom.MathLib.Collections {
             }
 
             /// <summary>
-            ///		Adds the elements of a <see cref="Vector3"/> array to the current <c>Vector3Collection</c>.
+            ///		Adds the elements of a <see cref="Vector3"/> array to the current <c>Vector3List</c>.
             /// </summary>
-            /// <param name="x">The <see cref="Vector3"/> array whose elements should be added to the end of the <c>Vector3Collection</c>.</param>
-            /// <returns>The new <see cref="Vector3Collection.Count"/> of the <c>Vector3Collection</c>.</returns>
+            /// <param name="x">The <see cref="Vector3"/> array whose elements should be added to the end of the <c>Vector3List</c>.</param>
+            /// <returns>The new <see cref="Vector3List.Count"/> of the <c>Vector3List</c>.</returns>
             public virtual int AddRange(Vector3[] x) {
                 if (m_count + x.Length >= m_array.Length)
                     EnsureCapacity(m_count + x.Length);
@@ -460,7 +460,7 @@ namespace Axiom.MathLib.Collections {
             /// <exception cref="ArgumentOutOfRangeException">
             ///		<para><paramref name="index"/> is less than zero</para>
             ///		<para>-or-</para>
-            ///		<para><paramref name="index"/> is equal to or greater than <see cref="Vector3Collection.Count"/>.</para>
+            ///		<para><paramref name="index"/> is equal to or greater than <see cref="Vector3List.Count"/>.</para>
             /// </exception>
             private void ValidateIndex(int i) {
                 ValidateIndex(i, false);
@@ -469,7 +469,7 @@ namespace Axiom.MathLib.Collections {
             /// <exception cref="ArgumentOutOfRangeException">
             ///		<para><paramref name="index"/> is less than zero</para>
             ///		<para>-or-</para>
-            ///		<para><paramref name="index"/> is equal to or greater than <see cref="Vector3Collection.Count"/>.</para>
+            ///		<para><paramref name="index"/> is equal to or greater than <see cref="Vector3List.Count"/>.</para>
             /// </exception>
             private void ValidateIndex(int i, bool allowEqualEnd) {
                 int max = (allowEqualEnd)?(m_count):(m_count-1);
@@ -538,12 +538,12 @@ namespace Axiom.MathLib.Collections {
 
             #region Nested enumerator class
             /// <summary>
-            ///		Supports simple iteration over a <see cref="Vector3Collection"/>.
+            ///		Supports simple iteration over a <see cref="Vector3List"/>.
             /// </summary>
-            private class Enumerator : IEnumerator, IVector3CollectionEnumerator {
+            private class Enumerator : IEnumerator, IVector3ListEnumerator {
                 #region Implementation (data)
 			
-                private Vector3Collection m_collection;
+                private Vector3List m_collection;
                 private int m_index;
                 private int m_version;
 			
@@ -555,7 +555,7 @@ namespace Axiom.MathLib.Collections {
                 ///		Initializes a new instance of the <c>Enumerator</c> class.
                 /// </summary>
                 /// <param name="tc"></param>
-                internal Enumerator(Vector3Collection tc) {
+                internal Enumerator(Vector3List tc) {
                     m_collection = tc;
                     m_index = -1;
                     m_version = tc.m_version;
@@ -609,14 +609,14 @@ namespace Axiom.MathLib.Collections {
             #endregion
         
             #region Nested Syncronized Wrapper class
-            private class SyncVector3Collection : Vector3Collection {
+            private class SyncVector3List : Vector3List {
                 #region Implementation (data)
-                private Vector3Collection m_collection;
+                private Vector3List m_collection;
                 private object m_root;
                 #endregion
 
                 #region Construction
-                internal SyncVector3Collection(Vector3Collection list) : base(Tag.Default) {
+                internal SyncVector3List(Vector3List list) : base(Tag.Default) {
                     m_root = list.SyncRoot;
                     m_collection = list;
                 }
@@ -705,7 +705,7 @@ namespace Axiom.MathLib.Collections {
                 #endregion
 
                 #region Type-safe IEnumerable
-                public override IVector3CollectionEnumerator GetEnumerator() {
+                public override IVector3ListEnumerator GetEnumerator() {
                     lock(m_root)
                         return m_collection.GetEnumerator();
                 }
@@ -725,7 +725,7 @@ namespace Axiom.MathLib.Collections {
                     }
                 }
 
-                public override int AddRange(Vector3Collection x) {
+                public override int AddRange(Vector3List x) {
                     lock(this.m_root)
                         return m_collection.AddRange(x);
                 }
@@ -739,13 +739,13 @@ namespace Axiom.MathLib.Collections {
             #endregion
 
             #region Nested Read Only Wrapper class
-            private class ReadOnlyVector3Collection : Vector3Collection {
+            private class ReadOnlyVector3List : Vector3List {
                 #region Implementation (data)
-                private Vector3Collection m_collection;
+                private Vector3List m_collection;
                 #endregion
 
                 #region Construction
-                internal ReadOnlyVector3Collection(Vector3Collection list) : base(Tag.Default) {
+                internal ReadOnlyVector3List(Vector3List list) : base(Tag.Default) {
                     m_collection = list;
                 }
                 #endregion
@@ -815,7 +815,7 @@ namespace Axiom.MathLib.Collections {
                 #endregion
 
                 #region Type-safe IEnumerable
-                public override IVector3CollectionEnumerator GetEnumerator() {
+                public override IVector3ListEnumerator GetEnumerator() {
                     return m_collection.GetEnumerator();
                 }
                 #endregion
@@ -828,7 +828,7 @@ namespace Axiom.MathLib.Collections {
                     set { throw new NotSupportedException("This is a Read Only Collection and can not be modified"); }
                 }
 
-                public override int AddRange(Vector3Collection x) {
+                public override int AddRange(Vector3List x) {
                     throw new NotSupportedException("This is a Read Only Collection and can not be modified");
                 }
 

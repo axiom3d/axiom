@@ -59,20 +59,53 @@ namespace Axiom.Media {
 
         #region Methods
 
-        /// <summary>
-        ///    Performs gamma adjusment on this image.
-        /// </summary>
-        /// <remarks>
-        ///    Basic algo taken from Titan Engine, copyright (c) 2000 Ignacio 
-        ///    Castano Iguado.
-        /// </remarks>
-        /// <param name="buffer"></param>
-        /// <param name="gamma"></param>
-        /// <param name="size"></param>
-        /// <param name="bpp"></param>
-        public static void ApplyGamma(byte[] buffer, float gamma, int size, int bpp) {
-            // TODO: Implement ApplyGamma
-        }
+		/// <summary>
+		///    Performs gamma adjusment on this image.
+		/// </summary>
+		/// <remarks>
+		///    Basic algo taken from Titan Engine, copyright (c) 2000 Ignacio 
+		///    Castano Iguado.
+		/// </remarks>
+		/// <param name="buffer"></param>
+		/// <param name="gamma"></param>
+		/// <param name="size"></param>
+		/// <param name="bpp"></param>
+		public static void ApplyGamma(byte[] buffer, float gamma, int size, int bpp) {
+			if( gamma == 1.0f )
+				return;
+
+			//NB only 24/32-bit supported
+			if( bpp != 24 && bpp != 32 ) return;
+
+			int stride = bpp >> 3;
+
+			for( int i = 0, j = size / stride, p = 0; i < j; i++, p += stride ) {
+				float r, g, b;
+
+				r = (float)buffer[p+0];
+				g = (float)buffer[p+1];
+				b = (float)buffer[p+2];
+
+				r = r * gamma;
+				g = g * gamma;
+				b = b * gamma;
+
+				float scale = 1.0f, tmp;
+
+				if( r > 255.0f && (tmp=(255.0f/r)) < scale )
+					scale = tmp;
+				if( g > 255.0f && (tmp=(255.0f/g)) < scale )
+					scale = tmp;
+				if( b > 255.0f && (tmp=(255.0f/b)) < scale )
+					scale = tmp;
+
+				r *= scale; g *= scale; b *= scale;
+
+				buffer[p+0] = (byte)r;
+				buffer[p+1] = (byte)g;
+				buffer[p+2] = (byte)b;
+			}
+		}
 
         /// <summary>
         ///    Checks the specified image format to determine if it contains an alpha

@@ -32,7 +32,6 @@ using System.Runtime.InteropServices;
 using Axiom.Core;
 using Axiom.MathLib;
 using Axiom.Graphics;
-using Axiom.Exceptions;
 using Axiom.Collections;
 using Axiom.MathLib.Collections;
 
@@ -67,14 +66,13 @@ namespace Axiom.SceneManagers.Bsp
 	{
 		#region Protected members
 		protected BspLevel level;
-		protected ArrayList faceGroupSet = new ArrayList();
+		protected bool[] faceGroupUsed;
 		protected RenderOperation renderOp = new RenderOperation();
 		protected RenderOperation patchOp = new RenderOperation();
 		protected bool showNodeAABs;
 		protected RenderOperation aaBGeometry = new RenderOperation();
 
-
-		protected Map matFaceGroupMap = new Map(new MaterialComparer());
+		protected Bsp.Collections.Map matFaceGroupMap = new Bsp.Collections.Map();
 		protected SceneObjectCollection objectsForRendering = new SceneObjectCollection();
 		#endregion
 
@@ -165,7 +163,7 @@ namespace Axiom.SceneManagers.Bsp
 
 			// Walk the tree, tag static geometry, return camera's node (for info only)
 			// Movables are now added to the render queue in processVisibleLeaf
-			BspNode cameraNode = WalkTree(camera);
+			BspNode cameraNode = WalkTree(camera, false);
 		}
 
 		/// <summary>
@@ -241,7 +239,7 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			// TODO:
 			return null;
-		}
+		}*/
 
 		/// <summary>
 		///		Creates a SphereSceneQuery for this scene manager. 
@@ -250,108 +248,53 @@ namespace Axiom.SceneManagers.Bsp
 		/// 	This method creates a new instance of a query object for this scene manager, 
 		///		for a spherical region. See SceneQuery and SphereSceneQuery 
 		///		for full details.
-		///		<p/>
-		///		The instance returned from this method must be destroyed by calling
-		///		SceneManager.DestroyQuery when it is no longer required.
-		/// </remarks>
-		/// <param name="sphere">Details of the sphere which describes the region for this query.</param>
-		public virtual SphereSceneQuery CreateSphereQuery(Sphere sphere)
-		{
-			return CreateSphereQuery(sphere, 0xFFFFFFFF);
-		}
-
-		/// <summary>
-		///		Creates a SphereSceneQuery for this scene manager. 
-		/// </summary>
-		/// <remarks>
-		/// 	This method creates a new instance of a query object for this scene manager, 
-		///		for a spherical region. See SceneQuery and SphereSceneQuery 
-		///		for full details.
-		///		<p/>
-		///		The instance returned from this method must be destroyed by calling
-		///		SceneManager.DestroyQuery when it is no longer required.
 		/// </remarks>
 		/// <param name="sphere">Details of the sphere which describes the region for this query.</param>
 		/// <param name="mask">The query mask to apply to this query; can be used to filter out	certain objects; see SceneQuery for details.</param>
-		public virtual SphereSceneQuery CreateSphereQuery(Sphere sphere, ulong mask)
+		public override SphereRegionSceneQuery CreateSphereRegionQuery(Sphere sphere, ulong mask)
 		{
-			// TODO:
-			return null;
-		}
-
-		/// <summary>
-		///		Creates a RaySceneQuery for this scene manager. 
-		/// </summary>
-		/// <remarks>
-		///		This method creates a new instance of a query object for this scene manager, 
-		///		looking for objects which fall along a ray. See SceneQuery and RaySceneQuery 
-		///		for full details.
-		///		<p/>
-		///		The instance returned from this method must be destroyed by calling
-		///		SceneManager.DestroyQuery when it is no longer required.
-		/// </remarks>
-		/// <param name="ray">Details of the ray which describes the region for this query.</param>
-		/// <param name="mask">The query mask to apply to this query; can be used to filter out certain objects; see SceneQuery for details.</param>
-		public virtual RaySceneQuery CreateRayQuery(Ray ray)
-		{
-			return CreateRayQuery(ray, 0xFFFFFFFF);
-		}
-
-		/// <summary>
-		///		Creates a RaySceneQuery for this scene manager. 
-		/// </summary>
-		/// <remarks>
-		///		This method creates a new instance of a query object for this scene manager, 
-		///		looking for objects which fall along a ray. See SceneQuery and RaySceneQuery 
-		///		for full details.
-		///		<p/>
-		///		The instance returned from this method must be destroyed by calling
-		///		SceneManager.DestroyQuery when it is no longer required.
-		/// </remarks>
-		/// <param name="ray">Details of the ray which describes the region for this query.</param>
-		/// <param name="mask">The query mask to apply to this query; can be used to filter out certain objects; see SceneQuery for details.</param>
-		public virtual RaySceneQuery CreateRayQuery(Ray ray, ulong mask)
-		{
-			// TODO:
-			return null;
-		}
-
-		/// <summary>
-		///		Creates an IntersectionSceneQuery for this scene manager. 
-		/// </summary>
-		/// <remarks>
-		///		This method creates a new instance of a query object for locating
-		///		intersecting objects. See SceneQuery and IntersectionSceneQuery
-		///		for full details.
-		///		<p/>
-		///		The instance returned from this method must be destroyed by calling
-		///		SceneManager.DestroyQuery when it is no longer required.
-		/// </remarks>
-		/// <param name="mask">The query mask to apply to this query; can be used to filter out certain objects; see SceneQuery for details.</param>
-		public virtual IntersectionSceneQuery CreateIntersectionQuery()
-		{
-			return CreateIntersectionQuery(0xFFFFFFFF);
-		}
-
-		/// <summary>
-		///		Creates an IntersectionSceneQuery for this scene manager. 
-		/// </summary>
-		/// <remarks>
-		///		This method creates a new instance of a query object for locating
-		///		intersecting objects. See SceneQuery and IntersectionSceneQuery
-		///		for full details.
-		///		<p/>
-		///		The instance returned from this method must be destroyed by calling
-		///		SceneManager.DestroyQuery when it is no longer required.
-		/// </remarks>
-		/// <param name="mask">The query mask to apply to this query; can be used to filter out certain objects; see SceneQuery for details.</param>
-		public virtual IntersectionSceneQuery CreateIntersectionQuery(ulong mask)
-		{
-			BspIntersectionSceneQuery q= new BspIntersectionSceneQuery(this);
+			BspSphereRegionSceneQuery q = new BspSphereRegionSceneQuery(this);
+			q.Sphere = sphere;
 			q.QueryMask = mask;
 
 			return q;
-		}*/
+		}
+
+		/// <summary>
+		///		Creates a RaySceneQuery for this scene manager. 
+		/// </summary>
+		/// <remarks>
+		///		This method creates a new instance of a query object for this scene manager, 
+		///		looking for objects which fall along a ray. See SceneQuery and RaySceneQuery 
+		///		for full details.
+		/// </remarks>
+		/// <param name="ray">Details of the ray which describes the region for this query.</param>
+		/// <param name="mask">The query mask to apply to this query; can be used to filter out certain objects; see SceneQuery for details.</param>
+		public override RaySceneQuery CreateRayQuery(Ray ray, ulong mask)
+		{
+			BspRaySceneQuery q = new BspRaySceneQuery(this);
+			q.Ray = ray;
+			q.QueryMask = mask;
+
+			return q;
+		}
+
+		/// <summary>
+		///		Creates an IntersectionSceneQuery for this scene manager. 
+		/// </summary>
+		/// <remarks>
+		///		This method creates a new instance of a query object for locating
+		///		intersecting objects. See SceneQuery and IntersectionSceneQuery
+		///		for full details.
+		/// </remarks>
+		/// <param name="mask">The query mask to apply to this query; can be used to filter out certain objects; see SceneQuery for details.</param>
+		public override IntersectionSceneQuery CreateIntersectionQuery(ulong mask)
+		{
+			BspIntersectionSceneQuery q = new BspIntersectionSceneQuery(this);
+			q.QueryMask = mask;
+
+			return q;
+		}
 		#endregion
 
 		#region Protected methods
@@ -359,20 +302,23 @@ namespace Axiom.SceneManagers.Bsp
 		///		Walks the BSP tree looking for the node which the camera is in, and tags any geometry 
 		///		which is in a visible leaf for later processing.
 		/// </summary>
-		protected BspNode WalkTree(Camera camera)
+		protected BspNode WalkTree(Camera camera, bool onlyShadowCasters)
 		{
 			// Locate the leaf node where the camera is located
 			BspNode cameraNode = level.FindLeaf(camera.DerivedPosition);
 
 			matFaceGroupMap.Clear();
-			faceGroupSet.Clear();
+			faceGroupUsed = new bool[level.FaceGroups.Length];
 
 			// Scan through all the other leaf nodes looking for visibles
 			int i = level.NumNodes - level.LeafStart;
-			BspNode node = level.Nodes[level.LeafStart];
+			int p = level.LeafStart;
+			BspNode node;
 			
 			while(i-- > 0)
 			{
+				node = level.Nodes[p];
+                
 				if(level.IsLeafVisible(cameraNode, node))
 				{
 					// Visible according to PVS, check bounding box against frustum
@@ -380,14 +326,14 @@ namespace Axiom.SceneManagers.Bsp
 
 					if(camera.IsObjectVisible(node.BoundingBox, out plane))
 					{
-						ProcessVisibleLeaf(node, camera);
+						ProcessVisibleLeaf(node, camera, onlyShadowCasters);
 
 						if(showNodeAABs)
 							AddBoundingBox(node.BoundingBox, true);
 					}
 				}
 
-				node = level.Nodes[level.LeafStart + i];
+				p++;
 			}
 
 			return cameraNode;
@@ -396,59 +342,70 @@ namespace Axiom.SceneManagers.Bsp
 		/// <summary>
 		///		Tags geometry in the leaf specified for later rendering.
 		/// </summary>
-		protected void ProcessVisibleLeaf(BspNode leaf, Camera camera)
+		protected void ProcessVisibleLeaf(BspNode leaf, Camera camera, bool onlyShadowCasters)
 		{
-			// Parse the leaf node's faces, add face groups to material map
-			int numGroups = leaf.NumFaceGroups;
-			int idx = leaf.FaceGroupStart;
-
-			while(numGroups-- > 0)
+			// Skip world geometry if we're only supposed to process shadow casters
+			// World is pre-lit
+			if (!onlyShadowCasters)
 			{
-				int realIndex = level.LeafFaceGroups[idx++];
-				
-				// Check not already included
-				if(faceGroupSet.Contains(realIndex))
-					continue;
-				
-				StaticFaceGroup faceGroup = level.FaceGroups[realIndex];
-				
-				// Get Material reference by handle
-				Material mat = GetMaterial(faceGroup.materialHandle);
+				// Parse the leaf node's faces, add face groups to material map
+				int numGroups = leaf.NumFaceGroups;
+				int idx = leaf.FaceGroupStart;
 
-				// Check normal (manual culling)
-				ManualCullingMode cullMode = mat.GetTechnique(0).GetPass(0).ManualCullMode;
-
-				if(cullMode != ManualCullingMode.None)
+				while(numGroups-- > 0)
 				{
-					float dist = faceGroup.plane.GetDistance(camera.DerivedPosition);
-					
-					if(((dist < 0) && (cullMode == ManualCullingMode.Back)) ||
-						((dist > 0) && (cullMode == ManualCullingMode.Front)))
-						continue;
-				}
+					int realIndex = level.LeafFaceGroups[idx++];
+				
+					// Check not already included
+					if (faceGroupUsed[realIndex] == true) continue;
+				
+					StaticFaceGroup faceGroup = level.FaceGroups[realIndex];
+				
+					// Get Material reference by handle
+					Material mat = GetMaterial(faceGroup.materialHandle);
 
-				faceGroupSet.Add(realIndex);
-				// Try to insert, will find existing if already there
-				matFaceGroupMap.Insert(mat, faceGroup);
+					// Check normal (manual culling)
+					ManualCullingMode cullMode = mat.GetTechnique(0).GetPass(0).ManualCullMode;
+
+					if(cullMode != ManualCullingMode.None)
+					{
+						float dist = faceGroup.plane.GetDistance(camera.DerivedPosition);
+					
+						if(((dist < 0) && (cullMode == ManualCullingMode.Back)) ||
+							((dist > 0) && (cullMode == ManualCullingMode.Front)))
+							continue;
+					}
+
+					faceGroupUsed[realIndex] = true;
+					// Try to insert, will find existing if already there
+					matFaceGroupMap.Insert(mat, faceGroup);
+				}
 			}
 
 			// TODO BspNode.IntersectingObjectSet
 			// Add movables to render queue, provided it hasn't been seen already.			
-			/*for(int i = 0; i < leaf.Objects.Count; i++)
+			for(int i = 0; i < leaf.Objects.Count; i++)
 			{
-				if(!objectsForRendering.ContainsKey(leaf.Objects[i]))
+				if(!objectsForRendering.ContainsKey(((SceneObject)leaf.Objects[i]).Name))
 				{
 					SceneObject obj = leaf.Objects[i];
 
-					if(obj.IsVisible && camera.IsObjectVisible(obj.BoundingBox))
+					if(obj.IsVisible && 
+						(!onlyShadowCasters || obj.CastShadows) &&
+						camera.IsObjectVisible(obj.GetWorldBoundingBox()))
 					{
 						obj.NotifyCurrentCamera(camera);
 						obj.UpdateRenderQueue(this.renderQueue);
-
+						// Check if the bounding box should be shown.
+						SceneNode node = (SceneNode)obj.ParentNode;
+						if (node.ShowBoundingBox || this.showBoundingBoxes)
+						{
+							node.AddBoundingBoxToQueue(this.renderQueue);
+						}
 						objectsForRendering.Add(obj);
 					}
 				}
-			}*/
+			}
 		}
 
 		/// <summary>
@@ -476,14 +433,19 @@ namespace Axiom.SceneManagers.Bsp
 				numIdx = faceGroup.patchSurf.CurrentIndexCount;
 				vertexStart = faceGroup.patchSurf.VertexOffset;
 			}
+			else
+			{
+				// Unsupported face type
+				return 0;
+			}
 
 			unsafe
 			{
 				uint *src = (uint*) level.Indexes.Lock(
-					idxStart * Marshal.SizeOf(typeof(uint)), 
-					numIdx * Marshal.SizeOf(typeof(uint)), 
-					BufferLocking.ReadOnly).ToPointer();
-				uint *pIndexes = (uint*) indexes.ToPointer();
+					idxStart * sizeof(uint), 
+					numIdx * sizeof(uint), 
+					BufferLocking.ReadOnly);
+				uint *pIndexes = (uint*) indexes;
 
 				// Offset the indexes here
 				// we have to do this now rather than up-front because the 
@@ -518,13 +480,13 @@ namespace Axiom.SceneManagers.Bsp
 			targetRenderSystem.ProjectionMatrix = camInProgress.ProjectionMatrix;
 
 			// For each material in turn, cache rendering data & render
-			IEnumerator mapEnu = matFaceGroupMap.GetEnumerator();
-
+			IEnumerator mapEnu = matFaceGroupMap.buckets.Keys.GetEnumerator();
+            
 			while(mapEnu.MoveNext())
 			{
 				// Get Material
-				Material thisMaterial = (Material) ((Pair) mapEnu.Current).first;
-				StaticFaceGroup[] faceGrp = (StaticFaceGroup[]) ((ArrayList) ((Pair) mapEnu.Current).second).ToArray(typeof(StaticFaceGroup));
+				Material thisMaterial = (Material) mapEnu.Current;
+				StaticFaceGroup[] faceGrp = (StaticFaceGroup[]) ((ArrayList) matFaceGroupMap.buckets[thisMaterial]).ToArray(typeof(StaticFaceGroup));
 
 				// Empty existing cache
 				renderOp.indexData.indexCount = 0;
@@ -532,7 +494,7 @@ namespace Axiom.SceneManagers.Bsp
 				// lock index buffer ready to receive data
 				unsafe
 				{
-					uint *pIdx = (uint *) renderOp.indexData.indexBuffer.Lock(BufferLocking.Discard).ToPointer();
+					uint *pIdx = (uint *) renderOp.indexData.indexBuffer.Lock(BufferLocking.Discard);
 
 					for(int i = 0; i < faceGrp.Length; i++)
 					{
@@ -557,8 +519,8 @@ namespace Axiom.SceneManagers.Bsp
 				}
 			}
 
-			if(showNodeAABs)
-				targetRenderSystem.Render(aaBGeometry);
+			//if(showNodeAABs)
+			//	targetRenderSystem.Render(aaBGeometry);
 		}
 
 		/// <summary>
@@ -577,75 +539,93 @@ namespace Axiom.SceneManagers.Bsp
 	/// <summary>
 	///		BSP specialisation of IntersectionSceneQuery.
 	/// </summary>
-	// TODO: Scene queries.
-	/*public class BspIntersectionSceneQuery : IntersectionSceneQuery
+	public class BspIntersectionSceneQuery : DefaultIntersectionSceneQuery
 	{
 		#region Constructor
-		public BspIntersectionSceneQuery(SceneManager creator)
+		public BspIntersectionSceneQuery(SceneManager creator) : base(creator)
 		{
-			supportedWorldFragments.Add(WorldFragmentType.PlaneBoundedRegion);
+			this.AddWorldFragmentType(WorldFragmentType.PlaneBoundedRegion);
 		}
 		#endregion	
 
 		#region Public methods
-		public void Execute(IntersectionQuerySceneListener listener)
+		
+		public override void Execute(IIntersectionSceneQueryListener listener)
 		{
-			/*
-			Go through each leaf node in BspLevel and check movables against each other and world
-			Issue: some movable-movable intersections could be reported twice if 2 movables
-			overlap 2 leaves?
-			*/
-			/*BspLevel lvl = ((BspSceneManager) parentSceneMgr).Level;
-			BspNode leaf = lvl.Nodes[lvl.LeafStart];
+			//Go through each leaf node in BspLevel and check movables against each other and world
+			//Issue: some movable-movable intersections could be reported twice if 2 movables
+			//overlap 2 leaves?
+			BspLevel lvl = ((BspSceneManager) this.creator).Level;
+			int leafPoint = lvl.LeafStart;
 			int numLeaves = lvl.NumLeaves;
-        
-			while (numLeaves--)
-			{
-				SceneObjectCollection objects = leaf.Objects;
 
-				for(int i = 0; i < objects.Count; i++)
+			Bsp.Collections.Map objIntersections = new Bsp.Collections.Map();
+			PlaneBoundedVolume boundedVolume = new PlaneBoundedVolume(PlaneSide.Positive);
+        
+			while ((numLeaves--) != 0)
+			{
+				BspNode leaf = lvl.Nodes[leafPoint];
+				SceneObjectCollection objects = leaf.Objects;
+				int numObjects = objects.Count;
+
+				for(int a = 0; a < numObjects; a++)
 				{
-					if((objects[i].QueryFlags & queryMask) != 0)
+					SceneObject aObj = objects[a];
+					// Skip this object if collision not enabled
+					if((aObj.QueryFlags & queryMask) == 0)
 						continue;
 
-					if(i < (objects.Count - 1))
+					if(a < (numObjects - 1))
 					{
 						// Check object against others in this node
-
-						b = a;
-						for (++b; b != theEnd; ++b)
+						int b = a;
+						for (++b; b < numObjects; ++b)
 						{
-							const MovableObject* bObj = *b;
+							SceneObject bObj = objects[b];
 							// Apply mask to b (both must pass)
-							if ( bObj->getQueryFlags() & mQueryMask)
+							if ((bObj.QueryFlags & queryMask) != 0)
 							{
-								const AxisAlignedBox& box1 = aObj->getWorldBoundingBox();
-								const AxisAlignedBox& box2 = bObj->getWorldBoundingBox();
+								AxisAlignedBox box1 = aObj.GetWorldBoundingBox();
+								AxisAlignedBox box2 = bObj.GetWorldBoundingBox();
 
-								if (box1.intersects(box2))
+								if (box1.Intersects(box2))
 								{
-									listener->queryResult(const_cast<MovableObject*>(aObj), 
-										const_cast<MovableObject*>(bObj)); // hacky
+									//Check if this pair is already reported
+									bool alreadyReported = false;
+									IList interObjList = objIntersections.FindBucket(aObj);
+									if (interObjList != null)
+										if (interObjList.Contains(bObj))
+											alreadyReported = true;
+
+									if (!alreadyReported)
+									{
+										objIntersections.Insert(aObj,bObj);
+										listener.OnQueryResult(aObj,bObj);
+									}
 								}
 							}
 						}
 					}
 					// Check object against brushes
-					const BspNode::NodeBrushList& brushes = leaf->getSolidBrushes();
-				BspNode::NodeBrushList::const_iterator bi, biend;
-					biend = brushes.end();
-					Real radius = aObj->getBoundingRadius();
-					const Vector3& pos = aObj->getParentNode()->_getDerivedPosition();
 
-					for (bi = brushes.begin(); bi != biend; ++bi)
+					/*----This is for bounding sphere-----
+					float radius = aObj.BoundingRadius;
+					//-------------------------------------------*/
+
+					for (int brushPoint=0; brushPoint < leaf.SolidBrushes.Length; brushPoint++)
 					{
-					std::list<Plane>::const_iterator planeit, planeitend;
-						planeitend = (*bi)->planes.end();
+						BspBrush brush = leaf.SolidBrushes[brushPoint];
+
+						if (brush == null) continue;
+
 						bool brushIntersect = true; // Assume intersecting for now
 
-						for (planeit = (*bi)->planes.begin(); planeit != planeitend; ++planeit)
+						/*----This is for bounding sphere-----
+						IEnumerator planes = brush.Planes.GetEnumerator();
+
+						while (planes.MoveNext())
 						{
-							Real dist = planeit->getDistance(pos);
+							float dist = ((Plane)planes.Current).GetDistance(pos);
 							if (dist > radius)
 							{
 								// Definitely excluded
@@ -653,47 +633,260 @@ namespace Axiom.SceneManagers.Bsp
 								break;
 							}
 						}
+						//-------------------------------------------*/
+
+						boundedVolume.planes = brush.Planes;
+						//Test object as bounding box
+						if (!boundedVolume.Intersects(aObj.GetWorldBoundingBox()))
+							brushIntersect = false;
+
 						if (brushIntersect)
 						{
-							// report this brush as it's WorldFragment
-							assert((*bi)->fragment.fragmentType == SceneQuery::WFT_PLANE_BOUNDED_REGION);
-							listener->queryResult(const_cast<MovableObject*>(aObj), // hacky
-								const_cast<WorldFragment*>(&((*bi)->fragment))); 
+							//Check if this pair is already reported
+							bool alreadyReported = false;
+							IList interObjList = objIntersections.FindBucket(aObj);
+							if (interObjList != null)
+								if (interObjList.Contains(brush))
+									alreadyReported = true;
+
+							if (!alreadyReported)
+							{
+								objIntersections.Insert(aObj,brush);
+								// report this brush as it's WorldFragment
+								brush.Fragment.FragmentType = WorldFragmentType.PlaneBoundedRegion;
+								listener.OnQueryResult(aObj,brush.Fragment);
+							}
 						}
-
 					}
-
-
 				}
-
-				++leaf;
+				++leafPoint;
 			}
-		}
-		#endregion
-	}*/
-
-	public class MaterialComparer : IComparer
-	{
-		#region IComparer methods
-		public int Compare(object x, object y)
-		{
-			Material matX = x as Material;
-			Material matY = y as Material;
-
-			if((matX == null) || (matY == null))
-				throw new ArgumentException();
-
-			return String.Compare(matX.Name, matY.Name);
-			/*// If x transparent and y not, x > y (since x has to overlap y)
-			if(matX.IsTransparent && !matY.IsTransparent)
-				return 1;
-			// If y is transparent and x not, x < y
-			if(!matX.IsTransparent && matY.IsTransparent)
-				return -1;
-			else 
-				return 0;*/
 		}
 		#endregion
 	}
 
+	/// <summary>
+	///		BSP specialisation of RaySceneQuery.
+	/// </summary>
+	public class BspRaySceneQuery : DefaultRaySceneQuery
+	{
+		#region Constructor
+		public BspRaySceneQuery(SceneManager creator) : base(creator)
+		{
+			this.AddWorldFragmentType(WorldFragmentType.PlaneBoundedRegion);
+		}
+		#endregion	
+
+		#region Protected Members
+
+		protected IRaySceneQueryListener listener;
+		protected bool StopRayTracing;
+
+		#endregion
+
+		#region Public methods
+		
+		public override void Execute(IRaySceneQueryListener listener)
+		{
+			this.listener = listener;
+			this.StopRayTracing = false;
+            ProcessNode(((BspSceneManager)creator).Level.RootNode, ray, float.PositiveInfinity, 0);
+		}
+		#endregion
+
+		#region Protected methods
+
+		protected virtual void ProcessNode(BspNode node, Ray tracingRay, float maxDistance, float traceDistance)
+		{
+			if (StopRayTracing) return;
+
+			if (node.IsLeaf)
+			{
+				ProcessLeaf(node, tracingRay, maxDistance, traceDistance);
+				return;
+			}
+
+			IntersectResult result = tracingRay.Intersects(node.SplittingPlane);
+			if (result.Hit)
+			{
+				if (result.Distance < maxDistance)
+				{
+					if (node.GetSide(tracingRay.Origin) == PlaneSide.Negative)
+					{
+						ProcessNode(node.BackNode, tracingRay, result.Distance, traceDistance);
+						Vector3 splitPoint = tracingRay.Origin + tracingRay.Direction * result.Distance;
+						ProcessNode(node.FrontNode, new Ray(splitPoint, tracingRay.Direction), maxDistance - result.Distance, traceDistance + result.Distance);
+					}
+					else
+					{
+						ProcessNode(node.FrontNode, tracingRay, result.Distance, traceDistance);
+						Vector3 splitPoint = tracingRay.Origin + tracingRay.Direction * result.Distance;
+						ProcessNode(node.BackNode, new Ray(splitPoint, tracingRay.Direction), maxDistance - result.Distance, traceDistance + result.Distance);
+					}
+				}
+				else
+					ProcessNode(node.GetNextNode(tracingRay.Origin), tracingRay, maxDistance, traceDistance);
+			}
+			else
+				ProcessNode(node.GetNextNode(tracingRay.Origin), tracingRay, maxDistance, traceDistance);
+		}
+
+		protected virtual void ProcessLeaf(BspNode leaf, Ray tracingRay, float maxDistance, float traceDistance)
+		{
+			SceneObjectCollection objects = leaf.Objects;
+			int numObjects = objects.Count;
+
+			//Check ray against objects
+			for(int a = 0; a < numObjects; a++)
+			{
+				SceneObject obj = objects[a];
+				// Skip this object if collision not enabled
+				if((obj.QueryFlags & queryMask) == 0)
+					continue;
+
+				//Test object as bounding box
+				IntersectResult result = tracingRay.Intersects(obj.GetWorldBoundingBox());
+				// if the result came back positive and intersection point is inside
+				// the node, fire the event handler
+				if(result.Hit && result.Distance <= maxDistance) 
+				{
+					listener.OnQueryResult(obj, result.Distance + traceDistance);
+				}
+			}
+
+			PlaneBoundedVolume boundedVolume = new PlaneBoundedVolume(PlaneSide.Positive);
+			BspBrush intersectBrush = null;
+			float intersectBrushDist = float.PositiveInfinity;
+
+			// Check ray against brushes
+			for (int brushPoint=0; brushPoint < leaf.SolidBrushes.Length; brushPoint++)
+			{
+				BspBrush brush = leaf.SolidBrushes[brushPoint];
+
+				if (brush == null) continue;
+
+				boundedVolume.planes = brush.Planes;
+
+				IntersectResult result = tracingRay.Intersects(boundedVolume);
+				// if the result came back positive and intersection point is inside
+				// the node, check if this brush is closer
+				if(result.Hit && result.Distance <= maxDistance) 
+				{
+					if (result.Distance < intersectBrushDist)
+					{
+						intersectBrushDist = result.Distance;
+						intersectBrush = brush;
+					}
+				}
+			}
+
+			if (intersectBrush != null)
+			{
+				listener.OnQueryResult(intersectBrush.Fragment, intersectBrushDist + traceDistance);
+				StopRayTracing = true;
+			}
+		}
+		#endregion
+	}
+
+	/// <summary>
+	///		BSP specialisation of SphereRegionSceneQuery.
+	/// </summary>
+	public class BspSphereRegionSceneQuery : DefaultSphereRegionSceneQuery
+	{
+		#region Constructor
+		public BspSphereRegionSceneQuery(SceneManager creator) : base(creator)
+		{
+			this.AddWorldFragmentType(WorldFragmentType.PlaneBoundedRegion);
+		}
+		#endregion	
+
+		#region Protected Members
+
+		protected ISceneQueryListener listener;
+		protected ArrayList foundIntersections = new ArrayList();
+
+		#endregion
+
+		#region Public methods
+		
+		public override void Execute(ISceneQueryListener listener)
+		{
+			this.listener = listener;
+			this.foundIntersections.Clear();
+			ProcessNode(((BspSceneManager)creator).Level.RootNode);
+		}
+		#endregion
+
+		#region Protected methods
+
+		protected virtual void ProcessNode(BspNode node)
+		{
+			if (node.IsLeaf)
+			{
+				ProcessLeaf(node);
+				return;
+			}
+
+			float distance = node.GetDistance(sphere.Center);
+
+			if(MathUtil.Abs(distance) < sphere.Radius)
+			{
+				// Sphere crosses the plane, do both.
+				ProcessNode(node.BackNode);
+				ProcessNode(node.FrontNode);
+			}
+			else if(distance < 0)
+			{
+				// Do back.
+				ProcessNode(node.BackNode);
+			}
+			else
+			{
+				// Do front.
+				ProcessNode(node.FrontNode);
+			}
+		}
+
+		protected virtual void ProcessLeaf(BspNode leaf)
+		{
+			SceneObjectCollection objects = leaf.Objects;
+			int numObjects = objects.Count;
+
+			//Check sphere against objects
+			for(int a = 0; a < numObjects; a++)
+			{
+				SceneObject obj = objects[a];
+				// Skip this object if collision not enabled
+				if((obj.QueryFlags & queryMask) == 0)
+					continue;
+
+				//Test object as bounding box
+				if(sphere.Intersects(obj.GetWorldBoundingBox())) 
+				{
+					if (!foundIntersections.Contains(obj))
+					{
+						listener.OnQueryResult(obj);
+						foundIntersections.Add(obj);
+					}
+				}
+			}
+
+			PlaneBoundedVolume boundedVolume = new PlaneBoundedVolume(PlaneSide.Positive);
+
+			// Check ray against brushes
+			for (int brushPoint=0; brushPoint < leaf.SolidBrushes.Length; brushPoint++)
+			{
+				BspBrush brush = leaf.SolidBrushes[brushPoint];
+				if (brush == null) continue;
+
+				boundedVolume.planes = brush.Planes;
+				if(boundedVolume.Intersects(sphere)) 
+				{
+					listener.OnQueryResult(brush.Fragment);
+				}
+			}
+		}
+		#endregion
+	}
 }

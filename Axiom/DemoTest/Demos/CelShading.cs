@@ -11,6 +11,14 @@ namespace Demos {
 	/// Summary description for CelShading.
 	/// </summary>
 	public class CelShading : TechDemo {
+		#region Constants
+
+		const int CustomShininess = 1;
+		const int CustomDiffuse = 2;
+		const int CustomSpecular = 3;
+
+		#endregion Constants
+
         #region Fields
 
         SceneNode rotNode;
@@ -35,12 +43,36 @@ namespace Demos {
 
             camera.Position = new Vector3(20, 0, 100);
             camera.LookAt(Vector3.Zero);
+			
+			// eyes
+			SubEntity subEnt = entity.GetSubEntity(0);
+			subEnt.MaterialName = "Examples/CelShading";
+			subEnt.SetCustomParameter(CustomShininess, new Vector4(35.0f, 0.0f, 0.0f, 0.0f));
+			subEnt.SetCustomParameter(CustomDiffuse, new Vector4(1.0f, 0.3f, 0.3f, 1.0f));
+			subEnt.SetCustomParameter(CustomSpecular, new Vector4(1.0f, 0.6f, 0.6f, 1.0f));
 
-            entity.GetSubEntity(0).MaterialName = "Examples/OgreCelShading/Eyes";
-            entity.GetSubEntity(1).MaterialName = "Examples/OgreCelShading/Skin";
-            entity.GetSubEntity(2).MaterialName = "Examples/OgreCelShading/Earring";
-            entity.GetSubEntity(3).MaterialName = "Examples/OgreCelShading/Teeth";
+			// skin
+			subEnt = entity.GetSubEntity(1);
+			subEnt.MaterialName = "Examples/CelShading";
+			subEnt.SetCustomParameter(CustomShininess, new Vector4(10.0f, 0.0f, 0.0f, 0.0f));
+			subEnt.SetCustomParameter(CustomDiffuse, new Vector4(0.0f, 0.5f, 0.0f, 1.0f));
+			subEnt.SetCustomParameter(CustomSpecular, new Vector4(0.3f, 0.5f, 0.3f, 1.0f));
 
+			// earring
+			subEnt = entity.GetSubEntity(2);
+			subEnt.MaterialName = "Examples/CelShading";
+			subEnt.SetCustomParameter(CustomShininess, new Vector4(25.0f, 0.0f, 0.0f, 0.0f));
+			subEnt.SetCustomParameter(CustomDiffuse, new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
+			subEnt.SetCustomParameter(CustomSpecular, new Vector4(1.0f, 1.0f, 0.7f, 1.0f));
+
+			// teeth
+			subEnt = entity.GetSubEntity(3);
+			subEnt.MaterialName = "Examples/CelShading";
+			subEnt.SetCustomParameter(CustomShininess, new Vector4(20.0f, 0.0f, 0.0f, 0.0f));
+			subEnt.SetCustomParameter(CustomDiffuse, new Vector4(1.0f, 1.0f, 0.7f, 1.0f));
+			subEnt.SetCustomParameter(CustomSpecular, new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+
+			// add entity to the root scene node
             scene.RootSceneNode.CreateChildSceneNode().AttachObject(entity);
 
             window.GetViewport(0).BackgroundColor = ColorEx.White;

@@ -68,6 +68,7 @@ namespace Axiom.Overlays {
         /// <summary>Parser method lookup for script parameters.</summary>
         protected Hashtable attribParsers = new Hashtable();
         protected LightList emptyLightList = new LightList();
+		protected Hashtable customParams = new Hashtable();
 
         #endregion
 		
@@ -802,6 +803,25 @@ namespace Axiom.Overlays {
                 return emptyLightList;
             }
         }
+
+		public Vector4 GetCustomParameter(int index) {
+			if(customParams[index] == null) {
+				throw new Exception("A parameter was not found at the given index");
+			}
+			else {
+				return (Vector4)customParams[index];
+			}
+		}
+
+		public void SetCustomParameter(int index, Vector4 val) {
+			customParams[index] = val;
+		}
+
+		public void UpdateCustomGpuParameter(GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams) {
+			if(customParams[entry.data] != null) {
+				gpuParams.SetConstant(entry.index, (Vector4)customParams[entry.data]);
+			}
+		}
 
         #endregion
 

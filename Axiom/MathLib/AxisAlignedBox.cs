@@ -158,9 +158,27 @@ namespace Axiom.MathLib {
 		/// <param name="box2"></param>
 		/// <returns>True if the 2 boxes intersect, false otherwise.</returns>
 		public bool Intersects(AxisAlignedBox box2) {
-			Intersection result = MathUtil.Intersects(this, box2);
+			// Early-fail for nulls
+			if (this.IsNull || box2.IsNull)
+				return false;
 
-			return result != Intersection.None;
+			// Use up to 6 separating planes
+			if (this.maxVector.x < box2.minVector.x)
+				return false;
+			if (this.maxVector.y < box2.minVector.y)
+				return false;
+			if (this.maxVector.z < box2.minVector.z)
+				return false;
+
+			if (this.minVector.x > box2.maxVector.x)
+				return false;
+			if (this.minVector.y > box2.maxVector.y)
+				return false;
+			if (this.minVector.z > box2.maxVector.z)
+				return false;
+
+			// otherwise, must be intersecting
+			return true;
 		}
 
 		/// <summary>

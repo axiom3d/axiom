@@ -189,7 +189,6 @@ namespace Axiom.SceneManagers.Bsp
 				}
 				if(attribParams[2] != "-")
 				{
-					Console.WriteLine("height: " + attribParams[2]);
 					shader.SkyDome = true;
 
 					if(attribParams[2] == "full")
@@ -238,7 +237,7 @@ namespace Axiom.SceneManagers.Bsp
 			}
 
 			// MAP
-			 else if(attribParams[0] == "map")
+			if(attribParams[0] == "map")
 			{
 				pass.textureName = attribParams[1];
 
@@ -332,24 +331,20 @@ namespace Axiom.SceneManagers.Bsp
 			{
 				if(attribParams[1] == "rotate")
 				{
-					Console.WriteLine("{0}, {1}, {2}", line, attribParams[2], attribParams[3]);
 					pass.tcModRotate = -float.Parse(attribParams[2]) / 360; // +ve is clockwise degrees in Q3 shader, anticlockwise complete rotations in Ogre
 				}
 				else if(attribParams[1] == "scroll")
 				{
-					Console.WriteLine("{0}, {1}, {2}", line, attribParams[2], attribParams[3]);
 					pass.tcModScroll[0] = float.Parse(attribParams[2]);
 					pass.tcModScroll[1] = float.Parse(attribParams[3]);
 				}
 				else if(attribParams[1] == "scale")
 				{
-					Console.WriteLine("{0}, {1}, {2}", line, attribParams[2], attribParams[3]);
 					pass.tcModScale[0] = float.Parse(attribParams[2]);
 					pass.tcModScale[1] = float.Parse(attribParams[3]);
 				}
 				else if(attribParams[1] == "stretch")
 				{
-					Console.WriteLine("{0}, {1}, {2}", line, attribParams[2], attribParams[3]);
 					if(attribParams[2] == "sin")
 						pass.tcModStretchWave = ShaderWaveType.Sin;
 					else if(attribParams[2] == "triangle")

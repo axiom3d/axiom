@@ -25,8 +25,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using System.Collections;
 using Axiom.Collections;
 using Axiom.Core;
+using Axiom.MathLib;
 
 namespace Axiom.Graphics {
 	/// <summary>
@@ -49,6 +51,7 @@ namespace Axiom.Graphics {
 		/// </summary>
 		protected ShadowRenderable lightCap;
 		protected LightList dummyLightList = new LightList();
+		protected Hashtable customParams = new Hashtable();
 
 		#endregion Fields
 
@@ -175,6 +178,25 @@ namespace Axiom.Graphics {
         public virtual float GetSquaredViewDepth(Camera camera) {
             return 0;
         }
+
+		public Vector4 GetCustomParameter(int index) {
+			if(customParams[index] == null) {
+				throw new Exception("A parameter was not found at the given index");
+			}
+			else {
+				return (Vector4)customParams[index];
+			}
+		}
+
+		public void SetCustomParameter(int index, Vector4 val) {
+			customParams[index] = val;
+		}
+
+		public void UpdateCustomGpuParameter(GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams) {
+			if(customParams[entry.data] != null) {
+				gpuParams.SetConstant(entry.index, (Vector4)customParams[entry.data]);
+			}
+		}
 
         #endregion
     }

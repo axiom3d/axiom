@@ -166,17 +166,22 @@ namespace Axiom.Graphics
         /// <returns>A new set of program parameters.</returns>
         public override GpuProgramParameters CreateParameters() {
             // create and load named parameters
-            GpuProgramParameters parms = GpuProgramManager.Instance.CreateParameters();
+            GpuProgramParameters newParams = GpuProgramManager.Instance.CreateParameters();
             
             // load high level program and parameters if required
             if(IsSupported) {
                 // make sure parameter definitions are loaded
                 LoadHighLevelImpl();
 
-                PopulateParameterNames(parms);
+                PopulateParameterNames(newParams);
             }
 
-            return parms;
+			// copy in default parameters if present
+			if(defaultParams != null) {
+				newParams.CopyConstantsFrom(defaultParams);
+			}
+
+            return newParams;
         }
 
 		#endregion

@@ -29,7 +29,6 @@ using System;
 using Axiom;
 using Axiom.Core;
 using Axiom.MathLib;
-using Axiom.Exceptions;
 using Axiom.Collections;
 using Axiom.MathLib.Collections;
 

@@ -186,6 +186,53 @@ namespace Axiom.Graphics {
         /// <returns></returns>
         float GetSquaredViewDepth(Camera camera);
 
+		/// <summary>
+		///		Gets the custom value associated with this Renderable at the given index. 
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		Vector4 GetCustomParameter(int index);
+
+		/// <summary>
+		///		Sets a custom parameter for this Renderable, which may be used to 
+		///		drive calculations for this specific Renderable, like GPU program parameters.
+		/// </summary>
+		/// <remarks>
+		///		Calling this method simply associates a numeric index with a 4-dimensional
+		///		value for this specific Renderable. This is most useful if the material
+		///		which this Renderable uses a vertex or fragment program, and has an 
+		///		AutoConstant.Custom parameter entry. This parameter entry can refer to the
+		///		index you specify as part of this call, thereby mapping a custom
+		///		parameter for this renderable to a program parameter.
+		/// </remarks>
+		/// <param name="index">
+		///		The index with which to associate the value. Note that this
+		///		does not have to start at 0, and can include gaps. It also has no direct
+		///		correlation with a GPU program parameter index - the mapping between the
+		///		two is performed by the AutoConstant.Custom entry, if that is used.
+		/// </param>
+		/// <param name="val">The value to associate.</param>
+		void SetCustomParameter(int index, Vector4 val);
+
+		/// <summary>
+		///		Update a custom GpuProgramParameters constant which is derived from 
+		///		information only this Renderable knows.
+		/// </summary>
+		/// <remarks>
+		///		This method allows a Renderable to map in a custom GPU program parameter
+		///		based on it's own data. This is represented by a GPU auto parameter
+		///		of AutoConstants.Custom, and to allow there to be more than one of these per
+		///		Renderable, the 'data' field on the auto parameter will identify
+		///		which parameter is being updated. The implementation of this method
+		///		must identify the parameter being updated, and call a 'SetConstant' 
+		///		method on the passed in <see cref="GpuProgramParameters"/> object, using the details
+		///		provided in the incoming auto constant setting to identify the index
+		///		at which to set the parameter.
+		/// </remarks>
+		/// <param name="constant">The auto constant entry referring to the parameter being updated.</param>
+		/// <param name="parameters">The parameters object which this method should call to set the updated parameters.</param>
+		void UpdateCustomGpuParameter(GpuProgramParameters.AutoConstantEntry constant, GpuProgramParameters parameters);
+
         #endregion
     }
 }

@@ -34,7 +34,6 @@ using Axiom;
 using Axiom.Core;
 using Axiom.MathLib;
 using Axiom.Graphics;
-using Axiom.Exceptions;
 using Axiom.Collections;
 
 namespace Axiom.SceneManagers.Bsp
@@ -104,7 +103,7 @@ namespace Axiom.SceneManagers.Bsp
 		protected BspBrush[] brushes;
 		protected ArrayList playerStarts = new ArrayList();
 		protected VisData visData;
-		protected Map objectToNodeMap;
+		protected Bsp.Collections.Map objectToNodeMap;
 		#endregion
 
 		#region Public properties
@@ -172,7 +171,7 @@ namespace Axiom.SceneManagers.Bsp
 		public BspLevel(string name)
 		{
 			this.name = name;
-			this.objectToNodeMap = new Map();
+			this.objectToNodeMap = new Bsp.Collections.Map();
 		}
 		#endregion
 
@@ -236,18 +235,17 @@ namespace Axiom.SceneManagers.Bsp
 		/// </summary>
 		public void NotifyObjectMoved(SceneObject obj, Vector3 pos)
 		{
-			IEnumerator nodes = objectToNodeMap.Find(obj);
+			IEnumerator objnodes = objectToNodeMap.Find(obj);
 			
-			if(nodes != null)
+			if(objnodes != null)
 			{
-				while(nodes.MoveNext())
-					((BspNode) nodes.Current).RemoveObject(obj);
+				while(objnodes.MoveNext())
+					((BspNode) objnodes.Current).RemoveObject(obj);
 
 				objectToNodeMap.Clear(obj);
 			}
 
-			TagNodesWithObject((BspNode) nodes.Current, obj, pos);
-
+			TagNodesWithObject(this.RootNode, obj, pos);
 		}
 
 		/// <summary>
@@ -255,13 +253,13 @@ namespace Axiom.SceneManagers.Bsp
 		/// </summary>
 		public void NotifyObjectDetached(SceneObject obj)
 		{
-			IEnumerator nodes = objectToNodeMap.Find(obj);
+			IEnumerator objnodes = objectToNodeMap.Find(obj);
 			
-			if(nodes == null)
+			if(objnodes == null)
 				return;
 
-			while(nodes.MoveNext())
-				((BspNode) nodes.Current).RemoveObject(obj);
+			while(objnodes.MoveNext())
+				((BspNode) objnodes.Current).RemoveObject(obj);
 
 			objectToNodeMap.Clear(obj);
 		}
@@ -417,7 +415,7 @@ namespace Axiom.SceneManagers.Bsp
 						// Try jpg
 						TextureUnitState tex = shadPass.CreateTextureUnitState(tryName + ".jpg");
 						tex.Load();
-						
+
 						if(tex.IsBlank)
 						{
 							// Try tga
@@ -432,10 +430,10 @@ namespace Axiom.SceneManagers.Bsp
 						{
 							// Add lightmap, additive blending
 							tex = shadPass.CreateTextureUnitState(String.Format("@lightmap{0}", q3lvl.Faces[face].lmTexture));
-			
+		
 							// Blend
 							tex.SetColorOperation(LayerBlendOperation.Modulate);
-							
+						
 							// Use 2nd texture co-ordinate set
 							tex.TextureCoordSet = 1;
 
@@ -488,7 +486,7 @@ namespace Axiom.SceneManagers.Bsp
 					// groups eg repeating small details have the same relative vertex data but
 					// use the same index data.
 				}
-				/*else if(src.type == BspFaceType.Patch)
+				else if(src.type == BspFaceType.Patch)
 				{
 					// Seems to be some crap in the Q3 level where vertex count = 0 or num control points = 0?
 					if((dest.numVertices == 0) || (src.meshCtrl[0] == 0))
@@ -506,7 +504,7 @@ namespace Axiom.SceneManagers.Bsp
 
 						dest.patchSurf = (PatchSurface) patches[face];
 					}
-				}*/
+				}
 				else if(src.type == BspFaceType.Mesh)
 				{
 					dest.type = FaceGroup.FaceList;
@@ -736,16 +734,22 @@ namespace Axiom.SceneManagers.Bsp
 		protected void QuakeVertexToBspVertex(InternalBspVertex src, out BspVertex dest)
 		{
 			dest = new BspVertex();
-			dest.position = new float[3];
-			dest.normal = new float[3];
 
-			Array.Copy(src.point, 0, dest.position, 0, 3);
-			Array.Copy(src.normal, 0, dest.normal, 0, 3);
-			
+            dest.position0 = src.point[0];
+			dest.position1 = src.point[1];
+			dest.position2 = src.point[2];
+
+			dest.normal0 = src.normal[0];
+			dest.normal1 = src.normal[1];
+			dest.normal2 = src.normal[2];
+
 			dest.color = src.color;
 
-			dest.texCoords = new float[] { src.texture[0], src.texture[1] };
-			dest.lightMap = new float[] { src.lightMap[0], src.lightMap[1] };
+			dest.texCoords0 = src.texture[0];
+			dest.texCoords1 = src.texture[1];
+
+			dest.lightMap0 = src.lightMap[0];
+			dest.lightMap1 = src.lightMap[1];
 		}
 
 		protected void TagNodesWithObject(BspNode node, SceneObject obj, Vector3 pos)
@@ -762,6 +766,7 @@ namespace Axiom.SceneManagers.Bsp
 				// Find distance to dividing plane
 				float dist = node.GetDistance(pos);
 
+				//CHECK: treat obj as bounding box?
 				if(MathUtil.Abs(dist) < obj.BoundingRadius)
 				{
 					// Bounding sphere crosses the plane, do both.
@@ -891,15 +896,17 @@ namespace Axiom.SceneManagers.Bsp
 		[StructLayout(LayoutKind.Sequential)]
 		public struct BspVertex
 		{
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst=3)]
-			public float[] position;
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst=3)]
-			public float[] normal;
+			public float position0;
+			public float position1;
+			public float position2;
+			public float normal0;
+			public float normal1;
+			public float normal2;
 			public int color;
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst=2)]
-			public float[] texCoords;
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst=2)]
-			public float[] lightMap;
+			public float texCoords0;
+			public float texCoords1;
+			public float lightMap0;
+			public float lightMap1;
 		}
 	
 		/// <summary>

@@ -56,9 +56,9 @@ namespace Axiom.MathLib {
             1,  0,  0,  0);
 
         /// <summary>Collection of control points.</summary>
-        private Vector3Collection pointList;
+        private Vector3List pointList;
         /// <summary>Collection of generated tangents for the spline controls points.</summary>
-        private Vector3Collection tangentList;
+        private Vector3List tangentList;
         /// <summary>Specifies whether or not to recalculate tangents as each control point is added.</summary>
         private bool autoCalculateTangents;
 
@@ -71,8 +71,8 @@ namespace Axiom.MathLib {
         /// </summary>
         public PositionalSpline() {
             // intialize the vector collections
-            pointList = new Vector3Collection();
-            tangentList = new Vector3Collection();
+            pointList = new Vector3List();
+            tangentList = new Vector3List();
 
             // do not auto calculate tangents by default
             autoCalculateTangents = false;
