@@ -4,7 +4,7 @@ package.language = "c#"
 package.kind = "dll"
 package.buildflags = { "unsafe" }
 package.defines = { "TRACE" } 
-package.config["Debug"].target = { "DEBUG" }
+package.config["Debug"].defines = { "DEBUG" }
 package.target = "Axiom.RenderSystems.OpenGL"
 package.libpaths = { "../Solution Items" }
 

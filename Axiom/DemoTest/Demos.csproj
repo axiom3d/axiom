@@ -111,52 +111,52 @@
                 />
                 <Reference
                     Name = "DynamicsSystem_ODE"
-                    Project = "{54AE5D74-A7F0-C94A-BDEF-E42370057D3A}"
+                    Project = "{E4D7D15F-0B0B-3045-83E2-B545314BE24C}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
                     Name = "Engine"
-                    Project = "{76F1B76C-4CAC-704D-84BC-01A4E9E74CF8}"
+                    Project = "{6C8DDE4A-CA96-D944-991A-CB4F203BFA41}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
                     Name = "MathLib"
-                    Project = "{E6AC8079-93CC-1444-AD68-C09835E5682D}"
+                    Project = "{3A9BBD69-5635-DE43-962E-6E4BDA53ED38}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
                     Name = "ParticleFX"
-                    Project = "{56143703-9EB1-D340-BF1F-953D247DCC4C}"
+                    Project = "{523A799A-1E5B-A941-AF73-8F5CF9D17F8F}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
                     Name = "PlatformManager_Win32"
-                    Project = "{850FEFAE-B5D6-D044-9E87-A30351FEA9FB}"
+                    Project = "{E305C856-FF45-2849-B939-931265B79652}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
                     Name = "Plugin_CgProgramManager"
-                    Project = "{B00EF0A6-6B6B-384C-B1DD-FD8CDB5078EA}"
+                    Project = "{1B28ECE2-2A7A-3B49-AAF2-0214F53F0D97}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
                     Name = "Plugin_GuiElements"
-                    Project = "{822F6913-8806-CC44-8C27-CFAEDDE5CE23}"
+                    Project = "{E67F755F-F7B8-C242-A43C-E5160B44E0EB}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
+                <Reference
+                    Name = "Plugin_OctreeSceneManager"
+                    Project = "{49AAE6B4-DDA7-F94F-BC8C-BBEB82A3C77E}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
                     Name = "RenderSystem_DirectX9"
-                    Project = "{638E4832-A3D7-1E45-B78B-8D9D65119F1F}"
+                    Project = "{7887CB15-EBE7-F042-AC2C-28B2D7E70D9E}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
                     Name = "RenderSystem_OpenGL"
-                    Project = "{968EF85F-6D75-5F42-AC43-FA7395FFB0D0}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
-                />
-                <Reference
-                    Name = "OctreeSceneManager"
-                    Project = "{2A0A1D2B-BC8F-4BC4-BA75-9B719982AE3B}"
+                    Project = "{3C70B965-1828-754C-B85E-1CADCC6ABEF0}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
             </References>
@@ -219,6 +219,11 @@
                 />
                 <File
                     RelPath = "Demos\Fresnel.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Demos\FrustumCulling.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -3,7 +3,7 @@
         ProjectType = "Local"
         ProductVersion = "7.10.3077"
         SchemaVersion = "2.0"
-        ProjectGuid = "{850FEFAE-B5D6-D044-9E87-A30351FEA9FB}"
+        ProjectGuid = "{E305C856-FF45-2849-B939-931265B79652}"
     >
         <Build>
             <Settings
@@ -28,7 +28,7 @@
                     BaseAddress = "285212672"
                     CheckForOverflowUnderflow = "false"
                     ConfigurationOverrideFile = ""
-                    DefineConstants = ""
+                    DefineConstants = "TRACE;DEBUG"
                     DocumentationFile = ""
                     DebugSymbols = "true"
                     FileAlignment = "4096"
@@ -48,7 +48,7 @@
                     BaseAddress = "285212672"
                     CheckForOverflowUnderflow = "false"
                     ConfigurationOverrideFile = ""
-                    DefineConstants = ""
+                    DefineConstants = "TRACE"
                     DocumentationFile = ""
                     DebugSymbols = "false"
                     FileAlignment = "4096"
@@ -77,17 +77,17 @@
                     AssemblyName = "System.Windows.Forms"
                 />
                 <Reference
+                    Name = "Engine"
+                    Project = "{6C8DDE4A-CA96-D944-991A-CB4F203BFA41}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
+                <Reference
                     Name = "Microsoft.DirectX"
                     AssemblyName = "Microsoft.DirectX"
                 />
                 <Reference
                     Name = "Microsoft.DirectX.DirectInput"
                     AssemblyName = "Microsoft.DirectX.DirectInput"
-                />
-                <Reference
-                    Name = "Engine"
-                    Project = "{76F1B76C-4CAC-704D-84BC-01A4E9E74CF8}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
             </References>
         </Build>
