@@ -72,9 +72,23 @@ namespace RenderSystem_DirectX9 {
         /// <returns></returns>
         /// DOC
         protected override IntPtr LockImpl(int offset, int length, BufferLocking locking) {
+
+            D3D.LockFlags d3dLocking = 0;
+
+            if(usage != BufferUsage.Dynamic &&
+                usage != BufferUsage.DynamicWriteOnly &&
+                (locking == BufferLocking.Discard || locking == BufferLocking.NoOverwrite)) {
+             
+                // lock flags already 0 by default
+            }
+            else {
+                // D3D doesnt like disard or no overrwrite on non dynamic buffers
+                d3dLocking = D3DHelper.ConvertEnum(locking);
+            }
+
             // lock the buffer, which returns an array
             // TODO: no *working* overload takes length, revisit this
-            System.Array data = d3dBuffer.Lock(offset, D3DHelper.ConvertEnum(locking));
+            System.Array data = d3dBuffer.Lock(offset, d3dLocking);
 			
             // return an IntPtr to the first element of the locked array
             return Marshal.UnsafeAddrOfPinnedArrayElement(data, 0);

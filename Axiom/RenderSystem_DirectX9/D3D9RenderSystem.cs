@@ -63,6 +63,9 @@ namespace RenderSystem_DirectX9 {
         protected int primCount;
         protected int renderCount = 0;
 
+        // temp fields for tracking render states
+        protected bool lightingEnabled;
+
         public D3D9RenderSystem() {
             InitConfigOptions();
 
@@ -85,7 +88,11 @@ namespace RenderSystem_DirectX9 {
 	
         public override bool LightingEnabled {
             set {
-                device.RenderState.Lighting = value;
+                if(lightingEnabled == value) {
+                    return;
+                }
+
+                device.RenderState.Lighting = lightingEnabled = value;
             }
         }
 	
@@ -1109,7 +1116,7 @@ namespace RenderSystem_DirectX9 {
             D3D.TransformType d3dTransType = (D3D.TransformType)((int)(D3D.TransformType.Texture0) + stage);
 
             // set the matrix if it is not the identity
-            if(d3dMat != DX.Matrix.Identity) {
+            if(!D3DHelper.IsIdentity(ref d3dMat)) {
                 // tell D3D the dimension of tex. coord
                 int texCoordDim = 0;
 
