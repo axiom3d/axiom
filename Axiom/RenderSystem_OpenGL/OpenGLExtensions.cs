@@ -30,7 +30,7 @@ using CsGL.OpenGL;
 namespace RenderSystem_OpenGL
 {
 	/// <summary>
-	/// Summary description for OpenGLExtensions.
+	/// Summary description for Gl.
 	/// </summary>
 	public class OpenGLExtensions : OpenGL_Extension
 	{
