@@ -26,7 +26,7 @@ namespace ParticleFX {
         public override void InitParticle(Particle particle) {
             base.InitParticle(particle);
 
-            // point emitter emits startinf from its own position
+            // point emitter emits starting from its own position
             particle.Position = this.position;
 
             GenerateEmissionColor(particle.Color);

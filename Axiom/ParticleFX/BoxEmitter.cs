@@ -58,27 +58,54 @@ namespace ParticleFX {
             particle.timeToLive = GenerateEmissionTTL();
         }
 
-        #region Script parser methods
+        #region Command definition classes
 
-        [AttributeParser("width", EMITTER)]
-        public static void ParseWidth(string[] values, params object[] objects) {
-            BoxEmitter emitter = objects[0] as BoxEmitter;
-            emitter.Width = float.Parse(values[0]);
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command("width", "Width of the box emitter.", typeof(ParticleEmitter))]
+            class WidthCommand: ICommand {
+            public void Set(object target, string val) {
+                BoxEmitter emitter = target as BoxEmitter;
+                emitter.Width = float.Parse(val);
+            }
+            public string Get(object target) {
+                BoxEmitter emitter = target as BoxEmitter;
+                return emitter.Width.ToString();
+            }
         }
 
-        [AttributeParser("height", EMITTER)]
-        public static void ParseHeight(string[] values, params object[] objects) {
-            BoxEmitter emitter = objects[0] as BoxEmitter;
-            emitter.Height = float.Parse(values[0]);
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command("height", "Height of the box emitter.", typeof(ParticleEmitter))]
+            class HeightCommand: ICommand {
+            public void Set(object target, string val) {
+                BoxEmitter emitter = target as BoxEmitter;
+                emitter.Height = float.Parse(val);
+            }
+            public string Get(object target) {
+                BoxEmitter emitter = target as BoxEmitter;
+                return emitter.Height.ToString();
+            }
         }
 
-        [AttributeParser("depth", EMITTER)]
-        public static void ParseDepth(string[] values, params object[] objects) {
-            BoxEmitter emitter = objects[0] as BoxEmitter;
-            emitter.Depth = float.Parse(values[0]);
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command("depth", "Depth of the box emitter.", typeof(ParticleEmitter))]
+            class DepthCommand: ICommand {
+            public void Set(object target, string val) {
+                BoxEmitter emitter = target as BoxEmitter;
+                emitter.Depth = float.Parse(val);
+            }
+            public string Get(object target) {
+                BoxEmitter emitter = target as BoxEmitter;
+                return emitter.Depth.ToString();
+            }
         }
 
-        #endregion Script parser methods
+        #endregion Command definition classes
 
     }
 }

@@ -78,7 +78,38 @@ namespace Axiom.Scripting {
         ///		Parses an array of params and returns a color from it.
         /// </summary>
         /// <param name="val"></param>
+        public static ColorEx ParseColor(string val) {
+            ColorEx color = new ColorEx();
+            string[] vals = val.Split(' ');
+
+            color.r = float.Parse(vals[0]);
+            color.g = float.Parse(vals[1]);
+            color.b = float.Parse(vals[2]);
+            color.a = (vals.Length == 4) ? float.Parse(vals[3]) : 1.0f;
+
+            return color;
+        }
+
+        /// <summary>
+        ///		Parses an array of params and returns a color from it.
+        /// </summary>
+        /// <param name="val"></param>
         public static Vector3 ParseVector3(string[] values) {
+            Vector3 vec = new Vector3();
+            vec.x = float.Parse(values[0]);
+            vec.y = float.Parse(values[1]);
+            vec.z = float.Parse(values[2]);
+
+            return vec;
+        }
+
+        /// <summary>
+        ///		Parses an array of params and returns a color from it.
+        /// </summary>
+        /// <param name="val"></param>
+        public static Vector3 ParseVector3(string val) {
+            string[] values = val.Split(' ');
+            
             Vector3 vec = new Vector3();
             vec.x = float.Parse(values[0]);
             vec.y = float.Parse(values[1]);
@@ -175,6 +206,32 @@ namespace Axiom.Scripting {
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        public static string ToString(ColorEx color) {
+            return string.Format("{0} {1} {2} {3}", color.r, color.g, color.b, color.a);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vec"></param>
+        /// <returns></returns>
+        public static string ToString(Vector4 vec) {
+            return string.Format("{0} {1} {2} {3}", vec.x, vec.y, vec.z, vec.w);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vec"></param>
+        /// <returns></returns>
+        public static string ToString(Vector3 vec) {
+            return string.Format("{0} {1} {2}", vec.x, vec.y, vec.z);
+        }
         #endregion
     }
 }

@@ -64,6 +64,7 @@ namespace Axiom.Graphics {
         protected CullingMode cullingMode;
         protected bool isVSync;
         protected bool depthWrite;
+        protected int numCurrentLights;
 
         // Stored options
         protected EngineConfig engineConfig = new EngineConfig();
@@ -722,7 +723,7 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="textureUnit">Index of the texture unit to configure</param>
         /// <param name="layer">Reference to a TextureLayer object which defines all the settings.</param>
-        virtual protected internal void SetTextureUnit(int stage, TextureUnitState layer) {
+        protected virtual internal void SetTextureUnit(int stage, TextureUnitState layer) {
             // set the texture if it is different from the current
             SetTexture(stage, true, layer.TextureName);
 
@@ -804,7 +805,7 @@ namespace Axiom.Graphics {
         ///		Turns off a texture unit if not needed.
         /// </summary>
         /// <param name="textureUnit"></param>
-        virtual protected internal void DisableTextureUnit(int textureUnit) {
+        protected virtual internal void DisableTextureUnit(int textureUnit) {
             SetTexture(textureUnit, false, "");
         }
 

@@ -8,7 +8,6 @@ namespace ParticleFX {
     /// 	Summary description for PointEmitterFactory.
     /// </summary>
     public class PointEmitterFactory : ParticleEmitterFactory {
-	
         #region Methods
 
         public override ParticleEmitter Create() {
@@ -28,6 +27,5 @@ namespace ParticleFX {
         }
 	
         #endregion
-
     }
 }

@@ -37,72 +37,72 @@ namespace Axiom.Graphics {
         /// <summary>
         ///    Current world matrix.
         /// </summary>
-        [ScriptEnum("WORLD_MATRIX")]
+        [ScriptEnum("world_matrix")]
         WorldMatrix,
         /// <summary>
         ///    Current view matrix.
         /// </summary>
-        [ScriptEnum("VIEW_MATRIX")]
+        [ScriptEnum("view_matrix")]
         ViewMatrix,
         /// <summary>
         ///    Current projection matrix.
         /// </summary>
-        [ScriptEnum("PROJECTION_MATRIX")]
+        [ScriptEnum("projection_matrix")]
         ProjectionMatrix,
         /// <summary>
         ///    Current world and view matrices concatenated.
         /// </summary>
-        [ScriptEnum("WORLDVIEW_MATRIX")]
+        [ScriptEnum("worldview_matrix")]
         WorldViewMatrix,
         /// <summary>
         ///    Current world, view, and projection matrics concatenated.
         /// </summary>
-        [ScriptEnum("WORLDVIEWPROJ_MATRIX")]
+        [ScriptEnum("worldviewproj_matrix")]
         WorldViewProjMatrix,
         /// <summary>
         ///    Current world matrix, inverted.
         /// </summary>
-        [ScriptEnum("INVERSE_WORLD_MATRIX")]
+        [ScriptEnum("inverse_world_matrix")]
         InverseWorldMatrix,
         /// <summary>
         ///    Current world and view matrices concatenated, then inverted.
         /// </summary>
-        [ScriptEnum("INVERSE_WORLDVIEW_MATRIX")]
+        [ScriptEnum("inverse_worldview_matrix")]
         InverseWorldViewMatrix,
         /// <summary>
         ///    Global ambient light color.
         /// </summary>
-        [ScriptEnum("AMBIENT_LIGHT_COLOR")]
+        [ScriptEnum("ambient_light_color")]
         AmbientLightColor,
         /// <summary>
         ///    Light diffuse color.  Index determined when setting up auto constants.
         /// </summary>
-        [ScriptEnum("LIGHT_DIFFUSE_COLOR")]     
+        [ScriptEnum("light_diffuse_color")]     
         LightDiffuseColor,
         /// <summary>
         ///    Light specular color.  Index determined when setting up auto constants.
         /// </summary>
-        [ScriptEnum("LIGHT_SPECULAR_COLOR")]  
+        [ScriptEnum("light_specular_color")]  
         LightSpecularColor,
         /// <summary>
         ///    Light attenuation.  Vector4(range, constant, linear, quadratic).
         /// </summary>
-        [ScriptEnum("LIGHT_ATTENUATION")]
+        [ScriptEnum("light_attenuation")]
         LightAttenuation,
         /// <summary>
         ///    A light position in object space.  Index determined when setting up auto constants.
         /// </summary>
-        [ScriptEnum("LIGHT_POSITION_OBJECT_SPACE")]
+        [ScriptEnum("light_position_object_space")]
         LightPositionObjectSpace,
         /// <summary>
         ///    A light direction in object space.  Index determined when setting up auto constants.
         /// </summary>
-        [ScriptEnum("LIGHT_DIRECTION_OBJECT_SPACE")]
+        [ScriptEnum("light_direction_object_space")]
         LightDirectionObjectSpace,
         /// <summary>
         ///    The current camera's position in object space.
         /// </summary>
-        [ScriptEnum("CAMERA_POSITION_OBJECT_SPACE")]
+        [ScriptEnum("camera_position_object_space")]
         CameraPositionObjectSpace
     }
 

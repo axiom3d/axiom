@@ -299,7 +299,7 @@ namespace Axiom.Core {
         /// <summary>
         ///		Tell the SceneNode to update the world bound info it stores.
         /// </summary>
-        virtual protected void UpdateBounds() {
+        protected virtual void UpdateBounds() {
             // reset bounds
             worldAABB.IsNull = true;
             worldBoundingSphere.Center = this.DerivedPosition;

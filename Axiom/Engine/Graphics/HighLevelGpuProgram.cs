@@ -201,7 +201,7 @@ namespace Axiom.Graphics
         /// </summary>
         /// <param name="name"></param>
         /// <param name="val"></param>
-        public abstract void SetParam(string name, string val);
+        public abstract bool SetParam(string name, string val);
 
         #endregion
     }

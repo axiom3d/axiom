@@ -862,7 +862,17 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Scripting\CommandAttribute.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Scripting\GameObject.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Scripting\ICommand.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

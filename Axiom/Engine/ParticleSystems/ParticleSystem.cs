@@ -436,15 +436,21 @@ namespace Axiom.ParticleSystems {
         ///		equally across all emitters to be as consistent to the origina particle system style as possible.
         /// </remarks>
         public int ParticleQuota {
-            get { return this.PoolSize; }
-            set { this.PoolSize = value; }
+            get { 
+                return this.PoolSize; 
+            }
+            set { 
+                this.PoolSize = value; 
+            }
         }
 
         /// <summary>
         /// 
         /// </summary>
         public ArrayList Particles {
-            get { return activeBillboards; }
+            get { 
+                return activeBillboards; 
+            }
         }
 
         #endregion

@@ -49,6 +49,10 @@ namespace ParticleFX {
             emitterFactory = new PointEmitterFactory();
             ParticleSystemManager.Instance.AddEmitterFactory(emitterFactory);
 
+            // draw emitter
+            emitterFactory = new DrawEmitterFactory();
+            ParticleSystemManager.Instance.AddEmitterFactory(emitterFactory);
+
             // linear force affector
             affectorFactory = new LinearForceAffectorFactory();
             ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);

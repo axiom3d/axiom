@@ -280,7 +280,7 @@ namespace Axiom.Graphics
                     }
 
                     ParseHelper.SkipToNextOpenBrace(script);
-                    ParseGpuProgram(script, parms[2], parms[1], GpuProgramType.Vertex);
+                    ParseGpuProgram(script, parms[1], parms[2], GpuProgramType.Vertex);
                 }
                     // Fragment Programs
                 else if(line.StartsWith("fragment_program")) {
@@ -294,7 +294,7 @@ namespace Axiom.Graphics
                     }
 
                     ParseHelper.SkipToNextOpenBrace(script);
-                    ParseGpuProgram(script, parms[2], parms[1], GpuProgramType.Fragment);
+                    ParseGpuProgram(script, parms[1], parms[2], GpuProgramType.Fragment);
                 }
             }
         }
@@ -334,8 +334,6 @@ namespace Axiom.Graphics
                         foreach(DictionaryEntry entry in parmsTable) {
                             program.SetParam((string)entry.Key, (string)entry.Value);
                         }
-
-                        //program.Load();
                     }
 
                     return;
@@ -352,7 +350,6 @@ namespace Axiom.Graphics
                 }
             }
         }
-
 
         #endregion
 		

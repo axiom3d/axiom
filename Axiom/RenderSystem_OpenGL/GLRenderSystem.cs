@@ -76,8 +76,6 @@ namespace RenderSystem_OpenGL {
         // only lets you set them all at once, keep old values around to allow this to work
         protected int stencilFail, stencilZFail, stencilPass, stencilFunc, stencilRef, stencilMask;
 
-        protected int numCurrentLights;
-
         protected bool zTrickEven;      
 
         // render state redundency reduction settings

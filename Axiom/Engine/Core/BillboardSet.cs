@@ -132,7 +132,7 @@ namespace Axiom.Core {
         ///		Internal method for increasing pool size.
         /// </summary>
         /// <param name="size"></param>
-        virtual protected void IncreasePool(int size) {
+        protected virtual void IncreasePool(int size) {
             int oldSize = billboardPool.Count;
 
             // expand the capacity a bit
@@ -178,7 +178,7 @@ namespace Axiom.Core {
         /// <param name="camera"></param>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        virtual protected void GenerateBillboardAxes(Camera camera, ref Vector3 x, ref Vector3 y) {
+        protected virtual void GenerateBillboardAxes(Camera camera, ref Vector3 x, ref Vector3 y) {
             GenerateBillboardAxes(camera, ref x, ref y, null);
         }
 
@@ -190,7 +190,7 @@ namespace Axiom.Core {
         /// <param name="y"></param>
         /// <param name="billboard"></param>
         /// <remarks>Billboard param only required for type OrientedSelf</remarks>
-        virtual protected void GenerateBillboardAxes(Camera camera, ref Vector3 x, ref Vector3 y, Billboard billboard) {
+        protected virtual void GenerateBillboardAxes(Camera camera, ref Vector3 x, ref Vector3 y, Billboard billboard) {
             // Default behavior is that billboards are in local node space
             // so orientation of camera (in world space) must be reverse-transformed 
             // into node space to generate the axes
