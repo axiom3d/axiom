@@ -1,3 +1,23 @@
+4-7-2004
+Major patch from jkeiser
+- Fixes all initialization issues.  The DemoBrowser now works with running demos over and over.
+- Several memory leaks fixed now that all managers get disposed of properly.
+- Enhanced resource loading implementation now support proper factory based implementation, with a Zip and Folder implementation included (before this was hardcoded to support these but I never went back to fix it.
+
+Awesome changes overall!
+
+Major particle system updates submitted by Maarc!
+  - All Ogre Emitters and Affectors are completed and available.
+  - All core classes were updated to support additional functionality, such as modifying texture coords on Billboards (for rotation).
+  - Potential crash bug fixed in BillboardSet.GenVertices.
+  - Added Smoke demo now that the particle system supports all required functionality.
+
+Patch from Antiarc to allow gpu program definitions within material files like Ogre does.  Robot material modified to include one just to have a conbined material.  Thanks antiarc!
+
+Najak submissions
+  - Added smooth camera acceleration in the demos.
+  - Fixed several memory leaks.
+
 3-30-2004
 Big Commit
 - Hardware skinning now support.  
