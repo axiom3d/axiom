@@ -75,7 +75,8 @@ namespace Axiom.ParticleSystems {
             originType = BillboardOrigin.Center;
             this.name = name;
             cullIndividual = true;
-            this.DefaultDimensions = new Size(100, 100);
+            defaultParticleWidth = 100;
+            defaultParticleHeight = 100;
             this.MaterialName = "BaseWhite";
             this.PoolSize = 10;
         }
@@ -370,6 +371,30 @@ namespace Axiom.ParticleSystems {
         #region Properties
 
         /// <summary>
+        /// 
+        /// </summary>
+        public float DefaultHeight {
+            get {
+                return defaultParticleHeight;
+            }
+            set {
+                defaultParticleHeight = value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public float DefaultWidth {
+            get {
+                return defaultParticleWidth;
+            }
+            set {
+                defaultParticleWidth = value;
+            }
+        }
+
+        /// <summary>
         ///		Gets the count of active particles currently in the system.
         /// </summary>
         public int ParticleCount {
@@ -427,7 +452,8 @@ namespace Axiom.ParticleSystems {
             system.PoolSize = this.PoolSize;
             system.MaterialName = this.MaterialName;
             system.originType = this.originType;
-            system.defaultDimensions = this.defaultDimensions;
+            system.defaultParticleWidth = this.defaultParticleWidth;
+            system.defaultParticleHeight = this.defaultParticleHeight;
             system.cullIndividual = this.cullIndividual;
             system.billboardType = this.billboardType;
             system.commonDirection = this.commonDirection;

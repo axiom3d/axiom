@@ -58,7 +58,8 @@ namespace Axiom.Core {
         /// <summary>Origin of each billboard</summary>
         protected BillboardOrigin originType = BillboardOrigin.Center;
         /// <summary>Default width/height of each billboard.</summary>
-        protected Size defaultDimensions = new Size(100, 100);
+        protected float defaultParticleWidth = 100;
+        protected float defaultParticleHeight = 100;
         /// <summary>Name of the material to use</summary>
         protected String materialName = "BaseWhite";
         /// <summary>Reference to the material to use</summary>
@@ -162,10 +163,10 @@ namespace Axiom.Core {
 
             // calculate the radius of the bounding sphere for the billboard
             if(billboard.HasOwnDimensions) {
-                sphere.Radius = MathUtil.Max(billboard.Dimensions.Width, billboard.Dimensions.Height);
+                sphere.Radius = MathUtil.Max(billboard.Width, billboard.Height);
             }
             else {
-                sphere.Radius = MathUtil.Max(defaultDimensions.Width, defaultDimensions.Height);
+                sphere.Radius = MathUtil.Max(defaultParticleWidth, defaultParticleHeight);
             }
 
             // finally, see if the sphere is visible in the camera
@@ -448,7 +449,7 @@ namespace Axiom.Core {
             }
 
             // adjust for billboard size
-            float adjust = MathUtil.Max(defaultDimensions.Width, defaultDimensions.Height);
+            float adjust = MathUtil.Max(defaultParticleWidth, defaultParticleHeight);
             Vector3 vecAdjust = new Vector3(adjust, adjust, adjust);
             min -= vecAdjust;
             max += vecAdjust;
@@ -640,19 +641,6 @@ namespace Axiom.Core {
         public BillboardOrigin BillboardOrigin {
             get { return originType; }
             set  { originType = value; }
-        }
-
-        /// <summary>
-        ///		Sets the default dimensions of the billboards in this set.
-        ///	 </summary>
-        ///	 <remarks>
-        ///		All billboards in a set are created with these default dimensions. The set will render most efficiently if
-        ///		all the billboards in the set are the default size. It is possible to alter the size of individual
-        ///		billboards at the expense of extra calculation. See the Billboard class for more info.
-        /// </remarks>
-        public Size DefaultDimensions {
-            get { return defaultDimensions; }
-            set { defaultDimensions = value; }
         }
 
         /// <summary>
@@ -853,7 +841,7 @@ namespace Axiom.Core {
                 //	if all billboards are the same size we can precalculare the
                 // offsets and just use + instead of * for each billboard, which should be faster.
                 GenerateVertexOffsets(leftOffset, rightOffset, topOffset, bottomOffset, 
-                    defaultDimensions.Width, defaultDimensions.Height, ref camX, ref camY, vecOffsets);
+                    defaultParticleWidth, defaultParticleHeight, ref camX, ref camY, vecOffsets);
             }
 
             // reset counter
@@ -882,8 +870,8 @@ namespace Axiom.Core {
                     if(billboardType == BillboardType.OrientedSelf) {
                         // generate per billboard
                         GenerateBillboardAxes(camera, ref camX, ref camY, b);
-                        GenerateVertexOffsets(leftOffset, rightOffset, topOffset, bottomOffset, defaultDimensions.Width,
-                            defaultDimensions.Height, ref camX, ref camY, vecOffsets);
+                        GenerateVertexOffsets(leftOffset, rightOffset, topOffset, bottomOffset, defaultParticleWidth,
+                            defaultParticleHeight, ref camX, ref camY, vecOffsets);
                     }
 
                     // generate the billboard vertices
@@ -908,8 +896,8 @@ namespace Axiom.Core {
                     // if it has it's own dimensions. or self oriented, gen offsets
                     if(b.HasOwnDimensions || billboardType == BillboardType.OrientedSelf) {
                         // generate using it's own dimensions
-                        GenerateVertexOffsets(leftOffset, rightOffset, topOffset, bottomOffset, b.Dimensions.Width,
-                            b.Dimensions.Height, ref camX, ref camY, vecOffsets);
+                        GenerateVertexOffsets(leftOffset, rightOffset, topOffset, bottomOffset, b.Width,
+                            b.Height, ref camX, ref camY, vecOffsets);
                     }
 
                     // generate the billboard vertices
@@ -924,6 +912,19 @@ namespace Axiom.Core {
             colBuffer.Unlock();
         }
 	
+        /// <summary>
+        ///		Sets the default dimensions of the billboards in this set.
+        ///	 </summary>
+        ///	 <remarks>
+        ///		All billboards in a set are created with these default dimensions. The set will render most efficiently if
+        ///		all the billboards in the set are the default size. It is possible to alter the size of individual
+        ///		billboards at the expense of extra calculation. See the Billboard class for more info.
+        /// </remarks>
+        public void SetDefaultDimensions(float width, float height) {
+            defaultParticleWidth = width;
+            defaultParticleHeight = height;
+        }
+
         internal override void UpdateRenderQueue(RenderQueue queue) {
             // add ourself to the render queue
             queue.AddRenderable(this, RenderQueue.DEFAULT_PRIORITY, renderQueueID);

@@ -53,7 +53,7 @@ namespace Axiom.Core {
         #region Member variables
 
         protected bool hasOwnDimensions;
-        protected Size dimensions;
+        protected float width, height;
 
         // Intentional public access, since having a property for these for 1,000s of billboards
         // could be too costly
@@ -102,11 +102,23 @@ namespace Axiom.Core {
         /// <summary>
         ///		Width and height of this billboard, if it has it's own.
         /// </summary>
-        public Size Dimensions {
-            get { return dimensions; }
+        public float Width {
+            get { return width; }
             set {
                 hasOwnDimensions = true;
-                dimensions = value; 
+                width = value; 
+                ParentSet.NotifyBillboardResized();
+            }
+        }
+
+        /// <summary>
+        ///		Width and height of this billboard, if it has it's own.
+        /// </summary>
+        public float Height {
+            get { return height; }
+            set {
+                hasOwnDimensions = true;
+                height = value; 
                 ParentSet.NotifyBillboardResized();
             }
         }

@@ -7,7 +7,7 @@
     >
         <Build>
             <Settings
-                ApplicationIcon = ""
+                ApplicationIcon = "bin\Media\Icons\AxiomIcon.ico"
                 AssemblyKeyContainerName = ""
                 AssemblyName = "Demos"
                 AssemblyOriginatorKeyFile = ""

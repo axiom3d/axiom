@@ -1569,10 +1569,13 @@ namespace RenderSystem_OpenGL {
                 bpp = setting.dmBitsPerPel;
                 freq = setting.dmDisplayFrequency;
 			
-                // filter out the lower resolutions and dupe frequencies, assuming 60 is always available for now
-                if((width >= 640 && height >= 480 && bpp >= 16) && freq == 60) {
-                    // add a new row to the display settings table
-                    engineConfig.DisplayMode.AddDisplayModeRow(width, height, bpp, false, false);
+                // filter out the lower resolutions and dupe frequencies
+                if(width >= 640 && height >= 480 && bpp >= 16) {
+                    string query = string.Format("Width = {0} AND Height= {1} AND Bpp = {2}", width, height, bpp);
+                    if(engineConfig.DisplayMode.Select(query).Length == 0) {
+                        // add a new row to the display settings table
+                        engineConfig.DisplayMode.AddDisplayModeRow(width, height, bpp, false, false);
+                    }
                 }
 
                 // grab the current display settings
