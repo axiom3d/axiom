@@ -38,6 +38,11 @@ namespace Demos {
     /// <summary>
     ///     Offset mapping.
     /// </summary>
+    /// <remarks>
+    ///     Original technique documented by Terry Welsh http://www.infiscape.com/doc/parallax_mapping.pdf.
+    ///     PS.1.4 assembler shader put together by NFZ (nfuzz@hotmail.com)
+    ///     Demo done by Randy Ridge http://www.randyridge.com
+    /// </remarks>
     public class OffsetMapping : TechDemo {
         #region Fields
 
