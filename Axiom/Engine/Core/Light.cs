@@ -107,11 +107,11 @@ namespace Axiom.Core {
 		/// <summary></summary>
 		protected float attenuationQuad;
 		/// <summary></summary>
-		protected bool isModified;
+		protected bool localTransformDirty;
 		/// <summary>
 		///    Used for sorting.  Internal for "friend" access to SceneManager.
 		/// </summary>
-		internal float tempSquaredDist;
+		internal protected float tempSquaredDist;
 		/// <summary>
 		///		Stored version of the last near clip volume tested.
 		/// </summary>
@@ -136,8 +136,10 @@ namespace Axiom.Core {
 		/// </summary>
 		/// <param name="name"></param>
 		public Light(string name) {
+
 			this.name = name;
 
+			// Default to point light, white diffuse light, linear attenuation, fair range
 			type = LightType.Point;
 			diffuse = ColorEx.White;
 			specular = ColorEx.Black;
@@ -146,14 +148,16 @@ namespace Axiom.Core {
 			attenuationLinear = 0.0f;
 			attenuationQuad = 0.0f;
 
+			// Center in world, direction irrelevant but set anyway
 			position = Vector3.Zero;
 			direction = Vector3.UnitZ;
 
+			// Default some spot values
 			spotInner = 30.0f;
 			spotOuter = 40.0f;
 			spotFalloff = 1.0f;
 			
-			isModified = true;
+			localTransformDirty = false;
 		}
 
 		#endregion
@@ -169,7 +173,6 @@ namespace Axiom.Core {
 			}
 			set { 
 				type = value; 
-				isModified = true; 
 			}
 		}
 
@@ -182,7 +185,7 @@ namespace Axiom.Core {
 			}
 			set { 
 				position = value; 
-				isModified = true; 
+				localTransformDirty = true; 
 			}
 		}
 
@@ -195,7 +198,7 @@ namespace Axiom.Core {
 			}
 			set { 
 				direction = value; 
-				isModified = true; 
+				localTransformDirty = true; 
 			}
 		}
 
@@ -235,7 +238,6 @@ namespace Axiom.Core {
 			}
 			set { 
 				diffuse = value; 
-				isModified = true; 
 			}
 		}
 
@@ -248,7 +250,6 @@ namespace Axiom.Core {
 			}
 			set { 
 				specular = value; 
-				isModified = true; 
 			}
 		}
 
@@ -293,7 +294,7 @@ namespace Axiom.Core {
 		/// </summary>
 		public void Update() {
 			if(parentNode != null) {
-				if(!isModified
+				if(!localTransformDirty
 					&& parentNode.DerivedOrientation == lastParentOrientation
 					&& parentNode.DerivedPosition == lastParentPosition) {
 				}
@@ -309,6 +310,8 @@ namespace Axiom.Core {
 				derivedPosition = position;
 				derivedDirection = direction;
 			}
+
+			localTransformDirty = false;
 		}
 
 		/// <summary>
