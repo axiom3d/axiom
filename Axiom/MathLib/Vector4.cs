@@ -92,16 +92,16 @@ namespace Axiom.MathLib {
         /// <param name="vector"></param>
         /// <param name="matrix"></param>
         /// <returns></returns>
-        public static Vector4 operator * (Vector4 vector, Matrix4 matrix) {
-            Vector4 result = new Vector4();
+		public static Vector4 operator * (Vector4 vector, Matrix4 matrix) {
+			Vector4 result = new Vector4();
 			
-            result.x = vector.x * matrix.m00 + vector.y * matrix.m01 + vector.z * matrix.m02 + vector.w * matrix.m03;
-            result.y = vector.x * matrix.m10 + vector.y * matrix.m11 + vector.z * matrix.m12 + vector.w * matrix.m13;
-            result.z = vector.x * matrix.m20 + vector.y * matrix.m21 + vector.z * matrix.m22 + vector.w * matrix.m22;
-            result.w = vector.x * matrix.m30 + vector.y * matrix.m31 + vector.z * matrix.m32 + vector.w * matrix.m33;
+			result.x = vector.x * matrix.m00 + vector.y * matrix.m10 + vector.z * matrix.m20 + vector.w * matrix.m30;
+			result.y = vector.x * matrix.m01 + vector.y * matrix.m11 + vector.z * matrix.m21 + vector.w * matrix.m31;
+			result.z = vector.x * matrix.m02 + vector.y * matrix.m12 + vector.z * matrix.m22 + vector.w * matrix.m32;
+			result.w = vector.x * matrix.m03 + vector.y * matrix.m13 + vector.z * matrix.m23 + vector.w * matrix.m33;
 
-            return result;
-        }
+			return result;
+		}
 
         /// <summary>
         ///		User to compare two Vector4 instances for equality.
