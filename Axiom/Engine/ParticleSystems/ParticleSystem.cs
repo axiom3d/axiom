@@ -130,7 +130,7 @@ namespace Axiom.ParticleSystems {
         public ParticleAffector GetAffector(int index) {
             Debug.Assert(index < affectorList.Count, "index < affectorList.Count");
 
-            return (ParticleAffector)emitterList[index];
+            return (ParticleAffector)affectorList[index];
         }
 
         /// <summary>
