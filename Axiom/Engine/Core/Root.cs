@@ -705,13 +705,13 @@ namespace Axiom.Core {
 		///    an event handler is requesting that shudown begin for one reason or another.
 		/// </param>
 		public bool OnFrameEnded(FrameEventArgs e) {
+			// Tell buffer manager to free temp buffers used this frame
+			// CMH 9/1/04 - Needs to be be called each frame!
+			HardwareBufferManager.Instance.ReleaseBufferCopies();
+
 			// call the event, which automatically fires all registered handlers
 			if(this.FrameEnded != null) {
 				FrameEnded(this, e);
-
-				// Tell buffer manager to free temp buffers used this fram
-				HardwareBufferManager.Instance.ReleaseBufferCopies();
-
 				return e.RequestShutdown;
 			}
 			else {
