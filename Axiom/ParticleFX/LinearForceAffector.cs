@@ -122,7 +122,7 @@ namespace Axiom.ParticleFX {
 				LinearForceAffector affector = target as LinearForceAffector;
 
 				// TODO: Reverse lookup the enum attribute
-				return affector.ForceApplication.ToString();
+				return affector.ForceApplication.ToString().ToLower();
 			}
 			public void Set(object target, string val) {
 				LinearForceAffector affector = target as LinearForceAffector;
