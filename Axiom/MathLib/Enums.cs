@@ -14,7 +14,11 @@ namespace Axiom.MathLib
         ///    An object is fully contained within another object.
         /// </summary>
         Contained, 
-        /// <summary>
+		/// <summary>
+		///    An object fully contains another object.
+		/// </summary>
+		Contains, 
+		/// <summary>
         ///    The objects are partially intersecting each other.
         /// </summary>
         Partial
