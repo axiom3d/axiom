@@ -470,7 +470,10 @@ namespace Axiom.RenderSystems.DirectX9 {
                     else
                         // fall back on camera space normal if sphere map isnt supported
                         return (int)D3D.TextureCoordinateIndex.CameraSpaceNormal;
-            } // switch
+
+				case TexCoordCalcMethod.ProjectiveTexture:
+					return (int)D3D.TextureCoordinateIndex.CameraSpacePosition;
+			} // switch
 
             return 0;
         }

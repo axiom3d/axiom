@@ -35,9 +35,6 @@ namespace Axiom.Graphics {
 	///		This class defines the interface that must be implemented by shadow casters.
 	/// </summary>
 	public abstract class ShadowCaster {
-		public ShadowCaster() {
-		}
-
 		#region Properties
 
 		/// <summary>
@@ -104,6 +101,12 @@ namespace Axiom.Graphics {
 
 			return GetShadowVolumeRenderableEnumerator(technique, light, indexBuffer, extrudeVertices, extrusionDistance, 0);
 		}
+
+		/// <summary>
+		///		Return the last calculated shadow renderables.
+		/// </summary>
+		/// <returns></returns>
+		public abstract IEnumerator GetLastShadowVolumeRenderableEnumerator();
 
 		/// <summary>
 		///		Utility method for extruding vertices based on a light.
@@ -252,11 +255,11 @@ namespace Axiom.Graphics {
 							shadOp.indexData.indexCount += 3;
 
 							//if (lightType != LightType.Directional) {
-								// additional tri to make quad
-								pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
-								pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
-								pIdx[count++] = (short)edge.vertIndex[1];
-								shadOp.indexData.indexCount += 3;
+							// additional tri to make quad
+							pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
+							pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
+							pIdx[count++] = (short)edge.vertIndex[1];
+							shadOp.indexData.indexCount += 3;
 							//}
 
 							// Do dark cap tri
@@ -284,11 +287,11 @@ namespace Axiom.Graphics {
 							shadOp.indexData.indexCount += 3;
 
 							//if (lightType != LightType.Directional) {
-								// additional tri to make quad
-								pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
-								pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
-								pIdx[count++] = (short)edge.vertIndex[0];
-								shadOp.indexData.indexCount += 3;
+							// additional tri to make quad
+							pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
+							pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
+							pIdx[count++] = (short)edge.vertIndex[0];
+							shadOp.indexData.indexCount += 3;
 							//}
 
 							// Do dark cap tri
@@ -374,7 +377,7 @@ namespace Axiom.Graphics {
 				Vector3[] corners = box.Corners;
 				Vector3 vmin = new Vector3();
 				Vector3 vmax = new Vector3();
-
+  
 				for(int i = 0; i < 8; i++) {
 					extrusionDir.x = corners[i].x - lightPosition.x;
 					extrusionDir.y = corners[i].y - lightPosition.y;
@@ -382,7 +385,7 @@ namespace Axiom.Graphics {
 					extrusionDir.Normalize();
 					extrusionDir *= extrudeDistance;
 					Vector3 res = corners[i] + extrusionDir;
-
+ 
 					if(i == 0) {
 						vmin = res;
 						vmax = res;
@@ -398,10 +401,10 @@ namespace Axiom.Graphics {
 		}
 
 		/// <summary>
-		///		Helper moethod for calculating extrusion distance.
+		///		Helper method for calculating extrusion distance.
 		/// </summary>
-		/// <param name="objectPos">Current position of the object in question.</param>
-		/// <param name="light">Light to use for extrusion calcs.</param>
+		/// <param name="objectPos"></param>
+		/// <param name="light"></param>
 		/// <returns></returns>
 		protected float GetExtrusionDistance(Vector3 objectPos, Light light) {
 			Vector3 diff = objectPos - light.DerivedPosition;

@@ -205,7 +205,7 @@ namespace Axiom.SceneManagers.Octree {
             base.UpdateSceneGraph(cam);
         }
 
-        public override void FindVisibleObjects(Camera cam) {
+        public override void FindVisibleObjects(Camera cam, bool onlyShadowCasters) {
             GetRenderQueue().Clear();
             boxList.Clear();
             visible.Clear();

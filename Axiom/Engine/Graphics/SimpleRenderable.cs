@@ -32,78 +32,78 @@ using Axiom.MathLib;
 using Axiom.Graphics;
 
 namespace Axiom.Graphics {
-    /// <summary>
-    /// Summary description for SimpleRenderable.
-    /// </summary>
-    public abstract class SimpleRenderable : SceneObject, IRenderable {
-        #region Fields
+	/// <summary>
+	/// Summary description for SimpleRenderable.
+	/// </summary>
+	public abstract class SimpleRenderable : SceneObject, IRenderable {
+		#region Fields
 
-        protected Matrix4 worldTransform = Matrix4.Identity;
-        protected AxisAlignedBox box;
-        protected string materialName;
-        protected Material material;
-        protected SceneManager sceneMgr;
-        protected Camera camera;
-        static protected long nextAutoGenName;
+		protected Matrix4 worldTransform = Matrix4.Identity;
+		protected AxisAlignedBox box;
+		protected string materialName;
+		protected Material material;
+		protected SceneManager sceneMgr;
+		protected Camera camera;
+		static protected long nextAutoGenName;
 
-        protected VertexData vertexData;
-        protected IndexData indexData;
+		protected VertexData vertexData;
+		protected IndexData indexData;
 
-        /// <summary>
-        ///    Empty light list to use when there is no parent for this renderable.
-        /// </summary>
-        protected LightList dummyLightList = new LightList();
+		/// <summary>
+		///    Empty light list to use when there is no parent for this renderable.
+		/// </summary>
+		protected LightList dummyLightList = new LightList();
 
 		protected Hashtable customParams = new Hashtable();
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Constructor
+		#region Constructor
 
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public SimpleRenderable() {
-            materialName = "BaseWhite";
-            material = MaterialManager.Instance.GetByName("BaseWhite");
-            name = "SimpleRenderable" + nextAutoGenName++;
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		public SimpleRenderable() {
+			materialName = "BaseWhite";
+			material = MaterialManager.Instance.GetByName("BaseWhite");
+			name = "SimpleRenderable" + nextAutoGenName++;
 
-            material.Load();
-        }
+			material.Load();
+		}
 
-        #endregion
+		#endregion
 
-        #region Implementation of SceneObject
+		#region Implementation of SceneObject
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public override AxisAlignedBox BoundingBox {
-            get {
-                return box;
-            }
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		public override AxisAlignedBox BoundingBox {
+			get {
+				return (AxisAlignedBox)box.Clone();
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="camera"></param>
-        public override void NotifyCurrentCamera(Camera camera) {
-            this.camera = camera;
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="camera"></param>
+		public override void NotifyCurrentCamera(Camera camera) {
+			this.camera = camera;
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="queue"></param>
-        public override void UpdateRenderQueue(RenderQueue queue) {
-            // add ourself to the render queue
-            queue.AddRenderable(this);
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="queue"></param>
+		public override void UpdateRenderQueue(RenderQueue queue) {
+			// add ourself to the render queue
+			queue.AddRenderable(this);
+		}
 
-        #endregion
+		#endregion
 
-        #region IRenderable Members
+		#region IRenderable Members
 
 		public bool CastsShadows {
 			get {
@@ -111,115 +111,115 @@ namespace Axiom.Graphics {
 			}
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public Material Material {
-            get { 
-                return material; 
-            }
-            set {
-                material = value;
-            }
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		public Material Material {
+			get { 
+				return material; 
+			}
+			set {
+				material = value;
+			}
+		}
 
-        public Technique Technique {
-            get {
-                return material.GetBestTechnique();
-            }
-        }
+		public Technique Technique {
+			get {
+				return material.GetBestTechnique();
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="op"></param>
-        public abstract void GetRenderOperation(RenderOperation op);
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="op"></param>
+		public abstract void GetRenderOperation(RenderOperation op);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="matrices"></param>
-        public virtual void GetWorldTransforms(Matrix4[] matrices) {
-            matrices[0] = worldTransform * parentNode.FullTransform;
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="matrices"></param>
+		public virtual void GetWorldTransforms(Matrix4[] matrices) {
+			matrices[0] = worldTransform * parentNode.FullTransform;
+		}
 
-        public bool NormalizeNormals {
-            get {
-                return false;
-            }
-        }
+		public bool NormalizeNormals {
+			get {
+				return false;
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public ushort NumWorldTransforms {
-            get {
-                return 1;
-            }
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		public ushort NumWorldTransforms {
+			get {
+				return 1;
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual bool UseIdentityProjection {
-            get {
-                return false;
-            }
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		public virtual bool UseIdentityProjection {
+			get {
+				return false;
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual bool UseIdentityView {
-            get {
-                return false;
-            }
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		public virtual bool UseIdentityView {
+			get {
+				return false;
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public SceneDetailLevel RenderDetail {
-            get {
-                return SceneDetailLevel.Solid;
-            }
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		public SceneDetailLevel RenderDetail {
+			get {
+				return SceneDetailLevel.Solid;
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="camera"></param>
-        /// <returns></returns>
-        public abstract float GetSquaredViewDepth(Camera camera);
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="camera"></param>
+		/// <returns></returns>
+		public abstract float GetSquaredViewDepth(Camera camera);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual Quaternion WorldOrientation {
-            get {
-                return parentNode.DerivedOrientation;
-            }
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		public virtual Quaternion WorldOrientation {
+			get {
+				return parentNode.DerivedOrientation;
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual Vector3 WorldPosition {
-            get {
-                return parentNode.DerivedPosition;
-            }
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		public virtual Vector3 WorldPosition {
+			get {
+				return parentNode.DerivedPosition;
+			}
+		}
 
-        public LightList Lights {
-            get {
-                if(parentNode != null) {
-                    return parentNode.Lights;
-                }
-                else {
-                    return dummyLightList;
-                }
-            }
-        }
+		public LightList Lights {
+			get {
+				if(parentNode != null) {
+					return parentNode.Lights;
+				}
+				else {
+					return dummyLightList;
+				}
+			}
+		}
 
 		public Vector4 GetCustomParameter(int index) {
 			if(customParams[index] == null) {
@@ -240,6 +240,6 @@ namespace Axiom.Graphics {
 			}
 		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

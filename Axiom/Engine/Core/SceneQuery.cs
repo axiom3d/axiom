@@ -61,31 +61,31 @@ namespace Axiom.Core {
 	/// 	SceneManager.CreateRaySceneQuery.
 	/// </remarks>
 	public abstract class SceneQuery {
-        #region Fields
+		#region Fields
 
 		/// <summary>
 		///		Reference to the SceneManager that this query was created by.
 		/// </summary>
-        protected SceneManager creator;
+		protected SceneManager creator;
 		/// <summary>
 		///		User definable query bit mask which can be used to filter the results of a query.
 		/// </summary>
-        protected ulong queryMask;
+		protected ulong queryMask;
 		/// <summary>
 		///		A flag enum which holds the world fragment types supported by this query.
 		/// </summary>
 		protected WorldFragmentType worldFragmentTypes;
 
-        #endregion Fields
+		#endregion Fields
 		
 		#region Constructors
 		
-        /// <summary>
-        ///		Internal constructor.
-        /// </summary>
-        /// <param name="creator">Reference to the scene manager who created this query.</param>
+		/// <summary>
+		///		Internal constructor.
+		/// </summary>
+		/// <param name="creator">Reference to the scene manager who created this query.</param>
 		internal SceneQuery(SceneManager creator) {
-            this.creator = creator;
+			this.creator = creator;
 
 			// default to no world fragments queried
 			AddWorldFragmentType(WorldFragmentType.None);
@@ -95,9 +95,9 @@ namespace Axiom.Core {
 		
 		#region Methods
 
-        /// <summary>
-        ///		Used to add a supported world fragment type to this query.
-        /// </summary>
+		/// <summary>
+		///		Used to add a supported world fragment type to this query.
+		/// </summary>
 		public void AddWorldFragmentType(WorldFragmentType fragmentType) {
 			worldFragmentTypes |= fragmentType;
 		}
@@ -106,25 +106,25 @@ namespace Axiom.Core {
 		
 		#region Properties
 		
-        /// <summary>
-        ///    Sets the mask for results of this query.
-        /// </summary>
-        /// <remarks>
-        ///    This property allows you to set a 'mask' to limit the results of this
-        ///    query to certain types of result. The actual meaning of this value is
-        ///    up to the application; basically SceneObject instances will only be returned
-        ///    from this query if a bitwise AND operation between this mask value and the
-        ///    SceneObject.QueryFlags value is non-zero. The application will
-        ///    have to decide what each of the bits means.
-        /// </remarks>
-        public ulong QueryMask {
-            get {
-                return queryMask;
-            }
-            set {
-                queryMask = value;
-            }
-        }
+		/// <summary>
+		///    Sets the mask for results of this query.
+		/// </summary>
+		/// <remarks>
+		///    This property allows you to set a 'mask' to limit the results of this
+		///    query to certain types of result. The actual meaning of this value is
+		///    up to the application; basically SceneObject instances will only be returned
+		///    from this query if a bitwise AND operation between this mask value and the
+		///    SceneObject.QueryFlags value is non-zero. The application will
+		///    have to decide what each of the bits means.
+		/// </remarks>
+		public ulong QueryMask {
+			get {
+				return queryMask;
+			}
+			set {
+				queryMask = value;
+			}
+		}
 
 		#endregion
 
@@ -308,16 +308,16 @@ namespace Axiom.Core {
 
 	#region RaySceneQuery Implementation
 
-    /// <summary>
-    ///		Specializes the SceneQuery class for querying for objects along a ray.
-    /// </summary>
-    public abstract class RaySceneQuery : SceneQuery, IRaySceneQueryListener {
+	/// <summary>
+	///		Specializes the SceneQuery class for querying for objects along a ray.
+	/// </summary>
+	public abstract class RaySceneQuery : SceneQuery, IRaySceneQueryListener {
 		#region Fields
 
 		/// <summary>
 		///		Reference to a ray to use for this query.
 		/// </summary>
-        protected Ray ray;
+		protected Ray ray;
 		/// <summary>
 		///		If true, results returned in the list 
 		/// </summary>
@@ -339,23 +339,23 @@ namespace Axiom.Core {
 		///		Constructor.
 		/// </summary>
 		/// <param name="creator">Scene manager who created this query.</param>
-        internal RaySceneQuery(SceneManager creator) : base(creator) {}
+		internal RaySceneQuery(SceneManager creator) : base(creator) {}
 
 		#endregion Constructor
 
 		#region Properties
 
-        /// <summary>
-        ///    Gets/Sets the Ray being used for this query.
-        /// </summary>
-        public Ray Ray {
-            get {
-                return ray;
-            }
-            set {
-                ray = value;
-            }
-        }
+		/// <summary>
+		///    Gets/Sets the Ray being used for this query.
+		/// </summary>
+		public Ray Ray {
+			get {
+				return ray;
+			}
+			set {
+				ray = value;
+			}
+		}
 
 		/// <summary>
 		///		Gets/Sets whether this queries results are sorted by distance.
@@ -549,6 +549,50 @@ namespace Axiom.Core {
 
 	#endregion RaySceneQuery Implementation
 
+	#region AxisAlignedBoxRegionSceneQuery Implementation
+
+	/// <summary>
+	///		Specializes the SceneQuery class for querying items within an AxisAlignedBox.
+	/// </summary>
+	public abstract class AxisAlignedBoxRegionSceneQuery : RegionSceneQuery {
+		#region Fields
+
+		/// <summary>
+		///		Sphere to query items within.
+		/// </summary>
+		protected AxisAlignedBox box;
+
+		#endregion Fields
+
+		#region Constructor
+
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		/// <param name="creator">SceneManager who created this query.</param>
+		internal AxisAlignedBoxRegionSceneQuery(SceneManager creator) : base(creator) {}
+
+		#endregion Constructor
+
+		#region Properties
+
+		/// <summary>
+		///		Gets/Sets the sphere to use for the query.
+		/// </summary>
+		public AxisAlignedBox Box {
+			get {
+				return box;
+			}
+			set {
+				box = value;
+			}
+		}
+
+		#endregion Properties
+	}
+
+	#endregion AxisAlignedBoxRegionSceneQuery Implementation
+
 	#region SphereRegionSceneQuery Implementation
 
 	/// <summary>
@@ -592,6 +636,50 @@ namespace Axiom.Core {
 	}
 
 	#endregion SphereRegionSceneQuery Implementation
+
+	#region PlaneBoundedVolumeListSceneQuery Implementation
+
+	/// <summary>
+	///		Specializes the SceneQuery class for querying items within PlaneBoundedVolumes.
+	/// </summary>
+	public abstract class PlaneBoundedVolumeListSceneQuery : RegionSceneQuery {
+		#region Fields
+
+		/// <summary>
+		///		Sphere to query items within.
+		/// </summary>
+		protected PlaneBoundedVolumeList volumes;
+
+		#endregion Fields
+
+		#region Constructor
+
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		/// <param name="creator">SceneManager who created this query.</param>
+		internal PlaneBoundedVolumeListSceneQuery(SceneManager creator) : base(creator) {}
+
+		#endregion Constructor
+
+		#region Properties
+
+		/// <summary>
+		///		Gets/Sets the sphere to use for the query.
+		/// </summary>
+		public PlaneBoundedVolumeList Volumes {
+			get {
+				return volumes;
+			}
+			set {
+				volumes = value;
+			}
+		}
+
+		#endregion Properties
+	}
+
+	#endregion PlaneBoundedVolumeListSceneQuery Implementation
 
 	#region IntersectionSceneQuery Implementation
 

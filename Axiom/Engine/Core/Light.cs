@@ -31,87 +31,87 @@ using Axiom.MathLib.Collections;
 using Axiom.Graphics;
 
 namespace Axiom.Core {
-    /// <summary>
-    ///    Representation of a dynamic light source in the scene.
-    /// </summary>
-    /// <remarks>
-    ///    Lights are added to the scene like any other object. They contain various
-    ///    parameters like type, position, attenuation (how light intensity fades with
-    ///    distance), color etc.
-    ///    <p/>
-    ///    The defaults when a light is created is pure white diffues light, with no
-    ///    attenuation (does not decrease with distance) and a range of 1000 world units.
-    ///    <p/>
-    ///    Lights are created by using the SceneManager.CreateLight method. They can subsequently be
-    ///    added to a SceneNode if required to allow them to move relative to a node in the scene. A light attached
-    ///    to a SceneNode is assumed to have a base position of (0,0,0) and a direction of (0,0,1) before modification
-    ///    by the SceneNode's own orientation. If not attached to a SceneNode,
-    ///    the light's position and direction is as set using Position and Direction.
-    ///    <p/>
-    ///    Remember also that dynamic lights rely on modifying the color of vertices based on the position of
-    ///    the light compared to an object's vertex normals. Dynamic lighting will only look good if the
-    ///    object being lit has a fair level of tesselation and the normals are properly set. This is particularly
-    ///    true for the spotlight which will only look right on highly tesselated models.
-    /// </remarks>
-    public class Light : SceneObject, IComparable {
-        #region Fields
+	/// <summary>
+	///    Representation of a dynamic light source in the scene.
+	/// </summary>
+	/// <remarks>
+	///    Lights are added to the scene like any other object. They contain various
+	///    parameters like type, position, attenuation (how light intensity fades with
+	///    distance), color etc.
+	///    <p/>
+	///    The defaults when a light is created is pure white diffues light, with no
+	///    attenuation (does not decrease with distance) and a range of 1000 world units.
+	///    <p/>
+	///    Lights are created by using the SceneManager.CreateLight method. They can subsequently be
+	///    added to a SceneNode if required to allow them to move relative to a node in the scene. A light attached
+	///    to a SceneNode is assumed to have a base position of (0,0,0) and a direction of (0,0,1) before modification
+	///    by the SceneNode's own orientation. If not attached to a SceneNode,
+	///    the light's position and direction is as set using Position and Direction.
+	///    <p/>
+	///    Remember also that dynamic lights rely on modifying the color of vertices based on the position of
+	///    the light compared to an object's vertex normals. Dynamic lighting will only look good if the
+	///    object being lit has a fair level of tesselation and the normals are properly set. This is particularly
+	///    true for the spotlight which will only look right on highly tesselated models.
+	/// </remarks>
+	public class Light : SceneObject, IComparable {
+		#region Fields
 
-        /// <summary>
-        ///    Type of light.
-        /// </summary>
-        protected LightType type;
-        /// <summary>
-        ///    Position of this light.
-        /// </summary>
-        protected Vector3 position = Vector3.Zero;
-        /// <summary>
-        ///    Direction of this light.
-        /// </summary>
-        protected Vector3 direction = Vector3.UnitZ;
-        /// <summary>
-        ///		Derived position of this light.
-        ///	</summary>
-        protected Vector3 derivedPosition = Vector3.Zero;
-        /// <summary>
-        ///		Derived direction of this light.
-        ///	</summary>
-        protected Vector3 derivedDirection = Vector3.Zero;
-        /// <summary>
-        ///		Stored version of parent orientation.
-        ///	</summary>
-        protected Quaternion lastParentOrientation = Quaternion.Identity;
-        /// <summary>
-        ///		Stored version of parent position.
-        ///	</summary>
-        protected Vector3 lastParentPosition = Vector3.Zero;
-        /// <summary>
-        ///		Diffuse color.
-        ///	</summary>
-        protected ColorEx diffuse;
-        /// <summary>
-        ///		Specular color.
-        ///	</summary>
-        protected ColorEx specular;
-        /// <summary></summary>
-        protected float spotOuter;
-        /// <summary></summary>
-        protected float spotInner;
-        /// <summary></summary>
-        protected float spotFalloff;
-        /// <summary></summary>
-        protected float range;
-        /// <summary></summary>
-        protected float attenuationConst;
-        /// <summary></summary>
-        protected float attenuationLinear;
-        /// <summary></summary>
-        protected float attenuationQuad;
-        /// <summary></summary>
-        protected bool isModified;
-        /// <summary>
-        ///    Used for sorting.  Internal for "friend" access to SceneManager.
-        /// </summary>
-        internal float tempSquaredDist;
+		/// <summary>
+		///    Type of light.
+		/// </summary>
+		protected LightType type;
+		/// <summary>
+		///    Position of this light.
+		/// </summary>
+		protected Vector3 position = Vector3.Zero;
+		/// <summary>
+		///    Direction of this light.
+		/// </summary>
+		protected Vector3 direction = Vector3.UnitZ;
+		/// <summary>
+		///		Derived position of this light.
+		///	</summary>
+		protected Vector3 derivedPosition = Vector3.Zero;
+		/// <summary>
+		///		Derived direction of this light.
+		///	</summary>
+		protected Vector3 derivedDirection = Vector3.Zero;
+		/// <summary>
+		///		Stored version of parent orientation.
+		///	</summary>
+		protected Quaternion lastParentOrientation = Quaternion.Identity;
+		/// <summary>
+		///		Stored version of parent position.
+		///	</summary>
+		protected Vector3 lastParentPosition = Vector3.Zero;
+		/// <summary>
+		///		Diffuse color.
+		///	</summary>
+		protected ColorEx diffuse;
+		/// <summary>
+		///		Specular color.
+		///	</summary>
+		protected ColorEx specular;
+		/// <summary></summary>
+		protected float spotOuter;
+		/// <summary></summary>
+		protected float spotInner;
+		/// <summary></summary>
+		protected float spotFalloff;
+		/// <summary></summary>
+		protected float range;
+		/// <summary></summary>
+		protected float attenuationConst;
+		/// <summary></summary>
+		protected float attenuationLinear;
+		/// <summary></summary>
+		protected float attenuationQuad;
+		/// <summary></summary>
+		protected bool isModified;
+		/// <summary>
+		///    Used for sorting.  Internal for "friend" access to SceneManager.
+		/// </summary>
+		internal float tempSquaredDist;
 		/// <summary>
 		///		Stored version of the last near clip volume tested.
 		/// </summary>
@@ -121,21 +121,21 @@ namespace Axiom.Core {
 		/// </summary>
 		protected PlaneBoundedVolumeList frustumClipVolumes = new PlaneBoundedVolumeList();
 
-        #endregion
+		#endregion
 		
-        #region Constructors
+		#region Constructors
 
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public Light() : this("") {
-        }
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		public Light() : this("") {
+		}
 
-        /// <summary>
-        ///		Normal constructor. Should not be called directly, but rather the SceneManager.CreateLight method should be used.
-        /// </summary>
-        /// <param name="name"></param>
-        public Light(string name) {
+		/// <summary>
+		///		Normal constructor. Should not be called directly, but rather the SceneManager.CreateLight method should be used.
+		/// </summary>
+		/// <param name="name"></param>
+		public Light(string name) {
 			this.name = name;
 
 			type = LightType.Point;
@@ -154,212 +154,212 @@ namespace Axiom.Core {
 			spotFalloff = 1.0f;
 			
 			isModified = true;
-        }
+		}
 
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
 
-        /// <summary>
-        ///		Gets/Sets the type of light this is.
-        /// </summary>
-        public LightType Type {
-            get { 
-                return type; 
-            }
-            set { 
-                type = value; 
-                isModified = true; 
-            }
-        }
+		/// <summary>
+		///		Gets/Sets the type of light this is.
+		/// </summary>
+		public LightType Type {
+			get { 
+				return type; 
+			}
+			set { 
+				type = value; 
+				isModified = true; 
+			}
+		}
 
-        /// <summary>
-        ///		Gets/Sets the position of the light.
-        /// </summary>
-        public Vector3 Position {
-            get { 
-                return position; 
-            }
-            set { 
-                position = value; 
-                isModified = true; 
-            }
-        }
+		/// <summary>
+		///		Gets/Sets the position of the light.
+		/// </summary>
+		public Vector3 Position {
+			get { 
+				return position; 
+			}
+			set { 
+				position = value; 
+				isModified = true; 
+			}
+		}
 
-        /// <summary>
-        ///		Gets/Sets the direction of the light.
-        /// </summary>
-        public Vector3 Direction {
-            get { 
-                return direction; 
-            }
-            set { 
-                direction = value; 
-                isModified = true; 
-            }
-        }
+		/// <summary>
+		///		Gets/Sets the direction of the light.
+		/// </summary>
+		public Vector3 Direction {
+			get { 
+				return direction; 
+			}
+			set { 
+				direction = value; 
+				isModified = true; 
+			}
+		}
 
-        /// <summary>
-        ///		Gets the inner angle of the spotlight.
-        /// </summary>
-        public float SpotlightInnerAngle {
-            get { 
-                return spotInner; 
-            }
-        }
+		/// <summary>
+		///		Gets the inner angle of the spotlight.
+		/// </summary>
+		public float SpotlightInnerAngle {
+			get { 
+				return spotInner; 
+			}
+		}
 
-        /// <summary>
-        ///		Gets the outer angle of the spotlight.
-        /// </summary>
-        public float SpotlightOuterAngle {
-            get { 
-                return spotInner; 
-            }
-        }
+		/// <summary>
+		///		Gets the outer angle of the spotlight.
+		/// </summary>
+		public float SpotlightOuterAngle {
+			get { 
+				return spotOuter; 
+			}
+		}
 
-        /// <summary>
-        ///		Gets the spotlight falloff.
-        /// </summary>
-        public float SpotlightFalloff {
-            get { 
-                return spotInner; 
-            }
-        }
+		/// <summary>
+		///		Gets the spotlight falloff.
+		/// </summary>
+		public float SpotlightFalloff {
+			get { 
+				return spotFalloff; 
+			}
+		}
 
-        /// <summary>
-        ///		Gets/Sets the diffuse color of the light.
-        /// </summary>
-        public ColorEx Diffuse {
-            get { 
-                return diffuse; 
-            }
-            set { 
-                diffuse = value; 
-                isModified = true; 
-            }
-        }
+		/// <summary>
+		///		Gets/Sets the diffuse color of the light.
+		/// </summary>
+		public ColorEx Diffuse {
+			get { 
+				return diffuse; 
+			}
+			set { 
+				diffuse = value; 
+				isModified = true; 
+			}
+		}
 
-        /// <summary>
-        ///		Gets/Sets the diffuse color of the light.
-        /// </summary>
-        public ColorEx Specular {
-            get { 
-                return specular; 
-            }
-            set { 
-                specular = value; 
-                isModified = true; 
-            }
-        }
+		/// <summary>
+		///		Gets/Sets the diffuse color of the light.
+		/// </summary>
+		public ColorEx Specular {
+			get { 
+				return specular; 
+			}
+			set { 
+				specular = value; 
+				isModified = true; 
+			}
+		}
 
-        /// <summary>
-        ///		Gets the attenuation range value.
-        /// </summary>
-        public float AttenuationRange {
-            get { 
-                return range; 
-            }
-        }
+		/// <summary>
+		///		Gets the attenuation range value.
+		/// </summary>
+		public float AttenuationRange {
+			get { 
+				return range; 
+			}
+		}
 
-        /// <summary>
-        ///		Gets the constant attenuation value.
-        /// </summary>
-        public float AttenuationConstant {
-            get { 
-                return attenuationConst; 
-            }
-        }
+		/// <summary>
+		///		Gets the constant attenuation value.
+		/// </summary>
+		public float AttenuationConstant {
+			get { 
+				return attenuationConst; 
+			}
+		}
 
-        /// <summary>
-        ///		Gets the linear attenuation value.
-        /// </summary>
-        public float AttenuationLinear {
-            get { 
-                return attenuationLinear; 
-            }
-        }
+		/// <summary>
+		///		Gets the linear attenuation value.
+		/// </summary>
+		public float AttenuationLinear {
+			get { 
+				return attenuationLinear; 
+			}
+		}
 
-        /// <summary>
-        ///		Gets the quadratic attenuation value.
-        /// </summary>
-        public float AttenuationQuadratic {
-            get { 
-                return attenuationQuad; 
-            }
-        }
+		/// <summary>
+		///		Gets the quadratic attenuation value.
+		/// </summary>
+		public float AttenuationQuadratic {
+			get { 
+				return attenuationQuad; 
+			}
+		}
 
-        /// <summary>
-        ///		Updates this lights position.
-        /// </summary>
-        public void Update() {
-            if(parentNode != null) {
-                if(!isModified
-                    && parentNode.DerivedOrientation == lastParentOrientation
-                    && parentNode.DerivedPosition == lastParentPosition) {
-                }
-                else {
-                    // we are out of date with the scene node we are attached to
-                    lastParentOrientation = parentNode.DerivedOrientation;
-                    lastParentPosition = parentNode.DerivedPosition;
-                    derivedDirection = lastParentOrientation * direction;
-                    derivedPosition = (lastParentOrientation * position) + lastParentPosition;
-                }
-            }
-            else {
-                derivedPosition = position;
-                derivedDirection = direction;
-            }
-        }
+		/// <summary>
+		///		Updates this lights position.
+		/// </summary>
+		public void Update() {
+			if(parentNode != null) {
+				if(!isModified
+					&& parentNode.DerivedOrientation == lastParentOrientation
+					&& parentNode.DerivedPosition == lastParentPosition) {
+				}
+				else {
+					// we are out of date with the scene node we are attached to
+					lastParentOrientation = parentNode.DerivedOrientation;
+					lastParentPosition = parentNode.DerivedPosition;
+					derivedDirection = lastParentOrientation * direction;
+					derivedPosition = (lastParentOrientation * position) + lastParentPosition;
+				}
+			}
+			else {
+				derivedPosition = position;
+				derivedDirection = direction;
+			}
+		}
 
-        /// <summary>
-        ///		Gets the derived position of this light.
-        /// </summary>
-        public Vector3 DerivedPosition {
-            get {
-                // this is called to force an update
-                Update();
+		/// <summary>
+		///		Gets the derived position of this light.
+		/// </summary>
+		public Vector3 DerivedPosition {
+			get {
+				// this is called to force an update
+				Update();
 
-                return derivedPosition;
-            }
-        }
+				return derivedPosition;
+			}
+		}
 
-        /// <summary>
-        ///		Gets the derived position of this light.
-        /// </summary>
-        public Vector3 DerivedDirection {
-            get {
-                // this is called to force an update
-                Update();
+		/// <summary>
+		///		Gets the derived position of this light.
+		/// </summary>
+		public Vector3 DerivedDirection {
+			get {
+				// this is called to force an update
+				Update();
 
-                return derivedDirection;
-            }
-        }
+				return derivedDirection;
+			}
+		}
 
-        /// <summary>
-        ///		Override IsVisible to ensure we are updated when this changes.
-        /// </summary>
-        public override bool IsVisible {
-            get {
-                return base.IsVisible;
-            }
-            set {
-                base.IsVisible = value;
-            }
-        }
+		/// <summary>
+		///		Override IsVisible to ensure we are updated when this changes.
+		/// </summary>
+		public override bool IsVisible {
+			get {
+				return base.IsVisible;
+			}
+			set {
+				base.IsVisible = value;
+			}
+		}
 
-        /// <summary>
-        ///    Local bounding radius of this light.
-        /// </summary>
-        public override float BoundingRadius {
-            get {
-                // not visible
-                return 0;
-            }
-        }
+		/// <summary>
+		///    Local bounding radius of this light.
+		/// </summary>
+		public override float BoundingRadius {
+			get {
+				// not visible
+				return 0;
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
 		/// <summary>
 		///		Gets the details of this light as a 4D vector.
@@ -390,6 +390,15 @@ namespace Axiom.Core {
 			return vec;
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="innerAngle"></param>
+		/// <param name="outerAngle"></param>
+		public void SetSpotlightRange(float innerAngle, float outerAngle) {
+			SetSpotlightRange(innerAngle, outerAngle, 1.0f);
+		}
+
         /// <summary>
         ///		Sets the spotlight parameters in a single call.
         /// </summary>
@@ -397,8 +406,9 @@ namespace Axiom.Core {
         /// <param name="outerAngle"></param>
         /// <param name="falloff"></param>
         public void SetSpotlightRange(float innerAngle, float outerAngle, float falloff) {
-            if(type != LightType.Spotlight)
-                throw new Exception("Setting the spotlight range is only valid for spotlights.");
+			if(type != LightType.Spotlight) {
+				throw new Exception("Setting the spotlight range is only valid for spotlights.");
+			}
 
             spotInner = innerAngle;
             spotOuter = outerAngle;

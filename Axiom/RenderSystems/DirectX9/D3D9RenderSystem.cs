@@ -48,6 +48,19 @@ namespace Axiom.RenderSystems.DirectX9 {
 	/// DirectX9 Render System implementation.
 	/// </summary>
 	public class D3D9RenderSystem : RenderSystem {
+
+		public static readonly Matrix4 ProjectionClipSpace2DToImageSpacePerspective = new Matrix4(
+			0.5f,    0,  0, -0.5f, 
+			0, -0.5f,  0, -0.5f, 
+			0,    0,  0,   1f,
+			0,    0,  0,   1f);
+
+		public static readonly Matrix4 ProjectionClipSpace2DToImageSpaceOrtho = new Matrix4(
+			-0.5f,    0,  0, -0.5f, 
+			0, 0.5f,  0, -0.5f, 
+			0,    0,  0,   1f,
+			0,    0,  0,   1f);
+
 		/// <summary>
 		///    Reference to the Direct3D device.
 		/// </summary>
@@ -81,6 +94,9 @@ namespace Axiom.RenderSystems.DirectX9 {
 		protected Axiom.Core.Light[] lights = new Axiom.Core.Light[MAX_LIGHTS];
 
 		protected D3DGpuProgramManager gpuProgramMgr;
+
+		/// Saved last view matrix
+		protected Matrix4 viewMatrix = Matrix4.Identity;
 
 		/// <summary>
 		///		Temp D3D vector to avoid constant allocations.
@@ -777,14 +793,16 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// </summary>
 		/// <param name="stage"></param>
 		/// <param name="method"></param>
-		public override void SetTextureCoordCalculation(int stage, TexCoordCalcMethod method) {
+		public override void SetTextureCoordCalculation(int stage, TexCoordCalcMethod method, Frustum frustum) {
 			// save this for texture matrix calcs later
 			texStageDesc[stage].autoTexCoordType = method;
+			texStageDesc[stage].frustum = frustum;
 
 			// set auto texcoord gen mode if present
 			// if not present we've already set it through SetTextureCoordSet
-			if(method != TexCoordCalcMethod.None)
-				device.TextureState[stage].TextureCoordinateIndex = D3DHelper.ConvertEnum(method, d3dCaps);
+			if(method != TexCoordCalcMethod.None) {
+				device.TextureState[stage].TextureCoordinateIndex = D3DHelper.ConvertEnum(method, d3dCaps) | texStageDesc[stage].coordIndex;
+			}
 		}
 
 		public override void BindGpuProgram(GpuProgram program) {
@@ -875,12 +893,14 @@ namespace Axiom.RenderSystems.DirectX9 {
 			}
 			set {
 				// flip the transform portion of the matrix for DX and its left-handed coord system
-				DX.Matrix dxView = MakeD3DMatrix(value);
-				dxView.M13 = -dxView.M13;
-				dxView.M23 = -dxView.M23;
-				dxView.M33 = -dxView.M33;
-				dxView.M43 = -dxView.M43;
+				// save latest view matrix
+				viewMatrix = value;
+				viewMatrix.m20 = -viewMatrix.m20;
+				viewMatrix.m21 = -viewMatrix.m21;
+				viewMatrix.m22 = -viewMatrix.m22;
+				viewMatrix.m23 = -viewMatrix.m23;
 
+				DX.Matrix dxView = MakeD3DMatrix(viewMatrix);
 				device.Transform.View = dxView;
 			}
 		}
@@ -1247,18 +1267,19 @@ namespace Axiom.RenderSystems.DirectX9 {
 			}
 
 			// Now set up sources
-			ColorEx manualD3D = null;
+			System.Drawing.Color factor = System.Drawing.Color.FromArgb( device.RenderState.TextureFactor );
+			ColorEx manualD3D = ColorEx.FromColor(factor);
 
 			if( blendMode.blendType == LayerBlendType.Color ) {
-				manualD3D = new ColorEx(1.0f, blendMode.colorArg1.r, blendMode.colorArg1.g, blendMode.colorArg1.b);
+				manualD3D = new ColorEx(manualD3D.a, blendMode.colorArg1.r, blendMode.colorArg1.g, blendMode.colorArg1.b);
 			}
 			else if( blendMode.blendType == LayerBlendType.Alpha ) {
-				manualD3D = new ColorEx(blendMode.alphaArg1, 0, 0, 0);
+				manualD3D = new ColorEx(blendMode.alphaArg1, manualD3D.r, manualD3D.g, manualD3D.b);
 			}
 
 			LayerBlendSource blendSource = blendMode.source1;
 
-			for( int i=0; i < 2; i++ ) {
+			for( int i = 0; i < 2; i++ ) {
 				D3D.TextureArgument d3dTexArg = D3DHelper.ConvertEnum(blendSource);
 
 				// set the texture blend factor if this is manual blending
@@ -1282,10 +1303,10 @@ namespace Axiom.RenderSystems.DirectX9 {
 				// Source2
 				blendSource = blendMode.source2;
 				if( blendMode.blendType == LayerBlendType.Color ) {
-					manualD3D = new ColorEx(1.0f, blendMode.colorArg2.r, blendMode.colorArg2.g, blendMode.colorArg2.b);
+					manualD3D = new ColorEx(manualD3D.a, blendMode.colorArg2.r, blendMode.colorArg2.g, blendMode.colorArg2.b);
 				}
 				else if( blendMode.blendType == LayerBlendType.Alpha ) {
-					manualD3D = new ColorEx(blendMode.alphaArg2, 0, 0, 0);
+					manualD3D = new ColorEx(blendMode.alphaArg2, manualD3D.r, manualD3D.g, manualD3D.b);
 				}
 			}
 		}
@@ -1402,6 +1423,22 @@ namespace Axiom.RenderSystems.DirectX9 {
 				newMat = newMat * viewTransposed;
 			}
 
+			if (texStageDesc[stage].autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture) {
+				// Derive camera space to projector space transform
+				// To do this, we need to undo the camera view matrix, then 
+				// apply the projector view & projection matrices
+				newMat = viewMatrix.Inverse() * newMat;
+				newMat = texStageDesc[stage].frustum.ViewMatrix * newMat;
+				newMat = texStageDesc[stage].frustum.ProjectionMatrix * newMat;
+				if (texStageDesc[stage].frustum.ProjectionType == Projection.Perspective) {
+					newMat = ProjectionClipSpace2DToImageSpacePerspective * newMat;
+				}
+				else {
+					newMat = ProjectionClipSpace2DToImageSpaceOrtho * newMat;
+				}
+
+			}
+
 			// convert to D3D format
 			d3dMat = MakeD3DMatrix(newMat);
 
@@ -1416,18 +1453,22 @@ namespace Axiom.RenderSystems.DirectX9 {
 			D3D.TransformType d3dTransType = (D3D.TransformType)((int)(D3D.TransformType.Texture0) + stage);
 
 			// set the matrix if it is not the identity
-			if(!D3DHelper.IsIdentity(ref d3dMat)) {
+			if(!D3DHelper.IsIdentity(ref d3dMat)) { 
 				// tell D3D the dimension of tex. coord
 				int texCoordDim = 0;
-
-				switch(texStageDesc[stage].texType) {
-					case D3DTexType.Normal:
-						texCoordDim = 2;
-						break;
-					case D3DTexType.Cube:
-					case D3DTexType.Volume:
-						texCoordDim = 3;
-						break;
+				if (texStageDesc[stage].autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture) {
+					texCoordDim = 256 | 3;
+				}
+				else {
+					switch(texStageDesc[stage].texType) {
+						case D3DTexType.Normal:
+							texCoordDim = 2;
+							break;
+						case D3DTexType.Cube:
+						case D3DTexType.Volume:
+							texCoordDim = 3;
+							break;
+					}
 				}
 
 				// note: int values of D3D.TextureTransform correspond directly with tex dimension, so direct conversion is possible
@@ -1721,9 +1762,15 @@ namespace Axiom.RenderSystems.DirectX9 {
 	///		Structure holding texture unit settings for every stage
 	/// </summary>
 	internal struct D3DTextureStageDesc {
+		/// the type of the texture
 		public D3DTexType texType;
+		/// wich texCoordIndex to use
 		public int coordIndex;
+		/// type of auto tex. calc. used
 		public TexCoordCalcMethod autoTexCoordType;
+		/// Frustum, used if the above is projection
+		public Frustum frustum;
+		/// texture 
 		public D3D.Texture tex;
 	}
 

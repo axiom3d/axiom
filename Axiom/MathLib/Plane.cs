@@ -61,7 +61,7 @@ namespace Axiom.MathLib {
 
         public Plane(Vector3 normal, Vector3 point) {
             this.normal = normal;
-            this.d = normal.Dot(point);
+            this.d = -normal.Dot(point);
         }
 
         #endregion

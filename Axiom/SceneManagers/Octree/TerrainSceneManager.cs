@@ -228,8 +228,8 @@ namespace Axiom.SceneManagers.Octree {
         /// 
         /// </summary>
         /// <param name="camera"></param>
-        public override void FindVisibleObjects(Camera camera) {
-            base.FindVisibleObjects (camera);
+        public override void FindVisibleObjects(Camera camera, bool onlyShadowCasters) {
+            base.FindVisibleObjects (camera, onlyShadowCasters);
         }
 
         /// <summary>

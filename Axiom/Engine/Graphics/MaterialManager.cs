@@ -73,9 +73,14 @@ namespace Axiom.Graphics {
 
             instance.Initialize();
 
-            // just create the default BaseWhite material
+			// Set up default material - don't use name contructor as we want to avoid applying defaults
+			Material.defaultSettings = new Material();
+			Material.defaultSettings.SetName("DefaultSettings");
+			// Add a single technique and pass, non-programmable
+			Material.defaultSettings.CreateTechnique().CreatePass();
+
+			// just create the default BaseWhite material
             Material baseWhite = (Material)instance.Create("BaseWhite");
-            baseWhite.CreateTechnique().CreatePass();
             baseWhite.Lighting = false;
 
             instance.defaultMinFilter = FilterOptions.Linear;

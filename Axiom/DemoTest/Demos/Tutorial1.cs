@@ -285,12 +285,15 @@ namespace Demos {
             // grab a copy of the BaseWhite material for our use
             Material material = MaterialManager.Instance.GetByName("BaseWhite");
             material = material.Clone("TriMat");
+
             // disable lighting to vertex colors are used
             material.Lighting = false;
             // set culling to none so the triangle is drawn 2 sided
             material.CullingMode = CullingMode.None;
 
-            this.Material = material;
+			materialName = "TriMat";
+
+			this.Material = material;
 
             // set the bounding box of the tri
             // TODO: not right, but good enough for now
