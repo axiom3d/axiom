@@ -15,7 +15,7 @@ namespace Plugin_CgProgramManager
         /// <summary>
         ///    ID of the active Cg context.
         /// </summary>
-        private int cgContext;
+        private IntPtr cgContext;
 
         #endregion Fields
 

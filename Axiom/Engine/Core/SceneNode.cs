@@ -349,7 +349,7 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        ///    Allows retrieval of the nearest lights to the centre of this SceneNode.
+        ///    Allows retrieval of the nearest lights to the center of this SceneNode.
         /// </summary>
         /// <remarks>
         ///    This method allows a list of lights, ordered by proximity to the center of
@@ -357,7 +357,7 @@ namespace Axiom.Core {
         ///    the node nor the lights have moved will result in the same list being returned
         ///    without recalculation. Can be useful when implementing IRenderable.Lights.
         /// </remarks>
-        public LightList Lights {
+        public new LightList Lights {
             get {
                 if(lightListDirty) {
                     creator.PopulateLightList(this.DerivedPosition, lightList);

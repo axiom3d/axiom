@@ -155,7 +155,7 @@ namespace Axiom.Graphics
         protected abstract void PopulateParameterNames(GpuProgramParameters parms);
 
         /// <summary>
-        ///    Creates a new parameters object from this program definition.
+        ///    Creates a new parameters object compatible with this program definition.
         /// </summary>
         /// <remarks>
         ///    Unlike low-level assembly programs, parameters objects are specific to the
@@ -164,7 +164,7 @@ namespace Axiom.Graphics
         ///    object containing the definition of the parameters this program understands.
         /// </remarks>
         /// <returns>A new set of program parameters.</returns>
-        public GpuProgramParameters CreateParameters() {
+        public override GpuProgramParameters CreateParameters() {
             // make sure parameter definitions are loaded
             LoadHighLevelImpl();
 

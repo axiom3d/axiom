@@ -76,9 +76,23 @@ namespace Axiom.Graphics
         #endregion Constructors
 		
         #region Methods
+
+        /// <summary>
+        ///    Creates a new parameters object compatible with this program definition.
+        /// </summary>
+        /// <remarks>
+        ///    It is recommended that you use this method of creating parameters objects
+        ///    rather than going direct to GpuProgramManager, because this method will
+        ///    populate any implementation-specific extras (like named parameters) where
+        ///    they are appropriate.
+        /// </remarks>
+        /// <returns></returns>
+        public virtual GpuProgramParameters CreateParameters() {
+            return GpuProgramManager.Instance.CreateParameters();
+        }
 		
         /// <summary>
-        ///    
+        ///    Loads this Gpu Program.
         /// </summary>
         public override void Load() {
             if(isLoaded) {

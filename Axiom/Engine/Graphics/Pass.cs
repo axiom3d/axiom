@@ -44,7 +44,7 @@ namespace Axiom.Graphics
     ///    <p/>
     ///    Programmable passes are complex to define, because they require custom
     ///    programs and you have to set all constant inputs to the programs (like
-    ///    the position of lights, any base material colours you wish to use etc), but
+    ///    the position of lights, any base material colors you wish to use etc), but
     ///    they do give you much total flexibility over the algorithms used to render your
     ///    pass, and you can create some effects which are impossible with a fixed-function pass.
     ///    On the other hand, you can define a fixed-function pass in very little time, and
@@ -426,7 +426,7 @@ namespace Axiom.Graphics
         ///    defined in the enum FogMode.
         /// </param>
         /// <param name="color">
-        ///    The colour of the fog. Either set this to the same as your viewport background colour,
+        ///    The color of the fog. Either set this to the same as your viewport background color,
         ///    or to blend in with a skydome or skybox.
         /// </param>
         /// <param name="density">
@@ -494,7 +494,7 @@ namespace Axiom.Graphics
         ///    defined in the enum FogMode.
         /// </param>
         /// <param name="color">
-        ///    The colour of the fog. Either set this to the same as your viewport background colour,
+        ///    The color of the fog. Either set this to the same as your viewport background color,
         ///    or to blend in with a skydome or skybox.
         /// </param>
         public void SetFog(bool overrideScene, FogMode mode, ColorEx color) {
@@ -514,7 +514,7 @@ namespace Axiom.Graphics
         ///    defined in the enum FogMode.
         /// </param>
         /// <param name="color">
-        ///    The colour of the fog. Either set this to the same as your viewport background colour,
+        ///    The color of the fog. Either set this to the same as your viewport background color,
         ///    or to blend in with a skydome or skybox.
         /// </param>
         /// <param name="density">
@@ -577,8 +577,8 @@ namespace Axiom.Graphics
         ///    <p/>
         ///    This method is applicable for both the fixed-function and programmable pipelines.
         /// </remarks>
-        /// <param name="src">The source factor in the above calculation, i.e. multiplied by the texture colour components.</param>
-        /// <param name="dest">The destination factor in the above calculation, i.e. multiplied by the pixel colour components.</param>
+        /// <param name="src">The source factor in the above calculation, i.e. multiplied by the texture color components.</param>
+        /// <param name="dest">The destination factor in the above calculation, i.e. multiplied by the pixel color components.</param>
         public void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest) {
             // copy settings
             sourceBlendFactor = src;
@@ -680,12 +680,12 @@ namespace Axiom.Graphics
 		///    Sets the ambient color reflectance properties of this pass.
 		/// </summary>
 		/// <remarks>
-		///    The base colour of a pass is determined by how much red, green and blue light is reflects
+		///    The base color of a pass is determined by how much red, green and blue light is reflects
 		///    (provided texture layer #0 has a blend mode other than LayerBlendOperation.Replace). 
 		///    This property determines how much ambient light (directionless global light) is reflected. 
 		///    The default is full white, meaning objects are completely globally illuminated. Reduce this 
-		///    if you want to see diffuse or specular light effects, or change the blend of colours to make 
-		///    the object have a base colour other than white.
+		///    if you want to see diffuse or specular light effects, or change the blend of colors to make 
+		///    the object have a base color other than white.
 		///    <p/>
         ///    This setting has no effect if dynamic lighting is disabled (see <see cref="Pass.LightingEnabled"/>),
         ///    or if this is a programmable pass.
@@ -700,10 +700,10 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        ///    Sets whether or not colour buffer writing is enabled for this Pass.
+        ///    Sets whether or not color buffer writing is enabled for this Pass.
         /// </summary>
         /// <remarks>
-        ///    For some effects, you might wish to turn off the colour write operation
+        ///    For some effects, you might wish to turn off the color write operation
         ///    when rendering geometry; this means that only the depth buffer will be
         ///    updated (provided you have depth buffer writing enabled, which you 
         ///    probably will do, although you may wish to only update the stencil
@@ -838,10 +838,10 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-		///    Sets the diffuse colour reflectance properties of this pass.
+		///    Sets the diffuse color reflectance properties of this pass.
 		/// </summary>
 		/// <remarks>
-		///    The base colour of a pass is determined by how much red, green and blue light is reflects
+		///    The base color of a pass is determined by how much red, green and blue light is reflects
 		///    (provided texture layer #0 has a blend mode other than LayerBlendOperation.Replace). This property determines how
 		///    much diffuse light (light from instances of the Light class in the scene) is reflected. The default
 		///    is full white, meaning objects reflect the maximum white light they can from Light objects.
@@ -871,7 +871,7 @@ namespace Axiom.Graphics
         }
         
         /// <summary>
-        ///    Returns the fog colour for the scene.
+        ///    Returns the fog color for the scene.
         /// </summary>
         /// <remarks>
         ///    Only valid if FogOverride is true.
@@ -1183,10 +1183,10 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        ///    Sets the specular colour reflectance properties of this pass.
+        ///    Sets the specular color reflectance properties of this pass.
         /// </summary>
         /// <remarks>
-        ///    The base colour of a pass is determined by how much red, green and blue light is reflects
+        ///    The base color of a pass is determined by how much red, green and blue light is reflects
         ///    (provided texture layer #0 has a blend mode other than LBO_REPLACE). This property determines how
         ///    much specular light (highlights from instances of the Light class in the scene) is reflected.
         ///    The default is to reflect no specular light.

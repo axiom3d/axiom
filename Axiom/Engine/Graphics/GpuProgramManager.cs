@@ -25,9 +25,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Specialized;
+using System.IO;
 using Axiom.Core;
 using Axiom.Exceptions;
+using Axiom.FileSystem;
+using Axiom.Scripting;
 
 namespace Axiom.Graphics
 {
@@ -215,6 +219,142 @@ namespace Axiom.Graphics
         }
 
 		#endregion
+
+        #region Script parsing
+
+        /// <summary>
+        ///		Look for .program scripts in all known sources and parse them.
+        /// </summary>
+        /// <param name="extension"></param>
+        public void ParseAllSources() {
+            string extension = ".program";
+
+            // search archives
+            for(int i = 0; i < archives.Count; i++) {
+                Archive archive = (Archive)archives[i];
+                string[] files = archive.GetFileNamesLike("", extension);
+
+                for(int j = 0; j < files.Length; j++) {
+                    Stream data = archive.ReadFile(files[j]);
+
+                    // parse the materials
+                    ParseScript(data);
+                }
+            }
+
+            // search common archives
+            for(int i = 0; i < commonArchives.Count; i++) {
+                Archive archive = (Archive)commonArchives[i];
+                string[] files = archive.GetFileNamesLike("", extension);
+
+                for(int j = 0; j < files.Length; j++) {
+                    Stream data = archive.ReadFile(files[j]);
+
+                    // parse the materials
+                    ParseScript(data);
+                }
+            }
+        }
+
+        protected void ParseScript(Stream stream) {
+            StreamReader script = new StreamReader(stream, System.Text.Encoding.ASCII);
+
+            string line = "";
+
+            // parse through the data to the end
+            while((line = ParseHelper.ReadLine(script)) != null) {
+                // ignore blank lines and comments
+                if(line.Length == 0 || line.StartsWith("//")) {
+                    continue;
+                }
+
+                // Vertex Programs
+                if(line.StartsWith("vertex_program")) {
+                    string[] parms = line.Split(' ');
+
+                    if(parms.Length != 3) {
+                        ParseHelper.LogParserError("vertex_program", "Top level", "Vertex program declarations must include a type and name.");
+                        // skip this one
+                        ParseHelper.SkipToNextCloseBrace(script);
+                        continue;
+                    }
+
+                    ParseHelper.SkipToNextOpenBrace(script);
+                    ParseGpuProgram(script, parms[2], parms[1], GpuProgramType.Vertex);
+                }
+                    // Fragment Programs
+                else if(line.StartsWith("fragment_program")) {
+                    string[] parms = line.Split(' ');
+
+                    if(parms.Length != 3) {
+                        ParseHelper.LogParserError("vertex_program", "Top level", "Fragment program declarations must include a type and name.");
+                        // skip this one
+                        ParseHelper.SkipToNextCloseBrace(script);
+                        continue;
+                    }
+
+                    ParseHelper.SkipToNextOpenBrace(script);
+                    ParseGpuProgram(script, parms[2], parms[1], GpuProgramType.Fragment);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="script"></param>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        /// <param name="programType"></param>
+        protected void ParseGpuProgram(TextReader script, string name, string language, GpuProgramType programType) {
+
+            string line = string.Empty;
+            string fileName = string.Empty;
+            string profiles = string.Empty;
+            Hashtable parmsTable = new Hashtable();
+
+            while((line = ParseHelper.ReadLine(script)) != null) {
+                // ignore blank lines and comments
+                if(line.Length == 0 || line.StartsWith("//")) {
+                    continue;
+                }
+
+                if(line == "}") {
+                    if(language == "asm") {
+                        string profile = (string)parmsTable["profile"];
+
+                        GpuProgramManager.Instance.CreateProgram(name, fileName, programType, profile);
+                    }
+                    else {
+                        // High level gpu programs
+                        HighLevelGpuProgram program = HighLevelGpuProgramManager.Instance.CreateProgram(name, language, programType);
+                        program.SourceFile = fileName;
+
+                        // set all extra params
+                        foreach(DictionaryEntry entry in parmsTable) {
+                            program.SetParam((string)entry.Key, (string)entry.Value);
+                        }
+
+                        program.Load();
+                    }
+
+                    return;
+                }
+                
+                string[] atts = line.Split(new char[]{' '}, 2);
+
+                if(atts[0] == "source") {
+                    fileName = atts[1];
+                }
+                else {
+                    // store the param for parsing later
+                    parmsTable.Add(atts[0], atts[1]);
+                }
+            }
+        }
+
+
+        #endregion
 		
         #region Properties
 		

@@ -328,22 +328,22 @@ namespace Axiom.Utility {
         }
 
         protected void UpdateStats() {
-            GuiElement element = GuiManager.Instance.GetElement("Core/CurrFps", false);
+            GuiElement element = GuiManager.Instance.GetElement("Core/CurrFps");
             element.Text = string.Format("Current FPS: {0}", Engine.Instance.CurrentFPS);
 
-            element = GuiManager.Instance.GetElement("Core/BestFps", false);
+            element = GuiManager.Instance.GetElement("Core/BestFps");
             element.Text = string.Format("Best FPS: {0}", Engine.Instance.BestFPS);
 
-            element = GuiManager.Instance.GetElement("Core/WorstFps", false);
+            element = GuiManager.Instance.GetElement("Core/WorstFps");
             element.Text = string.Format("Worst FPS: {0}", Engine.Instance.WorstFPS);
 
-            element = GuiManager.Instance.GetElement("Core/AverageFps", false);
+            element = GuiManager.Instance.GetElement("Core/AverageFps");
             element.Text = string.Format("Average FPS: {0}", Engine.Instance.AverageFPS);
 
-            element = GuiManager.Instance.GetElement("Core/NumTris", false);
+            element = GuiManager.Instance.GetElement("Core/NumTris");
             element.Text = string.Format("Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered);
 
-            element = GuiManager.Instance.GetElement("Core/DebugText", false);
+            element = GuiManager.Instance.GetElement("Core/DebugText");
             element.Text = window.DebugText;
         }
 

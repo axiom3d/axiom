@@ -36,13 +36,13 @@ using System.Runtime.InteropServices;
 
 namespace Axiom.MathLib {
     /// <summary>
-    ///	Standard 3-dimensional vector.
+    ///    Standard 3-dimensional vector.
     /// </summary>
     /// <remarks>
-    ///	A direction in 3D space represented as distances along the 3
-    ///	orthoganal axes (x, y, z). Note that positions, directions and
-    ///	scaling factors can be represented by a vector, depending on how
-    ///	you interpret the values.
+    ///	    A direction in 3D space represented as distances along the 3
+    ///	    orthoganal axes (x, y, z). Note that positions, directions and
+    ///	    scaling factors can be represented by a vector, depending on how
+    ///	    you interpret the values.
     /// </remarks>
     [StructLayout(LayoutKind.Sequential)]
     public struct Vector3 {
@@ -60,8 +60,6 @@ namespace Axiom.MathLib {
         private static readonly Vector3 unitVectorY = new Vector3(0.0f, 1.0f, 0.0f);
         private static readonly Vector3 unitVectorZ = new Vector3(0.0f, 0.0f, 1.0f);
         private static readonly Vector3 unitVector = new Vector3(1.0f, 1.0f, 1.0f);
-
-        private const float SQUARE_ZERO = 1e-06f * 1e-06f;
 
         #endregion
 
@@ -107,7 +105,7 @@ namespace Axiom.MathLib {
         /// <param name="right"></param>
         /// <returns></returns>
         public static Vector3 Multiply (Vector3 left, Vector3 right) {
-        	return left * right;
+            return left * right;
         }
         
         /// <summary>
@@ -127,7 +125,7 @@ namespace Axiom.MathLib {
         /// <param name="scalar"></param>
         /// <returns></returns>
         public static Vector3 Divide (Vector3 left, float scalar) {
-        	return left / scalar;
+            return left / scalar;
         }
         
         /// <summary>
@@ -158,7 +156,7 @@ namespace Axiom.MathLib {
         /// <param name="right"></param>
         /// <returns></returns>
         public static Vector3 Add (Vector3 left, Vector3 right) {
-        	return left + right;
+            return left + right;
         }
         
         /// <summary>
@@ -178,7 +176,7 @@ namespace Axiom.MathLib {
         /// <param name="scalar"></param>
         /// <returns></returns>
         public static Vector3 Multiply (Vector3 left, float scalar) {
-        	return left * scalar;
+            return left * scalar;
         }
         
         /// <summary>
@@ -198,7 +196,7 @@ namespace Axiom.MathLib {
         /// <param name="right"></param>
         /// <returns></returns>
         public static Vector3 Multiply (float scalar, Vector3 right) {
-        	return scalar * right;
+            return scalar * right;
         }
         
         /// <summary>
@@ -218,7 +216,7 @@ namespace Axiom.MathLib {
         /// <param name="right"></param>
         /// <returns></returns>
         public static Vector3 Subtract (Vector3 left, Vector3 right) {
-        	return left - right;
+            return left - right;
         }
         
         /// <summary>
@@ -241,7 +239,7 @@ namespace Axiom.MathLib {
         /// <param name="left"></param>
         /// <returns></returns>
         public static Vector3 Negate (Vector3 left) {
-        	return -left;
+            return -left;
         }
         
         /// <summary>
@@ -365,7 +363,7 @@ namespace Axiom.MathLib {
             Vector3 result = this.Cross(Vector3.UnitX);
 
             // check length
-            if(result.LengthSquared < SQUARE_ZERO) {
+            if(result.LengthSquared < float.Epsilon) {
                 // This vector is the Y axis multiplied by a scalar, so we have to use another axis
                 result = this.Cross(Vector3.UnitY);
             }
@@ -490,7 +488,7 @@ namespace Axiom.MathLib {
             float length = MathUtil.Sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
 
             // Will also work for zero-sized vectors, but will change nothing
-            if ( length > 1e-06 ) {
+            if ( length > float.Epsilon ) {
                 float inverseLength = 1.0f / length;
 
                 this.x *= inverseLength;
@@ -504,19 +502,23 @@ namespace Axiom.MathLib {
         #region Public properties
 
         /// <summary>
-        /// Gets the length (magnitude) of this Vector3.  The Sqrt operation is expensive, so 
-        /// only use this if you need the exact length of the Vector.  If vector lengths are only going
-        /// to be compared, use LengthSquared instead.
+        ///    Gets the length (magnitude) of this Vector3.  The Sqrt operation is expensive, so 
+        ///    only use this if you need the exact length of the Vector.  If vector lengths are only going
+        ///    to be compared, use LengthSquared instead.
         /// </summary>
         public float Length {
-            get { return MathUtil.Sqrt(this.x * this.x + this.y * this.y + this.z * this.z); }
+            get { 
+                return MathUtil.Sqrt(this.x * this.x + this.y * this.y + this.z * this.z); 
+            }
         }
 
         /// <summary>
-        /// Returns the length (magnitude) of the vector squared.
+        ///    Returns the length (magnitude) of the vector squared.
         /// </summary>
         public float LengthSquared {
-            get { return (this.x * this.x + this.y * this.y + this.z * this.z); }
+            get { 
+                return (this.x * this.x + this.y * this.y + this.z * this.z); 
+            }
         }
 
         #endregion
@@ -527,35 +529,45 @@ namespace Axiom.MathLib {
         ///		Gets a Vector3 with all components set to 0.
         /// </summary>
         public static Vector3 Zero {
-            get { return zeroVector; }
+            get { 
+                return zeroVector; 
+            }
         }
 		
         /// <summary>
         ///		Gets a Vector3 with all components set to 1.
         /// </summary>
         public static Vector3 UnitScale {
-            get { return unitVector; }
+            get { 
+                return unitVector; 
+            }
         }
 
         /// <summary>
         ///		Gets a Vector3 with the X set to 1, and the others set to 0.
         /// </summary>
         public static Vector3 UnitX {
-            get { return unitVectorX; }
+            get { 
+                return unitVectorX; 
+            }
         }
 
         /// <summary>
         ///		Gets a Vector3 with the Y set to 1, and the others set to 0.
         /// </summary>
         public static Vector3 UnitY {
-            get { return unitVectorY; }
+            get { 
+                return unitVectorY; 
+            }
         }
 
         /// <summary>
         ///		Gets a Vector3 with the Z set to 1, and the others set to 0.
         /// </summary>
         public static Vector3 UnitZ {
-            get { return unitVectorZ; }
+            get { 
+                return unitVectorZ; 
+            }
         }
         #endregion
 

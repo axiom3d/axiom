@@ -23,11 +23,11 @@ namespace Plugin_CgProgramManager
         /// <summary>
         ///    Current Cg context id.
         /// </summary>
-        protected int cgContext;
+        protected IntPtr cgContext;
         /// <summary>
         ///    Current Cg program id.
         /// </summary>
-        protected int cgProgram;
+        protected IntPtr cgProgram;
         /// <summary>
         ///    Entry point of the Cg program.
         /// </summary>
@@ -53,7 +53,7 @@ namespace Plugin_CgProgramManager
         /// <param name="type">Type of this program, vertex or fragment program.</param>
         /// <param name="language">HLSL language of this program.</param>
         /// <param name="context">CG context id.</param>
-		public CgProgram(string name, GpuProgramType type, string language, int context) : base(name, type, language) {
+		public CgProgram(string name, GpuProgramType type, string language, IntPtr context) : base(name, type, language) {
 			this.cgContext = context;
 		}
 		
@@ -100,19 +100,19 @@ namespace Plugin_CgProgramManager
         }
 
         protected override void PopulateParameterNames(GpuProgramParameters parms) {
-            Debug.Assert(cgProgram != 0);
+            Debug.Assert(cgProgram != IntPtr.Zero);
 
             // Note use of 'leaf' format so we only get bottom-level params, not structs
-            int param = Cg.cgGetFirstLeafParameter(cgProgram, Cg.CG_PROGRAM);
+            IntPtr param = Cg.cgGetFirstLeafParameter(cgProgram, Cg.CG_PROGRAM);
             int offset = 0;
 
             // loop through the rest of the params
-            while(param != 0) {
+            while(param != IntPtr.Zero) {
 
                 // Look for uniform parameters only
                 // Don't bother enumerating unused parameters, especially since they will
                 // be optimised out and therefore not in the indexed versions
-                if(Cg.cgIsParameterReferenced(param) 
+                if(Cg.cgIsParameterReferenced(param) != 0
                     && Cg.cgGetParameterVariability(param) == Cg.CG_UNIFORM
                     && Cg.cgGetParameterDirection(param) == Cg.CG_IN) {
                     
