@@ -41,6 +41,23 @@ namespace RenderSystem_DirectX9
 		
 		public D3DGpuProgramManager(D3D.Device device) : base() {
             this.device = device;
+
+            // Vertex Shader 1.1 (DirectX 8.1)
+            syntaxCodes.Add("vs_1_1");
+            // Vertex Shader 1.x (DirectX 8.1)
+            syntaxCodes.Add("vs_1_x");
+            // Vertex Shader 2.0 (DirectX 9)
+            syntaxCodes.Add("vs_2_0");
+            // Vertex Shader 2.0 (DirectX 9)
+            syntaxCodes.Add("vs_2_x");
+            // Pixel Shader 1.1 (DirectX 8.1)
+            syntaxCodes.Add("ps_1_1");
+            // Pixel Shader 1.3 (DirectX 8.1)
+            syntaxCodes.Add("ps_1_3");
+            // Pixel Shader 1.4 (DirectX 8.1)
+            syntaxCodes.Add("ps_1_4");
+            // Pixel Shader 2.0 (DirectX 9)
+            syntaxCodes.Add("ps_2_0");
 		}
 
         /// <summary>

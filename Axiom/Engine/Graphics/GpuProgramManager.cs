@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using System.Collections.Specialized;
 using Axiom.Core;
 using Axiom.Exceptions;
 
@@ -51,8 +52,10 @@ namespace Axiom.Graphics
 		
         #endregion
 
-		#region Member variables
+		#region Fields
 		
+        protected StringCollection syntaxCodes = new StringCollection();
+
 		#endregion
 				
 		#region Methods
@@ -77,6 +80,15 @@ namespace Axiom.Graphics
         /// </remarks>
         /// <returns></returns>
         public abstract GpuProgramParameters CreateParameters();
+
+        /// <summary>
+        ///    Returns whether a given syntax code (e.g. "ps_1_3", "fp20", "arbvp1") is supported. 
+        /// </summary>
+        /// <param name="syntaxCode"></param>
+        /// <returns></returns>
+        public bool IsSyntaxSupported(string syntaxCode) {
+            return syntaxCodes.Contains(syntaxCode);
+        }
 
         /// <summary>
         ///    Loads a GPU program from a file of assembly.
@@ -114,6 +126,19 @@ namespace Axiom.Graphics
 
 		#endregion
 		
+        #region Implementation of ResourceManager
+
+        /// <summary>
+        ///    New version of the ResourceManager indexer, returning a typed GpuProgram.
+        /// </summary>
+        public new GpuProgram this[string name] {
+            get {
+                return (GpuProgram)resourceList[name];
+            }
+        }
+
+        #endregion
+
 		#region Properties
 		
 		#endregion

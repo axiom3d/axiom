@@ -102,7 +102,7 @@ namespace Axiom.Controllers {
         /// <param name="layer"></param>
         /// <param name="speed"></param>
         /// <returns></returns>
-        public Controller CreateTextureRotator(TextureLayer layer, float speed) {
+        public Controller CreateTextureRotator(TextureUnitState layer, float speed) {
             IControllerValue val = new TexCoordModifierControllerValue(layer, false, false, false, false, true);
             IControllerFunction func = new MultipyControllerFunction(-speed, true);
 
@@ -116,7 +116,7 @@ namespace Axiom.Controllers {
         /// <param name="speedU"></param>
         /// <param name="speedV"></param>
         /// <returns></returns>
-        public Controller CreateTextureScroller(TextureLayer layer, float speedU, float speedV) {
+        public Controller CreateTextureScroller(TextureUnitState layer, float speedU, float speedV) {
             IControllerValue val = null;
             IControllerFunction func = null;
             Controller controller = null;
@@ -167,7 +167,7 @@ namespace Axiom.Controllers {
         /// <param name="phase"></param>
         /// <param name="amplitude"></param>
         /// <returns></returns>
-        public Controller CreateTextureWaveTransformer(TextureLayer layer, TextureTransform type, WaveformType waveType, 
+        public Controller CreateTextureWaveTransformer(TextureUnitState layer, TextureTransform type, WaveformType waveType, 
             float baseVal, float frequency, float phase, float amplitude) {
             IControllerValue val = null;
             IControllerFunction function = null;

@@ -275,6 +275,30 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
+        ///    Method for cloning a Pass object.
+        /// </summary>
+        /// <param name="parent">Parent technique that will own this cloned Pass.</param>
+        /// <returns></returns>
+        public Pass Clone(Technique parent, int index) {
+            Pass newPass = (Pass)this.MemberwiseClone();
+            // TODO: Watch out for copied references...
+            newPass.textureUnitStates = new ArrayList();
+
+            newPass.index = index;
+
+            // TODO: Clone GpuProgramUsage
+
+            // loop through and clone each texture unit state, adding the clone to the new pass
+            for(int i = 0; i < textureUnitStates.Count; i++) {
+                TextureUnitState state = (TextureUnitState)textureUnitStates[i];
+                TextureUnitState newState = state.Clone(newPass);
+                newPass.textureUnitStates.Add(newState);
+            }
+
+            return newPass;
+        }
+
+        /// <summary>
         ///    Overloaded method.
         /// </summary>
         /// <param name="textureName">The basic name of the texture (i.e. brickwall.jpg)</param>
@@ -361,10 +385,10 @@ namespace Axiom.Graphics
             hashCode = (index << 28);
             int count = NumTextureUnitStages;
 
-            if(c > 0) {
+            if(count > 0) {
                 hashCode += (((TextureUnitState)textureUnitStates[0]).TextureName.GetHashCode() % (2 ^ 14)) << 14;
             }
-            if(c > 1) {
+            if(count > 1) {
                 hashCode += (((TextureUnitState)textureUnitStates[0]).TextureName.GetHashCode() % (2 ^ 14));
             }
         }
@@ -690,8 +714,10 @@ namespace Axiom.Graphics
         /// </remarks>
         public bool ColorWrite {
             get {
+                return colorWrite;
             }
             set {
+                colorWrite = value;
             }
         }
 
@@ -739,7 +765,7 @@ namespace Axiom.Graphics
                 return depthBias;
             }
             set {
-                Debug.Assert(bias <= 16, "Depth bias must be between 0 and 16.");
+                Debug.Assert(value <= 16, "Depth bias must be between 0 and 16.");
                 depthBias = value;
             }
         }
@@ -808,7 +834,7 @@ namespace Axiom.Graphics
         /// </summary>
         public SceneBlendFactor DestBlendFactor {
             get {
-                return sourceBlendFactor;
+                return destBlendFactor;
             }
         }
 

@@ -122,11 +122,11 @@ namespace Axiom.Utility {
             // get a reference to the engine singleton
             engine = Engine.Instance;
 
-            // setup the engine
-            engine.Setup();
-
             // allow for setting up resource gathering
             SetupResources();
+
+            // setup the engine
+            engine.Setup();
 
             //show the config dialog and collect options
             if(!Configure()) {
@@ -349,7 +349,7 @@ namespace Axiom.Utility {
 
         public static void GlobalErrorHandler(Object source, ThreadExceptionEventArgs e) {
             // show the error
-            MessageBox.Show("An exception has occured.  Please check the log file for more information.\n\nError:\t" + e.Exception.ToString(), "Exception!");
+            MessageBox.Show("An exception has occured.  Please check the log file for more information.\n\nError:\n" + e.Exception.ToString(), "Exception!");
 
             // log the error
             //System.Diagnostics.Trace.WriteLine(e.Exception.ToString());

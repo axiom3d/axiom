@@ -47,9 +47,16 @@ namespace Axiom.Graphics {
         #region Properties
 
         /// <summary>
-        /// Get the material associated with this renderable object.
+        ///    Get the material associated with this renderable object.
         /// </summary>
         Material Material {
+            get;
+        }
+
+        /// <summary>
+        ///    Technique being used to render this object according to the current hardware.
+        /// </summary>
+        Technique Technique {
             get;
         }
 

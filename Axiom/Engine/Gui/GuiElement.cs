@@ -363,7 +363,7 @@ namespace Axiom.Gui
         #region Properties
 
         /// <summary>
-        ///    Sets the colour on elements that support it.
+        ///    Sets the color on elements that support it.
         /// </summary>
         /// <remarks>
         ///    Note that not all elements support this, but it is still a relevant base class property.
@@ -703,6 +703,12 @@ namespace Axiom.Gui
         public Material Material {
             get {
                 return material;
+            }
+        }
+
+        public Technique Technique {
+            get {
+                return material.BestTechnique;
             }
         }
 

@@ -41,11 +41,14 @@ namespace Axiom.Graphics
         ///    The assembler source of this program.
         /// </summary>
         protected string source;
-
         /// <summary>
         ///    Whether this source is being loaded from file or not.
         /// </summary>
         protected bool loadFromFile;
+        /// <summary>
+        ///    Syntax code (i.e. arbvp1, vs_2_0, etc.)
+        /// </summary>
+        protected string syntaxCode;
 
         /// <summary>
         ///    Type of program this represents (vertex or fragment).
@@ -111,6 +114,15 @@ namespace Axiom.Graphics
             set {
                 source = value;
                 loadFromFile = false;
+            }
+        }
+
+        /// <summary>
+        ///    Gets the syntax code of this program (i.e. arbvp1, vs_1_1, etc).
+        /// </summary>
+        public string SyntaxCode {
+            get {
+                return syntaxCode;
             }
         }
 

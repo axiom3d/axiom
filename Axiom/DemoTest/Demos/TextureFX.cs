@@ -30,7 +30,7 @@ using System.Windows.Forms;
 using Axiom.Controllers;
 using Axiom.Controllers.Canned;
 using Axiom.Core;
-
+using Axiom.Graphics;
 using Axiom.MathLib;
 using Axiom.Utility;
 
@@ -61,7 +61,8 @@ namespace Demos {
             Material skyMaterial = scene.CreateMaterial("SkyMat");
             skyMaterial.Lighting = false;
             // use a cloudy sky
-            TextureLayer textureLayer = skyMaterial.AddTextureLayer("clouds.jpg");
+            Pass pass = skyMaterial.GetTechnique(0).GetPass(0);
+            TextureUnitState textureLayer = pass.CreateTextureUnitState("clouds.jpg");
             // scroll the clouds
             textureLayer.SetScrollAnimation(0.15f, 0);
 

@@ -217,7 +217,7 @@ namespace Plugin_GuiElements
         /// </summary>
         protected virtual void UpdateTextureGeometry() {
             if(material != null) {
-                int numLayers = material.NumTextureLayers;
+                int numLayers = material.GetTechnique(0).GetPass(0).NumTextureUnitStages;
 
                 VertexDeclaration decl = renderOp.vertexData.vertexDeclaration;
 

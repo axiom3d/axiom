@@ -96,7 +96,7 @@ namespace RenderSystem_DirectX9 {
             }
         }
 	
-        public override Shading ShadingType {
+        public override Shading ShadingMode {
             set {
                 device.RenderState.ShadeMode = D3DHelper.ConvertEnum(value);
             }
@@ -333,6 +333,26 @@ namespace RenderSystem_DirectX9 {
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stage"></param>
+        /// <param name="func"></param>
+        /// <param name="val"></param>
+        protected override void SetAlphaRejectSettings(int stage, CompareFunction func, byte val) {
+            device.RenderState.AlphaTestEnable = (func != CompareFunction.AlwaysPass);
+            device.RenderState.AlphaFunction = D3DHelper.ConvertEnum(func);
+            device.RenderState.ReferenceAlpha = val;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="color"></param>
+        /// <param name="density"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
         protected override void SetFog(Axiom.Graphics.FogMode mode, ColorEx color, float density, float start, float end) {
             // disable fog if set to none
             if(mode == FogMode.None) {
@@ -805,7 +825,7 @@ namespace RenderSystem_DirectX9 {
         /// <summary>
         /// 
         /// </summary>
-        protected override ushort DepthBias {
+        protected override int DepthBias {
             set {
                 device.RenderState.DepthBias = (float)value;
             }

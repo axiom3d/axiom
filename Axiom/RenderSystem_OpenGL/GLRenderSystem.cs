@@ -93,7 +93,7 @@ namespace RenderSystem_OpenGL {
         protected LayerBlendOperationEx[] lastAlphaOp = new LayerBlendOperationEx[Config.MaxTextureLayers];
         protected LayerBlendType lastBlendType;
         protected TextureAddressing[] lastAddressingMode = new TextureAddressing[Config.MaxTextureLayers];
-        protected ushort lastDepthBias;
+        protected int lastDepthBias;
         protected bool lastDepthCheck, lastDepthWrite;
         protected CompareFunction lastDepthFunc;
         
@@ -310,7 +310,7 @@ namespace RenderSystem_OpenGL {
             }
         }
 
-        public override Shading ShadingType {
+        public override Shading ShadingMode {
             // OpenGL supports Flat and Smooth shaded primitives
             set {
                 switch(value) {
@@ -1110,11 +1110,6 @@ namespace RenderSystem_OpenGL {
         /// <param name="enabled"></param>
         /// <param name="textureName"></param>
         protected override void SetTexture(int stage, bool enabled, string textureName) {
-            // TODO: Fix problem this causes with toggling bounding box
-            //if(textureUnits[stage].TextureName == textureName) {
-           //     return;
-           // }
-
             // load the texture
             GLTexture texture = (GLTexture)TextureManager.Instance[textureName];
 
@@ -1141,6 +1136,10 @@ namespace RenderSystem_OpenGL {
 
             // reset active texture to unit 0
             Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
+        }
+
+        protected override void SetAlphaRejectSettings(int stage, CompareFunction func, byte val) {
+
         }
 
         /// <summary>
@@ -1536,7 +1535,7 @@ namespace RenderSystem_OpenGL {
         /// <summary>
         /// 
         /// </summary>
-        protected override ushort DepthBias {
+        protected override int DepthBias {
             set {
                 // reduce dupe state changes
                 if(lastDepthBias == value) {

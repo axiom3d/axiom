@@ -397,17 +397,17 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Core\CoreEnums.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Core\Engine.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "Core\Entity.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Core\Enums.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -433,16 +433,6 @@
                 />
                 <File
                     RelPath = "Core\Log.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Core\Material.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Core\MaterialManager.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -518,11 +508,6 @@
                 />
                 <File
                     RelPath = "Core\Texture.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Core\TextureLayer.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -627,6 +612,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Graphics\GpuProgramUsage.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Graphics\HardwareBuffer.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -667,6 +657,21 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Graphics\Material.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Graphics\MaterialManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Graphics\Pass.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Graphics\RenderOperation.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -698,6 +703,16 @@
                 />
                 <File
                     RelPath = "Graphics\SoftwareBufferManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Graphics\Technique.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Graphics\TextureUnitState.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -874,6 +889,16 @@
                 <File
                     RelPath = "Utility\ConfigDialog.resx"
                     DependentUpon = "ConfigDialog.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "Utility\DebugWindow.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Utility\DebugWindow.resx"
+                    DependentUpon = "DebugWindow.cs"
                     BuildAction = "EmbeddedResource"
                 />
                 <File

@@ -278,8 +278,6 @@ namespace RenderSystem_DirectX9 {
             else {
                 throw new Exception("Unknown pixel format!");
             }
-
-            return 0;
         }
 
         #endregion

@@ -388,7 +388,7 @@ namespace RenderSystem_DirectX9 {
         }
 
         /// <summary>
-        ///    Converts our Shading enum to the D3D ShadingType equivalent.
+        ///    Converts our Shading enum to the D3D ShadingMode equivalent.
         /// </summary>
         /// <param name="shading"></param>
         /// <returns></returns>

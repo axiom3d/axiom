@@ -706,6 +706,12 @@ namespace Plugin_GuiElements
                 }
             }
 
+            public Technique Technique {
+                get {
+                    return this.Material.BestTechnique;
+                }
+            }
+
             public ushort NumWorldTransforms {
                 get {
                     return 1;

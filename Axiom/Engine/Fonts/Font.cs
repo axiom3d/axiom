@@ -86,7 +86,7 @@ namespace Axiom.Fonts {
                 // create a material for this font
                 material = (Material)MaterialManager.Instance.Create("Fonts." + name);
 
-                TextureLayer layer = null;
+                TextureUnitState layer = null;
                 bool blendByAlpha = false;
 
                 if(fontType == FontType.TrueType) {
@@ -94,7 +94,7 @@ namespace Axiom.Fonts {
                     CreateTexture();
 
                     // a texture layer was added in CreateTexture
-                    layer = material.TextureLayers[0];
+                    layer = material.GetTechnique(0).GetPass(0).GetTextureUnitState(0);
 
                     material.Lighting = false;
                     material.DepthCheck = false;
@@ -195,7 +195,7 @@ namespace Axiom.Fonts {
             TextureManager.Instance.LoadImage(textureName, bitmap);
 
             // add a texture layer with the name of the texture
-            material.AddTextureLayer(textureName);
+            material.GetTechnique(0).GetPass(0).CreateTextureUnitState(textureName);
         }
 
         /// <summary>
