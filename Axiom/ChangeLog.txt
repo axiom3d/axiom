@@ -1,3 +1,8 @@
+2-23-2004
+- Camera now inherits from Frustum.
+- Frustum is a renderable object.
+- Modified Node.Translate() to allow for using different transform spaces (local, world, parent).
+
 2-22-2004
 - Implemented normal normalization capability in the render systems.
 - Added explicit scissor test capability to the render systems.
