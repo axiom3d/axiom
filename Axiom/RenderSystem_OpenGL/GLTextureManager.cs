@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using Axiom.Core;
+using Axiom.SubSystems.Rendering;
 
 namespace RenderSystem_OpenGL {
     /// <summary>
@@ -36,7 +37,11 @@ namespace RenderSystem_OpenGL {
         }
 	
         public override Resource Create(string name) {
-            GLTexture texture = new GLTexture(name);
+            return Create(name, TextureType.TwoD);
+        }
+
+        public Resource Create(string name, TextureType type) {
+            GLTexture texture = new GLTexture(name, type);
             texture.Enable32Bit(is32Bit);
 
             return texture;

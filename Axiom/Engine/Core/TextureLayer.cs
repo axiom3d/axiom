@@ -53,6 +53,8 @@ namespace Axiom.Core {
         private LayerBlendOperation colorOp;
         /// <summary>Is this a blank layer?</summary>
         private bool isBlank;
+        /// <summary>Records whether this layer is cubic texture.</summary>
+        private bool isCubic;
         /// <summary>Number of frames for this layer.</summary>
         private int numFrames;
         private int currentFrame;
@@ -128,9 +130,11 @@ namespace Axiom.Core {
                 frames[0] = value; 
                 numFrames = 1;
                 currentFrame = 0;
+                isCubic = false;
 				
-                if(value.Length == 0)
+                if(value.Length == 0) {
                     isBlank = true;
+                }
                 else if(!deferredLoad) {
                     if(TextureManager.Instance[value] != null) {
                         isBlank = false;
@@ -217,6 +221,15 @@ namespace Axiom.Core {
         }
 
         /// <summary>
+        ///    Returns true if this layer is a cubic texture.
+        /// </summary>
+        public bool IsCubic {
+            get {
+                return isCubic;
+            }
+        }
+
+        /// <summary>
         ///		
         /// </summary>
         public int NumFrames {
@@ -257,21 +270,27 @@ namespace Axiom.Core {
         /// <param name="textureName"></param>
         /// <param name="forUVW"></param>
         public void SetCubicTexture(string textureName, bool forUVW) {
-            string[] postfixes = {"_fr", "_bk", "_lf", "_rt", "_up", "_dn"};
-            string[] fullNames = new string[6];
-            string baseName;
-            string ext;
-
-            int pos = textureName.LastIndexOf(".");
-
-            baseName = textureName.Substring(0, pos);
-            ext = textureName.Substring(pos);
-
-            for(int i = 0; i < 6; i++) {
-                fullNames[i] = baseName + postfixes[i] + ext;
+            if(forUVW) {
+                // pass in the single texture name
+                SetCubicTexture(new string[] { textureName}, forUVW);
             }
+            else {
+                string[] postfixes = {"_fr", "_bk", "_lf", "_rt", "_up", "_dn"};
+                string[] fullNames = new string[6];
+                string baseName;
+                string ext;
 
-            SetCubicTexture(fullNames, forUVW);
+                int pos = textureName.LastIndexOf(".");
+
+                baseName = textureName.Substring(0, pos);
+                ext = textureName.Substring(pos);
+
+                for(int i = 0; i < 6; i++) {
+                    fullNames[i] = baseName + postfixes[i] + ext;
+                }
+
+                SetCubicTexture(fullNames, forUVW);
+            }
         }
 
         public void SetColorOpMultipassFallback(SceneBlendFactor src, SceneBlendFactor dest) {
@@ -285,26 +304,28 @@ namespace Axiom.Core {
         /// <param name="textureNames"></param>
         /// <param name="forUVW"></param>
         public void SetCubicTexture(string[] textureNames, bool forUVW) {
-            if(forUVW) {
-                // TODO: single cubic textures, rather than 6 seperate ones
-            }
-            else {
-                numFrames = 6;
-                currentFrame = 0;
+            numFrames = forUVW ? 1 : 6;
+            currentFrame = 0;
+            isCubic = true;
 
-                for(int i = 0; i < 6; i++) {
-                    frames[i] = textureNames[i];
+            for(int i = 0; i < numFrames; i++) {
+                frames[i] = textureNames[i];
 
-                    if(!deferredLoad) {
-                        try {
-                            // ensure texture is loaded
+                if(!deferredLoad) {
+                    try {
+                        // ensure texture is loaded
+                        if(forUVW) {
+                            TextureManager.Instance.Load(frames[i], TextureType.CubeMap);
+                        }
+                        else {
                             TextureManager.Instance.Load(frames[i]);
-                            isBlank = false;
                         }
-                        catch(Exception) {
-                            System.Diagnostics.Trace.WriteLine(string.Format("Error loading texture {0}.  Texture layer will be left blank.", frames[i]));
-                            isBlank = true;
-                        }
+
+                        isBlank = false;
+                    }
+                    catch(Exception) {
+                        System.Diagnostics.Trace.WriteLine(string.Format("Error loading texture {0}.  Texture layer will be left blank.", frames[i]));
+                        isBlank = true;
                     }
                 }
             }

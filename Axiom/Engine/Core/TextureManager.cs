@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Drawing;
+using Axiom.SubSystems.Rendering;
 
 namespace Axiom.Core {
     /// <summary>
@@ -69,14 +70,18 @@ namespace Axiom.Core {
             set { defaultNumMipMaps = value; }
         }
 
+        public Texture Load(string name) {
+            return Load(name, TextureType.TwoD);
+        }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public Texture Load(string name) {
+        public Texture Load(string name, TextureType type) {
             // load the texture by default with -1 mipmaps (uses default), gamma of 1, priority of 1
-            return Load(name, -1, 1.0f, 1);
+            return Load(name, type, -1, 1.0f, 1);
         }
 
         /// <summary>
@@ -87,7 +92,7 @@ namespace Axiom.Core {
         /// <param name="gamma"></param>
         /// <param name="priority"></param>
         /// <returns></returns>
-        public Texture Load(string name, int numMipMaps, float gamma, int priority) {
+        public Texture Load(string name, TextureType type, int numMipMaps, float gamma, int priority) {
             Texture texture = (Texture)this[name];
 
             if(texture == null) {
