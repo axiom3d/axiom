@@ -492,6 +492,10 @@ namespace RenderSystem_DirectX9
 				System.Drawing.Rectangle rect = new System.Drawing.Rectangle(activeViewport.ActualLeft, activeViewport.ActualTop, activeViewport.ActualWidth, activeViewport.ActualHeight);
 				device.Clear(ClearFlags.ZBuffer | ClearFlags.Target, activeViewport.BackgroundColor.ToColor(), 1.0f, 0, new System.Drawing.Rectangle[] {rect});
 			}
+			else
+			{
+				// 
+			}
 
 			// begin the D3D scene for the current viewport
 			device.BeginScene();

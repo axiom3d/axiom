@@ -812,19 +812,19 @@ namespace Axiom.Core
 
 			if(enable)
 			{
-				Material s = (Material)MaterialManager.Instance[materialName];
+				Material m = (Material)MaterialManager.Instance[materialName];
 
-				if(s == null)
+				if(m == null)
 					throw new AxiomException(String.Format("Could not find skybox material '{0}'", materialName));
 
 				// dont update the depth buffer
-				s.DepthWrite = false;
+				//m.DepthWrite = false;
 
 				// ensure texture clamping to reduce fuzzy edges when using filtering
-				s.TextureLayers[0].TextureAddressing = TextureAddressing.Clamp;
+				m.TextureLayers[0].TextureAddressing = TextureAddressing.Clamp;
 
 				// load yourself numbnuts!
-				s.Load();
+				m.Load();
 	
 				isSkyBoxDrawnFirst = drawFirst;
 
@@ -854,7 +854,7 @@ namespace Axiom.Core
 					//Material boxMaterial = (Material)materialMgr[entityName];
 
 					// close the material
-					Material boxMaterial = (Material)s.Clone(entityName);
+					Material boxMaterial = (Material)m.Clone(entityName);
 
 					// set the current frame
 					// first 2 cases swap the front and back textures

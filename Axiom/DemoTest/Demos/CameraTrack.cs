@@ -49,7 +49,9 @@ namespace Demos
 		protected override void CreateScene()
 		{
 			// since whole screen is being redrawn every frame, dont bother clearing
-			mainViewport.ClearEveryFrame = false;
+			// option works for GL right now, uncomment to test it out.  huge fps increase
+			// also, depth_write in the skybox material must be set to on
+			//mainViewport.ClearEveryFrame = false;
 
 			// set some ambient light
 			sceneMgr.TargetRenderSystem.LightingEnabled = true;
