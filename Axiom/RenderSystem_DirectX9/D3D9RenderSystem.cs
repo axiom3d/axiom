@@ -154,7 +154,7 @@ namespace RenderSystem_DirectX9 {
                 D3DHardwareVertexBuffer buffer = 
                     (D3DHardwareVertexBuffer)bufferBinding.Value;
 
-                int stream = (int)bufferBinding.Key;
+                ushort stream = (ushort)bufferBinding.Key;
 
                 device.SetStreamSource(stream, buffer.D3DVertexBuffer, 0, buffer.VertexSize);
             }
