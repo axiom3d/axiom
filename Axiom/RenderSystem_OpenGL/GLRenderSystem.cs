@@ -69,6 +69,9 @@ namespace RenderSystem_OpenGL {
         protected float[] autoTextureMatrix = new float[16];
         protected ushort[] texCoordIndex = new ushort[Config.MaxTextureLayers];
 
+        // keeps track of type for each stage (2d, 3d, cube, etc)
+        protected int[] textureTypes = new int[Config.MaxTextureLayers];
+
         // retained stencil buffer params vals, since we allow setting invidual params but GL
         // only lets you set them all at once, keep old values around to allow this to work
         protected int stencilFail, stencilZFail, stencilPass, stencilFunc, stencilRef, stencilMask;
@@ -405,20 +408,20 @@ namespace RenderSystem_OpenGL {
 
                     switch(value) {
                         case Axiom.SubSystems.Rendering.TextureFiltering.Trilinear: {
-                            Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
-                            Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_LINEAR);
+                            Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
+                            Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_LINEAR);
 
                         } break;
 
                         case Axiom.SubSystems.Rendering.TextureFiltering.Bilinear: {
-                            Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
-                            Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_NEAREST);
+                            Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
+                            Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_NEAREST);
 
                         } break;
 
                         case Axiom.SubSystems.Rendering.TextureFiltering.None: {
-                            Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_NEAREST);
-                            Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_NEAREST);
+                            Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_NEAREST);
+                            Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_NEAREST);
 
                         } break;
                     } // switch
@@ -621,8 +624,9 @@ namespace RenderSystem_OpenGL {
 
             // set the GL texture wrap params for the specified unit
             Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + stage);
-            Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, type);
-            Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, type);
+            Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_WRAP_S, type);
+            Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_WRAP_T, type);
+            Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_WRAP_R, type);
             Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
         }
 
@@ -993,16 +997,24 @@ namespace RenderSystem_OpenGL {
             // load the texture
             GLTexture texture = (GLTexture)TextureManager.Instance[textureName];
 
+            int lastTextureType = textureTypes[stage];
+
             // set the active texture
             Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + stage);
 
             // enable and bind the texture if necessary
             if(enabled && texture != null) {
-                Gl.glEnable(Gl.GL_TEXTURE_2D);
-                Gl.glBindTexture(Gl.GL_TEXTURE_2D, texture.TextureID);
+                textureTypes[stage] = texture.GLTextureType;
+
+                if(lastTextureType != textureTypes[stage] && lastTextureType != 0) {
+                    Gl.glDisable(lastTextureType);
+                }
+
+                Gl.glEnable(textureTypes[stage]);
+                Gl.glBindTexture(textureTypes[stage], texture.TextureID);
             }
             else {
-                Gl.glDisable(Gl.GL_TEXTURE_2D);
+                Gl.glDisable(textureTypes[stage]);
                 Gl.glTexEnvf(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_MODULATE);
             }
 

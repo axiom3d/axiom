@@ -26,6 +26,9 @@ namespace Demos {
 
         public DemoBrowser() {
             InitializeComponent();
+            
+            // this always get whacked from InitializeComponent, so doing it here instead
+            this.Icon = new Icon("Media/Icons/AxiomIcon.ico");
         }
 
         protected override void Dispose(bool disposing) {

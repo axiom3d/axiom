@@ -64,6 +64,8 @@ namespace Axiom.Core {
         /// <summary></summary>
         protected TextureUsage usage;
         /// <summary></summary>
+        protected TextureType textureType;
+        /// <summary></summary>
         protected ushort numMipMaps;
         /// <summary></summary>
         protected float gamma;
@@ -71,9 +73,6 @@ namespace Axiom.Core {
         #endregion
 
         #region Constructors
-
-        public Texture() {
-        }
 
         #endregion
 
@@ -93,6 +92,15 @@ namespace Axiom.Core {
         public ushort NumMipMaps {
             get { return numMipMaps; }
             set { numMipMaps = value; }
+        }
+
+        /// <summary>
+        ///    Type of texture, i.e. 2d, 3d, cubemap.
+        /// </summary>
+        public TextureType TextureType {
+            get {
+                return textureType;
+            }
         }
 
         #endregion

@@ -652,6 +652,16 @@ namespace Axiom.SubSystems.Rendering {
     }
 
     /// <summary>
+    ///    Enum identifying the texture type.
+    /// </summary>
+    public enum TextureType {
+        OneD,
+        TwoD,
+        ThreeD,
+        CubeMap = 4,
+    }
+
+    /// <summary>
     ///		Specifies how a texture is to be used in the engine.
     /// </summary>
     public enum TextureUsage {
