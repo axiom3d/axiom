@@ -46,14 +46,13 @@ namespace Axiom.ParticleFX {
         protected ForceApplication forceApp = ForceApplication.Add;
         protected Vector3 forceVector = Vector3.Zero;
 
-        const string LINEAR_FORCE = "LinearForce";
-
         public LinearForceAffector() {
             // HACK: See if there is better way to do this
             this.type = "LinearForce";
         }
 
-        public override void AffectParticles(ParticleSystem system, float timeElapsed) {
+		public override void AffectParticles(ParticleSystem system, float timeElapsed) 
+		{
             Vector3 scaledVector = Vector3.Zero;
 
             if(forceApp == ForceApplication.Add) {
@@ -65,46 +64,82 @@ namespace Axiom.ParticleFX {
             for(int i = 0; i < system.Particles.Count; i++) {
                 Particle p = (Particle)system.Particles[i];
 
-                if(forceApp == ForceApplication.Add)
-                    p.Direction += scaledVector;
-                else // Average
-                    p.Direction = (p.Direction + forceVector) / 2;
+				if(forceApp == ForceApplication.Add) {
+					p.Direction += scaledVector;
+				}
+				else { // Average
+					p.Direction = (p.Direction + forceVector) / 2;
+				}
             }
         }
 
         public Vector3 Force {
-            get { return forceVector; }
-            set { forceVector = value; }
+            get { 
+				return forceVector; 
+			}
+            set { 
+				forceVector = value; 
+			}
         }
 
         public ForceApplication ForceApplication {
-            get { return forceApp; }
-            set { forceApp = value; }
+			get { 
+				return forceApp; 
+			}
+            set { 
+				forceApp = value; 
+			}
         }
 
-        #region Script parser methods
+        #region Command definition classes
 
-        [AttributeParser("force_vector", LINEAR_FORCE)]
-        public static void ParseForceVector(string[] values, params object[] objects) {
-            LinearForceAffector affector = objects[0] as LinearForceAffector;
+		[Command("force_vector", "Direction of force to apply to this particle.", typeof(ParticleAffector))]
+		class ForceVectorCommand : ICommand {
+			#region ICommand Members
 
-            affector.Force = ParseHelper.ParseVector3(values);
-        }
+			public string Get(object target) {
+				LinearForceAffector affector = target as LinearForceAffector;
 
-        [AttributeParser("force_application", LINEAR_FORCE)]
-        public static void ParseForceApplication(string[] values, params object[] objects) {
-            LinearForceAffector affector = objects[0] as LinearForceAffector;
+				// TODO: Common way for vector string rep, maybe modify ToString
+				return affector.Force.ToString();
+			}
+			public void Set(object target, string val) {
+				LinearForceAffector affector = target as LinearForceAffector;
 
-            // lookup the real enum equivalent to the script value
-            object val = ScriptEnumAttribute.Lookup(values[0], typeof(ForceApplication));
+				affector.Force = ParseHelper.ParseVector3(val);
+			}
 
-            // if a value was found, assign it
-            if(val != null)
-                affector.ForceApplication = ((ForceApplication)val);
-            else
-                ParseHelper.LogParserError(values[0], affector.Type, "Invalid enum value");
-        }
+			#endregion
+		}
 
-        #endregion Script parser methods
+		[Command("force_application", "Type of force to apply to this particle.", typeof(ParticleAffector))]
+		class ForceApplicationCommand : ICommand {
+			#region ICommand Members
+
+			public string Get(object target) {
+				LinearForceAffector affector = target as LinearForceAffector;
+
+				// TODO: Reverse lookup the enum attribute
+				return affector.ForceApplication.ToString();
+			}
+			public void Set(object target, string val) {
+				LinearForceAffector affector = target as LinearForceAffector;
+
+				// lookup the real enum equivalent to the script value
+				object enumVal = ScriptEnumAttribute.Lookup(val, typeof(ForceApplication));
+
+				// if a value was found, assign it
+				if(enumVal != null) {
+					affector.ForceApplication = ((ForceApplication)enumVal);
+				}
+				else {
+					ParseHelper.LogParserError(val, affector.Type, "Invalid enum value");;
+				}
+			}
+
+			#endregion
+		}
+
+		#endregion Command definition classes
     }
 }

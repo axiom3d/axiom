@@ -34,7 +34,7 @@ namespace Axiom.ParticleFX {
             GenerateEmissionVelocity(ref particle.Direction);
 
             // generate time to live
-            particle.timeToLive = GenerateEmissionTTL();
+            particle.timeToLive = particle.totalTimeToLive = GenerateEmissionTTL();
         }
 
         #endregion

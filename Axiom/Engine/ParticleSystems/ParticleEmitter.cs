@@ -729,7 +729,7 @@ namespace Axiom.ParticleSystems {
         ///		Methods meant to serve as attribute parsers should use a method attribute to 
         /// </remarks>
         protected void RegisterCommands() {
-            Type baseType = this.GetType();
+            Type baseType = GetType();
 
             do {
                 Type[] types = baseType.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Public);

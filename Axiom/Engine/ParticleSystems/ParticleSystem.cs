@@ -71,16 +71,14 @@ namespace Axiom.ParticleSystems {
         ///		You should use the ParticleSystemManager to create systems, rather than doing it directly.
         /// </remarks>
         /// <param name="name"></param>
-        public ParticleSystem(string name) {
+        public ParticleSystem(string name) : base(name, 10)  {
             autoExtendPool = true;
             allDefaultSize = true;
             originType = BillboardOrigin.Center;
-            this.name = name;
             cullIndividual = true;
             defaultParticleWidth = 100;
             defaultParticleHeight = 100;
             this.MaterialName = "BaseWhite";
-            this.PoolSize = 10;
         }
 
         /// <summary>
@@ -190,8 +188,9 @@ namespace Axiom.ParticleSystems {
         ///		is the more realistic the fast-forward, but it takes more iterations to do it.
         /// </param>
         public void FastForward(float time, float interval) {
-            for(float t = 0.0f; t < time; t += interval)
-                Update(interval);
+			for(float t = 0.0f; t < time; t += interval) {
+				Update(interval);
+			}
         }
 
         public override void GetWorldTransforms(Matrix4[] matrices) {
@@ -279,8 +278,9 @@ namespace Axiom.ParticleSystems {
                 float ratio = (float)emissionAllowed / (float)totalRequested;
 
                 // modify requested values
-                for(int i = 0; i < emitterCount; i++)
-                    requested[i] = (int)requested[i] * (int)ratio;
+				for(int i = 0; i < emitterCount; i++) {
+					requested[i] = (int)requested[i] * (int)ratio;
+				}
             }
 
             // emission time
@@ -288,7 +288,12 @@ namespace Axiom.ParticleSystems {
                 // get a reference to the current emitter
                 emitter = (ParticleEmitter)emitterList[i];
 
-                for(int j = 0; j < (int)requested[i]; j++) {
+				// Reflects OGRE behaviour
+				float timePoint = 0.0f;
+				float timeInc	= timeElapsed / (int)requested[i];
+
+                for(int j = 0; j < (int)requested[i]; j++) 
+				{
                     // create a new particle and initialize it with the current emitter
                     Particle p = AddParticle();
                     emitter.InitParticle(p);
@@ -296,7 +301,22 @@ namespace Axiom.ParticleSystems {
                     // translate position and direction into world space
                     p.Position = (parentNode.DerivedOrientation * p.Position) + parentNode.DerivedPosition;
                     p.Direction = parentNode.DerivedOrientation * p.Direction;
-                }
+
+					// The following is OGRE behaviour
+
+					// apply partial frame motion to this particle
+					p.Position += (p.Direction * timePoint);
+
+					// apply particle initialization by the affectors
+					for(int k = 0; k < affectorList.Count; k++) 
+					{
+						ParticleAffector affector = (ParticleAffector)affectorList[k];
+						affector.InitParticle(ref p);
+					}
+
+					// Increment time fragment
+					timePoint += timeInc;
+				}
             }
         }
 
@@ -424,7 +444,9 @@ namespace Axiom.ParticleSystems {
         ///		Gets the count of active particles currently in the system.
         /// </summary>
         public int ParticleCount {
-            get { return activeBillboards.Count; }
+            get { 
+				return activeBillboards.Count; 
+			}
         }
 
         /// <summary>

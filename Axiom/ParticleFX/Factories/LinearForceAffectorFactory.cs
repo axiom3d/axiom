@@ -26,42 +26,27 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using Axiom.Core;
+using Axiom.ParticleSystems;
+using Axiom.MathLib;
 
-namespace Axiom.ParticleSystems {
+namespace Axiom.ParticleFX.Factories {
     /// <summary>
-    ///		An extension of Billboard that allows for each particle to have particle system specific info.
+    /// Summary description for LinearForceAffectorFactory.
     /// </summary>
-    public class Particle : Billboard {
-
-		#region Member variables
-
-        /// <summary>Time (in seconds) before this particle is destroyed.</summary>
-        public float timeToLive;
-		/// <summary>Total Time to live, number of seconds of particles natural life</summary>
-		public float totalTimeToLive;
-		/// <summary>Speed of rotation in radians</summary>
-		float rotationSpeed;
-
-		#endregion
-
-		#region Properties
-
-		public float RotationSpeed
-		{
-			get { return rotationSpeed; }
-			set { rotationSpeed = value; }
-		}
-
-		#endregion
-		
-		/// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public Particle() 
-		{
-            timeToLive		= 10;
-			totalTimeToLive = 10;
-			rotationSpeed	= 0;
+    public class LinearForceAffectorFactory : ParticleAffectorFactory {
+        public override string Name {
+            get {
+                return "LinearForce";
+            }
         }
+
+        public override ParticleAffector Create() {
+            ParticleAffector p = new LinearForceAffector();
+            affectorList.Add(p);
+
+            return p;
+        }
+
+
     }
 }

@@ -48,7 +48,9 @@ namespace Axiom.ParticleFX {
         #region Properties
 
         public override Axiom.MathLib.Vector3 Direction {
-            get { return base.Direction; }
+            get { 
+				return base.Direction; 
+			}
             set {
                 base.Direction = value;
 
@@ -58,23 +60,43 @@ namespace Axiom.ParticleFX {
         }
 
         public Vector3 Size {
-            get { return size; }
-            set { size = value; GenerateAreaAxes(); }
+            get { 
+				return size; 
+			}
+            set { 
+				size = value; 
+				GenerateAreaAxes(); 
+			}
         }
 
         public float Width { 
-            get { return size.x; }
-            set { size.x = value; GenerateAreaAxes(); }
+            get { 
+				return size.x; 
+			}
+            set { 
+				size.x = value; 
+				GenerateAreaAxes(); 
+			}
         }
 
         public float Height { 
-            get { return size.y; }
-            set { size.y = value; GenerateAreaAxes(); }
+            get { 
+				return size.y; 
+			}
+            set { 
+				size.y = value; 
+				GenerateAreaAxes(); 
+			}
         }
 
         public float Depth { 
-            get { return size.z; }
-            set { size.z = value; GenerateAreaAxes(); }
+            get { 
+				return size.z; 
+			}
+            set { 
+				size.z = value; 
+				GenerateAreaAxes(); 
+			}
         }
 
         #endregion
