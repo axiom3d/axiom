@@ -154,11 +154,6 @@
                     AssemblyName = "Tao.Platform.Windows"
                     HintPath = "..\Solution Items\Tao.Platform.Windows.dll"
                 />
-                <Reference
-                    Name = "Plugin_CgProgramManager"
-                    Project = "{D61C988B-DECE-491C-965B-296EA135D68E}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
-                />
             </References>
         </Build>
         <Files>
