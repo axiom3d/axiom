@@ -1,7 +1,7 @@
 using System;
 using Axiom.ParticleSystems;
 
-namespace AxiomParticleFX
+namespace ParticleFX
 {
 	/// <summary>
 	/// Summary description for ColorFaderAffector.

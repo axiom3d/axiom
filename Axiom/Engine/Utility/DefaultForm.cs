@@ -14,9 +14,7 @@ namespace Axiom.Utility
 	{
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.ComponentModel.IContainer components;
-		private System.Windows.Forms.Timer timer;
 		private RenderWindow renderWindow;		
-		private Graphics g;
 		private string stats;
 
 		public DefaultForm()
@@ -52,9 +50,7 @@ namespace Axiom.Utility
 
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
-			this.timer = new System.Windows.Forms.Timer(this.components);
 			this.SuspendLayout();
 			// 
 			// pictureBox1
@@ -68,13 +64,6 @@ namespace Axiom.Utility
 			this.pictureBox1.Size = new System.Drawing.Size(292, 266);
 			this.pictureBox1.TabIndex = 0;
 			this.pictureBox1.TabStop = false;
-			this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
-			// 
-			// timer
-			// 
-			this.timer.Enabled = true;
-			this.timer.Interval = 1;
-			this.timer.Tick += new System.EventHandler(this.timer_Tick);
 			// 
 			// DefaultForm
 			// 
@@ -83,8 +72,6 @@ namespace Axiom.Utility
 			this.ClientSize = new System.Drawing.Size(292, 266);
 			this.Controls.Add(this.pictureBox1);
 			this.Name = "DefaultForm";
-			this.Closing += new System.ComponentModel.CancelEventHandler(this.DefaultForm_Closing);
-			this.Load += new System.EventHandler(this.DefaultForm_Load);
 			this.ResumeLayout(false);
 
 		}
@@ -102,28 +89,6 @@ namespace Axiom.Utility
 			// remove it from the list of render windows, which will halt the rendering loop
 			// since there should now be 0 windows left
 			Engine.Instance.RenderSystem.RenderWindows.Remove(renderWindow);
-		}
-
-		private void timer_Tick(object sender, System.EventArgs e)
-		{
-			//stats = String.Format("Current FPS: {0} Poly Count: {1}", Engine.Instance.CurrentFPS, Engine.Instance.RenderSystem.FacesRendered);
-
-			//if(g != null)
-				//g.DrawString(stats, this.Font, Brushes.Red, 10, 10);
-		}
-
-		private void pictureBox1_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
-		{
-		}
-
-		private void DefaultForm_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-		{
-			timer.Enabled = false;
-		}
-
-		private void DefaultForm_Load(object sender, System.EventArgs e)
-		{
-			//g = pictureBox1.CreateGraphics();
 		}
 
 		/// <summary>

@@ -2,7 +2,7 @@ using System;
 using Axiom.Core;
 using Axiom.ParticleSystems;
 
-namespace AxiomParticleFX
+namespace ParticleFX
 {
 	/// <summary>
 	/// Summary description for ParticleFX.

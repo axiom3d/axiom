@@ -1,6 +1,6 @@
 <Project name="Engine" description="" newfilesearch="None" enableviewstate="True" version="1.1" projecttype="C#">
   <Contents>
-    <File name=".\AssemblyInfo.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\AssemblyInfo.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Animating\Animation.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Animating\AnimationState.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Animating\AnimationTrack.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
@@ -60,8 +60,6 @@
     <File name=".\Core\Light.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Log.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Mesh.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\Core\Model.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\Core\ModelManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Node.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Overlay.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\OverlayManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
@@ -72,15 +70,12 @@
     <File name=".\Core\SceneManagerList.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\SceneNode.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\SceneObject.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\Core\Shader.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\Core\ShaderManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\SimpleRenderable.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Sphere.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\SubEntity.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Texture.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\TextureLayer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\TextureManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\Core\VertexBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Viewport.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\WireBoundingBox.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Enumerations\Enums.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
@@ -132,12 +127,8 @@
     <File name=".\Utility\DefaultForm.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Utility\HighResolutionTimer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Utility\TechDemo.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\Xml\AxiomValidatingReader.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\Xml\XmlParticleReader.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\Xml\XmlShaderReader.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Utility\ConfigDialog.resources" subtype="Code" buildaction="EmbedAsResource" dependson="" data="" />
     <File name=".\Utility\DefaultForm.resources" subtype="Code" buildaction="EmbedAsResource" dependson="" data="" />
-    <File name=".\Xml\Axiom.Xml.Shaders.xsd" subtype="Code" buildaction="EmbedAsResource" dependson="" data="" />
     <File name=".\Utility\Axiom.Utility.ConfigDialog.resources" subtype="Code" buildaction="EmbedAsResource" dependson="" data="" />
     <File name=".\Serialization\OgreMeshReader.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\SubSystems\Rendering\SoftwareBufferManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
@@ -149,31 +140,31 @@
     <File name=".\SubSystems\Rendering\HardwareBufferManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\SubSystems\Rendering\HardwareIndexBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\SubSystems\Rendering\HardwareVertexBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\Material.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\MaterialManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\MeshManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Scripting\ScriptEnumAttribute.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\SubMesh.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References>
-    <Reference type="Project" refto="MathLib" />
+    <Reference type="Project" refto="MathLib" localcopy="True" />
   </References>
   <DeploymentInformation target="" script="" strategy="File" />
   <Configuration runwithwarnings="True" name="Debug">
     <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="0" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
     <Execution commandlineparameters="" consolepause="True" />
-    <Output directory="..\DemoTest\bin\Debug\" assembly="AxiomEngine" />
+    <Output directory="..\Enginet\bin\Debug\" assembly="AxiomEngine" executeBeforeBuild="" executeAfterBuild="" />
   </Configuration>
   <Configurations active="Debug">
     <Configuration runwithwarnings="True" name="Debug">
       <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="0" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
       <Execution commandlineparameters="" consolepause="True" />
-      <Output directory="..\DemoTest\bin\Debug\" assembly="AxiomEngine" />
+      <Output directory="..\Enginet\bin\Debug\" assembly="AxiomEngine" executeBeforeBuild="" executeAfterBuild="" />
     </Configuration>
     <Configuration runwithwarnings="True" name="Release">
       <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="False" optimize="True" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="TRACE" generatexmldocumentation="False" win32Icon="" />
       <Execution commandlineparameters="" consolepause="True" />
-      <Output directory=".\Release\" assembly="AxiomEngine" />
-    </Configuration>
-    <Configuration runwithwarnings="True" name="EngineDebug">
-      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="0" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
-      <Execution commandlineparameters="" consolepause="True" />
-      <Output directory=".\Debug\" assembly="AxiomEngine" />
+      <Output directory=".\Release\" assembly="AxiomEngine" executeBeforeBuild="" executeAfterBuild="" />
     </Configuration>
   </Configurations>
 </Project>
