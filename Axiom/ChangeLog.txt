@@ -2,6 +2,8 @@
 - Several bug fixes/optimizations in the shadow code.
 - Added robustness to pass hash code recalculation.
 - Added support for scene node auto tracking other scene nodes, the same way cameras can currently auto track nodes.  This allows you to set up objects that will "watch" other nodes and turn to follow them.  See SceneNode.SetAutoTracking.
+- Added checks for removed cameras to notify render targets that use them.
+- Optimized AnimationState.AddTime.
 
 4-16-2004
 - Modulative stencil shadows working in OpenGL for the first time.
