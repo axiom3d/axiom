@@ -946,7 +946,7 @@ namespace Axiom.Serialization {
 			context.isProgramShadowReceiver = false;
 
 			// set the vertex program for this pass
-			context.pass.VertexProgramName = parameters;
+			context.pass.SetVertexProgram(parameters);
 
 			// create params?  skip this if program is not supported
 			if(context.program.IsSupported) {
@@ -974,7 +974,7 @@ namespace Axiom.Serialization {
 			context.isProgramShadowReceiver = false;
 
 			// set the vertex program for this pass
-			context.pass.FragmentProgramName = parameters;
+			context.pass.SetFragmentProgram(parameters);
 
 			// create params?  skip this if program is not supported
 			if(context.program.IsSupported) {
@@ -1851,6 +1851,12 @@ namespace Axiom.Serialization {
 				return;
 			}
 		}
+
+		#region Exporting
+	
+		//public void WriteMaterial
+
+		#endregion Exporting
 	}
 
 	/// <summary>
@@ -1917,11 +1923,15 @@ namespace Axiom.Serialization {
 		}
 
 		public string Name {
-			get { return attributeName; }
+			get { 
+				return attributeName; 
+			}
 		}
 
 		public MaterialScriptSection Section {
-			get { return section; }
+			get { 
+				return section; 
+			}
 		}
 	}
 }

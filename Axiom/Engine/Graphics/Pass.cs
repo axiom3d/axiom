@@ -746,6 +746,68 @@ namespace Axiom.Graphics {
 		}
 
 		/// <summary>
+		///		
+		/// </summary>
+		/// <param name="name"></param>
+		public void SetFragmentProgram(string name) {
+			SetFragmentProgram(name, true);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="resetParams"></param>
+		public void SetFragmentProgram(string name, bool resetParams) {
+			// turn off fragment programs when the name is set to null
+			if(name.Length == 0) {
+				fragmentProgramUsage = null;
+			}
+			else {
+				// create a new usage object
+				if(!this.HasFragmentProgram) {
+					fragmentProgramUsage = new GpuProgramUsage(GpuProgramType.Fragment);
+				}
+
+				fragmentProgramUsage.ProgramName = name;
+			}
+
+			// needs recompilation
+			parent.NotifyNeedsRecompile();
+		}
+
+		/// <summary>
+		///		
+		/// </summary>
+		/// <param name="name"></param>
+		public void SetVertexProgram(string name) {
+			SetVertexProgram(name, true);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="resetParams"></param>
+		public void SetVertexProgram(string name, bool resetParams) {
+			// turn off vertex programs when the name is set to null
+			if(name.Length == 0) {
+				vertexProgramUsage = null;
+			}
+			else {
+				// create a new usage object
+				if(!this.HasVertexProgram) {
+					vertexProgramUsage = new GpuProgramUsage(GpuProgramType.Vertex);
+				}
+
+				vertexProgramUsage.ProgramName = name;
+			}
+
+			// needs recompilation
+			parent.NotifyNeedsRecompile();
+		}
+
+		/// <summary>
 		///    Splits this Pass to one which can be handled in the number of
 		///    texture units specified.
 		/// </summary>
@@ -1189,23 +1251,6 @@ namespace Axiom.Graphics {
 					return String.Empty;
 				}
 			}
-			set {
-				// turn off fragment programs when the name is set to null
-				if(value.Length == 0) {
-					fragmentProgramUsage = null;
-				}
-				else {
-					// create a new usage object
-					if(!this.HasFragmentProgram) {
-						fragmentProgramUsage = new GpuProgramUsage(GpuProgramType.Fragment);
-					}
-
-					fragmentProgramUsage.ProgramName = value;
-				}
-
-				// needs recompilation
-				parent.NotifyNeedsRecompile();
-			}
 		}
 
 		/// <summary>
@@ -1531,23 +1576,6 @@ namespace Axiom.Graphics {
 				else {
 					return String.Empty;
 				}
-			}
-			set {
-				// turn off vertex programs when the name is set to null
-				if(value.Length == 0) {
-					vertexProgramUsage = null;
-				}
-				else {
-					// create a new usage object
-					if(!this.HasVertexProgram) {
-						vertexProgramUsage = new GpuProgramUsage(GpuProgramType.Vertex);
-					}
-
-					vertexProgramUsage.ProgramName = value;
-				}
-
-				// needs recompilation
-				parent.NotifyNeedsRecompile();
 			}
 		}
 

@@ -591,6 +591,10 @@ namespace Axiom.Graphics {
 						SetConstant(entry.index, source.CameraPositionObjectSpace);
 						break;
 
+					case AutoConstants.TextureViewProjMatrix:
+						SetConstant(entry.index, source.TextureViewProjectionMatrix);
+						break;
+
 					case AutoConstants.Custom:
 						source.Renderable.UpdateCustomGpuParameter(entry, this);
 						break;
@@ -644,6 +648,15 @@ namespace Axiom.Graphics {
 						vec3 = source.InverseWorldMatrix * source.GetLight(entry.data).DerivedDirection;
 						vec3.Normalize();
 						SetConstant(entry.index, new Vector4(vec3.x, vec3.y, vec3.z, 1.0f));
+						break;
+
+					case AutoConstants.LightDistanceObjectSpace:
+						vec3 = source.InverseWorldMatrix * source.GetLight(entry.data).DerivedPosition;
+						SetConstant(entry.index, new Vector4(vec3.Length, 0, 0, 0));
+						break;
+
+					case AutoConstants.ShadowExtrusionDistance:
+						SetConstant(entry.index, new Vector4(source.ShadowExtrusionDistance, 0, 0, 0));
 						break;
 
 					case AutoConstants.LightAttenuation:
