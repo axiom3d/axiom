@@ -280,6 +280,27 @@ namespace RenderSystem_DirectX9 {
             return d3dUsage;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        public static D3D.FogMode ConvertEnum(Axiom.SubSystems.Rendering.FogMode mode) {
+            // convert the fog mode value
+            switch(mode) {
+                case Axiom.SubSystems.Rendering.FogMode.Exp:
+                   return D3D.FogMode.Exp;
+
+                case Axiom.SubSystems.Rendering.FogMode.Exp2:
+                    return D3D.FogMode.Exp2;
+
+                case Axiom.SubSystems.Rendering.FogMode.Linear:
+                    return D3D.FogMode.Linear;
+            } // switch
+
+            return 0;
+        }
+
         public static D3D.LockFlags ConvertEnum(BufferLocking locking) {
             D3D.LockFlags d3dLockFlags = 0;
 
