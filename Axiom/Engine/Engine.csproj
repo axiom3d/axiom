@@ -442,12 +442,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Core\Model.cs"
+                    RelPath = "Core\Mesh.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Core\ModelManager.cs"
+                    RelPath = "Core\MeshManager.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -4,7 +4,7 @@ using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.MathLib;
 
-namespace AxiomParticleFX
+namespace ParticleFX
 {
 	public enum ForceApplication
 	{
@@ -30,7 +30,7 @@ namespace AxiomParticleFX
 		{
 			Vector3 scaledVector = Vector3.Zero;
 
-			if(forceApp == AxiomParticleFX.ForceApplication.Add)
+			if(forceApp == ForceApplication.Add)
 			{
 				// scale force by time
 				scaledVector = forceVector * timeElapsed;
@@ -41,7 +41,7 @@ namespace AxiomParticleFX
 			{
 				Particle p = (Particle)system.Particles[i];
 
-				if(forceApp == AxiomParticleFX.ForceApplication.Add)
+				if(forceApp == ForceApplication.Add)
 					p.Direction += scaledVector;
 				else // Average
 					p.Direction = (p.Direction + forceVector) / 2;
