@@ -512,6 +512,8 @@ namespace Axiom.Core {
             // Write final performance stats
             System.Diagnostics.Trace.WriteLine("Final Stats:");
             System.Diagnostics.Trace.WriteLine("Axiom Framerate Average FPS: " + averageFPS.ToString("0.000000") + " Best FPS: " + highestFPS.ToString("0.000000") + " Worst FPS: " + lowestFPS.ToString("0.000000"));
+            
+            engineLog.Dispose();
         }
 
         private void InitializeSingletons() {

@@ -343,16 +343,16 @@ namespace RenderSystem_DirectX9 {
                 D3D.FogMode d3dFogMode = D3DHelper.ConvertEnum(mode);
 
                 // set the rest of the fog render states
-                if(d3dCaps.RasterCaps.SupportsFogTable) {
-                    device.RenderState.FogVertexMode = D3D.FogMode.None;
-                    device.RenderState.FogTableMode = d3dFogMode;
-                }
-                else {
+             //   if(d3dCaps.RasterCaps.SupportsFogTable) {
+             //       device.RenderState.FogVertexMode = D3D.FogMode.None;
+             //       device.RenderState.FogTableMode = d3dFogMode;
+             //   }
+             //   else {
                     device.RenderState.FogVertexMode = d3dFogMode; 
                     device.RenderState.FogTableMode = D3D.FogMode.None;
-                }
+             //   }
 
-                device.RenderState.FogColor = System.Drawing.Color.Red; //color.ToColor();
+                device.RenderState.FogColor = color.ToColor();
                 device.RenderState.FogStart = start;
                 device.RenderState.FogEnd = end;
                 device.RenderState.FogDensity = density;
