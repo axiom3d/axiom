@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.IO;
 using Axiom.Core;
+using System.Collections;
 
 namespace Axiom.Graphics
 {
@@ -34,7 +35,8 @@ namespace Axiom.Graphics
 	/// 	Defines a program which runs on the GPU such as a vertex or fragment program.
 	/// </summary>
     public abstract class GpuProgram : Resource {
-        #region Fields
+		
+		#region Fields
 		
         /// <summary>
         ///    The name of the file to load from source (may be blank).
@@ -61,6 +63,11 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected bool isSkeletalAnimationSupported;
 
+		/// <summary>
+		///		List of default parameters, as gathered from the program definition.
+		/// </summary>
+		protected GpuProgramParameters defaultParams;
+
         #endregion Fields
 		
         #region Constructors
@@ -80,8 +87,8 @@ namespace Axiom.Graphics
         #endregion Constructors
 		
         #region Methods
-
-        /// <summary>
+		
+		/// <summary>
         ///    Creates a new parameters object compatible with this program definition.
         /// </summary>
         /// <remarks>
@@ -137,6 +144,15 @@ namespace Axiom.Graphics
                 return this;
             }
         }
+
+		public GpuProgramParameters DefaultParameters {
+			get {
+				if (defaultParams == null) {
+					defaultParams = this.CreateParameters();
+				}
+				return defaultParams;
+			}
+		}
 
 		/// <summary>
 		///		Gets/Sets whether a vertex program includes the required instructions
