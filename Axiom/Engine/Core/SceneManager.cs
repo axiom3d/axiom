@@ -344,7 +344,7 @@ namespace Axiom.Core {
             if(entityList.ContainsKey(name))
                 throw new Axiom.Exceptions.AxiomException(string.Format("An entity with the name '{0}' already exists in the scene.", name));
 
-            Mesh mesh = MeshManager.Instance.Load(meshName, 1);
+            Mesh mesh = MeshManager.Instance.Load(meshName);
 
             // create a new entitiy
             Entity entity = new Entity(name, mesh, this);

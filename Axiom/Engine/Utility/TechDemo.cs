@@ -55,6 +55,7 @@ namespace Axiom.Utility {
         protected float cameraScale;
         protected bool showDebugOverlay = true;
         protected float statDelay = 0.0f;
+        protected float debugTextDelay = 0.0f;
         #endregion Protected Fields
 
         #region Constructors & Destructors
@@ -95,9 +96,8 @@ namespace Axiom.Utility {
             camera.Near = 5;
         }
 
-        protected void TakeScreenshot() {
-            string[] temp = Directory.GetFiles(Environment.CurrentDirectory, "screenshot*.jpg");
-            window.SaveToFile(string.Format("screenshot{0}.jpg", temp.Length + 1));
+        protected void TakeScreenshot(string fileName) {
+            window.SaveToFile(fileName);
         }
 
         #endregion Protected Methods
@@ -264,7 +264,16 @@ namespace Axiom.Utility {
             }
 
             if(input.IsKeyPressed(Keys.P)) {
-                TakeScreenshot();
+                string[] temp = Directory.GetFiles(Environment.CurrentDirectory, "screenshot*.jpg");
+                string fileName = string.Format("screenshot{0}.jpg", temp.Length + 1);
+                
+                // show briefly on the screen
+                window.DebugText = string.Format("Wrote screenshot '{0}'.", fileName);
+
+                TakeScreenshot(fileName);
+
+                // show for 2 seconds
+                debugTextDelay = 2.0f;
             }
 
             if(input.IsKeyPressed(Keys.B)) {
@@ -294,6 +303,15 @@ namespace Axiom.Utility {
             }
             else {
                 statDelay -= e.TimeSinceLastFrame;
+            }
+
+            // turn off debug text when delay ends
+            if(debugTextDelay < 0.0f) {
+                debugTextDelay = 0.0f;
+                window.DebugText = "";
+            }
+            else if(debugTextDelay > 0.0f) {
+                debugTextDelay -= e.TimeSinceLastFrame;
             }
 
             return true;

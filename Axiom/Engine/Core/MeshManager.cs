@@ -494,12 +494,27 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="name"></param>
         /// <param name="priority"></param>
-        public Mesh Load(string name, int priority) {
+        public Mesh Load(string name) {
+            return Load(name, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, false, false, 1);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="priority"></param>
+        public Mesh Load(string name, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage) {
+            return Load(name, vertexBufferUsage, indexBufferUsage, false, false, 1);
+        }
+
+        public Mesh Load(string name, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexBufferSysMem, bool indexBufferSysMem, int priority) {
             Mesh mesh = null;
 
             // if the resource isn't cached, create it
             if(!resourceList.ContainsKey(name)) {
                 mesh = (Mesh)Create(name);
+                mesh.SetVertexBufferPolicy(vertexBufferUsage, vertexBufferSysMem);
+                mesh.SetIndexBufferPolicy(indexBufferUsage, indexBufferSysMem);
                 base.Load(mesh, priority);
             }
             else {

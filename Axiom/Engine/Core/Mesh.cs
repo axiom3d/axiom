@@ -404,7 +404,7 @@ namespace Axiom.Core {
 
             // load the manual lod mesh for this level if not done already
             if(isLodManual && usage.manualMesh == null) {
-                usage.manualMesh = MeshManager.Instance.Load(usage.manualName, 1);
+                usage.manualMesh = MeshManager.Instance.Load(usage.manualName);
             }
 
             return usage;

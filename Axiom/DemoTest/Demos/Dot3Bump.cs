@@ -99,7 +99,7 @@ namespace Demos {
             string[] meshNames = {"knot.mesh", "cube.mesh", "ogrehead.mesh", "ball.mesh"};
             for(int meshIndex = 0; meshIndex < meshNames.Length; meshIndex++) {
                 // TODO: Look at HBU options
-                MeshManager.Instance.Load(meshNames[meshIndex], 1);
+                MeshManager.Instance.Load(meshNames[meshIndex]);
             }
 
             // create the meshes
