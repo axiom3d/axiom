@@ -20,23 +20,18 @@
   <Configuration runwithwarnings="True" name="Debug">
     <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
     <Execution commandlineparameters="" consolepause="True" />
-    <Output directory="..\DemoTest\bin\" assembly="OpenGLRenderer" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
+    <Output directory=".\bin\Debug" assembly="OpenGLRenderer" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
   </Configuration>
   <Configurations active="Debug">
     <Configuration runwithwarnings="True" name="Debug">
       <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
       <Execution commandlineparameters="" consolepause="True" />
-      <Output directory="..\DemoTest\bin\" assembly="OpenGLRenderer" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
+      <Output directory=".\bin\Debug" assembly="OpenGLRenderer" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
     </Configuration>
     <Configuration runwithwarnings="True" name="Release">
       <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="False" optimize="True" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="TRACE" generatexmldocumentation="False" win32Icon="" />
       <Execution commandlineparameters="" consolepause="True" />
-      <Output directory="..\DemoTest\bin\" assembly="OpenGLRenderer" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
-    </Configuration>
-    <Configuration runwithwarnings="True" name="EngineDebug">
-      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
-      <Execution commandlineparameters="" consolepause="True" />
-      <Output directory=".\Debug\" assembly="OpenGLRenderer" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
+      <Output directory=".\bin\Release" assembly="OpenGLRenderer" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
     </Configuration>
   </Configurations>
 </Project>

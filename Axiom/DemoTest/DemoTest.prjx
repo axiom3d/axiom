@@ -22,6 +22,11 @@
     <Reference type="Project" refto="Engine" localcopy="True" />
     <Reference type="Project" refto="MathLib" localcopy="True" />
     <Reference type="Project" refto="DynamicsSystem_ODE" localcopy="True" />
+    <Reference type="Project" refto="RenderSystem_DirectX9" localcopy="True" />
+    <Reference type="Project" refto="RenderSystem_OpenGL" localcopy="True" />
+    <Reference type="Project" refto="InputSystem_DInput" localcopy="True" />
+    <Reference type="Project" refto="ParticleFX" localcopy="True" />
+    <Reference type="Project" refto="Plugin_GuiElements" localcopy="True" />
   </References>
   <DeploymentInformation target="" script="" strategy="File" />
   <Configuration runwithwarnings="True" name="Debug">

@@ -128,7 +128,6 @@ namespace Axiom.Core {
 
         /// <summary>Cache the last material used during SetMaterial so we can comapare and reduce state changes.</summary>
         private static Material lastMaterialUsed;
-        private static bool firstTime = true;
         protected bool lastUsedFallback;
         protected static int lastNumTexUnitsUsed = 0;
 
@@ -463,11 +462,7 @@ namespace Axiom.Core {
             targetRenderSystem.SetSurfaceParams(material.Ambient, material.Diffuse, material.Specular, material.Emissive, material.Shininess);
 
             // Scene Blending
-            if(firstTime || lastUsedFallback ||
-                lastMaterialUsed.SourceBlendFactor != material.SourceBlendFactor ||
-                lastMaterialUsed.DestBlendFactor != material.DestBlendFactor) {
-                targetRenderSystem.SetSceneBlending(material.SourceBlendFactor, material.DestBlendFactor);
-            }
+            targetRenderSystem.SetSceneBlending(material.SourceBlendFactor, material.DestBlendFactor);
 
             // FOG
             ColorEx newFogColor;
@@ -490,17 +485,8 @@ namespace Axiom.Core {
                 newFogEnd = fogEnd;
             }
 
-            // check to see if fog needs to be changed
-            if(firstTime || newFogMode != oldFogMode || newFogColor != oldFogColor || 
-                newFogStart != oldFogStart || newFogEnd != oldFogEnd || newFogDensity != oldFogDensity) {
-                // set fog using the render system
-                targetRenderSystem.SetFog(newFogMode, newFogColor, newFogDensity, newFogStart, newFogEnd);
-                oldFogMode = newFogMode;
-                oldFogColor = newFogColor;
-                oldFogDensity = newFogDensity;
-                oldFogStart = newFogStart;
-                oldFogEnd = newFogEnd;
-            }
+            // set fog using the render system
+            targetRenderSystem.SetFog(newFogMode, newFogColor, newFogDensity, newFogStart, newFogEnd);
 
             // Texture layers
             int texLayer = material.NumTextureLayers - numLayersLeft;
@@ -535,7 +521,6 @@ namespace Axiom.Core {
 
                         // set the texture layer for the current unit
                         targetRenderSystem.SetTextureUnit(unit, tmpLayer);
-
                     }
                     else {
                         if(lastUsedFallback)
@@ -550,31 +535,17 @@ namespace Axiom.Core {
             } // for
 
             // DEPTH SETTINGS
-            if(firstTime || lastMaterialUsed.DepthWrite != material.DepthWrite) {
-                targetRenderSystem.DepthWrite = material.DepthWrite;
-            }
-            if(firstTime || lastMaterialUsed.DepthCheck != material.DepthCheck) {
-                targetRenderSystem.DepthCheck = material.DepthCheck;
-            }
-            if(firstTime || lastMaterialUsed.DepthFunction != material.DepthFunction) {
-                targetRenderSystem.DepthFunction = material.DepthFunction;
-            }
-            if(firstTime || lastMaterialUsed.DepthBias != material.DepthBias) {
-                targetRenderSystem.DepthBias = material.DepthBias;
-            }
+            targetRenderSystem.DepthWrite = material.DepthWrite;
+            targetRenderSystem.DepthCheck = material.DepthCheck;
+            targetRenderSystem.DepthFunction = material.DepthFunction;
+            targetRenderSystem.DepthBias = material.DepthBias;
 
             // TODO: CULLING
 
             // lighting enabled?
-            //if(firstTime || lastMaterialUsed.Lighting != material.Lighting) {
-                targetRenderSystem.LightingEnabled = material.Lighting;
-            //}
+            targetRenderSystem.LightingEnabled = material.Lighting;
 
             // TODO: SHADING MODE
-
-            // texture filtering
-            //if(firstTime || lastMaterialUsed.TextureFiltering != material.TextureFiltering)
-                targetRenderSystem.TextureFiltering = material.TextureFiltering;
 
             // save the last material used for comparison next time this is called
             lastMaterialUsed = material;
@@ -582,9 +553,6 @@ namespace Axiom.Core {
             // remeber how many layers this material had for the next material so we can disable
             // texture units no longer in use
             lastNumTexUnitsUsed = unit;
-
-            if(firstTime)
-                firstTime = false;
 
             return numLayersLeft;
         }

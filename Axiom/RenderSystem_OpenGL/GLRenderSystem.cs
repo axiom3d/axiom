@@ -81,11 +81,21 @@ namespace RenderSystem_OpenGL {
 
         protected bool zTrickEven;      
 
+        // render state redundency reduction settings
         protected SceneDetailLevel lastRasterizationMode;
         protected ColorEx lastDiffuse, lastAmbient, lastSpecular, lastEmissive;
         protected float lastShininess;
         protected TexCoordCalcMethod[] lastTexCalMethods = new TexCoordCalcMethod[Config.MaxTextureLayers];
         protected bool fogEnabled;
+        protected bool lightingEnabled;
+        protected SceneBlendFactor lastBlendSrc, lastBlendDest;
+        protected LayerBlendOperationEx[] lastColorOp = new LayerBlendOperationEx[Config.MaxTextureLayers];
+        protected LayerBlendOperationEx[] lastAlphaOp = new LayerBlendOperationEx[Config.MaxTextureLayers];
+        protected LayerBlendType lastBlendType;
+        protected TextureAddressing[] lastAddressingMode = new TextureAddressing[Config.MaxTextureLayers];
+        protected ushort lastDepthBias;
+        protected bool lastDepthCheck, lastDepthWrite;
+        protected CompareFunction lastDepthFunc;
         
         // temp arrays to reduce runtime allocations
         protected float[] tempMatrix = new float[16];
@@ -254,10 +264,15 @@ namespace RenderSystem_OpenGL {
         /// </summary>
         public override bool LightingEnabled {
             set {
+                if(lightingEnabled == value)
+                    return;
+
                 if(value)
                     Gl.glEnable(Gl.GL_LIGHTING);
                 else
                     Gl.glDisable(Gl.GL_LIGHTING);
+
+                lightingEnabled = value;
             }
         }
 
@@ -403,6 +418,7 @@ namespace RenderSystem_OpenGL {
 
                 // set for all texture units
                 for(int unit = 0; unit < numUnits; unit++) {
+                    // looks like filtering must be set every frame regardless
 
                     Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + unit);
 
@@ -507,7 +523,12 @@ namespace RenderSystem_OpenGL {
         /// 
         /// </summary>
         protected override void EndFrame() {
-            // Nothing to do here really
+            // clear stored blend modes, to ensure they gets set properly in multi texturing scenarios
+            // overall this will still reduce the number of blend mode changes
+            for(int i = 1; i < Config.MaxTextureLayers; i++) {
+                lastAlphaOp[i] = 0;
+                lastColorOp[i] = 0;
+            }
         }
 
         /// <summary>
@@ -601,9 +622,11 @@ namespace RenderSystem_OpenGL {
         /// <param name="stage"></param>
         /// <param name="texAddressingMode"></param>
         protected override void SetTextureAddressingMode(int stage, TextureAddressing texAddressingMode) {
-            //if(textureUnits[stage].TextureAddressing == texAddressingMode) {
-           //     return;
-           // }
+            if(lastAddressingMode[stage] == texAddressingMode) {
+                return;
+            }
+
+            lastAddressingMode[stage] = texAddressingMode;
 
             int type = 0;
 
@@ -640,9 +663,30 @@ namespace RenderSystem_OpenGL {
                 return;
             }
 
-            //if(textureUnits[stage].ColorBlendMode == blendMode) {
-           //     return;
-           // }
+            LayerBlendOperationEx lastOp;
+
+            if(blendMode.blendType == LayerBlendType.Alpha) {
+                lastOp = lastAlphaOp[stage];
+            }
+            else {
+                lastOp = lastColorOp[stage];
+            }
+            
+            // ignore the new blend mode only if the last one for the current texture stage
+            // is the same, and if no special texture coord calcs are required
+            if( lastOp == blendMode.operation && 
+                lastTexCalMethods[stage] == TexCoordCalcMethod.None)  {
+                // TODO: Works in all cases except TextureFX
+               return;
+            }
+
+            // remember last setting
+            if(blendMode.blendType == LayerBlendType.Alpha) {
+                lastAlphaOp[stage] = blendMode.operation;
+            }
+            else {
+                lastColorOp[stage] = blendMode.operation;
+            }
 
             int src1op, src2op, cmd;
 
@@ -725,31 +769,31 @@ namespace RenderSystem_OpenGL {
             } // end switch
 
             Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + stage);
-            Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, (int)Gl.GL_COMBINE);
+            Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_COMBINE);
 
             if (blendMode.blendType == LayerBlendType.Color) {
-                Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_COMBINE_RGB, (int)cmd);
-                Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE0_RGB, (int)src1op);
-                Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE1_RGB, (int)src2op);
-                Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_RGB, (int)Gl.GL_CONSTANT);
+                Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_COMBINE_RGB, cmd);
+                Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE0_RGB, src1op);
+                Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE1_RGB, src2op);
+                Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_RGB, Gl.GL_CONSTANT);
             }
             else {
                 if (cmd != Gl.GL_DOT3_RGB)
-                    Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_COMBINE_ALPHA, (int)cmd);
+                    Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_COMBINE_ALPHA, cmd);
 
-                Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE0_ALPHA, (int)src1op);
-                Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE1_ALPHA, (int)src2op);
-                Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_ALPHA, (int)Gl.GL_CONSTANT);
+                Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE0_ALPHA, src1op);
+                Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE1_ALPHA, src2op);
+                Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_ALPHA, Gl.GL_CONSTANT);
             }
 
             switch (blendMode.operation) {
                 case LayerBlendOperationEx.BlendTextureAlpha:
-                    Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_RGB, (int)Gl.GL_TEXTURE);
-                    Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_ALPHA, (int)Gl.GL_TEXTURE);
+                    Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_RGB, Gl.GL_TEXTURE);
+                    Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_ALPHA, Gl.GL_TEXTURE);
                     break;
                 case LayerBlendOperationEx.BlendCurrentAlpha:
-                    Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_RGB, (int)Gl.GL_PREVIOUS);
-                    Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_ALPHA, (int)Gl.GL_PREVIOUS);
+                    Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_RGB, Gl.GL_PREVIOUS);
+                    Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_ALPHA, Gl.GL_PREVIOUS);
                     break;
                 case LayerBlendOperationEx.Modulate:
                     Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, blendMode.blendType == LayerBlendType.Color ? 
@@ -804,6 +848,35 @@ namespace RenderSystem_OpenGL {
             Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
         }
 
+        protected override void SetTextureLayerFiltering(int stage, TextureFiltering filtering) {
+            // looks like filtering must be set every frame regardless
+
+            Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + stage);
+
+            switch(filtering) {
+                case Axiom.SubSystems.Rendering.TextureFiltering.Trilinear: {
+                    Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
+                    Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_LINEAR);
+
+                } break;
+
+                case Axiom.SubSystems.Rendering.TextureFiltering.Bilinear: {
+                    Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
+                    Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_NEAREST);
+
+                } break;
+
+                case Axiom.SubSystems.Rendering.TextureFiltering.None: {
+                    Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_NEAREST);
+                    Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_NEAREST);
+
+                } break;
+            } // switch
+
+            // reset texture unit
+            Ext.glActiveTextureARB(Gl.GL_TEXTURE0 );
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -822,24 +895,27 @@ namespace RenderSystem_OpenGL {
             // Default to no extra auto texture matrix
             useAutoTextureMatrix = false;
 
+            if(method == TexCoordCalcMethod.None && 
+                lastTexCalMethods[stage] == method) {
+                return;
+            }
+
+            // store for next checking next time around
+            lastTexCalMethods[stage] = method;
+
             Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + stage );
 
             switch(method) {
                 case TexCoordCalcMethod.None:
-
-                  //  if(lastTexCalMethods[stage] != method) {
                         Gl.glDisable( Gl.GL_TEXTURE_GEN_S );
                         Gl.glDisable( Gl.GL_TEXTURE_GEN_T );
                         Gl.glDisable( Gl.GL_TEXTURE_GEN_R );
                         Gl.glDisable( Gl.GL_TEXTURE_GEN_Q );
-
-                    //    lastTexCalMethods[stage] = method;
-                   // }
                     break;
 
                 case TexCoordCalcMethod.EnvironmentMap:
-                    Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_SPHERE_MAP );
-                    Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_SPHERE_MAP );
+                    Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_SPHERE_MAP );
+                    Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_SPHERE_MAP );
 
                     Gl.glEnable( Gl.GL_TEXTURE_GEN_S );
                     Gl.glEnable( Gl.GL_TEXTURE_GEN_T );
@@ -850,9 +926,9 @@ namespace RenderSystem_OpenGL {
                 case TexCoordCalcMethod.EnvironmentMapPlanar:            
                     // XXX This doesn't seem right?!
                     if(GLHelper.CheckMinVersion("1.3")) {
-                        Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_REFLECTION_MAP );
-                        Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_REFLECTION_MAP );
-                        Gl.glTexGeni( Gl.GL_R, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_REFLECTION_MAP );
+                        Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_REFLECTION_MAP );
+                        Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_REFLECTION_MAP );
+                        Gl.glTexGeni( Gl.GL_R, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_REFLECTION_MAP );
 
                         Gl.glEnable( Gl.GL_TEXTURE_GEN_S );
                         Gl.glEnable( Gl.GL_TEXTURE_GEN_T );
@@ -860,8 +936,8 @@ namespace RenderSystem_OpenGL {
                         Gl.glDisable( Gl.GL_TEXTURE_GEN_Q );
                     }
                     else {
-                        Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_SPHERE_MAP );
-                        Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_SPHERE_MAP );
+                        Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_SPHERE_MAP );
+                        Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_SPHERE_MAP );
 
                         Gl.glEnable( Gl.GL_TEXTURE_GEN_S );
                         Gl.glEnable( Gl.GL_TEXTURE_GEN_T );
@@ -872,9 +948,9 @@ namespace RenderSystem_OpenGL {
 
                 case TexCoordCalcMethod.EnvironmentMapReflection:
         
-                    Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_REFLECTION_MAP );
-                    Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_REFLECTION_MAP );
-                    Gl.glTexGeni( Gl.GL_R, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_REFLECTION_MAP );
+                    Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_REFLECTION_MAP );
+                    Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_REFLECTION_MAP );
+                    Gl.glTexGeni( Gl.GL_R, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_REFLECTION_MAP );
 
                     Gl.glEnable( Gl.GL_TEXTURE_GEN_S );
                     Gl.glEnable( Gl.GL_TEXTURE_GEN_T );
@@ -900,9 +976,9 @@ namespace RenderSystem_OpenGL {
                     break;
 
                 case TexCoordCalcMethod.EnvironmentMapNormal:
-                    Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_NORMAL_MAP );
-                    Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_NORMAL_MAP );
-                    Gl.glTexGeni( Gl.GL_R, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_NORMAL_MAP );
+                    Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_NORMAL_MAP );
+                    Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_NORMAL_MAP );
+                    Gl.glTexGeni( Gl.GL_R, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_NORMAL_MAP );
 
                     Gl.glEnable( Gl.GL_TEXTURE_GEN_S );
                     Gl.glEnable( Gl.GL_TEXTURE_GEN_T );
@@ -923,10 +999,11 @@ namespace RenderSystem_OpenGL {
         /// <param name="stage"></param>
         /// <param name="xform"></param>
         protected override void SetTextureMatrix(int stage, Matrix4 xform) {
-            float[] glMatrix = MakeGLMatrix(xform);
+            
+            MakeGLMatrix(ref xform, tempMatrix);
 
-            glMatrix[12] = glMatrix[8];
-            glMatrix[13] = glMatrix[9];
+            tempMatrix[12] = tempMatrix[8];
+            tempMatrix[13] = tempMatrix[9];
 
             Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + stage);
             Gl.glMatrixMode(Gl.GL_TEXTURE);
@@ -934,10 +1011,10 @@ namespace RenderSystem_OpenGL {
             // if texture matrix was precalced, use that
             if(useAutoTextureMatrix) {
                 Gl.glLoadMatrixf(autoTextureMatrix);
-                Gl.glMultMatrixf(glMatrix);
+                Gl.glMultMatrixf(tempMatrix);
             }
             else
-                Gl.glLoadMatrixf(glMatrix);
+                Gl.glLoadMatrixf(tempMatrix);
 
             // reset to mesh view matrix and to tex unit 0
             Gl.glMatrixMode(Gl.GL_MODELVIEW);
@@ -1031,7 +1108,7 @@ namespace RenderSystem_OpenGL {
         /// <param name="start"></param>
         /// <param name="end"></param>
         protected override void SetFog(FogMode mode, ColorEx color, float density, float start, float end) {
-            uint fogMode;
+            int fogMode;
 
             switch(mode) {
                 case FogMode.Exp:
@@ -1052,7 +1129,7 @@ namespace RenderSystem_OpenGL {
             } // switch
 
             Gl.glEnable(Gl.GL_FOG);
-            Gl.glFogi(Gl.GL_FOG_MODE, (int)fogMode);
+            Gl.glFogi(Gl.GL_FOG_MODE, fogMode);
             // fog color values
             color.ToArrayRGBA(tempColorVals);
             Gl.glFogfv(Gl.GL_FOG_COLOR, tempColorVals);
@@ -1250,13 +1327,13 @@ namespace RenderSystem_OpenGL {
         protected override Matrix4 ProjectionMatrix {
             set {
                 // create a float[16] from our Matrix4
-                float[] glMatrix = MakeGLMatrix(value);
+                MakeGLMatrix(ref value, tempMatrix);
 			
                 // set the matrix mode to Projection
                 Gl.glMatrixMode(Gl.GL_PROJECTION);
 
                 // load the float array into the projection matrix
-                Gl.glLoadMatrixf(glMatrix);
+                Gl.glLoadMatrixf(tempMatrix);
 
                 // set the matrix mode back to ModelView
                 Gl.glMatrixMode(Gl.GL_MODELVIEW);
@@ -1271,22 +1348,22 @@ namespace RenderSystem_OpenGL {
                 viewMatrix = value;
 
                 // create a float[16] from our Matrix4
-                float[] glMatrix = MakeGLMatrix(viewMatrix);
+                MakeGLMatrix(ref viewMatrix, tempMatrix);
 			
                 // set the matrix mode to ModelView
                 Gl.glMatrixMode(Gl.GL_MODELVIEW);
 			
                 // load the float array into the ModelView matrix
-                Gl.glLoadMatrixf(glMatrix);
+                Gl.glLoadMatrixf(tempMatrix);
 
                 // Reset lights here after a view change
                 ResetLights();
 
                 // convert the internal world matrix
-                glMatrix = MakeGLMatrix(worldMatrix);
+                MakeGLMatrix(ref worldMatrix, tempMatrix);
 
                 // multply the world matrix by the current ModelView matrix
-                Gl.glMultMatrixf(glMatrix);
+                Gl.glMultMatrixf(tempMatrix);
             }
         }
 
@@ -1298,13 +1375,14 @@ namespace RenderSystem_OpenGL {
                 worldMatrix = value;
 
                 // multiply the view and world matrices, and convert it to GL format
-                float[] glMatrix = MakeGLMatrix(viewMatrix * worldMatrix);
+                Matrix4 multMatrix = viewMatrix * worldMatrix;
+                MakeGLMatrix(ref multMatrix, tempMatrix);
 
                 // change the matrix mode to ModelView
                 Gl.glMatrixMode(Gl.GL_MODELVIEW);
 
                 // load the converted GL matrix
-                Gl.glLoadMatrixf(glMatrix);
+                Gl.glLoadMatrixf(tempMatrix);
             }
         }
 
@@ -1364,12 +1442,19 @@ namespace RenderSystem_OpenGL {
         /// <param name="src"></param>
         /// <param name="dest"></param>
         protected override void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest) {
+            if(src == lastBlendSrc && dest == lastBlendDest) {
+                return;
+            }
+
             int srcFactor = ConvertBlendFactor(src);
             int destFactor = ConvertBlendFactor(dest);
 
             // enable blending and set the blend function
             Gl.glEnable(Gl.GL_BLEND);
             Gl.glBlendFunc(srcFactor, destFactor);
+
+            lastBlendSrc = src;
+            lastBlendDest = dest;
         }
 
         /// <summary>
@@ -1377,14 +1462,19 @@ namespace RenderSystem_OpenGL {
         /// </summary>
         protected override ushort DepthBias {
             set {
-                ushort bias = value;
+                // reduce dupe state changes
+                if(lastDepthBias == value) {
+                    return;
+                }
 
-                if (bias > 0) {
+                lastDepthBias = value;
+
+                if (value > 0) {
                     Gl.glEnable(Gl.GL_POLYGON_OFFSET_FILL);
                     Gl.glEnable(Gl.GL_POLYGON_OFFSET_POINT);
                     Gl.glEnable(Gl.GL_POLYGON_OFFSET_LINE);
                     // Bias is in {0, 16}, scale the unit addition appropriately
-                    Gl.glPolygonOffset(1.0f, bias);
+                    Gl.glPolygonOffset(1.0f, value);
                 }
                 else {
                     Gl.glDisable(Gl.GL_POLYGON_OFFSET_FILL);
@@ -1399,6 +1489,13 @@ namespace RenderSystem_OpenGL {
         /// </summary>
         protected override bool DepthCheck {
             set {
+                // reduce dupe state changes
+                if(lastDepthCheck == value) {
+                    return;
+                }
+
+                lastDepthCheck = value;
+
                 if(value) {
                     // clear the buffer and enable
                     Gl.glClearDepth(1.0f);
@@ -1414,6 +1511,12 @@ namespace RenderSystem_OpenGL {
         /// </summary>
         protected override CompareFunction DepthFunction {
             set {
+                // reduce dupe state changes
+                if(lastDepthFunc == value) {
+                    return;
+                }
+                lastDepthFunc = value;
+
                 Gl.glDepthFunc(GLHelper.ConvertEnum(value));
             }
         }
@@ -1423,6 +1526,12 @@ namespace RenderSystem_OpenGL {
         /// </summary>
         protected override bool DepthWrite {
             set {
+                // reduce dupe state changes
+                if(lastDepthWrite == value) {
+                    return;
+                }
+                lastDepthWrite = value;
+
                 int flag = value ? Gl.GL_TRUE : Gl.GL_FALSE;
                 Gl.glDepthMask( flag );  
 
@@ -1489,10 +1598,10 @@ namespace RenderSystem_OpenGL {
         /// </summary>
         /// <param name="matrix"></param>
         /// <returns></returns>
-        private float[] MakeGLMatrix(Matrix4 matrix) {
+        private void MakeGLMatrix(ref Matrix4 matrix, float[] floats) {
             Matrix4 mat = matrix.Transpose();
 
-            return mat.MakeFloatArray();
+            mat.MakeFloatArray(floats);
         }
 
         /// <summary>

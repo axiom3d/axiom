@@ -46,6 +46,7 @@ namespace Axiom.Core {
         /// <summary></summary>
         private int texCoordSet;
         private TextureAddressing texAddressingMode;
+        private TextureFiltering texFiltering;
         private LayerBlendModeEx colorBlendMode = new LayerBlendModeEx();
         private LayerBlendModeEx alphaBlendMode = new LayerBlendModeEx();
         private SceneBlendFactor colorBlendFallbackSrc;
@@ -87,6 +88,7 @@ namespace Axiom.Core {
             colorBlendMode.blendType = LayerBlendType.Color;
             SetColorOperation(LayerBlendOperation.Modulate);
             TextureAddressing = TextureAddressing.Wrap;
+            texFiltering = TextureFiltering.Bilinear;
 
             alphaBlendMode.operation = LayerBlendOperationEx.Modulate;
             alphaBlendMode.blendType = LayerBlendType.Alpha;
@@ -171,6 +173,14 @@ namespace Axiom.Core {
         public TextureAddressing TextureAddressing {
             get { return texAddressingMode; }
             set { texAddressingMode = value; }
+        }
+
+        /// <summary>
+        ///		Get/Set the texture filtering mode for this layer.
+        /// </summary>
+        public TextureFiltering TextureFiltering {
+            get { return texFiltering; }
+            set { texFiltering = value; }
         }
 
         /// <summary>
@@ -758,6 +768,10 @@ namespace Axiom.Core {
         /// <param name="right"></param>
         /// <returns></returns>
         static public bool operator == (LayerBlendModeEx left, LayerBlendModeEx right) {
+            if((object)left == null) {
+                return false;
+            }
+
             if(left.colorArg1 != right.colorArg1 ||
                 left.colorArg2 != right.colorArg2 ||
                 left.blendFactor != right.blendFactor ||

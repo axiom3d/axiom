@@ -603,6 +603,13 @@ namespace Axiom.SubSystems.Rendering {
         abstract protected internal void SetTextureCoordSet(int stage, int index);
 
         /// <summary>
+        ///		Sets the filtering level to use for textures in the specified unit.
+        /// </summary>
+        /// <param name="stage"></param>
+        /// <param name="index"></param>
+        abstract protected internal void SetTextureLayerFiltering(int stage, TextureFiltering filtering);
+
+        /// <summary>
         ///		Sets the texture matrix for the specified stage.  Used to apply rotations, translations,
         ///		and scaling to textures.
         /// </summary>
@@ -691,18 +698,16 @@ namespace Axiom.SubSystems.Rendering {
             // Tex Coord Set
             SetTextureCoordSet(stage, layer.TexCoordSet);
 
-            // TODO: Texture layer filtering
+            // Texture layer filtering
+            SetTextureLayerFiltering(stage, layer.TextureFiltering);
 
             // TODO: Texture layer anistropy
 
-            // Texture blend modes
-            LayerBlendModeEx newBlend = layer.ColorBlendMode;
+            // set the texture blending mode
+            SetTextureBlendMode(stage, layer.ColorBlendMode);
 
             // set the texture blending mode
-            SetTextureBlendMode(stage, newBlend);
-
-            // set the texture blending mode
-            SetTextureBlendMode(stage, newBlend);
+            SetTextureBlendMode(stage, layer.AlphaBlendMode);
 
             // this must always be set for OpenGL.  DX9 will ignore dupe render states like this (observed in the
             // output window when debugging with high verbosity), so there is no harm
