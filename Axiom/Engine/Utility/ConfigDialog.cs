@@ -28,330 +28,289 @@ using System;
 using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
-using System.Xml;
 using System.Windows.Forms;
+using System.Xml;
 using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Exceptions;
 using Axiom.SubSystems.Rendering;
 
 namespace Axiom.Utility {
-    /// <summary>
-    /// Summary description for ConfigDialog.
-    /// </summary>
-    public class ConfigDialog : System.Windows.Forms.Form {
-        private System.Windows.Forms.ComboBox cboRenderSystems;
-        private System.Windows.Forms.ComboBox cboResolution;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.CheckBox chkFullScreen;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Label lblResolutions;
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.Container components = null;
+    public class ConfigDialog : Form {
+        private Container components = null;
+        private PictureBox picLogo;
+        private GroupBox grpVideoOptions;
+        private Label lblDriver;
+        private ComboBox cboRenderSystems;
+        private Label lblResolution;
+        private ComboBox cboResolution;
+        private CheckBox chkFullscreen;
+        private Button btnOk;
+        private Button btnCancel;
 
         public ConfigDialog() {
-            //
-            // Required for Windows Form Designer support
-            //
             InitializeComponent();
-
-            //
-            // TODO: Add any constructor code after InitializeComponent call
-            //
         }
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        protected override void Dispose( bool disposing ) {
-            if( disposing ) {
+        protected override void Dispose(bool disposing) {
+            if(disposing) {
                 if(components != null) {
                     components.Dispose();
                 }
             }
-            base.Dispose( disposing );
+            base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-		
         private void InitializeComponent() {
             System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(ConfigDialog));
-            this.lblResolutions = new System.Windows.Forms.Label();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.chkFullScreen = new System.Windows.Forms.CheckBox();
-            this.btnOK = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.cboRenderSystems = new System.Windows.Forms.ComboBox();
-            this.cboResolution = new System.Windows.Forms.ComboBox();
-            this.groupBox1.SuspendLayout();
+            this.lblResolution = new Label();
+            this.btnCancel = new Button();
+            this.picLogo = new PictureBox();
+            this.chkFullscreen = new CheckBox();
+            this.btnOk = new Button();
+            this.grpVideoOptions = new GroupBox();
+            this.lblDriver = new Label();
+            this.cboRenderSystems = new ComboBox();
+            this.cboResolution = new ComboBox();
+            this.grpVideoOptions.SuspendLayout();
             this.SuspendLayout();
             // 
-            // lblResolutions
+            // lblResolution
             // 
-            this.lblResolutions.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.lblResolutions.Location = new System.Drawing.Point(16, 70);
-            this.lblResolutions.Name = "lblResolutions";
-            this.lblResolutions.Size = new System.Drawing.Size(128, 16);
-            this.lblResolutions.TabIndex = 7;
-            this.lblResolutions.Text = "Resolution:";
-            this.lblResolutions.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblResolution.FlatStyle = FlatStyle.Flat;
+            this.lblResolution.ForeColor = Color.FromArgb(((Byte)(25)), ((Byte)(35)), ((Byte)(75)));
+            this.lblResolution.Location = new Point(16, 70);
+            this.lblResolution.Name = "lblResolution";
+            this.lblResolution.Size = new Size(128, 16);
+            this.lblResolution.TabIndex = 7;
+            this.lblResolution.Text = "Resolution:";
+            this.lblResolution.TextAlign = ContentAlignment.MiddleRight;
             // 
             // btnCancel
             // 
-            this.btnCancel.BackColor = System.Drawing.SystemColors.Control;
-            this.btnCancel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCancel.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-            this.btnCancel.ForeColor = System.Drawing.Color.Black;
-            this.btnCancel.Location = new System.Drawing.Point(237, 296);
+            this.btnCancel.BackColor = Color.White;
+            this.btnCancel.Cursor = Cursors.Hand;
+            this.btnCancel.DialogResult = DialogResult.Cancel;
+            this.btnCancel.FlatStyle = FlatStyle.Flat;
+            this.btnCancel.Font = new Font("Palatino Linotype", 12F, FontStyle.Regular, GraphicsUnit.Point, ((Byte)(0)));
+            this.btnCancel.ForeColor = Color.FromArgb(((Byte)(25)), ((Byte)(35)), ((Byte)(75)));
+            this.btnCancel.Location = new Point(237, 287);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(96, 24);
+            this.btnCancel.Size = new Size(96, 24);
             this.btnCancel.TabIndex = 1;
             this.btnCancel.Text = "Cancel";
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            this.btnCancel.Click += new EventHandler(Cancel_Click);
             // 
-            // pictureBox1
+            // picLogo
             // 
-            this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(126, 15);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(200, 80);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pictureBox1.TabIndex = 3;
-            this.pictureBox1.TabStop = false;
+            this.picLogo.Image = ((Image)(resources.GetObject("picLogo.Image")));
+            this.picLogo.Location = new Point(94, -14);
+            this.picLogo.Name = "picLogo";
+            this.picLogo.Size = new Size(256, 128);
+            this.picLogo.SizeMode = PictureBoxSizeMode.AutoSize;
+            this.picLogo.TabIndex = 3;
+            this.picLogo.TabStop = false;
             // 
-            // chkFullScreen
+            // chkFullscreen
             // 
-            this.chkFullScreen.BackColor = System.Drawing.SystemColors.Control;
-            this.chkFullScreen.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.chkFullScreen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chkFullScreen.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-            this.chkFullScreen.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.chkFullScreen.Location = new System.Drawing.Point(143, 102);
-            this.chkFullScreen.Name = "chkFullScreen";
-            this.chkFullScreen.Size = new System.Drawing.Size(144, 24);
-            this.chkFullScreen.TabIndex = 0;
-            this.chkFullScreen.Text = "Fullscreen?";
+            this.chkFullscreen.BackColor = Color.White;
+            this.chkFullscreen.Cursor = Cursors.Hand;
+            this.chkFullscreen.FlatStyle = FlatStyle.Flat;
+            this.chkFullscreen.Font = new Font("Palatino Linotype", 12F, FontStyle.Regular, GraphicsUnit.Point, ((Byte)(0)));
+            this.chkFullscreen.ForeColor = Color.FromArgb(((Byte)(25)), ((Byte)(35)), ((Byte)(75)));
+            this.chkFullscreen.Location = new Point(143, 102);
+            this.chkFullscreen.Name = "chkFullscreen";
+            this.chkFullscreen.Size = new Size(144, 24);
+            this.chkFullscreen.TabIndex = 0;
+            this.chkFullscreen.Text = "Fullscreen?";
             // 
-            // btnOK
+            // btnOk
             // 
-            this.btnOK.BackColor = System.Drawing.SystemColors.Control;
-            this.btnOK.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnOK.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-            this.btnOK.ForeColor = System.Drawing.Color.Black;
-            this.btnOK.Location = new System.Drawing.Point(109, 296);
-            this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(96, 24);
-            this.btnOK.TabIndex = 0;
-            this.btnOK.Text = "Start";
-            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+            this.btnOk.BackColor = Color.White;
+            this.btnOk.Cursor = Cursors.Hand;
+            this.btnOk.DialogResult = DialogResult.OK;
+            this.btnOk.FlatStyle = FlatStyle.Flat;
+            this.btnOk.Font = new Font("Palatino Linotype", 12F, FontStyle.Regular, GraphicsUnit.Point, ((Byte)(0)));
+            this.btnOk.ForeColor = Color.FromArgb(((Byte)(25)), ((Byte)(35)), ((Byte)(75)));
+            this.btnOk.Location = new Point(109, 287);
+            this.btnOk.Name = "btnOk";
+            this.btnOk.Size = new Size(96, 24);
+            this.btnOk.TabIndex = 0;
+            this.btnOk.Text = "Start";
+            this.btnOk.Click += new EventHandler(Ok_Click);
             // 
-            // groupBox1
+            // grpVideoOptions
             // 
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.cboRenderSystems);
-            this.groupBox1.Controls.Add(this.lblResolutions);
-            this.groupBox1.Controls.Add(this.cboResolution);
-            this.groupBox1.Controls.Add(this.chkFullScreen);
-            this.groupBox1.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-            this.groupBox1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.groupBox1.Location = new System.Drawing.Point(24, 136);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(392, 144);
-            this.groupBox1.TabIndex = 6;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Video Options";
+            this.grpVideoOptions.Controls.Add(this.lblDriver);
+            this.grpVideoOptions.Controls.Add(this.cboRenderSystems);
+            this.grpVideoOptions.Controls.Add(this.lblResolution);
+            this.grpVideoOptions.Controls.Add(this.cboResolution);
+            this.grpVideoOptions.Controls.Add(this.chkFullscreen);
+            this.grpVideoOptions.FlatStyle = FlatStyle.Flat;
+            this.grpVideoOptions.Font = new Font("Palatino Linotype", 12F, FontStyle.Regular, GraphicsUnit.Point, ((Byte)(0)));
+            this.grpVideoOptions.ForeColor = Color.FromArgb(((Byte)(25)), ((Byte)(35)), ((Byte)(75)));
+            this.grpVideoOptions.Location = new Point(24, 111);
+            this.grpVideoOptions.Name = "grpVideoOptions";
+            this.grpVideoOptions.Size = new Size(392, 144);
+            this.grpVideoOptions.TabIndex = 6;
+            this.grpVideoOptions.TabStop = false;
+            this.grpVideoOptions.Text = "Video Options";
             // 
-            // label1
+            // lblDriver
             // 
-            this.label1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label1.Location = new System.Drawing.Point(71, 37);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(72, 16);
-            this.label1.TabIndex = 9;
-            this.label1.Text = "Driver:";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblDriver.FlatStyle = FlatStyle.Flat;
+            this.lblDriver.ForeColor = Color.FromArgb(((Byte)(25)), ((Byte)(35)), ((Byte)(75)));
+            this.lblDriver.Location = new Point(71, 37);
+            this.lblDriver.Name = "lblDriver";
+            this.lblDriver.Size = new Size(72, 16);
+            this.lblDriver.TabIndex = 9;
+            this.lblDriver.Text = "Driver:";
+            this.lblDriver.TextAlign = ContentAlignment.MiddleRight;
             // 
             // cboRenderSystems
             // 
-            this.cboRenderSystems.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboRenderSystems.Font = new System.Drawing.Font("Palatino Linotype", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-            this.cboRenderSystems.Location = new System.Drawing.Point(144, 32);
+            this.cboRenderSystems.DropDownStyle = ComboBoxStyle.DropDownList;
+            this.cboRenderSystems.Font = new Font("Palatino Linotype", 8F, FontStyle.Regular, GraphicsUnit.Point, ((Byte)(0)));
+            this.cboRenderSystems.ForeColor = Color.FromArgb(((Byte)(25)), ((Byte)(35)), ((Byte)(75)));
+            this.cboRenderSystems.Location = new Point(144, 32);
             this.cboRenderSystems.Name = "cboRenderSystems";
-            this.cboRenderSystems.Size = new System.Drawing.Size(176, 24);
+            this.cboRenderSystems.Size = new Size(176, 24);
             this.cboRenderSystems.TabIndex = 8;
-            this.cboRenderSystems.SelectedIndexChanged += new System.EventHandler(this.cboRenderSystems_SelectedIndexChanged);
+            this.cboRenderSystems.SelectedIndexChanged += new EventHandler(RenderSystems_SelectedIndexChanged);
             // 
             // cboResolution
             // 
-            this.cboResolution.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboResolution.Font = new System.Drawing.Font("Palatino Linotype", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-            this.cboResolution.Location = new System.Drawing.Point(144, 64);
+            this.cboResolution.DropDownStyle = ComboBoxStyle.DropDownList;
+            this.cboResolution.Font = new Font("Palatino Linotype", 8F, FontStyle.Regular, GraphicsUnit.Point, ((Byte)(0)));
+            this.cboResolution.ForeColor = Color.FromArgb(((Byte)(25)), ((Byte)(35)), ((Byte)(75)));
+            this.cboResolution.Location = new Point(144, 64);
             this.cboResolution.Name = "cboResolution";
-            this.cboResolution.Size = new System.Drawing.Size(176, 24);
+            this.cboResolution.Size = new Size(176, 24);
             this.cboResolution.TabIndex = 6;
             // 
             // ConfigDialog
             // 
-            this.AcceptButton = this.btnOK;
-            this.AutoScaleBaseSize = new System.Drawing.Size(6, 17);
+            this.AcceptButton = this.btnOk;
+            this.AutoScaleBaseSize = new Size(6, 17);
+            this.BackColor = Color.White;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(442, 344);
+            this.ClientSize = new Size(442, 344);
             this.ControlBox = false;
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.btnOK);
+            this.Controls.Add(this.grpVideoOptions);
+            this.Controls.Add(this.picLogo);
+            this.Controls.Add(this.btnOk);
             this.Controls.Add(this.btnCancel);
-            this.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Font = new Font("Palatino Linotype", 9F, FontStyle.Bold, GraphicsUnit.Point, ((Byte)(0)));
+            this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ConfigDialog";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = FormStartPosition.CenterScreen;
             this.Text = "Axiom Game Engine";
-            this.Load += new System.EventHandler(this.ConfigDialog_Load);
-            this.groupBox1.ResumeLayout(false);
+            this.Load += new EventHandler(this.ConfigDialog_Load);
+            this.grpVideoOptions.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
-        #endregion
 
-        private void btnOK_Click(object sender, System.EventArgs e) { 
-            Engine.Instance.RenderSystem = (RenderSystem)cboRenderSystems.SelectedItem; 
+        private void Ok_Click(object sender, EventArgs e) {
+            Engine.Instance.RenderSystem = (RenderSystem) cboRenderSystems.SelectedItem;
+            EngineConfig.DisplayModeRow mode = Engine.Instance.RenderSystem.ConfigOptions.DisplayMode[cboResolution.SelectedIndex];
+            mode.FullScreen = chkFullscreen.Checked;
+            mode.Selected = true;
+            SaveDisplaySettings(cboRenderSystems.SelectedIndex.ToString(), cboResolution.SelectedIndex.ToString(), chkFullscreen.Checked.ToString());
+            this.Close();
+        }
 
-            EngineConfig.DisplayModeRow mode = 
-                Engine.Instance.RenderSystem.ConfigOptions.DisplayMode 
-                [cboResolution.SelectedIndex]; 
+        private void Cancel_Click(object sender, EventArgs e) {
+            this.Dispose();
+        }
 
-            mode.FullScreen = chkFullScreen.Checked; 
-            mode.Selected = true; 
+        private void ConfigDialog_Load(object sender, System.EventArgs e) {
+            foreach(RenderSystem renderSystem in Engine.Instance.RenderSystems) {
+                cboRenderSystems.Items.Add(renderSystem);
+            }
 
-            // Hobbes: Save those settings for next time! 
-            SaveDisplaySettings(cboRenderSystems.SelectedIndex.ToString() , cboResolution.SelectedIndex.ToString(), chkFullScreen.Checked.ToString()); 
-            // END Hobbes          
-            this.Close(); 
-        } 
+            try {
+                string temp;
+                XmlTextReader settingsReader = new XmlTextReader("DisplayConfig.xml");
+                while(settingsReader.Read()) {
+                    if(settingsReader.NodeType == XmlNodeType.Element) {
+                        if(settingsReader.LocalName.Equals("RenderSystem")) {
+                            temp = settingsReader.ReadString();
+                            if(cboRenderSystems.Items.Count > Int32.Parse(temp)) {
+                                cboRenderSystems.SelectedIndex = Int32.Parse(temp);
+                            }
+                            else {
+                                cboRenderSystems.SelectedIndex = 1;
+                            }
+                        }
 
-        private void btnCancel_Click(object sender, System.EventArgs e) { 
-            this.Dispose(); 
-        } 
+                        if(settingsReader.LocalName.Equals("Resolution")) {
+                            temp = settingsReader.ReadString();
+                            if(cboResolution.Items.Count > Int32.Parse(temp)) {
+                                cboResolution.SelectedIndex = Int32.Parse(temp);
+                            }
+                            else {
+                                cboResolution.SelectedIndex = (cboResolution.Items.Count - 1);
+                            }
+                        }
 
-        private void ConfigDialog_Load(object sender, System.EventArgs e) { 
-            string temp; 
-            // add the available render systems to the driver dropdown 
-            foreach(RenderSystem renderSystem in Engine.Instance.RenderSystems) { 
-                cboRenderSystems.Items.Add(renderSystem); 
-            } 
-    
-            // Hobbes: Check for a config file and load settings 
-            try { 
-                XmlTextReader settingsReader = new XmlTextReader("DisplayConfig.xml"); 
-          
-                while(settingsReader.Read()) { 
-                    if(settingsReader.NodeType == XmlNodeType.Element) { 
-                        if(settingsReader.LocalName.Equals("RenderSystem")) { 
-                            temp = settingsReader.ReadString(); 
-                            if(cboRenderSystems.Items.Count > int.Parse(temp)) 
-                                cboRenderSystems.SelectedIndex = int.Parse(temp); 
-                            else 
-                                cboRenderSystems.SelectedIndex = 1; 
-                        } 
-                      
-                        if(settingsReader.LocalName.Equals("Resolution")) { 
-                            temp = settingsReader.ReadString(); 
-                            if(cboResolution.Items.Count > int.Parse(temp)) 
-                                cboResolution.SelectedIndex = int.Parse(temp); 
-                            else 
-                                cboResolution.SelectedIndex = (cboResolution.Items.Count - 1); 
-                        } 
-                      
-                        if(settingsReader.LocalName.Equals("FullScreen")) { 
-                            if(settingsReader.ReadString()== "True") 
-                                chkFullScreen.Checked = true; 
-                            else 
-                                chkFullScreen.Checked = false; 
-                        } 
-                    } 
-                } 
-            } 
-            catch { 
-                // If the DisplayConfig.xml file is missing, or corrupt, hack it. 
-                // HACK: forcing OpenGL as default, since it kicks ass <g/>. 
-                if(cboRenderSystems.Items.Count > 1) 
-                    cboRenderSystems.SelectedIndex = 1; 
-                else 
-                    cboRenderSystems.SelectedIndex = 0; 
-               
-                // Hobbes: HACK: Forcing highest resolution 
-                if(cboResolution.Items.Count > 1) 
-                    cboResolution.SelectedIndex = (cboResolution.Items.Count - 1); 
-                else 
-                    cboResolution.SelectedIndex = 0; 
-            } 
-        } 
-        // END Hobbes 
+                        if(settingsReader.LocalName.Equals("FullScreen")) {
+                            if(settingsReader.ReadString()== "True") {
+                                chkFullscreen.Checked = true;
+                            }
+                            else {
+                                chkFullscreen.Checked = false;
+                            }
+                        }
+                    }
+                }
+            }
+            catch {
+                // HACK: Trying to force Tao.OpenGl to be listed first.
+                if(cboRenderSystems.Items.Count > 1) {
+                    cboRenderSystems.SelectedIndex = 1;
+                }
+                else {
+                    cboRenderSystems.SelectedIndex = 0;
+                }
 
-        private void cboRenderSystems_SelectedIndexChanged(object sender, System.EventArgs e) {
+                cboResolution.SelectedIndex = 0;
+            }
+        }
+
+        private void RenderSystems_SelectedIndexChanged(object sender, EventArgs e) {
             cboResolution.Items.Clear();
-				
-            RenderSystem system = (RenderSystem)cboRenderSystems.SelectedItem;
+            RenderSystem system = (RenderSystem) cboRenderSystems.SelectedItem;
 
             foreach(EngineConfig.DisplayModeRow mode in system.ConfigOptions.DisplayMode)
-                cboResolution.Items.Add(String.Format("{0} x {1} @{2}bpp", mode.Width, mode.Height, mode.Bpp));
+                cboResolution.Items.Add(String.Format("{0} x {1} @ {2}bpp", mode.Width, mode.Height, mode.Bpp));
 
             cboResolution.SelectedIndex = 0;
         }
 
-        // Hobbes: Save the Render System, Resolution and Full Screen options 
-        public void SaveDisplaySettings(string renderSystem, string resolution, string fullScreen ) { 
-            XmlTextWriter settingsWriter = new XmlTextWriter("DisplayConfig.xml", null); 
-          
-            try { 
-                settingsWriter.Formatting = Formatting.Indented; 
-                settingsWriter.Indentation = 6; 
-                settingsWriter.Namespaces = false; 
-                
-                settingsWriter.WriteStartDocument(); 
-                
-                settingsWriter.WriteStartElement("", "Settings", ""); 
-                
-                settingsWriter.WriteStartElement("", "RenderSystem", ""); 
-                settingsWriter.WriteString(renderSystem); 
-                settingsWriter.WriteEndElement(); 
-                
-                settingsWriter.WriteStartElement("", "Resolution", ""); 
-                settingsWriter.WriteString(resolution); 
-                settingsWriter.WriteEndElement(); 
-                
-                settingsWriter.WriteStartElement("", "FullScreen", ""); 
-                settingsWriter.WriteString(fullScreen); 
-                settingsWriter.WriteEndElement(); 
-             
-                settingsWriter.WriteEndElement(); 
-             
-                settingsWriter.Flush(); 
-            } 
-            finally { 
-                if(settingsWriter != null) { 
-                    settingsWriter.Close(); 
-                } 
-            } 
-        }
+        public void SaveDisplaySettings(string renderSystem, string resolution, string fullScreen ) {
+            XmlTextWriter settingsWriter = new XmlTextWriter("DisplayConfig.xml", null);
+            settingsWriter.Formatting = Formatting.Indented;
+            settingsWriter.Indentation = 6;
+            settingsWriter.Namespaces = false;
 
+            settingsWriter.WriteStartDocument();
+                settingsWriter.WriteStartElement("", "Settings", "");
+                    settingsWriter.WriteStartElement("", "RenderSystem", "");
+                        settingsWriter.WriteString(renderSystem);
+                    settingsWriter.WriteEndElement();
+
+                    settingsWriter.WriteStartElement("", "Resolution", "");
+                        settingsWriter.WriteString(resolution);
+                    settingsWriter.WriteEndElement();
+
+                    settingsWriter.WriteStartElement("", "FullScreen", "");
+                        settingsWriter.WriteString(fullScreen);
+                    settingsWriter.WriteEndElement();
+                settingsWriter.WriteEndElement();
+            settingsWriter.WriteEndDocument();
+            settingsWriter.Flush();
+        }
     }
 }

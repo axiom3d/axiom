@@ -44,7 +44,7 @@ Core/DebugOverlay
 		horz_align right
 		vert_align bottom
 		top -75
-		left -200
+		left -210
 		width 200
 		height 80
 		material Core/AxiomLogo
