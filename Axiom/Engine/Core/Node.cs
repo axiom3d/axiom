@@ -206,6 +206,7 @@ namespace Axiom.Core {
             for(int i = 0; i < childNodes.Count; i++) {
                 Node child = childNodes[i];
                 if(child.name == name) {
+                	node = child;
                     break;
                 }
             }
