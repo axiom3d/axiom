@@ -253,22 +253,25 @@ namespace Axiom.Core {
         ///    and the engine reserves the right to do some internal data reformatting of this information, 
         ///    depending on render system requirements.
         /// </remarks>
-        /// <param name="boneAssignment"></param>
+        /// <param name="boneAssignment">Bone assignment to add.</param>
         public void AddBoneAssignment(ref VertexBoneAssignment boneAssignment) {
             boneAssignmentList.Insert(boneAssignment.vertexIndex, boneAssignment);
             boneAssignmentsOutOfDate = true;
         }
 
         /// <summary>
-        /// 
+        ///     Builds tangent space vector required for accurate bump mapping.
         /// </summary>
         /// <remarks>
         ///    Adapted from bump mapping tutorials at:
         ///    http://www.paulsprojects.net/tutorials/simplebump/simplebump.html
         ///    author : paul.baker@univ.ox.ac.uk
+        ///    <p/>
+        ///    Note: Only the tangent vector is calculated, it is assumed the binormal
+        ///    will be calculated in a vertex program.
         /// </remarks>
-        /// <param name="sourceTexCoordSet"></param>
-        /// <param name="destTexCoordSet"></param>
+        /// <param name="sourceTexCoordSet">Source texcoord set that holds the current UV texcoords.</param>
+        /// <param name="destTexCoordSet">Destination texcoord set to hold the tangent vectors.</param>
         public void BuildTangentVectors(short sourceTexCoordSet, short destTexCoordSet) {
             // temp data buffers
             ushort[] vertIdx = new ushort[3];
@@ -496,6 +499,7 @@ namespace Axiom.Core {
         /// </summary>
         protected internal void CompileBoneAssignmentsHardware(Map boneAssignments, int numBlendWeightsPerVertex, VertexData targetVertexData) {
             // TODO: Implementation of Mesh.CompileBoneAssignmentsHardware
+            throw new NotImplementedException();
         }
 
         /// <summary>

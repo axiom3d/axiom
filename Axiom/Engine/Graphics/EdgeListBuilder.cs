@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using Axiom.Collections;
 using Axiom.Core;
 using Axiom.MathLib;
 
@@ -34,7 +35,7 @@ namespace Axiom.Graphics {
 	///     General utility class for building edge lists for geometry.
 	/// </summary>
 	/// <remarks>
-	///     You can add multiple sets of vertex and index data to build and edge list. 
+	///     You can add multiple sets of vertex and index data to build an edge list. 
 	///     Edges will be built between the various sets as well as within sets; this allows 
 	///     you to use a model which is built from multiple SubMeshes each using 
 	///     separate index and (optionally) vertex data and still get the same connectivity 
@@ -47,22 +48,9 @@ namespace Axiom.Graphics {
         protected IndexDataList indexDataList = new IndexDataList();
         protected IntList indexDataVertexDataSetList = new IntList();
         protected VertexDataList vertexDataList = new VertexDataList();
+        protected Map vertexLookup = new Map(new Vector3Comparer());
         protected CommonVertexList vertices = new CommonVertexList();
         protected EdgeData edgeData = new EdgeData();
-
-        // TODO: CommonVertexMap <Vector3, size_t, vectorLess>
-
-        /** Comparator for unique vertex list
-        struct vectorLess {
-            _OgreExport bool operator()(const Vector3& v1, const Vector3& v2) const {
-                            if (v1.x < v2.x) return true;
-                            if (v1.x == v2.x && v1.y < v2.y) return true;
-                            if (v1.x == v2.x && v1.y == v2.y && v1.z < v2.z) return true;
-
-                            return false;
-                        }
-                        };
-                */
 
         #endregion Fields
 
@@ -158,7 +146,30 @@ namespace Axiom.Graphics {
             vertex buffer which this index set uses.
             */
 
-            return new EdgeData();
+            vertexLookup.Clear();
+            edgeData = new EdgeData();
+            // resize the edge group list to equal the number of vertex sets
+            edgeData.edgeGroups.Capacity = vertexDataList.Count;
+
+            // Initialize edge group data
+            for(int i = 0; i < vertexDataList.Count; i++) {
+                EdgeGroup group = new EdgeGroup();
+                group.vertexSet = i;
+                group.vertexData = (VertexData)vertexDataList[i];
+                edgeData.edgeGroups.Add(group);
+            }
+
+            // Stage 1: Build triangles and initial edge list.
+            for(int i = 0, indexSet = 0; i < indexDataList.Count; i++, indexSet++) {
+                int vertexSet = (int)indexDataVertexDataSetList[i];
+
+                BuildTrianglesEdges(indexSet, vertexSet);
+            }
+
+            // Stage 2: Link edges.
+            ConnectEdges();
+
+            return edgeData;
         }
 
         /// <summary>
@@ -167,7 +178,60 @@ namespace Axiom.Graphics {
         /// <param name="indexSet"></param>
         /// <param name="vertexSet"></param>
         protected void BuildTrianglesEdges(int indexSet, int vertexSet) {
+            IndexData indexData = (IndexData)indexDataList[indexSet];
+            int iterations = indexData.indexCount / 3;
+
+            // locate postion element & the buffer to go with it
+            VertexData vertexData = (VertexData)vertexDataList[vertexSet];
+            VertexElement posElem = 
+                vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Position);
+
+            HardwareVertexBuffer posBuffer = vertexData.vertexBufferBinding.GetBuffer(posElem.Source);
+            IntPtr posPtr = posBuffer.Lock(BufferLocking.ReadOnly);
+            IntPtr idxPtr = indexData.indexBuffer.Lock(BufferLocking.ReadOnly);
+
+            unsafe {
+                short* p16Idx = null;
+                int* p32Idx = null;
+
+                if(indexData.indexBuffer.Type == IndexType.Size16) {
+                    p16Idx = (short*)idxPtr.ToPointer();
+                }
+                else {
+                    p32Idx = (int*)idxPtr.ToPointer();
+                }
+
+                float* pReal = null;
+
+                // iterate over all the groups of 3 indices
+                // TODO: Ogre has this as count + iterations, warn them
+                edgeData.triangles.Capacity = edgeData.triangles.Count * iterations;
+
+                for(int t = 0; t < iterations; t++) {
+                    EdgeData.Triangle tri = new EdgeData.Triangle();
+                    tri.indexSet = indexSet;
+                    tri.vertexSet = vertexSet;
+                    
+                    int[] index = new int[3];
+                    Vector3[] v = new Vector3[3];
+
+                    for(int i = 0; i < 3; i++) {
+                        if(indexData.indexBuffer.Type == IndexType.Size32) {
+                            index[i] = *p32Idx++;
+                        }
+                        else {
+                            index[i] = *p16Idx++;
+                        }
+
+                        // populate tri original vertex index
+                        // TODO: Tri arrays need to be initialized first!!
+                        tri.vertIndex[i] = index[i];
+                    }
+                }
+            }
+
             // TODO: Implementation
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -175,6 +239,7 @@ namespace Axiom.Graphics {
         /// </summary>
         protected void ConnectEdges() {
             // TODO: Implementation
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -185,7 +250,7 @@ namespace Axiom.Graphics {
         /// <returns></returns>
         protected EdgeData.Edge FindEdge(int sharedIndex1, int sharedIndex2) {
             // TODO: Implementation
-            return new EdgeData.Edge();
+            throw new NotImplementedException();
         }
 
         #endregion Methods
@@ -214,8 +279,52 @@ namespace Axiom.Graphics {
         }
 
         /// <summary>
-        ///     Generics: List<EdgeListBuilder.CommonVertex>
+        ///     A group of edges sharing the same vertex data.
         /// </summary>
+        protected struct EdgeGroup {
+            /// <summary>
+            ///     The vertex set index that contains the vertices for this edge group.
+            /// </summary>
+            public int vertexSet;
+            /// <summary>
+            ///     Reference to the vertex data used by this edge group.
+            /// </summary>
+            public VertexData vertexData;
+            /// <summary>
+            ///     The edges themselves.
+            /// </summary>
+            public EdgeList edges;
+
+        }
+
+        /// <summary>
+        ///     Class used to compare 2 vectors.
+        /// </summary>
+        /// TODO: Move into MathLib.
+        public class Vector3Comparer : IComparer {
+            #region IComparer Members
+
+            /// <summary>
+            ///     Compares 2 vectors.
+            /// </summary>
+            /// <param name="x">Vector 1.</param>
+            /// <param name="y">Vector 2</param>
+            /// <returns>-1 if x is less than y.  0 if equal, or 1 if y > x.</returns>
+            public int Compare(object x, object y) {
+                Vector3 v1 = (Vector3)x;
+                Vector3 v2 = (Vector3)y;
+
+                if (v1.x < v2.x) return -1;
+                if (v1.x == v2.x && v1.y < v2.y) return -1;
+                if (v1.x == v2.x && v1.y == v2.y && v1.z < v2.z) return -1;
+                if(v1 == v2) return 0;
+
+                return 1;
+            }
+
+            #endregion
+        }
+
         public class CommonVertexList : ArrayList {}
 
         #endregion Structs
