@@ -3114,7 +3114,6 @@ namespace Axiom.Core {
 
 			// Set camera window clipping planes (if any)
 			if (targetRenderSystem.Caps.CheckCap(Capabilities.UserClipPlanes)) {
-				// TODO: Add WindowPlanes to Camera.cs
 				// TODO: Add ClipPlanes to RenderSystem.cs
 				/*
 				if (camera.IsWindowSet)  
@@ -4089,15 +4088,11 @@ namespace Axiom.Core {
 			for(int i = 0; i < list.Count; i++) {
 				RenderablePass rp = (RenderablePass)list[i];
 
-				// TODO: Add TransparencyCastsShadows property to Material.cs
-				/*
 				// only render this pass if it's being forced to cast shadows
-				if (rp.pass.Parent.Parent.TransparencyCastsShadows)
-				{
+				if (rp.pass.Parent.Parent.TransparencyCastsShadows) {
 					SetPass(rp.pass);
 					RenderSingleObject(rp.renderable, rp.pass, doLightIteration, manualLightList);
 				}
-				*/
 			}
 		}
 

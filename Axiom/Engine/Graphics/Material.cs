@@ -92,6 +92,10 @@ namespace Axiom.Graphics {
 		/// </summary>
 		protected bool receiveShadows;
 		/// <summary>
+		///		Do transparent objects casts shadows?
+		/// </summary>
+		protected bool transparencyCastsShadows;
+		/// <summary>
 		///		List of LOD distances specified for this material.
 		/// </summary>
 		protected FloatList lodDistances = new FloatList();
@@ -286,6 +290,25 @@ namespace Axiom.Graphics {
 			}
 			set {
 				receiveShadows = value;
+			}
+		}
+
+		/// <summary>
+		///		Gets/Sets whether objects using this material be classified as opaque to the shadow caster system.
+		/// </summary>
+		/// <remarks>
+		///		This method allows a material to cast a shadow, even if it is transparent.
+		///		By default, transparent materials neither cast nor receive shadows. Shadows
+		///		will not be cast on any objects unless the scene is set up to support shadows 
+		///		<seealso cref="SceneManager.ShadowTechnique"/>, and not all techniques cast
+		///		shadows on all objects.
+		/// </remarks>
+		public bool TransparencyCastsShadows {
+			get {
+				return transparencyCastsShadows;
+			}
+			set {
+				transparencyCastsShadows = value;
 			}
 		}
 
