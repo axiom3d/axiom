@@ -43,7 +43,6 @@ namespace Axiom.Graphics {
 			#region IComparer Members
 
 			public int Compare(object x, object y) {
-				//if(HardwareVertexBuffer.ReferenceEquals(x, y)) {
 				HardwareVertexBuffer a = x as HardwareVertexBuffer;
 				HardwareVertexBuffer b = y as HardwareVertexBuffer;
 
@@ -72,6 +71,8 @@ namespace Axiom.Graphics {
         }
 
         public void Dispose() {
+			// TODO: Destroy all necessary objects
+
             if (instance == this) {
                 instance = null;
             }
@@ -215,6 +216,26 @@ namespace Axiom.Graphics {
             return binding;
         }
 
+		/// <summary>
+		///		Creates a new <see cref="VertexBufferBinding"/>.
+		/// </summary>
+		/// <param name="binding"></param>
+		public virtual void DestroyVertexBufferBinding(VertexBufferBinding binding) {
+			vertexBufferBindings.Remove(binding);
+		}
+
+		/// <summary>
+		///		Destroys a vertex declaration.
+		/// </summary>
+		/// <remarks>
+		///		Subclasses wishing to override this methods should call the base class implementation
+		///		first, which removes the object the collection of created objects.
+		/// </remarks>
+		/// <param name="decl">VertexDeclaration object to destroy.</param>
+		public virtual void DestroyVertexDeclaration(VertexDeclaration decl) {
+			vertexDeclarations.Remove(decl);
+		}
+
         /// <summary>
         ///     Allocates a copy of a given vertex buffer.
         /// </summary>
@@ -337,6 +358,19 @@ namespace Axiom.Graphics {
 				}
 			}
         }
+
+		/// <summary>
+		///		Internal method that forces the release of copies of a given buffer.
+		/// </summary>
+		/// <remarks>
+		///		This usually means that the buffer which the copies are based on has
+		///		been changed in some fundamental way, and the owner of the original 
+		///		wishes to make that known so that new copies will reflect the changes.
+		/// </remarks>
+		/// <param name="buffer">Buffer to release temp copies of.</param>
+		internal void ForceReleaseBufferCopies(HardwareVertexBuffer buffer) {
+			throw new NotImplementedException();
+		}
 
 		/// <summary>
 		///		Creates  a new buffer as a copy of the source, does not copy data.

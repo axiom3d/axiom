@@ -69,6 +69,13 @@ namespace Axiom.RenderSystems.DirectX9 {
 			return element;
 		}
 
+		public override void ModifyElement(int elemIndex, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index) {
+			base.ModifyElement (elemIndex, source, offset, type, semantic, index);
+
+			needsRebuild = true;
+		}
+
+
 		public override void RemoveElement(VertexElementSemantic semantic, int index) {
 			base.RemoveElement(semantic, index);
 

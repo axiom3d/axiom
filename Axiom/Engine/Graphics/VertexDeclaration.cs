@@ -240,6 +240,31 @@ namespace Axiom.Graphics {
 		}
 
 		/// <summary>
+		///		Modifies the definition of a <see cref="VertexElement"/>.
+		/// </summary>
+		/// <param name="elemIndex">Index of the element to modify.</param>
+		/// <param name="source">Source of the element.</param>
+		/// <param name="offset">Offset of the element.</param>
+		/// <param name="type">Type of the element.</param>
+		/// <param name="semantic">Semantic of the element.</param>
+		public void ModifyElement(int elemIndex, short source, int offset, VertexElementType type, VertexElementSemantic semantic) {
+			ModifyElement(elemIndex, source, offset, type, semantic, 0);
+		}
+
+		/// <summary>
+		///		Modifies the definition of a <see cref="VertexElement"/>.
+		/// </summary>
+		/// <param name="elemIndex">Index of the element to modify.</param>
+		/// <param name="source">Source of the element.</param>
+		/// <param name="offset">Offset of the element.</param>
+		/// <param name="type">Type of the element.</param>
+		/// <param name="semantic">Semantic of the element.</param>
+		/// <param name="index">Usage index of the element.</param>
+		public virtual void ModifyElement(int elemIndex, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index) {
+			elements[elemIndex] = new VertexElement(source, offset, type, semantic, index);
+		}
+
+		/// <summary>
 		///		Remove the element with the given semantic.
 		/// </summary>
 		/// <remarks>

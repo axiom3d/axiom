@@ -22,7 +22,7 @@ namespace Axiom.Core
             // load the requested assembly
             return Assembly.LoadFile(assemblyFile);
         }
-        public Type GetType() {
+        public new Type GetType() {
             return GetAssembly().GetType(className);
         }
         public object CreateInstance() {

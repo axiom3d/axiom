@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Runtime.InteropServices;
+using Axiom.Core;
 using Axiom.Graphics;
 using Tao.OpenGl;
 
@@ -178,7 +179,7 @@ namespace Axiom.RenderSystems.OpenGL {
             IntPtr src = this.Lock(offset, length, BufferLocking.ReadOnly);
 			
             // copy that data in there
-            PointerCopy(src, dest, length);
+            Memory.Copy(src, dest, length);
 
             // unlock the buffer
             this.Unlock();

@@ -201,8 +201,11 @@ namespace Axiom.Core {
 		/// </remarks>
 		public EdgeData EdgeList {
 			get {
-				// TODO: Implement Mesh.EdgeList
-				throw new NotImplementedException();
+				if(edgeData == null) {
+					BuildEdgeList();
+				}
+
+				return edgeData;
 			}
 		}
 
@@ -335,8 +338,31 @@ namespace Axiom.Core {
 		///		among other things.
 		/// </summary>
 		public void BuildEdgeList() {
-			// TODO: Implement Mesh.BuildEdgeList
-			throw new NotImplementedException();
+			EdgeListBuilder builder = new EdgeListBuilder();
+			int vertexSetCount = 0;
+
+			if(sharedVertexData != null) {
+				builder.AddVertexData(sharedVertexData);
+				vertexSetCount++;
+			}
+
+			// Prepare the builder using the submesh information
+			for(int i = 0; i < subMeshList.Count; i++) {
+				SubMesh sm = subMeshList[i];
+
+				if(sm.useSharedVertices) {
+					// Use shared vertex data, index as set 0
+					builder.AddIndexData(sm.indexData, 0);
+				}
+				else {
+					// own vertex data, add it and reference it directly
+					builder.AddVertexData(sm.vertexData);
+					builder.AddIndexData(sm.indexData, vertexSetCount++);
+				}
+			}
+
+			// build the edge data from all accumulate vertex/index buffers
+			edgeData = builder.Build();
 		}
 
         /// <summary>
@@ -603,6 +629,7 @@ namespace Axiom.Core {
 				// Iterate by vertex
 				float* pWeight;
 				byte* pIndex;
+				bool end = false;
 
 				for (int v = 0; v < targetVertexData.vertexCount; v++) {
 					/// Convert to specific pointers
@@ -614,12 +641,12 @@ namespace Axiom.Core {
 						VertexBoneAssignment ba = (VertexBoneAssignment)result.second;
 
 						// Do we still have data for this vertex?
-						if (ba.vertexIndex == v) {
+						if (ba.vertexIndex == v && !end) {
 							// If so, write weight
 							*pWeight++ = ba.weight;
 							*pIndex++ = (byte)ba.boneIndex;
 
-							i.MoveNext();
+							end = !i.MoveNext();
 						}
 						else {
 							// Ran out of assignments for this vertex, use weight 0 to indicate empty
@@ -824,8 +851,19 @@ namespace Axiom.Core {
 		///		shadow rendering algorithm is used for addressing this extended vertex buffer.
 		/// </remarks>
 		public void PrepareForShadowVolume() {
-			// TODO: Implement Mesh.PrepareForShadowVolume
-			throw new NotImplementedException();
+			if(sharedVertexData != null) {
+				sharedVertexData.PrepareForShadowVolume();
+			}
+
+			for(int i = 0; i < subMeshList.Count; i++) {
+				SubMesh sm = subMeshList[i];
+
+				if(!sm.useSharedVertices) {
+					sm.vertexData.PrepareForShadowVolume();
+				}
+			}
+
+			isPreparedForShadowVolumes = true;
 		}
 
         /// <summary>
@@ -883,6 +921,8 @@ namespace Axiom.Core {
 
                 // Now normalise if total weight is outside tolerance
                 if(!MathUtil.FloatEqual(totalWeight, 1.0f)) {
+					// TODO: This is not correct, shouldn't be advancing the current iterator
+					// Need to have another one that starts at the same position as the current
                     while(iter.MoveNext()) {
                         VertexBoneAssignment vba = (VertexBoneAssignment)iter.Current;
                         vba.weight /= totalWeight;

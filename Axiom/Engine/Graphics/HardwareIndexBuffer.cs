@@ -32,15 +32,29 @@ namespace Axiom.Graphics {
     /// Summary description for IIndexBuffer.
     /// </summary>
     public abstract class HardwareIndexBuffer : HardwareBuffer {
-        #region Member variables
+        #region Fields
 
+		/// <summary>
+		///		Type of index (16 or 32 bit).
+		/// </summary>
         protected IndexType type;
+		/// <summary>
+		///		Number of indices in this buffer.
+		/// </summary>
         protected int numIndices;
 
         #endregion
 
         #region Constructors
 
+		/// <summary>
+		///		Constructor.
+		/// </summary>
+		/// <param name="type">Type of index (16 or 32 bit).</param>
+		/// <param name="numIndices">Number of indices to create in this buffer.</param>
+		/// <param name="usage">Buffer usage.</param>
+		/// <param name="useSystemMemory">Create in system memory?</param>
+		/// <param name="useShadowBuffer">Use a shadow buffer for reading/writing?</param>
         public HardwareIndexBuffer(IndexType type, int numIndices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer) 
             : base(usage, useSystemMemory, useShadowBuffer) {
             this.type = type;
@@ -68,8 +82,19 @@ namespace Axiom.Graphics {
         ///		Gets an enum specifying whether this index buffer is 16 or 32 bit elements.
         /// </summary>
         public IndexType Type {
-            get { return type; }
+            get { 
+				return type; 
+			}
         }
+
+		/// <summary>
+		///		Gets the number of indices in this buffer.
+		/// </summary>
+		public int IndexCount {
+			get {
+				return numIndices;
+			}
+		}
 
         #endregion
     }
