@@ -177,6 +177,8 @@ namespace Axiom.Gui.Elements {
 
                 charHeight = (float)pixelCharHeight  / vpHeight;
                 spaceWidth = (float)pixelSpaceWidth / vpHeight;
+
+                geomPositionsOutOfDate = true;
             }
 
             base.Update ();
@@ -242,7 +244,7 @@ namespace Axiom.Gui.Elements {
 
             // derive space width from the size of a capital A
             if(spaceWidth == 0) {
-                spaceWidth = font.GetCharAspectRatio('a') * charHeight;// * 2.0f;
+                spaceWidth = font.GetGlyphAspectRatio('A') * charHeight * 2.0f;
             }
 
             // get pos/tex buffer
@@ -266,7 +268,7 @@ namespace Axiom.Gui.Elements {
                             length += spaceWidth;
                         }
                         else {
-                            length += font.GetCharAspectRatio(c) * charHeight * 2;
+                            length += font.GetGlyphAspectRatio(text[j]) * charHeight * 2;
                         }
                     } // for j
 
@@ -297,11 +299,11 @@ namespace Axiom.Gui.Elements {
                     continue;
                 }
 
-                float horizHeight = font.GetCharAspectRatio(c);
+                float horizHeight = font.GetGlyphAspectRatio(c);
                 float u1, u2, v1, v2;
 
                 // get the texcoords for the specified character
-                font.GetCharTexCoords(c, out u1, out u2, out v1, out v2);
+                font.GetGlyphTexCoords(c, out u1, out v1, out u2, out v2);
 
                 // each vert is (x, y, z, u, v)
                 // first tri
@@ -362,7 +364,7 @@ namespace Axiom.Gui.Elements {
                 // go back up with top
                 top += charHeight * 2.0f;
 
-                float currentWidth = ((left + 1) / 2) - this.DerivedLeft;
+                float currentWidth = (left + 1) / 2 - this.DerivedLeft;
                 
                 if(currentWidth > largestWidth) {
                     largestWidth = currentWidth;
@@ -372,8 +374,17 @@ namespace Axiom.Gui.Elements {
             // unlock vertex buffer
             buffer.Unlock();
 
+            if(metricsMode == MetricsMode.Pixels) {
+                // Derive parametric version of dimensions
+                float vpWidth = OverlayManager.Instance.ViewportWidth;
+
+                largestWidth *= vpWidth;
+            }
+
             // record the width as the longest width calculated for any of the lines
-            this.Width = largestWidth;
+            if(this.Width < largestWidth) {
+                this.Width = largestWidth;
+            }
 
             // update colors
             UpdateColors();
@@ -460,11 +471,15 @@ namespace Axiom.Gui.Elements {
                 return font.Name;
             }
             set {
-                font = (Font)FontManager.Instance.Create(value);
+                font = (Font)FontManager.Instance.GetByName(value);
                 font.Load();
+
                 // note: font materials are created with lighting and depthcheck disabled by default
-                material = MaterialManager.Instance.GetByName("Fonts." + value);
-                material.Load();
+                material = font.Material;
+
+                // TODO: See if this can be eliminated
+                material.Lighting = false;
+                material.DepthCheck = false;
 
                 geomPositionsOutOfDate = true;
             }

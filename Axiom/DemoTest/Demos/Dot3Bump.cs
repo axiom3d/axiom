@@ -154,10 +154,8 @@ namespace Demos {
             camera.LookAt(new Vector3(0, 0, 0));
         }
 
-        protected override bool OnFrameStarted(object source, FrameEventArgs e) {
-            if(!base.OnFrameStarted (source, e)) {
-                return false;
-            }
+        protected override void OnFrameStarted(object source, FrameEventArgs e) {
+            base.OnFrameStarted(source, e);
 
             if(timeDelay > 0.0f) {
                 timeDelay -= e.TimeSinceLastFrame;
@@ -194,8 +192,6 @@ namespace Demos {
             for(int i = 0; i < NUM_LIGHTS; i++) {
                 lightPivots[i].Rotate(Vector3.UnitZ, lightSpeeds[i] * e.TimeSinceLastFrame);
             }
-
-            return true;
         }
 
 

@@ -255,7 +255,7 @@ namespace Axiom.Graphics
             isDefaultFiltering = true;
             isDefaultAniso = true;
 
-            // HACK: Hardcoded for now
+            // Default max lights to the global max
             maxLights = Config.MaxSimultaneousLights;
         }
 		
@@ -389,11 +389,11 @@ namespace Axiom.Graphics
             hashCode = (index << 28);
             int count = NumTextureUnitStages;
 
-            if(count > 0) {
+            if(count > 0 && !((TextureUnitState)textureUnitStates[0]).IsBlank) {
                 hashCode += (((TextureUnitState)textureUnitStates[0]).TextureName.GetHashCode() % (1 << 14)) << 14;
             }
-            if(count > 1) {
-                hashCode += (((TextureUnitState)textureUnitStates[0]).TextureName.GetHashCode() % (1 << 14));
+            if(count > 1 && !((TextureUnitState)textureUnitStates[1]).IsBlank) {
+                hashCode += (((TextureUnitState)textureUnitStates[1]).TextureName.GetHashCode() % (1 << 14));
             }
         }
 

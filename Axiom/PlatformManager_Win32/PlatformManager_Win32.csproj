@@ -77,17 +77,17 @@
                     AssemblyName = "System.Windows.Forms"
                 />
                 <Reference
-                    Name = "Engine"
-                    Project = "{76F1B76C-4CAC-704D-84BC-01A4E9E74CF8}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
-                />
-                <Reference
                     Name = "Microsoft.DirectX"
                     AssemblyName = "Microsoft.DirectX"
                 />
                 <Reference
                     Name = "Microsoft.DirectX.DirectInput"
                     AssemblyName = "Microsoft.DirectX.DirectInput"
+                />
+                <Reference
+                    Name = "Engine"
+                    Project = "{76F1B76C-4CAC-704D-84BC-01A4E9E74CF8}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
             </References>
         </Build>

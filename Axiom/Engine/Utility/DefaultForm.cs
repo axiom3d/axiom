@@ -106,7 +106,7 @@ namespace Axiom.Utility {
 
             // remove it from the list of render windows, which will halt the rendering loop
             // since there should now be 0 windows left
-            Engine.Instance.RenderSystem.RenderWindows.Remove(renderWindow);
+            //Engine.Instance.RenderSystem.RenderWindows.Remove(renderWindow);
         }
 
         private void DefaultForm_Load(object sender, System.EventArgs e) {

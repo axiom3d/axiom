@@ -1,0 +1,10 @@
+package = newpackage()
+package.name = "Axiom.SceneManagers.Octree"
+package.language = "c#"
+package.kind = "dll"
+package.target = "Axiom.SceneManagers.Octree"
+package.defines = { "TRACE" } 
+package.config["Debug"].target = { "DEBUG" }
+package.libpaths = { "../Solution Items" }
+package.links = { "System", "Engine"}
+package.files = { matchfiles("*.cs") }

@@ -60,6 +60,8 @@ namespace Axiom.RenderSystems.DirectX9 {
         ///    Signifies whether the current frame being rendered is the first.
         /// </summary>
         protected bool isFirstFrame = true;
+
+        protected bool isFirstWindow = true;
         /// <summary>
         ///    Number of streams used last frame, used to unbind any buffers not used during the current operation.
         /// </summary>
@@ -74,6 +76,8 @@ namespace Axiom.RenderSystems.DirectX9 {
 
         // temp fields for tracking render states
         protected bool lightingEnabled;
+
+        protected D3DGpuProgramManager gpuProgramMgr;
 
         public D3D9RenderSystem() {
             InitConfigOptions();
@@ -198,84 +202,33 @@ namespace Axiom.RenderSystems.DirectX9 {
             device.VertexDeclaration = d3dVertDecl.D3DVertexDecl;
         }
 	
+        /// <summary>
+        ///     Create a D3D specific render texture.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
+        public override RenderTexture CreateRenderTexture(string name, int width, int height) {
+            D3DRenderTexture renderTexture = new D3DRenderTexture(name, width, height);
+            AttachRenderTarget(renderTexture);
+            return renderTexture;
+        }
+
         public override RenderWindow CreateRenderWindow(string name, int width, int height, int colorDepth, bool isFullscreen, int left, int top, bool depthBuffer, object target) {
             RenderWindow window = new D3DWindow();
 
 			window.Handle = target;
-			Control targetControl = (Control)target;
 
-            // if the device has not been created, the create it
-            if(device == null) {
-                PresentParameters presentParams = new PresentParameters();
+            // create the window
+            window.Create(name, width, height, colorDepth, isFullscreen, left, top, depthBuffer, (Control)target); 
 
-                presentParams.Windowed = !isFullscreen;
-                presentParams.BackBufferCount = 1;
-                // TODO: Look into using Copy and why Discard has nasty effects with multiple viewports.
+            // add the new render target
+            AttachRenderTarget(window);
 
-                presentParams.EnableAutoDepthStencil = depthBuffer;
-                presentParams.BackBufferWidth = width;
-                presentParams.BackBufferHeight = height;
-                presentParams.MultiSample = MultiSampleType.None;
-                presentParams.SwapEffect = SwapEffect.Discard;
-                presentParams.PresentationInterval = PresentInterval.Immediate;
-
-                //if(isFullscreen) {
-                    // supports 16 and 32 bit color
-                    if(colorDepth == 16)
-                        presentParams.BackBufferFormat = Format.R5G6B5;
-                    else
-                        presentParams.BackBufferFormat = Format.X8R8G8B8;
-                //}
-                //else {
-                    // TODO: Set this up from the D3DDriver properties, which include current desktop format.
-                    // Hardcoded for 32 because i always use that for now.
-                    presentParams.BackBufferFormat = Format.X8R8G8B8;
-                    //presentParams.SwapEffect = SwapEffect.Copy;
-                //}
-
-                if(colorDepth > 16) {
-                    // check for 24 bit Z buffer with 8 bit stencil (optimal choice)
-                    if(!D3D.Manager.CheckDeviceFormat(0, DeviceType.Hardware, presentParams.BackBufferFormat, Usage.DepthStencil, ResourceType.Surface, DepthFormat.D24S8)) {
-                        // doh, check for 32 bit Z buffer then
-                        if(!D3D.Manager.CheckDeviceFormat(0, DeviceType.Hardware, presentParams.BackBufferFormat, Usage.DepthStencil, ResourceType.Surface, DepthFormat.D32)) {
-                            // float doh, just use 16 bit Z buffer
-                            presentParams.AutoDepthStencilFormat = DepthFormat.D16;
-                        }
-                        else {
-                            // use 32 bit Z buffer
-                            presentParams.AutoDepthStencilFormat = DepthFormat.D32;
-                        }
-                    }
-                    else {
-                        // <flair>Woooooooooo!</flair>
-                        presentParams.AutoDepthStencilFormat = DepthFormat.D24S8;
-                    }
-                }
-                else {
-                    // use 16 bit Z buffer if they arent using true color
-                    presentParams.AutoDepthStencilFormat = DepthFormat.D16;
-                }
-
-                // create the D3D Device, trying for the best vertex support first, and settling for less if necessary
-                try {
-                    // hardware vertex processing
-                    device = new D3D.Device(0, DeviceType.Hardware, targetControl, CreateFlags.HardwareVertexProcessing, presentParams);
-                }
-                catch(Exception) {
-                    try {
-                        // doh, how bout mixed vertex processing
-                        device = new D3D.Device(0, DeviceType.Hardware, targetControl, CreateFlags.MixedVertexProcessing, presentParams);
-                    }
-                    catch(Exception) {
-                        // what the...ok, how bout software vertex procssing.  if this fails, then I don't even know how they are seeing
-                        // anything at all since they obviously don't have a video card installed
-                        device = new D3D.Device(0, DeviceType.Hardware, targetControl, CreateFlags.SoftwareVertexProcessing, presentParams);
-                    }
-                }
-
-                device.DeviceReset += new EventHandler(OnResetDevice);
-                this.OnResetDevice(device, null);
-                device.DeviceLost += new EventHandler(device_DeviceLost);
+            // if this is the first window, get the device and do other initialization
+            if(isFirstWindow) {
+                device = (D3D.Device)window.GetCustomAttribute("D3DDEVICE");
 
                 // save the device capabilites
                 d3dCaps = device.DeviceCaps;
@@ -291,14 +244,12 @@ namespace Axiom.RenderSystems.DirectX9 {
 
                 CheckCaps();
 
+                // initialize the mesh manager here, since it relies on the render system already establishing a
+                // HardwareBufferManager
                 MeshManager.Init();
+
+                isFirstWindow = false;
             }
-
-            // create the window
-            window.Create(name, width, height, colorDepth, isFullscreen, left, top, depthBuffer, device); 
-
-            // add the new window to the RenderWindow collection
-            this.renderWindows.Add(window);
 
             return window;
         }
@@ -457,32 +408,9 @@ namespace Axiom.RenderSystems.DirectX9 {
         protected override void BeginFrame() {
             Debug.Assert(activeViewport != null, "BeingFrame cannot run without an active viewport.");
 
-            // see if the current render target is a render window
-            if(activeRenderTarget is RenderWindow) {
-                RenderWindow window = (RenderWindow)activeRenderTarget;
-
-                // if the window is not full screen, then use swap chains for rendering
-                if(!window.IsFullScreen) {
-                    // get the swap chain associated with the current render target
-                    SwapChain swapChain = (SwapChain)activeRenderTarget.CustomAttributes["SwapChain"];
-
-                    // set the swap chains back buffer as the current render target of the device
-                    Surface back = swapChain.GetBackBuffer(0, BackBufferType.Mono);
-                    device.SetRenderTarget(0, back);
-
-                    // must be called manually in this scenario, because SetRenderTarget resets the viewport
-                    this.SetViewport(activeViewport);
-                }
-            }
-
             if(activeViewport.ClearEveryFrame) {
                 // clear the device
-                // TODO: Setting the rect works fine for windowed mode, but should not be necessary.  Revisit this later.
-                System.Drawing.Rectangle rect = new System.Drawing.Rectangle(activeViewport.ActualLeft, activeViewport.ActualTop, activeViewport.ActualWidth, activeViewport.ActualHeight);
-                device.Clear(ClearFlags.ZBuffer | ClearFlags.Target, activeViewport.BackgroundColor.ToColor(), 1.0f, 0, new System.Drawing.Rectangle[] {rect});
-            }
-            else {
-                // 
+                device.Clear(ClearFlags.ZBuffer | ClearFlags.Target, activeViewport.BackgroundColor.ToColor(), 1.0f, 0);
             }
 
             // begin the D3D scene for the current viewport
@@ -504,8 +432,6 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// 
         /// </summary>
         protected override void EndFrame() {
-            //HackGeometry();
-
             // end the D3D scene
             device.EndScene();
         }
@@ -515,10 +441,25 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// </summary>
         /// <param name="viewport"></param>
         protected override void SetViewport(Axiom.Core.Viewport viewport) {
-            if(activeViewport != viewport && viewport.IsUpdated) {
+            if(activeViewport != viewport || viewport.IsUpdated) {
                 // store this viewport and it's target
                 activeViewport = viewport;
                 activeRenderTarget = viewport.Target;
+
+                // get the back buffer surface for this viewport
+                D3D.Surface back = 
+                    (D3D.Surface)activeRenderTarget.GetCustomAttribute("D3DBACKBUFFER");
+
+                D3D.Surface depth =
+                    (D3D.Surface)activeRenderTarget.GetCustomAttribute("D3DZBUFFER");
+
+                // set the render target and depth stencil for the surfaces beloning to the viewport
+                device.SetRenderTarget(0, back);
+                device.DepthStencilSurface = depth;
+
+                // set the culling mode, to make adjustments required for viewports
+                // that may need inverted vertex winding or texture flipping
+                this.CullingMode = cullingMode;
 
                 D3D.Viewport d3dvp = new D3D.Viewport();
 
@@ -756,7 +697,13 @@ namespace Axiom.RenderSystems.DirectX9 {
 
         protected override Axiom.MathLib.Matrix4 ProjectionMatrix {
             set {
-                device.Transform.Projection = MakeD3DMatrix(value);
+                Matrix mat = MakeD3DMatrix(value);
+
+                if(activeRenderTarget.RequiresTextureFlipping) {
+                    mat.M22 = - mat.M22;
+                }
+
+                device.Transform.Projection = mat;
             }
         }
 	
@@ -792,6 +739,7 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// <summary>
         /// 
         /// </summary>
+        // TODO: Modify for texture flipping and culling
         public override CullingMode CullingMode {
             get {
                 return cullingMode;
@@ -799,19 +747,9 @@ namespace Axiom.RenderSystems.DirectX9 {
             set {
                 cullingMode = value;
 
-                switch(value) {
-                    case CullingMode.None:
-                        device.RenderState.CullMode = D3D.Cull.None;
-                        break;
+                bool flip = activeRenderTarget.RequiresTextureFlipping ^ invertVertexWinding;
 
-                    case CullingMode.Clockwise:
-                         device.RenderState.CullMode = D3D.Cull.Clockwise;
-                        break;
-
-                    case CullingMode.CounterClockwise:
-                        device.RenderState.CullMode = D3D.Cull.CounterClockwise;
-                        break;
-                }
+                device.RenderState.CullMode = D3DHelper.ConvertEnum(value, flip);
             }
         }
 
@@ -985,22 +923,6 @@ namespace Axiom.RenderSystems.DirectX9 {
         }
 
         #endregion
-
-        private void OnResetDevice(object sender, EventArgs e) {
-            Device resetDevice = (Device)sender;
-
-            Console.WriteLine("Device has been reset!");
-
-            // Turn off culling, so we see the front and back of the triangle
-            resetDevice.RenderState.CullMode = Cull.None;
-            // Turn on the ZBuffer
-            resetDevice.RenderState.ZBufferEnable = true;
-            resetDevice.RenderState.Lighting = true;    //make sure lighting is enabled
-        }
-
-        private void device_DeviceLost(object sender, EventArgs e) {
-            Console.WriteLine("Device has been lost!");
-        }
 	
         /// <summary>
         /// 
@@ -1161,20 +1083,33 @@ namespace Axiom.RenderSystems.DirectX9 {
             reference the envmap properly. This isn't exactly the same as spheremap
             (it looks nasty on flat areas because the camera space normals are the same)
             but it's the best approximation we have in the absence of a proper spheremap */
-            if(texStageDesc[stage].autoTexCoordType == TexCoordCalcMethod.EnvironmentMap &&
-                !(d3dCaps.VertexProcessingCaps.SupportsTextureGenerationSphereMap)) {
-                DX.Matrix d3dMatEnvMap = DX.Matrix.Identity;
-                // set env map values
-                d3dMatEnvMap.M11 = 0.5f;
-                d3dMatEnvMap.M41 = 0.5f;
-                d3dMatEnvMap.M22 = -0.5f;
-                d3dMatEnvMap.M42 = 0.5f;
+            if(texStageDesc[stage].autoTexCoordType == TexCoordCalcMethod.EnvironmentMap) {
+                if(d3dCaps.VertexProcessingCaps.SupportsTextureGenerationSphereMap) {
 
-                // convert to our format
-                Matrix4 matEnvMap = ConvertD3DMatrix(ref d3dMatEnvMap);
+                    // inverts the texture for a spheremap
+                    Matrix4 matEnvMap = Matrix4.Identity;
+                    matEnvMap.m11 = -1.0f;
+                    newMat = newMat * matEnvMap;
 
-                // concatenate 
-                newMat = newMat * matEnvMap;
+                    // concatenate 
+                    newMat = newMat * matEnvMap;
+                }
+                else {
+                    /* If envmap is applied, but device doesn't support spheremap,
+                    then we have to use texture transform to make the camera space normal
+                    reference the envmap properly. This isn't exactly the same as spheremap
+                    (it looks nasty on flat areas because the camera space normals are the same)
+                    but it's the best approximation we have in the absence of a proper spheremap */
+                    Matrix4 matEnvMap = Matrix4.Identity;
+                    // set env_map values
+                    matEnvMap.m00 = 0.5f;
+                    matEnvMap.m03 = 0.5f;
+                    matEnvMap.m11 = -0.5f;
+                    matEnvMap.m13 = 0.5f;
+
+                    // concatenate with the xForm
+                    newMat = newMat * matEnvMap;
+                }
             }
 
             // If this is a cubic reflection, we need to modify using the view matrix
@@ -1297,6 +1232,11 @@ namespace Axiom.RenderSystems.DirectX9 {
 
             // D3D uses vertex buffers for everything
             caps.SetCap(Capabilities.VertexBuffer);
+
+            // Texture Compression
+            // We always support compression, D3DX will decompress if device does not support
+            caps.SetCap(Capabilities.TextureCompression);
+            caps.SetCap(Capabilities.TextureCompressionDXT);
 
             int vpMajor = d3dCaps.VertexShaderVersion.Major;
             int vpMinor = d3dCaps.VertexShaderVersion.Minor;
@@ -1434,6 +1374,9 @@ namespace Axiom.RenderSystems.DirectX9 {
                     gpuProgramMgr.PushSyntaxCode("ps_3_x");
                 }
             }
+
+            // register the HLSL program manager
+            HighLevelGpuProgramManager.Instance.AddFactory(new HLSL.HLSLProgramFactory());
 
             // write hardware capabilities to registered log listeners
             caps.Log();

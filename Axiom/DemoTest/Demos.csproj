@@ -110,11 +110,6 @@
                     HintPath = "D:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.XML.dll"
                 />
                 <Reference
-                    Name = "Tao.Platform.Windows"
-                    AssemblyName = "Tao.Platform.Windows"
-                    HintPath = "..\Solution Items\Tao.Platform.Windows.dll"
-                />
-                <Reference
                     Name = "DynamicsSystem_ODE"
                     Project = "{54AE5D74-A7F0-C94A-BDEF-E42370057D3A}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
@@ -193,6 +188,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Demos\CelShading.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Demos\CubeMapping.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -208,6 +208,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Demos\Fresnel.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Demos\Lights.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -219,6 +224,11 @@
                 />
                 <File
                     RelPath = "Demos\Physics.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Demos\RenderToTexture.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

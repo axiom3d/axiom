@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Axiom.Animating;
@@ -39,8 +40,8 @@ namespace Axiom.Serialization {
     public class OgreMeshReader : BinaryReader {
         #region Member variables
         const int CHUNK_OVERHEAD_SIZE = 6;
-        const string MESH_VERSION = "[MeshSerializer_v1.10]";
 
+        protected string version;
         protected int currentChunkLength;
         protected Mesh mesh;
         protected bool isSkeletallyAnimated;
@@ -79,10 +80,9 @@ namespace Axiom.Serialization {
                             break;
 
                         default:
-                            System.Diagnostics.Trace.Write("Can only parse meshes at the top level during mesh loading.");
+                            Trace.Write("Can only parse meshes at the top level during mesh loading.");
                             parse = false;
                             break;
-                            //throw new Exception("Unknown chunk Id");
                     } // switch
                 }
             }
@@ -99,10 +99,10 @@ namespace Axiom.Serialization {
 
             // better hope this is the header
             if(headerID == (short)MeshChunkID.Header) {
-                string version = this.ReadString('\n');
+                version = this.ReadString('\n');
 
-                if(version != MESH_VERSION) {
-                    throw new Exception("Unsupported mesh version, must be v1.10");
+                if(version != "[MeshSerializer_v1.10]" && version != "[MeshSerializer_v1.20]") {
+                    throw new Exception("Unsupported mesh version, must be v1.10 or v1.20");
                 }
             }
             else
@@ -456,6 +456,25 @@ namespace Axiom.Serialization {
 
                         // blast the tex coord data into the buffer
                         ReadFloats(vertexData.vertexCount * dim, texCoords);
+
+                        // HACK: Refactor mesh loading to be more factory like.  
+                        // This is swapping v texcoords for 1.10 right now, 1.20 won't need this and there are no other format changes.
+                        if(version == "[MeshSerializer_v1.10]") {
+                            // Adjust individual v values to (1 - v)
+                            if (dim == 2) {
+                                int count = 0;
+
+                                unsafe {
+                                    float* pTex = (float*)texCoords.ToPointer();
+
+                                    for(int i = 0; i < vertexData.vertexCount; i++) {
+                                        count++; // skip u
+                                        pTex[count] = 1.0f - pTex[count]; // v = 1 - v
+                                        count++;
+                                    }
+                                }
+                            }
+                        }
 
                         // unlock the buffer to commit
                         vBuffer.Unlock();

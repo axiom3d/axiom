@@ -30,7 +30,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
-using Direct3D = Microsoft.DirectX.Direct3D;
+using D3D = Microsoft.DirectX.Direct3D;
 
 namespace Axiom.RenderSystems.DirectX9 {
     /// <summary>
@@ -38,11 +38,10 @@ namespace Axiom.RenderSystems.DirectX9 {
     /// </summary>
     public class D3DWindow : RenderWindow {
         /// <summary>A handle to the Direct3D device of the DirectX9RenderSystem.</summary>
-        private Direct3D.Device device;
+        private D3D.Device device;
         /// <summary>Used to provide support for multiple RenderWindows per device.</summary>
-        private SwapChain swapChain;
-
-        private bool isActive;
+        private D3D.Surface backBuffer;
+        private D3D.Surface stencilBuffer;
 
         #region Constructor
 
@@ -65,24 +64,85 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// <param name="top"></param>
         /// <param name="depthBuffer"></param>height
         /// <param name="miscParams"></param>
-        // TODO: Think about an overload for this that doesn't take a Control param.
         public override void Create(string name, int width, int height, int colorDepth, bool isFullScreen, int left, int top, bool depthBuffer, params object[] miscParams) {
             // mMiscParams[0] = Direct3D.Device
             // mMiscParams[1] = D3DRenderSystem.Driver
             // mMiscParams[2] = Axiom.Core.RenderWindow
 		
             Driver driver = null;
+            Control targetControl = null;
 
             /// get the Direct3D.Device params
             if(miscParams.Length > 0)
-                device = (Direct3D.Device)miscParams[0];
+                targetControl = (System.Windows.Forms.Control)miscParams[0];
 
-            /// get the D3DDriver params
-            if(miscParams.Length > 1)
-                driver = (Driver)miscParams[1];
-			
+            PresentParameters presentParams = new PresentParameters();
+
+            presentParams.Windowed = !isFullScreen;
+            presentParams.BackBufferCount = 1;
+            presentParams.EnableAutoDepthStencil = depthBuffer;
+            presentParams.BackBufferWidth = width;
+            presentParams.BackBufferHeight = height;
+            presentParams.MultiSample = MultiSampleType.None;
+            presentParams.SwapEffect = SwapEffect.Discard;
+            // TODO: Check vsync setting
+            presentParams.PresentationInterval = PresentInterval.Immediate;
+
+            // supports 16 and 32 bit color
+            if(colorDepth == 16)
+                presentParams.BackBufferFormat = Format.R5G6B5;
+            else
+                presentParams.BackBufferFormat = Format.X8R8G8B8;
+
+            if(colorDepth > 16) {
+                // check for 24 bit Z buffer with 8 bit stencil (optimal choice)
+                if(!D3D.Manager.CheckDeviceFormat(0, DeviceType.Hardware, presentParams.BackBufferFormat, Usage.DepthStencil, ResourceType.Surface, DepthFormat.D24S8)) {
+                    // doh, check for 32 bit Z buffer then
+                    if(!D3D.Manager.CheckDeviceFormat(0, DeviceType.Hardware, presentParams.BackBufferFormat, Usage.DepthStencil, ResourceType.Surface, DepthFormat.D32)) {
+                        // float doh, just use 16 bit Z buffer
+                        presentParams.AutoDepthStencilFormat = DepthFormat.D16;
+                    }
+                    else {
+                        // use 32 bit Z buffer
+                        presentParams.AutoDepthStencilFormat = DepthFormat.D32;
+                    }
+                }
+                else {
+                    // <flair>Woooooooooo!</flair>
+                    presentParams.AutoDepthStencilFormat = DepthFormat.D24S8;
+                }
+            }
+            else {
+                // use 16 bit Z buffer if they arent using true color
+                presentParams.AutoDepthStencilFormat = DepthFormat.D16;
+            }
+
+            // create the D3D Device, trying for the best vertex support first, and settling for less if necessary
+            try {
+                // hardware vertex processing
+                device = new D3D.Device(0, DeviceType.Hardware, targetControl, CreateFlags.HardwareVertexProcessing, presentParams);
+            }
+            catch(Exception) {
+                try {
+                    // doh, how bout mixed vertex processing
+                    device = new D3D.Device(0, DeviceType.Hardware, targetControl, CreateFlags.MixedVertexProcessing, presentParams);
+                }
+                catch(Exception) {
+                    // what the...ok, how bout software vertex procssing.  if this fails, then I don't even know how they are seeing
+                    // anything at all since they obviously don't have a video card installed
+                    device = new D3D.Device(0, DeviceType.Hardware, targetControl, CreateFlags.SoftwareVertexProcessing, presentParams);
+                }
+            }
+
+            device.DeviceReset += new EventHandler(OnResetDevice);
+            this.OnResetDevice(device, null);
+            device.DeviceLost += new EventHandler(device_DeviceLost);
+
+            // get references to the render target and depth stencil surface
+            backBuffer = device.GetRenderTarget(0);
+            stencilBuffer = device.DepthStencilSurface;
+
             // set the params of the window
-            // TODO: deal with depth buffer
             this.Name = name;
             this.colorDepth = colorDepth;
             this.width = width;
@@ -91,22 +151,21 @@ namespace Axiom.RenderSystems.DirectX9 {
             this.top = top;
             this.left = left;
 
-            // TODO: Make sure this is the right place to do it
+            // set as active
             this.isActive = true;
+        }
 
-            // only implement swap chains if we are dealing with windowed app
-            if(!isFullScreen) {
-                PresentParameters pp = new PresentParameters(device.PresentationParameters);
-
-                // change the swap effect to copy (required for swap chains)
-                pp.SwapEffect = SwapEffect.Copy;
-
-                // create the swap chain
-                this.swapChain = new SwapChain(device, pp);
-
-                // add the swap chain as a custom attribute
-                this.CustomAttributes["SwapChain"] = this.swapChain;
+        public override object GetCustomAttribute(string attribute) {
+            switch(attribute) {
+                case "D3DDEVICE":
+                    return device;
+                case "D3DZBUFFER":
+                    return stencilBuffer;
+                case "D3DBACKBUFFER":
+                    return backBuffer;
             }
+
+            return new NotSupportedException("There is no D3D RenderWindow custom attribute named " + attribute);
         }
 
         /// <summary>
@@ -151,10 +210,8 @@ namespace Axiom.RenderSystems.DirectX9 {
                 // tests coop level to make sure we are ok to render
                 device.TestCooperativeLevel();
 				
-                if(this.isFullScreen)
-                    device.Present();
-                else
-                    swapChain.Present();
+                // swap back buffer to the front
+                device.Present();
             }
             catch(DeviceLostException dlx) {
                 Console.WriteLine(dlx.ToString());
@@ -182,24 +239,36 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// </summary>
         public override bool IsFullScreen {
             get {
-                // TODO: Implementation of D3DWindow.IsFullScreen
                 return base.IsFullScreen;
             }
         }
 
+        /// <summary>
+        ///     Saves the back buffer to disk.
+        /// </summary>
+        /// <param name="file"></param>
         public override void SaveToFile(string file) {		
-            Surface surface;
+            // get a reference to the back buffer surface
+            Surface surface = device.GetBackBuffer(0, 0, BackBufferType.Mono);
 
-            if(isFullScreen) {
-                surface = device.GetBackBuffer(0, 0, BackBufferType.Mono);
-            }
-            else {
-                // TODO: Does not work, so fix it :)
-                 surface = device.CreateOffscreenPlainSurface(this.width, this.height, Format.A8R8G8B8, Pool.SystemMemory);
-                device.GetFrontBufferData(0, surface);
-            }
-
+            // save the surface to disk
             SurfaceLoader.Save(file, ImageFileFormat.Jpg, surface);
+        }
+
+        private void OnResetDevice(object sender, EventArgs e) {
+            Device resetDevice = (Device)sender;
+
+            Console.WriteLine("Device has been reset!");
+
+            // Turn off culling, so we see the front and back of the triangle
+            resetDevice.RenderState.CullMode = Cull.None;
+            // Turn on the ZBuffer
+            resetDevice.RenderState.ZBufferEnable = true;
+            resetDevice.RenderState.Lighting = true;    //make sure lighting is enabled
+        }
+
+        private void device_DeviceLost(object sender, EventArgs e) {
+            Console.WriteLine("Device has been lost!");
         }
 
         #endregion

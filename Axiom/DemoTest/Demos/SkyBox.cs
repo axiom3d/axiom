@@ -40,7 +40,7 @@ namespace Demos {
         protected ParticleSystem thrusters = null;
         #endregion Fields
 
-        protected override bool OnFrameStarted(Object source, FrameEventArgs e) {
+        protected override void OnFrameStarted(Object source, FrameEventArgs e) {
             base.OnFrameStarted (source, e);
 
             if(input.IsKeyPressed(KeyCodes.N)) {
@@ -66,8 +66,6 @@ namespace Demos {
                 thrusters.GetEmitter(1).ParticleVelocity = defaultVelocity - 1;
                 defaultVelocity -= 1;
             }
-
-            return true;
         }
 
         #region Methods

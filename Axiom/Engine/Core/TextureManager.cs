@@ -25,24 +25,34 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using System.Drawing;
 using Axiom.Graphics;
+using Axiom.Media;
 
 namespace Axiom.Core {
     /// <summary>
-    ///		Texture manager serves as an abstract singleton for all API specific texture managers.
+    ///    Class for loading & managing textures.
+    /// </summary>
+    /// <remarks>
+    ///    Texture manager serves as an abstract singleton for all API specific texture managers.
     ///		When a class inherits from this and is created, a instance of that class (i.e. GLTextureManager)
     ///		is stored in the global singleton instance of the TextureManager.  
     ///		Note: This will not take place until the RenderSystem is initialized and at least one RenderWindow
     ///		has been created.
-    /// </summary>
+    /// </remarks>
     public abstract class TextureManager : ResourceManager {
-        #region Member variables
+        #region Fields
 
-        /// <summary></summary>
+        /// <summary>
+        ///    Flag that indicates whether 32-bit texture are being used.
+        /// </summary>
         protected bool is32Bit;
 
-        #endregion
+        /// <summary>
+        ///    Default number of mipmaps to be used for loaded textures.
+        /// </summary>
+        protected int defaultNumMipMaps = 5;
+
+        #endregion Fields
 
         #region Singleton implementation
 
@@ -59,22 +69,55 @@ namespace Axiom.Core {
         }
 		
         #endregion
-		
-        protected ushort defaultNumMipMaps = 5;
+
+        /// <summary>
+        ///    Sets the default number of mipmaps to be used for loaded textures.
+        /// </summary>
+        public int DefaultNumMipMaps {
+            get { 
+                return defaultNumMipMaps; 
+            }
+            set { 
+                defaultNumMipMaps = value; 
+            }
+        }
+        
+        #region Methods
+
+        public override Resource Create(string name) {
+            return Create(name, TextureType.TwoD);
+        }
+
 
         /// <summary>
         /// 
         /// </summary>
-        public ushort DefaultNumMipMaps {
-            get { return defaultNumMipMaps; }
-            set { defaultNumMipMaps = value; }
-        }
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public abstract Texture Create(string name, TextureType type);
 
+        /// <summary>
+        ///    Method for creating a new blank texture.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="numMipMaps"></param>
+        /// <param name="format"></param>
+        /// <param name="usage"></param>
+        /// <returns></returns>
+        public abstract Texture CreateManual(string name, TextureType type, int width, int height, int numMipMaps, PixelFormat format, TextureUsage usage);
+
+        /// <summary>
+        ///    Loads a texture with the specified name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public Texture Load(string name) {
             return Load(name, TextureType.TwoD);
         }
-        
-        public abstract  Resource Create(string name, TextureType type);
 
         /// <summary>
         /// 
@@ -95,6 +138,7 @@ namespace Axiom.Core {
         /// <param name="priority"></param>
         /// <returns></returns>
         public Texture Load(string name, TextureType type, int numMipMaps, float gamma, int priority) {
+            // does this texture exist laready?
             Texture texture = GetByName(name);
 
             if(texture == null) {
@@ -104,11 +148,10 @@ namespace Axiom.Core {
                 if(numMipMaps == -1)
                     texture.NumMipMaps = defaultNumMipMaps;
                 else
-                    texture.NumMipMaps = (ushort)numMipMaps;
+                    texture.NumMipMaps = numMipMaps;              
 
-                // TODO: Set gamma
-
-                // set bit depth
+                // set bit depth and gamma
+                texture.Gamma = gamma;
                 texture.Enable32Bit(is32Bit);
 
                 // call the base class load method
@@ -124,7 +167,7 @@ namespace Axiom.Core {
         /// <param name="name"></param>
         /// <param name="image"></param>
         /// <returns></returns>
-        public Texture LoadImage(string name, Bitmap image) {
+        public Texture LoadImage(string name, Image image) {
             return LoadImage(name, image, -1, 1.0f, 1);
         }
 
@@ -137,18 +180,20 @@ namespace Axiom.Core {
         /// <param name="gamma"></param>
         /// <param name="priority"></param>
         /// <returns></returns>
-        public Texture LoadImage(string name, Bitmap image, int numMipMaps, float gamma, int priority) {
+        public Texture LoadImage(string name, Image image, int numMipMaps, float gamma, int priority) {
             // create a new texture
             Texture texture = (Texture)Create(name);
 
-            if(numMipMaps == -1)
+            // set the number of mipmaps to use for this texture
+            if(numMipMaps == -1) {
                 texture.NumMipMaps = defaultNumMipMaps;
-            else
-                texture.NumMipMaps = (ushort)numMipMaps;
+            }
+            else {
+                texture.NumMipMaps = numMipMaps;
+            }
 
-            // TODO: Set gamma
-
-            // set bit depth
+            // set bit depth and gamma
+            texture.Gamma = gamma;
             texture.Enable32Bit(is32Bit);
 
             // load image data
@@ -160,8 +205,15 @@ namespace Axiom.Core {
             return texture;
         }
 
+        /// <summary>
+        ///    Returns an instance of Texture that has the supplied name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public new Texture GetByName(string name) {
             return (Texture)base.GetByName(name);
         }
+
+        #endregion Methods
     }
 }

@@ -41,9 +41,8 @@ namespace Axiom.RenderSystems.OpenGL {
         //protected OpenGLContext context;
         private IntPtr hDC = IntPtr.Zero;
         private IntPtr hRC = IntPtr.Zero;
-        private bool isActive;
 
-        public GLWindow() {
+        public GLWindow() : base() {
         }
 
         #region Implementation of RenderWindow
@@ -148,11 +147,6 @@ namespace Axiom.RenderSystems.OpenGL {
         /// </summary>
         /// <param name="fileName"></param>
         public override void SaveToFile(string fileName) {
-            // capture the dimensions of the client drawing area
-            //HACK
-            int width = 640; //control.ClientSize.Width; 
-            int height = 480; //control.ClientSize.Height;
-
             // create a new bitmap
             Bitmap bitmap = new Bitmap(width, height, PixelFormat.Format24bppRgb); 
 

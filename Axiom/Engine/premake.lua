@@ -6,7 +6,17 @@ package.defines = { "TRACE" }
 package.config["Debug"].target = { "DEBUG" }
 package.target = "Axiom"
 package.libpaths = { "../Solution Items" }
-package.links = { "System", "System.Data", "System.Xml", "System.Drawing", "System.Windows.Forms", "System.XML", "MathLib", "ICSharpCode.SharpZipLib" }
+package.links = { 
+	"System", 
+	"System.Data", 
+	"System.Xml", 
+	"System.Drawing", 
+	"System.Windows.Forms", 
+	"System.XML", 
+	"MathLib", 
+	"ICSharpCode.SharpZipLib",
+	"Tao.DevIl"  
+}
 
 -- insert all the various folders into the file list
 tinsert(package.files, matchfiles("*.cs"))

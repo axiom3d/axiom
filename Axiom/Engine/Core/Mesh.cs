@@ -34,6 +34,7 @@ using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Exceptions;
 using Axiom.MathLib;
+using Axiom.MathLib.Collections;
 using Axiom.Serialization;
 using Axiom.Graphics;
 
@@ -74,7 +75,7 @@ namespace Axiom.Core {
     /// </remarks>
     /// TODO: Add Clone method
     public class Mesh : Resource {
-        #region Member variables
+        #region Fields
 
         /// <summary>Shared vertex data between multiple meshes.</summary>
         protected VertexData sharedVertexData;
@@ -92,7 +93,7 @@ namespace Axiom.Core {
          /// <summary>Reference to the skeleton bound to this mesh.</summary>
         protected Skeleton skeleton;
         /// <summary>List of bone assignment for this mesh.</summary>
-        protected SortedList boneAssignmentList = new SortedList();
+        protected Map boneAssignmentList = new Map();
         /// <summary>Flag indicating that bone assignments need to be recompiled.</summary>
         protected bool boneAssignmentsOutOfDate;
         /// <summary>Number of blend weights that are assigned to each vertex.</summary>
@@ -254,7 +255,7 @@ namespace Axiom.Core {
         /// </remarks>
         /// <param name="boneAssignment"></param>
         public void AddBoneAssignment(ref VertexBoneAssignment boneAssignment) {
-            boneAssignmentList.Add(boneAssignment.vertexIndex, boneAssignment);
+            boneAssignmentList.Insert(boneAssignment.vertexIndex, boneAssignment);
             boneAssignmentsOutOfDate = true;
         }
 
@@ -367,13 +368,6 @@ namespace Axiom.Core {
                                 vertPos[0], vertPos[1], vertPos[2],
                                 u[0], v[0], u[1], v[1], u[2], v[2]);
 
-                        //Console.WriteLine(string.Format("Indices {0} {1} {2}", vertIdx[0].ToString(), vertIdx[1].ToString(), vertIdx[2].ToString()));
-                        //Console.WriteLine("Tangent " + vCount.ToString() + ": " + tangent.ToString());
-
-                        if(float.IsNaN(tangent.x) || float.IsNaN(tangent.y) || float.IsNaN(tangent.z)) {
-                            string test = "";
-                        }
-
                         // write the new tex coords
                         // only tangent is written, the binormal should be derived in the vertex program
                         for(int t = 0; t < 3; t++) {
@@ -432,35 +426,10 @@ namespace Axiom.Core {
         ///    Must be called once to compile bone assignments into geometry buffer.
         /// </summary>
         protected internal void CompileBoneAssignments() {
-            ushort maxBones = 0;
-            ushort currentBones = 0;
-            ushort lastVertexIndex = ushort.MaxValue;
+            int maxBones = RationalizeBoneAssignments(sharedVertexData.vertexCount, boneAssignmentList);
 
-            // find the largest number of bones per vertex
-            for(int i = 0; i < boneAssignmentList.Count; i++) {
-                VertexBoneAssignment boneAssignment =
-                    (VertexBoneAssignment)boneAssignmentList.GetByIndex(i);
-
-                if(lastVertexIndex != boneAssignment.vertexIndex) {
-                    if(maxBones < currentBones) {
-                        maxBones = currentBones;
-                    }
-                    currentBones = 0;
-                } // if
-
-                currentBones++;
-
-                lastVertexIndex = (ushort)boneAssignment.vertexIndex;
-            } // for
-
-            if(maxBones > Config.MaxBlendWeights) {
-                throw new Exception("Mesh '" + name + "' has too many bone assignments per vertex.");
-            }
-
-            numBlendWeightsPerVertex = (short)maxBones;
-
-            // no bone assignments?  get outta here
-            if(numBlendWeightsPerVertex == 0) {
+            // check for no bone assignments
+            if(maxBones == 0) {
                 return;
             }
 
@@ -478,7 +447,7 @@ namespace Axiom.Core {
         /// <summary>
         ///    Software blending oriented bone assignment compilation.
         /// </summary>
-        protected internal void CompileBoneAssignmentsSoftware(SortedList boneAssignments, short numBlendWeightsPerVertex, VertexData targetVertexData) {
+        protected internal void CompileBoneAssignmentsSoftware(Map boneAssignments, int numBlendWeightsPerVertex, VertexData targetVertexData) {
             SoftwareBlendInfo blendInfo = targetVertexData.softwareBlendInfo;
 
             // create new data buffers
@@ -488,11 +457,14 @@ namespace Axiom.Core {
                 new float[targetVertexData.vertexCount * numBlendWeightsPerVertex];
 
             // get the first element of the bone assignment list
-            VertexBoneAssignment boneAssignment = 
-                (VertexBoneAssignment)boneAssignments.GetByIndex(0);
+            IEnumerator iter = boneAssignments.GetEnumerator();
+
+            // move to the first position
+            iter.MoveNext();
+            
+            VertexBoneAssignment boneAssignment = (VertexBoneAssignment)((Pair)iter.Current).second;
 
             int index = 0;
-            int i = 0;
                 
             // interate through each vertex
             for(int v = 0; v < targetVertexData.vertexCount; v++) {
@@ -500,11 +472,12 @@ namespace Axiom.Core {
                     if(boneAssignment.vertexIndex == v) {
                         blendInfo.blendWeights[index] = boneAssignment.weight;
                         blendInfo.blendIndices[index] = (byte)boneAssignment.boneIndex;
-                        if(i++ < targetVertexData.vertexCount - 1) {
-                            boneAssignment = (VertexBoneAssignment)boneAssignments.GetByIndex(i);
-                        }
+
+                        iter.MoveNext();
+                        boneAssignment = (VertexBoneAssignment)((Pair)iter.Current).second;
                     }
                     else {
+                        // Ran out of assignments for this vertex, use weight 0 to indicate empty
                         blendInfo.blendWeights[index] = 0.0f;
                         blendInfo.blendIndices[index] = 0;
                     }
@@ -521,7 +494,7 @@ namespace Axiom.Core {
         /// <summary>
         ///    Hardware blending oriented bone assignment compilation.
         /// </summary>
-        protected internal void CompileBoneAssignmentsHardware(SortedList boneAssignments, short numBlendWeightsPerVertex, VertexData targetVertexData) {
+        protected internal void CompileBoneAssignmentsHardware(Map boneAssignments, int numBlendWeightsPerVertex, VertexData targetVertexData) {
             // TODO: Implementation of Mesh.CompileBoneAssignmentsHardware
         }
 
@@ -691,6 +664,80 @@ namespace Axiom.Core {
         public void NotifySkeleton(Skeleton skeleton) {
             skeleton = skeleton;
             skeletonName = skeleton.Name;
+        }
+
+        /// <summary>
+        ///     Rationalizes the passed in bone assignment list.
+        /// </summary>
+        /// <remarks>
+        ///     We support up to 4 bone assignments per vertex. The reason for this limit
+        ///     is that this is the maximum number of assignments that can be passed into
+        ///     a hardware-assisted blending algorithm. This method identifies where there are
+        ///     more than 4 bone assignments for a given vertex, and eliminates the bone
+        ///     assignments with the lowest weights to reduce to this limit. The remaining
+        ///     weights are then re-balanced to ensure that they sum to 1.0.
+        /// </remarks>
+        /// <param name="vertexCount">The number of vertices.</param>
+        /// <param name="assignments">
+        ///     The bone assignment list to rationalize. This list will be modified and
+        ///     entries will be removed where the limits are exceeded.
+        /// </param>
+        /// <returns>The maximum number of bone assignments per vertex found, clamped to [1-4]</returns>
+        internal int RationalizeBoneAssignments(int vertexCount, Map assignments) {
+            int maxBones = 0;
+            int currentBones = 0;
+
+            for(int i = 0; i < vertexCount; i++) {
+                // gets the numbers of assignments for the current vertex
+                currentBones = assignments.Count(i);
+
+                // Deal with max bones update 
+                // (note this will record maxBones even if they exceed limit)
+                if(maxBones < currentBones) {
+                    maxBones = currentBones;
+                }
+
+                // does the number of bone assignments exceed limit?
+                if(currentBones > Config.MaxBlendWeights) {
+                    // TODO: Handle balancing of too many weights
+                }
+
+                float totalWeight = 0.0f;
+
+                // Make sure the weights are normalised
+                // Do this irrespective of whether we had to remove assignments or not
+                //   since it gives us a guarantee that weights are normalised
+                //  We assume this, so it's a good idea since some modellers may not
+                IEnumerator iter = assignments.Find(i);
+
+                if(iter == null) {
+                    continue;
+                }
+
+                while(iter.MoveNext()) {
+                    VertexBoneAssignment vba = (VertexBoneAssignment)iter.Current;
+                    totalWeight += vba.weight;
+                }
+
+                // Now normalise if total weight is outside tolerance
+                if(!MathUtil.FloatEqual(totalWeight, 1.0f)) {
+                    while(iter.MoveNext()) {
+                        VertexBoneAssignment vba = (VertexBoneAssignment)iter.Current;
+                        vba.weight /= totalWeight;
+                    }
+                }
+            }
+
+            // Warn that we've reduced bone assignments
+            if(maxBones > Config.MaxBlendWeights) {
+                string msg = 
+                    string.Format("WARNING: Mesh '{0}' includes vertices with more than {1} bone assignments.  The lowest weighted assignments beyond this limit have been removed.", name, Config.MaxBlendWeights);
+                Trace.WriteLine(msg);
+
+                maxBones = Config.MaxBlendWeights;
+            }
+
+            return maxBones;
         }
 
         #endregion Methods

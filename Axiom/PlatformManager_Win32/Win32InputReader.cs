@@ -511,8 +511,6 @@ namespace Axiom.Platforms.Win32
 			// Set the data format to the keyboard pre-defined format.
 			keyboardDevice.SetDataFormat(DeviceDataFormat.Keyboard);
 
-			bool loop = true;
-
 			try {
 				keyboardDevice.Acquire();
 			}

@@ -280,19 +280,19 @@ namespace Axiom.Gui.Elements {
                         texIndex = (i * uvSize);
 
                         texPtr[texIndex] = 0.0f;
-                        texPtr[texIndex + 1] = upperY;
+                        texPtr[texIndex + 1] = 0.0f;
 
                         texIndex += vertexSize; // jump by 1 vertex stride
                         texPtr[texIndex] = 0.0f;
-                        texPtr[texIndex + 1] = 0.0f;
-
-                        texIndex += vertexSize;
-                        texPtr[texIndex] = upperX;
                         texPtr[texIndex + 1] = upperY;
 
                         texIndex += vertexSize;
                         texPtr[texIndex] = upperX;
                         texPtr[texIndex + 1] = 0.0f;
+
+                        texIndex += vertexSize;
+                        texPtr[texIndex] = upperX;
+                        texPtr[texIndex + 1] = upperY;
                     } // for
                 } // unsafev
 

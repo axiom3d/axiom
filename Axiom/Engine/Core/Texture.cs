@@ -25,10 +25,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
-
+using System.IO;
 using Axiom.Graphics;
+using Axiom.Media;
 
 namespace Axiom.Core {
     /// <summary>
@@ -45,29 +44,31 @@ namespace Axiom.Core {
     public abstract class Texture : Resource {
         #region Member variables
 	
-        /// <summary></summary>
+        /// <summary>Width of this texture.</summary>
         protected int width;
-        /// <summary></summary>
+        /// <summary>Height of this texture.</summary>
         protected int height;
-        /// <summary></summary>
-        protected int bpp;
-        /// <summary></summary>
+        /// <summary>Depth of this texture.</summary>
+        protected int depth;
+        /// <summary>Bits per pixel in this texture.</summary>
+        protected int finalBpp;
+        /// <summary>Original source width if this texture had been modified.</summary>
         protected int srcWidth;
-        /// <summary></summary>
+        /// <summary>Original source height if this texture had been modified.</summary>
         protected int srcHeight;
-        /// <summary></summary>
+        /// <summary>Original source bits per pixel if this texture had been modified.</summary>
         protected int srcBpp;
-        /// <summary></summary>
+        /// <summary>Does this texture have an alpha component?</summary>
         protected bool hasAlpha;
-        /// <summary></summary>
+        /// <summary>Pixel format of this texture.</summary>
         protected PixelFormat format;
-        /// <summary></summary>
+        /// <summary>Specifies how this texture will be used.</summary>
         protected TextureUsage usage;
-        /// <summary></summary>
+        /// <summary>Type of texture, i.e. 1D, 2D, Cube, Volume.</summary>
         protected TextureType textureType;
-        /// <summary></summary>
-        protected ushort numMipMaps;
-        /// <summary></summary>
+        /// <summary>Number of mipmaps present in this texture.</summary>
+        protected int numMipMaps;
+        /// <summary>Gamma setting for this texture.</summary>
         protected float gamma;
 
         #endregion
@@ -79,19 +80,118 @@ namespace Axiom.Core {
         #region Methods
 
         /// <summary>
-        /// 
+        ///    Specifies whether this texture should use 32 bit color or not.
         /// </summary>
-        /// <param name="enable"></param>
+        /// <param name="enable">true if this should be treated as 32-bit, false if it should be 16-bit.</param>
         public void Enable32Bit(bool enable) {
-            bpp = (enable == true) ? 32 : 16;
+            finalBpp = (enable == true) ? 32 : 16;
+        }
+
+
+        /// <summary>
+        ///    Loads data from an Image directly into this texture.
+        /// </summary>
+        /// <param name="image"></param>
+        public abstract void LoadImage(Image image);
+
+        /// <summary>
+        ///    Loads raw image data from the stream into this texture.
+        /// </summary>
+        /// <param name="data">The raw, decoded image data.</param>
+        /// <param name="width">Width of the texture data.</param>
+        /// <param name="height">Height of the texture data.</param>
+        /// <param name="format">Format of the supplied image data.</param>
+        public void LoadRawData(Stream data, int width, int height, PixelFormat format) {
+            // load the raw data
+            Image image = Image.FromRawStream(data, width, height, format);
+
+            // call the polymorphic LoadImage implementation
+            LoadImage(image);
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        ///    Gets the width (in pixels) of this texture.
+        /// </summary>
+        public int Width {
+            get {
+                return width;
+            }
         }
 
         /// <summary>
-        /// 
+        ///    Gets the height (in pixels) of this texture.
         /// </summary>
-        public ushort NumMipMaps {
-            get { return numMipMaps; }
-            set { numMipMaps = value; }
+        public int Height {
+            get {
+                return height;
+            }
+        }
+
+        /// <summary>
+        ///    Gets the depth of this texture (for volume textures).
+        /// </summary>
+        public int Depth {
+            get {
+                return depth;
+            }
+        }
+
+        /// <summary>
+        ///    Gets the bits per pixel found within this texture data.
+        /// </summary>
+        public int Bpp {
+            get {
+                return finalBpp;
+            }
+        }
+
+        /// <summary>
+        ///    Gets whether or not the PixelFormat of this texture contains an alpha component.
+        /// </summary>
+        public bool HasAlpha {
+            get {
+                return hasAlpha;
+            }
+        }
+
+        /// <summary>
+        ///    Gets/Sets the gamma adjustment factor for this texture.
+        /// </summary>
+        /// <remarks>
+        ///    Must be called before any variation of Load.
+        /// </remarks>
+        public float Gamma {
+            get {
+                return gamma;
+            }
+            set {
+                gamma = value;
+            }
+        }
+
+        /// <summary>
+        ///    Gets the PixelFormat of this texture.
+        /// </summary>
+        public PixelFormat Format {
+            get {
+                return format;
+            }
+        }
+
+        /// <summary>
+        ///    Number of mipmaps present in this texture.
+        /// </summary>
+        public int NumMipMaps {
+            get { 
+                return numMipMaps; 
+            }
+            set { 
+                numMipMaps = value; 
+            }
         }
 
         /// <summary>
@@ -103,32 +203,26 @@ namespace Axiom.Core {
             }
         }
 
-        #endregion
+        /// <summary>
+        ///     Gets the intended usage of this texture, whether for standard usage
+        ///     or as a render target.
+        /// </summary>
+        public TextureUsage Usage {
+            get {
+                return usage;
+            }
+        }
+
+        #endregion Properties
 
         #region Implementation of Resource
 
         /// <summary>
-        ///		
-        /// </summary>
-        public override void Load() {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="image"></param>
-        public abstract void LoadImage(Bitmap image);
-
-        /// <summary>
-        ///		
-        /// </summary>
-        public override void Unload() {
-        }
-
-        /// <summary>
-        ///		
+        ///		Implementation of IDisposable to determine how resources are disposed of.
         /// </summary>
         public override void Dispose() {
+            // call polymorphic Unload method
+            Unload();
         }
 
         #endregion

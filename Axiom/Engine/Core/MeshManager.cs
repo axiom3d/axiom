@@ -118,7 +118,6 @@ namespace Axiom.Core {
         /// <param name="vTile">Number of times the texture should be repeated in the v direction.</param>
         /// <param name="upVec">The up direction of the plane.</param>
         /// <returns></returns>
-        /// DOC: Add new params
         public Mesh CreatePlane(string name, Plane plane, float width, float height, int xSegments, int ySegments, bool normals, int numTexCoordSets, float uTile, float vTile, Vector3 upVec,
             BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer ) {
             Mesh mesh = CreateManual(name);
@@ -238,7 +237,7 @@ namespace Axiom.Core {
 
                         for(int i = 0; i < numTexCoordSets; i++) {
                             *pData++ = x * xTexCoord;
-                            *pData++ = y * yTexCoord;
+                            *pData++ = 1 - (y * yTexCoord);
                         } // for texCoords
                     } // for x
                 } // for y
@@ -258,6 +257,10 @@ namespace Axiom.Core {
             mesh.BoundingSphereRadius = MathUtil.Sqrt(maxSquaredLength);
 
             return mesh;
+        }
+
+        public Mesh CreateCurvedIllusionPlane(string name, Plane plane, float width, float height, float curvature, int xSegments, int ySegments, bool normals, int numberOfTexCoordSets, float uTiles, float vTiles, Vector3 upVector) {
+            return CreateCurvedIllusionPlane(name, plane, width, height, curvature, xSegments, ySegments, normals, numberOfTexCoordSets, uTiles, vTiles, upVector, Quaternion.Identity, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, false, false);
         }
 
         public Mesh CreateCurvedIllusionPlane(string name, Plane plane, float width, float height, float curvature, int xSegments, int ySegments, bool normals, int numberOfTexCoordSets, float uTiles, float vTiles, Vector3 upVector, Quaternion orientation, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer) {
@@ -408,7 +411,7 @@ namespace Axiom.Core {
                         float t = vec.z * (0.01f * vTiles);
                         for(int i = 0; i < numberOfTexCoordSets; i++) {
                             *pData++ = s;
-                            *pData++ = t;
+                            *pData++ = (1 - t);
                         }
                     } // x
                 } // y
@@ -436,16 +439,16 @@ namespace Axiom.Core {
             float[] vertices = {
                 -100, -100, 0,  // pos
                 0, 0, 1,        // normal
-                0, 0,           // texcoord
+                0, 1,           // texcoord
                 100, -100, 0,
                 0, 0, 1,
-                1, 0,
+                1, 1,
                 100, 100, 0,
                 0, 0, 1,
-                1, 1,
+                1, 0,
                 -100, 100, 0,
                 0, 0, 1,
-                0, 1
+                0, 0
             };
 
             mesh.SharedVertexData = new VertexData();

@@ -546,6 +546,21 @@ namespace Axiom.RenderSystems.DirectX9 {
             return 0;
         }
 
+        public static D3D.Cull ConvertEnum(Axiom.Graphics.CullingMode mode, bool flip) {
+            switch(mode) {
+                case CullingMode.None:
+                    return D3D.Cull.None;
+
+                case CullingMode.Clockwise:
+                    return flip ? D3D.Cull.CounterClockwise : D3D.Cull.Clockwise;
+
+                case CullingMode.CounterClockwise:
+                    return flip ? D3D.Cull.Clockwise : D3D.Cull.CounterClockwise;
+            }
+
+            return 0;
+        }
+
         /// <summary>
         ///    Checks D3D matrix to see if it an identity matrix.
         /// </summary>

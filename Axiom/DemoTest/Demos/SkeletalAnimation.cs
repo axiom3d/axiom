@@ -43,11 +43,11 @@ namespace Demos {
             camera.LookAt(new Vector3(0, 50, 0));
         }
 
-        protected override bool OnFrameStarted(object source, FrameEventArgs e) {
+        protected override void OnFrameStarted(object source, FrameEventArgs e) {
             // add time to the robot animation
             animState.AddTime(e.TimeSinceLastFrame);
 
-            return base.OnFrameStarted (source, e);
+            base.OnFrameStarted(source, e);
         }
 
         #endregion

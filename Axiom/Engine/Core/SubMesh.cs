@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using Axiom.Animating;
+using Axiom.Collections;
 using Axiom.Configuration;
 
 using Axiom.Graphics;
@@ -62,7 +63,7 @@ namespace Axiom.Core {
         protected internal short numFaces;
 		
         /// <summary>List of bone assignment for this mesh.</summary>
-        protected SortedList boneAssignmentList = new SortedList();
+        protected Map boneAssignmentList = new Map();
         /// <summary>Flag indicating that bone assignments need to be recompiled.</summary>
         protected internal bool boneAssignmentsOutOfDate;
 
@@ -98,14 +99,14 @@ namespace Axiom.Core {
         ///    Assigns a vertex to a bone with a given weight, for skeletal animation. 
         /// </summary>
         /// <remarks>
-        ///    This method is only valid after calling setSkeletonName.
+        ///    This method is only valid after setting the SkeletonName property.
         ///    You should not need to modify bone assignments during rendering (only the positions of bones) 
         ///    and the engine reserves the right to do some internal data reformatting of this information, 
         ///    depending on render system requirements.
         /// </remarks>
         /// <param name="boneAssignment"></param>
         public void AddBoneAssignment(ref VertexBoneAssignment boneAssignment) {
-            boneAssignmentList.Add(boneAssignment.vertexIndex, boneAssignment);
+            boneAssignmentList.Insert(boneAssignment.vertexIndex, boneAssignment);
             boneAssignmentsOutOfDate = true;
         }
 
@@ -125,30 +126,7 @@ namespace Axiom.Core {
         ///    Must be called once to compile bone assignments into geometry buffer.
         /// </summary>
         protected internal void CompileBoneAssignments() {
-            short maxBones = 0;
-            short currentBones = 0;
-            ushort lastVertexIndex = ushort.MaxValue;
-
-            // find the largest number of bones per vertex
-            for(int i = 0; i < boneAssignmentList.Count; i++) {
-                VertexBoneAssignment boneAssignment =
-                    (VertexBoneAssignment)boneAssignmentList.GetByIndex(i);
-
-                if(lastVertexIndex != boneAssignment.vertexIndex) {
-                    if(maxBones < currentBones) {
-                        maxBones = currentBones;
-                    }
-                    currentBones = 0;
-                } // if
-
-                currentBones++;
-
-                lastVertexIndex = (ushort)boneAssignment.vertexIndex;
-            } // for
-
-            if(maxBones > Config.MaxBlendWeights) {
-                throw new Exception("SubMesh '" + name + "' has too many bone assignments per vertex.");
-            }
+            int maxBones = parent.RationalizeBoneAssignments(vertexData.vertexCount, boneAssignmentList);
 
             // no bone assignments?  get outta here
             if(maxBones == 0) {

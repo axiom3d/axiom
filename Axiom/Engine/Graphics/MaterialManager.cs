@@ -39,6 +39,7 @@ namespace Axiom.Graphics {
     /// <summary>
     /// Summary description for MaterialManager.
     /// </summary>
+    // TODO: Switch delegates to use a context struct, to make all delegates have the same sig
     public class MaterialManager : ResourceManager {
         #region Singleton implementation
 
@@ -360,6 +361,11 @@ namespace Axiom.Graphics {
             string line = "";
 
             while((line = ParseHelper.ReadLine(script)) != null) {
+                // ignore blank lines and comments
+                if(line.Length == 0 || line.StartsWith("//")) {
+                    continue;
+                }
+
                 // have we reached the end of the layer
                 if(line == "}")
                     return;
@@ -546,7 +552,23 @@ namespace Axiom.Graphics {
 
                         string paramName = parms[1];
                         constant = parms[2];
-                        extraInfo = (parms.Length == 4) ? int.Parse(parms[3]) : 0;
+                        extraInfo = 0;
+
+                        // time is a special case here
+                        if(constant == "time") {
+                            float factor = 1.0f;
+                            
+                            if(parms.Length == 4) {
+                                factor = float.Parse(parms[3]);
+
+                                programParams.SetNamedConstantFromTime(paramName, factor);
+                            }
+
+                            continue;
+                        }
+                        else {
+                            extraInfo = (parms.Length == 4) ? int.Parse(parms[3]) : 0;
+                        }
 
                         val = ScriptEnumAttribute.Lookup(constant, typeof(AutoConstants));
 
@@ -986,21 +1008,35 @@ namespace Axiom.Graphics {
             }
         }
 
-        [AttributeParser("tex_filtering", TextureUnit)]
+        [AttributeParser("filtering", TextureUnit)]
         public static void ParseLayerFiltering(string[] values, TextureUnitState unitState) {
-            if(values.Length != 1) {
-                ParseHelper.LogParserError("tex_filtering", unitState.Parent.Parent.Name, "Expected 1 param.");
+            if(values.Length == 1) {
+                // lookup the real enum equivalent to the script value
+                object val = ScriptEnumAttribute.Lookup(values[0], typeof(TextureFiltering));
+
+                // if a value was found, assign it
+                if(val != null)
+                    unitState.SetTextureFiltering((TextureFiltering)val);
+                else
+                    ParseHelper.LogParserError("filtering", unitState.Parent.Parent.Name, "Invalid enum value");
+            }
+            else if(values.Length == 3) {
+                // complex format
+                object val1 = ScriptEnumAttribute.Lookup(values[0], typeof(FilterOptions));
+                object val2 = ScriptEnumAttribute.Lookup(values[1], typeof(FilterOptions));
+                object val3 = ScriptEnumAttribute.Lookup(values[2], typeof(FilterOptions));
+
+                if(val1 == null || val2 == null || val3 == null) {
+                    ParseHelper.LogParserError("filtering", unitState.Parent.Parent.Parent.Name, "Invalid enum value.");
+                }
+                else {
+                    unitState.SetTextureFiltering((FilterOptions)val1, (FilterOptions)val2, (FilterOptions)val3);
+                }
+            }
+            else {
+                ParseHelper.LogParserError("filtering", unitState.Parent.Parent.Name, "Expected 1 param.");
                 return;
             }
-
-            // lookup the real enum equivalent to the script value
-            object val = ScriptEnumAttribute.Lookup(values[0], typeof(TextureFiltering));
-
-            // if a value was found, assign it
-            if(val != null)
-                unitState.SetTextureFiltering((TextureFiltering)val);
-            else
-                ParseHelper.LogParserError("tex_filtering", unitState.Parent.Parent.Name, "Invalid enum value");
         }
 
         [AttributeParser("rotate", TextureUnit)]
@@ -1091,10 +1127,10 @@ namespace Axiom.Graphics {
 
             if(values.Length == 2) {
                 // check the transform type
-                object val = ScriptEnumAttribute.Lookup(values[0], typeof(TextureType));
+                object val = ScriptEnumAttribute.Lookup(values[1], typeof(TextureType));
 
                 if(val == null) {
-                    ParseHelper.LogParserError("texture", layer.Parent.Parent.Name, "Invalid texture type enum value");
+                    ParseHelper.LogParserError("texture", layer.Parent.Parent.Parent.Name, "Invalid texture type enum value");
                     return;
                 }
 

@@ -39,7 +39,7 @@ namespace Axiom.FileSystem {
     /// </summary>
     /// <remarks>
     ///    This would also be suitable for reading other .zip like formats, including
-    ///     .pak3.
+    ///    .pk3.
     /// </remarks>
     public class Zip : Archive {
         public Zip(string archiveName) : base(archiveName) {
@@ -56,16 +56,21 @@ namespace Axiom.FileSystem {
         /// <param name="name"></param>
         /// <returns></returns>
         public override Stream ReadFile(string name) {
-
+            // read the open the zip archive
             FileStream fs = File.OpenRead(archiveName);
             fs.Position = 0;
+
+            // get a input stream from the zip file
             ZipInputStream s = new ZipInputStream(fs);
             ZipEntry entry;
 
+            // we will put the decompressed data into a memory stream
             MemoryStream output = new MemoryStream();
 
+            // get the first entry 
             entry = s.GetNextEntry();
 
+            // loop through all the entries until we find the requested one
             while (entry != null) {
                 
                 if(entry.Name.ToLower() == name.ToLower()) {
@@ -80,6 +85,7 @@ namespace Axiom.FileSystem {
                 return null;
             }
 
+            // write the data to the output stream
             int size = 2048;
             byte[] data = new byte[2048];
             while (true) {
@@ -91,6 +97,9 @@ namespace Axiom.FileSystem {
                     break;
                 }
             }
+
+            // reset the position to make sure it is at the beginning of the stream
+            output.Position = 0;
 
             return output;
         }

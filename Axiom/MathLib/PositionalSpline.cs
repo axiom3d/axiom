@@ -127,6 +127,17 @@ namespace Axiom.MathLib {
         }
 
         /// <summary>
+        ///     Returns the point at the specified index.
+        /// </summary>
+        /// <param name="index">Index at which to retreive a point.</param>
+        /// <returns>Vector3 containing the point data.</returns>
+        public Vector3 GetPoint(int index) {
+            Debug.Assert(index < pointList.Count);
+
+            return pointList[index];
+        }
+
+        /// <summary>
         ///		Returns an interpolated point based on a parametric value over the whole series.
         /// </summary>
         /// <remarks>

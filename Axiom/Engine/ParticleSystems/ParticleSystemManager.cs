@@ -630,7 +630,7 @@ namespace Axiom.ParticleSystems {
         /// <param name="source"></param>
         /// <param name="e"></param>
         /// <returns></returns>
-        private bool RenderSystem_FrameStarted(object source, FrameEventArgs e) {
+        private void RenderSystem_FrameStarted(object source, FrameEventArgs e) {
             // Apply time factor
             float timeSinceLastFrame = timeFactor * e.TimeSinceLastFrame;
 
@@ -641,7 +641,6 @@ namespace Axiom.ParticleSystems {
                 // ask the particle system to update itself based on the frame time
                 system.Update(timeSinceLastFrame);
             }
-            return true;
         }
 
         #region IDisposable Members

@@ -82,7 +82,8 @@ namespace Axiom.RenderSystems.OpenGL {
             Ext.glBindBufferARB(Gl.GL_ARRAY_BUFFER_ARB, bufferID);
 
             if(locking == BufferLocking.Discard) {
-                Ext.glBufferDataARB(Gl.GL_ARRAY_BUFFER_ARB, length, IntPtr.Zero, GLHelper.ConvertEnum(usage));
+                // fixes issues with ATI cards
+                //Ext.glBufferDataARB(Gl.GL_ARRAY_BUFFER_ARB, length, IntPtr.Zero, GLHelper.ConvertEnum(usage));
 
                 // find out how we shall access this buffer
                 access = (usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly) ? 

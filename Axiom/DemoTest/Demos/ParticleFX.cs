@@ -81,12 +81,12 @@ namespace Demos {
             rain.FastForward(5.0f);
         }
 
-        protected override bool OnFrameStarted(object source, FrameEventArgs e) {
+        protected override void OnFrameStarted(object source, FrameEventArgs e) {
             // rotate fountains
             fountainNode.Yaw(e.TimeSinceLastFrame * 30);
 
             // call base method
-            return base.OnFrameStarted (source, e);
+            base.OnFrameStarted(source, e);
         }
 
 

@@ -22,8 +22,7 @@ void main_vp(float4 position	: POSITION,
 			 out float2 oUv			 : TEXCOORD0,
 			 out float3 oTSLightDir	 : TEXCOORD1,
 			 // parameters
-			 uniform float3 lightPosition, // object space
-			 uniform float3 eyePosition,   // object space
+			 uniform float4 lightPosition,
 			 uniform float4x4 worldViewProj)
 {
 	// calculate output position
@@ -47,8 +46,6 @@ void main_vp(float4 position	: POSITION,
 	
 	// Transform the light vector according to this matrix
 	oTSLightDir = normalize(mul(rotation, lightDir));
-	
-	
 }
 
 void main_fp( float2 uv			: TEXCOORD0,

@@ -21,4 +21,7 @@ else
 	tinsert(package.links, "Microsoft.DirectX.Direct3DX")
 end
 	
-package.files = { matchfiles("*.cs") }
+package.files = { 
+	matchfiles("*.cs"),
+	matchfiles("HLSL/*.cs") 
+}

@@ -29,8 +29,9 @@ using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
 using Axiom.Collections;
-using Axiom.MathLib;
+using Axiom.Exceptions;
 using Axiom.Graphics;
+using Axiom.MathLib;
 
 namespace Axiom.Core {
     /// <summary>
@@ -235,8 +236,7 @@ namespace Axiom.Core {
         /// <param name="top"></param>
         /// <param name="bottom"></param>
         protected void GetParametericOffsets(out float left, out float right, out float top, out float bottom) {
-            // ok, so the compiler doesn't trust me that the switch will set the value of the out params
-            // before the method returns.  two words: FUCK YOU
+
             left = 0.0f;
             right = 0.0f;
             top = 0.0f;
@@ -457,8 +457,9 @@ namespace Axiom.Core {
             aab.SetExtents(min, max);
 
             // if we have a parent node, ask it to update us
-            if(parentNode != null)
+            if(parentNode != null) {
                 parentNode.NeedUpdate();
+            }
         }
 
         #endregion
@@ -481,8 +482,12 @@ namespace Axiom.Core {
         ///		when the pool has expired will simply fail silently, returning a null pointer.
         /// </remarks>
         public bool AutoExtend {
-            get { return autoExtendPool; }
-            set { autoExtendPool = value; }
+            get { 
+                return autoExtendPool; 
+            }
+            set { 
+                autoExtendPool = value; 
+            }
         }
 
         /// <summary>
@@ -496,7 +501,9 @@ namespace Axiom.Core {
         ///		goes for auto-extension, try to avoid it by estimating the pool size correctly up-front.
         /// </remarks>
         public int PoolSize {
-            get { return billboardPool.Count; }
+            get { 
+                return billboardPool.Count; 
+            }
             set {
                 int size = value;
                 int currentSize = billboardPool.Count;
@@ -579,10 +586,11 @@ namespace Axiom.Core {
                         0-----1
                     */
 
-                    float[] texData = new float[] {0.0f, 0.0f, 
-                                                      1.0f, 0.0f, 
-                                                      0.0f, 1.0f, 
-                                                      1.0f, 1.0f};
+                    float[] texData = new float[] {
+                         0.0f, 1.0f,
+                         1.0f, 1.0f,
+                         0.0f, 0.0f,
+                         1.0f, 0.0f };
 
                     // lock the index buffer
                     IntPtr idxPtr = indexData.indexBuffer.Lock(BufferLocking.Discard);
@@ -638,15 +646,21 @@ namespace Axiom.Core {
         ///		it could mean the center of the bottom edge (e.g. a tree which is positioned on the ground),
         /// </remarks>
         public BillboardOrigin BillboardOrigin {
-            get { return originType; }
-            set  { originType = value; }
+            get { 
+                return originType; 
+            }
+            set  { 
+                originType = value; 
+            }
         }
 
         /// <summary>
         ///		Gets/Sets the name of the material to use for this billboard set.
         /// </summary>
         public string MaterialName {
-            get { return materialName; }
+            get { 
+                return materialName; 
+            }
             set {
                 materialName = value;
 				
@@ -657,8 +671,9 @@ namespace Axiom.Core {
                     // make sure it is loaded
                     material.Load();
                 }
-                else
-                    throw new Exception(string.Format("Material '{0}' could not be found.", materialName)); 
+                else {
+                    throw new AxiomException("Material '{0}' could not be found.", materialName); 
+                }
             }
         }
 
@@ -683,7 +698,9 @@ namespace Axiom.Core {
         ///		fine-grained culling so unnecessary rendering is avoided.
         /// </remarks>
         public bool CullIndividual {
-            get { return cullIndividual; }
+            get { 
+                return cullIndividual; 
+            }
             set { 
                 this.cullIndividual = value;
             }
@@ -701,8 +718,12 @@ namespace Axiom.Core {
         ///		and only the X axis is generated, perpendicular to both the local Y and the camera Z.
         /// </remarks>
         public BillboardType BillboardType {
-            get { return billboardType; }
-            set { billboardType = value; }
+            get { 
+                return billboardType; 
+            }
+            set { 
+                billboardType = value; 
+            }
         }
 
         /// <summary>
@@ -714,15 +735,21 @@ namespace Axiom.Core {
         ///		the billboard vertices if they have a common direction.
         /// </remarks>
         public Vector3 CommonDirection {
-            get { return commonDirection; }
-            set { commonDirection = value; }
+            get { 
+                return commonDirection; 
+            }
+            set { 
+                commonDirection = value; 
+            }
         }
 
         /// <summary>
         ///		Gets the list of active billboards.
         /// </summary>
         public ArrayList Billboards {
-            get { return activeBillboards; }
+            get { 
+                return activeBillboards; 
+            }
         }
 
         /// <summary>
@@ -739,7 +766,9 @@ namespace Axiom.Core {
         #region IRenderable Members
 
         public Material Material {
-            get { return material; }
+            get { 
+                return material; 
+            }
         }
 
         public Technique Technique {
@@ -776,28 +805,36 @@ namespace Axiom.Core {
         /// 
         /// </summary>
         public virtual ushort NumWorldTransforms {
-            get { return 1;	}
+            get { 
+                return 1;	
+            }
         }
 
         /// <summary>
         /// 
         /// </summary>
         public bool UseIdentityProjection {
-            get { return false; }
+            get { 
+                return false; 
+            }
         }
 
         /// <summary>
         /// 
         /// </summary>
         public bool UseIdentityView {
-            get { return false; }
+            get { 
+                return false; 
+            }
         }
 
         /// <summary>
         /// 
         /// </summary>
         public SceneDetailLevel RenderDetail {
-            get { return SceneDetailLevel.Solid; }
+            get { 
+                return SceneDetailLevel.Solid; 
+            }
         }
 
         /// <summary>
@@ -856,7 +893,7 @@ namespace Axiom.Core {
         ///		Generate the vertices for all the billboards relative to the camera
         /// </summary>
         /// <param name="camera"></param>
-        internal override void NotifyCurrentCamera(Camera camera) {
+        public override void NotifyCurrentCamera(Camera camera) {
             // Take the reverse transform of the camera world axes into billboard space for efficiency
 
             // parametrics offsets of the origin
@@ -962,7 +999,7 @@ namespace Axiom.Core {
             defaultParticleHeight = height;
         }
 
-        internal override void UpdateRenderQueue(RenderQueue queue) {
+        public override void UpdateRenderQueue(RenderQueue queue) {
             // add ourself to the render queue
             queue.AddRenderable(this, RenderQueue.DEFAULT_PRIORITY, renderQueueID);
         }

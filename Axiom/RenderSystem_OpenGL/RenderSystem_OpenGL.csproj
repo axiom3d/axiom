@@ -18,13 +18,13 @@
                 OutputType = "Library"
                 PreBuildEvent = ""
                 PostBuildEvent = ""
-                RootNamespace = "RenderSystem_OpenGL"
+                RootNamespace = "Axiom.RenderSystems.OpenGL"
                 RunPostBuildEvent = "OnBuildSuccess"
                 StartupObject = ""
             >
                 <Config
                     Name = "Debug"
-                    AllowUnsafeBlocks = "false"
+                    AllowUnsafeBlocks = "true"
                     BaseAddress = "285212672"
                     CheckForOverflowUnderflow = "false"
                     ConfigurationOverrideFile = ""
@@ -85,6 +85,16 @@
                     AssemblyName = "System.Windows.Forms"
                 />
                 <Reference
+                    Name = "Tao.OpenGl"
+                    AssemblyName = "Tao.OpenGl"
+                    HintPath = "..\Solution Items\Tao.OpenGl.dll"
+                />
+                <Reference
+                    Name = "Tao.Platform.Windows"
+                    AssemblyName = "Tao.Platform.Windows"
+                    HintPath = "..\Solution Items\Tao.Platform.Windows.dll"
+                />
+                <Reference
                     Name = "Engine"
                     Project = "{76F1B76C-4CAC-704D-84BC-01A4E9E74CF8}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
@@ -94,20 +104,15 @@
                     Project = "{E6AC8079-93CC-1444-AD68-C09835E5682D}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
-                <Reference
-                    Name = "Tao.OpenGL"
-                    AssemblyName = "Tao.OpenGl"
-                    HintPath = "..\Solution Items\Tao.OpenGl.dll"
-                />
-                <Reference
-                    Name = "Tao.Platform.Windows"
-                    AssemblyName = "Tao.Platform.Windows"
-                    HintPath = "..\Solution Items\Tao.Platform.Windows.dll"
-                />
             </References>
         </Build>
         <Files>
             <Include>
+                <File
+                    RelPath = "ARBGpuProgram.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
                 <File
                     RelPath = "AssemblyInfo.cs"
                     SubType = "Code"
@@ -149,6 +154,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "GLRenderTexture.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "GLTexture.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -160,6 +170,41 @@
                 />
                 <File
                     RelPath = "GLWindow.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IOpenGLGpuProgramFactory.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ATI\ATIFragmentShaderGpuProgram.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ATI\Compiler2Pass.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ATI\Enums.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ATI\PixelShader.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Nvidia\NV3xGpuProgram.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Nvidia\NvparseFragmentProgram.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -38,7 +38,8 @@ namespace Axiom.RenderSystems.DirectX9 {
         #region Member variables
 
         protected D3D.VertexBuffer d3dBuffer;
-		
+        protected System.Array data;
+
         #endregion
 		
         #region Constructors
@@ -47,8 +48,9 @@ namespace Axiom.RenderSystems.DirectX9 {
             D3D.Device device, bool useSystemMemory, bool useShadowBuffer) 
             : base(vertexSize, numVertices, usage, useSystemMemory, useShadowBuffer) {
             // Create the d3d vertex buffer
-            d3dBuffer = new D3D.VertexBuffer(typeof(byte), 
-                numVertices * vertexSize, 
+            d3dBuffer = new D3D.VertexBuffer(
+                typeof(byte), 
+                sizeInBytes, 
                 device,
                 D3DHelper.ConvertEnum(usage), 
                 0, 
@@ -75,8 +77,8 @@ namespace Axiom.RenderSystems.DirectX9 {
 
             D3D.LockFlags d3dLocking = 0;
 
-            if(usage != BufferUsage.Dynamic &&
-                usage != BufferUsage.DynamicWriteOnly &&
+            if((usage & BufferUsage.Dynamic) == 0 &&
+                //usage != BufferUsage.DynamicWriteOnly &&
                 (locking == BufferLocking.Discard || locking == BufferLocking.NoOverwrite)) {
              
                 // lock flags already 0 by default
@@ -88,7 +90,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 
             // lock the buffer, which returns an array
             // TODO: no *working* overload takes length, revisit this
-            System.Array data = d3dBuffer.Lock(offset, d3dLocking);
+            data = d3dBuffer.Lock(offset, d3dLocking);
 			
             // return an IntPtr to the first element of the locked array
             return Marshal.UnsafeAddrOfPinnedArrayElement(data, 0);
@@ -149,7 +151,9 @@ namespace Axiom.RenderSystems.DirectX9 {
         ///		Gets the underlying D3D Vertex Buffer object.
         /// </summary>
         public D3D.VertexBuffer D3DVertexBuffer {
-            get { return d3dBuffer; }
+            get { 
+                return d3dBuffer; 
+            }
         }
 		
         #endregion
