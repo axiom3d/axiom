@@ -1,0 +1,41 @@
+<Project name="MathLib" description="" newfilesearch="None" enableviewstate="True" version="1.1" projecttype="C#">
+  <Contents>
+    <File name=".\AssemblyInfo.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\MathUtil.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Matrix3.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Matrix4.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\PositionalSpline.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Quaternion.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\RotationalSpline.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Vector2.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Vector3.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Vector4.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\BaseCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\QuaternionCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\Vector3Collection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+  </Contents>
+  <References />
+  <DeploymentInformation target="" script="" strategy="File" />
+  <Configuration runwithwarnings="True" name="Debug">
+    <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
+    <Execution commandlineparameters="" consolepause="True" />
+    <Output directory="..\DemoTest\bin\Debug\" assembly="MathLib" />
+  </Configuration>
+  <Configurations active="Debug">
+    <Configuration runwithwarnings="True" name="Debug">
+      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
+      <Execution commandlineparameters="" consolepause="True" />
+      <Output directory="..\DemoTest\bin\Debug\" assembly="MathLib" />
+    </Configuration>
+    <Configuration runwithwarnings="True" name="Release">
+      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="False" optimize="True" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="TRACE" generatexmldocumentation="False" win32Icon="" />
+      <Execution commandlineparameters="" consolepause="True" />
+      <Output directory=".\Release\" assembly="MathLib" />
+    </Configuration>
+    <Configuration runwithwarnings="True" name="EngineDebug">
+      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
+      <Execution commandlineparameters="" consolepause="True" />
+      <Output directory=".\Debug\" assembly="MathLib" />
+    </Configuration>
+  </Configurations>
+</Project>

@@ -1,0 +1,45 @@
+// Skybox borrowed from the free Cg SDK (http://www.nvidia.com/cg)
+Skybox/CloudyHills
+{
+	// No dynamic lighting, fully lit
+	lighting off
+	// Depth writing off (always display stuff in front of it)
+	depth_write off
+
+	// Texture layer 0
+	{
+		// 6-sided texture, CloudyHills_fr.jpg, CloudyHills_up.jpg etc
+		cubic_texture CloudyHills.png separateUV
+		// clamp to avoid fuzziness at edges due to filtering
+		tex_address_mode clamp
+	}
+}
+
+Skybox/Space
+{
+	// No dynamic lighting, fully lit
+	lighting off
+	// Depth writing off (always display stuff in front of it)
+	depth_write off
+
+	// Texture layer 0
+	{
+		// 6-sided texture		
+		cubic_texture stevecube.jpg separateUV
+		// clamp to avoid fuzziness at edges due to filtering
+		tex_address_mode clamp
+	}	
+}
+
+Skyplane/Space
+{
+	// No dynamic lighting, fully lit
+	lighting off
+	// Depth writing off (always display stuff in front of it)
+	depth_write off
+
+	{
+		texture spacesky.jpg
+
+	}	
+}

@@ -1,0 +1,186 @@
+Ogre/Earring
+{
+	ambient 0.5 0.5 0.0
+	diffuse 1.0 1.0 0.0
+	// Texture layer 0
+	{
+		texture spheremap.png
+		colour_op add
+		env_map spherical
+	}
+}
+
+Ogre/Skin
+{
+	ambient 0.7 0.7 0.7
+	diffuse 1.0 1.0 1.0
+	cull_hardware none
+	{
+		texture GreenSkin.jpg
+		tex_address_mode mirror
+	}
+}
+
+Ogre/Tusks
+{
+	ambient 0.5 0.5 0.4
+	diffuse 1.0 1.0 0.8
+	{
+		texture dirt01.jpg
+		colour_op add
+	}
+
+}
+
+Ogre/Eyes
+{
+	ambient 1.0 1.0 1.0
+	// Texture layer 0
+	{
+		texture WeirdEye.png
+	}
+}
+
+Ogre/SkinEnv
+{
+	ambient 0.7 0.7 0.7
+	diffuse 1.0 1.0 1.0
+	cull_hardware none
+	// Texture layer 2
+	{
+		texture GreenSkin.jpg
+		tex_address_mode mirror
+	}
+	// Texture layer 1
+	{
+		texture spheremap.png
+		colour_op add
+		env_map spherical
+	}
+}
+
+Example/RustySteel
+{
+	{
+		texture RustySteel.jpg
+	}
+}
+
+// Transparent knots
+Examples/TransparentTest
+{
+	ambient 0.2 0.2 0.2
+	scene_blend add
+	depth_write off
+	{
+		texture Water02.jpg
+		scroll_anim 0.25 0
+	}
+	{
+		texture Water02.jpg
+		wave_xform scroll_y sine 0 0.1 0 0.5
+		colour_op modulate
+	}
+
+}
+
+Examples/EnvMappedRustySteel
+{
+	ambient 1.0 1.0 1.0
+	diffuse 1.0 1.0 1.0
+	// Texture layer 0
+	{
+		texture RustySteel.jpg
+	}
+	// Texture layer 1
+	{
+		texture spheremap.png
+		colour_op add
+		env_map spherical
+
+	}
+}
+
+// Rotation and wave scale
+TextureFX/BumpyMetal
+{
+	ambient 0.75 0.75 0.75
+	// double-sided
+	cull_hardware none
+	cull_software none
+	// Tex layer 0
+	{
+		texture BumpyMetal.jpg
+		// Scale in x and y over a wave
+		wave_xform scale_x sine 1 0.1 0 5
+		wave_xform scale_y sine 0.5 0.2 0.5 3
+		// Constant rotate
+		rotate_anim 0.2
+	}
+}
+
+//Watery effect
+TextureFX/Water
+{
+	ambient 0.7 0.7 0.7
+	// double-sided
+	cull_hardware none
+	cull_software none
+
+	{
+		texture Water01.jpg
+		scroll_anim -0.25 0.1
+	}
+	{
+		texture Water01.jpg
+		scroll_anim -0.1 0.25
+		color_op add
+	}
+}
+
+// Scroll only
+TextureFX/Knot
+{
+	{
+		texture Water01.jpg
+		scroll_anim 0.5 0
+	}
+}
+//	ambient 0.2 0.2 0.2
+
+// -- This section deals with materials for really old meshes
+// -- Embedded material definitions has been removed from 1.1 mesh format
+
+// Razor
+Material__25
+{
+	{
+		texture texmap2.jpg
+	}
+}
+// Knot
+2 - Default
+{
+	{
+		texture MtlPlat2.jpg
+	}
+}
+// Dragon
+Material #8
+{
+	{
+		texture body.jpg
+	}
+}
+Material #3
+{
+	{
+		texture head4.jpg
+	}
+}
+Material #9
+{
+	{
+		texture legs.jpg
+	}
+}
