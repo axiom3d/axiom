@@ -167,7 +167,7 @@ namespace Demos {
             this.Font = new System.Drawing.Font("Palatino Linotype", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
             this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = new Icon("Media/Icons/AxiomIcon.ico");
             this.MaximizeBox = false;
             this.Name = "DemoBrowser";
             this.Text = "Axiom Engine - Demo Browser v1.0.0.0";
