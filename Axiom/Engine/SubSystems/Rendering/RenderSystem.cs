@@ -615,6 +615,13 @@ namespace Axiom.SubSystems.Rendering {
         abstract protected internal void SetTextureLayerFiltering(int stage, TextureFiltering filtering);
 
         /// <summary>
+        ///		Sets the maximal anisotropy for the specified texture unit.
+        /// </summary>
+        /// <param name="stage"></param>
+        /// <param name="index">maxAnisotropy</param>
+        abstract protected internal void SetTextureLayerAnisotropy(int stage, int maxAnisotropy);
+
+        /// <summary>
         ///		Sets the texture matrix for the specified stage.  Used to apply rotations, translations,
         ///		and scaling to textures.
         /// </summary>
@@ -695,8 +702,6 @@ namespace Axiom.SubSystems.Rendering {
         /// <param name="textureUnit">Index of the texture unit to configure</param>
         /// <param name="layer">Reference to a TextureLayer object which defines all the settings.</param>
         virtual protected internal void SetTextureUnit(int stage, TextureLayer layer) {
-            // TODO: Finish this
-
             // set the texture if it is different from the current
             SetTexture(stage, true, layer.TextureName);
 
@@ -706,7 +711,8 @@ namespace Axiom.SubSystems.Rendering {
             // Texture layer filtering
             SetTextureLayerFiltering(stage, layer.TextureFiltering);
 
-            // TODO: Texture layer anistropy
+            // Texture layer anistropy
+            SetTextureLayerAnisotropy(stage, layer.Anisotropy);
 
             // set the texture blending mode
             SetTextureBlendMode(stage, layer.ColorBlendMode);

@@ -1,0 +1,115 @@
+// The materials for the DP3 demo
+Examples/DP3Mat1
+{
+	//Texture layer #1, normal map
+	{
+		texture NMBumpsOut.png
+		colour_op replace
+	}
+
+	//Texture layer #2, normalization cube map
+	{
+		cubic_texture nm.png combinedUVW
+		tex_coord_set 1
+		colour_op_ex dotproduct src_texture src_current
+		tex_address_mode clamp
+	}
+
+	//Texture layer #3, the decal...
+	{
+		texture Decal.png
+	}
+}
+
+Examples/DP3Mat2
+{
+	//Texture layer #1, normal map
+	{
+		texture NMStripes.png
+		colour_op replace
+	}
+
+	//Texture layer #2, normalization cube map
+	{
+		cubic_texture nm.png combinedUVW
+		tex_coord_set 1
+		colour_op_ex dotproduct src_texture src_current
+		tex_address_mode clamp
+	}
+
+	//Texture layer #3, the decal...
+	{
+		texture Decal.png
+	}
+}
+
+Examples/DP3Mat3
+{
+	//Texture layer #1, normal map
+	{
+		texture NMBalls.png
+		colour_op replace
+	}
+
+	//Texture layer #2, normalization cube map
+	{
+		cubic_texture nm.png combinedUVW
+		tex_coord_set 1
+		colour_op_ex dotproduct src_texture src_current
+		tex_address_mode clamp
+	}
+
+	//Texture layer #3, the decal...
+	{
+		texture Decal.png
+	}
+}
+
+Examples/DP3Mat4
+{
+	//Texture layer #1, normal map
+	{
+		texture NMHollyBumps.png
+		colour_op replace
+	}
+
+	//Texture layer #2, normalization cube map
+	{
+		cubic_texture nm.png combinedUVW
+		tex_coord_set 1
+		colour_op_ex dotproduct src_texture src_current
+		tex_address_mode clamp
+	}
+
+	//Texture layer #3, the decal...
+	{
+		texture Decal.png
+	}
+}
+
+Examples/DP3Terrain
+{
+	//Texture layer #1, normal map
+	{
+		texture NMBalls.png
+		colour_op_ex dotproduct src_texture src_manual 1 1 1
+		scale 12 12
+	}
+
+	//Texture layer #3, the decal...
+	{
+		texture dirt01.jpg
+		scale 0.2 0.2
+	}
+}
+
+Examples/DP3Sky
+{
+	lighting off
+	depth_write off
+
+	{
+		texture clouds.jpg
+		scroll_anim 0.15 0
+	}
+}

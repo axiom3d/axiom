@@ -149,6 +149,11 @@
                     Project = "{FDAF263D-095D-4217-AC87-3F1B20A49146}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
+                <Reference
+                    Name = "Tao.Platform.Windows"
+                    AssemblyName = "Tao.Platform.Windows"
+                    HintPath = "..\Solution Items\Tao.Platform.Windows.dll"
+                />
             </References>
         </Build>
         <Files>

@@ -49,7 +49,9 @@ namespace Axiom.Utility {
         private Button btnCancel;
 
         public ConfigDialog() {
+            this.SetStyle(ControlStyles.DoubleBuffer, true);
             InitializeComponent();
+            this.Icon = new Icon("Media/Icons/AxiomIcon.ico");
         }
 
         protected override void Dispose(bool disposing) {

@@ -46,7 +46,6 @@ namespace Axiom.Core {
         /// <summary></summary>
         private int texCoordSet;
         private TextureAddressing texAddressingMode;
-        private TextureFiltering texFiltering;
         private LayerBlendModeEx colorBlendMode = new LayerBlendModeEx();
         private LayerBlendModeEx alphaBlendMode = new LayerBlendModeEx();
         private SceneBlendFactor colorBlendFallbackSrc;
@@ -73,6 +72,12 @@ namespace Axiom.Core {
 
         private ArrayList effectList = new ArrayList();
 
+        // filtering
+        private TextureFiltering texFiltering;
+        private int maxAnisotropy;
+        private bool isDefaultAnisotropy;
+        private bool isDefaultFiltering;
+
         #endregion
 
         #region Constructors
@@ -95,6 +100,11 @@ namespace Axiom.Core {
             alphaBlendMode.source1 = LayerBlendSource.Texture;
             alphaBlendMode.source2 = LayerBlendSource.Current;
 
+            // texture filtering
+            isDefaultFiltering = true;
+            isDefaultAnisotropy = true;
+            texFiltering = MaterialManager.Instance.DefaultTextureFiltering;
+            maxAnisotropy = MaterialManager.Instance.DefaultAnisotropy;
         }
 
         /// <summary>
@@ -117,11 +127,39 @@ namespace Axiom.Core {
             alphaBlendMode.blendType = LayerBlendType.Alpha;
             alphaBlendMode.source1 = LayerBlendSource.Texture;
             alphaBlendMode.source2 = LayerBlendSource.Current;
+
+            // texture filtering
+            isDefaultFiltering = true;
+            isDefaultAnisotropy = true;
+            texFiltering = MaterialManager.Instance.DefaultTextureFiltering;
+            maxAnisotropy = MaterialManager.Instance.DefaultAnisotropy;
         }
 
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int DefaultAnisotropy {
+            set {
+                if(isDefaultAnisotropy) {
+                    maxAnisotropy = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public TextureFiltering DefaultTextureFiltering {
+            set {
+                if(isDefaultFiltering) {
+                    texFiltering = value;
+                }
+            }
+        }
 
         /// <summary>
         ///		Gets/Sets the name of the texture for this texture layer.
@@ -179,8 +217,13 @@ namespace Axiom.Core {
         ///		Get/Set the texture filtering mode for this layer.
         /// </summary>
         public TextureFiltering TextureFiltering {
-            get { return texFiltering; }
-            set { texFiltering = value; }
+            get { 
+                return texFiltering; 
+            }
+            set { 
+                texFiltering = value; 
+                isDefaultFiltering = false;
+            }
         }
 
         /// <summary>
@@ -195,6 +238,19 @@ namespace Axiom.Core {
         /// </summary>
         public LayerBlendModeEx AlphaBlendMode {
             get { return alphaBlendMode; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int Anisotropy {
+            get {
+                return maxAnisotropy;
+            }
+            set {
+                maxAnisotropy = value;
+                isDefaultAnisotropy = false;
+            }
         }
 
         public SceneBlendFactor ColorBlendFallbackSource {

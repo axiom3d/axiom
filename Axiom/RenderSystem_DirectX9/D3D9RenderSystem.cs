@@ -570,6 +570,21 @@ namespace RenderSystem_DirectX9 {
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stage"></param>
+        /// <param name="maxAnisotropy"></param>
+        protected override void SetTextureLayerAnisotropy(int stage, int maxAnisotropy) {
+            if(maxAnisotropy > d3dCaps.MaxAnisotropy) {
+                maxAnisotropy = d3dCaps.MaxAnisotropy;
+            }
+
+            if(device.SamplerState[stage].MaxAnisotropy != maxAnisotropy) {
+                device.SamplerState[stage].MaxAnisotropy = maxAnisotropy;
+            }
+        }
+
         protected override void SetTextureLayerFiltering(int stage, TextureFiltering filtering) {
             // get a reference to the current sampler for this tex unit
             D3D.Sampler sampler = device.SamplerState[stage];

@@ -1,10 +1,12 @@
 using System;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using Axiom.Utility;
+using Tao.Platform.Windows;
 
 namespace Demos {
     /// <summary>
@@ -25,10 +27,12 @@ namespace Demos {
         private Label lblInfo;
 
         public DemoBrowser() {
+            this.SetStyle(ControlStyles.DoubleBuffer, true);
             InitializeComponent();
             
             // this always get whacked from InitializeComponent, so doing it here instead
             this.Icon = new Icon("Media/Icons/AxiomIcon.ico");
+
         }
 
         protected override void Dispose(bool disposing) {
@@ -202,10 +206,18 @@ namespace Demos {
                         // get the type of the demo class
                         Type type = Type.GetType(demoClassName);
 
+                        this.Hide();
+                        this.WindowState = FormWindowState.Minimized;
+
                         // create an instance of the demo class and start it up
                         using(TechDemo demo = (TechDemo) Activator.CreateInstance(type)) {
                             demo.Start();
                         }
+
+                        GC.Collect();
+                        Kernel.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+                        this.WindowState = FormWindowState.Normal;
+                        this.Show();
                     }
                 }
             }
@@ -235,6 +247,9 @@ namespace Demos {
 
                 lstDemos.Items.Add(item);
             }
+
+            GC.Collect();
+            Kernel.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
         }
 
         private void DemoBrowser_Load(object sender, EventArgs e) {
@@ -267,13 +282,13 @@ namespace Demos {
             }
 
             // set the properties of the image list
-            demoImageList.ColorDepth = ColorDepth.Depth16Bit;
-            demoImageList.ImageSize = new Size(133, 100);
+            demoImageList.ColorDepth = ColorDepth.Depth24Bit;
+            demoImageList.ImageSize = new Size(150, 110);
 
             // set the listview to use the new imagelist for images
-            lstDemos.SmallImageList = demoImageList;
+//            lstDemos.SmallImageList = demoImageList;
             lstDemos.LargeImageList = demoImageList;
-            lstDemos.StateImageList = demoImageList;
+//            lstDemos.StateImageList = demoImageList;
 
             // load the items
             LoadDemoItems(demoView);
