@@ -17,7 +17,7 @@ Here are some details for the curious:
 - GuiElements plugin removed, and the existing basic widgets are available in the core.  All current .overlay scripts will continue to work.  Axiom.Gui namespace is now Axiom.Overlays, and the Panel, BorderPanel, and TextArea widgets are under Axiom.Overlays.Elements.  This will be left as-is with no plans for future additions, in favor of using the much better C# port of CrazyEdsGUI.
 - Updated DX code to conform to changes in the DX9 Summer 2004 Update.
 - SceneObject.GameObject renamed to UserData and typed as object, to allow attaching any arbitrary object to a scene object.
-- GameObject removed.
+- GameObject removed; SceneObjects can now link to an untyped object reference to point to whatever makes sense for the application in question.
 - Axiom.Utility namespace removed.
 
 5-21-2004
