@@ -644,21 +644,21 @@ namespace Axiom.Core {
                     IntPtr texPtr = vBuffer.Lock(BufferLocking.Discard);
 
                     unsafe {
-                        short* pIdx = (short*)idxPtr.ToPointer();
+                        ushort* pIdx = (ushort*)idxPtr.ToPointer();
                         float* pTex = (float*)texPtr.ToPointer();
 
-                        for(short idx, idxOffset, texOffset, bboard = 0; bboard < size; bboard++) {
+                        for(int idx, idxOffset, texOffset, bboard = 0; bboard < size; bboard++) {
                             // compute indexes
-                            idx = (short)(bboard * 6);
-                            idxOffset = (short)(bboard * 4);
-                            texOffset = (short)(bboard * 8);
+                            idx = bboard * 6;
+                            idxOffset = bboard * 4;
+                            texOffset = bboard * 8;
 
-                            pIdx[idx]   = idxOffset; // + 0;, for clarity
-                            pIdx[idx + 1] = (short)(idxOffset + 1);
-                            pIdx[idx + 2] = (short)(idxOffset + 3);
-                            pIdx[idx + 3] = (short)(idxOffset + 0);
-                            pIdx[idx + 4] = (short)(idxOffset + 3);
-                            pIdx[idx + 5] = (short)(idxOffset + 2);
+                            pIdx[idx]   =	(ushort)idxOffset; // + 0;, for clarity
+                            pIdx[idx + 1] = (ushort)(idxOffset + 1);
+                            pIdx[idx + 2] = (ushort)(idxOffset + 3);
+                            pIdx[idx + 3] = (ushort)(idxOffset + 0);
+                            pIdx[idx + 4] = (ushort)(idxOffset + 3);
+                            pIdx[idx + 5] = (ushort)(idxOffset + 2);
 
                             // Do tex coords
                             pTex[texOffset]   = texData[0];
