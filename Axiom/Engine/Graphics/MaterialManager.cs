@@ -848,7 +848,7 @@ namespace Axiom.Graphics {
         [AttributeParser("lighting", PASS)]
         public static void ParseLighting(string[] values, Pass pass) {
             if(values.Length != 1) {
-                ParseHelper.LogParserError("lighting", pass.Parent.Name, "Expected param 'on' or 'off'");
+                ParseHelper.LogParserError("lighting", pass.Parent.Parent.Name, "Expected param 'on' or 'off'");
                 return;
             }
 
