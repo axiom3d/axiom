@@ -517,41 +517,66 @@ namespace Axiom.MathLib {
 
         public float Determinant {
             get {
-                return this[0,0] * Minor(1, 2, 3, 1, 2, 3) -
-                    this[0,1] * Minor(1, 2, 3, 0, 2, 3) +
-                    this[0,2] * Minor(1, 2, 3, 0, 1, 3) -
-                    this[0,3] * Minor(1, 2, 3, 0, 1, 2);
+                float result = m00 * m11 * (m22 * m33 - m32 * m23) - m12 * (m21 * m33 - m31 * m23) + m13 * (m21 * m32 - m31 * m22) - 
+	                m01 * (m10 * (m22 * m33 - m32 * m23) - m12 * (m20 * m33 - m30 * m23) + m13 * (m20 * m32 - m30 * m22)) + 
+	                m02 * (m10 * (m21 * m33 - m31 * m23) - m11 * (m20 * m33 - m30 * m23) + m13 * (m20 * m31 - m30 * m21)) - 
+	                m03 * (m10 * (m21 * m32 - m31 * m22) - m11 * (m20 * m32 - m30 * m22) + m12 * (m20 * m31 - m30 * m21));
+
+                return result;
+//                return this[0,0] * Minor(1, 2, 3, 1, 2, 3) -
+//                    this[0,1] * Minor(1, 2, 3, 0, 2, 3) +
+//                    this[0,2] * Minor(1, 2, 3, 0, 1, 3) -
+//                    this[0,3] * Minor(1, 2, 3, 0, 1, 2);
             }
         }
 
         private Matrix4 Adjoint() {
-            return new Matrix4(
-                Minor(1, 2, 3, 1, 2, 3),
-                -Minor(0, 2, 3, 1, 2, 3),
-                Minor(0, 1, 3, 1, 2, 3),
-                -Minor(0, 1, 2, 1, 2, 3),
+            float val0 = m11 * (m22 * m33 - m32 * m23) - m12 * (m21 * m33 - m31 * m23) + m13 * (m21 * m32 - m31 * m22);
+            float val1 = -(m01 * (m22 * m33 - m32 * m23) - m02 * (m21 * m33 - m31 * m23) + m03 * (m21 * m32 - m31 * m22));
+            float val2 = m01 * (m12 * m33 - m32 * m13) - m02 * (m11 * m33 - m31 * m13) + m03 * (m11 * m32 - m31 * m12);
+            float val3 = -(m01 * (m12 * m23 - m22 * m13) - m02 * (m11 * m23 - m21 * m13) + m03 * (m11 * m22 - m21 * m12));
+            float val4 = -(m10 * (m22 * m33 - m32 * m23) - m12 * (m20 * m33 - m30 * m23) + m13 * (m20 * m32 - m30 * m22));
+            float val5 = m00 * (m22 * m33 - m32 * m23) - m02 * (m20 * m33 - m30 * m23) + m03 * (m20 * m32 - m30 * m22);
+            float val6 = -(m00 * (m12 * m33 - m32 * m13) - m02 * (m10 * m33 - m30 * m13) + m03 * (m10 * m32 - m30 * m12));
+            float val7 = m00 * (m12 * m23 - m22 * m13) - m02 * (m10 * m23 - m20 * m13) + m03 * (m10 * m22 - m20 * m12);
+            float val8 = m10 * (m21 * m33 - m31 * m23) - m11 * (m20 * m33 - m30 * m23) + m13 * (m20 * m31 - m30 * m21);
+            float val9 = -(m00 * (m21 * m33 - m31 * m23) - m01 * (m20 * m33 - m30 * m23) + m03 * (m20 * m31 - m30 * m21));
+            float val10 = m00 * (m11 * m33 - m31 * m13) - m01 * (m10 * m33 - m30 * m13) + m03 * (m10 * m31 - m30 * m11);
+            float val11 = -(m00 * (m11 * m23 - m21 * m13) - m01 * (m10 * m23 - m20 * m13) + m03 * (m10 * m21 - m20 * m11));
+            float val12 = -(m10 * (m21 * m32 - m31 * m22) - m11 * (m20 * m32 - m30 * m22) + m12 * (m20 * m31 - m30 * m21));
+            float val13 = m00 * (m21 * m32 - m31 * m22) - m01 * (m20 * m32 - m30 * m22) + m02 * (m20 * m31 - m30 * m21);
+            float val14 = -(m00 * (m11 * m32 - m31 * m12) - m01 * (m10 * m32 - m30 * m12) + m02 * (m10 * m31 - m30 * m11));
+            float val15 = m00 * (m11 * m22 - m21 * m12) - m01 * (m10 * m22 - m20 * m12) + m02 * (m10 * m21 - m20 * m11);
 
-                -Minor(1, 2, 3, 0, 2, 3),
-                Minor(0, 2, 3, 0, 2, 3),
-                -Minor(0, 1, 3, 0, 2, 3),
-                Minor(0, 1, 2, 0, 2, 3),
+            return new Matrix4(val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14, val15);
 
-                Minor(1, 2, 3, 0, 1, 3),
-                -Minor(0, 2, 3, 0, 1, 3),
-                Minor(0, 1, 3, 0, 1, 3),
-                -Minor(0, 1, 2, 0, 1, 3),
-
-                -Minor(1, 2, 3, 0, 1, 2),
-                Minor(0, 2, 3, 0, 1, 2),
-                -Minor(0, 1, 3, 0, 1, 2),
-                Minor(0, 1, 2, 0, 1, 2));
+//            return new Matrix4(
+//                Minor(1, 2, 3, 1, 2, 3),
+//                -Minor(0, 2, 3, 1, 2, 3),
+//                Minor(0, 1, 3, 1, 2, 3),
+//                -Minor(0, 1, 2, 1, 2, 3),
+//
+//                -Minor(1, 2, 3, 0, 2, 3),
+//                Minor(0, 2, 3, 0, 2, 3),
+//                -Minor(0, 1, 3, 0, 2, 3),
+//                Minor(0, 1, 2, 0, 2, 3),
+//
+//                Minor(1, 2, 3, 0, 1, 3),
+//                -Minor(0, 2, 3, 0, 1, 3),
+//                Minor(0, 1, 3, 0, 1, 3),
+//                -Minor(0, 1, 2, 0, 1, 3),
+//
+//                -Minor(1, 2, 3, 0, 1, 2),
+//                Minor(0, 2, 3, 0, 1, 2),
+//                -Minor(0, 1, 3, 0, 1, 2),
+//                Minor(0, 1, 2, 0, 1, 2));
         }
 
-        private float Minor(int r0, int r1, int r2, int c0, int c1, int c2) {
-            return this[r0,c0] * (this[r1,c1] * this[r2,c2] - this[r2,c1] * this[r1,c2]) -
-                this[r0,c1] * (this[r1,c0] * this[r2,c2] - this[r2,c0] * this[r1,c2]) +
-                this[r0,c2] * (this[r1,c0] * this[r2,c1] - this[r2,c0] * this[r1,c1]);
-        }
+//        private float Minor(int r0, int r1, int r2, int c0, int c1, int c2) {
+//            return this[r0,c0] * (this[r1,c1] * this[r2,c2] - this[r2,c1] * this[r1,c2]) -
+//                this[r0,c1] * (this[r1,c0] * this[r2,c2] - this[r2,c0] * this[r1,c2]) +
+//                this[r0,c2] * (this[r1,c0] * this[r2,c1] - this[r2,c0] * this[r1,c1]);
+//        }
 
         #endregion
 
