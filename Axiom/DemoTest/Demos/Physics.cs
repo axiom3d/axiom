@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Windows.Forms;
 using Axiom.Core;
-
+using Axiom.Input;
 using Axiom.MathLib;
 using Axiom.Physics;
 using Axiom.Scripting;
@@ -101,13 +101,13 @@ namespace Demos {
 
             float force = 30.0f;
 
-            if(input.IsKeyPressed(Keys.L))
+            if(input.IsKeyPressed(KeyCodes.L))
                 box.RigidBody.AddForce(force, 0, 0);
-            if(input.IsKeyPressed(Keys.J))
+            if(input.IsKeyPressed(KeyCodes.J))
                 box.RigidBody.AddForce(-force, 0, 0);
-            if(input.IsKeyPressed(Keys.I))
+            if(input.IsKeyPressed(KeyCodes.I))
                 box.RigidBody.AddForce(0, 0, -force);
-            if(input.IsKeyPressed(Keys.K))
+            if(input.IsKeyPressed(KeyCodes.K))
                 box.RigidBody.AddForce(0, 0, force);
 
             UpdateDynamics(4 * e.TimeSinceLastFrame);

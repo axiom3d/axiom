@@ -28,6 +28,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Axiom.Core;
+using Axiom.Input;
 using Axiom.MathLib;
 using Axiom.ParticleSystems;
 using Axiom.Utility;
@@ -43,25 +44,25 @@ namespace Demos {
         protected override bool OnFrameStarted(Object source, FrameEventArgs e) {
             base.OnFrameStarted (source, e);
 
-            if(input.IsKeyPressed(Keys.N)) {
+            if(input.IsKeyPressed(KeyCodes.N)) {
                 thrusters.DefaultWidth = defaultDimension + 0.25f;
                 thrusters.DefaultHeight = defaultDimension + 0.25f;
                 defaultDimension += 0.25f;
             }
 
-            if(input.IsKeyPressed(Keys.M)) {
+            if(input.IsKeyPressed(KeyCodes.M)) {
                 thrusters.DefaultWidth = defaultDimension - 0.25f;
                 thrusters.DefaultHeight = defaultDimension - 0.25f;
                 defaultDimension -= 0.25f;
             }
 
-            if(input.IsKeyPressed(Keys.H)) {
+            if(input.IsKeyPressed(KeyCodes.H)) {
                 thrusters.GetEmitter(0).ParticleVelocity = defaultVelocity + 1;
                 thrusters.GetEmitter(1).ParticleVelocity = defaultVelocity + 1;
                 defaultVelocity += 1;
             }
 
-            if(input.IsKeyPressed(Keys.J) && !(defaultVelocity < 0.0f)) {
+            if(input.IsKeyPressed(KeyCodes.J) && !(defaultVelocity < 0.0f)) {
                 thrusters.GetEmitter(0).ParticleVelocity = defaultVelocity - 1;
                 thrusters.GetEmitter(1).ParticleVelocity = defaultVelocity - 1;
                 defaultVelocity -= 1;

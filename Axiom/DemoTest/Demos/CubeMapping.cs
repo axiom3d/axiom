@@ -29,6 +29,7 @@ using System.Collections;
 using System.Windows.Forms;
 using Axiom.Core;
 using Axiom.Gui;
+using Axiom.Input;
 using Axiom.MathLib;
 using Axiom.Graphics;
 using Axiom.Utility;
@@ -664,22 +665,22 @@ namespace Demos {
             // only check key input if the delay is not active
             if(keyDelay == 0.0f) {
                 // toggle noise
-                if(input.IsKeyPressed(Keys.N)) {
+                if(input.IsKeyPressed(KeyCodes.N)) {
                     ToggleNoise();
                     keyDelay = 0.3f;
                 }
                 // toggle mesh object
-                if(input.IsKeyPressed(Keys.O)) {
+                if(input.IsKeyPressed(KeyCodes.O)) {
                     ToggleMesh();
                     keyDelay = 0.3f;
                 }
                 // toggle cubemap texture
-                if(input.IsKeyPressed(Keys.C)) {
+                if(input.IsKeyPressed(KeyCodes.C)) {
                     ToggleCubeMap();
                     keyDelay = 0.3f;
                 }
                 // toggle material blending
-                if(input.IsKeyPressed(Keys.M)) {
+                if(input.IsKeyPressed(KeyCodes.M)) {
                     ToggleBlending();
                     keyDelay = 0.3f;
                 }
