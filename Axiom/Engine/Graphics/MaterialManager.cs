@@ -370,7 +370,7 @@ namespace Axiom.Graphics {
         /// <summary>
         ///		
         /// </summary>
-        protected void ParseScript(Stream stream) {
+        public void ParseScript(Stream stream) {
             StreamReader script = new StreamReader(stream, System.Text.Encoding.ASCII);
 
             string line = "";
