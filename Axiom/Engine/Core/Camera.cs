@@ -750,7 +750,7 @@ namespace Axiom.Core {
         ///	 </param> 
         /// <param name="target">The SceneObject which this Camera will track.</param>
         public void SetAutoTracking(bool enabled, SceneObject target) {
-            SetAutoTracking(enabled, target.ParentNode, Vector3.Zero);
+            SetAutoTracking(enabled, (SceneNode)target.ParentNode, Vector3.Zero);
         }
 
         /// <summary>

@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-
+using Axiom.Animating;
 using Axiom.Core;
 
 // used to alias a type in the code for easy copying and pasting.  Come on generics!!
@@ -87,4 +87,16 @@ namespace Axiom.Collections {
         #endregion
 
     }
+
+	public class BoneList : ArrayList {
+		public void Add(Bone bone) {
+			base.Add(bone);
+		}
+
+		public Bone this[int index] {
+			get {
+				return (Bone)base[index];
+			}
+		}
+	}
 }

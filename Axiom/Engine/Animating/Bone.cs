@@ -37,9 +37,8 @@ namespace Axiom.Animating {
     ///    This class is a node in the joint hierarchy. Mesh vertices also have assignments
     ///    to bones to define how they move in relation to the skeleton.
     /// </remarks>
-    /// TODO: Tag points
     public class Bone : Node {
-        #region Member variables
+        #region Fields
 
         /// <summary>Numeric handle of this bone.</summary>
         protected ushort handle;
@@ -50,7 +49,7 @@ namespace Axiom.Animating {
         /// <summary>The inverse derived transform of the bone in the binding pose.</summary>
         protected Matrix4 bindDerivedInverseTransform;
 
-        #endregion
+        #endregion Fields
 
         #region Constructors
 
@@ -178,7 +177,6 @@ namespace Axiom.Animating {
         }
 
         #endregion
-
     }
 
     /// <summary>

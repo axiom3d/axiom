@@ -31,20 +31,19 @@ using Axiom.Scripting;
 
 namespace Axiom.Core {
     /// <summary>
-    /// Abstract class definining a movable object in a scene.
+    ///		Abstract class definining a movable object in a scene.
     /// </summary>
     /// <remarks>
-    /// Instances of this class are discrete, relatively small, movable objects
-    /// which are attached to SceneNode objects to define their position.						  
+    ///		Instances of this class are discrete, relatively small, movable objects
+    ///		which are attached to SceneNode objects to define their position.						  
     /// </remarks>
-    // TODO: Add local OBB / convex hull
-    public abstract class SceneObject {
-        #region Member variables 
+    public abstract class SceneObject : ShadowCaster {
+        #region Fields
 
         /// <summary>
         ///    Node that this node is attached to.
         /// </summary>
-        protected SceneNode parentNode;
+        protected Node parentNode;
         /// <summary>
         ///    Is this object visible?
         /// </summary>
@@ -73,8 +72,12 @@ namespace Axiom.Core {
         ///    A link back to a GameObject (or subclass thereof) that may be associated with this SceneObject.
         /// </summary>
         protected GameObject gameObject;
+		/// <summary>
+		///		Flag which indicates whether this objects parent is a <see cref="TagPoint"/>.
+		/// </summary>
+		protected bool parentIsTagPoint;
 
-        #endregion Member variables 
+        #endregion Fields
 
         #region Constructors
 
@@ -124,7 +127,7 @@ namespace Axiom.Core {
         /// <summary>
         ///		Gets the parent node that this object is attached to.
         /// </summary>
-        public SceneNode ParentNode {
+        public Node ParentNode {
             get {
                 return parentNode;
             }
@@ -176,6 +179,39 @@ namespace Axiom.Core {
             }
         }
 
+		/// <summary>
+		///		Gets the full transformation of the parent SceneNode or TagPoint.
+		/// </summary>
+		public virtual Matrix4 ParentNodeFullTransform {
+			get {
+				if(parentNode != null) {
+					// object is attached to a node, so return the nodes transform
+					return parentNode.FullTransform;
+				}
+
+				// fallback
+				return Matrix4.Identity;
+			}
+		}
+
+		/// <summary>
+		///		Gets/Sets the query flags for this object.
+		/// </summary>
+		/// <remarks>
+		///		When performing a scene query, this object will be included or excluded according
+		///		to flags on the object and flags on the query. This is a bitwise value, so only when
+		///		a bit on these flags is set, will it be included in a query asking for that flag. The
+		///		meaning of the bits is application-specific.
+		/// </remarks>
+		public ulong QueryFlags {
+			get {
+				return queryFlags;
+			}
+			set {
+				queryFlags = value;
+			}
+		}
+
         /// <summary>
         ///    Allows showing the bounding box of an invidual SceneObject.
         /// </summary>
@@ -184,16 +220,43 @@ namespace Axiom.Core {
         /// </remarks>
         public bool ShowBoundingBox {
             get {
-                return parentNode.ShowBoundingBox;
+                return ((SceneNode)parentNode).ShowBoundingBox;
             }
             set {
-                parentNode.ShowBoundingBox = value;
+                ((SceneNode)parentNode).ShowBoundingBox = value;
             }
         }
+
+		/// <summary>
+		///		Gets/Sets the render queue group this entity will be rendered through.
+		/// </summary>
+		/// <remarks>
+		///		Render queues are grouped to allow you to more tightly control the ordering
+		///		of rendered objects. If you do not call this method, all Entity objects default
+		///		to <see cref="RenderQueueGroupID.Main"/> which is fine for most objects. You may want to alter this
+		///		if you want this entity to always appear in front of other objects, e.g. for
+		///		a 3D menu system or such.
+		/// </remarks>
+		public RenderQueueGroupID RenderQueueGroup {
+			get {
+				return renderQueueID;
+			}
+			set {
+				renderQueueID = value;
+			}
+		}
 
         #endregion Properties
 
         #region Methods
+
+		/// <summary>
+		///		Appends the specified flags to the current flags for this object.
+		/// </summary>
+		/// <param name="flags"></param>
+		public void AddQueryFlags(ulong flags) {
+			queryFlags |= flags;
+		}
 
         /// <summary>
         ///    Overloaded method.  Calls the overload with a default of not deriving the transform.
@@ -238,6 +301,14 @@ namespace Axiom.Core {
             return worldBoundingSphere;
         }
 
+		/// <summary>
+		///		Removes the specified flags from the current flags for this object.
+		/// </summary>
+		/// <param name="flags"></param>
+		public void RemoveQueryFlags(ulong flags) {
+			queryFlags ^= flags;
+		}
+
         #endregion Methods
 
         #region Internal engine methods
@@ -246,9 +317,18 @@ namespace Axiom.Core {
         ///		Internal method called to notify the object that it has been attached to a node.
         /// </summary>
         /// <param name="node">Scene node to notify.</param>
-        internal virtual void NotifyAttached(SceneNode node) {
-            parentNode = node;
+        internal virtual void NotifyAttached(Node node) {
+            NotifyAttached(node, false);
         }
+
+		/// <summary>
+		///		Internal method called to notify the object that it has been attached to a node.
+		/// </summary>
+		/// <param name="node">Scene node to notify.</param>
+		internal virtual void NotifyAttached(Node node, bool isTagPoint) {
+			parentNode = node;
+			parentIsTagPoint = isTagPoint;
+		}
 
         /// <summary>
         ///		Internal method to notify the object of the camera to be used for the next rendering operation.
@@ -257,7 +337,7 @@ namespace Axiom.Core {
         ///		Certain objects may want to do specific processing based on the camera position. This method notifies
         ///		them incase they wish to do this.
         /// </remarks>
-        /// <param name="camera"></param>
+        /// <param name="camera">Reference to the Camera being used for the current rendering operation.</param>
         public abstract void NotifyCurrentCamera(Camera camera);
 
         /// <summary>

@@ -61,7 +61,6 @@ namespace Axiom.Animating {
     ///		Skeleton definitions are loaded from datafiles, namely the .xsf file format. They
     ///		are loaded on demand, especially when referenced by a Mesh.
     /// </remarks>
-    /// TODO: Add tag point functionality
     public class Skeleton : Resource {
 
         #region Member variables
@@ -75,11 +74,9 @@ namespace Axiom.Animating {
         /// <summary>The entity that is currently updating this skeleton.</summary>
         protected Entity currentEntity;
         /// <summary>Reference to the root bone of this skeleton.</summary>
-        protected Bone rootBone;
+        protected BoneList rootBones = new BoneList();
         /// <summary>Used for auto generated handles to ensure they are unique.</summary>
-        protected ushort nextAutoHandle;
-        /// <summary>Used for auto generated tag point handles to ensure they are unique.</summary>
-        protected ushort nextTagPointAutoHandle;
+        protected internal ushort nextAutoHandle;
         /// <summary>Lookup table for animations related to this skeleton.</summary>
         protected AnimationCollection animationList = new AnimationCollection();
         /// <summary>Saved version of the last animation.</summary>
@@ -116,7 +113,7 @@ namespace Axiom.Animating {
         /// <param name="name">The name of this animation</param>
         /// <param name="length">The length of the animation in seconds</param>
         /// <returns></returns>
-        public Animation CreateAnimation(string name, float length) {
+        public virtual Animation CreateAnimation(string name, float length) {
             Animation anim = new Animation(name, length);
 
             animationList.Add(name, anim);
@@ -235,16 +232,19 @@ namespace Axiom.Animating {
                 throw new Exception("Cannot derive the root bone for a skeleton that has no bones.");
             }
 
+			rootBones.Clear();
+
             // get the first bone in the list
             Bone currentBone = boneList[0];
             
-            // keep walking the tree upwards until we hit a bone that has no parent
-            while(currentBone.Parent != null) {
-                currentBone = (Bone)currentBone.Parent;
-            }
+			// all bones without a parent are root bones
+			for(int i = 0; i < boneList.Count; i++) {
+				Bone bone = boneList[i];
 
-            // store a reference to the root bone
-            rootBone = currentBone;
+				if(bone.Parent == null) {
+					rootBones.Add(bone);
+				}
+			}
         }
 
         /// <summary>
@@ -252,7 +252,7 @@ namespace Axiom.Animating {
         /// </summary>
         /// <param name="index">Index of the animation to retrieve.</param>
         /// <returns></returns>
-        public Animation GetAnimation(int index) {
+        public virtual Animation GetAnimation(int index) {
             Debug.Assert(index < animationList.Count, "index < animationList.Count");
 
             return animationList[index];
@@ -263,7 +263,7 @@ namespace Axiom.Animating {
         /// </summary>
         /// <param name="name">Name of the animation to retrieve.</param>
         /// <returns></returns>
-        public Animation GetAnimation(string name) {
+        public virtual Animation GetAnimation(string name) {
             if(!animationList.ContainsKey(name)) {
                 throw new Exception("Animation named '" + name + "' is not part of this skeleton.");
             }
@@ -296,6 +296,19 @@ namespace Axiom.Animating {
 
             return (Bone)namedBoneList[name];
         }
+
+		/// <summary>
+		///		Gets the root bone at the specified index.
+		/// </summary>
+		/// <param name="index">Index of the root bone to return.</param>
+		/// <returns>Root bone at the specified index, or null if the index is out of bounds.</returns>
+		public Bone GetRootBone(int index) {
+			if(index < rootBones.Count) {
+				return rootBones[index];
+			}
+
+			return null;
+		}
 
         /// <summary>
         ///    Populates the passed in array with the bone matrices based on the current position.
@@ -349,7 +362,7 @@ namespace Axiom.Animating {
         /// </summary>
         /// <param name="name">Name of the animation to remove.</param>
         /// <returns></returns>
-        public void RemoveAnimation(string name) {
+        public virtual void RemoveAnimation(string name) {
             animationList.Remove(animationList[name]);
         }
 
@@ -362,13 +375,25 @@ namespace Axiom.Animating {
         ///    orientation.
         /// </remarks>
         public void Reset() {
-            // set all bones back to their binding pose
-            for(int i = 0; i < boneList.Count; i++) {
-                if(!boneList[i].IsManuallyControlled) {
-                    boneList[i].Reset();
-                }
-            }
+            Reset(false);
         }
+
+		/// <summary>
+		///    Resets the position and orientation of all bones in this skeleton to their original binding position.
+		/// </summary>
+		/// <remarks>
+		///    A skeleton is bound to a mesh in a binding pose. Bone positions are then modified from this
+		///    position during animation. This method returns all the bones to their original position and
+		///    orientation.
+		/// </remarks>
+		public void Reset(bool resetManualBones) {
+			// set all bones back to their binding pose
+			for(int i = 0; i < boneList.Count; i++) {
+				if(!boneList[i].IsManuallyControlled || resetManualBones) {
+					boneList[i].Reset();
+				}
+			}
+		}
 
         /// <summary>
         ///    
@@ -411,7 +436,7 @@ namespace Axiom.Animating {
                 // only apply if enable
                 if(animState.IsEnabled) {
                     Animation anim = GetAnimation(animState.Name);
-                    anim.Apply(animState.Time, animState.Weight, blendMode == SkeletalAnimBlendMode.Cumulative);
+                    anim.Apply(this, animState.Time, animState.Weight, blendMode == SkeletalAnimBlendMode.Cumulative);
                 } // if
             } // for
 
@@ -424,14 +449,23 @@ namespace Axiom.Animating {
         ///    bones were originally bound to a mesh.
         /// </summary>
         public void SetBindingPose() {
-            // update the derived transformation
-            this.RootBone.Update(true, false);
+			// update the derived transforms
+            UpdateTransforms();
 
             // set all bones back to their binding pose
             for(int i = 0; i < boneList.Count; i++) {
                 boneList[i].SetBindingPose();
             }
         }
+
+		/// <summary>
+		///		Updates all the derived transforms in the skeleton.
+		/// </summary>
+		public void UpdateTransforms() {
+			for(int i = 0; i < rootBones.Count; i++) {
+				rootBones[i].Update(true, false);
+			}
+		}
 
         #endregion Methods
 
@@ -440,7 +474,7 @@ namespace Axiom.Animating {
         /// <summary>
         ///    Gets the number of animations associated with this skeleton.
         /// </summary>
-        public int AnimationCount {
+        public virtual int AnimationCount {
             get {
                 return animationList.Count;
             }
@@ -494,13 +528,26 @@ namespace Axiom.Animating {
         /// </remarks>
         public Bone RootBone {
             get {
-                if(rootBone == null) {
+                if(rootBones.Count == 0) {
                     DeriveRootBone();
                 }
 
-                return rootBone;
+                return rootBones[0];
             }
         }
+
+		/// <summary>
+		///		Gets the number of root bones in this skeleton.
+		/// </summary>
+		public int RootBoneCount {
+			get {
+				if(rootBones.Count == 0) {
+					DeriveRootBone();
+				}
+
+				return rootBones.Count;
+			}
+		}
 
         #endregion Properties
 
@@ -591,7 +638,7 @@ namespace Axiom.Animating {
 
                 // tracks
                 foreach(AnimationTrack track in anim.Tracks) {
-                    writer.WriteLine("  -- AnimationTrack {0} --", track.Index);
+                    writer.WriteLine("  -- AnimationTrack {0} --", track.Handle);
                     writer.WriteLine("  Affects bone: {0}", ((Bone)track.TargetNode).Handle);
                     writer.WriteLine("  Number of keyframes: {0}", track.KeyFrames.Count);
 

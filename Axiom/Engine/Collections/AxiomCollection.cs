@@ -33,7 +33,6 @@ namespace Axiom.Collections {
     ///		Serves as a basis for strongly typed collections in the engine.
     /// </summary>
     /// <remarks>
-    ///		<b>GODDAMIT WHY DO WE HAVE TO GO THROUGH THIS SHIT!</b>
     ///		Can't wait for Generics in .Net Framework 2.0!   
     /// </remarks>
     public abstract class AxiomCollection : ICollection, IEnumerable {
