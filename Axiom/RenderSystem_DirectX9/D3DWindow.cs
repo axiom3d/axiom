@@ -89,10 +89,12 @@ namespace Axiom.RenderSystems.DirectX9 {
             presentParams.PresentationInterval = PresentInterval.Immediate;
 
             // supports 16 and 32 bit color
-            if(colorDepth == 16)
-                presentParams.BackBufferFormat = Format.R5G6B5;
-            else
-                presentParams.BackBufferFormat = Format.X8R8G8B8;
+			if(colorDepth == 16) {
+				presentParams.BackBufferFormat = Format.R5G6B5;
+			}
+			else {
+				presentParams.BackBufferFormat = Format.X8R8G8B8;
+			}
 
             if(colorDepth > 16) {
                 // check for 24 bit Z buffer with 8 bit stencil (optimal choice)

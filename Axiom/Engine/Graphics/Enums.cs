@@ -209,22 +209,77 @@ namespace Axiom.Graphics {
     /// </summary>
     [Flags]
     public enum Capabilities {
+		/// <summary>
+		///		Supports hardware stencil buffer.
+		/// </summary>
         StencilBuffer                   = 0x00000001,
         TextureBlending                 = 0x00000002,
         VertexBlending                  = 0x00000004,
+		/// <summary>
+		///		Supports anisotropic texture filtering.
+		/// </summary>
         AnisotropicFiltering            = 0x00000008,
-        Dot3Bump                        = 0x00000010,
+		/// <summary>
+		///		Supports fixed-function DOT3 texture blend.
+		/// </summary>
+        Dot3	                        = 0x00000010,
+		/// <summary>
+		///		Supports hardware vertex and index buffers.
+		/// </summary>
         VertexBuffer                    = 0x00000020,
         MultiTexturing                  = 0x00000040,
+		/// <summary>
+		///		Supports generating mipmaps in hardware.
+		/// </summary>
         HardwareMipMaps                 = 0x00000080,
+		/// <summary>
+		///		Supports cube mapping.
+		/// </summary>
         CubeMapping                     = 0x00000100,
+		/// <summary>
+		///		Supports vertex programs (vertex shaders).
+		/// </summary>
         VertexPrograms                  = 0x00000200,
+		/// <summary>
+		///		Supports fragment programs (pixel shaders).
+		/// </summary>
         FragmentPrograms                = 0x00000400,
+		/// <summary>
+		///		Supports compressed textures.
+		/// </summary>
         TextureCompression              = 0x00000800,
+		/// <summary>
+		///		Supports compressed textures in the DXT/ST3C formats.
+		/// </summary>
         TextureCompressionDXT           = 0x00001000,
+		/// <summary>
+		///		Supports compressed textures in the VTC format.
+		/// </summary>
         TextureCompressionVTC           = 0x00002000,
+		/// <summary>
+		///		Supports performing a scissor test to exclude areas of the screen.
+		/// </summary>
         ScissorTest                     = 0x00004000,
-		VertexFormatUByte4				= 0x00008000
+		/// <summary>
+		///		Supports separate stencil updates for both front and back faces.
+		/// </summary>
+		TwoSidedStencil					= 0x00008000,
+		/// <summary>
+		///		Supports wrapping the stencil value at the range extremeties.
+		/// </summary>
+		StencilWrap						= 0x00010000,
+		/// <summary>
+		///		Hardware occlusion queries.
+		/// </summary>
+		HardwareOcculusion				= 0x00020000,
+		/// <summary>
+		///		User clipping planes.
+		/// </summary>
+		UserClipPlanes					= 0x00040000,
+		/// <summary>
+		///		4 byte wide vertex elemet format.
+		/// </summary>
+		VertexFormatUByte4				= 0x00080000
     }
 
     /// <summary>
@@ -381,6 +436,16 @@ namespace Axiom.Graphics {
         /// </summary>
         Fragment
     }
+
+	/// <summary>
+	///		Defines the frame buffers which can be cleared.
+	/// </summary>
+	[Flags]
+	public enum FrameBuffer {
+		Color	= 0x1,
+		Depth	= 0x2,
+		Stencil = 0x4
+	}
 
     /// <summary>
     ///		Type of index buffer to use.
@@ -822,6 +887,14 @@ namespace Axiom.Graphics {
         ///		Decrease the stencil value by 1, clamping at 0.
         ///	 </summary>
         Decrement,
+		/// <summary>
+		///		Increase the stencil value by 1, wrapping back to 0 when incrementing the maximum value.
+		///	 </summary>
+		IncrementWrap,
+		/// <summary>
+		///		Decrease the stencil value by 1, wrapping when decrementing 0.
+		///	 </summary>
+		DecrementWrap,
         /// <summary>
         ///		Invert the bits of the stencil buffer.
         ///	 </summary>

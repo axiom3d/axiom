@@ -107,8 +107,7 @@ namespace Axiom.Core {
         /// <summary>
         ///		Default constructor.
         /// </summary>
-        public Light() {
-            Construct("");
+        public Light() : this("") {
         }
 
         /// <summary>
@@ -116,32 +115,24 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="name"></param>
         public Light(string name) {
-            Construct(name);
-        }
+			this.name = name;
 
-        /// <summary>
-        ///    Helper method to allow for consistent object construction.
-        /// </summary>
-        /// <param name="name"></param>
-        protected void Construct(string name) {
-            this.name = name;
+			type = LightType.Point;
+			diffuse = ColorEx.White;
+			specular = ColorEx.Black;
+			range = 1000;
+			attenuationConst = 1.0f;
+			attenuationLinear = 0.0f;
+			attenuationQuad = 0.0f;
 
-            type = LightType.Point;
-            diffuse = ColorEx.White;
-            specular = ColorEx.Black;
-            range = 1000;
-            attenuationConst = 1.0f;
-            attenuationLinear = 0.0f;
-            attenuationQuad = 0.0f;
+			position = Vector3.Zero;
+			direction = Vector3.UnitZ;
 
-            position = Vector3.Zero;
-            direction = Vector3.UnitZ;
-
-            spotInner = 30.0f;
-            spotOuter = 40.0f;
-            spotFalloff = 1.0f;
+			spotInner = 30.0f;
+			spotOuter = 40.0f;
+			spotFalloff = 1.0f;
 			
-            isModified = true;
+			isModified = true;
         }
 
         #endregion
@@ -348,6 +339,35 @@ namespace Axiom.Core {
         #endregion
 
         #region Methods
+
+		/// <summary>
+		///		Gets the details of this light as a 4D vector.
+		/// </summary>
+		/// <remarks>
+		///		Getting details of a light as a 4D vector can be useful for
+		///		doing general calculations between different light types; for
+		///		example the vector can represent both position lights (w=1.0f)
+		///		and directional lights (w=0.0f) and be used in the same 
+		///		calculations.
+		/// </remarks>
+		/// <returns>A 4D vector represenation of the light.</returns>
+		public Vector4 GetAs4DVector() {
+			Vector4 vec;
+
+			if(type == LightType.Directional) {
+				// negate direction as 'position'
+				vec = -(Vector4)this.DerivedDirection; 
+
+				// infinite distance
+				vec.w = 0.0f; 
+			}
+			else {
+				vec = (Vector4)this.DerivedPosition;
+				vec.w = 1.0f;
+			}
+
+			return vec;
+		}
 
         /// <summary>
         ///		Sets the spotlight parameters in a single call.

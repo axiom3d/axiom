@@ -267,8 +267,6 @@ namespace Axiom.Graphics
 		/// <param name="index">Index of the contant register.</param>
 		/// <param name="val">Structure containing 3 packed float values.</param>
 		public void SetConstant(int index, Matrix4[] matrices, int count) {
-			Matrix4 mat;
-
 			for(int i = 0; i < count; i++) {
 				SetConstant(index++, matrices[i]);
 			}

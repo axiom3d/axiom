@@ -116,6 +116,15 @@ namespace Axiom.MathLib {
                 left.w == right.w);
         }
 
+		/// <summary>
+		///		Used to negate the elements of a vector.
+		/// </summary>
+		/// <param name="left"></param>
+		/// <returns></returns>
+		public static Vector4 operator - (Vector4 left) {
+			return new Vector4(-left.x, -left.y, -left.z, -left.w);
+		}
+
         /// <summary>
         ///		User to compare two Vector4 instances for inequality.
         /// </summary>

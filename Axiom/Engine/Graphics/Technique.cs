@@ -137,7 +137,7 @@ namespace Axiom.Graphics
                         }
 
                         // if this is a Dot3 blending layer, make sure we can support it
-                        if(texUnit.ColorBlendMode.operation == LayerBlendOperationEx.DotProduct && !caps.CheckCap(Capabilities.Dot3Bump)) {
+                        if(texUnit.ColorBlendMode.operation == LayerBlendOperationEx.DotProduct && !caps.CheckCap(Capabilities.Dot3)) {
                             return;
                         }
                     }

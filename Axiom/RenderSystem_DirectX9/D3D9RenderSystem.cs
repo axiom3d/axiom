@@ -31,6 +31,7 @@ using System.Windows.Forms;
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
+using Axiom.Exceptions;
 using Axiom.MathLib;
 using Axiom.Graphics;
 using Axiom.Utility;
@@ -76,6 +77,9 @@ namespace Axiom.RenderSystems.DirectX9 {
 
         // temp fields for tracking render states
         protected bool lightingEnabled;
+
+		const int MAX_LIGHTS = 8;
+		protected Axiom.Core.Light[] lights = new Axiom.Core.Light[MAX_LIGHTS];
 
         protected D3DGpuProgramManager gpuProgramMgr;
 
@@ -124,42 +128,6 @@ namespace Axiom.RenderSystems.DirectX9 {
             }
         }
 	
-        public override StencilOperation StencilBufferDepthFailOperation {
-            set {
-                device.RenderState.StencilZBufferFail = D3DHelper.ConvertEnum(value);
-            }
-        }
-	
-        public override StencilOperation StencilBufferFailOperation {
-            set {
-                device.RenderState.StencilFail = D3DHelper.ConvertEnum(value);
-            }
-        }
-	
-        public override CompareFunction StencilBufferFunction {
-            set {
-                device.RenderState.StencilFunction = D3DHelper.ConvertEnum(value);
-            }
-        }
-	
-        public override int StencilBufferMask {
-            set {
-                device.RenderState.StencilMask = value;
-            }
-        }
-	
-        public override Axiom.Graphics.StencilOperation StencilBufferPassOperation {
-            set {
-                device.RenderState.StencilPass = D3DHelper.ConvertEnum(value);
-            }
-        }
-	
-        public override int StencilBufferReferenceValue {
-            set {
-                device.RenderState.StencilWriteMask = value;
-            }
-        }
-	
         public override bool StencilCheckEnabled {
             set {
                 device.RenderState.StencilEnable = value;
@@ -194,15 +162,41 @@ namespace Axiom.RenderSystems.DirectX9 {
         }
 
         /// <summary>
-        /// 
+        ///		Helper method for setting the current vertex declaration.
         /// </summary>
-        /// DOC
         protected void SetVertexDeclaration(Axiom.Graphics.VertexDeclaration decl) {
             // TODO: Check for duplicate setting and avoid setting if dupe
             D3DVertexDeclaration d3dVertDecl = (D3DVertexDeclaration)decl;
 
             device.VertexDeclaration = d3dVertDecl.D3DVertexDecl;
         }
+
+		/// <summary>
+		///		
+		/// </summary>
+		/// <param name="buffers"></param>
+		/// <param name="color"></param>
+		/// <param name="depth"></param>
+		/// <param name="stencil"></param>
+		public override void ClearFrameBuffer(FrameBuffer buffers, ColorEx color, float depth, int stencil) {
+			D3D.ClearFlags flags = 0;
+
+			if((buffers & FrameBuffer.Color) > 0) {
+				flags |= D3D.ClearFlags.Target;
+			}	
+			if((buffers & FrameBuffer.Depth) > 0) {
+				flags |= D3D.ClearFlags.ZBuffer;
+			}	
+			// Only try to clear the stencil buffer if supported
+			if((buffers & FrameBuffer.Stencil) > 0 
+				&& caps.CheckCap(Capabilities.StencilBuffer)) {
+
+				flags |= D3D.ClearFlags.Stencil;
+			}	
+
+			// clear the device using the specified params
+			device.Clear(flags, color.ToARGB(), depth, stencil);
+		}
 	
         /// <summary>
         ///     Create a D3D specific render texture.
@@ -375,6 +369,24 @@ namespace Axiom.RenderSystems.DirectX9 {
             return renderWindow;
         }
 
+		public override Matrix4 MakeOrthoMatrix(float fov, float aspectRatio, float near, float far, bool forGpuPrograms) {
+			float thetaY = MathUtil.DegreesToRadians(fov / 2.0f);
+            float sinThetaY = MathUtil.Sin(thetaY);
+            float thetaX = thetaY * aspectRatio;
+            float sinThetaX = MathUtil.Sin(thetaX);
+            float w = 1.0f / (sinThetaX * near);
+            float h = 1.0f / (sinThetaY * near);
+            float q = 1.0f / (far - near);
+
+			Matrix4 dest = Matrix4.Zero;
+            dest.m00 = w;
+            dest.m11 = h;
+            dest.m22 = q;
+            dest.m33 = 1;
+
+			return dest;
+		}
+
         public override Axiom.MathLib.Matrix4 MakeProjectionMatrix(float fov, float aspectRatio, float near, float far, bool forGpuProgram) {
 
             Matrix d3dMatrix;
@@ -410,9 +422,9 @@ namespace Axiom.RenderSystems.DirectX9 {
         protected override void BeginFrame() {
             Debug.Assert(activeViewport != null, "BeingFrame cannot run without an active viewport.");
 
+			// clear the device if need be
             if(activeViewport.ClearEveryFrame) {
-                // clear the device
-                device.Clear(ClearFlags.ZBuffer | ClearFlags.Target, activeViewport.BackgroundColor.ToColor(), 1.0f, 0);
+				ClearFrameBuffer(FrameBuffer.Color | FrameBuffer.Depth, activeViewport.BackgroundColor);
             }
 
             // begin the D3D scene for the current viewport
@@ -424,8 +436,7 @@ namespace Axiom.RenderSystems.DirectX9 {
                 // enable alpha blending and specular materials
                 device.RenderState.AlphaBlendEnable = true;
                 device.RenderState.SpecularEnable = true;
-                device.RenderState.ZBufferEnable = true;
-
+                //device.RenderState.ZBufferEnable = true;
                 isFirstFrame = false;
             }
         }
@@ -918,6 +929,34 @@ namespace Axiom.RenderSystems.DirectX9 {
 
         #endregion
 	
+		public override void SetStencilBufferParams(CompareFunction function, int refValue, int mask, StencilOperation stencilFailOp, StencilOperation depthFailOp, StencilOperation passOp, bool twoSidedOperation) {
+			// 2 sided operation?
+			if(twoSidedOperation) {
+				if(!caps.CheckCap(Capabilities.TwoSidedStencil)) {
+					throw new AxiomException("2-sided stencils are not supported on this hardware!");
+				}
+
+				device.RenderState.TwoSidedStencilMode = true;
+
+				// use CCW version of the operations
+				device.RenderState.CounterClockwiseStencilFail = D3DHelper.ConvertEnum(stencilFailOp, true);
+				device.RenderState.CounterClockwiseStencilZBufferFail = D3DHelper.ConvertEnum(depthFailOp, true);
+				device.RenderState.CounterClockwiseStencilPass = D3DHelper.ConvertEnum(passOp, true);
+			}
+			else {
+				device.RenderState.TwoSidedStencilMode = false;
+			}
+
+			// configure standard version of the stencil operations
+			device.RenderState.StencilFunction = D3DHelper.ConvertEnum(function);
+			device.RenderState.StencilMask = refValue;
+			device.RenderState.StencilWriteMask = mask;
+			device.RenderState.StencilFail = D3DHelper.ConvertEnum(stencilFailOp);
+			device.RenderState.StencilZBufferFail = D3DHelper.ConvertEnum(depthFailOp);
+			device.RenderState.StencilPass = D3DHelper.ConvertEnum(passOp);
+		}
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -1210,11 +1249,6 @@ namespace Axiom.RenderSystems.DirectX9 {
                 caps.StencilBufferBits = 8;
             }
 
-            // Scissor test
-            if(d3dCaps.RasterCaps.SupportsScissorTest) {
-                caps.SetCap(Capabilities.ScissorTest);
-            }
-
 			// some cards, oddly enough, do not support this
 			if(d3dCaps.DeclTypes.SupportsUByte4) {
 				caps.SetCap(Capabilities.VertexFormatUByte4);
@@ -1236,7 +1270,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 
             // Dot3 bump mapping?
             if(d3dCaps.TextureOperationCaps.SupportsDotProduct3) {
-                caps.SetCap(Capabilities.Dot3Bump);
+                caps.SetCap(Capabilities.Dot3);
             }
 
             // Cube mapping?
@@ -1244,13 +1278,34 @@ namespace Axiom.RenderSystems.DirectX9 {
                 caps.SetCap(Capabilities.CubeMapping);
             }
 
-            // D3D uses vertex buffers for everything
-            caps.SetCap(Capabilities.VertexBuffer);
-
             // Texture Compression
             // We always support compression, D3DX will decompress if device does not support
             caps.SetCap(Capabilities.TextureCompression);
             caps.SetCap(Capabilities.TextureCompressionDXT);
+
+			// D3D uses vertex buffers for everything
+			caps.SetCap(Capabilities.VertexBuffer);
+
+			// Scissor test
+			if(d3dCaps.RasterCaps.SupportsScissorTest) {
+				caps.SetCap(Capabilities.ScissorTest);
+			}
+
+			// 2 sided stencil
+			if(d3dCaps.StencilCaps.SupportsTwoSided) {
+				caps.SetCap(Capabilities.TwoSidedStencil);
+			}
+
+			// stencil wrap
+			if(d3dCaps.StencilCaps.SupportsIncrement && d3dCaps.StencilCaps.SupportsDecrement) {
+				caps.SetCap(Capabilities.StencilWrap);
+			}
+
+			// TODO: Check for hardware occlusion
+
+			if(d3dCaps.MaxUserClipPlanes > 0) {
+				caps.SetCap(Capabilities.UserClipPlanes);
+			}
 
             int vpMajor = d3dCaps.VertexShaderVersion.Major;
             int vpMinor = d3dCaps.VertexShaderVersion.Minor;

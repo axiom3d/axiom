@@ -233,9 +233,6 @@ namespace Axiom.MathLib {
         /// <summary>
         ///		Used to negate the elements of a vector.
         /// </summary>
-        /// <remarks>
-        ///		Uses unsafe pointer arithmetic to reduce the code required.
-        ///	</remarks>
         /// <param name="left"></param>
         /// <returns></returns>
         public static Vector3 Negate (Vector3 left) {
@@ -245,9 +242,6 @@ namespace Axiom.MathLib {
         /// <summary>
         ///		Used to negate the elements of a vector.
         /// </summary>
-        /// <remarks>
-        ///		Uses unsafe pointer arithmetic to reduce the code required.
-        ///	</remarks>
         /// <param name="left"></param>
         /// <returns></returns>
         public static Vector3 operator - (Vector3 left) {
