@@ -9,6 +9,8 @@
     <File name=".\GLHardwareBufferManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\GLHardwareIndexBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\GLRenderSystem.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\GLGpuProgram.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\GLGpuProgramManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References>
     <Reference type="Project" refto="Engine" localcopy="True" />
