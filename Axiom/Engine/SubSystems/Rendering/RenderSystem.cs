@@ -442,7 +442,7 @@ namespace Axiom.SubSystems.Rendering
 		/// <summary>
 		/// 
 		/// </summary>
-		abstract protected internal bool DepthFunction { set; }
+		abstract protected internal CompareFunction DepthFunction { set; }
 
 		/// <summary>
 		/// 
@@ -457,9 +457,6 @@ namespace Axiom.SubSystems.Rendering
 
 		/// <summary>Sets the current projection matrix.</summary>
 		abstract protected internal Matrix4 ProjectionMatrix { set; }
-
-		abstract protected VertexDeclaration VertexDeclaration { get; set; }
-		abstract protected VertexBufferBinding VertexBufferBinding { get; set; }
 
 		/// <summary>
 		///		Sets how to rasterise triangles, as points, wireframe or solid polys.

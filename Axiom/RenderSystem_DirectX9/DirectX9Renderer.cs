@@ -165,46 +165,32 @@ namespace RenderSystem_DirectX9
 		/// 
 		/// </summary>
 		/// DOC
-		protected override VertexBufferBinding VertexBufferBinding
+		protected void SetVertexBufferBinding(VertexBufferBinding binding)
 		{
-			get
+			// TODO: Optimize to remove foreach
+			foreach(DictionaryEntry bufferBinding in binding.Bindings)
 			{
-				return null;
+				D3DHardwareVertexBuffer buffer = 
+					(D3DHardwareVertexBuffer)bufferBinding.Value;
+
+				ushort stream = (ushort)bufferBinding.Key;
+
+				device.SetStreamSource((int)stream, buffer.D3DVertexBuffer, 0, buffer.VertexSize);
 			}
-			set
-			{
-				// TODO: Optimize to remove foreach
-				foreach(DictionaryEntry binding in value.Bindings)
-				{
-					D3DHardwareVertexBuffer buffer = 
-						(D3DHardwareVertexBuffer)binding.Value;
 
-					ushort stream = (ushort)binding.Key;
-
-					device.SetStreamSource((int)stream, buffer.D3DVertexBuffer, 0, buffer.VertexSize);
-				}
-
-				// TODO: Unbind any unused sources
-			}
+			// TODO: Unbind any unused sources
 		}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// DOC
-		protected override Axiom.SubSystems.Rendering.VertexDeclaration VertexDeclaration
+		protected void SetVertexDeclaration(Axiom.SubSystems.Rendering.VertexDeclaration decl)
 		{
-			get
-			{
-				return null;
-			}
-			set
-			{
-				// TODO: Check for duplicate setting and avoid setting if dupe
-				D3DVertexDeclaration d3dVertDecl = (D3DVertexDeclaration)value;
+			// TODO: Check for duplicate setting and avoid setting if dupe
+			D3DVertexDeclaration d3dVertDecl = (D3DVertexDeclaration)decl;
 
-				device.VertexDeclaration = d3dVertDecl.D3DVertexDecl;
-			}
+			device.VertexDeclaration = d3dVertDecl.D3DVertexDecl;
 		}
 
 
@@ -569,14 +555,18 @@ namespace RenderSystem_DirectX9
 			}
 		}
 
+		/// <summary>
+		///		Renders the current render operation in D3D's own special way.
+		/// </summary>
+		/// <param name="op"></param>
 		public override void Render(RenderOperation op)
 		{
 			// class base implementation first
-			base.Render (op);
+			base.Render(op);
 
 			// set the vertex declaration and buffer binding
-			this.VertexDeclaration = op.vertexData.vertexDeclaration;
-			this.VertexBufferBinding = op.vertexData.vertexBufferBinding;
+			SetVertexDeclaration(op.vertexData.vertexDeclaration);
+			SetVertexBufferBinding(op.vertexData.vertexBufferBinding);
 
 			PrimitiveType primType = 0;
 
@@ -618,12 +608,13 @@ namespace RenderSystem_DirectX9
 				device.Indices = idxBuffer.D3DIndexBuffer;
 
 				// draw the indexed primitives
-				device.DrawIndexedPrimitives(primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, 
+				device.DrawIndexedPrimitives(
+					primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, 
 					op.indexData.indexStart, primCount);
 			}
 			else
 			{
-				// draw vertices as is
+				// draw vertices without indices
 				device.DrawPrimitives(primType, op.vertexData.vertexStart, primCount);
 			}
 
@@ -796,7 +787,7 @@ namespace RenderSystem_DirectX9
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override bool DepthFunction
+		protected override CompareFunction DepthFunction
 		{
 			set
 			{
