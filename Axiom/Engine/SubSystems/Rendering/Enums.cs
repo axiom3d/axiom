@@ -81,11 +81,11 @@ namespace Axiom.SubSystems.Rendering {
         /// <summary>
         /// 
         /// </summary>
-        StaticWriteOnly = 8,
+        StaticWriteOnly = 5,
         /// <summary>
         /// 
         /// </summary>
-        DynamicWriteOnly = 16
+        DynamicWriteOnly = 6
     }
 
     /// <summary>
