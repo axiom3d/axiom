@@ -221,6 +221,12 @@ namespace Axiom.Core {
 		///		Current stage of rendering.
 		/// </summary>
 		protected IlluminationRenderStage illuminationStage;
+		/// <summary>
+		///		If set, only this scene node (and children) will be rendered.
+		///		If null, root node is used.
+		/// </summary>
+		protected SceneNode defaultRootNode;
+
 
         #endregion Fields
 
@@ -244,6 +250,7 @@ namespace Axiom.Core {
 
             // create the root scene node
             rootSceneNode = new SceneNode(this, "Root");
+			defaultRootNode = rootSceneNode;
 
             // default to no fog
             fogMode = FogMode.None;
@@ -2087,6 +2094,19 @@ namespace Axiom.Core {
                 return fogColor; 
             }
         }
+
+		/// <summary>
+		/// If set, only the selected node is rendered.
+		/// To render all nodes, set to null.
+		/// </summary>
+		/// 
+		public void OverrideRootSceneNode(SceneNode node) {
+			rootSceneNode = node;
+		}
+
+		public void RestoreRootSceneNode() {
+			rootSceneNode = defaultRootNode;
+		}
 
         #endregion
 
