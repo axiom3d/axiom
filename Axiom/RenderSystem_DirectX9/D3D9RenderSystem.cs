@@ -1308,7 +1308,7 @@ namespace RenderSystem_DirectX9 {
                 case 1:
                     caps.MaxVertexProgramVersion = "vs_1_1";
                     // 4d float vectors
-                    caps.VertexProgramConstantFloatCount = d3dCaps.MaxVertexShaderConst * 4;
+                    caps.VertexProgramConstantFloatCount = d3dCaps.MaxVertexShaderConst;
                     // no int params supports
                     caps.VertexProgramConstantIntCount = 0;
                     break;
@@ -1323,7 +1323,7 @@ namespace RenderSystem_DirectX9 {
                     // 16 ints
                     caps.VertexProgramConstantIntCount = 16 * 4;
                     // 4d float vectors
-                    caps.VertexProgramConstantFloatCount = d3dCaps.MaxVertexShaderConst * 4;
+                    caps.VertexProgramConstantFloatCount = d3dCaps.MaxVertexShaderConst;
 
                     break;
                 case 3:
@@ -1332,7 +1332,7 @@ namespace RenderSystem_DirectX9 {
                     // 16 ints
                     caps.VertexProgramConstantIntCount = 16 * 4;
                     // 4d float vectors
-                    caps.VertexProgramConstantFloatCount = d3dCaps.MaxVertexShaderConst * 4;
+                    caps.VertexProgramConstantFloatCount = d3dCaps.MaxVertexShaderConst;
 
                     break;
                 default:
@@ -1363,7 +1363,7 @@ namespace RenderSystem_DirectX9 {
 
                     caps.FragmentProgramConstantIntCount = 0;
                     // 8 4d float values, entered as floats but stored as fixed
-                    caps.FragmentProgramConstantFloatCount = 8 * 4;
+                    caps.FragmentProgramConstantFloatCount = 8;
                     break;
 
                 case 2:
@@ -1372,14 +1372,14 @@ namespace RenderSystem_DirectX9 {
                         //16 integer params allowed
                         caps.FragmentProgramConstantIntCount = 16 * 4;
                         // 4d float params
-                        caps.FragmentProgramConstantFloatCount = 224 * 4;
+                        caps.FragmentProgramConstantFloatCount = 224;
                     }
                     else {
                         caps.MaxFragmentProgramVersion = "ps_2_0";
                         // no integer params allowed
                         caps.FragmentProgramConstantIntCount = 0;
                         // 4d float params
-                        caps.FragmentProgramConstantFloatCount = 32 * 4;
+                        caps.FragmentProgramConstantFloatCount = 32;
                     }
 
                     break;
@@ -1393,8 +1393,8 @@ namespace RenderSystem_DirectX9 {
                     }
 
                     // 16 integer params allowed
-                    caps.FragmentProgramConstantIntCount = 16 * 4;
-                    caps.FragmentProgramConstantFloatCount = 224 * 4;
+                    caps.FragmentProgramConstantIntCount = 16;
+                    caps.FragmentProgramConstantFloatCount = 224;
                     break;
 
                 default:

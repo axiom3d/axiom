@@ -422,7 +422,7 @@ namespace Axiom.Core {
         ///		making up the world e.g. rooms, landscape etc.
         /// </summary>
         /// <remarks>
-        ///		Depending on the type of SceneManager (subclasses will be specialised
+        ///		Depending on the type of SceneManager (subclasses will be specialized
         ///		for particular world geometry types) you have requested via the Root or
         ///		SceneManagerEnumerator classes, you can pass a filename to this method and it
         ///		will attempt to load the world-level geometry for use. If you try to load

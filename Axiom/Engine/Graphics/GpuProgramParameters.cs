@@ -94,10 +94,20 @@ namespace Axiom.Graphics
             autoConstantList.Clear();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="n"></param>
+        /// <returns></returns>
         public int GetFloatConstantIndex(int n) {
             return (int)floatConstants.GetKey(n);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="n"></param>
+        /// <returns></returns>
         public Vector4 GetFloatConstant(int n) {
             return (Vector4)floatConstants.GetByIndex(n);
         }
@@ -169,7 +179,7 @@ namespace Axiom.Graphics
         /// </summary>
         /// <param name="index">Index of the contant register.</param>
         /// <param name="val">Single value to set.</param>
-        public virtual void SetConstant(int index, int val) {
+        public void SetConstant(int index, int val) {
             if(index >= intContants.Count) {
                 intContants.Insert(index, val);
             }
@@ -183,7 +193,7 @@ namespace Axiom.Graphics
         /// </summary>
         /// <param name="index">Index of the contant register.</param>
         /// <param name="val">Structure containing 4 packed float values.</param>
-        public virtual void SetConstant(int index, Vector4 val) {
+        public void SetConstant(int index, Vector4 val) {
             // store the float4 constant for this index
             floatConstants[index] = val;
         }
@@ -193,7 +203,7 @@ namespace Axiom.Graphics
         /// </summary>
         /// <param name="index">Index of the contant register.</param>
         /// <param name="val">Structure containing 3 packed float values.</param>
-        public virtual void SetConstant(int index, Vector3 val) {
+        public void SetConstant(int index, Vector3 val) {
             SetConstant(index, new Vector4(val.x, val.y, val.z, 1.0f));
         }
 
@@ -202,7 +212,7 @@ namespace Axiom.Graphics
         /// </summary>
         /// <param name="index">Index of the contant register.</param>
         /// <param name="color">Structure containing 4 packed RGBA color values.</param>
-        public virtual void SetConstant(int index, ColorEx color) {
+        public void SetConstant(int index, ColorEx color) {
             // verify order of color components
             SetConstant(index++, new Vector4(color.r, color.g, color.b, color.a));
         }
@@ -212,7 +222,7 @@ namespace Axiom.Graphics
         /// </summary>
         /// <param name="index">Index of the contant register.</param>
         /// <param name="val">Structure containing 3 packed float values.</param>
-        public virtual void SetConstant(int index, Matrix4 val) {
+        public void SetConstant(int index, Matrix4 val) {
             SetConstant(index++, new Vector4(val.m00, val.m01, val.m02, val.m03));
             SetConstant(index++, new Vector4(val.m10, val.m11, val.m12, val.m13));
             SetConstant(index++, new Vector4(val.m20, val.m21, val.m22, val.m23));
@@ -224,7 +234,7 @@ namespace Axiom.Graphics
         /// </summary>
         /// <param name="index">Index of the contant register to start at.</param>
         /// <param name="ints">Array of ints.</param>
-        public virtual void SetConstant(int index, int[] ints) {
+        public void SetConstant(int index, int[] ints) {
             for(int i = index; i < ints.Length; i++) {
                 SetConstant(i, ints[i]);
             }
@@ -251,7 +261,7 @@ namespace Axiom.Graphics
         /// <param name="extraInfo">
         ///    Any extra infor needed by the auto constant (i.e. light index, etc).
         /// </param>
-        public virtual void SetNamedAutoConstant(string name, AutoConstants type, int extraInfo) {
+        public void SetNamedAutoConstant(string name, AutoConstants type, int extraInfo) {
             SetAutoConstant(GetParamIndex(name), type, extraInfo);
         }
 
@@ -260,7 +270,7 @@ namespace Axiom.Graphics
         /// </summary>
         /// <param name="index">Index of the contant register.</param>
         /// <param name="val">Structure containing 4 packed float values.</param>
-        public virtual void SetNamedConstant(string name, Vector4 val) {
+        public void SetNamedConstant(string name, Vector4 val) {
             SetConstant(GetParamIndex(name), val);
         }
 
@@ -269,7 +279,7 @@ namespace Axiom.Graphics
         /// </summary>
         /// <param name="name">Name of the param.</param>
         /// <param name="val">Structure containing 3 packed float values.</param>
-        public virtual void SetNamedConstant(string name, Vector3 val) {
+        public void SetNamedConstant(string name, Vector3 val) {
             SetConstant(GetParamIndex(name), val);
         }
 
@@ -278,7 +288,7 @@ namespace Axiom.Graphics
         /// </summary>
         /// <param name="name">Name of the param.</param>
         /// <param name="color">Structure containing 4 packed RGBA color values.</param>
-        public virtual void SetNamedConstant(string name, ColorEx color) {
+        public void SetNamedConstant(string name, ColorEx color) {
             SetConstant(GetParamIndex(name), color);
         }
 
@@ -287,7 +297,7 @@ namespace Axiom.Graphics
         /// </summary>
         /// <param name="name">Name of the param.</param>
         /// <param name="val">Structure containing 3 packed float values.</param>
-        public virtual void SetNamedConstant(string name, Matrix4 val) {
+        public void SetNamedConstant(string name, Matrix4 val) {
             SetConstant(GetParamIndex(name), val);
         }
 
@@ -300,7 +310,7 @@ namespace Axiom.Graphics
         ///    A source containing all the updated data to be made available for auto updating
         ///    the GPU program constants.
         /// </param>
-        public virtual void UpdateAutoParams(AutoParamDataSource source) {
+        public void UpdateAutoParams(AutoParamDataSource source) {
             // return if no constants
             if(!this.HasAutoConstants) {
                 return;
