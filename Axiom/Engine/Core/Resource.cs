@@ -158,6 +158,10 @@ namespace Axiom.Core {
         /// </summary>
         public virtual void Touch() {
             lastAccessed = Engine.Instance.Timer.Milliseconds;
+
+			if(!isLoaded) {
+				Load();
+			}
         }
 
         #endregion
