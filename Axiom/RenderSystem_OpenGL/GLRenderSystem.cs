@@ -33,9 +33,9 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Axiom.Configuration;
 using Axiom.Core;
-using Axiom.Enumerations;
+
 using Axiom.MathLib;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 using Axiom.Utility;
 using Tao.OpenGl;
 using Tao.Platform.Windows;
@@ -422,25 +422,25 @@ namespace RenderSystem_OpenGL {
                     Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + unit);
 
                     switch(value) {
-                        case Axiom.SubSystems.Rendering.TextureFiltering.Anisotropic: {
+                        case Axiom.Graphics.TextureFiltering.Anisotropic: {
                             Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
                             Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_LINEAR);
 
                         } break;
 
-                        case Axiom.SubSystems.Rendering.TextureFiltering.Trilinear: {
+                        case Axiom.Graphics.TextureFiltering.Trilinear: {
                             Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
                             Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_LINEAR);
 
                         } break;
 
-                        case Axiom.SubSystems.Rendering.TextureFiltering.Bilinear: {
+                        case Axiom.Graphics.TextureFiltering.Bilinear: {
                             Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
                             Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_NEAREST);
 
                         } break;
 
-                        case Axiom.SubSystems.Rendering.TextureFiltering.None: {
+                        case Axiom.Graphics.TextureFiltering.None: {
                             Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_NEAREST);
                             Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_NEAREST);
 
@@ -893,19 +893,19 @@ namespace RenderSystem_OpenGL {
             Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + stage);
 
             switch(filtering) {
-                case Axiom.SubSystems.Rendering.TextureFiltering.Trilinear: {
+                case Axiom.Graphics.TextureFiltering.Trilinear: {
                     Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
                     Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_LINEAR);
 
                 } break;
 
-                case Axiom.SubSystems.Rendering.TextureFiltering.Bilinear: {
+                case Axiom.Graphics.TextureFiltering.Bilinear: {
                     Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
                     Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_NEAREST);
 
                 } break;
 
-                case Axiom.SubSystems.Rendering.TextureFiltering.None: {
+                case Axiom.Graphics.TextureFiltering.None: {
                     Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_NEAREST);
                     Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_NEAREST);
 

@@ -32,7 +32,7 @@ using Microsoft.DirectX.DirectInput;
 using DInput = Microsoft.DirectX.DirectInput;
 using Axiom.Core;
 using Axiom.Input;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 
 namespace InputSystem_DInput {
     /// <summary>

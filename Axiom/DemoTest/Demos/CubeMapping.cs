@@ -30,7 +30,7 @@ using System.Windows.Forms;
 using Axiom.Core;
 using Axiom.Gui;
 using Axiom.MathLib;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 using Axiom.Utility;
 
 namespace Demos {

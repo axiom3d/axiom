@@ -32,7 +32,7 @@ using System.IO;
 using Axiom.Core;
 using Axiom.FileSystem;
 using Axiom.Scripting;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 
 namespace Axiom.Gui {
     /// <summary>

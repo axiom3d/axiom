@@ -140,7 +140,7 @@ namespace Axiom.Gui
             }
         }
 
-        public override void UpdateRenderQueue(Axiom.SubSystems.Rendering.RenderQueue queue) {
+        public override void UpdateRenderQueue(Axiom.Graphics.RenderQueue queue) {
             if(isVisible) {
                 // call base class method
                 base.UpdateRenderQueue(queue);

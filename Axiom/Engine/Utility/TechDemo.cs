@@ -33,11 +33,11 @@ using System.Threading;
 using System.Windows.Forms;
 using Axiom.Configuration;
 using Axiom.Core;
-using Axiom.Enumerations;
+
 using Axiom.Input;
 using Axiom.Gui;
 using Axiom.MathLib;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 
 namespace Axiom.Utility {
     /// <summary>

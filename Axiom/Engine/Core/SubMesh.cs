@@ -28,8 +28,8 @@ using System;
 using System.Collections;
 using Axiom.Animating;
 using Axiom.Configuration;
-using Axiom.Enumerations;
-using Axiom.SubSystems.Rendering;
+
+using Axiom.Graphics;
 
 namespace Axiom.Core {
     /// <summary>
@@ -67,7 +67,7 @@ namespace Axiom.Core {
         protected internal bool boneAssignmentsOutOfDate;
 
         /// <summary>Mode used for rendering this submesh.</summary>
-        protected internal Axiom.SubSystems.Rendering.RenderMode operationType;
+        protected internal Axiom.Graphics.RenderMode operationType;
         public VertexData vertexData;
         public IndexData indexData = new IndexData();
         /// <summary>Indicates if this submesh shares vertex data with other meshes or whether it has it's own vertices.</summary>

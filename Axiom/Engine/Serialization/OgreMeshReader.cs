@@ -30,7 +30,7 @@ using System.Text;
 using Axiom.Animating;
 using Axiom.Core;
 using Axiom.MathLib;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 
 namespace Axiom.Serialization {
     /// <summary>

@@ -30,7 +30,7 @@ using System.Windows.Forms;
 using Axiom.Controllers;
 using Axiom.Controllers.Canned;
 using Axiom.Core;
-using Axiom.Enumerations;
+
 using Axiom.MathLib;
 using Axiom.Utility;
 

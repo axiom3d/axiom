@@ -3,9 +3,9 @@ using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
 using Axiom.Core;
-using Axiom.Enumerations;
+
 using Axiom.Scripting;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 
 namespace Axiom.Gui
 {
@@ -750,7 +750,7 @@ namespace Axiom.Gui
         /// <summary>
         /// 
         /// </summary>
-        public Axiom.SubSystems.Rendering.SceneDetailLevel RenderDetail {
+        public Axiom.Graphics.SceneDetailLevel RenderDetail {
             get {
                 return SceneDetailLevel.Solid;
             }

@@ -28,10 +28,10 @@ using System;
 using System.Collections;
 using System.Windows.Forms;
 using Axiom.Core;
-using Axiom.Enumerations;
+
 using Axiom.EventSystem;
 using Axiom.MathLib;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 
 namespace Axiom.Gui {
     /// <summary>

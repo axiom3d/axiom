@@ -27,10 +27,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Runtime.InteropServices;
 using Axiom.Core;
-using Axiom.Enumerations;
+
 using Axiom.Gui;
 using Axiom.Scripting;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 
 namespace Plugin_GuiElements
 {
@@ -694,7 +694,7 @@ namespace Plugin_GuiElements
                 parent.GetWorldTransforms(matrices);
             }
 
-            public Axiom.SubSystems.Rendering.SceneDetailLevel RenderDetail {
+            public Axiom.Graphics.SceneDetailLevel RenderDetail {
                 get {
                     return SceneDetailLevel.Solid;
                 }

@@ -32,7 +32,7 @@ using System.Reflection;
 using System.Text;
 using Axiom.Collections;
 using Axiom.Core;
-using Axiom.Enumerations;
+
 using Axiom.Scripting;
 
 namespace Axiom.ParticleSystems {

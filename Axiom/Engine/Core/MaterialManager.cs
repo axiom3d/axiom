@@ -32,7 +32,7 @@ using System.Reflection;
 using Axiom.Controllers;
 using Axiom.FileSystem;
 using Axiom.Scripting;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 
 namespace Axiom.Core {
     /// <summary>

@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using Axiom.Core;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using D3D = Microsoft.DirectX.Direct3D;
@@ -290,16 +290,16 @@ namespace RenderSystem_DirectX9 {
         /// </summary>
         /// <param name="mode"></param>
         /// <returns></returns>
-        public static D3D.FogMode ConvertEnum(Axiom.SubSystems.Rendering.FogMode mode) {
+        public static D3D.FogMode ConvertEnum(Axiom.Graphics.FogMode mode) {
             // convert the fog mode value
             switch(mode) {
-                case Axiom.SubSystems.Rendering.FogMode.Exp:
+                case Axiom.Graphics.FogMode.Exp:
                    return D3D.FogMode.Exp;
 
-                case Axiom.SubSystems.Rendering.FogMode.Exp2:
+                case Axiom.Graphics.FogMode.Exp2:
                     return D3D.FogMode.Exp2;
 
-                case Axiom.SubSystems.Rendering.FogMode.Linear:
+                case Axiom.Graphics.FogMode.Linear:
                     return D3D.FogMode.Linear;
             } // switch
 
@@ -410,19 +410,19 @@ namespace RenderSystem_DirectX9 {
         /// </summary>
         /// <param name="op"></param>
         /// <returns></returns>
-        public static D3D.StencilOperation ConvertEnum(Axiom.SubSystems.Rendering.StencilOperation op) {
+        public static D3D.StencilOperation ConvertEnum(Axiom.Graphics.StencilOperation op) {
             switch(op) {
-                case Axiom.SubSystems.Rendering.StencilOperation.Zero:
+                case Axiom.Graphics.StencilOperation.Zero:
                     return D3D.StencilOperation.Zero;
-                case Axiom.SubSystems.Rendering.StencilOperation.Replace:
+                case Axiom.Graphics.StencilOperation.Replace:
                     return D3D.StencilOperation.Replace;
-                case Axiom.SubSystems.Rendering.StencilOperation.Keep:
+                case Axiom.Graphics.StencilOperation.Keep:
                     return D3D.StencilOperation.Keep;
-                case Axiom.SubSystems.Rendering.StencilOperation.Invert:
+                case Axiom.Graphics.StencilOperation.Invert:
                     return D3D.StencilOperation.Invert;
-                case Axiom.SubSystems.Rendering.StencilOperation.Increment:
+                case Axiom.Graphics.StencilOperation.Increment:
                     return D3D.StencilOperation.Increment;
-                case Axiom.SubSystems.Rendering.StencilOperation.Decrement:
+                case Axiom.Graphics.StencilOperation.Decrement:
                     return D3D.StencilOperation.Decrement;
             }
 

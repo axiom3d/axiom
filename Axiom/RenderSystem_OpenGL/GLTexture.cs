@@ -30,7 +30,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using Axiom.Core;
-using Axiom.SubSystems.Rendering;
+using Axiom.Graphics;
 using Tao.OpenGl;
 using Tao.Platform.Windows;
 

@@ -28,8 +28,8 @@ using System;
 using System.Drawing;
 using System.Text;
 using Axiom.Core;
-using Axiom.Enumerations;
-using Axiom.SubSystems.Rendering;
+
+using Axiom.Graphics;
 
 namespace Axiom.Fonts {
     /// <summary>
@@ -121,7 +121,7 @@ namespace Axiom.Fonts {
             Bitmap bitmap = new Bitmap(BITMAP_WIDTH, BITMAP_HEIGHT, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             // get a handles to the graphics context of the bitmap
-            Graphics g = Graphics.FromImage(bitmap);
+            System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bitmap);
 
             // get a font object for the specified font
             System.Drawing.Font font = new System.Drawing.Font(name, 18);
