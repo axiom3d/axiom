@@ -115,8 +115,9 @@ namespace Axiom.RenderSystems.DirectX9 {
 			devParms = device.CreationParameters;
 
 			// get the pixel format of the back buffer
-			D3D.Surface back = device.GetBackBuffer(0, 0, D3D.BackBufferType.Mono);
-			bbPixelFormat = back.Description.Format;
+			using(D3D.Surface back = device.GetBackBuffer(0, 0, D3D.BackBufferType.Mono)) {
+				bbPixelFormat = back.Description.Format;
+			}
 
 			SetSrcAttributes(width, height, 1, format);
 
@@ -504,6 +505,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 			// This will be a temp texture for s/w filtering and the final one for h/w filtering
 			// This will perform any size conversion (inc stretching)
 			D3D.Surface dstSurface;
+
 			if (tempNormTexture != null) {
 				// s/w mipmaps, use temp texture
 				dstSurface = tempNormTexture.GetSurfaceLevel(0);
@@ -529,6 +531,8 @@ namespace Axiom.RenderSystems.DirectX9 {
 				texture.AutoGenerateFilterType = GetBestFilterMethod();
 				normTexture.GenerateMipSubLevels();
 			}
+
+			dstSurface.Dispose();
 		}
 
 		private void CopyMemoryToSurface(byte[] buffer, D3D.Surface surface) {
@@ -540,14 +544,18 @@ namespace Axiom.RenderSystems.DirectX9 {
 			int pBuf8, pitch;
 			uint data32, out32;
 			int iRow, iCol;
+
 			// NOTE - dimensions of surface may differ from buffer
 			// dimensions (e.g. power of 2 or square adjustments)
 			// Lock surface
 			desc = surface.Description;
 			uint aMask, rMask, gMask, bMask, rgbBitCount;
+
 			GetColorMasks(desc.Format, out rMask, out gMask, out bMask, out aMask, out rgbBitCount);
+
 			// lock our surface to acces raw memory
 			GraphicsStream stream = surface.LockRectangle(D3D.LockFlags.NoSystemLock, out pitch);
+
 			// loop through data and do conv.
 			pBuf8 = 0;
 			for( iRow = 0; iRow < srcHeight; iRow++ ) {
@@ -571,10 +579,13 @@ namespace Axiom.RenderSystems.DirectX9 {
 						data32 |= (uint)buffer[pBuf8++] << 8;
 					}
 					// check for alpha
-					if( hasAlpha )
+					if( hasAlpha ) {
 						data32 |= buffer[pBuf8++];
-					else
+					}
+					else {
 						data32 |= 0xFF;	// Set opaque
+					}
+
 					// Write RGBA values to surface
 					// Data in surface can be in varying formats
 					// Use bit concersion function
@@ -587,21 +598,27 @@ namespace Axiom.RenderSystems.DirectX9 {
 					out32 |= convertBitPattern( data32, 0x00FF0000, gMask );
 					// Blue
 					out32 |= convertBitPattern( data32, 0x0000FF00, bMask );
+
 					// Alpha
 					if( aMask > 0 ) {
 						out32 |= convertBitPattern( data32, 0x000000FF, aMask );
 					}
+
 					// Assign results to surface pixel
 					// Write up to 4 bytes
 					// Surfaces are little-endian (low byte first)
-					if( rgbBitCount >= 8 )
+					if( rgbBitCount >= 8 ) {
 						stream.WriteByte((byte)out32);
-					if( rgbBitCount >= 16 )
+					}
+					if( rgbBitCount >= 16 ) {
 						stream.WriteByte((byte)(out32 >> 8));
-					if( rgbBitCount >= 24 )
+					}
+					if( rgbBitCount >= 24 ) {
 						stream.WriteByte((byte)(out32 >> 16));
-					if( rgbBitCount >= 32 )
+					}
+					if( rgbBitCount >= 32 ) {
 						stream.WriteByte((byte)(out32 >> 24));
+					}
 				} // for( iCol...
 			} // for( iRow...
 			// unlock the surface
@@ -702,6 +719,8 @@ namespace Axiom.RenderSystems.DirectX9 {
 
 				// load the stream into the cubemap surface
 				SurfaceLoader.FromStream(dstSurface, stream, Filter.Point, 0);
+
+				dstSurface.Dispose();
 			}
 
 			// After doing all the faces, we generate mipmaps
