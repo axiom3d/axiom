@@ -68,15 +68,25 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		
 		protected ArrayList newHeight;
 
+		protected bool dynamic;
+
 		#endregion Fields
 
 		public Data2D() 
 		{
+			dynamic = false;
 			isLoaded = false;
 			heightData = null;
 			newHeight = new ArrayList();
 		}
 
+		public bool Dynamic 
+		{
+			get 
+			{
+				return dynamic;
+			}
+		}
 
 		#region IDisposable Members
 
@@ -214,7 +224,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 			return 0.0f;
 		}
 
-		public float GetHeight( float x, float z )
+		public virtual float GetHeight( float x, float z )
 		{
 			if ( heightData != null )
 			{
@@ -225,7 +235,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 			return 0.0f;
 		}
 
-		public float GetHeight(  long x, long z )
+		public virtual float GetHeight(  long x, long z )
 		{
 			if ( heightData != null)
 			{
@@ -236,7 +246,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 			return 0.0f;
 		}
 
-		public float GetHeight( int x, int z )
+		public virtual float GetHeight( int x, int z )
 		{
 			if ( heightData != null )
 			{
