@@ -85,11 +85,46 @@ namespace Axiom.Core {
 		///		Loads all plugins specified in the plugins section of the app.config file.
 		/// </summary>
 		public void LoadAll() {
+			// TODO: Make optional, using scanning again in the meantim
 			// trigger load of the plugins app.config section
-			ArrayList newPlugins = (ArrayList)ConfigurationSettings.GetConfig("plugins");
+			//ArrayList newPlugins = (ArrayList)ConfigurationSettings.GetConfig("plugins");
+			ArrayList newPlugins = ScanForPlugins();
+
 			foreach (ObjectCreator pluginCreator in newPlugins) {
 				plugins.Add(LoadPlugin(pluginCreator));
 			}
+		}
+
+		/// <summary>
+		///		Scans for plugin files in the current directory.
+		/// </summary>
+		/// <returns></returns>
+		protected ArrayList ScanForPlugins() {
+			ArrayList plugins = new ArrayList();
+
+			string[] files = Directory.GetFiles(".", "*.dll");
+
+			foreach(string file in files) {
+				// TODO: Temp fix, allow exlusions in the app.config
+				if(file != "Axiom.Engine.dll" && file.IndexOf("Axiom.") != -1) {
+					try {
+						string fullPath = Path.GetFullPath(file);
+
+						Assembly assembly = Assembly.LoadFile(fullPath);
+
+						foreach(Type type in assembly.GetTypes()) {
+							if(type.GetInterface("IPlugin") != null) {
+								plugins.Add(new ObjectCreator(file, type.FullName));
+							}
+						}
+					}
+					catch(BadImageFormatException) {
+						// eat, not a valid assembly
+					}
+				}
+			}
+
+			return plugins;
 		}
 
 		/// <summary>
@@ -148,7 +183,6 @@ namespace Axiom.Core {
 		}
 
 		#endregion
-
 	}
 
 	/// <summary>
