@@ -1,3 +1,8 @@
+1-6-2005
+- RenderWindow.SaveToFile renamed to Save and moved up to RenderTarget base class.
+- Save can now save to file, or to a Stream.
+- Added Image support for loading from a byte array, and for flipping image data.
+
 1-3-2005
 Some bug fixes: 
    - fragment program version not being reported properly.
