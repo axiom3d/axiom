@@ -64,6 +64,8 @@ namespace Axiom.Serialization {
                 } // while
             }
             catch(EndOfStreamException) {
+                skeleton.DumpContents(@"D:\skeleton.txt");
+
                 // assume bones are stored in binding pose
                 skeleton.SetBindingPose();
             }
@@ -103,13 +105,13 @@ namespace Axiom.Serialization {
         /// </summary>
         protected void ReadAnimationTrack(Animation anim) {
             // read the bone handle to apply this track to
-            ushort boneHandle = ReadUInt16();
+            short boneHandle = ReadInt16();
 
             // get a reference to the target bone
-            Bone targetBone = skeleton.GetBone(boneHandle);
+            Bone targetBone = skeleton.GetBone((ushort)boneHandle);
 
             // create an animation track for this bone
-            AnimationTrack track = anim.CreateTrack((short)boneHandle, targetBone);
+            AnimationTrack track = anim.CreateTrack(boneHandle, targetBone);
 
             // read the first chunkId
             SkeletonChunkID chunkId = ReadChunk();
@@ -134,10 +136,10 @@ namespace Axiom.Serialization {
             // bone name
             string name = ReadString('\n');
 
-            ushort handle = ReadUInt16();
+            short handle = ReadInt16();
 
             // create a new bone
-            Bone bone = skeleton.CreateBone(name, handle);
+            Bone bone = skeleton.CreateBone(name, (ushort)handle);
 
             // read and set the position of the bone
             Vector3 position = ReadVector3();
@@ -154,17 +156,17 @@ namespace Axiom.Serialization {
         protected void ReadBoneParent() {
             // all bones should have been created by this point, so this establishes the heirarchy
             Bone child, parent;
-            ushort childHandle, parentHandle;
+            short childHandle, parentHandle;
 
             // child bone
-            childHandle = ReadUInt16();
+            childHandle = ReadInt16();
 
             // parent bone
-            parentHandle = ReadUInt16();
+            parentHandle = ReadInt16();
 
             // get references to father and son bones
-            parent = skeleton.GetBone(parentHandle);
-            child = skeleton.GetBone(childHandle);
+            parent = skeleton.GetBone((ushort)parentHandle);
+            child = skeleton.GetBone((ushort)childHandle);
 
             // attach the child to the parent
             parent.ChildNodes.Add(child);

@@ -62,8 +62,6 @@ namespace Axiom.Core {
         protected bool isMaterialInitialized;
         /// <summary>Number of faces in this subMesh.</summary>
         protected internal short numFaces;
-        /// <summary>Indices to use for parent geometry when using shared vertices.</summary>
-        protected internal short[] faceIndices;
 		
         /// <summary>List of bone assignment for this mesh.</summary>
         protected SortedList boneAssignmentList = new SortedList();

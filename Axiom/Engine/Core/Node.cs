@@ -61,7 +61,7 @@ namespace Axiom.Core {
         /// <summary>Flag to indicate all children need to be updated.</summary>
         protected bool needChildUpdate;
         /// <summary>Flag indicating that parent has been notified about update request.</summary>
-        protected bool isParentNotifed;
+        protected bool isParentNotified;
         /// <summary>Orientation of this node relative to it's parent.</summary>
         protected Quaternion orientation;
         /// <summary>World orientation of this node based on parents orientation.</summary>
@@ -388,9 +388,9 @@ namespace Axiom.Core {
             isCachedTransformOutOfDate = true;
 
             // make sure we are not the root node
-            if(parent != null && !isParentNotifed) {
+            if(parent != null && !isParentNotified) {
                 parent.RequestUpdate(this);
-                isParentNotifed = true;
+                isParentNotified = true;
             }
 
             // all children will be updated shortly
@@ -408,13 +408,13 @@ namespace Axiom.Core {
 
             // add to the list of children that need updating
             //if(!childrenToUpdate.ContainsKey(child.name))
-            if(!childrenToUpdate.Contains(child))
-                childrenToUpdate.Add(child);
+            //if(!childrenToUpdate.Contains(child))
+            childrenToUpdate.Add(child);
 
             // request to update me
-            if(parent != null) {
+            if(parent != null && !isParentNotified) {
                 parent.RequestUpdate(this);
-                isParentNotifed = true;
+                isParentNotified = true;
             }
         }
 
@@ -427,9 +427,9 @@ namespace Axiom.Core {
             childrenToUpdate.Remove(child);
 
             // propogate this changed if we are done
-            if(childrenToUpdate.Count == 0 && parent != null) {
+            if(childrenToUpdate.Count == 0 && parent != null && !needChildUpdate) {
                 parent.CancelUpdate(this);
-                isParentNotifed = false;
+                isParentNotified = false;
             }
         }
 
@@ -451,7 +451,7 @@ namespace Axiom.Core {
             get { return parent; }
             set { 
                 parent = value; 
-                isParentNotifed = false;
+                isParentNotified = false;
                 NeedUpdate();
             }
         }
@@ -703,7 +703,7 @@ namespace Axiom.Core {
                     UpdateFromParent();
                     needParentUpdate = false;
                 }
-				
+
                 return derivedOrientation;
             }
         }
@@ -764,6 +764,8 @@ namespace Axiom.Core {
         /// <param name="updateChildren">If true, the update cascades down to all children. Specify false if you wish to
         /// update children separately, e.g. because of a more selective SceneManager implementation.</param>
         internal virtual void Update(bool updateChildren, bool hasParentChanged) {
+            isParentNotified = false;
+
             // nothin to see here folks, move on
             if(!updateChildren && !needParentUpdate && !needChildUpdate && !hasParentChanged)
                 return;
@@ -778,7 +780,7 @@ namespace Axiom.Core {
             // see if we need to process all
             if(needChildUpdate || hasParentChanged) {
                 // update from parent
-                UpdateFromParent();
+                //UpdateFromParent();
 
                 // update all children
                 for(int i = 0; i < childNodes.Count; i++) {

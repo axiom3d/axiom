@@ -74,6 +74,7 @@ namespace RenderSystem_OpenGL {
         // used for manual texture matrix calculations, for things like env mapping
         protected bool useAutoTextureMatrix;
         protected float[] autoTextureMatrix = new float[16];
+        protected ushort[] texCoordIndex = new ushort[Config.MaxTextureLayers];
 
         // retained stencil buffer params vals, since we allow setting invidual params but GL
         // only lets you set them all at once, keep old values around to allow this to work
@@ -693,7 +694,7 @@ namespace RenderSystem_OpenGL {
         /// <param name="stage"></param>
         /// <param name="index"></param>
         protected override void SetTextureCoordSet(int stage, int index) {
-            // TODO:  Add OpenGLRenderer.SetTextureCoordSet implementation
+            texCoordIndex[stage] = (ushort)index;
         }
 
         /// <summary>
@@ -1023,22 +1024,25 @@ namespace RenderSystem_OpenGL {
                             // this allows for multitexturing on entities whose mesh only has a single set of tex coords
 
                             for(int j = 0; j < caps.NumTextureUnits; j++) {
-                                // set the current active texture unit
-                                Ext.glClientActiveTextureARB(Gl.GL_TEXTURE0 + (uint)j);
+                                // only set if this textures index if it is supposed to
+                                if(texCoordIndex[j] == element.Index) {
+                                    // set the current active texture unit
+                                    Ext.glClientActiveTextureARB(Gl.GL_TEXTURE0 + (uint)j);
 
-                                int tmp = Gl.glIsEnabled(Gl.GL_TEXTURE_2D);
+                                    int tmp = Gl.glIsEnabled(Gl.GL_TEXTURE_2D);
 
-                                if(Gl.glIsEnabled(Gl.GL_TEXTURE_2D) != 0) {
-                                    // set the tex coord pointer
-                                    Gl.glTexCoordPointer(
-                                        VertexElement.GetTypeCount(element.Type),
-                                        type,
-                                        vertexBuffer.VertexSize,
-                                        bufferData);
+                                    if(Gl.glIsEnabled(Gl.GL_TEXTURE_2D) != 0) {
+                                        // set the tex coord pointer
+                                        Gl.glTexCoordPointer(
+                                            VertexElement.GetTypeCount(element.Type),
+                                            type,
+                                            vertexBuffer.VertexSize,
+                                            bufferData);
+                                    }
+
+                                    // enable texture coord state
+                                    Gl.glEnableClientState(Gl.GL_TEXTURE_COORD_ARRAY);
                                 }
-
-                                // enable texture coord state
-                                Gl.glEnableClientState(Gl.GL_TEXTURE_COORD_ARRAY);
                             }
                             break;
 

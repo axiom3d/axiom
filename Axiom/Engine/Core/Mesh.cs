@@ -76,7 +76,7 @@ namespace Axiom.Core {
         #region Member variables
 
         /// <summary>Shared vertex data between multiple meshes.</summary>
-        protected VertexData sharedVertexData = new VertexData();
+        protected VertexData sharedVertexData;
         /// <summary>Collection of sub meshes for this mesh.</summary>
         protected SubMeshCollection subMeshList = new SubMeshCollection();
         /// <summary>Flag that states whether or not the bounding box for this mesh needs to be re-calced.</summary>
@@ -393,8 +393,10 @@ namespace Axiom.Core {
 
             // compile bone assignments for each sub mesh
             for(int i = 0; i < subMeshList.Count; i++) {
-                if(subMeshList[i].boneAssignmentsOutOfDate) {
-                    subMeshList[i].CompileBoneAssignments();
+                SubMesh subMesh = subMeshList[i];
+
+                if(subMesh.boneAssignmentsOutOfDate) {
+                    subMesh.CompileBoneAssignments();
                 }
             } // for
         }

@@ -47,7 +47,11 @@ namespace Axiom.SubSystems.Rendering {
         ///		Lock the buffer for reading only. Not allowed in buffers which are created with WriteOnly. 
         ///		Mandatory on static buffers, ie those created without the Dynamic flag.
         /// </summary>
-        ReadOnly
+        ReadOnly,
+        /// <summary>
+        ///    Potential optimization for some API's.
+        /// </summary>
+        NoOverwrite
     }
 
     /// <summary>

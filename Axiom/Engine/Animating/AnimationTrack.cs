@@ -249,7 +249,7 @@ namespace Axiom.Animating {
         /// <param name="time"></param>
         /// <param name="weight"></param>
         /// <param name="accumulate"></param>
-        public void ApplyToNode(Node node, float time, float weight, bool accumulate) {
+        public void ApplyToNode(Node node, float time, float weight, bool accumulate) {         
             KeyFrame keyFrame = this.GetInterpolatedKeyFrame(time);
 
             if(accumulate) {

@@ -117,6 +117,15 @@ namespace Axiom.MathLib {
         }
 
         /// <summary>
+        ///    Inverse square root.
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        public static float InvSqrt(float number) {
+            return 1 / Sqrt(number);
+        }
+
+        /// <summary>
         ///		Returns the square root of a number.
         /// </summary>
         /// <remarks>This is one of the more expensive math operations.  Avoid when possible.</remarks>
