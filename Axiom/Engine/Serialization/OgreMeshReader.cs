@@ -593,7 +593,7 @@ namespace Axiom.Serialization {
                     IntPtr data = indexData.indexBuffer.Lock(BufferLocking.Discard);
 
                     // stuff the data into the index buffer
-                    ReadInts(indexData.indexCount, data);
+                    ReadShorts(indexData.indexCount, data);
                 }
             }
         }

@@ -97,7 +97,7 @@ namespace Axiom.SubSystems.Rendering {
 
             // This means CULL clockwise vertices, i.e. front of poly is counter-clockwise
             // This makes it the same as OpenGL and other right-handed systems
-            this.cullingMode = CullingMode.Clockwise; 
+            this.cullingMode = Axiom.SubSystems.Rendering.CullingMode.Clockwise; 
 
             // init the texture layer array
             for(int i = 0; i < Config.MaxTextureLayers; i++)
@@ -168,6 +168,11 @@ namespace Axiom.SubSystems.Rendering {
         ///		Sets the color & strength of the ambient (global directionless) light in the world.
         /// </summary>
         public abstract ColorEx AmbientLight { set; }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        public abstract CullingMode CullingMode { get; set; }
 
         /// <summary>
         ///		Sets the type of light shading required (default = Gouraud).

@@ -431,6 +431,39 @@ namespace Axiom.Core {
                 ParseHelper.LogParserError("scene_blend", material.Name, "Invalid enum value");
         }
 
+        [AttributeParser("cull_hardware", MATERIAL)]
+        public static void ParseCullHardware(string[] values, Material material) {
+            if(values.Length != 1) {
+                ParseHelper.LogParserError("cull_hardware", material.Name, "Expected 2 params.");
+                return;
+            }
+
+            // lookup the real enum equivalent to the script value
+            object val = ScriptEnumAttribute.Lookup(values[0], typeof(CullingMode));
+
+            // if a value was found, assign it
+            if(val != null)
+                material.CullingMode = (CullingMode)val;
+            else
+                ParseHelper.LogParserError("cull_hardware", material.Name, "Invalid enum value");
+        }
+
+        [AttributeParser("cull_software", MATERIAL)]
+        public static void ParseCullSoftware(string[] values, Material material) {
+            if(values.Length != 1) {
+                ParseHelper.LogParserError("cull_software", material.Name, "Invalid enum value");
+                return;
+            }
+
+            // lookup the real enum equivalent to the script value
+            object val = ScriptEnumAttribute.Lookup(values[0], typeof(ManualCullingMode));
+
+            // if a value was found, assign it
+            if(val != null)
+                material.ManualCullingMode = (ManualCullingMode)val;
+            else
+                ParseHelper.LogParserError("cull_software", material.Name, "Invalid enum value");
+        }
         #endregion
 
         #region Layer attribute parser methods

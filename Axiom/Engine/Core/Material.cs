@@ -30,6 +30,7 @@ using System.Drawing;
 using System.IO;
 using Axiom.Core;
 using Axiom.Configuration;
+using Axiom.Enumerations;
 using Axiom.SubSystems.Rendering;
 
 namespace Axiom.Core {
@@ -134,6 +135,9 @@ namespace Axiom.Core {
             fogMode = FogMode.None;
             fogColor = ColorEx.FromColor(Color.White);
 
+            // default culling
+            manualCullMode = ManualCullingMode.Back;
+            cullMode = CullingMode.Clockwise;
         }
 
         public Material(string name, bool deferLoad) {
@@ -351,6 +355,38 @@ namespace Axiom.Core {
         public ColorEx FogColor {
             get { return fogColor; }
             set { fogColor = value; }
+        }
+
+        /// <summary>
+        ///    Sets the culling mode for this material  based on the 'vertex winding'.
+        /// </summary>
+        /// <remarks>
+        ///    A typical way for the rendering engine to cull triangles is based on the 'vertex winding' of
+        ///    triangles. Vertex winding refers to the direction in which the vertices are passed or indexed
+        ///    to in the rendering operation as viewed from the camera, and will wither be clockwise or
+        ///    counterclockwise. The default is Clockwise i.e. that only triangles whose vertices are passed/indexed 
+        ///    in counter-clockwise order are rendered - this is a common approach and is used in 3D studio 
+        ///    models for example. You can alter this culling mode if you wish but it is not advised unless you 
+        ///    know what you are doing.
+        /// </remarks>
+        public CullingMode CullingMode {
+            get { return cullMode; }
+            set { cullMode = value; }
+        }
+
+        /// <summary>
+        ///    Gets/Sets the manual culling mode, performed by CPU rather than hardware.
+        /// </summary>
+        /// <remarks>
+        ///    In some situations you want to use manual culling of triangles rather than sending the
+        ///    triangles to the hardware and letting it cull them. This setting only takes effect on SceneManager's
+        ///    that use it (since it is best used on large groups of planar world geometry rather than on movable
+        ///    geometry since this would be expensive), but if used can cull geometry before it is sent to the
+        ///    hardware. The default for this setting is CullingMode.Back.
+        /// </remarks>
+        public ManualCullingMode ManualCullingMode {
+            get { return manualCullMode; }
+            set { manualCullMode = value; }
         }
 
         #endregion
