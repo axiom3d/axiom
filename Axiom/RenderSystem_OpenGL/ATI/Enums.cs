@@ -1,8 +1,7 @@
 using System;
 using Tao.OpenGl;
 
-namespace RenderSystem_OpenGL.atifs
-{
+namespace Axiom.RenderSystems.OpenGL.ATI {
     /// <summary>
     ///    Rule symbol group types for ASM Pixel Shader 1.x instructions.
     /// </summary>
@@ -44,12 +43,12 @@ namespace RenderSystem_OpenGL.atifs
     /// </summary>
     [Flags]
     public enum ContextKeyPattern {
-        Base,
+        PS_BASE,
         PS_1_1,
         PS_1_2,
         PS_1_3,
         PS_1_4,
-        PS_1_4_Base = Base + PS_1_4
+        PS_1_4_BASE = PS_BASE + PS_1_4
     }
 
     public enum RWAflags {
@@ -85,6 +84,7 @@ namespace RenderSystem_OpenGL.atifs
         DP3, DP4, DEF,
         R, RA, G, GA, B, BA, A, RGBA, RGB,
         RG, RGA, RB, RBA, GB, GBA,
+        RRRR, GGGG, BBBB, AAAA,
         X2, X4, D2, SAT,
         BIAS, INVERT, NEGATE, BX2,
         COMMA, VALUE,
@@ -95,7 +95,9 @@ namespace RenderSystem_OpenGL.atifs
         DP2ADD,
         X8, D8, D4,
         TEXCRD, TEXLD,
+        STR, STQ,
         STRDR, STQDQ,
+        BEM,
         PHASE,
 
         //PS_1_1
@@ -108,13 +110,40 @@ namespace RenderSystem_OpenGL.atifs
         TEXREG2RGB, TEXDP3, TEXDP3TEX,
 
         // common
-        Skip,
-        Invalid = 999,
+        SKIP, PLUS,
+
+        // non-terminal tokens section
+        PROGRAM, PROGRAMTYPE, DECLCONSTS, DEFCONST,
+        CONSTANT, COLOR,
+        TEXSWIZZLE, UNARYOP,
+        NUMVAL, SEPERATOR, ALUOPS, TEXMASK, TEXOP_PS1_1_3,
+        TEXOP_PS1_4,
+        ALU_STATEMENT, DSTMODSAT, UNARYOP_ARGS, REG_PS1_4,
+        TEX_PS1_4, REG_PS1_1_3, TEX_PS1_1_3, DSTINFO,
+        SRCINFO, BINARYOP_ARGS, TERNARYOP_ARGS, TEMPREG,
+        DSTMASK, PRESRCMOD, SRCNAME, SRCREP, POSTSRCMOD,
+        DSTMOD, DSTSAT, BINARYOP,  TERNARYOP,
+        TEXOPS_PHASE1, COISSUE, PHASEMARKER, TEXOPS_PHASE2, 
+        TEXREG_PS1_4, TEXOPS_PS1_4, TEXOPS_PS1_1_3, TEXCISCOP_PS1_1_3,
 
         // Base
-        BASE_R = (R0 - Gl.GL_REG_0_ATI),
-        BASE_C = (C0 - Gl.GL_CON_0_ATI),
-        BASE_T = (T0_1 - Gl.GL_REG_0_ATI)
+        R_BASE = (R0 - Gl.GL_REG_0_ATI),
+        C_BASE = (C0 - Gl.GL_CON_0_ATI),
+        T_BASE = (T0_1 - Gl.GL_REG_0_ATI),
+
+        Invalid = 999
+    }
+
+    /// <summary>
+    ///     BNF operation types.
+    /// </summary>
+    public enum OperationType {
+        Rule,
+        And,
+        Or,
+        Optional,
+        Repeat,
+        End
     }
 
     /// <summary>
