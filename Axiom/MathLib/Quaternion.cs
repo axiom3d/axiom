@@ -31,17 +31,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using System.ComponentModel;			// for TypeConverterAttribute
-using System.Diagnostics;				// mostly for Debug.Assert(...)
-using System.Runtime.InteropServices;	// for StructLayoutAttribute
-using System.Xml.Serialization;			// for various Xml attributes
+using System.Diagnostics;
 
 namespace Axiom.MathLib {
     /// <summary>
     /// Summary description for Quaternion.
     /// </summary>
-    [XmlType("Quaternion"),StructLayout(LayoutKind.Sequential),
-    Serializable,TypeConverter(typeof(ExpandableObjectConverter))]
     public struct Quaternion {
         #region Private member variables and constants
 
