@@ -1,0 +1,131 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demos", "DemoTest\Demos.csproj", "{A23B7D97-4826-43BD-AD28-B0DDC4933347}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InputSystem_DInput", "InputSystem_DInput\InputSystem_DInput.csproj", "{FDAF263D-095D-4217-AC87-3F1B20A49146}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine", "Engine\Engine.csproj", "{33DDA650-92ED-429F-8D2B-F4B9495454AF}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathLib", "MathLib\MathLib.csproj", "{5E33B605-D629-4AD1-B99E-EF852BE0E107}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenderSystem_DirectX9", "RenderSystem_DirectX9\RenderSystem_DirectX9.csproj", "{875E732D-8A8A-4AA0-AFCC-54E001805A10}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenderSystem_OpenGL", "RenderSystem_OpenGL\RenderSystem_OpenGL.csproj", "{25A4B73D-B0B3-445D-AE0D-DD0EA9320197}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicsSystem_ODE", "DynamicsSystem_ODE\DynamicsSystem_ODE.csproj", "{550EAA92-9CAC-4B19-B54B-762989B7A983}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParticleFX", "ParticleFX\ParticleFX.csproj", "{9C504B43-E58E-4915-8336-E005C6500797}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioSystem_DirectSound", "AudioSystem_DirectSound\AudioSystem_DirectSound.csproj", "{3C5EDCEC-BC19-4395-B8FF-9ADCB1871CFF}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SourceCodeControl) = preSolution
+		SccNumberOfProjects = 10
+		SccLocalPath0 = .
+		CanCheckoutShared = false
+		SolutionUniqueID = {224612B1-E35A-48CB-BFCD-458F876CC581}
+		SccProjectUniqueName1 = InputSystem_DInput\\InputSystem_DInput.csproj
+		SccLocalPath1 = .
+		CanCheckoutShared = false
+		SccProjectFilePathRelativizedFromConnection1 = InputSystem_DInput\\
+		SccProjectUniqueName2 = Engine\\Engine.csproj
+		SccProjectName2 = \u0022$/Axiom\u0020Game\u0020Engine/Engine\u0022,\u0020FIAAAAAA
+		SccLocalPath2 = Engine
+		CanCheckoutShared = false
+		SccProjectUniqueName3 = MathLib\\MathLib.csproj
+		SccProjectName3 = \u0022$/Axiom\u0020Game\u0020Engine/MathLib\u0022,\u0020HIAAAAAA
+		SccLocalPath3 = MathLib
+		CanCheckoutShared = false
+		SccProjectUniqueName4 = RenderSystem_DirectX9\\RenderSystem_DirectX9.csproj
+		SccProjectName4 = \u0022$/Axiom\u0020Game\u0020Engine/RenderSystem_DirectX9\u0022,\u0020NIAAAAAA
+		SccLocalPath4 = RenderSystem_DirectX9
+		CanCheckoutShared = false
+		SccProjectUniqueName5 = RenderSystem_OpenGL\\RenderSystem_OpenGL.csproj
+		SccProjectName5 = \u0022$/Axiom\u0020Game\u0020Engine/RenderSystem_OpenGL\u0022,\u0020PIAAAAAA
+		SccLocalPath5 = RenderSystem_OpenGL
+		CanCheckoutShared = false
+		SccProjectUniqueName6 = DynamicsSystem_ODE\\DynamicsSystem_ODE.csproj
+		SccLocalPath6 = .
+		CanCheckoutShared = false
+		SccProjectFilePathRelativizedFromConnection6 = DynamicsSystem_ODE\\
+		SccProjectUniqueName7 = AudioSystem_DirectSound\\AudioSystem_DirectSound.csproj
+		SccLocalPath7 = .
+		CanCheckoutShared = false
+		SccProjectFilePathRelativizedFromConnection7 = AudioSystem_DirectSound\\
+		SccProjectUniqueName8 = DemoTest\\Demos.csproj
+		SccLocalPath8 = .
+		CanCheckoutShared = false
+		SccProjectFilePathRelativizedFromConnection8 = DemoTest\\
+		SccProjectUniqueName9 = ParticleFX\\ParticleFX.csproj
+		SccLocalPath9 = .
+		CanCheckoutShared = false
+		SccProjectFilePathRelativizedFromConnection9 = ParticleFX\\
+	EndGlobalSection
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{A23B7D97-4826-43BD-AD28-B0DDC4933347}.Debug.ActiveCfg = Debug|.NET
+		{A23B7D97-4826-43BD-AD28-B0DDC4933347}.Debug.Build.0 = Debug|.NET
+		{A23B7D97-4826-43BD-AD28-B0DDC4933347}.Release.ActiveCfg = Release|.NET
+		{A23B7D97-4826-43BD-AD28-B0DDC4933347}.Release.Build.0 = Release|.NET
+		{FDAF263D-095D-4217-AC87-3F1B20A49146}.Debug.ActiveCfg = Debug|.NET
+		{FDAF263D-095D-4217-AC87-3F1B20A49146}.Debug.Build.0 = Debug|.NET
+		{FDAF263D-095D-4217-AC87-3F1B20A49146}.Release.ActiveCfg = Release|.NET
+		{FDAF263D-095D-4217-AC87-3F1B20A49146}.Release.Build.0 = Release|.NET
+		{33DDA650-92ED-429F-8D2B-F4B9495454AF}.Debug.ActiveCfg = Debug|.NET
+		{33DDA650-92ED-429F-8D2B-F4B9495454AF}.Debug.Build.0 = Debug|.NET
+		{33DDA650-92ED-429F-8D2B-F4B9495454AF}.Release.ActiveCfg = Release|.NET
+		{33DDA650-92ED-429F-8D2B-F4B9495454AF}.Release.Build.0 = Release|.NET
+		{5E33B605-D629-4AD1-B99E-EF852BE0E107}.Debug.ActiveCfg = Debug|.NET
+		{5E33B605-D629-4AD1-B99E-EF852BE0E107}.Debug.Build.0 = Debug|.NET
+		{5E33B605-D629-4AD1-B99E-EF852BE0E107}.Release.ActiveCfg = Release|.NET
+		{5E33B605-D629-4AD1-B99E-EF852BE0E107}.Release.Build.0 = Release|.NET
+		{875E732D-8A8A-4AA0-AFCC-54E001805A10}.Debug.ActiveCfg = Debug|.NET
+		{875E732D-8A8A-4AA0-AFCC-54E001805A10}.Debug.Build.0 = Debug|.NET
+		{875E732D-8A8A-4AA0-AFCC-54E001805A10}.Release.ActiveCfg = Release|.NET
+		{875E732D-8A8A-4AA0-AFCC-54E001805A10}.Release.Build.0 = Release|.NET
+		{25A4B73D-B0B3-445D-AE0D-DD0EA9320197}.Debug.ActiveCfg = Debug|.NET
+		{25A4B73D-B0B3-445D-AE0D-DD0EA9320197}.Debug.Build.0 = Debug|.NET
+		{25A4B73D-B0B3-445D-AE0D-DD0EA9320197}.Release.ActiveCfg = Release|.NET
+		{25A4B73D-B0B3-445D-AE0D-DD0EA9320197}.Release.Build.0 = Release|.NET
+		{550EAA92-9CAC-4B19-B54B-762989B7A983}.Debug.ActiveCfg = Debug|.NET
+		{550EAA92-9CAC-4B19-B54B-762989B7A983}.Debug.Build.0 = Debug|.NET
+		{550EAA92-9CAC-4B19-B54B-762989B7A983}.Release.ActiveCfg = Release|.NET
+		{550EAA92-9CAC-4B19-B54B-762989B7A983}.Release.Build.0 = Release|.NET
+		{9C504B43-E58E-4915-8336-E005C6500797}.Debug.ActiveCfg = Debug|.NET
+		{9C504B43-E58E-4915-8336-E005C6500797}.Debug.Build.0 = Debug|.NET
+		{9C504B43-E58E-4915-8336-E005C6500797}.Release.ActiveCfg = Release|.NET
+		{9C504B43-E58E-4915-8336-E005C6500797}.Release.Build.0 = Release|.NET
+		{3C5EDCEC-BC19-4395-B8FF-9ADCB1871CFF}.Debug.ActiveCfg = Debug|.NET
+		{3C5EDCEC-BC19-4395-B8FF-9ADCB1871CFF}.Debug.Build.0 = Debug|.NET
+		{3C5EDCEC-BC19-4395-B8FF-9ADCB1871CFF}.Release.ActiveCfg = Release|.NET
+		{3C5EDCEC-BC19-4395-B8FF-9ADCB1871CFF}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(SolutionItems) = postSolution
+		Solution Items\csgl.dll = Solution Items\csgl.dll
+		Solution Items\ode.dll = Solution Items\ode.dll
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
