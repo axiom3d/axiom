@@ -182,7 +182,45 @@ namespace Axiom.Core {
 
                     } break;
                     case Projection.Orthographic: {
-                        // TODO: Add Orthographic projection
+						// ORTHOGRAPHIC projection, API specific 
+						Engine.Instance.RenderSystem.MakeOrthoMatrix(
+							fieldOfView, aspectRatio, nearDistance, farDistance);
+
+						float thetaY = MathUtil.DegreesToRadians(fieldOfView * 0.5f);
+						float sinThetaY = MathUtil.Sin(thetaY);
+						float thetaX = thetaY * aspectRatio;
+						float sinThetaX = MathUtil.Sin(thetaX);
+						// Calculate co-efficients for the frustum planes
+						// Special-cased for L = -R and B = -T i.e. viewport centered 
+						// on direction vector.
+						// Taken from ideas in WildMagic 0.2 http://www.magic-software.com
+						float vpTop = sinThetaY * nearDistance;
+						float vpRight = sinThetaX * nearDistance;
+						float vpBottom = -vpTop;
+						float vpLeft = -vpRight;
+
+						float fNSqr = nearDistance * nearDistance;
+						float fLSqr = vpRight * vpRight;
+						float fRSqr = fLSqr;
+						float fTSqr = vpTop * vpTop;
+						float fBSqr = fTSqr;
+
+						float invLength = 1.0f / MathUtil.Sqrt( fNSqr + fLSqr );
+						coeffL[0] = nearDistance * invLength;
+						coeffL[1] = -vpLeft * invLength;
+
+						invLength = 1.0f / MathUtil.Sqrt( fNSqr + fRSqr );
+						coeffR[0] = -nearDistance * invLength;
+						coeffR[1] = vpRight * invLength;
+
+						invLength = 1.0f / MathUtil.Sqrt( fNSqr + fBSqr );
+						coeffB[0] = nearDistance * invLength;
+						coeffB[1] = -vpBottom * invLength;
+
+						invLength = 1.0f / MathUtil.Sqrt( fNSqr + fTSqr );
+						coeffT[0] = -nearDistance * invLength;
+						coeffT[1] = vpTop * invLength;
+
                     } break;
                 }
 
@@ -266,6 +304,24 @@ namespace Axiom.Core {
             this[FrustumPlane.Near].Normal = camDirection;
             this[FrustumPlane.Near].D = -(distance + nearDistance);
 
+			// Update worldspace corners
+			Matrix4 eyeToWorld = viewMatrix.Inverse();
+
+			// Get worldspace frustum corners
+			float y = MathUtil.Tan(fieldOfView * 0.5f);
+			float x = aspectRatio * y;
+
+			// near
+			worldSpaceCorners[0] = eyeToWorld * new Vector3( x,  y, -nearDistance);
+			worldSpaceCorners[1] = eyeToWorld * new Vector3(-x,  y, -nearDistance);
+			worldSpaceCorners[2] = eyeToWorld * new Vector3(-x, -y, -nearDistance);
+			worldSpaceCorners[3] = eyeToWorld * new Vector3( x, -y, -nearDistance);
+			// far
+			worldSpaceCorners[4] = eyeToWorld * new Vector3( x,  y, -farDistance);
+			worldSpaceCorners[5] = eyeToWorld * new Vector3(-x,  y, -farDistance);
+			worldSpaceCorners[6] = eyeToWorld * new Vector3(-x, -y, -farDistance);
+			worldSpaceCorners[7] = eyeToWorld * new Vector3( x, -y, -farDistance);
+
             // Deal with reflection on frustum planes
             if (isReflected) {
                 Vector3 pos = reflectionMatrix * derivedPosition;
@@ -286,6 +342,11 @@ namespace Axiom.Core {
                         break;
                     }
                 }
+
+				// Also reflect corners
+				for (int i = 0; i < 8; i++) {
+					worldSpaceCorners[i] = reflectionMatrix * worldSpaceCorners[i];
+				}
             }
 
             // update since we have now recalculated everything

@@ -25,9 +25,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using Axiom.MathLib;
 
-namespace Axiom.Core {
+namespace Axiom.MathLib {
     /// <summary>
     ///		A standard sphere, used mostly for bounds checking.
     /// </summary>
@@ -72,16 +71,24 @@ namespace Axiom.Core {
         ///		Gets/Sets the center of the sphere.
         /// </summary>
         public Vector3 Center {
-            get { return center; }
-            set { center = value; }
+            get { 
+				return center; 
+			}
+            set { 
+				center = value; 
+			}
         }
 
         /// <summary>
         ///		Gets/Sets the radius of the sphere.
         /// </summary>
         public float Radius {
-            get { return radius; }
-            set { radius = value; }
+            get { 
+				return radius; 
+			}
+            set { 
+				radius = value; 
+			}
         }
 
         #endregion
