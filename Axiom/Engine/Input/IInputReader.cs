@@ -46,12 +46,16 @@ namespace Axiom.Input {
 		///		Subclasses should initialize the underlying input subsystem using this
 		///		method.
 		/// </summary>
-		/// <param name="window"></param>
+		/// <param name="parent">Parent window that the input belongs to.</param>
 		/// <param name="eventQueue">Used for buffering input.  Events will be added to the queue by the input reader.</param>
 		/// <param name="useKeyboard"></param>
 		/// <param name="useMouse"></param>
 		/// <param name="useGamepad"></param>
-		void Initialize(RenderWindow parent, Queue eventQueue, bool useKeyboard, bool useMouse, bool useGamepad);
+		/// <param name="ownMouse">
+		///		If true, input will be taken over from the OS and exclusive to the window.
+		///		If false, input will still be shared with other apps.
+		///	</param>
+		void Initialize(RenderWindow parent, Queue eventQueue, bool useKeyboard, bool useMouse, bool useGamepad, bool ownMouse);
 
 		/// <summary>
 		///		Captures the state of all the input devices.

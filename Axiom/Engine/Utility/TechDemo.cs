@@ -177,7 +177,7 @@ namespace Axiom.Utility {
 
             // retreive and initialize the input system
 		input = PlatformManager.Instance.CreateInputReader();
-            input.Initialize(window, null, true, true, false);
+            input.Initialize(window, null, true, true, false, true);
 
             return true;
         }
