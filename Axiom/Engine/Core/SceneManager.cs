@@ -2438,7 +2438,7 @@ namespace Axiom.Core {
 					}
 					else {
 						// Copy over existing
-						m.CopyDetailsTo(boxMaterial);
+						m.CopyTo(boxMaterial);
 						boxMaterial.Load();
 					}
 

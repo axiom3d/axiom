@@ -123,6 +123,7 @@ namespace Axiom.Graphics {
 		public Material() {
 			this.name = String.Format("_Material{0}", autoNumber++);
 			compilationRequired = true;
+			lodDistances.Add(0.0f);
 			receiveShadows = true;
 		}
 
@@ -135,6 +136,7 @@ namespace Axiom.Graphics {
 		/// </remarks>
 		/// <param name="name">Unique name of this material.</param>
 		public Material(string name) {
+			// apply default material settings to this new material
 			ApplyDefaults();
 
 			this.name = name;
@@ -635,49 +637,18 @@ namespace Axiom.Graphics {
 		/// <summary>
 		///    Creates a copy of this Material with the specified name (must be unique).
 		/// </summary>
-		/// <param name="name">The name that the cloned material will be known as.</param>
+		/// <param name="newName">The name that the cloned material will be known as.</param>
 		/// <returns></returns>
-		public Material Clone(string name) {
-			Material newMaterial = (Material)this.MemberwiseClone();
-			// TODO: Watch out for other copied references...
-			newMaterial.bestTechniqueList = new Hashtable();
-			newMaterial.supportedTechniques = new TechniqueList();
-			newMaterial.techniques = new TechniqueList();
+		public Material Clone(string newName) {
+			Material newMaterial = (Material)MaterialManager.Instance.Create(newName);
 
-			// TODO: When adding global resource handles, create new one here and assign
+			int handle = newMaterial.handle;
 
-			newMaterial.name = name;
+			CopyTo(newMaterial);
 
-			newMaterial.RemoveAllTechniques();
-
-			// clone a copy of all the techniques
-			for(int i = 0; i < techniques.Count; i++) {
-				Technique technique = (Technique)techniques[i];
-				Technique newTechnique = technique.Clone(newMaterial);
-
-				// add this to the list of techniques
-				newMaterial.techniques.Add(newTechnique);
-
-				// only add this technique to supported techniques if its...well....supported :-)
-				if(newTechnique.IsSupported) {
-					newMaterial.supportedTechniques.Add(newTechnique);
-
-					if(newMaterial.bestTechniqueList[newTechnique.LodIndex] == null) {
-						newMaterial.bestTechniqueList[newTechnique.LodIndex] = newTechnique;
-					}
-				}
-			}
-
-			// clear LOD distances
-			newMaterial.lodDistances.Clear();
-
-			// copy LOD distances
-			for(int i = 0; i < lodDistances.Count; i++) {
-				newMaterial.lodDistances.Add(lodDistances[i]);
-			}
-
-			// TODO: Implement Add for ResourceManager and subclasses
-			MaterialManager.Instance.Load(newMaterial, 1);
+			newMaterial.isLoaded = isLoaded;
+			newMaterial.name = newName;
+			newMaterial.handle = handle;
 
 			return newMaterial;
 		}
@@ -686,39 +657,53 @@ namespace Axiom.Graphics {
 		///		Copies the details of this material into another, preserving the target's handle and name
 		///		(unlike operator=) but copying everything else.
 		/// </summary>
-		/// <param name="material">Material which will receive this material's settings.</param>
-		public void CopyDetailsTo(Material material) {
-			material.receiveShadows = this.receiveShadows;
+		/// <param name="target">Material which will receive this material's settings.</param>
+		public void CopyTo(Material target) {
+			// copy basic data
+			target.name = name;
+			target.handle = handle;
+			target.size = size;
+			target.lastAccessed = lastAccessed;
+			target.receiveShadows = receiveShadows;
 
-			// TODO: Watch out for other copied references...
-			material.supportedTechniques = new TechniqueList();
-			material.techniques = new TechniqueList();
+			target.RemoveAllTechniques();
 
 			// clone a copy of all the techniques
 			for(int i = 0; i < techniques.Count; i++) {
 				Technique technique = (Technique)techniques[i];
-				Technique newTechnique = technique.Clone(material);
-
-				// add this to the list of techniques
-				material.techniques.Add(newTechnique);
+				Technique newTechnique = target.CreateTechnique();
+				technique.CopyTo(newTechnique);
 
 				// only add this technique to supported techniques if its...well....supported :-)
 				if(newTechnique.IsSupported) {
-					material.supportedTechniques.Add(newTechnique);
+					target.supportedTechniques.Add(newTechnique);
+
+					if(target.bestTechniqueList[technique.LodIndex] == null) {
+						target.bestTechniqueList[technique.LodIndex] = newTechnique;
+					}
 				}
 			}
+
+			// clear LOD distances
+			target.lodDistances.Clear();
+
+			// copy LOD distances
+			for(int i = 0; i < lodDistances.Count; i++) {
+				target.lodDistances.Add(lodDistances[i]);
+			}
+
+			target.compilationRequired = compilationRequired;
+			target.isLoaded = isLoaded;
 		}
 	
 		public void ApplyDefaults() {
-			// TODO: Implement the ApplyDefaults
-			// Hack for now
-			this.CreateTechnique().CreatePass();
+			// copy properties from the default materials
+			//defaultSettings.CopyTo(this);
+			CreateTechnique().CreatePass();
 
-			//defaultSettings.CopyDetailsTo(this);
 			//compilationRequired = true;
 		}
 
-		
 		#endregion
 
 		#region Object overloads

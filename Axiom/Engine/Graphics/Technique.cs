@@ -98,23 +98,32 @@ namespace Axiom.Graphics {
 		/// <param name="parent">Material that will own this technique.</param>
 		/// <returns></returns>
 		public Technique Clone(Material parent) {
-			Technique newTechnique = (Technique)this.MemberwiseClone();
-			newTechnique.parent = parent;
+			Technique newTechnique = new Technique(parent);
 
-			// TODO: Watch out for other object refs copied...
-			newTechnique.passes = new PassList();
+			CopyTo(newTechnique);
+
+			return newTechnique;
+		}
+
+		/// <summary>
+		///		Copy the details of this Technique to another.
+		/// </summary>
+		/// <param name="target"></param>
+		public void CopyTo(Technique target) {
+			target.isSupported = isSupported;
+			target.lodIndex = lodIndex;
+
+			target.RemoveAllPasses();
 
 			// clone each pass and add that to the new technique
 			for(int i = 0; i < passes.Count; i++) {
 				Pass pass = (Pass)passes[i];
-				Pass newPass = pass.Clone(newTechnique, pass.Index);
-				newTechnique.passes.Add(newPass);
+				Pass newPass = pass.Clone(target, pass.Index);
+				target.passes.Add(newPass);
 			}
 
 			// recompile illumination passes
-			newTechnique.CompileIlluminationPasses();
-
-			return newTechnique;
+			target.CompileIlluminationPasses();
 		}
 
 		/// <summary>
@@ -231,7 +240,9 @@ namespace Axiom.Graphics {
 							if(pass.Ambient.CompareTo(ColorEx.Black) != 0 || 
 								pass.Emissive.CompareTo(ColorEx.Black) != 0) {
 
-								Pass newPass = pass.Clone(this, pass.Index);
+								Pass newPass = new Pass(this, pass.Index);
+								pass.CopyTo(newPass);
+
 								// remove any texture units
 								newPass.RemoveAllTextureUnitStates();
 
@@ -266,8 +277,11 @@ namespace Axiom.Graphics {
 							if(!hasAmbient) {
 								// make up a new basic pass
 								Pass newPass = new Pass(this, pass.Index);
+								pass.CopyTo(newPass);
+
 								newPass.Ambient = ColorEx.Black;
 								newPass.Diffuse = ColorEx.Black;
+
 								iPass = new IlluminationPass();
 								iPass.DestroyOnShutdown = true;
 								iPass.OriginalPass = pass;
@@ -303,7 +317,9 @@ namespace Axiom.Graphics {
 								pass.Specular.CompareTo(ColorEx.Black) != 0)) {
 
 								// copy existing pass
-								Pass newPass = pass.Clone(this, pass.Index);
+								Pass newPass = new Pass(this, pass.Index);
+								pass.CopyTo(newPass);
+
 								newPass.RemoveAllTextureUnitStates();
 
 								// also remove any fragment program
@@ -322,7 +338,7 @@ namespace Axiom.Graphics {
 								iPass = new IlluminationPass();
 								iPass.DestroyOnShutdown = true;
 								iPass.OriginalPass = pass;
-								iPass.Pass = pass;
+								iPass.Pass = newPass;
 								iPass.Stage = stage;
 
 								illuminationPasses.Add(iPass);
@@ -349,7 +365,9 @@ namespace Axiom.Graphics {
 							}
 							else {
 								// Copy the pass and tweak away the lighting parts
-								Pass newPass = pass.Clone(this, pass.Index);
+								//Pass newPass = pass.Clone(this, pass.Index);
+								Pass newPass = new Pass(this, pass.Index);
+								pass.CopyTo(newPass);
 								newPass.Ambient = ColorEx.Black;
 								newPass.Diffuse = ColorEx.Black;
 								newPass.Specular = ColorEx.Black;

@@ -64,6 +64,18 @@ namespace Axiom.Graphics
 		
 		#region Methods
 
+		/// <summary>
+		///		Creates and returns a copy of this GpuProgramUsage object.
+		/// </summary>
+		/// <returns></returns>
+		public GpuProgramUsage Clone() {
+			GpuProgramUsage usage = new GpuProgramUsage(type);
+			usage.program = program;
+			usage.parameters = parameters;
+
+			return usage;
+		}
+
         /// <summary>
         ///    Load this usage (and ensure program is loaded).
         /// </summary>

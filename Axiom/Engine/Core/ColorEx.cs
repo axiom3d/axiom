@@ -87,11 +87,18 @@ namespace Axiom.Core {
 
         #region Methods
 
+		/// <summary>
+		///		Returns a copy of this ColorEx instance.
+		/// </summary>
+		/// <returns></returns>
+		public ColorEx Clone() {
+			return new ColorEx(a, r, g, b);
+		}
+
         /// <summary>
         ///		Converts this instance to a <see cref="System.Drawing.Color"/> structure.
         /// </summary>
         /// <returns></returns>
-        // TODO: Watch for color loss.
         public System.Drawing.Color ToColor() {
             return System.Drawing.Color.FromArgb((int)(a * 255.0f), (int)(r * 255.0f), (int)(g * 255.0f), (int)(b * 255.0f));
         }

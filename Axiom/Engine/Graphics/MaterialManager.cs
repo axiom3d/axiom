@@ -71,7 +71,7 @@ namespace Axiom.Graphics {
 
             instance = new MaterialManager();
 
-            instance.Initialize();
+            //instance.Initialize();
 
 			// Set up default material - don't use name contructor as we want to avoid applying defaults
 			Material.defaultSettings = new Material();

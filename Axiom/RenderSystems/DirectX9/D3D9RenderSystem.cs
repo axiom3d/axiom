@@ -81,7 +81,6 @@ namespace Axiom.RenderSystems.DirectX9 {
 		protected int numLastStreams;
 
 		// stores texture stage info locally for convenience
-		// TODO: finish using this in all appropriate methods
 		internal D3DTextureStageDesc[] texStageDesc = new D3DTextureStageDesc[Config.MaxTextureLayers];
 
 		protected int primCount;

@@ -219,10 +219,20 @@ namespace Axiom.Graphics {
 			diffuse = ColorEx.White;
 			specular = ColorEx.Black;
 			emissive = ColorEx.Black;
-            
+
+			// by default, don't override the scene's fog settings
+			fogOverride = false;
+			fogMode = FogMode.None;
+			fogColor = ColorEx.White;
+			fogStart = 0;
+			fogEnd = 1;
+			fogDensity = 0.001f;
+
 			// default blending (overwrite)
 			sourceBlendFactor = SceneBlendFactor.One;
 			destBlendFactor = SceneBlendFactor.Zero;
+
+
 
 			// depth buffer settings
 			depthCheck = true;
@@ -268,25 +278,84 @@ namespace Axiom.Graphics {
 		/// <param name="parent">Parent technique that will own this cloned Pass.</param>
 		/// <returns></returns>
 		public Pass Clone(Technique parent, int index) {
-			Pass newPass = (Pass)this.MemberwiseClone();
-			// TODO: Watch out for copied references...
-			newPass.textureUnitStates = new TextureUnitStateList();
-			newPass.parent = parent;
-			newPass.index = index;
+			Pass newPass = new Pass(parent, index);
 
-			// TODO: Clone GpuProgramUsage
-
-			// loop through and clone each texture unit state, adding the clone to the new pass
-			for(int i = 0; i < textureUnitStates.Count; i++) {
-				TextureUnitState state = (TextureUnitState)textureUnitStates[i];
-				TextureUnitState newState = state.Clone(newPass);
-				newPass.textureUnitStates.Add(newState);
-			}
+			CopyTo(newPass);
 
 			// dirty the hash on the new pass
 			newPass.DirtyHash();
 
 			return newPass;
+		}
+
+		/// <summary>
+		///		Copy the details of this pass to the target pass.
+		/// </summary>
+		/// <param name="target">Destination pass to copy this pass's attributes to.</param>
+		public void CopyTo(Pass target) {
+			// surface
+			target.ambient = ambient.Clone();
+			target.diffuse = diffuse.Clone();
+			target.specular = specular.Clone();
+			target.emissive = emissive.Clone();
+			target.shininess = shininess;
+
+			// fog
+			target.fogOverride = fogOverride;
+			target.fogMode = fogMode;
+			target.fogColor = fogColor.Clone();
+			target.fogStart = fogStart;
+			target.fogEnd = fogEnd;
+			target.fogDensity = fogDensity;
+
+			// default blending
+			target.sourceBlendFactor = sourceBlendFactor;
+			target.destBlendFactor = destBlendFactor;
+
+			target.depthCheck = depthCheck;
+			target.depthWrite = depthWrite;
+			target.colorWrite = colorWrite;
+			target.depthFunc = depthFunc;
+			target.depthBias = depthBias;
+			target.cullMode = cullMode;
+			target.manualCullMode = manualCullMode;
+			target.lightingEnabled = lightingEnabled;
+			target.maxLights = maxLights;
+			target.runOncePerLight = runOncePerLight;
+			target.runOnlyForOneLightType = runOnlyForOneLightType;
+			target.onlyLightType = onlyLightType;
+			target.shadeOptions = shadeOptions;
+
+			// vertex program
+			if(vertexProgramUsage != null) {
+				vertexProgramUsage = vertexProgramUsage.Clone();
+			}
+			else {
+				vertexProgramUsage = null;
+			}
+
+			// fragment program
+			if(fragmentProgramUsage != null) {
+				fragmentProgramUsage = fragmentProgramUsage.Clone();
+			}
+			else {
+				fragmentProgramUsage = null;
+			}
+
+			// TODO: Shadow caster/receiver program usage
+
+			// texture units
+			target.RemoveAllTextureUnitStates();
+
+			for(int i = 0; i < textureUnitStates.Count; i++) {
+				TextureUnitState newState = new TextureUnitState(target);
+				TextureUnitState src = (TextureUnitState)textureUnitStates[i];
+				src.CopyTo(newState);
+
+				target.textureUnitStates.Add(newState);
+			}
+
+			target.DirtyHash();
 		}
 
 		/// <summary>
