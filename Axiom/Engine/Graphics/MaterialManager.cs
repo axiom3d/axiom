@@ -37,7 +37,21 @@ using Axiom.Scripting;
 
 namespace Axiom.Graphics {
     /// <summary>
-    /// Summary description for MaterialManager.
+    ///     Class for managing Material settings.
+    /// </summary>
+    /// <remarks>
+    ///     Materials control the eventual surface rendering properties of geometry. This class
+    ///     manages the library of materials, dealing with programmatic registrations and lookups,
+    ///     as well as loading predefined Material settings from scripts.
+    ///     <p/>
+    ///     When loaded from a script, a Material is in an 'unloaded' state and only stores the settings
+    ///     required. It does not at that stage load any textures. This is because the material settings may be
+    ///     loaded 'en masse' from bulk material script files, but only a subset will actually be required.
+    ///     <p/>
+    ///     Because this is a subclass of ResourceManager, any files loaded will be searched for in any path or
+    ///     archive added to the resource paths/archives. See ResourceManager for details.
+    ///     <p/>
+    ///     For a definition of the material script format, see http://www.ogre3d.org/docs/manual/manual_16.html#SEC25.
     /// </summary>
     // TODO: Switch delegates to use a context struct, to make all delegates have the same sig
     public class MaterialManager : ResourceManager {
@@ -61,8 +75,10 @@ namespace Axiom.Graphics {
             baseWhite.CreateTechnique().CreatePass();
             baseWhite.Lighting = false;
 
-            instance.defaultTextureFiltering = TextureFiltering.Bilinear;
-            instance.defaultAnisotropy = 1;
+            instance.defaultMinFilter = FilterOptions.Linear;
+            instance.defaultMagFilter = FilterOptions.Linear;
+            instance.defaultMipFilter = FilterOptions.Point;
+            instance.defaultMaxAniso = 1;
         }
 		
         #endregion
@@ -74,22 +90,36 @@ namespace Axiom.Graphics {
 
         #endregion
 
-        #region Member variables
+        #region Fields
 
         /// <summary>Lookup table of methods that can be used to parse material attributes.</summary>
         protected Hashtable passAttribParsers = new Hashtable();
         protected Hashtable texUnitAttribParsers = new Hashtable();
 
-        protected TextureFiltering defaultTextureFiltering;
-        protected int defaultAnisotropy;
+        /// <summary>
+        ///     Default Texture filtering - minification.
+        /// </summary>
+        protected FilterOptions defaultMinFilter;
+        /// <summary>
+        ///     Default Texture filtering - magnification.
+        /// </summary>
+        protected FilterOptions defaultMagFilter;
+        /// <summary>
+        ///     Default Texture filtering - mipmapping.
+        /// </summary>
+        protected FilterOptions defaultMipFilter;
+        /// <summary>
+        ///     Default Texture anisotropy.
+        /// </summary>
+        protected int defaultMaxAniso;
 		
         // constants for material section types
-        const string GpuProgram = "GpuProgram";
-        const string GpuProgramDef = "GpuProgramDef";
-        const string TextureUnit = "TextureUnit";
-        const string Pass = "Pass";
+        const string GPU_PROGRAM = "GpuProgram";
+        const string GPU_PROGRAM_DEF = "GpuProgramDef";
+        const string TEXTURE_UNIT = "TextureUnit";
+        const string PASS = "Pass";
 
-        #endregion
+        #endregion Fields
 
         #region Properties
 
@@ -100,37 +130,99 @@ namespace Axiom.Graphics {
         /// </summary>
         public int DefaultAnisotropy {
             get {
-                return defaultAnisotropy;
+                return defaultMaxAniso;
             }
             set {
-                defaultAnisotropy = value;
-
-                // TODO: Fix me dammit, need aniso on material
-                // reset for all current textures
-                foreach(Material material in resourceList.Values) {
-                    material.TextureFiltering = defaultTextureFiltering;
-                }
-            }
-        }
-
-        /// <summary>
-        ///    Sets the default texture filtering to use for all textures in the engine.
-        /// </summary>
-        public TextureFiltering DefaultTextureFiltering {
-            get {
-                return defaultTextureFiltering;
-            }
-            set {
-                defaultTextureFiltering = value;
-
-                // reset for all current textures
-                foreach(Material material in resourceList.Values) {
-                    material.TextureFiltering = defaultTextureFiltering;
-                }
+                defaultMaxAniso = value;
             }
         }
 
         #endregion Properties
+
+        #region Methods
+
+        /// <summary>
+        ///     Sets the default texture filtering to be used for loaded textures, for when textures are
+        ///     loaded automatically (e.g. by Material class) or when 'load' is called with the default
+        ///     parameters by the application.
+        /// </summary>
+        /// <param name="options">Default options to use.</param>
+        public virtual void SetDefaultTextureFiltering(TextureFiltering filtering) {
+            switch (filtering) {
+                case TextureFiltering.None:
+                    SetDefaultTextureFiltering(FilterOptions.Point, FilterOptions.Point, FilterOptions.None);
+                    break;
+                case TextureFiltering.Bilinear:
+                    SetDefaultTextureFiltering(FilterOptions.Linear, FilterOptions.Linear, FilterOptions.Point);
+                    break;
+                case TextureFiltering.Trilinear:
+                    SetDefaultTextureFiltering(FilterOptions.Linear, FilterOptions.Linear, FilterOptions.Linear);
+                    break;
+                case TextureFiltering.Anisotropic:
+                    SetDefaultTextureFiltering(FilterOptions.Anisotropic, FilterOptions.Anisotropic, FilterOptions.Linear);
+                    break;
+            }
+        }
+    
+        /// <summary>
+        ///     Sets the default texture filtering to be used for loaded textures, for when textures are
+        ///     loaded automatically (e.g. by Material class) or when 'load' is called with the default
+        ///     parameters by the application.
+        /// </summary>
+        /// <param name="type">Type to configure.</param>
+        /// <param name="options">Options to set for the specified type.</param>
+        public virtual void SetDefaultTextureFiltering(FilterType type, FilterOptions options) {
+            switch(type) {
+                case FilterType.Min:
+                    defaultMinFilter = options;
+                    break;
+
+                case FilterType.Mag:
+                    defaultMagFilter = options;
+                    break;
+
+                case FilterType.Mip:
+                    defaultMipFilter = options;
+                    break;
+            }
+        }
+
+        /// <summary>
+        ///     Sets the default texture filtering to be used for loaded textures, for when textures are
+        ///     loaded automatically (e.g. by Material class) or when 'load' is called with the default
+        ///     parameters by the application.
+        /// </summary>
+        /// <param name="minFilter">Minification filter.</param>
+        /// <param name="magFilter">Magnification filter.</param>
+        /// <param name="mipFilter">Map filter.</param>
+        public virtual void SetDefaultTextureFiltering(FilterOptions minFilter, FilterOptions magFilter, FilterOptions mipFilter) {
+            defaultMinFilter = minFilter;
+            defaultMagFilter = magFilter;
+            defaultMipFilter = mipFilter;
+        }
+
+        /// <summary>
+        ///     Gets the default texture filtering options for the specified filter type.
+        /// </summary>
+        /// <param name="type">Filter type to get options for.</param>
+        /// <returns></returns>
+        public virtual FilterOptions GetDefaultTextureFiltering(FilterType type) {
+            switch(type) {
+                case FilterType.Min:
+                    return defaultMinFilter;
+
+                case FilterType.Mag:
+                    return defaultMagFilter;
+
+                case FilterType.Mip:
+                    return defaultMipFilter;
+            }
+
+            // make the compiler happy
+            return FilterOptions.None;
+        }
+
+        #endregion Methods
 
         /// <summary>
         /// 
@@ -164,12 +256,12 @@ namespace Axiom.Graphics {
 
                     switch(parserAtt.ParserType) {
                             // this method should parse a material attribute
-                        case Pass:
+                        case PASS:
                             passAttribParsers.Add(parserAtt.Name, Delegate.CreateDelegate(typeof(PassAttributeParser), method));
                             break;
 
                             // this method should parse a texture layer attribute
-                        case TextureUnit:
+                        case TEXTURE_UNIT:
                             texUnitAttribParsers.Add(parserAtt.Name, Delegate.CreateDelegate(typeof(TextureUnitAttributeParser), method));
                             break;
                     } // switch
@@ -591,7 +683,7 @@ namespace Axiom.Graphics {
 
         #region Material attribute parser methods
 
-        [AttributeParser("ambient", Pass)]
+        [AttributeParser("ambient", PASS)]
         public static void ParseAmbient(string[] values, Pass pass) {
             if(values.Length != 3 && values.Length != 4) {
                 ParseHelper.LogParserError("ambient", pass.Parent.Name, "Expected 3-4 params");
@@ -601,8 +693,8 @@ namespace Axiom.Graphics {
             pass.Ambient = ParseHelper.ParseColor(values);
         }
 
-        [AttributeParser("colour_write", Pass)]
-        [AttributeParser("color_write", Pass)]
+        [AttributeParser("colour_write", PASS)]
+        [AttributeParser("color_write", PASS)]
         public static void ParseColorWrite(string[] values, Pass pass) {
             if(values.Length != 1) {
                 ParseHelper.LogParserError("color_write", pass.Parent.Name, "Expected value 'on' or 'off'");
@@ -622,7 +714,7 @@ namespace Axiom.Graphics {
             }
         }
 
-        [AttributeParser("depth_write", Pass)]
+        [AttributeParser("depth_write", PASS)]
         public static void ParseDepthWrite(string[] values, Pass pass) {
             if(values.Length != 1) {
                 ParseHelper.LogParserError("depth_write", pass.Parent.Name, "Expected value 'on' or 'off'");
@@ -642,7 +734,7 @@ namespace Axiom.Graphics {
             }
         }
 
-        [AttributeParser("diffuse", Pass)]
+        [AttributeParser("diffuse", PASS)]
         public static void ParseDiffuse(string[] values, Pass pass) {
             if(values.Length != 3 && values.Length != 4) {
                 ParseHelper.LogParserError("diffuse", pass.Parent.Name, "Expected 3-4 params");
@@ -652,7 +744,7 @@ namespace Axiom.Graphics {
             pass.Diffuse = ParseHelper.ParseColor(values);
         }
 
-        [AttributeParser("shininess", Pass)]
+        [AttributeParser("shininess", PASS)]
         public static void ParseShininess(string[] values, Pass pass) {
             if(values.Length != 1) {
                 ParseHelper.LogParserError("shininess", pass.Parent.Name, "Bad shininess attribute, expected 1 param.");
@@ -662,7 +754,7 @@ namespace Axiom.Graphics {
             pass.Shininess = float.Parse(values[0]);
         }
 
-        [AttributeParser("specular", Pass)]
+        [AttributeParser("specular", PASS)]
         public static void ParseSpecular(string[] values, Pass pass) {
             if(values.Length != 3 && values.Length != 4) {
                 ParseHelper.LogParserError("emissive", pass.Parent.Name, "Bad specular attribute, expected 4 or 5 params");
@@ -672,7 +764,7 @@ namespace Axiom.Graphics {
             pass.Specular = ParseHelper.ParseColor(values);
         }
 
-        [AttributeParser("emissive", Pass)]
+        [AttributeParser("emissive", PASS)]
         public static void ParseEmissive(string[] values, Pass pass) {
             if(values.Length != 3 && values.Length != 4) {
                 ParseHelper.LogParserError("emissive", pass.Parent.Name, "Expected 3-4 params");
@@ -682,7 +774,7 @@ namespace Axiom.Graphics {
             pass.Emissive = ParseHelper.ParseColor(values);
         }
 
-        [AttributeParser("depth_check", Pass)]
+        [AttributeParser("depth_check", PASS)]
         public static void ParseDepthCheck(string[] values, Pass pass) {
             if(values.Length != 1) {
                 ParseHelper.LogParserError("depth_check", pass.Parent.Name, "Expected param 'on' or 'off'");
@@ -702,7 +794,7 @@ namespace Axiom.Graphics {
             }
         }
 
-        [AttributeParser("iteration", Pass)]
+        [AttributeParser("iteration", PASS)]
         public static void ParseIteration(string[] values, Pass pass) {
             if(values.Length < 1 || values.Length > 2) {
                 ParseHelper.LogParserError("iteration", pass.Parent.Name, "Expected 1 or 2 param values.'");
@@ -736,7 +828,7 @@ namespace Axiom.Graphics {
             }
         }
 
-        [AttributeParser("lighting", Pass)]
+        [AttributeParser("lighting", PASS)]
         public static void ParseLighting(string[] values, Pass pass) {
             if(values.Length != 1) {
                 ParseHelper.LogParserError("lighting", pass.Parent.Name, "Expected param 'on' or 'off'");
@@ -757,7 +849,7 @@ namespace Axiom.Graphics {
         }
 
 
-        [AttributeParser("max_lights", Pass)]
+        [AttributeParser("max_lights", PASS)]
         public static void ParseMaxLights(string[] values, Pass pass) {
             if(values.Length != 1) {
                 ParseHelper.LogParserError("max_lights", pass.Parent.Name, "Expected 1 param value.'");
@@ -767,7 +859,7 @@ namespace Axiom.Graphics {
             pass.MaxLights = int.Parse(values[0]);
         }
 
-        [AttributeParser("scene_blend", Pass)] 
+        [AttributeParser("scene_blend", PASS)] 
         public static void ParseSceneBlend(string[] values, Pass pass) {           
             switch (values.Length) { 
                 case 1: 
@@ -807,7 +899,7 @@ namespace Axiom.Graphics {
             } 
         } 
 
-        [AttributeParser("cull_hardware", Pass)]
+        [AttributeParser("cull_hardware", PASS)]
         public static void ParseCullHardware(string[] values, Pass pass) {
             if(values.Length != 1) {
                 ParseHelper.LogParserError("cull_hardware", pass.Parent.Name, "Expected 2 params.");
@@ -824,7 +916,7 @@ namespace Axiom.Graphics {
                 ParseHelper.LogParserError("cull_hardware", pass.Parent.Name, "Invalid enum value");
         }
 
-        [AttributeParser("cull_software", Pass)]
+        [AttributeParser("cull_software", PASS)]
         public static void ParseCullSoftware(string[] values, Pass pass) {
             if(values.Length != 1) {
                 ParseHelper.LogParserError("cull_software", pass.Parent.Name, "Invalid enum value");
@@ -844,7 +936,7 @@ namespace Axiom.Graphics {
 
         #region Texture unit attribute parser methods
 
-        [AttributeParser("anim_texture", TextureUnit)]
+        [AttributeParser("anim_texture", TEXTURE_UNIT)]
         public static void ParseAnimTexture(string[] values, TextureUnitState layer) {
             if(values.Length < 3) {
                 ParseHelper.LogParserError("anim_texture", layer.Parent.Parent.Parent.Name, "Must have at least 3 params");
@@ -862,8 +954,8 @@ namespace Axiom.Graphics {
         }
 
         /// Note: Allows both spellings of color :-).
-        [AttributeParser("color_op", TextureUnit)]
-        [AttributeParser("colour_op", TextureUnit)]
+        [AttributeParser("color_op", TEXTURE_UNIT)]
+        [AttributeParser("colour_op", TEXTURE_UNIT)]
         public static void ParseColorOp(string[] values, TextureUnitState layer) {
             if(values.Length != 1) {
                 ParseHelper.LogParserError("color_op", layer.Parent.Parent.Name, "Expected 1 param.");
@@ -881,8 +973,8 @@ namespace Axiom.Graphics {
         }
 
         /// Note: Allows both spellings of color :-).
-        [AttributeParser("colour_op_multipass_fallback", TextureUnit)]
-        [AttributeParser("color_op_multipass_fallback", TextureUnit)]
+        [AttributeParser("colour_op_multipass_fallback", TEXTURE_UNIT)]
+        [AttributeParser("color_op_multipass_fallback", TEXTURE_UNIT)]
         public static void ParseColorOpFallback(string[] values, TextureUnitState layer) {
             // lookup the real enums equivalent to the script values 
             object srcVal = ScriptEnumAttribute.Lookup(values[0], typeof(SceneBlendFactor)); 
@@ -903,8 +995,8 @@ namespace Axiom.Graphics {
         }
 
         /// Note: Allows both spellings of color :-).
-        [AttributeParser("color_op_ex", TextureUnit)]
-        [AttributeParser("colour_op_ex", TextureUnit)]
+        [AttributeParser("color_op_ex", TEXTURE_UNIT)]
+        [AttributeParser("colour_op_ex", TEXTURE_UNIT)]
         public static void ParseColorOpEx(string[] values, TextureUnitState layer) {
             if(values.Length < 3 || values.Length > 12) {
                 ParseHelper.LogParserError("color_op_ex", layer.Parent.Parent.Name, "Expected either 3 or 10 params.");
@@ -972,7 +1064,7 @@ namespace Axiom.Graphics {
             layer.SetColorOperationEx(op, src1, src2, colSrc1, colSrc2, manual);
         }
 
-        [AttributeParser("cubic_texture", TextureUnit)]
+        [AttributeParser("cubic_texture", TEXTURE_UNIT)]
         public static void ParseCubicTexture(string[] values, TextureUnitState layer) {
             bool useUVW;
             string uvw = values[values.Length - 1].ToLower();
@@ -1004,7 +1096,7 @@ namespace Axiom.Graphics {
 			
         }		
 
-        [AttributeParser("env_map", TextureUnit)]
+        [AttributeParser("env_map", TEXTURE_UNIT)]
         public static void ParseEnvMap(string[] values, TextureUnitState layer) {
             if(values.Length != 1) {
                 ParseHelper.LogParserError("env_map", layer.Parent.Parent.Name, "Expected 1 param.");
@@ -1025,7 +1117,7 @@ namespace Axiom.Graphics {
             }
         }
 
-        [AttributeParser("filtering", TextureUnit)]
+        [AttributeParser("filtering", TEXTURE_UNIT)]
         public static void ParseLayerFiltering(string[] values, TextureUnitState unitState) {
             if(values.Length == 1) {
                 // lookup the real enum equivalent to the script value
@@ -1056,7 +1148,7 @@ namespace Axiom.Graphics {
             }
         }
 
-        [AttributeParser("rotate", TextureUnit)]
+        [AttributeParser("rotate", TEXTURE_UNIT)]
         public static void ParseRotate(string[] values, TextureUnitState layer) {
             if(values.Length != 1) {
                 ParseHelper.LogParserError("rotate", layer.Parent.Parent.Name, "Expected 1 param.");
@@ -1066,7 +1158,7 @@ namespace Axiom.Graphics {
             layer.SetTextureRotate(float.Parse(values[0]));
         }
 
-        [AttributeParser("rotate_anim", TextureUnit)]
+        [AttributeParser("rotate_anim", TEXTURE_UNIT)]
         public static void ParseRotateAnim(string[] values, TextureUnitState layer) {
             if(values.Length != 1) {
                 ParseHelper.LogParserError("rotate_anim", layer.Parent.Parent.Name, "Expected 1 param.");
@@ -1076,7 +1168,7 @@ namespace Axiom.Graphics {
             layer.SetRotateAnimation(float.Parse(values[0]));
         }
 
-        [AttributeParser("scale", TextureUnit)]
+        [AttributeParser("scale", TEXTURE_UNIT)]
         public static void ParseScale(string[] values, TextureUnitState layer) {
             if(values.Length != 2) {
                 ParseHelper.LogParserError("scale", layer.Parent.Parent.Name, "Expected 2 params.");
@@ -1086,7 +1178,7 @@ namespace Axiom.Graphics {
             layer.SetTextureScale(float.Parse(values[0]), float.Parse(values[1]));
         }
 
-        [AttributeParser("scroll", TextureUnit)]
+        [AttributeParser("scroll", TEXTURE_UNIT)]
         public static void ParseScroll(string[] values, TextureUnitState layer) {
             if(values.Length != 2) {
                 ParseHelper.LogParserError("scroll", layer.Parent.Parent.Name, "Expected 2 params.");
@@ -1096,7 +1188,7 @@ namespace Axiom.Graphics {
             layer.SetTextureScroll(float.Parse(values[0]), float.Parse(values[1]));
         }
 
-        [AttributeParser("scroll_anim", TextureUnit)]
+        [AttributeParser("scroll_anim", TEXTURE_UNIT)]
         public static void ParseScrollAnim(string[] values, TextureUnitState layer) {
             if(values.Length != 2) {
                 ParseHelper.LogParserError("scroll_anim", layer.Parent.Parent.Name, "Expected 2 params.");
@@ -1106,7 +1198,7 @@ namespace Axiom.Graphics {
             layer.SetScrollAnimation(float.Parse(values[0]), float.Parse(values[1]));
         }
 
-        [AttributeParser("tex_address_mode", TextureUnit)]
+        [AttributeParser("tex_address_mode", TEXTURE_UNIT)]
         public static void ParseTexAddressMode(string[] values, TextureUnitState layer) {
             if(values.Length != 1) {
                 ParseHelper.LogParserError("tex_address_mode", layer.Parent.Parent.Name, "Expected 1 param.");
@@ -1123,7 +1215,7 @@ namespace Axiom.Graphics {
                 ParseHelper.LogParserError("tex_address_mode", layer.Parent.Parent.Name, "Invalid enum value");
         }
 
-        [AttributeParser("tex_coord_set", TextureUnit)]
+        [AttributeParser("tex_coord_set", TEXTURE_UNIT)]
         public static void ParseTexCoordSet(string[] values, TextureUnitState layer) {
             if(values.Length != 1) {
                 ParseHelper.LogParserError("tex_coord_set", layer.Parent.Parent.Name, "Expected texture name");
@@ -1133,7 +1225,7 @@ namespace Axiom.Graphics {
             layer.TextureCoordSet = int.Parse(values[0]);
         }
 
-        [AttributeParser("texture", TextureUnit)]
+        [AttributeParser("texture", TEXTURE_UNIT)]
         public static void ParseTexture(string[] values, TextureUnitState layer) {
             if(values.Length < 1 || values.Length > 2) {
                 ParseHelper.LogParserError("texture", layer.Parent.Parent.Name, "Expected syntax 'texture <name> [type]'");
@@ -1157,7 +1249,7 @@ namespace Axiom.Graphics {
             layer.SetTextureName(values[0], texType);
         }
 
-        [AttributeParser("wave_xform", TextureUnit)]
+        [AttributeParser("wave_xform", TEXTURE_UNIT)]
         public static void ParseWaveXForm(string[] values, TextureUnitState layer) {
             if(values.Length != 6) {
                 ParseHelper.LogParserError("wave_xform", layer.Parent.Parent.Name, "Expected 6 params.");
