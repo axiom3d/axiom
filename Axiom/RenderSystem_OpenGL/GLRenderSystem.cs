@@ -1617,14 +1617,31 @@ namespace RenderSystem_OpenGL {
 
         public override void BindGpuProgram(GpuProgram program) {
             // TODO: Implement GlRenderSystem.BindGpuProgram
+            GLGpuProgram glProgram = (GLGpuProgram)program;
+
+            // TODO: Gl.glEnable(glProgram.GLProgramType);
+            // TODO: glBindProgramARB(glProgram.GLProgramType, glProgram.ProgramID);
+
         }
 
         public override void BindGpuProgramParameters(GpuProgramType type, GpuProgramParameters parms) {
             // TODO: Implement GlRenderSystem.BindGpuProgramParameters
+
+            int glType = GLHelper.ConvertEnum(type);
+
+            if(parms.HasFloatConstants) {
+                // TODO: glProgramLocalParameter4vfARB(glType, 0, parms.FloatContants);
+            }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
         public override void UnbindGpuProgram(GpuProgramType type) {
-            // TODO: Implement GlRenderSystem.UnbindGpuProgram
+            int glType = GLHelper.ConvertEnum(type);
+
+            Gl.glDisable(glType);
         }
 
         #endregion Implementation of RenderSystem

@@ -37,21 +37,11 @@ namespace RenderSystem_DirectX9
 	/// </summary>
 	public class D3DGpuProgramManager : GpuProgramManager
 	{
-		#region Member variables
-		
         protected D3D.Device device;
-
-		#endregion
-		
-		#region Constructors
 		
 		public D3DGpuProgramManager(D3D.Device device) : base() {
             this.device = device;
 		}
-		
-		#endregion
-		
-		#region Methods
 
         /// <summary>
         ///    Create the specified type of GpuProgram.
@@ -79,11 +69,5 @@ namespace RenderSystem_DirectX9
         public override GpuProgramParameters CreateParameters() {
             return new D3DGpuProgramParameters();
         }
-
-		#endregion
-		
-		#region Properties
-		
-		#endregion
 	}
 }
