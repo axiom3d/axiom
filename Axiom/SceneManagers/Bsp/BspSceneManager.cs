@@ -136,24 +136,24 @@ namespace Axiom.SceneManagers.Bsp
 
 				if(table.Columns["Scale"] != null) 
 				{
-                    optionList["Scale"] = StringConverter.ParseFloat(row["Scale"]);
+                    optionList["Scale"] = StringConverter.ParseFloat((string)row["Scale"]);
                 }
 
 				Vector3 move = Vector3.Zero;
 
 				if(table.Columns["MoveX"] != null) 
 				{
-                    move.x = StringConverter.ParseFloat(row["MoveX"]);
+                    move.x = StringConverter.ParseFloat((string)row["MoveX"]);
                 }
 
 				if(table.Columns["MoveY"] != null) 
 				{
-                    move.y = StringConverter.ParseFloat(row["MoveY"]);
+                    move.y = StringConverter.ParseFloat((string)row["MoveY"]);
                 }
 
 				if(table.Columns["MoveZ"] != null) 
 				{
-                    move.z = StringConverter.ParseFloat(row["MoveZ"]);
+                    move.z = StringConverter.ParseFloat((string)row["MoveZ"]);
                 }
 
 				optionList["Move"] = move;
@@ -170,7 +170,7 @@ namespace Axiom.SceneManagers.Bsp
 				
 				if(table.Columns["AmbientRatio"] != null) 
 				{
-                    optionList["AmbientRatio"] = StringConverter.ParseFloat(row["AmbientRatio"]);
+                    optionList["AmbientRatio"] = StringConverter.ParseFloat((string)row["AmbientRatio"]);
                 }
 			}
 			else

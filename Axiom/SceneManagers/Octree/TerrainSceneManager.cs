@@ -95,15 +95,15 @@ namespace Axiom.SceneManagers.Octree {
             }
 
             if(table.Columns["ScaleX"] != null) {
-                options.scalex = StringConverter.ParseFloat(row["ScaleX"]);
+                options.scalex = StringConverter.ParseFloat((string)row["ScaleX"]);
             }
 
             if(table.Columns["ScaleY"] != null) {
-                options.scaley = StringConverter.ParseFloat(row["ScaleY"]);
+                options.scaley = StringConverter.ParseFloat((string)row["ScaleY"]);
             }
 
             if(table.Columns["ScaleZ"] != null) {
-                options.scalez = StringConverter.ParseFloat(row["ScaleZ"]);
+                options.scalez = StringConverter.ParseFloat((string)row["ScaleZ"]);
             }
 
             if(table.Columns["VertexNormals"] != null) {
