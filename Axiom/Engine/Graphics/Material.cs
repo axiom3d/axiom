@@ -408,6 +408,11 @@ namespace Axiom.Graphics {
             }
 
             compilationRequired = false;
+
+            // Did we find any?
+            if(supportedTechniques.Count == 0) {
+                System.Diagnostics.Trace.WriteLine(string.Format("Warning: Material '{0}' has no supportable Techniques on this hardware.  Will be rendered blank.", name));
+            }
         }
 
         /// <summary>
@@ -450,6 +455,9 @@ namespace Axiom.Graphics {
         /// </summary>
         internal void NotifyNeedsRecompile() {
             compilationRequired = true;
+
+            // force reload of any new resources
+            isLoaded = false;
         }
 
         /// <summary>
