@@ -365,8 +365,12 @@ namespace Axiom.Core {
         /// <param name="meshName">The name of the mesh to load.  Will be loaded if not already.</param>
         /// <returns></returns>
         public virtual Entity CreateEntity(String name, PrefabEntity prefab) {
-            // TODO: Implement CreateEntity
-            return null;
+            switch(prefab) {
+                case PrefabEntity.Plane:
+                    return CreateEntity(name, "Prefab_Plane");
+                default:
+                    return null;
+            }        
         }
 
         /// <summary>
@@ -400,8 +404,7 @@ namespace Axiom.Core {
         /// <param name="name"></param>
         /// <returns></returns>
         public virtual Material CreateMaterial(String name) {
-            // TODO: Implement CreateMaterial
-            return null;
+            return (Material) MaterialManager.Instance.Create(name);
         }
 
         /// <summary>

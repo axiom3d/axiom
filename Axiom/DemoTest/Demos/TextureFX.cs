@@ -25,10 +25,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 using Axiom.Controllers;
 using Axiom.Controllers.Canned;
 using Axiom.Core;
+using Axiom.Enumerations;
 using Axiom.MathLib;
 using Axiom.Utility;
 
@@ -37,17 +39,6 @@ namespace Demos {
     /// 	Summary description for TextureBlending.
     /// </summary>
     public class TextureFX : TechDemo {
-        #region Member variables
-		
-        #endregion
-		
-        #region Constructors
-		
-        public TextureFX() {
-        }
-		
-        #endregion
-	
         protected override void CreateScene() {
             // since whole screen is being redrawn every frame, dont bother clearing
             // option works for GL right now, uncomment to test it out.  huge fps increase
@@ -56,34 +47,53 @@ namespace Demos {
 
             // set some ambient light
             scene.TargetRenderSystem.LightingEnabled = true;
-            scene.AmbientLight = ColorEx.FromColor(System.Drawing.Color.Gray);
+            scene.AmbientLight = ColorEx.FromColor(Color.Gray);
 
             // create a point light (default)
             Light light = scene.CreateLight("MainLight");
-            light.Position = new Vector3(-100, 80, 50);
+            light.Position = new Vector3(20, 80, 50);
 
-            // create a plane for the plane mesh
-            Plane p = new Plane();
-            p.Normal = Vector3.UnitZ;
-            p.D = 0;
+            CreateScalingPlane();
+            CreateScrollingKnot();
+            CreateWateryPlane();
 
-            // create a plane mesh
-            MeshManager.Instance.CreatePlane("ExamplePlane", p, 150, 150, 10, 10, true, 2, 2, 2, Vector3.UnitY);
+            // set up a material for the skydome
+            Material skyMaterial = scene.CreateMaterial("SkyMat");
+            skyMaterial.Lighting = false;
+            // use a cloudy sky
+            TextureLayer textureLayer = skyMaterial.AddTextureLayer("clouds.jpg");
+            // scroll the clouds
+            textureLayer.SetScrollAnimation(0.15f, 0);
 
-            // create an entity to reference this mesh
-            Entity metal = scene.CreateEntity("BumpyMetal", "ExamplePlane");
-            metal.MaterialName = "TextureFX/BumpyMetal";
-            ((SceneNode)scene.RootSceneNode.CreateChild(new Vector3(-250, -40, -100), Quaternion.Identity)).AttachObject(metal);
-
-            // create an entity to reference this mesh
-            Entity water = scene.CreateEntity("Water", "ExamplePlane");
-            water.MaterialName = "TextureFX/Water";
-            ((SceneNode)scene.RootSceneNode.CreateChild()).AttachObject(water);
-
-            // set a basic skybox
-            scene.SetSkyBox(true, "Skybox/CloudyHills", 3000.0f);
-
+            // create the skydome
+            scene.SetSkyDome(true, "SkyMat", -5, 2);
         }
 
+        private void CreateScalingPlane() {
+            // create a prefab plane
+            Entity plane = scene.CreateEntity("Plane", PrefabEntity.Plane);
+            // give the plane a texture
+            plane.MaterialName = "Examples/TextureEffect1";
+            // add entity to the root scene node
+            SceneNode node = (SceneNode) scene.RootSceneNode.CreateChild(new Vector3(-250, -40, -100), Quaternion.Identity);
+            node.AttachObject(plane);
+        }
+
+        private void CreateScrollingKnot() {
+            Entity knot = scene.CreateEntity("knot", "knot.mesh");
+            knot.MaterialName = "Examples/TextureEffect2";
+            // add entity to the root scene node
+            SceneNode node = (SceneNode) scene.RootSceneNode.CreateChild(new Vector3(200, 50, 150), Quaternion.Identity);
+            node.AttachObject(knot);
+        }
+
+        private void CreateWateryPlane() {
+            // create a prefab plane
+            Entity plane = scene.CreateEntity("WaterPlane", PrefabEntity.Plane);
+            // give the plane a texture
+            plane.MaterialName = "Examples/TextureEffect3";
+            // add entity to the root scene node
+            scene.RootSceneNode.AttachObject(plane);
+        }
     }
 }

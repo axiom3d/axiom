@@ -36,7 +36,9 @@ namespace Axiom.Core {
     public class MeshManager : ResourceManager {
         #region Singleton implementation
 
-        static MeshManager() {}
+        static MeshManager() {
+            //Init();
+        }
         protected MeshManager() {}
         protected static MeshManager instance;
 
@@ -56,6 +58,7 @@ namespace Axiom.Core {
         /// </summary>
         public void Initialize() {
             // TODO: Setup Prefab nodes here
+            CreatePrefabPlane();
         }
 	
         /// <summary>
@@ -423,6 +426,67 @@ namespace Axiom.Core {
             mesh.BoundingSphereRadius = MathUtil.Sqrt(maxSquaredLength);
 
             return mesh;
+        }
+
+        private void CreatePrefabPlane() {
+            
+            //this.CreatePlane("Prefab_Plane", new Plane(Vector3.UnitZ, 0), 100, 100);
+            
+            Mesh mesh = (Mesh) Create("Prefab_Plane");
+            SubMesh subMesh = mesh.CreateSubMesh("Prefab_Plane_Submesh");
+
+            float[] vertices = {
+                -100, -100, 0,  // pos
+                0, 0, 1,        // normal
+                0, 0,           // texcoord
+                100, -100, 0,
+                0, 0, 1,
+                1, 0,
+                100, 100, 0,
+                0, 0, 1,
+                1, 1,
+                -100, 100, 0,
+                0, 0, 1,
+                0, 1
+            };
+
+            mesh.SharedVertexData = new VertexData();
+            mesh.SharedVertexData.vertexCount = 4;
+            VertexDeclaration vertexDeclaration = mesh.SharedVertexData.vertexDeclaration;
+            VertexBufferBinding binding = mesh.SharedVertexData.vertexBufferBinding;
+
+            int offset = 0;
+
+            vertexDeclaration.AddElement(new VertexElement(0, offset, VertexElementType.Float3, VertexElementSemantic.Position));
+            offset += VertexElement.GetTypeSize(VertexElementType.Float3);
+
+            vertexDeclaration.AddElement(new VertexElement(0, offset, VertexElementType.Float3, VertexElementSemantic.Normal));
+            offset += VertexElement.GetTypeSize(VertexElementType.Float3);
+
+            vertexDeclaration.AddElement(new VertexElement(0, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0));
+            offset += VertexElement.GetTypeSize(VertexElementType.Float2);
+
+            // allocate vertex buffer
+            HardwareVertexBuffer vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(offset, 4, BufferUsage.StaticWriteOnly);
+
+            // set up the binding, one source only
+            binding.SetBinding(0, vertexBuffer);
+
+            vertexBuffer.WriteData(0, vertexBuffer.Size, vertices, true);
+
+            subMesh.useSharedVertices = true;
+
+            HardwareIndexBuffer indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer(IndexType.Size16, 6, BufferUsage.StaticWriteOnly);
+            short[] faces = {0, 1, 2, 0, 2, 3};
+            subMesh.indexData.indexBuffer = indexBuffer;
+            subMesh.indexData.indexCount = 6;
+            subMesh.indexData.indexStart = 0;
+            indexBuffer.WriteData(0, indexBuffer.Size, faces, true);
+
+            mesh.BoundingBox = new AxisAlignedBox(new Vector3(-100, -100, 0), new Vector3(100, 100, 0));
+            mesh.BoundingSphereRadius = MathUtil.Sqrt(100 * 100 + 100 * 100);
+
+            resourceList.Add(mesh.Name, mesh);
         }
 
         /// <summary>
