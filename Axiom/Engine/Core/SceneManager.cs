@@ -675,7 +675,10 @@ namespace Axiom.Core {
         /// <param name="group"></param>
         /// <returns>True if the queue should be skipped.</returns>
         protected bool OnRenderQueueStarted(RenderQueueGroupID group) {
-            // TODO: Implementation of OnRenderQueueStarted
+            if(QueueStarted != null) {
+                return QueueStarted(group);
+            }
+
             return false;
         }
 
@@ -685,7 +688,10 @@ namespace Axiom.Core {
         /// <param name="group"></param>
         /// <returns>True if the queue should be repeated.</returns>
         protected bool OnRenderQueueEnded(RenderQueueGroupID group) {
-            // TODO: Implementation of OnRenderQueueEnded
+            if(QueueEnded != null) {
+                return QueueEnded(group);
+            }
+
             return false;
         }
 
@@ -1239,9 +1245,9 @@ namespace Axiom.Core {
 
                             } while(materialLayersLeft > 0);
 
-                        } // foreach TransparencyGroups
+                        } // for TransparencyGroups
 
-                    } // foreach PriorityGroups
+                    } // for PriorityGroups
 
                     // true if we need to repeat this queue, false otherwise
                     repeatQueue = OnRenderQueueEnded(groupID);

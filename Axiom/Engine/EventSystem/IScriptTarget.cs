@@ -31,6 +31,6 @@ namespace Axiom.EventSystem {
     /// Summary description for IScriptTarget.
     /// </summary>
     public class IScriptTarget {
-        event ScriptEventHandler OnEvent;	
+        //event ScriptEventHandler OnEvent;	
     }
 }

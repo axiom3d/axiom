@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using System.Windows.Forms;
 using Axiom.Core;
 using Axiom.Enumerations;
 using Axiom.EventSystem;
@@ -106,15 +107,41 @@ namespace Axiom.Gui {
 
         #region IMouseTarget Members
 
-        public event System.Windows.Forms.MouseEventHandler MouseMoved;
+        public event MouseEventHandler MouseMoved;
+        public event MouseEventHandler MouseEnter;
+        public event MouseEventHandler MouseLeave;
+        public event MouseEventHandler MouseDown;
+        public event MouseEventHandler MouseUp;      
 
-        public event System.Windows.Forms.MouseEventHandler MouseEnter;
+        protected internal void OnMouseDown(MouseEventArgs e) {
+            if(MouseDown != null) {
+                MouseDown(this, e);
+            }
+        }
 
-        public event System.Windows.Forms.MouseEventHandler MouseLeave;
+        protected internal void OnMouseEnter(MouseEventArgs e) {
+            if(MouseEnter != null) {
+                MouseEnter(this, e);
+            }
+        }
 
-        public event System.Windows.Forms.MouseEventHandler MouseDown;
+        protected internal void OnMouseLeave(MouseEventArgs e) {
+            if(MouseLeave != null) {
+                MouseLeave(this, e);
+            }
+        }
 
-        public event System.Windows.Forms.MouseEventHandler MouseUp;
+        protected internal void OnMouseUp(MouseEventArgs e) {
+            if(MouseUp != null) {
+                MouseUp(this, e);
+            }
+        }
+
+        protected internal void OnMouseMoved(MouseEventArgs e) {
+            if(MouseMoved != null) {
+                MouseMoved(this, e);
+            }
+        }
 
         #endregion
     }

@@ -630,13 +630,16 @@ namespace RenderSystem_OpenGL {
         /// <param name="stage"></param>
         /// <param name="blendMode"></param>
         public override void SetTextureBlendMode(int stage, LayerBlendModeEx blendMode) {
+            if(caps.CheckCap(Capabilities.TextureBlending)) {
+                return;
+            }
 
             if(textureUnits[stage].ColorBlendMode == blendMode) {
                 return;
             }
 
-            float[] av1 = new float[4] {0.0f, 0.0f, 0.0f, blendMode.alphaArg1};
-            float[] av2 = new float[4] {0.0f, 0.0f, 0.0f, blendMode.alphaArg2};
+            //float[] av1 = new float[4] {0.0f, 0.0f, 0.0f, blendMode.alphaArg1};
+            //float[] av2 = new float[4] {0.0f, 0.0f, 0.0f, blendMode.alphaArg2};
 
             int src1op, src2op, cmd;
 
@@ -960,12 +963,6 @@ namespace RenderSystem_OpenGL {
         public override void Shutdown() {
             // call base Shutdown implementation
             base.Shutdown();
-
-           // if(context != null) {
-                // drop and dispose of the context
-          //      context.Drop();
-          //      context.Dispose();
-          //  }
         }
 
         /// <summary>
@@ -975,9 +972,10 @@ namespace RenderSystem_OpenGL {
         /// <param name="enabled"></param>
         /// <param name="textureName"></param>
         protected override void SetTexture(int stage, bool enabled, string textureName) {
-            if(textureUnits[stage].TextureName == textureName) {
-                return;
-            }
+            // TODO: Fix problem this causes with toggling bounding box
+            //if(textureUnits[stage].TextureName == textureName) {
+           //     return;
+           // }
 
             // load the texture
             GLTexture texture = (GLTexture)TextureManager.Instance[textureName];

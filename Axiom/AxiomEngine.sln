@@ -71,7 +71,6 @@ Global
 		{9C504B43-E58E-4915-8336-E005C6500797}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(SolutionItems) = postSolution
-		Solution Items\csgl.dll = Solution Items\csgl.dll
 		Solution Items\ode.dll = Solution Items\ode.dll
 		Solution Items\Tao.OpenGl.dll = Solution Items\Tao.OpenGl.dll
 		Solution Items\Tao.Platform.Windows.dll = Solution Items\Tao.Platform.Windows.dll
