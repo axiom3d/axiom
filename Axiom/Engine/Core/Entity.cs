@@ -703,6 +703,41 @@ namespace Axiom.Core {
 			}
 		}
 
+		/// <summary>
+		///    Sets a level-of-detail bias for the material detail of this entity.
+		/// </summary>
+		/// <remarks>
+		///    Level of detail reduction is normally applied automatically based on the Material 
+		///    settings. However, it is possible to influence this behavior for this entity
+		///    by adjusting the LOD bias. This 'nudges' the material level of detail used for this 
+		///    entity up or down depending on your requirements. You might want to use this
+		///    if there was a particularly important entity in your scene which you wanted to
+		///    detail better than the others, such as a player model.
+		///    <p/>
+		///    There are three parameters to this method; the first is a factor to apply; it 
+		///    defaults to 1.0 (no change), by increasing this to say 2.0, this model would 
+		///    take twice as long to reduce in detail, whilst at 0.5 this entity would use lower
+		///    detail versions twice as quickly. The other 2 parameters are hard limits which 
+		///    let you set the maximum and minimum level-of-detail version to use, after all
+		///    other calculations have been made. This lets you say that this entity should
+		///    never be simplified, or that it can only use LODs below a certain level even
+		///    when right next to the camera.
+		/// </remarks>
+		/// <param name="factor">Proportional factor to apply to the distance at which LOD is changed. 
+		///    Higher values increase the distance at which higher LODs are displayed (2.0 is 
+		///    twice the normal distance, 0.5 is half).</param>
+		/// <param name="maxDetailIndex">The index of the maximum LOD this entity is allowed to use (lower
+		///    indexes are higher detail: index 0 is the original full detail model).</param>
+		/// <param name="minDetailIndex">The index of the minimum LOD this entity is allowed to use (higher
+		///    indexes are lower detail. Use something like 99 if you want unlimited LODs (the actual
+		///    LOD will be limited by the number in the material)</param>
+		public void SetMaterialLodBias(float factor, int maxDetailIndex, int minDetailIndex) {
+			Debug.Assert(factor > 0.0f, "Bias factor must be > 0!");
+			materialLodFactorInv = 1.0f / factor;
+			maxMaterialLodIndex = maxDetailIndex;
+			minMaterialLodIndex = minDetailIndex;
+		}
+
         /// <summary>
         ///    Sets a level-of-detail bias on this entity.
         /// </summary>
@@ -731,7 +766,7 @@ namespace Axiom.Core {
         /// <param name="minDetailIndex">The index of the minimum LOD this entity is allowed to use (higher
         ///    indexes are lower detail. Use something like 99 if you want unlimited LODs (the actual
         ///    LOD will be limited by the number in the Mesh)</param>
-        public void SetLodBias(float factor, int maxDetailIndex, int minDetailIndex) {
+        public void SetMeshLodBias(float factor, int maxDetailIndex, int minDetailIndex) {
             Debug.Assert(factor > 0.0f, "Bias factor must be > 0!");
             meshLodFactorInv = 1.0f / factor;
             maxMeshLodIndex = maxDetailIndex;
