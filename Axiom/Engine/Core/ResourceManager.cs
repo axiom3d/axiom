@@ -326,13 +326,15 @@ namespace Axiom.Core {
 		public virtual Resource GetByHandle(int handle) {
 			Debug.Assert(resourceHandleMap != null, "A resource was being retreived, but the list of Resources is null.", "");
 
+			Resource resource = null;
+
 			// find the resource in the Hashtable and return it
 			if(resourceHandleMap[handle] != null) {
-				return (Resource)resourceHandleMap[handle];
+				resource = (Resource)resourceHandleMap[handle];
+				resource.Touch();
 			}
-			else {
-				return null;
-			}
+
+			return resource;
 		}
 
         /// <summary>
@@ -343,13 +345,15 @@ namespace Axiom.Core {
         public virtual Resource GetByName(string name) {
             Debug.Assert(resourceList != null, "A resource was being retreived, but the list of Resources is null.", "");
 
+			Resource resource = null;
+
             // find the resource in the Hashtable and return it
 			if(resourceList[name] != null) {
-				return (Resource)resourceList[name];
+				resource = (Resource)resourceList[name];
+				resource.Touch();
 			}
-			else {
-				return null;
-			}
+
+			return resource;
         }
 
         #endregion
