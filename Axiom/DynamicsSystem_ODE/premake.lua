@@ -1,0 +1,9 @@
+package.name = "DynamicsSystem_ODE"
+package.language = "c#"
+package.kind = "dll"
+package.target = "Axiom.Dynamics.ODE"
+package.defines = { "TRACE" } 
+package.config["Debug"].target = { "DEBUG" }
+package.links = { "System", "Engine", "MathLib", "ode" }
+package.libpaths = { "../Solution Items" }
+package.files = { matchfiles("*.cs"), matchfiles("Collections/*.cs") }

@@ -40,13 +40,13 @@ using Axiom.Utility;
 using Tao.OpenGl;
 using Tao.Platform.Windows;
 
-namespace RenderSystem_OpenGL {
+namespace Axiom.RenderSystems.OpenGL {
 
     /// <summary>
     /// Summary description for OpenGLRenderer.
     /// </summary>
     public class GLRenderSystem : RenderSystem, IPlugin {
-        #region Member variables
+        #region Fields
 
         /// <summary>Retains initial screen settings.</summary>        
         protected Gdi.DEVMODE intialScreenSettings;
@@ -78,6 +78,15 @@ namespace RenderSystem_OpenGL {
 
         protected bool zTrickEven;      
 
+        /// <summary>
+        ///    Last min filtering option.
+        /// </summary>
+        protected FilterOptions minFilter;
+        /// <summary>
+        ///    Last mip filtering option.
+        /// </summary>
+        protected FilterOptions mipFilter;
+
         // render state redundency reduction settings
         protected SceneDetailLevel lastRasterizationMode;
         protected ColorEx lastDiffuse, lastAmbient, lastSpecular, lastEmissive;
@@ -98,8 +107,9 @@ namespace RenderSystem_OpenGL {
         protected float[] tempMatrix = new float[16];
         protected float[] tempColorVals = new float[4];
         protected float[] tempProgramFloats = new float[4];
+        protected int[] colorWrite = new int[4];
 
-        #endregion Member variables
+        #endregion Fields
 
         #region Constructors
 
@@ -117,6 +127,11 @@ namespace RenderSystem_OpenGL {
             stencilRef = 0;
             stencilMask = unchecked((int)0xffffffff);
 
+            colorWrite[0] = colorWrite[1] = colorWrite[2] = colorWrite[3] = 1;
+
+            minFilter = FilterOptions.Linear;
+            mipFilter = FilterOptions.Point;
+
             InitConfigOptions();
         }
 
@@ -124,9 +139,13 @@ namespace RenderSystem_OpenGL {
 
         #region Implementation of RenderSystem
 
-        public override RenderWindow CreateRenderWindow(string name, System.Windows.Forms.Control target, int width, int height, int colorDepth,
-            bool isFullscreen, int left, int top, bool depthBuffer, RenderWindow parent) {
+        public override RenderWindow CreateRenderWindow(string name, int width, int height, int colorDepth,
+            bool isFullscreen, int left, int top, bool depthBuffer, object target) {
+
             RenderWindow window = new GLWindow();
+
+            window.Handle = target;
+            Control targetControl = (Control)target;
 
             // see if a OpenGLContext has been created yet
             if(renderWindows.Count == 0) {
@@ -152,7 +171,7 @@ namespace RenderSystem_OpenGL {
                 }
 
                 // grab the HWND from the supplied target control
-                hWnd = target.Handle;             
+                hWnd = (IntPtr)targetControl.Handle;
    
                 Gdi.PIXELFORMATDESCRIPTOR pfd = new Gdi.PIXELFORMATDESCRIPTOR();
                 pfd.Size = (short)Marshal.SizeOf(pfd);
@@ -219,7 +238,7 @@ namespace RenderSystem_OpenGL {
             }
 
             // create the window
-            window.Create(name, target, width, height, colorDepth, isFullscreen, left, top, depthBuffer, hDC, hRC);
+            window.Create(name, width, height, colorDepth, isFullscreen, left, top, depthBuffer, hDC, hRC);
 
             // add the new window to the RenderWindow collection
             this.renderWindows.Add(window);
@@ -271,6 +290,15 @@ namespace RenderSystem_OpenGL {
                     Gl.glDisable(Gl.GL_LIGHTING);
 
                 lightingEnabled = value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public override bool NormalizeNormals {
+            set {
+                // TODO: Implement NormalizeNormals
             }
         }
 
@@ -408,59 +436,16 @@ namespace RenderSystem_OpenGL {
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        public override TextureFiltering TextureFiltering {
-            set {
-                int numUnits = caps.NumTextureUnits;
-
-                // set for all texture units
-                for(int unit = 0; unit < numUnits; unit++) {
-                    // looks like filtering must be set every frame regardless
-
-                    Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + unit);
-
-                    switch(value) {
-                        case Axiom.Graphics.TextureFiltering.Anisotropic: {
-                            Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
-                            Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_LINEAR);
-
-                        } break;
-
-                        case Axiom.Graphics.TextureFiltering.Trilinear: {
-                            Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
-                            Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_LINEAR);
-
-                        } break;
-
-                        case Axiom.Graphics.TextureFiltering.Bilinear: {
-                            Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
-                            Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_NEAREST);
-
-                        } break;
-
-                        case Axiom.Graphics.TextureFiltering.None: {
-                            Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_NEAREST);
-                            Gl.glTexParameteri(textureTypes[unit], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_NEAREST);
-
-                        } break;
-                    } // switch
-                } // for
-
-                // reset texture unit
-                Ext.glActiveTextureARB(Gl.GL_TEXTURE0 );
-            }
-        }
-
-        /// <summary>
         ///		Creates a projection matrix specific to OpenGL based on the given params.
+        ///		Note: forGpuProgram is ignored because GL uses the same handed projection matrix
+        ///		normally and for GPU programs.
         /// </summary>
         /// <param name="fov"></param>
         /// <param name="aspectRatio"></param>
         /// <param name="near"></param>
         /// <param name="far"></param>
         /// <returns></returns>
-        public override Axiom.MathLib.Matrix4 MakeProjectionMatrix(float fov, float aspectRatio, float near, float far) {
+        public override Axiom.MathLib.Matrix4 MakeProjectionMatrix(float fov, float aspectRatio, float near, float far, bool forGpuProgram) {
             Matrix4 matrix = new Matrix4();
 
             float thetaY = MathUtil.DegreesToRadians(fov * 0.5f);
@@ -496,6 +481,12 @@ namespace RenderSystem_OpenGL {
                 if(!depthWrite)
                     Gl.glDepthMask(Gl.GL_TRUE);
 
+                bool colorMask = colorWrite[0] == 0 || colorWrite[1] == 0 || colorWrite[2] == 0 || colorWrite[3] == 0;
+
+                if(colorMask) {
+                    Gl.glColorMask(1, 1, 1, 1);
+                }
+
                 // clear the color buffer and depth buffer bits
                 Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);	
 
@@ -503,6 +494,10 @@ namespace RenderSystem_OpenGL {
                 // Enable depth buffer for writing if it isn't
                 if(!depthWrite)
                     Gl.glDepthMask(Gl.GL_FALSE);
+
+                if(colorMask) {
+                    Gl.glColorMask(1, 1, 1, 1);
+                }
             }
             else {
                 // Use Carmack's ztrick to avoid clearing the depth buffer every frame
@@ -883,33 +878,59 @@ namespace RenderSystem_OpenGL {
             Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
         }
 
-        protected override void SetTextureLayerFiltering(int stage, TextureFiltering filtering) {
-            // looks like filtering must be set every frame regardless
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="unit"></param>
+        /// <param name="type"></param>
+        /// <param name="filter"></param>
+        protected override void SetTextureUnitFiltering(int unit, FilterType type, FilterOptions filter) {
+            // set the current texture unit
+            Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + unit);
 
-            Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + stage);
+            switch(type) {
+                case FilterType.Min:
+                    minFilter = filter;
 
-            switch(filtering) {
-                case Axiom.Graphics.TextureFiltering.Trilinear: {
-                    Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
-                    Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_LINEAR);
+                    // combine with exiting mip filter
+                    Gl.glTexParameteri(
+                        textureTypes[unit], 
+                        Gl.GL_TEXTURE_MIN_FILTER, 
+                        GetCombinedMinMipFilter());
+                    break;
 
-                } break;
+                case FilterType.Mag:
+                    switch(filter) {
+                        case FilterOptions.Anisotropic:
+                        case FilterOptions.Linear:
+                            Gl.glTexParameteri(
+                                textureTypes[unit], 
+                                Gl.GL_TEXTURE_MAG_FILTER, 
+                                Gl.GL_LINEAR);
+                            break;
+                        case FilterOptions.Point:
+                        case FilterOptions.None:
+                            Gl.glTexParameteri(
+                                textureTypes[unit], 
+                                Gl.GL_TEXTURE_MAG_FILTER, 
+                                Gl.GL_NEAREST);
+                            break;
+                    }
+                    break;
 
-                case Axiom.Graphics.TextureFiltering.Bilinear: {
-                    Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
-                    Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_NEAREST);
+                case FilterType.Mip:
+                    mipFilter = filter;
 
-                } break;
+                    // combine with exiting mip filter
+                    Gl.glTexParameteri(
+                        textureTypes[unit], 
+                        Gl.GL_TEXTURE_MIN_FILTER, 
+                        GetCombinedMinMipFilter());
+                    break;
+            }
 
-                case Axiom.Graphics.TextureFiltering.None: {
-                    Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_NEAREST);
-                    Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_NEAREST);
-
-                } break;
-            } // switch
-
-            // reset texture unit
-            Ext.glActiveTextureARB(Gl.GL_TEXTURE0 );
+            // reset to the first texture unit
+            Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
         }
 
         /// <summary>
@@ -1077,7 +1098,7 @@ namespace RenderSystem_OpenGL {
                 DefaultForm newWindow = RenderWindow.CreateDefaultForm(0, 0, mode.Width, mode.Height, mode.FullScreen);
 
                 // create a new render window
-                renderWindow = this.CreateRenderWindow("Main Window", newWindow.Target, mode.Width, mode.Height, mode.Bpp, mode.FullScreen, 0, 0, true, null);
+                renderWindow = this.CreateRenderWindow("Main Window", mode.Width, mode.Height, mode.Bpp, mode.FullScreen, 0, 0, true, newWindow.Target);
 
                 // set the default form's renderwindow so it can access it internally
                 newWindow.RenderWindow = renderWindow;
@@ -1135,7 +1156,17 @@ namespace RenderSystem_OpenGL {
         }
 
         protected override void SetAlphaRejectSettings(int stage, CompareFunction func, byte val) {
+            // TODO: Implement SetAlphaRejectSettings
+        }
 
+        protected override void SetColorBufferWriteEnabled(bool red, bool green, bool blue, bool alpha) {
+            // record this for later
+            colorWrite[0] = red ? 1 : 0;
+            colorWrite[1] = green ? 1 : 0;
+            colorWrite[2] = blue ? 1 : 0;
+            colorWrite[3] = alpha ? 1 : 0;
+
+            Gl.glColorMask(colorWrite[0], colorWrite[1], colorWrite[2], colorWrite[3]);
         }
 
         /// <summary>
@@ -1184,6 +1215,12 @@ namespace RenderSystem_OpenGL {
         /// </summary>
         /// <param name="op"></param>
         public override void Render(RenderOperation op) {
+
+			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
+			if(op.vertexData.vertexCount == 0) {
+				return;
+			}
+
             // call base class method first
             base.Render (op);
 
@@ -1272,14 +1309,12 @@ namespace RenderSystem_OpenGL {
                                 // set the current active texture unit
                                 Ext.glClientActiveTextureARB(Gl.GL_TEXTURE0 + j); 
 
-                                if(Gl.glIsEnabled(Gl.GL_TEXTURE_2D) != 0) {
-                                    // set the tex coord pointer
-                                    Gl.glTexCoordPointer(
-                                        VertexElement.GetTypeCount(element.Type),
-                                        type,
-                                        vertexBuffer.VertexSize,
-                                        bufferData);
-                                }
+                                // set the tex coord pointer
+                                Gl.glTexCoordPointer(
+                                    VertexElement.GetTypeCount(element.Type),
+                                    type,
+                                    vertexBuffer.VertexSize,
+                                    bufferData);
 
                                 // enable texture coord state
                                 Gl.glEnableClientState(Gl.GL_TEXTURE_COORD_ARRAY);
@@ -1889,6 +1924,49 @@ namespace RenderSystem_OpenGL {
 
             // write info to logs
             caps.Log();
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        /// <returns></returns>
+        private int GetCombinedMinMipFilter() {
+            switch(minFilter) {
+                case FilterOptions.Anisotropic:
+                case FilterOptions.Linear:
+                    switch(mipFilter) {
+                        case FilterOptions.Anisotropic:
+                        case FilterOptions.Linear:
+                            // linear min, linear map
+                            return Gl.GL_LINEAR_MIPMAP_LINEAR;
+                        case FilterOptions.Point:
+                            // linear min, point mip
+                            return Gl.GL_LINEAR_MIPMAP_NEAREST;
+                        case FilterOptions.None:
+                            // linear, no mip
+                            return Gl.GL_LINEAR;
+                    }
+                    break;
+
+                case FilterOptions.Point:
+                case FilterOptions.None:
+                    switch(mipFilter) {
+                        case FilterOptions.Anisotropic:
+                        case FilterOptions.Linear:
+                            // nearest min, linear mip
+                            return Gl.GL_NEAREST_MIPMAP_LINEAR;
+                        case FilterOptions.Point:
+                            // nearest min, point mip
+                            return Gl.GL_NEAREST_MIPMAP_NEAREST;
+                        case FilterOptions.None:
+                            // nearest min, no mip
+                            return Gl.GL_NEAREST;
+                    }
+                    break;
+            }
+
+            // should never get here, but make the compiler happy
+            return 0;
         }
 
         /// <summary>

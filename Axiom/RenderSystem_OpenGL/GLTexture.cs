@@ -34,7 +34,7 @@ using Axiom.Graphics;
 using Tao.OpenGl;
 using Tao.Platform.Windows;
 
-namespace RenderSystem_OpenGL {
+namespace Axiom.RenderSystems.OpenGL {
     /// <summary>
     /// Summary description for GLTexture.
     /// </summary>
@@ -194,7 +194,7 @@ namespace RenderSystem_OpenGL {
                 isLoaded = true;
             }
             else {
-                if(textureType == TextureType.TwoD) {
+                if(textureType == TextureType.TwoD || textureType == TextureType.OneD) {
 
                     // load the resource data and 
                     Stream stream = TextureManager.Instance.FindResourceData(name);
@@ -249,22 +249,46 @@ namespace RenderSystem_OpenGL {
             int type = (textureType == TextureType.CubeMap) ? Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_X + faceNum : this.GLTextureType;
 
             if(useSoftware && numMipMaps > 0) {
-                // build the mipmaps
-                Glu.gluBuild2DMipmaps(
-                    type,
-                    hasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, 
-                    width, height, 
-                    hasAlpha ? Gl.GL_BGRA : Gl.GL_BGR, Gl.GL_UNSIGNED_BYTE, 
-                    data);
+                if(textureType == TextureType.OneD) {
+                    Glu.gluBuild1DMipmaps(
+                        type, 
+                        hasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, 
+                        width, 
+                        hasAlpha ? Gl.GL_BGRA : Gl.GL_BGR, 
+                        Gl.GL_UNSIGNED_BYTE, 
+                        data);
+                }
+                else {
+                    // build the mipmaps
+                    Glu.gluBuild2DMipmaps(
+                        type,
+                        hasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, 
+                        width, height,
+                        hasAlpha ? Gl.GL_BGRA : Gl.GL_BGR, 
+                        Gl.GL_UNSIGNED_BYTE, 
+                        data);
+                }
             }
             else {
-                Gl.glTexImage2D(
-                    type, 
-                    0, 
-                    hasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, 
-                    width, height, 0, 
-                    hasAlpha ? Gl.GL_BGRA : Gl.GL_BGR, Gl.GL_UNSIGNED_BYTE, 
-                    data);
+                if(textureType == TextureType.OneD) {
+                    Gl.glTexImage1D(
+                        type, 
+                        0, 
+                        hasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, 
+                        width, 
+                        0, 
+                        hasAlpha ? Gl.GL_BGRA : Gl.GL_BGR, Gl.GL_UNSIGNED_BYTE, 
+                        data);
+                }
+                else {
+                    Gl.glTexImage2D(
+                        type, 
+                        0, 
+                        hasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, 
+                        width, height, 0, 
+                        hasAlpha ? Gl.GL_BGRA : Gl.GL_BGR, Gl.GL_UNSIGNED_BYTE, 
+                        data);
+                }
             }
         }
 

@@ -72,17 +72,17 @@ namespace Axiom.Graphics {
         /// <summary>
         ///    Global ambient light color.
         /// </summary>
-        [ScriptEnum("ambient_light_color")]
+        [ScriptEnum("ambient_light_colour")]
         AmbientLightColor,
         /// <summary>
         ///    Light diffuse color.  Index determined when setting up auto constants.
         /// </summary>
-        [ScriptEnum("light_diffuse_color")]     
+        [ScriptEnum("light_diffuse_colour")]     
         LightDiffuseColor,
         /// <summary>
         ///    Light specular color.  Index determined when setting up auto constants.
         /// </summary>
-        [ScriptEnum("light_specular_color")]  
+        [ScriptEnum("light_specular_colour")]  
         LightSpecularColor,
         /// <summary>
         ///    Light attenuation.  Vector4(range, constant, linear, quadratic).
@@ -247,6 +247,50 @@ namespace Axiom.Graphics {
         /// </summary>
         [ScriptEnum("cubic_normal")]
         Normal
+    }
+
+    /// <summary>
+    ///    Filtering options for textures / mipmaps.
+    /// </summary>
+    public enum FilterOptions {
+        /// <summary>
+        ///    No filtering, used for FilterType.Mip to turn off mipmapping.
+        /// </summary>
+        [ScriptEnum("none")]
+        None,
+        /// <summary>
+        ///    Use the closest pixel.
+        /// </summary>
+        [ScriptEnum("point")]
+        Point,
+        /// <summary>
+        ///    Average of a 2x2 pixel area, denotes bilinear for Min and Mag, trilinear for Mip.
+        /// </summary>
+        [ScriptEnum("linear")]
+        Linear,
+        /// <summary>
+        ///    Similar to Linear, but compensates for the angle of the texture plane.
+        /// </summary>
+        [ScriptEnum("anisotropic")]
+        Anisotropic
+    }
+
+    /// <summary>
+    ///    Stages of texture rendering to which filters can be applied.
+    /// </summary>
+    public enum FilterType {
+        /// <summary>
+        ///    The filter used when shrinking a texture.
+        /// </summary>
+        Min,
+        /// <summary>
+        ///    The filter used when magnifiying a texture.
+        /// </summary>
+        Mag,
+        /// <summary>
+        ///    The filter used when determining the mipmap.
+        /// </summary>
+        Mip
     }
 
     /// <summary>
@@ -455,14 +499,17 @@ namespace Axiom.Graphics {
         /// <summary>
         ///		Point light sources give off light equally in all directions, so require only position not direction.
         ///	 </summary>
+        [ScriptEnum("point")]
         Point,
         /// <summary>
         ///		Directional lights simulate parallel light beams from a distant source, hence have direction but no position.
         ///	 </summary>
+        [ScriptEnum("directional")]
         Directional,
         /// <summary>
         ///		Spotlights simulate a cone of light from a source so require position and direction, plus extra values for falloff.
         ///	 </summary>
+        [ScriptEnum("spot")]
         Spotlight
     }
 
@@ -721,10 +768,6 @@ namespace Axiom.Graphics {
     /// </remarks>
     public enum TextureEffectType {
         /// <summary>
-        ///		Bump mapping.
-        ///	 </summary>
-        BumpMap,
-        /// <summary>
         ///		Generate all texture coords based on angle between camera and vertex.
         ///	 </summary>
         EnvironmentMap,
@@ -743,26 +786,26 @@ namespace Axiom.Graphics {
     }
 
     /// <summary>
-    /// Modes for improving the visual quality of rendered textures.
+    ///    Texture filtering defining the different minification and magnification.
     /// </summary>
     public enum TextureFiltering {
         /// <summary>
-        ///		No filtering.
+        ///		Equal to: min=Point, mag=Point, mip=None
         ///	 </summary>
         [ScriptEnum("none")]
         None,
         /// <summary>
-        ///		Good lookin, slower than none.
+        ///		Equal to: min=Linear, mag=Linear, mip=Point
         ///	 </summary>
         [ScriptEnum("bilinear")]
         Bilinear,
         /// <summary>
-        ///		Even better looking, but even slower than bilinear.
+        ///		Equal to: min=Linear, mag=Linear, mip=Linear
         ///	 </summary>
         [ScriptEnum("trilinear")]
         Trilinear,
         /// <summary>
-        ///    Highest quality filtering known to man, but the slowest of all the options as well.
+        ///    Equal to: min=Anisotropic, max=Anisotropic, mip=Linear
         /// </summary>
         [ScriptEnum("anisotropic")]
         Anisotropic
@@ -807,9 +850,13 @@ namespace Axiom.Graphics {
     ///    Enum identifying the texture type.
     /// </summary>
     public enum TextureType {
-        OneD,
-        TwoD,
-        ThreeD,
+        [ScriptEnum("1d")]
+        OneD = 1,
+        [ScriptEnum("2d")]
+        TwoD = 2,
+        [ScriptEnum("3d")]
+        ThreeD = 3,
+        [ScriptEnum("cubic")]
         CubeMap = 4,
     }
 

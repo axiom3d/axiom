@@ -359,10 +359,15 @@ namespace Axiom.Core {
         /// </remarks>
         public new LightList Lights {
             get {
-                if(lightListDirty) {
+				// TEMP FIX
+				// If a scene node is static and lights have moved, light list won't change
+				// can't use a simple global boolean flag since this is only called for
+				// visible nodes, so temporarily visible nodes will not be updated
+				// Since this is only called for visible nodes, skip the check for now
+                //if(lightListDirty) {
                     creator.PopulateLightList(this.DerivedPosition, lightList);
                     lightListDirty = false;
-                }
+                //}
 
                 return lightList;
             }

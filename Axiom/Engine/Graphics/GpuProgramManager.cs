@@ -321,7 +321,7 @@ namespace Axiom.Graphics
 
                 if(line == "}") {
                     if(language == "asm") {
-                        string profile = (string)parmsTable["profile"];
+                        string profile = (string)parmsTable["syntax"];
 
                         GpuProgramManager.Instance.CreateProgram(name, fileName, programType, profile);
                     }

@@ -29,7 +29,7 @@ using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.MathLib;
 
-namespace ParticleFX {
+namespace Axiom.ParticleFX {
     /// <summary>
     /// Summary description for AreaEmitter.
     /// </summary>

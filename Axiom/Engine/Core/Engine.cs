@@ -30,7 +30,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
-
 using Axiom.Collections;
 using Axiom.Controllers;
 using Axiom.Fonts;
@@ -51,12 +50,24 @@ namespace Axiom.Core {
     ///		Used to supply info to the FrameStarted and FrameEnded events.
     /// </summary>
     public class FrameEventArgs : System.EventArgs {
+        /// <summary>
+        ///    Time elapsed (in milliseconds) since the last frame event.
+        /// </summary>
         public float TimeSinceLastEvent;
+
+        /// <summary>
+        ///    Time elapsed (in milliseconds) since the last frame.
+        /// </summary>
         public float TimeSinceLastFrame;
+
+        /// <summary>
+        ///    Event handlers should set this to true if they wish to stop the render loop and begin shutdown.
+        /// </summary>
+        public bool Stop;
     }
 
     /// <summary>
-    /// The Engine class is the main container of all the subsystems.  This includes the RenderSystem, various ResourceManagers, etc.
+    ///		The Engine class is the main container of all the subsystems.  This includes the RenderSystem, various ResourceManagers, etc.
     /// </summary>
     // INC: In progress
     public class Engine : IDisposable {
@@ -64,8 +75,6 @@ namespace Axiom.Core {
         static Engine() {}
         private Engine() {
             pluginList = new ArrayList();
-            timer = new HighResolutionTimer();
-
         }
         public static readonly Engine Instance = new Engine();
         #endregion
@@ -77,24 +86,27 @@ namespace Axiom.Core {
         private RenderSystemCollection renderSystemList;
         private RenderSystem activeRenderSystem;
         private Log engineLog;
-        private InputSystem inputSystem;
 
-        protected HighResolutionTimer timer;
+        private ITimer timer;
 
         // Framerate Related State
-        protected static bool framerateReady;										// Do We Have A Calculated Framerate?
-        protected static ulong timerFrequency;											// The Frequency Of The Timer
-        protected static ulong lastCalculationTime;										// The Last Time We Calculated Framerate
-        protected static ulong framesDrawn;												// Frames Drawn Counter For FPS Calculations
-        protected static float currentFPS;											// Current FPS
-        protected static float highestFPS;											// Highest FPS
-        protected static float lowestFPS = 999999999;								// Lowest FPS
-        protected static float averageFPS;
+        private static bool framerateReady;										// Do We Have A Calculated Framerate?
+        private static long lastCalculationTime;										// The Last Time We Calculated Framerate
+        private static long frameCount;												// Frames Drawn Counter For FPS Calculations
+        private static float currentFPS;											// Current FPS
+        private static float highestFPS;											// Highest FPS
+        private static float lowestFPS = 9999;								// Lowest FPS
+        private static float averageFPS;
 
-        protected bool stopRendering;
+        /// <summary>
+        ///    Flag that specifies whether or not the render loop should end.
+        /// </summary>
+        private bool stopRendering;
 
-        /// <summary>A flag which safeguards against Setup being run more than once.</summary>
-        protected bool isSetupComplete;
+        /// <summary>
+        ///    Has the first render window been created yet?
+        /// </summary>
+        private bool firstTime = true;
 
         #region Events
 		
@@ -207,15 +219,11 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        ///		Gets/Sets the current system to use for reading input.
+        ///    Gets a reference to the timer being used for timing throughout the engine.
         /// </summary>
-        public InputSystem InputSystem {
-            get { 
-                return inputSystem;	
-            }
-            set { 
-                if(inputSystem == null) 
-                    inputSystem = value; 
+        public ITimer Timer {
+            get {
+                return timer;
             }
         }
 
@@ -234,6 +242,17 @@ namespace Axiom.Core {
 
             // if they chose to auto create a window, also initialize several subsystems
             if(autoCreateWindow) {
+                OneTimePostWindowInit();
+            }
+
+            return window;
+        }
+
+        /// <summary>
+        ///    Internal method for one-time tasks after first window creation.
+        /// </summary>
+        private void OneTimePostWindowInit() {
+            if(firstTime) {
                 // init material manager singleton, which parse sources for materials
                 MaterialManager.Instance.ParseAllSources();
 
@@ -245,9 +264,9 @@ namespace Axiom.Core {
 
                 // init overlay manager
                 OverlayManager.Instance.ParseAllSources();
-            }
 
-            return window;
+                firstTime = false;
+            }
         }
 
         /// <summary>
@@ -260,8 +279,8 @@ namespace Axiom.Core {
         /// <param name="colorDepth"></param>
         /// <param name="isFullscreen"></param>
         /// <returns></returns>
-        public RenderWindow CreateRenderWindow(string name, System.Windows.Forms.Control target, int width, int height, int colorDepth, bool isFullscreen) {
-            return CreateRenderWindow(name, target, width, height, colorDepth, isFullscreen, 0, 0, true, null);
+        public RenderWindow CreateRenderWindow(string name, int width, int height, int colorDepth, bool isFullscreen) {
+            return CreateRenderWindow(name, width, height, colorDepth, isFullscreen, 0, 0, true, IntPtr.Zero);
         }
 
         /// <summary>
@@ -276,32 +295,23 @@ namespace Axiom.Core {
         /// <param name="left"></param>
         /// <param name="top"></param>
         /// <param name="depthBuffer"></param>
-        /// <param name="parent"></param>
+		/// <param name="handle">
+		///		A handle to a pre-created window to be used for the rendering target.
+		///	 </param>
         /// <returns></returns>
-        public RenderWindow CreateRenderWindow(
-            string name, System.Windows.Forms.Control target, int width, int height, int colorDepth,
-            bool isFullscreen, int left, int top, bool depthBuffer, RenderWindow parent) {
+        public RenderWindow CreateRenderWindow(string name, int width, int height, int colorDepth,
+            bool isFullscreen, int left, int top, bool depthBuffer, object targetHandle) {
+
             Debug.Assert(activeRenderSystem != null, "Cannot create a RenderWindow without an active RenderSystem.");
 
+			// create a new render window via the current render system
             RenderWindow window = 
                 activeRenderSystem.CreateRenderWindow(
-                name, target, width, height, colorDepth, isFullscreen, left, top,
-                depthBuffer, parent);
+                name, width, height, colorDepth, isFullscreen, left, top,
+                depthBuffer, targetHandle);
 
-            // is this the first window being created?
-            if(activeRenderSystem.RenderWindows.Count == 1) {
-                // init the material manager singleton
-                MaterialManager.Instance.ParseAllSources();
-
-                // init the particle system manager singleton
-                ParticleSystemManager.Instance.ParseAllSources();
-
-                // init font manager singleton
-                FontManager.Init();
-
-                // init overlay manager singleton
-                OverlayManager.Instance.ParseAllSources();
-            }
+            // do any required initialization
+            OneTimePostWindowInit();
 
             return window;
         }
@@ -363,12 +373,12 @@ namespace Axiom.Core {
 
             // add the log to the list of trace listeners to capture output
             System.Diagnostics.Trace.Listeners.Add(engineLog);
-            DebugWindow debugWindow = new DebugWindow();
-            debugWindow.Show();
-            System.Diagnostics.Trace.Listeners.Add(debugWindow);
 
             // initialize all singletons, resetting them in the case of running more than once within the same AppDomain
             InitializeSingletons();
+
+            // create a new timer
+            timer = PlatformManager.Instance.CreateTimer();
 
             // get the singleton instance of the SceneManagerList
             sceneManagerList = SceneManagerList.Instance;
@@ -382,7 +392,6 @@ namespace Axiom.Core {
             System.Diagnostics.Trace.WriteLine("Engine initializing...");
             System.Diagnostics.Trace.WriteLine(string.Format("Operating System: {0}", Environment.OSVersion.ToString()));
             System.Diagnostics.Trace.WriteLine(string.Format(".Net Framework: {0}", Environment.Version.ToString()));
-            //System.Diagnostics.Trace.WriteLine("Engine initializing...");
 
             // dynamically load plugins
             this.LoadPlugins();
@@ -394,16 +403,13 @@ namespace Axiom.Core {
         public void StartRendering() {
             Debug.Assert(activeRenderSystem != null, "Engine cannot start rendering without an active RenderSystem.");
 
-            ulong lastStartTime, lastEndTime;
+            long lastStartTime, lastEndTime;
 
             // start the internal timer
-            timer.Start();
-
-            // capture the frequency of the timer for fps calculations
-            timerFrequency = timer.Frequency;
+            timer.Reset();
 
             // initialize the vars
-            lastStartTime = lastEndTime = timer.Count;
+            lastStartTime = lastEndTime = timer.Milliseconds;
 
             // get a reference to the render windows of the current render system
             RenderWindowCollection renderWindows = activeRenderSystem.RenderWindows;
@@ -421,13 +427,13 @@ namespace Axiom.Core {
                 FrameEventArgs evt = new FrameEventArgs();
 
                 // get the current time
-                ulong time = timer.Count;
+                long time = timer.Milliseconds;
 
                 // only fire a frame started event if time has elapsed
                 // prevent overupdating
                 if(time != lastStartTime || time != lastEndTime) {
-                    evt.TimeSinceLastFrame = (float)(time - lastStartTime) / timer.Frequency;
-                    evt.TimeSinceLastEvent = (float)(time - lastEndTime) / timer.Frequency;
+                    evt.TimeSinceLastFrame = (float)(time - lastStartTime) / 1000;
+                    evt.TimeSinceLastEvent = (float)(time - lastEndTime) / 1000;
 
                     // Stop rendering if frame callback says so
                     if(!OnFrameStarted(evt) || stopRendering)
@@ -445,17 +451,17 @@ namespace Axiom.Core {
                         renderWindows[i].Update();
                 }
 
-                // increment framesDrawn
-                framesDrawn++;
+                // increment frameCount
+                frameCount++;
 
                 // Do frame ended event
-                time = timer.Count; // Get current time
+                time = timer.Milliseconds; // Get current time
 
                 // collect performance stats
-                if((time - lastCalculationTime) > timerFrequency) { 
+                if((time - lastCalculationTime) > 1000) { 
 				 		// Is It Time To Update Our Calculations?
                     // Calculate New Framerate
-                    currentFPS = (float) (framesDrawn * timerFrequency) / (float) (time - lastCalculationTime);
+                    currentFPS = (float)frameCount / (float)(time - lastCalculationTime) * 1000;
 
                     // calculate the averge framerate
                     if(averageFPS == 0)
@@ -463,24 +469,29 @@ namespace Axiom.Core {
                     else
                         averageFPS = (averageFPS + currentFPS) / 2.0f;
 
+					 // Is The New Framerate A New Low?
                     if(currentFPS < lowestFPS || (int) lowestFPS == 0) { 
-					 						// Is The New Framerate A New Low?
-                        lowestFPS = currentFPS;							// Set It To The New Low
+                        // Set It To The New Low
+                        lowestFPS = currentFPS;							
                     }
 
+                    // Is The New Framerate A New High?
                     if(currentFPS > highestFPS) { 
-					 						// Is The New Framerate A New High?
-                        highestFPS = currentFPS;						// Set It To The New High
+					 	// Set It To The New High
+                        highestFPS = currentFPS;
                     }
 
-                    lastCalculationTime = time;							// Update Our Last Frame Time To Now
-                    framesDrawn = 0;												// Reset Our Frame Count
+                    // Update Our Last Frame Time To Now
+                    lastCalculationTime = time;
+
+                    // Reset Our Frame Count
+                    frameCount = 0;												
                 }
 
 
                 if (lastEndTime != time || time != lastStartTime) {
-                    evt.TimeSinceLastFrame = (float)(time - lastEndTime) / timer.Frequency;
-                    evt.TimeSinceLastEvent = (float)(time - lastStartTime) / timer.Frequency;
+                    evt.TimeSinceLastFrame = (float)(time - lastEndTime) / 1000;
+                    evt.TimeSinceLastEvent = (float)(time - lastStartTime) / 1000;
                     // Stop rendering if frame callback says so
                     if(!OnFrameEnded(evt) || stopRendering)
                         return;
@@ -523,6 +534,7 @@ namespace Axiom.Core {
         }
 
         private void InitializeSingletons() {
+            PlatformManager.Init();
             MaterialManager.Init();
             ParticleSystemManager.Init();
             SceneManagerList.Init();
@@ -619,70 +631,15 @@ namespace Axiom.Core {
         /// Searches for IPlugin implementations for the engine and loads them.
         /// </summary>
         internal void LoadPlugins() {
-            // get a list of .dll files in the current directory
-            string[] files = Directory.GetFiles(Environment.CurrentDirectory, "*.dll");
-			
-            // loop through and load the assemblies 
-            for(int i = 0; i < files.Length; i++) {
-                // dont load the engine .dll itself
-                if(files[i].EndsWith("AxiomEngine.dll"))
-                    continue;
-
-                Assembly assembly = null;
-
-                // load the assembly
-                try{
-                    assembly = Assembly.LoadFrom(files[i]);
-                }
-                catch(BadImageFormatException) {
-                    Trace.WriteLine(string.Format("Skipping load of non assemly....", files[i]));
-                    continue;
-                }
-
-                // get the list of types within the assembly
-                Type[] types = assembly.GetTypes();
-
-                // check each class to see if it implements the IPlugin interface
-                foreach(Type type in types) {
-                    // if the type implements the interface, then...
-                    if(type.GetInterface("IPlugin") != null) {
-                        /// ...create an instance of it
-                        IPlugin plugin = (IPlugin)Activator.CreateInstance(type);
-
-                        AssemblyTitleAttribute title = 
-                            (AssemblyTitleAttribute)Attribute.GetCustomAttribute(assembly, typeof(AssemblyTitleAttribute));
-
-                        // invoke the start method to fire up the plugin
-                        plugin.Start();
-                        
-                         // log the fact that the plugin has been loaded
-                        System.Diagnostics.Trace.WriteLine("Loaded plugin: " + title.Title);
-
-                        // keep the plugin around for later release
-                        pluginList.Add(plugin);
-                    }
-                }
-            }
+			// load all registered plugins
+			PluginManager.Instance.LoadAll();
         }
 
         /// <summary>
         /// Used to unload any previously loaded plugins.
         /// </summary>
         internal void UnloadPlugins() {
-            // loop through and stop each plugin
-            foreach(IPlugin plugin in pluginList) {
-                AssemblyTitleAttribute title = 
-                    (AssemblyTitleAttribute)Attribute.GetCustomAttribute(plugin.GetType().Assembly, typeof(AssemblyTitleAttribute));
-
-                // log the fact that the plugin is being loaded
-                System.Diagnostics.Trace.WriteLine("Unloading plugin: " + title.Title);
-
-                // stop the plugin from running
-                plugin.Stop();
-            }
-
-            // empty the list of plugins
-            pluginList.Clear();
+			PluginManager.Instance.UnloadAll();
         }
 
 

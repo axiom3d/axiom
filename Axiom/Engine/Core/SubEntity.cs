@@ -156,6 +156,12 @@ namespace Axiom.Core {
             }
         }
 
+        public bool NormalizeNormals {
+            get {
+                return false;
+            }
+        }
+
         public Technique Technique {
             get {
                 return material.BestTechnique;

@@ -33,8 +33,7 @@ using Axiom.MathLib;
 using Axiom.Scripting;
 using Axiom.Graphics;
 
-namespace Plugin_GuiElements
-{
+namespace Axiom.Gui.Elements {
 	/// <summary>
 	/// 	A specialization of the Panel element to provide a panel with a border with a seperate material.
 	/// </summary>
@@ -672,6 +671,12 @@ namespace Plugin_GuiElements
 
             public float GetSquaredViewDepth(Camera camera) {
                 return parent.GetSquaredViewDepth(camera);
+            }
+
+            public bool NormalizeNormals {
+                get {
+                    return false;
+                }
             }
 
             public bool UseIdentityView {

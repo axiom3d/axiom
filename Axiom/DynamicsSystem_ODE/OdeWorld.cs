@@ -27,7 +27,7 @@ using Axiom.Scripting;
 using Axiom.MathLib;
 using Ode;
 
-namespace DynamicsSystem_ODE {
+namespace Axiom.Dynamics.ODE {
     /// <summary>
     /// Summary description for ODEWorld.
     /// </summary>

@@ -24,7 +24,7 @@ using Ode;
 using Axiom.Core;
 using Axiom.Physics;
 
-namespace DynamicsSystem_ODE {
+namespace Axiom.Dynamics.ODE {
     /// <summary>
     /// Summary description for OdeDynamics.
     /// </summary>

@@ -29,13 +29,11 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Tao.OpenGl;
 
-namespace RenderSystem_OpenGL
-{
+namespace Axiom.RenderSystems.OpenGL {
 	/// <summary>
 	/// 	Specialization of vertex/fragment programs for OpenGL.
 	/// </summary>
-	public class GLGpuProgram : GpuProgram
-	{
+	public class GLGpuProgram : GpuProgram {
         /// <summary>
         ///    Internal OpenGL id assigned to this program.
         /// </summary>

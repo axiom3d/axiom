@@ -133,6 +133,18 @@ namespace Axiom.Graphics
         /// </summary>
         protected int maxLights;
         /// <summary>
+        ///    Run this pass once per light? 
+        /// </summary>
+        protected bool runOncePerLight; 
+        /// <summary>
+        ///     Should it only be run for a certain light type? 
+        /// </summary>
+        protected bool runOnlyForOneLightType; 
+        /// <summary>
+        ///    Type of light for a programmable pass that supports only one particular type of light.
+        /// </summary>
+        protected LightType onlyLightType; 
+        /// <summary>
         ///    Shading options for this pass.
         /// </summary>
         protected Shading shadeOptions;
@@ -234,6 +246,8 @@ namespace Axiom.Graphics
             // light settings
             lightingEnabled = true;
             shadeOptions = Shading.Gouraud;
+            runOnlyForOneLightType = true;
+            onlyLightType = LightType.Point;
 
             // texture filtering options
             textureFiltering = MaterialManager.Instance.DefaultTextureFiltering;
@@ -306,7 +320,7 @@ namespace Axiom.Graphics
         /// <returns></returns>
         public TextureUnitState CreateTextureUnitState(string textureName, int texCoordSet) {
             TextureUnitState state = new TextureUnitState(this);
-            state.TextureName = textureName;
+            state.SetTextureName(textureName);
             state.TextureCoordSet = texCoordSet;
             textureUnitStates.Add(state);
             // needs recompilation
@@ -526,6 +540,58 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
+        ///    Sets whether or not this pass should be run once per light which 
+        ///    can affect the object being rendered.
+        /// </summary>
+        /// <remarks>
+        ///    The default behavior for a pass (when this option is 'false'), is 
+        ///    for a pass to be rendered only once, with all the lights which could 
+        ///    affect this object set at the same time (up to the maximum lights 
+        ///    allowed in the render system, which is typically 8). 
+        ///    <p/>
+        ///    Setting this option to 'true' changes this behavior, such that 
+        ///    instead of trying to issue render this pass once per object, it 
+        ///    is run once <b>per light</b> which can affect this object. In 
+        ///    this case, only light index 0 is ever used, and is a different light 
+        ///    every time the pass is issued, up to the total number of lights 
+        ///    which is affecting this object. This has 2 advantages: 
+        ///    <ul><li>There is no limit on the number of lights which can be 
+        ///    supported</li> 
+        ///    <li>It's easier to write vertex / fragment programs for this because 
+        ///    a single program can be used for any number of lights</li> 
+        ///    </ul> 
+        ///    However, this technique is a lot more expensive, and typically you 
+        ///    will want an additional ambient pass, because if no lights are 
+        ///    affecting the object it will not be rendered at all, which will look 
+        ///    odd even if ambient light is zero (imagine if there are lit objects 
+        ///    behind it - the objects silhouette would not show up). Therefore, 
+        ///    use this option with care, and you would be well advised to provide 
+        ///    a less expensive fallback technique for use in the distance. 
+        ///    <p/>
+        ///    Note: The number of times this pass runs is still limited by the maximum 
+        ///    number of lights allowed as set in MaxLights, so 
+        ///    you will never get more passes than this. 
+        /// </remarks>
+        /// <param name="enabled">Whether this feature is enabled.</param>
+        /// <param name="onlyForOneLightType">
+        ///    If true, the pass will only be run for a single type of light, other light types will be ignored. 
+        /// </param>
+        /// <param name="lightType">The single light type which will be considered for this pass.</param>
+        public void SetRunOncePerLight(bool enabled, bool onlyForOneLightType, LightType lightType) {
+            runOncePerLight = enabled;
+            runOnlyForOneLightType = onlyForOneLightType;
+            onlyLightType = lightType;
+        }
+
+        public void SetRunOncePerLight(bool enabled, bool onlyForOneLightType) {
+            SetRunOncePerLight(enabled, onlyForOneLightType, LightType.Point);
+        }
+
+        public void SetRunOncePerLight(bool enabled) {
+            SetRunOncePerLight(enabled, true);
+        }
+
+        /// <summary>
         ///    Sets the kind of blending this pass has with the existing contents of the scene.
         /// </summary>
         /// <remarks>
@@ -641,19 +707,36 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        ///    Update any automatic parameters on this pass.
+        ///    Update any automatic light parameters on this pass.
         /// </summary>
         /// <param name="renderable">Current object being rendered.</param>
         /// <param name="camera">Current being being used for rendering.</param>
-        internal void UpdateAutoParams(AutoParamDataSource source) {
+        internal void UpdateAutoParamsLightsOnly(AutoParamDataSource source) {
             // auto update vertex program parameters
             if(this.HasVertexProgram) {
-                vertexProgramUsage.Params.UpdateAutoParams(source);
+                vertexProgramUsage.Params.UpdateAutoParamsLightsOnly(source);
             }
 
             // auto update fragment program parameters
             if(this.HasFragmentProgram) {
-                fragmentProgramUsage.Params.UpdateAutoParams(source);
+                fragmentProgramUsage.Params.UpdateAutoParamsLightsOnly(source);
+            }
+        }
+
+        /// <summary>
+        ///    Update any automatic parameters (except lights) on this pass.
+        /// </summary>
+        /// <param name="renderable">Current object being rendered.</param>
+        /// <param name="camera">Current being being used for rendering.</param>
+        internal void UpdateAutoParamsNoLights(AutoParamDataSource source) {
+            // auto update vertex program parameters
+            if(this.HasVertexProgram) {
+                vertexProgramUsage.Params.UpdateAutoParamsNoLights(source);
+            }
+
+            // auto update fragment program parameters
+            if(this.HasFragmentProgram) {
+                fragmentProgramUsage.Params.UpdateAutoParamsNoLights(source);
             }
         }
 		
@@ -1136,11 +1219,39 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
+        ///     Gets the single light type this pass runs for if RunOncePerLight and 
+        ///     RunOnlyForOneLightType are both true. 
+        /// </summary>
+        public LightType OnlyLightType {
+            get {
+                return onlyLightType;
+            }
+        }
+
+        /// <summary>
         ///    Gets a reference to the Technique that owns this pass.
         /// </summary>
         public Technique Parent {
             get {
                 return parent;
+            }
+        }
+
+        /// <summary>
+        ///    Does this pass run once for every light in range?
+        /// </summary>
+        public bool RunOncePerLight {
+            get {
+                return runOncePerLight;
+            }
+        }
+
+        /// <summary>
+        ///    Does this pass run only for a single light type (if RunOncePerLight is true). 
+        /// </summary>
+        public bool RunOnlyOncePerLightType {
+            get {
+                return runOnlyForOneLightType;
             }
         }
         
@@ -1236,7 +1347,7 @@ namespace Axiom.Graphics
         public TextureFiltering TextureFiltering {
             set {
                 for(int i = 0; i < textureUnitStates.Count; i++) {
-                    ((TextureUnitState)textureUnitStates[i]).TextureFiltering = value;
+                    ((TextureUnitState)textureUnitStates[i]).SetTextureFiltering(value);
                 }
             }
         }

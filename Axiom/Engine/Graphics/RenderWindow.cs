@@ -56,7 +56,7 @@ namespace Axiom.Graphics {
 		
         protected int top, left;
         protected bool isFullScreen;
-        protected System.Windows.Forms.Control control;
+        protected object targetHandle;
 		
         #endregion
 
@@ -83,7 +83,7 @@ namespace Axiom.Graphics {
         /// <param name="pDepthBuffer">Specify true to include a depth-buffer.</param>
         /// <param name="pMiscParams">A variable number of pointers to platform-specific arguments. 
         /// The actual requirements must be defined by the implementing subclasses.</param>
-        public abstract void Create(string name, System.Windows.Forms.Control target, int width, int height, int colorDepth, bool fullScreen, 
+        public abstract void Create(string name, int width, int height, int colorDepth, bool fullScreen, 
             int left, int top, bool depthBuffer, params object[] miscParams);
 
         /// <summary>
@@ -182,8 +182,13 @@ namespace Axiom.Graphics {
             }
         }
 
-        public System.Windows.Forms.Control Control {
-            get { return control; }
+        public object Handle {
+            get { 
+				return targetHandle; 
+			}
+			set {
+				targetHandle = value;
+			}
         }
 
         #endregion

@@ -28,7 +28,7 @@ using System;
 using Axiom.Core;
 using Axiom.ParticleSystems;
 
-namespace ParticleFX {
+namespace Axiom.ParticleFX {
     /// <summary>
     /// Summary description for BoxEmitterFactory.
     /// </summary>

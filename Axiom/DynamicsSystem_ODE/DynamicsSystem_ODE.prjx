@@ -6,26 +6,19 @@
     <File name=".\OdeWorld.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References>
+    <Reference type="Gac" refto="System.dll" localcopy="False" />
     <Reference type="Project" refto="Engine" localcopy="True" />
     <Reference type="Project" refto="MathLib" localcopy="True" />
-    <Reference type="Assembly" refto="..\Solution Items\ode.dll" localcopy="True" />
+    <Reference type="Assembly" refto="E:\GameProgramming\AxiomEngine\Axiom\Solution Items\ode.dll" localcopy="False" />
   </References>
-  <DeploymentInformation target="" script="" strategy="File" />
-  <Configuration runwithwarnings="True" name="Debug">
-    <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="True" optimize="False" unsafecodeallowed="False" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
-    <Execution commandlineparameters="" consolepause="True" />
-    <Output directory=".\bin\Debug" assembly="DynamicsSystem_ODE" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
-  </Configuration>
   <Configurations active="Debug">
     <Configuration runwithwarnings="True" name="Debug">
-      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="True" optimize="False" unsafecodeallowed="False" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
-      <Execution commandlineparameters="" consolepause="True" />
-      <Output directory=".\bin\Debug" assembly="DynamicsSystem_ODE" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
+      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="0" includedebuginformation="True" optimize="False" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" target="Library" definesymbols="TRACE" generatexmldocumentation="False" />
+      <Output directory=".." assembly="Axiom.Dynamics.ODE" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
     </Configuration>
     <Configuration runwithwarnings="True" name="Release">
-      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="False" optimize="True" unsafecodeallowed="False" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="TRACE" generatexmldocumentation="False" win32Icon="" />
-      <Execution commandlineparameters="" consolepause="True" />
-      <Output directory=".\bin\Release" assembly="DynamicsSystem_ODE" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
+      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="0" includedebuginformation="True" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" target="Library" definesymbols="TRACE" generatexmldocumentation="False" />
+      <Output directory=".." assembly="Axiom.Dynamics.ODE" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
     </Configuration>
   </Configurations>
 </Project>

@@ -2,13 +2,11 @@ using System;
 using Axiom.Core;
 using Axiom.ParticleSystems;
 
-namespace ParticleFX
-{
+namespace Axiom.ParticleFX {
 	/// <summary>
 	/// 	Summary description for DrawEmitterFactory.
 	/// </summary>
-	public class DrawEmitterFactory : ParticleEmitterFactory
-	{
+	public class DrawEmitterFactory : ParticleEmitterFactory {
 		#region Methods
 
         public override ParticleEmitter Create() {

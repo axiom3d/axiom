@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Windows.Forms;
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
@@ -42,7 +43,7 @@ using LightType = Axiom.Graphics.LightType;
 using StencilOperation = Axiom.Graphics.StencilOperation;
 using TextureFiltering = Axiom.Graphics.TextureFiltering;
 
-namespace RenderSystem_DirectX9 {
+namespace Axiom.RenderSystems.DirectX9 {
     /// <summary>
     /// DirectX9 Render System implementation.
     /// </summary>
@@ -104,6 +105,15 @@ namespace RenderSystem_DirectX9 {
             }
         }
 	
+        /// <summary>
+        /// 
+        /// </summary>
+        public override bool NormalizeNormals {
+            set {
+                // TODO: Implement NormalizeNormals
+            }
+        }
+
         public override Shading ShadingMode {
             set {
                 device.RenderState.ShadeMode = D3DHelper.ConvertEnum(value);
@@ -187,50 +197,12 @@ namespace RenderSystem_DirectX9 {
 
             device.VertexDeclaration = d3dVertDecl.D3DVertexDecl;
         }
-
-
 	
-        public override TextureFiltering TextureFiltering {
-            set {
-                // get the number of supported texture units
-                int numUnits = caps.NumTextureUnits;
-
-                for(int i = 0; i < numUnits; i++) {
-                    // get a reference to the current sampler for this tex unit
-                    D3D.Sampler sampler = device.SamplerState[i];
-
-                    // set the sampler states appropriately
-                    switch(value) {
-                        case Axiom.Graphics.TextureFiltering.None:
-                            sampler.MagFilter = TextureFilter.Point;
-                            sampler.MinFilter = TextureFilter.Point;
-                            sampler.MipFilter = TextureFilter.None;
-                            break;
-
-                        case Axiom.Graphics.TextureFiltering.Bilinear:
-                            if(d3dCaps.TextureFilterCaps.SupportsMinifyLinear) {
-                                sampler.MagFilter = TextureFilter.Linear;
-                                sampler.MinFilter = TextureFilter.Linear;
-                                sampler.MipFilter = TextureFilter.Point;
-                            }
-
-                            break;
-
-                        case Axiom.Graphics.TextureFiltering.Trilinear:
-                            if(d3dCaps.TextureFilterCaps.SupportsMipMapLinear) {
-                                sampler.MagFilter = TextureFilter.Linear;
-                                sampler.MinFilter = TextureFilter.Linear;
-                                sampler.MipFilter = TextureFilter.Linear;
-                            }
-
-                            break;
-                    }
-                }
-            }
-        }
-	
-        public override RenderWindow CreateRenderWindow(string name, System.Windows.Forms.Control target, int width, int height, int colorDepth, bool isFullscreen, int left, int top, bool depthBuffer, RenderWindow parent) {
+        public override RenderWindow CreateRenderWindow(string name, int width, int height, int colorDepth, bool isFullscreen, int left, int top, bool depthBuffer, object target) {
             RenderWindow window = new D3DWindow();
+
+			window.Handle = target;
+			Control targetControl = (Control)target;
 
             // if the device has not been created, the create it
             if(device == null) {
@@ -240,7 +212,6 @@ namespace RenderSystem_DirectX9 {
                 presentParams.BackBufferCount = 1;
                 // TODO: Look into using Copy and why Discard has nasty effects with multiple viewports.
 
-                presentParams.DeviceWindow = target;
                 presentParams.EnableAutoDepthStencil = depthBuffer;
                 presentParams.BackBufferWidth = width;
                 presentParams.BackBufferHeight = height;
@@ -248,19 +219,19 @@ namespace RenderSystem_DirectX9 {
                 presentParams.SwapEffect = SwapEffect.Discard;
                 presentParams.PresentationInterval = PresentInterval.Immediate;
 
-                if(isFullscreen) {
+                //if(isFullscreen) {
                     // supports 16 and 32 bit color
                     if(colorDepth == 16)
                         presentParams.BackBufferFormat = Format.R5G6B5;
                     else
                         presentParams.BackBufferFormat = Format.X8R8G8B8;
-                }
-                else {
+                //}
+                //else {
                     // TODO: Set this up from the D3DDriver properties, which include current desktop format.
                     // Hardcoded for 32 because i always use that for now.
                     presentParams.BackBufferFormat = Format.X8R8G8B8;
                     //presentParams.SwapEffect = SwapEffect.Copy;
-                }
+                //}
 
                 if(colorDepth > 16) {
                     // check for 24 bit Z buffer with 8 bit stencil (optimal choice)
@@ -288,17 +259,17 @@ namespace RenderSystem_DirectX9 {
                 // create the D3D Device, trying for the best vertex support first, and settling for less if necessary
                 try {
                     // hardware vertex processing
-                    device = new D3D.Device(0, DeviceType.Hardware, target, CreateFlags.HardwareVertexProcessing, presentParams);
+                    device = new D3D.Device(0, DeviceType.Hardware, targetControl, CreateFlags.HardwareVertexProcessing, presentParams);
                 }
                 catch(Exception) {
                     try {
                         // doh, how bout mixed vertex processing
-                        device = new D3D.Device(0, DeviceType.Hardware, target, CreateFlags.MixedVertexProcessing, presentParams);
+                        device = new D3D.Device(0, DeviceType.Hardware, targetControl, CreateFlags.MixedVertexProcessing, presentParams);
                     }
                     catch(Exception) {
                         // what the...ok, how bout software vertex procssing.  if this fails, then I don't even know how they are seeing
                         // anything at all since they obviously don't have a video card installed
-                        device = new D3D.Device(0, DeviceType.Hardware, target, CreateFlags.SoftwareVertexProcessing, presentParams);
+                        device = new D3D.Device(0, DeviceType.Hardware, targetControl, CreateFlags.SoftwareVertexProcessing, presentParams);
                     }
                 }
 
@@ -324,7 +295,7 @@ namespace RenderSystem_DirectX9 {
             }
 
             // create the window
-            window.Create(name, target, width, height, colorDepth, isFullscreen, left, top, depthBuffer, device); 
+            window.Create(name, width, height, colorDepth, isFullscreen, left, top, depthBuffer, device); 
 
             // add the new window to the RenderWindow collection
             this.renderWindows.Add(window);
@@ -333,7 +304,7 @@ namespace RenderSystem_DirectX9 {
         }
 
         public override void Shutdown() {
-            base.Shutdown ();
+            base.Shutdown();
 
             // TODO: Re eval shutdown
 
@@ -374,6 +345,26 @@ namespace RenderSystem_DirectX9 {
             device.RenderState.ReferenceAlpha = val;
         }
 
+        protected override void SetColorBufferWriteEnabled(bool red, bool green, bool blue, bool alpha) {
+            D3D.ColorWriteEnable val = 0;
+
+            if(red) {
+                val |= ColorWriteEnable.Red;
+            }
+            if(green) {
+                val |= ColorWriteEnable.Green;
+            }
+            if(blue) {
+                val |= ColorWriteEnable.Blue;
+            }
+            if(alpha) {
+                val |= ColorWriteEnable.Alpha;
+            }
+
+            device.RenderState.ColorWriteEnable = val;
+        }
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -390,20 +381,10 @@ namespace RenderSystem_DirectX9 {
             }
             else {
                 // enable fog
-                device.RenderState.FogEnable = true;
-
                 D3D.FogMode d3dFogMode = D3DHelper.ConvertEnum(mode);
-
-                // set the rest of the fog render states
-             //   if(d3dCaps.RasterCaps.SupportsFogTable) {
-             //       device.RenderState.FogVertexMode = D3D.FogMode.None;
-             //       device.RenderState.FogTableMode = d3dFogMode;
-             //   }
-             //   else {
-                    device.RenderState.FogVertexMode = d3dFogMode; 
-                    device.RenderState.FogTableMode = D3D.FogMode.None;
-             //   }
-
+                device.RenderState.FogEnable = true;
+                device.RenderState.FogVertexMode = d3dFogMode; 
+                device.RenderState.FogTableMode = D3D.FogMode.None;
                 device.RenderState.FogColor = color.ToColor();
                 device.RenderState.FogStart = start;
                 device.RenderState.FogEnd = end;
@@ -427,7 +408,7 @@ namespace RenderSystem_DirectX9 {
                 DefaultForm newWindow = RenderWindow.CreateDefaultForm(0, 0, mode.Width, mode.Height, mode.FullScreen);
 
                 // create the render window
-                renderWindow = this.CreateRenderWindow("Main Window", newWindow, mode.Width, mode.Height, mode.Bpp, mode.FullScreen, 0, 0, true, null);
+                renderWindow = this.CreateRenderWindow("Main Window", mode.Width, mode.Height, mode.Bpp, mode.FullScreen, 0, 0, true, newWindow);
 				
                 newWindow.Target.Visible = false;
 
@@ -441,21 +422,33 @@ namespace RenderSystem_DirectX9 {
             return renderWindow;
         }
 
-        public override Axiom.MathLib.Matrix4 MakeProjectionMatrix(float fov, float aspectRatio, float near, float far) {
-            Matrix4 matrix = Matrix4.Zero;
+        public override Axiom.MathLib.Matrix4 MakeProjectionMatrix(float fov, float aspectRatio, float near, float far, bool forGpuProgram) {
 
-            float theta = MathUtil.DegreesToRadians(fov * 0.5f);
-            float h = 1 / MathUtil.Tan(theta);
-            float w = h / aspectRatio;
-            float q = far / (far - near);
+            Matrix d3dMatrix;
 
-            matrix[0,0] = w;
-            matrix[1,1] = h;
-            matrix[2,2] = q;
-            matrix[2,3] = -q * near;
-            matrix[3,2] = 1.0f;
+            if(forGpuProgram) {
+                d3dMatrix = Matrix.PerspectiveFovRH(MathUtil.DegreesToRadians(fov), aspectRatio, near, far);
+            }
+            else {
+                d3dMatrix = Matrix.PerspectiveFovLH(MathUtil.DegreesToRadians(fov), aspectRatio, near, far);
+            }
 
-            return matrix;
+            return ConvertD3DMatrix(ref d3dMatrix);
+
+//            Matrix4 matrix = Matrix4.Zero;
+//
+//            float theta = MathUtil.DegreesToRadians(fov * 0.5f);
+//            float h = 1 / MathUtil.Tan(theta);
+//            float w = h / aspectRatio;
+//            float q = far / (far - near);
+//
+//            matrix[0,0] = w;
+//            matrix[1,1] = h;
+//            matrix[2,2] = q;
+//            matrix[2,3] = -q * near;
+//            matrix[3,2] = 1.0f;
+//
+//            return matrix;
         }
 
         /// <summary>
@@ -643,38 +636,6 @@ namespace RenderSystem_DirectX9 {
 
             if(device.SamplerState[stage].MaxAnisotropy != maxAnisotropy) {
                 device.SamplerState[stage].MaxAnisotropy = maxAnisotropy;
-            }
-        }
-
-        protected override void SetTextureLayerFiltering(int stage, TextureFiltering filtering) {
-            // get a reference to the current sampler for this tex unit
-            D3D.Sampler sampler = device.SamplerState[stage];
-
-            // set the sampler states appropriately
-            switch(filtering) {
-                case Axiom.Graphics.TextureFiltering.None:
-                    sampler.MagFilter = TextureFilter.Point;
-                    sampler.MinFilter = TextureFilter.Point;
-                    sampler.MipFilter = TextureFilter.None;
-                    break;
-
-                case Axiom.Graphics.TextureFiltering.Bilinear:
-                    if(d3dCaps.TextureFilterCaps.SupportsMinifyLinear) {
-                        sampler.MagFilter = TextureFilter.Linear;
-                        sampler.MinFilter = TextureFilter.Linear;
-                        sampler.MipFilter = TextureFilter.Point;
-                    }
-
-                    break;
-
-                case Axiom.Graphics.TextureFiltering.Trilinear:
-                    if(d3dCaps.TextureFilterCaps.SupportsMipMapLinear) {
-                        sampler.MagFilter = TextureFilter.Linear;
-                        sampler.MinFilter = TextureFilter.Linear;
-                        sampler.MipFilter = TextureFilter.Linear;
-                    }
-
-                    break;
             }
         }
 
@@ -1160,6 +1121,31 @@ namespace RenderSystem_DirectX9 {
             // store
             texStageDesc[stage].coordIndex = index;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="unit"></param>
+        /// <param name="type"></param>
+        /// <param name="filter"></param>
+        protected override void SetTextureUnitFiltering(int unit, FilterType type, FilterOptions filter) {
+            D3DTexType texType = texStageDesc[unit].texType;
+            D3D.TextureFilter texFilter = D3DHelper.ConvertEnum(type, filter, d3dCaps, texType);
+
+            switch(type) {
+                case FilterType.Min:
+                    device.SamplerState[unit].MinFilter = texFilter;
+                    break;
+
+                case FilterType.Mag:
+                    device.SamplerState[unit].MagFilter = texFilter;
+                    break;
+
+                case FilterType.Mip:
+                    device.SamplerState[unit].MipFilter = texFilter;
+                    break;
+            }
+        }
 	
         /// <summary>
         /// 
@@ -1498,7 +1484,7 @@ namespace RenderSystem_DirectX9 {
     /// <summary>
     ///		D3D texture types
     /// </summary>
-    internal enum D3DTexType {
+    public enum D3DTexType {
         Normal,
         Cube,
         Volume,

@@ -33,7 +33,7 @@ using Axiom.Graphics;
 using Tao.OpenGl;
 using Tao.Platform.Windows;
 
-namespace RenderSystem_OpenGL {
+namespace Axiom.RenderSystems.OpenGL {
     /// <summary>
     /// Summary description for GLWindow.
     /// </summary>
@@ -48,7 +48,7 @@ namespace RenderSystem_OpenGL {
 
         #region Implementation of RenderWindow
 
-        public override void Create(string name, System.Windows.Forms.Control target, int width, int height, int colorDepth, bool isFullScreen, int left, int top, bool depthBuffer, params object[] miscParams) {
+        public override void Create(string name, int width, int height, int colorDepth, bool isFullScreen, int left, int top, bool depthBuffer, params object[] miscParams) {
             // get the GL context if it was passed in
             if(miscParams.Length != 2) {
                 throw new Exception("Creating of a GL window requires both a device context and rendering context.");
@@ -67,7 +67,7 @@ namespace RenderSystem_OpenGL {
             this.isFullScreen = isFullScreen;
             this.top = top;
             this.left = left;
-            this.control = target;
+            //this.control = target;
 
             // make this window active
             this.isActive = true;
@@ -87,24 +87,24 @@ namespace RenderSystem_OpenGL {
                 hRC = IntPtr.Zero;                                          // Set RC To NULL
             }
 
-            if(hDC != IntPtr.Zero && !User.ReleaseDC(control.Handle, hDC)) {          // Are We Not Able To Release The DC
-                MessageBox.Show("Release Device Context Failed.", "SHUTDOWN ERROR", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                hDC = IntPtr.Zero;                                          // Set DC To NULL
-            }
+//            if(hDC != IntPtr.Zero && !User.ReleaseDC(control.Handle, hDC)) {          // Are We Not Able To Release The DC
+//                MessageBox.Show("Release Device Context Failed.", "SHUTDOWN ERROR", MessageBoxButtons.OK, MessageBoxIcon.Information);
+//                hDC = IntPtr.Zero;                                          // Set DC To NULL
+//            }
 
-            // if the control is a form, then close it
-            if(control is System.Windows.Forms.Form) {
-                form = control as System.Windows.Forms.Form;
-                form.Close();
-            }
-            else {
-                if(control.Parent != null) {
-                    form = (Form)control.Parent;
-                    form.Close();
-                }
-            }
+//            // if the control is a form, then close it
+//            if(control is System.Windows.Forms.Form) {
+//                form = control as System.Windows.Forms.Form;
+//                form.Close();
+//            }
+//            else {
+//                if(control.Parent != null) {
+//                    form = (Form)control.Parent;
+//                    form.Close();
+//                }
+//            }
 
-            form.Dispose();
+            //form.Dispose();
 
             // make sure this window is no longer active
             this.isActive = false;
@@ -149,8 +149,9 @@ namespace RenderSystem_OpenGL {
         /// <param name="fileName"></param>
         public override void SaveToFile(string fileName) {
             // capture the dimensions of the client drawing area
-            int width = control.ClientSize.Width; 
-            int height = control.ClientSize.Height;
+            //HACK
+            int width = 640; //control.ClientSize.Width; 
+            int height = 480; //control.ClientSize.Height;
 
             // create a new bitmap
             Bitmap bitmap = new Bitmap(width, height, PixelFormat.Format24bppRgb); 

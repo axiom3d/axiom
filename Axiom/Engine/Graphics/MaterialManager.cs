@@ -520,7 +520,7 @@ namespace Axiom.Graphics {
                             programParams.SetAutoConstant(index, autoConstant, extraInfo);
                         }
                         else {
-                            ParseHelper.LogParserError("vertex_program_ref", pass.Parent.Parent.Name, "Unrecognized auto contant type.");
+                            ParseHelper.LogParserError("vertex_program_ref", pass.Parent.Parent.Name, string.Format("Unrecognized auto contant type '{0}'", constant));
                         }
 
                         break;
@@ -555,7 +555,7 @@ namespace Axiom.Graphics {
                             programParams.SetNamedAutoConstant(paramName, autoConstant, extraInfo);
                         }
                         else {
-                            ParseHelper.LogParserError("vertex_program_ref", pass.Parent.Parent.Name, "Unrecognized auto contant type.");
+                            ParseHelper.LogParserError("vertex_program_ref", pass.Parent.Parent.Name, string.Format("Unrecognized auto contant type '{0}'", constant));
                         }
 
                         break;
@@ -577,6 +577,27 @@ namespace Axiom.Graphics {
             }
 			
             pass.Ambient = ParseHelper.ParseColor(values);
+        }
+
+        [AttributeParser("colour_write", Pass)]
+        [AttributeParser("color_write", Pass)]
+        public static void ParseColorWrite(string[] values, Pass pass) {
+            if(values.Length != 1) {
+                ParseHelper.LogParserError("color_write", pass.Parent.Name, "Expected value 'on' or 'off'");
+                return;
+            }
+
+            switch(values[0]) {
+                case "on":
+                    pass.ColorWrite = true;
+                    break;
+                case "off":
+                    pass.ColorWrite = false;
+                    break;
+                default:
+                    ParseHelper.LogParserError("color_write", pass.Parent.Name, "Invalid depth write value, must be 'on' or 'off'");
+                    return;
+            }
         }
 
         [AttributeParser("depth_write", Pass)]
@@ -609,6 +630,36 @@ namespace Axiom.Graphics {
             pass.Diffuse = ParseHelper.ParseColor(values);
         }
 
+        [AttributeParser("shininess", Pass)]
+        public static void ParseShininess(string[] values, Pass pass) {
+            if(values.Length != 1) {
+                ParseHelper.LogParserError("shininess", pass.Parent.Name, "Bad shininess attribute, expected 1 param.");
+                return;
+            }
+
+            pass.Shininess = float.Parse(values[0]);
+        }
+
+        [AttributeParser("specular", Pass)]
+        public static void ParseSpecular(string[] values, Pass pass) {
+            if(values.Length != 3 && values.Length != 4) {
+                ParseHelper.LogParserError("emissive", pass.Parent.Name, "Bad specular attribute, expected 4 or 5 params");
+                return;
+            }
+
+            pass.Specular = ParseHelper.ParseColor(values);
+        }
+
+        [AttributeParser("emissive", Pass)]
+        public static void ParseEmissive(string[] values, Pass pass) {
+            if(values.Length != 3 && values.Length != 4) {
+                ParseHelper.LogParserError("emissive", pass.Parent.Name, "Expected 3-4 params");
+                return;
+            }
+
+            pass.Emissive = ParseHelper.ParseColor(values);
+        }
+
         [AttributeParser("depth_check", Pass)]
         public static void ParseDepthCheck(string[] values, Pass pass) {
             if(values.Length != 1) {
@@ -626,6 +677,40 @@ namespace Axiom.Graphics {
                 default:
                     ParseHelper.LogParserError("depth_check", pass.Parent.Name, "Invalid depth_check value, must be 'on' or 'off'");
                     return;
+            }
+        }
+
+        [AttributeParser("iteration", Pass)]
+        public static void ParseIteration(string[] values, Pass pass) {
+            if(values.Length < 1 || values.Length > 2) {
+                ParseHelper.LogParserError("iteration", pass.Parent.Name, "Expected 1 or 2 param values.'");
+                return;
+            }
+
+            if(values[0] == "once") {
+                pass.SetRunOncePerLight(false);
+            }
+            else if(values[0] == "once_per_light") {
+                if(values.Length == 2) {
+                    // parse light type
+
+                    // lookup the real enum equivalent to the script value
+                    object val = ScriptEnumAttribute.Lookup(values[1], typeof(LightType));
+
+                    // if a value was found, assign it
+                    if(val != null) {
+                        pass.SetRunOncePerLight(true, true, (LightType)val);
+                    }
+                    else {
+                        ParseHelper.LogParserError("iteration", pass.Parent.Name, "Invalid enum value");
+                    }
+                }
+                else {
+                    pass.SetRunOncePerLight(true, false);
+                }
+            }
+            else {
+                ParseHelper.LogParserError("iteration", pass.Parent.Name, "Invalid iteration value");
             }
         }
 
@@ -647,6 +732,17 @@ namespace Axiom.Graphics {
                     ParseHelper.LogParserError("lighting", pass.Parent.Name, "Invalid lighting value, must be 'on' or 'off'");
                     return;
             }
+        }
+
+
+        [AttributeParser("max_lights", Pass)]
+        public static void ParseMaxLights(string[] values, Pass pass) {
+            if(values.Length != 1) {
+                ParseHelper.LogParserError("max_lights", pass.Parent.Name, "Expected 1 param value.'");
+                return;
+            }
+
+            pass.MaxLights = int.Parse(values[0]);
         }
 
         [AttributeParser("scene_blend", Pass)] 
@@ -891,9 +987,9 @@ namespace Axiom.Graphics {
         }
 
         [AttributeParser("tex_filtering", TextureUnit)]
-        public static void ParseLayerFiltering(string[] values, TextureUnitState layer) {
+        public static void ParseLayerFiltering(string[] values, TextureUnitState unitState) {
             if(values.Length != 1) {
-                ParseHelper.LogParserError("tex_filtering", layer.Parent.Parent.Name, "Expected 1 param.");
+                ParseHelper.LogParserError("tex_filtering", unitState.Parent.Parent.Name, "Expected 1 param.");
                 return;
             }
 
@@ -902,9 +998,9 @@ namespace Axiom.Graphics {
 
             // if a value was found, assign it
             if(val != null)
-                layer.TextureFiltering = (TextureFiltering)val;
+                unitState.SetTextureFiltering((TextureFiltering)val);
             else
-                ParseHelper.LogParserError("tex_filtering", layer.Parent.Parent.Name, "Invalid enum value");
+                ParseHelper.LogParserError("tex_filtering", unitState.Parent.Parent.Name, "Invalid enum value");
         }
 
         [AttributeParser("rotate", TextureUnit)]
@@ -986,12 +1082,26 @@ namespace Axiom.Graphics {
 
         [AttributeParser("texture", TextureUnit)]
         public static void ParseTexture(string[] values, TextureUnitState layer) {
-            if(values.Length != 1) {
-                ParseHelper.LogParserError("texture", layer.Parent.Parent.Name, "Expected texture name");
+            if(values.Length < 1 || values.Length > 2) {
+                ParseHelper.LogParserError("texture", layer.Parent.Parent.Name, "Expected syntax 'texture <name> [type]'");
                 return;
             }
+
+            TextureType texType = TextureType.TwoD;
+
+            if(values.Length == 2) {
+                // check the transform type
+                object val = ScriptEnumAttribute.Lookup(values[0], typeof(TextureType));
+
+                if(val == null) {
+                    ParseHelper.LogParserError("texture", layer.Parent.Parent.Name, "Invalid texture type enum value");
+                    return;
+                }
+
+                texType = (TextureType)val;
+            }
 			
-            layer.TextureName = values[0];
+            layer.SetTextureName(values[0], texType);
         }
 
         [AttributeParser("wave_xform", TextureUnit)]

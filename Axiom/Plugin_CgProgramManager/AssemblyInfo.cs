@@ -6,12 +6,12 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("nVidia Cg Plugin")]
+[assembly: AssemblyDescription("Plugin capable of loading and compiling Cg programs into low level ASM programs.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyProduct("Axiom Engine Project Library")]
+[assembly: AssemblyCopyright("@2003 Axiom Engine Project Team")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 

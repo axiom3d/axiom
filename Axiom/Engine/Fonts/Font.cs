@@ -196,7 +196,10 @@ namespace Axiom.Fonts {
             TextureManager.Instance.LoadImage(textureName, bitmap);
 
             // add a texture layer with the name of the texture
-            material.GetTechnique(0).GetPass(0).CreateTextureUnitState(textureName);
+            TextureUnitState unitState = material.GetTechnique(0).GetPass(0).CreateTextureUnitState(textureName);
+
+            // use min/mag filter, but no mipmapping
+            unitState.SetTextureFiltering(FilterOptions.Linear, FilterOptions.Linear, FilterOptions.None);
         }
 
         /// <summary>

@@ -26,7 +26,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using System.Windows.Forms;
 using Axiom.Core;
 
 using Axiom.EventSystem;
@@ -38,62 +37,5 @@ namespace Axiom.Gui {
     ///		Abstract class used to derive controls that can be placed in an overlay (GUI).
     /// </summary>
     public abstract class GuiControl : IMouseTarget {
-        #region Member variables
-        /// <summary>A list of child controls within this control.</summary>
-        protected ArrayList childControls = new ArrayList();
-        /// <summary>Parent control if this is a child control of another one.</summary>
-        protected GuiControl parentControl;
-		
-        #endregion
-
-        #region Constuctors
-
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public GuiControl() {
-        }
-
-        #endregion
-
-        #region IMouseTarget Members
-
-        public event MouseEventHandler MouseMoved;
-        public event MouseEventHandler MouseEnter;
-        public event MouseEventHandler MouseLeave;
-        public event MouseEventHandler MouseDown;
-        public event MouseEventHandler MouseUp;      
-
-        protected internal void OnMouseDown(MouseEventArgs e) {
-            if(MouseDown != null) {
-                MouseDown(this, e);
-            }
-        }
-
-        protected internal void OnMouseEnter(MouseEventArgs e) {
-            if(MouseEnter != null) {
-                MouseEnter(this, e);
-            }
-        }
-
-        protected internal void OnMouseLeave(MouseEventArgs e) {
-            if(MouseLeave != null) {
-                MouseLeave(this, e);
-            }
-        }
-
-        protected internal void OnMouseUp(MouseEventArgs e) {
-            if(MouseUp != null) {
-                MouseUp(this, e);
-            }
-        }
-
-        protected internal void OnMouseMoved(MouseEventArgs e) {
-            if(MouseMoved != null) {
-                MouseMoved(this, e);
-            }
-        }
-
-        #endregion
     }
 }

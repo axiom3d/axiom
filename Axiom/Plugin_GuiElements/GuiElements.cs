@@ -28,13 +28,11 @@ using System;
 using Axiom.Core;
 using Axiom.Gui;
 
-namespace Plugin_GuiElements
-{
+namespace Axiom.Gui.Elements {
 	/// <summary>
 	/// Summary description for GuiElements.
 	/// </summary>
-	public class GuiElements : IPlugin
-	{
+	public class GuiElements : IPlugin {
         #region IPlugin Members
 
         public void Start() {

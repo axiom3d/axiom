@@ -31,7 +31,6 @@ using System.Diagnostics;
 using System.IO;
 using Axiom.Configuration;
 using Axiom.FileSystem;
-using Axiom.Patterns;
 
 namespace Axiom.Core {
     /// <summary>

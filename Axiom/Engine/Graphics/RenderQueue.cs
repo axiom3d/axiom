@@ -440,10 +440,10 @@ namespace Axiom.Graphics {
 
                 // sorting by pass hash
                 if(a.GetHashCode() < b.GetHashCode()) {
-                    return 1;
+                    return -1;
                 }
                 else {
-                    return -1;
+                    return 1;
                 }
             }
 

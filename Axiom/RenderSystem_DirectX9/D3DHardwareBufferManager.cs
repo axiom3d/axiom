@@ -30,7 +30,7 @@ using D3D = Microsoft.DirectX.Direct3D;
 using Axiom.Graphics;
 using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
 
-namespace RenderSystem_DirectX9 {
+namespace Axiom.RenderSystems.DirectX9 {
     /// <summary>
     /// 	Summary description for D3DHardwareBufferManager.
     /// </summary>

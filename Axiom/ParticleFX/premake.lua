@@ -1,0 +1,9 @@
+package = newpackage()
+package.name = "ParticleFX"
+package.language = "c#"
+package.kind = "dll"
+package.defines = { "TRACE" } 
+package.config["Debug"].target = { "DEBUG" }
+package.target = "Axiom.ParticleFX"
+package.links = { "System", "Engine", "MathLib" }
+package.files = { matchfiles("*.cs") }

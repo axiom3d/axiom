@@ -27,8 +27,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom.Core;
 using Axiom.Gui;
-namespace Plugin_GuiElements
-{
+
+namespace Axiom.Gui.Elements {
     /// <summary>
     /// 	Summary description for BorderPanelFactory.
     /// </summary>

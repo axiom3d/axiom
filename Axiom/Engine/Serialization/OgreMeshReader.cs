@@ -618,8 +618,10 @@ namespace Axiom.Serialization {
             unsafe {
                 float* pFloats = (float*)dest.ToPointer();
 
-                for(int i = 0; i < count; i++)
-                    pFloats[i] = ReadSingle();
+                for(int i = 0; i < count; i++) {
+                    float val = ReadSingle();
+                    pFloats[i] = val;
+                }
             }
         }
 

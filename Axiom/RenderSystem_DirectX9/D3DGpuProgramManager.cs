@@ -30,13 +30,11 @@ using Axiom.Graphics;
 using Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
 
-namespace RenderSystem_DirectX9
-{
+namespace Axiom.RenderSystems.DirectX9 {
 	/// <summary>
 	/// 	Summary description for D3DGpuProgramManager.
 	/// </summary>
-	public class D3DGpuProgramManager : GpuProgramManager
-	{
+	public class D3DGpuProgramManager : GpuProgramManager {
         protected D3D.Device device;
 		
 		public D3DGpuProgramManager(D3D.Device device) : base() {

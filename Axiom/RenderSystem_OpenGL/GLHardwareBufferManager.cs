@@ -27,9 +27,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom.Graphics;
 using Tao.OpenGl;
-using Tao.Platform.Windows;
 
-namespace RenderSystem_OpenGL {
+namespace Axiom.RenderSystems.OpenGL {
     /// <summary>
     /// 	Summary description for GLHardwareBufferManager.
     /// </summary>

@@ -2,8 +2,7 @@ using System;
 using Axiom.Core;
 using Axiom.Graphics;
 
-namespace Plugin_CgProgramManager
-{
+namespace Axiom.CgPrograms {
 	/// <summary>
 	///    Main plugin class.
 	/// </summary>

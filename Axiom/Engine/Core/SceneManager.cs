@@ -133,6 +133,15 @@ namespace Axiom.Core {
         protected bool lastUsedFallback;
         protected static int lastNumTexUnitsUsed = 0;
         protected static RenderOperation op = new RenderOperation();
+        /// <summary>
+        ///    Local light list for use during rendering passes.
+        /// </summary>
+        protected static LightList localLightList = new LightList();
+        /// <summary>
+        ///    Whether normals are currently being normalized.
+        /// </summary>
+        protected static bool normalizeNormals;
+
         protected static bool lastUsedVertexProgram;
         protected static bool lastUsedFragmentProgram;
 
@@ -414,11 +423,12 @@ namespace Axiom.Core {
         ///		Empties the entire scene, inluding all SceneNodes, Cameras, Entities and Lights etc.
         /// </summary>
         public virtual void ClearScene() {
-            // TODO: Implement ClearScene
+            // TODO: Finish ClearScene
             rootSceneNode.Clear();
             cameraList.Clear();
             entityList.Clear();
             lightList.Clear();
+            animationStateList.Clear();
         }
 
         /// <summary>
@@ -467,7 +477,6 @@ namespace Axiom.Core {
             // vertex pipline
             if(pass.HasVertexProgram) {
                 targetRenderSystem.BindGpuProgram(pass.VertexProgram.BindingDelegate);
-                targetRenderSystem.BindGpuProgramParameters(GpuProgramType.Vertex, pass.VertexProgramParameters);
                 lastUsedVertexProgram = true;
             }
             else {
@@ -489,7 +498,6 @@ namespace Axiom.Core {
             // fragment pipeline
             if(pass.HasFragmentProgram) {
                 targetRenderSystem.BindGpuProgram(pass.FragmentProgram.BindingDelegate);
-                targetRenderSystem.BindGpuProgramParameters(GpuProgramType.Fragment, pass.FragmentProgramParameters);
                 lastUsedFragmentProgram = true;
             }
             else {
@@ -548,6 +556,11 @@ namespace Axiom.Core {
             targetRenderSystem.DepthCheck = pass.DepthCheck;
             targetRenderSystem.DepthFunction = pass.DepthFunction;
             targetRenderSystem.DepthBias = pass.DepthBias;
+
+            // Color Write
+            // right now only using on/off, not per channel
+            bool colWrite = pass.ColorWrite;
+            targetRenderSystem.SetColorBufferWriteEnabled(colWrite, colWrite, colWrite, colWrite);
 
             // Culling Mode
             targetRenderSystem.CullingMode = pass.CullMode;
@@ -1019,8 +1032,12 @@ namespace Axiom.Core {
         /// Gets/Sets the target render system that this scene manager should be using.
         /// </summary>
         public RenderSystem TargetRenderSystem {
-            get { return targetRenderSystem; }
-            set { targetRenderSystem = value; }
+            get { 
+                return targetRenderSystem; 
+            }
+            set { 
+                targetRenderSystem = value; 
+            }
         }
 
         /// <summary>
@@ -1038,7 +1055,9 @@ namespace Axiom.Core {
         ///		e.g. loading a BSP tree).
         /// </remarks>
         public SceneNode RootSceneNode {
-            get { return rootSceneNode; }
+            get { 
+                return rootSceneNode; 
+            }
         }
 
         /// <summary>
@@ -1056,7 +1075,9 @@ namespace Axiom.Core {
         ///		(see Material.LightingEnabled) will not be visible unless you have some dynamic lights in your scene.
         /// </remarks>
         public ColorEx AmbientLight {
-            get { return ambientColor; }
+            get { 
+                return ambientColor; 
+            }
             set { 
                 ambientColor = value; 
                 // change ambient color of current render system
@@ -1070,15 +1091,21 @@ namespace Axiom.Core {
         ///		will) not exist across different implementations.
         /// </summary>
         public Hashtable Options {
-            get { return optionList; }
+            get { 
+                return optionList; 
+            }
         }
 
         /// <summary>
         ///		Gets/Sets a value that forces all nodes to render their bounding boxes.
         /// </summary>
         public bool ShowBoundingBoxes {
-            get { return showBoundingBoxes; }
-            set { showBoundingBoxes = value; }
+            get { 
+                return showBoundingBoxes; 
+            }
+            set { 
+                showBoundingBoxes = value; 
+            }
         }
 
         /// <summary>
@@ -1088,43 +1115,57 @@ namespace Axiom.Core {
         ///		What will be displayed is the local axes of the node (for debugging mainly).
         /// </remarks>
         public bool DisplayNodes {
-            get { return displayNodes; }
-            set { displayNodes = value; }
+            get { 
+                return displayNodes; 
+            }
+            set { 
+                displayNodes = value; 
+            }
         }
 
         /// <summary>
         ///		Gets the fog mode that was set during the last call to SetFog.
         /// </summary>
         public FogMode FogMode {
-            get { return fogMode; }
+            get { 
+                return fogMode; 
+            }
         }
 
         /// <summary>
         ///		Gets the fog starting point that was set during the last call to SetFog.
         /// </summary>
         public float FogStart {
-            get { return fogStart; }
+            get { 
+                return fogStart; 
+            }
         }
 
         /// <summary>
         ///		Gets the fog ending point that was set during the last call to SetFog.
         /// </summary>
         public float FogEnd {
-            get { return fogEnd; }
+            get { 
+                return fogEnd; 
+            }
         }
 
         /// <summary>
         ///		Gets the fog density that was set during the last call to SetFog.
         /// </summary>
         public float FogDensity {
-            get { return fogDensity; }
+            get { 
+                return fogDensity; 
+            }
         }
 
         /// <summary>
         ///		Gets the fog color that was set during the last call to SetFog.
         /// </summary>
         public ColorEx FogColor {
-            get { return fogColor; }
+            get { 
+                return fogColor; 
+            }
         }
 
         #endregion
@@ -1281,7 +1322,7 @@ namespace Axiom.Core {
             // update auto params if this is a programmable pass
             if(pass.IsProgrammable) {
                 autoParamDataSource.Renderable = renderable;
-                pass.UpdateAutoParams(autoParamDataSource);
+                pass.UpdateAutoParamsNoLights(autoParamDataSource);
             }
 
             // get the world matrices and the count
@@ -1297,12 +1338,6 @@ namespace Axiom.Core {
             // issue view/projection changes (if any)
             UseRenderableViewProjection(renderable);
 
-            // Do we need to update light states? 
-            // Only do this if fixed-function vertex lighting applies
-            if(pass.LightingEnabled && !pass.HasVertexProgram) {
-                targetRenderSystem.UseLights(renderable.Lights, pass.MaxLights);
-            }
-
             // set up the texture units for this pass
             for(int i = 0; i < pass.NumTextureUnitStages; i++) {
                 TextureUnitState texUnit = pass.GetTextureUnitState(i);
@@ -1314,7 +1349,13 @@ namespace Axiom.Core {
                 }
             }
 
-            // TODO: Normalize normals!
+            // Normalize normals
+            bool thisNormalize = renderable.NormalizeNormals;
+
+            if(thisNormalize != normalizeNormals) {
+                targetRenderSystem.NormalizeNormals = thisNormalize;
+                normalizeNormals = thisNormalize;
+            }
 
             // override solid/wireframe rendering
             SceneDetailLevel requestedDetail = renderable.RenderDetail;
@@ -1330,12 +1371,63 @@ namespace Axiom.Core {
                 lastDetailLevel = requestedDetail;
             }
 
+            // Here's where we issue the rendering operation to the render system
+            // Note that we may do this once per light, therefore it's in a loop
+            // and the light parameters are updated once per traversal through the
+            // loop
+
+            LightList rendLightList = renderable.Lights;
+            bool iteratePerLight = pass.RunOncePerLight;
+            int numIterations = iteratePerLight ? rendLightList.Count : 1;
+            LightList lightListToUse = null;
+
             // get the renderables render operation
             renderable.GetRenderOperation(op);
 
-            // render the object as long as it has vertices
-            if(op.vertexData.vertexCount > 0)
-                targetRenderSystem.Render(op);
+            for(int i = 0; i < numIterations; i++) {
+                // determine light list to use
+                if(iteratePerLight) {
+                    localLightList.Clear();
+
+                    // check whether we need to filter this one out
+                    if(pass.RunOnlyOncePerLightType && pass.OnlyLightType != rendLightList[i].Type) {
+                        // skip this one
+                        continue;
+                    }
+
+                    localLightList.Add(rendLightList[i]);
+                    lightListToUse = localLightList;
+                }
+                else {
+                    // use complete light list
+                    lightListToUse = rendLightList;
+                }
+
+                if(pass.IsProgrammable) {
+                    // Update any automatic gpu params for lights
+                    // Other bits of information will have to be looked up
+                    autoParamDataSource.SetCurrentLightList(lightListToUse);
+                    pass.UpdateAutoParamsLightsOnly(autoParamDataSource);
+
+                    // note: parameters must be bound after auto params are updated
+                    if(pass.HasVertexProgram) {
+                        targetRenderSystem.BindGpuProgramParameters(GpuProgramType.Vertex, pass.VertexProgramParameters);
+                    }
+                    if(pass.HasFragmentProgram) {
+                        targetRenderSystem.BindGpuProgramParameters(GpuProgramType.Fragment, pass.FragmentProgramParameters);
+                    }
+                }
+
+                // Do we need to update light states? 
+                // Only do this if fixed-function vertex lighting applies
+                if(pass.LightingEnabled && !pass.HasVertexProgram) {
+                    targetRenderSystem.UseLights(renderable.Lights, pass.MaxLights);
+                }
+
+                // render the object as long as it has vertices
+                if(op.vertexData.vertexCount > 0)
+                    targetRenderSystem.Render(op);
+            } // iterate per light
         }
 
         /// <summary>
@@ -1597,6 +1689,5 @@ namespace Axiom.Core {
                 }
             }
         }
-
     }
 }

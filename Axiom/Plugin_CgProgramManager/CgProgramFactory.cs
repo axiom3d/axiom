@@ -3,8 +3,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Tao.Cg;
 
-namespace Plugin_CgProgramManager
-{
+namespace Axiom.CgPrograms {
 	/// <summary>
 	/// 	Summary description for CgProgramFactory.
 	/// </summary>

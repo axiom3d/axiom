@@ -93,6 +93,13 @@ namespace Axiom.Graphics {
         }
 
         /// <summary>
+        ///    Returns whether or not this Renderable wishes the hardware to normalize normals.
+        /// </summary>
+        bool NormalizeNormals {
+            get;
+        }
+
+        /// <summary>
         ///    Gets the number of world transformations that will be used for this object.
         /// </summary>
         /// <remarks>

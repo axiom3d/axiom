@@ -27,7 +27,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 using System.Drawing;
-using System.Windows.Forms;
 using Axiom.Core;
 using Axiom.Gui;
 using Axiom.Input;
@@ -42,174 +41,172 @@ namespace Demos {
     /// </summary>
     public class Dot3Bump : TechDemo {
         #region Fields
-        // the currently active/visible entity
-        protected static Entity activeEntity = null;
-        // the entities to be used
-        protected Entity knot, cube, head, ball;
-        // material name
-        protected static string materialName = "Examples/DP3Mat1";
-        // the light
-        protected Light light;
-        // the scene node of the entity
-        protected SceneNode sceneNode;
-        // the inverted model matrix
-        protected Matrix4[] invertedModelMatrix = new Matrix4[1];
-        // light's position vector
-        protected Vector3 lightPositionVector;
-        // 2d texture coordinates.
-        protected struct TextureCoord {
-            public float s;
-            public float t;
-        }
-        // data needed to calculate the tangent space basis for a general polygon
-        protected struct TangentSpace {
-            // position of the vertex
-            public Vector3 position;
-            // texture coordinates for vertex
-            public TextureCoord texCoord;
-        }
-        #endregion
 
-        #region Methods
-        private HardwareVertexBuffer Get3dTexCoordBuffer(VertexData vertexData) {
-            VertexDeclaration vertexDeclaration = vertexData.vertexDeclaration;
-            VertexBufferBinding vertexBinding = vertexData.vertexBufferBinding;
-            VertexElement texture2d = vertexDeclaration.FindElementBySemantic(VertexElementSemantic.TexCoords, 0);
+        const int NUM_LIGHTS = 3;
 
-            Debug.Assert(texture2d != null, "Geometry data must have at least one 2D texture coordinate buffer.");
+        float timeDelay = 0.0f;
+            
+        Entity[] entities = new Entity[NUM_LIGHTS];
+        string[] entityMeshes = new string[] { "knot.mesh", "ogrehead.mesh" };
+        Light[] lights = new Light[NUM_LIGHTS];
+        BillboardSet[] lightFlareSets = new BillboardSet[NUM_LIGHTS];
+        Billboard[] lightFlares = new Billboard[NUM_LIGHTS];
+        Vector3[] lightPositions = new Vector3[] {
+                                                     new Vector3(300, 0, 0),
+                                                     new Vector3(-200, 50, 0),
+                                                     new Vector3(0, -300, -100)
+                                                 };
 
-            VertexElement texture3d = vertexDeclaration.FindElementBySemantic(VertexElementSemantic.TexCoords, 1);
-            bool needsToBeCreated = false;
+        float[] lightRotationAngles = new float[] { 0, 30, 75 };
 
-            // no texture coordinates with index 1
-            if(texture3d == null) {
-                needsToBeCreated = true;
-            }
-            else if(texture3d.Type == VertexElementType.Float3) {
-                //                vertexDeclaration.
-                //                vertexBinding.
-                needsToBeCreated = true;
-            }
+        Vector3[] lightRotationAxes = new Vector3[] {
+                                                        Vector3.UnitX,
+                                                        Vector3.UnitZ,
+                                                        Vector3.UnitY
+                                                    };
 
-            return null;
-        }
+        float[] lightSpeeds = new float[] { 30, 10, 50 };
+
+        ColorEx[] diffuseLightColors = new ColorEx[] {
+                                                         new ColorEx(1, 1, 1, 1),
+                                                         new ColorEx(1, 1, 0, 0),
+                                                         new ColorEx(1, 1, 1, 0.5f)
+                                                     };
+
+        ColorEx[] specularLightColors = new ColorEx[] {
+                                                          new ColorEx(1, 1, 1, 1),
+                                                          new ColorEx(1, 0, 0.8f, 0.8f),
+                                                          new ColorEx(1, 1, 1, 0.8f)
+                                                      };
+
+        bool[] lightState = new bool[] { true, true, false };
+
+        string[] materialNames = new string[] {
+                                                  "Examples/BumpMapping/MultiLight",
+                                                  "Examples/BumpMapping/SingleLight",
+                                                  "Examples/BumpMapping/MultiLightSpecular"
+                                              };
+
+        int currentMaterial = 0;
+        int currentEntity = 0;
+
+        SceneNode mainNode;
+        SceneNode[] lightNodes = new SceneNode[NUM_LIGHTS];
+        SceneNode[] lightPivots = new SceneNode[NUM_LIGHTS];
+
+        #endregion Fields
 
         protected override void CreateScene() {
-            // set default filtering/anisotropy
-            MaterialManager.Instance.DefaultTextureFiltering = TextureFiltering.Anisotropic;
-            MaterialManager.Instance.DefaultAnisotropy = 2;
+            scene.AmbientLight = ColorEx.Black;
 
-            // set ambient light and fog
-            scene.AmbientLight = new ColorEx(1.0f, 1, 0.2f, 0.2f);
-            scene.SetFog(FogMode.Exp, ColorEx.White, 0.0002f, 0, 1);
+            // TODO: Implement SceneManager.CreateChildSceneNode()
+            mainNode = (SceneNode)scene.RootSceneNode.CreateChild();
 
-            // create a skydome
-            scene.SetSkyDome(true, "Examples/DP3Sky", 5, 8, 4000, true, Quaternion.Identity);
+            // Load the meshes with non-default HBU options
+            for(int mn = 0; mn < entityMeshes.Length; mn++) {
+                Mesh mesh = MeshManager.Instance.Load(entityMeshes[mn],
+                    BufferUsage.DynamicWriteOnly,
+                    BufferUsage.StaticWriteOnly,
+                    true, true, 1); //so we can still read it
 
-            // create a light
-            light = scene.CreateLight("MainLight");
-            light.Diffuse = new ColorEx(1, 0, 1, 0);
+                // Build tangent vectors, all our meshes use only 1 texture coordset 
+                mesh.BuildTangentVectors();
 
-            // define a floor plane
-            Plane plane = new Plane();
-            plane.Normal = Vector3.UnitY;
-            plane.D = 200;
-            MeshManager.Instance.CreatePlane("FloorPlane", plane, 2000, 2000, 1, 1, true, 1, 5, 5, Vector3.UnitZ);
+                // Create entity
+                entities[mn] = scene.CreateEntity("Ent" + mn.ToString(), entityMeshes[mn]);
 
-            // create the floor entity
-            Entity floor = scene.CreateEntity("Floor", "FloorPlane");
-            floor.MaterialName = "Examples/DP3Terrain";
-            scene.RootSceneNode.AttachObject(floor);
+                // Attach to child of root node
+                mainNode.AttachObject(entities[mn]);
 
-            // load the meshes with non-default hardware buffer usage options
-            string[] meshNames = {"knot.mesh", "cube.mesh", "ogrehead.mesh", "ball.mesh"};
-            for(int meshIndex = 0; meshIndex < meshNames.Length; meshIndex++) {
-                // TODO: Look at HBU options
-                MeshManager.Instance.Load(meshNames[meshIndex], BufferUsage.DynamicWriteOnly, BufferUsage.StaticWriteOnly, true, true, 1);
+                // Make invisible, except for index 0
+                if (mn == 0) {
+                    entities[mn].MaterialName = materialNames[currentMaterial];
+                }
+                else {
+                    entities[mn].IsVisible = false;
+                }
             }
 
-            // create the meshes
-            knot = scene.CreateEntity("Knot", "knot.mesh");
-            cube = scene.CreateEntity("Cube", "cube.mesh");
-            head = scene.CreateEntity("Head", "ogrehead.mesh");
-            ball = scene.CreateEntity("Ball", "ball.mesh");
+            for (int i = 0; i < NUM_LIGHTS; i++) {
+                lightPivots[i] = (SceneNode)scene.RootSceneNode.CreateChild();
+                lightPivots[i].Rotate(lightRotationAxes[i], lightRotationAngles[i]);
 
-            // attach entities to child of the root node
+                // Create a light, use default parameters
+                lights[i] = scene.CreateLight("Light" + i.ToString());
+                lights[i].Position = lightPositions[i];
+                lights[i].Diffuse = diffuseLightColors[i];
+                lights[i].Specular = specularLightColors[i];
+                lights[i].IsVisible = lightState[i];
 
-            sceneNode = (SceneNode) scene.RootSceneNode.CreateChild();
-            sceneNode.AttachObject(knot);
-            sceneNode.AttachObject(cube);
-            sceneNode.AttachObject(head);
-            sceneNode.AttachObject(ball);
+                // Attach light
+                lightPivots[i].AttachObject(lights[i]);
 
-            // move the camera a bit to the right
+                // Create billboard for light
+                lightFlareSets[i] = scene.CreateBillboardSet("Flare" + i.ToString());
+                lightFlareSets[i].MaterialName = "Particles/Flare";
+                lightPivots[i].AttachObject(lightFlareSets[i]);
+                lightFlares[i] = lightFlareSets[i].CreateBillboard(lightPositions[i]);
+                lightFlares[i].Color = diffuseLightColors[i];
+                lightFlareSets[i].IsVisible = lightState[i];
+            }
+            // move the camera a bit right and make it look at the knot
             camera.MoveRelative(new Vector3(50, 0, 20));
-            camera.LookAt(Vector3.Zero);
-
-            // show overlay
-            Overlay overlay = OverlayManager.Instance.GetByName("Example/DP3Overlay");
-            overlay.Show();
+            camera.LookAt(new Vector3(0, 0, 0));
         }
 
-        protected override bool OnFrameStarted(Object source, FrameEventArgs e) {
-            base.OnFrameStarted (source, e);
-
-            if(activeEntity == null) {
-                activeEntity = knot;
+        protected override bool OnFrameStarted(object source, FrameEventArgs e) {
+            if(!base.OnFrameStarted (source, e)) {
+                return false;
             }
 
-            // switch meshes
-            if(input.IsKeyPressed(KeyCodes.F5)) {
-                activeEntity = knot;
+            if(timeDelay > 0.0f) {
+                timeDelay -= e.TimeSinceLastFrame;
             }
-            if(input.IsKeyPressed(KeyCodes.F6)) {
-                activeEntity = cube;
-            }
-            if(input.IsKeyPressed(KeyCodes.F7)) {
-                activeEntity = head;
-            }
-            if(input.IsKeyPressed(KeyCodes.F8)) {
-                activeEntity = ball;
+            else {
+                if(input.IsKeyPressed(KeyCodes.O)) {
+                    entities[currentEntity].IsVisible = false;
+                    currentEntity = (++currentEntity) % entityMeshes.Length;
+                    entities[currentEntity].IsVisible = true;
+                    entities[currentEntity].MaterialName = materialNames[currentMaterial];
+                }
+
+                if(input.IsKeyPressed(KeyCodes.M)) {
+                    currentMaterial = (++currentMaterial) % materialNames.Length;
+                    entities[currentEntity].MaterialName = materialNames[currentMaterial];
+                }
+
+                if(input.IsKeyPressed(KeyCodes.D1)) {
+                    FlipLightState(0);
+                }
+
+                if(input.IsKeyPressed(KeyCodes.D2)) {
+                    FlipLightState(1);
+                }
+
+                if(input.IsKeyPressed(KeyCodes.D3)) {
+                    FlipLightState(2);
+                }
+
+                timeDelay = 1.0f;
             }
 
-            // set visible entity
-            knot.IsVisible = (activeEntity == knot ? true : false);
-            cube.IsVisible = (activeEntity == cube ? true : false);
-            head.IsVisible = (activeEntity == head ? true : false);
-            ball.IsVisible = (activeEntity == ball ? true : false);
-
-            // switch materials
-            if(input.IsKeyPressed(KeyCodes.F1)) {
-                materialName = "Examples/DP3Mat1";
+            // animate the lights
+            for(int i = 0; i < NUM_LIGHTS; i++) {
+                lightPivots[i].Rotate(Vector3.UnitZ, lightSpeeds[i] * e.TimeSinceLastFrame);
             }
-            if(input.IsKeyPressed(KeyCodes.F2)) {
-                materialName = "Examples/DP3Mat2";
-            }
-            if(input.IsKeyPressed(KeyCodes.F3)) {
-                materialName = "Examples/DP3Mat3";
-            }
-            if(input.IsKeyPressed(KeyCodes.F4)) {
-                materialName = "Examples/DP3Mat4";
-            }
-
-            // set material
-            activeEntity.MaterialName = materialName;
-
-            // update the light position, the light is projected and follows the camera
-            light.Position = camera.Position;
-
-            // animate the mesh node
-            sceneNode.Rotate(Vector3.UnitY, 0.5f);
-
-            // calculate the light position in object space
-            sceneNode.GetWorldTransforms(invertedModelMatrix);
-            //invertedModelMatrix = invertedModelMatrix[0].Inverse();
-            lightPositionVector = invertedModelMatrix[0] * light.Position;
-
-            // Create3dTexCoordsFromTslVector(activeEntity, lightPositionVector);
 
             return true;
         }
-        #endregion
+
+
+        /// <summary>
+        ///    Flips the light states for the light at the specified index.
+        /// </summary>
+        /// <param name="index"></param>
+        void FlipLightState(int index) {
+            lightState[index] = !lightState[index];
+            lights[index].IsVisible = lightState[index];
+            lightFlareSets[index].IsVisible = lightState[index];
+        }
     }
 }

@@ -50,7 +50,7 @@ namespace Axiom.Utility {
         protected Viewport viewport;
         protected SceneManager scene;
         protected RenderWindow window;
-        protected InputSystem input;
+        protected IInputReader input;
         protected Vector3 cameraVector = Vector3.Zero;
         protected float cameraScale;
         protected bool showDebugOverlay = true;
@@ -147,7 +147,7 @@ namespace Axiom.Utility {
             CreateScene();
 
             // retreive and initialize the input system
-            input = engine.InputSystem;
+			input = PlatformManager.Instance.CreateInputReader();
             input.Initialize(window, null, true, true, false);
 
             return true;

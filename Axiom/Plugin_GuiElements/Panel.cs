@@ -32,8 +32,7 @@ using Axiom.Gui;
 using Axiom.Scripting;
 using Axiom.Graphics;
 
-namespace Plugin_GuiElements
-{
+namespace Axiom.Gui.Elements {
 	/// <summary>
 	/// 	GuiElement representing a flat, single-material (or transparent) panel which can contain other elements.
 	/// </summary>
@@ -51,8 +50,7 @@ namespace Plugin_GuiElements
 	/// 	layers, scrolling / animated textures etc. For multiple texture layers, you have to set 
 	/// 	the tiling level for each layer.
 	/// </remarks>
-	public class Panel : GuiContainer
-	{
+	public class Panel : GuiContainer {
 		#region Member variables
 		
         protected float[] tileX = new float[Config.MaxTextureLayers];
