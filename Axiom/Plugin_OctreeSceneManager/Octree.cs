@@ -25,7 +25,7 @@ namespace Axiom.SceneManagers.Octree {
         This is used for octant index determination and rendering, but not culling
         */
         protected AxisAlignedBox box = new AxisAlignedBox();
-        /** Creats the wire frame bounding box for this octant
+        /** Creates the wire frame bounding box for this octant
         */
         protected WireBoundingBox wireBoundingBox;
 		
@@ -40,7 +40,7 @@ namespace Axiom.SceneManagers.Octree {
         */
         public Octree[,,] Children = new Octree[8,8,8];
 
-        protected Octree Parent = null;
+        protected Octree parent = null;
 		
         #endregion
 
@@ -84,14 +84,15 @@ namespace Axiom.SceneManagers.Octree {
             this.wireBoundingBox = null;
             this.HalfSize = new Vector3();
 
-            this.Parent = parent;
+            this.parent = parent;
             this.NumNodes = 0;
         }
 
         public void AddNode(OctreeNode node) {
-            this.nodeList.Add(node);
+			// TODO: Att some points, some nodes seemed to be added if they already existed.  Investigate.
+            nodeList[node.Name] = node;
             node.Octant = this;
-            this.Ref();
+            Ref();
         }
 
         public void RemoveNode(OctreeNode node) {
@@ -107,7 +108,7 @@ namespace Axiom.SceneManagers.Octree {
                 if(check == node) {
                     node.Octant = null;
                     NodeList.RemoveAt(i);
-                    this.UnRef();
+                    UnRef();
                 }
             }
         }
@@ -177,7 +178,7 @@ namespace Axiom.SceneManagers.Octree {
         public AxisAlignedBox CullBounds {
             get {
                 Vector3[] Corners = this.box.Corners;
-                box.SetExtents(Corners[0] - this.HalfSize,Corners[4] + this.HalfSize);
+                box.SetExtents(Corners[0] - this.HalfSize, Corners[4] + this.HalfSize);
 
                 return box;
             }
@@ -186,16 +187,16 @@ namespace Axiom.SceneManagers.Octree {
         public void Ref() {
             numNodes++;
 
-            if(Parent != null) {
-                Parent.Ref();
+            if(parent != null) {
+                parent.Ref();
             }
         }
 
         public void UnRef() {
             numNodes--;
 
-            if(Parent != null) {
-                Parent.UnRef();
+            if(parent != null) {
+                parent.UnRef();
             }
         }
 
