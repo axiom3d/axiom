@@ -25,12 +25,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Media;
 using Tao.OpenGl;
 using Tao.Platform.Windows;
 
@@ -52,10 +52,14 @@ namespace Axiom.RenderSystems.OpenGL {
 
 		#endregion Fields
 
-		/// <summary>
-		///		Constructor.
+        #region Constructor
+
+        /// <summary>
+        ///		Constructor.
 		/// </summary>
         public Win32Window() : base() { }
+
+        #endregion Constructor
 
         #region Implementation of RenderWindow
 
@@ -214,27 +218,38 @@ namespace Axiom.RenderSystems.OpenGL {
         /// </summary>
         /// <param name="fileName"></param>
         public override void SaveToFile(string fileName) {
-            // create a new bitmap
-			using(Bitmap bitmap = new Bitmap(width, height, PixelFormat.Format24bppRgb)) {
+            // create a RGB buffer
+            byte[] buffer = new byte[width * height * 3];
 
-				// create a sized rect
-				Rectangle rect = new Rectangle(0, 0, width, height); 
+			// read the pixels from the GL buffer
+            Gl.glReadPixels(0, 0, width, height, Gl.GL_RGB, Gl.GL_UNSIGNED_BYTE, buffer);
 
-				// lock the bitmap for writing
-				BitmapData bitmapData = bitmap.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+            MemoryStream stream = new MemoryStream(buffer);
 
-				// read the pixels from the GL buffer
-				Gl.glReadPixels(0, 0, width, height, Gl.GL_BGR, Gl.GL_UNSIGNED_BYTE, bitmapData.Scan0); 
- 
-				// unlock the bitmap
-				bitmap.UnlockBits(bitmapData); 
+            // load the RGB image from the new stream
+            Image image = Image.FromRawStream(stream, width, height, PixelFormat.R8G8B8);
 
-				// flip the image
-				bitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
+            int pos = fileName.LastIndexOf('.');
 
-				// save the final product
-				bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Jpeg);
-			}
+            // grab the file extension
+            string extension = fileName.Substring(pos + 1);
+
+            // grab the codec for the requested file extension
+            ICodec codec = CodecManager.Instance.GetCodec(extension);
+
+            // setup the image file information
+            ImageCodec.ImageData imageData = new ImageCodec.ImageData();
+            imageData.width = width;
+            imageData.height = height;
+            imageData.format = PixelFormat.R8G8B8;
+
+            // reset the stream position
+            stream.Position = 0;
+
+            // finally, save to file as an image
+            codec.EncodeToFile(stream, fileName, imageData);
+
+            stream.Close();
         }
 
         #endregion

@@ -31,6 +31,7 @@ namespace Axiom.Media {
             public ImageFlags flags;
             public int numMipMaps;
             public PixelFormat format;
+            public bool flip;
         }
     }
 }
