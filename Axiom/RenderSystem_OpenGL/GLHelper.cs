@@ -211,15 +211,21 @@ namespace Axiom.RenderSystems.OpenGL {
         }
 
         public static string Vendor {
-            get { return vendor; }
+            get { 
+                return vendor; 
+            }
         }
 
         public static string VideoCard {
-            get { return videoCard; }
+            get { 
+                return videoCard; 
+            }
         }
 
         public static string Version {
-            get { return glVersion; }
+            get { 
+                return glVersion; 
+            }
         }
     }
 

@@ -148,9 +148,18 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="length"></param>
         /// <param name="dest"></param>
         public override void ReadData(int offset, int length, IntPtr dest) {
-            Ext.glBindBufferARB(Gl.GL_ARRAY_BUFFER_ARB, bufferID);
+//            Ext.glBindBufferARB(Gl.GL_ARRAY_BUFFER_ARB, bufferID);
+//
+//            Ext.glGetBufferSubDataARB(Gl.GL_ARRAY_BUFFER_ARB, offset, length, dest);
 
-            Ext.glGetBufferSubDataARB(Gl.GL_ARRAY_BUFFER_ARB, offset, length, dest);
+            // lock the buffer for reading
+            IntPtr src = this.Lock(offset, length, BufferLocking.ReadOnly);
+			
+            // copy that data in there
+            PointerCopy(src, dest, length);
+
+            // unlock the buffer
+            this.Unlock();
         }
 
 

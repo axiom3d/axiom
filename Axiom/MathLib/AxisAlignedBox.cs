@@ -131,8 +131,9 @@ namespace Axiom.MathLib {
         public void SetExtents(Vector3 min, Vector3 max) {
             isNull = false;
 
-            this.minVector = min;
-            this.maxVector = max;
+            minVector = min;
+            maxVector = max;
+
             UpdateCorners();
         }
 
@@ -141,8 +142,10 @@ namespace Axiom.MathLib {
         /// </summary>
         /// <param name="factor">Factor of scaling to apply to the box.</param>
         public void Scale(Vector3 factor) {
-            minVector = minVector * factor;
-            maxVector = maxVector * factor;
+            Vector3 min = minVector * factor;
+            Vector3 max = maxVector * factor;
+
+            SetExtents(min, max);
         }
 
         #endregion

@@ -66,8 +66,8 @@ namespace Demos {
             // Refraction texture
             RenderTexture rttTex = Engine.Instance.RenderSystem.CreateRenderTexture("Refraction", 512, 512); 
             {
-                Viewport viewport = rttTex.AddViewport(camera, 0, 0, 100, 100, 0);
-                viewport.OverlaysEnabled = false;
+                Viewport vp = rttTex.AddViewport(camera, 0, 0, 100, 100, 0);
+                vp.OverlaysEnabled = false;
                 mat.GetTechnique(0).GetPass(0).GetTextureUnitState(2).SetTextureName("Refraction");
                 rttTex.BeforeUpdate += new RenderTargetUpdateEventHandler(Refraction_BeforeUpdate);
                 rttTex.AfterUpdate += new RenderTargetUpdateEventHandler(Refraction_AfterUpdate);                                                                                            
@@ -76,8 +76,8 @@ namespace Demos {
             // Reflection texture
             rttTex = Engine.Instance.RenderSystem.CreateRenderTexture("Reflection", 512, 512); 
             {
-                viewport = rttTex.AddViewport(camera, 0, 0, 100, 100, 0);
-                viewport.OverlaysEnabled = false;
+                Viewport vp = rttTex.AddViewport(camera, 0, 0, 100, 100, 0);
+                vp.OverlaysEnabled = false;
                 mat.GetTechnique(0).GetPass(0).GetTextureUnitState(1).SetTextureName("Reflection");
                 rttTex.BeforeUpdate += new RenderTargetUpdateEventHandler(Reflection_BeforeUpdate);
                 rttTex.AfterUpdate += new RenderTargetUpdateEventHandler(Reflection_AfterUpdate);                                                                                                     

@@ -1,3 +1,11 @@
+2-15-2004
+- Completed heightmap terrain functionality in the OctreeSceneManager plugin.
+- Added Terrain demo.
+- Fixed bug in OpenGL where software buffers weren't being used during a ReadData calls on hardware buffers when a software buffer backup existed.
+- Fixed bug in Fresnel demo where toggling the debug overlay didn't work.
+- Updated demo descriptions shown during a mouse over in the demo browser.  Also updated a few of the images.
+- Fixed an error in the Plane constructor which flipped the sign bit on the distance value.
+
 2-9-2004
 - Updated controller documentation.
 - Animated textures!  Added fuctionality to support the anim_texture attribute for texture_unit blocks in .material files.

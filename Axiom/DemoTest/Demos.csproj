@@ -258,6 +258,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Demos\Terrain.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Demos\TextureFX.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

@@ -87,7 +87,7 @@ namespace Axiom.Utility {
             }
         }
 
-        protected void CreateCamera() {
+        protected virtual void CreateCamera() {
             // create a camera and initialize its position
             camera = scene.CreateCamera("MainCamera");
             camera.Position = new Vector3(0, 0, 500);

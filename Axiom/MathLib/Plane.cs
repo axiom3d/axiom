@@ -56,7 +56,7 @@ namespace Axiom.MathLib {
 
         public Plane(Vector3 normal, float d) {
             this.normal = normal;
-            this.d = -d;
+            this.d = d;
         }
 
         public Plane(Vector3 normal, Vector3 point) {

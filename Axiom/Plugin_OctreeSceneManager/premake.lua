@@ -4,6 +4,7 @@ package.language = "c#"
 package.kind = "dll"
 package.target = "Axiom.SceneManagers.Octree"
 package.defines = { "TRACE" } 
+package.buildflags = { "unsafe" }
 package.config["Debug"].target = { "DEBUG" }
 package.libpaths = { "../Solution Items" }
 package.links = { "System", "Engine", "MathLib" }

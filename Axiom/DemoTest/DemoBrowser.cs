@@ -262,23 +262,24 @@ namespace Demos {
             demoTable.Columns.Add("Description");
             demoTable.Columns.Add("Type");
 
-            demoTable.Rows.Add(new object[] {0, "Camera Track", "Demos.CameraTrack", "CameraTrack.jpg", "Demonstrates a camera following a defined spline path while maintaining focus on an object.", "Demos"});
-            demoTable.Rows.Add(new object[] {1, "Cube Mapping", "Demos.CubeMapping", "CubeMapping.jpg", "Demonstrates cube mapping techniques.", "Demos"});
-            demoTable.Rows.Add(new object[] {2, "Dot3 Bump Mapping", "Demos.Dot3Bump", "Dot3Bump.jpg", "Demonstrates the use of vertex/fragment shaders to accomplish bump mapping.", "Demos"});
-            demoTable.Rows.Add(new object[] {3, "Environment Mapping", "Demos.EnvMapping", "EnvMapping.jpg", "Demonstrates an environment mapped entity.", "Demos"});
-            demoTable.Rows.Add(new object[] {4, "Lights", "Demos.Lights", "Lights.jpg", "Demonstrates creating a scene with lights and billboards.", "Demos"});
-            demoTable.Rows.Add(new object[] {5, "ParticleFX", "Demos.ParticleFX", "ParticleFX.jpg", "Demonstrates various particle systems.", "Demos"});
-            demoTable.Rows.Add(new object[] {6, "Physics", "Demos.Physics", "Physics.jpg", "Demonstrates collidable objects with real time physics.", "Demos"});
-            demoTable.Rows.Add(new object[] {7, "Skeletal Animation", "Demos.SkeletalAnimation", "SkeletalAnimation.jpg", "Demonstrates skeletal animation techniques.", "Demos"});
-            demoTable.Rows.Add(new object[] {8, "Sky Box", "Demos.SkyBox", "SkyBox.jpg", "Demonstrates creating a scene with a skybox.", "Demos"});
-            demoTable.Rows.Add(new object[] {9, "Sky Dome", "Demos.SkyDome", "SkyDome.jpg", "Demonstrates creating a scene with a skydome.", "Demos"});
-            demoTable.Rows.Add(new object[] {10, "Sky Plane", "Demos.SkyPlane", "SkyPlane.jpg", "Demonstrates creating a scene with a skyplane.", "Demos"});
-            demoTable.Rows.Add(new object[] {11, "TextureFX", "Demos.TextureFX", "TextureFX.jpg", "Demonstrates the usage of various texture effects including scrolling and rotating.", "Demos"});
-            demoTable.Rows.Add(new object[] {12, "Transparency", "Demos.Transparency", "Transparency.jpg", "Demonstrates a high poly scene with transparent entities.", "Demos"});
-            demoTable.Rows.Add(new object[] {13, "Tutorial 1", "Demos.Tutorial1", "Tutorial1.jpg", "Demonstrates the typical spinning triangle demo using the engine.", "Tutorials"});
-            demoTable.Rows.Add(new object[] {14, "Render To Texture", "Demos.RenderToTexture", "RenderToTexture.jpg", "Demonstrates the typical spinning triangle demo using the engine.", "Demos"});
-            demoTable.Rows.Add(new object[] {15, "Fresnel", "Demos.Fresnel", "Fresnel.jpg", "Demonstrates the typical spinning triangle demo using the engine.", "Demos"});
-            demoTable.Rows.Add(new object[] {16, "Cel Shading", "Demos.CelShading", "CelShading.jpg", "Demonstrates a cartoon like non-photorealistic rendering technique.", "Demos"});
+            demoTable.Rows.Add(new object[] {0, "Camera Track", "Demos.CameraTrack", "CameraTrack.jpg", "Shows a camera following a defined spline path while maintaining focus on an object.", "Demos"});
+            demoTable.Rows.Add(new object[] {1, "Cube Mapping", "Demos.CubeMapping", "CubeMapping.jpg", "Cubic environment mapping with various skyboxes.", "Demos"});
+            demoTable.Rows.Add(new object[] {2, "Dot3 Bump Mapping", "Demos.Dot3Bump", "Dot3Bump.jpg", "Use of vertex/fragment shaders to accomplish bump mapping.", "Demos"});
+            demoTable.Rows.Add(new object[] {3, "Environment Mapping", "Demos.EnvMapping", "EnvMapping.jpg", "An environment mapped entity.", "Demos"});
+            demoTable.Rows.Add(new object[] {4, "Lights", "Demos.Lights", "Lights.jpg", "A scene with lights and billboards.", "Demos"});
+            demoTable.Rows.Add(new object[] {5, "ParticleFX", "Demos.ParticleFX", "ParticleFX.jpg", "Several types of particle systems in action.", "Demos"});
+            demoTable.Rows.Add(new object[] {6, "Physics", "Demos.Physics", "Physics.jpg", "Collidable objects with real time physics.", "Demos"});
+            demoTable.Rows.Add(new object[] {7, "Skeletal Animation", "Demos.SkeletalAnimation", "SkeletalAnimation.jpg", "Skeletal animation.", "Demos"});
+            demoTable.Rows.Add(new object[] {8, "Sky Box", "Demos.SkyBox", "SkyBox.jpg", "A scene with a skybox.", "Demos"});
+            demoTable.Rows.Add(new object[] {9, "Sky Dome", "Demos.SkyDome", "SkyDome.jpg", "A scene with a skydome.", "Demos"});
+            demoTable.Rows.Add(new object[] {10, "Sky Plane", "Demos.SkyPlane", "SkyPlane.jpg", "A scene with a skyplane.", "Demos"});
+            demoTable.Rows.Add(new object[] {11, "TextureFX", "Demos.TextureFX", "TextureFX.jpg", "Various texture effects including scrolling and rotating.", "Demos"});
+            demoTable.Rows.Add(new object[] {12, "Transparency", "Demos.Transparency", "Transparency.jpg", "A high poly scene with transparent entities.", "Demos"});
+            demoTable.Rows.Add(new object[] {13, "Tutorial 1", "Demos.Tutorial1", "Tutorial1.jpg", "The obligatory spinning triangle demo using the engine.", "Tutorials"});
+            demoTable.Rows.Add(new object[] {14, "Render To Texture", "Demos.RenderToTexture", "RenderToTexture.jpg", "Rendering the scene to a texture.", "Demos"});
+            demoTable.Rows.Add(new object[] {15, "Fresnel", "Demos.Fresnel", "Fresnel.jpg", "Fresnel reflection/refraction and perlin noise applied to produce realistic water.", "Demos"});
+            demoTable.Rows.Add(new object[] {16, "Cel Shading", "Demos.CelShading", "CelShading.jpg", "Cartoon like non-photorealistic rendering technique.", "Demos"});
+            demoTable.Rows.Add(new object[] {17, "Terrain", "Demos.Terrain", "Terrain.jpg", "Simple heightmap terrain example.", "Demos"});
 
 
             demoView = new DataView(demoTable);

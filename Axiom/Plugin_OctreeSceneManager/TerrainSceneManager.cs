@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Data;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.MathLib;
@@ -30,18 +31,59 @@ namespace Axiom.SceneManagers.Octree {
         public override void LoadWorldGeometry(string fileName) {
             TerrainOptions options = new TerrainOptions();
 
-            options.maxMipmap = 5;
-            options.detailTile = 3;
-            options.maxPixelError = 8;
-            options.scalex = 1;
-            options.scaley = 0.2f;
-            options.scalez = 1;
-            options.size = 17;
+            DataSet optionData = new DataSet();
+            optionData.ReadXml(fileName);
+            DataTable table = optionData.Tables[0];
+            DataRow row = table.Rows[0];
 
-            string terrainFileName = "terrain.png";
-            string detailTexture = "terrain_detail.jpg";
-            string worldTexture = "tettain_texture.jpg";
+            string terrainFileName = "";
+            string detailTexture = "";
+            string worldTexture = "";
 
+            if(table.Columns["Terrain"] != null) {
+                terrainFileName = (string)row["Terrain"];
+            }
+
+            if(table.Columns["DetailTexture"] != null) {
+                detailTexture = (string)row["DetailTexture"];
+            }
+
+            if(table.Columns["WorldTexture"] != null) {
+                worldTexture = (string)row["WorldTexture"];
+            }
+
+            if(table.Columns["MaxMipMapLevel"] != null) {
+                options.maxMipmap = Convert.ToInt32(row["MaxMipMapLevel"]);
+            }
+
+            if(table.Columns["DetailTile"] != null) {
+                options.detailTile = Convert.ToInt32(row["DetailTile"]);
+            }
+
+            if(table.Columns["MaxPixelError"] != null) {
+                options.maxPixelError = Convert.ToInt32(row["MaxPixelError"]);
+            }
+
+            if(table.Columns["TileSize"] != null) {
+                options.size = Convert.ToInt32(row["TileSize"]);
+            }
+
+            if(table.Columns["ScaleX"] != null) {
+                options.scalex = Convert.ToSingle(row["ScaleX"]);
+            }
+
+            if(table.Columns["ScaleY"] != null) {
+                options.scaley = Convert.ToSingle(row["ScaleY"]);
+            }
+
+            if(table.Columns["ScaleZ"] != null) {
+                options.scalez = Convert.ToSingle(row["ScaleZ"]);
+            }
+
+            if(table.Columns["VertexNormals"] != null) {
+                options.isLit = ((string)row["VertexNormals"]) == "yes" ? true : false;
+            }
+            
             scale = new Vector3(options.scalex, options.scaley, options.scalez);
             tileSize = options.size;
 
@@ -80,7 +122,58 @@ namespace Axiom.SceneManagers.Octree {
 
             tiles = new TerrainRenderable[numTiles, numTiles]; 
 
+            int p = 0, q = 0;
 
+            for(int j = 0; j < options.worldSize - 1; j += (options.size - 1)) {
+                p = 0;
+
+                for(int i = 0; i < options.worldSize - 1; i += (options.size - 1)) {
+                    options.startx = i;
+                    options.startz = j;
+
+                    string name = string.Format("Tile[{0},{1}]", p, q);
+
+                    SceneNode node = (SceneNode)terrainRoot.CreateChild(name);
+                    TerrainRenderable tile = new TerrainRenderable();
+                    tile.Name = name;
+                    
+                    tile.SetMaterial(terrainMaterial);
+                    tile.Init(options);
+
+                    tiles[p,q] = tile;
+
+                    node.AttachObject(tile);
+
+                    p++;
+                }
+
+                q++;
+            }
+
+            int size1 = tiles.GetLength(0);
+            int size2 = tiles.GetLength(1);
+
+            for(int j = 0; j < size1; j++) {
+                for(int i = 0; i < size2; i++) {
+                    if(j != size1 - 1) {
+                        ((TerrainRenderable)tiles[i,j]).SetNeighbor(Neighbor.South, (TerrainRenderable)tiles[i, j + 1]);
+                        ((TerrainRenderable)tiles[i,j + 1]).SetNeighbor(Neighbor.North, (TerrainRenderable)tiles[i, j]);
+                    }
+
+                    if(i != size2 - 1) {
+                        ((TerrainRenderable)tiles[i,j]).SetNeighbor(Neighbor.East, (TerrainRenderable)tiles[i + 1, j]);
+                        ((TerrainRenderable)tiles[i + 1,j]).SetNeighbor(Neighbor.West, (TerrainRenderable)tiles[i, j]);
+                    }
+                }
+            }
+
+            if(options.isLit) {
+                for(int j = 0; j < size1; j++) {
+                    for(int i = 0; i < size2; i++) {
+                        ((TerrainRenderable)tiles[i,j]).CalculateNormals();
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -95,6 +188,13 @@ namespace Axiom.SceneManagers.Octree {
         ///     Aligns TerrainRenderable neighbors, and renders them.
         /// </summary>
         protected override void RenderVisibleObjects() {
+
+            for(int i = 0; i < tiles.GetLength(0); i++) {
+                for(int j = 0; j < tiles.GetLength(1); j++) {
+                    tiles[i, j].AlignNeighbors();
+                }
+            }
+
             base.RenderVisibleObjects ();
         }
 
