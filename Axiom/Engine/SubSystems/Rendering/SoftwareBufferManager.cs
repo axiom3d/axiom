@@ -148,13 +148,8 @@ namespace Axiom.SubSystems.Rendering
 
 		public override IntPtr Lock(int offset, int length, BufferLocking locking)
 		{
-			byte[] tmpData = new byte[length];
-
-			Array.Copy(data, offset, tmpData, 0, length);
-
-			// TODO: Since what we are returning is temporary,
-			// consider saving a reference to this and using it to update the local data on an unlock
-			return Marshal.UnsafeAddrOfPinnedArrayElement(tmpData, 0);
+			// return the offset into the array as a pointer
+			return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
 		}
 
 		protected override IntPtr LockImpl(int offset, int length, BufferLocking locking)
@@ -165,12 +160,17 @@ namespace Axiom.SubSystems.Rendering
 
 		public override void ReadData(int offset, int length, IntPtr dest)
 		{
-			/*
 			Debug.Assert((offset + length) <= sizeInBytes, "Buffer overrun while trying to read a software buffer.");
- 
-			// copy the data to the dest array
-			Array.Copy(dest, 0, data, offset, length);
-			*/
+	
+			unsafe
+			{
+				// get a pointer to the destination intptr
+				byte* pDest = (byte*)dest.ToPointer();
+
+				// copy the src data to the destination buffer
+				for(int i = 0; i < length; i++)
+					*pDest++ = data[offset + i];
+			}
 		}
 
 		public override void Unlock()
@@ -185,10 +185,26 @@ namespace Axiom.SubSystems.Rendering
 
 		public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer)
 		{
-			Debug.Assert((offset + length) <= sizeInBytes, "Buffer overrun while trying to read a software buffer.");
- 
-			// copy the data to the local array
-			/*Array.Copy(data, offset, src, 0, length);			*/
+			Debug.Assert((offset + length) <= sizeInBytes, "Buffer overrun while trying to write to a software buffer.");
+
+			unsafe
+			{
+				// get a pointer to the destination intptr
+				byte* pSrc = (byte*)src.ToPointer();
+
+				// copy the src data to the destination buffer
+				for(int i = 0; i < length; i++)
+					data[offset + i] = *pSrc++;
+			}
+		}
+
+		/// <summary>
+		///		Allows direct access to the software buffer data in cases when it is known that the underlying
+		///		buffer is software and not hardware.
+		/// </summary>
+		public IntPtr GetDataPointer(int offset)
+		{
+			return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
 		}
 
 		#endregion
@@ -221,6 +237,7 @@ namespace Axiom.SubSystems.Rendering
 		public SoftwareIndexBuffer(IndexType type, int numIndices, BufferUsage usage)
 			: base(type, numIndices, usage, true, false)
 		{
+			data = new byte[sizeInBytes];
 		}
 
 		#endregion
@@ -229,14 +246,8 @@ namespace Axiom.SubSystems.Rendering
 
 		public override IntPtr Lock(int offset, int length, BufferLocking locking)
 		{
-			byte[] tmpData = new byte[length];
-
-			Array.Copy(data, offset, tmpData, 0, length);
-
-			// TODO: Since what we are returning is temporary,
-			// consider saving a reference to this and using it to update the local data on an unlock
-			return Marshal.UnsafeAddrOfPinnedArrayElement(tmpData, 0);
-
+			// return the offset into the array as a pointer
+			return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
 		}
 
 
@@ -249,9 +260,16 @@ namespace Axiom.SubSystems.Rendering
 		public override void ReadData(int offset, int length, IntPtr dest)
 		{
 			Debug.Assert((offset + length) <= sizeInBytes, "Buffer overrun while trying to read a software buffer.");
- 
-			// copy the data to the dest array
-			//Array.Copy(dest, 0, data, offset, length);
+
+			unsafe
+			{
+				// get a pointer to the destination intptr
+				byte* pDest = (byte*)dest.ToPointer();
+
+				// copy the src data to the destination buffer
+				for(int i = 0; i < length; i++)
+					*pDest++ = data[offset + i];
+			}
 		}
 
 		public override void Unlock()
@@ -266,10 +284,26 @@ namespace Axiom.SubSystems.Rendering
 
 		public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer)
 		{
-			Debug.Assert((offset + length) <= sizeInBytes, "Buffer overrun while trying to read a software buffer.");
- 
-			// copy the data to the local array
-			//Array.Copy(data, offset, src, 0, length);			
+			Debug.Assert((offset + length) <= sizeInBytes, "Buffer overrun while trying to write to a software buffer.");
+
+			unsafe
+			{
+				// get a pointer to the destination intptr
+				byte* pSrc = (byte*)src.ToPointer();
+
+				// copy the src data to the destination buffer
+				for(int i = 0; i < length; i++)
+					data[offset + i] = *pSrc++;	
+			}
+		}
+
+		/// <summary>
+		///		Allows direct access to the software buffer data in cases when it is known that the underlying
+		///		buffer is software and not hardware.
+		/// </summary>
+		public IntPtr GetDataPointer(int offset)
+		{
+			return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
 		}
 
 		#endregion

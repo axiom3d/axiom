@@ -107,4 +107,8 @@ namespace RenderSystem_OpenGL
 		#endregion
 
 	}
+
+	public class GLSoftwareBufferManager : SoftwareBufferManager
+	{
+	}
 }
