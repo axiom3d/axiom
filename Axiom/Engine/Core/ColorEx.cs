@@ -67,6 +67,11 @@ namespace Axiom.Core {
         }
 
         /// <summary>
+        ///		Default constructor.
+        /// </summary>
+        public ColorEx(float r, float g, float b) : this(1.0f, r, g, b) {}
+
+        /// <summary>
         ///		Constructor taking all component values.
         /// </summary>
         /// <param name="a">Alpha value.</param>

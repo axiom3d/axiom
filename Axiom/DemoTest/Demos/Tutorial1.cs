@@ -42,7 +42,7 @@ namespace Demos {
 
         private Vector4 color = new Vector4(1, 0, 0, 1);
 
-        protected override bool OnFrameStarted(object source, FrameEventArgs e) {
+        protected override void OnFrameStarted(object source, FrameEventArgs e) {
             base.OnFrameStarted (source, e);
 
             color.x += e.TimeSinceLastFrame * .6f;
@@ -53,12 +53,9 @@ namespace Demos {
 
             color.z += e.TimeSinceLastFrame * .6f;
             if(color.z > 1) color.z = 0;
-
-            return false;
         }
 
         protected override void CreateScene() {
-
             // create a 3d line
             Line3d line = new Line3d(new Vector3(0, 0, 30), Vector3.UnitY, 50, ColorEx.Blue);
 
@@ -76,12 +73,12 @@ namespace Demos {
             SceneNode triNode = (SceneNode)node.CreateChild();
             triNode.Position = new Vector3(50, 0, 0);
 
-            // add the line to the scene
+            // add the line and triangle to the scene
             lineNode.AttachObject(line);
             triNode.AttachObject(tri);
 
             // create a node rotation controller value, which will mark the specified scene node as a target of the rotation
-            // we want to rotate along the Y axis
+            // we want to rotate along the Y axis for the triangle and Z for the line (just for the hell of it)
             NodeRotationControllerValue rotate = new NodeRotationControllerValue(triNode, Vector3.UnitY);
             NodeRotationControllerValue rotate2 = new NodeRotationControllerValue(lineNode, Vector3.UnitZ);
 
@@ -98,7 +95,9 @@ namespace Demos {
             ControllerManager.Instance.CreateController(rotate2, func);
 
             // place the camera in an optimal position
-            camera.Position = new Vector3(30, 30, 120);
+            camera.Position = new Vector3(30, 30, 220);
+
+            window.DebugText = "Spinning triangle - Using custom built geometry";
         }
 
         #endregion
@@ -144,48 +143,40 @@ namespace Demos {
                 vertexData.vertexCount, 
                 BufferUsage.StaticWriteOnly);
 
-            // lock the position buffer
-            IntPtr posPtr = buffer.Lock(BufferLocking.Discard);
+            Vector3[] pos = new Vector3[] { startPoint, endPoint };
 
-            unsafe {
-                float* data = (float*)posPtr.ToPointer();
-
-                // set the line data
-                data[0] = startPoint.x;
-                data[1] = startPoint.y;
-                data[2] = startPoint.z;
-                data[3] = endPoint.x;
-                data[4] = endPoint.y;
-                data[5] = endPoint.z;
-            }
-
-            // unlock the position buffer
-            buffer.Unlock();
+            // write the data to the position buffer
+            buffer.WriteData(0, buffer.Size, pos, true);
 
             // bind the position buffer
             binding.SetBinding(POSITION, buffer);
 
             // create a color buffer
-            buffer  = 	HardwareBufferManager.Instance.CreateVertexBuffer(
+            buffer = HardwareBufferManager.Instance.CreateVertexBuffer(
                 decl.GetVertexSize(COLOR), 
                 vertexData.vertexCount, 
                 BufferUsage.StaticWriteOnly);
 
-            // lock the color buffer
-            IntPtr colPtr = buffer.Lock(BufferLocking.Discard);
+            int colorValue = Engine.Instance.RenderSystem.ConvertColor(color);
 
-            unsafe {
-                int* data = (int*)colPtr.ToPointer();
+            int[] colors = new int[] { colorValue, colorValue };
 
-                // set the color data
-                data[0] = Engine.Instance.RenderSystem.ConvertColor(color);
-                data[1] = Engine.Instance.RenderSystem.ConvertColor(color);
-            }
-            // unlock the buffer
-            buffer.Unlock();
+            // write the data to the position buffer
+            buffer.WriteData(0, buffer.Size, colors, true);
 
             // bind the color buffer
             binding.SetBinding(COLOR, buffer);
+
+            // MATERIAL
+            // grab a copy of the BaseWhite material for our use
+            Material material = MaterialManager.Instance.GetByName("BaseWhite");
+            material = material.Clone("LineMat");
+            // disable lighting to vertex colors are used
+            material.Lighting = false;
+            // set culling to none so the triangle is drawn 2 sided
+            material.CullingMode = CullingMode.None;
+
+            this.Material = material;
 
             // set the bounding box of the line
             this.box = new AxisAlignedBox(startPoint, endPoint);
@@ -215,8 +206,6 @@ namespace Demos {
             op.indexData = null;
             op.operationType = RenderMode.LineList;
             op.useIndices = false;
-			
-            Engine.Instance.RenderSystem.LightingEnabled = false;
         }
 
         public override float BoundingRadius {
@@ -253,6 +242,7 @@ namespace Demos {
             decl.AddElement(new VertexElement(POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position));
             decl.AddElement(new VertexElement(COLOR, 0, VertexElementType.Color, VertexElementSemantic.Diffuse));
 
+            // POSITIONS
             // create a vertex buffer for the position
             HardwareVertexBuffer buffer  =
                 HardwareBufferManager.Instance.CreateVertexBuffer(
@@ -260,52 +250,46 @@ namespace Demos {
                 vertexData.vertexCount, 
                 BufferUsage.StaticWriteOnly);
 
-            // lock the position buffer
-            IntPtr posPtr = buffer.Lock(BufferLocking.Discard);
+            Vector3[] positions = new Vector3[] { v1, v2, v3 };
 
-            unsafe {
-                float* data = (float*)posPtr.ToPointer();
-
-                // set the line data
-                data[0] = v1.x;
-                data[1] = v1.y;
-                data[2] = v1.z;
-                data[3] = v2.x;
-                data[4] = v2.y;
-                data[5] = v2.z;
-                data[6] = v3.x;
-                data[7] = v3.y;
-                data[8] = v3.z;
-            }
-
-            // unlock the position buffer
-            buffer.Unlock();
+            // write the positions to the buffer
+            buffer.WriteData(0, buffer.Size, positions, true);
 
             // bind the position buffer
             binding.SetBinding(POSITION, buffer);
 
+            // COLORS
             // create a color buffer
-            buffer  = 	HardwareBufferManager.Instance.CreateVertexBuffer(
+            buffer = HardwareBufferManager.Instance.CreateVertexBuffer(
                 decl.GetVertexSize(COLOR), 
                 vertexData.vertexCount, 
                 BufferUsage.StaticWriteOnly);
 
-            // lock the color buffer
-            IntPtr colPtr = buffer.Lock(BufferLocking.Discard);
+            // create an int array of the colors to use.
+            // note: these must be converted to the current API's
+            // preferred packed int format
+            int[] colors = new int[] {
+                Engine.Instance.RenderSystem.ConvertColor(c1),
+                Engine.Instance.RenderSystem.ConvertColor(c2),
+                Engine.Instance.RenderSystem.ConvertColor(c3)
+            };
 
-            unsafe {
-                int* data = (int*)colPtr.ToPointer();
-
-                // set the color data
-                data[0] = Engine.Instance.RenderSystem.ConvertColor(c1);
-                data[1] = Engine.Instance.RenderSystem.ConvertColor(c2);
-                data[2] = Engine.Instance.RenderSystem.ConvertColor(c3);
-            }
-            // unlock the buffer
-            buffer.Unlock();
+            // write the colors to the color buffer
+            buffer.WriteData(0, buffer.Size, colors, true);
 
             // bind the color buffer
             binding.SetBinding(COLOR, buffer);
+
+            // MATERIAL
+            // grab a copy of the BaseWhite material for our use
+            Material material = MaterialManager.Instance.GetByName("BaseWhite");
+            material = material.Clone("TriMat");
+            // disable lighting to vertex colors are used
+            material.Lighting = false;
+            // set culling to none so the triangle is drawn 2 sided
+            material.CullingMode = CullingMode.None;
+
+            this.Material = material;
 
             // set the bounding box of the tri
             // TODO: not right, but good enough for now
@@ -336,8 +320,6 @@ namespace Demos {
             op.indexData = null;
             op.operationType = RenderMode.TriangleList;
             op.useIndices = false;
-			
-            Engine.Instance.RenderSystem.LightingEnabled = false;
         }
 
         public override float BoundingRadius {

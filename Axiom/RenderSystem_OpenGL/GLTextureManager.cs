@@ -36,14 +36,28 @@ namespace Axiom.RenderSystems.OpenGL {
         public GLTextureManager() {
         }
 	
-        public override Resource Create(string name) {
-            return Create(name, TextureType.TwoD);
-        }
-
-        public override Resource Create(string name, TextureType type) {
+        public override Texture Create(string name, TextureType type) {
             GLTexture texture = new GLTexture(name, type);
+            
             texture.Enable32Bit(is32Bit);
 
+            return texture;
+        }
+
+        /// <summary>
+        ///    Creates a GL texture manually.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="numMipMaps"></param>
+        /// <param name="format"></param>
+        /// <param name="usage"></param>
+        /// <returns></returns>
+        public override Texture CreateManual(string name, TextureType type, int width, int height, int numMipMaps, Axiom.Media.PixelFormat format, TextureUsage usage) {
+            GLTexture texture = new GLTexture(name, type, width, height, numMipMaps, format, usage);
+            texture.Enable32Bit(is32Bit);
             return texture;
         }
 
@@ -51,6 +65,5 @@ namespace Axiom.RenderSystems.OpenGL {
         public override void UnloadAndDestroyAll() {
             base.UnloadAndDestroyAll ();
         }
-
     }
 }

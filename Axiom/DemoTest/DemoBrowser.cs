@@ -6,7 +6,6 @@ using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using Axiom.Utility;
-using Tao.Platform.Windows;
 
 namespace Demos {
     /// <summary>
@@ -217,7 +216,7 @@ namespace Demos {
                         } 
                         finally { 
                             GC.Collect(); 
-                            Kernel.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1); 
+                            //Kernel.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1); 
                             this.WindowState = FormWindowState.Normal; 
                             this.Show(); 
                         }
@@ -252,7 +251,7 @@ namespace Demos {
             }
 
             GC.Collect();
-            Kernel.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+            //Kernel.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
         }
 
         private void DemoBrowser_Load(object sender, EventArgs e) {
@@ -277,7 +276,9 @@ namespace Demos {
             demoTable.Rows.Add(new object[] {11, "TextureFX", "Demos.TextureFX", "TextureFX.jpg", "Demonstrates the usage of various texture effects including scrolling and rotating.", "Demos"});
             demoTable.Rows.Add(new object[] {12, "Transparency", "Demos.Transparency", "Transparency.jpg", "Demonstrates a high poly scene with transparent entities.", "Demos"});
             demoTable.Rows.Add(new object[] {13, "Tutorial 1", "Demos.Tutorial1", "Tutorial1.jpg", "Demonstrates the typical spinning triangle demo using the engine.", "Tutorials"});
-            //demoTable.Rows.Add(new object[] {14, "Bezier Patch", "Demos.BezierPatch", "Tutorial1.jpg", "Demonstrates the typical spinning triangle demo using the engine.", "Tutorials"});
+            demoTable.Rows.Add(new object[] {14, "Render To Texture", "Demos.RenderToTexture", "RenderToTexture.jpg", "Demonstrates the typical spinning triangle demo using the engine.", "Demos"});
+            demoTable.Rows.Add(new object[] {15, "Fresnel", "Demos.Fresnel", "Fresnel.jpg", "Demonstrates the typical spinning triangle demo using the engine.", "Demos"});
+            demoTable.Rows.Add(new object[] {16, "Cel Shading", "Demos.CelShading", "CelShading.jpg", "Demonstrates a cartoon like non-photorealistic rendering technique.", "Demos"});
 
 
             demoView = new DataView(demoTable);

@@ -2,12 +2,13 @@
 <EngineConfig xmlns="http://tempuri.org/EngineConfig.xsd">
 	<FilePath type="Folder" src="Media\Textures"/>
 	<FilePath type="Folder" src="Media\Sounds"/>
+	<FilePath type="Folder" src="Media\Fonts"/>
 	<FilePath type="Folder" src="Media\Meshes"/>
 	<FilePath type="Folder" src="Media\Skeletons"/>
 	<FilePath type="Folder" src="Media\Materials"/>
 	<FilePath type="Folder" src="Media\Overlays"/>
 	<FilePath type="Folder" src="Media\GpuPrograms"/>
-	<FilePath type="ZipFile" src="Media\Archives\cubemapsJS.zip"/>
-	<FilePath type="ZipFile" src="Media\Archives\RZR-002.zip"/>
+	<FilePath type="ZipFile" src="Media\Archives\Fresnel.zip"/>
+	<FilePath type="ZipFile" src="Media\Textures\SkyBoxes.zip"/>
 </EngineConfig>
  

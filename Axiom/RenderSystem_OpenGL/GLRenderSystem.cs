@@ -109,6 +109,10 @@ namespace Axiom.RenderSystems.OpenGL {
         protected float[] tempProgramFloats = new float[4];
         protected int[] colorWrite = new int[4];
 
+        protected GLGpuProgramManager gpuProgramMgr;
+        protected GLGpuProgram currentVertexProgram;
+        protected GLGpuProgram currentFragmentProgram;
+
         #endregion Fields
 
         #region Constructors
@@ -139,6 +143,12 @@ namespace Axiom.RenderSystems.OpenGL {
 
         #region Implementation of RenderSystem
 
+        public override RenderTexture CreateRenderTexture(string name, int width, int height) {
+            GLRenderTexture renderTexture = new GLRenderTexture(name, width, height);
+            AttachRenderTarget(renderTexture);
+            return renderTexture;
+        }
+
         public override RenderWindow CreateRenderWindow(string name, int width, int height, int colorDepth,
             bool isFullscreen, int left, int top, bool depthBuffer, object target) {
 
@@ -148,7 +158,7 @@ namespace Axiom.RenderSystems.OpenGL {
             Control targetControl = (Control)target;
 
             // see if a OpenGLContext has been created yet
-            if(renderWindows.Count == 0) {
+            if(renderTargets.Count == 0) {
 
                 // grab the current display settings
                 User.EnumDisplaySettings(null, User.ENUM_CURRENT_SETTINGS, out intialScreenSettings);
@@ -240,8 +250,8 @@ namespace Axiom.RenderSystems.OpenGL {
             // create the window
             window.Create(name, width, height, colorDepth, isFullscreen, left, top, depthBuffer, hDC, hRC);
 
-            // add the new window to the RenderWindow collection
-            this.renderWindows.Add(window);
+            // add the new render target
+            AttachRenderTarget(window);
 
             // by creating our texture manager, singleton TextureManager will hold our implementation
             textureMgr = new GLTextureManager();
@@ -259,7 +269,8 @@ namespace Axiom.RenderSystems.OpenGL {
             else
                 hardwareBufferManager = new GLSoftwareBufferManager();
 
-            // initialize the mesh manager
+            // initialize the mesh manager here, since it relies on the render system already establishing a
+            // HardwareBufferManager
             MeshManager.Init();
 
             return window;
@@ -532,7 +543,6 @@ namespace Axiom.RenderSystems.OpenGL {
         /// </summary>
         /// <param name="viewport"></param>
         protected override void SetViewport(Viewport viewport) {
-            // TODO: Make sure to remember what happens to alter the viewport drawing behavior
             if(activeViewport != viewport || viewport.IsUpdated) {
                 // store this viewport and it's target
                 activeViewport = viewport;
@@ -977,6 +987,13 @@ namespace Axiom.RenderSystems.OpenGL {
                     Gl.glEnable( Gl.GL_TEXTURE_GEN_T );
                     Gl.glDisable( Gl.GL_TEXTURE_GEN_R );
                     Gl.glDisable( Gl.GL_TEXTURE_GEN_Q );
+
+                    // Need to use a texture matrix to flip the spheremap
+                    useAutoTextureMatrix = true;
+                    Array.Clear(autoTextureMatrix, 0, 16);
+                    autoTextureMatrix[0] = autoTextureMatrix[10] = autoTextureMatrix[15] = 1.0f;
+                    autoTextureMatrix[5] = -1.0f;
+
                     break;
 
                 case TexCoordCalcMethod.EnvironmentMapPlanar:            
@@ -1237,7 +1254,7 @@ namespace Axiom.RenderSystems.OpenGL {
                 VertexElement element = (VertexElement)elements[i];
 
                 // get the current vertex buffer
-                HardwareVertexBuffer vertexBuffer = 	op.vertexData.vertexBufferBinding.GetBuffer(element.Source);
+                HardwareVertexBuffer vertexBuffer = op.vertexData.vertexBufferBinding.GetBuffer(element.Source);
 
                 if(caps.CheckCap(Capabilities.VertexBuffer)) {
                     // get the buffer id
@@ -1403,6 +1420,11 @@ namespace Axiom.RenderSystems.OpenGL {
             set {
                 // create a float[16] from our Matrix4
                 MakeGLMatrix(ref value, tempMatrix);
+
+                // invert the Y if need be
+                if(activeRenderTarget.RequiresTextureFlipping) {
+                    tempMatrix[5] = - tempMatrix[5];
+                }
 			
                 // set the matrix mode to Projection
                 Gl.glMatrixMode(Gl.GL_PROJECTION);
@@ -1493,7 +1515,7 @@ namespace Axiom.RenderSystems.OpenGL {
             set {
                 // ignore dupe render state
                 if(value == cullingMode) {
-                   return;
+                   //return;
                 }
 
                 cullingMode = value;
@@ -1505,10 +1527,24 @@ namespace Axiom.RenderSystems.OpenGL {
                         Gl.glDisable(Gl.GL_CULL_FACE);
                         return;
                     case CullingMode.Clockwise:
-                        cullMode = Gl.GL_CCW;
+                        if(activeRenderTarget != null
+                            && (activeRenderTarget.RequiresTextureFlipping ^ invertVertexWinding)) {
+
+                            cullMode = Gl.GL_CW;
+                        }
+                        else {
+                            cullMode = Gl.GL_CCW;
+                        }
                         break;
                     case CullingMode.CounterClockwise:
-                        cullMode = Gl.GL_CW;
+                        if(activeRenderTarget != null
+                            && (activeRenderTarget.RequiresTextureFlipping ^ invertVertexWinding)) {
+
+                            cullMode = Gl.GL_CCW;
+                        }
+                        else {
+                            cullMode = Gl.GL_CW;
+                        }
                         break;
                 }
 
@@ -1628,8 +1664,15 @@ namespace Axiom.RenderSystems.OpenGL {
         public override void BindGpuProgram(GpuProgram program) {
             GLGpuProgram glProgram = (GLGpuProgram)program;
 
-            Gl.glEnable(glProgram.GLProgramType);
-            Ext.glBindProgramARB(glProgram.GLProgramType, glProgram.ProgramID);
+            glProgram.Bind();
+
+            // store the current program in use for eas unbinding later
+            if(glProgram.Type == GpuProgramType.Vertex) {
+                currentVertexProgram = glProgram;
+            }
+            else {
+                currentFragmentProgram = glProgram;
+            }
         }
 
         /// <summary>
@@ -1638,22 +1681,12 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="type"></param>
         /// <param name="parms"></param>
         public override void BindGpuProgramParameters(GpuProgramType type, GpuProgramParameters parms) {
-            int glType = GLHelper.ConvertEnum(type);
-
-            if(parms.HasFloatConstants) {
-
-                for(int i = 0; i < parms.FloatConstantCount; i++) {
-                    int index = parms.GetFloatConstantIndex(i);
-                    Axiom.MathLib.Vector4 vec4 = parms.GetFloatConstant(i);
-
-                    tempProgramFloats[0] = vec4.x;
-                    tempProgramFloats[1] = vec4.y;
-                    tempProgramFloats[2] = vec4.z;
-                    tempProgramFloats[3] = vec4.w;
-
-                    // send the params 4 at a time
-                    Ext.glProgramLocalParameter4vfARB(glType, index, tempProgramFloats);
-                }
+            // store the current program in use for eas unbinding later
+            if(type == GpuProgramType.Vertex) {
+                currentVertexProgram.BindParameters(parms);
+            }
+            else {
+                currentFragmentProgram.BindParameters(parms);
             }
         }
 
@@ -1662,9 +1695,15 @@ namespace Axiom.RenderSystems.OpenGL {
         /// </summary>
         /// <param name="type"></param>
         public override void UnbindGpuProgram(GpuProgramType type) {
-            int glType = GLHelper.ConvertEnum(type);
-
-            Gl.glDisable(glType);
+            // store the current program in use for eas unbinding later
+            if(type == GpuProgramType.Vertex) {
+                currentVertexProgram.Unbind();
+                currentVertexProgram = null;
+            }
+            else {
+                currentFragmentProgram.Unbind();
+                currentFragmentProgram = null;
+            }
         }
 
         #endregion Implementation of RenderSystem
@@ -1847,12 +1886,15 @@ namespace Axiom.RenderSystems.OpenGL {
             caps.NumTextureUnits = numTextureUnits;
 
             // check multitexturing
-            if(GLHelper.SupportsExtension("GL_ARB_multitexture"))
+            if(GLHelper.SupportsExtension("GL_ARB_multitexture")) {
                 caps.SetCap(Capabilities.MultiTexturing);
+            }
 
             // check texture blending
-            if(GLHelper.SupportsExtension("GL_EXT_texture_env_combine") || GLHelper.SupportsExtension("GL_ARB_texture_env_combine"))
+            if(GLHelper.SupportsExtension("GL_EXT_texture_env_combine") || 
+                GLHelper.SupportsExtension("GL_ARB_texture_env_combine")) {
                 caps.SetCap(Capabilities.TextureBlending);
+            }
 
             // anisotropic filtering
             if(GLHelper.SupportsExtension("GL_EXT_texture_filter_anisotropic")) {
@@ -1860,12 +1902,14 @@ namespace Axiom.RenderSystems.OpenGL {
             }
 
             // check dot3 support
-            if(GLHelper.SupportsExtension("GL_ARB_texture_env_dot3"))
+            if(GLHelper.SupportsExtension("GL_ARB_texture_env_dot3")) {
                 caps.SetCap(Capabilities.Dot3Bump);
+            }
 
             // check support for vertex buffers in hardware
-            if(GLHelper.SupportsExtension("GL_ARB_vertex_buffer_object"))
+            if(GLHelper.SupportsExtension("GL_ARB_vertex_buffer_object")) {
                 caps.SetCap(Capabilities.VertexBuffer);
+            }
 
             if(GLHelper.SupportsExtension("GL_ARB_texture_cube_map")
                 || GLHelper.SupportsExtension("GL_EXT_texture_cube_map")) {
@@ -1878,14 +1922,14 @@ namespace Axiom.RenderSystems.OpenGL {
             //    caps.SetCap(Capabilities.VertexBlending);
 
             // check if the hardware supports anisotropic filtering
-            if(GLHelper.SupportsExtension("GL_EXT_texture_filter_anisotropic"))
+            if(GLHelper.SupportsExtension("GL_EXT_texture_filter_anisotropic")) {
                 caps.SetCap(Capabilities.AnisotropicFiltering);
+            }
 
             // check hardware mip mapping
-            // TODO: Only enable this for non-ATI cards temporarily until drivers are fixed
-            if(GLHelper.SupportsExtension("GL_SGIS_generate_mipmap")
-                && GLHelper.Vendor != "ATI")
+            if(GLHelper.SupportsExtension("GL_SGIS_generate_mipmap")) {
                 caps.SetCap(Capabilities.HardwareMipMaps);
+            }
 
             // check stencil buffer depth availability
             int stencilBits;
@@ -1897,7 +1941,7 @@ namespace Axiom.RenderSystems.OpenGL {
                 caps.SetCap(Capabilities.StencilBuffer);
             }
 
-            // Vertex Programs
+            // ARB Vertex Programs
             if(GLHelper.SupportsExtension("GL_ARB_vertex_program")) {
                 caps.SetCap(Capabilities.VertexPrograms);
                 caps.MaxVertexProgramVersion = "arbvp1";
@@ -1905,10 +1949,13 @@ namespace Axiom.RenderSystems.OpenGL {
                 int maxFloats;
                 Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
                 caps.VertexProgramConstantFloatCount = maxFloats;
+
+                // register support for arbvp1
                 gpuProgramMgr.PushSyntaxCode("arbvp1");
+                gpuProgramMgr.RegisterProgramFactory("arbvp1", new ARB.ARBGpuProgramFactory());
             }
 
-            // Fragment Programs
+            // ARB Fragment Programs
             if(GLHelper.SupportsExtension("GL_ARB_fragment_program")) {
                 caps.SetCap(Capabilities.FragmentPrograms);
                 caps.MaxFragmentProgramVersion = "arbfp1";
@@ -1916,7 +1963,75 @@ namespace Axiom.RenderSystems.OpenGL {
                 int maxFloats;
                 Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
                 caps.FragmentProgramConstantFloatCount = maxFloats;
+
+                // register support for arbfp1
                 gpuProgramMgr.PushSyntaxCode("arbfp1");
+                gpuProgramMgr.RegisterProgramFactory("arbfp1", new ARB.ARBGpuProgramFactory());
+            }
+
+            // ATI Fragment Programs (supported via conversion from ps1.4 shaders)
+            // NOTE: Not done yet, still in progress
+//            if(GLHelper.SupportsExtension("GL_ATI_fragment_shader")) {
+//                caps.SetCap(Capabilities.FragmentPrograms);
+//                caps.MaxFragmentProgramVersion = "ps1.4";
+//                caps.FragmentProgramConstantIntCount = 0;
+//                int maxFloats;
+//                Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
+//                caps.FragmentProgramConstantFloatCount = maxFloats;
+//
+//                // register support for ps1.1 - ps1.4
+//                gpuProgramMgr.PushSyntaxCode("ps1.1");
+//                gpuProgramMgr.PushSyntaxCode("ps1.2");
+//                gpuProgramMgr.PushSyntaxCode("ps1.3");
+//                gpuProgramMgr.PushSyntaxCode("ps1.4");
+//                gpuProgramMgr.RegisterProgramFactory("ps1.1", new ATI.ATIFragmentShaderFactory());
+//                gpuProgramMgr.RegisterProgramFactory("ps1.2", new ATI.ATIFragmentShaderFactory());
+//                gpuProgramMgr.RegisterProgramFactory("ps1.3", new ATI.ATIFragmentShaderFactory());
+//                gpuProgramMgr.RegisterProgramFactory("ps1.4", new ATI.ATIFragmentShaderFactory());
+//            }
+
+            // GeForce3/4 Register Combiners/Texture Shaders
+            if(GLHelper.SupportsExtension("GL_NV_register_combiners2") &&
+                GLHelper.SupportsExtension("GL_NV_texture_shader")) {
+
+                caps.SetCap(Capabilities.FragmentPrograms);
+                caps.MaxFragmentProgramVersion = "fp20";
+
+                gpuProgramMgr.PushSyntaxCode("fp20");
+                gpuProgramMgr.RegisterProgramFactory("fp20", new Nvidia.NvparseProgramFactory());
+            }
+
+            // GeForceFX vp30 Vertex Programs
+            if(GLHelper.SupportsExtension("GL_NV_vertex_program2")) {
+                caps.SetCap(Capabilities.VertexPrograms);
+                caps.MaxVertexProgramVersion = "vp30";
+
+                gpuProgramMgr.PushSyntaxCode("vp30");
+                gpuProgramMgr.RegisterProgramFactory("vp30", new Nvidia.NV3xGpuProgramFactory());
+            }
+
+            // GeForceFX fp30 Fragment Programs
+            if(GLHelper.SupportsExtension("GL_NV_fragment_program")) {
+                caps.SetCap(Capabilities.FragmentPrograms);
+                caps.MaxFragmentProgramVersion = "fp30";
+
+                gpuProgramMgr.PushSyntaxCode("fp30");
+                gpuProgramMgr.RegisterProgramFactory("fp30", new Nvidia.NV3xGpuProgramFactory());
+            }
+
+            // Texture Compression
+            if(GLHelper.SupportsExtension("GL_ARB_texture_compression")) {
+                caps.SetCap(Capabilities.TextureCompression);
+
+                // DXT compression
+                if(GLHelper.SupportsExtension("GL_EXT_texture_compression_s3tc")) {
+                    caps.SetCap(Capabilities.TextureCompressionDXT);
+                }
+
+                // VTC compression
+                if(GLHelper.SupportsExtension("GL_NV_texture_compression_vtc")) {
+                    caps.SetCap(Capabilities.TextureCompressionVTC);
+                }
             }
 
             // write info to logs

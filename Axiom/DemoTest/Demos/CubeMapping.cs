@@ -642,10 +642,8 @@ namespace Demos {
         /// <param name="source"></param>
         /// <param name="e"></param>
         /// <returns></returns>
-        protected override bool OnFrameStarted(object source, FrameEventArgs e) {
-            if(!base.OnFrameStarted (source, e)) {
-                return false;
-            }
+        protected override void OnFrameStarted(object source, FrameEventArgs e) {
+            base.OnFrameStarted(source, e);
 
             tm += e.TimeSinceLastFrame / timeDensity ;
 
@@ -684,8 +682,6 @@ namespace Demos {
                     keyDelay = 0.3f;
                 }
             }
-
-            return false;
         }
 
         /// <summary>

@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using System.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 
@@ -33,6 +34,8 @@ namespace Axiom.RenderSystems.OpenGL {
 	/// 	Summary description for GLGpuProgramManager.
 	/// </summary>
 	public class GLGpuProgramManager : GpuProgramManager {	
+        protected Hashtable factories = new Hashtable();
+
 		public GLGpuProgramManager() : base() {
 		}
 
@@ -43,9 +46,18 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="type"></param>
         /// <returns></returns>
         public override GpuProgram Create(string name, GpuProgramType type, string syntaxCode) {
-            int glType = GLHelper.ConvertEnum(type);
+            // if there is none, this syntax code must not be supported
+            // just return the ARB one by default and it wont be used anyway
+            if(factories[syntaxCode] == null) {
+                return new ARB.ARBGpuProgram(name, type, syntaxCode);
+            }
 
-            return new GLGpuProgram(name, type, syntaxCode);
+            // get a reference to the factory for this syntax code
+            IOpenGLGpuProgramFactory factory = 
+                (IOpenGLGpuProgramFactory)factories[syntaxCode];
+
+            // create the gpu program
+            return factory.Create(name, type, syntaxCode);
         }
 
         /// <summary>
@@ -54,6 +66,16 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <returns></returns>
         public override GpuProgramParameters CreateParameters() {
             return new GpuProgramParameters();
+        }
+
+        /// <summary>
+        ///     Registers a factory to handles requests for the creation of low level
+        ///     gpu porgrams based on the syntax code.
+        /// </summary>
+        /// <param name="factory"></param>
+        public void RegisterProgramFactory(string syntaxCode, IOpenGLGpuProgramFactory factory) {
+            // store this factory for the specified syntax code
+            factories[syntaxCode] = factory;
         }
 	}
 }

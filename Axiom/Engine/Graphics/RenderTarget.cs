@@ -26,17 +26,44 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using System.Diagnostics;
 using Axiom.Core;
 using Axiom.Collections;
 
 namespace Axiom.Graphics {
 
-    #region Delegate declarations
-    public delegate void RenderTargetUpdateEvent(object source, RenderTargetEventArgs e);
+    #region Delegate/EventArg Declarations
 
-    public struct RenderTargetEventArgs {
+    /// <summary>
+    ///    Delegate for RenderTarget update events.
+    /// </summary>
+    public delegate void RenderTargetUpdateEventHandler(object sender, RenderTargetUpdateEventArgs e);
+
+    /// <summary>
+    ///    Delegate for Viewport update events.
+    /// </summary>
+    public delegate void ViewportUpdateEventHandler(object sender, ViewportUpdateEventArgs e);
+
+    /// <summary>
+    ///    Event arguments for render target updates.
+    /// </summary>
+    public class RenderTargetUpdateEventArgs : EventArgs {
     }
-    #endregion
+
+    /// <summary>
+    ///    Event arguments for viewport updates through while processing a RenderTarget.
+    /// </summary>
+    public class ViewportUpdateEventArgs : EventArgs {
+        internal Viewport viewport;
+
+        public Viewport Viewport {
+            get {
+                return viewport;
+            }
+        }
+    }
+
+    #endregion Delegate/EventArg Declarations
 
     /// <summary>
     ///		A 'canvas' which can receive the results of a rendering operation.
@@ -44,20 +71,51 @@ namespace Axiom.Graphics {
     /// <remarks>
     ///		This abstract class defines a common root to all targets of rendering operations. A
     ///		render target could be a window on a screen, or another
-    ///		offscreen surface like a texture or bump map etc.
+    ///		offscreen surface like a render texture.
     ///	</remarks>
-    // TESTME
-    public class RenderTarget {
-        #region Protected member variables
+    public abstract class RenderTarget {
+        #region Fields
 
-        protected int height, width, colorDepth;
+        /// <summary>
+        ///    Height of this render target.
+        /// </summary>
+        protected int height;
+        /// <summary>
+        ///    Width of this render target.
+        /// </summary>
+        protected int width;
+        protected int colorDepth;
+        /// <summary>
+        ///    Indicates the priority of this render target.  Higher priority targets will get processed first.
+        /// </summary>
+        protected RenderTargetPriority priority;
+        /// <summary>
+        ///    Unique name assigned to this render target.
+        /// </summary>
         protected string name;
-        protected string debugText = "";
+        /// <summary>
+        ///    Optional debug text that can be display on this render target.  May not be relevant for all targets.
+        /// </summary>
+        protected string debugText;
+        /// <summary>
+        ///    Collection of viewports attached to this render target.
+        /// </summary>
         protected ViewportCollection viewportList;
+        /// <summary>
+        ///    Number of faces rendered during the last update to this render target.
+        /// </summary>
         protected int numFaces;
+        /// <summary>
+        ///    Custom attributes that can be assigned to this target.
+        /// </summary>
         protected Hashtable customAttributes;
+        /// <summary>
+        ///    Flag that states whether this target is active or not.
+        /// </summary>
+        // TODO: Find out the proper way to set this
+        protected bool isActive = true;
 
-        #endregion
+        #endregion Fields
 
         #region Constructor
 
@@ -70,14 +128,97 @@ namespace Axiom.Graphics {
 
         #endregion
 
+        #region Event handling
+
+        /// <summary>
+        ///    Gets fired before this RenderTarget is going to update.  Handling this event is ideal
+        ///    in situation, such as RenderTextures, where before rendering the scene to the texture,
+        ///    you would like to show/hide certain entities to avoid rendering more than was necessary
+        ///    to reduce processing time.
+        /// </summary>
+        public event RenderTargetUpdateEventHandler BeforeUpdate;
+
+        /// <summary>
+        ///    Gets fired right after this RenderTarget has been updated each frame.  If the scene has been modified
+        ///    in the BeforeUpdate event (such as showing/hiding objects), this event can be handled to set everything 
+        ///    back to normal.
+        /// </summary>
+        public event RenderTargetUpdateEventHandler AfterUpdate;
+
+        /// <summary>
+        ///    Gets fired before rendering the contents of each viewport attached to this RenderTarget.
+        /// </summary>
+        public event ViewportUpdateEventHandler BeforeViewportUpdate;
+
+        /// <summary>
+        ///    Gets fired after rendering the contents of each viewport attached to this RenderTarget.
+        /// </summary>
+        public event ViewportUpdateEventHandler AfterViewportUpdate;
+
+        protected virtual void OnBeforeUpdate() {
+            if(BeforeUpdate != null) {
+                BeforeUpdate(this, new RenderTargetUpdateEventArgs());
+            }
+        }
+
+        protected virtual void OnAfterUpdate() {
+            if(AfterUpdate != null) {
+                AfterUpdate(this, new RenderTargetUpdateEventArgs());
+            }
+        }
+
+        protected virtual void OnBeforeViewportUpdate(Viewport viewport) {
+            if(BeforeViewportUpdate != null) {
+                ViewportUpdateEventArgs e = new ViewportUpdateEventArgs();
+                e.viewport = viewport;
+                BeforeViewportUpdate(this, e);
+            }
+        }
+
+        protected virtual void OnAfterViewportUpdate(Viewport viewport) {
+            if(AfterViewportUpdate != null) {
+                ViewportUpdateEventArgs e = new ViewportUpdateEventArgs();
+                e.viewport = viewport;
+                AfterViewportUpdate(this, e);
+            }
+        }
+
+        #endregion
+
         #region Public properties
 
         /// <summary>
-        /// Gets/Sets the name of this render target.
+        ///    Gets/Sets the name of this render target.
         /// </summary>
         public string Name {
-            get { return this.name; }
-            set { this.name = value; }
+            get { 
+                return this.name; 
+            }
+            set { 
+                this.name = value; 
+            }
+        }
+
+        /// <summary>
+        ///    Gets sets whether this RenderTarget is active or not.  When inactive, it will be skipped
+        ///    during processing each frame.
+        /// </summary>
+        public virtual bool IsActive {
+            get {
+                return isActive;
+            }
+            set {
+                isActive = value;
+            }
+        }
+
+        /// <summary>
+        ///    Gets the priority of this render target.  Higher priority targets will get processed first.
+        /// </summary>
+        public RenderTargetPriority Priority {
+            get {
+                return priority;
+            }
         }
 
         /// <summary>
@@ -96,41 +237,55 @@ namespace Axiom.Graphics {
         /// Gets/Sets the width of this render target.
         /// </summary>
         public int Width {
-            get { return this.width; }
-            set { this.width = value; }
+            get { 
+                return this.width; 
+            }
+            set { 
+                this.width = value; 
+            }
         }
 
         /// <summary>
         /// Gets/Sets the height of this render target.
         /// </summary>
         public int Height {
-            get { return this.height; }
-            set { this.height = value; }
+            get { 
+                return this.height; 
+            }
+            set { 
+                this.height = value; 
+            }
         }
 
         /// <summary>
         /// Gets/Sets the color depth of this render target.
         /// </summary>
         public int ColorDepth {
-            get { return this.colorDepth; }
-            set { this.colorDepth = value; }
+            get { 
+                return this.colorDepth; 
+            }
+            set { 
+                this.colorDepth = value; 
+            }
+        } 
+
+        /// <summary>
+        ///     Gets the number of viewports attached to this render target.
+        /// </summary>
+        public int NumViewports {
+            get {
+                return viewportList.Count;
+            }
         }
 
         /// <summary>
-        /// Allows access to the viewportList of this RenderTarget.
+        ///     Signals whether textures should be flipping before this target
+        ///     is updated.  Required for render textures in some API's.
         /// </summary>
-        public ViewportCollection Viewports {
-            get { return this.viewportList; }
-        }  
-
-        /// <summary>
-        ///		Allows for stroring and retrieving custom attributes that can be leveraged by
-        ///		any subclass.  For example, OpenGL and Direct3D windows may want to 
-        ///		store certain objects that are only relevant to that particlular window.  This keeps
-        ///		things generic.
-        /// </summary>
-        public Hashtable CustomAttributes {
-            get { return customAttributes; }
+        public virtual bool RequiresTextureFlipping {
+            get {
+                return false;
+            }
         }
 
         #endregion
@@ -153,22 +308,34 @@ namespace Axiom.Graphics {
         ///		constantly as with the automatic rendering loop.
         ///	</remarks>
         public virtual void Update() {
-            // notify listeners (pre)
-            OnPreUpdate();
-
             numFaces = 0;
+
+            // notify event handlers that this RenderTarget is about to be updated
+            OnBeforeUpdate();
 
             // Go through viewportList in Z-order
             // Tell each to refresh
             for(int i = 0; i < viewportList.Count; i++) {
+                Viewport viewport = viewportList[i];
+
+                // notify listeners (pre)
+                OnBeforeViewportUpdate(viewport);                
+
                 viewportList[i].Update();
                 numFaces += viewportList[i].Camera.NumRenderedFaces;
+
+                // notify event handlers the the viewport is updated
+                OnAfterViewportUpdate(viewport);
             }
 
-            // notify listeners (post)
-            OnPostUpdate();
+            // notify event handlers that this target update is complete
+            OnAfterUpdate();
         }
 
+        /// <summary>
+        ///		Destroys the RenderTarget.
+        /// </summary>
+        public abstract void Destroy();
 
         /// <summary>
         ///		Used to create a viewport for this RenderTarget.
@@ -180,7 +347,7 @@ namespace Axiom.Graphics {
         /// <param name="height"></param>
         /// <param name="zOrder"></param>
         /// <returns></returns>
-        public virtual Viewport CreateViewport(Camera camera, int left, int top, int width, int height, int zOrder) {
+        public virtual Viewport AddViewport(Camera camera, int left, int top, int width, int height, int zOrder) {
             // create a new camera and add it to our internal collection
             Viewport viewport = new Viewport(camera, this, left, top, width, height, zOrder);
             this.viewportList.Add(viewport);
@@ -188,45 +355,27 @@ namespace Axiom.Graphics {
             return viewport;
         }
 
-        #endregion
-
-        #region Protected methods
-
         /// <summary>
-        /// Called to fire the PreUpdate event.
+        /// 
         /// </summary>
-        protected void OnPreUpdate() {
-            if(this.PreUpdate != null) {
-                RenderTargetEventArgs e = new RenderTargetEventArgs();
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public Viewport GetViewport(int index) {
+            Debug.Assert(index > 0);
 
-                PreUpdate(this, e);
-            }
+            return viewportList[index];
         }
-
-        /// <summary>
-        /// Called to fire the PostUpdate event.
-        /// </summary>
-        protected void OnPostUpdate() {
-            if(this.PostUpdate != null) {
-                RenderTargetEventArgs e = new RenderTargetEventArgs();
-
-                PostUpdate(this, e);
-            }
-        }
-
-        #endregion
-
-        #region Events
 
         /// <summary>
         /// 
         /// </summary>
-        public event RenderTargetUpdateEvent PreUpdate;
-		
-        /// <summary>
-        /// 
-        /// </summary>
-        public event RenderTargetUpdateEvent PostUpdate;
+        /// <param name="attribute"></param>
+        /// <returns></returns>
+        public virtual object GetCustomAttribute(string attribute) {
+            Debug.Assert(customAttributes.ContainsKey(attribute));
+
+            return customAttributes[attribute];
+        }
 
         #endregion
     }

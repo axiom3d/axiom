@@ -49,8 +49,8 @@ namespace Axiom.Core {
 
         protected string name;
         protected bool isLoaded;
-        protected ulong size;
-        protected ulong lastAccessed;
+        protected long size;
+        protected long lastAccessed;
 
         #endregion
 
@@ -87,29 +87,37 @@ namespace Axiom.Core {
         /// <summary>
         ///		Size of this resource.
         /// </summary>
-        public ulong Size {
-            get { return size; }
+        public long Size {
+            get { 
+                return size; 
+            }
         }
 
         /// <summary>
         ///		Name of this resource.
         /// </summary>
         public string Name {
-            get { return name; }
+            get { 
+                return name; 
+            }
         }
 
         /// <summary>
         ///		Is this resource loaded?
         /// </summary>
         public bool IsLoaded {
-            get { return isLoaded; }
+            get { 
+                return isLoaded; 
+            }
         }
 
         /// <summary>
         ///		The time the resource was last touched.
         /// </summary>
-        public ulong LastAccessed {
-            get { return lastAccessed; }
+        public long LastAccessed {
+            get { 
+                return lastAccessed; 
+            }
         }
 
         #endregion
@@ -120,7 +128,7 @@ namespace Axiom.Core {
         ///		Indicates this resource has been used.
         /// </summary>
         public virtual void Touch() {
-            lastAccessed = (ulong)Environment.TickCount;
+            lastAccessed = Engine.Instance.Timer.Milliseconds;
         }
 
         #endregion

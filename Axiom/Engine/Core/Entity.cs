@@ -319,7 +319,7 @@ namespace Axiom.Core {
             return animationState[name];
         }
 
-        internal override void NotifyCurrentCamera(Axiom.Core.Camera camera) {
+        public override void NotifyCurrentCamera(Axiom.Core.Camera camera) {
             if(parentNode != null) {
                 float squaredDepth = parentNode.GetSquaredViewDepth(camera);
 
@@ -401,7 +401,7 @@ namespace Axiom.Core {
         ///		
         /// </summary>
         /// <param name="queue"></param>
-        internal override void UpdateRenderQueue(RenderQueue queue) {
+        public override void UpdateRenderQueue(RenderQueue queue) {
             // add all sub entities to the render queue
             for(int i = 0; i < subEntityList.Count; i++)
                 queue.AddRenderable(subEntityList[i], RenderQueue.DEFAULT_PRIORITY, renderQueueID);

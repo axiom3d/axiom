@@ -119,12 +119,13 @@ namespace Demos {
         #endregion Protected Override Methods
 
         #region Protected Override Event Handlers
-        protected override bool OnFrameStarted(Object source, FrameEventArgs e) {
+        protected override void OnFrameStarted(object source, FrameEventArgs e) {
+            base.OnFrameStarted(source, e);
+
             // add time to the animation which is driven off of rendering time per frame
             animationState.AddTime(e.TimeSinceLastFrame);
-
-            return base.OnFrameStarted (source, e);
         }
+
         #endregion Protected Override Event Handlers
     }
 }

@@ -208,6 +208,16 @@ namespace Axiom.MathLib {
             return new Quaternion(left.w + right.w, left.x + right.x, left.y + right.y, left.z + right.z);
         }
 
+        /// <summary>
+        ///     Negates a Quaternion, which simply returns a new Quaternion
+        ///     with all components negated.
+        /// </summary>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Quaternion operator - (Quaternion right) {
+            return new Quaternion(-right.w, -right.x, -right.y, -right.z);
+        }
+
         public static bool operator == (Quaternion left, Quaternion right) {
             return (left.w == right.w && left.x == right.x && left.y == right.y && left.z == right.z);
         }

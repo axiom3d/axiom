@@ -277,7 +277,7 @@ namespace Axiom.Core {
             }
 
             // do we wanna show our beautiful bounding box?
-            // do it id either we want it, or the SceneManager dictates it
+            // do it if either we want it, or the SceneManager dictates it
             if(showBoundingBox || creator.ShowBoundingBoxes) {
                 AddBoundingBoxToQueue(queue);
             }

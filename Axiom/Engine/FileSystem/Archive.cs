@@ -30,7 +30,7 @@ using Axiom.Core;
 
 namespace Axiom.FileSystem {
     /// <summary>
-    /// Summary description for Archive.
+    ///    Summary description for Archive.
     /// </summary>
     public abstract class Archive : Resource {
         /// <summary>Name of archive, can be folder path, zip name, etc.</summary>

@@ -26,31 +26,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.MathLib.Collections
-{
+namespace Axiom.MathLib.Collections {
 	/// <summary>
-	/// 	A simple container class for returning a pair of objects from a method call (similar to std::pair, minus the templates).
+	/// 	A simple container class for returning a pair of objects from a method call 
+	/// 	(similar to std::pair, minus the templates).
 	/// </summary>
 	/// <remarks>
 	/// </remarks>
-	[Obsolete("To be replaced with a templated version with generics in .Net 2.0")]
-	public class Pair
-	{
-		#region Member variables
-		
-        public object object1;
-        public object object2;
+    public class Pair {
+        public object first;
+        public object second;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="object1"></param>
-        /// <param name="object2"></param>
-        public Pair(object object1, object object2) {
-            this.object1 = object1;
-            this.object2 = object2;
+        public Pair(object first, object second) {
+            this.first = first;
+            this.second = second;
         }
-
-		#endregion
-	}
+    }
 }

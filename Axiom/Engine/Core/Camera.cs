@@ -26,7 +26,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
-
 using Axiom.MathLib;
 using Axiom.Graphics;
 
@@ -87,6 +86,10 @@ namespace Axiom.Core {
         protected Vector3				autoTrackOffset;	
         protected float                   sceneLodFactor;
         protected float                    invSceneLodFactor;
+
+        protected bool isReflected;
+        protected Matrix4 reflectionMatrix;
+        protected Plane reflectionPlane;
 
         /** Temp coefficient values calculated from a frustum change,
             used when establishing the frustum planes when the view changes. */
@@ -236,9 +239,6 @@ namespace Axiom.Core {
                 Matrix3 rotationT = rotation.Transpose();
                 Vector3 translation = -rotationT * derivedPosition;
 
-                // construct the final matrix, first zero out the view matrix
-                //viewMatrix = Matrix4.Zero;
-
                 // initialize the upper 3x3 portion with the rotation
                 viewMatrix = rotationT;
 
@@ -246,7 +246,11 @@ namespace Axiom.Core {
                 viewMatrix[0,3] = translation.x;
                 viewMatrix[1,3] = translation.y;
                 viewMatrix[2,3] = translation.z;
-                //viewMatrix[3,3] = 1.0f;
+
+                // deal with reflections
+                if(isReflected) {
+                    viewMatrix = viewMatrix * reflectionMatrix;
+                }
 
                 // update the frustum planes
                 UpdateFrustum();
@@ -280,6 +284,29 @@ namespace Axiom.Core {
                 // near plane
                 frustum[FrustumPlane.Near].Normal = camDirection;
                 frustum[FrustumPlane.Near].D = -(distance + nearDistance);
+
+                // Deal with reflection on frustum planes
+                if (isReflected) {
+                    Vector3 pos = reflectionMatrix * derivedPosition;
+                    Vector3 dir = camDirection.Reflect(reflectionPlane.Normal);
+                    distance = dir.Dot(pos);
+                    for(int i = 0; i < 6; i++) {
+                        FrustumPlane fp = (FrustumPlane)i;
+                        frustum[fp].Normal = frustum[fp].Normal.Reflect(reflectionPlane.Normal);
+                        // Near / far plane dealt with differently since they don't pass through camera
+                        switch(fp) {
+                        case FrustumPlane.Near:
+                            frustum[fp].D = -(distance + nearDistance);
+                            break;
+                        case FrustumPlane.Far:
+                            frustum[fp].D = distance + farDistance;
+                            break;
+                        default:
+                            frustum[fp].D = -pos.Dot(frustum[fp].Normal);
+                            break;
+                        }
+                    }
+                }
 
                 // update since we have now recalculated everything
                 recalculateView = false;
@@ -326,7 +353,7 @@ namespace Axiom.Core {
 
         #region SceneObject Implementation
 
-        internal override void UpdateRenderQueue(RenderQueue pQueue) {
+        public override void UpdateRenderQueue(RenderQueue pQueue) {
             // Do nothing
         }
 
@@ -337,7 +364,7 @@ namespace Axiom.Core {
             }
         }
 
-        internal override void NotifyCurrentCamera(Axiom.Core.Camera pCamera) {
+        public override void NotifyCurrentCamera(Axiom.Core.Camera pCamera) {
             // Do nothing
         }
 
@@ -373,6 +400,24 @@ namespace Axiom.Core {
             set { 
                 projectionType = value;	
                 recalculateFrustum = true; 
+            }
+        }
+
+        /// <summary>
+        ///     Returns the reflection matrix of the camera if appropriate.
+        /// </summary>
+        public Matrix4 ReflectionMatrix {
+            get {
+                return reflectionMatrix;
+            }
+        }
+
+        /// <summary>
+        ///     Returns the reflection plane of the camera if appropriate.
+        /// </summary>
+        public Plane ReflectionPlane {
+            get {
+                return reflectionPlane;
             }
         }
 
@@ -541,6 +586,15 @@ namespace Axiom.Core {
                 Debug.Assert(value > 0.0f, "Lod bias must be greater than 0");
                 sceneLodFactor = value;
                 invSceneLodFactor = 1.0f / sceneLodFactor;
+            }
+        }
+
+        /// <summary>
+        ///     Gets a flag that specifies whether this camera is being reflected or not.
+        /// </summary>
+        public bool IsReflected {
+            get {
+                return isReflected;
             }
         }
         
@@ -719,6 +773,29 @@ namespace Axiom.Core {
         #endregion
 
         #region Public methods
+
+        /// <summary>
+        ///     Disables reflection modification previously turned on with EnableReflection.
+        /// </summary>
+        public void DisableReflection() {
+            isReflected = false;
+            recalculateView = true;
+        }
+
+        /// <summary>
+        ///     Modifies this camera so it always renders from the reflection of itself through the
+        ///     plane specified.
+        /// </summary>
+        /// <remarks>
+        ///     This is obviously useful for rendering planar reflections.
+        /// </remarks>
+        /// <param name="plane"></param>
+        public void EnableReflection(Plane plane) {
+            isReflected = true;
+            reflectionPlane = plane;
+            reflectionMatrix = MathUtil.BuildReflectionMatrix(plane);
+            recalculateView = true;
+        }
 
         /// <summary>
         /// Moves the camera's position by the vector offset provided along world axes.
@@ -1054,7 +1131,7 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="viewport"></param>
         /// <param name="showOverlays"></param>
-        internal void RenderScene(Viewport viewport, bool showOverlays) {
+        public void RenderScene(Viewport viewport, bool showOverlays) {
             sceneManager.RenderScene(this, viewport, showOverlays);
         }
 

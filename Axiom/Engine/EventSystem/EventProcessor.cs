@@ -59,13 +59,11 @@ namespace Axiom.EventSystem {
             Engine.Instance.FrameStarted -= new FrameEvent(RenderSystem_FrameStarted);
         }
 
-        private bool RenderSystem_FrameStarted(object source, FrameEventArgs e) {
+        private void RenderSystem_FrameStarted(object source, FrameEventArgs e) {
             while(eventQueue.Count > 0) {
                 // loop through and process each event
 				
             }
-
-            return true;
         }
     }
 }

@@ -44,7 +44,7 @@ namespace Axiom.Core {
     /// <summary>
     ///		A delegate for defining frame events.
     /// </summary>
-    public delegate bool FrameEvent(object source, FrameEventArgs e);
+    public delegate void FrameEvent(object source, FrameEventArgs e);
 
     /// <summary>
     ///		Used to supply info to the FrameStarted and FrameEnded events.
@@ -63,13 +63,17 @@ namespace Axiom.Core {
         /// <summary>
         ///    Event handlers should set this to true if they wish to stop the render loop and begin shutdown.
         /// </summary>
-        public bool Stop;
+        public bool RequestShutdown;
+    }
+
+    public enum FrameEventType {
+        Start,
+        End
     }
 
     /// <summary>
     ///		The Engine class is the main container of all the subsystems.  This includes the RenderSystem, various ResourceManagers, etc.
     /// </summary>
-    // INC: In progress
     public class Engine : IDisposable {
         #region Singleton implementation
         static Engine() {}
@@ -86,22 +90,16 @@ namespace Axiom.Core {
         private RenderSystemCollection renderSystemList;
         private RenderSystem activeRenderSystem;
         private Log engineLog;
-
         private ITimer timer;
 
         // Framerate Related State
-        private static bool framerateReady;										// Do We Have A Calculated Framerate?
+        private static long lastStartTime, lastEndTime;
         private static long lastCalculationTime;										// The Last Time We Calculated Framerate
         private static long frameCount;												// Frames Drawn Counter For FPS Calculations
         private static float currentFPS;											// Current FPS
         private static float highestFPS;											// Highest FPS
         private static float lowestFPS = 9999;								// Lowest FPS
         private static float averageFPS;
-
-        /// <summary>
-        ///    Flag that specifies whether or not the render loop should end.
-        /// </summary>
-        private bool stopRendering;
 
         /// <summary>
         ///    Has the first render window been created yet?
@@ -260,7 +258,7 @@ namespace Axiom.Core {
                 ParticleSystemManager.Instance.ParseAllSources();
 
                 // init font manager singletons
-                FontManager.Init();
+                FontManager.Instance.ParseAllSources();
 
                 // init overlay manager
                 OverlayManager.Instance.ParseAllSources();
@@ -320,8 +318,6 @@ namespace Axiom.Core {
         /// 
         /// </summary>
         /// <returns></returns>
-        // TODO: Rethink this if ever a time comes where the .Net Windows Forms implementation is not sufficient
-        // for all .Net platforms (Linux, XBox, etc)
         public bool ShowConfigDialog() {
             ConfigDialog dialog = new ConfigDialog();
 			
@@ -342,25 +338,6 @@ namespace Axiom.Core {
             Debug.Assert(activeRenderSystem != null, "Cannot covert color value without an active renderer.");
 
             return activeRenderSystem.ConvertColor(color);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="show"></param>
-        public void ShowDebugOverlay(bool show) {
-            Overlay o = OverlayManager.Instance.GetByName("Core/DebugOverlay");
-
-            if(o == null) {
-                throw new Exception(string.Format("Could not find overlay named '{0}'.", "Core/DebugOverlay"));
-            }
-
-            if(show) {
-                o.Show();
-            }
-            else {
-                o.Hide();
-            }
         }
 
         /// <summary>
@@ -403,106 +380,27 @@ namespace Axiom.Core {
         public void StartRendering() {
             Debug.Assert(activeRenderSystem != null, "Engine cannot start rendering without an active RenderSystem.");
 
-            long lastStartTime, lastEndTime;
-
             // start the internal timer
             timer.Reset();
 
             // initialize the vars
             lastStartTime = lastEndTime = timer.Milliseconds;
 
-            // get a reference to the render windows of the current render system
-            RenderWindowCollection renderWindows = activeRenderSystem.RenderWindows;
+            while(true) {
+                // Stop rendering if frame callback says so
+                if(!OnFrameStarted())
+                    return;
 
-            while(renderWindows.Count > 0 && !stopRendering) {
-                // if we only have 1 window and it isn't active, skip the rendering loop
-                // so that things dont happen while it is minimized
-                if(renderWindows.Count == 1 && !renderWindows[0].IsActive) {
-                    // allow windows events to process
-                    System.Windows.Forms.Application.DoEvents();
+                // update all current render targets
+                activeRenderSystem.UpdateAllRenderTargets();
 
-                    continue;
-                }
-
-                FrameEventArgs evt = new FrameEventArgs();
-
-                // get the current time
-                long time = timer.Milliseconds;
-
-                // only fire a frame started event if time has elapsed
-                // prevent overupdating
-                if(time != lastStartTime || time != lastEndTime) {
-                    evt.TimeSinceLastFrame = (float)(time - lastStartTime) / 1000;
-                    evt.TimeSinceLastEvent = (float)(time - lastEndTime) / 1000;
-
-                    // Stop rendering if frame callback says so
-                    if(!OnFrameStarted(evt) || stopRendering)
-                        return;
-
-                    // We'll also check here if they decided to shut us down
-                }
-
-                // update the last start time before the render targets are rendered
-                lastStartTime = time;
-
-                // force all active render windows to update
-                for(int i = 0; i < renderWindows.Count; i++) {
-                    if(renderWindows[i].IsActive)
-                        renderWindows[i].Update();
-                }
-
-                // increment frameCount
-                frameCount++;
-
-                // Do frame ended event
-                time = timer.Milliseconds; // Get current time
-
-                // collect performance stats
-                if((time - lastCalculationTime) > 1000) { 
-				 		// Is It Time To Update Our Calculations?
-                    // Calculate New Framerate
-                    currentFPS = (float)frameCount / (float)(time - lastCalculationTime) * 1000;
-
-                    // calculate the averge framerate
-                    if(averageFPS == 0)
-                        averageFPS = currentFPS;
-                    else
-                        averageFPS = (averageFPS + currentFPS) / 2.0f;
-
-					 // Is The New Framerate A New Low?
-                    if(currentFPS < lowestFPS || (int) lowestFPS == 0) { 
-                        // Set It To The New Low
-                        lowestFPS = currentFPS;							
-                    }
-
-                    // Is The New Framerate A New High?
-                    if(currentFPS > highestFPS) { 
-					 	// Set It To The New High
-                        highestFPS = currentFPS;
-                    }
-
-                    // Update Our Last Frame Time To Now
-                    lastCalculationTime = time;
-
-                    // Reset Our Frame Count
-                    frameCount = 0;												
-                }
-
-
-                if (lastEndTime != time || time != lastStartTime) {
-                    evt.TimeSinceLastFrame = (float)(time - lastEndTime) / 1000;
-                    evt.TimeSinceLastEvent = (float)(time - lastStartTime) / 1000;
-                    // Stop rendering if frame callback says so
-                    if(!OnFrameEnded(evt) || stopRendering)
-                        return;
-                }
-
-                lastEndTime = time;
+                // Stop rendering if frame callback says so
+                if(!OnFrameEnded())
+                    return;
 
                 // allow windows events to process
                 System.Windows.Forms.Application.DoEvents();
             }
-
         }
 
         /// <summary>
@@ -600,29 +498,169 @@ namespace Axiom.Core {
         #region Internal Engine Methods
 
         /// <summary>
-        ///		Used to manually fire the FrameStarted event.
+        ///    Internal method for calculating the average time between recently fired events.
         /// </summary>
-        /// <param name="eventArgs"></param>
-        protected bool OnFrameStarted(FrameEventArgs eventArgs) {
-            // call the event, which automatically fires all registered handlers
-            if(this.FrameStarted != null) {
-                return FrameStarted(this, eventArgs);
+        /// <param name="time">The current time in milliseconds.</param>
+        /// <param name="type">The type event to calculate.</param>
+        /// <returns>Average time since last event of the same type.</returns>
+        private float CalculateEventTime(long time, FrameEventType type) {
+            float result = 0;
+
+            if(type == FrameEventType.Start) {
+                result = (float)(time - lastStartTime) / 1000;
+
+                // update the last start time before the render targets are rendered
+                lastStartTime = time;
             }
             else {
+                // increment frameCount
+                frameCount++;
+
+                // collect performance stats
+                if((time - lastCalculationTime) > 1000) { 
+                    // Is It Time To Update Our Calculations?
+                    // Calculate New Framerate
+                    currentFPS = (float)frameCount / (float)(time - lastCalculationTime) * 1000;
+
+                    // calculate the averge framerate
+                    if(averageFPS == 0)
+                        averageFPS = currentFPS;
+                    else
+                        averageFPS = (averageFPS + currentFPS) / 2.0f;
+
+                    // Is The New Framerate A New Low?
+                    if(currentFPS < lowestFPS || (int) lowestFPS == 0) { 
+                        // Set It To The New Low
+                        lowestFPS = currentFPS;							
+                    }
+
+                    // Is The New Framerate A New High?
+                    if(currentFPS > highestFPS) { 
+                        // Set It To The New High
+                        highestFPS = currentFPS;
+                    }
+
+                    // Update Our Last Frame Time To Now
+                    lastCalculationTime = time;
+
+                    // Reset Our Frame Count
+                    frameCount = 0;												
+                }
+
+                result = (float)(time - lastEndTime) / 1000;
+
+                lastEndTime = time;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        ///    Method for raising frame started events.
+        /// </summary>
+        /// <remarks>
+        ///    This method is only for internal use when you use the built-in rendering
+        ///    loop (Root.StartRendering). However, if you run your own rendering loop then
+        ///    you should call this method to ensure that FrameEvent handlers are notified
+        ///    of frame events; processes like texture animation and particle systems rely on 
+        ///    this.
+        ///    <p/>
+        ///    This method calculates the frame timing information for you based on the elapsed
+        ///    time. If you want to specify elapsed times yourself you should call the other 
+        ///    version of this method which takes event details as a parameter.
+        /// </remarks>
+        public bool OnFrameStarted() {
+            FrameEventArgs e = new FrameEventArgs();
+            long now = timer.Milliseconds;
+            e.TimeSinceLastFrame = CalculateEventTime(now, FrameEventType.Start);
+
+            // if any event handler set this to true, that will signal the engine to shutdown
+            return !OnFrameStarted(e);
+        }
+
+        /// <summary>
+        ///    Method for raising frame ended events.
+        /// </summary>
+        /// <remarks>
+        ///    This method is only for internal use when you use the built-in rendering
+        ///    loop (Root.StartRendering). However, if you run your own rendering loop then
+        ///    you should call this method to ensure that FrameEvent handlers are notified
+        ///    of frame events; processes like texture animation and particle systems rely on 
+        ///    this.
+        ///    <p/>
+        ///    This method calculates the frame timing information for you based on the elapsed
+        ///    time. If you want to specify elapsed times yourself you should call the other 
+        ///    version of this method which takes event details as a parameter.
+        /// </remarks>
+        public bool OnFrameEnded() {
+            FrameEventArgs e = new FrameEventArgs();
+            long now = timer.Milliseconds;
+            e.TimeSinceLastFrame = CalculateEventTime(now, FrameEventType.End);
+
+            // if any event handler set this to true, that will signal the engine to shutdown
+            return !OnFrameEnded(e);
+        }
+
+        /// <summary>
+        ///    Method for raising frame started events.
+        /// </summary>
+        /// <remarks>
+        ///    This method is only for internal use when you use the built-in rendering
+        ///    loop (Root.StartRendering). However, if you run your own rendering loop then
+        ///    you should call this method to ensure that FrameEvent handlers are notified
+        ///    of frame events; processes like texture animation and particle systems rely on 
+        ///    this.
+        ///    <p/>
+        ///    This method takes an event object as a parameter, so you can specify the times
+        ///    yourself. If you are happy for the engine to automatically calculate the frame time
+        ///    for you, then call the other version of this method with no parameters.
+        /// </remarks>
+        /// <param name="e">
+        ///    Event object which includes all the timing information which must already be 
+        ///    calculated.  RequestShutdown should be checked after each call, because that means
+        ///    an event handler is requesting that shudown begin for one reason or another.
+        /// </param>
+        protected bool OnFrameStarted(FrameEventArgs e) {
+            // call the event, which automatically fires all registered handlers
+            if(this.FrameStarted != null) {
+                FrameStarted(this, e);
+
+                return e.RequestShutdown;
+            }
+            else {
+                // just return false, meaning the loop should continue
                 return false;
             }
         }
 
         /// <summary>
-        ///		Used to manually fire the FrameEnded event.
+        ///    Method for raising frame ended events.
         /// </summary>
-        /// <param name="eventArgs"></param>
-        protected bool OnFrameEnded(FrameEventArgs eventArgs) {
+        /// <remarks>
+        ///    This method is only for internal use when you use the built-in rendering
+        ///    loop (Root.StartRendering). However, if you run your own rendering loop then
+        ///    you should call this method to ensure that FrameEvent handlers are notified
+        ///    of frame events; processes like texture animation and particle systems rely on 
+        ///    this.
+        ///    <p/>
+        ///    This method takes an event object as a parameter, so you can specify the times
+        ///    yourself. If you are happy for the engine to automatically calculate the frame time
+        ///    for you, then call the other version of this method with no parameters.
+        /// </remarks>
+        /// <param name="e">
+        ///    Event object which includes all the timing information which must already be 
+        ///    calculated.  RequestShutdown should be checked after each call, because that means
+        ///    an event handler is requesting that shudown begin for one reason or another.
+        /// </param>
+        protected bool OnFrameEnded(FrameEventArgs e) {
             // call the event, which automatically fires all registered handlers
             if(this.FrameEnded != null) {
-                return FrameEnded(this, eventArgs);
+                FrameEnded(this, e);
+
+                return e.RequestShutdown;
             }
             else {
+                // just return false, meaning the loop should continue
                 return false;
             }
         }

@@ -18,7 +18,7 @@
                 OutputType = "Library"
                 PreBuildEvent = ""
                 PostBuildEvent = ""
-                RootNamespace = "Engine"
+                RootNamespace = "Axiom"
                 RunPostBuildEvent = "OnBuildSuccess"
                 StartupObject = ""
             >
@@ -85,14 +85,19 @@
                     AssemblyName = "System.Windows.Forms"
                 />
                 <Reference
+                    Name = "ICSharpCode.SharpZipLib"
+                    AssemblyName = "ICSharpCode.SharpZipLib"
+                    HintPath = "..\Solution Items\ICSharpCode.SharpZipLib.dll"
+                />
+                <Reference
                     Name = "MathLib"
                     Project = "{E6AC8079-93CC-1444-AD68-C09835E5682D}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
-                    Name = "ICSharpCode.SharpZipLib"
-                    AssemblyName = "ICSharpCode.SharpZipLib"
-                    HintPath = "..\Solution Items\ICSharpCode.SharpZipLib.dll"
+                    Name = "Tao.DevIl"
+                    AssemblyName = "Tao.DevIl"
+                    HintPath = "..\Solution Items\Tao.DevIl.dll"
                 />
             </References>
         </Build>
@@ -224,6 +229,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Collections\Map.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Collections\MeshCollection.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -235,6 +245,11 @@
                 />
                 <File
                     RelPath = "Collections\RenderSystemCollection.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Collections\RenderTargetCollection.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -310,6 +325,11 @@
                 />
                 <File
                     RelPath = "Controllers\IControllerValue.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Controllers\Canned\FloatGpuParamControllerValue.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -420,11 +440,6 @@
                 />
                 <File
                     RelPath = "Core\Node.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Core\Plane.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -664,6 +679,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Graphics\RenderTexture.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Graphics\RenderWindow.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -754,12 +774,57 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Media\BMPCodec.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Media\CodecManager.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Media\DDSCodec.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Media\Enums.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Media\ICodec.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Media\ILImageCodec.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Media\Image.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Media\ImageCodec.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Media\JPGCodec.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Media\PNGCodec.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Media\TGACodec.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

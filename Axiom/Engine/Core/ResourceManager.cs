@@ -48,22 +48,22 @@ namespace Axiom.Core {
     ///		resources of the same priority.
     /// </remarks>
     public abstract class ResourceManager : IDisposable {
-        #region Member variables
+        #region Fields
 
-        protected ulong memoryBudget;
-        protected ulong memoryUsage;
+        protected long memoryBudget;
+        protected long memoryUsage;
         /// <summary>A cached list of all resources in memory.</summary>
-        protected Hashtable resourceList									= System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
+        protected Hashtable resourceList = System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
         /// <summary>A lookup table used to find a common archive associated with a filename.</summary>
-        protected Hashtable filePaths										= System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
+        protected Hashtable filePaths = System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
         /// <summary>A cached list of archives specific to a resource type.</summary>
-        protected ArrayList archives											= new ArrayList();
+        protected ArrayList archives = new ArrayList();
         /// <summary>A lookup table used to find a archive associated with a filename.</summary>
-        static protected Hashtable commonFilePaths				= System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
+        static protected Hashtable commonFilePaths = System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
         /// <summary>A cached list of archives common to all resource types.</summary>
-        static protected ArrayList commonArchives				= new ArrayList();
+        static protected ArrayList commonArchives = new ArrayList();
 
-        #endregion
+        #endregion Fields
 
         #region Constructors
 
@@ -88,7 +88,7 @@ namespace Axiom.Core {
         ///		is not permanent and the Resource is not destroyed; it simply needs to be reloaded when
         ///		next used.
         /// </remarks>
-        public ulong MemoryBudget {
+        public long MemoryBudget {
             //get { return memoryBudget; }
             set { 
                 memoryBudget = value;
@@ -100,9 +100,13 @@ namespace Axiom.Core {
         /// <summary>
         ///		Gets/Sets the current memory usages by all resource managers.
         /// </summary>
-        public ulong MemoryUsage {
-            get { return memoryUsage; }
-            set { memoryUsage = value; }
+        public long MemoryUsage {
+            get { 
+                return memoryUsage; 
+            }
+            set { 
+                memoryUsage = value; 
+            }
         }
 
         #endregion
@@ -231,7 +235,7 @@ namespace Axiom.Core {
 
             // add a lookup for all these files so they know what archive they are in
             for(int i = 0; i < files.Length; i++) {
-                filePaths.Add(files[i], archive);
+                filePaths[files[i]] = archive;
             }
 
             // add the archive to the common archives
@@ -262,7 +266,7 @@ namespace Axiom.Core {
 
             // add a lookup for all these files so they know what archive they are in
             for(int i = 0; i < files.Length; i++) {
-                commonFilePaths.Add(files[i], archive);
+                commonFilePaths[files[i]] = archive;
             }
 
             // add the archive to the common archives

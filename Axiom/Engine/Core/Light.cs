@@ -382,11 +382,11 @@ namespace Axiom.Core {
 
         #region SceneObject Implementation
 
-        internal override void NotifyCurrentCamera(Camera camera) {
+        public override void NotifyCurrentCamera(Camera camera) {
             // Do nothing
         }
 
-        internal override void UpdateRenderQueue(RenderQueue queue) {
+        public override void UpdateRenderQueue(RenderQueue queue) {
             // Do Nothing	
         }
 

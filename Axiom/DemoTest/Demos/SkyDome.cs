@@ -42,8 +42,9 @@ namespace Demos {
 
         #endregion Fields
 
-        protected override bool OnFrameStarted(Object source, FrameEventArgs e) {
-            base.OnFrameStarted (source, e);
+        protected override void OnFrameStarted(Object source, FrameEventArgs e) {
+            base.OnFrameStarted(source, e);
+
             bool updateSky = false;
 
             if(input.IsKeyPressed(KeyCodes.H) && timeDelay <= 0) {
@@ -77,8 +78,6 @@ namespace Demos {
             if(updateSky) {
                 scene.SetSkyDome(true, "Examples/CloudySky", curvature, tiling);
             }
-
-            return true;
         }
 
         #region Methods

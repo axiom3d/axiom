@@ -44,7 +44,7 @@ Core/DebugOverlay
             top 5
             width 90
             height 30
-            font_name Tahoma
+            font_name PalatinoLinotype
             char_height 19
             caption Current FPS:
             colour_top 0.8 0.8 0.8
@@ -59,7 +59,7 @@ Core/DebugOverlay
             top 25
             width 90
             height 30
-            font_name Tahoma
+            font_name PalatinoLinotype
             char_height 16
             caption AVERAGE FPS:
             colour_top 0.8 0.8 0.8
@@ -74,7 +74,7 @@ Core/DebugOverlay
             top 40
             width 90
             height 30
-            font_name Tahoma
+            font_name PalatinoLinotype
             char_height 16
             caption WORST FPS:
             colour_top 0.8 0.8 0.8
@@ -89,7 +89,7 @@ Core/DebugOverlay
             top 55
             width 90
             height 30
-            font_name Tahoma
+            font_name PalatinoLinotype
             char_height 16
             caption BEST FPS:
             colour_top 0.8 0.8 0.8
@@ -104,7 +104,7 @@ Core/DebugOverlay
             top 70
             width 90
             height 30
-            font_name Tahoma
+            font_name PalatinoLinotype
             char_height 16
             caption Triangle Count:
             colour_top 0.8 0.8 0.8
@@ -120,7 +120,7 @@ Core/DebugOverlay
             top 70
             width 200
             height 30
-            font_name Tahoma
+            font_name PalatinoLinotype
             char_height 16
             colour_top 0.8 0.8 0.8
             colour_bottom 0.2 0.2 0.4

@@ -497,6 +497,18 @@ namespace Axiom.MathLib {
             }
         }
 
+        /// <summary>
+        ///    Calculates a reflection vector to the plane with the given normal.
+        /// </summary>
+        /// <remarks>
+        ///    Assumes this vector is pointing AWAY from the plane, invert if not.
+        /// </remarks>
+        /// <param name="normal">Normal vector on which this vector will be reflected.</param>
+        /// <returns></returns>
+        public Vector3 Reflect(Vector3 normal) {
+            return this - (2 * this.Dot(normal) * normal);
+        }
+
         #endregion
 
         #region Public properties

@@ -63,6 +63,8 @@ namespace Axiom.Graphics {
         #region Constructor
 
         protected RenderWindow() {
+            // render windows are low priority
+            this.priority = RenderTargetPriority.Low;
         }
 
         #endregion
@@ -87,11 +89,6 @@ namespace Axiom.Graphics {
             int left, int top, bool depthBuffer, params object[] miscParams);
 
         /// <summary>
-        ///		Destroys the window.
-        /// </summary>
-        public abstract void Destroy();
-
-        /// <summary>
         ///		Alter the size of the window.
         /// </summary>
         /// <param name="pWidth"></param>
@@ -104,22 +101,6 @@ namespace Axiom.Graphics {
         /// <param name="pLeft"></param>
         /// <param name="pRight"></param>
         public abstract void Reposition(int left, int right);
-
-        /// <summary>
-        ///		Determine if the window is active & visible.
-        /// </summary>
-        /// <remarks>
-        ///		This method returns true if the window is active
-        ///		 i.e. is visible somewhere on screen, therefore should
-        ///		receive more images.
-        ///
-        ///		The render system will use this to determine if it
-        ///		should bother rendering. If the window is minimized,
-        ///		the render will simply update the world and not
-        ///		bother rendering anything, to save CPU time.
-        public abstract bool IsActive {
-            get; set;
-        }
 
         /// <summary>
         ///		Swaps the frame buffers to display the next frame.

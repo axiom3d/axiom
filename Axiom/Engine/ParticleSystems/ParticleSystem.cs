@@ -156,11 +156,13 @@ namespace Axiom.ParticleSystems {
         /// </remarks>
         /// <param name="timeElapsed">The amount of time (in seconds) since the last frame.</param>
         internal void Update(float timeElapsed) {
-            Expire(timeElapsed);
-            TriggerEmitters(timeElapsed);
-            TriggerAffectors(timeElapsed);
-            ApplyMotion(timeElapsed);
-            UpdateBounds();
+            if(parentNode != null) {
+                Expire(timeElapsed);
+                TriggerAffectors(timeElapsed);
+                ApplyMotion(timeElapsed);
+                TriggerEmitters(timeElapsed);
+                UpdateBounds();
+            }
         }
 
         /// <summary>

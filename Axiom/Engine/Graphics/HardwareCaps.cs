@@ -253,6 +253,8 @@ namespace Axiom.Graphics {
             Trace.WriteLineIf(CheckCap(Capabilities.StencilBuffer), string.Format("\t-Stencil Buffer: {0} bits", stencilBufferBits));
             Trace.WriteLineIf(CheckCap(Capabilities.TextureBlending), "\t-Texture Blending");
             Trace.WriteLineIf(CheckCap(Capabilities.TextureCompression), "\t-Texture Compression");
+            Trace.WriteLineIf(CheckCap(Capabilities.TextureCompressionDXT), "\t-DXT Texture Compression");
+            Trace.WriteLineIf(CheckCap(Capabilities.TextureCompressionVTC), "\t-VTC Texture Compression");
             Trace.WriteLineIf(CheckCap(Capabilities.VertexBuffer), "\t-Vertex Buffer Objects");
             Trace.WriteLineIf(CheckCap(Capabilities.VertexPrograms), string.Format("\t-Vertex Programs, max version: {0}", this.MaxVertexProgramVersion));
             Trace.WriteLineIf(CheckCap(Capabilities.FragmentPrograms), string.Format("\t-Fragment Programs, max version: {0}", this.MaxFragmentProgramVersion));

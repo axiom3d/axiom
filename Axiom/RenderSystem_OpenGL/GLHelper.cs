@@ -229,7 +229,7 @@ namespace Axiom.RenderSystems.OpenGL {
     /// </summary>
     public class Ext {
 
-        #region ARB_multitexture
+        #region GL_ARB_multitexture
 
         private static IntPtr activeTextureARB;
         private static IntPtr clientActiveTextureARB;
@@ -242,9 +242,9 @@ namespace Axiom.RenderSystems.OpenGL {
             Gl.glClientActiveTextureARB(clientActiveTextureARB, texture);
         }
 
-        #endregion ARB_multitexture
+        #endregion GL_ARB_multitexture
 
-        #region ARB_vertex_buffer_object
+        #region GL_ARB_vertex_buffer_object
 
         private static IntPtr bindBufferARBPtr;
         private static IntPtr bufferDataARBPtr;
@@ -288,9 +288,9 @@ namespace Axiom.RenderSystems.OpenGL {
             Gl.glUnmapBufferARB(unmapBufferARBPtr, target);
         }
 
-        #endregion ARB_vertex_buffer_object
+        #endregion GL_ARB_vertex_buffer_object
 
-        #region ARB_vertex_program/ARB_fragment_program
+        #region GL_ARB_vertex_program/GL_ARB_fragment_program
 
         private static IntPtr bindProgramARBPtr;
         private static IntPtr deleteProgramsARBPtr;
@@ -308,6 +308,7 @@ namespace Axiom.RenderSystems.OpenGL {
         }
 
         public static void glDeleteProgramsARB(int number, ref int program) {
+            // TODO: Fix
             //Gl.glDeleteProgramsARB(deleteProgramsARBPtr, number, ref program);
         }
 
@@ -323,7 +324,108 @@ namespace Axiom.RenderSystems.OpenGL {
             Gl.glProgramLocalParameter4fvARB(programLocalParameter4fvARBPtr, type, index, values);
         }
 
-        #endregion
+        #endregion GL_ARB_vertex_program/GL_ARB_fragment_program
+        
+        #region GL_EXT_texture3D
+    
+        private static IntPtr texImage3DEXTPtr;
+
+        public static void glTexImage3DEXT(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, byte[] pixels) {
+            Gl.glTexImage3DEXT(texImage3DEXTPtr, target, level, internalformat, width, height, depth, border, format, type, pixels);
+        }
+
+        #endregion GL_EXT_texture3D
+
+        #region GL_ARB_texture_compression
+
+        private static IntPtr compressedTexImage2DARB;
+
+        public static void glCompressedTexImage2DARB(int target, int level, int internalformat, int width, int height, int border, int imageSize, byte[] data)  {
+            Gl.glCompressedTexImage2DARB(compressedTexImage2DARB, target, level, internalformat, width, height, border, imageSize, data);
+        }
+
+        #endregion 
+
+        #region GL_ATI_fragment_shader
+
+        private static IntPtr genFragmentShadersATIptr;
+        private static IntPtr bindFragmentShaderATIptr;
+        private static IntPtr deleteFragmentShaderATIptr;
+        private static IntPtr beginFragmentShaderATIptr;
+        private static IntPtr endFragmentShaderATIptr;
+        private static IntPtr setFragmentShaderConstantATIptr;
+
+        public static int glGenFragmentShadersATI(int range) {
+            return Gl.glGenFragmentShadersATI(genFragmentShadersATIptr, range);
+        }
+
+        public static void glBindFragmentShaderATI(int id) {
+            Gl.glBindFragmentShaderATI(bindFragmentShaderATIptr, id);
+        }
+
+        public static void glDeleteFragmentShaderATI(int id) {
+            Gl.glDeleteFragmentShaderATI(deleteFragmentShaderATIptr, id);
+        }
+
+        public static void glBeginFragmentShaderATI() {
+            Gl.glBeginFragmentShaderATI(beginFragmentShaderATIptr);
+        }
+
+        public static void glEndFragmentShaderATI() {
+            Gl.glEndFragmentShaderATI(endFragmentShaderATIptr);
+        }
+
+        public static void glSetFragmentShaderConstantATI(int index, float[] values) {
+            Gl.glSetFragmentShaderConstantATI(setFragmentShaderConstantATIptr, index, values);
+        }
+
+        #endregion GL_ATI_fragment_shader
+
+        #region GL_NV_register_combiners
+
+        private static IntPtr combinerStageParameterfvNVptr;
+
+        public static void glCombinerStageParameterfvNV(int stage, int pname, float[] values) {
+            Gl.glCombinerStageParameterfvNV(combinerStageParameterfvNVptr, stage, pname, values);
+        }
+
+        #endregion NV20 Crap
+
+        #region GL_NV_fragment_program/GL_NV_vertex_program2
+
+        private static IntPtr genProgramsNVptr;
+        private static IntPtr bindProgramNVptr;
+        private static IntPtr deleteProgramsNVptr;
+        private static IntPtr loadProgramNVptr;
+        private static IntPtr programNamedParameter4fNVptr;
+        private static IntPtr programParameter4fvNVptr;
+
+        public static void glGenProgramsNV(int num, out int id) {
+            Gl.glGenProgramsNV(genProgramsNVptr, num, out id);
+        }
+
+        public static void glBindProgramNV(int target, int id) {
+            Gl.glBindProgramNV(bindProgramNVptr, target, id);
+        }
+
+        public static void glDeleteProgramsNV(int num, ref int id) {
+            Gl.glDeleteProgramsNV(deleteProgramsNVptr, num, ref id);
+        }
+
+        public static void glLoadProgramNV(int target, int id, int length, string program) {
+            Gl.glLoadProgramNV(loadProgramNVptr, target, id, length, program);
+        }
+
+        public static void glProgramNamedParameter4fNV(int id, int length, string name, float x, float y, float z, float w) {
+            Gl.glProgramNamedParameter4fNV(programNamedParameter4fNVptr, id, length, name, x, y, z, w);
+        }
+       
+        public static void glProgramParameter4fvNV(int target, int index, float[] vals) {
+            //Gl.gl
+            Gl.glProgramParameter4fvNV(programParameter4fvNVptr, target, index, vals);
+        }
+
+        #endregion GL_NV_fragment_program/GL_NV_vertex_program2
 
         /// <summary>
         ///    Must be fired up after a GL context has been created.
@@ -350,6 +452,31 @@ namespace Axiom.RenderSystems.OpenGL {
             programStringARBPtr = Wgl.wglGetProcAddress("glProgramStringARB");
             isProgramARBPtr = Wgl.wglGetProcAddress("glIsProgramARB");
             programLocalParameter4fvARBPtr = Wgl.wglGetProcAddress("glProgramLocalParameter4fvARB");
+
+            // GL_EXT_texture3D
+            texImage3DEXTPtr = Wgl.wglGetProcAddress("glTexImage3DEXT");
+
+            // GL_ARB_texture_compression
+            compressedTexImage2DARB = Wgl.wglGetProcAddress("glCompressedTexImage2DARB");
+
+            // GL_ATI_fragment_shader
+            genFragmentShadersATIptr = Wgl.wglGetProcAddress("glGenFragmentShadersATI");
+            bindFragmentShaderATIptr = Wgl.wglGetProcAddress("glBindFragmentShaderATI");
+            deleteFragmentShaderATIptr = Wgl.wglGetProcAddress("glDeleteFragmentShaderATI");
+            beginFragmentShaderATIptr = Wgl.wglGetProcAddress("glBeginFragmentShaderATI");
+            endFragmentShaderATIptr = Wgl.wglGetProcAddress("glEndFragmentShaderATI");
+            setFragmentShaderConstantATIptr = Wgl.wglGetProcAddress("glSetFragmentShaderConstantATI");
+
+            // GL_NV_register_combiner
+            combinerStageParameterfvNVptr = Wgl.wglGetProcAddress("glCombinerStageParameterfvNV");
+
+            // GL_NV_vertex_program2/GL_NV_fragment_program
+            genProgramsNVptr = Wgl.wglGetProcAddress("glGenProgramsNV");
+            bindProgramNVptr = Wgl.wglGetProcAddress("glBindProgramNV");
+            deleteProgramsNVptr = Wgl.wglGetProcAddress("glDeleteProgramsNV");
+            loadProgramNVptr = Wgl.wglGetProcAddress("glLoadProgramNV");
+            programNamedParameter4fNVptr = Wgl.wglGetProcAddress("glProgramNamedParameter4fNV");
+            programParameter4fvNVptr = Wgl.wglGetProcAddress("glProgramParameter4fvNV");
         }
     }
 

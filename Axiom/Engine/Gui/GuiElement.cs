@@ -269,6 +269,7 @@ namespace Axiom.Gui
                 width = (float)pixelWidth / vpWidth;
                 top = (float)pixelTop / vpHeight;
                 height = (float)pixelHeight / vpHeight;
+                geomPositionsOutOfDate = true;
             }
 
             // container subclasses will update children too

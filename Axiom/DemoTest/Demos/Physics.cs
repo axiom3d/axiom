@@ -95,7 +95,7 @@ namespace Demos {
             window.DebugText = "Press J,I,K,L to push a box around.";
         }
 
-        protected override bool OnFrameStarted(object source, FrameEventArgs e) {
+        protected override void OnFrameStarted(object source, FrameEventArgs e) {
             base.OnFrameStarted (source, e);
 
             float force = 30.0f;
@@ -113,8 +113,6 @@ namespace Demos {
 
             box.UpdateFromDynamics();
             box2.UpdateFromDynamics();
-
-            return true;
         }
 
         private void InitDynamics() {

@@ -115,8 +115,13 @@ namespace Axiom.CgPrograms {
             // Note use of 'leaf' format so we only get bottom-level params, not structs
             IntPtr param = Cg.cgGetFirstLeafParameter(cgProgram, Cg.CG_PROGRAM);
 
+            int index = 0;
+
             // loop through the rest of the params
             while(param != IntPtr.Zero) {
+
+                // get the type of this param up front
+                int paramType = Cg.cgGetParameterType(param);
 
                 // Look for uniform parameters only
                 // Don't bother enumerating unused parameters, especially since they will
@@ -124,15 +129,45 @@ namespace Axiom.CgPrograms {
                 if(Cg.cgIsParameterReferenced(param) != 0
                     && Cg.cgGetParameterVariability(param) == Cg.CG_UNIFORM
                     && Cg.cgGetParameterDirection(param) != Cg.CG_OUT
-                    && Cg.cgGetParameterType(param) != Cg.CG_SAMPLER1D
-                    && Cg.cgGetParameterType(param) != Cg.CG_SAMPLER2D
-                    && Cg.cgGetParameterType(param) != Cg.CG_SAMPLER3D
-                    && Cg.cgGetParameterType(param) != Cg.CG_SAMPLERCUBE
-                    && Cg.cgGetParameterType(param) != Cg.CG_SAMPLERRECT) {                 
+                    && paramType != Cg.CG_SAMPLER1D
+                    && paramType != Cg.CG_SAMPLER2D
+                    && paramType != Cg.CG_SAMPLER3D
+                    && paramType != Cg.CG_SAMPLERCUBE
+                    && paramType != Cg.CG_SAMPLERRECT) {                 
 
                     // get the name and index of the program param
                     string name = Cg.cgGetParameterName(param);
-                    int index = Cg.cgGetParameterResourceIndex(param);
+
+                    // get the underlying resource type of this param
+                    // we need a special case for the register combiner
+                    // stage constants.
+                    int resource = Cg.cgGetParameterResource(param);
+
+                    // resource 3256 is returned for fp30 named params
+                    // TODO: Find the enum for that
+                    if(resource == 3256) {
+                        // use a fake index just to order the named fp30 params
+                        index++;
+                    }
+                    else {
+                        // get the param constant index the normal way 
+                        index = Cg.cgGetParameterResourceIndex(param);
+                    }
+
+                    // Get the parameter resource, so we know what type we're dealing with
+                    switch(resource) {
+                        case Cg.CG_COMBINER_STAGE_CONST0:
+                            // register combiner, const 0
+                            // the index relates to the texture stage; store this as (stage * 2) + 0
+                            index = index * 2;
+                            break;
+
+                        case Cg.CG_COMBINER_STAGE_CONST1:
+                            // register combiner, const 1
+                            // the index relates to the texture stage; store this as (stage * 2) + 1
+                            index = (index * 2) + 1;
+                            break;
+                    }
 
                     // map the param to the index
                     parms.MapParamNameToIndex(name, index);
@@ -209,6 +244,6 @@ namespace Axiom.CgPrograms {
             return handled;
         }
 
-        #endregion
+        #endregion IConfigurable Members
     }
 }

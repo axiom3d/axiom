@@ -33,7 +33,10 @@ namespace Axiom.RenderSystems.OpenGL {
 	/// <summary>
 	/// 	Specialization of vertex/fragment programs for OpenGL.
 	/// </summary>
-	public class GLGpuProgram : GpuProgram {
+	public abstract class GLGpuProgram : GpuProgram {
+
+        #region Fields
+
         /// <summary>
         ///    Internal OpenGL id assigned to this program.
         /// </summary>
@@ -44,34 +47,41 @@ namespace Axiom.RenderSystems.OpenGL {
         /// </summary>
         protected int programType;
 
-        internal GLGpuProgram(string name, GpuProgramType type, string syntaxCode) : base(name, type, syntaxCode) {
-            programType = GLHelper.ConvertEnum(type);
+        /// <summary>
+        ///     For use internally to store temp values for passing constants, etc.
+        /// </summary>
+        protected float[] tempProgramFloats = new float[4];
 
-            Ext.glGenProgramsARB(1, out programId);
-        }
+        #endregion Fields
 
-        protected override void LoadFromSource() {
-            Ext.glBindProgramARB(programType, programId);
-     
-            Ext.glProgramStringARB(programType, Gl.GL_PROGRAM_FORMAT_ASCII_ARB, source.Length, source);
+        #region Constructors
 
-            // check for any errors
-            if(Gl.glGetError() == Gl.GL_INVALID_OPERATION) {
-                int pos;
-                string error;
+        internal GLGpuProgram(string name, GpuProgramType type, string syntaxCode) 
+            : base(name, type, syntaxCode) {}
 
-                Gl.glGetIntegerv(Gl.GL_PROGRAM_ERROR_POSITION_ARB, out pos);
-                error = Gl.glGetString(Gl.GL_PROGRAM_ERROR_STRING_ARB);
+        #endregion Constructors
 
-                throw new Exception(string.Format("Error on line {0} in program '{1}'\nError: {2}", pos, name, error));
-            }
-        }
+        #region Abstract methods
 
-        public override void Unload() {
-            base.Unload ();
+        /// <summary>
+        ///     Called when a program needs to be bound.
+        /// </summary>
+        public abstract void Bind();
 
-            Ext.glDeleteProgramsARB(1, ref programId);
-        }
+        /// <summary>
+        ///     Called when a program needs to be unbound.
+        /// </summary>
+        public abstract void Unbind();
+
+        /// <summary>
+        ///     Called when a program needs to bind the supplied parameters.
+        /// </summary>
+        /// <param name="parms"></param>
+        public abstract void BindParameters(GpuProgramParameters parms);
+
+        #endregion Abstract methods
+
+        #region Properties
 
         /// <summary>
         ///    Access to the internal program id.
@@ -83,12 +93,14 @@ namespace Axiom.RenderSystems.OpenGL {
         }
 
         /// <summary>
-        ///    Gets the program type (GL_VERTEX_PROGRAM_ARB, GL_FRAGMENT_PROGRAM_ARB);
+        ///    Gets the program type (GL_VERTEX_PROGRAM_ARB, GL_FRAGMENT_PROGRAM_ARB, etc);
         /// </summary>
         public int GLProgramType {
             get {
                 return programType;
             }
         }
+
+        #endregion Properties
 	}
 }

@@ -505,6 +505,25 @@ namespace Axiom.MathLib {
         } 
 
         #endregion
+        
+        #region Properties
+        
+        public float Determinant {
+		    get {
+			    float cofactor00 = m11 * m22 - m12 * m21;
+			    float cofactor10 = m12 * m20 - m10 * m22;
+			    float cofactor20 = m10 * m21 - m11 * m20;
+
+			    float result =
+			        m00 * cofactor00 +
+			        m01 * cofactor10 +
+			        m02 * cofactor20;
+
+			    return result;
+		    }
+	    }
+        
+        #endregion Properties
 
         #region Object overloads
 

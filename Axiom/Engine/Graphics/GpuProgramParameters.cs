@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using Axiom.Controllers;
 using Axiom.Core;
 using Axiom.MathLib;
 
@@ -75,6 +76,11 @@ namespace Axiom.Graphics
         ///    Lookup of constant indicies for named parameters.
         /// </summary>
         protected Hashtable namedParams = new Hashtable();
+        /// <summary>
+        ///     Specifies whether matrices need to be transposed prior to
+        ///     being sent to the hardware.
+        /// </summary>
+        protected bool transposeMatrices;
 
 		#endregion
 		
@@ -127,6 +133,16 @@ namespace Axiom.Graphics
             }
 
             return (int)namedParams[name];
+        }
+
+        public string GetNameByIndex(int index) {
+            foreach(DictionaryEntry entry in namedParams) {
+                if((int)entry.Value == index) {
+                    return (string)entry.Key;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -220,13 +236,29 @@ namespace Axiom.Graphics
         /// <summary>
         ///    Sends a multiple value constant floating-point parameter to the program.
         /// </summary>
+        /// <remarks>
+        ///     This method is made virtual to allow GpuProgramManagers, or even individual
+        ///     GpuProgram implementations to supply their own implementation if need be.
+        ///     An example would be where a Matrix needs to be transposed to row-major format
+        ///     before passing to the hardware.
+        /// </remarks>
         /// <param name="index">Index of the contant register.</param>
         /// <param name="val">Structure containing 3 packed float values.</param>
         public void SetConstant(int index, Matrix4 val) {
-            SetConstant(index++, new Vector4(val.m00, val.m01, val.m02, val.m03));
-            SetConstant(index++, new Vector4(val.m10, val.m11, val.m12, val.m13));
-            SetConstant(index++, new Vector4(val.m20, val.m21, val.m22, val.m23));
-            SetConstant(index++, new Vector4(val.m30, val.m31, val.m32, val.m33));
+            Matrix4 mat;
+
+            // transpose the matrix if need be
+            if(transposeMatrices) {
+                mat = val.Transpose();
+            }
+            else {
+                mat = val;
+            }
+
+            SetConstant(index++, new Vector4(mat.m00, mat.m01, mat.m02, mat.m03));
+            SetConstant(index++, new Vector4(mat.m10, mat.m11, mat.m12, mat.m13));
+            SetConstant(index++, new Vector4(mat.m20, mat.m21, mat.m22, mat.m23));
+            SetConstant(index, new Vector4(mat.m30, mat.m31, mat.m32, mat.m33));
         }
 
         /// <summary>
@@ -238,6 +270,15 @@ namespace Axiom.Graphics
             for(int i = index; i < ints.Length; i++) {
                 SetConstant(i, ints[i]);
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="factor"></param>
+        public void SetConstantFromTime(int index, float factor) {
+            ControllerManager.Instance.CreateGpuProgramTimerParam(this, index, factor);
         }
 
         #region Named parameters
@@ -301,6 +342,15 @@ namespace Axiom.Graphics
             SetConstant(GetParamIndex(name), val);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="factor"></param>
+        public void SetNamedConstantFromTime(string name, float factor) {
+            SetConstantFromTime(GetParamIndex(name), factor);
+        }
+
         #endregion
 
         /// <summary>
@@ -320,7 +370,6 @@ namespace Axiom.Graphics
             for(int i = 0; i < autoConstantList.Count; i++) {
                 AutoConstantEntry entry = (AutoConstantEntry)autoConstantList[i];
 
-                Vector3 vec3;
                 Vector4 vec4 = new Vector4();
 
                 switch(entry.type) {
@@ -472,6 +521,19 @@ namespace Axiom.Graphics
         public int FloatConstantCount {
             get {
                 return floatConstants.Count;
+            }
+        }
+
+        /// <summary>
+        ///     Specifies whether matrices need to be transposed prior to
+        ///     being sent to the hardware.
+        /// </summary>
+        public bool TransposeMatrices {
+            get {
+                return transposeMatrices;
+            }
+            set {
+                transposeMatrices = value;
             }
         }
 

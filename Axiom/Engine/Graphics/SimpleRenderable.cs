@@ -85,7 +85,7 @@ namespace Axiom.Graphics {
         /// 
         /// </summary>
         /// <param name="camera"></param>
-        internal override void NotifyCurrentCamera(Camera camera) {
+        public override void NotifyCurrentCamera(Camera camera) {
             this.camera = camera;
         }
 
@@ -93,7 +93,7 @@ namespace Axiom.Graphics {
         /// 
         /// </summary>
         /// <param name="queue"></param>
-        internal override void UpdateRenderQueue(RenderQueue queue) {
+        public override void UpdateRenderQueue(RenderQueue queue) {
             // add ourself to the render queue
             queue.AddRenderable(this);
         }

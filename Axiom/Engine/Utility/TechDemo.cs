@@ -33,6 +33,7 @@ using System.Threading;
 using Axiom.Configuration;
 using Axiom.Core;
 using System.Windows.Forms;
+using Axiom.Exceptions;
 using Axiom.Input;
 using Axiom.Gui;
 using Axiom.MathLib;
@@ -77,7 +78,7 @@ namespace Axiom.Utility {
             // show the config dialog
             if(engine.ShowConfigDialog()) {
                 window = engine.Initialize(true);
-                engine.ShowDebugOverlay(showDebugOverlay);
+                ShowDebugOverlay(showDebugOverlay);
                 return true;
             }
             else {
@@ -94,6 +95,25 @@ namespace Axiom.Utility {
 
             // set the near clipping plane to be very close
             camera.Near = 5;
+        }
+
+        /// <summary>
+        ///    Shows the debug overlay, which displays performance statistics.
+        /// </summary>
+        protected void ShowDebugOverlay(bool show) {
+            // gets a reference to the default overlay
+            Overlay o = OverlayManager.Instance.GetByName("Core/DebugOverlay");
+
+            if(o == null) {
+                throw new Exception(string.Format("Could not find overlay named '{0}'.", "Core/DebugOverlay"));
+            }
+
+            if(show) {
+                o.Show();
+            }
+            else {
+                o.Hide();
+            }
         }
 
         protected void TakeScreenshot(string fileName) {
@@ -114,7 +134,7 @@ namespace Axiom.Utility {
             Debug.Assert(window != null, "Attempting to use a null RenderWindow.");
 
             // create a new viewport and set it's background color
-            viewport = window.CreateViewport(camera, 0, 0, 100, 100, 100);
+            viewport = window.AddViewport(camera, 0, 0, 100, 100, 100);
             viewport.BackgroundColor = ColorEx.Black;
         }
 
@@ -210,12 +230,10 @@ namespace Axiom.Utility {
         #endregion Public Methods
 
         #region Event Handlers
-        protected virtual bool OnFrameEnded(Object source, FrameEventArgs e) {
-            // do nothing by default
-            return true;
+        protected virtual void OnFrameEnded(Object source, FrameEventArgs e) {
         }
 
-        protected virtual bool OnFrameStarted(Object source, FrameEventArgs e) {
+        protected virtual void OnFrameStarted(Object source, FrameEventArgs e) {
             // reset the camera
             cameraVector.x = 0;
             cameraVector.y = 0;
@@ -228,9 +246,9 @@ namespace Axiom.Utility {
             input.Capture();
 
             if(input.IsKeyPressed(KeyCodes.Escape)) {
-                // returning false from the FrameStart event will cause the engine's render loop to shut down
-                Engine.Instance.Shutdown();
-                return false;
+                e.RequestShutdown = true;               
+
+                return;
             }
 
             if(input.IsKeyPressed(KeyCodes.A)) {
@@ -328,8 +346,6 @@ namespace Axiom.Utility {
             else if(debugTextDelay > 0.0f) {
                 debugTextDelay -= e.TimeSinceLastFrame;
             }
-
-            return true;
         }
 
         protected void UpdateStats() {

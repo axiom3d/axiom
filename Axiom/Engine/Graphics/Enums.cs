@@ -170,18 +170,20 @@ namespace Axiom.Graphics {
     /// </summary>
     [Flags]
     public enum Capabilities {
-        StencilBuffer               = 0x00000001,
-        TextureBlending         = 0x00000002,
-        VertexBlending          = 0x00000004,
-        AnisotropicFiltering   = 0x00000008,
-        Dot3Bump                  = 0x00000010,
-        VertexBuffer               = 0x00000020,
-        MultiTexturing           = 0x00000040,
-        HardwareMipMaps   = 0x00000080,
-        CubeMapping            = 0x00000100,
-        TextureCompression = 0x00000200,
-        VertexPrograms         = 0x00000400,
-        FragmentPrograms    = 0x00000800,
+        StencilBuffer                       = 0x00000001,
+        TextureBlending                 = 0x00000002,
+        VertexBlending                  = 0x00000004,
+        AnisotropicFiltering           = 0x00000008,
+        Dot3Bump                          = 0x00000010,
+        VertexBuffer                       = 0x00000020,
+        MultiTexturing                   = 0x00000040,
+        HardwareMipMaps           = 0x00000080,
+        CubeMapping                    = 0x00000100,
+        VertexPrograms                 = 0x00000200,
+        FragmentPrograms            = 0x00000400,
+        TextureCompression         = 0x00000800,
+        TextureCompressionDXT = 0x00001000,
+        TextureCompressionVTC = 0x00002000
     }
 
     /// <summary>
@@ -579,6 +581,20 @@ namespace Axiom.Graphics {
     }
 
     /// <summary>
+    ///    Specifies priorities for processing Render Targets.
+    /// </summary>
+    public enum RenderTargetPriority {
+        /// <summary>
+        ///    Will be processed last.
+        /// </summary>
+        Low,
+        /// <summary>
+        ///    Will be processed first (i.e. RenderTextures).
+        /// </summary>
+        High
+    }
+
+    /// <summary>
     ///		Blending factors for manually blending objects with the scene. If there isn't a predefined
     ///		SceneBlendType that you like, then you can specify the blending factors directly to affect the
     ///		combination of object and the existing scene. See Material.SceneBlending for more details.
@@ -850,12 +866,24 @@ namespace Axiom.Graphics {
     ///    Enum identifying the texture type.
     /// </summary>
     public enum TextureType {
+        /// <summary>
+        ///    1D texture, used in combination with 1D texture coordinates.
+        /// </summary>
         [ScriptEnum("1d")]
         OneD = 1,
+        /// <summary>
+        ///    2D texture, used in combination with 2D texture coordinates (default).
+        /// </summary>
         [ScriptEnum("2d")]
         TwoD = 2,
+        /// <summary>
+        ///    3D volume texture, used in combination with 3D texture coordinates.
+        /// </summary>
         [ScriptEnum("3d")]
         ThreeD = 3,
+        /// <summary>
+        ///    3D cube map, used in combination with 3D texture coordinates.
+        /// </summary>
         [ScriptEnum("cubic")]
         CubeMap = 4,
     }

@@ -108,7 +108,7 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        ///    		Get/Sets a link back to a GameObject (or subclass thereof, such as Entity) that may be associated with this SceneObject.
+        ///     Get/Sets a link back to a GameObject (or subclass thereof, such as Entity) that may be associated with this SceneObject.
         /// </summary>
         public GameObject GameObject {
             get {
@@ -133,7 +133,7 @@ namespace Axiom.Core {
         /// </summary>
         public bool IsAttached {
             get {
-                return (parentNode == null);
+                return (parentNode != null);
             }
         }
 
@@ -153,8 +153,12 @@ namespace Axiom.Core {
         ///		Name of this SceneObject.
         /// </summary>
         public string Name {
-            get { return name;}
-            set { name = value; }
+            get { 
+                return name;
+            }
+            set { 
+                name = value; 
+            }
         }
 
         /// <summary>
@@ -252,14 +256,14 @@ namespace Axiom.Core {
         ///		them incase they wish to do this.
         /// </remarks>
         /// <param name="camera"></param>
-        internal abstract void NotifyCurrentCamera(Camera camera);
+        public abstract void NotifyCurrentCamera(Camera camera);
 
         /// <summary>
         ///		An abstract method that causes the specified RenderQueue to update itself.  
         /// </summary>
         /// <remarks>This is an internal method used by the engine assembly only.</remarks>
         /// <param name="queue">The render queue that this object should be updated in.</param>
-        internal abstract void UpdateRenderQueue(RenderQueue queue);
+        public abstract void UpdateRenderQueue(RenderQueue queue);
 
         #endregion Internal engine methods
     }

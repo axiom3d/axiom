@@ -21,6 +21,13 @@ namespace Axiom.Media {
 
         public static void Init() {
             instance = new CodecManager();
+
+            // register codecs
+            instance.RegisterCodec(new JPGCodec());
+            instance.RegisterCodec(new BMPCodec());
+            instance.RegisterCodec(new PNGCodec());
+            instance.RegisterCodec(new DDSCodec());
+            instance.RegisterCodec(new TGACodec());
         }
 		
         #endregion
@@ -28,9 +35,9 @@ namespace Axiom.Media {
         #region Fields
 
         /// <summary>
-        ///    List of registered codecs.
+        ///    List of registered media codecs.
         /// </summary>
-        private Hashtable codecs = new Hashtable();
+        private Hashtable codecs = System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
 
         #endregion Fields
 

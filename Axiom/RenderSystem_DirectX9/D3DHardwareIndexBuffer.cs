@@ -39,6 +39,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 
         protected D3D.Device device;
         protected D3D.IndexBuffer d3dBuffer;
+        protected System.Array data;
 		
         #endregion
 		
@@ -47,15 +48,16 @@ namespace Axiom.RenderSystems.DirectX9 {
         public D3DHardwareIndexBuffer(IndexType type, int numIndices, BufferUsage usage, 
             D3D.Device device, bool useSystemMemory, bool useShadowBuffer) 
             : base(type, numIndices, usage, useSystemMemory, useShadowBuffer) {
-            // HACK: Forcing data type specification here, hardcoded to short for now.  Other consotructors dont work
-            d3dBuffer = new IndexBuffer(typeof(short), numIndices, device, D3DHelper.ConvertEnum(usage), useSystemMemory ? Pool.SystemMemory : Pool.Default);
 
-            // create the index buffer
-            //d3dBuffer = new IndexBuffer(device, 
-            //												sizeInBytes, 
-            //												D3DHelper.ConvertEnum(usage),
-            //												useSystemMemory ? Pool.SystemMemory : Pool.Default, 
-            //												type == IndexType.Size16 ? true : false);
+            Type bufferType = (type == IndexType.Size16) ? typeof(short) : typeof(int);
+
+            // create the buffer
+            d3dBuffer = new IndexBuffer(
+                bufferType, 
+                sizeInBytes, 
+                device, 
+                D3DHelper.ConvertEnum(usage), 
+                useSystemMemory ? Pool.SystemMemory : Pool.Default);
         }
 		
         ~D3DHardwareIndexBuffer() {
@@ -75,12 +77,26 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// <returns></returns>
         /// DOC
         protected override IntPtr LockImpl(int offset, int length, BufferLocking locking) {
-            // use the graphics stream overload to supply offset and length
-            GraphicsStream gs = d3dBuffer.Lock(0, length, D3DHelper.ConvertEnum(locking));
+            
+            D3D.LockFlags d3dLocking = 0;
+
+            if((usage & BufferUsage.Dynamic) == 0 &&
+                //usage != BufferUsage.DynamicWriteOnly &&
+                (locking == BufferLocking.Discard)) {
+             
+                // lock flags already 0 by default
+            }
+            else {
+                // D3D doesnt like disard or no overrwrite on non dynamic buffers
+                d3dLocking = D3DHelper.ConvertEnum(locking);
+            }
+
+            // lock the buffer, which returns an array
+            // TODO: no *working* overload takes length, revisit this
+            data = d3dBuffer.Lock(offset, d3dLocking);
 			
-            // return the graphics streams internal data
-            // TODO: Beware if this is taken out of future versions
-            return gs.InternalData;
+            // return an IntPtr to the first element of the locked array
+            return Marshal.UnsafeAddrOfPinnedArrayElement(data, 0);            
         }
 
         /// <summary>
@@ -142,6 +158,5 @@ namespace Axiom.RenderSystems.DirectX9 {
         }
 
         #endregion
-
     }
 }

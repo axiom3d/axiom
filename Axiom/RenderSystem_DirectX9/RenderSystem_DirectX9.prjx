@@ -8,6 +8,7 @@
     <File name=".\D3DHardwareIndexBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\D3DHardwareVertexBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\D3DHelper.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\D3DRenderTexture.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\D3DTexture.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\D3DTextureManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\D3DVertexDeclaration.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
@@ -15,6 +16,8 @@
     <File name=".\Driver.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\VideoMode.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\VideoModeCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\HLSL\HLSLProgram.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\HLSL\HLSLProgramFactory.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References>
     <Reference type="Gac" refto="System.dll" localcopy="False" />
@@ -28,14 +31,22 @@
     <Reference type="Gac" refto="Microsoft.DirectX.Direct3D, Version=1.0.1901.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" localcopy="False" />
     <Reference type="Gac" refto="Microsoft.DirectX.Direct3DX, Version=1.0.1901.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" localcopy="False" />
   </References>
+  <DeploymentInformation target="" script="" strategy="File" />
+  <Configuration runwithwarnings="True" name="Debug">
+    <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="0" includedebuginformation="True" optimize="False" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" target="Library" definesymbols="TRACE" generatexmldocumentation="False" win32Icon="" />
+    <Execution commandlineparameters="" consolepause="True" />
+    <Output directory="..\" assembly="Axiom.RenderSystems.DirectX9" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
+  </Configuration>
   <Configurations active="Debug">
     <Configuration runwithwarnings="True" name="Debug">
-      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="0" includedebuginformation="True" optimize="False" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" target="Library" definesymbols="TRACE" generatexmldocumentation="False" />
-      <Output directory=".." assembly="Axiom.RenderSystems.DirectX9" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
+      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="0" includedebuginformation="True" optimize="False" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" target="Library" definesymbols="TRACE" generatexmldocumentation="False" win32Icon="" />
+      <Execution commandlineparameters="" consolepause="True" />
+      <Output directory="..\" assembly="Axiom.RenderSystems.DirectX9" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
     </Configuration>
     <Configuration runwithwarnings="True" name="Release">
-      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="0" includedebuginformation="True" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" target="Library" definesymbols="TRACE" generatexmldocumentation="False" />
-      <Output directory=".." assembly="Axiom.RenderSystems.DirectX9" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
+      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="0" includedebuginformation="True" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" target="Library" definesymbols="TRACE" generatexmldocumentation="False" win32Icon="" />
+      <Execution commandlineparameters="" consolepause="True" />
+      <Output directory="..\" assembly="Axiom.RenderSystems.DirectX9" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
     </Configuration>
   </Configurations>
 </Project>

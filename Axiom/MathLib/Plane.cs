@@ -26,9 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-using Axiom.MathLib;
-
-namespace Axiom.Core {
+namespace Axiom.MathLib {
     /// <summary>
     /// Defines a plane in 3D space.
     /// </summary>
@@ -104,16 +102,24 @@ namespace Axiom.Core {
         ///		The normal of the plane.
         /// </summary>
         public Vector3 Normal {
-            get { return normal; }
-            set { normal = value; }
+            get { 
+                return normal; 
+            }
+            set { 
+                normal = value; 
+            }
         }
 
         /// <summary>
         ///		The distance from the origin to the plane along the Normal vector.
         /// </summary>
         public float D {
-            get { return d; }
-            set { d = value; }
+            get { 
+                return d; 
+            }
+            set { 
+                d = value; 
+            }
         }
 
         #endregion 

@@ -85,16 +85,6 @@
                     AssemblyName = "System.Windows.Forms"
                 />
                 <Reference
-                    Name = "Engine"
-                    Project = "{76F1B76C-4CAC-704D-84BC-01A4E9E74CF8}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
-                />
-                <Reference
-                    Name = "MathLib"
-                    Project = "{E6AC8079-93CC-1444-AD68-C09835E5682D}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
-                />
-                <Reference
                     Name = "Microsoft.DirectX"
                     AssemblyName = "Microsoft.DirectX"
                 />
@@ -105,6 +95,16 @@
                 <Reference
                     Name = "Microsoft.DirectX.Direct3DX"
                     AssemblyName = "Microsoft.DirectX.Direct3DX"
+                />
+                <Reference
+                    Name = "Engine"
+                    Project = "{76F1B76C-4CAC-704D-84BC-01A4E9E74CF8}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
+                <Reference
+                    Name = "MathLib"
+                    Project = "{E6AC8079-93CC-1444-AD68-C09835E5682D}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
             </References>
         </Build>
@@ -151,6 +151,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "D3DRenderTexture.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "D3DTexture.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -182,6 +187,16 @@
                 />
                 <File
                     RelPath = "VideoModeCollection.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "HLSL\HLSLProgram.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "HLSL\HLSLProgramFactory.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -90,6 +90,21 @@ namespace Axiom.MathLib {
         }
 
         /// <summary>
+        ///     Builds a reflection matrix for the specified plane.
+        /// </summary>
+        /// <param name="plane"></param>
+        /// <returns></returns>
+        public static Matrix4 BuildReflectionMatrix(Plane plane) {
+            Vector3 normal = plane.Normal;
+
+            return new Matrix4(
+                -2 * normal.x * normal.x + 1,   -2 * normal.x * normal.y,       -2 * normal.x * normal.z,       -2 * normal.x * plane.D, 
+                -2 * normal.y * normal.x,       -2 * normal.y * normal.y + 1,   -2 * normal.y * normal.z,       -2 * normal.y * plane.D, 
+                -2 * normal.z * normal.x,       -2 * normal.z * normal.y,       -2 * normal.z * normal.z + 1,   -2 * normal.z * plane.D, 
+                0,                                  0,                                  0,                                  1);
+        }
+
+        /// <summary>
         ///    Calculates the tangent space vector for a given set of positions / texture coords.
         /// </summary>
         /// <remarks>
@@ -165,8 +180,12 @@ namespace Axiom.MathLib {
             // *slightly* off from what is loaded from .skeleton files.  In some scenarios when we end up having 
             // a cos value calculated above that is just over 1 (i.e. 1.000000012), which the ACos of is Nan, thus 
             // completly throwing off node transformations and rotations associated with an animation.
-           if(angle > 1)
+            if(angle > 1)
                 angle = 1.0f;
+
+            if(angle < 0) {
+                string test = "";
+            }
                 
             return (float)Math.Acos(angle);
         }
@@ -206,6 +225,30 @@ namespace Axiom.MathLib {
         /// <returns></returns>
         public static float Abs(float number) {
             return Math.Abs(number);
+        }
+
+        public static bool FloatEqual(float a, float b) {
+            return FloatEqual(a, b, .00001f);
+        }
+
+        /// <summary>
+        ///     Compares float values for equality, taking into consideration
+        ///     that floating point values should never be directly compared using
+        ///     ==.  2 floats could be conceptually equal, but vary by a 
+        ///     .000001 which would fail in a direct comparison.  To circumvent that,
+        ///     a tolerance value is used to see if the difference between the 2 floats
+        ///     is less than the desired amount of accuracy.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="tolerance"></param>
+        /// <returns></returns>
+        public static bool FloatEqual(float a, float b, float tolerance) {
+            if ((b < (a + tolerance)) && (b > (a - tolerance))) {
+                return true;
+            }
+            
+            return false;
         }
 
         /// <summary>

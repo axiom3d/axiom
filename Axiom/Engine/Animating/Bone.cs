@@ -188,8 +188,10 @@ namespace Axiom.Animating {
     ///		This simple struct simply holds a vertex index, bone index and weight representing the
     ///		assignment of a vertex to a bone for skeletal animation. There may be many of these
     ///		per vertex if blended vertex assignments are allowed.
+    ///		This is a class because we need it as a reference type to allow for modification
+    ///		in places where we would only have a copy of the data if it were a struct. 
     /// </remarks>
-    public struct VertexBoneAssignment {
+    public class VertexBoneAssignment {
         public int vertexIndex;
         public ushort boneIndex;
         public float weight;

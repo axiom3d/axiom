@@ -26,11 +26,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using System.Diagnostics;
 using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Controllers;
-
 using Axiom.Exceptions;
 using Axiom.Gui;
 using Axiom.MathLib;
@@ -429,6 +429,46 @@ namespace Axiom.Core {
             entityList.Clear();
             lightList.Clear();
             animationStateList.Clear();
+        }
+
+        /// <summary>
+        ///    Destroys and removes a node from the scene.
+        /// </summary>
+        /// <param name="name"></param>
+        public virtual void DestroySceneNode(string name) {
+            Debug.Assert(sceneNodeList.ContainsKey(name), "Scene node not found.");
+
+            // grab the node from the list
+            SceneNode node = (SceneNode)sceneNodeList[name];
+
+            // removes the node from the list
+            sceneNodeList.Remove(node);
+        }
+
+        /// <summary>
+        ///     Retreives the camera with the specified name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public Camera GetCamera(string name) {
+            if(cameraList[name] == null) {
+                throw new AxiomException("SceneNode named '{0}' not found.", name);
+            }
+
+            return cameraList[name];
+        }
+
+        /// <summary>
+        ///     Retreives the scene node with the specified name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public SceneNode GetSceneNode(string name) {
+            if(sceneNodeList[name] == null) {
+                throw new AxiomException("SceneNode named '{0}' not found.", name);
+            }
+
+            return sceneNodeList[name];
         }
 
         /// <summary>
@@ -1208,6 +1248,9 @@ namespace Axiom.Core {
             // ask the camera to auto track if it has a target
             camera.AutoTrack();
 
+            // handle a reflected camera
+            targetRenderSystem.InvertVertexWinding = camera.IsReflected;
+
             // clear the current render queue
             renderQueue.Clear();
 
@@ -1255,7 +1298,7 @@ namespace Axiom.Core {
         ///		nodes are updated.
         /// </remarks>
         /// <param name="camera"></param>
-        internal virtual void UpdateSceneGraph(Camera camera) {
+        protected internal virtual void UpdateSceneGraph(Camera camera) {
             // Cascade down the graph updating transforms & world bounds
             // In this implementation, just update from the root
             // Smarter SceneManager subclasses may choose to update only
@@ -1277,7 +1320,7 @@ namespace Axiom.Core {
         ///		to ensure objects with the same material are rendered together to minimise render state changes.
         /// </remarks>
         /// <param name="camera"></param>
-        internal virtual void FindVisibleObjects(Camera camera) {
+        public virtual void FindVisibleObjects(Camera camera) {
             // ask the root node to iterate through and find visible objects in the scene
             rootSceneNode.FindVisibleObjects(camera, renderQueue, true, displayNodes);
         }
@@ -1433,7 +1476,7 @@ namespace Axiom.Core {
         /// <summary>
         ///		Sends visible objects found in FindVisibleObjects to the rendering engine.
         /// </summary>
-        internal virtual void RenderVisibleObjects() {
+        protected internal virtual void RenderVisibleObjects() {
             int renderCount = 0;
 
             // loop through each main render group ( which is already sorted)
@@ -1630,7 +1673,13 @@ namespace Axiom.Core {
                     up = plane.Normal.Cross(-Vector3.UnitZ);
 
                 if(bow > 0) {
-                    // TODO: Add MeshManager.CreateCurvedPlane
+                    planeMesh = MeshManager.Instance.CreateCurvedIllusionPlane(
+                        meshName, 
+                        plane, 
+                        scale * 100, 
+                        scale * 100, 
+                        scale * bow * 100,
+                        6, 6, false, 1, tiling, tiling, up);
                 }
                 else {
                     planeMesh = MeshManager.Instance.CreatePlane(meshName, plane, scale * 100, scale * 100, 1, 1, false, 1, tiling, tiling, up);
@@ -1684,8 +1733,8 @@ namespace Axiom.Core {
                 Pair results = MathUtil.Intersects(ray, entity.GetWorldBoundingBox());
 
                 // if the results came back positive, fire the event handler
-                if((bool)results.object1 == true) {
-                    OnQueryResult(creator, new RayQueryResultEventArgs(entity, (float)results.object2));
+                if((bool)results.first == true) {
+                    OnQueryResult(creator, new RayQueryResultEventArgs(entity, (float)results.second));
                 }
             }
         }

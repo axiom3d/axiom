@@ -26,7 +26,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using Axiom.Core;
-
 using Axiom.Graphics;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
@@ -34,7 +33,7 @@ using D3D = Microsoft.DirectX.Direct3D;
 
 namespace Axiom.RenderSystems.DirectX9 {
     /// <summary>
-    /// Summary description for D3DTextureManager.
+    ///     Summary description for D3DTextureManager.
     /// </summary>
     public class D3DTextureManager : TextureManager {
         /// <summary>Reference to the D3D device.</summary>
@@ -43,20 +42,30 @@ namespace Axiom.RenderSystems.DirectX9 {
         public D3DTextureManager(D3D.Device device) : base() {
             this.device = device;
         }
-	
-        public override Axiom.Core.Resource Create(string name) {
-            D3DTexture texture = new D3DTexture(name, device, TextureUsage.Default, TextureType.TwoD);
+	       
+        public override Axiom.Core.Texture Create(string name, TextureType type) {
+            D3DTexture texture = new D3DTexture(name, device, TextureUsage.Default, type);
 			
-            // TODO: Handle 32-bit texture settings
+            // Handle 32-bit texture settings
+            texture.Enable32Bit(is32Bit);
 
             return texture;
         }
-        
-        public override Axiom.Core.Resource Create(string name, TextureType type) {
-            D3DTexture texture = new D3DTexture(name, device, TextureUsage.Default, type);
-			
-            // TODO: Implement this
 
+        /// <summary>
+        ///    Used to create a blank D3D texture.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="numMipMaps"></param>
+        /// <param name="format"></param>
+        /// <param name="usage"></param>
+        /// <returns></returns>
+        public override Axiom.Core.Texture CreateManual(string name, TextureType type, int width, int height, int numMipMaps, Axiom.Media.PixelFormat format, TextureUsage usage) {
+            D3DTexture texture = new D3DTexture(name, device, type, width, height, numMipMaps, format, usage);
+            texture.Enable32Bit(is32Bit);
             return texture;
         }
     }

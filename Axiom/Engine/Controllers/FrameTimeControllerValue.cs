@@ -89,11 +89,9 @@ namespace Axiom.Controllers {
         /// <param name="source"></param>
         /// <param name="e"></param>
         /// <returns></returns>
-        private bool RenderSystem_FrameStarted(object source, FrameEventArgs e) {
+        private void RenderSystem_FrameStarted(object source, FrameEventArgs e) {
             // apply the time factor to the time since last frame and save it
             frameTime = timeFactor * e.TimeSinceLastFrame;
-
-            return true;
         }
     }
 }

@@ -54,11 +54,10 @@ namespace Axiom.Graphics {
     ///		of the Core library.
     ///	</remarks>
     public abstract class RenderSystem : IDisposable {
-        #region Member variables
+        #region Fields
 
-        protected RenderWindowCollection renderWindows;
+        protected ArrayList renderTargets = new ArrayList();
         protected TextureManager textureMgr;
-        protected GpuProgramManager gpuProgramMgr;
         protected HardwareBufferManager hardwareBufferManager;
         protected CullingMode cullingMode;
         protected bool isVSync;
@@ -80,13 +79,16 @@ namespace Axiom.Graphics {
         /// Saved set of world matrices
         protected Matrix4[] worldMatrices = new Matrix4[256];
 
-        #endregion
+        /// <summary>
+        ///     Flag for whether vertex winding needs to be inverted, useful for reflections.
+        /// </summary>
+        protected bool invertVertexWinding;
+
+        #endregion Fields
 
         #region Constructor
 
-        public RenderSystem() {
-            this.renderWindows = new RenderWindowCollection();
-			
+        public RenderSystem() {		
             // default to true
             isVSync = true;
 
@@ -118,6 +120,19 @@ namespace Axiom.Graphics {
         }
 
         /// <summary>
+        ///     Sets whether or not vertex windings set should be inverted; this can be important
+        ///     for rendering reflections.
+        /// </summary>
+        public bool InvertVertexWinding {
+            get {
+                return invertVertexWinding;
+            }
+            set {
+                invertVertexWinding = value;
+            }
+        }
+
+        /// <summary>
         /// Gets/Sets a value that determines whether or not to wait for the screen to finish refreshing
         /// before drawing the next frame.
         /// </summary>
@@ -145,15 +160,6 @@ namespace Axiom.Graphics {
         public EngineConfig ConfigOptions {
             get { 
                 return this.engineConfig; 
-            }
-        }
-
-        /// <summary>
-        /// Gets a collection of the RenderSystems list of RenderWindows.
-        /// </summary>
-        public RenderWindowCollection RenderWindows {
-            get { 
-                return this.renderWindows; 
             }
         }
 
@@ -278,12 +284,12 @@ namespace Axiom.Graphics {
         /// </summary>
         public virtual void Shutdown() {
             // destroy each render window
-            foreach(RenderWindow window in renderWindows) {
-                window.Destroy();
+            foreach(RenderTarget target in renderTargets) {
+                target.Destroy();
             }
 
             // Clear the render window list
-            renderWindows.Clear();
+            renderTargets.Clear();
 
             // dispose of the render system
             this.Dispose();
@@ -291,6 +297,24 @@ namespace Axiom.Graphics {
         #endregion
 
         #region Abstract methods
+
+        /// <summary>
+        ///    Creates and registers a render texture object.
+        /// </summary>
+        /// <param name="name">The name for the new render texture. Note that names must be unique.</param>
+        /// <param name="width">Requested width for the render texture.</param>
+        /// <param name="height">Requested height for the render texture.</param>
+        /// <returns>
+        ///    On success, a reference to a new API-dependent, RenderTexture-derived
+        ///    class is returned. On failure, null is returned.
+        /// </returns>
+        /// <remarks>
+        ///    Because a render texture is basically a wrapper around a texture object,
+        ///    the width and height parameters of this method just hint the preferred
+        ///    size for the texture. Depending on the hardware driver or the underlying
+        ///    API, these values might change when the texture is created.
+        /// </remarks>
+        public abstract RenderTexture CreateRenderTexture(string name, int width, int height);
 
 		/// <summary>
 		///		Creates a new render window.
@@ -592,7 +616,7 @@ namespace Axiom.Graphics {
 
         #endregion
 
-        #region Internal engine methods and properties
+        #region Abstract methods and properties
 
         /// <summary>
         /// 
@@ -660,6 +684,22 @@ namespace Axiom.Graphics {
         ///		Ends rendering of a frame to the current viewport.
         /// </summary>
         protected abstract internal void EndFrame();
+
+        /// <summary>
+        ///    Internal method for updating all render targets attached to this rendering system.
+        /// </summary>
+        public void UpdateAllRenderTargets() {
+            // Update all in order of priority
+            // This ensures render-to-texture targets get updated before render windows
+            for(int i = 0; i < renderTargets.Count; i++) {
+                RenderTarget target = (RenderTarget)renderTargets[i];
+
+                // only update if it is active
+                if(target.IsActive) {
+                    target.Update();
+                }
+            }
+        }
 
         /// <summary>
         ///		Sets the details of a texture stage, to be used for all primitives
@@ -927,6 +967,29 @@ namespace Axiom.Graphics {
         }
 
         #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        ///    Attaches a render target to this render system.
+        /// </summary>
+        /// <param name="target"></param>
+        public void AttachRenderTarget(RenderTarget target) {
+            if(target.Priority == RenderTargetPriority.High) {
+                // insert at the front of the list
+                renderTargets.Insert(0, target);
+            }
+            else {
+                // add to the end
+                renderTargets.Add(target);
+            }
+        }
+
+        // TODO: Implement
+        public void DetachRenderTarget(string name) {}
+        public void DetachRenderTarget(RenderTarget target) {}
+
+        #endregion Public Methods
 
         #region IDisposable Members
 

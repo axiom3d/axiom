@@ -323,6 +323,7 @@ namespace Axiom.Gui.Elements {
                 rightBorderSize = (float)pixelRightBorderSize / vpWidth;
                 topBorderSize = (float)pixelTopBorderSize / vpHeight;
                 bottomBorderSize = (float)pixelBottomBorderSize / vpHeight;
+                geomPositionsOutOfDate = true;
             }
 
             base.Update ();

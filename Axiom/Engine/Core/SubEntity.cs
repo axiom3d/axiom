@@ -177,7 +177,9 @@ namespace Axiom.Core {
         }
 
         Material IRenderable.Material {
-            get { return material; }
+            get { 
+                return material; 
+            }
         }
 
         /// <summary>

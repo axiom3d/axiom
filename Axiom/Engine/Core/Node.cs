@@ -213,6 +213,32 @@ namespace Axiom.Core {
         }
 
         /// <summary>
+        ///     Removes the child node with the specified name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public virtual Node RemoveChild(string name) {
+            Node node = childNodes[name];
+			
+            CancelUpdate(node);
+            childNodes.Remove(node);
+            return node;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public virtual Node RemoveChild(int index) {
+            Node child = childNodes[index];
+
+            CancelUpdate(child);
+            childNodes.Remove(child);
+            return child;
+        }
+
+        /// <summary>
         /// Scales the node, combining it's current scale with the passed in scaling factor. 
         /// </summary>
         /// <remarks>

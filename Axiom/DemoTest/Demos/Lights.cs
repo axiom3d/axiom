@@ -159,14 +159,12 @@ namespace Demos {
             ControllerManager.Instance.CreateController(blueLightFlasher, blueLightFunc);
         }
 
-        protected override bool OnFrameStarted(object source, FrameEventArgs e) {
+        protected override void OnFrameStarted(object source, FrameEventArgs e) {
             base.OnFrameStarted (source, e);
 
             // move the billboards around a bit
             redYellowLightsNode.Yaw(10 * e.TimeSinceLastFrame);
             greenBlueLightsNode.Pitch(20 * e.TimeSinceLastFrame);
-
-            return true;
         }
 
         #endregion

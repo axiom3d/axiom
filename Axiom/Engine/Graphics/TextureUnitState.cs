@@ -661,7 +661,7 @@ namespace Axiom.Graphics
         public void SetCubicTexture(string textureName, bool forUVW) {
             if(forUVW) {
                 // pass in the single texture name
-                SetCubicTexture(new string[] { textureName}, forUVW);
+                SetCubicTexture(new string[] { textureName }, forUVW);
             }
             else {
                 string[] postfixes = {"_fr", "_bk", "_lf", "_rt", "_up", "_dn"};
@@ -1451,8 +1451,9 @@ namespace Axiom.Graphics
 
                         isBlank = false;
                     }
-                    catch(Exception) {
+                    catch(Exception ex) {
                         Trace.WriteLine(string.Format("Error loading texture {0}.  Layer will be left blank.", frames[i]));
+                        Trace.WriteLine(ex.ToString());
                         isBlank = true;
                     }
                 }

@@ -69,6 +69,11 @@
                     AssemblyName = "System"
                 />
                 <Reference
+                    Name = "ode"
+                    AssemblyName = "ode"
+                    HintPath = "..\Solution Items\ode.dll"
+                />
+                <Reference
                     Name = "Engine"
                     Project = "{76F1B76C-4CAC-704D-84BC-01A4E9E74CF8}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
@@ -77,11 +82,6 @@
                     Name = "MathLib"
                     Project = "{E6AC8079-93CC-1444-AD68-C09835E5682D}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
-                />
-                <Reference
-                    Name = "ode"
-                    AssemblyName = "ode"
-                    HintPath = "..\Solution Items\ode.dll"
                 />
             </References>
         </Build>

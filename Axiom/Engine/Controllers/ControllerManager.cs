@@ -109,6 +109,13 @@ namespace Axiom.Controllers {
             return CreateController(val, func);
         }
 
+        public Controller CreateGpuProgramTimerParam(GpuProgramParameters parms, int index, float timeFactor) {
+            IControllerValue val = new FloatGpuParamControllerValue(parms, index);
+            IControllerFunction func = new MultipyControllerFunction(timeFactor, true);
+
+            return CreateController(val, func);
+        }
+
         /// <summary>
         /// 
         /// </summary>
