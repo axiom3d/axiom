@@ -62,6 +62,33 @@ namespace Axiom.Core {
 
         #endregion
 
+		#region Fields
+
+		/// <summary>
+		///		Flag indicating whether newly loaded meshes should also be prepared for 
+		///		shadow volumes.
+		/// </summary>
+		protected bool prepAllMeshesForShadowVolumes;
+
+		#endregion Fields
+
+		#region Properties
+
+		/// <summary>
+		///		Tells the mesh manager that all future meshes should prepare themselves for
+		///		shadow volumes on loading.
+		/// </summary>
+		public bool PrepareAllMeshesForShadowVolumes {
+			get {
+				return prepAllMeshesForShadowVolumes;
+			}
+			set {
+				prepAllMeshesForShadowVolumes = value;
+			}
+		}
+
+		#endregion Properties
+
         /// <summary>
         ///	
         /// </summary>

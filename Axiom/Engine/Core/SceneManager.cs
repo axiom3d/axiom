@@ -180,6 +180,10 @@ namespace Axiom.Core {
 		/// </summary>
 		protected Rectangle2D fullScreenQuad;
 		/// <summary>
+		///		buffer to use for indexing shadow geometry required for certain techniques.
+		/// </summary>
+		protected HardwareIndexBuffer shadowIndexBuffer;
+		/// <summary>
 		///		Current list of shadow casters within the view of the camera.
 		/// </summary>
 		protected ArrayList shadowCasterList = new ArrayList();
@@ -1308,12 +1312,88 @@ namespace Axiom.Core {
             }
         }
 
+		/// <summary>
+		///		Gets/Sets the color used to modulate areas in shadow.
+		/// </summary>
+		/// <remarks>
+		///		This is only applicable for shadow techniques which involve 
+		///		darkening the area in shadow, as opposed to masking out the light. 
+		///		This color provided is used as a modulative value to darken the
+		///		areas.
+		/// </remarks>
+		public ColorEx ShadowColor {
+			get {
+				if(shadowModulativePass == null) {
+					return ColorEx.Black;
+				}
+
+				return shadowModulativePass.GetTextureUnitState(0).ColorBlendMode.colorArg1;
+			}
+			set {
+				if(shadowModulativePass == null) {
+					InitShadowVolumeMaterials();
+				}
+
+				shadowModulativePass.GetTextureUnitState(0).SetColorOperationEx(
+					LayerBlendOperationEx.Modulate, 
+					LayerBlendSource.Manual, 
+					LayerBlendSource.Current, 
+					value);
+			}
+		}
+
+		/// <summary>
+		///		Sets the general shadow technique to be used in this scene.
+		/// </summary>
+		/// <remarks>
+		///		There are multiple ways to generate shadows in a scene, and each has 
+		///		strengths and weaknesses. 
+		///		<ul><li>Stencil-based approaches can be used to 
+		///		draw very long, extreme shadows without loss of precision and the 'additive'
+		///		version can correctly show the shadowing of complex effects like bump mapping
+		///		because they physically exclude the light from those areas. However, the edges
+		///		are very sharp and stencils cannot handle transparency, and they involve a 
+		///		fair amount of CPU work in order to calculate the shadow volumes, especially
+		///		when animated objects are involved.</li>
+		///		<li>Texture-based approaches are good for handling transparency (they can, for
+		///		example, correctly shadow a mesh which uses alpha to represent holes), and they
+		///		require little CPU overhead, and can happily shadow geometry which is deformed
+		///		by a vertex program, unlike stencil shadows. However, they have a fixed precision 
+		///		which can introduce 'jaggies' at long range and have fillrate issues of their own.</li>
+		///		</ul>
+		///		<p/>
+		///		We support 2 kinds of stencil shadows, and 2 kinds of texture-based shadows, and one
+		///		simple decal approach. The 2 stencil approaches differ in the amount of multipass work 
+		///		that is required - the modulative approach simply 'darkens' areas in shadow after the 
+		///		main render, which is the least expensive, whilst the additive approach has to perform 
+		///		a render per light and adds the cumulative effect, whcih is more expensive but more 
+		///		accurate. The texture based shadows both work in roughly the same way, the only difference is
+		///		that the shadowmap approach is slightly more accurate, but requires a more recent
+		///		graphics card.
+		///		<p/>
+		///		Note that because mixing many shadow techniques can cause problems, only one technique
+		///		is supported at once. Also, you should call this method at the start of the 
+		///		scene setup. 
+		/// </remarks>
 		public ShadowTechnique ShadowTechnique {
 			get {
 				return shadowTechnique;
 			}
 			set {
 				shadowTechnique = value;
+
+				if(shadowTechnique == ShadowTechnique.StencilAdditive ||
+					shadowTechnique == ShadowTechnique.StencilModulative) {
+
+					// create an estimated sized shadow index buffer
+					shadowIndexBuffer = 
+						HardwareBufferManager.Instance.CreateIndexBuffer(
+							IndexType.Size16, 50000,
+							BufferUsage.DynamicWriteOnly, false);
+
+					// tell all the meshes to prepare shadow volumes
+					MeshManager.Instance.PrepareAllMeshesForShadowVolumes = true;
+				}
 			}
 		}
 
@@ -1328,6 +1408,19 @@ namespace Axiom.Core {
                 showBoundingBoxes = value; 
             }
         }
+
+		/// <summary>
+		///		Gets/Sets a flag that indicates whether debug shadow info (i.e. visible volumes)
+		///		will be displayed.
+		/// </summary>
+		public virtual bool ShowDebugShadows {
+			get {
+				return showDebugShadows;
+			}
+			set {
+				showDebugShadows = value;
+			}
+		}
 
         /// <summary>
         ///		Gets/Sets whether or not to display the nodes themselves in addition to their objects.

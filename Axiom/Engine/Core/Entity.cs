@@ -252,6 +252,13 @@ namespace Axiom.Core {
             }
         }
 
+		public override EdgeData EdgeList {
+			get {
+				return mesh.EdgeList;
+			}
+		}
+
+
 		/// <summary>
 		///		Returns true if this entity has a skeleton.
 		/// </summary>
@@ -467,8 +474,18 @@ namespace Axiom.Core {
 		/// <param name="originalData"></param>
 		/// <returns></returns>
 		protected VertexData FindBlendedVertexData(VertexData originalData) {
-			// TODO: Implement Entity.FindBlendedVertexData
-			throw new NotImplementedException();
+			if (originalData == mesh.SharedVertexData) {
+				return sharedBlendedVertexData;
+			}
+
+			for(int i = 0; i < subEntityList.Count; i++) {
+				SubEntity se = subEntityList[i];
+				if (originalData == se.SubMesh.vertexData) {
+					return se.blendedVertexData;
+				}
+			}
+
+			throw new Exception("Cannot find blended version of the vertex data specified.");
 		}
 
 		/// <summary>
@@ -846,8 +863,9 @@ namespace Axiom.Core {
 			EntityShadowRenderable esr = null;
 			EdgeData.EdgeGroup egi;
 
-			for(int i = 0; i < shadowRenderables.Count; i++) {
-				esr = (EntityShadowRenderable)shadowRenderables[i];
+			// note: using capacity for the loop since no items are in the list yet.
+			// capacity is set to how large the collection will be in the end
+			for(int i = 0; i < shadowRenderables.Capacity; i++) {
 				egi = (EdgeData.EdgeGroup)edgeList.edgeGroups[i];
 
 				if (init) {
@@ -866,15 +884,19 @@ namespace Axiom.Core {
 					// depth-fighting on the light cap
 					esr = new EntityShadowRenderable(this, indexBuffer, data, useHardwareSkinning);
 
-					shadowRenderables[i] = esr;
+					shadowRenderables.Add(esr);
 				}
-				else if (this.HasSkeleton) {
-					// If we have a skeleton, we have no guarantee that the position
-					// buffer we used last frame is the same one we used last frame
-					// since a temporary buffer is requested each frame
-					// therefore, we need to update the EntityShadowRenderable
-					// with the current position buffer
-					esr.RebindPositionBuffer();
+				else {
+					esr = (EntityShadowRenderable)shadowRenderables[i];
+
+					if (this.HasSkeleton) {
+						// If we have a skeleton, we have no guarantee that the position
+						// buffer we used last frame is the same one we used last frame
+						// since a temporary buffer is requested each frame
+						// therefore, we need to update the EntityShadowRenderable
+						// with the current position buffer
+						esr.RebindPositionBuffer();
+					}
 				}
 
 				// For animated entities we need to recalculate the face normals

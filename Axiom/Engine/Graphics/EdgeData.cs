@@ -68,10 +68,7 @@ namespace Axiom.Graphics {
                 Triangle tri = (Triangle)triangles[i];
 
                 float dot = tri.normal.Dot(lightPos);
-                tri.lightFacing = dot > 0 ? true : false;
-
-                // since tri is a struct, stick it back in at the current position
-                triangles[i] = tri;
+                tri.lightFacing = (dot > 0);
             }
         }
 
@@ -96,19 +93,13 @@ namespace Axiom.Graphics {
 					// Only update tris which are using this vertex set
 					if (t.vertexSet == vertexSet) {
 						int offset = t.vertIndex[0] * 3;
+						Vector3 v1 = new Vector3(pVert[offset], pVert[offset + 1], pVert[offset + 2]);
 
-						Vector3 v1 = 
-							new Vector3(pVert[offset], pVert[offset + 1], pVert[offset + 2]);
+						offset = t.vertIndex[1] * 3;
+						Vector3 v2 = new Vector3(pVert[offset], pVert[offset + 1], pVert[offset + 2]);
 
-						offset = t.vertIndex[1]*3;
-
-						Vector3 v2 = 
-							new Vector3(pVert[offset], pVert[offset + 1], pVert[offset + 2]);
-
-						offset = t.vertIndex[2]*3;
-
-						Vector3 v3 = 
-							new Vector3(pVert[offset], pVert[offset + 1], pVert[offset + 2]);
+						offset = t.vertIndex[2] * 3;
+						Vector3 v3 = new Vector3(pVert[offset], pVert[offset + 1], pVert[offset + 2]);
 
 						t.normal = MathUtil.CalculateFaceNormal(v1, v2, v3);
 					}
@@ -121,12 +112,16 @@ namespace Axiom.Graphics {
 
         #endregion Methods
 
-        #region Structs
+        #region Structures
+
+		// Note: These would typically be candidates for structs, but their usage throughout
+		// the engine is more appropriate as reference types, so hopefully the benefits will
+		// outweigh the massive boxing/unboxing these types would go through as value types.
 
         /// <summary>
         ///     Basic triangle structure.
         /// </summary>
-        public struct Triangle {
+        public class Triangle {
             #region Fields
 
             /// <summary>
@@ -156,13 +151,21 @@ namespace Axiom.Graphics {
             /// </summary>
             public bool lightFacing;
 
+			/// <summary>
+			///		Default contructor.
+			/// </summary>
+			public Triangle() {
+				vertIndex = new int[3];
+				sharedVertIndex = new int[3];
+			}
+
             #endregion Fields
         }
 
         /// <summary>
         ///     Edge data.
         /// </summary>
-        public struct Edge {
+        public class Edge {
             #region Fields
 
             /// <summary>
@@ -186,12 +189,21 @@ namespace Axiom.Graphics {
 			public bool isDegenerate;
 
             #endregion Fields
+
+			/// <summary>
+			///		Default constructor.
+			/// </summary>
+			public Edge() {
+				triIndex = new int[2];
+				vertIndex = new int[2];
+				sharedVertIndex = new int[2];
+			}
         }
 
         /// <summary>
         ///     A group of edges sharing the same vertex data.
         /// </summary>
-        public struct EdgeGroup {
+        public class EdgeGroup {
             #region Fields
 
             /// <summary>
@@ -205,7 +217,7 @@ namespace Axiom.Graphics {
             /// <summary>
             ///     The edges themselves.
             /// </summary>
-            public EdgeList edges;
+            public EdgeList edges = new EdgeList();
 
             #endregion Fields
         }
