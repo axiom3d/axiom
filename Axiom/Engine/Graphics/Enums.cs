@@ -781,7 +781,7 @@ namespace Axiom.Graphics {
 	/// <summary>
 	///		Types for determining which render operation to do for a series of vertices.
 	/// </summary>
-	public enum RenderMode {
+	public enum OperationType {
 		/// <summary>
 		///		Render the vertices as individual points.
 		/// </summary>

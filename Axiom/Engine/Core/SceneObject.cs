@@ -331,15 +331,6 @@ namespace Axiom.Core {
 			}
 		}
 
-		/// <summary>
-		///		Overridden.  Returns null by default.
-		/// </summary>
-		public override EdgeData EdgeList {
-			get {
-				return null;
-			}
-		}
-
 		public override AxisAlignedBox GetLightCapBounds() {
 			// same as original bounds
 			return GetWorldBoundingBox();
@@ -361,7 +352,14 @@ namespace Axiom.Core {
 			return worldDarkCapBounds;
 		}
 
-		public override IEnumerator GetShadowVolumeRenderableEnumerator(ShadowTechnique technique, Light light, 
+        /// <summary>
+        ///		Overridden.  Returns null by default.
+        /// </summary>
+        public override EdgeData GetEdgeList(int lodIndex) {
+            return null;
+        }
+
+        public override IEnumerator GetShadowVolumeRenderableEnumerator(ShadowTechnique technique, Light light, 
 			HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, int flags) {
 
 			return dummyList.GetEnumerator();

@@ -1731,8 +1731,8 @@ namespace Axiom.Core {
 			targetRenderSystem.SetSceneBlending(pass.SourceBlendFactor, pass.DestBlendFactor);
 
 			// set all required texture units for this pass, and disable ones not being used
-            for (int i = 0; i < targetRenderSystem.Caps.NumTextureUnits; i++) {
-                if(i < pass.NumTextureUnitStages) {
+			for(int i = 0; i < targetRenderSystem.Caps.TextureUnitCount; i++) {
+				if(i < pass.NumTextureUnitStages) {
 					TextureUnitState texUnit = pass.GetTextureUnitState(i);
 					targetRenderSystem.SetTextureUnit(i, texUnit);
 				}

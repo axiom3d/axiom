@@ -144,7 +144,7 @@ namespace Axiom.Graphics {
 			// TODO: Ensure all other places throughout the engine set these properly
             op.indexData = renderOp.indexData;
 			op.useIndices = true;
-			op.operationType = RenderMode.TriangleList;
+			op.operationType = OperationType.TriangleList;
 			op.vertexData = renderOp.vertexData;
         }
 

@@ -829,7 +829,7 @@ namespace Axiom.Core {
             // fill the render operation with our vertex and index data
 
             // indexed triangle list
-            op.operationType = RenderMode.TriangleList;
+            op.operationType = OperationType.TriangleList;
             op.useIndices = true;
 
             op.vertexData = vertexData;

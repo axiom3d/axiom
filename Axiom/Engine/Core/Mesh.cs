@@ -141,13 +141,17 @@ namespace Axiom.Core {
         protected bool useIndexShadowBuffer;
 
 		/// <summary>
-		///		Edge data for use in shadow volume creation.
-		/// </summary>
-		protected EdgeData edgeData;
-		/// <summary>
 		///		Flag indicating whether precalculation steps to support shadows have been taken.
 		/// </summary>
 		protected bool isPreparedForShadowVolumes;
+		/// <summary>
+		///		Should edge lists be automatically built for this mesh?
+		/// </summary>
+		protected bool autoBuildEdgeLists;
+        /// <summary>
+        ///     Have the edge lists been built for this mesh yet?
+        /// </summary>
+        protected internal bool edgeListsBuilt;
 
         #endregion
 
@@ -183,6 +187,66 @@ namespace Axiom.Core {
 
         #region Properties
 
+		/// <summary>
+		///		Gets/Sets whether or not this Mesh should automatically build edge lists
+		///		when asked for them, or whether it should never build them if
+		///		they are not already provided.
+		/// </summary>
+		public bool AutoBuildEdgeLists {
+			get {
+				return autoBuildEdgeLists;
+			}
+			set {
+				autoBuildEdgeLists = value;
+			}
+		}
+
+		/// <summary>
+		///		Gets/Sets the shared VertexData for this mesh.
+		/// </summary>
+		public VertexData SharedVertexData {
+			get { 
+				return sharedVertexData; 
+			}
+			set { 
+				sharedVertexData = value; 
+			}
+		}
+
+		/// <summary>
+		///    Gets the number of submeshes belonging to this mesh.
+		/// </summary>
+		public int SubMeshCount {
+			get {
+				return subMeshList.Count;
+			}
+		}
+
+		/// <summary>
+		///		Gets/Sets the bounding box for this mesh.
+		/// </summary>
+		/// <remarks>
+		///		Setting this property is required when building manual meshes now, because Axiom can no longer 
+		///		update the bounds for you, because it cannot necessarily read vertex data back from 
+		///		the vertex buffers which this mesh uses (they very well might be write-only, and even
+		///		if they are not, reading data from a hardware buffer is a bottleneck).
+		/// </remarks>
+		public AxisAlignedBox BoundingBox {
+			get {
+				// OPTIMIZE: Cloning to prevent direct modification
+				return (AxisAlignedBox)boundingBox.Clone();
+			}
+			set {
+				boundingBox = value;
+
+				float sqLen1 = boundingBox.Minimum.LengthSquared;
+				float sqLen2 = boundingBox.Maximum.LengthSquared;
+
+				// update the bounding sphere radius as well
+				boundingSphereRadius = MathUtil.Sqrt(MathUtil.Max(sqLen1, sqLen2));
+			}
+		}
+
         /// <summary>
         ///    Bounding spehere radius from this mesh in local coordinates.
         /// </summary>
@@ -195,21 +259,27 @@ namespace Axiom.Core {
 			}
         }
 
-		/// <summary>
+        /// <summary>
+        ///		Gets the edge list for this mesh, building it if required. 
+        /// </summary>
+        /// <returns>The edge list for mesh LOD 0.</returns>
+        public EdgeData GetEdgeList() {
+            return GetEdgeList(0);
+        }
+
+        /// <summary>
 		///		Gets the edge list for this mesh, building it if required. 
 		/// </summary>
 		/// <remarks>
 		///		You must ensure that the Mesh as been prepared for shadow volume 
 		///		rendering if you intend to use this information for that purpose.
 		/// </remarks>
-		public EdgeData EdgeList {
-			get {
-				if(edgeData == null) {
-					BuildEdgeList();
-				}
-
-				return edgeData;
+		public EdgeData GetEdgeList(int lodIndex) {
+			if(!edgeListsBuilt) {
+				BuildEdgeList();
 			}
+
+			return GetLodLevel(lodIndex).edgeData;
 		}
 
         /// <summary>
@@ -341,32 +411,65 @@ namespace Axiom.Core {
 		///		among other things.
 		/// </summary>
 		public void BuildEdgeList() {
-			EdgeListBuilder builder = new EdgeListBuilder();
-			int vertexSetCount = 0;
+            if (edgeListsBuilt) {
+                return;
+            }
 
-			if(sharedVertexData != null) {
-				builder.AddVertexData(sharedVertexData);
-				vertexSetCount++;
-			}
+            // loop over LODs
+            for (int lodIndex = 0; lodIndex < lodUsageList.Count; lodIndex++) {
+                // use getLodLevel to enforce loading of manual mesh lods
+                MeshLodUsage usage = GetLodLevel(lodIndex);
 
-			// Prepare the builder using the submesh information
-			for(int i = 0; i < subMeshList.Count; i++) {
-				SubMesh sm = subMeshList[i];
+                if (isLodManual && lodIndex != 0) {
+                    // Delegate edge building to manual mesh
+                    // It should have already built it's own edge list while loading
+                    usage.edgeData = usage.manualMesh.GetEdgeList(0);
+                }
+                else {
+                    EdgeListBuilder builder = new EdgeListBuilder();
+                    int vertexSetCount = 0;
 
-				if(sm.useSharedVertices) {
-					// Use shared vertex data, index as set 0
-					builder.AddIndexData(sm.indexData, 0);
-				}
-				else {
-					// own vertex data, add it and reference it directly
-					builder.AddVertexData(sm.vertexData);
-					builder.AddIndexData(sm.indexData, vertexSetCount++);
-				}
-			}
+                    if (sharedVertexData != null) {
+                        builder.AddVertexData(sharedVertexData);
+                        vertexSetCount++;
+                    }
 
-			// build the edge data from all accumulate vertex/index buffers
-			edgeData = builder.Build();
-		}
+                    // Prepare the builder using the submesh information
+                    for (int i = 0; i < subMeshList.Count; i++) {
+                        SubMesh sm = subMeshList[i];
+
+                        if (sm.useSharedVertices) {
+                            // Use shared vertex data, index as set 0
+                            if (lodIndex == 0) {
+                                // Use shared vertex data, index as set 0
+                                builder.AddIndexData(sm.indexData, 0, sm.operationType);
+                            }
+                            else {
+                                builder.AddIndexData((IndexData)sm.lodFaceList[lodIndex - 1], 0, sm.operationType);
+                            }
+                        }
+                        else {
+                            // own vertex data, add it and reference it directly
+                            builder.AddVertexData(sm.vertexData);
+
+                            if (lodIndex == 0) {
+                                // base index data
+                                builder.AddIndexData(sm.indexData, vertexSetCount++, sm.operationType);
+                            }
+                            else {
+                                // LOD index data
+                                builder.AddIndexData((IndexData)sm.lodFaceList[lodIndex - 1], vertexSetCount++, sm.operationType);
+                            }
+                        }
+                    }
+
+                    // build the edge data from all accumulate vertex/index buffers
+                    usage.edgeData = builder.Build();
+                }
+            }
+
+            edgeListsBuilt = true;
+        }
 
         /// <summary>
         ///     Builds tangent space vector required for accurate bump mapping.
@@ -685,8 +788,13 @@ namespace Axiom.Core {
             MeshLodUsage usage = (MeshLodUsage)lodUsageList[index];
 
             // load the manual lod mesh for this level if not done already
-            if(isLodManual && usage.manualMesh == null) {
+            if (isLodManual && index > 0 && usage.manualMesh == null) {
                 usage.manualMesh = MeshManager.Instance.Load(usage.manualName);
+
+                // get the edge data, if required
+                if (!autoBuildEdgeLists) {
+                    usage.edgeData = usage.manualMesh.GetEdgeList(0);
+                }
             }
 
             return usage;
@@ -811,7 +919,7 @@ namespace Axiom.Core {
         /// </remarks>
         /// <param name="skeleton"></param>
         public void NotifySkeleton(Skeleton skeleton) {
-            skeleton = skeleton;
+            this.skeleton = skeleton;
             skeletonName = skeleton.Name;
         }
 
@@ -836,7 +944,11 @@ namespace Axiom.Core {
 		///		shadow rendering algorithm is used for addressing this extended vertex buffer.
 		/// </remarks>
 		public void PrepareForShadowVolume() {
-			if(sharedVertexData != null) {
+            if (isPreparedForShadowVolumes) {
+                return;
+            }
+
+            if(sharedVertexData != null) {
 				sharedVertexData.PrepareForShadowVolume();
 			}
 
@@ -926,6 +1038,104 @@ namespace Axiom.Core {
 
             return maxBones;
         }
+
+		/// <summary>
+		///		Creates a new <see cref="SubMesh"/> and gives it a name.
+		/// </summary>
+		/// <param name="name">Name of the new <see cref="SubMesh"/>.</param>
+		/// <returns>A new <see cref="SubMesh"/> with this Mesh as its parent.</returns>
+		public SubMesh CreateSubMesh(string name) {
+			SubMesh subMesh = new SubMesh(name);
+
+			// set the parent of the subMesh to us
+			subMesh.Parent = this;
+
+			// add to the list of child meshes
+			subMeshList.Add(subMesh);
+
+			return subMesh;
+		}
+
+		/// <summary>
+		///		Creates a new <see cref="SubMesh"/>.
+		/// </summary>
+		/// <remarks>
+		///		Method for manually creating geometry for the mesh.
+		///		Note - use with extreme caution - you must be sure that
+		///		you have set up the geometry properly.
+		/// </remarks>
+		/// <returns>A new SubMesh with this Mesh as its parent.</returns>
+		public SubMesh CreateSubMesh() {
+			string name = string.Format("{0}_SubMesh{1}", this.name, subMeshList.Count);
+
+			SubMesh subMesh = new SubMesh(name);
+
+			// set the parent of the subMesh to us
+			subMesh.Parent = this;
+
+			// add to the list of child meshes
+			subMeshList.Add(subMesh);
+
+			return subMesh;
+		}
+
+		/// <summary>
+		///		Sets the policy for the vertex buffers to be used when loading this Mesh.
+		/// </summary>
+		/// <remarks>
+		///		By default, when loading the Mesh, static, write-only vertex and index buffers 
+		///		will be used where possible in order to improve rendering performance. 
+		///		However, such buffers
+		///		cannot be manipulated on the fly by CPU code (although shader code can). If you
+		///		wish to use the CPU to modify these buffers, you should call this method. Note,
+		///		however, that it only takes effect after the Mesh has been reloaded. Note that you
+		///		still have the option of manually repacing the buffers in this mesh with your
+		///		own if you see fit too, in which case you don't need to call this method since it
+		///		only affects buffers created by the mesh itself.
+		///		<p/>
+		///		You can define the approach to a Mesh by changing the default parameters to 
+		///		<see cref="MeshManager.Load"/> if you wish; this means the Mesh is loaded with those options
+		///		the first time instead of you having to reload the mesh after changing these options.
+		/// </remarks>
+		/// <param name="usage">The usage flags, which by default are <see cref="BufferUsage.StaticWriteOnly"/></param>
+		/// <param name="useShadowBuffer">
+		///		If set to true, the vertex buffers will be created with a
+		///		system memory shadow buffer. You should set this if you want to be able to
+		///		read from the buffer, because reading from a hardware buffer is a no-no.
+		/// </param>
+		public void SetVertexBufferPolicy(BufferUsage usage, bool useShadowBuffer) {
+			vertexBufferUsage = usage;
+			useVertexShadowBuffer = useShadowBuffer;
+		}
+
+		/// <summary>
+		///		Sets the policy for the index buffers to be used when loading this Mesh.
+		/// </summary>
+		/// <remarks>
+		///		By default, when loading the Mesh, static, write-only vertex and index buffers 
+		///		will be used where possible in order to improve rendering performance. 
+		///		However, such buffers
+		///		cannot be manipulated on the fly by CPU code (although shader code can). If you
+		///		wish to use the CPU to modify these buffers, you should call this method. Note,
+		///		however, that it only takes effect after the Mesh has been reloaded. Note that you
+		///		still have the option of manually repacing the buffers in this mesh with your
+		///		own if you see fit too, in which case you don't need to call this method since it
+		///		only affects buffers created by the mesh itself.
+		///		<p/>
+		///		You can define the approach to a Mesh by changing the default parameters to 
+		///		<see cref="MeshManager.Load"/> if you wish; this means the Mesh is loaded with those options
+		///		the first time instead of you having to reload the mesh after changing these options.
+		/// </remarks>
+		/// <param name="usage">The usage flags, which by default are <see cref="BufferUsage.StaticWriteOnly"/></param>
+		/// <param name="useShadowBuffer">
+		///		If set to true, the index buffers will be created with a
+		///		system memory shadow buffer. You should set this if you want to be able to
+		///		read from the buffer, because reading from a hardware buffer is a no-no.
+		/// </param>
+		public void SetIndexBufferPolicy(BufferUsage usage, bool useShadowBuffer) {
+			indexBufferUsage = usage;
+			useIndexShadowBuffer = useShadowBuffer;
+		}
 
         #endregion Methods
 
@@ -1245,11 +1455,10 @@ namespace Axiom.Core {
 
             // load this bad boy if it is not to be manually defined
             if(!isManuallyDefined) {
+				MeshSerializer serializer = new MeshSerializer();
+
                 // get the resource data from MeshManager
                 Stream data = MeshManager.Instance.FindResourceData(name);
-
-                // instantiate a mesh reader and pass in the stream data
-                OgreMeshReader meshReader = new OgreMeshReader(data);
 
                 string extension = Path.GetExtension( name );
 
@@ -1259,29 +1468,24 @@ namespace Axiom.Core {
                     throw new AxiomException("Unsupported mesh format '{0}'", extension);
                 }
 
-                // mesh loading stats
-                int before, after;
-
-                // get the tick count before loading the mesh
-                before = Environment.TickCount;
-
                 // import the .mesh file
-                meshReader.Import(this);
+                serializer.ImportMesh(data, this);
 				
-                // get the tick count after loading the mesh
-                after = Environment.TickCount;
-
-                // record the time elapsed while loading the mesh
-                System.Diagnostics.Trace.WriteLine(string.Format("Mesh: Loaded '{0}', took {1}ms", this.name,  (after - before)));
-
                 // close the stream (we don't need to leave it open here)
                 data.Close();
             }
 
 			// prepare the mesh for a shadow volume?
 			if(MeshManager.Instance.PrepareAllMeshesForShadowVolumes) {
-				PrepareForShadowVolume();
-			}
+                if (edgeListsBuilt || autoBuildEdgeLists) {
+                    PrepareForShadowVolume();
+                }
+                if (!edgeListsBuilt && autoBuildEdgeLists) {
+                    BuildEdgeList();
+                }
+            }
+
+			isLoaded = true;
         }
 
         /// <summary>
@@ -1289,6 +1493,11 @@ namespace Axiom.Core {
         /// </summary>
         public override void Unload() {
             subMeshList.Clear();
+            sharedVertexData = null;
+            // TODO: SubMeshNameCount
+            // TODO: Remove LOD levels
+            isPreparedForShadowVolumes = false;
+            isLoaded = false;
         }
 
         /// <summary>
@@ -1297,162 +1506,28 @@ namespace Axiom.Core {
         public override void Dispose() {
         }
 
-        /// <summary>
-        ///		Creates a new <see cref="SubMesh"/> and gives it a name.
-        /// </summary>
-        /// <param name="name">Name of the new <see cref="SubMesh"/>.</param>
-        /// <returns>A new <see cref="SubMesh"/> with this Mesh as its parent.</returns>
-        public SubMesh CreateSubMesh(string name) {
-            SubMesh subMesh = new SubMesh(name);
-
-            // set the parent of the subMesh to us
-            subMesh.Parent = this;
-
-            // add to the list of child meshes
-            subMeshList.Add(subMesh);
-
-            return subMesh;
-        }
-
-        /// <summary>
-        ///		Creates a new <see cref="SubMesh"/>.
-        /// </summary>
-        /// <remarks>
-        ///		Method for manually creating geometry for the mesh.
-        ///		Note - use with extreme caution - you must be sure that
-        ///		you have set up the geometry properly.
-        /// </remarks>
-        /// <returns>A new SubMesh with this Mesh as its parent.</returns>
-        public SubMesh CreateSubMesh() {
-            string name = string.Format("{0}_SubMesh{1}", this.name, subMeshList.Count);
-
-            SubMesh subMesh = new SubMesh(name);
-
-            // set the parent of the subMesh to us
-            subMesh.Parent = this;
-
-            // add to the list of child meshes
-            subMeshList.Add(subMesh);
-
-            return subMesh;
-        }
-
-        /// <summary>
-        ///		Gets/Sets the shared VertexData for this mesh.
-        /// </summary>
-        public VertexData SharedVertexData {
-            get { 
-                return sharedVertexData; 
-            }
-            set { 
-                sharedVertexData = value; 
-            }
-        }
-
-        /// <summary>
-        ///    Gets the number of submeshes belonging to this mesh.
-        /// </summary>
-        public int SubMeshCount {
-            get {
-                return subMeshList.Count;
-            }
-        }
-
-        /// <summary>
-        ///		Gets/Sets the bounding box for this mesh.
-        /// </summary>
-        /// <remarks>
-        ///		Setting this property is required when building manual meshes now, because Axiom can no longer 
-        ///		update the bounds for you, because it cannot necessarily read vertex data back from 
-        ///		the vertex buffers which this mesh uses (they very well might be write-only, and even
-        ///		if they are not, reading data from a hardware buffer is a bottleneck).
-        /// </remarks>
-        public AxisAlignedBox BoundingBox {
-            get {
-                // OPTIMIZE: Cloning to prevent direct modification
-                return (AxisAlignedBox)boundingBox.Clone();
-            }
-            set {
-                boundingBox = value;
-
-                float sqLen1 = boundingBox.Minimum.LengthSquared;
-                float sqLen2 = boundingBox.Maximum.LengthSquared;
-
-                // update the bounding sphere radius as well
-                boundingSphereRadius = MathUtil.Sqrt(MathUtil.Max(sqLen1, sqLen2));
-            }
-        }
-
-        /// <summary>
-		///		Sets the policy for the vertex buffers to be used when loading this Mesh.
-        /// </summary>
-        /// <remarks>
-        ///		By default, when loading the Mesh, static, write-only vertex and index buffers 
-        ///		will be used where possible in order to improve rendering performance. 
-        ///		However, such buffers
-        ///		cannot be manipulated on the fly by CPU code (although shader code can). If you
-        ///		wish to use the CPU to modify these buffers, you should call this method. Note,
-        ///		however, that it only takes effect after the Mesh has been reloaded. Note that you
-        ///		still have the option of manually repacing the buffers in this mesh with your
-        ///		own if you see fit too, in which case you don't need to call this method since it
-        ///		only affects buffers created by the mesh itself.
-        ///		<p/>
-        ///		You can define the approach to a Mesh by changing the default parameters to 
-        ///		<see cref="MeshManager.Load"/> if you wish; this means the Mesh is loaded with those options
-        ///		the first time instead of you having to reload the mesh after changing these options.
-        /// </remarks>
-		/// <param name="usage">The usage flags, which by default are <see cref="BufferUsage.StaticWriteOnly"/></param>
-        /// <param name="useShadowBuffer">
-        ///		If set to true, the vertex buffers will be created with a
-        ///		system memory shadow buffer. You should set this if you want to be able to
-        ///		read from the buffer, because reading from a hardware buffer is a no-no.
-        /// </param>
-        public void SetVertexBufferPolicy(BufferUsage usage, bool useShadowBuffer) {
-            vertexBufferUsage = usage;
-            useVertexShadowBuffer = useShadowBuffer;
-        }
-
-		/// <summary>
-		///		Sets the policy for the index buffers to be used when loading this Mesh.
-		/// </summary>
-		/// <remarks>
-		///		By default, when loading the Mesh, static, write-only vertex and index buffers 
-		///		will be used where possible in order to improve rendering performance. 
-		///		However, such buffers
-		///		cannot be manipulated on the fly by CPU code (although shader code can). If you
-		///		wish to use the CPU to modify these buffers, you should call this method. Note,
-		///		however, that it only takes effect after the Mesh has been reloaded. Note that you
-		///		still have the option of manually repacing the buffers in this mesh with your
-		///		own if you see fit too, in which case you don't need to call this method since it
-		///		only affects buffers created by the mesh itself.
-		///		<p/>
-		///		You can define the approach to a Mesh by changing the default parameters to 
-		///		<see cref="MeshManager.Load"/> if you wish; this means the Mesh is loaded with those options
-		///		the first time instead of you having to reload the mesh after changing these options.
-		/// </remarks>
-		/// <param name="usage">The usage flags, which by default are <see cref="BufferUsage.StaticWriteOnly"/></param>
-		/// <param name="useShadowBuffer">
-		///		If set to true, the index buffers will be created with a
-		///		system memory shadow buffer. You should set this if you want to be able to
-		///		read from the buffer, because reading from a hardware buffer is a no-no.
-		/// </param>
-        public void SetIndexBufferPolicy(BufferUsage usage, bool useShadowBuffer) {
-            indexBufferUsage = usage;
-            useIndexShadowBuffer = useShadowBuffer;
-        }
-
         #endregion
     }
     
     ///<summary>
     ///     A way of recording the way each LOD is recorded this Mesh.
     /// </summary>
-    public struct MeshLodUsage {
-        ///<summary>Squared Z value from which this LOD will apply</summary>
+    public class MeshLodUsage {
+        ///	<summary>
+        ///		Squared Z value from which this LOD will apply.
+        ///	</summary>
         public float fromSquaredDepth;
-         ///<summary>Only relevant if isLodManual is true, the name of the alternative mesh to use</summary>
+         /// <summary>
+         ///	Only relevant if isLodManual is true, the name of the alternative mesh to use.
+         /// </summary>
  	    public string manualName;
-        ///<summary>Reference to the manual mesh to avoid looking up each timey</summary>    	
+        ///	<summary>
+        ///		Reference to the manual mesh to avoid looking up each time.
+        ///	</summary>    	
         public Mesh manualMesh;
+		/// <summary>
+		///		Edge list for this LOD level (may be derived from manual mesh).	
+		/// </summary>
+		public EdgeData edgeData;
     }
 }

@@ -271,7 +271,7 @@ namespace Axiom.Core {
         public override void GetRenderOperation(RenderOperation op) {
             op.vertexData = vertexData;
             op.indexData = null;
-            op.operationType = RenderMode.LineList;
+            op.operationType = OperationType.LineList;
             op.useIndices = false;
         }
 

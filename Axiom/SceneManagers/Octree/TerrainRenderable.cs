@@ -668,7 +668,7 @@ namespace Axiom.SceneManagers.Octree {
             }
 
             op.useIndices = true;
-            op.operationType = RenderMode.TriangleList;
+            op.operationType = OperationType.TriangleList;
             op.vertexData = terrain;
             op.indexData = indexData;
 

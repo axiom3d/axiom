@@ -73,7 +73,7 @@ namespace Axiom.Graphics
 		public override void GetRenderOperation(RenderOperation op) {
 			op.vertexData = vertexData;
 			op.useIndices = false;
-			op.operationType = RenderMode.TriangleStrip;
+			op.operationType = OperationType.TriangleStrip;
 		}
 
 		public override void GetWorldTransforms(Axiom.MathLib.Matrix4[] matrices) {

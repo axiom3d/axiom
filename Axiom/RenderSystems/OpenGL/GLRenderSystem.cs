@@ -1428,7 +1428,7 @@ namespace Axiom.RenderSystems.OpenGL {
 					case VertexElementSemantic.TexCoords:
 						// this ignores vertex element index and sets tex array for each available texture unit
 						// this allows for multitexturing on entities whose mesh only has a single set of tex coords
-						for(int j = 0; j < caps.NumTextureUnits; j++) {
+						for(int j = 0; j < caps.TextureUnitCount; j++) {
 							// only set if this textures index if it is supposed to
 							if(texCoordIndex[j] == element.Index) {
 								// set the current active texture unit
@@ -1487,23 +1487,23 @@ namespace Axiom.RenderSystems.OpenGL {
 
 			// which type of render operation is this?
 			switch(op.operationType) {
-                case RenderMode.PointList:
-                    primType = Gl.GL_POINTS;
+				case OperationType.PointList:
+					primType = Gl.GL_POINTS;
 					break;
-                case RenderMode.LineList:
-                    primType = Gl.GL_LINES;
+				case OperationType.LineList:
+					primType = Gl.GL_LINES;
 					break;
-                case RenderMode.LineStrip:
-                    primType = Gl.GL_LINE_STRIP;
+				case OperationType.LineStrip:
+					primType = Gl.GL_LINE_STRIP;
 					break;
-                case RenderMode.TriangleList:
-                    primType = Gl.GL_TRIANGLES;
+				case OperationType.TriangleList:
+					primType = Gl.GL_TRIANGLES;
 					break;
-                case RenderMode.TriangleStrip:
-                    primType = Gl.GL_TRIANGLE_STRIP;
+				case OperationType.TriangleStrip:
+					primType = Gl.GL_TRIANGLE_STRIP;
 					break;
-                case RenderMode.TriangleFan:
-                    primType = Gl.GL_TRIANGLE_FAN;
+				case OperationType.TriangleFan:
+					primType = Gl.GL_TRIANGLE_FAN;
 					break;
 			}
 
@@ -1546,8 +1546,15 @@ namespace Axiom.RenderSystems.OpenGL {
 
 			// disable all client states
 			Gl.glDisableClientState( Gl.GL_VERTEX_ARRAY );
-			Gl.glDisableClientState( Gl.GL_TEXTURE_COORD_ARRAY );
-			Gl.glDisableClientState( Gl.GL_NORMAL_ARRAY );
+
+            // disable all texture units
+            for (int i = 0; i < caps.TextureUnitCount; i++) {
+                Gl.glClientActiveTextureARB(Gl.GL_TEXTURE0 + i);
+                Gl.glDisableClientState(Gl.GL_TEXTURE_COORD_ARRAY);
+            }
+
+            Gl.glClientActiveTextureARB(Gl.GL_TEXTURE0);
+            Gl.glDisableClientState( Gl.GL_NORMAL_ARRAY );
 			Gl.glDisableClientState( Gl.GL_COLOR_ARRAY );
 			Gl.glDisableClientState( Gl.GL_SECONDARY_COLOR_ARRAY );
 
@@ -1556,7 +1563,7 @@ namespace Axiom.RenderSystems.OpenGL {
 				Gl.glDisableVertexAttribArrayARB(BLEND_WEIGHTS); // disable weights
 			}
 
-			Gl.glColor4f(1.0f,1.0f,1.0f,1.0f);
+			Gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		}
 
 		/// <summary>
@@ -2083,7 +2090,7 @@ namespace Axiom.RenderSystems.OpenGL {
 			// check the number of texture units available
 			int numTextureUnits = 0;
 			Gl.glGetIntegerv(Gl.GL_MAX_TEXTURE_UNITS, out numTextureUnits);
-			caps.NumTextureUnits = numTextureUnits;
+			caps.TextureUnitCount = numTextureUnits;
 
 			// check multitexturing
 			if(glSupport.CheckExtension("GL_ARB_multitexture")) {

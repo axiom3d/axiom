@@ -157,7 +157,7 @@ namespace Axiom.Overlays.Elements {
             // colors, stored in seperate buffer since they change less often
             decl.AddElement(COLORS, 0, VertexElementType.Color, VertexElementSemantic.Diffuse);
 
-            renderOp.operationType = RenderMode.TriangleList;
+            renderOp.operationType = OperationType.TriangleList;
             renderOp.useIndices = false;
             renderOp.vertexData.vertexStart = 0;
 

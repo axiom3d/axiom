@@ -41,9 +41,17 @@ namespace Axiom.Platforms.Win32
 		///		Active host control that reserves control over the input.
 		/// </summary>
 		protected System.Windows.Forms.Control control;
+		/// <summary>
+		///		Do we want exclusive use of the mouse?
+		/// </summary>
 		protected bool ownMouse;
-
+		/// <summary>
+		///		Reference to the render window that is the target of the input.
+		/// </summary>
 		protected RenderWindow window;
+		/// <summary>
+		///		Flag used to remember the state of the render window the last time input was captured.
+		/// </summary>
 		protected bool lastWindowActive;
 
 		#endregion Fields

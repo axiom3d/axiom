@@ -47,11 +47,46 @@ namespace Axiom.Graphics {
 	public class EdgeListBuilder {
         #region Fields
 
+		/// <summary>
+		///		List of objects that will provide index data to the build process.
+		/// </summary>
         protected IndexDataList indexDataList = new IndexDataList();
+		/// <summary>
+		///		Mapping of index data sets to vertex data sets.
+		/// </summary>
         protected IntList indexDataVertexDataSetList = new IntList();
+		/// <summary>
+		///		List of vertex data objects.
+		/// </summary>
         protected VertexDataList vertexDataList = new VertexDataList();
+		/// <summary>
+		///		List of common vertices.
+		/// </summary>
         protected CommonVertexList vertices = new CommonVertexList();
+		/// <summary>
+		///		Underlying edge data to use for building.
+		/// </summary>
         protected EdgeData edgeData = new EdgeData();
+		/// <summary>
+		///		Mappings of operation type to vertex data.
+		/// </summary>
+		protected OperationTypeList operationTypes = new OperationTypeList();
+		/// <summary>
+		///		Unique edges, used to detect whether there are too many triangles on an edge
+		/// </summary>
+		protected UniqueEdgeList uniqueEdges = new UniqueEdgeList();
+		/// <summary>
+		///		Do we weld common vertices at all?
+		/// </summary>
+		protected bool weldVertices;
+		/// <summary>
+		///		Should we treat coincident vertices from different vertex sets as one?
+		/// </summary>
+		protected bool weldVerticesAcrossVertexSets;
+		/// <summary>
+		///		Should we treat coincident vertices referenced from different index sets as one?
+		/// </summary>
+		protected bool weldVerticesAcrossIndexSets;
 
         #endregion Fields
 
@@ -78,7 +113,11 @@ namespace Axiom.Graphics {
         /// </remarks>
         /// <param name="indexData">The index information which describes the triangles.</param>
         public void AddIndexData(IndexData indexData) {
-            AddIndexData(indexData, 0);
+            AddIndexData(indexData, 0, OperationType.TriangleList);
+        }
+
+        public void AddIndexData(IndexData indexData, int vertexSet) {
+            AddIndexData(indexData, vertexSet, OperationType.TriangleList);
         }
 
         /// <summary>
@@ -93,9 +132,10 @@ namespace Axiom.Graphics {
         ///     The vertex data set this index data refers to; you only need to alter this
         ///     if you have added multiple sets of vertices.
         /// </param>
-        public void AddIndexData(IndexData indexData, int vertexSet) {
+        public void AddIndexData(IndexData indexData, int vertexSet, OperationType opType) {
             indexDataList.Add(indexData);
             indexDataVertexDataSetList.Add(vertexSet);
+			operationTypes.Add(opType);
         }
 
         /// <summary>
@@ -103,54 +143,159 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <returns>All edge data from the vertex/index data recognized by the builder.</returns>
         public EdgeData Build() {
-            /* Ok, here's the algorithm:
-            For each set of indices in turn
-              // First pass, create triangles and create edges
-              For each set of 3 indexes
-                Create a new Triangle entry in the list
-                For each vertex referenced by the tri indexes
-                  Get the position of the vertex as a Vector3 from the correct vertex buffer
-                  Attempt to locate this position in the existing common vertex set
-                  If not found
-                    Create a new common vertex entry in the list
-                  End If
-                  Populate the original vertex index and common vertex index 
-                Next vertex
-                If commonIndex[0] < commonIndex[1]
-                    Create a new edge 
-                End If
-                If commonIndex[1] < commonIndex[2]
-                    Create a new edge 
-                End If
-                If commonIndex[2] < commonIndex[0]
-                    Create a new edge 
-                End If
-              Next set of 3 indexes
-            Next index set
-            // Identify shared edges (works across index sets)
-            For each triangle in the common triangle list
-            If commonIndex[0] > commonIndex[1]
-                Find existing edge and update with second side
-            End If
-            If commonIndex[1] > commonIndex[2]
-                Find existing edge and update with second side
-            End If
-            If commonIndex[2] > commonIndex[0]
-                Find existing edge and update with second side
-            End If
-            Next triangle
+			/* Ok, here's the algorithm:
+			For each set of indices in turn
+			  // First pass, create triangles and create edges
+			  For each set of 3 indexes
+				Create a new Triangle entry in the list
+				For each vertex referenced by the tri indexes
+				  Get the position of the vertex as a Vector3 from the correct vertex buffer
+				  Attempt to locate this position in the existing common vertex set
+				  If not found
+					Create a new common vertex entry in the list
+				  End If
+				  Populate the original vertex index and common vertex index 
+				Next vertex
+				If commonIndex[0] < commonIndex[1]
+					Create a new edge 
+				End If
+				If commonIndex[1] < commonIndex[2]
+					Create a new edge 
+				End If
+				If commonIndex[2] < commonIndex[0]
+					Create a new edge 
+				End If
+			  Next set of 3 indexes
+			Next index set
+			// Identify shared edges (works across index sets)
+			For each triangle in the common triangle list
+			If commonIndex[0] > commonIndex[1]
+				Find existing edge and update with second side
+			End If
+			If commonIndex[1] > commonIndex[2]
+				Find existing edge and update with second side
+			End If
+			If commonIndex[2] > commonIndex[0]
+				Find existing edge and update with second side
+			End If
+			Next triangle
 
-            Note that all edges 'belong' to the index set which originally caused them
-            to be created, which also means that the 2 vertices on the edge are both referencing the 
-            vertex buffer which this index set uses.
-            */
+			Note that all edges 'belong' to the index set which originally caused them
+			to be created, which also means that the 2 vertices on the edge are both referencing the 
+			vertex buffer which this index set uses.
+			*/
+
+
+			/* 
+			There is a major consideration: 'What is a common vertex'? This is a
+			crucial decision, since to form a completely close hull, you need to treat
+			vertices which are not physically the same as equivalent. This is because
+			there will be 'seams' in the model, where discrepancies in vertex components
+			other than position (such as normals or texture coordinates) will mean
+			that there are 2 vertices in the same place, and we MUST 'weld' them
+			into a single common vertex in order to have a closed hull. Just looking
+			at the unique vertex indices is not enough, since these seams would render
+			the hull invalid.
+
+			So, we look for positions which are the same across vertices, and treat 
+			those as as single vertex for our edge calculation. However, this has
+			it's own problems. There are OTHER vertices which may have a common 
+			position that should not be welded. Imagine 2 cubes touching along one
+			single edge. The common vertices on that edge, if welded, will cause 
+			an ambiguous hull, since the edge will have 4 triangles attached to it,
+			whilst a manifold mesh should only have 2 triangles attached to each edge.
+			This is a problem.
+
+			We deal with this with fallback techniques. We try the following approaches,
+			in order, falling back on the next approach if the current one results in
+			an ambiguous hull:
+        
+			1. Weld all vertices at the same position across all vertex and index sets. 
+			2. Weld vertices at the same position if they are in the same vertex set, 
+			   but regardless of the index set
+			3. Weld vertices at the same position if they were first referred to in 
+			   the same index set, but regardless of the vertex set.
+			4. Weld vertices only if they are in the same vertex set AND they are first
+			   referenced in the same index set.
+			5. Never weld vertices at the same position. This will only result in a
+			   valid hull if there are no seams in the mesh (perfect vertex sharing)
+
+			If all these techniques fail, the hull cannot be built. 
+
+			Therefore, when you have a model which has a potentially ambiguous hull,
+			(meeting at edges), you MUST EITHER:
+
+			   A. differentiate the individual sub-hulls by separating them by 
+				  vertex set or by index set.
+			or B. ensure that you have no seams, ie you have perfect vertex sharing.
+				  This is typically only feasible when you have no textures and 
+				  completely smooth shading
+			*/
+
+            int technique = 1;
+            bool validHull = false;
+
+            while (!validHull && technique <= 5) {
+                switch (technique) {
+                    case 1: // weld across everything
+                        weldVertices = true;
+                        weldVerticesAcrossVertexSets = true;
+                        weldVerticesAcrossIndexSets = true;
+                        break;
+                    case 2: // weld across index sets only
+                        weldVertices = true;
+                        weldVerticesAcrossVertexSets = false;
+                        weldVerticesAcrossIndexSets = true;
+                        break;
+                    case 3: // weld across vertex sets only
+                        weldVertices = true;
+                        weldVerticesAcrossVertexSets = true;
+                        weldVerticesAcrossIndexSets = false;
+                        break;
+                    case 4: // weld within same index & vertex set only
+                        weldVertices = true;
+                        weldVerticesAcrossVertexSets = false;
+                        weldVerticesAcrossIndexSets = false;
+                        break;
+                    case 5: // never weld
+                        weldVertices = false;
+                        weldVerticesAcrossVertexSets = false;
+                        weldVerticesAcrossIndexSets = false;
+                        break;
+                } // switch
+
+                // Log alternate techniques
+                if (technique > 1) {
+                    System.Diagnostics.Debug.WriteLine(string.Format("Trying alternative edge building technique {0}", technique));
+                }
+
+                try {
+                    AttemptBuild();
+
+                    // if we got here with no exceptions, we're done
+                    validHull = true;
+                }
+                catch (Exception) {
+                    // Ambiguous hull, try next technique
+                    technique++;
+                }
+            }
+
+            return edgeData;
+        }
+
+        private void AttemptBuild() {
+            // reset
+            vertices.Clear();
+            uniqueEdges.Clear();
 
             edgeData = new EdgeData();
+
             // resize the edge group list to equal the number of vertex sets
             edgeData.edgeGroups.Capacity = vertexDataList.Count;
 
             // Initialize edge group data
-            for(int i = 0; i < vertexDataList.Count; i++) {
+            for (int i = 0; i < vertexDataList.Count; i++) {
                 EdgeData.EdgeGroup group = new EdgeData.EdgeGroup();
                 group.vertexSet = i;
                 group.vertexData = (VertexData)vertexDataList[i];
@@ -158,7 +303,7 @@ namespace Axiom.Graphics {
             }
 
             // Stage 1: Build triangles and initial edge list.
-            for(int i = 0, indexSet = 0; i < indexDataList.Count; i++, indexSet++) {
+            for (int i = 0, indexSet = 0; i < indexDataList.Count; i++, indexSet++) {
                 int vertexSet = (int)indexDataVertexDataSetList[i];
 
                 BuildTrianglesEdges(indexSet, vertexSet);
@@ -167,10 +312,8 @@ namespace Axiom.Graphics {
             // Stage 2: Link edges.
             ConnectEdges();
 
-			//edgeData.DebugLog();
-			//DebugLog();
-
-            return edgeData;
+            //edgeData.DebugLog();
+            //DebugLog();
         }
 
         /// <summary>
@@ -180,7 +323,20 @@ namespace Axiom.Graphics {
         /// <param name="vertexSet"></param>
         protected void BuildTrianglesEdges(int indexSet, int vertexSet) {
             IndexData indexData = (IndexData)indexDataList[indexSet];
-            int iterations = indexData.indexCount / 3;
+            OperationType opType = operationTypes[indexSet];
+
+            int iterations = 0;
+
+            switch (opType) {
+                case OperationType.TriangleList:
+                    iterations = indexData.indexCount / 3;
+                    break;
+
+                case OperationType.TriangleFan:
+                case OperationType.TriangleStrip:
+                    iterations = indexData.indexCount - 2;
+                    break;
+            }
 
             // locate postion element & the buffer to go with it
             VertexData vertexData = (VertexData)vertexDataList[vertexSet];
@@ -196,6 +352,10 @@ namespace Axiom.Graphics {
 
                 short* p16Idx = null;
                 int* p32Idx = null;
+
+                // counters used for pointer indexing
+                int count16 = 0;
+                int count32 = 0;
 
                 if(indexData.indexBuffer.Type == IndexType.Size16) {
                     p16Idx = (short*)idxPtr.ToPointer();
@@ -220,11 +380,34 @@ namespace Axiom.Graphics {
                     Vector3[] v = new Vector3[3];
 
                     for(int i = 0; i < 3; i++) {
-                        if(indexData.indexBuffer.Type == IndexType.Size32) {
-                            index[i] = *p32Idx++;
+                        // Standard 3-index read for tri list or first tri in strip / fan
+                        if (opType == OperationType.TriangleList || t == 0) {
+                            if (indexData.indexBuffer.Type == IndexType.Size32) {
+                                index[i] = p32Idx[count32++];
+                            }
+                            else {
+                                index[i] = p16Idx[count16++];
+                            }
                         }
                         else {
-                            index[i] = *p16Idx++;
+                            // Strips and fans are formed from last 2 indexes plus the 
+                            // current one for triangles after the first
+                            if (indexData.indexBuffer.Type == IndexType.Size32) {
+                                index[i] = p32Idx[i - 2];
+                            }
+                            else {
+                                index[i] = p16Idx[i - 2];
+                            }
+
+                            // Perform single-index increment at the last tri index
+                            if (i == 2) {
+                                if (indexData.indexBuffer.Type == IndexType.Size32) {
+                                    count32++;
+                                }
+                                else {
+                                    count16++;
+                                }
+                            }
                         }
 
                         // populate tri original vertex index
@@ -237,60 +420,81 @@ namespace Axiom.Graphics {
 						v[i].y = *pReal++;
 						v[i].z = *pReal++;
 						// find this vertex in the existing vertex map, or create it
-						tri.sharedVertIndex[i] = FindOrCreateCommonVertex(v[i], vertexSet);
+						tri.sharedVertIndex[i] = FindOrCreateCommonVertex(v[i], vertexSet, indexSet, index[i]);
                     }
 
 					// Calculate triangle normal (NB will require recalculation for 
 					// skeletally animated meshes)
 					tri.normal = MathUtil.CalculateFaceNormal(v[0], v[1], v[2]);
+
 					// Add triangle to list
 					edgeData.triangles.Add(tri);
-					// Create edges from common list
-					EdgeData.Edge e = new EdgeData.Edge();
-					e.isDegenerate = true; // initialise as degenerate
 
-					if (tri.sharedVertIndex[0] < tri.sharedVertIndex[1]) {
-						// Set only first tri, the other will be completed in connectEdges
-						e.triIndex[0] = triStart + t;
-						e.sharedVertIndex[0] = tri.sharedVertIndex[0];
-						e.sharedVertIndex[1] = tri.sharedVertIndex[1];
-						e.vertIndex[0] = tri.vertIndex[0];
-						e.vertIndex[1] = tri.vertIndex[1];
-						((EdgeData.EdgeGroup)edgeData.edgeGroups[vertexSet]).edges.Add(e);
+                    try {
+                        // create edges from common list
+                        if (tri.sharedVertIndex[0] < tri.sharedVertIndex[1]) {
+                            CreateEdge(vertexSet, triStart + t,
+                                tri.vertIndex[0], tri.vertIndex[1],
+                                tri.sharedVertIndex[0], tri.sharedVertIndex[1]);
+                        }
+                        if (tri.sharedVertIndex[1] < tri.sharedVertIndex[2]) {
+                            CreateEdge(vertexSet, triStart + t,
+                                tri.vertIndex[1], tri.vertIndex[2],
+                                tri.sharedVertIndex[1], tri.sharedVertIndex[2]);
+                        }
+                        if (tri.sharedVertIndex[2] < tri.sharedVertIndex[0]) {
+                            CreateEdge(vertexSet, triStart + t,
+                                tri.vertIndex[2], tri.vertIndex[0],
+                                tri.sharedVertIndex[2], tri.sharedVertIndex[0]);
+                        }
+                    }
+                    catch (Exception ex) {
+                        // unlock those buffers!
+                        indexData.indexBuffer.Unlock();
+                        posBuffer.Unlock();
 
-						e = new EdgeData.Edge();
-						//e.isDegenerate = true;
-					}
-					if (tri.sharedVertIndex[1] < tri.sharedVertIndex[2]) {
-						// Set only first tri, the other will be completed in connectEdges
-						e.triIndex[0] = triStart + t;
-						e.sharedVertIndex[0] = tri.sharedVertIndex[1];
-						e.sharedVertIndex[1] = tri.sharedVertIndex[2];
-						e.vertIndex[0] = tri.vertIndex[1];
-						e.vertIndex[1] = tri.vertIndex[2];
-						((EdgeData.EdgeGroup)edgeData.edgeGroups[vertexSet]).edges.Add(e);
-
-						e = new EdgeData.Edge();
-						//e.isDegenerate = true;
-					}
-					if (tri.sharedVertIndex[2] < tri.sharedVertIndex[0]) {
-						// Set only first tri, the other will be completed in connectEdges
-						e.triIndex[0] = triStart + t;
-						e.sharedVertIndex[0] = tri.sharedVertIndex[2];
-						e.sharedVertIndex[1] = tri.sharedVertIndex[0];
-						e.vertIndex[0] = tri.vertIndex[2];
-						e.vertIndex[1] = tri.vertIndex[0];
-						((EdgeData.EdgeGroup)edgeData.edgeGroups[vertexSet]).edges.Add(e);
-
-						e = new EdgeData.Edge();
-						//e.isDegenerate = true;
-					}
+                        throw ex;
+                    }
                 } // for iterations
             } // unsafe
 
 			// unlock those buffers!
 			indexData.indexBuffer.Unlock();
 			posBuffer.Unlock();
+        }
+
+        /// <summary>
+        ///     
+        /// </summary>
+        /// <param name="vertexSet"></param>
+        /// <param name="triangleIndex"></param>
+        /// <param name="vertexIndex1"></param>
+        /// <param name="vertexIndex2"></param>
+        /// <param name="sharedVertIndex1"></param>
+        /// <param name="sharedVertIndex2"></param>
+        protected void CreateEdge(int vertexSet, int triangleIndex, int vertexIndex0, int vertexIndex1, int sharedVertIndex0, int sharedVertIndex1) {
+            UniqueEdge vertPair = new UniqueEdge();
+            vertPair.vertexIndex1 = sharedVertIndex0;
+            vertPair.vertexIndex2 = sharedVertIndex1;
+
+            if (uniqueEdges.Contains(vertPair)) {
+                throw new AxiomException("Edge is shared by too many triangles.");
+            }
+
+            uniqueEdges.Add(vertPair);
+
+            // create a new edge and initialize as degenerate
+            EdgeData.Edge e = new EdgeData.Edge();
+            e.isDegenerate = true;
+
+            // set only first tri, the other will be completed in ConnectEdges
+            e.triIndex[0] = triangleIndex;
+            e.sharedVertIndex[0] = sharedVertIndex0;
+            e.sharedVertIndex[1] = sharedVertIndex1;
+            e.vertIndex[0] = vertexIndex0;
+            e.vertIndex[1] = vertexIndex1;
+
+            ((EdgeData.EdgeGroup)edgeData.edgeGroups[vertexSet]).edges.Add(e);
         }
 
         /// <summary>
@@ -305,6 +509,7 @@ namespace Axiom.Graphics {
 
 				if (tri.sharedVertIndex[0] > tri.sharedVertIndex[1]) {
 					e = FindEdge(tri.sharedVertIndex[1], tri.sharedVertIndex[0]);
+
 					if(e != null) {
 						e.triIndex[1] = triIndex;
 						e.isDegenerate = false;
@@ -313,6 +518,7 @@ namespace Axiom.Graphics {
 				if (tri.sharedVertIndex[1] > tri.sharedVertIndex[2]) {
 					// Find the existing edge (should be reversed order)
 					e = FindEdge(tri.sharedVertIndex[2], tri.sharedVertIndex[1]);
+
 					if(e != null) {
 						e.triIndex[1] = triIndex;
 						e.isDegenerate = false;
@@ -320,6 +526,7 @@ namespace Axiom.Graphics {
 				}
 				if (tri.sharedVertIndex[2] > tri.sharedVertIndex[0]) {
 					e = FindEdge(tri.sharedVertIndex[0], tri.sharedVertIndex[2]);
+
 					if(e != null) {
 						e.triIndex[1] = triIndex;
 						e.isDegenerate = false;
@@ -357,16 +564,17 @@ namespace Axiom.Graphics {
 		/// <summary>
 		///		Finds an existing common vertex, or inserts a new one.
 		/// </summary>
-		/// <param name="vec"></param>
-		/// <param name="vertexSet"></param>
 		/// <returns></returns>
-		protected int FindOrCreateCommonVertex(Vector3 vec, int vertexSet) {
+		protected int FindOrCreateCommonVertex(Vector3 vec, int vertexSet, int indexSet, int originalIndex) {
 			for (int index = 0; index < vertices.Count; index++) {
 				CommonVertex commonVec = (CommonVertex)vertices[index];
 
 				if (MathUtil.FloatEqual(vec.x, commonVec.position.x, 1e-04f) && 
 					MathUtil.FloatEqual(vec.y, commonVec.position.y, 1e-04f) && 
-					MathUtil.FloatEqual(vec.z, commonVec.position.z, 1e-04f)) {
+					MathUtil.FloatEqual(vec.z, commonVec.position.z, 1e-04f) &&
+                    (commonVec.vertexSet == vertexSet || weldVerticesAcrossVertexSets) &&
+                    (commonVec.indexSet == indexSet || weldVerticesAcrossIndexSets) &&
+                    (commonVec.originalIndex == originalIndex || weldVertices)) {
 
 					return index;
 				}
@@ -377,7 +585,9 @@ namespace Axiom.Graphics {
 			newCommon.index = vertices.Count;
 			newCommon.position = vec;
 			newCommon.vertexSet = vertexSet;
-			vertices.Add(newCommon);
+            newCommon.indexSet = indexSet;
+            newCommon.originalIndex = originalIndex;
+            vertices.Add(newCommon);
 
 			return newCommon.index;
 		}
@@ -490,10 +700,25 @@ namespace Axiom.Graphics {
             ///      The vertex set this came from.
             /// </summary>
             public int vertexSet;
+            /// <summary>
+            ///     The index set this was referenced (first) from.
+            /// </summary>
+            public int indexSet;
+            /// <summary>
+            ///     Place of vertex in original vertex set.
+            /// </summary>
+            public int originalIndex;
         }
+
+		protected struct UniqueEdge {
+			public int vertexIndex1;
+			public int vertexIndex2;
+		}
 
         public class CommonVertexList : ArrayList {}
 
+		public class UniqueEdgeList : ArrayList {}
+
         #endregion Structs
-	}
+    }
 }

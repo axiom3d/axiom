@@ -98,4 +98,22 @@ namespace Axiom.Graphics {
 	///     Generics: List<ShadowRenderable>
 	/// </summary>
 	public class ShadowRenderableList : ArrayList {}
+
+	/// <summary>
+	///		Generics: List<RenderOperation>
+	/// </summary>
+	public class OperationTypeList : ArrayList {
+		public void Add(OperationType type) {
+			base.Add(type);
+		}
+
+		public new OperationType this[int index] {
+			get {
+				return (OperationType)base[index];
+			}
+			set {
+				base[index] = value;
+			}
+		}
+	}
 }

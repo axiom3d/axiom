@@ -1133,7 +1133,7 @@ namespace Axiom.Core {
 			UpdateView();
 			UpdateFrustum();
 
-			op.operationType = RenderMode.LineList;
+			op.operationType = OperationType.LineList;
 			op.useIndices = false;
 			op.vertexData = vertexData;
 		}

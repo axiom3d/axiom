@@ -42,11 +42,6 @@ namespace Axiom.Graphics {
 		/// </summary>
 		public abstract bool CastShadows { get; set; }
 
-		/// <summary>
-		///		Gets details of the edges which might be used to determine a silhouette.
-		/// </summary>
-		public abstract EdgeData EdgeList { get; }
-
 		#endregion Properties
 
 		#region Methods
@@ -59,7 +54,20 @@ namespace Axiom.Graphics {
 		/// <returns></returns>
 		public abstract AxisAlignedBox GetDarkCapBounds(Light light, float dirLightExtrusionDist);
 
-		/// <summary>
+        /// <summary>
+        ///		Gets details of the edges which might be used to determine a silhouette.
+        /// </summary>
+        /// <remarks>Defaults to LOD index 0.</remarks>
+        public EdgeData GetEdgeList() {
+            return GetEdgeList(0);
+        }
+
+        /// <summary>
+        ///		Gets details of the edges which might be used to determine a silhouette.
+        /// </summary>
+        public abstract EdgeData GetEdgeList(int lodIndex);
+
+        /// <summary>
 		///		Gets the world space bounding box of the light cap.
 		/// </summary>
 		/// <returns></returns>
@@ -200,13 +208,16 @@ namespace Axiom.Graphics {
 
 			LightType lightType = light.Type;
 
-			// Lock index buffer for writing
+            bool extrudeToInfinity = (flags & (int)ShadowRenderableFlags.ExtrudeToInfinity) > 0;
+
+            // Lock index buffer for writing
 			IntPtr idxPtr = indexBuffer.Lock(BufferLocking.Discard);
 
-			unsafe {
+            int indexStart = 0;
+
+            unsafe {
 				// TODO: Will currently cause an overflow for 32 bit indices, revisit
 				short* pIdx = (short*)idxPtr.ToPointer();
-				int indexStart = 0;
 				int count = 0;
 
 				// Iterate over the groups and form renderables for each based on their
@@ -215,7 +226,9 @@ namespace Axiom.Graphics {
 					EdgeData.EdgeGroup eg = (EdgeData.EdgeGroup)edgeData.edgeGroups[groupCount];
 					ShadowRenderable si = (ShadowRenderable)shadowRenderables[groupCount];
 
-					// Initialise the index bounds for this shadow renderable
+                    RenderOperation lightShadOp = null;
+
+                    // Initialise the index bounds for this shadow renderable
 					RenderOperation shadOp = si.GetRenderOperationForUpdate();
 					shadOp.indexData.indexCount = 0;
 					shadOp.indexData.indexStart = indexStart;
@@ -228,8 +241,9 @@ namespace Axiom.Graphics {
 					for (int edgeCount = 0; edgeCount < eg.edges.Count; edgeCount++) {
 						EdgeData.Edge edge = (EdgeData.Edge)eg.edges[edgeCount];
 
-						EdgeData.Triangle t1 = (EdgeData.Triangle)edgeData.triangles[edge.triIndex[0]];
-						EdgeData.Triangle t2 = (EdgeData.Triangle)edgeData.triangles[edge.triIndex[1]];
+                        EdgeData.Triangle t1 = (EdgeData.Triangle)edgeData.triangles[edge.triIndex[0]];
+						EdgeData.Triangle t2 = 
+                            edge.isDegenerate ? (EdgeData.Triangle)edgeData.triangles[edge.triIndex[0]] : (EdgeData.Triangle)edgeData.triangles[edge.triIndex[1]];
 
 						if (t1.lightFacing && (edge.isDegenerate || !t2.lightFacing)) {
 							/* Silhouette edge, first tri facing the light
@@ -254,13 +268,13 @@ namespace Axiom.Graphics {
 							pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
 							shadOp.indexData.indexCount += 3;
 
-							//if (lightType != LightType.Directional) {
-							// additional tri to make quad
-							pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
-							pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
-							pIdx[count++] = (short)edge.vertIndex[1];
-							shadOp.indexData.indexCount += 3;
-							//}
+							if (!(lightType == LightType.Directional && extrudeToInfinity)) {
+							    // additional tri to make quad
+							    pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
+							    pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
+							    pIdx[count++] = (short)edge.vertIndex[1];
+							    shadOp.indexData.indexCount += 3;
+							}
 
 							// Do dark cap tri
 							// Use McGuire et al method, a triangle fan covering all silhouette
@@ -286,13 +300,13 @@ namespace Axiom.Graphics {
 							pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
 							shadOp.indexData.indexCount += 3;
 
-							//if (lightType != LightType.Directional) {
-							// additional tri to make quad
-							pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
-							pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
-							pIdx[count++] = (short)edge.vertIndex[0];
-							shadOp.indexData.indexCount += 3;
-							//}
+							if (!(lightType == LightType.Directional && extrudeToInfinity)) {
+							    // additional tri to make quad
+							    pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
+							    pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
+							    pIdx[count++] = (short)edge.vertIndex[0];
+							    shadOp.indexData.indexCount += 3;
+							}
 
 							// Do dark cap tri
 							// Use McGuire et al method, a triangle fan covering all silhouette
@@ -315,7 +329,6 @@ namespace Axiom.Graphics {
 					// Do light cap
 					if ((flags & (int)ShadowRenderableFlags.IncludeLightCap) > 0) {
 						ShadowRenderable lightCapRend = null;
-						RenderOperation lightShadOp = null;
 
 						if(si.IsLightCapSeperate) {
 							// separate light cap
@@ -346,14 +359,22 @@ namespace Axiom.Graphics {
 							}
 						}
 					}
+
 					// update next indexStart (all renderables sharing the buffer)
 					indexStart += shadOp.indexData.indexCount;
-				}
+
+                    // add on the light cap too
+                    if (lightShadOp != null) {
+                        indexStart += lightShadOp.indexData.indexCount;
+                    }
+                }
 			}
 
 			// Unlock index buffer
 			indexBuffer.Unlock();
-		}
+
+            Debug.Assert(indexStart <= indexBuffer.IndexCount, "Index buffer overrun while generating shadow volume!");
+        }
 
 		/// <summary>
 		///		Utility method for extruding a bounding box.

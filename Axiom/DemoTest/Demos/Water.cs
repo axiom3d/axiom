@@ -831,9 +831,9 @@ namespace Demos {
 			// Ogre Wave Generation Logic - scale pressure according to time passed
 			for(int addx = (int)fx; addx <= (int)fx + 1; addx++) {
 				for(int addy = (int)fy; addy <= (int)fy + 1; addy++) {
-					float diffy = fy - (float)Math.Floor(addy);
-					float diffx = fx - (float)Math.Floor(addx);
-					float dist= (float) Math.Sqrt(diffy*diffy + diffx*diffx);
+					float diffy = fy - (float)Math.Floor((double)addy);
+                    float diffx = fx - (float)Math.Floor((double)addx);
+                    float dist= (float) Math.Sqrt(diffy*diffy + diffx*diffx);
 					float power = (1 - dist) * cmplxAdj * speed;
 
 					if (power < 0) { 

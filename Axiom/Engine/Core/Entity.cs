@@ -141,7 +141,11 @@ namespace Axiom.Core {
 		///		Flag indicating whether hardware skinning is supported by this entity's materials.
 		/// </summary>
 		protected bool useHardwareSkinning;
-		/// <summary>
+        /// <summary>
+        ///     Flag indicating whether we have a vertex program in use on any of our subentities.
+        /// </summary>
+        protected bool vertexProgramInUse;
+        /// <summary>
 		///		Records the last frame in which animation was updated.
 		/// </summary>
 		protected ulong frameAnimationLastUpdated;
@@ -200,7 +204,7 @@ namespace Axiom.Core {
 				PrepareTempBlendedBuffers();
 			}
 
-			EvaluateHardwareSkinning();
+			ReevaluateVertexProcessing();
 
 			// LOD default settings
 			meshLodFactorInv = 1.0f;
@@ -269,12 +273,6 @@ namespace Axiom.Core {
 			}
 			set {
 				displaySkeleton = value;
-			}
-		}
-
-		public override EdgeData EdgeList {
-			get {
-				return mesh.EdgeList;
 			}
 		}
 
@@ -583,6 +581,36 @@ namespace Axiom.Core {
 				frameAnimationLastUpdated = currentFrameNumber;
 			}
 		}
+
+        /// <summary>
+        ///    For entities based on animated meshes, gets the AnimationState object for a single animation.
+        /// </summary>
+        /// <remarks>
+        ///    You animate an entity by updating the animation state objects. Each of these represents the
+        ///    current state of each animation available to the entity. The AnimationState objects are
+        ///    initialized from the Mesh object.
+        /// </remarks>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public AnimationStateCollection GetAllAnimationStates() {
+            return animationState;
+        }
+
+        /// <summary>
+        ///    For entities based on animated meshes, gets the AnimationState object for a single animation.
+        /// </summary>
+        /// <remarks>
+        ///    You animate an entity by updating the animation state objects. Each of these represents the
+        ///    current state of each animation available to the entity. The AnimationState objects are
+        ///    initialized from the Mesh object.
+        /// </remarks>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public AnimationState GetAnimationState(string name) {
+            Debug.Assert(animationState.ContainsKey(name), "animationState.ContainsKey(name)");
+
+            return animationState[name];
+        }
 			
 		#endregion Methods
 
@@ -598,35 +626,9 @@ namespace Axiom.Core {
 
 		#region Implementation of SceneObject
 
-		/// <summary>
-		///    For entities based on animated meshes, gets the AnimationState object for a single animation.
-		/// </summary>
-		/// <remarks>
-		///    You animate an entity by updating the animation state objects. Each of these represents the
-		///    current state of each animation available to the entity. The AnimationState objects are
-		///    initialized from the Mesh object.
-		/// </remarks>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		public AnimationStateCollection GetAllAnimationStates() {
-			return animationState;
-		}
-
-		/// <summary>
-		///    For entities based on animated meshes, gets the AnimationState object for a single animation.
-		/// </summary>
-		/// <remarks>
-		///    You animate an entity by updating the animation state objects. Each of these represents the
-		///    current state of each animation available to the entity. The AnimationState objects are
-		///    initialized from the Mesh object.
-		/// </remarks>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		public AnimationState GetAnimationState(string name) {
-			Debug.Assert(animationState.ContainsKey(name), "animationState.ContainsKey(name)");
-
-			return animationState[name];
-		}
+        public override EdgeData GetEdgeList(int lodIndex) {
+            return mesh.GetEdgeList(lodIndex);
+        }
 
 		public override void NotifyCurrentCamera(Camera camera) {
 			if(parentNode != null) {
@@ -689,9 +691,15 @@ namespace Axiom.Core {
 		/// <summary>
 		///		Trigger an evaluation of whether hardware skinning is supported for this entity.
 		/// </summary>
-		protected internal void EvaluateHardwareSkinning() {
-			// check for each sub entity
-			for(int i = 0; i < this.SubEntityCount; i++) {
+		protected internal void ReevaluateVertexProcessing() {
+            // init
+            useHardwareSkinning = false;
+            vertexProgramInUse = false;
+
+            bool firstPass = true;
+
+            // check for each sub entity
+			for(int i = 0; i < this.SubEntityCount; i++, firstPass = false) {
 				SubEntity subEntity = GetSubEntity(i);
 
 				// grab the material and make sure it is loaded first
@@ -701,28 +709,31 @@ namespace Axiom.Core {
 				Technique t = m.GetBestTechnique();
 
 				if(t == null) {
-					// no supported techniques
-					useHardwareSkinning = false;
-					return;
+                    // no supported techniques
+					continue;
 				}
 
 				Pass p = t.GetPass(0);
 
 				if(p == null) {
 					// no passes, so invalid
-					useHardwareSkinning = false;
-					return;
-				}
+                    continue;
+                }
 
-				if(!p.HasVertexProgram || !p.VertexProgram.IsSkeletalAnimationIncluded) {
-					// if one material does not support skeletal animation, then treat
-					// them all the same
-					useHardwareSkinning = false;
-					return;
-				}
+				if(p.HasVertexProgram) {
+                    // If one material uses a vertex program, set this flag 
+                    // Causes some special processing like forcing a separate light cap
+                    vertexProgramInUse = true;
 
-				// if we got this far, all materials support hardware skinning!
-				useHardwareSkinning = true;
+                    // All materials must support skinning for us to consider using
+                    // hardware skinning - if one fails we use software
+                    if (firstPass) {
+                        useHardwareSkinning = p.VertexProgram.IsSkeletalAnimationIncluded;
+                    }
+                    else {
+                        useHardwareSkinning = useHardwareSkinning && p.VertexProgram.IsSkeletalAnimationIncluded;
+                    }
+				}
 			}
 		}
 
@@ -950,9 +961,9 @@ namespace Axiom.Core {
 			}
 
 			// We need to search the edge list for silhouette edges
-			EdgeData edgeList = this.EdgeList;
+            EdgeData edgeList = GetEdgeList();
 
-			// Init shadow renderable list if required
+            // Init shadow renderable list if required
 			bool init = (shadowRenderables.Count == 0);
 
 			if(init) {
@@ -987,21 +998,21 @@ namespace Axiom.Core {
 					// Create a new renderable, create a separate light cap if
 					// we're using hardware skinning since otherwise we get
 					// depth-fighting on the light cap
-					esr = new EntityShadowRenderable(this, indexBuffer, data, useHardwareSkinning, subEntity);
+					esr = new EntityShadowRenderable(this, indexBuffer, data, vertexProgramInUse || !extrudeVertices, subEntity);
 
 					shadowRenderables.Add(esr);
 				}
 				else {
 					esr = (EntityShadowRenderable)shadowRenderables[i];
 
-					if (this.HasSkeleton) {
-						// If we have a skeleton, we have no guarantee that the position
-						// buffer we used last frame is the same one we used last frame
-						// since a temporary buffer is requested each frame
-						// therefore, we need to update the EntityShadowRenderable
-						// with the current position buffer
-						esr.RebindPositionBuffer();
-					}
+                    if(this.HasSkeleton) {
+					    // If we have a skeleton, we have no guarantee that the position
+					    // buffer we used last frame is the same one we used last frame
+					    // since a temporary buffer is requested each frame
+					    // therefore, we need to update the EntityShadowRenderable
+					    // with the current position buffer
+					    esr.RebindPositionBuffer();
+                    }
 				}
 
 				// For animated entities we need to recalculate the face normals
@@ -1009,7 +1020,19 @@ namespace Axiom.Core {
 					if (egi.vertexData != mesh.SharedVertexData || !updatedSharedGeomNormals) {
 						// recalculate face normals
 						edgeList.UpdateFaceNormals(egi.vertexSet, esr.PositionBuffer);
-						if (egi.vertexData == mesh.SharedVertexData) {
+
+                        // If we're not extruding in software we still need to update 
+                        // the latter part of the buffer (the hardware extruded part)
+                        // with the latest animated positions
+                        if (!extrudeVertices) {
+                            IntPtr srcPtr = esr.PositionBuffer.Lock(BufferLocking.Normal);
+                            IntPtr destPtr = new IntPtr(srcPtr.ToInt32() + (egi.vertexData.vertexCount * 3));
+
+                            // 12 = sizeof(float) * 3
+                            Memory.Copy(srcPtr, destPtr, 12 * egi.vertexData.vertexCount);
+                        }
+
+                        if (egi.vertexData == mesh.SharedVertexData) {
 							updatedSharedGeomNormals = true;
 						}
 					}
@@ -1175,8 +1198,8 @@ namespace Axiom.Core {
 				else {
 					// Vertex count must take into account the doubling of the buffer,
 					// because second half of the buffer is the extruded copy
-					renderOp.vertexData.vertexCount = 
-						vertexData.vertexCount * 2;
+					renderOp.vertexData.vertexCount = vertexData.vertexCount * 2;
+
 					if(createSeparateLightCap) {
 						// Create child light cap
 						lightCap = new EntityShadowRenderable(parent, indexBuffer, vertexData, false, subEntity, true);

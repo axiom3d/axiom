@@ -144,7 +144,7 @@ namespace Axiom.Core {
 
 				// since the material has changed, re-evaulate its support of skeletal animation
 				if(parent.Mesh.HasSkeleton) {
-                    parent.EvaluateHardwareSkinning();
+                    parent.ReevaluateVertexProcessing();
                 }
             }
         }
