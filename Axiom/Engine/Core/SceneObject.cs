@@ -148,7 +148,7 @@ namespace Axiom.Core {
                 return parentNode.ShowBoundingBox;
             }
             set {
-                parentNode.ShowBoundingBox = true;
+                parentNode.ShowBoundingBox = value;
             }
         }
 
