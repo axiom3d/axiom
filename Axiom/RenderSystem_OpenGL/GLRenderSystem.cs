@@ -634,9 +634,9 @@ namespace RenderSystem_OpenGL {
                 return;
             }
 
-            if(textureUnits[stage].ColorBlendMode == blendMode) {
-                return;
-            }
+            //if(textureUnits[stage].ColorBlendMode == blendMode) {
+           //     return;
+           // }
 
             int src1op, src2op, cmd;
 

@@ -26,14 +26,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Controllers;
-using Axiom.Animating;
 using Axiom.Enumerations;
 using Axiom.Exceptions;
-using Axiom.SubSystems.Rendering;
+using Axiom.Gui;
 using Axiom.MathLib;
+using Axiom.SubSystems.Rendering;
 
 namespace Axiom.Core {
 
@@ -425,6 +426,7 @@ namespace Axiom.Core {
         /// </remarks>
         /// <param name="fileName"></param>
         public virtual void LoadWorldGeometry(String fileName) {
+            // TODO: Implement SceneManager.LoadWorldGeometry
         }
 
         #endregion
@@ -551,9 +553,9 @@ namespace Axiom.Core {
             // TODO: CULLING
 
             // lighting enabled?
-            if(firstTime || lastMaterialUsed.Lighting != material.Lighting) {
+            //if(firstTime || lastMaterialUsed.Lighting != material.Lighting) {
                 targetRenderSystem.LightingEnabled = material.Lighting;
-            }
+            //}
 
             // TODO: SHADING MODE
 
@@ -953,10 +955,6 @@ namespace Axiom.Core {
             get { return fogColor; }
         }
 
-        public LightCollection Lights {
-            get { return lightList; }
-        }
-
         #endregion
 
         #region Internal methods
@@ -976,7 +974,6 @@ namespace Axiom.Core {
         /// <param name="viewport">The target viewport</param>
         /// <param name="showOverlays">Whether or not any overlay objects should be rendered</param>
         internal void RenderScene(Camera camera, Viewport viewport, bool showOverlays) {
-            // TODO: Complete RenderScene implementation
             camInProgress = camera;
             hasCameraChanged = true;
 
@@ -1001,7 +998,8 @@ namespace Axiom.Core {
             // find camera's visible objects
             FindVisibleObjects(camera);
 
-            // TODO: Queue overlays
+            // Queue overlays for rendering
+            OverlayManager.Instance.QueueOverlaysForRendering(camera, renderQueue, viewport);
 
             // queue overlays and skyboxes for rendering
             QueueSkiesForRendering(camera);

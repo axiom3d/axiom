@@ -53,6 +53,7 @@ namespace Axiom.Core {
         ///    Default constructor.
         /// </summary>
         public WireBoundingBox() {
+            
             vertexData = new VertexData();
             vertexData.vertexCount = 24;
             vertexData.vertexStart = 0;
@@ -83,6 +84,16 @@ namespace Axiom.Core {
 
             // bind the color buffer
             binding.SetBinding(COLOR, buffer);
+
+            Material mat = MaterialManager.Instance["Core/WireBB"];
+
+            if(mat == null) {
+                mat = MaterialManager.Instance["BaseWhite"];
+                mat = mat.Clone("Core/WireBB");
+                mat.Lighting = false;
+            }
+
+            this.Material = mat;
         }
 
         #endregion Constructors
@@ -263,8 +274,6 @@ namespace Axiom.Core {
             op.indexData = null;
             op.operationType = RenderMode.LineList;
             op.useIndices = false;
-			
-            Engine.Instance.RenderSystem.LightingEnabled = false;
         }
 
         /// <summary>

@@ -34,6 +34,7 @@ using System.Windows.Forms;
 using Axiom.Collections;
 using Axiom.Controllers;
 using Axiom.Fonts;
+using Axiom.Gui;
 using Axiom.Physics;
 using Axiom.Input;
 using Axiom.ParticleSystems;
@@ -244,7 +245,7 @@ namespace Axiom.Core {
                 FontManager.Init();
 
                 // init overlay manager
-                OverlayManager.Init();
+                OverlayManager.Instance.ParseAllSources();
             }
 
             //LoadPlugins();
@@ -293,7 +294,7 @@ namespace Axiom.Core {
             // is this the first window being created?
             if(activeRenderSystem.RenderWindows.Count == 1) {
                 // init the material manager singleton
-                MaterialManager.Init();
+                MaterialManager.Instance.ParseAllSources();
 
                 // init the particle system manager singleton
                 ParticleSystemManager.Instance.ParseAllSources();
@@ -302,7 +303,7 @@ namespace Axiom.Core {
                 FontManager.Init();
 
                 // init overlay manager singleton
-                OverlayManager.Init();
+                OverlayManager.Instance.ParseAllSources();
             }
 
             return window;
@@ -512,11 +513,12 @@ namespace Axiom.Core {
             MaterialManager.Init();
             ParticleSystemManager.Init();
             SceneManagerList.Init();
+            OverlayManager.Init();
 
             GarbageManager.Instance.Add(ParticleSystemManager.Instance);
             GarbageManager.Instance.Add(MaterialManager.Instance);
             GarbageManager.Instance.Add(ControllerManager.Instance);
-
+            GarbageManager.Instance.Add(OverlayManager.Instance);
         }
 
         /// <summary>

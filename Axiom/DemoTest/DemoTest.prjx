@@ -27,18 +27,18 @@
   <Configuration runwithwarnings="True" name="Debug">
     <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="1" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="WinExe" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon=".\App.ico" />
     <Execution commandlineparameters="" consolepause="True" />
-    <Output directory=".\bin\" assembly="Demos" executeBeforeBuild="" executeAfterBuild="" />
+    <Output directory=".\bin\" assembly="Demos" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
   </Configuration>
   <Configurations active="Debug">
     <Configuration runwithwarnings="True" name="Debug">
       <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="1" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="WinExe" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon=".\App.ico" />
       <Execution commandlineparameters="" consolepause="True" />
-      <Output directory=".\bin\" assembly="Demos" executeBeforeBuild="" executeAfterBuild="" />
+      <Output directory=".\bin\" assembly="Demos" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
     </Configuration>
     <Configuration runwithwarnings="True" name="Release">
       <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="False" optimize="True" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="WinExe" definesymbols="TRACE" generatexmldocumentation="False" win32Icon=".\App.ico" />
       <Execution commandlineparameters="" consolepause="True" />
-      <Output directory=".\bin" assembly="DemoTest" executeBeforeBuild="" executeAfterBuild="" />
+      <Output directory=".\bin\" assembly="DemoTest" executeScript="" executeBeforeBuild="" executeAfterBuild="" />
     </Configuration>
   </Configurations>
 </Project>

@@ -101,7 +101,12 @@ namespace Axiom.Core {
         /// 
         /// </summary>
         public Material Material {
-            get { return material; }
+            get { 
+                return material; 
+            }
+            set {
+                material = value;
+            }
         }
 
         /// <summary>

@@ -306,9 +306,9 @@ namespace Axiom.Core {
             // not found in the cache, load the resource manually
 			
             // TODO: Load resources manually
-            throw new Axiom.Exceptions.AxiomException(String.Format("Resource '{0}' could not be found.  Be sure it is located in a known directory.", fileName));
+            //throw new Axiom.Exceptions.AxiomException(String.Format("Resource '{0}' could not be found.  Be sure it is located in a known directory.", fileName));
 
-            //return null;
+            return null;
         }
 
         /// <summary>
@@ -327,9 +327,9 @@ namespace Axiom.Core {
             // not found in the cache, load the resource manually
 			
             // TODO: Load resources manually
-            throw new Axiom.Exceptions.AxiomException(String.Format("Resource '{0}' could not be found.  Be sure it is located in a known directory.", fileName));
+            //throw new Axiom.Exceptions.AxiomException(String.Format("Resource '{0}' could not be found.  Be sure it is located in a known directory.", fileName));
 
-            //return null;
+            return null;
         }
 
         #endregion

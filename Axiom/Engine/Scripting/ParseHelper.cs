@@ -123,6 +123,27 @@ namespace Axiom.Scripting {
             return parms;
         }
 
+        /// <summary>
+        ///    Advances in the stream until it hits the next {.
+        /// </summary>
+        public static void SkipToNextOpenBrace(TextReader reader) {
+            string line = "";
+            while(line != null && line != "{") {
+                line = ReadLine(reader);
+            }
+        }
+
+        /// <summary>
+        ///    Advances in the stream until it hits the next }.
+        /// </summary>
+        /// <param name="reader"></param>
+        public static void SkipToNextCloseBrace(TextReader reader) {
+            string line = "";
+            while(line != null && line != "}") {
+                line = ReadLine(reader);
+            }
+        }
+
         #endregion
     }
 }

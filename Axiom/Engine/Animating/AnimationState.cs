@@ -137,7 +137,6 @@ namespace Axiom.Animating {
         /// <summary>
         ///		Gets/Sets whether this animation is enabled or not.
         /// </summary>
-        // TODO: Do something with this value, like *stop* the animation when set to false.
         public bool IsEnabled {
             get { return isEnabled; }
             set { isEnabled = value; }

@@ -109,7 +109,6 @@ namespace Axiom.SubSystems.Rendering {
                 textureUnits[i] = new TextureLayer();
         }
 
-
         #endregion
 
         #region Public properties
