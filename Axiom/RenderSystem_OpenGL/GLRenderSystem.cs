@@ -231,7 +231,8 @@ namespace RenderSystem_OpenGL {
             // by creating our texture manager, singleton TextureManager will hold our implementation
             textureMgr = new GLTextureManager();
 
-
+            // create our special program manager
+            gpuProgramMgr = new GLGpuProgramManager();
 
             // create a specialized instance, which registers itself as the singleton instance of HardwareBufferManager
             // use software buffers as a fallback, which operate as regular vertex arrays

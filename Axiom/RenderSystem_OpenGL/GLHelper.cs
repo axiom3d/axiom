@@ -196,13 +196,13 @@ namespace RenderSystem_OpenGL {
         }
 
         public static int ConvertEnum(GpuProgramType type) {
-//            switch(type) {
-//                case GpuProgramType.Vertex:
-//                    return GL_VERTEX_PROGRAM_ARB;
-//
-//                case GpuProgramType.Fragment:
-//                    return GL_FRAGMENT_PROGRAM_ARB;
-//            }
+            switch(type) {
+                case GpuProgramType.Vertex:
+                    return Gl.GL_VERTEX_PROGRAM_ARB;
+
+                case GpuProgramType.Fragment:
+                    return Gl.GL_FRAGMENT_PROGRAM_ARB;
+            }
 
             // make the compiler happy
             return 0;
@@ -288,34 +288,30 @@ namespace RenderSystem_OpenGL {
         private static IntPtr genProgramsARBPtr;
         private static IntPtr programStringARBPtr;
         private static IntPtr isProgramARBPtr;
-        private static IntPtr programLocalParameter4fvPtr;
+        private static IntPtr programLocalParameter4fvARBPtr;
 
         public static void glGenProgramsARB(int number, out int program) {
-            // HACK: Make compiler happy until this is implemented
-            program = 0;
-            // Gl.glGenProgramsARB(genProgramsARBPtr, number, out program);
+            Gl.glGenProgramsARB(genProgramsARBPtr, number, out program);
         }
 
         public static void glBindProgramARB(int type, int programId) {
-            // Gl.glBindProgramARB(bindProgramARBPtr, type, programId);
+            Gl.glBindProgramARB(bindProgramARBPtr, type, programId);
         }
 
         public static void glDeleteProgramsARB(int number, ref int program) {
-            // Gl.glDeleteProgramsARB(deleteProgramsARBPtr, number, ref program);
+            //Gl.glDeleteProgramsARB(deleteProgramsARBPtr, number, ref program);
         }
 
-        public static void glProgramStringARB(int type, int program, int length, string source) {
-            // Gl.glProgramStringARB(programStringARBPtr, type, program, length, source);
+        public static void glProgramStringARB(int type, int format, int length, string source) {
+            Gl.glProgramStringARB(programStringARBPtr, type, format, length, source);
         }
 
         public static bool glIsProgramARB(int programId) {
-            // return Gl.glIsProgramARB(programId);
-            // HACK: Make compiler happy until this is implemented
-            return true;
+            return Gl.glIsProgramARB(isProgramARBPtr, programId);
         }
 
         public static void glProgramLocalParameter4vfARB(int type, int index, float[] values) {
-            // Gl.glProgramLocalParameter4fv(type, index, values);
+            Gl.glProgramLocalParameter4fvARB(programLocalParameter4fvARBPtr, type, index, values);
         }
 
         #endregion
@@ -344,7 +340,7 @@ namespace RenderSystem_OpenGL {
             deleteProgramsARBPtr = Wgl.wglGetProcAddress("glDeleteProgramsARB");
             programStringARBPtr = Wgl.wglGetProcAddress("glProgramStringARB");
             isProgramARBPtr = Wgl.wglGetProcAddress("glIsProgramARB");
-            programLocalParameter4fvPtr = Wgl.wglGetProcAddress("glProgramLocalParameter4fv");
+            programLocalParameter4fvARBPtr = Wgl.wglGetProcAddress("glProgramLocalParameter4fvARB");
         }
     }
 
