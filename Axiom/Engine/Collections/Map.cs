@@ -144,6 +144,9 @@ namespace Axiom.Collections {
             get {
                 return count;
             }
+            set {
+                count = value;
+            }
         }
 
 		/// <summary>
