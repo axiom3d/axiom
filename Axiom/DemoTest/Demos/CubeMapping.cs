@@ -161,7 +161,7 @@ namespace Demos {
         #region Methods
 		
         protected override void CreateScene() {
-            scene.AmbientLight = new ColorEx(1.0f, 0.2f, 0.2f, 0.2f);
+            scene.AmbientLight = new ColorEx(1.0f, 0.5f, 0.5f, 0.5f);
 
             // create a default point light
             Light light = scene.CreateLight("MainLight");
@@ -391,6 +391,8 @@ namespace Demos {
                         orgSubMesh.vertexData,
                         subMesh.indexData,
                         normals);
+
+                    NormalsSaveNormalized(subMesh.vertexData, normals);
                 }
             } // for
 
@@ -459,9 +461,9 @@ namespace Demos {
                 Vector3 diff2 = v1 - v0;
                 Vector3 fn = diff1.Cross(diff2);
 
-                normals[3 * p0] += -fn.x;
-                normals[3 * p1] += -fn.y;
-                normals[3 * p2] += -fn.z;
+                normals[3 * p0] += fn.x;
+                normals[3 * p1 + 1] += fn.y;
+                normals[3 * p2 + 2] += fn.z;
             }
 
             // unlock index buffer
@@ -627,7 +629,9 @@ namespace Demos {
         /// <param name="e"></param>
         /// <returns></returns>
         protected override bool OnFrameStarted(object source, FrameEventArgs e) {
-            base.OnFrameStarted (source, e);
+            if(!base.OnFrameStarted (source, e)) {
+                return false;
+            }
 
             tm += e.TimeSinceLastFrame / timeDensity ;
 
