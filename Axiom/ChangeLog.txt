@@ -1,3 +1,5 @@
+10-9-2004
+
 This unfortunately is going to involve some breaking changes, but these are things I have been putting off and wanted to do before putting the first real release out there, so that everything is in better shape going forward.
 
 Here are some details for the curious:
