@@ -46,6 +46,7 @@ namespace Axiom.Core {
 
         public static void Init() {
             instance = new MeshManager();
+            instance.Initialize();
         }
 		
         #endregion

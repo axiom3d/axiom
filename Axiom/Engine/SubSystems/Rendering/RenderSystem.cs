@@ -256,14 +256,7 @@ namespace Axiom.SubSystems.Rendering {
         /// 
         /// </summary>
         /// <param name="autoCreateWindow"></param>
-        public virtual RenderWindow Initialize(bool autoCreateWindow) {
-            // initialize the MeshManager
-            MeshManager.Init();
-
-            // return null here, all subclasses of RenderSystem MUST override this, and
-            // call this base class method in their first line
-            return null;
-        }
+        public abstract RenderWindow Initialize(bool autoCreateWindow);
 
         /// <summary>
         ///		Shuts down the RenderSystem.
