@@ -172,7 +172,7 @@ namespace Axiom.Fonts {
 //            g.Clear(Color.Transparent);
 //
 //            // nice smooth text
-//            //g.TextRenderingHint = System.Drawing.TExt.TextRenderingHint.AntiAlias;
+//            //g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 //            //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 //
 //            // used for calculating position in the image for rendering the characters
