@@ -33,7 +33,7 @@ namespace Axiom.RenderSystems.OpenGL {
 	/// <summary>
 	/// 	Specialization of vertex/fragment programs for OpenGL.
 	/// </summary>
-	public abstract class GLGpuProgram : GpuProgram {
+	public class GLGpuProgram : GpuProgram {
         #region Fields
 
         /// <summary>
@@ -55,30 +55,49 @@ namespace Axiom.RenderSystems.OpenGL {
 
         #region Constructors
 
+        /// <summary>
+        ///     Constructor.
+        /// </summary>
+        /// <param name="name">Name of the program.</param>
+        /// <param name="type">Type of program (vertex or fragment).</param>
+        /// <param name="syntaxCode">Syntax code (i.e. arbvp1, etc).</param>
         internal GLGpuProgram(string name, GpuProgramType type, string syntaxCode) 
             : base(name, type, syntaxCode) {}
 
         #endregion Constructors
 
-        #region Abstract methods
+        #region GpuProgram Methods
 
         /// <summary>
         ///     Called when a program needs to be bound.
         /// </summary>
-        public abstract void Bind();
+        public virtual void Bind() {
+            // do nothing
+        }
 
         /// <summary>
         ///     Called when a program needs to be unbound.
         /// </summary>
-        public abstract void Unbind();
+        public virtual void Unbind() {
+            // do nothing
+        }
+
+        /// <summary>
+        ///     Called to create the program from source.
+        /// </summary>
+        protected override void LoadFromSource() {
+            // do nothing
+        }
 
         /// <summary>
         ///     Called when a program needs to bind the supplied parameters.
         /// </summary>
         /// <param name="parms"></param>
-        public abstract void BindParameters(GpuProgramParameters parms);
+        public virtual void BindParameters(GpuProgramParameters parms) {
+            // do nothing
+        }
 
-        #endregion Abstract methods
+        #endregion GpuProgram Methods
 
         #region Properties
 

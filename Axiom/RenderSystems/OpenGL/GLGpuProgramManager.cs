@@ -47,9 +47,9 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <returns></returns>
         public override GpuProgram Create(string name, GpuProgramType type, string syntaxCode) {
             // if there is none, this syntax code must not be supported
-            // just return the ARB one by default and it wont be used anyway
+            // just return the base GL program since it won't be doing anything anyway
             if(factories[syntaxCode] == null) {
-                return new ARB.ARBGpuProgram(name, type, syntaxCode);
+                return new GLGpuProgram(name, type, syntaxCode);
             }
 
             // get a reference to the factory for this syntax code
