@@ -206,7 +206,7 @@ namespace Axiom.SceneManagers.Octree {
         }
 
         public override void FindVisibleObjects(Camera cam) {
-            renderQueue.Clear();
+            GetRenderQueue().Clear();
             boxList.Clear();
             visible.Clear();
 
@@ -221,7 +221,7 @@ namespace Axiom.SceneManagers.Octree {
             numObjects = 0;
 
             //walk the octree, adding all visible Octreenodes nodes to the render queue.
-            WalkOctree((OctreeCamera)cam, renderQueue, octree, false);
+            WalkOctree((OctreeCamera)cam, GetRenderQueue(), octree, false);
 
             // Show the octree boxes & cull camera if required
             if(this.ShowBoundingBoxes || cullCamera) {
@@ -229,7 +229,7 @@ namespace Axiom.SceneManagers.Octree {
                     for(int i = 0; i < boxList.Count; i++) {
                         WireBoundingBox box = (WireBoundingBox)boxList[i];
 						
-                        renderQueue.AddRenderable(box);
+                        GetRenderQueue().AddRenderable(box);
                     }
                 }
 				
@@ -237,7 +237,7 @@ namespace Axiom.SceneManagers.Octree {
                     OctreeCamera c = (OctreeCamera)GetCamera("CullCamera");
 
                     if(c != null) {
-                        renderQueue.AddRenderable(c);
+                        GetRenderQueue().AddRenderable(c);
                     }
                 }
             }
@@ -306,7 +306,7 @@ namespace Axiom.SceneManagers.Octree {
                         visible.Add(node);
 
                         if(DisplayNodes) {
-                            renderQueue.AddRenderable(node);
+                            GetRenderQueue().AddRenderable(node);
                         }
 
                         // check if the scene manager or this node wants the bounding box shown.

@@ -45,16 +45,31 @@ namespace Axiom.Graphics {
     ///		complex multipass routines like stenciling.
     /// </remarks>
     public class RenderQueue {
-        #region Member variables
+        #region Fields
 
-        /// <summary>Cached list of render groups, indexed by RenderQueueGroupID</summary>
+        /// <summary>
+        ///		Cached list of render groups, indexed by RenderQueueGroupID.
+        ///	</summary>
         protected SortedList renderGroups = new SortedList();
-        /// <summary>Default render group for this queue.</summary>
+        /// <summary>
+        ///		Default render group for this queue.
+        ///	</summary>
         protected RenderQueueGroupID defaultGroup;
-        /// <summary>Default priority of items added to the render queue.</summary>
+		/// <summary>
+		///		Should passes be split by their lighting stage?
+		/// </summary>
+		protected bool splitPassesByLightingType;
+		/// <summary>
+		/// 
+		/// </summary>
+		protected bool splitNoShadowPasses;
+
+        /// <summary>
+        ///		Default priority of items added to the render queue.
+        ///	</summary>
         public const int DEFAULT_PRIORITY = 100;
 
-        #endregion
+        #endregion Fields
 
         #region Constructors
 
@@ -66,7 +81,9 @@ namespace Axiom.Graphics {
             defaultGroup = RenderQueueGroupID.Main;
 
             // create the main queue group up front
-            renderGroups.Add(RenderQueueGroupID.Main, new RenderQueueGroup());
+            renderGroups.Add(
+				RenderQueueGroupID.Main, 
+				new RenderQueueGroup(this, splitPassesByLightingType, splitNoShadowPasses));
         }
 
         #endregion
@@ -93,6 +110,43 @@ namespace Axiom.Graphics {
                 return renderGroups.Count;
             }
         }
+
+		/// <summary>
+		///		Gets/Sets whether or not the queue will split passes by their lighting type,
+		///		ie ambient, per-light and decal. 
+		/// </summary>
+		public bool SplitPassesByLightingType {
+			get {
+				return splitPassesByLightingType;
+			}
+			set {
+				splitPassesByLightingType = value;
+
+				// set the value for all render groups as well
+				for(int i = 0; i < renderGroups.Count; i++) {
+					GetQueueGroupByIndex(i).SplitPassesByLightingType = splitPassesByLightingType;
+				}
+			}
+		}
+
+		/// <summary>
+		///		Gets/Sets whether or not the queue will split passes which have shadow receive
+		///		turned off (in their parent material), which is needed when certain shadow
+		///		techniques are used.
+		/// </summary>
+		public bool SplitNoShadowPasses {
+			get {
+				return splitNoShadowPasses;
+			}
+			set {
+				splitNoShadowPasses = value;
+
+				// set the value for all render groups as well
+				for(int i = 0; i < renderGroups.Count; i++) {
+					GetQueueGroupByIndex(i).SplitNoShadowPasses = splitNoShadowPasses;
+				}
+			}
+		}
 
         #endregion
 
@@ -165,7 +219,7 @@ namespace Axiom.Graphics {
 			// see if there is a current queue group for this group id
 			if(renderGroups[queueID] == null) {
 				// create a new queue group for this group id
-				group = new RenderQueueGroup();
+				group = new RenderQueueGroup(this, splitPassesByLightingType, splitNoShadowPasses);
 
 				// add the new group to cached render group
 				renderGroups.Add(queueID, group);
@@ -211,8 +265,19 @@ namespace Axiom.Graphics {
     public class RenderQueueGroup {
         #region Fields
 
+		/// <summary>
+		///		Render queue that this queue group belongs to.
+		/// </summary>
+		protected RenderQueue parent;
+		/// <summary>
+		///		Should passes be split by their lighting stage?
+		/// </summary>
+		protected bool splitPassesByLightingType;
+		protected bool splitNoShadowPasses;
+		/// <summary>
+		///		List of priority groups.
+		/// </summary>
         protected HashList priorityGroups = new HashList();
-
 		/// <summary>
 		///		Are shadows enabled for this group?
 		/// </summary>
@@ -222,12 +287,19 @@ namespace Axiom.Graphics {
 
         #region Constructor
 
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public RenderQueueGroup() {
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		/// <param name="parent">Render queue that owns this group.</param>
+		/// <param name="splitPassesByLightingType">Split passes based on lighting stage?</param>
+		/// <param name="splitNoShadowPasses"></param>
+		public RenderQueueGroup(RenderQueue parent, bool splitPassesByLightingType, bool splitNoShadowPasses) {
 			// shadows enabled by default
 			shadowsEnabled = true;
+
+			this.splitNoShadowPasses = splitNoShadowPasses;
+			this.splitPassesByLightingType = splitPassesByLightingType;
+			this.parent = parent;
 		}
 
         #endregion
@@ -319,6 +391,43 @@ namespace Axiom.Graphics {
 			}
 		}
 
+		/// <summary>
+		///		Gets/Sets whether or not the queue will split passes by their lighting type,
+		///		ie ambient, per-light and decal. 
+		/// </summary>
+		public bool SplitPassesByLightingType {
+			get {
+				return splitPassesByLightingType;
+			}
+			set {
+				splitPassesByLightingType = value;
+
+				// set the value for all priority groups as well
+				for(int i = 0; i < priorityGroups.Count; i++) {
+					GetPriorityGroup(i).SplitPassesByLightingType = splitPassesByLightingType;
+				}
+			}
+		}
+
+		/// <summary>
+		///		Gets/Sets whether or not the queue will split passes which have shadow receive
+		///		turned off (in their parent material), which is needed when certain shadow
+		///		techniques are used.
+		/// </summary>
+		public bool SplitNoShadowPasses {
+			get {
+				return splitNoShadowPasses;
+			}
+			set {
+				splitNoShadowPasses = value;
+
+				// set the value for all priority groups as well
+				for(int i = 0; i < priorityGroups.Count; i++) {
+					GetPriorityGroup(i).SplitNoShadowPasses = splitNoShadowPasses;
+				}
+			}
+		}
+
         #endregion
     }
 
@@ -333,62 +442,135 @@ namespace Axiom.Graphics {
     ///		for detailed overlap control).
     /// </remarks>
     public class RenderPriorityGroup {
-        #region Member variables
+        #region Fields
 			
         protected internal ArrayList transparentPasses = new ArrayList();
-        protected internal SortedList solidPassMap;
+		/// <summary>
+		///		Solid pass list, used when no shadows, modulative shadows, or ambient passes for additive.
+		/// </summary>
+        protected internal SortedList solidPasses;
+		/// <summary>
+		///		Solid per-light pass list, used with additive shadows.
+		/// </summary>
+		protected internal SortedList solidPassesDiffuseSpecular;
+		/// <summary>
+		///		Solid decal (texture) pass list, used with additive shadows.
+		/// </summary>
+		protected internal SortedList solidPassesDecal;
+		/// <summary>
+		///		Solid pass list, used when shadows are enabled but shadow receive is turned off for these passes.
+		/// </summary>
+		protected internal SortedList solidPassesNoShadow;
+		/// <summary>
+		///		Should passes be split by their lighting stage?
+		/// </summary>
+		protected bool splitPassesByLightingType;
+		protected bool splitNoShadowPasses;
 
-        #endregion
+        #endregion Fields
 
         /// <summary>
         ///    Default constructor.
         /// </summary>
         internal RenderPriorityGroup() {
             // sorted list, using Pass as a key (sorted based on hashcode), and IRenderable as the value
-            solidPassMap = new SortedList(new SolidSort(), 50);
+            solidPasses = new SortedList(new SolidSort(), 50);
+			solidPassesDiffuseSpecular = new SortedList(new SolidSort(), 50);
+			solidPassesDecal = new SortedList(new SolidSort(), 50);
+			solidPassesNoShadow = new SortedList(new SolidSort(), 50);
         }
 
         #region Methods
 
         /// <summary>
-        /// 
+        ///		Add a renderable to this group.
         /// </summary>
-        /// <param name="item"></param>
-        public void AddRenderable(IRenderable item) {
+        /// <param name="renderable">Renderable to add to the queue.</param>
+        public void AddRenderable(IRenderable renderable) {
             Technique t = null;
                 
             // Check material & technique supplied (the former since the default implementation
-            // of getTechnique is based on it for backwards compatibility
-            if(item.Material == null || item.Technique == null) {
+            // of Technique is based on it for backwards compatibility
+            if(renderable.Material == null || renderable.Technique == null) {
                 // use default if not found
                 t = MaterialManager.Instance.GetByName("BaseWhite").GetTechnique(0);
             }
             else {
-                t = item.Technique;
+                t = renderable.Technique;
             }
 
             // loop through each pass and queue it up
             if(t.IsTransparent) {
-                for(int i = 0; i < t.NumPasses; i++) {
-                    // add to transparent list
-                    transparentPasses.Add(new RenderablePass(item, t.GetPass(i)));
-                }
+				AddTransparentRenderable(t, renderable);
             }
             else {
-                for(int i = 0; i < t.NumPasses; i++) {
-                    Pass pass = t.GetPass(i);
-
-                    if(solidPassMap[pass] == null) {
-                        // add a new list to hold renderables for this pass
-                        solidPassMap.Add(pass, new RenderableList());
-                    }
-
-                    // add to solid list for this pass
-                    RenderableList solidList = (RenderableList)solidPassMap[pass];
-                    solidList.Add(item);
-                }
+				if(splitNoShadowPasses && !t.Parent.ReceiveShadows) {
+					// Add solid renderable and add passes to no-shadow group
+					AddSolidRenderable(t, renderable, true);
+				}
+				else {
+					if(splitPassesByLightingType) {
+						AddSolidRenderableSplitByLightType(t, renderable);
+					}
+					else {
+						AddSolidRenderable(t, renderable, false);
+					}
+				}
             }
         }
+
+		/// <summary>
+		///		Internal method for adding a solid renderable
+		/// </summary>
+		/// <param name="technique">Technique to use for this renderable.</param>
+		/// <param name="renderable">Renderable to add to the queue.</param>
+		/// <param name="noShadows">True to add to the no shadow group, false otherwise.</param>
+		protected void AddSolidRenderable(Technique technique, IRenderable renderable, bool noShadows) {
+			SortedList passMap = null;
+
+			if(noShadows) {
+				passMap = solidPassesNoShadow;
+			}
+			else {
+				passMap = solidPasses;
+			}
+
+			for(int i = 0; i < technique.NumPasses; i++) {
+				Pass pass = technique.GetPass(i);
+
+				if(passMap[pass] == null) {
+					// add a new list to hold renderables for this pass
+					passMap.Add(pass, new RenderableList());
+				}
+
+				// add to solid list for this pass
+				RenderableList solidList = (RenderableList)passMap[pass];
+
+				solidList.Add(renderable);
+			}
+		}
+
+		/// <summary>
+		///		Internal method for adding a solid renderable ot the group based on lighting stage.
+		/// </summary>
+		/// <param name="technique">Technique to use for this renderable.</param>
+		/// <param name="renderable">Renderable to add to the queue.</param>
+		protected void AddSolidRenderableSplitByLightType(Technique technique, IRenderable renderable) {
+			// TODO
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		///		Internal method for adding a transparent renderable.
+		/// </summary>
+		/// <param name="technique">Technique to use for this renderable.</param>
+		/// <param name="renderable">Renderable to add to the queue.</param>
+		protected void AddTransparentRenderable(Technique technique, IRenderable renderable) {
+			for(int i = 0; i < technique.NumPasses; i++) {
+				// add to transparent list
+				transparentPasses.Add(new RenderablePass(renderable, technique.GetPass(i)));
+			}
+		}
 
         /// <summary>
         ///		Clears all the internal lists.
@@ -421,8 +603,10 @@ namespace Axiom.Graphics {
 
 			// We do not clear the unchanged solid pass maps, only the contents of each list
 			// This is because we assume passes are reused a lot and it saves resorting
-            ClearSolidPassMap(solidPassMap);
-			// TODO: Additional maps
+            ClearSolidPassMap(solidPasses);
+			ClearSolidPassMap(solidPassesDiffuseSpecular);
+			ClearSolidPassMap(solidPassesDecal);
+			ClearSolidPassMap(solidPassesNoShadow);
 
 			// Always empty the transparents list
 			transparentPasses.Clear();
@@ -441,8 +625,8 @@ namespace Axiom.Graphics {
         /// <param name="index"></param>
         /// <returns></returns>
         public Pass GetSolidPass(int index) {
-            Debug.Assert(index < solidPassMap.Count, "index < solidPasses.Count");
-            return (Pass)solidPassMap.GetKey(index);
+            Debug.Assert(index < solidPasses.Count, "index < solidPasses.Count");
+            return (Pass)solidPasses.GetKey(index);
         }
 
         /// <summary>
@@ -451,8 +635,8 @@ namespace Axiom.Graphics {
         /// <param name="index"></param>
         /// <returns></returns>
         public RenderableList GetSolidPassRenderables(int index) {
-            Debug.Assert(index < solidPassMap.Count, "index < solidPasses.Count");
-            return (RenderableList)solidPassMap.GetByIndex(index);
+            Debug.Assert(index < solidPasses.Count, "index < solidPasses.Count");
+            return (RenderableList)solidPasses.GetByIndex(index);
         }
 
         /// <summary>
@@ -484,11 +668,21 @@ namespace Axiom.Graphics {
 		/// </summary>
 		/// <param name="pass">Reference to the pass to remove.</param>
 		public void RemoveSolidPassEntry(Pass pass) {
-			if(solidPassMap[pass] != null) {
-				solidPassMap.Remove(pass);
+			if(solidPasses[pass] != null) {
+				solidPasses.Remove(pass);
 			}
 
-			// TODO: Additional solid pass lists
+			if(solidPassesDecal[pass] != null) {
+				solidPassesDecal.Remove(pass);
+			}
+
+			if(solidPassesDiffuseSpecular[pass] != null) {
+				solidPassesDiffuseSpecular.Remove(pass);
+			}
+
+			if(solidPassesNoShadow[pass] != null) {
+				solidPassesNoShadow.Remove(pass);
+			}
 		}
 
         #endregion
@@ -500,7 +694,7 @@ namespace Axiom.Graphics {
         /// </summary>
         public int NumSolidPasses {
             get {
-                return solidPassMap.Count;
+                return solidPasses.Count;
             }
         }
 
@@ -512,6 +706,33 @@ namespace Axiom.Graphics {
                 return transparentPasses.Count;
             }
         }
+
+		/// <summary>
+		///		Gets/Sets whether or not the queue will split passes by their lighting type,
+		///		ie ambient, per-light and decal. 
+		/// </summary>
+		public bool SplitPassesByLightingType {
+			get {
+				return splitPassesByLightingType;
+			}
+			set {
+				splitPassesByLightingType = value;
+			}
+		}
+
+		/// <summary>
+		///		Gets/Sets whether or not the queue will split passes which have shadow receive
+		///		turned off (in their parent material), which is needed when certain shadow
+		///		techniques are used.
+		/// </summary>
+		public bool SplitNoShadowPasses {
+			get {
+				return splitNoShadowPasses;
+			}
+			set {
+				splitNoShadowPasses = value;
+			}
+		}
 
         #endregion
 

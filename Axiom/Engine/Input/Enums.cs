@@ -1,7 +1,6 @@
 using System;
 
-namespace Axiom.Input
-{
+namespace Axiom.Input {
     /// <summary>
     ///    Enum containing all the possible keyboard codes.
     /// </summary>
@@ -711,6 +710,7 @@ namespace Axiom.Input
     /// <summary>
     ///    Possible buttons that can be found on a mouse.
     /// </summary>
+    [Flags]
     public enum MouseButtons {
         /// <summary>
         ///    Typically the left button.
@@ -725,4 +725,18 @@ namespace Axiom.Input
         /// </summary>
         Button2 = 4
     }
+
+	/// <summary>
+	///		Special keys that can alter input behavior when down.
+	/// </summary>
+	[Flags]
+	public enum ModifierKeys {
+		None			= 0,
+		Shift			= 1,
+		Control			= 2,
+		Alt				= 4,
+		MouseButton0	= 8,
+		MouseButton1	= 16,
+		MouseButton2	= 32
+	}
 }

@@ -13,7 +13,7 @@ namespace Axiom.Core
 		///		Creates a new input reader implementation specific to this platform.
 		/// </summary>
 		/// <returns></returns>
-		IInputReader CreateInputReader();
+		InputReader CreateInputReader();
 
 		/// <summary>
 		///		Creates a new timer implementation specific to this platform.

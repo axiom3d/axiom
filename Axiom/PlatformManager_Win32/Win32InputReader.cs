@@ -11,174 +11,231 @@ using DInput = Microsoft.DirectX.DirectInput;
 namespace Axiom.Platforms.Win32
 {
 	/// <summary>
-	/// Summary description for Win32InputReader.
+	///		Win32 input implementation using Managed DirectInput (tm).
 	/// </summary>
-	public class Win32InputReader : IInputReader {
+	public class Win32InputReader : InputReader {
+		#region Fields
+
+		/// <summary>
+		///		Holds a snapshot of DirectInput keyboard state.
+		/// </summary>
 		private KeyboardState keyboardState;
+		/// <summary>
+		///		Holds a snapshot of DirectInput mouse state.
+		/// </summary>
 		private MouseState mouseState;
+		/// <summary>
+		///		DirectInput keyboard device.
+		/// </summary>
 		private DInput.Device keyboardDevice;
+		/// <summary>
+		///		DirectInput mouse device.
+		/// </summary>
 		private DInput.Device mouseDevice;
 		private int mouseRelX, mouseRelY, mouseRelZ;
 		private int mouseAbsX, mouseAbsY, mouseAbsZ;
 		private bool isInitialised;
 		private bool useMouse, useKeyboard, useGamepad;
 		private int mouseButtons;
+		/// <summary>
+		///		Active host control that reserves control over the input.
+		/// </summary>
 		private System.Windows.Forms.Control control;
 		private bool ownMouse;
+		private ModifierKeys modifiers;
 
-		public Win32InputReader() {
-		}
-
-		#region Implementation of Axiom.Input.InputSystem
+		#endregion Fields
+		
+		#region Constants
 
 		/// <summary>
-		///		
+		///		Size to use for DirectInput's input buffer.
 		/// </summary>
-		public void Capture() {
-			if(useKeyboard) {
-				// capture the current keyboard state
-				try {
-					keyboardState =  keyboardDevice.GetCurrentKeyboardState();		
+		const int BufferSize = 16;
+
+		#endregion Constants
+
+		#region InputReader Members
+
+		#region Properties
+
+		/// <summary>
+		///		Retrieves the relative (compared to the last input poll) mouse movement
+		///		on the X (horizontal) axis.
+		/// </summary>
+		public override int RelativeMouseX {
+			get { 
+				return mouseRelX; 
+			}
+		}
+
+		/// <summary>
+		///		Retrieves the relative (compared to the last input poll) mouse movement
+		///		on the Y (vertical) axis.
+		/// </summary>
+		public override int RelativeMouseY {
+			get { 
+				return mouseRelY; 
+			}
+		}
+
+		/// <summary>
+		///		Retrieves the relative (compared to the last input poll) mouse movement
+		///		on the Z (mouse wheel) axis.
+		/// </summary>
+		public override int RelativeMouseZ {
+			get { 
+				return mouseRelZ; 
+			}
+		}
+
+		/// <summary>
+		///		Retrieves the absolute mouse position on the X (horizontal) axis.
+		/// </summary>
+		public override int AbsoluteMouseX {
+			get { 
+				return mouseAbsX; 
+			}
+		}
+
+		/// <summary>
+		///		Retrieves the absolute mouse position on the Y (vertical) axis.
+		/// </summary>
+		public override int AbsoluteMouseY {
+			get { 
+				return mouseAbsY; 
+			}
+		}
+
+		/// <summary>
+		///		Retrieves the absolute mouse position on the Z (mouse wheel) axis.
+		/// </summary>
+		public override int AbsoluteMouseZ {
+			get { 
+				return mouseAbsZ; 
+			}
+		}
+
+		/// <summary>
+		///		Get/Set whether or not to use event based keyboard input notification.
+		/// </summary>
+		/// <value>
+		///		When true, events will be fired when keyboard input occurs on a call to <see cref="Capture"/>.
+		///		When false, the current keyboard state will be available via <see cref="IsKeyPressed"/> .
+		/// </value>
+		public override bool UseKeyboardEvents {
+			get {
+				return useKeyboardEvents;
+			}
+			set {
+				if(useKeyboardEvents != value) {
+					useKeyboardEvents = value;
+
+					// dump the current keyboard device (if any)
+					if(keyboardDevice != null) {
+						keyboardDevice.Unacquire();
+						keyboardDevice.Dispose();
+					}
+
+					// re-init the keyboard
+					InitializeKeyboard();
 				}
-				catch (InputException) {
-					// DirectInput may be telling us that the input stream has been
-					// interrupted.  We aren't tracking any state between polls, so
-					// we don't have any special reset that needs to be done.
-					// We just re-acquire and try again.
-	        
-					// If input is lost then acquire and keep trying.
-					InputException ie;
+			}
+		}
 
-					bool loop = true;
-					do {
-						try {
-							// attempt to re-acquire the device
-							keyboardDevice.Acquire();
+		/// <summary>
+		///		Get/Set whether or not to use event based mouse input notification.
+		/// </summary>
+		/// <value>
+		///		When true, events will be fired when mouse input occurs on a call to <see cref="Capture"/>.
+		///		When false, the current mouse state will be available via <see cref="IsMousePressed"/> .
+		/// </value>
+		public override bool UseMouseEvents {
+			get {
+				return useMouseEvents;
+			}
+			set {
+				if(useMouseEvents != value) {
+					useMouseEvents = value;
 
-							// grab the fresh keyboard state
-							// not doing so produces unpredictable results, mainly keys pressed that
-							// really are not
-							keyboardState =  keyboardDevice.GetCurrentKeyboardState();		
+					// dump the current keyboard device (if any)
+					if(mouseDevice != null) {
+						mouseDevice.Unacquire();
+						mouseDevice.Dispose();
+					}
 
-							loop = false;
-						}
-						catch(InputLostException) {
-							loop = true;
-						}
-						catch(InputException inputException) {
-							ie = inputException;
-							loop = false;
-						}
-						catch(Exception) {}
-					} while (loop);
+					// re-init the keyboard
+					InitializeMouse();
+				}
+			}
+		}
 
-					// Exception may be OtherApplicationHasPriorityException or other exceptions.
-					// This may occur when the app is minimized or in the process of 
-					// switching, so just try again later.
-					return; 
 
+		#endregion Properties
+
+		#region Methods
+
+		/// <summary>
+		///		Captures the state of all active input controllers.
+		/// </summary>
+		public override void Capture() {
+			if(useKeyboard) {
+				if(useKeyboardEvents) {
+					ReadBufferedKeyboardData();
+				}
+				else {
+					// TODO: Grab keyboard modifiers
+					CaptureKeyboard();
 				}
 			}
 
 			if(useMouse) {
-				try {
-					// try to capture the current mouse state
-					mouseState = mouseDevice.CurrentMouseState;
-
-					// store the updated absolute values
-					mouseAbsX += mouseState.X;
-					mouseAbsY += mouseState.Y;
-					mouseAbsZ += mouseState.Z;
-
-					// calc relative deviance from center
-					mouseRelX = mouseState.X;
-					mouseRelY = mouseState.Y; 
-					mouseRelZ = mouseState.Z; 
-
-					byte[] buttons = mouseState.GetMouseButtons();
-
-					// clear the flags
-					mouseButtons = 0;
-
-					for(int i = 0; i < buttons.Length; i++) {
-						if((buttons[i] & 0x80) != 0) {
-							mouseButtons |= (1 << i);
-						}
-					}
+				if(useMouseEvents) {
 				}
-				catch (DirectXException) {
-					// DirectInput may be telling us that the input stream has been
-					// interrupted.  We aren't tracking any state between polls, so
-					// we don't have any special reset that needs to be done.
-					// We just re-acquire and try again.
-        
-					// If input is lost then acquire and keep trying.
-					InputException ie;
-
-					bool loop = true;
-					do {
-						try {
-							// attempt to re-acquire the device
-							mouseDevice.Acquire();
-
-							// grab the fresh keyboard state
-							// not doing so produces unpredictable results, mainly keys pressed that
-							// really are not
-							mouseState = mouseDevice.CurrentMouseState;		
-
-							loop = false;
-						}
-						catch(InputLostException) {
-							loop = true;
-						}
-						catch(InputException inputException) {
-							ie = inputException;
-							loop = false;
-						}
-					} while (loop);
-
-					// Exception may be OtherApplicationHasPriorityException or other exceptions.
-					// This may occur when the app is minimized or in the process of 
-					// switching, so just try again later.
-					return; 
+				else {
+					CaptureMouse();
 				}
 			}
 		}
 
 		/// <summary>
-		///		
+		///		Intializes DirectInput for use on Win32 platforms.
 		/// </summary>
 		/// <param name="window"></param>
-		/// <param name="eventQueue"></param>
 		/// <param name="useKeyboard"></param>
 		/// <param name="useMouse"></param>
 		/// <param name="useGamepad"></param>
-		public void Initialize(RenderWindow window, Queue eventQueue, bool useKeyboard, bool useMouse, bool useGamepad, bool ownMouse) {
+		public override void Initialize(RenderWindow window, bool useKeyboard, bool useMouse, bool useGamepad, bool ownMouse) {
 			this.useKeyboard = useKeyboard;
 			this.useMouse = useMouse;
 			this.useGamepad = useGamepad;
 			this.ownMouse = ownMouse;
 
+			// for Windows, this should be a S.W.F.Control
 			control = window.Handle as System.Windows.Forms.Control;
 
 			if(control is System.Windows.Forms.Form) {
 				control = control;
 			}
 			else if(control is System.Windows.Forms.PictureBox) {
+				// if the control is a picturebox, we need to grab its parent form
 				while(!(control is System.Windows.Forms.Form) && control != null) {
 					control = control.Parent;
 				}
 			}
 			else {
-				throw new Axiom.Exceptions.AxiomException("Input subsystem must have either a Form or PictureBox to set coop level.");
+				throw new Axiom.Exceptions.AxiomException("Win32InputReader requires the RenderWindow to have an associated handle of either a PictureBox or a Form.");
 			}
 
+			// initialize keyboard if needed
+			if(useKeyboard) {
+				InitializeKeyboard();
+			}
 
-			if(useKeyboard)
-				InitializeImmediateKeyboard();
-
-			if(useMouse)
+			// initialize the mouse if needed
+			if(useMouse) {
 				InitializeImmediateMouse();
+			}
 
 			// we are initialized
 			isInitialised = true;		
@@ -189,7 +246,7 @@ namespace Axiom.Platforms.Win32
 		/// </summary>
 		/// <param name="key"></param>
 		/// <returns></returns>
-		public bool IsKeyPressed(KeyCodes key) {
+		public override bool IsKeyPressed(KeyCodes key) {
 			// get the DInput.Key enum from the System.Windows.Forms.Keys enum passed in
 			DInput.Key daKey = ConvertKeyEnum(key);
 
@@ -205,11 +262,323 @@ namespace Axiom.Platforms.Win32
 		/// </summary>
 		/// <param name="button">Mouse button to query.</param>
 		/// <returns>True if the mouse button is down, false otherwise.</returns>
-		public bool IsMousePressed(Axiom.Input.MouseButtons button) {
+		public override bool IsMousePressed(Axiom.Input.MouseButtons button) {
 			return (mouseButtons & (int)button) != 0;
 		}
 
-		#endregion
+		#endregion Methods
+
+		#endregion InputReader implementation
+
+		#region Helper Methods
+
+		/// <summary>
+		///		Initializes the keyboard using either immediate mode or event based input.
+		/// </summary>
+		private void InitializeKeyboard() {
+			if(useKeyboardEvents) {
+				InitializeBufferedKeyboard();
+			}
+			else {
+				InitializeImmediateKeyboard();
+			}
+		}
+
+		/// <summary>
+		///		Initializes the mouse using either immediate mode or event based input.
+		/// </summary>
+		private void InitializeMouse() {
+			if(useMouseEvents) {
+				InitializeBufferedMouse();
+			}
+			else {
+				InitializeImmediateMouse();
+			}
+		}
+
+		/// <summary>
+		///		Initializes DirectInput for immediate input.
+		/// </summary>
+		private void InitializeImmediateKeyboard() {
+			// Create the device.
+			keyboardDevice = new DInput.Device(SystemGuid.Keyboard);
+
+			// grab the keyboard non-exclusively
+			keyboardDevice.SetCooperativeLevel(null, CooperativeLevelFlags.NonExclusive | CooperativeLevelFlags.Background);
+
+			// Set the data format to the keyboard pre-defined format.
+			keyboardDevice.SetDataFormat(DeviceDataFormat.Keyboard);
+
+			try {
+				keyboardDevice.Acquire();
+			}
+			catch {
+				throw new Exception("Unable to acquire a keyboard using DirectInput.");
+			}
+		}
+
+		/// <summary>
+		///		Prepares DirectInput for non-immediate input capturing.
+		/// </summary>
+		private void InitializeBufferedKeyboard() {
+			// create the device
+			keyboardDevice = new DInput.Device(SystemGuid.Keyboard);
+
+			// Set the data format to the keyboard pre-defined format.
+			keyboardDevice.SetDataFormat(DeviceDataFormat.Keyboard);
+
+			// grab the keyboard non-exclusively
+			keyboardDevice.SetCooperativeLevel(null, CooperativeLevelFlags.NonExclusive | CooperativeLevelFlags.Background);
+
+			// set the buffer size to use for input
+			keyboardDevice.Properties.BufferSize = BufferSize;
+
+			try {
+				keyboardDevice.Acquire();
+			}
+			catch {
+				throw new Exception("Unable to acquire a keyboard using DirectInput.");
+			}
+		}
+
+		/// <summary>
+		///		Prepares DirectInput for immediate mouse input.
+		/// </summary>
+		private void InitializeImmediateMouse() {
+			// create the device
+			mouseDevice = new DInput.Device(SystemGuid.Mouse);
+
+			mouseDevice.Properties.AxisModeAbsolute = true;
+
+			// set the device format so DInput knows this device is a mouse
+			mouseDevice.SetDataFormat(DeviceDataFormat.Mouse);
+
+			// set cooperation level
+			if(ownMouse) {
+				mouseDevice.SetCooperativeLevel(control, CooperativeLevelFlags.Exclusive | CooperativeLevelFlags.Foreground);
+			}
+			else {
+				mouseDevice.SetCooperativeLevel(null, CooperativeLevelFlags.NonExclusive | CooperativeLevelFlags.Background);
+			}
+
+			// note: dont acquire yet, wait till capture
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void InitializeBufferedMouse() {
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		///		Reads buffered input data when in buffered mode.
+		/// </summary>
+		private void ReadBufferedKeyboardData() {
+			// grab the collection of buffered data
+			BufferedDataCollection bufferedData = keyboardDevice.GetBufferedData();
+
+			// please tell me why this would ever come back null, rather than an empty collection...
+			if(bufferedData == null) {
+				return;
+			}
+
+			for(int i = 0; i < bufferedData.Count; i++) {
+				BufferedData data = bufferedData[i];
+
+				KeyCodes key = ConvertKeyEnum((DInput.Key)data.Offset);
+
+				// is the key being pressed down, or released?
+				bool down = (data.ButtonPressedData == 1);
+
+				KeyChanged(key, down);
+			}
+		}
+
+		/// <summary>
+		///		Helper method for running logic on a key change.
+		/// </summary>
+		/// <param name="key">Code of the key being changed</param>
+		/// <param name="down">True if the key is being pressed down, false if being released.</param>
+		private void KeyChanged(KeyCodes key, bool down) {
+			if(down) {
+				switch(key) {
+					case KeyCodes.LeftAlt:
+					case KeyCodes.RightAlt:
+						modifiers |= ModifierKeys.Alt;
+						break;
+
+					case KeyCodes.LeftShift:
+					case KeyCodes.RightShift:
+						modifiers |= ModifierKeys.Shift;
+						break;
+
+					case KeyCodes.LeftControl:
+					case KeyCodes.RightControl:
+						modifiers |= ModifierKeys.Control;
+						break;
+				}
+
+				Axiom.Input.KeyEventArgs e = new Axiom.Input.KeyEventArgs(key, modifiers);
+				OnKeyDown(e);
+			}
+			else {
+				switch(key) {
+					case KeyCodes.LeftAlt:
+					case KeyCodes.RightAlt:
+						modifiers &= ~ModifierKeys.Alt;
+						break;
+
+					case KeyCodes.LeftShift:
+					case KeyCodes.RightShift:
+						modifiers &= ~ModifierKeys.Shift;
+						break;
+
+					case KeyCodes.LeftControl:
+					case KeyCodes.RightControl:
+						modifiers &= ~ModifierKeys.Control;
+						break;
+				}
+
+				Axiom.Input.KeyEventArgs e = new Axiom.Input.KeyEventArgs(key, modifiers);
+				OnKeyUp(e);
+			}
+		}
+
+		/// <summary>
+		///		Captures an immediate keyboard state snapshot (for non-buffered data).
+		/// </summary>
+		private void CaptureKeyboard() {
+			// capture the current keyboard state
+			try {
+				keyboardState =  keyboardDevice.GetCurrentKeyboardState();		
+			}
+			catch (InputException) {
+				// DirectInput may be telling us that the input stream has been
+				// interrupted.  We aren't tracking any state between polls, so
+				// we don't have any special reset that needs to be done.
+				// We just re-acquire and try again.
+	        
+				// If input is lost then acquire and keep trying.
+				InputException ie;
+
+				bool loop = true;
+				do {
+					try {
+						// attempt to re-acquire the device
+						keyboardDevice.Acquire();
+
+						// grab the fresh keyboard state
+						// not doing so produces unpredictable results, mainly keys pressed that
+						// really are not
+						keyboardState = keyboardDevice.GetCurrentKeyboardState();		
+
+						loop = false;
+					}
+					catch(InputLostException) {
+						loop = true;
+					}
+					catch(InputException inputException) {
+						ie = inputException;
+						loop = false;
+					}
+					catch(Exception) {}
+				} while (loop);
+
+				// Exception may be OtherApplicationHasPriorityException or other exceptions.
+				// This may occur when the app is minimized or in the process of 
+				// switching, so just try again later.
+				return; 
+			}
+		}
+
+		/// <summary>
+		///		Captures the mouse input based on the preffered input mode.
+		/// </summary>
+		private void CaptureMouse() {
+			if(useMouseEvents) {
+				CaptureBufferedMouse();
+			}
+			else {
+				CaptureImmediateMouse();
+			}
+		}
+
+		/// <summary>
+		///		Checks the buffered mouse events.
+		/// </summary>
+		private void CaptureBufferedMouse() {
+			// TODO: Implement
+		}
+
+		/// <summary>
+		///		Takes a snapshot of the mouse state for immediate input checking.
+		/// </summary>
+		private void CaptureImmediateMouse() {
+			try {
+				// try to capture the current mouse state
+				mouseState = mouseDevice.CurrentMouseState;
+
+				// store the updated absolute values
+				mouseAbsX += mouseState.X;
+				mouseAbsY += mouseState.Y;
+				mouseAbsZ += mouseState.Z;
+
+				// calc relative deviance from center
+				mouseRelX = mouseState.X;
+				mouseRelY = mouseState.Y; 
+				mouseRelZ = mouseState.Z; 
+
+				byte[] buttons = mouseState.GetMouseButtons();
+
+				// clear the flags
+				mouseButtons = 0;
+
+				for(int i = 0; i < buttons.Length; i++) {
+					if((buttons[i] & 0x80) != 0) {
+						mouseButtons |= (1 << i);
+					}
+				}
+			}
+			catch (DirectXException) {
+				// DirectInput may be telling us that the input stream has been
+				// interrupted.  We aren't tracking any state between polls, so
+				// we don't have any special reset that needs to be done.
+				// We just re-acquire and try again.
+        
+				// If input is lost then acquire and keep trying.
+				InputException ie;
+
+				bool loop = true;
+				do {
+					try {
+						// attempt to re-acquire the device
+						mouseDevice.Acquire();
+
+						// grab the fresh keyboard state
+						// not doing so produces unpredictable results, mainly keys pressed that
+						// really are not
+						mouseState = mouseDevice.CurrentMouseState;		
+
+						loop = false;
+					}
+					catch(InputLostException) {
+						loop = true;
+					}
+					catch(InputException inputException) {
+						ie = inputException;
+						loop = false;
+					}
+				} while (loop);
+
+				// Exception may be OtherApplicationHasPriorityException or other exceptions.
+				// This may occur when the app is minimized or in the process of 
+				// switching, so just try again later.
+				return; 
+			}
+		}
+
+		#region Keycode Conversions
 
 		/// <summary>
 		///		Used to convert an Axiom.Input.KeyCodes enum val to a DirectInput.Key enum val.
@@ -217,7 +586,7 @@ namespace Axiom.Platforms.Win32
 		/// <param name="key">Axiom keyboard code to query.</param>
 		/// <returns>The equivalent enum value in the DInput.Key enum.</returns>
 		private DInput.Key ConvertKeyEnum(KeyCodes key) {
-			// TODO: Tilde, Quotes
+			// TODO: Quotes
 			DInput.Key dinputKey = 0;
 
 			switch(key) {
@@ -443,110 +812,295 @@ namespace Axiom.Platforms.Win32
 				case KeyCodes.Space:
 					dinputKey = DInput.Key.Space;
 					break;
+				case KeyCodes.Tilde:
+					dinputKey = DInput.Key.Grave;
+					break;
+				case KeyCodes.OpenBracket:
+					dinputKey = DInput.Key.LeftBracket;
+					break;
+				case KeyCodes.CloseBracket:
+					dinputKey = DInput.Key.RightBracket;
+					break;
+				case KeyCodes.Plus:
+					dinputKey = DInput.Key.Equals;
+					break;
+				case KeyCodes.QuestionMark:
+					dinputKey = DInput.Key.Slash;
+					break;
+				case KeyCodes.Quotes:
+					dinputKey = DInput.Key.Apostrophe;
+					break;
+				case KeyCodes.Backslash:
+					dinputKey = DInput.Key.BackSlash;
+					break;
 			}
 
 			return dinputKey;
 		}
 
 		/// <summary>
-		///		Retrieves the relative (compared to the last input poll) mouse movement
-		///		on the X (horizontal) axis.
+		///		Used to convert a DirectInput.Key enum val to a Axiom.Input.KeyCodes enum val.
 		/// </summary>
-		public int RelativeMouseX {
-			get { 
-				return mouseRelX; 
+		/// <param name="key">DirectInput.Key code to query.</param>
+		/// <returns>The equivalent enum value in the Axiom.KeyCodes enum.</returns>
+		private Axiom.Input.KeyCodes ConvertKeyEnum(DInput.Key key) {
+			// TODO: Quotes
+			Axiom.Input.KeyCodes axiomKey = 0;
+
+			switch(key) {
+				case DInput.Key.A:
+					axiomKey = Axiom.Input.KeyCodes.A;
+					break;
+				case DInput.Key.B:
+					axiomKey = Axiom.Input.KeyCodes.B;
+					break;
+				case DInput.Key.C:
+					axiomKey = Axiom.Input.KeyCodes.C;
+					break;
+				case DInput.Key.D:
+					axiomKey = Axiom.Input.KeyCodes.D;
+					break;
+				case DInput.Key.E:
+					axiomKey = Axiom.Input.KeyCodes.E;
+					break;
+				case DInput.Key.F:
+					axiomKey = Axiom.Input.KeyCodes.F;
+					break;
+				case DInput.Key.G:
+					axiomKey = Axiom.Input.KeyCodes.G;
+					break;
+				case DInput.Key.H:
+					axiomKey = Axiom.Input.KeyCodes.H;
+					break;
+				case DInput.Key.I:
+					axiomKey = Axiom.Input.KeyCodes.I;
+					break;
+				case DInput.Key.J:
+					axiomKey = Axiom.Input.KeyCodes.J;
+					break;
+				case DInput.Key.K:
+					axiomKey = Axiom.Input.KeyCodes.K;
+					break;
+				case DInput.Key.L:
+					axiomKey = Axiom.Input.KeyCodes.L;
+					break;
+				case DInput.Key.M:
+					axiomKey = Axiom.Input.KeyCodes.M;
+					break;
+				case DInput.Key.N:
+					axiomKey = Axiom.Input.KeyCodes.N;
+					break;
+				case DInput.Key.O:
+					axiomKey = Axiom.Input.KeyCodes.O;
+					break;
+				case DInput.Key.P:
+					axiomKey = Axiom.Input.KeyCodes.P;
+					break;
+				case DInput.Key.Q:
+					axiomKey = Axiom.Input.KeyCodes.Q;
+					break;
+				case DInput.Key.R:
+					axiomKey = Axiom.Input.KeyCodes.R;
+					break;
+				case DInput.Key.S:
+					axiomKey = Axiom.Input.KeyCodes.S;
+					break;
+				case DInput.Key.T:
+					axiomKey = Axiom.Input.KeyCodes.T;
+					break;
+				case DInput.Key.U:
+					axiomKey = Axiom.Input.KeyCodes.U;
+					break;
+				case DInput.Key.V:
+					axiomKey = Axiom.Input.KeyCodes.V;
+					break;
+				case DInput.Key.W:
+					axiomKey = Axiom.Input.KeyCodes.W;
+					break;
+				case DInput.Key.X:
+					axiomKey = Axiom.Input.KeyCodes.X;
+					break;
+				case DInput.Key.Y:
+					axiomKey = Axiom.Input.KeyCodes.Y;
+					break;
+				case DInput.Key.Z:
+					axiomKey = Axiom.Input.KeyCodes.Z;
+					break;
+				case DInput.Key.LeftArrow :
+					axiomKey = Axiom.Input.KeyCodes.Left;
+					break;
+				case DInput.Key.RightArrow:
+					axiomKey = Axiom.Input.KeyCodes.Right;
+					break;
+				case DInput.Key.UpArrow:
+					axiomKey = Axiom.Input.KeyCodes.Up;
+					break;
+				case DInput.Key.DownArrow:
+					axiomKey = Axiom.Input.KeyCodes.Down;
+					break;
+				case DInput.Key.Escape:
+					axiomKey = Axiom.Input.KeyCodes.Escape;
+					break;
+				case DInput.Key.F1:
+					axiomKey = Axiom.Input.KeyCodes.F1;
+					break;
+				case DInput.Key.F2:
+					axiomKey = Axiom.Input.KeyCodes.F2;
+					break;
+				case DInput.Key.F3:
+					axiomKey = Axiom.Input.KeyCodes.F3;
+					break;
+				case DInput.Key.F4:
+					axiomKey = Axiom.Input.KeyCodes.F4;
+					break;
+				case DInput.Key.F5:
+					axiomKey = Axiom.Input.KeyCodes.F5;
+					break;
+				case DInput.Key.F6:
+					axiomKey = Axiom.Input.KeyCodes.F6;
+					break;
+				case DInput.Key.F7:
+					axiomKey = Axiom.Input.KeyCodes.F7;
+					break;
+				case DInput.Key.F8:
+					axiomKey = Axiom.Input.KeyCodes.F8;
+					break;
+				case DInput.Key.F9:
+					axiomKey = Axiom.Input.KeyCodes.F9;
+					break;
+				case DInput.Key.F10:
+					axiomKey = Axiom.Input.KeyCodes.F10;
+					break;
+				case DInput.Key.D0:
+					axiomKey = Axiom.Input.KeyCodes.D0;
+					break;
+				case DInput.Key.D1:
+					axiomKey = Axiom.Input.KeyCodes.D1;
+					break;
+				case DInput.Key.D2:
+					axiomKey = Axiom.Input.KeyCodes.D2;
+					break;
+				case DInput.Key.D3:
+					axiomKey = Axiom.Input.KeyCodes.D3;
+					break;
+				case DInput.Key.D4:
+					axiomKey = Axiom.Input.KeyCodes.D4;
+					break;
+				case DInput.Key.D5:
+					axiomKey = Axiom.Input.KeyCodes.D5;
+					break;
+				case DInput.Key.D6:
+					axiomKey = Axiom.Input.KeyCodes.D6;
+					break;
+				case DInput.Key.D7:
+					axiomKey = Axiom.Input.KeyCodes.D7;
+					break;
+				case DInput.Key.D8:
+					axiomKey = Axiom.Input.KeyCodes.D8;
+					break;
+				case DInput.Key.D9:
+					axiomKey = Axiom.Input.KeyCodes.D9;
+					break;
+				case DInput.Key.F11:
+					axiomKey = Axiom.Input.KeyCodes.F11;
+					break;
+				case DInput.Key.F12:
+					axiomKey = Axiom.Input.KeyCodes.F12;
+					break;
+				case DInput.Key.Return:
+					axiomKey = Axiom.Input.KeyCodes.Enter;
+					break;
+				case DInput.Key.Tab:
+					axiomKey = Axiom.Input.KeyCodes.Tab;
+					break;
+				case DInput.Key.LeftShift:
+					axiomKey = Axiom.Input.KeyCodes.LeftShift;
+					break;
+				case DInput.Key.RightShift:
+					axiomKey = Axiom.Input.KeyCodes.RightShift;
+					break;
+				case DInput.Key.LeftControl:
+					axiomKey = Axiom.Input.KeyCodes.LeftControl;
+					break;
+				case DInput.Key.RightControl:
+					axiomKey = Axiom.Input.KeyCodes.RightControl;
+					break;
+				case DInput.Key.Period:
+					axiomKey = Axiom.Input.KeyCodes.Period;
+					break;
+				case DInput.Key.Comma:
+					axiomKey = Axiom.Input.KeyCodes.Comma;
+					break;
+				case DInput.Key.Home:
+					axiomKey = Axiom.Input.KeyCodes.Home;
+					break;
+				case DInput.Key.PageUp:
+					axiomKey = Axiom.Input.KeyCodes.PageUp;
+					break;
+				case DInput.Key.PageDown:
+					axiomKey = Axiom.Input.KeyCodes.PageDown;
+					break;
+				case DInput.Key.End:
+					axiomKey = Axiom.Input.KeyCodes.End;
+					break;
+				case DInput.Key.SemiColon:
+					axiomKey = Axiom.Input.KeyCodes.Semicolon;
+					break;
+				case DInput.Key.Subtract:
+					axiomKey = Axiom.Input.KeyCodes.Subtract;
+					break;
+				case DInput.Key.Add:
+					axiomKey = Axiom.Input.KeyCodes.Add;
+					break;
+				case DInput.Key.BackSpace:
+					axiomKey = Axiom.Input.KeyCodes.Backspace;
+					break;
+				case DInput.Key.Delete:
+					axiomKey = Axiom.Input.KeyCodes.Delete;
+					break;
+				case DInput.Key.Insert:
+					axiomKey = Axiom.Input.KeyCodes.Insert;
+					break;
+				case DInput.Key.LeftAlt:
+					axiomKey = Axiom.Input.KeyCodes.LeftAlt;
+					break;
+				case DInput.Key.RightAlt:
+					axiomKey = Axiom.Input.KeyCodes.RightAlt;
+					break;
+				case DInput.Key.Space:
+					axiomKey = Axiom.Input.KeyCodes.Space;
+					break;
+				case DInput.Key.Grave:
+					axiomKey = Axiom.Input.KeyCodes.Tilde;
+					break;
+				case DInput.Key.LeftBracket:
+					axiomKey = Axiom.Input.KeyCodes.OpenBracket;
+					break;
+				case DInput.Key.RightBracket:
+					axiomKey = Axiom.Input.KeyCodes.CloseBracket;
+					break;
+				case DInput.Key.Equals:
+					axiomKey = KeyCodes.Plus;
+					break;
+				case DInput.Key.Minus:
+					axiomKey = KeyCodes.Subtract;
+					break;
+				case DInput.Key.Slash:
+					axiomKey = KeyCodes.QuestionMark;
+					break;
+				case DInput.Key.Apostrophe:
+					axiomKey = KeyCodes.Quotes;
+					break;
+				case DInput.Key.BackSlash:
+					axiomKey = KeyCodes.Backslash;
+					break;
 			}
+
+			return axiomKey;
 		}
 
-		/// <summary>
-		///		Retrieves the relative (compared to the last input poll) mouse movement
-		///		on the Y (vertical) axis.
-		/// </summary>
-		public int RelativeMouseY {
-			get { 
-				return mouseRelY; 
-			}
-		}
+		#endregion Keycode Conversions
 
-		/// <summary>
-		///		Retrieves the relative (compared to the last input poll) mouse movement
-		///		on the Z (mouse wheel) axis.
-		/// </summary>
-		public int RelativeMouseZ {
-			get { 
-				return mouseRelZ; 
-			}
-		}
-
-		/// <summary>
-		///		Retrieves the absolute mouse position on the X (horizontal) axis.
-		/// </summary>
-		public int AbsoluteMouseX {
-			get { 
-				return mouseAbsX; 
-			}
-		}
-
-		/// <summary>
-		///		Retrieves the absolute mouse position on the Y (vertical) axis.
-		/// </summary>
-		public int AbsoluteMouseY {
-			get { 
-				return mouseAbsY; 
-			}
-		}
-
-		/// <summary>
-		///		Retrieves the absolute mouse position on the Z (mouse wheel) axis.
-		/// </summary>
-		public int AbsoluteMouseZ {
-			get { 
-				return mouseAbsZ; 
-			}
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		private void InitializeImmediateKeyboard() {
-			// Create the device.
-			keyboardDevice = new DInput.Device(SystemGuid.Keyboard);
-
-			// grab the keyboard non-exclusively
-			keyboardDevice.SetCooperativeLevel(null, CooperativeLevelFlags.NonExclusive | CooperativeLevelFlags.Background);
-
-			// Set the data format to the keyboard pre-defined format.
-			keyboardDevice.SetDataFormat(DeviceDataFormat.Keyboard);
-
-			try {
-				keyboardDevice.Acquire();
-			}
-			catch {
-				throw new Exception("Unable to acquire a keyboard using DirectInput.");
-			}
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		private void InitializeImmediateMouse() {
-			// create the device
-			mouseDevice = new DInput.Device(SystemGuid.Mouse);
-
-			mouseDevice.Properties.AxisModeAbsolute = true;
-
-			// set the device format so DInput knows this device is a mouse
-			mouseDevice.SetDataFormat(DeviceDataFormat.Mouse);
-
-			// set cooperation level
-			if(ownMouse) {
-				mouseDevice.SetCooperativeLevel(control, CooperativeLevelFlags.Exclusive | CooperativeLevelFlags.Foreground);
-			}
-			else {
-				mouseDevice.SetCooperativeLevel(null, CooperativeLevelFlags.NonExclusive | CooperativeLevelFlags.Background);
-			}
-
-			// note: dont acquire yet, wait till capture
-		}
+		#endregion Helper Methods
 	}
 }

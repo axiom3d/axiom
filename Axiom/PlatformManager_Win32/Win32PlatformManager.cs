@@ -9,7 +9,7 @@ namespace Axiom.Platforms.Win32
 	/// </summary>
 	// TODO: Disposal of object create here.
 	public class Win32PlatformManager : IPlatformManager {
-		private IInputReader inputReader;
+		private InputReader inputReader;
         private ITimer timer;
 
 		public Win32PlatformManager() {
@@ -17,7 +17,7 @@ namespace Axiom.Platforms.Win32
 
 		#region IPlatformManager Members
 
-		public Axiom.Input.IInputReader CreateInputReader() {
+		public Axiom.Input.InputReader CreateInputReader() {
 			inputReader = new Win32InputReader();
 			return inputReader;
 		}

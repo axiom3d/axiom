@@ -903,7 +903,7 @@ namespace Axiom.Graphics {
 		///		shadow receivers, followed by a depth test to detect the closest
 		///		fragment to the light.
 		/// </summary>
-		TextureShadowmap,
+		//TextureShadowmap,
 		/// <summary>
 		///		Simple shadow technique that simply renders a 'shadow blob' underneath
 		///		a movable object.
