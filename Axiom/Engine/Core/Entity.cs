@@ -361,7 +361,7 @@ namespace Axiom.Core {
         /// <param name="minDetailIndex">The index of the minimum LOD this entity is allowed to use (higher
         ///    indexes are lower detail. Use something like 99 if you want unlimited LODs (the actual
         ///    LOD will be limited by the number in the Mesh)</param>
-        public void SetLoadBias(float factor, int maxDetailIndex, int minDetailIndex) {
+        public void SetLodBias(float factor, int maxDetailIndex, int minDetailIndex) {
             Debug.Assert(factor > 0.0f, "Bias factor must be > 0!");
             meshLodFactorInv = 1.0f / factor;
             maxMeshLodIndex = maxDetailIndex;
