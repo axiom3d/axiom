@@ -4465,7 +4465,12 @@ namespace Axiom.Core {
 			for(int i = 0; i < creator.entityList.Count; i++) {
 				Entity entity = creator.entityList[i];
 
-				if ((entity.QueryFlags & queryMask) != 0 && box.Intersects(entity.GetWorldBoundingBox())) {
+                // skip if unattached or filtered out by query flags
+                if (!entity.IsAttached || (entity.QueryFlags & queryMask) == 0) {
+                    continue;
+                }
+
+                if (box.Intersects(entity.GetWorldBoundingBox())) {
 					listener.OnQueryResult(entity);
 				}
 			}
@@ -4490,14 +4495,17 @@ namespace Axiom.Core {
 			for(int i = 0; i < creator.entityList.Count; i++) {
 				Entity entity = creator.entityList[i];
 
-				if ((entity.QueryFlags & queryMask) != 0) {
-					// test the intersection against the world bounding box of the entity
-					IntersectResult results = MathUtil.Intersects(ray, entity.GetWorldBoundingBox());
+                // skip if unattached or filtered out by query flags
+                if (!entity.IsAttached || (entity.QueryFlags & queryMask) == 0) {
+                    continue;
+                }
 
-					// if the results came back positive, fire the event handler
-					if(results.Hit == true) {
-						listener.OnQueryResult(entity, results.Distance);
-					}
+                // test the intersection against the world bounding box of the entity
+				IntersectResult results = MathUtil.Intersects(ray, entity.GetWorldBoundingBox());
+
+				// if the results came back positive, fire the event handler
+				if(results.Hit == true) {
+					listener.OnQueryResult(entity, results.Distance);
 				}
 			}
 		}
@@ -4517,11 +4525,12 @@ namespace Axiom.Core {
 			for(int i = 0; i < creator.entityList.Count; i++) {
 				Entity entity = creator.entityList[i];
 
-				// Skip unattached
-				if (entity.ParentNode == null || (entity.QueryFlags & queryMask) == 0)
-					continue;
+                // skip if unattached or filtered out by query flags
+                if (!entity.IsAttached || (entity.QueryFlags & queryMask) == 0) {
+                    continue;
+                }
 
-				testSphere.Center = entity.ParentNode.DerivedPosition;
+                testSphere.Center = entity.ParentNode.DerivedPosition;
 				testSphere.Radius = entity.BoundingRadius;
 
 				// if the results came back positive, fire the event handler
@@ -4543,7 +4552,12 @@ namespace Axiom.Core {
 			for(int i = 0; i < creator.entityList.Count; i++) {
 				Entity entity = creator.entityList[i];
 
-				for (int v = 0; v < volumes.Count; v++) {
+                // skip if unattached or filtered out by query flags
+                if (!entity.IsAttached || (entity.QueryFlags & queryMask) == 0) {
+                    continue;
+                }
+
+                for (int v = 0; v < volumes.Count; v++) {
 					PlaneBoundedVolume volume = (PlaneBoundedVolume) volumes[v];
 					// Do AABB / plane volume test
 					if ((entity.QueryFlags & queryMask) != 0 && volume.Intersects(entity.GetWorldBoundingBox())) {
@@ -4570,15 +4584,23 @@ namespace Axiom.Core {
 			int numEntities = creator.entityList.Count;
 			for (int a=0; a < (numEntities - 1); a++) {
 				Entity aent = creator.entityList[a];
-				// Skip if aent does not pass the mask
-				if ((aent.QueryFlags & this.queryMask)==0)
-					continue;
 
-				// Loop b from a+1 to last
+                // skip if unattached or filtered out by query flags
+                if (!aent.IsAttached || (aent.QueryFlags & queryMask) == 0) {
+                    continue;
+                }
+
+                // Loop b from a+1 to last
 				int b = a;
 				for (++b; b != (numEntities - 1); ++b) {
 					Entity bent = creator.entityList[b];
-					// Apply mask to b (both must pass)
+
+                    // skip if unattached or filtered out by query flags
+                    if (!bent.IsAttached || (bent.QueryFlags & queryMask) == 0) {
+                        continue;
+                    }
+                    
+                    // Apply mask to b (both must pass)
 					if ((bent.QueryFlags & this.queryMask)!=0) {
 						AxisAlignedBox box1 = aent.GetWorldBoundingBox();
 						AxisAlignedBox box2 = bent.GetWorldBoundingBox();
