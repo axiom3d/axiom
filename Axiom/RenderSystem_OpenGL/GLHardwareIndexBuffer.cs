@@ -37,14 +37,6 @@ namespace RenderSystem_OpenGL
 	/// </summary>
 	public class GLHardwareIndexBuffer : HardwareIndexBuffer
 	{
-		const uint GL_ARRAY_BUFFER_ARB = 0x8892;
-		const uint GL_READ_ONLY_ARB = 0x88B8;
-		const uint GL_ELEMENT_ARRAY_BUFFER_ARB = 0x8893;
-		const uint GL_STATIC_COPY_ARB = 0x88E6; 
-		const uint GL_DYNAMIC_DRAW_ARB = 0x88E8;
-		const uint GL_WRITE_ONLY_ARB = 0x88B9;
-		const uint GL_READ_WRITE_ARB = 0x88BA;
-
 		#region Member variables
 		
 		/// <summary>Saves the GL buffer ID for this buffer.</summary>
@@ -68,11 +60,11 @@ namespace RenderSystem_OpenGL
 				if(bufferID == 0)
 					throw new Exception("Cannot create GL vertex buffer");
 
-				Ext.glBindBufferARB(GL_ARRAY_BUFFER_ARB, bufferID);
+				Ext.glBindBufferARB(Gl.GL_ARRAY_BUFFER_ARB, bufferID);
 
 				// initialize this buffer.  we dont have data yet tho
 				Ext.glBufferDataARB(
-					GL_ARRAY_BUFFER_ARB, 
+					Gl.GL_ARRAY_BUFFER_ARB, 
 					(uint)sizeInBytes, 
 					null, 
 					(uint)GLHelper.ConvertEnum(usage));
@@ -101,7 +93,7 @@ namespace RenderSystem_OpenGL
 		/// <returns></returns>
 		protected override IntPtr LockImpl(int offset, int length, BufferLocking locking)
 		{
-			uint access = 0;
+			int access = 0;
 
 			if(isLocked)
 				throw new Exception("Invalid attempt to lock an index buffer that has already been locked.");
@@ -109,33 +101,33 @@ namespace RenderSystem_OpenGL
 			unsafe
 			{
 				// bind this buffer
-				Ext.glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
+				Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
 
 				if(locking == BufferLocking.Discard)
 				{
-					Ext.glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB,
+					Ext.glBufferDataARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB,
 						(uint)sizeInBytes,
 						null,
 						(uint)GLHelper.ConvertEnum(usage));
 
 					// find out how we shall access this buffer
 					access = (usage & BufferUsage.Dynamic) > 0 ? 
-						GL_READ_WRITE_ARB : GL_WRITE_ONLY_ARB;
+						Gl.GL_READ_WRITE_ARB : Gl.GL_WRITE_ONLY_ARB;
 				}
 				else if(locking == BufferLocking.ReadOnly)
 				{
 					if((usage & BufferUsage.WriteOnly) > 0)
 						throw new Exception("Invalid attempt to lock a write-only vertex buffer as read-only.");
 
-					access = GL_READ_ONLY_ARB;
+					access = Gl.GL_READ_ONLY_ARB;
 				}
 				else if (locking == BufferLocking.Normal)
 				{
 					access = ((usage & BufferUsage.Dynamic) > 0) ?
-						GL_READ_WRITE_ARB : GL_READ_ONLY_ARB;
+						Gl.GL_READ_WRITE_ARB : Gl.GL_READ_ONLY_ARB;
 				}
 
-				IntPtr ptr = Ext.glMapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, access);
+				IntPtr ptr = Ext.glMapBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, (uint)access);
 
 				if(ptr == IntPtr.Zero)
 					throw new Exception("GL Vertex Buffer: Out of memory");
@@ -151,10 +143,10 @@ namespace RenderSystem_OpenGL
 		/// </summary>
 		public override void UnlockImpl()
 		{
-			Ext.glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
+			Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
 
 			// TODO: Remap CsGL to return a val from this method (bool)
-			Ext.glUnmapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB);
+			Ext.glUnmapBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB);
 
 			isLocked = false;
 		}
@@ -168,13 +160,13 @@ namespace RenderSystem_OpenGL
 		/// <param name="discardWholeBuffer"></param>
 		public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer)
 		{
-			Ext.glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
+			Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
 
 			unsafe
 			{
 				if(discardWholeBuffer)
 				{
-					Ext.glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB,
+					Ext.glBufferDataARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB,
 						(uint)sizeInBytes,
 						null,
 						(uint)GLHelper.ConvertEnum(usage));
@@ -182,7 +174,7 @@ namespace RenderSystem_OpenGL
 
 				// TODO: Map CsGL to accept a IntPtr instead of a void* ?
 				Ext.glBufferSubDataARB(
-					GL_ELEMENT_ARRAY_BUFFER_ARB, 
+					Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, 
 					(uint)offset, 
 					(uint)length, 
 					src.ToPointer());
@@ -197,13 +189,13 @@ namespace RenderSystem_OpenGL
 		/// <param name="dest"></param>
 		public override void ReadData(int offset, int length, IntPtr dest)
 		{
-			Ext.glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
+			Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
 
 			unsafe
 			{
 				// TODO: Map CsGL to accept a IntPtr instead of void* ?
 				Ext.glGetBufferSubDataARB(
-					GL_ELEMENT_ARRAY_BUFFER_ARB, 
+					Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, 
 					(uint)offset, 
 					(uint)length, 
 					dest.ToPointer());

@@ -436,9 +436,6 @@ namespace InputSystem_DInput
 		/// DOC
 		private void InitializeImmediateMouse(Control handle, bool fullScreen)
 		{
-			// hide the cursor
-			Cursor.Hide();
-
 			// create the device
 			mouseDevice = new DInput.Device(SystemGuid.Mouse);
 

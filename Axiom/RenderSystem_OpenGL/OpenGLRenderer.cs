@@ -71,6 +71,10 @@ namespace RenderSystem_OpenGL
 			protected bool useAutoTextureMatrix;
 			protected float[] autoTextureMatrix = new float[16];
 
+			// retained stencil buffer params vals, since we allow setting invidual params but GL
+			// only lets you set them all at once, keep old values around to allow this to work
+			protected int stencilFail, stencilZFail, stencilPass, stencilFunc, stencilRef, stencilMask;
+
 			// local array of light objects to reference during light updating, disabling, etc
 			protected Light[] lights;
 
@@ -80,25 +84,17 @@ namespace RenderSystem_OpenGL
 				worldMatrix = Matrix4.Identity;
 				textureMatrix = Matrix4.Identity;
 
+				// init the stored stencil buffer params
+				stencilFail = stencilZFail = stencilPass = Gl.GL_KEEP;
+				stencilFunc = Gl.GL_ALWAYS;
+				stencilRef = 0;
+				stencilMask = unchecked((int)0xffffffff);
+
 				// create a new OpenGLExtensions object
 				Ext = new Ext();
 
 				InitConfigOptions();
 			}
-
-			#region Implementation of IPlugin
-
-			public void Start()
-			{
-				// add an instance of this plugin to the list of available RenderSystems
-				Engine.Instance.RenderSystems.Add("OpenGL", this);
-			}
-
-			public void Stop()
-			{
-			}
-
-			#endregion
 
 			#region Implementation of RenderSystem
 
@@ -115,8 +111,13 @@ namespace RenderSystem_OpenGL
 					context.Create(new DisplayType(0, 0), null);
 					context.Grab();
 
+					// intialize GL extensions and check capabilites
+					GLHelper.InitializeExtensions();
+
+					CheckCaps();
+
 					// log hardware info
-					System.Diagnostics.Trace.WriteLine(String.Format("Vendor: {0}", Gl.glGetString(Gl.GL_VENDOR)));
+					System.Diagnostics.Trace.WriteLine(String.Format("Vendor: {0}", GLHelper.Vendor));
 					System.Diagnostics.Trace.WriteLine(String.Format("Video Board: {0}", Gl.glGetString(Gl.GL_RENDERER)));
 					System.Diagnostics.Trace.WriteLine(String.Format("Version: {0}", Gl.glGetString(Gl.GL_VERSION)));
 				
@@ -140,6 +141,10 @@ namespace RenderSystem_OpenGL
 					Gl.glEnable(Gl.GL_DEPTH_TEST);							// Enables Depth Testing
 					Gl.glDepthFunc(Gl.GL_LEQUAL);								// The Type Of Depth Testing To Do
 					Gl.glHint(Gl.GL_PERSPECTIVE_CORRECTION_HINT, Gl.GL_NICEST);	// Really Nice Perspective Calculations
+
+					// swap out existing memory.  drops the memory consumption of the app drastically.  equivalent
+					// to the ol' minimize/maximize trick.
+					Kernel.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 				}
 
 				// create the window
@@ -150,9 +155,6 @@ namespace RenderSystem_OpenGL
 
 				// by creating our texture manager, singleton TextureManager will hold our implementation
 				textureMgr = new GLTextureManager();
-
-				// TODO: Do this elsewhere
-				CheckCaps();
 
 				// create a specialized instance, which registers itself as the singleton instance of HardwareBufferManager
 				if(caps.CheckCap(Capabilities.VertexBuffer))
@@ -171,7 +173,7 @@ namespace RenderSystem_OpenGL
 				set
 				{
 					// create a float[4]  to contain the RGBA data
-					float[] ambient = GLColorArray(value);
+					float[] ambient = GlColorArray(value);
 					ambient[3] = 0.0f;
 
 					// set the ambient color
@@ -179,6 +181,9 @@ namespace RenderSystem_OpenGL
 				}
 			}
 	
+			/// <summary>
+			///		Gets/Sets the global lighting switch.
+			/// </summary>
 			public override bool LightingEnabled
 			{
 				set
@@ -190,6 +195,9 @@ namespace RenderSystem_OpenGL
 				}
 			}
 
+			/// <summary>
+			///		Sets the mode to use for rendering
+			/// </summary>
 			protected override SceneDetailLevel RasterizationMode
 			{
 				set
@@ -236,68 +244,101 @@ namespace RenderSystem_OpenGL
 				}
 			}
 
-			public override short StencilBufferBitDepth
-			{
-				get
-				{
-					// TODO:  Add OpenGLRenderer.StencilBufferBitDepth getter implementation
-					return 0;
-				}
-			}
-
+			/// <summary>
+			/// 
+			/// </summary>
 			public override StencilOperation StencilBufferDepthFailOperation
 			{
 				set
 				{
-					// TODO:  Add OpenGLRenderer.StencilBufferDepthFailOperation setter implementation
+					// Have to use saved values for other params since GL doesn't have 
+					// individual setters
+					stencilZFail = GLHelper.ConvertEnum(value);
+					Gl.glStencilOp(stencilFail, stencilZFail, stencilPass);
 				}
 			}
 
+			/// <summary>
+			/// 
+			/// </summary>
 			public override StencilOperation StencilBufferFailOperation
 			{
 				set
 				{
-					// TODO:  Add OpenGLRenderer.StencilBufferFailOperation setter implementation
+					// Have to use saved values for other params since GL doesn't have 
+					// individual setters
+					stencilFail = GLHelper.ConvertEnum(value);
+					Gl.glStencilOp(stencilFail, stencilZFail, stencilPass);
 				}
 			}
 
+			/// <summary>
+			/// 
+			/// </summary>
 			public override CompareFunction StencilBufferFunction
 			{
 				set
 				{
-					// TODO:  Add OpenGLRenderer.StencilBufferFunction setter implementation
+					// Have to use saved values for other params since GL doesn't have 
+					// individual setters
+					stencilFunc = GLHelper.ConvertEnum(value);
+					Gl.glStencilFunc(stencilFunc, stencilRef, stencilMask);
 				}
 			}
 
-			public override long StencilBufferMask
+			/// <summary>
+			/// 
+			/// </summary>
+			public override int StencilBufferMask
 			{
 				set
 				{
-					// TODO:  Add OpenGLRenderer.StencilBufferMask setter implementation
+					// Have to use saved values for other params since GL doesn't have 
+					// individual setters
+					stencilMask = value;
+					Gl.glStencilFunc(stencilFunc, stencilRef, stencilMask);
 				}
 			}
 
+			/// <summary>
+			/// 
+			/// </summary>
 			public override StencilOperation StencilBufferPassOperation
 			{
 				set
 				{
-					// TODO:  Add OpenGLRenderer.StencilBufferPassOperation setter implementation
+					// Have to use saved values for other params since GL doesn't have 
+					// individual setters
+					stencilPass = GLHelper.ConvertEnum(value);
+					Gl.glStencilOp(stencilFail, stencilZFail, stencilPass);
 				}
 			}
 
-			public override long StencilBufferReferenceValue
+			/// <summary>
+			/// 
+			/// </summary>
+			public override int StencilBufferReferenceValue
 			{
 				set
 				{
-					// TODO:  Add OpenGLRenderer.StencilBufferReferenceValue setter implementation
+					// Have to use saved values for other params since GL doesn't have 
+					// individual setters
+					stencilRef = value;
+					Gl.glStencilFunc(stencilFunc, stencilRef, stencilMask);
 				}
 			}
 
+			/// <summary>
+			///		Specifies whether stencil check should be enabled or not.
+			/// </summary>
 			public override bool StencilCheckEnabled
 			{
 				set
 				{
-					// TODO:  Add OpenGLRenderer.StencilCheckEnabled setter implementation
+					if(value)
+						Gl.glEnable(Gl.GL_STENCIL_TEST);
+					else
+						Gl.glDisable(Gl.GL_STENCIL_TEST);
 				}
 			}
 
@@ -342,6 +383,14 @@ namespace RenderSystem_OpenGL
 				}
 			}
 
+			/// <summary>
+			///		Creates a projection matrix specific to OpenGL based on the given params.
+			/// </summary>
+			/// <param name="fov"></param>
+			/// <param name="aspectRatio"></param>
+			/// <param name="near"></param>
+			/// <param name="far"></param>
+			/// <returns></returns>
 			public override Axiom.MathLib.Matrix4 MakeProjectionMatrix(float fov, float aspectRatio, float near, float far)
 			{
 				Matrix4 matrix = new Matrix4();
@@ -354,29 +403,32 @@ namespace RenderSystem_OpenGL
 				float q = -(far + near) / (far - near);
 				float qn = -2 * (far * near) / (far - near);
 
-				matrix[0,0] = w;
-				matrix[1,1] = h;
-				matrix[2,2] = q;
-				matrix[2,3] = qn;
-				matrix[3,2] = -1.0f;
+				matrix.m00 = w;
+				matrix.m11 = h;
+				matrix.m22 = q;
+				matrix.m23 = qn;
+				matrix.m32 = -1.0f;
 
 				return matrix;
 			}
 
+			/// <summary>
+			///		Executes right before each frame is rendered.
+			/// </summary>
 			protected override void BeginFrame()
 			{
 				Debug.Assert(activeViewport != null, "BeingFrame cannot run without an active viewport.");
 
 				if(activeViewport.ClearEveryFrame)
 				{
-					float[] color = GLColorArray(activeViewport.BackgroundColor);
+					float[] color = GlColorArray(activeViewport.BackgroundColor);
 
 					// clear the viewport
 					Gl.glClearColor(color[0], color[1], color[2], color[3]);
 
 					// disable depth write if it isnt
 					if(!depthWrite)
-						Gl.glDepthMask((byte)Gl.GL_TRUE);
+						Gl.glDepthMask(Gl.GL_TRUE);
 
 					// clear the color buffer and depth buffer bits
 					Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);	
@@ -384,7 +436,7 @@ namespace RenderSystem_OpenGL
 					// Reset depth write state if appropriate
 					// Enable depth buffer for writing if it isn't
 					if(!depthWrite)
-						Gl.glDepthMask((byte)Gl.GL_FALSE);
+						Gl.glDepthMask(Gl.GL_FALSE);
 				}
 
 				// Reset all lights
@@ -537,7 +589,7 @@ namespace RenderSystem_OpenGL
 
 				Gl.glEnable(Gl.GL_FOG);
 				Gl.glFogi(Gl.GL_FOG_MODE, (int)fogMode);
-				float[] fogColor = GLColorArray(color);
+				float[] fogColor = GlColorArray(color);
 				Gl.glFogfv(Gl.GL_FOG_COLOR, fogColor);
 				Gl.glFogf(Gl.GL_FOG_DENSITY, density);
 				Gl.glFogf(Gl.GL_FOG_START, start);
@@ -997,7 +1049,7 @@ namespace RenderSystem_OpenGL
 			/// </summary>
 			/// <param name="color"></param>
 			/// <returns></returns>
-			private float[] GLColorArray(ColorEx color)
+			private float[] GlColorArray(ColorEx color)
 			{
 				return new float[] {color.r, color.g, color.b, color.a};
 			}
@@ -1028,11 +1080,11 @@ namespace RenderSystem_OpenGL
 					}
 
 					// light color
-					float[] color = GLColorArray(light.Diffuse);
+					float[] color = GlColorArray(light.Diffuse);
 					Gl.glLightfv(lightIndex, Gl.GL_DIFFUSE, color);
 
 					// specular color
-					float[] specular = GLColorArray(light.Specular);
+					float[] specular = GlColorArray(light.Specular);
 					Gl.glLightfv(lightIndex, Gl.GL_SPECULAR, specular);
 
 					// disable ambient light for objects
@@ -1141,7 +1193,7 @@ namespace RenderSystem_OpenGL
 			protected override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess)
 			{
 				// ambient
-				float[] vals = GLColorArray(ambient);
+				float[] vals = GlColorArray(ambient);
 				Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_AMBIENT, vals);
 
 				// diffuse
@@ -1378,26 +1430,28 @@ namespace RenderSystem_OpenGL
 						break;
 
 					case TexCoordCalcMethod.EnvironmentMapPlanar:            
-						// TODO: Check GL Version here?
 						// XXX This doesn't seem right?!
-						/*#ifdef Gl.VERSION_1_3
-						glTexGeni( Gl.S, Gl.TEXTURE_GEN_MODE, (int)GL_REFLECTION_MAP );
-						glTexGeni( Gl.T, Gl.TEXTURE_GEN_MODE, (int)GL_REFLECTION_MAP );
-						glTexGeni( Gl.R, Gl.TEXTURE_GEN_MODE, (int)GL_REFLECTION_MAP );
+						if(GLHelper.CheckMinVersion("1.3"))
+						{
+							Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_REFLECTION_MAP );
+							Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_REFLECTION_MAP );
+							Gl.glTexGeni( Gl.GL_R, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_REFLECTION_MAP );
 
-						glEnable( Gl.TEXTURE_GEN_S );
-						glEnable( Gl.TEXTURE_GEN_T );
-						glEnable( Gl.TEXTURE_GEN_R );
-						glDisable( Gl.TEXTURE_GEN_Q ); */
-						//#else
-						Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_SPHERE_MAP );
-						Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_SPHERE_MAP );
+							Gl.glEnable( Gl.GL_TEXTURE_GEN_S );
+							Gl.glEnable( Gl.GL_TEXTURE_GEN_T );
+							Gl.glEnable( Gl.GL_TEXTURE_GEN_R );
+							Gl.glDisable( Gl.GL_TEXTURE_GEN_Q );
+						}
+						else
+						{
+							Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_SPHERE_MAP );
+							Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, (int)Gl.GL_SPHERE_MAP );
 
-						Gl.glEnable( Gl.GL_TEXTURE_GEN_S );
-						Gl.glEnable( Gl.GL_TEXTURE_GEN_T );
-						Gl.glDisable( Gl.GL_TEXTURE_GEN_R );
-						Gl.glDisable( Gl.GL_TEXTURE_GEN_Q );
-						//#endif
+							Gl.glEnable( Gl.GL_TEXTURE_GEN_S );
+							Gl.glEnable( Gl.GL_TEXTURE_GEN_T );
+							Gl.glDisable( Gl.GL_TEXTURE_GEN_R );
+							Gl.glDisable( Gl.GL_TEXTURE_GEN_Q );
+						}
 						break;
 
 					case TexCoordCalcMethod.EnvironmentMapReflection:
@@ -1471,7 +1525,10 @@ namespace RenderSystem_OpenGL
 				Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0);
 			}
 	
-			public override void CheckCaps()
+			/// <summary>
+			///		Helper method to go through and interrogate hardware capabilities.
+			/// </summary>
+			private void CheckCaps()
 			{
 				// check multitexturing
 				if(GLHelper.SupportsExtension("GL_ARB_multitexture"))
@@ -1504,14 +1561,23 @@ namespace RenderSystem_OpenGL
 
 				// check hardware mip mapping
 				// TODO: Only enable this for non-ATI cards temporarily until drivers are fixed
-				if(GLHelper.SupportsExtension("GL_SGIS_generate_mipmap"))
+				if(GLHelper.Vendor != "ATI" && GLHelper.SupportsExtension("GL_SGIS_generate_mipmap"))
 					caps.SetCap(Capabilities.HardwareMipMaps);
 
 				// find out how many lights we have to play with, then create a light array to keep locally
-				int maxLights = 0;
+				int maxLights;
 				Gl.glGetIntegerv(Gl.GL_MAX_LIGHTS, out maxLights);
 				caps.MaxLights = maxLights;
 				lights = new Light[caps.MaxLights];
+
+				// check stencil buffer depth availability
+				int stencilBits;
+				Gl.glGetIntegerv(Gl.GL_STENCIL_BITS, out stencilBits);
+				caps.StencilBufferBits = stencilBits;
+
+				// if stencil bits are available, enable stencil buffering
+				if(stencilBits > 0)
+					caps.SetCap(Capabilities.StencilBuffer);
 			}
 
 			/// <summary>
@@ -1523,5 +1589,19 @@ namespace RenderSystem_OpenGL
 			{
 				return new IntPtr(i);
 			}
+
+			#region Implementation of IPlugin
+
+			public void Start()
+			{
+				// add an instance of this plugin to the list of available RenderSystems
+				Engine.Instance.RenderSystems.Add("OpenGL", this);
+			}
+
+			public void Stop()
+			{
+			}
+
+			#endregion
 		}
 	}

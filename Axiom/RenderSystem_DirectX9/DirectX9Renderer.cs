@@ -105,15 +105,6 @@ namespace RenderSystem_DirectX9
 			}
 		}
 	
-		public override short StencilBufferBitDepth
-		{
-			get
-			{
-				// TODO:  Add DirectX9Renderer.StencilBufferBitDepth getter implementation
-				return 0;
-			}
-		}
-	
 		public override StencilOperation StencilBufferDepthFailOperation
 		{
 			set
@@ -138,7 +129,7 @@ namespace RenderSystem_DirectX9
 			}
 		}
 	
-		public override long StencilBufferMask
+		public override int StencilBufferMask
 		{
 			set
 			{
@@ -154,7 +145,7 @@ namespace RenderSystem_DirectX9
 			}
 		}
 	
-		public override long StencilBufferReferenceValue
+		public override int StencilBufferReferenceValue
 		{
 			set
 			{
@@ -338,6 +329,8 @@ namespace RenderSystem_DirectX9
 
 				// save the device capabilites
 				d3dCaps = device.DeviceCaps;
+
+				CheckCaps();
 			}
 
 			// create the window
@@ -1222,11 +1215,13 @@ namespace RenderSystem_DirectX9
 			}
 		}
 	
-		public override void CheckCaps()
+		/// <summary>
+		///		Helper method to go through and interrogate hardware capabilities.
+		/// </summary>
+		private void CheckCaps()
 		{
 			// get the number of possible texture units
 			caps.NumTextureUnits = d3dCaps.MaxSimultaneousTextures;
-
 		}
 
 		/// <summary>
