@@ -508,21 +508,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "EventSystem\.#IKeyTarget.removed.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EventSystem\.#IMouseTarget.removed.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EventSystem\.#IScriptTarget.removed.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "EventSystem\EventProcessor.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -884,11 +869,6 @@
                 />
                 <File
                     RelPath = "Text\TextManager.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Utility\.#HighResolutionTimer.removed.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
