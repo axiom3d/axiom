@@ -28,7 +28,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using Axiom.Core;
-using Axiom.Gui;
+using Axiom.Overlays;
 using Axiom.Input;
 using Axiom.MathLib;
 using Axiom.Graphics;

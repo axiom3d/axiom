@@ -29,31 +29,36 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-namespace Axiom.Gui {
+namespace Axiom.Overlays {
     /// <summary>
     ///    This class acts as a repository and regitrar of overlay components.
     /// </summary>
     /// <remarks>
-    ///    GuiManager's job is to manage the lifecycle of GuiElement (subclass)
+    ///    GuiManager's job is to manage the lifecycle of OverlayElement (subclass)
     ///    instances, and also to register plugin suppliers of new components.
     /// </remarks>
-    public class GuiManager : IDisposable {
-
+    public class OverlayElementManager : IDisposable {
         #region Singleton implementation
 
-        protected GuiManager() {}
-        protected static GuiManager instance;
+        protected OverlayElementManager() {}
+        protected static OverlayElementManager instance;
 
-        public static GuiManager Instance {
+        public static OverlayElementManager Instance {
             get { return instance; }
         }
 
         public static void Init() {
             if (instance != null) {
-                throw new ApplicationException("GuiManager.Init() called twice!");
+                throw new ApplicationException("OverlayElementManager.Init() called twice!");
             }
-            instance = new GuiManager();
+
+            instance = new OverlayElementManager();
             GarbageManager.Instance.Add(instance);
+
+			// register the default overlay element factories
+			instance.AddElementFactory(new Elements.BorderPanelFactory());
+			instance.AddElementFactory(new Elements.TextAreaFactory());
+			instance.AddElementFactory(new Elements.PanelFactory());
         }
 
         public void Dispose() {
@@ -75,46 +80,46 @@ namespace Axiom.Gui {
         #region Methods
 
         /// <summary>
-        ///     Registers a new GuiElementFactory with this manager.
+        ///     Registers a new OverlayElementFactory with this manager.
         /// </summary>
         /// <remarks>
         ///    Should be used by plugins or other apps wishing to provide
-        ///    a new GuiElement subclass.
+        ///    a new OverlayElement subclass.
         /// </remarks>
         /// <param name="factory"></param>
-        public void AddElementFactory(IGuiElementFactory factory) {
+        public void AddElementFactory(IOverlayElementFactory factory) {
             factories.Add(factory.Type, factory);
 
-            Trace.WriteLine(string.Format("GuiElementFactory for type '{0}' registered.", factory.Type));
+            Trace.WriteLine(string.Format("OverlayElementFactory for type '{0}' registered.", factory.Type));
         }
 
         /// <summary>
-        ///    Creates a new GuiElement of the type requested.
+        ///    Creates a new OverlayElement of the type requested.
         /// </summary>
         /// <param name="typeName">The type of element to create is passed in as a string because this
         ///    allows plugins to register new types of component.</param>
         /// <param name="instanceName">The type of element to create.</param>
         /// <returns></returns>
-        public GuiElement CreateElement(string typeName, string instanceName) {
+        public OverlayElement CreateElement(string typeName, string instanceName) {
             return CreateElement(typeName, instanceName, false);
         }
 
         /// <summary>
-        ///    Creates a new GuiElement of the type requested.
+        ///    Creates a new OverlayElement of the type requested.
         /// </summary>
         /// <param name="typeName">The type of element to create is passed in as a string because this
         ///    allows plugins to register new types of component.</param>
         /// <param name="instanceName">The type of element to create.</param>
         /// <param name="isTemplate"></param>
         /// <returns></returns>
-        public GuiElement CreateElement(string typeName, string instanceName, bool isTemplate) {
+        public OverlayElement CreateElement(string typeName, string instanceName, bool isTemplate) {
             Hashtable elements = GetElementTable(isTemplate);
 
             if(elements.ContainsKey(instanceName)) {
-                throw new Exception(string.Format("GuiElement with the name '{0}' already exists.")); 
+                throw new Exception(string.Format("OverlayElement with the name '{0}' already exists.")); 
             }
 
-            GuiElement element = CreateElementFromFactory(typeName, instanceName);
+            OverlayElement element = CreateElementFromFactory(typeName, instanceName);
             element.Initialize();
 
             // register
@@ -132,13 +137,13 @@ namespace Axiom.Gui {
         /// <param name="typeName"></param>
         /// <param name="instanceName"></param>
         /// <returns></returns>
-        public GuiElement CreateElementFromFactory(string typeName, string instanceName) {
+        public OverlayElement CreateElementFromFactory(string typeName, string instanceName) {
             if(!factories.ContainsKey(typeName)) {
                 throw new Exception(string.Format("Cannot locate factory for element type '{0}'", typeName));
             }
 
             // create the element
-            return ((IGuiElementFactory)factories[typeName]).Create(instanceName);
+            return ((IOverlayElementFactory)factories[typeName]).Create(instanceName);
         }
 
         /// <summary>
@@ -149,14 +154,14 @@ namespace Axiom.Gui {
         /// <param name="instanceName"></param>
         /// <param name="isTemplate"></param>
         /// <returns></returns>
-        public GuiElement CreateElementFromTemplate(string templateName, string typeName, string instanceName, bool isTemplate) {
-            GuiElement element = null;
+        public OverlayElement CreateElementFromTemplate(string templateName, string typeName, string instanceName, bool isTemplate) {
+            OverlayElement element = null;
 
             if(templateName.Length == 0) {
                 element = CreateElement(typeName, instanceName, isTemplate);
             }
             else {
-                GuiElement template = GetElement(templateName, true);
+                OverlayElement template = GetElement(templateName, true);
 
                 string typeToCreate = "";
                 if(typeName.Length == 0) {
@@ -169,7 +174,7 @@ namespace Axiom.Gui {
                 element = CreateElement(typeToCreate, instanceName, isTemplate);
 
                 // Copy settings from template
-                ((GuiContainer)element).CopyFromTemplate(template);
+                ((OverlayElementContainer)element).CopyFromTemplate(template);
             }
 
             return element;
@@ -181,12 +186,12 @@ namespace Axiom.Gui {
         /// <param name="name">Name of the element to retrieve.</param>
         /// <param name="isTemplate"></param>
         /// <returns></returns>
-        public GuiElement GetElement(string name) {
+        public OverlayElement GetElement(string name) {
             Hashtable elements = GetElementTable(false);
 
-            Debug.Assert(elements[name] != null, string.Format("GuiElement with the name'{0}' was not found.", name));
+            Debug.Assert(elements[name] != null, string.Format("OverlayElement with the name'{0}' was not found.", name));
 
-            return (GuiElement)elements[name];
+            return (OverlayElement)elements[name];
         }
 
         /// <summary>
@@ -195,12 +200,12 @@ namespace Axiom.Gui {
         /// <param name="name">Name of the element to retrieve.</param>
         /// <param name="isTemplate"></param>
         /// <returns></returns>
-        public GuiElement GetElement(string name, bool isTemplate) {
+        public OverlayElement GetElement(string name, bool isTemplate) {
             Hashtable elements = GetElementTable(isTemplate);
 
-            Debug.Assert(elements[name] != null, string.Format("GuiElement with the name'{0}' was not found.", name));
+            Debug.Assert(elements[name] != null, string.Format("OverlayElement with the name'{0}' was not found.", name));
 
-            return (GuiElement)elements[name];
+            return (OverlayElement)elements[name];
         }
 
         /// <summary>

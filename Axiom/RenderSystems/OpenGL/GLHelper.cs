@@ -29,7 +29,6 @@ using System.Collections.Specialized;
 using Axiom.Exceptions;
 using Axiom.Graphics;
 using Tao.OpenGl;
-using Tao.Platform.Windows;
 
 namespace Axiom.RenderSystems.OpenGL {
     /// <summary>

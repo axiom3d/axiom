@@ -58,6 +58,14 @@ namespace Demos {
             scene.RootSceneNode.AttachObject(entity);
         }
 
+		protected override void OnFrameStarted(object source, FrameEventArgs e) {
+			base.OnFrameStarted(source, e);
+			
+			Console.WriteLine("X: {0} Y: {1}", input.AbsoluteMouseX, input.AbsoluteMouseY);
+
+			return;
+		}
+
         #endregion
     }
 }

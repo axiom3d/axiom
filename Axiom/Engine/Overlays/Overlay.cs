@@ -27,11 +27,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using Axiom.Core;
-
 using Axiom.MathLib;
 using Axiom.Graphics;
 
-namespace Axiom.Gui {
+namespace Axiom.Overlays {
     /// <summary>
     ///    Represents a layer which is rendered on top of the 'normal' scene contents.
     /// </summary>
@@ -59,7 +58,6 @@ namespace Axiom.Gui {
      ///    a specific viewport by calling the Viewport.DisplayOverlays property.
     /// </remarks>
     public class Overlay : Resource {
-
         #region Member variables
 
         protected int zOrder;
@@ -110,7 +108,7 @@ namespace Axiom.Gui {
         ///    a container.
         /// </remarks>
         /// <param name="element"></param>
-        public void AddElement(GuiContainer element) {
+        public void AddElement(OverlayElementContainer element) {
             elementList.Add(element);
             elementLookup.Add(element.Name, element);
 
@@ -190,7 +188,7 @@ namespace Axiom.Gui {
 
             // add 2d elements
             for(int i = 0; i < elementList.Count; i++) {
-                GuiContainer container = (GuiContainer)elementList[i];
+                OverlayElementContainer container = (OverlayElementContainer)elementList[i];
                 container.Update();
                 container.UpdateRenderQueue(queue);
             }
@@ -201,8 +199,8 @@ namespace Axiom.Gui {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public GuiContainer GetChild(string name) {
-            return (GuiContainer)elementLookup[name];
+        public OverlayElementContainer GetChild(string name) {
+            return (OverlayElementContainer)elementLookup[name];
         }
 
         /// <summary>
@@ -389,7 +387,7 @@ namespace Axiom.Gui {
 
                 // notify attached 2d elements
                 for(int i = 0; i < elementList.Count; i++) {
-                    ((GuiContainer)elementList[i]).NotifyZOrder(zOrder);
+                    ((OverlayElementContainer)elementList[i]).NotifyZOrder(zOrder);
                 }
             }
         }

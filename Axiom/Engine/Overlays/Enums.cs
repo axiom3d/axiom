@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom.Scripting;
 
-namespace Axiom.Gui {
+namespace Axiom.Overlays {
     /// <summary>
     ///		Describes how the position / size of an element is to be treated. 
     /// </summary>

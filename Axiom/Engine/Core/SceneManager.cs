@@ -32,7 +32,7 @@ using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Controllers;
 using Axiom.Exceptions;
-using Axiom.Gui;
+using Axiom.Overlays;
 using Axiom.MathLib;
 using Axiom.MathLib.Collections;
 using Axiom.Graphics;

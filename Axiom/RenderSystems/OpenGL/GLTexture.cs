@@ -32,7 +32,6 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 using Tao.OpenGl;
-using Tao.Platform.Windows;
 
 namespace Axiom.RenderSystems.OpenGL {
     /// <summary>

@@ -45,13 +45,17 @@ namespace Axiom.Core {
         }
 
         public override void Write(string message) {
-            writer.WriteLine(message);
-            writer.Flush();
+			if(writer.BaseStream != null) {
+				writer.WriteLine(message);
+				writer.Flush();
+			}
         }
 
         public override void WriteLine(string message) {
-            writer.WriteLine(message);
-            writer.Flush();
+			if(writer.BaseStream != null) {
+				writer.WriteLine(message);
+				writer.Flush();
+			}
         }
         #region IDisposable Members
 

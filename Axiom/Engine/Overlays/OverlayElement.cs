@@ -8,19 +8,18 @@ using Axiom.MathLib;
 using Axiom.Scripting;
 using Axiom.Graphics;
 
-namespace Axiom.Gui
-{
+namespace Axiom.Overlays {
 	/// <summary>
 	/// 	Abstract definition of a 2D element to be displayed in an Overlay.
 	/// </summary>
 	/// <remarks>
 	/// 	This class abstracts all the details of a 2D element which will appear in
-	/// 	an overlay. In fact, not all GuiElement instances can be directly added to an
-	/// 	Overlay, only those which are GuiContainer instances (a subclass of this class).
-	/// 	GuiContainer objects can contain any GuiElement however. This is just to 
+	/// 	an overlay. In fact, not all OverlayElement instances can be directly added to an
+	/// 	Overlay, only those which are OverlayElementContainer instances (a subclass of this class).
+	/// 	OverlayElementContainer objects can contain any OverlayElement however. This is just to 
 	/// 	enforce some level of grouping on widgets.
 	/// 	<p/>
-	/// 	GuiElements should be managed using GuiManager. This class is responsible for
+	/// 	OverlayElements should be managed using GuiManager. This class is responsible for
 	/// 	instantiating / deleting elements, and also for accepting new types of element
 	/// 	from plugins etc.
 	/// 	<p/>
@@ -30,7 +29,7 @@ namespace Axiom.Gui
 	/// 	in physical pixels 0.5 is wider than it is tall, so a 0.5x0.5 panel will not be
 	/// 	square on the screen (but it will take up exactly half the screen in both dimensions).
 	/// </remarks>
-    public abstract class GuiElement : IRenderable {
+    public abstract class OverlayElement : IRenderable {
         #region Member variables
 		
         protected string name;
@@ -52,7 +51,7 @@ namespace Axiom.Gui
         protected int pixelHeight;
 
         // parent container
-        protected GuiContainer parent;
+        protected OverlayElementContainer parent;
         // overlay this element is attached to
         protected Overlay overlay;
 
@@ -78,7 +77,7 @@ namespace Axiom.Gui
         /// 
         /// </summary>
         /// <param name="name"></param>
-        protected internal GuiElement(string name) {
+        protected internal OverlayElement(string name) {
             this.name = name;
             width = 1.0f;
             height = 1.0f;
@@ -103,7 +102,7 @@ namespace Axiom.Gui
         /// </summary>
         /// <param name="template"></param>
         /// <returns></returns>
-        public virtual void CopyFromTemplate(GuiElement template) {
+        public virtual void CopyFromTemplate(OverlayElement template) {
             PropertyInfo[] props = template.GetType().GetProperties();
 
             for(int i = 0; i < props.Length; i++) {
@@ -128,7 +127,7 @@ namespace Axiom.Gui
         }
 
         /// <summary>
-        ///    Initialize the GuiElement.
+        ///    Initialize the OverlayElement.
         /// </summary>
         public abstract void Initialize();
 
@@ -137,7 +136,7 @@ namespace Axiom.Gui
         /// </summary>
         /// <param name="parent">Parent of this element.</param>
         /// <param name="overlay">Overlay this element belongs to.</param>
-        public virtual void NotifyParent(GuiContainer parent, Overlay overlay) {
+        public virtual void NotifyParent(OverlayElementContainer parent, Overlay overlay) {
             this.parent = parent;
             this.overlay = overlay;
             isDerivedOutOfDate = true;
@@ -148,7 +147,7 @@ namespace Axiom.Gui
         ///    has changed.
         /// </summary>
         /// <remarks>
-        ///    Overlays have explicit Z orders. GuiElements do not, they inherit the 
+        ///    Overlays have explicit Z orders. OverlayElements do not, they inherit the 
         ///    ZOrder of the overlay, and the Zorder is incremented for every container
         ///    nested within this to ensure that containers are displayed behind contained
         ///    items. This method is used internally to notify the element of a change in
@@ -444,7 +443,7 @@ namespace Axiom.Gui
         ///    Gets/Sets the horizontal origin for this element.
         /// </summary>
         /// <remarks>
-        ///    By default, the horizontal origin for a GuiElement is the left edge of the parent container
+        ///    By default, the horizontal origin for a OverlayElement is the left edge of the parent container
         ///    (or the screen if this is a root element). You can alter this by using this property, which is
         ///    especially useful when you want to use pixel-based metrics (see MetricsMode) since in this
         ///    mode you can't use relative positioning.
@@ -544,7 +543,7 @@ namespace Axiom.Gui
         ///    Tells this element how to interpret the position and dimension values it is given.
         /// </summary>
         /// <remarks>
-        ///    By default, GuiElements are positioned and sized according to relative dimensions
+        ///    By default, OverlayElements are positioned and sized according to relative dimensions
         ///    of the screen. This is to ensure portability between different resolutions when you
         ///    want things to be positioned and sized the same way across all resolutions. However, 
         ///    sometimes you want things to be sized according to fixed pixels. In order to do this,
@@ -585,7 +584,7 @@ namespace Axiom.Gui
         /// <summary>
         ///    Gets the parent container of this element.
         /// </summary>
-        public GuiContainer Parent {
+        public OverlayElementContainer Parent {
             get {
                 return parent;
             }
@@ -643,7 +642,7 @@ namespace Axiom.Gui
         ///    Sets the vertical origin for this element.
         /// </summary>
         /// <remarks>
-        ///    By default, the vertical origin for a GuiElement is the top edge of the parent container
+        ///    By default, the vertical origin for a OverlayElement is the top edge of the parent container
         ///    (or the screen if this is a root element). You can alter this by using this property, which is
         ///    especially useful when you want to use pixel-based metrics (see MetricsMode) since in this
         ///    mode you can't use relative positioning.
@@ -808,58 +807,58 @@ namespace Axiom.Gui
 
         #region Script parser methods
 
-        [AttributeParser("metrics_mode", "GuiElement")]
+        [AttributeParser("metrics_mode", "OverlayElement")]
         public static void ParseMetricsMode(string[] parms, params object[] objects) {
-            GuiElement element = (GuiElement)objects[0];
+            OverlayElement element = (OverlayElement)objects[0];
 
             element.MetricsMode = (MetricsMode)ScriptEnumAttribute.Lookup(parms[0], typeof(MetricsMode));
         }
 
-        [AttributeParser("horz_align", "GuiElement")]
+        [AttributeParser("horz_align", "OverlayElement")]
         public static void ParseHorzAlign(string[] parms, params object[] objects) {
-            GuiElement element = (GuiElement)objects[0];
+            OverlayElement element = (OverlayElement)objects[0];
 
             element.HorizontalAlignment = (HorizontalAlignment)ScriptEnumAttribute.Lookup(parms[0], typeof(HorizontalAlignment));
         }
 
-        [AttributeParser("vert_align", "GuiElement")]
+        [AttributeParser("vert_align", "OverlayElement")]
         public static void ParseVertAlign(string[] parms, params object[] objects) {
-            GuiElement element = (GuiElement)objects[0];
+            OverlayElement element = (OverlayElement)objects[0];
 
             element.VerticalAlignment = (VerticalAlignment)ScriptEnumAttribute.Lookup(parms[0], typeof(VerticalAlignment));
         }
 
-        [AttributeParser("top", "GuiElement")]
+        [AttributeParser("top", "OverlayElement")]
         public static void ParseTop(string[] parms, params object[] objects) {
-            GuiElement element = (GuiElement)objects[0];
+            OverlayElement element = (OverlayElement)objects[0];
 
             element.Top = int.Parse(parms[0]);
         }
 
-        [AttributeParser("left", "GuiElement")]
+        [AttributeParser("left", "OverlayElement")]
         public static void ParseLeft(string[] parms, params object[] objects) {
-            GuiElement element = (GuiElement)objects[0];
+            OverlayElement element = (OverlayElement)objects[0];
 
             element.Left = int.Parse(parms[0]);
         }
 
-        [AttributeParser("width", "GuiElement")]
+        [AttributeParser("width", "OverlayElement")]
         public static void ParseWidth(string[] parms, params object[] objects) {
-            GuiElement element = (GuiElement)objects[0];
+            OverlayElement element = (OverlayElement)objects[0];
 
             element.Width = int.Parse(parms[0]);
         }
 
-        [AttributeParser("height", "GuiElement")]
+        [AttributeParser("height", "OverlayElement")]
         public static void ParseHeight(string[] parms, params object[] objects) {
-            GuiElement element = (GuiElement)objects[0];
+            OverlayElement element = (OverlayElement)objects[0];
 
             element.Height = int.Parse(parms[0]);
         }
 
-        [AttributeParser("caption", "GuiElement")]
+        [AttributeParser("caption", "OverlayElement")]
         public static void ParseCaption(string[] parms, params object[] objects) {
-            GuiElement element = (GuiElement)objects[0];
+            OverlayElement element = (OverlayElement)objects[0];
 
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
@@ -872,9 +871,9 @@ namespace Axiom.Gui
             element.Text = sb.ToString();
         }
 
-        [AttributeParser("material", "GuiElement")]
+        [AttributeParser("material", "OverlayElement")]
         public static void ParseMaterial(string[] parms, params object[] objects) {
-            GuiElement element = (GuiElement)objects[0];
+            OverlayElement element = (OverlayElement)objects[0];
 
             element.MaterialName = parms[0];
         }

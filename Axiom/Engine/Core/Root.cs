@@ -32,7 +32,7 @@ using System.Reflection;
 using Axiom.Collections;
 using Axiom.Controllers;
 using Axiom.Fonts;
-using Axiom.Gui;
+using Axiom.Overlays;
 using Axiom.Input;
 using Axiom.ParticleSystems;
 using Axiom.Utility;
@@ -468,7 +468,7 @@ namespace Axiom.Core {
 			ParticleSystemManager.Init();
 			SceneManagerList.Init();
 			OverlayManager.Init();
-			GuiManager.Init();
+			OverlayElementManager.Init();
 			HighLevelGpuProgramManager.Init();
 			ControllerManager.Init();
 			FontManager.Init();
