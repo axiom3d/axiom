@@ -423,10 +423,7 @@ namespace Axiom.Core {
                 fullBoundingBox = mesh.BoundingBox;
                 fullBoundingBox.Merge(GetChildObjectsBoundingBox());
 
-                // scale by parent
-                if(parentNode != null) {
-                    fullBoundingBox.Scale(parentNode.DerivedScale);
-                }
+		// don't need to scale here anymore
 
                 return fullBoundingBox;
             }
