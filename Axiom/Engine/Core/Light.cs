@@ -232,7 +232,7 @@ namespace Axiom.Core {
 		/// <summary>
 		///		Gets/Sets the diffuse color of the light.
 		/// </summary>
-		public ColorEx Diffuse {
+		public virtual ColorEx Diffuse {
 			get { 
 				return diffuse; 
 			}
@@ -244,7 +244,7 @@ namespace Axiom.Core {
 		/// <summary>
 		///		Gets/Sets the diffuse color of the light.
 		/// </summary>
-		public ColorEx Specular {
+		public virtual ColorEx Specular {
 			get { 
 				return specular; 
 			}
@@ -292,7 +292,7 @@ namespace Axiom.Core {
 		/// <summary>
 		///		Updates this lights position.
 		/// </summary>
-		public void Update() {
+		public virtual void Update() {
 			if(parentNode != null) {
 				if(!localTransformDirty
 					&& parentNode.DerivedOrientation == lastParentOrientation
