@@ -88,11 +88,17 @@ namespace Axiom.Graphics {
 		///     being sent to the hardware.
 		/// </summary>
 		protected bool transposeMatrices;
+		/// <summary>
+		///		Temp array for use when passing constants around.
+		/// </summary>
+		protected float[] tmpVals = new float[4];
+		/// <summary>
+		///		Flag to indicate if names not found will be automatically added.
+		/// </summary>
+		protected bool autoAddParamName;
 
 		protected ArrayList paramTypeList = new ArrayList();
 		protected ArrayList paramIndexTypes = new ArrayList();
-
-		protected float[] tmpVals = new float[4];
 
 		#endregion
 		
@@ -147,6 +153,9 @@ namespace Axiom.Graphics {
 				AutoConstantEntry entry = (AutoConstantEntry)source.autoConstantList[i];
 				SetAutoConstant(entry.index, entry.type, entry.data);
 			}
+
+			// don't forget to copy the named param lookup as well
+			namedParams = (Hashtable)source.namedParams.Clone();
 		}
 
 		/// <summary>
@@ -186,7 +195,21 @@ namespace Axiom.Graphics {
 		/// </returns>
 		public int GetParamIndex(string name) {
 			if(namedParams[name] == null) {
-				throw new Exception(string.Format("Cannot find a param index for a param named '{0}'.", name));
+				// name not found in map, should it be added to the map?
+				if(autoAddParamName) {
+					// determine index
+					// don't know which Constants list the name is for
+					// so pick the largest index
+					int index = floatConstants.Count > intConstants.Count ? floatConstants.Count : intConstants.Count;
+
+					floatConstants.Resize(index + 1);
+					intConstants.Resize(index  + 1);
+					MapParamNameToIndex(name, index);
+					return index;
+				}
+				else {
+					throw new Exception(string.Format("Cannot find a param index for a param named '{0}'.", name));
+				}
 			}
 
 			return (int)namedParams[name];
@@ -202,6 +225,37 @@ namespace Axiom.Graphics {
 				if((int)entry.Value == index) {
 					return (string)entry.Key;
 				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///		Gets a Named Float Constant entry if the name is found otherwise returns a null.
+		/// </summary>
+		/// <param name="name">Name of the constant to retreive.</param>
+		/// <returns>A reference to the float constant entry with the specified name, else null if not found.</returns>
+		public FloatConstantEntry GetNamedFloatConstant(string name) {
+			if(namedParams[name] != null) {
+				int index = (int)namedParams[name];
+
+				return GetFloatConstant(index);
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///		Gets a Named Int Constant entry if the name is found otherwise returns a null.
+		/// </summary>
+		/// <param name="name">Name of the constant to retreive.</param>
+		/// <returns>A reference to the int constant entry with the specified name, else null if not found.</returns>
+
+		public IntConstantEntry GetNamedIntConstant(string name) {
+			if(namedParams[name] != null) {
+				int index = (int)namedParams[name];
+
+				return GetIntConstant(index);
 			}
 
 			return null;
@@ -335,9 +389,7 @@ namespace Axiom.Graphics {
 			int srcIndex = 0;
 
 			// resize if necessary
-			while(intConstants.Count < index + count) {
-				intConstants.Add(new IntConstantEntry());
-			}
+			intConstants.Resize(index + count);
 
 			// copy in chunks of 4
 			while(count-- > 0) {
@@ -357,9 +409,8 @@ namespace Axiom.Graphics {
 			int count = floats.Length / 4;
 			int srcIndex = 0;
 
-			while(floatConstants.Count < index + count) {
-				floatConstants.Add(new FloatConstantEntry());
-			}
+			// resize if necessary
+			floatConstants.Resize(index + count);
 
 			// copy in chunks of 4
 			while(count-- > 0) {
@@ -612,6 +663,26 @@ namespace Axiom.Graphics {
 		
 		#region Properties
 		
+		/// <summary>
+		///		Gets/Sets the auto add parameter name flag.
+		/// </summary>
+		/// <remarks>
+		///		Not all GPU programs make named parameters available after the high level
+		///		source is compiled.  GLSL is one such case.  If parameter names are not loaded
+		///		prior to the material serializer reading in parameter names in a script then
+		///		an exception is generated.  Set this to true to have names not found
+		///		in the map added to the map.
+		///		The index of the parameter name will be set to the end of the Float Constant List.
+		/// </remarks>
+		public bool AutoAddParamName {
+			get {
+				return autoAddParamName;
+			}
+			set {
+				autoAddParamName = value;
+			}
+		}
+
 		public ArrayList ParameterInfo {
 			get { 
 				return this.paramTypeList; 

@@ -66,6 +66,10 @@ namespace Axiom.Graphics
 		///		List of default parameters, as gathered from the program definition.
 		/// </summary>
 		protected GpuProgramParameters defaultParams;
+		/// <summary>
+		///		Does this program want light states passed through fixed pipeline?
+		/// </summary>
+		protected bool passSurfaceAndLightStates;
 
         #endregion Fields
 		
@@ -188,6 +192,25 @@ namespace Axiom.Graphics
                 return GpuProgramManager.Instance.IsSyntaxSupported(syntaxCode);
             }
         }
+
+		/// <summary>
+		///		Sets whether a vertex program requires light and material states to be passed
+		///		to through fixed pipeline low level API rendering calls.
+		/// </summary>
+		/// <remarks>
+		///		If this is set to true, Axiom will pass all active light states to the fixed function
+		///		pipeline.  This is useful for high level shaders like GLSL that can read the OpenGL
+		///		light and material states.  This way the user does not have to use autoparameters to 
+		///		pass light position, color etc.
+		/// </remarks>
+		public bool PassSurfaceAndLightStates {
+			get {
+				return passSurfaceAndLightStates;
+			}
+			set {
+				passSurfaceAndLightStates = value;
+			}
+		}
 		
         /// <summary>
         ///    Gets/Sets the source assembler code for this program.
