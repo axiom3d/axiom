@@ -144,5 +144,52 @@ namespace Axiom.Core {
 
         #endregion
 
+        #region Operator overloads
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static bool operator ==(ColorEx left, ColorEx right) {
+            if((object)right == null || (object)left == null)
+                return false;
+            
+            if(left.a == right.a &&
+                left.r == right.r &&
+                left.g == right.g &&
+                left.b == right.b) {
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static bool operator !=(ColorEx left, ColorEx right) {
+            
+            if((object)right == null || (object)left == null)
+                return true;
+
+            if(left.a != right.a ||
+                left.r != right.r ||
+                left.g != right.g ||
+                left.b != right.b) {
+
+                return true;
+            }
+
+            return false;
+        }
+
+        #endregion
+
     }
 }
