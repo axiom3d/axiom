@@ -8,6 +8,7 @@
 				<AllowUnsafe>true</AllowUnsafe>
 				<OutputPath>bin\Debug</OutputPath>
 				<DebugInformation>true</DebugInformation>
+				<WarningLevel>0</WarningLevel>
 			</Options>
 		</Configuration>
 		<Configuration name="Release">
@@ -17,6 +18,7 @@
 				<AllowUnsafe>true</AllowUnsafe>
 				<OutputPath>bin\Release</OutputPath>
 				<DebugInformation>false</DebugInformation>
+				<WarningLevel>0</WarningLevel>
 			</Options>
 		</Configuration>
 		<Project 
@@ -31,20 +33,23 @@
 			<Reference name="System" />
 			<Reference name="System.Data" />
 			<Reference name="System.Drawing" />
-			<Reference name="System.Windows.Forms" />
 			<Reference name="System.Xml" />
 			<Reference name="Axiom.Engine" localCopy="true"/>
 			<Reference name="Axiom.MathLib" localCopy="true"/>
 			<Reference name="Axiom.Plugins.ParticleFX" localCopy="true"/>
 			<Reference name="Axiom.Plugins.CgProgramManager" localCopy="true"/>
-			<Reference name="Axiom.RenderSystems.DirectX9" localCopy="true"/>
 			<Reference name="Axiom.RenderSystems.OpenGL" localCopy="true"/>
-			<Reference name="Axiom.Platforms.Win32" localCopy="true"/>
 			<Reference name="Axiom.SceneManagers.Bsp" localCopy="true"/>
 			<Reference name="Axiom.SceneManagers.Octree" localCopy="true"/>
 			
+			<?if OS = "Win32" ?>
+				<Reference name="Axiom.Platforms.Win32" localCopy="true"/>
+				<Reference name="Axiom.RenderSystems.DirectX9" localCopy="true"/>
+			<?endif ?>
+			
 			<Files>
-				<Match pattern="*.cs" path="." recurse="true"/>
+				<Match pattern="*.cs" path="."/>
+				<Match pattern="*.cs" path="Demos"/>
 			</Files>
 		</Project>
 		<Project 
