@@ -185,6 +185,13 @@ namespace Axiom.Core {
         }
 
         /// <summary>
+        ///		Gets the current number of Lod levels associated with this mesh.
+        /// </summary>
+        public int LodLevelCount {
+            get { return lodUsageList.Count; }
+        }
+
+        /// <summary>
         ///    Gets the skeleton currently bound to this mesh.
         /// </summary>
         public Skeleton Skeleton {
@@ -375,6 +382,54 @@ namespace Axiom.Core {
             // delegate down to the skeleton
             skeleton.SetAnimationState(animSet);
             skeleton.GetBoneMatrices(matrices);
+        }
+
+        /// <summary>
+        ///    Retrieves the level of detail index for the given depth value.
+        /// </summary>
+        /// <param name="depth"></param>
+        /// <returns></returns>
+        public int GetLodIndex(float depth) {
+            return GetLodIndexSquaredDepth(depth * depth);
+        }
+
+        /// <summary>
+        ///    Gets the mesh lod level at the specified index.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public MeshLodUsage GetLodLevel(int index) {
+            Debug.Assert(index < lodUsageList.Count, "index < lodUsageList.Count");
+
+            MeshLodUsage usage = (MeshLodUsage)lodUsageList[index];
+
+            // load the manual lod mesh for this level if not done already
+            if(isLodManual && usage.manualMesh == null) {
+                usage.manualMesh = MeshManager.Instance.Load(usage.manualName, 1);
+            }
+
+            return usage;
+        }
+
+        /// <summary>
+        ///    Retrieves the level of detail index for the given squared depth value.
+        /// </summary>
+        /// <remarks>
+        ///    Internally the lods are stored at squared depths to avoid having to perform
+        ///    square roots when determining the lod. This method allows you to provide a
+        ///    squared length depth value to avoid having to do your own square roots.
+        /// </remarks>
+        /// <param name="squaredDepth"></param>
+        /// <returns></returns>
+        public int GetLodIndexSquaredDepth(float squaredDepth) {
+            for(int i = 0; i < lodUsageList.Count; i++) {
+                if(((MeshLodUsage)lodUsageList[i]).fromSquaredDepth > squaredDepth) {
+                    return i - 1;
+                }
+            }
+
+            // if we fall all the wat through, use the higher value
+            return lodUsageList.Count - 1;
         }
 
         /// <summary>
@@ -689,7 +744,7 @@ namespace Axiom.Core {
         public float fromSquaredDepth;
          ///<summary>Only relevant if isLodManual is true, the name of the alternative mesh to use</summary>
  	    public string manualName;
-        ///<sum>Reference to the manual mesh to avoid looking up each timey</summary>    	
+        ///<summary>Reference to the manual mesh to avoid looking up each timey</summary>    	
         public Mesh manualMesh;
     }
 }

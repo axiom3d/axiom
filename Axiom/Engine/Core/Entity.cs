@@ -61,6 +61,14 @@ namespace Axiom.Core {
         protected bool displaySkeleton;
         /// <summary>The LOD number of the mesh to use, calculated by NotifyCurrentCamera</summary>
         protected int meshLodIndex;
+        /// <summary>LOD bias factor, inverted for optimization when calculating adjusted depth.</summary>
+        protected float meshLodFactorInv;
+        /// <summary>Index of minimum detail LOD (higher index is lower detail)</summary>
+        protected int minMeshLodIndex;
+        /// <summary>Index of maximum detail LOD (lower index is higher detail)</summary>
+        protected int maxMeshLodIndex;
+        /// <summary>Flag indicating that mesh uses manual LOD and so might have multiple SubEntity versions</summary>
+        protected bool usingManualLod;
         /// <summary>Render detail to be used for this entity (solid, wireframe, point).</summary>
         protected SceneDetailLevel renderDetail;
 
@@ -81,7 +89,10 @@ namespace Axiom.Core {
 
             BuildSubEntities();
 
-            // TODO: Determine LOD usage
+            // LOD default settings
+            meshLodFactorInv = 1.0f;
+            // Backwards, remember low value = high detail
+            minMeshLodIndex = 99;
 
             // init the AnimationState, if the mesh is animated
             if(mesh.HasSkeleton) {
@@ -280,7 +291,26 @@ namespace Axiom.Core {
         }
 
         internal override void NotifyCurrentCamera(Axiom.Core.Camera camera) {
-            // TODO: Use camera to determine updated LOD info
+            if(parentNode != null) {
+                float squaredDepth = parentNode.GetSquaredViewDepth(camera);
+
+                // Adjust this depth by the entity bias factor
+                squaredDepth = squaredDepth * meshLodFactorInv;
+
+                // Now adjust it by the camera bias
+                squaredDepth = squaredDepth * camera.InverseLodBias;
+                
+                // Get the index at this biased depth
+                meshLodIndex = mesh.GetLodIndexSquaredDepth(squaredDepth);
+                
+                // Apply maximum detail restriction (remember lower = higher detail)
+                meshLodIndex = (int)MathUtil.Max(maxMeshLodIndex, meshLodIndex);
+                
+                // Apply minimum detail restriction (remember higher = lower detail)
+                meshLodIndex = (int)MathUtil.Min(minMeshLodIndex, meshLodIndex);
+            }
+
+            // TODO: Notify child objects (tag points)
         }
 
         /// <summary>
@@ -301,6 +331,41 @@ namespace Axiom.Core {
             Debug.Assert(index < subEntityList.Count, "index < subEntityList.Count");
 
             return subEntityList[index];
+        }
+
+        /// <summary>
+        ///    Sets a level-of-detail bias on this entity.
+        /// </summary>
+        /// <remarks>
+        ///    Level of detail reduction is normally applied automatically based on the Mesh 
+        ///    settings. However, it is possible to influence this behavior for this entity
+        ///    by adjusting the LOD bias. This 'nudges' the level of detail used for this 
+        ///    entity up or down depending on your requirements. You might want to use this
+        ///    if there was a particularly important entity in your scene which you wanted to
+        ///    detail better than the others, such as a player model.
+        ///    <p/>
+        ///    There are three parameters to this method; the first is a factor to apply; it 
+        ///    defaults to 1.0 (no change), by increasing this to say 2.0, this model would 
+        ///    take twice as long to reduce in detail, whilst at 0.5 this entity would use lower
+        ///    detail versions twice as quickly. The other 2 parameters are hard limits which 
+        ///    let you set the maximum and minimum level-of-detail version to use, after all
+        ///    other calculations have been made. This lets you say that this entity should
+        ///    never be simplified, or that it can only use LODs below a certain level even
+        ///    when right next to the camera.
+        /// </remarks>
+        /// <param name="factor">Proportional factor to apply to the distance at which LOD is changed. 
+        ///    Higher values increase the distance at which higher LODs are displayed (2.0 is 
+        ///    twice the normal distance, 0.5 is half).</param>
+        /// <param name="maxDetailIndex">The index of the maximum LOD this entity is allowed to use (lower
+        ///    indexes are higher detail: index 0 is the original full detail model).</param>
+        /// <param name="minDetailIndex">The index of the minimum LOD this entity is allowed to use (higher
+        ///    indexes are lower detail. Use something like 99 if you want unlimited LODs (the actual
+        ///    LOD will be limited by the number in the Mesh)</param>
+        public void SetLoadBias(float factor, int maxDetailIndex, int minDetailIndex) {
+            Debug.Assert(factor > 0.0f, "Bias factor must be > 0!");
+            meshLodFactorInv = 1.0f / factor;
+            maxMeshLodIndex = maxDetailIndex;
+            minMeshLodIndex = minDetailIndex;
         }
 
         /// <summary>

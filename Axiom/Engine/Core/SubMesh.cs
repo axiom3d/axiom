@@ -205,8 +205,9 @@ namespace Axiom.Core {
             // meshes always use indices
             op.useIndices = true;
 
-            if(lodIndex > 0) {
-                // TODO: Use LOD index list
+            // use lod face list if requested, else pass the normal face list
+            if(lodIndex > 0 && (lodIndex - 1) < lodFaceList.Count) {
+                op.indexData = (IndexData)lodFaceList[lodIndex - 1];
             }
             else
                 op.indexData = indexData;
