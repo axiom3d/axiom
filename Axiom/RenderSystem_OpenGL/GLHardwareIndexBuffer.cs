@@ -53,11 +53,11 @@ namespace Axiom.RenderSystems.OpenGL {
             if(bufferID == 0)
                 throw new Exception("Cannot create GL vertex buffer");
 
-            Ext.glBindBufferARB(Gl.GL_ARRAY_BUFFER_ARB, bufferID);
+            Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
 
             // initialize this buffer.  we dont have data yet tho
             Ext.glBufferDataARB(
-                Gl.GL_ARRAY_BUFFER_ARB, 
+                Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, 
                 sizeInBytes, 
                 IntPtr.Zero, 
                 GLHelper.ConvertEnum(usage));
