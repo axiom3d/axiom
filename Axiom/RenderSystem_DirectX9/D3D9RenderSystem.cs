@@ -83,6 +83,11 @@ namespace Axiom.RenderSystems.DirectX9 {
 
         protected D3DGpuProgramManager gpuProgramMgr;
 
+		/// <summary>
+		///		Temp D3D vector to avoid constant allocations.
+		/// </summary>
+		private Microsoft.DirectX.Vector4 tempVec = new Microsoft.DirectX.Vector4();
+
         public D3D9RenderSystem() {
             InitConfigOptions();
 
@@ -628,6 +633,8 @@ namespace Axiom.RenderSystems.DirectX9 {
             }            
         }
 
+		
+
         public override void BindGpuProgramParameters(GpuProgramType type, GpuProgramParameters parms) {
 
             switch(type) {
@@ -640,7 +647,12 @@ namespace Axiom.RenderSystems.DirectX9 {
                             int index = parms.GetFloatConstantIndex(i);
                             Axiom.MathLib.Vector4 vec4 = parms.GetFloatConstant(i);
 
-                            device.SetVertexShaderConstant(index, new Microsoft.DirectX.Vector4(vec4.x, vec4.y, vec4.z, vec4.w));
+							tempVec.X = vec4.x;
+							tempVec.Y = vec4.y;
+							tempVec.Z = vec4.z;
+							tempVec.W = vec4.w;
+
+                            device.SetVertexShaderConstant(index, tempVec);
                         }
                     }
 
@@ -655,7 +667,12 @@ namespace Axiom.RenderSystems.DirectX9 {
                             int index = parms.GetFloatConstantIndex(i);
                             Axiom.MathLib.Vector4 vec4 = parms.GetFloatConstant(i);
 
-                            device.SetPixelShaderConstant(index, new Microsoft.DirectX.Vector4(vec4.x, vec4.y, vec4.z, vec4.w));
+							tempVec.X = vec4.x;
+							tempVec.Y = vec4.y;
+							tempVec.Z = vec4.z;
+							tempVec.W = vec4.w;
+
+                            device.SetPixelShaderConstant(index, tempVec);
                         }
                     }
                     break;
