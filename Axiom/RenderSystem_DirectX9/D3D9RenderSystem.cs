@@ -288,6 +288,8 @@ namespace RenderSystem_DirectX9 {
             // intializes the HardwareBufferManager singleton
             hardwareBufferManager = new D3DHardwareBufferManager(device);
 
+            MeshManager.Init();
+
             return window;
         }
 
@@ -359,8 +361,6 @@ namespace RenderSystem_DirectX9 {
         }
 
         public override RenderWindow Initialize(bool autoCreateWindow) {
-            base.Initialize (autoCreateWindow);
-
             RenderWindow renderWindow = null;
 
             if(autoCreateWindow) {

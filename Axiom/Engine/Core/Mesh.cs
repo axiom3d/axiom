@@ -487,6 +487,7 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
+        // TODO: Create overload which takes no params and auto name the sub mesh
         public SubMesh CreateSubMesh(String name) {
             SubMesh subMesh = new SubMesh(name);
 
