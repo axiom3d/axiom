@@ -134,7 +134,10 @@ namespace Axiom.Scripting {
 			} // for
 
 			// return the full string
-			return legalValues.ToString(0, legalValues.Length - 1);
+			if(legalValues.Length == 0)
+				return "(No values found for type " + type.Name.ToString() + ")";
+			else
+				return legalValues.ToString(0, legalValues.Length - 1);
 		}
     }
 
