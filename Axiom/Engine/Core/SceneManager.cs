@@ -194,6 +194,10 @@ namespace Axiom.Core {
 		///		Current list of shadow casters within the view of the camera.
 		/// </summary>
 		protected ArrayList shadowCasterList = new ArrayList();
+		/// <summary>
+		///		Explicit extrusion distance for directional lights.
+		/// </summary>
+		protected float shadowDirLightExtudeDist;
 
         #endregion Fields
 
@@ -230,6 +234,8 @@ namespace Axiom.Core {
 			renderQueue.GetQueueGroup(RenderQueueGroupID.Overlay).ShadowsEnabled = false;
 			renderQueue.GetQueueGroup(RenderQueueGroupID.SkiesEarly).ShadowsEnabled = false;
 			renderQueue.GetQueueGroup(RenderQueueGroupID.SkiesLate).ShadowsEnabled = false;
+
+			shadowDirLightExtudeDist = 10000;
         }
 
         #endregion
@@ -649,8 +655,11 @@ namespace Axiom.Core {
 			shadowCasterList.Clear();
 
 			if (light.Type == LightType.Directional) {
-				// Hmm, how to efficiently locate shadow casters for an infinite light?
-				// TODO
+				// HACK: Bypassing for testing, adding em all for now
+				for(int i = 0; i < entityList.Count; i++) {
+					if(entityList[i].CastShadows)
+						shadowCasterList.Add(entityList[i]);
+				}
 			}
 			else {
 				Sphere s = new Sphere(light.DerivedPosition, light.AttenuationRange);
@@ -794,15 +803,11 @@ namespace Axiom.Core {
 			targetRenderSystem.StencilCheckEnabled = true;
 			targetRenderSystem.DepthFunction = CompareFunction.Less;
 
+			float extrudeDistance = (light.Type == LightType.Directional) ? 
+					shadowDirLightExtudeDist : light.AttenuationRange;
+
 			// get the near clip volume
 			PlaneBoundedVolume nearClipVol = light.GetNearClipVolume(camera);
-
-//			Console.WriteLine("---");
-//			foreach(Plane plane in nearClipVol.planes) {
-//				Console.WriteLine("Normal {0} D: {1}", plane.Normal, plane.D);
-//			}
-//
-//			Console.WriteLine("---");
 
 			// get the shadow caster list
 			IList casters = FindShadowCastersForLight(light, camera);
@@ -835,7 +840,7 @@ namespace Axiom.Core {
 					// Dark caps are not needed for directional lights if
 					// extrusion is done in hardware (since extruded to infinity)
 					if((light.Type != LightType.Directional || extrudeInSoftware)
-						&& camera.IsObjectVisible(caster.GetDarkCapBounds(light))) {
+						&& camera.IsObjectVisible(caster.GetDarkCapBounds(light, extrudeDistance))) {
 
 						flags |= (int)ShadowRenderableFlags.IncludeDarkCap;
 					}
@@ -843,7 +848,7 @@ namespace Axiom.Core {
 
 				// get shadow renderables
 				IEnumerator renderables = caster.GetShadowVolumeRenderableEnumerator(
-					shadowTechnique, light, shadowIndexBuffer, extrudeInSoftware, flags);
+					shadowTechnique, light, shadowIndexBuffer, extrudeInSoftware, extrudeDistance, flags);
 
 				while(renderables.MoveNext()) {
 					ShadowRenderable sr = (ShadowRenderable)renderables.Current;
@@ -1712,6 +1717,28 @@ namespace Axiom.Core {
 					LayerBlendSource.Manual, 
 					LayerBlendSource.Current, 
 					value);
+			}
+		}
+
+		/// <summary>
+		///		Sets the distance a shadow volume is extruded for a directional light.
+		/// </summary>
+		/// <remarks>
+		///		Although directional lights are essentially infinite, there are many
+		///		reasons to limit the shadow extrusion distance to a finite number, 
+		///		not least of which is compatibility with older cards (which do not
+		///		support infinite positions), and shadow caster elimination.
+		///		<p/>
+		///		The default value is 10,000 world units. This does not apply to
+		///		point lights or spotlights, since they extrude up to their 
+		///		attenuation range.
+		/// </remarks>
+		public float ShadowDirectionalLightExtrusionDistance {
+			get {
+				return shadowDirLightExtudeDist;
+			}
+			set {
+				shadowDirLightExtudeDist = value;
 			}
 		}
 

@@ -20,7 +20,7 @@ namespace Axiom.Media {
         /// </summary>
         Unknown,
         /// <summary>
-        ///    8-bit pixel format, all bits luminace.
+        ///    8-bit pixel format, all bits luminance.
         /// </summary>
         L8,
         /// <summary>
@@ -28,7 +28,7 @@ namespace Axiom.Media {
         /// </summary>
         A8,
         /// <summary>
-        ///    8-bit pixel format, 4 bits alpha, 4 bits luminace.
+        ///    8-bit pixel format, 4 bits alpha, 4 bits luminance.
         /// </summary>
         A4L4,
         /// <summary>

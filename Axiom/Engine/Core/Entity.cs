@@ -816,7 +816,9 @@ namespace Axiom.Core {
 			}
 		}
 
-		public override IEnumerator GetShadowVolumeRenderableEnumerator(ShadowTechnique technique, Light light, HardwareIndexBuffer indexBuffer, bool extrudeVertices, int flags) {
+		public override IEnumerator GetShadowVolumeRenderableEnumerator(ShadowTechnique technique, Light light, 
+			HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, int flags) {
+
 			Debug.Assert(indexBuffer != null, "Only external index buffers are supported right now");
 			Debug.Assert(indexBuffer.Type == IndexType.Size16, "Only 16-bit indexes supported for now");
 
@@ -912,7 +914,7 @@ namespace Axiom.Core {
 				}
 				// Extrude vertices in software if required
 				if(extrudeVertices) {
-					ExtrudeVertices(esr.PositionBuffer, egi.vertexData.vertexCount, lightPos, light.AttenuationRange);
+					ExtrudeVertices(esr.PositionBuffer, egi.vertexData.vertexCount, lightPos, extrusionDistance);
 				}
 
 				// Stop suppressing hardware update now, if we were

@@ -68,6 +68,7 @@ namespace Axiom.Graphics {
                 Triangle tri = (Triangle)triangles[i];
 
                 float dot = tri.normal.Dot(lightPos);
+			
                 tri.lightFacing = (dot > 0);
             }
         }

@@ -167,8 +167,7 @@ namespace Demos {
             greenBlueLightsNode.Pitch(20 * e.TimeSinceLastFrame);
         }
 
-        #endregion
-		
+        #endregion	
     }
 
     public class LightFlasherControllerValue : IControllerValue {
