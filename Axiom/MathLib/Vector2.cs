@@ -3,6 +3,17 @@
 Axiom Game Engine Library
 Copyright (C) 2003  Axiom Project Team
 
+The overall design, and a majority of the core engine and rendering code 
+contained within this library is a derivative of the open source Object Oriented 
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+The math library included in this project, in addition to being a derivative of
+the works of Ogre, also include derivative work of the free portion of the 
+Wild Magic mathematics source code that is distributed with the excellent
+book Game Engine Design.
+http://www.wild-magic.com/
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
