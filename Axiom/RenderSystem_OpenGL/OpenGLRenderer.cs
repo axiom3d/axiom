@@ -52,14 +52,6 @@ namespace RenderSystem_OpenGL
 		/// </summary>
 		public class OpenGLRenderer : RenderSystem, IPlugin
 		{
-			const uint GL_ARRAY_BUFFER_ARB = 0x8892;
-			const uint GL_READ_ONLY_ARB = 0x88B8;
-			const uint GL_ELEMENT_ARRAY_BUFFER_ARB = 0x8893;
-			const uint GL_STATIC_COPY_ARB = 0x88E6; 
-			const uint GL_DYNAMIC_DRAW_ARB = 0x88E8;
-			const uint GL_WRITE_ONLY_ARB = 0x88B9;
-			const uint GL_READ_WRITE_ARB = 0x88BA;
-
 			/// <summary>OpenGL Context (from CsGL)</summary>
 			protected OpenGLContext context;
 			/// <summary>Object that allows for calls to OpenGL extensions.  Named all upper for consistency since GL calls are static through GL class.</summary>
@@ -79,11 +71,8 @@ namespace RenderSystem_OpenGL
 			protected bool useAutoTextureMatrix;
 			protected float[] autoTextureMatrix = new float[16];
 
-			// OpenGL supports 8 lights max
-			const int MAX_LIGHTS = 8;
-			const string OPENGL_LIB = "opengl32.dll";
-			const string GLU_LIB = "glu32.dll";
-			protected Light[] lights = new Light[MAX_LIGHTS];
+			// local array of light objects to reference during light updating, disabling, etc
+			protected Light[] lights;
 
 			public OpenGLRenderer()
 			{
@@ -584,7 +573,7 @@ namespace RenderSystem_OpenGL
 						uint bufferId = ((GLHardwareVertexBuffer)vertexBuffer).GLBufferID;
 
 						// bind the current vertex buffer
-						Ext.glBindBufferARB(GL_ARRAY_BUFFER_ARB, bufferId);
+						Ext.glBindBufferARB(Gl.GL_ARRAY_BUFFER_ARB, bufferId);
 						bufferData = BUFFER_OFFSET(element.Offset);
 					}
 					else
@@ -717,7 +706,7 @@ namespace RenderSystem_OpenGL
 							uint idxBufferID = ((GLHardwareIndexBuffer)op.indexData.indexBuffer).GLBufferID;
 
 							// bind the current index buffer
-							Ext.glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, idxBufferID);
+							Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, idxBufferID);
 
 							// get the offset pointer to the data in the vbo
 							indexData = BUFFER_OFFSET(0);
@@ -821,7 +810,7 @@ namespace RenderSystem_OpenGL
 				int lightIndex;
 
 				// look for a free slot and add the light
-				for(lightIndex = 0; lightIndex < MAX_LIGHTS; lightIndex++)
+				for(lightIndex = 0; lightIndex < caps.MaxLights; lightIndex++)
 				{
 					if(lights[lightIndex] == null)
 					{
@@ -830,7 +819,7 @@ namespace RenderSystem_OpenGL
 					}
 				}
 
-				if(lightIndex == MAX_LIGHTS)
+				if(lightIndex == caps.MaxLights)
 					throw new Exception("Maximum hardware light count has been reached.");
 
 				// update light
@@ -841,13 +830,13 @@ namespace RenderSystem_OpenGL
 			{
 				int lightIndex;
 
-				for(lightIndex = 0; lightIndex < MAX_LIGHTS; lightIndex++)
+				for(lightIndex = 0; lightIndex < caps.MaxLights; lightIndex++)
 				{
 					if(lights[lightIndex].Name == light.Name)
 						break;
 				}
 
-				if(lightIndex == MAX_LIGHTS)
+				if(lightIndex == caps.MaxLights)
 					throw new Exception("An attempt was made to update an invalid light.");
 
 				// update light
@@ -1116,7 +1105,7 @@ namespace RenderSystem_OpenGL
 			{
 				float[] f4vals = new float[4];
 
-				for (int i = 0; i < MAX_LIGHTS; i++)
+				for (int i = 0; i < caps.MaxLights; i++)
 				{
 					if (lights[i] != null)
 					{
@@ -1517,6 +1506,12 @@ namespace RenderSystem_OpenGL
 				// TODO: Only enable this for non-ATI cards temporarily until drivers are fixed
 				if(GLHelper.SupportsExtension("GL_SGIS_generate_mipmap"))
 					caps.SetCap(Capabilities.HardwareMipMaps);
+
+				// find out how many lights we have to play with, then create a light array to keep locally
+				int maxLights = 0;
+				Gl.glGetIntegerv(Gl.GL_MAX_LIGHTS, out maxLights);
+				caps.MaxLights = maxLights;
+				lights = new Light[caps.MaxLights];
 			}
 
 			/// <summary>

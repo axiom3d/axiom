@@ -143,62 +143,30 @@ namespace RenderSystem_OpenGL
 		///		Saves RenderWindow contents to disk.
 		/// </summary>
 		/// <param name="fileName"></param>
-		// BUG: Figure out how to avoid saving the blank area of the title bar when saving in windowed mode.
-		// TODO: Figure out if this should differ based on current video options
 		public override void SaveToFile(String fileName)
 		{
-			// create an appropriate sized byte array
-			byte[] rawImage = new byte[width * height * 4];
-
-			// read the raw pixel data from GL
-			GL.glReadPixels(0, 0, width, height, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, rawImage);
+			// capture the dimensions of the client drawing area
+			int width = control.ClientSize.Width; 
+			int height = control.ClientSize.Height;
 
 			// create a new bitmap
-			System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(width, height, PixelFormat.Format32bppArgb);
-			
-			// create a rectangle to specify the area of the bitmap to lock
-			Rectangle rect = new Rectangle(0, 0, width, height);
+			Bitmap bitmap = new Bitmap(width, height, PixelFormat.Format24bppRgb); 
 
-			// lock the bitmap so we can directly manipulate it
-			BitmapData data = bitmap.LockBits(rect, ImageLockMode.ReadWrite, PixelFormat.Format32bppPArgb);
-			
-			// oh yeah, its time for some pointer action!
-			unsafe 
-			{
-				// get a fixed byte pointer to the first element of the raw image data
-				fixed(byte* pRaw = &rawImage[0])
-				{
-					// from GL, swap from RGBA to BGRA format
-					for(int i = 0; i < width * height * 4; i += 4)
-					{
-						byte* pixel = pRaw + i;
-						byte r,g,b,a;
+			// create a sized rect
+			Rectangle rect = new Rectangle(0, 0, width, height); 
 
-						// store the values temporarily
-						r = pixel[0];
-						g = pixel[1];
-						b = pixel[2];
-						a = pixel[3];
+			// lock the bitmap for writing
+			BitmapData bitmapData = bitmap.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
 
-						// reorder them in the array
-						pixel[0] = b;
-						pixel[1] = g;
-						pixel[2] = r;
-						pixel[3] = a;
-					}
+			// read the pixels from the GL buffer
+			Gl.glReadPixels(0, 0, width, height, Gl.GL_BGR_EXT, Gl.GL_UNSIGNED_BYTE, bitmapData.Scan0); 
+ 
+			// unlock the bitmap and flip the image
+			bitmap.UnlockBits(bitmapData); 
+			bitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
 
-					// set the first scanline pointer and unlock the bits
-					data.Scan0 = new IntPtr((void*)pRaw);
-					bitmap.UnlockBits(data);
-
-					// flip the image data
-					bitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
-
-					// save the final product
-					bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Jpeg);
-				}
-			}
-
+			// save the final product
+			bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Jpeg);
 
 		}
 
