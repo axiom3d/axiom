@@ -26,19 +26,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.EventSystem
-{
-	public delegate void ScriptEventHandler(object source, ScriptEventArgs e);
+namespace Axiom.EventSystem {
+    public delegate void ScriptEventHandler(object source, ScriptEventArgs e);
 
-	/// <summary>
-	/// Summary description for ScriptEvent.
-	/// </summary>
-	public class ScriptEventArgs
-	{
-		protected String commandName;
+    /// <summary>
+    /// Summary description for ScriptEvent.
+    /// </summary>
+    public class ScriptEventArgs {
+        protected String commandName;
 
-		public ScriptEventArgs()
-		{
-		}
-	}
+        public ScriptEventArgs() {
+        }
+    }
 }

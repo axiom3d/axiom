@@ -26,20 +26,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.Configuration
-{
-	/// <summary>
-	/// Summary description for XConfig.
-	/// </summary>
-	public class Config
-	{
+namespace Axiom.Configuration {
+    /// <summary>
+    /// Summary description for XConfig.
+    /// </summary>
+    public class Config {
         //public const string MediaPath = @"E:\GameProgramming\Resources\";
-		public const int MaxTextureCoordSets = 6;
-		public const int MaxTextureLayers = 8;
+        public const int MaxTextureCoordSets = 6;
+        public const int MaxTextureLayers = 8;
 
-		public Config()
-		{
-		}
-	}
+        public Config() {
+        }
+    }
 
 }

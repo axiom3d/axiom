@@ -27,49 +27,43 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom.Core;
 
-namespace Axiom.Audio
-{
-	/// <summary>
-	/// Summary description for AudioStream.
-	/// </summary>
-	public class AudioStream : Resource
-	{
-		#region Member variables
+namespace Axiom.Audio {
+    /// <summary>
+    /// Summary description for AudioStream.
+    /// </summary>
+    public class AudioStream : Resource {
+        #region Member variables
 
-		/// <summary>Max size of .wav file to be cached.  Larger sound files are streamed in.</summary>
-		public const int MAX_CACHE_SIZE = 600000;
+        /// <summary>Max size of .wav file to be cached.  Larger sound files are streamed in.</summary>
+        public const int MAX_CACHE_SIZE = 600000;
 
-		#endregion
+        #endregion
 
-		public AudioStream()
-		{
-		}
+        public AudioStream() {
+        }
 
-		#region Implementation of Resource
+        #region Implementation of Resource
 
-		/// <summary>
-		///		
-		/// </summary>
-		public override void Load()
-		{
+        /// <summary>
+        ///		
+        /// </summary>
+        public override void Load() {
 		
-		}
+        }
 
-		/// <summary>
-		///		
-		/// </summary>
-		public override void Unload()
-		{
+        /// <summary>
+        ///		
+        /// </summary>
+        public override void Unload() {
 		
-		}
+        }
 
-		/// <summary>
-		///		
-		/// </summary>
-		public override void Dispose()
-		{
-		}
+        /// <summary>
+        ///		
+        /// </summary>
+        public override void Dispose() {
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

@@ -25,35 +25,30 @@ using Axiom.Scripting;
 using Axiom.Physics;
 using Axiom.MathLib;
 
-namespace Demos
-{
-	/// <summary>
-	/// 
-	/// </summary>
-	public class PlasmaGun : GameObject
-	{
-		static public int nextNum = 0;
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="sceneManager"></param>
-		public PlasmaGun(SceneManager sceneManager): base(sceneManager)
-		{
-			entity = sceneMgr.CreateEntity("Plasma" + nextNum++, "plasma.xmf");
-			node = (SceneNode)sceneMgr.RootSceneNode.CreateChild("PlasmaEntNode" + nextNum++);
-			node.Objects.Add(entity);
-		}
-	}
+namespace Demos {
+    /// <summary>
+    /// 
+    /// </summary>
+    public class PlasmaGun : GameObject {
+        static public int nextNum = 0;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sceneManager"></param>
+        public PlasmaGun(SceneManager sceneManager): base(sceneManager) {
+            entity = sceneMgr.CreateEntity("Plasma" + nextNum++, "plasma.xmf");
+            node = (SceneNode)sceneMgr.RootSceneNode.CreateChild("PlasmaEntNode" + nextNum++);
+            node.Objects.Add(entity);
+        }
+    }
 
-	public class RailGun : GameObject
-	{
-		static public int nextNum = 0;
+    public class RailGun : GameObject {
+        static public int nextNum = 0;
 
-		public RailGun(SceneManager sceneManager) : base(sceneManager)
-		{
-			entity = sceneMgr.CreateEntity("RailGun" + nextNum++, "railgun.xmf");
-			node = (SceneNode)sceneMgr.RootSceneNode.CreateChild("RailgunEntNode" + nextNum++);
-			node.Objects.Add(entity);
-		}
-	}
+        public RailGun(SceneManager sceneManager) : base(sceneManager) {
+            entity = sceneMgr.CreateEntity("RailGun" + nextNum++, "railgun.xmf");
+            node = (SceneNode)sceneMgr.RootSceneNode.CreateChild("RailgunEntNode" + nextNum++);
+            node.Objects.Add(entity);
+        }
+    }
 }

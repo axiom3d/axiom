@@ -27,45 +27,43 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom.MathLib;
 
-namespace Axiom.Audio
-{
-	/// <summary>
-	/// Summary description for ISound.
-	/// </summary>
-	public interface ISound
-	{
-		#region Methods
+namespace Axiom.Audio {
+    /// <summary>
+    /// Summary description for ISound.
+    /// </summary>
+    public interface ISound {
+        #region Methods
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="loop"></param>
-		void Play(bool loop);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="loop"></param>
+        void Play(bool loop);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		void Stop();
+        /// <summary>
+        /// 
+        /// </summary>
+        void Stop();
 
-		/// <summary>
-		/// 
-		/// </summary>
-		void Destroy();
+        /// <summary>
+        /// 
+        /// </summary>
+        void Destroy();
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		/// 
-		/// </summary>
-		Vector3 Position { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        Vector3 Position { get; set; }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		int Volumes { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        int Volumes { get; set; }
 
-		#endregion
-	}
+        #endregion
+    }
 }

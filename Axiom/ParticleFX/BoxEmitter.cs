@@ -31,60 +31,54 @@ using Axiom.ParticleSystems;
 using Axiom.MathLib;
 using Axiom.Scripting;
 
-namespace ParticleFX
-{
-	/// <summary>
-	/// Summary description for BoxEmitter.
-	/// </summary>
-	public class BoxEmitter : AreaEmitter
-	{
-		public BoxEmitter() : base()
-		{
-			InitDefaults("Box");
-		}
+namespace ParticleFX {
+    /// <summary>
+    /// Summary description for BoxEmitter.
+    /// </summary>
+    public class BoxEmitter : AreaEmitter {
+        public BoxEmitter() : base() {
+            InitDefaults("Box");
+        }
 
-		public override void InitParticle(Particle particle)
-		{
-			Vector3 xOff, yOff, zOff;
+        public override void InitParticle(Particle particle) {
+            Vector3 xOff, yOff, zOff;
 
-			xOff = MathUtil.SymmetricRandom() * xRange;
-			yOff = MathUtil.SymmetricRandom() * yRange;
-			zOff = MathUtil.SymmetricRandom() * zRange;
+            xOff = MathUtil.SymmetricRandom() * xRange;
+            yOff = MathUtil.SymmetricRandom() * yRange;
+            zOff = MathUtil.SymmetricRandom() * zRange;
 
-			particle.Position = position + xOff + yOff + zOff;
+            particle.Position = position + xOff + yOff + zOff;
 	        
-			// Generate complex data by reference
-			GenerateEmissionColor(particle.Color);
-			GenerateEmissionDirection(ref particle.Direction);
-			GenerateEmissionVelocity(ref particle.Direction);
+            // Generate complex data by reference
+            GenerateEmissionColor(particle.Color);
+            GenerateEmissionDirection(ref particle.Direction);
+            GenerateEmissionVelocity(ref particle.Direction);
 
-			// Generate simpler data
-			particle.timeToLive = GenerateEmissionTTL();
-		}
+            // Generate simpler data
+            particle.timeToLive = GenerateEmissionTTL();
+        }
 
-		#region Script parser methods
+        #region Script parser methods
 
-		[AttributeParser("width", EMITTER)]
-		public static void ParseWidth(string[] values, params object[] objects) {
-			BoxEmitter emitter = objects[0] as BoxEmitter;
-			emitter.Width = float.Parse(values[0]);
-		}
+        [AttributeParser("width", EMITTER)]
+        public static void ParseWidth(string[] values, params object[] objects) {
+            BoxEmitter emitter = objects[0] as BoxEmitter;
+            emitter.Width = float.Parse(values[0]);
+        }
 
-		[AttributeParser("height", EMITTER)]
-		public static void ParseHeight(string[] values, params object[] objects) 
-		{
-			BoxEmitter emitter = objects[0] as BoxEmitter;
-			emitter.Height = float.Parse(values[0]);
-		}
+        [AttributeParser("height", EMITTER)]
+        public static void ParseHeight(string[] values, params object[] objects) {
+            BoxEmitter emitter = objects[0] as BoxEmitter;
+            emitter.Height = float.Parse(values[0]);
+        }
 
-		[AttributeParser("depth", EMITTER)]
-		public static void ParseDepth(string[] values, params object[] objects) 
-		{
-			BoxEmitter emitter = objects[0] as BoxEmitter;
-			emitter.Depth = float.Parse(values[0]);
-		}
+        [AttributeParser("depth", EMITTER)]
+        public static void ParseDepth(string[] values, params object[] objects) {
+            BoxEmitter emitter = objects[0] as BoxEmitter;
+            emitter.Depth = float.Parse(values[0]);
+        }
 
-		#endregion Script parser methods
+        #endregion Script parser methods
 
-	}
+    }
 }

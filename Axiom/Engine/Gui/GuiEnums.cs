@@ -26,36 +26,32 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.Gui
-{
-	/// <summary>
-	///		Describes how the position / size of an element is to be treated. 
-	/// </summary>
-	public enum MetricsMode
-	{
-		/// <summary>'left', 'top', 'height' and 'width' are parametrics from 0.0 to 1.0</summary>
-		Relative,
-		/// <summary>Positions & sizes are in absolute pixels.</summary>
-		Pixels
-	}
+namespace Axiom.Gui {
+    /// <summary>
+    ///		Describes how the position / size of an element is to be treated. 
+    /// </summary>
+    public enum MetricsMode {
+        /// <summary>'left', 'top', 'height' and 'width' are parametrics from 0.0 to 1.0</summary>
+        Relative,
+        /// <summary>Positions & sizes are in absolute pixels.</summary>
+        Pixels
+    }
 
-	/// <summary>
-	///		Describes where '0' is in relation to the parent in the horizontal dimension.  Affects how 'left' is interpreted.
-	/// </summary>
-	public enum HorizontalAlignment
-	{
-		Left,
-		Center,
-		Right
-	}
+    /// <summary>
+    ///		Describes where '0' is in relation to the parent in the horizontal dimension.  Affects how 'left' is interpreted.
+    /// </summary>
+    public enum HorizontalAlignment {
+        Left,
+        Center,
+        Right
+    }
 
-	/// <summary>
-	///		Describes where '0' is in relation to the parent in the vertical dimension.  Affects how 'top' is interpreted.
-	/// </summary>
-	public enum VerticalAlignment
-	{
-		Top,
-		Center,
-		Bottom
-	}
+    /// <summary>
+    ///		Describes where '0' is in relation to the parent in the vertical dimension.  Affects how 'top' is interpreted.
+    /// </summary>
+    public enum VerticalAlignment {
+        Top,
+        Center,
+        Bottom
+    }
 }

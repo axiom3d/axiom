@@ -27,34 +27,28 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom.ParticleSystems;
 
-namespace ParticleFX
-{
-	/// <summary>
-	/// Summary description for ColorFaderAffectorFactory.
-	/// </summary>
-	public class ColorFaderAffectorFactory : ParticleAffectorFactory
-	{
-		public ColorFaderAffectorFactory()
-		{
-			//
-			// TODO: Add constructor logic here
-			//
-		}
+namespace ParticleFX {
+    /// <summary>
+    /// Summary description for ColorFaderAffectorFactory.
+    /// </summary>
+    public class ColorFaderAffectorFactory : ParticleAffectorFactory {
+        public ColorFaderAffectorFactory() {
+            //
+            // TODO: Add constructor logic here
+            //
+        }
 
-		public override string Name
-		{
-			get
-			{
-				return "ColourFader";
-			}
-		}
+        public override string Name {
+            get {
+                return "ColourFader";
+            }
+        }
 
-		public override ParticleAffector Create()
-		{
-			ParticleAffector p = new ColorFaderAffector();
-			affectorList.Add(p);
+        public override ParticleAffector Create() {
+            ParticleAffector p = new ColorFaderAffector();
+            affectorList.Add(p);
 
-			return p;
-		}
-	}
+            return p;
+        }
+    }
 }

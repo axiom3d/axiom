@@ -30,83 +30,73 @@ using System.Collections;
 using Axiom.Enumerations;
 using Axiom.SubSystems.Rendering;
 
-namespace Axiom.Core
-{
-	/// <summary>
-	/// Summary description for SceneManagerEnumerator.
-	/// </summary>
-	public class SceneManagerList
-	{
-		#region Singleton implementation
+namespace Axiom.Core {
+    /// <summary>
+    /// Summary description for SceneManagerEnumerator.
+    /// </summary>
+    public class SceneManagerList {
+        #region Singleton implementation
 
-		static SceneManagerList() { Init(); }
-		protected SceneManagerList() {}
-		protected static SceneManagerList instance;
+        static SceneManagerList() { Init(); }
+        protected SceneManagerList() {}
+        protected static SceneManagerList instance;
 
-		public static SceneManagerList Instance
-		{
-			get { return instance; }
-		}
+        public static SceneManagerList Instance {
+            get { return instance; }
+        }
 
-		public static void Init()
-		{
-			instance = new SceneManagerList();
+        public static void Init() {
+            instance = new SceneManagerList();
 
-			instance.Initialize();
-		}
+            instance.Initialize();
+        }
 
-		#endregion
+        #endregion
 
-		private SceneManager defaultSceneManager;
-		private Hashtable mSceneManagers = new Hashtable();
+        private SceneManager defaultSceneManager;
+        private Hashtable mSceneManagers = new Hashtable();
 
-		#region Operator overloads
+        #region Operator overloads
 
-		/// <summary>
-		/// Indexer to allow easy access to the scene manager list.
-		/// </summary>
-		public SceneManager this[SceneType pType]
-		{
-			get
-			{
-				return (SceneManager)mSceneManagers[pType];
-			}
-			set
-			{
-				mSceneManagers[pType] = value;
-			}
-		}
+        /// <summary>
+        /// Indexer to allow easy access to the scene manager list.
+        /// </summary>
+        public SceneManager this[SceneType pType] {
+            get {
+                return (SceneManager)mSceneManagers[pType];
+            }
+            set {
+                mSceneManagers[pType] = value;
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		/// <summary>
-		/// Register a new render system with the SceneManagerList.
-		/// </summary>
-		/// <param name="pSystem"></param>
-		public void RegisterRenderSystem(RenderSystem pSystem)
-		{
-			// loop through each scene manager and set the new render system
-			foreach(SceneManager sceneManager in mSceneManagers.Values)
-			{
-				sceneManager.TargetRenderSystem = pSystem;
-			}
-		}
+        /// <summary>
+        /// Register a new render system with the SceneManagerList.
+        /// </summary>
+        /// <param name="pSystem"></param>
+        public void RegisterRenderSystem(RenderSystem pSystem) {
+            // loop through each scene manager and set the new render system
+            foreach(SceneManager sceneManager in mSceneManagers.Values) {
+                sceneManager.TargetRenderSystem = pSystem;
+            }
+        }
 
-		public void Initialize()
-		{
-			// by default, use the standard scene manager.
-			defaultSceneManager = new SceneManager();
+        public void Initialize() {
+            // by default, use the standard scene manager.
+            defaultSceneManager = new SceneManager();
 
-			// by default, all scenetypes use the default Scene Manager.  Note: These can be overridden by plugins.
-			this[SceneType.Generic] = defaultSceneManager;
-			this[SceneType.ExteriorClose] = defaultSceneManager;
-			this[SceneType.ExteriorFar] = defaultSceneManager;
-			this[SceneType.Interior] = defaultSceneManager;
-			this[SceneType.Overhead] = defaultSceneManager;
-		}
+            // by default, all scenetypes use the default Scene Manager.  Note: These can be overridden by plugins.
+            this[SceneType.Generic] = defaultSceneManager;
+            this[SceneType.ExteriorClose] = defaultSceneManager;
+            this[SceneType.ExteriorFar] = defaultSceneManager;
+            this[SceneType.Interior] = defaultSceneManager;
+            this[SceneType.Overhead] = defaultSceneManager;
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

@@ -26,60 +26,54 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.SubSystems.Rendering
-{
-	/// <summary>
-	/// 	Summary description for VertexIndexData.
-	/// </summary>
-	public class VertexData : ICloneable
-	{
-		#region Member variables
+namespace Axiom.SubSystems.Rendering {
+    /// <summary>
+    /// 	Summary description for VertexIndexData.
+    /// </summary>
+    public class VertexData : ICloneable {
+        #region Member variables
 		
-		public VertexDeclaration vertexDeclaration;
-		public VertexBufferBinding vertexBufferBinding;
-		public int vertexStart;
-		public int vertexCount;
+        public VertexDeclaration vertexDeclaration;
+        public VertexBufferBinding vertexBufferBinding;
+        public int vertexStart;
+        public int vertexCount;
 
-		#endregion
+        #endregion
 
-		public VertexData()
-		{
-			vertexDeclaration = HardwareBufferManager.Instance.CreateVertexDeclaration();
-			vertexBufferBinding = HardwareBufferManager.Instance.CreateVertexBufferBinding();
-		}
+        public VertexData() {
+            vertexDeclaration = HardwareBufferManager.Instance.CreateVertexDeclaration();
+            vertexBufferBinding = HardwareBufferManager.Instance.CreateVertexBufferBinding();
+        }
 
-		#region ICloneable Members
+        #region ICloneable Members
 
-		public object Clone()
-		{
-			// TODO:  Add VertexData.Clone implementation
-			return null;
-		}
+        public object Clone() {
+            // TODO:  Add VertexData.Clone implementation
+            return null;
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 
-	/// <summary>
-	/// 	Summary description for VertexIndexData.
-	/// </summary>
-	public class IndexData : ICloneable
-	{
-		#region Member variables
+    /// <summary>
+    /// 	Summary description for VertexIndexData.
+    /// </summary>
+    public class IndexData : ICloneable {
+        #region Member variables
 
-		public HardwareIndexBuffer indexBuffer;
-		public int indexStart;
-		public int indexCount;
+        public HardwareIndexBuffer indexBuffer;
+        public int indexStart;
+        public int indexCount;
 		
-		#endregion
+        #endregion
 
-		#region ICloneable Members
+        #region ICloneable Members
 
-		public object Clone()
-		{
-			// TODO:  Add IndexData.Clone implementation
-			return null;
-		}
+        public object Clone() {
+            // TODO:  Add IndexData.Clone implementation
+            return null;
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

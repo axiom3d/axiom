@@ -30,176 +30,156 @@ using Axiom.Enumerations;
 using Axiom.MathLib;
 using Axiom.SubSystems.Rendering;
 
-namespace Axiom.Core
-{
-	/// <summary>
-	///		Utility class which defines the sub-parts of an Entity.
-	/// </summary>
-	/// <remarks>
-	///		Just as models are split into meshes, an Entity is made up of
-	///		potentially multiple SubEntities. These are mainly here to provide the
-	///		link between the Material which the SubEntity uses (which may be the
-	///		default Material for the SubMesh or may have been changed for this
-	///		object) and the SubMesh data.
-	///		<p/>
-	///		SubEntity instances are never created manually. They are created at
-	///		the same time as their parent Entity by the SceneManager method
-	///		CreateEntity.
-	/// </remarks>
-	public class SubEntity : IRenderable
-	{
-		#region Member variables
+namespace Axiom.Core {
+    /// <summary>
+    ///		Utility class which defines the sub-parts of an Entity.
+    /// </summary>
+    /// <remarks>
+    ///		Just as models are split into meshes, an Entity is made up of
+    ///		potentially multiple SubEntities. These are mainly here to provide the
+    ///		link between the Material which the SubEntity uses (which may be the
+    ///		default Material for the SubMesh or may have been changed for this
+    ///		object) and the SubMesh data.
+    ///		<p/>
+    ///		SubEntity instances are never created manually. They are created at
+    ///		the same time as their parent Entity by the SceneManager method
+    ///		CreateEntity.
+    /// </remarks>
+    public class SubEntity : IRenderable {
+        #region Member variables
 
-		/// <summary>Reference to the parent Entity.</summary>
-		private Entity parent;
-		/// <summary>Name of the material being used.</summary>
-		private String materialName;
-		/// <summary>Reference to the material being used by this SubEntity.</summary>
-		private Material material;
-		/// <summary>Reference to the subMesh that represents the geometry for this SubEntity.</summary>
-		private SubMesh subMesh;
-		/// <summary></summary>
-		private SceneDetailLevel renderDetail;
+        /// <summary>Reference to the parent Entity.</summary>
+        private Entity parent;
+        /// <summary>Name of the material being used.</summary>
+        private String materialName;
+        /// <summary>Reference to the material being used by this SubEntity.</summary>
+        private Material material;
+        /// <summary>Reference to the subMesh that represents the geometry for this SubEntity.</summary>
+        private SubMesh subMesh;
+        /// <summary></summary>
+        private SceneDetailLevel renderDetail;
 
-		#endregion
+        #endregion
 
-		#region Constructor
+        #region Constructor
 
-		/// <summary>
-		///		Internal constructor, only allows creation of SubEntities within the engine core.
-		/// </summary>
-		internal SubEntity()
-		{
-			renderDetail = SceneDetailLevel.Solid;
-		}
+        /// <summary>
+        ///		Internal constructor, only allows creation of SubEntities within the engine core.
+        /// </summary>
+        internal SubEntity() {
+            renderDetail = SceneDetailLevel.Solid;
+        }
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		///		Gets/Sets the name of the material used for this SubEntity.
-		/// </summary>
-		public String MaterialName
-		{
-			get { return materialName; }
-			// TODO: Implement setter on MaterialName to load material from material manager.
-			set 
-			{ 
-				materialName = value; 
+        /// <summary>
+        ///		Gets/Sets the name of the material used for this SubEntity.
+        /// </summary>
+        public String MaterialName {
+            get { return materialName; }
+            // TODO: Implement setter on MaterialName to load material from material manager.
+            set { 
+                materialName = value; 
 
-				// load the material from the material manager (it should already exist
-				material = (Material)MaterialManager.Instance[materialName];
+                // load the material from the material manager (it should already exist
+                material = (Material)MaterialManager.Instance[materialName];
 
-				if(material == null)
-					throw new Axiom.Exceptions.AxiomException(String.Format("Cannot assign material '{0}' to SubEntity '{1}' because the material doesn't exist.", materialName, parent.Name));
+                if(material == null)
+                    throw new Axiom.Exceptions.AxiomException(String.Format("Cannot assign material '{0}' to SubEntity '{1}' because the material doesn't exist.", materialName, parent.Name));
 
-				// ensure the material is loaded.  It will skip it if it already is
-				material.Load();
-			}
-		}
+                // ensure the material is loaded.  It will skip it if it already is
+                material.Load();
+            }
+        }
 
-		/// <summary>
-		///		Gets/Sets the subMesh to be used for rendering this SubEntity.
-		/// </summary>
-		public SubMesh SubMesh
-		{
-			get { return subMesh; }
-			set { subMesh = value; }
-		}
+        /// <summary>
+        ///		Gets/Sets the subMesh to be used for rendering this SubEntity.
+        /// </summary>
+        public SubMesh SubMesh {
+            get { return subMesh; }
+            set { subMesh = value; }
+        }
 
-		/// <summary>
-		///		Gets/Sets the parent entity of this SubEntity.
-		/// </summary>
-		public Entity Parent
-		{
-			get { return parent; }
-			set { parent = value; }
-		}
+        /// <summary>
+        ///		Gets/Sets the parent entity of this SubEntity.
+        /// </summary>
+        public Entity Parent {
+            get { return parent; }
+            set { parent = value; }
+        }
 
-		#endregion
+        #endregion
 
-		#region IRenderable Members
+        #region IRenderable Members
 
-		/// <summary>
-		///		Gets/Sets a reference to the material being used by this SubEntity.
-		/// </summary>
-		/// <remarks>
-		///		By default, the SubEntity will use the material defined by the SubMesh.  However,
-		///		this can be overridden by the SubEntity in the case where several entities use the
-		///		same SubMesh instance, but want to shade it different.
-		/// </remarks>
-		public Material Material
-		{
-			get { return material; }
-			set { material = value; }
-		}
+        /// <summary>
+        ///		Gets/Sets a reference to the material being used by this SubEntity.
+        /// </summary>
+        /// <remarks>
+        ///		By default, the SubEntity will use the material defined by the SubMesh.  However,
+        ///		this can be overridden by the SubEntity in the case where several entities use the
+        ///		same SubMesh instance, but want to shade it different.
+        /// </remarks>
+        public Material Material {
+            get { return material; }
+            set { material = value; }
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="op"></param>
-		/// DOC
-		public void GetRenderOperation(RenderOperation op)
-		{
-			subMesh.GetRenderOperation(op, parent.MeshLODIndex);
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="op"></param>
+        /// DOC
+        public void GetRenderOperation(RenderOperation op) {
+            subMesh.GetRenderOperation(op, parent.MeshLODIndex);
+        }
 
-		Material IRenderable.Material
-		{
-			get { return material; }
-		}
+        Material IRenderable.Material {
+            get { return material; }
+        }
 
-		public Axiom.MathLib.Matrix4[] WorldTransforms
-		{
-			get
-			{
-				return new Matrix4[] { parent.ParentNode.FullTransform };
-			}
-		}
+        public Axiom.MathLib.Matrix4[] WorldTransforms {
+            get {
+                return new Matrix4[] { parent.ParentNode.FullTransform };
+            }
+        }
 
-		public ushort NumWorldTransforms
-		{
-			get
-			{
-				// TODO:  Add SubEntity.NumWorldTransforms getter implementation
-				return 1;
-			}
-		}
+        public ushort NumWorldTransforms {
+            get {
+                // TODO:  Add SubEntity.NumWorldTransforms getter implementation
+                return 1;
+            }
+        }
 
-		public bool UseIdentityProjection
-		{
-			get
-			{
-				// TODO:  Add SubEntity.UseIdentityProjection getter implementation
-				return false;
-			}
-		}
+        public bool UseIdentityProjection {
+            get {
+                // TODO:  Add SubEntity.UseIdentityProjection getter implementation
+                return false;
+            }
+        }
 
-		public bool UseIdentityView
-		{
-			get
-			{
-				// TODO:  Add SubEntity.UseIdentityView getter implementation
-				return false;
-			}
-		}
+        public bool UseIdentityView {
+            get {
+                // TODO:  Add SubEntity.UseIdentityView getter implementation
+                return false;
+            }
+        }
 
-		public SceneDetailLevel RenderDetail
-		{
-			get { return SceneDetailLevel.Solid;	}
-		}
+        public SceneDetailLevel RenderDetail {
+            get { return SceneDetailLevel.Solid;	}
+        }
 
-		public float GetSquaredViewDepth(Camera camera)
-		{
-			// get the parent entitie's parent node
-			Node node = parent.ParentNode;
+        public float GetSquaredViewDepth(Camera camera) {
+            // get the parent entitie's parent node
+            Node node = parent.ParentNode;
 
-			Debug.Assert(node != null);
+            Debug.Assert(node != null);
 
-			return node.GetSquaredViewDepth(camera);
-		}
+            return node.GetSquaredViewDepth(camera);
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

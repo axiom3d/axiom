@@ -32,28 +32,24 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using D3D = Microsoft.DirectX.Direct3D;
 
-namespace RenderSystem_DirectX9
-{
-	/// <summary>
-	/// Summary description for D3DTextureManager.
-	/// </summary>
-	public class D3DTextureManager : TextureManager 
-	{
-		/// <summary>Reference to the D3D device.</summary>
-		private D3D.Device device;
+namespace RenderSystem_DirectX9 {
+    /// <summary>
+    /// Summary description for D3DTextureManager.
+    /// </summary>
+    public class D3DTextureManager : TextureManager {
+        /// <summary>Reference to the D3D device.</summary>
+        private D3D.Device device;
 
-		public D3DTextureManager(D3D.Device device) : base()
-		{
-			this.device = device;
-		}
+        public D3DTextureManager(D3D.Device device) : base() {
+            this.device = device;
+        }
 	
-		public override Axiom.Core.Resource Create(string name)
-		{
-			D3DTexture texture = new D3DTexture(name, device, TextureUsage.Default);
+        public override Axiom.Core.Resource Create(string name) {
+            D3DTexture texture = new D3DTexture(name, device, TextureUsage.Default);
 			
-			// TODO: Handle 32-bit texture settings
+            // TODO: Handle 32-bit texture settings
 
-			return texture;
-		}
-	}
+            return texture;
+        }
+    }
 }

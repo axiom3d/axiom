@@ -29,59 +29,53 @@ using System.Drawing.Text;
 using Axiom.Core;
 using Axiom.Exceptions;
 
-namespace Axiom.Fonts
-{
-	/// <summary>
-	/// Summary description for FontManager.
-	/// </summary>
-	public class FontManager : ResourceManager
-	{
-		#region Singleton implementation
+namespace Axiom.Fonts {
+    /// <summary>
+    /// Summary description for FontManager.
+    /// </summary>
+    public class FontManager : ResourceManager {
+        #region Singleton implementation
 
-		static FontManager() { Init(); }
-		private FontManager() {}
-		private static FontManager instance;
+        static FontManager() { Init(); }
+        private FontManager() {}
+        private static FontManager instance;
 
-		public static FontManager Instance
-		{
-			get { return instance; }
-		}
+        public static FontManager Instance {
+            get { return instance; }
+        }
 
-		public static void Init()
-		{
-			instance = new FontManager();
-		}
+        public static void Init() {
+            instance = new FontManager();
+        }
 		
-		#endregion
+        #endregion
 
-		#region Member variables
+        #region Member variables
 
-		/// <summary>Local list of manually loaded TrueType fonts.</summary>
-		protected PrivateFontCollection fontList = new PrivateFontCollection();
+        /// <summary>Local list of manually loaded TrueType fonts.</summary>
+        protected PrivateFontCollection fontList = new PrivateFontCollection();
 		
-		#endregion
+        #endregion
 
-		#region Implementation of ResourceManager
+        #region Implementation of ResourceManager
 
-		public override void Load(Resource resource, int priority)
-		{
-			base.Load (resource, priority);
-		}
+        public override void Load(Resource resource, int priority) {
+            base.Load (resource, priority);
+        }
 
-		public override Resource Create(string name)
-		{
-			if(this[name] != null)
-				throw new AxiomException("Cannot have more than one font with the same name registered, '" + name + "' already exists.");
+        public override Resource Create(string name) {
+            if(this[name] != null)
+                throw new AxiomException("Cannot have more than one font with the same name registered, '" + name + "' already exists.");
 
-			// create a new font and add it to the list of resources
-			Font font = new Font(name);
+            // create a new font and add it to the list of resources
+            Font font = new Font(name);
 
-			resourceList.Add(name, font);
+            resourceList.Add(name, font);
 
-			return font;
-		}
+            return font;
+        }
 
-		#endregion
+        #endregion
 
-	}
+    }
 }

@@ -32,17 +32,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.MathLib
-{
-	/// <summary>
-	/// Summary description for Vector2.
-	/// </summary>
-	public class Vector2
-	{
-		public float x, y;
+namespace Axiom.MathLib {
+    /// <summary>
+    /// Summary description for Vector2.
+    /// </summary>
+    public class Vector2 {
+        public float x, y;
 
-		public Vector2()
-		{
-		}
-	}
+        public Vector2() {
+        }
+    }
 }

@@ -27,22 +27,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom.Core;
 
-namespace Axiom.ParticleSystems
-{
-	/// <summary>
-	///		An extension of Billboard that allows for each particle to have particle system specific info.
-	/// </summary>
-	public class Particle : Billboard
-	{
-		/// <summary>Time (in seconds) before this particle is destroyed.</summary>
-		public float timeToLive;
+namespace Axiom.ParticleSystems {
+    /// <summary>
+    ///		An extension of Billboard that allows for each particle to have particle system specific info.
+    /// </summary>
+    public class Particle : Billboard {
+        /// <summary>Time (in seconds) before this particle is destroyed.</summary>
+        public float timeToLive;
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		public Particle()
-		{
-			timeToLive = 10;
-		}
-	}
+        /// <summary>
+        ///		Default constructor.
+        /// </summary>
+        public Particle() {
+            timeToLive = 10;
+        }
+    }
 }

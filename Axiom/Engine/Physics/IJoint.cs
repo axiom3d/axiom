@@ -26,12 +26,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.Physics
-{
-	/// <summary>
-	/// Summary description for Joint.
-	/// </summary>
-	public interface IJoint
-	{
-	}
+namespace Axiom.Physics {
+    /// <summary>
+    /// Summary description for Joint.
+    /// </summary>
+    public interface IJoint {
+    }
 }

@@ -28,284 +28,256 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Axiom.SubSystems.Rendering
-{
-	/// <summary>
-	/// 	Summary description for SoftwareBufferManager.
-	/// </summary>
-	public class SoftwareBufferManager : HardwareBufferManager
-	{
-		#region Singleton implementation
+namespace Axiom.SubSystems.Rendering {
+    /// <summary>
+    /// 	Summary description for SoftwareBufferManager.
+    /// </summary>
+    public class SoftwareBufferManager : HardwareBufferManager {
+        #region Singleton implementation
 
-		protected static SoftwareBufferManager Instance = new SoftwareBufferManager();
+        protected static SoftwareBufferManager Instance = new SoftwareBufferManager();
 
-		static SoftwareBufferManager() {}
+        static SoftwareBufferManager() {}
 
-		protected SoftwareBufferManager() { }
+        protected SoftwareBufferManager() { }
 
-		#endregion
+        #endregion
 
-		#region Member variables
+        #region Member variables
 		
-		#endregion
+        #endregion
 		
-		#region Methods
+        #region Methods
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="numIndices"></param>
-		/// <param name="usage"></param>
-		/// <returns></returns>
-		/// DOC
-		public override HardwareIndexBuffer CreateIndexBuffer(IndexType type, int numIndices, BufferUsage usage)
-		{
-			return new SoftwareIndexBuffer(type, numIndices, usage);
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="numIndices"></param>
+        /// <param name="usage"></param>
+        /// <returns></returns>
+        /// DOC
+        public override HardwareIndexBuffer CreateIndexBuffer(IndexType type, int numIndices, BufferUsage usage) {
+            return new SoftwareIndexBuffer(type, numIndices, usage);
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="numIndices"></param>
-		/// <param name="usage"></param>
-		/// <param name="useShadowBuffer"></param>
-		/// <returns></returns>
-		/// DOC
-		public override HardwareIndexBuffer CreateIndexBuffer(IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer)
-		{
-			return new SoftwareIndexBuffer(type, numIndices, usage);
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="numIndices"></param>
+        /// <param name="usage"></param>
+        /// <param name="useShadowBuffer"></param>
+        /// <returns></returns>
+        /// DOC
+        public override HardwareIndexBuffer CreateIndexBuffer(IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer) {
+            return new SoftwareIndexBuffer(type, numIndices, usage);
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="vertexSize"></param>
-		/// <param name="numVerts"></param>
-		/// <param name="usage"></param>
-		/// <returns></returns>
-		/// DOC
-		public override HardwareVertexBuffer CreateVertexBuffer(int vertexSize, int numVerts, BufferUsage usage)
-		{
-			return new SoftwareVertexBuffer(vertexSize, numVerts, usage);
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vertexSize"></param>
+        /// <param name="numVerts"></param>
+        /// <param name="usage"></param>
+        /// <returns></returns>
+        /// DOC
+        public override HardwareVertexBuffer CreateVertexBuffer(int vertexSize, int numVerts, BufferUsage usage) {
+            return new SoftwareVertexBuffer(vertexSize, numVerts, usage);
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="vertexSize"></param>
-		/// <param name="numVerts"></param>
-		/// <param name="usage"></param>
-		/// <param name="useShadowBuffer"></param>
-		/// <returns></returns>
-		/// DOC
-		public override HardwareVertexBuffer CreateVertexBuffer(int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer)
-		{
-			return new SoftwareVertexBuffer(vertexSize, numVerts, usage);
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vertexSize"></param>
+        /// <param name="numVerts"></param>
+        /// <param name="usage"></param>
+        /// <param name="useShadowBuffer"></param>
+        /// <returns></returns>
+        /// DOC
+        public override HardwareVertexBuffer CreateVertexBuffer(int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer) {
+            return new SoftwareVertexBuffer(vertexSize, numVerts, usage);
+        }
 		
-		#endregion
+        #endregion
 		
-		#region Properties
+        #region Properties
 		
-		#endregion
+        #endregion
 
-	}
+    }
 
-	/// <summary>
-	/// 
-	/// </summary>
-	public class SoftwareVertexBuffer : HardwareVertexBuffer
-	{
-		#region Member variables
+    /// <summary>
+    /// 
+    /// </summary>
+    public class SoftwareVertexBuffer : HardwareVertexBuffer {
+        #region Member variables
 		
-		protected byte[] data;
+        protected byte[] data;
 		
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 		
-		/// <summary>
-		///		
-		/// </summary>
-		/// <remarks>
-		///		This is already in system memory, so no need to use a shadow buffer.
-		/// </remarks>
-		/// <param name="vertexSize"></param>
-		/// <param name="numVertices"></param>
-		/// <param name="usage"></param>
-		/// DOC
-		public SoftwareVertexBuffer(int vertexSize, int numVertices, BufferUsage usage)
-			: base(vertexSize, numVertices, usage, true, false)
-		{
-			data = new byte[sizeInBytes];
-		}
+        /// <summary>
+        ///		
+        /// </summary>
+        /// <remarks>
+        ///		This is already in system memory, so no need to use a shadow buffer.
+        /// </remarks>
+        /// <param name="vertexSize"></param>
+        /// <param name="numVertices"></param>
+        /// <param name="usage"></param>
+        /// DOC
+        public SoftwareVertexBuffer(int vertexSize, int numVertices, BufferUsage usage)
+            : base(vertexSize, numVertices, usage, true, false) {
+            data = new byte[sizeInBytes];
+        }
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		public override IntPtr Lock(int offset, int length, BufferLocking locking)
-		{
-			// return the offset into the array as a pointer
-			return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
-		}
+        public override IntPtr Lock(int offset, int length, BufferLocking locking) {
+            // return the offset into the array as a pointer
+            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+        }
 
-		protected override IntPtr LockImpl(int offset, int length, BufferLocking locking)
-		{
-			// do nothing
-			return IntPtr.Zero;
-		}
+        protected override IntPtr LockImpl(int offset, int length, BufferLocking locking) {
+            // do nothing
+            return IntPtr.Zero;
+        }
 
-		public override void ReadData(int offset, int length, IntPtr dest)
-		{
-			Debug.Assert((offset + length) <= sizeInBytes, "Buffer overrun while trying to read a software buffer.");
+        public override void ReadData(int offset, int length, IntPtr dest) {
+            Debug.Assert((offset + length) <= sizeInBytes, "Buffer overrun while trying to read a software buffer.");
 	
-			unsafe
-			{
-				// get a pointer to the destination intptr
-				byte* pDest = (byte*)dest.ToPointer();
+            unsafe {
+                // get a pointer to the destination intptr
+                byte* pDest = (byte*)dest.ToPointer();
 
-				// copy the src data to the destination buffer
-				for(int i = 0; i < length; i++)
-					*pDest++ = data[offset + i];
-			}
-		}
+                // copy the src data to the destination buffer
+                for(int i = 0; i < length; i++)
+                    *pDest++ = data[offset + i];
+            }
+        }
 
-		public override void Unlock()
-		{
-			// TODO: Store temp data from lock and update local data here?
-		}
+        public override void Unlock() {
+            // TODO: Store temp data from lock and update local data here?
+        }
 
-		public override void UnlockImpl()
-		{
-			// do nothing
-		}
+        public override void UnlockImpl() {
+            // do nothing
+        }
 
-		public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer)
-		{
-			Debug.Assert((offset + length) <= sizeInBytes, "Buffer overrun while trying to write to a software buffer.");
+        public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer) {
+            Debug.Assert((offset + length) <= sizeInBytes, "Buffer overrun while trying to write to a software buffer.");
 
-			unsafe
-			{
-				// get a pointer to the destination intptr
-				byte* pSrc = (byte*)src.ToPointer();
+            unsafe {
+                // get a pointer to the destination intptr
+                byte* pSrc = (byte*)src.ToPointer();
 
-				// copy the src data to the destination buffer
-				for(int i = 0; i < length; i++)
-					data[offset + i] = *pSrc++;
-			}
-		}
+                // copy the src data to the destination buffer
+                for(int i = 0; i < length; i++)
+                    data[offset + i] = *pSrc++;
+            }
+        }
 
-		/// <summary>
-		///		Allows direct access to the software buffer data in cases when it is known that the underlying
-		///		buffer is software and not hardware.
-		/// </summary>
-		public IntPtr GetDataPointer(int offset)
-		{
-			return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
-		}
+        /// <summary>
+        ///		Allows direct access to the software buffer data in cases when it is known that the underlying
+        ///		buffer is software and not hardware.
+        /// </summary>
+        public IntPtr GetDataPointer(int offset) {
+            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+        }
 
-		#endregion
+        #endregion
 
-	}
+    }
 
-	/// <summary>
-	/// 
-	/// </summary>
-	public class SoftwareIndexBuffer : HardwareIndexBuffer
-	{
-		#region Member variables
+    /// <summary>
+    /// 
+    /// </summary>
+    public class SoftwareIndexBuffer : HardwareIndexBuffer {
+        #region Member variables
 		
-		protected byte[] data;
+        protected byte[] data;
 		
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 
-		/// <summary>
-		///		
-		/// </summary>
-		/// <remarks>
-		///		This is already in system memory, so no need to use a shadow buffer.
-		/// </remarks>
-		/// <param name="type"></param>
-		/// <param name="numIndices"></param>
-		/// <param name="usage"></param>
-		/// DOC
-		public SoftwareIndexBuffer(IndexType type, int numIndices, BufferUsage usage)
-			: base(type, numIndices, usage, true, false)
-		{
-			data = new byte[sizeInBytes];
-		}
+        /// <summary>
+        ///		
+        /// </summary>
+        /// <remarks>
+        ///		This is already in system memory, so no need to use a shadow buffer.
+        /// </remarks>
+        /// <param name="type"></param>
+        /// <param name="numIndices"></param>
+        /// <param name="usage"></param>
+        /// DOC
+        public SoftwareIndexBuffer(IndexType type, int numIndices, BufferUsage usage)
+            : base(type, numIndices, usage, true, false) {
+            data = new byte[sizeInBytes];
+        }
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		public override IntPtr Lock(int offset, int length, BufferLocking locking)
-		{
-			// return the offset into the array as a pointer
-			return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
-		}
+        public override IntPtr Lock(int offset, int length, BufferLocking locking) {
+            // return the offset into the array as a pointer
+            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+        }
 
 
-		protected override IntPtr LockImpl(int offset, int length, BufferLocking locking)
-		{
-			// do nothing
-			return IntPtr.Zero;
-		}
+        protected override IntPtr LockImpl(int offset, int length, BufferLocking locking) {
+            // do nothing
+            return IntPtr.Zero;
+        }
 
-		public override void ReadData(int offset, int length, IntPtr dest)
-		{
-			Debug.Assert((offset + length) <= sizeInBytes, "Buffer overrun while trying to read a software buffer.");
+        public override void ReadData(int offset, int length, IntPtr dest) {
+            Debug.Assert((offset + length) <= sizeInBytes, "Buffer overrun while trying to read a software buffer.");
 
-			unsafe
-			{
-				// get a pointer to the destination intptr
-				byte* pDest = (byte*)dest.ToPointer();
+            unsafe {
+                // get a pointer to the destination intptr
+                byte* pDest = (byte*)dest.ToPointer();
 
-				// copy the src data to the destination buffer
-				for(int i = 0; i < length; i++)
-					*pDest++ = data[offset + i];
-			}
-		}
+                // copy the src data to the destination buffer
+                for(int i = 0; i < length; i++)
+                    *pDest++ = data[offset + i];
+            }
+        }
 
-		public override void Unlock()
-		{
-			// TODO: Store temp data from lock and update local data here?
-		}
+        public override void Unlock() {
+            // TODO: Store temp data from lock and update local data here?
+        }
 
-		public override void UnlockImpl()
-		{
-			// do nothing
-		}
+        public override void UnlockImpl() {
+            // do nothing
+        }
 
-		public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer)
-		{
-			Debug.Assert((offset + length) <= sizeInBytes, "Buffer overrun while trying to write to a software buffer.");
+        public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer) {
+            Debug.Assert((offset + length) <= sizeInBytes, "Buffer overrun while trying to write to a software buffer.");
 
-			unsafe
-			{
-				// get a pointer to the destination intptr
-				byte* pSrc = (byte*)src.ToPointer();
+            unsafe {
+                // get a pointer to the destination intptr
+                byte* pSrc = (byte*)src.ToPointer();
 
-				// copy the src data to the destination buffer
-				for(int i = 0; i < length; i++)
-					data[offset + i] = *pSrc++;	
-			}
-		}
+                // copy the src data to the destination buffer
+                for(int i = 0; i < length; i++)
+                    data[offset + i] = *pSrc++;	
+            }
+        }
 
-		/// <summary>
-		///		Allows direct access to the software buffer data in cases when it is known that the underlying
-		///		buffer is software and not hardware.
-		/// </summary>
-		public IntPtr GetDataPointer(int offset)
-		{
-			return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
-		}
+        /// <summary>
+        ///		Allows direct access to the software buffer data in cases when it is known that the underlying
+        ///		buffer is software and not hardware.
+        /// </summary>
+        public IntPtr GetDataPointer(int offset) {
+            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

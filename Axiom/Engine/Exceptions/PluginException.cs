@@ -26,15 +26,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.Exceptions
-{
-	/// <summary>
-	/// Summary description for PluginException.
-	/// </summary>
-	public class PluginException : ApplicationException
-	{
-		public PluginException(string message) : base(message)
-		{
-		}
-	}
+namespace Axiom.Exceptions {
+    /// <summary>
+    /// Summary description for PluginException.
+    /// </summary>
+    public class PluginException : ApplicationException {
+        public PluginException(string message) : base(message) {
+        }
+    }
 }

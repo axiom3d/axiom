@@ -27,17 +27,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Reflection;
 
-namespace Axiom.Scripting
-{
-	/// <summary>
-	/// This attibute can be placed on one of an entitie's nested State classes to specifiy which
-	/// state should be the default.
-	/// </summary>
-	[AttributeUsage(AttributeTargets.Class)]
-	public sealed class AutoAttribute : System.Attribute 
-	{
-		public AutoAttribute()
-		{
-		}
-	}
+namespace Axiom.Scripting {
+    /// <summary>
+    /// This attibute can be placed on one of an entitie's nested State classes to specifiy which
+    /// state should be the default.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
+    public sealed class AutoAttribute : System.Attribute {
+        public AutoAttribute() {
+        }
+    }
 }

@@ -26,16 +26,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.Fonts
-{
-	/// <summary>
-	///		Possible font sources for use in the engine.
-	/// </summary>
-	public enum FontType
-	{
-		/// <summary>System truetype fonts, as well as supplementary .ttf files.</summary>
-		TrueType,
-		/// <summary>Character image map created by an artist.</summary>
-		Image
-	}
+namespace Axiom.Fonts {
+    /// <summary>
+    ///		Possible font sources for use in the engine.
+    /// </summary>
+    public enum FontType {
+        /// <summary>System truetype fonts, as well as supplementary .ttf files.</summary>
+        TrueType,
+        /// <summary>Character image map created by an artist.</summary>
+        Image
+    }
 }

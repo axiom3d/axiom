@@ -26,53 +26,48 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.SubSystems.Rendering
-{
-	/// <summary>
-	/// Summary description for IIndexBuffer.
-	/// </summary>
-	public abstract class HardwareIndexBuffer : HardwareBuffer
-	{
-		#region Member variables
+namespace Axiom.SubSystems.Rendering {
+    /// <summary>
+    /// Summary description for IIndexBuffer.
+    /// </summary>
+    public abstract class HardwareIndexBuffer : HardwareBuffer {
+        #region Member variables
 
-		protected IndexType type;
-		protected int numIndices;
+        protected IndexType type;
+        protected int numIndices;
 
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 
-		public HardwareIndexBuffer(IndexType type, int numIndices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer) 
-			: base(usage, useSystemMemory, useShadowBuffer)
-		{
-			this.type = type;
-			this.numIndices = numIndices;
+        public HardwareIndexBuffer(IndexType type, int numIndices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer) 
+            : base(usage, useSystemMemory, useShadowBuffer) {
+            this.type = type;
+            this.numIndices = numIndices;
 
-			// calc the index buffer size
-			sizeInBytes = numIndices;
+            // calc the index buffer size
+            sizeInBytes = numIndices;
 
-			// unsafe block for sizeof
-			unsafe
-			{
-				if(type == IndexType.Size32)
-					sizeInBytes *= sizeof(int);
-				else
-					sizeInBytes *= sizeof(short);
-			}
-		}
+            // unsafe block for sizeof
+            unsafe {
+                if(type == IndexType.Size32)
+                    sizeInBytes *= sizeof(int);
+                else
+                    sizeInBytes *= sizeof(short);
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		///		Gets an enum specifying whether this index buffer is 16 or 32 bit elements.
-		/// </summary>
-		public IndexType Type
-		{
-			get { return type; }
-		}
+        /// <summary>
+        ///		Gets an enum specifying whether this index buffer is 16 or 32 bit elements.
+        /// </summary>
+        public IndexType Type {
+            get { return type; }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

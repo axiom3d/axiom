@@ -26,13 +26,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.EventSystem
-{
-	/// <summary>
-	/// Summary description for IScriptTarget.
-	/// </summary>
-	public class IScriptTarget
-	{
-		event ScriptEventHandler OnEvent;	
-	}
+namespace Axiom.EventSystem {
+    /// <summary>
+    /// Summary description for IScriptTarget.
+    /// </summary>
+    public class IScriptTarget {
+        event ScriptEventHandler OnEvent;	
+    }
 }

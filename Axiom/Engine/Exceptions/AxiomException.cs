@@ -25,15 +25,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 using System;
 
-namespace Axiom.Exceptions
-{
-	/// <summary>
-	/// Summary description for AxiomException.
-	/// </summary>
-	public class AxiomException : ApplicationException 
-	{
-		public AxiomException(string message) : base(message)
-		{
-		}
-	}
+namespace Axiom.Exceptions {
+    /// <summary>
+    /// Summary description for AxiomException.
+    /// </summary>
+    public class AxiomException : ApplicationException {
+        public AxiomException(string message) : base(message) {
+        }
+    }
 }

@@ -31,109 +31,93 @@ using Axiom.Enumerations;
 using Axiom.EventSystem;
 using Axiom.SubSystems.Rendering;
 
-namespace Axiom.Gui
-{
-	/// <summary>
-	///		Abstract class used to derive controls that can be placed in an overlay (GUI).
-	/// </summary>
-	public abstract class GuiControl : IRenderable, IMouseTarget
-	{
-		#region Member variables
-		/// <summary>A list of child controls within this control.</summary>
-		protected ArrayList childControls = new ArrayList();
-		/// <summary>Parent control if this is a child control of another one.</summary>
-		protected GuiControl parentControl;
+namespace Axiom.Gui {
+    /// <summary>
+    ///		Abstract class used to derive controls that can be placed in an overlay (GUI).
+    /// </summary>
+    public abstract class GuiControl : IRenderable, IMouseTarget {
+        #region Member variables
+        /// <summary>A list of child controls within this control.</summary>
+        protected ArrayList childControls = new ArrayList();
+        /// <summary>Parent control if this is a child control of another one.</summary>
+        protected GuiControl parentControl;
 		
-		#endregion
+        #endregion
 
-		#region Constuctors
+        #region Constuctors
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		public GuiControl()
-		{
-		}
+        /// <summary>
+        ///		Default constructor.
+        /// </summary>
+        public GuiControl() {
+        }
 
-		#endregion
+        #endregion
 
-		#region IRenderable Members
+        #region IRenderable Members
 
-		public Material Material
-		{
-			get
-			{
-				// TODO:  Add GuiControl.Material getter implementation
-				return null;
-			}
-		}
+        public Material Material {
+            get {
+                // TODO:  Add GuiControl.Material getter implementation
+                return null;
+            }
+        }
 
-		public void GetRenderOperation(RenderOperation op)
-		{
-			// TODO: Implement GetRenderOperation
-		}		
+        public void GetRenderOperation(RenderOperation op) {
+            // TODO: Implement GetRenderOperation
+        }		
 
-		public Axiom.MathLib.Matrix4[] WorldTransforms
-		{
-			get
-			{
-				// TODO:  Add GuiControl.WorldTransforms getter implementation
-				return null;
-			}
-		}
+        public Axiom.MathLib.Matrix4[] WorldTransforms {
+            get {
+                // TODO:  Add GuiControl.WorldTransforms getter implementation
+                return null;
+            }
+        }
 
-		public ushort NumWorldTransforms
-		{
-			get
-			{
-				// TODO:  Add GuiControl.NumWorldTransforms getter implementation
-				return 0;
-			}
-		}
+        public ushort NumWorldTransforms {
+            get {
+                // TODO:  Add GuiControl.NumWorldTransforms getter implementation
+                return 0;
+            }
+        }
 
-		public bool UseIdentityProjection
-		{
-			get
-			{
-				// TODO:  Add GuiControl.UseIdentityProjection getter implementation
-				return false;
-			}
-		}
+        public bool UseIdentityProjection {
+            get {
+                // TODO:  Add GuiControl.UseIdentityProjection getter implementation
+                return false;
+            }
+        }
 
-		public bool UseIdentityView
-		{
-			get
-			{
-				// TODO:  Add GuiControl.UseIdentityView getter implementation
-				return false;
-			}
-		}
+        public bool UseIdentityView {
+            get {
+                // TODO:  Add GuiControl.UseIdentityView getter implementation
+                return false;
+            }
+        }
 
-		public SceneDetailLevel RenderDetail
-		{
-			get { return SceneDetailLevel.Solid; }
-		}
+        public SceneDetailLevel RenderDetail {
+            get { return SceneDetailLevel.Solid; }
+        }
 
-		public float GetSquaredViewDepth(Camera camera)
-		{
-			// TODO:  Add GuiControl.GetSquaredViewDepth implementation
-			return 0;
-		}
+        public float GetSquaredViewDepth(Camera camera) {
+            // TODO:  Add GuiControl.GetSquaredViewDepth implementation
+            return 0;
+        }
 
-		#endregion
+        #endregion
 
-		#region IMouseTarget Members
+        #region IMouseTarget Members
 
-		public event System.Windows.Forms.MouseEventHandler MouseMoved;
+        public event System.Windows.Forms.MouseEventHandler MouseMoved;
 
-		public event System.Windows.Forms.MouseEventHandler MouseEnter;
+        public event System.Windows.Forms.MouseEventHandler MouseEnter;
 
-		public event System.Windows.Forms.MouseEventHandler MouseLeave;
+        public event System.Windows.Forms.MouseEventHandler MouseLeave;
 
-		public event System.Windows.Forms.MouseEventHandler MouseDown;
+        public event System.Windows.Forms.MouseEventHandler MouseDown;
 
-		public event System.Windows.Forms.MouseEventHandler MouseUp;
+        public event System.Windows.Forms.MouseEventHandler MouseUp;
 
-		#endregion
-	}
+        #endregion
+    }
 }

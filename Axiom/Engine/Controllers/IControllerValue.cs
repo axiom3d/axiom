@@ -26,14 +26,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.Controllers
-{
-	/// <summary>
-	///		Classes that will be controlled by any type of Controller should implement
-	///		this interface to define how the controller will modifiy it's local data.
-	/// </summary>
-	public interface IControllerValue
-	{
-		float Value { get; set; }
-	}
+namespace Axiom.Controllers {
+    /// <summary>
+    ///		Classes that will be controlled by any type of Controller should implement
+    ///		this interface to define how the controller will modifiy it's local data.
+    /// </summary>
+    public interface IControllerValue {
+        float Value { get; set; }
+    }
 }

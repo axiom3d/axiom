@@ -30,48 +30,46 @@ using Axiom.Enumerations;
 using Axiom.Scripting;
 using Axiom.MathLib;
 
-namespace Axiom.Physics
-{
-	// TODO: Create our own event args
-	public delegate void CollisionHandler(object source, System.EventArgs e);
+namespace Axiom.Physics {
+    // TODO: Create our own event args
+    public delegate void CollisionHandler(object source, System.EventArgs e);
 
-	/// <summary>
-	/// Summary description for IWorld.
-	/// </summary>
-	public interface IWorld
-	{
-		/// <summary>
-		/// 
-		/// </summary>
-		//event CollisionHandler OnCollision;
+    /// <summary>
+    /// Summary description for IWorld.
+    /// </summary>
+    public interface IWorld {
+        /// <summary>
+        /// 
+        /// </summary>
+        //event CollisionHandler OnCollision;
 
-		/// <summary>
-		/// 
-		/// </summary>
-		Vector3 Gravity { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        Vector3 Gravity { get; set; }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="gameObject"></param>
-		/// <param name="bodyType"></param>
-		/// <param name="position"></param>
-		/// <param name="orientation"></param>
-		/// <param name="aab"></param>
-		/// <param name="massDensity"></param>
-		/// <returns></returns>
-		IRigidBody CreateBody(GameObject gameObject, DynamicsBodyType bodyType, float massDensity);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="bodyType"></param>
+        /// <param name="position"></param>
+        /// <param name="orientation"></param>
+        /// <param name="aab"></param>
+        /// <param name="massDensity"></param>
+        /// <returns></returns>
+        IRigidBody CreateBody(GameObject gameObject, DynamicsBodyType bodyType, float massDensity);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
-		//IJoint CreateJoint();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        //IJoint CreateJoint();
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="stepsize"></param>
-		void Step(float stepsize);
-	}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stepsize"></param>
+        void Step(float stepsize);
+    }
 }

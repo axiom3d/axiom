@@ -24,83 +24,73 @@ using Ode;
 using Axiom.Core;
 using Axiom.Physics;
 
-namespace DynamicsSystem_ODE
-{
-	/// <summary>
-	/// Summary description for OdeDynamics.
-	/// </summary>
-	public class OdeDynamics : DynamicsSystem, IPlugin
-	{
-		#region Constructors
+namespace DynamicsSystem_ODE {
+    /// <summary>
+    /// Summary description for OdeDynamics.
+    /// </summary>
+    public class OdeDynamics : DynamicsSystem, IPlugin {
+        #region Constructors
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		/// <remarks>
-		///		Upon creation, the inherited constructor will register this instance as the singleton instance.
-		/// </remarks>
-		public OdeDynamics()
-		{
-		}
+        /// <summary>
+        ///		Default constructor.
+        /// </summary>
+        /// <remarks>
+        ///		Upon creation, the inherited constructor will register this instance as the singleton instance.
+        /// </remarks>
+        public OdeDynamics() {
+        }
 
-		#endregion
+        #endregion
 
-		#region IDynamicsSystem Members
+        #region IDynamicsSystem Members
 
-		/// <summary>
-		///		
-		/// </summary>
-		/// <returns></returns>
-		public override IWorld CreateWorld()
-		{
-			return new OdeWorld();
-		}
+        /// <summary>
+        ///		
+        /// </summary>
+        /// <returns></returns>
+        public override IWorld CreateWorld() {
+            return new OdeWorld();
+        }
 
-		#endregion
+        #endregion
 
-		#region IPlugin Members
+        #region IPlugin Members
 
-		public void Start()
-		{
-		}
+        public void Start() {
+        }
 
-		public void Stop()
-		{
-			// TODO:  Add ODEDynamics.Stop implementation
-		}
+        public void Stop() {
+            // TODO:  Add ODEDynamics.Stop implementation
+        }
 
-		#endregion
+        #endregion
 
-		#region Static methods
+        #region Static methods
 
 
-		static internal Ode.Vector3 MakeOdeVector(Axiom.MathLib.Vector3 vec)
-		{
-			return new Ode.Vector3(vec.x, vec.y, vec.z);
-		}
+        static internal Ode.Vector3 MakeOdeVector(Axiom.MathLib.Vector3 vec) {
+            return new Ode.Vector3(vec.x, vec.y, vec.z);
+        }
 
-		static internal Axiom.MathLib.Vector3 MakeDIVector(Ode.Vector3 vec)
-		{
-			return new Axiom.MathLib.Vector3((float)vec.X, (float)vec.Y, (float)vec.Z);
-		}
+        static internal Axiom.MathLib.Vector3 MakeDIVector(Ode.Vector3 vec) {
+            return new Axiom.MathLib.Vector3((float)vec.X, (float)vec.Y, (float)vec.Z);
+        }
 
-		static internal Ode.Quaternion MakeOdeQuat(Axiom.MathLib.Quaternion quat)
-		{
-			// convert the quat
-			Ode.Quaternion odeQuat = new Ode.Quaternion();
-			odeQuat.W = (float)quat.w;
-			odeQuat.X = (float)quat.x;
-			odeQuat.Y = (float)quat.y;
-			odeQuat.Z = (float)quat.z;
+        static internal Ode.Quaternion MakeOdeQuat(Axiom.MathLib.Quaternion quat) {
+            // convert the quat
+            Ode.Quaternion odeQuat = new Ode.Quaternion();
+            odeQuat.W = (float)quat.w;
+            odeQuat.X = (float)quat.x;
+            odeQuat.Y = (float)quat.y;
+            odeQuat.Z = (float)quat.z;
 
-			return odeQuat;
-		}
+            return odeQuat;
+        }
 
-		static internal Axiom.MathLib.Quaternion MakeDIQuat(Ode.Quaternion quat)
-		{
-			return new Axiom.MathLib.Quaternion((float)quat.W, (float)quat.X, (float)quat.Y, (float)quat.Z);
-		}
+        static internal Axiom.MathLib.Quaternion MakeDIQuat(Ode.Quaternion quat) {
+            return new Axiom.MathLib.Quaternion((float)quat.W, (float)quat.X, (float)quat.Y, (float)quat.Z);
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

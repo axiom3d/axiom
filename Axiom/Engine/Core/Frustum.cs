@@ -28,55 +28,47 @@ using System;
 using Axiom.Core;
 using Axiom.Enumerations;
 
-namespace Axiom.Core
-{
-	/// <summary>
-	/// Summary description for Frustrum.
-	/// </summary>
-	// INC: In progress.
-	public class Frustum
-	{
-		private Plane[] planes = new Plane[6];
+namespace Axiom.Core {
+    /// <summary>
+    /// Summary description for Frustrum.
+    /// </summary>
+    // INC: In progress.
+    public class Frustum {
+        private Plane[] planes = new Plane[6];
 
-		#region Constructors
+        #region Constructors
 
-		public Frustum()
-		{
-			for(int i = 0; i < 6; i++)
-			{
-				planes[i] = new Plane();
-			}
-		}
-
-		public Frustum(float FOV, float aspectRatio, float near, float far)
-		{
-			// TODO: Implementation
-		}
-
-		#endregion 
-
-		#region Overloaded operators
-
-		/// <summary>
-		///		An indexer that accepts a FrustumPlane enum value and return the appropriate plane side of the Frustum.
-		/// </summary>
-		public Plane this[FrustumPlane plane]
-		{
-			get 
-			{	
-				// convert the incoming plan enum type to a int
-				int index = (int)plane;
-
-				// access the planes array by index
-				return planes[index];
-			}
-		}
-
-		#endregion
-
-        public void Initialize(float FOV, float aspectRatio, float near, float far)
-        {
-			// TODO: Implementation
+        public Frustum() {
+            for(int i = 0; i < 6; i++) {
+                planes[i] = new Plane();
+            }
         }
-	}
+
+        public Frustum(float FOV, float aspectRatio, float near, float far) {
+            // TODO: Implementation
+        }
+
+        #endregion 
+
+        #region Overloaded operators
+
+        /// <summary>
+        ///		An indexer that accepts a FrustumPlane enum value and return the appropriate plane side of the Frustum.
+        /// </summary>
+        public Plane this[FrustumPlane plane] {
+            get {	
+                // convert the incoming plan enum type to a int
+                int index = (int)plane;
+
+                // access the planes array by index
+                return planes[index];
+            }
+        }
+
+        #endregion
+
+        public void Initialize(float FOV, float aspectRatio, float near, float far) {
+            // TODO: Implementation
+        }
+    }
 }

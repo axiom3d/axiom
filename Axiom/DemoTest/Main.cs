@@ -41,30 +41,25 @@ using Axiom.Utility;
 using Vector3 = Axiom.MathLib.Vector3;
 using Quaternion = Axiom.MathLib.Quaternion;
 
-namespace Demos
-{
+namespace Demos {
 
-	/// <summary>
-	/// Summary description for DemoTest.
-	/// </summary>
-	public class DemoTest
-	{
-		[STAThread]
-		private static void Main(String[] args)
-		{
-			try
-			{
-				Application.Run(new DemoBrowser());
-			}
-			catch(Exception ex)
-			{
-				// BUG: Log is already closed at this point in some scenarios
-				//Trace.WriteLine(ex.ToString());
+    /// <summary>
+    /// Summary description for DemoTest.
+    /// </summary>
+    public class DemoTest {
+        [STAThread]
+        private static void Main(String[] args) {
+            try {
+                Application.Run(new DemoBrowser());
+            }
+            catch(Exception ex) {
+                // BUG: Log is already closed at this point in some scenarios
+                //Trace.WriteLine(ex.ToString());
 
-				// call the existing global exception handler
-				TechDemo.GlobalErrorHandler(null, new System.Threading.ThreadExceptionEventArgs(ex));
-			}
+                // call the existing global exception handler
+                TechDemo.GlobalErrorHandler(null, new System.Threading.ThreadExceptionEventArgs(ex));
+            }
 		
-		}
-	}
+        }
+    }
 }
