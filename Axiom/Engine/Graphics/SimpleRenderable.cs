@@ -25,8 +25,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using Axiom.Collections;
 using Axiom.Core;
-
 using Axiom.MathLib;
 using Axiom.Graphics;
 
@@ -129,10 +129,6 @@ namespace Axiom.Graphics {
             matrices[0] = worldTransform * parentNode.FullTransform;
         }
 
-        #endregion
-
-        #region IRenderable Members
-
         /// <summary>
         /// 
         /// </summary>
@@ -174,9 +170,30 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="camera"></param>
         /// <returns></returns>
-        public virtual float GetSquaredViewDepth(Camera camera) {
-            // TODO:  Add SimpleRenderable.GetSquaredViewDepth implementation
-            return 0;
+        public abstract float GetSquaredViewDepth(Camera camera);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Quaternion WorldOrientation {
+            get {
+                return parentNode.DerivedOrientation;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Vector3 WorldPosition {
+            get {
+                return parentNode.DerivedPosition;
+            }
+        }
+
+        public LightList Lights {
+            get {
+                return parentNode.Lights;
+            }
         }
 
         #endregion

@@ -49,7 +49,6 @@ namespace Axiom.Graphics
         ///    Syntax code (i.e. arbvp1, vs_2_0, etc.)
         /// </summary>
         protected string syntaxCode;
-
         /// <summary>
         ///    Type of program this represents (vertex or fragment).
         /// </summary>
@@ -64,9 +63,10 @@ namespace Axiom.Graphics
         /// </summary>
         /// <param name="name"></param>
         /// <param name="type"></param>
-		public GpuProgram(string name, GpuProgramType type) {
+		public GpuProgram(string name, GpuProgramType type, string syntaxCode) {
             this.type = type;
             this.name = name;
+            this.syntaxCode = syntaxCode;
             this.loadFromFile = true;
 		}
 		
@@ -136,6 +136,5 @@ namespace Axiom.Graphics
         }
 
 		#endregion
-
 	}
 }

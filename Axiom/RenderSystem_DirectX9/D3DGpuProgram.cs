@@ -46,7 +46,7 @@ namespace RenderSystem_DirectX9
         /// </summary>
         protected D3D.Device device;
 		
-		public D3DGpuProgram(string name, GpuProgramType type, D3D.Device device) : base(name, type) {
+		public D3DGpuProgram(string name, GpuProgramType type, D3D.Device device, string syntaxCode) : base(name, type, syntaxCode) {
             this.device = device;
 		}
 	}
@@ -60,7 +60,7 @@ namespace RenderSystem_DirectX9
         /// </summary>
         protected D3D.VertexShader vertexShader;
 
-        internal D3DVertexProgram(string name, D3D.Device device) : base(name, GpuProgramType.Vertex, device) {}
+        internal D3DVertexProgram(string name, D3D.Device device, string syntaxCode) : base(name, GpuProgramType.Vertex, device, syntaxCode) {}
 
         protected override void LoadFromSource() {
             string errors;
@@ -101,7 +101,7 @@ namespace RenderSystem_DirectX9
         /// </summary>
         protected D3D.PixelShader pixelShader;
 
-        internal D3DFragmentProgram(string name, D3D.Device device) : base(name, GpuProgramType.Fragment, device) {}
+        internal D3DFragmentProgram(string name, D3D.Device device, string syntaxCode) : base(name, GpuProgramType.Fragment, device, syntaxCode) {}
 
         protected override void LoadFromSource() {
             string errors;
@@ -130,19 +130,6 @@ namespace RenderSystem_DirectX9
             get {
                 return pixelShader;
             }
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class D3DGpuProgramParameters : GpuProgramParameters {
-        public override void SetConstant(int index, ref Matrix4 val) {
-            // TODO: Verify
-            Matrix4 temp = val.Transpose();
-            float[] floats = new float[16];
-            temp.MakeFloatArray(floats);
-            SetConstant(index, floats);
         }
     }
 }

@@ -65,11 +65,11 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        ///    
+        ///    Creates a new gpu program of the specified type.
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public abstract GpuProgram Create(string name, GpuProgramType type);
+        public abstract GpuProgram Create(string name, GpuProgramType type, string syntaxCode);
 
         /// <summary>
         ///    Creates a new GpuProgramParameters instance which can be used to bind parameters 
@@ -101,8 +101,8 @@ namespace Axiom.Graphics
         /// <param name="fileName">The file to load, which will also become the 
         ///    identifying name of the GpuProgram which is returned.</param>
         /// <param name="type">Type of program to create.</param>
-        public virtual GpuProgram Load(string fileName, GpuProgramType type) {
-            GpuProgram program = Create(fileName, type);
+        public virtual GpuProgram Load(string fileName, GpuProgramType type, string syntaxCode) {
+            GpuProgram program = Create(fileName, type, syntaxCode);
             base.Load(program, 1);
             return program;
         }
@@ -117,11 +117,19 @@ namespace Axiom.Graphics
         /// </remarks>
         /// <param name="name">Name used to identify this program.</param>
         /// <param name="type">Type of program to create.</param>
-        public virtual GpuProgram Load(string name, string source, GpuProgramType type) {
-            GpuProgram program = Create(name, type);
+        public virtual GpuProgram Load(string name, string source, GpuProgramType type, string syntaxCode) {
+            GpuProgram program = Create(name, type, syntaxCode);
             base.Load(program, 1);
             program.Source = source;
             return program;
+        }
+
+        /// <summary>
+        ///    Used internally to register support for a particular syntax code.
+        /// </summary>
+        /// <param name="code">The syntax code (i.e. vs_1_1).</param>
+        public void PushSyntaxCode(string code) {
+            syntaxCodes.Add(code);
         }
 
 		#endregion

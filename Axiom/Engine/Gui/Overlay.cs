@@ -394,6 +394,18 @@ namespace Axiom.Gui {
             }
         }
 
+        public Quaternion DerivedOrientation {
+            get {
+                return Quaternion.Identity;
+            }
+        }
+
+        public Vector3 DerivedPosition {
+            get {
+                return Vector3.Zero;
+            }
+        }
+
         #endregion Properties
 
         #region Implementation of Resource

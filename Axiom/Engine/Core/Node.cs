@@ -106,6 +106,10 @@ namespace Axiom.Core {
         protected static Material material = null;
         protected static SubMesh subMesh = null;
         protected static long nextUnnamedNodeExtNum = 1;
+        /// <summary>
+        ///    Empty list of lights to return for IRenderable.Lights, since nodes are not lit.
+        /// </summary>
+        private LightList emptyLightList = new LightList();
 		
         #endregion
 
@@ -931,9 +935,23 @@ namespace Axiom.Core {
             }
         }
 
-        #endregion
+        /// <summary>
+        /// 
+        /// </summary>
+        public Quaternion WorldOrientation {
+            get {
+                return this.DerivedOrientation;
+            }
+        }
 
-        #region IRenderable Members
+        /// <summary>
+        /// 
+        /// </summary>
+        public Vector3 WorldPosition {
+            get {
+                return this.DerivedPosition;
+            }
+        }
 
         /// <summary>
         /// 
@@ -966,7 +984,18 @@ namespace Axiom.Core {
         /// 
         /// </summary>
         public SceneDetailLevel RenderDetail {
-            get { return SceneDetailLevel.Solid;	}
+            get { 
+                return SceneDetailLevel.Solid;	
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public LightList Lights {
+            get {
+                return emptyLightList;
+            }
         }
 
         #endregion

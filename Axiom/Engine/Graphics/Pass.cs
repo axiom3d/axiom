@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
+using Axiom.Configuration;
 using Axiom.Core;
 
 namespace Axiom.Graphics
@@ -127,6 +128,10 @@ namespace Axiom.Graphics
         ///    Is lighting enabled for this pass?
         /// </summary>
         protected bool lightingEnabled;
+        /// <summary>
+        ///    Max number of simultaneous lights that can be used for this pass.
+        /// </summary>
+        protected int maxLights;
         /// <summary>
         ///    Shading options for this pass.
         /// </summary>
@@ -235,6 +240,9 @@ namespace Axiom.Graphics
             maxAniso = MaterialManager.Instance.DefaultAnisotropy;
             isDefaultFiltering = true;
             isDefaultAniso = true;
+
+            // HACK: Hardcoded for now
+            maxLights = Config.MaxSimultaneousLights;
         }
 		
 		#endregion
@@ -635,8 +643,16 @@ namespace Axiom.Graphics
         /// </summary>
         /// <param name="renderable">Current object being rendered.</param>
         /// <param name="camera">Current being being used for rendering.</param>
-        internal void UpdateAutoParams(IRenderable renderable, Camera camera) {
-            // TODO: Implement me...please!!
+        internal void UpdateAutoParams(AutoParamDataSource source) {
+            // auto update vertex program parameters
+            if(this.HasVertexProgram) {
+                vertexProgramUsage.Params.UpdateAutoParams(source);
+            }
+
+            // auto update fragment program parameters
+            if(this.HasFragmentProgram) {
+                fragmentProgramUsage.Params.UpdateAutoParams(source);
+            }
         }
 		
 		#endregion
@@ -931,7 +947,7 @@ namespace Axiom.Graphics
         /// </remarks>
         public GpuProgram FragmentProgram {
             get {
-                Debug.Assert(this.HasFragmentProgram, "This pass is not programmable!");
+                Debug.Assert(this.HasFragmentProgram, "This pass does not contain a fragment program!");
                 return fragmentProgramUsage.Program;
             }
         }
@@ -986,11 +1002,11 @@ namespace Axiom.Graphics
         /// </remarks>
         public GpuProgramParameters FragmentProgramParameters {
             get {
-                Debug.Assert(this.HasFragmentProgram, "This pass is not programmable!");
+                Debug.Assert(this.HasFragmentProgram, "This pass does not contain a fragment program!");
                 return fragmentProgramUsage.Params;
             }
             set {
-                Debug.Assert(this.HasFragmentProgram, "This pass is not programmable!");
+                Debug.Assert(this.HasFragmentProgram, "This pass does not contain a fragment program!");
                 fragmentProgramUsage.Params = value;
             }
         }
@@ -1086,6 +1102,25 @@ namespace Axiom.Graphics
             }
             set {
                 manualCullMode = value;
+            }
+        }
+
+        /// <summary>
+        ///    Sets the maximum number of lights to be used by this pass. 
+        /// </summary>
+        /// <remarks>
+        ///    During rendering, if lighting is enabled (or if the pass uses an automatic
+        ///    program parameter based on a light) the engine will request the nearest lights 
+        ///    to the object being rendered in order to work out which ones to use. This
+        ///    parameter sets the limit on the number of lights which should apply to objects 
+        ///    rendered with this pass. 
+        /// </remarks>
+        public int MaxLights {
+            get {
+                return maxLights;
+            }
+            set {
+                maxLights = value;
             }
         }
 
@@ -1212,7 +1247,7 @@ namespace Axiom.Graphics
         /// </remarks>
         public GpuProgram VertexProgram {
             get {
-                Debug.Assert(this.HasVertexProgram, "This pass is not programmable!");
+                Debug.Assert(this.HasVertexProgram, "This pass does not contain a vertex program!");
                 return vertexProgramUsage.Program;
             }
         }
@@ -1266,11 +1301,11 @@ namespace Axiom.Graphics
         /// </remarks>
         public GpuProgramParameters VertexProgramParameters {
             get {
-                Debug.Assert(this.HasVertexProgram, "This pass is not programmable!");
+                Debug.Assert(this.HasVertexProgram, "This pass does not contain a vertex program!");
                 return vertexProgramUsage.Params;
             }
             set {
-                Debug.Assert(this.HasVertexProgram, "This pass is not programmable!");
+                Debug.Assert(this.HasVertexProgram, "This pass does not contain a vertex program!");
                 vertexProgramUsage.Params = value;
             }
         }

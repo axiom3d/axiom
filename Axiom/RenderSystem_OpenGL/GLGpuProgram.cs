@@ -46,7 +46,7 @@ namespace RenderSystem_OpenGL
         /// </summary>
         protected int programType;
 
-        internal GLGpuProgram(string name, GpuProgramType type) : base(name, type) {
+        internal GLGpuProgram(string name, GpuProgramType type, string syntaxCode) : base(name, type, syntaxCode) {
             programType = GLHelper.ConvertEnum(type);
 
             Ext.glGenProgramsARB(1, out programId);
@@ -93,17 +93,4 @@ namespace RenderSystem_OpenGL
             }
         }
 	}
-
-    /// <summary>
-    ///    Customized parameters class for OpenGL.
-    /// </summary>
-    public class GLGpuProgramParameters : GpuProgramParameters {
-        public override void SetConstant(int index, ref Axiom.MathLib.Matrix4 val) {
-            // TODO: Verify
-            float[] floats = new float[16];
-            val.MakeFloatArray(floats);
-            SetConstant(index, floats);
-        }
-
-    }
 }

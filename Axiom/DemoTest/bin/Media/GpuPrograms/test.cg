@@ -1,16 +1,16 @@
 struct MyOutput {
    float4 position : POSITION;
    float4 color : COLOR;
-   float2 texCoord : TEXCOORD0;
 };
 
-MyOutput main(	float2 position : POSITION, float2 texCoord : TEXCOORD0, uniform float4 color) {
+MyOutput main(	float4 pos : POSITION,
+		float4 col : COLOR,
+		uniform float4x4 wvp) {
+	
    MyOutput OUT;
    
-   // note, will need modelViewProj matrix to do this right, screw it for now
-   OUT.position = float4(position, 0, 1);
-   OUT.color = color;
-   OUT.texCoord = texCoord;
+   OUT.position = mul(wvp, pos);
+   OUT.color = col;
    
    return OUT;
 }

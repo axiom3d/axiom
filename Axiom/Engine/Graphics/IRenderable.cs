@@ -25,8 +25,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using Axiom.Collections;
 using Axiom.Core;
-
 using Axiom.MathLib;
 
 namespace Axiom.Graphics {
@@ -56,37 +56,51 @@ namespace Axiom.Graphics {
         /// <summary>
         ///    Technique being used to render this object according to the current hardware.
         /// </summary>
+        /// <remarks>
+        ///    This is to allow Renderables to use a chosen Technique if they wish, otherwise
+        ///    they will use the best Technique available for the Material they are using.
+        /// </remarks>
         Technique Technique {
             get;
         }
 
         /// <summary>
-        /// Get the current render operation associated with this renderable object.
+        ///    Gets the render operation required to send this object to the frame buffer.
         /// </summary>
         void GetRenderOperation(RenderOperation op);
 
         /// <summary>
-        /// Gets the world transform matrix / matrices for this renderable object.
+        ///    Gets the world transform matrix / matrices for this renderable object.
         /// </summary>
         /// <remarks>
-        ///  If the object has any derived transforms, these are expected to be up to date as long as
-        ///  all the SceneNode structures have been updated before this is called.
-        ///  
-        ///  This method will populate xform with 1 matrix if it does not use vertex blending. If it
-        ///  does use vertex blending it will fill the passed in pointer with an array of matrices,
-        ///  the length being the value returned from getNumWorldTransforms.
+        ///    If the object has any derived transforms, these are expected to be up to date as long as
+        ///    all the SceneNode structures have been updated before this is called.
+        ///  <p/>
+        ///    This method will populate xform with 1 matrix if it does not use vertex blending. If it
+        ///    does use vertex blending it will fill the passed in pointer with an array of matrices,
+        ///    the length being the value returned from getNumWorldTransforms.
         /// </remarks>
         void GetWorldTransforms(Matrix4[] matrices);
 
         /// <summary>
-        /// Gets the number of world transformations that will be used for this object.
+        ///    Gets a list of lights, ordered relative to how close they are to this renderable.
         /// </summary>
         /// <remarks>
-        /// When a renderable uses vertex blending, it uses multiple world matrices instead of a single
-        /// one. Each vertex sent to the pipeline can reference one or more matrices in this list
-        /// with given weights.
-        /// If a renderable does not use vertex blending this method returns 1, which is the default for 
-        /// simplicity.
+        ///    Directional lights, which have no position, will always be first on this list.
+        /// </remarks>
+        LightList Lights {
+            get;
+        }
+
+        /// <summary>
+        ///    Gets the number of world transformations that will be used for this object.
+        /// </summary>
+        /// <remarks>
+        ///    When a renderable uses vertex blending, it uses multiple world matrices instead of a single
+        ///    one. Each vertex sent to the pipeline can reference one or more matrices in this list
+        ///    with given weights.
+        ///    If a renderable does not use vertex blending this method returns 1, which is the default for 
+        ///    simplicity.
         /// </remarks>
 
         ushort NumWorldTransforms {
@@ -94,28 +108,28 @@ namespace Axiom.Graphics {
         }
 
         /// <summary>
-        /// Returns whether or not to use an 'identity' projection.
+        ///    Returns whether or not to use an 'identity' projection.
         /// </summary>
         /// <remarks>
-        /// Usually IRenderable objects will use a projection matrix as determined
-        /// by the active camera. However, if they want they can cancel this out
-        /// and use an identity projection, which effectively projects in 2D using
-        /// a {-1, 1} view space. Useful for overlay rendering. Normal renderables need
-        /// not override this.
+        ///    Usually IRenderable objects will use a projection matrix as determined
+        ///    by the active camera. However, if they want they can cancel this out
+        ///    and use an identity projection, which effectively projects in 2D using
+        ///    a {-1, 1} view space. Useful for overlay rendering. Normal renderables need
+        ///    not override this.
         /// </remarks>
         bool UseIdentityProjection {
             get;
         }
 
         /// <summary>
-        /// Returns whether or not to use an 'identity' projection.
+        ///    Returns whether or not to use an 'identity' projection.
         /// </summary>
         /// <remarks>
-        /// Usually IRenderable objects will use a view matrix as determined
-        /// by the active camera. However, if they want they can cancel this out
-        /// and use an identity matrix, which means all geometry is assumed
-        /// to be relative to camera space already. Useful for overlay rendering. 
-        /// Normal renderables need not override this.
+        ///    Usually IRenderable objects will use a view matrix as determined
+        ///    by the active camera. However, if they want they can cancel this out
+        ///    and use an identity matrix, which means all geometry is assumed
+        ///    to be relative to camera space already. Useful for overlay rendering. 
+        ///    Normal renderables need not override this.
         /// </remarks>
         bool UseIdentityView {
             get;
@@ -125,6 +139,28 @@ namespace Axiom.Graphics {
         ///		Will allow for setting per renderable scene detail levels.
         /// </summary>
         SceneDetailLevel RenderDetail {
+            get;
+        }
+
+        /// <summary>
+        ///    Gets the worldspace orientation of this renderable; this is used in order to
+        ///    more efficiently update parameters to vertex & fragment programs, since inverting Quaterion
+        ///    and Vector in order to derive object-space positions / directions for cameras and
+        ///    lights is much more efficient than inverting a complete 4x4 matrix, and also 
+        ///    eliminates problems introduced by scaling.
+        /// </summary>
+        Quaternion WorldOrientation {
+            get;
+        }
+
+        /// <summary>
+        ///    Gets the worldspace position of this renderable; this is used in order to
+        ///    more efficiently update parameters to vertex & fragment programs, since inverting Quaterion
+        ///    and Vector in order to derive object-space positions / directions for cameras and
+        ///    lights is much more efficient than inverting a complete 4x4 matrix, and also 
+        ///    eliminates problems introduced by scaling.
+        /// </summary>
+        Vector3 WorldPosition {
             get;
         }
 

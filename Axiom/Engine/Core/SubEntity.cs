@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
-
+using Axiom.Collections;
 using Axiom.MathLib;
 using Axiom.Graphics;
 
@@ -229,6 +229,48 @@ namespace Axiom.Core {
             Debug.Assert(node != null);
 
             return node.GetSquaredViewDepth(camera);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Quaternion WorldOrientation {
+            get {
+                // get the parent entitie's parent node
+                Node node = parent.ParentNode;
+
+                Debug.Assert(node != null);
+
+                return parent.ParentNode.DerivedOrientation;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Vector3 WorldPosition {
+            get {
+                // get the parent entitie's parent node
+                Node node = parent.ParentNode;
+
+                Debug.Assert(node != null);
+
+                return parent.ParentNode.DerivedPosition;
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        public LightList Lights {
+            get {
+                // get the parent entitie's parent node
+                Node node = parent.ParentNode;
+
+                Debug.Assert(node != null);
+
+                return parent.ParentNode.Lights;
+            }
         }
 
         #endregion

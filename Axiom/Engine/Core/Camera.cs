@@ -78,6 +78,7 @@ namespace Axiom.Core {
         protected Projection			projectionType;
         protected SceneDetailLevel sceneDetail;
         protected Matrix4				projectionMatrix;
+        protected Matrix4              standardProjMatrix;
         protected Matrix4				viewMatrix;
         protected bool					recalculateFrustum;
         protected bool					recalculateView;
@@ -155,15 +156,30 @@ namespace Axiom.Core {
             if(recalculateFrustum) {
                 switch(projectionType) {
                     case Projection.Perspective: {
+
                         // recreate the projection matrix
                         projectionMatrix = Engine.Instance.RenderSystem.MakeProjectionMatrix(fieldOfView, aspectRatio, nearDistance, farDistance);
+
+                        float thetaY = MathUtil.DegreesToRadians(fieldOfView * 0.5f);
+                        float tanThetaY = MathUtil.Tan(thetaY);
+
+                        // Calculate the standard projection matrix
+                        float w = (1.0f / tanThetaY) / aspectRatio;
+                        float h = 1.0f / tanThetaY;
+                        float q = -(farDistance + nearDistance) / (farDistance - nearDistance);
+                        float qn = -2 * (farDistance * nearDistance) / (farDistance - nearDistance);
+
+                        standardProjMatrix = Matrix4.Zero;
+                        standardProjMatrix.m00 = w;
+                        standardProjMatrix.m11 = h;
+                        standardProjMatrix.m22 = q;
+                        standardProjMatrix.m23 = qn;
+                        standardProjMatrix.m32 = -1;
 
                         // Calculate co-efficients for the frustum planes
                         // Special-cased for L = -R and B = -T i.e. viewport centered 
                         // on direction vector.
                         // Taken from ideas in WildMagic 0.2 http://www.magic-software.com
-                        float thetaY = MathUtil.DegreesToRadians(fieldOfView * 0.5f);
-                        float tanThetaY = MathUtil.Tan(thetaY);
                         float tanThetaX = tanThetaY * aspectRatio;
 
                         float vpTop = tanThetaY * nearDistance;
@@ -340,17 +356,21 @@ namespace Axiom.Core {
         #region Public Properties
 	
         /// <summary>
-        /// Returns the current SceneManager that this camera is using.
+        ///    Returns the current SceneManager that this camera is using.
         /// </summary>
         public SceneManager SceneManager {
-            get { return sceneManager; }
+            get { 
+                return sceneManager; 
+            }
         }
 
-        // <summary>
-        /// Gets/Sets the type of projection to use (orthographic or perspective). Default is perspective.
+        /// <summary>
+        ///    Gets/Sets the type of projection to use (orthographic or perspective). Default is perspective.
         /// </summary>
         public Projection ProjectionType {
-            get { return projectionType; }
+            get { 
+                return projectionType; 
+            }
             set { 
                 projectionType = value;	
                 recalculateFrustum = true; 
@@ -367,22 +387,47 @@ namespace Axiom.Core {
         ///		wireframe view, for example.
         /// </remarks>
         public SceneDetailLevel SceneDetail {
-            get { return sceneDetail; }
-            set { sceneDetail = value; }
+            get { 
+                return sceneDetail; 
+            }
+            set { 
+                sceneDetail = value; 
+            }
+        }
+
+        /// <summary>
+        ///    Gets the 'standard' projection matrix for this camera, ie the 
+        ///    projection matrix which conforms to standard right-handed rules.
+        /// </summary>
+        /// <remarks>
+        ///    This differs from the rendering-API dependent ProjectionMatrix
+        ///    in that it always returns the same result no matter what rendering API
+        ///    is being used.
+        /// </remarks>
+        public Matrix4 StandardProjectionMatrix {
+            get {
+                UpdateFrustum();
+
+                return standardProjMatrix;
+            }
         }
 
         /// <summary>
         ///		Gets the viewing frustum of this camera.
         /// </summary>
         public Frustum Frustum {
-            get { return frustum; }
+            get { 
+                return frustum; 
+            }
         }
 
         /// <summary>
         /// Gets/Sets the cameras position.
         /// </summary>
         public Vector3 Position {
-            get { return position; }
+            get { 
+                return position; 
+            }
             set { 
                 position = value;	
                 recalculateView = true; 
@@ -509,7 +554,9 @@ namespace Axiom.Core {
         /// Gets the last count of triangles visible in the view of this camera.
         /// </summary>
         public int NumRenderedFaces {
-            get { return numFacesRenderedLastFrame; }
+            get { 
+                return numFacesRenderedLastFrame; 
+            }
         }
 
         /// <summary>
@@ -525,7 +572,9 @@ namespace Axiom.Core {
         ///		this depending on the dimensions of the viewport (they will only be the same if the viewport is square).
         /// </remarks>
         public float FOV {
-            get { return fieldOfView; } 
+            get { 
+                return fieldOfView; 
+            } 
             set {
                 fieldOfView = value;
                 recalculateFrustum = true;
@@ -544,7 +593,9 @@ namespace Axiom.Core {
         ///		screen viewport it renders into to avoid distortion.
         /// </remarks>
         public float Near {
-            get { return nearDistance; }
+            get { 
+                return nearDistance; 
+            }
             set {
                 Debug.Assert(value > 0, "Near clip distance must be greater than zero.");
 
@@ -570,7 +621,9 @@ namespace Axiom.Core {
         ///		it.
         /// </remarks>
         public float Far {
-            get { return farDistance; }
+            get { 
+                return farDistance; 
+            }
             set {
                 farDistance = value;
                 recalculateFrustum = true;
@@ -588,7 +641,9 @@ namespace Axiom.Core {
         ///		use this property to state otherwise.
         /// </remarks>
         public float AspectRatio {
-            get { return aspectRatio; }
+            get { 
+                return aspectRatio; 
+            }
             set {
                 aspectRatio = value;
                 recalculateFrustum = true;

@@ -73,7 +73,7 @@ namespace Axiom.Core {
         /// <summary>A list of the valid cameras for this scene for easy lookup.</summary>
         protected CameraCollection cameraList;
         /// <summary>A list of lights in the scene for easy lookup.</summary>
-        protected LightCollection lightList;
+        protected LightList lightList;
         /// <summary>A list of entities in the scene for easy lookup.</summary>
         protected internal EntityCollection entityList;
         /// <summary>A list of scene nodes (includes all in the scene graph).</summary>
@@ -91,6 +91,10 @@ namespace Axiom.Core {
         protected Camera camInProgress;
         /// <summary>The root of the scene graph heirarchy.</summary>
         protected SceneNode rootSceneNode;
+        /// <summary>
+        ///    Utility class for updating automatic GPU program params.
+        /// </summary>
+        protected AutoParamDataSource autoParamDataSource = new AutoParamDataSource();
 
         protected Entity skyPlaneEntity;
         protected Entity[] skyDomeEntities = new Entity[5];
@@ -153,7 +157,7 @@ namespace Axiom.Core {
             // initialize all collections
             renderQueue = new RenderQueue();
             cameraList = new CameraCollection();
-            lightList = new LightCollection();
+            lightList = new LightList();
             entityList = new EntityCollection();
             sceneNodeList = new SceneNodeCollection();
             billboardSetList = new BillboardSetCollection();
@@ -383,7 +387,7 @@ namespace Axiom.Core {
         ///		using this method so that the SceneManager manages their
         ///		existence.
         /// </remarks>
-        /// <param name="name"></param>
+        /// <param name="name">Name of the light to create.</param>
         /// <returns></returns>
         public virtual Light CreateLight(string name) {
             // create a new light and add it to our internal list
@@ -391,9 +395,6 @@ namespace Axiom.Core {
 			
             // add the light to the list
             lightList.Add(name, light);
-
-            // add the light to the target render system
-            targetRenderSystem.AddLight(light);
 
             return light;
         }
@@ -1142,14 +1143,14 @@ namespace Axiom.Core {
             // use this viewport for the rendering systems current pass
             targetRenderSystem.SetViewport(viewport);
 
+            // set the current camera for use in the auto GPU program params
+            autoParamDataSource.Camera = camera;
+
             // apply animations
             ApplySceneAnimations();
 
             // update scene graph
             UpdateSceneGraph(camera);
-
-            // update dynamic lights
-            UpdateDynamicLights();
 
             // ask the camera to auto track if it has a target
             camera.AutoTrack();
@@ -1264,7 +1265,8 @@ namespace Axiom.Core {
         
             // update auto params if this is a programmable pass
             if(pass.IsProgrammable) {
-                pass.UpdateAutoParams(renderable, camInProgress);
+                autoParamDataSource.Renderable = renderable;
+                pass.UpdateAutoParams(autoParamDataSource);
             }
 
             // get the world matrices and the count
@@ -1279,6 +1281,12 @@ namespace Axiom.Core {
 
             // issue view/projection changes (if any)
             UseRenderableViewProjection(renderable);
+
+            // Do we need to update light states? 
+            // Only do this if fixed-function vertex lighting applies
+            if(pass.LightingEnabled && !pass.HasVertexProgram) {
+                targetRenderSystem.UseLights(renderable.Lights, pass.MaxLights);
+            }
 
             // set up the texture units for this pass
             for(int i = 0; i < pass.NumTextureUnitStages; i++) {
@@ -1419,17 +1427,41 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        ///		Sends any updates to the dynamic lights in the world to the renderer.
+        /// 
         /// </summary>
-        internal virtual void UpdateDynamicLights() {
+        /// <param name="position"></param>
+        /// <param name="destList"></param>
+        internal void PopulateLightList(Vector3 position, LightList destList) {
+            // clear the list first
+            destList.Clear();
+
+            // loop through the scene lights an add ones in range
             for(int i = 0; i < lightList.Count; i++) {
                 Light light = lightList[i];
 
-                if(light.IsModified)
-                    targetRenderSystem.UpdateLight(light);
-            }
-        }
+                if(light.IsVisible) {
+                    if(light.Type == LightType.Directional) {
+                        // no distance
+                        light.tempSquaredDist = 0.0f;
+                        destList.Add(light);
+                    }
+                    else {
+                        light.tempSquaredDist = (light.DerivedPosition - position).LengthSquared;
+                        float range = light.AttenuationRange;
 
+                        // square range for even comparison and compare
+                        if(light.tempSquaredDist <= (range * range)) {
+                            destList.Add(light);
+                        }
+                    }
+                } // if
+            } // for
+
+            // Sort Destination light list.
+            // TODO: Not needed yet since the current LightList is a sorted list under the hood already
+            //destList.Sort();
+        }
+            
         /// <summary>
         ///		Enables / disables a 'sky plane' i.e. a plane at constant
         ///		distance from the camera representing the sky.

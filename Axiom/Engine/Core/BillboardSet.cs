@@ -811,6 +811,30 @@ namespace Axiom.Core {
             return parentNode.GetSquaredViewDepth(camera);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public Quaternion WorldOrientation {
+            get {
+                return parentNode.DerivedOrientation;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Vector3 WorldPosition {
+            get {
+                return parentNode.DerivedPosition;
+            }
+        }
+
+        public LightList Lights {
+            get {
+                return parentNode.Lights;
+            }
+        }
+
         #endregion
 
         #region Implementation of SceneObject

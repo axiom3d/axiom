@@ -96,6 +96,7 @@ namespace Demos {
         protected override void CreateScene() {
             // set default filtering/anisotropy
             MaterialManager.Instance.DefaultTextureFiltering = TextureFiltering.Anisotropic;
+            MaterialManager.Instance.DefaultAnisotropy = 2;
 
             // set ambient light and fog
             scene.AmbientLight = new ColorEx(1.0f, 1, 0.2f, 0.2f);

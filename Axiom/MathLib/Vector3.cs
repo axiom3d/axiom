@@ -287,6 +287,15 @@ namespace Axiom.MathLib {
         }
 
         /// <summary>
+        ///    
+        /// </summary>
+        /// <param name="vec3"></param>
+        /// <returns></returns>
+        public static explicit operator Vector4 (Vector3 vec3) {
+            return new Vector4(vec3.x, vec3.y, vec3.z, 1.0f);
+        }
+
+        /// <summary>
         ///		Used to access a Vector by index 0 = x, 1 = y, 2 = z.  
         /// </summary>
         /// <remarks>

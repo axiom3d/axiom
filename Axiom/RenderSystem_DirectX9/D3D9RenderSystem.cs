@@ -27,9 +27,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
+using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
-
 using Axiom.MathLib;
 using Axiom.Graphics;
 using Axiom.Utility;
@@ -53,8 +53,8 @@ namespace RenderSystem_DirectX9 {
 
         /// <summary>Signifies whether the current frame being rendered is the first.</summary>
         protected bool isFirstFrame = true;
-        const int MAX_LIGHTS = 8;
-        protected Axiom.Core.Light[] lights = new Axiom.Core.Light[MAX_LIGHTS];
+        protected int numCurrentLights;
+        protected int numLastStreams;
 
         // stores texture stage info locally for convenience
         // TODO: finish using this in all appropriate methods
@@ -89,7 +89,7 @@ namespace RenderSystem_DirectX9 {
         public override bool LightingEnabled {
             set {
                 if(lightingEnabled == value) {
-                    return;
+                    //return;
                 }
 
                 device.RenderState.Lighting = lightingEnabled = value;
@@ -157,9 +157,16 @@ namespace RenderSystem_DirectX9 {
                 ushort stream = (ushort)bufferBinding.Key;
 
                 device.SetStreamSource(stream, buffer.D3DVertexBuffer, 0, buffer.VertexSize);
+
+                numLastStreams++;
             }
 
-            // TODO: Unbind any unused sources
+            // Unbind any unused sources
+            for(int i = binding.Bindings.Count; i < numLastStreams; i++) {
+                device.SetStreamSource(i, null, 0, 0);
+            }
+            
+            numLastStreams = binding.Bindings.Count;
         }
 
         /// <summary>
@@ -294,7 +301,18 @@ namespace RenderSystem_DirectX9 {
                 // save the device capabilites
                 d3dCaps = device.DeviceCaps;
 
+                // by creating our texture manager, singleton TextureManager will hold our implementation
+                textureMgr = new D3DTextureManager(device);
+
+                // by creating our Gpu program manager, singleton GpuProgramManager will hold our implementation
+                gpuProgramMgr = new D3DGpuProgramManager(device);
+
+                // intializes the HardwareBufferManager singleton
+                hardwareBufferManager = new D3DHardwareBufferManager(device);
+
                 CheckCaps();
+
+                MeshManager.Init();
             }
 
             // create the window
@@ -302,17 +320,6 @@ namespace RenderSystem_DirectX9 {
 
             // add the new window to the RenderWindow collection
             this.renderWindows.Add(window);
-
-            // by creating our texture manager, singleton TextureManager will hold our implementation
-            textureMgr = new D3DTextureManager(device);
-
-            // by creating our Gpu program manager, singleton GpuProgramManager will hold our implementation
-            gpuProgramMgr = new D3DGpuProgramManager(device);
-
-            // intializes the HardwareBufferManager singleton
-            hardwareBufferManager = new D3DHardwareBufferManager(device);
-
-            MeshManager.Init();
 
             return window;
         }
@@ -766,37 +773,23 @@ namespace RenderSystem_DirectX9 {
             }
         }
 	
-        protected override void AddLight(Axiom.Core.Light light) {
-            int lightIndex;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lightList"></param>
+        /// <param name="limit"></param>
+        protected override void UseLights(LightList lightList, int limit) {
+            int i = 0;
 
-            // look for a free slot and add the light
-            for(lightIndex = 0; lightIndex < MAX_LIGHTS; lightIndex++) {
-                if(lights[lightIndex] == null) {
-                    lights[lightIndex] = light;
-                    break;
-                }
+            for( ; i < limit && i < lightList.Count; i++) {
+                SetD3DLight(i, lightList[i]);
             }
 
-            if(lightIndex == MAX_LIGHTS)
-                throw new Exception("Maximum hardware light count has been reached.");
-
-            // update light
-            SetD3DLight(lightIndex, light);		
-        }
-
-        protected override void UpdateLight(Axiom.Core.Light light) {
-            int lightIndex;
-
-            for(lightIndex = 0; lightIndex < MAX_LIGHTS; lightIndex++) {
-                if(lights[lightIndex].Name == light.Name)
-                    break;
+            for( ; i < numCurrentLights; i++) {
+                SetD3DLight(i, null);
             }
 
-            if(lightIndex == MAX_LIGHTS)
-                throw new Exception("An attempt was made to update an invalid light.");
-
-            // update light
-            SetD3DLight(lightIndex, light);
+            numCurrentLights = (int)MathUtil.Min(limit, lightList.Count);
         }
 
         public override int ConvertColor(ColorEx color) {
@@ -891,7 +884,10 @@ namespace RenderSystem_DirectX9 {
         /// <param name="index"></param>
         /// <param name="light"></param>
         private void SetD3DLight(int index, Axiom.Core.Light light) {
-            if(light.IsVisible) {
+            if(light == null) {
+                device.Lights[index].Enabled = false;
+            }
+            else {
                 switch(light.Type) {
                     case LightType.Point:
                         device.Lights[index].Type = D3D.LightType.Point;
@@ -931,8 +927,6 @@ namespace RenderSystem_DirectX9 {
 
                 device.Lights[index].Commit();
                 device.Lights[index].Enabled = true;
-
-                light.IsModified = false;
             } // if
         }
 
@@ -1253,6 +1247,184 @@ namespace RenderSystem_DirectX9 {
         private void CheckCaps() {
             // get the number of possible texture units
             caps.NumTextureUnits = d3dCaps.MaxSimultaneousTextures;
+
+            // max active lights
+            caps.MaxLights = d3dCaps.MaxActiveLights;
+
+            D3D.Surface surface = device.DepthStencilSurface;
+     
+            if(surface.Description.Format == D3D.Format.D24S8 || surface.Description.Format == D3D.Format.D24X8) {
+                caps.SetCap(Capabilities.StencilBuffer);
+                // always 8 here
+                caps.StencilBufferBits = 8;
+            }
+
+            // Anisotropy?
+            if(d3dCaps.MaxAnisotropy > 1) {
+                caps.SetCap(Capabilities.AnisotropicFiltering);
+            }
+
+            // Hardware mipmapping?
+            if(d3dCaps.DriverCaps.CanAutoGenerateMipMap) {
+                caps.SetCap(Capabilities.HardwareMipMaps);
+            }
+
+            // blending between stages is definately supported
+            caps.SetCap(Capabilities.TextureBlending);
+            caps.SetCap(Capabilities.MultiTexturing);
+
+            // Dot3 bump mapping?
+            if(d3dCaps.TextureOperationCaps.SupportsDotProduct3) {
+                caps.SetCap(Capabilities.Dot3Bump);
+            }
+
+            // Cube mapping?
+            if(d3dCaps.TextureCaps.SupportsCubeMap) {
+                caps.SetCap(Capabilities.CubeMapping);
+            }
+
+            // D3D uses vertex buffers for everything
+            caps.SetCap(Capabilities.VertexBuffer);
+
+            int vpMajor = d3dCaps.VertexShaderVersion.Major;
+            int vpMinor = d3dCaps.VertexShaderVersion.Minor;
+            int fpMajor = d3dCaps.PixelShaderVersion.Major;
+            int fpMinor = d3dCaps.PixelShaderVersion.Minor;
+
+            // check vertex program caps
+            switch(vpMajor) {
+                case 1:
+                    caps.MaxVertexProgramVersion = "vs_1_1";
+                    // 4d float vectors
+                    caps.VertexProgramConstantFloatCount = d3dCaps.MaxVertexShaderConst * 4;
+                    // no int params supports
+                    caps.VertexProgramConstantIntCount = 0;
+                    break;
+                case 2:
+                    if(vpMinor > 0) {
+                        caps.MaxVertexProgramVersion = "vs_2_x";
+                    }
+                    else {
+                        caps.MaxVertexProgramVersion = "vs_2_0";
+                    }
+
+                    // 16 ints
+                    caps.VertexProgramConstantIntCount = 16 * 4;
+                    // 4d float vectors
+                    caps.VertexProgramConstantFloatCount = d3dCaps.MaxVertexShaderConst * 4;
+
+                    break;
+                case 3:
+                    caps.MaxVertexProgramVersion = "vs_3_0";
+
+                    // 16 ints
+                    caps.VertexProgramConstantIntCount = 16 * 4;
+                    // 4d float vectors
+                    caps.VertexProgramConstantFloatCount = d3dCaps.MaxVertexShaderConst * 4;
+
+                    break;
+                default:
+                    // not gonna happen
+                    caps.MaxVertexProgramVersion = "";
+                    break;
+            }
+
+            // check for supported vertex program syntax codes
+            if(vpMajor >= 1) {
+                caps.SetCap(Capabilities.VertexPrograms);
+                gpuProgramMgr.PushSyntaxCode("vs_1_1");
+            }
+            if(vpMajor >= 2) {
+                if(vpMajor > 2 || vpMinor > 0) {
+                    gpuProgramMgr.PushSyntaxCode("vs_2_x");
+                }
+                gpuProgramMgr.PushSyntaxCode("vs_2_0");
+            }
+            if(vpMajor >= 3) {
+                gpuProgramMgr.PushSyntaxCode("vs_3_0");
+            }
+
+            // Fragment Program Caps
+            switch(fpMajor) {
+                case 1:
+                    caps.MaxFragmentProgramVersion = string.Format("ps_1_{0}", fpMinor);
+
+                    caps.FragmentProgramConstantIntCount = 0;
+                    // 8 4d float values, entered as floats but stored as fixed
+                    caps.FragmentProgramConstantFloatCount = 8 * 4;
+                    break;
+
+                case 2:
+                    if(fpMinor > 0) {
+                        caps.MaxFragmentProgramVersion = "ps_2_x";
+                        //16 integer params allowed
+                        caps.FragmentProgramConstantIntCount = 16 * 4;
+                        // 4d float params
+                        caps.FragmentProgramConstantFloatCount = 224 * 4;
+                    }
+                    else {
+                        caps.MaxFragmentProgramVersion = "ps_2_0";
+                        // no integer params allowed
+                        caps.FragmentProgramConstantIntCount = 0;
+                        // 4d float params
+                        caps.FragmentProgramConstantFloatCount = 32 * 4;
+                    }
+
+                    break;
+
+                case 3:
+                    if(fpMinor > 0) {
+                        caps.MaxFragmentProgramVersion = "ps_3_x";
+                    }
+                    else {
+                        caps.MaxFragmentProgramVersion = "ps_3_0";
+                    }
+
+                    // 16 integer params allowed
+                    caps.FragmentProgramConstantIntCount = 16 * 4;
+                    caps.FragmentProgramConstantFloatCount = 224 * 4;
+                    break;
+
+                default:
+                    // doh, SOL
+                    caps.MaxFragmentProgramVersion = "";
+                    break;
+            }
+
+            // Fragment Program syntax code checks
+            if(fpMajor >= 1) {
+                caps.SetCap(Capabilities.FragmentPrograms);
+                gpuProgramMgr.PushSyntaxCode("vs_1_1");
+
+                if(fpMinor >= 2) {
+                    gpuProgramMgr.PushSyntaxCode("vs_1_2");
+                }
+                if(fpMinor >= 3) {
+                    gpuProgramMgr.PushSyntaxCode("vs_1_3");
+                }
+                if(fpMinor >= 4) {
+                    gpuProgramMgr.PushSyntaxCode("vs_1_4");
+                }
+            }
+
+            if(fpMajor >= 2) {
+                gpuProgramMgr.PushSyntaxCode("vs_2_0");
+
+                if(fpMinor > 0) {
+                    gpuProgramMgr.PushSyntaxCode("vs_2_x");
+                }
+            }
+
+            if(fpMajor >= 3) {
+                gpuProgramMgr.PushSyntaxCode("vs_3_0");
+
+                if(fpMinor > 0) {
+                    gpuProgramMgr.PushSyntaxCode("vs_3_x");
+                }
+            }
+
+            // write hardware capabilities to registered log listeners
+            caps.Log();
         }
 
         /// <summary>

@@ -31,9 +31,9 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
-
 using Axiom.MathLib;
 using Axiom.Graphics;
 using Axiom.Utility;
@@ -76,8 +76,7 @@ namespace RenderSystem_OpenGL {
         // only lets you set them all at once, keep old values around to allow this to work
         protected int stencilFail, stencilZFail, stencilPass, stencilFunc, stencilRef, stencilMask;
 
-        // local array of light objects to reference during light updating, disabling, etc
-        protected Light[] lights;
+        protected int numCurrentLights;
 
         protected bool zTrickEven;      
 
@@ -100,6 +99,7 @@ namespace RenderSystem_OpenGL {
         // temp arrays to reduce runtime allocations
         protected float[] tempMatrix = new float[16];
         protected float[] tempColorVals = new float[4];
+        protected float[] tempProgramFloats = new float[4];
 
         #endregion Member variables
 
@@ -201,8 +201,6 @@ namespace RenderSystem_OpenGL {
                 // intialize GL extensions and check capabilites
                 GLHelper.InitializeExtensions();
 
-                CheckCaps();
-
                 // log hardware info
                 System.Diagnostics.Trace.WriteLine(string.Format("Vendor: {0}", GLHelper.Vendor));
                 System.Diagnostics.Trace.WriteLine(string.Format("Video Board: {0}", GLHelper.VideoCard));
@@ -234,6 +232,9 @@ namespace RenderSystem_OpenGL {
             // create our special program manager
             gpuProgramMgr = new GLGpuProgramManager();
 
+            // query hardware capabilites
+            CheckCaps();
+
             // create a specialized instance, which registers itself as the singleton instance of HardwareBufferManager
             // use software buffers as a fallback, which operate as regular vertex arrays
             if(caps.CheckCap(Capabilities.VertexBuffer))
@@ -259,7 +260,7 @@ namespace RenderSystem_OpenGL {
         }
 
         /// <summary>
-        ///		Gets/Sets the global lighting switch.
+        ///		Gets/Sets the global lighting setting.
         /// </summary>
         public override bool LightingEnabled {
             set {
@@ -519,9 +520,6 @@ namespace RenderSystem_OpenGL {
                 // swap the z trick flag
                 zTrickEven = !zTrickEven;
             }
-
-            // Reset all lights
-            ResetLights();
         }
 
         /// <summary>
@@ -1400,9 +1398,6 @@ namespace RenderSystem_OpenGL {
                 // load the float array into the ModelView matrix
                 Gl.glLoadMatrixf(tempMatrix);
 
-                // Reset lights here after a view change
-                ResetLights();
-
                 // convert the internal world matrix
                 MakeGLMatrix(ref worldMatrix, tempMatrix);
 
@@ -1433,42 +1428,20 @@ namespace RenderSystem_OpenGL {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="light"></param>
-        protected override void AddLight(Light light) {
-            int lightIndex;
+        /// <param name="lightList"></param>
+        /// <param name="limit"></param>
+        protected override void UseLights(LightList lightList, int limit) {
+            int i = 0;
 
-            // look for a free slot and add the light
-            for(lightIndex = 0; lightIndex < caps.MaxLights; lightIndex++) {
-                if(lights[lightIndex] == null) {
-                    lights[lightIndex] = light;
-                    break;
-                }
+            for( ; i < limit && i < lightList.Count; i++) {
+                SetGLLight(i, lightList[i]);
             }
 
-            if(lightIndex == caps.MaxLights)
-                throw new Exception("Maximum hardware light count has been reached.");
-
-            // update light
-            SetGLLight(lightIndex, light);			
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="light"></param>
-        protected override void UpdateLight(Light light) {
-            int lightIndex;
-
-            for(lightIndex = 0; lightIndex < caps.MaxLights; lightIndex++) {
-                if(lights[lightIndex].Name == light.Name)
-                    break;
+            for( ; i < numCurrentLights; i++) {
+                SetGLLight(i, null);
             }
 
-            if(lightIndex == caps.MaxLights)
-                throw new Exception("An attempt was made to update an invalid light.");
-
-            // update light
-            SetGLLight(lightIndex, light);
+            numCurrentLights = (int)MathUtil.Min(limit, lightList.Count);
         }
 
         /// <summary>
@@ -1634,8 +1607,24 @@ namespace RenderSystem_OpenGL {
         public override void BindGpuProgramParameters(GpuProgramType type, GpuProgramParameters parms) {
             int glType = GLHelper.ConvertEnum(type);
 
+            if((parms.FloatConstantCount % 4) != 0) {
+                throw new Exception("OpenGL only supports 4d vectors for gpu program parameters.");
+            }
+
             if(parms.HasFloatConstants) {
-                Ext.glProgramLocalParameter4vfARB(glType, 0, parms.FloatConstants);
+                float[] paramVals = parms.FloatConstants;
+
+                int count = parms.FloatConstantCount / 4;
+
+                for(int i = 0; i < count; i++) {
+                    tempProgramFloats[0] = paramVals[i * count];
+                    tempProgramFloats[1] = paramVals[i * count + 1];
+                    tempProgramFloats[2] = paramVals[i * count + 2];
+                    tempProgramFloats[3] = paramVals[i * count + 3];
+
+                    // send the params 4 at a time
+                    Ext.glProgramLocalParameter4vfARB(glType, i, tempProgramFloats);
+                }
             }
         }
 
@@ -1721,7 +1710,11 @@ namespace RenderSystem_OpenGL {
         private void SetGLLight(int index, Light light) {
             int lightIndex = Gl.GL_LIGHT0 + index;
 
-            if(light.IsVisible) {
+            if(light == null) {
+                // disable the light if it is not visible
+                Gl.glDisable(lightIndex);
+            }
+            else {
                 // set spotlight cutoff
                 switch(light.Type) {
                     case LightType.Spotlight:
@@ -1776,10 +1769,6 @@ namespace RenderSystem_OpenGL {
                 // enable the light
                 Gl.glEnable(lightIndex);
             }
-            else {
-                // disable the light if it is not visible
-                Gl.glDisable(lightIndex);
-            }
         }
 
         /// <summary>
@@ -1813,34 +1802,6 @@ namespace RenderSystem_OpenGL {
             }
         }
 
-        private void ResetLights() {
-            for (int i = 0; i < caps.MaxLights; i++) {
-                if (lights[i] != null) {
-                    Light lt = lights[i];
-                    // Position (don't set for directional)
-                    Vector3 vec = new Vector3();
-
-                    if (lt.Type != LightType.Directional) {
-                        vec = lt.DerivedPosition;
-                        tempColorVals[0] = vec.x;
-                        tempColorVals[1] = vec.y;
-                        tempColorVals[2] = vec.z;
-                        tempColorVals[3] = 1.0f;
-                        Gl.glLightfv(Gl.GL_LIGHT0 + i, Gl.GL_POSITION, tempColorVals);
-                    }
-                    // Direction (not needed for point lights)
-                    if (lt.Type != LightType.Point) {
-                        vec = lt.DerivedDirection;
-                        tempColorVals[0] = vec.x;
-                        tempColorVals[1] = vec.y;
-                        tempColorVals[2] = vec.z;
-                        tempColorVals[3] = 0.0f;
-                        Gl.glLightfv(Gl.GL_LIGHT0 + i, Gl.GL_SPOT_DIRECTION, tempColorVals);
-                    }
-                }
-            }
-        }
-	
         /// <summary>
         ///		Helper method to go through and interrogate hardware capabilities.
         /// </summary>
@@ -1850,15 +1811,11 @@ namespace RenderSystem_OpenGL {
             int maxLights;
             Gl.glGetIntegerv(Gl.GL_MAX_LIGHTS, out maxLights);
             caps.MaxLights = maxLights;
-            lights = new Light[caps.MaxLights];
-            Trace.WriteLine("Maximum lights available: " + caps.MaxLights);
 
             // check the number of texture units available
             int numTextureUnits = 0;
             Gl.glGetIntegerv(Gl.GL_MAX_TEXTURE_UNITS, out numTextureUnits);
             caps.NumTextureUnits = numTextureUnits;
-
-            Trace.WriteLine("Available texture units: " + caps.NumTextureUnits);
 
             // check multitexturing
             if(GLHelper.SupportsExtension("GL_ARB_multitexture"))
@@ -1906,8 +1863,32 @@ namespace RenderSystem_OpenGL {
             // if stencil bits are available, enable stencil buffering
             if(stencilBits > 0) {
                 caps.SetCap(Capabilities.StencilBuffer);
-                Trace.WriteLine("Available stencil bits: " + caps.StencilBufferBits);
             }
+
+            // Vertex Programs
+            if(GLHelper.SupportsExtension("GL_ARB_vertex_program")) {
+                caps.SetCap(Capabilities.VertexPrograms);
+                caps.MaxVertexProgramVersion = "arbvp1";
+                caps.VertexProgramConstantIntCount = 0;
+                int maxFloats;
+                Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
+                caps.VertexProgramConstantFloatCount = maxFloats;
+                gpuProgramMgr.PushSyntaxCode("arbvp1");
+            }
+
+            // Fragment Programs
+            if(GLHelper.SupportsExtension("GL_ARB_fragment_program")) {
+                caps.SetCap(Capabilities.FragmentPrograms);
+                caps.MaxFragmentProgramVersion = "arbfp1";
+                caps.FragmentProgramConstantIntCount = 0;
+                int maxFloats;
+                Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
+                caps.FragmentProgramConstantFloatCount = maxFloats;
+                gpuProgramMgr.PushSyntaxCode("arbfp1");
+            }
+
+            // write info to logs
+            caps.Log();
         }
 
         /// <summary>

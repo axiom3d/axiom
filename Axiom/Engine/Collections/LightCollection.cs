@@ -38,21 +38,21 @@ using K = System.String;
 
 namespace Axiom.Collections {
     /// <summary>
-    /// Summary description for LightCollection.
+    /// Summary description for LightList.
     /// </summary>
-    public class LightCollection : AxiomCollection {
+    public class LightList : AxiomCollection {
         #region Constructors
 
         /// <summary>
         ///		Default constructor.
         /// </summary>
-        public LightCollection() : base() {}
+        public LightList() : base() {}
 
         /// <summary>
         ///		Constructor that takes a parent object to, and calls the base class constructor to 
         /// </summary>
         /// <param name="entity"></param>
-        //public LightCollection(P parent) : base(parent) {}
+        //public LightList(P parent) : base(parent) {}
 
         #endregion
 

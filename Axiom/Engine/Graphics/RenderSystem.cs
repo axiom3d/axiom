@@ -311,18 +311,6 @@ namespace Axiom.Graphics {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="light"></param>
-        abstract internal protected void AddLight(Light light);
-		
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="light"></param>
-        abstract internal protected void UpdateLight(Light light);
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="stage"></param>
         /// <param name="func"></param>
         /// <param name="val"></param>
@@ -373,6 +361,15 @@ namespace Axiom.Graphics {
         /// <param name="stage"></param>
         /// <param name="texAddressingMode"></param>
         abstract internal protected void SetTextureAddressingMode(int stage, TextureAddressing texAddressingMode);
+
+        /// <summary>
+        ///    Tells the rendersystem to use the attached set of lights (and no others) 
+        ///    up to the number specified (this allows the same list to be used with different
+        ///    count limits).
+        /// </summary>
+        /// <param name="lightList">List of lights.</param>
+        /// <param name="limit">Max number of lights that can be used from the list currently.</param>
+        protected abstract internal void UseLights(LightList lightList, int limit);
 
         #endregion
 

@@ -108,18 +108,18 @@ namespace Axiom.MathLib {
 
         #region Static properties
         /// <summary>
-        /// Returns a matrix with the following form:
-        /// | 1,0,0,0 |
-        /// | 0,1,0,0 |
-        /// | 0,0,1,0 |
-        /// | 0,0,0,1 |
+        ///    Returns a matrix with the following form:
+        ///    | 1,0,0,0 |
+        ///    | 0,1,0,0 |
+        ///    | 0,0,1,0 |
+        ///    | 0,0,0,1 |
         /// </summary>
         public static Matrix4 Identity {
             get { return identityMatrix; }
         }
 
         /// <summary>
-        /// Returns a matrix with all elements set to 0.
+        ///    Returns a matrix with all elements set to 0.
         /// </summary>
         public static Matrix4 Zero {
             get { return zeroMatrix; }
@@ -136,7 +136,6 @@ namespace Axiom.MathLib {
         ///		| 0 0 0 Tz|
         ///		| 0 0 0  1 |
         /// </summary>
-        // TESTME
         public Vector3 Translation {
             get {
                 return new Vector3(this.m03, this.m13, this.m23);
@@ -155,7 +154,6 @@ namespace Axiom.MathLib {
         ///		| 0  0 Sz 0 |
         ///		| 0  0  0  0 |
         /// </summary>
-        // TESTME
         public Vector3 Scale {
             get {
                 return new Vector3(this.m00, this.m11, this.m22);
@@ -184,15 +182,15 @@ namespace Axiom.MathLib {
         }
 
         /// <summary>
-        ///    Inverts the matrix.
+        ///    Returns an inverted 4d matrix.
         /// </summary>
         /// <returns></returns>
         public Matrix4 Inverse() {
-            return new Matrix4();
+            return Adjoint() * (1.0f / this.Determinant);
         }
 
         /// <summary>
-        /// Swap the rows of the matrix with the columns.
+        ///    Swap the rows of the matrix with the columns.
         /// </summary>
         /// <returns>A transposed Matrix.</returns>
         public Matrix4 Transpose() {
@@ -282,6 +280,38 @@ namespace Axiom.MathLib {
             result.x = ( (matrix.m00 * vector.x) + (matrix.m01 * vector.y) + (matrix.m02 * vector.z) + matrix.m03 ) * inverseW;
             result.y = ( (matrix.m10 * vector.x) + (matrix.m11 * vector.y) + (matrix.m12 * vector.z) + matrix.m13 ) * inverseW;
             result.z = ( (matrix.m20 * vector.x) + (matrix.m21 * vector.y) + (matrix.m22 * vector.z) + matrix.m23 ) * inverseW;
+
+            return result;
+        }
+
+        /// <summary>
+        ///		Used to add two matrices together.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Matrix4 operator * ( Matrix4 left, float scalar) {
+            Matrix4 result = new Matrix4();
+
+            result.m00 = left.m00 * scalar;
+            result.m01 = left.m01 * scalar;
+            result.m02 = left.m02 * scalar;
+            result.m03 = left.m03 * scalar;
+
+            result.m10 = left.m10 * scalar;
+            result.m11 = left.m11 * scalar;
+            result.m12 = left.m12 * scalar;
+            result.m13 = left.m13 * scalar;
+
+            result.m20 = left.m20 * scalar;
+            result.m21 = left.m21 * scalar;
+            result.m22 = left.m22 * scalar;
+            result.m23 = left.m23 * scalar;
+
+            result.m30 = left.m30 * scalar;
+            result.m31 = left.m31 * scalar;
+            result.m32 = left.m32 * scalar;
+            result.m33 = left.m33 * scalar;
 
             return result;
         }
@@ -476,16 +506,51 @@ namespace Axiom.MathLib {
         /// 
         /// </summary>
         /// <returns></returns>
-        public float[] MakeFloatArray(float[] floats) {
-            
+        public void MakeFloatArray(float[] floats) {
             unsafe {
                 fixed(float* p = &m00) {
                     for(int i = 0; i < 16; i++)
                         floats[i] = *(p + i);
                 }
             }
+        }
 
-            return floats;
+        public float Determinant {
+            get {
+                return this[0,0] * Minor(1, 2, 3, 1, 2, 3) -
+                    this[0,1] * Minor(1, 2, 3, 0, 2, 3) +
+                    this[0,2] * Minor(1, 2, 3, 0, 1, 3) -
+                    this[0,3] * Minor(1, 2, 3, 0, 1, 2);
+            }
+        }
+
+        private Matrix4 Adjoint() {
+            return new Matrix4(
+                Minor(1, 2, 3, 1, 2, 3),
+                -Minor(0, 2, 3, 1, 2, 3),
+                Minor(0, 1, 3, 1, 2, 3),
+                -Minor(0, 1, 2, 1, 2, 3),
+
+                -Minor(1, 2, 3, 0, 2, 3),
+                Minor(0, 2, 3, 0, 2, 3),
+                -Minor(0, 1, 3, 0, 2, 3),
+                Minor(0, 1, 2, 0, 2, 3),
+
+                Minor(1, 2, 3, 0, 1, 3),
+                -Minor(0, 2, 3, 0, 1, 3),
+                Minor(0, 1, 3, 0, 1, 3),
+                -Minor(0, 1, 2, 0, 1, 3),
+
+                -Minor(1, 2, 3, 0, 1, 2),
+                Minor(0, 2, 3, 0, 1, 2),
+                -Minor(0, 1, 3, 0, 1, 2),
+                Minor(0, 1, 2, 0, 1, 2));
+        }
+
+        private float Minor(int r0, int r1, int r2, int c0, int c1, int c2) {
+            return this[r0,c0] * (this[r1,c1] * this[r2,c2] - this[r2,c1] * this[r1,c2]) -
+                this[r0,c1] * (this[r1,c0] * this[r2,c2] - this[r2,c0] * this[r1,c2]) +
+                this[r0,c2] * (this[r1,c0] * this[r2,c1] - this[r2,c0] * this[r1,c1]);
         }
 
         #endregion

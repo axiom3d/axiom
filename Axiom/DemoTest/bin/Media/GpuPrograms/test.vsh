@@ -3,25 +3,23 @@ vs_1_1
 // cgc version 1.1.0003, build date Mar  4 2003  12:32:10
 // command line args: -profile vs_1_1 -profileopts dcls
 // nv30vp backend compiling 'main' program
-def c1, 0, 1, 0, 0
 //vendor NVIDIA Corporation
 //version 1.0.02
 //profile vs_1_1
 //program main
-//semantic main.color
-//var float2 position : $vin.POSITION : POSITION : 0 : 1
-//var float2 texCoord : $vin.TEXCOORD0 : TEXCOORD0 : 1 : 1
-//var float4 color :  : c[0] : 2 : 1
+//semantic main.wvp
+//var float4 pos : $vin.POSITION : POSITION : 0 : 1
+//var float4 col : $vin.COLOR : COLOR : 1 : 1
+//var float4x4 wvp :  : c[0], 4 : 2 : 1
 //var float4 position : $vout.POSITION : POSITION : -1 : 1
 //var float4 color : $vout.COLOR : COLOR : -1 : 1
-//var float2 texCoord : $vout.TEXCOORD0 : TEXCOORD0 : -1 : 1
-//const c[1] = 0 1 0 0
-dcl_texcoord0 v7
+dcl_color v5
 dcl_position v0
-	mov oD0, c0
-	mov oT0.xy, v7
-	mov oPos.xy, v0.xyyy
-	mov oPos.zw, c1.yyxy
-// 4 instructions
+	mov oD0, v5
+	dp4 oPos.x, c0, v0
+	dp4 oPos.y, c1, v0
+	dp4 oPos.z, c2, v0
+	dp4 oPos.w, c3, v0
+// 5 instructions
 // 0 temp registers
 // End of program
