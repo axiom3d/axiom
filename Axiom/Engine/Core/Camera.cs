@@ -512,7 +512,7 @@ namespace Axiom.Core {
                     Vector3 xAxis, yAxis, zAxis;
 
                     // get the vector components of the derived orientation vector
-                    derivedOrientation.ToAxes(out xAxis, out yAxis, out zAxis);
+                    this.DerivedOrientation.ToAxes(out xAxis, out yAxis, out zAxis);
 
                     Quaternion rotationQuat;
 

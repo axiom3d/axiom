@@ -59,6 +59,7 @@ namespace Axiom.Core {
     ///		designed (e.g. BSPs, octrees etc). As with other classes, methods marked as internal are 
     ///		designed to be called by other classes in the engine, not by user applications.
     ///	 </remarks>
+    /// TODO: Thoroughly review node removal/cleanup.
     public class SceneManager {
         #region Fields
 
@@ -150,6 +151,10 @@ namespace Axiom.Core {
         protected static ColorEx oldFogColor;
         protected static float oldFogStart, oldFogEnd, oldFogDensity;
         protected bool lastViewWasIdentity, lastProjectionWasIdentity;
+		/// <summary>
+		///		Active list of nodes tracking other nodes.
+		/// </summary>
+		protected SceneNodeCollection autoTrackingSceneNodes = new SceneNodeCollection();
 
 		/// <summary>
 		///		Current shadow technique in use in the scene.
@@ -168,7 +173,7 @@ namespace Axiom.Core {
 		/// </summary>
 		protected Pass shadowStencilPass;
 		/// <summary>
-		/// 
+		///		Pass to use while rendering the full screen quad for modulative shadows.
 		/// </summary>
 		protected Pass shadowModulativePass;
 		/// <summary>
@@ -474,6 +479,9 @@ namespace Axiom.Core {
             entityList.Clear();
             lightList.Clear();
             animationStateList.Clear();
+			billboardSetList.Clear();
+			sceneNodeList.Clear();
+			autoTrackingSceneNodes.Clear();
         }
 
         /// <summary>
@@ -483,8 +491,22 @@ namespace Axiom.Core {
         public virtual void DestroySceneNode(string name) {
             Debug.Assert(sceneNodeList.ContainsKey(name), "Scene node not found.");
 
-            // grab the node from the list
-            SceneNode node = (SceneNode)sceneNodeList[name];
+			// grab the node from the list
+			SceneNode node = (SceneNode)sceneNodeList[name];
+
+			// Find any scene nodes which are tracking this node, and turn them off.
+			for(int i = 0; i < autoTrackingSceneNodes.Count; i++) {
+				SceneNode autoNode = autoTrackingSceneNodes[i];
+
+				if(autoNode.AutoTrackTarget == autoNode) {
+					// turn off, this will notify SceneManager to remove
+					autoNode.SetAutoTracking(false);
+				}
+				else if(autoNode == node) {
+					// node being removed is a tracker
+					autoTrackingSceneNodes.Remove(autoNode);
+				}
+			}
 
             // removes the node from the list
             sceneNodeList.Remove(node);
@@ -1803,6 +1825,7 @@ namespace Axiom.Core {
         /// <param name="viewport">The target viewport</param>
         /// <param name="showOverlays">Whether or not any overlay objects should be rendered</param>
         internal void RenderScene(Camera camera, Viewport viewport, bool showOverlays) {
+			// let the engine know this is the current scene manager
 			Engine.Instance.SceneManager = this;
 
 			// initialize shadow volume materials
@@ -1825,6 +1848,11 @@ namespace Axiom.Core {
 
             // update scene graph
             UpdateSceneGraph(camera);
+
+			// auto track nodes
+			for(int i = 0; i < autoTrackingSceneNodes.Count; i++) {
+				autoTrackingSceneNodes[i].AutoTrack();
+			}
 
             // ask the camera to auto track if it has a target
             camera.AutoTrack();
@@ -2415,6 +2443,20 @@ namespace Axiom.Core {
             // call the overloaded method
             SetSkyPlane(enable, plane, materialName, 1000.0f, 10.0f, true, 0);
         }
+
+		/// <summary>
+		///		Internal method for notifying the manager that a SceneNode is autotracking.
+		/// </summary>
+		/// <param name="node">Scene node that is auto tracking another scene node.</param>
+		/// <param name="autoTrack">True if tracking, false if it is stopping tracking.</param>
+		internal void NotifyAutoTrackingSceneNode(SceneNode node, bool autoTrack) {
+			if(autoTrack) {
+				autoTrackingSceneNodes.Add(node);
+			}
+			else {
+				autoTrackingSceneNodes.Remove(node);
+			}
+		}
 
         #endregion
     }
