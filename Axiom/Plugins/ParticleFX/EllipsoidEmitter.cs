@@ -84,7 +84,7 @@ namespace Axiom.ParticleFX {
 			class WidthCommand: ICommand {
 			public void Set(object target, string val) {
 				EllipsoidEmitter emitter = target as EllipsoidEmitter;
-				emitter.Width = float.Parse(val);
+				emitter.Width = ParseHelper.ParseFloat(val);
 			}
 			public string Get(object target) {
 				EllipsoidEmitter emitter = target as EllipsoidEmitter;
@@ -99,7 +99,7 @@ namespace Axiom.ParticleFX {
 			class HeightCommand: ICommand {
 			public void Set(object target, string val) {
 				EllipsoidEmitter emitter = target as EllipsoidEmitter;
-				emitter.Height = float.Parse(val);
+				emitter.Height = ParseHelper.ParseFloat(val);
 			}
 			public string Get(object target) {
 				EllipsoidEmitter emitter = target as EllipsoidEmitter;
@@ -114,7 +114,7 @@ namespace Axiom.ParticleFX {
 			class DepthCommand: ICommand {
 			public void Set(object target, string val) {
 				EllipsoidEmitter emitter = target as EllipsoidEmitter;
-				emitter.Depth = float.Parse(val);
+				emitter.Depth = ParseHelper.ParseFloat(val);
 			}
 			public string Get(object target) {
 				EllipsoidEmitter emitter = target as EllipsoidEmitter;

@@ -87,7 +87,7 @@ namespace Axiom.ParticleFX {
 			}
 			public void Set(object target, string val) {
 				ScaleAffector affector = target as ScaleAffector;
-				affector.ScaleAdjust = float.Parse(val);
+				affector.ScaleAdjust = ParseHelper.ParseFloat(val);
 			}
 
 			#endregion

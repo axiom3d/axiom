@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics;
 using Axiom.Core;
+using Axiom.Scripting;
+
 /**
  * DX8.1 Pixel Shader to ATI Fragment Shader compiler
  * Original Author: NFZ (nfuzz@hotmail.com)
@@ -175,7 +177,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             }
 
             if(charPos != currPos) {
-                val = float.Parse(floatString);
+                val = ParseHelper.ParseFloat(floatString);
                 valueFound = true;
             }
 

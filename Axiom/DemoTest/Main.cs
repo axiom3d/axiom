@@ -1,4 +1,4 @@
-#region LGPL License
+﻿#region LGPL License
 /*
 Axiom Game Engine Library
 Copyright (C) 2003  Axiom Project Team
@@ -33,8 +33,6 @@ namespace Demos {
         [STAThread]
         private static void Main(string[] args) {
             try {
-				Thread.CurrentThread.CurrentCulture=CultureInfo.CreateSpecificCulture("");
-
 				//using(DemoBrowser browser = new DemoBrowser()) {
 				//	browser.Start();
 				//}

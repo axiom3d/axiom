@@ -97,7 +97,7 @@ namespace Axiom.ParticleFX {
 			}
 			public void Set(object target, string val) {
 				RotationAffector affector = target as RotationAffector;
-				affector.rotationSpeedRangeStart = float.Parse(val);
+				affector.rotationSpeedRangeStart = ParseHelper.ParseFloat(val);
 			}
 
 			#endregion
@@ -113,7 +113,7 @@ namespace Axiom.ParticleFX {
 			}
 			public void Set(object target, string val) {
 				RotationAffector affector = target as RotationAffector;
-				affector.rotationSpeedRangeEnd = float.Parse(val);
+				affector.rotationSpeedRangeEnd = ParseHelper.ParseFloat(val);
 			}
 
 			#endregion
@@ -129,7 +129,7 @@ namespace Axiom.ParticleFX {
 			}
 			public void Set(object target, string val) {
 				RotationAffector affector = target as RotationAffector;
-				affector.rotationRangeStart = float.Parse(val);
+				affector.rotationRangeStart = ParseHelper.ParseFloat(val);
 			}
 
 			#endregion
@@ -146,7 +146,7 @@ namespace Axiom.ParticleFX {
 			}
 			public void Set(object target, string val) {
 				RotationAffector affector = target as RotationAffector;
-				affector.rotationRangeEnd = float.Parse(val);
+				affector.rotationRangeEnd = ParseHelper.ParseFloat(val);
 			}
 
 			#endregion

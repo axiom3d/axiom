@@ -564,7 +564,7 @@ namespace Axiom.Serialization {
 			FloatList lodDistances = new FloatList();
 
 			for(int i = 0; i < values.Length; i++) {
-				lodDistances.Add(float.Parse(values[i]));
+				lodDistances.Add(ParseHelper.ParseFloat(values[i]));
 			}
 
 			context.material.SetLodLevels(lodDistances);
@@ -758,10 +758,10 @@ namespace Axiom.Serialization {
 						context.pass.SetFog(
 							true, 
 							mode, 
-							new ColorEx(float.Parse(values[2]), float.Parse(values[3]), float.Parse(values[4])),
-							float.Parse(values[5]),
-							float.Parse(values[6]),
-							float.Parse(values[7]));
+							new ColorEx(ParseHelper.ParseFloat(values[2]), ParseHelper.ParseFloat(values[3]), ParseHelper.ParseFloat(values[4])),
+							ParseHelper.ParseFloat(values[5]),
+							ParseHelper.ParseFloat(values[6]),
+							ParseHelper.ParseFloat(values[7]));
 					}
 					else {
 						string legalValues = ScriptEnumAttribute.GetLegalValues(typeof(FogMode));
@@ -922,7 +922,7 @@ namespace Axiom.Serialization {
 				context.pass.Specular = ParseHelper.ParseColor(values);
 
 				if(values.Length == 5) {
-					context.pass.Shininess = float.Parse(values[4]);
+					context.pass.Shininess = ParseHelper.ParseFloat(values[4]);
 				}
 			}
 
@@ -1029,7 +1029,7 @@ namespace Axiom.Serialization {
 						return false;
 					}
 
-					arg1 = float.Parse(values[paramIndex]);
+					arg1 = ParseHelper.ParseFloat(values[paramIndex]);
 				}
 
 				if(src2 == LayerBlendSource.Manual) {
@@ -1047,7 +1047,7 @@ namespace Axiom.Serialization {
 						return false;
 					}
 
-					arg2 = float.Parse(values[paramIndex]);
+					arg2 = ParseHelper.ParseFloat(values[paramIndex]);
 				}
 			}
 			catch(Exception ex) {
@@ -1095,11 +1095,11 @@ namespace Axiom.Serialization {
 
 			if(values.Length == 3 && int.Parse(values[1]) != 0) {
 				// first form using the base name and number of frames
-				context.textureUnit.SetAnimatedTextureName(values[0], int.Parse(values[1]), float.Parse(values[2]));
+				context.textureUnit.SetAnimatedTextureName(values[0], int.Parse(values[1]), ParseHelper.ParseFloat(values[2]));
 			}
 			else {
 				// second form using individual names
-				context.textureUnit.SetAnimatedTextureName(values, values.Length - 1, float.Parse(values[values.Length - 1]));
+				context.textureUnit.SetAnimatedTextureName(values, values.Length - 1, ParseHelper.ParseFloat(values[values.Length - 1]));
 			}
 
 			return false;
@@ -1202,12 +1202,12 @@ namespace Axiom.Serialization {
 						return false;
 					}
 
-					colSrc1.r = float.Parse(values[paramIndex++]);
-					colSrc1.g = float.Parse(values[paramIndex++]);
-					colSrc1.b = float.Parse(values[paramIndex]);
+					colSrc1.r = ParseHelper.ParseFloat(values[paramIndex++]);
+					colSrc1.g = ParseHelper.ParseFloat(values[paramIndex++]);
+					colSrc1.b = ParseHelper.ParseFloat(values[paramIndex]);
 
 					if(values.Length > paramIndex) {
-						colSrc1.a = float.Parse(values[paramIndex]);
+						colSrc1.a = ParseHelper.ParseFloat(values[paramIndex]);
 					}
 					else {
 						colSrc1.a = 1.0f;
@@ -1226,12 +1226,12 @@ namespace Axiom.Serialization {
 						return false;
 					}
 
-					colSrc2.r = float.Parse(values[paramIndex++]);
-					colSrc2.g = float.Parse(values[paramIndex++]);
-					colSrc2.b = float.Parse(values[paramIndex++]);
+					colSrc2.r = ParseHelper.ParseFloat(values[paramIndex++]);
+					colSrc2.g = ParseHelper.ParseFloat(values[paramIndex++]);
+					colSrc2.b = ParseHelper.ParseFloat(values[paramIndex++]);
 
 					if(values.Length > paramIndex) {
-						colSrc2.a = float.Parse(values[paramIndex]);
+						colSrc2.a = ParseHelper.ParseFloat(values[paramIndex]);
 					}
 					else {
 						colSrc2.a = 1.0f;
@@ -1349,13 +1349,13 @@ namespace Axiom.Serialization {
 
 		[MaterialAttributeParser("rotate", MaterialScriptSection.TextureUnit)]
 		protected static bool ParseRotate(string parameters, MaterialScriptContext context) {		
-			context.textureUnit.SetTextureRotate(float.Parse(parameters));
+			context.textureUnit.SetTextureRotate(ParseHelper.ParseFloat(parameters));
 			return false;
 		}
 
 		[MaterialAttributeParser("rotate_anim", MaterialScriptSection.TextureUnit)]
 		protected static bool ParseRotateAnim(string parameters, MaterialScriptContext context) {
-			context.textureUnit.SetRotateAnimation(float.Parse(parameters));
+			context.textureUnit.SetRotateAnimation(ParseHelper.ParseFloat(parameters));
 			return false;
 		}
 
@@ -1367,7 +1367,7 @@ namespace Axiom.Serialization {
 				LogParseError(context, "Bad scale attribute, wrong number of parameters (expected 2).");
 			}
 			else {
-				context.textureUnit.SetTextureScale(float.Parse(values[0]), float.Parse(values[1]));
+				context.textureUnit.SetTextureScale(ParseHelper.ParseFloat(values[0]), ParseHelper.ParseFloat(values[1]));
 			}
 
 			return false;
@@ -1381,7 +1381,7 @@ namespace Axiom.Serialization {
 				LogParseError(context, "Bad scroll attribute, wrong number of parameters (expected 2).");
 			}
 			else {
-				context.textureUnit.SetTextureScroll(float.Parse(values[0]), float.Parse(values[1]));
+				context.textureUnit.SetTextureScroll(ParseHelper.ParseFloat(values[0]), ParseHelper.ParseFloat(values[1]));
 			}
 
 			return false;
@@ -1395,7 +1395,7 @@ namespace Axiom.Serialization {
 				LogParseError(context, "Bad scroll_anim attribute, wrong number of parameters (expected 2).");
 			}
 			else {
-				context.textureUnit.SetScrollAnimation(float.Parse(values[0]), float.Parse(values[1]));
+				context.textureUnit.SetScrollAnimation(ParseHelper.ParseFloat(values[0]), ParseHelper.ParseFloat(values[1]));
 			}
 
 			return false;
@@ -1494,10 +1494,10 @@ namespace Axiom.Serialization {
 			context.textureUnit.SetTransformAnimation(
 				transType, 
 				waveType, 
-				float.Parse(values[2]),
-				float.Parse(values[3]),
-				float.Parse(values[4]),
-				float.Parse(values[5]));
+				ParseHelper.ParseFloat(values[2]),
+				ParseHelper.ParseFloat(values[3]),
+				ParseHelper.ParseFloat(values[4]),
+				ParseHelper.ParseFloat(values[5]));
 
 			return false;
 		}
@@ -1763,7 +1763,7 @@ namespace Axiom.Serialization {
 
 				// do specified values
 				for(i = 0; i < dims; i++) {
-					buffer[i] = float.Parse(parameters[i + 2]);
+					buffer[i] = ParseHelper.ParseFloat(parameters[i + 2]);
 				}
 
 				// fill up to multiple of 4 with zero
@@ -1823,7 +1823,7 @@ namespace Axiom.Serialization {
 					float factor = 1.0f;
 
 					if(parameters.Length == 3) {
-						factor = float.Parse(parameters[2]);
+						factor = ParseHelper.ParseFloat(parameters[2]);
 					}
 
 					context.programParams.SetConstantFromTime(index, factor);

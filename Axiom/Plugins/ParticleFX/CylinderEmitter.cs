@@ -86,7 +86,7 @@ namespace Axiom.ParticleFX {
 			class WidthCommand: ICommand {
 			public void Set(object target, string val) {
 				CylinderEmitter emitter = target as CylinderEmitter;
-				emitter.Width = float.Parse(val);
+				emitter.Width = ParseHelper.ParseFloat(val);
 			}
 			public string Get(object target) {
 				CylinderEmitter emitter = target as CylinderEmitter;
@@ -101,7 +101,7 @@ namespace Axiom.ParticleFX {
 			class HeightCommand: ICommand {
 			public void Set(object target, string val) {
 				CylinderEmitter emitter = target as CylinderEmitter;
-				emitter.Height = float.Parse(val);
+				emitter.Height = ParseHelper.ParseFloat(val);
 			}
 			public string Get(object target) {
 				CylinderEmitter emitter = target as CylinderEmitter;
@@ -116,7 +116,7 @@ namespace Axiom.ParticleFX {
 			class DepthCommand: ICommand {
 			public void Set(object target, string val) {
 				CylinderEmitter emitter = target as CylinderEmitter;
-				emitter.Depth = float.Parse(val);
+				emitter.Depth = ParseHelper.ParseFloat(val);
 			}
 			public string Get(object target) {
 				CylinderEmitter emitter = target as CylinderEmitter;

@@ -136,7 +136,7 @@ namespace Axiom.ParticleFX {
 			class WidthCommand: ICommand {
 			public void Set(object target, string val) {
 				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
-				emitter.Width = float.Parse(val);
+				emitter.Width = ParseHelper.ParseFloat(val);
 			}
 			public string Get(object target) {
 				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
@@ -151,7 +151,7 @@ namespace Axiom.ParticleFX {
 			class HeightCommand: ICommand {
 			public void Set(object target, string val) {
 				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
-				emitter.Height = float.Parse(val);
+				emitter.Height = ParseHelper.ParseFloat(val);
 			}
 			public string Get(object target) {
 				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
@@ -166,7 +166,7 @@ namespace Axiom.ParticleFX {
 			class DepthCommand: ICommand {
 			public void Set(object target, string val) {
 				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
-				emitter.Depth = float.Parse(val);
+				emitter.Depth = ParseHelper.ParseFloat(val);
 			}
 			public string Get(object target) {
 				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
@@ -181,7 +181,7 @@ namespace Axiom.ParticleFX {
 			class InnerWidthCommand: ICommand {
 			public void Set(object target, string val) {
 				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
-				emitter.InnerX = float.Parse(val);
+				emitter.InnerX = ParseHelper.ParseFloat(val);
 			}
 			public string Get(object target) {
 				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
@@ -196,7 +196,7 @@ namespace Axiom.ParticleFX {
 			class InnerHeightCommand: ICommand {
 			public void Set(object target, string val) {
 				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
-				emitter.InnerY = float.Parse(val);
+				emitter.InnerY = ParseHelper.ParseFloat(val);
 			}
 			public string Get(object target) {
 				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
@@ -211,7 +211,7 @@ namespace Axiom.ParticleFX {
 			class InnerDepthCommand: ICommand {
 			public void Set(object target, string val) {
 				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
-				emitter.InnerZ = float.Parse(val);
+				emitter.InnerZ = ParseHelper.ParseFloat(val);
 			}
 			public string Get(object target) {
 				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;

@@ -73,7 +73,7 @@ namespace Axiom.ParticleFX {
             }
             public void Set(object target, string val) {
                 DrawEmitter emitter = target as DrawEmitter;
-                emitter.Distance = float.Parse(val);
+                emitter.Distance = ParseHelper.ParseFloat(val);
             }
 
             #endregion

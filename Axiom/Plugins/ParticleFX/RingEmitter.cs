@@ -105,7 +105,7 @@ namespace Axiom.ParticleFX {
 			class WidthCommand: ICommand {
 			public void Set(object target, string val) {
 				RingEmitter emitter = target as RingEmitter;
-				emitter.Width = float.Parse(val);
+				emitter.Width = ParseHelper.ParseFloat(val);
 			}
 			public string Get(object target) {
 				RingEmitter emitter = target as RingEmitter;
@@ -120,7 +120,7 @@ namespace Axiom.ParticleFX {
 			class HeightCommand: ICommand {
 			public void Set(object target, string val) {
 				RingEmitter emitter = target as RingEmitter;
-				emitter.Height = float.Parse(val);
+				emitter.Height = ParseHelper.ParseFloat(val);
 			}
 			public string Get(object target) {
 				RingEmitter emitter = target as RingEmitter;
@@ -135,7 +135,7 @@ namespace Axiom.ParticleFX {
 			class DepthCommand: ICommand {
 			public void Set(object target, string val) {
 				RingEmitter emitter = target as RingEmitter;
-				emitter.Depth = float.Parse(val);
+				emitter.Depth = ParseHelper.ParseFloat(val);
 			}
 			public string Get(object target) {
 				RingEmitter emitter = target as RingEmitter;
@@ -150,7 +150,7 @@ namespace Axiom.ParticleFX {
 			class InnerWidthCommand: ICommand {
 			public void Set(object target, string val) {
 				RingEmitter emitter = target as RingEmitter;
-				emitter.InnerX = float.Parse(val);
+				emitter.InnerX = ParseHelper.ParseFloat(val);
 			}
 			public string Get(object target) {
 				RingEmitter emitter = target as RingEmitter;
@@ -165,7 +165,7 @@ namespace Axiom.ParticleFX {
 			class InnerHeightCommand: ICommand {
 			public void Set(object target, string val) {
 				RingEmitter emitter = target as RingEmitter;
-				emitter.InnerY = float.Parse(val);
+				emitter.InnerY = ParseHelper.ParseFloat(val);
 			}
 			public string Get(object target) {
 				RingEmitter emitter = target as RingEmitter;

@@ -580,14 +580,14 @@ namespace Axiom.Overlays.Elements {
         public static void  ParseCharHeight(string[] parms, params object[] objects) {
             TextArea textArea = (TextArea)objects[0];
 
-            textArea.CharHeight = float.Parse(parms[0]);
+            textArea.CharHeight = ParseHelper.ParseFloat(parms[0]);
         }
 
         [AttributeParser("space_width", "TextArea")]
         public static void  ParseSpaceWidth(string[] parms, params object[] objects) {
             TextArea textArea = (TextArea)objects[0];
 
-            textArea.SpaceWidth = float.Parse(parms[0]);
+            textArea.SpaceWidth = ParseHelper.ParseFloat(parms[0]);
         }
 
         [AttributeParser("font_name", "TextArea")]

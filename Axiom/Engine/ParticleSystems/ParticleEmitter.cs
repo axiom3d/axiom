@@ -768,7 +768,7 @@ namespace Axiom.ParticleSystems {
         class AngleCommand: ICommand {
             public void Set(object target, string val) {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.Angle = float.Parse(val);
+                emitter.Angle = ParseHelper.ParseFloat(val);
             }
             public string Get(object target) {
                 ParticleEmitter emitter = target as ParticleEmitter;
@@ -799,7 +799,7 @@ namespace Axiom.ParticleSystems {
         class EmissionRateCommand: ICommand {
             public void Set(object target, string val) {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.EmissionRate = float.Parse(val);
+                emitter.EmissionRate = ParseHelper.ParseFloat(val);
             }
             public string Get(object target) {
                 ParticleEmitter emitter = target as ParticleEmitter;
@@ -814,7 +814,7 @@ namespace Axiom.ParticleSystems {
         class TtlCommand: ICommand {
             public void Set(object target, string val) {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.TimeToLive = float.Parse(val);
+                emitter.TimeToLive = ParseHelper.ParseFloat(val);
             }
             public string Get(object target) {
                 ParticleEmitter emitter = target as ParticleEmitter;
@@ -829,7 +829,7 @@ namespace Axiom.ParticleSystems {
         class TtlMinCommand: ICommand {
             public void Set(object target, string val) {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MinTimeToLive = float.Parse(val);
+                emitter.MinTimeToLive = ParseHelper.ParseFloat(val);
             }
             public string Get(object target) {
                 ParticleEmitter emitter = target as ParticleEmitter;
@@ -844,7 +844,7 @@ namespace Axiom.ParticleSystems {
         class TtlMaxCommand: ICommand {
             public void Set(object target, string val) {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MaxTimeToLive = float.Parse(val);
+                emitter.MaxTimeToLive = ParseHelper.ParseFloat(val);
             }
             public string Get(object target) {
                 ParticleEmitter emitter = target as ParticleEmitter;
@@ -874,7 +874,7 @@ namespace Axiom.ParticleSystems {
         class DurationCommand : ICommand {
             public void Set(object target, string val) {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.Duration = float.Parse(val);
+                emitter.Duration = ParseHelper.ParseFloat(val);
             }
             public string Get(object target) {
                 ParticleEmitter emitter = target as ParticleEmitter;
@@ -889,7 +889,7 @@ namespace Axiom.ParticleSystems {
         class MinDurationCommand : ICommand {
             public void Set(object target, string val) {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MinDuration = float.Parse(val);
+                emitter.MinDuration = ParseHelper.ParseFloat(val);
             }
             public string Get(object target) {
                 ParticleEmitter emitter = target as ParticleEmitter;
@@ -904,7 +904,7 @@ namespace Axiom.ParticleSystems {
         class MaxDurationCommand : ICommand {
             public void Set(object target, string val) {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MaxDuration = float.Parse(val);
+                emitter.MaxDuration = ParseHelper.ParseFloat(val);
             }
             public string Get(object target) {
                 ParticleEmitter emitter = target as ParticleEmitter;
@@ -919,7 +919,7 @@ namespace Axiom.ParticleSystems {
         class RepeatDelayCommand : ICommand {
             public void Set(object target, string val) {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.RepeatDelay = float.Parse(val);
+                emitter.RepeatDelay = ParseHelper.ParseFloat(val);
             }
             public string Get(object target) {
                 ParticleEmitter emitter = target as ParticleEmitter;
@@ -934,7 +934,7 @@ namespace Axiom.ParticleSystems {
         class RepeatDelayMinCommand : ICommand {
             public void Set(object target, string val) {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MinRepeatDelay = float.Parse(val);
+                emitter.MinRepeatDelay = ParseHelper.ParseFloat(val);
             }
             public string Get(object target) {
                 ParticleEmitter emitter = target as ParticleEmitter;
@@ -949,7 +949,7 @@ namespace Axiom.ParticleSystems {
         class RepeatDelayMaxCommand : ICommand {
             public void Set(object target, string val) {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MaxRepeatDelay = float.Parse(val);
+                emitter.MaxRepeatDelay = ParseHelper.ParseFloat(val);
             }
             public string Get(object target) {
                 ParticleEmitter emitter = target as ParticleEmitter;
@@ -964,7 +964,7 @@ namespace Axiom.ParticleSystems {
         class VelocityCommand : ICommand {
             public void Set(object target, string val) {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.ParticleVelocity = float.Parse(val);
+                emitter.ParticleVelocity = ParseHelper.ParseFloat(val);
             }
             public string Get(object target) {
                 ParticleEmitter emitter = target as ParticleEmitter;
@@ -979,7 +979,7 @@ namespace Axiom.ParticleSystems {
         class VelocityMinCommand : ICommand {
             public void Set(object target, string val) {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MinParticleVelocity = float.Parse(val);
+                emitter.MinParticleVelocity = ParseHelper.ParseFloat(val);
             }
             public string Get(object target) {
                 ParticleEmitter emitter = target as ParticleEmitter;
@@ -994,7 +994,7 @@ namespace Axiom.ParticleSystems {
         class VelocityMaxCommand : ICommand {
             public void Set(object target, string val) {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MaxParticleVelocity = float.Parse(val);
+                emitter.MaxParticleVelocity = ParseHelper.ParseFloat(val);
             }
             public string Get(object target) {
                 ParticleEmitter emitter = target as ParticleEmitter;

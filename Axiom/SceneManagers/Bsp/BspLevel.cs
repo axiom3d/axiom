@@ -29,12 +29,12 @@ using System.IO;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Runtime.InteropServices;
-
 using Axiom;
 using Axiom.Core;
 using Axiom.MathLib;
 using Axiom.Graphics;
 using Axiom.Collections;
+using Axiom.Scripting;
 
 namespace Axiom.SceneManagers.Bsp
 {
@@ -704,14 +704,14 @@ namespace Axiom.SceneManagers.Bsp
 				if(paramList[0] == "origin")
 				{
 					origin = new Vector3(
-						float.Parse(paramList[1]),
-						float.Parse(paramList[2]),
-						float.Parse(paramList[3])
+						ParseHelper.ParseFloat(paramList[1]),
+						ParseHelper.ParseFloat(paramList[2]),
+						ParseHelper.ParseFloat(paramList[3])
 						);
 				}
 
 				if(paramList[0] == "angle")
-					angle = float.Parse(paramList[1]);
+					angle = ParseHelper.ParseFloat(paramList[1]);
 
 				if((paramList[0] == "classname") && (paramList[1] == "info_player_deathmatch"))
 					isPlayerStart = true;
