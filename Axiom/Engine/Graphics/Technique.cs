@@ -85,7 +85,7 @@ namespace Axiom.Graphics
             // clone each pass and add that to the new technique
             for(int i = 0; i < passes.Count; i++) {
                 Pass pass = (Pass)passes[i];
-                Pass newPass = pass.Clone(this, pass.Index);
+                Pass newPass = pass.Clone(newTechnique, pass.Index);
                 newTechnique.passes.Add(newPass);
             }
 
