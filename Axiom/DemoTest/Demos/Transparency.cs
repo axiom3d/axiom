@@ -28,6 +28,7 @@ using System;
 using Axiom.Animating;
 using Axiom.Controllers;
 using Axiom.Core;
+using Axiom.Enumerations;
 using Axiom.MathLib;
 using Axiom.Utility;
 
@@ -46,47 +47,45 @@ namespace Demos {
             Light light = scene.CreateLight("MainLight");
             light.Position = new Vector3(20, 80, 50);
 
-            // create the initial knot entity
-            Entity knotEntity = scene.CreateEntity("Knot", "knot.mesh");
-            knotEntity.MaterialName = "Examples/TransparentTest";
+            // create a prefab plane
+            Entity plane = scene.CreateEntity("Plane", PrefabEntity.Plane);
+            // give the plan a texture
+            plane.MaterialName = "Transparency/BumpyMetal";
 
-            // get a reference to the material for modification
-            Material material = MaterialManager.Instance["Examples/TransparentTest"];
+            // create an entity from a model
+            Entity knot = scene.CreateEntity("Knot", "knot.mesh");
+            knot.MaterialName = "Transparency/Knot";
 
-            // lower the ambient light to make the knots more transparent
-            material.Ambient = new ColorEx(1.0f, 0.2f, 0.2f, 0.2f);
-
-            // add the objects to the scene
+            // attach the two new entities to the root of the scene
             SceneNode rootNode = scene.RootSceneNode;
-            //rootNode.AttachObject(knotEntity);
+            rootNode.AttachObject(plane);
+            rootNode.AttachObject(knot);
 
             Entity clone = null;
-
             for(int i = 0; i < 10; i++) {
+                // create a new node under the root
                 SceneNode node = scene.CreateSceneNode();
 
-                Vector3 nodePos = new Vector3();
-
                 // calculate a random position
-                nodePos.x = MathUtil.SymmetricRandom() * 500.0f;
-                nodePos.y = MathUtil.SymmetricRandom() * 500.0f;
-                nodePos.z = MathUtil.SymmetricRandom() * 500.0f;
+                Vector3 nodePosition = new Vector3();
+                nodePosition.x = MathUtil.SymmetricRandom() * 500.0f;
+                nodePosition.y = MathUtil.SymmetricRandom() * 500.0f;
+                nodePosition.z = MathUtil.SymmetricRandom() * 500.0f;
 
                 // set the new position
-                node.Position = nodePos;
+                node.Position = nodePosition;
 
                 // attach this node to the root node
                 rootNode.AddChild(node);
 
                 // clone the knot
                 string cloneName = string.Format("Knot{0}", i);
-                clone = knotEntity.Clone(cloneName);
+                clone = knot.Clone(cloneName);
 
                 // add the cloned knot to the scene
                 node.AttachObject(clone);
-            } 
-        } 
-		
+            }
+        }
         #endregion
     }
 }

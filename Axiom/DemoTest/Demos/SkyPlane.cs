@@ -49,9 +49,6 @@ namespace Demos {
             // create the skyplace 10000 units wide, tile the texture 3 times
             scene.SetSkyPlane(true, plane, "Skyplane/Space", 10000, 3, true, 0);
 
-            // set the far plane far off into the distance to view the whole skyplane
-            camera.Far = 100000;
-
             // create a default point light
             Light light = scene.CreateLight("MainLight");
             light.Position = new Vector3(20, 80, 50);
