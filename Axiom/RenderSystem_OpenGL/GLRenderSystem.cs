@@ -704,7 +704,6 @@ namespace RenderSystem_OpenGL {
             // is the same, and if no special texture coord calcs are required
             if( lastOp == blendMode.operation && 
                 lastTexCalMethods[stage] == TexCoordCalcMethod.None)  {
-                // TODO: Works in all cases except TextureFX
                return;
             }
 
@@ -806,15 +805,18 @@ namespace RenderSystem_OpenGL {
                 Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_RGB, Gl.GL_CONSTANT);
             }
             else {
-                if (cmd != Gl.GL_DOT3_RGB)
-                    Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_COMBINE_ALPHA, cmd);
-
+                Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_COMBINE_ALPHA, cmd);
                 Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE0_ALPHA, src1op);
                 Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE1_ALPHA, src2op);
                 Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_ALPHA, Gl.GL_CONSTANT);
             }
 
+            // handle blend types first
             switch (blendMode.operation) {
+                case LayerBlendOperationEx.BlendDiffuseAlpha:
+                    Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_RGB, Gl.GL_PRIMARY_COLOR);
+                    Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_ALPHA, Gl.GL_PRIMARY_COLOR);
+                    break;
                 case LayerBlendOperationEx.BlendTextureAlpha:
                     Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_RGB, Gl.GL_TEXTURE);
                     Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_ALPHA, Gl.GL_TEXTURE);
@@ -823,10 +825,14 @@ namespace RenderSystem_OpenGL {
                     Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_RGB, Gl.GL_PREVIOUS);
                     Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_ALPHA, Gl.GL_PREVIOUS);
                     break;
-                case LayerBlendOperationEx.Modulate:
-                    Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, blendMode.blendType == LayerBlendType.Color ? 
-                        Gl.GL_RGB_SCALE : Gl.GL_ALPHA_SCALE, 1);
+                default:
                     break;
+            }
+
+            // set alpha scale to 1 by default unless specifically requested to be higher
+            // otherwise, textures that get switch from ModulateX2 or ModulateX4 down to Source1
+            // for example, the alpha scale would still be high and overbrighten the texture
+            switch (blendMode.operation) {
                 case LayerBlendOperationEx.ModulateX2:
                     Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, blendMode.blendType == LayerBlendType.Color ? 
                         Gl.GL_RGB_SCALE : Gl.GL_ALPHA_SCALE, 2);
@@ -836,6 +842,8 @@ namespace RenderSystem_OpenGL {
                         Gl.GL_RGB_SCALE : Gl.GL_ALPHA_SCALE, 4);
                     break;
                 default:
+                    Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, blendMode.blendType == LayerBlendType.Color ? 
+                        Gl.GL_RGB_SCALE : Gl.GL_ALPHA_SCALE, 1);
                     break;
             }
 

@@ -46,11 +46,13 @@ namespace Axiom.FileSystem {
         }
 
         public override string[] GetFileNamesLike(string startPath, string pattern) {
-            // TODO: Fix me
-
             // replace with wildcard if empty
             if(pattern == string.Empty)
                 pattern = "*.*";
+            // otherwise prefix with a star as a wildcard
+            else if(pattern.IndexOf("*") == -1) {
+                pattern = "*" + pattern;
+            }
 
             string[] files = Directory.GetFiles(archiveName, pattern);
 

@@ -220,7 +220,6 @@ namespace Axiom.Core {
                 case "Folder":
                     archive = new Folder(name);
                     break;
-                    // TODO: Implement this
                 case "ZipFile":
                     archive = new Zip(name);
                     break;
@@ -252,7 +251,6 @@ namespace Axiom.Core {
                 case "Folder":
                     archive = new Folder(name);
                     break;
-                    // TODO: Implement this
                 case "ZipFile":
                     archive = new Zip(name);
                     break;

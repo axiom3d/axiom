@@ -1,9 +1,0 @@
-RZR-002
-{
-	ambient 1.0 1.0 1.0
-	diffuse 1.0 1.0 1.0
-	// Texture layer 0
-	{
-		texture Razor.png
-	}
-}

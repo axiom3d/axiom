@@ -25,10 +25,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using System.Collections;
 using System.Windows.Forms;
 using Axiom.Core;
 using Axiom.Gui;
 using Axiom.MathLib;
+using Axiom.SubSystems.Rendering;
 using Axiom.Utility;
 
 namespace Demos {
@@ -114,8 +116,35 @@ namespace Demos {
 
         private bool noiseOn;
         private float keyDelay = 0.0f;
-        private string[] meshes = {"ogrehead.mesh", "knot.mesh", "razor.mesh"};
+        private string[] meshes = 
+            {   "ogrehead.mesh", 
+                "geosphere4500.mesh", 
+                "razor.mesh", 
+                "geosphere12500.mesh", 
+                "knot.mesh", 
+                "geosphere19220.mesh", 
+                //"RZR-002.mesh", 
+                "geosphere1000.mesh", 
+                "geosphere8000.mesh", 
+                "sphere.mesh"
+            };
+        private string[] cubeMaps = {"cubescene.jpg", "cubemap.jpg", "early_morning.jpg", "cloudy_noon.jpg", "evening.jpg", "morning.jpg", "stormy.jpg"};
+        private string[] blendModes = {"Add", "Modulate", "ModulateX2", "ModulateX4", "Source1"};
         private int currentMeshIndex = -1;
+        private int currentLbxIndex = -1;
+        private LayerBlendOperationEx currentLbx;
+        private int currentCubeIndex = 0;
+        private Mesh originalMesh;
+        private Mesh clonedMesh;
+        private Entity objectEntity;
+        private SceneNode objectNode;
+        private Material material;
+        private ArrayList clonedMaterials = new ArrayList();
+
+        const string ENTITY_NAME = "CubeMappedEntity";
+        const string MESH_NAME = "CubeMappedMesh";
+        const string MATERIAL_NAME = "Examples/SceneCubeMap2";
+        const string SKYBOX_MATERIAL = "Examples/SceneSkyBox2";
 
         #endregion Fields
 
@@ -136,21 +165,268 @@ namespace Demos {
             Light light = scene.CreateLight("MainLight");
             light.Position = new Vector3(20, 80, 50);
 
-            // create an ogre head, assigning it a material manually
-            Entity entity = scene.CreateEntity("Head", "ogrehead.mesh");
+            // set the initial skybox
+            scene.SetSkyBox(true, SKYBOX_MATERIAL, 2000.0f);
 
-            // make the ogre look nice and shiny
-            entity.MaterialName = "Examples/SceneCubeMap2";
-
-            scene.SetSkyBox(true, "Examples/SceneSkyBox2", 2000.0f);
-
-            // attach the ogre to the scene
-            SceneNode node = (SceneNode)scene.RootSceneNode.CreateChild();
-            node.AttachObject(entity);
+            // create a node that will be used to attach the objects to
+            objectNode = (SceneNode)scene.RootSceneNode.CreateChild();
 
 		    // show overlay
 		    Overlay overlay = OverlayManager.Instance["Example/CubeMappingOverlay"];
 		    overlay.Show();
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        private void ClearEntity() {
+            // clear all cloned materials
+            for(int i = 0; i < clonedMaterials.Count; i++) {
+                MaterialManager.Instance.Unload((Material)clonedMaterials[i]);
+            }
+
+            clonedMaterials.Clear();
+
+            // detach and remove entity
+            objectNode.DetachAllObjects();
+            scene.RemoveEntity(objectEntity);
+
+            // unload current cloned mesh
+            MeshManager.Instance.Unload(clonedMesh);
+
+            objectEntity = null;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="meshName"></param>
+        private void PrepareEntity(string meshName) {
+            if(objectEntity != null) {
+                ClearEntity();
+            }
+
+            // load mesh if necessary
+            originalMesh = (Mesh)MeshManager.Instance[meshName];
+
+            // load mesh with shadow buffer so we can do fast reads
+            if(originalMesh == null) {
+                originalMesh = (Mesh)MeshManager.Instance.Load(
+                    meshName,
+                    BufferUsage.StaticWriteOnly,
+                    BufferUsage.StaticWriteOnly,
+                    true, true, 1);
+
+                if(originalMesh == null) {
+                    throw new Exception(string.Format("Can't find mesh named '{0}'.", meshName));
+                }
+            }
+
+            PrepareClonedMesh();
+
+            // create a new entity based on the cloned mesh
+            objectEntity = scene.CreateEntity(ENTITY_NAME, MESH_NAME);
+
+            // setting the material here propogates it down to cloned sub entites, no need to clone them
+            objectEntity.MaterialName = material.Name;
+            
+            // add original sub mesh texture layers after the new cube map recently added
+            for(int i = 0; i < clonedMesh.SubMeshCount; i++) {
+                SubMesh subMesh = clonedMesh.GetSubMesh(i);
+                SubEntity subEntity = objectEntity.GetSubEntity(i);
+
+                // does this mesh have its own material set?
+                if(subMesh.IsMaterialInitialized) {
+                    string matName = subMesh.MaterialName;
+                    Material subMat = MaterialManager.Instance[matName];
+                    Material cloned = subMat.Clone(string.Format("CubeMapTempMaterial#{0}", i));
+
+                    if(subMat != null) {
+                        subMat.Load();
+
+                        // add global texture layers to the existing material of the entity
+                        for(int j = 0; j < subMat.NumTextureLayers; j++) {
+                            TextureLayer orgLayer = material.TextureLayers[j];
+                            TextureLayer newLayer = cloned.AddTextureLayer(orgLayer.TextureName);
+                            orgLayer.CopyTo(newLayer);
+                            newLayer.SetColorOperationEx(currentLbx);
+                        }
+
+                        // set the new material for the subentity and cache it
+                        subEntity.MaterialName = cloned.Name;
+                        clonedMaterials.Add(cloned);
+                    }
+                }
+            }
+
+            // attach the entity to the scene
+            objectNode.AttachObject(objectEntity);
+
+            // update noise if currently set to on
+            if(noiseOn) {
+                UpdateNoise();
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        private void PrepareClonedMesh() {
+            // create a new mesh based on the original, only with different BufferUsage flags (inside PrepareVertexData)
+            clonedMesh = MeshManager.Instance.CreateManual(MESH_NAME);
+            clonedMesh.BoundingBox = (AxisAlignedBox)originalMesh.BoundingBox.Clone();
+            clonedMesh.BoundingSphereRadius = originalMesh.BoundingSphereRadius;
+
+            // clone the actual data
+            clonedMesh.SharedVertexData = PrepareVertexData(originalMesh.SharedVertexData);
+
+            // clone each sub mesh
+            for(int i = 0; i < originalMesh.SubMeshCount; i++) {
+                SubMesh orgSub = originalMesh.GetSubMesh(i);
+                SubMesh newSub = clonedMesh.CreateSubMesh(string.Format("ClonedSubMesh#{0}", i));
+
+                if(orgSub.IsMaterialInitialized) {
+                    newSub.MaterialName = orgSub.MaterialName;
+                }
+
+                // prepare new vertex data
+                newSub.useSharedVertices = orgSub.useSharedVertices;
+                newSub.vertexData = PrepareVertexData(orgSub.vertexData);
+
+                // use existing index buffer as is since it wont be modified anyway
+                newSub.indexData.indexBuffer = orgSub.indexData.indexBuffer;
+                newSub.indexData.indexStart = orgSub.indexData.indexStart;
+                newSub.indexData.indexCount = orgSub.indexData.indexCount;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vertexData"></param>
+        /// <returns></returns>
+        private VertexData PrepareVertexData(VertexData orgData) {
+            if(orgData == null) {
+                return null;
+            }
+
+            VertexData newData = new VertexData();
+            // copy things that do not change
+            newData.vertexCount = orgData.vertexCount;
+            newData.vertexStart = orgData.vertexStart;
+
+            // copy vertex buffers
+            VertexDeclaration newDecl = newData.vertexDeclaration;
+            VertexBufferBinding newBinding = newData.vertexBufferBinding;
+
+            // prepare buffer for each declaration
+            // TODO: Remove elements property and add accessor
+            foreach(VertexElement element in orgData.vertexDeclaration.Elements) {
+                VertexElementSemantic ves = element.Semantic;
+                ushort source = element.Source;
+                HardwareVertexBuffer orgBuffer = orgData.vertexBufferBinding.GetBuffer(source);
+
+                // check usage for the new buffer
+                bool dynamic = false;
+
+                switch(ves) {
+                    case VertexElementSemantic.Normal:
+                    case VertexElementSemantic.Position:
+                        dynamic = true;
+                        break;
+                }
+
+                if(dynamic) {
+                    HardwareVertexBuffer newBuffer = 
+                        HardwareBufferManager.Instance.CreateVertexBuffer(
+                        orgBuffer.VertexSize,
+                        orgBuffer.VertexCount,
+                        BufferUsage.DynamicWriteOnly,
+                        true);
+
+                    // copy and bind the new dynamic buffer
+                    newBuffer.CopyData(orgBuffer, 0, 0, orgBuffer.Size, true);
+                    newBinding.SetBinding(source, newBuffer);
+                }
+                else {
+                    // use the existing buffer
+                    newBinding.SetBinding(source, orgBuffer);
+                }
+
+                // add the new element to the declaration
+                newDecl.AddElement(new VertexElement(source, element.Offset, element.Type, ves, element.Index));
+            } // foreach
+
+            return newData;
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        private void UpdateNoise() {
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        private void ToggleBlending() {
+            if(++currentLbxIndex == blendModes.Length) {
+                currentLbxIndex = 0;
+            }
+
+            // get the current color blend mode to use
+            currentLbx = 
+                (LayerBlendOperationEx)Enum.Parse(typeof(LayerBlendOperationEx), blendModes[currentLbxIndex], true);
+
+            PrepareEntity(meshes[currentMeshIndex]);
+
+            // update the UI
+            GuiManager.Instance.GetElement("Example/CubeMapping/Material").Text = 
+                string.Format("[M] Material: {0}", blendModes[currentLbxIndex]);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void ToggleCubeMap() {
+            if(++currentCubeIndex == cubeMaps.Length) {
+                currentCubeIndex = 0;
+            }
+
+            string cubeMapName = cubeMaps[currentCubeIndex];
+
+            // toast the existing textures
+            for(int i = 0; i < material.TextureLayers[0].NumFrames; i++) {
+                string texName = material.TextureLayers[0].GetFrameTextureName(i);
+                Texture tex = (Texture)TextureManager.Instance[texName];
+                TextureManager.Instance.Unload(tex);
+            }
+
+            // set the current entity material to the new cubemap texture
+            material.TextureLayers[0].SetCubicTexture(cubeMapName, true);
+
+            // get the current skybox cubemap and change it to the new one
+            Material skyBoxMat = MaterialManager.Instance[SKYBOX_MATERIAL];
+
+            // toast the existing textures
+            for(int i = 0; i < skyBoxMat.TextureLayers[0].NumFrames; i++) {
+                string texName = skyBoxMat.TextureLayers[0].GetFrameTextureName(i);
+                Texture tex = (Texture)TextureManager.Instance[texName];
+                TextureManager.Instance.Unload(tex);
+            }
+
+            // set the new cube texture for the skybox
+            skyBoxMat.TextureLayers[0].SetCubicTexture(cubeMapName, false);
+
+            // reset the entity based on the new cubemap
+            PrepareEntity(meshes[currentMeshIndex]);
+
+            // reset the skybox
+            scene.SetSkyBox(true, SKYBOX_MATERIAL, 2000.0f);
+
+            // update the UI
+            GuiManager.Instance.GetElement("Example/CubeMapping/CubeMap").Text = 
+                string.Format("[C] CubeMap: {0}", cubeMapName);
         }
 
         /// <summary>
@@ -163,18 +439,27 @@ namespace Demos {
                 string.Format("[N] Noise: {0}", noiseOn ? "on" : "off");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void ToggleMesh() {
             if(++currentMeshIndex == meshes.Length) {
                 currentMeshIndex = 0;
             }
 
             string meshName = meshes[currentMeshIndex];
-            //PrepareEntity(meshName);
+            PrepareEntity(meshName);
 
             GuiManager.Instance.GetElement("Example/CubeMapping/Object").Text = 
                 string.Format("[O] Object: {0}", meshName);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
         protected override bool OnFrameStarted(object source, FrameEventArgs e) {
             base.OnFrameStarted (source, e);
 
@@ -193,9 +478,19 @@ namespace Demos {
                     ToggleNoise();
                     keyDelay = 0.3f;
                 }
-                // toggle noise
+                // toggle mesh object
                 if(input.IsKeyPressed(Keys.O)) {
                     ToggleMesh();
+                    keyDelay = 0.3f;
+                }
+                // toggle cubemap texture
+                if(input.IsKeyPressed(Keys.C)) {
+                    ToggleCubeMap();
+                    keyDelay = 0.3f;
+                }
+                // toggle material blending
+                if(input.IsKeyPressed(Keys.M)) {
+                    ToggleBlending();
                     keyDelay = 0.3f;
                 }
             }
@@ -203,6 +498,24 @@ namespace Demos {
             return false;
         }
 
+        /// <summary>
+        ///    Override to do some of our own initialization after the engine is set up.
+        /// </summary>
+        /// <returns></returns>
+        protected override bool Setup() {
+            if(base.Setup()) {
+
+                material = MaterialManager.Instance[MATERIAL_NAME];
+
+                ToggleNoise();
+                ToggleMesh();
+                ToggleBlending();
+
+                return true;
+            }
+
+            return false;
+        }
 
         #endregion
     }

@@ -277,3 +277,10 @@ Material #9
 		texture legs.jpg
 	}
 }
+
+Ground_Grass_sub2
+{
+	{
+		texture terr_dirt-grass.jpg
+	}
+}
