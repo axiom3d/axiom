@@ -938,7 +938,7 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="updateChildren">If true, the update cascades down to all children. Specify false if you wish to
         /// update children separately, e.g. because of a more selective SceneManager implementation.</param>
-        internal virtual void Update(bool updateChildren, bool hasParentChanged) {
+        protected internal virtual void Update(bool updateChildren, bool hasParentChanged) {
             isParentNotified = false;
 
             // nothin to see here folks, move on

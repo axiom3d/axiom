@@ -339,9 +339,9 @@ namespace Axiom.Core {
         ///		Updates this scene node and any relevant children to incorporate transforms etc.
         ///		Don't call this yourself unless you are writing a SceneManager implementation.
         /// </remarks>
-        /// <param name="?"></param>
+        /// <param name="updateChildren"></param>
         /// <param name="hasParentChanged"></param>
-        internal override void Update(bool updateChildren, bool hasParentChanged) {
+		protected internal override void Update(bool updateChildren, bool hasParentChanged) {
             // call base class method
             base.Update(updateChildren, hasParentChanged);
 
@@ -470,10 +470,33 @@ namespace Axiom.Core {
 			yawFixedAxis = fixedAxis;
 		}
 
-
+		/// <summary>
+		///		Sets a default fixed yaw axis of Y.
+		/// </summary>
+		/// <param name="useFixed"></param>
 		public void SetFixedYawAxis(bool useFixed) {
 			SetFixedYawAxis(useFixed, Vector3.UnitY);
 		}
+
+		/// <summary>
+		///		Overridden to apply fixed yaw axis behavior.
+		/// </summary>
+		/// <param name="degrees"></param>
+		public override void Yaw(float degrees) {
+			Vector3 yAxis;
+
+			if(isYawFixed) {
+				// Rotate around fixed yaw axis
+				yAxis = yawFixedAxis;
+			}
+			else {
+				// Rotate around local Y axis
+				yAxis = orientation * Vector3.UnitY;
+			}
+
+			Rotate(yAxis, degrees);
+		}
+
 
 		/// <summary>
 		///		Points the local Z direction of this node at a point in space.
