@@ -197,7 +197,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Renderable
 //			}
 
 			//No need to set the indexData since it is shared from IndexBuffer class
-			renderOp.operationType = RenderMode.TriangleList;
+			renderOp.operationType = OperationType.TriangleList;
 			renderOp.useIndices = true;
 
 			renderOp.indexData = null;
