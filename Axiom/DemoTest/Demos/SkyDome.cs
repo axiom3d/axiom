@@ -28,6 +28,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Axiom.Core;
+using Axiom.Input;
 using Axiom.MathLib;
 using Axiom.ParticleSystems;
 using Axiom.Utility;
@@ -49,25 +50,25 @@ namespace Demos {
             base.OnFrameStarted (source, e);
             bool updateSky = false;
 
-            if(input.IsKeyPressed(Keys.H) && timeDelay <= 0) {
+            if(input.IsKeyPressed(KeyCodes.H) && timeDelay <= 0) {
                 curvature += 1;
                 timeDelay = 0.1f;
                 updateSky = true;
             }
 
-            if(input.IsKeyPressed(Keys.G) && timeDelay <= 0) {
+            if(input.IsKeyPressed(KeyCodes.G) && timeDelay <= 0) {
                 curvature -= 1;
                 timeDelay = 0.1f;
                 updateSky = true;
             }
 
-            if(input.IsKeyPressed(Keys.U) && timeDelay <= 0) {
+            if(input.IsKeyPressed(KeyCodes.U) && timeDelay <= 0) {
                 tiling += 1;
                 timeDelay = 0.1f;
                 updateSky = true;
             }
 
-            if(input.IsKeyPressed(Keys.Y) && timeDelay <= 0) {
+            if(input.IsKeyPressed(KeyCodes.Y) && timeDelay <= 0) {
                 tiling -= 1;
                 timeDelay = 0.1f;
                 updateSky = true;

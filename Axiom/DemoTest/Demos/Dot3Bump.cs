@@ -30,6 +30,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Axiom.Core;
 using Axiom.Gui;
+using Axiom.Input;
 using Axiom.MathLib;
 using Axiom.Graphics;
 using Axiom.Utility;
@@ -158,16 +159,16 @@ namespace Demos {
             }
 
             // switch meshes
-            if(input.IsKeyPressed(Keys.F5)) {
+            if(input.IsKeyPressed(KeyCodes.F5)) {
                 activeEntity = knot;
             }
-            if(input.IsKeyPressed(Keys.F6)) {
+            if(input.IsKeyPressed(KeyCodes.F6)) {
                 activeEntity = cube;
             }
-            if(input.IsKeyPressed(Keys.F7)) {
+            if(input.IsKeyPressed(KeyCodes.F7)) {
                 activeEntity = head;
             }
-            if(input.IsKeyPressed(Keys.F8)) {
+            if(input.IsKeyPressed(KeyCodes.F8)) {
                 activeEntity = ball;
             }
 
@@ -178,16 +179,16 @@ namespace Demos {
             ball.IsVisible = (activeEntity == ball ? true : false);
 
             // switch materials
-            if(input.IsKeyPressed(Keys.F1)) {
+            if(input.IsKeyPressed(KeyCodes.F1)) {
                 materialName = "Examples/DP3Mat1";
             }
-            if(input.IsKeyPressed(Keys.F2)) {
+            if(input.IsKeyPressed(KeyCodes.F2)) {
                 materialName = "Examples/DP3Mat2";
             }
-            if(input.IsKeyPressed(Keys.F3)) {
+            if(input.IsKeyPressed(KeyCodes.F3)) {
                 materialName = "Examples/DP3Mat3";
             }
-            if(input.IsKeyPressed(Keys.F4)) {
+            if(input.IsKeyPressed(KeyCodes.F4)) {
                 materialName = "Examples/DP3Mat4";
             }
 
