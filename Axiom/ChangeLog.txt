@@ -1,3 +1,9 @@
+3-17-2004
+- Fixed problem with duplicate keyframes in animations; allows the Ninja model to load without incident.
+
+3-14-2004
+- Fixed Cg version of Offset Mapping thanks to a patch from Steve Streeting.
+
 3-4-2004
 - Added SceneNode.CreateChildSceneNode (and overloads) to allow for creating scene nodes without having to do createChild with a cast.
 - Fixed nasty bug in hardware buffers causing stream source indexes to go above what some hardware can support.  Caused Dot3 and Offset to throw an
