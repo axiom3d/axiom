@@ -89,7 +89,7 @@ namespace Axiom.Core {
         protected static float currentFPS;											// Current FPS
         protected static float highestFPS;											// Highest FPS
         protected static float lowestFPS = 999999999;								// Lowest FPS
-        protected static float avergeFPS;
+        protected static float averageFPS;
 
         protected bool stopRendering;
 
@@ -337,8 +337,7 @@ namespace Axiom.Core {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="makeVisible"></param>
-        // TODO: Implementation
+        /// <param name="show"></param>
         public void ShowDebugOverlay(bool show) {
             Overlay o = OverlayManager.Instance["Core/DebugOverlay"];
 
@@ -453,10 +452,10 @@ namespace Axiom.Core {
                     currentFPS = (framesDrawn * timerFrequency) / (time - lastCalculationTime);
 
                     // calculate the averge framerate
-                    if(avergeFPS == 0)
-                        avergeFPS = currentFPS;
+                    if(averageFPS == 0)
+                        averageFPS = currentFPS;
                     else
-                        avergeFPS = (avergeFPS + currentFPS) / 2;
+                        averageFPS = (averageFPS + currentFPS) / 2;
 
                     if(currentFPS < lowestFPS || lowestFPS == 0) { 
 					 						// Is The New Framerate A New Low?
@@ -513,7 +512,7 @@ namespace Axiom.Core {
             // Write final performance stats
             System.Diagnostics.Trace.WriteLine("Final Stats:");
             System.Diagnostics.Trace.WriteLine("   Highest FPS - " + highestFPS);
-            System.Diagnostics.Trace.WriteLine("   Average FPS: " + avergeFPS);
+            System.Diagnostics.Trace.WriteLine("   Average FPS: " + averageFPS);
             System.Diagnostics.Trace.WriteLine("   Lowest FPS: " + lowestFPS);
         }
 
@@ -535,6 +534,27 @@ namespace Axiom.Core {
         /// </summary>
         public int CurrentFPS {
             get { return (int)currentFPS; }
+        }
+
+        /// <summary>
+        ///		Exposes FPS stats to anyone who cares.
+        /// </summary>
+        public int BestFPS {
+            get { return (int)highestFPS; }
+        }
+
+        /// <summary>
+        ///		Exposes FPS stats to anyone who cares.
+        /// </summary>
+        public int WorstFPS {
+            get { return (int)lowestFPS; }
+        }
+
+        /// <summary>
+        ///		Exposes FPS stats to anyone who cares.
+        /// </summary>
+        public int AverageFPS {
+            get { return (int)averageFPS; }
         }
 
         #region Implementation of IDisposable

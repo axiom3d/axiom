@@ -76,7 +76,7 @@ namespace Axiom.Gui
         /// 
         /// </summary>
         /// <param name="name"></param>
-        internal GuiElement(string name) {
+        protected internal GuiElement(string name) {
             this.name = name;
             width = 1.0f;
             height = 1.0f;
@@ -584,7 +584,7 @@ namespace Axiom.Gui
         /// <remarks>
         ///    Not all elements support this, but it is still a relevant base class property.
         /// </remarks>
-        public string Text {
+        public virtual string Text {
             get {
                 return text;
             }
@@ -796,6 +796,21 @@ namespace Axiom.Gui
             GuiElement element = (GuiElement)objects[0];
 
             element.Height = int.Parse(parms[0]);
+        }
+
+        [AttributeParser("caption", "GuiElement")]
+        public static void ParseCaption(string[] parms, params object[] objects) {
+            GuiElement element = (GuiElement)objects[0];
+
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+            // reconstruct the single string since the caption could have spaces
+            for(int i = 0; i < parms.Length; i++) {
+                sb.Append(parms[i]);
+                sb.Append(" ");
+            }
+
+            element.Text = sb.ToString();
         }
 
         [AttributeParser("material", "GuiElement")]

@@ -64,15 +64,18 @@ namespace Axiom.Fonts {
         }
 
         public override Resource Create(string name) {
-            if(this[name] != null)
-                throw new AxiomException("Cannot have more than one font with the same name registered, '" + name + "' already exists.");
+            // either return an existing font if already created, or create a new one
+            if(this[name] != null) {
+                return this[name];
+            }
+            else {
+                // create a new font and add it to the list of resources
+                Font font = new Font(name);
 
-            // create a new font and add it to the list of resources
-            Font font = new Font(name);
+                resourceList.Add(name, font);
 
-            resourceList.Add(name, font);
-
-            return font;
+                return font;
+            }
         }
 
         #endregion

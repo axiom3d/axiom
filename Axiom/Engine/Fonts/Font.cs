@@ -97,6 +97,7 @@ namespace Axiom.Fonts {
                     layer = material.TextureLayers[0];
 
                     material.Lighting = false;
+                    material.DepthCheck = false;
                 }
                 else {
                     // TODO: Manually created fonts
@@ -157,21 +158,21 @@ namespace Axiom.Fonts {
                 }
 
                 // draw the character
-                g.DrawString(c.ToString(), font, Brushes.White, x, y);
+                g.DrawString(c.ToString(), font, Brushes.White, x - 3, y);
 
                 // measure the width and height of the character
                 SizeF metrics = g.MeasureString(c.ToString(), font);
 
                 // calculate the texture coords for the character
                 // note: flip the y coords by subtracting from 1
-                texCoordU1[i - START_CHAR] = (float)x / (float)BITMAP_WIDTH;
-                texCoordU2[i - START_CHAR] = ((float)x  + metrics.Width) / (float)BITMAP_WIDTH;
-                texCoordV1[i - START_CHAR] = 1 - ((float)y / (float)BITMAP_HEIGHT);
-                texCoordV2[i - START_CHAR] = 1 - (((float)y + metrics.Height) / (float)BITMAP_HEIGHT);
-                aspectRatio[i - START_CHAR] = metrics.Width / metrics.Height;
+                float u1 = (float)x / (float)BITMAP_WIDTH;
+                float u2 = ((float)x  + metrics.Width - 4) / (float)BITMAP_WIDTH;
+                float v1 = 1 - ((float)y / (float)BITMAP_HEIGHT);
+                float v2 = 1 - (((float)y + metrics.Height) / (float)BITMAP_HEIGHT);
+                SetCharTexCoords(c, u1, u2, v1, v2);
 
                 // increment X by the width of the current char
-                x += (int)metrics.Width;
+                x += (int)metrics.Width - 3;
 
                 // keep track of the tallest character on this line
                 if(maxHeight < (int)metrics.Height)
@@ -222,6 +223,15 @@ namespace Axiom.Fonts {
             int idx = (int)c - START_CHAR;
 
             return aspectRatio[idx];
+        }
+
+        public void SetCharTexCoords(char c, float u1, float u2, float v1, float v2) {
+            int idx = (int)c - START_CHAR;
+            texCoordU1[idx] = u1;
+            texCoordU2[idx] = u2;
+            texCoordV1[idx] = v1;
+            texCoordV2[idx] = v2;
+            aspectRatio[idx] = ( u2 - u1 ) / ( v1 - v2 );
         }
 
         #endregion

@@ -2,10 +2,10 @@
   <Contents>
     <File name=".\AssemblyInfo.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\BorderPanel.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\BorderPanelFactory.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\GuiElements.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Panel.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\PanelFactory.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\TextArea.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Factories.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References>
     <Reference type="Project" refto="Engine" localcopy="True" />

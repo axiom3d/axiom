@@ -35,6 +35,7 @@ using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Enumerations;
 using Axiom.Input;
+using Axiom.Gui;
 using Axiom.MathLib;
 using Axiom.SubSystems.Rendering;
 
@@ -53,6 +54,7 @@ namespace Axiom.Utility {
         protected Vector3 cameraVector = Vector3.Zero;
         protected float cameraScale;
         protected bool showDebugOverlay = true;
+        protected float statDelay = 0.0f;
         #endregion Protected Fields
 
         #region Constructors & Destructors
@@ -70,7 +72,7 @@ namespace Axiom.Utility {
 
         #region Protected Methods
 
-        protected Boolean Configure() {
+        protected bool Configure() {
             // show the config dialog
             if(engine.ShowConfigDialog()) {
                 window = engine.Initialize(true);
@@ -116,7 +118,7 @@ namespace Axiom.Utility {
             viewport.BackgroundColor = ColorEx.FromColor(Color.Black);
         }
 
-        protected virtual Boolean Setup() {
+        protected virtual bool Setup() {
             // get a reference to the engine singleton
             engine = Engine.Instance;
 
@@ -174,7 +176,7 @@ namespace Axiom.Utility {
 
         #region Public Methods
 
-        public Boolean Start() {
+        public bool Start() {
             if(!Setup()) {
                 return false;
             }
@@ -193,12 +195,12 @@ namespace Axiom.Utility {
         #endregion Public Methods
 
         #region Event Handlers
-        protected virtual Boolean OnFrameEnded(Object source, FrameEventArgs e) {
+        protected virtual bool OnFrameEnded(Object source, FrameEventArgs e) {
             // do nothing by default
             return true;
         }
 
-        protected virtual Boolean OnFrameStarted(Object source, FrameEventArgs e) {
+        protected virtual bool OnFrameStarted(Object source, FrameEventArgs e) {
             // reset the camera
             cameraVector.x = 0;
             cameraVector.y = 0;
@@ -279,7 +281,33 @@ namespace Axiom.Utility {
             // move the camera based on the accumulated movement vector
             camera.MoveRelative(cameraVector);
 
+            // update performance stats once per second
+            if(statDelay < 0.0f) {
+                UpdateStats();
+                statDelay = 1.0f;
+            }
+            else {
+                statDelay -= e.TimeSinceLastFrame;
+            }
+
             return true;
+        }
+
+        protected void UpdateStats() {
+            GuiElement element = GuiManager.Instance.GetElement("Core/CurrFps", false);
+            element.Text = string.Format("Current FPS: {0}", Engine.Instance.CurrentFPS);
+
+            element = GuiManager.Instance.GetElement("Core/BestFps", false);
+            element.Text = string.Format("Best FPS: {0}", Engine.Instance.BestFPS);
+
+            element = GuiManager.Instance.GetElement("Core/WorstFps", false);
+            element.Text = string.Format("Worst FPS: {0}", Engine.Instance.WorstFPS);
+
+            element = GuiManager.Instance.GetElement("Core/AverageFps", false);
+            element.Text = string.Format("Average FPS: {0}", Engine.Instance.AverageFPS);
+
+            element = GuiManager.Instance.GetElement("Core/NumTris", false);
+            element.Text = string.Format("Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered);
         }
 
         public static void GlobalErrorHandler(Object source, ThreadExceptionEventArgs e) {
