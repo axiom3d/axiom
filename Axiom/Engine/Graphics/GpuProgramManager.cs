@@ -29,7 +29,6 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.IO;
 using Axiom.Core;
-using Axiom.Exceptions;
 using Axiom.FileSystem;
 using Axiom.Scripting;
 

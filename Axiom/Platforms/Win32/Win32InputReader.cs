@@ -223,7 +223,7 @@ namespace Axiom.Platforms.Win32
 				}
 			}
 			else {
-				throw new Axiom.Exceptions.AxiomException("Win32InputReader requires the RenderWindow to have an associated handle of either a PictureBox or a Form.");
+				throw new AxiomException("Win32InputReader requires the RenderWindow to have an associated handle of either a PictureBox or a Form.");
 			}
 
 			// initialize keyboard if needed

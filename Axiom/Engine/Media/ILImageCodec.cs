@@ -1,7 +1,7 @@
 using System;
 using System.IO;
+using Axiom.Core;
 using Axiom.MathLib.Collections;
-using Axiom.Exceptions;
 using Tao.DevIl;
 
 namespace Axiom.Media {

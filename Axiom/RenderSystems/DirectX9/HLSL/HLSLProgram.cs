@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using Axiom.Core;
-using Axiom.Exceptions;
 using Axiom.Graphics;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;

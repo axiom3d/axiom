@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using Axiom.Core;
-using Axiom.Exceptions;
 
 namespace Axiom.Media {
 	/// <summary>

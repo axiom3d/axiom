@@ -211,7 +211,7 @@ namespace Axiom.Core {
             }
 
             if(node == null) {
-                throw new Axiom.Exceptions.AxiomException("Node named '{0}' not found.!", name);
+                throw new AxiomException("Node named '{0}' not found.!", name);
             }
 
             return node;
@@ -245,7 +245,7 @@ namespace Axiom.Core {
             }
 
             if(child == null) {
-                throw new Axiom.Exceptions.AxiomException("Node named '{0}' not found.!", name);
+                throw new AxiomException("Node named '{0}' not found.!", name);
             }
 			
             CancelUpdate(child);

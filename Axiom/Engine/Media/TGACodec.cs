@@ -1,5 +1,5 @@
 using System;
-using Axiom.Exceptions;
+using Axiom.Core;
 using Tao.DevIl;
 
 namespace Axiom.Media {

@@ -279,7 +279,7 @@ namespace Axiom.Core {
         private static Archive CreateArchive(string name, string type) {
             IArchiveFactory factory = ArchiveManager.Instance.GetArchiveFactory(type);
             if (factory == null) {
-                throw new Axiom.Exceptions.AxiomException(string.Format("Archive type {0} is not a valid archive type.", type));
+                throw new AxiomException(string.Format("Archive type {0} is not a valid archive type.", type));
             }
             return factory.CreateArchive(name);
         }
@@ -389,7 +389,7 @@ namespace Axiom.Core {
             // not found in the cache, load the resource manually
 			
             // TODO: Load resources manually
-            throw new Axiom.Exceptions.AxiomException(string.Format("Resource '{0}' could not be found.  Be sure it is located in a known directory.", fileName));
+            throw new AxiomException(string.Format("Resource '{0}' could not be found.  Be sure it is located in a known directory.", fileName));
         }
 
         /// <summary>
@@ -408,7 +408,7 @@ namespace Axiom.Core {
             // not found in the cache, load the resource manually
 			
             // TODO: Load resources manually
-            throw new Axiom.Exceptions.AxiomException(string.Format("Resource '{0}' could not be found.  Be sure it is located in a known directory.", fileName));
+            throw new AxiomException(string.Format("Resource '{0}' could not be found.  Be sure it is located in a known directory.", fileName));
         }
 
         #endregion
