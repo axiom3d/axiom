@@ -29,6 +29,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using Axiom.Core;
 using CsGL.OpenGL;
+using Gl = CsGL.OpenGL.GL;
 
 namespace RenderSystem_OpenGL
 {
@@ -108,15 +109,15 @@ namespace RenderSystem_OpenGL
 			{
 				// generate the texture
 				fixed(uint* pTexID = &textureID)
-					GL.glGenTextures(1, pTexID);
+					Gl.glGenTextures(1, pTexID);
 
 				// bind the texture
-				GL.glBindTexture(GL.GL_TEXTURE_2D, textureID);
+				Gl.glBindTexture(Gl.GL_TEXTURE_2D, textureID);
 
 				// TODO: Apply gamma?
 				
 				// send the data to GL
-				GL.glTexImage2D(GL.GL_TEXTURE_2D, 0, hasAlpha ? (int)GL.GL_RGBA8 : (int)GL.GL_RGB8, width, height, 0, hasAlpha ? GL.GL_BGRA : GL.GL_BGR, GL.GL_UNSIGNED_BYTE, data.Scan0);
+				Gl.glTexImage2D(Gl.GL_TEXTURE_2D, 0, hasAlpha ? (int)Gl.GL_RGBA8 : (int)Gl.GL_RGB8, width, height, 0, hasAlpha ? Gl.GL_BGRA : Gl.GL_BGR, Gl.GL_UNSIGNED_BYTE, data.Scan0);
 
 				GenerateMipMaps(data.Scan0);
 
@@ -154,7 +155,7 @@ namespace RenderSystem_OpenGL
 		{
 			if(isLoaded)
 			{
-				GL.glDeleteTextures(1, new uint[] { textureID });
+				Gl.glDeleteTextures(1, new uint[] { textureID });
 				isLoaded = false;
 			}
 		}
@@ -162,11 +163,11 @@ namespace RenderSystem_OpenGL
 		protected void GenerateMipMaps(IntPtr data)
 		{
 			// set the max number of mipmaps
-			GL.glTexParameteri(GL.GL_TEXTURE, GL.GL_TEXTURE_MAX_LEVEL, numMipMaps);
+			Gl.glTexParameteri(Gl.GL_TEXTURE, Gl.GL_TEXTURE_MAX_LEVEL, numMipMaps);
 
 			// build the mipmaps
-			GL.gluBuild2DMipmaps(GL.GL_TEXTURE_2D, hasAlpha ? (int)GL.GL_RGBA8 : (int)GL.GL_RGB8, width, height, 
-				hasAlpha ? GL.GL_BGRA : GL.GL_BGR, GL.GL_UNSIGNED_BYTE, data);
+			Gl.gluBuild2DMipmaps(Gl.GL_TEXTURE_2D, hasAlpha ? (int)Gl.GL_RGBA8 : (int)Gl.GL_RGB8, width, height, 
+				hasAlpha ? Gl.GL_BGRA : Gl.GL_BGR, Gl.GL_UNSIGNED_BYTE, data);
 		}
 
 		#endregion

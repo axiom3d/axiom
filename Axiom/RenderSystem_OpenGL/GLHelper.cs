@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Specialized;
 using Axiom.SubSystems.Rendering;
+using Gl = CsGL.OpenGL.GL;
 
 namespace RenderSystem_OpenGL
 {
@@ -74,7 +75,7 @@ namespace RenderSystem_OpenGL
 			{
 				extensionList = new StringCollection();
 
-				string allExt = OpenGLRenderer.glGetString(OpenGLRenderer.GL_EXTENSIONS);
+				string allExt = Gl.glGetString(Gl.GL_EXTENSIONS);
 				string[] splitExt = allExt.Split(Char.Parse(" "));
 
 				// store the parsed extension list
@@ -94,12 +95,12 @@ namespace RenderSystem_OpenGL
 			{
 				case BufferUsage.Static:
 				//case BufferUsage.StaticWriteOnly:
-					return OpenGLExtensions.GL_STATIC_DRAW_ARB;
+					return Gl.GL_STATIC_DRAW_ARB;
 
 				case BufferUsage.Dynamic:
 				case BufferUsage.DynamicWriteOnly:
 				default:
-					return OpenGLExtensions.GL_DYNAMIC_DRAW_ARB;
+					return Gl.GL_DYNAMIC_DRAW_ARB;
 			}
 		}
 
@@ -116,16 +117,16 @@ namespace RenderSystem_OpenGL
 				case VertexElementType.Float2:
 				case VertexElementType.Float3:
 				case VertexElementType.Float4:
-					return OpenGLExtensions.GL_FLOAT;
+					return Gl.GL_FLOAT;
 
 				case VertexElementType.Short1:
 				case VertexElementType.Short2:
 				case VertexElementType.Short3:
 				case VertexElementType.Short4:
-					return OpenGLExtensions.GL_SHORT;
+					return Gl.GL_SHORT;
 
 				case VertexElementType.Color:
-					return OpenGLExtensions.GL_UNSIGNED_BYTE;
+					return Gl.GL_UNSIGNED_BYTE;
 			}
 
 			// should never reach this

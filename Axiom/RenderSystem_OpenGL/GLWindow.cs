@@ -31,6 +31,7 @@ using System.Windows.Forms;
 using Axiom.Core;
 using Axiom.SubSystems.Rendering;
 using CsGL.OpenGL;
+using Gl = CsGL.OpenGL.GL;
 
 namespace RenderSystem_OpenGL
 {
@@ -40,7 +41,7 @@ namespace RenderSystem_OpenGL
 	public class GLWindow : RenderWindow
 	{
 		protected OpenGLContext context;
-		protected OpenGLExtensions EXT = new OpenGLExtensions();
+		protected OpenGLExtensions Ext = new OpenGLExtensions();
 		private bool isActive;
 
 		public GLWindow()
@@ -110,10 +111,10 @@ namespace RenderSystem_OpenGL
 		public override void SwapBuffers(bool waitForVSync)
 		{
 			// swap buffers
-			//context.Grab();
+			//contExt.Grab();
 			int sync = waitForVSync ? 1: 0;
 
-			//EXT.wglSwapIntervalEXT((uint)sync);
+			//Ext.wglSwapIntervalEXT((uint)sync);
 			context.SwapBuffer();
 		}
 
