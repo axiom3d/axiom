@@ -138,14 +138,13 @@ namespace Axiom.CgPrograms {
                     // get the name and index of the program param
                     string name = Cg.cgGetParameterName(param);
 
-                    // get the underlying resource type of this param
-                    // we need a special case for the register combiner
-                    // stage constants.
-                    int resource = Cg.cgGetParameterResource(param);
-
-                    // resource 3256 is returned for fp30 named params
-                    // TODO: Find the enum for that
-                    if(resource == 3256) {
+                    // fp30 uses named rather than indexed params, so Cg returns
+                    // 0 for the index. However, we need the index to be unique here
+                    // Resource type 3256 doesn't have a define in the Cg header, so I assume
+                    // it means an unused or non-indexed params, since it is also returned
+                    // for programs that have a param that is not referenced in the program
+                    // and ends up getting pruned by the Cg compiler
+                    if(selectedCgProfile == Cg.CG_PROFILE_FP30) {
                         // use a fake index just to order the named fp30 params
                         index++;
                     }
@@ -153,6 +152,11 @@ namespace Axiom.CgPrograms {
                         // get the param constant index the normal way 
                         index = Cg.cgGetParameterResourceIndex(param);
                     }
+
+                    // get the underlying resource type of this param
+                    // we need a special case for the register combiner
+                    // stage constants.
+                    int resource = Cg.cgGetParameterResource(param);
 
                     // Get the parameter resource, so we know what type we're dealing with
                     switch(resource) {
