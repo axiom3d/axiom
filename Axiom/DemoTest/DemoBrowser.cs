@@ -206,18 +206,21 @@ namespace Demos {
                         // get the type of the demo class
                         Type type = Type.GetType(demoClassName);
 
-                        this.Hide(); 
-                        this.WindowState = FormWindowState.Minimized; 
+                        try { 
+                            this.Hide(); 
+                            this.WindowState = FormWindowState.Minimized; 
  
-                        // create an instance of the demo class and start it up 
-                        using(TechDemo demo = (TechDemo) Activator.CreateInstance(type)) { 
-                            demo.Start(); 
+                            // create an instance of the demo class and start it up 
+                            using(TechDemo demo = (TechDemo) Activator.CreateInstance(type)) { 
+                                demo.Start(); 
+                            } 
                         } 
- 
-                        GC.Collect(); 
-                        Kernel.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1); 
-                        this.WindowState = FormWindowState.Normal; 
-                        this.Show();
+                        finally { 
+                            GC.Collect(); 
+                            Kernel.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1); 
+                            this.WindowState = FormWindowState.Normal; 
+                            this.Show(); 
+                        }
                     }
                 }
             }
