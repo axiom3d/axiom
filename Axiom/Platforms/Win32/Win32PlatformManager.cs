@@ -8,7 +8,6 @@ namespace Axiom.Platforms.Win32
 	/// <summary>
 	///		Platform management specialization for Microsoft Windows (r) platform.
 	/// </summary>
-	// TODO: Disposal of object create here.
 	public class Win32PlatformManager : IPlatformManager {
 		#region Fields
 
@@ -51,9 +50,9 @@ namespace Axiom.Platforms.Win32
 			Msg msg;
 
 			// pump those events!
-			while(!PeekMessage(out msg, IntPtr.Zero, 0, 0, PM_REMOVE)) {
-				TranslateMessage(msg);
-				DispatchMessage(msg);
+			while(!(PeekMessage(out msg, IntPtr.Zero, 0, 0, PM_REMOVE) == 0)) {
+				TranslateMessage(ref msg);
+				DispatchMessage(ref msg);
 			}
 		}
 
@@ -106,7 +105,7 @@ namespace Axiom.Platforms.Win32
 		/// <param name="msgFilterMax"></param>
 		/// <param name="removeMsg"></param>
 		[DllImport(USER_DLL)]
-		private static extern bool PeekMessage(out Msg msg, IntPtr handle, int msgFilterMin, int msgFilterMax, int removeMsg);
+		private static extern int PeekMessage(out Msg msg, IntPtr handle, int msgFilterMin, int msgFilterMax, int removeMsg);
 
 		/// <summary>
 		///		The TranslateMessage function translates virtual-key messages into character messages.
@@ -116,14 +115,14 @@ namespace Axiom.Platforms.Win32
 		///		by using the GetMessage or <see cref="PeekMessage"/> function.
 		/// </param>
 		[DllImport(USER_DLL)]
-		private static extern void TranslateMessage(Msg msg);
+		private static extern void TranslateMessage(ref Msg msg);
 
 		/// <summary>
 		///		The DispatchMessage function dispatches a message to a window procedure.
 		/// </summary>
 		/// <param name="msg">A <see cref="Msg"/> structure containing the message.</param>
 		[DllImport(USER_DLL)]
-		private static extern void DispatchMessage(Msg msg);
+		private static extern void DispatchMessage(ref Msg msg);
 
 		#endregion P/Invoke Declarations
 	}
