@@ -6,10 +6,10 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("OpenGL (CsGL)")]
-[assembly: AssemblyDescription("The OpenGL renderer implementation using the Csharp OpenGL Library.")]
+[assembly: AssemblyTitle("OpenGL (Tao)")]
+[assembly: AssemblyDescription("The OpenGL renderer implementation using the Tao.OpenGl library.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Dark Imp Studios Inc.")]
+[assembly: AssemblyCompany("Axiom Project Team")]
 [assembly: AssemblyProduct("Axiom Game Engine")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
@@ -26,7 +26,7 @@ using System.Runtime.CompilerServices;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.0.0.1")]
+[assembly: AssemblyVersion("1.0.0.0")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 

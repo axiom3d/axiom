@@ -39,17 +39,14 @@ namespace Demos
 	/// 	Sample class which shows the classic spinning triangle, done in the Axiom engine.
 	/// </summary>
 	public class Tutorial1 : TechDemo
-	{
-		#region Member variables
-		
-		#endregion
-		
+	{	
 		#region Methods
 		
 		protected override void CreateScene()
 		{
 			// create a 3d line
 			Line3d line = new Line3d(new Vector3(0, 0, 30), Vector3.UnitY, 50, ColorEx.FromColor(System.Drawing.Color.Blue));
+
 			Triangle tri = new Triangle(
 				new Vector3(-25, 0, 0),
 				new Vector3(0, 50, 0),
@@ -88,7 +85,6 @@ namespace Demos
 		}
 
 		#endregion
-
 	}
 
 	/// <summary>

@@ -263,7 +263,11 @@ namespace Axiom.Utility
 
 			// auto select the first item
 			// TODO: Read from config file
-			cboRenderSystems.SelectedIndex = 0;
+            // HACK: forcing OpenGL as default, since it kicks ass <g/>.
+            if(cboRenderSystems.Items.Count > 1)
+			    cboRenderSystems.SelectedIndex = 1;
+            else
+                cboRenderSystems.SelectedIndex = 0;
 		}
 
 		private void cboRenderSystems_SelectedIndexChanged(object sender, System.EventArgs e)
