@@ -4,7 +4,7 @@ package.language = "c#"
 package.kind = "dll"
 package.target = "Axiom.RenderSystems.DirectX9"
 package.defines = { "TRACE" } 
-package.config["Debug"].target = { "DEBUG" }
+package.config["Debug"].defines = { "DEBUG" }
 
 -- get the target since we need to do something special for SharpDevelop
 local i, target = next(options.target, nil)

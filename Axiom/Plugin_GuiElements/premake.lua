@@ -5,6 +5,6 @@ package.kind = "dll"
 package.buildflags = { "unsafe" }
 package.target = "Axiom.Gui.Elements"
 package.defines = { "TRACE" } 
-package.config["Debug"].target = { "DEBUG" }
+package.config["Debug"].defines = { "DEBUG" }
 package.links = { "System", "Engine", "MathLib" }
 package.files = { matchfiles("*.cs") }

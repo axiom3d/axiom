@@ -3,7 +3,7 @@
         ProjectType = "Local"
         ProductVersion = "7.10.3077"
         SchemaVersion = "2.0"
-        ProjectGuid = "{638E4832-A3D7-1E45-B78B-8D9D65119F1F}"
+        ProjectGuid = "{7887CB15-EBE7-F042-AC2C-28B2D7E70D9E}"
     >
         <Build>
             <Settings
@@ -28,7 +28,7 @@
                     BaseAddress = "285212672"
                     CheckForOverflowUnderflow = "false"
                     ConfigurationOverrideFile = ""
-                    DefineConstants = "TRACE"
+                    DefineConstants = "TRACE;DEBUG"
                     DocumentationFile = ""
                     DebugSymbols = "true"
                     FileAlignment = "4096"
@@ -85,6 +85,16 @@
                     AssemblyName = "System.Windows.Forms"
                 />
                 <Reference
+                    Name = "Engine"
+                    Project = "{6C8DDE4A-CA96-D944-991A-CB4F203BFA41}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
+                <Reference
+                    Name = "MathLib"
+                    Project = "{3A9BBD69-5635-DE43-962E-6E4BDA53ED38}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
+                <Reference
                     Name = "Microsoft.DirectX"
                     AssemblyName = "Microsoft.DirectX"
                 />
@@ -95,16 +105,6 @@
                 <Reference
                     Name = "Microsoft.DirectX.Direct3DX"
                     AssemblyName = "Microsoft.DirectX.Direct3DX"
-                />
-                <Reference
-                    Name = "Engine"
-                    Project = "{76F1B76C-4CAC-704D-84BC-01A4E9E74CF8}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
-                />
-                <Reference
-                    Name = "MathLib"
-                    Project = "{E6AC8079-93CC-1444-AD68-C09835E5682D}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
             </References>
         </Build>

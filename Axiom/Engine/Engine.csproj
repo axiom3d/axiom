@@ -3,7 +3,7 @@
         ProjectType = "Local"
         ProductVersion = "7.10.3077"
         SchemaVersion = "2.0"
-        ProjectGuid = "{76F1B76C-4CAC-704D-84BC-01A4E9E74CF8}"
+        ProjectGuid = "{6C8DDE4A-CA96-D944-991A-CB4F203BFA41}"
     >
         <Build>
             <Settings
@@ -18,7 +18,7 @@
                 OutputType = "Library"
                 PreBuildEvent = ""
                 PostBuildEvent = ""
-                RootNamespace = "Axiom"
+                RootNamespace = "Engine"
                 RunPostBuildEvent = "OnBuildSuccess"
                 StartupObject = ""
             >
@@ -28,7 +28,7 @@
                     BaseAddress = "285212672"
                     CheckForOverflowUnderflow = "false"
                     ConfigurationOverrideFile = ""
-                    DefineConstants = "DEBUG;TRACE"
+                    DefineConstants = "TRACE;DEBUG"
                     DocumentationFile = ""
                     DebugSymbols = "true"
                     FileAlignment = "4096"
@@ -85,19 +85,17 @@
                     AssemblyName = "System.Windows.Forms"
                 />
                 <Reference
-                    Name = "ICSharpCode.SharpZipLib"
-                    AssemblyName = "ICSharpCode.SharpZipLib"
-                    HintPath = "..\Solution Items\ICSharpCode.SharpZipLib.dll"
+                    Name = "MathLib"
+                    Project = "{3A9BBD69-5635-DE43-962E-6E4BDA53ED38}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
-                    Name = "MathLib"
-                    Project = "{E6AC8079-93CC-1444-AD68-C09835E5682D}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                    Name = "ICSharpCode.SharpZipLib"
+                    AssemblyName = "ICSharpCode.SharpZipLib"
                 />
                 <Reference
                     Name = "Tao.DevIl"
                     AssemblyName = "Tao.DevIl"
-                    HintPath = "..\Solution Items\Tao.DevIl.dll"
                 />
             </References>
         </Build>
@@ -804,6 +802,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Input\.#InputSystem.removed.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Input\Enums.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -974,13 +977,18 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Utility\ConfigDialog.cs"
+                    RelPath = "Utility\.#DebugWindow.removed.cs"
                     SubType = "Form"
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Utility\ConfigDialog.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Utility\DefaultForm.cs"
-                    SubType = "Form"
+                    SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
