@@ -45,6 +45,7 @@ namespace Axiom.Utility
 	{
 		protected Engine engine;
 		protected Camera camera;
+		protected Viewport mainViewport;
 		protected SceneManager sceneMgr;
 		protected RenderWindow renderWindow;
 		protected InputSystem inputReader;
@@ -164,7 +165,7 @@ namespace Axiom.Utility
 			camera.LookAt(new Vector3(0, 0, -300));
 
 			// set the near clipping plane to be very close 
-			camera.Near = 0.1f;
+			camera.Near = 5;
 
 		}
 
@@ -176,8 +177,8 @@ namespace Axiom.Utility
 			Debug.Assert(renderWindow != null, "Attempting to use a null RenderWindow.");
 
 			// create a new viewport and set it's background color
-			Viewport viewport = renderWindow.CreateViewport(camera, 0, 0, 100, 100, 100);
-			viewport.BackgroundColor = ColorEx.FromColor(System.Drawing.Color.Black);
+			mainViewport = renderWindow.CreateViewport(camera, 0, 0, 100, 100, 100);
+			mainViewport.BackgroundColor = ColorEx.FromColor(System.Drawing.Color.Black);
 
 		}
 
