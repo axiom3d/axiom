@@ -797,13 +797,23 @@ namespace Axiom.Core {
 	        
 			VertexElement idxElem, weightElem;
 
+			VertexElement firstElem = decl.GetElement(0);
+
 			// add new vertex elements
 			// Note, insert directly after position to abide by pre-Dx9 format restrictions
-			if(decl.GetElement(0).Semantic == VertexElementSemantic.Position) {
-				idxElem = decl.InsertElement(1, bindIndex, 0, VertexElementType.UByte4, 
+			if(firstElem.Semantic == VertexElementSemantic.Position) {
+				int insertPoint = 1;
+				
+				while(insertPoint < decl.ElementCount && 
+					decl.GetElement(insertPoint).Source == firstElem.Source) {
+
+					insertPoint++;
+				}
+
+				idxElem = decl.InsertElement(insertPoint, bindIndex, 0, VertexElementType.UByte4, 
 					VertexElementSemantic.BlendIndices);
 
-				weightElem = decl.InsertElement(2, bindIndex, Marshal.SizeOf(typeof(byte)) * 4, 
+				weightElem = decl.InsertElement(insertPoint + 1, bindIndex, Marshal.SizeOf(typeof(byte)) * 4, 
 					VertexElement.MultiplyTypeCount(VertexElementType.Float1, numBlendWeightsPerVertex),
 					VertexElementSemantic.BlendWeights);
 			}
