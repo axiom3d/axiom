@@ -219,9 +219,10 @@ namespace Axiom.RenderSystems.OpenGL {
                 // set the max number of mipmap levels
                 Gl.glTexParameteri(this.GLTextureType, Gl.GL_TEXTURE_MAX_LEVEL, numMipMaps);
 
-                // TODO: Rescale to Power of 2
+				// Rescale to Power of 2 (also applies gamma correction)
+				byte[] data = RescaleNPower2(image);
 
-                GenerateMipMaps(image.Data, useSoftwareMipMaps, image.HasFlag(ImageFlags.Compressed), i);
+                GenerateMipMaps(data, useSoftwareMipMaps, image.HasFlag(ImageFlags.Compressed), i);
             }
 
             // update the size
@@ -439,6 +440,67 @@ namespace Axiom.RenderSystems.OpenGL {
             // This needs to be set otherwise the texture doesn't get rendered
             Gl.glTexParameteri(this.GLTextureType, Gl.GL_TEXTURE_MAX_LEVEL, numMipMaps);
         }
+
+		private byte[] RescaleNPower2(Image src) {
+			// Scale image to n^2 dimensions
+			int newWidth = (1 << MostSignificantBitSet(srcWidth));
+
+			if (newWidth != srcWidth) {
+				newWidth <<= 1;
+			}
+
+			int newHeight = (1 << MostSignificantBitSet(srcHeight));
+			if (newHeight != srcHeight) {
+				newHeight <<= 1;
+			}
+
+			byte[] tempData;
+
+			if(newWidth != srcWidth || newHeight != srcHeight) {
+				int newImageSize = newWidth * newHeight * (hasAlpha ? 4 : 3);
+
+				tempData = new byte[newImageSize];
+
+				IntPtr srcPtr = System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(src.Data, 0);
+				IntPtr tmpPtr = System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(tempData, 0);
+
+				if(Glu.gluScaleImage(this.GLFormat, srcWidth, srcHeight,
+					Gl.GL_UNSIGNED_BYTE, srcPtr, newWidth, newHeight, 
+					Gl.GL_UNSIGNED_BYTE, tmpPtr) != 0) {
+
+					throw new AxiomException("Error while rescaling image!");
+				}
+
+				Image.ApplyGamma(tempData, gamma, newImageSize, srcBpp);
+
+				srcWidth = width = newWidth; 
+				srcHeight = height = newHeight;
+			}
+			else {
+				tempData = new byte[src.Size];
+				Array.Copy(src.Data, tempData, src.Size);
+				Image.ApplyGamma(tempData, gamma, src.Size, srcBpp);
+			}
+
+			return tempData;
+		}
+
+		/// <summary>
+		///		Helper method for getting the next highest power of 2 value from the specified value.
+		/// </summary>
+		/// <remarks>Example: Input: 3 Result: 4, Input: 96 Output: 128</remarks>
+		/// <param name="val">Integer value.</param>
+		/// <returns></returns>
+		private int MostSignificantBitSet(int val) {
+			int result = 0;
+
+			while(val != 0) {
+				result++;
+				val >>= 1;
+			}
+
+			return result - 1;
+		}
 
         #endregion
     }
