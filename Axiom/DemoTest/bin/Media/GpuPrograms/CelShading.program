@@ -1,0 +1,13 @@
+vertex_program Ogre/CelShadingVP cg
+{
+	source Example_CelShading.cg
+	entry_point main_vp
+	profiles vs_1_1 arbvp1
+}
+
+fragment_program Ogre/CelShadingFP cg
+{
+	source Example_CelShading.cg
+	entry_point main_fp
+	profiles ps_1_1 arbfp1 fp20
+}
