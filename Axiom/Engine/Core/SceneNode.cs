@@ -412,7 +412,7 @@ namespace Axiom.Core {
         ///    the node nor the lights have moved will result in the same list being returned
         ///    without recalculation. Can be useful when implementing IRenderable.Lights.
         /// </remarks>
-        public new LightList Lights {
+        public override LightList Lights {
             get {
 				// TEMP FIX
 				// If a scene node is static and lights have moved, light list won't change

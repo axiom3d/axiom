@@ -51,8 +51,8 @@ namespace Axiom.Animating {
     public class AnimationTrack {
         #region Member variables
 
-        /// <summary>Index of this animation track.</summary>
-        protected short index;
+        /// <summary>Handle of this animation track.</summary>
+        protected short handle;
         /// <summary>Animation that owns this track.</summary>
         protected Animation parent;
         /// <summary>Target node to be animated.</summary>
@@ -110,12 +110,12 @@ namespace Axiom.Animating {
         /// <summary>
         ///		The name of this animation track.
         /// </summary>
-        public short Index {
+        public short Handle {
             get { 
-				return index; 
+				return handle; 
 			}
             set { 
-				index = value; 
+				handle = value; 
 			}
         }
 
@@ -262,7 +262,7 @@ namespace Axiom.Animating {
         }
 
         /// <summary>
-        /// Sames as the Apply method, but applies to a specified Node instead of it's associated node.
+        ///		Same as the Apply method, but applies to a specified Node instead of it's associated node.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="time"></param>

@@ -359,7 +359,6 @@ namespace Axiom.Core {
             float[] u = new float[3];
             float[] v = new float[3];
 
-            // TODO: rename to NumSubMeshes?
             int numSubMeshes = this.SubMeshCount;
 
             unsafe {

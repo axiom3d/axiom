@@ -81,7 +81,7 @@ namespace Axiom.Collections {
         /// <param name="item"></param>
         public void Add(T item) {
             // add the item to the list
-            Add(item.Index, item);
+            Add(item.Handle, item);
         }
 
         /// <summary>

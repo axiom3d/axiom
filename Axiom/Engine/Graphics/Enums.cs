@@ -713,6 +713,20 @@ namespace Axiom.Graphics {
         Phong
     }
 
+	/// <summary>
+	///		A set of flags that can be used to influence <see cref="ShadowRenderable"/> creation.
+	/// </summary>
+	public enum ShadowRenderableFlags {
+		/// <summary>
+		///		For shadow volume techniques only, generate a light cap on the volume.
+		/// </summary>
+		IncludeLightCap = 1,
+		/// <summary>
+		///		For shadow volume techniques only, generate a dark cap on the volume.
+		/// </summary>
+		IncludeDarkCap	= 2
+	}
+
     /// <summary>
     ///		Describes the various actions which can be taken on the stencil buffer.
     ///	</summary> 

@@ -1,3 +1,10 @@
+3-20-2004
+- Implemented TagPoint functionality, which allows you to attach objects to bones when using an entity that
+  has a skeleton.  An example would be attaching a gun to a player's hand, where the gun will move with the players
+  hand as it moves.
+- Continued refactoring work to support hardware skinning.
+- Using the default scene manager now until I fix a bug where billboards weren't always showing up in Octree scenes.
+
 3-17-2004
 - Fixed problem with duplicate keyframes in animations; allows the Ninja model to load without incident.
 

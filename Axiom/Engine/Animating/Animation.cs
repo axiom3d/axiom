@@ -130,11 +130,11 @@ namespace Axiom.Animating {
         /// <summary>
         ///		Creates an AnimationTrack. 
         /// </summary>
-        /// <param name="index">Numeric handle to give the track, used for accessing the track later.</param>
+        /// <param name="handle">Numeric handle to give the track, used for accessing the track later.</param>
         /// <returns></returns>
-        public AnimationTrack CreateTrack(short index) {
+        public AnimationTrack CreateTrack(short handle) {
             AnimationTrack track = new AnimationTrack(this);
-            track.Index = index;
+            track.Handle = handle;
 
             // add the track to the list
             trackList.Add(track);
@@ -148,11 +148,11 @@ namespace Axiom.Animating {
         /// <param name="index">Numeric handle to give the track, used for accessing the track later.</param>
         /// <param name="target">Node object which will be affected by this track.</param>
         /// <returns></returns>
-        public AnimationTrack CreateTrack(short index, Node target) {
+        public AnimationTrack CreateTrack(short handle, Node target) {
             // create a new track and set it's target
-            AnimationTrack track = CreateTrack(index);
+            AnimationTrack track = CreateTrack(handle);
             track.TargetNode = target;
-            track.Index = index;
+            track.Handle = handle;
 
             return track;
         }
@@ -170,9 +170,19 @@ namespace Axiom.Animating {
         /// <param name="accumulate"></param>
         public void Apply(float time, float weight, bool accumulate) {
             // loop through tracks and update them all with current time
-            for(int i = 0; i < trackList.Count; i++)
-                trackList[i].Apply(time, weight, accumulate);
+			for(int i = 0; i < trackList.Count; i++) {
+				trackList[i].Apply(time, weight, accumulate);
+			}
         }
+
+		public void Apply(Skeleton skeleton, float time, float weight, bool accumulate) {
+			// loop through tracks and update them all with current time
+			for(int i = 0; i < trackList.Count; i++) {
+				AnimationTrack track = trackList[i];
+				Bone bone = skeleton.GetBone((ushort)track.Handle);
+				track.ApplyToNode(bone, time, weight, accumulate);
+			}
+		}
 
         #endregion
 

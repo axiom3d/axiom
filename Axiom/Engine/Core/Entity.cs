@@ -133,6 +133,30 @@ namespace Axiom.Core {
 		///		Flag indicating whether or not this entity will cast shadows.
 		/// </summary>
 		protected bool castsShadows;
+		/// <summary>
+		///		Temp blend buffer details for shared geometry.
+		/// </summary>
+		protected TempBlendedBufferInfo tempBlendedBuffer;
+		/// <summary>
+		///		Temp blend buffer details for shared geometry.
+		/// </summary>
+		protected VertexData sharedBlendedVertexData;
+		/// <summary>
+		///		Flag indicating whether hardware skinning is supported by this entity's materials.
+		/// </summary>
+		protected bool useHardwareSkinning;
+		/// <summary>
+		///		Records the last frame in which animation was updated.
+		/// </summary>
+		protected ulong framAnimationLastUpdated;
+		/// <summary>
+		///		This entity's personal copy of a master skeleton.
+		/// </summary>
+		protected SkeletonInstance skeletonInstance;
+		/// <summary>
+		///		List of child objects attached to this entity.
+		/// </summary>
+		protected SceneObjectCollection childObjectList = new SceneObjectCollection();
 
         #endregion Fields
 
@@ -149,19 +173,24 @@ namespace Axiom.Core {
             this.mesh = mesh;
             this.sceneMgr = creator;
 
+			if(mesh.HasSkeleton) {
+				skeletonInstance = new SkeletonInstance(mesh.Skeleton);
+				skeletonInstance.Load();
+			}
+
             BuildSubEntities();
+
+			// init the AnimationState, if the mesh is animated
+			if(mesh.HasSkeleton) {
+				mesh.InitAnimationState(animationState);
+				numBoneMatrices = mesh.BoneMatrixCount;
+				boneMatrices = new Matrix4[numBoneMatrices];
+			}
 
             // LOD default settings
             meshLodFactorInv = 1.0f;
             // Backwards, remember low value = high detail
             minMeshLodIndex = 99;
-
-            // init the AnimationState, if the mesh is animated
-            if(mesh.HasSkeleton) {
-                mesh.InitAnimationState(animationState);
-                numBoneMatrices = mesh.BoneMatrixCount;
-                boneMatrices = new Matrix4[numBoneMatrices];
-            }
         }
 
         #endregion
@@ -205,6 +234,29 @@ namespace Axiom.Core {
 			}
 		}
 
+		/// <summary>
+		///    Merge all the child object Bounds and return it.
+		/// </summary>
+		/// <returns></returns>
+		public AxisAlignedBox ChildObjectsBoundingBox {
+			get {
+				AxisAlignedBox box;
+				AxisAlignedBox fullBox = AxisAlignedBox.Null;
+
+				for(int i = 0; i < childObjectList.Count; i++) {
+					SceneObject child = childObjectList[i];
+					box = child.BoundingBox;
+					TagPoint tagPoint = (TagPoint)child.ParentNode;
+
+					box.Transform(tagPoint.FullLocalTransform);
+
+					fullBox.Merge(box);
+				}
+
+				return fullBox;
+			}
+		}
+
         /// <summary>
         ///    Gets/Sets the flag to render the skeleton of this entity.
         /// </summary>
@@ -216,6 +268,15 @@ namespace Axiom.Core {
                 displaySkeleton = value;
             }
         }
+
+		/// <summary>
+		///		Returns true if this entity has a skeleton.
+		/// </summary>
+		public bool HasSkeleton {
+			get {
+				return skeletonInstance != null;
+			}
+		}
             
         /// <summary>
         /// 
@@ -280,12 +341,80 @@ namespace Axiom.Core {
 
         #endregion
 
-        #region Private methods
+        #region Methods
+
+		/// <summary>
+		///		Attaches another object to a certain bone of the skeleton which this entity uses.
+		/// </summary>
+		/// <remarks>
+		///		This method can be used to attach another object to an animated part of this entity,
+		///		by attaching it to a bone in the skeleton (with an offset if required). As this entity 
+		///		is animated, the attached object will move relative to the bone to which it is attached.
+		/// </remarks>
+		/// <param name="boneName">The name of the bone (in the skeleton) to attach this object.</param>
+		/// <param name="sceneObject">Reference to the object to attach.</param>
+		public TagPoint AttachObjectToBone(string boneName, SceneObject sceneObject) {
+			return AttachObjectToBone(boneName, sceneObject, Quaternion.Identity);
+		}
+
+		/// <summary>
+		///		Attaches another object to a certain bone of the skeleton which this entity uses.
+		/// </summary>
+		/// <param name="boneName">The name of the bone (in the skeleton) to attach this object.</param>
+		/// <param name="sceneObject">Reference to the object to attach.</param>
+		/// <param name="offsetOrientation">An adjustment to the orientation of the attached object, relative to the bone.</param>
+		public TagPoint AttachObjectToBone(string boneName, SceneObject sceneObject, Quaternion offsetOrientation) {
+			return AttachObjectToBone(boneName, sceneObject, Quaternion.Identity, Vector3.UnitScale);
+		}
+
+		/// <summary>
+		///		Attaches another object to a certain bone of the skeleton which this entity uses.
+		/// </summary>
+		/// <param name="boneName">The name of the bone (in the skeleton) to attach this object.</param>
+		/// <param name="sceneObject">Reference to the object to attach.</param>
+		/// <param name="offsetOrientation">An adjustment to the orientation of the attached object, relative to the bone.</param>
+		/// <param name="offsetPosition">An adjustment to the position of the attached object, relative to the bone.</param>
+		public TagPoint AttachObjectToBone(string boneName, SceneObject sceneObject, Quaternion offsetOrientation, Vector3 offsetPosition) {
+			if(sceneObject.IsAttached) {
+				throw new Axiom.Exceptions.AxiomException("SceneObject '{0}' is already attached to '{1}'", sceneObject.Name, sceneObject.ParentNode.Name);
+			}
+
+			if(!this.HasSkeleton) {
+				throw new Axiom.Exceptions.AxiomException("Entity '{0}' has no skeleton to attach an object to.", this.name);
+			}
+
+			Bone bone = skeletonInstance.GetBone(boneName);
+
+			if(bone == null) {
+				throw new Axiom.Exceptions.AxiomException("Entity '{0}' does not have a skeleton with a bone named '{1}'.", this.name, boneName);
+			}
+
+			TagPoint tagPoint = 
+				skeletonInstance.CreateTagPointOnBone(bone, offsetOrientation, offsetPosition);
+
+			tagPoint.ParentEntity = this;
+			tagPoint.ChildObject = sceneObject;
+
+			AttachObjectImpl(sceneObject, tagPoint);
+
+			return tagPoint;
+		}
+
+		/// <summary>
+		///		Internal implementation of attaching a 'child' object to this entity and assign 
+		///		the parent node to the child entity.
+		/// </summary>
+		/// <param name="sceneObject">Object to attach.</param>
+		/// <param name="tagPoint">TagPoint to attach the object to.</param>
+		protected void AttachObjectImpl(SceneObject sceneObject, TagPoint tagPoint) {
+			childObjectList[sceneObject.Name] = sceneObject;
+			sceneObject.NotifyAttached(tagPoint, true);
+		}
 
         /// <summary>
         ///		Used to build a list of sub-entities from the meshes located in the mesh.
         /// </summary>
-        public void BuildSubEntities() {
+        protected void BuildSubEntities() {
             // loop through the models meshes and create sub entities from them
             for(int i = 0; i < mesh.SubMeshCount; i++) {
                 SubMesh subMesh = mesh.GetSubMesh(i);
@@ -299,8 +428,74 @@ namespace Axiom.Core {
                 subEntityList.Add(sub);
             }
         }
+
+		/// <summary>
+		///    Protected method to cache bone matrices from a skeleton.
+		/// </summary>
+		protected void CacheBoneMatrices() {
+			// Get the appropriate meshes skeleton here
+			// Can use lower LOD mesh skeleton if mesh LOD is manual
+			// We make the assumption that lower LOD meshes will have
+			//   fewer bones than the full LOD, therefore marix stack will be
+			//   big enough.
+
+			// TODO: Check for LOD usage
+
+			skeletonInstance.SetAnimationState(animationState);
+			skeletonInstance.GetBoneMatrices(boneMatrices);
+
+			// update the child object's transforms
+			for(int i = 0; i < childObjectList.Count; i++) {
+				SceneObject child = childObjectList[i];
+				child.ParentNode.Update(true, true);
+			}
+
+			// apply the current world transforms to these too, since these are used as
+			// replacement world matrices
+			Matrix4 worldXform = this.ParentNodeFullTransform;
+			numBoneMatrices = skeletonInstance.BoneCount;
+
+			for(int i = 0; i < numBoneMatrices; i++) {
+				boneMatrices[i] = worldXform * boneMatrices[i];
+			}
+		}
+
+		/// <summary>
+		///		Internal method - given vertex data which could be from the <see cref="Mesh"/> or 
+		///		any <see cref="SubMesh"/>, finds the temporary blend copy.
+		/// </summary>
+		/// <param name="originalData"></param>
+		/// <returns></returns>
+		protected VertexData FindBlendedVertexData(VertexData originalData) {
+			// TODO: Implement Entity.FindBlendedVertexData
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		///		Perform all the updates required for an animated entity.
+		/// </summary>
+		protected void UpdateAnimation() {
+			CacheBoneMatrices();
+
+			// TODO: Complete implementation
+
+			bool blendNormals = true;
+
+			if(mesh.SharedVertexData != null) {
+				RenderSystem.SoftwareVertexBlend(mesh.SharedVertexData, boneMatrices);
+			}
+			else {
+				for(int i = 0; i < subEntityList.Count; i++) {
+					RenderSystem.SoftwareVertexBlend(subEntityList[i].SubMesh.vertexData, boneMatrices);
+				}
+			}
+
+			if(childObjectList.Count != 0) {
+				parentNode.NeedUpdate();
+			}
+		}
 			
-        #endregion
+        #endregion Methods
 
         #region Implementation of IDisposable
 
@@ -313,40 +508,6 @@ namespace Axiom.Core {
         #endregion
 
         #region Implementation of SceneObject
-
-        /// <summary>
-        ///    
-        /// </summary>
-        protected void CacheBoneMatrices() {
-            Mesh theMesh = null;
-
-            // Get the appropriate meshes skeleton here
-            // Can use lower LOD mesh skeleton if mesh LOD is manual
-            // We make the assumption that lower LOD meshes will have
-            //   fewer bones than the full LOD, therefore marix stack will be
-            //   big enough.
-
-            // TODO: Check for LOD usage
-
-            theMesh = this.mesh;
-
-            // tell the skeleton who is making a call to update it
-            theMesh.Skeleton.CurrentEntity = this;
-
-            theMesh.GetBoneMatrices(animationState, boneMatrices);
-
-            // reset the skeleton to 'no caller'
-            theMesh.Skeleton.CurrentEntity = null;
-
-            // apply the current world transforms to these too, since these are used as
-            // replacement world matrices
-            Matrix4 worldXform = this.ParentFullTransform;
-            numBoneMatrices = theMesh.BoneMatrixCount;
-
-            for(int i = 0; i < numBoneMatrices; i++) {
-                boneMatrices[i] = worldXform * boneMatrices[i];
-            }
-        }
 
         /// <summary>
         ///    For entities based on animated meshes, gets the AnimationState object for a single animation.
@@ -378,7 +539,7 @@ namespace Axiom.Core {
             return animationState[name];
         }
 
-        public override void NotifyCurrentCamera(Axiom.Core.Camera camera) {
+        public override void NotifyCurrentCamera(Camera camera) {
             if(parentNode != null) {
                 float squaredDepth = parentNode.GetSquaredViewDepth(camera);
 
@@ -398,16 +559,11 @@ namespace Axiom.Core {
                 meshLodIndex = (int)MathUtil.Min(minMeshLodIndex, meshLodIndex);
             }
 
-            // TODO: Notify child objects (tag points)
-        }
-
-        /// <summary>
-        ///    Merge all the child object Bounds and return it.
-        /// </summary>
-        /// <returns></returns>
-        public AxisAlignedBox GetChildObjectsBoundingBox() {
-            // TODO: Implement Entity.GetChildObjectsBoundingBox after adding TagPoints
-            return AxisAlignedBox.Null;
+            // Notify child objects (tag points)
+			for(int i = 0; i < childObjectList.Count; i++) {
+				SceneObject child = childObjectList[i];
+				child.NotifyCurrentCamera(camera);
+			}
         }
 
         /// <summary>
@@ -461,16 +617,26 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="queue"></param>
         public override void UpdateRenderQueue(RenderQueue queue) {
+			// TODO: Manual LOD sub entities
+
             // add all sub entities to the render queue
-            for(int i = 0; i < subEntityList.Count; i++)
-                queue.AddRenderable(subEntityList[i], RenderQueue.DEFAULT_PRIORITY, renderQueueID);
+			for(int i = 0; i < subEntityList.Count; i++) {
+				// TODO: Add SubEntity.IsVisible
+				//if(subEntityList[i].IsVisible) {
+					queue.AddRenderable(subEntityList[i], RenderQueue.DEFAULT_PRIORITY, renderQueueID);
+				//}
+			}
 
             // Since we know we're going to be rendered, take this opportunity to 
             // cache bone matrices & apply world matrix to them
             if(mesh.HasSkeleton) {
-                CacheBoneMatrices();
+                UpdateAnimation();
 
-                // TODO: Update render queue with child objects (tag points)
+				// Update render queue with child objects (tag points)
+				for(int i = 0; i < childObjectList.Count; i++) {
+					SceneObject child = childObjectList[i];
+					child.UpdateRenderQueue(queue);
+				}
             }
 
             // TODO: Add skeleton itself to the render queue
@@ -480,9 +646,9 @@ namespace Axiom.Core {
             // return the bounding box of our mesh
             get {	 
                 fullBoundingBox = mesh.BoundingBox;
-                fullBoundingBox.Merge(GetChildObjectsBoundingBox());
+                fullBoundingBox.Merge(this.ChildObjectsBoundingBox);
 
-		// don't need to scale here anymore
+				// don't need to scale here anymore
 
                 return fullBoundingBox;
             }

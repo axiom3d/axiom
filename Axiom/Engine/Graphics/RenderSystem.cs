@@ -489,7 +489,7 @@ namespace Axiom.Graphics {
         ///		temporary vertex buffer is used for the result, which is then used in the
         ///		VertexBuffer instead of the original passed in vertex data.
         /// </remarks>
-        protected unsafe void SoftwareVertexBlend(VertexData vertexData, Matrix4[] matrices) {
+        public static unsafe void SoftwareVertexBlend(VertexData vertexData, Matrix4[] matrices) {
 
             Vector3 sourceVec = new Vector3();
             Vector3 accumVecPos;
