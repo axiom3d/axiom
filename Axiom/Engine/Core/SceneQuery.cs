@@ -433,7 +433,7 @@ namespace Axiom.Core {
 
 				if(maxResults != 0 && lastResults.Count > maxResults) {
 					// remove the results greater than the desired amount
-					lastResults.RemoveRange(maxResults - 1, lastResults.Count - maxResults);
+					lastResults.RemoveRange(maxResults, lastResults.Count - maxResults);
 				}
 			}
 
@@ -592,4 +592,150 @@ namespace Axiom.Core {
 	}
 
 	#endregion SphereRegionSceneQuery Implementation
+
+	#region IntersectionSceneQuery Implementation
+
+	/// <summary>
+	/// Separate SceneQuery class to query for pairs of objects which are
+	///	possibly intersecting one another.
+	/// </summary>
+	/// <remarks>
+	/// This SceneQuery subclass considers the whole world and returns pairs of objects
+	/// which are close enough to each other that they may be intersecting. Because of
+	/// this slightly different focus, the return types and listener interface are
+	/// different for this class.
+	/// </remarks>
+	public abstract class IntersectionSceneQuery : SceneQuery, IIntersectionSceneQueryListener {
+		#region Fields
+
+		/// <summary>
+		///		List of query results from the last execution of this query.
+		/// </summary>
+		protected IntersectionSceneQueryResult lastResults = new IntersectionSceneQueryResult();
+
+		#endregion Fields
+
+		#region Constructor
+
+		/// <summary>
+		///		Constructor.
+		/// </summary>
+		/// <param name="creator">Scene manager who created this query.</param>
+		internal IntersectionSceneQuery(SceneManager creator) : base(creator) {}
+
+		#endregion Constructor
+
+		#region Methods
+
+		/// <summary>
+		///		Clears out any cached results from the last query.
+		/// </summary>
+		public virtual void ClearResults() {
+			lastResults.Clear();
+		}
+
+		/// <summary>
+		///		Executes the query, returning the results back in one list.
+		/// </summary>
+		/// <remarks>
+		///		This method executes the scene query as configured, gathers the results
+		///		into one structure and returns a reference to that structure. These
+		///		results will also persist in this query object until the next query is
+		///		executed, or <see cref="ClearResults"/>. A more lightweight version of
+		///		this method that returns results through a listener is also available.
+		/// </remarks>
+		/// <returns></returns>
+		public virtual IntersectionSceneQueryResult Execute() {
+			ClearResults();
+
+			// execute the callback version using ourselves as the listener
+			Execute(this);
+
+			return lastResults;
+		}
+
+		/// <summary>
+		///		Executes the query and returns each match through a listener interface.
+		/// </summary>
+		/// <remarks>
+		///		Note that this method does not store the results of the query internally 
+		///		so does not update the 'last result' value. This means that this version of
+		///		execute is more lightweight and therefore more efficient than the version 
+		///		which returns the results as a collection.
+		/// </remarks>
+		/// <param name="listener">Listener object to handle the result callbacks.</param>
+		public abstract void Execute(IIntersectionSceneQueryListener listener);
+
+		#endregion Methods
+
+		#region IIntersectionSceneQueryListener Members
+
+		bool Axiom.Core.IIntersectionSceneQueryListener.OnQueryResult(SceneObject first, SceneObject second) {
+			// create an entry and add it to the cached result list
+			lastResults.Objects2Objects.Add(new SceneQuerySceneObjectPair(first,second));
+
+			// continue gathering results
+			return true;
+		}
+
+		bool Axiom.Core.IIntersectionSceneQueryListener.OnQueryResult(SceneObject obj, SceneQuery.WorldFragment fragment) {
+			// create an entry and add it to the cached result list
+			lastResults.Objects2World.Add(new SceneQuerySceneObjectWorldFragmentPair(obj,fragment));
+
+			// continue gathering results
+			return true;
+		}
+
+		#endregion
+	}
+
+	/// <summary>
+	///		Alternative listener interface for dealing with <see cref="IntersectionSceneQuery"/>.
+	/// </summary>
+	/// <remarks>
+	///		Because the IntersectionSceneQuery returns results in pairs, rather than singularly,
+	///		the listener interface must be customised from the standard SceneQueryListener.
+	/// </remarks>
+	public interface IIntersectionSceneQueryListener {
+		/// <summary>
+		///		Called when 2 movable objects intersect one another.
+		/// </summary>
+		/// <param name="first">Reference to the first intersecting object.</param>
+		/// <param name="second">Reference to the second intersecting object.</param>
+		/// <returns>Should return false to abandon returning additional results, or true to continue.</returns>
+		bool OnQueryResult(SceneObject first, SceneObject second);
+
+		/// <summary>
+		///		Called when a movable intersects a world fragment.
+		/// </summary>
+		/// <param name="obj">Intersecting object.</param>
+		/// <param name="fragment">Intersecting world fragment.</param>
+		/// <returns>Should return false to abandon returning additional results, or true to continue.</returns>
+		bool OnQueryResult(SceneObject obj, SceneQuery.WorldFragment fragment);
+	}
+
+	/// <summary>Holds the results of an intersection scene query (pair values).</summary>
+	public class IntersectionSceneQueryResult {
+		protected SceneQuerySceneObjectIntersectionList objects2Objects = new SceneQuerySceneObjectIntersectionList();
+		protected SceneQuerySceneObjectWorldFragmentIntersectionList objects2World = new SceneQuerySceneObjectWorldFragmentIntersectionList();
+
+		public SceneQuerySceneObjectIntersectionList Objects2Objects {
+			get {
+				return objects2Objects;
+			}
+		}
+
+		public SceneQuerySceneObjectWorldFragmentIntersectionList Objects2World {
+			get {
+				return objects2World;
+			}
+		}
+
+		public void Clear() {
+			objects2Objects.Clear();
+			objects2World.Clear();
+		}
+	}
+
+	#endregion IntersectionSceneQuery Implementation
 }

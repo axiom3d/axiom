@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using System.Collections;
 using System.Diagnostics;
 using Axiom.Collections;
 using Axiom.MathLib;
@@ -87,6 +88,8 @@ namespace Axiom.Core {
 		///		Quick lookup of buffers.
 		/// </summary>
 		protected internal TempBlendedBufferInfo tempBlendedBuffer = new TempBlendedBufferInfo();
+
+		protected Hashtable customParams = new Hashtable();
 
         #endregion Fields
 
@@ -351,6 +354,25 @@ namespace Axiom.Core {
                 return parent.ParentNode.Lights;
             }
         }
+
+		public Vector4 GetCustomParameter(int index) {
+			if(customParams[index] == null) {
+				throw new Exception("A parameter was not found at the given index");
+			}
+			else {
+				return (Vector4)customParams[index];
+			}
+		}
+
+		public void SetCustomParameter(int index, Vector4 val) {
+			customParams[index] = val;
+		}
+
+		public void UpdateCustomGpuParameter(GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams) {
+			if(customParams[entry.data] != null) {
+				gpuParams.SetConstant(entry.index, (Vector4)customParams[entry.data]);
+			}
+		}
 
         #endregion
     }
