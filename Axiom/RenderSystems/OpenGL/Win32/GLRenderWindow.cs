@@ -215,25 +215,26 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="fileName"></param>
         public override void SaveToFile(string fileName) {
             // create a new bitmap
-            Bitmap bitmap = new Bitmap(width, height, PixelFormat.Format24bppRgb); 
+			using(Bitmap bitmap = new Bitmap(width, height, PixelFormat.Format24bppRgb)) {
 
-            // create a sized rect
-            Rectangle rect = new Rectangle(0, 0, width, height); 
+				// create a sized rect
+				Rectangle rect = new Rectangle(0, 0, width, height); 
 
-            // lock the bitmap for writing
-            BitmapData bitmapData = bitmap.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+				// lock the bitmap for writing
+				BitmapData bitmapData = bitmap.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
 
-            // read the pixels from the GL buffer
-            Gl.glReadPixels(0, 0, width, height, Gl.GL_BGR, Gl.GL_UNSIGNED_BYTE, bitmapData.Scan0); 
+				// read the pixels from the GL buffer
+				Gl.glReadPixels(0, 0, width, height, Gl.GL_BGR, Gl.GL_UNSIGNED_BYTE, bitmapData.Scan0); 
  
-            // unlock the bitmap
-            bitmap.UnlockBits(bitmapData); 
+				// unlock the bitmap
+				bitmap.UnlockBits(bitmapData); 
 
-            // flip the image
-            bitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
+				// flip the image
+				bitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
 
-            // save the final product
-            bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Jpeg);
+				// save the final product
+				bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Jpeg);
+			}
         }
 
         #endregion
