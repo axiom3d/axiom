@@ -313,7 +313,7 @@ namespace Axiom.Serialization {
 
 					switch(chunkID) {
 						case MeshChunkID.GeometryVertexElement:
-							ReadGeometryVertexDeclaration(reader, data);
+							ReadGeometryVertexElement(reader, data);
 							break;
 					}
 
@@ -337,7 +337,7 @@ namespace Axiom.Serialization {
 			short offset = ReadShort(reader);
 			short index = ReadShort(reader);
 
-			// add the element to the declaration for the current vertex data
+            // add the element to the declaration for the current vertex data
 			data.vertexDeclaration.AddElement(source, offset, type, semantic, index);
 		}
 
@@ -544,15 +544,126 @@ namespace Axiom.Serialization {
 		}
 
 		protected virtual void ReadEdgeList(BinaryReader reader) {
-			// TODO: Edge list and all associated changes
-			IgnoreCurrentChunk(reader);
-		}
+            if (!IsEOF(reader)) {
+                MeshChunkID chunkID = ReadChunk(reader);
+
+                while (!IsEOF(reader) &&
+                    chunkID == MeshChunkID.EdgeListLOD) {
+
+                    // process single LOD
+                    short lodIndex = ReadShort(reader);
+
+                    // If manual, no edge data here, loaded from manual mesh
+                    bool isManual = ReadBool(reader);
+
+                    // Only load in non-manual levels; others will be connected up by Mesh on demand
+                    if (!isManual) {
+                        MeshLodUsage usage = mesh.GetLodLevel(lodIndex);
+
+                        usage.edgeData = new EdgeData();
+
+                        int triCount = ReadInt(reader);
+                        int edgeGroupCount = ReadInt(reader);
+
+                        // TODO: Resize triangle list
+                        // TODO: Resize edge groups
+
+                        for (int i = 0; i < triCount; i++) {
+                            EdgeData.Triangle tri = new EdgeData.Triangle();
+
+                            tri.indexSet = ReadInt(reader);
+                            tri.vertexSet = ReadInt(reader);
+
+                            tri.vertIndex[0] = ReadInt(reader);
+                            tri.vertIndex[1] = ReadInt(reader);
+                            tri.vertIndex[2] = ReadInt(reader);
+
+                            tri.sharedVertIndex[0] = ReadInt(reader);
+                            tri.sharedVertIndex[1] = ReadInt(reader);
+                            tri.sharedVertIndex[2] = ReadInt(reader);
+
+                            tri.normal = ReadVector4(reader);
+
+                            usage.edgeData.triangles.Add(tri);
+                        }
+
+                        for (int eg = 0; eg < edgeGroupCount; eg++) {
+                            chunkID = ReadChunk(reader);
+
+                            if (chunkID != MeshChunkID.EdgeListGroup) {
+                                throw new AxiomException("Missing EdgeListGroup chunk.");
+                            }
+
+                            EdgeData.EdgeGroup edgeGroup = new EdgeData.EdgeGroup();
+
+                            edgeGroup.vertexSet = ReadInt(reader);
+
+                            int edgeCount = ReadInt(reader);
+
+                            // TODO: Resize the edge group list
+
+                            for (int e = 0; e < edgeCount; e++) {
+                                EdgeData.Edge edge = new EdgeData.Edge();
+
+                                edge.triIndex[0] = ReadInt(reader);
+                                edge.triIndex[1] = ReadInt(reader);
+
+                                edge.vertIndex[0] = ReadInt(reader);
+                                edge.vertIndex[1] = ReadInt(reader);
+
+                                edge.sharedVertIndex[0] = ReadInt(reader);
+                                edge.sharedVertIndex[1] = ReadInt(reader);
+
+                                edge.isDegenerate = ReadBool(reader);
+
+                                // add the edge to the list
+                                edgeGroup.edges.Add(edge);
+                            }
+
+                            // Populate edgeGroup.vertexData references
+                            // If there is shared vertex data, vertexSet 0 is that, 
+                            // otherwise 0 is first dedicated
+                            if (mesh.SharedVertexData != null) {
+                                if (edgeGroup.vertexSet == 0) {
+                                    edgeGroup.vertexData = mesh.SharedVertexData;
+                                }
+                                else {
+                                    edgeGroup.vertexData = mesh.GetSubMesh(edgeGroup.vertexSet - 1).vertexData;
+                                }
+                            }
+                            else {
+                                edgeGroup.vertexData = mesh.GetSubMesh(edgeGroup.vertexSet).vertexData;
+                            }
+
+                            // add the edge group to the list
+                            usage.edgeData.edgeGroups.Add(edgeGroup);
+                        }
+                    }
+
+                    // grab the next chunk
+                    if (!IsEOF(reader)) {
+                        chunkID = ReadChunk(reader);
+                    }
+                }
+
+                // grab the next chunk
+                if (!IsEOF(reader)) {
+                    // backpedal to the start of chunk
+                    Seek(reader, -ChunkOverheadSize);
+                }
+            }
+
+            mesh.edgeListsBuilt = true;
+        }
 
 		#endregion Protected
 
 		#endregion Methods
 	}
 
+    /// <summary>
+    ///     Mesh serializer for supporint OGRE 1.20 meshes.
+    /// </summary>
 	public class MeshSerializerImplv12 : MeshSerializerImpl {
 		#region Constructor
 
@@ -720,7 +831,10 @@ namespace Axiom.Serialization {
 		#endregion Methods
 	}
 
-	public class MeshSerializerImplv11 : MeshSerializerImplv12 {
+    /// <summary>
+    ///     Mesh serializer for supporint OGRE 1.10 meshes.
+    /// </summary>
+    public class MeshSerializerImplv11 : MeshSerializerImplv12 {
 		#region Constructor
 
 		public MeshSerializerImplv11() {
@@ -778,6 +892,5 @@ namespace Axiom.Serialization {
 		}
 
 		#endregion Methods
-
 	}
 }

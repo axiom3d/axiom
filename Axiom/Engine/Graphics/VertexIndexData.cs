@@ -205,11 +205,12 @@ namespace Axiom.Graphics {
 
 			if(posElem != null) {
 				short posOldSource = posElem.Source;
-				bool wasSharedBuffer = false;
 
 				HardwareVertexBuffer vbuf = vertexBufferBinding.GetBuffer(posOldSource);
 
-				// Are there other elements in the buffer except for the position?
+                bool wasSharedBuffer = false;
+
+                // Are there other elements in the buffer except for the position?
 				if (vbuf.VertexSize > posElem.Size) {
 					// We need to create another buffer to contain the remaining elements
 					// Most drivers don't like gaps in the declaration, and in any case it's waste
@@ -238,7 +239,8 @@ namespace Axiom.Graphics {
 				// Point first destination pointer at the start of the new position buffer,
 				// the other one half way along
 				IntPtr destPtr = newPosBuffer.Lock(BufferLocking.Discard);
-				IntPtr dest2Ptr = new IntPtr(destPtr.ToInt32() + (oldVertexCount * 3 * 4));
+                // oldVertexCount * 3 * 4, since we are dealing with byte offsets here
+				IntPtr dest2Ptr = new IntPtr(destPtr.ToInt32() + (oldVertexCount * 12));
 
 				int prePosVertexSize = 0;
 				int postPosVertexSize = 0;
@@ -246,50 +248,48 @@ namespace Axiom.Graphics {
 
 				if(wasSharedBuffer) {
 					// Precalculate any dimensions of vertex areas outside the position
-					IntPtr baseDestRemPtr = newRemainderBuffer.Lock(BufferLocking.Discard);
 					prePosVertexSize = posElem.Offset;
-					postPosVertexSize = prePosVertexSize + posElem.Size;
-					postPosVertexOffset = vbuf.VertexSize - postPosVertexSize;
+                    postPosVertexOffset = prePosVertexSize + posElem.Size;
+                    postPosVertexSize = vbuf.VertexSize - postPosVertexOffset;
 
-					// the 2 separate bits together should be the same size as the remainder buffer vertex
+                    // the 2 separate bits together should be the same size as the remainder buffer vertex
 					Debug.Assert(newRemainderBuffer.VertexSize == (prePosVertexSize + postPosVertexSize));
 
-					int baseSrcOffset = 0;
+                    IntPtr baseDestRemPtr = newRemainderBuffer.Lock(BufferLocking.Discard);
+
+                    int baseSrcOffset = 0;
 					int baseDestRemOffset = 0;
 
 					unsafe {
-						float* pDest = null;
-						float* pDest2 = null;
-						float* pSrc = null;
+                        float* pDest = (float*)destPtr.ToPointer();
+                        float* pDest2 = (float*)dest2Ptr.ToPointer();
 
-						int srcCount = 0, destCount = 0, dest2Count = 0;
+                        int destCount = 0, dest2Count = 0;
 
 						// Iterate over the vertices
 						for (int v = 0; v < oldVertexCount; v++) {
-							// Copy position, into both buffers
-							pSrc = (float*)((byte*)baseSrcPtr.ToPointer() + posElem.Offset);
-							pDest = (float*)destPtr.ToPointer();
-							pDest2 = pDest + (oldVertexCount * 3);
-
-							pDest[destCount++] = pDest2[dest2Count++] = pSrc[srcCount++];
-							pDest[destCount++] = pDest2[dest2Count++] = pSrc[srcCount++];
-							pDest[destCount++] = pDest2[dest2Count++] = pSrc[srcCount++];
+                            float* pSrc = (float*)((byte*)baseSrcPtr.ToPointer() + posElem.Offset + baseSrcOffset);
+                            
+                            // Copy position, into both buffers
+							pDest[destCount++] = pDest2[dest2Count++] = pSrc[0];
+							pDest[destCount++] = pDest2[dest2Count++] = pSrc[1];
+							pDest[destCount++] = pDest2[dest2Count++] = pSrc[2];
 
 							// now deal with any other elements 
 							// Basically we just memcpy the vertex excluding the position
 							if (prePosVertexSize > 0) {
 								Memory.Copy(
-									baseDestRemPtr, baseSrcPtr, 
-									baseDestRemOffset, baseSrcOffset, 
-									prePosVertexSize);
+                                    baseSrcPtr, baseDestRemPtr,
+                                    baseSrcOffset, baseDestRemOffset,
+                                    prePosVertexSize);
 							}
 
 							if (postPosVertexSize > 0) {
 								Memory.Copy(
-									baseDestRemPtr, baseSrcPtr, 
-									baseDestRemOffset + prePosVertexSize, 
-									baseSrcOffset + postPosVertexOffset, 
-									prePosVertexSize);
+                                    baseSrcPtr, baseDestRemPtr,
+									baseSrcOffset + postPosVertexOffset,
+                                    baseDestRemOffset + prePosVertexSize,
+                                    postPosVertexSize);
 							}
 
 							// increment the pointer offsets

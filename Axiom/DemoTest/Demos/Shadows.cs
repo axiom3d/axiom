@@ -54,7 +54,7 @@ namespace Demos {
 			scene.AmbientLight = ColorEx.Black;
 
 			// TODO: Check based on caps
-			int currentAtheneMaterial = 1;
+			int currentAtheneMaterial = 0;
 
 			// fixed light, dim
 			sunLight = scene.CreateLight("SunLight");
@@ -132,7 +132,13 @@ namespace Demos {
 			lightNode.SetAutoTracking(true, scene.RootSceneNode);
 
 			Mesh mesh = MeshManager.Instance.Load("athene.mesh");
-			mesh.BuildTangentVectors(0, 1);
+
+            short srcIdx, destIdx;
+
+            // the athene mesh requires tangent vectors
+            if(!mesh.SuggestTangentVectorBuildParams(out srcIdx, out destIdx)) {
+                mesh.BuildTangentVectors(srcIdx, destIdx);
+            }
 
 			SceneNode node = scene.RootSceneNode.CreateChildSceneNode();
 			athene = scene.CreateEntity("Athene", "athene.mesh");

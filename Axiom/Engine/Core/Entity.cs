@@ -446,11 +446,12 @@ namespace Axiom.Core {
 				SubEntity sub = new SubEntity();
 				sub.Parent = this;
 				sub.SubMesh = subMesh;
-				
-				if(subMesh.IsMaterialInitialized)
-					sub.MaterialName = subMesh.MaterialName;
 
-				subEntityList.Add(sub);
+                if (subMesh.IsMaterialInitialized) {
+                    sub.MaterialName = subMesh.MaterialName;
+                }
+
+                subEntityList.Add(sub);
 			}
 		}
 

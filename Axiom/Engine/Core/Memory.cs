@@ -5,8 +5,18 @@ namespace Axiom.Core {
 	///		Utility class for dealing with memory.
 	/// </summary>
 	public sealed class Memory {
-		/// <summary>
-		///		Method for copying data from one IntPtr to another.
+        #region Constructor
+
+        /// <summary>
+        ///     Don't want instances of this created.
+        /// </summary>
+        private Memory() {
+        }
+
+        #endregion Constructor
+
+        /// <summary>
+        ///		Method for copying data from one IntPtr to another.
 		/// </summary>
 		/// <param name="src">Source pointer.</param>
 		/// <param name="dest">Destination pointer.</param>
@@ -34,5 +44,21 @@ namespace Axiom.Core {
 				}
 			}
 		}
-	}
+
+        /// <summary>
+        ///     Sets the memory to 0 starting at the specified offset for the specified byte length.
+        /// </summary>
+        /// <param name="dest">Destination pointer.</param>
+        /// <param name="offset">Byte offset to start.</param>
+        /// <param name="length">Number of bytes to set.</param>
+        public static void Set(IntPtr dest, int offset, int length) {
+            unsafe {
+                byte* ptr = (byte*)dest.ToPointer();
+
+                for (int i = 0; i < length; i++) {
+                    ptr[i + offset] = 0;
+                }
+            }
+        }
+    }
 }

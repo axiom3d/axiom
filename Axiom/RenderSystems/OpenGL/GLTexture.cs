@@ -249,9 +249,8 @@ namespace Axiom.RenderSystems.OpenGL {
                     || textureType == TextureType.OneD 
                     || textureType == TextureType.ThreeD) {
 
-                    // load from stream
                     Image image = Image.FromFile(name);
-
+                    
                     if(name.EndsWith(".dds") && image.HasFlag(ImageFlags.CubeMap)) {
                         ImageList images = new ImageList();
 
@@ -460,9 +459,6 @@ namespace Axiom.RenderSystems.OpenGL {
 				int newImageSize = newWidth * newHeight * (hasAlpha ? 4 : 3);
 
 				tempData = new byte[newImageSize];
-
-				//IntPtr srcPtr = System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(src.Data, 0);
-				//IntPtr tmpPtr = System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(tempData, 0);
 
 				if(Glu.gluScaleImage(this.GLFormat, srcWidth, srcHeight,
 					Gl.GL_UNSIGNED_BYTE, src.Data, newWidth, newHeight, 
