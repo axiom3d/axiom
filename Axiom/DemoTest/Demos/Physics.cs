@@ -71,18 +71,18 @@ namespace Demos {
             MeshManager.Instance.CreatePlane("GrassPlane", p, 20000, 20000, 50, 50, true, 2, 50, 50, Vector3.UnitZ);
 
             // create an entity to reference this mesh
-            Entity planeEnt = sceneMgr.CreateEntity("Floor", "GrassPlane");
+            Entity planeEnt = scene.CreateEntity("Floor", "GrassPlane");
             planeEnt.MaterialName = "Example/RustySteel";
-            ((SceneNode)sceneMgr.RootSceneNode.CreateChild()).AttachObject(planeEnt);
+            ((SceneNode)scene.RootSceneNode.CreateChild()).AttachObject(planeEnt);
 
             // set ambient light to white
-            sceneMgr.TargetRenderSystem.LightingEnabled = true;
-            sceneMgr.AmbientLight = ColorEx.FromColor(System.Drawing.Color.Gray);
+            scene.TargetRenderSystem.LightingEnabled = true;
+            scene.AmbientLight = ColorEx.FromColor(System.Drawing.Color.Gray);
 
-            box = new Box(sceneMgr);
+            box = new Box(scene);
             box.Position = new Vector3(0, 400, 200);
 
-            box2 = new Box(sceneMgr);
+            box2 = new Box(scene);
             box2.Position = new Vector3(0, 100, 200);
 
             // HACK: Decouple this and register objects with the World
@@ -90,7 +90,7 @@ namespace Demos {
             box2.RigidBody = world.CreateBody(box2, DynamicsBodyType.Box, 0.0f);
 
             // setup the skybox
-            sceneMgr.SetSkyBox(true, "Skybox/CloudyHills", 2000.0f);
+            scene.SetSkyBox(true, "Skybox/CloudyHills", 2000.0f);
 
             camera.Position = new Vector3(0, 200, 700);
             camera.LookAt(Vector3.Zero);
@@ -101,13 +101,13 @@ namespace Demos {
 
             float force = 30.0f;
 
-            if(inputReader.IsKeyPressed(Keys.L))
+            if(input.IsKeyPressed(Keys.L))
                 box.RigidBody.AddForce(force, 0, 0);
-            if(inputReader.IsKeyPressed(Keys.J))
+            if(input.IsKeyPressed(Keys.J))
                 box.RigidBody.AddForce(-force, 0, 0);
-            if(inputReader.IsKeyPressed(Keys.I))
+            if(input.IsKeyPressed(Keys.I))
                 box.RigidBody.AddForce(0, 0, -force);
-            if(inputReader.IsKeyPressed(Keys.K))
+            if(input.IsKeyPressed(Keys.K))
                 box.RigidBody.AddForce(0, 0, force);
 
             UpdateDynamics(4 * e.TimeSinceLastFrame);

@@ -256,6 +256,174 @@ namespace Axiom.Core {
             return mesh;
         }
 
+        public Mesh CreateCurvedIllusionPlane(String name, Plane plane, float width, float height, float curvature, int xSegments, int ySegments, bool normals, int numberOfTexCoordSets, float uTiles, float vTiles, Vector3 upVector, Quaternion orientation, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer) {
+            Mesh mesh = CreateManual(name);
+            SubMesh subMesh = mesh.CreateSubMesh(name + "SubMesh");
+
+            // set up vertex data, use a single shared buffer
+            mesh.SharedVertexData = new VertexData();
+            VertexData vertexData = mesh.SharedVertexData;
+
+            // set up vertex declaration
+            VertexDeclaration vertexDeclaration = vertexData.vertexDeclaration;
+            int currentOffset = 0;
+
+            // always need positions
+            vertexDeclaration.AddElement(new VertexElement(0, currentOffset, VertexElementType.Float3, VertexElementSemantic.Position));
+            currentOffset += VertexElement.GetTypeSize(VertexElementType.Float3);
+
+            // optional normals
+            if(normals) {
+                vertexDeclaration.AddElement(new VertexElement(0, currentOffset, VertexElementType.Float3, VertexElementSemantic.Normal));
+                currentOffset += VertexElement.GetTypeSize(VertexElementType.Float3);
+            }
+
+            for(ushort i = 0; i < numberOfTexCoordSets; i++) {
+                // assumes 2d texture coordinates
+                vertexDeclaration.AddElement(new VertexElement(0, currentOffset, VertexElementType.Float2, VertexElementSemantic.TexCoords, i));
+                currentOffset += VertexElement.GetTypeSize(VertexElementType.Float2);
+            }
+
+            vertexData.vertexCount = (xSegments + 1) * (ySegments + 1);
+
+            // allocate vertex buffer
+            HardwareVertexBuffer vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(vertexDeclaration.GetVertexSize(0), vertexData.vertexCount, vertexBufferUsage, vertexShadowBuffer);
+
+            // set up the binding, one source only
+            VertexBufferBinding binding = vertexData.vertexBufferBinding;
+            binding.SetBinding(0, vertexBuffer);
+
+            // work out the transform required, default orientation of plane is normal along +z, distance 0
+            Matrix4 xlate, xform, rot;
+            Matrix3 rot3 = Matrix3.Identity;
+            xlate = rot = Matrix4.Identity;
+
+            // determine axes
+            Vector3 zAxis, yAxis, xAxis;
+            zAxis = plane.Normal;
+            zAxis.Normalize();
+            yAxis = upVector;
+            yAxis.Normalize();
+            xAxis = yAxis.Cross(zAxis);
+            if(xAxis.Length == 0) {
+                throw new Axiom.Exceptions.AxiomException("The up vector for a plane cannot be parallel to the planes normal.");
+            }
+
+            rot3.FromAxes(xAxis, yAxis, zAxis);
+            rot = rot3;
+
+            // set up standard xform from origin
+            xlate.Translation = plane.Normal * -plane.D;
+
+            // concatenate
+            xform = xlate * rot;
+
+            // generate vertex data, imagine a large sphere with the camera located near the top,
+            // the lower the curvature, the larger the sphere.  use the angle from the viewer to the
+            // points on the plane
+            float cameraPosition;      // camera position relative to the sphere center
+
+            // derive sphere radius
+            float sphereDistance;      // distance from the camera to the sphere along box vertex vector
+            float sphereRadius;
+
+            // actual values irrelevant, it's the relation between the sphere's radius and the camera's position which is important
+            float SPHERE_RADIUS = 100;
+            float CAMERA_DISTANCE = 5;
+            sphereRadius = SPHERE_RADIUS - curvature;
+            cameraPosition = sphereRadius - CAMERA_DISTANCE;
+
+            // lock the whole buffer
+            float xSpace = width / xSegments;
+            float ySpace = height / ySegments;
+            float halfWidth = width / 2;
+            float halfHeight = height / 2;
+            Vector3 vec = Vector3.Zero;
+            Vector3 norm = Vector3.Zero;
+            Vector3 min = Vector3.Zero;
+            Vector3 max = Vector3.Zero;
+            float maxSquaredLength = 0;
+            bool firstTime = true;
+
+            // generate vertex data
+            unsafe {
+                // lock the vertex buffer
+                IntPtr data = vertexBuffer.Lock(BufferLocking.Discard);
+
+                float* pData = (float*) data.ToPointer();
+
+                for(int y = 0; y < ySegments + 1; ++y) {
+                    for(int x = 0; x < xSegments + 1; ++x) {
+                        // centered on origin
+                        vec.x = (x * xSpace) - halfWidth;
+                        vec.y = (y * ySpace) - halfHeight;
+                        vec.z = 0.0f;
+
+                        // transform by orientation and distance
+                        vec = xform * vec;
+
+                        // assign to geometry
+                        *pData++ = vec.x;
+                        *pData++ = vec.y;
+                        *pData++ = vec.z;
+
+                        // build bounds as we go
+                        if(firstTime) {
+                            min = vec;
+                            max = vec;
+                            maxSquaredLength = vec.LengthSquared;
+                            firstTime = false;
+                        }
+                        else {
+                            min.Floor(vec);
+                            max.Ceil(vec);
+                            maxSquaredLength = MathUtil.Max(maxSquaredLength, vec.LengthSquared);
+                        }
+
+                        if(normals) {
+                            norm = Vector3.UnitZ;
+                            norm = orientation * norm;
+
+                            *pData++ = vec.x;
+                            *pData++ = vec.y;
+                            *pData++ = vec.z;
+                        }
+
+                        // generate texture coordinates, normalize position, modify by orientation to return +y up
+                        vec = orientation.Inverse() * vec;
+                        vec.Normalize();
+
+                        // find distance to sphere
+                        sphereDistance = MathUtil.Sqrt(cameraPosition * cameraPosition * (vec.y * vec.y - 1.0f) + sphereRadius * sphereRadius) - cameraPosition * vec.y;
+
+                        vec.x *= sphereDistance;
+                        vec.z *= sphereDistance;
+
+                        // use x and y on sphere as texture coordinates, tiled
+                        float s = vec.x * (0.01f * uTiles);
+                        float t = vec.z * (0.01f * vTiles);
+                        for(int i = 0; i < numberOfTexCoordSets; i++) {
+                            *pData++ = s;
+                            *pData++ = t;
+                        }
+                    } // x
+                } // y
+
+                // unlock the buffer
+                vertexBuffer.Unlock();
+            } // unsafe
+
+            // generate face list
+            subMesh.useSharedVertices = true;
+            Tesselate2DMesh(subMesh, xSegments + 1, ySegments + 1, false, indexBufferUsage, indexShadowBuffer);
+
+            // generate bounds for the mesh
+            mesh.BoundingBox = new AxisAlignedBox(min, max);
+            mesh.BoundingSphereRadius = MathUtil.Sqrt(maxSquaredLength);
+
+            return mesh;
+        }
+
         /// <summary>
         /// 
         /// </summary>

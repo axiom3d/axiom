@@ -43,7 +43,7 @@ namespace Demos {
             //mainViewport.ClearEveryFrame = false;
 
             // set some ambient light
-            sceneMgr.AmbientLight = new ColorEx(1.0f, 0.5f, 0.5f, 0.5f);
+            scene.AmbientLight = new ColorEx(1.0f, 0.5f, 0.5f, 0.5f);
 
             Plane plane = new Plane();
             // 5000 units from the camera
@@ -52,15 +52,15 @@ namespace Demos {
             plane.Normal = -Vector3.UnitY;
 
             // create the skybox
-            sceneMgr.SetSkyBox(true, "Skybox/Space", 50);
+            scene.SetSkyBox(true, "Skybox/Space", 50);
 
             // create a default point light
-            Light light = sceneMgr.CreateLight("MainLight");
+            Light light = scene.CreateLight("MainLight");
             light.Position = new Vector3(20, 80, 50);
 
             // stuff a dragon into the scene
-            Entity entity = sceneMgr.CreateEntity("razor", "razor.mesh");
-            sceneMgr.RootSceneNode.AttachObject(entity);			
+            Entity entity = scene.CreateEntity("razor", "razor.mesh");
+            scene.RootSceneNode.AttachObject(entity);			
 
             // TODO: Add particle system thrusters after post-VBO particles are implemented
         }

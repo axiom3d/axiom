@@ -45,22 +45,22 @@ namespace Demos {
 		
         protected override void CreateScene() {
             // set some ambient light
-            sceneMgr.TargetRenderSystem.LightingEnabled = true;
-            sceneMgr.AmbientLight = ColorEx.FromColor(System.Drawing.Color.Gray);
+            scene.TargetRenderSystem.LightingEnabled = true;
+            scene.AmbientLight = ColorEx.FromColor(System.Drawing.Color.Gray);
 
             // create an entity to have follow the path
-            Entity ogreHead = sceneMgr.CreateEntity("OgreHead", "ogrehead.mesh");
+            Entity ogreHead = scene.CreateEntity("OgreHead", "ogrehead.mesh");
 
             // create a scene node for the entity and attach the entity
-            SceneNode headNode = (SceneNode)sceneMgr.RootSceneNode.CreateChild();
+            SceneNode headNode = (SceneNode)scene.RootSceneNode.CreateChild();
             headNode.AttachObject(ogreHead);
 
             // create a cool glowing green particle system
             ParticleSystem greenyNimbus = ParticleSystemManager.Instance.CreateSystem("GreenyNimbus", "ParticleSystems/GreenyNimbus");
-            ((SceneNode)sceneMgr.RootSceneNode.CreateChild()).AttachObject(greenyNimbus);
+            ((SceneNode)scene.RootSceneNode.CreateChild()).AttachObject(greenyNimbus);
 
             // shared node for the 2 fountains
-            fountainNode = (SceneNode)sceneMgr.RootSceneNode.CreateChild();
+            fountainNode = (SceneNode)scene.RootSceneNode.CreateChild();
 
             // create the first fountain
             ParticleSystem fountain1 = ParticleSystemManager.Instance.CreateSystem("Fountain1", "ParticleSystems/Fountain");
@@ -78,7 +78,7 @@ namespace Demos {
 
             // create a cool glowing green particle system
             ParticleSystem rain = ParticleSystemManager.Instance.CreateSystem("Rain", "ParticleSystems/Rain");
-            ((SceneNode)sceneMgr.RootSceneNode.CreateChild(new Vector3(0, 1000, 0), Quaternion.Identity)).AttachObject(rain);
+            ((SceneNode)scene.RootSceneNode.CreateChild(new Vector3(0, 1000, 0), Quaternion.Identity)).AttachObject(rain);
             rain.FastForward(5.0f);
         }
 

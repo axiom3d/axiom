@@ -38,7 +38,7 @@ namespace Demos {
 
         protected override void CreateScene() {
             // set some ambient light
-            sceneMgr.AmbientLight = new ColorEx(1.0f, 0.5f, 0.5f, 0.5f);
+            scene.AmbientLight = new ColorEx(1.0f, 0.5f, 0.5f, 0.5f);
 
             Plane plane = new Plane();
             // 5000 units from the camera
@@ -47,18 +47,18 @@ namespace Demos {
             plane.Normal = -Vector3.UnitY;
 
             // create the skyplace 10000 units wide, tile the texture 3 times
-            sceneMgr.SetSkyPlane(true, plane, "Skyplane/Space", 10000, 3, true, 0);
+            scene.SetSkyPlane(true, plane, "Skyplane/Space", 10000, 3, true, 0);
 
             // set the far plane far off into the distance to view the whole skyplane
             camera.Far = 100000;
 
             // create a default point light
-            Light light = sceneMgr.CreateLight("MainLight");
+            Light light = scene.CreateLight("MainLight");
             light.Position = new Vector3(20, 80, 50);
 
             // stuff a dragon into the scene
-            Entity entity = sceneMgr.CreateEntity("dragon", "dragon.mesh");
-            sceneMgr.RootSceneNode.AttachObject(entity);
+            Entity entity = scene.CreateEntity("dragon", "dragon.mesh");
+            scene.RootSceneNode.AttachObject(entity);
         }
 
         #endregion

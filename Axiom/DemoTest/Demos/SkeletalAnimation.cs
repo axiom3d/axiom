@@ -20,21 +20,21 @@ namespace Demos {
         protected override void CreateScene() {
 
             // set some ambient light
-            sceneMgr.TargetRenderSystem.LightingEnabled = true;
-            sceneMgr.AmbientLight = ColorEx.FromColor(System.Drawing.Color.Gray);
+            scene.TargetRenderSystem.LightingEnabled = true;
+            scene.AmbientLight = ColorEx.FromColor(System.Drawing.Color.Gray);
 
             // create the robot entity
-            Entity entity = sceneMgr.CreateEntity("Robot", "robot.mesh");
+            Entity entity = scene.CreateEntity("Robot", "robot.mesh");
             animState = entity.GetAnimationState("Walk");
             animState.IsEnabled = true;
 
-            ((SceneNode)sceneMgr.RootSceneNode.CreateChild()).AttachObject(entity);
+            ((SceneNode)scene.RootSceneNode.CreateChild()).AttachObject(entity);
 
-            Light light = sceneMgr.CreateLight("BlueLight");
+            Light light = scene.CreateLight("BlueLight");
             light.Position = new Vector3(-200, -80, -100);
             light.Diffuse = new ColorEx(1.0f, .5f, .5f, 1.0f);
 
-            light = sceneMgr.CreateLight("GreenLight");
+            light = scene.CreateLight("GreenLight");
             light.Position = new Vector3(0, 0, -100);
             light.Diffuse = new ColorEx(1.0f, 0.5f, 1.0f, 0.5f);
 

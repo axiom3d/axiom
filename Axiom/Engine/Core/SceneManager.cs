@@ -653,16 +653,63 @@ namespace Axiom.Core {
             return modelMgr.CreatePlane(meshName, p, planeSize, planeSize, 1, 1, false, 1, 1, 1, up);
         }
 
-        /// <summary>
-        ///		Utility method for creating the planes of a skydome.
-        /// </summary>
-        /// <param name="plane"></param>
-        /// <param name="distance"></param>
-        /// <param name="orientation"></param>
-        /// <returns></returns>
-        protected SubMesh CreateSkydomePlane(BoxPlane plane, float curvature, float tiling, float distance, Quaternion orientation) {
-            // TODO: Implemenation of CreateSkydomePlane
-            return null;
+
+        protected Mesh CreateSkyDomePlane(BoxPlane plane, float curvature, float tiling, float distance, Quaternion orientation) {
+            Plane p = new Plane();
+            Vector3 up = Vector3.Zero;
+            String meshName = "SkyDomePlane_";;
+
+            // set up plane equation
+            p.D = distance;
+
+            switch(plane) {
+                case BoxPlane.Front:
+                    p.Normal = Vector3.UnitZ;
+                    up = Vector3.UnitY;
+                    meshName += "Front";
+                    break;
+                case BoxPlane.Back:
+                    p.Normal = -Vector3.UnitZ;
+                    up = Vector3.UnitY;
+                    meshName += "Back";
+                    break;
+                case BoxPlane.Left:
+                    p.Normal = Vector3.UnitX;
+                    up = Vector3.UnitY;
+                    meshName += "Left";
+                    break;
+                case BoxPlane.Right:
+                    p.Normal = -Vector3.UnitX;
+                    up = Vector3.UnitY;
+                    meshName += "Right";
+                    break;
+                case BoxPlane.Up:
+                    p.Normal = -Vector3.UnitY;
+                    up = Vector3.UnitZ;
+                    meshName += "Up";
+                    break;
+                case BoxPlane.Down:
+                    return null;
+            }
+
+            // modify orientation
+            p.Normal = orientation * p.Normal;
+            up = orientation * up;
+
+            // check to see if mesh exists
+            MeshManager meshManager = MeshManager.Instance;
+            Mesh planeMesh = (Mesh) meshManager[meshName];
+
+            // destroy existing
+            if(planeMesh != null) {
+                meshManager.Unload(planeMesh);
+                planeMesh.Dispose();
+            }
+
+            // create new
+            float planeSize = distance * 2;
+            int segments = 16;
+            return planeMesh = meshManager.CreateCurvedIllusionPlane(meshName, p, planeSize, planeSize, curvature, segments, segments, false, 1, tiling, tiling, up, orientation, BufferUsage.DynamicWriteOnly, BufferUsage.StaticWriteOnly, false, false);
         }
 
         /// <summary>
@@ -753,6 +800,22 @@ namespace Axiom.Core {
             fogDensity = density;
             fogStart = linearStart;
             fogEnd = linearEnd;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="color"></param>
+        /// <param name="density"></param>
+        public void SetFog(FogMode mode, ColorEx color, float density) {
+            // set all the fog information
+            fogMode = mode;
+            fogColor = color;
+            fogDensity = density;
+            fogStart = 0.0f;
+            fogEnd = 1.0f;
         }
 
         /// <summary>
@@ -863,6 +926,71 @@ namespace Axiom.Core {
 
                     skyBoxNode.AttachObject(skyBoxEntities[i]);
                 } // for
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isEnabled"></param>
+        /// <param name="materialName"></param>
+        /// <param name="curvature"></param>
+        /// <param name="tiling"></param>
+        public void SetSkyDome(bool isEnabled, String materialName, float curvature, float tiling) {
+            SetSkyDome(isEnabled, materialName, curvature, tiling, 4000, true, Quaternion.Identity);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isEnabled"></param>
+        /// <param name="materialName"></param>
+        /// <param name="curvature"></param>
+        /// <param name="tiling"></param>
+        /// <param name="distance"></param>
+        /// <param name="drawFirst"></param>
+        /// <param name="orientation"></param>
+        public void SetSkyDome(bool isEnabled, String materialName, float curvature, float tiling, float distance, bool drawFirst, Quaternion orientation) {
+            isSkyDomeEnabled = isEnabled;
+            if(isEnabled) {
+                Material material = MaterialManager.Instance[materialName];
+
+                if(material == null) {
+                    throw new AxiomException(String.Format("Could not find skydome material '{0}'", materialName));
+                }
+
+                // make sure the material doesn't update the depth buffer
+                material.DepthWrite = false;
+                // ensure loading
+                material.Load();
+
+                isSkyDomeDrawnFirst = drawFirst;
+
+                // create node
+                if(skyDomeNode == null) {
+                    skyDomeNode = CreateSceneNode("SkyDomeNode");
+                }
+                else {
+                    skyDomeNode.DetachAllObjects();
+                }
+
+                // set up the dome (5 planes)
+                for(int i = 0; i < 5; ++i) {
+                    Mesh planeMesh = CreateSkyDomePlane((BoxPlane) i, curvature, tiling, distance, orientation);
+                    String entityName = "SkyDomePlame" + i.ToString();
+
+                    // create entity
+                    if(skyDomeEntities[i] != null) {
+                        // TODO: Remove the entity damn it
+                    }
+
+                    skyDomeEntities[i] = CreateEntity(entityName, planeMesh.Name);
+                    skyDomeEntities[i].MaterialName = material.Name;
+
+                    // attach to node
+                    skyDomeNode.AttachObject(skyDomeEntities[i]);
+                }
             }
         }
 
@@ -1314,7 +1442,7 @@ namespace Axiom.Core {
             if(isSkyDomeEnabled) {
                 qid = isSkyDomeDrawnFirst ? RenderQueueGroupID.One : RenderQueueGroupID.Nine;
 
-                for(int plane = 0; plane < 5; plane++)
+                for(int plane = 0; plane < 5; ++plane)
                     renderQueue.AddRenderable(skyDomeEntities[plane].GetSubEntity(0), 1, qid);
             }
         }

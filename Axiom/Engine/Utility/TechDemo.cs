@@ -27,7 +27,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 using Axiom.Configuration;
 using Axiom.Core;
@@ -38,44 +40,82 @@ using Axiom.SubSystems.Rendering;
 
 namespace Axiom.Utility {
     /// <summary>
-    /// A base class that can be used to get a head start on writing a game or technical demo using the engine.
+    ///     Base class for Axiom examples.
     /// </summary>
     public abstract class TechDemo : IDisposable {
+        #region Protected Fields
         protected Engine engine;
         protected Camera camera;
-        protected Viewport mainViewport;
-        protected SceneManager sceneMgr;
-        protected RenderWindow renderWindow;
-        protected InputSystem inputReader;
-        protected Vector3 camVec = Vector3.Zero;
-        protected float camScale;
+        protected Viewport viewport;
+        protected SceneManager scene;
+        protected RenderWindow window;
+        protected InputSystem input;
+        protected Vector3 cameraVector = Vector3.Zero;
+        protected float cameraScale;
+        #endregion Protected Fields
+
+        #region Constructors & Destructors
 
         public TechDemo() {
             // set the global error handler for this applications thread of excecution.
-            System.Windows.Forms.Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(GlobalErrorHandler);
+            Application.ThreadException += new ThreadExceptionEventHandler(GlobalErrorHandler);
 
             // add event handlers for frame events
             Engine.Instance.FrameStarted += new FrameEvent(OnFrameStarted);
             Engine.Instance.FrameEnded += new FrameEvent(OnFrameEnded);
         }
 
-        public bool Start() {
-            if(!Setup())
+        #endregion Constructors & Destructors
+
+        #region Protected Methods
+
+        protected Boolean Configure() {
+            // show the config dialog
+            if(engine.ShowConfigDialog()) {
+                window = engine.Initialize(true);
+                engine.ShowDebugOverlay(true);
+                return true;
+            }
+            else {
+                // cancel configuration
                 return false;
-
-            // start the engines rendering loop
-            engine.StartRendering();
-
-            //			engine.Shutdown();
-
-            return true;
+            }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        virtual protected bool Setup() {
+        protected void CreateCamera() {
+            // create a camera and initialize its position
+            camera = scene.CreateCamera("MainCamera");
+            camera.Position = new Vector3(0, 0, 500);
+            camera.LookAt(new Vector3(0, 0, -300));
+
+            // set the near clipping plane to be very close
+            camera.Near = 5;
+        }
+
+        protected void TakeScreenshot() {
+            string[] temp = Directory.GetFiles(Environment.CurrentDirectory, "screenshot*.jpg");
+            window.SaveToFile(String.Format("screenshot{0}.jpg", temp.Length + 1));
+        }
+
+        #endregion Protected Methods
+
+        #region Protected Virtual Methods
+
+        protected virtual void ChooseSceneManager() {
+            // Get the SceneManager, a generic one by default
+            // REFACTOR: Create SceneManagerFactories and have them register their supported type?
+            scene = engine.SceneManagers[SceneType.Generic];
+        }
+
+        protected virtual void CreateViewports() {
+            Debug.Assert(window != null, "Attempting to use a null RenderWindow.");
+
+            // create a new viewport and set it's background color
+            viewport = window.CreateViewport(camera, 0, 0, 100, 100, 100);
+            viewport.BackgroundColor = ColorEx.FromColor(Color.Black);
+        }
+
+        protected virtual Boolean Setup() {
             // get a reference to the engine singleton
             engine = Engine.Instance;
 
@@ -83,32 +123,33 @@ namespace Axiom.Utility {
             engine.Setup();
 
             // allow for setting up resource gathering
-            this.SetupResources();
+            SetupResources();
 
             //show the config dialog and collect options
-            if(!Configure())
+            if(!Configure()) {
                 return false;
-			
-            this.ChooseSceneManager();
-            this.CreateCamera();
-            this.CreateViewports();
+            }
+
+            ChooseSceneManager();
+            CreateCamera();
+            CreateViewports();
+
+            // set default mipmap level
+            TextureManager.Instance.DefaultNumMipMaps = 5;
 
             // call the overridden CreateScene method
             CreateScene();
 
             // retreive and initialize the input system
-            inputReader = engine.InputSystem;
-            inputReader.Initialize(renderWindow, null, true, true, false);
+            input = engine.InputSystem;
+            input.Initialize(window, null, true, true, false);
 
             return true;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         protected virtual void SetupResources() {
             EngineConfig config = new EngineConfig();
-	
+
             // load the config file
             // relative from the location of debug and releases executables
             config.ReadXml("EngineConfig.xml");
@@ -119,159 +160,123 @@ namespace Axiom.Utility {
             }
         }
 
-        /// <summary>
-        /// Configures the application 
-        /// </summary>
-        /// <returns></returns>
-        protected bool Configure() {
-            // show the config dialog
-            if(engine.ShowConfigDialog()) {
-                renderWindow = engine.Initialize(true);
-                engine.ShowDebugOverlay(true);
-                return true;
-            }
-			
-            // cancel configuration
-            return false;
-        }
+        #endregion Protected Virtual Methods
+
+        #region Protected Abstract Methods
 
         /// <summary>
         /// 
-        /// </summary>
-        protected virtual void ChooseSceneManager() {
-            // Get the SceneManager, a generic one by default
-            // REFACTOR: Create SceneManagerFactories and have them register their supported type?
-            sceneMgr = engine.SceneManagers[SceneType.Generic];
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected void CreateCamera() {
-            // create a camera and initialize its position
-            camera = sceneMgr.CreateCamera("MainCamera");
-            camera.Position = new Vector3(0, 0, 500);
-            camera.LookAt(new Vector3(0, 0, -300));
-
-            // set the near clipping plane to be very close 
-            camera.Near = 5;
-
-        }
-
-        /// <summary>
-        ///		Called to create the default viewports.
-        /// </summary>
-        virtual protected void CreateViewports() {
-            Debug.Assert(renderWindow != null, "Attempting to use a null RenderWindow.");
-
-            // create a new viewport and set it's background color
-            mainViewport = renderWindow.CreateViewport(camera, 0, 0, 100, 100, 100);
-            mainViewport.BackgroundColor = ColorEx.FromColor(System.Drawing.Color.Black);
-
-        }
-
-        /// <summary>
-        /// Called to create the scene to be rendered each frame by the renderer.
         /// </summary>
         protected abstract void CreateScene();
 
-        /// <summary>
-        ///		Used to set up the events for the RenderSystem.  Provides default camera movement behavior
-        ///		and a few other basic functions, but can be overridden by base classes.  If overridden, the base class
-        ///		method should be called first. 
-        /// </summary>
-        protected virtual bool OnFrameStarted(object source, FrameEventArgs e) {
-            // reset the camera
-            camVec.x = 0;
-            camVec.y = 0;
-            camVec.z = 0;
+        #endregion Protected Abstract Methods
 
-            // set the scaling of camera motion
-            camScale = 100 * e.TimeSinceLastFrame;
+        #region Public Methods
 
-            // TODO: Move this into an event queueing mechanism that is processed every frame
-            inputReader.Capture();
-
-            if(inputReader.IsKeyPressed(Keys.Escape)) {
-                // returning false from the FrameStart event will cause the engine's render loop to shut down
-                Engine.Instance.Shutdown();
+        public Boolean Start() {
+            if(!Setup()) {
+                return false;
             }
 
-            if(inputReader.IsKeyPressed(Keys.A))
-                camVec.x = -camScale;
-
-            if(inputReader.IsKeyPressed(Keys.D))
-                camVec.x = camScale;
-
-            if(inputReader.IsKeyPressed(Keys.W))
-                camVec.z = -camScale;
-
-            if(inputReader.IsKeyPressed(Keys.S))
-                camVec.z = camScale;
-
-            if(inputReader.IsKeyPressed(Keys.Left))
-                camera.Yaw(camScale);
-
-            if(inputReader.IsKeyPressed(Keys.Right))
-                camera.Yaw(-camScale);
-
-            if(inputReader.IsKeyPressed(Keys.Up))
-                camera.Pitch(camScale);
-
-            if(inputReader.IsKeyPressed(Keys.Down))
-                camera.Pitch(-camScale);
-
-            if(inputReader.IsKeyPressed(Keys.T))
-                camera.SceneDetail = SceneDetailLevel.Wireframe;
-
-            if(inputReader.IsKeyPressed(Keys.Y))
-                camera.SceneDetail = SceneDetailLevel.Solid;
-
-            if(inputReader.IsKeyPressed(Keys.P))
-                TakeScreenshot();
-
-            if(inputReader.IsKeyPressed(Keys.B))
-                sceneMgr.ShowBoundingBoxes = !sceneMgr.ShowBoundingBoxes;
-
-            float camYaw = -inputReader.RelativeMouseX * 0.13f;
-            float camPitch = -inputReader.RelativeMouseY * 0.13f;
-
-            camVec.z += -inputReader.RelativeMouseZ * 0.13f;
-
-            camera.Yaw(camYaw);
-            camera.Pitch(camPitch);
-
-            // move the camera based on the accumulated movement vector
-            camera.MoveRelative(camVec);
+            // start the engines rendering loop
+            engine.StartRendering();
 
             return true;
         }
 
-        /// <summary>
-        /// Used to set up the events for the RenderSystem.  Should be overridden by base classes.
-        /// </summary>
-        protected virtual bool OnFrameEnded(object source, FrameEventArgs e) {
+        public void Dispose() {
+            // ask the engine to dispose of itself
+            engine.Dispose();
+        }
+
+        #endregion Public Methods
+
+        #region Event Handlers
+        protected virtual Boolean OnFrameEnded(Object source, FrameEventArgs e) {
             // do nothing by default
             return true;
         }
 
-        /// <summary>
-        ///		Used to take a screenshot of the current camera view.
-        /// </summary>
-        protected void TakeScreenshot() {
-            string[] temp = Directory.GetFiles(Environment.CurrentDirectory, "screenshot*.jpg");
+        protected virtual Boolean OnFrameStarted(Object source, FrameEventArgs e) {
+            // reset the camera
+            cameraVector.x = 0;
+            cameraVector.y = 0;
+            cameraVector.z = 0;
 
-            renderWindow.SaveToFile(String.Format("screenshot{0}.jpg", temp.Length + 1));
+            // set the scaling of camera motion
+            cameraScale = 100 * e.TimeSinceLastFrame;
+
+            // TODO: Move this into an event queueing mechanism that is processed every frame
+            input.Capture();
+
+            if(input.IsKeyPressed(Keys.Escape)) {
+                // returning false from the FrameStart event will cause the engine's render loop to shut down
+                Engine.Instance.Shutdown();
+            }
+
+            if(input.IsKeyPressed(Keys.A)) {
+                cameraVector.x = -cameraScale;
+            }
+
+            if(input.IsKeyPressed(Keys.D)) {
+                cameraVector.x = cameraScale;
+            }
+
+            if(input.IsKeyPressed(Keys.W)) {
+                cameraVector.z = -cameraScale;
+            }
+
+            if(input.IsKeyPressed(Keys.S)) {
+                cameraVector.z = cameraScale;
+            }
+
+            if(input.IsKeyPressed(Keys.Left)) {
+                camera.Yaw(cameraScale);
+            }
+
+            if(input.IsKeyPressed(Keys.Right)) {
+                camera.Yaw(-cameraScale);
+            }
+
+            if(input.IsKeyPressed(Keys.Up)) {
+                camera.Pitch(cameraScale);
+            }
+
+            if(input.IsKeyPressed(Keys.Down)) {
+                camera.Pitch(-cameraScale);
+            }
+
+            if(input.IsKeyPressed(Keys.T)) {
+                camera.SceneDetail = SceneDetailLevel.Wireframe;
+            }
+
+            if(input.IsKeyPressed(Keys.Y)) {
+                camera.SceneDetail = SceneDetailLevel.Solid;
+            }
+
+            if(input.IsKeyPressed(Keys.P)) {
+                TakeScreenshot();
+            }
+
+            if(input.IsKeyPressed(Keys.B)) {
+                scene.ShowBoundingBoxes = !scene.ShowBoundingBoxes;
+            }
+
+            float cameraYaw = -input.RelativeMouseX * 0.13f;
+            float cameraPitch = -input.RelativeMouseY * 0.13f;
+
+            cameraVector.z += -input.RelativeMouseZ * 0.13f;
+
+            camera.Yaw(cameraYaw);
+            camera.Pitch(cameraPitch);
+
+            // move the camera based on the accumulated movement vector
+            camera.MoveRelative(cameraVector);
+
+            return true;
         }
 
-        #region Global Error Handling
-
-        /// <summary>
-        ///		Global error handler to trap any unhandled exceptions.  Exception will be displayed and logged.
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
-        public static void GlobalErrorHandler(object source, System.Threading.ThreadExceptionEventArgs e) {
+        public static void GlobalErrorHandler(Object source, ThreadExceptionEventArgs e) {
             // show the error
             MessageBox.Show("An exception has occured.  Please check the log file for more information.\n\nError:\t" + e.Exception.ToString(), "Exception!");
 
@@ -279,18 +284,6 @@ namespace Axiom.Utility {
             //System.Diagnostics.Trace.WriteLine(e.Exception.ToString());
         }
 
-        #endregion
-
-        #region Implementation of IDisposable
-
-        /// <summary>
-        ///		Called to shutdown the engine and all of it's resources.
-        /// </summary>
-        public void Dispose() {
-            // ask the engine to dispose of itself
-            engine.Dispose();
-        }
-        #endregion
-
+        #endregion Event Handlers
     }
 }

@@ -40,14 +40,14 @@ namespace Demos {
 
         protected override void CreateScene() {
             // set some ambient light
-            sceneMgr.AmbientLight = new ColorEx(1.0f, 0.5f, 0.5f, 0.5f);
+            scene.AmbientLight = new ColorEx(1.0f, 0.5f, 0.5f, 0.5f);
 
             // create a point light (default)
-            Light light = sceneMgr.CreateLight("MainLight");
+            Light light = scene.CreateLight("MainLight");
             light.Position = new Vector3(20, 80, 50);
 
             // create the initial knot entity
-            Entity knotEntity = sceneMgr.CreateEntity("Knot", "knot.mesh");
+            Entity knotEntity = scene.CreateEntity("Knot", "knot.mesh");
             knotEntity.MaterialName = "Examples/TransparentTest";
 
             // get a reference to the material for modification
@@ -57,13 +57,13 @@ namespace Demos {
             material.Ambient = new ColorEx(1.0f, 0.2f, 0.2f, 0.2f);
 
             // add the objects to the scene
-            SceneNode rootNode = sceneMgr.RootSceneNode;
+            SceneNode rootNode = scene.RootSceneNode;
             //rootNode.AttachObject(knotEntity);
 
             Entity clone = null;
 
             for(int i = 0; i < 10; i++) {
-                SceneNode node = sceneMgr.CreateSceneNode();
+                SceneNode node = scene.CreateSceneNode();
 
                 Vector3 nodePos = new Vector3();
 

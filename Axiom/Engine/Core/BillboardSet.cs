@@ -437,8 +437,8 @@ namespace Axiom.Core {
         ///		Update the bounds of the BillboardSet.
         /// </summary>
         public virtual void UpdateBounds() {
-            Vector3 min = new Vector3(Single.PositiveInfinity, Single.PositiveInfinity, Single.PositiveInfinity);
-            Vector3 max = new Vector3(Single.NegativeInfinity, Single.NegativeInfinity, Single.NegativeInfinity);
+            Vector3 min = new Vector3(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
+            Vector3 max = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
 
             for(int i = 0; i < activeBillboards.Count; i++) {
                 Billboard billboard = (Billboard)activeBillboards[i];

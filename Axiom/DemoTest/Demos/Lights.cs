@@ -67,18 +67,18 @@ namespace Demos {
 		
         protected override void CreateScene() {
             // set some ambient light
-            sceneMgr.TargetRenderSystem.LightingEnabled = true;
-            sceneMgr.AmbientLight = ColorEx.FromColor(System.Drawing.Color.Gray);
+            scene.TargetRenderSystem.LightingEnabled = true;
+            scene.AmbientLight = ColorEx.FromColor(System.Drawing.Color.Gray);
 
             // create the ogre head
-            Entity ogre = sceneMgr.CreateEntity("OgreHead", "ogrehead.mesh");
+            Entity ogre = scene.CreateEntity("OgreHead", "ogrehead.mesh");
 
             // attach the ogre to the scene
-            sceneMgr.RootSceneNode.AttachObject(ogre);
+            scene.RootSceneNode.AttachObject(ogre);
 
             // create nodes for the billboard sets
-            redYellowLightsNode = (SceneNode)sceneMgr.RootSceneNode.CreateChild();
-            greenBlueLightsNode = (SceneNode)sceneMgr.RootSceneNode.CreateChild();
+            redYellowLightsNode = (SceneNode)scene.RootSceneNode.CreateChild();
+            greenBlueLightsNode = (SceneNode)scene.RootSceneNode.CreateChild();
 
             // create a billboard set for creating billboards
             redYellowLights = new BillboardSet("RedYellowLights", 5);
@@ -106,25 +106,25 @@ namespace Demos {
             greenLightBoard = greenBlueLights.CreateBillboard(redLightPos, ColorEx.FromColor(Color.Black));
 
             // red light in off state
-            redLight = sceneMgr.CreateLight("RedLight");
+            redLight = scene.CreateLight("RedLight");
             redLight.Position = redLightPos;
             redLight.Diffuse = ColorEx.FromColor(Color.Black);
             redYellowLightsNode.AttachObject(redLight);
 
             // yellow light in off state
-            yellowLight = sceneMgr.CreateLight("YellowLight");
+            yellowLight = scene.CreateLight("YellowLight");
             yellowLight.Position = yellowLightPos;
             yellowLight.Diffuse = ColorEx.FromColor(Color.Black);
             redYellowLightsNode.AttachObject(yellowLight);
 
             // green light in off state
-            greenLight = sceneMgr.CreateLight("GreenLight");
+            greenLight = scene.CreateLight("GreenLight");
             greenLight.Position = greenLightPos;
             greenLight.Diffuse = ColorEx.FromColor(Color.Black);
             greenBlueLightsNode.AttachObject(greenLight);
 
             // blue light in off state
-            blueLight = sceneMgr.CreateLight("BlueLight");
+            blueLight = scene.CreateLight("BlueLight");
             blueLight.Position = blueLightPos;
             blueLight.Diffuse = ColorEx.FromColor(Color.Black);
             greenBlueLightsNode.AttachObject(blueLight);
@@ -152,7 +152,7 @@ namespace Demos {
             ControllerManager.Instance.CreateController(blueLightFlasher, blueLightFunc);
 
             // set a basic skybox
-            sceneMgr.SetSkyBox(true, "Skybox/Space", 2000.0f);
+            scene.SetSkyBox(true, "Skybox/Space", 2000.0f);
         }
 
         protected override bool OnFrameStarted(object source, FrameEventArgs e) {

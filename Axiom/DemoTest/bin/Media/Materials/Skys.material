@@ -42,3 +42,18 @@ Skyplane/Space
 		texture spacesky.jpg
 	}	
 }
+
+// Scrolling cloudy sky
+Examples/CloudySky
+{
+	// No dynamic lighting, fully lit
+	lighting off
+	// Depth writing off (always display stuff in front of it)
+	depth_write off
+
+	// Texture layer 0
+	{
+		texture clouds.jpg
+		scroll_anim 0.15 0
+	}
+}

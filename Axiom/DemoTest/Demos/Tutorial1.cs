@@ -54,7 +54,7 @@ namespace Demos {
                 ColorEx.FromColor(Color.Green));
 
             // create a node for the line
-            SceneNode node = (SceneNode)sceneMgr.RootSceneNode.CreateChild();
+            SceneNode node = (SceneNode)scene.RootSceneNode.CreateChild();
             SceneNode lineNode = (SceneNode)node.CreateChild();
             SceneNode triNode = (SceneNode)node.CreateChild();
             triNode.Position = new Vector3(50, 0, 0);
