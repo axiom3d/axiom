@@ -32,11 +32,14 @@ namespace Demos {
         [STAThread]
         private static void Main(string[] args) {
             try {
-				// get the type of the demo class
-				Type type = Type.GetType("Demos.Lights");
+				//using(DemoBrowser browser = new DemoBrowser()) {
+				//	browser.Start();
+				//}
 
-				// create an instance of the demo class and start it up 
-				using(TechDemo demo = (TechDemo)Activator.CreateInstance(type)) { 
+				// Change me to whatever demo you want to run for the meantime until the new browser is done
+				Type demoType = Type.GetType("Demos.CelShading");
+
+				using(TechDemo demo = (TechDemo)Activator.CreateInstance(demoType)) {
 					demo.Start();
 				}
             }
