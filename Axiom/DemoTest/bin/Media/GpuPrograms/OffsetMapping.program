@@ -7,6 +7,14 @@ vertex_program Examples/OffsetMappingVP cg
 } 
 
 // Bump map with parallax fragment program 
+fragment_program Examples/OffsetMappingFP cg
+{ 
+   source OffsetMapping.cg
+   entry_point main_fp
+   profiles ps_2_0 arbfp1
+} 
+
+// Bump map with parallax fragment program 
 fragment_program Examples/OffsetMappingPS asm 
 { 
    source OffsetMapping_specular.asm 
