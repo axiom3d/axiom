@@ -46,22 +46,70 @@ namespace Axiom.Core {
 	///		obscure the other in some predetermined way.
 	///	</remarks>
 	public sealed class Viewport {
-		#region Protected member variables
+		#region Fields
 		
 		/// <summary>
 		///		Camera that this viewport is attached to.
 		/// </summary>
 		private Camera camera;
+		/// <summary>
+		///		Render target that is using this viewport.
+		/// </summary>
 		private RenderTarget target;
-		private float relativeLeft, relativeTop, relativeWidth, relativeHeight;
-		private int actualLeft, actualTop, actualWidth, actualHeight;
+		/// <summary>
+		///		Relative left [0.0, 1.0].
+		/// </summary>
+		private float relativeLeft;
+		/// <summary>
+		///		Relative top [0.0, 1.0].
+		/// </summary>
+		private float relativeTop;
+		/// <summary>
+		///		Relative width [0.0, 1.0].
+		/// </summary>
+		private float relativeWidth;
+		/// <summary>
+		///		Relative height [0.0, 1.0].
+		/// </summary>
+		private float relativeHeight;
+		/// <summary>
+		///		Absolute left edge of the viewport (in pixels).
+		/// </summary>
+		private int actualLeft;
+		/// <summary>
+		///		Absolute top edge of the viewport (in pixels).
+		/// </summary>
+		private int actualTop;
+		/// <summary>
+		///		Absolute width of the viewport (in pixels).
+		/// </summary>
+		private int actualWidth;
+		/// <summary>
+		///		Absolute height of the viewport (in pixels).
+		/// </summary>
+		private int actualHeight;
+		/// <summary>
+		///		Depth order of the viewport, for sorting.
+		/// </summary>
 		private int zOrder;
+		/// <summary>
+		///		Background color of the viewport.
+		/// </summary>
 		private ColorEx backColor;
+		/// <summary>
+		///		Should this viewport be cleared very frame?
+		/// </summary>
 		private bool clearEveryFrame;
+		/// <summary>
+		///		Has this viewport been updated?
+		/// </summary>
 		private bool isUpdated;
+		/// <summary>
+		///		Should we show overlays on this viewport?
+		/// </summary>
 		private bool showOverlays;
 		
-		#endregion
+		#endregion Fields
 
 		#region Constructor
 
@@ -71,8 +119,8 @@ namespace Axiom.Core {
 		///		changes in the target's size: e.g. to fill the whole area,
 		///		values of 0,0,100,100 are appropriate.
 		/// </summary>
-		/// <param name="camera">Pointer to a camera to be the source for the image.</param>
-		/// <param name="target">Pointer to the render target to be the destination for the rendering.</param>
+		/// <param name="camera">Reference to the camera to be the source for the image.</param>
+		/// <param name="target">Reference to the render target to be the destination for the rendering.</param>
 		/// <param name="left">Left</param>
 		/// <param name="top">Top</param>
 		/// <param name="width">Width</param>
@@ -154,7 +202,7 @@ namespace Axiom.Core {
 		#region Public properties
 
 		/// <summary>
-		/// Retrieves a reference to the render target for this viewport.
+		///		Retrieves a reference to the render target for this viewport.
 		/// </summary>
 		public RenderTarget Target {
 			get { 
@@ -166,7 +214,7 @@ namespace Axiom.Core {
 		}
 
 		/// <summary>
-		/// Retrieves a reference to the camera for this viewport.
+		///		Retrieves a reference to the camera for this viewport.
 		/// </summary>
 		public Camera Camera {
 			get { 
@@ -178,7 +226,7 @@ namespace Axiom.Core {
 		}
 
 		/// <summary>
-		/// Gets and sets the background color which will be used to clear the screen every frame.
+		///		Gets/Sets the background color which will be used to clear the screen every frame.
 		/// </summary>
 		public ColorEx BackgroundColor {
 			get { 
@@ -189,7 +237,7 @@ namespace Axiom.Core {
 			}
 		}
 		/// <summary>
-		/// Gets one of the relative dimensions of the viewport, a value between 0.0 and 1.0.
+		///		Gets the relative top edge of the viewport, a value between 0.0 and 1.0.
 		/// </summary>
 		public float Top {
 			get { 
@@ -198,7 +246,7 @@ namespace Axiom.Core {
 		}
 
 		/// <summary>
-		/// Gets one of the relative dimensions of the viewport, a value between 0.0 and 1.0.
+		///		Gets the relative left edge of the viewport, a value between 0.0 and 1.0.
 		/// </summary>
 		public float Left {
 			get { 
@@ -207,7 +255,7 @@ namespace Axiom.Core {
 		}
 
 		/// <summary>
-		/// Gets one of the relative dimensions of the viewport, a value between 0.0 and 1.0.
+		///		Gets the relative width of the viewport, a value between 0.0 and 1.0.
 		/// </summary>
 		public float Width {
 			get { 
@@ -216,7 +264,7 @@ namespace Axiom.Core {
 		}
 
 		/// <summary>
-		/// Gets one of the relative dimensions of the viewport, a value between 0.0 and 1.0.
+		///		Gets the relative height of the viewport, a value between 0.0 and 1.0.
 		/// </summary>
 		public float Height {
 			get { 
@@ -225,7 +273,7 @@ namespace Axiom.Core {
 		}
 
 		/// <summary>
-		/// Gets the ZOrder of this viewport.
+		///		Gets the ZOrder of this viewport.
 		/// </summary>
 		public int ZOrder {
 			get { 
@@ -234,7 +282,7 @@ namespace Axiom.Core {
 		}
 
 		/// <summary>
-		/// Gets one of the actual dimensions of the viewport, a value in pixels.
+		///		Gets the actual top edge of the viewport, a value in pixels.
 		/// </summary>
 		public int ActualTop {
 			get { 
@@ -243,7 +291,7 @@ namespace Axiom.Core {
 		}
 
 		/// <summary>
-		/// Gets one of the actual dimensions of the viewport, a value in pixels.
+		///		Gets the actual left edge of the viewport, a value in pixels.
 		/// </summary>
 		public int ActualLeft {
 			get { 
@@ -252,7 +300,7 @@ namespace Axiom.Core {
 		}
 
 		/// <summary>
-		/// Gets one of the actual dimensions of the viewport, a value in pixels.
+		///		Gets the actual width of the viewport, a value in pixels.
 		/// </summary>
 		public int ActualWidth {
 			get { 
@@ -261,7 +309,7 @@ namespace Axiom.Core {
 		}
 
 		/// <summary>
-		/// Gets one of the actual dimensions of the viewport, a value in pixels.
+		///		Gets the actual height of the viewport, a value in pixels.
 		/// </summary>
 		public int ActualHeight {
 			get { 
@@ -316,7 +364,7 @@ namespace Axiom.Core {
 		}
 
 		/// <summary>
-		/// Gets and sets the IsUpdated value.
+		///		Gets/Sets the IsUpdated value.
 		/// </summary>
 		public bool IsUpdated {
 			get { 
@@ -349,10 +397,10 @@ namespace Axiom.Core {
 		///		represented as real values between 0 and 1. i.e. the full
 		///		target area is 0, 0, 1, 1.
 		/// </remarks>
-		/// <param name="left"></param>
-		/// <param name="top"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
+		/// <param name="left">Left edge of the viewport ([0.0, 1.0]).</param>
+		/// <param name="top">Top edge of the viewport ([0.0, 1.0]).</param>
+		/// <param name="width">Width of the viewport ([0.0, 1.0]).</param>
+		/// <param name="height">Height of the viewport ([0.0, 1.0]).</param>
 		public void SetDimensions(float left, float top, float width, float height) {
 			relativeLeft = left;
 			relativeTop = top;
@@ -365,10 +413,10 @@ namespace Axiom.Core {
 		/// <summary>
 		///		Access to actual dimensions (based on target size).
 		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="top"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
+		/// <param name="left">Left edge of the viewport (in pixels).</param>
+		/// <param name="top">Top edge of the viewport (in pixels).</param>
+		/// <param name="width">Width of the viewport (in pixels).</param>
+		/// <param name="height">Height of the viewport (in pixels).</param>
 		public void GetActualDimensions(out int left, out int top, out int width, out int height) {
 			left = actualLeft;
 			top = actualTop;
