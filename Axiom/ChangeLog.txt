@@ -1,3 +1,14 @@
+4-18-2004
+- Several bug fixes/optimizations in the shadow code.
+- Added robustness to pass hash code recalculation.
+- Added support for scene node auto tracking other scene nodes, the same way cameras can currently auto track nodes.  This allows you to set up objects that will "watch" other nodes and turn to follow them.  See SceneNode.SetAutoTracking.
+
+4-16-2004
+- Modulative stencil shadows working in OpenGL for the first time.
+
+4-14-2004
+- Modulative stencil shadows working in D3D for the first time.
+
 4-10-2004
 **Important changes**
 - Refactored the SceneQuery interface to use interface based listeners rather that .Net events, which ended up making more sense in this scenario, which proved to be a cleaner and more flexible implementation.  Anyone using the RaySceneQuery will need to make modifications to use the new interface, which isn't a drastic change but is a breaking change.
