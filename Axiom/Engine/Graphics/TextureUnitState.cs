@@ -30,6 +30,7 @@ using System.Diagnostics;
 using System.Reflection;
 using Axiom.Controllers;
 using Axiom.Core;
+using Axiom.Exceptions;
 using Axiom.MathLib;
 
 namespace Axiom.Graphics
@@ -54,7 +55,7 @@ namespace Axiom.Graphics
 	/// TODO: Destroy controllers
 	public class TextureUnitState
 	{
-        #region Member variables
+        #region Fields
 
         /// <summary>
         ///    Maximum amount of animation frames allowed.
@@ -177,8 +178,12 @@ namespace Axiom.Graphics
         ///    Value against which alpha values will be tested.
         /// </summary>
         private byte alphaRejectValue;
+        /// <summary>
+        ///     Reference to an animation controller for this texture unit.
+        /// </summary>
+        private Controller animController;
 
-        #endregion
+        #endregion Fields
 
         #region Constructors
 
@@ -1014,6 +1019,82 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
+        ///     Sets the names of the texture images for an animated texture.
+        /// </summary>
+        /// <remarks>
+        ///     Animated textures are just a series of images making up the frames of the animation. All the images
+        ///     must be the same size, and their names must have a frame number appended before the extension, e.g.
+        ///     if you specify a name of "wall.jpg" with 3 frames, the image names must be "wall_1.jpg" and "wall_2.jpg".
+        ///     <p/>
+        ///     You can change the active frame on a texture layer by setting the CurrentFrame property.
+        ///     <p/>
+        ///     Note: If you can't make your texture images conform to the naming standard layed out here, you
+        ///     can call the alternative SetAnimatedTextureName method which takes an array of names instead.
+        /// </remarks>
+        /// <param name="name">The base name of the series of textures to use.</param>
+        /// <param name="numFrames">Number of frames to be used for this animation.</param>
+        /// <param name="duration">
+        ///     Total length of the animation sequence.  When set to 0, automatic animation does not occur.
+        ///     In that scenario, the values can be changed manually by setting the CurrentFrame property.
+        /// </param>
+        public void SetAnimatedTextureName(string name, int numFrames, float duration) {
+            string ext, baseName;
+
+            // split up the base name and file extension
+            int pos = name.LastIndexOf(".");
+            baseName = name.Substring(0, pos);
+            ext = name.Substring(pos);
+
+            string[] names = new string[numFrames];
+
+            // loop through and create the real texture names from the base name
+            for(int i = 0; i < numFrames; i++) {
+                names[i] = string.Format("{0}_{1}{2}", baseName, i, ext);
+            }
+
+            // call the overloaded method, passing in our final texture names
+            SetAnimatedTextureName(names, numFrames, duration);
+        }
+
+        /// <summary>
+        ///     Sets the names of the texture images for an animated texture.
+        /// </summary>
+        /// <remarks>
+        ///     Animated textures are just a series of images making up the frames of the animation. All the images
+        ///     must be the same size, and their names must have a frame number appended before the extension, e.g.
+        ///     if you specify a name of "wall.jpg" with 3 frames, the image names must be "wall_1.jpg" and "wall_2.jpg".
+        ///     <p/>
+        ///     You can change the active frame on a texture layer by setting the CurrentFrame property.
+        /// </remarks>
+        /// <param name="names">An array containing the array names to use for the animation.</param>
+        /// <param name="numFrames">Number of frames to be used for this animation.</param>
+        /// <param name="duration">
+        ///     Total length of the animation sequence.  When set to 0, automatic animation does not occur.
+        ///     In that scenario, the values can be changed manually by setting the CurrentFrame property.
+        /// </param>
+        public void SetAnimatedTextureName(string[] names, int numFrames, float duration) {
+            if(numFrames > MAX_ANIMATION_FRAMES) {
+                throw new AxiomException("Maximum number of texture animation frames exceeded!");
+            }
+
+            this.numFrames = numFrames;
+            this.animDuration = duration;
+            this.currentFrame = 0;
+            this.isCubic = false;
+
+            // copy the texture names
+            Array.Copy(names, 0, frames, 0, numFrames);
+
+            // if material is already loaded, load this immediately
+            if(IsLoaded) {
+                Load();
+
+                // tell parent to recalculate the hash
+                parent.RecalculateHash();
+            }
+        }
+
+        /// <summary>
         ///    Sets the translation offset of the texture, ie scrolls the texture.
         /// </summary>
         /// <remarks>
@@ -1404,6 +1485,13 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
+        ///     Creates an animation controller if needed for this texture unit.
+        /// </summary>
+        private void CreateAnimationController() {
+            animController = ControllerManager.Instance.CreateTextureAnimator(this, animDuration);
+        }
+
+        /// <summary>
         ///		Used internally to create a new controller for this layer given the requested effect.
         /// </summary>
         /// <param name="effect"></param>
@@ -1459,7 +1547,10 @@ namespace Axiom.Graphics
                 }
             }
 
-            // TODO: Init animated textures
+            // Init animated textures
+            if(animDuration != 0) {
+                CreateAnimationController();
+            }
 
             // initialize texture effects
             for(int i = 0; i < effectList.Count; i++) {
@@ -1533,6 +1624,8 @@ namespace Axiom.Graphics
         }
         #endregion
     }
+
+    #region LayerBlendModeEx class declaration
 
     /// <summary>
     ///		Utility class for handling texture layer blending parameters.
@@ -1633,6 +1726,10 @@ namespace Axiom.Graphics
         #endregion Object overloads
     }
 
+    #endregion LayerBlendModeEx class declaration
+
+    #region TextureEffect class declaration
+
     /// <summary>
     ///		Class used to define parameters for a texture effect.
     /// </summary>
@@ -1647,4 +1744,6 @@ namespace Axiom.Graphics
         public float amplitude;
         public Controller controller;
     };
+
+    #endregion TextureEffect class declaration
 }

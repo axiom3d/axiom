@@ -97,11 +97,33 @@ namespace Axiom.Controllers {
         }
 
         /// <summary>
-        /// 
+        ///     Creates a texture layer animator controller.
         /// </summary>
-        /// <param name="layer"></param>
-        /// <param name="speed"></param>
-        /// <returns></returns>
+        /// <remarks>
+        ///     This helper method creates the Controller, IControllerValue and IControllerFunction classes required
+        ///     to animate a texture.
+        /// </remarks>
+        /// <param name="texUnit">The texture unit to animate.</param>
+        /// <param name="sequenceTime">Length of the animation (in seconds).</param>
+        /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
+        public Controller CreateTextureAnimator(TextureUnitState texUnit, float sequenceTime) {
+            IControllerValue val = new TextureFrameControllerValue(texUnit);
+            IControllerFunction func = new AnimationControllerFunction(sequenceTime);
+
+            return CreateController(val, func);
+        }
+
+        /// <summary>
+        ///     Creates a basic time-based texture coordinate modifier designed for creating rotating textures.
+        /// </summary>
+        /// <remarks>
+        ///     This simple method allows you to easily create constant-speed rotating textures. If you want more
+        ///     control, look up the ControllerManager.CreateTextureWaveTransformer for more complex wave-based
+        ///     scrollers / stretchers / rotaters.
+        /// </remarks>
+        /// <param name="layer">The texture unit to animate.</param>
+        /// <param name="speed">Speed of the rotation, in counter-clockwise revolutions per second.</param>
+        /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
         public Controller CreateTextureRotator(TextureUnitState layer, float speed) {
             IControllerValue val = new TexCoordModifierControllerValue(layer, false, false, false, false, true);
             IControllerFunction func = new MultipyControllerFunction(-speed, true);
@@ -109,6 +131,20 @@ namespace Axiom.Controllers {
             return CreateController(val, func);
         }
 
+        /// <summary>
+        ///     Predefined controller value for setting a single floating-
+        ///     point value in a constant paramter of a vertex or fragment program.
+        /// </summary>
+        /// <remarks>
+        ///     Any value is accepted, it is propagated into the 'x'
+        ///     component of the constant register identified by the index. If you
+        ///     need to use named parameters, retrieve the index from the param
+        ///     object before setting this controller up.
+        /// </remarks>
+        /// <param name="parms"></param>
+        /// <param name="index"></param>
+        /// <param name="timeFactor"></param>
+        /// <returns></returns>
         public Controller CreateGpuProgramTimerParam(GpuProgramParameters parms, int index, float timeFactor) {
             IControllerValue val = new FloatGpuParamControllerValue(parms, index);
             IControllerFunction func = new MultipyControllerFunction(timeFactor, true);
@@ -117,12 +153,17 @@ namespace Axiom.Controllers {
         }
 
         /// <summary>
-        /// 
+        ///     Creates a basic time-based texture coordinate modifier designed for creating rotating textures.
         /// </summary>
-        /// <param name="layer"></param>
-        /// <param name="speedU"></param>
-        /// <param name="speedV"></param>
-        /// <returns></returns>
+        /// <remarks>
+        ///     This simple method allows you to easily create constant-speed scrolling textures. If you want more
+        ///     control, look up the ControllerManager.CreateTextureWaveTransformer for more complex wave-based
+        ///     scrollers / stretchers / rotaters.
+        /// </remarks>
+        /// <param name="layer">The texture unit to animate.</param>
+        /// <param name="speedU">Horizontal speed, in wraps per second.</param>
+        /// <param name="speedV">Vertical speed, in wraps per second.</param>
+        /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
         public Controller CreateTextureScroller(TextureUnitState layer, float speedU, float speedV) {
             IControllerValue val = null;
             IControllerFunction func = null;
@@ -164,16 +205,17 @@ namespace Axiom.Controllers {
         }
 
         /// <summary>
-        ///		
+        ///	    Creates a very flexible time-based texture transformation which can alter the scale, position or
+        ///	    rotation of a texture based on a wave function.	
         /// </summary>
-        /// <param name="layer"></param>
-        /// <param name="transformType"></param>
-        /// <param name="waveType"></param>
-        /// <param name="baseVal"></param>
-        /// <param name="frequency"></param>
-        /// <param name="phase"></param>
-        /// <param name="amplitude"></param>
-        /// <returns></returns>
+        /// <param name="layer">The texture unit to effect.</param>
+        /// <param name="transformType">The type of transform, either translate (scroll), scale (stretch) or rotate (spin).</param>
+        /// <param name="waveType">The shape of the wave, see WaveformType enum for details.</param>
+        /// <param name="baseVal">The base value of the output.</param>
+        /// <param name="frequency">The speed of the wave in cycles per second.</param>
+        /// <param name="phase">The offset of the start of the wave, e.g. 0.5 to start half-way through the wave.</param>
+        /// <param name="amplitude">Scales the output so that instead of lying within 0..1 it lies within 0..(1 * amplitude) for exaggerated effects</param>
+        /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
         public Controller CreateTextureWaveTransformer(TextureUnitState layer, TextureTransform type, WaveformType waveType, 
             float baseVal, float frequency, float phase, float amplitude) {
             IControllerValue val = null;

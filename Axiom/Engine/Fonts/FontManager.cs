@@ -143,7 +143,7 @@ namespace Axiom.Fonts {
             switch(attrib) {
                 case "type":
                     if(parms.Length != 2) {
-                        ParseHelper.LogParserError(attrib, font.Name, "Invalid number of params.");
+                        ParseHelper.LogParserError(attrib, font.Name, "Invalid number of params for glyph ");
                         return;
                     }
                     else {
@@ -158,7 +158,7 @@ namespace Axiom.Fonts {
 
                 case "source":
                     if(parms.Length != 2) {
-                        ParseHelper.LogParserError(line, font.Name, "Invalid number of params.");
+                        ParseHelper.LogParserError("source", font.Name, "Invalid number of params.");
                         return;
                     }
 
