@@ -7,10 +7,14 @@ namespace Axiom.RenderSystems.OpenGL.GLSL {
 	///		Factory class for GLSL programs.
 	/// </summary>
 	public class GLSLProgramFactory : IHighLevelGpuProgramFactory {
+        #region Fields
+
+        /// <summary>
+        ///     Language string.
+        /// </summary>
 		protected static string languageName = "glsl";
 
-		public GLSLProgramFactory() {
-		}
+        #endregion Fields
 
 		#region IHighLevelGpuProgramFactory Members
 
