@@ -417,11 +417,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Core\ISubSystem.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Core\Light.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -755,21 +750,6 @@
                 />
                 <File
                     RelPath = "SubSystems\Rendering\IRenderable.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "SubSystems\Rendering\IRenderSystem.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "SubSystems\Rendering\IRenderWindow.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "SubSystems\Rendering\RenderingEnums.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

@@ -3,10 +3,10 @@
 Axiom Game Engine Library
 Copyright (C) 2003  Axiom Project Team
 
-The rendering portion of the Axiom Engine is an adaption of the excellent 
-open source engine OGRE (Object-Oriented Graphics Rendering Engine)
-http://ogre.sourceforge.net.  Many thanks to the OGRE team for all of their
-hard work and creating such a large community.
+The overall design, and a majority of the core engine and rendering code 
+contained within this library is a derivative of the open source Object Oriented 
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
