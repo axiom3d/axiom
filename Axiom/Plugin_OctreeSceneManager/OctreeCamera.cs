@@ -26,7 +26,7 @@ namespace Axiom.SceneManagers.Octree {
     ///for debuggin purposes. It also implements a visibility function that is more granular
     ///than the default.
     /// </summary>
-    public class OctreeCamera : Camera, IRenderable {
+    public class OctreeCamera : Camera {
         #region Member Variables	
 
         Vector3[] Corners;
@@ -36,10 +36,6 @@ namespace Axiom.SceneManagers.Octree {
 
         protected bool useIdentityProj;
         protected bool useIdentityView;
-
-        protected Material material;
-        protected LightList lightList;
-
 
         const int PositionBinding = 0;
         const int ColorBinding = 1;
@@ -53,61 +49,9 @@ namespace Axiom.SceneManagers.Octree {
 
         int[] corners = {0, 4, 3, 5, 2, 6, 1, 7};
 
-        Axiom.Core.FrustumPlane[] planes = {Axiom.Core.FrustumPlane.Top, Axiom.Core.FrustumPlane.Bottom,
-                                               Axiom.Core.FrustumPlane.Left, Axiom.Core.FrustumPlane.Right,
-                                               Axiom.Core.FrustumPlane.Far, Axiom.Core.FrustumPlane.Near };
-        #endregion
-
-        #region Properties
-
-        public bool UseIdentityProjection {
-            get{return useIdentityProj;}
-        }
-
-        public bool UseIdentityView {
-            get{return useIdentityView;}
-        }
-
-        public Vector3 WorldPosition {
-            get{return this.position;}
-        }
-
-        public Material Material {
-            get{return this.material;}
-        }
-
-        public ushort NumWorldTransforms {
-            get{return 1;}
-        }
-
-        public LightList Lights {
-            get{return lightList;}
-        }
-
-        public virtual Quaternion WorldOrientation {
-            get{return Quaternion.Identity;}
-        }
-
-        public SceneDetailLevel RenderDetail {
-            get{return this.sceneDetail;}
-        }
-
-        public Technique Technique {
-            get{return this.material.BestTechnique;}
-        }
-
-
-        /*public virtual Vector3 GetWorldPosition()
-        {
-            return Vector3.Zero;
-        }*/
-        //TODO: Could be the function above, or neither
-        //		public Vector3 WorldPosition
-        //		{
-        //			get{return base.DerivedPosition;}
-        //		}
-		
-
+//        Axiom.Core.FrustumPlane[] planes = {Axiom.Core.FrustumPlane.Top, Axiom.Core.FrustumPlane.Bottom,
+//                                               Axiom.Core.FrustumPlane.Left, Axiom.Core.FrustumPlane.Right,
+//                                               Axiom.Core.FrustumPlane.Far, Axiom.Core.FrustumPlane.Near };
         #endregion
 
         public OctreeCamera(string name, SceneManager scene) : base(name, scene) {
@@ -143,7 +87,7 @@ namespace Axiom.SceneManagers.Octree {
                 float distance = 0;
 
                 for(int corner=0;corner<8;corner++) {
-                    distance = this.Frustum[planes[plane]].GetDistance(boxCorners[corners[corner]]);
+                    distance = planes[plane].GetDistance(boxCorners[corners[corner]]);
                     AllOutside = AllOutside && (distance < 0);
                     AllInside = AllInside && (distance >= 0);
 
@@ -166,31 +110,31 @@ namespace Axiom.SceneManagers.Octree {
 
         }
 		
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="op"></param>
-        public virtual void GetRenderOperation(RenderOperation op) {
-            Vector3[] r = new Vector3[8];
-
-            r = this.Corners;
-
-            r[0] = GetCorner(FrustumPlane.Far,FrustumPlane.Left,FrustumPlane.Bottom);
-            r[1] = GetCorner(FrustumPlane.Far,FrustumPlane.Left,FrustumPlane.Top);
-            r[2] = GetCorner(FrustumPlane.Far,FrustumPlane.Right,FrustumPlane.Top);
-            r[3] = GetCorner(FrustumPlane.Far,FrustumPlane.Right,FrustumPlane.Bottom);
-
-            r[4] = GetCorner(FrustumPlane.Near,FrustumPlane.Right,FrustumPlane.Top);
-            r[5] = GetCorner(FrustumPlane.Near,FrustumPlane.Left,FrustumPlane.Top);
-            r[6] = GetCorner(FrustumPlane.Near,FrustumPlane.Left,FrustumPlane.Bottom);
-            r[7] = GetCorner(FrustumPlane.Near,FrustumPlane.Right,FrustumPlane.Bottom);
-
-            this.Corners = r;
-
-            UpdateView();
-			
-            //TODO: VERTEX BUFFER STUFF
-        }
+//        /// <summary>
+//        /// 
+//        /// </summary>
+//        /// <param name="op"></param>
+//        public override void GetRenderOperation(RenderOperation op) {
+//            Vector3[] r = new Vector3[8];
+//
+//            r = this.Corners;
+//
+//            r[0] = GetCorner(FrustumPlane.Far,FrustumPlane.Left,FrustumPlane.Bottom);
+//            r[1] = GetCorner(FrustumPlane.Far,FrustumPlane.Left,FrustumPlane.Top);
+//            r[2] = GetCorner(FrustumPlane.Far,FrustumPlane.Right,FrustumPlane.Top);
+//            r[3] = GetCorner(FrustumPlane.Far,FrustumPlane.Right,FrustumPlane.Bottom);
+//
+//            r[4] = GetCorner(FrustumPlane.Near,FrustumPlane.Right,FrustumPlane.Top);
+//            r[5] = GetCorner(FrustumPlane.Near,FrustumPlane.Left,FrustumPlane.Top);
+//            r[6] = GetCorner(FrustumPlane.Near,FrustumPlane.Left,FrustumPlane.Bottom);
+//            r[7] = GetCorner(FrustumPlane.Near,FrustumPlane.Right,FrustumPlane.Bottom);
+//
+//            this.Corners = r;
+//
+//            UpdateView();
+//			
+//            //TODO: VERTEX BUFFER STUFF
+//        }
 
         /// <summary>
         /// 
@@ -200,9 +144,9 @@ namespace Axiom.SceneManagers.Octree {
         /// <param name="pp3"></param>
         /// <returns></returns>
         private Vector3 GetCorner(FrustumPlane pp1, FrustumPlane pp2, FrustumPlane pp3) {
-            Plane p1 = base.frustum[pp1];
-            Plane p2 = base.frustum[pp1];
-            Plane p3 = base.frustum[pp1];
+            Plane p1 = planes[(int)pp1];
+            Plane p2 = planes[(int)pp1];
+            Plane p3 = planes[(int)pp1];
 
             Matrix3 mdet;
 			
@@ -268,33 +212,6 @@ namespace Axiom.SceneManagers.Octree {
             r.z = zdet / det;
 
             return r;
-        }
-		
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="cam"></param>
-        /// <returns></returns>
-        public float GetSquaredViewDepth(Camera cam) {
-            Vector3 dist = cam.DerivedPosition - this.DerivedPosition;
-            return dist.LengthSquared;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="xform"></param>
-        public virtual void GetWorldTransforms(Matrix4[] xform) {
-            xform[0] = Matrix4.Identity;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual bool NormalizeNormals {
-            get {
-                return false;
-            }
         }
     }
 }
