@@ -1,0 +1,59 @@
+<Combine fileversion="1.0" name="AxiomEngine" description="">
+  <StartMode startupentry="DemoTest" single="True">
+    <Execute entry="DemoTest" type="None" />
+    <Execute entry="InputSystem_DInput" type="None" />
+    <Execute entry="Engine" type="None" />
+    <Execute entry="MathLib" type="None" />
+    <Execute entry="RenderSystem_DirectX9" type="None" />
+    <Execute entry="RenderSystem_OpenGL" type="None" />
+    <Execute entry="DynamicsSystem_ODE" type="None" />
+    <Execute entry="AxiomParticleFX" type="None" />
+    <Execute entry="AudioSystem_DirectSound" type="None" />
+  </StartMode>
+  <Entries>
+    <Entry filename=".\DemoTest\DemoTest.prjx" />
+    <Entry filename=".\InputSystem_DInput\InputSystem_DInput.prjx" />
+    <Entry filename=".\Engine\Engine.prjx" />
+    <Entry filename=".\MathLib\MathLib.prjx" />
+    <Entry filename=".\RenderSystem_DirectX9\RenderSystem_DirectX9.prjx" />
+    <Entry filename=".\RenderSystem_OpenGL\RenderSystem_OpenGL.prjx" />
+    <Entry filename=".\DynamicsSystem_ODE\DynamicsSystem_ODE.prjx" />
+    <Entry filename=".\AxiomParticleFX\AxiomParticleFX.prjx" />
+    <Entry filename=".\AudioSystem_DirectSound\AudioSystem_DirectSound.prjx" />
+  </Entries>
+  <Configurations active="Debug">
+    <Configuration name="EngineDebug">
+      <Entry name="DemoTest" configurationname="Debug" build="False" />
+      <Entry name="InputSystem_DInput" configurationname="Debug" build="False" />
+      <Entry name="Engine" configurationname="Debug" build="False" />
+      <Entry name="MathLib" configurationname="Debug" build="False" />
+      <Entry name="RenderSystem_DirectX9" configurationname="Debug" build="False" />
+      <Entry name="RenderSystem_OpenGL" configurationname="Debug" build="False" />
+      <Entry name="DynamicsSystem_ODE" configurationname="Debug" build="False" />
+      <Entry name="AxiomParticleFX" configurationname="Debug" build="False" />
+      <Entry name="AudioSystem_DirectSound" configurationname="Debug" build="False" />
+    </Configuration>
+    <Configuration name="Release">
+      <Entry name="DemoTest" configurationname="Debug" build="False" />
+      <Entry name="InputSystem_DInput" configurationname="Debug" build="False" />
+      <Entry name="Engine" configurationname="Debug" build="False" />
+      <Entry name="MathLib" configurationname="Debug" build="False" />
+      <Entry name="RenderSystem_DirectX9" configurationname="Debug" build="False" />
+      <Entry name="RenderSystem_OpenGL" configurationname="Debug" build="False" />
+      <Entry name="DynamicsSystem_ODE" configurationname="Debug" build="False" />
+      <Entry name="AxiomParticleFX" configurationname="Debug" build="False" />
+      <Entry name="AudioSystem_DirectSound" configurationname="Debug" build="False" />
+    </Configuration>
+    <Configuration name="Debug">
+      <Entry name="DemoTest" configurationname="Debug" build="False" />
+      <Entry name="InputSystem_DInput" configurationname="Debug" build="False" />
+      <Entry name="Engine" configurationname="Debug" build="False" />
+      <Entry name="MathLib" configurationname="Debug" build="False" />
+      <Entry name="RenderSystem_DirectX9" configurationname="Debug" build="False" />
+      <Entry name="RenderSystem_OpenGL" configurationname="Debug" build="False" />
+      <Entry name="DynamicsSystem_ODE" configurationname="Debug" build="False" />
+      <Entry name="AxiomParticleFX" configurationname="Debug" build="False" />
+      <Entry name="AudioSystem_DirectSound" configurationname="Debug" build="False" />
+    </Configuration>
+  </Configurations>
+</Combine>

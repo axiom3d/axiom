@@ -1,0 +1,42 @@
+<Project name="RenderSystem_OpenGL" description="" newfilesearch="None" enableviewstate="True" version="1.1" projecttype="C#">
+  <Contents>
+    <File name=".\AssemblyInfo.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\GLHelper.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\GLTexture.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\GLTextureManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\GLWindow.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\OpenGLExtensions.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\OpenGLRenderer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\GLHardwareVertexBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\GLHardwareBufferManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\GLHardwareIndexBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+  </Contents>
+  <References>
+    <Reference type="Project" refto="Engine" />
+    <Reference type="Project" refto="MathLib" />
+    <Reference type="Assembly" refto="..\Solution Items\csgl.dll" />
+  </References>
+  <DeploymentInformation target="" script="" strategy="File" />
+  <Configuration runwithwarnings="True" name="Debug">
+    <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
+    <Execution commandlineparameters="" consolepause="True" />
+    <Output directory="..\DemoTest\bin\Debug\" assembly="OpenGLRenderer" />
+  </Configuration>
+  <Configurations active="Debug">
+    <Configuration runwithwarnings="True" name="Debug">
+      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
+      <Execution commandlineparameters="" consolepause="True" />
+      <Output directory="..\DemoTest\bin\Debug\" assembly="OpenGLRenderer" />
+    </Configuration>
+    <Configuration runwithwarnings="True" name="Release">
+      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="False" optimize="True" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="TRACE" generatexmldocumentation="False" win32Icon="" />
+      <Execution commandlineparameters="" consolepause="True" />
+      <Output directory=".\Release\" assembly="OpenGLRenderer" />
+    </Configuration>
+    <Configuration runwithwarnings="True" name="EngineDebug">
+      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
+      <Execution commandlineparameters="" consolepause="True" />
+      <Output directory=".\Debug\" assembly="OpenGLRenderer" />
+    </Configuration>
+  </Configurations>
+</Project>

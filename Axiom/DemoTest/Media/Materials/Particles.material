@@ -1,0 +1,10 @@
+Particles/Flare
+{
+	lighting off
+	scene_blend add
+	
+	// texture 0
+	{
+		texture Flare.png
+	}
+}

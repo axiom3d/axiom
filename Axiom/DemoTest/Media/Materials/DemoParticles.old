@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Effects xmlns="http://darkimp.com/Effects.xsd">
+	<ParticleSystem name="ParticleSystems.Fire"> 
+		<BillboardType>Point</BillboardType>
+		<ShaderName>Particles.Flare</ShaderName> 
+		<DefaultDimensions>
+			<Width>50</Width>
+			<Height>50</Height>
+		</DefaultDimensions>
+		<Emitter type="Box">
+			<TimeToLive>1.2</TimeToLive> 
+			<EmissionRate>20</EmissionRate> 
+			<Angle>0</Angle> 
+			<Width>10</Width> 
+			<Height>30</Height> 
+			<Depth>30</Depth>
+			<ColorRangeStart name="Red"/>
+			<ColorRangeEnd name="Yellow"/>
+		</Emitter>
+		<!-- Gravity -->
+		<Affector type="LinearForce">
+			<ForceApplication>Add</ForceApplication> 
+			<Force> 
+				<x>0</x> 
+				<y>100</y> 
+				<z>0</z>
+			</Force>
+		</Affector>
+		<Affector type="ColorFader">
+			<RedAdjust>-0.25</RedAdjust>
+			<GreenAdjust>-0.25</GreenAdjust>
+			<BlueAdjust>-0.25</BlueAdjust>
+			<AlphaAdjust>-0.25</AlphaAdjust>
+		</Affector>
+	</ParticleSystem>
+	<ParticleSystem name="ParticleSystems.Rain"> 
+		<BillboardType>OrientedCommon</BillboardType>
+		<ShaderName>Particles.Rain</ShaderName>
+		<CullIndividual>true</CullIndividual>
+		<CommonDirection>
+			<x>0</x>
+			<y>-1</y>
+			<z>0</z>
+		</CommonDirection>
+		<DefaultDimensions>
+			<Width>15</Width>
+			<Height>30</Height>
+		</DefaultDimensions>
+		<Emitter type="Box">
+			<Direction>
+				<x>0</x>
+				<y>-1</y>
+				<z>0</z>				
+			</Direction>
+			<TimeToLive>1.5</TimeToLive> 
+			<EmissionRate>300</EmissionRate>
+			<ParticleVelocity>500</ParticleVelocity>
+			<Angle>0</Angle> 
+			<Width>2000</Width> 
+			<Height>2000</Height> 
+			<Depth>0</Depth>
+			<ColorRangeStart name="PowderBlue"/>
+			<ColorRangeEnd name="PowderBlue"/>
+		</Emitter>
+		<!-- Gravity -->
+		<Affector type="LinearForce">
+			<ForceApplication>Add</ForceApplication> 
+			<Force> 
+				<x>0</x> 
+				<y>-500</y> 
+				<z>0</z>
+			</Force>
+		</Affector>
+	</ParticleSystem>
+</Effects>

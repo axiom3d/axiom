@@ -1,0 +1,179 @@
+<Project name="Engine" description="" newfilesearch="None" enableviewstate="True" version="1.1" projecttype="C#">
+  <Contents>
+    <File name=".\AssemblyInfo.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Animating\Animation.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Animating\AnimationState.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Animating\AnimationTrack.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Animating\Bone.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Animating\Enums.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Animating\KeyFrame.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Animating\Skeleton.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Animating\SkeletonManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Audio\AudioStream.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Audio\AudioSystem.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Audio\IAudioSystem.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Audio\IAudioSystemFactory.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Audio\ISound.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\AnimationCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\AnimationStateCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\AnimationTrackCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\AxiomCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\BillboardSetCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\CameraCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\EntityCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\HashList.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\KeyFrameCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\LightCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\MeshCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\MovableObjectCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\NodeCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\RenderSystemCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\RenderWindowCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\SceneNodeCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\SubEntityCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\TextureLayerCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\ViewportCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Configuration\Config.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Configuration\EngineConfig.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Controllers\BaseControllerFunction.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Controllers\Controller.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Controllers\ControllerManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Controllers\Enums.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Controllers\FrameTimeControllerValue.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Controllers\IControllerFunction.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Controllers\IControllerValue.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Controllers\Canned\MultiplyControllerFunction.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Controllers\Canned\NodeRotationControllerValue.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Controllers\Canned\TexCoordModifierControllerValue.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Controllers\Canned\WaveformControllerFunction.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\AxisAlignedBox.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\Billboard.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\BillboardSet.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\Camera.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\ColorEx.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\Engine.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\Entity.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\Frustum.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\GarbageManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\IPlugin.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\ISubSystem.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\Light.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\Log.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\Mesh.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\Model.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\ModelManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\Node.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\Overlay.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\OverlayManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\Plane.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\Resource.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\ResourceManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\SceneManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\SceneManagerList.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\SceneNode.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\SceneObject.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\Shader.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\ShaderManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\SimpleRenderable.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\Sphere.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\SubEntity.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\Texture.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\TextureLayer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\TextureManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\VertexBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\Viewport.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\WireBoundingBox.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Enumerations\Enums.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\EventSystem\EventProcessor.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\EventSystem\IKeyTarget.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\EventSystem\IMouseTarget.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\EventSystem\IScriptTarget.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\EventSystem\ScriptEvent.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Exceptions\AxiomException.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Exceptions\PluginException.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\FileSystem\Archive.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\FileSystem\Folder.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\FileSystem\Zip.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Fonts\Font.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Fonts\FontEnums.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Fonts\FontManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Gui\GuiControl.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Gui\GuiEnums.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Gui\GuiManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Input\InputSystem.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\ParticleSystems\Particle.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\ParticleSystems\ParticleAffector.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\ParticleSystems\ParticleAffectorFactory.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\ParticleSystems\ParticleEmitter.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\ParticleSystems\ParticleEmitterFactory.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\ParticleSystems\ParticleSystem.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\ParticleSystems\ParticleSystemManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Patterns\IObjectFactory.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Physics\DynamicsSystem.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Physics\IJoint.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Physics\IRigidBody.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Physics\IWorld.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Scripting\AutoAttribute.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Scripting\GameObject.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Scripting\State.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\Enums.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\HardwareCaps.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\IRenderable.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\IRenderSystem.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\IRenderWindow.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\RenderingEnums.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\RenderOperation.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\RenderQueue.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\RenderSystem.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\RenderTarget.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\RenderWindow.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Text\TextManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Utility\ConfigDialog.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Utility\DefaultForm.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Utility\HighResolutionTimer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Utility\TechDemo.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Xml\AxiomValidatingReader.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Xml\XmlParticleReader.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Xml\XmlShaderReader.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Utility\ConfigDialog.resources" subtype="Code" buildaction="EmbedAsResource" dependson="" data="" />
+    <File name=".\Utility\DefaultForm.resources" subtype="Code" buildaction="EmbedAsResource" dependson="" data="" />
+    <File name=".\Xml\Axiom.Xml.Shaders.xsd" subtype="Code" buildaction="EmbedAsResource" dependson="" data="" />
+    <File name=".\Utility\Axiom.Utility.ConfigDialog.resources" subtype="Code" buildaction="EmbedAsResource" dependson="" data="" />
+    <File name=".\Serialization\OgreMeshReader.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\SoftwareBufferManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\VertexBufferBinding.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\VertexDeclaration.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\VertexElement.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\VertexIndexData.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\HardwareBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\HardwareBufferManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\HardwareIndexBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\HardwareVertexBuffer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+  </Contents>
+  <References>
+    <Reference type="Project" refto="MathLib" />
+  </References>
+  <DeploymentInformation target="" script="" strategy="File" />
+  <Configuration runwithwarnings="True" name="Debug">
+    <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="0" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
+    <Execution commandlineparameters="" consolepause="True" />
+    <Output directory="..\DemoTest\bin\Debug\" assembly="AxiomEngine" />
+  </Configuration>
+  <Configurations active="Debug">
+    <Configuration runwithwarnings="True" name="Debug">
+      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="0" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
+      <Execution commandlineparameters="" consolepause="True" />
+      <Output directory="..\DemoTest\bin\Debug\" assembly="AxiomEngine" />
+    </Configuration>
+    <Configuration runwithwarnings="True" name="Release">
+      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="4" includedebuginformation="False" optimize="True" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="TRACE" generatexmldocumentation="False" win32Icon="" />
+      <Execution commandlineparameters="" consolepause="True" />
+      <Output directory=".\Release\" assembly="AxiomEngine" />
+    </Configuration>
+    <Configuration runwithwarnings="True" name="EngineDebug">
+      <CodeGeneration runtime="MsNet" compiler="Csc" warninglevel="0" includedebuginformation="True" optimize="False" unsafecodeallowed="True" generateoverflowchecks="False" mainclass="" target="Library" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" win32Icon="" />
+      <Execution commandlineparameters="" consolepause="True" />
+      <Output directory=".\Debug\" assembly="AxiomEngine" />
+    </Configuration>
+  </Configurations>
+</Project>

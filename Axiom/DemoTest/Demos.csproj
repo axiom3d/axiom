@@ -1,0 +1,454 @@
+<VisualStudioProject>
+    <CSHARP
+        ProjectType = "Local"
+        ProductVersion = "7.10.3077"
+        SchemaVersion = "2.0"
+        ProjectGuid = "{A23B7D97-4826-43BD-AD28-B0DDC4933347}"
+        SccProjectName = "SAK"
+        SccLocalPath = "SAK"
+        SccAuxPath = "SAK"
+        SccProvider = "SAK"
+    >
+        <Build>
+            <Settings
+                ApplicationIcon = "App.ico"
+                AssemblyKeyContainerName = ""
+                AssemblyName = "Demos"
+                AssemblyOriginatorKeyFile = ""
+                DefaultClientScript = "JScript"
+                DefaultHTMLPageLayout = "Grid"
+                DefaultTargetSchema = "IE50"
+                DelaySign = "false"
+                OutputType = "WinExe"
+                PreBuildEvent = ""
+                PostBuildEvent = ""
+                RootNamespace = "Demos"
+                RunPostBuildEvent = "OnBuildSuccess"
+                StartupObject = ""
+            >
+                <Config
+                    Name = "Debug"
+                    AllowUnsafeBlocks = "false"
+                    BaseAddress = "285212672"
+                    CheckForOverflowUnderflow = "false"
+                    ConfigurationOverrideFile = ""
+                    DefineConstants = "DEBUG;TRACE"
+                    DocumentationFile = ""
+                    DebugSymbols = "true"
+                    FileAlignment = "4096"
+                    IncrementalBuild = "true"
+                    NoStdLib = "false"
+                    NoWarn = ""
+                    Optimize = "false"
+                    OutputPath = "bin\Debug\"
+                    RegisterForComInterop = "false"
+                    RemoveIntegerChecks = "false"
+                    TreatWarningsAsErrors = "false"
+                    WarningLevel = "4"
+                />
+                <Config
+                    Name = "Release"
+                    AllowUnsafeBlocks = "false"
+                    BaseAddress = "285212672"
+                    CheckForOverflowUnderflow = "false"
+                    ConfigurationOverrideFile = ""
+                    DefineConstants = "TRACE"
+                    DocumentationFile = ""
+                    DebugSymbols = "false"
+                    FileAlignment = "4096"
+                    IncrementalBuild = "false"
+                    NoStdLib = "false"
+                    NoWarn = ""
+                    Optimize = "true"
+                    OutputPath = "bin\Release\"
+                    RegisterForComInterop = "false"
+                    RemoveIntegerChecks = "false"
+                    TreatWarningsAsErrors = "false"
+                    WarningLevel = "4"
+                />
+                <Config
+                    Name = "EngineDebug"
+                    AllowUnsafeBlocks = "false"
+                    BaseAddress = "285212672"
+                    CheckForOverflowUnderflow = "false"
+                    ConfigurationOverrideFile = ""
+                    DefineConstants = "DEBUG;TRACE"
+                    DocumentationFile = ""
+                    DebugSymbols = "true"
+                    FileAlignment = "4096"
+                    IncrementalBuild = "true"
+                    NoStdLib = "false"
+                    NoWarn = ""
+                    Optimize = "false"
+                    OutputPath = "bin\Debug\"
+                    RegisterForComInterop = "false"
+                    RemoveIntegerChecks = "false"
+                    TreatWarningsAsErrors = "false"
+                    WarningLevel = "4"
+                />
+            </Settings>
+            <References>
+                <Reference
+                    Name = "System"
+                    AssemblyName = "System"
+                    HintPath = "D:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.dll"
+                />
+                <Reference
+                    Name = "System.Data"
+                    AssemblyName = "System.Data"
+                    HintPath = "D:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Data.dll"
+                />
+                <Reference
+                    Name = "System.Drawing"
+                    AssemblyName = "System.Drawing"
+                    HintPath = "D:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Drawing.dll"
+                />
+                <Reference
+                    Name = "System.Windows.Forms"
+                    AssemblyName = "System.Windows.Forms"
+                    HintPath = "D:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Windows.Forms.dll"
+                />
+                <Reference
+                    Name = "System.XML"
+                    AssemblyName = "System.Xml"
+                    HintPath = "D:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.XML.dll"
+                />
+                <Reference
+                    Name = "Engine"
+                    Project = "{33DDA650-92ED-429F-8D2B-F4B9495454AF}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
+                <Reference
+                    Name = "MathLib"
+                    Project = "{5E33B605-D629-4AD1-B99E-EF852BE0E107}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
+                <Reference
+                    Name = "InputSystem_DInput"
+                    Project = "{FDAF263D-095D-4217-AC87-3F1B20A49146}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
+                <Reference
+                    Name = "RenderSystem_OpenGL"
+                    Project = "{25A4B73D-B0B3-445D-AE0D-DD0EA9320197}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
+                <Reference
+                    Name = "DynamicsSystem_ODE"
+                    Project = "{550EAA92-9CAC-4B19-B54B-762989B7A983}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
+                <Reference
+                    Name = "AxiomParticleFX"
+                    Project = "{9C504B43-E58E-4915-8336-E005C6500797}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
+                <Reference
+                    Name = "RenderSystem_DirectX9"
+                    Project = "{875E732D-8A8A-4AA0-AFCC-54E001805A10}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
+            </References>
+        </Build>
+        <Files>
+            <Include>
+                <File
+                    RelPath = "App.ico"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "AssemblyInfo.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "DemoBrowser.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "DemoBrowser.resx"
+                    DependentUpon = "DemoBrowser.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "Main.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "PlasmaGun.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Demos\CameraTrack.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Demos\EnvMapping.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Demos\Lights.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Demos\ParticleFX.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Demos\Physics.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Demos\SkyBox.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Demos\SkyPlane.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Demos\TextureFX.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Demos\Transparency.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Demos\images\CameraTrack.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Demos\images\EnvMapping.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Demos\images\Lights.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Demos\images\SkyBox.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Demos\images\SkyPlane.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Demos\images\TextureFX.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Demos\images\Transparency.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\EngineConfig.xml"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Materials\DemoParticles.old"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "Media\Materials\Examples.material"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "Media\Materials\Particles.material"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "Media\Materials\Skys.material"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "Media\Meshes\box.mesh"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "Media\Meshes\dragon.mesh"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "Media\Meshes\knot.mesh"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "Media\Meshes\ogrehead.mesh"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "Media\Meshes\razor.mesh"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "Media\Meshes\robot.mesh"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "Media\Meshes\teapot.mesh"
+                    BuildAction = "None"
+                />
+                <Folder RelPath = "Media\Sounds\" />
+                <File
+                    RelPath = "Media\Textures\blue_flare.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\body.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\bricks.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\BumpyMetal.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\CloudyHills_bk.png"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\CloudyHills_dn.png"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\CloudyHills_fr.png"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\CloudyHills_lf.png"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\CloudyHills_rt.png"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\CloudyHills_up.png"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\dirt01.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\Flare.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\Flare.png"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\Grass.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\grass_1024.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\GreenSkin.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\head4.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\legs.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\MtlPlat2.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\r2skin.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\raindrop.png"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\Rock.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\RustySteel.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\spacesky.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\spheremap.png"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\stevecube_bk.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\stevecube_dn.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\stevecube_fr.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\stevecube_lf.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\stevecube_rt.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\stevecube_up.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\texmap2.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\textures.zip"
+                    BuildAction = "None"
+                />
+                <File
+                    RelPath = "Media\Textures\Water01.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\Water02.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Media\Textures\WeirdEye.png"
+                    BuildAction = "Content"
+                />
+            </Include>
+        </Files>
+    </CSHARP>
+</VisualStudioProject>
+
