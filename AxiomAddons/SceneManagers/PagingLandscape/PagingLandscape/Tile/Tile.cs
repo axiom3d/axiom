@@ -353,14 +353,14 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
 
 				if ( loaded && renderable != null )
 				{        
-					renderable.Dispose();
+					renderable.Release();
 					renderable = null;
 					loaded = false;         
 				}
 				if (neighbors[(int)Neighbor.North] != null)
-					neighbors[(int)Neighbor.South].SetNeighbor(Neighbor.North, null);
-				if (neighbors[(int)Neighbor.South] != null)
 					neighbors[(int)Neighbor.North].SetNeighbor(Neighbor.South, null);
+				if (neighbors[(int)Neighbor.South] != null)
+					neighbors[(int)Neighbor.South].SetNeighbor(Neighbor.North, null);
 				if (neighbors[(int)Neighbor.East] != null)
 					neighbors[(int)Neighbor.East].SetNeighbor(Neighbor.West, null);
 				if (neighbors[(int)Neighbor.West] != null)
@@ -375,6 +375,11 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
 					//mTileNode->getParent()->removeChild( mTileNode->getName() );
 					//delete mTileNode;
 					//assert (mTileSceneNode->getParent());
+
+					// jsw - we need to call both of these to delete the scene node.  The first
+					//  one removes it from the SceneManager's list of all nodes, and the 2nd one 
+					//  removes it from the tree of scene nodes.
+					tileSceneNode.Creator.DestroySceneNode(tileSceneNode.Name);
 					tileSceneNode.Parent.RemoveChild( tileSceneNode );
 					tileSceneNode = null;
 				}
@@ -457,7 +462,8 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
 		    
 				if ( loaded == false
 					//&& Cam.getVisibility (mBoundsExt)) 
-					&& Cam.GetVisibility (tileSceneNode.WorldAABB ))
+//					&& Cam.GetVisibility (tileSceneNode.WorldAABB ))
+					&& Cam.GetVisibility (this.worldAABB ))
 					{
 						// Request a renderable
 						renderable = RenderableManager.Instance.GetRenderable();
@@ -490,7 +496,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
 					{
 						tileSceneNode.DetachObject( renderable );
 					}
-					renderable.Dispose();
+					renderable.Release();
 					renderable = null;
 				}
 			}
