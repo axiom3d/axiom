@@ -1617,10 +1617,10 @@ namespace RenderSystem_OpenGL {
                 int count = parms.FloatConstantCount / 4;
 
                 for(int i = 0; i < count; i++) {
-                    tempProgramFloats[0] = paramVals[i * count];
-                    tempProgramFloats[1] = paramVals[i * count + 1];
-                    tempProgramFloats[2] = paramVals[i * count + 2];
-                    tempProgramFloats[3] = paramVals[i * count + 3];
+                    tempProgramFloats[0] = paramVals[i * 4];
+                    tempProgramFloats[1] = paramVals[i * 4 + 1];
+                    tempProgramFloats[2] = paramVals[i * 4 + 2];
+                    tempProgramFloats[3] = paramVals[i * 4 + 3];
 
                     // send the params 4 at a time
                     Ext.glProgramLocalParameter4vfARB(glType, i, tempProgramFloats);
