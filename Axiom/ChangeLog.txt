@@ -1,3 +1,10 @@
+1-3-2005
+Some bug fixes: 
+   - fragment program version not being reported properly.
+   - make sure original exception gets logged when something bad happens.
+   - platform manager trying to dispose of a null input reader
+   - check singletons for null before calling Dispose.
+
 12-31-2004 *Significant commit*
 - FrameEventArgs.RequestShutdown removed; use Root.Instance.QueueEndRendering() from now on.  Root.OnFrameStarted/Ended no longer return bool.
 - Root.Setup removed; you must create an instance of Root using "new" to initialize the singleton.  See TechDemo.
