@@ -1464,11 +1464,11 @@ namespace Axiom.RenderSystems.OpenGL {
                     Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, idxBufferID);
 
                     // get the offset pointer to the data in the vbo
-                    indexPtr = BUFFER_OFFSET(op.indexData.indexCount * op.indexData.indexBuffer.Size);
+                    indexPtr = BUFFER_OFFSET(op.indexData.indexStart * op.indexData.indexBuffer.Size);
                 }
                 else {
                     // get the index data as a direct pointer to the software buffer data
-                    indexPtr = ((SoftwareIndexBuffer)op.indexData.indexBuffer).GetDataPointer(op.indexData.indexCount * op.indexData.indexBuffer.Size);
+                    indexPtr = ((SoftwareIndexBuffer)op.indexData.indexBuffer).GetDataPointer(op.indexData.indexStart * op.indexData.indexBuffer.Size);
                 }
 
                 // find what type of index buffer elements we are using
