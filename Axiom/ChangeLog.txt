@@ -1,6 +1,6 @@
 This unfortunately is going to involve some breaking changes, but these are things I have been putting off and wanted to do before putting the first real release out there, so that everything is in better shape going forward.
 
-Here are a few tidbits for the curious:
+Here are some details for the curious:
 - The folder structure and some of the implementation needed some reworking and tidying up, which involved some renaming and folder rearrangment.
 - The GL render system was modified to make it cross platform friendly. 
 - The demo browser is being totally redone to run in-engine rather than using an external configuration interface, for ease of running on various operating systems.
@@ -13,7 +13,10 @@ Here are a few tidbits for the curious:
 - Axiom.Physics namespace removed.
 - Axiom.Exceptions namespace removed; existing exceptions moved to Axiom.Core.
 - GuiElements plugin removed, and the existing basic widgets are available in the core.  All current .overlay scripts will continue to work.  Axiom.Gui namespace is now Axiom.Overlays, and the Panel, BorderPanel, and TextArea widgets are under Axiom.Overlays.Elements.  This will be left as-is with no plans for future additions, in favor of using the much better C# port of CrazyEdsGUI.
-
+- Updated DX code to conform to changes in the DX9 Summer 2004 Update.
+- SceneObject.GameObject renamed to UserData and typed as object, to allow attaching any arbitrary object to a scene object.
+- GameObject removed.
+- Axiom.Utility namespace removed.
 
 5-21-2004
 - Give the RenderSystem class a much needed cleanup.  All previous protected internal methods are now public like they should have been, so they can be accessible to plugins and such.
