@@ -83,7 +83,7 @@ namespace Axiom.SubSystems.Rendering {
         /// <param name="pDepthBuffer">Specify true to include a depth-buffer.</param>
         /// <param name="pMiscParams">A variable number of pointers to platform-specific arguments. 
         /// The actual requirements must be defined by the implementing subclasses.</param>
-        public abstract void Create(String name, System.Windows.Forms.Control target, int width, int height, int colorDepth, bool fullScreen, 
+        public abstract void Create(string name, System.Windows.Forms.Control target, int width, int height, int colorDepth, bool fullScreen, 
             int left, int top, bool depthBuffer, params object[] miscParams);
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace Axiom.SubSystems.Rendering {
         /// <summary>
         ///		Saves window contents to file (i.e. screenshot);
         /// </summary>
-        public abstract void SaveToFile(String fileName);
+        public abstract void SaveToFile(string fileName);
 
         #endregion
 

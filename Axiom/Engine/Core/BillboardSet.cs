@@ -61,7 +61,7 @@ namespace Axiom.Core {
         protected float defaultParticleWidth = 100;
         protected float defaultParticleHeight = 100;
         /// <summary>Name of the material to use</summary>
-        protected String materialName = "BaseWhite";
+        protected string materialName = "BaseWhite";
         /// <summary>Reference to the material to use</summary>
         protected Material material;
         /// <summary></summary>
@@ -110,7 +110,7 @@ namespace Axiom.Core {
         /// <summary>
         ///		Public constructor.  Should not be created manually, must be created using a SceneManager.
         /// </summary>
-        public BillboardSet( String name, int poolSize) {
+        public BillboardSet( string name, int poolSize) {
             this.name = name;
             this.PoolSize = poolSize;
         }
@@ -646,7 +646,7 @@ namespace Axiom.Core {
         /// <summary>
         ///		Gets/Sets the name of the material to use for this billboard set.
         /// </summary>
-        public String MaterialName {
+        public string MaterialName {
             get { return materialName; }
             set {
                 materialName = value;

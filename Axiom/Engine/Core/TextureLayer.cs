@@ -57,7 +57,7 @@ namespace Axiom.Core {
         private int numFrames;
         private int currentFrame;
         /// <summary>store names of textures for animation frames.</summary>
-        private String[] frames = new String[MAX_ANIMATION_FRAMES];
+        private string[] frames = new string[MAX_ANIMATION_FRAMES];
 
         // texture animation parameters
         private bool recalcTexMatrix;
@@ -122,7 +122,7 @@ namespace Axiom.Core {
         /// <summary>
         ///		Gets/Sets the name of the texture for this texture layer.
         /// </summary>
-        public String TextureName {
+        public string TextureName {
             get { return frames[currentFrame]; }
             set { 
                 frames[0] = value; 
@@ -302,7 +302,7 @@ namespace Axiom.Core {
                             isBlank = false;
                         }
                         catch(Exception) {
-                            System.Diagnostics.Trace.WriteLine(String.Format("Error loading texture {0}.  Texture layer will be left blank.", frames[i]));
+                            System.Diagnostics.Trace.WriteLine(string.Format("Error loading texture {0}.  Texture layer will be left blank.", frames[i]));
                             isBlank = true;
                         }
                     }
@@ -682,7 +682,7 @@ namespace Axiom.Core {
         /// </summary>
         internal void Load() {
             for(int i = 0; i < numFrames; i++) {
-                if(frames[i] != String.Empty) {
+                if(frames[i] != string.Empty) {
                     // force a load of the texture
                     TextureManager.Instance.Load(frames[i]);
                     isBlank = false;

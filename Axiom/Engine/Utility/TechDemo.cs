@@ -95,7 +95,7 @@ namespace Axiom.Utility {
 
         protected void TakeScreenshot() {
             string[] temp = Directory.GetFiles(Environment.CurrentDirectory, "screenshot*.jpg");
-            window.SaveToFile(String.Format("screenshot{0}.jpg", temp.Length + 1));
+            window.SaveToFile(string.Format("screenshot{0}.jpg", temp.Length + 1));
         }
 
         #endregion Protected Methods

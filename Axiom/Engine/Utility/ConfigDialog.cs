@@ -283,7 +283,7 @@ namespace Axiom.Utility {
             RenderSystem system = (RenderSystem) cboRenderSystems.SelectedItem;
 
             foreach(EngineConfig.DisplayModeRow mode in system.ConfigOptions.DisplayMode)
-                cboResolution.Items.Add(String.Format("{0} x {1} @ {2}bpp", mode.Width, mode.Height, mode.Bpp));
+                cboResolution.Items.Add(string.Format("{0} x {1} @ {2}bpp", mode.Width, mode.Height, mode.Bpp));
 
             cboResolution.SelectedIndex = 0;
         }

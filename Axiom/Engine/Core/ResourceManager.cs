@@ -175,7 +175,7 @@ namespace Axiom.Core {
         ///		specific subpaths, which it will append to the current path as it searches for matching files.
         /// </remarks>
         /// <param name="path"></param>
-        public void AddSearchPath(String path) {
+        public void AddSearchPath(string path) {
             AddArchive(path, "Folder");
         }
 
@@ -187,7 +187,7 @@ namespace Axiom.Core {
         ///		applies to ALL resources, not just the one managed by the subclass in question.
         /// </remarks>
         /// <param name="path"></param>
-        static public void AddCommonSearchPath(String path) {
+        static public void AddCommonSearchPath(string path) {
             // record the common file path
             AddCommonArchive(path, "Folder");
         }
@@ -200,7 +200,7 @@ namespace Axiom.Core {
                 string[] files = archive.GetFileNamesLike(startPath, extension);
 
                 // add each one to the final list
-                foreach(String fileName in files) {
+                foreach(string fileName in files) {
                     allFiles.Add(fileName);
                 }
             }
@@ -225,7 +225,7 @@ namespace Axiom.Core {
                     archive = new Zip(name);
                     break;
                 default: 
-                    throw new Axiom.Exceptions.AxiomException(String.Format("Archive type {0} is not a valid archive type.", type));
+                    throw new Axiom.Exceptions.AxiomException(string.Format("Archive type {0} is not a valid archive type.", type));
             }
 
             // get a list of all files in the archive
@@ -257,7 +257,7 @@ namespace Axiom.Core {
                     archive = new Zip(name);
                     break;
                 default: 
-                    throw new Axiom.Exceptions.AxiomException(String.Format("Archive type {0} is not a valid archive type.", type));
+                    throw new Axiom.Exceptions.AxiomException(string.Format("Archive type {0} is not a valid archive type.", type));
             }
 
             // get a list of all files in the archive
@@ -306,7 +306,7 @@ namespace Axiom.Core {
             // not found in the cache, load the resource manually
 			
             // TODO: Load resources manually
-            //throw new Axiom.Exceptions.AxiomException(String.Format("Resource '{0}' could not be found.  Be sure it is located in a known directory.", fileName));
+            //throw new Axiom.Exceptions.AxiomException(string.Format("Resource '{0}' could not be found.  Be sure it is located in a known directory.", fileName));
 
             return null;
         }
@@ -327,7 +327,7 @@ namespace Axiom.Core {
             // not found in the cache, load the resource manually
 			
             // TODO: Load resources manually
-            //throw new Axiom.Exceptions.AxiomException(String.Format("Resource '{0}' could not be found.  Be sure it is located in a known directory.", fileName));
+            //throw new Axiom.Exceptions.AxiomException(string.Format("Resource '{0}' could not be found.  Be sure it is located in a known directory.", fileName));
 
             return null;
         }

@@ -74,7 +74,7 @@ namespace Axiom.Core {
         /// <param name="name"></param>
         /// <param name="mesh"></param>
         /// <param name="creator"></param>
-        internal Entity(String name, Mesh mesh, SceneManager creator) {
+        internal Entity(string name, Mesh mesh, SceneManager creator) {
             this.name = name;
             this.mesh = mesh;
             this.sceneMgr = creator;
@@ -143,7 +143,7 @@ namespace Axiom.Core {
         /// <summary>
         /// 
         /// </summary>
-        public String MaterialName {
+        public string MaterialName {
             set {
                 materialName = value;
 

@@ -75,7 +75,7 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public Mesh CreateManual(String name) {
+        public Mesh CreateManual(string name) {
             Mesh mesh = (Mesh)MeshManager.Instance[name];
 
             if(mesh == null) {
@@ -95,11 +95,11 @@ namespace Axiom.Core {
         /// <param name="width">Width in world coordinates.</param>
         /// <param name="height">Height in world coordinates.</param>
         /// <returns></returns>
-        public Mesh CreatePlane(String name, Plane plane, int width, int height) {
+        public Mesh CreatePlane(string name, Plane plane, int width, int height) {
             return CreatePlane(name, plane, width, height, 1, 1, true, 1, 1.0f, 1.0f, Vector3.UnitY, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, false, false);
         }
 
-        public Mesh CreatePlane(String name, Plane plane, float width, float height, int xSegments, int ySegments, bool normals, int numTexCoordSets, float uTile, float vTile, Vector3 upVec) {
+        public Mesh CreatePlane(string name, Plane plane, float width, float height, int xSegments, int ySegments, bool normals, int numTexCoordSets, float uTile, float vTile, Vector3 upVec) {
             return CreatePlane(name, plane, width, height, xSegments, ySegments, normals, numTexCoordSets, uTile, vTile, upVec, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, false, false);
         }
 
@@ -119,7 +119,7 @@ namespace Axiom.Core {
         /// <param name="upVec">The up direction of the plane.</param>
         /// <returns></returns>
         /// DOC: Add new params
-        public Mesh CreatePlane(String name, Plane plane, float width, float height, int xSegments, int ySegments, bool normals, int numTexCoordSets, float uTile, float vTile, Vector3 upVec,
+        public Mesh CreatePlane(string name, Plane plane, float width, float height, int xSegments, int ySegments, bool normals, int numTexCoordSets, float uTile, float vTile, Vector3 upVec,
             BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer ) {
             Mesh mesh = CreateManual(name);
             SubMesh subMesh = mesh.CreateSubMesh(name + "SubMesh");
@@ -260,7 +260,7 @@ namespace Axiom.Core {
             return mesh;
         }
 
-        public Mesh CreateCurvedIllusionPlane(String name, Plane plane, float width, float height, float curvature, int xSegments, int ySegments, bool normals, int numberOfTexCoordSets, float uTiles, float vTiles, Vector3 upVector, Quaternion orientation, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer) {
+        public Mesh CreateCurvedIllusionPlane(string name, Plane plane, float width, float height, float curvature, int xSegments, int ySegments, bool normals, int numberOfTexCoordSets, float uTiles, float vTiles, Vector3 upVector, Quaternion orientation, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer) {
             Mesh mesh = CreateManual(name);
             SubMesh subMesh = mesh.CreateSubMesh(name + "SubMesh");
 

@@ -79,7 +79,7 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="creator"></param>
         /// <param name="name"></param>
-        public SceneNode(SceneManager creator, String name) : base(name) {
+        public SceneNode(SceneManager creator, string name) : base(name) {
             this.creator = creator;
 
             worldAABB = AxisAlignedBox.Null;
@@ -331,7 +331,7 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        protected override Node CreateChildImpl(String name) {
+        protected override Node CreateChildImpl(string name) {
             SceneNode newNode = creator.CreateSceneNode(name);
             return newNode;
         }

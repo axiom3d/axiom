@@ -62,7 +62,7 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         ///		Returns the name of the factory, which identifies which type of emitter this factory creates.
         /// </summary>
-        public abstract String Name { get; }
+        public abstract string Name { get; }
 
         #endregion
 

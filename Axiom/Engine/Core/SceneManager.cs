@@ -214,7 +214,7 @@ namespace Axiom.Core {
         /// </remarks>
         /// <param name="pName"></param>
         /// <returns></returns>
-        public virtual SceneNode CreateSceneNode(String name) {
+        public virtual SceneNode CreateSceneNode(string name) {
             SceneNode node = new SceneNode(this, name);
             sceneNodeList.Add(node);
             return node;
@@ -240,7 +240,7 @@ namespace Axiom.Core {
         /// <param name="name"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        public virtual Animation CreateAnimation(String name, float length) {
+        public virtual Animation CreateAnimation(string name, float length) {
             // create a new animation and record it locally
             Animation anim = new Animation(name, length);
             animationList.Add(anim);
@@ -275,13 +275,13 @@ namespace Axiom.Core {
         /// </remarks>
         /// <param name="animationName"></param>
         /// <returns></returns>
-        public virtual AnimationState CreateAnimationState(String animationName) {
+        public virtual AnimationState CreateAnimationState(string animationName) {
             // do we have this already?
             if(animationStateList.ContainsKey(animationName))
                 throw new Axiom.Exceptions.AxiomException("Cannot create a duplicate AnimationState for an Animation.");
 
             if(!animationList.ContainsKey(animationName))
-                throw new Axiom.Exceptions.AxiomException(String.Format("The name of a valid animation must be supplied when creating an AnimationState.  Animation '{0}' does not exist.", animationName));
+                throw new Axiom.Exceptions.AxiomException(string.Format("The name of a valid animation must be supplied when creating an AnimationState.  Animation '{0}' does not exist.", animationName));
 
             // get a reference to the sepcified animation
             Animation anim = animationList[animationName];
@@ -300,7 +300,7 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public virtual BillboardSet CreateBillboardSet(String name) {
+        public virtual BillboardSet CreateBillboardSet(string name) {
             // return new billboardset with a default pool size of 20
             return CreateBillboardSet(name, 20);
         }
@@ -311,7 +311,7 @@ namespace Axiom.Core {
         /// <param name="name"></param>
         /// <param name="poolSize"></param>
         /// <returns></returns>
-        public virtual BillboardSet CreateBillboardSet(String name, int poolSize) {
+        public virtual BillboardSet CreateBillboardSet(string name, int poolSize) {
             BillboardSet billboardSet = new BillboardSet(name, poolSize);
 
             // keep a local copy
@@ -329,7 +329,7 @@ namespace Axiom.Core {
         ///	 </remarks>
         ///	 <param name="name"></param>
         /// <returns></returns>
-        public virtual Camera CreateCamera(String name) {
+        public virtual Camera CreateCamera(string name) {
             // create the camera and add it to our local list
             Camera camera = new Camera(name, this);
             cameraList.Add(camera);
@@ -343,9 +343,9 @@ namespace Axiom.Core {
         /// <param name="name">The name to be given to the entity (must be unique).</param>
         /// <param name="meshName">The name of the mesh to load.  Will be loaded if not already.</param>
         /// <returns></returns>
-        public virtual Entity CreateEntity(String name, String meshName) {
+        public virtual Entity CreateEntity(string name, string meshName) {
             if(entityList.ContainsKey(name))
-                throw new Axiom.Exceptions.AxiomException(String.Format("An entity with the name '{0}' already exists in the scene.", name));
+                throw new Axiom.Exceptions.AxiomException(string.Format("An entity with the name '{0}' already exists in the scene.", name));
 
             Mesh mesh = MeshManager.Instance.Load(meshName, 1);
 
@@ -364,7 +364,7 @@ namespace Axiom.Core {
         /// <param name="name">The name to be given to the entity (must be unique).</param>
         /// <param name="meshName">The name of the mesh to load.  Will be loaded if not already.</param>
         /// <returns></returns>
-        public virtual Entity CreateEntity(String name, PrefabEntity prefab) {
+        public virtual Entity CreateEntity(string name, PrefabEntity prefab) {
             switch(prefab) {
                 case PrefabEntity.Plane:
                     return CreateEntity(name, "Prefab_Plane");
@@ -385,7 +385,7 @@ namespace Axiom.Core {
         /// </remarks>
         /// <param name="name"></param>
         /// <returns></returns>
-        public virtual Light CreateLight(String name) {
+        public virtual Light CreateLight(string name) {
             // create a new light and add it to our internal list
             Light light = new Light(name);
 			
@@ -403,7 +403,7 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public virtual Material CreateMaterial(String name) {
+        public virtual Material CreateMaterial(string name) {
             return (Material) MaterialManager.Instance.Create(name);
         }
 
@@ -429,7 +429,7 @@ namespace Axiom.Core {
         ///		particular types of world geometry e.g. "q3dm1.bsp".
         /// </remarks>
         /// <param name="fileName"></param>
-        public virtual void LoadWorldGeometry(String fileName) {
+        public virtual void LoadWorldGeometry(string fileName) {
             // TODO: Implement SceneManager.LoadWorldGeometry
         }
 
@@ -660,7 +660,7 @@ namespace Axiom.Core {
         protected Mesh CreateSkyDomePlane(BoxPlane plane, float curvature, float tiling, float distance, Quaternion orientation) {
             Plane p = new Plane();
             Vector3 up = Vector3.Zero;
-            String meshName = "SkyDomePlane_";;
+            string meshName = "SkyDomePlane_";;
 
             // set up plane equation
             p.D = distance;
@@ -879,7 +879,7 @@ namespace Axiom.Core {
                 Material m = MaterialManager.Instance[materialName];
 
                 if(m == null)
-                    throw new AxiomException(String.Format("Could not find skybox material '{0}'", materialName));
+                    throw new AxiomException(string.Format("Could not find skybox material '{0}'", materialName));
 
                 // dont update the depth buffer
                 //m.DepthWrite = false;
@@ -942,7 +942,7 @@ namespace Axiom.Core {
         /// <param name="materialName"></param>
         /// <param name="curvature"></param>
         /// <param name="tiling"></param>
-        public void SetSkyDome(bool isEnabled, String materialName, float curvature, float tiling) {
+        public void SetSkyDome(bool isEnabled, string materialName, float curvature, float tiling) {
             SetSkyDome(isEnabled, materialName, curvature, tiling, 4000, true, Quaternion.Identity);
         }
 
@@ -956,13 +956,13 @@ namespace Axiom.Core {
         /// <param name="distance"></param>
         /// <param name="drawFirst"></param>
         /// <param name="orientation"></param>
-        public void SetSkyDome(bool isEnabled, String materialName, float curvature, float tiling, float distance, bool drawFirst, Quaternion orientation) {
+        public void SetSkyDome(bool isEnabled, string materialName, float curvature, float tiling, float distance, bool drawFirst, Quaternion orientation) {
             isSkyDomeEnabled = isEnabled;
             if(isEnabled) {
                 Material material = MaterialManager.Instance[materialName];
 
                 if(material == null) {
-                    throw new AxiomException(String.Format("Could not find skydome material '{0}'", materialName));
+                    throw new AxiomException(string.Format("Could not find skydome material '{0}'", materialName));
                 }
 
                 // make sure the material doesn't update the depth buffer
@@ -983,7 +983,7 @@ namespace Axiom.Core {
                 // set up the dome (5 planes)
                 for(int i = 0; i < 5; ++i) {
                     Mesh planeMesh = CreateSkyDomePlane((BoxPlane) i, curvature, tiling, distance, orientation);
-                    String entityName = "SkyDomePlame" + i.ToString();
+                    string entityName = "SkyDomePlame" + i.ToString();
 
                     // create entity
                     if(skyDomeEntities[i] != null) {
@@ -1489,7 +1489,7 @@ namespace Axiom.Core {
         ///		the sky to appear below camera level.  Curved sky planes are 
         ///		simular to skydomes, but are more compatable with fog.
         /// </param>
-        public virtual void SetSkyPlane(bool enable, Plane plane, String materialName, float scale, float tiling, bool drawFirst, float bow) {
+        public virtual void SetSkyPlane(bool enable, Plane plane, string materialName, float scale, float tiling, bool drawFirst, float bow) {
             isSkyPlaneEnabled = enable;
 
             if(enable) {
@@ -1549,7 +1549,7 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="enable"></param>
         /// <param name="plane"></param>
-        public virtual void SetSkyPlane(bool enable, Plane plane, String materialName) {
+        public virtual void SetSkyPlane(bool enable, Plane plane, string materialName) {
             // call the overloaded method
             SetSkyPlane(enable, plane, materialName, 1000.0f, 10.0f, true, 0);
         }

@@ -55,7 +55,7 @@ namespace Axiom.Fonts {
         /// <summary></summary>
         protected FontType fontType;
         /// <summary></summary>
-        protected String source;
+        protected string source;
 
         // arrays for storing texture and display data for each character
         protected float[] texCoordU1 = new float[END_CHAR - START_CHAR];
@@ -74,7 +74,7 @@ namespace Axiom.Fonts {
         /// <summary>
         ///		Constructor, should be called through FontManager.Create.
         /// </summary>
-        public Font(String name) {
+        public Font(string name) {
             this.name = name;
         }
 
@@ -188,7 +188,7 @@ namespace Axiom.Fonts {
                 g.DrawLine(linePen, 0, y + font.Height, BITMAP_WIDTH, y + font.Height);
             }
 
-            String textureName = name + "FontTexture";
+            string textureName = name + "FontTexture";
 
             // load the created image using the texture manager
             TextureManager.Instance.LoadImage(textureName, bitmap);

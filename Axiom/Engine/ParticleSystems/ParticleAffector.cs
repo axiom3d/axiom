@@ -54,7 +54,7 @@ namespace Axiom.ParticleSystems {
         #region Member variables
 
         /// <summary>Name of the affector type.  Must be initialized by subclasses.</summary>
-        protected String type;
+        protected string type;
         protected Hashtable attribParsers = new Hashtable();
 
         #endregion
@@ -75,7 +75,7 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         ///		Gets the type name of this affector.
         /// </summary>
-        public String Type {
+        public string Type {
             get { return type; }
             set { type = value; }
         }

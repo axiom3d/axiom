@@ -133,8 +133,8 @@ namespace RenderSystem_DirectX9 {
         ///		Returns a string representation of this video mode.
         /// </summary>
         /// <returns></returns>
-        public override String ToString() {
-            return String.Format("{0} x {1} @ {2}bpp", displayMode.Width, displayMode.Height, this.ColorDepth);
+        public override string ToString() {
+            return string.Format("{0} x {1} @ {2}bpp", displayMode.Width, displayMode.Height, this.ColorDepth);
         }
 
         #endregion

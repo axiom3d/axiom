@@ -48,7 +48,7 @@ namespace RenderSystem_DirectX9 {
 
         #endregion
 		
-        public D3DTexture(String name, D3D.Device device, TextureUsage usage) {
+        public D3DTexture(string name, D3D.Device device, TextureUsage usage) {
             Debug.Assert(device != null, "Cannot create a texture without a valid D3D Device.");
 
             this.device = device;
@@ -97,7 +97,7 @@ namespace RenderSystem_DirectX9 {
             image.RotateFlip(RotateFlipType.RotateNoneFlipY);
 
             // log a quick message
-            System.Diagnostics.Trace.WriteLine(String.Format("D3DTexture: Loading {0} with {1} mipmaps from an Image.", name, numMipMaps));
+            System.Diagnostics.Trace.WriteLine(string.Format("D3DTexture: Loading {0} with {1} mipmaps from an Image.", name, numMipMaps));
 
             // get the images pixel format
             PixelFormat pixFormat = image.PixelFormat;
@@ -134,7 +134,7 @@ namespace RenderSystem_DirectX9 {
 
             // texture dimensions may have been altered during load
             if(surface.Description.Width != srcWidth || surface.Description.Height != srcHeight) {
-                System.Diagnostics.Trace.WriteLine(String.Format("Texture dimensions altered by the renderer to fit power of 2 format. Name: {0}", name));
+                System.Diagnostics.Trace.WriteLine(string.Format("Texture dimensions altered by the renderer to fit power of 2 format. Name: {0}", name));
             }
 
             // record the final width and height (may have been modified)

@@ -89,7 +89,7 @@ namespace Axiom.Animating {
         /// </summary>
         /// <param name="name">Name of the bone to create.</param>
         /// <returns></returns>
-        protected override Node CreateChildImpl(String name) {
+        protected override Node CreateChildImpl(string name) {
             return creator.CreateBone(name);
         }
 

@@ -42,7 +42,7 @@ namespace Axiom.Animating {
         #region Member variables
 
         /// <summary>Name of this animation track.</summary>
-        protected String animationName;
+        protected string animationName;
         /// <summary></summary>
         protected float time;
         /// <summary></summary>
@@ -97,7 +97,7 @@ namespace Axiom.Animating {
         /// <summary>
         ///		Gets the name of the animation to which this state applies
         /// </summary>
-        public String Name {
+        public string Name {
             get { return animationName; }
             set { animationName = value; }
         }

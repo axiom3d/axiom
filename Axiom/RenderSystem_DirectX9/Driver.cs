@@ -39,8 +39,8 @@ namespace RenderSystem_DirectX9 {
         private int adapterNum;
         private D3D.DisplayMode desktopMode;
         private VideoModeCollection videoModeList;
-        private String name;
-        private String description;
+        private string name;
+        private string description;
 
         #endregion
 
@@ -65,14 +65,14 @@ namespace RenderSystem_DirectX9 {
         /// <summary>
         /// 
         /// </summary>
-        public String Name {
+        public string Name {
             get { return name; }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public String Description {
+        public string Description {
             get { return description; }
         }
 

@@ -511,8 +511,8 @@ namespace Axiom.MathLib {
         ///		a Quaternion.
         /// </summary>
         /// <returns>A string representation of a Quaternion.</returns>
-        public override String ToString() {
-            return String.Format("Quaternion({0}, {1}, {2}, {3})", this.x, this.y, this.z, this.w);
+        public override string ToString() {
+            return string.Format("Quaternion({0}, {1}, {2}, {3})", this.x, this.y, this.z, this.w);
         }
 		
         public override int GetHashCode() {

@@ -160,7 +160,7 @@ namespace Axiom.ParticleSystems {
         /// </remarks>
         /// <param name="name">The name of the template. Must be unique across all templates.</param>
         /// <param name="system">A reference to a particle system to be used as a template.</param>
-        public void AddTemplate(String name, ParticleSystem system) {
+        public void AddTemplate(string name, ParticleSystem system) {
             systemTemplateList.Add(name, system);
         }
 
@@ -174,7 +174,7 @@ namespace Axiom.ParticleSystems {
         /// </remarks>
         /// <param name="name"></param>
         /// <returns></returns>
-        public ParticleSystem CreateTemplate(String name) {
+        public ParticleSystem CreateTemplate(string name) {
             ParticleSystem system = new ParticleSystem(name);
             AddTemplate(name, system);
 
@@ -186,12 +186,12 @@ namespace Axiom.ParticleSystems {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public ParticleSystem CreateSystem(String name) {
+        public ParticleSystem CreateSystem(string name) {
             // create a system with a default quota
             return CreateSystem(name, DEFAULT_QUOTA);
         }
 
-        public ParticleSystem CreateSystem(String name, String templateName) {
+        public ParticleSystem CreateSystem(string name, string templateName) {
             return CreateSystem(name, templateName, DEFAULT_QUOTA);
         }
 
@@ -211,7 +211,7 @@ namespace Axiom.ParticleSystems {
         /// <param name="name">The name to give the ParticleSystem.</param>
         /// <param name="quota">The maximum number of particles to allow in this system.</param>
         /// <returns></returns>
-        public ParticleSystem CreateSystem(String name, int quota) {
+        public ParticleSystem CreateSystem(string name, int quota) {
             ParticleSystem system = new ParticleSystem(name);
             system.ParticleQuota = quota;
             systemList.Add(name, system);
@@ -239,7 +239,7 @@ namespace Axiom.ParticleSystems {
         /// <param name="templateName">The name of the template to base the new instance on.</param>
         /// <param name="quota">The maximum number of particles to allow in this system (can be changed later).</param>
         /// <returns></returns>
-        public ParticleSystem CreateSystem(String name, String templateName, int quota) {
+        public ParticleSystem CreateSystem(string name, string templateName, int quota) {
             if(!systemTemplateList.ContainsKey(templateName))
                 throw new Exception("Cannot create a particle system with template '" + templateName + "' because it does not exist.");
 
@@ -261,8 +261,8 @@ namespace Axiom.ParticleSystems {
         ///		factories. Applications should use the ParticleSystem.AddEmitter method instead, 
         ///		which calls this method to create an instance.
         /// </remarks>
-        /// <param name="emitterType">String name of the emitter type to be created. A factory of this type must have been registered.</param>
-        protected internal ParticleEmitter CreateEmitter(String emitterType) {
+        /// <param name="emitterType">string name of the emitter type to be created. A factory of this type must have been registered.</param>
+        protected internal ParticleEmitter CreateEmitter(string emitterType) {
             ParticleEmitterFactory factory = (ParticleEmitterFactory)emitterFactoryList[emitterType];
 
             if(factory == null)
@@ -279,8 +279,8 @@ namespace Axiom.ParticleSystems {
         ///		factories. Applications should use the ParticleSystem.AddAffector method instead, 
         ///		which calls this method to create an instance.
         /// </remarks>
-        /// <param name="emitterType">String name of the affector type to be created. A factory of this type must have been registered.</param>
-        protected internal ParticleAffector CreateAffector(String affectorType) {
+        /// <param name="emitterType">string name of the affector type to be created. A factory of this type must have been registered.</param>
+        protected internal ParticleAffector CreateAffector(string affectorType) {
             ParticleAffectorFactory factory = (ParticleAffectorFactory)affectorFactoryList[affectorType];
 
             if(factory == null)
@@ -310,7 +310,7 @@ namespace Axiom.ParticleSystems {
         protected internal void ParseAllSources() {
             StringCollection particleFiles = ResourceManager.GetAllCommonNamesLike("./", "*.particle");
 
-            foreach(String file in particleFiles) {
+            foreach(string file in particleFiles) {
                 Stream data = ResourceManager.FindCommonResourceData(file);
 				
                 ParseScript(data);

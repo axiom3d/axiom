@@ -462,7 +462,7 @@ namespace Axiom.Core {
                 after = Environment.TickCount;
 
                 // record the time elapsed while loading the mesh
-                System.Diagnostics.Trace.WriteLine(String.Format("Mesh: Loaded '{0}', took {1}ms", this.name,  (after - before)));
+                System.Diagnostics.Trace.WriteLine(string.Format("Mesh: Loaded '{0}', took {1}ms", this.name,  (after - before)));
 
                 // close the stream (we don't need to leave it open here)
                 data.Close();
@@ -488,7 +488,7 @@ namespace Axiom.Core {
         /// <param name="name"></param>
         /// <returns></returns>
         // TODO: Create overload which takes no params and auto name the sub mesh
-        public SubMesh CreateSubMesh(String name) {
+        public SubMesh CreateSubMesh(string name) {
             SubMesh subMesh = new SubMesh(name);
 
             // set the parent of the subMesh to us

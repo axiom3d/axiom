@@ -39,7 +39,7 @@ namespace Axiom.Core {
 
         protected Matrix4 worldTransform = Matrix4.Identity;
         protected AxisAlignedBox box;
-        protected String materialName;
+        protected string materialName;
         protected Material material;
         protected SceneManager sceneMgr;
         protected Camera camera;
