@@ -265,7 +265,7 @@ namespace Demos {
 
             demoTable.Rows.Add(new object[] {0, "Camera Track", "Demos.CameraTrack", "CameraTrack.jpg", "Demonstrates a camera following a defined spline path while maintaining focus on an object.", "Demos"});
             demoTable.Rows.Add(new object[] {1, "Cube Mapping", "Demos.CubeMapping", "CubeMapping.jpg", "Demonstrates cube mapping techniques.", "Demos"});
-            demoTable.Rows.Add(new object[] {2, "Dot3 Bump Mapping", "Demos.Dot3Bump", "CameraTrack.jpg", "Demonstrates the use of vertex/fragment shaders to accomplish bump mapping.", "Demos"});
+            demoTable.Rows.Add(new object[] {2, "Dot3 Bump Mapping", "Demos.Dot3Bump", "Dot3Bump.jpg", "Demonstrates the use of vertex/fragment shaders to accomplish bump mapping.", "Demos"});
             demoTable.Rows.Add(new object[] {3, "Environment Mapping", "Demos.EnvMapping", "EnvMapping.jpg", "Demonstrates an environment mapped entity.", "Demos"});
             demoTable.Rows.Add(new object[] {4, "Lights", "Demos.Lights", "Lights.jpg", "Demonstrates creating a scene with lights and billboards.", "Demos"});
             demoTable.Rows.Add(new object[] {5, "ParticleFX", "Demos.ParticleFX", "ParticleFX.jpg", "Demonstrates various particle systems.", "Demos"});
