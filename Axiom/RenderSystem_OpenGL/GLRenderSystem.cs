@@ -665,15 +665,11 @@ namespace RenderSystem_OpenGL {
                 return;
             }
 
-            // TODO: Get these added to Tao
-            const int GL_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FE;
-            const int GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FF;
-
             // get current setting to compare
             float currentAnisotropy = 0;
             float maxSupportedAnisotropy = 0;
-            Gl.glGetFloatv(GL_TEXTURE_MAX_ANISOTROPY_EXT, out currentAnisotropy);
-            Gl.glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, out maxSupportedAnisotropy);
+            Gl.glGetFloatv(Gl.GL_TEXTURE_MAX_ANISOTROPY_EXT, out currentAnisotropy);
+            Gl.glGetFloatv(Gl.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, out maxSupportedAnisotropy);
 
             if(maxAnisotropy > maxSupportedAnisotropy) {
                 maxAnisotropy = 
@@ -681,7 +677,7 @@ namespace RenderSystem_OpenGL {
             }
 
             if(currentAnisotropy != maxAnisotropy) {
-                Gl.glTexParameterf(textureTypes[stage], GL_TEXTURE_MAX_ANISOTROPY_EXT, (float)maxAnisotropy);
+                Gl.glTexParameterf(textureTypes[stage], Gl.GL_TEXTURE_MAX_ANISOTROPY_EXT, (float)maxAnisotropy);
             }
         }
 
