@@ -27,8 +27,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Specialized;
 using Axiom.SubSystems.Rendering;
-//using Gl = CsGL.OpenGL.GL;
-using Gl = Tao.OpenGl.Gl;
+using Tao.OpenGl;
+using Tao.Platform.Windows;
 
 namespace RenderSystem_OpenGL {
     /// <summary>
@@ -72,6 +72,9 @@ namespace RenderSystem_OpenGL {
         /// </summary>
         public static void InitializeExtensions() {
             if(extensionList == null) {
+                // load GL extensions
+                Ext.Init();
+
                 // get the OpenGL version string and vendor name
                 glVersion = Gl.glGetString(Gl.GL_VERSION);
                 vendor = Gl.glGetString(Gl.GL_VENDOR);
@@ -193,4 +196,92 @@ namespace RenderSystem_OpenGL {
         }
 
     }
+
+    /// <summary>
+    ///    Wrapper for Tao extension methods to cache the extension pointers and wrap methods eliminating
+    ///    the need to pass them in manually.
+    /// </summary>
+    public class Ext {
+
+        #region ARB_multitexture
+
+        private static IntPtr activeTextureARB;
+        private static IntPtr clientActiveTextureARB;
+
+        public static void glActiveTextureARB(int texture) {
+            Gl.glActiveTextureARB(activeTextureARB, texture);
+        }
+
+        public static void glClientActiveTextureARB(int texture) {
+            Gl.glClientActiveTextureARB(clientActiveTextureARB, texture);
+        }
+
+        #endregion ARB_multitexture
+
+        #region ARB_vertex_buffer_object
+
+        private static IntPtr bindBufferARBPtr;
+        private static IntPtr bufferDataARBPtr;
+        private static IntPtr bufferSubDataARBPtr;
+        private static IntPtr deleteBuffersARBPtr;
+        private static IntPtr genBuffersARBPtr;
+        private static IntPtr getBufferSubDataARBPtr;      
+        private static IntPtr mapBufferARBPtr;
+        private static IntPtr unmapBufferARBPtr;
+
+        public static void glBindBufferARB(int target, int buffer) {
+            Gl.glBindBufferARB(bindBufferARBPtr, target, buffer);
+        }
+
+        public static void glBufferDataARB(int target, int size, IntPtr data, int usage) {
+            Gl.glBufferDataARB(bufferDataARBPtr, target, size, data, usage);
+        }
+
+        public static void glBufferSubDataARB(int target, int offset, int size, IntPtr data) {
+            Gl.glBufferSubDataARB(bufferSubDataARBPtr, target, offset, size, data);
+        }
+
+        public static void glDeleteBuffersARB(int number, ref int buffer) {
+            // TODO: Fix, currently does nothing
+            //Gl.glDeleteBuffersARB(deleteBuffersARBPtr, number, ref buffer);
+        }
+
+        public static void glGenBuffersARB(int number, out int buffer) {
+            Gl.glGenBuffersARB(genBuffersARBPtr, number, out buffer);
+        }
+
+        public static void glGetBufferSubDataARB(int target, int offset, int size, IntPtr data) {
+            Gl.glGetBufferSubDataARB(getBufferSubDataARBPtr, target, offset, size, data);
+        }
+
+        public static IntPtr glMapBufferARB(int target, int access) {
+            return Gl.glMapBufferARB(mapBufferARBPtr, target, access);
+        }
+
+        public static void glUnmapBufferARB(int target) {
+            Gl.glUnmapBufferARB(unmapBufferARBPtr, target);
+        }
+
+        #endregion ARB_vertex_buffer_object
+
+        /// <summary>
+        ///    Must be fired up after a GL context has been created.
+        /// </summary>
+        public static void Init() {
+            // ARB_vertex_buffer_object
+            bindBufferARBPtr = Wgl.wglGetProcAddress("glBindBufferARB");
+            bufferDataARBPtr = Wgl.wglGetProcAddress("glBufferDataARB");        
+            bufferSubDataARBPtr = Wgl.wglGetProcAddress("glBufferSubDataARB"); 
+            deleteBuffersARBPtr = Wgl.wglGetProcAddress("glDeleteBuffersARB");       
+            genBuffersARBPtr = Wgl.wglGetProcAddress("glGenBuffersARB");
+            getBufferSubDataARBPtr = Wgl.wglGetProcAddress("glGetBufferSubDataARB");        
+            mapBufferARBPtr = Wgl.wglGetProcAddress("glMapBufferARB");
+            unmapBufferARBPtr = Wgl.wglGetProcAddress("glUnmapBufferARB");
+
+            // ARB_multitexture
+            activeTextureARB = Wgl.wglGetProcAddress("glActiveTextureARB");
+            clientActiveTextureARB = Wgl.wglGetProcAddress("glClientActiveTextureARB");
+        }
+    }
+
 }

@@ -28,8 +28,8 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using Axiom.Core;
-using CsGL.OpenGL;
-using Gl = CsGL.OpenGL.GL;
+using Tao.OpenGl;
+using Tao.Platform.Windows;
 
 namespace RenderSystem_OpenGL {
     /// <summary>
@@ -39,7 +39,7 @@ namespace RenderSystem_OpenGL {
         #region Member variable
 
         /// <summary>OpenGL texture ID.</summary>
-        private uint textureID;
+        private int textureID;
 
         #endregion
 
@@ -61,7 +61,7 @@ namespace RenderSystem_OpenGL {
         /// <summary>
         ///		OpenGL texture ID.
         /// </summary>
-        public uint TextureID {
+        public int TextureID {
             get { return textureID; }
         }
 		
@@ -102,8 +102,7 @@ namespace RenderSystem_OpenGL {
 
             unsafe {
                 // generate the texture
-                fixed(uint* pTexID = &textureID)
-                    Gl.glGenTextures(1, pTexID);
+                Gl.glGenTextures(1, out textureID);
 
                 // bind the texture
                 Gl.glBindTexture(Gl.GL_TEXTURE_2D, textureID);
@@ -111,7 +110,7 @@ namespace RenderSystem_OpenGL {
                 // TODO: Apply gamma?
 				
                 // send the data to GL
-                Gl.glTexImage2D(Gl.GL_TEXTURE_2D, 0, hasAlpha ? (int)Gl.GL_RGBA8 : (int)Gl.GL_RGB8, width, height, 0, hasAlpha ? Gl.GL_BGRA : Gl.GL_BGR, Gl.GL_UNSIGNED_BYTE, data.Scan0);
+                Gl.glTexImage2D(Gl.GL_TEXTURE_2D, 0, hasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, width, height, 0, hasAlpha ? Gl.GL_BGRA : Gl.GL_BGR, Gl.GL_UNSIGNED_BYTE, data.Scan0);
 
                 GenerateMipMaps(data.Scan0);
 
@@ -146,7 +145,7 @@ namespace RenderSystem_OpenGL {
 
         public override void Unload() {
             if(isLoaded) {
-                Gl.glDeleteTextures(1, new uint[] { textureID });
+                Gl.glDeleteTextures(1, ref textureID);
                 isLoaded = false;
             }
         }
@@ -156,7 +155,7 @@ namespace RenderSystem_OpenGL {
             Gl.glTexParameteri(Gl.GL_TEXTURE, Gl.GL_TEXTURE_MAX_LEVEL, numMipMaps);
 
             // build the mipmaps
-            Gl.gluBuild2DMipmaps(Gl.GL_TEXTURE_2D, hasAlpha ? (int)Gl.GL_RGBA8 : (int)Gl.GL_RGB8, width, height, 
+            Glu.gluBuild2DMipmaps(Gl.GL_TEXTURE_2D, hasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, width, height, 
                 hasAlpha ? Gl.GL_BGRA : Gl.GL_BGR, Gl.GL_UNSIGNED_BYTE, data);
         }
 

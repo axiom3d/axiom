@@ -65,6 +65,7 @@ namespace Demos {
             // create a node rotation controller value, which will mark the specified scene node as a target of the rotation
             // we want to rotate along the Y axis
             NodeRotationControllerValue rotate = new NodeRotationControllerValue(triNode, Vector3.UnitY);
+            NodeRotationControllerValue rotate2 = new NodeRotationControllerValue(lineNode, Vector3.UnitZ);
 
             // the multiply controller function will multiply the source controller value by the specified value each frame.
             MultipyControllerFunction func = new MultipyControllerFunction(50);
@@ -76,6 +77,7 @@ namespace Demos {
             // MultiplyControllerValue, then the node will rotate 50 degrees per second.  since the value is scaled by the frame time, the speed
             // of the rotation will be consistent on all machines regardless of CPU speed.
             ControllerManager.Instance.CreateController(rotate, func);
+            ControllerManager.Instance.CreateController(rotate2, func);
 
             // place the camera in an optimal position
             camera.Position = new Vector3(30, 30, 120);

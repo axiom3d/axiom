@@ -2,6 +2,7 @@ Particles/Flare
 {
 	lighting off
 	scene_blend add
+	depth_write off
 	
 	// texture 0
 	{
@@ -13,6 +14,7 @@ Particles/Flare2
 {
 	lighting off
 	scene_blend add
+	depth_write off
 	
 	// texture 0
 	{
@@ -24,6 +26,7 @@ Particles/Rain
 {
 	lighting off
 	scene_blend add
+	depth_write off
 
 	{
 		texture raindrop.png

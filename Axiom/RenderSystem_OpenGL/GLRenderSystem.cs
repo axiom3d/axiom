@@ -45,12 +45,6 @@ using Tao.Platform.Windows;
 namespace RenderSystem_OpenGL {
 
     /// <summary>
-    ///    Temporary until Tao.OpenGl is complete.
-    /// </summary>
-    public class Ext : OpenGL_Extension {
-    }
-
-    /// <summary>
     /// Summary description for OpenGLRenderer.
     /// </summary>
     public class GLRenderSystem : RenderSystem, IPlugin {
@@ -58,11 +52,6 @@ namespace RenderSystem_OpenGL {
 
         /// <summary>OpenGL Context (from CsGL)</summary>
         protected OpenGLContext context;
-        /// <summary>Object that allows for calls to OpenGL extensions.  Named all upper for consistency since GL calls are static through GL class.</summary>
-        protected OpenGL_Extension Ext;
-
-        protected IntPtr glClientActiveTextureARB;
-        protected IntPtr glActiveTextureARB;
 
         /// <summary>Internal view matrix.</summary>
         protected Matrix4 viewMatrix;
@@ -102,9 +91,6 @@ namespace RenderSystem_OpenGL {
             stencilFunc = Gl.GL_ALWAYS;
             stencilRef = 0;
             stencilMask = unchecked((int)0xffffffff);
-
-            // create a new OpenGLExtensions object
-            Ext = new Ext();
 
             InitConfigOptions();
         }
@@ -169,14 +155,11 @@ namespace RenderSystem_OpenGL {
             textureMgr = new GLTextureManager();
 
             // create a specialized instance, which registers itself as the singleton instance of HardwareBufferManager
+            // use software buffers as a fallback, which operate as regular vertex arrays
             if(caps.CheckCap(Capabilities.VertexBuffer))
                 hardwareBufferManager = new GLHardwareBufferManager();
             else
                 hardwareBufferManager = new GLSoftwareBufferManager();
-
-            // handles to OpenGL extensions
-            glActiveTextureARB = Wgl.wglGetProcAddress("glActiveTextureARB");
-            glClientActiveTextureARB = Wgl.wglGetProcAddress("glClientActiveTextureARB");
 
             return window;
         }
@@ -340,7 +323,7 @@ namespace RenderSystem_OpenGL {
 
                 // set for all texture units
                 for(int unit = 0; unit < numUnits; unit++) {
-                    Gl.glActiveTextureARB(glActiveTextureARB, Gl.GL_TEXTURE0 + unit);
+                    Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + unit);
 
                     switch(value) {
                         case Axiom.SubSystems.Rendering.TextureFiltering.Trilinear: {
@@ -364,7 +347,7 @@ namespace RenderSystem_OpenGL {
                 } // for
 
                 // reset texture unit
-                Gl.glActiveTextureARB(glActiveTextureARB, Gl.GL_TEXTURE0 );
+                Ext.glActiveTextureARB(Gl.GL_TEXTURE0 );
             }
         }
 
@@ -534,10 +517,10 @@ namespace RenderSystem_OpenGL {
             } // end switch
 
             // set the GL texture wrap params for the specified unit
-            Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0 + stage);
+            Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + stage);
             Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, type);
             Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, type);
-            Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0);
+            Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
         }
 
         /// <summary>
@@ -631,7 +614,7 @@ namespace RenderSystem_OpenGL {
                     break;
             } // end switch
 
-            Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0 + stage);
+            Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + stage);
             Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, (int)Gl.GL_COMBINE);
 
             if (blendMode.blendType == LayerBlendType.Color) {
@@ -686,7 +669,7 @@ namespace RenderSystem_OpenGL {
             if (blendMode.blendType == LayerBlendType.Color && blendMode.source2 == LayerBlendSource.Manual)
                 Gl.glTexEnvfv(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_COLOR, cv2);
         
-            Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0);
+            Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
         }
 
         /// <summary>
@@ -709,7 +692,7 @@ namespace RenderSystem_OpenGL {
             // Default to no extra auto texture matrix
             useAutoTextureMatrix = false;
 
-            Gl.glActiveTextureARB(glActiveTextureARB, Gl.GL_TEXTURE0 + stage );
+            Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + stage );
 
             switch(method) {
                 case TexCoordCalcMethod.None:
@@ -796,7 +779,7 @@ namespace RenderSystem_OpenGL {
                     break;
             }
 
-            Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0);		
+            Ext.glActiveTextureARB(Gl.GL_TEXTURE0);		
         }
 
         /// <summary>
@@ -810,7 +793,7 @@ namespace RenderSystem_OpenGL {
             glMatrix[12] = glMatrix[8];
             glMatrix[13] = glMatrix[9];
 
-            Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0 + stage);
+            Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + stage);
             Gl.glMatrixMode(Gl.GL_TEXTURE);
 
             // if texture matrix was precalced, use that
@@ -823,7 +806,7 @@ namespace RenderSystem_OpenGL {
 
             // reset to mesh view matrix and to tex unit 0
             Gl.glMatrixMode(Gl.GL_MODELVIEW);
-            Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0);
+            Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
         }
 
         /// <summary>
@@ -883,12 +866,12 @@ namespace RenderSystem_OpenGL {
             GLTexture texture = (GLTexture)TextureManager.Instance[textureName];
 
             // set the active texture
-            Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0 + stage);
+            Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + stage);
 
             // enable and bind the texture if necessary
             if(enabled && texture != null) {
                 Gl.glEnable(Gl.GL_TEXTURE_2D);
-                Gl.glBindTexture(Gl.GL_TEXTURE_2D, (int)texture.TextureID);
+                Gl.glBindTexture(Gl.GL_TEXTURE_2D, texture.TextureID);
             }
             else {
                 Gl.glDisable(Gl.GL_TEXTURE_2D);
@@ -896,7 +879,7 @@ namespace RenderSystem_OpenGL {
             }
 
             // reset active texture to unit 0
-            Gl.glActiveTextureARB(glActiveTextureARB,Gl.GL_TEXTURE0);
+            Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
         }
 
         /// <summary>
@@ -961,7 +944,7 @@ namespace RenderSystem_OpenGL {
 
                 if(caps.CheckCap(Capabilities.VertexBuffer)) {
                     // get the buffer id
-                    uint bufferId = ((GLHardwareVertexBuffer)vertexBuffer).GLBufferID;
+                    int bufferId = ((GLHardwareVertexBuffer)vertexBuffer).GLBufferID;
 
                     // bind the current vertex buffer
                     Ext.glBindBufferARB(Gl.GL_ARRAY_BUFFER_ARB, bufferId);
@@ -1027,7 +1010,7 @@ namespace RenderSystem_OpenGL {
                             // only set if this textures index if it is supposed to
                             if(texCoordIndex[j] == element.Index) {
                                 // set the current active texture unit
-                                Gl.glClientActiveTextureARB(glClientActiveTextureARB, Gl.GL_TEXTURE0 + j); 
+                                Ext.glClientActiveTextureARB(Gl.GL_TEXTURE0 + j); 
 
                                 int tmp = Gl.glIsEnabled(Gl.GL_TEXTURE_2D);
 
@@ -1052,7 +1035,7 @@ namespace RenderSystem_OpenGL {
             } // for
 
             // reset to texture unit 0
-            Gl.glClientActiveTextureARB(glClientActiveTextureARB, Gl.GL_TEXTURE0); 
+            Ext.glClientActiveTextureARB(Gl.GL_TEXTURE0); 
 
             int primType = 0;
 
@@ -1086,7 +1069,7 @@ namespace RenderSystem_OpenGL {
                     // if hardware is supported, expect it is a hardware buffer.  else, fallback to software
                     if(caps.CheckCap(Capabilities.VertexBuffer)) {
                         // get the index buffer id
-                        uint idxBufferID = ((GLHardwareIndexBuffer)op.indexData.indexBuffer).GLBufferID;
+                        int idxBufferID = ((GLHardwareIndexBuffer)op.indexData.indexBuffer).GLBufferID;
 
                         // bind the current index buffer
                         Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, idxBufferID);
