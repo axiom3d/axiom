@@ -59,6 +59,7 @@ namespace Axiom.SceneManagers.Bsp
 		public const int LightmapSize = (128 * 128 * 3);
 
 		#region Protected members
+
 		protected BspNode[] nodes;
 		protected int numLeaves;
 		protected int leafStart;
@@ -78,7 +79,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// <summary>
 		///		Array of face groups, indexed into by contents of mLeafFaceGroups.
 		///	</summary>
-		protected StaticFaceGroup[] faceGroups;
+		protected BspStaticFaceGroup[] faceGroups;
 
 		/// <summary>
 		///		Storage of patches 
@@ -93,7 +94,6 @@ namespace Axiom.SceneManagers.Bsp
 		///		Total number of indexes required for all patches.
 		/// </summary>
 		protected int patchIndexCount;
-		
 
 		/// <summary>
 		///		Indexes for the whole level, will be copied to the real indexdata per frame.
@@ -103,7 +103,9 @@ namespace Axiom.SceneManagers.Bsp
 		protected BspBrush[] brushes;
 		protected ArrayList playerStarts = new ArrayList();
 		protected VisData visData;
-		protected Bsp.Collections.Map objectToNodeMap;
+		internal protected Bsp.Collections.Map objectToNodeMap;
+		protected BspOptions bspOptions = new BspOptions();
+
 		#endregion
 
 		#region Public properties
@@ -147,7 +149,7 @@ namespace Axiom.SceneManagers.Bsp
 			get { return leafFaceGroups; }
 		}
 
-		public StaticFaceGroup[] FaceGroups
+		public BspStaticFaceGroup[] FaceGroups
 		{
 			get { return faceGroups; }
 		}
@@ -160,6 +162,11 @@ namespace Axiom.SceneManagers.Bsp
 		public ViewPoint[] PlayerStarts
 		{
 			get { return (ViewPoint[]) playerStarts.ToArray(typeof(ViewPoint)); }
+		}
+
+		public BspOptions BspOptions
+		{
+			get { return bspOptions; }
 		}
 		#endregion
 
@@ -233,7 +240,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// <summary>
 		///		Ensures that the <see cref="Axiom.Core.SceneObject"/> is attached to the right leaves of the BSP tree.
 		/// </summary>
-		public void NotifyObjectMoved(SceneObject obj, Vector3 pos)
+		internal void NotifyObjectMoved(SceneObject obj, Vector3 pos)
 		{
 			IEnumerator objnodes = objectToNodeMap.Find(obj);
 			
@@ -251,7 +258,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// <summary>
 		///		Internal method, makes sure an object is removed from the leaves when detached from a node.
 		/// </summary>
-		public void NotifyObjectDetached(SceneObject obj)
+		internal void NotifyObjectDetached(SceneObject obj)
 		{
 			IEnumerator objnodes = objectToNodeMap.Find(obj);
 			
@@ -286,25 +293,42 @@ namespace Axiom.SceneManagers.Bsp
 			// Create vertex declaration
 			VertexDeclaration decl = vertexData.vertexDeclaration;
 			int offset = 0;
+			int lightTexOffset = 0;
 			decl.AddElement(0, offset, VertexElementType.Float3, VertexElementSemantic.Position);
 			offset += VertexElement.GetTypeSize(VertexElementType.Float3);
 			decl.AddElement(0, offset, VertexElementType.Float3, VertexElementSemantic.Normal);
 			offset += VertexElement.GetTypeSize(VertexElementType.Float3);
-			decl.AddElement(0, offset, VertexElementType.Color, VertexElementSemantic.Diffuse);
-			offset += VertexElement.GetTypeSize(VertexElementType.Color);
 			decl.AddElement(0, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0);
 			offset += VertexElement.GetTypeSize(VertexElementType.Float2);
 			decl.AddElement(0, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 1);
 
 			// Build initial patches - we need to know how big the vertex buffer needs to be
 			// to accommodate the subdivision
-			InitQuake3Patches(q3lvl, decl);
+			// we don't want to include the elements for texture lighting, so we clone it
+			InitQuake3Patches(q3lvl, (VertexDeclaration) decl.Clone());
+			
+			// this is for texture lighting color and alpha
+			decl.AddElement(1, lightTexOffset, VertexElementType.Color, VertexElementSemantic.Diffuse);
+			lightTexOffset += VertexElement.GetTypeSize(VertexElementType.Color);
+			// this is for texture lighting coords
+			decl.AddElement(1, lightTexOffset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 2);
+
 
 			// Create the vertex buffer, allow space for patches
 			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer(
 				Marshal.SizeOf(typeof(BspVertex)), 
 				q3lvl.NumVertices + patchVertexCount,
-				BufferUsage.StaticWriteOnly
+				BufferUsage.StaticWriteOnly,
+				// the vertices will be read often for texture lighting, use shadow buffer
+				true
+				);
+
+			// Create the vertex buffer for texture lighting, allow space for patches
+			HardwareVertexBuffer texLightBuf = HardwareBufferManager.Instance.CreateVertexBuffer(
+				Marshal.SizeOf(typeof(TextureLightMap)), 
+				q3lvl.NumVertices + patchVertexCount,
+				BufferUsage.DynamicWriteOnly,
+				false
 				);
 
 			// COPY static vertex data - Note that we can't just block-copy the vertex data because we have to reorder
@@ -315,26 +339,38 @@ namespace Axiom.SceneManagers.Bsp
 
 			unsafe
 			{    
+				BspVertex vert = new BspVertex();
+				TextureLightMap texLightMap = new TextureLightMap();
+
 				// Keep another base pointer for use later in patch building
 				for(int v = 0; v < q3lvl.NumVertices; v++)
 				{
-					BspVertex vert = new BspVertex();
-					IntPtr ptr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(BspVertex)));
+					QuakeVertexToBspVertex(q3lvl.Vertices[v], out vert, out texLightMap);
 
-					QuakeVertexToBspVertex(q3lvl.Vertices[v], out vert);
-					Marshal.StructureToPtr(vert, ptr, true);
+					BspVertex* bvptr = &vert;
+                    TextureLightMap* tlptr = &texLightMap;
 
 					vbuf.WriteData(
-						v * Marshal.SizeOf(typeof(BspVertex)), 
-						Marshal.SizeOf(typeof(BspVertex)), 
-						ptr
+						v * sizeof(BspVertex),
+						sizeof(BspVertex), 
+						(IntPtr)bvptr
 						);
+
+					texLightBuf.WriteData(
+						v * sizeof(TextureLightMap),
+						sizeof(TextureLightMap),
+						(IntPtr)tlptr
+						);
+                        
 				}
 			}
 
 			// Setup binding
 			vertexData.vertexBufferBinding.SetBinding(0, vbuf);
 			
+			// Setup texture lighting binding
+			vertexData.vertexBufferBinding.SetBinding(1, texLightBuf);
+
 			// Set other data
 			vertexData.vertexStart = 0;
 			vertexData.vertexCount = q3lvl.NumVertices + patchVertexCount;
@@ -345,7 +381,7 @@ namespace Axiom.SceneManagers.Bsp
 			leafFaceGroups = new int[q3lvl.LeafFaces.Length];
 			Array.Copy(q3lvl.LeafFaces, 0, leafFaceGroups, 0, leafFaceGroups.Length);
 
-			faceGroups = new StaticFaceGroup[q3lvl.Faces.Length];
+			faceGroups = new BspStaticFaceGroup[q3lvl.Faces.Length];
 
 			// Set up index buffer
 			// NB Quake3 indexes are 32-bit
@@ -389,9 +425,16 @@ namespace Axiom.SceneManagers.Bsp
 				// Check to see if existing material
 				// Format shader#lightmap
 				int shadIdx = q3lvl.Faces[face].shader;
+
 				shaderName = String.Format("{0}#{1}", q3lvl.Shaders[shadIdx].name, q3lvl.Faces[face].lmTexture);
-				
 				Material shadMat = sm.GetMaterial(shaderName);
+
+				if (shadMat == null && !bspOptions.useLightmaps)
+				{
+					// try the no-lightmap material
+					shaderName = String.Format("{0}#n", q3lvl.Shaders[shadIdx].name);
+					shadMat = sm.GetMaterial(shaderName);
+				}
 
 				if(shadMat == null)
 				{
@@ -426,7 +469,10 @@ namespace Axiom.SceneManagers.Bsp
 						tex.SetColorOperation(LayerBlendOperation.Replace);
 						tex.TextureAddressing = TextureAddressing.Wrap;
 
-						if(q3lvl.Faces[face].lmTexture != -1)
+						// for ambient lighting
+						tex.ColorBlendMode.source2 = LayerBlendSource.Manual;
+
+						if(bspOptions.useLightmaps && q3lvl.Faces[face].lmTexture != -1)
 						{
 							// Add lightmap, additive blending
 							tex = shadPass.CreateTextureUnitState(String.Format("@lightmap{0}", q3lvl.Faces[face].lmTexture));
@@ -447,9 +493,9 @@ namespace Axiom.SceneManagers.Bsp
 				}
 
 				shadMat.Load();
-				
+
 				// Copy face data
-				StaticFaceGroup dest = new StaticFaceGroup();
+				BspStaticFaceGroup dest = new BspStaticFaceGroup();
 				InternalBspFace src = q3lvl.Faces[face];
 
 				if((q3lvl.Shaders[src.shader].surfaceFlags & SurfaceFlags.Sky) == SurfaceFlags.Sky)
@@ -463,6 +509,12 @@ namespace Axiom.SceneManagers.Bsp
 				dest.numVertices = src.vertCount;
 				dest.vertexStart = src.vertStart;
 				dest.plane = new Plane();
+
+				if (Quake3ShaderManager.Instance.GetByName(q3lvl.Shaders[shadIdx].name) != null)
+				{
+					// it's a quake shader
+					dest.isQuakeShader = true;
+				}
 
 				if(src.type == BspFaceType.Normal)
 				{
@@ -707,11 +759,13 @@ namespace Axiom.SceneManagers.Bsp
 
 				if(paramList[0] == "origin")
 				{
-					origin = new Vector3(
-						ParseHelper.ParseFloat(paramList[1]),
-						ParseHelper.ParseFloat(paramList[2]),
-						ParseHelper.ParseFloat(paramList[3])
-						);
+					float[] vector = new float[3];
+					for (int v = 0; v < 3; v++)
+						vector[v] = ParseHelper.ParseFloat(paramList[v + 1]);
+
+					q3lvl.TransformVector(vector);
+
+					origin = new Vector3(vector[0], vector[1], vector[2]);
 				}
 
 				if(paramList[0] == "angle")
@@ -726,7 +780,12 @@ namespace Axiom.SceneManagers.Bsp
 					{
 						ViewPoint vp = new ViewPoint();
 						vp.position = origin;
-						vp.orientation = Quaternion.FromAngleAxis(MathUtil.DegreesToRadians(angle), Vector3.UnitZ);
+
+						if (q3lvl.Options.setYAxisUp)
+							vp.orientation = Quaternion.FromAngleAxis(MathUtil.DegreesToRadians(angle), Vector3.UnitY);
+						else
+							vp.orientation = Quaternion.FromAngleAxis(MathUtil.DegreesToRadians(angle), Vector3.UnitZ);
+
 						playerStarts.Add(vp);
 					}
 
@@ -735,25 +794,17 @@ namespace Axiom.SceneManagers.Bsp
 			}
 		}
 
-		protected void QuakeVertexToBspVertex(InternalBspVertex src, out BspVertex dest)
+		protected void QuakeVertexToBspVertex(InternalBspVertex src, out BspVertex dest, out TextureLightMap texLightMap)
 		{
 			dest = new BspVertex();
 
-            dest.position0 = src.point[0];
-			dest.position1 = src.point[1];
-			dest.position2 = src.point[2];
+			dest.position = new Vector3(src.point[0], src.point[1], src.point[2]);
+			dest.normal = new Vector3(src.normal[0], src.normal[1], src.normal[2]);
+			dest.texCoords = new Vector2(src.texture[0], src.texture[1]);
+			dest.lightMap = new Vector2(src.lightMap[0], src.lightMap[1]);
 
-			dest.normal0 = src.normal[0];
-			dest.normal1 = src.normal[1];
-			dest.normal2 = src.normal[2];
-
-			dest.color = src.color;
-
-			dest.texCoords0 = src.texture[0];
-			dest.texCoords1 = src.texture[1];
-
-			dest.lightMap0 = src.lightMap[0];
-			dest.lightMap1 = src.lightMap[1];
+			texLightMap = new TextureLightMap();
+			texLightMap.color = src.color;
 		}
 
 		protected void TagNodesWithObject(BspNode node, SceneObject obj, Vector3 pos)
@@ -817,9 +868,10 @@ namespace Axiom.SceneManagers.Bsp
 					// Reuse the vertex declaration.
 					// Copy control points into a buffer so we can convert their format.
 					BspVertex[] controlPoints = new BspVertex[src.vertCount];
+					TextureLightMap texLightMap;
 					
 					for(int v = 0; v < src.vertCount; v++)
-						QuakeVertexToBspVertex(q3lvl.Vertices[src.vertStart + v], out controlPoints[v]);
+						QuakeVertexToBspVertex(q3lvl.Vertices[src.vertStart + v], out controlPoints[v], out texLightMap);
 
 					// Define the surface, but don't build it yet (no vertex / index buffer)
 					ps.DefineSurface(
@@ -843,7 +895,7 @@ namespace Axiom.SceneManagers.Bsp
 			// Loop through the patches
 			int currVertOffset = vertOffset;
 			int currIndexOffset = indexOffset;
-
+            
 			HardwareVertexBuffer vbuf = vertexData.vertexBufferBinding.GetBuffer(0);
 
 			for(int i = 0; i < patches.Count; i++)
@@ -864,7 +916,27 @@ namespace Axiom.SceneManagers.Bsp
 		/// </summary>
 		public override void Load()
 		{
-			Quake3Level q3 = new Quake3Level();
+			Hashtable options = SceneManagerList.Instance[SceneType.Interior].Options;
+
+			if (options.ContainsKey("SetYAxisUp"))
+				bspOptions.setYAxisUp = (bool)options["SetYAxisUp"];
+
+			if (options.ContainsKey("Scale"))
+				bspOptions.scale = (float)options["Scale"];
+			
+			if (options.ContainsKey("Move"))
+				bspOptions.move = (Vector3)options["Move"];
+
+			if (options.ContainsKey("UseLightmaps"))
+				bspOptions.useLightmaps = (bool)options["UseLightmaps"];
+			
+			if (options.ContainsKey("AmbientEnabled"))
+				bspOptions.ambientEnabled = (bool)options["AmbientEnabled"];
+			
+			if (options.ContainsKey("AmbientRatio"))
+				bspOptions.ambientRatio = (float)options["AmbientRatio"];
+
+			Quake3Level q3 = new Quake3Level(bspOptions);
 
 			Stream chunk = BspResourceManager.Instance.FindResourceData(name);
 			q3.LoadFromStream(chunk);
@@ -887,32 +959,6 @@ namespace Axiom.SceneManagers.Bsp
 		#endregion
 
 		#region Sub types
-		/// <summary>
-		///		Vertex format for fixed geometry.
-		/// </summary>
-		/// <remarks>
-		///		Note that in this case vertex components (position, normal, texture coords etc)
-		///		are held interleaved in the same buffer. However, the format here is different from 
-		///		the format used by Quake because older Direct3d drivers like the vertex elements
-		///		to be in a particular order within the buffer. See VertexDeclaration for full
-		///		details of this marvellous(not) feature.
-		///	</remarks>
-		[StructLayout(LayoutKind.Sequential)]
-		public struct BspVertex
-		{
-			public float position0;
-			public float position1;
-			public float position2;
-			public float normal0;
-			public float normal1;
-			public float normal2;
-			public int color;
-			public float texCoords0;
-			public float texCoords1;
-			public float lightMap0;
-			public float lightMap1;
-		}
-	
 		/// <summary>
 		///		Internal lookup table to determine visibility between leaves.
 		/// </summary>
@@ -941,5 +987,44 @@ namespace Axiom.SceneManagers.Bsp
 			public int rowLength; 
 		}
 		#endregion
+	}
+
+	/// <summary>
+	///		Vertex format for fixed geometry.
+	/// </summary>
+	/// <remarks>
+	///		Note that in this case vertex components (position, normal, texture coords etc)
+	///		are held interleaved in the same buffer. However, the format here is different from 
+	///		the format used by Quake because older Direct3d drivers like the vertex elements
+	///		to be in a particular order within the buffer. See VertexDeclaration for full
+	///		details of this marvellous(not) feature.
+	///	</remarks>
+	[StructLayout(LayoutKind.Sequential)]
+	public struct BspVertex
+	{
+		public Vector3 position;
+		public Vector3 normal;
+		public Vector2 texCoords;
+		public Vector2 lightMap;
+	}
+
+	public class BspOptions
+	{
+		public bool setYAxisUp;
+        public float scale;
+		public Vector3 move;
+		public bool useLightmaps;
+		public bool ambientEnabled;
+		public float ambientRatio;
+
+		public BspOptions()
+		{
+			setYAxisUp = false;
+			scale = 1f;
+			move = Vector3.Zero;
+			useLightmaps = true;
+			ambientEnabled = false;
+			ambientRatio = 1;
+		}
 	}
 }
