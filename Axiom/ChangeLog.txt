@@ -1,3 +1,8 @@
+1-8-2005
+- Fixed OpenGL problem where ARB programs were being created by default, even through they were not supported.
+- Added StringConverter class for parsing back and forth between strings and other types (float, etc).
+- Fixed issue where float.ToString was being called in the particle system and non-US cultures were interpreting the values wrong.
+
 1-6-2005
 - RenderWindow.SaveToFile renamed to Save and moved up to RenderTarget base class.
 - Save can now save to file, or to a Stream.
