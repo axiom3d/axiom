@@ -38,18 +38,15 @@ namespace Demos {
 				//}
 
 				// Change me to whatever demo you want to run for the meantime until the new browser is done
-				Type demoType = Type.GetType("Demos.Shadows");
+				Type demoType = Type.GetType("Demos.CameraTrack");
 
 				using(TechDemo demo = (TechDemo)Activator.CreateInstance(demoType)) {
 					demo.Start();
 				}
             }
             catch(Exception ex) {
-                // call the existing global exception handler
-                TechDemo.GlobalErrorHandler(ex);
-
-				Console.WriteLine("");
-				Console.WriteLine("Press enter to continue...");
+				Console.WriteLine(ex.ToString());
+				Console.WriteLine("An exception has occurred.  Press enter to continue...");
 				Console.ReadLine();
             }
         }

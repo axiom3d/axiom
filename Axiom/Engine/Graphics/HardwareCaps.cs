@@ -273,7 +273,7 @@ namespace Axiom.Graphics {
             logMgr.Write("\t-Fragment programs: {0}", ConvertBool(CheckCap(Capabilities.FragmentPrograms)));
 
             if (CheckCap(Capabilities.FragmentPrograms)) {
-                logMgr.Write("\t\t-Max fragment program version: {0}", this.MaxVertexProgramVersion);
+                logMgr.Write("\t\t-Max fragment program version: {0}", this.MaxFragmentProgramVersion);
             }
 
             logMgr.Write("\t-Texture compression: {0}", ConvertBool(CheckCap(Capabilities.TextureCompression)));
