@@ -846,7 +846,7 @@ namespace Axiom.Core {
 			if (!this.HasSkeleton) {
 				Matrix4 world2Obj = parentNode.FullTransform.Inverse();
 
-				lightPos = lightPos * world2Obj; 
+				lightPos = world2Obj * lightPos; 
 			}
 
 			// We need to search the edge list for silhouette edges

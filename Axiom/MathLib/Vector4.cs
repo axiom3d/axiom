@@ -92,6 +92,18 @@ namespace Axiom.MathLib {
         /// <param name="vector"></param>
         /// <param name="matrix"></param>
         /// <returns></returns>
+		public static Vector4 operator * (Matrix4 matrix, Vector4 vector) {
+			Vector4 result = new Vector4();
+			
+			result.x = vector.x * matrix.m00 + vector.y * matrix.m01 + vector.z * matrix.m02 + vector.w * matrix.m03;
+			result.y = vector.x * matrix.m10 + vector.y * matrix.m11 + vector.z * matrix.m12 + vector.w * matrix.m13;
+			result.z = vector.x * matrix.m20 + vector.y * matrix.m21 + vector.z * matrix.m22 + vector.w * matrix.m23;
+			result.w = vector.x * matrix.m30 + vector.y * matrix.m31 + vector.z * matrix.m32 + vector.w * matrix.m33;
+
+			return result;
+		}
+
+		// TODO: Find the signifance of having 2 overloads with opposite param lists that do transposed operations
 		public static Vector4 operator * (Vector4 vector, Matrix4 matrix) {
 			Vector4 result = new Vector4();
 			
