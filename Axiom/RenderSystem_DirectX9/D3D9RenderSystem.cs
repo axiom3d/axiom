@@ -270,9 +270,23 @@ namespace RenderSystem_DirectX9 {
                     presentParams.AutoDepthStencilFormat = DepthFormat.D16;
                 }
 
-                // create the D3D Device
-                // TODO: Do testing to fall back to vertex processing other that Hardware (need to swap vid cards to test this)
-                device = new D3D.Device(0, DeviceType.Hardware, target, CreateFlags.HardwareVertexProcessing | CreateFlags.PureDevice, presentParams);
+                // create the D3D Device, trying for the best vertex support first, and settling for less if necessary
+                try {
+                    // hardware vertex processing
+                    device = new D3D.Device(0, DeviceType.Hardware, target, CreateFlags.HardwareVertexProcessing, presentParams);
+                }
+                catch(Exception) {
+                    try {
+                        // doh, how bout mixed vertex processing
+                        device = new D3D.Device(0, DeviceType.Hardware, target, CreateFlags.MixedVertexProcessing, presentParams);
+                    }
+                    catch(Exception) {
+                        // what the...ok, how bout software vertex procssing.  if this fails, then I don't even know how they are seeing
+                        // anything at all since they obviously don't have a video card installed
+                        device = new D3D.Device(0, DeviceType.Hardware, target, CreateFlags.SoftwareVertexProcessing, presentParams);
+                    }
+                }
+
                 device.DeviceReset += new EventHandler(OnResetDevice);
                 this.OnResetDevice(device, null);
                 device.DeviceLost += new EventHandler(device_DeviceLost);
