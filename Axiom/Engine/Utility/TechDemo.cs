@@ -61,7 +61,7 @@ namespace Axiom.Utility {
         #region Constructors & Destructors
 
         public TechDemo() {
-            // set the global error handler for this applications thread of excecution.
+            // set the global error handler for this applications thread of execution.
             Application.ThreadException += new ThreadExceptionEventHandler(GlobalErrorHandler);
 
             // add event handlers for frame events

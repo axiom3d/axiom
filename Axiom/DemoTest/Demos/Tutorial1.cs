@@ -39,11 +39,8 @@ namespace Demos {
     /// </summary>
     public class Tutorial1 : TechDemo {	
         #region Methods
-		
-        protected override void CreateScene() {
 
-            Material mat = MaterialManager.Instance["Examples/DP3Mat1"];
-            mat.Load();
+        protected override void CreateScene() {
 
             // create a 3d line
             Line3d line = new Line3d(new Vector3(0, 0, 30), Vector3.UnitY, 50, ColorEx.FromColor(System.Drawing.Color.Blue));

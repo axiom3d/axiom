@@ -207,7 +207,9 @@ namespace Axiom.Core {
 
             // use lod face list if requested, else pass the normal face list
             if(lodIndex > 0 && (lodIndex - 1) < lodFaceList.Count) {
-                op.indexData = (IndexData)lodFaceList[lodIndex - 1];
+                // HACK: Revisit why LOD suddenly stopped working in GL
+                //op.indexData = (IndexData)lodFaceList[lodIndex - 1];
+                op.indexData = indexData;
             }
             else
                 op.indexData = indexData;

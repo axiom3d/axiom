@@ -45,7 +45,6 @@
     <File name=".\Controllers\Canned\NodeRotationControllerValue.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Controllers\Canned\TexCoordModifierControllerValue.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Controllers\Canned\WaveformControllerFunction.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
-    <File name=".\Core\AxisAlignedBox.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Billboard.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\BillboardSet.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\Camera.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
@@ -147,6 +146,10 @@
     <File name=".\Gui\GuiContainer.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Gui\GuiElement.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Gui\IGuiElementFactory.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Core\SceneQuery.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\GpuProgramParameters.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\GpuProgram.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\SubSystems\Rendering\GpuProgramManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References>
     <Reference type="Project" refto="MathLib" localcopy="True" />

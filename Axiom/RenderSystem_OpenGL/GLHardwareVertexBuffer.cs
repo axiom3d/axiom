@@ -88,17 +88,19 @@ namespace RenderSystem_OpenGL {
                 Ext.glBufferDataARB(Gl.GL_ARRAY_BUFFER_ARB, length, IntPtr.Zero, GLHelper.ConvertEnum(usage));
 
                 // find out how we shall access this buffer
-                access = (usage & BufferUsage.Dynamic) > 0 ? 
+                access = (usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly) ? 
                     Gl.GL_READ_WRITE_ARB : Gl.GL_WRITE_ONLY_ARB;
             }
             else if(locking == BufferLocking.ReadOnly) {
-                if((usage & BufferUsage.WriteOnly) > 0)
+                if(usage == BufferUsage.WriteOnly ||
+                    usage == BufferUsage.StaticWriteOnly ||
+                    usage == BufferUsage.DynamicWriteOnly)
                     throw new Exception("Invalid attempt to lock a write-only vertex buffer as read-only.");
 
                 access = Gl.GL_READ_ONLY_ARB;
             }
             else if (locking == BufferLocking.Normal) {
-                access = ((usage & BufferUsage.Dynamic) > 0) ?
+                access = (usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly) ?
                     Gl.GL_READ_WRITE_ARB : Gl.GL_READ_ONLY_ARB;
             }
 

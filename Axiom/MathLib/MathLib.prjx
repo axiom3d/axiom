@@ -13,6 +13,9 @@
     <File name=".\Collections\BaseCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Collections\QuaternionCollection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Collections\Vector3Collection.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\AxisAlignedBox.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Ray.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Collections\Pair.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References />
   <DeploymentInformation target="" script="" strategy="File" />

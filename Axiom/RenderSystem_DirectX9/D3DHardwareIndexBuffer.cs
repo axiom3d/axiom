@@ -104,7 +104,6 @@ namespace RenderSystem_DirectX9 {
             IntPtr src = this.Lock(offset, length, BufferLocking.ReadOnly);
 			
             // copy that data in there
-            //Array.Copy(src, dest, length);
             PointerCopy(src, dest, length);
 
             // unlock the buffer
@@ -125,7 +124,6 @@ namespace RenderSystem_DirectX9 {
                 discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal);
 			
             // copy that data in there
-            //Array.Copy(src, dest, length);
             PointerCopy(src, dest, length);
 
             // unlock the buffer

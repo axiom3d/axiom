@@ -257,6 +257,36 @@ namespace Axiom.MathLib {
         }
 
         /// <summary>
+        ///    Returns true if the vector's scalar components are all smaller
+        ///    that the ones of the vector it is compared against.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static bool operator > (Vector3 left, Vector3 right) {
+            if(left.x > right.x && left.y > right.y && left.z > right.z) {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///    Returns true if the vector's scalar components are all greater
+        ///    that the ones of the vector it is compared against.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static bool operator < (Vector3 left, Vector3 right) {
+            if(left.x < right.x && left.y < right.y && left.z < right.z) {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         ///		Used to access a Vector by index 0 = x, 1 = y, 2 = z.  
         /// </summary>
         /// <remarks>

@@ -336,7 +336,7 @@ namespace Axiom.Core {
         }
 
         // TODO: Make sure returning the reference to null box isn't causing problems since it is not cloned.
-        public override Axiom.Core.AxisAlignedBox BoundingBox {
+        public override AxisAlignedBox BoundingBox {
             get {	 return AxisAlignedBox.Null; }
         }
 

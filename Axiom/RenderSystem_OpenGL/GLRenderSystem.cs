@@ -231,6 +231,8 @@ namespace RenderSystem_OpenGL {
             // by creating our texture manager, singleton TextureManager will hold our implementation
             textureMgr = new GLTextureManager();
 
+
+
             // create a specialized instance, which registers itself as the singleton instance of HardwareBufferManager
             // use software buffers as a fallback, which operate as regular vertex arrays
             if(caps.CheckCap(Capabilities.VertexBuffer))
@@ -1347,6 +1349,7 @@ namespace RenderSystem_OpenGL {
 
                 // draw the indexed vertex data
                 Gl.glDrawElements(primType, op.indexData.indexCount, indexType, indexPtr);
+                
                 // TODO: Use glDrawRangeElements to allow indexStart, indexCount to be used
             }
             else {
@@ -1359,7 +1362,7 @@ namespace RenderSystem_OpenGL {
             Gl.glDisableClientState( Gl.GL_NORMAL_ARRAY );
             Gl.glDisableClientState( Gl.GL_COLOR_ARRAY );
             //Gl.glDisableClientState( Gl.GL_SECONDARY_COLOR_ARRAY );
-            //Gl.glColor4f(1.0f,1.0f,1.0f,1.0f);
+            Gl.glColor4f(1.0f,1.0f,1.0f,1.0f);
         }
 
         /// <summary>
@@ -1610,6 +1613,18 @@ namespace RenderSystem_OpenGL {
                 // Store for reference in BeginFrame
                 depthWrite = value;
             }
+        }
+
+        public override void BindGpuProgram(GpuProgram program) {
+            // TODO: Implement GlRenderSystem.BindGpuProgram
+        }
+
+        public override void BindGpuProgramParameters(GpuProgramType type, GpuProgramParameters parms) {
+            // TODO: Implement GlRenderSystem.BindGpuProgramParameters
+        }
+
+        public override void UnbindGpuProgram(GpuProgramType type) {
+            // TODO: Implement GlRenderSystem.UnbindGpuProgram
         }
 
         #endregion Implementation of RenderSystem

@@ -149,7 +149,7 @@ namespace DynamicsSystem_ODE {
         /// 
         /// </summary>
         /// <param name="aab"></param>
-        public void SetAABB(Axiom.Core.AxisAlignedBox aab) {
+        public void SetAABB(AxisAlignedBox aab) {
             // TODO:  Add ODEBody.SetAABB implementation
         }
 

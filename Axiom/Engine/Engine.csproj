@@ -377,11 +377,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Core\AxisAlignedBox.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Core\Billboard.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -493,6 +488,11 @@
                 />
                 <File
                     RelPath = "Core\SceneObject.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Core\SceneQuery.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -755,6 +755,21 @@
                 <Folder RelPath = "SubSystems\Networking\" />
                 <File
                     RelPath = "SubSystems\Rendering\Enums.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "SubSystems\Rendering\GpuProgram.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "SubSystems\Rendering\GpuProgramManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "SubSystems\Rendering\GpuProgramParameters.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

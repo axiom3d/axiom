@@ -151,8 +151,8 @@ namespace Axiom.Enumerations {
     }
 
     /// <summary>
-    /// The different types of scenes types that can be handled by the engine.  The various types can
-    /// be altered by plugin functionality (i.e. BSP for interior, OctTree for Exterior, etc).
+    ///    The different types of scenes types that can be handled by the engine.  The various types can
+    ///    be altered by plugin functionality (i.e. BSP for interior, Octree for Exterior, etc).
     /// </summary>
     public enum SceneType {
         Generic,
@@ -162,4 +162,33 @@ namespace Axiom.Enumerations {
         Overhead
     }
 
+    /// <summary>
+    ///    This type can be used by collaborating applications & SceneManagers to 
+    ///    agree on the type of world geometry to be returned from queries. Not all
+    ///    these types will be supported by all SceneManagers; once the application
+    ///    has decided which SceneManager specialization to use, it is expected that 
+    ///    it will know which type of world geometry abstraction is available to it.
+    /// </summary>
+    public enum WorldFragmentType {
+        /// <summary>
+        ///    Return no world geometry hits at all.
+        /// </summary>
+        None,
+        /// <summary>
+        ///    Return references to convex plane-bounded regions.
+        /// </summary>
+        PlaneBoundedRegion,
+        /// <summary>
+        ///    Return a single intersection point (typically RaySceneQuery only)
+        /// </summary>
+        SingleIntersection,
+        /// <summary>
+        ///    Custom geometry as defined by the SceneManger.
+        /// </summary>
+        CustomGeometry,
+        /// <summary>
+        ///    General RenderOperation structure.
+        /// </summary>
+        RenderOperation
+    }
 }
