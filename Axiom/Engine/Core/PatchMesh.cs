@@ -22,19 +22,101 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion LGPL License
 
 using System;
+using Axiom.Graphics;
 
 namespace Axiom.Core {
-	/// <summary>
-	/// Summary description for PatchMesh.
-	/// </summary>
-	public class PatchMesh {
-		public PatchMesh() {
-			//
-			// TODO: Add constructor logic here
-			//
-		}
-	}
+    /// <summary>
+    ///     Patch specialization of <see cref="Mesh" />.
+    /// </summary>
+    /// <remarks>
+    ///     Instances of this class should be created by calling
+    ///     <see cref="MeshManager.CreateBezierPatch" />.
+    /// </remarks>
+    public class PatchMesh : Mesh {
+        // ------------------------------------
+        #region Fields
+        /// <summary>
+        ///     Internal surface definition.
+        /// </summary>
+        protected PatchSurface patchSurface = new PatchSurface();
+        /// <summary>
+        ///     Vertex declaration, cloned from the input.
+        /// </summary>
+        protected VertexDeclaration vertexDeclaration;
+
+        #endregion Fields
+        // ------------------------------------
+
+        // ------------------------------------
+        /// <summary>
+        ///     Creates a new PatchMesh.
+        /// </summary>
+        /// <remarks>
+        ///     As defined in <see cref="MeshManager.CreateBezierPatch" />.
+        /// </remarks>
+        public PatchMesh(string name, System.Array controlPointBuffer, VertexDeclaration declaration,
+            int width, int height, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide,
+            BufferUsage vbUsage, BufferUsage ibUsage, bool vbUseShadow, bool ibUseShadow) : base(name) {
+
+            vertexBufferUsage = vbUsage;
+            useVertexShadowBuffer = vbUseShadow;
+            indexBufferUsage = ibUsage;
+            useIndexShadowBuffer = ibUseShadow;
+
+            // Init patch builder
+            // define the surface
+            // NB clone the declaration to make it independent
+            vertexDeclaration = (VertexDeclaration)declaration.Clone();
+            patchSurface.DefineSurface(controlPointBuffer, vertexDeclaration, width, height,
+                PatchSurfaceType.Bezier, uMaxSubdivisionLevel, vMaxSubdivisionLevel, visibleSide);
+        }
+
+        public void SetSubdivision(float factor) {
+            patchSurface.SubdivisionFactor = factor;
+            SubMesh sm = GetSubMesh(0);
+            sm.indexData.indexCount = patchSurface.CurrentIndexCount;
+        }
+
+        public override void Load() {
+            SubMesh sm = CreateSubMesh();
+            sm.vertexData = new VertexData();
+            sm.useSharedVertices = false;
+
+            // Set up the vertex buffer
+            sm.vertexData.vertexStart = 0;
+            sm.vertexData.vertexCount = patchSurface.RequiredVertexCount;
+            sm.vertexData.vertexDeclaration = vertexDeclaration;
+
+            HardwareVertexBuffer buffer = 
+                HardwareBufferManager.Instance.CreateVertexBuffer(
+                    vertexDeclaration.GetVertexSize(0),
+                    sm.vertexData.vertexCount,
+                    vertexBufferUsage,
+                    useVertexShadowBuffer);
+
+            // bind the vertex buffer
+            sm.vertexData.vertexBufferBinding.SetBinding(0, buffer);
+
+            // create the index buffer
+            sm.indexData.indexStart = 0;
+            sm.indexData.indexCount = patchSurface.RequiredIndexCount;
+            sm.indexData.indexBuffer = 
+                HardwareBufferManager.Instance.CreateIndexBuffer(
+                IndexType.Size16,
+                sm.indexData.indexCount,
+                indexBufferUsage,
+                useIndexShadowBuffer);
+
+            // build the path
+            patchSurface.Build(buffer, 0, sm.indexData.indexBuffer, 0);
+
+            // set the bounds
+            this.BoundingBox = patchSurface.Bounds;
+            this.BoundingSphereRadius = patchSurface.BoundingSphereRadius;
+            isLoaded = true;
+        }
+    }
 }
