@@ -243,6 +243,11 @@ namespace Axiom.Serialization {
             subMesh.AddBoneAssignment(ref assignment);
         }
 
+        public void ReadSubMeshOperation(SubMesh subMesh) {
+            short op = ReadInt16();
+            subMesh.operationType = (RenderMode)op;
+        }
+
         public void ReadSubMesh() {
             MeshChunkID chunkID;
 
@@ -318,10 +323,15 @@ namespace Axiom.Serialization {
             chunkID = ReadChunk();
 
             // walk through all the bone assignments for this submesh
-            while(chunkID == MeshChunkID.SubMeshBoneAssignment) {
+            while(chunkID == MeshChunkID.SubMeshBoneAssignment ||
+                      chunkID == MeshChunkID.SubMeshOperation) {
                 switch(chunkID) {
                     case MeshChunkID.SubMeshBoneAssignment:
                         ReadSubMeshBoneAssignment(subMesh);
+                        break;
+
+                    case MeshChunkID.SubMeshOperation:
+                        ReadSubMeshOperation(subMesh);
                         break;
                 }
 
@@ -674,7 +684,8 @@ namespace Axiom.Serialization {
     public enum MeshChunkID : ushort {
         Header                                    = 0x1000,
         Mesh                                       = 0x3000,
-        SubMesh                                = 0x4000, 
+        SubMesh                                = 0x4000,
+        SubMeshOperation               = 0x4010,
         SubMeshBoneAssignment    = 0x4100,
         Geometry                                = 0x5000,
         GeometryNormals                  = 0x5100,    //(Optional)
