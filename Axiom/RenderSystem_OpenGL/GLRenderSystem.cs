@@ -1840,6 +1840,11 @@ namespace RenderSystem_OpenGL {
                 && GLHelper.VideoCard.IndexOf("GeForce2 MX") == -1)
                 caps.SetCap(Capabilities.VertexBuffer);
 
+            if(GLHelper.SupportsExtension("GL_ARB_texture_cube_map")
+                || GLHelper.SupportsExtension("GL_EXT_texture_cube_map")) {
+                caps.SetCap(Capabilities.CubeMapping);
+            }
+
             // check support for hardware vertex blending
             // TODO: Dont check this cap yet, wait for vertex shader support so that software blending is always used
             //if(GLHelper.SupportsExtension("GL_ARB_vertex_blend"))
