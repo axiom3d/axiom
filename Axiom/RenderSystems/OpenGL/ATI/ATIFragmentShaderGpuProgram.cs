@@ -12,7 +12,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             : base(name, type, syntaxCode) {
 
             programType = Gl.GL_FRAGMENT_SHADER_ATI;
-            programId = Ext.glGenFragmentShadersATI(1);
+            programId = Gl.glGenFragmentShadersATI(1);
 		}
 
         #region Implementation of GpuProgram
@@ -25,13 +25,13 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             bool error = !assembler.Compile(source);
 
             if(!error) {
-                Ext.glBindFragmentShaderATI(programId);
-                Ext.glBeginFragmentShaderATI();
+                Gl.glBindFragmentShaderATI(programId);
+                Gl.glBeginFragmentShaderATI();
 
                 // Compile and issue shader commands
                 error = !assembler.BindAllMachineInstToFragmentShader();
 
-                Ext.glEndFragmentShaderATI();
+                Gl.glEndFragmentShaderATI();
             }
             else {
             }
@@ -41,7 +41,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             base.Unload ();
 
             // delete the fragment shader for good
-            Ext.glDeleteFragmentShaderATI(programId);
+            Gl.glDeleteFragmentShaderATI(programId);
         }
 
 
@@ -51,7 +51,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
         public override void Bind() {
             Gl.glEnable(programType);
-            Ext.glBindFragmentShaderATI(programId);
+            Gl.glBindFragmentShaderATI(programId);
         }
 
         public override void BindParameters(GpuProgramParameters parms) {
@@ -68,7 +68,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
                     tempProgramFloats[3] = vec4.w;
 
                     // send the params 4 at a time
-                    Ext.glSetFragmentShaderConstantATI(Gl.GL_CON_0_ATI + index, tempProgramFloats);
+                    Gl.glSetFragmentShaderConstantATI(Gl.GL_CON_0_ATI + index, tempProgramFloats);
                     //index++;
                 }
             }   

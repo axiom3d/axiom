@@ -518,7 +518,7 @@ namespace Axiom.RenderSystems.OpenGL {
 					throw new AxiomException("2-sided stencils are not supported on this hardware!");
 				}
 				
-				Ext.glActiveStencilFaceEXT(Gl.GL_FRONT);
+				Gl.glActiveStencilFaceEXT(Gl.GL_FRONT);
 			}
         
 			Gl.glStencilMask(mask);
@@ -528,7 +528,7 @@ namespace Axiom.RenderSystems.OpenGL {
 
 			if (twoSidedOperation) {
 				// set everything again, inverted
-				Ext.glActiveStencilFaceEXT(Gl.GL_BACK);
+				Gl.glActiveStencilFaceEXT(Gl.GL_BACK);
 				Gl.glStencilMask(mask);
 				Gl.glStencilFunc(GLHelper.ConvertEnum(function), refValue, mask);
 				Gl.glStencilOp(
@@ -537,7 +537,7 @@ namespace Axiom.RenderSystems.OpenGL {
 					GLHelper.ConvertEnum(passOp, true));
 
 				// reset
-				Ext.glActiveStencilFaceEXT(Gl.GL_FRONT);
+				Gl.glActiveStencilFaceEXT(Gl.GL_FRONT);
 				Gl.glEnable(Gl.GL_STENCIL_TEST_TWO_SIDE_EXT);
 			}
 			else {
@@ -627,11 +627,11 @@ namespace Axiom.RenderSystems.OpenGL {
             } // end switch
 
             // set the GL texture wrap params for the specified unit
-            Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + stage);
+            Gl.glActiveTextureARB(Gl.GL_TEXTURE0 + stage);
             Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_WRAP_S, type);
             Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_WRAP_T, type);
             Gl.glTexParameteri(textureTypes[stage], Gl.GL_TEXTURE_WRAP_R, type);
-            Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
+            Gl.glActiveTextureARB(Gl.GL_TEXTURE0);
         }
 
         /// <summary>
@@ -790,7 +790,7 @@ namespace Axiom.RenderSystems.OpenGL {
                     break;
             } // end switch
 
-            Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + stage);
+            Gl.glActiveTextureARB(Gl.GL_TEXTURE0 + stage);
             Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_COMBINE);
 
             if (blendMode.blendType == LayerBlendType.Color) {
@@ -876,7 +876,7 @@ namespace Axiom.RenderSystems.OpenGL {
                 Gl.glTexEnvfv(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_COLOR, tempColorVals);
             }
         
-            Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
+            Gl.glActiveTextureARB(Gl.GL_TEXTURE0);
         }
 
         /// <summary>
@@ -887,7 +887,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="filter"></param>
         public override void SetTextureUnitFiltering(int unit, FilterType type, FilterOptions filter) {
             // set the current texture unit
-            Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + unit);
+            Gl.glActiveTextureARB(Gl.GL_TEXTURE0 + unit);
 
             switch(type) {
                 case FilterType.Min:
@@ -931,7 +931,7 @@ namespace Axiom.RenderSystems.OpenGL {
             }
 
             // reset to the first texture unit
-            Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
+            Gl.glActiveTextureARB(Gl.GL_TEXTURE0);
         }
 
         /// <summary>
@@ -960,7 +960,7 @@ namespace Axiom.RenderSystems.OpenGL {
             // store for next checking next time around
             lastTexCalMethods[stage] = method;
 
-            Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + stage );
+            Gl.glActiveTextureARB(Gl.GL_TEXTURE0 + stage );
 
             switch(method) {
                 case TexCoordCalcMethod.None:
@@ -1054,7 +1054,7 @@ namespace Axiom.RenderSystems.OpenGL {
                     break;
             }
 
-            Ext.glActiveTextureARB(Gl.GL_TEXTURE0);		
+            Gl.glActiveTextureARB(Gl.GL_TEXTURE0);		
         }
 
         /// <summary>
@@ -1072,7 +1072,7 @@ namespace Axiom.RenderSystems.OpenGL {
             //float[] m = autoTextureMatrix;
             //Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15}", m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8], m[9], m[10], m[11], m[12], m[13], m[14], m[15]);
 
-            Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + stage);
+            Gl.glActiveTextureARB(Gl.GL_TEXTURE0 + stage);
             Gl.glMatrixMode(Gl.GL_TEXTURE);
 
             // if texture matrix was precalced, use that
@@ -1086,7 +1086,7 @@ namespace Axiom.RenderSystems.OpenGL {
 
             // reset to mesh view matrix and to tex unit 0
             Gl.glMatrixMode(Gl.GL_MODELVIEW);
-            Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
+            Gl.glActiveTextureARB(Gl.GL_TEXTURE0);
         }
 
         /// <summary>
@@ -1124,7 +1124,7 @@ namespace Axiom.RenderSystems.OpenGL {
             int lastTextureType = textureTypes[stage];
 
             // set the active texture
-            Ext.glActiveTextureARB(Gl.GL_TEXTURE0 + stage);
+            Gl.glActiveTextureARB(Gl.GL_TEXTURE0 + stage);
 
             // enable and bind the texture if necessary
             if(enabled) {
@@ -1155,7 +1155,7 @@ namespace Axiom.RenderSystems.OpenGL {
             }
 
             // reset active texture to unit 0
-            Ext.glActiveTextureARB(Gl.GL_TEXTURE0);
+            Gl.glActiveTextureARB(Gl.GL_TEXTURE0);
         }
 
         public override void SetAlphaRejectSettings(int stage, CompareFunction func, byte val) {
@@ -1253,7 +1253,7 @@ namespace Axiom.RenderSystems.OpenGL {
                     int bufferId = ((GLHardwareVertexBuffer)vertexBuffer).GLBufferID;
 
                     // bind the current vertex buffer
-                    Ext.glBindBufferARB(Gl.GL_ARRAY_BUFFER_ARB, bufferId);
+                    Gl.glBindBufferARB(Gl.GL_ARRAY_BUFFER_ARB, bufferId);
                     bufferData = BUFFER_OFFSET(element.Offset);
                 }
                 else {
@@ -1306,7 +1306,7 @@ namespace Axiom.RenderSystems.OpenGL {
 				
                     case VertexElementSemantic.Specular:
                         // set the secondary color pointer data
-                        Ext.glSecondaryColorPointerEXT(
+                        Gl.glSecondaryColorPointerEXT(
                             4,
                             type, 
                             vertexBuffer.VertexSize,
@@ -1324,7 +1324,7 @@ namespace Axiom.RenderSystems.OpenGL {
                             // only set if this textures index if it is supposed to
                             if(texCoordIndex[j] == element.Index) {
                                 // set the current active texture unit
-                                Ext.glClientActiveTextureARB(Gl.GL_TEXTURE0 + j); 
+                                Gl.glClientActiveTextureARB(Gl.GL_TEXTURE0 + j); 
 
                                 // set the tex coord pointer
                                 Gl.glTexCoordPointer(
@@ -1342,7 +1342,7 @@ namespace Axiom.RenderSystems.OpenGL {
 					case VertexElementSemantic.BlendIndices:
 						Debug.Assert(caps.CheckCap(Capabilities.VertexPrograms));
 
-						Ext.glVertexAttribPointerARB(
+						Gl.glVertexAttribPointerARB(
 							BLEND_INDICES, // matrix indices are vertex attribute 7
 							VertexElement.GetTypeCount(element.Type), 
 							GLHelper.ConvertEnum(element.Type),
@@ -1350,13 +1350,13 @@ namespace Axiom.RenderSystems.OpenGL {
 							vertexBuffer.VertexSize,
 							bufferData);
 
-						Ext.glEnableVertexAttribArrayARB(BLEND_INDICES);
+						Gl.glEnableVertexAttribArrayARB(BLEND_INDICES);
 						break;
 
 					case VertexElementSemantic.BlendWeights:
 						Debug.Assert(caps.CheckCap(Capabilities.VertexPrograms));
 
-						Ext.glVertexAttribPointerARB(
+						Gl.glVertexAttribPointerARB(
 							BLEND_WEIGHTS, // weights are vertex attribute 1
 							VertexElement.GetTypeCount(element.Type), 
 							GLHelper.ConvertEnum(element.Type),
@@ -1364,7 +1364,7 @@ namespace Axiom.RenderSystems.OpenGL {
 							vertexBuffer.VertexSize,
 							bufferData);
 
-						Ext.glEnableVertexAttribArrayARB(BLEND_WEIGHTS);
+						Gl.glEnableVertexAttribArrayARB(BLEND_WEIGHTS);
 						break;
 
                     default:
@@ -1373,7 +1373,7 @@ namespace Axiom.RenderSystems.OpenGL {
             } // for
 
             // reset to texture unit 0
-            Ext.glClientActiveTextureARB(Gl.GL_TEXTURE0); 
+            Gl.glClientActiveTextureARB(Gl.GL_TEXTURE0); 
 
             int primType = 0;
 
@@ -1409,7 +1409,7 @@ namespace Axiom.RenderSystems.OpenGL {
                     int idxBufferID = ((GLHardwareIndexBuffer)op.indexData.indexBuffer).GLBufferID;
 
                     // bind the current index buffer
-                    Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, idxBufferID);
+                    Gl.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, idxBufferID);
 
                     // get the offset pointer to the data in the vbo
                     indexPtr = BUFFER_OFFSET(op.indexData.indexStart * op.indexData.indexBuffer.Size);
@@ -1424,7 +1424,7 @@ namespace Axiom.RenderSystems.OpenGL {
                     ? Gl.GL_UNSIGNED_SHORT : Gl.GL_UNSIGNED_INT;
 
                 // draw the indexed vertex data
-				Ext.glDrawRangeElements(
+				Gl.glDrawRangeElementsEXT(
 					primType,
 					op.indexData.indexStart,
 					op.indexData.indexStart + op.indexData.indexCount - 1,
@@ -1443,8 +1443,8 @@ namespace Axiom.RenderSystems.OpenGL {
             Gl.glDisableClientState( Gl.GL_SECONDARY_COLOR_ARRAY );
 
 			if (caps.CheckCap(Capabilities.VertexPrograms)) {
-				Ext.glDisableVertexAttribArrayARB(BLEND_INDICES); // disable indices
-				Ext.glDisableVertexAttribArrayARB(BLEND_WEIGHTS); // disable weights
+				Gl.glDisableVertexAttribArrayARB(BLEND_INDICES); // disable indices
+				Gl.glDisableVertexAttribArrayARB(BLEND_WEIGHTS); // disable weights
 			}
 
             Gl.glColor4f(1.0f,1.0f,1.0f,1.0f);

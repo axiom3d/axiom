@@ -48,15 +48,15 @@ namespace Axiom.RenderSystems.OpenGL {
             : base(type, numIndices, usage, false, useShadowBuffer) {
 
             // generate the buffer
-            Ext.glGenBuffersARB(1, out bufferID);
+            Gl.glGenBuffersARB(1, out bufferID);
 
             if(bufferID == 0)
-                throw new Exception("Cannot create GL vertex buffer");
+                throw new Exception("Cannot create GL index buffer");
 
-            Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
+            Gl.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
 
             // initialize this buffer.  we dont have data yet tho
-            Ext.glBufferDataARB(
+            Gl.glBufferDataARB(
                 Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, 
                 sizeInBytes, 
                 IntPtr.Zero, 
@@ -64,7 +64,7 @@ namespace Axiom.RenderSystems.OpenGL {
         }
 
         ~GLHardwareIndexBuffer() {
-            Ext.glDeleteBuffersARB(1, ref bufferID);
+            //Gl.glDeleteBuffersARB(1, ref bufferID);
         }
 		
         #endregion
@@ -86,11 +86,11 @@ namespace Axiom.RenderSystems.OpenGL {
 			}
 
             // bind this buffer
-            Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
+            Gl.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
 
             if(locking == BufferLocking.Discard) {
                 // commented out to fix ATI issues
-               /*Ext.glBufferDataARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB,
+               /*Gl.glBufferDataARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB,
                     sizeInBytes,
                     IntPtr.Zero,
                     GLHelper.ConvertEnum(usage));
@@ -112,7 +112,7 @@ namespace Axiom.RenderSystems.OpenGL {
                     Gl.GL_READ_WRITE_ARB : Gl.GL_WRITE_ONLY_ARB;
             }
 
-            IntPtr ptr = Ext.glMapBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, access);
+            IntPtr ptr = Gl.glMapBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, access);
 
 			if(ptr == IntPtr.Zero) {
 				throw new Exception("GL Vertex Buffer: Out of memory");
@@ -127,9 +127,9 @@ namespace Axiom.RenderSystems.OpenGL {
         /// 
         /// </summary>
         public override void UnlockImpl() {
-            Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
+            Gl.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
 
-			if(Ext.glUnmapBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB) == 0) {
+			if(Gl.glUnmapBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB) == 0) {
 				throw new Exception("Buffer data corrupted!");
 			}
 
@@ -144,7 +144,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="src"></param>
         /// <param name="discardWholeBuffer"></param>
         public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer) {
-            Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
+            Gl.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
 
 			if(useShadowBuffer) {
 				// lock the buffer for reading
@@ -159,13 +159,13 @@ namespace Axiom.RenderSystems.OpenGL {
 			}
 
             if(discardWholeBuffer) {
-                Ext.glBufferDataARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB,
+                Gl.glBufferDataARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB,
                     sizeInBytes,
                     IntPtr.Zero,
                     GLHelper.ConvertEnum(usage));
             }
 
-            Ext.glBufferSubDataARB(
+            Gl.glBufferSubDataARB(
                 Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, 
                 offset, 
                 length, 
@@ -190,9 +190,9 @@ namespace Axiom.RenderSystems.OpenGL {
 				shadowBuffer.Unlock();
 			}
 			else {
-				Ext.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
+				Gl.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID);
 	
-				Ext.glGetBufferSubDataARB(
+				Gl.glGetBufferSubDataARB(
 				    Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, 
 				    offset, 
 				    length, 

@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using Axiom.Graphics;
 using Axiom.RenderSystems.OpenGL;
 using Tao.OpenGl;
@@ -16,7 +17,7 @@ namespace Axiom.RenderSystems.OpenGL.ARB {
             programType = (type == GpuProgramType.Vertex) ? Gl.GL_VERTEX_PROGRAM_ARB : Gl.GL_FRAGMENT_PROGRAM_ARB;
 
             // generate a new program
-            Ext.glGenProgramsARB(1, out programId);
+            Gl.glGenProgramsARB(1, out programId);
 		}
 
         #region Implementation of GpuProgram
@@ -25,9 +26,9 @@ namespace Axiom.RenderSystems.OpenGL.ARB {
         ///     Load Assembler gpu program source.
         /// </summary>
         protected override void LoadFromSource() {
-            Ext.glBindProgramARB(programType, programId);
+            Gl.glBindProgramARB(programType, programId);
      
-            Ext.glProgramStringARB(programType, Gl.GL_PROGRAM_FORMAT_ASCII_ARB, source.Length, source);
+            Gl.glProgramStringARB(programType, Gl.GL_PROGRAM_FORMAT_ASCII_ARB, source.Length, source);
 
             // check for any errors
             if(Gl.glGetError() == Gl.GL_INVALID_OPERATION) {
@@ -35,7 +36,7 @@ namespace Axiom.RenderSystems.OpenGL.ARB {
                 string error;
 
                 Gl.glGetIntegerv(Gl.GL_PROGRAM_ERROR_POSITION_ARB, out pos);
-                error = Gl.glGetString(Gl.GL_PROGRAM_ERROR_STRING_ARB);
+                error = Marshal.PtrToStringAnsi(Gl.glGetString(Gl.GL_PROGRAM_ERROR_STRING_ARB));
 
                 throw new Exception(string.Format("Error on line {0} in program '{1}'\nError: {2}", pos, name, error));
             }
@@ -47,7 +48,7 @@ namespace Axiom.RenderSystems.OpenGL.ARB {
         public override void Unload() {
             base.Unload ();
 
-            Ext.glDeleteProgramsARB(1, ref programId);
+            Gl.glDeleteProgramsARB(1, ref programId);
         }
 
         #endregion Implementation of GpuProgram
@@ -56,11 +57,11 @@ namespace Axiom.RenderSystems.OpenGL.ARB {
 
         public override void Bind() {
             Gl.glEnable(programType);
-            Ext.glBindProgramARB(programType, programId);
+            Gl.glBindProgramARB(programType, programId);
         }
 
         public override void Unbind() {
-            Ext.glBindProgramARB(programType, 0);
+            Gl.glBindProgramARB(programType, 0);
             Gl.glDisable(programType);
         }
 
@@ -77,7 +78,7 @@ namespace Axiom.RenderSystems.OpenGL.ARB {
                     tempProgramFloats[3] = vec4.w;
 
                     // send the params 4 at a time
-                    Ext.glProgramLocalParameter4vfARB(programType, index, tempProgramFloats);
+                    Gl.glProgramLocalParameter4fvARB(programType, index, tempProgramFloats);
                 }
             }            
         }

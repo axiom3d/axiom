@@ -59,7 +59,7 @@ namespace Axiom.RenderSystems.OpenGL {
 			isSupported = Root.Instance.RenderSystem.Caps.CheckCap(Capabilities.HardwareOcculusion);
 
 			if(isSupported) {
-				Ext.glGenOcclusionQueriesNV(1, out id);
+				Gl.glGenOcclusionQueriesNV(1, out id);
 			}
 		}
 
@@ -73,7 +73,7 @@ namespace Axiom.RenderSystems.OpenGL {
 				}
 
 				if(skipCounter == 0) { // && lastFragmentCount != 0) {
-					Ext.glBeginOcclusionQueriesNV(id);
+					Gl.glBeginOcclusionQueryNV(id);
 				}
 			}
 		}
@@ -85,7 +85,7 @@ namespace Axiom.RenderSystems.OpenGL {
 			lastFragmentCount = 100000;
 
 			if(isSupported) {
-				Ext.glGetOcclusionQueryivNV(id, Gl.GL_PIXEL_COUNT_NV, out lastFragmentCount);
+				Gl.glGetOcclusionQueryivNV(id, Gl.GL_PIXEL_COUNT_NV, out lastFragmentCount);
 			}
 				
 			return lastFragmentCount;
@@ -95,7 +95,7 @@ namespace Axiom.RenderSystems.OpenGL {
 			// proceed if supported, or silently fail otherwise
 			if(isSupported) {
 				if(skipCounter == 0) { // && lastFragmentCount != 0) {
-					Ext.glEndOcclusionQueriesNV();
+					Gl.glEndOcclusionQueryNV();
 				}
 
 				skipCounter++;

@@ -341,7 +341,7 @@ namespace Axiom.RenderSystems.OpenGL {
                 }
                 else if(textureType == TextureType.ThreeD) {
                     // TODO: Tao needs glTexImage3D
-                    Ext.glTexImage3DEXT(
+                    Gl.glTexImage3DEXT(
                         type, 
                         0,
                         hasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8,
@@ -374,7 +374,7 @@ namespace Axiom.RenderSystems.OpenGL {
                 }
                 else if(textureType == TextureType.ThreeD) {
                     // TODO: Tao needs glTexImage3D
-                    Ext.glTexImage3DEXT(
+                    Gl.glTexImage3DEXT(
                         type, 
                         0,
                         hasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8,
@@ -388,7 +388,7 @@ namespace Axiom.RenderSystems.OpenGL {
                         int size = ((width + 3) / 4)*((height + 3) / 4) * blockSize;
 
                         // load compressed image data
-                        Ext.glCompressedTexImage2DARB(
+                        Gl.glCompressedTexImage2DARB(
                             type,
                             0,
                             this.GLFormat,

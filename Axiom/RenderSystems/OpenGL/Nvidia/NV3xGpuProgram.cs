@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using Axiom.Graphics;
 using Tao.OpenGl;
 
@@ -18,7 +19,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia {
             : base(name, type, syntaxCode){
 
             // generate the program and store the unique name
-            Ext.glGenProgramsNV(1, out programId);
+            Gl.glGenProgramsNV(1, out programId);
 
             // find the GL enum for the type of program this is
             programType = (type == GpuProgramType.Vertex) ? 
@@ -34,13 +35,13 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia {
         /// </summary>
         protected override void LoadFromSource() {
             // bind this program before loading
-            Ext.glBindProgramNV(programType, programId);
+            Gl.glBindProgramNV(programType, programId);
 
             // load the ASM source into an NV program
-            Ext.glLoadProgramNV(programType, programId, source.Length, source);
+            Gl.glLoadProgramNV(programType, programId, source.Length, source);
 
             // get the error string from the NV program loader
-            string error = Gl.glGetString(Gl.GL_PROGRAM_ERROR_STRING_NV);
+            string error = Marshal.PtrToStringAnsi(Gl.glGetString(Gl.GL_PROGRAM_ERROR_STRING_NV));
 
             // if there was an error, report it
             if(error != null && error.Length > 0) {
@@ -60,7 +61,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia {
             base.Unload();
 
             // delete this NV program
-            Ext.glDeleteProgramsNV(1, ref programId);
+            Gl.glDeleteProgramsNV(1, ref programId);
         }
 
 
@@ -76,7 +77,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia {
             Gl.glEnable(programType);
 
             // bind the program to the context
-            Ext.glBindProgramNV(programType, programId);
+            Gl.glBindProgramNV(programType, programId);
         }
 
         /// <summary>
@@ -120,7 +121,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia {
                     tempProgramFloats[3] = vec4.w;
 
                     // send the params 4 at a time
-                    Ext.glProgramParameter4fvNV(programType, index, tempProgramFloats);
+                    Gl.glProgramParameter4fvNV(programType, index, tempProgramFloats);
                 }
             }  
         }
@@ -165,7 +166,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia {
                     Axiom.MathLib.Vector4 vec4 = parms.GetFloatConstant(i);
 
                     // send the params 4 at a time
-                    Ext.glProgramNamedParameter4fNV(programId, name.Length, name, vec4.x, vec4.y, vec4.z, vec4.w);
+                    Gl.glProgramNamedParameter4fNV(programId, name.Length, name, vec4.x, vec4.y, vec4.z, vec4.w);
                 }
             }  
         }
