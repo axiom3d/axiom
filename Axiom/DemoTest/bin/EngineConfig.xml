@@ -6,6 +6,7 @@
 	<FilePath type="Folder" src="Media\Skeletons"/>
 	<FilePath type="Folder" src="Media\Materials"/>
 	<FilePath type="Folder" src="Media\Overlays"/>
+	<FilePath type="Folder" src="Media\GpuPrograms"/>
 	<FilePath type="ZipFile" src="Media\Archives\cubemapsJS.zip"/>
 	<FilePath type="ZipFile" src="Media\Archives\RZR-002.zip"/>
 </EngineConfig>
