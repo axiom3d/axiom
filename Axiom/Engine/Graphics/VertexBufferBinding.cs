@@ -60,7 +60,7 @@ namespace Axiom.Graphics {
         /// DOC
         public virtual void SetBinding(ushort index, HardwareVertexBuffer buffer) {
             bindingMap[index] = buffer;
-            highIndex = (ushort)MathUtil.Max(highIndex, index + 11);
+            highIndex = (ushort)MathUtil.Max(highIndex, index + 1);
         }
 
         /// <summary>
