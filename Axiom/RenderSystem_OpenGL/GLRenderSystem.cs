@@ -799,14 +799,14 @@ namespace RenderSystem_OpenGL {
             switch(method) {
                 case TexCoordCalcMethod.None:
 
-                    if(lastTexCalMethods[stage] != method) {
+                  //  if(lastTexCalMethods[stage] != method) {
                         Gl.glDisable( Gl.GL_TEXTURE_GEN_S );
                         Gl.glDisable( Gl.GL_TEXTURE_GEN_T );
                         Gl.glDisable( Gl.GL_TEXTURE_GEN_R );
                         Gl.glDisable( Gl.GL_TEXTURE_GEN_Q );
 
-                        lastTexCalMethods[stage] = method;
-                    }
+                    //    lastTexCalMethods[stage] = method;
+                   // }
                     break;
 
                 case TexCoordCalcMethod.EnvironmentMap:
