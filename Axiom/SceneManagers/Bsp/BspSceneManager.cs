@@ -229,7 +229,7 @@ namespace Axiom.SceneManagers.Bsp
 				level.NumIndexes,
 				BufferUsage.Dynamic, false
 				);
-			renderOp.operationType = RenderMode.TriangleList;
+			renderOp.operationType = OperationType.TriangleList;
 			renderOp.useIndices = true;
 		}
 
