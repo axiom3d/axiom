@@ -113,10 +113,10 @@ namespace Axiom.Core {
 
             // Reasonable defaults to camera params
             this.frustum = new Frustum();
-            this.fieldOfView = 45.0f;
-            this.nearDistance = 0.1f;
-            this.farDistance = 10000.0f;
-            this.aspectRatio = 1.33333f;
+            this.fieldOfView = MathUtil.RadiansToDegrees(MathUtil.PI / 4.0f);
+            this.nearDistance = 100.0f;
+            this.farDistance = 100000.0f;
+            this.aspectRatio = 1.33333333333333f;
             this.projectionType = Projection.Perspective;
             this.sceneDetail = SceneDetailLevel.Solid;
 

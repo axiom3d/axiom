@@ -67,39 +67,32 @@ Example/RustySteel
 }
 
 // Transparent knots
-Examples/TransparentTest
+Transparency/Knot
 {
 	ambient 0.2 0.2 0.2
 	scene_blend add
 	depth_write off
 	{
-		texture Water02.jpg
+		texture Water01.jpg
 		scroll_anim 0.25 0
 	}
 	{
-		texture Water02.jpg
+		texture Water01.jpg
 		wave_xform scroll_y sine 0 0.1 0 0.5
 		colour_op modulate
 	}
 
 }
 
-// teapot
-Example.Lava
+// Plain metal (2-sided)
+Transparency/BumpyMetal
 {
-	ambient 0.2 0.2 0.2
-	scene_blend add
-	depth_write off
+	cull_hardware none
+	cull_software none
+	ambient 0.75 0.75 0.75
 	{
-		texture Water02.jpg
-		scroll_anim 0.25 0
+		texture BumpyMetal.jpg
 	}
-	{
-		texture Water02.jpg
-		wave_xform scroll_y sine 0 0.1 0 0.5
-		colour_op modulate
-	}
-
 }
 
 Examples/EnvMappedRustySteel
@@ -119,6 +112,7 @@ Examples/EnvMappedRustySteel
 
 	}
 }
+
 
 // Rotation and wave scale
 TextureFX/BumpyMetal
