@@ -223,8 +223,8 @@ namespace Axiom.Gui
 
             AttributeParserMethod parser = (AttributeParserMethod)attribParsers[param];
             
-            // call the parser method, passing in an array of the param and val, and this element for the optional object
-            parser(new string[] {param, val}, this);
+            // call the parser method, passing in an array of the split val param, and this element for the optional object
+            parser(val.Split(' '), this);
 
             return true;
         }
@@ -753,56 +753,56 @@ namespace Axiom.Gui
         public static void ParseMetricsMode(string[] parms, params object[] objects) {
             GuiElement element = (GuiElement)objects[0];
 
-            element.MetricsMode = (MetricsMode)ScriptEnumAttribute.Lookup(parms[1], typeof(MetricsMode));
+            element.MetricsMode = (MetricsMode)ScriptEnumAttribute.Lookup(parms[0], typeof(MetricsMode));
         }
 
         [AttributeParser("horz_align", "GuiElement")]
         public static void ParseHorzAlign(string[] parms, params object[] objects) {
             GuiElement element = (GuiElement)objects[0];
 
-            element.HorizontalAlignment = (HorizontalAlignment)ScriptEnumAttribute.Lookup(parms[1], typeof(HorizontalAlignment));
+            element.HorizontalAlignment = (HorizontalAlignment)ScriptEnumAttribute.Lookup(parms[0], typeof(HorizontalAlignment));
         }
 
         [AttributeParser("vert_align", "GuiElement")]
         public static void ParseVertAlign(string[] parms, params object[] objects) {
             GuiElement element = (GuiElement)objects[0];
 
-            element.VerticalAlignment = (VerticalAlignment)ScriptEnumAttribute.Lookup(parms[1], typeof(VerticalAlignment));
+            element.VerticalAlignment = (VerticalAlignment)ScriptEnumAttribute.Lookup(parms[0], typeof(VerticalAlignment));
         }
 
         [AttributeParser("top", "GuiElement")]
         public static void ParseTop(string[] parms, params object[] objects) {
             GuiElement element = (GuiElement)objects[0];
 
-            element.Top = int.Parse(parms[1]);
+            element.Top = int.Parse(parms[0]);
         }
 
         [AttributeParser("left", "GuiElement")]
         public static void ParseLeft(string[] parms, params object[] objects) {
             GuiElement element = (GuiElement)objects[0];
 
-            element.Left = int.Parse(parms[1]);
+            element.Left = int.Parse(parms[0]);
         }
 
         [AttributeParser("width", "GuiElement")]
         public static void ParseWidth(string[] parms, params object[] objects) {
             GuiElement element = (GuiElement)objects[0];
 
-            element.Width = int.Parse(parms[1]);
+            element.Width = int.Parse(parms[0]);
         }
 
         [AttributeParser("height", "GuiElement")]
         public static void ParseHeight(string[] parms, params object[] objects) {
             GuiElement element = (GuiElement)objects[0];
 
-            element.Height = int.Parse(parms[1]);
+            element.Height = int.Parse(parms[0]);
         }
 
         [AttributeParser("material", "GuiElement")]
         public static void ParseMaterial(string[] parms, params object[] objects) {
             GuiElement element = (GuiElement)objects[0];
 
-            element.MaterialName = parms[1];
+            element.MaterialName = parms[0];
         }
 
         #endregion Script parser methods

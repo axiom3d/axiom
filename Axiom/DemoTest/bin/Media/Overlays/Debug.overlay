@@ -4,6 +4,40 @@ Core/DebugOverlay
 	zorder 500
 	// Stats block
 
+	// Stats block
+	container BorderPanel(Core/StatPanel)
+	{
+		metrics_mode pixels
+		vert_align bottom
+		left 5 
+		top -92
+		width 220
+		height 87
+		material Core/StatsBlockCenter
+        	border_size 1 1 1 1
+        	border_material Core/StatsBlockBorder
+        	border_topleft_uv     0.0000 1.0000 0.0039 0.9961
+	    	border_top_uv         0.0039 1.0000 0.9961 0.9961
+	    	border_topright_uv    0.9961 1.0000 1.0000 0.9961
+	    	border_left_uv        0.0000 0.9961 0.0039 0.0039
+	    	border_right_uv       0.9961 0.9961 1.0000 0.0039
+	    	border_bottomleft_uv  0.0000 0.0039 0.0039 0.0000
+        	border_bottom_uv      0.0039 0.0039 0.9961 0.0000
+	    	border_bottomright_uv 0.9961 0.0039 1.0000 0.0000
+	    	
+	    	// nested break line
+		container Panel(Core/BreakPanel)
+		{
+			metrics_mode pixels
+			left 5 
+			top 22
+			width 210
+			height 1
+			material Core/StatsBreak
+		}
+	}
+
+	// engine logo
 	container Panel(Core/LogoPanel)
 	{	
 		metrics_mode pixels

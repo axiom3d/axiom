@@ -28,6 +28,7 @@ using System;
 using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
+using System.Xml;
 using System.Windows.Forms;
 using Axiom.Configuration;
 using Axiom.Core;
@@ -230,35 +231,80 @@ namespace Axiom.Utility {
         }
         #endregion
 
-        private void btnOK_Click(object sender, System.EventArgs e) {
-            Engine.Instance.RenderSystem = (RenderSystem)cboRenderSystems.SelectedItem;
+        private void btnOK_Click(object sender, System.EventArgs e) { 
+            Engine.Instance.RenderSystem = (RenderSystem)cboRenderSystems.SelectedItem; 
 
-            EngineConfig.DisplayModeRow mode = Engine.Instance.RenderSystem.ConfigOptions.DisplayMode[cboResolution.SelectedIndex];
+            EngineConfig.DisplayModeRow mode = 
+                Engine.Instance.RenderSystem.ConfigOptions.DisplayMode 
+                [cboResolution.SelectedIndex]; 
 
-            mode.FullScreen = chkFullScreen.Checked;
-            mode.Selected = true;
+            mode.FullScreen = chkFullScreen.Checked; 
+            mode.Selected = true; 
 
-            this.Close();
-        }
+            // Hobbes: Save those settings for next time! 
+            SaveDisplaySettings(cboRenderSystems.SelectedIndex.ToString() , cboResolution.SelectedIndex.ToString(), chkFullScreen.Checked.ToString()); 
+            // END Hobbes          
+            this.Close(); 
+        } 
 
-        private void btnCancel_Click(object sender, System.EventArgs e) {
-            this.Dispose();
-        }
+        private void btnCancel_Click(object sender, System.EventArgs e) { 
+            this.Dispose(); 
+        } 
 
-        private void ConfigDialog_Load(object sender, System.EventArgs e) {
-            // add the available render systems to the driver dropdown
-            foreach(RenderSystem renderSystem in Engine.Instance.RenderSystems) {
-                cboRenderSystems.Items.Add(renderSystem);
-            }
-
-            // auto select the first item
-            // TODO: Read from config file
-            // HACK: forcing OpenGL as default, since it kicks ass <g/>.
-            if(cboRenderSystems.Items.Count > 1)
-                cboRenderSystems.SelectedIndex = 1;
-            else
-                cboRenderSystems.SelectedIndex = 0;
-        }
+        private void ConfigDialog_Load(object sender, System.EventArgs e) { 
+            string temp; 
+            // add the available render systems to the driver dropdown 
+            foreach(RenderSystem renderSystem in Engine.Instance.RenderSystems) { 
+                cboRenderSystems.Items.Add(renderSystem); 
+            } 
+    
+            // Hobbes: Check for a config file and load settings 
+            try { 
+                XmlTextReader settingsReader = new XmlTextReader("DisplayConfig.xml"); 
+          
+                while(settingsReader.Read()) { 
+                    if(settingsReader.NodeType == XmlNodeType.Element) { 
+                        if(settingsReader.LocalName.Equals("RenderSystem")) { 
+                            temp = settingsReader.ReadString(); 
+                            if(cboRenderSystems.Items.Count > int.Parse(temp)) 
+                                cboRenderSystems.SelectedIndex = int.Parse(temp); 
+                            else 
+                                cboRenderSystems.SelectedIndex = 1; 
+                        } 
+                      
+                        if(settingsReader.LocalName.Equals("Resolution")) { 
+                            temp = settingsReader.ReadString(); 
+                            if(cboResolution.Items.Count > int.Parse(temp)) 
+                                cboResolution.SelectedIndex = int.Parse(temp); 
+                            else 
+                                cboResolution.SelectedIndex = (cboResolution.Items.Count - 1); 
+                        } 
+                      
+                        if(settingsReader.LocalName.Equals("FullScreen")) { 
+                            if(settingsReader.ReadString()== "True") 
+                                chkFullScreen.Checked = true; 
+                            else 
+                                chkFullScreen.Checked = false; 
+                        } 
+                    } 
+                } 
+            } 
+            catch { 
+                // If the DisplayConfig.xml file is missing, or corrupt, hack it. 
+                // HACK: forcing OpenGL as default, since it kicks ass <g/>. 
+                if(cboRenderSystems.Items.Count > 1) 
+                    cboRenderSystems.SelectedIndex = 1; 
+                else 
+                    cboRenderSystems.SelectedIndex = 0; 
+               
+                // Hobbes: HACK: Forcing highest resolution 
+                if(cboResolution.Items.Count > 1) 
+                    cboResolution.SelectedIndex = (cboResolution.Items.Count - 1); 
+                else 
+                    cboResolution.SelectedIndex = 0; 
+            } 
+        } 
+        // END Hobbes 
 
         private void cboRenderSystems_SelectedIndexChanged(object sender, System.EventArgs e) {
             cboResolution.Items.Clear();
@@ -270,5 +316,42 @@ namespace Axiom.Utility {
 
             cboResolution.SelectedIndex = 0;
         }
+
+        // Hobbes: Save the Render System, Resolution and Full Screen options 
+        public void SaveDisplaySettings(string renderSystem, string resolution, string fullScreen ) { 
+            XmlTextWriter settingsWriter = new XmlTextWriter("DisplayConfig.xml", null); 
+          
+            try { 
+                settingsWriter.Formatting = Formatting.Indented; 
+                settingsWriter.Indentation = 6; 
+                settingsWriter.Namespaces = false; 
+                
+                settingsWriter.WriteStartDocument(); 
+                
+                settingsWriter.WriteStartElement("", "Settings", ""); 
+                
+                settingsWriter.WriteStartElement("", "RenderSystem", ""); 
+                settingsWriter.WriteString(renderSystem); 
+                settingsWriter.WriteEndElement(); 
+                
+                settingsWriter.WriteStartElement("", "Resolution", ""); 
+                settingsWriter.WriteString(resolution); 
+                settingsWriter.WriteEndElement(); 
+                
+                settingsWriter.WriteStartElement("", "FullScreen", ""); 
+                settingsWriter.WriteString(fullScreen); 
+                settingsWriter.WriteEndElement(); 
+             
+                settingsWriter.WriteEndElement(); 
+             
+                settingsWriter.Flush(); 
+            } 
+            finally { 
+                if(settingsWriter != null) { 
+                    settingsWriter.Close(); 
+                } 
+            } 
+        }
+
     }
 }
