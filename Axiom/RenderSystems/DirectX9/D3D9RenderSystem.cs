@@ -597,8 +597,8 @@ namespace Axiom.RenderSystems.DirectX9 {
 			float qn = 0;
 
 			if(far == 0) {
-				q = 1 - Frustum.InfinitFarPlaneAdjust;
-				qn = near * (Frustum.InfinitFarPlaneAdjust - 1);
+				q = 1 - Frustum.InfiniteFarPlaneAdjust;
+				qn = near * (Frustum.InfiniteFarPlaneAdjust - 1);
 			}
 			else {
 				q = far / (far - near);
@@ -622,6 +622,52 @@ namespace Axiom.RenderSystems.DirectX9 {
 			dest.m23 = qn;
 
 			return dest;
+		}
+
+		public override void ApplyObliqueDepthProjection(ref Axiom.MathLib.Matrix4 projMatrix, Axiom.MathLib.Plane plane, bool forGpuProgram) {
+			// Thanks to Eric Lenyel for posting this calculation at www.terathon.com
+
+			// Calculate the clip-space corner point opposite the clipping plane
+			// as (sgn(clipPlane.x), sgn(clipPlane.y), 1, 1) and
+			// transform it into camera space by multiplying it
+			// by the inverse of the projection matrix
+
+			/* generalised version
+			Vector4 q = matrix.inverse() * 
+				Vector4(Math::Sign(plane.normal.x), Math::Sign(plane.normal.y), 1.0f, 1.0f);
+			*/
+			Axiom.MathLib.Vector4 q = new Axiom.MathLib.Vector4();
+			q.x = Math.Sign(plane.Normal.x) / projMatrix.m00;
+			q.y = Math.Sign(plane.Normal.y) / projMatrix.m11;
+			q.z = 1.0f;
+ 
+			// flip the next bit from Lengyel since we're right-handed
+			if (forGpuProgram) {
+				q.w = (1.0f - projMatrix.m22) / projMatrix.m23;
+			}
+			else {
+				q.w = (1.0f + projMatrix.m22) / projMatrix.m23;
+			}
+
+			// Calculate the scaled plane vector
+			Axiom.MathLib.Vector4 clipPlane4d = 
+				new Axiom.MathLib.Vector4(plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D);
+
+			Axiom.MathLib.Vector4 c = clipPlane4d * (1.0f / (clipPlane4d.Dot(q)));
+
+			// Replace the third row of the projection matrix
+			projMatrix.m20 = c.x;
+			projMatrix.m21 = c.y;
+
+			// flip the next bit from Lengyel since we're right-handed
+			if (forGpuProgram) {
+				projMatrix.m22 = c.z; 
+			}
+			else {
+				projMatrix.m22 = -c.z; 
+			}
+
+			projMatrix.m23 = c.w;   
 		}
 
 		/// <summary>
@@ -1737,6 +1783,24 @@ namespace Axiom.RenderSystems.DirectX9 {
 
 				if(fpMinor > 0) {
 					gpuProgramMgr.PushSyntaxCode("ps_3_x");
+				}
+			}
+
+			// Infinite projection?
+			// We have no capability for this, so we have to base this on our
+			// experience and reports from users
+			// Non-vertex program capable hardware does not appear to support it
+			if(caps.CheckCap(Capabilities.VertexPrograms)) {
+				// GeForce4 Ti (and presumably GeForce3) does not
+				// render infinite projection properly, even though it does in GL
+				// So exclude all cards prior to the FX range from doing infinite
+				Driver driver = D3DHelper.GetDriverInfo();
+
+				AdapterDetails details = D3D.Manager.Adapters[driver.AdapterNumber].Information;
+
+				// not nVidia or GeForceFX and above
+				if(details.VendorId != 0x10DE || details.DeviceId >= 0x0301) {
+					caps.SetCap(Capabilities.InfiniteFarPlane);
 				}
 			}
 

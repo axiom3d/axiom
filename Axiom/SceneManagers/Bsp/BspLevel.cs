@@ -544,13 +544,17 @@ namespace Axiom.SceneManagers.Bsp
 				node.IsLeaf = false;
 				node.Owner = this;
 
+				Plane splitPlane = new Plane();
+
 				// Set plane
-				node.SplittingPlane.Normal = new Vector3(
+				splitPlane.Normal = new Vector3(
 					q3lvl.Planes[q3node.plane].normal[0],
 					q3lvl.Planes[q3node.plane].normal[1],
 					q3lvl.Planes[q3node.plane].normal[2]
 					);
-				node.SplittingPlane.D = -q3lvl.Planes[q3node.plane].distance;
+				splitPlane.D = -q3lvl.Planes[q3node.plane].distance;
+
+				node.SplittingPlane = splitPlane;
 
 				// Set bounding box				
 				node.BoundingBox = new AxisAlignedBox(

@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 using Axiom.MathLib;
+using Axiom.MathLib.Collections;
 using Axiom.Graphics;
 
 namespace Axiom.Core {
@@ -63,22 +64,94 @@ namespace Axiom.Core {
 	public class Camera : Frustum {
 		#region Fields
 
+		/// <summary>
+		///		Parent scene manager.
+		/// </summary>
 		protected SceneManager sceneManager;
+		/// <summary>
+		///		Camera orientation.
+		/// </summary>
 		protected Quaternion orientation;
+		/// <summary>
+		///		Camera position.
+		/// </summary>
 		protected Vector3 position;
+		/// <summary>
+		///		Orientation dervied from parent.
+		/// </summary>
 		protected Quaternion derivedOrientation;
+		/// <summary>
+		///		Position dervied from parent.
+		/// </summary>
 		protected Vector3 derivedPosition;				
+		/// <summary>
+		///		Whether to yaw around a fixed axis.
+		/// </summary>
 		protected bool isYawFixed;
+		/// <summary>
+		///		Fixed axis to yaw around.
+		/// </summary>
 		protected Vector3 yawFixedAxis;
+		/// <summary>
+		///		Rendering type (wireframe, solid, point).
+		/// </summary>
 		protected SceneDetailLevel sceneDetail;
+		/// <summary>
+		///		Stored number of visible faces in the last render.
+		/// </summary>
 		protected int numFacesRenderedLastFrame;
+		/// <summary>
+		///		SceneNode which this Camera will automatically track.
+		/// </summary>
 		protected SceneNode autoTrackTarget;
-		protected Vector3 autoTrackOffset;	
+		/// <summary>
+		///		Tracking offset for fine tuning.
+		/// </summary>
+		protected Vector3 autoTrackOffset;
+		/// <summary>
+		///		Scene LOD factor used to adjust overall LOD.
+		/// </summary>
 		protected float sceneLodFactor;
+		/// <summary>
+		///		Inverted scene LOD factor, can be used by Renderables to adjust their LOD.
+		/// </summary>
 		protected float invSceneLodFactor;
-		protected bool isReflected;
-		protected Matrix4 reflectionMatrix;
-		protected Plane reflectionPlane;
+		/// <summary>
+		///		Left window edge (window clip planes).
+		/// </summary>
+		protected float windowLeft;
+		/// <summary>
+		///		Right window edge (window clip planes).
+		/// </summary>
+		protected float windowRight;
+		/// <summary>
+		///		Top window edge (window clip planes).
+		/// </summary>
+		protected float windowTop;
+		/// <summary>
+		///		Bottom window edge (window clip planes).
+		/// </summary>
+		protected float windowBottom;
+		/// <summary>
+		///		Is viewing window used.
+		/// </summary>
+		protected bool isWindowSet;
+		/// <summary>
+		///		Windowed viewport clip planes.
+		/// </summary>
+		protected PlaneList windowClipPlanes = new PlaneList();
+		/// <summary>
+		///		Was viewing window changed?
+		/// </summary>
+		protected bool recalculateWindow;
+		/// <summary>
+		///		The last viewport to be added using this camera.
+		/// </summary>
+		protected Viewport lastViewport;
+		/// <summary>
+		///		Whether aspect ratio will automaticaally be recalculated when a vieport changes its size.
+		/// </summary>
+		protected bool autoAspectRatio;
 
 		#endregion Fields
 
@@ -99,6 +172,7 @@ namespace Axiom.Core {
 			nearDistance = 100.0f;
 			farDistance = 100000.0f;
 			aspectRatio = 1.33333333333333f;
+			projectionType = Projection.Perspective;
 
 			viewMatrix = Matrix4.Zero;
 			projectionMatrix = Matrix4.Zero;
@@ -126,236 +200,100 @@ namespace Axiom.Core {
 
 		#endregion
 
-		#region Protected methods
+		#region Frustum Members
+
+		/// <summary>
+		///		Get the derived orientation of this frustum.
+		/// </summary>
+		/// <returns></returns>
+		protected override Quaternion GetOrientationForViewUpdate() {
+			return derivedOrientation;
+		}
+
+		/// <summary>
+		///		Get the derived position of this frustum.
+		/// </summary>
+		/// <returns></returns>
+		protected override Vector3 GetPositionForViewUpdate() {
+			return derivedPosition;
+		}
+
+		/// <summary>
+		///		Signal to update view information.
+		/// </summary>
+		protected override void InvalidateView() {
+			recalculateView = true;
+			recalculateWindow = true;
+		}
+
+		/// <summary>
+		///		Signal to update frustum information.
+		/// </summary>
+		protected override void InvalidateFrustum() {
+			recalculateFrustum = true;
+			recalculateWindow = true;
+		}
 
 		/// <summary>
 		///		Updates the frustum data.
 		/// </summary>
 		protected override void UpdateFrustum() {
-			if(recalculateFrustum) {
-				switch(projectionType) {
-					case Projection.Perspective: {
-
-						// PERSPECTIVE transform, API specific
-						projectionMatrix = Root.Instance.RenderSystem.MakeProjectionMatrix(fieldOfView, aspectRatio, nearDistance, farDistance);
-
-						// PERSPECTIVE transform, API specific for GPU programs
-						standardProjMatrix = Root.Instance.RenderSystem.MakeProjectionMatrix(fieldOfView, aspectRatio, nearDistance, farDistance, true);
-
-						float thetaY = MathUtil.DegreesToRadians(fieldOfView * 0.5f);
-						float tanThetaY = MathUtil.Tan(thetaY);
-
-						// Calculate co-efficients for the frustum planes
-						// Special-cased for L = -R and B = -T i.e. viewport centered 
-						// on direction vector.
-						// Taken from ideas in WildMagic 0.2 http://www.magic-software.com
-						float tanThetaX = tanThetaY * aspectRatio;
-
-						float vpTop = tanThetaY * nearDistance;
-						float vpRight = tanThetaX * nearDistance;
-						float vpBottom = -vpTop;
-						float vpLeft = -vpRight;
-
-						float nSqr = nearDistance * nearDistance;
-						float lSqr = vpRight * vpRight;
-						float rSqr = lSqr;
-						float tSqr = vpTop * vpTop;
-						float bSqr = tSqr;
-
-						float inverseLength = 1.0f / MathUtil.Sqrt( nSqr + lSqr );
-						coeffL[0] = nearDistance * inverseLength;
-						coeffL[1] = -vpLeft * inverseLength;
-
-						inverseLength = 1.0f / MathUtil.Sqrt( nSqr + rSqr );
-						coeffR[0] = -nearDistance * inverseLength;
-						coeffR[1] = vpRight * inverseLength;
-
-						inverseLength = 1.0f / MathUtil.Sqrt( nSqr + bSqr );
-						coeffB[0] = nearDistance * inverseLength;
-						coeffB[1] = -vpBottom * inverseLength;
-
-						inverseLength = 1.0f / MathUtil.Sqrt( nSqr + tSqr );
-						coeffT[0] = -nearDistance * inverseLength;
-						coeffT[1] = vpTop * inverseLength;
-
-					} break;
-					case Projection.Orthographic: {
-						// ORTHOGRAPHIC projection, API specific 
-						projectionMatrix = Root.Instance.RenderSystem.MakeOrthoMatrix(
-							fieldOfView, aspectRatio, nearDistance, farDistance);
-
-						float thetaY = MathUtil.DegreesToRadians(fieldOfView * 0.5f);
-						float sinThetaY = MathUtil.Sin(thetaY);
-						float thetaX = thetaY * aspectRatio;
-						float sinThetaX = MathUtil.Sin(thetaX);
-						// Calculate co-efficients for the frustum planes
-						// Special-cased for L = -R and B = -T i.e. viewport centered 
-						// on direction vector.
-						// Taken from ideas in WildMagic 0.2 http://www.magic-software.com
-						float vpTop = sinThetaY * nearDistance;
-						float vpRight = sinThetaX * nearDistance;
-						float vpBottom = -vpTop;
-						float vpLeft = -vpRight;
-
-						float fNSqr = nearDistance * nearDistance;
-						float fLSqr = vpRight * vpRight;
-						float fRSqr = fLSqr;
-						float fTSqr = vpTop * vpTop;
-						float fBSqr = fTSqr;
-
-						float invLength = 1.0f / MathUtil.Sqrt( fNSqr + fLSqr );
-						coeffL[0] = nearDistance * invLength;
-						coeffL[1] = -vpLeft * invLength;
-
-						invLength = 1.0f / MathUtil.Sqrt( fNSqr + fRSqr );
-						coeffR[0] = -nearDistance * invLength;
-						coeffR[1] = vpRight * invLength;
-
-						invLength = 1.0f / MathUtil.Sqrt( fNSqr + fBSqr );
-						coeffB[0] = nearDistance * invLength;
-						coeffB[1] = -vpBottom * invLength;
-
-						invLength = 1.0f / MathUtil.Sqrt( fNSqr + fTSqr );
-						coeffT[0] = -nearDistance * invLength;
-						coeffT[1] = vpTop * invLength;
-
-					} break;
-				}
-
-				recalculateFrustum = false;
-			}
+			base.UpdateFrustum();
+			SetWindowImpl();
 		}
 
 		/// <summary>
 		///		Updates the view matrix.
 		/// </summary>
 		protected override void UpdateView() {
-			// check if the view is out of date
-			if(!this.IsViewOutOfDate) {
-				return;
-			}
-
-			// View matrix is:
-			//
-			//  [ Lx  Uy  Dz  Tx  ]
-			//  [ Lx  Uy  Dz  Ty  ]
-			//  [ Lx  Uy  Dz  Tz  ]
-			//  [ 0   0   0   1   ]
-			//
-			// Where T = -(Transposed(Rot) * Pos)
-
-			// This is most efficiently done using 3x3 Matrices
-
-			// Get orientation from quaternion
-			Matrix3 rotation = derivedOrientation.ToRotationMatrix();
-			Vector3 left = rotation.GetColumn(0);
-			Vector3 up = rotation.GetColumn(1);
-			Vector3 direction = rotation.GetColumn(2);
-
-			// make the translation relative to the new axis
-			Matrix3 rotationT = rotation.Transpose();
-			Vector3 translation = -rotationT * derivedPosition;
-
-			// initialize the upper 3x3 portion with the rotation
-			viewMatrix = rotationT;
-
-			// add the translation portion, add set 1 for the bottom right portion
-			viewMatrix.m03 = translation.x;
-			viewMatrix.m13 = translation.y;
-			viewMatrix.m23 = translation.z;
-
-			// deal with reflections
-			if(isReflected) {
-				viewMatrix = viewMatrix * reflectionMatrix;
-			}
-
-			// update the frustum planes
-			UpdateFrustum();
-
-			// Use camera view for frustum calcs, using -Z rather than Z
-			Vector3 camDirection = derivedOrientation * -Vector3.UnitZ;
-
-			// calculate distance along direction to our derived position
-			float distance = camDirection.Dot(derivedPosition);
-
-			// left plane
-			this[FrustumPlane.Left].Normal = coeffL[0] * left + coeffL[1] * camDirection;
-			this[FrustumPlane.Left].D = -derivedPosition.Dot(this[FrustumPlane.Left].Normal);
-
-			// right plane
-			this[FrustumPlane.Right].Normal = coeffR[0] * left + coeffR[1] * camDirection;
-			this[FrustumPlane.Right].D = -derivedPosition.Dot(this[FrustumPlane.Right].Normal);
-
-			// bottom plane
-			this[FrustumPlane.Bottom].Normal = coeffB[0] * up + coeffB[1] * camDirection;
-			this[FrustumPlane.Bottom].D = -derivedPosition.Dot(this[FrustumPlane.Bottom].Normal);
-
-			// top plane
-			this[FrustumPlane.Top].Normal = coeffT[0] * up + coeffT[1] * camDirection;
-			this[FrustumPlane.Top].D = -derivedPosition.Dot(this[FrustumPlane.Top].Normal);
-
-			// far plane
-			this[FrustumPlane.Far].Normal = -camDirection;
-			this[FrustumPlane.Far].D = distance + farDistance;
-
-			// near plane
-			this[FrustumPlane.Near].Normal = camDirection;
-			this[FrustumPlane.Near].D = -(distance + nearDistance);
-
-			// Update worldspace corners
-			Matrix4 eyeToWorld = viewMatrix.Inverse();
-
-			// Get worldspace frustum corners
-			float y = MathUtil.Tan(fieldOfView * 0.5f);
-			float x = aspectRatio * y;
-			float neary = y * nearDistance;
-			float fary = y * farDistance;
-			float nearx = x * nearDistance;
-			float farx = x * farDistance;
-
-			// near
-			worldSpaceCorners[0] = eyeToWorld * new Vector3(nearx, neary, -nearDistance);
-			worldSpaceCorners[1] = eyeToWorld * new Vector3(-nearx,  neary, -nearDistance);
-			worldSpaceCorners[2] = eyeToWorld * new Vector3(-nearx, -neary, -nearDistance);
-			worldSpaceCorners[3] = eyeToWorld * new Vector3(nearx, -neary, -nearDistance);
-			// far
-			worldSpaceCorners[4] = eyeToWorld * new Vector3(farx, fary, -farDistance);
-			worldSpaceCorners[5] = eyeToWorld * new Vector3(-farx, fary, -farDistance);
-			worldSpaceCorners[6] = eyeToWorld * new Vector3(-farx, -fary, -farDistance);
-			worldSpaceCorners[7] = eyeToWorld * new Vector3(farx, -fary, -farDistance);
-
-			// Deal with reflection on frustum planes
-			if (isReflected) {
-				Vector3 pos = reflectionMatrix * derivedPosition;
-				Vector3 dir = camDirection.Reflect(reflectionPlane.Normal);
-				distance = dir.Dot(pos);
-				for(int i = 0; i < 6; i++) {
-					planes[i].Normal = planes[i].Normal.Reflect(reflectionPlane.Normal);
-					// Near / far plane dealt with differently since they don't pass through camera
-					switch((FrustumPlane)i) {
-						case FrustumPlane.Near:
-							planes[i].D = -(distance + nearDistance);
-							break;
-						case FrustumPlane.Far:
-							planes[i].D = distance + farDistance;
-							break;
-						default:
-							planes[i].D = -pos.Dot(planes[i].Normal);
-							break;
-					}
-				}
-
-				// Also reflect corners
-				for (int i = 0; i < 8; i++) {
-					worldSpaceCorners[i] = reflectionMatrix * worldSpaceCorners[i];
-				}
-			}
-
-			// update since we have now recalculated everything
-			recalculateView = false;
+			base.UpdateView();
+			SetWindowImpl();
 		}
 
-		#endregion
+		/// <summary>
+		///		Evaluates whether or not the view matrix is out of date.
+		/// </summary>
+		/// <returns></returns>
+		protected override bool IsViewOutOfDate {
+			get {
+				bool returnVal = false;
+
+				// Overridden from Frustum to use local orientation / position offsets
+				// are we attached to another node?
+				if(parentNode != null) {
+					if(!recalculateView && parentNode.DerivedOrientation == lastParentOrientation &&
+						parentNode.DerivedPosition == lastParentPosition) {
+						returnVal = false;
+					}
+					else {
+						// we are out of date with the parent scene node
+						lastParentOrientation = parentNode.DerivedOrientation;
+						lastParentPosition = parentNode.DerivedPosition;
+						derivedOrientation = lastParentOrientation * orientation;
+						derivedPosition = (lastParentOrientation * position) + lastParentPosition;
+						returnVal = true;
+					}
+				}
+				else {
+					// rely on own updates
+					derivedOrientation = orientation;
+					derivedPosition = position;
+				}
+
+				if(isReflected && linkedReflectionPlane != null &&
+					!(lastLinkedReflectionPlane == linkedReflectionPlane.DerivedPlane)) {
+
+					reflectionPlane = linkedReflectionPlane.DerivedPlane;
+					reflectionMatrix = MathUtil.BuildReflectionMatrix(reflectionPlane);
+					lastLinkedReflectionPlane = linkedReflectionPlane.DerivedPlane;
+					returnVal = true;
+				}
+
+				return returnVal || recalculateView;
+			}
+		}
+
+		#endregion Frustum Members
 
 		#region SceneObject Implementation
 
@@ -381,7 +319,7 @@ namespace Axiom.Core {
 			}
 		}
 
-		public override void NotifyCurrentCamera(Axiom.Core.Camera pCamera) {
+		public override void NotifyCurrentCamera(Axiom.Core.Camera camera) {
 			// Do nothing
 		}
 
@@ -389,14 +327,32 @@ namespace Axiom.Core {
 		///    Called by the scene manager to let this camera know how many faces were renderer within
 		///    view of this camera every frame.
 		/// </summary>
-		/// <param name="numRenderedFaces"></param>
-		internal void NotifyRenderedFaces(int numRenderedFaces) {
-			numFacesRenderedLastFrame = numRenderedFaces;
+		/// <param name="renderedFaceCount"></param>
+		internal void NotifyRenderedFaces(int renderedFaceCount) {
+			numFacesRenderedLastFrame = renderedFaceCount;
 		}
 
 		#endregion
 
 		#region Public Properties
+
+		/// <summary>
+		///		If set to true a vieport that owns this frustum will be able to 
+		///		recalculate the aspect ratio whenever the frustum is resized.
+		/// </summary>
+		/// <remarks>
+		///		You should set this to true only if the frustum / camera is used by 
+		///		one viewport at the same time. Otherwise the aspect ratio for other 
+		///		viewports may be wrong.
+		/// </remarks>
+		public bool AutoAspectRatio {
+			get {
+				return autoAspectRatio;
+			}
+			set {
+				autoAspectRatio = true;
+			}
+		}
 	
 		/// <summary>
 		///    Returns the current SceneManager that this camera is using.
@@ -404,24 +360,6 @@ namespace Axiom.Core {
 		public SceneManager SceneManager {
 			get { 
 				return sceneManager; 
-			}
-		}
-
-		/// <summary>
-		///     Returns the reflection matrix of the camera if appropriate.
-		/// </summary>
-		public Matrix4 ReflectionMatrix {
-			get {
-				return reflectionMatrix;
-			}
-		}
-
-		/// <summary>
-		///     Returns the reflection plane of the camera if appropriate.
-		/// </summary>
-		public Plane ReflectionPlane {
-			get {
-				return reflectionPlane;
 			}
 		}
 
@@ -444,7 +382,7 @@ namespace Axiom.Core {
 		}
 
 		/// <summary>
-		///     Gets/Sets the camera orientation.
+		///     Gets/Sets the camera's orientation.
 		/// </summary>
 		public Quaternion Orientation {
 			get {
@@ -457,7 +395,7 @@ namespace Axiom.Core {
 		}
 
 		/// <summary>
-		///     Gets/Sets the cameras position.
+		///     Gets/Sets the camera's position.
 		/// </summary>
 		public Vector3 Position {
 			get { 
@@ -470,7 +408,7 @@ namespace Axiom.Core {
 		}
 
 		/// <summary>
-		/// Gets/Sets the cameras direction vector.
+		///		Gets/Sets the camera's direction vector.
 		/// </summary>
 		public Vector3 Direction {
 			// Direction points down the negatize Z axis by default.
@@ -534,6 +472,38 @@ namespace Axiom.Core {
 		}
 
 		/// <summary>
+		///		Gets camera's 'right' vector.
+		/// </summary>
+		public Vector3 Right {
+			get { 
+				return orientation * Vector3.UnitX; 
+			}
+		}
+
+		/// <summary>
+		///		Gets camera's 'up' vector.
+		/// </summary>
+		public Vector3 Up {
+			get { 
+				return orientation * Vector3.UnitY; 
+			}
+		}
+
+		/// <summary>
+		///		Get the last viewport which was attached to this camera. 
+		/// </summary>
+		/// <remarks>
+		///		This is not guaranteed to be the only viewport which is
+		///		using this camera, just the last once which was created referring
+		///		to it.
+		/// </remarks>
+		public Viewport Viewport {
+			get {
+				return lastViewport;
+			}
+		}
+
+		/// <summary>
 		/// 
 		/// </summary>
 		public Vector3 FixedYawAxis {
@@ -579,15 +549,6 @@ namespace Axiom.Core {
 				invSceneLodFactor = 1.0f / sceneLodFactor;
 			}
 		}
-
-		/// <summary>
-		///     Gets a flag that specifies whether this camera is being reflected or not.
-		/// </summary>
-		public bool IsReflected {
-			get {
-				return isReflected;
-			}
-		}
         
 		/// <summary>
 		///     Used for internal Lod calculations.
@@ -601,7 +562,7 @@ namespace Axiom.Core {
 		/// <summary>
 		/// Gets the last count of triangles visible in the view of this camera.
 		/// </summary>
-		public int NumRenderedFaces {
+		public int RenderedFaceCount {
 			get { 
 				return numFacesRenderedLastFrame; 
 			}
@@ -640,62 +601,28 @@ namespace Axiom.Core {
 		}
 
 		/// <summary>
-		///		Evaluates whether or not the view matrix is out of date.
+		///		Gets the flag specifying if a viewport window is being used.
 		/// </summary>
-		/// <returns></returns>
-		protected override bool IsViewOutOfDate {
+		public virtual bool IsWindowSet {
 			get {
-				// Overridden from Frustum to use local orientation / position offsets
-				// are we attached to another node?
-				if(parentNode != null) {
-					if(!recalculateView && parentNode.DerivedOrientation == lastParentOrientation &&
-						parentNode.DerivedPosition == lastParentPosition) {
-						return false;
-					}
-					else {
-						// we are out of date with the parent scene node
-						lastParentOrientation = parentNode.DerivedOrientation;
-						lastParentPosition = parentNode.DerivedPosition;
-						derivedOrientation = lastParentOrientation * orientation;
-						derivedPosition = (lastParentOrientation * position) + lastParentPosition;
-						return true;
-					}
-				}
-				else {
-					// rely on own updates
-					derivedOrientation = orientation;
-					derivedPosition = position;
-					return recalculateView;
-				}
+				return isWindowSet;
+			}
+		}
+
+		/// <summary>
+		///		Gets the number of window clip planes for this camera.
+		/// </summary>
+		/// <remarks>Only applicable if IsWindowSet == true.
+		/// </remarks>
+		public int WindowPlaneCount {
+			get {
+				return windowClipPlanes.Count;
 			}
 		}
 
 		#endregion
 
 		#region Public methods
-
-		/// <summary>
-		///     Disables reflection modification previously turned on with EnableReflection.
-		/// </summary>
-		public void DisableReflection() {
-			isReflected = false;
-			InvalidateView();
-		}
-
-		/// <summary>
-		///     Modifies this camera so it always renders from the reflection of itself through the
-		///     plane specified.
-		/// </summary>
-		/// <remarks>
-		///     This is obviously useful for rendering planar reflections.
-		/// </remarks>
-		/// <param name="plane"></param>
-		public void EnableReflection(Plane plane) {
-			isReflected = true;
-			reflectionPlane = plane;
-			reflectionMatrix = MathUtil.BuildReflectionMatrix(plane);
-			InvalidateView();
-		}
 
 		/// <summary>
 		/// Moves the camera's position by the vector offset provided along world axes.
@@ -875,6 +802,95 @@ namespace Axiom.Core {
 		}
 
 		/// <summary>
+		///		Sets the viewing window inside of viewport.
+		/// </summary>
+		/// <remarks>
+		///		This method can be used to set a subset of the viewport as the rendering target. 
+		/// </remarks>
+		/// <param name="left">Relative to Viewport - 0 corresponds to left edge, 1 - to right edge (default - 0).</param>
+		/// <param name="top">Relative to Viewport - 0 corresponds to top edge, 1 - to bottom edge (default - 0).</param>
+		/// <param name="right">Relative to Viewport - 0 corresponds to left edge, 1 - to right edge (default - 1).</param>
+		/// <param name="bottom">Relative to Viewport - 0 corresponds to top edge, 1 - to bottom edge (default - 1).</param>
+		public virtual void SetWindow(float left, float top, float right, float bottom) {
+			windowLeft = left;
+			windowTop = top;
+			windowRight = right;
+			windowBottom = bottom;
+
+			isWindowSet = true;
+			recalculateWindow = true;
+
+			InvalidateView();
+		}
+
+		/// <summary>
+		///		Do actual window setting, using parameters set in <see cref="SetWindow"/> call.
+		/// </summary>
+		/// <remarks>The method is called after projection matrix each change.</remarks>
+		protected void SetWindowImpl() {
+			if(!isWindowSet || !recalculateWindow) {
+				return;
+			}
+
+			float thetaY  = MathUtil.DegreesToRadians(fieldOfView * 0.5f);
+			float tanThetaY = MathUtil.Tan(thetaY);
+			float tanThetaX = tanThetaY * aspectRatio;
+
+			float vpTop = tanThetaY * nearDistance;
+			float vpLeft = -tanThetaX * nearDistance;
+			float vpWidth = -2 * vpLeft;
+			float vpHeight = -2 * vpTop;
+
+			float wvpLeft = vpLeft + windowLeft * vpWidth;
+			float wvpRight = vpLeft + windowRight * vpWidth;
+			float wvpTop = vpTop - windowTop * vpHeight;
+			float wvpBottom = vpTop - windowBottom * vpHeight;
+
+			Vector3 vpUpLeft = new Vector3(wvpLeft, wvpTop, -nearDistance);
+			Vector3 vpUpRight = new Vector3(wvpRight, wvpTop, -nearDistance);
+			Vector3 vpBottomLeft = new Vector3(wvpLeft, wvpBottom, -nearDistance);
+			Vector3 vpBottomRight = new Vector3(wvpRight, wvpBottom, -nearDistance);
+
+			Matrix4 inv = viewMatrix.Inverse();
+
+			Vector3 vwUpLeft = inv * vpUpLeft;
+			Vector3 vwUpRight = inv * vpUpRight;
+			Vector3 vwBottomLeft = inv * vpBottomLeft;
+			Vector3 vwBottomRight = inv * vpBottomRight;
+
+			Vector3 pos = Position;
+
+			windowClipPlanes.Clear();
+			windowClipPlanes.Add(new Plane(pos, vwBottomLeft, vwUpLeft));
+			windowClipPlanes.Add(new Plane(pos, vwUpLeft, vwUpRight));
+			windowClipPlanes.Add(new Plane(pos, vwUpRight, vwBottomRight));
+			windowClipPlanes.Add(new Plane(pos, vwBottomRight, vwBottomLeft));
+
+			recalculateWindow = false;
+		}
+
+		/// <summary>
+		///		Cancel view window.
+		/// </summary>
+		public virtual void ResetWindow() {
+			isWindowSet = false;
+		}
+
+		/// <summary>
+		///		Gets the window plane at the specified index.
+		/// </summary>
+		/// <param name="index">Index of the plane to get.</param>
+		/// <returns>The window plane at the specified index.</returns>
+		public Plane GetWindowPlane(int index) {
+			Debug.Assert(index < windowClipPlanes.Count, "Window clip plane index out of bounds.");
+
+			// ensure the window is recalced
+			SetWindowImpl();
+
+			return (Plane)windowClipPlanes[index];
+		}
+
+		/// <summary>
 		///     Gets a world space ray as cast from the camera through a viewport position.
 		/// </summary>
 		/// <param name="screenX">
@@ -906,6 +922,14 @@ namespace Axiom.Core {
 			return new Ray(this.DerivedPosition, rayDirection);
 		}
 
+		/// <summary>
+		///		Notifies this camera that a viewport is using it.
+		/// </summary>
+		/// <param name="viewport">Viewport that is using this camera.</param>
+		public void NotifyViewport(Viewport viewport) {
+			lastViewport = viewport;
+		}
+
 		#endregion
 
 		#region Internal engine methods
@@ -915,7 +939,7 @@ namespace Axiom.Core {
 		/// </summary>
 		/// <param name="viewport"></param>
 		/// <param name="showOverlays"></param>
-		public void RenderScene(Viewport viewport, bool showOverlays) {
+		internal void RenderScene(Viewport viewport, bool showOverlays) {
 			sceneManager.RenderScene(this, viewport, showOverlays);
 		}
 

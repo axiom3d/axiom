@@ -651,6 +651,30 @@ namespace Axiom.Graphics {
 		#region Methods
 
 		/// <summary>
+		///		Update a perspective projection matrix to use 'oblique depth projection'.
+		/// </summary>
+		/// <remarks>
+		///		This method can be used to change the nature of a perspective 
+		///		transform in order to make the near plane not perpendicular to the 
+		///		camera view direction, but to be at some different orientation. 
+		///		This can be useful for performing arbitrary clipping (e.g. to a 
+		///		reflection plane) which could otherwise only be done using user
+		///		clip planes, which are more expensive, and not necessarily supported
+		///		on all cards.
+		/// </remarks>
+		/// <param name="projMatrix">
+		///		The existing projection matrix. Note that this must be a
+		///		perspective transform (not orthographic), and must not have already
+		///		been altered by this method. The matrix will be altered in-place.
+		/// </param>
+		/// <param name="plane">
+		///		The plane which is to be used as the clipping plane. This
+		///		plane must be in CAMERA (view) space.
+		///	</param>
+		/// <param name="forGpuProgram">Is this for use with a Gpu program or fixed-function transforms?</param>
+		public abstract void ApplyObliqueDepthProjection(ref Matrix4 projMatrix, Plane plane, bool forGpuProgram);
+
+		/// <summary>
 		///		Signifies the beginning of a frame, ie the start of rendering on a single viewport. Will occur
 		///		several times per complete frame if multiple viewports exist.
 		/// </summary>

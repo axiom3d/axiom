@@ -39,35 +39,65 @@ namespace Axiom.MathLib {
     /// respectively), and a constant (D) which is the distance along
     /// the normal you have to go to move the plane back to the origin.
     /// </remarks>
-    public sealed class Plane {
-        private Vector3 normal;
-        private float d;
+    public struct Plane {
+		#region Fields
+
+		/// <summary>
+		///		Direction the plane is facing.
+		/// </summary>
+        public Vector3 Normal;
+		/// <summary>
+		///		Distance from the origin.
+		/// </summary>
+        public float D;
+
+		#endregion Fields
 
         #region Constructors
 
-        public Plane() {
-            // TODO: Implementation
-        }
-
         public Plane(Plane plane) {
-            this.normal = plane.normal;
-            this.d = plane.d;
+            this.Normal = plane.Normal;
+            this.D = plane.D;
         }
 
+		/// <summary>
+		///		Construct a plane through a normal, and a distance to move the plane along the normal.
+		/// </summary>
+		/// <param name="normal"></param>
+		/// <param name="constant"></param>
         public Plane(Vector3 normal, float constant) {
-            this.normal = normal;
-            this.d = -constant;
+            this.Normal = normal;
+            this.D = -constant;
         }
 
         public Plane(Vector3 normal, Vector3 point) {
-            this.normal = normal;
-            this.d = -normal.Dot(point);
+            this.Normal = normal;
+            this.D = -normal.Dot(point);
         }
+
+		/// <summary>
+		///		Construct a plane from 3 coplanar points.
+		/// </summary>
+		/// <param name="point0">First point.</param>
+		/// <param name="point1">Second point.</param>
+		/// <param name="point2">Third point.</param>
+		public Plane(Vector3 point0, Vector3 point1, Vector3 point2) {
+			Vector3 edge1 = point1 - point0;
+			Vector3 edge2 = point2 - point0;
+			Normal = edge1.Cross(edge2);
+			Normal.Normalize();
+			D = -Normal.Dot(point0);
+		}
 
         #endregion
 
-        #region Public methods
+        #region Methods
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="point"></param>
+		/// <returns></returns>
         public PlaneSide GetSide(Vector3 point) {
             float distance = GetDistance(point);
 
@@ -91,46 +121,78 @@ namespace Axiom.MathLib {
         /// <param name="point"></param>
         /// <returns></returns>
         public float GetDistance(Vector3 point) { 
-            return normal.Dot(point) + this.d;
+            return Normal.Dot(point) + D;
         }
 
-        #endregion
+		/// <summary>
+		///		Construct a plane from 3 coplanar points.
+		/// </summary>
+		/// <param name="point0">First point.</param>
+		/// <param name="point1">Second point.</param>
+		/// <param name="point2">Third point.</param>
+		public void Redefine(Vector3 point0, Vector3 point1, Vector3 point2) {
+			Vector3 edge1 = point1 - point0;
+			Vector3 edge2 = point2 - point0;
+			Normal = edge1.Cross(edge2);
+			Normal.Normalize();
+			D = -Normal.Dot(point0);
+		}
 
-        #region Properties
-
-        /// <summary>
-        ///		The normal of the plane.
-        /// </summary>
-        public Vector3 Normal {
-            get { 
-                return normal; 
-            }
-            set { 
-                normal = value; 
-            }
-        }
-
-        /// <summary>
-        ///		The distance from the origin to the plane along the Normal vector.
-        /// </summary>
-        public float D {
-            get { 
-                return d; 
-            }
-            set { 
-                d = value; 
-            }
-        }
-
-        #endregion 
+        #endregion Methods
 
         #region Object overrides
 
+		/// <summary>
+		///		Object method for testing equality.
+		/// </summary>
+		/// <param name="obj">Object to test.</param>
+		/// <returns>True if the 2 planes are logically equal, false otherwise.</returns>
+		public override bool Equals(object obj) {
+			Plane plane = (Plane)obj;
+
+			return plane == this;
+		}
+
+		/// <summary>
+		///		Gets the hashcode for this Plane.
+		/// </summary>
+		/// <returns></returns>
+		public override int GetHashCode() {
+			return D.GetHashCode() ^ Normal.GetHashCode();
+		}
+
+		/// <summary>
+		///		Returns a string representation of this Plane.
+		/// </summary>
+		/// <returns></returns>
         public override string ToString() {
-            // TODO: Implementation
-            return "";
+            return string.Format("Distance: {0} Normal: {1}", D, Normal.ToString());
         }
 
         #endregion
-    }
+
+		#region Operator Overloads
+
+		/// <summary>
+		///		Compares 2 Planes for equality.
+		/// </summary>
+		/// <param name="left">First plane.</param>
+		/// <param name="right">Second plane.</param>
+		/// <returns>true if equal, false if not equal.</returns>
+		public static bool operator == (Plane left, Plane right) {
+			return (left.D == right.D) && (left.Normal == right.Normal);
+		}
+
+		/// <summary>
+		///		Compares 2 Planes for inequality.
+		/// </summary>
+		/// <param name="left">First plane.</param>
+		/// <param name="right">Second plane.</param>
+		/// <returns>true if not equal, false if equal.</returns>
+		public static bool operator != (Plane left, Plane right) {
+			return (left.D != right.D) || (left.Normal != right.Normal);
+		}
+
+		#endregion
+	}
 }

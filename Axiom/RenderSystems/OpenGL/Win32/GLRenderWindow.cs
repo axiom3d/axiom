@@ -49,10 +49,6 @@ namespace Axiom.RenderSystems.OpenGL {
 		private IntPtr hRC = IntPtr.Zero;
 		/// <summary>Retains initial screen settings.</summary>        
 		private Gdi.DEVMODE intialScreenSettings;
-		/// <summary>
-		///		Reference to an auto created form used as a rendering target.
-		/// </summary>
-		private System.Windows.Forms.Form autoForm;
 
 		#endregion Fields
 

@@ -405,18 +405,26 @@ namespace Axiom.RenderSystems.OpenGL {
 
 		public override Matrix4 MakeOrthoMatrix(float fov, float aspectRatio, float near, float far, bool forGpuPrograms) {
 			float thetaY = MathUtil.DegreesToRadians(fov / 2.0f);
-			float sinThetaY = MathUtil.Sin(thetaY);
-			float thetaX = thetaY * aspectRatio;
-			float sinThetaX = MathUtil.Sin(thetaX);
-			float w = 1.0f / (sinThetaX * near);
-			float h = 1.0f / (sinThetaY * near);
-			float q = 1.0f / (far - near);
+			float tanThetaY = MathUtil.Tan(thetaY);
+			float tanThetaX = tanThetaY * aspectRatio;
+
+			float halfW = tanThetaX * near;
+			float halfH = tanThetaY * near;
+
+			float w = 1.0f / halfW;
+			float h = 1.0f / halfH;
+			float q = 0;
+
+			if(far != 0) {
+				q = 2.0f / (far - near);
+			}
 		
 			Matrix4 dest = Matrix4.Zero;
 			dest.m00 = w;
 			dest.m11 = h;
 			dest.m22 = -q;
-			dest.m33 = 1;
+			dest.m23 = -(far + near) / (far - near);
+			dest.m33 = 1.0f;
 
 			return dest;
 		}
@@ -440,8 +448,24 @@ namespace Axiom.RenderSystems.OpenGL {
 
 			float w = (1.0f / tanThetaY) / aspectRatio;
 			float h = 1.0f / tanThetaY;
-			float q = -(far + near) / (far - near);
-			float qn = -2 * (far * near) / (far - near);
+			float q = 0;
+			float qn = 0;
+
+			if(far == 0) {
+				q = Frustum.InfiniteFarPlaneAdjust - 1;
+				qn = near * (Frustum.InfiniteFarPlaneAdjust - 2);
+			}
+			else {
+				q = -(far + near) / (far - near);
+				qn = -2 * (far * near) / (far - near);
+			}
+
+			// NB This creates Z in range [-1,1]
+			//
+			// [ w   0   0   0  ]
+			// [ 0   h   0   0  ]
+			// [ 0   0   q   qn ]
+			// [ 0   0   -1  0  ]
 
 			matrix.m00 = w;
 			matrix.m11 = h;
@@ -450,6 +474,31 @@ namespace Axiom.RenderSystems.OpenGL {
 			matrix.m32 = -1.0f;
 
 			return matrix;
+		}
+
+		public override void ApplyObliqueDepthProjection(ref Axiom.MathLib.Matrix4 projMatrix, Axiom.MathLib.Plane plane, bool forGpuProgram) {
+			// Thanks to Eric Lenyel for posting this calculation at www.terathon.com
+
+			// Calculate the clip-space corner point opposite the clipping plane
+			// as (sgn(clipPlane.x), sgn(clipPlane.y), 1, 1) and
+			// transform it into camera space by multiplying it
+			// by the inverse of the projection matrix
+
+			Vector4 q = new Vector4();
+			q.x = (Math.Sign(plane.Normal.x) + projMatrix.m02) / projMatrix.m00;
+			q.y = (Math.Sign(plane.Normal.y) + projMatrix.m12) / projMatrix.m11;
+			q.z = -1.0f;
+			q.w = (1.0f + projMatrix.m22) / projMatrix.m23;
+
+			// Calculate the scaled plane vector
+			Vector4 clipPlane4d = new Vector4(plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D);
+			Vector4 c = clipPlane4d * (2.0f / (clipPlane4d.Dot(q)));
+
+			// Replace the third row of the projection matrix
+			projMatrix.m20 = c.x;
+			projMatrix.m21 = c.y;
+			projMatrix.m22 = c.z + 1.0f;
+			projMatrix.m23 = c.w;
 		}
 
 		/// <summary>
@@ -2102,6 +2151,9 @@ namespace Axiom.RenderSystems.OpenGL {
 
 			// UBYTE4 is always supported in GL
 			caps.SetCap(Capabilities.VertexFormatUByte4);
+
+			// Infinit far plane always supported
+			caps.SetCap(Capabilities.InfiniteFarPlane);
 
 			// Hardware occlusion queries
 			if(glSupport.CheckExtension("GL_NV_occlusion_query")) {

@@ -481,7 +481,8 @@ namespace Axiom.MathLib {
         ///		This function will not crash for zero-sized vectors, but there
         ///		will be no changes made to their components.
         ///	</remarks>
-        public void Normalize() {
+        ///	<returns>The previous length of the vector.</returns>
+        public float Normalize() {
             float length = MathUtil.Sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
 
             // Will also work for zero-sized vectors, but will change nothing
@@ -492,6 +493,8 @@ namespace Axiom.MathLib {
                 this.y *= inverseLength;
                 this.z *= inverseLength;
             }
+
+			return length;
         }
 
         /// <summary>

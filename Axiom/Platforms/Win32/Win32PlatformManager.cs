@@ -61,18 +61,24 @@ namespace Axiom.Platforms.Win32
 
 		#region P/Invoke Declarations
 
-		struct POINTAPI {
-			int x;
-			int y;
+		struct Msg {
+			public int hWnd;
+			public int Message;
+			public int wParam;
+			public int lParam;
+			public int time;
+			public POINTAPI pt;
 		}
 
-		struct Msg {
-			int hWnd;
-			int Message;
-			int wParam;
-			int lParam;
-			int time;
-			POINTAPI pt;
+		struct POINTAPI {
+			public int x;
+			public int y;
+
+			// Just to get rid of Warning CS0649.
+			public POINTAPI(int x, int y) {
+				this.x = x;
+				this.y = y;
+			}
 		}
 
 		/// <summary>
