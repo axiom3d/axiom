@@ -53,7 +53,8 @@ namespace Axiom.Core {
         }
         #region IDisposable Members
 
-        public void Dispose() {
+        public new void Dispose() {
+            
             writer.Close();
             log.Close();
         }

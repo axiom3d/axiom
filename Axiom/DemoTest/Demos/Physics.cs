@@ -40,7 +40,7 @@ namespace Demos {
     public class Physics : TechDemo {
         #region Member variables
 		
-        private IWorld world;
+        private IWorld world = null;
         private GameObject plasma;
         private GameObject plasma2;
 

@@ -191,5 +191,31 @@ namespace Axiom.Core {
 
         #endregion
 
+        #region Object overloads
+
+        /// <summary>
+        ///    Override to determine equality between 2 ColorEx objects,
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj) {
+            ColorEx color = obj as ColorEx;
+
+            return (color == this);
+        }
+
+        /// <summary>
+        ///    Override GetHashCode.
+        /// </summary>
+        /// <remarks>
+        ///    Done mainly to quash warnings, no real need for it.
+        /// </remarks>
+        /// <returns></returns>
+        public override int GetHashCode() {
+            return this.ToARGB();
+        }
+
+        #endregion Object overloads
+
     }
 }

@@ -84,6 +84,10 @@ namespace RenderSystem_OpenGL {
         protected TexCoordCalcMethod[] lastTexCalMethods = new TexCoordCalcMethod[Config.MaxTextureLayers];
         protected bool fogEnabled;
         
+        // temp arrays to reduce runtime allocations
+        protected float[] tempMatrix = new float[16];
+        protected float[] tempLightVals = new float[4];
+
         #endregion Member variables
 
         #region Constructors
@@ -231,7 +235,7 @@ namespace RenderSystem_OpenGL {
         public override ColorEx AmbientLight {
             set {
                 // create a float[4]  to contain the RGBA data
-                float[] ambient = GlColorArray(value);
+                float[] ambient = value.ToArrayRGBA();
                 ambient[3] = 0.0f;
 
                 // set the ambient color
@@ -457,7 +461,7 @@ namespace RenderSystem_OpenGL {
             Debug.Assert(activeViewport != null, "BeingFrame cannot run without an active viewport.");
 
             if(activeViewport.ClearEveryFrame) {
-                float[] color = GlColorArray(activeViewport.BackgroundColor);
+                float[] color = activeViewport.BackgroundColor.ToArrayRGBA();
 
                 // clear the viewport
                 Gl.glClearColor(color[0], color[1], color[2], color[3]);
@@ -547,7 +551,7 @@ namespace RenderSystem_OpenGL {
             
             // ambient
             if(lastAmbient == null || lastAmbient != ambient) {
-                vals = GlColorArray(ambient);
+                vals = ambient.ToArrayRGBA();
                 Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_AMBIENT, vals);
                 
                 lastAmbient = ambient;
@@ -789,8 +793,6 @@ namespace RenderSystem_OpenGL {
         /// <param name="stage"></param>
         /// <param name="method"></param>
         protected override void SetTextureCoordCalculation(int stage, TexCoordCalcMethod method) {
-            float[] m = new float[16];
-
             // Default to no extra auto texture matrix
             useAutoTextureMatrix = false;
 
@@ -857,14 +859,14 @@ namespace RenderSystem_OpenGL {
                     // This sets the texture matrix to be the inverse of the modelview matrix
                     useAutoTextureMatrix = true;
 
-                    Gl.glGetFloatv( Gl.GL_MODELVIEW_MATRIX, m);
+                    Gl.glGetFloatv( Gl.GL_MODELVIEW_MATRIX, tempMatrix);
 
                     // Transpose 3x3 in order to invert matrix (rotation)
                     // Note that we need to invert the Z _before_ the rotation
                     // No idea why we have to invert the Z at all, but reflection is wrong without it
-                    autoTextureMatrix[0] = m[0]; autoTextureMatrix[1] = m[4]; autoTextureMatrix[2] = -m[8];
-                    autoTextureMatrix[4] = m[1]; autoTextureMatrix[5] = m[5]; autoTextureMatrix[6] = -m[9];
-                    autoTextureMatrix[8] = m[2]; autoTextureMatrix[9] = m[6]; autoTextureMatrix[10] = -m[10];
+                    autoTextureMatrix[0] = tempMatrix[0]; autoTextureMatrix[1] = tempMatrix[4]; autoTextureMatrix[2] = -tempMatrix[8];
+                    autoTextureMatrix[4] = tempMatrix[1]; autoTextureMatrix[5] = tempMatrix[5]; autoTextureMatrix[6] = -tempMatrix[9];
+                    autoTextureMatrix[8] = tempMatrix[2]; autoTextureMatrix[9] = tempMatrix[6]; autoTextureMatrix[10] = -tempMatrix[10];
                     autoTextureMatrix[3] = autoTextureMatrix[7] = autoTextureMatrix[11] = 0.0f;
                     autoTextureMatrix[12] = autoTextureMatrix[13] = autoTextureMatrix[14] = 0.0f;
                     autoTextureMatrix[15] = 1.0f;
@@ -1023,7 +1025,7 @@ namespace RenderSystem_OpenGL {
 
             Gl.glEnable(Gl.GL_FOG);
             Gl.glFogi(Gl.GL_FOG_MODE, (int)fogMode);
-            float[] fogColor = GlColorArray(color);
+            float[] fogColor = color.ToArrayRGBA();
             Gl.glFogfv(Gl.GL_FOG_COLOR, fogColor);
             Gl.glFogf(Gl.GL_FOG_DENSITY, density);
             Gl.glFogf(Gl.GL_FOG_START, start);
@@ -1465,24 +1467,12 @@ namespace RenderSystem_OpenGL {
         }
 
         /// <summary>
-        ///		
-        /// </summary>
-        /// <param name="color"></param>
-        /// <returns></returns>
-        private float[] GlColorArray(ColorEx color) {
-            return new float[] {color.r, color.g, color.b, color.a};
-        }
-
-        /// <summary>
         /// 
         /// </summary>
         /// <param name="index"></param>
         /// <param name="light"></param>
         private void SetGLLight(int index, Light light) {
             int lightIndex = Gl.GL_LIGHT0 + index;
-
-            if(index == 1)
-                lightIndex = Gl.GL_LIGHT1;
 
             if(light.IsVisible) {
                 // set spotlight cutoff
@@ -1496,40 +1486,39 @@ namespace RenderSystem_OpenGL {
                 }
 
                 // light color
-                float[] color = GlColorArray(light.Diffuse);
+                float[] color = light.Diffuse.ToArrayRGBA();
                 Gl.glLightfv(lightIndex, Gl.GL_DIFFUSE, color);
 
                 // specular color
-                float[] specular = GlColorArray(light.Specular);
+                float[] specular = light.Specular.ToArrayRGBA();
                 Gl.glLightfv(lightIndex, Gl.GL_SPECULAR, specular);
 
                 // disable ambient light for objects
                 // BUG: Why does this return GL ERROR 1280?
-                //Gl.glLighti(lightIndex, 0x1200/*GL_AMBIENT*/, 0);
+                //Gl.glLighti(lightIndex, Gl.GL_AMBIENT, 0);
 
                 // position (not set for Directional lighting)
                 Vector3 vec;
-                float[] vals = new float[4];
 
                 if(light.Type != LightType.Directional) {
                     vec = light.DerivedPosition;
-                    vals[0] = vec.x;
-                    vals[1] = vec.y;
-                    vals[2] = vec.z;
-                    vals[3] = 1.0f;
+                    tempLightVals[0] = vec.x;
+                    tempLightVals[1] = vec.y;
+                    tempLightVals[2] = vec.z;
+                    tempLightVals[3] = 1.0f;
 
-                    Gl.glLightfv(lightIndex, Gl.GL_POSITION, vals);
+                    Gl.glLightfv(lightIndex, Gl.GL_POSITION, tempLightVals);
                 }
 			
                 // direction (not needed for point lights
                 if(light.Type != LightType.Point) {
                     vec = light.DerivedDirection;
-                    vals[0] = vec.x;
-                    vals[1] = vec.y;
-                    vals[2] = vec.z;
-                    vals[3] = 1.0f;
+                    tempLightVals[0] = vec.x;
+                    tempLightVals[1] = vec.y;
+                    tempLightVals[2] = vec.z;
+                    tempLightVals[3] = 1.0f;
 
-                    Gl.glLightfv(lightIndex, Gl.GL_SPOT_DIRECTION, vals);
+                    Gl.glLightfv(lightIndex, Gl.GL_SPOT_DIRECTION, tempLightVals);
                 }
 
                 // light attenuation
@@ -1575,8 +1564,6 @@ namespace RenderSystem_OpenGL {
         }
 
         private void ResetLights() {
-            float[] f4vals = new float[4];
-
             for (int i = 0; i < caps.MaxLights; i++) {
                 if (lights[i] != null) {
                     Light lt = lights[i];
@@ -1585,20 +1572,20 @@ namespace RenderSystem_OpenGL {
 
                     if (lt.Type != LightType.Directional) {
                         vec = lt.DerivedPosition;
-                        f4vals[0] = vec.x;
-                        f4vals[1] = vec.y;
-                        f4vals[2] = vec.z;
-                        f4vals[3] = 1.0f;
-                        Gl.glLightfv(Gl.GL_LIGHT0 + i, Gl.GL_POSITION, f4vals);
+                        tempLightVals[0] = vec.x;
+                        tempLightVals[1] = vec.y;
+                        tempLightVals[2] = vec.z;
+                        tempLightVals[3] = 1.0f;
+                        Gl.glLightfv(Gl.GL_LIGHT0 + i, Gl.GL_POSITION, tempLightVals);
                     }
                     // Direction (not needed for point lights)
                     if (lt.Type != LightType.Point) {
                         vec = lt.DerivedDirection;
-                        f4vals[0] = vec.x;
-                        f4vals[1] = vec.y;
-                        f4vals[2] = vec.z;
-                        f4vals[3] = 0.0f;
-                        Gl.glLightfv(Gl.GL_LIGHT0 + i, Gl.GL_SPOT_DIRECTION, f4vals);
+                        tempLightVals[0] = vec.x;
+                        tempLightVals[1] = vec.y;
+                        tempLightVals[2] = vec.z;
+                        tempLightVals[3] = 0.0f;
+                        Gl.glLightfv(Gl.GL_LIGHT0 + i, Gl.GL_SPOT_DIRECTION, tempLightVals);
                     }
                 }
             }

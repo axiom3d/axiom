@@ -37,9 +37,7 @@ namespace Axiom.Utility {
     /// </summary>
     public class DefaultForm : System.Windows.Forms.Form {
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.ComponentModel.IContainer components;
         private RenderWindow renderWindow;		
-        private string stats;
 
         public DefaultForm() {
             InitializeComponent();

@@ -113,7 +113,7 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="name"></param>
         public Mesh(string name) {
-            this.name = name.ToLower();
+            this.name = name;
 
             // default to static write only for speed
             vertexBufferUsage = BufferUsage.StaticWriteOnly;

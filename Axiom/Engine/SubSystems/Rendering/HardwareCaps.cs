@@ -38,7 +38,6 @@ namespace Axiom.SubSystems.Rendering {
         private Capabilities caps;
         private int numTextureUnits;
         private int stencilBufferBits;
-        private int numIndexedMatrices;
         private int maxLights;
         private string vendor;
 

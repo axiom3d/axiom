@@ -382,24 +382,24 @@ namespace Axiom.Animating {
           3. Iterate per AnimationState, if enabled get Animation and call Animation::apply
             */
 
-            if(lastAnimationState.Count == animSet.Count) {
+           // if(lastAnimationState.Count == animSet.Count) {
                 // same size, so check to see if the elements are the same to avoid update
                 // if possible
-                bool different = false;
+                //bool different = false;
 
-                for(int i = 0; i < animSet.Count; i++) {
-                    if(lastAnimationState[i] != animSet[i]) {
-                        different = true;
-                        break;
-                    }
-                } // for
+                //for(int i = 0; i < animSet.Count; i++) {
+                //    if(lastAnimationState[i] != animSet[i]) {
+                //        different = true;
+                //        break;
+                //    }
+               // } // for
 
                 // HACK: Need to create a copy method to store a copy of the last animation states, not a direct ref to it or else this will only ever run once
                 // if there was no difference, just return
                 //if(!different){
                 //    return;
                 //}
-            } // if
+            //} // if
 
             // reset bones
             Reset();

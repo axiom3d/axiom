@@ -208,5 +208,31 @@ namespace Axiom.Animating {
             set {	time = value * length; }
         }
         #endregion
+
+        #region Object overloads
+
+        /// <summary>
+        ///    Override to determine equality between 2 AnimationState objects,
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj) {
+            AnimationState animState = obj as AnimationState;
+
+            return (animState == this);
+        }
+
+        /// <summary>
+        ///    Override GetHashCode.
+        /// </summary>
+        /// <remarks>
+        ///    Done mainly to quash warnings, no real need for it.
+        /// </remarks>
+        /// <returns></returns>
+        public override int GetHashCode() {
+            return animationName.GetHashCode();
+        }
+
+        #endregion Object overloads
     }
 }

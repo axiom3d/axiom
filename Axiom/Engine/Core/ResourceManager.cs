@@ -201,7 +201,7 @@ namespace Axiom.Core {
 
                 // add each one to the final list
                 foreach(String fileName in files) {
-                    allFiles.Add(fileName.ToLower());
+                    allFiles.Add(fileName);
                 }
             }
 
@@ -233,9 +233,7 @@ namespace Axiom.Core {
 
             // add a lookup for all these files so they know what archive they are in
             for(int i = 0; i < files.Length; i++) {
-                // HACK: Ignore .scc (SoureSafe) files, remove when put into CVS
-                if(!files[i].EndsWith(".scc"))
-                    filePaths.Add(files[i].ToLower(), archive);
+                filePaths.Add(files[i], archive);
             }
 
             // add the archive to the common archives
@@ -267,9 +265,7 @@ namespace Axiom.Core {
 
             // add a lookup for all these files so they know what archive they are in
             for(int i = 0; i < files.Length; i++) {
-                // HACK: Ignore .scc (SoureSafe) files, remove when put into CVS
-                if(!files[i].EndsWith(".scc"))
-                    commonFilePaths.Add(files[i].ToLower(), archive);
+                commonFilePaths.Add(files[i], archive);
             }
 
             // add the archive to the common archives
@@ -294,18 +290,17 @@ namespace Axiom.Core {
         /// <param name="fileName"></param>
         /// <returns></returns>
         public Stream FindResourceData(string fileName) {
-            string lowerName = fileName.ToLower();
 
             // look in local file cache first
-            if(filePaths.ContainsKey(lowerName)) {
-                Archive archive = (Archive)filePaths[lowerName];
-                return archive.ReadFile(lowerName);
+            if(filePaths.ContainsKey(fileName)) {
+                Archive archive = (Archive)filePaths[fileName];
+                return archive.ReadFile(fileName);
             }
 
             // search common file cache			
-            if(commonFilePaths.ContainsKey(lowerName)) {
-                Archive archive = (Archive)commonFilePaths[lowerName];
-                return archive.ReadFile(lowerName);
+            if(commonFilePaths.ContainsKey(fileName)) {
+                Archive archive = (Archive)commonFilePaths[fileName];
+                return archive.ReadFile(fileName);
             }
 
             // not found in the cache, load the resource manually
@@ -322,12 +317,11 @@ namespace Axiom.Core {
         /// <param name="fileName"></param>
         /// <returns></returns>
         static public Stream FindCommonResourceData(string fileName) {
-            string lowerName = fileName.ToLower();
 
             // search common file cache			
-            if(commonFilePaths.ContainsKey(lowerName)) {
-                Archive archive = (Archive)commonFilePaths[lowerName];
-                return archive.ReadFile(lowerName);
+            if(commonFilePaths.ContainsKey(fileName)) {
+                Archive archive = (Archive)commonFilePaths[fileName];
+                return archive.ReadFile(fileName);
             }
 
             // not found in the cache, load the resource manually
@@ -349,11 +343,9 @@ namespace Axiom.Core {
             get {
                 Debug.Assert(resourceList != null, "A resource was being retreived, but the list of Resources is null.", "");
 
-                string lowerName = name.ToLower();
-
                 // find the resource in the Hashtable and return it
-                if(resourceList.ContainsKey(lowerName))
-                    return (Resource)resourceList[lowerName];
+                if(resourceList.ContainsKey(name))
+                    return (Resource)resourceList[name];
                 else
                     return null;
             }

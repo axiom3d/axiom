@@ -41,44 +41,39 @@ namespace Axiom.Core {
 
         public const int MAX_ANIMATION_FRAMES = 32;
 
-        /// <summary>Name of the texture for this layer.</summary>
-        protected string textureName;
         /// <summary></summary>
-        protected bool deferredLoad;
+        private bool deferredLoad;
         /// <summary></summary>
-        protected int texCoordSet;
-        protected TextureAddressing texAddressingMode;
-        protected LayerBlendModeEx colorBlendMode = new LayerBlendModeEx();
-        protected LayerBlendModeEx alphaBlendMode = new LayerBlendModeEx();
-        protected SceneBlendFactor colorBlendFallbackSrc;
-        protected SceneBlendFactor colorBlendFallbackDest;
-        protected LayerBlendOperation colorOp;
-        protected EnvironmentMap envMap;
+        private int texCoordSet;
+        private TextureAddressing texAddressingMode;
+        private LayerBlendModeEx colorBlendMode = new LayerBlendModeEx();
+        private LayerBlendModeEx alphaBlendMode = new LayerBlendModeEx();
+        private SceneBlendFactor colorBlendFallbackSrc;
+        private SceneBlendFactor colorBlendFallbackDest;
+        private LayerBlendOperation colorOp;
+        private EnvironmentMap envMap;
 
         /// <summary>Is this a blank layer?</summary>
-        protected bool isBlank;
+        private bool isBlank;
         /// <summary>Number of frames for this layer.</summary>
-        protected int numFrames;
-        protected int currentFrame;
+        private int numFrames;
+        private int currentFrame;
         /// <summary>store names of textures for animation frames.</summary>
-        protected String[] frames = new String[MAX_ANIMATION_FRAMES];
-        protected bool isCubic;
+        private String[] frames = new String[MAX_ANIMATION_FRAMES];
+        private bool isCubic;
 
         // texture animation parameters
-        protected bool recalcTexMatrix;
-        protected float transU;
-        protected float transV;
-        protected float scaleU;
-        protected float scaleV;
-        protected float rotate;
-        protected Matrix4 texMatrix = Matrix4.Identity;
-        protected float scrollAnimU;
-        protected float scrollAnimV;
-        protected float rotateAnim;
+        private bool recalcTexMatrix;
+        private float transU;
+        private float transV;
+        private float scaleU;
+        private float scaleV;
+        private float rotate;
+        private Matrix4 texMatrix = Matrix4.Identity;
 
         // TODO: make this a hashtable to something else with type as a key
         // .Net doesnt have a nonunique key hashtable like structure
-        protected ArrayList effectList = new ArrayList();
+        private ArrayList effectList = new ArrayList();
 
         #endregion
 
@@ -91,6 +86,7 @@ namespace Axiom.Core {
             this.deferredLoad = false;
 
             isBlank = true;
+            isCubic = false;
 
             colorBlendMode.blendType = LayerBlendType.Color;
             SetColorOperation(LayerBlendOperation.Modulate);
@@ -114,6 +110,7 @@ namespace Axiom.Core {
             texAddressingMode = TextureAddressing.Wrap;
 
             isBlank = true;
+            isCubic = false;
 
             colorBlendMode.blendType = LayerBlendType.Color;
             SetColorOperation(LayerBlendOperation.Modulate);
@@ -796,6 +793,31 @@ namespace Axiom.Core {
             return false;
         }
 
+        #region Object overloads
+
+        /// <summary>
+        ///    Overide to use custom equality check.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj) {
+            LayerBlendModeEx lbx = obj as LayerBlendModeEx;
+
+            return (lbx == this);
+        }
+
+        /// <summary>
+        ///    Override.
+        /// </summary>
+        /// <remarks>
+        ///    Overriden to quash warnings, not necessarily needed right now.
+        /// </remarks>
+        /// <returns></returns>
+        public override int GetHashCode() {
+            return base.GetHashCode ();
+        }
+
+        #endregion Object overloads
     }
 
     /// <summary>
