@@ -9,6 +9,8 @@
     <File name=".\LinearForceAffector.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\LinearForceAffectorFactory.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\ParticleFX.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\PointEmitterFactory.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\PointEmitter.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References>
     <Reference type="Project" refto="Engine" localcopy="True" />

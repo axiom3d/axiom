@@ -67,7 +67,7 @@ namespace Axiom.Core
 		/// <param name="name"></param>
 		public Mesh(string name)
 		{
-			this.name = name;
+			this.name = name.ToLower();
 
 			vertexBufferUsage = BufferUsage.StaticWriteOnly;
 			indexBufferUsage = BufferUsage.StaticWriteOnly;

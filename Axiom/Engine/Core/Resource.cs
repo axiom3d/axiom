@@ -100,7 +100,7 @@ namespace Axiom.Core
 		/// </summary>
 		public String Name
 		{
-			get { return name; }
+			get { return name.ToLower(); }
 		}
 
 		/// <summary>

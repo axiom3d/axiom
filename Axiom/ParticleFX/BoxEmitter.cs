@@ -29,6 +29,7 @@ using System.Drawing;
 using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.MathLib;
+using Axiom.Scripting;
 
 namespace ParticleFX
 {
@@ -60,6 +61,30 @@ namespace ParticleFX
 			// Generate simpler data
 			particle.timeToLive = GenerateEmissionTTL();
 		}
+
+		#region Script parser methods
+
+		[AttributeParser("width", EMITTER)]
+		public static void ParseWidth(string[] values, params object[] objects) {
+			BoxEmitter emitter = objects[0] as BoxEmitter;
+			emitter.Width = float.Parse(values[0]);
+		}
+
+		[AttributeParser("height", EMITTER)]
+		public static void ParseHeight(string[] values, params object[] objects) 
+		{
+			BoxEmitter emitter = objects[0] as BoxEmitter;
+			emitter.Height = float.Parse(values[0]);
+		}
+
+		[AttributeParser("depth", EMITTER)]
+		public static void ParseDepth(string[] values, params object[] objects) 
+		{
+			BoxEmitter emitter = objects[0] as BoxEmitter;
+			emitter.Depth = float.Parse(values[0]);
+		}
+
+		#endregion Script parser methods
 
 	}
 }

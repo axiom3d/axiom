@@ -45,7 +45,7 @@ namespace ParticleFX
 		{
 			get
 			{
-				return "ColorFader";
+				return "ColourFader";
 			}
 		}
 

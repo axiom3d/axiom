@@ -45,15 +45,19 @@ namespace ParticleFX
 			ParticleEmitterFactory emitterFactory;
 			ParticleAffectorFactory affectorFactory;
 
-			// box emitter factory
+			// box emitter
 			emitterFactory = new BoxEmitterFactory();
 			ParticleSystemManager.Instance.AddEmitterFactory(emitterFactory);
 
-			// linear force affector factory
+			// point emitter
+			emitterFactory = new PointEmitterFactory();
+			ParticleSystemManager.Instance.AddEmitterFactory(emitterFactory);
+
+			// linear force affector
 			affectorFactory = new LinearForceAffectorFactory();
 			ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
 
-			// color fader affector factory
+			// color fader affector
 			affectorFactory = new ColorFaderAffectorFactory();
 			ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
 		}

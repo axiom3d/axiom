@@ -42,9 +42,6 @@ namespace Demos
 	{
 		#region Member variables
 		
-		private Controller skullRotator;
-		private SceneNode ogreNode;
-		private SceneNode billboardNode;
 		private SceneNode redYellowLightsNode;
 		private SceneNode greenBlueLightsNode;
 		private BillboardSet redYellowLights;
@@ -136,13 +133,13 @@ namespace Demos
 			greenBlueLightsNode.Objects.Add(blueLight);
 
 			// create controller function
-			IControllerValue redLightFlasher = 
+			redLightFlasher = 
 				new LightFlasherControllerValue(redLight, redLightBoard, ColorEx.FromColor(System.Drawing.Color.Red));
-			IControllerValue yellowLightFlasher = 
+			yellowLightFlasher = 
 				new LightFlasherControllerValue(yellowLight, yellowLightBoard, ColorEx.FromColor(System.Drawing.Color.Yellow));
-			IControllerValue greenLightFlasher = 
+			greenLightFlasher = 
 				new LightFlasherControllerValue(greenLight, greenLightBoard, ColorEx.FromColor(System.Drawing.Color.Green));
-			IControllerValue blueLightFlasher = 
+			blueLightFlasher = 
 				new LightFlasherControllerValue(blueLight, blueLightBoard, ColorEx.FromColor(System.Drawing.Color.Blue));
 
 			// set up the controller value and function for flashing

@@ -273,10 +273,10 @@ namespace Axiom.Core
 			if(autoCreateWindow)
 			{
 				// init material manager singleton, which parse sources for materials
-				MaterialManager.Init();
+				MaterialManager.Instance.ParseAllSources();
 
-				//init particle system manager singleton
-				ParticleSystemManager.Instance.Initialize();
+				// init the particle system manager singleton
+				ParticleSystemManager.Instance.ParseAllSources();
 
 				// init font manager singletons
 				FontManager.Init();
@@ -337,7 +337,7 @@ namespace Axiom.Core
 				MaterialManager.Init();
 
 				// init the particle system manager singleton
-				ParticleSystemManager.Init();
+				ParticleSystemManager.Instance.ParseAllSources();
 
 				// init font manager singleton
 				FontManager.Init();
@@ -562,9 +562,8 @@ namespace Axiom.Core
 
 		private void InitializeSingletons()
 		{
+			MaterialManager.Init();
 			ParticleSystemManager.Init();
-
-			// init the SceneManagerList
 			SceneManagerList.Init();
 
 			GarbageManager.Instance.Add(ParticleSystemManager.Instance);

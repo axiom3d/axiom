@@ -73,6 +73,10 @@ namespace Axiom.Core
 		/// <summary>Lookup table of methods that can be used to parse material attributes.</summary>
 		protected Hashtable attribParsers = new Hashtable();
 		protected Hashtable layerAttribParsers = new Hashtable();
+		
+		// constants for material section types
+		const string TEX_LAYER = "TextureLayer";
+		const string MATERIAL = "Material";
 
 		#endregion
 
@@ -83,9 +87,6 @@ namespace Axiom.Core
 		{
 			// register all attribute parsers
 			RegisterParsers();
-
-			// parse material resources
-			ParseAllSources(".material");
 		}
 
 		/// <summary>
@@ -116,19 +117,17 @@ namespace Axiom.Core
 					switch(parserAtt.ParserType)
 					{
 							// this method should parse a material attribute
-						case Parser.Material:
+						case MATERIAL:
 							attribParsers.Add(parserAtt.Name, Delegate.CreateDelegate(typeof(MaterialAttributeParser), method));
 							break;
 
 							// this method should parse a texture layer attribute
-						case Parser.TextureLayer:
+						case TEX_LAYER:
 							layerAttribParsers.Add(parserAtt.Name, Delegate.CreateDelegate(typeof(TextureLayerAttributeParser), method));
 							break;
-					}
-
-				}
-				
-			}
+					} // switch
+				} // for
+			} // for
 		}
 
 		#region Implementation of ResourceManager
@@ -198,8 +197,10 @@ namespace Axiom.Core
 		///		Look for material scripts in all known sources and parse them.
 		/// </summary>
 		/// <param name="extension"></param>
-		public void ParseAllSources(string extension)
+		public void ParseAllSources()
 		{
+			string extension = ".material";
+
 			// search archives
 			for(int i = 0; i < archives.Count; i++)
 			{
@@ -244,7 +245,7 @@ namespace Axiom.Core
 			Material material = null;
 
 			// parse through the data to the end
-			while((line = ReadLine(script)) != null)
+			while((line = ParseHelper.ReadLine(script)) != null)
 			{
 				// ignore blank lines and comments
 				if(!(line.Length == 0 || line.StartsWith("//")))
@@ -287,7 +288,7 @@ namespace Axiom.Core
 			// create a new texture layer from the current material
 			TextureLayer layer = material.AddTextureLayer("");
 
-			while((line = ReadLine(script)) != null)
+			while((line = ParseHelper.ReadLine(script)) != null)
 			{
 				if(line.Length != 0 && !line.StartsWith("//"))
 				{
@@ -316,7 +317,7 @@ namespace Axiom.Core
 			else
 			{
 				MaterialAttributeParser parser = (MaterialAttributeParser)attribParsers[values[0]];
-				parser(values, material);
+				parser(ParseHelper.GetParams(values), material);
 			}
 		}
 
@@ -340,96 +341,40 @@ namespace Axiom.Core
 
 				if(values[0] != "texture" && values[0] != "cubic_texture" && 	values[0] != "anim_texture")
 				{
-					// lowercase all params if not a texture attrib of any sort, since texture filenams
+					// lowercase all params if not a texture attrib of any sort, since texture filenames
 					// can be case sensitive
 					for(int i = 0; i < values.Length; i++)
 						values[0] = values[0].ToLower();
 				}
 
-				parser(values, material, layer);
+				parser(ParseHelper.GetParams(values), material, layer);
 			}
 		}
-
-		#region Helper methods
-
-		/// <summary>
-		///		Helper method to nip/tuck the string before parsing it.
-		/// </summary>
-		/// <param name="reader"></param>
-		/// <returns></returns>
-		protected string ReadLine(TextReader reader)
-		{
-			string line = reader.ReadLine();
-
-			if(line != null)
-				return line.Replace("\t", "").Trim();
-			else
-				return null;
-		}
-
-		/// <summary>
-		///		Parses an array of params and returns a color from it.
-		/// </summary>
-		/// <param name="values"></param>
-		/// <returns></returns>
-		public static ColorEx ParseColor(string[] values)
-		{
-			ColorEx color = new ColorEx();
-			color.r = float.Parse(values[1]);
-			color.g = float.Parse(values[2]);
-			color.b = float.Parse(values[3]);
-			color.a = (values.Length == 5) ? float.Parse(values[4]) : 1.0f;
-
-			return color;
-		}
-
-		/// <summary>
-		///		Helper method to log a formatted error when encountering problems with parsing
-		///		an attribute.
-		/// </summary>
-		/// <param name="attribute"></param>
-		/// <param name="materialName"></param>
-		/// <param name="expectedParams"></param>
-		public static void LogParserError(string attribute, string materialName, string reason)
-		{
-			string error = string.Format("Bad {0} attribute in material '{1}', wrong number of parameters. Reason: {2}", 
-				attribute, materialName, reason);
-
-			System.Diagnostics.Trace.WriteLine(error);
-		}
-
-		#endregion
 
 		#region Material attribute parser methods
 
-		/// <summary>
-		///		Parses the 'ambient' attribute.
-		/// </summary>
-		[AttributeParser("ambient", Parser.Material)]
+		[AttributeParser("ambient", MATERIAL)]
 		public static void ParseAmbient(string[] values, Material material)
 		{
-			if(values.Length != 4 && values.Length != 5)
+			if(values.Length != 3 && values.Length != 4)
 			{
-				LogParserError(values[0], material.Name, "Expected 3-4 params");
+				ParseHelper.LogParserError("ambient", material.Name, "Expected 3-4 params");
 				return;
 			}
 			
-			material.Ambient = ParseColor(values);
+			material.Ambient = ParseHelper.ParseColor(values);
 		}
 
-		/// <summary>
-		///		Parses the 'depth_write' attribute.
-		/// </summary>
-		[AttributeParser("depth_write", Parser.Material)]
+		[AttributeParser("depth_write", MATERIAL)]
 		public static void ParseDepthWrite(string[] values, Material material)
 		{
-			if(values.Length != 2)
+			if(values.Length != 1)
 			{
-				LogParserError(values[0], material.Name, "Expected value 'on' or 'off'");
+				ParseHelper.LogParserError("depth_write", material.Name, "Expected value 'on' or 'off'");
 				return;
 			}
 
-			switch(values[1])
+			switch(values[0])
 			{
 				case "on":
 					material.DepthWrite = true;
@@ -438,39 +383,33 @@ namespace Axiom.Core
 					material.DepthWrite = false;
 					break;
 				default:
-					LogParserError(values[0], material.Name, "Invalid depth write value, must be 'on' or 'off'");
+					ParseHelper.LogParserError("depth_write", material.Name, "Invalid depth write value, must be 'on' or 'off'");
 					return;
 			}
 		}
 
-		/// <summary>
-		///		Parses the 'diffuse' attribute.
-		/// </summary>
-		[AttributeParser("diffuse", Parser.Material)]
+		[AttributeParser("diffuse", MATERIAL)]
 		public static void ParseDiffuse(string[] values, Material material)
 		{
-			if(values.Length != 4 && values.Length != 5)
+			if(values.Length != 3 && values.Length != 4)
 			{
-				LogParserError(values[0], material.Name, "Expected 3-4 params");
+				ParseHelper.LogParserError("diffuse", material.Name, "Expected 3-4 params");
 				return;
 			}
 
-			material.Diffuse = ParseColor(values);
+			material.Diffuse = ParseHelper.ParseColor(values);
 		}
 
-		/// <summary>
-		///		Parses the 'lighting' attribute.
-		/// </summary>
-		[AttributeParser("lighting", Parser.Material)]
+		[AttributeParser("lighting", MATERIAL)]
 		public static void ParseLighting(string[] values, Material material)
 		{
-			if(values.Length != 2)
+			if(values.Length != 1)
 			{
-				LogParserError(values[0], material.Name, "Expected param 'on' or 'off'");
+				ParseHelper.LogParserError("lighting", material.Name, "Expected param 'on' or 'off'");
 				return;
 			}
 
-			switch(values[1])
+			switch(values[0])
 			{
 				case "on":
 					material.Lighting = true;
@@ -479,71 +418,56 @@ namespace Axiom.Core
 					material.Lighting = false;
 					break;
 				default:
-					LogParserError(values[0], material.Name, "Invalid lighting value, must be 'on' or 'off'");
+					ParseHelper.LogParserError("lighting", material.Name, "Invalid lighting value, must be 'on' or 'off'");
 					return;
 			}
 		}
 
-		/// <summary>
-		///		Parses the 'scene_blend' attribute.
-		/// </summary>
-		[AttributeParser("scene_blend", Parser.Material)]
+		[AttributeParser("scene_blend", MATERIAL)]
 		public static void ParseSceneBlend(string[] values, Material material)
 		{
-			if(values.Length != 2)
+			if(values.Length != 1)
 			{
-				LogParserError(values[0], material.Name, "Expected 1 param.");
+				ParseHelper.LogParserError("scene_blend", material.Name, "Expected 1 param.");
 				return;
 			}
 
 			// lookup the real enum equivalent to the script value
-			object val = ScriptEnumAttribute.Lookup(values[1], typeof(SceneBlendType));
+			object val = ScriptEnumAttribute.Lookup(values[0], typeof(SceneBlendType));
 
 			// if a value was found, assign it
 			if(val != null)
 				material.SetSceneBlending((SceneBlendType)val);
 			else
-				LogParserError(values[0], material.Name, "Invalid enum value");
+				ParseHelper.LogParserError("scene_blend", material.Name, "Invalid enum value");
 		}
 
 		#endregion
 
 		#region Layer attribute parser methods
 
-		/// <summary>
-		///		Parses the 'colour_op' attribute.
-		/// </summary>
-		/// <param name="values"></param>
-		/// <param name="material"></param>
-		/// <param name="layer"></param>
 		/// Note: Allows both spellings of color :-).
-		[AttributeParser("color_op", Parser.TextureLayer)]
-		[AttributeParser("colour_op", Parser.TextureLayer)]
+		[AttributeParser("color_op", TEX_LAYER)]
+		[AttributeParser("colour_op", TEX_LAYER)]
 		public static void ParseColorOp(string[] values, Material material, TextureLayer layer)
 		{
-			if(values.Length != 2)
+			if(values.Length != 1)
 			{
-				LogParserError(values[0], material.Name, "Expected 1 param.");
+				ParseHelper.LogParserError("color_op", material.Name, "Expected 1 param.");
 				return;
 			}
 
 			// lookup the real enum equivalent to the script value
-			object val = ScriptEnumAttribute.Lookup(values[1], typeof(LayerBlendOperation));
+			object val = ScriptEnumAttribute.Lookup(values[0], typeof(LayerBlendOperation));
 
 			// if a value was found, assign it
 			if(val != null)
 				layer.SetColorOperation((LayerBlendOperation)val);
 			else
-				LogParserError(values[0], material.Name, "Invalid enum value");
+				ParseHelper.LogParserError("color_op", material.Name, "Invalid enum value");
 		}
 
-		/// <summary>
-		///		Parses the 'cubic_texture' attribute.
-		/// </summary>
-		/// <param name="values"></param>
-		/// <param name="material"></param>
-		/// <param name="layer"></param>
-		[AttributeParser("cubic_texture", Parser.TextureLayer)]
+		[AttributeParser("cubic_texture", TEX_LAYER)]
 		public static void ParseCubicTexture(string[] values, Material material, TextureLayer layer)
 		{
 			bool useUVW;
@@ -558,38 +482,32 @@ namespace Axiom.Core
 					useUVW = false;
 					break;
 				default:
-					LogParserError(values[0], material.Name, "Last param must be 'combinedUVW' or 'separateUV'");
+					ParseHelper.LogParserError("cubic_texture", material.Name, "Last param must be 'combinedUVW' or 'separateUV'");
 					return;
 			}
 
 			// use base name to infer the 6 texture names
-			if(values.Length == 3)
-				layer.SetCubicTexture(values[1], useUVW);
-			else if(values.Length == 8)
+			if(values.Length == 2)
+				layer.SetCubicTexture(values[0], useUVW);
+			else if(values.Length == 7)
 			{
 				// copy the array elements for the 6 tex names
 				string[] names = new string[6];
-				Array.Copy(values, 1, names, 0, 6);
+				Array.Copy(values, 0, names, 0, 6);
 
 				layer.SetCubicTexture(names, useUVW);
 			}
 			else
-				LogParserError(values[0], material.Name, "Expected 2 or 7 params.");
+				ParseHelper.LogParserError("cubic_texture", material.Name, "Expected 2 or 7 params.");
 			
 		}		
 
-		/// <summary>
-		///		Parses the 'env_map' attribute.
-		/// </summary>
-		/// <param name="values"></param>
-		/// <param name="material"></param>
-		/// <param name="layer"></param>
-		[AttributeParser("env_map", Parser.TextureLayer)]
+		[AttributeParser("env_map", TEX_LAYER)]
 		public static void ParseEnvMap(string[] values, Material material, TextureLayer layer)
 		{
-			if(values.Length != 2)
+			if(values.Length != 1)
 			{
-				LogParserError(values[0], material.Name, "Expected 1 param.");
+				ParseHelper.LogParserError("env_map", material.Name, "Expected 1 param.");
 				return;
 			}
 
@@ -598,117 +516,101 @@ namespace Axiom.Core
 			else
 			{
 				// lookup the real enum equivalent to the script value
-				object val = ScriptEnumAttribute.Lookup(values[1], typeof(EnvironmentMap));
+				object val = ScriptEnumAttribute.Lookup(values[0], typeof(EnvironmentMap));
 
 				// if a value was found, assign it
 				if(val != null)
 					layer.SetEnvironmentMap(true, (EnvironmentMap)val);
 				else
-					LogParserError(values[0], material.Name, "Invalid enum value");
+					ParseHelper.LogParserError("env_map", material.Name, "Invalid enum value");
 			}
 		}
 
-		/// <summary>
-		///		Parses both the 'rotate' and 'rotate_anim' attributes.
-		/// </summary>
-		/// <param name="values"></param>
-		/// <param name="material"></param>
-		/// <param name="layer"></param>
-		[AttributeParser("rotate", Parser.TextureLayer)]
-		[AttributeParser("rotate_anim", Parser.TextureLayer)]
+		[AttributeParser("rotate", TEX_LAYER)]
 		public static void ParseRotate(string[] values, Material material, TextureLayer layer)
 		{
-			if(values.Length != 2)
+			if(values.Length != 1)
 			{
-				LogParserError(values[0], material.Name, "Expected 2 params.");
+				ParseHelper.LogParserError("rotate", material.Name, "Expected 1 param.");
 				return;
 			}
-			else if(values[0] == "rotate")
-				layer.SetTextureRotate(float.Parse(values[1]));
-			else // rotate_anim
-			{
-				layer.SetRotateAnimation(float.Parse(values[1]));
-			}
+			
+			layer.SetTextureRotate(float.Parse(values[0]));
 		}
 
-		/// <summary>
-		///		Parses both the 'scroll' and 'scroll_anim' attributes.
-		/// </summary>
-		/// <param name="values"></param>
-		/// <param name="material"></param>
-		/// <param name="layer"></param>
-		[AttributeParser("scroll", Parser.TextureLayer)]
-		[AttributeParser("scroll_anim", Parser.TextureLayer)]
+		[AttributeParser("rotate_anim", TEX_LAYER)]
+		public static void ParseRotateAnim(string[] values, Material material, TextureLayer layer)
+		{
+			if(values.Length != 1)
+			{
+				ParseHelper.LogParserError("rotate_anim", material.Name, "Expected 1 param.");
+				return;
+			}
+
+			layer.SetRotateAnimation(float.Parse(values[0]));
+		}
+
+		[AttributeParser("scroll", TEX_LAYER)]
 		public static void ParseScroll(string[] values, Material material, TextureLayer layer)
 		{
-			if(values.Length != 3)
+			if(values.Length != 2)
 			{
-				LogParserError(values[0], material.Name, "Expected 3 params.");
+				ParseHelper.LogParserError("scroll", material.Name, "Expected 2 params.");
 				return;
 			}
-			else if(values[0] == "scroll")
-				layer.SetTextureScroll(float.Parse(values[1]), float.Parse(values[2]));
-			else // scroll_anim
-			{
-				layer.SetScrollAnimation(float.Parse(values[1]), float.Parse(values[2]));
-			}
+			
+			layer.SetTextureScroll(float.Parse(values[0]), float.Parse(values[1]));
 		}
 
-		/// <summary>
-		///		Parses the 'tex_address_mode' attribute.
-		/// </summary>
-		/// <param name="values"></param>
-		/// <param name="material"></param>
-		/// <param name="layer"></param>
-		[AttributeParser("tex_address_mode", Parser.TextureLayer)]
-		public static void ParseTexAddressMode(string[] values, Material material, TextureLayer layer)
+		[AttributeParser("scroll_anim", TEX_LAYER)]
+		public static void ParseScrollAnim(string[] values, Material material, TextureLayer layer)
 		{
 			if(values.Length != 2)
 			{
-				LogParserError(values[0], material.Name, "Expected 1 param.");
+				ParseHelper.LogParserError("scroll_anim", material.Name, "Expected 2 params.");
+				return;
+			}
+
+			layer.SetScrollAnimation(float.Parse(values[0]), float.Parse(values[1]));
+		}
+
+		[AttributeParser("tex_address_mode", TEX_LAYER)]
+		public static void ParseTexAddressMode(string[] values, Material material, TextureLayer layer)
+		{
+			if(values.Length != 1)
+			{
+				ParseHelper.LogParserError("tex_address_mode", material.Name, "Expected 1 param.");
 				return;
 			}
 
 			// lookup the real enum equivalent to the script value
-			object val = ScriptEnumAttribute.Lookup(values[1], typeof(TextureAddressing));
+			object val = ScriptEnumAttribute.Lookup(values[0], typeof(TextureAddressing));
 
 			// if a value was found, assign it
 			if(val != null)
 				layer.TextureAddressing = (TextureAddressing)val;
 			else
-				LogParserError(values[0], material.Name, "Invalid enum value");
+				ParseHelper.LogParserError("tex_address_mode", material.Name, "Invalid enum value");
 		}
 
-		/// <summary>
-		///		Parses the 'texture' attribute.
-		/// </summary>
-		/// <param name="values"></param>
-		/// <param name="material"></param>
-		/// <param name="layer"></param>
-		[AttributeParser("texture", Parser.TextureLayer)]
+		[AttributeParser("texture", TEX_LAYER)]
 		public static void ParseTexture(string[] values, Material material, TextureLayer layer)
 		{
-			if(values.Length != 2)
+			if(values.Length != 1)
 			{
-				LogParserError(values[0], material.Name, "Expected texture name");
+				ParseHelper.LogParserError("texture", material.Name, "Expected texture name");
 				return;
 			}
 			
-			layer.TextureName = values[1];
+			layer.TextureName = values[0];
 		}
 
-		/// <summary>
-		///		Parses the 'wave_xform' attribute.
-		/// </summary>
-		/// <param name="values"></param>
-		/// <param name="material"></param>
-		/// <param name="layer"></param>
-		[AttributeParser("wave_xform", Parser.TextureLayer)]
+		[AttributeParser("wave_xform", TEX_LAYER)]
 		public static void ParseWaveXForm(string[] values, Material material, TextureLayer layer)
 		{
-			if(values.Length != 7)
+			if(values.Length != 6)
 			{
-				LogParserError(values[0], material.Name, "Expected 7 params.");
+				ParseHelper.LogParserError("wave_xform", material.Name, "Expected 6 params.");
 				return;
 			}
 
@@ -716,22 +618,22 @@ namespace Axiom.Core
 			WaveformType waveType = 0;
 
 			// check the transform type
-			object val = ScriptEnumAttribute.Lookup(values[1], typeof(TextureTransform));
+			object val = ScriptEnumAttribute.Lookup(values[0], typeof(TextureTransform));
 
 			if(val == null)
 			{
-				LogParserError(values[0], material.Name, "Invalid transform type enum value");
+				ParseHelper.LogParserError("wave_xform", material.Name, "Invalid transform type enum value");
 				return;
 			}
 
 			transType = (TextureTransform)val;
 
 			// check the wavetype
-			val = ScriptEnumAttribute.Lookup(values[2], typeof(WaveformType));
+			val = ScriptEnumAttribute.Lookup(values[1], typeof(WaveformType));
 
 			if(val == null)
 			{
-				LogParserError(values[0], material.Name, "Invalid waveform type enum value");
+				ParseHelper.LogParserError("wave_xform", material.Name, "Invalid waveform type enum value");
 				return;
 			}
 
@@ -741,51 +643,12 @@ namespace Axiom.Core
 			layer.SetTransformAnimation(
 				transType, 
 				waveType, 
+				float.Parse(values[2]),
 				float.Parse(values[3]),
 				float.Parse(values[4]),
-				float.Parse(values[5]),
-				float.Parse(values[6]));
+				float.Parse(values[5]));
 		}
 
 		#endregion
 	}
-
-	#region Custom attributes
-
-	/// <summary>
-	///		Custom attribute to mark methods as handling the parsing for a material script attribute.
-	/// </summary>
-	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-	public sealed class AttributeParserAttribute : Attribute
-	{
-		private string attributeName;
-		private Parser parserType;
-
-		public AttributeParserAttribute(string name, Parser parserType)
-		{
-			this.attributeName = name;
-			this.parserType = parserType;
-		}
-
-		public string Name
-		{
-			get { return attributeName; }
-		}
-
-		public Parser ParserType
-		{
-			get { return parserType; }
-		}
-	}
-
-	/// <summary>
-	///		Types of attributes parsers used in scripts.
-	/// </summary>
-	public enum Parser
-	{
-		Material,
-		TextureLayer
-	}
-
-	#endregion
 }

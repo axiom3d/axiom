@@ -141,6 +141,7 @@
     <File name=".\Core\MeshManager.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Scripting\ScriptEnumAttribute.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
     <File name=".\Core\SubMesh.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\Scripting\ParseHelper.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
   </Contents>
   <References>
     <Reference type="Project" refto="MathLib" localcopy="True" />

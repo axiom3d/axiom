@@ -29,12 +29,16 @@ using System.Drawing;
 using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.MathLib;
+using Axiom.Scripting;
 
 namespace ParticleFX
 {
 	public enum ForceApplication
 	{
+		[ScriptEnum("average")]
 		Average,
+
+		[ScriptEnum("add")]
 		Add
 	}
 
@@ -45,6 +49,8 @@ namespace ParticleFX
 	{
 		protected ForceApplication forceApp = ForceApplication.Add;
 		protected Vector3 forceVector = Vector3.Zero;
+
+		const string LINEAR_FORCE = "LinearForce";
 
 		public LinearForceAffector()
 		{
@@ -86,5 +92,30 @@ namespace ParticleFX
 			set { forceApp = value; }
 		}
 
+		#region Script parser methods
+
+		[AttributeParser("force_vector", LINEAR_FORCE)]
+		public static void ParseForceVector(string[] values, params object[] objects) {
+			LinearForceAffector affector = objects[0] as LinearForceAffector;
+
+			affector.Force = ParseHelper.ParseVector3(values);
+		}
+
+		[AttributeParser("force_application", LINEAR_FORCE)]
+		public static void ParseForceApplication(string[] values, params object[] objects) 
+		{
+			LinearForceAffector affector = objects[0] as LinearForceAffector;
+
+			// lookup the real enum equivalent to the script value
+			object val = ScriptEnumAttribute.Lookup(values[0], typeof(ForceApplication));
+
+			// if a value was found, assign it
+			if(val != null)
+				affector.ForceApplication = ((ForceApplication)val);
+			else
+				ParseHelper.LogParserError(values[0], affector.Type, "Invalid enum value");
+		}
+
+		#endregion Script parser methods
 	}
 }

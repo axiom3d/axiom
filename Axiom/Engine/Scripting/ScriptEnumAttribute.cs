@@ -29,6 +29,11 @@ using System.Reflection;
 
 namespace Axiom.Scripting
 {
+	#region Delegates
+
+	public delegate void AttributeParserMethod(string[] values, params object[] objects);
+
+	#endregion Delegates
 	/// <summary>
 	///		This attribute is intended to be used on enum fields for enums that can be used
 	///		in script files (.material, .overlay, etc).  Placing this attribute on the field will
@@ -102,6 +107,32 @@ namespace Axiom.Scripting
 
 			//	invalid enum value
 			return null;
+		}
+	}
+
+	/// <summary>
+	///		Custom attribute to mark methods as handling the parsing for a material script attribute.
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+	public sealed class AttributeParserAttribute : Attribute
+	{
+		private string attributeName;
+		private string parserType;
+
+		public AttributeParserAttribute(string name, string parserType)
+		{
+			this.attributeName = name;
+			this.parserType = parserType;
+		}
+
+		public string Name
+		{
+			get { return attributeName; }
+		}
+
+		public string ParserType
+		{
+			get { return parserType; }
 		}
 	}
 }

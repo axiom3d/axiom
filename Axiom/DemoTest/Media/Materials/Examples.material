@@ -1,3 +1,8 @@
+// default material
+BaseWhite
+{
+}
+
 Ogre/Earring
 {
 	ambient 0.5 0.5 0.0
@@ -88,6 +93,7 @@ Examples/EnvMappedRustySteel
 {
 	ambient 1.0 1.0 1.0
 	diffuse 1.0 1.0 1.0
+
 	// Texture layer 0
 	{
 		texture RustySteel.jpg

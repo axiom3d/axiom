@@ -131,6 +131,14 @@ namespace Axiom.Core
 		#region Methods
 
 		/// <summary>
+		///		Resets this billboard to use the parent BillboardSet's dimensions instead of it's own.
+		/// </summary>
+		public virtual void ResetDimensions()
+		{
+			hasOwnDimensions = false;
+		}
+
+		/// <summary>
 		///		Internal method for notifying a billboard of it's owner.
 		/// </summary>
 		/// <param name="owner"></param>
