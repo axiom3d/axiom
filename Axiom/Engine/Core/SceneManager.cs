@@ -415,6 +415,10 @@ namespace Axiom.Core {
         /// </summary>
         public virtual void ClearScene() {
             // TODO: Implement ClearScene
+            rootSceneNode.Clear();
+            cameraList.Clear();
+            entityList.Clear();
+            lightList.Clear();
         }
 
         /// <summary>
@@ -1584,8 +1588,8 @@ namespace Axiom.Core {
             for(int i = 0; i < creator.entityList.Count; i++) {
                 Entity entity = creator.entityList[i];
 
-                // test the intersection
-                Pair results = MathUtil.Intersects(ray, entity.BoundingBox);
+                // test the intersection against the world bounding box of the entity
+                Pair results = MathUtil.Intersects(ray, entity.GetWorldBoundingBox());
 
                 // if the results came back positive, fire the event handler
                 if((bool)results.object1 == true) {

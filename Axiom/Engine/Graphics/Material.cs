@@ -306,7 +306,9 @@ namespace Axiom.Graphics {
         public override void Load() {
             if(!isLoaded) {
                 // compile if needed
-                Compile();
+                if(compilationRequired) {
+                    Compile();
+                }
 
                 // load all the supported techniques
                 for(int i = 0; i < supportedTechniques.Count; i++) {
@@ -339,6 +341,17 @@ namespace Axiom.Graphics {
             if(isLoaded) {
                 Unload();
             }
+        }
+
+        /// <summary>
+        ///    Overridden to ensure a recompile occurs if needed before use.
+        /// </summary>
+        public override void Touch() {
+            if(compilationRequired) {
+                Compile();
+            }
+
+            base.Touch();
         }
 
         #endregion
@@ -383,11 +396,7 @@ namespace Axiom.Graphics {
         ///    this situation arises, an Exception will be thrown.
         /// </param>
         public void Compile(bool autoManageTextureUnits) {
-            // should we even bother?
-            if(!compilationRequired) {
-                return;
-            }
-            
+           
             // clear current list of supported techniques
             supportedTechniques.Clear();
 

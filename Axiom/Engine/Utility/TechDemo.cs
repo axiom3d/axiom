@@ -30,14 +30,14 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading;
-using System.Windows.Forms;
 using Axiom.Configuration;
 using Axiom.Core;
-
+using System.Windows.Forms;
 using Axiom.Input;
 using Axiom.Gui;
 using Axiom.MathLib;
 using Axiom.Graphics;
+using MouseButtons = Axiom.Input.MouseButtons;
 
 namespace Axiom.Utility {
     /// <summary>
@@ -227,53 +227,53 @@ namespace Axiom.Utility {
             // TODO: Move this into an event queueing mechanism that is processed every frame
             input.Capture();
 
-            if(input.IsKeyPressed(Keys.Escape)) {
+            if(input.IsKeyPressed(KeyCodes.Escape)) {
                 // returning false from the FrameStart event will cause the engine's render loop to shut down
                 Engine.Instance.Shutdown();
                 return false;
             }
 
-            if(input.IsKeyPressed(Keys.A)) {
+            if(input.IsKeyPressed(KeyCodes.A)) {
                 cameraVector.x = -cameraScale;
             }
 
-            if(input.IsKeyPressed(Keys.D)) {
+            if(input.IsKeyPressed(KeyCodes.D)) {
                 cameraVector.x = cameraScale;
             }
 
-            if(input.IsKeyPressed(Keys.W)) {
+            if(input.IsKeyPressed(KeyCodes.W)) {
                 cameraVector.z = -cameraScale;
             }
 
-            if(input.IsKeyPressed(Keys.S)) {
+            if(input.IsKeyPressed(KeyCodes.S)) {
                 cameraVector.z = cameraScale;
             }
 
-            if(input.IsKeyPressed(Keys.Left)) {
+            if(input.IsKeyPressed(KeyCodes.Left)) {
                 camera.Yaw(cameraScale);
             }
 
-            if(input.IsKeyPressed(Keys.Right)) {
+            if(input.IsKeyPressed(KeyCodes.Right)) {
                 camera.Yaw(-cameraScale);
             }
 
-            if(input.IsKeyPressed(Keys.Up)) {
+            if(input.IsKeyPressed(KeyCodes.Up)) {
                 camera.Pitch(cameraScale);
             }
 
-            if(input.IsKeyPressed(Keys.Down)) {
+            if(input.IsKeyPressed(KeyCodes.Down)) {
                 camera.Pitch(-cameraScale);
             }
 
-            if(input.IsKeyPressed(Keys.T)) {
+            if(input.IsKeyPressed(KeyCodes.T)) {
                 camera.SceneDetail = SceneDetailLevel.Wireframe;
             }
 
-            if(input.IsKeyPressed(Keys.Y)) {
+            if(input.IsKeyPressed(KeyCodes.Y)) {
                 camera.SceneDetail = SceneDetailLevel.Solid;
             }
 
-            if(input.IsKeyPressed(Keys.P)) {
+            if(input.IsKeyPressed(KeyCodes.P)) {
                 string[] temp = Directory.GetFiles(Environment.CurrentDirectory, "screenshot*.jpg");
                 string fileName = string.Format("screenshot{0}.jpg", temp.Length + 1);
                 
@@ -286,22 +286,27 @@ namespace Axiom.Utility {
                 debugTextDelay = 2.0f;
             }
 
-            if(input.IsKeyPressed(Keys.B)) {
+            if(input.IsKeyPressed(KeyCodes.B)) {
                 scene.ShowBoundingBoxes = !scene.ShowBoundingBoxes;
             }
 
-            if(input.IsKeyPressed(Keys.F)) {
+            if(input.IsKeyPressed(KeyCodes.F)) {
                 // hide all overlays, includes ones besides the debug overlay
                 viewport.OverlaysEnabled = !viewport.OverlaysEnabled;
             }
 
-            float cameraYaw = -input.RelativeMouseX * 0.13f;
-            float cameraPitch = -input.RelativeMouseY * 0.13f;
-
             cameraVector.z += -input.RelativeMouseZ * 0.13f;
 
-            camera.Yaw(cameraYaw);
-            camera.Pitch(cameraPitch);
+            if(!input.IsMousePressed(MouseButtons.Button0)) {
+                float cameraYaw = -input.RelativeMouseX * 0.13f;
+                float cameraPitch = -input.RelativeMouseY * 0.13f;
+                
+                camera.Yaw(cameraYaw);
+                camera.Pitch(cameraPitch);
+            } 
+            else {
+                cameraVector.x += input.RelativeMouseX * 0.13f;
+            }
 
             // move the camera based on the accumulated movement vector
             camera.MoveRelative(cameraVector);

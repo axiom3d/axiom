@@ -5,9 +5,9 @@ namespace Axiom.MathLib
     /// <summary>
     ///    Type of intersection detected between 2 object.
     /// </summary>
-    public enum IntersectionType { 
+    public enum Intersection { 
         /// <summary>
-        ///    The objects are not colliding.
+        ///    The objects are not intersecting.
         /// </summary>
         None,
         /// <summary>
@@ -17,6 +17,6 @@ namespace Axiom.MathLib
         /// <summary>
         ///    The objects are partially intersecting each other.
         /// </summary>
-        Intersects 
+        Partial
     } 
 }

@@ -38,7 +38,7 @@ namespace Axiom.Animating {
     ///		This class implements the IControllerValue interface to enable automatic update of
     ///		animation state through controllers.
     /// </remarks>
-    public class AnimationState : IControllerValue {
+    public class AnimationState : IControllerValue, IComparable {
         #region Member variables
 
         /// <summary>Name of this animation track.</summary>
@@ -164,39 +164,6 @@ namespace Axiom.Animating {
 
         #endregion
 
-        #region Operator overloads
-
-        /// <summary>
-        ///		Compares 2 animation states for equality.
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
-        public static bool operator == (AnimationState left, AnimationState right) {
-            if (left.animationName == right.animationName &&
-                left.isEnabled == right.isEnabled &&
-                left.time == right.time &&
-                left.weight == right.weight &&
-                left.length == right.length) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-
-        /// <summary>
-        ///		Compares 2 animation states for inequality.
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
-        public static bool operator != (AnimationState left, AnimationState right) {
-            return !(left == right);
-        }
-
-        #endregion
-
         #region Implementation of IControllerValue
 
         /// <summary>
@@ -211,17 +178,6 @@ namespace Axiom.Animating {
         #region Object overloads
 
         /// <summary>
-        ///    Override to determine equality between 2 AnimationState objects,
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public override bool Equals(object obj) {
-            AnimationState animState = obj as AnimationState;
-
-            return (animState == this);
-        }
-
-        /// <summary>
         ///    Override GetHashCode.
         /// </summary>
         /// <remarks>
@@ -233,5 +189,30 @@ namespace Axiom.Animating {
         }
 
         #endregion Object overloads
+
+        #region IComparable Members
+
+        /// <summary>
+        ///    
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns>0 if they are the same, -1 otherwise.</returns>
+        public int CompareTo(object obj) {
+            AnimationState other = obj as AnimationState;
+
+            if (animationName == other.animationName &&
+                isEnabled == other.isEnabled &&
+                time == other.time &&
+                weight == other.weight &&
+                length == other.length) {
+
+                return 0;
+            }
+            else {
+                return -1;
+            }
+        }
+
+        #endregion
     }
 }

@@ -106,7 +106,15 @@ namespace Axiom.Graphics
         /// <param name="type">Type of program, i.e. vertex or fragment.</param>
         /// <returns>An unloaded instance of HighLevelGpuProgram.</returns>
         public HighLevelGpuProgram CreateProgram(string name, string language, GpuProgramType type) {
-            HighLevelGpuProgram program = GetFactory(language).Create(name, type);
+            // lookup the factory for the requested program language
+            IHighLevelGpuProgramFactory factory = GetFactory(language);
+
+            if(factory == null) {
+                throw new Exception(string.Format("Could not find HighLevelGpuProgramManager that can compile programs of type '{0}'", language));
+            }
+
+            // create the high level program using the factory
+            HighLevelGpuProgram program = factory.Create(name, type);
             resourceList[name] = program;
             return program;
         }

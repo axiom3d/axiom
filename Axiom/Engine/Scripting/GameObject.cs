@@ -57,8 +57,13 @@ namespace Axiom.Scripting {
 
         public void Move(float x, float y, float z) {
             node.Translate(new Vector3(x, y, z));
-            //body.Position = node.Position;
-            //body.AddTorque(120.0f, 0.0f, 0.0f);
+        }
+
+        public void MoveRelative(float x, float y, float z) {
+            // Transform the axes of the relative vector by camera's local axes
+            Vector3 transform = node.Orientation * new Vector3(x, y, z);
+
+            node.Position += transform;
         }
 
         public void Rotate(Vector3 axis, float angle) {
@@ -69,23 +74,84 @@ namespace Axiom.Scripting {
             node.Scale(new Vector3(x, y, z));
         }
 
+        /// <summary>
+        ///    Called on every frame to allow the object to update its state, perform actions, etc.
+        /// </summary>
+        /// <param name="time">Time elapsed since the last frame.</param>
+        public virtual void OnTick(float time) {
+        }
+
         public Vector3 Position {
-            get { return node.Position; }
-            set { node.Position = value; }
+            get { 
+                return node.DerivedPosition; 
+            }
+            set { 
+                node.Position = value; 
+            }
         }
 
         public Quaternion Orientation {
-            get { return node.Orientation; }
-            set { 	node.Orientation = value;
+            get { 
+                return node.DerivedOrientation; 
+            }
+            set { 
+                node.Orientation = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the object's direction vector.
+        /// </summary>
+        public Vector3 Direction {
+            get {
+                return node.Orientation * Vector3.UnitZ;
+            }
+            set {
+                Vector3 direction = value;
+
+                // Do nothing if given a zero vector
+                // (Replaced assert since this could happen with auto tracking camera and
+                //  camera passes through the lookAt point)
+                if (direction == Vector3.Zero) 
+                    return;
+
+                // Remember, camera points down -Z of local axes!
+                // Therefore reverse direction of direction vector before determining local Z
+                Vector3 zAdjustVector = direction;
+                zAdjustVector.Normalize();
+
+                // Get axes from current quaternion
+                Vector3 xAxis, yAxis, zAxis;
+
+                // get the vector components of the derived orientation vector
+                node.Orientation.ToAxes(out xAxis, out yAxis, out zAxis);
+
+                Quaternion rotationQuat;
+
+                if (-zAdjustVector == zAxis) {
+                    // Oops, a 180 degree turn (infinite possible rotation axes)
+                    // Default to yaw i.e. use current UP
+                    rotationQuat = Quaternion.FromAngleAxis(MathUtil.PI, yAxis);
+                }
+                else {
+                    // Derive shortest arc to new direction
+                    rotationQuat = zAxis.GetRotationTo(zAdjustVector);
+                }
+
+                node.Orientation = rotationQuat * node.Orientation;
             }
         }
 
         public Node Node {
-            get { return node; }
+            get { 
+                return node; 
+            }
         }
 
         public AxisAlignedBox BoundingBox {
-            get { return sceneObject.BoundingBox; }
+            get { 
+                return sceneObject.BoundingBox; 
+            }
         }
 
         public void UpdateFromDynamics() {

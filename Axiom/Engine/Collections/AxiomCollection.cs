@@ -71,8 +71,12 @@ namespace Axiom.Collections {
         ///		
         /// </summary>
         public object this[int index] { 
-            get { return objectList.GetByIndex(index); } 
-            set { objectList.SetByIndex(index, value); }
+            get {  
+                return objectList.GetByIndex(index); 
+            } 
+            set { 
+                objectList.SetByIndex(index, value); 
+            }
         }
 
         /// <summary>

@@ -544,6 +544,12 @@ namespace RenderSystem_DirectX9 {
         /// </summary>
         /// <param name="op"></param>
         public override void Render(RenderOperation op) {
+
+            // don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
+            if(op.vertexData.vertexCount == 0) {
+                return;
+            }
+
             // class base implementation first
             base.Render(op);
 

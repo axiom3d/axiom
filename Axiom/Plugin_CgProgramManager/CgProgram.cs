@@ -92,13 +92,19 @@ namespace Plugin_CgProgramManager
             CgHelper.CheckCgError("Unable to compile Cg program " + name, cgContext);
         }
 
+        /// <summary>
+        ///    Create as assembler program from the compiled source supplied by the Cg compiler.
+        /// </summary>
         protected override void CreateLowLevelImpl() {  
             // create a low-level program, with the same name as this one
-            //assemblerProgram = GpuProgramManager.Instance.Create((name, type, selectedProfile);
             assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString(name, "", type, selectedProfile);
             assemblerProgram.Source = Cg.cgGetProgramString(cgProgram, Cg.CG_COMPILED_PROGRAM);
         }
 
+        /// <summary>
+        ///    
+        /// </summary>
+        /// <param name="parms"></param>
         protected override void PopulateParameterNames(GpuProgramParameters parms) {
             Debug.Assert(cgProgram != IntPtr.Zero);
 
@@ -133,6 +139,9 @@ namespace Plugin_CgProgramManager
             }
         }
 
+        /// <summary>
+        ///    Unloads the Cg program.
+        /// </summary>
         protected override void UnloadImpl() {
             // destroy this program
             Cg.cgDestroyProgram(cgProgram);
@@ -144,6 +153,9 @@ namespace Plugin_CgProgramManager
 		
 		#region Properties
 
+        /// <summary>
+        ///    Returns whether or not this high level gpu program is supported on the current hardware.
+        /// </summary>
         public override bool IsSupported {
             get {
                 // see if any profiles are supported
