@@ -20,7 +20,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         protected override void LoadFromSource() {
             PixelShader assembler = new PixelShader();
 
-            bool testError = assembler.RunTests();
+            //bool testError = assembler.RunTests();
 
             bool error = !assembler.Compile(source);
 
@@ -50,17 +50,16 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         #region Implementation of GLGpuProgram
 
         public override void Bind() {
+            Gl.glEnable(programType);
             Ext.glBindFragmentShaderATI(programId);
         }
 
         public override void BindParameters(GpuProgramParameters parms) {
-
             // program constants done internally by compiler for local
-
             if(parms.HasFloatConstants) {
-
                 for(int i = 0; i < parms.FloatConstantCount; i++) {
                     int index = parms.GetFloatConstantIndex(i);
+
                     Axiom.MathLib.Vector4 vec4 = parms.GetFloatConstant(i);
 
                     tempProgramFloats[0] = vec4.x;
@@ -69,12 +68,14 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
                     tempProgramFloats[3] = vec4.w;
 
                     // send the params 4 at a time
-                    Ext.glSetFragmentShaderConstantATI(index, tempProgramFloats);
+                    Ext.glSetFragmentShaderConstantATI(Gl.GL_CON_0_ATI + index, tempProgramFloats);
+                    //index++;
                 }
             }   
         }
 
         public override void Unbind() {
+            Gl.glDisable(programType);
         }
 
         #endregion Implementation of GLGpuProgram

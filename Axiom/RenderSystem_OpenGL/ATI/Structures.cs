@@ -6,7 +6,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
     /// </summary>
     public struct TokenRule {
         public OperationType operation;
-        public int tokenID;
+        public Symbol tokenID;
         public string symbol;
         public int errorID;
 
@@ -19,14 +19,14 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
         public TokenRule(OperationType op, Symbol tokenID) {
             this.operation = op;
-            this.tokenID = (int)tokenID;
+            this.tokenID = tokenID;
             symbol = "";
             errorID = 0;
         }
 
         public TokenRule(OperationType op, Symbol tokenID, string symbol) {
             this.operation = op;
-            this.tokenID = (int)tokenID;
+            this.tokenID = tokenID;
             this.symbol = symbol;
             errorID = 0;
         }
@@ -39,7 +39,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         /// <summary>
         ///     Token ID which is the index into the Token Type library.
         /// </summary>
-        public int ID;
+        public Symbol ID;
         /// <summary>
         ///     Data used by pass 2 to build native instructions.
         /// </summary>
@@ -67,7 +67,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         public int ruleID;
 
         public SymbolDef(Symbol symbol, int glEnum, ContextKeyPattern ckp) {
-            this.ID = (int)symbol;
+            this.ID = symbol;
             this.pass2Data = glEnum;
             this.contextKey = (uint)ckp;
             contextPatternSet = 0;
@@ -77,7 +77,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         }
 
         public SymbolDef(Symbol symbol, int glEnum, ContextKeyPattern ckp, uint cps) {
-            this.ID = (int)symbol;
+            this.ID = symbol;
             this.pass2Data = glEnum;
             this.contextKey = (uint)ckp;
             this.contextPatternSet = cps;
@@ -87,7 +87,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         }
 
         public SymbolDef(Symbol symbol, int glEnum, ContextKeyPattern ckp, ContextKeyPattern cps) {
-            this.ID = (int)symbol;
+            this.ID = symbol;
             this.pass2Data = glEnum;
             this.contextKey = (uint)ckp;
             this.contextPatternSet = (uint)cps;
@@ -104,11 +104,11 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         /// <summary>
         ///     Non-Terminal Token Rule ID that generated Token.
         /// </summary>
-        public int NTTRuleID;
+        public Symbol NTTRuleID;
         /// <summary>
         ///     Token ID.
         /// </summary>
-        public int ID;
+        public Symbol ID;
         /// <summary>
         ///     Line number in source code where Token was found
         /// </summary>
@@ -119,8 +119,8 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         public int pos;
 
         public TokenInstruction(Symbol symbol, Symbol ID) {
-            this.NTTRuleID = (int)symbol;
-            this.ID = (int)ID;
+            this.NTTRuleID = symbol;
+            this.ID = ID;
             line = 0;
             pos = 0;
         }
