@@ -184,6 +184,7 @@ namespace Demos
 			demoTable.Rows.Add(new object[] {"Sky Box", "Demos.SkyBox", "SkyBox.jpg", "Example of creating a scene with a skybox."});
 			demoTable.Rows.Add(new object[] {"Lights", "Demos.Lights", "Lights.jpg", "Example of creating a scene with lights and billboards."});
 			demoTable.Rows.Add(new object[] {"ParticleFX", "Demos.ParticleFX", "ParticleFX.jpg", "Demonstrates the various type of particle systems that the engine supports."});
+			demoTable.Rows.Add(new object[] {"Tutorial 1", "Demos.Tutorial1", "Tutorial1.jpg", "Demonstrates the typical spinning triangle demo using the engine."});
 
 			// load the items
 			LoadDemoItems(demoTable);

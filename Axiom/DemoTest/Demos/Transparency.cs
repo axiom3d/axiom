@@ -44,6 +44,7 @@ namespace Demos
 		{
 			// set some ambient light
 			sceneMgr.AmbientLight = new ColorEx(1.0f, 0.5f, 0.5f, 0.5f);
+			sceneMgr.ShowBoundingBoxes = true;
 
 			// create a point light (default)
 			Light light = sceneMgr.CreateLight("MainLight");
@@ -61,7 +62,7 @@ namespace Demos
 
 			// add the objects to the scene
 			SceneNode rootNode = sceneMgr.RootSceneNode;
-			rootNode.Objects.Add(knotEntity);
+			//rootNode.Objects.Add(knotEntity);
 
 			Entity clone;
 

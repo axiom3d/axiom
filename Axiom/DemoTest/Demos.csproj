@@ -24,7 +24,7 @@
             >
                 <Config
                     Name = "Debug"
-                    AllowUnsafeBlocks = "false"
+                    AllowUnsafeBlocks = "true"
                     BaseAddress = "285212672"
                     CheckForOverflowUnderflow = "false"
                     ConfigurationOverrideFile = ""
@@ -223,6 +223,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Demos\Tutorial1.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Demos\images\CameraTrack.jpg"
                     BuildAction = "Content"
                 />
@@ -232,6 +237,10 @@
                 />
                 <File
                     RelPath = "Demos\images\Lights.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Demos\images\ParticleFX.jpg"
                     BuildAction = "Content"
                 />
                 <File
@@ -248,6 +257,10 @@
                 />
                 <File
                     RelPath = "Demos\images\Transparency.jpg"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "Demos\images\Tutorial1.jpg"
                     BuildAction = "Content"
                 />
                 <File
