@@ -43,7 +43,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         ///     Needs to be initialized by the subclass before compiling occurs
         ///     it defines the token ID used in the symbol type library.
         /// </summary>
-        protected int valueID;
+        protected Symbol valueID;
         /// <summary>
         ///     Storage container for constants defined in source.
         /// </summary>
@@ -193,8 +193,10 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
             symbolSize = symbol.Length;
 
-            if(string.Compare(source.Substring(charPos, symbolSize), symbol) != -1) {
-                symbolFound = true;
+            if(charPos + symbolSize <= endOfSource) {
+                if(string.Compare(source.Substring(charPos, symbolSize), symbol) == 0) {
+                    symbolFound = true;
+                }   
             }
 
             return symbolFound;
@@ -242,7 +244,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         ///     <item>Or: if the previous tokens failed then try these ones.</item>
         ///     <item>Optional: the token is optional and does not cause the rule to fail if the token is not found.</item>
         ///     <item>Repeat: the token is required but there can be more than one in a sequence.</item>
-        ///     <item>End: end of the rule path - the method returns the succuss of the rule.</item>
+        ///     <item>End: end of the rule path - the method returns the success of the rule.</item>
         ///     </list>
         /// </remarks>
         /// <param name="rulePathIdx">Index into to array of Token Rules that define a rule path to be processed.</param>
@@ -260,7 +262,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             int oldConstantsSize = constants.Count;
 
             // keep track of what non-terminal token activated the rule
-            int activeNTTRule = rootRulePath[rulePathIdx].tokenID;
+            Symbol activeNTTRule = rootRulePath[rulePathIdx].tokenID;
 
             // start rule path at next position for definition
             rulePathIdx++;
@@ -395,7 +397,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
                 currentLine++;
                 charPos++;
 
-                if ((source[charPos] == '\n') || (source[charPos] == '\r')) {
+                if ((charPos != endOfSource) && ((source[charPos] == '\n') || (source[charPos] == '\r'))) {
                     charPos++;
                 }
             }
@@ -410,7 +412,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             }
 
             // FIX - this method kinda slow
-            while((source[charPos] == ' ') || (source[charPos] == '\t')) {
+            while(charPos != endOfSource && ((source[charPos] == ' ') || (source[charPos] == '\t'))) {
                 charPos++; // find first non white space character
             }
         }
@@ -425,17 +427,17 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         ///     False if token symbol text does not match the source text.
         ///     If token is non-terminal, then ProcessRulePath is called.
         /// </returns>
-        protected bool ValidateToken(int rulePathIdx, int activeRuleID) {
+        protected bool ValidateToken(int rulePathIdx, Symbol activeRuleID) {
             int tokenlength = 0;
             // assume the test is going to fail
             bool passed = false;
-            int tokenID = rootRulePath[rulePathIdx].tokenID;
+            Symbol tokenID = rootRulePath[rulePathIdx].tokenID;
 
             // only validate token if context is correct
-            if((symbolTypeLib[tokenID].contextKey & activeContexts) > 0) {
-	
+            if((symbolTypeLib[(int)tokenID].contextKey & activeContexts) > 0) {
+	            int ruleID = symbolTypeLib[(int)tokenID].ruleID;
                 // if terminal token then compare text of symbol with what is in source
-                if (symbolTypeLib[tokenID].ruleID == 0) {
+                if (ruleID == 0) {
                     if (PositionToNextSymbol()) {
                         // if Token is supposed to be a number then check if its a numerical constant
                         if (tokenID == valueID) {
@@ -464,9 +466,9 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
                             // allow token instruction to change the ActiveContexts
                             // use token contexts pattern to clear ActiveContexts pattern bits
-                            activeContexts &= ~symbolTypeLib[tokenID].contextPatternClear;
+                            activeContexts &= ~symbolTypeLib[(int)tokenID].contextPatternClear;
                             // use token contexts pattern to set ActiveContexts pattern bits
-                            activeContexts |= symbolTypeLib[tokenID].contextPatternSet;
+                            activeContexts |= symbolTypeLib[(int)tokenID].contextPatternSet;
                         }
                     }
 
@@ -476,7 +478,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
                     // execute rule for non-terminal
                     // get rule_ID for index into  rulepath to be called
-                    passed = ProcessRulePath(symbolTypeLib[tokenID].ruleID);
+                    passed = ProcessRulePath(symbolTypeLib[(int)tokenID].ruleID);
                 }
             }
 
@@ -490,26 +492,26 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         ///     Must be called by subclass after libraries and rule database setup.
         /// </summary>
         protected void InitSymbolTypeLib() {
-            int tokenID;
+            Symbol tokenID;
             // find a default text for all Symbol Types in library
 
             // scan through all the rules and initialize TypeLib with index to text and index to rules for non-terminal tokens
             for(int i = 0; i < rulePathLibCount; i++) {
                 tokenID = rootRulePath[i].tokenID;
 
-                Debug.Assert(symbolTypeLib[tokenID].ID == tokenID);
+                Debug.Assert(symbolTypeLib[(int)tokenID].ID == tokenID);
 
                 switch(rootRulePath[i].operation) {
                     case OperationType.Rule:
                         // if operation is a rule then update typelib
-                        symbolTypeLib[tokenID].ruleID = i;
+                        symbolTypeLib[(int)tokenID].ruleID = i;
                         break;
 
                     case OperationType.And:
                     case OperationType.Or:
                     case OperationType.Optional:
                         if(rootRulePath[i].symbol != null) {
-                            symbolTypeLib[tokenID].defTextID = i;
+                            symbolTypeLib[(int)tokenID].defTextID = i;
                         }
                         break;
                 } // switch

@@ -800,7 +800,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
         // vars used during pass 2
         MachineInstruction opType;
-        int opInst;
+        Symbol opInst;
         bool do_Alpha;
         PhaseType instructionPhase;
         int argCnt;
@@ -841,7 +841,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             rulePathLibCount = PS_1_x_RulePath.Length;
 
             // tell compiler what the symbol id is for a numeric value
-            valueID = (int)Symbol.VALUE;
+            valueID = Symbol.VALUE;
 
             // only need to initialize the rule database once
             if(!libInitialized) {
@@ -968,7 +968,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
                     // only 2 texm3x3pad instructions allowed
                     // use count to modify macro to select which mask to use
                     if(texm3x3padCount < 2) {
-                        texm3x3pad[4].ID = (int)Symbol.R + texm3x3padCount;
+                        texm3x3pad[4].ID = (Symbol)((int)Symbol.R + texm3x3padCount);
                         texm3x3padCount++;
                         passed = ExpandMacro(texm3x3pad_MacroMods);
                     }
@@ -1003,7 +1003,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         void ClearMachineInstState() {
             // set current Machine Instruction State to baseline
             opType = MachineInstruction.Nop;
-            opInst = (int)Symbol.Invalid;
+            opInst = Symbol.Invalid;
             do_Alpha = false;
             argCnt = 0;
 
@@ -1061,7 +1061,6 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
         // the method is expected to be recursive to allow for inline expansion of instructions if required
         bool Pass2scan(TokenInstruction[] Tokens, int size) {
-
             // execute TokenInstructions to build MachineInstructions
             bool passed = true;
             SymbolDef cursymboldef;
@@ -1073,7 +1072,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             // for each machine instruction need: optype, opinst, and up to 5 parameters
             for(int i = 0; i < size; i++) {
                 // lookup instruction type in library
-                cursymboldef = symbolTypeLib[Tokens[i].ID];
+                cursymboldef = symbolTypeLib[(int)Tokens[i].ID];
                 ActiveNTTRuleID = (Symbol)Tokens[i].NTTRuleID;
                 currentLine = Tokens[i].line;
                 charPos = Tokens[i].pos;
@@ -1100,7 +1099,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
                         // if the last instruction has not been passed on then do it now
                         // make sure the pipe is clear for a new instruction
                         BuildMachineInst();
-                        if(opInst == (int)Symbol.Invalid) {
+                        if(opInst == Symbol.Invalid) {
                             opInst = cursymboldef.ID;
                         }
                         else {
@@ -1144,7 +1143,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             if(passed) {
                 BuildMachineInst();
                 // if there are no more instructions in the pipe than OpInst should be invalid
-                if(opInst != (int)Symbol.Invalid) {
+                if(opInst != Symbol.Invalid) {
                     passed = false;
                 }
             }
@@ -1161,6 +1160,10 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             int instIDX = 0;
             int instCount = PassMachineInstructions.Count;
             bool error = false;
+
+            for(int i = 0; i < PassMachineInstructions.Count; i++) {
+                Console.WriteLine("{0}", PassMachineInstructions[i]);
+            }
 
             while ((instIDX < instCount) && !error) {
                 switch((MachineInstruction)PassMachineInstructions[instIDX]) {
@@ -1316,7 +1319,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             // set source and destination registers in macro expansion
             for (int i = 0; i < MacroMod.RegModSize; i++) {
                 regmod = MacroMod.RegMods[i];
-                MacroMod.Macro[regmod.MacroOffset].ID = regmod.RegisterBase + opParams[regmod.OpParamsIndex].Arg;
+                MacroMod.Macro[regmod.MacroOffset].ID = (Symbol)(regmod.RegisterBase + opParams[regmod.OpParamsIndex].Arg);
             }
 
             // turn macro support on so that ps.1.4 ALU instructions get put in phase 1 alu instruction sequence container
@@ -1354,7 +1357,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
                     case MachineInstruction.ColorOp2:
                     case MachineInstruction.ColorOp3: {
                         AddMachineInst(instructionPhase, (int)opType);
-                        AddMachineInst(instructionPhase, symbolTypeLib[opInst].pass2Data);
+                        AddMachineInst(instructionPhase, symbolTypeLib[(int)opInst].pass2Data);
                         // send all parameters to machine inst container
                         for(int i=0; i <= argCnt; i++) {
                             AddMachineInst(instructionPhase, opParams[i].Arg);
@@ -1432,7 +1435,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
                 MachineInstruction alphaoptype = (MachineInstruction)(MachineInstruction.AlphaOp1 + argCnt - 1);
                 AddMachineInst(instructionPhase, (int)alphaoptype);
-                AddMachineInst(instructionPhase, symbolTypeLib[opInst].pass2Data);
+                AddMachineInst(instructionPhase, symbolTypeLib[(int)opInst].pass2Data);
 
                 // put all parameters in instruction que
                 for(int i = 0; i <= argCnt; i++) {
@@ -1490,7 +1493,6 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
         void AddMachineInst(PhaseType phase, int inst) {
             switch(phase) {
-
                 case PhaseType.PHASE1TEX:
                     phase1TEX_mi.Add(inst);
                     break;
@@ -1743,7 +1745,140 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
             Console.WriteLine("**Finished testing: IsFloatValue\n");
 
+            // ***TEST 5***
+            // Simple compile test for ps.1.4
+            string CompileTest1src = "ps.1.4\n";
+            Symbol[] CompileTest1result = {Symbol.PS_1_4};
+            TestCompile("Basic PS_1_4", CompileTest1src, CompileTest1result);
+
+            // ***TEST 6***
+            // Simple compile test for ps1.1
+            string CompileTest2src = "ps.1.1\n";
+            Symbol[] CompileTest2result = {Symbol.PS_1_1};
+            TestCompile("Basic PS_1_1", CompileTest2src, CompileTest2result);
+
+            // ***TEST 7***
+            // Simple compile test, ps.1.4 with defines
+            string CompileTest3src = "ps.1.4\ndef c0, 1.0, 2.0, 3.0, 4.0\n";
+            Symbol[] CompileTest3result = {Symbol.PS_1_4, Symbol.DEF, Symbol.C0, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA,
+		        Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE};
+
+            TestCompile("PS_1_4 with defines", CompileTest3src, CompileTest3result);
+
+            // ***TEST 8***
+            // Simple compile test, ps.1.4 with 2 defines
+            string CompileTest4src = "ps.1.4\n//test kkl \ndef c0, 1.0, 2.0, 3.0, 4.0\ndef c3, 1.0, 2.0, 3.0, 4.0\n";
+            Symbol[] CompileTest4result = {Symbol.PS_1_4, Symbol.DEF, Symbol.C0, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA,
+		        Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE,Symbol.DEF, Symbol.C3, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA,
+		        Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE};
+
+            TestCompile("PS_1_4 with 2 defines", CompileTest4src, CompileTest4result);
+
+            // ***TEST 9***
+            // Simple compile test, checking machine instructions
+            int[] CompileTest5MachinInstResults = {(int)MachineInstruction.SetConstants, Gl.GL_CON_0_ATI, 0};
+
+            TestCompile("PS_1_4 with defines", CompileTest3src, CompileTest3result, CompileTest5MachinInstResults);
+
+            // ***TEST 10***
+            // Simple compile test, checking ALU instructions
+            string CompileTest6Src = "ps.1.4\nmov r0.xzw, c1 \nmul r3, r2, c3";
+            Symbol[] CompileTest6result = {Symbol.PS_1_4, Symbol.MOV, Symbol.R0, Symbol.RBA, Symbol.COMMA, Symbol.C1,
+	            Symbol.MUL, Symbol.R3, Symbol.COMMA, Symbol.R2, Symbol.COMMA, Symbol.C3};
+              
+            TestCompile("PS_1_4 ALU simple", CompileTest6Src, CompileTest6result);
+
+
+            // test to see if PS_1_4 compile pass 2 generates the proper machine instructions
+	        string CompileTest7Src = "ps.1.4\ndef c0,1.0,2.0,3.0,4.0\nmov_x8 r1,v0\nmov r0,r1.g";
+
+	        Symbol[] CompileTest7result = {
+		        Symbol.PS_1_4, Symbol.DEF, Symbol.C0, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA,
+		        Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.MOV, Symbol.X8, Symbol.R1, Symbol.COMMA,
+		        Symbol.V0, Symbol.MOV, Symbol.R0, Symbol.COMMA, Symbol.R1, Symbol.GGGG
+	        };
+
+	        int[] CompileTest7MachinInstResults = {
+		        (int)MachineInstruction.SetConstants, Gl.GL_CON_0_ATI, 0,
+		        (int)MachineInstruction.ColorOp1, Gl.GL_MOV_ATI, Gl.GL_REG_1_ATI, RGB_BITS, Gl.GL_8X_BIT_ATI,	Gl.GL_PRIMARY_COLOR_ARB, Gl.GL_NONE, Gl.GL_NONE,
+		        (int)MachineInstruction.AlphaOp1, Gl.GL_MOV_ATI, Gl.GL_REG_1_ATI, Gl.GL_8X_BIT_ATI, Gl.GL_PRIMARY_COLOR_ARB, Gl.GL_NONE, Gl.GL_NONE,
+		        (int)MachineInstruction.ColorOp1, Gl.GL_MOV_ATI, Gl.GL_REG_0_ATI, RGB_BITS, Gl.GL_NONE,Gl.GL_REG_1_ATI, Gl.GL_GREEN, Gl.GL_NONE,
+		        (int)MachineInstruction.AlphaOp1, Gl.GL_MOV_ATI, Gl.GL_REG_0_ATI, Gl.GL_NONE, Gl.GL_REG_1_ATI, Gl.GL_GREEN, Gl.GL_NONE,
+	        };
+
+	        TestCompile("PS_1_4 ALU simple modifier", CompileTest7Src, CompileTest7result, CompileTest7MachinInstResults);
+
             return true;
+        }
+
+        private void TestCompile(string testName, string snippet, Symbol[] expectedResults) {
+            TestCompile(testName, snippet, expectedResults, null);
+        }
+
+        private void TestCompile(string testName, string snippet, Symbol[] expectedResults, int[] machineInstResults) {
+            string passed = "PASSED";
+            string failed = "***** FAILED ****";
+
+            SetActiveContexts((uint)ContextKeyPattern.PS_BASE);
+
+            Console.WriteLine("*** TESTING: {0} Compile: Check Pass 1 and 2\n", testName);
+            Console.WriteLine("  Source to compile:\n[\n{0}\n]", snippet);
+
+            bool compiled = Compile(snippet);
+
+            Console.WriteLine("  Pass 1 Lines scanned: {0}, Tokens produced: {1} out of {2}: {3}",
+                currentLine, tokenInstructions.Count, expectedResults.Length,
+                (tokenInstructions.Count == expectedResults.Length) ? passed : failed);
+
+            Console.WriteLine("    Validating Pass 1:");
+
+            Console.WriteLine("\n  Tokens:");
+            for(int i = 0; i < tokenInstructions.Count; i++) {
+                Console.WriteLine("    Token[{0}] [{1}] {2}: [{3}] {4}: {5}", 
+                    i, 
+                    GetTypeDefText(((TokenInstruction)tokenInstructions[i]).ID),
+                    ((TokenInstruction)tokenInstructions[i]).ID, 
+                    GetTypeDefText(expectedResults[i]), 
+                    expectedResults[i],
+                    (((TokenInstruction)tokenInstructions[i]).ID == expectedResults[i]) ? passed : failed);
+            }
+
+            if(machineInstResults != null) {
+                Console.WriteLine("\n  Machine Instructions:");
+
+                int MIcount = GetMachineInstCount();
+
+                Console.WriteLine("  Pass 2 Machine Instructions generated: {0} out of {1}: {2}", 
+                    MIcount,
+                    machineInstResults.Length, 
+                    (MIcount == machineInstResults.Length) ? passed : failed);
+
+                Console.WriteLine("    Validating Pass 2:");
+
+                for(int i = 0; i < MIcount; i++) {
+                    Console.WriteLine("    instruction[{0}] = {1} : {2} : {3}", i, 
+                        GetMachineInst(i), 
+                        machineInstResults[i], 
+                        (GetMachineInst(i) == machineInstResults[i]) ? passed : failed);
+                }
+
+                Console.WriteLine("    Constants:");
+
+                for(int i=0; i < 4; i++) {
+                    Console.WriteLine("    Constants[{0}] = {1} : {2}", 
+                        i, 
+                        constants[i], 
+                        ((float)constants[i] == (1.0f + i)) ? passed : failed);
+                }
+            }
+
+            if(!compiled) {
+                Console.WriteLine(failed);
+            }
+
+            Console.WriteLine("\nFinished testing: {0} Compile: Check Pass 2\n\n", testName);
+
+            SetActiveContexts((uint)ContextKeyPattern.PS_BASE);
         }
 
         #endregion Test Cases
