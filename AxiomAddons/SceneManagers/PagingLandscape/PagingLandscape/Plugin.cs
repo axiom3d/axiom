@@ -40,7 +40,7 @@ namespace Axiom.SceneManagers.PagingLandscape
 	{ 
 		public void Start() 
 		{ 
-			Root.Instance.SceneManagers[SceneType.ExteriorFar] = new SceneManager();
+			SceneManagerEnumerator.Instance.SetSceneManager(SceneType.ExteriorFar, new SceneManager());
 		} 
 
 		public void Stop() 
