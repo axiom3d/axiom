@@ -664,4 +664,16 @@ namespace Axiom.Core {
 
         #endregion
     }
+    
+    ///<summary>
+    ///     A way of recording the way each LOD is recorded this Mesh.
+    /// </summary>
+    public struct MeshLodUsage {
+        ///<summary>Squared Z value from which this LOD will apply</summary>
+        public float fromSquaredDepth;
+         ///<summary>Only relevant if isLodManual is true, the name of the alternative mesh to use</summary>
+ 	    public string manualName;
+        ///<sum>Reference to the manual mesh to avoid looking up each timey</summary>    	
+        public Mesh manualMesh;
+    }
 }

@@ -174,6 +174,13 @@ namespace Axiom.Core {
         }
 
         /// <summary>
+        ///    Removes all child nodes from this node.
+        /// </summary>
+        public void Clear() {
+            childNodes.Clear();
+        }
+
+        /// <summary>
         ///    Gets a child node by index.
         /// </summary>
         /// <param name="index"></param>

@@ -23,6 +23,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
+
 using System;
 using System.Diagnostics;
 using Axiom.Enumerations;
@@ -83,6 +84,8 @@ namespace Axiom.Core {
         protected int						numFacesRenderedLastFrame;
         protected SceneNode			autoTrackTarget;
         protected Vector3				autoTrackOffset;	
+        protected float                   sceneLodFactor;
+        protected float                    invSceneLodFactor;
 
         /** Temp coefficient values calculated from a frustum change,
             used when establishing the frustum planes when the view changes. */
@@ -113,7 +116,7 @@ namespace Axiom.Core {
             this.fieldOfView = 45.0f;
             this.nearDistance = 0.1f;
             this.farDistance = 10000.0f;
-            this.aspectRatio = 1.33333333333333f;
+            this.aspectRatio = 1.33333f;
             this.projectionType = Projection.Perspective;
             this.sceneDetail = SceneDetailLevel.Solid;
 
@@ -135,8 +138,10 @@ namespace Axiom.Core {
             this.autoTrackTarget = null;
             this.autoTrackOffset = Vector3.Zero;
 
-            UpdateView();
+            // default these to 1 so Lod default to normal
+            this.sceneLodFactor = this.invSceneLodFactor = 1.0f;
 
+            UpdateView();
         }
 
         #endregion
@@ -458,6 +463,43 @@ namespace Axiom.Core {
                     isYawFixed = true;
             }
         }
+        
+        /// <summary>
+        ///     Sets the level-of-detail factor for this Camera.
+        /// </summary>
+        /// <remarks>
+        ///     This method can be used to influence the overall level of detail of the scenes 
+        ///     rendered using this camera. Various elements of the scene have level-of-detail
+        ///     reductions to improve rendering speed at distance; this method allows you 
+        ///     to hint to those elements that you would like to adjust the level of detail that
+        ///     they would normally use (up or down). 
+        ///     <p/>
+        ///     The most common use for this method is to reduce the overall level of detail used
+        ///     for a secondary camera used for sub viewports like rear-view mirrors etc.
+        ///     Note that scene elements are at liberty to ignore this setting if they choose,
+        ///     this is merely a hint.
+        ///     <p/>
+        ///     Higher values increase the detail, so 2.0 doubles the normal detail and 0.5 halves it.
+        /// </remarks>
+        public float LodBias {
+            get {
+                return sceneLodFactor;
+            }
+            set {
+                Debug.Assert(value > 0.0f, "Lod bias must be greater than 0");
+                sceneLodFactor = value;
+                invSceneLodFactor = 1.0f / sceneLodFactor;
+            }
+        }
+        
+        /// <summary>
+        ///     Used for internal Lod calculations.
+        /// </summary>
+        public float InverseLodBias {
+            get {
+                return invSceneLodFactor;
+            }
+        }
 
         /// <summary>
         /// Gets the last count of triangles visible in the view of this camera.
@@ -552,7 +594,6 @@ namespace Axiom.Core {
         /// <summary>
         /// Gets the projection matrix for this camera.
         /// </summary>
-        // TODO: Decide if internal use only or not.
         public Matrix4 ProjectionMatrix {
             get {
                 UpdateFrustum();
@@ -562,9 +603,8 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        /// Gets the view matrix for this camera.
+        ///     Gets the view matrix for this camera.
         /// </summary>
-        // TODO: Decide if internal use only or not.
         public Matrix4 ViewMatrix {
             get {
                 UpdateView();

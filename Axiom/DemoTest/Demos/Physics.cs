@@ -32,6 +32,7 @@ using Axiom.MathLib;
 using Axiom.Physics;
 using Axiom.Scripting;
 using Axiom.Utility;
+using DynamicsSystem_ODE;
 
 namespace Demos {
     /// <summary>
@@ -41,8 +42,8 @@ namespace Demos {
         #region Member variables
 		
         private IWorld world = null;
-        private GameObject plasma;
-        private GameObject plasma2;
+        private GameObject box;
+        private GameObject box2;
 
         #endregion
 		
@@ -71,25 +72,25 @@ namespace Demos {
 
             // create an entity to reference this mesh
             Entity planeEnt = sceneMgr.CreateEntity("Floor", "GrassPlane");
-            planeEnt.MaterialName = "Example.GrassyPlane";
+            planeEnt.MaterialName = "Example/RustySteel";
             ((SceneNode)sceneMgr.RootSceneNode.CreateChild()).AttachObject(planeEnt);
 
             // set ambient light to white
             sceneMgr.TargetRenderSystem.LightingEnabled = true;
             sceneMgr.AmbientLight = ColorEx.FromColor(System.Drawing.Color.Gray);
 
-            plasma = new PlasmaGun(sceneMgr);
-            plasma.Position = new Vector3(0, 400, 200);
+            box = new Box(sceneMgr);
+            box.Position = new Vector3(0, 400, 200);
 
-            plasma2 = new PlasmaGun(sceneMgr);
-            plasma2.Position = new Vector3(0, 100, 200);
+            box2 = new Box(sceneMgr);
+            box2.Position = new Vector3(0, 100, 200);
 
             // HACK: Decouple this and register objects with the World
-            plasma.RigidBody = world.CreateBody(plasma, DynamicsBodyType.Box, 0.0f);
-            plasma2.RigidBody = world.CreateBody(plasma2, DynamicsBodyType.Box, 0.0f);
+            box.RigidBody = world.CreateBody(box, DynamicsBodyType.Box, 0.0f);
+            box2.RigidBody = world.CreateBody(box2, DynamicsBodyType.Box, 0.0f);
 
             // setup the skybox
-            sceneMgr.SetSkyBox(true, "Skybox.CloudyHills", 2000.0f);
+            sceneMgr.SetSkyBox(true, "Skybox/CloudyHills", 2000.0f);
         }
 
         protected override bool OnFrameStarted(object source, FrameEventArgs e) {
@@ -98,18 +99,18 @@ namespace Demos {
             float force = 30.0f;
 
             if(inputReader.IsKeyPressed(Keys.L))
-                plasma.RigidBody.AddForce(force, 0, 0);
+                box.RigidBody.AddForce(force, 0, 0);
             if(inputReader.IsKeyPressed(Keys.J))
-                plasma.RigidBody.AddForce(-force, 0, 0);
+                box.RigidBody.AddForce(-force, 0, 0);
             if(inputReader.IsKeyPressed(Keys.I))
-                plasma.RigidBody.AddForce(0, 0, -force);
+                box.RigidBody.AddForce(0, 0, -force);
             if(inputReader.IsKeyPressed(Keys.K))
-                plasma.RigidBody.AddForce(0, 0, force);
+                box.RigidBody.AddForce(0, 0, force);
 
             UpdateDynamics(3 * e.TimeSinceLastFrame);
 
-            plasma.UpdateFromDynamics();
-            plasma2.UpdateFromDynamics();
+            box.UpdateFromDynamics();
+            box2.UpdateFromDynamics();
 
             return true;
         }
@@ -117,7 +118,7 @@ namespace Demos {
         private void InitDynamics() {
             // TODO: Make the dynamics system request from the engine, no longer a singleton
             // create a new world
-            //world = DynamicsSystem.Instance.CreateWorld();
+            world = new OdeWorld();//DynamicsSystem.Instance.CreateWorld();
 
             world.Gravity = new Vector3(0, -9.81f, 0);
         }
@@ -127,10 +128,21 @@ namespace Demos {
         }
 		
         #endregion
-		
-        #region Properties
-		
-        #endregion
+    }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    public class Box : GameObject {
+        static public int nextNum = 0;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sceneManager"></param>
+        public Box(SceneManager sceneManager): base(sceneManager) {
+            entity = sceneMgr.CreateEntity("Box" + nextNum++, "robot.mesh");
+            node = (SceneNode)sceneMgr.RootSceneNode.CreateChild("BoxEntNode" + nextNum++);
+            node.AttachObject(entity);
+        }
     }
 }

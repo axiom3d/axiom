@@ -1,4 +1,4 @@
-﻿#region LGPL License
+#region LGPL License
 /*
 Axiom Game Engine Library
 Copyright (C) 2003  Axiom Project Team
@@ -194,16 +194,6 @@ namespace Axiom.MathLib {
         /// <returns></returns>
         static public Quaternion Slerp(float time, Quaternion quatA, Quaternion quatB) {
             float cos = quatA.Dot(quatB);
-
-            // clamp
-            // HACK: Ok, this needs to be looked at.  The decimal precision can sometimes be *slightly* off
-            // from what is loaded from .skeleton files.  In some scenarios when we end up having a cos value
-            // calculated above that is just over 1 (i.e. 1.000000012), which the ACos of is Nan, thus completly
-            // throwing off node transformations and rotations associated with an animation.
-            if(cos > 1.0f)
-                cos = 1.0f;
-            else if(cos < -1.0f)
-                cos = -1.0f;
 
             float angle = MathUtil.ACos(cos);
 

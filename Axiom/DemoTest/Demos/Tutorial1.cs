@@ -41,6 +41,7 @@ namespace Demos {
         #region Methods
 		
         protected override void CreateScene() {
+
             // create a 3d line
             Line3d line = new Line3d(new Vector3(0, 0, 30), Vector3.UnitY, 50, ColorEx.FromColor(System.Drawing.Color.Blue));
 
