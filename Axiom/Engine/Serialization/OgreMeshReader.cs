@@ -39,6 +39,7 @@ namespace Axiom.Serialization {
     public class OgreMeshReader : BinaryReader {
         #region Member variables
         const int CHUNK_OVERHEAD_SIZE = 6;
+        const string MESH_VERSION = "[MeshSerializer_v1.10]";
 
         protected int currentChunkLength;
         protected Mesh mesh;
@@ -99,6 +100,10 @@ namespace Axiom.Serialization {
             // better hope this is the header
             if(headerID == (short)MeshChunkID.Header) {
                 string version = this.ReadString('\n');
+
+                if(version != MESH_VERSION) {
+                    throw new Exception("Unsupported mesh version, must be v1.10");
+                }
             }
             else
                 throw new Exception("Invalid mesh file, no header found.");
@@ -173,8 +178,8 @@ namespace Axiom.Serialization {
                         break;
 
                     case MeshChunkID.MeshLOD:
-                        // TODO: Handle meshes with LOD, skip for now
-                        IgnoreCurrentChunk();
+                        // Handle meshes with LOD
+                        ReadMeshLodInfo();
                         break;
 
                     case MeshChunkID.MeshBounds:
@@ -493,6 +498,107 @@ namespace Axiom.Serialization {
         }
 
         /// <summary>
+        ///    
+        /// </summary>
+        protected void ReadMeshLodInfo() {
+            MeshChunkID chunkId;
+
+            // number of lod levels
+            mesh.numLods = ReadInt16();
+
+            // load manual?
+            mesh.isLodManual = ReadBoolean();
+
+            // TODO: If lod manual, preallocate submesh lod face data
+
+            for(int i = 1; i < mesh.numLods; i++) {
+                chunkId = ReadChunk();
+
+                if(chunkId != MeshChunkID.MeshLODUsage) {
+                    throw new Exception(string.Format("Missing MeshLodUsage chunk in mesh '{0}'", mesh.Name));
+                }
+
+                // camera depth
+                MeshLodUsage usage = new MeshLodUsage();
+                usage.fromSquaredDepth = ReadSingle();
+
+                if(mesh.isLodManual) {
+                    // TODO: Manual Lod 
+                }
+                else {
+                    ReadMeshLodUsageGenerated(i, usage);
+                }
+
+                // push lod usage onto the mesh lod list
+                mesh.lodUsageList.Add(usage);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="level"></param>
+        /// <param name="usage"></param>
+        protected void ReadMeshLodUsageGenerated(int level, MeshLodUsage usage) {
+            usage.manualName = "";
+            usage.manualMesh = null;
+
+            // get one set of detail per submesh
+
+            MeshChunkID chunkId;
+
+            for(int i = 0; i < mesh.SubMeshCount; i++) {
+                chunkId = ReadChunk();
+
+                if(chunkId != MeshChunkID.MeshLODGenerated) {
+                    throw new Exception(string.Format("Missing MeshLodGenerated chunk in mesh '{0}'", mesh.Name));
+                }
+
+                // get the current submesh
+                SubMesh sm = mesh.GetSubMesh(i);
+               
+                // drop another index data object into the list
+                IndexData indexData = new IndexData();
+                sm.lodFaceList.Add(indexData);
+                
+                // number of indices
+                indexData.indexCount = ReadInt32();
+
+                bool is32bit = ReadBoolean();
+
+                // create an appropriate index buffer and stuff in the data
+                if(is32bit) {
+                    indexData.indexBuffer = 
+                        HardwareBufferManager.Instance.CreateIndexBuffer(
+                            IndexType.Size32, 
+                            indexData.indexCount,
+                            mesh.IndexBufferUsage,
+                            mesh.UseIndexShadowBuffer);
+
+                    // lock the buffer
+                    IntPtr data = indexData.indexBuffer.Lock(BufferLocking.Discard);
+
+                    // stuff the data into the index buffer
+                    ReadInts(indexData.indexCount, data);
+                }
+                else {
+                    indexData.indexBuffer = 
+                        HardwareBufferManager.Instance.CreateIndexBuffer(
+                        IndexType.Size16, 
+                        indexData.indexCount,
+                        mesh.IndexBufferUsage,
+                        mesh.UseIndexShadowBuffer);
+
+                    // lock the buffer
+                    IntPtr data = indexData.indexBuffer.Lock(BufferLocking.Discard);
+
+                    // stuff the data into the index buffer
+                    ReadInts(indexData.indexCount, data);
+                }
+            }
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="count"></param>
@@ -503,7 +609,7 @@ namespace Axiom.Serialization {
                 float* pFloats = (float*)dest.ToPointer();
 
                 for(int i = 0; i < count; i++)
-                    *pFloats++ = ReadSingle();
+                    pFloats[i] = ReadSingle();
             }
         }
 
@@ -519,7 +625,7 @@ namespace Axiom.Serialization {
 
                 for(int i = 0; i < count; i++) {
                     float val = ReadSingle();
-                    *pFloats++ = val;
+                    pFloats[i] = val;
                     destArray[i] = val;
                 }
             }
@@ -536,7 +642,7 @@ namespace Axiom.Serialization {
                 int* pInts = (int*)dest.ToPointer();
 
                 for(int i = 0; i < count; i++)
-                    *pInts++ = ReadInt32();
+                    pInts[i] = ReadInt32();
             }
         }
 
@@ -551,7 +657,7 @@ namespace Axiom.Serialization {
                 short* pShorts = (short*)dest.ToPointer();
 
                 for(int i = 0; i < count; i++)
-                    *pShorts++ = ReadInt16();
+                    pShorts[i] = ReadInt16();
             }
         }
 

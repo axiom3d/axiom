@@ -60,7 +60,7 @@ namespace Axiom.Core {
         /// <summary>Flag determines whether or not to display skeleton</summary>
         protected bool displaySkeleton;
         /// <summary>The LOD number of the mesh to use, calculated by NotifyCurrentCamera</summary>
-        protected int meshLODIndex;
+        protected int meshLodIndex;
         /// <summary>Render detail to be used for this entity (solid, wireframe, point).</summary>
         protected SceneDetailLevel renderDetail;
 
@@ -128,9 +128,9 @@ namespace Axiom.Core {
         /// 
         /// </summary>
         /// DOC
-        public int MeshLODIndex {
-            get { return meshLODIndex; }
-            set { meshLODIndex = value; }
+        public int MeshLodIndex {
+            get { return meshLodIndex; }
+            set { meshLodIndex = value; }
         }
 
         /// <summary>

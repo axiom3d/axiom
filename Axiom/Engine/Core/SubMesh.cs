@@ -72,6 +72,7 @@ namespace Axiom.Core {
         protected internal Axiom.SubSystems.Rendering.RenderMode operationType;
         public VertexData vertexData;
         public IndexData indexData = new IndexData();
+        protected internal ArrayList lodFaceList = new ArrayList();
 
         #endregion
 		

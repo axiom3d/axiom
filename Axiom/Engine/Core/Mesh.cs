@@ -99,6 +99,13 @@ namespace Axiom.Core {
         /// <summary>Option whether to use software or hardware blending, there are tradeoffs to both.</summary>
         protected internal bool useSoftwareBlending;
 
+        // LOD settings, declared internal so OgreMeshReader can use them, nobody else needs access
+        // to them
+        protected internal bool isLodManual;
+        protected internal int numLods;
+        protected internal ArrayList lodUsageList = new ArrayList();
+
+        // vertex buffer settings
         protected BufferUsage vertexBufferUsage;
         protected BufferUsage indexBufferUsage;
         protected bool useVertexShadowBuffer;
@@ -118,6 +125,11 @@ namespace Axiom.Core {
             // default to static write only for speed
             vertexBufferUsage = BufferUsage.StaticWriteOnly;
             indexBufferUsage = BufferUsage.StaticWriteOnly;
+
+            numLods = 1;
+            MeshLodUsage lod = new MeshLodUsage();
+            lod.fromSquaredDepth = 0.0f;
+            lodUsageList.Add(lod);
 
             // always use software blending for now
             useSoftwareBlending = true;

@@ -14,16 +14,16 @@ Core/DebugOverlay
         height 87
 
         material Core/StatsBlockCenter
-            border_size 1 1 1 1
-            border_material Core/StatsBlockBorder
-            border_topleft_uv       0.0000 1.0000 0.0039 0.9961
-            border_top_uv           0.0039 1.0000 0.9961 0.9961
-            border_topright_uv      0.9961 1.0000 1.0000 0.9961
-            border_left_uv          0.0000 0.9961 0.0039 0.0039
-            border_right_uv         0.9961 0.9961 1.0000 0.0039
-            border_bottomleft_uv    0.0000 0.0039 0.0039 0.0000
-            border_bottom_uv        0.0039 0.0039 0.9961 0.0000
-            border_bottomright_uv   0.9961 0.0039 1.0000 0.0000
+        border_size 1 1 1 1
+        border_material Core/StatsBlockBorder
+        border_topleft_uv       0.0000 1.0000 0.0039 0.9961
+        border_top_uv           0.0039 1.0000 0.9961 0.9961
+        border_topright_uv      0.9961 1.0000 1.0000 0.9961
+        border_left_uv          0.0000 0.9961 0.0039 0.0039
+        border_right_uv         0.9961 0.9961 1.0000 0.0039
+        border_bottomleft_uv    0.0000 0.0039 0.0039 0.0000
+        border_bottom_uv        0.0039 0.0039 0.9961 0.0000
+        border_bottomright_uv   0.9961 0.0039 1.0000 0.0000
 
         // Nested break line
         container Panel(Core/BreakPanel)

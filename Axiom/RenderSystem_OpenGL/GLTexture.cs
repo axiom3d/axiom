@@ -132,7 +132,7 @@ namespace RenderSystem_OpenGL {
             }
 
             // set the max number of mipmap levels
-            Gl.glTexParameteri(Gl.GL_TEXTURE, Gl.GL_TEXTURE_MAX_LEVEL, numMipMaps);
+            Gl.glTexParameteri(this.GLTextureType, Gl.GL_TEXTURE_MAX_LEVEL, numMipMaps);
 
             for(int i = 0; i < images.Count; i++) {
                 Bitmap image = (Bitmap)images[i];

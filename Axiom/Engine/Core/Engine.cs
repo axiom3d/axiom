@@ -564,7 +564,7 @@ namespace Axiom.Core {
         /// </summary>
         public void Dispose() {
             // force the engine to shutdown
-            //Shutdown();
+            Shutdown();
 
             engineLog.Dispose();
         }
@@ -610,7 +610,7 @@ namespace Axiom.Core {
             // loop through and load the assemblies 
             for(int i = 0; i < files.Length; i++) {
                 // dont load the engine .dll itself
-                if(files[i].Equals("AxiomEngine.dll"))
+                if(files[i].EndsWith("AxiomEngine.dll"))
                     continue;
 
                 Assembly assembly = null;
@@ -636,12 +636,12 @@ namespace Axiom.Core {
 
                         AssemblyTitleAttribute title = 
                             (AssemblyTitleAttribute)Attribute.GetCustomAttribute(assembly, typeof(AssemblyTitleAttribute));
-						
-                        // log the fact that the plugin is being loaded
-                        System.Diagnostics.Trace.WriteLine("Loading plugin: " + title.Title);
 
                         // invoke the start method to fire up the plugin
                         plugin.Start();
+                        
+                         // log the fact that the plugin has been loaded
+                        System.Diagnostics.Trace.WriteLine("Loaded plugin: " + title.Title);
 
                         // keep the plugin around for later release
                         pluginList.Add(plugin);

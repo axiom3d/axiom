@@ -201,8 +201,7 @@ namespace Axiom.SubSystems.Rendering {
         public static Axiom.Utility.DefaultForm CreateDefaultForm(int top, int left, int width, int height, bool fullScreen) {
             DefaultForm form = new DefaultForm();
 
-            form.Width = width;
-            form.Height = height;
+            form.ClientSize = new System.Drawing.Size(width,height);
             form.MaximizeBox = false;
             form.MinimizeBox = false;
             form.StartPosition = FormStartPosition.CenterScreen;

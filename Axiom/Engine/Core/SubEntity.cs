@@ -140,7 +140,7 @@ namespace Axiom.Core {
         /// <param name="op"></param>
         /// DOC
         public void GetRenderOperation(RenderOperation op) {
-            subMesh.GetRenderOperation(op, parent.MeshLODIndex);
+            subMesh.GetRenderOperation(op, parent.MeshLodIndex);
         }
 
         Material IRenderable.Material {
