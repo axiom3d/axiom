@@ -32,7 +32,6 @@ using System.IO;
 using System.Threading;
 using Axiom.Configuration;
 using Axiom.Core;
-using System.Windows.Forms;
 using Axiom.Exceptions;
 using Axiom.Input;
 using Axiom.Gui;
@@ -52,7 +51,7 @@ namespace Axiom.Utility {
         protected Viewport viewport;
         protected SceneManager scene; 
         protected RenderWindow window;
-        protected IInputReader input;
+        protected InputReader input;
         protected Vector3 cameraVector = Vector3.Zero;
         protected float cameraScale;
         protected bool showDebugOverlay = true;
@@ -176,8 +175,8 @@ namespace Axiom.Utility {
             CreateScene();
 
             // retreive and initialize the input system
-		input = PlatformManager.Instance.CreateInputReader();
-            input.Initialize(window, null, true, true, false, true);
+			input = PlatformManager.Instance.CreateInputReader();
+            input.Initialize(window, true, true, false, true);
 
             return true;
         }
