@@ -451,7 +451,7 @@ namespace Axiom.Core {
 
 			// Get eye-space light position
 			// use 4D vector so directional lights still work
-			Vector4 eyeSpaceLight = lightPos * camera.ViewMatrix;
+			Vector4 eyeSpaceLight = camera.ViewMatrix * lightPos;
 			Matrix4 eyeToWorld = camera.ViewMatrix.Inverse();
 
 			// Find distance to light, project onto -Z axis

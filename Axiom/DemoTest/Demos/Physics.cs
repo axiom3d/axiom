@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using Axiom.Core;
+using Axiom.Graphics;
 using Axiom.Input;
 using Axiom.MathLib;
 using Axiom.Physics;
@@ -48,16 +49,27 @@ namespace Demos {
 		
 		#region Methods
 		protected override void CreateScene() {
+			scene.ShadowTechnique = ShadowTechnique.StencilModulative;
+
 			InitDynamics();
 			this.camSpeed = 6.0f; // Scale up the camera speed - need it fast
 
+			Light light = scene.CreateLight("Sun");
+			light.Diffuse = ColorEx.LightGoldenrodYellow;
+			light.Type = LightType.Directional;
+			light.Direction = new Vector3(-0.3f, -0.3f, -0.3f);
+
 			// Create Plane Mesh for ground
-			Plane p = new Plane();  p.Normal = Vector3.UnitY;  p.D = 0;
+			Plane p = new Plane();  
+			p.Normal = Vector3.UnitY;  
+			p.D = 0;
+
 			MeshManager.Instance.CreatePlane("GrassPlane", p, 20000, 20000, 50, 50, true, 2, 50, 50, Vector3.UnitZ);
 
 			// Create Ground Entity attached to this Mesh
 			Entity planeEnt = scene.CreateEntity("Floor", "GrassPlane");
 			planeEnt.MaterialName = "Examples/RustySteel";
+			planeEnt.CastShadows = false;
 			scene.RootSceneNode.CreateChildSceneNode().AttachObject(planeEnt);
 
 			// set ambient light to white

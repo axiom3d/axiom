@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using System.Collections;
 using Axiom.Graphics;
 using Axiom.MathLib;
 using Axiom.Scripting;
@@ -344,15 +345,21 @@ namespace Axiom.Core {
 			return GetWorldBoundingBox();
 		}
 
-		public override AxisAlignedBox GetDarkCapBounds(Light light) {
+		public override AxisAlignedBox GetDarkCapBounds(Light light, float dirLightExtrusionDist) {
 			// Extrude own light cap bounds
 			worldDarkCapBounds = GetLightCapBounds();
-			ExtrudeBounds(worldDarkCapBounds, light.GetAs4DVector(), light.AttenuationRange);
+
+			float extrusionDistance = 
+				(light.Type == LightType.Directional) ? dirLightExtrusionDist : light.AttenuationRange;
+
+			ExtrudeBounds(worldDarkCapBounds, light.GetAs4DVector(), extrusionDistance);
 
 			return worldDarkCapBounds;
 		}
 
-		public override System.Collections.IEnumerator GetShadowVolumeRenderableEnumerator(ShadowTechnique technique, Light light, HardwareIndexBuffer indexBuffer, bool extrudeVertices, int flags) {
+		public override IEnumerator GetShadowVolumeRenderableEnumerator(ShadowTechnique technique, Light light, 
+			HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, int flags) {
+
 			return dummyList.GetEnumerator();
 		}
 

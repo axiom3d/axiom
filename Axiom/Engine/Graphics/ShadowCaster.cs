@@ -58,8 +58,9 @@ namespace Axiom.Graphics {
 		///		Gets the world space bounding box of the dark cap, as extruded using the light provided.
 		/// </summary>
 		/// <param name="light"></param>
+		/// <param name="dirLightExtrusionDist"></param>
 		/// <returns></returns>
-		public abstract AxisAlignedBox GetDarkCapBounds(Light light);
+		public abstract AxisAlignedBox GetDarkCapBounds(Light light, float dirLightExtrusionDist);
 
 		/// <summary>
 		///		Gets the world space bounding box of the light cap.
@@ -96,12 +97,12 @@ namespace Axiom.Graphics {
 		/// <param name="flags">Technique-specific flags, see <see cref="ShadowRenderableFlags"/></param>
 		/// <returns>An iterator that will allow iteration over all renderables for the full shadow volume.</returns>
 		public abstract IEnumerator GetShadowVolumeRenderableEnumerator(ShadowTechnique technique, Light light,
-			HardwareIndexBuffer indexBuffer, bool extrudeVertices, int flags);
+			HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, int flags);
 
 		public IEnumerator GetShadowVolumeRenderableEnumerator(ShadowTechnique technique, Light light,
-			HardwareIndexBuffer indexBuffer, bool extrudeVertices) {
+			HardwareIndexBuffer indexBuffer, float extrusionDistance, bool extrudeVertices) {
 
-			return GetShadowVolumeRenderableEnumerator(technique, light, indexBuffer, extrudeVertices, 0);
+			return GetShadowVolumeRenderableEnumerator(technique, light, indexBuffer, extrudeVertices, extrusionDistance, 0);
 		}
 
 		/// <summary>
@@ -141,7 +142,7 @@ namespace Axiom.Graphics {
 				int destCount = 0, srcCount = 0;
 
 				// Assume directional light, extrusion is along light direction
-				Vector3 extrusionDir = new Vector3(lightPosition.x, lightPosition.y, lightPosition.z);
+				Vector3 extrusionDir = new Vector3(-lightPosition.x, -lightPosition.y, -lightPosition.z);
 				extrusionDir.Normalize();
 				extrusionDir *= extrudeDistance;
 
@@ -250,13 +251,13 @@ namespace Axiom.Graphics {
 							pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
 							shadOp.indexData.indexCount += 3;
 
-							if (lightType != LightType.Directional) {
+							//if (lightType != LightType.Directional) {
 								// additional tri to make quad
 								pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
 								pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
 								pIdx[count++] = (short)edge.vertIndex[1];
 								shadOp.indexData.indexCount += 3;
-							}
+							//}
 
 							// Do dark cap tri
 							// Use McGuire et al method, a triangle fan covering all silhouette
@@ -282,13 +283,13 @@ namespace Axiom.Graphics {
 							pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
 							shadOp.indexData.indexCount += 3;
 
-							if (lightType != LightType.Directional) {
+							//if (lightType != LightType.Directional) {
 								// additional tri to make quad
 								pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
 								pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
 								pIdx[count++] = (short)edge.vertIndex[0];
 								shadOp.indexData.indexCount += 3;
-							}
+							//}
 
 							// Do dark cap tri
 							// Use McGuire et al method, a triangle fan covering all silhouette
