@@ -35,7 +35,7 @@ namespace Axiom.Graphics {
     /// Summary description for SimpleRenderable.
     /// </summary>
     public abstract class SimpleRenderable : SceneObject, IRenderable {
-        #region Member variables
+        #region Fields
 
         protected Matrix4 worldTransform = Matrix4.Identity;
         protected AxisAlignedBox box;
@@ -48,7 +48,12 @@ namespace Axiom.Graphics {
         protected VertexData vertexData;
         protected IndexData indexData;
 
-        #endregion
+        /// <summary>
+        ///    Empty light list to use when there is no parent for this renderable.
+        /// </summary>
+        protected LightList dummyLightList = new LightList();
+
+        #endregion Fields
 
         #region Constructor
 
@@ -129,6 +134,12 @@ namespace Axiom.Graphics {
             matrices[0] = worldTransform * parentNode.FullTransform;
         }
 
+        public bool NormalizeNormals {
+            get {
+                return false;
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -192,7 +203,12 @@ namespace Axiom.Graphics {
 
         public LightList Lights {
             get {
-                return parentNode.Lights;
+                if(parentNode != null) {
+                    return parentNode.Lights;
+                }
+                else {
+                    return dummyLightList;
+                }
             }
         }
 
