@@ -469,6 +469,8 @@ namespace Axiom.Graphics {
 
 		#endregion Fields
 
+		#region Constructor
+
 		/// <summary>
 		///    Default constructor.
 		/// </summary>
@@ -481,6 +483,8 @@ namespace Axiom.Graphics {
 			this.splitPassesByLightingType = splitPassesByLightingType;
 			this.splitNoShadowPasses = splitNoShadowPasses;
 		}
+
+		#endregion Constructor
 
 		#region Methods
 
@@ -576,9 +580,9 @@ namespace Axiom.Graphics {
 						break;
 				}
 
-				RenderableList solidList = (RenderableList) passMap[illpass.Pass];
+				RenderableList solidList = (RenderableList)passMap[illpass.Pass];
 
-				if (solidList == null) {
+				if(solidList == null) {
 					// add a new list to hold renderables for this pass
 					solidList = new RenderableList();
 					passMap.Add(illpass.Pass, solidList);

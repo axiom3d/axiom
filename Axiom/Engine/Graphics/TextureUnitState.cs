@@ -57,7 +57,7 @@ namespace Axiom.Graphics {
 		/// <summary>
 		///    Maximum amount of animation frames allowed.
 		/// </summary>
-		public const int MAX_ANIMATION_FRAMES = 32;
+		public const int MaxAnimationFrames = 32;
 		/// <summary>
 		///    The parent Pass that owns this TextureUnitState.
 		/// </summary>
@@ -113,7 +113,7 @@ namespace Axiom.Graphics {
 		/// <summary>
 		///    Store names of textures for animation frames.
 		/// </summary>
-		private string[] frames = new string[MAX_ANIMATION_FRAMES];
+		private string[] frames = new string[MaxAnimationFrames];
 		/// <summary>
 		///    Flag the determines if a recalc of the texture matrix is required, usually set after a rotate or
 		///    other transformations.
@@ -227,16 +227,11 @@ namespace Axiom.Graphics {
 		/// </summary>
 		public TextureUnitState(Pass parent, string textureName, int texCoordSet) {
 			this.parent = parent;
-			// texture params
-			SetTextureName(textureName);
-
-			this.TextureCoordSet = texCoordSet;
-
 			isBlank = true;
 
 			colorBlendMode.blendType = LayerBlendType.Color;
 			SetColorOperation(LayerBlendOperation.Modulate);
-			TextureAddressing = TextureAddressing.Wrap;
+			this.TextureAddressing = TextureAddressing.Wrap;
 
 			// set alpha blending options
 			alphaBlendMode.operation = LayerBlendOperationEx.Modulate;
@@ -253,14 +248,20 @@ namespace Axiom.Graphics {
 			isDefaultAniso = true;
 
 			// texture modification params
+			scrollU = scrollV = 0;
 			transU = transV = 0;
 			scaleU = scaleV = 1;
 			rotate = 0;
-			animDuration = 0;
 			texMatrix = Matrix4.Identity;
+			animDuration = 0;
 			alphaRejectFunction = CompareFunction.AlwaysPass;
 			alphaRejectValue = 0;
+
 			textureType = TextureType.TwoD;
+
+			// texture params
+			SetTextureName(textureName);
+			this.TextureCoordSet = texCoordSet;
 
 			parent.DirtyHash();
 		}
@@ -1186,7 +1187,7 @@ namespace Axiom.Graphics {
 		///     In that scenario, the values can be changed manually by setting the CurrentFrame property.
 		/// </param>
 		public void SetAnimatedTextureName(string[] names, int numFrames, float duration) {
-			if(numFrames > MAX_ANIMATION_FRAMES) {
+			if(numFrames > MaxAnimationFrames) {
 				throw new AxiomException("Maximum number of texture animation frames exceeded!");
 			}
 
@@ -1706,23 +1707,37 @@ namespace Axiom.Graphics {
 		///		Used to clone a texture layer.  Mainly used during a call to Clone on a Material.
 		/// </summary>
 		/// <returns></returns>
-		public void CopyTo(TextureUnitState layer) {
-
-			FieldInfo[] props = layer.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+		public void CopyTo(TextureUnitState target) {
+			FieldInfo[] props = target.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
 
 			for(int i = 0; i < props.Length; i++) {
 				FieldInfo prop = props[i];
 
 				object srcVal = prop.GetValue(this);
-				prop.SetValue(layer, srcVal);
+				prop.SetValue(target, srcVal);
 			}
     
-			layer.frames = new string[MAX_ANIMATION_FRAMES];
+			target.frames = new string[MaxAnimationFrames];
                 
 			// copy over animation frame texture names
-			for(int i = 0; i < MAX_ANIMATION_FRAMES; i++) {
-				layer.frames[i] = frames[i];
+			for(int i = 0; i < MaxAnimationFrames; i++) {
+				target.frames[i] = frames[i];
 			}
+
+			// must clone these references
+			target.colorBlendMode = colorBlendMode.Clone();
+			target.alphaBlendMode = alphaBlendMode.Clone();
+
+			target.effectList = new TextureEffectList();
+
+			// copy effects
+			for(int i = 0; i < effectList.Count; i++) {
+				TextureEffect effect = (TextureEffect)effectList[i];
+				target.effectList.Add(effect.Clone());
+			}
+
+			// dirty the hash of the parent pass
+			target.parent.DirtyHash();
 		}
 
 		/// <summary>
@@ -1730,27 +1745,16 @@ namespace Axiom.Graphics {
 		/// </summary>
 		/// <returns></returns>
 		public TextureUnitState Clone(Pass parent) {
-			TextureUnitState newLayer = (TextureUnitState)this.MemberwiseClone();
+			TextureUnitState newState = new TextureUnitState(parent);
 
-			newLayer.frames = new string[MAX_ANIMATION_FRAMES];
+			CopyTo(newState);
 
-			// copy over animation frame texture names
-			for(int i = 0; i < MAX_ANIMATION_FRAMES; i++) {
-				newLayer.frames[i] = frames[i];
-			}
+			newState.parent.DirtyHash();
 
-			// TODO: Revisit to clone these as well
-			newLayer.colorBlendMode = colorBlendMode;
-			newLayer.alphaBlendMode = alphaBlendMode;
-
-			// set the manually specified parent for this new texture state
-			newLayer.parent = parent;
-
-			parent.DirtyHash();
-
-			return newLayer;
+			return newState;
 		}
-		#endregion
+
+		#endregion Object cloning
 	}
 
 	#region LayerBlendModeEx class declaration
@@ -1827,6 +1831,21 @@ namespace Axiom.Graphics {
 			return false;
 		}
 
+		/// <summary>
+		///		Creates and returns a clone of this instance.
+		/// </summary>
+		/// <returns></returns>
+		public LayerBlendModeEx Clone() {
+			// copy the basic members
+			LayerBlendModeEx blendMode = (LayerBlendModeEx)MemberwiseClone();
+			
+			// clone the colors
+			blendMode.colorArg1 = colorArg1.Clone();
+			blendMode.colorArg2 = colorArg2.Clone();
+
+			return blendMode;
+		}
+
 		#region Object overloads
 
 		/// <summary>
@@ -1872,6 +1891,16 @@ namespace Axiom.Graphics {
 		public float amplitude;
 		public Controller controller;
 		public Frustum frustum;
+
+		/// <summary>
+		///		Returns a clone of this instance.
+		/// </summary>
+		/// <returns></returns>
+		public TextureEffect Clone() {
+			TextureEffect clone = (TextureEffect)MemberwiseClone();
+
+			return clone;
+		}
 	};
 
 	#endregion TextureEffect class declaration
