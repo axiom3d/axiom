@@ -43,7 +43,7 @@ namespace Axiom.Graphics {
 		#region Fields
 
 		protected Material material;
-		protected RenderOperation renderOp;
+		protected RenderOperation renderOp = new RenderOperation();
 		/// <summary>
 		///		Used only if IsLightCapSeparate == true.
 		/// </summary>

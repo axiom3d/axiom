@@ -884,6 +884,17 @@ namespace Axiom.Graphics
             SetColorOperationEx(operation, source1, source2, ColorEx.White, ColorEx.White, 0.0f);
         }
 
+		/// <summary>
+		///		Overloaded method.
+		/// </summary>
+		/// <param name="operation">The operation to be used, e.g. modulate (multiply), add, subtract.</param>
+		/// <param name="source1">The source of the first color to the operation e.g. texture color.</param>
+		/// <param name="source2">The source of the second color to the operation e.g. current surface color.</param>
+		/// <param name="arg1">Manually supplied color value (only required if source1 = Manual).</param>		
+		public void SetColorOperationEx(LayerBlendOperationEx operation, LayerBlendSource source1, LayerBlendSource source2, ColorEx arg1) {
+			SetColorOperationEx(operation, source1, source2, arg1, ColorEx.White, 0.0f);
+		}
+
         /// <summary>
         ///    Sets the alpha operation to be applied to this texture.
         /// </summary>

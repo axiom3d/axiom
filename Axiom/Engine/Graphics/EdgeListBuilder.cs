@@ -29,6 +29,7 @@ using System.Collections;
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.MathLib;
+using Axiom.MathLib.Collections;
 
 namespace Axiom.Graphics {
 	/// <summary>
@@ -48,7 +49,6 @@ namespace Axiom.Graphics {
         protected IndexDataList indexDataList = new IndexDataList();
         protected IntList indexDataVertexDataSetList = new IntList();
         protected VertexDataList vertexDataList = new VertexDataList();
-        protected Map vertexLookup = new Map(new Vector3Comparer());
         protected CommonVertexList vertices = new CommonVertexList();
         protected EdgeData edgeData = new EdgeData();
 
@@ -146,14 +146,13 @@ namespace Axiom.Graphics {
             vertex buffer which this index set uses.
             */
 
-            vertexLookup.Clear();
             edgeData = new EdgeData();
             // resize the edge group list to equal the number of vertex sets
             edgeData.edgeGroups.Capacity = vertexDataList.Count;
 
             // Initialize edge group data
             for(int i = 0; i < vertexDataList.Count; i++) {
-                EdgeGroup group = new EdgeGroup();
+                EdgeData.EdgeGroup group = new EdgeData.EdgeGroup();
                 group.vertexSet = i;
                 group.vertexData = (VertexData)vertexDataList[i];
                 edgeData.edgeGroups.Add(group);
@@ -191,6 +190,8 @@ namespace Axiom.Graphics {
             IntPtr idxPtr = indexData.indexBuffer.Lock(BufferLocking.ReadOnly);
 
             unsafe {
+				byte* pBaseVertex = (byte*)posPtr.ToPointer();
+
                 short* p16Idx = null;
                 int* p32Idx = null;
 
@@ -203,8 +204,10 @@ namespace Axiom.Graphics {
 
                 float* pReal = null;
 
+				int triStart = edgeData.triangles.Count;
+
                 // iterate over all the groups of 3 indices
-                edgeData.triangles.Capacity = edgeData.triangles.Count + iterations;
+                edgeData.triangles.Capacity = triStart + iterations;
 
                 for(int t = 0; t < iterations; t++) {
                     EdgeData.Triangle tri = new EdgeData.Triangle();
@@ -223,23 +226,97 @@ namespace Axiom.Graphics {
                         }
 
                         // populate tri original vertex index
-                        // TODO: Tri arrays need to be initialized first!!
                         tri.vertIndex[i] = index[i];
-                    }
-                }
-            }
 
-            // TODO: Implementation
-            throw new NotImplementedException();
+						// Retrieve the vertex position
+						byte* pVertex = pBaseVertex + (index[i] * posBuffer.VertexSize);
+						pReal = (float*)(pVertex + posElem.Offset);
+						v[i].x = *pReal++;
+						v[i].y = *pReal++;
+						v[i].z = *pReal++;
+						// find this vertex in the existing vertex map, or create it
+						tri.sharedVertIndex[i] = FindOrCreateCommonVertex(v[i], vertexSet);
+                    }
+
+					// Calculate triangle normal (NB will require recalculation for 
+					// skeletally animated meshes)
+					tri.normal = MathUtil.CalculateFaceNormal(v[0], v[1], v[2]);
+					// Add triangle to list
+					edgeData.triangles.Add(tri);
+					// Create edges from common list
+					EdgeData.Edge e = new EdgeData.Edge();
+					e.isDegenerate = true; // initialise as degenerate
+
+					if (tri.sharedVertIndex[0] < tri.sharedVertIndex[1]) {
+						// Set only first tri, the other will be completed in connectEdges
+						e.triIndex[0] = triStart + t;
+						e.sharedVertIndex[0] = tri.sharedVertIndex[0];
+						e.sharedVertIndex[1] = tri.sharedVertIndex[1];
+						e.vertIndex[0] = tri.vertIndex[0];
+						e.vertIndex[1] = tri.vertIndex[1];
+						((EdgeData.EdgeGroup)edgeData.edgeGroups[vertexSet]).edges.Add(e);
+					}
+					if (tri.sharedVertIndex[1] < tri.sharedVertIndex[2]) {
+						// Set only first tri, the other will be completed in connectEdges
+						e.triIndex[0] = triStart + t;
+						e.sharedVertIndex[0] = tri.sharedVertIndex[1];
+						e.sharedVertIndex[1] = tri.sharedVertIndex[2];
+						e.vertIndex[0] = tri.vertIndex[1];
+						e.vertIndex[1] = tri.vertIndex[2];
+						((EdgeData.EdgeGroup)edgeData.edgeGroups[vertexSet]).edges.Add(e);
+					}
+					if (tri.sharedVertIndex[2] < tri.sharedVertIndex[0]) {
+						// Set only first tri, the other will be completed in connectEdges
+						e.triIndex[0] = triStart + t;
+						e.sharedVertIndex[0] = tri.sharedVertIndex[2];
+						e.sharedVertIndex[1] = tri.sharedVertIndex[0];
+						e.vertIndex[0] = tri.vertIndex[2];
+						e.vertIndex[1] = tri.vertIndex[0];
+						((EdgeData.EdgeGroup)edgeData.edgeGroups[vertexSet]).edges.Add(e);
+					}
+                } // for iterations
+            } // unsafe
+
+			// unlock those buffers!
+			indexData.indexBuffer.Unlock();
+			posBuffer.Unlock();
         }
 
         /// <summary>
         ///     
         /// </summary>
-        protected void ConnectEdges() {
-            // TODO: Implementation
-            throw new NotImplementedException();
-        }
+		protected void ConnectEdges() {
+			int triIndex = 0;
+
+			for (int i = 0; i < edgeData.triangles.Count; i++, triIndex++) {
+				EdgeData.Triangle tri = (EdgeData.Triangle)edgeData.triangles[i];
+				EdgeData.Edge e;
+
+				if (tri.sharedVertIndex[0] > tri.sharedVertIndex[1]) {
+					e = FindEdge(tri.sharedVertIndex[1], tri.sharedVertIndex[0]);
+					if(e != null) {
+						e.triIndex[1] = triIndex;
+						e.isDegenerate = false;
+					}
+				}
+				if (tri.sharedVertIndex[1] > tri.sharedVertIndex[2]) {
+					// Find the existing edge (should be reversed order)
+					e = FindEdge(tri.sharedVertIndex[2], tri.sharedVertIndex[1]);
+					if(e != null) {
+						e.triIndex[1] = triIndex;
+						e.isDegenerate = false;
+					}
+				}
+				if (tri.sharedVertIndex[2] > tri.sharedVertIndex[0]) {
+					e = FindEdge(tri.sharedVertIndex[0], tri.sharedVertIndex[2]);
+					if(e != null) {
+						e.triIndex[1] = triIndex;
+						e.isDegenerate = false;
+					}
+				}
+
+			}
+		}
 
         /// <summary>
         ///     
@@ -248,9 +325,52 @@ namespace Axiom.Graphics {
         /// <param name="sharedIndex2"></param>
         /// <returns></returns>
         protected EdgeData.Edge FindEdge(int sharedIndex1, int sharedIndex2) {
-            // TODO: Implementation
-            throw new NotImplementedException();
+			// Iterate over the existing edges
+			for(int i = 0; i < edgeData.edgeGroups.Count; i++) {
+				EdgeData.EdgeGroup edgeGroup = (EdgeData.EdgeGroup)edgeData.edgeGroups[i]; 
+
+				for(int j = 0; j < edgeGroup.edges.Count; j++) {
+					EdgeData.Edge edge = (EdgeData.Edge)edgeGroup.edges[j];
+
+					if (edge.sharedVertIndex[0] == sharedIndex1 && 
+						edge.sharedVertIndex[1] == sharedIndex2) {
+
+						return edge;
+					}
+				}
+			}
+	        
+			// no edge found
+			return null;
         }
+
+		/// <summary>
+		///		Finds an existing common vertex, or inserts a new one.
+		/// </summary>
+		/// <param name="vec"></param>
+		/// <param name="vertexSet"></param>
+		/// <returns></returns>
+		protected int FindOrCreateCommonVertex(Vector3 vec, int vertexSet) {
+			for (int index = 0; index < vertices.Count; index++) {
+				CommonVertex commonVec = (CommonVertex)vertices[index];
+
+				if (MathUtil.FloatEqual(vec.x, commonVec.position.x, 1e-04f) && 
+					MathUtil.FloatEqual(vec.y, commonVec.position.y, 1e-04f) && 
+					MathUtil.FloatEqual(vec.z, commonVec.position.z, 1e-04f)) {
+
+					return index;
+				}
+			}
+
+			// Not found, insert
+			CommonVertex newCommon = new CommonVertex();
+			newCommon.index = vertices.Count;
+			newCommon.position = vec;
+			newCommon.vertexSet = vertexSet;
+			vertices.Add(newCommon);
+
+			return newCommon.index;
+		}
 
         #endregion Methods
 
@@ -275,25 +395,6 @@ namespace Axiom.Graphics {
             ///      The vertex set this came from.
             /// </summary>
             public int vertexSet;
-        }
-
-        /// <summary>
-        ///     A group of edges sharing the same vertex data.
-        /// </summary>
-        protected struct EdgeGroup {
-            /// <summary>
-            ///     The vertex set index that contains the vertices for this edge group.
-            /// </summary>
-            public int vertexSet;
-            /// <summary>
-            ///     Reference to the vertex data used by this edge group.
-            /// </summary>
-            public VertexData vertexData;
-            /// <summary>
-            ///     The edges themselves.
-            /// </summary>
-            public EdgeList edges;
-
         }
 
         /// <summary>

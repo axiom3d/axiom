@@ -1275,6 +1275,11 @@ namespace Axiom.Core {
                 // close the stream (we don't need to leave it open here)
                 data.Close();
             }
+
+			// prepare the mesh for a shadow volume?
+			if(MeshManager.Instance.PrepareAllMeshesForShadowVolumes) {
+				PrepareForShadowVolume();
+			}
         }
 
         /// <summary>

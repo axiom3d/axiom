@@ -200,7 +200,8 @@ namespace Axiom.Graphics {
 			}
 
 			// Look for a position element
-			VertexElement posElem = vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Position);
+			VertexElement posElem = 
+				vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Position);
 
 			if(posElem != null) {
 				short posOldSource = posElem.Source;
@@ -227,8 +228,8 @@ namespace Axiom.Graphics {
 				int oldVertexCount = vbuf.VertexCount;
 				int newVertexCount = oldVertexCount * 2;
 				newPosBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-					VertexElement.GetTypeSize(VertexElementType.Float3), newVertexCount, vbuf.Usage, 
-					vbuf.HasShadowBuffer);
+					VertexElement.GetTypeSize(VertexElementType.Float3), 
+					newVertexCount, vbuf.Usage, vbuf.HasShadowBuffer);
 
 				// Iterate over the old buffer, copying the appropriate elements and initializing the rest
 				IntPtr baseSrcPtr = vbuf.Lock(BufferLocking.ReadOnly);

@@ -369,7 +369,7 @@ namespace Axiom.Graphics {
 		/// </remarks>
 		/// <param name="buffer">Buffer to release temp copies of.</param>
 		internal void ForceReleaseBufferCopies(HardwareVertexBuffer buffer) {
-			throw new NotImplementedException();
+			//throw new NotImplementedException();
 		}
 
 		/// <summary>
