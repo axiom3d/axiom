@@ -43,18 +43,31 @@ namespace Axiom.Core {
     ///		tree, allowing for fast culling.
     /// </remarks>
     public class SceneNode : Node {
-        #region Member variables
+        #region Fields
 
-        /// <summary>A collection of all objects attached to this scene node.</summary>
+        /// <summary>
+        ///		A collection of all objects attached to this scene node.
+        ///	</summary>
         protected SceneObjectCollection objectList = new SceneObjectCollection();
-        /// <summary>Reference to the scene manager who created me.</summary>
+        /// <summary>
+        ///		Reference to the scene manager who created me.
+        ///	</summary>
         protected SceneManager creator;
-        /// <summary>Renderable bounding box for this node.</summary>
+        /// <summary>
+        ///		Renderable bounding box for this node.
+        ///	</summary>
         protected WireBoundingBox wireBox;
-        /// <summary>Whether or not to display this node's bounding box.</summary>
+        /// <summary>
+        ///		Whether or not to display this node's bounding box.
+        ///	</summary>
         protected bool showBoundingBox;
-        /// <summary>Bounding box.  Updated through Update.</summary>
+        /// <summary>
+        ///		Bounding box. Updated through Update.
+        ///	</summary>
         protected AxisAlignedBox worldAABB = AxisAlignedBox.Null;
+		/// <summary>
+		///		Word bounding sphere surrounding this node.
+		/// </summary>
         protected Sphere worldBoundingSphere = new Sphere();
         /// <summary>
         ///    List of lights within range of this node.
@@ -64,6 +77,26 @@ namespace Axiom.Core {
         ///    Keeps track of whether the list of lights located near this node needs updating.
         /// </summary>
         protected bool lightListDirty;
+		/// <summary>
+		///		Where to yaw around a fixed axis.
+		/// </summary>
+		protected bool isYawFixed;
+		/// <summary>
+		///		Fixed axis to yaw around.
+		/// </summary>
+		protected Vector3 yawFixedAxis;
+		/// <summary>
+		///		Auto tracking target.
+		/// </summary>
+		protected SceneNode autoTrackTarget;
+		/// <summary>
+		///		Tracking offset for fine tuning.
+		/// </summary>
+		protected Vector3 autoTrackOffset = Vector3.Zero;
+		/// <summary>
+		///		Local 'normal' direction vector.
+		/// </summary>
+		protected Vector3 autoTrackLocalDirection = Vector3.NegativeUnitZ;
 
         #endregion
 
@@ -114,15 +147,21 @@ namespace Axiom.Core {
         ///		Gets/Sets whether or not to display the bounding box for this node.
         /// </summary>
         public bool ShowBoundingBox {
-            get { return showBoundingBox; }
-            set { showBoundingBox = value; }
+            get { 
+				return showBoundingBox; 
+			}
+            set { 
+				showBoundingBox = value; 
+			}
         }
 
         /// <summary>
         ///		Gets a reference to the SceneManager that created this node.
         /// </summary>
         public SceneManager Creator {
-            get { return creator; }
+            get { 
+				return creator; 
+			}
         }
 
         /// <summary>
@@ -133,8 +172,37 @@ namespace Axiom.Core {
         ///		from this method is only up to date after the SceneManager has called Update.
         /// </remarks>
         public AxisAlignedBox WorldAABB {
-            get { return worldAABB; }
+            get { 
+				return worldAABB; 
+			}
         }
+
+		/// <summary>
+		///		Gets the offset at which this node is tracking another node, if the node is auto tracking..
+		/// </summary>
+		public Vector3 AutoTrackOffset {
+			get {
+				return autoTrackOffset;
+			}
+		}
+
+		/// <summary>
+		///		Get the auto tracking local direction for this node, if it is auto tracking.
+		/// </summary>
+		public Vector3 AutoTrackLocalDirection {
+			get {
+				return autoTrackLocalDirection;
+			}
+		}
+
+		/// <summary>
+		///		Gets the SceneNode that this node is currently tracking, if any.
+		/// </summary>
+		public SceneNode AutoTrackTarget {
+			get {
+				return autoTrackTarget;
+			}
+		}
 
         #endregion
 
@@ -380,6 +448,194 @@ namespace Axiom.Core {
                     MathUtil.Max(worldBoundingSphere.Radius, child.worldBoundingSphere.Radius);
             }
         }
+
+		/// <summary>
+		///		Tells the node whether to yaw around it's own local Y axis or a fixed axis of choice.
+		/// </summary>
+		/// <remarks>
+		///		This method allows you to change the yaw behavior of the node - by default, it
+		///		yaws around it's own local Y axis when told to yaw with <see cref="TransformSpace.Local"/>, 
+		///		this makes it yaw around a fixed axis. 
+		///		You only really need this when you're using auto tracking (<see cref="SetAutoTracking"/>,
+		///		because when you're manually rotating a node you can specify the <see cref="TransformSpace"/>
+		///		in which you wish to work anyway.
+		/// </remarks>
+		/// <param name="useFixed">
+		///		If true, the axis passed in the second parameter will always be the yaw axis no
+		///		matter what the node orientation. If false, the node returns to it's default behavior.
+		/// </param>
+		/// <param name="fixedAxis">The axis to use if the first parameter is true.</param>
+		public void SetFixedYawAxis(bool useFixed, Vector3 fixedAxis) {
+			isYawFixed = useFixed;
+			yawFixedAxis = fixedAxis;
+		}
+
+
+		public void SetFixedYawAxis(bool useFixed) {
+			SetFixedYawAxis(useFixed, Vector3.UnitY);
+		}
+
+		/// <summary>
+		///		Points the local Z direction of this node at a point in space.
+		/// </summary>
+		/// <param name="target">A vector specifying the look at point.</param>
+		/// <param name="relativeTo">The space in which the point resides.</param>
+		/// <param name="localDirection">
+		///		The vector which normally describes the natural direction of the node, usually -Z.
+		///	</param>
+		public void LookAt(Vector3 target, TransformSpace relativeTo, Vector3 localDirection) {
+			SetDirection(target - this.DerivedPosition, relativeTo, localDirection);
+		}
+
+		public void LookAt(Vector3 target, TransformSpace relativeTo) {
+			LookAt(target, relativeTo, Vector3.NegativeUnitZ);
+		}
+
+		/// <summary>
+		///		Enables / disables automatic tracking of another SceneNode.
+		/// </summary>
+		/// <remarks>
+		///		If you enable auto-tracking, this SceneNode will automatically rotate to
+		///		point it's -Z at the target SceneNode every frame, no matter how 
+		///		it or the other SceneNode move. Note that by default the -Z points at the 
+		///		origin of the target SceneNode, if you want to tweak this, provide a 
+		///		vector in the 'offset' parameter and the target point will be adjusted.
+		/// </remarks>
+		/// <param name="enabled">
+		///		If true, tracking will be enabled and the 'target' cannot be null. 
+		///		If false tracking will be disabled and the current orientation will be maintained.
+		/// </param>
+		/// <param name="target">
+		///		Reference to the SceneNode to track. Can be null if and only if the enabled param is false.
+		/// </param>
+		/// <param name="localDirection">
+		///		The local vector considered to be the usual 'direction'
+		///		of the node; normally the local -Z but can be another direction.
+		/// </param>
+		/// <param name="offset">
+		///		If supplied, this is the target point in local space of the target node
+		///		instead of the origin of the target node. Good for fine tuning the look at point.
+		/// </param>
+		public void SetAutoTracking(bool enabled, SceneNode target, Vector3 localDirection, Vector3 offset) {
+			if(enabled) {
+				autoTrackTarget = target;
+				autoTrackOffset = offset;
+				autoTrackLocalDirection = localDirection;
+			}
+			else {
+				autoTrackTarget = null;
+			}
+
+			if(creator != null) {
+				creator.NotifyAutoTrackingSceneNode(this, enabled);
+			}
+		}
+
+		public void SetAutoTracking(bool enabled, SceneNode target, Vector3 localDirection) {
+			SetAutoTracking(enabled, target, localDirection, Vector3.Zero);
+		}
+
+		public void SetAutoTracking(bool enabled, SceneNode target) {
+			SetAutoTracking(enabled, target, Vector3.NegativeUnitZ, Vector3.Zero);
+		}
+
+		public void SetAutoTracking(bool enabled) {
+			SetAutoTracking(enabled, null, Vector3.NegativeUnitZ, Vector3.Zero);
+		}
+
+		/// <summary>
+		///		Sets the node's direction vector ie it's local -z.
+		/// </summary>
+		/// <remarks>
+		///		Note that the 'up' vector for the orientation will automatically be 
+		///		recalculated based on the current 'up' vector (i.e. the roll will 
+		///		remain the same). If you need more control, use the <see cref="Orientation"/>
+		///		property.
+		/// </remarks>
+		/// <param name="vec">The direction vector.</param>
+		/// <param name="relativeTo">The space in which this direction vector is expressed.</param>
+		/// <param name="localDirection">The vector which normally describes the natural direction 
+		///		of the node, usually -Z.
+		///	</param>
+		public void SetDirection(Vector3 vec, TransformSpace relativeTo, Vector3 localDirection) {
+			// Do nothing if given a zero vector
+			if (vec == Vector3.Zero) { 
+				return;
+			}
+
+			// Adjust vector so that it is relative to local Z
+			Vector3 zAdjustVec;
+
+			if (localDirection == Vector3.NegativeUnitZ) {
+				zAdjustVec = -vec;
+			}
+			else {
+				Quaternion localToUnitZ = localDirection.GetRotationTo(Vector3.UnitZ);
+				zAdjustVec = localToUnitZ * vec;
+			}
+
+			zAdjustVec.Normalize();
+
+			Quaternion targetOrientation = Quaternion.Identity;
+
+			if(isYawFixed ) {
+				Vector3 xVec = yawFixedAxis.Cross(zAdjustVec);
+				xVec.Normalize();
+
+				Vector3 yVec = zAdjustVec.Cross(xVec);
+				yVec.Normalize();
+	            
+				targetOrientation.FromAxes(xVec, yVec, zAdjustVec);
+			}
+			else {
+				Vector3 xAxis, yAxis, zAxis;
+
+				// Get axes from current quaternion
+				// get the vector components of the derived orientation vector
+				this.DerivedOrientation.ToAxes(out xAxis, out yAxis, out zAxis);
+
+				Quaternion rotationQuat;
+
+				if (-zAdjustVec == zAxis) {
+					// Oops, a 180 degree turn (infinite possible rotation axes)
+					// Default to yaw i.e. use current UP
+					rotationQuat = Quaternion.FromAngleAxis(MathUtil.PI, yAxis);
+				}
+				else {
+					// Derive shortest arc to new direction
+					rotationQuat = zAxis.GetRotationTo(zAdjustVec);
+				}
+
+				targetOrientation = rotationQuat * orientation;
+			}
+
+			if (relativeTo == TransformSpace.Local || parent != null) {
+				orientation = targetOrientation;
+			}
+			else {
+				if (relativeTo == TransformSpace.Parent) {
+					orientation = targetOrientation * parent.Orientation.Inverse();
+				}
+				else if (relativeTo == TransformSpace.World) {
+					orientation = targetOrientation * parent.DerivedOrientation.Inverse();
+				}
+			}
+		}
+
+		/// <summary>
+		///		Internal method used to update auto-tracking scene nodes.
+		/// </summary>
+		internal void AutoTrack() {
+			if(autoTrackTarget != null) {
+				LookAt(
+					autoTrackTarget.DerivedPosition + autoTrackOffset,
+					TransformSpace.World,
+					autoTrackLocalDirection);
+
+				// update self and children
+				Update(true, true);
+			}
+		}
 
         #endregion
 

@@ -528,7 +528,8 @@ namespace Axiom.MathLib {
             rotation.m12 = zAxis.y;
             rotation.m22 = zAxis.z;
 
-            this.FromRotationMatrix(rotation);
+			// set this quaternions values from the rotation matrix built
+            FromRotationMatrix(rotation);
         }
 
         /// <summary>
