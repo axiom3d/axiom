@@ -53,6 +53,11 @@ namespace Demos
 	
 		protected override void CreateScene()
 		{
+			// since whole screen is being redrawn every frame, dont bother clearing
+			// option works for GL right now, uncomment to test it out.  huge fps increase
+			// also, depth_write in the skybox material must be set to on
+			//mainViewport.ClearEveryFrame = false;
+
 			// set some ambient light
 			sceneMgr.TargetRenderSystem.LightingEnabled = true;
 			sceneMgr.AmbientLight = ColorEx.FromColor(System.Drawing.Color.Gray);
@@ -80,7 +85,7 @@ namespace Demos
 			((SceneNode)sceneMgr.RootSceneNode.CreateChild()).Objects.Add(water);
 
 			// set a basic skybox
-			sceneMgr.SetSkyBox(true, "Skybox/CloudyHills", 2000.0f);
+			sceneMgr.SetSkyBox(true, "Skybox/CloudyHills", 3000.0f);
 
 		}
 
