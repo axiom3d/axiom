@@ -1,3 +1,7 @@
+10-30-2004
+- Updated MathLib with missing intersection tests, plus convenience methods on some of the math classes.
+- Modified Math intersection tests that returned the untyped Pair class to now return an IntersectResult struct.
+
 10-9-2004
 
 This unfortunately is going to involve some breaking changes, but these are things I have been putting off and wanted to do before putting the first real release out there, so that everything is in better shape going forward.
