@@ -98,49 +98,49 @@ namespace RenderSystem_DirectX9 {
 	
         public override Shading ShadingType {
             set {
-                // TODO:  Add DirectX9Renderer.ShadingType setter implementation
+                device.RenderState.ShadeMode = D3DHelper.ConvertEnum(value);
             }
         }
 	
         public override StencilOperation StencilBufferDepthFailOperation {
             set {
-                // TODO:  Add DirectX9Renderer.StencilBufferDepthFailOperation setter implementation
+                device.RenderState.StencilZBufferFail = D3DHelper.ConvertEnum(value);
             }
         }
 	
         public override StencilOperation StencilBufferFailOperation {
             set {
-                // TODO:  Add DirectX9Renderer.StencilBufferFailOperation setter implementation
+                device.RenderState.StencilFail = D3DHelper.ConvertEnum(value);
             }
         }
 	
         public override CompareFunction StencilBufferFunction {
             set {
-                // TODO:  Add DirectX9Renderer.StencilBufferFunction setter implementation
+                device.RenderState.StencilFunction = D3DHelper.ConvertEnum(value);
             }
         }
 	
         public override int StencilBufferMask {
             set {
-                // TODO:  Add DirectX9Renderer.StencilBufferMask setter implementation
+                device.RenderState.StencilMask = value;
             }
         }
 	
         public override Axiom.SubSystems.Rendering.StencilOperation StencilBufferPassOperation {
             set {
-                // TODO:  Add DirectX9Renderer.StencilBufferPassOperation setter implementation
+                device.RenderState.StencilPass = D3DHelper.ConvertEnum(value);
             }
         }
 	
         public override int StencilBufferReferenceValue {
             set {
-                // TODO:  Add DirectX9Renderer.StencilBufferReferenceValue setter implementation
+                device.RenderState.StencilWriteMask = value;
             }
         }
 	
         public override bool StencilCheckEnabled {
             set {
-                // TODO:  Add DirectX9Renderer.StencilCheckEnabled setter implementation
+                device.RenderState.StencilEnable = value;
             }
         }
 
@@ -154,9 +154,9 @@ namespace RenderSystem_DirectX9 {
                 D3DHardwareVertexBuffer buffer = 
                     (D3DHardwareVertexBuffer)bufferBinding.Value;
 
-                ushort stream = (ushort)bufferBinding.Key;
+                int stream = (int)bufferBinding.Key;
 
-                device.SetStreamSource((int)stream, buffer.D3DVertexBuffer, 0, buffer.VertexSize);
+                device.SetStreamSource(stream, buffer.D3DVertexBuffer, 0, buffer.VertexSize);
             }
 
             // TODO: Unbind any unused sources

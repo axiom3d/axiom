@@ -799,6 +799,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "SubSystems\Rendering\HighLevelGpuProgram.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "SubSystems\Rendering\HighLevelGpuProgramManager.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "SubSystems\Rendering\IRenderable.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

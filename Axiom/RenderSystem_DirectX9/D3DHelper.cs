@@ -388,6 +388,48 @@ namespace RenderSystem_DirectX9 {
         }
 
         /// <summary>
+        ///    Converts our Shading enum to the D3D ShadingType equivalent.
+        /// </summary>
+        /// <param name="shading"></param>
+        /// <returns></returns>
+        public static D3D.ShadeMode ConvertEnum(Shading shading) {
+            switch(shading) {
+                case Shading.Flat:
+                    return D3D.ShadeMode.Flat;
+                case Shading.Gouraud:
+                    return D3D.ShadeMode.Gouraud;
+                case Shading.Phong:
+                    return D3D.ShadeMode.Phong;
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        ///    Converts our StencilOperation enum to the D3D StencilOperation equivalent.
+        /// </summary>
+        /// <param name="op"></param>
+        /// <returns></returns>
+        public static D3D.StencilOperation ConvertEnum(Axiom.SubSystems.Rendering.StencilOperation op) {
+            switch(op) {
+                case Axiom.SubSystems.Rendering.StencilOperation.Zero:
+                    return D3D.StencilOperation.Zero;
+                case Axiom.SubSystems.Rendering.StencilOperation.Replace:
+                    return D3D.StencilOperation.Replace;
+                case Axiom.SubSystems.Rendering.StencilOperation.Keep:
+                    return D3D.StencilOperation.Keep;
+                case Axiom.SubSystems.Rendering.StencilOperation.Invert:
+                    return D3D.StencilOperation.Invert;
+                case Axiom.SubSystems.Rendering.StencilOperation.Increment:
+                    return D3D.StencilOperation.Increment;
+                case Axiom.SubSystems.Rendering.StencilOperation.Decrement:
+                    return D3D.StencilOperation.Decrement;
+            }
+
+            return 0;
+        }
+
+        /// <summary>
         ///    Checks D3D matrix to see if it an identity matrix.
         /// </summary>
         /// <remarks>

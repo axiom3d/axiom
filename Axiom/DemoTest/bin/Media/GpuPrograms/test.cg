@@ -7,6 +7,7 @@ struct MyOutput {
 MyOutput main(	float2 position : POSITION, float2 texCoord : TEXCOORD0, uniform float4 color) {
    MyOutput OUT;
    
+   // note, will need modelViewProj matrix to do this right, screw it for now
    OUT.position = float4(position, 0, 1);
    OUT.color = color;
    OUT.texCoord = texCoord;
