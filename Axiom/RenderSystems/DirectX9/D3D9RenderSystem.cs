@@ -75,6 +75,12 @@ namespace Axiom.RenderSystems.DirectX9 {
 		protected bool isFirstFrame = true;
 
 		protected bool isFirstWindow = true;
+
+		/// <summary>
+		///		Should we use the W buffer? (16 bit color only).
+		/// </summary>
+		protected bool useWBuffer;
+
 		/// <summary>
 		///    Number of streams used last frame, used to unbind any buffers not used during the current operation.
 		/// </summary>
@@ -490,6 +496,9 @@ namespace Axiom.RenderSystems.DirectX9 {
 				// create the render window
 				renderWindow = CreateRenderWindow("Main Window", mode.Width, mode.Height, mode.Bpp, mode.FullScreen, 0, 0, true, false, newWindow);
 				
+				// use W buffer when in 16 bit color mode
+				useWBuffer = (renderWindow.ColorDepth == 16);
+
 				newWindow.Target.Visible = false;
 
 				newWindow.Show();
@@ -1061,7 +1070,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 			set {
 				if(value) {
 					// use w-buffer if available
-					if(d3dCaps.RasterCaps.SupportsWBuffer) {
+					if(useWBuffer && d3dCaps.RasterCaps.SupportsWBuffer) {
 						device.RenderState.UseWBuffer = true;
 					}
 					else {
