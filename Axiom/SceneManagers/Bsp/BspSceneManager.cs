@@ -337,15 +337,24 @@ namespace Axiom.SceneManagers.Bsp
 			{
 				// we must provide the list of lights now, not at WalkTree
 
+				// CHECK: The code here finds the lights faster than at WalkTree
+				// but not as accurate. The case where the node of a light is not
+				// visible, but the nodes that the light affects are, is not taken
+				// into account.
+
 				// Locate the leaf node where the camera is located
 				BspNode cameraNode = level.FindLeaf(camera.DerivedPosition);
 
 				for (int i=0; i < lightList.Count; i++)
 				{
-					Light light = (Light) lightList[i];
+					TextureLight light = (TextureLight) lightList[i];
 
 					if (!light.IsVisible)
 						continue;
+
+					// This is set so that the lights are rendered with ascending
+					// Priority order.
+					light.TempSquaredDist = light.Priority;
 
 					BspNode lightNode = (BspNode) level.objectToNodeMap.FindFirst(light);
 					if (level.IsLeafVisible(cameraNode, lightNode))
@@ -669,6 +678,10 @@ namespace Axiom.SceneManagers.Bsp
                                     (lights[lp].Type == LightType.Directional ||
 									lightSpheres[lp].Intersects(node.BoundingBox)))
 								{
+									// This is set so that the lights are rendered with ascending
+									// Priority order.
+									lights[lp].TempSquaredDist = lights[lp].Priority;
+
 									lightsAffectingFrustum.Add(lights[lp]);
 									lightAddedToFrustum[lp] = true;
 								}
@@ -918,9 +931,14 @@ namespace Axiom.SceneManagers.Bsp
 			targetRenderSystem.ViewMatrix = camInProgress.ViewMatrix;
 			targetRenderSystem.ProjectionMatrix = camInProgress.ProjectionMatrix;
 
-			ColorEx bspAmbient = new ColorEx(ambientColor.r * level.BspOptions.ambientRatio,
-						ambientColor.g * level.BspOptions.ambientRatio,
-						ambientColor.b * level.BspOptions.ambientRatio);
+			ColorEx bspAmbient = null;
+
+			if (level.BspOptions.ambientEnabled)
+			{
+				bspAmbient = new ColorEx(ambientColor.r * level.BspOptions.ambientRatio,
+					ambientColor.g * level.BspOptions.ambientRatio,
+					ambientColor.b * level.BspOptions.ambientRatio);
+			}
 
 			LayerBlendModeEx ambientBlend = new LayerBlendModeEx();
 			ambientBlend.blendType = LayerBlendType.Color;
@@ -933,7 +951,7 @@ namespace Axiom.SceneManagers.Bsp
 			IEnumerator mapEnu = matFaceGroupMap.buckets.Keys.GetEnumerator();
 
 			bool passIsSet = false;
-            
+
 			while(mapEnu.MoveNext())
 			{
 				// Get Material
@@ -1142,6 +1160,8 @@ namespace Axiom.SceneManagers.Bsp
 					continue;
 
 				targetRenderSystem.SetTexture(1, true, geometryTex.TextureName);
+				// OpenGL requires the addressing mode to be set before every render operation
+				targetRenderSystem.SetTextureAddressingMode(0, TextureAddressing.Clamp);
 				targetRenderSystem.Render(renderOp);
 			}
 		}
@@ -1197,7 +1217,7 @@ namespace Axiom.SceneManagers.Bsp
 			{
 				uint *pIdx = (uint *) renderOp.indexData.indexBuffer.Lock(BufferLocking.Discard);
 
-				// For each material in turn, cache rendering data & render
+				// For each material in turn, cache rendering data
 				IEnumerator mapEnu = matFaceGroupMap.buckets.Keys.GetEnumerator();
             
 				while(mapEnu.MoveNext())
@@ -1215,8 +1235,8 @@ namespace Axiom.SceneManagers.Bsp
 						float dist = faceGrp[i].plane.GetDistance(camPos);
 						float angle = faceGrp[i].plane.Normal.Dot(camDir);
 
-						if (MathUtil.Abs(angle) > ((shadowCam.FOV + 3) / 180) &&
-							((dist < 0 && angle > 0) || (dist > 0 && angle < 0)))
+						if (((dist < 0 && angle > 0) || (dist > 0 && angle < 0)) &&
+							MathUtil.Abs(angle) >= MathUtil.Cos(shadowCam.FOV * 0.5f))
 						{
 							// face is in shadow's frustum
 
