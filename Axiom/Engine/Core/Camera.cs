@@ -394,7 +394,9 @@ namespace Axiom.Core {
         /// </summary>
         public Vector3 Direction {
             // Direction points down the negatize Z axis by default.
-            get { return orientation * -Vector3.UnitZ; }
+            get { 
+                return orientation * -Vector3.UnitZ; 
+            }
             set {
                 Vector3 direction = value;
 
@@ -455,7 +457,9 @@ namespace Axiom.Core {
         /// 
         /// </summary>
         public Vector3 FixedYawAxis {
-            get { return yawFixedAxis; }
+            get { 
+                return yawFixedAxis; 
+            }
             set { 
                 yawFixedAxis = value; 
 
@@ -899,6 +903,53 @@ namespace Axiom.Core {
             // vertex is not culled
             culledBy = FrustumPlane.None;
             return true;
+        }
+
+        /// <summary>
+        ///		Enables / disables automatic tracking of a SceneObject.
+        /// </summary>
+        /// <remarks>
+        ///		If you enable auto-tracking, this Camera will automatically rotate to
+        ///		look at the target SceneNode every frame, no matter how 
+        ///		it or SceneNode move. This is handy if you want a Camera to be focused on a
+        ///		single object or group of objects. Note that by default the Camera looks at the 
+        ///		origin of the SceneNode, if you want to tweak this, e.g. if the object which is
+        ///		attached to this target node is quite big and you want to point the camera at
+        ///		a specific point on it, provide a vector in the 'offset' parameter and the 
+        ///		camera's target point will be adjusted.
+        /// </remarks>
+        /// <param name="enabled">If true, the Camera will track the SceneNode supplied as the next 
+        ///		parameter (cannot be null). If false the camera will cease tracking and will
+        ///		remain in it's current orientation.
+        ///	 </param> 
+        /// <param name="target">The SceneObject which this Camera will track.</param>
+        public void SetAutoTracking(bool enabled, SceneObject target) {
+            SetAutoTracking(enabled, target.ParentNode, Vector3.Zero);
+        }
+
+        /// <summary>
+        ///		Enables / disables automatic tracking of a SceneNode.
+        /// </summary>
+        /// <remarks>
+        ///		If you enable auto-tracking, this Camera will automatically rotate to
+        ///		look at the target SceneNode every frame, no matter how 
+        ///		it or SceneNode move. This is handy if you want a Camera to be focused on a
+        ///		single object or group of objects. Note that by default the Camera looks at the 
+        ///		origin of the SceneNode, if you want to tweak this, e.g. if the object which is
+        ///		attached to this target node is quite big and you want to point the camera at
+        ///		a specific point on it, provide a vector in the 'offset' parameter and the 
+        ///		camera's target point will be adjusted.
+        /// </remarks>
+        /// <param name="enabled">If true, the Camera will track the SceneNode supplied as the next 
+        ///		parameter (cannot be null). If false the camera will cease tracking and will
+        ///		remain in it's current orientation.
+        ///	 </param> 
+        /// <param name="target">The SceneNode which this Camera will track. Make sure you don't
+        ///		delete this SceneNode before turning off tracking (e.g. SceneManager.ClearScene will
+        ///		delete it so be careful of this). Can be null if and only if the enabled param is false.
+        ///	</param>
+        public void SetAutoTracking(bool enabled, SceneNode target) {
+            SetAutoTracking(enabled, target, Vector3.Zero);
         }
 
         /// <summary>
