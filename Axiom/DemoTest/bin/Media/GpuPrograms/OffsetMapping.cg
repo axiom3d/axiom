@@ -6,7 +6,7 @@
 
 /* Vertex program that moves light and eye vectors into texture tangent space at vertex */ 
 
-void OffsetMapping_vp(float4 position   : POSITION, 
+void main_vp(float4 position   : POSITION, 
               float3 normal      : NORMAL, 
               float2 uv         : TEXCOORD0, 
               float3 tangent     : TEXCOORD1, 
@@ -48,4 +48,40 @@ void OffsetMapping_vp(float4 position   : POSITION,
    oLightDir = lightDir; 
    oEyeDir = eyeDir; 
    oHalfAngle = normalize(eyeDir + lightDir); 
+}
+
+void main_fp(float2 uv : TEXCOORD0,
+	float3 lightDir : TEXCOORD1,
+	float3 eyeDir : TEXCOORD2,
+	float3 halfAngle : TEXCOORD3,
+	uniform float3 lightDiffuse,
+	uniform float3 lightSpecular,
+	uniform float4 scaleBias,
+	uniform sampler2D normalHeightMap,
+	uniform sampler2D diffuseMap,
+	out float4 oColor : COLOR)
+{
+	// get the height using the tex coords
+	float height = tex2D(normalHeightMap, uv).a;
+
+	// scale and bias factors	
+	float scale = scaleBias.x;
+	float bias = scaleBias.y;
+
+	// calculate displacement	
+	float displacement = (height * scale) + bias;
+	
+	float3 uv2 = float3(uv, 1);
+	
+	// calculate the new tex coord to use for normal and diffuse
+	float2 newTexCoord = ((eyeDir * displacement) + uv2).xy;
+	
+	// get the new normal and diffuse values
+	float3 normal = tex2D(normalHeightMap, newTexCoord).xyz;
+	float3 diffuse = tex2D(diffuseMap, newTexCoord).xyz;
+	
+	float3 specular = pow(dot(normal, halfAngle), 3) * lightSpecular;
+	float3 col = ((diffuse * dot(normal, lightDir)) * lightDiffuse) + specular;
+		
+	oColor = float4(col, 1);
 }
