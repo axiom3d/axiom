@@ -187,8 +187,10 @@ namespace Demos {
                     FlipLightState(2);
                 }
 
-                timeDelay = 1.0f;
+                timeDelay = 0.1f;
             }
+
+            Console.WriteLine(timeDelay);
 
             // animate the lights
             for(int i = 0; i < NUM_LIGHTS; i++) {
