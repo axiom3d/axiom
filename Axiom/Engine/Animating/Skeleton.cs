@@ -570,16 +570,15 @@ namespace Axiom.Animating {
             // instantiate a new skeleton reader
             OgreSkeletonReader reader = new OgreSkeletonReader(data);
 
-            string[] parts = name.Split('.');
-            string ext = parts[1];
+            string extension = Path.GetExtension( name );
 
-            if(ext == "skeleton") {
+            if(extension == ".skeleton") {
                 reader.Import(this);
             }
             else {
                 data.Close();
 
-                throw new Exception("Unsupported skeleton file format '" + ext + "'");
+                throw new Exception("Unsupported skeleton file format '" + extension + "'");
             }
 
             data.Close();
