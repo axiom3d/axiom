@@ -8,6 +8,9 @@ contained within this library is a derivative of the open source Object Oriented
 Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
 Many thanks to the OGRE team for maintaining such a high quality project.
 
+The .zip archive functionality uses a dynamically linked version of
+SharpZipLib (http://www.icsharpcode.net/OpenSource/SharpZipLib/Default.aspx.
+
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
