@@ -43,7 +43,7 @@ namespace Demos {
             scene.SetFog(FogMode.Exp2, ColorEx.White, .008f, 0, 250);
 
             // water plane setup
-            Plane waterPlane = new Plane(Vector3.UnitY, -1.5f);
+            Plane waterPlane = new Plane(Vector3.UnitY, 1.5f);
 
             MeshManager.Instance.CreatePlane(
                 "WaterPlane",
