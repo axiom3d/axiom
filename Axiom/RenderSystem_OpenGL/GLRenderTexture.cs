@@ -10,8 +10,14 @@ namespace Axiom.RenderSystems.OpenGL
 	/// Summary description for GLRenderTexture.
 	/// </summary>
 	public class GLRenderTexture : RenderTexture {
+        #region Constructor
+
         public GLRenderTexture(string name, int width, int height)
             : base(name, width, height){}
+
+        #endregion Constructor
+
+        #region RenderTexture Members
 
         /// <summary>
         ///     
@@ -22,7 +28,7 @@ namespace Axiom.RenderSystems.OpenGL
                 return;
             }
 
-            // TODO: Refactor Viewport to eliminate exposed collections
+            // get the first viewport
             Viewport viewport = GetViewport(0);
 
             // render the scene so the color buffer can be copied to a texture
@@ -50,5 +56,7 @@ namespace Axiom.RenderSystems.OpenGL
                 return true;
             }
         }
+
+        #endregion RenderTexture Members
 	}
 }

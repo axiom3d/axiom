@@ -12,12 +12,16 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia {
 	///     register and texture combiners.
 	/// </summary>
 	public class NvparseFragmentProgram : GLGpuProgram {
+        #region Constructor
+
 		public NvparseFragmentProgram(string name, GpuProgramType type, string syntaxCode)
             : base(name, type, syntaxCode) {
 
             // create a display list
             programId = Gl.glGenLists(1);
 		}
+
+        #endregion Constructor
 
         #region GpuProgram Members
 
@@ -163,7 +167,6 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia {
         }
 
         #endregion
-
     }
 
 }

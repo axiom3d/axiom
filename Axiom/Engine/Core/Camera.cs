@@ -63,7 +63,7 @@ namespace Axiom.Core {
     public class Camera : Frustum {
         #region Fields
 
-        protected SceneManager	sceneManager;
+        protected SceneManager sceneManager;
         protected Quaternion orientation;
         protected Vector3 position;
         protected Quaternion derivedOrientation;
@@ -85,7 +85,7 @@ namespace Axiom.Core {
 
         #region Constructors
 
-        public Camera(string name, SceneManager sceneManager) : base() {
+        public Camera(string name, SceneManager sceneManager) {
             // Init camera location & direction
 
             // Locate at (0,0,0)
@@ -96,12 +96,23 @@ namespace Axiom.Core {
             orientation = Quaternion.Identity;
             derivedOrientation = Quaternion.Identity;
 
+            fieldOfView = MathUtil.RadiansToDegrees(MathUtil.PI / 4.0f);
+            nearDistance = 100.0f;
+            farDistance = 100000.0f;
+            aspectRatio = 1.33333333333333f;
+
+            viewMatrix = Matrix4.Zero;
+            projectionMatrix = Matrix4.Zero;
+
             // Reasonable defaults to camera params
             projectionType = Projection.Perspective;
             sceneDetail = SceneDetailLevel.Solid;
 
             // Default to fixed yaw (freelook)
             this.FixedYawAxis = Vector3.UnitY;
+
+            InvalidateFrustum();
+            InvalidateView();
 
             // Record name & SceneManager
             this.name = name;
@@ -184,99 +195,101 @@ namespace Axiom.Core {
         /// </summary>
         protected override void UpdateView() {
             // check if the view is out of date
-            if(this.IsViewOutOfDate) {
-                // View matrix is:
-                //
-                //  [ Lx  Uy  Dz  Tx  ]
-                //  [ Lx  Uy  Dz  Ty  ]
-                //  [ Lx  Uy  Dz  Tz  ]
-                //  [ 0   0   0   1   ]
-                //
-                // Where T = -(Transposed(Rot) * Pos)
+            if(!this.IsViewOutOfDate) {
+                return;
+            }
 
-                // This is most efficiently done using 3x3 Matrices
+            // View matrix is:
+            //
+            //  [ Lx  Uy  Dz  Tx  ]
+            //  [ Lx  Uy  Dz  Ty  ]
+            //  [ Lx  Uy  Dz  Tz  ]
+            //  [ 0   0   0   1   ]
+            //
+            // Where T = -(Transposed(Rot) * Pos)
 
-                // Get orientation from quaternion
-                Matrix3 rotation = derivedOrientation.ToRotationMatrix();
-                Vector3 left = rotation.GetColumn(0);
-                Vector3 up = rotation.GetColumn(1);
-                Vector3 direction = rotation.GetColumn(2);
+            // This is most efficiently done using 3x3 Matrices
 
-                // make the translation relative to the new axis
-                Matrix3 rotationT = rotation.Transpose();
-                Vector3 translation = -rotationT * derivedPosition;
+            // Get orientation from quaternion
+            Matrix3 rotation = derivedOrientation.ToRotationMatrix();
+            Vector3 left = rotation.GetColumn(0);
+            Vector3 up = rotation.GetColumn(1);
+            Vector3 direction = rotation.GetColumn(2);
 
-                // initialize the upper 3x3 portion with the rotation
-                viewMatrix = rotationT;
+            // make the translation relative to the new axis
+            Matrix3 rotationT = rotation.Transpose();
+            Vector3 translation = -rotationT * derivedPosition;
 
-                // add the translation portion, add set 1 for the bottom right portion
-                viewMatrix[0,3] = translation.x;
-                viewMatrix[1,3] = translation.y;
-                viewMatrix[2,3] = translation.z;
+            // initialize the upper 3x3 portion with the rotation
+            viewMatrix = rotationT;
 
-                // deal with reflections
-                if(isReflected) {
-                    viewMatrix = viewMatrix * reflectionMatrix;
-                }
+            // add the translation portion, add set 1 for the bottom right portion
+            viewMatrix.m03 = translation.x;
+            viewMatrix.m13 = translation.y;
+            viewMatrix.m23 = translation.z;
 
-                // update the frustum planes
-                UpdateFrustum();
+            // deal with reflections
+            if(isReflected) {
+                viewMatrix = viewMatrix * reflectionMatrix;
+            }
 
-                // Use camera view for frustum calcs, using -Z rather than Z
-                Vector3 camDirection = derivedOrientation * -Vector3.UnitZ;
+            // update the frustum planes
+            UpdateFrustum();
 
-                // calculate distance along direction to our derived position
-                float distance = camDirection.Dot(derivedPosition);
+            // Use camera view for frustum calcs, using -Z rather than Z
+            Vector3 camDirection = derivedOrientation * -Vector3.UnitZ;
 
-                // left plane
-                planes[(int)FrustumPlane.Left].Normal = coeffL[0] * left + 	coeffL[1] * camDirection;
-                planes[(int)FrustumPlane.Left].D = -derivedPosition.Dot(planes[(int)FrustumPlane.Left].Normal);
+            // calculate distance along direction to our derived position
+            float distance = camDirection.Dot(derivedPosition);
 
-                // right plane
-                planes[(int)FrustumPlane.Right].Normal = coeffR[0] * left + coeffR[1] * camDirection;
-                planes[(int)FrustumPlane.Right].D = -derivedPosition.Dot(planes[(int)FrustumPlane.Right].Normal);
+            // left plane
+            this[FrustumPlane.Left].Normal = coeffL[0] * left + coeffL[1] * camDirection;
+            this[FrustumPlane.Left].D = -derivedPosition.Dot(this[FrustumPlane.Left].Normal);
 
-                // bottom plane
-                planes[(int)FrustumPlane.Bottom].Normal = coeffB[0] * up + coeffB[1] * camDirection;
-                planes[(int)FrustumPlane.Bottom].D = -derivedPosition.Dot(planes[(int)FrustumPlane.Bottom].Normal);
+            // right plane
+            this[FrustumPlane.Right].Normal = coeffR[0] * left + coeffR[1] * camDirection;
+            this[FrustumPlane.Right].D = -derivedPosition.Dot(this[FrustumPlane.Right].Normal);
 
-                // top plane
-                planes[(int)FrustumPlane.Top].Normal = coeffT[0] * up + coeffT[1] * camDirection;
-                planes[(int)FrustumPlane.Top].D = -derivedPosition.Dot(planes[(int)FrustumPlane.Top].Normal);
+            // bottom plane
+            this[FrustumPlane.Bottom].Normal = coeffB[0] * up + coeffB[1] * camDirection;
+            this[FrustumPlane.Bottom].D = -derivedPosition.Dot(this[FrustumPlane.Bottom].Normal);
 
-                // far plane
-                planes[(int)FrustumPlane.Far].Normal = -camDirection;
-                planes[(int)FrustumPlane.Far].D = distance + farDistance;
+            // top plane
+            this[FrustumPlane.Top].Normal = coeffT[0] * up + coeffT[1] * camDirection;
+            this[FrustumPlane.Top].D = -derivedPosition.Dot(this[FrustumPlane.Top].Normal);
 
-                // near plane
-                planes[(int)FrustumPlane.Near].Normal = camDirection;
-                planes[(int)FrustumPlane.Near].D = -(distance + nearDistance);
+            // far plane
+            this[FrustumPlane.Far].Normal = -camDirection;
+            this[FrustumPlane.Far].D = distance + farDistance;
 
-                // Deal with reflection on frustum planes
-                if (isReflected) {
-                    Vector3 pos = reflectionMatrix * derivedPosition;
-                    Vector3 dir = camDirection.Reflect(reflectionPlane.Normal);
-                    distance = dir.Dot(pos);
-                    for(int i = 0; i < 6; i++) {
-                        planes[i].Normal = planes[i].Normal.Reflect(reflectionPlane.Normal);
-                        // Near / far plane dealt with differently since they don't pass through camera
-                        switch((FrustumPlane)i) {
-                        case FrustumPlane.Near:
-                            planes[i].D = -(distance + nearDistance);
-                            break;
-                        case FrustumPlane.Far:
-                            planes[i].D = distance + farDistance;
-                            break;
-                        default:
-                            planes[i].D = -pos.Dot(planes[i].Normal);
-                            break;
-                        }
+            // near plane
+            this[FrustumPlane.Near].Normal = camDirection;
+            this[FrustumPlane.Near].D = -(distance + nearDistance);
+
+            // Deal with reflection on frustum planes
+            if (isReflected) {
+                Vector3 pos = reflectionMatrix * derivedPosition;
+                Vector3 dir = camDirection.Reflect(reflectionPlane.Normal);
+                distance = dir.Dot(pos);
+                for(int i = 0; i < 6; i++) {
+                    planes[i].Normal = planes[i].Normal.Reflect(reflectionPlane.Normal);
+                    // Near / far plane dealt with differently since they don't pass through camera
+                    switch((FrustumPlane)i) {
+                    case FrustumPlane.Near:
+                        planes[i].D = -(distance + nearDistance);
+                        break;
+                    case FrustumPlane.Far:
+                        planes[i].D = distance + farDistance;
+                        break;
+                    default:
+                        planes[i].D = -pos.Dot(planes[i].Normal);
+                        break;
                     }
                 }
-
-                // update since we have now recalculated everything
-                recalculateView = false;
             }
+
+            // update since we have now recalculated everything
+            recalculateView = false;
         }
 
         #endregion
@@ -329,7 +342,7 @@ namespace Axiom.Core {
             }
             set { 
                 projectionType = value;	
-                recalculateFrustum = true; 
+                InvalidateFrustum();
             }
         }
 
@@ -370,7 +383,20 @@ namespace Axiom.Core {
         }
 
         /// <summary>
-        /// Gets/Sets the cameras position.
+        ///     Gets/Sets the camera orientation.
+        /// </summary>
+        public Quaternion Orientation {
+            get {
+                return orientation;
+            }
+            set {
+                orientation = value;
+                InvalidateView();
+            }
+        }
+
+        /// <summary>
+        ///     Gets/Sets the cameras position.
         /// </summary>
         public Vector3 Position {
             get { 
@@ -378,7 +404,7 @@ namespace Axiom.Core {
             }
             set { 
                 position = value;	
-                recalculateView = true; 
+                InvalidateView();
             }
         }
 
@@ -442,7 +468,7 @@ namespace Axiom.Core {
                 // shortest arc because this will sometimes cause a relative yaw
                 // which will tip the camera
 
-                recalculateView = true;
+                InvalidateView();
             }
         }
 
@@ -592,7 +618,7 @@ namespace Axiom.Core {
         /// </summary>
         public void DisableReflection() {
             isReflected = false;
-            recalculateView = true;
+            InvalidateView();
         }
 
         /// <summary>
@@ -607,7 +633,7 @@ namespace Axiom.Core {
             isReflected = true;
             reflectionPlane = plane;
             reflectionMatrix = MathUtil.BuildReflectionMatrix(plane);
-            recalculateView = true;
+            InvalidateView();
         }
 
         /// <summary>
@@ -616,7 +642,7 @@ namespace Axiom.Core {
         /// <param name="offset"></param>
         public void Move(Vector3 offset) {
             position = position + offset;
-            recalculateView = true;
+            InvalidateView();
         }
 
         /// <summary>
@@ -628,7 +654,7 @@ namespace Axiom.Core {
             Vector3 transform = orientation * offset;
 
             position = position + transform;
-            recalculateView = true;
+            InvalidateView();
         }
 
         /// <summary>
@@ -648,7 +674,7 @@ namespace Axiom.Core {
             Vector3 xAxis = orientation * Vector3.UnitX;
             Rotate(xAxis, degrees);
 
-            recalculateView = true;
+            InvalidateView();
         }
 
         /// <summary>
@@ -669,7 +695,7 @@ namespace Axiom.Core {
 
             Rotate(yAxis, degrees);
 
-            recalculateView = true;
+            InvalidateView();
         }
 
         /// <summary>
@@ -681,7 +707,7 @@ namespace Axiom.Core {
             Vector3 zAxis = orientation * Vector3.UnitZ;
             Rotate(zAxis, degrees);
 
-            recalculateView = true;
+            InvalidateView();
         }
 
         /// <summary>
@@ -692,7 +718,7 @@ namespace Axiom.Core {
             // Note the order of the multiplication
             orientation = quat * orientation;
 
-            recalculateView = true;
+            InvalidateView();
         }
 
         /// <summary>

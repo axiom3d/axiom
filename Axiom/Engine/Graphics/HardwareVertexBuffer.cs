@@ -36,7 +36,6 @@ namespace Axiom.Graphics {
     ///		
     /// </remarks>
     public abstract class HardwareVertexBuffer : HardwareBuffer {
-
         #region Member variables
 
         protected int numVertices;

@@ -141,7 +141,8 @@ namespace Axiom.ParticleSystems {
         /// </summary>
         protected float repeatDelayRemain;
 
-        static float remainder = 0;
+        protected float remainder = 0;
+
         protected Hashtable commandTable = new Hashtable();
 
         #endregion Fields

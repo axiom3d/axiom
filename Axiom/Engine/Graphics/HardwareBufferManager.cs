@@ -140,6 +140,5 @@ namespace Axiom.Graphics {
         #region Properties
 		
         #endregion
-
     }
 }
