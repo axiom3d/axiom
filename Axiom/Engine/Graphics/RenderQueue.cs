@@ -745,7 +745,6 @@ namespace Axiom.Graphics {
             #region IComparer Members
 
             public int Compare(object x, object y) {
-                // TODO: Should these ever be null?
                 if(x == null  || y == null)
                     return 0;
 
@@ -781,7 +780,6 @@ namespace Axiom.Graphics {
             #region IComparer Members
 
             public int Compare(object x, object y) {
-                // TODO: Should these ever be null?
                 if(x == null  || y == null)
                     return 0;
 

@@ -665,7 +665,7 @@ namespace Axiom.Core {
 		/// </remarks>
 		/// <param name="fileName"></param>
 		public virtual void LoadWorldGeometry(string fileName) {
-			// TODO: Implement SceneManager.LoadWorldGeometry
+			// no default implenentation
 		}
 
 		public void ManualRender(RenderOperation op, Pass pass, Viewport vp, 
@@ -795,7 +795,7 @@ namespace Axiom.Core {
 						shadowCasterQuery.Sphere = s;
 					}
 
-					// TODO: Ogre has as Position, should be DerivedPosition methinks
+					// check if the light is within view of the camera
 					bool lightInFrustum = camera.IsObjectVisible(light.DerivedPosition);
 
 					PlaneBoundedVolumeList volumeList = null;
@@ -914,7 +914,7 @@ namespace Axiom.Core {
 			// Do we have access to vertex programs?
 			bool extrudeInSoftware = true;
 			if (targetRenderSystem.Caps.CheckCap(Capabilities.VertexPrograms)) {
-				// TODO
+				// TODO: Support for hardware shadow volume extrusion
 				//extrudeInSoftware = false;
 			}
 

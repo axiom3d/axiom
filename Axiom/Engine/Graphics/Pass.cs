@@ -678,7 +678,6 @@ namespace Axiom.Graphics
         ///    setting appropriate to approximate the multitexture. This Pass will be 
         ///    attached to the parent Technique of this Pass.
         /// </returns>
-        /// TODO: Verify indexing
         public Pass Split(int numUnits) {
             // can't split programmable passes
             if(fragmentProgramUsage != null) {
