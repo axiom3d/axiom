@@ -205,8 +205,6 @@ namespace Demos {
             demoListView.Items.Clear();
 
             foreach(DataRowView demo in demoView) {
-                // add the image
-                //demoImageList.Images.Add(Bitmap.FromFile("../../Demos/images/" + (string)demo["ImageFile"]));
 
                 ListViewItem item = new ListViewItem();
                 item.Tag = (string)demo["ClassName"];
@@ -219,7 +217,6 @@ namespace Demos {
         }
 
         private void DemoBrowser_Load(object sender, System.EventArgs e) {
-            // TODO: load data from xml file or something
 
             demoTable.Columns.Add("ImageIndex", typeof(int));
             demoTable.Columns.Add("Name");
@@ -244,7 +241,7 @@ namespace Demos {
             // load the images on form load once
             foreach(DataRowView demo in demoView) {
                 // add the image
-                demoImageList.Images.Add(Bitmap.FromFile("../../Demos/images/" + (string)demo["ImageFile"]));
+                demoImageList.Images.Add(Bitmap.FromFile("BrowserImages/" + (string)demo["ImageFile"]));
             }
 
             // set the properties of the image list
