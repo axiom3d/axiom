@@ -29,6 +29,7 @@ using System.Drawing;
 using Axiom.Animating;
 using Axiom.Core;
 using Axiom.MathLib;
+using Axiom.SubSystems.Rendering;
 using Axiom.Utility;
 
 namespace Demos {
@@ -118,7 +119,7 @@ namespace Demos {
             animationState.IsEnabled = true;
 
             // turn on some fog
-            scene.SetFog(Axiom.SubSystems.Rendering.FogMode.Exp, ColorEx.FromColor(Color.White), 0.0002f);
+            scene.SetFog(FogMode.Exp, ColorEx.FromColor(Color.White), 0.0002f);
         }
         #endregion Protected Override Methods
 
