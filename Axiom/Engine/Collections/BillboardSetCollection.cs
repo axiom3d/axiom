@@ -86,7 +86,7 @@ namespace Axiom.Collections {
         /// <summary>
         ///		Adds a named object to the collection.
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="key"></param>
         /// <param name="item"></param>
         public void Add(K key, T item) {
             base.Add(key, item);

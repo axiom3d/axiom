@@ -94,57 +94,57 @@ namespace Demos {
 
             // red light billboard in off set
             Vector3 redLightPos = new Vector3(78, -8, -70);
-            redLightBoard = redYellowLights.CreateBillboard(redLightPos, ColorEx.FromColor(Color.Black));
+            redLightBoard = redYellowLights.CreateBillboard(redLightPos, ColorEx.Black);
 
             // yellow light billboard in off set
             Vector3 yellowLightPos = new Vector3(-4.5f, 30, -80);
-            yellowLightBoard = redYellowLights.CreateBillboard(yellowLightPos, ColorEx.FromColor(Color.Black));
+            yellowLightBoard = redYellowLights.CreateBillboard(yellowLightPos, ColorEx.Black);
 
             // blue light billboard in off set
             Vector3 blueLightPos = new Vector3(-90, -8, -70);
-            blueLightBoard = greenBlueLights.CreateBillboard(blueLightPos, ColorEx.FromColor(Color.Black));
+            blueLightBoard = greenBlueLights.CreateBillboard(blueLightPos, ColorEx.Black);
 
             // green light billboard in off set
             Vector3 greenLightPos = new Vector3(50, 70, 80);
-            greenLightBoard = greenBlueLights.CreateBillboard(greenLightPos, ColorEx.FromColor(Color.Black));
+            greenLightBoard = greenBlueLights.CreateBillboard(greenLightPos, ColorEx.Black);
 
             // red light in off state
             redLight = scene.CreateLight("RedLight");
             redLight.Position = redLightPos;
             redLight.Type = LightType.Point;
-            redLight.Diffuse = ColorEx.FromColor(Color.Black);
+            redLight.Diffuse = ColorEx.Black;
             redYellowLightsNode.AttachObject(redLight);
 
             // yellow light in off state
             yellowLight = scene.CreateLight("YellowLight");
             yellowLight.Type = LightType.Point;
             yellowLight.Position = yellowLightPos;
-            yellowLight.Diffuse = ColorEx.FromColor(Color.Black);
+            yellowLight.Diffuse = ColorEx.Black;
             redYellowLightsNode.AttachObject(yellowLight);
 
             // green light in off state
             greenLight = scene.CreateLight("GreenLight");
             greenLight.Type = LightType.Point;
             greenLight.Position = greenLightPos;
-            greenLight.Diffuse = ColorEx.FromColor(Color.Black);
+            greenLight.Diffuse = ColorEx.Black;
             greenBlueLightsNode.AttachObject(greenLight);
 
             // blue light in off state
             blueLight = scene.CreateLight("BlueLight");
             blueLight.Type = LightType.Point;
             blueLight.Position = blueLightPos;
-            blueLight.Diffuse = ColorEx.FromColor(Color.Black);
+            blueLight.Diffuse = ColorEx.Black;
             greenBlueLightsNode.AttachObject(blueLight);
 
             // create controller function
             redLightFlasher = 
-                new LightFlasherControllerValue(redLight, redLightBoard, ColorEx.FromColor(System.Drawing.Color.Red));
+                new LightFlasherControllerValue(redLight, redLightBoard, ColorEx.Red);
             yellowLightFlasher = 
-                new LightFlasherControllerValue(yellowLight, yellowLightBoard, ColorEx.FromColor(System.Drawing.Color.Yellow));
+                new LightFlasherControllerValue(yellowLight, yellowLightBoard, ColorEx.Yellow);
             greenLightFlasher = 
-                new LightFlasherControllerValue(greenLight, greenLightBoard, ColorEx.FromColor(System.Drawing.Color.Green));
+                new LightFlasherControllerValue(greenLight, greenLightBoard, ColorEx.Green);
             blueLightFlasher = 
-                new LightFlasherControllerValue(blueLight, blueLightBoard, ColorEx.FromColor(System.Drawing.Color.Blue));
+                new LightFlasherControllerValue(blueLight, blueLightBoard, ColorEx.Blue);
 
             // set up the controller value and function for flashing
             redLightFunc = new WaveformControllerFunction(WaveformType.Sine, 0, 0.5f, 0, 1);

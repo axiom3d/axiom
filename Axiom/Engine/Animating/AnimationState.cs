@@ -172,7 +172,7 @@ namespace Axiom.Animating {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        static public bool operator == (AnimationState left, AnimationState right) {
+        public static bool operator == (AnimationState left, AnimationState right) {
             if (left.animationName == right.animationName &&
                 left.isEnabled == right.isEnabled &&
                 left.time == right.time &&
@@ -191,7 +191,7 @@ namespace Axiom.Animating {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        static public bool operator != (AnimationState left, AnimationState right) {
+        public static bool operator != (AnimationState left, AnimationState right) {
             return !(left == right);
         }
 

@@ -115,7 +115,7 @@ namespace Axiom.Utility {
 
             // create a new viewport and set it's background color
             viewport = window.CreateViewport(camera, 0, 0, 100, 100, 100);
-            viewport.BackgroundColor = ColorEx.FromColor(Color.Black);
+            viewport.BackgroundColor = ColorEx.Black;
         }
 
         protected virtual bool Setup() {

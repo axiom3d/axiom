@@ -128,7 +128,7 @@ namespace Demos {
             
             Vector3 direction = -Vector3.UnitZ;
 
-            line = new Line3d(start, direction, 1000, ColorEx.FromColor(Color.Blue));
+            line = new Line3d(start, direction, 1000, ColorEx.Blue);
             ((SceneNode) scene.RootSceneNode.CreateChild()).AttachObject(line);
         }
 

@@ -390,7 +390,7 @@ namespace Axiom.Core {
         /// <param name="position"></param>
         /// <returns></returns>
         public Billboard CreateBillboard(Vector3 position) {
-            return CreateBillboard(position, ColorEx.FromColor(Color.White));
+            return CreateBillboard(position, ColorEx.White);
         }
 
         /// <summary>
@@ -651,7 +651,7 @@ namespace Axiom.Core {
                 materialName = value;
 				
                 // find the requested material
-                material = MaterialManager.Instance[materialName];
+                material = MaterialManager.Instance.GetByName(materialName);
 
                 if(material != null) {
                     // make sure it is loaded

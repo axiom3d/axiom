@@ -105,8 +105,8 @@ namespace Demos {
             emitter1.EmissionRate = 70;
             emitter1.ParticleVelocity = 50;
             emitter1.Direction = -Vector3.UnitZ;
-            emitter1.ColorRangeStart = ColorEx.FromColor(Color.White);
-            emitter1.ColorRangeEnd = ColorEx.FromColor(Color.Red);
+            emitter1.ColorRangeStart = ColorEx.White;
+            emitter1.ColorRangeEnd = ColorEx.Red;
 
             // thruster 2
             emitter2.Angle = 3;
@@ -114,8 +114,8 @@ namespace Demos {
             emitter2.EmissionRate = 70;
             emitter2.ParticleVelocity = 50;
             emitter2.Direction = -Vector3.UnitZ;
-            emitter2.ColorRangeStart = ColorEx.FromColor(Color.White);
-            emitter2.ColorRangeEnd = ColorEx.FromColor(Color.Red);
+            emitter2.ColorRangeStart = ColorEx.White;
+            emitter2.ColorRangeEnd = ColorEx.Red;
 
             // set the position of the thrusters
             emitter1.Position = new Vector3(5.7f, 0, 0);

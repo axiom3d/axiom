@@ -174,7 +174,7 @@ namespace Demos {
             objectNode = (SceneNode)scene.RootSceneNode.CreateChild();
 
 		    // show overlay
-		    Overlay overlay = OverlayManager.Instance["Example/CubeMappingOverlay"];
+		    Overlay overlay = OverlayManager.Instance.GetByName("Example/CubeMappingOverlay");
 		    overlay.Show();
         }
 
@@ -209,7 +209,7 @@ namespace Demos {
             }
 
             // load mesh if necessary
-            originalMesh = (Mesh)MeshManager.Instance[meshName];
+            originalMesh = (Mesh)MeshManager.Instance.GetByName(meshName);
 
             // load mesh with shadow buffer so we can do fast reads
             if(originalMesh == null) {
@@ -242,7 +242,7 @@ namespace Demos {
                 // does this mesh have its own material set?
                 if(subMesh.IsMaterialInitialized) {
                     string matName = subMesh.MaterialName;
-                    Material subMat = MaterialManager.Instance[matName];
+                    Material subMat = MaterialManager.Instance.GetByName(matName);
 
                     if(subMat != null) {
                         subMat.Load();
@@ -580,7 +580,7 @@ namespace Demos {
             // toast the existing textures
             for(int i = 0; i < material.GetTechnique(0).GetPass(0).GetTextureUnitState(0).NumFrames; i++) {
                 string texName = material.GetTechnique(0).GetPass(0).GetTextureUnitState(0).GetFrameTextureName(i);
-                Texture tex = (Texture)TextureManager.Instance[texName];
+                Texture tex = (Texture)TextureManager.Instance.GetByName(texName);
                 TextureManager.Instance.Unload(tex);
             }
 
@@ -588,12 +588,12 @@ namespace Demos {
             material.GetTechnique(0).GetPass(0).GetTextureUnitState(0).SetCubicTexture(cubeMapName, true);
 
             // get the current skybox cubemap and change it to the new one
-            Material skyBoxMat = MaterialManager.Instance[SKYBOX_MATERIAL];
+            Material skyBoxMat = MaterialManager.Instance.GetByName(SKYBOX_MATERIAL);
 
             // toast the existing textures
             for(int i = 0; i < skyBoxMat.GetTechnique(0).GetPass(0).GetTextureUnitState(0).NumFrames; i++) {
                 string texName = skyBoxMat.GetTechnique(0).GetPass(0).GetTextureUnitState(0).GetFrameTextureName(i);
-                Texture tex = (Texture)TextureManager.Instance[texName];
+                Texture tex = (Texture)TextureManager.Instance.GetByName(texName);
                 TextureManager.Instance.Unload(tex);
             }
 
@@ -695,7 +695,7 @@ namespace Demos {
         protected override bool Setup() {
             if(base.Setup()) {
 
-                material = MaterialManager.Instance[MATERIAL_NAME];
+                material = MaterialManager.Instance.GetByName(MATERIAL_NAME);
 
                 ToggleNoise();
                 ToggleMesh();

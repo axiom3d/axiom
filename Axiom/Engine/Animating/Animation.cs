@@ -118,7 +118,7 @@ namespace Axiom.Animating {
         /// <summary>
         ///		Gets/Sets the default interpolation mode to be used for all animations.
         /// </summary>
-        static public InterpolationMode DefaultInterpolationMode {
+        public static InterpolationMode DefaultInterpolationMode {
             get { return defaultInterpolationMode; }
             set { defaultInterpolationMode = value; }
         }

@@ -54,6 +54,10 @@ namespace Axiom.Graphics
         ///    Flag that states whether or not this technique is supported on the current hardware.
         /// </summary>
         protected bool isSupported;
+        /// <summary>
+        ///    Name of this technique.
+        /// </summary>
+        protected string name;
 		
 		#endregion
 		
@@ -117,7 +121,7 @@ namespace Axiom.Graphics
                     }
 
                     // check fragment program version
-                    if(!GpuProgramManager.Instance.IsSyntaxSupported(pass.FragmentProgram.SyntaxCode)) {
+                    if(!pass.FragmentProgram.IsSupported) {
                         // can't do this one
                         return;
                     }
@@ -149,7 +153,7 @@ namespace Axiom.Graphics
                 // if this has a vertex program, check the syntax code to be sure the hardware supports it
                 if(pass.HasVertexProgram) {
                     // check vertex program version
-                    if(!GpuProgramManager.Instance.IsSyntaxSupported(pass.VertexProgram.SyntaxCode)) {
+                    if(!pass.VertexProgram.IsSupported) {
                         // can't do this one
                         return;
                     }
@@ -352,6 +356,18 @@ namespace Axiom.Graphics
                 for(int i = 0; i < passes.Count; i++) {
                     ((Pass)passes[i]).ManualCullMode = value;
                 }
+            }
+        }
+
+        /// <summary>
+        ///    Gets/Sets the name of this technique.
+        /// </summary>
+        public string Name {
+            get {
+                return name;
+            }
+            set {
+                name = value;
             }
         }
 

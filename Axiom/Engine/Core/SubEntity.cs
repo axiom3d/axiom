@@ -67,7 +67,7 @@ namespace Axiom.Core {
         ///		Internal constructor, only allows creation of SubEntities within the engine core.
         /// </summary>
         internal SubEntity() {
-            material = MaterialManager.Instance["BaseWhite"];
+            material = MaterialManager.Instance.GetByName("BaseWhite");
             renderDetail = SceneDetailLevel.Solid;
         }
 
@@ -86,14 +86,14 @@ namespace Axiom.Core {
                 materialName = value; 
 
                 // load the material from the material manager (it should already exist
-                material = MaterialManager.Instance[materialName];
+                material = MaterialManager.Instance.GetByName(materialName);
 
                 if(material == null) {
                     System.Diagnostics.Trace.Write(
                         string.Format("Cannot assign material '{0}' to SubEntity '{1}' because the material doesn't exist.", materialName, parent.Name));
 
                     // give it base white so we can continue
-                    material = MaterialManager.Instance["BaseWhite"];
+                    material = MaterialManager.Instance.GetByName("BaseWhite");
                 }
 
                 // ensure the material is loaded.  It will skip it if it already is

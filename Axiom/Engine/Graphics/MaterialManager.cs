@@ -32,6 +32,7 @@ using System.Reflection;
 using Axiom.Controllers;
 using Axiom.Core;
 using Axiom.FileSystem;
+using Axiom.MathLib;
 using Axiom.Scripting;
 
 namespace Axiom.Graphics {
@@ -56,6 +57,7 @@ namespace Axiom.Graphics {
 
             // just create the default BaseWhite material
             Material baseWhite = (Material)instance.Create("BaseWhite");
+            baseWhite.CreateTechnique().CreatePass();
             baseWhite.Lighting = false;
 
             instance.defaultTextureFiltering = TextureFiltering.Bilinear;
@@ -66,23 +68,25 @@ namespace Axiom.Graphics {
 
         #region Delegates
 
-        delegate void MaterialAttributeParser(string[] values, Material material);
-        delegate void TextureLayerAttributeParser(string[] values, Material material, TextureUnitState layer);
+        delegate void PassAttributeParser(string[] values, Pass pass);
+        delegate void TextureUnitAttributeParser(string[] values, TextureUnitState texUnit);
 
         #endregion
 
         #region Member variables
 
         /// <summary>Lookup table of methods that can be used to parse material attributes.</summary>
-        protected Hashtable attribParsers = new Hashtable();
-        protected Hashtable layerAttribParsers = new Hashtable();
+        protected Hashtable passAttribParsers = new Hashtable();
+        protected Hashtable texUnitAttribParsers = new Hashtable();
 
         protected TextureFiltering defaultTextureFiltering;
         protected int defaultAnisotropy;
 		
         // constants for material section types
-        const string TEX_LAYER = "TextureLayer";
-        const string MATERIAL = "Material";
+        const string GpuProgram = "GpuProgram";
+        const string GpuProgramDef = "GpuProgramDef";
+        const string TextureUnit = "TextureUnit";
+        const string Pass = "Pass";
 
         #endregion
 
@@ -159,28 +163,24 @@ namespace Axiom.Graphics {
 
                     switch(parserAtt.ParserType) {
                             // this method should parse a material attribute
-                        case MATERIAL:
-                            attribParsers.Add(parserAtt.Name, Delegate.CreateDelegate(typeof(MaterialAttributeParser), method));
+                        case Pass:
+                            passAttribParsers.Add(parserAtt.Name, Delegate.CreateDelegate(typeof(PassAttributeParser), method));
                             break;
 
                             // this method should parse a texture layer attribute
-                        case TEX_LAYER:
-                            layerAttribParsers.Add(parserAtt.Name, Delegate.CreateDelegate(typeof(TextureLayerAttributeParser), method));
+                        case TextureUnit:
+                            texUnitAttribParsers.Add(parserAtt.Name, Delegate.CreateDelegate(typeof(TextureUnitAttributeParser), method));
                             break;
                     } // switch
                 } // for
             } // for
         }
 
+
         #region Implementation of ResourceManager
 
-        /// <summary>
-        ///    Indexer that gets a material by name.
-        /// </summary>
-        public new Material this[string name] {
-            get {
-                return (Material)base[name];
-            }
+        public new Material GetByName(string name) {
+            return (Material)base.GetByName(name);
         }
 
         /// <summary>
@@ -195,9 +195,7 @@ namespace Axiom.Graphics {
             // create a material
             Material material = new Material(name);
 
-            resourceList.Add(material.Name, material);
-
-            //base.Load(material, 1);
+            resourceList[name] = material;
 				
             return material;
         }
@@ -267,30 +265,165 @@ namespace Axiom.Graphics {
             StreamReader script = new StreamReader(stream, System.Text.Encoding.ASCII);
 
             string line = "";
-            Material material = null;
 
             // parse through the data to the end
             while((line = ParseHelper.ReadLine(script)) != null) {
                 // ignore blank lines and comments
-                if(!(line.Length == 0 || line.StartsWith("//"))) {
-                    if(material == null) {
-                        material = (Material)Create(line);
+                if(line.Length == 0 || line.StartsWith("//")) {
+                    continue;
+                }
 
-                        // read another line to skip the beginning brace of the current material
-                        script.ReadLine();
+                // Vertex Programs
+                if(line.StartsWith("vertex_program")) {
+                    string[] parms = line.Split(' ');
+
+                    if(parms.Length != 3) {
+                        ParseHelper.LogParserError("vertex_program", "Top level", "Vertex program declarations must include a type and name.");
+                        // skip this one
+                        ParseHelper.SkipToNextCloseBrace(script);
+                        continue;
                     }
-                    else if(line == "}") {
-                        // end of current material
-                        material = null;
+
+                    ParseHelper.SkipToNextOpenBrace(script);
+                    ParseGpuProgram(script, parms[2], parms[1], GpuProgramType.Vertex);
+                }
+                // Fragment Programs
+                else if(line.StartsWith("fragment_program")) {
+                    string[] parms = line.Split(' ');
+
+                    if(parms.Length != 3) {
+                        ParseHelper.LogParserError("vertex_program", "Top level", "Fragment program declarations must include a type and name.");
+                        // skip this one
+                        ParseHelper.SkipToNextCloseBrace(script);
+                        continue;
                     }
-                    else if (line == "{") {
-                        // new texture pass
-                        ParseNewTextureLayer(script, material);
+
+                    ParseHelper.SkipToNextOpenBrace(script);
+                    ParseGpuProgram(script, parms[2], parms[1], GpuProgramType.Fragment);
+                }
+                // Materials
+                else if(line.StartsWith("material")) {
+                    string[] parms = line.Split(new char[] {' '}, 2);
+
+                    if(parms.Length != 2) {
+                        ParseHelper.LogParserError("material", "Top level", "Materials must have a name.");
+                        // skip this one
+                        ParseHelper.SkipToNextCloseBrace(script);
+                        continue;
+                    }
+                    
+                    ParseHelper.SkipToNextOpenBrace(script);
+
+                    ParseMaterial(script, parms[1]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="script"></param>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        /// <param name="programType"></param>
+        protected void ParseGpuProgram(TextReader script, string name, string language, GpuProgramType programType) {
+
+            string line = string.Empty;
+            string fileName = string.Empty;
+            string profiles = string.Empty;
+            Hashtable parmsTable = new Hashtable();
+
+            while((line = ParseHelper.ReadLine(script)) != null) {
+                // ignore blank lines and comments
+                if(line.Length == 0 || line.StartsWith("//")) {
+                    continue;
+                }
+
+                if(line == "}") {
+                    if(language == "asm") {
+                        string profile = (string)parmsTable["profile"];
+
+                        GpuProgramManager.Instance.CreateProgram(name, fileName, programType, profile);
                     }
                     else {
-                        // attribute line
-                        ParseAttrib(line.ToLower(), material);
+                        // High level gpu programs
+                        HighLevelGpuProgram program = HighLevelGpuProgramManager.Instance.CreateProgram(name, language, programType);
+                        program.SourceFile = fileName;
+
+                        // set all extra params
+                        foreach(DictionaryEntry entry in parmsTable) {
+                            program.SetParam((string)entry.Key, (string)entry.Value);
+                        }
+
+                        program.Load();
                     }
+
+                    return;
+                }
+                
+                string[] atts = line.Split(new char[]{' '}, 2);
+
+                if(atts[0] == "source") {
+                    fileName = atts[1];
+                }
+                else {
+                    // store the param for parsing later
+                    parmsTable.Add(atts[0], atts[1]);
+                }
+            }
+        }
+
+        protected void ParseMaterial(TextReader script, string name) {
+            // create a new material
+            Material material = (Material)Create(name);
+
+            string line = "";
+
+            while((line = ParseHelper.ReadLine(script)) != null) {
+                // ignore blank lines and comments
+                if(line.Length == 0 || line.StartsWith("//")) {
+                    continue;
+                }
+
+                if(line == "}") {
+                    // compile the material
+                    material.Compile();
+
+                    return;
+                }
+
+                if(line == "technique") {
+                    ParseHelper.SkipToNextOpenBrace(script);
+                    ParseTechnique(script, material);
+                }
+                else {
+                    ParseHelper.LogParserError("material", "material", "Only techniques can be child blocks for a material block.");
+                }
+            }
+        }
+
+        protected void ParseTechnique(TextReader script, Material material) {
+            // create a new technique
+            Technique technique = material.CreateTechnique();
+
+            string line = "";
+
+            while((line = ParseHelper.ReadLine(script)) != null) {
+                // ignore blank lines and comments
+                if(line.Length == 0 || line.StartsWith("//")) {
+                    continue;
+                }
+
+                if(line == "}") {
+                    return;
+                }
+
+                if(line == "pass") {
+                    ParseHelper.SkipToNextOpenBrace(script);
+                    ParsePass(script, technique);
+                }
+                else {
+                    ParseHelper.LogParserError("technique", "technique", "Only passes can be child blocks for a technique block.");
                 }
             }
         }
@@ -300,154 +433,285 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="script"></param>
         /// <param name="material"></param>
-        protected void ParseNewTextureLayer(TextReader script, Material material) {
+        protected void ParseTextureUnit(TextReader script, Pass pass) {
+            TextureUnitState texUnit = pass.CreateTextureUnitState("");
+
             string line = "";
 
-            // create a new texture layer from the current material
-            TextureUnitState layer = material.GetTechnique(0).GetPass(0).CreateTextureUnitState("");
+            while((line = ParseHelper.ReadLine(script)) != null) {
+                // have we reached the end of the layer
+                if(line == "}")
+                    return;
+                else {
+                    // split attribute line by spaces
+                    string[] values = line.Split(' ');
+
+                    // make sure this attribute exists
+                    if(!texUnitAttribParsers.ContainsKey(values[0]))
+                        System.Diagnostics.Trace.WriteLine(string.Format("Unknown layer attribute: {0}", values[0]));
+                    else {
+                        TextureUnitAttributeParser parser = (TextureUnitAttributeParser)texUnitAttribParsers[values[0]];
+
+                        if(values[0] != "texture" && values[0] != "cubic_texture" && 	values[0] != "anim_texture") {
+                            // lowercase all params if not a texture attrib of any sort, since texture filenames
+                            // can be case sensitive
+                            for(int i = 0; i < values.Length; i++)
+                                values[0] = values[0].ToLower();
+                        }
+
+                        parser(ParseHelper.GetParams(values), texUnit);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///		Parses an attribute line for the current pass.
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="technique"></param>
+        protected void ParsePass(TextReader script, Technique technique) {
+
+            Pass pass = technique.CreatePass();
+
+            string line = "";
 
             while((line = ParseHelper.ReadLine(script)) != null) {
-                if(line.Length != 0 && !line.StartsWith("//")) {
-                    // have we reached the end of the layer
-                    if(line == "}")
+                if(line.Length == 0 || line.StartsWith("//")) {
+                    continue;
+                }
+
+                if(line == "}") {
+                    return;
+                }
+
+                if(line == "texture_unit") {
+                    ParseHelper.SkipToNextOpenBrace(script);
+                    ParseTextureUnit(script, pass);
+                }
+                else if(line.StartsWith("vertex_program_ref")) {
+                    string[] parms = line.Split(' ');
+
+                    if(parms.Length != 2) {
+                        ParseHelper.LogParserError("vertex_program_ref", pass.Parent.Parent.Name, "A name must be specified for a vertex program reference.");
+                        ParseHelper.SkipToNextCloseBrace(script);
                         return;
-                    else
-                        ParseLayerAttrib(line, material, layer);
+                    }
+
+                    ParseHelper.SkipToNextOpenBrace(script);
+                    ParseGpuProgramRef(script, parms[1], pass, GpuProgramType.Vertex);
+                }
+                else if(line.StartsWith("fragment_program_ref")) {
+                    string[] parms = line.Split(' ');
+
+                    if(parms.Length != 2) {
+                        ParseHelper.LogParserError("fragment_program_ref", pass.Parent.Parent.Name, "A name must be specified for a fragment program reference.");
+                        ParseHelper.SkipToNextCloseBrace(script);
+                        return;
+                    }
+                    
+                    ParseHelper.SkipToNextOpenBrace(script);
+                    ParseGpuProgramRef(script, parms[1], pass, GpuProgramType.Fragment);
+                }
+                else {
+                    // split attribute line by spaces
+                    string[] values = line.Split(' ');
+
+                    // make sure this attribute exists
+                    if(!passAttribParsers.ContainsKey(values[0]))
+                        System.Diagnostics.Trace.WriteLine(string.Format("Unknown pass attribute: {0}", values[0]));
+                    else {
+                        PassAttributeParser parser = (PassAttributeParser)passAttribParsers[values[0]];
+                        parser(ParseHelper.GetParams(values), pass);
+                    }
                 }
             }
         }
 
-        /// <summary>
-        ///		Parses an attribute line for the current material.
-        /// </summary>
-        /// <param name="line"></param>
-        /// <param name="material"></param>
-        protected void ParseAttrib(string line, Material material) {
-            // split attribute line by spaces
-            string[] values = line.Split(' ');
+        protected void ParseGpuProgramRef(TextReader script, string name, Pass pass, GpuProgramType type) {
+            string line = "";
+            GpuProgramParameters programParams = null;
 
-            // make sure this attribute exists
-            if(!attribParsers.ContainsKey(values[0]))
-                System.Diagnostics.Trace.WriteLine(string.Format("Unknown material attribute: {0}", values[0]));
-            else {
-                MaterialAttributeParser parser = (MaterialAttributeParser)attribParsers[values[0]];
-                parser(ParseHelper.GetParams(values), material);
+            switch(type) {
+                case GpuProgramType.Vertex:
+                    pass.VertexProgramName = name;
+
+                    if(pass.VertexProgram is HighLevelGpuProgram) {
+                        pass.VertexProgramParameters = ((HighLevelGpuProgram)pass.VertexProgram).CreateParameters();
+                    }
+
+                    programParams = pass.VertexProgramParameters;
+                    break;
+
+                case GpuProgramType.Fragment:
+                    pass.FragmentProgramName = name;
+
+                    if(pass.FragmentProgram is HighLevelGpuProgram) {
+                        pass.FragmentProgramParameters = ((HighLevelGpuProgram)pass.FragmentProgram).CreateParameters();
+                    }
+
+                    programParams = pass.FragmentProgramParameters;
+                    break;
             }
-        }
 
-        /// <summary>
-        ///		Parses an attribute string for a texture layer.
-        /// </summary>
-        /// <param name="line"></param>
-        /// <param name="material"></param>
-        /// <param name="layer"></param>
-        protected void ParseLayerAttrib(string line, Material material, TextureUnitState layer) {
-            // split attribute line by spaces
-            string[] values = line.Split(' ');
-
-            // make sure this attribute exists
-            if(!layerAttribParsers.ContainsKey(values[0]))
-                System.Diagnostics.Trace.WriteLine(string.Format("Unknown layer attribute: {0}", values[0]));
-            else {
-                TextureLayerAttributeParser parser = (TextureLayerAttributeParser)layerAttribParsers[values[0]];
-
-                if(values[0] != "texture" && values[0] != "cubic_texture" && 	values[0] != "anim_texture") {
-                    // lowercase all params if not a texture attrib of any sort, since texture filenames
-                    // can be case sensitive
-                    for(int i = 0; i < values.Length; i++)
-                        values[0] = values[0].ToLower();
+            while((line = ParseHelper.ReadLine(script)) != null) {
+                if(line.Length == 0 || line.StartsWith("//")) {
+                    continue;
                 }
 
-                parser(ParseHelper.GetParams(values), material, layer);
+                if(line == "}") {
+                    return;
+                }
+
+                string[] parms = line.Split(' ');
+                int index = 0;
+
+                switch(parms[0]) {
+                    case "param_indexed":
+                        index = int.Parse(parms[1]);
+                        string dataType = parms[2];
+
+                        if(dataType == "float4") {
+                            if(parms.Length != 7) {
+                                ParseHelper.LogParserError("param_indexed", pass.Parent.Parent.Name, "Float4 gpu program params must have 4 components specified.");
+                                ParseHelper.SkipToNextCloseBrace(script);
+                                return;
+                            }
+
+                            Vector4 vec = new Vector4(float.Parse(parms[3]), float.Parse(parms[4]), float.Parse(parms[5]), float.Parse(parms[6]));
+                            programParams.SetConstant(index, vec);
+                        }
+                        // TODO: more types
+                        break;
+
+                    case "param_indexed_auto":
+                        index = int.Parse(parms[1]);
+                        string constant = parms[2];
+                        int extraInfo = (parms.Length == 4) ? int.Parse(parms[3]) : 0;
+
+                        object val = ScriptEnumAttribute.Lookup(constant, typeof(AutoConstants));
+
+                        if(val != null) {
+                            AutoConstants autoConstant = (AutoConstants)val;
+                            programParams.SetAutoConstant(index, autoConstant, extraInfo);
+                        }
+                        else {
+                            ParseHelper.LogParserError("vertex_program_ref", pass.Parent.Parent.Name, "Unrecognized auto contant type.");
+                        }
+
+                        break;
+
+                    case "param_named_auto":
+
+                        string paramName = parms[1];
+                        constant = parms[2];
+                        extraInfo = (parms.Length == 4) ? int.Parse(parms[3]) : 0;
+
+                        val = ScriptEnumAttribute.Lookup(constant, typeof(AutoConstants));
+
+                        if(val != null) {
+                            AutoConstants autoConstant = (AutoConstants)val;
+                            programParams.SetNamedAutoConstant(paramName, autoConstant, extraInfo);
+                        }
+                        else {
+                            ParseHelper.LogParserError("vertex_program_ref", pass.Parent.Parent.Name, "Unrecognized auto contant type.");
+                        }
+
+                        break;
+
+                    default:
+                        ParseHelper.LogParserError("vertex_program_ref", pass.Parent.Parent.Name, "Unknown vertex program ref param");
+                        break;
+                }
             }
         }
 
         #region Material attribute parser methods
 
-        [AttributeParser("ambient", MATERIAL)]
-        public static void ParseAmbient(string[] values, Material material) {
+        [AttributeParser("ambient", Pass)]
+        public static void ParseAmbient(string[] values, Pass pass) {
             if(values.Length != 3 && values.Length != 4) {
-                ParseHelper.LogParserError("ambient", material.Name, "Expected 3-4 params");
+                ParseHelper.LogParserError("ambient", pass.Parent.Name, "Expected 3-4 params");
                 return;
             }
 			
-            material.Ambient = ParseHelper.ParseColor(values);
+            pass.Ambient = ParseHelper.ParseColor(values);
         }
 
-        [AttributeParser("depth_write", MATERIAL)]
-        public static void ParseDepthWrite(string[] values, Material material) {
+        [AttributeParser("depth_write", Pass)]
+        public static void ParseDepthWrite(string[] values, Pass pass) {
             if(values.Length != 1) {
-                ParseHelper.LogParserError("depth_write", material.Name, "Expected value 'on' or 'off'");
+                ParseHelper.LogParserError("depth_write", pass.Parent.Name, "Expected value 'on' or 'off'");
                 return;
             }
 
             switch(values[0]) {
                 case "on":
-                    material.DepthWrite = true;
+                    pass.DepthWrite = true;
                     break;
                 case "off":
-                    material.DepthWrite = false;
+                    pass.DepthWrite = false;
                     break;
                 default:
-                    ParseHelper.LogParserError("depth_write", material.Name, "Invalid depth write value, must be 'on' or 'off'");
+                    ParseHelper.LogParserError("depth_write", pass.Parent.Name, "Invalid depth write value, must be 'on' or 'off'");
                     return;
             }
         }
 
-        [AttributeParser("diffuse", MATERIAL)]
-        public static void ParseDiffuse(string[] values, Material material) {
+        [AttributeParser("diffuse", Pass)]
+        public static void ParseDiffuse(string[] values, Pass pass) {
             if(values.Length != 3 && values.Length != 4) {
-                ParseHelper.LogParserError("diffuse", material.Name, "Expected 3-4 params");
+                ParseHelper.LogParserError("diffuse", pass.Parent.Name, "Expected 3-4 params");
                 return;
             }
 
-            material.Diffuse = ParseHelper.ParseColor(values);
+            pass.Diffuse = ParseHelper.ParseColor(values);
         }
 
-        [AttributeParser("depth_check", MATERIAL)]
-        public static void ParseDepthCheck(string[] values, Material material) {
+        [AttributeParser("depth_check", Pass)]
+        public static void ParseDepthCheck(string[] values, Pass pass) {
             if(values.Length != 1) {
-                ParseHelper.LogParserError("depth_check", material.Name, "Expected param 'on' or 'off'");
-                return;
-            }
-
-            switch(values[0]) {
-                case "on":
-                    material.DepthCheck = true;
-                    break;
-                case "off":
-                    material.DepthCheck = false;
-                    break;
-                default:
-                    ParseHelper.LogParserError("depth_check", material.Name, "Invalid depth_check value, must be 'on' or 'off'");
-                    return;
-            }
-        }
-
-        [AttributeParser("lighting", MATERIAL)]
-        public static void ParseLighting(string[] values, Material material) {
-            if(values.Length != 1) {
-                ParseHelper.LogParserError("lighting", material.Name, "Expected param 'on' or 'off'");
+                ParseHelper.LogParserError("depth_check", pass.Parent.Name, "Expected param 'on' or 'off'");
                 return;
             }
 
             switch(values[0]) {
                 case "on":
-                    material.Lighting = true;
+                    pass.DepthCheck = true;
                     break;
                 case "off":
-                    material.Lighting = false;
+                    pass.DepthCheck = false;
                     break;
                 default:
-                    ParseHelper.LogParserError("lighting", material.Name, "Invalid lighting value, must be 'on' or 'off'");
+                    ParseHelper.LogParserError("depth_check", pass.Parent.Name, "Invalid depth_check value, must be 'on' or 'off'");
                     return;
             }
         }
 
-        [AttributeParser("scene_blend", MATERIAL)]
-        public static void ParseSceneBlend(string[] values, Material material) {
+        [AttributeParser("lighting", Pass)]
+        public static void ParseLighting(string[] values, Pass pass) {
             if(values.Length != 1) {
-                ParseHelper.LogParserError("scene_blend", material.Name, "Expected 1 param.");
+                ParseHelper.LogParserError("lighting", pass.Parent.Name, "Expected param 'on' or 'off'");
+                return;
+            }
+
+            switch(values[0]) {
+                case "on":
+                    pass.LightingEnabled = true;
+                    break;
+                case "off":
+                    pass.LightingEnabled = false;
+                    break;
+                default:
+                    ParseHelper.LogParserError("lighting", pass.Parent.Name, "Invalid lighting value, must be 'on' or 'off'");
+                    return;
+            }
+        }
+
+        [AttributeParser("scene_blend", Pass)]
+        public static void ParseSceneBlend(string[] values, Pass pass) {
+            if(values.Length != 1) {
+                ParseHelper.LogParserError("scene_blend", pass.Parent.Name, "Expected 1 param.");
                 return;
             }
 
@@ -456,15 +720,15 @@ namespace Axiom.Graphics {
 
             // if a value was found, assign it
             if(val != null)
-                material.SetSceneBlending((SceneBlendType)val);
+                pass.SetSceneBlending((SceneBlendType)val);
             else
-                ParseHelper.LogParserError("scene_blend", material.Name, "Invalid enum value");
+                ParseHelper.LogParserError("scene_blend", pass.Parent.Name, "Invalid enum value");
         }
 
-        [AttributeParser("cull_hardware", MATERIAL)]
-        public static void ParseCullHardware(string[] values, Material material) {
+        [AttributeParser("cull_hardware", Pass)]
+        public static void ParseCullHardware(string[] values, Pass pass) {
             if(values.Length != 1) {
-                ParseHelper.LogParserError("cull_hardware", material.Name, "Expected 2 params.");
+                ParseHelper.LogParserError("cull_hardware", pass.Parent.Name, "Expected 2 params.");
                 return;
             }
 
@@ -473,15 +737,15 @@ namespace Axiom.Graphics {
 
             // if a value was found, assign it
             if(val != null)
-                material.CullingMode = (CullingMode)val;
+                pass.CullMode = (CullingMode)val;
             else
-                ParseHelper.LogParserError("cull_hardware", material.Name, "Invalid enum value");
+                ParseHelper.LogParserError("cull_hardware", pass.Parent.Name, "Invalid enum value");
         }
 
-        [AttributeParser("cull_software", MATERIAL)]
-        public static void ParseCullSoftware(string[] values, Material material) {
+        [AttributeParser("cull_software", Pass)]
+        public static void ParseCullSoftware(string[] values, Pass pass) {
             if(values.Length != 1) {
-                ParseHelper.LogParserError("cull_software", material.Name, "Invalid enum value");
+                ParseHelper.LogParserError("cull_software", pass.Parent.Name, "Invalid enum value");
                 return;
             }
 
@@ -490,20 +754,20 @@ namespace Axiom.Graphics {
 
             // if a value was found, assign it
             if(val != null)
-                material.ManualCullMode = (ManualCullingMode)val;
+                pass.ManualCullMode = (ManualCullingMode)val;
             else
-                ParseHelper.LogParserError("cull_software", material.Name, "Invalid enum value");
+                ParseHelper.LogParserError("cull_software", pass.Parent.Name, "Invalid enum value");
         }
         #endregion
 
         #region Layer attribute parser methods
 
         /// Note: Allows both spellings of color :-).
-        [AttributeParser("color_op", TEX_LAYER)]
-        [AttributeParser("colour_op", TEX_LAYER)]
-        public static void ParseColorOp(string[] values, Material material, TextureUnitState layer) {
+        [AttributeParser("color_op", TextureUnit)]
+        [AttributeParser("colour_op", TextureUnit)]
+        public static void ParseColorOp(string[] values, TextureUnitState layer) {
             if(values.Length != 1) {
-                ParseHelper.LogParserError("color_op", material.Name, "Expected 1 param.");
+                ParseHelper.LogParserError("color_op", layer.Parent.Parent.Name, "Expected 1 param.");
                 return;
             }
 
@@ -514,15 +778,15 @@ namespace Axiom.Graphics {
             if(val != null)
                 layer.SetColorOperation((LayerBlendOperation)val);
             else
-                ParseHelper.LogParserError("color_op", material.Name, "Invalid enum value");
+                ParseHelper.LogParserError("color_op", layer.Parent.Parent.Name, "Invalid enum value");
         }
 
         /// Note: Allows both spellings of color :-).
-        [AttributeParser("color_op_ex", TEX_LAYER)]
-        [AttributeParser("colour_op_ex", TEX_LAYER)]
-        public static void ParseColorOpEx(string[] values, Material material, TextureUnitState layer) {
+        [AttributeParser("color_op_ex", TextureUnit)]
+        [AttributeParser("colour_op_ex", TextureUnit)]
+        public static void ParseColorOpEx(string[] values, TextureUnitState layer) {
             if(values.Length < 3 || values.Length > 12) {
-                ParseHelper.LogParserError("color_op_ex", material.Name, "Expected either 3 or 10 params.");
+                ParseHelper.LogParserError("color_op_ex", layer.Parent.Parent.Name, "Expected either 3 or 10 params.");
                 return;
             }
 
@@ -530,8 +794,8 @@ namespace Axiom.Graphics {
             LayerBlendSource src1 = 0;
             LayerBlendSource src2 = 0;
             float manual = 0.0f;
-            ColorEx colSrc1 = ColorEx.FromColor(System.Drawing.Color.White);
-            ColorEx colSrc2 = ColorEx.FromColor(System.Drawing.Color.White);
+            ColorEx colSrc1 = ColorEx.White;
+            ColorEx colSrc2 = ColorEx.White;
 
             try {
                 op = (LayerBlendOperationEx)ScriptEnumAttribute.Lookup(values[0], typeof(LayerBlendOperationEx));
@@ -540,7 +804,7 @@ namespace Axiom.Graphics {
 
                 if(op == LayerBlendOperationEx.BlendManual) {
                     if(values.Length < 4) {
-                        ParseHelper.LogParserError("color_op_ex", material.Name, "Expected 4 params for manual blending.");
+                        ParseHelper.LogParserError("color_op_ex", layer.Parent.Parent.Name, "Expected 4 params for manual blending.");
                         return;
                     }
 
@@ -554,7 +818,7 @@ namespace Axiom.Graphics {
                     }
 
                     if(values.Length < paramIndex + 2) {
-                        ParseHelper.LogParserError("color_op_ex", material.Name, "Wrong number of params.");
+                        ParseHelper.LogParserError("color_op_ex", layer.Parent.Parent.Name, "Wrong number of params.");
                         return;
                     }
 
@@ -571,7 +835,7 @@ namespace Axiom.Graphics {
                     }
 
                     if(values.Length < paramIndex + 2) {
-                        ParseHelper.LogParserError("color_op_ex", material.Name, "Wrong number of params.");
+                        ParseHelper.LogParserError("color_op_ex", layer.Parent.Parent.Name, "Wrong number of params.");
                         return;
                     }
 
@@ -581,14 +845,14 @@ namespace Axiom.Graphics {
                 }
             }
             catch(Exception ex) {
-                ParseHelper.LogParserError("color_op_ex", material.Name, ex.Message);
+                ParseHelper.LogParserError("color_op_ex", layer.Parent.Parent.Name, ex.Message);
             }
 
             layer.SetColorOperationEx(op, src1, src2, colSrc1, colSrc2, manual);
         }
 
-        [AttributeParser("cubic_texture", TEX_LAYER)]
-        public static void ParseCubicTexture(string[] values, Material material, TextureUnitState layer) {
+        [AttributeParser("cubic_texture", TextureUnit)]
+        public static void ParseCubicTexture(string[] values, TextureUnitState layer) {
             bool useUVW;
             string uvw = values[values.Length - 1].ToLower();
 
@@ -600,7 +864,7 @@ namespace Axiom.Graphics {
                     useUVW = false;
                     break;
                 default:
-                    ParseHelper.LogParserError("cubic_texture", material.Name, "Last param must be 'combinedUVW' or 'separateUV'");
+                    ParseHelper.LogParserError("cubic_texture", layer.Parent.Parent.Name, "Last param must be 'combinedUVW' or 'separateUV'");
                     return;
             }
 
@@ -615,14 +879,14 @@ namespace Axiom.Graphics {
                 layer.SetCubicTexture(names, useUVW);
             }
             else
-                ParseHelper.LogParserError("cubic_texture", material.Name, "Expected 2 or 7 params.");
+                ParseHelper.LogParserError("cubic_texture", layer.Parent.Parent.Name, "Expected 2 or 7 params.");
 			
         }		
 
-        [AttributeParser("env_map", TEX_LAYER)]
-        public static void ParseEnvMap(string[] values, Material material, TextureUnitState layer) {
+        [AttributeParser("env_map", TextureUnit)]
+        public static void ParseEnvMap(string[] values, TextureUnitState layer) {
             if(values.Length != 1) {
-                ParseHelper.LogParserError("env_map", material.Name, "Expected 1 param.");
+                ParseHelper.LogParserError("env_map", layer.Parent.Parent.Name, "Expected 1 param.");
                 return;
             }
 
@@ -636,14 +900,14 @@ namespace Axiom.Graphics {
                 if(val != null)
                     layer.SetEnvironmentMap(true, (EnvironmentMap)val);
                 else
-                    ParseHelper.LogParserError("env_map", material.Name, "Invalid enum value");
+                    ParseHelper.LogParserError("env_map", layer.Parent.Parent.Name, "Invalid enum value");
             }
         }
 
-        [AttributeParser("tex_filtering", TEX_LAYER)]
-        public static void ParseLayerFiltering(string[] values, Material material, TextureUnitState layer) {
+        [AttributeParser("tex_filtering", TextureUnit)]
+        public static void ParseLayerFiltering(string[] values, TextureUnitState layer) {
             if(values.Length != 1) {
-                ParseHelper.LogParserError("tex_filtering", material.Name, "Expected 1 param.");
+                ParseHelper.LogParserError("tex_filtering", layer.Parent.Parent.Name, "Expected 1 param.");
                 return;
             }
 
@@ -654,63 +918,63 @@ namespace Axiom.Graphics {
             if(val != null)
                 layer.TextureFiltering = (TextureFiltering)val;
             else
-                ParseHelper.LogParserError("tex_filtering", material.Name, "Invalid enum value");
+                ParseHelper.LogParserError("tex_filtering", layer.Parent.Parent.Name, "Invalid enum value");
         }
 
-        [AttributeParser("rotate", TEX_LAYER)]
-        public static void ParseRotate(string[] values, Material material, TextureUnitState layer) {
+        [AttributeParser("rotate", TextureUnit)]
+        public static void ParseRotate(string[] values, TextureUnitState layer) {
             if(values.Length != 1) {
-                ParseHelper.LogParserError("rotate", material.Name, "Expected 1 param.");
+                ParseHelper.LogParserError("rotate", layer.Parent.Parent.Name, "Expected 1 param.");
                 return;
             }
 			
             layer.SetTextureRotate(float.Parse(values[0]));
         }
 
-        [AttributeParser("rotate_anim", TEX_LAYER)]
-        public static void ParseRotateAnim(string[] values, Material material, TextureUnitState layer) {
+        [AttributeParser("rotate_anim", TextureUnit)]
+        public static void ParseRotateAnim(string[] values, TextureUnitState layer) {
             if(values.Length != 1) {
-                ParseHelper.LogParserError("rotate_anim", material.Name, "Expected 1 param.");
+                ParseHelper.LogParserError("rotate_anim", layer.Parent.Parent.Name, "Expected 1 param.");
                 return;
             }
 
             layer.SetRotateAnimation(float.Parse(values[0]));
         }
 
-        [AttributeParser("scale", TEX_LAYER)]
-        public static void ParseScale(string[] values, Material material, TextureUnitState layer) {
+        [AttributeParser("scale", TextureUnit)]
+        public static void ParseScale(string[] values, TextureUnitState layer) {
             if(values.Length != 2) {
-                ParseHelper.LogParserError("scale", material.Name, "Expected 2 params.");
+                ParseHelper.LogParserError("scale", layer.Parent.Parent.Name, "Expected 2 params.");
                 return;
             }
 			
             layer.SetTextureScale(float.Parse(values[0]), float.Parse(values[1]));
         }
 
-        [AttributeParser("scroll", TEX_LAYER)]
-        public static void ParseScroll(string[] values, Material material, TextureUnitState layer) {
+        [AttributeParser("scroll", TextureUnit)]
+        public static void ParseScroll(string[] values, TextureUnitState layer) {
             if(values.Length != 2) {
-                ParseHelper.LogParserError("scroll", material.Name, "Expected 2 params.");
+                ParseHelper.LogParserError("scroll", layer.Parent.Parent.Name, "Expected 2 params.");
                 return;
             }
 			
             layer.SetTextureScroll(float.Parse(values[0]), float.Parse(values[1]));
         }
 
-        [AttributeParser("scroll_anim", TEX_LAYER)]
-        public static void ParseScrollAnim(string[] values, Material material, TextureUnitState layer) {
+        [AttributeParser("scroll_anim", TextureUnit)]
+        public static void ParseScrollAnim(string[] values, TextureUnitState layer) {
             if(values.Length != 2) {
-                ParseHelper.LogParserError("scroll_anim", material.Name, "Expected 2 params.");
+                ParseHelper.LogParserError("scroll_anim", layer.Parent.Parent.Name, "Expected 2 params.");
                 return;
             }
 
             layer.SetScrollAnimation(float.Parse(values[0]), float.Parse(values[1]));
         }
 
-        [AttributeParser("tex_address_mode", TEX_LAYER)]
-        public static void ParseTexAddressMode(string[] values, Material material, TextureUnitState layer) {
+        [AttributeParser("tex_address_mode", TextureUnit)]
+        public static void ParseTexAddressMode(string[] values, TextureUnitState layer) {
             if(values.Length != 1) {
-                ParseHelper.LogParserError("tex_address_mode", material.Name, "Expected 1 param.");
+                ParseHelper.LogParserError("tex_address_mode", layer.Parent.Parent.Name, "Expected 1 param.");
                 return;
             }
 
@@ -721,33 +985,33 @@ namespace Axiom.Graphics {
             if(val != null)
                 layer.TextureAddressing = (TextureAddressing)val;
             else
-                ParseHelper.LogParserError("tex_address_mode", material.Name, "Invalid enum value");
+                ParseHelper.LogParserError("tex_address_mode", layer.Parent.Parent.Name, "Invalid enum value");
         }
 
-        [AttributeParser("tex_coord_set", TEX_LAYER)]
-        public static void ParseTexCoordSet(string[] values, Material material, TextureUnitState layer) {
+        [AttributeParser("tex_coord_set", TextureUnit)]
+        public static void ParseTexCoordSet(string[] values, TextureUnitState layer) {
             if(values.Length != 1) {
-                ParseHelper.LogParserError("tex_coord_set", material.Name, "Expected texture name");
+                ParseHelper.LogParserError("tex_coord_set", layer.Parent.Parent.Name, "Expected texture name");
                 return;
             }
 			
             layer.TextureCoordSet = int.Parse(values[0]);
         }
 
-        [AttributeParser("texture", TEX_LAYER)]
-        public static void ParseTexture(string[] values, Material material, TextureUnitState layer) {
+        [AttributeParser("texture", TextureUnit)]
+        public static void ParseTexture(string[] values, TextureUnitState layer) {
             if(values.Length != 1) {
-                ParseHelper.LogParserError("texture", material.Name, "Expected texture name");
+                ParseHelper.LogParserError("texture", layer.Parent.Parent.Name, "Expected texture name");
                 return;
             }
 			
             layer.TextureName = values[0];
         }
 
-        [AttributeParser("wave_xform", TEX_LAYER)]
-        public static void ParseWaveXForm(string[] values, Material material, TextureUnitState layer) {
+        [AttributeParser("wave_xform", TextureUnit)]
+        public static void ParseWaveXForm(string[] values, TextureUnitState layer) {
             if(values.Length != 6) {
-                ParseHelper.LogParserError("wave_xform", material.Name, "Expected 6 params.");
+                ParseHelper.LogParserError("wave_xform", layer.Parent.Parent.Name, "Expected 6 params.");
                 return;
             }
 
@@ -758,7 +1022,7 @@ namespace Axiom.Graphics {
             object val = ScriptEnumAttribute.Lookup(values[0], typeof(TextureTransform));
 
             if(val == null) {
-                ParseHelper.LogParserError("wave_xform", material.Name, "Invalid transform type enum value");
+                ParseHelper.LogParserError("wave_xform", layer.Parent.Parent.Name, "Invalid transform type enum value");
                 return;
             }
 
@@ -768,7 +1032,7 @@ namespace Axiom.Graphics {
             val = ScriptEnumAttribute.Lookup(values[1], typeof(WaveformType));
 
             if(val == null) {
-                ParseHelper.LogParserError("wave_xform", material.Name, "Invalid waveform type enum value");
+                ParseHelper.LogParserError("wave_xform", layer.Parent.Parent.Name, "Invalid waveform type enum value");
                 return;
             }
 

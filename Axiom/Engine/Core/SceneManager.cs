@@ -405,7 +405,9 @@ namespace Axiom.Core {
         /// <param name="name"></param>
         /// <returns></returns>
         public virtual Material CreateMaterial(string name) {
-            return (Material) MaterialManager.Instance.Create(name);
+            Material material = (Material) MaterialManager.Instance.Create(name);
+            material.CreateTechnique().CreatePass();
+            return material;
         }
 
         /// <summary>
@@ -460,7 +462,7 @@ namespace Axiom.Core {
         protected void SetPass(Pass pass) {
             // vertex pipline
             if(pass.HasVertexProgram) {
-                targetRenderSystem.BindGpuProgram(pass.VertexProgram);
+                targetRenderSystem.BindGpuProgram(pass.VertexProgram.BindingDelegate);
                 targetRenderSystem.BindGpuProgramParameters(GpuProgramType.Vertex, pass.VertexProgramParameters);
                 lastUsedVertexProgram = true;
             }
@@ -470,8 +472,11 @@ namespace Axiom.Core {
                     lastUsedVertexProgram = false;
                 }
 
-                // set the surface params of the render system
-                targetRenderSystem.SetSurfaceParams(pass.Ambient, pass.Diffuse, pass.Specular, pass.Emissive, pass.Shininess);
+                // set the material surface params, only if lighting is enabled
+                if(pass.LightingEnabled) {
+                    // set the surface params of the render system
+                    targetRenderSystem.SetSurfaceParams(pass.Ambient, pass.Diffuse, pass.Specular, pass.Emissive, pass.Shininess);
+                }
 
                 // dynamic lighting
                 targetRenderSystem.LightingEnabled = pass.LightingEnabled;
@@ -479,7 +484,7 @@ namespace Axiom.Core {
 
             // fragment pipeline
             if(pass.HasFragmentProgram) {
-                targetRenderSystem.BindGpuProgram(pass.FragmentProgram);
+                targetRenderSystem.BindGpuProgram(pass.FragmentProgram.BindingDelegate);
                 targetRenderSystem.BindGpuProgramParameters(GpuProgramType.Fragment, pass.FragmentProgramParameters);
                 lastUsedFragmentProgram = true;
             }
@@ -602,7 +607,7 @@ namespace Axiom.Core {
             MeshManager modelMgr = MeshManager.Instance;
 
             // see if this mesh exists
-            Mesh planeModel = (Mesh)modelMgr[meshName];
+            Mesh planeModel = modelMgr.GetByName(meshName);
 
             // trash it if it already exists
             if(planeModel != null)
@@ -690,7 +695,7 @@ namespace Axiom.Core {
 
             // check to see if mesh exists
             MeshManager meshManager = MeshManager.Instance;
-            Mesh planeMesh = (Mesh) meshManager[meshName];
+            Mesh planeMesh = meshManager.GetByName(meshName);
 
             // destroy existing
             if(planeMesh != null) {
@@ -884,7 +889,7 @@ namespace Axiom.Core {
             isSkyBoxEnabled = enable;
 
             if(enable) {
-                Material m = MaterialManager.Instance[materialName];
+                Material m = MaterialManager.Instance.GetByName(materialName);
 
                 if(m == null)
                     throw new AxiomException(string.Format("Could not find skybox material '{0}'", materialName));
@@ -917,7 +922,7 @@ namespace Axiom.Core {
                     // create an entity for this plane
                     skyBoxEntities[i] = CreateEntity(entityName, planeModel.Name);
 
-                    Material boxMaterial = MaterialManager.Instance[entityName];
+                    Material boxMaterial = MaterialManager.Instance.GetByName(entityName);
 
                     // if already exists, remove it first
                     if(boxMaterial != null) {
@@ -962,7 +967,7 @@ namespace Axiom.Core {
         public void SetSkyDome(bool isEnabled, string materialName, float curvature, float tiling, float distance, bool drawFirst, Quaternion orientation) {
             isSkyDomeEnabled = isEnabled;
             if(isEnabled) {
-                Material material = MaterialManager.Instance[materialName];
+                Material material = MaterialManager.Instance.GetByName(materialName);
 
                 if(material == null) {
                     throw new AxiomException(string.Format("Could not find skydome material '{0}'", materialName));
@@ -1146,6 +1151,9 @@ namespace Axiom.Core {
             // set the current camera for use in the auto GPU program params
             autoParamDataSource.Camera = camera;
 
+            // sets the current ambient light color for use in auto GPU program params
+            autoParamDataSource.AmbientLight = ambientColor;
+
             // apply animations
             ApplySceneAnimations();
 
@@ -1186,6 +1194,9 @@ namespace Axiom.Core {
 
             // end the current frame
             targetRenderSystem.EndFrame();
+
+            // Notify camera of the number of rendered faces
+            camera.NotifyRenderedFaces(targetRenderSystem.FacesRendered);
         }
 
         /// <summary>
@@ -1354,6 +1365,11 @@ namespace Axiom.Core {
 
                         // ----- SOLIDS LOOP -----
                         for(int k = 0; k < priorityGroup.NumSolidPasses; k++) {
+                            // skip this iteration if there are no solid passes
+                            if(priorityGroup.NumSolidPasses == 0) {
+                                continue;
+                            }
+
                             Pass pass = priorityGroup.GetSolidPass(k);
                             ArrayList renderables = priorityGroup.GetSolidPassRenderables(k);
 
@@ -1494,7 +1510,7 @@ namespace Axiom.Core {
                 string meshName = "SkyPlane";
                 skyPlane = plane;
 
-                Material m = MaterialManager.Instance[materialName];
+                Material m = MaterialManager.Instance.GetByName(materialName);
 
                 if(m == null)
                     throw new Exception(string.Format("Skyplane material '{0}' not found.", materialName));
@@ -1506,7 +1522,7 @@ namespace Axiom.Core {
                 isSkyPlaneDrawnFirst = drawFirst;
 
                 // set up the place
-                Mesh planeMesh = (Mesh)MeshManager.Instance[meshName];
+                Mesh planeMesh = MeshManager.Instance.GetByName(meshName);
 
                 // unload the old one if it exists
                 if(planeMesh != null)

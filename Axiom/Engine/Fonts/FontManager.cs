@@ -65,14 +65,14 @@ namespace Axiom.Fonts {
 
         public override Resource Create(string name) {
             // either return an existing font if already created, or create a new one
-            if(this[name] != null) {
-                return this[name];
+            if(GetByName(name) != null) {
+                return GetByName(name);
             }
             else {
                 // create a new font and add it to the list of resources
                 Font font = new Font(name);
 
-                resourceList.Add(name, font);
+                resourceList[name] = font;
 
                 return font;
             }

@@ -74,7 +74,7 @@ namespace Demos {
 
             // set ambient light to white
             scene.TargetRenderSystem.LightingEnabled = true;
-            scene.AmbientLight = ColorEx.FromColor(System.Drawing.Color.Gray);
+            scene.AmbientLight = ColorEx.Gray;
 
             box = new Box(scene);
             box.Position = new Vector3(0, 400, 200);
@@ -137,7 +137,7 @@ namespace Demos {
     /// 
     /// </summary>
     public class Box : GameObject {
-        static public int nextNum = 0;
+        public static int nextNum = 0;
         /// <summary>
         /// 
         /// </summary>

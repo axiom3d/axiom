@@ -1,115 +1,159 @@
-// The materials for the DP3 demo
-Examples/DP3Mat1
+
+material Examples/DP3Mat1
 {
-	//Texture layer #1, normal map
+	technique
 	{
-		texture NMBumpsOut.png
-		colour_op replace
-	}
+		pass
+		{
 
-	//Texture layer #2, normalization cube map
-	{
-		cubic_texture nm.png combinedUVW
-		tex_coord_set 1
-		colour_op_ex dotproduct src_texture src_current
-		tex_address_mode clamp
-	}
+			texture_unit
+			{
+				texture NMBumpsOut.png
+				colour_op_ex source1 src_texture src_current
+				colour_op_multipass_fallback one zero
+			}
 
-	//Texture layer #3, the decal...
-	{
-		texture decal.png
+			texture_unit
+			{
+				cubic_texture nm.png combinedUVW
+				tex_coord_set 1
+				tex_address_mode clamp
+				colour_op_ex dotproduct src_texture src_current
+				colour_op_multipass_fallback dest_colour zero
+			}
+
+			texture_unit
+			{
+				texture decal.png
+			}
+		}
 	}
 }
-
-Examples/DP3Mat2
+material Examples/DP3Mat2
 {
-	//Texture layer #1, normal map
+	technique
 	{
-		texture NMStripes.png
-		colour_op replace
-	}
+		pass
+		{
 
-	//Texture layer #2, normalization cube map
-	{
-		cubic_texture nm.png combinedUVW
-		tex_coord_set 1
-		colour_op_ex dotproduct src_texture src_current
-		tex_address_mode clamp
-	}
+			texture_unit
+			{
+				texture NMStripes.png
+				colour_op_ex source1 src_texture src_current
+				colour_op_multipass_fallback one zero
+			}
 
-	//Texture layer #3, the decal...
-	{
-		texture Decal.png
+			texture_unit
+			{
+				cubic_texture nm.png combinedUVW
+				tex_coord_set 1
+				tex_address_mode clamp
+				colour_op_ex dotproduct src_texture src_current
+				colour_op_multipass_fallback dest_colour zero
+			}
+
+			texture_unit
+			{
+				texture Decal.png
+			}
+		}
 	}
 }
-
-Examples/DP3Mat3
+material Examples/DP3Mat3
 {
-	//Texture layer #1, normal map
+	technique
 	{
-		texture NMBalls.png
-		colour_op replace
-	}
+		pass
+		{
 
-	//Texture layer #2, normalization cube map
-	{
-		cubic_texture nm.png combinedUVW
-		tex_coord_set 1
-		colour_op_ex dotproduct src_texture src_current
-		tex_address_mode clamp
-	}
+			texture_unit
+			{
+				texture NMBalls.png
+				colour_op_ex source1 src_texture src_current
+				colour_op_multipass_fallback one zero
+			}
 
-	//Texture layer #3, the decal...
-	{
-		texture Decal.png
+			texture_unit
+			{
+				cubic_texture nm.png combinedUVW
+				tex_coord_set 1
+				tex_address_mode clamp
+				colour_op_ex dotproduct src_texture src_current
+				colour_op_multipass_fallback dest_colour zero
+			}
+
+			texture_unit
+			{
+				texture Decal.png
+			}
+		}
 	}
 }
-
-Examples/DP3Mat4
+material Examples/DP3Mat4
 {
-	//Texture layer #1, normal map
+	technique
 	{
-		texture NMHollyBumps.png
-		colour_op replace
-	}
+		pass
+		{
 
-	//Texture layer #2, normalization cube map
-	{
-		cubic_texture nm.png combinedUVW
-		tex_coord_set 1
-		colour_op_ex dotproduct src_texture src_current
-		tex_address_mode clamp
-	}
+			texture_unit
+			{
+				texture NMHollyBumps.png
+				colour_op_ex source1 src_texture src_current
+				colour_op_multipass_fallback one zero
+			}
 
-	//Texture layer #3, the decal...
-	{
-		texture Decal.png
+			texture_unit
+			{
+				cubic_texture nm.png combinedUVW
+				tex_coord_set 1
+				tex_address_mode clamp
+				colour_op_ex dotproduct src_texture src_current
+				colour_op_multipass_fallback dest_colour zero
+			}
+
+			texture_unit
+			{
+				texture Decal.png
+			}
+		}
 	}
 }
-
-Examples/DP3Terrain
+material Examples/DP3Terrain
 {
-	//Texture layer #1, normal map
+	technique
 	{
-		texture NMBalls.png
-		colour_op_ex dotproduct src_texture src_manual 1 1 1
-		scale 12 12
-	}
+		pass
+		{
 
-	//Texture layer #3, the decal...
-	{
-		texture dirt01.jpg
-		scale 0.2 0.2
+			texture_unit
+			{
+				texture NMBalls.png
+				colour_op_ex dotproduct src_texture src_manual 1 1 1
+				colour_op_multipass_fallback dest_colour zero
+			}
+
+			texture_unit
+			{
+				texture dirt01.jpg
+			}
+		}
 	}
 }
-
-Examples/DP3Sky
+material Examples/DP3Sky
 {
-	lighting off
-	depth_write off
-
+	technique
 	{
-		texture clouds.jpg
-		scroll_anim 0.15 0
+		pass
+		{
+			lighting off
+			depth_write off
+
+			texture_unit
+			{
+				texture clouds.jpg
+				scroll_anim 0.15 0
+			}
+		}
 	}
 }

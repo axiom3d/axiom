@@ -530,7 +530,7 @@ namespace Axiom.Gui
             }
             set {
                 materialName = value;
-                material = MaterialManager.Instance[materialName];
+                material = MaterialManager.Instance.GetByName(materialName);
 
                 if(material == null) {
                     throw new Exception(string.Format("Could not find material '{0}'.", materialName));

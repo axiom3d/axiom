@@ -604,7 +604,7 @@ namespace RenderSystem_DirectX9 {
         /// <param name="enabled"></param>
         /// <param name="textureName"></param>
         protected override void SetTexture(int stage, bool enabled, string textureName) {
-            D3DTexture texture = (D3DTexture)TextureManager.Instance[textureName];
+            D3DTexture texture = (D3DTexture)TextureManager.Instance.GetByName(textureName);
 
             if(enabled && texture != null)
                 device.SetTexture(stage, texture.DXTexture);
@@ -1394,32 +1394,32 @@ namespace RenderSystem_DirectX9 {
             // Fragment Program syntax code checks
             if(fpMajor >= 1) {
                 caps.SetCap(Capabilities.FragmentPrograms);
-                gpuProgramMgr.PushSyntaxCode("vs_1_1");
+                gpuProgramMgr.PushSyntaxCode("ps_1_1");
 
                 if(fpMinor >= 2) {
-                    gpuProgramMgr.PushSyntaxCode("vs_1_2");
+                    gpuProgramMgr.PushSyntaxCode("ps_1_2");
                 }
                 if(fpMinor >= 3) {
-                    gpuProgramMgr.PushSyntaxCode("vs_1_3");
+                    gpuProgramMgr.PushSyntaxCode("ps_1_3");
                 }
                 if(fpMinor >= 4) {
-                    gpuProgramMgr.PushSyntaxCode("vs_1_4");
+                    gpuProgramMgr.PushSyntaxCode("ps_1_4");
                 }
             }
 
             if(fpMajor >= 2) {
-                gpuProgramMgr.PushSyntaxCode("vs_2_0");
+                gpuProgramMgr.PushSyntaxCode("ps_2_0");
 
                 if(fpMinor > 0) {
-                    gpuProgramMgr.PushSyntaxCode("vs_2_x");
+                    gpuProgramMgr.PushSyntaxCode("ps_2_x");
                 }
             }
 
             if(fpMajor >= 3) {
-                gpuProgramMgr.PushSyntaxCode("vs_3_0");
+                gpuProgramMgr.PushSyntaxCode("ps_3_0");
 
                 if(fpMinor > 0) {
-                    gpuProgramMgr.PushSyntaxCode("vs_3_x");
+                    gpuProgramMgr.PushSyntaxCode("ps_3_x");
                 }
             }
 

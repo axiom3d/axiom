@@ -76,7 +76,7 @@ namespace Axiom.Core {
         /// <param name="name"></param>
         /// <returns></returns>
         public Mesh CreateManual(string name) {
-            Mesh mesh = (Mesh)MeshManager.Instance[name];
+            Mesh mesh = MeshManager.Instance.GetByName(name);
 
             if(mesh == null) {
                 mesh = (Mesh)Create(name);
@@ -430,8 +430,6 @@ namespace Axiom.Core {
 
         private void CreatePrefabPlane() {
             
-            //this.CreatePlane("Prefab_Plane", new Plane(Vector3.UnitZ, 0), 100, 100);
-            
             Mesh mesh = (Mesh) Create("Prefab_Plane");
             SubMesh subMesh = mesh.CreateSubMesh("Prefab_Plane_Submesh");
 
@@ -608,5 +606,8 @@ namespace Axiom.Core {
             idxBuffer.Unlock();
         }
 
+        public new Mesh GetByName(string name) {
+            return (Mesh)base.GetByName(name);
+        }
     }
 }

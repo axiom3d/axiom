@@ -45,7 +45,7 @@ namespace Demos {
 		
         protected override void CreateScene() {
             // set some ambient light
-            scene.AmbientLight = ColorEx.FromColor(System.Drawing.Color.Gray);
+            scene.AmbientLight = ColorEx.Gray;
 
             // create an entity to have follow the path
             Entity ogreHead = scene.CreateEntity("OgreHead", "ogrehead.mesh");

@@ -12,6 +12,23 @@ namespace Axiom.Scripting {
         #region Methods
 		
         /// <summary>
+        ///    Helper method for taking a string array and returning a single concatenated
+        ///    string composed of the range of specified elements.
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        public static string Combine(string[] items, int start, int end) {
+            StringBuilder sb = new StringBuilder();
+
+            for(int i = start; i < end; i++) {
+                sb.AppendFormat("{0} ", items[i]);
+            }
+
+            return sb.ToString(0, sb.Length - 1);
+        }
+
+        /// <summary>
         ///		Helper method to log a formatted error when encountering problems with parsing
         ///		an attribute.
         /// </summary>
@@ -66,6 +83,20 @@ namespace Axiom.Scripting {
             vec.x = float.Parse(values[0]);
             vec.y = float.Parse(values[1]);
             vec.z = float.Parse(values[2]);
+
+            return vec;
+        }
+
+        /// <summary>
+        ///		Parses an array of params and returns a color from it.
+        /// </summary>
+        /// <param name="val"></param>
+        public static Vector4 ParseVector4(string[] values) {
+            Vector4 vec = new Vector4();
+            vec.x = float.Parse(values[0]);
+            vec.y = float.Parse(values[1]);
+            vec.z = float.Parse(values[2]);
+            vec.w = float.Parse(values[3]);
 
             return vec;
         }

@@ -66,7 +66,7 @@ namespace Axiom.Graphics
         /// </summary>
         protected Matrix4 projectionMatrix;
 		/// <summary>
-		///    
+		///    Array of world matrices for the current renderable.
 		/// </summary>
         protected Matrix4[] worldMatrix = new Matrix4[256];
         /// <summary>
@@ -93,6 +93,10 @@ namespace Axiom.Graphics
         ///    Position of the current camera in object space relative to the current renderable.
         /// </summary>
         protected Vector4 cameraPositionObjectSpace;
+        /// <summary>
+        ///    Current global ambient light color.
+        /// </summary>
+        protected ColorEx ambientLight;
         /// <summary>
         ///    List of lights that are in the scene and near the current renderable.
         /// </summary>
@@ -129,8 +133,8 @@ namespace Axiom.Graphics
             lightListDirty = true;
 
             // defaults for the blank light
-            blankLight.Diffuse = ColorEx.FromColor(System.Drawing.Color.Black);
-            blankLight.Specular = ColorEx.FromColor(System.Drawing.Color.Black);
+            blankLight.Diffuse = ColorEx.Black;
+            blankLight.Specular = ColorEx.Black;
             blankLight.SetAttenuation(0, 0, 0, 0);
 		}
 		
@@ -141,7 +145,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///    Get the light which is 'index'th closest to the current object 
         /// </summary>
-        /// <param name="index">Ordinal value signifying the light to retreive, with 0 beinhg closest, 1 being next closest, etc.</param>
+        /// <param name="index">Ordinal value signifying the light to retreive, with 0 being closest, 1 being next closest, etc.</param>
         /// <returns>A light located near the current renderable.</returns>
         public Light GetLight(int index) {
             if(lightListDirty) {
@@ -200,6 +204,18 @@ namespace Axiom.Graphics
                 cameraPositionObjectSpaceDirty = true;
 		    }
 		}
+
+        /// <summary>
+        ///    Gets/Sets the current global ambient light color.
+        /// </summary>
+        public ColorEx AmbientLight {
+            get {
+                return ambientLight;
+            }
+            set {
+                ambientLight = value;
+            }
+        }
 
         /// <summary>
         ///    Gets the current world matrix.

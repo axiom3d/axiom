@@ -123,8 +123,8 @@ namespace Axiom.ParticleSystems {
             maxSpeed = minSpeed = 1;
             maxTTL = minTTL = 5;
             position = Vector3.Zero;
-            colorRangeStart = ColorEx.FromColor(System.Drawing.Color.White);
-            colorRangeEnd = ColorEx.FromColor(System.Drawing.Color.White);
+            colorRangeStart = ColorEx.White;
+            colorRangeEnd = ColorEx.White;
             isEnabled = true;
             durationMax = 0;
 
@@ -514,9 +514,11 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         ///		Internal method for generating a color for a particle.
         /// </summary>
-        /// <param name="color"></param>
+        /// <param name="color">
+        ///    The color object that will be altered depending on the method of generating the particle color.
+        /// </param>
         virtual protected void GenerateEmissionColor(ColorEx color) {
-            if (colorRangeStart != colorRangeEnd) {
+            if (colorRangeStart.CompareTo(colorRangeEnd) != 0) {
                 color.r = colorRangeStart.r + MathUtil.UnitRandom() * (colorRangeEnd.r - colorRangeStart.r);
                 color.g = colorRangeStart.g + MathUtil.UnitRandom() * (colorRangeEnd.g - colorRangeStart.g);
                 color.b = colorRangeStart.b + MathUtil.UnitRandom() * (colorRangeEnd.b - colorRangeStart.b);

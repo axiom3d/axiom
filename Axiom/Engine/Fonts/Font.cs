@@ -85,6 +85,7 @@ namespace Axiom.Fonts {
             if(!isLoaded) {
                 // create a material for this font
                 material = (Material)MaterialManager.Instance.Create("Fonts." + name);
+                material.CreateTechnique().CreatePass();
 
                 TextureUnitState layer = null;
                 bool blendByAlpha = false;

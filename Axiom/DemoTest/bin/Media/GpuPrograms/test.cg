@@ -5,12 +5,16 @@ struct MyOutput {
 
 MyOutput main(	float4 pos : POSITION,
 		float4 col : COLOR,
-		uniform float4x4 wvp) {
+		uniform float4x4 wvp,
+		uniform float4 color,
+		uniform float4 color2,
+		uniform sampler2D test,
+		uniform float4 color3) {
 	
    MyOutput OUT;
    
    OUT.position = mul(wvp, pos);
-   OUT.color = col;
+   OUT.color = color + color2 + color3;
    
    return OUT;
 }

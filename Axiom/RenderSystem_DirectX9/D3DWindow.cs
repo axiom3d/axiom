@@ -197,10 +197,11 @@ namespace RenderSystem_DirectX9 {
         }
 
         public override void SaveToFile(string file) {		
-            Surface surface = device.CreateOffscreenPlainSurface(this.width, this.height, Format.A8R8G8B8, Pool.Default);
-            device.GetFrontBufferData(1, surface);
-			
-            //image.Save(file, System.Drawing.Imaging.ImageFormat.Jpeg);
+            Surface surface = device.CreateOffscreenPlainSurface(this.width, this.height, Format.A8R8G8B8, Pool.SystemMemory);
+
+            device.GetFrontBufferData(0, surface);
+
+            SurfaceLoader.Save(file, ImageFileFormat.Jpg, surface);
         }
 
         #endregion

@@ -127,8 +127,8 @@ namespace Axiom.Core {
             this.name = name;
 
             type = LightType.Point;
-            diffuse = ColorEx.FromColor(System.Drawing.Color.White);
-            specular = ColorEx.FromColor(System.Drawing.Color.Black);
+            diffuse = ColorEx.White;
+            specular = ColorEx.Black;
             range = 1000;
             attenuationConst = 1.0f;
             attenuationLinear = 0.0f;

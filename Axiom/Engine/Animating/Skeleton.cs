@@ -331,7 +331,7 @@ namespace Axiom.Animating {
         /// <remarks>
         ///    Only recommended for use inside the engine, not by applications.
         /// </remarks>
-        /// <param name="anim"></param>
+        /// <param name="animSet"></param>
         public void InitAnimationState(AnimationStateCollection animSet) {
             animSet.Clear();
 
@@ -555,7 +555,7 @@ namespace Axiom.Animating {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="fileName"></param>
         public void DumpContents(string fileName) {
             FileStream fs = File.Open(fileName, FileMode.Create);
             StreamWriter writer = new StreamWriter(fs);

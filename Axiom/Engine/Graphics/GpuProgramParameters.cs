@@ -71,8 +71,13 @@ namespace Axiom.Graphics
         ///    List of automatically updated parameters.
         /// </summary>
         protected ArrayList autoConstantList = new ArrayList();
-
-        // Temp float array for making Matrix4 floats to reduce allocations
+        /// <summary>
+        ///    Lookup of constant indicies for named parameters.
+        /// </summary>
+        protected Hashtable namedParams = new Hashtable();
+        /// <summary>
+        ///     Temp float array for making Matrix4 floats to reduce allocations
+        /// </summary>
         protected float[] matrixFloats = new float[16];
 
 		#endregion
@@ -91,6 +96,33 @@ namespace Axiom.Graphics
         /// </summary>
         public void ClearAutoConstants() {
             autoConstantList.Clear();
+        }
+
+        /// <summary>
+        ///    Gets the constant index of the specified named param.
+        /// </summary>
+        /// <param name="name">
+        ///    Name of the param.
+        /// </param>
+        /// <returns>
+        ///    Constant index.
+        /// </returns>
+        protected int GetParamIndex(string name) {
+            if(namedParams[name] == null) {
+                throw new Exception(string.Format("Cannot find a param index for a param named '{0}'.", name));
+            }
+
+            return (int)namedParams[name];
+        }
+
+        /// <summary>
+        ///    Maps a parameter name to the specified constant index.
+        /// </summary>
+        /// <param name="name">Name of the param.</param>
+        /// <param name="index">Constant index of the param.</param>
+        public void MapParamNameToIndex(string name, int index) {
+            // TODO: Alter the index here?  Doing it for now
+            namedParams[name] = index * 4;
         }
 
         /// <summary>
@@ -197,30 +229,11 @@ namespace Axiom.Graphics
         /// <summary>
         ///    Sends a multiple value constant floating-point parameter to the program.
         /// </summary>
-        /// <remarks>
-        ///    Implementation left to the rendersystem since column / row vectors matter.
-        /// </remarks>
         /// <param name="index">Index of the contant register.</param>
         /// <param name="val">Structure containing 3 packed float values.</param>
         public virtual void SetConstant(int index, Matrix4 val) {
             val.MakeFloatArray(matrixFloats);
             SetConstant(index, matrixFloats);
-//            SetConstant(index++, val.m00);
-//            SetConstant(index++, val.m10);
-//            SetConstant(index++, val.m20);
-//            SetConstant(index++, val.m30);
-//            SetConstant(index++, val.m01);
-//            SetConstant(index++, val.m11);
-//            SetConstant(index++, val.m21);
-//            SetConstant(index++, val.m31);
-//            SetConstant(index++, val.m02);
-//            SetConstant(index++, val.m12);
-//            SetConstant(index++, val.m22);
-//            SetConstant(index++, val.m32);
-//            SetConstant(index++, val.m03);
-//            SetConstant(index++, val.m13);
-//            SetConstant(index++, val.m23);
-//            SetConstant(index++, val.m33);
         }
 
         /// <summary>
@@ -244,6 +257,69 @@ namespace Axiom.Graphics
                 SetConstant(i, floats[j]);
             }
         }
+
+        #region Named parameters
+
+        /// <summary>
+        ///    Sets up a constant which will automatically be updated by the engine.
+        /// </summary>
+        /// <remarks>
+        ///    Vertex and fragment programs often need parameters which are to do with the
+        ///    current render state, or particular values which may very well change over time,
+        ///    and often between objects which are being rendered. This feature allows you 
+        ///    to set up a certain number of predefined parameter mappings that are kept up to 
+        ///    date for you.
+        /// </remarks>
+        /// <param name="name">
+        ///    Name of the param.
+        /// </param>
+        /// <param name="type">
+        ///    The type of automatic constant to set.
+        /// </param>
+        /// <param name="extraInfo">
+        ///    Any extra infor needed by the auto constant (i.e. light index, etc).
+        /// </param>
+        public virtual void SetNamedAutoConstant(string name, AutoConstants type, int extraInfo) {
+            SetAutoConstant(GetParamIndex(name), type, extraInfo);
+        }
+
+        /// <summary>
+        ///    Sends 4 packed floating-point values to the program.
+        /// </summary>
+        /// <param name="index">Index of the contant register.</param>
+        /// <param name="val">Structure containing 4 packed float values.</param>
+        public virtual void SetNamedConstant(string name, Vector4 val) {
+            SetConstant(GetParamIndex(name), val);
+        }
+
+        /// <summary>
+        ///    Sends 3 packed floating-point values to the program.
+        /// </summary>
+        /// <param name="name">Name of the param.</param>
+        /// <param name="val">Structure containing 3 packed float values.</param>
+        public virtual void SetNamedConstant(string name, Vector3 val) {
+            SetConstant(GetParamIndex(name), val);
+        }
+
+        /// <summary>
+        ///    Sends 4 packed floating-point RGBA color values to the program.
+        /// </summary>
+        /// <param name="name">Name of the param.</param>
+        /// <param name="color">Structure containing 4 packed RGBA color values.</param>
+        public virtual void SetNamedConstant(string name, ColorEx color) {
+            SetConstant(GetParamIndex(name), color);
+        }
+
+        /// <summary>
+        ///    Sends a multiple value constant floating-point parameter to the program.
+        /// </summary>
+        /// <param name="name">Name of the param.</param>
+        /// <param name="val">Structure containing 3 packed float values.</param>
+        public virtual void SetNamedConstant(string name, Matrix4 val) {
+            SetConstant(GetParamIndex(name), val);
+        }
+
+        #endregion
 
         /// <summary>
         ///    Updates the automatic parameters based on the details provided.
@@ -292,6 +368,10 @@ namespace Axiom.Graphics
 
                     case AutoConstants.InverseWorldViewMatrix:
                         SetConstant(entry.index, source.InverseWorldViewMatrix);
+                        break;
+
+                    case AutoConstants.AmbientLightColor:
+                        SetConstant(entry.index, source.AmbientLight);
                         break;
 
                     case AutoConstants.LightDiffuseColor:

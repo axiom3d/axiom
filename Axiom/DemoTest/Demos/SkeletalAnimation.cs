@@ -21,7 +21,7 @@ namespace Demos {
 
             // set some ambient light
             scene.TargetRenderSystem.LightingEnabled = true;
-            scene.AmbientLight = ColorEx.FromColor(System.Drawing.Color.Gray);
+            scene.AmbientLight = ColorEx.Gray;
 
             // create the robot entity
             Entity entity = scene.CreateEntity("Robot", "robot.mesh");

@@ -1,57 +1,88 @@
-Core/NodeMaterial
-{
-	cull_hardware none
-	lighting off
-	depth_write off
-	depth_check off
-	scene_blend add
 
+material Core/NodeMaterial
+{
+	technique
 	{
-		texture axes.png
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_check off
+			depth_write off
+			cull_hardware none
+
+			texture_unit
+			{
+				texture axes.png
+			}
+		}
 	}
 }
-
-Core/AxiomLogo
+material Core/AxiomLogo
 {
-	lighting off
-	depth_check off
-	scene_blend alpha_blend
-	
-	// texture layer 1
+	technique
 	{
-		texture AxiomLogo.png
-	}
-	
-}
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
 
-Core/StatsBlockBorder
-{
-	lighting off
-	depth_check off
-	scene_blend alpha_blend
-	{
-		texture Border.png
+			texture_unit
+			{
+				texture AxiomLogo.png
+			}
+		}
 	}
 }
-
-
-
-Core/StatsBlockCenter
+material Core/StatsBlockBorder
 {
-	lighting off
-	depth_check off
-	scene_blend alpha_blend
+	technique
 	{
-		texture Border_Center.png
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture Border.png
+			}
+		}
 	}
 }
-
-Core/StatsBreak
+material Core/StatsBlockCenter
 {
-	lighting off
-	depth_check off
-	scene_blend alpha_blend
+	technique
 	{
-		texture Border_Break.png
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture Border_Center.png
+			}
+		}
+	}
+}
+material Core/StatsBreak
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture Border_Break.png
+			}
+		}
 	}
 }

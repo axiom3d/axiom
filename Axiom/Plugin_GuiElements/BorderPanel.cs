@@ -490,7 +490,7 @@ namespace Plugin_GuiElements
             }
             set {
                 borderMaterialName = value;
-                borderMaterial = MaterialManager.Instance[borderMaterialName];
+                borderMaterial = MaterialManager.Instance.GetByName(borderMaterialName);
 
                 if(borderMaterial == null) {
                     throw new Exception(string.Format("Could not find material '{0}'.", borderMaterialName));

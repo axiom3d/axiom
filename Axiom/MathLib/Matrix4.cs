@@ -285,7 +285,7 @@ namespace Axiom.MathLib {
         }
 
         /// <summary>
-        ///		Used to add two matrices together.
+        ///		Used to multiply a Matrix4 object by a scalar value..
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>

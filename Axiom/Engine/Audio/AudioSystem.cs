@@ -45,7 +45,7 @@ namespace Axiom.Audio {
         /// <summary>
         /// 
         /// </summary>
-        static public AudioSystem Instance {
+        public static AudioSystem Instance {
             get { return instance; }
         }
 

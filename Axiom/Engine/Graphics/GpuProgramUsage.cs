@@ -155,7 +155,7 @@ namespace Axiom.Graphics
         ///    Internal validation function - checks the name of the program (and links).
         /// </summary>
         protected void ValidateName() {
-            program = GpuProgramManager.Instance[programName];
+            program = GpuProgramManager.Instance.GetByName(programName);
 
             if(program == null) {
                 string error = string.Format("Unable to locate {0} program named '{1}'.", type.ToString(), programName);

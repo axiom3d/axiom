@@ -351,6 +351,15 @@ namespace Axiom.Core {
             // Do nothing
         }
 
+        /// <summary>
+        ///    Called by the scene manager to let this camera know how many faces were renderer within
+        ///    view of this camera every frame.
+        /// </summary>
+        /// <param name="numRenderedFaces"></param>
+        internal void NotifyRenderedFaces(int numRenderedFaces) {
+            numFacesRenderedLastFrame = numRenderedFaces;
+        }
+
         #endregion
 
         #region Public Properties

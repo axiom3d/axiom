@@ -304,7 +304,7 @@ namespace Axiom.Graphics {
             // of getTechnique is based on it for backwards compatibility
             if(item.Material == null || item.Technique == null) {
                 // use default if not found
-                t = MaterialManager.Instance["BaseWhite"].GetTechnique(0);
+                t = MaterialManager.Instance.GetByName("BaseWhite").GetTechnique(0);
             }
             else {
                 t = item.Technique;
