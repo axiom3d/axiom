@@ -497,9 +497,9 @@ namespace Axiom.MathLib {
                 return Intersection.Contained; 
             }
 
-            if ((minB.x > maxB.x) || 
-                (minB.y > maxB.y) || 
-                (minB.z > maxB.z) || 
+            if ((minB.x > maxA.x) || 
+                (minB.y > maxA.y) || 
+                (minB.z > maxA.z) || 
                 (maxB.x < minA.x) || 
                 (maxB.y < minA.y) || 
                 (maxB.z < minA.z)) {
