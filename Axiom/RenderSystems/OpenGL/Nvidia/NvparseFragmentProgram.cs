@@ -110,7 +110,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia {
                     tempProgramFloats[3] = vec4.w;
 
                     // send the params 4 at a time
-                    Ext.glCombinerStageParameterfvNV(combinerStage, pname, tempProgramFloats);
+                    Gl.glCombinerStageParameterfvNV(combinerStage, pname, tempProgramFloats);
                 }
             }  
         }

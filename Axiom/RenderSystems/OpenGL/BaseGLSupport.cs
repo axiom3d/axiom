@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+using System.Runtime.InteropServices;
 using System.Collections.Specialized;
 using Axiom.Configuration;
 using Axiom.Graphics;
@@ -137,13 +138,12 @@ namespace Axiom.RenderSystems.OpenGL {
 		/// </summary>
 		public void InitializeExtensions() {
 			if(extensionList == null) {
-				// load GL extensions
-				Ext.Init(this);
+				GlExtensionLoader.LoadAllExtensions();
 
 				// get the OpenGL version string and vendor name
-				glVersion = Gl.glGetString(Gl.GL_VERSION);
-				videoCard = Gl.glGetString(Gl.GL_RENDERER);
-				vendor = Gl.glGetString(Gl.GL_VENDOR);
+				glVersion = Marshal.PtrToStringAnsi(Gl.glGetString(Gl.GL_VERSION));
+				videoCard = Marshal.PtrToStringAnsi(Gl.glGetString(Gl.GL_RENDERER));
+				vendor = Marshal.PtrToStringAnsi(Gl.glGetString(Gl.GL_VENDOR));
 
 				// parse out the first piece of the vendor string if there are spaces in it
 				if(vendor.IndexOf(" ") != -1) {
@@ -153,7 +153,7 @@ namespace Axiom.RenderSystems.OpenGL {
 				// create a new extension list
 				extensionList = new StringCollection();
 
-				string allExt = Gl.glGetString(Gl.GL_EXTENSIONS);
+				string allExt = Marshal.PtrToStringAnsi(Gl.glGetString(Gl.GL_EXTENSIONS));
 				string[] splitExt = allExt.Split(Char.Parse(" "));
 
 				// store the parsed extension list

@@ -1169,7 +1169,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
                 switch((MachineInstruction)PassMachineInstructions[instIDX]) {
                     case MachineInstruction.ColorOp1:
                         if((instIDX+7) < instCount)
-                            Ext.glColorFragmentOp1ATI(
+                            Gl.glColorFragmentOp1ATI(
                                 (int)PassMachineInstructions[instIDX+1], // op
                                 (int)PassMachineInstructions[instIDX+2], // dst
                                 (int)PassMachineInstructions[instIDX+3], // dstMask
@@ -1182,7 +1182,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
                     case MachineInstruction.ColorOp2:
                         if((instIDX+10) < instCount)
-                            Ext.glColorFragmentOp2ATI(
+                            Gl.glColorFragmentOp2ATI(
                                 (int)PassMachineInstructions[instIDX+1], // op
                                 (int)PassMachineInstructions[instIDX+2], // dst
                                 (int)PassMachineInstructions[instIDX+3], // dstMask
@@ -1198,7 +1198,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
                     case MachineInstruction.ColorOp3:
                         if((instIDX+13) < instCount)
-                            Ext.glColorFragmentOp3ATI(
+                            Gl.glColorFragmentOp3ATI(
                                 (int)PassMachineInstructions[instIDX+1], // op
                                 (int)PassMachineInstructions[instIDX+2],  // dst
                                 (int)PassMachineInstructions[instIDX+3],  // dstMask
@@ -1217,7 +1217,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
                     case MachineInstruction.AlphaOp1:
                         if((instIDX+6) < instCount)
-                            Ext.glAlphaFragmentOp1ATI(
+                            Gl.glAlphaFragmentOp1ATI(
                                 (int)PassMachineInstructions[instIDX+1], // op
                                 (int)PassMachineInstructions[instIDX+2],   // dst
                                 (int)PassMachineInstructions[instIDX+3],   // dstMod
@@ -1229,7 +1229,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
                     case MachineInstruction.AlphaOp2:
                         if((instIDX+9) < instCount)
-                            Ext.glAlphaFragmentOp2ATI(
+                            Gl.glAlphaFragmentOp2ATI(
                                 (int)PassMachineInstructions[instIDX+1], // op
                                 (int)PassMachineInstructions[instIDX+2],   // dst
                                 (int)PassMachineInstructions[instIDX+3],   // dstMod
@@ -1244,7 +1244,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
                     case MachineInstruction.AlphaOp3:
                         if((instIDX+12) < instCount)
-                            Ext.glAlphaFragmentOp3ATI(
+                            Gl.glAlphaFragmentOp3ATI(
                                 (int)PassMachineInstructions[instIDX+1], // op
                                 (int)PassMachineInstructions[instIDX+2],   // dst
                                 (int)PassMachineInstructions[instIDX+3],   // dstMod
@@ -1270,7 +1270,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
                             vals[2] = (float)constants[start++];
                             vals[3] = (float)constants[start];
 
-                            Ext.glSetFragmentShaderConstantATI(
+                            Gl.glSetFragmentShaderConstantATI(
                                 (int)PassMachineInstructions[instIDX+1], // dst
                                 vals);
                         }
@@ -1279,7 +1279,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
                     case MachineInstruction.PassTexCoord:
                         if((instIDX+3) < instCount)
-                            Ext.glPassTexCoordATI(
+                            Gl.glPassTexCoordATI(
                                 (int)PassMachineInstructions[instIDX+1], // dst
                                 (int)PassMachineInstructions[instIDX+2], // coord
                                 (int)PassMachineInstructions[instIDX+3]); // swizzle
@@ -1288,7 +1288,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
                     case MachineInstruction.SampleMap:
                         if((instIDX+3) < instCount)
-                            Ext.glSampleMapATI(
+                            Gl.glSampleMapATI(
                                 (int)PassMachineInstructions[instIDX+1], // dst
                                 (int)PassMachineInstructions[instIDX+2], // interp
                                 (int)PassMachineInstructions[instIDX+3]); // swizzle

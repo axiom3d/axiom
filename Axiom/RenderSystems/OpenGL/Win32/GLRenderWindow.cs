@@ -198,7 +198,7 @@ namespace Axiom.RenderSystems.OpenGL {
 
         public override void SwapBuffers(bool waitForVSync) {
             //int sync = waitForVSync ? 1: 0;
-            //Ext.wglSwapIntervalEXT((uint)sync);
+            //Gl.wglSwapIntervalEXT((uint)sync);
 
              // swap buffers
             Gdi.SwapBuffersFast(hDC);
