@@ -581,7 +581,7 @@ namespace Axiom.Core {
                     true);
 
                 // bind the new buffer accordingly
-                ushort source = (ushort)(binding.NextIndex + 1);
+                ushort source = binding.NextIndex;
                 binding.SetBinding(source, buff3D);
                 decl.AddElement(new VertexElement(source, 0, VertexElementType.Float3, VertexElementSemantic.TexCoords, (ushort)texCoordSet));
             }

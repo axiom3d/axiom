@@ -45,6 +45,9 @@ namespace Demos
         ArrayList entityList = new ArrayList();
         Frustum frustum;
         SceneNode frustumNode;
+        Viewport viewport2;
+        Camera camera2;
+        int objectsVisible = 0;
 
         protected override void CreateScene() {
             scene.AmbientLight = new ColorEx(.4f, .4f, .4f);
@@ -56,20 +59,59 @@ namespace Demos
             entityList.Add(head);
             ((SceneNode)scene.RootSceneNode.CreateChild()).AttachObject(head);
 
+            Entity box = scene.CreateEntity("Box1", "cube.mesh");
+            entityList.Add(box);
+            ((SceneNode)scene.RootSceneNode.CreateChild(new Vector3(-100, 0, 0), Quaternion.Identity)).AttachObject(box);
+
+            box = scene.CreateEntity("Box2", "cube.mesh");
+            entityList.Add(box);
+            ((SceneNode)scene.RootSceneNode.CreateChild(new Vector3(100, 0, -300), Quaternion.Identity)).AttachObject(box);
+
+            box = scene.CreateEntity("Box3", "cube.mesh");
+            entityList.Add(box);
+            ((SceneNode)scene.RootSceneNode.CreateChild(new Vector3(-200, 100, -200), Quaternion.Identity)).AttachObject(box);
+
             frustum = new Frustum();
-            frustum.Near = 15;
+            frustum.Near = 10;
             frustum.Far = 300;
             frustum.Name = "PlayFrustum";
 
+            // create a node for the frustum and attach it
             frustumNode = (SceneNode)scene.RootSceneNode.CreateChild(new Vector3(0, 0, 200), Quaternion.Identity);
+
+            // set the camera in a convenient position
+            camera.Position = new Vector3(0, 759, 680);
+            camera.LookAt(Vector3.Zero);
+
             frustumNode.AttachObject(frustum);
+            frustumNode.AttachObject(camera2);
         }
+
+        protected override void CreateCamera() {
+            base.CreateCamera();
+
+            camera2 = scene.CreateCamera("Camera2");
+            camera2.Far = 300;
+            camera2.Near = 1;
+        }
+
+
+        protected override void CreateViewports() {
+            base.CreateViewports();
+
+            viewport2 = window.AddViewport(camera2, 60, 0, 40, 40, 102);
+            viewport2.OverlaysEnabled = false;
+            viewport2.BackgroundColor = ColorEx.Blue;
+        }
+
 
         protected override void OnFrameStarted(object source, FrameEventArgs e) {
             base.OnFrameStarted (source, e);
 
-            float speed = 30 * e.TimeSinceLastFrame;
-            float change = 10 * e.TimeSinceLastFrame;
+            objectsVisible = 0;
+
+            float speed = 35 * e.TimeSinceLastFrame;
+            float change = 15 * e.TimeSinceLastFrame;
 
             if(input.IsKeyPressed(KeyCodes.I)) {
                 frustumNode.Translate(new Vector3(0, 0, -speed), TransformSpace.Local);
@@ -103,7 +145,7 @@ namespace Demos
             }
 
             if(input.IsKeyPressed(KeyCodes.D4)) {
-                if(frustum.Far + change < 200) {
+                if(frustum.Far + change < 500) {
                     frustum.Far += change;
                 }
             }
@@ -113,11 +155,15 @@ namespace Demos
             foreach(Entity entity in entityList) {
                 if(frustum.IsObjectVisible(entity.GetWorldBoundingBox())) {
                     entity.ShowBoundingBox = true;
+                    objectsVisible++;
                 }
                 else {
                     entity.ShowBoundingBox = false;
                 }
             }
+
+            // report the number of objects within the frustum
+            window.DebugText = string.Format("Objects visible: {0}", objectsVisible);
         }
 
 	}

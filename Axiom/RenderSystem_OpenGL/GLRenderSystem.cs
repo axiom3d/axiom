@@ -1436,7 +1436,7 @@ namespace Axiom.RenderSystems.OpenGL {
 
                 // invert the Y if need be
                 if(activeRenderTarget.RequiresTextureFlipping) {
-                    tempMatrix[5] = - tempMatrix[5];
+                    tempMatrix[5] = -tempMatrix[5];
                 }
 			
                 // set the matrix mode to Projection

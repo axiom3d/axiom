@@ -1,3 +1,13 @@
+?
+- Frustum demo, shows a frustum visually and allows you to move it around and clip objects.
+
+2-23-2004 (continued)
+- Fixed assert bug in RenderTarget.GetViewport().
+- Added new method: Camera.GetCameraToViewport(), which takes x and y viewports coords in the range[0,1] and returns a Ray that can be used in a RaySceneQuery for object picking.
+- Fixed potential particle emission bug.
+- Fixed render to texture issue with recent camera/frustum changes.
+- Added Camera.Orientation (can't believe that was never there before, heh).
+
 2-23-2004
 - Camera now inherits from Frustum.
 - Frustum is a renderable object.

@@ -175,7 +175,7 @@ namespace Axiom.Core {
             } 
             set {
                 fieldOfView = value;
-                recalculateFrustum = true;
+                InvalidateFrustum();
             }
         }
 
@@ -198,7 +198,7 @@ namespace Axiom.Core {
                 Debug.Assert(value > 0, "Near clip distance must be greater than zero.");
 
                 nearDistance = value;
-                recalculateFrustum = true;
+                InvalidateFrustum();
             }
         }
 
@@ -224,7 +224,7 @@ namespace Axiom.Core {
             }
             set {
                 farDistance = value;
-                recalculateFrustum = true;
+                InvalidateFrustum();
             }
         }
 
@@ -244,7 +244,7 @@ namespace Axiom.Core {
             }
             set {
                 aspectRatio = value;
-                recalculateFrustum = true;
+                InvalidateFrustum();
             }
         }
 
@@ -467,6 +467,20 @@ namespace Axiom.Core {
         }
 
         /// <summary>
+        ///     Signal to update frustum information.
+        /// </summary>
+        protected virtual void InvalidateFrustum() {
+            recalculateFrustum = true;
+        }
+
+        /// <summary>
+        ///     Signal to update view information.
+        /// </summary>
+        protected virtual void InvalidateView() {
+            recalculateView = true;
+        }
+
+        /// <summary>
         ///		Updates the frustum data.
         /// </summary>
         protected virtual void UpdateFrustum() {
@@ -643,28 +657,28 @@ namespace Axiom.Core {
                 float distance = camDirection.Dot(lastParentPosition);
 
                 // left plane
-                planes[(int)FrustumPlane.Left].Normal = coeffL[0] * left + 	coeffL[1] * camDirection;
-                planes[(int)FrustumPlane.Left].D = -lastParentPosition.Dot(planes[(int)FrustumPlane.Left].Normal);
+                this[FrustumPlane.Left].Normal = coeffL[0] * left + coeffL[1] * camDirection;
+                this[FrustumPlane.Left].D = -lastParentPosition.Dot(this[FrustumPlane.Left].Normal);
 
                 // right plane
-                planes[(int)FrustumPlane.Right].Normal = coeffR[0] * left + coeffR[1] * camDirection;
-                planes[(int)FrustumPlane.Right].D = -lastParentPosition.Dot(planes[(int)FrustumPlane.Right].Normal);
+                this[FrustumPlane.Right].Normal = coeffR[0] * left + coeffR[1] * camDirection;
+                this[FrustumPlane.Right].D = -lastParentPosition.Dot(this[FrustumPlane.Right].Normal);
 
                 // bottom plane
-                planes[(int)FrustumPlane.Bottom].Normal = coeffB[0] * up + coeffB[1] * camDirection;
-                planes[(int)FrustumPlane.Bottom].D = -lastParentPosition.Dot(planes[(int)FrustumPlane.Bottom].Normal);
+                this[FrustumPlane.Bottom].Normal = coeffB[0] * up + coeffB[1] * camDirection;
+                this[FrustumPlane.Bottom].D = -lastParentPosition.Dot(this[FrustumPlane.Bottom].Normal);
 
                 // top plane
-                planes[(int)FrustumPlane.Top].Normal = coeffT[0] * up + coeffT[1] * camDirection;
-                planes[(int)FrustumPlane.Top].D = -lastParentPosition.Dot(planes[(int)FrustumPlane.Top].Normal);
+                this[FrustumPlane.Top].Normal = coeffT[0] * up + coeffT[1] * camDirection;
+                this[FrustumPlane.Top].D = -lastParentPosition.Dot(this[FrustumPlane.Top].Normal);
 
                 // far plane
-                planes[(int)FrustumPlane.Far].Normal = -camDirection;
-                planes[(int)FrustumPlane.Far].D = distance + farDistance;
+                this[FrustumPlane.Far].Normal = -camDirection;
+                this[FrustumPlane.Far].D = distance + farDistance;
 
                 // near plane
-                planes[(int)FrustumPlane.Near].Normal = camDirection;
-                planes[(int)FrustumPlane.Near].D = -(distance + nearDistance);
+                this[FrustumPlane.Near].Normal = camDirection;
+                this[FrustumPlane.Near].D = -(distance + nearDistance);
 
                 // update since we have now recalculated everything
                 recalculateView = false;

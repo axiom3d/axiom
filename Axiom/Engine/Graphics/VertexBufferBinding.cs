@@ -43,12 +43,12 @@ namespace Axiom.Graphics {
     ///		and vice versa, giving opportunities to reduce the state changes required to perform rendering.
     /// </remarks>
     public class VertexBufferBinding {
-        #region Member variables
+        #region Fields
 		
         protected Hashtable bindingMap = new Hashtable();
         protected ushort highIndex;
 		
-        #endregion
+        #endregion Fields
 
         #region Methods
 		
@@ -60,7 +60,7 @@ namespace Axiom.Graphics {
         /// DOC
         public virtual void SetBinding(ushort index, HardwareVertexBuffer buffer) {
             bindingMap[index] = buffer;
-            highIndex = (ushort)MathUtil.Max(highIndex, index);
+            highIndex = (ushort)MathUtil.Max(highIndex, index + 11);
         }
 
         /// <summary>
@@ -95,20 +95,22 @@ namespace Axiom.Graphics {
         /// <summary>
         /// 
         /// </summary>
-        /// DOC
         /// TODO: Change this to strongly typed later on
         public virtual IDictionary Bindings {
-            get { return bindingMap; }
+            get { 
+                return bindingMap; 
+            }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// DOC
         public virtual ushort NextIndex {
-            get { return highIndex; }
+            get { 
+                return highIndex++; 
+            }
         }
 
-        #endregion
+        #endregion Properties
     }
 }
