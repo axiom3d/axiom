@@ -36,7 +36,7 @@ namespace Axiom.Core {
     public class MeshManager : ResourceManager {
         #region Singleton implementation
 
-        static MeshManager() { Init(); }
+        static MeshManager() {}
         protected MeshManager() {}
         protected static MeshManager instance;
 
