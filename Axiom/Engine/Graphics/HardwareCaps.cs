@@ -261,7 +261,7 @@ namespace Axiom.Graphics {
 			Trace.WriteLineIf(CheckCap(Capabilities.TwoSidedStencil), "\t\t-Two Sided Stencil");
 			Trace.WriteLineIf(CheckCap(Capabilities.StencilWrap), "\t\t-Stencil Wrap");
 			Trace.WriteLineIf(CheckCap(Capabilities.UserClipPlanes), "\t-User Clip Planes");
-			Trace.WriteLineIf(CheckCap(Capabilities.StencilBuffer), "\t-Hardware Occlusion Queries");
+			Trace.WriteLineIf(CheckCap(Capabilities.HardwareOcculusion), "\t-Hardware Occlusion Queries");
 			Trace.WriteLineIf(CheckCap(Capabilities.InfiniteFarPlane), "\t-Infinite Far Plane");
         }
 
