@@ -64,7 +64,7 @@ namespace Axiom.Core {
         /// <summary>Reference to the material to use</summary>
         protected Material material;
         /// <summary></summary>
-        protected bool allDefaultSize;
+        protected bool allDefaultSize = true;
         /// <summary></summary>
         protected bool autoExtendPool = true;
 
@@ -471,6 +471,12 @@ namespace Axiom.Core {
         ///		Empties all of the active billboards from this set.
         /// </summary>
         public void Clear() {
+			// add all the currently active billboards to the free billboard queue
+			foreach ( Billboard b in activeBillboards ) 
+			{
+				freeBillboards.Enqueue(b);
+ 			}
+
             // clear the active billboard list
             activeBillboards.Clear();
         }
