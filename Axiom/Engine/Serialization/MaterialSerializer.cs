@@ -1109,7 +1109,7 @@ namespace Axiom.Serialization {
 				context.textureUnit.SetAlphaRejectSettings((CompareFunction)val, byte.Parse(values[1]));
 			}
 			else {
-				string legalValues = ScriptEnumAttribute.GetLegalValues(typeof(Shading));
+				string legalValues = ScriptEnumAttribute.GetLegalValues(typeof(CompareFunction));
 				LogParseError(context, "Bad alpha_rejection attribute, valid parameters are {0}.", legalValues);
 			}
 
