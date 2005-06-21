@@ -181,7 +181,7 @@ namespace Axiom.Core {
 			// This allows cameras to be used to render to many viewports,
 			// which can have their own dimensions and aspect ratios.
 			if (camera.AutoAspectRatio) {
-				camera.AspectRatio = actualWidth / actualHeight;
+				camera.AspectRatio = (float)actualWidth / (float)actualHeight;
 			}
 
             LogManager.Instance.Write("Viewport for camera '{0}' - actual dimensions L:{1},T:{2},W:{3},H:{4}",
