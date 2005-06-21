@@ -835,7 +835,7 @@ namespace Axiom.Graphics {
 				}
 				else {
 					// sort descending by depth, meaning further objects get drawn first
-					if(adepth > bdepth)
+					if(adepth < bdepth)
 						return 1;
 					else
 						return -1;
