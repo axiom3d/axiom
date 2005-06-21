@@ -714,6 +714,9 @@ namespace Axiom.Graphics {
 				case SceneBlendType.TransparentColor:
 					SetSceneBlending(SceneBlendFactor.SourceColor, SceneBlendFactor.OneMinusSourceColor);
 					break;
+				case SceneBlendType.Modulate:
+					SetSceneBlending(SceneBlendFactor.DestColor, SceneBlendFactor.Zero);
+					break;
 			}
 		}
 

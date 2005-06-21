@@ -876,8 +876,13 @@ namespace Axiom.Graphics {
 		/// <summary>
 		///		Make the object transparent based on the color values in the texture (brighter = more opaque).
 		///	 </summary>
-		[ScriptEnum("modulate")]
+		[ScriptEnum("color_blend")]
 		TransparentColor,
+		/// <summary>
+		///		Make the object transparent based on the color values in the texture (brighter = more opaque).
+		///	 </summary>
+		[ScriptEnum("modulate")]
+		Modulate,
 		/// <summary>
 		///		Add the texture values to the existing scene content.
 		///	 </summary>
