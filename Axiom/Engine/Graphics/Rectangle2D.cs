@@ -122,7 +122,7 @@ namespace Axiom.Graphics
 			float[] data = new float[] {
 				left, top, -1,
 				left, bottom, -1,
-				top, right, -1,
+				right, top, -1,
 				right, bottom, -1
 			};
 
