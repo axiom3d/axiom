@@ -683,8 +683,13 @@ namespace Axiom.Graphics {
 		/// <param name="target">Material which will receive this material's settings.</param>
 		public void CopyTo(Material target) {
 			// copy basic data
-			target.name = name;
-			target.handle = handle;
+
+			/* Commented these two out, since we don't want to overwrite the target's
+			 * name and handle!!
+			 * -- CMH 6/21/05 */
+			//target.name = name;
+			//target.handle = handle;
+
 			target.size = size;
 			target.lastAccessed = lastAccessed;
 			target.receiveShadows = receiveShadows;
