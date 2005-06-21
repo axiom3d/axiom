@@ -71,7 +71,7 @@ namespace Axiom.Graphics
 		public GpuProgramUsage Clone() {
 			GpuProgramUsage usage = new GpuProgramUsage(type);
 			usage.program = program;
-			usage.parameters = parameters;
+			usage.parameters = parameters.Clone();
 
 			return usage;
 		}

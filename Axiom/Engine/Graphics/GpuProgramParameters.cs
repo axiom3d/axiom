@@ -128,6 +128,50 @@ namespace Axiom.Graphics {
 			autoConstantList.Clear();
 		}
 
+		public GpuProgramParameters Clone() {
+			GpuProgramParameters p = new GpuProgramParameters();
+
+			// copy int constants
+			for ( int i = 0; i < intConstants.Count; i++ ) {
+				IntConstantEntry e = intConstants[i] as IntConstantEntry;
+				if ( e.isSet ) {
+					p.SetConstant(i, e.val);
+				}
+			}
+
+			// copy float constants
+			for ( int i = 0; i < floatConstants.Count; i++ ) {
+				FloatConstantEntry e = floatConstants[i] as FloatConstantEntry;
+				if ( e.isSet ) {
+					p.SetConstant(i, e.val);
+				}
+			}
+
+			// copy auto constants
+			for(int i = 0; i < autoConstantList.Count; i++) {
+				AutoConstantEntry entry = autoConstantList[i] as AutoConstantEntry;
+				p.SetAutoConstant(entry.index, entry.type, entry.data);
+			}
+
+			// copy named params
+			foreach ( DictionaryEntry e in namedParams ) {
+				p.MapParamNameToIndex(e.Key as string, (int)e.Value);
+			}
+
+			for ( int i = 0; i < paramTypeList.Count; i++ ) {
+				
+			}
+			foreach ( ParameterEntry pEntry in paramTypeList ) {
+				p.AddParameterToDefaultsList(pEntry.ParameterType, pEntry.ParameterName);
+			}
+
+			// copy value members
+			p.transposeMatrices = transposeMatrices;
+			p.autoAddParamName = autoAddParamName;
+
+			return p;
+		}
+
 		/// <summary>
 		///		Copies the values of all constants (including auto constants) from another <see cref="GpuProgramParameters"/> object.
 		/// </summary>
