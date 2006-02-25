@@ -58,7 +58,7 @@ namespace Axiom.RenderSystems.OpenGL
                 // filter out the lower resolutions and dupe frequencies
                 if ( width >= 640 && height >= 480 && bpp >= 16 )
                 {
-                    string query = string.Format( "{0} x {1} @ {2}-bit colour", width, height );
+                    string query = string.Format( "{0} x {1} @ {2}-bit colour", width, height, bpp );
 
                     if ( !option.PossibleValues.Contains( query ) )
                     {
