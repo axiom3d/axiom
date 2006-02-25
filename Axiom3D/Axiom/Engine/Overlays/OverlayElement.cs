@@ -1424,7 +1424,10 @@ namespace Axiom
             for ( int i = 0; i < parms.Length; i++ )
             {
                 sb.Append( parms[i] );
-                sb.Append( " " );
+				if (i != parms.Length-1)
+				{
+					sb.Append( " " );
+				}
             }
 
             element.Text = sb.ToString();
