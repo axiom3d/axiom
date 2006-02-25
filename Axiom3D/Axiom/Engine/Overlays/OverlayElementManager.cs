@@ -27,7 +27,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-
+#region Ogre Synchronization Information
+/// <ogresynchronization>
+///     <file name="OgreOverlayManager.h"   revision="1.23.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+///     <file name="OgreOverlayManager.cpp" revision="1.39.2.3" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
+#endregion
 namespace Axiom
 {
     /// <summary>
@@ -139,7 +144,7 @@ namespace Axiom
             }
 
             OverlayElement element = CreateElementFromFactory( typeName, instanceName );
-            element.Initialize();
+            //element.Initialize();
 
             // register
             elements.Add( instanceName, element );

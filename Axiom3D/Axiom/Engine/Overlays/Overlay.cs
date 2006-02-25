@@ -225,6 +225,7 @@ namespace Axiom
 					OverlayElementContainer container = (OverlayElementContainer)elementList[i];
 					container.NotifyWorldTransforms(xform);
 				}
+				isTransformUpdated = false;
 			}
 
 			if (isVisible)
