@@ -554,7 +554,7 @@ namespace Axiom
 
             // create the camera and add it to our local list
             Camera camera = new Camera( name, this );
-            cameraList.Add( camera );
+            cameraList.Add( name, camera );
 
             return camera;
         }
