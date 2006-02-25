@@ -21,6 +21,8 @@
                 <warning number="1591" />
                 <!-- do not report deprecation warnings -->
                 <warning number="0618" />
+		<warning number="1570" />
+		<warning number="1574" />
             </nowarn>
             <sources failonempty="true">
                 <include name="**/*.cs" />
