@@ -3,9 +3,9 @@
 	<FilePath type="Folder" src="../../Media"/>
 	
 	<!-- Axiom Media -->
-	<FilePath type="Folder" src="../../../../Media\Icons"/>	
-	<FilePath type="Folder" src="../../../../Media\Fonts"/>
-	<FilePath type="Folder" src="../../../../Media\Logos"/>
+	<FilePath type="Folder" src="../../../../Media/Icons"/>	
+	<FilePath type="Folder" src="../../../../Media/Fonts"/>
+	<FilePath type="Folder" src="../../../../Media/Logos"/>
 	
 </EngineConfig>
  
