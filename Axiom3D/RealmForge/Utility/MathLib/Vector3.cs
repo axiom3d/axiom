@@ -326,6 +326,20 @@ namespace Axiom.MathLib
             return left - right;
         }
 
+
+		public bool PositionEquals(Vector3 rhs, float tolerance)
+		{
+			
+			return Axiom.MathLib.MathUtil.RealEqual(x, rhs.x, tolerance) &&
+			Axiom.MathLib.MathUtil.RealEqual(y, rhs.y, tolerance) &&
+			Axiom.MathLib.MathUtil.RealEqual(z, rhs.z, tolerance);
+				
+		}
+		public bool PositionEquals(Vector3 rhs)
+		{
+			return PositionEquals(rhs,1e-03f);
+				
+		}
         /// <summary>
         ///		Used to subtract a Vector3 from another Vector3.
         /// </summary>

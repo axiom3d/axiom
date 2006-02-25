@@ -249,6 +249,11 @@ namespace Axiom.MathLib
             return left + right;
         }
 
+
+		public static Quaternion Subtract( Quaternion left, Quaternion right )
+		{
+			return left - right;
+		}
         /// <summary>
         /// Used when a Quaternion is added to another Quaternion.
         /// </summary>
@@ -260,6 +265,10 @@ namespace Axiom.MathLib
             return new Quaternion( left.w + right.w, left.x + right.x, left.y + right.y, left.z + right.z );
         }
 
+		public static Quaternion operator -( Quaternion left, Quaternion right )
+		{
+			return new Quaternion( left.w - right.w, left.x - right.x, left.y - right.y, left.z - right.z );
+		}
         /// <summary>
         ///     Negates a Quaternion, which simply returns a new Quaternion
         ///     with all components negated.
@@ -477,8 +486,26 @@ namespace Axiom.MathLib
             return new Quaternion( text );
         }
 
-
-
+		public static Quaternion Nlerp(float fT, Quaternion rkP, Quaternion rkQ)
+		{
+			return Nlerp(fT,rkP,rkQ,false);
+		}
+		public static Quaternion Nlerp(float fT, Quaternion rkP, Quaternion rkQ, bool shortestPath)
+		{
+			Quaternion result;
+			float fCos = rkP.Dot(rkQ);
+			if (fCos < 0.0f && shortestPath)
+			{
+				result = rkP + fT * ((-rkQ) - rkP);
+			}
+			else
+			{
+				result = rkP + fT * (rkQ - rkP);
+				
+			}
+			result.Normalize();
+			return result;
+		}
 
         public static Quaternion Slerp( float time, Quaternion quatA, Quaternion quatB )
         {
@@ -1011,7 +1038,13 @@ namespace Axiom.MathLib
         {
             return obj is Quaternion && this == (Quaternion)obj;
         }
+		public bool Equals(Quaternion rhs, float tolerance)
+		{
+			float fCos = Dot(rhs);
+			float angle = (float)Math.Acos(fCos);
 
+			return Math.Abs(angle) <= tolerance;
+		}
 
         #endregion
     }
