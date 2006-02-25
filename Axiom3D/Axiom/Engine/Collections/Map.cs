@@ -1,7 +1,9 @@
+#region Namespace declarations
 using System;
 using System.Collections;
 using System.Diagnostics;
 using Axiom.MathLib.Collections;
+#endregion Namespace declarations
 
 namespace Axiom {
     /// <summary>
