@@ -33,8 +33,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Diagnostics;
-using System.Resources;
 using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
@@ -55,7 +53,7 @@ namespace DotNet3D.Math
     {
         #region Fields
 
-        public float x, y;
+        public Real x, y;
 
         #endregion Fields
 
@@ -77,7 +75,7 @@ namespace DotNet3D.Math
         /// </summary>
         /// <param name="x">X position.</param>
         /// <param name="y">Y position</param>
-        public Vector2( float x, float y )
+        public Vector2( Real x, Real y )
         {
             this.x = x;
             this.y = y;
@@ -105,11 +103,11 @@ namespace DotNet3D.Math
                 throw new FormatException( string.Format( "Cannot parse the text '{0}' because it does not have 2 parts separated by commas in the form (x,y) with optional parenthesis.", parsableText ) );
 
             // Attempt to assign member variables to values. 
-            // Will fail if the values are not parseable into floats.
+            // Will fail if the values are not parseable into Reals.
             try
             {
-                x = float.Parse( vals[0].Trim() );
-                y = float.Parse( vals[1].Trim() );
+                x = Real.Parse( vals[0].Trim() );
+                y = Real.Parse( vals[1].Trim() );
             }
             catch ( Exception )
             {
@@ -159,7 +157,9 @@ namespace DotNet3D.Math
 
             format = format.PadLeft( decimalPlaces, '#' );
             format = "({0:0." + format + "}, {1:0." + format + "})";
-            return string.Format( format, this.x, this.y );
+            //NOTE: Explicit conversion used here to get proper behavior, for some reson it left as Real it will always 
+            //      display all decimal places
+            return string.Format( format, (float)this.x, (float)this.y );
         }
 
         /// <summary>
@@ -248,7 +248,7 @@ namespace DotNet3D.Math
         /// <param name="left"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public static Vector2 operator *( Vector2 left, float scalar )
+        public static Vector2 operator *( Vector2 left, Real scalar )
         {
             return new Vector2( left.x * scalar, left.y * scalar );
         }
@@ -260,7 +260,7 @@ namespace DotNet3D.Math
         /// <param name="scalar"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector2 operator *( float scalar, Vector2 right )
+        public static Vector2 operator *( Real scalar, Vector2 right )
         {
             return new Vector2( right.x * scalar, right.y * scalar );
         }
@@ -281,7 +281,7 @@ namespace DotNet3D.Math
         /// </summary>
         /// <remarks>
         ///	</remarks>
-        public float this[ int index ]
+        public Real this[ int index ]
         {
             get
             {
@@ -352,7 +352,7 @@ namespace DotNet3D.Math
         /// <param name="left"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public static Vector2 Multiply( Vector2 left, float scalar )
+        public static Vector2 Multiply( Vector2 left, Real scalar )
         {
             return left * scalar;
         }
@@ -363,7 +363,7 @@ namespace DotNet3D.Math
         /// <param name="scalar"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector2 Multiply( float scalar, Vector2 right )
+        public static Vector2 Multiply( Real scalar, Vector2 right )
         {
             return scalar * right;
         }
