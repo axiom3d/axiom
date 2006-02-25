@@ -1439,23 +1439,16 @@ namespace Axiom.RenderSystems.DirectX9
         /// </summary>
         private void InitConfigOptions()
         {
-            ConfigOption optDevice = new ConfigOption();
-            ConfigOption optVideoMode = new ConfigOption();
-            ConfigOption optFullScreen = new ConfigOption();
-            ConfigOption optVSync = new ConfigOption();
-            ConfigOption optAA = new ConfigOption();
-            ConfigOption optFPUMode = new ConfigOption();
+            ConfigOption optDevice = new ConfigOption( "Rendering Device", "", false);
+            ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit colour", false );
+            ConfigOption optFullScreen = new ConfigOption( "Full Screen", "Yes", false );
+            ConfigOption optVSync = new ConfigOption( "VSync", "No", false);
+            ConfigOption optAA = new ConfigOption( "Anti aliasing", "None", false );
+            ConfigOption optFPUMode = new ConfigOption( "Floating-point mode", "Fastest", false );
 
             //driverList = this->getDirect3DDrivers();
 
-            optDevice.Name = "Rendering Device";
-            optDevice.Value = "";
             optDevice.PossibleValues.Clear();
-            optDevice.Immutable = false;
-
-            optVideoMode.Name = "Video Mode";
-            optVideoMode.Value = "800 x 600 @ 32-bit colour";
-            optVideoMode.Immutable = false;
 
             DriverCollection driverList = D3DHelper.GetDriverInfo();
             foreach ( Driver driver in driverList )
@@ -1472,11 +1465,8 @@ namespace Axiom.RenderSystems.DirectX9
             //    optVideoMode.Add( mode.Width, mode.Height, mode.ColorDepth, false, false );
             //}
 
-            optFullScreen.Name = "Full Screen";
             optFullScreen.PossibleValues.Add( "Yes" );
             optFullScreen.PossibleValues.Add( "No" );
-            optFullScreen.Value = "Yes";
-            optFullScreen.Immutable = false;
 
             //for ( unsigned j = 0; j < driverList->count(); j++ )
             //{
@@ -1487,23 +1477,14 @@ namespace Axiom.RenderSystems.DirectX9
             //        optDevice.Value = driver->DriverDescription();
             //}
 
-            optVSync.Name = "VSync";
-            optVSync.Immutable = false;
             optVSync.PossibleValues.Add( "Yes" );
             optVSync.PossibleValues.Add( "No" );
-            optVSync.Value = "No";
 
-            optAA.Name = "Anti aliasing";
-            optAA.Immutable = false;
             optAA.PossibleValues.Add( "None" );
-            optAA.Value = "None";
 
-            optFPUMode.Name = "Floating-point mode";
-            optFPUMode.Value = "Fastest";
             optFPUMode.PossibleValues.Clear();
             optFPUMode.PossibleValues.Add( "Fastest" );
             optFPUMode.PossibleValues.Add( "Consistent" );
-            optFPUMode.Immutable = false;
 
             ConfigOptions.Add( optDevice );
             ConfigOptions.Add( optVideoMode );
