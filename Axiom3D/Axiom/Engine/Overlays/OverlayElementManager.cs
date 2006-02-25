@@ -144,7 +144,6 @@ namespace Axiom
             }
 
             OverlayElement element = CreateElementFromFactory( typeName, instanceName );
-            //element.Initialize();
 
             // register
             elements.Add( instanceName, element );
@@ -195,7 +194,7 @@ namespace Axiom
                 string typeToCreate = "";
                 if ( typeName.Length == 0 )
                 {
-                    typeToCreate = template.Type;
+                    typeToCreate = template.GetType().Name;
                 }
                 else
                 {

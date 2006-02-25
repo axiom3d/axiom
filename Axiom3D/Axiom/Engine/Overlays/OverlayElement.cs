@@ -152,7 +152,7 @@ namespace Axiom
         }
 		public OverlayElement Clone(string instanceName)
 		{
-			OverlayElement newElement = OverlayElementManager.Instance.CreateElement(Type, instanceName + "/" + name);
+			OverlayElement newElement = OverlayElementManager.Instance.CreateElement(this.GetType().Name, instanceName + "/" + name);
 			//copyParametersTo(newElement);
 
 			return newElement;
@@ -657,8 +657,8 @@ namespace Axiom
 		/// <ogreequivilent>_setDimensions</ogreequivilent>
 		public void ScreenDimensions(float width, float height)
 		{
-			width  = width;
-			height = height;
+			this.width  = width;
+			this.height = height;
 			pixelWidth  = width / pixelScaleX;
 			pixelHeight = height / pixelScaleY;
 
@@ -1098,14 +1098,6 @@ namespace Axiom
                 isDerivedOutOfDate = true;
                 PositionsOutOfDate();
             }
-        }
-
-        /// <summary>
-        ///    Type name of this element.
-        /// </summary>
-        public abstract string Type
-        {
-            get;
         }
 
         /// <summary>
