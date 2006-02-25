@@ -44,20 +44,21 @@ namespace Axiom.Demos
     {
         #region Protected Fields
 
-        protected const string CONFIG_FILE = @"..\..\EngineConfig.xml";
-        
+
+        private bool _configured = false;
+        protected RenderWindow window;
         protected Root engine;
+
         protected Camera camera;
         protected Viewport viewport;
         protected SceneManager scene;
-        protected RenderWindow window;
         protected InputReader input;
         protected Vector3 cameraVector = Vector3.Zero;
         protected float cameraScale;
         protected bool showDebugOverlay = true;
         protected float statDelay = 0.0f;
         protected float debugTextDelay = 0.0f;
-        protected float toggleDelay = 0.0f;
+        protected float toggleDelay = 1.0f;
         protected Vector3 camVelocity = Vector3.Zero;
         protected Vector3 camAccel = Vector3.Zero;
         protected float camSpeed = 2.5f;
@@ -67,25 +68,6 @@ namespace Axiom.Demos
         #endregion Protected Fields
 
         #region Protected Methods
-
-        protected bool Configure()
-        {
-            // HACK: Temporary
-            ConfigDialog dlg = new ConfigDialog();
-            dlg.ShowDialog();
-            
-            RenderSystem renderSystem = Root.Instance.RenderSystems[0];
-            Root.Instance.RenderSystem = renderSystem;
-            //EngineConfig.DisplayModeRow mode = renderSystem.ConfigOptions.DisplayMode[0];
-            //mode.FullScreen = true;
-            //mode.Selected = true;
-
-            window = Root.Instance.Initialize( true, "Axiom Engine Window" );
-
-            ShowDebugOverlay( showDebugOverlay );
-
-            return true;
-        }
 
         protected virtual void CreateCamera()
         {
@@ -145,26 +127,17 @@ namespace Axiom.Demos
             viewport.BackgroundColor = ColorEx.Black;
         }
 
-        protected virtual bool Setup()
+        protected virtual bool Setup( RenderWindow win )
         {
-            // instantiate the Root singleton
-            engine = new Root( CONFIG_FILE, "AxiomEngine.log" );
+            engine = Root.Instance;
+
+            window = win;
 
             // add event handlers for frame events
             engine.FrameStarted += new FrameEvent( OnFrameStarted );
             engine.FrameEnded += new FrameEvent( OnFrameEnded );
 
-            // allow for setting up resource gathering
-            SetupResources();
-
-            //show the config dialog and collect options
-            if ( !Configure() )
-            {
-                // shutting right back down
-                engine.Shutdown();
-
-                return false;
-            }
+            ShowDebugOverlay( showDebugOverlay );
 
             ChooseSceneManager();
             CreateCamera();
@@ -183,48 +156,6 @@ namespace Axiom.Demos
             return true;
         }
 
-        /// <summary>
-        ///		Loads default resource configuration if one exists.
-        /// </summary>
-        protected virtual void SetupResources()
-        {
-            string resourceConfigPath = Path.GetFullPath( CONFIG_FILE );
-
-            if ( File.Exists( resourceConfigPath ) )
-            {
-                ConfigOptionCollection config = new ConfigOptionCollection();
-
-                // load the config file
-                // relative from the location of debug and releases executables
-                //config.ReadXmlFile( CONFIG_FILE );
-
-                // interrogate the available resource paths
-                //foreach ( EngineConfig.FilePathRow row in config.FilePath )
-                //{
-                //    ResourceManager.AddCommonArchive( row.src, row.type );
-                //}
-	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Textures", "Folder");
-                ResourceManager.AddCommonArchive(@"../../../../..\Media\Icons", "Folder");
-	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Sounds", "Folder");
-	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Fonts", "Folder");
-	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Meshes", "Folder");
-	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Skeletons", "Folder");
-	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Materials", "Folder");
-	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Materials\Entities", "Folder");
-	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Overlays", "Folder");
-	            ResourceManager.AddCommonArchive(@"../../../../..\Media\GpuPrograms", "Folder");
-	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Terrain", "Folder");
-	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Terrain\ps_height_1k", "Folder");
-	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Temp", "Folder");
-	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Particles", "Folder");
-	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Logos", "Folder");
-	            ResourceManager.AddCommonArchive(@"../../../../..\Media\GUI", "Folder");
-	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Cursors", "Folder");
-	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Archives\chiropteraDM.zip", "ZipFile");
-	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Archives\TechDemoPreviews.zip", "ZipFile");            
-                }
-        }
-
         #endregion Protected Virtual Methods
 
         #region Protected Abstract Methods
@@ -238,11 +169,11 @@ namespace Axiom.Demos
 
         #region Public Methods
 
-        public void Start()
+        public void Start( RenderWindow win )
         {
             try
             {
-                if ( Setup() )
+                if ( Setup( win ) )
                 {
                     // start the engines rendering loop
                     engine.StartRendering();
@@ -259,15 +190,15 @@ namespace Axiom.Demos
             }
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             if ( engine != null )
             {
-                // remove event handlers
-                engine.FrameStarted -= new FrameEvent( OnFrameStarted );
+                engine.SceneManager.ClearScene();
+                window.RemoveViewport( 0 );
+                engine.SceneManager.RemoveAllCameras();
                 engine.FrameEnded -= new FrameEvent( OnFrameEnded );
-
-                engine.Dispose();
+                engine.FrameStarted -= new FrameEvent( OnFrameStarted );
             }
         }
 

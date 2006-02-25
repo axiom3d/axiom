@@ -745,9 +745,9 @@ namespace Axiom.Demos
         ///    Override to do some of our own initialization after the engine is set up.
         /// </summary>
         /// <returns></returns>
-        protected override bool Setup()
+        protected override bool Setup( RenderWindow win )
         {
-            if ( base.Setup() )
+            if ( base.Setup( win ) )
             {
 
                 material = MaterialManager.Instance.GetByName( MATERIAL_NAME );
