@@ -861,6 +861,25 @@ namespace Axiom.MathLib
         }
 
         /// <summary>
+        /// Initializes the Quaternion from a single Vector3
+        /// </summary>
+        /// <param name="axis">the Vector3</param>
+        public void FromAxes( Vector3 akAxis )
+        {
+            Matrix3 rotation = new Matrix3();
+
+            for ( int iCol = 0; iCol < 3; iCol++ )
+            {
+                rotation[ 0 ][ iCol ] = akAxis[ iCol ].x;
+                rotation[ 1 ][ iCol ] = akAxis[ iCol ].y;
+                rotation[ 2 ][ iCol ] = akAxis[ iCol ].z;
+            }
+
+            // set this quaternions values from the rotation matrix built
+            FromRotationMatrix( rotation );
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="matrix"></param>
