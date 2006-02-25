@@ -538,7 +538,7 @@ namespace Axiom.Core
                     orientation = rotationQuat * orientation;
                 }
 
-                // TODO: If we have a fixed yaw axis, we musn't break it by using the
+                // TODO If we have a fixed yaw axis, we musn't break it by using the
                 // shortest arc because this will sometimes cause a relative yaw
                 // which will tip the camera
 

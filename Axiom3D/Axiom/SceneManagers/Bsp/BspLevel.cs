@@ -516,7 +516,7 @@ namespace Axiom.SceneManagers.Bsp
             // NB this only works for the 'default' shaders for now
             // i.e. those that don't have a .shader script and thus default
             // to just texture + lightmap
-            // TODO: pre-parse all .shader files and create lookup for next stage (use ROGL shader_file_t)
+            // TODO pre-parse all .shader files and create lookup for next stage (use ROGL shader_file_t)
 
             // Material names are shadername#lightmapnumber
             // This is because I like to define materials up front completely

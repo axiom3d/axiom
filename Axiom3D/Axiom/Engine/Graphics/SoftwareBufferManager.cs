@@ -33,7 +33,7 @@ namespace Axiom.Graphics
     /// <summary>
     /// 	Summary description for SoftwareBufferManager.
     /// </summary>
-    // TODO: Switch go using GCHandle for array pointer after resolving stack overflow in TerrainSceneManager.
+    // TODO Switch go using GCHandle for array pointer after resolving stack overflow in TerrainSceneManager.
     public class SoftwareBufferManager : HardwareBufferManager
     {
         #region Methods

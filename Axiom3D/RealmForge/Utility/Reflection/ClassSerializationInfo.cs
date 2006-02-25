@@ -272,7 +272,7 @@ namespace RealmForge.Reflection
 
         protected void AddMember( MemberSerializationInfo info )
         {
-            //TODO: Register member's type	
+            //TODO Register member's type	
             if ( members.Contains( info.Name ) )
             {
                 throw new ApplicationException( string.Format( "A member with name '{0}' is already registered for class {1}", info.Name, this.TargetType ) );

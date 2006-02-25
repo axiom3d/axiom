@@ -337,7 +337,7 @@ namespace Axiom.Serialization
                     break;
 
                 case MaterialScriptSection.TextureSource:
-                    // TODO: Implement
+                    // TODO Implement
                     LogParseError( scriptContext, "Texture Source sections are not yet supported!" );
                     break;
 

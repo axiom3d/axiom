@@ -87,7 +87,7 @@ namespace Axiom.Core
         /// </summary>
         public void LoadAll()
         {
-            // TODO: Make optional, using scanning again in the meantim
+            // TODO Make optional, using scanning again in the meantim
             // trigger load of the plugins app.config section
             //ArrayList newPlugins = (ArrayList)ConfigurationSettings.GetConfig("plugins");
             ArrayList newPlugins = ScanForPlugins();
@@ -110,7 +110,7 @@ namespace Axiom.Core
 
             foreach ( string file in files )
             {
-                // TODO: Temp fix, allow exlusions in the app.config
+                // TODO Temp fix, allow exlusions in the app.config
                 if ( file != "Axiom.Engine.dll" )
                 {
                     try

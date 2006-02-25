@@ -125,7 +125,7 @@ namespace Axiom.Core
                 string path = SelectPlatformManagerAssembly( files );
 
 
-                // TODO: AssemblyManager?
+                // TODO AssemblyManager?
                 Assembly assembly = Assembly.LoadFrom( path );
 
                 // look for the type in the loaded assembly that implements IPlatformManager

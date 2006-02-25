@@ -1,66 +1,129 @@
-#region LGPL License
-/*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-#endregion LGPL License
-
-#region Using Directives
-
-using System;
-using System.Collections;
-
-using Axiom.Core;
-using Axiom.MathLib;
-using Axiom.Collections;
-
-using Axiom.SceneManagers.PagingLandscape.Collections;
-using Axiom.SceneManagers.PagingLandscape.Tile;
-using Axiom.SceneManagers.PagingLandscape.Page;
-
-#endregion Using Directives
-
-#region Versioning Information
-/// File								Revision
-/// ===============================================
-/// OgrePagingLandScapeData2DManager.h		1.9
-/// OgrePagingLandScapeData2DManager.cpp	1.14
-/// 
-#endregion
-
-namespace Axiom.SceneManagers.PagingLandscape.Data2D
-{
-	/// <summary>
-	/// Summary description for Data2DManager.
-	/// </summary>
-	public class Data2DManager: IDisposable
-	{
-		#region Singleton Implementation
-		
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		private Data2DManager() 
-		{
+#region LGPL License
+
+/*
+
+Axiom Game Engine Library
+
+Copyright (C) 2003  Axiom Project Team
+
+
+
+The overall design, and a majority of the core engine and rendering code 
+
+contained within this library is a derivative of the open source Object Oriented 
+
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+
+
+This library is free software; you can redistribute it and/or
+
+modify it under the terms of the GNU Lesser General Public
+
+License as published by the Free Software Foundation; either
+
+version 2.1 of the License, or (at your option) any later version.
+
+
+
+This library is distributed in the hope that it will be useful,
+
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+
+Lesser General Public License for more details.
+
+
+
+You should have received a copy of the GNU Lesser General Public
+
+License along with this library; if not, write to the Free Software
+
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+*/
+
+#endregion LGPL License
+
+
+
+#region Using Directives
+
+
+
+using System;
+
+using System.Collections;
+
+
+
+using Axiom.Core;
+
+using Axiom.MathLib;
+
+using Axiom.Collections;
+
+
+
+using Axiom.SceneManagers.PagingLandscape.Collections;
+
+using Axiom.SceneManagers.PagingLandscape.Tile;
+
+using Axiom.SceneManagers.PagingLandscape.Page;
+
+
+
+#endregion Using Directives
+
+
+
+#region Versioning Information
+
+/// File								Revision
+
+/// ===============================================
+
+/// OgrePagingLandScapeData2DManager.h		1.9
+
+/// OgrePagingLandScapeData2DManager.cpp	1.14
+
+/// 
+
+#endregion
+
+
+
+namespace Axiom.SceneManagers.PagingLandscape.Data2D
+
+{
+
+	/// <summary>
+
+	/// Summary description for Data2DManager.
+
+	/// </summary>
+
+	public class Data2DManager: IDisposable
+
+	{
+
+		#region Singleton Implementation
+
+		
+
+		/// <summary>
+
+		/// Constructor
+
+		/// </summary>
+
+		private Data2DManager() 
+
+		{
+
 			long w = Options.Instance.World_Width;
 			long h = Options.Instance.World_Height;
 
@@ -84,14 +147,22 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 						data2D[ i ][ j ] = new Data2D_HeightField();
 					}
 				}
-			}
-            else if (Options.Instance.Data2DFormat == "ClientGen") {
-                for (j = 0; j < h; j++) {
-                    for (i = 0; i < w; i++) {
-                        data2D[i][j] = new Data2D_ClientGen((int)i, (int)j);
-                    }
-                }
-            }
+			}
+
+            else if (Options.Instance.Data2DFormat == "ClientGen") {
+
+                for (j = 0; j < h; j++) {
+
+                    for (i = 0; i < w; i++) {
+
+                        data2D[i][j] = new Data2D_ClientGen((int)i, (int)j);
+
+                    }
+
+                }
+
+            }
+
 /*
 			else if ( Options.Instance.Data2DFormat == "HeightFieldTC" )
 			{
@@ -128,50 +199,85 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 			}
 			// when data is not yet loaded it gives the absolute maximum possible
 			maxHeight = data2D[ 0 ][ 0 ].MaxHeight;
-		}
-
-
-		private static Data2DManager instance = null;
-
-		public static Data2DManager Instance 
-		{
-			get 
-			{
-				if ( instance == null ) instance = new Data2DManager();
-				return instance;
-			}
-		}
-
-
-		#endregion Singleton Implementation
-
-		#region IDisposable Implementation
-
-		public void Dispose()
-		{
-			if (instance == this) 
-			{
-				data2D.Clear();
-				instance = null;
-			}
-		}
-
-		#endregion IDisposable Implementation
-
-		#region Fields
-
+		}
+
+
+
+
+
+		private static Data2DManager instance = null;
+
+
+
+		public static Data2DManager Instance 
+
+		{
+
+			get 
+
+			{
+
+				if ( instance == null ) instance = new Data2DManager();
+
+				return instance;
+
+			}
+
+		}
+
+
+
+
+
+		#endregion Singleton Implementation
+
+
+
+		#region IDisposable Implementation
+
+
+
+		public void Dispose()
+
+		{
+
+			if (instance == this) 
+
+			{
+
+				data2D.Clear();
+
+				instance = null;
+
+			}
+
+		}
+
+
+
+		#endregion IDisposable Implementation
+
+
+
+		#region Fields
+
+
+
 		Data2DPages data2D;
 		float maxHeight;
 
-		#endregion Fields
-
+		#endregion Fields
+
+
+
 		public void Load(  long dataX,  long dataZ )
 		{
 			Data2D data = data2D[ dataX ][ dataZ ];
 			if ( !data.IsLoaded )
 			{
 				data.Load( dataX, dataZ );
-			}		
+			}		
+
 		}
         
 		public void Unload(  long dataX,  long dataZ )
@@ -450,7 +556,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 			long x, z;
 			// Calculate where is going to be placed the new height
 			this.GetPageIndices( newSphere.Center, out x, out z);
-			// TODO: DeScale and add the sphere to all the necessary pages
+			// TODO DeScale and add the sphere to all the necessary pages
 
 			//place it there
 			return data2D[ x ][ z ].AddNewHeight(newSphere);
@@ -461,7 +567,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 			long x, z;
 			// Calculate where is going to be placed the new height
 			GetPageIndices( oldSphere.Center, out x,  out z);
-			// TODO: DeScale and add the sphere to all the necessary pages
+			// TODO DeScale and add the sphere to all the necessary pages
 
 			//remove it
 			return data2D[ x ][ z ].RemoveNewHeight(oldSphere);
@@ -504,11 +610,14 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 			long dataX, dataZ;
 			GetPageIndices(pos, out dataX, out dataZ);
 
-			if ( data2D[dataX][dataZ].Dynamic ) 
+			if ( data2D[dataX][dataZ].Dynamic ) 
+
 			{
 				return GetRealPageHeight (x, z, dataX, dataZ, 0);
-			} 
-			else 
+			} 
+
+			else 
+
 			{
 				if ( !(data2D[ dataX ][ dataZ ].IsLoaded ))
 					return 0.0f;
@@ -695,16 +804,20 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 			if (x >= w) 
 			{
 				x = w - 1;
-			} 
-			else if ( x < 0 ) 
+			} 
+
+			else if ( x < 0 ) 
+
 			{
 				x = 0;
 			}
 			if (z >= h) 
 			{
 				z = h - 1;
-			} 
-			else if ( z < 0 ) 
+			} 
+
+			else if ( z < 0 ) 
+
 			{
 				z = 0;
 			}
@@ -716,5 +829,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 			return ( data.IsLoaded )? data: null;
 		}
         
-	}
-}
+	}
+
+}
+

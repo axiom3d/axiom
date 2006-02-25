@@ -375,7 +375,7 @@ namespace Axiom.RenderSystems.OpenGL
                 }
                 else if ( textureType == TextureType.ThreeD )
                 {
-                    // TODO: Tao needs glTexImage3D
+                    // TODO Tao needs glTexImage3D
                     Gl.glTexImage3DEXT(
                         type,
                         0,
@@ -412,7 +412,7 @@ namespace Axiom.RenderSystems.OpenGL
                 }
                 else if ( textureType == TextureType.ThreeD )
                 {
-                    // TODO: Tao needs glTexImage3D
+                    // TODO Tao needs glTexImage3D
                     Gl.glTexImage3DEXT(
                         type,
                         0,

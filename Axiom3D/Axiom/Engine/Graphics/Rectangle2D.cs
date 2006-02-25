@@ -58,7 +58,7 @@ namespace Axiom.Graphics
                 buffer.WriteData( 0, buffer.Size, texCoords, true );
             }
 
-            // TODO: Fix
+            // TODO Fix
             material = MaterialManager.Instance.GetByName( "BaseWhite" );
             material.Lighting = false;
         }

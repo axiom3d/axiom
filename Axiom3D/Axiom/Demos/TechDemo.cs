@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 using System.IO;
+using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -46,6 +47,8 @@ namespace Axiom.Demos
     {
         #region Protected Fields
 
+        protected const string CONFIG_FILE = @"..\..\EngineConfig.xml";
+        
         protected Root engine;
         protected Camera camera;
         protected Viewport viewport;
@@ -71,11 +74,14 @@ namespace Axiom.Demos
         protected bool Configure()
         {
             // HACK: Temporary
+            ConfigDialog dlg = new ConfigDialog();
+            dlg.ShowDialog();
+            
             RenderSystem renderSystem = Root.Instance.RenderSystems[0];
             Root.Instance.RenderSystem = renderSystem;
-            EngineConfig.DisplayModeRow mode = renderSystem.ConfigOptions.DisplayMode[0];
+            //EngineConfig.DisplayModeRow mode = renderSystem.ConfigOptions.DisplayMode[0];
             //mode.FullScreen = true;
-            mode.Selected = true;
+            //mode.Selected = true;
 
             window = Root.Instance.Initialize( true, "Axiom Engine Window" );
 
@@ -145,7 +151,7 @@ namespace Axiom.Demos
         protected virtual bool Setup()
         {
             // instantiate the Root singleton
-            engine = new Root( "EngineConfig.xml", "AxiomEngine.log" );
+            engine = new Root( CONFIG_FILE, "AxiomEngine.log" );
 
             // add event handlers for frame events
             engine.FrameStarted += new FrameEvent( OnFrameStarted );
@@ -185,22 +191,41 @@ namespace Axiom.Demos
         /// </summary>
         protected virtual void SetupResources()
         {
-            string resourceConfigPath = Path.GetFullPath( "EngineConfig.xml" );
+            string resourceConfigPath = Path.GetFullPath( CONFIG_FILE );
 
             if ( File.Exists( resourceConfigPath ) )
             {
-                EngineConfig config = new EngineConfig();
+                ConfigOptionCollection config = new ConfigOptionCollection();
 
                 // load the config file
                 // relative from the location of debug and releases executables
-                config.ReadXml( "EngineConfig.xml" );
+                //config.ReadXmlFile( CONFIG_FILE );
 
                 // interrogate the available resource paths
-                foreach ( EngineConfig.FilePathRow row in config.FilePath )
-                {
-                    ResourceManager.AddCommonArchive( row.src, row.type );
+                //foreach ( EngineConfig.FilePathRow row in config.FilePath )
+                //{
+                //    ResourceManager.AddCommonArchive( row.src, row.type );
+                //}
+	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Textures", "Folder");
+                ResourceManager.AddCommonArchive(@"../../../../..\Media\Icons", "Folder");
+	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Sounds", "Folder");
+	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Fonts", "Folder");
+	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Meshes", "Folder");
+	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Skeletons", "Folder");
+	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Materials", "Folder");
+	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Materials\Entities", "Folder");
+	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Overlays", "Folder");
+	            ResourceManager.AddCommonArchive(@"../../../../..\Media\GpuPrograms", "Folder");
+	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Terrain", "Folder");
+	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Terrain\ps_height_1k", "Folder");
+	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Temp", "Folder");
+	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Particles", "Folder");
+	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Logos", "Folder");
+	            ResourceManager.AddCommonArchive(@"../../../../..\Media\GUI", "Folder");
+	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Cursors", "Folder");
+	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Archives\chiropteraDM.zip", "ZipFile");
+	            ResourceManager.AddCommonArchive(@"../../../../..\Media\Archives\TechDemoPreviews.zip", "ZipFile");            
                 }
-            }
         }
 
         #endregion Protected Virtual Methods
@@ -267,7 +292,7 @@ namespace Axiom.Demos
             // set the scaling of camera motion
             cameraScale = 100 * e.TimeSinceLastFrame;
 
-            // TODO: Move this into an event queueing mechanism that is processed every frame
+            // TODO Move this into an event queueing mechanism that is processed every frame
             input.Capture();
 
             if ( input.IsKeyPressed( KeyCodes.Escape ) )
@@ -448,7 +473,7 @@ namespace Axiom.Demos
 
         protected void UpdateStats()
         {
-            // TODO: Replace with CEGUI
+            // TODO Replace with CEGUI
             OverlayElement element = OverlayElementManager.Instance.GetElement( "Core/CurrFps" );
             element.Text = string.Format( "Current FPS: {0}", Root.Instance.CurrentFPS );
 

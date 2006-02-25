@@ -102,7 +102,7 @@ namespace Axiom.ParticleFX
 
         public void Stop()
         {
-            // TODO:  Add ParticleFX.Stop implementation
+            // TODO  Add ParticleFX.Stop implementation
         }
 
         #endregion

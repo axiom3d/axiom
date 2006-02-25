@@ -12,9 +12,9 @@ namespace RealmForge
         {
         }
 
-        public const string RealmForgeDeveloper = "http://realmforge.com";	//TODO: RealmWare
-        public const string RealmForgeHomepage = "http://realmforge.com";	//TODO: About page
-        public const string RealmForgeOverview = "http://wiki.realmforge.com";	//TODO: wiki about page
+        public const string RealmForgeDeveloper = "http://realmforge.com";	//TODO RealmWare
+        public const string RealmForgeHomepage = "http://realmforge.com";	//TODO About page
+        public const string RealmForgeOverview = "http://wiki.realmforge.com";	//TODO wiki about page
         public const string RealmForgeWiki = "http://wiki.realmforge.com";
         public const string RealmForgeProject = "http://sourceforge.net/projects/realmforge";
         public const string RealmForgeForums = "http://forums.realmforge.com";

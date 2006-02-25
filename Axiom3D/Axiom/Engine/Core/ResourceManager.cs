@@ -321,7 +321,7 @@ namespace Axiom.Core
 
             Archive archive = factory.CreateArchive( name );
 
-            // TODO: Shouldn't be calling this manually here, but good enough until the resource loading is rewritten
+            // TODO Shouldn't be calling this manually here, but good enough until the resource loading is rewritten
             archive.Load();
             archive.Touch();
 
@@ -434,7 +434,7 @@ namespace Axiom.Core
         /// </summary>
         protected void CheckUsage()
         {
-            // TODO: Implementation of CheckUsage.
+            // TODO Implementation of CheckUsage.
             // Keep a sorted list of resource by LastAccessed for easy removal of oldest?
         }
 
@@ -478,7 +478,7 @@ namespace Axiom.Core
                 return File.OpenRead( fileName );
             }
 
-            // TODO: Load resources manually
+            // TODO Load resources manually
             throw new AxiomException( string.Format( "Resource '{0}' could not be found.  Be sure it is located in a known directory "
                 + "or that it is not qualified by a directory name unless that directory is located inside a zip archive.", fileName ) );
         }
@@ -543,7 +543,7 @@ namespace Axiom.Core
 
             // not found in the cache, load the resource manually
 
-            // TODO: Load resources manually
+            // TODO Load resources manually
             throw new AxiomException( string.Format( "Resource '{0}' could not be found.  Be sure it is located in a known directory.", fileName ) );
         }
 

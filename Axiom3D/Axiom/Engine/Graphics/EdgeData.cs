@@ -122,7 +122,7 @@ namespace Axiom.Graphics
 
         public void DebugLog( Log log )
         {
-            // TODO: 
+            // TODO 
             log.Write( "Edge Data" );
             log.Write( "---------" );
 

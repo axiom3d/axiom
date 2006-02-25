@@ -1,3 +1,20 @@
+2005-09-13 Michael Cummings [Borrillis]
+- Testing CruiseControl.Net for CI Build Server
+
+2005-09-13 Michael Cummings [Borrillis]
+- Fixed a couple of classes formatting
+* Started work on Animations
+- Moved enumerations into respective class files for easier location when updating from Ogre
+- Updated Animation
+
+2005-09-12 Michael Cummings [Borrillis]
+- Added code changes for animation fixes and something else from forums
+ 
+2005-09-04 Michael Cummings [Borrillis]
+- Started work on new Demo browser for Axiom
+  includes new configuration dialog similar to Ogre's.
+  Also the browser itself will be done in CEGUI so it's cross platform
+  
 2005-09-01 Michael Cummings [Borrillis]
 - Fixed some references for OpenGL RenderSystem in the Prebuild.xml
 - Updated some of the dependencies in the dependencies folder.

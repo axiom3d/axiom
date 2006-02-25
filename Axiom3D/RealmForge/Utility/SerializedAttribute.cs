@@ -7,7 +7,7 @@ namespace RealmForge
     /// An attribute which described how a field or property member of a class will be serialized
     /// taking different versions of the class into account as well as different data formats
     /// </summary>
-    /// TODO: the member name that represents an ID in IDictionary collections
+    /// TODO the member name that represents an ID in IDictionary collections
     [AttributeUsage( AttributeTargets.Property | AttributeTargets.Field )]
     public class SerializedAttribute : Attribute
     {

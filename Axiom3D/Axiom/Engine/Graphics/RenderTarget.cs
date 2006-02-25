@@ -499,7 +499,7 @@ namespace Axiom.Graphics
 
         public virtual void ResetStatistics()
         {
-            // TODO: Implement RenderTarget.ResetStatistics
+            // TODO Implement RenderTarget.ResetStatistics
         }
 
         /// <summary>
@@ -551,7 +551,7 @@ namespace Axiom.Graphics
         /// </summary>
         public virtual void Dispose()
         {
-            // TODO: Track stats per render target and report on shutdown
+            // TODO Track stats per render target and report on shutdown
             // Write final performance stats
             //LogManager.Instance.Write("Final Stats:");
             //LogManager.Instance.Write("Axiom Framerate Average FPS: " + averageFPS.ToString("0.000000") + " Best FPS: " + highestFPS.ToString("0.000000") + " Worst FPS: " + lowestFPS.ToString("0.000000"));

@@ -118,7 +118,7 @@ namespace Axiom.ParticleFX
 
                 Vector3 vec = affector.Force;
 
-                // TODO: Common way for vector string rep, maybe modify ToString
+                // TODO Common way for vector string rep, maybe modify ToString
                 return string.Format( "{0}, {1}, {2}", vec.x, vec.y, vec.z );
             }
             public void Set( object target, string val )
@@ -140,7 +140,7 @@ namespace Axiom.ParticleFX
             {
                 LinearForceAffector affector = target as LinearForceAffector;
 
-                // TODO: Reverse lookup the enum attribute
+                // TODO Reverse lookup the enum attribute
                 return affector.ForceApplication.ToString().ToLower();
             }
             public void Set( object target, string val )

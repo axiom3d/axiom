@@ -137,7 +137,7 @@ namespace Axiom.MathLib
             return result;
         }
 
-        // TODO: Find the signifance of having 2 overloads with opposite param lists that do transposed operations
+        // TODO Find the signifance of having 2 overloads with opposite param lists that do transposed operations
         public static Vector4 operator *( Vector4 vector, Matrix4 matrix )
         {
             Vector4 result = new Vector4();

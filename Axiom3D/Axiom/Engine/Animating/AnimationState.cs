@@ -155,7 +155,7 @@ namespace Axiom.Animating {
         /// </summary>
         /// <param name="offset">Offset from the current time position.</param>
         public void AddTime(float offset) {
-			// TODO: Add MathUtil function for this?
+			// TODO Add MathUtil function for this?
 			time = (float)Math.IEEERemainder(time + offset, length);
 
 			if(time < 0) {

@@ -49,7 +49,7 @@ namespace Axiom.Core
     ///     it is intended that the Root class is not customized by everybody
     ///     (and it may be restricted access in the future).
     /// </remarks>
-    // TODO: Class name no longer matches file name.
+    // TODO Class name no longer matches file name.
     public sealed class SceneManagerEnumerator
     {
         #region Singleton implementation

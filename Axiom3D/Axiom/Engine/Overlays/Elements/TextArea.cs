@@ -522,7 +522,7 @@ namespace Axiom.Overlays.Elements
                 // note: font materials are created with lighting and depthcheck disabled by default
                 material = font.Material;
 
-                // TODO: See if this can be eliminated
+                // TODO See if this can be eliminated
                 material.Lighting = false;
                 material.DepthCheck = false;
 

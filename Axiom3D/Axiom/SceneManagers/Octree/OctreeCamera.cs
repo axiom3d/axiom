@@ -32,7 +32,7 @@ using Axiom.MathLib;
 
 #endregion Namespace Declarations
 
-// TODO: Update with infinite far plane and such.
+// TODO Update with infinite far plane and such.
 
 namespace Axiom.SceneManagers.Octree
 {
@@ -160,7 +160,7 @@ namespace Axiom.SceneManagers.Octree
         //
         //            UpdateView();
         //			
-        //            //TODO: VERTEX BUFFER STUFF
+        //            //TODO VERTEX BUFFER STUFF
         //        }
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace Axiom.SceneManagers.Octree
 
             if ( det == 0 )
             {
-                //TODO: Unsure. The C++ just returned
+                //TODO Unsure. The C++ just returned
                 return Vector3.Zero; //some planes are parallel.
             }
 

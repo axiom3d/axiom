@@ -40,7 +40,7 @@ using ATIFragmentShaderFactory = Axiom.RenderSystems.OpenGL.ATI.ATIFragmentShade
 
 #endregion Namespace Declarations
 
-// TODO: Cache property values and implement property getters
+// TODO Cache property values and implement property getters
 
 namespace Axiom.RenderSystems.OpenGL
 {
@@ -159,7 +159,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region Implementation of RenderSystem
 
-        public override EngineConfig ConfigOptions
+        public override ConfigOptionCollection ConfigOptions
         {
             get
             {
@@ -244,7 +244,7 @@ namespace Axiom.RenderSystems.OpenGL
             bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, object target )
         {
 
-            // TODO: Check for dupe windows
+            // TODO Check for dupe windows
 
             RenderWindow window = glSupport.NewWindow( name, width, height, colorDepth, isFullscreen, left, top, depthBuffer, vsync, target );
 
@@ -777,7 +777,7 @@ namespace Axiom.RenderSystems.OpenGL
             float currentAnisotropy = 1;
             float maxSupportedAnisotropy = 0;
 
-            // TODO: Add getCurrentAnistoropy
+            // TODO Add getCurrentAnistoropy
             Gl.glGetTexParameterfv( textureTypes[stage], Gl.GL_TEXTURE_MAX_ANISOTROPY_EXT, out currentAnisotropy );
             Gl.glGetFloatv( Gl.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, out maxSupportedAnisotropy );
 
@@ -1485,7 +1485,7 @@ namespace Axiom.RenderSystems.OpenGL
             Gl.glFogf( Gl.GL_FOG_END, end );
             fogEnabled = true;
 
-            // TODO: Fog hints maybe?
+            // TODO Fog hints maybe?
         }
 
         /// <summary>
@@ -2383,7 +2383,7 @@ namespace Axiom.RenderSystems.OpenGL
             }
 
             // check support for hardware vertex blending
-            // TODO: Dont check this cap yet, wait for vertex shader support so that software blending is always used
+            // TODO Dont check this cap yet, wait for vertex shader support so that software blending is always used
             //if(GLHelper.CheckExtension("GL_ARB_vertex_blend"))
             //    caps.SetCap(Capabilities.VertexBlending);
 
@@ -2467,7 +2467,7 @@ namespace Axiom.RenderSystems.OpenGL
                 caps.SetCap( Capabilities.VertexPrograms );
                 caps.MaxVertexProgramVersion = "arbvp1";
                 caps.VertexProgramConstantIntCount = 0;
-                // TODO: Fix constant float count calcs, glGetIntegerv doesn't work
+                // TODO Fix constant float count calcs, glGetIntegerv doesn't work
                 //int maxFloats;
                 //Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
                 //caps.VertexProgramConstantFloatCount = maxFloats;
@@ -2483,7 +2483,7 @@ namespace Axiom.RenderSystems.OpenGL
                 caps.SetCap( Capabilities.FragmentPrograms );
                 caps.MaxFragmentProgramVersion = "arbfp1";
                 caps.FragmentProgramConstantIntCount = 0;
-                // TODO: Fix constant float count calcs, glGetIntegerv doesn't work
+                // TODO Fix constant float count calcs, glGetIntegerv doesn't work
                 //int maxFloats;
                 //Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
                 //caps.FragmentProgramConstantFloatCount = maxFloats;
@@ -2499,7 +2499,7 @@ namespace Axiom.RenderSystems.OpenGL
                 caps.SetCap( Capabilities.FragmentPrograms );
                 caps.MaxFragmentProgramVersion = "ps_1_4";
                 caps.FragmentProgramConstantIntCount = 0;
-                // TODO: Fix constant float count calcs, glGetIntegerv doesn't work
+                // TODO Fix constant float count calcs, glGetIntegerv doesn't work
                 //int maxFloats;
                 //Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
                 //caps.FragmentProgramConstantFloatCount = maxFloats;

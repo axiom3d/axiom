@@ -27,7 +27,7 @@ namespace RealmForge.FileSystem
     /// Though a lot of speed is lost with larger files, bzip likely wont make the stream that much smaller for small packets of XML, so the faster gzip should be used
     /// Output Streams Compress
     /// </remarks>
-    /// TODO:
+    /// TODO
     public abstract class Compressor
     {
         #region Constructors

@@ -250,7 +250,7 @@ namespace Axiom.MathLib
             // Catmull-Rom approach
             // tangent[i] = 0.5 * (point[i+1] - point[i-1])
 
-            // TODO: Resize tangent list and use existing elements rather than clear/readd every time.
+            // TODO Resize tangent list and use existing elements rather than clear/readd every time.
 
             tangentList.Clear();
 

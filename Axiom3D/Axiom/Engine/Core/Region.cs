@@ -331,7 +331,7 @@ namespace Axiom.Core
 
         public IEnumerator GetShadowVolumeRenderableIterator( ShadowTechnique shadowTechnique, Light light, HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, ulong flags )
         {
-            // TODO: Port this from Ogre
+            // TODO Port this from Ogre
             throw new NotImplementedException();
         }
 

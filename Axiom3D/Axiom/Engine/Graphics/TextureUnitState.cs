@@ -51,7 +51,7 @@ namespace Axiom.Graphics
     /// 	where you do not use vertex or fragment programs (shaders). Programmable 
     /// 	pipeline means that for this pass you are using vertex or fragment programs.
     /// </remarks>
-    /// TODO: Destroy controllers
+    /// TODO Destroy controllers
     public class TextureUnitState
     {
         #region Fields
@@ -353,7 +353,7 @@ namespace Axiom.Graphics
         {
             get
             {
-                // TODO: Optimize this to hopefully eliminate the search every time
+                // TODO Optimize this to hopefully eliminate the search every time
                 for ( int i = 0; i < effectList.Count; i++ )
                 {
                     TextureEffect effect = (TextureEffect)effectList[i];
@@ -1793,7 +1793,7 @@ namespace Axiom.Graphics
         /// <param name="type"></param>
         private void RemoveEffect( TextureEffectType type )
         {
-            // TODO: Verify this works correctly since we are removing items during a loop
+            // TODO Verify this works correctly since we are removing items during a loop
             for ( int i = 0; i < effectList.Count; i++ )
             {
                 if ( ( (TextureEffect)effectList[i] ).type == type )
@@ -1893,7 +1893,7 @@ namespace Axiom.Graphics
         /// </summary>
         public void Unload()
         {
-            // TODO: Implement TextureUnitState.Unload?
+            // TODO Implement TextureUnitState.Unload?
         }
 
         /// <summary>

@@ -282,7 +282,7 @@ namespace RealmForge
             foreach ( Type type in assembly.GetTypes() )
             {
                 object[] attribs = type.GetCustomAttributes( attributeType, true );
-                //TODO:
+                //TODO
                 if ( attribs.Length > 0 )
                 {
                     list.Add( type );
@@ -304,7 +304,7 @@ namespace RealmForge
                 foreach ( Type type in assembly.GetTypes() )
                 {
                     object[] attribs = type.GetCustomAttributes( attributeType, true );
-                    //TODO:
+                    //TODO
                     if ( attribs.Length > 0 )
                     {
                         typeAttribTable.Add( type, attribs[0] );
@@ -407,7 +407,7 @@ namespace RealmForge
             object result = null;
             hasReturnVal = false;
             MemberInfo info = null;
-            //TODO: check if binding flags work for static and other situations
+            //TODO check if binding flags work for static and other situations
             MemberInfo[] infos = type.GetMember( memberName,
                 MemberTypes.Field | MemberTypes.Property | MemberTypes.Method,
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic );
@@ -677,7 +677,7 @@ namespace RealmForge
             ArrayList attribSet = new ArrayList();
             foreach ( FieldInfo info in targetType.GetFields( flags ) )
             {
-                //TODO: Readonly column?, though its not very useful
+                //TODO Readonly column?, though its not very useful
                 if ( !readWriteOnly || !info.IsInitOnly )
                 {
                     object[] attribs = info.GetCustomAttributes( attribType, checkInherited );
@@ -690,7 +690,7 @@ namespace RealmForge
             }
             foreach ( PropertyInfo info in targetType.GetProperties( flags ) )
             {
-                //TODO: Readonly column?, though its not very useful
+                //TODO Readonly column?, though its not very useful
                 if ( !readWriteOnly || info.CanWrite && info.CanWrite )
                 {
                     object[] attribs = info.GetCustomAttributes( attribType, checkInherited );

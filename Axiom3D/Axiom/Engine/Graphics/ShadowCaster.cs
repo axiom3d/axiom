@@ -232,7 +232,7 @@ namespace Axiom.Graphics
 
             unsafe
             {
-                // TODO: Will currently cause an overflow for 32 bit indices, revisit
+                // TODO Will currently cause an overflow for 32 bit indices, revisit
                 short* pIdx = (short*)idxPtr.ToPointer();
                 int count = 0;
 

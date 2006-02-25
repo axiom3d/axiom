@@ -312,7 +312,7 @@ namespace Axiom.Demos
             Material = material;
 
             // set the bounding box of the tri
-            // TODO: not right, but good enough for now
+            // TODO not right, but good enough for now
             box = new AxisAlignedBox( new Vector3( 25, 50, 0 ), new Vector3( -25, 0, 0 ) );
         }
 

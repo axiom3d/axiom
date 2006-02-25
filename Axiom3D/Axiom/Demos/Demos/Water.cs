@@ -126,7 +126,7 @@ namespace Axiom.Demos
 
             #region STUBBED LIGHT ANIMATION
             // Create a new animation state to track this
-            // TODO: Light Animation not working.
+            // TODO Light Animation not working.
             //this.animState = scene.CreateAnimationState("WaterLight");
             //this.animState.Time = 0f;
             //this.animState.IsEnabled = false;
@@ -181,7 +181,7 @@ namespace Axiom.Demos
             scene.AmbientLight = new ColorEx( 0.05f, 0.05f, 0.05f ); // default is low ambient light
 
             // Clear Current Lights and start over
-            // TODO: Add ClearLights
+            // TODO Add ClearLights
             //this.scene.ClearLights();
             lightNode.Lights.Clear();
             lightSet.Clear();
@@ -355,7 +355,7 @@ namespace Axiom.Demos
                     if ( y > CMPLX - 1 )
                         y = CMPLX - 1;
                     waterMesh.PushDown( x, y, -h );
-                    //TODO: to implement WaterCircles, this is where you would create each new WaterCircle
+                    //TODO to implement WaterCircles, this is where you would create each new WaterCircle
                 }
             }
         }
@@ -803,7 +803,7 @@ namespace Axiom.Demos
             vdecl.AddElement( 1, 0, VertexElementType.Float3, VertexElementSemantic.Normal );
             vdecl.AddElement( 2, 0, VertexElementType.Float2, VertexElementSemantic.TexCoords );
 
-            // Prepare buffer for positions - todo: first attempt, slow
+            // Prepare buffer for positions - TODO first attempt, slow
             // Create the Position Vertex Buffer and Bind it index 0 - Write Only
             posVBuf = HwBufMgr.CreateVertexBuffer( 3 * 4, numVertices, BufferUsage.DynamicWriteOnly );
             vbind.SetBinding( 0, posVBuf );
@@ -821,7 +821,7 @@ namespace Axiom.Demos
             //    ...
             //    (0,0.00), (0.02, 0.00), (0.04, 0.00), ... (1.00,0.00)
             // This construct is simple and is used to calculate the Texture map.
-            // Todo: Write directly to the buffer, when Axiom supports this in safe manner
+            // TODO Write directly to the buffer, when Axiom supports this in safe manner
             float[, ,] tcBufDat = new float[cmplx + 1, cmplx + 1, 2];
             for ( int i = 0; i <= cmplx; i++ )
             {

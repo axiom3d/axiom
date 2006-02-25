@@ -44,7 +44,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Type of operation to perform.
         /// </summary>
-        /// TODO: Rename the enum to OperationType
+        /// TODO Rename the enum to OperationType
         public OperationType operationType;
 
         /// <summary>

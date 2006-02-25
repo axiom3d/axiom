@@ -158,7 +158,7 @@ namespace Axiom.Graphics
         /// <param name="op"></param>
         public void GetRenderOperation( RenderOperation op )
         {
-            // TODO: Ensure all other places throughout the engine set these properly
+            // TODO Ensure all other places throughout the engine set these properly
             op.indexData = renderOp.indexData;
             op.useIndices = true;
             op.operationType = OperationType.TriangleList;

@@ -160,7 +160,7 @@ namespace Axiom.Platforms.SDL
 
             if ( !useMouseEvents )
             {
-                // TODO: Look into awkward mouse wheel behavior
+                // TODO Look into awkward mouse wheel behavior
                 mouseKeys = 0;
                 relMouseX = 0;
                 relMouseY = 0;
@@ -178,7 +178,7 @@ namespace Axiom.Platforms.SDL
                     // MOUSEBUTTONUP and a MOUSEBUTTONDOWN event)
 
                     // fetch all mouse related events
-                    // TODO: SDL_PeepEvents throwing exceptions, investigate
+                    // TODO SDL_PeepEvents throwing exceptions, investigate
                     int count = 0;
                     //Sdl.SDL_PeepEvents(events, BufferSize, Sdl.SDL_GETEVENT, 
                     //	Sdl.SDL_MOUSEMOTIONMASK | Sdl.SDL_MOUSEBUTTONDOWNMASK | Sdl.SDL_MOUSEBUTTONUPMASK);
@@ -221,7 +221,7 @@ namespace Axiom.Platforms.SDL
             if ( useMouse && ownMouse )
             {
                 // hide the cursor
-                // TODO: Commented out for easier debugging
+                // TODO Commented out for easier debugging
                 //Sdl.SDL_ShowCursor(0);
 
                 //Sdl.SDL_WM_GrabInput(Sdl.SDL_GRAB_ON);
@@ -321,7 +321,7 @@ namespace Axiom.Platforms.SDL
         /// <returns>The equivalent enum value in the Sdl enum.</returns>
         private int ConvertKeyEnum( KeyCodes key )
         {
-            // TODO: Quotes
+            // TODO Quotes
             int sdlKey = 0;
 
             switch ( key )
@@ -581,7 +581,7 @@ namespace Axiom.Platforms.SDL
         /// <returns>The equivalent enum value in the Axiom.KeyCodes enum.</returns>
         private Axiom.Input.KeyCodes ConvertKeyEnum( int key )
         {
-            // TODO: Quotes
+            // TODO Quotes
             Axiom.Input.KeyCodes axiomKey = 0;
 
             switch ( key )

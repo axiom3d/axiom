@@ -537,7 +537,7 @@ namespace Axiom.Graphics
                 }
             }
 
-            // TODO: Order best techniques
+            // TODO Order best techniques
 
             compilationRequired = false;
 

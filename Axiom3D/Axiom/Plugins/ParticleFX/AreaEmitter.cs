@@ -133,7 +133,7 @@ namespace Axiom.ParticleFX
 
         protected void InitDefaults( string type )
         {
-            // TODO: Revisit this
+            // TODO Revisit this
             direction = Vector3.UnitZ;
             up = Vector3.UnitZ;
             this.Size = new Vector3( 50, 50, 0 );

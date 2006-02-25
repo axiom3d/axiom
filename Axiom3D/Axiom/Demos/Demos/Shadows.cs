@@ -55,7 +55,7 @@ namespace Axiom.Demos
             // set ambient light off
             scene.AmbientLight = ColorEx.Black;
 
-            // TODO: Check based on caps
+            // TODO Check based on caps
             int currentAtheneMaterial = 0;
 
             // fixed light, dim

@@ -90,7 +90,7 @@ namespace RealmForge.Serialization
         /// <param name="nameOverride">used if info is null</param>
         protected void SaveObject( MemberSerializationInfo info, object obj, bool isAttribOverride, string nameOverride, object listKeyValue )
         {
-            //TODO: May want to do an empty tag?
+            //TODO May want to do an empty tag?
             if ( obj == null )
                 return;
             //get the cached serialization rules for this data type, often retrieved from attributes
@@ -166,7 +166,7 @@ namespace RealmForge.Serialization
                     IDictionary members = (IDictionary)data;
                     xw.WriteStartElement( name );
                     //write an additional key attribute if this class is stored in a IDictionary, it will be used to rekey it on deserialization
-                    //TODO: Allow properties with attributes to be serialized using classInfo
+                    //TODO Allow properties with attributes to be serialized using classInfo
                     if ( listKeyValue != null )
                     {//write the key for this item
                         SaveObject( null, listKeyValue, true, classInfo.KeyPropertyName, null );
@@ -355,7 +355,7 @@ namespace RealmForge.Serialization
             {//check if is an element or attribute
 
                 case XmlNodeType.Attribute://try to find inner text, or a child
-                    //TODO: If is defaultListKeyAttrib
+                    //TODO If is defaultListKeyAttrib
                     if ( modeType == SerializeMode.Text )
                     {
                         return classInfo.CreateObject( xr.Value );
@@ -379,7 +379,7 @@ namespace RealmForge.Serialization
                     switch ( modeType )
                     {//construct an object from the data and its children using different methods
                         case SerializeMode.Text://a tag with just text (ie <tag>MyText</tag> or <tag></tag> or <tag/>
-                            //TODO: consider properties
+                            //TODO consider properties
                             string text = null;
                             if ( xr.IsEmptyElement || ReadToData( false ) == XmlNodeType.EndElement )
                             {
@@ -395,7 +395,7 @@ namespace RealmForge.Serialization
                         //find each child tag and attribute and set them for the new instance
 
                         case SerializeMode.List://an IList of child objects
-                            //TODO: consider properties
+                            //TODO consider properties
 
                             IList list = (IList)classInfo.CreateInstance();
                             if ( !xr.IsEmptyElement )
@@ -415,7 +415,7 @@ namespace RealmForge.Serialization
                             }
                             return list;
                         case SerializeMode.KeyedList://an IDictionary, similiar to List, but with where all children have an attribute representing their key (may also represent a property to prevent repitition)
-                            //TODO: read properties children/attributes
+                            //TODO read properties children/attributes
                             IDictionary keyedList = (IDictionary)classInfo.CreateInstance();
                             if ( !xr.IsEmptyElement )
                             {

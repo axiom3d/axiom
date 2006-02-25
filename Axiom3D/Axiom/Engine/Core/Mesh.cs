@@ -73,7 +73,7 @@ namespace Axiom.Core
     ///    also that mesh sub-sections (when used in an instantiated object)
     ///    share the same scene node as the parent.
     /// </remarks>
-    /// TODO: Add Clone method
+    /// TODO Add Clone method
     public class Mesh : Resource
     {
         #region Fields
@@ -641,8 +641,8 @@ namespace Axiom.Core
 
                     if ( srcElem == null || srcElem.Type != VertexElementType.Float2 )
                     {
-                        // TODO: SubMesh names
-                        throw new AxiomException( "SubMesh '{0}' of Mesh '{1}' has no 2D texture coordinates at the selected set, therefore we cannot calculate tangents.", "<TODO: SubMesh name>", name );
+                        // TODO SubMesh names
+                        throw new AxiomException( "SubMesh '{0}' of Mesh '{1}' has no 2D texture coordinates at the selected set, therefore we cannot calculate tangents.", "<TODO SubMesh name>", name );
                     }
 
                     HardwareVertexBuffer srcBuffer = null, destBuffer = null, posBuffer = null;
@@ -1930,8 +1930,8 @@ namespace Axiom.Core
         {
             subMeshList.Clear();
             sharedVertexData = null;
-            // TODO: SubMeshNameCount
-            // TODO: Remove LOD levels
+            // TODO SubMeshNameCount
+            // TODO Remove LOD levels
             isPreparedForShadowVolumes = false;
             isLoaded = false;
         }

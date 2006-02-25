@@ -715,7 +715,7 @@ namespace Axiom.Graphics
                 // destroy shadow volume extruders
                 foreach ( string programName in programNames )
                 {
-                    // TODO: Toast the programs
+                    // TODO Toast the programs
                     //GpuProgramManager.Instance.Remove(programName);
                 }
 

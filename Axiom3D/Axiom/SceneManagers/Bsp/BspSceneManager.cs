@@ -330,7 +330,7 @@ namespace Axiom.SceneManagers.Bsp
             } // for
 
             // Sort Destination light list.
-            // TODO: Not needed yet since the current LightList is a sorted list under the hood already
+            // TODO Not needed yet since the current LightList is a sorted list under the hood already
             //destList.Sort();
         }
 
@@ -491,7 +491,7 @@ namespace Axiom.SceneManagers.Bsp
             level.NotifyObjectDetached( obj );
         }
 
-        // TODO: Scene queries.
+        // TODO Scene queries.
         /// <summary>
         ///		Creates an AxisAlignedBoxSceneQuery for this scene manager. 
         /// </summary>
@@ -524,7 +524,7 @@ namespace Axiom.SceneManagers.Bsp
         /// <param name="mask">The query mask to apply to this query; can be used to filter out certain objects; see SceneQuery for details.</param>
         public virtual AxisAlignedBoxSceneQuery CreateAABBQuery(AxisAlignedBox box, ulong mask)
         {
-            // TODO:
+            // TODO
             return null;
         }*/
 

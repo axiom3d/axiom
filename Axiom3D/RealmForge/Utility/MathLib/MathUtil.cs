@@ -41,7 +41,7 @@ namespace Axiom.MathLib
     /// This is in case the implementation needs to be swapped out with a faster C++ implementation, if
     /// deemed that the System.Math methods are not up to far speed wise.
     /// </summary>
-    /// TODO: Add overloads for all methods for all instrinsic data types (i.e. float, short, etc).
+    /// TODO Add overloads for all methods for all instrinsic data types (i.e. float, short, etc).
     public sealed class MathUtil
     {
         /// <summary>

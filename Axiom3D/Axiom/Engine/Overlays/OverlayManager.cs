@@ -121,7 +121,7 @@ namespace Axiom.Overlays
                 viewportDimensionsChanged = false;
             }
 
-            // TODO: optimize this resource list to avoid the foreach
+            // TODO optimize this resource list to avoid the foreach
             foreach ( Overlay overlay in resourceList.Values )
             {
                 overlay.FindVisibleObjects( camera, queue );
@@ -464,7 +464,7 @@ namespace Axiom.Overlays
                     // does another overlay have to be included
                     if ( line.StartsWith( "#include" ) )
                     {
-                        // TODO: Handle included overlays
+                        // TODO Handle included overlays
                         continue;
                     }
 

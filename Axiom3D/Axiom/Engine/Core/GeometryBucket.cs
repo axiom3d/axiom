@@ -55,7 +55,7 @@ namespace Axiom.Core
         }
         #endregion
 
-        #region TODO: Port from Ogre
+        #region TODO Port from Ogre
         public Material Material
         {
             get
@@ -234,7 +234,7 @@ namespace Axiom.Core
             // iterate over the geometry items
             int indexOffset = 0;
             IEnumerator iter = queuedGeometry.GetEnumerator();
-            Vector3 regionCenter = Vector3.Zero;// TODO: Parent.Parent.Parent.GetCenter();
+            Vector3 regionCenter = Vector3.Zero;// TODO Parent.Parent.Parent.GetCenter();
             while ( iter.MoveNext() )
             {
                 QueuedGeometry geom = (QueuedGeometry)iter.Current;

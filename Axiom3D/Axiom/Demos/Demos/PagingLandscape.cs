@@ -119,7 +119,7 @@ namespace Axiom.Demos
             // set the scaling of camera motion
             cameraScale = 100 * e.TimeSinceLastFrame;
 
-            // TODO: Move this into an event queueing mechanism that is processed every frame
+            // TODO Move this into an event queueing mechanism that is processed every frame
             input.Capture();
 
             if ( input.IsKeyPressed( KeyCodes.Escape ) )

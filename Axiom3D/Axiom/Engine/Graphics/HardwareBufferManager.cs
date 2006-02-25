@@ -394,7 +394,7 @@ namespace Axiom.Graphics
                 }
             }
 
-            // TODO: Verify this works
+            // TODO Verify this works
             foreach ( DictionaryEntry entry in freeTempVertexBufferMap )
             {
                 if ( entry.Key == sourceBuffer )

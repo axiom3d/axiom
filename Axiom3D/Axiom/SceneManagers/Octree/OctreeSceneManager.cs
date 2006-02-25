@@ -285,7 +285,7 @@ namespace Axiom.SceneManagers.Octree
             for ( i = 0; i < visible.Count; i++ )
             {
                 OctreeNode node = (OctreeNode)visible[i];
-                //TODO: looks like something is missing here
+                //TODO looks like something is missing here
             }
         }
 
@@ -323,7 +323,7 @@ namespace Axiom.SceneManagers.Octree
             {
                 if ( this.ShowBoundingBoxes )
                 {
-                    // TODO: Implement Octree.WireBoundingBox
+                    // TODO Implement Octree.WireBoundingBox
                     //boxList.Add(octant.WireBoundingBox); 
                 }
 
@@ -627,7 +627,7 @@ namespace Axiom.SceneManagers.Octree
 
         public void FindNodes( Sphere sphere, Axiom.Collections.SceneNodeCollection sceneNodeList, SceneNode exclude, bool full, Octree octant )
         {
-            //TODO: Implement
+            //TODO Implement
         }
 
         public bool SetOption( string key, object val )
@@ -659,7 +659,7 @@ namespace Axiom.SceneManagers.Octree
 
         public bool GetOption()
         {
-            return true;//TODO: Implement
+            return true;//TODO Implement
         }
     }
 }

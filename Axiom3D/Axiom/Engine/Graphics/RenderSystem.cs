@@ -99,7 +99,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Reference to the config options for the graphics engine.
         /// </summary>
-        protected EngineConfig engineConfig = new EngineConfig();
+        protected ConfigOptionCollection configOptions = new ConfigOptionCollection();
         /// <summary>
         ///		Active viewport (dest for future rendering operations) and target.
         /// </summary>
@@ -167,13 +167,13 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        /// Gets a dataset with the options set for the rendering system.
+        /// Gets a collection with the options set for the rendering system.
         /// </summary>
-        public virtual EngineConfig ConfigOptions
+        public virtual ConfigOptionCollection ConfigOptions
         {
             get
             {
-                return engineConfig;
+                return configOptions;
             }
         }
 
@@ -298,7 +298,7 @@ namespace Axiom.Graphics
         /// <param name="target">Reference to the render target to detach.</param>
         public virtual void DetachRenderTarget( RenderTarget target )
         {
-            // TODO: Remove prioritized render targets
+            // TODO Remove prioritized render targets
             renderTargets.Remove( target );
         }
 

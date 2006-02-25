@@ -39,7 +39,7 @@ namespace Axiom.Core
     ///     used to represent either a visible area or a projection area. Can be used
     ///     for a number of applications.
     /// </summary>
-    // TODO: Review attaching object in the scene and making them no longer require a name.
+    // TODO Review attaching object in the scene and making them no longer require a name.
     public class Frustum : MovableObject, IRenderable
     {
         #region Constants
@@ -1198,7 +1198,7 @@ namespace Axiom.Core
             get
             {
                 // make any pending updates to the calculated frustum
-                // TODO: Was causing a stack overflow, revisit
+                // TODO Was causing a stack overflow, revisit
                 UpdateView();
 
                 // convert the incoming plan enum type to a int

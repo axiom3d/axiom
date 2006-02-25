@@ -1,27 +1,49 @@
 #region LGPL License
 
-/*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+/*
+
+Axiom Game Engine Library
+
+Copyright (C) 2003  Axiom Project Team
+
+
+
+The overall design, and a majority of the core engine and rendering code 
+
+contained within this library is a derivative of the open source Object Oriented 
+
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+
+
+This library is free software; you can redistribute it and/or
+
+modify it under the terms of the GNU Lesser General Public
+
+License as published by the Free Software Foundation; either
+
+version 2.1 of the License, or (at your option) any later version.
+
+
+
+This library is distributed in the hope that it will be useful,
+
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+
+Lesser General Public License for more details.
+
+
+
+You should have received a copy of the GNU Lesser General Public
+
+License along with this library; if not, write to the Free Software
+
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
 */
 
 #endregion LGPL License
@@ -371,7 +393,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Renderable
                             pPos[cntPos++] = norm.y;
                             pPos[cntPos++] = norm.z;
 #if _VisibilityCheck
-							//TODO: This must be moved to Preprocessing phase
+							//TODO This must be moved to Preprocessing phase
 							mTmpAngle = mConeNormal.dotProduct( norm );
 							if ( mTmpAngle > mAngle )
 							{
@@ -477,7 +499,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Renderable
 #if _VisibilityCheck
 
 			//Check if the renderable need to be rendered based on the Cone normal approach
-			//TODO: use the cone aperture not a fixed value
+			//TODO use the cone aperture not a fixed value
 			if ( Options.Instance.Lit == true )
 			{
 				mustRender = (bool)( cam.Direction.Dot( coneNormal ) < Options.Instance.VisibilityAngle );
@@ -489,7 +511,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Renderable
             d = d * cam.LodBias;
             // Material LOD
 
-            //TODO:: Axiom Doesn't Support Material LOD yet.
+            //TODO: Axiom Doesn't Support Material LOD yet.
             //if ( this.material.getNumLodLevels() > 1 )
             //	materialLODIndex = m_pMaterial->getLodIndexSquaredDepth(d);
 

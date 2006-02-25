@@ -638,7 +638,7 @@ namespace Axiom.Core
             skeletonInstance.GetBoneMatrices( boneMatrices );
             frameBonesLastUpdated[0] = currentFrameCount;
 
-            // TODO: Skeleton instance sharing
+            // TODO Skeleton instance sharing
 
             // update the child object's transforms
             for ( int i = 0; i < childObjectList.Count; i++ )
@@ -1112,7 +1112,7 @@ namespace Axiom.Core
                 }
             }
 
-            // TODO: Add skeleton itself to the render queue
+            // TODO Add skeleton itself to the render queue
         }
 
         /// <summary>

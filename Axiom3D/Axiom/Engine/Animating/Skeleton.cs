@@ -642,7 +642,7 @@ namespace Axiom.Animating {
                 // tracks
                 foreach(AnimationTrack track in anim.Tracks) {
                     writer.WriteLine("  -- AnimationTrack {0} --", track.Handle);
-                    writer.WriteLine("  Affects bone: {0}", ((Bone)track.TargetNode).Handle);
+                    writer.WriteLine("  Affects bone: {0}", ((Bone)track.AssociatedNode).Handle);
                     writer.WriteLine("  Number of keyframes: {0}", track.KeyFrames.Count);
 
                     // key frames

@@ -84,8 +84,8 @@ namespace Axiom.Core
     ///		designed (e.g. BSPs, octrees etc). As with other classes, methods marked as internal are 
     ///		designed to be called by other classes in the engine, not by user applications.
     ///	 </remarks>
-    /// TODO: Thoroughly review node removal/cleanup.
-    /// TODO: Review of method visibility/virtuality to ensure consistency.
+    /// TODO Thoroughly review node removal/cleanup.
+    /// TODO Review of method visibility/virtuality to ensure consistency.
     public class SceneManager
     {
         #region Fields
@@ -1507,7 +1507,7 @@ namespace Axiom.Core
                 case ShadowTechnique.TextureModulative:
                     if ( pass.HasVertexProgram )
                     {
-                        // TODO: Add hardware ShadowCasterVertexProgram
+                        // TODO Add hardware ShadowCasterVertexProgram
                         /*
 						// Have to merge the shadow caster vertex program in
 						// This may in fact be blank, in which case it falls back on 
@@ -1564,7 +1564,7 @@ namespace Axiom.Core
                 case ShadowTechnique.TextureModulative:
                     if ( pass.HasVertexProgram )
                     {
-                        // TODO: Add hardware shadows
+                        // TODO Add hardware shadows
                         /*
 						// Have to merge the receiver vertex program in
 						// This may return "" which means fixed function will be used
@@ -3626,7 +3626,7 @@ namespace Axiom.Core
             // Set camera window clipping planes (if any)
             if ( targetRenderSystem.Caps.CheckCap( Capabilities.UserClipPlanes ) )
             {
-                // TODO: Add ClipPlanes to RenderSystem.cs
+                // TODO Add ClipPlanes to RenderSystem.cs
                 /*
 				if (camera.IsWindowSet)  
 				{
@@ -3742,7 +3742,7 @@ namespace Axiom.Core
                 // loop through all tracks and reset their nodes initial state
                 for ( int j = 0; j < anim.Tracks.Count; j++ )
                 {
-                    Node node = anim.Tracks[j].TargetNode;
+                    Node node = anim.Tracks[j].AssociatedNode;
                     node.ResetToInitialState();
                 }
 
@@ -4070,12 +4070,12 @@ namespace Axiom.Core
 
             }
 
-            // TODO: Add ClipPlanes to RenderSystem.cs
+            // TODO Add ClipPlanes to RenderSystem.cs
             //targetRenderSystem.ClipPlanes = renderable.ClipPlanes;
 
             // get the renderables render operation
             renderable.GetRenderOperation( op );
-            // TODO: Add srcRenderable to RenderOperation.cs
+            // TODO Add srcRenderable to RenderOperation.cs
             //op.srcRenderable = renderable;
 
             if ( doLightIteration )
@@ -4854,7 +4854,7 @@ namespace Axiom.Core
             } // for
 
                         // Sort Destination light list.
-                        // TODO: Not needed yet since the current LightList is a sorted list under the hood already
+                        // TODO Not needed yet since the current LightList is a sorted list under the hood already
                         //destList.Sort();
                 }
 
@@ -5116,7 +5116,7 @@ namespace Axiom.Core
 
         public override void Execute( ISceneQueryListener listener )
         {
-            // TODO: BillboardSets? Will need per-billboard collision most likely
+            // TODO BillboardSets? Will need per-billboard collision most likely
             // Entities only for now
             for ( int i = 0; i < creator.entityList.Count; i++ )
             {
@@ -5153,7 +5153,7 @@ namespace Axiom.Core
             // of the scene in order to reduce the number of intersection tests 
             // required to fulfil the query
 
-            // TODO: BillboardSets? Will need per-billboard collision most likely
+            // TODO BillboardSets? Will need per-billboard collision most likely
             // Entities only for now
             for ( int i = 0; i < creator.entityList.Count; i++ )
             {
@@ -5188,7 +5188,7 @@ namespace Axiom.Core
 
         public override void Execute( ISceneQueryListener listener )
         {
-            // TODO: BillboardSets? Will need per-billboard collision most likely
+            // TODO BillboardSets? Will need per-billboard collision most likely
             // Entities only for now
             Sphere testSphere = new Sphere();
 
@@ -5264,7 +5264,7 @@ namespace Axiom.Core
 
         public override void Execute( IIntersectionSceneQueryListener listener )
         {
-            // TODO: BillboardSets? Will need per-billboard collision most likely
+            // TODO BillboardSets? Will need per-billboard collision most likely
             // Entities only for now
             int numEntities = creator.entityList.Count;
             for ( int a = 0; a < ( numEntities - 1 ); a++ )
