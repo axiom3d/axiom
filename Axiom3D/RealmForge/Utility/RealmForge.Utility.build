@@ -20,6 +20,16 @@
                 <warning number="1591" />
                 <!-- do not report deprecation warnings -->
                 <warning number="0618" />
+		<!-- do not report param tag for non-existent param in XML comments -->
+		<warning number="1572" />
+		<!-- do not report unused variables -->
+		<warning number="219" />
+		<!-- do not report unreachable code -->
+		<warning number="162" />
+		<!-- do not report unused properties -->
+		<warning number="169" />
+		<!-- do not report unused private fields -->
+		<warning number="414" />
             </nowarn>
             <sources failonempty="true">
                 <include name="**/*.cs" />
