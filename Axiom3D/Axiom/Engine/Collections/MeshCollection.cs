@@ -24,10 +24,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region Namespace declarations
 using System;
 using System.Diagnostics;
 
 using Axiom.Core;
+#endregion Namespace declarations
 
 // used to alias a type in the code for easy copying and pasting.  Come on generics!!
 //using T = Axiom.Core.SubMesh;
