@@ -1,6 +1,10 @@
 2005-12-19-2005 Michael Cummings [Borrillis]
 - Fixed OpenGL bug that was causing it to not load.
 - Fixed a couple of Overlay issues that were causing them to not display correctly.
+- Updates to get the demos to work properly.
+- Added MoveableText object for floating text.
+- Fixed a bug in Rectangle2D
+- DemoBrowser updated to be mostly run through Axiom. Just the ConfigDialog is SWF.
 
 2005-09-27 Michael Cummings [Borrillis]
 - Added a few new classes that were missing from the Ogre versions (ResourceGroupManager, ParticleSystemRenderer* )
