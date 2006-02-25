@@ -402,22 +402,6 @@ namespace Axiom
 		    _updateColor = false;
         }
 
-        //// from MovableObject
-        //private void getWorldTransforms(Matrix4 *xform) ;
-        //private const Quaternion getWorldOrientation() ;
-        //private const Vector3 getWorldPosition() ;
-        //private void _notifyCurrentCamera(Camera *cam);
-        //private void _updateRenderQueue(RenderQueue* queue);
-
-        //private const AxisAlignedBox getBoundingBox()  {return mAABB;};
-        //private float getBoundingRadius(void)  {return mRadius;};
-        //private float getSquaredViewDepth(const Camera *cam) {return 0;};
-
-        //// from renderable
-        //private void getRenderOperation(RenderOperation op);
-        //private const MaterialPtr getMaterial(void) const {assert(!mpMaterial.isNull());return mpMaterial;};
-        //private const LightList getLights(void) const {return mLList;};    
-
         #region Implementation of SimpleRenderable
         public override void GetRenderOperation( RenderOperation op )
         {
