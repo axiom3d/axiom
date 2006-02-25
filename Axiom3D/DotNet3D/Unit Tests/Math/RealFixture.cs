@@ -26,12 +26,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #else
@@ -42,10 +36,19 @@ using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
 #endif
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Globalization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
+
+
+
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
-
+			
 namespace DotNet3D.Math.Tests
 {
     /// <summary>
@@ -70,8 +73,8 @@ namespace DotNet3D.Math.Tests
             Real expected = value;
             Type expectedType = typeof( Real );
 
-            Assert.IsInstanceOfType( expectedType, actual );
-            Assert.AreEqual( expected, actual );
+            //Assert.IsInstanceOfType( typeof( Real ), target );
+            Assert.AreEqual( expected, target );
         }
 
         /// <summary>
@@ -86,8 +89,8 @@ namespace DotNet3D.Math.Tests
             Real expected = value;
             Type expectedType = typeof( Real );
 
-            Assert.IsInstanceOfType( expectedType, actual );
-            Assert.AreEqual( expected, actual );
+            //Assert.IsInstanceOfType( typeof( Real ), target );
+            Assert.AreEqual( expected, target );
         }
 
         /// <summary>
@@ -102,8 +105,8 @@ namespace DotNet3D.Math.Tests
             Real expected = value;
             Type expectedType = typeof( Real );
 
-            Assert.IsInstanceOfType( expectedType, actual );
-            Assert.AreEqual( expected, actual );
+            //Assert.IsInstanceOfType( typeof( Real ), target );
+            Assert.AreEqual( expected, target );
         }
 
         /// <summary>
@@ -118,8 +121,8 @@ namespace DotNet3D.Math.Tests
             Real expected = value;
             Type expectedType = typeof( Real );
 
-            Assert.IsInstanceOfType( expectedType, actual );
-            Assert.AreEqual( expected, actual );
+            //Assert.IsInstanceOfType( typeof( Real ), target );
+            Assert.AreEqual( expected, target );
         }
 
         /// <summary>
@@ -134,8 +137,8 @@ namespace DotNet3D.Math.Tests
             Real expected = value;
             Type expectedType = typeof( Real );
 
-            Assert.IsInstanceOfType( expectedType, actual );
-            Assert.AreEqual( expected, actual );
+            //Assert.IsInstanceOfType( typeof( Real ), target );
+            Assert.AreEqual( expected, target );
         }
 
         #endregion Construction Tests
@@ -341,49 +344,93 @@ namespace DotNet3D.Math.Tests
             Assert.AreEqual( actual, expected );
         }
 
+        [TestMethod]
+        public void DivideRealByReal()
+        {
+            Real expected = 0.5;
+            Real left = 1.0;
+            Real right = 2.0;
+            Real actual = left / right;
+
+            Assert.AreEqual( actual, expected );
+        }
 
         [TestMethod]
         public void EqualityTrue()
         {
-            bool expected = true;
-            Real left = 2.0;
-            Real right = 2.0;
-            bool actual = ( left == right );
+            Real left = 3.0;
+            Real right = 3.0;
 
-            Assert.AreEqual( actual, expected );
+            Assert.IsTrue( left == right );
         }
 
         [TestMethod]
         public void EqualityFalse()
         {
-            bool expected = false;
-            Real left = 1.0;
-            Real right = 2.0;
-            bool actual = ( left == right );
+            Real left = 3.0;
+            Real right = 5.0;
 
-            Assert.AreEqual( actual, expected );
+            Assert.IsFalse( left == right );
         }
 
         [TestMethod]
         public void InequalityTrue()
         {
-            bool expected = true;
-            Real left = 1.0;
-            Real right = 2.0;
-            bool actual = ( left != right );
+            Real left = 4.0;
+            Real right = 3.0;
 
-            Assert.AreEqual( actual, expected );
+            Assert.IsTrue( left != right );
         }
 
         [TestMethod]
         public void InequalityFalse()
         {
-            bool expected = false;
             Real left = 3.0;
             Real right = 3.0;
-            bool actual = ( left != right );
 
-            Assert.AreEqual( actual, expected );
+            Assert.IsFalse( left != right );
+        }
+
+        [TestMethod]
+        public void GreaterThan()
+        {
+            Real left = 4.0;
+            Real right = 2.0;
+
+            Assert.IsTrue( left > right );
+            Assert.IsFalse( right > left );
+        }
+
+        [TestMethod]
+        public void GreaterThanEqual()
+        {
+            Real left = 4.0;
+            Real right = 4.0;
+
+            Assert.IsTrue( left >= right );
+            Assert.IsTrue( left == right );
+            Assert.IsFalse( left > right );
+        }
+
+        [TestMethod]
+        public void LessThan()
+        {
+            Real left = 2.0;
+            Real right = 4.0;
+
+            Assert.IsTrue( left < right );
+            Assert.IsFalse( right < left );
+        }
+
+        [TestMethod]
+        public void LessThanEqual()
+        {
+            Real left = 4.0;
+            Real right = 4.0;
+
+            Assert.IsTrue( left <= right );
+            Assert.IsTrue( left == right );
+            Assert.IsFalse( left < right );
         }
 
         [TestMethod]
@@ -434,10 +481,21 @@ namespace DotNet3D.Math.Tests
         [TestMethod]
         public void CLSMethodMultiplyRealByReal()
         {
-            Real a = 2.0;
-            Real b = 3.0;
-            Real actual = Real.Multiply( a, b );
             Real expected = 6.0;
+            Real left = 2.0;
+            Real right = 3.0;
+            Real actual = Real.Multiply( left, right );
+
+            Assert.AreEqual( actual, expected );
+        }
+
+        [TestMethod]
+        public void CLSMethodDivideRealByReal()
+        {
+            Real expected = 3.0;
+            Real left = 6.0;
+            Real right = 2.0;
+            Real actual = Real.Divide( left, right );
 
             Assert.AreEqual( actual, expected );
         }
@@ -455,15 +513,187 @@ namespace DotNet3D.Math.Tests
         [TestMethod]
         public void CLSMethodEquals()
         {
-            Real a = 1.0;
-            Real b = 1.0;
+            Real expected = 3.0;
+            Real actual = 3.0;
 
-            bool test = a.Equals( b );
+            Assert.AreEqual( actual, expected );
+        }
 
-            Assert.IsTrue( test );
+        [TestMethod]
+        public void CLSMethodNotEqual()
+        {
+            Real expected = 4.0;
+            Real actual = 3.0;
+
+            Assert.AreNotEqual( actual, expected );
+        }
+
+        [TestMethod]
+        public void CompareToEqual()
+        {
+            int expected = 0;
+            Real left = 3.0;
+            Real right = 3.0;
+            int actual = left.CompareTo( right );
+
+            Assert.AreEqual( actual, expected );
+        }
+
+        [TestMethod]
+        public void CompareToGreaterThan()
+        {
+            int expected = -1;
+            Real left = 2.0;
+            Real right = 3.0;
+            int actual = left.CompareTo( right );
+
+            Assert.AreEqual( actual, expected );
+        }
+
+        [TestMethod]
+        public void CompareToLessThan()
+        {
+            int expected = 1;
+            Real left = 3.0;
+            Real right = 2.0;
+            int actual = left.CompareTo( right );
+
+            Assert.AreEqual( actual, expected );
         }
 
         #endregion
+
+        #region Other Tests
+
+        [TestMethod]
+        public void IsInfinity()
+        {
+            Real value;
+            
+            value = Real.PositiveInfinity;
+            Assert.IsTrue( Real.IsInfinity( value ) );
+
+            value = Real.NegativeInfinity;
+            Assert.IsTrue( Real.IsInfinity( value ) );
+
+            value = Real.NaN;
+            Assert.IsFalse( Real.IsInfinity( value ) );
+
+            value = 10;
+            Assert.IsFalse( Real.IsInfinity( value ) );
+
+        }
+
+        [TestMethod]
+        public void IsPositiveInfinity()
+        {
+            Real value;
+
+            value = Real.PositiveInfinity;
+            Assert.IsTrue( Real.IsPositiveInfinity( value ) );
+
+            value = Real.NegativeInfinity;
+            Assert.IsFalse( Real.IsPositiveInfinity( value ) );
+
+            value = Real.NaN;
+            Assert.IsFalse( Real.IsPositiveInfinity( value ) );
+
+            value = 10;
+            Assert.IsFalse( Real.IsPositiveInfinity( value ) );
+        }
+
+        [TestMethod]
+        public void IsNegativeInfinity()
+        {
+            Real value;
+
+            value = Real.PositiveInfinity;
+            Assert.IsFalse( Real.IsNegativeInfinity( value ) );
+
+            value = Real.NegativeInfinity;
+            Assert.IsTrue( Real.IsNegativeInfinity( value ) );
+
+            value = Real.NaN;
+            Assert.IsFalse( Real.IsNegativeInfinity( value ) );
+
+            value = 10;
+            Assert.IsFalse( Real.IsNegativeInfinity( value ) );
+        }
+
+        [TestMethod]
+        public void IsNaN()
+        {
+            Real value;
+
+            value = Real.PositiveInfinity;
+            Assert.IsFalse( Real.IsNaN( value ) );
+
+            value = Real.NegativeInfinity;
+            Assert.IsFalse( Real.IsNaN( value ) );
+
+            value = Real.NaN;
+            Assert.IsTrue( Real.IsNaN( value ) );
+
+            value = 10;
+            Assert.IsFalse( Real.IsNaN( value ) );
+        }
+
+        #endregion Other Tests
+
+
+        #region Parse Tests
+
+        [TestMethod]
+        public void Parse()
+        {
+            Real expected = 3.14159;
+            string value = "3.14159";
+
+            Real actual = Real.Parse( value );
+            
+            Assert.AreEqual( expected, actual );
+        }
+
+        [TestMethod]
+        [ExpectedException( typeof( FormatException ) )]
+        public void ParseWithBadFormatThrows()
+        {
+            string value = "[3.14159]";
+
+            Real actual = Real.Parse( value );
+        }
+
+        [TestMethod]
+        [ExpectedException( typeof( ArgumentNullException ) )]
+        public void ParseWithNullArgumentThrows()
+        {
+            string value = null;
+
+            Real actual = Real.Parse( value );
+            
+        }
+
+        [TestMethod]
+        [ExpectedException( typeof( OverflowException ) )]
+        public void ParseWithNumberToLargeArgumentThrows()
+        {
+            string value = Real.MaxValue.ToString() + "1";
+
+            Real actual = Real.Parse( value );
+
+        }
+
+        [TestMethod]
+        [ExpectedException( typeof( OverflowException ) )]
+        public void ParseWithNumberToSmallArgumentThrows()
+        {
+            string value = Real.MinValue.ToString() + "1";
+
+            Real actual = Real.Parse( value );
+
+        }
+
+        #endregion Parse Tests
 
         #region Serialization Tests
 

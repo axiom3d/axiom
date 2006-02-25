@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+DotNet3D Library
+Copyright (C) 2006 DotNet3D Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -33,15 +33,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
-using RealmForge.Scripting;
-using RealmForge.Serialization;
+using System.Runtime.Serialization;
 
 #endregion Namespace Declarations
 
-namespace Axiom.MathLib
+namespace DotNet3D.Math
 {
     /// <summary>
     ///    Standard 3-dimensional vector.
@@ -52,80 +49,103 @@ namespace Axiom.MathLib
     ///	    scaling factors can be represented by a vector, depending on how
     ///	    you interpret the values.
     /// </remarks>
-    [StructLayout( LayoutKind.Sequential ), TypeConverter( typeof( Vector3Converter ) )]
-    public struct Vector3 : ICustomTypeDescriptor, IParsable
+    [StructLayout( LayoutKind.Sequential )]
+    [Serializable]
+    public struct Vector3 : ISerializable
     {
         #region Fields
 
         /// <summary>X component.</summary>
-        public float x;
+        public Real x;
         /// <summary>Y component.</summary>
-        public float y;
+        public Real y;
         /// <summary>Z component.</summary>
-        public float z;
+        public Real z;
 
-        private static readonly Vector3 positiveInfinityVector = new Vector3( float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity );
-        private static readonly Vector3 negativeInfinityVector = new Vector3( float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity );
-        private static readonly Vector3 invalidVector = new Vector3( float.NaN, float.NaN, float.NaN );
-        private static readonly Vector3 zeroVector = new Vector3( 0.0f, 0.0f, 0.0f );
-        private static readonly Vector3 unitX = new Vector3( 1.0f, 0.0f, 0.0f );
-        private static readonly Vector3 unitY = new Vector3( 0.0f, 1.0f, 0.0f );
-        private static readonly Vector3 unitZ = new Vector3( 0.0f, 0.0f, 1.0f );
-        private static readonly Vector3 negativeUnitX = new Vector3( -1.0f, 0.0f, 0.0f );
-        private static readonly Vector3 negativeUnitY = new Vector3( 0.0f, -1.0f, 0.0f );
-        private static readonly Vector3 negativeUnitZ = new Vector3( 0.0f, 0.0f, -1.0f );
-        private static readonly Vector3 unitVector = new Vector3( 1.0f, 1.0f, 1.0f );
+        /// <summary>Gets a Vector3 with all units set to positive infinity.</summary>
+        public static readonly Vector3 PositiveInfinity = new Vector3( Real.PositiveInfinity, Real.PositiveInfinity, Real.PositiveInfinity );
+        /// <summary>Gets a Vector3 with all units set to negative infinity.</summary>
+        private static readonly Vector3 NegativeInfinity = new Vector3( Real.NegativeInfinity, Real.NegativeInfinity, Real.NegativeInfinity );
+        /// <summary>Gets a Vector3 with all units set to Invalid.</summary>
+        private static readonly Vector3 Invalid = new Vector3( Real.NaN, Real.NaN, Real.NaN );
+        /// <summary>Gets a Vector3 with all components set to 0.</summary>
+        private static readonly Vector3 Zero = new Vector3( 0.0f, 0.0f, 0.0f );
+        /// <summary>Gets a Vector3 with the X set to 1, and the others set to 0.</summary>
+        private static readonly Vector3 UnitX = new Vector3( 1.0f, 0.0f, 0.0f );
+        /// <summary>Gets a Vector3 with the Y set to 1, and the others set to 0.</summary>
+        private static readonly Vector3 UnitY = new Vector3( 0.0f, 1.0f, 0.0f );
+        /// <summary>Gets a Vector3 with the Z set to 1, and the others set to 0.</summary>
+        private static readonly Vector3 UnitZ = new Vector3( 0.0f, 0.0f, 1.0f );
+        /// <summary>Gets a Vector3 with the X set to -1, and the others set to 0.</summary>
+        private static readonly Vector3 NegativeUnitX = new Vector3( -1.0f, 0.0f, 0.0f );
+        /// <summary>Gets a Vector3 with the Y set to -1, and the others set to 0.</summary>
+        private static readonly Vector3 NegativeUnitY = new Vector3( 0.0f, -1.0f, 0.0f );
+        /// <summary>Gets a Vector3 with the Z set to -1, and the others set to 0.</summary>
+        private static readonly Vector3 NegativeUnitZ = new Vector3( 0.0f, 0.0f, -1.0f );
+        /// <summary>Gets a Vector3 with all components set to 1.</summary>
+        private static readonly Vector3 Unit = new Vector3( 1.0f, 1.0f, 1.0f );
 
         #endregion
 
         #region Constructors
 
+        //NOTE: ISerializable Constructor in ISerializable Implementation
+
+        /// <overloads>
         /// <summary>
         ///		Creates a new 3 dimensional Vector.
         /// </summary>
-        public Vector3( float x, float y, float z )
+        /// </overloads>
+        public Vector3( Real x, Real y, Real z )
         {
             this.x = x;
             this.y = y;
             this.z = z;
         }
 
-
-        /// <summary>
-        ///		Creates a new 3 dimensional Vector.
-        /// </summary>
-        public Vector3( float unitDimension )
+        /// <param name="unitDimension"></param>
+        public Vector3( Real unitDimension )
             : this( unitDimension, unitDimension, unitDimension )
         {
         }
 
-        public Vector3( ParsingData data )
-            : this( data.Text )
-        {
-        }
+        /// <remarks>
+        /// The parseableText parameter is a comma seperated list of values e.g. "< 1.0, 1.0 >" 
+        /// Format : {[(<} Real, Real {>)]}
+        /// </remarks>
+        /// <param name="parsableText">a comma seperated list of values</param>
+        /// <exception cref="ArgumentException" />
+        /// <exception cref="FormatException" />
         private Vector3( string parsableText )
         {
-            if ( parsableText == null )
-                throw new ArgumentException( "The parsableText parameter cannot be null." );
+            // Verfiy input
+            if ( parsableText == null || parsableText.Length == 0 )
+                throw new ArgumentNullException( "The parsableText parameter cannot be null or zero length." );
+
+            // Retrieve input values from input string
             string[] vals = parsableText.TrimStart( '(', '[', '<' ).TrimEnd( ')', ']', '>' ).Split( ',' );
+
             if ( vals.Length != 3 )
+            {
                 throw new FormatException( string.Format( "Cannot parse the text '{0}' because it does not have 3 parts separated by commas in the form (x,y,z) with optional parenthesis.", parsableText ) );
+            }
+
+            // Attempt to assign member variables to values. 
+            // Will fail if the values are not parseable into Reals.
             try
             {
-                x = float.Parse( vals[0].Trim() );
-                y = float.Parse( vals[1].Trim() );
-                z = float.Parse( vals[2].Trim() );
+                x = Real.Parse( vals[0].Trim() );
+                y = Real.Parse( vals[1].Trim() );
+                z = Real.Parse( vals[2].Trim() );
             }
             catch ( Exception )
             {
-                throw new FormatException( "The parts of the vectors must be decimal numbers" );
+                throw new FormatException( "The parts of the vectors must be decimal numbers." );
             }
         }
 
-        /// <summary>
-        ///		Creates a new 3 dimensional Vector.
-        /// </summary>
-        public Vector3( float[] coordinates )
+        /// <param name="coordinates">An array of 3 decimal values.</param>
+        public Vector3( Real[] coordinates )
         {
             if ( coordinates.Length != 3 )
                 throw new ArgumentException( "The coordinates array must be of length 3 to specify the x, y, and z coordinates." );
@@ -137,9 +157,15 @@ namespace Axiom.MathLib
 
         #endregion
 
-        #region Overloaded operators + CLS compliant method equivalents
+        #region Static Methods
+        #endregion Static Methods
 
-        #region Equality
+        #region System.Object Implementation
+        #endregion System.Object Implementation
+
+        #region Operator Overloads
+
+        #region Equality Operators
         /// <summary>
         ///		User to compare two Vector3 instances for equality.
         /// </summary>
@@ -163,17 +189,7 @@ namespace Axiom.MathLib
         }
         #endregion Equality
 
-        #region Multiplication
-        /// <summary>
-        ///		Used when a Vector3 is multiplied by another vector.
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
-        public static Vector3 Multiply( Vector3 left, Vector3 right )
-        {
-            return left * right;
-        }
+        #region Multiplication Operators
 
         /// <summary>
         ///		Used when a Vector3 is multiplied by another vector.
@@ -192,18 +208,7 @@ namespace Axiom.MathLib
         /// <param name="left"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public static Vector3 Multiply( Vector3 left, float scalar )
-        {
-            return left * scalar;
-        }
-
-        /// <summary>
-        ///		Used when a Vector3 is multiplied by a scalar value.
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="scalar"></param>
-        /// <returns></returns>
-        public static Vector3 operator *( Vector3 left, float scalar )
+        public static Vector3 operator *( Vector3 left, Real scalar )
         {
             return new Vector3( left.x * scalar, left.y * scalar, left.z * scalar );
         }
@@ -214,9 +219,31 @@ namespace Axiom.MathLib
         /// <param name="scalar"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 Multiply( float scalar, Vector3 right )
+        public static Vector3 operator *( Real scalar, Vector3 right )
         {
-            return scalar * right;
+            return new Vector3( right.x * scalar, right.y * scalar, right.z * scalar );
+        }
+
+        /// <summary>
+        ///		Used when a Vector3 is multiplied by another vector.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Vector3 Multiply( Vector3 left, Vector3 right )
+        {
+            return left * right;
+        }
+
+        /// <summary>
+        ///		Used when a Vector3 is multiplied by a scalar value.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="scalar"></param>
+        /// <returns></returns>
+        public static Vector3 Multiply( Vector3 left, Real scalar )
+        {
+            return left * scalar;
         }
 
         /// <summary>
@@ -225,14 +252,15 @@ namespace Axiom.MathLib
         /// <param name="scalar"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 operator *( float scalar, Vector3 right )
+        public static Vector3 Multiply( Real scalar, Vector3 right )
         {
-            return new Vector3( right.x * scalar, right.y * scalar, right.z * scalar );
+            return scalar * right;
         }
 
-        #endregion Multiplication
 
-        #region Division
+        #endregion Multiplication Operators
+
+        #region Division Operators
         /// <summary>
         ///		Used when a Vector3 is divided by another vector.
         /// </summary>
@@ -261,7 +289,7 @@ namespace Axiom.MathLib
         /// <param name="left"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public static Vector3 Divide( Vector3 left, float scalar )
+        public static Vector3 Divide( Vector3 left, Real scalar )
         {
             return left / scalar;
         }
@@ -272,14 +300,14 @@ namespace Axiom.MathLib
         /// <param name="left"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public static Vector3 operator /( Vector3 left, float scalar )
+        public static Vector3 operator /( Vector3 left, Real scalar )
         {
             Debug.Assert( scalar != 0.0f, "Cannot divide a Vector3 by zero." );
 
             Vector3 vector = new Vector3();
 
             // get the inverse of the scalar up front to avoid doing multiple divides later
-            float inverse = 1.0f / scalar;
+            Real inverse = 1.0f / scalar;
 
             vector.x = left.x * inverse;
             vector.y = left.y * inverse;
@@ -287,9 +315,9 @@ namespace Axiom.MathLib
 
             return vector;
         }
-        #endregion Division
+        #endregion Division Operators
 
-        #region Addition
+        #region Addition Operators
         /// <summary>
         ///		Used when a Vector3 is added to another Vector3.
         /// </summary>
@@ -311,8 +339,8 @@ namespace Axiom.MathLib
         {
             return new Vector3( left.x + right.x, left.y + right.y, left.z + right.z );
         }
-        #endregion Addition
-        
+        #endregion Addition Operators
+
         #region Subtraction Operators
 
         /// <summary>
@@ -327,19 +355,19 @@ namespace Axiom.MathLib
         }
 
 
-		public bool PositionEquals(Vector3 rhs, float tolerance)
-		{
-			
-			return Axiom.MathLib.MathUtil.RealEqual(x, rhs.x, tolerance) &&
-			Axiom.MathLib.MathUtil.RealEqual(y, rhs.y, tolerance) &&
-			Axiom.MathLib.MathUtil.RealEqual(z, rhs.z, tolerance);
-				
-		}
-		public bool PositionEquals(Vector3 rhs)
-		{
-			return PositionEquals(rhs,1e-03f);
-				
-		}
+        public bool PositionEquals( Vector3 rhs, Real tolerance )
+        {
+
+            return Axiom.MathLib.MathUtil.RealEqual( x, rhs.x, tolerance ) &&
+            Axiom.MathLib.MathUtil.RealEqual( y, rhs.y, tolerance ) &&
+            Axiom.MathLib.MathUtil.RealEqual( z, rhs.z, tolerance );
+
+        }
+        public bool PositionEquals( Vector3 rhs )
+        {
+            return PositionEquals( rhs, 1e-03f );
+
+        }
         /// <summary>
         ///		Used to subtract a Vector3 from another Vector3.
         /// </summary>
@@ -398,25 +426,31 @@ namespace Axiom.MathLib
         {
             return ( left.x < right.x && left.y < right.y && left.z < right.z );
         }
-        
+
         #endregion Logical Operators
-        
+
+        #region Conversion Operators
+
         /// <summary>
-        ///    
+        /// Explicit conversion from a Vector3 to a Vector4
         /// </summary>
         /// <param name="vec3"></param>
         /// <returns></returns>
-        public static explicit operator Vector4( Vector3 vec3 )
-        {
-            return new Vector4( vec3.x, vec3.y, vec3.z, 1.0f );
-        }
+        //public static explicit operator Vector4( Vector3 vec3 )
+        //{
+        //    return new Vector4( vec3.x, vec3.y, vec3.z, 1.0f );
+        //}
+
+        #endregion Conversion Operators
+
+        #region Indexers
 
         /// <summary>
         ///		Used to access a Vector by index 0 = x, 1 = y, 2 = z.  
         /// </summary>
         /// <remarks>
         ///	</remarks>
-        public float this[int index]
+        public Real this[ int index ]
         {
             get
             {
@@ -451,7 +485,12 @@ namespace Axiom.MathLib
             }
         }
 
-        #endregion
+        #endregion Indexers
+
+        #endregion Operator Overloads
+
+        #region ISerializable Implementation
+        #endregion ISerializable Implementation
 
         #region Public methods
 
@@ -459,12 +498,12 @@ namespace Axiom.MathLib
         {
             return new object[] { x, y, z };
         }
-        public float[] ToArray()
+        public Real[] ToArray()
         {
-            return new float[] { x, y, z };
+            return new Real[] { x, y, z };
         }
 
-        public Vector3 Offset( float x, float y, float z )
+        public Vector3 Offset( Real x, Real y, Real z )
         {
             return new Vector3( this.x + x, this.y + y, this.z + z );
         }
@@ -474,7 +513,7 @@ namespace Axiom.MathLib
         /// </summary>
         /// <param name="vector">The vector to perform the Dot Product against.</param>
         /// <returns>The angle between the 2 vectors.</returns>       
-        public float DotProduct( Vector3 vector )
+        public Real DotProduct( Vector3 vector )
         {
             return x * vector.x + y * vector.y + z * vector.z;
         }
@@ -504,7 +543,7 @@ namespace Axiom.MathLib
             Vector3 result = this.CrossProduct( UnitX );
 
             // check length
-            if ( result.LengthSquared < float.Epsilon )
+            if ( result.LengthSquared < Real.Epsilon )
             {
                 // This vector is the Y axis multiplied by a scalar, so we have to use another axis
                 result = this.CrossProduct( UnitY );
@@ -523,12 +562,12 @@ namespace Axiom.MathLib
             return SymmetricRandom( maxComponentMagnitude.x, maxComponentMagnitude.y, maxComponentMagnitude.z );
         }
 
-        public static Vector3 SymmetricRandom( float maxComponentMagnitude )
+        public static Vector3 SymmetricRandom( Real maxComponentMagnitude )
         {
             return SymmetricRandom( maxComponentMagnitude, maxComponentMagnitude, maxComponentMagnitude );
         }
 
-        public static Vector3 SymmetricRandom( float xMult, float yMult, float zMult )
+        public static Vector3 SymmetricRandom( Real xMult, Real yMult, Real zMult )
         {
             return new Vector3(
                 ( xMult == 0 ) ? 0 : xMult * MathUtil.SymmetricRandom(),
@@ -544,23 +583,23 @@ namespace Axiom.MathLib
         /// <param name="angle"></param>
         /// <param name="up"></param>
         /// <returns></returns>
-        public Vector3 RandomDeviant( float angle, Vector3 up )
+        public Vector3 RandomDeviant( Real angle, Vector3 up )
         {
-            Vector3 newUp = Zero;
+            //Vector3 newUp = Zero;
 
-            if ( up == Zero )
-                newUp = this.Perpendicular();
-            else
-                newUp = up;
+            //if ( up == Zero )
+            //    newUp = this.Perpendicular();
+            //else
+            //    newUp = up;
 
-            // rotate up vector by random amount around this
-            Quaternion q = Quaternion.FromAngleAxis( MathUtil.UnitRandom() * MathUtil.TWO_PI, this );
-            newUp = q * newUp;
+            //// rotate up vector by random amount around this
+            //Quaternion q = Quaternion.FromAngleAxis( MathUtil.UnitRandom() * MathUtil.TWO_PI, this );
+            //newUp = q * newUp;
 
-            // finally, rotate this by given angle around randomized up vector
-            q = Quaternion.FromAngleAxis( angle, newUp );
+            //// finally, rotate this by given angle around randomized up vector
+            //q = Quaternion.FromAngleAxis( angle, newUp );
 
-            return q * this;
+            //return q * this;
         }
 
         /// <summary>
@@ -570,16 +609,14 @@ namespace Axiom.MathLib
         /// <returns></returns>
         public Vector3 MidPoint( Vector3 vector )
         {
-            return new Vector3( ( this.x + vector.x ) / 2f,
-                ( this.y + vector.y ) / 2f,
-                ( this.z + vector.z ) / 2f );
+            return new Vector3( ( this.x + vector.x ) / 2f, ( this.y + vector.y ) / 2f, ( this.z + vector.z ) / 2f );
         }
 
         /// <summary>
         ///		Compares the supplied vector and updates it's x/y/z components of they are higher in value.
         /// </summary>
         /// <param name="compare"></param>
-        public void Ceil( Vector3 compare )
+        public void ToCeiling( Vector3 compare )
         {
             if ( compare.x > x )
                 x = compare.x;
@@ -594,7 +631,7 @@ namespace Axiom.MathLib
         /// </summary>
         /// <param name="compare"></param>
         /// <returns></returns>
-        public void Floor( Vector3 compare )
+        public void ToFloor( Vector3 compare )
         {
             if ( compare.x < x )
                 x = compare.x;
@@ -611,42 +648,46 @@ namespace Axiom.MathLib
         ///		Don't call this if you think the dest vector can be close to the inverse
         ///		of this vector, since then ANY axis of rotation is ok.
         ///	</remarks>
-        public Quaternion GetRotationTo( Vector3 destination )
-        {
-            // Based on Stan Melax's article in Game Programming Gems
-            Quaternion q = new Quaternion();
+        //public Quaternion GetRotationTo( Vector3 destination )
+        //{
+        //    // Based on Stan Melax's article in Game Programming Gems
+        //    Quaternion q = new Quaternion();
 
-            Vector3 v0 = new Vector3( this.x, this.y, this.z );
-            Vector3 v1 = destination;
+        //    Vector3 v0 = new Vector3( this.x, this.y, this.z );
+        //    Vector3 v1 = destination;
 
-            // normalize both vectors 
-            v0.Normalize();
-            v1.Normalize();
+        //    // normalize both vectors 
+        //    v0.Normalize();
+        //    v1.Normalize();
 
-            // get the cross product of the vectors
-            Vector3 c = v0.CrossProduct( v1 );
+        //    // get the cross product of the vectors
+        //    Vector3 c = v0.CrossProduct( v1 );
 
-            // If the cross product approaches zero, we get unstable because ANY axis will do
-            // when v0 == -v1
-            float d = v0.DotProduct( v1 );
+        //    // If the cross product approaches zero, we get unstable because ANY axis will do
+        //    // when v0 == -v1
+        //    Real d = v0.DotProduct( v1 );
 
-            // If dot == 1, vectors are the same
-            if ( d >= 1.0f )
-            {
-                return Quaternion.Identity;
-            }
+        //    // If dot == 1, vectors are the same
+        //    if ( d >= 1.0f )
+        //    {
+        //        return Quaternion.Identity;
+        //    }
 
-            float s = MathUtil.Sqrt( ( 1 + d ) * 2 );
-            float inverse = 1 / s;
+        //    Real s = MathUtil.Sqrt( ( 1 + d ) * 2 );
+        //    Real inverse = 1 / s;
 
-            q.x = c.x * inverse;
-            q.y = c.y * inverse;
-            q.z = c.z * inverse;
-            q.w = s * 0.5f;
+        //    q.x = c.x * inverse;
+        //    q.y = c.y * inverse;
+        //    q.z = c.z * inverse;
+        //    q.w = s * 0.5f;
 
-            return q;
-        }
+        //    return q;
+        //}
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public Vector3 ToNormalized()
         {
             Vector3 vec = this;
@@ -665,14 +706,14 @@ namespace Axiom.MathLib
         ///		will be no changes made to their components.
         ///	</remarks>
         ///	<returns>The previous length of the vector.</returns>
-        public float Normalize()
+        public Real Normalize()
         {
-            float length = MathUtil.Sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
+            Real length = MathUtil.Sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
 
             // Will also work for zero-sized vectors, but will change nothing
-            if ( length > float.Epsilon )
+            if ( length > Real.Epsilon )
             {
-                float inverseLength = 1.0f / length;
+                Real inverseLength = 1.0f / length;
 
                 this.x *= inverseLength;
                 this.y *= inverseLength;
@@ -702,7 +743,7 @@ namespace Axiom.MathLib
         {
             get
             {
-                return this.x == 0f && this.y == 0f && this.z == 0f;
+                return this == Vector3.Zero;
             }
         }
 
@@ -711,7 +752,7 @@ namespace Axiom.MathLib
         ///    only use this if you need the exact length of the Vector.  If vector lengths are only going
         ///    to be compared, use LengthSquared instead.
         /// </summary>
-        public float Length
+        public Real Length
         {
             get
             {
@@ -722,136 +763,11 @@ namespace Axiom.MathLib
         /// <summary>
         ///    Returns the length (magnitude) of the vector squared.
         /// </summary>
-        public float LengthSquared
+        public Real LengthSquared
         {
             get
             {
                 return ( this.x * this.x + this.y * this.y + this.z * this.z );
-            }
-        }
-
-        #endregion
-
-        #region Static Constant Properties
-
-        /// <summary>
-        ///		Gets a Vector3 with all components set to 0.
-        /// </summary>
-        public static Vector3 Zero
-        {
-            get
-            {
-                return zeroVector;
-            }
-        }
-
-        /// <summary>
-        ///		Gets a Vector3 with all components set to 1.
-        /// </summary>
-        public static Vector3 UnitScale
-        {
-            get
-            {
-                return unitVector;
-            }
-        }
-
-        /// <summary>
-        ///		Gets a Vector3 with the X set to 1, and the others set to 0.
-        /// </summary>
-        public static Vector3 UnitX
-        {
-            get
-            {
-                return unitX;
-            }
-        }
-
-        /// <summary>
-        ///		Gets a Vector3 with the Y set to 1, and the others set to 0.
-        /// </summary>
-        public static Vector3 UnitY
-        {
-            get
-            {
-                return unitY;
-            }
-        }
-
-        /// <summary>
-        ///		Gets a Vector3 with the Z set to 1, and the others set to 0.
-        /// </summary>
-        public static Vector3 UnitZ
-        {
-            get
-            {
-                return unitZ;
-            }
-        }
-
-        /// <summary>
-        ///		Gets a Vector3 with the X set to -1, and the others set to 0.
-        /// </summary>
-        public static Vector3 NegativeUnitX
-        {
-            get
-            {
-                return negativeUnitX;
-            }
-        }
-
-        /// <summary>
-        ///		Gets a Vector3 with the Y set to -1, and the others set to 0.
-        /// </summary>
-        public static Vector3 NegativeUnitY
-        {
-            get
-            {
-                return negativeUnitY;
-            }
-        }
-
-        /// <summary>
-        ///		Gets a Vector3 with the Z set to -1, and the others set to 0.
-        /// </summary>
-        public static Vector3 NegativeUnitZ
-        {
-            get
-            {
-                return negativeUnitZ;
-            }
-        }
-        
-        /// <summary>
-        ///     Gets a Vector3 with all units set to positive infinity.
-        /// </summary>
-        public static Vector3 PositiveInfinity
-        {
-            get
-            {
-                return positiveInfinityVector;
-            }
-        }
-        
-        /// <summary>
-        ///     Gets a Vector3 with all units set to negative infinity.
-        /// </summary>
-        public static Vector3 NegativeInfinity
-        {
-            get
-            {
-                return negativeInfinityVector;
-            }
-        }
-        
-        /// <summary>
-        ///     Gets a Vector3 with all units set to Invalid.
-        /// </summary>
-        public static Vector3 Invalid
-        {
-            get
-            {
-                return invalidVector;
             }
         }
 
@@ -928,83 +844,5 @@ namespace Axiom.MathLib
 
         #endregion
 
-        #region ICustomTypeDescriptor
-
-        #region Public Methods
-
-        object ICustomTypeDescriptor.GetPropertyOwner( PropertyDescriptor pd )
-        {
-            return this; // properties belong to the this object
-        }
-
-
-        PropertyDescriptorCollection ICustomTypeDescriptor.GetProperties()
-        {
-            return ( (ICustomTypeDescriptor)this ).GetProperties( null );
-        }
-
-        PropertyDescriptorCollection ICustomTypeDescriptor.GetProperties(
-            Attribute[] attributes )
-        {
-            // Create the property collection and filter
-            return new PropertyDescriptorCollection(
-            new PropertyDescriptor[] {	 new FieldPropertyDescriptor(this,"x"),
-										 new FieldPropertyDescriptor(this,"y"),
-										 new FieldPropertyDescriptor(this,"z")} );
-        }
-
-
-        #region Delegated to TypeDescriptor
-
-        AttributeCollection ICustomTypeDescriptor.GetAttributes()
-        {
-            // Gets the attributes of the this object
-            return TypeDescriptor.GetAttributes( this, true );
-        }
-
-        string ICustomTypeDescriptor.GetClassName()
-        {
-            // Gets the class name of the this object
-            return TypeDescriptor.GetClassName( this, true );
-        }
-
-        TypeConverter ICustomTypeDescriptor.GetConverter()
-        {
-            return TypeDescriptor.GetConverter( this, true );
-        }
-
-        EventDescriptorCollection ICustomTypeDescriptor.GetEvents( Attribute[] attributes )
-        {
-            return TypeDescriptor.GetEvents( this, attributes, true );
-        }
-
-        EventDescriptorCollection ICustomTypeDescriptor.GetEvents()
-        {
-            return ( (ICustomTypeDescriptor)this ).GetEvents( null );
-        }
-
-        string ICustomTypeDescriptor.GetComponentName()
-        {
-            return TypeDescriptor.GetComponentName( this, true );
-        }
-
-        object ICustomTypeDescriptor.GetEditor( Type editorBaseType )
-        {
-            return TypeDescriptor.GetEditor( this, editorBaseType, true );
-        }
-
-        PropertyDescriptor ICustomTypeDescriptor.GetDefaultProperty()
-        {
-            return TypeDescriptor.GetDefaultProperty( this, true );
-        }
-
-        EventDescriptor ICustomTypeDescriptor.GetDefaultEvent()
-        {
-            return TypeDescriptor.GetDefaultEvent( this, true );
-        }
-
-        #endregion
-        #endregion
-        #endregion
     }
 }

@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Runtime.InteropServices;
+using System.Security.Permissions;
 using System.Runtime.Serialization;
 
 #endregion Namespace Declarations
@@ -53,42 +54,168 @@ namespace DotNet3D.Math
     [Serializable]
     public struct Vector2 : ISerializable
     {
-        #region Fields
+        #region Fields adn Properties
 
+        // These fields are public on purpose. They are accessed often and 
+        // we want to avoid the cost of the method call to a property.
+        // When C# implements an inline keyword, we will revisit these.
+       
         /// <summary>X component.</summary>
         public Real x;
         /// <summary>Y component.</summary>
         public Real y;
 
-        private static readonly Vector2 positiveInfinityVector = new Vector2( Real.PositiveInfinity, Real.PositiveInfinity );
-        private static readonly Vector2 negativeInfinityVector = new Vector2( Real.NegativeInfinity, Real.NegativeInfinity );
-        private static readonly Vector2 invalidVector = new Vector2( Real.NaN, Real.NaN );
-        private static readonly Vector2 zeroVector = new Vector2( 0.0f, 0.0f );
-        private static readonly Vector2 unitX = new Vector2( 1.0f, 0.0f );
-        private static readonly Vector2 unitY = new Vector2( 0.0f, 1.0f );
-        private static readonly Vector2 negativeUnitX = new Vector2( -1.0f, 0.0f );
-        private static readonly Vector2 negativeUnitY = new Vector2( 0.0f, -1.0f );
-        private static readonly Vector2 unitVector = new Vector2( 1.0f, 1.0f );
+        /// <summary>Gets a Vector2 with all units set to positive infinity.</summary>
+        public static readonly Vector2 PositiveInfinity = new Vector2( Real.PositiveInfinity, Real.PositiveInfinity );
+        /// <summary>Gets a Vector2 with all units set to negative infinity.</summary>
+        public static readonly Vector2 NegativeInfinity = new Vector2( Real.NegativeInfinity, Real.NegativeInfinity );
+        /// <summary>Gets a Vector2 with all units set to Invalid.</summary>
+        public static readonly Vector2 Invalid = new Vector2( Real.NaN, Real.NaN );
+        /// <summary>Gets a Vector2 with all components set to 0.</summary>
+        public static readonly Vector2 Zero = new Vector2( 0.0f, 0.0f );
+        /// <summary>Gets a Vector2 with the X set to 1, and the others set to 0.</summary>
+        public static readonly Vector2 UnitX = new Vector2( 1.0f, 0.0f );
+        /// <summary>Gets a Vector2 with the Y set to 1, and the others set to 0.</summary>
+        public static readonly Vector2 UnitY = new Vector2( 0.0f, 1.0f );
+        /// <summary>Gets a Vector2 with the X set to -1, and the others set to 0.</summary>
+        public static readonly Vector2 NegativeUnitX = new Vector2( -1.0f, 0.0f );
+        /// <summary>Gets a Vector2 with the Y set to -1, and the others set to 0.</summary>
+        public static readonly Vector2 NegativeUnitY = new Vector2( 0.0f, -1.0f );
+        /// <summary>Gets a Vector2 with all components set to 1.</summary>
+        public static readonly Vector2 Unit = new Vector2( 1.0f, 1.0f );
+
+
+        /// <summary>Return True if the vector is the Positive Infinity Vector </summary>
+        public bool IsPostiveInfinity
+        {
+            get
+            {
+                return this == Vector2.PositiveInfinity;
+            }
+        }
+
+        /// <summary>Return True if the vector is the Negative Infinity Vector </summary>
+        public bool IsNegativeInfinity
+        {
+            get
+            {
+                return this == Vector2.NegativeInfinity;
+            }
+        }
+
+        /// <summary>Return True if the vector is the Invalid Vector </summary>
+        public bool IsInvalid
+        {
+            get
+            {
+                return this == Vector2.Invalid;
+            }
+        }
+
+        /// <summary>Return True if the vector is the Zero Vector </summary>
+        public bool IsZero
+        {
+            get
+            {
+                return this == Vector2.Zero;
+            }
+        }
+
+        /// <summary>Return True if the vector is the Unit X Vector </summary>
+        public bool IsUnitX
+        {
+            get
+            {
+                return this == Vector2.UnitX;
+            }
+        }
+
+        /// <summary>Return True if the vector is the UnitY Vector </summary>
+        public bool IsUnitY
+        {
+            get
+            {
+                return this == Vector2.UnitY;
+            }
+        }
+
+        /// <summary>Return True if the vector is the NegativeUnitX Vector </summary>
+        public bool IsNegativeUnitX
+        {
+            get
+            {
+                return this == Vector2.NegativeUnitX;
+            }
+        }
+
+        /// <summary>Return True if the vector is the NegativeUnitY Vector </summary>
+        public bool IsNegativeUnitY
+        {
+            get
+            {
+                return this == Vector2.NegativeUnitY;
+            }
+        }
+
+        /// <summary>Return True if the vector is the PositiveInfinity Vector </summary>
+        public bool IsUnit
+        {
+            get
+            {
+                return this == Vector2.Unit;
+            }
+        }
+
+        /// <summary>Return True if the vector is the PositiveInfinity Vector </summary>
+        public bool IsNormalized
+        {
+            get
+            {
+                return this == Vector2.Zero;
+            }
+        }
+
+        /// <summary>
+        ///    Gets the length (magnitude) of this Vector3.  The Sqrt operation is expensive, so 
+        ///    only use this if you need the exact length of the Vector.  If vector lengths are only going
+        ///    to be compared, use LengthSquared instead.
+        /// </summary>
+        public Real Length
+        {
+            get
+            {
+                return Utility.Sqrt( this.x * this.x + this.y * this.y );
+            }
+        }
+
+        /// <summary>
+        ///    Returns the length (magnitude) of the vector squared.
+        /// </summary>
+        public Real LengthSquared
+        {
+            get
+            {
+                return ( this.x * this.x + this.y * this.y );
+            }
+        }
 
         #endregion Fields
 
         #region Constructors
         //NOTE: ISerializable Constructor in ISerializable Implementation
 
+        /// <overloads>
         /// <summary>
         ///     Creates a new Vector2
         /// </summary>
-        /// <param name="x">X position.</param>
-        /// <param name="y">Y position</param>
+        /// </overloads>
+        /// <param name="source">the source vector.</param>
         public Vector2( Vector2 source )
         {
             this.x = source.x;
             this.y = source.y;
         }
 
-        /// <summary>
-        ///     Creates a new Vector2
-        /// </summary>
         /// <param name="x">X position.</param>
         /// <param name="y">Y position</param>
         public Vector2( Real x, Real y )
@@ -97,14 +224,19 @@ namespace DotNet3D.Math
             this.y = y;
         }
 
-        /// <summary>
-        /// Create a new Vector2
-        /// </summary>
+        /// <param name="unitDimension"></param>
+        public Vector2( Real unitDimension )
+            : this( unitDimension, unitDimension )
+        {
+        }
+
         /// <remarks>
-        /// The parseableText parameter is a comma seperated list of values e.g. "< 1.0, 1.0 >" 
-        /// Format : {[(<} float, float {>)]}
+        /// The parseableText parameter is a comma seperated list of values e.g. "&lt; 1.0, 1.0 &gt;" 
+        /// Format : {[(&lt;} Real, Real {&gt;)]}
         /// </remarks>
         /// <param name="parsableText">a comma seperated list of values</param>
+        /// <exception cref="ArgumentException" />
+        /// <exception cref="FormatException" />
         public Vector2( string parsableText )
         {
             // Verfiy input
@@ -131,9 +263,18 @@ namespace DotNet3D.Math
             }
         }
 
+        /// <param name="coordinates">An array of 2 decimal values.</param>
+        public Vector2( Real[] coordinates )
+        {
+            if ( coordinates.Length != 2 )
+                throw new ArgumentException( "The coordinates array must be of length 2 to specify the x and y coordinates." );
+            this.x = coordinates[0];
+            this.y = coordinates[1];
+        }
+
         #endregion Constructors
 
-        #region Static Interface
+        #region Static Methods
 
         /// <summary>
         /// Parses a Vector2 from a string
@@ -141,114 +282,11 @@ namespace DotNet3D.Math
         /// <remarks>
         /// The parseableText parameter is a comma seperated list of values e.g. "(###, ###)" 
         /// </remarks>
-        /// <param name="parsableText">a comma seperated list of values</param>
+        /// <param name="text">a comma seperated list of values</param>
         /// <returns>a new instance</returns>
         public static Vector2 Parse( string text )
         {
             return new Vector2( text );
-        }
-
-        #endregion
-
-        #region Static Constant Properties
-
-        /// <summary>
-        ///		Gets a Vector2 with all components set to 0.
-        /// </summary>
-        public static Vector2 Zero
-        {
-            get
-            {
-                return zeroVector;
-            }
-        }
-
-        /// <summary>
-        ///		Gets a Vector2 with all components set to 1.
-        /// </summary>
-        public static Vector2 UnitScale
-        {
-            get
-            {
-                return unitVector;
-            }
-        }
-
-        /// <summary>
-        ///		Gets a Vector2 with the X set to 1, and the others set to 0.
-        /// </summary>
-        public static Vector2 UnitX
-        {
-            get
-            {
-                return unitX;
-            }
-        }
-
-        /// <summary>
-        ///		Gets a Vector2 with the Y set to 1, and the others set to 0.
-        /// </summary>
-        public static Vector2 UnitY
-        {
-            get
-            {
-                return unitY;
-            }
-        }
-
-        /// <summary>
-        ///		Gets a Vector2 with the X set to -1, and the others set to 0.
-        /// </summary>
-        public static Vector2 NegativeUnitX
-        {
-            get
-            {
-                return negativeUnitX;
-            }
-        }
-
-        /// <summary>
-        ///		Gets a Vector2 with the Y set to -1, and the others set to 0.
-        /// </summary>
-        public static Vector2 NegativeUnitY
-        {
-            get
-            {
-                return negativeUnitY;
-            }
-        }
-
-        /// <summary>
-        ///     Gets a Vector2 with all units set to positive infinity.
-        /// </summary>
-        public static Vector2 PositiveInfinity
-        {
-            get
-            {
-                return positiveInfinityVector;
-            }
-        }
-
-        /// <summary>
-        ///     Gets a Vector2 with all units set to negative infinity.
-        /// </summary>
-        public static Vector2 NegativeInfinity
-        {
-            get
-            {
-                return negativeInfinityVector;
-            }
-        }
-
-        /// <summary>
-        ///     Gets a Vector2 with all units set to Invalid.
-        /// </summary>
-        public static Vector2 Invalid
-        {
-            get
-            {
-                return invalidVector;
-            }
         }
 
         #endregion
@@ -269,6 +307,7 @@ namespace DotNet3D.Math
         ///		Overrides the Object.ToString() method to provide a text representation of 
         ///		a Vector2.
         /// </summary>
+        /// <param name="decimalPlaces">number of decimal places to render</param>
         /// <returns>A string representation of a Vector2.</returns>
         public string ToString( int decimalPlaces )
         {
@@ -276,7 +315,7 @@ namespace DotNet3D.Math
 
             format = format.PadLeft( decimalPlaces, '#' );
             format = "({0:0." + format + "}, {1:0." + format + "})";
-            //NOTE: Explicit conversion used here to get proper behavior, for some reson it left as Real it will always 
+            //NOTE: Explicit conversion used here to get proper behavior, for some reason it left as Real it will always 
             //      display all decimal places
             return string.Format( format, (float)this.x, (float)this.y );
         }
@@ -306,8 +345,8 @@ namespace DotNet3D.Math
         /// <summary>
         /// Used to test equality between two Vector2s
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
+        /// <param name="left">LHS of the operator</param>
+        /// <param name="right">RHS of the operator</param>
         /// <returns></returns>
         public static bool operator ==( Vector2 left, Vector2 right )
         {
@@ -317,8 +356,8 @@ namespace DotNet3D.Math
         /// <summary>
         /// Used to test inequality between two Vector2s
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
+        /// <param name="left">LHS of the operator</param>
+        /// <param name="right">RHS of the operator</param>
         /// <returns></returns>
         public static bool operator !=( Vector2 left, Vector2 right )
         {
@@ -328,8 +367,8 @@ namespace DotNet3D.Math
         /// <summary>
         ///		Used when a Vector2 is added to another Vector2.
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
+        /// <param name="left">LHS of the operator</param>
+        /// <param name="right">RHS of the operator</param>
         /// <returns></returns>
         public static Vector2 operator +( Vector2 left, Vector2 right )
         {
@@ -340,8 +379,8 @@ namespace DotNet3D.Math
         /// <summary>
         ///		Used to subtract a Vector2 from another Vector2.
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
+        /// <param name="left">LHS of the operator</param>
+        /// <param name="right">RHS of the operator</param>
         /// <returns></returns>
         public static Vector2 operator -( Vector2 left, Vector2 right )
         {
@@ -352,8 +391,8 @@ namespace DotNet3D.Math
         /// <summary>
         ///		Used when a Vector2 is multiplied by a Vector2.
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="scalar"></param>
+        /// <param name="left">LHS of the operator</param>
+        /// <param name="right">RHS of the operator</param>
         /// <returns></returns>
         public static Vector2 operator *( Vector2 left, Vector2 right )
         {
@@ -364,8 +403,8 @@ namespace DotNet3D.Math
         /// <summary>
         ///		Used when a Vector2 is multiplied by a scalar value.
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="scalar"></param>
+        /// <param name="left">LHS of the operator</param>
+        /// <param name="scalar">The scalar to multiply by</param>
         /// <returns></returns>
         public static Vector2 operator *( Vector2 left, Real scalar )
         {
@@ -376,8 +415,8 @@ namespace DotNet3D.Math
         /// <summary>
         ///		Used when a scalar value is multiplied by a Vector2.
         /// </summary>
-        /// <param name="scalar"></param>
-        /// <param name="right"></param>
+        /// <param name="scalar">The scalar to multiply by</param>
+        /// <param name="right">RHS of the operator</param>
         /// <returns></returns>
         public static Vector2 operator *( Real scalar, Vector2 right )
         {
@@ -388,7 +427,7 @@ namespace DotNet3D.Math
         /// <summary>
         ///		Used to negate the elements of a vector.
         /// </summary>
-        /// <param name="left"></param>
+        /// <param name="left">LHS of the operator</param>
         /// <returns></returns>
         public static Vector2 operator -( Vector2 left )
         {
@@ -430,13 +469,13 @@ namespace DotNet3D.Math
             }
         }
 
-        #region CLSCompliant Methods
+        #region CLSCompliant Operator Methods
 
         /// <summary>
         ///		Used when a Vector2 is added to another Vector2.
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
+        /// <param name="left">LHS of the operator</param>
+        /// <param name="right">RHS of the operator</param>
         /// <returns></returns>
         public static Vector2 Add( Vector2 left, Vector2 right )
         {
@@ -446,8 +485,8 @@ namespace DotNet3D.Math
         /// <summary>
         ///		Used to subtract a Vector2 from another Vector2.
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
+        /// <param name="left">LHS of the operator</param>
+        /// <param name="right">RHS of the operator</param>
         /// <returns></returns>
         public static Vector2 Subtract( Vector2 left, Vector2 right )
         {
@@ -457,8 +496,8 @@ namespace DotNet3D.Math
         /// <summary>
         ///		Used when a Vector2 is multiplied by a Vector2.
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="scalar"></param>
+        /// <param name="left">LHS of the operator</param>
+        /// <param name="right">RHS of the operator</param>
         /// <returns></returns>
         public static Vector2 Multiply( Vector2 left, Vector2 right )
         {
@@ -468,8 +507,8 @@ namespace DotNet3D.Math
         /// <summary>
         ///		Used when a Vector2 is multiplied by a scalar value.
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="scalar"></param>
+        /// <param name="left">LHS of the operator</param>
+        /// <param name="scalar">The scalar to multiply by</param>
         /// <returns></returns>
         public static Vector2 Multiply( Vector2 left, Real scalar )
         {
@@ -479,8 +518,8 @@ namespace DotNet3D.Math
         /// <summary>
         ///		Used when a scalar value is multiplied by a Vector2.
         /// </summary>
-        /// <param name="scalar"></param>
-        /// <param name="right"></param>
+        /// <param name="scalar">The scalar to multiply by</param>
+        /// <param name="right">RHS of the operator</param>
         /// <returns></returns>
         public static Vector2 Multiply( Real scalar, Vector2 right )
         {
@@ -490,7 +529,7 @@ namespace DotNet3D.Math
         /// <summary>
         ///		Used to negate the elements of a vector.
         /// </summary>
-        /// <param name="left"></param>
+        /// <param name="left">LHS of the operator</param>
         /// <returns></returns>
         public static Vector2 Negate( Vector2 left )
         {
@@ -499,16 +538,223 @@ namespace DotNet3D.Math
 
         #endregion CLSCompliant Methods
 
-        #endregion Operator Overloads
+        #endregion Operator Operator Overloads
+
+        #region Conversion Operations
+
+        #region String Conversions
+
+        /// <summary>
+        /// Implicit conversion from string to Vector2
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        static public implicit operator Vector2( string value )
+        {
+            return new Vector2( value );
+        }
+
+        /// <summary>
+        /// Explicit conversion from Vector2 to string
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        static public explicit operator string( Vector2 v )
+        {
+            return v.ToString();
+        }
+
+        #endregion String Conversions
+
+        #region Real[] Conversions
+
+        /// <summary>
+        /// Implicit conversion from Real[] to Vector2
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        static public implicit operator Vector2( Real[] value )
+        {
+            return new Vector2( value );
+        }
+
+        #endregion Real[] Conversions
+
+        #endregion Converstion Operations
+
+        #region Public Methods
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="K"></typeparam>
+        /// <returns></returns>
+        public K[] ToArray<K>() where K : struct
+        {
+            return new K[] { (K)Convert.ChangeType( x, typeof( K ) ), (K)Convert.ChangeType( y, typeof( K ) ) };
+        }
+
+        /// <summary>
+        /// Offsets the Vector2 by the specified values.
+        /// </summary>
+        /// <param name="x">Amount to offset the x component.</param>
+        /// <param name="y">Amount to offset the y component.</param>
+        /// <remarks>This is equivilent to v += new Vector2( x, y );</remarks>
+        /// <returns>the resultant Vector3</returns>
+        public Vector2 Offset( Real x, Real y )
+        {
+            return new Vector2( this.x + x, this.y + y );
+        }
+
+        /// <summary>
+        ///		Performs a Dot Product operation on 2 vectors, which produces the angle between them.
+        /// </summary>
+        /// <param name="vector">The vector to perform the Dot Product against.</param>
+        /// <returns>The angle between the 2 vectors.</returns>       
+        public Real DotProduct( Vector2 vector )
+        {
+            return x * vector.x + y * vector.y;
+        }
+
+        /// <summary>
+        ///		Performs a Cross Product operation on 2 vectors, which returns a vector that is perpendicular
+        ///		to the intersection of the 2 vectors.  Useful for finding face normals.
+        /// </summary>
+        /// <param name="vector">A vector to perform the Cross Product against.</param>
+        /// <returns>A new Vector2 perpedicular to the 2 original vectors.</returns>
+        public Vector2 CrossProduct( Vector2 vector )
+        {
+            return new Vector2(
+                ( this.y * vector.x ) - ( this.x * vector.y ),
+                ( this.x * vector.y ) - ( this.y * vector.x )
+                );
+
+        }
+
+        /// <summary>
+        ///		Finds a vector perpendicular to this one.
+        /// </summary>
+        /// <returns></returns>
+        public Vector2 Perpendicular()
+        {
+            Vector2 result = this.CrossProduct( UnitX );
+
+            // check length
+            if ( result.LengthSquared < Real.Epsilon )
+            {
+                // This vector is the Y axis multiplied by a scalar, so we have to use another axis
+                result = this.CrossProduct( UnitY );
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        ///		Finds the midpoint between the supplied Vector and this vector.
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <returns></returns>
+        public Vector2 MidPoint( Vector2 vector )
+        {
+            Real two = 2f;
+            return new Vector2( ( this.x + vector.x ) / two, ( this.y + vector.y ) / two );
+        }
+
+        /// <summary>
+        ///		Compares the supplied vector and updates it's x/y/z components of they are higher in value.
+        /// </summary>
+        /// <param name="compare"></param>
+        public void ToCeiling( Vector2 compare )
+        {
+            if ( compare.x > x )
+                x = compare.x;
+            if ( compare.y > y )
+                y = compare.y;
+        }
+
+        /// <summary>
+        ///		Compares the supplied vector and updates it's x/y/z components of they are lower in value.
+        /// </summary>
+        /// <param name="compare"></param>
+        /// <returns></returns>
+        public void ToFloor( Vector2 compare )
+        {
+            if ( compare.x < x )
+                x = compare.x;
+            if ( compare.y < y )
+                y = compare.y;
+        }
+        /// <summary>
+        /// returns a normailized vector of the current vector.
+        /// </summary>
+        public Vector2 ToNormalized()
+        {
+            Vector2 vec = this;
+            vec.Normalize();
+            return vec;
+        }
+
+        /// <summary>
+        ///		Normalizes the vector.
+        /// </summary>
+        /// <remarks>
+        ///		This method normalises the vector such that it's
+        ///		length / magnitude is 1. The result is called a unit vector.
+        ///		<p/>
+        ///		This function will not crash for zero-sized vectors, but there
+        ///		will be no changes made to their components.
+        ///	</remarks>
+        ///	<returns>The previous length of the vector.</returns>
+        public Real Normalize()
+        {
+            Real length = Utility.Sqrt( this.x * this.x + this.y * this.y );
+
+            // Will also work for zero-sized vectors, but will change nothing
+            if ( length > Real.Epsilon )
+            {
+                Real inverseLength = new Real( 0.1f ) * length;
+
+                this.x *= inverseLength;
+                this.y *= inverseLength;
+            }
+
+            return length;
+        }
+
+        /// <summary>
+        ///    Calculates a reflection vector to the plane with the given normal.
+        /// </summary>
+        /// <remarks>
+        ///    Assumes this vector is pointing AWAY from the plane, invert if not.
+        /// </remarks>
+        /// <param name="normal">Normal vector on which this vector will be reflected.</param>
+        /// <returns></returns>
+        public Vector2 Reflect( Vector2 normal )
+        {
+            return this - 2 * this.DotProduct( normal ) * normal;
+        }
+
+        #endregion Public Methods
 
         #region ISerializable Implementation
 
-        public Vector2( SerializationInfo info, StreamingContext context )
+        /// <summary>
+        /// Deserialization contructor
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        private Vector2( SerializationInfo info, StreamingContext context )
         {
             x = (Real)info.GetValue( "x", typeof( Real ) );
             y = (Real)info.GetValue( "y", typeof( Real ) );
         }
 
+        /// <summary>
+        /// Serialization Method
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        [SecurityPermission( SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter )]
         public void GetObjectData( SerializationInfo info, StreamingContext context )
         {
             info.AddValue( "x", x );

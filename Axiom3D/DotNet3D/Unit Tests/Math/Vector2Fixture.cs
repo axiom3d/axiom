@@ -26,12 +26,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #else
@@ -41,6 +35,12 @@ using TestInitialize = NUnit.Framework.SetUpAttribute;
 using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
 #endif
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 
 using DotNet3D.Math;
 
@@ -91,7 +91,7 @@ namespace DotNet3D.Math.Tests
         [ExpectedException( typeof( ArgumentNullException ) )]
         public void ConstructVector2WithNullStringThrows()
         {
-            Vector2 v = new Vector2( null );
+            Vector2 v = new Vector2( (string)null );
         }
 
         [TestMethod]
@@ -110,6 +110,40 @@ namespace DotNet3D.Math.Tests
             Assert.IsNotNull( a );
             Assert.IsNotNull( b );
             Assert.AreEqual( a, b );
+        }
+
+        [TestMethod]
+        public void ConstructVector2fromScalar()
+        {
+            Vector2 expected = "< 15, 15 >";
+            Vector2 actual = new Vector2( 15 );
+
+            Assert.AreEqual( expected, actual );
+            Assert.IsNotNull( actual );
+        }
+
+
+        [TestMethod]
+        public void ConstructVector2fromScalarArray()
+        {
+            Vector2 expected = "< 13, 14 >";
+            Real[] r = { 13, 14 };
+            Vector2 actual = new Vector2( r );
+
+            Assert.AreEqual( expected, actual );
+            Assert.IsNotNull( actual );
+        }
+
+        [TestMethod]
+        [ExpectedException( typeof( ArgumentException ) )]
+        public void ConstructVector2fromScalarArrayThrows()
+        {
+            Vector2 expected = "< 13, 14 >";
+            Real[] r = { 13, 14, 15 };
+            Vector2 actual = new Vector2( r );
+
+            Assert.AreEqual( expected, actual );
+            Assert.IsNotNull( actual );
         }
 
         #endregion
@@ -360,6 +394,7 @@ namespace DotNet3D.Math.Tests
             Assert.IsTrue( test );
         }
 
+        [TestMethod]
         public void ParseVector2String()
         {
             Vector2 v = Vector2.Parse( "(1.234567, 2.345678)" );
@@ -367,6 +402,31 @@ namespace DotNet3D.Math.Tests
             Assert.IsNotNull( v );
             Assert.AreEqual( v.x, new Real( 1.234567f ));
             Assert.AreEqual( v.y,new Real(  2.345678f ));
+        }
+
+
+        [TestMethod]
+        public void DotProductBetweenTwoVector2()
+        {
+            Real expected = 25;
+            Vector2 left = new Real[] { 3, 4 };
+            Vector2 right = new Real[] { 3, 4 };
+
+            Real actual = left.DotProduct( right );
+
+            Assert.AreEqual( expected, actual );
+        }
+
+        [TestMethod]
+        public void CrossProductBetweenTwoVector2()
+        {
+            Vector2 expected = new Real[] { -33, 33 };
+            Vector2 left = new Real[] { 5, 4 };
+            Vector2 right = new Real[] { 3, 9 };
+
+            Vector2 actual = left.CrossProduct( right );
+
+            Assert.AreEqual( expected, actual );
         }
 
         #region Serialization Tests
