@@ -45,4 +45,22 @@ namespace Axiom.MathLib.Collections
             this.second = second;
         }
     }
+
+    /// <summary>
+    /// 	A simple container class for returning a pair of objects from a method call 
+    /// 	(Generic version).
+    /// </summary>
+    /// <remarks>
+    /// </remarks>
+    public class Pair<T>
+    {
+        public T first;
+        public T second;
+
+        public Pair( T first, T second )
+        {
+            this.first = first;
+            this.second = second;
+        }
+    }
 }
