@@ -302,7 +302,7 @@ namespace Axiom.Demos
             if ( ( input.IsMousePressed( MouseButtons.Left ) || input.IsKeyPressed( KeyCodes.Enter ) )
                     && toggleDelay < 0 )
             {
-                RaySceneQuery rq = scene.CreateRayQuery( camera.GetCameraToViewportRay( (float)input.AbsoluteMouseX / 640f, (float)input.AbsoluteMouseY / 480f ) );
+                RaySceneQuery rq = scene.CreateRayQuery( camera.GetCameraToViewportRay( (float)input.AbsoluteMouseX / (float)window.Width, (float)input.AbsoluteMouseY / (float)window.Height ) );
 
                 rq.SortByDistance = true;
                 rq.MaxResults = 1;
