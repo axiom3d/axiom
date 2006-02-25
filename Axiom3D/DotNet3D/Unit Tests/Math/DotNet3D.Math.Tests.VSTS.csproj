@@ -16,13 +16,13 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\build\VS.Net\DotNet3D\Debug\lib\</OutputPath>
+    <OutputPath>..\..\build\net-2.0.win32\DotNet3D-0.01-dev\lib\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\build\VS.Net\DotNet3D\Release\lib\</OutputPath>
+    <OutputPath>..\..\build\net-2.0.win32\DotNet3D-0.01-release\lib\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>

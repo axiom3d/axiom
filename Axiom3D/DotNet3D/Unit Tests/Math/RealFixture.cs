@@ -74,7 +74,7 @@ namespace DotNet3D.Math.Tests
             Type expectedType = typeof( Real );
 
             //Assert.IsInstanceOfType( typeof( Real ), target );
-            Assert.AreEqual( expected, target );
+            Assert.AreEqual( expected, actual );
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace DotNet3D.Math.Tests
             Type expectedType = typeof( Real );
 
             //Assert.IsInstanceOfType( typeof( Real ), target );
-            Assert.AreEqual( expected, target );
+            Assert.AreEqual( expected, actual );
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace DotNet3D.Math.Tests
             Type expectedType = typeof( Real );
 
             //Assert.IsInstanceOfType( typeof( Real ), target );
-            Assert.AreEqual( expected, target );
+            Assert.AreEqual( expected, actual );
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace DotNet3D.Math.Tests
             Type expectedType = typeof( Real );
 
             //Assert.IsInstanceOfType( typeof( Real ), target );
-            Assert.AreEqual( expected, target );
+            Assert.AreEqual( expected, actual );
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace DotNet3D.Math.Tests
             Type expectedType = typeof( Real );
 
             //Assert.IsInstanceOfType( typeof( Real ), target );
-            Assert.AreEqual( expected, target );
+            Assert.AreEqual( expected, actual );
         }
 
         #endregion Construction Tests
