@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <DNPreBuild xmlns="http://dnpb.sourceforge.net/schemas/dnpb-1.4.xsd">
-	<Solution name="Axiom.Clean" activeConfig="Debug">
+	<Solution name="Axiom" activeConfig="Debug">
 		<Configuration name="Debug">
 			<Options>
 				<CompilerDefines>TRACE;DEBUG</CompilerDefines>
@@ -42,6 +42,52 @@
 		<Files>
 			<Match path="Documentation" pattern="*.*"/>
 		</Files>
+
+		<Project name="Axiom.Demos" path="Axiom\Demos" type="WinExe" rootNamespace="Axiom">
+			<Configuration name="Debug">
+				<Options>
+					<XmlDocFile>SampleBrowser.xml</XmlDocFile>
+					<AllowUnsafe>true</AllowUnsafe>
+				</Options>
+			</Configuration>
+			<Configuration name="Release">
+				<Options>
+					<XmlDocFile>SampleBrowser.xml</XmlDocFile>
+					<AllowUnsafe>true</AllowUnsafe>
+				</Options>
+			</Configuration>
+			<ReferencePath>..\..\Dependencies\Managed</ReferencePath>
+			<Reference name="System"/>
+			<Reference name="System.Drawing"/>
+			<Reference name="System.Windows.Forms"/>
+			<Reference name="System.Xml"/>
+			<Reference name="System.Data"/>
+			<Reference name="RealmForge.Utility"/>
+			<Reference name="Axiom"/>
+
+			<?if OS = "Win32" ?>
+
+			<Reference name="Axiom.RenderSystems.DirectX9"/>
+			<Reference name="Axiom.Platforms.Win32"/>
+
+			<?else ?>
+
+			<Reference name="Axiom.RenderSystems.OpenGL"/>
+			<Reference name="Axiom.Platforms.SDL"/>
+
+			<?endif ?>
+
+			<Reference name="Axiom.Plugins.CgProgramManager"/>
+			<Reference name="Axiom.Plugins.ParticleFX"/>
+			<Reference name="Axiom.SceneManagers.Octree"/>
+			<Reference name="Axiom.SceneManagers.Bsp"/>
+			<Reference name="Axiom.SceneManagers.PagingLandscape"/>
+
+
+			<Files>
+				<Match pattern="*.cs" recurse="true"/>
+			</Files>
+		</Project>
 
 		<Project name="RealmForge.Utility" filterGroups="Axiom|Cegui" path="RealmForge\Utility" type="Library" assemblyName="RealmForge.Utility" rootNamespace="RealmForge">
 			<Configuration name="Debug">
@@ -85,6 +131,7 @@
 			<Reference name="System" />
 			<Reference name="System.Data" />
 			<Reference name="System.Drawing" />
+			<Reference name="System.Configuration" />
 			<Reference name="System.Xml" />
 			<Reference name="RealmForge.Utility"/>
 			<Reference name="Tao.DevIl" />
@@ -355,52 +402,7 @@
 			</Files>
 		</Project>
 
-		<Project name="Axiom.Demos" path="Axiom\Demos" type="WinExe" rootNamespace="Axiom">
-			<Configuration name="Debug">
-				<Options>
-					<XmlDocFile>SampleBrowser.xml</XmlDocFile>
-					<AllowUnsafe>true</AllowUnsafe>
-				</Options>
-			</Configuration>
-			<Configuration name="Release">
-				<Options>
-					<XmlDocFile>SampleBrowser.xml</XmlDocFile>
-					<AllowUnsafe>true</AllowUnsafe>
-				</Options>
-			</Configuration>
-			<ReferencePath>..\..\Dependencies\Managed</ReferencePath>
-			<Reference name="System"/>
-			<Reference name="System.Drawing"/>
-			<Reference name="System.Windows.Forms"/>
-			<Reference name="System.Xml"/>
-			<Reference name="System.Data"/>
-			<Reference name="RealmForge.Utility"/>
-			<Reference name="Axiom"/>
-			
-			<?if OS = "Win32" ?>
-			
-			<Reference name="Axiom.RenderSystems.DirectX9"/>
-			<Reference name="Axiom.Platforms.Win32"/>
-			
-			<?else ?>
-			
-			<Reference name="Axiom.RenderSystems.OpenGL"/>
-			<Reference name="Axiom.Platforms.SDL"/>
-			
-			<?endif ?>
-			
-			<Reference name="Axiom.Plugins.CgProgramManager"/>
-			<Reference name="Axiom.Plugins.ParticleFX"/>
-			<Reference name="Axiom.SceneManagers.Octree"/>
-			<Reference name="Axiom.SceneManagers.Bsp"/>
-			<Reference name="Axiom.SceneManagers.PagingLandscape"/>
-
-
-			<Files>
-				<Match pattern="*.cs" recurse="true"/>
-			</Files>
-		</Project>
-		
+	
 	</Solution>
 </DNPreBuild>
 
