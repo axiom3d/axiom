@@ -187,7 +187,7 @@ namespace Axiom.Demos
             node.AttachObject( planeEnt );
             //node.Translate( new Vector3( 2000, 0, 0 ) ); 
 
-            if ( Root.Instance.RenderSystem.Name.StartsWith( "Direct" ) )
+            if ( Root.Instance.RenderSystem.Name.Contains( "DirectX" ) )
             {
                 // In D3D, use a 1024x1024 shadow texture 
                 scene.SetShadowTextureSettings( 1024, 2 );
