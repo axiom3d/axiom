@@ -446,15 +446,15 @@ namespace Axiom
         }
 
         /// <summary>
-        /// Returns a scene object attached to this node by name. Node that this method
+        /// Returns a movable object attached to this node by name. Node that this method
         /// is O(n), whereas the integer overload of this method is O(1). Use the integer
         /// version of this method if speed is important.
         /// </summary>
         /// <param name="name">The name of the object to return.</param>
-        /// <returns>SceneObject if found. Throws exception of not found.</returns>
+        /// <returns>MovableObject if found. Throws exception of not found.</returns>
         public MovableObject GetObject( string name )
         {
-            foreach ( MovableObject obj in this.objectList )
+            foreach ( MovableObject obj in this.objectList.Values )
             {
                 if ( obj.Name == name )
                     return obj;

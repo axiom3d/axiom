@@ -24,39 +24,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-#region Namespace declarations
+#region Namespace Declarations
+
 using System;
 using System.Diagnostics;
 
-using Axiom.Core;
-#endregion Namespace declarations
-
-// used to alias a type in the code for easy copying and pasting.  Come on generics!!
-//using T = Axiom.Core.Entity;
-// used to alias a key value in the code for easy copying and pasting.  Come on generics!!
-//using K = System.String;
-
+#endregion Namespace Declarations
+			
 namespace Axiom {
     /// <summary>
     /// Summary description for EntityCollection.
     /// </summary>
     public class EntityList : AxiomCollection<string, Entity>
     {
-        #region Constructors
-
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public EntityList() : base() { }
-
-        #endregion
-
-        public override void Add(Entity item)
-        {
-            if (item.Name == string.Empty)
-                base.Add("Entity" + nextUniqueKeyCounter++, item);
-            else
-                base.Add(item.Name, item);
-        }
     }
 }

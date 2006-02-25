@@ -2,6 +2,11 @@
 - Fixed RealmForge.Reflector class to be .NET 2.0-compliant 
 
 2005-12-20 Michael Cummings [Borrillis]
+- Updated Prebuild to properly handle vs2005cse targets
+- Updated batch scripts
+- Small fix in OGL renderer
+
+2005-12-20 Michael Cummings [Borrillis]
 - Reverted the configuration changes to the EngineConfig.xml file is used again. This will stay 
   until the new configuration handers are completed.
 - Completed RenderSystem Configuration Options handling, Now the ConfigWindow that opens with the Demos

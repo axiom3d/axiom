@@ -240,7 +240,7 @@ namespace Axiom
 
         public bool HasChild( Node node )
         {
-            return childNodes.Contains( node );
+            return childNodes.ContainsValue( node );
         }
 
         public bool HasChild( string name )
@@ -273,7 +273,7 @@ namespace Axiom
         /// <param name="child"></param>
         public virtual void RemoveChild( Node child )
         {
-            int index = childNodes.IndexOf( child.Name );
+            int index = childNodes.IndexOfKey( child.Name );
             if ( index != -1 )
             {
                 RemoveChild( child, index );
@@ -288,7 +288,7 @@ namespace Axiom
         /// <returns></returns>
         public virtual Node RemoveChild( string name )
         {
-            int index = childNodes.IndexOf( name );//getting the index prevent traversing 2x
+            int index = childNodes.IndexOfKey( name );//getting the index prevent traversing 2x
             if ( index != -1 )
             {
                 Node child = childNodes[index];

@@ -289,7 +289,7 @@ namespace Axiom
 			// Iterate over the tracks and identify those with no useful keyframes
 			AnimationTrackCollection tracksToDestroy = new AnimationTrackCollection();
 			// loop through tracks and update them all with current time
-			foreach ( AnimationTrack track in trackList )
+			foreach ( AnimationTrack track in trackList.Values )
 			{
 				if (!track.HasNonZeroKeyFrames())
 				{
@@ -303,7 +303,7 @@ namespace Axiom
 			}
 
 			// Now destroy the tracks we marked for death
-			foreach ( AnimationTrack track in trackList )
+			foreach ( AnimationTrack track in trackList.Values )
 			{
 				DestroyTrack(track.Handle);
 			}
@@ -370,7 +370,7 @@ namespace Axiom
 		public void Apply( float time, float weight, bool accumulate, float scale )
 		{
 			// loop through tracks and update them all with current time
-			foreach ( AnimationTrack track in trackList )
+			foreach ( AnimationTrack track in trackList.Values )
 			{
 				track.Apply(time, weight, accumulate, scale);
 			}
@@ -408,7 +408,7 @@ namespace Axiom
         public void Apply( float time, float weight, bool accumulate, float scale, bool lookInDirectionOfTranslation )
         {
             // loop through tracks and update them all with current time
-            foreach ( AnimationTrack track in trackList )
+            foreach ( AnimationTrack track in trackList.Values )
             {
                 track.Apply( time, weight, accumulate, scale);
             }
@@ -421,7 +421,7 @@ namespace Axiom
         public void Apply( Skeleton skeleton, float time, float weight, bool accumulate, float scale )
         {
             // loop through tracks and update them all with current time
-            foreach ( AnimationTrack track in trackList )
+            foreach ( AnimationTrack track in trackList.Values )
             {
                 Bone bone = skeleton.GetBone( (ushort)track.Handle );
                 track.ApplyToNode( bone, time, weight, accumulate, scale);

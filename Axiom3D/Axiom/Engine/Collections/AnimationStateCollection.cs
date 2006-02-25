@@ -24,12 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-#region Namespace declarations
+#region Namespace Declarations
+
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-using Axiom.Core;
+#endregion Namespace Declarations
 #endregion Namespace declarations
 
 namespace Axiom
@@ -39,41 +41,16 @@ namespace Axiom
     /// </summary>
     public class AnimationStateCollection : AxiomCollection<string, AnimationState>
     {
-        #region Constructors
-
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public AnimationStateCollection() : base() { }
-
-        /// <summary>
-        ///		Constructor that takes a parent object to, and calls the base class constructor to 
-        /// </summary>
-        /// <param name="entity"></param>
-        //public AnimationStateCollection(P parent) : base(parent) {}
-
-        #endregion
-
-
-        public override void Add(Axiom.AnimationState item)
-        {
-            if (item.Name == string.Empty)
-                base.Add("AnimationState" + nextUniqueKeyCounter++, item);
-            else
-                base.Add(item.Name, item);
-        }
-
         public AnimationStateCollection Clone()
         {
             AnimationStateCollection newCol = new AnimationStateCollection();
 
-            foreach (KeyValuePair<string, AnimationState> val in this.objectList)
+            foreach ( string key in this.Keys )
             {
-                newCol.Add(val.Key, val.Value);
+                newCol.Add( key, this[ key ] );
             }
 
             return newCol;
         }
-
     }
 }
