@@ -140,7 +140,7 @@ namespace Axiom
             float[] data = new float[] {
 				left, top, -1,
 				left, bottom, -1,
-				top, right, -1,
+				right, top, -1, // Fix for Issue #1187096
 				right, bottom, -1
 			};
 
