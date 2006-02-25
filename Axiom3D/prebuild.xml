@@ -46,6 +46,7 @@
 		<Project name="RealmForge.Utility" filterGroups="Axiom|Cegui" path="RealmForge\Utility" type="Library" assemblyName="RealmForge.Utility" rootNamespace="RealmForge">
 			<Configuration name="Debug">
 				<Options>
+					<OutputPath>bin\Debug</OutputPath>
 					<XmlDocFile>RealmForge.Utility.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
@@ -68,6 +69,7 @@
 		<Project name="Axiom.Engine" type="Library" path="Axiom/Engine" rootNamespace="Axiom" >		
 			<Configuration name="Debug">
 				<Options>
+					<OutputPath>bin\Debug</OutputPath>
 					<XmlDocFile>Axiom.Engine.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
@@ -204,6 +206,8 @@
 			<Reference name="Axiom.Engine" />
 			<Reference name="RealmForge.Utility" />
 			<Reference name="Tao.OpenGl" localCopy="false"/>
+			<Reference name="Tao.OpenGl.ExtensionLoader"/>
+			<Reference name="Tao.OpenGl.Glu"/>
 
 			<?if OS = "Win32" ?>
 				<Reference name="Tao.Platform.Windows" />
@@ -223,7 +227,7 @@
 				<?endif ?>
 			</Files>
 		</Project>
-
+		
 		<Project name="Axiom.Plugins.CgProgramManager" type="Library" path="Axiom/Plugins/CgProgramManager" rootNamespace="Axiom">		
 			<Configuration name="Debug">
 				<Options>
