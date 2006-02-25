@@ -93,9 +93,9 @@ namespace Axiom.ParticleSystems
             autoExtendPool = true;
             allDefaultSize = true;
             originType = BillboardOrigin.Center;
-            cullIndividual = true;
-            defaultParticleWidth = 100;
-            defaultParticleHeight = 100;
+            cullIndividually = true;
+            defaultWidth = 100;
+            defaultHeight = 100;
             this.MaterialName = "BaseWhite";
         }
 
@@ -471,11 +471,11 @@ namespace Axiom.ParticleSystems
         {
             get
             {
-                return defaultParticleHeight;
+                return defaultHeight;
             }
             set
             {
-                defaultParticleHeight = value;
+                defaultHeight = value;
             }
         }
 
@@ -486,11 +486,11 @@ namespace Axiom.ParticleSystems
         {
             get
             {
-                return defaultParticleWidth;
+                return defaultWidth;
             }
             set
             {
-                defaultParticleWidth = value;
+                defaultWidth = value;
             }
         }
 
@@ -570,9 +570,9 @@ namespace Axiom.ParticleSystems
             system.PoolSize = this.PoolSize;
             system.MaterialName = this.MaterialName;
             system.originType = this.originType;
-            system.defaultParticleWidth = this.defaultParticleWidth;
-            system.defaultParticleHeight = this.defaultParticleHeight;
-            system.cullIndividual = this.cullIndividual;
+            system.defaultWidth = this.defaultWidth;
+            system.defaultHeight = this.defaultHeight;
+            system.cullIndividually = this.cullIndividually;
             system.billboardType = this.billboardType;
             system.commonDirection = this.commonDirection;
         }

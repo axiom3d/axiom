@@ -1,0 +1,1 @@
+.\Prebuild/clean /removedir obj /pause

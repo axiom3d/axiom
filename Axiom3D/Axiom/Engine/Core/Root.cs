@@ -43,6 +43,14 @@ using Axiom.Serialization;
 
 #endregion Namespace Declarations
 
+#region Versioning Information
+/// File								Revision
+/// ===============================================
+/// OgreRoot.h	        	            ?.??
+/// OgreRoot.cpp		                ?.??
+/// 
+#endregion
+
 namespace Axiom.Core
 {
 
