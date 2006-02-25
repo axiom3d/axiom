@@ -18,9 +18,7 @@
 	<FilePath type="Folder" src="../../../Media/Logos"/>
 	<FilePath type="Folder" src="../../../Media/GUI"/>
 	<FilePath type="Folder" src="../../../Media/Cursors"/>
-	<!--
 	<FilePath type="ZipFile" src="../../../Media/Archives/TechDemoPreviews.zip"/>
 	<FilePath type="ZipFile" src="../../../Media/Archives/chiropteraDM.zip"/> 
-	-->
 </EngineConfig>
  

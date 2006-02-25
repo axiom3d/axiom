@@ -11,7 +11,7 @@
 
 
 	<target name="references.setup" description="Sets up file references for projects tasks" unless="${target::has-executed('references.setup')}">
-			<fileset id="axiom.demos.references">
+			<fileset id="axiom.demos.build.references">
 				<include name="${axiom3d.build.dir}/RealmForge.Utility.dll"/>
 				<include name="${axiom3d.build.dir}/Axiom.dll"/>
 				<include name="${axiom3d.build.dir}/Axiom.Plugins.CgProgramManager.dll"/>
@@ -19,7 +19,7 @@
 				<include name="${axiom3d.build.dir}/Axiom.SceneManagers.Bsp.dll"/>
 				<include name="${axiom3d.build.dir}/Axiom.SceneManagers.Octree.dll"/>
 				<include name="${axiom3d.build.dir}/Axiom.SceneManagers.PagingLandscape.dll"/>
-				<include name="${axiom3d.build.dir}/Axiom.RenderSystems.OpenGl"/>
+				<include name="${axiom3d.build.dir}/Axiom.RenderSystems.OpenGl.dll"/>
 
 				<include name="System.dll"/>
 				<include name="System.Data.dll"/>
@@ -30,6 +30,31 @@
 				<include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.Win32.dll"/>
 				<include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.RenderSystems.DirectX9.dll"/>
 				<include unless="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.Sdl.dll"/>
+			</fileset>
+			
+			<fileset id="axiom.demos.runtime.references">
+				<include name="${axiom3d.build.dir}/RealmForge.Utility.dll"/>
+				<include name="${axiom3d.build.dir}/Axiom.dll"/>
+				<include name="${axiom3d.build.dir}/Axiom.Plugins.CgProgramManager.dll"/>
+				<include name="${axiom3d.build.dir}/Axiom.Plugins.ParticleFX.dll"/>
+				<include name="${axiom3d.build.dir}/Axiom.SceneManagers.Bsp.dll"/>
+				<include name="${axiom3d.build.dir}/Axiom.SceneManagers.Octree.dll"/>
+				<include name="${axiom3d.build.dir}/Axiom.SceneManagers.PagingLandscape.dll"/>
+				<include name="${axiom3d.build.dir}/Axiom.RenderSystems.OpenGl.dll"/>
+
+				<include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.Win32.dll"/>
+				<include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.RenderSystems.DirectX9.dll"/>
+				<include unless="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.Sdl.dll"/>
+
+				<include name="${managed.dependencies.dir}/ICSharpCode.SharpZipLib.dll"/>
+				<include name="${managed.dependencies.dir}/Tao.DevIl.dll"/>
+				<include name="${managed.dependencies.dir}/Tao.Cg.dll"/>
+				<include name="${managed.dependencies.dir}/Tao.OpenGl.dll"/>
+				<include name="${managed.dependencies.dir}/Tao.OpenGl.ExtensionLoader.dll"/>
+				<include name="${managed.dependencies.dir}/Tao.OpenGl.Glu.dll"/>
+				<include if="${platform::is-win32()}" name="${managed.dependencies.dir}/Tao.Platform.Windows.dll"/>
+				<include unless="${platform::is-win32()}" name="${managed.dependencies.dir}/Tao.Sdl.dll"/>
+			
 			</fileset>
 			
 	</target>
@@ -52,7 +77,7 @@
 		</copy>
 		<copy todir="${axiom.demos.build.dir}">
 			<!-- Copy references - we'll need these at runtime -->
-			<fileset refid="axiom.demos.references" />
+			<fileset refid="axiom.demos.runtime.references" />
 		</copy>
 		
 	</target>
@@ -85,7 +110,7 @@
 				<include name="Resources/**/*" />
 			</resources>
 			-->
-			<references refid="axiom.demos.references" />
+			<references refid="axiom.demos.build.references" />
 		</csc>
 	</target>
 	
