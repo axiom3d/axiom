@@ -1,9 +1,0 @@
-obj\Debug\ResolveAssemblyReference.cache
-obj\Debug\DotNet3D.Math.Properties.Resources.resources
-obj\Debug\DotNet3D.Math.csproj.GenerateResource.Cache
-bin\Debug\DotNet3D.Math.dll
-bin\Debug\DotNet3D.Math.pdb
-bin\Debug\DotNet3D.Math.dll.CodeAnalysisLog.xml
-bin\Debug\DotNet3D.Math.dll.lastcodeanalysissucceeded
-obj\Debug\DotNet3D.Math.dll
-obj\Debug\DotNet3D.Math.pdb

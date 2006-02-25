@@ -1,9 +1,0 @@
-obj\Debug\ResolveAssemblyReference.cache
-bin\Debug\DotNet3D.Core.dll
-bin\Debug\DotNet3D.Core.pdb
-bin\Debug\DotNet3D.Core.dll.CodeAnalysisLog.xml
-bin\Debug\DotNet3D.Core.dll.lastcodeanalysissucceeded
-obj\Debug\DotNet3D.Core.dll
-obj\Debug\DotNet3D.Core.pdb
-obj\Debug\DotNet3D.Core.Properties.Resources.resources
-obj\Debug\DotNet3D.Core.csproj.GenerateResource.Cache
