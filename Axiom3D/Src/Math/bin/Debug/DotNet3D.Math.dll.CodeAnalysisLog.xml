@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="c:\program files\microsoft visual studio 8\team tools\static analysis tools\fxcop\Xml\CodeAnalysisReport.Xsl"?>
+<FxCopReport Version="8">
+ <Targets>
+  <Target Name="E:\Development\DotNet Game Development\DotNet3D\Src\Math\bin\Debug\DotNet3D.Math.dll">
+   <Modules>
+    <Module Name="dotnet3d.math.dll">
+     <Messages>
+      <Message TypeName="AssembliesShouldHaveValidStrongNames" Category="Microsoft.Design" CheckId="CA2210" Status="Active" Created="2006-01-11 16:03:19Z" FixCategory="NonBreaking">
+       <Issue Name="NoStrongName" Certainty="95" Level="CriticalError">Sign 'DotNet3D.Math' with a strong name key.</Issue>
+      </Message>
+     </Messages>
+     <Namespaces>
+      <Namespace Name="DotNet3D.Math">
+       <Types>
+        <Type Name="Vector2" Kind="Struct" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name=".ctor(System.String)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message Id="System.FormatException.#ctor(System.String)" TypeName="DoNotPassLiteralsAsLocalizedParameters" Category="Microsoft.Globalization" CheckId="CA1303" Status="Active" Created="2006-01-11 16:03:19Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="E:\Development\DotNet Game Development\DotNet3D\Src\Math" File="Vector2.cs" Line="116">Vector2.Vector2(String) passes a literal as parameter 1 of a call to FormatException.FormatException(String). Retrieve the following string argument from a resource table instead: 'The parts of the vectors must be decimal numbers.'</Issue>
+            </Message>
+            <Message TypeName="InstantiateArgumentExceptionsCorrectly" Category="Microsoft.Usage" CheckId="CA2208" Status="Active" Created="2006-01-11 16:03:19Z" FixCategory="NonBreaking">
+             <Issue Name="OneArgumentShouldBeParameterName" Certainty="95" Level="CriticalError" Path="E:\Development\DotNet Game Development\DotNet3D\Src\Math" File="Vector2.cs" Line="98">Calls to System.ArgumentNullException's constructor 'ArgumentNullException.ArgumentNullException(String)' should contain one of the method's parameter names instead of 'The parsableText parameter cannot be null or zero length.'. Note that the provided parameter name should have the exact casing as declared on the method.</Issue>
+            </Message>
+            <Message Id="System.Single.Parse(System.String)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Status="Active" Created="2006-01-11 16:03:19Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="E:\Development\DotNet Game Development\DotNet3D\Src\Math" File="Vector2.cs" Line="111">Vector2.Vector2(String) makes a call to System.Single.Parse(System.String) that does not explicitly provide an IFormatProvider. This should be replaced with a call to System.Single.Parse(System.String,System.IFormatProvider).</Issue>
+             <Issue Certainty="95" Level="Error" Path="E:\Development\DotNet Game Development\DotNet3D\Src\Math" File="Vector2.cs" Line="112">Vector2.Vector2(String) makes a call to System.Single.Parse(System.String) that does not explicitly provide an IFormatProvider. This should be replaced with a call to System.Single.Parse(System.String,System.IFormatProvider).</Issue>
+            </Message>
+            <Message Id="System.String.Format(System.String,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Status="Active" Created="2006-01-11 16:03:19Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="E:\Development\DotNet Game Development\DotNet3D\Src\Math" File="Vector2.cs" Line="105">Vector2.Vector2(String) makes a call to System.String.Format(System.String,System.Object) that does not explicitly provide an IFormatProvider. This should be replaced with a call to System.String.Format(System.IFormatProvider,System.String,System.Object[]).</Issue>
+            </Message>
+            <Message TypeName="ValidateArgumentsOfPublicMethods" Category="Microsoft.Design" CheckId="CA1062" Status="Active" Created="2006-01-11 16:03:19Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="E:\Development\DotNet Game Development\DotNet3D\Src\Math" File="Vector2.cs" Line="101">Validate parameter 'parsableText' passed to externally visible method Vector2.Vector2(String).</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="ToString():System.String" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message Id="System.String.Format(System.String,System.Object,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Status="Active" Created="2006-01-11 16:03:19Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="E:\Development\DotNet Game Development\DotNet3D\Src\Math" File="Vector2.cs" Line="148">Vector2.ToString():String makes a call to System.String.Format(System.String,System.Object,System.Object) that does not explicitly provide an IFormatProvider. This should be replaced with a call to System.String.Format(System.IFormatProvider,System.String,System.Object[]).</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="ToString(System.Int32):System.String" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message Id="System.String.Format(System.String,System.Object,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Status="Active" Created="2006-01-11 16:03:19Z" FixCategory="NonBreaking">
+             <Issue Certainty="95" Level="Error" Path="E:\Development\DotNet Game Development\DotNet3D\Src\Math" File="Vector2.cs" Line="162">Vector2.ToString(Int32):String makes a call to System.String.Format(System.String,System.Object,System.Object) that does not explicitly provide an IFormatProvider. This should be replaced with a call to System.String.Format(System.IFormatProvider,System.String,System.Object[]).</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="x" Kind="Field" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Status="Active" Created="2006-01-11 16:03:19Z" FixCategory="Breaking">
+             <Issue Certainty="90" Level="Error">Make 'x' private or internal (Friend in VB, public private in C++) and provide a public or protected property to access it.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="y" Kind="Field" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Status="Active" Created="2006-01-11 16:03:19Z" FixCategory="Breaking">
+             <Issue Certainty="90" Level="Error">Make 'y' private or internal (Friend in VB, public private in C++) and provide a public or protected property to access it.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+       </Types>
+      </Namespace>
+     </Namespaces>
+    </Module>
+   </Modules>
+  </Target>
+ </Targets>
+ <Rules>
+  <Rule TypeName="AssembliesShouldHaveValidStrongNames" Category="Microsoft.Design" CheckId="CA2210">
+   <Name>Assemblies should have valid strong names</Name>
+   <Description>Either the assembly has no strong name, an invalid one, or the strong name is valid only because of the computer configuration. The assembly should not be deployed in this state. The most common causes of this are: 1) The assembly's contents were modified after it was signed. 2) The signing process failed. 3) The assembly was delay-signed. 4) A registry key existed that allowed the check to pass (where it would not have otherwise).</Description>
+   <Resolution Name="NoStrongName">Sign '{0}' with a strong name key.</Resolution>
+   <Owner />
+   <Email>[none]</Email>
+   <MessageLevel Certainty="95">CriticalError</MessageLevel>
+   <File Name="DesignRules.dll" Version="8.0.0.0" />
+  </Rule>
+  <Rule TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051">
+   <Name>Do not declare visible instance fields</Name>
+   <Description>Public or protected instance fields limit your ability to change the implementation details for those data items. Use properties instead. They do not compromise usability or performance and they do provide flexibility in that they conceal the  implementation details of the underlying data.</Description>
+   <Resolution Name="Default">Make '{0}' private or internal (Friend in VB, public private in C++) and provide a public or protected property to access it.</Resolution>
+   <Owner />
+   <Email>[none]</Email>
+   <MessageLevel Certainty="90">Error</MessageLevel>
+   <File Name="DesignRules.dll" Version="8.0.0.0" />
+  </Rule>
+  <Rule TypeName="DoNotPassLiteralsAsLocalizedParameters" Category="Microsoft.Globalization" CheckId="CA1303">
+   <Name>Do not pass literals as localized parameters</Name>
+   <Description>String literals that are embedded in source code are difficult to localize. Avoid passing string literals as arguments in circumstances where a localized string is generally expected. Most localized applications, for example, should localize string arguments that are passed to exception constructors. When creating an Exception instance, therefore, a string argument retrieved from a string table is more appropriate than a string literal.</Description>
+   <Resolution Name="Default">{0} passes a literal as parameter {1} of a call to {2}. Retrieve the following string argument from a resource table instead: '{3}'</Resolution>
+   <Owner />
+   <Email>[none]</Email>
+   <MessageLevel Certainty="95">Error</MessageLevel>
+   <File Name="GlobalizationRules.dll" Version="8.0.0.0" />
+  </Rule>
+  <Rule TypeName="InstantiateArgumentExceptionsCorrectly" Category="Microsoft.Usage" CheckId="CA2208">
+   <Name>Instantiate argument exceptions correctly</Name>
+   <Description>String arguments passed to constructors of ArgumentException and its derived types should be correct. Types derived from ArgumentException have inconsistent constructor overloads with respect to the message and paramName parameters as compared to ArgumentException.</Description>
+   <Resolution Name="OneArgumentShouldBeParameterName">Calls to {0}'s constructor '{1}' should contain one of the method's parameter names instead of '{2}'. Note that the provided parameter name should have the exact casing as declared on the method.</Resolution>
+   <Owner />
+   <Email>[none]</Email>
+   <MessageLevel Certainty="95">CriticalError</MessageLevel>
+   <File Name="UsageRules.dll" Version="8.0.0.0" />
+  </Rule>
+  <Rule TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305">
+   <Name>Specify IFormatProvider</Name>
+   <Description>If an overload exists that takes an IFormatProvider argument, it should always be called in favor of an overload that does not. Some methods in the common language runtime convert a value to or from a string representation and take a string parameter that contains one or more characters, called format specifiers, which indicate how the value is to be converted. If the meaning of the format specifier varies by culture, a formatting object supplies the actual characters used in the string representation. In scenarios where sorting and comparison behavior should never change between cultures, specify CultureInfo.InvariantCulture.</Description>
+   <Resolution Name="Default">{0} makes a call to {1} that does not explicitly provide an IFormatProvider. This should be replaced with a call to {2}.</Resolution>
+   <Owner />
+   <Email>[none]</Email>
+   <MessageLevel Certainty="95">Error</MessageLevel>
+   <File Name="GlobalizationRules.dll" Version="8.0.0.0" />
+  </Rule>
+  <Rule TypeName="ValidateArgumentsOfPublicMethods" Category="Microsoft.Design" CheckId="CA1062">
+   <Name>Validate arguments of public methods</Name>
+   <Description>All reference arguments passed to public methods should be tested against null (Nothing in VB), as they can be provided by arbitrary callers.</Description>
+   <Resolution Name="Default">Validate parameter {0} passed to externally visible method {1}.</Resolution>
+   <Owner />
+   <Email>[none]</Email>
+   <MessageLevel Certainty="95">Error</MessageLevel>
+   <File Name="DesignRules.dll" Version="8.0.0.0" />
+  </Rule>
+ </Rules>
+ <Localized>
+  <String Key="Category">Category</String>
+  <String Key="CollapseAll">Collapse All</String>
+  <String Key="CheckId">Check Id</String>
+  <String Key="Error">Error</String>
+  <String Key="Errors">error(s)</String>
+  <String Key="Line">Line</String>
+  <String Key="LocationNotStoredInPdb">&lt;Location not stored in Pdb&gt;</String>
+  <String Key="Project">Project</String>
+  <String Key="Rule">Rule</String>
+  <String Key="RuleDescription">Rule Description</String>
+  <String Key="Source">Source</String>
+  <String Key="Target">Target</String>
+  <String Key="Warning">Warning</String>
+  <String Key="Warnings">warning(s)</String>
+  <String Key="ReportTitle">Microsoft Visual Studio 2005 Code Analysis Report</String>
+ </Localized>
+</FxCopReport>

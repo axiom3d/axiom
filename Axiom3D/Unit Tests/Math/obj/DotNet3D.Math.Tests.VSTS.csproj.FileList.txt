@@ -1,0 +1,7 @@
+obj\Debug\ResolveAssemblyReference.cache
+.\bin\Debug\DotNet3D.UnitTests.VS.dll
+.\bin\Debug\DotNet3D.UnitTests.VS.pdb
+.\bin\Debug\DotNet3D.Math.dll
+.\bin\Debug\DotNet3D.Math.pdb
+obj\Debug\DotNet3D.UnitTests.VS.dll
+obj\Debug\DotNet3D.UnitTests.VS.pdb
