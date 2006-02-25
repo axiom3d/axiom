@@ -140,7 +140,8 @@ namespace Axiom
 
             if ( elements.ContainsKey( instanceName ) )
             {
-                throw new AxiomException( "OverlayElement with the name '{0}' already exists.", instanceName );
+                //throw new AxiomException( "OverlayElement with the name '{0}' already exists.", instanceName );
+                return (OverlayElement)elements[ instanceName ];
             }
 
             OverlayElement element = CreateElementFromFactory( typeName, instanceName );
@@ -204,7 +205,7 @@ namespace Axiom
                 element = CreateElement( typeToCreate, instanceName, isTemplate );
 
                 // Copy settings from template
-                ( (OverlayElementContainer)element ).CopyFromTemplate( template );
+                element.CopyFromTemplate( template );
             }
 
             return element;

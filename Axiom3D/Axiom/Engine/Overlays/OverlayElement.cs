@@ -147,7 +147,8 @@ namespace Axiom
                 }
 
                 object srcVal = prop.GetValue( template, null );
-                prop.SetValue( this, srcVal, null );
+                if ( srcVal != null )
+                    prop.SetValue( this, srcVal, null );
             }
         }
 		public OverlayElement Clone(string instanceName)

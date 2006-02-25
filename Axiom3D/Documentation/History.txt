@@ -4,6 +4,7 @@
 - Completed RenderSystem Configuration Options handling, Now the ConfigWindow that opens with the Demos
   should actually work.
 - Other random fixes and changes I can't remember
+- Fixed some OverlayTemplate issues so YAT works properly.
 
 2005-12-19 Michael Cummings [Borrillis]
 - Fixed OpenGL bug that was causing it to not load.
