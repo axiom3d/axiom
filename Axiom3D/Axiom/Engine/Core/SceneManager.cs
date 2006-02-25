@@ -83,6 +83,7 @@ namespace Axiom
     ///	 </remarks>
     /// TODO Thoroughly review node removal/cleanup.
     /// TODO Review of method visibility/virtuality to ensure consistency.
+	/// TODO Review Create...( string name ) methods to verify name is used as key when adding to collection
     public class SceneManager
     {
         #region Fields
@@ -414,7 +415,7 @@ namespace Axiom
         public virtual SceneNode CreateSceneNode( string name )
         {
             SceneNode node = new SceneNode( this, name );
-            sceneNodeList.Add( node );
+            sceneNodeList.Add( name, node );
             return node;
         }
 
