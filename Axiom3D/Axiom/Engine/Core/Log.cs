@@ -164,7 +164,7 @@ namespace Axiom
         {
             if ( message == null )
                 throw new ArgumentNullException( "The log message cannot be null" );
-            if ( ( (int)logLevel + (int)level ) >= LogThreshold )
+            if ( ( (int)logLevel + (int)level ) > LogThreshold )
                 return;	//too verbose a message to write
 
             // construct the log message
