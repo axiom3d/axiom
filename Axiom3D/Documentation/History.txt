@@ -1,4 +1,11 @@
-2005-12-19-2005 Michael Cummings [Borrillis]
+2005-12-20 Michael Cummings [Borrillis]
+- Reverted the configuration changes to the EngineConfig.xml file is used again. This will stay 
+  until the new configuration handers are completed.
+- Completed RenderSystem Configuration Options handling, Now the ConfigWindow that opens with the Demos
+  should actually work.
+- Other random fixes and changes I can't remember
+
+2005-12-19 Michael Cummings [Borrillis]
 - Fixed OpenGL bug that was causing it to not load.
 - Fixed a couple of Overlay issues that were causing them to not display correctly.
 - Updates to get the demos to work properly.
