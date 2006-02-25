@@ -30,6 +30,12 @@ using System.Diagnostics;
 using Font = Axiom.Font;
 // This is coming from RealmForge.Utility
 using Axiom.Core;
+#region Ogre Synchronization Information
+/// <ogresynchronization>
+///     <file name="OgreTextAreaOverlayElement.h"   revision="1.7.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+///     <file name="OgreTextAreaOverlayElement.cpp" revision="1.9" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
+#endregion
 
 namespace Axiom
 {
@@ -40,16 +46,17 @@ namespace Axiom
     {
         #region Member variables
 
-        protected Font font;
+        
         protected HorizontalAlignment alignment;
+		protected RenderOperation renderOp = new RenderOperation();
+		protected bool isTransparent;
+		protected Font font;
         protected float charHeight;
         protected int pixelCharHeight;
         protected float spaceWidth;
         protected int pixelSpaceWidth;
         protected int allocSize;
-        protected bool isTransparent;
-        protected RenderOperation renderOp = new RenderOperation();
-
+		protected float viewportAspectCoef;
         /// Colors to use for the vertices
         protected ColorEx colorBottom;
         protected ColorEx colorTop;
@@ -79,6 +86,7 @@ namespace Axiom
 
             charHeight = 0.02f;
             pixelCharHeight = 12;
+			viewportAspectCoef = 1f;
         }
 
         #endregion
@@ -91,8 +99,8 @@ namespace Axiom
         /// <param name="size"></param>
         protected void CheckMemoryAllocation( int numChars )
         {
-            if ( allocSize < numChars )
-            {
+//            if ( allocSize < numChars )
+//            {
                 // Create and bind new buffers
                 // Note that old buffers will be deleted automatically through reference counting
 
@@ -109,7 +117,7 @@ namespace Axiom
                     HardwareBufferManager.Instance.CreateVertexBuffer(
                         decl.GetVertexSize( POSITION_TEXCOORD ),
                         renderOp.vertexData.vertexCount,
-                        BufferUsage.Dynamic );
+                        BufferUsage.DynamicWriteOnly );
 
                 // bind the pos/tex buffer
                 binding.SetBinding( POSITION_TEXCOORD, buffer );
@@ -119,7 +127,7 @@ namespace Axiom
                     HardwareBufferManager.Instance.CreateVertexBuffer(
                     decl.GetVertexSize( COLORS ),
                     renderOp.vertexData.vertexCount,
-                    BufferUsage.Dynamic );
+                    BufferUsage.DynamicWriteOnly );
 
                 // bind the color buffer
                 binding.SetBinding( COLORS, buffer );
@@ -127,7 +135,7 @@ namespace Axiom
                 allocSize = numChars;
                 // force color buffer regeneration
                 haveColorsChanged = true;
-            }
+//            }
         }
 
         /// <summary>
@@ -157,10 +165,9 @@ namespace Axiom
             // positions
             decl.AddElement( POSITION_TEXCOORD, offset, VertexElementType.Float3, VertexElementSemantic.Position );
             offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
-
             // texcoords
             decl.AddElement( POSITION_TEXCOORD, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
-
+			offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
             // colors, stored in seperate buffer since they change less often
             decl.AddElement( COLORS, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
 
@@ -170,6 +177,8 @@ namespace Axiom
 
             // buffers are created in CheckMemoryAllocation
             CheckMemoryAllocation( DEFAULT_INITIAL_CHARS );
+
+			isInitialised = true;
         }
 
         /// <summary>
@@ -177,19 +186,26 @@ namespace Axiom
         /// </summary>
         public override void Update()
         {
-            if ( metricsMode == MetricsMode.Pixels &&
-                ( OverlayManager.Instance.HasViewportChanged || geomPositionsOutOfDate ) )
+			float vpWidth = OverlayManager.Instance.ViewportWidth;
+			float vpHeight = OverlayManager.Instance.ViewportHeight;
+			viewportAspectCoef = vpHeight/vpWidth;
+
+            if ( metricsMode != MetricsMode.Relative &&
+                ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate ) )
             {
-
-                float vpHeight = OverlayManager.Instance.ViewportHeight;
-
                 charHeight = (float)pixelCharHeight / vpHeight;
                 spaceWidth = (float)pixelSpaceWidth / vpHeight;
 
-                geomPositionsOutOfDate = true;
+                isGeomPositionsOutOfDate = true;
             }
 
             base.Update();
+
+			if (this.haveColorsChanged && isInitialised)
+			{
+				UpdateColors();
+				haveColorsChanged = false;
+			}
         }
 
         /// <summary>
@@ -197,12 +213,6 @@ namespace Axiom
         /// </summary>
         protected unsafe void UpdateColors()
         {
-            if ( !haveColorsChanged )
-            {
-                // nothing to see here folks
-                return;
-            }
-
             // convert to API specific color values
             int topColor = Root.Instance.ConvertColor( colorTop );
             int bottomColor = Root.Instance.ConvertColor( colorBottom );
@@ -230,8 +240,6 @@ namespace Axiom
 
             // unlock this bad boy
             buffer.Unlock();
-
-            haveColorsChanged = false;
         }
 
         /// <summary>
@@ -239,7 +247,7 @@ namespace Axiom
         /// </summary>
         protected unsafe void UpdateGeometry()
         {
-            if ( font == null || text == null || !geomPositionsOutOfDate )
+            if ( font == null)
             {
                 // must not be initialized yet, probably due to order of creation in a template
                 return;
@@ -251,21 +259,20 @@ namespace Axiom
 
             renderOp.vertexData.vertexCount = charLength * 6;
 
-            float largestWidth = 0.0f;
-            float left = this.DerivedLeft * 2.0f - 1.0f;
-            float top = -( ( this.DerivedTop * 2.0f ) - 1.0f );
-
-            // derive space width from the size of a capital A
-            if ( spaceWidth == 0 )
-            {
-                spaceWidth = font.GetGlyphAspectRatio( 'A' ) * charHeight * 2.0f;
-            }
-
             // get pos/tex buffer
             HardwareVertexBuffer buffer = renderOp.vertexData.vertexBufferBinding.GetBuffer( POSITION_TEXCOORD );
             IntPtr data = buffer.Lock( BufferLocking.Discard );
-            float* vertPtr = (float*)data.ToPointer();
-            int index = 0;
+
+			float largestWidth = 0.0f;
+			float left = this.DerivedLeft * 2.0f - 1.0f;
+			float top = -( ( this.DerivedTop * 2.0f ) - 1.0f );
+
+			// derive space width from the size of a capital A
+			if ( spaceWidth == 0 )
+			{
+				spaceWidth = font.GetGlyphAspectRatio( 'A' ) * charHeight * 2.0f * viewportAspectCoef;
+			}
+
 
             bool newLine = true;
 
@@ -287,7 +294,7 @@ namespace Axiom
                         }
                         else
                         {
-                            length += font.GetGlyphAspectRatio( text[j] ) * charHeight * 2;
+                            length += font.GetGlyphAspectRatio( text[j] ) * charHeight * 2f * viewportAspectCoef;
                         }
                     } // for j
 
@@ -322,7 +329,7 @@ namespace Axiom
                     continue;
                 }
 
-                float horizHeight = font.GetGlyphAspectRatio( c );
+                float horizHeight = font.GetGlyphAspectRatio( c ) * viewportAspectCoef;
                 float u1, u2, v1, v2;
 
                 // get the texcoords for the specified character
@@ -331,6 +338,8 @@ namespace Axiom
                 // each vert is (x, y, z, u, v)
                 // first tri
                 // upper left
+				float* vertPtr = (float*)data.ToPointer();
+				int index = 0;
                 vertPtr[index++] = left;
                 vertPtr[index++] = top;
                 vertPtr[index++] = -1.0f;
@@ -411,9 +420,6 @@ namespace Axiom
             {
                 this.Width = largestWidth;
             }
-
-            // update colors
-            UpdateColors();
         }
 
         /// <summary>
@@ -435,11 +441,18 @@ namespace Axiom
         {
             get
             {
-                return charHeight;
+				if ( metricsMode == MetricsMode.Pixels )
+				{
+					return (float)pixelCharHeight;
+				}
+				else
+				{
+					return charHeight;
+				}
             }
             set
             {
-                if ( metricsMode == MetricsMode.Pixels )
+                if ( metricsMode != MetricsMode.Relative )
                 {
                     pixelCharHeight = (int)value;
                 }
@@ -447,7 +460,7 @@ namespace Axiom
                 {
                     charHeight = value;
                 }
-                UpdateGeometry();
+                isGeomPositionsOutOfDate = true;
             }
         }
 
@@ -466,7 +479,6 @@ namespace Axiom
                 colorTop = value;
                 colorBottom = value;
                 haveColorsChanged = true;
-                UpdateColors();
             }
         }
 
@@ -483,7 +495,6 @@ namespace Axiom
             {
                 colorTop = value;
                 haveColorsChanged = true;
-                UpdateColors();
             }
         }
 
@@ -500,7 +511,6 @@ namespace Axiom
             {
                 colorBottom = value;
                 haveColorsChanged = true;
-                UpdateColors();
             }
         }
 
@@ -522,10 +532,12 @@ namespace Axiom
                 material = font.Material;
 
                 // TODO See if this can be eliminated
-                material.Lighting = false;
+                
                 material.DepthCheck = false;
+				material.Lighting = false;
 
-                geomPositionsOutOfDate = true;
+                isGeomPositionsOutOfDate = true;
+				isGeomUVsOutOfDate = true;
             }
         }
 
@@ -541,7 +553,6 @@ namespace Axiom
             set
             {
                 base.MaterialName = value;
-                UpdateGeometry();
             }
         }
 
@@ -556,13 +567,14 @@ namespace Axiom
             }
             set
             {
-                base.MetricsMode = value;
-
+                
+				float vpWidth = OverlayManager.Instance.ViewportWidth;
+				float vpHeight = OverlayManager.Instance.ViewportHeight;
+				viewportAspectCoef = vpHeight/vpWidth;
+				base.MetricsMode = value;
                 // configure pixel variables based on current viewport
-                if ( metricsMode == MetricsMode.Pixels )
+                if ( metricsMode != MetricsMode.Relative )
                 {
-                    float vpHeight = OverlayManager.Instance.ViewportHeight;
-
                     pixelCharHeight = (int)( charHeight * vpHeight );
                     pixelSpaceWidth = (int)( spaceWidth * vpHeight );
                 }
@@ -576,11 +588,18 @@ namespace Axiom
         {
             get
             {
-                return spaceWidth;
+				if ( metricsMode == MetricsMode.Pixels )
+				{
+					return (float)pixelSpaceWidth;
+				}
+				else
+				{
+					return spaceWidth;
+				}
             }
             set
             {
-                if ( metricsMode == MetricsMode.Pixels )
+                if ( metricsMode != MetricsMode.Relative )
                 {
                     pixelSpaceWidth = (int)value;
                 }
@@ -589,7 +608,7 @@ namespace Axiom
                     spaceWidth = value;
                 }
 
-                geomPositionsOutOfDate = true;
+                isGeomPositionsOutOfDate = true;
             }
         }
 
@@ -605,7 +624,7 @@ namespace Axiom
             set
             {
                 alignment = value;
-                UpdateGeometry();
+				isGeomPositionsOutOfDate = true;
             }
         }
 
@@ -621,7 +640,8 @@ namespace Axiom
             set
             {
                 base.Text = value;
-                UpdateGeometry();
+				isGeomPositionsOutOfDate = true;
+				isGeomUVsOutOfDate = true;
             }
         }
 
@@ -693,5 +713,10 @@ namespace Axiom
         }
 
         #endregion
-    }
+    
+		protected override void UpdateTextureGeometry()
+		{
+		// Nothing to do, we combine positions and textures
+		}
+	}
 }

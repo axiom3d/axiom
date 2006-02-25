@@ -26,6 +26,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
+#region Ogre Synchronization Information
+/// <ogresynchronization>
+///     <file name="OgrePanelOverlayElement.h"   revision="1.3.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+///     <file name="OgrePanelOverlayElement.cpp" revision="1.10.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
+#endregion
 
 namespace Axiom
 {
@@ -53,7 +59,7 @@ namespace Axiom
         protected float[] tileX = new float[Config.MaxTextureLayers];
         protected float[] tileY = new float[Config.MaxTextureLayers];
         protected bool isTransparent;
-        protected int numTexCoords;
+        protected int numTexCoordsInBuffer;
         protected RenderOperation renderOp = new RenderOperation();
 
         // source bindings for vertex buffers
@@ -67,12 +73,16 @@ namespace Axiom
         internal Panel( string name )
             : base( name )
         {
+			this.IsTransparent = false;
             // initialize the default tiling to 1 for all layers
             for ( int i = 0; i < Config.MaxTextureLayers; i++ )
             {
                 tileX[i] = 1.0f;
                 tileY[i] = 1.0f;
             }
+
+			// Defer creation of texcoord buffer until we know how big it needs to be
+			this.numTexCoordsInBuffer = 0;
         }
 
         #endregion
@@ -95,29 +105,35 @@ namespace Axiom
         /// </summary>
         public override void Initialize()
         {
-            // setup the vertex data
-            renderOp.vertexData = new VertexData();
+			bool init = !isInitialised;
+			base.Initialize();
+			if (init)
+			{
+				// setup the vertex data
+				renderOp.vertexData = new VertexData();
 
-            // Vertex declaration: 1 position, add texcoords later depending on #layers
-            // Create as separate buffers so we can lock & discard separately
-            VertexDeclaration decl = renderOp.vertexData.vertexDeclaration;
-            decl.AddElement( POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position );
-            renderOp.vertexData.vertexStart = 0;
-            renderOp.vertexData.vertexCount = 4;
+				// Vertex declaration: 1 position, add texcoords later depending on #layers
+				// Create as separate buffers so we can lock & discard separately
+				VertexDeclaration decl = renderOp.vertexData.vertexDeclaration;
+				decl.AddElement( POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position );
+				renderOp.vertexData.vertexStart = 0;
+				renderOp.vertexData.vertexCount = 4;
 
-            // create the first vertex buffer, mostly static except during resizing
-            HardwareVertexBuffer buffer =
-                HardwareBufferManager.Instance.CreateVertexBuffer(
-                     decl.GetVertexSize( POSITION ),
-                     renderOp.vertexData.vertexCount,
-                     BufferUsage.StaticWriteOnly );
+				// create the first vertex buffer, mostly static except during resizing
+				HardwareVertexBuffer buffer =
+					HardwareBufferManager.Instance.CreateVertexBuffer(
+					decl.GetVertexSize( POSITION ),
+					renderOp.vertexData.vertexCount,
+					BufferUsage.StaticWriteOnly );
 
-            // bind the vertex buffer
-            renderOp.vertexData.vertexBufferBinding.SetBinding( POSITION, buffer );
+				// bind the vertex buffer
+				renderOp.vertexData.vertexBufferBinding.SetBinding( POSITION, buffer );
 
-            // no indices, and issue as a tri strip
-            renderOp.useIndices = false;
-            renderOp.operationType = OperationType.TriangleStrip;
+				// no indices, and issue as a tri strip
+				renderOp.useIndices = false;
+				renderOp.operationType = OperationType.TriangleStrip;
+				isInitialised = true;
+			}
         }
 
         /// <summary>
@@ -134,9 +150,27 @@ namespace Axiom
             tileX[layer] = x;
             tileY[layer] = y;
 
-            UpdateTextureGeometry();
+            isGeomUVsOutOfDate = true;
         }
 
+		public float GetTileX(int layer )
+		{
+			return tileX[layer];
+
+		}
+		public float GetTileY(int layer )
+		{
+			return tileY[layer];
+
+		}
+
+		public override string Type
+		{
+			get
+			{
+				return "Panel";
+			}
+		}
         /// <summary>
         ///    Internal method for setting up geometry, called by GuiElement.Update
         /// </summary>
@@ -173,26 +207,29 @@ namespace Axiom
             IntPtr data = buffer.Lock( BufferLocking.Discard );
             int index = 0;
 
-            // modify the position data
+			// Use the furthest away depth value, since materials should have depth-check off
+			// This initialised the depth buffer for any 3D objects in front
+			//float zValue = Root.Instance.RenderSystem.MaximumDepthInputValue;
+			float zValue = -1;
             unsafe
             {
                 float* posPtr = (float*)data.ToPointer();
 
                 posPtr[index++] = left;
                 posPtr[index++] = top;
-                posPtr[index++] = -1;
+                posPtr[index++] = zValue;
 
                 posPtr[index++] = left;
                 posPtr[index++] = bottom;
-                posPtr[index++] = -1;
+                posPtr[index++] = zValue;
 
                 posPtr[index++] = right;
                 posPtr[index++] = top;
-                posPtr[index++] = -1;
+                posPtr[index++] = zValue;
 
                 posPtr[index++] = right;
                 posPtr[index++] = bottom;
-                posPtr[index++] = -1;
+                posPtr[index++] = zValue;
             }
 
             // unlock the position buffer
@@ -222,9 +259,9 @@ namespace Axiom
         /// <summary>
         ///    Called to update the texture coords when layers change.
         /// </summary>
-        protected virtual void UpdateTextureGeometry()
+        protected override void UpdateTextureGeometry()
         {
-            if ( material != null )
+            if ( material != null && isInitialised)
             {
                 int numLayers = material.GetTechnique( 0 ).GetPass( 0 ).NumTextureUnitStages;
 
@@ -232,20 +269,19 @@ namespace Axiom
 
                 // if the required layers is less than the current amount of tex coord buffers, remove
                 // the extraneous buffers
-                if ( numTexCoords > numLayers )
+                if ( numTexCoordsInBuffer > numLayers )
                 {
-                    for ( int i = numTexCoords; i > numLayers; --i )
+                    for ( int i = numTexCoordsInBuffer; i > numLayers; --i )
                     {
-                        // TODO Implement RemoveElement
-                        //decl.RemoveElement(TEXTURE_COORDS, i);
+                        decl.RemoveElement(Axiom.VertexElementSemantic.TexCoords, i);
                     }
                 }
-                else if ( numTexCoords < numLayers )
+                else if ( numTexCoordsInBuffer < numLayers )
                 {
                     // we need to add more buffers
-                    int offset = VertexElement.GetTypeSize( VertexElementType.Float2 ) * numTexCoords;
+                    int offset = VertexElement.GetTypeSize( VertexElementType.Float2 ) * numTexCoordsInBuffer;
 
-                    for ( int i = numTexCoords; i < numLayers; i++ )
+                    for ( int i = numTexCoordsInBuffer; i < numLayers; i++ )
                     {
                         decl.AddElement( TEXTURE_COORDS, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, i );
                         offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
@@ -253,7 +289,7 @@ namespace Axiom
                 } // if
 
                 // if the number of layers changed at all, we'll need to reallocate buffer
-                if ( numTexCoords != numLayers )
+                if ( numTexCoordsInBuffer != numLayers )
                 {
                     HardwareVertexBuffer newBuffer =
                         HardwareBufferManager.Instance.CreateVertexBuffer(
@@ -265,57 +301,60 @@ namespace Axiom
                     renderOp.vertexData.vertexBufferBinding.SetBinding( TEXTURE_COORDS, newBuffer );
 
                     // record the current number of tex layers now
-                    numTexCoords = numLayers;
+                    numTexCoordsInBuffer = numLayers;
                 } // if
 
-                // get the tex coord buffer
-                HardwareVertexBuffer buffer = renderOp.vertexData.vertexBufferBinding.GetBuffer( TEXTURE_COORDS );
-                IntPtr data = buffer.Lock( BufferLocking.Discard );
+				if (numTexCoordsInBuffer != 0)
+				{
+					// get the tex coord buffer
+					HardwareVertexBuffer buffer = renderOp.vertexData.vertexBufferBinding.GetBuffer( TEXTURE_COORDS );
+					IntPtr data = buffer.Lock( BufferLocking.Discard );
 
-                unsafe
-                {
+					unsafe
+					{
 
-                    float* texPtr = (float*)data.ToPointer();
-                    int texIndex = 0;
+						float* texPtr = (float*)data.ToPointer();
+						int texIndex = 0;
 
-                    int uvSize = VertexElement.GetTypeSize( VertexElementType.Float2 ) / sizeof( float );
-                    int vertexSize = decl.GetVertexSize( TEXTURE_COORDS ) / sizeof( float );
+						int uvSize = VertexElement.GetTypeSize( VertexElementType.Float2 ) / sizeof( float );
+						int vertexSize = decl.GetVertexSize( TEXTURE_COORDS ) / sizeof( float );
 
-                    for ( int i = 0; i < numLayers; i++ )
-                    {
-                        // Calc upper tex coords
-                        float upperX = 1.0f * tileX[i];
-                        float upperY = 1.0f * tileY[i];
+						for ( int i = 0; i < numLayers; i++ )
+						{
+							// Calc upper tex coords
+							float upperX = 1.0f * tileX[i];
+							float upperY = 1.0f * tileY[i];
 
-                        /*
-                            0-----2
-                            |    /|
-                            |  /  |
-                            |/    |
-                            1-----3
-                        */
-                        // Find start offset for this set
-                        texIndex = ( i * uvSize );
+							/*
+								0-----2
+								|    /|
+								|  /  |
+								|/    |
+								1-----3
+							*/
+							// Find start offset for this set
+							texIndex = ( i * uvSize );
 
-                        texPtr[texIndex] = 0.0f;
-                        texPtr[texIndex + 1] = 0.0f;
+							texPtr[texIndex] = 0.0f;
+							texPtr[texIndex + 1] = 0.0f;
 
-                        texIndex += vertexSize; // jump by 1 vertex stride
-                        texPtr[texIndex] = 0.0f;
-                        texPtr[texIndex + 1] = upperY;
+							texIndex += vertexSize; // jump by 1 vertex stride
+							texPtr[texIndex] = 0.0f;
+							texPtr[texIndex + 1] = upperY;
 
-                        texIndex += vertexSize;
-                        texPtr[texIndex] = upperX;
-                        texPtr[texIndex + 1] = 0.0f;
+							texIndex += vertexSize;
+							texPtr[texIndex] = upperX;
+							texPtr[texIndex + 1] = 0.0f;
 
-                        texIndex += vertexSize;
-                        texPtr[texIndex] = upperX;
-                        texPtr[texIndex + 1] = upperY;
-                    } // for
-                } // unsafev
+							texIndex += vertexSize;
+							texPtr[texIndex] = upperX;
+							texPtr[texIndex + 1] = upperY;
+						} // for
+					} // unsafev
 
-                // unlock the buffer
-                buffer.Unlock();
+					// unlock the buffer
+					buffer.Unlock();
+				}
             } // if material != null
         }
 
