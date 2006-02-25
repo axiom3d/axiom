@@ -1,11 +1,18 @@
+2005-09-01 Michael Cummings [Borrillis]
+- Fixed some references for OpenGL RenderSystem in the Prebuild.xml
+- Updated some of the dependencies in the dependencies folder.
+- NB: If you switch from Windows/DirectX to SDL/OpenGL make sure you change the references from Tao.Platform.Windows 
+  to Tao.SDL and remove the Win32 folder and add the SDL folder in the OpenGL Project.
+  
 2005-08-31 Michael Cummings [Borrillis]
 - Added RealmForge.Utility to branch
 - Updated Billboard and BillboardSet to Ogre 1.03
-- Removed Axiom.Mathlib as it is now wholly contained in RealmForge.Utility, project files and using declarations are updated.
+- Removed Axiom.Mathlib as it is now wholly contained in RealmForge.Utility, project files and using declarations are 
+  updated.
 - Added Documentation folder for the history file and anything else that describes this process.
 - Added Axiom Dependencies directory and build tools to make building this branch easier, may or may not work yet.
-  Tested with MSVC 2002, and it seems to work. You need to manually copy the Native Win32 deps into the bin/Debug or bin/Release
-  folders of the Axiom.Demo project.
+  Tested with MSVC 2002, and it seems to work. You need to manually copy the Native Win32 deps into the bin/Debug or 
+  bin/Release folders of the Axiom.Demo project.
 
 2005-08-22 Michael Cummings [Borrillis]
 - Reformatted Axiom code files using ReSharper and VS2005 for greater consistancy.
