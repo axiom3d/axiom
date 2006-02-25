@@ -66,7 +66,11 @@ namespace Axiom
         /// <summary>
         ///		Default priority of items added to the render queue.
         ///	</summary>
-        public const int DEFAULT_PRIORITY = 100;
+		protected ushort defaultRenderablePriority = 100;
+		/// <summary>
+		///		Default priority of items added to the render queue.
+		///	</summary>
+		public const int DEFAULT_PRIORITY = 100;
 
         #endregion Fields
 
@@ -104,7 +108,20 @@ namespace Axiom
                 defaultGroup = value;
             }
         }
-
+		/// <summary>
+		///		Gets/Sets the default priority for rendering objects in the queue.
+		/// </summary>
+		public ushort DefaultRenderablePriority
+		{
+			get
+			{
+				return defaultRenderablePriority;
+			}
+			set
+			{
+				defaultRenderablePriority = value;
+			}
+		}
         /// <summary>
         ///    Gets the number of render queue groups contained within this queue.
         /// </summary>
@@ -201,7 +218,7 @@ namespace Axiom
         /// <param name="item"></param>
         public void AddRenderable( IRenderable item )
         {
-            AddRenderable( item, DEFAULT_PRIORITY );
+            AddRenderable( item, defaultRenderablePriority );
         }
 
         /// <summary>
