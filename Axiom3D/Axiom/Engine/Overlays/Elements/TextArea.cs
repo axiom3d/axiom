@@ -32,8 +32,8 @@ using Font = Axiom.Font;
 using Axiom.Core;
 #region Ogre Synchronization Information
 /// <ogresynchronization>
-///     <file name="OgreTextAreaOverlayElement.h"   revision="1.7.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
-///     <file name="OgreTextAreaOverlayElement.cpp" revision="1.9" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+///     <file name="OgreTextAreaOverlayElement.h"   revision="1.7.2.1" lastUpdated="10/21/2005" lastUpdatedBy="DanielH" />
+///     <file name="OgreTextAreaOverlayElement.cpp" revision="1.9" lastUpdated="10/21/2005" lastUpdatedBy="DanielH" />
 /// </ogresynchronization>
 #endregion
 
@@ -80,6 +80,7 @@ namespace Axiom
             isTransparent = false;
             alignment = HorizontalAlignment.Center;
 
+
             colorTop = ColorEx.White;
             colorBottom = ColorEx.White;
             haveColorsChanged = true;
@@ -99,8 +100,8 @@ namespace Axiom
         /// <param name="size"></param>
         protected void CheckMemoryAllocation( int numChars )
         {
-//            if ( allocSize < numChars )
-//            {
+            if ( allocSize < numChars )
+            {
                 // Create and bind new buffers
                 // Note that old buffers will be deleted automatically through reference counting
 
@@ -135,7 +136,7 @@ namespace Axiom
                 allocSize = numChars;
                 // force color buffer regeneration
                 haveColorsChanged = true;
-//            }
+            }
         }
 
         /// <summary>
@@ -154,31 +155,34 @@ namespace Axiom
         /// </summary>
         public override void Initialize()
         {
-            // Set up the render operation
-            // Combine positions and texture coords since they tend to change together
-            // since character sizes are different
-            renderOp.vertexData = new VertexData();
-            VertexDeclaration decl = renderOp.vertexData.vertexDeclaration;
+			if (!isInitialised)
+			{
+				// Set up the render operation
+				// Combine positions and texture coords since they tend to change together
+				// since character sizes are different
+				renderOp.vertexData = new VertexData();
+				VertexDeclaration decl = renderOp.vertexData.vertexDeclaration;
 
-            int offset = 0;
+				int offset = 0;
 
-            // positions
-            decl.AddElement( POSITION_TEXCOORD, offset, VertexElementType.Float3, VertexElementSemantic.Position );
-            offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
-            // texcoords
-            decl.AddElement( POSITION_TEXCOORD, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
-			offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
-            // colors, stored in seperate buffer since they change less often
-            decl.AddElement( COLORS, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
+				// positions
+				decl.AddElement( POSITION_TEXCOORD, offset, VertexElementType.Float3, VertexElementSemantic.Position );
+				offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
+				// texcoords
+				decl.AddElement( POSITION_TEXCOORD, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
+				offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
+				// colors, stored in seperate buffer since they change less often
+				decl.AddElement( COLORS, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
 
-            renderOp.operationType = OperationType.TriangleList;
-            renderOp.useIndices = false;
-            renderOp.vertexData.vertexStart = 0;
+				renderOp.operationType = OperationType.TriangleList;
+				renderOp.useIndices = false;
+				renderOp.vertexData.vertexStart = 0;
 
-            // buffers are created in CheckMemoryAllocation
-            CheckMemoryAllocation( DEFAULT_INITIAL_CHARS );
+				// buffers are created in CheckMemoryAllocation
+				CheckMemoryAllocation( DEFAULT_INITIAL_CHARS );
 
-			isInitialised = true;
+				isInitialised = true;
+			}
         }
 
         /// <summary>
@@ -247,11 +251,11 @@ namespace Axiom
         /// </summary>
         protected unsafe void UpdateGeometry()
         {
-            if ( font == null)
-            {
-                // must not be initialized yet, probably due to order of creation in a template
-                return;
-            }
+			if(font == null || text == null || !this.isGeomPositionsOutOfDate) 
+			{
+				// must not be initialized yet, probably due to order of creation in a template
+				return;
+			}
 
             int charLength = text.Length;
             // make sure the buffers are big enough
