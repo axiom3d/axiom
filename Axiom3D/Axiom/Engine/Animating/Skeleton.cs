@@ -30,7 +30,12 @@ using System.Diagnostics;
 using System.IO;
 
 using Axiom.MathLib;
-
+#region Ogre Synchronization Information
+/// <ogresynchronization>
+///     <file name="Skeleton.h"   revision="" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+///     <file name="Skeleton.cpp" revision="" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
+#endregion
 namespace Axiom
 {
     /// <summary>
