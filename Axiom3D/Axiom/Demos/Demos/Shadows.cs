@@ -1,10 +1,7 @@
 #region Namespace Declarations
 
-using Axiom.Animating;
-using Axiom.Controllers;
-using Axiom.Controllers.Canned;
+using Axiom.Engine;
 using Axiom.Core;
-using Axiom.Graphics;
 using Axiom.Input;
 using Axiom.MathLib;
 

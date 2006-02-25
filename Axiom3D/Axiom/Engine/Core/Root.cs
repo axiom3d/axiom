@@ -30,18 +30,10 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
-
 using System.Text;
-using Axiom.Animating;
-using Axiom.Collections;
-using Axiom.Controllers;
-using Axiom.FileSystem;
-using Axiom.Fonts;
-using Axiom.Graphics;
-using Axiom.Media;
-using Axiom.Overlays;
-using Axiom.ParticleSystems;
-using Axiom.Serialization;
+
+// This is coming from RealmForge.Utility
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -53,7 +45,7 @@ using Axiom.Serialization;
 /// 
 #endregion
 
-namespace Axiom.Core
+namespace Axiom.Engine
 {
 
     /// <summary>

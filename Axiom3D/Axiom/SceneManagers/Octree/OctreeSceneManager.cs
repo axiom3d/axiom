@@ -28,10 +28,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using Axiom;
-using Axiom.Collections;
+using Axiom.Engine;
 using Axiom.Core;
 using Axiom.MathLib;
-using Axiom.Graphics;
 
 namespace Axiom.SceneManagers.Octree
 {
@@ -555,7 +554,7 @@ namespace Axiom.SceneManagers.Octree
             }
         }
 
-        public void FindNodes( AxisAlignedBox box, Axiom.Collections.SceneNodeCollection sceneNodeList, SceneNode exclude, bool full, Octree octant )
+        public void FindNodes( AxisAlignedBox box, SceneNodeCollection sceneNodeList, SceneNode exclude, bool full, Octree octant )
         {
             System.Collections.ArrayList localList = new System.Collections.ArrayList();
             if ( octant == null )
@@ -625,7 +624,7 @@ namespace Axiom.SceneManagers.Octree
 
         }
 
-        public void FindNodes( Sphere sphere, Axiom.Collections.SceneNodeCollection sceneNodeList, SceneNode exclude, bool full, Octree octant )
+        public void FindNodes( Sphere sphere, SceneNodeCollection sceneNodeList, SceneNode exclude, bool full, Octree octant )
         {
             //TODO Implement
         }

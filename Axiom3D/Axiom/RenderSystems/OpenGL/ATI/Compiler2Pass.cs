@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
-using Axiom.Core;
-using Axiom.Scripting;
+
+using Axiom.Engine;
 
 /**
  * DX8.1 Pixel Shader to ATI Fragment Shader compiler

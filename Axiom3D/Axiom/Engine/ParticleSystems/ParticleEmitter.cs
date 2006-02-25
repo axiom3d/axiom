@@ -27,12 +27,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Drawing;
-using Axiom.Core;
-using Axiom.MathLib;
-using Axiom.Scripting;
 using System.Reflection;
 
-namespace Axiom.ParticleSystems
+using Axiom.MathLib;
+// This is coming from RealmForge.Utility
+using Axiom.Core;
+
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Abstract class defining the interface to be implemented by particle emitters.

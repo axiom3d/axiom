@@ -1,6 +1,6 @@
 using System;
 
-namespace Axiom.Serialization
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Values that mark data chunks in the .mesh file.

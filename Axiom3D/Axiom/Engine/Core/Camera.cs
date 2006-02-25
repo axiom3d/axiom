@@ -26,11 +26,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
+
 using Axiom.MathLib;
 using Axiom.MathLib.Collections;
-using Axiom.Graphics;
 
-namespace Axiom.Core
+namespace Axiom.Engine
 {
     /// <summary>
     ///		A viewpoint from which the scene will be rendered.
@@ -343,7 +343,7 @@ namespace Axiom.Core
             }
         }
 
-        public override void NotifyCurrentCamera( Axiom.Core.Camera camera )
+        public override void NotifyCurrentCamera( Camera camera )
         {
             // Do nothing
         }

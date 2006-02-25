@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Axiom.Core;
+using Axiom.Engine;
 
-namespace Axiom.Overlays
+namespace Axiom.Engine
 {
     /// <summary>
     /// 	A 2D element which contains other OverlayElement instances.
@@ -157,7 +157,7 @@ namespace Axiom.Overlays
             }
         }
 
-        public override void UpdateRenderQueue( Axiom.Graphics.RenderQueue queue )
+        public override void UpdateRenderQueue( RenderQueue queue )
         {
             if ( isVisible )
             {

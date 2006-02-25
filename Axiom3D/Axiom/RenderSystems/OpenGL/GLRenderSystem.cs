@@ -28,15 +28,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
-using Axiom.Collections;
-using Axiom.Configuration;
+
 using Axiom.Core;
-using Axiom.Graphics;
+
+using Axiom.Engine;
 using Axiom.MathLib;
 using Axiom.RenderSystems.OpenGL.ARB;
 using Axiom.RenderSystems.OpenGL.Nvidia;
-using Tao.OpenGl;
 using ATIFragmentShaderFactory = Axiom.RenderSystems.OpenGL.ATI.ATIFragmentShaderFactory;
+
+using Tao.OpenGl;
+
 
 #endregion Namespace Declarations
 

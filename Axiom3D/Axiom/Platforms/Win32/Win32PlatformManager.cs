@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
-using Axiom.Core;
-using Axiom.Input;
+
+using Axiom.Engine;
 
 namespace Axiom.Platforms.Win32
 {
@@ -29,7 +29,7 @@ namespace Axiom.Platforms.Win32
         ///		Creates an InputReader implemented using Microsoft DirectInput (tm).
         /// </summary>
         /// <returns></returns>
-        public Axiom.Input.InputReader CreateInputReader()
+        public InputReader CreateInputReader()
         {
             inputReader = new Win32InputReader();
             return inputReader;

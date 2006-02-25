@@ -30,7 +30,7 @@ using System;
 using Axiom.Core;
 using Axiom.Input;
 using Axiom.MathLib;
-using Axiom.ParticleSystems;
+using Axiom.Engine;
 
 #endregion Namespace Declarations
 

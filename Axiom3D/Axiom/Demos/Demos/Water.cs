@@ -2,13 +2,10 @@
 
 using System;
 using System.IO;
-using Axiom.Animating;
+using Axiom.Engine;
 using Axiom.Core;
-using Axiom.Graphics;
 using Axiom.Input;
 using Axiom.MathLib;
-using Axiom.Overlays;
-using Axiom.ParticleSystems;
 
 #endregion Namespace Declarations
 

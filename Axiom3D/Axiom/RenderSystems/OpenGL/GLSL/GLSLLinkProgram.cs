@@ -1,7 +1,8 @@
 using System;
 using System.Collections;
-using Axiom.Core;
-using Axiom.Graphics;
+
+using Axiom.Engine;
+
 using Tao.OpenGl;
 
 namespace Axiom.RenderSystems.OpenGL.GLSL

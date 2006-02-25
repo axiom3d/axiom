@@ -26,13 +26,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using Axiom.Animating;
-using Axiom.Collections;
-using Axiom.Configuration;
 
-using Axiom.Graphics;
-
-namespace Axiom.Core
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Defines a part of a complete 3D mesh.
@@ -70,7 +65,7 @@ namespace Axiom.Core
         protected internal bool boneAssignmentsOutOfDate;
 
         /// <summary>Mode used for rendering this submesh.</summary>
-        protected internal Axiom.Graphics.OperationType operationType;
+        protected internal OperationType operationType;
         public VertexData vertexData;
         public IndexData indexData = new IndexData();
         /// <summary>Indicates if this submesh shares vertex data with other meshes or whether it has it's own vertices.</summary>

@@ -47,7 +47,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.Core
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Any class that wants to entend the functionality of the engine can implement this

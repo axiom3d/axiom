@@ -1,10 +1,10 @@
 using System;
 using System.IO;
 using System.Text;
-using Axiom.Animating;
+
 using Axiom.MathLib;
 
-namespace Axiom.Serialization
+namespace Axiom.Engine
 {
     /// <summary>
     /// 	Summary description for OgreSkeletonReader.

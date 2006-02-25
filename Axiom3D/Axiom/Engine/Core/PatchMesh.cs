@@ -25,9 +25,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion LGPL License
 
 using System;
-using Axiom.Graphics;
 
-namespace Axiom.Core
+namespace Axiom.Engine
 {
     /// <summary>
     ///     Patch specialization of <see cref="Mesh" />.

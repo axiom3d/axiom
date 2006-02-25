@@ -27,11 +27,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Drawing;
 using System.Text;
-using Axiom.Core;
 
-using Axiom.Graphics;
-
-namespace Axiom.Fonts
+namespace Axiom.Engine
 {
     /// <summary>
     ///		This class is simply a way of getting a font texture into the engine and
@@ -41,7 +38,7 @@ namespace Axiom.Fonts
     ///		can use an XML font script to define it (probably more practical since you can reuse
     ///		the definition more easily)
     /// </summary>
-    public class Font : Axiom.Core.Resource
+    public class Font : Axiom.Engine.Resource
     {
         #region Constants
 

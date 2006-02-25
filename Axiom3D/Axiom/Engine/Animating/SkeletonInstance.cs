@@ -29,7 +29,8 @@ using System;
 using System.Collections;
 using Axiom.MathLib;
 
-namespace Axiom.Animating {
+namespace Axiom.Engine
+{
 	/// <summary>
 	///		A SkeletonInstance is a single instance of a Skeleton used by a world object.
 	/// </summary>
@@ -41,7 +42,8 @@ namespace Axiom.Animating {
 	///		reflected in the master copy. The exception is animations; these are
 	///		shared on the Skeleton itself and may not be modified here.
 	/// </remarks>
-	public class SkeletonInstance : Skeleton {
+	public class SkeletonInstance : Skeleton 
+    {
 
 		#region Fields
 

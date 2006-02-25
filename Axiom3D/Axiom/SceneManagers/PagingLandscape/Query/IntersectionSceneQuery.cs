@@ -30,7 +30,7 @@ using System.Collections;
 
 using Axiom.Core;
 using Axiom.MathLib;
-using Axiom.Graphics;
+using Axiom.Engine;
 
 using Axiom.SceneManagers.PagingLandscape;
 using Axiom.SceneManagers.PagingLandscape.Query;
@@ -67,7 +67,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Query
 
             for(int i = 0; i < sceneMgr.Entities.Count; i++) 
 			{
-                Entity entityA = ((Axiom.Collections.EntityList)sceneMgr.Entities)[i];
+                Entity entityA = ((EntityList)sceneMgr.Entities)[i];
 
 				// Apply mask 
 				if ( ( entityA.QueryFlags & queryMask) == 0 ) 

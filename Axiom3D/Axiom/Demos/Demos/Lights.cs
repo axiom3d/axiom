@@ -24,10 +24,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-using Axiom.Controllers;
-using Axiom.Controllers.Canned;
+using Axiom.Engine;
 using Axiom.Core;
-using Axiom.Graphics;
 using Axiom.MathLib;
 
 namespace Axiom.Demos

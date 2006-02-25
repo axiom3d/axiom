@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
-using Axiom.Core;
+using Axiom.Engine;
 
-namespace Axiom.Media
+namespace Axiom.Engine
 {
     /// <summary>
     ///    Manages registering/fulfilling requests for codecs that handle various types of media.

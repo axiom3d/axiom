@@ -1,7 +1,7 @@
 #region Namespace Declarations
 
 using Axiom.Core;
-using Axiom.Graphics;
+using Axiom.Engine;
 using Axiom.MathLib;
 
 #endregion Namespace Declarations

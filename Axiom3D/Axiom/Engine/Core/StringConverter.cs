@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Globalization;
 using System.Text;
-using Axiom.MathLib;
 
-namespace Axiom.Core
+using Axiom.MathLib;
+// This is coming from RealmForge.Utility
+using Axiom.Core;
+
+namespace Axiom.Engine
 {
     /// <summary>
     ///     Helper class for going back and forth between strings and various types.

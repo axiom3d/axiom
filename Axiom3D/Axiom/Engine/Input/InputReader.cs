@@ -26,10 +26,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using Axiom.Core;
-using Axiom.Graphics;
 
-namespace Axiom.Input
+// This is coming from RealmForge.Utility
+using Axiom.Input;
+
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Abstract class which allows input to be read from various
@@ -334,7 +335,7 @@ namespace Axiom.Input
                         break;
                 }
 
-                Axiom.Input.KeyEventArgs e = new Axiom.Input.KeyEventArgs( key, modifiers );
+                KeyEventArgs e = new KeyEventArgs( key, modifiers );
                 OnKeyDown( e );
             }
             else
@@ -357,7 +358,7 @@ namespace Axiom.Input
                         break;
                 }
 
-                Axiom.Input.KeyEventArgs e = new Axiom.Input.KeyEventArgs( key, modifiers );
+                KeyEventArgs e = new KeyEventArgs( key, modifiers );
                 OnKeyUp( e );
             }
         }

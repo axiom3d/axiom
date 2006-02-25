@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace Axiom.Core
+namespace Axiom.Engine
 {
     /// <summary>
     /// Summary description for LogManager.

@@ -29,12 +29,9 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
-using Axiom.Core;
-using Axiom.FileSystem;
-using Axiom.Scripting;
-using Axiom.Graphics;
+using Axiom.Engine;
 
-namespace Axiom.Overlays
+namespace Axiom.Engine
 {
     /// <summary>
     ///    Manages Overlay objects, parsing them from Ogre .overlay files and

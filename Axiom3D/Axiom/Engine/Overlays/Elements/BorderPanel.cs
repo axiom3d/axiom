@@ -27,13 +27,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
-using Axiom.Collections;
-using Axiom.Core;
-using Axiom.MathLib;
-using Axiom.Scripting;
-using Axiom.Graphics;
 
-namespace Axiom.Overlays.Elements
+using Axiom.MathLib;
+
+namespace Axiom.Engine
 {
     /// <summary>
     /// 	A specialization of the Panel element to provide a panel with a border with a seperate material.
@@ -777,7 +774,7 @@ namespace Axiom.Overlays.Elements
                 parent.GetWorldTransforms( matrices );
             }
 
-            public Axiom.Graphics.SceneDetailLevel RenderDetail
+            public SceneDetailLevel RenderDetail
             {
                 get
                 {

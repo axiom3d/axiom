@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Text;
 
-namespace Axiom.Configuration
+namespace Axiom.Engine
 {
     /// <summary>
     /// Packages the details of a configuration option.

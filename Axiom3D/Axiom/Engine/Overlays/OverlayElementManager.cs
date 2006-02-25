@@ -24,12 +24,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-using Axiom.Core;
 using System;
 using System.Collections;
 using System.Diagnostics;
 
-namespace Axiom.Overlays
+namespace Axiom.Engine
 {
     /// <summary>
     ///    This class acts as a repository and regitrar of overlay components.
@@ -57,9 +56,9 @@ namespace Axiom.Overlays
                 instance = this;
 
                 // register the default overlay element factories
-                instance.AddElementFactory( new Elements.BorderPanelFactory() );
-                instance.AddElementFactory( new Elements.TextAreaFactory() );
-                instance.AddElementFactory( new Elements.PanelFactory() );
+                instance.AddElementFactory( new BorderPanelFactory() );
+                instance.AddElementFactory( new TextAreaFactory() );
+                instance.AddElementFactory( new PanelFactory() );
             }
         }
 

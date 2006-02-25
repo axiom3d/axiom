@@ -1,5 +1,6 @@
 using System;
-using Axiom.Graphics;
+
+using Axiom.Engine;
 
 namespace Axiom.RenderSystems.OpenGL
 {

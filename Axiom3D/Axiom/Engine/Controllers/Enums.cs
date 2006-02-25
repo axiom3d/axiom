@@ -25,9 +25,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using Axiom.Scripting;
 
-namespace Axiom.Controllers
+namespace Axiom.Engine
 {
     /// <summary>
     /// Enumerates the wave types usable with the engine.

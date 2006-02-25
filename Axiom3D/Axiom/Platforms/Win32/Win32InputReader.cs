@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
 using System.Windows.Forms;
-using Axiom.Core;
+
 using Axiom.Input;
-using Axiom.Graphics;
+using Axiom.Engine;
+
 using Microsoft.DirectX;
 using Microsoft.DirectX.DirectInput;
 using DInput = Microsoft.DirectX.DirectInput;

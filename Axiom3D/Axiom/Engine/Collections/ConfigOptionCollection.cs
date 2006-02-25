@@ -30,13 +30,13 @@ using System.Collections;
 using System.Diagnostics;
 
 // used to alias a type in the code for easy copying and pasting.  Come on generics!!
-using T = Axiom.Configuration.ConfigOption;
+using T = Axiom.Engine.ConfigOption;
 // used to alias a key value in the code for easy copying and pasting.  Come on generics!!
 using K = System.String;
 
 #endregion
 
-namespace Axiom.Collections
+namespace Axiom.Engine
 {
     /// <summary>
     /// Summary description for EntityCollection.

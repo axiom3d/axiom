@@ -30,9 +30,8 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom.Core;
 // used to alias a type in the code for easy copying and pasting.  Come on generics!!
-using T = Axiom.Core.BillboardSet;
+using T = Axiom.Engine.BillboardSet;
 // used to alias a key value in the code for easy copying and pasting.  Come on generics!!
 using K = System.String;
 // used to alias a parent type in the code for easy copying and pasting.  Come on generics!!
@@ -40,7 +39,7 @@ using K = System.String;
 
 #endregion  Namespace Declarations
 
-namespace Axiom.Collections
+namespace Axiom.Engine
 {
     /// <summary>
     /// Summary description for BillboardSetCollection.

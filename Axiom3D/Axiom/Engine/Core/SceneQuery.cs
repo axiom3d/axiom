@@ -26,12 +26,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using Axiom.Collections;
-using Axiom.Graphics;
+
 using Axiom.MathLib;
 using Axiom.MathLib.Collections;
 
-namespace Axiom.Core
+namespace Axiom.Engine
 {
     #region Base Query Implementation
     /// <summary>
@@ -270,7 +269,7 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="fragment"></param>
         /// <returns></returns>
-        public bool OnQueryResult( Axiom.Core.SceneQuery.WorldFragment fragment )
+        public bool OnQueryResult( SceneQuery.WorldFragment fragment )
         {
             lastResult.worldFragments.Add( fragment );
 
@@ -502,7 +501,7 @@ namespace Axiom.Core
             return true;
         }
 
-        bool Axiom.Core.IRaySceneQueryListener.OnQueryResult( SceneQuery.WorldFragment fragment, float distance )
+        bool IRaySceneQueryListener.OnQueryResult( SceneQuery.WorldFragment fragment, float distance )
         {
             // create an entry and add it to the cached result list
             RaySceneQueryResultEntry entry = new RaySceneQueryResultEntry();
@@ -821,7 +820,7 @@ namespace Axiom.Core
 
         #region IIntersectionSceneQueryListener Members
 
-        bool Axiom.Core.IIntersectionSceneQueryListener.OnQueryResult( MovableObject first, MovableObject second )
+        bool IIntersectionSceneQueryListener.OnQueryResult( MovableObject first, MovableObject second )
         {
             // create an entry and add it to the cached result list
             lastResults.Objects2Objects.Add( new SceneQueryMovableObjectPair( first, second ) );
@@ -830,7 +829,7 @@ namespace Axiom.Core
             return true;
         }
 
-        bool Axiom.Core.IIntersectionSceneQueryListener.OnQueryResult( MovableObject obj, SceneQuery.WorldFragment fragment )
+        bool IIntersectionSceneQueryListener.OnQueryResult( MovableObject obj, SceneQuery.WorldFragment fragment )
         {
             // create an entry and add it to the cached result list
             lastResults.Objects2World.Add( new SceneQueryMovableObjectWorldFragmentPair( obj, fragment ) );

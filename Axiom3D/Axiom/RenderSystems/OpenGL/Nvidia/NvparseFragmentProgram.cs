@@ -1,8 +1,9 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Axiom.Core;
-using Axiom.Graphics;
+
+using Axiom.Engine;
+
 using Tao.OpenGl;
 
 namespace Axiom.RenderSystems.OpenGL.Nvidia
@@ -178,7 +179,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
     {
         #region IOpenGLGpuProgramFactory Members
 
-        public GLGpuProgram Create( string name, Axiom.Graphics.GpuProgramType type, string syntaxCode )
+        public GLGpuProgram Create( string name, GpuProgramType type, string syntaxCode )
         {
             return new NvparseFragmentProgram( name, type, syntaxCode );
         }

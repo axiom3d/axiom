@@ -25,10 +25,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using Axiom.Core;
-using Axiom.Graphics;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+
+using Axiom.Engine;
+
 using D3D = Microsoft.DirectX.Direct3D;
 
 namespace Axiom.RenderSystems.DirectX9
@@ -48,7 +47,7 @@ namespace Axiom.RenderSystems.DirectX9
             is32Bit = true;
         }
 
-        public override Axiom.Core.Texture Create( string name, TextureType type )
+        public override Texture Create( string name, TextureType type )
         {
             D3DTexture texture = new D3DTexture( name, device, TextureUsage.Default, type );
 
@@ -69,7 +68,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="format"></param>
         /// <param name="usage"></param>
         /// <returns></returns>
-        public override Axiom.Core.Texture CreateManual( string name, TextureType type, int width, int height, int numMipMaps, Axiom.Media.PixelFormat format, TextureUsage usage )
+        public override Texture CreateManual( string name, TextureType type, int width, int height, int numMipMaps, PixelFormat format, TextureUsage usage )
         {
             D3DTexture texture = new D3DTexture( name, device, type, width, height, numMipMaps, format, usage );
             texture.Enable32Bit( is32Bit );

@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.IO;
-using Axiom.Core;
+using Axiom.Engine;
 
-namespace Axiom.Serialization
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Class for serialising mesh data to/from an OGRE .mesh file.

@@ -30,11 +30,8 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using Axiom.Collections;
-using Axiom.Core;
-using Axiom.Scripting;
 
-namespace Axiom.ParticleSystems
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Manages particle systems, particle system scripts (templates) and the available emitter & affector factories.

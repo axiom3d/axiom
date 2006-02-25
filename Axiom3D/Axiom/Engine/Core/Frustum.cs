@@ -27,12 +27,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Axiom.Collections;
-using Axiom.Core;
-using Axiom.Graphics;
+
 using Axiom.MathLib;
 
-namespace Axiom.Core
+namespace Axiom.Engine
 {
     /// <summary>
     ///     A frustum represents a pyramid, capped at the near and far end which is
@@ -1311,7 +1309,7 @@ namespace Axiom.Core
         /// <summary>
         ///     Returns a dummy list since we won't be lit.
         /// </summary>
-        public Axiom.Collections.LightList Lights
+        public LightList Lights
         {
             get
             {
@@ -1351,7 +1349,7 @@ namespace Axiom.Core
             }
         }
 
-        public Axiom.Graphics.SceneDetailLevel RenderDetail
+        public SceneDetailLevel RenderDetail
         {
             get
             {

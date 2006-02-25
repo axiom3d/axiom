@@ -26,10 +26,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-using Axiom;
-using Axiom.Core;
+using Axiom.Engine;
 using Axiom.MathLib;
-using Axiom.Collections;
 using Axiom.MathLib.Collections;
 
 namespace Axiom.SceneManagers.Bsp

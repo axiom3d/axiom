@@ -25,8 +25,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using Axiom.Core;
-using Axiom.Graphics;
+
+using Axiom.Engine;
 
 namespace Axiom.RenderSystems.OpenGL
 {
@@ -60,7 +60,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// <param name="format"></param>
         /// <param name="usage"></param>
         /// <returns></returns>
-        public override Texture CreateManual( string name, TextureType type, int width, int height, int numMipMaps, Axiom.Media.PixelFormat format, TextureUsage usage )
+        public override Texture CreateManual( string name, TextureType type, int width, int height, int numMipMaps, PixelFormat format, TextureUsage usage )
         {
             GLTexture texture = new GLTexture( name, type, width, height, numMipMaps, format, usage );
             texture.Enable32Bit( is32Bit );

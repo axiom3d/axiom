@@ -26,13 +26,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
-using Axiom.Core;
-using Axiom.Fonts;
-using Axiom.Scripting;
-using Axiom.Graphics;
-using Font = Axiom.Fonts.Font;
 
-namespace Axiom.Overlays.Elements
+using Font = Axiom.Engine.Font;
+// This is coming from RealmForge.Utility
+using Axiom.Core;
+
+namespace Axiom.Engine
 {
     /// <summary>
     /// 	Label type control that can be used to display text using a specified font.

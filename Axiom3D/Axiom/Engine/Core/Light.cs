@@ -28,9 +28,10 @@ using System;
 
 using Axiom.MathLib;
 using Axiom.MathLib.Collections;
-using Axiom.Graphics;
+// This is coming from RealmForge.Utility
+using Axiom.Core;
 
-namespace Axiom.Core
+namespace Axiom.Engine
 {
     /// <summary>
     ///    Representation of a dynamic light source in the scene.

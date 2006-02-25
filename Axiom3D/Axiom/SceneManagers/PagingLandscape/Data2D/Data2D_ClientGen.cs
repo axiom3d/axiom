@@ -30,9 +30,8 @@ using System;
 using System.Collections;
 
 using Axiom.Core;
-using Axiom.Collections;
+using Axiom.Engine;
 using Axiom.MathLib;
-using Axiom.Media;
 
 //using Axiom.SceneManagers.IPLSceneManager.Page;
 //using Axiom.SceneManagers.IPLSceneManager.Query;

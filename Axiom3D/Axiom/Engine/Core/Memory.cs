@@ -1,6 +1,6 @@
 using System;
 
-namespace Axiom.Core
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Utility class for dealing with memory.

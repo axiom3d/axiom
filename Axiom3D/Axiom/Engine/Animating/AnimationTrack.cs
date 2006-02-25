@@ -28,9 +28,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
-using Axiom.Collections;
 
-using Axiom.Core;
 using Axiom.MathLib;
 
 #endregion
@@ -43,7 +41,7 @@ using Axiom.MathLib;
 /// 
 #endregion
 
-namespace Axiom.Animating
+namespace Axiom.Engine
 {
     /// <summary>
     ///		A 'track' in an animation sequence, ie a sequence of keyframes which affect a

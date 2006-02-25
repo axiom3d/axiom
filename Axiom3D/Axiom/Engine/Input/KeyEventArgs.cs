@@ -1,6 +1,9 @@
 using System;
 
-namespace Axiom.Input
+// This is coming from RealmForge.Utility
+using Axiom.Input;
+
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Events args for keyboard input events.

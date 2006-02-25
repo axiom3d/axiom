@@ -26,11 +26,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Axiom.Collections;
-using Axiom.Core;
-using Axiom.Graphics;
 
-namespace Axiom.Graphics
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Class to manage the scene object rendering queue.

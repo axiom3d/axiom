@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace Axiom.Graphics
+namespace Axiom.Engine
 {
     /// <summary>
     ///     Generics: List<VertexElement>

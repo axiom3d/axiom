@@ -28,9 +28,9 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Axiom.Core;
+using Axiom.Engine;
 
-namespace Axiom.Graphics
+namespace Axiom.Engine
 {
     /// <summary>
     /// 	Summary class collecting together vertex source information.

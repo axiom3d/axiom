@@ -30,14 +30,11 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
-using Axiom.Animating;
-using Axiom.Collections;
-using Axiom.Controllers;
-using Axiom.Graphics;
+
 using Axiom.MathLib;
 using Axiom.MathLib.Collections;
-using Axiom.Media;
-using Axiom.Overlays;
+// This is coming from RealmForge.Utility
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -49,7 +46,7 @@ using Axiom.Overlays;
 /// 
 #endregion
 
-namespace Axiom.Core
+namespace Axiom.Engine
 {
 
     #region Delegate Declarations

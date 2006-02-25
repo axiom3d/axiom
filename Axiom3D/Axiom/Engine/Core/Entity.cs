@@ -27,12 +27,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Axiom.Animating;
-using Axiom.Collections;
-using Axiom.MathLib;
-using Axiom.Graphics;
 
-namespace Axiom.Core
+using Axiom.MathLib;
+
+namespace Axiom.Engine
 {
     /// <summary>
     ///    Defines an instance of a discrete, movable object based on a Mesh.

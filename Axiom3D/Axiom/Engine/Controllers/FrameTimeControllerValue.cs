@@ -25,9 +25,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using Axiom.Core;
+using Axiom.Engine;
 
-namespace Axiom.Controllers
+namespace Axiom.Engine
 {
     /// <summary>
     /// Summary description for FrameTimeControllerValue.

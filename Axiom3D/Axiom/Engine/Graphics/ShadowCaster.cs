@@ -27,10 +27,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Axiom.Core;
+using Axiom.Engine;
 using Axiom.MathLib;
 
-namespace Axiom.Graphics
+namespace Axiom.Engine
 {
     /// <summary>
     ///		This class defines the interface that must be implemented by shadow casters.

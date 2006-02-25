@@ -66,11 +66,7 @@ using Axiom.Core;
 
 using Axiom.MathLib;
 
-using Axiom.Collections;
-
-using Axiom.Media;
-
-using Axiom.Graphics;
+using Axiom.Engine;
 
 
 
@@ -476,7 +472,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
 
         /** Updates the level of detail to be used for rendering this PagingLandScapeRenderable based on the passed in Camera 
 		*/
-        public override void NotifyCurrentCamera( Axiom.Core.Camera cam )
+        public override void NotifyCurrentCamera( Axiom.Engine.Camera cam )
         {
             PagingLandscape.Camera plsmcam = (PagingLandscape.Camera)( cam );
             this.isVisible = ( init && loaded && plsmcam.GetVisibility( tileSceneNode.WorldAABB ) );

@@ -27,8 +27,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+
 using Axiom.Core;
-using Axiom.Graphics;
+using Axiom.Engine;
 using Axiom.MathLib;
 
 namespace Axiom.SceneManagers.Octree
@@ -842,7 +843,7 @@ namespace Axiom.SceneManagers.Octree
             parentNode.GetWorldTransforms( matrices );
         }
 
-        public Axiom.MathLib.Quaternion WorldOrientation
+        public Quaternion WorldOrientation
         {
             get
             {
@@ -850,7 +851,7 @@ namespace Axiom.SceneManagers.Octree
             }
         }
 
-        public Axiom.Graphics.SceneDetailLevel RenderDetail
+        public SceneDetailLevel RenderDetail
         {
             get
             {
@@ -866,7 +867,7 @@ namespace Axiom.SceneManagers.Octree
             }
         }
 
-        public Axiom.Collections.LightList Lights
+        public LightList Lights
         {
             get
             {

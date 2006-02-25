@@ -1,6 +1,6 @@
 using System;
-using Axiom.Core;
-using Axiom.Graphics;
+
+using Axiom.Engine;
 
 namespace Axiom.RenderSystems.OpenGL.GLSL
 {
@@ -43,7 +43,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
         /// <param name="name">Name of the object.</param>
         /// <param name="type">Type of the object.</param>
         /// <returns>A newly created GLSL program object.</returns>
-        public HighLevelGpuProgram Create( string name, Axiom.Graphics.GpuProgramType type )
+        public HighLevelGpuProgram Create( string name, GpuProgramType type )
         {
             return new GLSLProgram( name, type, languageName );
         }

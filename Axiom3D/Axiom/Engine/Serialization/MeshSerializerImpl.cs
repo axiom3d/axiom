@@ -1,11 +1,9 @@
 using System;
 using System.IO;
-using Axiom.Animating;
-using Axiom.Core;
-using Axiom.Graphics;
+
 using Axiom.MathLib;
 
-namespace Axiom.Serialization
+namespace Axiom.Engine
 {
     /// <summary>
     /// Summary description for MeshSerializerImpl.

@@ -37,7 +37,8 @@ are met:
 
 using System;
 using System.Runtime.InteropServices;
-using Axiom.Core;
+
+using Axiom.Engine;
 
 namespace Axiom.Platforms.Win32
 {

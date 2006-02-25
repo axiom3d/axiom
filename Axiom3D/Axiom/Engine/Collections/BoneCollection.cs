@@ -27,15 +27,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Axiom.Animating;
-using Axiom.Core;
 
 // used to alias a type in the code for easy copying and pasting.  Come on generics!!
-using T = Axiom.Animating.Bone;
+using T = Axiom.Engine.Bone;
 // used to alias a key value in the code for easy copying and pasting.  Come on generics!!
 using K = System.UInt16;
 
-namespace Axiom.Collections
+namespace Axiom.Engine
 {
     /// <summary>
     /// Summary description for AnimationCollection.

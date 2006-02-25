@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
-using Axiom.Core;
-using Axiom.Input;
+
+using Axiom.Engine;
 
 namespace Axiom.Platforms.SDL
 {
@@ -34,7 +34,7 @@ namespace Axiom.Platforms.SDL
         ///		Creates an InputReader implemented using Microsoft DirectInput (tm).
         /// </summary>
         /// <returns></returns>
-        public Axiom.Input.InputReader CreateInputReader()
+        public InputReader CreateInputReader()
         {
             inputReader = new SdlInputReader();
             return inputReader;

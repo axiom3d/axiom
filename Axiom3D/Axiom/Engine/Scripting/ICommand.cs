@@ -1,6 +1,6 @@
 using System;
 
-namespace Axiom.Scripting
+namespace Axiom.Engine
 {
     /// <summary>
     /// 	Summary description for ICommand.

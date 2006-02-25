@@ -64,11 +64,7 @@ using Axiom.Core;
 
 using Axiom.MathLib;
 
-using Axiom.Collections;
-
-using Axiom.Media;
-
-using Axiom.Graphics;
+using Axiom.Engine;
 
 
 
@@ -478,7 +474,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Renderable
         }
 
 
-        public override void NotifyCurrentCamera( Axiom.Core.Camera cam )
+        public override void NotifyCurrentCamera( Axiom.Engine.Camera cam )
         {
             if ( inUse == false || isLoaded == false )
                 return;
@@ -570,7 +566,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Renderable
 
         /** Overridden, see Renderable */
 
-        public override float GetSquaredViewDepth( Axiom.Core.Camera cam )
+        public override float GetSquaredViewDepth( Axiom.Engine.Camera cam )
         {
             // Use squared length to avoid square root
             return ( this.ParentNode.DerivedPosition - cam.DerivedPosition ).LengthSquared;

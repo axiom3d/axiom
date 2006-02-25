@@ -30,9 +30,7 @@ using System.Text;
 using System.Diagnostics;
 using System.Collections.Specialized;
 
-using Axiom.Core;
-using Axiom.Graphics;
-using Axiom.Scripting;
+using Axiom.Engine;
 
 namespace Axiom.SceneManagers.Bsp
 {

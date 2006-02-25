@@ -28,16 +28,14 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom.Core;
-
 // used to alias a type in the code for easy copying and pasting.  Come on generics!!
-using T = Axiom.Graphics.RenderWindow;
+using T = Axiom.Engine.RenderWindow;
 // used to alias a key value in the code for easy copying and pasting.  Come on generics!!
 using K = System.String;
 // used to alias a parent type in the code for easy copying and pasting.  Come on generics!!
 //using P = Axiom.Core.Entity;
 
-namespace Axiom.Collections
+namespace Axiom.Engine
 {
     /// <summary>
     /// Summary description for RenderWindowCollection.

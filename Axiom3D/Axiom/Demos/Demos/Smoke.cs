@@ -1,7 +1,7 @@
 #region Namespace Declarations
 
 using Axiom.Core;
-using Axiom.ParticleSystems;
+using Axiom.Engine;
 
 #endregion Namespace Declarations
 

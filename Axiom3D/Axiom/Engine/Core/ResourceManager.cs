@@ -29,10 +29,8 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
-using Axiom.Configuration;
-using Axiom.FileSystem;
 
-namespace Axiom.Core
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Defines a generic resource handler.

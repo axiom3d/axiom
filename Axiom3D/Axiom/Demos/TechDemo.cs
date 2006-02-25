@@ -28,13 +28,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 using System.IO;
-using Axiom.Collections;
-using Axiom.Configuration;
-using Axiom.Core;
-using Axiom.Graphics;
+using Axiom.Engine;
 using Axiom.Input;
+using Axiom.Core;
 using Axiom.MathLib;
-using Axiom.Overlays;
 using Log = RealmForge.Log;
 #endregion
 

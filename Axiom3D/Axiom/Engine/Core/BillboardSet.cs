@@ -30,10 +30,9 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom.Collections;
-using Axiom.Graphics;
 using Axiom.MathLib;
-using Axiom.Scripting;
+// This is coming from RealmForge.Utility
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -45,7 +44,7 @@ using Axiom.Scripting;
 /// 
 #endregion
 
-namespace Axiom.Core
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Covers what a billboards position means.

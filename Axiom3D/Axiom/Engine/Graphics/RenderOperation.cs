@@ -28,7 +28,7 @@ using System;
 using System.Collections;
 
 
-namespace Axiom.Graphics
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Contains all the information required to render a set of vertices.  This includes

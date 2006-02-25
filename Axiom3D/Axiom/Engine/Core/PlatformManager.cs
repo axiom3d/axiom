@@ -29,7 +29,7 @@ using System.Configuration;
 using System.IO;
 using System.Reflection;
 
-namespace Axiom.Core
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Class which manages the platform settings required to run.

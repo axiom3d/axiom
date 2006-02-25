@@ -25,10 +25,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
+
+using Axiom.Engine;
+using VertexDeclaration = Axiom.Engine.VertexDeclaration;
+
 using Microsoft.DirectX.Direct3D;
 using D3D = Microsoft.DirectX.Direct3D;
-using Axiom.Graphics;
-using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
 
 namespace Axiom.RenderSystems.DirectX9
 {
@@ -58,13 +60,13 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region Methods
 
-        public override Axiom.Graphics.HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
+        public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
         {
             // call overloaded method with no shadow buffer
             return CreateIndexBuffer( type, numIndices, usage, false );
         }
 
-        public override Axiom.Graphics.HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
+        public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
         {
             D3DHardwareIndexBuffer buffer = new D3DHardwareIndexBuffer( type, numIndices, usage, device, false, useShadowBuffer );
             indexBuffers.Add( buffer );
@@ -84,7 +86,7 @@ namespace Axiom.RenderSystems.DirectX9
             return buffer;
         }
 
-        public override Axiom.Graphics.VertexDeclaration CreateVertexDeclaration()
+        public override VertexDeclaration CreateVertexDeclaration()
         {
             VertexDeclaration decl = new D3DVertexDeclaration( device );
             vertexDeclarations.Add( decl );

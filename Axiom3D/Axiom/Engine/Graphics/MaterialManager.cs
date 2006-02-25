@@ -29,14 +29,10 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.IO;
 using System.Reflection;
-using Axiom.Controllers;
-using Axiom.Core;
-using Axiom.FileSystem;
-using Axiom.MathLib;
-using Axiom.Scripting;
-using Axiom.Serialization;
 
-namespace Axiom.Graphics
+using Axiom.MathLib;
+
+namespace Axiom.Engine
 {
     /// <summary>
     ///     Class for managing Material settings.

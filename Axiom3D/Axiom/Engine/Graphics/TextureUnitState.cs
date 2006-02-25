@@ -28,11 +28,12 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
-using Axiom.Controllers;
-using Axiom.Core;
-using Axiom.MathLib;
 
-namespace Axiom.Graphics
+using Axiom.MathLib;
+// This is coming from RealmForge.Utility
+using Axiom.Core;
+
+namespace Axiom.Engine
 {
     /// <summary>
     /// 	Class representing the state of a single texture unit during a Pass of a

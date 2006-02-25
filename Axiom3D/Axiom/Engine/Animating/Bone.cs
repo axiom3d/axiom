@@ -25,10 +25,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using Axiom.Core;
+using Axiom.Engine;
 using Axiom.MathLib;
 
-namespace Axiom.Animating {
+namespace Axiom.Engine
+{
     /// <summary>
     ///    A bone in a skeleton.
     /// </summary>

@@ -33,7 +33,7 @@ using System.IO;
 using System.Reflection;
 using System.Xml;
 
-namespace Axiom.Core
+namespace Axiom.Engine
 {
     /// <summary>
     /// Summary description for PluginManager.
