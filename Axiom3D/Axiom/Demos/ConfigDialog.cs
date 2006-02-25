@@ -267,7 +267,7 @@ namespace Axiom.Demos
 
         private void ConfigDialog_Load( object sender, EventArgs e )
         {
-            foreach ( RenderSystem renderSystem in Root.Instance.RenderSystems.Values )
+            foreach ( RenderSystem renderSystem in Root.Instance.RenderSystems )
             {
                 cboRenderSystems.Items.Add( renderSystem );
             }
