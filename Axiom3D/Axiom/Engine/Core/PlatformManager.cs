@@ -24,10 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region Namespace Declarations
+
 using System;
 using System.Configuration;
 using System.IO;
 using System.Reflection;
+
+#endregion Namespace Declarations
 
 namespace Axiom
 {
@@ -87,15 +91,15 @@ namespace Axiom
                 {	//if this is a Microsoft OS such as Windows or Win32S
                     for ( int i = 0; i < files.Length; i++ )
                     {
-                        if ( ( files[i].IndexOf( "Win32" ) != -1 ) == windows )
+                        if ( ( files[ i ].IndexOf( "Win32" ) != -1 ) == windows )
                         {//use win32 for windows or another platforms (such as SDL) for non-windows
-                            return files[i];
+                            return files[ i ];
                         }
                     }
                     if ( windows )
                     {
                         //use SDL for example instead
-                        System.Diagnostics.Debug.WriteLine( "The Win32 PlatformManager is not present for use with this windows operating system, so {0} is selected", files[0] );
+                        System.Diagnostics.Debug.WriteLine( "The Win32 PlatformManager is not present for use with this windows operating system, so {0} is selected", files[ 0 ] );
                     }
                     else
                     {
@@ -105,7 +109,7 @@ namespace Axiom
                 //throw new PluginException("Only 1 PlatformManager can exist in the execution path.");
             }
 
-            return files[0];
+            return files[ 0 ];
         }
 
         /// <summary>
@@ -120,9 +124,9 @@ namespace Axiom
         {
             if ( instance == null )
             {
-                instance = 
+                instance =
                     (IPlatformManager)
-                    ((ISingletonPlugin) PluginManager.Instance.GetPlugin("/Axiom/Plugins/PlatformManager")).GetSubsystemImplementation();
+                    ( (ISingletonPlugin)PluginManager.Instance.GetPlugin( "/Axiom/Plugins/PlatformManager" ) ).GetSubsystemImplementation();
 
                 // find and load a platform manager assembly
                 /*string[] files = Directory.GetFiles( ".", "Axiom.Platforms.*.dll" );
