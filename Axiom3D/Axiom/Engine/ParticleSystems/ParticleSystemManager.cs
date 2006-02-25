@@ -706,7 +706,7 @@ namespace Axiom.ParticleSystems
                 return;
             }
 
-            system.CullIndividual = StringConverter.ParseBool( values[0] );
+            system.CullIndividually = StringConverter.ParseBool( values[0] );
         }
 
         [AttributeParser( "particle_height", PARTICLE )]

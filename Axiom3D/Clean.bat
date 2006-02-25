@@ -1,0 +1,1 @@
+.\Prebuild /clean /pause
