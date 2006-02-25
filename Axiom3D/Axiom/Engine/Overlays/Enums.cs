@@ -38,7 +38,12 @@ namespace Axiom
         Relative,
         /// <summary>Positions & sizes are in absolute pixels.</summary>
         [ScriptEnum( "pixels" )]
-        Pixels
+        Pixels,
+		/// <summary>
+		/// Positions & sizes are in virtual pixels
+		/// </summary>
+		[ScriptEnum( "relative_aspect_adjusted" )]
+		Relative_Aspect_Adjusted
     }
 
     /// <summary>
