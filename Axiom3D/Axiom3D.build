@@ -57,6 +57,7 @@
 	<property name="dependencies.managed.unix.dir" value="${path::combine(dependencies.managed.dir, 'Mono')}" dynamic="false" />
 	<property name="dependencies.native.dir" value="${path::combine(dependencies.dir, 'Native')}" dynamic="false" />
 	<property name="dependencies.native.win32.dir" value="${path::combine(dependencies.native.dir, 'Win32')}" dynamic="false" />
+	<property name="dependencies.native.unix.dir" value="${path::combine(dependencies.native.dir, 'Mono')}" dynamic="false" />
 	
 	<!-- 
 		OK, here's a bit of cleverness I may regret - define a 'runtime' managed
