@@ -34,6 +34,7 @@ using System.Text;
 
 // This is coming from RealmForge.Utility
 using Axiom.Core;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -96,33 +97,34 @@ namespace Axiom
                 logMgr.Write( info.ToString() );
                 logMgr.Write( "*-*-* Axiom Intializing" );
                 
-                AxiomVfs.Instance.Initialize();
-
-                new ArchiveManager();
+                Vfs.Instance.Initialize();
                 
-                sceneManagerList = SceneManagerEnumerator.Instance;
-
+                new PluginManager();
+                new ArchiveManager();
+                new ZipArchiveFactory();
+                new FontManager();
+                new OverlayManager();
+                new OverlayElementManager();
                 new MaterialManager();
                 new MeshManager();
                 new SkeletonManager();
-                new ParticleSystemManager();
-                
-                PlatformManager.LoadInstance();
-
-
-                // create a new timer
-                timer = PlatformManager.Instance.CreateTimer();
-
-                new OverlayManager();
-                new OverlayElementManager();
-                new FontManager();
-                new ZipArchiveFactory();
+                new HighLevelGpuProgramManager();
                 new CodecManager();
 
                 // register all build in codecs
                 CodecManager.Instance.RegisterCodecs();
 
-                new HighLevelGpuProgramManager();
+                sceneManagerList = SceneManagerEnumerator.Instance;
+
+                new ParticleSystemManager();
+                
+                PlatformManager.LoadInstance();
+                
+                // init the rendersystem manager
+                new RenderSystemManager();
+
+                // create a new timer
+                timer = PlatformManager.Instance.CreateTimer();
 
                 // load the still unloaded but specified plugins
                 // (third-party?)
@@ -330,11 +332,14 @@ namespace Axiom
         /// <summary>
         /// The list of available render systems for the engine to use (made available via plugins.
         /// </summary>
-        public RenderSystemCollection RenderSystems
+        public IEnumerable<RenderSystem> RenderSystems
         {
             get
             {
-                return renderSystemList;
+                return ((INamespaceExtender)
+                    Vfs.Instance["/Axiom/RenderSystems/"]).Subtree<RenderSystem>();
+
+                //return renderSystemList;
             }
         }
 
@@ -707,9 +712,9 @@ namespace Axiom
             {
                 ControllerManager.Instance.Dispose();
             }
-            if ( HighLevelGpuProgramManagerSingleton.Instance != null )
+            if ( HighLevelGpuProgramManager.Instance != null )
             {
-                HighLevelGpuProgramManagerSingleton.Instance.Dispose();
+                HighLevelGpuProgramManager.Instance.Dispose();
             }
             if ( PluginManager.Instance != null )
             {

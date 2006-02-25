@@ -5,16 +5,15 @@ using System.Collections;
 
 namespace Axiom
 {
-    public class EmitterNamespaceExtender : INamespaceExtender
+    public class AffectorNamespaceExtender : INamespaceExtender
     {
-        //public EmitterNamespaceExtender
         public IEnumerable<K> Subtree<K>()
         {
             IEnumerator
-                enu = ParticleSystemManager.Instance.Emitters.Values.GetEnumerator();
+                enu = ParticleSystemManager.Instance.Affectors.Values.GetEnumerator();
 
             while (enu.MoveNext())
-                if(enu.Current.GetType() == typeof(K) ||
+                if (enu.Current.GetType() == typeof(K) ||
                     enu.Current.GetType().IsSubclassOf(typeof(K)) ||
                     enu.Current.GetType().GetInterface(typeof(K).FullName) != null)
                     yield return (K)enu.Current;
@@ -24,13 +23,13 @@ namespace Axiom
         {
             if (typeof(K) == typeof(ParticleEmitterFactory) ||
                 typeof(K).IsSubclassOf(typeof(ParticleEmitterFactory)))
-                return (K)((object)ParticleSystemManager.Instance.Emitters[objectName]);
+                return (K)((object)ParticleSystemManager.Instance.Affectors[objectName]);
             else
                 return default(K);
         }
 
         const string
-            NAMESPACE_NAME = "/Axiom/Plugins/ParticleFX/Emitters/";
+            NAMESPACE_NAME = "/Axiom/ParticleFX/Affectors/";
 
         public string Namespace
         {

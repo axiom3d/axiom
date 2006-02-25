@@ -86,6 +86,10 @@ namespace Axiom
 
             scriptPatterns.Add( "*.particle" );
             ResourceGroupManager.Instance.RegisterScriptLoader( this );
+            
+            // register the namespace
+            Vfs.Instance.RegisterNamespace(new EmitterNamespaceExtender());
+            Vfs.Instance.RegisterNamespace(new AffectorNamespaceExtender());
 
             // locate particle plugins
             List<PluginMetadataAttribute> particlePlugins =

@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using Axiom;
+using System.Collections.Generic;
 
 namespace Axiom
 {
@@ -46,38 +47,39 @@ namespace Axiom
     ///    factories and as such the engine can be extended to accept virtually any kind of
     ///    program provided a plugin is written.
     /// </remarks>
-    public class HighLevelGpuProgramManager : ResourceManager
+    [Subsystem("HighLevelGpuProgramManager")]
+    public class HighLevelGpuProgramManager : ResourceManager, ISubsystem
     {
-        //#region Singleton implementation
+        #region Singleton implementation
 
-        ///// <summary>
-        /////     Singleton instance of this class.
-        ///// </summary>
-        //private static HighLevelGpuProgramManager instance;
+        /// <summary>
+        ///     Singleton instance of this class.
+        /// </summary>
+        private static HighLevelGpuProgramManager instance;
 
-        ///// <summary>
-        /////     Internal constructor.  This class cannot be instantiated externally.
-        ///// </summary>
-        //internal HighLevelGpuProgramManager()
-        //{
-        //    if ( instance == null )
-        //    {
-        //        instance = this;
-        //    }
-        //}
+        /// <summary>
+        ///     Internal constructor.  This class cannot be instantiated externally.
+        /// </summary>
+        internal HighLevelGpuProgramManager()
+        {
+            if (instance == null)
+            {
+                instance = this;
+            }
+        }
 
-        ///// <summary>
-        /////     Gets the singleton instance of this class.
-        ///// </summary>
-        //public static HighLevelGpuProgramManager Instance
-        //{
-        //    get
-        //    {
-        //        return instance;
-        //    }
-        //}
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
+        public static HighLevelGpuProgramManager Instance
+        {
+            get
+            {
+                return instance;
+            }
+        }
 
-        //#endregion Singleton implementation
+        #endregion Singleton implementation
 
         #region Fields
 
@@ -96,9 +98,9 @@ namespace Axiom
         /// <param name="factory">
         ///    The factory instance to register.
         /// </param>
-        public void AddFactory( IHighLevelGpuProgramFactory factory )
+        public void AddFactory(IHighLevelGpuProgramFactory factory)
         {
-            factories.Add( factory.Language, factory );
+            factories.Add(factory.Language, factory);
         }
 
         /// <summary>
@@ -113,19 +115,19 @@ namespace Axiom
         /// <param name="language">HLSL language to use.</param>
         /// <param name="type">Type of program, i.e. vertex or fragment.</param>
         /// <returns>An unloaded instance of HighLevelGpuProgram.</returns>
-        public HighLevelGpuProgram CreateProgram( string name, string language, GpuProgramType type )
+        public HighLevelGpuProgram CreateProgram(string name, string language, GpuProgramType type)
         {
             // lookup the factory for the requested program language
-            IHighLevelGpuProgramFactory factory = GetFactory( language );
+            IHighLevelGpuProgramFactory factory = GetFactory(language);
 
-            if ( factory == null )
+            if (factory == null)
             {
-                throw new Exception( string.Format( "Could not find HighLevelGpuProgramManager that can compile programs of type '{0}'", language ) );
+                throw new Exception(string.Format("Could not find HighLevelGpuProgramManager that can compile programs of type '{0}'", language));
             }
 
             // create the high level program using the factory
-            HighLevelGpuProgram program = factory.Create( name, type );
-            Add( program );
+            HighLevelGpuProgram program = factory.Create(name, type);
+            Add(program);
             return program;
         }
 
@@ -135,9 +137,9 @@ namespace Axiom
         /// </summary>
         /// <param name="language">HLSL language.</param>
         /// <returns>A factory capable of creating a HighLevelGpuProgram of the specified language.</returns>
-        public IHighLevelGpuProgramFactory GetFactory( string language )
+        public IHighLevelGpuProgramFactory GetFactory(string language)
         {
-            if ( factories.ContainsKey( language ) )
+            if (factories.ContainsKey(language))
             {
                 return (IHighLevelGpuProgramFactory)factories[language];
             }
@@ -156,7 +158,7 @@ namespace Axiom
             {
                 string[] sl = new string[resourceList.Count];
                 int count = 0;
-                foreach ( string s in resourceList.Keys )
+                foreach (string s in resourceList.Keys)
                 {
                     sl[count++] = s;
                 }
@@ -174,9 +176,9 @@ namespace Axiom
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public override Resource Create( string name )
+        public override Resource Create(string name)
         {
-            throw new AxiomException( "The more specific method, CreateProgram should be used." );
+            throw new AxiomException("The more specific method, CreateProgram should be used.");
         }
 
         /// <summary>
@@ -184,9 +186,9 @@ namespace Axiom
         /// </summary>
         /// <param name="name">Name of the program to retrieve.</param>
         /// <returns>The high level gpu program with the specified name.</returns>
-        public new HighLevelGpuProgram GetByName( string name )
+        public new HighLevelGpuProgram GetByName(string name)
         {
-            return (HighLevelGpuProgram)base.GetByName( name );
+            return (HighLevelGpuProgram)base.GetByName(name);
         }
 
         /// <summary>
@@ -200,14 +202,36 @@ namespace Axiom
         }
 
         #endregion ResourceManager Implementation
-    }
 
-    public class HighLevelGpuProgramManagerSingleton : Singleton<HighLevelGpuProgramManager>
-    {
-        public override bool Initialize()
+        #region ISubsystem Members
+
+
+        public bool Initialize()
         {
+            List<PluginMetadataAttribute> plugins =
+                PluginManager.Instance.RequestSubsystemPlugins(this);
+
+            foreach (PluginMetadataAttribute pluginInfo in plugins)
+            {
+                IPlugin plugin = PluginManager.Instance.GetPlugin(pluginInfo.Name);
+                if (!plugin.IsStarted)
+                    plugin.Start();
+            }
+            _isInitialized = true;
+
             return true;
         }
+
+        bool _isInitialized = false;
+        public bool IsInitialized
+        {
+            get
+            {
+                return _isInitialized;
+            }
+        }
+
+        #endregion
     }
 
     /// <summary>
@@ -230,7 +254,7 @@ namespace Axiom
         /// <returns>
         ///    A newly created instance of HighLevelGpuProgram.
         /// </returns>
-        HighLevelGpuProgram Create( string name, GpuProgramType type );
+        HighLevelGpuProgram Create(string name, GpuProgramType type);
 
         #endregion Methods
 

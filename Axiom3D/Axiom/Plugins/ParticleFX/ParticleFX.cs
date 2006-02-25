@@ -39,12 +39,8 @@ namespace Axiom.ParticleFX
     {
         #region IPlugin Members
 
-        EmitterNamespaceExtender mynamespace = null;
         public void Start()
         {
-            mynamespace = new EmitterNamespaceExtender();
-            AxiomVfs.Instance.RegisterNamespace(mynamespace);
-
             ParticleEmitterFactory emitterFactory;
             ParticleAffectorFactory affectorFactory;
 

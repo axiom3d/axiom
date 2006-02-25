@@ -9,7 +9,9 @@ namespace Axiom.Platforms.SDL
     ///		Platform management specialization for Microsoft Windows (r) platform.
     /// </summary>
     // TODO Disposal of object create here.
-    public class SdlPlatformManager : IPlatformManager
+    [PluginMetadata(IsSingleton = true, Name = "PlatformManager",
+    Description = "Axiom SDL Platform")]
+    public class SdlPlatformManager : IPlatformManager, ISingletonPlugin
     {
         #region Fields
 
@@ -60,5 +62,29 @@ namespace Axiom.Platforms.SDL
         }
 
         #endregion
+
+        public object GetSubsystemImplementation()
+        {
+            return this;
+        }
+
+        public void Start()
+        {
+            LogManager.Instance.Write("SDL Platform Manager started");
+            _isStarted = true;
+        }
+
+        public void Stop()
+        {
+            LogManager.Instance.Write("SDL Platform Manager stopped");
+        }
+
+        private bool _isStarted = false;
+
+        public bool IsStarted
+        {
+            get { return _isStarted; }
+        }
+
     }
 }

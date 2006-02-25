@@ -7,7 +7,8 @@ namespace Axiom.CgPrograms
     /// <summary>
     ///    Main plugin class.
     /// </summary>
-    [PluginMetadata(Name = "CgProgramManager", Subsystem=typeof(HighLevelGpuProgramManager))]
+    [PluginMetadata(Name = "CgProgramManager", 
+        Subsystem=typeof(HighLevelGpuProgramManager))]
     public class CgPlugin : IPlugin
     {
         private CgProgramFactory factory;
@@ -26,7 +27,7 @@ namespace Axiom.CgPrograms
             // register our Cg Program Factory
             factory = new CgProgramFactory();
 
-            HighLevelGpuProgramManagerSingleton.Instance.AddFactory( factory );
+            HighLevelGpuProgramManager.Instance.AddFactory( factory );
             _isStarted = true;
         }
 
