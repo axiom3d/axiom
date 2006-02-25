@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 #endregion Namespace Declarations
 
@@ -49,7 +50,8 @@ namespace DotNet3D.Math
     /// you interpret the values.
     ///</remarks>
     [StructLayout(LayoutKind.Sequential)]
-    public struct Vector2 
+    [Serializable]
+    public struct Vector2 : ISerializable
     {
         #region Fields
 
@@ -58,6 +60,7 @@ namespace DotNet3D.Math
         #endregion Fields
 
         #region Constructors
+        //NOTE: ISerializable Constructor in ISerializable Implementation
 
         /// <summary>
         ///     Creates a new Vector2
@@ -392,5 +395,21 @@ namespace DotNet3D.Math
             return new Vector2( this );
         }
 
+
+        #region ISerializable Implementation
+
+        public Vector2( SerializationInfo info, StreamingContext context )
+        {
+            x = (Real)info.GetValue( "x", typeof( Real ) );
+            y = (Real)info.GetValue( "y", typeof( Real ) );
+        }
+
+        public void GetObjectData( SerializationInfo info, StreamingContext context )
+        {
+            info.AddValue( "x", x );
+            info.AddValue( "y", y );
+        }
+
+        #endregion ISerializable Implementation
     }
 }

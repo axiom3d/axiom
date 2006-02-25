@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 // The Real datatype is actually one of these three under the covers
 using Numeric = System.Single;
@@ -48,7 +49,8 @@ namespace DotNet3D.Math
     /// 
     /// </summary>
     [StructLayout( LayoutKind.Sequential )]
-    public struct Real
+    [Serializable]
+    public struct Real : ISerializable
     {
         #region Fields
 
@@ -342,5 +344,20 @@ namespace DotNet3D.Math
         {
             return new Real( Numeric.Parse( value ) );
         }
+
+        #region ISerializable Implementation
+
+        public Real( SerializationInfo info, StreamingContext context )
+        {
+            _value = (Numeric)info.GetValue( "value", typeof( Numeric ) );
+        }
+
+        public void GetObjectData( SerializationInfo info, StreamingContext context )
+        {
+            info.AddValue( "value", _value );
+        }
+
+        #endregion ISerializable Implementation
+
     }
 }
