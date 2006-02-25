@@ -499,7 +499,7 @@ namespace Axiom.Demos
 
                 Vector3 diff1 = v1 - v2;
                 Vector3 diff2 = v1 - v0;
-                Vector3 fn = diff1.Cross( diff2 );
+                Vector3 fn = diff1.CrossProduct( diff2 );
 
                 // update the normal of each vertex in the current face
                 normals[3 * p0] += fn.x;
