@@ -33,12 +33,11 @@ using Axiom.MathLib;
 
 #endregion
 
-#region Versioning Information
-/// File								Revision
-/// ===============================================
-/// OgreAnimationTrack.h		                
-/// OgreAnimationTrack.cpp		            
-/// 
+#region Ogre Synchronization Information
+/// <ogresynchronization>
+///     <file name="AnimationTrack.h"   revision="1.13.2.2" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+///     <file name="AnimationTrack.cpp" revision="1.28.2.3" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
 #endregion
 
 namespace Axiom
@@ -180,11 +179,114 @@ namespace Axiom
                 targetNode = value;
             }
         }
-
+		public bool UseShortestRotationPath
+		{
+			get
+			{
+				return useShortestRotationPath;
+			}
+			set
+			{
+				useShortestRotationPath = value;
+			}
+		}
         #endregion
 
         #region Public methods
+		public bool HasNonZeroKeyFrames()
+		{
+			for ( int i = 0; i < keyFrameList.Count; i++ )
+			{
+				KeyFrame kf = keyFrameList[i];
+				// look for keyframes which have any component which is non-zero
+				// Since exporters can be a little inaccurate sometimes we use a
+				// tolerance value rather than looking for nothing
+				Vector3 trans = kf.Translate;
+				Vector3 scale = kf.Scale;
+				Vector3 axis = new Vector3();
+				float angle = 0f;
+				kf.Rotation.ToAngleAxis(ref angle, ref axis);
+				float tolerance = 1e-3f;
+				
 
+				
+				if (!trans.PositionEquals(Vector3.Zero, tolerance) ||
+					!scale.PositionEquals(Vector3.UnitScale, tolerance) ||
+					!Axiom.MathLib.MathUtil.RealEqual(angle, 0.0f, tolerance))
+				{
+					return true;
+				}
+
+		
+				
+			}
+
+			return false;
+		}
+
+		public void Optimise()
+		{
+			// Eliminate duplicate keyframes from 2nd to penultimate keyframe 
+			// NB only eliminate middle keys from sequences of 5+ identical keyframes
+			// since we need to preserve the boundary keys in place, and we need
+			// 2 at each end to preserve tangents for spline interpolation
+			Vector3 lasttrans = new Vector3();
+			Vector3 lastscale = new Vector3();
+			Quaternion lastorientation = new Quaternion();
+
+			float quatTolerance = 1e-3f;
+
+			System.Collections.ArrayList removeList = new System.Collections.ArrayList();
+
+			short k = 0;
+			ushort dupKfCount = 0;
+
+
+			for ( int i = 0; i < keyFrameList.Count; i++ )
+			{
+				KeyFrame kf = keyFrameList[i];
+
+				Vector3 newtrans = kf.Translate;
+				Vector3 newscale = kf.Scale;
+				Quaternion neworientation = kf.Rotation;
+				// Ignore first keyframe; now include the last keyframe as we eliminate
+				// only k-2 in a group of 5 to ensure we only eliminate middle keys
+				if (i != 0)
+				{
+					if (newtrans.PositionEquals(lasttrans) &&
+						newscale.PositionEquals(lastscale) && 
+						neworientation.Equals(lastorientation, quatTolerance))
+					{
+						++dupKfCount;
+
+						// 4 indicates this is the 5th duplicate keyframe
+						if (dupKfCount == 4)
+						{
+							// remove the 'middle' keyframe
+							removeList.Add(k-2);	
+							--dupKfCount;
+						}
+					}
+					else
+					{
+						// reset
+						dupKfCount = 0;
+					}
+						
+				}
+
+				lasttrans = newtrans;
+				lastscale = newscale;
+				lastorientation = neworientation;
+			}
+
+			// Now remove keyframes, in reverse order to avoid index revocation
+			for ( int r = 0; r < removeList.Count; r++ )
+			{
+				short removeIndex = (short)removeList[r];
+				RemoveKeyFrame(removeIndex);
+			}
+		}
         /// <summary>
         ///		Creates a new KeyFrame and adds it to this animation at the given time index.
         /// </summary>
@@ -224,6 +326,19 @@ namespace Axiom
             return keyFrame;
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		public KeyFrame GetKeyFrame( int index )
+		{
+			int count = keyFrameList.Count;
+			if ( index > count || index < 0 )
+				throw new ArgumentOutOfRangeException( "KeyFrame index is invalid." );
+			KeyFrame keyFrame = keyFrameList[index];
+			return keyFrame;
+		}
         /// <summary>
         ///		Gets the 2 KeyFrame objects which are active at the time given, and the blend value between them.
         /// </summary>
@@ -252,7 +367,6 @@ namespace Axiom
 
             int i = 0;
 
-            // makes compiler happy so it wont complain about this var being unassigned
             keyFrame1 = null;
 
             // find the last keyframe before or on current time
@@ -346,30 +460,58 @@ namespace Axiom
             else
             {
                 // interpolate by t
-                InterpolationMode mode = parent.InterpolationMode;
+                InterpolationMode interpolationMode = parent.InterpolationMode;
+				RotationInterpolationMode rim = parent.RotationInterpolationMode;
+				Vector3 baseVector;
 
-                switch ( mode )
+                switch ( interpolationMode )
                 {
+
                     case InterpolationMode.Linear:
                         {
-                            // linear interoplation
-                            result.Rotation = Quaternion.Slerp( t, k1.Rotation, k2.Rotation, useShortestRotationPath );
-                            result.Translate = k1.Translate + ( ( k2.Translate - k1.Translate ) * t );
-                            result.Scale = k1.Scale + ( ( k2.Scale - k1.Scale ) * t );
 
+						// Interpolate linearly
+						// Rotation
+						// Interpolate to nearest rotation if mUseShortestRotationPath set
+						if (rim == RotationInterpolationMode.Linear)
+						{
+						result.Rotation = Quaternion.Nlerp(t, k1.Rotation, k2.Rotation, useShortestRotationPath);
+						}
+						else //if (rim == Animation::RIM_SPHERICAL)
+						{
+							result.Rotation =  Quaternion.Slerp(t, k1.Rotation, k2.Rotation, useShortestRotationPath);
+						}
+
+						// Translation
+						baseVector = k1.Translate;
+						result.Translate = ( baseVector + ((k2.Translate - baseVector) * t) );
+
+						// Scale
+						baseVector = k1.Scale;
+						result.Scale = (baseVector + ((k2.Scale - baseVector) * t));
+						
                         }
-                        break;
+						break;
+
                     case InterpolationMode.Spline:
                         {
-                            // spline interpolation
-                            if ( isSplineRebuildNeeded )
-                            {
-                                BuildInterpolationSplines();
-                            }
 
-                            result.Rotation = rotationalSpline.Interpolate( firstKeyIndex, t, useShortestRotationPath );
-                            result.Translate = positionSpline.Interpolate( firstKeyIndex, t );
-                            result.Scale = scaleSpline.Interpolate( firstKeyIndex, t );
+						// Spline interpolation
+
+						// Build splines if required
+						if (isSplineRebuildNeeded)
+						{
+							this.BuildInterpolationSplines();
+						}
+
+						// Rotation, take mUseShortestRotationPath into account
+						result.Rotation = this.rotationalSpline.Interpolate(firstKeyIndex, t, useShortestRotationPath);
+
+						// Translation
+						result.Translate = positionSpline.Interpolate(firstKeyIndex, t);
+
+						// Scale
+						result.Scale =  scaleSpline.Interpolate(firstKeyIndex, t);
                         }
                         break;
 
@@ -379,23 +521,10 @@ namespace Axiom
             // return the resulting keyframe
             return result;
         }
-
-        /// <summary>
-        ///		Applies an animation track at a certain position to the target node.
-        /// </summary>
-        /// <remarks>
-        ///		When a track has bee associated with a target node, you can eaisly apply the animation
-        ///		to the target by calling this method.
-        /// </remarks>
-        /// <param name="time">The time position in the animation to apply.</param>
-        /// <param name="weight">The influence to give to this track, 1.0 for full influence, less to blend with
-        ///		other animations.</param>
-        /// <param name="accumulate"></param>
-        public void Apply( float time, float weight, bool accumulate, float scale, bool lookInDirectionOfTranslation )
-        {
-            // call ApplyToNode with our target node
-            ApplyToNode( targetNode, time, weight, accumulate, 1.0F, lookInDirectionOfTranslation );
-        }
+		public void Apply( float time, float weight, bool accumulate, float scale )
+		{
+			ApplyToNode(targetNode, time, weight, accumulate, scale);
+		}
 
         /// <summary>
         ///		Overloaded Apply method.  
@@ -404,50 +533,52 @@ namespace Axiom
         public void Apply( float time )
         {
             // call overloaded method
-            Apply( time, 1.0f, false, 1.0F, false );
+            Apply( time, 1.0f, false, 1.0F );
         }
 
-        /// <summary>
-        ///		Same as the Apply method, but applies to a specified Node instead of it's associated node.
-        /// </summary>
-        /// <param name="node"></param>
-        /// <param name="time"></param>
-        /// <param name="weight"></param>
-        /// <param name="accumulate"></param>
-        public void ApplyToNode( Node node, float time, float weight, bool accumulate, float scl, bool lookInDirectionOfTranslation )
-        {
 
-            KeyFrame keyFrame = this.GetInterpolatedKeyFrame( time );
+		public void ApplyToNode(Node node, float timePos, float weight, bool accumulate, float scl)
+		{
+			KeyFrame kf = this.GetInterpolatedKeyFrame(timePos);
+			if (accumulate) 
+			{
+				// add to existing. Weights are not relative, but treated as absolute multipliers for the animation
+				Vector3 translate = kf.Translate * weight * scl;
+				node.Translate(translate);
 
-            Vector3 scale = keyFrame.Scale;
-            // TODO not yet sure how to modify scale for cumulative animations... leave it alone
-            //scale = ((Vector3.UnitScale - keyFrame.Scale) * weight) + Vector3.UnitScale;
-            if ( scl != 1.0F && scale != Vector3.UnitScale )
-            {
-                scale = Vector3.UnitScale + ( scale - Vector3.UnitScale ) * scl;
-            }
+				// interpolate between no-rotation and full rotation, to point 'weight', so 0 = no rotate, 1 = full
+				Quaternion rotate;
+				RotationInterpolationMode rim = parent.RotationInterpolationMode;
+				if (rim == RotationInterpolationMode.Linear)
+				{
+					rotate = Quaternion.Nlerp(weight, Quaternion.Identity, kf.Rotation);
+				}
+				else //if (rim == Animation.RIM_SPHERICAL)
+				{
+					rotate = Quaternion.Slerp(weight, Quaternion.Identity, kf.Rotation);
+				}
+				node.Rotate(rotate);
 
-            if ( accumulate )
-            {
-                // add to existing. Weights are not relative, but treated as absolute multipliers for the animation
-                Vector3 translate = keyFrame.Translate * weight;
-                node.Translate( translate );
-
-                // interpolate between not rotation and full rotation, to point weight, so 0 = no rotate, and 1 = full rotation
-                Quaternion rotate = Quaternion.Slerp( weight, Quaternion.Identity, keyFrame.Rotation );
-                node.Rotate( rotate );
-
-                if ( lookInDirectionOfTranslation )
-                    node.Orientation = -Vector3.UnitZ.GetRotationTo( translate.ToNormalized() );
-
-                node.Scale( scale );
-            }
-            else
-            {
-                // apply using weighted transform method
-                node.WeightedTransform( weight, keyFrame.Translate, keyFrame.Rotation, scale, lookInDirectionOfTranslation );
-            }
-        }
+				Vector3 scale = kf.Scale;
+				// Not sure how to modify scale for cumulative anims... leave it alone
+				//scale = ((Vector3.UNIT_SCALE - kf.getScale()) * weight) + Vector3.UNIT_SCALE;
+				if (scl != 1.0f && scale != Vector3.UnitScale)
+				{
+					scale = Vector3.UnitScale + (scale - Vector3.UnitScale) * scl;
+				}
+				node.Scale(scale);
+			} 
+			else 
+			{
+				// apply using weighted transform method
+				Vector3 scale = kf.Scale;
+				if (scl != 1.0f && scale != Vector3.UnitScale)
+				{
+					scale = Vector3.UnitScale + (scale - Vector3.UnitScale) * scl;
+				}
+				node.WeightedTransform(weight, kf.Translate * scl, kf.Rotation,scale);
+			}
+		}
 
         /// <summary>
         ///		Removes all key frames from this animation track.

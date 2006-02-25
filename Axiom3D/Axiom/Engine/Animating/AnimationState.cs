@@ -25,7 +25,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-
+#region Ogre Synchronization Information
+/// <ogresynchronization>
+///     <file name="AnimationState.h"   revision="1.16" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+///     <file name="AnimationState.cpp" revision="1.17" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
+#endregion
 namespace Axiom
 {
     /// <summary>
@@ -53,6 +58,7 @@ namespace Axiom
         /// <summary></summary>
         protected bool isEnabled;
 		protected bool lookAt = false;
+		protected bool loop;
 
         #endregion
 
@@ -74,6 +80,7 @@ namespace Axiom
 
             // set using the Length property
             this.Length = length;
+			this.loop = true;
         }
 
         /// <summary>
@@ -85,9 +92,10 @@ namespace Axiom
         internal AnimationState(string animationName, float time, float length) {
             this.animationName = animationName;
             this.time = time;
-            this.length = length;
+            this.Length = length;
             this.weight = 1.0f;
             this.isEnabled = false;
+			this.loop = true;
         }
 
         #endregion
@@ -109,7 +117,26 @@ namespace Axiom
         /// </summary>
         public float Time {
             get { return time; }
-            set { time = value; }
+            set 
+			{ 
+				time = value;
+				if (loop)
+				{
+					// Wrap
+					//time = time%length;
+					time = (float)Math.IEEERemainder(time,length);
+					if(time < 0)
+						time += length;     
+				}
+				else
+				{
+					// Clamp
+					if(time < 0)
+						time = 0;
+					else if (time > length)
+						time = length;
+				}
+			}
         }
 
         /// <summary>
@@ -143,7 +170,11 @@ namespace Axiom
             get { return isEnabled; }
             set { isEnabled = value; }
         }
-
+		public bool Loop 
+		{
+			get { return loop; }
+			set { loop = value; }
+		}
         #endregion
 
         #region Public methods
@@ -153,12 +184,7 @@ namespace Axiom
         /// </summary>
         /// <param name="offset">Offset from the current time position.</param>
         public void AddTime(float offset) {
-			// TODO Add MathUtil function for this?
-			time = (float)Math.IEEERemainder(time + offset, length);
-
-			if(time < 0) {
-				time += length;
-			}
+			this.Time = (time += offset);
         }
 
         /// <summary>
@@ -177,12 +203,24 @@ namespace Axiom
         /// <param name="target">Target instance to copy our details to.</param>
         public void CopyTo(AnimationState target) {
             target.time = time;
-            target.animationName = animationName;
             target.inverseLength = inverseLength;
             target.length = length;
-            target.time = time;
+            target.isEnabled = isEnabled;
             target.weight = weight;
+			target.loop = loop;
         }
+
+		public void CopyStateFrom(AnimationState animState) 
+		{
+			time = animState.time;
+			inverseLength = animState.inverseLength;
+			length = animState.length;
+			isEnabled = animState.isEnabled;
+			weight = animState.weight;
+			loop = animState.loop;
+		}
+
+
 
         #endregion
 
@@ -198,7 +236,34 @@ namespace Axiom
         #endregion
 
         #region Object overloads
-
+		public static bool operator !=( AnimationState left, AnimationState right )
+		{
+			return !(left == right);
+		}
+		public override bool Equals( object obj )
+		{
+			return obj is AnimationState && this == (AnimationState)obj;
+		}
+		public static bool operator ==( AnimationState left, AnimationState right )
+		{
+			if ( object.ReferenceEquals( left, null ) && object.ReferenceEquals( right, null ) )
+				return true;
+			if ( object.ReferenceEquals( left, null ) || object.ReferenceEquals( right, null ) )
+				return false;
+			if (left.animationName == right.animationName &&
+				left.isEnabled == right.isEnabled &&
+				left.time == right.time &&
+				left.weight == right.weight &&
+				left.length == right.length && 
+				left.loop == right.loop)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
         /// <summary>
         ///    Override GetHashCode.
         /// </summary>
@@ -235,6 +300,25 @@ namespace Axiom
             }
         }
 
+
+		public static void CopyAnimationStateSubset(AnimationStateCollection target,  AnimationStateCollection source)
+		{
+
+			for ( int i = 0; i < target.Count; i++ )
+			{
+				AnimationState state = target[i];
+				if (!source.ContainsKey(state.Name))
+				{
+					throw new Exception("No animation entry found named " + state.Name + " CopyAnimationStateSubset");
+				}
+				else
+				{
+					state.CopyStateFrom(source[state.Name]);
+				}
+
+			}
+
+		}
         #endregion
     }
 }
