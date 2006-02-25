@@ -618,20 +618,24 @@ namespace Axiom.RenderSystems.DirectX9
 
             if ( autoCreateWindow )
             {
-                DataRow[] modes = engineConfig.DisplayMode.Select( "Selected = true" );
+                int width = 800;
+                int height = 600;
+                int bpp = 32;
+                bool fullScreen = false;
+                //DataRow[] modes = ConfigOptions["Video Mode"];
 
-                if ( modes == null || modes.Length == 0 )
-                {
-                    throw new Exception( "No video mode is selected" );
-                }
+                //if ( modes == null || modes.Length == 0 )
+                //{
+                //    throw new Exception( "No video mode is selected" );
+                //}
 
-                EngineConfig.DisplayModeRow mode = (EngineConfig.DisplayModeRow)modes[0];
+                //EngineConfig.DisplayModeRow mode = (EngineConfig.DisplayModeRow)modes[0];
 
                 // create a default form window
-                DefaultForm newWindow = CreateDefaultForm( windowTitle, 0, 0, mode.Width, mode.Height, mode.FullScreen );
+                DefaultForm newWindow = CreateDefaultForm( windowTitle, 0, 0, width, height, fullScreen );
 
                 // create the render window
-                renderWindow = CreateRenderWindow( "Main Window", mode.Width, mode.Height, mode.Bpp, mode.FullScreen, 0, 0, true, false, newWindow );
+                renderWindow = CreateRenderWindow( "Main Window", width, height, bpp, fullScreen, 0, 0, true, false, newWindow );
 
                 // use W buffer when in 16 bit color mode
                 useWBuffer = ( renderWindow.ColorDepth == 16 );
@@ -1435,13 +1439,79 @@ namespace Axiom.RenderSystems.DirectX9
         /// </summary>
         private void InitConfigOptions()
         {
-            Driver driver = D3DHelper.GetDriverInfo();
+            ConfigOption optDevice = new ConfigOption();
+            ConfigOption optVideoMode = new ConfigOption();
+            ConfigOption optFullScreen = new ConfigOption();
+            ConfigOption optVSync = new ConfigOption();
+            ConfigOption optAA = new ConfigOption();
+            ConfigOption optFPUMode = new ConfigOption();
 
-            foreach ( VideoMode mode in driver.VideoModes )
+            //driverList = this->getDirect3DDrivers();
+
+            optDevice.Name = "Rendering Device";
+            optDevice.Value = "";
+            optDevice.PossibleValues.Clear();
+            optDevice.Immutable = false;
+
+            optVideoMode.Name = "Video Mode";
+            optVideoMode.Value = "800 x 600 @ 32-bit colour";
+            optVideoMode.Immutable = false;
+
+            DriverCollection driverList = D3DHelper.GetDriverInfo();
+            foreach ( Driver driver in driverList )
             {
+                //string query = string.Format( "{0} x {1} @ {2}-bit colour", mode.Width, mode.Height, mode.ColorDepth.ToString );
                 // add a new row to the display settings table
-                engineConfig.DisplayMode.AddDisplayModeRow( mode.Width, mode.Height, mode.ColorDepth, false, false );
+                optDevice.PossibleValues.Add( driver.Description );
             }
+
+            //foreach ( VideoMode mode in driver.VideoModes )
+            //{
+            //    string query = string.Format( "{0} x {1} @ {2}-bit colour", mode.Width, mode.Height, mode.ColorDepth.ToString );
+            //    // add a new row to the display settings table
+            //    optVideoMode.Add( mode.Width, mode.Height, mode.ColorDepth, false, false );
+            //}
+
+            optFullScreen.Name = "Full Screen";
+            optFullScreen.PossibleValues.Add( "Yes" );
+            optFullScreen.PossibleValues.Add( "No" );
+            optFullScreen.Value = "Yes";
+            optFullScreen.Immutable = false;
+
+            //for ( unsigned j = 0; j < driverList->count(); j++ )
+            //{
+            //    driver = driverList->item( j );
+            //    optDevice.PossibleValues.push_back( driver->DriverDescription() );
+            //    // Make first one default
+            //    if ( j == 0 )
+            //        optDevice.Value = driver->DriverDescription();
+            //}
+
+            optVSync.Name = "VSync";
+            optVSync.Immutable = false;
+            optVSync.PossibleValues.Add( "Yes" );
+            optVSync.PossibleValues.Add( "No" );
+            optVSync.Value = "No";
+
+            optAA.Name = "Anti aliasing";
+            optAA.Immutable = false;
+            optAA.PossibleValues.Add( "None" );
+            optAA.Value = "None";
+
+            optFPUMode.Name = "Floating-point mode";
+            optFPUMode.Value = "Fastest";
+            optFPUMode.PossibleValues.Clear();
+            optFPUMode.PossibleValues.Add( "Fastest" );
+            optFPUMode.PossibleValues.Add( "Consistent" );
+            optFPUMode.Immutable = false;
+
+            ConfigOptions.Add( optDevice );
+            ConfigOptions.Add( optVideoMode );
+            ConfigOptions.Add( optFullScreen );
+            ConfigOptions.Add( optVSync );
+            ConfigOptions.Add( optAA );
+            ConfigOptions.Add( optFPUMode );
+            
         }
 
         private Matrix MakeD3DMatrix( Matrix4 matrix )
@@ -1981,9 +2051,12 @@ namespace Axiom.RenderSystems.DirectX9
                 // GeForce4 Ti (and presumably GeForce3) does not
                 // render infinite projection properly, even though it does in GL
                 // So exclude all cards prior to the FX range from doing infinite
-                Driver driver = D3DHelper.GetDriverInfo();
 
-                AdapterDetails details = Manager.Adapters[driver.AdapterNumber].Information;
+                //Driver driver = D3DHelper.GetDriverInfo();
+
+                AdapterDetails details = Manager.Adapters[0].Information;
+
+                //AdapterDetails details = Manager.Adapters[driver.AdapterNumber].Information;
 
                 // not nVidia or GeForceFX and above
                 if ( details.VendorId != 0x10DE || details.DeviceId >= 0x0301 )

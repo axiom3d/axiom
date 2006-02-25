@@ -438,7 +438,7 @@ namespace Axiom.Animating {
                 // only apply if enable
                 if(animState.IsEnabled) {
                     Animation anim = GetAnimation(animState.Name);
-                    anim.Apply(this, animState.Time, animState.Weight, blendMode == SkeletalAnimBlendMode.Cumulative);
+                    anim.Apply(this, animState.Time, animState.Weight, blendMode == SkeletalAnimBlendMode.Cumulative, 1.0F);
                 } // if
             } // for
 

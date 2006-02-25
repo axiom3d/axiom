@@ -211,6 +211,21 @@ namespace Axiom.Animating
             }
         }
 
+        /// <summary>
+        ///		Gets/Sets the default rotation interpolation mode to be used for all animations.
+        /// </summary>
+        public static RotationInterpolationMode DefaultRotationInterpolationMode
+        {
+            get
+            {
+                return defaultRotationInterpolationMode;
+            }
+            set
+            {
+                defaultRotationInterpolationMode = value;
+            }
+        }
+
         #endregion
 
         #region Public methods
@@ -260,7 +275,7 @@ namespace Axiom.Animating
         /// <param name="accumulate"></param>
         public void Apply( float time, float weight, bool accumulate )
         {
-            Apply( time, weight, accumulate, 1.0, false );
+            Apply( time, weight, accumulate, 1.0F, false );
         }
 
 
@@ -280,7 +295,7 @@ namespace Axiom.Animating
             // loop through tracks and update them all with current time
             foreach ( AnimationTrack track in trackList )
             {
-                trackList[i].Apply( time, weight, accumulate, scale, lookInDirectionOfTranslation );
+                track.Apply( time, weight, accumulate, scale, lookInDirectionOfTranslation );
             }
             //for ( int i = 0; i < trackList.Count; i++ )
             //{
