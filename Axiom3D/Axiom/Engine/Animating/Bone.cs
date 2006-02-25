@@ -195,9 +195,10 @@ namespace Axiom.Animating {
         public ushort boneIndex;
         public float weight;
 
+
         #region IComparable Members
 
-        public int IComparable.CompareTo( object obj )
+        public int CompareTo( object obj )
         {
             if ( obj is VertexBoneAssignment )
             {
@@ -220,5 +221,6 @@ namespace Axiom.Animating {
         }
 
         #endregion
-    }
+
+}
 }
