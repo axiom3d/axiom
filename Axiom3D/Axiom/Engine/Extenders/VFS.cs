@@ -24,9 +24,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region Namespace Declarations
 using System;
 using System.Collections.Generic;
 using System.Text;
+#endregion
 
 namespace Axiom
 {
@@ -78,6 +80,21 @@ namespace Axiom
                 namespaceExtender.Namespace, namespaceExtender.GetType().FullName);
         }
 
+        private INamespaceExtender recursiveLookupExtender(ref string namespaceName)
+        {
+            // finished recursing?
+            if (namespaceName.IndexOf("/") == -1)
+                return null; 
+
+            namespaceName =
+                namespaceName.Substring(0, namespaceName.LastIndexOf("/"));
+
+            if (fileSystem.ContainsKey(namespaceName + "/"))
+                return fileSystem[namespaceName + "/"];
+            else
+                return recursiveLookupExtender(ref namespaceName);
+        }
+
         /// <summary>
         /// Returns an object from the VFS
         /// </summary>
@@ -99,14 +116,16 @@ namespace Axiom
 
                     string namespaceName =
                         path.Substring(0, path.LastIndexOf("/") + 1);
+                    INamespaceExtender extender =
+                        recursiveLookupExtender(ref namespaceName);
 
-                    if (!fileSystem.ContainsKey(namespaceName))
+                    if (extender == null)
                         return null;
 
-                    string objectName = path.Substring(path.LastIndexOf("/") + 1,
-                        path.Length - namespaceName.Length);
-
-                    return ((INamespaceExtender)this[namespaceName]).GetObject<object>(objectName);
+                    string objectName =
+                        path.Substring(namespaceName.Length + 1);
+                        
+                    return (extender).GetObject<object>(objectName);
                 }
             }
         }
