@@ -189,9 +189,36 @@ namespace Axiom.Animating {
     ///		This is a class because we need it as a reference type to allow for modification
     ///		in places where we would only have a copy of the data if it were a struct. 
     /// </remarks>
-    public class VertexBoneAssignment {
+    public class VertexBoneAssignment  : IComparable
+    {
         public int vertexIndex;
         public ushort boneIndex;
         public float weight;
+
+        #region IComparable Members
+
+        public int IComparable.CompareTo( object obj )
+        {
+            if ( obj is VertexBoneAssignment )
+            {
+                VertexBoneAssignment v = (VertexBoneAssignment)obj;
+
+                if ( weight > v.weight )
+                    return 1;
+                if ( weight < v.weight )
+                    return -1;
+
+                if ( vertexIndex != v.vertexIndex )
+                    return vertexIndex - v.vertexIndex;
+
+                if ( boneIndex != v.boneIndex )
+                    return boneIndex - v.boneIndex;
+
+                return 0;
+            }
+            return 0;
+        }
+
+        #endregion
     }
 }

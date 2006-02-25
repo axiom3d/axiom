@@ -142,7 +142,7 @@ namespace Axiom.SceneManagers.Octree
             // load the heightmap
             Image image = Image.FromFile( terrainFileName );
 
-            // TODO: Check terrain size for 2^n + 1
+            // TODO Check terrain size for 2^n + 1
 
             // get the data from the heightmap
             options.data = image.Data;
@@ -227,7 +227,7 @@ namespace Axiom.SceneManagers.Octree
                 }
             }
 
-            if ( false && options.isLit ) //TODO: Fix
+            if ( false && options.isLit ) //TODO Fix
             {
                 for ( int j = 0; j < size1; j++ )
                 {

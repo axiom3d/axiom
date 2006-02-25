@@ -650,7 +650,7 @@ namespace Axiom.MathLib
                 * Quaternion.FromAngleAxis( pitch, Vector3.UnitX )
                 * Quaternion.FromAngleAxis( roll, Vector3.UnitZ );
 
-            /*TODO: Debug
+            /*TODO Debug
 			//Equation from http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm
 			//heading
 			

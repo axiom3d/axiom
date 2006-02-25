@@ -159,7 +159,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
                 container = (ArrayList)buckets[key];
             }
 
-            // TODO: Doing the contains check is extremely slow, so for now duplicate items are allowed
+            // TODO Doing the contains check is extremely slow, so for now duplicate items are allowed
             //if(!container.Contains(val)) {
             container.Add( val );
             count++;

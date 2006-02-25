@@ -228,7 +228,7 @@ namespace Axiom.Controllers
                 }
             }
 
-            // TODO: Revisit, since we can't return 2 controllers in the case of non equal U and V speeds
+            // TODO Revisit, since we can't return 2 controllers in the case of non equal U and V speeds
             return controller;
         }
 

@@ -352,7 +352,7 @@ namespace Axiom.Graphics
                 target.fragmentProgramUsage = null;
             }
 
-            // TODO: Shadow caster/receiver program usage
+            // TODO Shadow caster/receiver program usage
 
             // texture units
             target.RemoveAllTextureUnitStates();

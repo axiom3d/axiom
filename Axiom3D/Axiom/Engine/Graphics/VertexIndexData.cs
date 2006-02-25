@@ -186,7 +186,7 @@ namespace Axiom.Graphics
         ///			structure of the vertex data in the buffers of this object, you may have to rethink them.
         ///		</para>
         /// </remarks>
-        // TODO: Step through and test
+        // TODO Step through and test
         public void PrepareForShadowVolume()
         {
             /* NOTE

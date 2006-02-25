@@ -208,7 +208,7 @@ namespace RealmForge.Reflection
             classInfos.Add( type.FullName, info );
             if ( typeAliases.Contains( tagName ) )
             {
-                //TODO: may want to throw error, if the type is different
+                //TODO may want to throw error, if the type is different
                 //But this may be just changing the serialization method
                 typeAliases.Remove( tagName );//replace
             }
@@ -251,7 +251,7 @@ namespace RealmForge.Reflection
         /// <param name="type"></param>
         public ClassSerializationInfo RegisterType( Type type )
         {
-            //TODO: Consider readonly or writeonly properties and fields
+            //TODO Consider readonly or writeonly properties and fields
             string qualifiedName = type.FullName;
             if ( classInfos.Contains( qualifiedName ) )
                 return (ClassSerializationInfo)classInfos[qualifiedName];	//already registered
@@ -304,7 +304,7 @@ namespace RealmForge.Reflection
                 }
                 else if ( type.GetInterface( "IDictionary" ) != null )
                 {
-                    //TODO: get the KeyPropertyName from SerializedClassAttribute
+                    //TODO get the KeyPropertyName from SerializedClassAttribute
                     serInfo = new ClassSerializationInfo( type, name, SerializeType.KeyedList, keyProperty );
                 }
                 else if ( type.GetInterface( "IList" ) != null )

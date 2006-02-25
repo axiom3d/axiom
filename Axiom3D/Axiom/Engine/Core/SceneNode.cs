@@ -524,7 +524,7 @@ namespace Axiom.Core
         public virtual void FindVisibleObjects( Camera camera, RenderQueue queue, bool includeChildren, bool displayNodes, bool onlyShadowCasters )
         {
             // if we aren't visible, then quit now
-            // TODO: Make sure sphere is calculated properly for all objects, then switch to cull using that
+            // TODO Make sure sphere is calculated properly for all objects, then switch to cull using that
             if ( !camera.IsObjectVisible( worldAABB ) )
                 return;
 

@@ -92,7 +92,7 @@ namespace Axiom.Graphics
         /// <returns></returns>
         public int Read( byte[] buffer, int offset, int count )
         {
-            // TODO:  Add BufferStream.Read implementation
+            // TODO  Add BufferStream.Read implementation
             return 0;
         }
 

@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Runtime.InteropServices;
 using System.Collections.Specialized;
+using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Graphics;
 using Tao.OpenGl;
@@ -59,7 +60,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// <summary>
         ///		Config options.
         /// </summary>
-        protected EngineConfig engineConfig = new EngineConfig();
+        protected ConfigOptionCollection configOptions = new ConfigOptionCollection();
 
         #endregion Fields
 
@@ -70,11 +71,11 @@ namespace Axiom.RenderSystems.OpenGL
         /// <summary>
         ///		Gets the options currently set by the current GL implementation.
         /// </summary>
-        public EngineConfig ConfigOptions
+        public ConfigOptionCollection ConfigOptions
         {
             get
             {
-                return engineConfig;
+                return configOptions;
             }
         }
 
@@ -191,6 +192,13 @@ namespace Axiom.RenderSystems.OpenGL
         ///		Add any special config values to the system.
         /// </summary>
         public abstract void AddConfig();
+	    public abstract void SetConfigOption(string name, string value);
+
+        /// <summary>
+        /// Make sure all the extra options are valid
+        /// </summary>
+        /// <returns>string with error message</returns>
+        public abstract string ValidateConfig();
 
         /// <summary>
         ///		

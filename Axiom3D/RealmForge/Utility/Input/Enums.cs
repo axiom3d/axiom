@@ -19,7 +19,7 @@ namespace RealmForge.Input
     /// <summary>
     /// 
     /// </summary>
-    /// TODO: Ensure that there are no values conflicts
+    /// TODO Ensure that there are no values conflicts
     [Flags]
     public enum ControlKeys
     {
@@ -56,7 +56,7 @@ namespace RealmForge.Input
 
     /// <summary>
     /// All the possible gamepad buttons
-    /// TODO: implement after Axiom has support for it
+    /// TODO implement after Axiom has support for it
     /// </summary>
     public enum GamepadButtons
     {

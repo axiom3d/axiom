@@ -96,7 +96,7 @@ namespace Axiom.Graphics
         /// </summary>
         internal void Unload()
         {
-            // TODO: Anything needed here?  The program cannot be destroyed since it is shared.
+            // TODO Anything needed here?  The program cannot be destroyed since it is shared.
         }
 
         #endregion

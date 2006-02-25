@@ -6,12 +6,11 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle( "OpenGL (Tao)" )]
-[assembly: AssemblyDescription( "The OpenGL renderer implementation using the Tao.OpenGl library." )]
-[assembly: AssemblyConfiguration( "" )]
-[assembly: AssemblyCompany( "Axiom Project Team" )]
-[assembly: AssemblyProduct( "Axiom Game Engine" )]
-[assembly: AssemblyCopyright( "" )]
+[assembly: AssemblyTitle( "Axiom OpenGL Rendering Subsystem" )]
+[assembly: AssemblyDescription( "Rendering system implementation which implements the 3D graphics API abstraction layer using Tao.OpenGL." )]
+[assembly: AssemblyCompany( "Axiom and RealmForge Development Team" )]
+[assembly: AssemblyProduct( "Axiom Rendering Engine" )]
+[assembly: AssemblyCopyright( "Copyright © Axiom and RealmForge Development Team 2003-2005" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 

@@ -60,7 +60,7 @@ namespace Axiom.RenderSystems.OpenGL
             }
 
             // set the video mode (and create the surface)
-            // TODO: Grab return val once changed to the right type
+            // TODO Grab return val once changed to the right type
             Sdl.SDL_SetVideoMode( width, height, colorDepth, flags );
 
             // lets get active!

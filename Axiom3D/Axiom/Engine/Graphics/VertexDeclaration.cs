@@ -388,7 +388,7 @@ namespace Axiom.Graphics
         ///    Done mainly to quash warnings, no real need for it.
         /// </remarks>
         /// <returns></returns>
-        // TODO: Does this need to be implemented, dont think we are stuffing these into hashtables.
+        // TODO Does this need to be implemented, dont think we are stuffing these into hashtables.
         public override int GetHashCode()
         {
             return 0;

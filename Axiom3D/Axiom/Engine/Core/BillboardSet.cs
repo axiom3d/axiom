@@ -94,6 +94,11 @@ namespace Axiom.Core
     ///		<p/>
     ///		A BillboardSet can be created using the SceneManager.CreateBillboardSet method. They can also be used internally
     ///		by other classes to create effects.
+    ///     <p/>
+    ///     Billboard bounds are only automatically calculated when you create them. If you modify the position of a 
+    ///     billboard you may need to call UpdateBounds if the billboard moves outside the original bounds.
+    ///     Similarly, the bounds do no shrink when you remove a billboard, if you want them to, call UpdateBounds, 
+    ///     but note this requires a potentially expensive examination of every billboard in the set.
     /// </remarks>
     public class BillboardSet : MovableObject, IRenderable
     {

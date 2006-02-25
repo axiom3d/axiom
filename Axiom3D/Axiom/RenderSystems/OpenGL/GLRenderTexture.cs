@@ -54,7 +54,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         public override void Save( System.IO.Stream stream )
         {
-            // TODO: Implement me
+            // TODO Implement me
             throw new NotImplementedException( "Saving RenderTextures is not yet implemented." );
         }
 

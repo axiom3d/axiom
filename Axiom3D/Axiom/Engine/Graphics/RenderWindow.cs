@@ -168,7 +168,7 @@ namespace Axiom.Graphics
             // call base class Update method
             base.Update();
 
-            // TODO: Implement this later
+            // TODO Implement this later
             // Update statistics (always on top)
             //UpdateStats();
 

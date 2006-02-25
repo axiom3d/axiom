@@ -151,7 +151,7 @@ namespace Axiom.SceneManagers.Octree
 
         public void AddNode( OctreeNode node )
         {
-            // TODO: Att some points, some nodes seemed to be added if they already existed.  Investigate.
+            // TODO Att some points, some nodes seemed to be added if they already existed.  Investigate.
             nodeList[node.Name] = node;
             node.Octant = this;
             Ref();

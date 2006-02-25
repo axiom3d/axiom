@@ -36,29 +36,50 @@ namespace Axiom.RenderSystems.OpenGL
         /// </summary>
         public override void AddConfig()
         {
+            ConfigOption option;
+            
+            // Full Screen
+            option = new ConfigOption( "Full Screen", "Yes", false );
+            option.PossibleValues.Add( "Yes" );
+            option.PossibleValues.Add( "No" );
+            ConfigOptions.Add( option );
+            
+            // Video Mode
             // get the available OpenGL resolutions
             Sdl.SDL_Rect[] modes = Sdl.SDL_ListModes( IntPtr.Zero, Sdl.SDL_FULLSCREEN | Sdl.SDL_OPENGL );
 
+            option = new ConfigOption( "Video Mode", "", false );
             // add the resolutions to the config
             foreach ( Sdl.SDL_Rect mode in modes )
             {
                 int width = mode.w;
                 int height = mode.h;
-                // HACK: How to get bpp?  Assume 16 and 32 are available?
-                int bpp = 32;
-
+                
                 // filter out the lower resolutions and dupe frequencies
-                if ( width >= 640 && height >= 480 && bpp >= 16 )
+                if ( width >= 640 && height >= 480)
                 {
-                    string query = string.Format( "Width = {0} AND Height= {1} AND Bpp = {2}", width, height, bpp );
+                    string query = string.Format( "{0} x {1}", width, height );
 
-                    if ( engineConfig.DisplayMode.Select( query ).Length == 0 )
+                    if ( !option.PossibleValues.Contains( query ) )
                     {
                         // add a new row to the display settings table
-                        engineConfig.DisplayMode.AddDisplayModeRow( width, height, bpp, false, false );
+                        option.PossibleValues.Add( query );
+                    }
+                    if ( option.PossibleValues.Count == 1 )
+                    {
+                        option.Value = query;
                     }
                 }
             }
+            ConfigOptions.Add( option );
+
+            option = new ConfigOption( "FSAA", "0", false );
+            option.PossibleValues.Add( "0" );
+            option.PossibleValues.Add( "2" );
+            option.PossibleValues.Add( "4" );
+            option.PossibleValues.Add( "6" );
+            ConfigOptions.Add( option );
+            
         }
 
         /// <summary>
@@ -96,15 +117,20 @@ namespace Axiom.RenderSystems.OpenGL
             if ( autoCreateWindow )
             {
                 // MONO: Could not cast result of Select to strongly typed data row
-                DataRow[] modes =
-                    (DataRow[])engineConfig.DisplayMode.Select( "Selected = true" );
+                //DataRow[] modes =
+                //    (DataRow[])engineConfig.DisplayMode.Select( "Selected = true" );
 
-                DataRow mode = modes[0];
+                //DataRow mode = modes[0];
 
-                int width = (int)mode["Width"];
-                int height = (int)mode["Height"];
-                int bpp = (int)mode["Bpp"];
-                bool fullscreen = (bool)mode["FullScreen"];
+                //int width = (int)mode["Width"];
+                //int height = (int)mode["Height"];
+                //int bpp = (int)mode["Bpp"];
+                //bool fullscreen = (bool)mode["FullScreen"];
+
+                int width = 640;
+                int height = 480;
+                int bpp = 32;
+                bool fullscreen = false;
 
                 // create the window with the default form as the target
                 autoWindow = renderSystem.CreateRenderWindow( windowTitle, width, height, 32, fullscreen, 0, 0, true, false, null );
@@ -114,5 +140,19 @@ namespace Axiom.RenderSystems.OpenGL
         }
 
         #endregion BaseGLSupport Members
+
+        public override void SetConfigOption(string name, string value)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Make sure all the extra options are valid
+        /// </summary>
+        /// <returns>string with error message</returns>
+        public override string ValidateConfig()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

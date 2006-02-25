@@ -290,7 +290,7 @@ namespace Axiom.Platforms.Win32
         {
             get
             {
-                // TODO:  Add Win32Timer.Microseconds getter implementation
+                // TODO  Add Win32Timer.Microseconds getter implementation
                 return 0;
             }
         }

@@ -173,7 +173,7 @@ namespace Axiom.Platforms.SDL
         {
             get
             {
-                // TODO:  Add Win32Timer.Microseconds getter implementation
+                // TODO  Add Win32Timer.Microseconds getter implementation
                 return 0;
             }
         }

@@ -39,7 +39,7 @@ namespace Axiom.Core
         /// <param name="length">Length of data (in bytes) to copy.</param>
         public static void Copy( IntPtr src, IntPtr dest, int srcOffset, int destOffset, int length )
         {
-            // TODO: Block copy would be faster, find a cross platform way to do it
+            // TODO Block copy would be faster, find a cross platform way to do it
             unsafe
             {
                 byte* pSrc = (byte*)src.ToPointer();

@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Reflection;
+using System.Threading;
 using RealmForge;
 
 #endregion Namespace Declarations
@@ -34,7 +35,7 @@ namespace Axiom.Demos
     /// <summary>
     ///     Demo browser entry point.
     /// </summary>
-    public class DemoTest
+    public class DemoMain
     {
         [STAThread]
         private static void Main( string[] args )
@@ -42,36 +43,7 @@ namespace Axiom.Demos
 
             try
             {
-                //print out the the available tech demos and their numbers
-                ArrayList demoTypes = Reflector.GetTypesDerivedFrom( Assembly.GetExecutingAssembly(), typeof( TechDemo ) );
-                for ( int i = 0; i < demoTypes.Count; i++ )
-                {
-                    Type type = (Type)demoTypes[i];
-                    Console.WriteLine( "{0}) {1}", i + 1, type.Name );
-                }
-                //have the user enter the number of the demo to show
-                Type demoType = null;
-                Console.WriteLine( "Enter the number of the demo that you want to run and press enter." );
-                while ( true )
-                {
-                    string line = Console.ReadLine();
-                    int number = -1;
-                    if ( line != string.Empty )
-                    {
-                        number = int.Parse( line.Trim() );
-                    }
-                    if ( number < 1 || number > demoTypes.Count )
-                        Console.WriteLine( "The number of the demo game must be between 1 and {0}, the number of demos games available.", demoTypes.Count );
-                    else
-                    {
-                        demoType = (Type)demoTypes[number - 1];
-                        break;
-                    }
-                }
-
-                Console.WriteLine( "Starting the {0} demo.", demoType.Name );
-                //start it
-                using ( TechDemo demo = (TechDemo)Activator.CreateInstance( demoType ) )
+                using ( TechDemo demo = (TechDemo)new DemoList() )
                 {
                     demo.Start();//show and start rendering
                 }//dispose of it when done

@@ -936,7 +936,7 @@ namespace Axiom.Core
         ///	to update it's complete transformation based on it's parents
         ///	derived transform.
         /// </summary>
-        // TODO: This was previously protected.  Was made internal to allow access to custom collections.
+        // TODO This was previously protected.  Was made internal to allow access to custom collections.
         virtual internal void UpdateFromParent()
         {
             if ( parent != null )

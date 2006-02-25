@@ -26,7 +26,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
         /// <param name="forceInfoLog"></param>
         public static void CheckForGLSLError( string error, int handle, bool forceInfoLog, bool forceException )
         {
-            // TODO: Implement
+            // TODO Implement
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
         /// <returns></returns>
         public static string LogObjectInfo( string message, int handle )
         {
-            // TODO: Implement
+            // TODO Implement
             return string.Empty;
         }
     }

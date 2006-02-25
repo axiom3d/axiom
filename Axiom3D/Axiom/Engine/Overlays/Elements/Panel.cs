@@ -240,7 +240,7 @@ namespace Axiom.Overlays.Elements
                 {
                     for ( int i = numTexCoords; i > numLayers; --i )
                     {
-                        // TODO: Implement RemoveElement
+                        // TODO Implement RemoveElement
                         //decl.RemoveElement(TEXTURE_COORDS, i);
                     }
                 }

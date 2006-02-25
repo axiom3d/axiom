@@ -11,7 +11,7 @@ namespace Axiom.Core
 {
 
     #region Strongly Types Collections
-    //TODO: Modify for Generics
+    //TODO Modify for Generics
     public class QueuedGeometryList : ArrayList
     {
     }

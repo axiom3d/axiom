@@ -118,7 +118,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Gets an enumerator to iterate through the buffer bindings.
         /// </summary>
-        /// TODO: Change this to strongly typed later on
+        /// TODO Change this to strongly typed later on
         public virtual IEnumerator Bindings
         {
             get

@@ -153,7 +153,7 @@ namespace Axiom.Serialization
                             // read geometry into shared vertex data
                             ReadGeometry( reader, mesh.SharedVertexData );
 
-                            // TODO: trap errors here
+                            // TODO trap errors here
                             break;
 
                         case MeshChunkID.SubMesh:
@@ -497,7 +497,7 @@ namespace Axiom.Serialization
                 {
                     SubMesh sub = mesh.GetSubMesh( i );
 
-                    // TODO: Create typed collection and implement resize
+                    // TODO Create typed collection and implement resize
                     for ( int j = 1; j < mesh.numLods; j++ )
                     {
                         sub.lodFaceList.Add( null );
@@ -659,8 +659,8 @@ namespace Axiom.Serialization
                         int triCount = ReadInt( reader );
                         int edgeGroupCount = ReadInt( reader );
 
-                        // TODO: Resize triangle list
-                        // TODO: Resize edge groups
+                        // TODO Resize triangle list
+                        // TODO Resize edge groups
 
                         for ( int i = 0; i < triCount; i++ )
                         {
@@ -697,7 +697,7 @@ namespace Axiom.Serialization
 
                             int edgeCount = ReadInt( reader );
 
-                            // TODO: Resize the edge group list
+                            // TODO Resize the edge group list
 
                             for ( int e = 0; e < edgeCount; e++ )
                             {

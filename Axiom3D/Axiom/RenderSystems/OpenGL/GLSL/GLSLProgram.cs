@@ -223,7 +223,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
         /// <param name="name"></param>
         /// <param name="val"></param>
         /// <returns></returns>
-        // TODO: Refactor to command pattern
+        // TODO Refactor to command pattern
         public override bool SetParam( string name, string val )
         {
             if ( name == "attach" )

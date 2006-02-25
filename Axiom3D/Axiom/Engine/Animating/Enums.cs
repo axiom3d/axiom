@@ -24,27 +24,28 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region Namespace Declarations
+
 using System;
 
-namespace Axiom.Animating {
-    /// <summary>
-    ///		Types of interpolation used in animation.
-    /// </summary>
-    public enum InterpolationMode {
-        /// <summary>
-        ///		More robotic movement, not as realistic.
-        ///	 </summary>
-        Linear,
-        /// <summary>
-        ///		Smooth movement between keyframes.
-        ///	 </summary>
-        Spline
-    }
+#endregion
+
+#region Versioning Information
+/// File								Revision
+/// ===============================================
+/// OgreBillboard.h		                1.13
+/// OgreBillboard.cpp		            1.13
+/// 
+#endregion
+
+namespace Axiom.Animating
+{
 
     /// <summary>
     ///		Used to specify how animations are applied to a skeleton.
     /// </summary>
-    public enum SkeletalAnimBlendMode {
+    public enum SkeletalAnimBlendMode
+    {
         /// <summary>
         ///		Animations are applied by calculating a weighted average of all animations.
         ///	 </summary>

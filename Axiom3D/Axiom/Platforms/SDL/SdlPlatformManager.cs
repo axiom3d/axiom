@@ -8,7 +8,7 @@ namespace Axiom.Platforms.SDL
     /// <summary>
     ///		Platform management specialization for Microsoft Windows (r) platform.
     /// </summary>
-    // TODO: Disposal of object create here.
+    // TODO Disposal of object create here.
     public class SdlPlatformManager : IPlatformManager
     {
         #region Fields

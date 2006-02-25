@@ -125,7 +125,7 @@ namespace Axiom.ParticleFX
             {
                 ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
-                // TODO: Common way for writing color.
+                // TODO Common way for writing color.
                 return StringConverter.ToString( affector.colorAdj[1] );
             }
             public void Set( object target, string val )
@@ -147,7 +147,7 @@ namespace Axiom.ParticleFX
             {
                 ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
-                // TODO: Common way for writing color.
+                // TODO Common way for writing color.
                 return StringConverter.ToString( affector.colorAdj[2] );
             }
             public void Set( object target, string val )

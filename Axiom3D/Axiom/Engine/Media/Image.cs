@@ -183,7 +183,7 @@ namespace Axiom.Media
             // find a registered codec for this type
             ICodec codec = CodecManager.Instance.GetCodec( ext );
 
-            // TODO: Need ArchiveManager
+            // TODO Need ArchiveManager
             Stream encoded = ResourceManager.FindCommonResourceData( fileName );
             MemoryStream decoded = new MemoryStream();
 

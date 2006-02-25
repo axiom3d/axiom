@@ -107,7 +107,7 @@ namespace Axiom.SceneManagers.Octree
             offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
             decl.AddElement( TEXCOORD, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 1 );
             offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
-            // TODO: Color
+            // TODO Color
 
             HardwareVertexBuffer buffer =
                 HardwareBufferManager.Instance.CreateVertexBuffer(
@@ -139,7 +139,7 @@ namespace Axiom.SceneManagers.Octree
             int endx = options.startx + options.size;
             int endz = options.startz + options.size;
 
-            // TODO: name buffers different so we can unlock
+            // TODO name buffers different so we can unlock
             HardwareVertexBuffer posBuffer = binding.GetBuffer( POSITION );
             IntPtr pos = posBuffer.Lock( BufferLocking.Discard );
 
@@ -838,7 +838,7 @@ namespace Axiom.SceneManagers.Octree
 
         public void GetWorldTransforms( Axiom.MathLib.Matrix4[] matrices )
         {
-            // TODO: Add Node.FullTransform?
+            // TODO Add Node.FullTransform?
             parentNode.GetWorldTransforms( matrices );
         }
 

@@ -226,7 +226,7 @@ namespace Axiom.Platforms.Win32
                     }
                     else
                     {
-                        // TODO: Grab keyboard modifiers
+                        // TODO Grab keyboard modifiers
                         CaptureKeyboard();
                     }
                 }
@@ -528,7 +528,7 @@ namespace Axiom.Platforms.Win32
         /// </summary>
         private void CaptureBufferedMouse()
         {
-            // TODO: Implement
+            // TODO Implement
         }
 
         /// <summary>
@@ -609,7 +609,7 @@ namespace Axiom.Platforms.Win32
         /// <returns>The equivalent enum value in the DInput.Key enum.</returns>
         private DInput.Key ConvertKeyEnum( KeyCodes key )
         {
-            // TODO: Quotes
+            // TODO Quotes
             DInput.Key dinputKey = 0;
 
             switch ( key )
@@ -902,7 +902,7 @@ namespace Axiom.Platforms.Win32
         /// <returns>The equivalent enum value in the Axiom.KeyCodes enum.</returns>
         private Axiom.Input.KeyCodes ConvertKeyEnum( DInput.Key key )
         {
-            // TODO: Quotes
+            // TODO Quotes
             Axiom.Input.KeyCodes axiomKey = 0;
 
             switch ( key )

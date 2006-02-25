@@ -141,7 +141,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
         ///     
         /// </summary>
         /// <returns></returns>
-        // TODO: Only returns first error for now
+        // TODO Only returns first error for now
         private string nvparse_get_errors()
         {
             unsafe

@@ -237,6 +237,13 @@ namespace Axiom.Serialization
             // read translation
             Vector3 translate = ReadVector3();
             keyFrame.Translate = translate;
+
+            // read scale?
+            if ( currentChunkLength == 50 )
+            {
+                Vector3 scale = ReadVector3();
+                keyFrame.Scale = scale;
+            }
         }
 
         protected string ReadString( char delimiter )

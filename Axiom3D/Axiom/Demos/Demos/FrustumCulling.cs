@@ -34,7 +34,7 @@ namespace Axiom.Demos
     /// <summary>
     ///     Demo allowing you to visualize a viewing frustom and bounding box culling.
     /// </summary>
-    // TODO: Make sure recalculateView is being set properly for frustum updates.
+    // TODO Make sure recalculateView is being set properly for frustum updates.
     public class FrustumCulling : TechDemo
     {
 

@@ -24,14 +24,27 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region Namespace Declarations
+
 using System;
 using System.Diagnostics;
 using Axiom.Collections;
-using Axiom.Core;
 
+using Axiom.Core;
 using Axiom.MathLib;
 
-namespace Axiom.Animating {
+#endregion
+
+#region Versioning Information
+/// File								Revision
+/// ===============================================
+/// OgreAnimationTrack.h		                
+/// OgreAnimationTrack.cpp		            
+/// 
+#endregion
+
+namespace Axiom.Animating
+{
     /// <summary>
     ///		A 'track' in an animation sequence, ie a sequence of keyframes which affect a
     ///		certain type of object that can be animated.
@@ -40,16 +53,20 @@ namespace Axiom.Animating {
     ///		This class is intended as a base for more complete classes which will actually
     ///		animate specific types of object, e.g. a bone in a skeleton to affect
     ///		skeletal animation. An animation will likely include multiple tracks each of which
-    ///		can be made up of many KeyFrame instances. Note that the use of tracks allows each animable
+    ///		can be made up of many KeyFrame instances. Note that the use of tracks allows each animatable
     ///		object to have it's own number of keyframes, i.e. you do not have to have the
     ///		maximum number of keyframes for all animable objects just to cope with the most
     ///		animated one.
-    ///		<p/>
-    ///		Since the most common animable object is a Node, there are options in this class for associating
-    ///		the track with a Node which will receive keyframe updates automatically when the 'apply' method
+    ///		<para/>
+    ///		Since the most common animatable object is a Node, there are options in this class for associating
+    ///		the track with a Node which will receive keyframe updates automatically when the <see cref="Apply"/> method
     ///		is called.
+    ///     <para/>
+    /// 	By default rotation is done using shortest-path algorithm. It is possible to change this behaviour using
+    ///	    <see cref="setUseShortestRotationPath"/> method.
     /// </remarks>
-    public class AnimationTrack {
+    public class AnimationTrack
+    {
         #region Fields
 
         /// <summary>
@@ -63,7 +80,7 @@ namespace Axiom.Animating {
         /// <summary>
         ///		Target node to be animated.
         ///	</summary>
-        protected Node target;
+        protected Node targetNode;
         /// <summary>
         ///		Maximum keyframe time.
         ///	</summary>
@@ -87,11 +104,11 @@ namespace Axiom.Animating {
         /// <summary>
         ///		Spline for rotation interpolation.
         ///	</summary>
-        protected RotationalSpline rotationSpline = new RotationalSpline();
-		/// <summary>
-		///		Defines if rotation is done using shortest path
-		/// </summary>
-		protected bool useShortestPath;
+        protected RotationalSpline rotationalSpline = new RotationalSpline();
+        /// <summary>
+        ///		Defines if rotation is done using shortest path
+        /// </summary>
+        protected bool useShortestRotationPath;
 
         #endregion Fields
 
@@ -101,21 +118,24 @@ namespace Axiom.Animating {
         ///		Internal constructor, to prevent direction instantiation.  Should be created
         ///		via a call to the CreateTrack method of an Animation.
         /// </summary>
-        internal AnimationTrack(Animation parent) 
-			: this(parent, null) {}
+        internal AnimationTrack( Animation parent )
+            : this( parent, null )
+        {
+        }
 
         /// <summary>
         ///		Internal constructor, to prevent direction instantiation.  Should be created
         ///		via a call to the CreateTrack method of an Animation.
         /// </summary>
-        internal AnimationTrack(Animation parent, Node target) {
+        internal AnimationTrack( Animation parent, Node target )
+        {
             this.parent = parent;
-            this.target = target;
+            this.targetNode = target;
 
             maxKeyFrameTime = -1;
 
-			// use shortest path rotation by default
-			useShortestPath = true;
+            // use shortest path rotation by default
+            useShortestRotationPath = true;
         }
 
         #endregion
@@ -125,34 +145,42 @@ namespace Axiom.Animating {
         /// <summary>
         ///		The name of this animation track.
         /// </summary>
-        public short Handle {
-            get { 
-				return handle; 
-			}
-            set { 
-				handle = value; 
-			}
+        public short Handle
+        {
+            get
+            {
+                return handle;
+            }
+            set
+            {
+                handle = value;
+            }
         }
 
         /// <summary>
         ///		Collection of the KeyFrames present in this AnimationTrack.
         /// </summary>
-        public KeyFrameCollection KeyFrames {
-            get { 
-				return keyFrameList; 
-			}
+        public KeyFrameCollection KeyFrames
+        {
+            get
+            {
+                return keyFrameList;
+            }
         }
 
         /// <summary>
         ///		Gets/Sets the target node that this track is associated with.
         /// </summary>
-        public Node TargetNode {
-            get { 
-				return target; 
-			}
-            set { 
-				target = value; 
-			}
+        public Node AssociatedNode
+        {
+            get
+            {
+                return targetNode;
+            }
+            set
+            {
+                targetNode = value;
+            }
         }
 
         #endregion
@@ -169,147 +197,33 @@ namespace Axiom.Animating {
         /// </remarks>
         /// <param name="time">Time within the animation at which this keyframe will lie.</param>
         /// <returns>A new KeyFrame.</returns>
-        public KeyFrame CreateKeyFrame(float time) {
-            KeyFrame keyFrame = new KeyFrame(this, time);
+        public KeyFrame CreateKeyFrame( float time )
+        {
+            KeyFrame keyFrame = new KeyFrame( this, time );
 
-			if(time > maxKeyFrameTime || (time == 0 && keyFrameList.Count == 0)) {
-				keyFrameList.Add(keyFrame);
-				maxKeyFrameTime = time;
-			}
-			else {
-				// search for the correct place to insert the keyframe
-				int i = 0;
-				KeyFrame kf = keyFrameList[i];
-				
-				while(kf.Time < time && i != keyFrameList.Count) {
-					i++;
-				}
+            if ( time > maxKeyFrameTime || ( time == 0 && keyFrameList.Count == 0 ) )
+            {
+                keyFrameList.Add( keyFrame );
+                maxKeyFrameTime = time;
+            }
+            else
+            {
+                // search for the correct place to insert the keyframe
+                int i = 0;
+                KeyFrame kf = keyFrameList[i];
 
-				keyFrameList.Insert(i, kf);
-			}
+                while ( kf.Time < time && i != keyFrameList.Count )
+                {
+                    i++;
+                }
 
-			// ensure a spline rebuild takes place
+                keyFrameList.Insert( i, kf );
+            }
+
+            // ensure a spline rebuild takes place
             OnKeyFrameDataChanged();
 
             return keyFrame;
-        }
-
-        /// <summary>
-        ///		Gets a KeyFrame object which contains the interpolated transforms at the time index specified.
-        /// </summary>
-        /// <remarks>
-        ///		The KeyFrame objects held by this class are transformation snapshots at 
-        ///		discrete points in time. Normally however, you want to interpolate between these
-        ///		keyframes to produce smooth movement, and this method allows you to do this easily.
-        ///		In animation terminology this is called 'tweening'. 
-        /// </remarks>
-        /// <param name="time">The time (in relation to the whole animation sequence).</param>
-        /// <returns>
-        ///		A new keyframe object containing the interpolated transforms. Note that the
-        ///		position and scaling transforms are linearly interpolated (lerp), whilst the rotation is
-        ///		spherically linearly interpolated (slerp) for the most natural result.
-        /// </returns>
-        public KeyFrame GetInterpolatedKeyFrame(float time) {
-			// note: this is an un-attached keyframe
-            KeyFrame result = new KeyFrame(null, time);
-
-            KeyFrame k1, k2;
-            ushort firstKeyIndex;
-
-            float t = GetKeyFramesAtTime(time, out k1, out k2, out firstKeyIndex);
-
-            if(t == 0.0f) {
-                // just use k1
-                result.Rotation = k1.Rotation;
-                result.Translate = k1.Translate;
-                result.Scale = k1.Scale;
-            }
-            else {
-                // interpolate by t
-                InterpolationMode mode = parent.InterpolationMode;
-
-                switch(mode) {
-                    case InterpolationMode.Linear: {
-                        // linear interoplation
-                        result.Rotation = Quaternion.Slerp(t, k1.Rotation, k2.Rotation, useShortestPath);
-                        result.Translate = k1.Translate + ((k2.Translate - k1.Translate) * t);
-                        result.Scale = k1.Scale + ((k2.Scale - k1.Scale) * t);
-
-                    }	break;
-                    case InterpolationMode.Spline: {
-                        // spline interpolation
-						if(isSplineRebuildNeeded) {
-							BuildInterpolationSplines();
-						}
-
-                        result.Rotation = rotationSpline.Interpolate(firstKeyIndex, t, useShortestPath);
-                        result.Translate = positionSpline.Interpolate(firstKeyIndex, t);
-                        result.Scale = scaleSpline.Interpolate(firstKeyIndex, t);
-                    }	break;
-
-                }
-            }
-
-            // return the resulting keyframe
-            return result;
-        }
-
-        /// <summary>
-        ///		Applies an animation track at a certain position to the target node.
-        /// </summary>
-        /// <remarks>
-        ///		When a track has bee associated with a target node, you can eaisly apply the animation
-        ///		to the target by calling this method.
-        /// </remarks>
-        /// <param name="time">The time position in the animation to apply.</param>
-        /// <param name="weight">The influence to give to this track, 1.0 for full influence, less to blend with
-        ///		other animations.</param>
-        /// <param name="accumulate"></param>
-        public void Apply(float time, float weight, bool accumulate, bool lookInDirectionOfTranslation) {
-            // call ApplyToNode with our target node
-            ApplyToNode(target, time, weight, accumulate, lookInDirectionOfTranslation);
-        }
-
-        /// <summary>
-        ///		Overloaded Apply method.  
-        /// </summary>
-        /// <param name="time"></param>
-        public void Apply(float time) {
-            // call overloaded method
-            Apply(time, 1.0f, false, false);
-        }
-
-        /// <summary>
-        ///		Same as the Apply method, but applies to a specified Node instead of it's associated node.
-        /// </summary>
-        /// <param name="node"></param>
-        /// <param name="time"></param>
-        /// <param name="weight"></param>
-        /// <param name="accumulate"></param>
-        public void ApplyToNode(Node node, float time, float weight, bool accumulate, bool lookInDirectionOfTranslation) {    
-
-            KeyFrame keyFrame = this.GetInterpolatedKeyFrame(time);
-
-            if(accumulate) {
-                // add to existing. Weights are not relative, but treated as absolute multipliers for the animation
-                Vector3 translate = keyFrame.Translate * weight;
-                node.Translate(translate);
-
-                // interpolate between not rotation and full rotation, to point weight, so 0 = no rotate, and 1 = full rotation
-                Quaternion rotate = Quaternion.Slerp(weight, Quaternion.Identity, keyFrame.Rotation);
-                node.Rotate(rotate);
-
-				if(lookInDirectionOfTranslation)
-					node.Orientation = -Vector3.UnitZ.GetRotationTo(translate.ToNormalized());
-
-                // TODO: not yet sure how to modify scale for cumulative animations
-                Vector3 scale = keyFrame.Scale;
-                node.Scale(scale);
-            }
-            else {
-                // apply using weighted transform method
-                node.WeightedTransform(weight, keyFrame.Translate, keyFrame.Rotation, keyFrame.Scale, lookInDirectionOfTranslation);
-            }
         }
 
         /// <summary>
@@ -329,12 +243,13 @@ namespace Axiom.Animating {
         ///    value is, e.g. 0.0 for exactly at 1, 0.25 for a quarter etc. By definition the range of this 
         ///    value is:  0.0 &lt;= returnValue &lt; 1.0 .
         ///</returns>
-        public float GetKeyFramesAtTime(float time, out KeyFrame keyFrame1, out KeyFrame keyFrame2, out ushort firstKeyIndex) {
+        public float GetKeyFramesAtTime( float time, out KeyFrame keyFrame1, out KeyFrame keyFrame2, out ushort firstKeyIndex )
+        {
             short firstIndex = -1;
             float totalLength = parent.Length;
 
             // wrap time
-            while(time > totalLength)
+            while ( time > totalLength )
                 time -= totalLength;
 
             int i = 0;
@@ -343,11 +258,12 @@ namespace Axiom.Animating {
             keyFrame1 = null;
 
             // find the last keyframe before or on current time
-            for(i = 0; i < keyFrameList.Count; i++) {
+            for ( i = 0; i < keyFrameList.Count; i++ )
+            {
                 KeyFrame keyFrame = keyFrameList[i];
 
                 // kick out now if the current frames time is greater than the current time
-                if(keyFrame.Time > time)
+                if ( keyFrame.Time > time )
                     break;
 
                 keyFrame1 = keyFrame;
@@ -356,7 +272,8 @@ namespace Axiom.Animating {
 
             // trap case where there is no key before this time
             // use the first key anyway and pretend it's time index 0
-            if(firstIndex == -1) {
+            if ( firstIndex == -1 )
+            {
                 keyFrame1 = keyFrameList[0];
                 ++firstIndex;
             }
@@ -371,88 +288,235 @@ namespace Axiom.Animating {
 
             // find first keyframe after the time
             // if no next keyframe, wrap back to first
-            // TODO: Verify logic
-            if(firstIndex == (keyFrameList.Count - 1)) {
+            // TODO Verify logic
+            if ( firstIndex == ( keyFrameList.Count - 1 ) )
+            {
                 keyFrame2 = keyFrameList[0];
                 t2 = totalLength;
             }
-            else {
+            else
+            {
                 keyFrame2 = keyFrameList[firstIndex + 1];
                 t2 = keyFrame2.Time;
             }
 
             t1 = keyFrame1.Time;
 
-            if(t1 == t2) {
+            if ( t1 == t2 )
+            {
                 // same keyframe
                 return 0.0f;
             }
-            else {
-                return (time - t1) / (t2 - t1);
+            else
+            {
+                return ( time - t1 ) / ( t2 - t1 );
             }
         }
 
-		/// <summary>
-		///		Removes all key frames from this animation track.
-		/// </summary>
-		public void RemoveAllKeyFrames() {
-			keyFrameList.Clear();
+        /// <summary>
+        ///		Gets a KeyFrame object which contains the interpolated transforms at the time index specified.
+        /// </summary>
+        /// <remarks>
+        ///		The KeyFrame objects held by this class are transformation snapshots at 
+        ///		discrete points in time. Normally however, you want to interpolate between these
+        ///		keyframes to produce smooth movement, and this method allows you to do this easily.
+        ///		In animation terminology this is called 'tweening'. 
+        /// </remarks>
+        /// <param name="time">The time (in relation to the whole animation sequence).</param>
+        /// <returns>
+        ///		A new keyframe object containing the interpolated transforms. Note that the
+        ///		position and scaling transforms are linearly interpolated (lerp), whilst the rotation is
+        ///		spherically linearly interpolated (slerp) for the most natural result.
+        /// </returns>
+        public KeyFrame GetInterpolatedKeyFrame( float time )
+        {
+            // note: this is an un-attached keyframe
+            KeyFrame result = new KeyFrame( null, time );
 
-			// ensure a spline rebuild takes place
-			OnKeyFrameDataChanged();
-		}
+            KeyFrame k1, k2;
+            ushort firstKeyIndex;
 
-		/// <summary>
-		///		Removes the keyframe at the specified index.
-		/// </summary>
-		/// <param name="index">Index of the keyframe to remove from this track.</param>
-		public void RemoveKeyFrame(int index) {
-			Debug.Assert(index < keyFrameList.Count, "Index of of bounds when removing a key frame.");
+            float t = GetKeyFramesAtTime( time, out k1, out k2, out firstKeyIndex );
 
-			keyFrameList.RemoveAt(index);
+            if ( t == 0.0f )
+            {
+                // just use k1
+                result.Rotation = k1.Rotation;
+                result.Translate = k1.Translate;
+                result.Scale = k1.Scale;
+            }
+            else
+            {
+                // interpolate by t
+                InterpolationMode mode = parent.InterpolationMode;
 
-			// ensure a spline rebuild takes place
-			OnKeyFrameDataChanged();
-		}
+                switch ( mode )
+                {
+                    case InterpolationMode.Linear:
+                        {
+                            // linear interoplation
+                            result.Rotation = Quaternion.Slerp( t, k1.Rotation, k2.Rotation, useShortestRotationPath );
+                            result.Translate = k1.Translate + ( ( k2.Translate - k1.Translate ) * t );
+                            result.Scale = k1.Scale + ( ( k2.Scale - k1.Scale ) * t );
+
+                        }
+                        break;
+                    case InterpolationMode.Spline:
+                        {
+                            // spline interpolation
+                            if ( isSplineRebuildNeeded )
+                            {
+                                BuildInterpolationSplines();
+                            }
+
+                            result.Rotation = rotationalSpline.Interpolate( firstKeyIndex, t, useShortestRotationPath );
+                            result.Translate = positionSpline.Interpolate( firstKeyIndex, t );
+                            result.Scale = scaleSpline.Interpolate( firstKeyIndex, t );
+                        }
+                        break;
+
+                }
+            }
+
+            // return the resulting keyframe
+            return result;
+        }
+
+        /// <summary>
+        ///		Applies an animation track at a certain position to the target node.
+        /// </summary>
+        /// <remarks>
+        ///		When a track has bee associated with a target node, you can eaisly apply the animation
+        ///		to the target by calling this method.
+        /// </remarks>
+        /// <param name="time">The time position in the animation to apply.</param>
+        /// <param name="weight">The influence to give to this track, 1.0 for full influence, less to blend with
+        ///		other animations.</param>
+        /// <param name="accumulate"></param>
+        public void Apply( float time, float weight, bool accumulate, float scale, bool lookInDirectionOfTranslation )
+        {
+            // call ApplyToNode with our target node
+            ApplyToNode( targetNode, time, weight, accumulate, 1.0, lookInDirectionOfTranslation );
+        }
+
+        /// <summary>
+        ///		Overloaded Apply method.  
+        /// </summary>
+        /// <param name="time"></param>
+        public void Apply( float time )
+        {
+            // call overloaded method
+            Apply( time, 1.0f, false, 1.0, false );
+        }
+
+        /// <summary>
+        ///		Same as the Apply method, but applies to a specified Node instead of it's associated node.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="time"></param>
+        /// <param name="weight"></param>
+        /// <param name="accumulate"></param>
+        public void ApplyToNode( Node node, float time, float weight, bool accumulate, float scl, bool lookInDirectionOfTranslation )
+        {
+
+            KeyFrame keyFrame = this.GetInterpolatedKeyFrame( time );
+
+            Vector3 scale = keyFrame.Scale;
+            // TODO not yet sure how to modify scale for cumulative animations... leave it alone
+            //scale = ((Vector3.UnitScale - keyFrame.Scale) * weight) + Vector3.UnitScale;
+            if ( scl != 1.0F && scale != Vector3.UnitScale )
+            {
+                scale = Vector3.UnitScale + ( scale - Vector3.UnitScale ) * scl;
+            }
+
+            if ( accumulate )
+            {
+                // add to existing. Weights are not relative, but treated as absolute multipliers for the animation
+                Vector3 translate = keyFrame.Translate * weight;
+                node.Translate( translate );
+
+                // interpolate between not rotation and full rotation, to point weight, so 0 = no rotate, and 1 = full rotation
+                Quaternion rotate = Quaternion.Slerp( weight, Quaternion.Identity, keyFrame.Rotation );
+                node.Rotate( rotate );
+
+                if ( lookInDirectionOfTranslation )
+                    node.Orientation = -Vector3.UnitZ.GetRotationTo( translate.ToNormalized() );
+
+                node.Scale( scale );
+            }
+            else
+            {
+                // apply using weighted transform method
+                node.WeightedTransform( weight, keyFrame.Translate, keyFrame.Rotation, scale, lookInDirectionOfTranslation );
+            }
+        }
+
+        /// <summary>
+        ///		Removes all key frames from this animation track.
+        /// </summary>
+        public void RemoveAllKeyFrames()
+        {
+            keyFrameList.Clear();
+
+            // ensure a spline rebuild takes place
+            OnKeyFrameDataChanged();
+        }
+
+        /// <summary>
+        ///		Removes the keyframe at the specified index.
+        /// </summary>
+        /// <param name="index">Index of the keyframe to remove from this track.</param>
+        public void RemoveKeyFrame( int index )
+        {
+            Debug.Assert( index < keyFrameList.Count, "Index of of bounds when removing a key frame." );
+
+            keyFrameList.RemoveAt( index );
+
+            // ensure a spline rebuild takes place
+            OnKeyFrameDataChanged();
+        }
 
         #endregion
 
-		#region Protected/Internal methods
+        #region Protected/Internal methods
 
-		/// <summary>
-		///		Called internally when keyframes belonging to this track are changed, in order to
-		///		trigger a rebuild of the animation splines.
-		/// </summary>
-		internal void OnKeyFrameDataChanged() {
-			isSplineRebuildNeeded = true;
-		}
+        /// <summary>
+        ///		Called internally when keyframes belonging to this track are changed, in order to
+        ///		trigger a rebuild of the animation splines.
+        /// </summary>
+        internal void OnKeyFrameDataChanged()
+        {
+            isSplineRebuildNeeded = true;
+        }
 
         /// <summary>Used to rebuild the internal interpolation splines for translations, rotations, and scaling.</summary>
-        protected void BuildInterpolationSplines() {
+        protected void BuildInterpolationSplines()
+        {
             // dont calculate on the fly, wait till the end when we do it manually
             positionSpline.AutoCalculate = false;
-            rotationSpline.AutoCalculate = false;
+            rotationalSpline.AutoCalculate = false;
             scaleSpline.AutoCalculate = false;
 
             positionSpline.Clear();
-            rotationSpline.Clear();
+            rotationalSpline.Clear();
             scaleSpline.Clear();
 
             // add spline control points for each keyframe in the list
-            for(int i = 0; i < keyFrameList.Count; i++) {
+            for ( int i = 0; i < keyFrameList.Count; i++ )
+            {
                 KeyFrame keyFrame = keyFrameList[i];
 
-                positionSpline.AddPoint(keyFrame.Translate);
-                rotationSpline.AddPoint(keyFrame.Rotation);
-                scaleSpline.AddPoint(keyFrame.Scale);
+                positionSpline.AddPoint( keyFrame.Translate );
+                rotationalSpline.AddPoint( keyFrame.Rotation );
+                scaleSpline.AddPoint( keyFrame.Scale );
             }
 
             // recalculate all spline tangents now
             positionSpline.RecalculateTangents();
-            rotationSpline.RecalculateTangents();
+            rotationalSpline.RecalculateTangents();
             scaleSpline.RecalculateTangents();
 
-			isSplineRebuildNeeded = false;
+            isSplineRebuildNeeded = false;
         }
 
         #endregion

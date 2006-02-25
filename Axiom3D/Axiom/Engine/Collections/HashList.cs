@@ -47,7 +47,7 @@ namespace Axiom.Collections
         public HashList()
         {
             //
-            // TODO: Add constructor logic here
+            // TODO Add constructor logic here
             //
         }
 

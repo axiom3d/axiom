@@ -6,10 +6,10 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle( "Axiom DirectX 9 Rendering System" )]
+[assembly: AssemblyTitle( "Axiom DirectX 9 Rendering Subsystem" )]
 [assembly: AssemblyDescription( "Rendering system implementation which implements the 3D graphics API abstraction layer using Managed DirectX." )]
 [assembly: AssemblyCompany( "Axiom and RealmForge Development Team" )]
-[assembly: AssemblyProduct( "Axiom" )]
+[assembly: AssemblyProduct( "Axiom Rendering Engine" )]
 [assembly: AssemblyCopyright( "Copyright © Axiom and RealmForge Development Team 2003-2005" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]

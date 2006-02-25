@@ -67,7 +67,7 @@ namespace Axiom.RenderSystems.OpenGL
             return texture;
         }
 
-        // TODO: Finish
+        // TODO Finish
         public override void UnloadAndDestroyAll()
         {
             base.UnloadAndDestroyAll();

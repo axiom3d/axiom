@@ -134,7 +134,7 @@ namespace Axiom.Fonts
                     unitState = material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( source );
 
                     // load this texture
-                    // TODO: In general, modify any methods like this that throw their own exception rather than returning null, so the caller can decide how to handle a missing resource.
+                    // TODO In general, modify any methods like this that throw their own exception rather than returning null, so the caller can decide how to handle a missing resource.
                     Texture texture = TextureManager.Instance.Load( source );
 
                     blendByAlpha = texture.HasAlpha;
@@ -164,7 +164,7 @@ namespace Axiom.Fonts
 
         protected void CreateTexture()
         {
-            // TODO: Revisit after checking current Imaging support in Mono.
+            // TODO Revisit after checking current Imaging support in Mono.
             //            // create a new bitamp with the size defined
             //            Bitmap bitmap = new Bitmap(BITMAP_WIDTH, BITMAP_HEIGHT, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
             //

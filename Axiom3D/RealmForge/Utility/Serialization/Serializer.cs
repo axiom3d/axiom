@@ -130,7 +130,7 @@ namespace RealmForge.Serialization
             switch ( format )
             {
                 case SerializeFormat.Binary:
-                //TODO:
+                //TODO
                 case SerializeFormat.Xml:
                     xmlSer.Serialize( file, data );
                     break;
@@ -208,7 +208,7 @@ namespace RealmForge.Serialization
             switch ( format )
             {
                 case SerializeFormat.Binary:
-                //TODO:
+                //TODO
                 case SerializeFormat.Xml:
                     if ( dataType != null )
                     {
@@ -216,7 +216,7 @@ namespace RealmForge.Serialization
                     }
 
                     result = xmlSer.Deserialize( file );
-                    //TODO:
+                    //TODO
                     break;
                 case SerializeFormat.DotNetBinary:
                     BinaryFormatter bin = new BinaryFormatter();

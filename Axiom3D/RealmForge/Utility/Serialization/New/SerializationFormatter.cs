@@ -10,7 +10,7 @@ namespace RealmForge.Serialization.New
         public SerializationFormatter()
         {
             //
-            // TODO: Add constructor logic here
+            // TODO Add constructor logic here
             //
         }
     }
