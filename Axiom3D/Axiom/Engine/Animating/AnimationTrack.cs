@@ -41,7 +41,7 @@ using Axiom.MathLib;
 /// 
 #endregion
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		A 'track' in an animation sequence, ie a sequence of keyframes which affect a

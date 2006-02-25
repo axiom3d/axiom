@@ -1,8 +1,8 @@
 using System;
-using Axiom.Engine;
+using Axiom;
 using Tao.DevIl;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///    TGA image file codec.

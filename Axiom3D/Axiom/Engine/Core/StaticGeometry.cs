@@ -5,7 +5,7 @@ using System.IO;
 
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
 
     #region Strongly Types Collections

@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Specialized;
-using Axiom.Engine;
+using Axiom;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///     ResourceManager specialization to handle Archive plug-ins.

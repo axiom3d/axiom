@@ -30,7 +30,7 @@ using System;
 using System.Collections;
 
 using Axiom.Core;
-using Axiom.Engine;
+using Axiom;
 using Axiom.MathLib;
 
 //using Axiom.SceneManagers.IPLSceneManager.Page;
@@ -84,8 +84,10 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		public override float GetHeight( float x, float z ) 
 		{
 			if ( ( heightData == null ) && dynamic ) 
-			{
-				return generateHeightPoint((int)x, (int)z, tileX, tileZ, Options.Instance.PageSize);
+			{
+
+				return generateHeightPoint((int)x, (int)z, tileX, tileZ, Options.Instance.PageSize);
+
 			} 
 			else 
 			{
@@ -96,8 +98,10 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		public override float GetHeight( long x, long z ) 
 		{
 			if ( ( heightData == null ) && dynamic ) 
-			{
-				return generateHeightPoint((int)x, (int)z, tileX, tileZ, Options.Instance.PageSize);
+			{
+
+				return generateHeightPoint((int)x, (int)z, tileX, tileZ, Options.Instance.PageSize);
+
 			} 
 			else 
 			{
@@ -108,8 +112,10 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		public override float GetHeight( int x, int z ) 
 		{
 			if ( ( heightData == null ) && dynamic ) 
-			{
-				return generateHeightPoint((int)x, (int)z, tileX, tileZ, Options.Instance.PageSize);
+			{
+
+				return generateHeightPoint((int)x, (int)z, tileX, tileZ, Options.Instance.PageSize);
+
 			} 
 			else 
 			{
@@ -121,22 +127,26 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		{
 			float X1 = X-1;
 			float X2 = X+1;
-			if ( X1 < 0 ) 
+			if ( X1 < 0 ) 
+
 			{
 				X1 = 0;
 			}
-			if ( X2 > ( size - 1 )) 
+			if ( X2 > ( size - 1 )) 
+
 			{
 				X2 = size - 1;
 			}
 
 			float Z1 = Z-1;
 			float Z2 = Z+1;
-			if ( Z1 < 0 ) 
+			if ( Z1 < 0 ) 
+
 			{
 				Z1 = 0;
 			}
-			if ( Z2 > ( size - 1 )) 
+			if ( Z2 > ( size - 1 )) 
+
 			{
 				Z2 = size - 1;
 			}

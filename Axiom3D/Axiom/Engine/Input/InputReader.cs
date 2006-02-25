@@ -30,7 +30,7 @@ using System.Collections;
 // This is coming from RealmForge.Utility
 using Axiom.Input;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		Abstract class which allows input to be read from various

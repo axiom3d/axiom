@@ -3,7 +3,7 @@ using System.Collections;
 using System.Diagnostics;
 using Axiom.MathLib.Collections;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///     The Map is a C# conversion of the std::map container from the C++ 

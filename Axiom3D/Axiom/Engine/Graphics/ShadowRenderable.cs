@@ -29,7 +29,7 @@ using System.Collections;
 
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		Class which represents the renderable aspects of a set of shadow volume faces.

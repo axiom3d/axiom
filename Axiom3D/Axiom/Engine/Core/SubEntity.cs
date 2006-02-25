@@ -30,7 +30,7 @@ using System.Diagnostics;
 
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		Utility class which defines the sub-parts of an Entity.

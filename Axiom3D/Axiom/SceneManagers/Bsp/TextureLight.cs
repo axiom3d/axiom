@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 
 using Axiom.Core;
-using Axiom.Engine;
+using Axiom;
 using Axiom.MathLib;
 
 namespace Axiom.SceneManagers.Bsp

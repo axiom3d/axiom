@@ -39,7 +39,7 @@ using System;
 #endregion
 
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		Types of interpolation used in animation.

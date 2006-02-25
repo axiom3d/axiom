@@ -1,8 +1,8 @@
 using System;
-using Axiom.Engine;
+using Axiom;
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
 
     public interface IDerivedPlaneProvider

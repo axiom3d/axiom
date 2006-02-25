@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///    Interface describing an object that can handle a form of media, be it

@@ -31,10 +31,10 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.IO;
-using Axiom.Engine;
+using Axiom;
 using ICSharpCode.SharpZipLib.Zip;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///    Implementation of Archive that allows for reading resources from a .zip file.

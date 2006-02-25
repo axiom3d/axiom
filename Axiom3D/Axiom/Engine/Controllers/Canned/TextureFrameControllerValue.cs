@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///     Predefined controller value for getting/setting the frame number of a texture unit.

@@ -29,7 +29,7 @@ using System.Collections.Specialized;
 
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		Handles the management of mesh resources.

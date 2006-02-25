@@ -29,7 +29,7 @@ using System.Collections;
 
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		Abstract class definining a movable object in a scene.

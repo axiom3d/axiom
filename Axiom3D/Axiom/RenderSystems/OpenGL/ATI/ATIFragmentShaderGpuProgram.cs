@@ -1,6 +1,6 @@
 using System;
 
-using Axiom.Engine;
+using Axiom;
 using Axiom.RenderSystems.OpenGL;
 
 using Tao.OpenGl;

@@ -44,7 +44,7 @@ using Axiom.Core;
 /// 
 #endregion
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		Covers what a billboards position means.

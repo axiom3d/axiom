@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///     Generics: List<MeshLodUsage>

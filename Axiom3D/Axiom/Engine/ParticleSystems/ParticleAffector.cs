@@ -27,7 +27,7 @@ using System;
 using System.Collections;
 using System.Reflection;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		Abstract class defining the interface to be implemented by particle affectors.

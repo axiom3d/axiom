@@ -30,7 +30,7 @@ using System.Diagnostics;
 
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		Represents a node in a scene graph.

@@ -1,7 +1,7 @@
 using System;
 using System.Data;
 
-using Axiom.Engine;
+using Axiom;
 
 using Tao.OpenGl;
 using Tao.Sdl;

@@ -29,7 +29,7 @@ using System.Collections;
 using System.Diagnostics;
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		Records the state of all the vertex buffer bindings required to provide a vertex declaration

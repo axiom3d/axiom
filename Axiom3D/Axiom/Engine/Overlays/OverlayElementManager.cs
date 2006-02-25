@@ -28,7 +28,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///    This class acts as a repository and regitrar of overlay components.

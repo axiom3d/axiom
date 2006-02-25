@@ -27,10 +27,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 using System.Collections;
 using System.IO;
-using Axiom.Engine;
+using Axiom;
 #endregion
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// Represents a file system folder.

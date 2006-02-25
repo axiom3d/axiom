@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// Summary description for ImageCodec.

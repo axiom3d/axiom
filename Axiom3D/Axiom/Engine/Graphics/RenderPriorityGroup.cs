@@ -27,9 +27,9 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom.Engine;
+using Axiom;
 
-namespace Axiom.Engine
+namespace Axiom
 {
 
     /// <summary>

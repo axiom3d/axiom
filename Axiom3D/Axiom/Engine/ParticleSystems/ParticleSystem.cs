@@ -31,7 +31,7 @@ using System.Drawing;
 
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		Class defining particle system based special effects.

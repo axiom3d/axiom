@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 
-using Axiom.Engine;
+using Axiom;
 
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;

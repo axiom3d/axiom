@@ -46,7 +46,7 @@ using Axiom.Core;
 /// 
 #endregion
 
-namespace Axiom.Engine
+namespace Axiom
 {
 
     #region Delegate Declarations

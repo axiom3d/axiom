@@ -32,7 +32,7 @@ using System.Reflection;
 
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///     Class for managing Material settings.

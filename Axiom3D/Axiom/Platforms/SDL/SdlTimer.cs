@@ -38,7 +38,7 @@ are met:
 using System;
 using System.Runtime.InteropServices;
 
-using Axiom.Engine;
+using Axiom;
 
 
 namespace Axiom.Platforms.SDL

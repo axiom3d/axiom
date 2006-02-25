@@ -6,7 +6,7 @@ using Axiom.MathLib;
 // This is coming from RealmForge.Utility
 using Axiom.Core;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///     Helper class for going back and forth between strings and various types.

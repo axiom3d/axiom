@@ -4,7 +4,7 @@ using System.Text;
 
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// 	Summary description for OgreSkeletonReader.

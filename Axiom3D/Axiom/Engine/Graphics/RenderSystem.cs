@@ -35,7 +35,7 @@ using Axiom.Core;
 
 #endregion Namespace Declarations
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///    Defines the functionality of a 3D API

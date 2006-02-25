@@ -28,7 +28,7 @@ using System;
 using System.Drawing;
 using System.Text;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		This class is simply a way of getting a font texture into the engine and
@@ -38,7 +38,7 @@ namespace Axiom.Engine
     ///		can use an XML font script to define it (probably more practical since you can reuse
     ///		the definition more easily)
     /// </summary>
-    public class Font : Axiom.Engine.Resource
+    public class Font : Axiom.Resource
     {
         #region Constants
 

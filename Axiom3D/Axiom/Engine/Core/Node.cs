@@ -30,7 +30,7 @@ using System.Diagnostics;
 
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     #region Delegates
     /// <summary>

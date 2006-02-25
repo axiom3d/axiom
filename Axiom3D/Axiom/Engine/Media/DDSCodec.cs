@@ -2,7 +2,7 @@ using System;
 
 using Tao.DevIl;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///    Microsoft's DDS file format codec.

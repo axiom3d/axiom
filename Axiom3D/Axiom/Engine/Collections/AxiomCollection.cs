@@ -31,7 +31,7 @@ using System.Collections;
 
 #endregion Namespace Declarations
 
-namespace Axiom.Engine
+namespace Axiom
 {
 
     /// <summary>

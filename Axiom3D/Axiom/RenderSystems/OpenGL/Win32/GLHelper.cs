@@ -1,7 +1,6 @@
 using System;
 using System.Windows.Forms;
-using Axiom.Configuration;
-using Axiom.Graphics;
+using Axiom;
 using Tao.Platform.Windows;
 
 namespace Axiom.RenderSystems.OpenGL
@@ -85,7 +84,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         }
 
-        public override Axiom.Graphics.RenderWindow CreateWindow( bool autoCreateWindow, GLRenderSystem renderSystem, string windowTitle )
+        public override Axiom.RenderWindow CreateWindow( bool autoCreateWindow, GLRenderSystem renderSystem, string windowTitle )
         {
             RenderWindow autoWindow = null;
 
@@ -122,7 +121,7 @@ namespace Axiom.RenderSystems.OpenGL
             return autoWindow;
         }
 
-        public override Axiom.Graphics.RenderWindow NewWindow( string name, int width, int height, int colorDepth, bool fullScreen, int left, int top, bool depthBuffer, bool vsync, object target )
+        public override Axiom.RenderWindow NewWindow( string name, int width, int height, int colorDepth, bool fullScreen, int left, int top, bool depthBuffer, bool vsync, object target )
         {
             Win32Window window = new Win32Window();
 

@@ -29,7 +29,7 @@ using System;
 using System.Collections;
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
 	/// <summary>
 	///		A SkeletonInstance is a single instance of a Skeleton used by a world object.

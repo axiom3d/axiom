@@ -26,10 +26,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.IO;
-using Axiom.Engine;
+using Axiom;
 using System.Collections;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// 	Defines a program which runs on the GPU such as a vertex or fragment program.

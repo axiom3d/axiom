@@ -30,7 +30,7 @@ using System.Diagnostics;
 
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///     A frustum represents a pyramid, capped at the near and far end which is

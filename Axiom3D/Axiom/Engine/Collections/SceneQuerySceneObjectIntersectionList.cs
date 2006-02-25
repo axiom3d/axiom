@@ -28,10 +28,10 @@ using System.Collections;
 using System.Diagnostics;
 
 // used to alias a type in the code for easy copying and pasting.  Come on generics!!
-using T = Axiom.Engine.SceneQuerySceneObjectPair;
+using T = Axiom.SceneQuerySceneObjectPair;
 // used to alias a key value in the code for easy copying and pasting.  Come on generics!!
 
-namespace Axiom.Engine
+namespace Axiom
 {
     [Obsolete( "Please use SceneQueryMovableObjectPair." )]
     public class SceneQuerySceneObjectPair

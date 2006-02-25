@@ -31,7 +31,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		Manages particle systems, particle system scripts (templates) and the available emitter & affector factories.

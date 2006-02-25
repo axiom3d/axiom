@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 
-using Axiom.Engine;
+using Axiom;
 
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
@@ -456,18 +456,18 @@ namespace Axiom.RenderSystems.DirectX9
         /// </summary>
         /// <param name="mode"></param>
         /// <returns></returns>
-        public static D3D.FogMode ConvertEnum( Axiom.Engine.FogMode mode )
+        public static D3D.FogMode ConvertEnum( Axiom.FogMode mode )
         {
             // convert the fog mode value
             switch ( mode )
             {
-                case Axiom.Engine.FogMode.Exp:
+                case Axiom.FogMode.Exp:
                     return D3D.FogMode.Exp;
 
-                case Axiom.Engine.FogMode.Exp2:
+                case Axiom.FogMode.Exp2:
                     return D3D.FogMode.Exp2;
 
-                case Axiom.Engine.FogMode.Linear:
+                case Axiom.FogMode.Linear:
                     return D3D.FogMode.Linear;
             } // switch
 
@@ -642,7 +642,7 @@ namespace Axiom.RenderSystems.DirectX9
             return 0;
         }
 
-        public static D3D.StencilOperation ConvertEnum( Axiom.Engine.StencilOperation op )
+        public static D3D.StencilOperation ConvertEnum( Axiom.StencilOperation op )
         {
             return ConvertEnum( op, false );
         }
@@ -652,43 +652,43 @@ namespace Axiom.RenderSystems.DirectX9
         /// </summary>
         /// <param name="op"></param>
         /// <returns></returns>
-        public static D3D.StencilOperation ConvertEnum( Axiom.Engine.StencilOperation op, bool invert )
+        public static D3D.StencilOperation ConvertEnum( Axiom.StencilOperation op, bool invert )
         {
             switch ( op )
             {
-                case Axiom.Engine.StencilOperation.Keep:
+                case Axiom.StencilOperation.Keep:
                     return D3D.StencilOperation.Keep;
 
-                case Axiom.Engine.StencilOperation.Zero:
+                case Axiom.StencilOperation.Zero:
                     return D3D.StencilOperation.Zero;
 
-                case Axiom.Engine.StencilOperation.Replace:
+                case Axiom.StencilOperation.Replace:
                     return D3D.StencilOperation.Replace;
 
-                case Axiom.Engine.StencilOperation.Increment:
+                case Axiom.StencilOperation.Increment:
                     return invert ?
                         D3D.StencilOperation.DecrementSaturation : D3D.StencilOperation.IncrementSaturation;
 
-                case Axiom.Engine.StencilOperation.Decrement:
+                case Axiom.StencilOperation.Decrement:
                     return invert ?
                         D3D.StencilOperation.IncrementSaturation : D3D.StencilOperation.DecrementSaturation;
 
-                case Axiom.Engine.StencilOperation.IncrementWrap:
+                case Axiom.StencilOperation.IncrementWrap:
                     return invert ?
                         D3D.StencilOperation.Decrement : D3D.StencilOperation.Increment;
 
-                case Axiom.Engine.StencilOperation.DecrementWrap:
+                case Axiom.StencilOperation.DecrementWrap:
                     return invert ?
                         D3D.StencilOperation.Increment : D3D.StencilOperation.Decrement;
 
-                case Axiom.Engine.StencilOperation.Invert:
+                case Axiom.StencilOperation.Invert:
                     return D3D.StencilOperation.Invert;
             }
 
             return 0;
         }
 
-        public static D3D.Cull ConvertEnum( Axiom.Engine.CullingMode mode, bool flip )
+        public static D3D.Cull ConvertEnum( Axiom.CullingMode mode, bool flip )
         {
             switch ( mode )
             {

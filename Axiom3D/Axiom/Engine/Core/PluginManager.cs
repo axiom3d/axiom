@@ -33,7 +33,7 @@ using System.IO;
 using System.Reflection;
 using System.Xml;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// Summary description for PluginManager.
@@ -111,7 +111,7 @@ namespace Axiom.Engine
             foreach ( string file in files )
             {
                 // TODO Temp fix, allow exlusions in the app.config
-                if ( file != "Axiom.Engine.dll" )
+                if ( file != "Axiom.dll" )
                 {
                     try
                     {

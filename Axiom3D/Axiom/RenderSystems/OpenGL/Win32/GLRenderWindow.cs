@@ -29,8 +29,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Axiom.Core;
-using Axiom.Graphics;
-using Axiom.Media;
+using Axiom;
 using Tao.OpenGl;
 using Tao.Platform.Windows;
 

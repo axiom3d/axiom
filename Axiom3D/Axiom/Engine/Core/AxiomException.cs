@@ -30,7 +30,7 @@ using System;
 
 #endregion Namespace Declarations
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// Summary description for AxiomException.

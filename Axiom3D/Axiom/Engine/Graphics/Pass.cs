@@ -31,7 +31,7 @@ using System.Diagnostics;
 // This is coming from RealmForge.Utility
 using Axiom.Core;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// 	Class defining a single pass of a Technique (of a Material), ie

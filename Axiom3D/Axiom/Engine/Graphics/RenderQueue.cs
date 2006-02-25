@@ -27,7 +27,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		Class to manage the scene object rendering queue.

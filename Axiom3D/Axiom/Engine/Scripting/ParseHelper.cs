@@ -2,10 +2,10 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using Axiom.Engine;
+using Axiom;
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// 	Class contining helper methods for parsing text files.

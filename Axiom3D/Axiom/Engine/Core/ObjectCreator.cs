@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using System.IO;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// Used by configuration classes to store assembly/class names and instantiate

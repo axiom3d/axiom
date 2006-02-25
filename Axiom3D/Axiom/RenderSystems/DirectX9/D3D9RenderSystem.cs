@@ -34,13 +34,13 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using Axiom.Core;
-using Axiom.Engine;
+using Axiom;
 using Axiom.MathLib;
 
-using FogMode = Axiom.Engine.FogMode;
-using LightType = Axiom.Engine.LightType;
-using StencilOperation = Axiom.Engine.StencilOperation;
-using TextureFiltering = Axiom.Engine.TextureFiltering;
+using FogMode = Axiom.FogMode;
+using LightType = Axiom.LightType;
+using StencilOperation = Axiom.StencilOperation;
+using TextureFiltering = Axiom.TextureFiltering;
 
 using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
@@ -102,7 +102,7 @@ namespace Axiom.RenderSystems.DirectX9
         protected bool lightingEnabled;
 
         const int MAX_LIGHTS = 8;
-        protected Axiom.Engine.Light[] lights = new Axiom.Engine.Light[MAX_LIGHTS];
+        protected Axiom.Light[] lights = new Axiom.Light[MAX_LIGHTS];
 
         protected D3DGpuProgramManager gpuProgramMgr;
 
@@ -849,7 +849,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// 
         /// </summary>
         /// <param name="viewport"></param>
-        public override void SetViewport( Axiom.Engine.Viewport viewport )
+        public override void SetViewport( Axiom.Viewport viewport )
         {
             if ( activeViewport != viewport || viewport.IsUpdated )
             {
@@ -1352,7 +1352,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// </summary>
         /// <param name="index"></param>
         /// <param name="light"></param>
-        private void SetD3DLight( int index, Axiom.Engine.Light light )
+        private void SetD3DLight( int index, Axiom.Light light )
         {
             if ( light == null )
             {

@@ -66,17 +66,17 @@
 			</Files>
 		</Project>
 		
-		<Project name="Axiom.Engine" type="Library" path="Axiom/Engine" rootNamespace="Axiom" >		
+		<Project name="Axiom" type="Library" path="Axiom/Engine" rootNamespace="Axiom" >		
 			<Configuration name="Debug">
 				<Options>
 					<OutputPath>bin\Debug</OutputPath>
-					<XmlDocFile>Axiom.Engine.xml</XmlDocFile>
+					<XmlDocFile>Axiom.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
-					<XmlDocFile>Axiom.Engine.xml</XmlDocFile>
+					<XmlDocFile>Axiom.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
@@ -113,7 +113,7 @@
 			<Reference name="System.Drawing" />
 			<Reference name="System.Windows.Forms" />
 			<Reference name="System.Xml" />
-			<Reference name="Axiom.Engine"/>
+			<Reference name="Axiom"/>
 			<Reference name="RealmForge.Utility"/>
 			<Reference name="Microsoft.DirectX" />
 			<Reference name="Microsoft.DirectX.DirectInput" />
@@ -144,7 +144,7 @@
 			<Reference name="System.Drawing" />
 			<Reference name="System.Windows.Forms" />
 			<Reference name="System.Xml" />
-			<Reference name="Axiom.Engine" />
+			<Reference name="Axiom" />
 			<Reference name="RealmForge.Utility" />
 			<Reference name="Microsoft.DirectX" />
 			<Reference name="Microsoft.DirectX.Direct3D" />
@@ -174,7 +174,7 @@
 			<Reference name="System.Data" />
 			<Reference name="System.Drawing" />
 			<Reference name="System.Xml" />
-			<Reference name="Axiom.Engine" />
+			<Reference name="Axiom" />
 			<Reference name="RealmForge.Utility"/>
 			<Reference name="Tao.Sdl"/>
 			
@@ -203,7 +203,7 @@
 			<Reference name="System.Drawing" />
 			<Reference name="System.Windows.Forms" />
 			<Reference name="System.Xml" />
-			<Reference name="Axiom.Engine" />
+			<Reference name="Axiom" />
 			<Reference name="RealmForge.Utility" />
 			<Reference name="Tao.OpenGl" localCopy="false"/>
 			<Reference name="Tao.OpenGl.ExtensionLoader"/>
@@ -244,7 +244,7 @@
 			<Reference name="System" />
 			<Reference name="System.Data" />
 			<Reference name="System.Xml" />
-			<Reference name="Axiom.Engine"/>
+			<Reference name="Axiom"/>
 			<Reference name="RealmForge.Utility" />
 			<Reference name="Tao.Cg"  />
 			
@@ -269,7 +269,7 @@
 			<Reference name="System" />
 			<Reference name="System.Data" />
 			<Reference name="System.Xml" />
-			<Reference name="Axiom.Engine" />
+			<Reference name="Axiom" />
 			<Reference name="RealmForge.Utility" />
 			
 			<Files>
@@ -295,7 +295,7 @@
 			<Reference name="System" />
 			<Reference name="System.Data" />
 			<Reference name="System.Xml" />
-			<Reference name="Axiom.Engine"/>
+			<Reference name="Axiom"/>
 			<Reference name="RealmForge.Utility"/>
 			
 			<Files>
@@ -321,7 +321,7 @@
 			<Reference name="System" />
 			<Reference name="System.Data" />
 			<Reference name="System.Xml" />
-			<Reference name="Axiom.Engine" />
+			<Reference name="Axiom" />
 			<Reference name="RealmForge.Utility"/>
 			
 			<Files>
@@ -347,7 +347,7 @@
 			<Reference name="System" />
 			<Reference name="System.Data" />
 			<Reference name="System.Xml" />
-			<Reference name="Axiom.Engine"/>
+			<Reference name="Axiom"/>
 			<Reference name="RealmForge.Utility"/>
 			
 			<Files>
@@ -375,7 +375,7 @@
 			<Reference name="System.Xml"/>
 			<Reference name="System.Data"/>
 			<Reference name="RealmForge.Utility"/>
-			<Reference name="Axiom.Engine"/>
+			<Reference name="Axiom"/>
 			
 			<?if OS = "Win32" ?>
 			

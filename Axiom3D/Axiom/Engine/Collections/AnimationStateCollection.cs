@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System.Collections;
 
-using T = Axiom.Engine.AnimationState;
+using T = Axiom.AnimationState;
 // used to alias a key value in the code for easy copying and pasting.  Come on generics!!
 using K = System.String;
 // used to alias a parent type in the code for easy copying and pasting.  Come on generics!!
@@ -36,7 +36,7 @@ using K = System.String;
 
 #endregion  Namespace Declarations
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// Summary description for AnimationStateCollection.

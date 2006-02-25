@@ -1,12 +1,55 @@
-#region LGPL License/*Axiom Game Engine LibraryCopyright (C) 2003  Axiom Project TeamThe overall design, and a majority of the core engine and rendering code contained within this library is a derivative of the open source Object Oriented Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  Many thanks to the OGRE team for maintaining such a high quality project.This library is free software; you can redistribute it and/ormodify it under the terms of the GNU Lesser General PublicLicense as published by the Free Software Foundation; eitherversion 2.1 of the License, or (at your option) any later version.This library is distributed in the hope that it will be useful,but WITHOUT ANY WARRANTY; without even the implied warranty ofMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNULesser General Public License for more details.You should have received a copy of the GNU Lesser General PublicLicense along with this library; if not, write to the Free SoftwareFoundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA*/#endregion LGPL License#region Namespace Declarationsusing System;using System.Collections;using System.Diagnostics;using Axiom.Core;
-using Axiom.Engine;
-using Axiom.MathLib;using Axiom.SceneManagers.PagingLandscape.Collections;using Axiom.SceneManagers.PagingLandscape.Tile;#endregion Using Directivesnamespace Axiom.SceneManagers.PagingLandscape.Data2D{
+#region LGPL License
+/*
+Axiom Game Engine Library
+Copyright (C) 2003  Axiom Project Team
+
+The overall design, and a majority of the core engine and rendering code 
+contained within this library is a derivative of the open source Object Oriented 
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+#endregion LGPL License
+
+#region Namespace Declarations
+
+using System;
+using System.Collections;
+using System.Diagnostics;
+
+using Axiom.Core;
+using Axiom;
+using Axiom.MathLib;
+
+using Axiom.SceneManagers.PagingLandscape.Collections;
+using Axiom.SceneManagers.PagingLandscape.Tile;
+
+#endregion Using Directives
+
+namespace Axiom.SceneManagers.PagingLandscape.Data2D
+{
+
 	/// <summary>
 	/// Summary description for Data2D.
 	/// </summary>
 	public abstract class Data2D : IDisposable
-	{
-		#region Fields
+	{
+
+		#region Fields
+
 		/// <summary>
 		/// computed Height Data  (scaled)
 		/// </summary>
@@ -35,7 +78,8 @@ using Axiom.MathLib;using Axiom.SceneManagers.PagingLandscape.Collections;usi
 		/// <summary>
 		/// if data loaded or not
 		/// </summary>
-		protected bool isLoaded;
+		protected bool isLoaded;
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -45,8 +89,10 @@ using Axiom.MathLib;using Axiom.SceneManagers.PagingLandscape.Collections;usi
 		/// 
 		/// </summary>
 		protected bool dynamic;
-
-		#endregion Fields
+
+
+		#endregion Fields
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -56,7 +102,8 @@ using Axiom.MathLib;using Axiom.SceneManagers.PagingLandscape.Collections;usi
 			isLoaded = false;
 			heightData = null;
 			newHeight = new ArrayList();
-		}
+		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -66,18 +113,27 @@ using Axiom.MathLib;using Axiom.SceneManagers.PagingLandscape.Collections;usi
 			{
 				return dynamic;
 			}
-		}
-		#region IDisposable Members
-
-		public virtual void Dispose()
-		{
+		}
+
+		#region IDisposable Members
+
+
+
+		public virtual void Dispose()
+
+		{
+
 			if (heightData != null)
 				heightData = null;
 			newHeight.Clear();
-			isLoaded = false;		
-		}
-
-		#endregion
+			isLoaded = false;		
+
+		}
+
+
+
+		#endregion
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -102,7 +158,8 @@ using Axiom.MathLib;using Axiom.SceneManagers.PagingLandscape.Collections;usi
 		/// 
 		/// </summary>
 		/// <param name="NewHeightmap"></param>
-		public virtual void Load(Image NewHeightmap)
+		public virtual void Load(Image NewHeightmap)
+
 		{
 			isLoaded = true;
 			load(NewHeightmap);
@@ -181,9 +238,12 @@ using Axiom.MathLib;using Axiom.SceneManagers.PagingLandscape.Collections;usi
 		/// <param name="mX"></param>
 		/// <param name="mZ"></param>
 		/// <returns></returns>
-		public virtual Vector3 GetNormalAt (float mX, float mZ)
-		{
-			return Vector3.UnitY;
+		public virtual Vector3 GetNormalAt (float mX, float mZ)
+
+		{
+
+			return Vector3.UnitY;
+
 		}
 
 		/// <summary>
@@ -421,5 +481,7 @@ using Axiom.MathLib;using Axiom.SceneManagers.PagingLandscape.Collections;usi
 			return false;
 		}
 
-	}
-}
+	}
+
+}
+

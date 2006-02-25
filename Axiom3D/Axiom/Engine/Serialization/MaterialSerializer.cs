@@ -8,7 +8,7 @@ using System.Text;
 // This is coming from RealmForge.Utility
 using Axiom.Core;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// Summary description for MaterialSerializer.

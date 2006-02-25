@@ -30,7 +30,7 @@ using System.Diagnostics;
 using Axiom.MathLib;
 using Axiom.MathLib.Collections;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		A viewpoint from which the scene will be rendered.

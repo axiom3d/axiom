@@ -28,7 +28,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// 	Abstract base class representing a high-level program (a vertex or

@@ -28,11 +28,11 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom.Engine;
+using Axiom;
 using Axiom.MathLib;
 using Axiom.MathLib.Collections;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///     General utility class for building edge lists for geometry.

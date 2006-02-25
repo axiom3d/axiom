@@ -30,7 +30,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		Defines a generic resource handler.
