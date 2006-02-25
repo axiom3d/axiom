@@ -2101,7 +2101,7 @@ namespace Axiom.RenderSystems.DirectX9
             {
                 gpuProgramMgr.PushSyntaxCode( "ps_2_0" );
 
-                if ( fpMinor > 0 )
+                if ( fpMajor > 2 || fpMinor > 0 )
                 {
                     gpuProgramMgr.PushSyntaxCode( "ps_2_x" );
                 }
