@@ -7,6 +7,7 @@ namespace Axiom.RenderSystems.OpenGL
     /// <summary>
     /// Summary description for Plugin.
     /// </summary>
+    [PluginMetadata(Name="OpenGL", Description="Axiom OpenGL Renderer")]
     public sealed class Plugin : IPlugin
     {
         #region Implementation of IPlugin
@@ -20,12 +21,20 @@ namespace Axiom.RenderSystems.OpenGL
         /// </summary>
         private GLRenderSystem renderSystem = new GLRenderSystem();
 
+        private bool _isStarted = false;
+
+        public bool IsStarted
+        {
+            get { return _isStarted; }
+        }
+
         public void Start()
         {
             // add an instance of this plugin to the list of available RenderSystems
             Root.Instance.RenderSystems.Add( "OpenGL", renderSystem );
 
             HighLevelGpuProgramManagerSingleton.Instance.AddFactory( factory );
+            _isStarted = true;
         }
 
         public void Stop()

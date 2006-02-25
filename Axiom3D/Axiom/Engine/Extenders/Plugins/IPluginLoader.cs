@@ -22,20 +22,24 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
+#endregion 
 
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Axiom
 {
     /// <summary>
-    /// Summary description for PluginException.
+    /// Strategry that specifies how a plugin is loaded
     /// </summary>
-    public class PluginException : AxiomException
+    public interface IPluginLoader
     {
-        public PluginException( string message, params object[] args )
-            : base( string.Format( message, args ) )
-        {
-        }
+        /// <summary>
+        /// Loads the plugin specified by its metadata
+        /// </summary>
+        /// <param name="metadata">plugin metadata</param>
+        /// <returns></returns>
+        IPlugin LoadPlugin(PluginMetadataAttribute metadata);
     }
 }

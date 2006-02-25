@@ -22,36 +22,31 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
-
+#endregion 
 
 using System;
+using System.Collections.Generic;
+using System.Text;
 
-using Axiom;
-
-namespace Axiom.SceneManagers.Bsp
+namespace Axiom
 {
-    public class BspPlugin : IPlugin
+    /// <summary>
+    /// Singleton plugin loader
+    /// </summary>
+    class SingletonPluginLoader : PluginLoader
     {
-        public void Start()
+        static List<string>
+            _loadedSingletons = new List<string>();
+
+        public override IPlugin LoadPlugin(PluginMetadataAttribute metadata)
         {
-            Root.Instance.SceneManagers.SetSceneManager( SceneType.Interior, new BspSceneManager() );
+            if (_loadedSingletons.Contains(metadata.Name))
+                throw new PluginException("Plugin {0} is already loaded and only one instance can exist",
+                    metadata.Name);
 
-            _isStarted = true;
-        }
+            _loadedSingletons.Add(metadata.Name);
 
-        private bool _isStarted = false;
-
-        public bool IsStarted
-        {
-            get { return _isStarted; }
-        }
-
-        public void Stop()
-        {
+            return base.LoadPlugin(metadata);
         }
     }
 }
-
-
-

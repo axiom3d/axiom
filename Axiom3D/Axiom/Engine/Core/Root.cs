@@ -95,6 +95,8 @@ namespace Axiom
 
                 logMgr.Write( info.ToString() );
                 logMgr.Write( "*-*-* Axiom Intializing" );
+                
+                AxiomVfs.Instance.Initialize();
 
                 new ArchiveManager();
                 
@@ -122,7 +124,9 @@ namespace Axiom
 
                 new HighLevelGpuProgramManager();
 
-                PluginManager.Instance.Init();
+                // load the still unloaded but specified plugins
+                // (third-party?)
+                PluginManager.Instance.LoadPlugins();
             }
         }
 

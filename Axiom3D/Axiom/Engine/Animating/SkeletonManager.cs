@@ -31,7 +31,8 @@ namespace Axiom
     /// <summary>
     /// Summary description for SkeletonManager.
     /// </summary>
-    public sealed class SkeletonManager : ResourceManager {
+    public sealed class SkeletonManager : ResourceManager
+    {
         #region Singleton implementation
 
         /// <summary>
@@ -42,8 +43,10 @@ namespace Axiom
         /// <summary>
         ///     Internal constructor.  This class cannot be instantiated externally.
         /// </summary>
-        internal SkeletonManager() {
-            if (instance == null) {
+        internal SkeletonManager()
+        {
+            if (instance == null)
+            {
                 instance = this;
             }
         }
@@ -51,9 +54,11 @@ namespace Axiom
         /// <summary>
         ///     Gets the singleton instance of this class.
         /// </summary>
-        public static SkeletonManager Instance {
-            get { 
-                return instance; 
+        public static SkeletonManager Instance
+        {
+            get
+            {
+                return instance;
             }
         }
 
@@ -66,7 +71,8 @@ namespace Axiom
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public override Resource Create(string name) {
+        public override Resource Create(string name)
+        {
             return new Skeleton(name);
         }
 
@@ -74,7 +80,8 @@ namespace Axiom
         ///    Overloaded method.  Call overload with default of priority 1.
         /// </summary>
         /// <param name="fileName">Name of the skeleton file to load.</param>
-        public Skeleton Load(string fileName) {
+        public Skeleton Load(string fileName)
+        {
             return Load(fileName, 1);
         }
 
@@ -86,19 +93,22 @@ namespace Axiom
         /// </remarks>
         /// <param name="fileName"></param>
         /// <param name="priority"></param>
-        public Skeleton Load(string fileName, int priority) {
+        public Skeleton Load(string fileName, int priority)
+        {
             Skeleton skeleton = GetByName(fileName);
 
-            if(skeleton == null) {
+            if (skeleton == null)
+            {
                 // create and load the skeleton
                 skeleton = (Skeleton)Create(fileName);
-                base.Load (skeleton, priority);
+                base.Load(skeleton, priority);
             }
 
             return skeleton;
         }
 
-        public new Skeleton GetByName(string name) {
+        public new Skeleton GetByName(string name)
+        {
             return (Skeleton)base.GetByName(name);
         }
 

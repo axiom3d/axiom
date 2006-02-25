@@ -22,36 +22,44 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
-
+#endregion 
 
 using System;
+using System.Collections.Generic;
+using System.Text;
 
-using Axiom;
-
-namespace Axiom.SceneManagers.Bsp
+namespace Axiom
 {
-    public class BspPlugin : IPlugin
+    /// <summary>
+    /// Describes a subsystem 
+    /// </summary>
+    /// <remarks>
+    /// Describing a class as a subsystem allows Axiom to initialize it upong the 
+    /// creation of Root. This facilitates easier subsystem addition and provides
+    /// a way to control the order in which subsystems are created by the engine.
+    /// </remarks>
+    // TODO: arilou: create a SubsystemManager and refactor PluginManager to remove subsystem
+    // code from it
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple=false)]
+    public class SubsystemAttribute : Attribute
     {
-        public void Start()
+        private string _name = string.Empty;
+        /// <summary>
+        /// Subsystem name
+        /// </summary>
+        public string Name
         {
-            Root.Instance.SceneManagers.SetSceneManager( SceneType.Interior, new BspSceneManager() );
-
-            _isStarted = true;
+            get { return _name; }
+            set { _name = value; }
         }
 
-        private bool _isStarted = false;
-
-        public bool IsStarted
+        /// <summary>
+        /// Describes a subsystem
+        /// </summary>
+        /// <param name="subsystemName"></param>
+        public SubsystemAttribute(string subsystemName)
         {
-            get { return _isStarted; }
-        }
-
-        public void Stop()
-        {
+            _name = subsystemName;
         }
     }
 }
-
-
-

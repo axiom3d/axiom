@@ -34,13 +34,17 @@ namespace Axiom.ParticleFX
     /// <summary>
     /// Summary description for ParticleFX.
     /// </summary>
-    [PluginMetadata(Namespace="/Axiom/Plugins/ParticleFX")]
+    [PluginMetadata(Name="ParticleFX", Subsystem=typeof(ParticleSystemManager))]
     public class ParticleFX : IPlugin
     {
         #region IPlugin Members
 
+        EmitterNamespaceExtender mynamespace = null;
         public void Start()
         {
+            mynamespace = new EmitterNamespaceExtender();
+            AxiomVfs.Instance.RegisterNamespace(mynamespace);
+
             ParticleEmitterFactory emitterFactory;
             ParticleAffectorFactory affectorFactory;
 
@@ -99,11 +103,20 @@ namespace Axiom.ParticleFX
             // scale affector
             affectorFactory = new RotationAffectorFactory();
             ParticleSystemManager.Instance.AddAffectorFactory( affectorFactory );
+
+            _isStarted = true;
         }
 
         public void Stop()
         {
             // TODO  Add ParticleFX.Stop implementation
+        }
+
+        private bool _isStarted = false;
+
+        public bool IsStarted
+        {
+            get { return _isStarted; }
         }
 
         #endregion

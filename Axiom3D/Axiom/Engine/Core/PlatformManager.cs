@@ -122,7 +122,7 @@ namespace Axiom
             {
                 instance = 
                     (IPlatformManager)
-                    ((ISingletonPlugin) PluginManager.Instance.GetPlugin("/Axiom/PlatformManager")).GetSubsystemImplementation();
+                    ((ISingletonPlugin) PluginManager.Instance.GetPlugin("/Axiom/Plugins/PlatformManager")).GetSubsystemImplementation();
 
                 // find and load a platform manager assembly
                 /*string[] files = Directory.GetFiles( ".", "Axiom.Platforms.*.dll" );

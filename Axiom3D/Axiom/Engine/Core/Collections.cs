@@ -1,23 +1,17 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Axiom
 {
-    /// <summary>
-    ///     Generics: List<MeshLodUsage>
-    /// </summary>
-    public class MeshLodUsageList : ArrayList
+    public class MeshLodUsageList : List<MeshLodUsage>
     {
     }
 
-    /// <summary>
-    ///     Generics: List<int>
-    /// </summary>
-    public class IntList : ArrayList
+    public class IntList : List<int>
     {
         public void Resize( int size )
         {
-            int[] data = (int[])this.ToArray( typeof( int ) );
+            int[] data = this.ToArray();
             int[] newData = new int[size];
             Array.Copy( data, 0, newData, 0, size );
             Clear();
@@ -25,14 +19,11 @@ namespace Axiom
         }
     }
 
-    /// <summary>
-    ///     Generics: List<float>
-    /// </summary>
-    public class FloatList : ArrayList
+    public class FloatList : List<float>
     {
         public void Resize( int size )
         {
-            float[] data = (float[])this.ToArray( typeof( float ) );
+            float[] data = this.ToArray();
             float[] newData = new float[size];
             Array.Copy( data, 0, newData, 0, size );
             Clear();

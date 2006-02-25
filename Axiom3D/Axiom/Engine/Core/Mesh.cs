@@ -982,7 +982,7 @@ namespace Axiom
         {
             Debug.Assert( index < lodUsageList.Count, "index < lodUsageList.Count" );
 
-            MeshLodUsage usage = (MeshLodUsage)lodUsageList[index];
+            MeshLodUsage usage = lodUsageList[index];
 
             // load the manual lod mesh for this level if not done already
             if ( isLodManual && index > 0 && usage.manualMesh == null )
@@ -1212,7 +1212,7 @@ namespace Axiom
         {
             for ( int i = 0; i < lodUsageList.Count; i++ )
             {
-                if ( ( (MeshLodUsage)lodUsageList[i] ).fromSquaredDepth > squaredDepth )
+                if ( lodUsageList[i].fromSquaredDepth > squaredDepth )
                 {
                     return i - 1;
                 }

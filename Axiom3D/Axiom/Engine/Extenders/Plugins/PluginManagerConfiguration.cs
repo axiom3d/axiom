@@ -22,36 +22,44 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
-
+#endregion 
 
 using System;
+using System.Collections.Generic;
+using System.Text;
 
-using Axiom;
-
-namespace Axiom.SceneManagers.Bsp
+namespace Axiom
 {
-    public class BspPlugin : IPlugin
+    /// <summary>
+    /// <see cref="PluginManager"/> configuration class
+    /// </summary>
+    public class PluginManagerConfiguration
     {
-        public void Start()
+        string _pluginFolder = string.Empty;
+        /// <summary>
+        /// Root folder for plugin assemblies
+        /// </summary>
+        public string PluginFolder
         {
-            Root.Instance.SceneManagers.SetSceneManager( SceneType.Interior, new BspSceneManager() );
-
-            _isStarted = true;
+            get { return _pluginFolder; }
         }
 
-        private bool _isStarted = false;
-
-        public bool IsStarted
+        List<string> plugins = new List<string>();
+        /// <summary>
+        /// List of registered plugin names
+        /// </summary>
+        public List<string> Plugins
         {
-            get { return _isStarted; }
+            get { return plugins; }
         }
 
-        public void Stop()
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="pluginFolder">root plugin folder</param>
+        public PluginManagerConfiguration(string pluginFolder)
         {
+            _pluginFolder = pluginFolder;
         }
     }
 }
-
-
-

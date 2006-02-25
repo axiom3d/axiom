@@ -26,6 +26,7 @@ namespace Axiom
         {
             static SingletonFactory()
             {
+                
             }
 
             internal static readonly T instance = new T();
