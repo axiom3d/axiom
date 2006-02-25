@@ -1,13 +1,16 @@
 <?xml version="1.0"?>
 <project name="Axiom.RenderSystems.OpenGL" default="build">
-	<!--
-		Required properties:
-			* build.dir             - (path) root level to build to
-			* build.bin.dir         - (path), Executables go here
-			* build.lib.dir         - (path), assemblies go here
-			* build.debug           - (true|false) debug build?
-			* current.build.defines - framework-specific build defines
-	-->
+<!--
+	Member of the core Axiom3D build
+	Axiom references should refer to the build dir listed below
+	
+	Required properties:
+		* axiom3d.build.dir			- (path) root level to build to
+		* managed.dependencies.dir	- (path) dynamically defined path to 
+									  managed dependencies
+		* build.debug				- (true|false) debug build?
+		* current.build.defines 	- framework-specific build defines
+-->
 	<target name="build">
 
 		<property name="unsafe" value="true" />
@@ -15,12 +18,13 @@
 		<property name="warninglevel" value="1"/>
 	 
 		<!-- build it -->
-		<csc target="library" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" output="${build.lib.dir}/${nant.project.name}.dll" doc="${build.lib.dir}/${nant.project.name}.xml">
+		<csc target="library" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" output="${axiom3d.build.dir}/${nant.project.name}.dll" doc="${axiom3d.build.dir}/${nant.project.name}.xml">
 			<nowarn>
 				<!-- do not report warnings for missing XML comments -->
 				<warning number="1591" />
 				<!-- do not report deprecation warnings -->
 				<warning number="0618" />
+				<warning number="1574" />
 			</nowarn>
 			<sources failonempty="true">
 				<include name="**/*.cs" />
@@ -35,18 +39,18 @@
 			</resources>
 		-->
 			<references>
-				<include name="${build.lib.dir}/Axiom.dll"/>
-				<include name="${build.lib.dir}/RealmForge.Utility.dll"/>
+				<include name="${axiom3d.build.dir}/Axiom.dll"/>
+				<include name="${axiom3d.build.dir}/RealmForge.Utility.dll"/>
 				<include name="System.dll"/>
 				<include name="System.Data.dll"/>
 				<include name="System.Drawing.dll"/>
 				<include name="System.Xml.dll"/>
-				<include name="${Tao.OpenGl}"/>
-				<include name="${Tao.OpenGl.ExtensionLoader}"/>
-				<include name="${Tao.OpenGl.Glu}"/>
+				<include name="${managed.dependencies.dir}/Tao.OpenGl.dll"/>
+				<include name="${managed.dependencies.dir}/Tao.OpenGl.ExtensionLoader.dll"/>
+				<include name="${managed.dependencies.dir}/Tao.OpenGl.Glu.dll"/>
 				<include if="${platform::is-win32()}" name="System.Windows.Forms.dll"/>
-				<include if="${platform::is-win32()}" name="${Tao.Platform.Windows}"/>
-				<include unless="${platform::is-win32()}" name="${Tao.Sdl}"/>
+				<include if="${platform::is-win32()}" name="${managed.dependencies.dir}/Tao.Platform.Windows.dll"/>
+				<include unless="${platform::is-win32()}" name="${managed.dependencies.dir}/Tao.Sdl.dll"/>
 			 </references>
 		</csc>
 	</target>

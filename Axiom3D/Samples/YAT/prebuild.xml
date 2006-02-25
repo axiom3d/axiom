@@ -42,15 +42,25 @@
 		<Project name="YAT" path="." type="WinExe" rootNamespace="YAT">
 			<Configuration name="Debug">
 				<Options>
+					<OutputPath>../../build/debug/YAT</OutputPath>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
+					<OutputPath>../../build/release/YAT</OutputPath>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
-			<ReferencePath>..\..\Dependencies\Managed</ReferencePath>
+			<?if OS = "Win32" ?>
+			
+			<ReferencePath>../../Dependencies/Managed/Win32</ReferencePath>
+			
+			<?else ?>
+			
+			<ReferencePath>../../Dependencies/Managed/Mono</ReferencePath>
+			
+			<?endif ?>
 			<Reference name="System"/>
 			<Reference name="System.Data"/>
 			<Reference name="System.Drawing"/>

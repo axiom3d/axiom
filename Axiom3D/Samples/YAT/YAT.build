@@ -1,0 +1,176 @@
+<?xml version="1.0"?>
+<project name="YAT" default="build">
+	<!--
+		Required properties:
+			* yat.build.dir         - (path) root level to build to
+			* axiom3d.build.dir     - (path) location of Axiom assemblies
+			* build.debug           - (true|false) debug build?
+			* current.build.defines - framework-specific build defines
+	-->
+	
+	<target name="references.setup" description="Sets up file references for YAT tasks" >
+		<fileset id="yat.references">
+			<include name="${axiom3d.build.dir}/RealmForge.Utility.dll"/>
+			<include name="${axiom3d.build.dir}/Axiom.dll"/>
+	
+			<include name="System.dll"/>
+			<include name="System.Data.dll"/>
+			<include name="System.Drawing.dll"/>
+			<include name="System.Xml.dll"/>
+
+			<include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.Win32.dll"/>
+			<include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.RenderSystems.DirectX9.dll"/>
+			<include unless="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.Sdl.dll"/>
+			<include unless="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.RenderSystems.OpenGl"/>
+		</fileset>
+	</target>
+	
+	<target name="build.setup" description="Sets up the build directory for debugging and running" depends="references.setup" unless="${target::has-executed('build.setup')}">
+		<!-- 
+			Define build directory for YAT 
+		-->
+		<property name="yat.build.dir" value="${path::combine(build.dir, 'YAT')}" />
+	
+		<!-- ensure build directory exists -->
+		<mkdir dir="${yat.build.dir}" />
+		
+		<!-- Copy any essential files over -->
+		<copy todir="${yat.build.dir}">
+			<fileset>
+				<include name="EngineConfig.xml" />
+			</fileset>
+		</copy>
+
+		<!-- Copy references - we'll need these at runtime -->
+		<copy todir="${yat.build.dir}">
+			<fileset refid="yat.references" />
+		</copy>
+
+		<!-- Copy Media folder - need this at runtime -->
+		<copy todir="${path::combine(yat.build.dir, 'Media')}">
+			<fileset basedir="Media">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+
+		<!-- YAT depends on some Axiom media at the moment. -->
+		<copy todir="${path::combine(yat.build.dir, 'Media')}">
+			<fileset basedir="../../Media" >
+				<include name="Icons/**/*"/>
+				<include name="Fonts/**/*"/>
+				<include name="Logos/**/*"/>
+			</fileset>
+		</copy>
+		
+	</target>
+
+	<target name="build" depends="references.setup, build.setup">
+
+		<property name="unsafe" value="true" />
+		<property name="warnaserror" value="false"/>
+	
+		<!-- build it -->
+		<csc target="winexe" define="${current.build.defines}" warnaserror="${warnaserror}" debug="${build.debug}" unsafe="${unsafe}" output="${yat.build.dir}/${nant.project.name}.exe" doc="${yat.build.dir}/${nant.project.name}.xml">
+			<nowarn>
+				<!-- do not report warnings for missing XML comments -->
+				<warning number="1591" />
+				<!-- do not report deprecation warnings -->
+				<warning number="0618" />
+			</nowarn>
+			<sources failonempty="true">
+				<include name="**/*.cs" />
+				<!-- common assembly-level attributes -->
+				<!-- <include name="../CommonAssemblyInfo.cs" /> -->
+			</sources>
+		<!--
+			<resources prefix="YAT" dynamicprefix="true">
+				<include name="Resources/**/*" />
+			</resources>
+		-->
+			<references refid="yat.references" />
+		</csc>
+	</target>
+	
+	<target name="run" description="Run YAT" depends="build">
+		<echo message="Running YAT!"/>
+		<exec program="${yat.build.dir}/YAT.exe" useruntimeengine="true" workingdir="${yat.build.dir}" />
+	</target>
+
+	<!-- Dist/packaging stuff.  Moved here for reference and disabled for now -->
+	<!--
+	<property name="dist.yat.dir" value="${path::combine(dist.dir, 'YAT')}" dynamic="true" />
+	<property name="dist.yat.bin.dir" value="${path::combine(dist.yat.dir, 'bin')}" dynamic="true" />
+	<property name="dist.yat.lib.dir" value="${path::combine(dist.yat.dir, 'bin')}" dynamic="true" />
+	<property name="dist.yat.media.dir" value="${path::combine(dist.yat.dir, 'Media')}" dynamic="true" />
+	-->
+	<!-- Note: nested comments not allowed, so replaced dashes with 'comment' below.
+		 switch back to dashes when uncommenting this block.
+	<target name="dist.setup" description="Deploy the YAT sample app in preparation for packaging" depends="build" unless="${target::has-executed('dist')}">
+		<!comment Make sure YAT deployment directory exists comment>
+		<mkdir dir="${dist.yat.dir}" />
+		
+		<!comment Copy required Axiom assemblies (based on platform comment>
+		<copy todir="${dist.yat.lib.dir}" if="${platform::is-win32()}">
+			<fileset basedir="${build.lib.dir}">
+				<include name="RealmForge.Utility.dll" />
+				<include name="Axiom.dll" />
+				<include name="Axiom.Platforms.Win32.dll" />
+				<include name="Axiom.RenderSystems.DirectX9.dll" />
+			</fileset>
+		</copy>
+		<copy todir="${dist.yat.lib.dir}" if="${platform::is-unix()}">
+			<fileset basedir="${build.lib.dir}">
+				<include name="RealmForge.Utility.dll" />
+				<include name="Axiom.dll" />
+				<include name="Axiom.Platforms.SDL.dll" />
+				<include name="Axiom.RenderSystems.OpenGL.dll" />
+			</fileset>
+		</copy>
+	
+		<!comment Copy managed and native dependencies (based on platform) comment>
+		<copy todir="${dist.yat.lib.dir}" if="${platform::is-win32()}">
+			<fileset basedir="${dependencies.managed.win32.dir}">
+				<include name="Tao.DevIl.dll" />
+				<include name="Tao.Platform.Windows.dll" />
+			</fileset>
+		</copy>
+		<copy todir="${dist.yat.lib.dir}" if="${platform::is-win32()}">
+			<fileset basedir="${dependencies.native.win32.dir}">
+				<include name="DevIl.dll" />
+			</fileset>
+		</copy>
+		<copy todir="${dist.yat.lib.dir}" if="${platform::is-unix()}">
+			<fileset basedir="${dependencies.managed.unix.dir}">
+				<include name="Tao.DevIl.*" />
+				<include name="Tao.Sdl.*" />
+				<include name="Tao.OpenGl.*" />
+			</fileset>
+		</copy>
+
+		<copy todir="${dist.yat.bin.dir}">
+			<fileset basedir="${project::get-base-directory()}/Samples/YAT/">
+				<include name="EngineConfig.xml" />
+			</fileset>
+		</copy>
+	
+		<!comment Copy the YAT executiable and the YAT and Axiom media comment>
+		<copy todir="${dist.yat.bin.dir}">
+			<fileset basedir="${build.bin.dir}">
+				<include name="YAT.exe" />
+			</fileset>
+		</copy>
+		<copy todir="${dist.yat.media.dir}">
+			<fileset basedir="${project::get-base-directory()}/Samples/YAT/Media">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+		<copy todir="${dist.yat.media.dir}">
+			<fileset basedir="${project::get-base-directory()}/Media">
+				<include name="Icons/*" />
+				<include name="Fonts/*" />
+				<include name="Logos/*" />
+			</fileset>
+		</copy>
+	</target>
+  -->
+</project>

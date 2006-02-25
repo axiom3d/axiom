@@ -15,13 +15,6 @@
 		<property name="project.version.full" value="${project.version + if(project.release.type == 'release', '', '-' + project.release.type)}" dynamic="true" />
 	</if>
 	
-	<!-- 
-		specifies whether the CommonAssemblyInfo.cs file should be created.
-		we do not want this for releases (whether they're beta or release) as
-		this would cause the build number to be updated
-		NOTE: disabled at present for Axiom, but left in for future consideration
-	-->
-	<property name="create.assemblyinfo" value="false" />
 	
 	<!-- named project configurations -->
 	<!-- 
@@ -34,14 +27,16 @@
 	<target name="debug" description="Perform a 'debug' build">
 		<property name="project.config" value="debug" />
 		<property name="build.debug" value="true" />
-		<property name="build.dir" value="${project::get-base-directory()}/build/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" />
+	<!--	<property name="build.dir" value="${project::get-base-directory()}/build/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" /> -->
+		<property name="build.dir" value="${project::get-base-directory()}/build/${project.config}" />
 		<property name="dist.dir" value="${project::get-base-directory()}/dist/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" />
 	</target>
 
 	<target name="release" description="Perform a 'release' build">
 		<property name="project.config" value="release" />
 		<property name="build.debug" value="false" />
-		<property name="build.dir" value="${project::get-base-directory()}/build/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" />
+	<!--	<property name="build.dir" value="${project::get-base-directory()}/build/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" /> -->
+		<property name="build.dir" value="${project::get-base-directory()}/build/${project.config}" />
 		<property name="dist.dir" value="${project::get-base-directory()}/dist/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" />
 	</target>
 	
@@ -52,21 +47,43 @@
 	<property name="build.bin.dir" value="${path::combine(build.dir, 'bin')}" dynamic="true" />
 	<property name="build.lib.dir" value="${path::combine(build.dir, 'lib')}" dynamic="true" />
 	
+	<!-- Aliases for managed and native dependencies -->
+	<!-- NOTE: dynamic should be false for these so nested buildfiles don't change the path-->
+
 	<!-- Define locations of various Axiom dependencies provided by the dev environment -->
 	<property name="dependencies.dir" value="${project::get-base-directory()}/Dependencies" dynamic="false" />
 	<property name="dependencies.managed.dir" value="${path::combine(dependencies.dir, 'Managed')}" dynamic="false" />
 	<property name="dependencies.managed.win32.dir" value="${path::combine(dependencies.managed.dir, 'Win32')}" dynamic="false" />
 	<property name="dependencies.managed.unix.dir" value="${path::combine(dependencies.managed.dir, 'Mono')}" dynamic="false" />
+	<property name="dependencies.native.dir" value="${path::combine(dependencies.dir, 'Native')}" dynamic="false" />
+	<property name="dependencies.native.win32.dir" value="${path::combine(dependencies.native.dir, 'Win32')}" dynamic="false" />
 	
 	<!-- 
-		Needs to be more cleanly defined as with managed deps, but there are only win32
-		deps in a single native dir now, so I'll leave this simple 
+		OK, here's a bit of cleverness I may regret - define a 'runtime' managed
+		and native dependencies dir based on platform we are executing on.
 	-->
-	<property name="dependencies.native.win32.dir" value="${path::combine(dependencies.dir, 'Native')}" dynamic="false" />
+	<if test="${platform::is-win32()}">
+		<property name="managed.dependencies.dir" value="${dependencies.managed.win32.dir}" dynamic="false"/>
+		<property name="native.dependencies.dir" value="${dependencies.native.win32.dir}" dynamic="false"/>		
+	</if>
+	<if test="${platform::is-unix()}">
+		<property name="managed.dependencies.dir" value="${dependencies.managed.unix.dir}" dynamic="false"/>
+		<property name="native.dependencies.dir" value="${dependencies.native.unix.dir}" dynamic="false"/>
+	</if>
+
 	
 	<!-- Paths for Managed DirectX -->
+	<!-- NOTE: Points to the location of the Managed DirectX assemblies.  If you
+		recieve error messages relating to missing DirectX assemblies, check
+		here first.
+	-->
+	<property name="directx.sdk.dir" value="${environment::get-variable('DXSDK_DIR')}" dynamic="true" />
+	<property name="directx.dir" value="${path::combine(directx.sdk.dir, 'Developer Runtime/x86/DirectX for Managed Code')}" dynamic="true" />
+	<!-- alternate settings
 	<property name="win.sys.root" value="${environment::get-variable('SystemRoot')}" dynamic="true" />
 	<property name="directx.dir" value="${path::combine(win.sys.root, 'Microsoft.NET/Managed DirectX/v9.02.2904')}" dynamic="true" />
+	-->
+	
 	
 	<!-- default configuration -->
 	<property name="project.config" value="debug" /> <!-- debug|release -->
@@ -124,67 +141,13 @@
 	<fileset id="axiom.samples.yat.buildfile">
 		<include name="Samples/YAT/YAT.build"/>
 	</fileset>
-	
-	<!-- Aliases for managed dependencies -->
-	<!-- NOTE: dynamic should be false for these so nested buildfiles don't change the path-->
-
-	<property name="ICSharpCode.SharpZipLib" value="${path::combine(dependencies.managed.dir, 'ICSharpCode.SharpZipLib.dll')}" dynamic="false"/> 
-	
-	<!-- Mainly required for Tao assemblies. Somewhat verbose, but NAnt lacks an else construct -->
-	<if test="${platform::is-win32()}">
-		<property name="Tao.Cg" value="${path::combine(dependencies.managed.win32.dir, 'Tao.Cg.dll')}" dynamic="false"/>
-		<property name="Tao.DevIl" value="${path::combine(dependencies.managed.win32.dir, 'Tao.DevIl.dll')}" dynamic="false"/>
-		<property name="Tao.OpenGl" value="${path::combine(dependencies.managed.win32.dir, 'Tao.OpenGl.dll')}" dynamic="false"/>
-		<property name="Tao.OpenGl.ExtensionLoader" value="${path::combine(dependencies.managed.win32.dir, 'Tao.OpenGl.ExtensionLoader.dll')}" dynamic="false"/>
-		<property name="Tao.OpenGl.Glu" value="${path::combine(dependencies.managed.win32.dir, 'Tao.OpenGl.Glu.dll')}" dynamic="false"/>
-		<property name="Tao.Platform.Windows" value="${path::combine(dependencies.managed.win32.dir, 'Tao.Platform.Windows.dll')}" dynamic="false"/>
-		<property name="Tao.Sdl" value="${path::combine(dependencies.managed.win32.dir, 'Tao.Sdl.dll')}" dynamic="false"/>
-	</if>
-
-	<if test="${platform::is-unix()}">
-		<property name="Tao.Cg" value="${path::combine(dependencies.managed.unix.dir, 'Tao.Cg.dll')}" dynamic="false"/>
-		<property name="Tao.DevIl" value="${path::combine(dependencies.managed.unix.dir, 'Tao.DevIl.dll')}" dynamic="false"/>
-		<property name="Tao.OpenGl" value="${path::combine(dependencies.managed.unix.dir, 'Tao.OpenGl.dll')}" dynamic="false"/>
-		<property name="Tao.OpenGl.ExtensionLoader" value="${path::combine(dependencies.managed.unix.dir, 'Tao.OpenGl.ExtensionLoader.dll')}" dynamic="false"/>
-		<property name="Tao.OpenGl.Glu" value="${path::combine(dependencies.managed.unix.dir, 'Tao.OpenGl.Glu.dll')}" dynamic="false"/>
-		<property name="Tao.Sdl" value="${path::combine(dependencies.managed.unix.dir, 'Tao.Sdl.dll')}" dynamic="false"/>
-		<property name="Tao.Platform.Windows" value="${path::combine(dependencies.managed.unix.dir, 'Tao.Platform.Windows.dll')}" dynamic="false"/>
-	</if>
-	
-	<!-- build tasks -->
+		
+	<!-- BEGIN: General build tasks -->
 	<target name="init" description="Initializes build properties" unless="${target::has-executed('init')}">
 		<call target="${project.config}" />
 		<call target="set-framework-configuration" />
 	</target>
 	
-	<!-- Not used at the moment.  Left here for possible future use -->
-	<target name="create-common-assemblyinfo" if="${create.assemblyinfo}">
-		<!-- ensure CommonAssemblyInfo.cs is writable if it already exists -->
-		<attrib file="Axiom/CommonAssemblyInfo.cs" readonly="false" if="${file::exists('Axiom/CommonAssemblyInfo.cs')}" />
-		<!-- generate the source file holding the common assembly-level attributes -->
-		<asminfo output="Axiom/CommonAssemblyInfo.cs" language="CSharp">
-			<imports>
-				<import namespace="System" />
-				<import namespace="System.Reflection" />
-				<import namespace="System.Runtime.InteropServices" />
-			</imports>
-			<attributes>
-				<attribute type="ComVisibleAttribute" value="false" />
-				<attribute type="CLSCompliantAttribute" value="false" />
-				<attribute type="AssemblyTitleAttribute" value="Axiom3D" />
-				<attribute type="AssemblyDescriptionAttribute" value="A .NET Graphics Engine" />
-				<attribute type="AssemblyConfigurationAttribute" value="${project.release.type}" />
-				<attribute type="AssemblyCompanyAttribute" value="http://axiomengine.sourceforge.net" />
-				<attribute type="AssemblyProductAttribute" value="Axiom3D" />
-				<attribute type="AssemblyCopyrightAttribute" value="Copyright (C) 2005-${datetime::get-year(datetime::now())} The Axiom3D Team" />
-				<attribute type="AssemblyTrademarkAttribute" value="" />
-				<attribute type="AssemblyCultureAttribute" value="" />
-				<attribute type="AssemblyVersionAttribute" value="${project.version}.${build.number}.0" />
-				<attribute type="AssemblyInformationalVersionAttribute" value="${project.version}" />
-			</attributes>
-		</asminfo>
-	</target>
-
 	<target name="build.clean" depends="init" description="Deletes current build configuration">
 		<delete dir="${build.dir}" if="${directory::exists(build.dir)}" />
 	</target>
@@ -198,22 +161,27 @@
 
 	<target name="build.setup" depends="init, create-common-assemblyinfo" unless="${target::has-executed('build.setup')}" description="Sets up build area">
 		<echo message="Build Directory is ${build.dir}" />
-		<!-- ensure bin directory exists -->
-		<mkdir dir="${build.bin.dir}" />
-		<!-- ensure lib directory exists -->
-		<mkdir dir="${build.lib.dir}" />
-		
-		<!-- copy third party assemblies -->
-		<!-- Disabled for now - refer to them in place
-		<copy todir="${build.lib.dir}">
-		<fileset basedir="${dependencies.managed.dir}">
-			<include name="**/*" />
-		</fileset>
-		</copy>
-		-->
+		<!-- ensure build directory exists -->
+		<mkdir dir="${build.dir}" />
 	</target>
 
-	<target name="build.axiom3d" depends="build.setup" description="Builds the Axiom3D engine for the current build configuration">
+	<target name="build.all" depends="build.axiom3d, build.axiom.demos, build.axiom.samples.yat" description="Build everything"/>
+	
+	<!-- END: General build tasks -->
+	
+	<!-- BEGIN: Axiom3D core build tasks -->
+	<target name="build.axiom3d.setup" depends="build.setup" unless="${target::has-executed('build.axiom3d.setup')}" description="Sets up build area">
+		<!-- 
+			Define build directory for Axiom3D projects - Note: this is all the 
+			assemblies considered 'core' to the Axiom engine. 
+		-->
+		<property name="axiom3d.build.dir" value="${path::combine(build.dir, 'Axiom3D')}" />
+	
+		<!-- ensure Axiom3D build directory exists -->
+		<mkdir dir="${axiom3d.build.dir}" />
+	</target>
+
+	<target name="build.axiom3d" depends="build.axiom3d.setup" description="Builds the Axiom3D engine for the current build configuration">
 		<!-- Call required targets in order -->
 		<!-- 
 			Call targets building Windows-specific assemblies only on 
@@ -233,87 +201,107 @@
 	</target>
 	
 	<!-- Build targets for the individual Axiom3D assemblies -->
-	<target name="build.realmforge.utility" description="Build RealmForge.Utility assembly" depends="build.setup" unless="${target::has-executed('build.realmforge.utility')}">
+	<target name="build.realmforge.utility" description="Build RealmForge.Utility assembly" depends="build.axiom3d.setup" unless="${target::has-executed('build.realmforge.utility')}">
 		<nant target="build">
 			<buildfiles refid="realmforge.utility.buildfile"/>
 		</nant>
 	</target>
 
-	<target name="build.axiom" description="Build Axiom assembly" depends="build.setup, build.realmforge.utility" unless="${target::has-executed('build.axiom')}">
+	<target name="build.axiom" description="Build Axiom assembly" depends="build.realmforge.utility" unless="${target::has-executed('build.axiom')}">
 		<nant target="build">
 			<buildfiles refid="axiom.buildfile"/>
 		</nant>
 	</target>
 
-	<target name="build.axiom.platforms.win32" description="Build Axiom.Platforms.Win32 assembly" depends="build.setup, build.realmforge.utility, build.axiom" unless="${target::has-executed('build.axiom.platforms.win32')}">
+	<target name="build.axiom.platforms.win32" description="Build Axiom.Platforms.Win32 assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.platforms.win32')}">
 		<nant target="build">
 			<buildfiles refid="axiom.platforms.win32.buildfile"/>
 		</nant>
 	</target>
 
-	<target name="build.axiom.platforms.sdl" description="Build Axiom.Platforms.SDL assembly" depends="build.setup, build.realmforge.utility, build.axiom" unless="${target::has-executed('build.axiom.platforms.sdl')}">
+	<target name="build.axiom.platforms.sdl" description="Build Axiom.Platforms.SDL assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.platforms.sdl')}">
 		<nant target="build">
 			<buildfiles refid="axiom.platforms.sdl.buildfile"/>
 		</nant>
 	</target>
 
-	<target name="build.axiom.plugins.cgprogrammanager" description="Build Axiom.Plugins.CgProgramManager assembly" depends="build.setup, build.realmforge.utility, build.axiom" unless="${target::has-executed('build.axiom.plugins.cgprogrammanager')}">
+	<target name="build.axiom.plugins.cgprogrammanager" description="Build Axiom.Plugins.CgProgramManager assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.plugins.cgprogrammanager')}">
 		<nant target="build">
 			<buildfiles refid="axiom.plugins.cgprogrammanager.buildfile"/>
 		</nant>
 	</target>
 
-	<target name="build.axiom.plugins.particlefx" description="Build Axiom.Plugins.ParticleFX assembly" depends="build.setup, build.realmforge.utility, build.axiom" unless="${target::has-executed('build.axiom.plugins.particlefx')}">
+	<target name="build.axiom.plugins.particlefx" description="Build Axiom.Plugins.ParticleFX assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.plugins.particlefx')}">
 		<nant target="build">
 			<buildfiles refid="axiom.plugins.particlefx.buildfile"/>
 		</nant>
 	</target>
 
-	<target name="build.axiom.rendersystems.directx9" description="Build Axiom.RenderSystems.DirectX9 assembly" depends="build.setup, build.realmforge.utility, build.axiom" unless="${target::has-executed('build.axiom.rendersystems.directx9')}">
+	<target name="build.axiom.rendersystems.directx9" description="Build Axiom.RenderSystems.DirectX9 assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.rendersystems.directx9')}">
 		<nant target="build">
 			<buildfiles refid="axiom.rendersystems.directx9.buildfile"/>
 		</nant>
 	</target>
 
-	<target name="build.axiom.rendersystems.opengl" description="Build Axiom.RenderSystems.OpenGL assembly" depends="build.setup, build.realmforge.utility, build.axiom" unless="${target::has-executed('build.axiom.rendersystems.opengl')}">
+	<target name="build.axiom.rendersystems.opengl" description="Build Axiom.RenderSystems.OpenGL assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.rendersystems.opengl')}">
 		<nant target="build">
 			<buildfiles refid="axiom.rendersystems.opengl.buildfile"/>
 		</nant>
 	</target>
 
-	<target name="build.axiom.scenemanagers.bsp" description="Build Axiom.SceneManagers.Bsp assembly" depends="build.setup, build.realmforge.utility, build.axiom" unless="${target::has-executed('build.axiom.scenemanagers.bsp')}">
+	<target name="build.axiom.scenemanagers.bsp" description="Build Axiom.SceneManagers.Bsp assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.scenemanagers.bsp')}">
 		<nant target="build">
 			<buildfiles refid="axiom.scenemanagers.bsp.buildfile"/>
 		</nant>
 	</target>
 
-	<target name="build.axiom.scenemanagers.octree" description="Build Axiom.SceneManagers.Octree assembly" depends="build.setup, build.realmforge.utility, build.axiom" unless="${target::has-executed('build.axiom.scenemanagers.octree')}">
+	<target name="build.axiom.scenemanagers.octree" description="Build Axiom.SceneManagers.Octree assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.scenemanagers.octree')}">
 		<nant target="build">
 			<buildfiles refid="axiom.scenemanagers.octree.buildfile"/>
 		</nant>
 	</target>
 
-	<target name="build.axiom.scenemanagers.paginglandscape" description="Build Axiom.SceneManagers.PagingLandscape assembly" depends="build.setup, build.realmforge.utility, build.axiom" unless="${target::has-executed('build.axiom.scenemanagers.paginglandscape')}">
+	<target name="build.axiom.scenemanagers.paginglandscape" description="Build Axiom.SceneManagers.PagingLandscape assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.scenemanagers.paginglandscape')}">
 		<nant target="build">
 			<buildfiles refid="axiom.scenemanagers.paginglandscape.buildfile"/>
 		</nant>
 	</target>
+	<!-- END: Axiom3D core build tasks -->
 
+	<!-- BEGIN:  Axiom Demos tasks -->
+	<!-- Note: This just calls targets in the relevant build file since this
+		app is effectively standalone and has no dependency relationships with
+		other buildfiles, unlike the Axiom core assemblies
+	-->
 	<target name="build.axiom.demos" description="Build the Axiom Demos" depends="build.axiom3d" unless="${target::has-executed('build.axiom.demos')}">
 		<nant target="build">
 			<buildfiles refid="axiom.demos.buildfile"/>
 		</nant>
 	</target>
 
+	<target name="run.axiom.demos" description="Run the Axiom Demos app" depends="build.axiom.demos">
+		<nant target="run">
+			<buildfiles refid="axiom.demos.buildfile"/>
+		</nant>
+	</target>
+	
+	<!-- END: Axiom Demos tasks -->
+
+	<!-- BEGIN: YAT tasks -->
 	<target name="build.axiom.samples.yat" description="Build the YAT sample app" depends="build.axiom3d" unless="${target::has-executed('build.axiom.samples.yat')}">
 		<nant target="build">
 			<buildfiles refid="axiom.samples.yat.buildfile"/>
 		</nant>
 	</target>
 
-	<target name="build.all" depends="build.axiom3d, build.axiom.demos, build.axiom.samples.yat" description="Builds everything"/>
-	
-	<!-- Distribution targets -->
+	<target name="run.axiom.samples.yat" description="Run the YAT sample app" depends="build.axiom.samples.yat">
+		<nant target="run">
+			<buildfiles refid="axiom.samples.yat.buildfile"/>
+		</nant>
+	</target>
+	<!-- END: YAT tasks -->
+
+	<!-- BEGIN: General Distribution targets -->
 	<target name="dist.setup" description="General setup of the distribution directory" depends="init" unless="${target::has-executed('dist.setup')}">
 		<echo message="dist Directory is ${dist.dir}" />
 		<!-- ensure dist directory exists -->
@@ -327,106 +315,17 @@
 	<target name="dist.cleanall" description="Cleans every dist configuration">
 		<delete dir="dist" if="${directory::exists('dist')}" />
 	</target>
+	<!-- END: General Distribution targets -->
 	
-	<!-- "Deploy" and "Run" targets -->
+	<!-- BEGIN: Packaging targets -->
 
-	<target name="deploy.axiom.demos" description="Deploy the Axiom Demos in preparation for packaging or execution" depends="build.axiom.demos, dist.setup" unless="${target::has-executed('deploy.axiom.demos')}">
-		<echo message="Deploy Axiom Demos: coming soon!" />
-	</target>
-
-	<target name="run.axiom.demos" description="Run the Axiom Demos app" depends="build.axiom.demos">
-		<echo message="Run Axiom demos: coming soon!"/>
+	<target name="dist.axiom.demos" description="Deploy the Axiom Demos in preparation for packaging" depends="build.axiom.demos, dist.setup" unless="${target::has-executed('dist.axiom.demos')}">
+		<echo message="Dist Axiom Demos: coming soon!" />
 	</target>
 	
-	<!-- 
-		Properties for YAT.  Should be above in the declarations section above but are 
-		here temporarily so I can see what I'm doing. 
-		Separate variables are defined for YAT bin and lib for future flexibility,
-		though they both point to the same place right now.
-	-->
-	<property name="dist.yat.dir" value="${path::combine(dist.dir, 'YAT')}" dynamic="true" />
-	<property name="dist.yat.bin.dir" value="${path::combine(dist.yat.dir, 'bin')}" dynamic="true" />
-	<property name="dist.yat.lib.dir" value="${path::combine(dist.yat.dir, 'bin')}" dynamic="true" />
-	<property name="dist.yat.media.dir" value="${path::combine(dist.yat.dir, 'Media')}" dynamic="true" />
-
-	<target name="deploy.axiom.samples.yat" description="Deploy the YAT sample app in preparation for packaging or execution" depends="build.axiom.samples.yat, dist.setup" unless="${target::has-executed('deploy.axiom.samples.yat')}">
-		<!-- Setup for YAT deployment.  This should in a dedicated setup task, really. -->
-		<!-- Make sure YAT deployment directories exist -->
-		<mkdir dir="${dist.yat.dir}" />
-		<mkdir dir="${dist.yat.bin.dir}" />
-		<mkdir dir="${dist.yat.lib.dir}" />
-		<mkdir dir="${dist.yat.media.dir}" />
-		
-		<!-- Copy required Axiom assemblies (based on platform -->
-		<copy todir="${dist.yat.lib.dir}" if="${platform::is-win32()}">
-			<fileset basedir="${build.lib.dir}">
-				<include name="RealmForge.Utility.dll" />
-				<include name="Axiom.dll" />
-				<include name="Axiom.Platforms.Win32.dll" />
-				<include name="Axiom.RenderSystems.DirectX9.dll" />
-			</fileset>
-		</copy>
-		<copy todir="${dist.yat.lib.dir}" if="${platform::is-unix()}">
-			<fileset basedir="${build.lib.dir}">
-				<include name="RealmForge.Utility.dll" />
-				<include name="Axiom.dll" />
-				<include name="Axiom.Platforms.SDL.dll" />
-				<include name="Axiom.RenderSystems.OpenGL.dll" />
-			</fileset>
-		</copy>
+	<!-- END: Packaging targets -->
 	
-		<!-- Copy managed and native dependencies (based on platform) -->
-		<copy todir="${dist.yat.lib.dir}" if="${platform::is-win32()}">
-			<fileset basedir="${dependencies.managed.win32.dir}">
-				<include name="Tao.DevIl.dll" />
-				<include name="Tao.Platform.Windows.dll" />
-			</fileset>
-		</copy>
-		<copy todir="${dist.yat.lib.dir}" if="${platform::is-win32()}">
-			<fileset basedir="${dependencies.native.win32.dir}">
-				<include name="DevIl.dll" />
-			</fileset>
-		</copy>
-		<copy todir="${dist.yat.lib.dir}" if="${platform::is-unix()}">
-			<fileset basedir="${dependencies.managed.unix.dir}">
-				<include name="Tao.DevIl.*" />
-				<include name="Tao.Sdl.*" />
-				<include name="Tao.OpenGl.*" />
-			</fileset>
-		</copy>
-
-		<copy todir="${dist.yat.bin.dir}">
-			<fileset basedir="${project::get-base-directory()}/Samples/YAT/">
-				<include name="EngineConfig.xml" />
-			</fileset>
-		</copy>
-	
-		<!-- Copy the YAT executiable and the YAT and Axiom media -->
-		<copy todir="${dist.yat.bin.dir}">
-			<fileset basedir="${build.bin.dir}">
-				<include name="YAT.exe" />
-			</fileset>
-		</copy>
-		<copy todir="${dist.yat.media.dir}">
-			<fileset basedir="${project::get-base-directory()}/Samples/YAT/Media">
-				<include name="**/*" />
-			</fileset>
-		</copy>
-		<copy todir="${dist.yat.media.dir}">
-			<fileset basedir="${project::get-base-directory()}/Media">
-				<include name="Icons/*" />
-				<include name="Fonts/*" />
-				<include name="Logos/*" />
-			</fileset>
-		</copy>
-	</target>
-
-	<target name="run.axiom.samples.yat" description="Run the YAT sample app" depends="deploy.axiom.samples.yat">
-		<echo message="Running YAT!"/>
-		<exec program="${dist.yat.bin.dir}/YAT.exe" useruntimeengine="true" workingdir="${dist.yat.bin.dir}" />
-	</target>
-	
-	<!-- Framework support targets -->
+	<!-- BEGIN: Framework support targets -->
 	<target name="set-framework-configuration">
 		<if test="${not(target::exists('set-'+framework::get-target-framework()+'-framework-configuration'))}">
 			<fail message="The '${framework::get-target-framework()}' framework is not supported by this version of NAnt." />
@@ -482,9 +381,48 @@
 		<property name="link.sdkdoc.version" value="SDK_v1_0" />
 		<property name="link.sdkdoc.web" value="true" />
 	</target>
-	
+	<!-- END: Framework support targets -->
 	
 	<!-- MATHOMS BELOW -->
+	<!-- The targets below are NOT actively used - just moved here during 
+	transition period while this build system is in active development -->
+	
+	<!-- 
+		specifies whether the CommonAssemblyInfo.cs file should be created.
+		we do not want this for releases (whether they're beta or release) as
+		this would cause the build number to be updated
+		NOTE: disabled at present for Axiom, but left in for future consideration
+	-->
+	<property name="create.assemblyinfo" value="false" />
+
+	<!-- Not used at the moment.  Left here for possible future use -->
+	<target name="create-common-assemblyinfo" if="${create.assemblyinfo}">
+		<!-- ensure CommonAssemblyInfo.cs is writable if it already exists -->
+		<attrib file="Axiom/CommonAssemblyInfo.cs" readonly="false" if="${file::exists('Axiom/CommonAssemblyInfo.cs')}" />
+		<!-- generate the source file holding the common assembly-level attributes -->
+		<asminfo output="Axiom/CommonAssemblyInfo.cs" language="CSharp">
+			<imports>
+				<import namespace="System" />
+				<import namespace="System.Reflection" />
+				<import namespace="System.Runtime.InteropServices" />
+			</imports>
+			<attributes>
+				<attribute type="ComVisibleAttribute" value="false" />
+				<attribute type="CLSCompliantAttribute" value="false" />
+				<attribute type="AssemblyTitleAttribute" value="Axiom3D" />
+				<attribute type="AssemblyDescriptionAttribute" value="A .NET Graphics Engine" />
+				<attribute type="AssemblyConfigurationAttribute" value="${project.release.type}" />
+				<attribute type="AssemblyCompanyAttribute" value="http://axiomengine.sourceforge.net" />
+				<attribute type="AssemblyProductAttribute" value="Axiom3D" />
+				<attribute type="AssemblyCopyrightAttribute" value="Copyright (C) 2005-${datetime::get-year(datetime::now())} The Axiom3D Team" />
+				<attribute type="AssemblyTrademarkAttribute" value="" />
+				<attribute type="AssemblyCultureAttribute" value="" />
+				<attribute type="AssemblyVersionAttribute" value="${project.version}.${build.number}.0" />
+				<attribute type="AssemblyInformationalVersionAttribute" value="${project.version}" />
+			</attributes>
+		</asminfo>
+	</target>
+
 	<target name="userdoc" depends="build.all" description="Builds user documentation">
 		<!-- build the documenter -->
 		<csc target="library" define="${current.build.defines}" warnaserror="true" debug="${build.debug}" output="${build.dir}/bin/NDoc.Documenter.NAnt.dll">
