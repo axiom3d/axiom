@@ -1,0 +1,82 @@
+material AxiomPhysics/Default
+{
+	technique
+	{
+		pass
+		{
+
+			texture_unit
+			{
+				texture Box.png
+			}
+		}
+	}
+}
+material AxiomPhysics/OverlayBorder
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture OverlayBorder.png
+			}
+		}
+	}
+}
+material AxiomPhysics/OverlayCenter
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture OverlayCenter.png
+			}
+		}
+	}
+}
+material AxiomPhysics/OverlayBreak
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture OverlayBreak.png
+			}
+		}
+	}
+}
+material AxiomPhysics/OverlayLogo
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture OverlayLogo.png
+			}
+		}
+	}
+}

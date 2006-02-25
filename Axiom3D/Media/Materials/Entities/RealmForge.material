@@ -1,0 +1,29 @@
+
+material Dull Black 3DS
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.145098 0.145098 0.145098 1
+			diffuse 0.345098 0.345098 0.345098 1
+			specular 0.847059 0.847059 0.847059 1 1
+		}
+	}
+}
+material Camo 3DS
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.411765 0.411765 0.411765 1
+			diffuse 0.898039 0.898039 0.898039 1
+
+			texture_unit
+			{
+				texture Camo.JPG
+			}
+		}
+	}
+}

@@ -1,0 +1,12 @@
+
+material Hat01
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			diffuse 0 0 0 1
+		}
+	}
+}

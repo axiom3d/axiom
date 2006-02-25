@@ -1,0 +1,167 @@
+
+material WheelHub
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.9 0.9 0.9 1
+			diffuse 0.9 0.9 0.9 1
+			specular 0.9 0.9 0.9 1 4.48
+		}
+	}
+}
+material Blue_Paint
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.2 0.2 0.4 1
+			diffuse 0.2 0.2 0.4 1
+			specular 1 1 1 1 2.56
+		}
+	}
+}
+material Bupm_Light
+{
+	technique
+	{
+		pass
+		{
+			specular 1 1 1 1 0
+		}
+	}
+}
+material Black-Paint
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.1 0.1 0.1 1
+			diffuse 0.1 0.1 0.1 1
+			specular 1 1 1 1 0.512
+		}
+	}
+}
+material TintedBlueGlass
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			diffuse 0 0 0 1
+			specular 1 1 1 1 3.2
+		}
+	}
+}
+material Wheel_Arch
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.1 0.1 0.1 1
+			diffuse 0.1 0.1 0.1 1
+			specular 0.1 0.1 0.1 1 0
+		}
+	}
+}
+material RearLightR
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.2 0.2 0.2 1
+			diffuse 0.8 0.8 0.8 1
+
+			texture_unit
+			{
+				texture mini.jpg
+			}
+		}
+	}
+}
+material RearLightL
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.2 0.2 0.2 1
+			diffuse 0.8 0.8 0.8 1
+
+			texture_unit
+			{
+				texture mini.jpg
+			}
+		}
+	}
+}
+material FrontLightL
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.2 0.2 0.2 1
+			diffuse 0.8 0.8 0.8 1
+
+			texture_unit
+			{
+				texture mini.jpg
+			}
+		}
+	}
+}
+material FrontLightR
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.2 0.2 0.2 1
+			diffuse 0.8 0.8 0.8 1
+
+			texture_unit
+			{
+				texture mini.jpg
+			}
+		}
+	}
+}
+material Car
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.2 0.2 0.2 1
+			diffuse 0.8 0.8 0.8 1
+
+			texture_unit
+			{
+				texture mini.jpg
+			}
+		}
+	}
+}
+material plane
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.2 0.2 0.2 1
+			diffuse 0.8 0.8 0.8 1
+
+			texture_unit
+			{
+				texture mini.jpg
+			}
+		}
+	}
+}

@@ -1,0 +1,105 @@
+material RF/Water/FresnelReflectionRefraction
+{
+	// GeForceFX/Radeon9600
+	technique
+	{
+		pass 
+		{
+			vertex_program_ref Examples/FresnelRefractReflectVP
+			{
+				param_named_auto worldViewProjMatrix worldviewproj_matrix
+				param_named_auto eyePosition camera_position_object_space
+				param_named fresnelBias float4 -0.3 0 0 0
+				param_named fresnelScale float4 1.4 0 0 0
+				param_named fresnelPower float4 8 0 0 0
+				param_named_auto timeVal time 0.05
+				param_named scroll float4 1 0 0 0
+				param_named scale float4 4 0 0 0
+				param_named noise float4 1 0 0 0
+				// scroll and noisePos will need updating per frame
+			}
+			fragment_program_ref Examples/FresnelRefractReflectFP
+			{
+				param_named distortionRange float4 0.025 0 0 0
+				param_named tintColour float4 0 0 0 1
+			}
+			// Noise
+			texture_unit
+			{
+				// Perlin noise volume
+				texture perlinvolume.dds 3d
+				// min / mag filtering, no mip
+				filtering linear linear none
+			}
+			// Reflection
+			texture_unit
+			{
+				// Will be filled in at runtime
+				texture Reflection
+				tex_address_mode clamp
+			}
+			// Refraction
+			texture_unit
+			{
+				// Will be filled in at runtime
+				texture Refraction
+				tex_address_mode clamp
+			}
+		}	
+	}
+
+	// Radeon 8500/9000, ps1.4
+	technique
+	{
+		pass 
+		{
+			vertex_program_ref Examples/FresnelRefractReflectVP
+			{
+				param_named_auto worldViewProjMatrix worldviewproj_matrix
+				param_named_auto eyePosition camera_position_object_space
+				param_named fresnelBias float4 -0.3 0 0 0
+				param_named fresnelScale float4 1.4 0 0 0
+				param_named fresnelPower float4 8 0 0 0
+				param_named_auto timeVal time 0.05
+				param_named scroll float4 1 0 0 0
+				param_named scale float4 4 0 0 0
+				param_named noise float4 1 0 0 0
+				// scroll and noisePos will need updating per frame
+			}
+
+ 			// for ATI RADEON 8500 - 9200 
+ 			fragment_program_ref Examples/FresnelRefractReflectPS 
+ 			{ 
+ 				// distortionRange 
+ 				param_indexed 0 float4 0.025 0 0 0 
+ 				// tintColour 
+ 				param_indexed 1 float4 0.05 0.12 0.15 1 
+ 			} 
+
+			// Noise
+			texture_unit
+			{
+				// Perlin noise volume
+				texture perlinvolume.dds 3d
+				// min / mag filtering, no mip
+				filtering linear linear none
+			}
+			// Reflection
+			texture_unit
+			{
+				// Will be filled in at runtime
+				texture Reflection
+				tex_address_mode clamp
+				tex_coord_set 1
+			}
+			// Refraction
+			texture_unit
+			{
+				// Will be filled in at runtime
+				texture Refraction
+				tex_address_mode clamp
+				tex_coord_set 2
+			}
+		}		
+	}
+}

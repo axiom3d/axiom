@@ -1,0 +1,31 @@
+// Bump map vertex program, support for this is required
+vertex_program Examples/BumpMapVP cg
+{
+	source Example_BumpMapping.cg
+	entry_point main_vp
+	profiles vs_1_1 arbvp1
+}
+
+// Bump map fragment program, support for this is optional
+fragment_program Examples/BumpMapFP cg
+{
+	source Example_BumpMapping.cg
+	entry_point main_fp
+	profiles ps_1_1 arbfp1 fp20
+}
+
+// Bump map with specular vertex program, support for this is required
+vertex_program Examples/BumpMapVPSpecular cg
+{
+	source Example_BumpMapping.cg
+	entry_point specular_vp
+	profiles vs_1_1 arbvp1
+}
+
+// Bump map fragment program, support for this is optional
+fragment_program Examples/BumpMapFPSpecular cg
+{
+	source Example_BumpMapping.cg
+	entry_point specular_fp
+	profiles ps_1_1 arbfp1 fp20
+}

@@ -1,0 +1,16 @@
+material Winter/SnowFlake
+{
+	technique
+	{
+		pass
+		{
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture snowflake.png
+			}
+		}
+	}
+}
