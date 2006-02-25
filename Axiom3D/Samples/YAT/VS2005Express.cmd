@@ -1,3 +1,3 @@
 @rem Generates a solution (.sln) and a set of project files (.csproj, .vbproj, etc.)
 @rem for Microsoft Visual Studio .NET 2005 Express
-Prebuild /target vs2005express /pause
+..\..\Tools\Prebuild\Prebuild /target vs2005cse /pause
