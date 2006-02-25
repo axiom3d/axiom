@@ -1,10 +1,10 @@
 using System;
 using System.IO;
 using System.Text;
-using Axiom.Engine;
+using Axiom;
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// Summary description for Serializer.

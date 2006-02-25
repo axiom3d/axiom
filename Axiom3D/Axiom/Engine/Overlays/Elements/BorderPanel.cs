@@ -30,7 +30,7 @@ using System.Runtime.InteropServices;
 
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// 	A specialization of the Panel element to provide a panel with a border with a seperate material.

@@ -1,7 +1,7 @@
 using System;
 using Tao.DevIl;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///    JPG image file codec.

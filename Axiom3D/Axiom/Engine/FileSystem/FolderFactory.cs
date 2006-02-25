@@ -1,7 +1,7 @@
 using System;
-using Axiom.Engine;
+using Axiom;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///     Specialization of IArchiveFactory for file system folders.

@@ -31,7 +31,7 @@ using System.Collections;
 using System.Diagnostics;
 
 // used to alias a type in the code for easy copying and pasting.  Come on generics!!
-using T = Axiom.Engine.AnimationTrack;
+using T = Axiom.AnimationTrack;
 // used to alias a key value in the code for easy copying and pasting.  Come on generics!!
 using K = System.Int16;
 // used to alias a parent type in the code for easy copying and pasting.  Come on generics!!
@@ -39,7 +39,7 @@ using K = System.Int16;
 
 #endregion  Namespace Declarations
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// Summary description for AnimationTrackCollection.

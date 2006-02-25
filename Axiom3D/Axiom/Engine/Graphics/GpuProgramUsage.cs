@@ -1,6 +1,6 @@
 using System;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// 	This class makes the usage of a vertex and fragment programs (low-level or high-level), 

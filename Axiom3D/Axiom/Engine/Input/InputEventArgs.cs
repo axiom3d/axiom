@@ -3,7 +3,7 @@ using System;
 // This is coming from RealmForge.Utility
 using Axiom.Input;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// Summary description for InputEvent.

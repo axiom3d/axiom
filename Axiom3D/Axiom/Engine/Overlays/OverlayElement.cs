@@ -7,7 +7,7 @@ using Axiom.MathLib;
 // This is coming from RealmForge.Utility
 using Axiom.Core;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// 	Abstract definition of a 2D element to be displayed in an Overlay.

@@ -29,13 +29,13 @@ using System.Collections;
 using System.Diagnostics;
 
 // type of the object to be inserted into the collection
-using T = Axiom.Engine.Viewport;
+using T = Axiom.Viewport;
 // type of object to be used for the key
 using K = System.Int32;
 // type of parent of this collection (if any)
-using P = Axiom.Engine.RenderTarget;
+using P = Axiom.RenderTarget;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// Summary description for ViewportCollection.

@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Axiom.Engine;
+using Axiom;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// 	A 2D element which contains other OverlayElement instances.

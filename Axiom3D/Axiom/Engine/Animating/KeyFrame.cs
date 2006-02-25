@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		A key frame in an animation sequence defined by an AnimationTrack.

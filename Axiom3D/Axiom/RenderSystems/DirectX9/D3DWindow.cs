@@ -28,7 +28,7 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 
-using Axiom.Engine;
+using Axiom;
 
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;

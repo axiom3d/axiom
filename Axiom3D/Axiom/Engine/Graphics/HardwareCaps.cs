@@ -27,9 +27,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 using System.Reflection;
-using Axiom.Engine;
+using Axiom;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// 	This serves as a way to query information about the capabilies of a 3D API and the

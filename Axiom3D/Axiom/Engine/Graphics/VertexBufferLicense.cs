@@ -1,6 +1,6 @@
 using System;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		Structure holding details of a license to use a temporary shared buffer.

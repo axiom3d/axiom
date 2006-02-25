@@ -29,7 +29,7 @@ using System.Collections;
 
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///    Represents a layer which is rendered on top of the 'normal' scene contents.

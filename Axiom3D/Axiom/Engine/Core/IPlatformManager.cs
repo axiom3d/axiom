@@ -1,8 +1,8 @@
 using System;
-using Axiom.Engine;
+using Axiom;
 using Axiom.Input;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// Summary description for IPlatformManager.

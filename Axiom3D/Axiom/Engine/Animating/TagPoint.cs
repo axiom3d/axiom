@@ -26,10 +26,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 
 using System;
-using Axiom.Engine;
+using Axiom;
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
 	/// <summary>
 	///		A tagged point on a skeleton, which can be used to attach entities to on specific

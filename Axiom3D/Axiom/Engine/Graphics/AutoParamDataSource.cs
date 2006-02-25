@@ -32,7 +32,7 @@ using Axiom.MathLib;
 // This is coming from RealmForge.Utility
 using Axiom.Core;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// 	This utility class is used to hold the information used to generate the matrices

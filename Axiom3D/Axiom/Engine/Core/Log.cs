@@ -28,7 +28,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///     Log class for writing debug/log data to files.

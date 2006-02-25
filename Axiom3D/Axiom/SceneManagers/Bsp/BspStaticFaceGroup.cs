@@ -1,6 +1,6 @@
 using System;
 
-using Axiom.Engine;
+using Axiom;
 
 namespace Axiom.SceneManagers.Bsp
 {

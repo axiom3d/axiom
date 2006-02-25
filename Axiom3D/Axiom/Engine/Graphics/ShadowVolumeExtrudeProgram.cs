@@ -1,7 +1,7 @@
 using System;
-using Axiom.Engine;
+using Axiom;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		Static class containing source for vertex programs for extruding shadow volumes.

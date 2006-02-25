@@ -1,6 +1,6 @@
 using System;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		Values that mark data chunks in the .mesh file.

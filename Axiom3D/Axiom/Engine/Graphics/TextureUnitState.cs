@@ -33,7 +33,7 @@ using Axiom.MathLib;
 // This is coming from RealmForge.Utility
 using Axiom.Core;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// 	Class representing the state of a single texture unit during a Pass of a

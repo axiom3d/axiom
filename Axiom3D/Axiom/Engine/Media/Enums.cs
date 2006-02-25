@@ -1,6 +1,6 @@
 using System;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///    Various flags that give details on a particular image.

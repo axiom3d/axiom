@@ -45,7 +45,7 @@ using Axiom.Core;
 /// 
 #endregion
 
-namespace Axiom.Engine
+namespace Axiom
 {
 
     /// <summary>

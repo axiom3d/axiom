@@ -30,7 +30,7 @@ using System.Collections;
 using Axiom.MathLib;
 using Axiom.MathLib.Collections;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     #region Base Query Implementation
     /// <summary>

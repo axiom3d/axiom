@@ -28,7 +28,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Collections.Specialized;
 
-using Axiom.Engine;
+using Axiom;
 
 using Tao.OpenGl;
 

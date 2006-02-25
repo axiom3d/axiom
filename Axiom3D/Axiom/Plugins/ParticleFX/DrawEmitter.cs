@@ -1,6 +1,6 @@
 using System;
 using Axiom.MathLib;
-using Axiom.Engine;
+using Axiom;
 
 namespace Axiom.ParticleFX
 {

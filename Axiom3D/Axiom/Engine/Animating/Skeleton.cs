@@ -31,7 +31,7 @@ using System.IO;
 
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		A collection of Bone objects used to animate a skinned mesh.

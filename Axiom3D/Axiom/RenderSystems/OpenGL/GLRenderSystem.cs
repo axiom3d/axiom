@@ -31,7 +31,7 @@ using System.Diagnostics;
 
 using Axiom.Core;
 
-using Axiom.Engine;
+using Axiom;
 using Axiom.MathLib;
 using Axiom.RenderSystems.OpenGL.ARB;
 using Axiom.RenderSystems.OpenGL.Nvidia;

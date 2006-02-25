@@ -29,11 +29,11 @@ using System.Collections;
 using System.Diagnostics;
 
 // used to alias a type in the code for easy copying and pasting.  Come on generics!!
-using T = Axiom.Engine.Camera;
+using T = Axiom.Camera;
 // used to alias a key value in the code for easy copying and pasting.  Come on generics!!
 using K = System.String;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// Summary description for CameraCollection.

@@ -31,7 +31,7 @@ using System.Runtime.InteropServices;
 using Axiom.MathLib;
 using Axiom.MathLib.Collections;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///     A surface which is defined by curves of some kind to form a patch, e.g. a Bezier patch.

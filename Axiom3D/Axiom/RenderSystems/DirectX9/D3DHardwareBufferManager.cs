@@ -26,8 +26,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-using Axiom.Engine;
-using VertexDeclaration = Axiom.Engine.VertexDeclaration;
+using Axiom;
+using VertexDeclaration = Axiom.VertexDeclaration;
 
 using Microsoft.DirectX.Direct3D;
 using D3D = Microsoft.DirectX.Direct3D;

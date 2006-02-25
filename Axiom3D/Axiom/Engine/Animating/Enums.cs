@@ -38,7 +38,7 @@ using System;
 /// 
 #endregion
 
-namespace Axiom.Engine
+namespace Axiom
 {
 
     /// <summary>

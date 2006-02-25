@@ -34,7 +34,7 @@ using Axiom.MathLib;
 // This is coming from RealmForge.Utility
 using Axiom.Core;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///    Class encapsulating the rendering properties of an object.

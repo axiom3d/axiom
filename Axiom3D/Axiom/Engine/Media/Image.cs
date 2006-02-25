@@ -1,8 +1,8 @@
 using System;
 using System.IO;
-using Axiom.Engine;
+using Axiom;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///    Class representing an image file.

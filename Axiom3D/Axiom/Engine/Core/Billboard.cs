@@ -40,7 +40,7 @@ using Axiom.Core;
 /// 
 #endregion
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		A billboard is a primitive which always faces the camera in every frame.

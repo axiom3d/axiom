@@ -29,11 +29,11 @@ using System.Collections;
 using System.Diagnostics;
 
 // used to alias a type in the code for easy copying and pasting.  Come on generics!!
-using T = Axiom.Engine.Bone;
+using T = Axiom.Bone;
 // used to alias a key value in the code for easy copying and pasting.  Come on generics!!
 using K = System.UInt16;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     /// Summary description for AnimationCollection.

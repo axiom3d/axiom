@@ -28,7 +28,7 @@ using System;
 
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///     Predefined controller value for setting a single floating-

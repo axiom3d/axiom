@@ -1,10 +1,10 @@
 using System;
 using System.IO;
-using Axiom.Engine;
+using Axiom;
 using Axiom.MathLib;
 using System.Runtime.InteropServices;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///     This class is intended to allow a clean stream interface for writing to hardware buffers.

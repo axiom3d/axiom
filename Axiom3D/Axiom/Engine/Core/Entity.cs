@@ -30,7 +30,7 @@ using System.Diagnostics;
 
 using Axiom.MathLib;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///    Defines an instance of a discrete, movable object based on a Mesh.

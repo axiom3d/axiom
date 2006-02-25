@@ -29,8 +29,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom.MathLib;
 
-using IntersectionSceneQuery = Axiom.Engine.IntersectionSceneQuery;
-using RaySceneQuery = Axiom.Engine.RaySceneQuery;
+using IntersectionSceneQuery = Axiom.IntersectionSceneQuery;
+using RaySceneQuery = Axiom.RaySceneQuery;
 
 using Axiom.SceneManagers.PagingLandscape.Data2D;
 using Axiom.SceneManagers.PagingLandscape.Page;
@@ -63,7 +63,7 @@ namespace Axiom.SceneManagers.PagingLandscape
     ///		This is a basic SceneManager for organizing LandscapeRenderables into a total Landscape.
     ///		It loads a Landscape from a XML config file that specifices what textures/scale/virtual window/etc to use.
     /// </summary>
-    public class SceneManager : Axiom.Engine.SceneManager
+    public class SceneManager : Axiom.SceneManager
     {
         #region Fields
 
@@ -133,9 +133,9 @@ namespace Axiom.SceneManagers.PagingLandscape
         /// </summary>
         /// <param name="name">Camera name</param>
         /// <returns>camera</returns>
-        public override Axiom.Engine.Camera CreateCamera( string name )
+        public override Axiom.Camera CreateCamera( string name )
         {
-            Axiom.Engine.Camera c = new Camera( name, this );
+            Axiom.Camera c = new Camera( name, this );
             cameraList.Add( name, c );
             return c;
         }
@@ -217,7 +217,7 @@ namespace Axiom.SceneManagers.PagingLandscape
         ///	to be updated even if they are not visible. Subclasses could trim this such that only potentially visible
         ///	nodes are updated.
         /// </remarks>
-        protected override void UpdateSceneGraph( Axiom.Engine.Camera cam )
+        protected override void UpdateSceneGraph( Axiom.Camera cam )
         {
             // entry into here could come before SetWorldGeometry 
             // got called which could be disasterous

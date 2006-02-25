@@ -3,7 +3,7 @@ using System.Collections;
 using System.Windows.Forms;
 
 using Axiom.Input;
-using Axiom.Engine;
+using Axiom;
 
 using Microsoft.DirectX;
 using Microsoft.DirectX.DirectInput;

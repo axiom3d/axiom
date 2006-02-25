@@ -26,11 +26,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using Axiom.Engine;
+using Axiom;
 
 #endregion Namespace Declarations
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///		Manages the target rendering window.

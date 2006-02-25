@@ -32,7 +32,7 @@ using System.Runtime.InteropServices;
 using Axiom.MathLib;
 using Axiom.MathLib.Collections;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     /// <summary>
     ///    Resource holding data about a 3D mesh.

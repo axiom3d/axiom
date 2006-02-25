@@ -18,7 +18,7 @@
 
 using System;
 
-using Axiom.Engine;
+using Axiom;
 
 using Tao.OpenGl;
 

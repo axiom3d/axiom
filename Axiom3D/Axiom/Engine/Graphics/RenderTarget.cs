@@ -28,9 +28,9 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
-using Axiom.Engine;
+using Axiom;
 
-namespace Axiom.Engine
+namespace Axiom
 {
 
     #region Delegate/EventArg Declarations

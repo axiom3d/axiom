@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-using Axiom.Engine;
+using Axiom;
 using Axiom.RenderSystems.OpenGL;
 
 using Tao.OpenGl;

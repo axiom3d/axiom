@@ -28,7 +28,7 @@ using System;
 using System.Reflection;
 using System.Text;
 
-namespace Axiom.Engine
+namespace Axiom
 {
     #region Delegates
 

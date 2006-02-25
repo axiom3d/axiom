@@ -28,7 +28,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 
-using Axiom.Engine;
+using Axiom;
 
 using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
@@ -39,7 +39,7 @@ namespace Axiom.RenderSystems.DirectX9
     /// Summary description for D3DTexture.
     /// </summary>
     /// <remarks>When loading a cubic texture, the image with the texture base name plus the "_rt", "_lf", "_up", "_dn", "_fr", "_bk" suffixes will automaticaly be loaded to construct it.</remarks>
-    public class D3DTexture : Axiom.Engine.Texture
+    public class D3DTexture : Axiom.Texture
     {
         #region Fields
 
