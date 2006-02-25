@@ -151,7 +151,7 @@ namespace Axiom.Demos
             // 
             // lstOptions
             // 
-            this.lstOptions.FormattingEnabled = true;
+            //this.lstOptions.FormattingEnabled = true;
             this.lstOptions.ItemHeight = 14;
             this.lstOptions.Location = new System.Drawing.Point( 7, 22 );
             this.lstOptions.Name = "lstOptions";
