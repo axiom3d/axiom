@@ -58,6 +58,27 @@ namespace DotNet3D.Math
 
         #endregion Fields
 
+        #region Static Interface
+        public readonly static Real PositiveInfinity = Numeric.PositiveInfinity;
+        public readonly static Real NegativeInfinity = Numeric.NegativeInfinity;
+        public readonly static Real NaN = Numeric.NaN;
+
+        public static bool IsPositiveInfinity( Real number )
+        {
+            return Numeric.IsPositiveInfinity( (Numeric)number );
+        }
+
+        public static bool IsNegativeInfinity( Real number )
+        {
+            return Numeric.IsNegativeInfinity( (Numeric)number );
+        }
+
+        public static bool IsNaN( Real number )
+        {
+            return Numeric.IsNaN( (Numeric)number );
+        }
+        #endregion Static Interface
+
         #region Constructors
 
         public Real( int value )

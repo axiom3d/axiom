@@ -109,7 +109,7 @@ namespace DotNet3D.Math.Tests
 
             Assert.IsNotNull( a );
             Assert.IsNotNull( b );
-            Assert.Equals( a, b );
+            Assert.AreEqual( a, b );
         }
 
         #endregion
@@ -123,8 +123,8 @@ namespace DotNet3D.Math.Tests
             Vector2 b = new Vector2( 2.0f, 3.0f );
             Vector2 c = a + b;
 
-            Assert.Equals( c.x, 3.0f );
-            Assert.Equals( c.y, 5.0f );
+            Assert.AreEqual( c.x, new Real( 3.0f ) );
+            Assert.AreEqual( c.y, new Real( 5.0f ) );
         }
 
         [TestMethod]
@@ -134,8 +134,8 @@ namespace DotNet3D.Math.Tests
             Vector2 b = new Vector2( 2.0f, 3.0f );
             Vector2 c = a - b;
 
-            Assert.Equals( c.x, -1.0f );
-            Assert.Equals( c.y, 1.0f );
+            Assert.AreEqual( c.x, new Real( -1.0f ) );
+            Assert.AreEqual( c.y, new Real( -1.0f ) );
         }
 
         [TestMethod]
@@ -145,8 +145,8 @@ namespace DotNet3D.Math.Tests
             Vector2 b = new Vector2( 2.0f, 3.0f );
             Vector2 c = a * b;
 
-            Assert.Equals( c.x, 2.0f );
-            Assert.Equals( c.y, 6.0f );
+            Assert.AreEqual( c.x, new Real( 2.0f ) );
+            Assert.AreEqual( c.y, new Real( 6.0f ) );
         }
 
         [TestMethod]
@@ -159,9 +159,9 @@ namespace DotNet3D.Math.Tests
             c = a * b;
             d = b * a;
 
-            Assert.Equals( c.x, 3.0f );
-            Assert.Equals( c.y, 6.0f );
-            Assert.Equals( c, d );
+            Assert.AreEqual( c.x, new Real( 3.0f ) );
+            Assert.AreEqual( c.y, new Real( 6.0f ) );
+            Assert.AreEqual( c, d  );
         }
 
         [TestMethod]
@@ -192,26 +192,28 @@ namespace DotNet3D.Math.Tests
             Vector2 a = new Vector2( 1.0f, 2.0f );
             Vector2 b = -a;
 
-            Assert.Equals( b.x, -1.0f );
-            Assert.Equals( b.y, -2.0f );
+            Assert.AreEqual( b.x, new Real( -1.0f ) );
+            Assert.AreEqual( b.y, new Real( -2.0f ) );
         }
 
         [TestMethod]
         public void AccessXValueByIntIndexer()
         {
-            Vector2 v = new Vector2( 1.0f, 2.0f );
-            Real x = v[ 0 ];
+            Vector2 value = new Vector2( 1.0f, 2.0f );
+            Real actual = value[ 0 ];
+            Real expected = new Real( 1.0f );
 
-            Assert.Equals( x, 1.0f );
+            Assert.AreEqual( expected, actual );
         }
 
         [TestMethod]
         public void AccessYValueByIntIndexer()
         {
-            Vector2 v = new Vector2( 1.0f, 2.0f );
-            Real y = v[ 1 ];
+            Vector2 value = new Vector2( 1.0f, 2.0f );
+            Real actual = value[ 1 ];
+            Real expected = new Real( 2.0f );
 
-            Assert.Equals( y, 1.0f );
+            Assert.AreEqual( expected, actual );
         }
 
         [TestMethod]
@@ -225,29 +227,41 @@ namespace DotNet3D.Math.Tests
         [TestMethod]
         public void SetXValueByIntIndexer()
         {
-            Vector2 v = new Vector2( 1.0f, 2.0f );
-            v[ 0 ] = 3.0f;
+            Vector2 value = new Vector2( 1.0f, 2.0f );
+            Vector2 expected = new Vector2( 3.0f, 2.0f );
+            Vector2 actual;
 
-            Assert.Equals( v.x, 3.0f );
-            Assert.Equals( v.y, 2.0f );
+            value[ 0 ] = 3.0f;
+            actual = value;
+
+            Assert.AreEqual( expected, actual );
         }
 
         [TestMethod]
         public void SetYValueByIntIndexer()
         {
-            Vector2 v = new Vector2( 1.0f, 2.0f );
-            v[ 1 ] = 3.0f;
+            Vector2 value = new Vector2( 1.0f, 2.0f );
+            Vector2 expected = new Vector2( 1.0f, 3.0f );
+            Vector2 actual;
 
-            Assert.Equals( v.x, 1.0f );
-            Assert.Equals( v.y, 3.0f );
+            value[ 1 ] = 3.0f;
+            actual = value;
+
+            Assert.AreEqual( expected, actual );
         }
 
         [TestMethod]
         [ExpectedException( typeof( ArgumentOutOfRangeException ) )]
         public void SetInvalidValueByIntIndexerThrows()
         {
-            Vector2 v = new Vector2( 1.0f, 2.0f );
-            v[ 2 ] = 3.0f;
+            Vector2 value = new Vector2( 1.0f, 2.0f );
+            Vector2 expected = new Vector2( 1.0f, 3.0f );
+            Vector2 actual;
+
+            value[ 2 ] = 3.0f;
+            actual = value;
+
+            Assert.AreEqual( expected, actual );
         }
 
         #endregion
@@ -257,76 +271,74 @@ namespace DotNet3D.Math.Tests
         [TestMethod]
         public void CLSMethodAddVector2toVector2()
         {
-            Vector2 a = new Vector2( 1.0f, 2.0f );
-            Vector2 b = new Vector2( 2.0f, 3.0f );
-            Vector2 c = Vector2.Add( a, b );
-            Assert.Equals( c.x, 3.0f );
-            Assert.Equals( c.y, 5.0f );
+            Vector2 left = new Vector2( 1.0f, 2.0f );
+            Vector2 right = new Vector2( 2.0f, 3.0f );
+            Vector2 expected = new Vector2( 3.0f, 5.0f );
+
+            Vector2 actual = Vector2.Add( left, right );
+
+            Assert.AreEqual( expected, actual );
         }
 
         [TestMethod]
         public void CLSMethodSubtractVector2FromVector2()
         {
-            Vector2 a = new Vector2( 1.0f, 2.0f );
-            Vector2 b = new Vector2( 2.0f, 3.0f );
-            Vector2 c = Vector2.Subtract( a, b);
-            Assert.Equals( c.x, -1.0f );
-            Assert.Equals( c.y, 1.0f );
+            Vector2 left = new Vector2( 1.0f, 2.0f );
+            Vector2 right = new Vector2( 2.0f, 3.0f );
+            Vector2 expected = new Vector2( -1.0f, -1.0f );
+
+            Vector2 actual = Vector2.Subtract( left, right );
+
+            Assert.AreEqual( expected, actual );
         }
 
         [TestMethod]
         public void CLSMethodMultiplyVector2ByVector2()
         {
-            Vector2 a = new Vector2( 1.0f, 2.0f );
-            Vector2 b = new Vector2( 2.0f, 3.0f );
-            Vector2 c = Vector2.Multiply( a , b);
-            Assert.Equals( c.x, 2.0f );
-            Assert.Equals( c.y, 6.0f );
+            Vector2 left = new Vector2( 1.0f, 2.0f );
+            Vector2 right = new Vector2( 2.0f, 3.0f );
+            Vector2 expected = new Vector2( 2.0f, 6.0f );
+
+            Vector2 actual = Vector2.Multiply( left, right );
+
+            Assert.AreEqual( expected, actual );
         }
 
         [TestMethod]
         public void CLSMethodMultiplyVector2ByScalar()
         {
-            Vector2 a = new Vector2( 1.0f, 2.0f );
-            Vector2 c, d;
-            float b = 3.0f;
-            c = Vector2.Multiply( a , b);
-            d = Vector2.Multiply( b , a);
-            Assert.Equals( c.x, 3.0f );
-            Assert.Equals( c.y, 6.0f );
-            Assert.Equals( c, d );
+            Vector2 left = new Vector2( 1.0f, 2.0f );
+            float right = 3.0f;
+            Vector2 expected = new Vector2( 3.0f, 6.0f );
+
+            Vector2 actual = Vector2.Multiply( left, right );
+
+            Assert.AreEqual( expected, actual );
         }
 
         [TestMethod]
         public void CLSMethodNegateVector2()
         {
-            Vector2 a = new Vector2( 1.0f, 2.0f );
-            Vector2 b = Vector2.Negate( a );
-            Assert.Equals( b.x, -1.0f );
-            Assert.Equals( b.y, -2.0f );
-        }
+            Vector2 value = new Vector2( 1.0f, 2.0f );
+            Vector2 expected = new Vector2( -1.0f, -2.0f );
 
+            Vector2 actual = Vector2.Negate( value );
+
+            Assert.AreEqual( expected, actual );
+        }
+        
         [TestMethod]
         public void CLSMethodEquals()
         {
-            Vector2 a = new Vector2( 1.0f, 2.0f );
-            Vector2 b = new Vector2( 1.0f, 2.0f );
+            Vector2 left = new Vector2( 1.0f, 2.0f );
+            Vector2 right = new Vector2( 1.0f, 2.0f );
 
-            bool test = a.Equals( b );
+            bool actual = left.Equals( right );
 
-            Assert.IsTrue( test );
+            Assert.IsTrue( actual );
         }
 
         #endregion
-
-        [TestMethod]
-        public void CopyVector2()
-        {
-            Vector2 a = new Vector2( 1.0f, 2.0f );
-            Vector2 b = a.Copy();
-
-            Assert.Equals( a, b );
-        }
 
         [TestMethod]
         public void ToStringWithNoArguments()
@@ -353,8 +365,8 @@ namespace DotNet3D.Math.Tests
             Vector2 v = Vector2.Parse( "(1.234567, 2.345678)" );
 
             Assert.IsNotNull( v );
-            Assert.Equals( v.x, 1.234567f );
-            Assert.Equals( v.y, 2.345678f );
+            Assert.AreEqual( v.x, new Real( 1.234567f ));
+            Assert.AreEqual( v.y,new Real(  2.345678f ));
         }
 
         #region Serialization Tests
@@ -374,8 +386,19 @@ namespace DotNet3D.Math.Tests
             actual = (Vector2)bformatter.Deserialize( stream );
             stream.Close();
 
-            Assert.Equals( actual, expected );
+            Assert.AreEqual( actual, expected );
         }
+
+        [TestMethod]
+        public void ModifyStaticKnownValuesTest()
+        {
+            Vector2 actual = Vector2.UnitX;
+
+            actual.y = 1;
+
+            Assert.AreNotEqual( Vector2.UnitX, actual );
+        }
+
         #endregion Serialization Tests
 
     }

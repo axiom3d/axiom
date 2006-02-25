@@ -67,8 +67,10 @@ namespace DotNet3D.UnitTests.VS
             decimal value = 3.1415926979m;
 
             Real target = new Real( value );
+            Real expected = value;
 
-            Assert.Equals( value, target );
+            Assert.IsInstanceOfType( target, typeof( Real ) );
+            Assert.AreEqual( expected, target );
         }
 
         /// <summary>
@@ -80,8 +82,10 @@ namespace DotNet3D.UnitTests.VS
             double value = 3.1415926979;
 
             Real target = new Real( value );
+            Real expected = value;
 
-            Assert.Equals( value, target );
+            Assert.IsInstanceOfType( target, typeof( Real ) );
+            Assert.AreEqual( expected, target );
         }
 
         /// <summary>
@@ -93,8 +97,10 @@ namespace DotNet3D.UnitTests.VS
             float value = 3.1415926979f;
 
             Real target = new Real( value );
+            Real expected = value;
 
-            Assert.Equals( value, target );
+            Assert.IsInstanceOfType( target, typeof( Real ) );
+            Assert.AreEqual( expected, target );
         }
 
         /// <summary>
@@ -106,8 +112,10 @@ namespace DotNet3D.UnitTests.VS
             int value = 5;
 
             Real target = new Real( value );
+            Real expected = value;
 
-            Assert.Equals( value, target );
+            Assert.IsInstanceOfType( target, typeof( Real ) );
+            Assert.AreEqual( expected, target );
         }
 
         /// <summary>
@@ -119,8 +127,10 @@ namespace DotNet3D.UnitTests.VS
             string value = "3.1415926979";
 
             Real target = new Real( value );
+            Real expected = value;
 
-            Assert.Equals( value, target );
+            Assert.IsInstanceOfType( target, typeof( Real ) );
+            Assert.AreEqual( expected, target );
         }
 
         #endregion Construction Tests
@@ -301,29 +311,29 @@ namespace DotNet3D.UnitTests.VS
             Real right = 2.0;
             Real actual = left + right;
 
-            Assert.Equals( actual, expected );
+            Assert.AreEqual( actual, expected );
         }
 
         [TestMethod]
         public void SubtractRealFromReal()
         {
-            Real expected = 3.0;
+            Real expected = -1.0;
             Real left = 1.0;
             Real right = 2.0;
             Real actual = left - right;
 
-            Assert.Equals( actual, expected );
+            Assert.AreEqual( actual, expected );
         }
 
         [TestMethod]
         public void MultiplyRealByReal()
         {
-            Real expected = 3.0;
+            Real expected = 2.0;
             Real left = 1.0;
             Real right = 2.0;
             Real actual = left * right;
 
-            Assert.Equals( actual, expected );
+            Assert.AreEqual( actual, expected );
         }
 
 
@@ -335,7 +345,7 @@ namespace DotNet3D.UnitTests.VS
             Real right = 2.0;
             bool actual = ( left == right );
 
-            Assert.Equals( actual, expected );
+            Assert.AreEqual( actual, expected );
         }
 
         [TestMethod]
@@ -346,7 +356,7 @@ namespace DotNet3D.UnitTests.VS
             Real right = 2.0;
             bool actual = ( left == right );
 
-            Assert.Equals( actual, expected );
+            Assert.AreEqual( actual, expected );
         }
 
         [TestMethod]
@@ -357,7 +367,7 @@ namespace DotNet3D.UnitTests.VS
             Real right = 2.0;
             bool actual = ( left != right );
 
-            Assert.Equals( actual, expected );
+            Assert.AreEqual( actual, expected );
         }
 
         [TestMethod]
@@ -368,7 +378,7 @@ namespace DotNet3D.UnitTests.VS
             Real right = 3.0;
             bool actual = ( left != right );
 
-            Assert.Equals( actual, expected );
+            Assert.AreEqual( actual, expected );
         }
 
         [TestMethod]
@@ -378,7 +388,7 @@ namespace DotNet3D.UnitTests.VS
             Real a = 1.0;
             Real actual = -a;
 
-            Assert.Equals( actual, expected );
+            Assert.AreEqual( actual, expected );
         }
 
         [TestMethod]
@@ -386,9 +396,9 @@ namespace DotNet3D.UnitTests.VS
         {
             Real expected = 1.0;
             Real a = -1.0;
-            Real actual = a;
+            Real actual = -a;
 
-            Assert.Equals( actual, expected );
+            Assert.AreEqual( actual, expected );
         }
         #endregion
 
@@ -424,7 +434,7 @@ namespace DotNet3D.UnitTests.VS
             Real actual = Real.Multiply( a, b );
             Real expected = 6.0;
 
-            Assert.Equals( actual, expected );
+            Assert.AreEqual( actual, expected );
         }
 
         [TestMethod]
@@ -434,7 +444,7 @@ namespace DotNet3D.UnitTests.VS
             Real actual = Real.Negate( a );
             Real expected = -1.0;
 
-            Assert.Equals( actual, expected );
+            Assert.AreEqual( actual, expected );
         }
 
         [TestMethod]
@@ -467,7 +477,7 @@ namespace DotNet3D.UnitTests.VS
             actual = (Real)bformatter.Deserialize( stream );
             stream.Close();
 
-            Assert.Equals( actual, expected );
+            Assert.AreEqual( actual, expected );
         }
         #endregion Serialization Tests
     }

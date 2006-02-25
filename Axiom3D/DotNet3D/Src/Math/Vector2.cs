@@ -55,7 +55,20 @@ namespace DotNet3D.Math
     {
         #region Fields
 
-        public Real x, y;
+        /// <summary>X component.</summary>
+        public Real x;
+        /// <summary>Y component.</summary>
+        public Real y;
+
+        private static readonly Vector2 positiveInfinityVector = new Vector2( Real.PositiveInfinity, Real.PositiveInfinity );
+        private static readonly Vector2 negativeInfinityVector = new Vector2( Real.NegativeInfinity, Real.NegativeInfinity );
+        private static readonly Vector2 invalidVector = new Vector2( Real.NaN, Real.NaN );
+        private static readonly Vector2 zeroVector = new Vector2( 0.0f, 0.0f );
+        private static readonly Vector2 unitX = new Vector2( 1.0f, 0.0f );
+        private static readonly Vector2 unitY = new Vector2( 0.0f, 1.0f );
+        private static readonly Vector2 negativeUnitX = new Vector2( -1.0f, 0.0f );
+        private static readonly Vector2 negativeUnitY = new Vector2( 0.0f, -1.0f );
+        private static readonly Vector2 unitVector = new Vector2( 1.0f, 1.0f );
 
         #endregion Fields
 
@@ -137,13 +150,116 @@ namespace DotNet3D.Math
 
         #endregion
 
+        #region Static Constant Properties
+
+        /// <summary>
+        ///		Gets a Vector2 with all components set to 0.
+        /// </summary>
+        public static Vector2 Zero
+        {
+            get
+            {
+                return zeroVector;
+            }
+        }
+
+        /// <summary>
+        ///		Gets a Vector2 with all components set to 1.
+        /// </summary>
+        public static Vector2 UnitScale
+        {
+            get
+            {
+                return unitVector;
+            }
+        }
+
+        /// <summary>
+        ///		Gets a Vector2 with the X set to 1, and the others set to 0.
+        /// </summary>
+        public static Vector2 UnitX
+        {
+            get
+            {
+                return unitX;
+            }
+        }
+
+        /// <summary>
+        ///		Gets a Vector2 with the Y set to 1, and the others set to 0.
+        /// </summary>
+        public static Vector2 UnitY
+        {
+            get
+            {
+                return unitY;
+            }
+        }
+
+        /// <summary>
+        ///		Gets a Vector2 with the X set to -1, and the others set to 0.
+        /// </summary>
+        public static Vector2 NegativeUnitX
+        {
+            get
+            {
+                return negativeUnitX;
+            }
+        }
+
+        /// <summary>
+        ///		Gets a Vector2 with the Y set to -1, and the others set to 0.
+        /// </summary>
+        public static Vector2 NegativeUnitY
+        {
+            get
+            {
+                return negativeUnitY;
+            }
+        }
+
+        /// <summary>
+        ///     Gets a Vector2 with all units set to positive infinity.
+        /// </summary>
+        public static Vector2 PositiveInfinity
+        {
+            get
+            {
+                return positiveInfinityVector;
+            }
+        }
+
+        /// <summary>
+        ///     Gets a Vector2 with all units set to negative infinity.
+        /// </summary>
+        public static Vector2 NegativeInfinity
+        {
+            get
+            {
+                return negativeInfinityVector;
+            }
+        }
+
+        /// <summary>
+        ///     Gets a Vector2 with all units set to Invalid.
+        /// </summary>
+        public static Vector2 Invalid
+        {
+            get
+            {
+                return invalidVector;
+            }
+        }
+
+        #endregion
+
         #region System.Object Implementation
 
         /// <summary>
         ///		Overrides the Object.ToString() method to provide a text representation of 
         ///		a Vector2.
         /// </summary>
-        /// <returns>A string representation of a Vector3.</returns>
+        /// <returns>A string representation of a Vector2.</returns>
         public override string ToString()
         {
             return string.Format( "({0}, {1})", x, y );
@@ -384,17 +500,6 @@ namespace DotNet3D.Math
         #endregion CLSCompliant Methods
 
         #endregion Operator Overloads
-
-        /// <summary>
-        /// Copies a Vector2 into a new Vector2 instance.
-        /// </summary>
-        /// <param name="source"></param>
-        /// <returns>a new instance</returns>
-        public Vector2 Copy()
-        {
-            return new Vector2( this );
-        }
-
 
         #region ISerializable Implementation
 
