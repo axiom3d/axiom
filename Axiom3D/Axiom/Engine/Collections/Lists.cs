@@ -31,7 +31,6 @@ using System.Collections;
 using System.Diagnostics;
 
 using Axiom.Core;
-#endregion Namespace declarations
 
 #endregion Namespace Declarations
 			

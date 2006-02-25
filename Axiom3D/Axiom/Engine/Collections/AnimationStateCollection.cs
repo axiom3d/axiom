@@ -32,7 +32,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 #endregion Namespace Declarations
-#endregion Namespace declarations
 
 namespace Axiom
 {
