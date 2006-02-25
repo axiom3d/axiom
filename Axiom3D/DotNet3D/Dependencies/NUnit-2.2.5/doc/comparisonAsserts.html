@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<!-- Standard Head Part -->
+<head>
+<title>NUnit - ComparisonAsserts</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-US">
+<link rel="stylesheet" type="text/css" href="nunit.css">
+<link rel="shortcut icon" href="favicon.ico">
+<style type="text/css"><!--
+--></style>
+</head>
+<!-- End Standard Head Part -->
+
+<body>
+<!-- Standard Header for NUnit.org -->
+<div id="header">
+  <a id="logo" href="http://www.nunit.org"><img src="img/logo.gif" alt="NUnit.org" title="NUnit.org"></a>
+  <div id="nav">
+    <a href="http://www.nunit.org">NUnit</a>
+    <a class="active" href="index.html">Documentation</a>
+  </div>
+</div>
+<!-- End of Header -->
+
+<!-- Main Content -->
+<div id="content">
+
+<h2>Comparisons (NUnit 2.2.5)</h2>
+
+<p>The following methods test whether one object is greater than than another.
+   Contrary to the normal order of Asserts, these methods are designed to be
+   read in the "natural" English-language or mathematical order. Thus 
+   <b>Assert.Greater( x, y )</b> asserts that x is greater than y ( x &gt; y ). </p>
+   
+<div class="code" style="width: 36em" >
+<pre>Assert.Greater( int arg1, int arg2 );
+Assert.Greater( int arg1, int arg2, string message );
+Assert.Greater( int arg1, int arg2, string message, 
+                object[] parms );
+
+Assert.Greater( decimal arg1, decimal arg2 );
+Assert.Greater( decimal arg1, decimal arg2, string message );
+Assert.Greater( decimal arg1, decimal arg2, string message, 
+                object[] parms );
+
+Assert.Greater( double arg1, double arg2 );
+Assert.Greater( double arg1, double arg2, string message );
+Assert.Greater( double arg1, double arg2, string message, 
+                object[] parms );
+
+Assert.Greater( double arg1, double arg2 );
+Assert.Greater( double arg1, double arg2, string message );
+Assert.Greater( double arg1, double arg2, string message, 
+                object[] parms );
+
+Assert.Greater( float arg1, float arg2 );
+Assert.Greater( float arg1, float arg2, string message );
+Assert.Greater( float arg1, float arg2, string message, 
+                object[] parms );
+
+Assert.Less( IComparable arg1, IComparable arg2, object actual );
+Assert.Less( IComparable arg1, IComparable arg2, string message );
+Assert.Less( IComparable arg1, IComparable arg2, string message, 
+                object[] parms );</pre>
+</div>
+				
+<p>The following methods test whether one object is less than than another.
+   Contrary to the normal order of Asserts, these methods are designed to be
+   read in the "natural" English-language or mathematical order. Thus 
+   <b>Assert.Less( x, y )</b> asserts that x is less than y ( x &lt; y ). </p>
+   
+<div class="code" style="width: 36em" >
+<pre>Assert.Less( int arg1, int arg2, object actual );
+Assert.Less( int arg1, int arg2, string message );
+Assert.Less( int arg1, int arg2, string message, 
+                object[] parms );
+				
+Assert.Less( decimal arg1, decimal arg2, object actual );
+Assert.Less( decimal arg1, decimal arg2, string message );
+Assert.Less( decimal arg1, decimal arg2, string message, 
+                object[] parms );
+				
+Assert.Less( double arg1, double arg2, object actual );
+Assert.Less( double arg1, double arg2, string message );
+Assert.Less( double arg1, double arg2, string message, 
+                object[] parms );
+				
+Assert.Less( float arg1, float arg2, object actual );
+Assert.Less( float arg1, float arg2, string message );
+Assert.Less( float arg1, float arg2, string message, 
+                object[] parms );
+				
+Assert.Less( IComparable arg1, IComparable arg2, object actual );
+Assert.Less( IComparable arg1, IComparable arg2, string message );
+Assert.Less( IComparable arg1, IComparable arg2, string message, 
+                object[] parms );</pre>
+</div>
+</div>
+<!-- End of Main Content -->
+
+<!-- Submenu -->
+<div id="subnav">
+<ul>
+<li><a href="index.html">NUnit 2.2.5</a></li>
+<ul>
+<li><a href="getStarted.html">Getting&nbsp;Started</a></li>
+<li><a href="installation.html">Installation</a></li>
+<li><a href="features.html">Features</a></li>
+<ul>
+<li><a href="assertions.html">Assertions</a></li>
+<ul>
+<li><a href="equalityAsserts.html">Equality&nbsp;Asserts</a></li>
+<li><a href="identityAsserts.html">Identity&nbsp;Asserts</a></li>
+<li id="current"><a href="comparisonAsserts.html">Comparison&nbsp;Asserts</a></li>
+<li><a href="typeAsserts.html">Type&nbsp;Asserts</a></li>
+<li><a href="conditionAsserts.html">Condition&nbsp;Tests</a></li>
+<li><a href="utilityAsserts.html">Utility&nbsp;Methods</a></li>
+<li><a href="stringAssert.html">String&nbsp;Assert</a></li>
+</ul>
+<li><a href="attributes.html">Attributes</a></li>
+<li><a href="configFiles.html">Configuration&nbsp;Files</a></li>
+<li><a href="multiAssembly.html">Multiple&nbsp;Assemblies</a></li>
+<li><a href="vsSupport.html">Visual&nbsp;Studio&nbsp;Support</a></li>
+</ul>
+<li><a href="nunit-console.html">NUnit-Console</a></li>
+<li><a href="nunit-gui.html">NUnit-Gui</a></li>
+<li><a href="releaseNotes.html">Release&nbsp;Notes</a></li>
+<li><a href="samples.html">Samples</a></li>
+<li><a href="license.html">License</a></li>
+</ul>
+</ul>
+</div>
+<!-- End of Submenu -->
+<!-- Standard Footer for NUnit.org -->
+<div id="footer">
+  Copyright &copy; 2002-2005. All Rights Reserved.
+</div>
+<!-- End of Footer -->
+
+
+</body>
+</html>

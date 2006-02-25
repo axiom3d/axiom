@@ -1,0 +1,389 @@
+NUnit 2.2.5 Release
+
+Bugs Fixed
+* 1382389 NUnit 2.2.4 source package won't build
+* 1383680 2.2.4 NullReferenceException in Project on Add Assembly
+* 1383523 Assert.Contains bug for empty IList
+* 1383546 2.2.4 installer desktop shortcut incorrect
+
+NUnit 2.2.4 Release
+
+Bugs Fixed
+* 1220723 Tests always fail after first run
+
+Feature Requests Implemented
+* ExpectedExceptionAttribute Constructor with Type as String
+
+NUnit 2.2.3 Iteration Release 
+
+Bugs Fixed
+* 1099669 Missing function in framework
+* 1076043 Assert.AreEqual and boxing
+* 1077941 Custom Identity prevents test from completing
+* 1107950 NullReferenceException on Tools -> Framework info...
+* 1104326 Clicking Stop during test requires restart of GUI
+* 1103744 Ctrl-A to select exception stack trace
+* 1071502 NullReference exception on reload
+* 1063359 System.IO.IOException after run with unmanaged C++
+* 1060639 Dll does not unload properly when testing unmanaged C++
+* 1115605 Cannot open solution file that contains a makefile project
+* 1124049 params-keyword is missing in overloaded Assert.Ignore
+* 1116442 Cannot open C++ project file [with macros in paths]
+* 1109309 Cannot add assemblies from directories below AppBase
+* 1031617 Crash when repeatedly running tests in same session 
+* 1169186 The tab order of the controls in the Categories tab is wrong
+* 1173204 Incorrect XML Documentation for Assert.IsNull/IsNotNull
+* 1182239 NUnit GUI cannot load VS Proj. with non-English named files
+* 1156923 The message "assembly was not built ..." is confusing
+* 1203077 Cannot install NUnit - needs Framework 2.0.40607
+* 1189808 Build fails without VS.Net Installed
+* 1056946 TestFixtureSetUp and TestFixtureTearDown run between tests
+* 1236483 Nunit.build references unavailable registry keys
+* 1292875 double.NaN equals fails
+*  823573 NullReferenceException handling a COM exception
+* 1224378 Can't specify an absolute path to an assembly on unix
+* 1073539 Create Summary Document error
+* 1311644 Unprintable chars in Assert.AreEqual parms causes errors
+* 1242836 Exception in CreateSummaryDocument()
+* 1020791 PositionOutOfBounds failed
+* 1265810 Crash when saving project to project file marked read-only
+*  919674 Custom Exceptions Cause Error in gui
+* 1022105 ExpectedException yields NullReference bug
+* 1222749 "Index was outside the bounds of the array." Exception
+* 1214117 NullReferenceException is thrown
+* 1276193 Errors and Failures Tooltip makes errors hard to read
+* 1036266 Tests are no longer repeatable
+
+Feature Requests Implemented
+* 1006156 Assert.IsType() Would be very helpful
+*  644012 Adjusting task priority (actually fixed earlier)
+* 1159528 Assemblies must be strong named
+*  780114 Display full type name for running test
+*  836512 Report with information about current...
+
+NUnit 2.2.2 Iteration Release - December 7, 2004
+
+Bugs Fixed
+* 1010869 Exception when running with VS .NET 2005
+* 1058229 /fixture argument suppresses namespace hierarchy
+* 1023349 Gui's tooltip window throws an exception
+* 1040523 Exception by opening .sln with non-.NET projects
+* 1051632 NUnit does not properly handle absolute UNC paths
+* 1020855 one timing test fails
+* 1028529 Globalization issues in results.xml
+
+Feature Requests Implemented
+*  676154 AssertEqualsIgnoreCase method for strings
+* 1032799 Assert.AreNotEqual
+*  871799 Detect older NUnit version reference
+*  783604 Run test on specific platform only
+
+NUnit 2.2.1 Iteration Release - October 26, 2004
+
+Bugs Fixed
+
+* 1006909 Label test cases in test output
+* 1008777 Cache directories in drive root
+* 1006902 Console.Out pane does not clear always
+* 1020504 Assert has no protected constructor
+* 1017335 TipWindow problems
+* 1034527 No AttributeUsage specified on TestBuilder attribute
+* 1026207 Loading VS.NET 2005 .csproj
+* 1026552 NotSupportedException when loading solution file
+* 1020817 exception running NUnit.sln
+* 1029041 2.2 Help out of date
+* 1055124 Method names beginning with 'Test' will be shown
+
+Feature Requests Implemented
+* 848853 - Display results in GUI while running
+* 978781 - Make using old 'introspection' test style an option
+* 615499 - GUI and Console as DLL
+* 807193 - Support VS.NET solutions with web projects with virtual root
+
+NUnit 2.2 Final Release - August 8, 2004
+
+Bugs Fixed or Closed
+
+* 1002250 - Only one InvalidFixture allowed
+* 999100 - NUnit 2.1
+* 999098 - No warnings on obsolete interface use
+* 998708 - disturbing gui update
+
+NUnit 2.2 Beta 3 - NUnit Version 2.1.93
+
+Bugs Fixed or Closed
+
+* 993661 - Long folder structure problematic for NUnit Gui
+* 986598 - nUnit-gui crashes when first test starts
+* 994922 - nunit-console.exe /help documents /fixture=STR
+* 994707 - nunit-gui.exe /run fails
+* 994702 - /fixture with bad arguments throws exception
+* 989835 - Status Bar inaccurate when multiple tests are checked.
+
+NUnit 2.2 Beta 2 - NUnit Version 2.1.92
+
+Feature Requests Implemented (some implemented earlier but not closed)
+
+* 594186 - Add test/suite id to message output
+* 595185 - Category Attribute
+* 893151 - Show Test Description in Gui
+* 616107 - Selecting multiple tests
+* 692131 - Re-execute failed tests
+* 744126 - Ability to control test thread apartment state
+* 848855 - Allow selection of individual tests
+* 856175 - Standard and Error only available after test finish
+* 893674 - TestFixtureSetup does not fail test when exception thrown
+* 974881 - Exceptions during FixtureTearDown
+* 974713 - MTA console, also
+* 922981 - nunit-console should not display MessageBox
+* 905155 - Jump to failed assertion in code
+
+Bugs Fixed or Closed
+
+* 965681 - Crash of nunit-gui
+* 833213 - Exception with DAO cause problems with NUnit
+* 982623 - DDTek.OracleException with .nunit filename length
+* 886103 - Read-only .pdb file causes crash after test run
+* 977105 - "Tests Not Run" tab causes crash on next Run
+* 959394 - Limited to single display for FormSettings
+* 935784 - Naming for .config file seems wrong
+* 976510 - TestDomain is not Unloaded
+* 979513 - NUnit Gui does not use ApplicationBase setting for project
+* 964341 - Clicking Stop during test requires restart of GUI
+* 935443 - Fails to load my Tests
+* 908085 - clicking error or failure entries opens vs.net to the line
+* 832586 - Temp folder archives
+* 875240 - refresh problem when changing existing namespace
+* 917878 - Shortcut creation not completing
+* 909903 - TestFixtureSetup called in ignored TestFixture
+* 921255 - CollapseAll + Properties = Crash!
+* 834160 - Package missing license.rtf and QuickStart.Spanish.doc
+* 917893 - Incorrect registry entry?
+* 954725 - String difference pointer ^ one character too left
+* 958835 - NAnt build script
+* 908632 - Assert.AreEquals Error message backwards for enums
+* 783963 - Uninstaller leaves samples directories
+* 958057 - Missing file limit validation in Tools - Options
+* 958051 - Incorrect Tab Order in Tools - Options
+* 882142 - NUnit assembly version conflicts
+* 935786 - Files missing from source distribution
+* 956596 - Named method with Test...() show in GUI
+
+NUNIT 2.2 Beta 1 - NUnit Version 2.1.91
+
+Feature Requests Implemented
+* 783608 - Split Framework Dll
+* 863269 - Run Automatic Suites from Command line
+* 832923 - Add /fixture command-line-parameter
+* 808733 - automatically run tests with nunit-gui
+* 813859 - Update www.nunit.org
+* 788315 - multi-select tests in GUI runner
+
+Bugs Fixed or Closed
+* 951254 - GUI dies with after opening project if you hit spacebar
+* 909452 - odd stuff if Assert* called from a method called from a Test
+* 909277 - Homepage URL
+* 887857 - TestFixture with no tests runs FixtureSetup but not Teardown
+* 879811 - inheriting private setup/teardown methods
+* 878484 - FixtureTearDown not called if fixture is ignored.
+* 805223 - Integration with NANT has broken
+* 859200 - ExpectedException message parameter breaks test.
+* 859198 - ExpectedException breaks Assert tests
+* 820244 - Deprecated Assertion Does not give compiler warning.
+* 861503 - Wrong total attribute
+* 864347 - Ignore Flag does not skip Setup/TearDown
+* 843075 - Bad error message when fixture doesn't exist
+* 847018 - Shutdown project save dialog has no [cancel] button
+* 852052 - NUnit crashes with typeloadexception when using int arrays
+* 846998 - nant net-1.1 fails if VS.NET not present
+* 832557 - Nant.build has bad copy task args
+* 824897 - Can't specify multiple ExpectedExceptionAttribute
+* 822952 - NAnt build broken
+* 825375 - Right click tree pane throws exception if no node selected
+* 800691 - TestFixture with Ignore Attribute runs TestFixtureSetUp code
+* 798997 - NullReferenceException on context menus 
+* 798956 - Maximized GUI allos status bar resizing
+* 817950 - NUnit-gui forgets window state
+* 799729 - nunit-console uses Debug.Write for Release output
+* 811603 - nunit-console sends no ouput to VisualStudio in debug mode 
+
+NUnit 2.1 Final Release - Version 2.1.4
+
+Feature Requests Implemented
+* 660774 - Document that assemblies cannot be loaded via a UNC
+
+Bugs Fixed or Closed
+* 794994 - Include Type differences in FailEquals Message
+* 795399 - Assembly load failed from UNC Path
+* 798474 - No intellisense documentation in VS.NET
+
+NUnit 2.1 Release Candidate 1 - Version 2.1.3
+
+Feature Requests Implemented
+* 779509 - Test execution order should match TreeView order
+* 781617 - Execution order
+* 784114 - Provide Framework Version Info
+* 660760 - Document how NUnit may be launched from Visual Studio .NET
+* 777251 - Test Case Properties dialog should support resize
+
+Bugs Fixed or Closed
+* 784001 - single central installation of nunit.framework.dll
+* 784128 - Invalid Configuration File Name Entry using default setup
+* 785027 - Enable VS support by default to avoid confusion
+* 785006 - GUI: Improve default tree splitter position
+* 785015 - NullReferenceException on Empty Errors & Failures Copy
+* 785591 - pdf Readme bugs
+* 788934 - NUnit and .NET versions issue
+* 784119 - Project should require one or more configurations
+* 785259 - Running is not wanted
+* 784607 - Error About using VS solution
+* 790785 - XML Output file can't contain path
+* 790818 - Build with NAnt is broken
+* 699640 - Tests run in nunit-console fails
+* 791421 - Tests using STA COM objects fail
+* 791518 - NUnit.tests fail when build with NAnt
+
+NUnit 2.1 Beta 2 - Version 2.1.2
+
+Feature Requests Implemented
+* 660759 - Document how to install NUnit manually
+* 777256 - Test Case Properties dialog should support cut and paste
+* 660762 - Make text in error list copyable
+* 641437 - wrapped exception
+* 672419 - InnerException information isn't displayed
+* 678291 - Errors in TearDown hide the real errors
+* 692128 - Show type of exception in GUI output
+
+Bugs Fixed or Closed
+* 775813 - Running Nunit Gui 2.1 after install throws a cast exception
+* 775795 - V2.1 Beta 1 Install has naming conflict
+* 636535 - Problem with managed C++ wrappers
+* 761711 - NUnit doesn't allow lease-time to be changed
+* 777566 - nunit.build missing
+* 777571 - NUnit.build has "jpg" for "bmp" files
+* 776237 - console runner doesn't show all results in debugger
+* 764042 - detailList tooltip not cleared after succesful test
+* 748092 - nunit-console NoTestFixturesException
+* 725699 - Permission problem accessing resources in .NET 1.1
+* 745987 - Nunit-GUI frequently fails to unload assembly
+* 739798 - exception not being trapped properly
+* 739800 - not catching exception properly
+* 649189 - StdOut display not correct for 2+ runs
+* 637296 - NUnit trying to delete folder and cannot
+* 640173 - Assembly Load Failure
+* 653236 - Problem error loading assembly
+* 655291 - InvaildTestFixtureException gets lost
+* 686560 - AppDomainUnloadedException in nunit-console
+* 776720 - assert.equals doesn't handle decimal correctly
+* 761715 - hosting a winform in an NUnit-test gives exception
+* 767594 - NUnit hangs in case of stack overflow
+* 740190 - GUI/Console runners report spurious failures
+* 749590 - Overflow exception when defining static test methods
+* 761717 - testdriver doesn't exit when threads are running
+* 644494 - Bug with SSL
+* 614258 - R/o access to test dir fails badly
+* 760863 - Error with V2.1 ObjectsEqual
+* 614251 - Serialization test leaves test droppings
+* 633818 - Exception error opening databases
+* 694279 - XmlResultVisitor can't handle failure in xml string compare
+* 779455 - Truncated Labels in GUI Runner
+* 779523 - GUI Runner forgets that no tests were loaded
+* 779551 - Can open multiple "About" dialog boxes
+* 779445 - Incorrect Tab Order in Options Window
+* 779490 - Configuration Editor allows empty name
+* 779511 - Inconsistent "XML" spelling in user interfaces
+* 778872 - v2.1 is not backwards compatible with .NET 1.0
+* 777570 - NUnitForm resource naming problem
+* 779512 - Statistics not set for treeview selection
+* 781718 - Incorrect handling of ExpectedException test cases
+* 767256 - Static initializer exception report not helpful
+* 675680 - Exception names not reported
+* 660772 - TestFixture not found error when assembly can't be loaded
+* 782579 - Installer fails
+* 660776 - NT required?
+
+NUnit 2.1 Beta 1 and Beta 1 Refresh - Versions 2.1.0 and 2.1.1
+
+Feature Requests Implemented
+* 597609 - Support a cancel/stop operation
+* 606393 - Maintain results in gui when reloading
+* 603449 - Option to disable assembly watching
+* 597626 - /wait gone from NunitConsole.exe
+* 600119 - Per-test statistics in nunit-gui
+* 616931 - Sort order of TestFixtures
+* 594486 - Loading Switch
+* 599120 - Show help when invalid GuiRunner options
+* 598814 - Add TestFixtureSetup/TearDown
+* 660750 - A class SetUp which runs each time Run is clicked
+* 623090 - Warnings if fixtures not public
+* 609643 - Compound structure
+* 614602 - Load multiple test dlls in nunit-gui
+* 660751 - Do not expand Tree by default
+* 629138 - Add Class Setup/TearDown
+* 516161 - Test Project Files
+* 629136 - Remarks for TestFixture and Test Attributes
+* 677192 - Recursive assembly load by reference
+* 587855 - Need option to select default test case
+* 660767 - Assert should indicate which source line
+* 669203 - Save and restore splitter positions
+* 660761 - Add shortcut key to Recently Used list
+* 648492 - NUnit doesn’t display in reference list
+* 676195 - Increase the Number of Recent Assemblies
+* 600182 - REPOST: Output to IDE Output Window
+* 660764 - Set focus, when StdOut or Errors are reported
+* 660745 - NUnit GUI should nest nested classes
+* 757160 - Add Registry key to show assemblies in .NET Reference dialog
+* 755787 - Realtime Tree updates
+* 755791 - Stop button in GUI
+
+Bugs Fixed or Closed
+* 610910 - UI Problems while Test is running
+* 624007 - Object has been disconnected
+* 624935 - Splitter messes up Run Area
+* 624943 - Disabled Run Button
+* 610906 - Running Test Domain Unloaded
+* 615750 - Test of unsafe C# code stack ovflw excpt
+* 619823 - crash when specifying invalid assembly
+* 630663 - Documentation
+* 618673 - Installer fails with Interrupted.. error
+* 640533 - NUnit crashes when assembly is updated
+* 644877 - Assembly Load failure
+* 599145 - Failed check of sign. For MS.VisualBasic
+* 609440 - I have an error when I run nunit v2 rc2
+* 618945 - installer fails
+* 665558 - ConfigurationSettings not available
+* 661571 - nunit task from nant = failure
+* 660770 - ExpectedException doesn’t work as documented
+* 656401 - Missing dll reference in documentation
+* 648152 - Click on failed test then STDOUT tab
+* 668406 - ConfigurationSettings w/ networked assemblies
+* 699661 - Nunit-gui exits when pressing space bar
+* 699640 - Tests run in nunit-console fails
+* 703096 - Run All Tests in All Assemblies
+* 667664 - GUI updates
+* 646933 - Assembly Load failure: possible solution
+* 699641 - TestResult.xml written in wrong directory
+* 675968 - Another open database bug - VS.NET 2003
+* 706643 - Switching to StandardOut pane with too much text fails.
+* 707671 - System.Net.IPAddress.Parse - Invalid Pinvoke metadata format
+* 713681 - [STAThread] Attribute Missing in Console Runner
+* 713388 - (BUG) Dependent assemblies aren’t reloaded
+* 720225 - AssertEquals() incorrectly compares decimals in .NET 1.1
+* 722037 - Infinite loop causes test harness to lock
+* 730822 - Setup() should fail if an exception is thrown during execution
+* 731422 - AssertEquals fails with two Decimals in .NET v1.1
+* 731258 - suite not recognized
+* 738425 - NUnit-console.exe runs tests from a MTA
+* 730870 - Setup() should fail if an exception is thrown during execution
+* 640467 - Newline not rendered in GUI
+* 671642 - Multiline ToolTip messages improperly displayed
+* 735111 - assembly loading fails if assembly name contains a dot char
+* 743442 - timing-tests won’t compile
+* 735138 - nunit.console
+* 742163 - NUnit.Extensions.RepeatedTest.cs won’t compile
+* 770942 - AppSettings not loaded when using nunit-console.exe
+* 744649 - Lengthy COM calls cause failures in Console.WriteLine
+* 775791 - nunit-gui requires admin rights in 2.1 beta 1
+* 775796 - NUnit 2.1 Beta 1 install requires .NET 1.1
+* 776053 - NUnit 2.1 won't install with 2.0
+* 775566 - Typos in Readme.pdf with nunit v2.1 beta 1
