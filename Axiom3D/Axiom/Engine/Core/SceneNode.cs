@@ -287,10 +287,10 @@ namespace Axiom
 
 
         /// <summary>
-        ///    Attaches a SceneObject to this scene node.
+        ///    Attaches a MovableObject to this scene node.
         /// </summary>
         /// <remarks>
-        ///    A SceneObject will not show up in the scene until it is attached to a SceneNode.
+        ///    A MovableObject will not show up in the scene until it is attached to a SceneNode.
         /// </remarks>
         /// <param name="obj"></param>
         public virtual void AttachObject( MovableObject obj )
