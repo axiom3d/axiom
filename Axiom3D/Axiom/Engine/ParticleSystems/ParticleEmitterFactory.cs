@@ -26,9 +26,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using Axiom.Collections;
 
-namespace Axiom.ParticleSystems
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Abstract class defining the interface to be implemented by creators of ParticleEmitter subclasses.

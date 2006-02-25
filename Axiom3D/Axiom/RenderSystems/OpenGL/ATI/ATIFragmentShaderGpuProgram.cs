@@ -1,6 +1,8 @@
 using System;
-using Axiom.Graphics;
+
+using Axiom.Engine;
 using Axiom.RenderSystems.OpenGL;
+
 using Tao.OpenGl;
 
 namespace Axiom.RenderSystems.OpenGL.ATI
@@ -95,7 +97,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
     {
         #region IOpenGLGpuProgramFactory Members
 
-        public GLGpuProgram Create( string name, Axiom.Graphics.GpuProgramType type, string syntaxCode )
+        public GLGpuProgram Create( string name, GpuProgramType type, string syntaxCode )
         {
             // creates and returns a new ATI fragment shader implementation
             return new ATIFragmentShaderGpuProgram( name, type, syntaxCode );

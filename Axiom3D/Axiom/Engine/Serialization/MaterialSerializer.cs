@@ -4,12 +4,11 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using Axiom.Controllers;
-using Axiom.Core;
-using Axiom.Graphics;
-using Axiom.Scripting;
 
-namespace Axiom.Serialization
+// This is coming from RealmForge.Utility
+using Axiom.Core;
+
+namespace Axiom.Engine
 {
     /// <summary>
     /// Summary description for MaterialSerializer.

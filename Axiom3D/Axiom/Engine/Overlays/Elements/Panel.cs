@@ -26,12 +26,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
-using Axiom.Configuration;
-using Axiom.Core;
-using Axiom.Scripting;
-using Axiom.Graphics;
 
-namespace Axiom.Overlays.Elements
+namespace Axiom.Engine
 {
     /// <summary>
     /// 	GuiElement representing a flat, single-material (or transparent) panel which can contain other elements.
@@ -87,7 +83,7 @@ namespace Axiom.Overlays.Elements
         ///    Returns the geometry to use during rendering.
         /// </summary>
         /// <param name="op"></param>
-        public override void GetRenderOperation( Axiom.Graphics.RenderOperation op )
+        public override void GetRenderOperation( RenderOperation op )
         {
             op.vertexData = renderOp.vertexData;
             op.operationType = renderOp.operationType;

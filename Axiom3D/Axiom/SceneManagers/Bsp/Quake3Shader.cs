@@ -30,10 +30,8 @@ using System.Collections;
 using System.Runtime.InteropServices;
 
 using Axiom.Core;
+using Axiom.Engine;
 using Axiom.MathLib;
-using Axiom.Graphics;
-using Axiom.Controllers;
-
 using Axiom.SceneManagers.Bsp.Collections;
 
 namespace Axiom.SceneManagers.Bsp
@@ -344,7 +342,7 @@ namespace Axiom.SceneManagers.Bsp
                 sm.SetSkyDome( true, materialName, 20 - ( cloudHeight / 256 * 18 ), 12, 2000, false, q );
             }
 
-            material.CullingMode = Axiom.Graphics.CullingMode.None;
+            material.CullingMode = Axiom.Engine.CullingMode.None;
             material.ManualCullMode = cullMode;
             material.Lighting = false;
             material.Load();

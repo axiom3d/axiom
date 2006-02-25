@@ -29,12 +29,9 @@ using System.IO;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Runtime.InteropServices;
-using Axiom;
-using Axiom.Core;
+
+using Axiom.Engine;
 using Axiom.MathLib;
-using Axiom.Graphics;
-using Axiom.Collections;
-using Axiom.Scripting;
 
 namespace Axiom.SceneManagers.Bsp
 {

@@ -27,6 +27,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using Axiom.MathLib;
+// This is coming from RealmForge.Utility
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -38,7 +40,7 @@ using Axiom.MathLib;
 /// 
 #endregion
 
-namespace Axiom.Core
+namespace Axiom.Engine
 {
     /// <summary>
     ///		A billboard is a primitive which always faces the camera in every frame.

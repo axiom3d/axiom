@@ -28,14 +28,12 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom.Core;
-
 // used to alias a type in the code for easy copying and pasting.  Come on generics!!
-using T = Axiom.Core.Node;
+using T = Axiom.Engine.Node;
 // used to alias a key value in the code for easy copying and pasting.  Come on generics!!
 using K = System.String;
 
-namespace Axiom.Collections
+namespace Axiom.Engine
 {
     /// <summary>
     ///		A strongly-typed collection of <see cref="Node"/> objects.

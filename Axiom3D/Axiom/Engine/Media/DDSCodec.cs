@@ -1,9 +1,8 @@
 using System;
-using Axiom.Core;
-using Axiom.Graphics;
+
 using Tao.DevIl;
 
-namespace Axiom.Media
+namespace Axiom.Engine
 {
     /// <summary>
     ///    Microsoft's DDS file format codec.

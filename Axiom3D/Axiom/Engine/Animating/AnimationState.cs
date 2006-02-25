@@ -25,11 +25,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using Axiom.Collections;
-using Axiom.Core;
-using Axiom.Controllers;
 
-namespace Axiom.Animating {
+namespace Axiom.Engine
+{
     /// <summary>
     ///		Represents the state of an animation and the weight of it's influence. 
     /// </summary>

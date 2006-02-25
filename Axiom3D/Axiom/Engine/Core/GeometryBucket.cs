@@ -3,11 +3,9 @@ using System.Collections;
 using System.Text;
 using System.IO;
 
-using Axiom.Graphics;
 using Axiom.MathLib;
-using Axiom.Collections;
 
-namespace Axiom.Core
+namespace Axiom.Engine
 {
     public class GeometryBucket : IRenderable
     {

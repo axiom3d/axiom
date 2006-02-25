@@ -1,8 +1,10 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
-using Axiom.Graphics;
+
+using Axiom.Engine;
 using Axiom.RenderSystems.OpenGL;
+
 using Tao.OpenGl;
 
 namespace Axiom.RenderSystems.OpenGL.ARB

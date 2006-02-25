@@ -26,11 +26,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using Axiom.Collections;
-using Axiom.Core;
+
 using Axiom.MathLib;
 
-namespace Axiom.Graphics
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Class which represents the renderable aspects of a set of shadow volume faces.

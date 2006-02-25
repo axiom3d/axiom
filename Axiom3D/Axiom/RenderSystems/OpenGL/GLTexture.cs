@@ -27,10 +27,9 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
-using Axiom.Collections;
-using Axiom.Core;
-using Axiom.Graphics;
-using Axiom.Media;
+
+using Axiom.Engine;
+
 using Tao.OpenGl;
 
 namespace Axiom.RenderSystems.OpenGL

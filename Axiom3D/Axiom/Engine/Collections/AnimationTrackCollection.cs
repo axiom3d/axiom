@@ -29,9 +29,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Axiom.Core;
+
 // used to alias a type in the code for easy copying and pasting.  Come on generics!!
-using T = Axiom.Animating.AnimationTrack;
+using T = Axiom.Engine.AnimationTrack;
 // used to alias a key value in the code for easy copying and pasting.  Come on generics!!
 using K = System.Int16;
 // used to alias a parent type in the code for easy copying and pasting.  Come on generics!!
@@ -39,7 +39,7 @@ using K = System.Int16;
 
 #endregion  Namespace Declarations
 
-namespace Axiom.Collections
+namespace Axiom.Engine
 {
     /// <summary>
     /// Summary description for AnimationTrackCollection.

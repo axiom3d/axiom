@@ -28,7 +28,7 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Axiom.Graphics
+namespace Axiom.Engine
 {
     /// <summary>
     /// 	Summary description for SoftwareBufferManager.

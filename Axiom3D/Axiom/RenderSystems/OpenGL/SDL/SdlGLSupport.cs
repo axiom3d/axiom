@@ -1,8 +1,8 @@
 using System;
 using System.Data;
-using Axiom.Configuration;
-using Axiom.Core;
-using Axiom.Graphics;
+
+using Axiom.Engine;
+
 using Tao.OpenGl;
 using Tao.Sdl;
 

@@ -28,12 +28,10 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.IO;
-using Axiom.Core;
-using Axiom.FileSystem;
-using Axiom.Scripting;
+
 using Axiom.MathLib;
 
-namespace Axiom.Graphics
+namespace Axiom.Engine
 {
     /// <summary>
     /// 	Summary description for GpuProgramManager.

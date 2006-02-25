@@ -27,17 +27,15 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom.Animating;
-using Axiom.Core;
 
 // used to alias a type in the code for easy copying and pasting.  Come on generics!!
-using T = Axiom.Animating.KeyFrame;
+using T = Axiom.Engine.KeyFrame;
 // used to alias a key value in the code for easy copying and pasting.  Come on generics!!
 using K = System.Single;
 // used to alias a parent type in the code for easy copying and pasting.  Come on generics!!
 //using P = Axiom.Core.Entity;
 
-namespace Axiom.Collections
+namespace Axiom.Engine
 {
     /// <summary>
     /// Summary description for KeyFrameCollection.

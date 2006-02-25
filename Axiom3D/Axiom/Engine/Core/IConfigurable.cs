@@ -1,6 +1,6 @@
 using System;
 
-namespace Axiom.Core
+namespace Axiom.Engine
 {
     /// <summary>
     /// 	Describes behaviors required by objects that can be configured, whether through script

@@ -32,11 +32,11 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using SWF = System.Windows.Forms;
 using System.Xml;
 
-using Axiom.Configuration;
+using Axiom.Engine;
 using Axiom.Core;
-using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
@@ -53,7 +53,7 @@ namespace Axiom.Demos
         private ListBox lstOptions;
         private Button cmdCancel;
         private Button cmdOk;
-        private Panel pnlBackground;
+        private SWF.Panel pnlBackground;
         private ComboBox cboRenderSystems;
 
         public ConfigDialog()
@@ -65,7 +65,7 @@ namespace Axiom.Demos
             {
                 Stream icon = ResourceManager.FindCommonResourceData( "AxiomLogoSmall.png" );
 
-                this.picLogo.Image = Image.FromStream( icon, true );
+                this.picLogo.Image = System.Drawing.Image.FromStream( icon, true );
                 this.Icon = new Icon( icon );
             }
             catch ( Exception )

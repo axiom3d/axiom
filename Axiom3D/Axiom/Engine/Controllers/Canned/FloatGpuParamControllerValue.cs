@@ -25,11 +25,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using Axiom.Controllers;
-using Axiom.Graphics;
+
 using Axiom.MathLib;
 
-namespace Axiom.Controllers.Canned
+namespace Axiom.Engine
 {
     /// <summary>
     ///     Predefined controller value for setting a single floating-

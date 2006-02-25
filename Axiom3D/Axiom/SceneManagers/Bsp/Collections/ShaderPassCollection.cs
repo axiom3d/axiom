@@ -36,7 +36,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
     /// <summary>
     /// Summary description for AnimationCollection.
     /// </summary>
-    public class ShaderPassCollection : Axiom.Collections.AxiomCollection
+    public class ShaderPassCollection : Axiom.Engine.AxiomCollection
     {
         #region Constructors
 

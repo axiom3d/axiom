@@ -29,10 +29,12 @@ using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using Axiom.Core;
-using Axiom.Configuration;
 
-namespace Axiom.Graphics
+using Axiom.MathLib;
+// This is coming from RealmForge.Utility
+using Axiom.Core;
+
+namespace Axiom.Engine
 {
     /// <summary>
     ///    Class encapsulating the rendering properties of an object.

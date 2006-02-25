@@ -25,16 +25,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using Microsoft.DirectX.Direct3D;
+
+using Axiom.Engine;
+
 using D3D = Microsoft.DirectX.Direct3D;
-using Axiom.Graphics;
 
 namespace Axiom.RenderSystems.DirectX9
 {
     /// <summary>
     /// 	Summary description for D3DVertexDeclaration.
     /// </summary>
-    public class D3DVertexDeclaration : Axiom.Graphics.VertexDeclaration
+    public class D3DVertexDeclaration : VertexDeclaration
     {
         #region Member variables
 
@@ -55,18 +56,18 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region Methods
 
-        public override Axiom.Graphics.VertexElement AddElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+        public override VertexElement AddElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
         {
-            Axiom.Graphics.VertexElement element = base.AddElement( source, offset, type, semantic, index );
+            VertexElement element = base.AddElement( source, offset, type, semantic, index );
 
             needsRebuild = true;
 
             return element;
         }
 
-        public override Axiom.Graphics.VertexElement InsertElement( int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+        public override VertexElement InsertElement( int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
         {
-            Axiom.Graphics.VertexElement element = base.InsertElement( position, source, offset, type, semantic, index );
+            VertexElement element = base.InsertElement( position, source, offset, type, semantic, index );
 
             needsRebuild = true;
 
@@ -120,8 +121,8 @@ namespace Axiom.RenderSystems.DirectX9
                     // loop through and configure each element for D3D
                     for ( int i = 0; i < elements.Count; i++ )
                     {
-                        Axiom.Graphics.VertexElement element =
-                            (Axiom.Graphics.VertexElement)elements[i];
+                        VertexElement element =
+                            (VertexElement)elements[i];
 
                         d3dElements[i].DeclarationMethod = D3D.DeclarationMethod.Default;
                         d3dElements[i].Offset = (short)element.Offset;

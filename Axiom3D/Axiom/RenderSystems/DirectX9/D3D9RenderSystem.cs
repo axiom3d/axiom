@@ -32,47 +32,18 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
-using Axiom.Collections;
-using Axiom.Configuration;
+
 using Axiom.Core;
-using Axiom.Graphics;
+using Axiom.Engine;
 using Axiom.MathLib;
-using AdapterDetails = Microsoft.DirectX.Direct3D.AdapterDetails;
-using BaseTexture = Microsoft.DirectX.Direct3D.BaseTexture;
-using Caps = Microsoft.DirectX.Direct3D.Caps;
-using ClearFlags = Microsoft.DirectX.Direct3D.ClearFlags;
-using ColorWriteEnable = Microsoft.DirectX.Direct3D.ColorWriteEnable;
-using CreateFlags = Microsoft.DirectX.Direct3D.CreateFlags;
+
+using FogMode = Axiom.Engine.FogMode;
+using LightType = Axiom.Engine.LightType;
+using StencilOperation = Axiom.Engine.StencilOperation;
+using TextureFiltering = Axiom.Engine.TextureFiltering;
+
 using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
-using DepthFormat = Microsoft.DirectX.Direct3D.DepthFormat;
-using Device = Microsoft.DirectX.Direct3D.Device;
-using DeviceType = Microsoft.DirectX.Direct3D.DeviceType;
-using FillMode = Microsoft.DirectX.Direct3D.FillMode;
-using Format = Microsoft.DirectX.Direct3D.Format;
-using Manager = Microsoft.DirectX.Direct3D.Manager;
-using Material = Microsoft.DirectX.Direct3D.Material;
-using Matrix = Microsoft.DirectX.Matrix;
-using MultiSampleType = Microsoft.DirectX.Direct3D.MultiSampleType;
-using OutOfVideoMemoryException = Microsoft.DirectX.Direct3D.OutOfVideoMemoryException;
-using PresentInterval = Microsoft.DirectX.Direct3D.PresentInterval;
-using PresentParameters = Microsoft.DirectX.Direct3D.PresentParameters;
-using PrimitiveType = Microsoft.DirectX.Direct3D.PrimitiveType;
-using Query = Microsoft.DirectX.Direct3D.Query;
-using QueryType = Microsoft.DirectX.Direct3D.QueryType;
-using ResourceType = Microsoft.DirectX.Direct3D.ResourceType;
-using Surface = Microsoft.DirectX.Direct3D.Surface;
-using SurfaceDescription = Microsoft.DirectX.Direct3D.SurfaceDescription;
-using SwapEffect = Microsoft.DirectX.Direct3D.SwapEffect;
-using TextureAddress = Microsoft.DirectX.Direct3D.TextureAddress;
-using TextureArgument = Microsoft.DirectX.Direct3D.TextureArgument;
-using TextureFilter = Microsoft.DirectX.Direct3D.TextureFilter;
-using TextureOperation = Microsoft.DirectX.Direct3D.TextureOperation;
-using TextureTransform = Microsoft.DirectX.Direct3D.TextureTransform;
-using TransformType = Microsoft.DirectX.Direct3D.TransformType;
-using Usage = Microsoft.DirectX.Direct3D.Usage;
-using Vector4 = Microsoft.DirectX.Vector4;
-using VertexElement = Microsoft.DirectX.Direct3D.VertexElement;
 
 #endregion Namespace Declarations
 
@@ -99,11 +70,11 @@ namespace Axiom.RenderSystems.DirectX9
         /// <summary>
         ///    Reference to the Direct3D device.
         /// </summary>
-        protected Device device;
+        protected D3D.Device device;
         /// <summary>
         ///    Direct3D capability structure.
         /// </summary>
-        protected Caps d3dCaps;
+        protected D3D.Caps d3dCaps;
         /// <summary>
         ///    Signifies whether the current frame being rendered is the first.
         /// </summary>
@@ -131,7 +102,7 @@ namespace Axiom.RenderSystems.DirectX9
         protected bool lightingEnabled;
 
         const int MAX_LIGHTS = 8;
-        protected Light[] lights = new Light[MAX_LIGHTS];
+        protected Axiom.Engine.Light[] lights = new Axiom.Engine.Light[MAX_LIGHTS];
 
         protected D3DGpuProgramManager gpuProgramMgr;
 
@@ -141,7 +112,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <summary>
         ///		Temp D3D vector to avoid constant allocations.
         /// </summary>
-        private Vector4 tempVec = new Vector4();
+        private Microsoft.DirectX.Vector4 tempVec = new Microsoft.DirectX.Vector4();
 
         public D3D9RenderSystem()
         {
@@ -276,22 +247,22 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="stencil"></param>
         public override void ClearFrameBuffer( FrameBuffer buffers, ColorEx color, float depth, int stencil )
         {
-            ClearFlags flags = 0;
+            D3D.ClearFlags flags = 0;
 
             if ( ( buffers & FrameBuffer.Color ) > 0 )
             {
-                flags |= ClearFlags.Target;
+                flags |= D3D.ClearFlags.Target;
             }
             if ( ( buffers & FrameBuffer.Depth ) > 0 )
             {
-                flags |= ClearFlags.ZBuffer;
+                flags |= D3D.ClearFlags.ZBuffer;
             }
             // Only try to clear the stencil buffer if supported
             if ( ( buffers & FrameBuffer.Stencil ) > 0
                 && caps.CheckCap( Capabilities.StencilBuffer ) )
             {
 
-                flags |= ClearFlags.Stencil;
+                flags |= D3D.ClearFlags.Stencil;
             }
 
             // clear the device using the specified params
@@ -344,7 +315,7 @@ namespace Axiom.RenderSystems.DirectX9
                 // create the window
                 window.Create( name, width, height, colorDepth, isFullscreen, left, top, depthBuffer, (Control)target, device );
             }
-            catch ( OutOfVideoMemoryException e )
+            catch ( D3D.OutOfVideoMemoryException e )
             {
                 throw new AxiomException( "The graphics card memory has all be used up to an issue an video memory leak when restarting Axiom's DirectX rendering system. Please restart the application.", e );
             }
@@ -355,7 +326,7 @@ namespace Axiom.RenderSystems.DirectX9
             return window;
         }
 
-        private Device InitDevice( bool isFullscreen, bool depthBuffer, int width, int height, int colorDepth, Control target )
+        private D3D.Device InitDevice( bool isFullscreen, bool depthBuffer, int width, int height, int colorDepth, Control target )
         {
             if ( device != null )
             {
@@ -363,30 +334,30 @@ namespace Axiom.RenderSystems.DirectX9
             }
 
             // we don't care about event handlers
-            Device.IsUsingEventHandlers = false;
+            D3D.Device.IsUsingEventHandlers = false;
 
-            Device newDevice;
+            D3D.Device newDevice;
 
-            PresentParameters presentParams = CreatePresentationParams( isFullscreen, depthBuffer, width, height, colorDepth );
+            D3D.PresentParameters presentParams = CreatePresentationParams( isFullscreen, depthBuffer, width, height, colorDepth );
 
             // create the D3D Device, trying for the best vertex support first, and settling for less if necessary
             try
             {
                 // hardware vertex processing
-                newDevice = new Device( 0, DeviceType.Hardware, target, CreateFlags.HardwareVertexProcessing, presentParams );
+                newDevice = new D3D.Device( 0, D3D.DeviceType.Hardware, target, D3D.CreateFlags.HardwareVertexProcessing, presentParams );
             }
             catch ( Exception )
             {
                 try
                 {
                     // doh, how bout mixed vertex processing
-                    newDevice = new Device( 0, DeviceType.Hardware, target, CreateFlags.MixedVertexProcessing, presentParams );
+                    newDevice = new D3D.Device( 0, D3D.DeviceType.Hardware, target, D3D.CreateFlags.MixedVertexProcessing, presentParams );
                 }
                 catch ( Exception )
                 {
                     // what the...ok, how bout software vertex procssing.  if this fails, then I don't even know how they are seeing
                     // anything at all since they obviously don't have a video card installed
-                    newDevice = new Device( 0, DeviceType.Hardware, target, CreateFlags.SoftwareVertexProcessing, presentParams );
+                    newDevice = new D3D.Device( 0, D3D.DeviceType.Hardware, target, D3D.CreateFlags.SoftwareVertexProcessing, presentParams );
                 }
             }
 
@@ -410,12 +381,12 @@ namespace Axiom.RenderSystems.DirectX9
             return newDevice;
         }
 
-        private static PresentParameters CreatePresentationParams( bool isFullscreen, bool depthBuffer, int width, int height, int colorDepth )
+        private static D3D.PresentParameters CreatePresentationParams( bool isFullscreen, bool depthBuffer, int width, int height, int colorDepth )
         {
             // if this is the first window, get the device and do other initialization
             // CMH - 4/24/2004 start
             /// get the Direct3D.Device params
-            PresentParameters presentParams = new PresentParameters();
+            D3D.PresentParameters presentParams = new D3D.PresentParameters();
             presentParams.Windowed = !isFullscreen;
             presentParams.BackBufferCount = 0;
             presentParams.EnableAutoDepthStencil = depthBuffer;
@@ -431,54 +402,54 @@ namespace Axiom.RenderSystems.DirectX9
                 presentParams.BackBufferHeight = 16;
             }
 
-            presentParams.MultiSample = MultiSampleType.None;
-            presentParams.SwapEffect = SwapEffect.Discard;
+            presentParams.MultiSample = D3D.MultiSampleType.None;
+            presentParams.SwapEffect = D3D.SwapEffect.Discard;
             // TODO: Check vsync setting
-            presentParams.PresentationInterval = PresentInterval.Immediate;
+            presentParams.PresentationInterval = D3D.PresentInterval.Immediate;
 
             // supports 16 and 32 bit color
             if ( colorDepth == 16 )
             {
-                presentParams.BackBufferFormat = Format.R5G6B5;
+                presentParams.BackBufferFormat = D3D.Format.R5G6B5;
             }
             else
             {
-                presentParams.BackBufferFormat = Format.X8R8G8B8;
+                presentParams.BackBufferFormat = D3D.Format.X8R8G8B8;
             }
 
             if ( colorDepth > 16 )
             {
                 // check for 24 bit Z buffer with 8 bit stencil (optimal choice)
-                if ( !Manager.CheckDeviceFormat( 0, DeviceType.Hardware, presentParams.BackBufferFormat, Usage.DepthStencil, ResourceType.Surface, DepthFormat.D24S8 ) )
+                if ( !D3D.Manager.CheckDeviceFormat( 0, D3D.DeviceType.Hardware, presentParams.BackBufferFormat, D3D.Usage.DepthStencil, D3D.ResourceType.Surface, D3D.DepthFormat.D24S8 ) )
                 {
                     // doh, check for 32 bit Z buffer then
-                    if ( !Manager.CheckDeviceFormat( 0, DeviceType.Hardware, presentParams.BackBufferFormat, Usage.DepthStencil, ResourceType.Surface, DepthFormat.D32 ) )
+                    if ( !D3D.Manager.CheckDeviceFormat( 0, D3D.DeviceType.Hardware, presentParams.BackBufferFormat, D3D.Usage.DepthStencil, D3D.ResourceType.Surface, D3D.DepthFormat.D32 ) )
                     {
                         // float doh, just use 16 bit Z buffer
-                        presentParams.AutoDepthStencilFormat = DepthFormat.D16;
+                        presentParams.AutoDepthStencilFormat = D3D.DepthFormat.D16;
                     }
                     else
                     {
                         // use 32 bit Z buffer
-                        presentParams.AutoDepthStencilFormat = DepthFormat.D32;
+                        presentParams.AutoDepthStencilFormat = D3D.DepthFormat.D32;
                     }
                 }
                 else
                 {
-                    if ( Manager.CheckDepthStencilMatch( 0, DeviceType.Hardware, presentParams.BackBufferFormat, presentParams.BackBufferFormat, DepthFormat.D24S8 ) )
+                    if ( D3D.Manager.CheckDepthStencilMatch( 0, D3D.DeviceType.Hardware, presentParams.BackBufferFormat, presentParams.BackBufferFormat, D3D.DepthFormat.D24S8 ) )
                     {
-                        presentParams.AutoDepthStencilFormat = DepthFormat.D24S8;
+                        presentParams.AutoDepthStencilFormat = D3D.DepthFormat.D24S8;
                     }
                     else
                     {
-                        presentParams.AutoDepthStencilFormat = DepthFormat.D24X8;
+                        presentParams.AutoDepthStencilFormat = D3D.DepthFormat.D24X8;
                     }
                 }
             }
             else
             {
                 // use 16 bit Z buffer if they arent using true color
-                presentParams.AutoDepthStencilFormat = DepthFormat.D16;
+                presentParams.AutoDepthStencilFormat = D3D.DepthFormat.D16;
             }
             return presentParams;
         }
@@ -517,11 +488,11 @@ namespace Axiom.RenderSystems.DirectX9
 
                 switch ( device.RenderState.FillMode )
                 {
-                    case FillMode.Point:
+                    case D3D.FillMode.Point:
                         return SceneDetailLevel.Points;
-                    case FillMode.WireFrame:
+                    case D3D.FillMode.WireFrame:
                         return SceneDetailLevel.Wireframe;
-                    case FillMode.Solid:
+                    case D3D.FillMode.Solid:
                         return SceneDetailLevel.Solid;
                     default:
                         throw new NotSupportedException();
@@ -532,13 +503,13 @@ namespace Axiom.RenderSystems.DirectX9
                 switch ( value )
                 {
                     case SceneDetailLevel.Points:
-                        device.RenderState.FillMode = FillMode.Point;
+                        device.RenderState.FillMode = D3D.FillMode.Point;
                         break;
                     case SceneDetailLevel.Wireframe:
-                        device.RenderState.FillMode = FillMode.WireFrame;
+                        device.RenderState.FillMode = D3D.FillMode.WireFrame;
                         break;
                     case SceneDetailLevel.Solid:
-                        device.RenderState.FillMode = FillMode.Solid;
+                        device.RenderState.FillMode = D3D.FillMode.Solid;
                         break;
                 }
             }
@@ -559,23 +530,23 @@ namespace Axiom.RenderSystems.DirectX9
 
         public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
         {
-            ColorWriteEnable val = 0;
+            D3D.ColorWriteEnable val = 0;
 
             if ( red )
             {
-                val |= ColorWriteEnable.Red;
+                val |= D3D.ColorWriteEnable.Red;
             }
             if ( green )
             {
-                val |= ColorWriteEnable.Green;
+                val |= D3D.ColorWriteEnable.Green;
             }
             if ( blue )
             {
-                val |= ColorWriteEnable.Blue;
+                val |= D3D.ColorWriteEnable.Blue;
             }
             if ( alpha )
             {
-                val |= ColorWriteEnable.Alpha;
+                val |= D3D.ColorWriteEnable.Alpha;
             }
 
             device.RenderState.ColorWriteEnable = val;
@@ -786,7 +757,7 @@ namespace Axiom.RenderSystems.DirectX9
             return dest;
         }
 
-        public override void ApplyObliqueDepthProjection( ref Matrix4 projMatrix, Plane plane, bool forGpuProgram )
+        public override void ApplyObliqueDepthProjection( ref Matrix4 projMatrix, Axiom.MathLib.Plane plane, bool forGpuProgram )
         {
             // Thanks to Eric Lenyel for posting this calculation at www.terathon.com
 
@@ -878,16 +849,16 @@ namespace Axiom.RenderSystems.DirectX9
         /// 
         /// </summary>
         /// <param name="viewport"></param>
-        public override void SetViewport( Viewport viewport )
+        public override void SetViewport( Axiom.Engine.Viewport viewport )
         {
             if ( activeViewport != viewport || viewport.IsUpdated )
             {
-                                // store this viewport and it's target
-                                activeViewport = viewport;
-                                activeRenderTarget = viewport.Target;
+                // store this viewport and it's target
+                activeViewport = viewport;
+                activeRenderTarget = viewport.Target;
 
                 // get the back buffer surface for this viewport
-                Surface back = (Surface)activeRenderTarget.GetCustomAttribute( "D3DBACKBUFFER" );
+                D3D.Surface back = (D3D.Surface)activeRenderTarget.GetCustomAttribute( "D3DBACKBUFFER" );
                 device.SetRenderTarget( 0, back );
 
                 // we cannot dipose of the back buffer in fullscreen mode, since we have a direct reference to
@@ -910,7 +881,7 @@ namespace Axiom.RenderSystems.DirectX9
                     back.Dispose();
                 }
 
-                Surface depth = (Surface)activeRenderTarget.GetCustomAttribute( "D3DZBUFFER" );
+                D3D.Surface depth = (D3D.Surface)activeRenderTarget.GetCustomAttribute( "D3DZBUFFER" );
 
                 // set the render target and depth stencil for the surfaces beloning to the viewport
                 device.DepthStencilSurface = depth;
@@ -919,7 +890,7 @@ namespace Axiom.RenderSystems.DirectX9
                 // that may need inverted vertex winding or texture flipping
                 this.CullingMode = cullingMode;
 
-                Microsoft.DirectX.Direct3D.Viewport d3dvp = new Microsoft.DirectX.Direct3D.Viewport();
+                D3D.Viewport d3dvp = new D3D.Viewport();
 
                 // set viewport dimensions
                 d3dvp.X = viewport.ActualLeft;
@@ -959,32 +930,32 @@ namespace Axiom.RenderSystems.DirectX9
             SetVertexDeclaration( op.vertexData.vertexDeclaration );
             SetVertexBufferBinding( op.vertexData.vertexBufferBinding );
 
-            PrimitiveType primType = 0;
+            D3D.PrimitiveType primType = 0;
 
             switch ( op.operationType )
             {
                 case OperationType.PointList:
-                    primType = PrimitiveType.PointList;
+                    primType = D3D.PrimitiveType.PointList;
                     primCount = op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount;
                     break;
                 case OperationType.LineList:
-                    primType = PrimitiveType.LineList;
+                    primType = D3D.PrimitiveType.LineList;
                     primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) / 2;
                     break;
                 case OperationType.LineStrip:
-                    primType = PrimitiveType.LineStrip;
+                    primType = D3D.PrimitiveType.LineStrip;
                     primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) - 1;
                     break;
                 case OperationType.TriangleList:
-                    primType = PrimitiveType.TriangleList;
+                    primType = D3D.PrimitiveType.TriangleList;
                     primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) / 3;
                     break;
                 case OperationType.TriangleStrip:
-                    primType = PrimitiveType.TriangleStrip;
+                    primType = D3D.PrimitiveType.TriangleStrip;
                     primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) - 2;
                     break;
                 case OperationType.TriangleFan:
-                    primType = PrimitiveType.TriangleFan;
+                    primType = D3D.PrimitiveType.TriangleFan;
                     primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) - 2;
                     break;
             } // switch(primType)
@@ -1033,7 +1004,7 @@ namespace Axiom.RenderSystems.DirectX9
                 if ( texStageDesc[stage].tex != null )
                 {
                     device.SetTexture( stage, null );
-                    device.TextureState[stage].ColorOperation = TextureOperation.Disable;
+                    device.TextureState[stage].ColorOperation = D3D.TextureOperation.Disable;
                 }
 
                 // set stage description to defaults
@@ -1197,7 +1168,7 @@ namespace Axiom.RenderSystems.DirectX9
                 viewMatrix.m22 = -viewMatrix.m22;
                 viewMatrix.m23 = -viewMatrix.m23;
 
-                Matrix dxView = MakeD3DMatrix( viewMatrix );
+                DX.Matrix dxView = MakeD3DMatrix( viewMatrix );
                 device.Transform.View = dxView;
             }
         }
@@ -1210,7 +1181,7 @@ namespace Axiom.RenderSystems.DirectX9
             }
             set
             {
-                Matrix mat = MakeD3DMatrix( value );
+                DX.Matrix mat = MakeD3DMatrix( value );
 
                 if ( activeRenderTarget.RequiresTextureFlipping )
                 {
@@ -1381,7 +1352,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// </summary>
         /// <param name="index"></param>
         /// <param name="light"></param>
-        private void SetD3DLight( int index, Light light )
+        private void SetD3DLight( int index, Axiom.Engine.Light light )
         {
             if ( light == null )
             {
@@ -1495,9 +1466,9 @@ namespace Axiom.RenderSystems.DirectX9
             
         }
 
-        private Matrix MakeD3DMatrix( Matrix4 matrix )
+        private DX.Matrix MakeD3DMatrix( Matrix4 matrix )
         {
-            Matrix dxMat = new Matrix();
+            DX.Matrix dxMat = new DX.Matrix();
 
             // set it to a transposed matrix since DX uses row vectors
             dxMat.M11 = matrix.m00;
@@ -1526,7 +1497,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        private bool CompareVertexDecls( VertexElement[] a, VertexElement[] b )
+        private bool CompareVertexDecls( D3D.VertexElement[] a, D3D.VertexElement[] b )
         {
             // if b is null, return false
             if ( b == null )
@@ -1607,7 +1578,7 @@ namespace Axiom.RenderSystems.DirectX9
             // TODO: Cache color values to prune unneccessary setting
 
             // create a new material based on the supplied params
-            Material mat = new Material();
+            D3D.Material mat = new D3D.Material();
             mat.Ambient = ambient.ToColor();
             mat.Diffuse = diffuse.ToColor();
             mat.Emissive = emissive.ToColor();
@@ -1625,7 +1596,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="texAddressingMode"></param>
         public override void SetTextureAddressingMode( int stage, TextureAddressing texAddressingMode )
         {
-            TextureAddress d3dMode = D3DHelper.ConvertEnum( texAddressingMode );
+            D3D.TextureAddress d3dMode = D3DHelper.ConvertEnum( texAddressingMode );
 
             // set the device sampler states accordingly
             device.SamplerState[stage].AddressU = d3dMode;
@@ -1635,7 +1606,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         public override void SetTextureBlendMode( int stage, LayerBlendModeEx blendMode )
         {
-            TextureOperation d3dTexOp = D3DHelper.ConvertEnum( blendMode.operation );
+            D3D.TextureOperation d3dTexOp = D3DHelper.ConvertEnum( blendMode.operation );
 
             // TODO: Verify byte ordering
             if ( blendMode.operation == LayerBlendOperationEx.BlendManual )
@@ -1671,7 +1642,7 @@ namespace Axiom.RenderSystems.DirectX9
 
             for ( int i = 0; i < 2; i++ )
             {
-                TextureArgument d3dTexArg = D3DHelper.ConvertEnum( blendSource );
+                D3D.TextureArgument d3dTexArg = D3DHelper.ConvertEnum( blendSource );
 
                 // set the texture blend factor if this is manual blending
                 if ( blendSource == LayerBlendSource.Manual )
@@ -1739,7 +1710,7 @@ namespace Axiom.RenderSystems.DirectX9
         public override void SetTextureUnitFiltering( int stage, FilterType type, FilterOptions filter )
         {
             D3DTexType texType = texStageDesc[stage].texType;
-            TextureFilter texFilter = D3DHelper.ConvertEnum( type, filter, d3dCaps, texType );
+            D3D.TextureFilter texFilter = D3DHelper.ConvertEnum( type, filter, d3dCaps, texType );
 
             switch ( type )
             {
@@ -1764,7 +1735,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="xform"></param>
         public override void SetTextureMatrix( int stage, Matrix4 xform )
         {
-            Matrix d3dMat = Matrix.Identity;
+            DX.Matrix d3dMat = DX.Matrix.Identity;
             Matrix4 newMat = xform;
 
             /* If envmap is applied, but device doesn't support spheremap,
@@ -1800,7 +1771,7 @@ namespace Axiom.RenderSystems.DirectX9
             if ( texStageDesc[stage].autoTexCoordType == TexCoordCalcMethod.EnvironmentMapReflection )
             {
                 // get the current view matrix
-                Matrix viewMatrix = device.Transform.View;
+                DX.Matrix viewMatrix = device.Transform.View;
 
                 // Get transposed 3x3, ie since D3D is transposed just copy
                 // We want to transpose since that will invert an orthonormal matrix ie rotation
@@ -1861,7 +1832,7 @@ namespace Axiom.RenderSystems.DirectX9
                 d3dMat.M43 = -d3dMat.M43;
             }
 
-            TransformType d3dTransType = (TransformType)( (int)( TransformType.Texture0 ) + stage );
+            D3D.TransformType d3dTransType = (D3D.TransformType)( (int)( D3D.TransformType.Texture0 ) + stage );
 
             // set the matrix if it is not the identity
             if ( !D3DHelper.IsIdentity( ref d3dMat ) )
@@ -1870,25 +1841,25 @@ namespace Axiom.RenderSystems.DirectX9
                 int texCoordDim = 0;
                 if ( texStageDesc[stage].autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture )
                 {
-                    texCoordDim = (int)TextureTransform.Projected | (int)TextureTransform.Count3;
+                    texCoordDim = (int)D3D.TextureTransform.Projected | (int)D3D.TextureTransform.Count3;
                 }
                 else
                 {
                     switch ( texStageDesc[stage].texType )
                     {
                         case D3DTexType.Normal:
-                            texCoordDim = (int)TextureTransform.Count2;
+                            texCoordDim = (int)D3D.TextureTransform.Count2;
                             break;
                         case D3DTexType.Cube:
                         case D3DTexType.Volume:
-                            texCoordDim = (int)TextureTransform.Count3;
+                            texCoordDim = (int)D3D.TextureTransform.Count3;
                             break;
                     }
                 }
 
                 // note: int values of D3D.TextureTransform correspond directly with tex dimension, so direct conversion is possible
                 // i.e. Count1 = 1, Count2 = 2, etc
-                device.TextureState[stage].TextureTransform = (TextureTransform)texCoordDim;
+                device.TextureState[stage].TextureTransform = (D3D.TextureTransform)texCoordDim;
 
                 // set the manually calculated texture matrix
                 device.SetTransform( d3dTransType, d3dMat );
@@ -1896,10 +1867,10 @@ namespace Axiom.RenderSystems.DirectX9
             else
             {
                 // disable texture transformation
-                device.TextureState[stage].TextureTransform = TextureTransform.Disable;
+                device.TextureState[stage].TextureTransform = D3D.TextureTransform.Disable;
 
                 // set as the identity matrix
-                device.SetTransform( d3dTransType, Matrix.Identity );
+                device.SetTransform( d3dTransType, DX.Matrix.Identity );
             }
         }
 
@@ -1919,7 +1890,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <summary>
         ///		Helper method to go through and interrogate hardware capabilities.
         /// </summary>
-        private void CheckCaps( Device device )
+        private void CheckCaps( D3D.Device device )
         {
             // get the number of possible texture units
             caps.TextureUnitCount = d3dCaps.MaxSimultaneousTextures;
@@ -1927,11 +1898,11 @@ namespace Axiom.RenderSystems.DirectX9
             // max active lights
             caps.MaxLights = d3dCaps.MaxActiveLights;
 
-            Surface surface = device.DepthStencilSurface;
-            SurfaceDescription surfaceDesc = surface.Description;
+            D3D.Surface surface = device.DepthStencilSurface;
+            D3D.SurfaceDescription surfaceDesc = surface.Description;
             surface.Dispose();
 
-            if ( surfaceDesc.Format == Format.D24S8 || surfaceDesc.Format == Format.D24X8 )
+            if ( surfaceDesc.Format == D3D.Format.D24S8 || surfaceDesc.Format == D3D.Format.D24X8 )
             {
                 caps.SetCap( Capabilities.StencilBuffer );
                 // always 8 here
@@ -2001,7 +1972,7 @@ namespace Axiom.RenderSystems.DirectX9
             // Hardware Occlusion
             try
             {
-                Query test = new Query( device, QueryType.Occlusion );
+                D3D.Query test = new D3D.Query( device, D3D.QueryType.Occlusion );
 
                 // if we made it this far, it is supported
                 caps.SetCap( Capabilities.HardwareOcculusion );
@@ -2035,7 +2006,7 @@ namespace Axiom.RenderSystems.DirectX9
 
                 //Driver driver = D3DHelper.GetDriverInfo();
 
-                AdapterDetails details = Manager.Adapters[0].Information;
+                D3D.AdapterDetails details = D3D.Manager.Adapters[0].Information;
 
                 //AdapterDetails details = Manager.Adapters[driver.AdapterNumber].Information;
 
@@ -2218,7 +2189,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// </summary>
         /// <param name="d3dMat"></param>
         /// <returns></returns>
-        private Matrix4 ConvertD3DMatrix( ref Matrix d3dMat )
+        private Matrix4 ConvertD3DMatrix( ref DX.Matrix d3dMat )
         {
             Matrix4 mat = Matrix4.Zero;
 
@@ -2260,7 +2231,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// Frustum, used if the above is projection
         public Frustum frustum;
         /// texture 
-        public BaseTexture tex;
+        public D3D.BaseTexture tex;
     }
 
     /// <summary>

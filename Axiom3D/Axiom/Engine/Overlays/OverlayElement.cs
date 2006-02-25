@@ -2,13 +2,12 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
-using Axiom.Collections;
-using Axiom.Core;
-using Axiom.MathLib;
-using Axiom.Scripting;
-using Axiom.Graphics;
 
-namespace Axiom.Overlays
+using Axiom.MathLib;
+// This is coming from RealmForge.Utility
+using Axiom.Core;
+
+namespace Axiom.Engine
 {
     /// <summary>
     /// 	Abstract definition of a 2D element to be displayed in an Overlay.
@@ -891,7 +890,7 @@ namespace Axiom.Overlays
         /// <summary>
         /// 
         /// </summary>
-        public Axiom.Graphics.SceneDetailLevel RenderDetail
+        public SceneDetailLevel RenderDetail
         {
             get
             {

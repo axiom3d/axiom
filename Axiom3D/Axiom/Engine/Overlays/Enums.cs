@@ -25,9 +25,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using Axiom.Scripting;
 
-namespace Axiom.Overlays
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Describes how the position / size of an element is to be treated. 

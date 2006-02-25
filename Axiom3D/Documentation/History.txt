@@ -1,3 +1,7 @@
+2005-09-22 Michael Cummings [Borrillis]
+- Started collapsing namespaces in Axiom.Engine.dll, all namespaces will become Axiom.Engine. This differs slightly from the Ogre version for now,
+  I am planning on renaming it to Axiom.
+  
 2005-09-21 Michael Cummings [Borrillis]
 - Fixed compile errors in DX and OpenGL Renderers, incomplete, but it compiles.
   Hard coded the Autowindow settings to make things work. When I get to the RenderSystems, I'll fix this back up.

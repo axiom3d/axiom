@@ -1,5 +1,6 @@
 using System;
-using Axiom.Graphics;
+
+using Axiom.Engine;
 
 namespace Axiom.RenderSystems.DirectX9.HLSL
 {
@@ -16,7 +17,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
         #region IHighLevelGpuProgramFactory Members
 
-        public HighLevelGpuProgram Create( string name, Axiom.Graphics.GpuProgramType type )
+        public HighLevelGpuProgram Create( string name, GpuProgramType type )
         {
             return new HLSLProgram( name, type, language );
         }

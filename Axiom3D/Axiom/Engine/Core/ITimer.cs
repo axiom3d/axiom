@@ -1,6 +1,6 @@
 using System;
 
-namespace Axiom.Core
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Describes the interface for a platform independent timer.

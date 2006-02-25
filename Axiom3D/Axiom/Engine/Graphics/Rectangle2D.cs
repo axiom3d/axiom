@@ -1,9 +1,8 @@
 using System;
-using Axiom.Core;
-using Axiom.Graphics;
+using Axiom.Engine;
 using Axiom.MathLib;
 
-namespace Axiom.Graphics
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Allows the rendering of a simple 2D rectangle

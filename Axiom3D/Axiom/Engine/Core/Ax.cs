@@ -24,20 +24,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-#region Namespace Declarations
-
-using Axiom.Animating;
-using Axiom.Controllers;
-using Axiom.FileSystem;
-using Axiom.Fonts;
-using Axiom.Graphics;
-using Axiom.Media;
-using Axiom.Overlays;
-using Axiom.ParticleSystems;
-
-#endregion Namespace Declarations
-
-namespace Axiom.Core
+namespace Axiom.Engine
 {
     /// <summary>
     /// Static singleton aggregator utility class

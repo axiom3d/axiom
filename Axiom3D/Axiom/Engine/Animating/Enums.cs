@@ -38,7 +38,7 @@ using System;
 /// 
 #endregion
 
-namespace Axiom.Animating
+namespace Axiom.Engine
 {
 
     /// <summary>

@@ -28,12 +28,10 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
-using Axiom.Collections;
-using Axiom.Core;
 
 using Axiom.MathLib;
 
-namespace Axiom.ParticleSystems
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Class defining particle system based special effects.
@@ -463,36 +461,6 @@ namespace Axiom.ParticleSystems
         #endregion
 
         #region Properties
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public float DefaultHeight
-        {
-            get
-            {
-                return defaultHeight;
-            }
-            set
-            {
-                defaultHeight = value;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public float DefaultWidth
-        {
-            get
-            {
-                return defaultWidth;
-            }
-            set
-            {
-                defaultWidth = value;
-            }
-        }
 
         /// <summary>
         ///		Gets the count of active particles currently in the system.

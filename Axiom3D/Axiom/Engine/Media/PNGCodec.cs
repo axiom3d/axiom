@@ -1,7 +1,7 @@
 using System;
 using Tao.DevIl;
 
-namespace Axiom.Media
+namespace Axiom.Engine
 {
     /// <summary>
     ///    PNG image file codec.

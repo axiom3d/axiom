@@ -42,13 +42,9 @@ using System.Diagnostics;
 
 using Axiom.Core;
 
+using Axiom.Engine;
+
 using Axiom.MathLib;
-
-using Axiom.Collections;
-
-using Axiom.Media;
-
-using Axiom.Graphics;
 
 
 
@@ -390,12 +386,12 @@ namespace Axiom.SceneManagers.PagingLandscape.Renderable
         public IndexData GetIndexData( long stitchFlags, long RenderLevel, Renderable[] neighbors )
         {
             Debug.Assert( levelIndex[(int)RenderLevel] != null );
-            IEnumerator ii = ( (Axiom.Collections.Map)( levelIndex[(int)RenderLevel] ) ).Find( (long)stitchFlags );
+            IEnumerator ii = ( (Map)( levelIndex[(int)RenderLevel] ) ).Find( (long)stitchFlags );
             if ( ii == null )
             {
                 // Create
                 IndexData indexData = GenerateTriListIndexes( (long)stitchFlags, RenderLevel, neighbors );
-                ( (Axiom.Collections.Map)( levelIndex[(int)RenderLevel] ) ).Insert( (long)stitchFlags, indexData );
+                ( (Map)( levelIndex[(int)RenderLevel] ) ).Insert( (long)stitchFlags, indexData );
                 return indexData;
             }
             else

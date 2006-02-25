@@ -1,7 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
+
 using Axiom.Core;
-using Axiom.Graphics;
+using Axiom.Engine;
 using Axiom.MathLib;
 
 namespace Axiom.SceneManagers.Bsp
@@ -262,7 +263,7 @@ namespace Axiom.SceneManagers.Bsp
                     }
 
                 System.IO.MemoryStream stream = new System.IO.MemoryStream( fotbuf );
-                Axiom.Media.Image img = Axiom.Media.Image.FromRawStream( stream, 128, 128, Axiom.Media.PixelFormat.A8R8G8B8 );
+                Image img = Image.FromRawStream( stream, 128, 128, PixelFormat.A8R8G8B8 );
                 TextureManager.Instance.LoadImage( "Axiom/LightingTexture", img, TextureType.TwoD, 0, 1, 1 );
 
                 tex = TextureManager.Instance.GetByName( "Axiom/LightingTexture" );

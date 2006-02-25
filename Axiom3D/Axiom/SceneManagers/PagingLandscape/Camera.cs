@@ -42,7 +42,7 @@ using Axiom.Core;
 
 using Axiom.MathLib;
 
-using Axiom.Collections;
+using Axiom.Engine;
 
 
 
@@ -81,7 +81,7 @@ namespace Axiom.SceneManagers.PagingLandscape
 
     /// </summary>
 
-    public class Camera : Core.Camera
+    public class Camera : Axiom.Engine.Camera
     {
         /** Visibility types */
         public enum Visibility
@@ -92,7 +92,7 @@ namespace Axiom.SceneManagers.PagingLandscape
         };
 
         /* Standard Constructor */
-        public Camera( string name, Axiom.Core.SceneManager creator ) : base( name, creator )
+        public Camera( string name, Axiom.Engine.SceneManager creator ) : base( name, creator )
         {
         }
 

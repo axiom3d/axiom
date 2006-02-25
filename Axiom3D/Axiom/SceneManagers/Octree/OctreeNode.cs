@@ -27,10 +27,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using Axiom;
-using Axiom.Collections;
+using Axiom.Engine;
 using Axiom.Core;
 using Axiom.MathLib;
-using Axiom.Graphics;
 
 namespace Axiom.SceneManagers.Octree
 {

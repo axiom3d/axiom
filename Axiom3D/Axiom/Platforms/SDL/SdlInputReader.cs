@@ -1,7 +1,9 @@
 using System;
 using System.Runtime.InteropServices;
-using Axiom.Core;
+
+using Axiom.Engine;
 using Axiom.Input;
+
 using Tao.Sdl;
 
 namespace Axiom.Platforms.SDL
@@ -216,7 +218,7 @@ namespace Axiom.Platforms.SDL
         /// <param name="useMouse"></param>
         /// <param name="useGamepad"></param>
         /// <param name="ownMouse"></param>
-        public override void Initialize( Axiom.Graphics.RenderWindow parent, bool useKeyboard, bool useMouse, bool useGamepad, bool ownMouse )
+        public override void Initialize( RenderWindow parent, bool useKeyboard, bool useMouse, bool useGamepad, bool ownMouse )
         {
             if ( useMouse && ownMouse )
             {

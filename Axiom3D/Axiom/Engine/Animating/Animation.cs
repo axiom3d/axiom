@@ -28,9 +28,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-using Axiom.Collections;
-using Axiom.Core;
-
 #endregion
 
 #region Versioning Information
@@ -42,7 +39,7 @@ using Axiom.Core;
 #endregion
 
 
-namespace Axiom.Animating
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Types of interpolation used in animation.

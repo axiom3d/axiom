@@ -1,6 +1,6 @@
 using System;
 
-namespace Axiom.Overlays
+namespace Axiom.Engine
 {
     /// <summary>
     /// 	Defines the interface which all components wishing to 

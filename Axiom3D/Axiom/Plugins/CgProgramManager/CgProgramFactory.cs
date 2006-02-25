@@ -1,6 +1,7 @@
 using System;
-using Axiom.Core;
-using Axiom.Graphics;
+
+using Axiom.Engine;
+
 using Tao.Cg;
 
 namespace Axiom.CgPrograms
@@ -42,7 +43,7 @@ namespace Axiom.CgPrograms
         /// <param name="name">Name of the program to create.</param>
         /// <param name="type">Type of program to create, vertex or fragment.</param>
         /// <returns>A new CgProgram instance within the current Cg Context.</returns>
-        public HighLevelGpuProgram Create( string name, Axiom.Graphics.GpuProgramType type )
+        public HighLevelGpuProgram Create( string name, GpuProgramType type )
         {
             return new CgProgram( name, type, this.Language, cgContext );
         }

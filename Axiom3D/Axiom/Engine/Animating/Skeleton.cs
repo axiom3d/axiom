@@ -28,12 +28,11 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
-using Axiom.Collections;
-using Axiom.Core;
-using Axiom.MathLib;
-using Axiom.Serialization;
 
-namespace Axiom.Animating {
+using Axiom.MathLib;
+
+namespace Axiom.Engine
+{
     /// <summary>
     ///		A collection of Bone objects used to animate a skinned mesh.
     ///	 </summary>

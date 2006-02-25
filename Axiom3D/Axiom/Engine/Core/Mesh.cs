@@ -29,15 +29,10 @@ using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-using Axiom.Animating;
-using Axiom.Collections;
-using Axiom.Configuration;
 using Axiom.MathLib;
 using Axiom.MathLib.Collections;
-using Axiom.Serialization;
-using Axiom.Graphics;
 
-namespace Axiom.Core
+namespace Axiom.Engine
 {
     /// <summary>
     ///    Resource holding data about a 3D mesh.

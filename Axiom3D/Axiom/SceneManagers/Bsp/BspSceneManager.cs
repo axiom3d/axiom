@@ -32,9 +32,8 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 
 using Axiom.Core;
+using Axiom.Engine;
 using Axiom.MathLib;
-using Axiom.Graphics;
-using Axiom.Collections;
 using Axiom.MathLib.Collections;
 
 namespace Axiom.SceneManagers.Bsp

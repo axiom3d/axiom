@@ -1,8 +1,7 @@
 using System;
-using Axiom.Core;
-using Axiom.Media;
+using Axiom.Engine;
 
-namespace Axiom.Graphics
+namespace Axiom.Engine
 {
     /// <summary>
     ///    Custom RenderTarget that allows for rendering a scene to a texture.

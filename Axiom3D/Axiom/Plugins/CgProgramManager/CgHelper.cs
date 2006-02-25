@@ -1,6 +1,8 @@
 using System;
 using System.Text;
-using Axiom.Core;
+
+using Axiom.Engine;
+
 using Tao.Cg;
 
 namespace Axiom.CgPrograms

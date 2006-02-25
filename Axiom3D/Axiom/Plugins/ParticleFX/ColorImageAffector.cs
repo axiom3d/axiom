@@ -25,9 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using Axiom.ParticleSystems;
-using Axiom.Scripting;
-using Axiom.Media;
+using Axiom.Engine;
 
 namespace Axiom.ParticleFX
 {
@@ -36,7 +34,7 @@ namespace Axiom.ParticleFX
     /// </summary>
     public class ColorImageAffector : ParticleAffector
     {
-        protected Axiom.Media.Image colorImage;
+        protected Image colorImage;
         protected String colorImageName;
 
         public ColorImageAffector()
@@ -53,7 +51,7 @@ namespace Axiom.ParticleFX
             set
             {
                 colorImageName = value;
-                colorImage = Axiom.Media.Image.FromFile( value );
+                colorImage = Image.FromFile( value );
 
                 PixelFormat format = colorImage.Format;
 

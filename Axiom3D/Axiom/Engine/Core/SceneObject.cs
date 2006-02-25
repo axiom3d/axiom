@@ -26,11 +26,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using Axiom.Graphics;
-using Axiom.MathLib;
-using Axiom.Scripting;
 
-namespace Axiom.Core
+using Axiom.MathLib;
+
+namespace Axiom.Engine
 {
     /// <summary>
     ///		Abstract class definining a movable object in a scene.

@@ -1,10 +1,10 @@
 using System;
 using System.IO;
-using Axiom.Core;
+using Axiom.Engine;
 using Axiom.MathLib.Collections;
 using Tao.DevIl;
 
-namespace Axiom.Media
+namespace Axiom.Engine
 {
     /// <summary>
     ///    Base DevIL (OpenIL) implementation for loading images.

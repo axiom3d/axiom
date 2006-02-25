@@ -1,8 +1,6 @@
 using System;
-using Axiom.Animating;
-using Axiom.Collections;
+using Axiom.Engine;
 using Axiom.Core;
-using Axiom.Graphics;
 using Axiom.MathLib;
 
 namespace Axiom.Demos

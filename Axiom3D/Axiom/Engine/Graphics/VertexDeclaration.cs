@@ -28,7 +28,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-namespace Axiom.Graphics
+namespace Axiom.Engine
 {
     /// <summary>
     /// 	This class declares the format of a set of vertex inputs, which

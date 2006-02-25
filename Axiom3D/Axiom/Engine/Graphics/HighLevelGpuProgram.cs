@@ -27,10 +27,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 using System.IO;
-using Axiom.Core;
-using Axiom.Graphics;
 
-namespace Axiom.Graphics
+namespace Axiom.Engine
 {
     /// <summary>
     /// 	Abstract base class representing a high-level program (a vertex or

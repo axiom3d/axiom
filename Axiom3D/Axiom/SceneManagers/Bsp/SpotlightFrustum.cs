@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
-using Axiom.Core;
-using Axiom.Graphics;
+
+using Axiom.Engine;
 using Axiom.MathLib;
 
 namespace Axiom.SceneManagers.Bsp

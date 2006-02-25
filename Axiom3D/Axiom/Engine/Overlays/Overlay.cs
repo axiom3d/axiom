@@ -26,11 +26,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using Axiom.Core;
-using Axiom.MathLib;
-using Axiom.Graphics;
 
-namespace Axiom.Overlays
+using Axiom.MathLib;
+
+namespace Axiom.Engine
 {
     /// <summary>
     ///    Represents a layer which is rendered on top of the 'normal' scene contents.
