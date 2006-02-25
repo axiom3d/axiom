@@ -60,6 +60,10 @@ namespace Axiom.Core
         /// </summary>
         protected RenderQueueGroupID renderQueueID;
         /// <summary>
+        ///    Flags whether the RenderQueue's default should be used.
+        /// </summary>
+        protected bool renderQueueIDSet = false;
+        /// <summary>
         ///    Flags determining whether this object is included/excluded from scene queries.
         /// </summary>
         protected ulong queryFlags;
@@ -289,6 +293,7 @@ namespace Axiom.Core
             set
             {
                 renderQueueID = value;
+                renderQueueIDSet = true;
             }
         }
 
