@@ -12,11 +12,12 @@ namespace Axiom
             IEnumerator
                 enu = ParticleSystemManager.Instance.Emitters.Values.GetEnumerator();
 
+            if (typeof(K) != typeof(ParticleEmitterFactory) &&
+                !typeof(K).IsSubclassOf(typeof(ParticleEmitterFactory)))
+                throw new ArgumentOutOfRangeException("EmitterNamespaceExtender supports only ParticleEmitterFactory instances or descendants");
+
             while (enu.MoveNext())
-                if(enu.Current.GetType() == typeof(K) ||
-                    enu.Current.GetType().IsSubclassOf(typeof(K)) ||
-                    enu.Current.GetType().GetInterface(typeof(K).FullName) != null)
-                    yield return (K)enu.Current;
+                yield return (K)enu.Current;
         }
 
         public K GetObject<K>(string objectName)

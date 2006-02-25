@@ -65,6 +65,7 @@ namespace Axiom
             if (instance == null)
             {
                 instance = this;
+                Initialize();
             }
         }
 
@@ -208,15 +209,24 @@ namespace Axiom
 
         public bool Initialize()
         {
+            // prevent double init
+            if (_isInitialized)
+                return true;
+
+            Vfs.Instance.RegisterNamespace(new GPUProgramsNamespaceExtender());
+
             List<PluginMetadataAttribute> plugins =
                 PluginManager.Instance.RequestSubsystemPlugins(this);
 
             foreach (PluginMetadataAttribute pluginInfo in plugins)
             {
-                IPlugin plugin = PluginManager.Instance.GetPlugin(pluginInfo.Name);
+                IPlugin plugin = PluginManager.Instance.GetPlugin(
+                    pluginInfo.Name);
+
                 if (!plugin.IsStarted)
                     plugin.Start();
             }
+
             _isInitialized = true;
 
             return true;
