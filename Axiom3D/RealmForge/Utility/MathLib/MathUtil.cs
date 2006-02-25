@@ -65,7 +65,13 @@ namespace Axiom.MathLib
         #endregion
 
         #region Static Methods
-
+		public static bool RealEqual( float a, float b, float tolerance )
+		{
+			if (Math.Abs(b-a) <= tolerance)
+				return true;
+			else
+				return false;
+		}
         /// <summary>
         ///		Converts degrees to radians.
         /// </summary>
