@@ -108,7 +108,7 @@ namespace Axiom.RenderSystems.OpenGL {
 		}
 	
 		private void DefaultForm_Load(object sender, System.EventArgs e) {
-			this.Icon = new System.Drawing.Icon(Axiom.Core.ResourceManager.FindCommonResourceData("AxiomIcon.ico"));
+			this.Icon = new System.Drawing.Icon(Axiom.ResourceManager.FindCommonResourceData("AxiomIcon.ico"));
 		}
 	
 		/// <summary>
