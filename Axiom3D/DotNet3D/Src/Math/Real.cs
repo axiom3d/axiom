@@ -32,75 +32,167 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+// The Real datatype is actually one of these under the covers
+#if _REAL_AS_DOUBLE || !( _REAL_AS_SINGLE )
+using Numeric = System.Single;
+#else
+using Numeric = System.Double;
+#endif
+
 using System;
 using System.Runtime.InteropServices;
+using System.Security.Permissions;
 using System.Runtime.Serialization;
-
-// The Real datatype is actually one of these three under the covers
-using Numeric = System.Single;
-//using Numeric = System.Double;
-//using Numeric = System.Decimal;
 
 #endregion Namespace Declarations
 
 namespace DotNet3D.Math
 {
     /// <summary>
-    /// 
+    /// a floating point number abstraction allows the use of either a single-precision or double-precision floating point number
     /// </summary>
+    /// <remarks>
+    /// Use the _REAL_AS_DOUBLE condition compilation argument to use a double-precision value or
+    /// _REAL_AS_SINGLE to use a single-precision value.
+    /// </remarks>
     [StructLayout( LayoutKind.Sequential )]
     [Serializable]
-    public struct Real : ISerializable
+    public struct Real : ISerializable, IComparable<Real>
     {
         #region Fields
 
+        /// <summary>Internal storage for value</summary>
         private Numeric _value;
 
         #endregion Fields
 
         #region Static Interface
-        public readonly static Real PositiveInfinity = Numeric.PositiveInfinity;
-        public readonly static Real NegativeInfinity = Numeric.NegativeInfinity;
-        public readonly static Real NaN = Numeric.NaN;
 
+        /// <summary>The value of Positive Infinity</summary>
+        public readonly static Real PositiveInfinity = Numeric.PositiveInfinity;
+        /// <summary>The value of Negative Infinity</summary>
+        public readonly static Real NegativeInfinity = Numeric.NegativeInfinity;
+        /// <summary>Represents not a number</summary>
+        public readonly static Real NaN = Numeric.NaN;
+        /// <summary>The value of Epsilon</summary>
+        public readonly static Real Epsilon = Numeric.Epsilon;
+        /// <summary>The maximum possible value</summary>
+        public readonly static Real MaxValue = Numeric.MaxValue;
+        /// <summary>The minimum possible value</summary>
+        public readonly static Real MinValue = Numeric.MinValue;
+
+        /// <summary>
+        /// Returns a value indicating whether the specified number evaluates to positive infinity
+        /// </summary>
+        /// <param name="number">a floating point number</param>
+        /// <returns>a boolean</returns>
         public static bool IsPositiveInfinity( Real number )
         {
             return Numeric.IsPositiveInfinity( (Numeric)number );
         }
 
+        /// <summary>
+        /// Returns a value indicating whether the specified number evaluates to negative infinity
+        /// </summary>
+        /// <param name="number">a floating point number</param>
+        /// <returns>a boolean</returns>
         public static bool IsNegativeInfinity( Real number )
         {
             return Numeric.IsNegativeInfinity( (Numeric)number );
         }
 
+        /// <summary>
+        /// Returns a value indicating whether the specified number evaluates to negative infinity
+        /// </summary>
+        /// <param name="number">a floating point number</param>
+        /// <returns>a boolean</returns>
+        public static bool IsInfinity( Real number )
+        {
+            return Numeric.IsInfinity( (Numeric)number );
+        }
+
+        /// <summary>
+        /// Returns a value indicating whether the specified number evaluates to not a number
+        /// </summary>
+        /// <param name="number">a floating point number</param>
+        /// <returns>a boolean</returns>
         public static bool IsNaN( Real number )
         {
             return Numeric.IsNaN( (Numeric)number );
         }
+       
+        /// <overloads>
+        /// <summary>
+        /// converts a string representation of a number in a specified style and culture-specific format
+        /// to its floating point number equivilent
+        /// </summary>
+        /// <param name="value">a floating point number</param>
+        /// <exception cref="System.ArgumentException"  />
+        /// <exception cref="System.FormatException" />
+        /// <exception cref="System.ArgumentNullException" />
+        /// <returns>a Real</returns>
+        /// </overloads>
+        public static Real Parse( string value )
+        {
+            return new Real( Numeric.Parse( value ) );
+        }
+
+        /// <param name="value"></param>
+        /// <param name="provider"></param>
+        public static Real Parse( string value, IFormatProvider provider )
+        {
+            return new Real( Numeric.Parse( value, provider ) );
+        }
+
+        /// <param name="value"></param>
+        /// <param name="style"></param>
+        /// <param name="provider"></param>
+        public static Real Parse( string value, System.Globalization.NumberStyles style, IFormatProvider provider )
+        {
+            return new Real( Numeric.Parse( value, style, provider ) );
+        }
+
+        /// <param name="value">a floating point number</param>
+        /// <param name="style"></param>
+        public static Real Parse( string value, System.Globalization.NumberStyles style )
+        {
+            return new Real( Numeric.Parse( value, style) );
+        }
+
         #endregion Static Interface
 
         #region Constructors
 
+        /// <overloads>
+        /// <summary>
+        /// initializes a Real with a specified value
+        /// </summary>
+        /// </overloads>
+        /// <param name="value">an integer representation of the value to convert</param>
         public Real( int value )
         {
             this._value = value;
         }
 
+        /// <param name="value">a float representation of the value to convert</param>
         public Real( float value )
         {
             this._value = value;
         }
 
+        /// <param name="value">a double representation of the value to convert</param>
         public Real( double value )
         {
             this._value = (Numeric)value;
         }
 
+        /// <param name="value">a decimal representation of the value to convert</param>
         public Real( decimal value )
         {
             this._value = (Numeric)value;
         }
 
+        /// <param name="value">a string representation of the value to convert</param>
         public Real( string value )
         {
             this._value = Numeric.Parse( value );
@@ -124,7 +216,7 @@ namespace DotNet3D.Math
         /// <summary>
         /// Explicit conversion from Real to int
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="real"></param>
         /// <returns></returns>
         static public explicit operator int( Real real )
         {
@@ -146,7 +238,7 @@ namespace DotNet3D.Math
         /// <summary>
         /// Explicit conversion from Real to float
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="real"></param>
         /// <returns></returns>
         static public explicit operator float( Real real )
         {
@@ -168,7 +260,7 @@ namespace DotNet3D.Math
         /// <summary>
         /// Explicit conversion from Real to double
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="real"></param>
         /// <returns></returns>
         static public explicit operator double( Real real )
         {
@@ -190,7 +282,7 @@ namespace DotNet3D.Math
         /// <summary>
         /// Explicit conversion from Real to decimal
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="real"></param>
         /// <returns></returns>
         static public explicit operator decimal( Real real )
         {
@@ -213,7 +305,7 @@ namespace DotNet3D.Math
         /// <summary>
         /// Explicit conversion from Real to string
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="real"></param>
         /// <returns></returns>
         static public explicit operator string( Real real )
         {
@@ -225,6 +317,10 @@ namespace DotNet3D.Math
         #endregion Conversion Operators
 
         #region Operator Overrides
+
+        #region Logical Operators
+
+        #region Equality Operators
 
         /// <summary>
         /// Used to test equality between two Reals
@@ -247,6 +343,56 @@ namespace DotNet3D.Math
         {
             return ( left._value != right._value );
         }
+        #endregion Equality Operators
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static bool operator >( Real left, Real right )
+        {
+            return ( left._value > right._value );
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static bool operator <( Real left, Real right )
+        {
+            return ( left._value < right._value );
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static bool operator >=( Real left, Real right )
+        {
+            return ( left._value >= right._value );
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static bool operator <=( Real left, Real right )
+        {
+            return ( left._value <= right._value );
+        }
+
+
+        #endregion Logical Operators
+
+        #region Arithmatic Operators
 
         /// <summary>
         ///		Used when a Real is added to another Real.
@@ -259,7 +405,6 @@ namespace DotNet3D.Math
             return new Real( left._value + right._value );
         }
 
-
         /// <summary>
         ///		Used to subtract a Real from another Real.
         /// </summary>
@@ -271,16 +416,26 @@ namespace DotNet3D.Math
             return new Real( left._value - right._value );
         }
 
-
         /// <summary>
         ///		Used when a Real is multiplied by a Real.
         /// </summary>
         /// <param name="left"></param>
-        /// <param name="scalar"></param>
+        /// <param name="right"></param>
         /// <returns></returns>
         public static Real operator *( Real left, Real right )
         {
             return new Real( left._value * right._value );
+        }
+
+        /// <summary>
+        ///     Used when a Real is divided by a Real
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Real operator /( Real left, Real right )
+        {
+            return new Real( left._value / right._value );
         }
 
         /// <summary>
@@ -293,8 +448,11 @@ namespace DotNet3D.Math
             return new Real( -left._value );
         }
 
+        #endregion Arithmatic Operators
+
         #region CLSCompliant Methods
 
+        #region Arithmatic Operations
         /// <summary>
         ///		Used when a Real is added to another Real.
         /// </summary>
@@ -321,11 +479,22 @@ namespace DotNet3D.Math
         ///		Used when a Real is multiplied by a Real.
         /// </summary>
         /// <param name="left"></param>
-        /// <param name="scalar"></param>
+        /// <param name="right"></param>
         /// <returns></returns>
         public static Real Multiply( Real left, Real right )
         {
             return left * right;
+        }
+
+        /// <summary>
+        /// Used when a Real is divided by a Real.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Real Divide( Real left, Real right )
+        {
+            return left / right;
         }
 
         /// <summary>
@@ -338,22 +507,37 @@ namespace DotNet3D.Math
             return -left;
         }
 
+        #endregion Arithmatic Operations
+
         #endregion CLSCompliant Methods
 
         #endregion Operator Overrides
 
         #region System.Object Overrides
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return this._value.ToString();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             return ( obj is Real && this == (Real)obj );
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             return this._value.GetHashCode();
@@ -361,18 +545,24 @@ namespace DotNet3D.Math
 
         #endregion System.Object Overrides
 
-        public static Real Parse( string value )
-        {
-            return new Real( Numeric.Parse( value ) );
-        }
-
         #region ISerializable Implementation
 
-        public Real( SerializationInfo info, StreamingContext context )
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        private Real( SerializationInfo info, StreamingContext context )
         {
             _value = (Numeric)info.GetValue( "value", typeof( Numeric ) );
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
         public void GetObjectData( SerializationInfo info, StreamingContext context )
         {
             info.AddValue( "value", _value );
@@ -380,5 +570,18 @@ namespace DotNet3D.Math
 
         #endregion ISerializable Implementation
 
+        #region IComparable<Real> Members
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public int CompareTo( Real other )
+        {
+            return this._value.CompareTo( other._value );
+        }
+
+        #endregion
     }
 }
