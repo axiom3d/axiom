@@ -3747,7 +3747,7 @@ namespace Axiom.Core
                 }
 
                 // apply the animation
-                anim.Apply( animState.Time, animState.Weight, false, animState.FaceDirectionOfMotion );
+                anim.Apply( animState.Time, animState.Weight, false, 1.0F, animState.FaceDirectionOfMotion );
             }
         }
 

@@ -396,7 +396,7 @@ namespace Axiom.Animating
         public void Apply( float time, float weight, bool accumulate, float scale, bool lookInDirectionOfTranslation )
         {
             // call ApplyToNode with our target node
-            ApplyToNode( targetNode, time, weight, accumulate, 1.0, lookInDirectionOfTranslation );
+            ApplyToNode( targetNode, time, weight, accumulate, 1.0F, lookInDirectionOfTranslation );
         }
 
         /// <summary>
@@ -406,7 +406,7 @@ namespace Axiom.Animating
         public void Apply( float time )
         {
             // call overloaded method
-            Apply( time, 1.0f, false, 1.0, false );
+            Apply( time, 1.0f, false, 1.0F, false );
         }
 
         /// <summary>

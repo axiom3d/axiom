@@ -47,35 +47,37 @@ namespace Axiom.RenderSystems.DirectX9
         /// <summary>
         ///		Enumerates driver information and their supported display modes.
         /// </summary>
-        public static Driver GetDriverInfo()
+        public static DriverCollection GetDriverInfo()
         {
-            ArrayList driverList = new ArrayList();
+            DriverCollection driverList = new DriverCollection();
 
-            // get the information for the default adapter (not checking secondaries)
-            AdapterInformation adapterInfo = D3D.Manager.Adapters[0];
-
-            Driver driver = new Driver( adapterInfo );
-
-            int lastWidth = 0, lastHeight = 0;
-            D3D.Format lastFormat = 0;
-
-            foreach ( DisplayMode mode in adapterInfo.SupportedDisplayModes )
+            foreach ( AdapterInformation adapterInfo in D3D.Manager.Adapters )
             {
-                // filter out lower resolutions, and make sure this isnt a dupe (ignore variations on refresh rate)
-                if ( ( mode.Width >= 640 && mode.Height >= 480 ) &&
-                    ( ( mode.Width != lastWidth ) || mode.Height != lastHeight || mode.Format != lastFormat ) )
+                //AdapterInformation adapterInfo = D3D.Manager.Adapters[0];
+
+                Driver driver = new Driver( adapterInfo );
+
+                int lastWidth = 0, lastHeight = 0;
+                D3D.Format lastFormat = 0;
+
+                foreach ( DisplayMode mode in adapterInfo.SupportedDisplayModes )
                 {
-                    // add the video mode to the list
-                    driver.VideoModes.Add( new VideoMode( mode ) );
+                    // filter out lower resolutions, and make sure this isnt a dupe (ignore variations on refresh rate)
+                    if ( ( mode.Width >= 640 && mode.Height >= 480 ) &&
+                        ( ( mode.Width != lastWidth ) || mode.Height != lastHeight || mode.Format != lastFormat ) )
+                    {
+                        // add the video mode to the list
+                        driver.VideoModes.Add( new VideoMode( mode ) );
 
-                    // save current mode settings for comparison on the next iteraion
-                    lastWidth = mode.Width;
-                    lastHeight = mode.Height;
-                    lastFormat = mode.Format;
+                        // save current mode settings for comparison on the next iteraion
+                        lastWidth = mode.Width;
+                        lastHeight = mode.Height;
+                        lastFormat = mode.Format;
+                    }
                 }
+                driverList.Add( driver );
             }
-
-            return driver;
+            return driverList;
         }
 
         /// <summary>
