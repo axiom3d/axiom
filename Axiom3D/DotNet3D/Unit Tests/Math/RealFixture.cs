@@ -45,15 +45,15 @@ using TestMethod = NUnit.Framework.TestAttribute;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
-			
-namespace DotNet3D.UnitTests.VS
+
+namespace DotNet3D.Math.Tests
 {
     /// <summary>
     ///This is a test class for DotNet3D.Math.Real and is intended
     ///to contain all DotNet3D.Math.Real Unit Tests
     ///</summary>
     [TestClass()]
-    public class RealTest
+    public class RealFixture
     {
 
         #region Construction Tests
@@ -66,11 +66,12 @@ namespace DotNet3D.UnitTests.VS
         {
             decimal value = 3.1415926979m;
 
-            Real target = new Real( value );
+            Real actual = new Real( value );
             Real expected = value;
+            Type expectedType = typeof( Real );
 
-            Assert.IsInstanceOfType( target, typeof( Real ) );
-            Assert.AreEqual( expected, target );
+            Assert.IsInstanceOfType( expectedType, actual );
+            Assert.AreEqual( expected, actual );
         }
 
         /// <summary>
@@ -81,11 +82,12 @@ namespace DotNet3D.UnitTests.VS
         {
             double value = 3.1415926979;
 
-            Real target = new Real( value );
+            Real actual = new Real( value );
             Real expected = value;
+            Type expectedType = typeof( Real );
 
-            Assert.IsInstanceOfType( target, typeof( Real ) );
-            Assert.AreEqual( expected, target );
+            Assert.IsInstanceOfType( expectedType, actual );
+            Assert.AreEqual( expected, actual );
         }
 
         /// <summary>
@@ -96,11 +98,12 @@ namespace DotNet3D.UnitTests.VS
         {
             float value = 3.1415926979f;
 
-            Real target = new Real( value );
+            Real actual = new Real( value );
             Real expected = value;
+            Type expectedType = typeof( Real );
 
-            Assert.IsInstanceOfType( target, typeof( Real ) );
-            Assert.AreEqual( expected, target );
+            Assert.IsInstanceOfType( expectedType, actual );
+            Assert.AreEqual( expected, actual );
         }
 
         /// <summary>
@@ -111,11 +114,12 @@ namespace DotNet3D.UnitTests.VS
         {
             int value = 5;
 
-            Real target = new Real( value );
+            Real actual = new Real( value );
             Real expected = value;
+            Type expectedType = typeof( Real );
 
-            Assert.IsInstanceOfType( target, typeof( Real ) );
-            Assert.AreEqual( expected, target );
+            Assert.IsInstanceOfType( expectedType, actual );
+            Assert.AreEqual( expected, actual );
         }
 
         /// <summary>
@@ -126,11 +130,12 @@ namespace DotNet3D.UnitTests.VS
         {
             string value = "3.1415926979";
 
-            Real target = new Real( value );
+            Real actual = new Real( value );
             Real expected = value;
+            Type expectedType = typeof( Real );
 
-            Assert.IsInstanceOfType( target, typeof( Real ) );
-            Assert.AreEqual( expected, target );
+            Assert.IsInstanceOfType( expectedType, actual );
+            Assert.AreEqual( expected, actual );
         }
 
         #endregion Construction Tests
@@ -144,7 +149,7 @@ namespace DotNet3D.UnitTests.VS
         public void ConvertToFloat()
         {
             float expected = 10.45f;
-            Real real = new Real( expected ); 
+            Real real = new Real( expected );
 
             float actual;
 
@@ -412,7 +417,7 @@ namespace DotNet3D.UnitTests.VS
             Real actual = Real.Add( a, b );
             Real expected = 3.0;
 
-            Assert.Equals( actual, expected );
+            Assert.AreEqual( actual, expected );
         }
 
         [TestMethod]
@@ -423,7 +428,7 @@ namespace DotNet3D.UnitTests.VS
             Real actual = Real.Subtract( a, b );
             Real expected = 1.0;
 
-            Assert.Equals( actual, expected );
+            Assert.AreEqual( actual, expected );
         }
 
         [TestMethod]
