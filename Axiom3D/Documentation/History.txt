@@ -1,4 +1,15 @@
-2005-09-13 Michael Cummings [Borrillis]
+2005-09-21 Michael Cummings [Borrillis]
+- Fixed compile errors in DX and OpenGL Renderers, incomplete, but it compiles.
+  Hard coded the Autowindow settings to make things work. When I get to the RenderSystems, I'll fix this back up.
+
+Notes:
+	Was discussing some things on #Ogre3d, with wumpus, seems like the PlatformManagers are going to become extinct eventually
+	I think they make a great place to encapsulate the platform specific code and eliminate the compile time options in the
+	Renderers. e.g. The OpenGL Renderer can use either SDL or Win32, but in order to switch you have to flip some compile options
+	I think Ogre is trying to get it so that if you are compiling on unix it will configure itself to use the native unix methods
+	and do the same for the other platforms. Will need to think about how to proceed on this.
+	
+2005-09-20 Michael Cummings [Borrillis]
 - Testing CruiseControl.Net for CI Build Server
 
 2005-09-13 Michael Cummings [Borrillis]
