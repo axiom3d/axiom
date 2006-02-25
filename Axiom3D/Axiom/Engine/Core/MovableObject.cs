@@ -160,6 +160,23 @@ namespace Axiom
             }
         }
 
+
+		public SceneNode ParentSceneNode
+		{
+			get
+			{
+				if (parentIsTagPoint)
+				{
+					TagPoint tp = (TagPoint)parentNode;
+					return tp.ParentEntity.ParentSceneNode;
+				}
+				else
+				{
+					return (SceneNode)parentNode;
+				}
+			}
+		}
+
         /// <summary>
         ///		See if this object is attached to another node.
         /// </summary>
