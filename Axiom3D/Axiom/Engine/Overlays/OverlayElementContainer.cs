@@ -191,7 +191,8 @@ namespace Axiom
 			// Update children
 			for ( int i = 0; i < childList.Count; i++ )
 			{
-				( (OverlayElement)childList[i] ).NotifyViewport( );
+				OverlayElement overlayElement = (OverlayElement)childList[i];
+				overlayElement.NotifyViewport();
 			}
 		}
 

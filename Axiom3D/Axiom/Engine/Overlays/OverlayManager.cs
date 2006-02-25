@@ -30,7 +30,12 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using Axiom;
-
+#region Ogre Synchronization Information
+/// <ogresynchronization>
+///     <file name="OgreOverlayManager.h"   revision="1.23.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+///     <file name="OgreOverlayManager.cpp" revision="1.39.2.3" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
+#endregion
 namespace Axiom
 {
     /// <summary>
@@ -240,6 +245,7 @@ namespace Axiom
 
                 for ( int j = 0; j < files.Length; j++ )
                 {
+					
                     Stream data = archive.ReadFile( files[j] );
 
                     // parse the materials
@@ -293,10 +299,9 @@ namespace Axiom
 
             if ( isTemplate )
             {
-                // the first param = 'template' on a new child element
                 if ( parms[0] == "template" )
                 {
-                    skipParam++;
+                    skipParam++;// the first param = 'template' on a new child element
                 }
             }
 
@@ -334,6 +339,7 @@ namespace Axiom
 
                 ParseHelper.SkipToNextOpenBrace( script );
                 bool isContainer = ( parms[0 + skipParam] == "container" );
+				isContainer = true;
                 ParseNewElement( script, parms[1 + skipParam], parms[2 + skipParam], isContainer, overlay, isTemplate, templateName, parent );
             }
 
@@ -392,6 +398,7 @@ namespace Axiom
             string line;
             OverlayElement element = OverlayElementManager.Instance.CreateElementFromTemplate( templateName, type, name, isTemplate );
 
+			//if ( isContainer )
             if ( parent != null )
             {
                 // add this element to the parent container
@@ -414,7 +421,13 @@ namespace Axiom
                     }
                     else
                     {
-                        if ( isContainer && ParseChildren( script, line, overlay, isTemplate, (OverlayElementContainer)element ) )
+						OverlayElementContainer container = null;
+						if (element is OverlayElementContainer)
+						{
+							container = (OverlayElementContainer)element;
+						}
+                        //if ( isContainer && ParseChildren( script, line, overlay, isTemplate, (OverlayElementContainer)element ) )
+						if ( isContainer && ParseChildren( script, line, overlay, isTemplate, container ) )
                         {
                             // nested children, so don't reparse it
                         }
@@ -447,13 +460,16 @@ namespace Axiom
         {
             string line = "";
             Overlay overlay = null;
+			bool skipLine;
+			
 
             StreamReader script = new StreamReader( data, System.Text.Encoding.ASCII );
-
+			
             // keep reading the file until we hit the end
             while ( ( line = ParseHelper.ReadLine( script ) ) != null )
             {
                 bool isTemplate = false;
+				skipLine = false;
 
                 // ignore comments and blank lines
                 if ( line.Length > 0 && !line.StartsWith( "//" ) )
@@ -461,8 +477,29 @@ namespace Axiom
                     // does another overlay have to be included
                     if ( line.StartsWith( "#include" ) )
                     {
-                        // TODO Handle included overlays
-                        continue;
+
+
+						string[] parms = line.Split( ' ', '(', ')', '<', '>' );
+						// split on lines with a ) will have an extra blank array element, so lets get rid of it
+						if ( parms[parms.Length - 1].Length == 0 )
+						{
+							string[] tmp = new string[parms.Length - 1];
+							Array.Copy( parms, 0, tmp, 0, parms.Length - 1 );
+							parms = tmp;
+						}
+						string fileName = parms[2];
+
+//						FileStream fileStream = (FileStream)data;
+//						FileInfo fileInfo = new FileInfo(fileStream.Name);
+//						
+//						string fullName = fileInfo.DirectoryName + Path.DirectorySeparatorChar + fileName;
+//						
+//						FileStream file = File.OpenRead(fullName);
+//						this.ParseOverlayScript(file);
+
+						LoadAndParseOverlayFile(fileName);
+						// TODO Handle included overlays
+						continue;
                     }
 
                     if ( overlay == null )
@@ -477,13 +514,14 @@ namespace Axiom
                         {
                             // the line in this case should be the name of the overlay
                             overlay = (Overlay)Create( line );
+							//this is just telling the file name of the overlay
+							//overlay.Origin = (stream.Name);
                             // cause the next line (open brace) to be skipped
                             ParseHelper.SkipToNextOpenBrace( script );
-
-                            continue;
+							skipLine = true;
                         }
                     }
-                    if ( overlay != null || isTemplate )
+                    if (( overlay != null && !skipLine) || isTemplate )
                     {
                         // already in overlay
                         string[] parms = line.Split( ' ', '(', ')' );
