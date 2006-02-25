@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <DNPreBuild xmlns="http://dnpb.sourceforge.net/schemas/dnpb-1.4.xsd">
-	<Solution name="Axiom" activeConfig="Debug">
+	<Solution name="Axiom3D" activeConfig="Debug">
 		<Configuration name="Debug">
 			<Options>
 				<CompilerDefines>TRACE;DEBUG</CompilerDefines>
@@ -41,6 +41,7 @@
 		</Configuration>
 		<Files>
 			<Match path="Documentation" pattern="*.*"/>
+      		<Match path="." pattern="prebuild.xml" />
 		</Files>
 
 		<Project name="Axiom.Demos" path="Axiom\Demos" type="WinExe" rootNamespace="Axiom">
@@ -129,9 +130,9 @@
 			<ReferencePath>..\..\Dependencies\Managed</ReferencePath>
 
 			<Reference name="System" />
+      		<Reference name="System.Configuration" />
 			<Reference name="System.Data" />
 			<Reference name="System.Drawing" />
-			<Reference name="System.Configuration" />
 			<Reference name="System.Xml" />
 			<Reference name="RealmForge.Utility"/>
 			<Reference name="Tao.DevIl" />
