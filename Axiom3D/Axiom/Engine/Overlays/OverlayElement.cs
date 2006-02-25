@@ -2,10 +2,17 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
+using System.Drawing;
 
 using Axiom.MathLib;
 // This is coming from RealmForge.Utility
 using Axiom.Core;
+#region Ogre Synchronization Information
+/// <ogresynchronization>
+///     <file name="OgreOverlayElement.h"   revision="1.8" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+///     <file name="OgreOverlayElement.cpp" revision="1.11.2.3" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
+#endregion
 
 namespace Axiom
 {
@@ -40,16 +47,19 @@ namespace Axiom
         protected Material material;
         protected string text;
         protected ColorEx color;
+		protected Rectangle clippingRegion;
+		
         protected MetricsMode metricsMode;
         protected HorizontalAlignment horzAlign;
         protected VerticalAlignment vertAlign;
 
         // Pixel-mode positions, used in GMM_PIXELS mode.
-        protected int pixelTop;
-        protected int pixelLeft;
-        protected int pixelWidth;
-        protected int pixelHeight;
-
+        protected float pixelTop;
+        protected float pixelLeft;
+        protected float pixelWidth;
+        protected float pixelHeight;
+		protected float pixelScaleX;
+		protected float pixelScaleY;
         // parent container
         protected OverlayElementContainer parent;
         // overlay this element is attached to
@@ -58,13 +68,23 @@ namespace Axiom
         protected float derivedLeft, derivedTop;
         protected bool isDerivedOutOfDate;
         // Flag indicating if the vertex positons need recalculating
-        protected bool geomPositionsOutOfDate;
-
+        protected bool isGeomPositionsOutOfDate;
+		// Flag indicating if the vertex uvs need recalculating
+		protected bool isGeomUVsOutOfDate;
         // Zorder for when sending to render queue
         // Derived from parent
         protected int zOrder;
 
+		// world transforms
+		protected Matrix4[] xform = new Matrix4[256];
+
         protected bool isEnabled;
+
+		// is element initialised
+		protected bool isInitialised;
+
+		// Used to see if this element is created from a Template
+		protected OverlayElement sourceTemplate ;
         /// <summary>Parser method lookup for script parameters.</summary>
         protected Hashtable attribParsers = new Hashtable();
         protected LightList emptyLightList = new LightList();
@@ -83,15 +103,22 @@ namespace Axiom
             this.name = name;
             width = 1.0f;
             height = 1.0f;
+
             isVisible = true;
             isDerivedOutOfDate = true;
             isCloneable = true;
             metricsMode = MetricsMode.Relative;
             horzAlign = HorizontalAlignment.Left;
             vertAlign = VerticalAlignment.Top;
-            geomPositionsOutOfDate = true;
+            isGeomPositionsOutOfDate = true;
+			isGeomUVsOutOfDate = true;
             isEnabled = true;
-
+			pixelWidth = 1.0f;
+			pixelHeight = 1.0f;
+			pixelScaleX = 1.0f;
+			pixelScaleY = 1.0f;
+			sourceTemplate = null;
+			isInitialised = false;
             RegisterParsers();
         }
 
@@ -123,7 +150,13 @@ namespace Axiom
                 prop.SetValue( this, srcVal, null );
             }
         }
+		public OverlayElement Clone(string instanceName)
+		{
+			OverlayElement newElement = OverlayElementManager.Instance.CreateElement(Type, instanceName + "/" + name);
+			//copyParametersTo(newElement);
 
+			return newElement;
+		}
         /// <summary>
         ///    Hides an element if it is currently visible.
         /// </summary>
@@ -146,7 +179,13 @@ namespace Axiom
         {
             this.parent = parent;
             this.overlay = overlay;
-            isDerivedOutOfDate = true;
+
+			if (overlay != null && overlay.IsInitialized && !isInitialised)
+			{
+				Initialize();
+			}
+
+			isDerivedOutOfDate = true;
         }
 
         /// <summary>
@@ -166,12 +205,63 @@ namespace Axiom
             this.zOrder = zOrder;
         }
 
+
+		public virtual void NotifyWorldTransforms(Matrix4[] xform)
+		{
+			this.xform = xform;
+		}
+
+		public virtual void NotifyViewport()
+		{
+			switch (metricsMode)
+			{
+				case MetricsMode.Pixels:
+				{
+					float vpWidth, vpHeight;
+					OverlayManager oMgr = OverlayManager.Instance;
+					vpWidth = (float) (oMgr.ViewportWidth);
+					vpHeight = (float) (oMgr.ViewportHeight);
+
+					pixelScaleX = (int)(1.0 / vpWidth);
+					pixelScaleY = (int)(1.0 / vpHeight);
+				}
+					break;
+
+				case MetricsMode.Relative_Aspect_Adjusted:
+				{
+					float vpWidth, vpHeight;
+					OverlayManager oMgr = OverlayManager.Instance;
+					vpWidth = (float) (oMgr.ViewportWidth);
+					vpHeight = (float) (oMgr.ViewportHeight);
+
+					pixelScaleX = (int)(1.0 / (10000.0 * (vpWidth / vpHeight)));
+					pixelScaleY = (int)(1.0 /  10000.0);
+				}
+					break;
+
+				case MetricsMode.Relative:
+					pixelScaleX = 1.0f;
+					pixelScaleY = 1.0f;
+					pixelLeft = left;
+					pixelTop = top;
+					pixelWidth = width;
+					pixelHeight = height;
+					break;
+			}
+
+			left = pixelLeft * pixelScaleX;
+			top = pixelTop * pixelScaleY;
+			width = pixelWidth * pixelScaleX;
+			height = pixelHeight * pixelScaleY;
+
+			isGeomPositionsOutOfDate = true;
+		}
         /// <summary>
         ///    Tells this element to recaculate it's position.
         /// </summary>
         public virtual void PositionsOutOfDate()
         {
-            geomPositionsOutOfDate = true;
+            isGeomPositionsOutOfDate = true;
         }
 
         /// <summary>
@@ -211,7 +301,7 @@ namespace Axiom
         /// <param name="height"></param>
         public void SetDimensions( float width, float height )
         {
-            if ( metricsMode == MetricsMode.Pixels )
+            if ( metricsMode != MetricsMode.Relative )
             {
                 pixelWidth = (int)width;
                 pixelHeight = (int)height;
@@ -255,7 +345,7 @@ namespace Axiom
         /// <param name="top"></param>
         public void SetPosition( float left, float top )
         {
-            if ( metricsMode == MetricsMode.Pixels )
+            if ( metricsMode != MetricsMode.Relative )
             {
                 pixelLeft = (int)left;
                 pixelTop = (int)top;
@@ -283,29 +373,99 @@ namespace Axiom
         /// </summary>
         public virtual void Update()
         {
-            if ( metricsMode == MetricsMode.Pixels && ( OverlayManager.Instance.HasViewportChanged || geomPositionsOutOfDate ) )
-            {
-                float vpWidth = OverlayManager.Instance.ViewportWidth;
-                float vpHeight = OverlayManager.Instance.ViewportHeight;
+			// Check size if pixel-based
+			switch (this.metricsMode)
+			{
+				case MetricsMode.Pixels :
+					if (OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate)
+					{
+						float vpWidth, vpHeight;
+						OverlayManager oMgr = OverlayManager.Instance;
+						vpWidth = (float) (oMgr.ViewportWidth);
+						vpHeight = (float) (oMgr.ViewportHeight);
 
-                left = (float)pixelLeft / vpWidth;
-                width = (float)pixelWidth / vpWidth;
-                top = (float)pixelTop / vpHeight;
-                height = (float)pixelHeight / vpHeight;
-                geomPositionsOutOfDate = true;
-            }
+						pixelScaleX = 1.0f / vpWidth;
+						pixelScaleY = 1.0f / vpHeight;
 
-            // container subclasses will update children too
-            UpdateFromParent();
+						left = pixelLeft * pixelScaleX;
+						top = pixelTop * pixelScaleY;
+						width = pixelWidth * pixelScaleX;
+						height = pixelHeight * pixelScaleY;
+					}
+					break;
 
-            // update our own position geometry
-            if ( geomPositionsOutOfDate )
-            {
-                UpdatePositionGeometry();
-                geomPositionsOutOfDate = false;
-            }
+				case MetricsMode.Relative_Aspect_Adjusted :
+					if (OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate)
+					{
+						float vpWidth, vpHeight;
+						OverlayManager oMgr = OverlayManager.Instance;
+						vpWidth = (float) (oMgr.ViewportWidth);
+						vpHeight = (float) (oMgr.ViewportHeight);
+
+						pixelScaleX = 1.0f / (10000.0f * (vpWidth / vpHeight));
+						pixelScaleY = 1.0f /  10000.0f;
+
+						left = pixelLeft * pixelScaleX;
+						top = pixelTop * pixelScaleY;
+						width = pixelWidth * pixelScaleX;
+						height = pixelHeight * pixelScaleY;
+					}
+					break;
+				default:
+					break;
+			}
+
+			UpdateFromParent();
+			// NB container subclasses will update children too
+
+			// Tell self to update own position geometry
+			if (isGeomPositionsOutOfDate && isInitialised)
+			{
+				UpdatePositionGeometry();
+				isGeomPositionsOutOfDate = false;
+			}
+			// Tell self to update own texture geometry
+			if (isGeomUVsOutOfDate && isInitialised)
+			{
+
+				UpdateTextureGeometry();
+				isGeomPositionsOutOfDate = false;
+			}
         }
 
+		/// <summary>
+		/// Internal method which is triggered when the UVs of the element get updated,
+		/// meaning the element should be rebuilding it's mesh UVs. Abstract since
+		/// subclasses must implement this.
+		/// </summary>
+
+
+		/// <summary>
+		/// Returns true if xy is within the constraints of the component 
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
+		public virtual bool Contains(float x, float y)
+		{
+			return clippingRegion.Contains((int)x, (int)y);
+		}
+
+		/// <summary>
+		///  Returns true if xy is within the constraints of the component
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
+		public virtual OverlayElement FindElementAt(float x, float y)
+		{
+			OverlayElement ret = null;
+			if (Contains(x , y ))
+			{
+				ret = this;
+			}
+			return ret;
+		}
         /// <summary>
         ///    Updates this elements transform based on it's parent.
         /// </summary>
@@ -334,8 +494,22 @@ namespace Axiom
             else
             {
                 // with no real parent, the "parent" is actually the full viewport size
-                parentLeft = parentTop = 0.0f;
-                parentRight = parentBottom = 1.0f;
+//                parentLeft = parentTop = 0.0f;
+//                parentRight = parentBottom = 1.0f;
+
+
+				RenderSystem rSys = Root.Instance.RenderSystem;
+				OverlayManager oMgr = OverlayManager.Instance;
+
+				// Calculate offsets required for mapping texel origins to pixel origins in the
+				// current rendersystem
+				float hOffset = rSys.HorizontalTexelOffset / oMgr.ViewportWidth;
+				float vOffset = rSys.VerticalTexelOffset / oMgr.ViewportHeight;
+
+				parentLeft = 0.0f + hOffset;
+				parentTop = 0.0f + vOffset;
+				parentRight = 1.0f + hOffset;
+				parentBottom = 1.0f + vOffset;
             }
 
             // sort out position based on alignment
@@ -373,8 +547,124 @@ namespace Axiom
             }
 
             isDerivedOutOfDate = false;
+			if ( parent != null )
+			{
+				Rectangle parentRect;
+				Rectangle child;
+
+				parentRect = parent.ClippingRegion;
+
+				Rectangle childRect = new Rectangle((int)derivedLeft,(int)derivedTop,(int)width,(int)height);
+//				child.Left   = derivedLeft;
+//				child.Top    = derivedTop;
+//				child.Right  = derivedLeft + width;
+//				child.Bottom = derivedTop + height;
+
+				this.clippingRegion = Rectangle.Intersect(parentRect, childRect);
+			}
+			else
+			{
+				clippingRegion = new Rectangle((int)derivedLeft,(int)derivedTop,(int)width,(int)height);
+//				clippingRegion.Left   = derivedLeft;
+//				clippingRegion.Top    = derivedTop;
+//				clippingRegion.Right  = derivedLeft + width;
+//				clippingRegion.Bottom = derivedTop + height;
+			}
         }
 
+
+		
+		
+
+		/// <summary>
+		/// Sets the left of this element in relation to the screen (where 1.0 = screen width)
+		/// </summary>
+		/// <param name="left"></param>
+		/// <ogreequivilent>_setLeft</ogreequivilent>
+		public void ScreenLeft(float left)
+		{
+			this.left = left;
+			pixelLeft = left / pixelScaleX;
+
+			isDerivedOutOfDate = true;
+			PositionsOutOfDate();
+		}
+
+		/// <summary>
+		/// Sets the top of this element in relation to the screen (where 1.0 = screen width)
+		/// </summary>
+		/// <param name="top"></param>
+		/// <ogreequivilent>_setTop</ogreequivilent>
+		public void ScreenTop(float top)
+		{
+			this.top = top;
+			pixelTop = top / pixelScaleY;
+
+			isDerivedOutOfDate = true;
+			PositionsOutOfDate();
+		}
+
+		/// <summary>
+		/// Sets the width of this element in relation to the screen (where 1.0 = screen width)
+		/// </summary>
+		/// <param name="width"></param>
+		/// <ogreequivilent>_setWidth</ogreequivilent>
+		public void ScreenWidth(float width)
+		{
+			this.width = width;
+			pixelWidth = width / pixelScaleX;
+
+			isDerivedOutOfDate = true;
+			PositionsOutOfDate();
+		}
+		/// <summary>
+		/// Sets the height of this element in relation to the screen (where 1.0 = screen width)
+		/// </summary>
+		/// <param name="height"></param>
+		/// <ogreequivilent>_setHeight</ogreequivilent>
+		public void ScreenHeight(float height)
+		{
+			this.height = height;
+			pixelHeight = height / pixelScaleY;
+
+			isDerivedOutOfDate = true;
+			PositionsOutOfDate();
+		}
+
+		/// <summary>
+		/// Sets the left and top of this element in relation to the screen (where 1.0 = screen width)
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="top"></param>
+		/// <ogreequivilent>_setPosition</ogreequivilent>
+		public void ScreenPosition(float left, float top)
+		{
+			this.left = left;
+			this.top  = top;
+			pixelLeft = left / pixelScaleX;
+			pixelTop  = top / pixelScaleY;
+
+			isDerivedOutOfDate = true;
+			PositionsOutOfDate();
+		}
+
+
+		/// <summary>
+		/// Sets the width and height of this element in relation to the screen (where 1.0 = screen width)
+		/// </summary>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <ogreequivilent>_setDimensions</ogreequivilent>
+		public void ScreenDimensions(float width, float height)
+		{
+			width  = width;
+			height = height;
+			pixelWidth  = width / pixelScaleX;
+			pixelHeight = height / pixelScaleY;
+
+			isDerivedOutOfDate = true;
+			PositionsOutOfDate();
+		}
         /// <summary>
         ///    Internal method which is triggered when the positions of the element get updated,
         ///    meaning the element should be rebuilding it's mesh positions. Abstract since
@@ -382,6 +672,12 @@ namespace Axiom
         /// </summary>
         protected abstract void UpdatePositionGeometry();
 
+		/// <summary>
+		/// Internal method which is triggered when the UVs of the element get updated,
+		/// meaning the element should be rebuilding it's mesh UVs. Abstract since
+		/// subclasses must implement this.
+		/// </summary>
+		protected abstract void UpdateTextureGeometry();
         /// <summary>
         ///    Internal method to put the contents onto the render queue.
         /// </summary>
@@ -397,7 +693,16 @@ namespace Axiom
         #endregion
 
         #region Properties
-
+		/// <summary>
+		/// Gets the SourceTemplate for this element
+		/// </summary>
+		public OverlayElement SourceTemplate
+		{
+			get
+			{
+				return this.sourceTemplate;
+			}
+		}
         /// <summary>
         ///    Sets the color on elements that support it.
         /// </summary>
@@ -468,7 +773,7 @@ namespace Axiom
         {
             get
             {
-                if ( metricsMode == MetricsMode.Pixels )
+                if ( metricsMode != MetricsMode.Relative )
                 {
                     return pixelHeight;
                 }
@@ -479,7 +784,7 @@ namespace Axiom
             }
             set
             {
-                if ( metricsMode == MetricsMode.Pixels )
+                if ( metricsMode != MetricsMode.Relative )
                 {
                     pixelHeight = (int)value;
                 }
@@ -487,7 +792,7 @@ namespace Axiom
                 {
                     height = value;
                 }
-
+				this.isDerivedOutOfDate=true;
                 PositionsOutOfDate();
             }
         }
@@ -566,7 +871,7 @@ namespace Axiom
         {
             get
             {
-                if ( metricsMode == MetricsMode.Pixels )
+                if ( metricsMode != MetricsMode.Relative )
                 {
                     return pixelLeft;
                 }
@@ -577,7 +882,7 @@ namespace Axiom
             }
             set
             {
-                if ( metricsMode == MetricsMode.Pixels )
+                if ( metricsMode != MetricsMode.Relative )
                 {
                     pixelLeft = (int)value;
                 }
@@ -610,6 +915,9 @@ namespace Axiom
                     throw new Exception( string.Format( "Could not find material '{0}'.", materialName ) );
                 }
                 material.Load();
+				// Set some prerequisites to be sure
+				material.Lighting = false;
+				material.DepthCheck = false;
             }
         }
 
@@ -633,20 +941,68 @@ namespace Axiom
             }
             set
             {
-                metricsMode = value;
+                MetricsMode localMetricsMode = value;
+				switch (localMetricsMode)
+				{
+					case MetricsMode.Pixels :
+					{
+						float vpWidth, vpHeight;
+						OverlayManager oMgr = OverlayManager.Instance;
+						vpWidth = (float) (oMgr.ViewportWidth);
+						vpHeight = (float) (oMgr.ViewportHeight);
 
-                if ( metricsMode == MetricsMode.Pixels )
-                {
-                    // Copy settings into pixel versions
-                    // Relative versions will be derived at viewport change time
-                    pixelLeft = (int)left;
-                    pixelTop = (int)top;
-                    pixelWidth = (int)width;
-                    pixelHeight = (int)height;
-                }
+						pixelScaleX = 1.0f / vpWidth;
+						pixelScaleY = 1.0f / vpHeight;
 
-                isDerivedOutOfDate = true;
-                PositionsOutOfDate();
+						if (metricsMode == MetricsMode.Relative)
+						{
+							pixelLeft = left;
+							pixelTop = top;
+							pixelWidth = width;
+							pixelHeight = height;
+						}
+					}
+						break;
+
+					case MetricsMode.Relative_Aspect_Adjusted :
+					{
+						float vpWidth, vpHeight;
+						OverlayManager oMgr = OverlayManager.Instance;
+						vpWidth = (float) (oMgr.ViewportWidth);
+						vpHeight = (float) (oMgr.ViewportHeight);
+
+						pixelScaleX = 1.0f / (10000.0f * (vpWidth / vpHeight));
+						pixelScaleY = 1.0f /  10000.0f;
+
+						if (metricsMode == MetricsMode.Relative)
+						{
+							pixelLeft = left;
+							pixelTop = top;
+							pixelWidth = width;
+							pixelHeight = height;
+						}
+					}
+						break;
+
+					case MetricsMode.Relative :
+						pixelScaleX = 1.0f;
+						pixelScaleY = 1.0f;
+						pixelLeft = left;
+						pixelTop = top;
+						pixelWidth = width;
+						pixelHeight = height;
+						break;
+				}
+
+				left = pixelLeft * pixelScaleX;
+				top = pixelTop * pixelScaleY;
+				width = pixelWidth * pixelScaleX;
+				height = pixelHeight * pixelScaleY;
+
+
+				metricsMode = value;
+				isDerivedOutOfDate = true;
+				PositionsOutOfDate();
             }
         }
 
@@ -661,6 +1017,22 @@ namespace Axiom
             }
         }
 
+		/// <summary>
+		/// Gets the clipping region of the element
+		/// </summary>
+		public virtual Rectangle ClippingRegion
+		{
+			get
+			{
+				if (isDerivedOutOfDate)
+				{
+					UpdateFromParent();
+				}
+				return clippingRegion;
+			}
+		}
+
+
         /// <summary>
         ///    Gets the parent container of this element.
         /// </summary>
@@ -670,6 +1042,10 @@ namespace Axiom
             {
                 return parent;
             }
+			set
+			{
+				parent = value;
+			}
         }
 
         /// <summary>
@@ -678,6 +1054,7 @@ namespace Axiom
         /// <remarks>
         ///    Not all elements support this, but it is still a relevant base class property.
         /// </remarks>
+        ///<ogreequivilent>getCaption</ogreequivilent>
         public virtual string Text
         {
             get
@@ -698,7 +1075,7 @@ namespace Axiom
         {
             get
             {
-                if ( metricsMode == MetricsMode.Pixels )
+                if ( metricsMode != MetricsMode.Relative )
                 {
                     return pixelTop;
                 }
@@ -709,7 +1086,7 @@ namespace Axiom
             }
             set
             {
-                if ( metricsMode == MetricsMode.Pixels )
+                if ( metricsMode != MetricsMode.Relative )
                 {
                     pixelTop = (int)value;
                 }
@@ -768,7 +1145,7 @@ namespace Axiom
         {
             get
             {
-                if ( metricsMode == MetricsMode.Pixels )
+                if ( metricsMode != MetricsMode.Relative )
                 {
                     return pixelWidth;
                 }
@@ -779,7 +1156,7 @@ namespace Axiom
             }
             set
             {
-                if ( metricsMode == MetricsMode.Pixels )
+                if ( metricsMode != MetricsMode.Relative )
                 {
                     pixelWidth = (int)value;
                 }
@@ -787,7 +1164,7 @@ namespace Axiom
                 {
                     width = value;
                 }
-
+				this.isDerivedOutOfDate=true;
                 PositionsOutOfDate();
             }
         }
@@ -853,7 +1230,20 @@ namespace Axiom
         {
             overlay.GetWorldTransforms( matrices );
         }
+			
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		public Quaternion GetWorldOrientation()
+		{
+			return overlay.GetWorldOrientation();
+		}
 
+		public Vector3 GetWorldPosition()
+		{
+			return overlay.GetWorldPosition();
+		}
         /// <summary>
         /// 
         /// </summary>

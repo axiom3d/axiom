@@ -29,6 +29,12 @@ using System.Collections;
 using System.Runtime.InteropServices;
 
 using Axiom.MathLib;
+#region Ogre Synchronization Information
+/// <ogresynchronization>
+///     <file name="OgreBorderPanelOverlayElement.h"   revision="1.6.2.3" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+///     <file name="OgreBorderPanelOverlayElement.cpp" revision="1.10" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
+#endregion
 
 namespace Axiom
 {
@@ -55,6 +61,8 @@ namespace Axiom
         protected float rightBorderSize;
         protected float topBorderSize;
         protected float bottomBorderSize;
+
+		protected CellUV[] borderUV = new CellUV[8];
 
         protected short pixelLeftBorderSize;
         protected short pixelRightBorderSize;
@@ -90,103 +98,220 @@ namespace Axiom
         internal BorderPanel( string name )
             : base( name )
         {
+			for (int x = 0; x < 8;x++)
+			{
+				borderUV[x] = new CellUV();
+			}
         }
 
         #endregion
 
         #region Methods
+		protected override void UpdateTextureGeometry()
+		{
+			/* Each cell is
+				0-----2
+				|    /|
+				|  /  |
+				|/    |
+				1-----3
+			*/
+			
+			// No choice but to lock / unlock each time here, but lock only small sections
+		    
+			HardwareVertexBuffer vbuf =
+				renderOp2.vertexData.vertexBufferBinding.GetBuffer(BorderPanel.TEXCOORDS);
+			// Can't use discard since this discards whole buffer
+			IntPtr data = vbuf.Lock( BufferLocking.Discard );
+			int index = 0;
+			unsafe
+			{
+				float* idxPtr = (float*)data.ToPointer();
+
+				for ( short i = 0; i < 8; i++ )
+				{
+					idxPtr[index++] = borderUV[i].u1; idxPtr[index++] = borderUV[i].v1;
+					idxPtr[index++] = borderUV[i].u1; idxPtr[index++] = borderUV[i].v2;
+					idxPtr[index++] = borderUV[i].u2; idxPtr[index++] = borderUV[i].v1;
+					idxPtr[index++] = borderUV[i].u2; idxPtr[index++] = borderUV[i].v2;
+
+				}
+			}
+
+			vbuf.Unlock();
+			
+		}
+
+
+		public void SetLeftBorderUV(float u1, float v1, float u2, float v2)
+		{
+			borderUV[(int)BorderCell.Left].u1 = u1; 
+			borderUV[(int)BorderCell.Left].u2 = u2; 
+			borderUV[(int)BorderCell.Left].v1 = v1; 
+			borderUV[(int)BorderCell.Left].v2 = v2; 
+			isGeomUVsOutOfDate = true;
+		}
+		//---------------------------------------------------------------------
+		public void SetRightBorderUV(float u1, float v1, float u2, float v2)
+		{
+			borderUV[(int)BorderCell.Right].u1 = u1; 
+			borderUV[(int)BorderCell.Right].u2 = u2; 
+			borderUV[(int)BorderCell.Right].v1 = v1; 
+			borderUV[(int)BorderCell.Right].v2 = v2; 
+			isGeomUVsOutOfDate = true;
+		}
+		//---------------------------------------------------------------------
+		public void SetTopBorderUV(float u1, float v1, float u2, float v2)
+		{
+			borderUV[(int)BorderCell.Top].u1 = u1; 
+			borderUV[(int)BorderCell.Top].u2 = u2; 
+			borderUV[(int)BorderCell.Top].v1 = v1; 
+			borderUV[(int)BorderCell.Top].v2 = v2; 
+			isGeomUVsOutOfDate = true;
+		}
+		//---------------------------------------------------------------------
+		public void SetBottomBorderUV(float u1, float v1, float u2, float v2)
+		{
+			borderUV[(int)BorderCell.Bottom].u1 = u1; 
+			borderUV[(int)BorderCell.Bottom].u2 = u2; 
+			borderUV[(int)BorderCell.Bottom].v1 = v1; 
+			borderUV[(int)BorderCell.Bottom].v2 = v2; 
+			isGeomUVsOutOfDate = true;
+		}
+		//---------------------------------------------------------------------
+		public void SetTopLeftBorderUV(float u1, float v1, float u2, float v2)
+		{
+			borderUV[(int)BorderCell.TopLeft].u1 = u1; 
+			borderUV[(int)BorderCell.TopLeft].u2 = u2; 
+			borderUV[(int)BorderCell.TopLeft].v1 = v1; 
+			borderUV[(int)BorderCell.TopLeft].v2 = v2; 
+			isGeomUVsOutOfDate = true;
+		}
+		//---------------------------------------------------------------------
+		public void SetTopRightBorderUV(float u1, float v1, float u2, float v2)
+		{
+			borderUV[(int)BorderCell.TopRight].u1 = u1; 
+			borderUV[(int)BorderCell.TopRight].u2 = u2; 
+			borderUV[(int)BorderCell.TopRight].v1 = v1; 
+			borderUV[(int)BorderCell.TopRight].v2 = v2; 
+			isGeomUVsOutOfDate = true;
+		}
+		//---------------------------------------------------------------------
+		public void SetBottomLeftBorderUV(float u1, float v1, float u2, float v2)
+		{
+			borderUV[(int)BorderCell.BottomLeft].u1 = u1; 
+			borderUV[(int)BorderCell.BottomLeft].u2 = u2; 
+			borderUV[(int)BorderCell.BottomLeft].v1 = v1; 
+			borderUV[(int)BorderCell.BottomLeft].v2 = v2; 
+			isGeomUVsOutOfDate = true;
+		}
+		//---------------------------------------------------------------------
+		public void SetBottomRightBorderUV(float u1, float v1, float u2, float v2)
+		{
+			borderUV[(int)BorderCell.BottomRight].u1 = u1; 
+			borderUV[(int)BorderCell.BottomRight].u2 = u2; 
+			borderUV[(int)BorderCell.BottomRight].v1 = v1; 
+			borderUV[(int)BorderCell.BottomRight].v2 = v2; 
+			isGeomUVsOutOfDate = true;
+		}
 
         /// <summary>
         ///    Override from Panel.
         /// </summary>
         public override void Initialize()
         {
+			bool init = !isInitialised;
             base.Initialize();
 
-            // base class already has added the center panel at this point, so lets create the borders
-            renderOp2.vertexData = new VertexData();
-            // 8 * 4, cant resuse vertices because they might not share same tex coords
-            renderOp2.vertexData.vertexCount = 32;
-            renderOp2.vertexData.vertexStart = 0;
+			// superclass will handle the interior panel area 
+			if (init)
+			{
+				// base class already has added the center panel at this point, so lets create the borders
+				renderOp2.vertexData = new VertexData();
+				// 8 * 4, cant resuse vertices because they might not share same tex coords
+				renderOp2.vertexData.vertexCount = 32;
+				renderOp2.vertexData.vertexStart = 0;
 
-            // get a reference to the vertex declaration
-            VertexDeclaration decl = renderOp2.vertexData.vertexDeclaration;
-            // Position and texture coords each have their own buffers to allow
-            // each to be edited separately with the discard flag
-            decl.AddElement( POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position );
-            decl.AddElement( TEXCOORDS, 0, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
+				// get a reference to the vertex declaration
+				VertexDeclaration decl = renderOp2.vertexData.vertexDeclaration;
+				// Position and texture coords each have their own buffers to allow
+				// each to be edited separately with the discard flag
+				decl.AddElement( POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position );
+				decl.AddElement( TEXCOORDS, 0, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 
-            // position buffer
-            HardwareVertexBuffer buffer =
-                HardwareBufferManager.Instance.CreateVertexBuffer(
-                    decl.GetVertexSize( POSITION ),
-                    renderOp2.vertexData.vertexCount,
-                    BufferUsage.StaticWriteOnly );
+				// position buffer
+				HardwareVertexBuffer buffer =
+					HardwareBufferManager.Instance.CreateVertexBuffer(
+					decl.GetVertexSize( POSITION ),
+					renderOp2.vertexData.vertexCount,
+					BufferUsage.StaticWriteOnly );
 
-            // bind position
-            VertexBufferBinding binding = renderOp2.vertexData.vertexBufferBinding;
-            binding.SetBinding( POSITION, buffer );
+				// bind position
+				VertexBufferBinding binding = renderOp2.vertexData.vertexBufferBinding;
+				binding.SetBinding( POSITION, buffer );
 
-            // texcoord buffer
-            buffer =
-                HardwareBufferManager.Instance.CreateVertexBuffer(
-                decl.GetVertexSize( TEXCOORDS ),
-                renderOp2.vertexData.vertexCount,
-                BufferUsage.StaticWriteOnly );
+				// texcoord buffer
+				buffer =
+					HardwareBufferManager.Instance.CreateVertexBuffer(
+					decl.GetVertexSize( TEXCOORDS ),
+					renderOp2.vertexData.vertexCount,
+					BufferUsage.StaticWriteOnly,true );
 
-            // bind texcoords
-            binding = renderOp2.vertexData.vertexBufferBinding;
-            binding.SetBinding( TEXCOORDS, buffer );
+				// bind texcoords
+				binding = renderOp2.vertexData.vertexBufferBinding;
+				binding.SetBinding( TEXCOORDS, buffer );
 
-            renderOp2.operationType = OperationType.TriangleList;
-            renderOp2.useIndices = true;
+				renderOp2.operationType = OperationType.TriangleList;
+				renderOp2.useIndices = true;
 
-            // index data
-            renderOp2.indexData = new IndexData();
-            // 8 * 3 * 2 = 8 vertices, 3 indices per tri, 2 tris
-            renderOp2.indexData.indexCount = 48;
-            renderOp2.indexData.indexStart = 0;
+				// index data
+				renderOp2.indexData = new IndexData();
+				// 8 * 3 * 2 = 8 vertices, 3 indices per tri, 2 tris
+				renderOp2.indexData.indexCount = 48;
+				renderOp2.indexData.indexStart = 0;
 
-            /* Each cell is
-                0-----2
-                |    /|
-                |  /  |
-                |/    |
-                1-----3
-            */
+				/* Each cell is
+					0-----2
+					|    /|
+					|  /  |
+					|/    |
+					1-----3
+				*/
 
-            // create a new index buffer
-            renderOp2.indexData.indexBuffer =
-                HardwareBufferManager.Instance.CreateIndexBuffer(
-                    IndexType.Size16,
-                    renderOp2.indexData.indexCount,
-                    BufferUsage.StaticWriteOnly );
+				// create a new index buffer
+				renderOp2.indexData.indexBuffer =
+					HardwareBufferManager.Instance.CreateIndexBuffer(
+					IndexType.Size16,
+					renderOp2.indexData.indexCount,
+					BufferUsage.StaticWriteOnly );
 
-            // lock this bad boy
-            IntPtr data = renderOp2.indexData.indexBuffer.Lock( BufferLocking.Discard );
-            int index = 0;
-            unsafe
-            {
-                short* idxPtr = (short*)data.ToPointer();
+				// lock this bad boy
+				IntPtr data = renderOp2.indexData.indexBuffer.Lock( BufferLocking.Discard );
+				int index = 0;
+				unsafe
+				{
+					short* idxPtr = (short*)data.ToPointer();
 
-                for ( short cell = 0; cell < 8; cell++ )
-                {
-                    short val = (short)( cell * 4 );
-                    idxPtr[index++] = val;
-                    idxPtr[index++] = (short)( val + 1 );
-                    idxPtr[index++] = (short)( val + 2 );
+					for ( short cell = 0; cell < 8; cell++ )
+					{
+						short val = (short)( cell * 4 );
+						idxPtr[index++] = val;
+						idxPtr[index++] = (short)( val + 1 );
+						idxPtr[index++] = (short)( val + 2 );
 
-                    idxPtr[index++] = (short)( val + 2 );
-                    idxPtr[index++] = (short)( val + 1 );
-                    idxPtr[index++] = (short)( val + 3 );
-                }
-            }
+						idxPtr[index++] = (short)( val + 2 );
+						idxPtr[index++] = (short)( val + 1 );
+						idxPtr[index++] = (short)( val + 3 );
+					}
+				}
 
-            // unlock the buffer
-            renderOp2.indexData.indexBuffer.Unlock();
+				// unlock the buffer
+				renderOp2.indexData.indexBuffer.Unlock();
 
-            // create new seperate object for the panels since they have a different material
-            borderRenderable = new BorderRenderable( this );
+				// create new seperate object for the panels since they have a different material
+				borderRenderable = new BorderRenderable( this );
+				isInitialised = true;
+			}
         }
 
         /// <summary>
@@ -205,7 +330,7 @@ namespace Axiom
         /// </param>
         public void SetBorderSize( float size )
         {
-            if ( metricsMode == MetricsMode.Pixels )
+            if ( metricsMode != MetricsMode.Relative )
             {
                 pixelTopBorderSize = pixelRightBorderSize = pixelLeftBorderSize = pixelBottomBorderSize = (short)size;
             }
@@ -213,6 +338,7 @@ namespace Axiom
             {
                 topBorderSize = rightBorderSize = leftBorderSize = bottomBorderSize = size;
             }
+			isGeomPositionsOutOfDate = true;
         }
 
         /// <summary>
@@ -230,16 +356,17 @@ namespace Axiom
         /// <param name="topAndBottom">The size of the top and bottom borders as a factor of the screen dimensions.</param>
         public void SetBorderSize( float sides, float topAndBottom )
         {
-            if ( metricsMode == MetricsMode.Pixels )
+            if ( metricsMode != MetricsMode.Relative )
             {
-                pixelTopBorderSize = pixelBottomBorderSize = (short)topAndBottom;
                 pixelRightBorderSize = pixelLeftBorderSize = (short)sides;
+				pixelTopBorderSize = pixelBottomBorderSize = (short)topAndBottom;
             }
             else
             {
                 topBorderSize = bottomBorderSize = topAndBottom;
                 rightBorderSize = leftBorderSize = sides;
             }
+			isGeomPositionsOutOfDate = true;
         }
 
         /// <summary>
@@ -259,7 +386,7 @@ namespace Axiom
         /// <param name="bottom">The size of the bottom border as a factor of the screen dimensions.</param>
         public void SetBorderSize( float left, float right, float top, float bottom )
         {
-            if ( metricsMode == MetricsMode.Pixels )
+            if ( metricsMode != MetricsMode.Relative )
             {
                 pixelTopBorderSize = (short)top;
                 pixelBottomBorderSize = (short)bottom;
@@ -273,6 +400,7 @@ namespace Axiom
                 rightBorderSize = right;
                 leftBorderSize = left;
             }
+			isGeomPositionsOutOfDate = true;
         }
 
         /// <summary>
@@ -330,22 +458,17 @@ namespace Axiom
         /// </summary>
         public override void Update()
         {
-            base.Update();
-
-            if ( metricsMode == MetricsMode.Pixels &&
-                ( OverlayManager.Instance.HasViewportChanged || geomPositionsOutOfDate ) )
+            if ( metricsMode != MetricsMode.Relative &&
+                ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate ) )
             {
-                // Recalc border size
-                float vpWidth, vpHeight;
-                vpWidth = OverlayManager.Instance.ViewportWidth;
-                vpHeight = OverlayManager.Instance.ViewportHeight;
 
-                leftBorderSize = (float)pixelLeftBorderSize / vpWidth;
-                rightBorderSize = (float)pixelRightBorderSize / vpWidth;
-                topBorderSize = (float)pixelTopBorderSize / vpHeight;
-                bottomBorderSize = (float)pixelBottomBorderSize / vpHeight;
-                geomPositionsOutOfDate = true;
+				leftBorderSize = pixelLeftBorderSize * pixelScaleX;
+				rightBorderSize = pixelRightBorderSize * pixelScaleX;
+				topBorderSize = pixelTopBorderSize * pixelScaleY;
+				bottomBorderSize = pixelBottomBorderSize * pixelScaleY;
+				isGeomPositionsOutOfDate = true;
             }
+			base.Update();
         }
 
         /// <summary>
@@ -387,6 +510,9 @@ namespace Axiom
             // lock this bad boy
             IntPtr data = buffer.Lock( BufferLocking.Discard );
             int index = 0;
+
+			//float zValue = Root.Instance.RenderSystem.MaximumDepthInputValue;
+			float zValue = -1;
             unsafe
             {
                 float* posPtr = (float*)data.ToPointer();
@@ -394,19 +520,19 @@ namespace Axiom
                 {
                     posPtr[index++] = lefts[cell];
                     posPtr[index++] = tops[cell];
-                    posPtr[index++] = -1;
+                    posPtr[index++] = zValue;
 
                     posPtr[index++] = lefts[cell];
                     posPtr[index++] = bottoms[cell];
-                    posPtr[index++] = -1;
+                    posPtr[index++] = zValue;
 
                     posPtr[index++] = rights[cell];
                     posPtr[index++] = tops[cell];
-                    posPtr[index++] = -1;
+                    posPtr[index++] = zValue;
 
                     posPtr[index++] = rights[cell];
                     posPtr[index++] = bottoms[cell];
-                    posPtr[index++] = -1;
+                    posPtr[index++] = zValue;
                 } // for
             } // unsafe
 
@@ -426,19 +552,19 @@ namespace Axiom
 
                 posPtr[index++] = lefts[1];
                 posPtr[index++] = tops[3];
-                posPtr[index++] = -1;
+                posPtr[index++] = zValue;
 
                 posPtr[index++] = lefts[1];
                 posPtr[index++] = bottoms[3];
-                posPtr[index++] = -1;
+                posPtr[index++] = zValue;
 
                 posPtr[index++] = rights[1];
                 posPtr[index++] = tops[3];
-                posPtr[index++] = -1;
+                posPtr[index++] = zValue;
 
                 posPtr[index++] = rights[1];
                 posPtr[index++] = bottoms[3];
-                posPtr[index++] = -1;
+                posPtr[index++] = zValue;
             }
 
             // unlock the buffer to finish
@@ -477,7 +603,14 @@ namespace Axiom
         {
             get
             {
-                return leftBorderSize;
+				if ( metricsMode == MetricsMode.Pixels )
+				{
+					return pixelLeftBorderSize;
+				}
+				else
+				{
+					return leftBorderSize;
+				}
             }
         }
 
@@ -488,7 +621,14 @@ namespace Axiom
         {
             get
             {
-                return rightBorderSize;
+				if ( metricsMode == MetricsMode.Pixels )
+				{
+					return pixelRightBorderSize;
+				}
+				else
+				{
+					return rightBorderSize;
+				}
             }
         }
 
@@ -499,7 +639,14 @@ namespace Axiom
         {
             get
             {
-                return topBorderSize;
+				if ( metricsMode == MetricsMode.Pixels )
+				{
+					return pixelTopBorderSize;
+				}
+				else
+				{
+					return topBorderSize;
+				}
             }
         }
 
@@ -510,7 +657,15 @@ namespace Axiom
         {
             get
             {
-                return bottomBorderSize;
+                
+				if ( metricsMode == MetricsMode.Pixels )
+				{
+					return pixelBottomBorderSize;
+				}
+				else
+				{
+					return bottomBorderSize;
+				}
             }
         }
 
@@ -533,9 +688,18 @@ namespace Axiom
                     throw new Exception( string.Format( "Could not find material '{0}'.", borderMaterialName ) );
                 }
                 borderMaterial.Load();
+				// Set some prerequisites to be sure
+				borderMaterial.Lighting=(false);
+				borderMaterial.DepthCheck=(false);
             }
         }
-
+		public override string Type
+		{
+			get
+			{
+				return "BorderPanel";
+			}
+		}
         /// <summary>
         ///    Override of Panel.
         /// </summary>
@@ -549,7 +713,7 @@ namespace Axiom
             {
                 base.MetricsMode = value;
 
-                if ( value == MetricsMode.Pixels )
+                if ( value != MetricsMode.Relative )
                 {
                     pixelBottomBorderSize = (short)bottomBorderSize;
                     pixelLeftBorderSize = (short)leftBorderSize;
@@ -689,7 +853,10 @@ namespace Axiom
         #endregion Script parser methods
 
         #endregion
-
+		public class CellUV 
+		{
+			public float u1, v1, u2, v2;
+		};
         /// <summary>
         ///    Class for rendering the border of a BorderPanel.
         /// </summary>

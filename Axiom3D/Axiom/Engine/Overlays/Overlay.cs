@@ -24,10 +24,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+
+#region Namespace Declarations
 using System;
 using System.Collections;
 
 using Axiom.MathLib;
+#endregion
+
+
+
+#region Ogre Synchronization Information
+/// <ogresynchronization>
+///     <file name="OgreOverlay.h"   revision="1.26.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+///     <file name="OgreOverlay.cpp" revision="1.31" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
+#endregion
 
 namespace Axiom
 {
@@ -60,10 +72,11 @@ namespace Axiom
     public class Overlay : Resource
     {
         #region Member variables
-
-        protected int zOrder;
-        protected bool isVisible;
-        protected SceneNode rootNode;
+		/// <summary>
+		/// Internal root node, used as parent for 3D objects
+		/// </summary>
+		protected SceneNode rootNode;
+        
         /// <summary>2D element list.</summary>
         protected ArrayList elementList = new ArrayList();
         protected Hashtable elementLookup = new Hashtable();
@@ -75,6 +88,12 @@ namespace Axiom
         protected float scaleX, scaleY;
         protected Matrix4 transform = Matrix4.Identity;
         protected bool isTransformOutOfDate;
+		protected bool isTransformUpdated;
+
+		protected int zOrder;
+		protected bool isVisible;
+		protected bool isInitialised;
+		protected string origin;
 
         #endregion Member variables
 
@@ -90,7 +109,9 @@ namespace Axiom
             this.scaleX = 1.0f;
             this.scaleY = 1.0f;
             this.isTransformOutOfDate = true;
+			this.isTransformUpdated = true;
             this.zOrder = 100;
+			this.isInitialised = false;
             rootNode = new SceneNode( null );
         }
 
@@ -121,6 +142,14 @@ namespace Axiom
             // Set Z order, scaled to separate overlays
             // max 100 container levels per overlay, should be plenty
             element.NotifyZOrder( zOrder * 100 );
+
+			Matrix4[] xform = new Matrix4[256];
+			GetWorldTransforms(xform);
+
+			element.NotifyWorldTransforms(xform);
+			element.NotifyViewport();
+
+
         }
 
         /// <summary>
@@ -176,32 +205,84 @@ namespace Axiom
         /// <param name="queue">Current render queue.</param>
         public void FindVisibleObjects( Camera camera, RenderQueue queue )
         {
-            if ( !isVisible )
-            {
-                return;
-            }
 
-            // add 3d elements
-            rootNode.Position = camera.DerivedPosition;
-            rootNode.Orientation = camera.DerivedOrientation;
-            rootNode.Update( true, false );
+			if (OverlayManager.Instance.HasViewportChanged)
+			{
 
-            // set up the default queue group for the objects about to be added
-            RenderQueueGroupID oldGroupID = queue.DefaultRenderGroup;
-            queue.DefaultRenderGroup = RenderQueueGroupID.Overlay;
-            rootNode.FindVisibleObjects( camera, queue, true, false );
-            // reset the group
-            queue.DefaultRenderGroup = oldGroupID;
+				for ( int i = 0; i < elementList.Count; i++ )
+				{
+					OverlayElementContainer container = (OverlayElementContainer)elementList[i];
+					container.NotifyViewport();
+				}
+			}
+			// update elements
+			if (isTransformUpdated)
+			{
+				Matrix4[] xform = new Matrix4[256];
+				GetWorldTransforms(xform);
+				for ( int i = 0; i < elementList.Count; i++ )
+				{
+					OverlayElementContainer container = (OverlayElementContainer)elementList[i];
+					container.NotifyWorldTransforms(xform);
+				}
+			}
 
-            // add 2d elements
-            for ( int i = 0; i < elementList.Count; i++ )
-            {
-                OverlayElementContainer container = (OverlayElementContainer)elementList[i];
-                container.Update();
-                container.UpdateRenderQueue( queue );
-            }
+			if (isVisible)
+			{
+				// add 3d elements
+				rootNode.Position = camera.DerivedPosition;
+				rootNode.Orientation = camera.DerivedOrientation;
+				rootNode.Update( true, false );
+
+				// set up the default queue group for the objects about to be added
+				RenderQueueGroupID oldGroupID = queue.DefaultRenderGroup;
+				ushort oldPriority = queue.DefaultRenderablePriority;
+				queue.DefaultRenderGroup = RenderQueueGroupID.Overlay;
+				queue.DefaultRenderablePriority = (ushort)((zOrder*100)-1);
+
+				rootNode.FindVisibleObjects( camera, queue, true, false );
+				// reset the group
+				queue.DefaultRenderGroup = oldGroupID;
+				//queue.DefaultRenderablePriority = (oldPriority);
+	
+
+				// add 2d elements
+				for ( int i = 0; i < elementList.Count; i++ )
+				{
+					OverlayElementContainer container = (OverlayElementContainer)elementList[i];
+					container.Update();
+					container.UpdateRenderQueue( queue );
+				}
+			}
         }
 
+		/// <summary>
+		/// This returns a OverlayElement at position x,y.
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
+		public virtual OverlayElement FindElementAt(float x, float y)
+		{
+			OverlayElement ret = null;
+			int currZ = -1;
+
+			for ( int i = 0; i < elementList.Count; i++ )
+			{
+				OverlayElementContainer container = (OverlayElementContainer)elementList[i];
+				int z = container.ZOrder;
+				if (z > currZ)
+				{
+					OverlayElement elementFound = container.FindElementAt(x,y);
+					if(elementFound != null)
+					{
+						currZ = elementFound.ZOrder;
+						ret = elementFound;
+					}
+				}
+			}
+			return ret;
+		}
         /// <summary>
         ///    Gets a child container of this overlay by name.
         /// </summary>
@@ -228,6 +309,17 @@ namespace Axiom
             xform[0] = transform;
         }
 
+		public Quaternion GetWorldOrientation()
+		{
+			// n/a
+			return Quaternion.Identity;
+		}
+
+		public Vector3 GetWorldPosition()
+		{
+			// n/a
+			return Vector3.Zero;
+		}
         /// <summary>
         ///    Hides this overlay if it is currently being displayed.
         /// </summary>
@@ -260,6 +352,7 @@ namespace Axiom
             scrollX += xOffset;
             scrollY += yOffset;
             isTransformOutOfDate = true;
+			isTransformUpdated = true;
         }
 
         /// <summary>
@@ -275,6 +368,7 @@ namespace Axiom
             scaleX = x;
             scaleY = y;
             isTransformOutOfDate = true;
+			isTransformUpdated = true;
         }
 
         /// <summary>
@@ -297,6 +391,7 @@ namespace Axiom
             scrollX = x;
             scrollY = y;
             isTransformOutOfDate = true;
+			isTransformUpdated = true;
         }
 
         /// <summary>
@@ -305,8 +400,22 @@ namespace Axiom
         public void Show()
         {
             isVisible = true;
+			if (!isInitialised)
+			{
+				this.Initialize();
+			}
         }
+		protected void Initialize()
+		{
 
+			// add 2d elements
+			for ( int i = 0; i < elementList.Count; i++ )
+			{
+				OverlayElementContainer container = (OverlayElementContainer)elementList[i];
+				container.Initialize();
+			}
+			this.isInitialised = true;
+		}
         /// <summary>
         ///    Internal lazy update method.
         /// </summary>
@@ -346,6 +455,33 @@ namespace Axiom
             }
         }
 
+		public bool IsInitialized
+		{
+			get
+			{
+				return isInitialised;
+			}
+		}
+
+		/// <summary>
+		/// Get the origin of this overlay, e.g. a script file name.
+		/// </summary>
+		/// <remarks>
+		/// This property will only contain something if the creator of
+		/// this overlay chose to populate it. Script loaders are advised
+		/// to populate it.
+		///</remarks>
+		public string Origin
+		{
+			get
+			{
+				return origin;
+			}
+			set
+			{
+				origin = value;
+			}
+		}
         /// <summary>
         ///    Gets/Sets the rotation applied to this overlay, in degrees.
         /// </summary>
@@ -359,6 +495,7 @@ namespace Axiom
             {
                 rotate = value;
                 isTransformOutOfDate = true;
+				isTransformUpdated = true;
             }
         }
 

@@ -2,6 +2,14 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using Axiom;
+using Axiom.MathLib;
+#region Ogre Synchronization Information
+/// <ogresynchronization>
+///     <file name="OgreOverlayContainer.h"   revision="1.4.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+///     <file name="OgreOverlayContainer.cpp" revision="1.5.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
+#endregion
+
 
 namespace Axiom
 {
@@ -25,6 +33,8 @@ namespace Axiom
         protected ArrayList childList = new ArrayList();
         protected Hashtable childContainers = new Hashtable();
 
+		protected bool childrenProcessEvents;
+
         #endregion
 
         #region Constructors
@@ -36,6 +46,7 @@ namespace Axiom
         protected internal OverlayElementContainer( string name )
             : base( name )
         {
+			childrenProcessEvents = true;
         }
 
         #endregion
@@ -73,6 +84,8 @@ namespace Axiom
             // inform this child about his/her parent and zorder
             element.NotifyParent( this, overlay );
             element.NotifyZOrder( zOrder + 1 );
+			element.NotifyWorldTransforms(xform);
+			element.NotifyViewport();
         }
 
         /// <summary>
@@ -84,6 +97,7 @@ namespace Axiom
             // add this container to the main child list first
             OverlayElement element = container;
             AddChildImpl( element );
+			/*
             element.NotifyParent( this, overlay );
             element.NotifyZOrder( zOrder + 1 );
 
@@ -94,11 +108,26 @@ namespace Axiom
                 child.NotifyParent( container, overlay );
                 child.NotifyZOrder( container.ZOrder + 1 );
             }
-
+        */
             // now add the container to the container collection
             childContainers.Add( container.Name, container );
         }
+		public virtual void RemoveChild( string name )
+		{
+			Debug.Assert( !children.ContainsKey( name ), string.Format( "Child with name '{0}' not found.", name ) );
 
+			OverlayElement element =  GetChild(name);
+			children.Remove(name);
+
+			// remove from container list (if found)
+			if (childContainers.ContainsKey( name ))
+			{
+				childContainers.Remove(name);
+			}
+			element.Parent = null;
+
+
+		}
         /// <summary>
         ///    Gets the named child of this container.
         /// </summary>
@@ -142,9 +171,29 @@ namespace Axiom
 
             for ( int i = 0; i < childList.Count; i++ )
             {
-                ( (OverlayElement)childList[i] ).NotifyZOrder( zOrder );
+                ( (OverlayElement)childList[i] ).NotifyZOrder( zOrder + 1 );
             }
         }
+		public override void NotifyWorldTransforms(Matrix4[] xform)
+		{
+			base.NotifyWorldTransforms(xform);
+
+			// Update children
+			for ( int i = 0; i < childList.Count; i++ )
+			{
+				( (OverlayElement)childList[i] ).NotifyWorldTransforms( xform );
+			}
+		}
+
+		public override void NotifyViewport()
+		{
+			base.NotifyViewport();
+			// Update children
+			for ( int i = 0; i < childList.Count; i++ )
+			{
+				( (OverlayElement)childList[i] ).NotifyViewport( );
+			}
+		}
 
         public override void NotifyParent( OverlayElementContainer parent, Overlay overlay )
         {
@@ -156,6 +205,8 @@ namespace Axiom
                 ( (OverlayElement)childList[i] ).NotifyParent( this, overlay );
             }
         }
+
+
 
         public override void UpdateRenderQueue( RenderQueue queue )
         {
@@ -170,7 +221,39 @@ namespace Axiom
                 }
             }
         }
+		public override OverlayElement FindElementAt(float x, float y)
+		{
+			OverlayElement ret = null;
 
+			int currZ = -1;
+
+			if (isVisible)
+			{
+				ret = base.FindElementAt(x,y);	//default to the current container if no others are found
+				if (ret !=null && childrenProcessEvents)
+				{
+					for ( int i = 0; i < childList.Count; i++ )
+					{
+						OverlayElement currentOverlayElement = (OverlayElement)childList[i];
+
+						if (currentOverlayElement.IsVisible && currentOverlayElement.Enabled)
+						{
+							int z = currentOverlayElement.ZOrder;
+							if (z > currZ)
+							{
+								OverlayElement elementFound = currentOverlayElement.FindElementAt(x ,y );
+								if (elementFound != null)
+								{
+									currZ = z;
+									ret = elementFound;
+								}
+							}
+						}
+					}
+				}
+			}
+			return ret;
+		}
         #endregion
 
         #region Properties
@@ -185,7 +268,20 @@ namespace Axiom
                 return true;
             }
         }
-
+		/// <summary>
+		///   Should this container pass events to their children 
+		/// </summary>
+		public bool IsChildrenProcessEvents
+		{
+			get
+			{
+				return true;
+			}
+			set
+			{
+				childrenProcessEvents = value;
+			}
+		}
         public override string Type
         {
             get
@@ -195,5 +291,63 @@ namespace Axiom
         }
 
         #endregion
-    }
+    
+		public override void Initialize()
+		{
+			IDictionaryEnumerator en = childContainers.GetEnumerator();
+			while (en.MoveNext())
+			{
+				((OverlayElementContainer)en.Value ).Initialize();
+			}
+
+			for ( int i = 0; i < childList.Count; i++ )
+			{
+				((OverlayElement)childList[i] ).Initialize();
+
+			}
+
+		}
+//		public void CopyFromTemplate(OverlayElement templateOverlay)
+//		{
+//			base.CopyFromTemplate(templateOverlay);
+//
+//			if (templateOverlay.IsContainer() && isContainer)
+//			{
+//				OverlayContainer::ChildIterator it = static_cast<OverlayContainer*>(templateOverlay).getChildIterator();
+//				while (it.hasMoreElements())
+//				{
+//					OverlayElement* oldChildElement = it.getNext();
+//					if (oldChildElement.isCloneable())
+//					{
+//						OverlayElement* newChildElement = 
+//						OverlayManager::getSingleton().createOverlayElement(
+//											oldChildElement.getTypeName(), 
+//											mName+"/"+oldChildElement.getName());
+//						oldChildElement.copyParametersTo(newChildElement);
+//						addChild((OverlayContainer*)newChildElement);
+//					}
+//				}
+//			}
+//		}
+//
+//		public OverlayElement Clone(string instanceName)
+//		{
+//			OverlayElementContainer newContainer;
+//
+//			newContainer = static_cast<OverlayContainer*>(OverlayElement::clone(instanceName));
+//
+//			ChildIterator it = getChildIterator();
+//			while (it.hasMoreElements())
+//			{
+//				OverlayElement* oldChildElement = it.getNext();
+//				if (oldChildElement->isCloneable())
+//				{
+//					OverlayElement* newChildElement = oldChildElement->clone(instanceName);
+//					newContainer->_addChild(newChildElement);
+//				}
+//			}
+//
+//			return newContainer;
+//		}
+	}
 }
