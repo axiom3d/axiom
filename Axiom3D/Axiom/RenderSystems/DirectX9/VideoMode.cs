@@ -24,10 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region Namespace Declarations
+
 using System;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+
+using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
+
+#endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
@@ -135,9 +139,9 @@ namespace Axiom.RenderSystems.DirectX9
         {
             get
             {
-                if ( displayMode.Format == Format.X8R8G8B8 ||
-                    displayMode.Format == Format.A8R8G8B8 ||
-                    displayMode.Format == Format.R8G8B8 )
+                if ( displayMode.Format == D3D.Format.X8R8G8B8 ||
+                    displayMode.Format == D3D.Format.A8R8G8B8 ||
+                    displayMode.Format == D3D.Format.R8G8B8 )
                 {
                     return 32;
                 }
