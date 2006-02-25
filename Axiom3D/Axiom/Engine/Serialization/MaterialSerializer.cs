@@ -152,7 +152,7 @@ namespace Axiom
                 // create
                 try
                 {
-                    HighLevelGpuProgram hgp = HighLevelGpuProgramManager.Instance.CreateProgram( def.name, def.language, def.progType );
+                    HighLevelGpuProgram hgp = HighLevelGpuProgramManagerSingleton.Instance.CreateProgram( def.name, def.language, def.progType );
                     gp = hgp;
                     // set source file
                     hgp.SourceFile = def.source;
@@ -174,42 +174,44 @@ namespace Axiom
                     LogManager.Instance.Write( "Could not create GPU program '{0}'. error reported was: {1}.", def.name, ex.Message );
                 }
             }
-            if ( gp == null )
-                throw new NotSupportedException( string.Format( "Failed to create {0} {1} GPU program named '{2}' using syntax {3}.  This is likely due to your hardware not supporting advanced high-level shaders.",
-                    def.language, def.progType, def.name, def.syntax ) );
-
-            // set skeletal animation option
-            gp.IsSkeletalAnimationIncluded = def.supportsSkeletalAnimation;
-
-            // set up to receive default parameters
-            if ( gp.IsSupported && scriptContext.defaultParamLines.Count > 0 )
+            if (gp != null)
             {
-                scriptContext.programParams = gp.DefaultParameters;
-                scriptContext.program = gp;
+                //   throw new NotSupportedException( string.Format( "Failed to create {0} {1} GPU program named '{2}' using syntax {3}.  This is likely due to your hardware not supporting advanced high-level shaders.",
+                //     def.language, def.progType, def.name, def.syntax ) );
 
-                for ( int i = 0; i < scriptContext.defaultParamLines.Count; i++ )
+                // set skeletal animation option
+                gp.IsSkeletalAnimationIncluded = def.supportsSkeletalAnimation;
+
+                // set up to receive default parameters
+                if (gp.IsSupported && scriptContext.defaultParamLines.Count > 0)
                 {
-                    // find & invoke a parser
-                    // do this manually because we want to call a custom
-                    // routine when the parser is not found
-                    // First, split line on first divisor only
-                    string[] splitCmd = scriptContext.defaultParamLines[i].Split( new char[] { ' ', '\t' }, 2 );
+                    scriptContext.programParams = gp.DefaultParameters;
+                    scriptContext.program = gp;
 
-                    // find attribute parser
-                    if ( programDefaultParamAttribParsers.ContainsKey( splitCmd[0] ) )
+                    for (int i = 0; i < scriptContext.defaultParamLines.Count; i++)
                     {
-                        string cmd = splitCmd.Length >= 2 ? splitCmd[1] : string.Empty;
+                        // find & invoke a parser
+                        // do this manually because we want to call a custom
+                        // routine when the parser is not found
+                        // First, split line on first divisor only
+                        string[] splitCmd = scriptContext.defaultParamLines[i].Split(new char[] { ' ', '\t' }, 2);
 
-                        MaterialAttributeParserHandler handler = (MaterialAttributeParserHandler)programDefaultParamAttribParsers[splitCmd[0]];
+                        // find attribute parser
+                        if (programDefaultParamAttribParsers.ContainsKey(splitCmd[0]))
+                        {
+                            string cmd = splitCmd.Length >= 2 ? splitCmd[1] : string.Empty;
 
-                        // Use parser, make sure we have 2 params before using splitCmd[1]
-                        handler( cmd, scriptContext );
+                            MaterialAttributeParserHandler handler = (MaterialAttributeParserHandler)programDefaultParamAttribParsers[splitCmd[0]];
+
+                            // Use parser, make sure we have 2 params before using splitCmd[1]
+                            handler(cmd, scriptContext);
+                        }
                     }
-                }
 
-                // reset
-                scriptContext.program = null;
-                scriptContext.programParams = null;
+                    // reset
+                    scriptContext.program = null;
+                    scriptContext.programParams = null;
+                }
             }
         }
 

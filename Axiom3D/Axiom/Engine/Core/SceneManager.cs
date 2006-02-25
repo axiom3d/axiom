@@ -732,14 +732,15 @@ namespace Axiom
             for ( int j = 0; j < node.ObjectCount; j++ )
             {
                 MovableObject obj = node.GetObject( j );
+
                 if ( obj is Camera )
-                    cameraList.Remove( obj );
+                    cameraList.Remove( (Camera)obj );
                 else if ( obj is Light )
-                    lightList.Remove( obj );
+                    lightList.Remove( (Light)obj );
                 else if ( obj is Entity )
-                    entityList.Remove( obj );
+                    entityList.Remove( (Entity)obj );
                 else if ( obj is BillboardSet )
-                    billboardSetList.Remove( obj );
+                    billboardSetList.Remove( (BillboardSet)obj );
             }
             // Remove this node from its parent
             node.Parent.RemoveChild( node );
@@ -2900,77 +2901,77 @@ namespace Axiom
         /// <summary>
         /// Gets a list of the valid cameras for this scene for easy lookup.
         /// </summary>
-        public ICollection Cameras
+        public CameraList Cameras
         {
             get
             {
-                return cameraList.Values;
+                return cameraList;
             }
         }
 
         /// <summary>
         /// Gets a list of lights in the scene for easy lookup.
         /// </summary>
-        public ICollection Lights
+        public LightList Lights
         {
             get
             {
-                return lightList.Values;
+                return lightList;
             }
         }
 
         /// <summary>
         /// Gets a list of entities in the scene for easy lookup.
         /// </summary>
-        public ICollection Entities
+        public EntityList Entities
         {
             get
             {
-                return entityList.Values;
+                return entityList;
             }
         }
 
         /// <summary>
         /// Gets a list of scene nodes (includes all in the scene graph).
         /// </summary>
-        public ICollection SceneNodes
+        public SceneNodeCollection SceneNodes
         {
             get
             {
-                return sceneNodeList.Values;
+                return sceneNodeList;
             }
         }
 
         /// <summary>
         /// Gets a list of billboard sets for easy lookup.
         /// </summary>
-        public ICollection BillboardSets
+        public BillboardSetCollection BillboardSets
         {
             get
             {
-                return billboardSetList.Values;
+                return billboardSetList;
             }
         }
 
         /// <summary>
         /// Gets a list of animations for easy lookup.
         /// </summary>
-        public ICollection Animations
+        public AnimationCollection Animations
         {
             get
             {
-                return animationList.Values;
+                return animationList;
             }
         }
 
         /// <summary>
         /// Gets a list of animation states for easy lookup.
         /// </summary>
-        public ICollection AnimationStates
+        public AnimationStateCollection AnimationStates
         {
             get
             {
-                return animationStateList.Values;
+                return animationStateList;
             }
         }
 

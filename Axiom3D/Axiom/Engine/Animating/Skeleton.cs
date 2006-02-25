@@ -86,7 +86,7 @@ namespace Axiom
         /// <summary>Saved version of the last animation.</summary>
         protected AnimationStateCollection lastAnimationState = new AnimationStateCollection();
 
-		public ICollection Bones { get { return boneList.Values; } }
+		public BoneCollection Bones { get { return boneList; } }
 
         #endregion Member variables
 

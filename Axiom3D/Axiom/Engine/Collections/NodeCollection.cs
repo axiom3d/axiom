@@ -25,13 +25,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using System.Collections;
 using System.Diagnostics;
 
+using Axiom.Core;
+
 // used to alias a type in the code for easy copying and pasting.  Come on generics!!
-using T = Axiom.Node;
+//using T = Axiom.Core.Node;
 // used to alias a key value in the code for easy copying and pasting.  Come on generics!!
-using K = System.String;
+//using K = System.String;
 
 namespace Axiom
 {
@@ -39,16 +40,14 @@ namespace Axiom
     ///		A strongly-typed collection of <see cref="Node"/> objects.
     /// </summary>
     [Serializable]
-    public class NodeCollection : AxiomCollection
+    public class NodeCollection : AxiomCollection<string, Node>
     {
         #region Constructors
 
         /// <summary>
         ///		Default constructor.
         /// </summary>
-        public NodeCollection() : base()
-        {
-        }
+        public NodeCollection() : base() { }
 
         /// <summary>
         ///		Constructor that takes a parent object to, and calls the base class constructor to 
@@ -58,91 +57,13 @@ namespace Axiom
 
         #endregion
 
-        #region Strongly typed methods and indexers
 
-        /// <summary>
-        ///		Get/Set indexer that allows access to the collection by index.
-        /// </summary>
-        new public T this[int index]
+        public override void Add(Node item)
         {
-            get
-            {
-                return (T)base[index];
-            }
-            set
-            {
-                base[index] = value;
-            }
+            if (item.Name == string.Empty)
+                base.Add("Node" + nextUniqueKeyCounter++, item);
+            else
+                base.Add(item.Name, item);
         }
-
-        /// <summary>
-        ///		Get/Set indexer that allows access to the collection by key value.
-        /// </summary>
-        public T this[string key]
-        {
-            get
-            {
-                return (T)base[key];
-            }
-            set
-            {
-                base[key] = value;
-            }
-        }
-
-        /// <summary>
-        ///		Adds an object to the collection.
-        /// </summary>
-        /// <param name="item"></param>
-        public void Add( T item )
-        {
-            Add( item.Name, item );
-        }
-
-        /// <summary>
-        ///		Adds a named object to the collection.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="item"></param>
-        public void Add( K key, T item )
-        {
-            base.Add( key, item );
-        }
-        public override void Remove( object item )
-        {
-            if ( !( item is T ) )
-                throw new ArgumentException( "Cannot remove an item that is note a Node from a NodeCollection." );
-            Remove( (T)item );
-        }
-        public void Remove( T item )
-        {
-            objectList.Remove( item.Name );
-        }
-        public void Remove( K key )
-        {
-            objectList.Remove( key );
-        }
-        public bool Contains( T item )
-        {
-            return objectList.Contains( item.Name );
-        }
-
-        public bool Contains( K key )
-        {
-            return objectList.Contains( key );
-        }
-
-        public int IndexOf( K key )
-        {
-            return objectList.IndexOfKey( key );
-        }
-
-        public int IndexOf( T item )
-        {
-            return objectList.IndexOfKey( item.Name );
-        }
-
-
-        #endregion
     }
 }

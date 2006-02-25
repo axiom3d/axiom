@@ -120,8 +120,12 @@ namespace Axiom
         {
             if ( instance == null )
             {
+                instance = 
+                    (IPlatformManager)
+                    ((ISingletonPlugin) PluginManager.Instance.GetPlugin("/Axiom/PlatformManager")).GetSubsystemImplementation();
+
                 // find and load a platform manager assembly
-                string[] files = Directory.GetFiles( ".", "Axiom.Platforms.*.dll" );
+                /*string[] files = Directory.GetFiles( ".", "Axiom.Platforms.*.dll" );
                 string path = SelectPlatformManagerAssembly( files );
 
 
@@ -139,6 +143,7 @@ namespace Axiom
                 }
 
                 throw new PluginException( "The available Platform assembly did not contain any subclasses of PlatformManager, which is required." );
+                 * */
             }
         }
 

@@ -28,7 +28,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom;
+using Axiom.Core;
 
 // used to alias a type in the code for easy copying and pasting.  Come on generics!!
 using T = Axiom.Core.TextureLayer;
@@ -37,7 +37,7 @@ using K = System.String;
 // used to alias a parent type in the code for easy copying and pasting.  Come on generics!!
 //using P = Axiom.Core.Entity;
 
-namespace Axiom
+namespace Axiom {
     /// <summary>
     /// Summary description for TextureLayerCollection.
     /// </summary>

@@ -48,36 +48,36 @@ namespace Axiom
     /// </remarks>
     public class HighLevelGpuProgramManager : ResourceManager
     {
-        #region Singleton implementation
+        //#region Singleton implementation
 
-        /// <summary>
-        ///     Singleton instance of this class.
-        /// </summary>
-        private static HighLevelGpuProgramManager instance;
+        ///// <summary>
+        /////     Singleton instance of this class.
+        ///// </summary>
+        //private static HighLevelGpuProgramManager instance;
 
-        /// <summary>
-        ///     Internal constructor.  This class cannot be instantiated externally.
-        /// </summary>
-        internal HighLevelGpuProgramManager()
-        {
-            if ( instance == null )
-            {
-                instance = this;
-            }
-        }
+        ///// <summary>
+        /////     Internal constructor.  This class cannot be instantiated externally.
+        ///// </summary>
+        //internal HighLevelGpuProgramManager()
+        //{
+        //    if ( instance == null )
+        //    {
+        //        instance = this;
+        //    }
+        //}
 
-        /// <summary>
-        ///     Gets the singleton instance of this class.
-        /// </summary>
-        public static HighLevelGpuProgramManager Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
+        ///// <summary>
+        /////     Gets the singleton instance of this class.
+        ///// </summary>
+        //public static HighLevelGpuProgramManager Instance
+        //{
+        //    get
+        //    {
+        //        return instance;
+        //    }
+        //}
 
-        #endregion Singleton implementation
+        //#endregion Singleton implementation
 
         #region Fields
 
@@ -196,10 +196,18 @@ namespace Axiom
         {
             base.Dispose();
 
-            instance = null;
+            //instance = null;
         }
 
         #endregion ResourceManager Implementation
+    }
+
+    public class HighLevelGpuProgramManagerSingleton : Singleton<HighLevelGpuProgramManager>
+    {
+        public override bool Initialize()
+        {
+            return true;
+        }
     }
 
     /// <summary>

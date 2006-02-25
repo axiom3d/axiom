@@ -70,11 +70,11 @@ namespace Axiom
         protected Node parent;
         /// <summary>Collection of this nodes child nodes.</summary>
         protected NodeCollection childNodes;
-        public ICollection Children
+        public NodeCollection Children
         {
             get
             {
-                return childNodes.Values;
+                return childNodes;
             }
         }
         /// <summary>Collection of this nodes child nodes.</summary>
@@ -212,7 +212,7 @@ namespace Axiom
             string childName = child.Name;
             if ( child == this )
                 throw new ArgumentException( string.Format( "Node '{0}' cannot be added as a child of itself.", childName ) );
-            if ( childNodes.Contains( childName ) )
+            if ( childNodes.ContainsKey( childName ) )
                 throw new ArgumentException( string.Format( "Node '{0}' already has a child node with the name '{1}'.", this.name, childName ) );
 
             child.RemoveFromParent();
@@ -245,7 +245,7 @@ namespace Axiom
 
         public bool HasChild( string name )
         {
-            return childNodes.Contains( name );
+            return childNodes.ContainsKey( name );
         }
 
         /// <summary>

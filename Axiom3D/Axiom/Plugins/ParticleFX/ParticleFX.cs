@@ -34,6 +34,7 @@ namespace Axiom.ParticleFX
     /// <summary>
     /// Summary description for ParticleFX.
     /// </summary>
+    [PluginMetadata(Namespace="/Axiom/Plugins/ParticleFX")]
     public class ParticleFX : IPlugin
     {
         #region IPlugin Members

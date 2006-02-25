@@ -25,7 +25,7 @@ namespace Axiom.RenderSystems.OpenGL
             // add an instance of this plugin to the list of available RenderSystems
             Root.Instance.RenderSystems.Add( "OpenGL", renderSystem );
 
-            HighLevelGpuProgramManager.Instance.AddFactory( factory );
+            HighLevelGpuProgramManagerSingleton.Instance.AddFactory( factory );
         }
 
         public void Stop()
