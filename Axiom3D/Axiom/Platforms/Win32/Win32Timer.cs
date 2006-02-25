@@ -35,10 +35,12 @@ are met:
  */
 #endregion BSD License
 
+#region Namespace Declarations
+
 using System;
 using System.Runtime.InteropServices;
 
-using Axiom;
+#endregion Namespace Declarations
 
 namespace Axiom.Platforms.Win32
 {
