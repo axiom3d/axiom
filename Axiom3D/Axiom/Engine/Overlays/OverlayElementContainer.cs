@@ -283,13 +283,6 @@ namespace Axiom
 				childrenProcessEvents = value;
 			}
 		}
-        public override string Type
-        {
-            get
-            {
-                return "OverlayElementContainer";
-            }
-        }
 
         #endregion
     

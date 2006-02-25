@@ -693,13 +693,7 @@ namespace Axiom
 				borderMaterial.DepthCheck=(false);
             }
         }
-		public override string Type
-		{
-			get
-			{
-				return "BorderPanel";
-			}
-		}
+
         /// <summary>
         ///    Override of Panel.
         /// </summary>

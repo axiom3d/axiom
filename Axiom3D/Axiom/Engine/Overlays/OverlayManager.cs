@@ -316,13 +316,13 @@ namespace Axiom
                 {
                     if ( parms.Length != 5 + skipParam )
                     {
-                        LogManager.Instance.Write( "Bad element/container line: {0} in {1} - {2}, expecting ':' templateName", line, parent.Type, parent.Name );
+                        LogManager.Instance.Write( "Bad element/container line: {0} in {1} - {2}, expecting ':' templateName", line, parent.GetType().Name, parent.Name );
                         ParseHelper.SkipToNextCloseBrace( script );
                         return ret;
                     }
                     if ( parms[3 + skipParam] != ":" )
                     {
-                        LogManager.Instance.Write( "Bad element/container line: {0} in {1} - {2}, expecting ':' for element inheritance.", line, parent.Type, parent.Name );
+                        LogManager.Instance.Write( "Bad element/container line: {0} in {1} - {2}, expecting ':' for element inheritance.", line, parent.GetType().Name, parent.Name );
                         ParseHelper.SkipToNextCloseBrace( script );
                         return ret;
                     }
@@ -332,7 +332,7 @@ namespace Axiom
                 }
                 else if ( parms.Length != 3 + skipParam )
                 {
-                    LogManager.Instance.Write( "Bad element/container line: {0} in {1} - {2}, expecting 'element type(name)'.", line, parent.Type, parent.Name );
+                    LogManager.Instance.Write( "Bad element/container line: {0} in {1} - {2}, expecting 'element type(name)'.", line, parent.GetType().Name, parent.Name );
                     ParseHelper.SkipToNextCloseBrace( script );
                     return ret;
                 }

@@ -62,7 +62,7 @@ namespace Axiom
         protected ColorEx colorTop;
         protected bool haveColorsChanged;
 
-        const int DEFAULT_INITIAL_CHARS = 12;
+        const int DEFAULT_INITIAL_CHARS = 1;
         const int POSITION_TEXCOORD = 0;
         const int COLORS = 1;
 
@@ -279,9 +279,10 @@ namespace Axiom
 
 
             bool newLine = true;
+            int index = 0;
 
             // go through each character and process
-            for ( int i = 0; i < text.Length; i++ )
+            for ( int i = 0; i < charLength; i++ )
             {
                 char c = text[i];
 
@@ -290,7 +291,7 @@ namespace Axiom
                     float length = 0.0f;
 
                     // precalc the length of this line
-                    for ( int j = i; j < text.Length && text[j] != '\n'; j++ )
+                    for ( int j = i; j < charLength && text[ j ] != '\n'; j++ )
                     {
                         if ( text[j] == ' ' )
                         {
@@ -308,7 +309,7 @@ namespace Axiom
                     }
                     else if ( alignment == HorizontalAlignment.Center )
                     {
-                        left -= length * 0.5f;
+                        //left -= length * 0.5f;
                     }
 
                     newLine = false;
@@ -343,7 +344,6 @@ namespace Axiom
                 // first tri
                 // upper left
 				float* vertPtr = (float*)data.ToPointer();
-				int index = 0;
                 vertPtr[index++] = left;
                 vertPtr[index++] = top;
                 vertPtr[index++] = -1.0f;
@@ -533,7 +533,7 @@ namespace Axiom
                 font.Load();
 
                 // note: font materials are created with lighting and depthcheck disabled by default
-                material = font.Material;
+                material = font.Material.Clone( this.name + "Font" );
 
                 // TODO See if this can be eliminated
                 
@@ -646,18 +646,6 @@ namespace Axiom
                 base.Text = value;
 				isGeomPositionsOutOfDate = true;
 				isGeomUVsOutOfDate = true;
-            }
-        }
-
-
-        /// <summary>
-        ///    Overridden to return this elements type.
-        /// </summary>
-        public override string Type
-        {
-            get
-            {
-                return "TextArea";
             }
         }
 

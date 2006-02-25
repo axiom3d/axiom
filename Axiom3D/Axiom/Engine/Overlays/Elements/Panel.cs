@@ -164,13 +164,6 @@ namespace Axiom
 
 		}
 
-		public override string Type
-		{
-			get
-			{
-				return "Panel";
-			}
-		}
         /// <summary>
         ///    Internal method for setting up geometry, called by GuiElement.Update
         /// </summary>
