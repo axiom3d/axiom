@@ -101,7 +101,7 @@ namespace Axiom.RenderSystems.OpenGL
                 height = int.Parse( vm.Substring( vm.IndexOf( "x" ) + 1, vm.IndexOf( "@" ) - ( vm.IndexOf( "x" ) + 1 ) ) );
                 bpp = int.Parse( vm.Substring( vm.IndexOf( "@" ) + 1, vm.IndexOf( "-" ) - ( vm.IndexOf( "@" ) + 1 ) ) );
 
-                fullScreen = ( ConfigOptions[ "Full Screen" ].Value == "Yes" );
+                fullscreen = ( ConfigOptions[ "Full Screen" ].Value == "Yes" );
 
 
                 // create a default form to use for a rendering target
