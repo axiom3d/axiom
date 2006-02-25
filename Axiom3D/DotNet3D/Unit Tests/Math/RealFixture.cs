@@ -28,6 +28,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
 #if !NUNIT
@@ -44,7 +46,6 @@ using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
-
 namespace DotNet3D.UnitTests.VS
 {
     /// <summary>
@@ -449,5 +450,25 @@ namespace DotNet3D.UnitTests.VS
 
         #endregion
 
+        #region Serialization Tests
+
+        [TestMethod]
+        public void SerializationDeserializeTest()
+        {
+            Real expected = 3.1415926f;
+            Real actual;
+            Stream stream = new MemoryStream();
+            BinaryFormatter bformatter = new BinaryFormatter();
+
+            bformatter.Serialize( stream, expected );
+
+            stream.Position = 0;
+
+            actual = (Real)bformatter.Deserialize( stream );
+            stream.Close();
+
+            Assert.Equals( actual, expected );
+        }
+        #endregion Serialization Tests
     }
 }
