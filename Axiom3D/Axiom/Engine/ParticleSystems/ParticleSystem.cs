@@ -55,24 +55,12 @@ namespace Axiom
 
         /// <summary>List of emitters for this system.</summary>
         protected EmitterList emitterList = new EmitterList();
-        public EmitterList Emitters
-        {
-            get
-            {
-                return emitterList;
-            }
-        }
         /// <summary>List of affectors for this system.</summary>
         protected AffectorList affectorList = new AffectorList();
-        public AffectorList Affectors
-        {
-            get
-            {
-                return affectorList;
-            }
-        }
         /// <summary>Cached for less memory usage during emitter processing.</summary>
         protected EmitterList requested = new EmitterList();
+
+        protected string resourceGroupName;
 
         #endregion
 
@@ -85,7 +73,7 @@ namespace Axiom
         ///		You should use the ParticleSystemManager to create systems, rather than doing it directly.
         /// </remarks>
         /// <param name="name"></param>
-        public ParticleSystem( string name )
+        internal ParticleSystem( string name, string resourceGroup )
             : base( name, 10 )
         {
             autoExtendPool = true;
@@ -94,7 +82,8 @@ namespace Axiom
             cullIndividually = true;
             defaultWidth = 100;
             defaultHeight = 100;
-            this.MaterialName = "BaseWhite";
+            MaterialName = "BaseWhite";
+            resourceGroupName = resourceGroup;
         }
 
         /// <summary>
@@ -295,7 +284,7 @@ namespace Axiom
 
             emitterCount = emitterList.Count;
             // get the difference between quota and current active count
-            emissionAllowed = this.ParticleQuota - activeBillboards.Count;
+            emissionAllowed = this.Quota - activeBillboards.Count;
             totalRequested = 0;
 
             // count up the total requested emissions
@@ -462,6 +451,22 @@ namespace Axiom
 
         #region Properties
 
+        public AffectorList Affectors
+        {
+            get
+            {
+                return affectorList;
+            }
+        }
+
+        public EmitterList Emitters
+        {
+            get
+            {
+                return emitterList;
+            }
+        }
+
         /// <summary>
         ///		Gets the count of active particles currently in the system.
         /// </summary>
@@ -484,7 +489,7 @@ namespace Axiom
         ///		emit any more particles. As existing particles die, the spare capacity will be allocated
         ///		equally across all emitters to be as consistent to the origina particle system style as possible.
         /// </remarks>
-        public int ParticleQuota
+        public int Quota
         {
             get
             {
@@ -504,6 +509,17 @@ namespace Axiom
             get
             {
                 return activeBillboards;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string ResourceGroup
+        {
+            get
+            {
+                return resourceGroupName;
             }
         }
 

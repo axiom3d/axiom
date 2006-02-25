@@ -24,12 +24,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region Namespace Declarations
 using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.IO;
 using System.Reflection;
 using System.Text;
+#endregion
+
+#region Versioning Information
+/// File								Revision
+/// ===============================================
+/// OgreBillboard.h		                1.13
+/// OgreBillboard.cpp		            1.13
+/// 
+#endregion
 
 namespace Axiom
 {
@@ -71,6 +81,9 @@ namespace Axiom
             {
                 instance = this;
             }
+
+            scriptPatterns.Add( "*.particle" );
+            ResourceGroupManager.Instance.RegisterScriptLoader( this );
         }
 
         /// <summary>
@@ -103,22 +116,33 @@ namespace Axiom
         ///     List of template particle systems.
         /// </summary>
         private Hashtable systemTemplateList = new Hashtable();
+
         /// <summary>
         ///     Actual instantiated particle systems (may be based on template, may be manual).
         /// </summary>
         private HashList systemList = new HashList();
+
         /// <summary>
         ///     Factories for named emitter type (can be extended using plugins).
         /// </summary>
         private Hashtable emitterFactoryList = new Hashtable();
+
         /// <summary>
         ///     Factories for named affector types (can be extended using plugins).
         /// </summary>
         private Hashtable affectorFactoryList = new Hashtable();
+
+        /// <summary>
+        ///     Map of renderer types to factories
+        /// </summary>
+        private Hashtable rendererFactoryList = new Hashtable();
+
         /// <summary>
         ///     List of available attibute parsers for script attributes.
         /// </summary>
         private Hashtable attribParsers = new Hashtable();
+
+        private ArrayList scriptPatterns = new ArrayList();
 
         /// <summary>
         ///     Controls time. (1.0 is real time)
@@ -182,6 +206,21 @@ namespace Axiom
         }
 
         /// <summary>
+        /// Registers a factory class for creating ParticleSystemRenderer instances.
+        /// </summary>
+        /// <param name="factory">
+        /// factory Pointer to a ParticleSystemRendererFactory subclass created by the plugin or application code.
+        /// </param>
+        /// <remarks>
+        /// Note that the object passed to this function will not be destroyed by the ParticleSystemManager,
+        /// since it may have been allocted on a different heap in the case of plugins. The caller must
+        /// destroy the object later on, probably on plugin shutdown.
+        /// </remarks>
+        public void AddRendererFactory( ParticleSystemRendererFactory factory )
+        {
+        }
+
+        /// <summary>
         ///		Adds a new particle system template to the list of available templates. 
         ///	 </summary>
         ///	 <remarks>
@@ -209,29 +248,33 @@ namespace Axiom
         ///		to add as a template and just want to create a new template which you will build up at runtime.
         /// </remarks>
         /// <param name="name"></param>
-        /// <returns></returns>
+        /// <param name="resourceGroup">The name of the resource group which will be used to load any dependent resources.</param>
+        /// <returns>returns a reference to a ParticleSystem template to be populated</returns>
         public ParticleSystem CreateTemplate( string name )
         {
-            ParticleSystem system = new ParticleSystem( name );
+            return CreateTemplate( name, "" );
+        }
+        public ParticleSystem CreateTemplate( string name, string resourceGroup )
+        {
+            ParticleSystem system = new ParticleSystem( name , resourceGroup );
             AddTemplate( name, system );
 
             return system;
         }
 
         /// <summary>
-        ///		Overloaded method.
+        /// 
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public ParticleSystem CreateSystem( string name )
+        /// <param name="name">Name of the particle system to remove</param>
+        public void RemoveTemplate( string name )
         {
-            // create a system with a default quota
-            return CreateSystem( name, DefaultQuota );
-        }
-
-        public ParticleSystem CreateSystem( string name, string templateName )
-        {
-            return CreateSystem( name, templateName, DefaultQuota );
+            if ( !systemTemplateList.ContainsKey( name ) )
+            {
+                return;
+            }
+            ParticleSystem system = (ParticleSystem)systemTemplateList[name];
+            systemTemplateList.Remove( name );
+            //system.Dispose();
         }
 
         /// <summary>
@@ -239,6 +282,8 @@ namespace Axiom
         ///	 </summary>
         ///	 <remarks>
         ///		This method creates a new, blank ParticleSystem instance and returns a reference to it.
+        ///     The caller should not delete this object, it will be freed at system shutdown, or can
+        ///     be released earlier using the destroySystem method.
         ///		<p/>
         ///		The instance returned from this method won't actually do anything because on creation a
         ///		particle system has no emitters. The caller should manipulate the instance through it's 
@@ -252,10 +297,33 @@ namespace Axiom
         /// <returns></returns>
         public ParticleSystem CreateSystem( string name, int quota )
         {
-            ParticleSystem system = new ParticleSystem( name );
-            system.ParticleQuota = quota;
-            systemList.Add( name, system );
+            return CreateSystem( name, quota, ResourceGroupManager.DefaultResourceGroupName );
+        }
 
+        /// <summary>
+        ///		Basic method for creating a blank particle system.
+        ///	 </summary>
+        ///	 <remarks>
+        ///		This method creates a new, blank ParticleSystem instance and returns a reference to it.
+        ///     The caller should not delete this object, it will be freed at system shutdown, or can
+        ///     be released earlier using the destroySystem method.
+        ///		<p/>
+        ///		The instance returned from this method won't actually do anything because on creation a
+        ///		particle system has no emitters. The caller should manipulate the instance through it's 
+        ///		ParticleSystem methods to actually create a real particle effect. 
+        ///		<p/>
+        ///		Creating a particle system does not make it a part of the scene. As with other SceneObject
+        ///		subclasses, a ParticleSystem is not rendered until it is attached to a SceneNode. 
+        /// </remarks>
+        /// <param name="name">The name to give the ParticleSystem.</param>
+        /// <param name="quota">The maximum number of particles to allow in this system.</param>
+        /// <param name="resourceGroup">The resource group which will be used to load dependent resources</param>
+        /// <returns></returns>
+        public ParticleSystem CreateSystem( string name, int quota, string resourceGroup )
+        {
+            ParticleSystem system = new ParticleSystem( name, resourceGroup );
+            system.Quota = quota;
+            systemList.Add( name, system );
             return system;
         }
 
@@ -264,7 +332,8 @@ namespace Axiom
         ///	 </summary>
         ///	 <remarks>
         ///		This method creates a new ParticleSystem instance based on the named template and returns a 
-        ///		reference to the caller. 
+        ///		reference to the caller. The caller should not delete this object, it will be freed at system shutdown, 
+        ///    or can be released earlier using the destroySystem method.
         ///		<p/>
         ///		Each system created from a template takes the template's settings at the time of creation, 
         ///		but is completely separate from the template from there on. 
@@ -277,9 +346,8 @@ namespace Axiom
         /// </remarks>
         /// <param name="name">The name to give the new particle system instance.</param>
         /// <param name="templateName">The name of the template to base the new instance on.</param>
-        /// <param name="quota">The maximum number of particles to allow in this system (can be changed later).</param>
         /// <returns></returns>
-        public ParticleSystem CreateSystem( string name, string templateName, int quota )
+        public ParticleSystem CreateSystem( string name, string templateName )
         {
             if ( !systemTemplateList.ContainsKey( templateName ) )
             {
@@ -288,12 +356,50 @@ namespace Axiom
 
             ParticleSystem templateSystem = (ParticleSystem)systemTemplateList[templateName];
 
-            ParticleSystem system = CreateSystem( name, quota );
+            ParticleSystem system = CreateSystem( name, templateSystem.Quota, templateSystem.ResourceGroup );
 
             // copy template settings to the new system (do not return the template itself)
             templateSystem.CopyTo( system );
 
             return system;
+        }
+
+        /// <summary>
+        /// Destroys a particle system, freeing it's memory and removing references to it in this class.
+        /// </summary>
+        /// <remarks>
+        /// You should ensure that before calling this method, the particle system has been detached from 
+        /// any SceneNode objects, and that no other objects are referencing it.
+        /// </remarks>
+        /// <param name="name">The name of the ParticleSystem to remove.</param>
+        public void RemoveSystem( string name )
+        {
+            if ( !systemList.ContainsKey( name ) )
+            {
+                return;
+            }
+            ParticleSystem system = (ParticleSystem)systemList[name];
+            systemList.Remove( name );
+            //system.Dispose();
+        }
+
+        /// <summary>
+        /// Destroys a particle system, freeing it's memory and removing references to it in this class.
+        /// </summary>
+        /// <remarks>
+        /// You should ensure that before calling this method, the particle system has been detached from 
+        /// any SceneNode objects, and that no other objects are referencing it.
+        /// </remarks>
+        /// <param name="sys">Reference to the ParticleSystem to be removed.</param>
+        public void RemoveSystem( ParticleSystem sys )
+        {
+            if ( !systemList.ContainsKey( sys.Name ) )
+            {
+                return;
+            }
+            systemList.Remove( sys.Name );
+            //sys.Dispose();
+            sys = null;
         }
 
         /// <summary>
@@ -318,6 +424,17 @@ namespace Axiom
         }
 
         /// <summary>
+        /// Internal method for removing an emitter.
+        /// </summary>
+        /// <remarks>
+        /// This method is used to ask the factory to remove the instance passed in as a reference.
+        /// </remarks>
+        /// <param name="emitter">Reference to emitter to be removed. On return this reference will be null.</param>
+        internal void RemoveEmitter( ParticleEmitter emitter )
+        {
+        }
+
+        /// <summary>
         ///		Internal method for creating a new affector from a factory.
         /// </summary>
         /// <remarks>
@@ -337,6 +454,52 @@ namespace Axiom
 
             return factory.Create();
         }
+
+        /// <summary>
+        /// Internal method for removing an affector.
+        /// </summary>
+        /// <remarks>
+        /// This method is used to ask the factory to remove the instance passed in as a reference.
+        /// </remarks>
+        /// <param name="affector">Reference to affector to be removed. On return this reference will be null.</param>
+        internal void RemoveAffector( ParticleAffector affector )
+        {
+        }
+
+        /// <summary>
+        /// Internal method for creating a new renderer from a factory.
+        /// </summary>
+        /// <param name="rendererType">rendererType String name of the renderer type to be created. A factory of this type must have been registered.</param>
+        /// <returns>new ParticleSystemRenderer</returns>
+        /// <remarks>
+        ///    Used internally by the engine to create new ParticleSystemRenderer instances from named
+        ///    factories. Applications should use the ParticleSystem.Renderer Property instead, 
+        ///    which calls this method to create an instance.
+        /// </remarks>
+        internal ParticleSystemRenderer CreateRenderer( string rendererType )
+        {
+            ParticleSystemRendererFactory factory = (ParticleSystemRendererFactory)rendererFactoryList[rendererType];
+
+            if ( factory == null )
+            {
+                throw new AxiomException( "Cannot find requested renderer '{0}'.", rendererType );
+            }
+
+            //return factory.Create();
+            return null;
+        }
+
+        /// <summary>
+        /// Internal method for removing an renderer.
+        /// </summary>
+        /// <remarks>
+        /// This method is used to ask the factory to remove the instance passed in as a reference.
+        /// </remarks>
+        /// <param name="renderer">Reference to renderer to be removed. On return this reference will be null.</param>
+        internal void RemoveRenderer( ParticleAffector renderer )
+        {
+        }
+
 
         /// <summary>
         ///		Internal method to init the particle systems.
@@ -622,6 +785,39 @@ namespace Axiom
             }
         }
 
+        /// <summary>
+        ///     List of available renderer factories.
+        /// </summary>
+        public Hashtable Renderers
+        {
+            get
+            {
+                return rendererFactoryList;
+            }
+        }
+
+        /// <summary>
+        ///     List of script patterns to load.
+        /// </summary>
+        public ArrayList ScriptPatterns
+        {
+            get
+            {
+                return scriptPatterns;
+            }
+        }
+
+        /// <summary>
+        ///     Loading Order
+        /// </summary>
+        public float LoadingOrder
+        {
+            get
+            {
+                return 1000.0F; // load late
+            }
+        }
+
         #endregion
 
         #region Script parser methods
@@ -739,7 +935,7 @@ namespace Axiom
                 return;
             }
 
-            system.ParticleQuota = int.Parse( values[0] );
+            system.Quota = int.Parse( values[0] );
         }
 
         [AttributeParser( "particle_width", PARTICLE )]
@@ -779,6 +975,27 @@ namespace Axiom
             }
         }
 
+        /// <summary>
+        ///		A listener that is added to the engine's render loop.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        private void RenderSystem_FrameEnded( object source, FrameEventArgs e )
+        {
+            // Apply time factor
+            float timeSinceLastFrame = timeFactor * e.TimeSinceLastFrame;
+
+            // loop through and update each particle system
+            for ( int i = 0; i < systemList.Count; i++ )
+            {
+                ParticleSystem system = (ParticleSystem)systemList[i];
+
+                // ask the particle system to update itself based on the frame time
+                system.Update( timeSinceLastFrame );
+            }
+        }
+
         #endregion Event Handlers
 
         #region IDisposable Members
@@ -790,7 +1007,7 @@ namespace Axiom
         {
             //clear all the collections
             Clear();
-
+            ResourceGroupManager.Instance.UnregisterScriptLoader( this );
             instance = null;
         }
 
