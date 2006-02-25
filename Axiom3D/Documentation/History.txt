@@ -1,3 +1,7 @@
+2005-12-19-2005 Michael Cummings [Borrillis]
+- Fixed OpenGL bug that was causing it to not load.
+- Fixed a couple of Overlay issues that were causing them to not display correctly.
+
 2005-09-27 Michael Cummings [Borrillis]
 - Added a few new classes that were missing from the Ogre versions (ResourceGroupManager, ParticleSystemRenderer* )
 - Added missing properties and Methods to the various ParticleSystems classes.
