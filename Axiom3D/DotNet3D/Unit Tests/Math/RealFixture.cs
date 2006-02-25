@@ -55,59 +55,76 @@ namespace DotNet3D.UnitTests.VS
     public class RealTest
     {
 
-
-        private TestContext testContextInstance;
+        #region Construction Tests
 
         /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
+        ///A test for Real (decimal)
         ///</summary>
-        public TestContext TestContext
+        [TestMethod()]
+        public void ConstructFromDecimal()
         {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
+            decimal value = 3.1415926979m;
+
+            Real target = new Real( value );
+
+            Assert.Equals( value, target );
         }
 
-        #region Additional test attributes
-        // 
-        //You can use the following additional attributes as you write your tests:
-        //
-        //Use ClassInitialize to run code before running the first test in the class
-        //
-        //[ClassInitialize()]
-        //public static void MyClassInitialize(TestContext testContext)
-        //{
-        //}
-        //
-        //Use ClassCleanup to run code after all tests in a class have run
-        //
-        //[ClassCleanup()]
-        //public static void MyClassCleanup()
-        //{
-        //}
-        //
-        //Use TestInitialize to run code before running each test
-        //
-        //[TestInitialize()]
-        //public void MyTestInitialize()
-        //{
-        //}
-        //
-        //Use TestCleanup to run code after each test has run
-        //
-        //[TestCleanup()]
-        //public void MyTestCleanup()
-        //{
-        //}
-        //
-        #endregion
+        /// <summary>
+        ///A test for Real (double)
+        ///</summary>
+        [TestMethod()]
+        public void ConstructFromDouble()
+        {
+            double value = 3.1415926979;
 
+            Real target = new Real( value );
+
+            Assert.Equals( value, target );
+        }
+
+        /// <summary>
+        ///A test for Real (float)
+        ///</summary>
+        [TestMethod()]
+        public void ConstructFromFloat()
+        {
+            float value = 3.1415926979f;
+
+            Real target = new Real( value );
+
+            Assert.Equals( value, target );
+        }
+
+        /// <summary>
+        ///A test for Real (int)
+        ///</summary>
+        [TestMethod()]
+        public void ConstructFromInt()
+        {
+            int value = 5;
+
+            Real target = new Real( value );
+
+            Assert.Equals( value, target );
+        }
+
+        /// <summary>
+        ///A test for Real (string)
+        ///</summary>
+        [TestMethod()]
+        public void ConstructFromString()
+        {
+            string value = "3.1415926979";
+
+            Real target = new Real( value );
+
+            Assert.Equals( value, target );
+        }
+
+        #endregion Construction Tests
+
+        #region Conversion Operator Tests
 
         /// <summary>
         ///A test for explicit operator (float)(Real)
@@ -271,70 +288,166 @@ namespace DotNet3D.UnitTests.VS
             Assert.IsTrue( test, "DotNet3D.Math.Real.explicit operator did not return the expected value." );
         }
 
-        /// <summary>
-        ///A test for Real (decimal)
-        ///</summary>
-        [TestMethod()]
-        public void ConstructFromDecimal()
+        #endregion Conversion Operator Tests
+
+        #region Operations Tests
+
+        [TestMethod]
+        public void AddRealtoReal()
         {
-            decimal value = 3.1415926979m; 
+            Real expected = 3.0;
+            Real left = 1.0;
+            Real right = 2.0;
+            Real actual = left + right;
 
-            Real target = new Real( value );
-
-            Assert.Equals( value, target );
+            Assert.Equals( actual, expected );
         }
 
-        /// <summary>
-        ///A test for Real (double)
-        ///</summary>
-        [TestMethod()]
-        public void ConstructFromDouble()
+        [TestMethod]
+        public void SubtractRealFromReal()
         {
-            double value = 3.1415926979;
+            Real expected = 3.0;
+            Real left = 1.0;
+            Real right = 2.0;
+            Real actual = left - right;
 
-            Real target = new Real( value );
-
-            Assert.Equals( value, target );
+            Assert.Equals( actual, expected );
         }
 
-        /// <summary>
-        ///A test for Real (float)
-        ///</summary>
-        [TestMethod()]
-        public void ConstructFromFloat()
+        [TestMethod]
+        public void MultiplyRealByReal()
         {
-            float value = 3.1415926979f;
+            Real expected = 3.0;
+            Real left = 1.0;
+            Real right = 2.0;
+            Real actual = left * right;
 
-            Real target = new Real( value );
-
-            Assert.Equals( value, target );
+            Assert.Equals( actual, expected );
         }
 
-        /// <summary>
-        ///A test for Real (int)
-        ///</summary>
-        [TestMethod()]
-        public void ConstructFromInt()
+
+        [TestMethod]
+        public void EqualityTrue()
         {
-            int value = 5;
+            bool expected = true;
+            Real left = 2.0;
+            Real right = 2.0;
+            bool actual = ( left == right );
 
-            Real target = new Real( value );
-
-            Assert.Equals( value, target );
+            Assert.Equals( actual, expected );
         }
 
-        /// <summary>
-        ///A test for Real (string)
-        ///</summary>
-        [TestMethod()]
-        public void ConstructFromString()
+        [TestMethod]
+        public void EqualityFalse()
         {
-            string value = "3.1415926979";
+            bool expected = false;
+            Real left = 1.0;
+            Real right = 2.0;
+            bool actual = ( left == right );
 
-            Real target = new Real( value );
-
-            Assert.Equals( value, target );
+            Assert.Equals( actual, expected );
         }
+
+        [TestMethod]
+        public void InequalityTrue()
+        {
+            bool expected = true;
+            Real left = 1.0;
+            Real right = 2.0;
+            bool actual = ( left != right );
+
+            Assert.Equals( actual, expected );
+        }
+
+        [TestMethod]
+        public void InequalityFalse()
+        {
+            bool expected = false;
+            Real left = 3.0;
+            Real right = 3.0;
+            bool actual = ( left != right );
+
+            Assert.Equals( actual, expected );
+        }
+
+        [TestMethod]
+        public void NegateRealNegative()
+        {
+            Real expected = -1.0;
+            Real a = 1.0;
+            Real actual = -a;
+
+            Assert.Equals( actual, expected );
+        }
+
+        [TestMethod]
+        public void NegateRealPositive()
+        {
+            Real expected = 1.0;
+            Real a = -1.0;
+            Real actual = a;
+
+            Assert.Equals( actual, expected );
+        }
+        #endregion
+
+        #region CLS Compliant Operation Tests
+
+        [TestMethod]
+        public void CLSMethodAddRealtoReal()
+        {
+            Real a = 1.0;
+            Real b = 2.0;
+            Real actual = Real.Add( a, b );
+            Real expected = 3.0;
+
+            Assert.Equals( actual, expected );
+        }
+
+        [TestMethod]
+        public void CLSMethodSubtractRealFromReal()
+        {
+            Real a = 2.0;
+            Real b = 1.0;
+            Real actual = Real.Subtract( a, b );
+            Real expected = 1.0;
+
+            Assert.Equals( actual, expected );
+        }
+
+        [TestMethod]
+        public void CLSMethodMultiplyRealByReal()
+        {
+            Real a = 2.0;
+            Real b = 3.0;
+            Real actual = Real.Multiply( a, b );
+            Real expected = 6.0;
+
+            Assert.Equals( actual, expected );
+        }
+
+        [TestMethod]
+        public void CLSMethodNegateReal()
+        {
+            Real a = 1.0;
+            Real actual = Real.Negate( a );
+            Real expected = -1.0;
+
+            Assert.Equals( actual, expected );
+        }
+
+        [TestMethod]
+        public void CLSMethodEquals()
+        {
+            Real a = 1.0;
+            Real b = 1.0;
+
+            bool test = a.Equals( b );
+
+            Assert.IsTrue( test );
+        }
+
+        #endregion
 
     }
 }
