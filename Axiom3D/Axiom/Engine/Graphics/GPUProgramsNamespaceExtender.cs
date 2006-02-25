@@ -26,45 +26,44 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 using System;
-
-using Axiom;
+using System.Collections.Generic;
+using System.Text;
+using System.Collections;
 #endregion
 
-namespace Axiom.CgPrograms
+namespace Axiom
 {
-    /// <summary>
-    ///    Main plugin class.
-    /// </summary>
-    [PluginMetadata(Name = "CgProgramManager", 
-        Subsystem=typeof(HighLevelGpuProgramManager))]
-    public class CgPlugin : IPlugin
+    public class GPUProgramsNamespaceExtender : INamespaceExtender
     {
-        private CgProgramFactory factory;
-        private bool _isStarted = false;
-
-        public bool IsStarted
+        public IEnumerable<K> Subtree<K>()
         {
-            get { return _isStarted; }
+            if (typeof(K).GetInterface("IHighLevelGpuProgramFactory") == null)
+                throw new ArgumentOutOfRangeException("GPUProgramsNamespaceExtender supports only IHighLevelGpuProgramFactory-compatible instances");
+
+            IEnumerator
+                enu = ParticleSystemManager.Instance.Emitters.Values.GetEnumerator();
+
+            while (enu.MoveNext())
+                yield return (K)enu.Current;
         }
 
-        /// <summary>
-        ///    Called when the plugin is started.
-        /// </summary>
-        public void Start()
-        {
-            // register our Cg Program Factory
-            factory = new CgProgramFactory();
+        const string 
+            NAMESPACE_NAME = "/Axiom/GPUPrograms/";
 
-            HighLevelGpuProgramManager.Instance.AddFactory( factory );
-            _isStarted = true;
+        public string Namespace
+        {
+            get 
+            { 
+                return NAMESPACE_NAME; 
+            }
         }
 
-        /// <summary>
-        ///    Called when the plugin is stopped.
-        /// </summary>
-        public void Stop()
+        public K GetObject<K>(string objectName)
         {
-            //factory.Dispose();
+            if (typeof(K).GetInterface("IHighLevelGpuProgramFactory") == null)
+                throw new ArgumentOutOfRangeException("GPUProgramsNamespaceExtender supports only IHighLevelGpuProgramFactory-compatible instances");
+
+            return (K)((object)GpuProgramManager.Instance.GetByName(objectName));
         }
     }
 }

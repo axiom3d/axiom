@@ -11,18 +11,19 @@ namespace Axiom
         {
             IEnumerator
                 enu = ParticleSystemManager.Instance.Affectors.Values.GetEnumerator();
+            
+            if (typeof(K) != typeof(ParticleAffectorFactory) &&
+                !typeof(K).IsSubclassOf(typeof(ParticleAffectorFactory)))
+                throw new ArgumentOutOfRangeException("AffectorNamespaceExtender supports only ParticleAffectorFactory instances or descendants");
 
             while (enu.MoveNext())
-                if (enu.Current.GetType() == typeof(K) ||
-                    enu.Current.GetType().IsSubclassOf(typeof(K)) ||
-                    enu.Current.GetType().GetInterface(typeof(K).FullName) != null)
                     yield return (K)enu.Current;
         }
 
         public K GetObject<K>(string objectName)
         {
-            if (typeof(K) == typeof(ParticleEmitterFactory) ||
-                typeof(K).IsSubclassOf(typeof(ParticleEmitterFactory)))
+            if (typeof(K) == typeof(ParticleAffectorFactory) ||
+                typeof(K).IsSubclassOf(typeof(ParticleAffectorFactory)))
                 return (K)((object)ParticleSystemManager.Instance.Affectors[objectName]);
             else
                 return default(K);
