@@ -870,9 +870,9 @@ namespace Axiom.MathLib
 
             for ( int iCol = 0; iCol < 3; iCol++ )
             {
-                rotation[ 0 ][ iCol ] = akAxis[ iCol ].x;
-                rotation[ 1 ][ iCol ] = akAxis[ iCol ].y;
-                rotation[ 2 ][ iCol ] = akAxis[ iCol ].z;
+                rotation[ 0 , iCol ] = akAxis.x;
+                rotation[ 1 , iCol ] = akAxis.y;
+                rotation[ 2 , iCol ] = akAxis.z;
             }
 
             // set this quaternions values from the rotation matrix built
