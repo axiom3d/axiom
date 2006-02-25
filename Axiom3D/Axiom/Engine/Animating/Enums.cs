@@ -30,13 +30,7 @@ using System;
 
 #endregion
 
-#region Versioning Information
-/// File								Revision
-/// ===============================================
-/// OgreBillboard.h		                1.13
-/// OgreBillboard.cpp		            1.13
-/// 
-#endregion
+
 
 namespace Axiom
 {

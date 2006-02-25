@@ -27,7 +27,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom;
 using Axiom.MathLib;
-
+#region Ogre Synchronization Information
+/// <ogresynchronization>
+///     <file name="Bone.h"   revision="1.17" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+///     <file name="Bone.cpp" revision="1.22" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
+#endregion
 namespace Axiom
 {
     /// <summary>

@@ -29,6 +29,14 @@ using System;
 using Axiom;
 using Axiom.MathLib;
 
+
+#region Ogre Synchronization Information
+/// <ogresynchronization>
+///     <file name="TagPoint.h"   revision="1.10.2.2" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+///     <file name="TagPoint.cpp" revision="1.12" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
+#endregion
+
 namespace Axiom
 {
 	/// <summary>
@@ -77,12 +85,24 @@ namespace Axiom
 
 		#endregion Constructor
 
-		#region Properties
+		#region Methods
 
+		#endregion
+
+
+		#region Properties
+		public override LightList Lights
+		{
+			get
+			{
+				return parentEntity.ParentSceneNode.FindLights(parentEntity.BoundingRadius);
+			}
+		}
 		/// <summary>
 		///		Gets/Sets the object attached to this tagpoint.
 		/// </summary>
-		public MovableObject ChildObject {
+		public MovableObject ChildObject 
+		{
 			get {
 				return childObject;
 			}
