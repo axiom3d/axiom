@@ -1,0 +1,84 @@
+NUnit 2.2.2 Iteration Release - December 7, 2004
+
+Extensibility Features in NUnit
+
+NUnit originally identified tests in the time-honored way that is still used in JUnit today. Test classes inherited from the framework's TestCase class. Individual test case methods were identified by their naming pattern.
+
+With NUnit 2.0, we introduced the use of attributes to identify both fixtures and test cases. This was heralded by many as an advance - and indeed it was. Use of attributes for identifying test cases is a natural outcome of their presence in .NET.
+
+However, one thing was lost in the transition. JUnit has a simple, readily available mechanism for extending test cases and fixtures: inheritance. Because each user fixture is_a TestCase, it's quite easy to modify test behavior by extending TestCase.
+
+On the other hand, NUNit's TestCase, TestSuite and other classes are purely internal, and are not designed to be inherited from by user fixtures. Rather, they construct and manage the user fixture objects. Of course, it is possible to inherit from these internal classes and introduce new behavior. But, without changing NUnit itself, there has been no way to induce the test runner to make use of the new classes.
+
+With NUnit 2.2.1, we introduced an experimental extensibility mechanism that makes up for this deficit. We call it experimental, because we want to signal that the interfaces described are by no means final. In fact, we expect them to change over the next few iteration releases in response to the feedback we receive from users.
+
+Currently, we are providing three separate extensibility mechanisms, one for Test Suites, one for Test Cases and a third for defining new assertions. The approaches taken for suites and test cases are similar, but not identical. We expect to select a common approach for the next release and are looking for input on this issue, among others.
+
+Test Suite Extensions
+
+User-defined test suites are built by a SuiteBuilder. This is a class that implements the ISuiteBuilder interface, defined as follows:
+
+	public interface ISuiteBuilder
+	{
+	  bool CanBuildFrom( Type type );
+	  TestSuite BuildFrom( Type type, int assemblyKey );
+	}
+
+In the current implementation, user suite buite builder classes must be located in one of the test assemblies. Later releases will allow suite builders to be installed as standard extensions to NUnit. These classes are identified to NUnit by use of the SuiteBuilderAttribute.
+
+	[SuiteBuilder]
+	public class MyBuilder : ISuiteBuilder
+	{
+	  // Implementation of MyBuilder...
+	}
+
+As you can see above, the CanBuildFrom method takes a single argument, a System.Type, and returns true if the builder knows how to build a fixture from that type, false if not. All knowledge about how a particular extension is identified can be encapsulated in the builder. Most frequently, we expect that the builder will examine the type passed in to see if it carries a specially-defined attribute. However, other approaches (for example, use of inheritance) can be supported equally well.
+
+The second method, BuildFrom, was originally designed to take a Type and create an appropriate TestSuite-derived class from it. The object returned may inherit directly from TestSuite or from another derived class such as TestFixture if the user wishes to take advantage of functionality already present. Note that it is the responsibility of the test suite builder to somehow recognize any test cases contained in the suite. If you want to designate test cases using some other mechanism than what is built into NUnit, you will need to include code to do so either in the builder or in your custom suite class.
+
+Unfortunately, a problem discovered just as this release was completed forced us to add a second argument to BuildFrom. This is an int, assemblyKey, which must be passed as an argument to your derived class constructor. In turn, that constructor should pass it on to one of the base constructors. Failure to do this will cause problems when running multiple assemblies. This requirement will be removed in a subsequent release.
+
+All of this is most easily understood through an example and one is provided in the NUnit tests themselves. See MockSuiteBuilder.cs in the framework tests. Since NUnit uses the SuiteBuilder mechanism internally, you may also wish to examine the core classes TestFixtureBuilder and LegacySuiteBuilder.
+
+Test Case Extensions
+
+Test case extensions are intended for special kinds of test cases intended to be used in any suite or fixture. A test case type that is only intended to be used in your suite extension should be created by the suite builder.
+
+In the current implementation, test case extensions must be identified by a user-defined attribute. For example:
+
+	[AttributeUsage(AttributeTargets.Method, 
+	   AllowMultiple=false)]
+	[TestBuilder(typeof( MyTestBuilder ))]
+	public class MyTestAttribute : System.Attribute
+	{
+	}
+
+Note that the user-defined attribute is itself marked with the TestBuilderAttribute, which in turn indicates the class of the builder to be used for such test cases. The test builder class
+must implement the ITestBuilder interface:
+
+	public interface ITestBuilder 
+	{
+	  TestCase Make(Type fixtureType, 
+	    MethodInfo method, 
+	    object attribute);
+	}
+ 
+The Make method should use the arguments to construct and return a test case, which will then be inserted into the tree of tests by NUnit.
+
+For an example of a test case extension, see RepeatedTestBuilder in the extensions directory.
+
+Assert Extensions
+
+With NUnit 2.2.2, we introduced the IAsserter interface and asserter objects. Each static Assert method creates an asserter object and calls it's Assert method. By creating an object to represent each instance of an assertion, we enable users to use inheritance in defining their own assertions.
+
+As of NUnit 2.2.3, this mechanism has been improved. The IAsserter interface now separates testing the assertion from the retrieval of the failure message:
+
+	interface IAsserter
+	{
+		bool Test();
+		string Message { get; }
+	}
+
+This new approach takes the action of throwing an exception entirely out of the asserter object and makes it much easier to test.
+
+For an example of how to create your own Assert verbs with this mechanism, see the StringAssert and TypeAssert class in the nunit.extensions assembly as well as the standard Assert methods in nunit.framework.
