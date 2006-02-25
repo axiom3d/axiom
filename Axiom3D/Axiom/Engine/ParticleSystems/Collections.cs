@@ -10,4 +10,9 @@ namespace Axiom
     public class AffectorList : ArrayList
     {
     }
+
+    public class ParticleList : ArrayList
+    {
+    }
+
 }

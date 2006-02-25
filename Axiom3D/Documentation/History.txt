@@ -1,3 +1,10 @@
+2005-09-27 Michael Cummings [Borrillis]
+- Added a few new classes that were missing from the Ogre versions (ResourceGroupManager, ParticleSystemRenderer* )
+- Added missing properties and Methods to the various ParticleSystems classes.
+Notes: Work nearly complete on the Billboard/ParticleSystems of the main engine. Still needs some going over, but for now it builds again. 
+One place in particular that needs some refactoring are the Events/Listeners of the ResourceGroupManager. Once I have everything
+set I'll add the versioning tags. One thing I have noted in this process is that I am going to so love moving this code to .Net 2.0
+
 2005-09-22 Michael Cummings [Borrillis]
 - Started collapsing namespaces in Axiom.dll, all namespaces will become Axiom. This differs slightly from the Ogre version for now,
   I am planning on renaming it to Axiom.
