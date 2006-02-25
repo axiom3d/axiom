@@ -26,6 +26,7 @@ using System.Collections;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using System.Windows.Forms;
 
 using RealmForge;
 
@@ -41,7 +42,7 @@ namespace Axiom.Demos
     /// </summary>
     public class Program : IDisposable
     {
-        protected const string CONFIG_FILE = @"..\..\EngineConfig.xml";
+        protected const string CONFIG_FILE = @"EngineConfig.xml";
 
         private RenderWindow window;
         private Root engine;
@@ -55,10 +56,9 @@ namespace Axiom.Demos
 
             // HACK: Temporary
             ConfigDialog dlg = new ConfigDialog();
-            dlg.ShowDialog();
-
-            RenderSystem renderSystem = Root.Instance.RenderSystems[ 0 ];
-            Root.Instance.RenderSystem = renderSystem;
+            DialogResult result = dlg.ShowDialog();
+            if ( result == DialogResult.Cancel )
+                return false;
 
             window = Root.Instance.Initialize( true, "Axiom Technical Demos" );
 
@@ -72,64 +72,87 @@ namespace Axiom.Demos
         {
             string resourceConfigPath = Path.GetFullPath( CONFIG_FILE );
 
-            //if ( File.Exists( resourceConfigPath ) )
+            if ( File.Exists( resourceConfigPath ) )
             {
-                ConfigOptionCollection config = new ConfigOptionCollection();
+                EngineConfig config = new EngineConfig();
 
                 // load the config file
                 // relative from the location of debug and releases executables
-                //config.ReadXmlFile( CONFIG_FILE );
+                config.ReadXml( CONFIG_FILE );
 
                 // interrogate the available resource paths
-                //foreach ( EngineConfig.FilePathRow row in config.FilePath )
-                //{
-                //    ResourceManager.AddCommonArchive( row.src, row.type );
-                //}
-                ResourceManager.AddCommonArchive( @"../../../../Media\Textures", "Folder" );
-                ResourceManager.AddCommonArchive( @"../../../../Media\Icons", "Folder" );
-                ResourceManager.AddCommonArchive( @"../../../../Media\Sounds", "Folder" );
-                ResourceManager.AddCommonArchive( @"../../../../Media\Fonts", "Folder" );
-                ResourceManager.AddCommonArchive( @"../../../../Media\Meshes", "Folder" );
-                ResourceManager.AddCommonArchive( @"../../../../Media\Skeletons", "Folder" );
-                ResourceManager.AddCommonArchive( @"../../../../Media\Materials", "Folder" );
-                ResourceManager.AddCommonArchive( @"../../../../Media\Materials\Entities", "Folder" );
-                ResourceManager.AddCommonArchive( @"../../../../Media\Overlays", "Folder" );
-                ResourceManager.AddCommonArchive( @"../../../../Media\GpuPrograms", "Folder" );
-                ResourceManager.AddCommonArchive( @"../../../../Media\Terrain", "Folder" );
-                ResourceManager.AddCommonArchive( @"../../../../Media\Terrain\ps_height_1k", "Folder" );
-                ResourceManager.AddCommonArchive( @"../../../../Media\Temp", "Folder" );
-                ResourceManager.AddCommonArchive( @"../../../../Media\Particles", "Folder" );
-                ResourceManager.AddCommonArchive( @"../../../../Media\Logos", "Folder" );
-                ResourceManager.AddCommonArchive( @"../../../../Media\GUI", "Folder" );
-                ResourceManager.AddCommonArchive( @"../../../../Media\Cursors", "Folder" );
-                ResourceManager.AddCommonArchive( @"../../../../Media\Archives\chiropteraDM.zip", "ZipFile" );
-                ResourceManager.AddCommonArchive( @"../../../../Media\Archives\TechDemoPreviews.zip", "ZipFile" );
+                foreach ( EngineConfig.FilePathRow row in config.FilePath )
+                {
+                    ResourceManager.AddCommonArchive( row.src, row.type );
+                }
             }
         }
+
+        //private void _setupResources()
+        //{
+        //    string resourceConfigPath = Path.GetFullPath( CONFIG_FILE );
+
+        //    //if ( File.Exists( resourceConfigPath ) )
+        //    {
+        //        ConfigOptionCollection config = new ConfigOptionCollection();
+
+        //        // load the config file
+        //        // relative from the location of debug and releases executables
+        //        config.ReadXmlFile( CONFIG_FILE );
+
+        //        // interrogate the available resource paths
+        //        foreach ( EngineConfig.FilePathRow row in config.FilePath )
+        //        {
+        //            ResourceManager.AddCommonArchive( row.src, row.type );
+        //        }
+        //        //ResourceManager.AddCommonArchive( @"../../../../Media\Textures", "Folder" );
+        //        //ResourceManager.AddCommonArchive( @"../../../../Media\Icons", "Folder" );
+        //        //ResourceManager.AddCommonArchive( @"../../../../Media\Sounds", "Folder" );
+        //        //ResourceManager.AddCommonArchive( @"../../../../Media\Fonts", "Folder" );
+        //        //ResourceManager.AddCommonArchive( @"../../../../Media\Meshes", "Folder" );
+        //        //ResourceManager.AddCommonArchive( @"../../../../Media\Skeletons", "Folder" );
+        //        //ResourceManager.AddCommonArchive( @"../../../../Media\Materials", "Folder" );
+        //        //ResourceManager.AddCommonArchive( @"../../../../Media\Materials\Entities", "Folder" );
+        //        //ResourceManager.AddCommonArchive( @"../../../../Media\Overlays", "Folder" );
+        //        //ResourceManager.AddCommonArchive( @"../../../../Media\GpuPrograms", "Folder" );
+        //        //ResourceManager.AddCommonArchive( @"../../../../Media\Terrain", "Folder" );
+        //        //ResourceManager.AddCommonArchive( @"../../../../Media\Terrain\ps_height_1k", "Folder" );
+        //        //ResourceManager.AddCommonArchive( @"../../../../Media\Temp", "Folder" );
+        //        //ResourceManager.AddCommonArchive( @"../../../../Media\Particles", "Folder" );
+        //        //ResourceManager.AddCommonArchive( @"../../../../Media\Logos", "Folder" );
+        //        //ResourceManager.AddCommonArchive( @"../../../../Media\GUI", "Folder" );
+        //        //ResourceManager.AddCommonArchive( @"../../../../Media\Cursors", "Folder" );
+        //        //ResourceManager.AddCommonArchive( @"../../../../Media\Archives\chiropteraDM.zip", "ZipFile" );
+        //        //ResourceManager.AddCommonArchive( @"../../../../Media\Archives\TechDemoPreviews.zip", "ZipFile" );
+        //    }
+        //}
+
         public void Run()
         {
-            _configure();
-
-            string next = "";
-
-            while ( next != "exit" )
+            if ( _configure() )
             {
-                using ( DemoList mainDemo =  new DemoList() )
-                {
-                    next = mainDemo.Start( window );
-                }
 
-                if ( next != "exit" )
-                {
-                    Type demoType = Assembly.GetExecutingAssembly().GetType( "Axiom.Demos." + next );
+                string next = "";
 
-                    using ( TechDemo demo = (TechDemo)Assembly.GetExecutingAssembly().CreateInstance( "Axiom.Demos." + next ) )
+                while ( next != "exit" )
+                {
+                    using ( DemoList mainDemo = new DemoList() )
                     {
-                        demo.Start( window );//show and start rendering
-                    }//dispose of it when done
+                        next = mainDemo.Start( window );
+                    }
+
+                    if ( next != "exit" )
+                    {
+                        Type demoType = Assembly.GetExecutingAssembly().GetType( "Axiom.Demos." + next );
+
+                        using ( TechDemo demo = (TechDemo)Assembly.GetExecutingAssembly().CreateInstance( "Axiom.Demos." + next ) )
+                        {
+                            demo.Start( window );//show and start rendering
+                        }//dispose of it when done
+
+                    }
 
                 }
-
             }
         }
 

@@ -49,7 +49,7 @@ namespace Axiom.Demos
         private GroupBox grpVideoOptions;
         private Label lblRenderer;
         private Label lblOption;
-        private ComboBox cboResolution;
+        private ComboBox cboOptionValues;
         private ListBox lstOptions;
         private Button cmdCancel;
         private Button cmdOk;
@@ -63,10 +63,18 @@ namespace Axiom.Demos
 
             try
             {
-                Stream icon = ResourceManager.FindCommonResourceData( "AxiomLogoSmall.png" );
+                Stream image = ResourceManager.FindCommonResourceData( "AxiomLogoSmall.png" );
+                Stream icon = ResourceManager.FindCommonResourceData( "AxiomIcon.ico" );
 
-                this.picLogo.Image = System.Drawing.Image.FromStream( icon, true );
-                this.Icon = new Icon( icon );
+                if ( image != null )
+                {
+                    this.picLogo.Image = System.Drawing.Image.FromStream( image, true );
+                }
+
+                if ( icon != null )
+                {
+                    this.Icon = new Icon( icon );
+                }
             }
             catch ( Exception )
             {
@@ -90,7 +98,7 @@ namespace Axiom.Demos
             this.picLogo = new System.Windows.Forms.PictureBox();
             this.grpVideoOptions = new System.Windows.Forms.GroupBox();
             this.lblOption = new System.Windows.Forms.Label();
-            this.cboResolution = new System.Windows.Forms.ComboBox();
+            this.cboOptionValues = new System.Windows.Forms.ComboBox();
             this.lstOptions = new System.Windows.Forms.ListBox();
             this.lblRenderer = new System.Windows.Forms.Label();
             this.cboRenderSystems = new System.Windows.Forms.ComboBox();
@@ -114,7 +122,7 @@ namespace Axiom.Demos
             // grpVideoOptions
             // 
             this.grpVideoOptions.Controls.Add( this.lblOption );
-            this.grpVideoOptions.Controls.Add( this.cboResolution );
+            this.grpVideoOptions.Controls.Add( this.cboOptionValues );
             this.grpVideoOptions.Controls.Add( this.lstOptions );
             this.grpVideoOptions.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.grpVideoOptions.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
@@ -135,28 +143,30 @@ namespace Axiom.Demos
             this.lblOption.Name = "lblOption";
             this.lblOption.Size = new System.Drawing.Size( 128, 22 );
             this.lblOption.TabIndex = 9;
-            this.lblOption.Text = "Resolution:";
+            this.lblOption.Text = "Option Name:";
             this.lblOption.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblOption.Visible = false;
             // 
-            // cboResolution
+            // cboOptionValues
             // 
-            this.cboResolution.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboResolution.Font = new System.Drawing.Font( "Palatino Linotype", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
-            this.cboResolution.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
-            //this.cboResolution.FormattingEnabled = true;
-            this.cboResolution.Location = new System.Drawing.Point( 238, 158 );
-            this.cboResolution.Name = "cboResolution";
-            this.cboResolution.Size = new System.Drawing.Size( 176, 24 );
-            this.cboResolution.TabIndex = 8;
+            this.cboOptionValues.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboOptionValues.Font = new System.Drawing.Font( "Palatino Linotype", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
+            this.cboOptionValues.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
+            this.cboOptionValues.Location = new System.Drawing.Point( 238, 158 );
+            this.cboOptionValues.Name = "cboOptionValues";
+            this.cboOptionValues.Size = new System.Drawing.Size( 176, 24 );
+            this.cboOptionValues.TabIndex = 8;
+            this.cboOptionValues.Visible = false;
+            this.cboOptionValues.SelectedIndexChanged += new System.EventHandler( this.cboOptionValues_SelectedIndexChanged );
             // 
             // lstOptions
             // 
-            //this.lstOptions.FormattingEnabled = true;
             this.lstOptions.ItemHeight = 14;
             this.lstOptions.Location = new System.Drawing.Point( 7, 22 );
             this.lstOptions.Name = "lstOptions";
             this.lstOptions.Size = new System.Drawing.Size( 407, 130 );
             this.lstOptions.TabIndex = 0;
+            this.lstOptions.SelectedIndexChanged += new System.EventHandler( this.lstOptions_SelectedIndexChanged );
             // 
             // lblRenderer
             // 
@@ -175,7 +185,6 @@ namespace Axiom.Demos
             this.cboRenderSystems.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboRenderSystems.Font = new System.Drawing.Font( "Palatino Linotype", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
             this.cboRenderSystems.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
-            //this.cboRenderSystems.FormattingEnabled = true;
             this.cboRenderSystems.Location = new System.Drawing.Point( 145, 185 );
             this.cboRenderSystems.Name = "cboRenderSystems";
             this.cboRenderSystems.Size = new System.Drawing.Size( 285, 24 );
@@ -189,7 +198,7 @@ namespace Axiom.Demos
             this.cmdCancel.Size = new System.Drawing.Size( 75, 23 );
             this.cmdCancel.TabIndex = 10;
             this.cmdCancel.Text = "Cancel";
-            this.cmdCancel.Click += new System.EventHandler( cmdCancel_Click );
+            this.cmdCancel.Click += new System.EventHandler( this.cmdCancel_Click );
             // 
             // cmdOk
             // 
@@ -198,7 +207,7 @@ namespace Axiom.Demos
             this.cmdOk.Size = new System.Drawing.Size( 75, 23 );
             this.cmdOk.TabIndex = 11;
             this.cmdOk.Text = "Ok";
-            this.cmdOk.Click += new System.EventHandler( cmdOk_Click );
+            this.cmdOk.Click += new System.EventHandler( this.cmdOk_Click );
             // 
             // pnlBackground
             // 
@@ -210,9 +219,6 @@ namespace Axiom.Demos
             // 
             // ConfigDialog
             // 
-            //this.AutoScaleDimensions = new System.Drawing.SizeF( 96F, 96F );
-            //this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            //this.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.ClientSize = new System.Drawing.Size( 442, 436 );
             this.ControlBox = false;
             this.Controls.Add( this.cmdOk );
@@ -222,7 +228,6 @@ namespace Axiom.Demos
             this.Controls.Add( this.cboRenderSystems );
             this.Controls.Add( this.picLogo );
             this.Controls.Add( this.pnlBackground );
-            //this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
@@ -240,15 +245,23 @@ namespace Axiom.Demos
         private void cmdOk_Click( object sender, EventArgs e )
         {
             Root.Instance.RenderSystem = (RenderSystem)cboRenderSystems.SelectedItem;
-            //EngineConfig.DisplayModeRow mode = Root.Instance.RenderSystem.ConfigOptions.DisplayMode[cboResolution.SelectedIndex];
-            //mode.FullScreen = chkFullscreen.Checked;
-            //mode.Selected = true;
-            //SaveDisplaySettings( cboRenderSystems.SelectedIndex.ToString(), cboResolution.SelectedIndex.ToString(), chkFullscreen.Checked.ToString() );
+
+            RenderSystem system = Root.Instance.RenderSystem;
+
+            foreach ( ConfigOption opt in lstOptions.Items )
+            {
+               system.ConfigOptions[ opt.Name ] = opt;
+            }
+
+            //TODO: Use ConfigurationSectionHandler to save config out to config file.
+
+            this.DialogResult = DialogResult.OK;
             this.Close();
         }
 
         private void cmdCancel_Click( object sender, EventArgs e )
         {
+            this.DialogResult = DialogResult.Cancel;
             this.Dispose();
         }
 
@@ -259,133 +272,61 @@ namespace Axiom.Demos
                 cboRenderSystems.Items.Add( renderSystem );
             }
 
-            XmlTextReader settingsReader = null;
+            if ( cboRenderSystems.Items.Count > 0 )
+                cboRenderSystems.SelectedIndex = 0;
 
-            try
-            {
-                string temp = string.Empty;
-
-                settingsReader = new XmlTextReader( "DisplayConfig.xml" );
-
-                while ( settingsReader.Read() )
-                {
-                    if ( settingsReader.NodeType == XmlNodeType.Element )
-                    {
-                        if ( settingsReader.LocalName.Equals( "RenderSystem" ) )
-                        {
-                            temp = settingsReader.ReadString();
-                            if ( cboRenderSystems.Items.Count > int.Parse( temp ) )
-                            {
-                                cboRenderSystems.SelectedIndex = int.Parse( temp );
-                            }
-                            else
-                            {
-                                cboRenderSystems.SelectedIndex = 1;
-                            }
-                        }
-
-                        if ( settingsReader.LocalName.Equals( "Resolution" ) )
-                        {
-                            temp = settingsReader.ReadString();
-                            if ( cboResolution.Items.Count > int.Parse( temp ) )
-                            {
-                                cboResolution.SelectedIndex = int.Parse( temp );
-                            }
-                            else
-                            {
-                                cboResolution.SelectedIndex = ( cboResolution.Items.Count - 1 );
-                            }
-                        }
-
-                        if ( settingsReader.LocalName.Equals( "FullScreen" ) )
-                        {
-                            if ( settingsReader.ReadString() == "True" )
-                            {
-                                //chkFullscreen.Checked = true;
-                            }
-                            else
-                            {
-                                //chkFullscreen.Checked = false;
-                            }
-                        }
-                    }
-                }
-            }
-            catch ( FileNotFoundException )
-            {
-                // HACK: Trying to force Tao.OpenGl to be listed first.
-                if ( cboRenderSystems.Items.Count > 1 )
-                {
-                    cboRenderSystems.SelectedIndex = 1;
-                }
-                else
-                {
-                    cboRenderSystems.SelectedIndex = 0;
-                }
-
-                cboResolution.SelectedIndex = 0;
-            }
-            finally
-            {
-                if ( settingsReader != null )
-                {
-                    settingsReader.Close();
-                }
-            }
+            //TODO: Read configuration Settings from config file using ConfigurationSectionHandler
         }
 
         private void RenderSystems_SelectedIndexChanged( object sender, EventArgs e )
         {
             lstOptions.Items.Clear();
-            cboResolution.Items.Clear();
+            cboOptionValues.Items.Clear();
             RenderSystem system = (RenderSystem)cboRenderSystems.SelectedItem;
             ConfigOption optVideoMode;
 
             // Load Render Subsystem Options
             foreach ( ConfigOption option in system.ConfigOptions )
-                lstOptions.Items.Add( string.Format( "{0} : {1}" , option.Name,option.Value) );
-
-            optVideoMode = system.ConfigOptions["Video Mode"];
-            foreach ( string mode in optVideoMode.PossibleValues )
-                cboResolution.Items.Add( mode );
-
-            if ( cboResolution.Items.Count == 0 )
             {
-                cboResolution.Items.Add( optVideoMode.Value );
+                lstOptions.Items.Add( option );
             }
-            cboResolution.SelectedIndex = 0;
+
         }
-        
-        private void loadRenderSystemOptions()
+
+        private void lstOptions_SelectedIndexChanged( object sender, EventArgs e )
         {
+     
             RenderSystem system = (RenderSystem)cboRenderSystems.SelectedItem;
+            ConfigOption opt = (ConfigOption)lstOptions.SelectedItem;
 
+            cboOptionValues.Items.Clear();
+            foreach ( string value in opt.PossibleValues )
+                cboOptionValues.Items.Add( value );
+
+            if ( cboOptionValues.Items.Count == 0 )
+            {
+                cboOptionValues.Items.Add( opt.Value );
+            }
+            cboOptionValues.SelectedIndex = cboOptionValues.Items.IndexOf( opt.Value );
+
+            this.lblOption.Text = opt.Name;
+            this.lblOption.Visible = true;
+            this.cboOptionValues.Visible = true;
+            this.cboOptionValues.Enabled = ( !opt.Immutable );
         }
-        
 
-        public void SaveDisplaySettings( string renderSystem, string resolution, string fullScreen )
+        private void cboOptionValues_SelectedIndexChanged( object sender, EventArgs e )
         {
-            XmlTextWriter settingsWriter = new XmlTextWriter( "DisplayConfig.xml", null );
-            settingsWriter.Formatting = Formatting.Indented;
-            settingsWriter.Indentation = 6;
-            settingsWriter.Namespaces = false;
+            ConfigOption opt = (ConfigOption)lstOptions.SelectedItem;
+            string value = (string)cboOptionValues.SelectedItem;
 
-            settingsWriter.WriteStartDocument();
-            settingsWriter.WriteStartElement( "", "Settings", "" );
-            settingsWriter.WriteStartElement( "", "RenderSystem", "" );
-            settingsWriter.WriteString( renderSystem );
-            settingsWriter.WriteEndElement();
+            opt.Value = value;
 
-            settingsWriter.WriteStartElement( "", "Resolution", "" );
-            settingsWriter.WriteString( resolution );
-            settingsWriter.WriteEndElement();
+            int index = lstOptions.SelectedIndex;
+            this.lstOptions.SelectedIndexChanged -= new System.EventHandler( this.lstOptions_SelectedIndexChanged );
+            lstOptions.Items[ index ] = opt;
+            this.lstOptions.SelectedIndexChanged += new System.EventHandler( this.lstOptions_SelectedIndexChanged );
+        }        
 
-            settingsWriter.WriteStartElement( "", "FullScreen", "" );
-            settingsWriter.WriteString( fullScreen );
-            settingsWriter.WriteEndElement();
-            settingsWriter.WriteEndElement();
-            settingsWriter.WriteEndDocument();
-            settingsWriter.Flush();
-        }
     }
 }

@@ -90,20 +90,19 @@ namespace Axiom.RenderSystems.OpenGL
 
             if ( autoCreateWindow )
             {
-                //EngineConfig.DisplayModeRow[] modes =
-                //    (EngineConfig.DisplayModeRow[])engineConfig.DisplayMode.Select( "Selected = true" );
-
-                //EngineConfig.DisplayModeRow mode = modes[0];
-
-                //int width = mode.Width;
-                //int height = mode.Height;
-                //int bpp = mode.Bpp;
-                //bool fullscreen = mode.FullScreen;
-
                 int width = 640;
                 int height = 480;
                 int bpp = 32;
                 bool fullscreen = false;
+
+                ConfigOption optVM = ConfigOptions[ "Video Mode" ];
+                string vm = optVM.Value;
+                width = int.Parse( vm.Substring( 0, vm.IndexOf( "x" ) ) );
+                height = int.Parse( vm.Substring( vm.IndexOf( "x" ) + 1, vm.IndexOf( "@" ) - ( vm.IndexOf( "x" ) + 1 ) ) );
+                bpp = int.Parse( vm.Substring( vm.IndexOf( "@" ) + 1, vm.IndexOf( "-" ) - ( vm.IndexOf( "@" ) + 1 ) ) );
+
+                fullScreen = ( ConfigOptions[ "Full Screen" ].Value == "Yes" );
+
 
                 // create a default form to use for a rendering target
                 DefaultForm form = CreateDefaultForm( windowTitle, 0, 0, width, height, fullscreen );

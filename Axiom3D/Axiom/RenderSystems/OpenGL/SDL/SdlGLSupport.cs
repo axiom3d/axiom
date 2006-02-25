@@ -58,7 +58,7 @@ namespace Axiom.RenderSystems.OpenGL
                 // filter out the lower resolutions and dupe frequencies
                 if ( width >= 640 && height >= 480)
                 {
-                    string query = string.Format( "{0} x {1}", width, height );
+                    string query = string.Format( "{0} x {1} @ {2}-bit colour", width, height, 32 );
 
                     if ( !option.PossibleValues.Contains( query ) )
                     {
@@ -130,10 +130,18 @@ namespace Axiom.RenderSystems.OpenGL
                 int width = 640;
                 int height = 480;
                 int bpp = 32;
-                bool fullscreen = false;
+                bool fullScreen = false;
+
+                ConfigOption optVM = ConfigOptions[ "Video Mode" ];
+                string vm = optVM.Value;
+                width = int.Parse( vm.Substring( 0, vm.IndexOf( "x" ) ) );
+                height = int.Parse( vm.Substring( vm.IndexOf( "x" ) + 1, vm.IndexOf( "@" ) - ( vm.IndexOf( "x" ) + 1 ) ) );
+                bpp = int.Parse( vm.Substring( vm.IndexOf( "@" ) + 1, vm.IndexOf( "-" ) - ( vm.IndexOf( "@" ) + 1 ) ) );
+
+                fullScreen = ( ConfigOptions[ "Full Screen" ].Value == "Yes" );
 
                 // create the window with the default form as the target
-                autoWindow = renderSystem.CreateRenderWindow( windowTitle, width, height, 32, fullscreen, 0, 0, true, false, null );
+                autoWindow = renderSystem.CreateRenderWindow( windowTitle, width, height, 32, fullScreen, 0, 0, true, false, null );
             }
 
             return autoWindow;

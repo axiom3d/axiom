@@ -589,18 +589,18 @@ namespace Axiom.RenderSystems.DirectX9
 
             if ( autoCreateWindow )
             {
-                int width = 800;
-                int height = 600;
+                int width = 640;
+                int height = 480;
                 int bpp = 32;
                 bool fullScreen = false;
-                //DataRow[] modes = ConfigOptions["Video Mode"];
+                
+                ConfigOption optVM = ConfigOptions["Video Mode"];
+                string vm = optVM.Value;
+                width = int.Parse( vm.Substring(0,vm.IndexOf( "x" )));
+                height = int.Parse( vm.Substring( vm.IndexOf( "x" ) + 1, vm.IndexOf( "@" ) - ( vm.IndexOf( "x" ) + 1 ) ) );
+                bpp = int.Parse( vm.Substring( vm.IndexOf( "@" ) + 1, vm.IndexOf( "-" ) - ( vm.IndexOf( "@" ) + 1 ) ) );
 
-                //if ( modes == null || modes.Length == 0 )
-                //{
-                //    throw new Exception( "No video mode is selected" );
-                //}
-
-                //EngineConfig.DisplayModeRow mode = (EngineConfig.DisplayModeRow)modes[0];
+                fullScreen = (ConfigOptions[ "Full Screen" ].Value == "Yes");
 
                 // create a default form window
                 DefaultForm newWindow = CreateDefaultForm( windowTitle, 0, 0, width, height, fullScreen );
@@ -1427,14 +1427,14 @@ namespace Axiom.RenderSystems.DirectX9
                 //string query = string.Format( "{0} x {1} @ {2}-bit colour", mode.Width, mode.Height, mode.ColorDepth.ToString );
                 // add a new row to the display settings table
                 optDevice.PossibleValues.Add( driver.Description );
+                //foreach ( VideoMode mode in driver.VideoModes )
+                //{
+                //    string query = string.Format( "{0} x {1} @ {2}-bit colour", mode.Width, mode.Height, mode.ColorDepth.ToString );
+                //    // add a new row to the display settings table
+                //    optVideoMode.Add( mode.Width, mode.Height, mode.ColorDepth, false, false );
+                //}
             }
 
-            //foreach ( VideoMode mode in driver.VideoModes )
-            //{
-            //    string query = string.Format( "{0} x {1} @ {2}-bit colour", mode.Width, mode.Height, mode.ColorDepth.ToString );
-            //    // add a new row to the display settings table
-            //    optVideoMode.Add( mode.Width, mode.Height, mode.ColorDepth, false, false );
-            //}
 
             optFullScreen.PossibleValues.Add( "Yes" );
             optFullScreen.PossibleValues.Add( "No" );

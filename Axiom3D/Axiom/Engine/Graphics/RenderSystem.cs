@@ -300,6 +300,10 @@ namespace Axiom
         {
             // TODO Remove prioritized render targets
             renderTargets.Remove( target );
+            if ( renderTargets.Count == 0 )
+            {
+                Root.Instance.QueueEndRendering();
+            }
         }
 
         /// <summary>
