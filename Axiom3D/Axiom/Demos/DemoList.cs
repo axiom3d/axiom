@@ -1,21 +1,21 @@
 #region LGPL License
-/*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+/* 
+Axiom Game Engine Library 
+Copyright (C) 2003  Axiom Project Team 
 
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
+This library is free software; you can redistribute it and/or 
+modify it under the terms of the GNU Lesser General Public 
+License as published by the Free Software Foundation; either 
+version 2.1 of the License, or (at your option) any later version. 
 
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
+This library is distributed in the hope that it will be useful, 
+but WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+Lesser General Public License for more details. 
 
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+You should have received a copy of the GNU Lesser General Public 
+License along with this library; if not, write to the Free Software 
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
 */
 #endregion
 
@@ -40,30 +40,42 @@ namespace Axiom.Demos
         private ArrayList demoTypes;
         private string nextDemo;
 
+        //scene creation & semi-auto camera movement 
+        private float currentAngle;
+        private float stepAngle;
+        private int cameraMoveDir; //positive (right) or negative (left) indicates direction which camera is actually moving 
+        private float camAngle; //current camera angle (where currentAngle is only for scene creation) 
+        private float currentAngleStop = 0; //where the camera should stop (facing a statue) 
+
+        //make one or another greater (e.g. cam 600, menu 800 looks good with camera facing outwards, cam 1100 menu 900 looking to center) 
+        private const float cameraCircleR = 300; //camera circular path radius 
+        private const float menuCircleR = 800; //where entities representing menu shall be placed (statues) 
+
+
         Light sunLight;
 
         string[] atheneMaterials = new string[] { 
-			"Examples/Athene/NormalMapped",
-			"Examples/Athene/Basic" 
-		};
+         "Examples/Athene/NormalMapped", 
+         "Examples/Athene/Basic" 
+      };
 
         string[] shadowTechniqueDescriptions = new string[] { 
-			"Stencil Shadows (Additive)",
-			"Stencil Shadows (Modulative)",
-			"Texture Shadows (Modulative)",
-			"None"
-		};
+         "Stencil Shadows (Additive)", 
+         "Stencil Shadows (Modulative)", 
+         "Texture Shadows (Modulative)", 
+         "None" 
+      };
 
         ShadowTechnique[] shadowTechniques = new ShadowTechnique[] { 
-			ShadowTechnique.StencilAdditive,
-			ShadowTechnique.StencilModulative,
-			ShadowTechnique.TextureModulative,
-			ShadowTechnique.None
-		};
+         ShadowTechnique.StencilAdditive, 
+         ShadowTechnique.StencilModulative, 
+         ShadowTechnique.TextureModulative, 
+         ShadowTechnique.None 
+      };
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
+        /// <summary> 
+        /// Constructor 
+        /// </summary> 
         public DemoList()
         {
             Type[] types = Assembly.GetExecutingAssembly().GetTypes();
@@ -81,14 +93,14 @@ namespace Axiom.Demos
             {
                 if ( Setup( win ) )
                 {
-                    // start the engines rendering loop
+                    // start the engines rendering loop 
                     engine.StartRendering();
                 }
             }
             catch ( Exception ex )
             {
                 RealmForge.Log.Write( ex );
-                // try logging the error here first, before Root is disposed of
+                // try logging the error here first, before Root is disposed of 
                 if ( LogManager.Instance != null )
                 {
                     LogManager.Instance.Write( ex.Message );
@@ -99,12 +111,12 @@ namespace Axiom.Demos
 
         protected override void CreateScene()
         {
-            //scene.ShadowTechnique = ShadowTechnique.StencilAdditive;
+            //scene.ShadowTechnique = ShadowTechnique.StencilAdditive; 
 
-            // set ambient light off
+            // set ambient light off 
             scene.AmbientLight = ColorEx.White;
 
-            // fixed light, dim
+            // fixed light, dim 
             sunLight = scene.CreateLight( "SunLight" );
             sunLight.Type = LightType.Spotlight;
             sunLight.Position = new Vector3( camera.Position.x, 1250, camera.Position.z );
@@ -122,12 +134,17 @@ namespace Axiom.Demos
 
             short srcIdx, destIdx;
 
-            // the athene mesh requires tangent vectors
+            // the athene mesh requires tangent vectors 
             if ( !mesh.SuggestTangentVectorBuildParams( out srcIdx, out destIdx ) )
             {
                 mesh.BuildTangentVectors( srcIdx, destIdx );
             }
             SceneNode node;
+
+            stepAngle = ( 360.0f / (float)demoTypes.Count ); // * ((float)Math.PI / 180.0f); 
+            currentAngle = 0;
+
+
             for ( int i = 0; i < demoTypes.Count; i++ )
             {
                 Type type = (Type)demoTypes[ i ];
@@ -135,28 +152,30 @@ namespace Axiom.Demos
                 if ( type.Name == "DemoList" )
                     continue;
 
-                Entity ent = null;
 
-                node = scene.RootSceneNode.CreateChildSceneNode( type.Name );
-                ent = scene.CreateEntity( type.Name, "athene.mesh" );
+                //place menu entity (statue) 
+                Entity ent = scene.CreateEntity( type.Name, "athene.mesh" );
                 ent.MaterialName = atheneMaterials[ 1 ];
+                node = scene.RootSceneNode.CreateChildSceneNode( type.Name );
                 node.AttachObject( ent );
-                node.Translate( new Vector3(  ( i % 2 )==0? i * 100: (i-1)*100 , 0, (( i % 2 ) * -1 ) * 500 )  );
-                if ( i % 2 == 0 )
-                {
-                    node.Yaw( 180 );
-                }
 
+                //get our point on outer circle 
+                float cX = (float)Math.Sin( currentAngle * ( (float)Math.PI / 180.0f ) );
+                float cZ = (float)Math.Cos( currentAngle * ( (float)Math.PI / 180.0f ) );
+                node.Translate( new Vector3( menuCircleR * cX, 0, menuCircleR * cZ ) );
+                node.Rotate( Vector3.UnitY, currentAngle );
+                if ( cameraCircleR < menuCircleR )
+                    node.Rotate( Vector3.UnitY, -180.0f );
+
+
+                //attach labels to statues 
                 node = node.CreateChildSceneNode( type.Name + "Label" );
-                MovableText label = new MovableText( type.Name + "Label", type.Name, "Arial", 8, ColorEx.Red );
+                MovableText label = new MovableText( type.Name + "Label", type.Name, "Arial", 10, ColorEx.Red );
                 node.AttachObject( label );
-                node.Translate( new Vector3( -label.BoundingBox.Center.x, 0, 0 ) );
-                node.Position = new Vector3( node.Position.x, node.Position.y, 1 );
-                //node.Rotate( Vector3.UnitZ, 90 );
+                node.Translate( new Vector3( -label.BoundingBox.Center.x, 1, 0 ) ); // 
 
-                
+                currentAngle += stepAngle;
             }
-            Type demoType = null;
 
             Plane plane = new Plane( Vector3.UnitY, -80 );
             MeshManager.Instance.CreatePlane( "MyPlane", plane, 5000, 5000, 20, 20, true, 1, 5, 5, Vector3.UnitZ );
@@ -166,22 +185,22 @@ namespace Axiom.Demos
             planeEnt.CastShadows = false;
             node = scene.RootSceneNode.CreateChildSceneNode();
             node.AttachObject( planeEnt );
-            node.Translate( new Vector3( 2000, 0, 0 ) );
+            //node.Translate( new Vector3( 2000, 0, 0 ) ); 
 
             if ( Root.Instance.RenderSystem.Name.StartsWith( "Direct" ) )
             {
-                // In D3D, use a 1024x1024 shadow texture
+                // In D3D, use a 1024x1024 shadow texture 
                 scene.SetShadowTextureSettings( 1024, 2 );
             }
             else
             {
-                // Use 512x512 texture in GL since we can't go higher than the window res
+                // Use 512x512 texture in GL since we can't go higher than the window res 
                 scene.SetShadowTextureSettings( 512, 2 );
             }
 
             scene.ShadowColor = new ColorEx( 0.5f, 0.5f, 0.5f );
 
-            // incase infinite far distance is not supported
+            // incase infinite far distance is not supported 
             camera.Far = 100000;
 
         }
@@ -191,14 +210,17 @@ namespace Axiom.Demos
 
             float scaleMove = 200 * e.TimeSinceLastFrame;
 
-            // reset acceleration zero
+            // reset acceleration zero 
             camAccel = Vector3.Zero;
 
-            // set the scaling of camera motion
+            // set the scaling of camera motion 
             cameraScale = 50 * e.TimeSinceLastFrame;
 
-            // TODO Move this into an event queueing mechanism that is processed every frame
+            // TODO Move this into an event queueing mechanism that is processed every frame 
             input.Capture();
+
+            // subtract the time since last frame to delay specific key presses 
+            toggleDelay -= e.TimeSinceLastFrame;
 
             if ( input.IsKeyPressed( KeyCodes.Escape ) && toggleDelay < 0 )
             {
@@ -207,61 +229,16 @@ namespace Axiom.Demos
                 return;
             }
 
-            if ( input.IsKeyPressed( KeyCodes.A ) )
-            {
-                camAccel.x = -0.5f;
-            }
-
-            if ( input.IsKeyPressed( KeyCodes.D ) )
-            {
-                camAccel.x = 0.5f;
-            }
-
-            if ( input.IsKeyPressed( KeyCodes.W ) )
-            {
-                camera.Pitch( cameraScale );
-            }
-
-            if ( input.IsKeyPressed( KeyCodes.S ) )
-            {
-                camera.Pitch( -cameraScale );
-            }
-
-            camAccel.y += input.RelativeMouseZ * 0.1f;
-
-            if ( input.IsKeyPressed( KeyCodes.Left ) )
-            {
-                camera.Yaw( cameraScale );
-            }
-
-            if ( input.IsKeyPressed( KeyCodes.Right ) )
-            {
-                camera.Yaw( -cameraScale );
-            }
-
-            if ( input.IsKeyPressed( KeyCodes.Up ) )
-            {
-                camAccel.z = -1.0f;
-            }
-
-            if ( input.IsKeyPressed( KeyCodes.Down ) )
-            {
-                camAccel.z = 1.0f;
-            }
-
-            // subtract the time since last frame to delay specific key presses
-            toggleDelay -= e.TimeSinceLastFrame;
-
             if ( input.IsKeyPressed( KeyCodes.F ) && toggleDelay < 0 )
             {
-                // hide all overlays, includes ones besides the debug overlay
+                // hide all overlays, includes ones besides the debug overlay 
                 viewport.OverlaysEnabled = !viewport.OverlaysEnabled;
                 toggleDelay = 1;
             }
 
             if ( input.IsKeyPressed( KeyCodes.T ) && toggleDelay < 0 )
             {
-                // toggle the texture settings
+                // toggle the texture settings 
                 switch ( filtering )
                 {
                     case TextureFiltering.Bilinear:
@@ -280,7 +257,7 @@ namespace Axiom.Demos
 
                 Console.WriteLine( "Texture Filtering changed to '{0}'.", filtering );
 
-                // set the new default
+                // set the new default 
                 MaterialManager.Instance.SetDefaultTextureFiltering( filtering );
                 MaterialManager.Instance.DefaultAnisotropy = aniso;
 
@@ -292,12 +269,12 @@ namespace Axiom.Demos
                 string[] temp = Directory.GetFiles( Environment.CurrentDirectory, "screenshot*.jpg" );
                 string fileName = string.Format( "screenshot{0}.jpg", temp.Length + 1 );
 
-                // show briefly on the screen
+                // show briefly on the screen 
                 window.DebugText = string.Format( "Wrote screenshot '{0}'.", fileName );
 
                 TakeScreenshot( fileName );
 
-                // show for 2 seconds
+                // show for 2 seconds 
                 debugTextDelay = 2.0f;
             }
 
@@ -322,9 +299,10 @@ namespace Axiom.Demos
             }
 
 
-            if ( input.IsMousePressed( MouseButtons.Left ) && toggleDelay < 0 )
+            if ( ( input.IsMousePressed( MouseButtons.Left ) || input.IsKeyPressed( KeyCodes.Enter ) )
+                    && toggleDelay < 0 )
             {
-                RaySceneQuery rq  = scene.CreateRayQuery( camera.GetCameraToViewportRay( (float)input.AbsoluteMouseX/640f, (float)input.AbsoluteMouseY/480f ) );
+                RaySceneQuery rq = scene.CreateRayQuery( camera.GetCameraToViewportRay( (float)input.AbsoluteMouseX / 640f, (float)input.AbsoluteMouseY / 480f ) );
 
                 rq.SortByDistance = true;
                 rq.MaxResults = 1;
@@ -341,13 +319,12 @@ namespace Axiom.Demos
             }
             else
             {
-                cameraVector.x += input.RelativeMouseX * 0.13f;
+                //cameraVector.x += input.RelativeMouseX * 0.13f; 
             }
 
-            camVelocity = camAccel * 100.0f;
-            camera.MoveRelative( camVelocity * e.TimeSinceLastFrame );
 
-            // update performance stats once per second
+
+            // update performance stats once per second 
             if ( statDelay < 0.0f && showDebugOverlay )
             {
                 UpdateStats();
@@ -358,7 +335,7 @@ namespace Axiom.Demos
                 statDelay -= e.TimeSinceLastFrame;
             }
 
-            // turn off debug text when delay ends
+            // turn off debug text when delay ends 
             if ( debugTextDelay < 0.0f )
             {
                 debugTextDelay = 0.0f;
@@ -371,20 +348,66 @@ namespace Axiom.Demos
             element.Text = window.DebugText;
 
 
-            camera.Position = new Vector3(camera.Position.x, 0 , camera.Position.z);
+
+            // semi-automatic camera movement 
+            float camAngleAccel = stepAngle * e.TimeSinceLastFrame;
+
+            //check mouse input 
+            //if (cameraMoveDir == 0) //only if not currently moving 
+            //    camAngle += input.RelativeMouseX * e.TimeSinceLastFrame * 4; 
+
+            //kbd overrides mouse 
+            if ( input.IsKeyPressed( KeyCodes.Left ) )
+                cameraMoveDir = -1;
+
+            if ( input.IsKeyPressed( KeyCodes.Right ) )
+                cameraMoveDir = 1;
+
+
+            //let's do the movement 
+            if ( cameraMoveDir < 0 ) //left 
+            {
+                camAngle += camAngleAccel;
+                if ( camAngle >= currentAngleStop + stepAngle )
+                {
+                    currentAngleStop += stepAngle;
+                    cameraMoveDir = 0; //stop the camera 
+                    camAngle = currentAngleStop; //correct final position 
+                }
+            }
+            else if ( cameraMoveDir > 0 ) //right 
+            {
+                camAngle -= camAngleAccel;
+                if ( camAngle <= currentAngleStop - stepAngle )
+                {
+                    currentAngleStop -= stepAngle;
+                    cameraMoveDir = 0; //stop the camera 
+                    camAngle = currentAngleStop; //correct final position 
+                }
+            }
+
+
+            //update camera 
+            //            if (cameraMoveDir != 0 || correctFinalPos) 
+            float cX = (float)Math.Sin( camAngle * Math.PI / 180.0f );
+            float cZ = (float)Math.Cos( camAngle * Math.PI / 180.0f );
+            camera.Position = new Vector3( cameraCircleR * cX, 0, cameraCircleR * cZ );
+            camera.LookAt( new Vector3( menuCircleR * cX, 0, menuCircleR * cZ ) );
+
+
+
             sunLight.Position = new Vector3( camera.Position.x, 1250, camera.Position.z );
         }
 
-        protected override bool Setup( RenderWindow win)
+        protected override bool Setup( RenderWindow win )
         {
             bool retVal = base.Setup( win );
 
-            camera.Position = new Vector3( -500, 0, -250 );
-            camera.LookAt( new Vector3( 300, 0, -250 ) );
+            //camera.Position = new Vector3( -500, 0, -250 ); 
+            //camera.LookAt( new Vector3( 300, 0, -250 ) ); 
 
             return retVal;
 
         }
     }
 }
-
