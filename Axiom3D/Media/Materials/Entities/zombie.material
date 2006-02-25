@@ -1,0 +1,17 @@
+
+material Zombie
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.2 0.2 0.2 1
+			diffuse 0.509804 0.509804 0.509804 1
+
+			texture_unit
+			{
+				texture Zombie.jpg
+			}
+		}
+	}
+}

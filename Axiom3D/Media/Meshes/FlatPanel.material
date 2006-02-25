@@ -1,0 +1,117 @@
+
+material FlatPanel.7
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588235 0.588235 0.588235 1
+			diffuse 0.588235 0.588235 0.588235 1
+			specular 0.898039 0.898039 0.898039 1 0.1
+		}
+	}
+}
+material FlatPanel.6
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588235 0.588235 0.588235 1
+			diffuse 0.588235 0.588235 0.588235 1
+			specular 0.898039 0.898039 0.898039 1 0.1
+
+			texture_unit
+			{
+				texture XEROLOGO.JPG
+			}
+		}
+	}
+}
+material FlatPanel.5
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588235 0.588235 0.588235 1
+			diffuse 0.588235 0.588235 0.588235 1
+			specular 0.898039 0.898039 0.898039 1 0.1
+
+			texture_unit
+			{
+				texture TEXTURE2.JPG
+			}
+		}
+	}
+}
+material FlatPanel.4
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.584314 0.584314 0.584314 1
+			diffuse 0.584314 0.584314 0.584314 1
+			specular 0.898039 0.898039 0.898039 1 0.1
+		}
+	}
+}
+material FlatPanel.3
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.584314 0.584314 0.584314 1
+			diffuse 0.584314 0.584314 0.584314 1
+			specular 0.898039 0.898039 0.898039 1 0.1
+		}
+	}
+}
+material FlatPanel.2
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.584314 0.584314 0.584314 1
+			diffuse 0.584314 0.584314 0.584314 1
+			specular 0.898039 0.898039 0.898039 1 0.1
+		}
+	}
+}
+material FlatPanel.Screen
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588235 0.588235 0.588235 1
+			diffuse 0.588235 0.588235 0.588235 1
+			specular 0.898039 0.898039 0.898039 1 0.1
+
+			texture_unit
+			{
+				texture MON.JPG
+			}
+		}
+	}
+}
+material FlatPanel.1
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588235 0.588235 0.588235 1
+			diffuse 0.588235 0.588235 0.588235 1
+			specular 0.898039 0.898039 0.898039 1 0.1
+
+			texture_unit
+			{
+				texture FINAL.JPG
+			}
+		}
+	}
+}

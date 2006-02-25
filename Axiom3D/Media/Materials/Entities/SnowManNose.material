@@ -1,0 +1,12 @@
+
+material Material02
+{
+	technique
+	{
+		pass
+		{
+			ambient 1 0.501961 0.25098 1
+			diffuse 1 0.501961 0.25098 1
+		}
+	}
+}

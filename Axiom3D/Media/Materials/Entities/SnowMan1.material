@@ -1,0 +1,15 @@
+
+material SnowMaterial01
+{
+	technique
+	{
+		pass
+		{
+
+			texture_unit
+			{
+				texture terrain_winter_detail.jpg
+			}
+		}
+	}
+}

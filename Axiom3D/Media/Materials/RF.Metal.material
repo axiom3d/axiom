@@ -1,0 +1,74 @@
+
+material RF/Metal/RustySteel
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture RustySteel.jpg
+			}
+		}
+	}
+}
+
+material RF/Metal/SemiRustySteel
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture RustyMetal.jpg
+			}
+		}
+	}
+}
+
+material RF/Metal/Scales
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture scales.jpg
+			}
+		}
+	}
+}
+
+
+material RF/Metal/UnstableChrome
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture Chrome.jpg
+				scroll_anim 0.005 0.005
+			}
+		}
+	}
+}
+
+material RF/Metal/Chrome
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture Chrome.jpg
+				scroll_anim 0.009 0.01
+			}
+		}
+	}
+}
+

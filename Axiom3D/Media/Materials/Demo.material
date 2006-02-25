@@ -1,0 +1,40 @@
+// Custom materials
+material AxiomPhysics/Box
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture Box.png
+			}
+		}
+	}
+}
+material AxiomPhysics/Rocky
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture rocky.jpg
+			}
+		}
+	}
+}
+material AxiomPhysics/Scales
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture scales.jpg
+			}
+		}
+	}
+}

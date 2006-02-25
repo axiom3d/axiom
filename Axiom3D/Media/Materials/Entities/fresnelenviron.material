@@ -1,0 +1,206 @@
+
+material head1_Shell_Material
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+
+			texture_unit
+			{
+				texture egyptrockyfull.jpg
+			}
+
+			texture_unit
+			{
+				texture head1LightingMap.png
+				tex_coord_set 1
+			}
+		}
+	}
+}
+material head2_Shell_Material
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+
+			texture_unit
+			{
+				texture egyptrockyfull.jpg
+			}
+			texture_unit
+			{
+				texture head2LightingMap.png
+				tex_coord_set 1
+			}
+		}
+	}
+}
+material Cylinder01_Shell_Material
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+
+			texture_unit
+			{
+				texture egyptrockyfull.jpg
+			}
+
+			texture_unit
+			{
+				texture Pillar1LightingMap.png
+				tex_coord_set 1
+			}
+		}
+	}
+}
+material Cylinder02_Shell_Material
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+
+			texture_unit
+			{
+				texture egyptrockyfull.jpg
+			}
+
+			texture_unit
+			{
+				texture Pillar2LightingMap.png
+				tex_coord_set 1
+			}
+		}
+	}
+}
+material Cylinder03_Shell_Material
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+
+			texture_unit
+			{
+				texture egyptrockyfull.jpg
+			}
+
+			texture_unit
+			{
+				texture Pillar3LightingMap.png
+				tex_coord_set 1
+			}
+		}
+	}
+}
+material Cylinder04_Shell_Material
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+
+			texture_unit
+			{
+				texture egyptrockyfull.jpg
+			}
+
+			texture_unit
+			{
+				texture Pillar4LightingMap.png
+				tex_coord_set 1
+			}
+		}
+	}
+}
+material Plane01_Shell_Material
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+
+			texture_unit
+			{
+				texture BeachStones.jpg
+				scale 0.05 0.05
+			}
+
+			texture_unit
+			{
+				texture PoolFloorLightingMap.png
+				tex_coord_set 1
+			}
+		}
+	}
+}
+material Box01_Shell_Material
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+
+			texture_unit
+			{
+				texture terr_rock6.jpg
+			}
+			texture_unit
+			{
+				texture UpperSurroundLightingMap.png
+				tex_coord_set 1
+			}
+		}
+	}
+}
+material Box05_Shell_Material
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+
+			texture_unit
+			{
+				texture terr_rock6.jpg
+			}
+			texture_unit
+			{
+				texture LowerSurroundLightingMap.png
+				tex_coord_set 1
+			}
+		}
+	}
+}
+
+material Examples/CloudyNoonSkyBox
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+
+			texture_unit
+			{
+				cubic_texture cloudy_noon.jpg separateUV
+				tex_address_mode clamp
+			}
+		}
+	}
+}
