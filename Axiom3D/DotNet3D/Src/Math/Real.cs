@@ -328,7 +328,7 @@ namespace DotNet3D.Math
 
         public override bool Equals(object obj)
         {
- 	         return this._value.Equals(obj);
+            return ( obj is Real && this == (Real)obj );
         }
 
         public override int GetHashCode()
