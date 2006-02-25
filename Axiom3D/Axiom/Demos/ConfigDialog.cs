@@ -267,7 +267,7 @@ namespace Axiom.Demos
 
         private void ConfigDialog_Load( object sender, EventArgs e )
         {
-            foreach ( RenderSystem renderSystem in Root.Instance.RenderSystems )
+            foreach ( RenderSystem renderSystem in Root.Instance.RenderSystems.Values )
             {
                 cboRenderSystems.Items.Add( renderSystem );
             }
@@ -286,7 +286,7 @@ namespace Axiom.Demos
             ConfigOption optVideoMode;
 
             // Load Render Subsystem Options
-            foreach ( ConfigOption option in system.ConfigOptions )
+            foreach ( ConfigOption option in system.ConfigOptions.Values )
             {
                 lstOptions.Items.Add( option );
             }

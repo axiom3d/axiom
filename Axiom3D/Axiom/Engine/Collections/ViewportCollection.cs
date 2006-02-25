@@ -24,13 +24,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-#region Namespace declarations
+#region Namespace Declarations
+			
 using System;
 using System.Diagnostics;
 
-using Axiom.Core;
-#endregion Namespace declarations
-
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
 
@@ -39,25 +39,27 @@ namespace Axiom
     /// </summary>
     public class ViewportCollection : AxiomCollection<Int32, Viewport>
     {
-        #region Constructors
+        private RenderTarget _parent;
+        public ViewportCollection( RenderTarget parent )
 
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public ViewportCollection() : base() { }
-
-        /// <summary>
-        ///		Constructor that takes a parent object to, and calls the base class constructor to 
-        /// </summary>
-        /// <param name="entity"></param>
-        public ViewportCollection(RenderTarget parent) : base(parent) { }
-
-        #endregion
-
-
-        public override void Add(Viewport item)
         {
-            base.Add(nextUniqueKeyCounter++, item);
+            this._parent = parent;
         }
+
+        /// <summary>
+        ///		Adds an object to the collection.
+        /// </summary>
+        /// <param name="item"></param>
+        public override void Add( Viewport item )
+        {
+            Debug.Assert( !this.ContainsKey( item.ZOrder ), "A viewport with the specified ZOrder " + item.ZOrder + " already exists." );
+
+            // assign this viewport to the parent RenderTarget
+            item.Target = _parent;
+
+            // add the viewport
+            base.Add( item.ZOrder, item );
+        }
+
     }
 }

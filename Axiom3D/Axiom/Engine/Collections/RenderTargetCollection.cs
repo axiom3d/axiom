@@ -24,11 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-#region Namespace declarations
+#region Namespace Declarations
+
 using System;
 using System.Diagnostics;
 #endregion Namespace declarations
 
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     /// <summary>
@@ -36,28 +39,6 @@ namespace Axiom
     /// </summary>
     public class RenderTargetCollection : AxiomCollection<string, RenderTarget>
     {
-        #region Constructors
-
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public RenderTargetCollection() : base() { }
-
-        /// <summary>
-        ///		Constructor that takes a parent object to, and calls the base class constructor to 
-        /// </summary>
-        /// <param name="entity"></param>
-        //public RenderTargetCollection(P parent) : base(parent) {}
-
-        #endregion
-
-        public override void Add(RenderTarget item)
-        {
-            if (item.Name == string.Empty)
-                base.Add("RenderTarget" + nextUniqueKeyCounter++, item);
-            else
-                base.Add(item.Name, item);
-        }
     }
 }
 

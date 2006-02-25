@@ -24,321 +24,235 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-#region Namespace declarations
+#region Namespace Declarations
+
 using System;
 using System.Collections.Generic;
 #endregion Namespace declarations
 
+#endregion Namespace Declarations
+
 namespace Axiom
 {
+    //public interface IKeyValue
+    //{
+    //}
+
+    //public struct StringKeyValue : IKeyValue
+    //{
+    //    private string _value;
+
+    //    #region Constructors
+
+    //    public StringKeyValue( int value )
+    //    {
+    //        this._value = value.ToString();
+    //    }
+
+    //    public StringKeyValue( string value )
+    //    {
+    //        this._value = value;
+    //    }
+
+    //    #endregion Constructors
+
+    //    #region Conversion Operators
+
+    //    #region Int Conversions
+    //    /// <summary>
+    //    /// Implicit conversion from int to Real
+    //    /// </summary>
+    //    /// <param name="value"></param>
+    //    /// <returns></returns>
+    //    static public implicit operator StringKeyValue( int val )
+    //    {
+    //        return new StringKeyValue( val );
+    //    }
+    //    #endregion Int Conversions
+
+    //    #region String Conversions
+
+    //    /// <summary>
+    //    /// Implicit conversion from string to Real
+    //    /// </summary>
+    //    /// <param name="value"></param>
+    //    /// <returns></returns>
+    //    static public implicit operator StringKeyValue( string val )
+    //    {
+    //        return new StringKeyValue( val );
+    //    }
+
+    //    /// <summary>
+    //    /// Explicit conversion from Real to string
+    //    /// </summary>
+    //    /// <param name="value"></param>
+    //    /// <returns></returns>
+    //    static public explicit operator string( StringKeyValue val )
+    //    {
+    //        return val.ToString();
+    //    }
+
+    //    #endregion String Conversions
+
+    //    #endregion Conversion Operators
+
+    //    #region System.Object Overloads
+
+    //    public override string ToString()
+    //    {
+    //        return _value;
+    //    }
+
+    //    #endregion
+    //}
+
+    //public struct IntKeyValue : IKeyValue
+    //{
+    //    private int _value;
+
+    //    #region Constructors
+
+    //    public IntKeyValue( int value )
+    //    {
+    //        this._value = value;
+    //    }
+
+    //    public IntKeyValue( string value )
+    //    {
+    //        this._value = int.Parse( value );
+    //    }
+
+    //    #endregion Constructors
+
+    //    #region Conversion Operators
+
+    //    #region Int Conversions
+    //    /// <summary>
+    //    /// Implicit conversion from int to Real
+    //    /// </summary>
+    //    /// <param name="value"></param>
+    //    /// <returns></returns>
+    //    static public implicit operator IntKeyValue( int val )
+    //    {
+    //        return new IntKeyValue( val );
+    //    }
+    //    #endregion Int Conversions
+
+    //    #region String Conversions
+
+    //    /// <summary>
+    //    /// Implicit conversion from string to Real
+    //    /// </summary>
+    //    /// <param name="value"></param>
+    //    /// <returns></returns>
+    //    static public implicit operator IntKeyValue( string val )
+    //    {
+    //        return new IntKeyValue( val );
+    //    }
+
+    //    /// <summary>
+    //    /// Explicit conversion from Real to string
+    //    /// </summary>
+    //    /// <param name="value"></param>
+    //    /// <returns></returns>
+    //    static public explicit operator string( IntKeyValue val )
+    //    {
+    //        return val.ToString();
+    //    }
+
+    //    #endregion String Conversions
+
+    //    #endregion Conversion Operators
+
+    //    #region System.Object Overloads
+
+    //    public override string ToString()
+    //    {
+    //        return _value.ToString();
+    //    }
+
+    //    #endregion
+    //}
 
     /// <summary>
     ///		Serves as a basis for strongly typed collections in the engine.
     /// </summary>
-    public abstract class AxiomCollection<K, T> : ICollection<T>, IEnumerable<T>
+    public class AxiomCollection<K, T>: SortedList<K, T> where K : IConvertible
     {
         /// <summary></summary>
-        protected SortedList<K, T> objectList;
+        private const int INITIAL_CAPACITY = 60;
         /// <summary></summary>
-        protected Object parent;
         static protected int nextUniqueKeyCounter;
-
-        const int INITIAL_CAPACITY = 60;
 
         #region Constructors
 
         /// <summary>
         ///		
         /// </summary>
-        public AxiomCollection()
+        public AxiomCollection(): base( INITIAL_CAPACITY )
         {
-            this.parent = null;
-            objectList = new SortedList<K, T>(INITIAL_CAPACITY);
         }
 
         /// <summary>
-        ///		
+        /// 
         /// </summary>
-        /// <param name="parent"></param>
-        public AxiomCollection(object parent)
+        /// <param name="capacity"></param>
+        public AxiomCollection( int capacity ): base( capacity )
         {
-            this.parent = parent;
-            objectList = new SortedList<K, T>(INITIAL_CAPACITY);
         }
 
         #endregion
 
         /// <summary>
-        ///		
+        ///		Get/Set indexer that allows access to the collection by index.
         /// </summary>
-        public T this[int index]
+        public T this[ int index ]
         {
             get
             {
-                return objectList.Values[index];
+                return (T)base.Values[ index ];
             }
             set
             {
-                objectList.Values[index] = value;
+                base.Values[ index ] = value;
             }
         }
 
-        public ICollection<T> Values { get { return objectList.Values; } }
-
-        public ICollection<K> Keys { get { return objectList.Keys; } }
-
         /// <summary>
-        ///		
+        /// 
         /// </summary>
-        public T this[K key]
+        /// <param name="item"></param>
+        public void Remove( T item )
         {
-            get { return objectList[key]; }
-            set { objectList[key] = value; }
+            if ( this.ContainsValue( item ) )
+            {
+                int index = this.IndexOfValue( item );
+                this.RemoveAt( index );
+            }
         }
 
         /// <summary>
         ///		Accepts an unnamed object and names it manually.
         /// </summary>
         /// <param name="item"></param>
-        public abstract void Add(T item);
-
-        /// <summary>
-        ///		Adds a named object to the collection.
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="item"></param>
-        public void Add(K key, T item)
+        public virtual void Add( T item )
         {
-            objectList.Add(key, item);
-        }
+            K key = default( K );
 
-        /// <summary>
-        ///		Clears all objects from the collection.
-        /// </summary>
-        public void Clear()
-        {
-            objectList.Clear();
-        }
-
-        /// <summary>
-        ///		Removes the item from the collection.
-        /// </summary>
-        /// <param name="item"></param>
-        public void Remove(T item)
-        {
-            int index = objectList.IndexOfValue(item);
-
-            if (index != -1)
-                objectList.RemoveAt(index);
-        }
-
-        /// <summary>
-        /// Removes the item from the collection
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public void Remove(K key)
-        {
-            objectList.Remove(key);
-        }
-
-        /// <summary>
-        ///		Removes an item at the specified index.
-        /// </summary>
-        /// <param name="index"></param>
-        public void RemoveAt(int index)
-        {
-            objectList.RemoveAt(index);
-        }
-
-        /// <summary>
-        ///		Tests if there is a dupe entry in here.
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public bool ContainsKey(K key)
-        {
-            return objectList.ContainsKey(key);
-        }
-
-        /// <summary>
-        /// Returns the index at which the object with the given key resides
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public int IndexOf(K key)
-        {
-            return objectList.IndexOfKey(key);
-        }
-
-        /// <summary>
-        /// Returns the index at which the given object resides
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public int IndexOf(T value)
-        {
-            return objectList.IndexOfValue(value);
-        }
-
-        #region Implementation of ICollection
-
-        //public bool IsSynchronized {
-        //    get {
-        //        return true; // TODO вернуться сюда позже
-        //    }
-        //}
-
-        public int Count
-        {
-            get
+            if ( key is string )
             {
-                return objectList.Count;
+                key = (K)Convert.ChangeType( key.GetType().Name + nextUniqueKeyCounter++, key.GetType() );
             }
-        }
-
-        //public object SyncRoot {
-        //    get {
-        //        return objectList.SyncRoot;
-        //    }
-        //}
-
-        #endregion
-
-        #region Implementation of IEnumerator
-
-        public class Enumerator : IEnumerator<T>
-        {
-            private int position = -1;
-            private AxiomCollection<K, T> list;
-
-            public Enumerator(AxiomCollection<K, T> list)
+            else
             {
-                this.list = list;
+                key = (K)Convert.ChangeType( nextUniqueKeyCounter++, key.GetType() );
             }
 
-            /// <summary>
-            ///		Resets the in progress enumerator.
-            /// </summary>
-            public void Reset()
-            {
-                // reset the enumerator position
-                position = -1;
-            }
-
-            /// <summary>
-            ///		Moves to the next item in the enumeration if there is one.
-            /// </summary>
-            /// <returns></returns>
-            public bool MoveNext()
-            {
-                position += 1;
-
-                if (position >= list.objectList.Count)
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-
-            /// <summary>
-            ///		Returns the current object in the enumeration.
-            /// </summary>
-            public T Current
-            {
-                get
-                {
-                    return list.objectList.Values[position];
-                }
-            }
-
-            #region IDisposable Members
-
-            public void Dispose()
-            {
-                this.Reset();
-            }
-
-            #endregion
-
-            #region IEnumerator Members
-
-            object System.Collections.IEnumerator.Current
-            {
-                get { return list.objectList.Values[position]; }
-            }
-
-            #endregion
-        }
-        #endregion
-
-
-        #region ICollection<T> Members
-
-
-        public bool Contains(T item)
-        {
-            return objectList.ContainsValue(item);
+            base.Add( key, item );
         }
 
-        public void CopyTo(T[] array, int arrayIndex)
-        {
-            objectList.Values.CopyTo(array, arrayIndex);
-        }
-
-        public bool IsReadOnly
-        {
-            get { return false; }
-        }
-
-        bool ICollection<T>.Remove(T item)
-        {
-            int idx = objectList.IndexOfValue(item);
-
-            if (idx < 0)
-                return false;
-
-            K key = objectList.Keys[idx];
-
-            return objectList.Remove(key);
-        }
-
-        #endregion
-
-        #region IEnumerable<T> Members
-
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
-        {
-            Enumerator etr = new Enumerator(this);
-
-            return etr;
-        }
-
-        #endregion
-
-        #region IEnumerable<T> Members
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            Enumerator etr = new Enumerator(this);
-
-            return etr;
-        }
-
-        #endregion
-
-        #region IEnumerable Members
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            Enumerator etr = new Enumerator(this);
-
-            return etr;
-        }
-
-        #endregion
     }
 }
+
+
+

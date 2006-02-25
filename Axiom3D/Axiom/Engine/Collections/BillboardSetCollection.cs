@@ -24,22 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-#region Namespace declarations
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom.Core;
-#endregion
-
-
-// used to alias a type in the code for easy copying and pasting.  Come on generics!!
-//using T = Axiom.Core.BillboardSet;
-// used to alias a key value in the code for easy copying and pasting.  Come on generics!!
-//using K = System.String;
-// used to alias a parent type in the code for easy copying and pasting.  Come on generics!!
-//using P = Axiom.Core.Entity;
-
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     /// <summary>
@@ -47,27 +39,5 @@ namespace Axiom
     /// </summary>
     public class BillboardSetCollection : AxiomCollection<string, BillboardSet>
     {
-        #region Constructors
-
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public BillboardSetCollection() : base() { }
-
-        /// <summary>
-        ///		Constructor that takes a parent object to, and calls the base class constructor to 
-        /// </summary>
-        /// <param name="entity"></param>
-        //public BillboardSetCollection(P parent) : base(parent) {}
-
-        #endregion
-
-        public override void Add(BillboardSet item)
-        {
-            if (item.Name == string.Empty)
-                base.Add("BillboardSet" + nextUniqueKeyCounter++, item);
-            else
-                base.Add(item.Name, item);
-        }
     }
 }

@@ -24,18 +24,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-#region Namespace declarations
+#region Namespace Declarations
+
 using System;
 using System.Diagnostics;
 
-using Axiom.Core;
-#endregion Namespace declarations
-
-// used to alias a type in the code for easy copying and pasting.  Come on generics!!
-//using T = Axiom.Core.Node;
-// used to alias a key value in the code for easy copying and pasting.  Come on generics!!
-//using K = System.String;
-
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     /// <summary>
@@ -44,28 +39,5 @@ namespace Axiom
     [Serializable]
     public class NodeCollection : AxiomCollection<string, Node>
     {
-        #region Constructors
-
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public NodeCollection() : base() { }
-
-        /// <summary>
-        ///		Constructor that takes a parent object to, and calls the base class constructor to 
-        /// </summary>
-        /// <param name="entity"></param>
-        //public SceneNodeCollection(P parent) : base(parent) {}
-
-        #endregion
-
-
-        public override void Add(Node item)
-        {
-            if (item.Name == string.Empty)
-                base.Add("Node" + nextUniqueKeyCounter++, item);
-            else
-                base.Add(item.Name, item);
-        }
     }
 }

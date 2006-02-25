@@ -164,7 +164,7 @@ namespace Axiom.Demos
 
             // go through each entity in the scene.  if the entity is within
             // the frustum, show its bounding box
-            foreach ( Entity entity in entityList )
+            foreach ( Entity entity in entityList.Values )
             {
                 if ( frustum.IsObjectVisible( entity.GetWorldBoundingBox() ) )
                 {

@@ -1,4 +1,30 @@
-// arilou
+#region LGPL License
+/*
+Axiom Game Engine Library
+Copyright (C) 2003  Axiom Project Team
+
+The overall design, and a majority of the core engine and rendering code 
+contained within this library is a derivative of the open source Object Oriented 
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+#endregion
+
+#region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
@@ -9,6 +35,8 @@ using System.Xml;
 using System.Diagnostics;
 using System.Reflection;
 
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     /// <summary>
@@ -33,17 +61,17 @@ namespace Axiom
             preloadCoreAssembly();
 
             _instance.plugins.ObjectResolve +=
-                new ObjectResolveEventHandler<string, IPlugin>(resolvePluginHandler);
+                new ObjectResolveEventHandler<string, IPlugin>( resolvePluginHandler );
 
             managerConfig = (PluginManagerConfiguration)
-                ConfigurationManager.GetSection("Plugins");
+                ConfigurationManager.GetSection( "Plugins" );
 
-            if (managerConfig == null)
-                managerConfig = new PluginManagerConfiguration(CURRENT_FOLDER);
+            if ( managerConfig == null )
+                managerConfig = new PluginManagerConfiguration( CURRENT_FOLDER );
 
             // fill in plugin loaders
-            pluginLoaders.Add(typeof(IPlugin), new PluginLoader());
-            pluginLoaders.Add(typeof(ISingletonPlugin), new SingletonPluginLoader());
+            pluginLoaders.Add( typeof( IPlugin ), new PluginLoader() );
+            pluginLoaders.Add( typeof( ISingletonPlugin ), new SingletonPluginLoader() );
 
             processAssemblies();
         }
@@ -55,7 +83,7 @@ namespace Axiom
         {
             get
             {
-                if (_instance == null)
+                if ( _instance == null )
                     new PluginManager();
 
                 return _instance;
@@ -87,10 +115,10 @@ namespace Axiom
         /// </summary>
         HierarchicalRegistry<IPlugin> plugins = new HierarchicalRegistry<IPlugin>();
 
-        void resolvePluginHandler(object sender, ObjectResolveEventArgs<string, IPlugin> e)
+        void resolvePluginHandler( object sender, ObjectResolveEventArgs<string, IPlugin> e )
         {
             string pluginQualifiedName = e.Key; // e.g. /Axiom/RenderSystems/D3D9RenderSystemPlugin
-            e.ResolvedObject = resolvePlugin(pluginQualifiedName);
+            e.ResolvedObject = resolvePlugin( pluginQualifiedName );
         }
 
         /// <summary>
@@ -111,40 +139,40 @@ namespace Axiom
         /// 3) Also, it blindly tries to create the plugin from the passed
         /// plugin name. This allows to query plugins by type name directly
         /// </remarks>
-        protected virtual IPlugin resolvePlugin(string pluginName)
+        protected virtual IPlugin resolvePlugin( string pluginName )
         {
             PluginMetadataAttribute metadata = null;
 
-            if (!metadataStore.ContainsKey(pluginName))
-                throw new PluginException("Metadata for plugin {0} is not found",
-                    pluginName);
+            if ( !metadataStore.ContainsKey( pluginName ) )
+                throw new PluginException( "Metadata for plugin {0} is not found",
+                    pluginName );
 
-            metadata = metadataStore[pluginName];
+            metadata = metadataStore[ pluginName ];
 
-            if (metadata.IsSingleton)
-                return pluginLoaders[typeof(ISingletonPlugin)].LoadPlugin(metadata);
+            if ( metadata.IsSingleton )
+                return pluginLoaders[ typeof( ISingletonPlugin ) ].LoadPlugin( metadata );
             else
-                return pluginLoaders[typeof(IPlugin)].LoadPlugin(metadata);
+                return pluginLoaders[ typeof( IPlugin ) ].LoadPlugin( metadata );
         }
 
 
-        public IPlugin GetPlugin(string pluginQualifiedName)
+        public IPlugin GetPlugin( string pluginQualifiedName )
         {
-            return plugins[pluginQualifiedName];
+            return plugins[ pluginQualifiedName ];
         }
 
-        public IEnumerable<IPlugin> GetPlugins(string namespacePrefix)
+        public IEnumerable<IPlugin> GetPlugins( string namespacePrefix )
         {
-            return plugins.Subtree(namespacePrefix);
+            return plugins.Subtree( namespacePrefix );
         }
 
-        public IEnumerable<PluginMetadataAttribute> GetPluginInfo(string namespacePrefix)
+        public IEnumerable<PluginMetadataAttribute> GetPluginInfo( string namespacePrefix )
         {
             IEnumerator<KeyValuePair<string, PluginMetadataAttribute>> enu =
                 metadataStore.GetEnumerator();
 
-            while (enu.MoveNext())
-                if(enu.Current.Key.StartsWith(namespacePrefix))
+            while ( enu.MoveNext() )
+                if ( enu.Current.Key.StartsWith( namespacePrefix ) )
                     yield return enu.Current.Value;
         }
 
@@ -155,16 +183,16 @@ namespace Axiom
 
         private void preloadCoreAssembly()
         {
-            Assembly.ReflectionOnlyLoadFrom(AXIOM_CORE_DLL);
+            Assembly.ReflectionOnlyLoadFrom( AXIOM_CORE_DLL );
 
             // wire other preload requests to satisfy lazy loaded
             // reflection only behaviour
-            AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += new ResolveEventHandler(loadAssemblyForInspection);
+            AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += new ResolveEventHandler( loadAssemblyForInspection );
         }
 
-        Assembly loadAssemblyForInspection(object sender, ResolveEventArgs args)
+        Assembly loadAssemblyForInspection( object sender, ResolveEventArgs args )
         {
-            return Assembly.ReflectionOnlyLoad(args.Name);
+            return Assembly.ReflectionOnlyLoad( args.Name );
         }
 
         /// <summary>
@@ -175,29 +203,29 @@ namespace Axiom
         /// making it impossible to execute code from that assembly. This 
         /// eliminates the discrepancy that all assemblies are loaded into
         /// the exection context upon Axiom initialization</remarks>
-        protected void inspectAssemblyForPlugins(string assemblyPath)
+        protected void inspectAssemblyForPlugins( string assemblyPath )
         {
-            Assembly asm = Assembly.ReflectionOnlyLoadFrom(assemblyPath);
+            Assembly asm = Assembly.ReflectionOnlyLoadFrom( assemblyPath );
             Type[] types = asm.GetExportedTypes();
 
-            foreach (Type type in types)
+            foreach ( Type type in types )
             {
-                if (type.GetInterface("IPlugin") != null)
+                if ( type.GetInterface( "IPlugin" ) != null )
                 {
                     IList<CustomAttributeData> attrs =
-                        CustomAttributeData.GetCustomAttributes(type);
+                        CustomAttributeData.GetCustomAttributes( type );
 
-                    if (attrs.Count == 1)
+                    if ( attrs.Count == 1 )
                     {
                         PluginMetadataAttribute metadata =
-                            PluginMetadataAttribute.ReflectionOnlyConstructor(attrs[0].NamedArguments);
+                            PluginMetadataAttribute.ReflectionOnlyConstructor( attrs[ 0 ].NamedArguments );
 
-                        if (metadata.IsSingleton && type.GetInterface("ISingletonPlugin") == null)
-                            throw new PluginException("Plugin {0} is declared as singleton but does not implement ISingletonPlugin",
-                                metadata.Namespace);
+                        if ( metadata.IsSingleton && type.GetInterface( "ISingletonPlugin" ) == null )
+                            throw new PluginException( "Plugin {0} is declared as singleton but does not implement ISingletonPlugin",
+                                metadata.Namespace );
 
                         metadata.TypeName = type.AssemblyQualifiedName;
-                        metadataStore.Add(metadata.Namespace, metadata);
+                        metadataStore.Add( metadata.Namespace, metadata );
                     }
                 }
             }
@@ -206,25 +234,25 @@ namespace Axiom
         private bool _isInitialized = false;
         void processAssemblies()
         {
-            if (_isInitialized)
+            if ( _isInitialized )
                 return;
 
             _isInitialized = true;
 
-            string[] files = Directory.GetFiles(managerConfig.PluginFolder,
-                    "*.dll");
+            string[] files = Directory.GetFiles( managerConfig.PluginFolder,
+                    "*.dll" );
 
-            foreach (string fileName in files)
+            foreach ( string fileName in files )
             {
-                if (fileName.IndexOf(AXIOM_CORE_DLL) == -1
-                    && fileName.IndexOf(PLUIGIN_ASSEMBLYNAME_PREFIX) != -1)
+                if ( fileName.IndexOf( AXIOM_CORE_DLL ) == -1
+                    && fileName.IndexOf( PLUIGIN_ASSEMBLYNAME_PREFIX ) != -1 )
                 {
                     try
                     {
-                        string fullPath = Path.GetFullPath(fileName);
-                        inspectAssemblyForPlugins(fullPath);
+                        string fullPath = Path.GetFullPath( fileName );
+                        inspectAssemblyForPlugins( fullPath );
                     }
-                    catch (BadImageFormatException)
+                    catch ( BadImageFormatException )
                     {
                         // eat, not a valid assembly
                     }
@@ -248,11 +276,11 @@ namespace Axiom
         {
             processAssemblies();
 
-            if (managerConfig.Plugins.Count > 0)
+            if ( managerConfig.Plugins.Count > 0 )
             {
-                foreach (string pluginTypeName in managerConfig.Plugins)
+                foreach ( string pluginTypeName in managerConfig.Plugins )
                 {
-                    IPlugin plugin = plugins[pluginTypeName];
+                    IPlugin plugin = plugins[ pluginTypeName ];
                     plugin.Start();
                 }
             }
@@ -279,7 +307,10 @@ namespace Axiom
         /// </summary>
         public string PluginFolder
         {
-            get { return _pluginFolder; }
+            get
+            {
+                return _pluginFolder;
+            }
         }
 
         List<string> plugins = new List<string>();
@@ -288,14 +319,17 @@ namespace Axiom
         /// </summary>
         public List<string> Plugins
         {
-            get { return plugins; }
+            get
+            {
+                return plugins;
+            }
         }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="pluginFolder">root plugin folder</param>
-        public PluginManagerConfiguration(string pluginFolder)
+        public PluginManagerConfiguration( string pluginFolder )
         {
             _pluginFolder = pluginFolder;
         }
@@ -323,18 +357,18 @@ namespace Axiom
     /// </remarks>
     public class PluginConfigurationSectionHandler : IConfigurationSectionHandler
     {
-        object IConfigurationSectionHandler.Create(object parent, object configContext, System.Xml.XmlNode section)
+        object IConfigurationSectionHandler.Create( object parent, object configContext, System.Xml.XmlNode section )
         {
             PluginManagerConfiguration config =
-                new PluginManagerConfiguration(section.Attributes["folder"] == null
-                ? "." : section.Attributes["folder"].Value);
+                new PluginManagerConfiguration( section.Attributes[ "folder" ] == null
+                ? "." : section.Attributes[ "folder" ].Value );
 
             // grab the plugin nodes
-            XmlNodeList pluginNodes = section.SelectNodes("plugin");
+            XmlNodeList pluginNodes = section.SelectNodes( "plugin" );
 
             // loop through each plugin node and load the plugins
-            foreach (XmlNode pluginNode in pluginNodes)
-                config.Plugins.Add(pluginNode.Attributes["type"].Value);
+            foreach ( XmlNode pluginNode in pluginNodes )
+                config.Plugins.Add( pluginNode.Attributes[ "type" ].Value );
 
             return config;
         }
@@ -352,7 +386,7 @@ namespace Axiom
         /// </summary>
         /// <param name="metadata">plugin metadata</param>
         /// <returns></returns>
-        IPlugin LoadPlugin(PluginMetadataAttribute metadata);
+        IPlugin LoadPlugin( PluginMetadataAttribute metadata );
     }
 
     class PluginLoader : IPluginLoader
@@ -364,12 +398,12 @@ namespace Axiom
         /// <returns><see cref="IPlugin"/>-compatible object instance 
         /// -OR-
         /// null if the type was not found</returns>
-        protected virtual IPlugin createPluginInstance(string pluginTypeName)
+        protected virtual IPlugin createPluginInstance( string pluginTypeName )
         {
-            Type pluginType = Type.GetType(pluginTypeName, false);
+            Type pluginType = Type.GetType( pluginTypeName, false );
 
-            if (pluginType != null)
-                return createPluginInstance(pluginType);
+            if ( pluginType != null )
+                return createPluginInstance( pluginType );
             else
                 return null;
         }
@@ -381,20 +415,20 @@ namespace Axiom
         /// <returns><see cref="IPlugin"/>-compatible object instance 
         /// -OR-
         /// null if the type was not found</returns>
-        protected virtual IPlugin createPluginInstance(Type pluginType)
+        protected virtual IPlugin createPluginInstance( Type pluginType )
         {
-            if (pluginType.GetInterface("IPlugin") == null)
-                Trace.Fail("Plugin " + pluginType.FullName +
-                    "does not implement IPlugin");
+            if ( pluginType.GetInterface( "IPlugin" ) == null )
+                Trace.Fail( "Plugin " + pluginType.FullName +
+                    "does not implement IPlugin" );
             else
-                return (IPlugin)Activator.CreateInstance(pluginType);
+                return (IPlugin)Activator.CreateInstance( pluginType );
 
             return null;
         }
 
-        public virtual IPlugin LoadPlugin(PluginMetadataAttribute metadata)
+        public virtual IPlugin LoadPlugin( PluginMetadataAttribute metadata )
         {
-            IPlugin plugin = createPluginInstance(metadata.TypeName);
+            IPlugin plugin = createPluginInstance( metadata.TypeName );
             return plugin;
         }
     }
@@ -404,15 +438,15 @@ namespace Axiom
         static List<string>
             _loadedSingletons = new List<string>();
 
-        public override IPlugin LoadPlugin(PluginMetadataAttribute metadata)
+        public override IPlugin LoadPlugin( PluginMetadataAttribute metadata )
         {
-            if (_loadedSingletons.Contains(metadata.Namespace))
-                throw new PluginException("Plugin {0} is already loaded and only one instance can exist",
-                    metadata.Namespace);
+            if ( _loadedSingletons.Contains( metadata.Namespace ) )
+                throw new PluginException( "Plugin {0} is already loaded and only one instance can exist",
+                    metadata.Namespace );
 
-            _loadedSingletons.Add(metadata.Namespace);
+            _loadedSingletons.Add( metadata.Namespace );
 
-            return base.LoadPlugin(metadata);
+            return base.LoadPlugin( metadata );
         }
     }
 

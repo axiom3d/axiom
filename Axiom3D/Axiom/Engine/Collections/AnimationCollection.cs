@@ -24,19 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom.Core;
-
-// used to alias a type in the code for easy copying and pasting.  Come on generics!!
-//using T = Axiom.Animating.Animation;
-// used to alias a key value in the code for easy copying and pasting.  Come on generics!!
-//using K = System.String;
-// used to alias a parent type in the code for easy copying and pasting.  Come on generics!!
-//using P = Axiom.Core.Entity;
-
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     /// <summary>
@@ -44,34 +39,5 @@ namespace Axiom
     /// </summary>
     public class AnimationCollection : AxiomCollection<string, Axiom.Animation>
     {
-
-        #region Constructors
-
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public AnimationCollection() : base() { }
-
-        /// <summary>
-        ///		Constructor that takes a parent object to, and calls the base class constructor to 
-        /// </summary>
-        /// <param name="entity"></param>
-        //public AnimationCollection(P parent) : base(parent) {}
-
-        #endregion
-
-        /// <summary>
-        ///		Accepts an unnamed object and names it manually.
-        /// </summary>
-        /// <param name="item"></param>
-        public override void Add(Axiom.Animation item)
-        {
-            string name = item.Name;
-
-            if (name == string.Empty)
-                name = "Animation" + nextUniqueKeyCounter++;
-
-            base.Add(name, item);
-        }
     }
 }

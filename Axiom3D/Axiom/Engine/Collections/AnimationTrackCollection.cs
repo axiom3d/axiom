@@ -24,48 +24,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-#region Namespace declarations
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom.Core;
-#endregion Namespace declarations
-
-// used to alias a type in the code for easy copying and pasting.  Come on generics!!
-//using T = Axiom.Animating.AnimationTrack;
-// used to alias a key value in the code for easy copying and pasting.  Come on generics!!
-//using K = System.Int16;
-// used to alias a parent type in the code for easy copying and pasting.  Come on generics!!
-//using P = Axiom.Core.Entity;
-
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     /// <summary>
     /// Summary description for AnimationTrackCollection.
     /// </summary>
-    public class AnimationTrackCollection : AxiomCollection<Int16, Axiom.AnimationTrack>
+    public class AnimationTrackCollection : AxiomCollection<Int32, Axiom.AnimationTrack>
     {
-        #region Constructors
-
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public AnimationTrackCollection() : base() { }
-
-        /// <summary>
-        ///		Constructor that takes a parent object to, and calls the base class constructor to 
-        /// </summary>
-        /// <param name="entity"></param>
-        //public AnimationTrackCollection(P parent) : base(parent) {}
-
-        #endregion
-
-
-
-        public override void Add(Axiom.AnimationTrack item)
-        {
-            base.Add((Int16) nextUniqueKeyCounter++, item);
-        }
     }
 }

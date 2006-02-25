@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <DNPreBuild xmlns="http://dnpb.sourceforge.net/schemas/dnpb-1.4.xsd">
-	<Solution name="Axiom" activeConfig="Debug">
+	<Solution name="Axiom.Clean" activeConfig="Debug">
 		<Configuration name="Debug">
 			<Options>
 				<CompilerDefines>TRACE;DEBUG</CompilerDefines>

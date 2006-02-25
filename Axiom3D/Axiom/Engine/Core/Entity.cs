@@ -449,7 +449,7 @@ namespace Axiom
                 //if null or empty string then reset the material to that defined by the mesh
                 if ( value == null || value == string.Empty )
                 {
-                    foreach ( SubEntity ent in subEntityList )
+                    foreach ( SubEntity ent in subEntityList.Values )
                     {
                         string defaultMaterial = ent.SubMesh.MaterialName;
                         if ( defaultMaterial != null && defaultMaterial != string.Empty )
