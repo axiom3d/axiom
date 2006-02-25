@@ -147,7 +147,6 @@
 		<property name="Tao.OpenGl" value="${path::combine(dependencies.managed.unix.dir, 'Tao.OpenGl.dll')}" dynamic="false"/>
 		<property name="Tao.OpenGl.ExtensionLoader" value="${path::combine(dependencies.managed.unix.dir, 'Tao.OpenGl.ExtensionLoader.dll')}" dynamic="false"/>
 		<property name="Tao.OpenGl.Glu" value="${path::combine(dependencies.managed.unix.dir, 'Tao.OpenGl.Glu.dll')}" dynamic="false"/>
-		<property name="Tao.Platform.Windows" value="${path::combine(dependencies.managed.unix.dir, 'Tao.Platform.Windows.dll')}" dynamic="false"/>
 		<property name="Tao.Sdl" value="${path::combine(dependencies.managed.unix.dir, 'Tao.Sdl.dll')}" dynamic="false"/>
 	</if>
 	
