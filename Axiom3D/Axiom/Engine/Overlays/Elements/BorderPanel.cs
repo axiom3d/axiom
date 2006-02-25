@@ -735,7 +735,8 @@ namespace Axiom
             float u2 = StringConverter.ParseFloat( parms[2] );
             float v2 = StringConverter.ParseFloat( parms[3] );
 
-            borderPanel.SetCellUV( BorderCell.Left, u1, v1, u2, v2 );
+            //borderPanel.SetCellUV( BorderCell.Left, u1, v1, u2, v2 );
+			borderPanel.SetLeftBorderUV(u1, v1, u2, v2);
         }
 
         [AttributeParser( "border_right_uv", "BorderPanel" )]
@@ -748,7 +749,8 @@ namespace Axiom
             float u2 = StringConverter.ParseFloat( parms[2] );
             float v2 = StringConverter.ParseFloat( parms[3] );
 
-            borderPanel.SetCellUV( BorderCell.Right, u1, v1, u2, v2 );
+            //borderPanel.SetCellUV( BorderCell.Right, u1, v1, u2, v2 );
+			borderPanel.SetRightBorderUV(u1, v1, u2, v2);
         }
 
         [AttributeParser( "border_top_uv", "BorderPanel" )]
@@ -761,7 +763,8 @@ namespace Axiom
             float u2 = StringConverter.ParseFloat( parms[2] );
             float v2 = StringConverter.ParseFloat( parms[3] );
 
-            borderPanel.SetCellUV( BorderCell.Top, u1, v1, u2, v2 );
+            //borderPanel.SetCellUV( BorderCell.Top, u1, v1, u2, v2 );
+			borderPanel.SetTopBorderUV(u1, v1, u2, v2);
         }
 
         [AttributeParser( "border_bottom_uv", "BorderPanel" )]
@@ -774,7 +777,8 @@ namespace Axiom
             float u2 = StringConverter.ParseFloat( parms[2] );
             float v2 = StringConverter.ParseFloat( parms[3] );
 
-            borderPanel.SetCellUV( BorderCell.Bottom, u1, v1, u2, v2 );
+            //borderPanel.SetCellUV( BorderCell.Bottom, u1, v1, u2, v2 );
+			borderPanel.SetBottomBorderUV(u1, v1, u2, v2);
         }
 
         [AttributeParser( "border_topleft_uv", "BorderPanel" )]
@@ -787,7 +791,8 @@ namespace Axiom
             float u2 = StringConverter.ParseFloat( parms[2] );
             float v2 = StringConverter.ParseFloat( parms[3] );
 
-            borderPanel.SetCellUV( BorderCell.TopLeft, u1, v1, u2, v2 );
+            //borderPanel.SetCellUV( BorderCell.TopLeft, u1, v1, u2, v2 );
+			borderPanel.SetTopLeftBorderUV(u1, v1, u2, v2);
         }
 
         [AttributeParser( "border_topright_uv", "BorderPanel" )]
@@ -800,7 +805,8 @@ namespace Axiom
             float u2 = StringConverter.ParseFloat( parms[2] );
             float v2 = StringConverter.ParseFloat( parms[3] );
 
-            borderPanel.SetCellUV( BorderCell.TopRight, u1, v1, u2, v2 );
+            //borderPanel.SetCellUV( BorderCell.TopRight, u1, v1, u2, v2 );
+			borderPanel.SetTopRightBorderUV(u1, v1, u2, v2);
         }
 
         [AttributeParser( "border_bottomleft_uv", "BorderPanel" )]
@@ -813,7 +819,8 @@ namespace Axiom
             float u2 = StringConverter.ParseFloat( parms[2] );
             float v2 = StringConverter.ParseFloat( parms[3] );
 
-            borderPanel.SetCellUV( BorderCell.BottomLeft, u1, v1, u2, v2 );
+            //borderPanel.SetCellUV( BorderCell.BottomLeft, u1, v1, u2, v2 );
+			borderPanel.SetBottomLeftBorderUV(u1, v1, u2, v2);
         }
 
         [AttributeParser( "border_bottomright_uv", "BorderPanel" )]
@@ -826,7 +833,8 @@ namespace Axiom
             float u2 = StringConverter.ParseFloat( parms[2] );
             float v2 = StringConverter.ParseFloat( parms[3] );
 
-            borderPanel.SetCellUV( BorderCell.BottomRight, u1, v1, u2, v2 );
+            //borderPanel.SetCellUV( BorderCell.BottomRight, u1, v1, u2, v2 );
+			borderPanel.SetBottomRightBorderUV(u1, v1, u2, v2);
         }
 
         [AttributeParser( "border_size", "BorderPanel" )]

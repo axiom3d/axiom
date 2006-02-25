@@ -385,7 +385,7 @@ namespace Axiom
             set
             {
                 base.MaterialName = value;
-                UpdateTextureGeometry();
+                //UpdateTextureGeometry();
             }
             get
             {

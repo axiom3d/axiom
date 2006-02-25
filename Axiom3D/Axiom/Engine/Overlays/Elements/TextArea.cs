@@ -78,7 +78,7 @@ namespace Axiom
             : base( name )
         {
             isTransparent = false;
-            alignment = HorizontalAlignment.Left;
+            alignment = HorizontalAlignment.Center;
 
             colorTop = ColorEx.White;
             colorBottom = ColorEx.White;
