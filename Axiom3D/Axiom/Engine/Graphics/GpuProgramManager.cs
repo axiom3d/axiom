@@ -267,7 +267,7 @@ namespace Axiom
         public new GpuProgram GetByName( string name )
         {
             // look for a high level program first
-            GpuProgram program = HighLevelGpuProgramManager.Instance.GetByName( name );
+            GpuProgram program = HighLevelGpuProgramManagerSingleton.Instance.GetByName( name );
 
             // return if found
             if ( program != null )

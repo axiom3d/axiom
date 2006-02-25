@@ -182,11 +182,11 @@ namespace Axiom.SceneManagers.PagingLandscape
         public long World_Height;					//world page height, from 0 to height
         public long World_Width;					//world page width, from 0 to width
 
-        public float MaxScaledZ;					//world page height, scaled
-        public float MaxScaledX;					//world page width, scaled
+        public float MaxScaledZ = 0;					//world page height, scaled
+        public float MaxScaledX = 0;					//world page width, scaled
 
-        public float MaxUnScaledZ;					//world page height, unscaled
-        public float MaxUnScaledX;					//world page width, unscaled
+        public float MaxUnScaledZ = 0;					//world page height, unscaled
+        public float MaxUnScaledX = 0;					//world page width, unscaled
 
         public float Change_Factor;				//Determines the value of the change factor for loading/unloading LandScape Pages
         public long Max_Adjacent_Pages;

@@ -353,7 +353,8 @@ namespace Axiom
 			{
 				throw new Exception("Track with the handle " + handle + " not found.");
 			}
-			trackList.RemoveByKey(handle);
+
+			trackList.Remove(handle);
 		}
 
 		/// <summary>

@@ -7,6 +7,8 @@ namespace Axiom.RenderSystems.DirectX9
     /// <summary>
     /// Summary description for Plugin.
     /// </summary>
+    [PluginMetadata(Namespace = "/Axiom/RenderSystems/DirectX",
+        Description="Axiom DirectX 9 Renderer")]
     public sealed class Plugin : IPlugin
     {
         #region Fields
@@ -30,7 +32,7 @@ namespace Axiom.RenderSystems.DirectX9
             Root.Instance.RenderSystems.Add( "Direct3D9", renderSystem );
 
             // register the HLSL program manager
-            HighLevelGpuProgramManager.Instance.AddFactory( factory );
+            HighLevelGpuProgramManagerSingleton.Instance.AddFactory( factory );
         }
 
         public void Stop()

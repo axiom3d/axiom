@@ -141,7 +141,7 @@ namespace Axiom
         {
             get
             {
-                return HighLevelGpuProgramManager.Instance;
+                return HighLevelGpuProgramManagerSingleton.Instance;
             }
         }
         public static PluginManager Plugins

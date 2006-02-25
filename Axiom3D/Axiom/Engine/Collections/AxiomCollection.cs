@@ -22,14 +22,10 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion LGPL License
-
-#region Namespace Declarations
+#endregion
 
 using System;
-using System.Collections;
-
-#endregion Namespace Declarations
+using System.Collections.Generic;
 
 namespace Axiom
 {
@@ -37,21 +33,15 @@ namespace Axiom
     /// <summary>
     ///		Serves as a basis for strongly typed collections in the engine.
     /// </summary>
-    /// <remarks>
-    ///		Can't wait for Generics in .Net Framework 2.0!   
-    /// </remarks>
-    public abstract class AxiomCollection : ICollection, IEnumerable
+    public abstract class AxiomCollection<K, T> : ICollection<T>, IEnumerable<T>
     {
-        #region Fields
         /// <summary></summary>
-        protected SortedList objectList;
+        protected SortedList<K, T> objectList;
         /// <summary></summary>
         protected Object parent;
         static protected int nextUniqueKeyCounter;
 
         const int INITIAL_CAPACITY = 60;
-
-        #endregion Fields
 
         #region Constructors
 
@@ -61,86 +51,63 @@ namespace Axiom
         public AxiomCollection()
         {
             this.parent = null;
-            objectList = new SortedList( INITIAL_CAPACITY );
+            objectList = new SortedList<K, T>(INITIAL_CAPACITY);
         }
 
         /// <summary>
         ///		
         /// </summary>
         /// <param name="parent"></param>
-        public AxiomCollection( Object parent )
+        public AxiomCollection(object parent)
         {
             this.parent = parent;
-            objectList = new SortedList( INITIAL_CAPACITY );
+            objectList = new SortedList<K, T>(INITIAL_CAPACITY);
         }
 
         #endregion
 
-        #region Weakly typed methods and indexers
+        /// <summary>
+        ///		
+        /// </summary>
+        public T this[int index]
+        {
+            get
+            {
+                return objectList.Values[index];
+            }
+            set
+            {
+                objectList.Values[index] = value;
+            }
+        }
+
+        public ICollection<T> Values { get { return objectList.Values; } }
+
+        public ICollection<K> Keys { get { return objectList.Keys; } }
 
         /// <summary>
         ///		
         /// </summary>
-        public object this[int index]
+        public T this[K key]
         {
-            get
-            {
-                return objectList.GetByIndex( index );
-            }
-            set
-            {
-                objectList.SetByIndex( index, value );
-            }
-        }
-
-        public ICollection Values
-        {
-            get
-            {
-                return objectList.Values;
-            }
-        }
-
-        public ICollection Keys
-        {
-            get
-            {
-                return objectList.Keys;
-            }
-        }
-
-        /// <summary>
-        ///		
-        /// </summary>
-        protected object this[object key]
-        {
-            get
-            {
-                return objectList[key];
-            }
-            set
-            {
-                objectList[key] = value;
-            }
+            get { return objectList[key]; }
+            set { objectList[key] = value; }
         }
 
         /// <summary>
         ///		Accepts an unnamed object and names it manually.
         /// </summary>
         /// <param name="item"></param>
-        protected void Add( object item )
-        {
-            objectList.Add( "Object" + ( nextUniqueKeyCounter++ ), item );
-        }
+        public abstract void Add(T item);
 
         /// <summary>
         ///		Adds a named object to the collection.
         /// </summary>
         /// <param name="key"></param>
         /// <param name="item"></param>
-        protected void Add( object key, object item )
+        public void Add(K key, T item)
         {
-            objectList.Add( key, item );
+            objectList.Add(key, item);
         }
 
         /// <summary>
@@ -155,35 +122,31 @@ namespace Axiom
         ///		Removes the item from the collection.
         /// </summary>
         /// <param name="item"></param>
-        public virtual void Remove( object item )
+        public void Remove(T item)
         {
-            int index = objectList.IndexOfValue( item );
+            int index = objectList.IndexOfValue(item);
 
-            if ( index != -1 )
-                objectList.RemoveAt( index );
+            if (index != -1)
+                objectList.RemoveAt(index);
         }
-
 
         /// <summary>
-        ///		Removes the item from the collection.
+        /// Removes the item from the collection
         /// </summary>
-        /// <param name="item"></param>
-        public virtual void RemoveByKey( object item )
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public void Remove(K key)
         {
-            int index = objectList.IndexOfKey( item );
-
-            if ( index != -1 )
-                objectList.RemoveAt( index );
+            objectList.Remove(key);
         }
-
 
         /// <summary>
         ///		Removes an item at the specified index.
         /// </summary>
         /// <param name="index"></param>
-        public void RemoveAt( int index )
+        public void RemoveAt(int index)
         {
-            objectList.RemoveAt( index );
+            objectList.RemoveAt(index);
         }
 
         /// <summary>
@@ -191,27 +154,38 @@ namespace Axiom
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public bool ContainsKey( object key )
+        public bool ContainsKey(K key)
         {
-            return objectList.ContainsKey( key );
+            return objectList.ContainsKey(key);
         }
 
-        #endregion Strongly typed methods and indexers
+        /// <summary>
+        /// Returns the index at which the object with the given key resides
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public int IndexOf(K key)
+        {
+            return objectList.IndexOfKey(key);
+        }
+
+        /// <summary>
+        /// Returns the index at which the given object resides
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public int IndexOf(T value)
+        {
+            return objectList.IndexOfValue(value);
+        }
 
         #region Implementation of ICollection
 
-        public void CopyTo( System.Array array, int index )
-        {
-            objectList.CopyTo( array, index );
-        }
-
-        public bool IsSynchronized
-        {
-            get
-            {
-                return objectList.IsSynchronized;
-            }
-        }
+        //public bool IsSynchronized {
+        //    get {
+        //        return true; // TODO вернуться сюда позже
+        //    }
+        //}
 
         public int Count
         {
@@ -221,33 +195,22 @@ namespace Axiom
             }
         }
 
-        public object SyncRoot
-        {
-            get
-            {
-                return objectList.SyncRoot;
-            }
-        }
-
-        #endregion
-
-        #region Implementation of IEnumerable
-
-        public System.Collections.IEnumerator GetEnumerator()
-        {
-            return objectList.Values.GetEnumerator();
-        }
+        //public object SyncRoot {
+        //    get {
+        //        return objectList.SyncRoot;
+        //    }
+        //}
 
         #endregion
 
         #region Implementation of IEnumerator
 
-        public class Enumerator : IEnumerator
+        public class Enumerator : IEnumerator<T>
         {
             private int position = -1;
-            private AxiomCollection list;
+            private AxiomCollection<K, T> list;
 
-            public Enumerator( AxiomCollection list )
+            public Enumerator(AxiomCollection<K, T> list)
             {
                 this.list = list;
             }
@@ -269,7 +232,7 @@ namespace Axiom
             {
                 position += 1;
 
-                if ( position >= list.objectList.Count )
+                if (position >= list.objectList.Count)
                 {
                     return false;
                 }
@@ -282,15 +245,98 @@ namespace Axiom
             /// <summary>
             ///		Returns the current object in the enumeration.
             /// </summary>
-            public object Current
+            public T Current
             {
                 get
                 {
-                    return list.objectList.GetByIndex( position );
+                    return list.objectList.Values[position];
                 }
             }
+
+            #region IDisposable Members
+
+            public void Dispose()
+            {
+                this.Reset();
+            }
+
+            #endregion
+
+            #region IEnumerator Members
+
+            object System.Collections.IEnumerator.Current
+            {
+                get { return list.objectList.Values[position]; }
+            }
+
+            #endregion
         }
         #endregion
 
+
+        #region ICollection<T> Members
+
+
+        public bool Contains(T item)
+        {
+            return objectList.ContainsValue(item);
+        }
+
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            objectList.Values.CopyTo(array, arrayIndex);
+        }
+
+        public bool IsReadOnly
+        {
+            get { return false; }
+        }
+
+        bool ICollection<T>.Remove(T item)
+        {
+            int idx = objectList.IndexOfValue(item);
+
+            if (idx < 0)
+                return false;
+
+            K key = objectList.Keys[idx];
+
+            return objectList.Remove(key);
+        }
+
+        #endregion
+
+        #region IEnumerable<T> Members
+
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
+            Enumerator etr = new Enumerator(this);
+
+            return etr;
+        }
+
+        #endregion
+
+        #region IEnumerable<T> Members
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            Enumerator etr = new Enumerator(this);
+
+            return etr;
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            Enumerator etr = new Enumerator(this);
+
+            return etr;
+        }
+
+        #endregion
     }
 }

@@ -525,7 +525,7 @@ namespace RealmForge
                         */
                     if ( assemblyPath.EndsWith( ".dll" ) )
                         assemblyPath = assemblyPath.Substring( 0, assemblyPath.Length - 4 );
-                    asm = Assembly.LoadWithPartialName( assemblyPath );
+                    asm = Assembly.LoadFrom( assemblyPath );
                 }
                 catch ( Exception e )
                 {

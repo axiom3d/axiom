@@ -102,7 +102,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
         {
             // is the name valid and already loaded?
             // check with the high level program manager to see if it was loaded
-            HighLevelGpuProgram hlProgram = HighLevelGpuProgramManager.Instance.GetByName( name );
+            HighLevelGpuProgram hlProgram = HighLevelGpuProgramManagerSingleton.Instance.GetByName( name );
 
             if ( hlProgram != null )
             {

@@ -97,12 +97,14 @@ namespace Axiom
                 logMgr.Write( "*-*-* Axiom Intializing" );
 
                 new ArchiveManager();
+                
                 sceneManagerList = SceneManagerEnumerator.Instance;
 
                 new MaterialManager();
                 new MeshManager();
                 new SkeletonManager();
                 new ParticleSystemManager();
+                
                 PlatformManager.LoadInstance();
 
 
@@ -120,9 +122,7 @@ namespace Axiom
 
                 new HighLevelGpuProgramManager();
 
-                new PluginManager();
-
-                PluginManager.Instance.LoadAll();
+                PluginManager.Instance.Init();
             }
         }
 
@@ -703,9 +703,9 @@ namespace Axiom
             {
                 ControllerManager.Instance.Dispose();
             }
-            if ( HighLevelGpuProgramManager.Instance != null )
+            if ( HighLevelGpuProgramManagerSingleton.Instance != null )
             {
-                HighLevelGpuProgramManager.Instance.Dispose();
+                HighLevelGpuProgramManagerSingleton.Instance.Dispose();
             }
             if ( PluginManager.Instance != null )
             {

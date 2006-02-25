@@ -77,7 +77,7 @@ namespace Axiom
         ///    List of sub entities.
         /// </summary>
         protected SubEntityCollection subEntityList = new SubEntityCollection();
-        public ICollection SubEntities
+        public SubEntityCollection SubEntities
         {
             get
             {

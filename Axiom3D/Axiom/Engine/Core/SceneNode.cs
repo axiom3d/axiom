@@ -64,11 +64,11 @@ namespace Axiom
         /// <summary>
         /// Gets the list of scene objects attached to this scene node
         /// </summary>
-        public ICollection Objects
+        public MovableObjectCollection Objects
         {
             get
             {
-                return objectList.Values;
+                return objectList;
             }
         }
 
