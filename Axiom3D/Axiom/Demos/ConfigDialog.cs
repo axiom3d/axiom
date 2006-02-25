@@ -336,6 +336,7 @@ namespace Axiom.Demos
 
         private void RenderSystems_SelectedIndexChanged( object sender, EventArgs e )
         {
+            lstOptions.Items.Clear();
             cboResolution.Items.Clear();
             RenderSystem system = (RenderSystem)cboRenderSystems.SelectedItem;
             ConfigOption optVideoMode;
@@ -346,8 +347,12 @@ namespace Axiom.Demos
 
             optVideoMode = system.ConfigOptions["Video Mode"];
             foreach ( string mode in optVideoMode.PossibleValues )
-                cboResolution.Items.Add( mode );                
+                cboResolution.Items.Add( mode );
 
+            if ( cboResolution.Items.Count == 0 )
+            {
+                cboResolution.Items.Add( optVideoMode.Value );
+            }
             cboResolution.SelectedIndex = 0;
         }
         
