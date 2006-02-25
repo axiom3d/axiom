@@ -143,7 +143,7 @@ namespace Axiom.Demos
             this.cboResolution.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboResolution.Font = new System.Drawing.Font( "Palatino Linotype", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
             this.cboResolution.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
-            this.cboResolution.FormattingEnabled = true;
+            //this.cboResolution.FormattingEnabled = true;
             this.cboResolution.Location = new System.Drawing.Point( 238, 158 );
             this.cboResolution.Name = "cboResolution";
             this.cboResolution.Size = new System.Drawing.Size( 176, 24 );
@@ -175,7 +175,7 @@ namespace Axiom.Demos
             this.cboRenderSystems.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboRenderSystems.Font = new System.Drawing.Font( "Palatino Linotype", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
             this.cboRenderSystems.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
-            this.cboRenderSystems.FormattingEnabled = true;
+            //this.cboRenderSystems.FormattingEnabled = true;
             this.cboRenderSystems.Location = new System.Drawing.Point( 145, 185 );
             this.cboRenderSystems.Name = "cboRenderSystems";
             this.cboRenderSystems.Size = new System.Drawing.Size( 285, 24 );
@@ -210,9 +210,9 @@ namespace Axiom.Demos
             // 
             // ConfigDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF( 96F, 96F );
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.BackColor = System.Drawing.SystemColors.ButtonFace;
+            //this.AutoScaleDimensions = new System.Drawing.SizeF( 96F, 96F );
+            //this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            //this.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.ClientSize = new System.Drawing.Size( 442, 436 );
             this.ControlBox = false;
             this.Controls.Add( this.cmdOk );
@@ -222,7 +222,7 @@ namespace Axiom.Demos
             this.Controls.Add( this.cboRenderSystems );
             this.Controls.Add( this.picLogo );
             this.Controls.Add( this.pnlBackground );
-            this.DoubleBuffered = true;
+            //this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
