@@ -488,11 +488,11 @@ namespace Axiom
 
             if ( count > 0 && !( (TextureUnitState)textureUnitStates[0] ).IsBlank )
             {
-                hashCode += ( ( (TextureUnitState)textureUnitStates[0] ).TextureName.GetHashCode() % ( 1 << 14 ) ) << 14;
+                hashCode += ( ( (TextureUnitState)textureUnitStates[0] ).TextureName.GetHashCode() & ( 1 << 14 ) ) << 14;
             }
             if ( count > 1 && !( (TextureUnitState)textureUnitStates[1] ).IsBlank )
             {
-                hashCode += ( ( (TextureUnitState)textureUnitStates[1] ).TextureName.GetHashCode() % ( 1 << 14 ) );
+                hashCode += ( ( (TextureUnitState)textureUnitStates[1] ).TextureName.GetHashCode() & ( 1 << 14 ) );
             }
         }
 

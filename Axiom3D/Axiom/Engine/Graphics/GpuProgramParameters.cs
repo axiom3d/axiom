@@ -704,7 +704,7 @@ namespace Axiom
                         break;
 
                     case AutoConstants.LightPositionObjectSpace:
-                        SetConstant( entry.index, source.InverseWorldMatrix * source.GetLight( entry.data ).DerivedPosition );
+                        SetConstant( entry.index, source.InverseWorldMatrix * source.GetLight( entry.data ).GetAs4DVector() );
                         break;
 
                     case AutoConstants.LightDirectionObjectSpace:
