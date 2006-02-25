@@ -46,6 +46,10 @@ using DotNet3D.Math;
 			
 namespace DotNet3D.Math.Tests
 {
+    /// <summary>
+    ///This is a test class for DotNet3D.Math.Vector2 and is intended
+    ///to contain all DotNet3D.Math.Vector2 Unit Tests
+    ///</summary>
     [TestClass]
     public class Vector2Fixture
     {
@@ -194,7 +198,7 @@ namespace DotNet3D.Math.Tests
         public void AccessXValueByIntIndexer()
         {
             Vector2 v = new Vector2( 1.0f, 2.0f );
-            float x = v[ 0 ];
+            Real x = v[ 0 ];
 
             Assert.Equals( x, 1.0f );
         }
@@ -203,7 +207,7 @@ namespace DotNet3D.Math.Tests
         public void AccessYValueByIntIndexer()
         {
             Vector2 v = new Vector2( 1.0f, 2.0f );
-            float y = v[ 1 ];
+            Real y = v[ 1 ];
 
             Assert.Equals( y, 1.0f );
         }
@@ -213,7 +217,7 @@ namespace DotNet3D.Math.Tests
         public void AccessInvalidValueByIntIndexerThrows()
         {
             Vector2 v = new Vector2( 1.0f, 2.0f );
-            float x = v[ 2 ];
+            Real x = v[ 2 ];
         }
 
         [TestMethod]
