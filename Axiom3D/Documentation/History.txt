@@ -4,6 +4,8 @@
 - Removed Axiom.Mathlib as it is now wholly contained in RealmForge.Utility, project files and using declarations are updated.
 - Added Documentation folder for the history file and anything else that describes this process.
 - Added Axiom Dependencies directory and build tools to make building this branch easier, may or may not work yet.
+  Tested with MSVC 2002, and it seems to work. You need to manually copy the Native Win32 deps into the bin/Debug or bin/Release
+  folders of the Axiom.Demo project.
 
 2005-08-22 Michael Cummings [Borrillis]
 - Reformatted Axiom code files using ReSharper and VS2005 for greater consistancy.

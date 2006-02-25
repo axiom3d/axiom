@@ -7,10 +7,10 @@
 				<OptimizeCode>false</OptimizeCode>
 				<CheckUnderflowOverflow>false</CheckUnderflowOverflow>
 				<AllowUnsafe>false</AllowUnsafe>
+				<OutputPath>bin\Debug</OutputPath>
 				<WarningLevel>4</WarningLevel>
 				<WarningsAsErrors>false</WarningsAsErrors>
 				<SupressWarnings>1595;1591;219;1573;1572;168;1574;1570;1587</SupressWarnings>
-				<OutputPath>..\bin\Debug</OutputPath>
 				<DebugInformation>true</DebugInformation>
 				<RegisterCOMInterop>false</RegisterCOMInterop>
 				<IncrementalBuild>true</IncrementalBuild>
@@ -26,10 +26,10 @@
 				<OptimizeCode>true</OptimizeCode>
 				<CheckUnderflowOverflow>false</CheckUnderflowOverflow>
 				<AllowUnsafe>false</AllowUnsafe>
+				<OutputPath>bin\Release</OutputPath>
 				<WarningLevel>4</WarningLevel>
 				<WarningsAsErrors>false</WarningsAsErrors>
 				<SupressWarnings>1595;1591;219;1573;1572;168;1574;1570;1587</SupressWarnings>
-				<OutputPath>..\bin\Release</OutputPath>
 				<DebugInformation>false</DebugInformation>
 				<RegisterCOMInterop>false</RegisterCOMInterop>
 				<IncrementalBuild>true</IncrementalBuild>
@@ -39,7 +39,32 @@
 				<XmlDocFile>Docs.xml</XmlDocFile>				
 			</Options>
 		</Configuration>
+		<Files>
+			<Match path="Documentation" pattern="*.*"/>
+		</Files>
 
+		<Project name="RealmForge.Utility" filterGroups="Axiom|Cegui" path="RealmForge\Utility" type="Library" assemblyName="RealmForge.Utility" rootNamespace="RealmForge">
+			<Configuration name="Debug">
+				<Options>
+					<XmlDocFile>RealmForge.Utility.xml</XmlDocFile>
+					<AllowUnsafe>true</AllowUnsafe>
+				</Options>
+			</Configuration>
+			<Configuration name="Release">
+				<Options>
+					<XmlDocFile>RealmForge.Utility.xml</XmlDocFile>
+					<AllowUnsafe>true</AllowUnsafe>
+				</Options>
+			</Configuration>
+			<ReferencePath>..\..\Dependencies\Managed</ReferencePath>
+			<Reference name="System"/>
+			<Reference name="System.Drawing"/>
+			<Reference name="System.Xml"/>
+			<Files>
+				<Match pattern="*.cs" recurse="true"/>
+			</Files>
+		</Project>
+		
 		<Project name="Axiom.Engine" type="Library" path="Axiom/Engine" rootNamespace="Axiom" >		
 			<Configuration name="Debug">
 				<Options>
@@ -53,7 +78,7 @@
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
-			<ReferencePath>..\Dependencies\Managed</ReferencePath>
+			<ReferencePath>..\..\Dependencies\Managed</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -68,7 +93,6 @@
 			</Files>
 		</Project>
 		
-	<?if OS = "Win32" ?>
 		<Project name="Axiom.Platforms.Win32" type="Library" path="Axiom/Platforms/Win32" rootNamespace="Axiom">
 			<Configuration name="Debug">
 				<Options>
@@ -80,7 +104,7 @@
 					<XmlDocFile>Axiom.Platforms.Win32.xml</XmlDocFile>
 				</Options>
 			</Configuration>
-			<ReferencePath>..\..\Dependencies\Managed</ReferencePath>
+			<ReferencePath>..\..\..\Dependencies\Managed</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -111,7 +135,7 @@
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
-			<ReferencePath>..\..\Dependencies\Managed</ReferencePath>
+			<ReferencePath>..\..\..\Dependencies\Managed</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -129,7 +153,6 @@
 				<Match pattern="*.cs" path="." recurse="true"/>
 			</Files>
 		</Project>
-	<?else ?>
 
 		<Project name="Axiom.Platforms.SDL" type="Library" path="Axiom/Platforms/SDL" rootNamespace="Axiom">
 			<Configuration name="Debug">
@@ -143,7 +166,7 @@
 				</Options>
 			</Configuration>
 			
-			<ReferencePath>..\..\Dependencies\Managed</ReferencePath>
+			<ReferencePath>..\..\..\Dependencies\Managed</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -151,14 +174,12 @@
 			<Reference name="System.Xml" />
 			<Reference name="Axiom.Engine" />
 			<Reference name="RealmForge.Utility"/>
-			<Reference name="Tao.Platform.Windows" />
 			<Reference name="Tao.Sdl"/>
 			
 			<Files>
 				<Match pattern="*.cs" path="." recurse="true"/>
 			</Files>
 		</Project>
-	<?endif ?>
 
 		<Project name="Axiom.RenderSystems.OpenGL" type="Library" path="Axiom/RenderSystems/OpenGL" rootNamespace="Axiom" >
 			<Configuration name="Debug">
@@ -173,7 +194,7 @@
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
-			<ReferencePath>..\..\Dependencies\Managed</ReferencePath>
+			<ReferencePath>..\..\..\Dependencies\Managed</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -214,7 +235,7 @@
 					<XmlDocFile>Axiom.Plugins.CgProgramManager.xml</XmlDocFile>
 				</Options>
 			</Configuration>
-			<ReferencePath>..\..\Dependencies\Managed</ReferencePath>
+			<ReferencePath>..\..\..\Dependencies\Managed</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -239,13 +260,13 @@
 					<XmlDocFile>Axiom.Plugins.ParticleFX.xml</XmlDocFile>
 				</Options>
 			</Configuration>
-			<ReferencePath>..\..\Dependencies\Managed</ReferencePath>
+			<ReferencePath>..\..\..\Dependencies\Managed</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
 			<Reference name="System.Xml" />
 			<Reference name="Axiom.Engine" />
-			<Reference name="RealmForeg.Utility" />
+			<Reference name="RealmForge.Utility" />
 			
 			<Files>
 				<Match pattern="*.cs" path="." recurse="true"/>
@@ -265,12 +286,13 @@
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
+			<ReferencePath>..\..\..\Dependencies\Managed</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
 			<Reference name="System.Xml" />
 			<Reference name="Axiom.Engine"/>
-			<Reference name="RealmForeg.Utility"/>
+			<Reference name="RealmForge.Utility"/>
 			
 			<Files>
 				<Match pattern="*.cs" path="." recurse="true"/>
@@ -290,6 +312,7 @@
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
+			<ReferencePath>..\..\..\Dependencies\Managed</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -316,52 +339,64 @@
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
+			<ReferencePath>..\..\..\Dependencies\Managed</ReferencePath>
 			<Reference name="System" />
 			<Reference name="System.Data" />
 			<Reference name="System.Xml" />
 			<Reference name="Axiom.Engine"/>
-			<Reference name="RealmForege.Utility"/>
+			<Reference name="RealmForge.Utility"/>
 			
 			<Files>
 				<Match pattern="*.cs" path="." recurse="true"/>
 			</Files>
 		</Project>
 
-		<Project name="Axiom.Demos" path="Demos" type="WinExe" icon="..\..\bin\RealmForge.ico" assemblyName="TechDemo" rootNamespace="Axiom">
+		<Project name="Axiom.Demos" path="Axiom\Demos" type="WinExe" rootNamespace="Axiom">
 			<Configuration name="Debug">
 				<Options>
-					<OutputPath>..\..\bin</OutputPath>
 					<XmlDocFile>SampleBrowser.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
-					<OutputPath>..\..\bin</OutputPath>
 					<XmlDocFile>SampleBrowser.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
-			<ReferencePath>../../libs</ReferencePath>
+			<ReferencePath>..\..\Dependencies\Managed</ReferencePath>
 			<Reference name="System"/>
 			<Reference name="System.Drawing"/>
 			<Reference name="System.Windows.Forms"/>
 			<Reference name="System.Xml"/>
-			<Reference name="RealmForge.Forms"/>
-			<Reference name="Axiom.MathLib"/>
-			<Reference name="Axiom.Engine"/>
-			<Reference name="RealmForge.Forms"/>
-			<Reference name="RealmForge.ScriptLibrary"/>
-			<Reference name="RealmForge.RAGE"/>
-			<Reference name="RealmForge.Framework"/>
+			<Reference name="System.Data"/>
 			<Reference name="RealmForge.Utility"/>
-			<Reference name="RealmForge.Importers.Collada"/>
+			<Reference name="Axiom.Engine"/>
+			
+			<?if OS = "Win32" ?>
+			
+			<Reference name="Axiom.RenderSystems.DirectX9"/>
+			<Reference name="Axiom.Platforms.Win32"/>
+			
+			<?else ?>
+			
+			<Reference name="Axiom.RenderSystems.OpenGL"/>
+			<Reference name="Axiom.Platforms.SDL"/>
+			
+			<?endif ?>
+			
+			<Reference name="Axiom.Plugins.CgProgramManager"/>
+			<Reference name="Axiom.Plugins.ParticleFX"/>
+			<Reference name="Axiom.SceneManagers.Octree"/>
+			<Reference name="Axiom.SceneManagers.Bsp"/>
+			<Reference name="Axiom.SceneManagers.PagingLandscape"/>
+
 
 			<Files>
 				<Match pattern="*.cs" recurse="true"/>
-				<Match path="Resources" pattern="*.xml" buildAction="EmbeddedResource" recurse="true"/>
 			</Files>
 		</Project>
+		
 	</Solution>
 </DNPreBuild>
 
