@@ -238,13 +238,14 @@ namespace Axiom
         {
             K key = default( K );
 
-            if ( key is string )
+            if ( typeof(K) == typeof(string) )
             {
-                key = (K)Convert.ChangeType( key.GetType().Name + nextUniqueKeyCounter++, key.GetType() );
+                string stringKey = typeof(T).Name + nextUniqueKeyCounter++;
+                key = (K)Convert.ChangeType( stringKey, typeof(K) );
             }
             else
             {
-                key = (K)Convert.ChangeType( nextUniqueKeyCounter++, key.GetType() );
+                key = (K)Convert.ChangeType( nextUniqueKeyCounter++, typeof(K) );
             }
 
             base.Add( key, item );
