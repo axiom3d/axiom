@@ -403,7 +403,7 @@ namespace Axiom
             isVisible = true;
 			if (!isInitialised)
 			{
-				this.Initialize();
+				Initialize();
 			}
         }
 		protected void Initialize()
