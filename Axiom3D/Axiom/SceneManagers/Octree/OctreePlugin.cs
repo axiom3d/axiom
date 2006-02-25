@@ -32,10 +32,18 @@ namespace Axiom.SceneManagers.Octree
 {
     public class OctreePlugin : IPlugin
     {
+        private bool _isStarted = false;
+
+        public bool IsStarted
+        {
+            get { return _isStarted; }
+        }
+
         public void Start()
         {
             //SceneManagerEnumerator.Instance.SetSceneManager(SceneType.Generic, new OctreeSceneManager());
             SceneManagerEnumerator.Instance.SetSceneManager( SceneType.ExteriorClose, new TerrainSceneManager() );
+            _isStarted = true;
         }
 
         public void Stop()

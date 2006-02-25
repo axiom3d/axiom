@@ -22,36 +22,36 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion
-
+#endregion 
 
 using System;
+using System.Collections.Generic;
+using System.Text;
 
-using Axiom;
-
-namespace Axiom.SceneManagers.Bsp
+namespace Axiom
 {
-    public class BspPlugin : IPlugin
+    /// <summary>
+    ///		Any class that wants to entend the functionality of the engine can implement this
+    ///		interface.  Classes implementing this interface will automatically be loaded and
+    ///		started by the engine during the initialization phase.  Examples of plugins would be
+    ///		RenderSystems, SceneManagers, etc, which can register themself using the 
+    ///		singleton instance of the Engine class.
+    /// </summary>
+    public interface IPlugin
     {
-        public void Start()
-        {
-            Root.Instance.SceneManagers.SetSceneManager( SceneType.Interior, new BspSceneManager() );
+        /// <summary>
+        /// Initializes the plugin
+        /// </summary>
+        void Start();
 
-            _isStarted = true;
-        }
+        /// <summary>
+        /// Shuts down the plugin (really?)
+        /// </summary>
+        void Stop();
 
-        private bool _isStarted = false;
-
-        public bool IsStarted
-        {
-            get { return _isStarted; }
-        }
-
-        public void Stop()
-        {
-        }
+        /// <summary>
+        /// Checks whether this plugin is already started
+        /// </summary>
+        bool IsStarted { get; }
     }
 }
-
-
-

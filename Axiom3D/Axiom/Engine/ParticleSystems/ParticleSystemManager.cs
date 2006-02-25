@@ -31,6 +31,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Collections.Generic;
 #endregion
 
 #region Versioning Information
@@ -63,6 +64,7 @@ namespace Axiom
     ///		describing named particle system templates. Instances of particle systems using these templates can
     ///		then be created easily through the CreateParticleSystem method.
     /// </remarks>
+    [Subsystem("ParticleSystemManager")]
     public sealed class ParticleSystemManager : IDisposable
     {
         #region Singleton implementation
@@ -84,6 +86,16 @@ namespace Axiom
 
             scriptPatterns.Add( "*.particle" );
             ResourceGroupManager.Instance.RegisterScriptLoader( this );
+
+            // locate particle plugins
+            List<PluginMetadataAttribute> particlePlugins =
+                PluginManager.Instance.RequestSubsystemPlugins(this);
+
+            foreach (PluginMetadataAttribute meta in particlePlugins)
+            {
+                IPlugin particlePlugin = PluginManager.Instance.GetPlugin(meta.Name);
+                particlePlugin.Start();
+            }
         }
 
         /// <summary>
@@ -125,12 +137,12 @@ namespace Axiom
         /// <summary>
         ///     Factories for named emitter type (can be extended using plugins).
         /// </summary>
-        private Hashtable emitterFactoryList = new Hashtable();
+        private Dictionary<string, ParticleEmitterFactory> emitterFactoryList = new Dictionary<string,ParticleEmitterFactory>();
 
         /// <summary>
         ///     Factories for named affector types (can be extended using plugins).
         /// </summary>
-        private Hashtable affectorFactoryList = new Hashtable();
+        private Dictionary<string, ParticleAffectorFactory> affectorFactoryList = new Dictionary<string,ParticleAffectorFactory>();
 
         /// <summary>
         ///     Map of renderer types to factories
@@ -766,7 +778,7 @@ namespace Axiom
         /// <summary>
         ///     List of available affector factories.
         /// </summary>
-        public Hashtable Affectors
+        public Dictionary<string, ParticleAffectorFactory> Affectors
         {
             get
             {
@@ -777,7 +789,7 @@ namespace Axiom
         /// <summary>
         ///     List of available emitter factories.
         /// </summary>
-        public Hashtable Emitters
+        public Dictionary<string, ParticleEmitterFactory> Emitters
         {
             get
             {

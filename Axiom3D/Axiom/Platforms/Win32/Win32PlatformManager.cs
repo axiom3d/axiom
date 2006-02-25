@@ -8,7 +8,7 @@ namespace Axiom.Platforms.Win32
     /// <summary>
     ///		Platform management specialization for Microsoft Windows (r) platform.
     /// </summary>
-    [PluginMetadata(IsSingleton=true, Namespace="/Axiom/PlatformManager",
+    [PluginMetadata(IsSingleton=true, Name="PlatformManager",
         Description="Axiom Win32 Platform")]
     public class Win32PlatformManager : IPlatformManager, ISingletonPlugin
     {
@@ -146,11 +146,20 @@ namespace Axiom.Platforms.Win32
         public void Start()
         {
             LogManager.Instance.Write("Win32 Platform Manager started");
+            _isStarted = true;
         }
 
         public void Stop()
         {
             LogManager.Instance.Write("Win32 Platform Manager stopped");
         }
+
+        private bool _isStarted = false;
+
+        public bool IsStarted
+        {
+            get { return _isStarted; }
+        }
+
     }
 }

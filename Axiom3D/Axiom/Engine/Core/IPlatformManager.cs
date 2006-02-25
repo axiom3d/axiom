@@ -5,7 +5,7 @@ using Axiom.Input;
 namespace Axiom
 {
     /// <summary>
-    /// Summary description for IPlatformManager.
+    /// General behavior for a platform implementation class
     /// </summary>
     public interface IPlatformManager : IDisposable
     {
@@ -24,7 +24,7 @@ namespace Axiom
 
         /// <summary>
         ///		Implement to allow the host operating system to process pending events
-        ///		for other processes.
+        ///		for the current process.
         /// </summary>
         /// <remarks>
         ///		May not be relevant on all platforms.

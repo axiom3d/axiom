@@ -75,12 +75,17 @@ namespace Axiom.SceneManagers.PagingLandscape
 
     public class LandscapeSceneManagerPlugin : IPlugin
     {
+        private bool _isStarted = false;
+
+        public bool IsStarted
+        {
+            get { return _isStarted; }
+        }
 
         public void Start()
         {
-
             SceneManagerEnumerator.Instance.SetSceneManager( SceneType.ExteriorFar, new SceneManager() );
-
+            _isStarted = true;
         }
 
 

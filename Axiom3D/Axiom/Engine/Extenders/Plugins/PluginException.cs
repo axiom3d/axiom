@@ -24,34 +24,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-
 using System;
 
-using Axiom;
-
-namespace Axiom.SceneManagers.Bsp
+namespace Axiom
 {
-    public class BspPlugin : IPlugin
+    /// <summary>
+    /// Plugin exception class
+    /// </summary>
+    public class PluginException : AxiomException
     {
-        public void Start()
-        {
-            Root.Instance.SceneManagers.SetSceneManager( SceneType.Interior, new BspSceneManager() );
-
-            _isStarted = true;
-        }
-
-        private bool _isStarted = false;
-
-        public bool IsStarted
-        {
-            get { return _isStarted; }
-        }
-
-        public void Stop()
+        public PluginException( string message, params object[] args )
+            : base( string.Format( message, args ) )
         {
         }
     }
 }
-
-
-
