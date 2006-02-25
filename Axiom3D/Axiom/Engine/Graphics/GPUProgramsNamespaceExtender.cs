@@ -41,7 +41,7 @@ namespace Axiom
                 throw new ArgumentOutOfRangeException("GPUProgramsNamespaceExtender supports only IHighLevelGpuProgramFactory-compatible instances");
 
             IEnumerator
-                enu = ParticleSystemManager.Instance.Emitters.Values.GetEnumerator();
+                enu = HighLevelGpuProgramManager.Instance.Resources.GetEnumerator();
 
             while (enu.MoveNext())
                 yield return (K)enu.Current;
