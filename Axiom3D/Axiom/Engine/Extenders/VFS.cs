@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion 
+#endregion
 
 using System;
 using System.Collections.Generic;
@@ -33,8 +33,27 @@ namespace Axiom
     /// <summary>
     /// Virtual filesystem 
     /// </summary>
-    public class Vfs 
+    public class Vfs
     {
+        #region Singleton implementation
+        private Vfs()
+        {
+        }
+
+        private static Vfs _instance = null;
+        public static Vfs Instance
+        {
+            get
+            {
+                if (_instance == null)
+                    _instance = new Vfs();
+
+                return _instance;
+            }
+        }
+
+        #endregion
+
         public void Initialize()
         {
             LogManager.Instance.Write("*-*-* Virtual File System initialized");
@@ -78,7 +97,7 @@ namespace Axiom
                     if (path.LastIndexOf("/") == -1)
                         return null;
 
-                    string namespaceName = 
+                    string namespaceName =
                         path.Substring(0, path.LastIndexOf("/") + 1);
 
                     if (!fileSystem.ContainsKey(namespaceName))
@@ -93,15 +112,15 @@ namespace Axiom
         }
     }
 
-    /// <summary>
-    /// Axiom VFS singleton class
-    /// </summary>
-    // TODO: find a better name/implementation for it
-    public class AxiomVfs : Singleton<Vfs>
-    {
-        public override bool Initialize()
-        {
-            return true;
-        }
-    }
+    ///// <summary>
+    ///// Axiom VFS singleton class
+    ///// </summary>
+    //// TODO: find a better name/implementation for it
+    //public class Vfs : Singleton<Vfs>
+    //{
+    //    public override bool Initialize()
+    //    {
+    //        return true;
+    //    }
+    //}
 }

@@ -56,17 +56,18 @@ namespace Axiom
         /// <summary>
         /// Private constructor.  This class cannot be instantiated by any third party.
         /// </summary>
-        private PluginManager()
+        internal PluginManager()
         {
-            _instance = this;
+            if (_instance == null)
+                _instance = this;
 
             managerConfig = (PluginManagerConfiguration)
                 ConfigurationManager.GetSection("Plugins");
 
+            Vfs.Instance.RegisterNamespace(new PluginNamespaceExtender());
+
             if (managerConfig == null)
                 managerConfig = new PluginManagerConfiguration(CURRENT_FOLDER);
-
-            AxiomVfs.Instance.RegisterNamespace(new PluginNamespaceExtender());
         }
 
         /// <summary>
@@ -76,9 +77,6 @@ namespace Axiom
         {
             get
             {
-                if (_instance == null)
-                    new PluginManager();
-
                 return _instance;
             }
         }
@@ -102,7 +100,10 @@ namespace Axiom
         /// <returns>IPlugin-compatible object</returns>
         public IPlugin GetPlugin(string pluginName)
         {
-            return (IPlugin)AxiomVfs.Instance[pluginName];
+            string lookup = pluginName.IndexOf("/") > -1 ? pluginName :
+                "/Axiom/Plugins/" + pluginName;
+
+            return (IPlugin)Vfs.Instance[lookup];
         }
 
         /// <summary>
@@ -116,10 +117,10 @@ namespace Axiom
 
             string subsName = subsystems[subsystem.GetType()].Name;
             PluginNamespaceExtender plugins = 
-                (PluginNamespaceExtender)AxiomVfs.Instance["/Axiom/Plugins/"];
+                (PluginNamespaceExtender)Vfs.Instance["/Axiom/Plugins/"];
 
-            foreach(PluginMetadataAttribute meta in plugins.PluginMetadata("/Axiom/Plugins/"))
-                if(meta.Subsystem == subsystem.GetType())
+            foreach(PluginMetadataAttribute meta in plugins.PluginMetadata)
+                if(meta.Subsystem != null && meta.Subsystem.FullName == subsystem.GetType().FullName)
                     result.Add(meta);
 
             return result;
@@ -168,7 +169,7 @@ namespace Axiom
             {
                 foreach (string pluginTypeName in managerConfig.Plugins)
                 {
-                    IPlugin plugin = (IPlugin)AxiomVfs.Instance[pluginTypeName];
+                    IPlugin plugin = (IPlugin)Vfs.Instance[pluginTypeName];
 
                     //// load only the unloaded plugins
                     if(!plugin.IsStarted)

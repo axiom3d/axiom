@@ -73,6 +73,9 @@ namespace Axiom
             // acquire configuration
             managerConfig = (PluginManagerConfiguration)
                 ConfigurationManager.GetSection("Plugins");
+            
+            if (managerConfig == null)
+                managerConfig = new PluginManagerConfiguration(CURRENT_FOLDER);
 
             // inspect assemblies for plugins
             preloadCoreAssembly();
@@ -148,14 +151,16 @@ namespace Axiom
         /// </summary>
         /// <param name="namespacePrefix">namespace to look for plugin metadata in</param>
         /// <returns>IEnumerable-compatible iterator</returns>
-        public IEnumerable<PluginMetadataAttribute> PluginMetadata(string namespacePrefix)
+        public IEnumerable<PluginMetadataAttribute> PluginMetadata
         {
-            IEnumerator<KeyValuePair<string, PluginMetadataAttribute>> enu =
-                metadataStore.GetEnumerator();
+            get
+            {
+                IEnumerator<KeyValuePair<string, PluginMetadataAttribute>> enu =
+                    metadataStore.GetEnumerator();
 
-            while (enu.MoveNext())
-                if (enu.Current.Key.StartsWith(namespacePrefix))
+                while (enu.MoveNext())
                     yield return enu.Current.Value;
+            }
         }
 
         /// <summary>

@@ -152,7 +152,7 @@ namespace Axiom
                 // create
                 try
                 {
-                    HighLevelGpuProgram hgp = HighLevelGpuProgramManagerSingleton.Instance.CreateProgram( def.name, def.language, def.progType );
+                    HighLevelGpuProgram hgp = HighLevelGpuProgramManager.Instance.CreateProgram( def.name, def.language, def.progType );
                     gp = hgp;
                     // set source file
                     hgp.SourceFile = def.source;
