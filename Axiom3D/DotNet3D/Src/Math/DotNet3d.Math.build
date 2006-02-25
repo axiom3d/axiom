@@ -27,6 +27,7 @@
                 <!-- include name="**/*.cs" /-->
                 <include name="Real.cs" />
                 <include name="Vector2.cs" />
+				<include name="Utility.cs" />
                 <!-- common assembly-level attributes -->
                 <include name="../GlobalAssemblyInfo.cs" />
             </sources>

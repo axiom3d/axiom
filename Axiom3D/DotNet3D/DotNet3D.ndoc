@@ -1,6 +1,6 @@
 <project SchemaVersion="1.3">
     <assemblies>
-        <assembly location=".\Src\Math\bin\Debug\DotNet3D.Math.dll" documentation=".\Src\Math\bin\Debug\DotNet3D.Math.xml" />
+        <assembly location=".\build\net-2.0.win32\DotNet3D-0.01-release\lib\DotNet3D.Math.dll" documentation=".\build\net-2.0.win32\DotNet3D-0.01-release\lib\DotNet3D.Math.xml" />
     </assemblies>
     <namespaces>
         <namespace name="DotNet3D.Math">A collection of useful classes for performing 3D calculations and transformations</namespace>
@@ -21,9 +21,9 @@
             <property name="Title" value="An NDoc Documented Class Library" />
         </documenter>
         <documenter name="MSDN">
-            <property name="OutputDirectory" value=".\doc\" />
+            <property name="OutputDirectory" value=".\build\net-2.0.win32\DotNet3D-0.01-release\doc\" />
             <property name="HtmlHelpName" value="Documentation" />
-            <property name="Title" value="An NDoc Documented Class Library" />
+            <property name="Title" value="DotNet3D Class Library" />
         </documenter>
         <documenter name="MSDN 2003">
             <property name="OutputDirectory" value=".\doc\" />
