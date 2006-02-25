@@ -33,150 +33,11 @@ using System.Collections.Generic;
 
 namespace Axiom
 {
-    //public interface IKeyValue
-    //{
-    //}
-
-    //public struct StringKeyValue : IKeyValue
-    //{
-    //    private string _value;
-
-    //    #region Constructors
-
-    //    public StringKeyValue( int value )
-    //    {
-    //        this._value = value.ToString();
-    //    }
-
-    //    public StringKeyValue( string value )
-    //    {
-    //        this._value = value;
-    //    }
-
-    //    #endregion Constructors
-
-    //    #region Conversion Operators
-
-    //    #region Int Conversions
-    //    /// <summary>
-    //    /// Implicit conversion from int to Real
-    //    /// </summary>
-    //    /// <param name="value"></param>
-    //    /// <returns></returns>
-    //    static public implicit operator StringKeyValue( int val )
-    //    {
-    //        return new StringKeyValue( val );
-    //    }
-    //    #endregion Int Conversions
-
-    //    #region String Conversions
-
-    //    /// <summary>
-    //    /// Implicit conversion from string to Real
-    //    /// </summary>
-    //    /// <param name="value"></param>
-    //    /// <returns></returns>
-    //    static public implicit operator StringKeyValue( string val )
-    //    {
-    //        return new StringKeyValue( val );
-    //    }
-
-    //    /// <summary>
-    //    /// Explicit conversion from Real to string
-    //    /// </summary>
-    //    /// <param name="value"></param>
-    //    /// <returns></returns>
-    //    static public explicit operator string( StringKeyValue val )
-    //    {
-    //        return val.ToString();
-    //    }
-
-    //    #endregion String Conversions
-
-    //    #endregion Conversion Operators
-
-    //    #region System.Object Overloads
-
-    //    public override string ToString()
-    //    {
-    //        return _value;
-    //    }
-
-    //    #endregion
-    //}
-
-    //public struct IntKeyValue : IKeyValue
-    //{
-    //    private int _value;
-
-    //    #region Constructors
-
-    //    public IntKeyValue( int value )
-    //    {
-    //        this._value = value;
-    //    }
-
-    //    public IntKeyValue( string value )
-    //    {
-    //        this._value = int.Parse( value );
-    //    }
-
-    //    #endregion Constructors
-
-    //    #region Conversion Operators
-
-    //    #region Int Conversions
-    //    /// <summary>
-    //    /// Implicit conversion from int to Real
-    //    /// </summary>
-    //    /// <param name="value"></param>
-    //    /// <returns></returns>
-    //    static public implicit operator IntKeyValue( int val )
-    //    {
-    //        return new IntKeyValue( val );
-    //    }
-    //    #endregion Int Conversions
-
-    //    #region String Conversions
-
-    //    /// <summary>
-    //    /// Implicit conversion from string to Real
-    //    /// </summary>
-    //    /// <param name="value"></param>
-    //    /// <returns></returns>
-    //    static public implicit operator IntKeyValue( string val )
-    //    {
-    //        return new IntKeyValue( val );
-    //    }
-
-    //    /// <summary>
-    //    /// Explicit conversion from Real to string
-    //    /// </summary>
-    //    /// <param name="value"></param>
-    //    /// <returns></returns>
-    //    static public explicit operator string( IntKeyValue val )
-    //    {
-    //        return val.ToString();
-    //    }
-
-    //    #endregion String Conversions
-
-    //    #endregion Conversion Operators
-
-    //    #region System.Object Overloads
-
-    //    public override string ToString()
-    //    {
-    //        return _value.ToString();
-    //    }
-
-    //    #endregion
-    //}
 
     /// <summary>
     ///		Serves as a basis for strongly typed collections in the engine.
     /// </summary>
-    public class AxiomCollection<K, T>: SortedList<K, T> where K : IConvertible
+    public class AxiomCollection<K, T> : SortedList<K, T> where K : IConvertible
     {
         /// <summary></summary>
         private const int INITIAL_CAPACITY = 60;
@@ -188,7 +49,8 @@ namespace Axiom
         /// <summary>
         ///		
         /// </summary>
-        public AxiomCollection(): base( INITIAL_CAPACITY )
+        public AxiomCollection()
+            : base( INITIAL_CAPACITY )
         {
         }
 
@@ -196,7 +58,8 @@ namespace Axiom
         /// 
         /// </summary>
         /// <param name="capacity"></param>
-        public AxiomCollection( int capacity ): base( capacity )
+        public AxiomCollection( int capacity )
+            : base( capacity )
         {
         }
 
@@ -238,14 +101,13 @@ namespace Axiom
         {
             K key = default( K );
 
-            if ( typeof(K) == typeof(string) )
+            if ( typeof( K ) == typeof( string ) )
             {
-                string stringKey = typeof(T).Name + nextUniqueKeyCounter++;
-                key = (K)Convert.ChangeType( stringKey, typeof(K) );
+                key = (K)Convert.ChangeType( typeof( T ).Name + nextUniqueKeyCounter++, typeof( K ) );
             }
             else
             {
-                key = (K)Convert.ChangeType( nextUniqueKeyCounter++, typeof(K) );
+                key = (K)Convert.ChangeType( nextUniqueKeyCounter++, typeof( K ) );
             }
 
             base.Add( key, item );
