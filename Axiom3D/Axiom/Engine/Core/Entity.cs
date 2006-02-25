@@ -580,6 +580,72 @@ namespace Axiom.Core
             childObjectList[sceneObject.Name] = sceneObject;
             sceneObject.NotifyAttached( tagPoint, true );
         }
+		public MovableObject DetachObjectFromBone(string name)
+		{
+
+			MovableObject obj = childObjectList[name];
+			if (obj == null)
+			{
+				throw new AxiomException("Child object named '{0}' not found.  Entity.DetachObjectFromBone", name);
+			}
+
+			DetachObjectImpl(obj);
+			childObjectList.Remove(obj);
+
+			return obj;
+		}
+		//-----------------------------------------------------------------------
+		public void DetachObjectFromBone(MovableObject obj)
+		{
+			for(int i = 0; i < childObjectList.Count; i++) 
+			{
+				MovableObject child = childObjectList[i];
+				if (child == obj)
+				{
+					DetachObjectImpl(obj);
+					childObjectList.Remove(obj);
+
+					// Trigger update of bounding box if necessary
+					if (this.parentNode != null)
+						parentNode.NeedUpdate();
+					break;
+				}
+			}
+		}
+
+		public void DetachAllObjectsFromBone()
+		{
+			DetachAllObjectsImpl();
+
+			// Trigger update of bounding box if necessary
+			if (this.parentNode != null)
+				parentNode.NeedUpdate();
+		}
+
+		public void DetachObjectImpl(MovableObject pObject)
+		{
+			TagPoint tagPoint = (TagPoint)pObject.ParentNode;
+
+
+			// free the TagPoint so we can reuse it later
+			//TODO: NO idea what this does!
+			//skeletonInstance.freeTagPoint(tp);
+
+			pObject.NotifyAttached(tagPoint, true);
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		public void DetachAllObjectsImpl()
+		{
+			for(int i = 0; i < childObjectList.Count; i++) 
+			{
+				MovableObject child = childObjectList[i];
+				DetachObjectImpl(child);
+			}
+			childObjectList.Clear();
+		}
+
 
         /// <summary>
         ///		Used to build a list of sub-entities from the meshes located in the mesh.
