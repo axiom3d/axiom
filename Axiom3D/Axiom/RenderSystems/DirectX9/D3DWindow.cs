@@ -85,13 +85,13 @@ namespace Axiom.RenderSystems.DirectX9
             /// get the Direct3D.Device params
             if ( miscParams.Length > 0 )
             {
-                targetControl = (System.Windows.Forms.Control)miscParams[0];
+                targetControl = (System.Windows.Forms.Control)miscParams[ 0 ];
             }
 
             // CMH - 4/24/2004 - Start
-            if ( miscParams.Length > 1 && miscParams[1] != null )
+            if ( miscParams.Length > 1 && miscParams[ 1 ] != null )
             {
-                device = (Device)miscParams[1];
+                device = (Device)miscParams[ 1 ];
             }
             if ( device == null )
             {
@@ -111,19 +111,19 @@ namespace Axiom.RenderSystems.DirectX9
 
             // CMH - 4/24/2004 - Start
 
-                        /* If we're in fullscreen, we can use the device's back and stencil buffers.
-             * If we're in windowed mode, we'll want our own.
-             * get references to the render target and depth stencil surface
-			 */
+            /* If we're in fullscreen, we can use the device's back and stencil buffers.
+ * If we're in windowed mode, we'll want our own.
+ * get references to the render target and depth stencil surface
+ */
             if ( isFullScreen )
             {
                 backBuffer = device.GetRenderTarget( 0 );
                 stencilBuffer = device.DepthStencilSurface;
             }
-                        else
+            else
             {
-                                PresentParameters presentParams = new PresentParameters( device.PresentationParameters );
-                                presentParams.Windowed = true;
+                PresentParameters presentParams = new PresentParameters( device.PresentationParameters );
+                presentParams.Windowed = true;
                 presentParams.BackBufferCount = 1;
                 presentParams.EnableAutoDepthStencil = depthBuffer;
                 presentParams.SwapEffect = SwapEffect.Discard;
@@ -131,7 +131,7 @@ namespace Axiom.RenderSystems.DirectX9
                 presentParams.BackBufferHeight = height;
                 presentParams.BackBufferWidth = width;
                 swapChain = new SwapChain( device, presentParams );
-                customAttributes["SwapChain"] = swapChain;
+                customAttributes[ "SwapChain" ] = swapChain;
 
                 stencilBuffer = device.CreateDepthStencilSurface(
                     width, height,
@@ -256,7 +256,7 @@ namespace Axiom.RenderSystems.DirectX9
                     device.PresentationParameters.MultiSampleQuality,
                     false );
 
-                customAttributes["SwapChain"] = swapChain;
+                customAttributes[ "SwapChain" ] = swapChain;
             }
             // CMH - End
         }
@@ -373,7 +373,7 @@ namespace Axiom.RenderSystems.DirectX9
             GraphicsStream graphStream = surface.LockRectangle( LockFlags.ReadOnly | LockFlags.NoSystemLock, out pitch );
 
             // create an RGB buffer
-            byte[] buffer = new byte[width * height * 3];
+            byte[] buffer = new byte[ width * height * 3 ];
 
             int offset = 0, line = 0, count = 0;
 
@@ -393,9 +393,9 @@ namespace Axiom.RenderSystems.DirectX9
                         int pixel = line + offset;
 
                         // Actual format is BRGA for some reason
-                        buffer[count++] = data[pixel + 2];
-                        buffer[count++] = data[pixel + 1];
-                        buffer[count++] = data[pixel + 0];
+                        buffer[ count++ ] = data[ pixel + 2 ];
+                        buffer[ count++ ] = data[ pixel + 1 ];
+                        buffer[ count++ ] = data[ pixel + 0 ];
                     }
                 }
             }

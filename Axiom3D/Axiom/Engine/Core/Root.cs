@@ -128,7 +128,7 @@ namespace Axiom
 
                 // load the still unloaded but specified plugins
                 // (third-party?)
-                PluginManager.Instance.LoadPlugins();
+                // PluginManager.Instance.LoadPlugins();
             }
         }
 
