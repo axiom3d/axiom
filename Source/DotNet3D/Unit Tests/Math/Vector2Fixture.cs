@@ -26,14 +26,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-#if !NUNIT
+#if !NUNIT && !MBUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#else
+#endif
+
+#if NUNIT
 using NUnit.Framework;
 using TestClass = NUnit.Framework.TestFixtureAttribute;
 using TestInitialize = NUnit.Framework.SetUpAttribute;
 using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
+#endif
+
+#if MBUNIT
+using MbUnit.Framework;
+using TestClass = MbUnit.Framework.TestFixtureAttribute;
+using TestInitialize = MbUnit.Framework.SetUpAttribute;
+using TestCleanup = MbUnit.Framework.TearDownAttribute;
+using TestMethod = MbUnit.Framework.TestAttribute;
 #endif
 
 using System;

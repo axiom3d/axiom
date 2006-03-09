@@ -39,19 +39,14 @@ using System.Security.Permissions;
 
 #endregion Namespace Declarations
 
+
 namespace DotNet3D.Math
 {
     /// <summary>
-    ///    Standard 3-dimensional vector.
+    /// 4D homogeneous vector.
     /// </summary>
-    /// <remarks>
-    ///	    A direction in 3D space represented as distances along the 3
-    ///	    orthoganal axes (x, y, z). Note that positions, directions and
-    ///	    scaling factors can be represented by a vector, depending on how
-    ///	    you interpret the values.
-    /// </remarks>
     [StructLayout( LayoutKind.Sequential )]
-    public struct Vector3 : ISerializable
+    public struct Vector4 : ISerializable
     {
         #region Fields and Properties
 
@@ -61,36 +56,42 @@ namespace DotNet3D.Math
         public Real y;
         /// <summary>Z component.</summary>
         public Real z;
+        /// <summary>W component.</summary>
+        public Real w;
 
-        /// <summary>Gets a Vector3 with all units set to positive infinity.</summary>
-        public static readonly Vector3 PositiveInfinity = new Vector3( Real.PositiveInfinity, Real.PositiveInfinity, Real.PositiveInfinity );
-        /// <summary>Gets a Vector3 with all units set to negative infinity.</summary>
-        public static readonly Vector3 NegativeInfinity = new Vector3( Real.NegativeInfinity, Real.NegativeInfinity, Real.NegativeInfinity );
-        /// <summary>Gets a Vector3 with all units set to Invalid.</summary>
-        public static readonly Vector3 Invalid = new Vector3( Real.NaN, Real.NaN, Real.NaN );
-        /// <summary>Gets a Vector3 with all components set to 0.</summary>
-        public static readonly Vector3 Zero = new Vector3( 0.0f, 0.0f, 0.0f );
-        /// <summary>Gets a Vector3 with the X set to 1, and the others set to 0.</summary>
-        public static readonly Vector3 UnitX = new Vector3( 1.0f, 0.0f, 0.0f );
-        /// <summary>Gets a Vector3 with the Y set to 1, and the others set to 0.</summary>
-        public static readonly Vector3 UnitY = new Vector3( 0.0f, 1.0f, 0.0f );
-        /// <summary>Gets a Vector3 with the Z set to 1, and the others set to 0.</summary>
-        public static readonly Vector3 UnitZ = new Vector3( 0.0f, 0.0f, 1.0f );
-        /// <summary>Gets a Vector3 with the X set to -1, and the others set to 0.</summary>
-        public static readonly Vector3 NegativeUnitX = new Vector3( -1.0f, 0.0f, 0.0f );
-        /// <summary>Gets a Vector3 with the Y set to -1, and the others set to 0.</summary>
-        public static readonly Vector3 NegativeUnitY = new Vector3( 0.0f, -1.0f, 0.0f );
-        /// <summary>Gets a Vector3 with the Z set to -1, and the others set to 0.</summary>
-        public static readonly Vector3 NegativeUnitZ = new Vector3( 0.0f, 0.0f, -1.0f );
-        /// <summary>Gets a Vector3 with all components set to 1.</summary>
-        public static readonly Vector3 Unit = new Vector3( 1.0f, 1.0f, 1.0f );
+        /// <summary>Gets a Vector4 with all units set to positive infinity.</summary>
+        public static readonly Vector4 PositiveInfinity = new Vector4( Real.PositiveInfinity, Real.PositiveInfinity, Real.PositiveInfinity, Real.PositiveInfinity );
+        /// <summary>Gets a Vector4 with all units set to negative infinity.</summary>
+        public static readonly Vector4 NegativeInfinity = new Vector4( Real.NegativeInfinity, Real.NegativeInfinity, Real.NegativeInfinity, Real.NegativeInfinity );
+        /// <summary>Gets a Vector4 with all units set to Invalid.</summary>
+        public static readonly Vector4 Invalid = new Vector4( Real.NaN, Real.NaN, Real.NaN, Real.NaN );
+        /// <summary>Gets a Vector4 with all components set to 0.</summary>
+        public static readonly Vector4 Zero = new Vector4( 0.0f, 0.0f, 0.0f, 0.0f );
+        /// <summary>Gets a Vector4 with the X set to 1, and the others set to 0.</summary>
+        public static readonly Vector4 UnitX = new Vector4( 1.0f, 0.0f, 0.0f, 0.0f );
+        /// <summary>Gets a Vector4 with the Y set to 1, and the others set to 0.</summary>
+        public static readonly Vector4 UnitY = new Vector4( 0.0f, 1.0f, 0.0f, 0.0f );
+        /// <summary>Gets a Vector4 with the Z set to 1, and the others set to 0.</summary>
+        public static readonly Vector4 UnitZ = new Vector4( 0.0f, 0.0f, 1.0f, 0.0f );
+        /// <summary>Gets a Vector4 with the W set to 1, and the others set to 0.</summary>
+        public static readonly Vector4 UnitW = new Vector4( 0.0f, 0.0f, 0.0f, 1.0f );
+        /// <summary>Gets a Vector4 with the X set to -1, and the others set to 0.</summary>
+        public static readonly Vector4 NegativeUnitX = new Vector4( -1.0f, 0.0f, 0.0f, 0.0f );
+        /// <summary>Gets a Vector4 with the Y set to -1, and the others set to 0.</summary>
+        public static readonly Vector4 NegativeUnitY = new Vector4( 0.0f, -1.0f, 0.0f, 0.0f );
+        /// <summary>Gets a Vector4 with the Z set to -1, and the others set to 0.</summary>
+        public static readonly Vector4 NegativeUnitZ = new Vector4( 0.0f, 0.0f, -1.0f, 0.0f );
+        /// <summary>Gets a Vector4 with the W set to -1, and the others set to 0.</summary>
+        public static readonly Vector4 NegativeUnitW = new Vector4( 0.0f, 0.0f, 0.0f, -1.0f );
+        /// <summary>Gets a Vector4 with all components set to 1.</summary>
+        public static readonly Vector4 Unit = new Vector4( 1.0f, 1.0f, 1.0f, 1.0f );
 
         /// <summary>Return True if the vector is the Positive Infinity Vector </summary>
         public bool IsPostiveInfinity
         {
             get
             {
-                return this == Vector3.PositiveInfinity;
+                return this == Vector4.PositiveInfinity;
             }
         }
 
@@ -99,7 +100,7 @@ namespace DotNet3D.Math
         {
             get
             {
-                return this == Vector3.NegativeInfinity;
+                return this == Vector4.NegativeInfinity;
             }
         }
 
@@ -108,7 +109,7 @@ namespace DotNet3D.Math
         {
             get
             {
-                return this == Vector3.Invalid;
+                return this == Vector4.Invalid;
             }
         }
 
@@ -117,7 +118,7 @@ namespace DotNet3D.Math
         {
             get
             {
-                return this == Vector3.Zero;
+                return this == Vector4.Zero;
             }
         }
 
@@ -126,7 +127,7 @@ namespace DotNet3D.Math
         {
             get
             {
-                return this == Vector3.UnitX;
+                return this == Vector4.UnitX;
             }
         }
 
@@ -135,7 +136,7 @@ namespace DotNet3D.Math
         {
             get
             {
-                return this == Vector3.UnitY;
+                return this == Vector4.UnitY;
             }
         }
 
@@ -144,7 +145,16 @@ namespace DotNet3D.Math
         {
             get
             {
-                return this == Vector3.UnitZ;
+                return this == Vector4.UnitZ;
+            }
+        }
+
+        /// <summary>Return True if the vector is the UnitW Vector </summary>
+        public bool IsUnitW
+        {
+            get
+            {
+                return this == Vector4.UnitW;
             }
         }
 
@@ -153,7 +163,7 @@ namespace DotNet3D.Math
         {
             get
             {
-                return this == Vector3.NegativeUnitX;
+                return this == Vector4.NegativeUnitX;
             }
         }
 
@@ -162,7 +172,7 @@ namespace DotNet3D.Math
         {
             get
             {
-                return this == Vector3.NegativeUnitY;
+                return this == Vector4.NegativeUnitY;
             }
         }
 
@@ -171,7 +181,16 @@ namespace DotNet3D.Math
         {
             get
             {
-                return this == Vector3.NegativeUnitZ;
+                return this == Vector4.NegativeUnitZ;
+            }
+        }
+
+        /// <summary>Return True if the vector is the NegativeUnitW Vector </summary>
+        public bool IsNegativeUnitW
+        {
+            get
+            {
+                return this == Vector4.NegativeUnitW;
             }
         }
 
@@ -180,7 +199,7 @@ namespace DotNet3D.Math
         {
             get
             {
-                return this == Vector3.Unit;
+                return this == Vector4.Unit;
             }
         }
 
@@ -189,12 +208,12 @@ namespace DotNet3D.Math
         {
             get
             {
-                return this == Vector3.Zero;
+                return this == Vector4.Zero;
             }
         }
 
         /// <summary>
-        ///    Gets the length (magnitude) of this Vector3.  The Sqrt operation is expensive, so 
+        ///    Gets the length (magnitude) of this Vector4.  The Sqrt operation is expensive, so 
         ///    only use this if you need the exact length of the Vector.  If vector lengths are only going
         ///    to be compared, use LengthSquared instead.
         /// </summary>
@@ -202,7 +221,7 @@ namespace DotNet3D.Math
         {
             get
             {
-                return Utility.Sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
+                return Utility.Sqrt( this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w );
             }
         }
 
@@ -213,7 +232,7 @@ namespace DotNet3D.Math
         {
             get
             {
-                return ( this.x * this.x + this.y * this.y + this.z * this.z );
+                return ( this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w );
             }
         }
 
@@ -225,41 +244,45 @@ namespace DotNet3D.Math
 
         /// <overloads>
         /// <summary>
-        ///     Creates a new 3 dimensional Vector.
+        ///     Creates a new 4 dimensional Vector.
         /// </summary>
         /// </overloads>
         /// <param name="source">the source vector.</param>
-        public Vector3( Vector3 source )
+        public Vector4( Vector4 source )
         {
             this.x = source.x;
             this.y = source.y;
             this.z = source.z;
+            this.w = source.w;
         }
 
         /// <param name="x">X position.</param>
-        /// <param name="y">Y position</param>
-        /// <param name="z">Z position</param>
-        public Vector3( Real x, Real y, Real z )
+        /// <param name="y">Y position.</param>
+        /// <param name="z">Z position.</param>
+        /// <param name="w">W position.</param>
+        public Vector4( Real x, Real y, Real z, Real w )
         {
             this.x = x;
             this.y = y;
             this.z = z;
+            this.w = w;
         }
 
         /// <param name="unitDimension"></param>
-        public Vector3( Real unitDimension )
-            : this( unitDimension, unitDimension, unitDimension )
+        public Vector4( Real unitDimension )
+            : this( unitDimension, unitDimension, unitDimension, unitDimension )
         {
         }
 
+
         /// <remarks>
-        /// The parseableText parameter is a comma seperated list of values e.g. "< 1.0, 1.0, 1.0 >" 
-        /// Format : {[(<} Real, Real, Real {>)]}
+        /// The parseableText parameter is a comma seperated list of values e.g. "< 1.0, 1.0, 1.0, 1.0 >" 
+        /// Format : {[(<} Real, Real, Real, Real {>)]}
         /// </remarks>
         /// <param name="parsableText">a comma seperated list of values</param>
         /// <exception cref="ArgumentException" />
         /// <exception cref="FormatException" />
-        private Vector3( string parsableText )
+        private Vector4( string parsableText )
         {
             // Verfiy input
             if ( parsableText == null || parsableText.Length == 0 )
@@ -268,9 +291,9 @@ namespace DotNet3D.Math
             // Retrieve input values from input string
             string[] vals = parsableText.TrimStart( '(', '[', '<' ).TrimEnd( ')', ']', '>' ).Split( ',' );
 
-            if ( vals.Length != 3 )
+            if ( vals.Length != 4 )
             {
-                throw new FormatException( string.Format( "Cannot parse the text '{0}' because it does not have 3 parts separated by commas in the form (x,y,z) with optional parenthesis.", parsableText ) );
+                throw new FormatException( string.Format( "Cannot parse the text '{0}' because it does not have 4 parts separated by commas in the form (x,y,z) with optional parenthesis.", parsableText ) );
             }
 
             // Attempt to assign member variables to values. 
@@ -280,6 +303,7 @@ namespace DotNet3D.Math
                 x = Real.Parse( vals[ 0 ].Trim() );
                 y = Real.Parse( vals[ 1 ].Trim() );
                 z = Real.Parse( vals[ 2 ].Trim() );
+                w = Real.Parse( vals[ 3 ].Trim() );
             }
             catch ( Exception )
             {
@@ -288,13 +312,14 @@ namespace DotNet3D.Math
         }
 
         /// <param name="coordinates">An array of 3 decimal values.</param>
-        public Vector3( Real[] coordinates )
+        public Vector4( Real[] coordinates )
         {
-            if ( coordinates.Length != 3 )
-                throw new ArgumentException( "The coordinates array must be of length 3 to specify the x, y, and z coordinates." );
+            if ( coordinates.Length != 4 )
+                throw new ArgumentException( "The coordinates array must be of length 4 to specify the x, y, z and w coordinates." );
             this.x = coordinates[ 0 ];
             this.y = coordinates[ 1 ];
             this.z = coordinates[ 2 ];
+            this.w = coordinates[ 3 ];
         }
 
 
@@ -302,16 +327,16 @@ namespace DotNet3D.Math
 
         #region Static Methods
         /// <summary>
-        /// Parses a Vector3 from a string
+        /// Parses a Vector4 from a string
         /// </summary>
         /// <remarks>
-        /// The parseableText parameter is a comma seperated list of values e.g. "(###, ###)" 
+        /// The parseableText parameter is a comma seperated list of values e.g. "(#.##, #.##, #.##, #.##)" 
         /// </remarks>
         /// <param name="text">a comma seperated list of values</param>
         /// <returns>a new instance</returns>
-        public static Vector3 Parse( string text )
+        public static Vector4 Parse( string text )
         {
-            return new Vector3( text );
+            return new Vector4( text );
         }
 
         #endregion Static Methods
@@ -320,13 +345,13 @@ namespace DotNet3D.Math
         /// <overrides>
         /// <summary>
         ///		Overrides the Object.ToString() method to provide a text representation of 
-        ///		a Vector3.
+        ///		a Vector4.
         /// </summary>
-        /// <returns>A string representation of a Vector3.</returns>
+        /// <returns>A string representation of a Vector4.</returns>
         /// </overrides>
         public override string ToString()
         {
-            return string.Format( "({0}, {1}, {2})", this.x, this.y, this.z );
+            return string.Format( "({0}, {1}, {2}, {3})", this.x, this.y, this.z, this.w );
         }
 
         /// <param name="decimalPlaces">number of decimal places to render</param>
@@ -335,10 +360,10 @@ namespace DotNet3D.Math
             string format = "";
 
             format = format.PadLeft( decimalPlaces, '#' );
-            format = "({0:0." + format + "}, {1:0." + format + "}, {2:0." + format + "})";
+            format = "({0:0." + format + "}, {1:0." + format + "}, {2:0." + format + "}, {3:0." + format + "})";
             //NOTE: Explicit conversion used here to get proper behavior, for some reason it left as Real it will always 
             //      display all decimal places
-            return string.Format( format, (float)this.x, (float)this.y, (float)this.z );
+            return string.Format( format, (float)this.x, (float)this.y, (float)this.z, (float)this.w );
         }
 
         /// <summary>
@@ -352,7 +377,7 @@ namespace DotNet3D.Math
         /// <returns>a unique code to represent this object</returns>
         public override int GetHashCode()
         {
-            return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode();
+            return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode() ^ w.GetHashCode();
         }
 
         /// <summary>
@@ -363,7 +388,7 @@ namespace DotNet3D.Math
         /// <returns>true or false</returns>
         public override bool Equals( object obj )
         {
-            return ( obj is Vector3 ) && ( this == (Vector3)obj );
+            return ( obj is Vector4 ) && ( this == (Vector4)obj );
         }
 
         #endregion System.Object Implementation
@@ -371,69 +396,106 @@ namespace DotNet3D.Math
         #region Operator Overloads
 
         /// <summary>
-        ///		Used when a Vector3 is added to another Vector3.
+        ///		Used when a Vector4 is added to another Vector4.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 operator +( Vector3 left, Vector3 right )
+        public static Vector4 operator +( Vector4 left, Vector4 right )
         {
-            return new Vector3( left.x + right.x, left.y + right.y, left.z + right.z );
+            return new Vector4( left.x + right.x, left.y + right.y, left.z + right.z, left.w + right.w );
         }
 
         /// <summary>
-        ///		Used to subtract a Vector3 from another Vector3.
+        ///		Used to subtract a Vector4 from another Vector4.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 operator -( Vector3 left, Vector3 right )
+        public static Vector4 operator -( Vector4 left, Vector4 right )
         {
-            return new Vector3( left.x - right.x, left.y - right.y, left.z - right.z );
+            return new Vector4( left.x - right.x, left.y - right.y, left.z - right.z, left.w - right.w );
         }
 
         /// <summary>
-        ///		Used when a Vector3 is multiplied by another vector.
+        ///		Used when a Vector4 is multiplied by another vector.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 operator *( Vector3 left, Vector3 right )
+        public static Vector4 operator *( Vector4 left, Vector4 right )
         {
-            return new Vector3( left.x * right.x, left.y * right.y, left.z * right.z );
+            return new Vector4( left.x * right.x, left.y * right.y, left.z * right.z, left.w * right.w );
         }
 
         /// <summary>
-        ///		Used when a Vector3 is multiplied by a scalar value.
+        ///		Used when a Vector4 is multiplied by a scalar value.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public static Vector3 operator *( Vector3 left, Real scalar )
+        public static Vector4 operator *( Vector4 left, Real scalar )
         {
-            return new Vector3( left.x * scalar, left.y * scalar, left.z * scalar );
+            return new Vector4( left.x * scalar, left.y * scalar, left.z * scalar, left.w * scalar );
         }
 
         /// <summary>
-        ///		Used when a scalar value is multiplied by a Vector3.
+        ///		Used when a scalar value is multiplied by a Vector4.
         /// </summary>
         /// <param name="scalar"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 operator *( Real scalar, Vector3 right )
+        public static Vector4 operator *( Real scalar, Vector4 right )
         {
-            return new Vector3( right.x * scalar, right.y * scalar, right.z * scalar );
+            return new Vector4( right.x * scalar, right.y * scalar, right.z * scalar, right.w * scalar );
         }
 
         /// <summary>
-        ///		Used when a Vector3 is divided by another vector.
+        /// Used when a Matrix4 is multiplied by a Vector4.
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <param name="vector"></param>
+        /// <returns></returns>
+        public static Vector4 operator *( Matrix4 matrix, Vector4 vector )
+        {
+            Vector4 result = new Vector4();
+
+            result.x = vector.x * matrix.m00 + vector.y * matrix.m01 + vector.z * matrix.m02 + vector.w * matrix.m03;
+            result.y = vector.x * matrix.m10 + vector.y * matrix.m11 + vector.z * matrix.m12 + vector.w * matrix.m13;
+            result.z = vector.x * matrix.m20 + vector.y * matrix.m21 + vector.z * matrix.m22 + vector.w * matrix.m23;
+            result.w = vector.x * matrix.m30 + vector.y * matrix.m31 + vector.z * matrix.m32 + vector.w * matrix.m33;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Used when a Vector4 is multiplied by a Matrix4.
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <param name="matrix"></param>
+        /// <returns></returns>
+        public static Vector4 operator *( Vector4 vector, Matrix4 matrix )
+        {
+            Vector4 result = new Vector4();
+
+            result.x = vector.x * matrix.m00 + vector.y * matrix.m10 + vector.z * matrix.m20 + vector.w * matrix.m30;
+            result.y = vector.x * matrix.m01 + vector.y * matrix.m11 + vector.z * matrix.m21 + vector.w * matrix.m31;
+            result.z = vector.x * matrix.m02 + vector.y * matrix.m12 + vector.z * matrix.m22 + vector.w * matrix.m32;
+            result.w = vector.x * matrix.m03 + vector.y * matrix.m13 + vector.z * matrix.m23 + vector.w * matrix.m33;
+
+            return result;
+        }
+
+
+        /// <summary>
+        ///		Used when a Vector4 is divided by another vector.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 operator /( Vector3 left, Vector3 right )
+        public static Vector4 operator /( Vector4 left, Vector4 right )
         {
-            return new Vector3( left.x / right.x, left.y / right.y, left.z / right.z );
+            return new Vector4( left.x / right.x, left.y / right.y, left.z / right.z, left.w / right.w );
         }
 
         /// <summary>
@@ -442,9 +504,9 @@ namespace DotNet3D.Math
         /// <param name="left"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public static Vector3 operator /( Vector3 left, Real scalar )
+        public static Vector4 operator /( Vector4 left, Real scalar )
         {
-            Vector3 vector = new Vector3();
+            Vector4 vector = new Vector4();
 
             // get the inverse of the scalar up front to avoid doing multiple divides later
             Real inverse = 1.0f / scalar;
@@ -452,6 +514,7 @@ namespace DotNet3D.Math
             vector.x = left.x * inverse;
             vector.y = left.y * inverse;
             vector.z = left.z * inverse;
+            vector.w = left.w * inverse;
 
             return vector;
         }
@@ -461,31 +524,31 @@ namespace DotNet3D.Math
         /// </summary>
         /// <param name="left"></param>
         /// <returns></returns>
-        public static Vector3 operator -( Vector3 left )
+        public static Vector4 operator -( Vector4 left )
         {
-            return new Vector3( -left.x, -left.y, -left.z );
+            return new Vector4( -left.x, -left.y, -left.z, -left.w );
         }
 
         /// <summary>
-        ///		User to compare two Vector3 instances for equality.
+        ///		User to compare two Vector4 instances for equality.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns>true or false</returns>
-        public static bool operator ==( Vector3 left, Vector3 right )
+        public static bool operator ==( Vector4 left, Vector4 right )
         {
-            return ( left.x == right.x && left.y == right.y && left.z == right.z );
+            return ( left.x == right.x && left.y == right.y && left.z == right.z && left.w == right.w );
         }
 
         /// <summary>
-        ///		User to compare two Vector3 instances for inequality.
+        ///		User to compare two Vector4 instances for inequality.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns>true or false</returns>
-        public static bool operator !=( Vector3 left, Vector3 right )
+        public static bool operator !=( Vector4 left, Vector4 right )
         {
-            return ( left.x != right.x || left.y != right.y || left.z != right.z );
+            return ( left.x != right.x || left.y != right.y || left.z != right.z || left.w != right.w );
         }
 
         /// <summary>
@@ -495,9 +558,9 @@ namespace DotNet3D.Math
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static bool operator >( Vector3 left, Vector3 right )
+        public static bool operator >( Vector4 left, Vector4 right )
         {
-            return ( left.x > right.x && left.y > right.y && left.z > right.z );
+            return ( left.x > right.x && left.y > right.y && left.z > right.z && left.w > right.w );
         }
 
         /// <summary>
@@ -507,9 +570,9 @@ namespace DotNet3D.Math
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static bool operator <( Vector3 left, Vector3 right )
+        public static bool operator <( Vector4 left, Vector4 right )
         {
-            return ( left.x < right.x && left.y < right.y && left.z < right.z );
+            return ( left.x < right.x && left.y < right.y && left.z < right.z && left.w < right.w );
         }
 
         /// <summary>
@@ -523,7 +586,7 @@ namespace DotNet3D.Math
         {
             get
             {
-                if ( index < 0 | index > 2 )
+                if ( index < 0 | index > 3 )
                     throw new ArgumentOutOfRangeException( "index" );
                 fixed ( Real* v = &this.x )
                 {
@@ -532,7 +595,7 @@ namespace DotNet3D.Math
             }
             set
             {
-                if ( index < 0 | index > 2 )
+                if ( index < 0 | index > 3 )
                     throw new ArgumentOutOfRangeException( "index" );
                 fixed ( Real* v = &this.x )
                 {
@@ -544,67 +607,78 @@ namespace DotNet3D.Math
         #region CLSCompliant Operator Methods
 
         /// <summary>
-        ///		Used when a Vector3 is added to another Vector3.
+        ///		Used when a Vector4 is added to another Vector4.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 Add( Vector3 left, Vector3 right )
+        public static Vector4 Add( Vector4 left, Vector4 right )
         {
             return left + right;
         }
 
         /// <summary>
-        ///		Used to subtract a Vector3 from another Vector3.
+        ///		Used to subtract a Vector4 from another Vector4.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 Subtract( Vector3 left, Vector3 right )
+        public static Vector4 Subtract( Vector4 left, Vector4 right )
         {
             return left - right;
         }
 
         /// <summary>
-        ///		Used when a Vector3 is multiplied by another vector.
+        ///		Used when a Vector4 is multiplied by another vector.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 Multiply( Vector3 left, Vector3 right )
+        public static Vector4 Multiply( Vector4 left, Vector4 right )
         {
             return left * right;
         }
 
         /// <summary>
-        ///		Used when a Vector3 is multiplied by a scalar value.
+        ///		Used when a Vector4 is multiplied by a scalar value.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public static Vector3 Multiply( Vector3 left, Real scalar )
+        public static Vector4 Multiply( Vector4 left, Real scalar )
         {
             return left * scalar;
         }
 
         /// <summary>
-        ///		Used when a scalar value is multiplied by a Vector3.
+        ///		Used when a scalar value is multiplied by a Vector4.
         /// </summary>
         /// <param name="scalar"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 Multiply( Real scalar, Vector3 right )
+        public static Vector4 Multiply( Real scalar, Vector4 right )
         {
             return scalar * right;
         }
 
         /// <summary>
-        ///		Used when a Vector3 is divided by another vector.
+        ///		
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <param name="matrix"></param>
+        /// <returns></returns>
+        public static Vector4 Multiply( Vector4 vector, Matrix4 matrix )
+        {
+            return vector * matrix;
+        }
+
+        /// <summary>
+        ///		Used when a Vector4 is divided by another vector.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 Divide( Vector3 left, Vector3 right )
+        public static Vector4 Divide( Vector4 left, Vector4 right )
         {
             return left / right;
         }
@@ -615,7 +689,7 @@ namespace DotNet3D.Math
         /// <param name="left"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public static Vector3 Divide( Vector3 left, Real scalar )
+        public static Vector4 Divide( Vector4 left, Real scalar )
         {
             return left / scalar;
         }
@@ -625,7 +699,7 @@ namespace DotNet3D.Math
         /// </summary>
         /// <param name="left"></param>
         /// <returns></returns>
-        public static Vector3 Negate( Vector3 left )
+        public static Vector4 Negate( Vector4 left )
         {
             return -left;
         }
@@ -639,21 +713,21 @@ namespace DotNet3D.Math
         #region String Conversion
 
         /// <summary>
-        /// Implicit conversion from string to Vector3
+        /// Implicit conversion from string to Vector4
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        static public implicit operator Vector3( string value )
+        static public implicit operator Vector4( string value )
         {
-            return new Vector3( value );
+            return new Vector4( value );
         }
 
         /// <summary>
-        /// Explicit conversion from Vector3 to string
+        /// Explicit conversion from Vector4 to string
         /// </summary>
         /// <param name="v"></param>
         /// <returns></returns>
-        static public explicit operator string( Vector3 v )
+        static public explicit operator string( Vector4 v )
         {
             return v.ToString();
         }
@@ -663,29 +737,16 @@ namespace DotNet3D.Math
         #region Real[] Conversion
 
         /// <summary>
-        /// Implicit conversion from Real[] to Vector3
+        /// Implicit conversion from Real[] to Vector4
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        static public implicit operator Vector3( Real[] value )
+        static public implicit operator Vector4( Real[] value )
         {
-            return new Vector3( value );
+            return new Vector4( value );
         }
 
         #endregion Real[] Conversions
-
-        #region Vector4 Conversion
-
-        /// <summary>
-        /// Explicit conversion from a Vector3 to a Vector4
-        /// </summary>
-        /// <param name="vec3"></param>
-        /// <returns></returns>
-        public static explicit operator Vector4( Vector3 v )
-        {
-            return new Vector4( v.x, v.y, v.z, 1.0f );
-        }
-        #endregion Vector4 Conversion
 
         #endregion Conversion Operators
 
@@ -698,7 +759,7 @@ namespace DotNet3D.Math
         /// <returns>An array of the specified type containing 3 elements</returns>
         public K[] ToArray<K>() where K : struct
         {
-            return new K[] { (K)Convert.ChangeType( x, typeof( K ) ), (K)Convert.ChangeType( y, typeof( K ) ), (K)Convert.ChangeType( z, typeof( K ) ) };
+            return new K[] { (K)Convert.ChangeType( x, typeof( K ) ), (K)Convert.ChangeType( y, typeof( K ) ), (K)Convert.ChangeType( z, typeof( K ) ), (K)Convert.ChangeType( w, typeof( K ) ) };
         }
 
         /// <summary>
@@ -717,10 +778,10 @@ namespace DotNet3D.Math
         /// <param name="y">Amount to offset the y component.</param>
         /// <param name="y">Amount to offset the z component.</param>
         /// <remarks>This is equivilent to v += new Vector2( x, y );</remarks>
-        /// <returns>the resultant Vector3</returns>        
-        public Vector3 Offset( Real x, Real y, Real z )
+        /// <returns>the resultant Vector4</returns>        
+        public Vector4 Offset( Real x, Real y, Real z, Real w )
         {
-            return new Vector3( this.x + x, this.y + y, this.z + z );
+            return new Vector4( this.x + x, this.y + y, this.z + z, this.w + w );
         }
 
         /// <summary>
@@ -728,43 +789,9 @@ namespace DotNet3D.Math
         /// </summary>
         /// <param name="vector">The vector to perform the Dot Product against.</param>
         /// <returns>The angle between the 2 vectors.</returns>       
-        public Real DotProduct( Vector3 vector )
+        public Real DotProduct( Vector4 vector )
         {
-            return x * vector.x + y * vector.y + z * vector.z;
-        }
-
-        /// <summary>
-        ///		Performs a Cross Product operation on 2 vectors, which returns a vector that is perpendicular
-        ///		to the intersection of the 2 vectors.  Useful for finding face normals.
-        /// </summary>
-        /// <param name="vector">A vector to perform the Cross Product against.</param>
-        /// <returns>A new Vector3 perpedicular to the 2 original vectors.</returns>
-        public Vector3 CrossProduct( Vector3 vector )
-        {
-            return new Vector3(
-                ( this.y * vector.z ) - ( this.z * vector.y ),
-                ( this.z * vector.x ) - ( this.x * vector.z ),
-                ( this.x * vector.y ) - ( this.y * vector.x )
-                );
-
-        }
-
-        /// <summary>
-        ///		Finds a vector perpendicular to this one.
-        /// </summary>
-        /// <returns></returns>
-        public Vector3 Perpendicular()
-        {
-            Vector3 result = this.CrossProduct( UnitX );
-
-            // check length
-            if ( result.LengthSquared < Real.Epsilon )
-            {
-                // This vector is the Y axis multiplied by a scalar, so we have to use another axis
-                result = this.CrossProduct( UnitY );
-            }
-
-            return result;
+            return x * vector.x + y * vector.y + z * vector.z + w * vector.w;
         }
 
         /// <summary>
@@ -772,16 +799,16 @@ namespace DotNet3D.Math
         /// </summary>
         /// <param name="vector"></param>
         /// <returns></returns>
-        public Vector3 MidPoint( Vector3 vector )
+        public Vector4 MidPoint( Vector4 vector )
         {
-            return new Vector3( ( this.x + vector.x ) / 2f, ( this.y + vector.y ) / 2f, ( this.z + vector.z ) / 2f );
+            return new Vector4( ( this.x + vector.x ) / 2f, ( this.y + vector.y ) / 2f, ( this.z + vector.z ) / 2f, ( this.w + vector.w ) / 2f );
         }
 
         /// <summary>
-        ///		Compares the supplied vector and updates it's x/y/z components of they are higher in value.
+        ///		Compares the supplied vector and updates it's x/y/z/w components of they are higher in value.
         /// </summary>
         /// <param name="compare"></param>
-        public void ToCeiling( Vector3 compare )
+        public void ToCeiling( Vector4 compare )
         {
             if ( compare.x > x )
                 x = compare.x;
@@ -789,14 +816,16 @@ namespace DotNet3D.Math
                 y = compare.y;
             if ( compare.z > z )
                 z = compare.z;
+            if ( compare.w > w )
+                w = compare.w;
         }
 
         /// <summary>
-        ///		Compares the supplied vector and updates it's x/y/z components of they are lower in value.
+        ///		Compares the supplied vector and updates it's x/y/z/w components of they are lower in value.
         /// </summary>
         /// <param name="compare"></param>
         /// <returns></returns>
-        public void ToFloor( Vector3 compare )
+        public void ToFloor( Vector4 compare )
         {
             if ( compare.x < x )
                 x = compare.x;
@@ -804,58 +833,18 @@ namespace DotNet3D.Math
                 y = compare.y;
             if ( compare.z < z )
                 z = compare.z;
+            if ( compare.w < w )
+                w = compare.w;
         }
 
-        /// <summary>
-        ///		Gets the shortest arc quaternion to rotate this vector to the destination vector. 
-        /// </summary>
-        /// <remarks>
-        ///		Don't call this if you think the dest vector can be close to the inverse
-        ///		of this vector, since then ANY axis of rotation is ok.
-        ///	</remarks>
-        public Quaternion GetRotationTo( Vector3 destination )
-        {
-            // Based on Stan Melax's article in Game Programming Gems
-            Quaternion q = new Quaternion();
-
-            Vector3 v0 = new Vector3( this.x, this.y, this.z );
-            Vector3 v1 = destination;
-
-            // normalize both vectors 
-            v0.Normalize();
-            v1.Normalize();
-
-            // get the cross product of the vectors
-            Vector3 c = v0.CrossProduct( v1 );
-
-            // If the cross product approaches zero, we get unstable because ANY axis will do
-            // when v0 == -v1
-            Real d = v0.DotProduct( v1 );
-
-            // If dot == 1, vectors are the same
-            if ( d >= 1.0f )
-            {
-                return Quaternion.Identity;
-            }
-
-            Real s = Utility.Sqrt( ( 1 + d ) * 2 );
-            Real inverse = 1 / s;
-
-            q.x = c.x * inverse;
-            q.y = c.y * inverse;
-            q.z = c.z * inverse;
-            q.w = s * 0.5f;
-
-            return q;
-        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public Vector3 ToNormalized()
+        public Vector4 ToNormalized()
         {
-            Vector3 vec = this;
+            Vector4 vec = this;
             vec.Normalize();
             return vec;
         }
@@ -873,7 +862,7 @@ namespace DotNet3D.Math
         ///	<returns>The previous length of the vector.</returns>
         public Real Normalize()
         {
-            Real length = Utility.Sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
+            Real length = Utility.Sqrt( this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w );
 
             // Will also work for zero-sized vectors, but will change nothing
             if ( length > Real.Epsilon )
@@ -883,6 +872,7 @@ namespace DotNet3D.Math
                 this.x *= inverseLength;
                 this.y *= inverseLength;
                 this.z *= inverseLength;
+                this.w *= inverseLength;
             }
 
             return length;
@@ -896,80 +886,9 @@ namespace DotNet3D.Math
         /// </remarks>
         /// <param name="normal">Normal vector on which this vector will be reflected.</param>
         /// <returns></returns>
-        public Vector3 Reflect( Vector3 normal )
+        public Vector4 Reflect( Vector4 normal )
         {
             return this - 2 * this.DotProduct( normal ) * normal;
-        }
-
-        /// <summary>
-        /// Generates a new random vector which deviates from this vector by a
-        /// given angle in a random direction.
-        /// </summary>
-        /// <remarks>
-        /// This method assumes that the random number generator has already 
-        /// been seeded appropriately.
-        /// </remarks>
-        /// <param name="angle">The angle at which to deviate</param>
-        /// <param name="up">Any vector perpendicular to this one (which could generated 
-        ///        by cross-product of this vector and any other non-colinear 
-        ///        vector). If you choose not to provide this the function will 
-        ///        derive one on it's own, however if you provide one yourself the 
-        ///        function will be faster (this allows you to reuse up vectors if 
-        ///        you call this method more than once) 
-        /// </param>
-        /// <returns>A random vector which deviates from this vector by angle. This 
-        ///        vector will not be normalised, normalise it if you wish 
-        ///        afterwards.
-        /// </returns>
-        public Vector3 RandomDeviant( Radian angle, Vector3 up )
-        {
-            Vector3 newUp = Zero;
-
-            if ( up == Zero )
-                newUp = this.Perpendicular();
-            else
-                newUp = up;
-
-            // rotate up vector by random amount around this
-            Quaternion q = new Quaternion( Utility.UnitRandom() * Utility.TWO_PI, this );
-            newUp = q * newUp;
-
-            // finally, rotate this by given angle around randomized up vector
-            q = new Quaternion( angle, newUp );
-
-            return q * this;
-        }
-
-        ///<overloads>
-        ///<summary>Returns wether this vector is within a positional tolerance of another vector</summary>
-        ///<param name="right">The vector to compare with</param>
-        ///</overloads>
-        ///<remarks>Uses a defalut tolerance of 1E-03</remarks>
-        public bool PositionEquals( Vector3 right )
-        {
-            return PositionEquals( right, 1e-03f );
-        }
-
-        /// <param name="tolerance">The amount that each element of the vector may vary by and still be considered equal.</param>
-        public bool PositionEquals( Vector3 right, Real tolerance )
-        {
-            return x.Equals( right.x, tolerance ) &&
-                y.Equals( right.y, tolerance ) &&
-                z.Equals( right.z, tolerance );
-        }
-
-        /// <summary>
-        /// Returns whether this vector is within a directional tolerance of another vector.
-        /// </summary>
-        /// <param name="right">The vector to compare with.</param>
-        /// <param name="tolerance">The maximum angle by which the vectors may vary and still be considered equal.</param>
-        public bool DirectionEquals( Vector3 right, Radian tolerance )
-        {
-            Real dot = DotProduct( right );
-            Radian angle = Utility.Acos( dot );
-
-            return Utility.Abs( angle ) <= tolerance;
-
         }
 
         #endregion
@@ -981,11 +900,12 @@ namespace DotNet3D.Math
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
-        private Vector3( SerializationInfo info, StreamingContext context )
+        private Vector4( SerializationInfo info, StreamingContext context )
         {
             x = (Real)info.GetValue( "x", typeof( Real ) );
             y = (Real)info.GetValue( "y", typeof( Real ) );
             z = (Real)info.GetValue( "z", typeof( Real ) );
+            w = (Real)info.GetValue( "w", typeof( Real ) );
         }
 
         /// <summary>
@@ -999,8 +919,10 @@ namespace DotNet3D.Math
             info.AddValue( "x", x );
             info.AddValue( "y", y );
             info.AddValue( "z", z );
+            info.AddValue( "w", w );
         }
 
         #endregion ISerializable Implementation
+
     }
 }
