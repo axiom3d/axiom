@@ -1,11 +1,40 @@
+#region LGPL License
+/*
+Axiom Game Engine Library
+Copyright (C) 2003  Axiom Project Team
+
+The overall design, and a majority of the core engine and rendering code 
+contained within this library is a derivative of the open source Object Oriented 
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+#endregion
+
+#region Namespace Declarations
+
 using System;
 using System.Diagnostics;
 
 using Axiom;
 
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
+
+#endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9.HLSL
 {
@@ -27,7 +56,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
         /// <summary>
         ///     Holds the low level program instructions after the compile.
         /// </summary>
-        protected Microsoft.DirectX.GraphicsStream microcode;
+        protected DX.GraphicsBuffer microcode;
         /// <summary>
         ///     Holds information about shader constants.
         /// </summary>
@@ -75,20 +104,15 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
         /// </summary>
         protected override void LoadFromSource()
         {
-            string errors;
-
+            string errors = null;
             // compile the high level shader to low level microcode
             // note, we need to pack matrices in row-major format for HLSL
             microcode =
-                ShaderLoader.CompileShader(
+                D3D.Shader.Assemble(
                     source,
-                    entry,
                     null,
                     null,
-                    target,
-                    ShaderFlags.PackMatrixRowMajor,
-                    out errors,
-                    out constantTable );
+                    D3D.ShaderFlags.PackMatrixRowMajor);
 
             // check for errors
             if ( errors != null && errors.Length > 0 )
@@ -121,7 +145,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
         /// </summary>
         protected override void UnloadImpl()
         {
-            microcode.Close();
+            microcode.Cleanup();
             constantTable = null;
         }
 
@@ -173,7 +197,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
             // If it's an array, elements will be > 1
             for ( int e = 0; e < desc.Elements; e++ )
             {
-                if ( desc.Class == ParameterClass.Struct )
+                if ( desc.Class == D3D.ParameterClass.Struct )
                 {
                     // work out a new prefix for the nextest members
                     // if its an array, we need the index
@@ -195,9 +219,9 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
                 else
                 {
                     // process params
-                    if ( desc.ParameterType == ParameterType.Float ||
-                        desc.ParameterType == ParameterType.Integer ||
-                        desc.ParameterType == ParameterType.Boolean )
+                    if ( desc.ParameterType == D3D.ParameterType.Float ||
+                        desc.ParameterType == D3D.ParameterType.Integer ||
+                        desc.ParameterType == D3D.ParameterType.Boolean )
                     {
 
                         int paramIndex = desc.RegisterIndex;

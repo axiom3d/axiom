@@ -24,14 +24,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region Namespace Declarations
+
 using System;
 using System.Diagnostics;
 using System.IO;
 
-using Axiom;
-
 using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
+
+using Axiom;
+
+#endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
@@ -86,7 +90,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <summary>
         ///     Direct3D device capability structure.
         /// </summary>
-        private D3D.Caps devCaps;
+        private D3D.Capabilities devCaps;
         /// <summary>
         ///     Array to hold texture names used for loading cube textures.
         /// </summary>
@@ -114,14 +118,14 @@ namespace Axiom.RenderSystems.DirectX9
             }
 
             // get device caps
-            devCaps = device.DeviceCaps;
+            devCaps = device.Capabilities;
 
             // save off the params used to create the Direct3D device
             this.device = device;
             devParms = device.CreationParameters;
 
             // get the pixel format of the back buffer
-            using ( D3D.Surface back = device.GetBackBuffer( 0, 0, D3D.BackBufferType.Mono ) )
+            using ( D3D.Surface back = device.GetBackBuffer( 0, 0 ) )
             {
                 bbPixelFormat = back.Description.Format;
             }
@@ -295,7 +299,7 @@ namespace Axiom.RenderSystems.DirectX9
             Stream stream = TextureManager.Instance.FindResourceData( name );
 
             // use D3DX to load the image directly from the stream
-            normTexture = D3D.TextureLoader.FromStream( device, stream );
+            normTexture = new D3D.Texture( device, stream );
 
             // store a ref for the base texture interface
             texture = normTexture;
@@ -320,7 +324,7 @@ namespace Axiom.RenderSystems.DirectX9
                 Stream stream = TextureManager.Instance.FindResourceData( name );
 
                 // load the cube texture from the image data stream directly
-                cubeTexture = D3D.TextureLoader.FromCubeStream( device, stream );
+                cubeTexture = new D3D.CubeTexture( device, stream );
 
                 // store off a base reference
                 texture = cubeTexture;
@@ -366,7 +370,7 @@ namespace Axiom.RenderSystems.DirectX9
             Stream stream = TextureManager.Instance.FindResourceData( name );
 
             // load the cube texture from the image data stream directly
-            volumeTexture = D3D.TextureLoader.FromVolumeStream( device, stream );
+            volumeTexture = new D3D.VolumeTexture( device, stream );
 
             // store off a base reference
             texture = volumeTexture;
@@ -482,7 +486,7 @@ namespace Axiom.RenderSystems.DirectX9
 
             if ( devCaps.TextureCaps.SupportsMipMap && numMipMaps > 0 )
             {
-                if ( this.CanAutoGenMipMaps( d3dUsage, D3D.ResourceType.Textures, d3dPixelFormat ) )
+                if ( this.CanAutoGenMipMaps( d3dUsage, D3D.ResourceType.Texture, d3dPixelFormat ) )
                 {
                     d3dUsage |= D3D.Usage.AutoGenerateMipMap;
                     numMips = 0;
@@ -494,7 +498,7 @@ namespace Axiom.RenderSystems.DirectX9
                         // check texture requirements
                         texRequire.NumberMipLevels = numMips;
                         texRequire.Format = d3dPixelFormat;
-                        D3D.TextureLoader.CheckTextureRequirements( device, d3dUsage, D3D.Pool.SystemMemory, out texRequire );
+                        texRequire = D3D.Texture.CheckRequirements( device, d3dUsage, D3D.Pool.SystemMemory, texRequire );
                         numMips = texRequire.NumberMipLevels;
                         d3dPixelFormat = texRequire.Format;
 
@@ -520,7 +524,7 @@ namespace Axiom.RenderSystems.DirectX9
             // check texture requirements
             texRequire.NumberMipLevels = numMips;
             texRequire.Format = d3dPixelFormat;
-            D3D.TextureLoader.CheckTextureRequirements( device, d3dUsage, D3D.Pool.Default, out texRequire );
+            texRequire = D3D.Texture.CheckRequirements( device, d3dUsage, D3D.Pool.Default, texRequire );
             numMips = texRequire.NumberMipLevels;
             d3dPixelFormat = texRequire.Format;
 
@@ -580,22 +584,26 @@ namespace Axiom.RenderSystems.DirectX9
                 dstSurface = normTexture.GetSurfaceLevel( 0 );
             }
 
-            // copy surfaces
-            D3D.SurfaceLoader.FromSurface( dstSurface, srcSurface, D3D.Filter.Triangle | D3D.Filter.Dither, 0 );
+            // NOTE: MDX2.0 FEB 06
+            // This is a temporary workaround until the next drop when the Load methods should no longer e marked private.
+            //{
+            //    Type typSurface = typeof( D3D.Surface );
+            //    typSurface.InvokeMember( "Load", System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.NonPublic, null, dstSurface, new object[] { srcSurface, D3D.Filter.Triangle | D3D.Filter.Dither, 0 } );
+            //}
 
             if ( tempNormTexture != null )
             {
                 // Software filtering
                 // Now update the texture & filter the results
                 // we will use D3DX to create the mip map levels
-                D3D.TextureLoader.FilterTexture( tempNormTexture, 0, D3D.Filter.Box );
+                tempNormTexture.Filter( 0, D3D.Filter.Box );
                 device.UpdateTexture( tempNormTexture, normTexture );
             }
             else
             {
                 // Hardware mipmapping
                 // use best filtering method supported by hardware
-                texture.AutoGenerateFilterType = GetBestFilterMethod();
+                texture.AutoGeneratedFilterType = GetBestFilterMethod();
                 normTexture.GenerateMipSubLevels();
             }
 
@@ -622,7 +630,9 @@ namespace Axiom.RenderSystems.DirectX9
             GetColorMasks( desc.Format, out rMask, out gMask, out bMask, out aMask, out rgbBitCount );
 
             // lock our surface to acces raw memory
-            DX.GraphicsStream stream = surface.LockRectangle( D3D.LockFlags.NoSystemLock, out pitch );
+            DX.GraphicsBuffer stream = surface.Lock(null, D3D.LockFlags.NoSystemLock );
+
+            pitch = stream.Pitch;
 
             // loop through data and do conv.
             pBuf8 = 0;
@@ -684,24 +694,24 @@ namespace Axiom.RenderSystems.DirectX9
                     // Surfaces are little-endian (low byte first)
                     if ( rgbBitCount >= 8 )
                     {
-                        stream.WriteByte( (byte)out32 );
+                        stream.Write( new byte[] { (byte)out32 } );
                     }
                     if ( rgbBitCount >= 16 )
                     {
-                        stream.WriteByte( (byte)( out32 >> 8 ) );
+                        stream.Write( new byte[] {(byte)( out32 >> 8 ) } );
                     }
                     if ( rgbBitCount >= 24 )
                     {
-                        stream.WriteByte( (byte)( out32 >> 16 ) );
+                        stream.Write( new byte[] {(byte)( out32 >> 16 ) } );
                     }
                     if ( rgbBitCount >= 32 )
                     {
-                        stream.WriteByte( (byte)( out32 >> 24 ) );
+                        stream.Write( new byte[] { (byte)( out32 >> 24 ) } );
                     }
                 } // for( iCol...
             } // for( iRow...
             // unlock the surface
-            surface.UnlockRectangle();
+            surface.Unlock();
         }
 
         private uint ConvertBitPattern( uint srcValue, uint srcBitMask, uint destBitMask )
@@ -825,7 +835,7 @@ namespace Axiom.RenderSystems.DirectX9
                 Stream stream = TextureManager.Instance.FindResourceData( cubeFaceNames[i] );
 
                 // load the stream into the cubemap surface
-                D3D.SurfaceLoader.FromStream( dstSurface, stream, D3D.Filter.Point, 0 );
+                dstSurface = D3D.Surface.FromStream( device, stream, D3D.Pool.Managed );
 
                 dstSurface.Dispose();
             }
@@ -835,14 +845,14 @@ namespace Axiom.RenderSystems.DirectX9
             // TODO: Find best filtering method for this hardware, currently hardcoded to Point
             if ( tempCubeTexture != null )
             {
-                D3D.TextureLoader.FilterTexture( tempCubeTexture, 0, D3D.Filter.Point );
+                tempCubeTexture.Filter( 0, D3D.Filter.Point );
                 device.UpdateTexture( tempCubeTexture, cubeTexture );
 
                 tempCubeTexture.Dispose();
             }
             else
             {
-                cubeTexture.AutoGenerateFilterType = D3D.TextureFilter.Point;
+                cubeTexture.AutoGeneratedFilterType = D3D.TextureFilter.Point;
                 cubeTexture.GenerateMipSubLevels();
             }
         }
@@ -858,7 +868,7 @@ namespace Axiom.RenderSystems.DirectX9
         {
             Debug.Assert( device != null );
 
-            if ( device.DeviceCaps.DriverCaps.CanAutoGenerateMipMap )
+            if ( device.Capabilities.DriverCaps.CanAutoGenerateMipMap )
             {
                 // make sure we can do it!
                 return D3D.Manager.CheckDeviceFormat(

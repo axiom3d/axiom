@@ -24,14 +24,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region Namespace Declarations
+
 using System;
 using System.Diagnostics;
 
+using DX = Microsoft.DirectX;
+using D3D = Microsoft.DirectX.Direct3D;
+
 using Axiom;
 
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
-using D3D = Microsoft.DirectX.Direct3D;
+#endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
@@ -49,7 +52,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <summary>
         ///     Microsode set externally, most likely from the HLSL compiler.
         /// </summary>
-        protected Microsoft.DirectX.GraphicsStream externalMicrocode;
+        protected DX.GraphicsBuffer externalMicrocode;
 
         #endregion Fields
 
@@ -95,10 +98,10 @@ namespace Axiom.RenderSystems.DirectX9
         /// </summary>
         protected override void LoadFromSource()
         {
-            string errors;
+            string errors = null;
 
             // load the shader from the source string
-            GraphicsStream microcode = ShaderLoader.FromString( source, null, 0, out errors );
+            DX.GraphicsBuffer microcode = D3D.Shader.Assemble( source, null, null, D3D.ShaderFlags.None );
 
             if ( errors != null && errors != string.Empty )
             {
@@ -118,9 +121,9 @@ namespace Axiom.RenderSystems.DirectX9
         ///     Loads a shader object from the supplied microcode.
         /// </summary>
         /// <param name="microcode">
-        ///     GraphicsStream that contains the assembler instructions for the program.
+        ///     GraphicsBuffer that contains the assembler instructions for the program.
         /// </param>
-        protected abstract void LoadFromMicrocode( Microsoft.DirectX.GraphicsStream microcode );
+        protected abstract void LoadFromMicrocode( DX.GraphicsBuffer microcode );
 
         #endregion Methods
 
@@ -135,7 +138,7 @@ namespace Axiom.RenderSystems.DirectX9
         ///     level microcode, which can then be loaded into a low level GPU
         ///     program.
         /// </remarks>
-        internal Microsoft.DirectX.GraphicsStream ExternalMicrocode
+        internal DX.GraphicsBuffer ExternalMicrocode
         {
             get
             {
@@ -174,10 +177,10 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region D3DGpuProgram Memebers
 
-        protected override void LoadFromMicrocode( GraphicsStream microcode )
+        protected override void LoadFromMicrocode( DX.GraphicsBuffer microcode )
         {
             // create the new vertex shader
-            vertexShader = new VertexShader( device, microcode );
+            vertexShader = new D3D.VertexShader( device, microcode );
         }
 
         #endregion D3DGpuProgram Memebers
@@ -240,10 +243,10 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region D3DGpuProgram Memebers
 
-        protected override void LoadFromMicrocode( GraphicsStream microcode )
+        protected override void LoadFromMicrocode( DX.GraphicsBuffer microcode )
         {
             // create a new pixel shader
-            pixelShader = new PixelShader( device, microcode );
+            pixelShader = new D3D.PixelShader( device, microcode );
         }
 
         #endregion D3DGpuProgram Members

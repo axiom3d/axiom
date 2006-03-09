@@ -190,8 +190,14 @@ namespace Axiom.Demos
             }
         }
 
-        public virtual void Dispose()
+        protected virtual void _Dispose()
         {
+        }
+
+        public void Dispose()
+        {
+            _Dispose();
+
             if ( engine != null )
             {
                 engine.SceneManager.ClearScene();

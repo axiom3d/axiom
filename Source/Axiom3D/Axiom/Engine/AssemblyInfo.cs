@@ -9,9 +9,9 @@ using System.Runtime.CompilerServices;
 //
 [assembly: AssemblyTitle( "Axiom 3D Engine" )]
 [assembly: AssemblyDescription( "The core engine and framework for the Axiom 3D rendering engine for .NET." )]
-[assembly: AssemblyCompany( "Axiom and RealmForge Development Team" )]
+[assembly: AssemblyCompany( "Axiom Development Team" )]
 [assembly: AssemblyProduct( "Axiom" )]
-[assembly: AssemblyCopyright( "Copyright © Axiom and RealmForge Development Team 2003-2005" )]
+[assembly: AssemblyCopyright( "Copyright © Axiom Development Team 2003-2005" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 //[assembly: CLSCompliant(true)]

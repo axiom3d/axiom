@@ -621,44 +621,44 @@ namespace Axiom
         /// <summary>
         ///		Exposes FPS stats to anyone who cares.
         /// </summary>
-        public int CurrentFPS
+        public float CurrentFPS
         {
             get
             {
-                return (int)currentFPS;
+                return float.Parse( String.Format( "{0:N}", currentFPS ) );
             }
         }
 
         /// <summary>
         ///		Exposes FPS stats to anyone who cares.
         /// </summary>
-        public int BestFPS
+        public float BestFPS
         {
             get
             {
-                return (int)highestFPS;
+                return float.Parse( String.Format( "{0:N}", highestFPS ) );
             }
         }
 
         /// <summary>
         ///		Exposes FPS stats to anyone who cares.
         /// </summary>
-        public int WorstFPS
+        public float WorstFPS
         {
             get
             {
-                return (int)lowestFPS;
+                return float.Parse( String.Format( "{0:N}", lowestFPS ) );
             }
         }
 
         /// <summary>
         ///		Exposes FPS stats to anyone who cares.
         /// </summary>
-        public int AverageFPS
+        public float AverageFPS
         {
             get
             {
-                return (int)averageFPS;
+                return float.Parse( String.Format( "{0:N}", averageFPS ) );
             }
         }
 

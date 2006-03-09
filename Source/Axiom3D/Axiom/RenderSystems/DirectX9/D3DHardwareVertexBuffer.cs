@@ -24,13 +24,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region Namespace Declarations
+
 using System;
 using System.Runtime.InteropServices;
 
 using Axiom;
 
-using Microsoft.DirectX.Direct3D;
+using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
+
+#endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
@@ -54,12 +58,11 @@ namespace Axiom.RenderSystems.DirectX9
         {
             // Create the d3d vertex buffer
             d3dBuffer = new D3D.VertexBuffer(
-                typeof( byte ),
-                sizeInBytes,
                 device,
+                sizeInBytes,
                 D3DHelper.ConvertEnum( usage ),
-                0,
-                useSystemMemory ? Pool.SystemMemory : Pool.Default );
+                D3D.VertexFormats.None,
+                useSystemMemory ? D3D.Pool.SystemMemory : D3D.Pool.Default,null );
         }
 
         #endregion
@@ -91,8 +94,8 @@ namespace Axiom.RenderSystems.DirectX9
                 d3dLocking = D3DHelper.ConvertEnum( locking );
             }
 
-            Microsoft.DirectX.GraphicsStream s = d3dBuffer.Lock( offset, length, d3dLocking );
-            return s.InternalData;
+            DX.GraphicsBuffer s = d3dBuffer.Lock( offset, length, d3dLocking );
+            return s.DataBuffer;
         }
 
         /// <summary>

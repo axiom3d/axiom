@@ -24,10 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region Namespace Declarations
+
 using System;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+
+using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
+
+#endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
@@ -51,12 +55,12 @@ namespace Axiom.RenderSystems.DirectX9
         /// <summary>
         ///		Default constructor.
         /// </summary>
-        public Driver( D3D.AdapterInformation adapterInfo )
+        public Driver( D3D.AdapterDetails adapterDetails )
         {
-            this.desktopMode = adapterInfo.CurrentDisplayMode;
-            this.name = adapterInfo.Information.DriverName;
-            this.description = adapterInfo.Information.Description;
-            this.adapterNum = adapterInfo.Adapter;
+            this.desktopMode = adapterDetails.CurrentDisplayMode;
+            this.name = adapterDetails.Information.DeviceName;
+            this.description = adapterDetails.Information.Description;
+            this.adapterNum = adapterDetails.Adapter;
 
             videoModeList = new VideoModeCollection();
         }

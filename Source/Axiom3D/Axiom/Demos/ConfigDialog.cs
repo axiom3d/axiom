@@ -63,7 +63,7 @@ namespace Axiom.Demos
 
             try
             {
-                Stream image = ResourceManager.FindCommonResourceData( "AxiomLogoSmall.png" );
+                Stream image = ResourceManager.FindCommonResourceData( "AxiomLogo.png" );
                 Stream icon = ResourceManager.FindCommonResourceData( "AxiomIcon.ico" );
 
                 if ( image != null )

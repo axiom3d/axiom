@@ -1,3 +1,31 @@
+#region LGPL License
+/*
+Axiom Game Engine Library
+Copyright (C) 2003  Axiom Project Team
+
+The overall design, and a majority of the core engine and rendering code 
+contained within this library is a derivative of the open source Object Oriented 
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+#endregion
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Windows.Forms;
@@ -5,9 +33,10 @@ using System.Windows.Forms;
 using Axiom.Input;
 using Axiom;
 
-using Microsoft.DirectX;
-using Microsoft.DirectX.DirectInput;
-using DInput = Microsoft.DirectX.DirectInput;
+using DX = Microsoft.DirectX;
+using DXI = Microsoft.DirectX.DirectInput;
+
+#endregion Namespace Declarations
 
 namespace Axiom.Platforms.Win32
 {
@@ -21,40 +50,41 @@ namespace Axiom.Platforms.Win32
         /// <summary>
         ///		Holds a snapshot of DirectInput keyboard state.
         /// </summary>
-        protected KeyboardState keyboardState;
+        protected DXI.KeyboardState keyboardState;
         /// <summary>
         ///		Holds a snapshot of DirectInput mouse state.
         /// </summary>
-        protected MouseState mouseState;
+        protected DXI.MouseState mouseState;
+
         /// <summary>
         ///		DirectInput keyboard device.
         /// </summary>
-        protected DInput.Device keyboardDevice;
+        protected DXI.Device keyboardDevice;
+
         /// <summary>
         ///		DirectInput mouse device.
         /// </summary>
-        protected DInput.Device mouseDevice;
+        protected DXI.Device mouseDevice;
         protected int mouseRelX, mouseRelY, mouseRelZ;
         protected int mouseAbsX, mouseAbsY, mouseAbsZ;
         protected bool isInitialized;
         protected bool useMouse, useKeyboard, useGamepad;
         protected int mouseButtons;
+
         /// <summary>
         ///		Active host control that reserves control over the input.
         /// </summary>
         protected System.Windows.Forms.Control control;
+
         /// <summary>
         ///		Do we want exclusive use of the mouse?
         /// </summary>
         protected bool ownMouse;
+
         /// <summary>
         ///		Reference to the render window that is the target of the input.
         /// </summary>
         protected RenderWindow window;
-        /// <summary>
-        ///		Flag used to remember the state of the render window the last time input was captured.
-        /// </summary>
-        protected bool lastWindowActive;
 
         #endregion Fields
 
@@ -217,29 +247,31 @@ namespace Axiom.Platforms.Win32
             this.control.BringToFront();
             this.control.Select();
             this.control.Show();
-            if ( VerifyInputAcquired() )
-            {
-                if ( useKeyboard )
-                {
-                    if ( useKeyboardEvents )
-                    {
-                        ReadBufferedKeyboardData();
-                    }
-                    else
-                    {
-                        // TODO Grab keyboard modifiers
-                        CaptureKeyboard();
-                    }
-                }
 
-                if ( useMouse )
+            if ( window.IsActive )
+            {
+                try
                 {
-                    if ( useMouseEvents )
+                    CaptureInput();
+                }
+                catch ( Exception )
+                {
+                    try
                     {
+                        // try to acquire device and try again
+                        if ( useKeyboard )
+                        {
+                            keyboardDevice.Acquire();
+                        }
+                        if ( useMouse )
+                        {
+                            mouseDevice.Acquire();
+                        }
+                        CaptureInput();
                     }
-                    else
+                    catch ( Exception )
                     {
-                        CaptureMouse();
+                        ClearInput(); //not to appear as something would be pressed or whatever.
                     }
                 }
             }
@@ -289,7 +321,7 @@ namespace Axiom.Platforms.Win32
             // initialize the mouse if needed
             if ( useMouse )
             {
-                InitializeImmediateMouse();
+                InitializeMouse();
             }
 
             // we are initialized
@@ -309,8 +341,8 @@ namespace Axiom.Platforms.Win32
         {
             if ( keyboardState != null )
             {
-                // get the DInput.Key enum from the System.Windows.Forms.Keys enum passed in
-                DInput.Key daKey = ConvertKeyEnum( key );
+                // get the DXI.Key enum from the System.Windows.Forms.Keys enum passed in
+                DXI.Key daKey = ConvertKeyEnum( key );
 
                 if ( keyboardState[daKey] )
                 {
@@ -372,6 +404,48 @@ namespace Axiom.Platforms.Win32
                 InitializeImmediateKeyboard();
             }
         }
+       /// <summary>
+       ///     Clear this class input buffers (those accesible to client through one of the public methods)
+       /// </summary>
+        private void ClearInput()
+        {
+            keyboardState = null;
+            mouseRelX = mouseRelY = mouseRelZ = 0;
+            mouseButtons = 0;
+        }
+
+
+       /// <summary>
+       ///     Capture buffered or unbuffered mouse and/or keyboard input.
+       /// </summary>
+        private void CaptureInput()
+        {
+
+            if ( useKeyboard )
+            {
+                if ( useKeyboardEvents )
+                {
+                    ReadBufferedKeyboardData();
+                }
+                else
+                {
+                    // TODO Grab keyboard modifiers
+                    CaptureKeyboard();
+                }
+            }
+
+            if ( useMouse )
+            {
+                if ( useMouseEvents )
+                {
+                    //TODO: implement
+                }
+                else
+                {
+                    CaptureMouse();
+                }
+            }
+        }
 
         /// <summary>
         ///		Initializes the mouse using either immediate mode or event based input.
@@ -393,14 +467,20 @@ namespace Axiom.Platforms.Win32
         /// </summary>
         private void InitializeImmediateKeyboard()
         {
+            // Find the GUID
+            Guid keyboardGuid = new Guid();
+            System.Collections.ObjectModel.ReadOnlyCollection<DXI.DeviceInstance> deviceInstances = DXI.Manager.GetDevices( DXI.DeviceType.Keyboard, DXI.EnumDevicesFlags.AllDevices );
+            if ( deviceInstances.Count >= 1 )
+                keyboardGuid = deviceInstances[ 0 ].Instance;
+
             // Create the device.
-            keyboardDevice = new DInput.Device( SystemGuid.Keyboard );
+            keyboardDevice = new DXI.Device( keyboardGuid );
 
             // grab the keyboard non-exclusively
-            keyboardDevice.SetCooperativeLevel( null, CooperativeLevelFlags.NonExclusive | CooperativeLevelFlags.Background );
+            keyboardDevice.SetCooperativeLevel( IntPtr.Zero, DXI.CooperativeLevelFlags.NonExclusive | DXI.CooperativeLevelFlags.Background );
 
             // Set the data format to the keyboard pre-defined format.
-            keyboardDevice.SetDataFormat( DeviceDataFormat.Keyboard );
+            keyboardDevice.SetDataFormat( DXI.DeviceDataFormat.Keyboard );
 
             try
             {
@@ -417,14 +497,20 @@ namespace Axiom.Platforms.Win32
         /// </summary>
         private void InitializeBufferedKeyboard()
         {
+            // Find the GUID
+            Guid keyboardGuid = new Guid();
+            System.Collections.ObjectModel.ReadOnlyCollection<DXI.DeviceInstance> deviceInstances = DXI.Manager.GetDevices( DXI.DeviceType.Keyboard, DXI.EnumDevicesFlags.AllDevices );
+            if ( deviceInstances.Count >= 1 )
+                keyboardGuid = deviceInstances[ 0 ].Instance;
+
             // create the device
-            keyboardDevice = new DInput.Device( SystemGuid.Keyboard );
+            keyboardDevice = new DXI.Device( keyboardGuid );
 
             // Set the data format to the keyboard pre-defined format.
-            keyboardDevice.SetDataFormat( DeviceDataFormat.Keyboard );
+            keyboardDevice.SetDataFormat( DXI.DeviceDataFormat.Keyboard );
 
             // grab the keyboard non-exclusively
-            keyboardDevice.SetCooperativeLevel( null, CooperativeLevelFlags.NonExclusive | CooperativeLevelFlags.Background );
+            keyboardDevice.SetCooperativeLevel( IntPtr.Zero, DXI.CooperativeLevelFlags.NonExclusive | DXI.CooperativeLevelFlags.Background );
 
             // set the buffer size to use for input
             keyboardDevice.Properties.BufferSize = BufferSize;
@@ -444,22 +530,28 @@ namespace Axiom.Platforms.Win32
         /// </summary>
         private void InitializeImmediateMouse()
         {
+            // Find the GUID
+            Guid mouseGuid = new Guid();
+            System.Collections.ObjectModel.ReadOnlyCollection<DXI.DeviceInstance> deviceInstances = DXI.Manager.GetDevices( DXI.DeviceType.Mouse, DXI.EnumDevicesFlags.AllDevices );
+            if ( deviceInstances.Count >= 1 )
+                mouseGuid = deviceInstances[ 0 ].Instance;
+
             // create the device
-            mouseDevice = new DInput.Device( SystemGuid.Mouse );
+            mouseDevice = new DXI.Device( mouseGuid );
 
-            mouseDevice.Properties.AxisModeAbsolute = true;
+            mouseDevice.Properties.IsAxisModeAbsolute = true;
 
-            // set the device format so DInput knows this device is a mouse
-            mouseDevice.SetDataFormat( DeviceDataFormat.Mouse );
+            // set the device format so DXI knows this device is a mouse
+            mouseDevice.SetDataFormat( DXI.DeviceDataFormat.Mouse );
 
             // set cooperation level
             if ( ownMouse )
             {
-                mouseDevice.SetCooperativeLevel( control, CooperativeLevelFlags.Exclusive | CooperativeLevelFlags.Foreground );
+                mouseDevice.SetCooperativeLevel( control.Handle, DXI.CooperativeLevelFlags.Exclusive | DXI.CooperativeLevelFlags.Foreground );
             }
             else
             {
-                mouseDevice.SetCooperativeLevel( null, CooperativeLevelFlags.NonExclusive | CooperativeLevelFlags.Background );
+                mouseDevice.SetCooperativeLevel( IntPtr.Zero, DXI.CooperativeLevelFlags.NonExclusive | DXI.CooperativeLevelFlags.Background );
             }
 
             // note: dont acquire yet, wait till capture
@@ -479,7 +571,7 @@ namespace Axiom.Platforms.Win32
         private void ReadBufferedKeyboardData()
         {
             // grab the collection of buffered data
-            BufferedDataCollection bufferedData = keyboardDevice.GetBufferedData();
+            DXI.BufferedDataCollection bufferedData = keyboardDevice.GetBufferedData();
 
             // please tell me why this would ever come back null, rather than an empty collection...
             if ( bufferedData == null )
@@ -489,14 +581,11 @@ namespace Axiom.Platforms.Win32
 
             for ( int i = 0; i < bufferedData.Count; i++ )
             {
-                BufferedData data = bufferedData[i];
+                DXI.BufferedData data = bufferedData[i];
 
-                KeyCodes key = ConvertKeyEnum( (DInput.Key)data.Offset );
+                KeyCodes key = ConvertKeyEnum( (DXI.Key)data.Offset );
 
-                // is the key being pressed down, or released?
-                bool down = ( data.ButtonPressedData == 1 );
-
-                KeyChanged( key, down );
+                KeyChanged( key, data.IsButtonPressed );
             }
         }
 
@@ -505,7 +594,7 @@ namespace Axiom.Platforms.Win32
         /// </summary>
         private void CaptureKeyboard()
         {
-            keyboardState = keyboardDevice.GetCurrentKeyboardState();
+            keyboardState = keyboardDevice.CurrentKeyboardState;
         }
 
         /// <summary>
@@ -537,8 +626,22 @@ namespace Axiom.Platforms.Win32
         /// </summary>
         private void CaptureImmediateMouse()
         {
-            // capture the current mouse state
-            mouseState = mouseDevice.CurrentMouseState;
+            try
+            {
+                // capture the current mouse state
+                mouseState = mouseDevice.CurrentMouseState;
+            }
+            catch ( DXI.InputLostException )
+            {
+                try
+                {
+                    mouseDevice.Acquire();
+                    mouseState = mouseDevice.CurrentMouseState;
+                }
+                catch ( Exception )
+                {
+                }
+            }
 
             // store the updated absolute values
             mouseAbsX += mouseState.X;
@@ -550,56 +653,20 @@ namespace Axiom.Platforms.Win32
             mouseRelY = mouseState.Y;
             mouseRelZ = mouseState.Z;
 
-            byte[] buttons = mouseState.GetMouseButtons();
+            bool[] buttons = mouseState.GetButtons();
 
             // clear the flags
             mouseButtons = 0;
 
             for ( int i = 0; i < buttons.Length; i++ )
             {
-                if ( ( buttons[i] & 0x80 ) != 0 )
+                if ( buttons[i] )
                 {
                     mouseButtons |= ( 1 << i );
                 }
             }
         }
 
-        /// <summary>
-        ///		Verifies the state of the host window and reacquires input if the window was
-        ///		previously minimized and has been brought back into focus.
-        /// </summary>
-        /// <returns>True if the input devices are acquired and input capturing can proceed, false otherwise.</returns>
-        protected bool VerifyInputAcquired()
-        {
-            // if the window is coming back from being deactivated, lets grab input again
-            if ( window.IsActive && !lastWindowActive )
-            {
-                // no exceptions right now, thanks anyway
-                DirectXException.IgnoreExceptions();
-
-                // acquire and capture keyboard input
-                if ( useKeyboard )
-                {
-                    keyboardDevice.Acquire();
-                    CaptureKeyboard();
-                }
-
-                // acquire and capture mouse input
-                if ( useMouse )
-                {
-                    mouseDevice.Acquire();
-                    CaptureMouse();
-                }
-
-                // wait...i like exceptions!
-                DirectXException.EnableExceptions();
-            }
-
-            // store the current window state
-            lastWindowActive = window.IsActive;
-
-            return lastWindowActive;
-        }
 
         #region Keycode Conversions
 
@@ -607,293 +674,293 @@ namespace Axiom.Platforms.Win32
         ///		Used to convert an Axiom.Input.KeyCodes enum val to a DirectInput.Key enum val.
         /// </summary>
         /// <param name="key">Axiom keyboard code to query.</param>
-        /// <returns>The equivalent enum value in the DInput.Key enum.</returns>
-        private DInput.Key ConvertKeyEnum( KeyCodes key )
+        /// <returns>The equivalent enum value in the DXI.Key enum.</returns>
+        private DXI.Key ConvertKeyEnum( KeyCodes key )
         {
             // TODO Quotes
-            DInput.Key dinputKey = 0;
+            DXI.Key DXIKey = 0;
 
             switch ( key )
             {
                 case KeyCodes.A:
-                    dinputKey = DInput.Key.A;
+                    DXIKey = DXI.Key.A;
                     break;
                 case KeyCodes.B:
-                    dinputKey = DInput.Key.B;
+                    DXIKey = DXI.Key.B;
                     break;
                 case KeyCodes.C:
-                    dinputKey = DInput.Key.C;
+                    DXIKey = DXI.Key.C;
                     break;
                 case KeyCodes.D:
-                    dinputKey = DInput.Key.D;
+                    DXIKey = DXI.Key.D;
                     break;
                 case KeyCodes.E:
-                    dinputKey = DInput.Key.E;
+                    DXIKey = DXI.Key.E;
                     break;
                 case KeyCodes.F:
-                    dinputKey = DInput.Key.F;
+                    DXIKey = DXI.Key.F;
                     break;
                 case KeyCodes.G:
-                    dinputKey = DInput.Key.G;
+                    DXIKey = DXI.Key.G;
                     break;
                 case KeyCodes.H:
-                    dinputKey = DInput.Key.H;
+                    DXIKey = DXI.Key.H;
                     break;
                 case KeyCodes.I:
-                    dinputKey = DInput.Key.I;
+                    DXIKey = DXI.Key.I;
                     break;
                 case KeyCodes.J:
-                    dinputKey = DInput.Key.J;
+                    DXIKey = DXI.Key.J;
                     break;
                 case KeyCodes.K:
-                    dinputKey = DInput.Key.K;
+                    DXIKey = DXI.Key.K;
                     break;
                 case KeyCodes.L:
-                    dinputKey = DInput.Key.L;
+                    DXIKey = DXI.Key.L;
                     break;
                 case KeyCodes.M:
-                    dinputKey = DInput.Key.M;
+                    DXIKey = DXI.Key.M;
                     break;
                 case KeyCodes.N:
-                    dinputKey = DInput.Key.N;
+                    DXIKey = DXI.Key.N;
                     break;
                 case KeyCodes.O:
-                    dinputKey = DInput.Key.O;
+                    DXIKey = DXI.Key.O;
                     break;
                 case KeyCodes.P:
-                    dinputKey = DInput.Key.P;
+                    DXIKey = DXI.Key.P;
                     break;
                 case KeyCodes.Q:
-                    dinputKey = DInput.Key.Q;
+                    DXIKey = DXI.Key.Q;
                     break;
                 case KeyCodes.R:
-                    dinputKey = DInput.Key.R;
+                    DXIKey = DXI.Key.R;
                     break;
                 case KeyCodes.S:
-                    dinputKey = DInput.Key.S;
+                    DXIKey = DXI.Key.S;
                     break;
                 case KeyCodes.T:
-                    dinputKey = DInput.Key.T;
+                    DXIKey = DXI.Key.T;
                     break;
                 case KeyCodes.U:
-                    dinputKey = DInput.Key.U;
+                    DXIKey = DXI.Key.U;
                     break;
                 case KeyCodes.V:
-                    dinputKey = DInput.Key.V;
+                    DXIKey = DXI.Key.V;
                     break;
                 case KeyCodes.W:
-                    dinputKey = DInput.Key.W;
+                    DXIKey = DXI.Key.W;
                     break;
                 case KeyCodes.X:
-                    dinputKey = DInput.Key.X;
+                    DXIKey = DXI.Key.X;
                     break;
                 case KeyCodes.Y:
-                    dinputKey = DInput.Key.Y;
+                    DXIKey = DXI.Key.Y;
                     break;
                 case KeyCodes.Z:
-                    dinputKey = DInput.Key.Z;
+                    DXIKey = DXI.Key.Z;
                     break;
                 case KeyCodes.Left:
-                    dinputKey = DInput.Key.LeftArrow;
+                    DXIKey = DXI.Key.LeftArrow;
                     break;
                 case KeyCodes.Right:
-                    dinputKey = DInput.Key.RightArrow;
+                    DXIKey = DXI.Key.RightArrow;
                     break;
                 case KeyCodes.Up:
-                    dinputKey = DInput.Key.UpArrow;
+                    DXIKey = DXI.Key.UpArrow;
                     break;
                 case KeyCodes.Down:
-                    dinputKey = DInput.Key.DownArrow;
+                    DXIKey = DXI.Key.DownArrow;
                     break;
                 case KeyCodes.Escape:
-                    dinputKey = DInput.Key.Escape;
+                    DXIKey = DXI.Key.Escape;
                     break;
                 case KeyCodes.F1:
-                    dinputKey = DInput.Key.F1;
+                    DXIKey = DXI.Key.F1;
                     break;
                 case KeyCodes.F2:
-                    dinputKey = DInput.Key.F2;
+                    DXIKey = DXI.Key.F2;
                     break;
                 case KeyCodes.F3:
-                    dinputKey = DInput.Key.F3;
+                    DXIKey = DXI.Key.F3;
                     break;
                 case KeyCodes.F4:
-                    dinputKey = DInput.Key.F4;
+                    DXIKey = DXI.Key.F4;
                     break;
                 case KeyCodes.F5:
-                    dinputKey = DInput.Key.F5;
+                    DXIKey = DXI.Key.F5;
                     break;
                 case KeyCodes.F6:
-                    dinputKey = DInput.Key.F6;
+                    DXIKey = DXI.Key.F6;
                     break;
                 case KeyCodes.F7:
-                    dinputKey = DInput.Key.F7;
+                    DXIKey = DXI.Key.F7;
                     break;
                 case KeyCodes.F8:
-                    dinputKey = DInput.Key.F8;
+                    DXIKey = DXI.Key.F8;
                     break;
                 case KeyCodes.F9:
-                    dinputKey = DInput.Key.F9;
+                    DXIKey = DXI.Key.F9;
                     break;
                 case KeyCodes.F10:
-                    dinputKey = DInput.Key.F10;
+                    DXIKey = DXI.Key.F10;
                     break;
                 case KeyCodes.D0:
-                    dinputKey = DInput.Key.D0;
+                    DXIKey = DXI.Key.D0;
                     break;
                 case KeyCodes.D1:
-                    dinputKey = DInput.Key.D1;
+                    DXIKey = DXI.Key.D1;
                     break;
                 case KeyCodes.D2:
-                    dinputKey = DInput.Key.D2;
+                    DXIKey = DXI.Key.D2;
                     break;
                 case KeyCodes.D3:
-                    dinputKey = DInput.Key.D3;
+                    DXIKey = DXI.Key.D3;
                     break;
                 case KeyCodes.D4:
-                    dinputKey = DInput.Key.D4;
+                    DXIKey = DXI.Key.D4;
                     break;
                 case KeyCodes.D5:
-                    dinputKey = DInput.Key.D5;
+                    DXIKey = DXI.Key.D5;
                     break;
                 case KeyCodes.D6:
-                    dinputKey = DInput.Key.D6;
+                    DXIKey = DXI.Key.D6;
                     break;
                 case KeyCodes.D7:
-                    dinputKey = DInput.Key.D7;
+                    DXIKey = DXI.Key.D7;
                     break;
                 case KeyCodes.D8:
-                    dinputKey = DInput.Key.D8;
+                    DXIKey = DXI.Key.D8;
                     break;
                 case KeyCodes.D9:
-                    dinputKey = DInput.Key.D9;
+                    DXIKey = DXI.Key.D9;
                     break;
                 case KeyCodes.F11:
-                    dinputKey = DInput.Key.F11;
+                    DXIKey = DXI.Key.F11;
                     break;
                 case KeyCodes.F12:
-                    dinputKey = DInput.Key.F12;
+                    DXIKey = DXI.Key.F12;
                     break;
                 case KeyCodes.Enter:
-                    dinputKey = DInput.Key.Return;
+                    DXIKey = DXI.Key.Return;
                     break;
                 case KeyCodes.Tab:
-                    dinputKey = DInput.Key.Tab;
+                    DXIKey = DXI.Key.Tab;
                     break;
                 case KeyCodes.LeftShift:
-                    dinputKey = DInput.Key.LeftShift;
+                    DXIKey = DXI.Key.LeftShift;
                     break;
                 case KeyCodes.RightShift:
-                    dinputKey = DInput.Key.RightShift;
+                    DXIKey = DXI.Key.RightShift;
                     break;
                 case KeyCodes.LeftControl:
-                    dinputKey = DInput.Key.LeftControl;
+                    DXIKey = DXI.Key.LeftControl;
                     break;
                 case KeyCodes.RightControl:
-                    dinputKey = DInput.Key.RightControl;
+                    DXIKey = DXI.Key.RightControl;
                     break;
                 case KeyCodes.Period:
-                    dinputKey = DInput.Key.Period;
+                    DXIKey = DXI.Key.Period;
                     break;
                 case KeyCodes.Comma:
-                    dinputKey = DInput.Key.Comma;
+                    DXIKey = DXI.Key.Comma;
                     break;
                 case KeyCodes.Home:
-                    dinputKey = DInput.Key.Home;
+                    DXIKey = DXI.Key.Home;
                     break;
                 case KeyCodes.PageUp:
-                    dinputKey = DInput.Key.PageUp;
+                    DXIKey = DXI.Key.PageUp;
                     break;
                 case KeyCodes.PageDown:
-                    dinputKey = DInput.Key.PageDown;
+                    DXIKey = DXI.Key.PageDown;
                     break;
                 case KeyCodes.End:
-                    dinputKey = DInput.Key.End;
+                    DXIKey = DXI.Key.End;
                     break;
                 case KeyCodes.Semicolon:
-                    dinputKey = DInput.Key.SemiColon;
+                    DXIKey = DXI.Key.SemiColon;
                     break;
                 case KeyCodes.Subtract:
-                    dinputKey = DInput.Key.Subtract;
+                    DXIKey = DXI.Key.Subtract;
                     break;
                 case KeyCodes.Add:
-                    dinputKey = DInput.Key.Add;
+                    DXIKey = DXI.Key.Add;
                     break;
                 case KeyCodes.Backspace:
-                    dinputKey = DInput.Key.BackSpace;
+                    DXIKey = DXI.Key.BackSpace;
                     break;
                 case KeyCodes.Delete:
-                    dinputKey = DInput.Key.Delete;
+                    DXIKey = DXI.Key.Delete;
                     break;
                 case KeyCodes.Insert:
-                    dinputKey = DInput.Key.Insert;
+                    DXIKey = DXI.Key.Insert;
                     break;
                 case KeyCodes.LeftAlt:
-                    dinputKey = DInput.Key.LeftAlt;
+                    DXIKey = DXI.Key.LeftAlt;
                     break;
                 case KeyCodes.RightAlt:
-                    dinputKey = DInput.Key.RightAlt;
+                    DXIKey = DXI.Key.RightAlt;
                     break;
                 case KeyCodes.Space:
-                    dinputKey = DInput.Key.Space;
+                    DXIKey = DXI.Key.Space;
                     break;
                 case KeyCodes.Tilde:
-                    dinputKey = DInput.Key.Grave;
+                    DXIKey = DXI.Key.Grave;
                     break;
                 case KeyCodes.OpenBracket:
-                    dinputKey = DInput.Key.LeftBracket;
+                    DXIKey = DXI.Key.LeftBracket;
                     break;
                 case KeyCodes.CloseBracket:
-                    dinputKey = DInput.Key.RightBracket;
+                    DXIKey = DXI.Key.RightBracket;
                     break;
                 case KeyCodes.Plus:
-                    dinputKey = DInput.Key.Equals;
+                    DXIKey = DXI.Key.Equals;
                     break;
                 case KeyCodes.QuestionMark:
-                    dinputKey = DInput.Key.Slash;
+                    DXIKey = DXI.Key.Slash;
                     break;
                 case KeyCodes.Quotes:
-                    dinputKey = DInput.Key.Apostrophe;
+                    DXIKey = DXI.Key.Apostrophe;
                     break;
                 case KeyCodes.Backslash:
-                    dinputKey = DInput.Key.BackSlash;
+                    DXIKey = DXI.Key.BackSlash;
                     break;
                 case KeyCodes.NumPad0:
-                    dinputKey = DInput.Key.NumPad0;
+                    DXIKey = DXI.Key.NumPad0;
                     break;
                 case KeyCodes.NumPad1:
-                    dinputKey = DInput.Key.NumPad1;
+                    DXIKey = DXI.Key.NumPad1;
                     break;
                 case KeyCodes.NumPad2:
-                    dinputKey = DInput.Key.NumPad2;
+                    DXIKey = DXI.Key.NumPad2;
                     break;
                 case KeyCodes.NumPad3:
-                    dinputKey = DInput.Key.NumPad3;
+                    DXIKey = DXI.Key.NumPad3;
                     break;
                 case KeyCodes.NumPad4:
-                    dinputKey = DInput.Key.NumPad4;
+                    DXIKey = DXI.Key.NumPad4;
                     break;
                 case KeyCodes.NumPad5:
-                    dinputKey = DInput.Key.NumPad5;
+                    DXIKey = DXI.Key.NumPad5;
                     break;
                 case KeyCodes.NumPad6:
-                    dinputKey = DInput.Key.NumPad6;
+                    DXIKey = DXI.Key.NumPad6;
                     break;
                 case KeyCodes.NumPad7:
-                    dinputKey = DInput.Key.NumPad7;
+                    DXIKey = DXI.Key.NumPad7;
                     break;
                 case KeyCodes.NumPad8:
-                    dinputKey = DInput.Key.NumPad8;
+                    DXIKey = DXI.Key.NumPad8;
                     break;
                 case KeyCodes.NumPad9:
-                    dinputKey = DInput.Key.NumPad9;
+                    DXIKey = DXI.Key.NumPad9;
                     break;
                 case KeyCodes.PrintScreen:
-                    dinputKey = DInput.Key.SysRq;
+                    DXIKey = DXI.Key.SysRq;
                     break;
             }
 
-            return dinputKey;
+            return DXIKey;
         }
 
         /// <summary>
@@ -901,290 +968,290 @@ namespace Axiom.Platforms.Win32
         /// </summary>
         /// <param name="key">DirectInput.Key code to query.</param>
         /// <returns>The equivalent enum value in the Axiom.KeyCodes enum.</returns>
-        private Axiom.Input.KeyCodes ConvertKeyEnum( DInput.Key key )
+        private Axiom.Input.KeyCodes ConvertKeyEnum( DXI.Key key )
         {
             // TODO Quotes
             Axiom.Input.KeyCodes axiomKey = 0;
 
             switch ( key )
             {
-                case DInput.Key.SysRq:	//same key as PrintScreen
+                case DXI.Key.SysRq:	//same key as PrintScreen
                     axiomKey = Axiom.Input.KeyCodes.PrintScreen;
                     break;
-                case DInput.Key.A:
+                case DXI.Key.A:
                     axiomKey = Axiom.Input.KeyCodes.A;
                     break;
-                case DInput.Key.B:
+                case DXI.Key.B:
                     axiomKey = Axiom.Input.KeyCodes.B;
                     break;
-                case DInput.Key.C:
+                case DXI.Key.C:
                     axiomKey = Axiom.Input.KeyCodes.C;
                     break;
-                case DInput.Key.D:
+                case DXI.Key.D:
                     axiomKey = Axiom.Input.KeyCodes.D;
                     break;
-                case DInput.Key.E:
+                case DXI.Key.E:
                     axiomKey = Axiom.Input.KeyCodes.E;
                     break;
-                case DInput.Key.F:
+                case DXI.Key.F:
                     axiomKey = Axiom.Input.KeyCodes.F;
                     break;
-                case DInput.Key.G:
+                case DXI.Key.G:
                     axiomKey = Axiom.Input.KeyCodes.G;
                     break;
-                case DInput.Key.H:
+                case DXI.Key.H:
                     axiomKey = Axiom.Input.KeyCodes.H;
                     break;
-                case DInput.Key.I:
+                case DXI.Key.I:
                     axiomKey = Axiom.Input.KeyCodes.I;
                     break;
-                case DInput.Key.J:
+                case DXI.Key.J:
                     axiomKey = Axiom.Input.KeyCodes.J;
                     break;
-                case DInput.Key.K:
+                case DXI.Key.K:
                     axiomKey = Axiom.Input.KeyCodes.K;
                     break;
-                case DInput.Key.L:
+                case DXI.Key.L:
                     axiomKey = Axiom.Input.KeyCodes.L;
                     break;
-                case DInput.Key.M:
+                case DXI.Key.M:
                     axiomKey = Axiom.Input.KeyCodes.M;
                     break;
-                case DInput.Key.N:
+                case DXI.Key.N:
                     axiomKey = Axiom.Input.KeyCodes.N;
                     break;
-                case DInput.Key.O:
+                case DXI.Key.O:
                     axiomKey = Axiom.Input.KeyCodes.O;
                     break;
-                case DInput.Key.P:
+                case DXI.Key.P:
                     axiomKey = Axiom.Input.KeyCodes.P;
                     break;
-                case DInput.Key.Q:
+                case DXI.Key.Q:
                     axiomKey = Axiom.Input.KeyCodes.Q;
                     break;
-                case DInput.Key.R:
+                case DXI.Key.R:
                     axiomKey = Axiom.Input.KeyCodes.R;
                     break;
-                case DInput.Key.S:
+                case DXI.Key.S:
                     axiomKey = Axiom.Input.KeyCodes.S;
                     break;
-                case DInput.Key.T:
+                case DXI.Key.T:
                     axiomKey = Axiom.Input.KeyCodes.T;
                     break;
-                case DInput.Key.U:
+                case DXI.Key.U:
                     axiomKey = Axiom.Input.KeyCodes.U;
                     break;
-                case DInput.Key.V:
+                case DXI.Key.V:
                     axiomKey = Axiom.Input.KeyCodes.V;
                     break;
-                case DInput.Key.W:
+                case DXI.Key.W:
                     axiomKey = Axiom.Input.KeyCodes.W;
                     break;
-                case DInput.Key.X:
+                case DXI.Key.X:
                     axiomKey = Axiom.Input.KeyCodes.X;
                     break;
-                case DInput.Key.Y:
+                case DXI.Key.Y:
                     axiomKey = Axiom.Input.KeyCodes.Y;
                     break;
-                case DInput.Key.Z:
+                case DXI.Key.Z:
                     axiomKey = Axiom.Input.KeyCodes.Z;
                     break;
-                case DInput.Key.LeftArrow:
+                case DXI.Key.LeftArrow:
                     axiomKey = Axiom.Input.KeyCodes.Left;
                     break;
-                case DInput.Key.RightArrow:
+                case DXI.Key.RightArrow:
                     axiomKey = Axiom.Input.KeyCodes.Right;
                     break;
-                case DInput.Key.UpArrow:
+                case DXI.Key.UpArrow:
                     axiomKey = Axiom.Input.KeyCodes.Up;
                     break;
-                case DInput.Key.DownArrow:
+                case DXI.Key.DownArrow:
                     axiomKey = Axiom.Input.KeyCodes.Down;
                     break;
-                case DInput.Key.Escape:
+                case DXI.Key.Escape:
                     axiomKey = Axiom.Input.KeyCodes.Escape;
                     break;
-                case DInput.Key.F1:
+                case DXI.Key.F1:
                     axiomKey = Axiom.Input.KeyCodes.F1;
                     break;
-                case DInput.Key.F2:
+                case DXI.Key.F2:
                     axiomKey = Axiom.Input.KeyCodes.F2;
                     break;
-                case DInput.Key.F3:
+                case DXI.Key.F3:
                     axiomKey = Axiom.Input.KeyCodes.F3;
                     break;
-                case DInput.Key.F4:
+                case DXI.Key.F4:
                     axiomKey = Axiom.Input.KeyCodes.F4;
                     break;
-                case DInput.Key.F5:
+                case DXI.Key.F5:
                     axiomKey = Axiom.Input.KeyCodes.F5;
                     break;
-                case DInput.Key.F6:
+                case DXI.Key.F6:
                     axiomKey = Axiom.Input.KeyCodes.F6;
                     break;
-                case DInput.Key.F7:
+                case DXI.Key.F7:
                     axiomKey = Axiom.Input.KeyCodes.F7;
                     break;
-                case DInput.Key.F8:
+                case DXI.Key.F8:
                     axiomKey = Axiom.Input.KeyCodes.F8;
                     break;
-                case DInput.Key.F9:
+                case DXI.Key.F9:
                     axiomKey = Axiom.Input.KeyCodes.F9;
                     break;
-                case DInput.Key.F10:
+                case DXI.Key.F10:
                     axiomKey = Axiom.Input.KeyCodes.F10;
                     break;
-                case DInput.Key.D0:
+                case DXI.Key.D0:
                     axiomKey = Axiom.Input.KeyCodes.D0;
                     break;
-                case DInput.Key.D1:
+                case DXI.Key.D1:
                     axiomKey = Axiom.Input.KeyCodes.D1;
                     break;
-                case DInput.Key.D2:
+                case DXI.Key.D2:
                     axiomKey = Axiom.Input.KeyCodes.D2;
                     break;
-                case DInput.Key.D3:
+                case DXI.Key.D3:
                     axiomKey = Axiom.Input.KeyCodes.D3;
                     break;
-                case DInput.Key.D4:
+                case DXI.Key.D4:
                     axiomKey = Axiom.Input.KeyCodes.D4;
                     break;
-                case DInput.Key.D5:
+                case DXI.Key.D5:
                     axiomKey = Axiom.Input.KeyCodes.D5;
                     break;
-                case DInput.Key.D6:
+                case DXI.Key.D6:
                     axiomKey = Axiom.Input.KeyCodes.D6;
                     break;
-                case DInput.Key.D7:
+                case DXI.Key.D7:
                     axiomKey = Axiom.Input.KeyCodes.D7;
                     break;
-                case DInput.Key.D8:
+                case DXI.Key.D8:
                     axiomKey = Axiom.Input.KeyCodes.D8;
                     break;
-                case DInput.Key.D9:
+                case DXI.Key.D9:
                     axiomKey = Axiom.Input.KeyCodes.D9;
                     break;
-                case DInput.Key.F11:
+                case DXI.Key.F11:
                     axiomKey = Axiom.Input.KeyCodes.F11;
                     break;
-                case DInput.Key.F12:
+                case DXI.Key.F12:
                     axiomKey = Axiom.Input.KeyCodes.F12;
                     break;
-                case DInput.Key.Return:
+                case DXI.Key.Return:
                     axiomKey = Axiom.Input.KeyCodes.Enter;
                     break;
-                case DInput.Key.Tab:
+                case DXI.Key.Tab:
                     axiomKey = Axiom.Input.KeyCodes.Tab;
                     break;
-                case DInput.Key.LeftShift:
+                case DXI.Key.LeftShift:
                     axiomKey = Axiom.Input.KeyCodes.LeftShift;
                     break;
-                case DInput.Key.RightShift:
+                case DXI.Key.RightShift:
                     axiomKey = Axiom.Input.KeyCodes.RightShift;
                     break;
-                case DInput.Key.LeftControl:
+                case DXI.Key.LeftControl:
                     axiomKey = Axiom.Input.KeyCodes.LeftControl;
                     break;
-                case DInput.Key.RightControl:
+                case DXI.Key.RightControl:
                     axiomKey = Axiom.Input.KeyCodes.RightControl;
                     break;
-                case DInput.Key.Period:
+                case DXI.Key.Period:
                     axiomKey = Axiom.Input.KeyCodes.Period;
                     break;
-                case DInput.Key.Comma:
+                case DXI.Key.Comma:
                     axiomKey = Axiom.Input.KeyCodes.Comma;
                     break;
-                case DInput.Key.Home:
+                case DXI.Key.Home:
                     axiomKey = Axiom.Input.KeyCodes.Home;
                     break;
-                case DInput.Key.PageUp:
+                case DXI.Key.PageUp:
                     axiomKey = Axiom.Input.KeyCodes.PageUp;
                     break;
-                case DInput.Key.PageDown:
+                case DXI.Key.PageDown:
                     axiomKey = Axiom.Input.KeyCodes.PageDown;
                     break;
-                case DInput.Key.End:
+                case DXI.Key.End:
                     axiomKey = Axiom.Input.KeyCodes.End;
                     break;
-                case DInput.Key.SemiColon:
+                case DXI.Key.SemiColon:
                     axiomKey = Axiom.Input.KeyCodes.Semicolon;
                     break;
-                case DInput.Key.Subtract:
+                case DXI.Key.Subtract:
                     axiomKey = Axiom.Input.KeyCodes.Subtract;
                     break;
-                case DInput.Key.Add:
+                case DXI.Key.Add:
                     axiomKey = Axiom.Input.KeyCodes.Add;
                     break;
-                case DInput.Key.BackSpace:
+                case DXI.Key.BackSpace:
                     axiomKey = Axiom.Input.KeyCodes.Backspace;
                     break;
-                case DInput.Key.Delete:
+                case DXI.Key.Delete:
                     axiomKey = Axiom.Input.KeyCodes.Delete;
                     break;
-                case DInput.Key.Insert:
+                case DXI.Key.Insert:
                     axiomKey = Axiom.Input.KeyCodes.Insert;
                     break;
-                case DInput.Key.LeftAlt:
+                case DXI.Key.LeftAlt:
                     axiomKey = Axiom.Input.KeyCodes.LeftAlt;
                     break;
-                case DInput.Key.RightAlt:
+                case DXI.Key.RightAlt:
                     axiomKey = Axiom.Input.KeyCodes.RightAlt;
                     break;
-                case DInput.Key.Space:
+                case DXI.Key.Space:
                     axiomKey = Axiom.Input.KeyCodes.Space;
                     break;
-                case DInput.Key.Grave:
+                case DXI.Key.Grave:
                     axiomKey = Axiom.Input.KeyCodes.Tilde;
                     break;
-                case DInput.Key.LeftBracket:
+                case DXI.Key.LeftBracket:
                     axiomKey = Axiom.Input.KeyCodes.OpenBracket;
                     break;
-                case DInput.Key.RightBracket:
+                case DXI.Key.RightBracket:
                     axiomKey = Axiom.Input.KeyCodes.CloseBracket;
                     break;
-                case DInput.Key.Equals:
+                case DXI.Key.Equals:
                     axiomKey = KeyCodes.Plus;
                     break;
-                case DInput.Key.Minus:
+                case DXI.Key.Minus:
                     axiomKey = KeyCodes.Subtract;
                     break;
-                case DInput.Key.Slash:
+                case DXI.Key.Slash:
                     axiomKey = KeyCodes.QuestionMark;
                     break;
-                case DInput.Key.Apostrophe:
+                case DXI.Key.Apostrophe:
                     axiomKey = KeyCodes.Quotes;
                     break;
-                case DInput.Key.BackSlash:
+                case DXI.Key.BackSlash:
                     axiomKey = KeyCodes.Backslash;
                     break;
-                case DInput.Key.NumPad0:
+                case DXI.Key.NumPad0:
                     axiomKey = Axiom.Input.KeyCodes.NumPad0;
                     break;
-                case DInput.Key.NumPad1:
+                case DXI.Key.NumPad1:
                     axiomKey = Axiom.Input.KeyCodes.NumPad1;
                     break;
-                case DInput.Key.NumPad2:
+                case DXI.Key.NumPad2:
                     axiomKey = Axiom.Input.KeyCodes.NumPad2;
                     break;
-                case DInput.Key.NumPad3:
+                case DXI.Key.NumPad3:
                     axiomKey = Axiom.Input.KeyCodes.NumPad3;
                     break;
-                case DInput.Key.NumPad4:
+                case DXI.Key.NumPad4:
                     axiomKey = Axiom.Input.KeyCodes.NumPad4;
                     break;
-                case DInput.Key.NumPad5:
+                case DXI.Key.NumPad5:
                     axiomKey = Axiom.Input.KeyCodes.NumPad5;
                     break;
-                case DInput.Key.NumPad6:
+                case DXI.Key.NumPad6:
                     axiomKey = Axiom.Input.KeyCodes.NumPad6;
                     break;
-                case DInput.Key.NumPad7:
+                case DXI.Key.NumPad7:
                     axiomKey = Axiom.Input.KeyCodes.NumPad7;
                     break;
-                case DInput.Key.NumPad8:
+                case DXI.Key.NumPad8:
                     axiomKey = Axiom.Input.KeyCodes.NumPad8;
                     break;
-                case DInput.Key.NumPad9:
+                case DXI.Key.NumPad9:
                     axiomKey = Axiom.Input.KeyCodes.NumPad9;
                     break;
             }

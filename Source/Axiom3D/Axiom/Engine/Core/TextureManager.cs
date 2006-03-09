@@ -29,7 +29,7 @@ using System;
 namespace Axiom
 {
     /// <summary>
-    ///    Class for loading & managing textures.
+    ///    Class for loading and managing textures.
     /// </summary>
     /// <remarks>
     ///    Texture manager serves as an abstract singleton for all API specific texture managers.
