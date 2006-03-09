@@ -99,7 +99,7 @@ namespace Axiom.Demos
             }
             catch ( Exception ex )
             {
-                RealmForge.Log.Write( ex );
+                //RealmForge.Log.Write( ex );
                 // try logging the error here first, before Root is disposed of 
                 if ( LogManager.Instance != null )
                 {
@@ -128,7 +128,7 @@ namespace Axiom.Demos
             sunLight.Specular = new ColorEx( 0.9f, 0.9f, 1 );
 
 
-            scene.SetSkyBox( true, "Skybox/EarlyMorning", 5000 );
+            scene.SetSkyBox( true, "Skybox/Morning", 5000 );
 
             Mesh mesh = MeshManager.Instance.Load( "athene.mesh" );
 
@@ -154,7 +154,7 @@ namespace Axiom.Demos
 
 
                 //place menu entity (statue) 
-                Entity ent = scene.CreateEntity( type.Name, "athene.mesh" );
+                Entity ent = scene.CreateEntity( type.Name, "cube.mesh" );
                 ent.MaterialName = atheneMaterials[ 1 ];
                 node = scene.RootSceneNode.CreateChildSceneNode( type.Name );
                 node.AttachObject( ent );
@@ -185,9 +185,8 @@ namespace Axiom.Demos
             planeEnt.CastShadows = false;
             node = scene.RootSceneNode.CreateChildSceneNode();
             node.AttachObject( planeEnt );
-            //node.Translate( new Vector3( 2000, 0, 0 ) ); 
 
-            if ( Root.Instance.RenderSystem.Name.Contains( "DirectX" ) )
+            if ( Root.Instance.RenderSystem.Name.StartsWith( "Direct" ) )
             {
                 // In D3D, use a 1024x1024 shadow texture 
                 scene.SetShadowTextureSettings( 1024, 2 );
@@ -302,7 +301,7 @@ namespace Axiom.Demos
             if ( ( input.IsMousePressed( MouseButtons.Left ) || input.IsKeyPressed( KeyCodes.Enter ) )
                     && toggleDelay < 0 )
             {
-                RaySceneQuery rq = scene.CreateRayQuery( camera.GetCameraToViewportRay( (float)input.AbsoluteMouseX / (float)window.Width, (float)input.AbsoluteMouseY / (float)window.Height ) );
+                RaySceneQuery rq = scene.CreateRayQuery( camera.GetCameraToViewportRay( .5f, .5f ) );
 
                 rq.SortByDistance = true;
                 rq.MaxResults = 1;
@@ -310,7 +309,7 @@ namespace Axiom.Demos
                 if ( results.Count == 1 )
                 {
                     RaySceneQueryResultEntry ent = (RaySceneQueryResultEntry)results[ 0 ];
-                    ent.SceneObject.ShowBoundingBox = !ent.SceneObject.ShowBoundingBox;
+                    //ent.SceneObject.ShowBoundingBox = !ent.SceneObject.ShowBoundingBox;
                     nextDemo = ent.SceneObject.Name;
                     Root.Instance.QueueEndRendering();
                     return;
@@ -321,8 +320,6 @@ namespace Axiom.Demos
             {
                 //cameraVector.x += input.RelativeMouseX * 0.13f; 
             }
-
-
 
             // update performance stats once per second 
             if ( statDelay < 0.0f && showDebugOverlay )
@@ -393,8 +390,6 @@ namespace Axiom.Demos
             float cZ = (float)Math.Cos( camAngle * Math.PI / 180.0f );
             camera.Position = new Vector3( cameraCircleR * cX, 0, cameraCircleR * cZ );
             camera.LookAt( new Vector3( menuCircleR * cX, 0, menuCircleR * cZ ) );
-
-
 
             sunLight.Position = new Vector3( camera.Position.x, 1250, camera.Position.z );
         }

@@ -66,6 +66,11 @@ namespace Axiom.Demos
 
         #region Methods
 
+        protected override void _Dispose()
+        {
+            base._Dispose();
+            waterOverlay.Hide();
+        }
         // Just override the mandatory create scene method
         protected override void CreateScene()
         {

@@ -24,13 +24,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region Namespace Declarations
+
 using System;
+
+using DX = Microsoft.DirectX;
+using D3D = Microsoft.DirectX.Direct3D;
 
 using Axiom;
 
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
-using D3D = Microsoft.DirectX.Direct3D;
+#endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
@@ -85,7 +88,7 @@ namespace Axiom.RenderSystems.DirectX9
             if ( isSupported )
             {
                 // attempt to create an occlusion query
-                query = new D3D.Query( device, QueryType.Occlusion );
+                query = new D3D.Query( device, D3D.QueryType.Occlusion );
             }
         }
 
@@ -105,7 +108,7 @@ namespace Axiom.RenderSystems.DirectX9
 
                 if ( skipCounter == 0 )
                 { // && lastFragmentCount != 0) {
-                    query.Issue( IssueFlags.Begin );
+                    query.Begin();
                 }
             }
         }
@@ -117,7 +120,9 @@ namespace Axiom.RenderSystems.DirectX9
 
             if ( isSupported )
             {
-                lastFragmentCount = (int)query.GetData( typeof( int ), flush );
+                DX.Generic.GraphicsBuffer<int> tmp = new Microsoft.DirectX.Generic.GraphicsBuffer<int>(lastFragmentCount);
+                query.GetData< int >( flush, tmp );
+                lastFragmentCount = tmp.ElementCount;
             }
 
             return lastFragmentCount;
@@ -130,7 +135,7 @@ namespace Axiom.RenderSystems.DirectX9
             {
                 if ( skipCounter == 0 )
                 { // && lastFragmentCount != 0) {
-                    query.Issue( IssueFlags.End );
+                    query.End();
                 }
 
                 skipCounter++;

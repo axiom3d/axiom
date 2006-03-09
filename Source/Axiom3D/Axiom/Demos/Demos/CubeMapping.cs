@@ -149,6 +149,7 @@ namespace Axiom.Demos
         const string MESH_NAME = "CubeMappedMesh";
         const string MATERIAL_NAME = "Examples/SceneCubeMap2";
         const string SKYBOX_MATERIAL = "Examples/SceneSkyBox2";
+        private Overlay cubeMapOverlay;
 
         #endregion Fields
 
@@ -178,8 +179,13 @@ namespace Axiom.Demos
             objectNode = scene.RootSceneNode.CreateChildSceneNode();
 
             // show overlay
-            Overlay overlay = OverlayManager.Instance.GetByName( "Example/CubeMappingOverlay" );
-            overlay.Show();
+            cubeMapOverlay = OverlayManager.Instance.GetByName( "Example/CubeMappingOverlay" );
+            cubeMapOverlay.Show();
+        }
+
+        protected override void _Dispose()
+        {
+            cubeMapOverlay.Hide();
         }
 
         /// <summary>

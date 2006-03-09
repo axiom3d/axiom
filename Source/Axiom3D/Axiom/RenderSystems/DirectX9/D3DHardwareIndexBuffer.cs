@@ -24,13 +24,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region Namespace Declarations
+
 using System;
 using System.Runtime.InteropServices;
 
 using Axiom;
 
-using Microsoft.DirectX.Direct3D;
+using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
+
+#endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
@@ -54,15 +58,16 @@ namespace Axiom.RenderSystems.DirectX9
             : base( type, numIndices, usage, useSystemMemory, useShadowBuffer )
         {
 
-            Type bufferType = ( type == IndexType.Size16 ) ? typeof( short ) : typeof( int );
+            bool is16bitbuffer = ( type == IndexType.Size16 );
 
             // create the buffer
-            d3dBuffer = new IndexBuffer(
-                bufferType,
-                sizeInBytes,
+            d3dBuffer = new D3D.IndexBuffer(
                 device,
+                sizeInBytes,
                 D3DHelper.ConvertEnum( usage ),
-                useSystemMemory ? Pool.SystemMemory : Pool.Default );
+                useSystemMemory ? D3D.Pool.SystemMemory : D3D.Pool.Default,
+                is16bitbuffer,
+                null );
         }
 
         #endregion
@@ -93,8 +98,8 @@ namespace Axiom.RenderSystems.DirectX9
                 d3dLocking = D3DHelper.ConvertEnum( locking );
             }
 
-            Microsoft.DirectX.GraphicsStream s = d3dBuffer.Lock( offset, length, d3dLocking );
-            return s.InternalData;
+            DX.GraphicsBuffer s = d3dBuffer.Lock( offset, length, d3dLocking );
+            return s.DataBuffer;
         }
 
         /// <summary>
