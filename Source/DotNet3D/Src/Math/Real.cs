@@ -68,6 +68,8 @@ namespace DotNet3D.Math
 
         #region Static Interface
 
+        /// <summary>The value 0</summary>
+        public readonly static Real Zero = new Real( 0 );
         /// <summary>The value of Positive Infinity</summary>
         public readonly static Real PositiveInfinity = Numeric.PositiveInfinity;
         /// <summary>The value of Negative Infinity</summary>
@@ -201,6 +203,19 @@ namespace DotNet3D.Math
         #endregion Constructors
 
         #region Conversion Operators
+        // Conversion Grid
+        //
+        //-------------------------------------------
+        //|        | Int32 | Real | Single | Double |
+        //-------------------------------------------
+        //| Int32  |   X   |   I  |    X   |    X   |
+        //-------------------------------------------
+        //| Real   |   E   |      |    I   |    I   |
+        //-------------------------------------------
+        //| Single |   X   |   I  |    X   |    X   |
+        //-------------------------------------------
+        //| Double |   X   |   I  |    X   |    X   |
+        //-------------------------------------------
 
         #region Int Conversions
         /// <summary>
@@ -225,6 +240,7 @@ namespace DotNet3D.Math
         #endregion Int Conversions
 
         #region Float Conversions
+
         /// <summary>
         /// Implicit conversion from float to Real
         /// </summary>
@@ -236,14 +252,15 @@ namespace DotNet3D.Math
         }
 
         /// <summary>
-        /// Explicit conversion from Real to float
+        /// Implicit conversion from Real to float
         /// </summary>
         /// <param name="real"></param>
         /// <returns></returns>
-        static public explicit operator float( Real real )
+        static public implicit operator float( Real real )
         {
-            return (float)real._value;
+            return real._value;
         }
+
         #endregion Float Conversions
 
         #region Double Conversions
@@ -262,7 +279,7 @@ namespace DotNet3D.Math
         /// </summary>
         /// <param name="real"></param>
         /// <returns></returns>
-        static public explicit operator double( Real real )
+        static public implicit operator double( Real real )
         {
             return real._value;
         }
@@ -532,6 +549,17 @@ namespace DotNet3D.Math
         public override bool Equals(object obj)
         {
             return ( obj is Real && this == (Real)obj );
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="tolerance"></param>
+        /// <returns></returns>
+        public bool Equals( Real obj, Real tolerance)
+        {
+            return ( obj is Real && ( Utility.Abs( (Real)obj - this ) <= tolerance ) );
         }
 
         /// <summary>

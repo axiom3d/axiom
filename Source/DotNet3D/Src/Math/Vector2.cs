@@ -34,8 +34,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Runtime.InteropServices;
-using System.Security.Permissions;
 using System.Runtime.Serialization;
+using System.Security.Permissions;
 
 #endregion Namespace Declarations
 
@@ -50,16 +50,16 @@ namespace DotNet3D.Math
     /// scaling factors can be represented by a vector, depending on how
     /// you interpret the values.
     ///</remarks>
-    [StructLayout(LayoutKind.Sequential)]
+    [StructLayout( LayoutKind.Sequential )]
     [Serializable]
     public struct Vector2 : ISerializable
     {
-        #region Fields adn Properties
+        #region Fields and Properties
 
         // These fields are public on purpose. They are accessed often and 
         // we want to avoid the cost of the method call to a property.
         // When C# implements an inline keyword, we will revisit these.
-       
+
         /// <summary>X component.</summary>
         public Real x;
         /// <summary>Y component.</summary>
@@ -157,7 +157,7 @@ namespace DotNet3D.Math
             }
         }
 
-        /// <summary>Return True if the vector is the PositiveInfinity Vector </summary>
+        /// <summary>Return True if the vector is the Unit Vector </summary>
         public bool IsUnit
         {
             get
@@ -166,7 +166,7 @@ namespace DotNet3D.Math
             }
         }
 
-        /// <summary>Return True if the vector is the PositiveInfinity Vector </summary>
+        /// <summary>Return True if the vector is normalized </summary>
         public bool IsNormalized
         {
             get
@@ -199,7 +199,7 @@ namespace DotNet3D.Math
             }
         }
 
-        #endregion Fields
+        #endregion Fields and Properties
 
         #region Constructors
         //NOTE: ISerializable Constructor in ISerializable Implementation
@@ -254,8 +254,8 @@ namespace DotNet3D.Math
             // Will fail if the values are not parseable into Reals.
             try
             {
-                x = Real.Parse( vals[0].Trim() );
-                y = Real.Parse( vals[1].Trim() );
+                x = Real.Parse( vals[ 0 ].Trim() );
+                y = Real.Parse( vals[ 1 ].Trim() );
             }
             catch ( Exception )
             {
@@ -268,8 +268,8 @@ namespace DotNet3D.Math
         {
             if ( coordinates.Length != 2 )
                 throw new ArgumentException( "The coordinates array must be of length 2 to specify the x and y coordinates." );
-            this.x = coordinates[0];
-            this.y = coordinates[1];
+            this.x = coordinates[ 0 ];
+            this.y = coordinates[ 1 ];
         }
 
         #endregion Constructors
@@ -293,22 +293,19 @@ namespace DotNet3D.Math
 
         #region System.Object Implementation
 
+        /// <overrides>
         /// <summary>
         ///		Overrides the Object.ToString() method to provide a text representation of 
         ///		a Vector2.
         /// </summary>
         /// <returns>A string representation of a Vector2.</returns>
+        /// </overrides>
         public override string ToString()
         {
             return string.Format( "({0}, {1})", x, y );
         }
 
-        /// <summary>
-        ///		Overrides the Object.ToString() method to provide a text representation of 
-        ///		a Vector2.
-        /// </summary>
         /// <param name="decimalPlaces">number of decimal places to render</param>
-        /// <returns>A string representation of a Vector2.</returns>
         public string ToString( int decimalPlaces )
         {
             string format = "";
@@ -321,7 +318,8 @@ namespace DotNet3D.Math
         }
 
         /// <summary>
-        ///     Overrides the object.Equals method for proper equality testing
+        ///		Compares this Vector to another object.  This should be done because the 
+        ///		equality operators (==, !=) have been overriden by this class.
         /// </summary>
         /// <param name="obj">object to compare to</param>
         /// <returns>true or false</returns>
@@ -331,9 +329,14 @@ namespace DotNet3D.Math
         }
 
         /// <summary>
-        /// Provides an unique Hashcode for this Object 
+        ///		Provides a unique hash code based on the member variables of this
+        ///		class.  This should be done because the equality operators (==, !=)
+        ///		have been overriden by this class.
+        ///		<p/>
+        ///		The standard implementation is a simple XOR operation between all local
+        ///		member variables.
         /// </summary>
-        /// <returns>Uses standard XOR operation of members</returns>
+        /// <returns>a unique code to represent this object</returns>
         public override int GetHashCode()
         {
             return ( x.GetHashCode() ^ y.GetHashCode() );
@@ -342,6 +345,62 @@ namespace DotNet3D.Math
         #endregion System.Object Implementation
 
         #region Operator Overloads
+
+        /// <summary>
+        ///		Used when a Vector2 is added to another Vector2.
+        /// </summary>
+        /// <param name="left">LHS of the operator</param>
+        /// <param name="right">RHS of the operator</param>
+        /// <returns></returns>
+        public static Vector2 operator +( Vector2 left, Vector2 right )
+        {
+            return new Vector2( left.x + right.x, left.y + right.y );
+        }
+
+        /// <summary>
+        ///		Used to subtract a Vector2 from another Vector2.
+        /// </summary>
+        /// <param name="left">LHS of the operator</param>
+        /// <param name="right">RHS of the operator</param>
+        /// <returns></returns>
+        public static Vector2 operator -( Vector2 left, Vector2 right )
+        {
+            return new Vector2( left.x - right.x, left.y - right.y );
+        }
+
+        /// <summary>
+        ///		Used when a Vector2 is multiplied by a Vector2.
+        /// </summary>
+        /// <param name="left">LHS of the operator</param>
+        /// <param name="right">RHS of the operator</param>
+        /// <returns></returns>
+        public static Vector2 operator *( Vector2 left, Vector2 right )
+        {
+            return new Vector2( left.x * right.x, left.y * right.y );
+        }
+
+        /// <summary>
+        ///		Used when a Vector2 is multiplied by a scalar value.
+        /// </summary>
+        /// <param name="left">LHS of the operator</param>
+        /// <param name="scalar">The scalar to multiply by</param>
+        /// <returns></returns>
+        public static Vector2 operator *( Vector2 left, Real scalar )
+        {
+            return new Vector2( left.x * scalar, left.y * scalar );
+        }
+
+        /// <summary>
+        ///		Used when a scalar value is multiplied by a Vector2.
+        /// </summary>
+        /// <param name="scalar">The scalar to multiply by</param>
+        /// <param name="right">RHS of the operator</param>
+        /// <returns></returns>
+        public static Vector2 operator *( Real scalar, Vector2 right )
+        {
+            return new Vector2( right.x * scalar, right.y * scalar );
+        }
+
         /// <summary>
         /// Used to test equality between two Vector2s
         /// </summary>
@@ -365,66 +424,6 @@ namespace DotNet3D.Math
         }
 
         /// <summary>
-        ///		Used when a Vector2 is added to another Vector2.
-        /// </summary>
-        /// <param name="left">LHS of the operator</param>
-        /// <param name="right">RHS of the operator</param>
-        /// <returns></returns>
-        public static Vector2 operator +( Vector2 left, Vector2 right )
-        {
-            return new Vector2( left.x + right.x, left.y + right.y );
-        }
-
-
-        /// <summary>
-        ///		Used to subtract a Vector2 from another Vector2.
-        /// </summary>
-        /// <param name="left">LHS of the operator</param>
-        /// <param name="right">RHS of the operator</param>
-        /// <returns></returns>
-        public static Vector2 operator -( Vector2 left, Vector2 right )
-        {
-            return new Vector2( left.x - right.x, left.y - right.y );
-        }
-
-
-        /// <summary>
-        ///		Used when a Vector2 is multiplied by a Vector2.
-        /// </summary>
-        /// <param name="left">LHS of the operator</param>
-        /// <param name="right">RHS of the operator</param>
-        /// <returns></returns>
-        public static Vector2 operator *( Vector2 left, Vector2 right )
-        {
-            return new Vector2( left.x * right.x, left.y * right.y );
-        }
-
-
-        /// <summary>
-        ///		Used when a Vector2 is multiplied by a scalar value.
-        /// </summary>
-        /// <param name="left">LHS of the operator</param>
-        /// <param name="scalar">The scalar to multiply by</param>
-        /// <returns></returns>
-        public static Vector2 operator *( Vector2 left, Real scalar )
-        {
-            return new Vector2( left.x * scalar, left.y * scalar );
-        }
-
-
-        /// <summary>
-        ///		Used when a scalar value is multiplied by a Vector2.
-        /// </summary>
-        /// <param name="scalar">The scalar to multiply by</param>
-        /// <param name="right">RHS of the operator</param>
-        /// <returns></returns>
-        public static Vector2 operator *( Real scalar, Vector2 right )
-        {
-            return new Vector2( right.x * scalar, right.y * scalar );
-        }
-
-
-        /// <summary>
         ///		Used to negate the elements of a vector.
         /// </summary>
         /// <param name="left">LHS of the operator</param>
@@ -435,36 +434,54 @@ namespace DotNet3D.Math
         }
 
         /// <summary>
+        ///    Returns true if the vector's scalar components are all smaller
+        ///    that the ones of the vector it is compared against.
+        /// </summary>
+        /// <param name="left">LHS of the operator</param>
+        /// <param name="right">RHS of the operator</param>
+        /// <returns></returns>
+        public static bool operator >( Vector2 left, Vector2 right )
+        {
+            return ( left.x > right.x && left.y > right.y );
+        }
+
+        /// <summary>
+        ///    Returns true if the vector's scalar components are all greater
+        ///    that the ones of the vector it is compared against.
+        /// </summary>
+        /// <param name="left">LHS of the operator</param>
+        /// <param name="right">RHS of the operator</param>
+        /// <returns></returns>
+        public static bool operator <( Vector2 left, Vector2 right )
+        {
+            return ( left.x < right.x && left.y < right.y );
+        }
+
+        /// <summary>
         ///		Used to access a Vector by index 0 = x, 1 = y. 
         /// </summary>
         /// <remarks>
+        /// uses unsafe pointer arithmatic for speed
         ///	</remarks>
-        public Real this[ int index ]
+        ///	<exception cref="ArgumentOutOfRange" />
+        public unsafe Real this[ int index ]
         {
             get
             {
-                switch ( index )
+                if ( index < 0 | index > 1 ) 
+                    throw new ArgumentOutOfRangeException( "index" );
+                fixed ( Real* v = &this.x )
                 {
-                    case 0:
-                        return x;
-                    case 1:
-                        return y;
-                    default:
-                        throw new ArgumentOutOfRangeException( "index" );
+                    return v[ index ];
                 }
             }
             set
             {
-                switch ( index )
+                if ( index < 0 | index > 1 )
+                    throw new ArgumentOutOfRangeException( "index" );
+                fixed ( Real* v = &this.x )
                 {
-                    case 0:
-                        x = value;
-                        break;
-                    case 1:
-                        y = value;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException( "index" );
+                    v[ index ] = value;
                 }
             }
         }
@@ -540,9 +557,9 @@ namespace DotNet3D.Math
 
         #endregion Operator Operator Overloads
 
-        #region Conversion Operations
+        #region Conversion Operators
 
-        #region String Conversions
+        #region String Conversion
 
         /// <summary>
         /// Implicit conversion from string to Vector2
@@ -566,7 +583,7 @@ namespace DotNet3D.Math
 
         #endregion String Conversions
 
-        #region Real[] Conversions
+        #region Real[] Conversion
 
         /// <summary>
         /// Implicit conversion from Real[] to Vector2
@@ -580,18 +597,41 @@ namespace DotNet3D.Math
 
         #endregion Real[] Conversions
 
-        #endregion Converstion Operations
+        #region Vector3 Conversion
+
+        /// <summary>
+        /// Explicit conversion from a Vector3 to a Vector4
+        /// </summary>
+        /// <param name="vec3"></param>
+        /// <returns></returns>
+        public static explicit operator Vector3( Vector2 v )
+        {
+            return new Vector3( v.x, v.y, 1.0f );
+        }
+
+        #endregion Vector4 Conversion
+
+        #endregion Converstion Operators
 
         #region Public Methods
 
         /// <summary>
-        /// 
+        /// Generic method to get the elments of the vector as an array.
         /// </summary>
-        /// <typeparam name="K"></typeparam>
-        /// <returns></returns>
+        /// <typeparam name="K">Any value based type (Real, int, float, decimal... )</typeparam>
+        /// <returns>An array of the specified type containing 2 elements</returns>
         public K[] ToArray<K>() where K : struct
         {
             return new K[] { (K)Convert.ChangeType( x, typeof( K ) ), (K)Convert.ChangeType( y, typeof( K ) ) };
+        }
+
+        /// <summary>
+        /// Specific method to get the elments of the vector as an array of Reals.
+        /// </summary>
+        /// <returns>An array Reals containing 2 elements</returns>
+        public Real[] ToArray()
+        {
+            return ToArray<Real>();
         }
 
         /// <summary>

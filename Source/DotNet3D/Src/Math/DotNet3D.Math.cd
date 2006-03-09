@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="DotNet3D.Math.Utility" Collapsed="true">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Utility.cs</FileName>
+      <HashCode>AAAIgAAAAAAgCAAAgAAEAIIBAAUAAgAAEAwgAACAAAE=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DotNet3D.Math.Properties.Resources" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAAAAABEIAAAQAAAAAAAAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="DotNet3D.Math.Matrix3">
+    <Position X="7.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Matrix3.cs</FileName>
+      <HashCode>AAaBQAAAAAAQAAAE6AMDAAAAAwAgAKAAAEAUAAgAAiA=</HashCode>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DotNet3D.Math.Matrix4">
+    <Position X="9.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Matrix4.cs</FileName>
+      <HashCode>AAIAAAACQAIAAgAG6AMDAAAAAwIgAKAAAEAQAAhAQiA=</HashCode>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DotNet3D.Math.Plane" Collapsed="true">
+    <Position X="6" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Plane.cs</FileName>
+      <HashCode>AAAAAABAIAAAAACEgAAAAAAAAAAIAIAAAAIQBAAAAiA=</HashCode>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="Normal" />
+    </ShowAsAssociation>
+    <NestedTypes>
+      <Enum Name="DotNet3D.Math.Plane.Side" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Plane.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+  </Struct>
+  <Struct Name="DotNet3D.Math.Quaternion" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Quaternion.cs</FileName>
+      <HashCode>gAKCEAIBEAoQAAEE8CMDAAAgTQgAAKAoAEpkAQAAAiQ=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Struct>
+  <Struct Name="DotNet3D.Math.Real" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Real.cs</FileName>
+      <HashCode>ABIgBAAgBYAAAowE4AWDAgAgAQAQAIAIAAAkAAAIByg=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Struct>
+  <Struct Name="DotNet3D.Math.Vector2" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Vector2.cs</FileName>
+      <HashCode>AAIgZAAgEAgAAoAE+AGDQgBhASBAAOAFgABkQExAgyg=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Struct>
+  <Struct Name="DotNet3D.Math.Vector3" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Vector3.cs</FileName>
+      <HashCode>EAIgZgAgEQhAAoAE+AWDQgBhASBAAOgFgABkQU1Agyg=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Struct>
+  <Struct Name="DotNet3D.Math.Vector4" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Vector4.cs</FileName>
+      <HashCode>AAIgZgAgEQgAAoAE+AWDQgBhASBAAOkBgAhkYQ1Agyg=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Struct>
+  <Struct Name="DotNet3D.Math.Radian" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="6" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Radian.cs</FileName>
+      <HashCode>gBAAAAAAAAAAAgQA4AWAAgAgAAAgAIAAAAAAAAAAAiA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Struct>
+  <Struct Name="DotNet3D.Math.Degree" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Degree.cs</FileName>
+      <HashCode>ABAAAAAAAAAAAgQA4AWCAgAgAAAAAIAAIAAAAAAAAiA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Struct>
+</ClassDiagram>
