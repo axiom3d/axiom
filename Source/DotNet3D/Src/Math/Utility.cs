@@ -35,6 +35,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 
+using DotNet3D.Math.Collections;
+
 #endregion Namespace Declarations
 
 namespace DotNet3D.Math
@@ -154,6 +156,28 @@ namespace DotNet3D.Math
         }
 
         /// <summary>
+        /// Returns the maximum of the two supplied values.
+        /// </summary>
+        /// <param name="lhs"></param>
+        /// <param name="rhs"></param>
+        /// <returns></returns>
+        public static Real Max( Real lhs, Real rhs )
+        {
+            return lhs > rhs ? lhs : rhs;
+        }
+
+        /// <summary>
+        /// Returns the minumum of the two supplied values.
+        /// </summary>
+        /// <param name="lhs"></param>
+        /// <param name="rhs"></param>
+        /// <returns></returns>
+        public static Real Min( Real lhs, Real rhs )
+        {
+            return lhs < rhs ? lhs : rhs;
+        }
+
+        /// <summary>
         ///    
         /// </summary>
         /// <returns></returns>
@@ -181,9 +205,9 @@ namespace DotNet3D.Math
             Vector3 normal = plane.Normal;
 
             return new Matrix4(
-                -2.0f * normal.x * normal.x + 1.0f, -2.0f * normal.x * normal.y, -2.0f * normal.x * normal.z, -2.0f * normal.x * plane.D,
-                -2.0f * normal.y * normal.x, -2.0f * normal.y * normal.y + 1.0f, -2.0f * normal.y * normal.z, -2.0f * normal.y * plane.D,
-                -2.0f * normal.z * normal.x, -2.0f * normal.z * normal.y, -2.0f * normal.z * normal.z + 1.0f, -2.0f * normal.z * plane.D,
+                -2.0f * normal.x * normal.x + 1.0f, -2.0f * normal.x * normal.y, -2.0f * normal.x * normal.z, -2.0f * normal.x * plane.Distance,
+                -2.0f * normal.y * normal.x, -2.0f * normal.y * normal.y + 1.0f, -2.0f * normal.y * normal.z, -2.0f * normal.y * plane.Distance,
+                -2.0f * normal.z * normal.x, -2.0f * normal.z * normal.y, -2.0f * normal.z * normal.z + 1.0f, -2.0f * normal.z * plane.Distance,
                 0.0f, 0.0f, 0.0f, 1.0f );
         }
 
@@ -274,6 +298,5 @@ namespace DotNet3D.Math
 
             return tangent;
         }
-
     }
 }

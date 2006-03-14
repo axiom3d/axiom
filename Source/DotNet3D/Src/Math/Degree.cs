@@ -49,6 +49,7 @@ namespace DotNet3D.Math
     /// will be done automatically between them.
     /// </remarks>
     [StructLayout( LayoutKind.Sequential )]
+    [Serializable]
     public struct Degree : ISerializable, IComparable<Degree>, IComparable<Radian>, IComparable<Real>
 	{
         private static readonly Real _degreesToRadians = Utility.PI / 180.0f;

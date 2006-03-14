@@ -489,10 +489,10 @@ namespace DotNet3D.Math
                 left.m10 * planeNormal.x + left.m11 * planeNormal.y + left.m12 * planeNormal.z,
                 left.m20 * planeNormal.x + left.m21 * planeNormal.y + left.m22 * planeNormal.z );
 
-            Vector3 pt = planeNormal * -plane.D;
+            Vector3 pt = planeNormal * -plane.Distance;
             pt = left * pt;
 
-            result.D = -pt.DotProduct( result.Normal );
+            result.Distance = -pt.DotProduct( result.Normal );
 
             return result;
         }

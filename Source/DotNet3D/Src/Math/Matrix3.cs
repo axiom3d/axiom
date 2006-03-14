@@ -143,7 +143,7 @@ namespace DotNet3D.Math
         }
 
         /// <summary>
-        /// Create a new Matrix from 3 Vertex3 objects.
+        /// Create a new Matrix3 from 3 Vector3 objects.
         /// </summary>
         /// <param name="xAxis"></param>
         /// <param name="yAxis"></param>
@@ -162,16 +162,28 @@ namespace DotNet3D.Math
             this[ 8 ] = zAxis.z;
         }
 
+        /// <summary>
+        /// Creates a new Matrix3 from an array of Reals
+        /// </summary>
+        /// <param name="matrix"></param>
         public Matrix3( Real[][] matrix )
             : this( Zero )
         {
         }
 
+        /// <summary>
+        /// Creates a new Matrix3 from an array of Vector3s
+        /// </summary>
+        /// <param name="matrix"></param>
         public Matrix3( Vector3[] matrix )
             : this( Zero )
         {
         }
 
+        /// <summary>
+        /// Creates a new Matrix3 from an existing Matrix3.
+        /// </summary>
+        /// <param name="matrix"></param>
         public Matrix3( Matrix3 matrix )
         {
             _matrix = new Real[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -635,105 +647,248 @@ namespace DotNet3D.Math
 
             this = xMat * ( yMat * zMat );
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="yaw"></param>
+        /// <param name="pitch"></param>
+        /// <param name="roll"></param>
         public void FromEulerAnglesXZY( Real yaw, Real pitch, Real roll )
         {
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="yaw"></param>
+        /// <param name="pitch"></param>
+        /// <param name="roll"></param>
         public void FromEulerAnglesYXZ( Real yaw, Real pitch, Real roll )
         {
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="yaw"></param>
+        /// <param name="pitch"></param>
+        /// <param name="roll"></param>
         public void FromEulerAnglesYZX( Real yaw, Real pitch, Real roll )
         {
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="yaw"></param>
+        /// <param name="pitch"></param>
+        /// <param name="roll"></param>
         public void FromEulerAnglesZXY( Real yaw, Real pitch, Real roll )
         {
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="yaw"></param>
+        /// <param name="pitch"></param>
+        /// <param name="roll"></param>
         public void FromEulerAnglesZYX( Real yaw, Real pitch, Real roll )
         {
         }
 
-        // The matrix must be orthonormal.  The decomposition is yaw*pitch*roll
-        // where yaw is rotation about the Up vector, pitch is rotation about the
-        // Right axis, and roll is rotation about the Direction axis.
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="yaw"></param>
+        /// <param name="pitch"></param>
+        /// <param name="roll"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// The matrix must be orthonormal.  The decomposition is yaw*pitch*roll
+        /// where yaw is rotation about the Up vector, pitch is rotation about the
+        /// Right axis, and roll is rotation about the Direction axis.
+        /// </remarks>
         public bool ToEulerAnglesXYZ( Real yaw, Real pitch, Real roll )
         {
             return true;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="yaw"></param>
+        /// <param name="pitch"></param>
+        /// <param name="roll"></param>
+        /// <returns></returns>
         public bool ToEulerAnglesXZY( Real yaw, Real pitch, Real roll )
         {
             return true;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="yaw"></param>
+        /// <param name="pitch"></param>
+        /// <param name="roll"></param>
+        /// <returns></returns>
         public bool ToEulerAnglesYXZ( Real yaw, Real pitch, Real roll )
         {
             return true;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="yaw"></param>
+        /// <param name="pitch"></param>
+        /// <param name="roll"></param>
+        /// <returns></returns>
         public bool ToEulerAnglesYZX( Real yaw, Real pitch, Real roll )
         {
             return true;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="yaw"></param>
+        /// <param name="pitch"></param>
+        /// <param name="roll"></param>
+        /// <returns></returns>
         public bool ToEulerAnglesZXY( Real yaw, Real pitch, Real roll )
         {
             return true;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="yaw"></param>
+        /// <param name="pitch"></param>
+        /// <param name="roll"></param>
+        /// <returns></returns>
         public bool ToEulerAnglesZYX( Real yaw, Real pitch, Real roll )
         {
             return true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rkInverse"></param>
+        /// <returns></returns>
         public bool Inverse( Matrix3 rkInverse )
         {
             return Inverse( rkInverse, _epsilon );
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rkInverse"></param>
+        /// <param name="fTolerance"></param>
+        /// <returns></returns>
         public bool Inverse( Matrix3 rkInverse, Real fTolerance )
         {
             return true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public Matrix3 Inverse()
         {
             return Inverse( _epsilon );
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fTolerance"></param>
+        /// <returns></returns>
         public Matrix3 Inverse( Real fTolerance )
         {
             return new Matrix3();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rkL"></param>
+        /// <param name="rkS"></param>
+        /// <param name="rkR"></param>
         public void SingularValueComposition( Matrix3 rkL,
             Vector3 rkS, Matrix3 rkR )
         {
         }
 
-        // Gram-Schmidt orthonormalization (applied to columns of rotation matrix)
+        /// <summary>
+        /// Gram-Schmidt orthonormalization (applied to columns of rotation matrix)
+        /// </summary>
         public void Orthonormalize()
         {
         }
 
-        // orthogonal Q, diagonal D, upper triangular U stored as (u01,u02,u12)
+        /// <summary>
+        /// orthogonal Q, diagonal D, upper triangular U stored as (u01,u02,u12)
+        /// </summary>
+        /// <param name="rkQ"></param>
+        /// <param name="rkD"></param>
+        /// <param name="rkU"></param>
         public void QDUDecomposition( Matrix3 rkQ, Vector3 rkD,
             Vector3 rkU )
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public Real SpectralNorm()
         {
             return 0;
         }
 
-        // matrix must be orthonormal
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rkAxis"></param>
+        /// <returns></returns>
+        /// <remarks>matrix must be orthonormal</remarks>
         public Radian ToAxisAngle( Vector3 rkAxis )
         {
             return new Radian(0);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rkAxis"></param>
+        /// <param name="fRadians"></param>
         public void FromAxisAngle( Vector3 rkAxis, Radian fRadians )
         {
         }
 
-        public void EigenSolveSymmetric( Real[] afEigenvalue,
-            Vector3[] akEigenvector )
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="afEigenValue"></param>
+        /// <param name="akEigenVector"></param>
+        public void EigenSolveSymmetric( Real[] afEigenValue, Vector3[] akEigenVector )
         {
         }
 
-        public static void TensorProduct( Vector3 rkU, Vector3 rkV,
-            Matrix3 rkProduct )
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rkU"></param>
+        /// <param name="rkV"></param>
+        /// <param name="rkProduct"></param>
+        public static void TensorProduct( Vector3 rkU, Vector3 rkV, Matrix3 rkProduct )
         {
         }
 
@@ -742,24 +897,52 @@ namespace DotNet3D.Math
         #region Protected + Private Methods
 
         // support for eigensolver
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="afDiag"></param>
+        /// <param name="afSubDiag"></param>
         private void triDiagonal( Real[] afDiag, Real[] afSubDiag )
         {
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="afDiag"></param>
+        /// <param name="afSubDiag"></param>
+        /// <returns></returns>
         private bool qlAlgorithm( Real[] afDiag, Real[] afSubDiag )
         {
             return true;
         }
 
         // support for singular value decomposition
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="kA"></param>
+        /// <param name="kL"></param>
+        /// <param name="kR"></param>
         private void biDiagonalize( Matrix3 kA, Matrix3 kL, Matrix3 kR )
         {
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="kA"></param>
+        /// <param name="kL"></param>
+        /// <param name="kR"></param>
         private void golubKahanStep( Matrix3 kA, Matrix3 kL, Matrix3 kR )
         {
         }
 
         // support for spectral norm
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="afCoeff"></param>
+        /// <returns></returns>
         private Real maxCubicRoot( Real[] afCoeff )
         {
             return new Real( 0 );
