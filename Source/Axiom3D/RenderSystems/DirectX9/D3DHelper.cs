@@ -24,14 +24,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 
 using Axiom;
 
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
+
+#endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
@@ -52,16 +55,16 @@ namespace Axiom.RenderSystems.DirectX9
         {
             DriverCollection driverList = new DriverCollection();
 
-            foreach ( AdapterInformation adapterInfo in D3D.Manager.Adapters )
+            foreach ( D3D.AdapterDetails adapterDetails in D3D.Manager.Adapters )
             {
                 //AdapterInformation adapterInfo = D3D.Manager.Adapters[0];
 
-                Driver driver = new Driver( adapterInfo );
+                Driver driver = new Driver( adapterDetails );
 
                 int lastWidth = 0, lastHeight = 0;
                 D3D.Format lastFormat = 0;
 
-                foreach ( DisplayMode mode in adapterInfo.SupportedDisplayModes )
+                foreach ( D3D.DisplayMode mode in adapterDetails.SupportedDisplayModes )
                 {
                     // filter out lower resolutions, and make sure this isnt a dupe (ignore variations on refresh rate)
                     if ( ( mode.Width >= 640 && mode.Height >= 480 ) &&
@@ -89,21 +92,21 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="caps"></param>
         /// <param name="texType"></param>
         /// <returns></returns>
-        public static D3D.TextureFilter ConvertEnum( FilterType type, FilterOptions options, D3D.Caps devCaps, D3DTexType texType )
+        public static D3D.TextureFilter ConvertEnum( FilterType type, FilterOptions options, D3D.Capabilities devCaps, D3DTexType texType )
         {
             // setting a default val here to keep compiler from complaining about using unassigned value types
-            D3D.FilterCaps filterCaps = devCaps.TextureFilterCaps;
+            D3D.Capabilities.FilterCapabilities filterCaps = devCaps.TextureFilterCapabilities;
 
             switch ( texType )
             {
                 case D3DTexType.Normal:
-                    filterCaps = devCaps.TextureFilterCaps;
+                    filterCaps = devCaps.TextureFilterCapabilities;
                     break;
                 case D3DTexType.Cube:
-                    filterCaps = devCaps.CubeTextureFilterCaps;
+                    filterCaps = devCaps.CubeTextureFilterCapabilities;
                     break;
                 case D3DTexType.Volume:
-                    filterCaps = devCaps.VolumeTextureFilterCaps;
+                    filterCaps = devCaps.VolumeTextureFilterCapabilities;
                     break;
             }
 
@@ -296,7 +299,7 @@ namespace Axiom.RenderSystems.DirectX9
                     break;
 
                 case LayerBlendSource.Texture:
-                    d3dTexArg = D3D.TextureArgument.TextureColor;
+                    d3dTexArg = D3D.TextureArgument.Texture;
                     break;
 
                 case LayerBlendSource.Diffuse:
@@ -308,7 +311,7 @@ namespace Axiom.RenderSystems.DirectX9
                     break;
 
                 case LayerBlendSource.Manual:
-                    d3dTexArg = D3D.TextureArgument.TFactor;
+                    d3dTexArg = D3D.TextureArgument.TextureFactor;
                     break;
             } // end switch
 
@@ -327,34 +330,34 @@ namespace Axiom.RenderSystems.DirectX9
             switch ( factor )
             {
                 case SceneBlendFactor.One:
-                    d3dBlend = Blend.One;
+                    d3dBlend = D3D.Blend.One;
                     break;
                 case SceneBlendFactor.Zero:
-                    d3dBlend = Blend.Zero;
+                    d3dBlend = D3D.Blend.Zero;
                     break;
                 case SceneBlendFactor.DestColor:
-                    d3dBlend = Blend.DestinationColor;
+                    d3dBlend = D3D.Blend.DestinationColor;
                     break;
                 case SceneBlendFactor.SourceColor:
-                    d3dBlend = Blend.SourceColor;
+                    d3dBlend = D3D.Blend.SourceColor;
                     break;
                 case SceneBlendFactor.OneMinusDestColor:
-                    d3dBlend = Blend.InvDestinationColor;
+                    d3dBlend = D3D.Blend.InvDestinationColor;
                     break;
                 case SceneBlendFactor.OneMinusSourceColor:
-                    d3dBlend = Blend.InvSourceColor;
+                    d3dBlend = D3D.Blend.InvSourceColor;
                     break;
                 case SceneBlendFactor.DestAlpha:
-                    d3dBlend = Blend.DestinationAlpha;
+                    d3dBlend = D3D.Blend.DestinationAlpha;
                     break;
                 case SceneBlendFactor.SourceAlpha:
-                    d3dBlend = Blend.SourceAlpha;
+                    d3dBlend = D3D.Blend.SourceAlpha;
                     break;
                 case SceneBlendFactor.OneMinusDestAlpha:
-                    d3dBlend = Blend.InvDestinationAlpha;
+                    d3dBlend = D3D.Blend.InvDestinationAlpha;
                     break;
                 case SceneBlendFactor.OneMinusSourceAlpha:
-                    d3dBlend = Blend.InvSourceAlpha;
+                    d3dBlend = D3D.Blend.InvSourceAlpha;
                     break;
             }
 
@@ -462,10 +465,10 @@ namespace Axiom.RenderSystems.DirectX9
             switch ( mode )
             {
                 case Axiom.FogMode.Exp:
-                    return D3D.FogMode.Exp;
+                    return D3D.FogMode.Exponent;
 
                 case Axiom.FogMode.Exp2:
-                    return D3D.FogMode.Exp2;
+                    return D3D.FogMode.ExponentSquared;
 
                 case Axiom.FogMode.Linear:
                     return D3D.FogMode.Linear;
@@ -488,12 +491,18 @@ namespace Axiom.RenderSystems.DirectX9
             return d3dLockFlags;
         }
 
-        public static int ConvertEnum( TexCoordCalcMethod method, D3D.Caps caps )
+        /// <summary>
+        /// Converts the enum.
+        /// </summary>
+        /// <param name="method">The method.</param>
+        /// <param name="caps">The caps.</param>
+        /// <returns></returns>
+        public static int ConvertEnum( TexCoordCalcMethod method, D3D.Capabilities caps )
         {
             switch ( method )
             {
                 case TexCoordCalcMethod.None:
-                    return (int)D3D.TextureCoordinateIndex.PassThru;
+                    return (int)D3D.TextureCoordinateIndex.PassThrough;
 
                 case TexCoordCalcMethod.EnvironmentMapReflection:
                     return (int)D3D.TextureCoordinateIndex.CameraSpaceReflectionVector;
@@ -571,33 +580,33 @@ namespace Axiom.RenderSystems.DirectX9
         /// </summary>
         /// <param name="func"></param>
         /// <returns></returns>
-        public static D3D.Compare ConvertEnum( CompareFunction func )
+        public static D3D.CompareFunction ConvertEnum( CompareFunction func )
         {
             switch ( func )
             {
                 case CompareFunction.AlwaysFail:
-                    return D3D.Compare.Never;
+                    return D3D.CompareFunction.Never;
 
                 case CompareFunction.AlwaysPass:
-                    return D3D.Compare.Always;
+                    return D3D.CompareFunction.Always;
 
                 case CompareFunction.Equal:
-                    return D3D.Compare.Equal;
+                    return D3D.CompareFunction.Equal;
 
                 case CompareFunction.Greater:
-                    return D3D.Compare.Greater;
+                    return D3D.CompareFunction.Greater;
 
                 case CompareFunction.GreaterEqual:
-                    return D3D.Compare.GreaterEqual;
+                    return D3D.CompareFunction.GreaterEqual;
 
                 case CompareFunction.Less:
-                    return D3D.Compare.Less;
+                    return D3D.CompareFunction.Less;
 
                 case CompareFunction.LessEqual:
-                    return D3D.Compare.LessEqual;
+                    return D3D.CompareFunction.LessEqual;
 
                 case CompareFunction.NotEqual:
-                    return D3D.Compare.NotEqual;
+                    return D3D.CompareFunction.NotEqual;
             }
 
             return 0;
@@ -631,11 +640,11 @@ namespace Axiom.RenderSystems.DirectX9
         {
             switch ( shading )
             {
-                case ShadeMode.Flat:
+                case D3D.ShadeMode.Flat:
                     return Shading.Flat;
-                case ShadeMode.Gouraud:
+                case D3D.ShadeMode.Gouraud:
                     return Shading.Gouraud;
-                case ShadeMode.Phong:
+                case D3D.ShadeMode.Phong:
                     return Shading.Phong;
             }
 

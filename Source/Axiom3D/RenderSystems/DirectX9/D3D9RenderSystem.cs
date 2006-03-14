@@ -33,8 +33,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
-using Axiom.Core;
 using Axiom;
+using Axiom.Core;
 using Axiom.MathLib;
 
 using FogMode = Axiom.FogMode;
@@ -74,7 +74,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <summary>
         ///    Direct3D capability structure.
         /// </summary>
-        protected D3D.Caps d3dCaps;
+        protected D3D.Capabilities d3dCaps;
         /// <summary>
         ///    Signifies whether the current frame being rendered is the first.
         /// </summary>
@@ -93,7 +93,7 @@ namespace Axiom.RenderSystems.DirectX9
         protected int numLastStreams;
 
         // stores texture stage info locally for convenience
-        internal D3DTextureStageDesc[] texStageDesc = new D3DTextureStageDesc[Config.MaxTextureLayers];
+        internal D3DTextureStageDesc[] texStageDesc = new D3DTextureStageDesc[ Config.MaxTextureLayers ];
 
         protected int primCount;
         protected int renderCount = 0;
@@ -102,7 +102,7 @@ namespace Axiom.RenderSystems.DirectX9
         protected bool lightingEnabled;
 
         const int MAX_LIGHTS = 8;
-        protected Axiom.Light[] lights = new Axiom.Light[MAX_LIGHTS];
+        protected Axiom.Light[] lights = new Axiom.Light[ MAX_LIGHTS ];
 
         protected D3DGpuProgramManager gpuProgramMgr;
 
@@ -121,10 +121,10 @@ namespace Axiom.RenderSystems.DirectX9
             // init the texture stage descriptions
             for ( int i = 0; i < Config.MaxTextureLayers; i++ )
             {
-                texStageDesc[i].autoTexCoordType = TexCoordCalcMethod.None;
-                texStageDesc[i].coordIndex = 0;
-                texStageDesc[i].texType = D3DTexType.Normal;
-                texStageDesc[i].tex = null;
+                texStageDesc[ i ].autoTexCoordType = TexCoordCalcMethod.None;
+                texStageDesc[ i ].coordIndex = 0;
+                texStageDesc[ i ].texType = D3DTexType.Normal;
+                texStageDesc[ i ].tex = null;
             }
         }
 
@@ -344,20 +344,34 @@ namespace Axiom.RenderSystems.DirectX9
             try
             {
                 // hardware vertex processing
-                newDevice = new D3D.Device( 0, D3D.DeviceType.Hardware, target, D3D.CreateFlags.HardwareVertexProcessing, presentParams );
+                int adapterNum = 0;
+                D3D.DeviceType type = D3D.DeviceType.Hardware;
+#if DEBUG
+                for ( int i = 0; i < D3D.Manager.Adapters.Count; i++ )
+                {
+                    if ( D3D.Manager.Adapters[ i ].Information.Description == "NVIDIA NVPerfHUD" )
+                    {
+                        adapterNum = i;
+                        type = D3D.DeviceType.Reference;
+                    }
+                }
+#endif
+				// use this with NVPerfHUD
+                newDevice = new D3D.Device( adapterNum, type, target.Handle, D3D.CreateFlags.HardwareVertexProcessing, presentParams );
+                // newDevice = new D3D.Device(0, D3D.DeviceType.Hardware, target.Handle, D3D.CreateFlags.HardwareVertexProcessing, presentParams);
             }
             catch ( Exception )
             {
                 try
                 {
                     // doh, how bout mixed vertex processing
-                    newDevice = new D3D.Device( 0, D3D.DeviceType.Hardware, target, D3D.CreateFlags.MixedVertexProcessing, presentParams );
+                    newDevice = new D3D.Device( 0, D3D.DeviceType.Hardware, target.Handle, D3D.CreateFlags.MixedVertexProcessing, presentParams );
                 }
                 catch ( Exception )
                 {
                     // what the...ok, how bout software vertex procssing.  if this fails, then I don't even know how they are seeing
                     // anything at all since they obviously don't have a video card installed
-                    newDevice = new D3D.Device( 0, D3D.DeviceType.Hardware, target, D3D.CreateFlags.SoftwareVertexProcessing, presentParams );
+                    newDevice = new D3D.Device( 0, D3D.DeviceType.Hardware, target.Handle, D3D.CreateFlags.SoftwareVertexProcessing, presentParams );
                 }
             }
 
@@ -365,7 +379,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 
             // save the device capabilites
-            d3dCaps = newDevice.DeviceCaps;
+            d3dCaps = newDevice.Capabilities;
 
             // by creating our texture manager, singleton TextureManager will hold our implementation
             textureMgr = new D3DTextureManager( newDevice );
@@ -387,7 +401,7 @@ namespace Axiom.RenderSystems.DirectX9
             // CMH - 4/24/2004 start
             /// get the Direct3D.Device params
             D3D.PresentParameters presentParams = new D3D.PresentParameters();
-            presentParams.Windowed = !isFullscreen;
+            presentParams.IsWindowed = !isFullscreen;
             presentParams.BackBufferCount = 0;
             presentParams.EnableAutoDepthStencil = depthBuffer;
 
@@ -402,7 +416,7 @@ namespace Axiom.RenderSystems.DirectX9
                 presentParams.BackBufferHeight = 16;
             }
 
-            presentParams.MultiSample = D3D.MultiSampleType.None;
+            presentParams.MultiSampleType = D3D.MultiSampleType.None;
             presentParams.SwapEffect = D3D.SwapEffect.Discard;
             // TODO: Check vsync setting
             presentParams.PresentationInterval = D3D.PresentInterval.Immediate;
@@ -593,14 +607,14 @@ namespace Axiom.RenderSystems.DirectX9
                 int height = 480;
                 int bpp = 32;
                 bool fullScreen = false;
-                
-                ConfigOption optVM = ConfigOptions["Video Mode"];
+
+                ConfigOption optVM = ConfigOptions[ "Video Mode" ];
                 string vm = optVM.Value;
-                width = int.Parse( vm.Substring(0,vm.IndexOf( "x" )));
+                width = int.Parse( vm.Substring( 0, vm.IndexOf( "x" ) ) );
                 height = int.Parse( vm.Substring( vm.IndexOf( "x" ) + 1, vm.IndexOf( "@" ) - ( vm.IndexOf( "x" ) + 1 ) ) );
                 bpp = int.Parse( vm.Substring( vm.IndexOf( "@" ) + 1, vm.IndexOf( "-" ) - ( vm.IndexOf( "@" ) + 1 ) ) );
 
-                fullScreen = (ConfigOptions[ "Full Screen" ].Value == "Yes");
+                fullScreen = ( ConfigOptions[ "Full Screen" ].Value == "Yes" );
 
                 // create a default form window
                 DefaultForm newWindow = CreateDefaultForm( windowTitle, 0, 0, width, height, fullScreen );
@@ -996,22 +1010,22 @@ namespace Axiom.RenderSystems.DirectX9
                 device.SetTexture( stage, texture.DXTexture );
 
                 // set stage description
-                texStageDesc[stage].tex = texture.DXTexture;
-                texStageDesc[stage].texType = D3DHelper.ConvertEnum( texture.TextureType );
+                texStageDesc[ stage ].tex = texture.DXTexture;
+                texStageDesc[ stage ].texType = D3DHelper.ConvertEnum( texture.TextureType );
             }
             else
             {
-                if ( texStageDesc[stage].tex != null )
+                if ( texStageDesc[ stage ].tex != null )
                 {
                     device.SetTexture( stage, null );
-                    device.TextureState[stage].ColorOperation = D3D.TextureOperation.Disable;
+                    device.TextureState[ stage ].ColorOperation = D3D.TextureOperation.Disable;
                 }
 
                 // set stage description to defaults
-                texStageDesc[stage].tex = null;
-                texStageDesc[stage].autoTexCoordType = TexCoordCalcMethod.None;
-                texStageDesc[stage].coordIndex = 0;
-                texStageDesc[stage].texType = D3DTexType.Normal;
+                texStageDesc[ stage ].tex = null;
+                texStageDesc[ stage ].autoTexCoordType = TexCoordCalcMethod.None;
+                texStageDesc[ stage ].coordIndex = 0;
+                texStageDesc[ stage ].texType = D3DTexType.Normal;
             }
         }
 
@@ -1027,9 +1041,9 @@ namespace Axiom.RenderSystems.DirectX9
                 maxAnisotropy = d3dCaps.MaxAnisotropy;
             }
 
-            if ( device.SamplerState[stage].MaxAnisotropy != maxAnisotropy )
+            if ( device.SamplerState[ stage ].MaxAnisotropy != maxAnisotropy )
             {
-                device.SamplerState[stage].MaxAnisotropy = maxAnisotropy;
+                device.SamplerState[ stage ].MaxAnisotropy = maxAnisotropy;
             }
         }
 
@@ -1041,10 +1055,10 @@ namespace Axiom.RenderSystems.DirectX9
         public override void SetTextureCoordCalculation( int stage, TexCoordCalcMethod method, Frustum frustum )
         {
             // save this for texture matrix calcs later
-            texStageDesc[stage].autoTexCoordType = method;
-            texStageDesc[stage].frustum = frustum;
+            texStageDesc[ stage ].autoTexCoordType = method;
+            texStageDesc[ stage ].frustum = frustum;
 
-            device.TextureState[stage].TextureCoordinateIndex = D3DHelper.ConvertEnum( method, d3dCaps ) | texStageDesc[stage].coordIndex;
+            device.TextureState[ stage ].TextureCoordinateIndex = D3DHelper.ConvertEnum( method, d3dCaps ) | texStageDesc[ stage ].coordIndex;
         }
 
         public override void BindGpuProgram( GpuProgram program )
@@ -1203,7 +1217,7 @@ namespace Axiom.RenderSystems.DirectX9
 
             for ( ; i < limit && i < lightList.Count; i++ )
             {
-                SetD3DLight( i, lightList[i] );
+                SetD3DLight( i, lightList[ i ] );
             }
 
             for ( ; i < numCurrentLights; i++ )
@@ -1356,52 +1370,52 @@ namespace Axiom.RenderSystems.DirectX9
         {
             if ( light == null )
             {
-                device.Lights[index].Enabled = false;
+                device.Lights[ index ].Enabled = false;
             }
             else
             {
                 switch ( light.Type )
                 {
                     case LightType.Point:
-                        device.Lights[index].Type = Microsoft.DirectX.Direct3D.LightType.Point;
+                        device.Lights[ index ].LightType = Microsoft.DirectX.Direct3D.LightType.Point;
                         break;
                     case LightType.Directional:
-                        device.Lights[index].Type = Microsoft.DirectX.Direct3D.LightType.Directional;
+                        device.Lights[ index ].LightType = Microsoft.DirectX.Direct3D.LightType.Directional;
                         break;
                     case LightType.Spotlight:
-                        device.Lights[index].Type = Microsoft.DirectX.Direct3D.LightType.Spot;
-                        device.Lights[index].Falloff = light.SpotlightFalloff;
-                        device.Lights[index].InnerConeAngle = MathUtil.DegreesToRadians( light.SpotlightInnerAngle );
-                        device.Lights[index].OuterConeAngle = MathUtil.DegreesToRadians( light.SpotlightOuterAngle );
+                        device.Lights[ index ].LightType = Microsoft.DirectX.Direct3D.LightType.Spot;
+                        device.Lights[ index ].Falloff = light.SpotlightFalloff;
+                        device.Lights[ index ].InnerConeAngle = MathUtil.DegreesToRadians( light.SpotlightInnerAngle );
+                        device.Lights[ index ].OuterConeAngle = MathUtil.DegreesToRadians( light.SpotlightOuterAngle );
                         break;
                 } // switch
 
                 // light colors
-                device.Lights[index].Diffuse = light.Diffuse.ToColor();
-                device.Lights[index].Specular = light.Specular.ToColor();
+                device.Lights[ index ].Diffuse = light.Diffuse.ToColor();
+                device.Lights[ index ].Specular = light.Specular.ToColor();
 
                 Vector3 vec;
 
                 if ( light.Type != LightType.Directional )
                 {
                     vec = light.DerivedPosition;
-                    device.Lights[index].Position = new Microsoft.DirectX.Vector3( vec.x, vec.y, vec.z );
+                    device.Lights[ index ].Position = new Microsoft.DirectX.Vector3( vec.x, vec.y, vec.z );
                 }
 
                 if ( light.Type != LightType.Point )
                 {
                     vec = light.DerivedDirection;
-                    device.Lights[index].Direction = new Microsoft.DirectX.Vector3( vec.x, vec.y, vec.z );
+                    device.Lights[ index ].Direction = new Microsoft.DirectX.Vector3( vec.x, vec.y, vec.z );
                 }
 
                 // atenuation settings
-                device.Lights[index].Range = light.AttenuationRange;
-                device.Lights[index].Attenuation0 = light.AttenuationConstant;
-                device.Lights[index].Attenuation1 = light.AttenuationLinear;
-                device.Lights[index].Attenuation2 = light.AttenuationQuadratic;
+                device.Lights[ index ].Range = light.AttenuationRange;
+                device.Lights[ index ].Attenuation0 = light.AttenuationConstant;
+                device.Lights[ index ].Attenuation1 = light.AttenuationLinear;
+                device.Lights[ index ].Attenuation2 = light.AttenuationQuadratic;
 
-                device.Lights[index].Update();
-                device.Lights[index].Enabled = true;
+                device.Lights[ index ].Update();
+                device.Lights[ index ].Enabled = true;
             } // if
         }
 
@@ -1410,10 +1424,10 @@ namespace Axiom.RenderSystems.DirectX9
         /// </summary>
         private void InitConfigOptions()
         {
-            ConfigOption optDevice = new ConfigOption( "Rendering Device", "", false);
+            ConfigOption optDevice = new ConfigOption( "Rendering Device", "", false );
             ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit colour", false );
             ConfigOption optFullScreen = new ConfigOption( "Full Screen", "Yes", false );
-            ConfigOption optVSync = new ConfigOption( "VSync", "No", false);
+            ConfigOption optVSync = new ConfigOption( "VSync", "No", false );
             ConfigOption optAA = new ConfigOption( "Anti aliasing", "None", false );
             ConfigOption optFPUMode = new ConfigOption( "Floating-point mode", "Fastest", false );
 
@@ -1427,12 +1441,12 @@ namespace Axiom.RenderSystems.DirectX9
                 //string query = string.Format( "{0} x {1} @ {2}-bit colour", mode.Width, mode.Height, mode.ColorDepth.ToString );
                 // add a new row to the display settings table
                 optDevice.PossibleValues.Add( driver.Description );
-                //foreach ( VideoMode mode in driver.VideoModes )
-                //{
-                //    string query = string.Format( "{0} x {1} @ {2}-bit colour", mode.Width, mode.Height, mode.ColorDepth.ToString );
-                //    // add a new row to the display settings table
-                //    optVideoMode.Add( mode.Width, mode.Height, mode.ColorDepth, false, false );
-                //}
+                foreach ( VideoMode mode in driver.VideoModes )
+                {
+                    string query = string.Format( "{0} x {1} @ {2}-bit colour", mode.Width, mode.Height, mode.ColorDepth.ToString() );
+                    // add a new row to the display settings table
+                    optVideoMode.PossibleValues.Add( query );
+                }
             }
 
 
@@ -1463,7 +1477,7 @@ namespace Axiom.RenderSystems.DirectX9
             ConfigOptions.Add( optVSync );
             ConfigOptions.Add( optAA );
             ConfigOptions.Add( optFPUMode );
-            
+
         }
 
         private DX.Matrix MakeD3DMatrix( Matrix4 matrix )
@@ -1510,12 +1524,12 @@ namespace Axiom.RenderSystems.DirectX9
             // continuing on, compare each property of each element.  if any differ, return false
             for ( int i = 0; i < a.Length; i++ )
             {
-                if ( a[i].DeclarationMethod != b[i].DeclarationMethod ||
-                    a[i].Offset != b[i].Offset ||
-                    a[i].Stream != b[i].Stream ||
-                    a[i].DeclarationType != b[i].DeclarationType ||
-                    a[i].DeclarationUsage != b[i].DeclarationUsage ||
-                    a[i].UsageIndex != b[i].UsageIndex
+                if ( a[ i ].DeclarationMethod != b[ i ].DeclarationMethod ||
+                    a[ i ].Offset != b[ i ].Offset ||
+                    a[ i ].Stream != b[ i ].Stream ||
+                    a[ i ].DeclarationType != b[ i ].DeclarationType ||
+                    a[ i ].DeclarationUsage != b[ i ].DeclarationUsage ||
+                    a[ i ].UsageIndex != b[ i ].UsageIndex
                     )
                     return false;
             }
@@ -1579,11 +1593,11 @@ namespace Axiom.RenderSystems.DirectX9
 
             // create a new material based on the supplied params
             D3D.Material mat = new D3D.Material();
-            mat.Ambient = ambient.ToColor();
-            mat.Diffuse = diffuse.ToColor();
-            mat.Emissive = emissive.ToColor();
-            mat.Specular = specular.ToColor();
-            mat.SpecularSharpness = shininess;
+            mat.AmbientColor = DX.ColorValue.FromColor( ambient.ToColor() );
+            mat.DiffuseColor = DX.ColorValue.FromColor( diffuse.ToColor() );
+            mat.EmissiveColor = DX.ColorValue.FromColor( emissive.ToColor() );
+            mat.SpecularColor = DX.ColorValue.FromColor( specular.ToColor() );
+            mat.Power = shininess;
 
             // set the current material
             device.Material = mat;
@@ -1599,9 +1613,9 @@ namespace Axiom.RenderSystems.DirectX9
             D3D.TextureAddress d3dMode = D3DHelper.ConvertEnum( texAddressingMode );
 
             // set the device sampler states accordingly
-            device.SamplerState[stage].AddressU = d3dMode;
-            device.SamplerState[stage].AddressV = d3dMode;
-            device.SamplerState[stage].AddressW = d3dMode;
+            device.SamplerState[ stage ].AddressU = d3dMode;
+            device.SamplerState[ stage ].AddressV = d3dMode;
+            device.SamplerState[ stage ].AddressW = d3dMode;
         }
 
         public override void SetTextureBlendMode( int stage, LayerBlendModeEx blendMode )
@@ -1617,12 +1631,12 @@ namespace Axiom.RenderSystems.DirectX9
             if ( blendMode.blendType == LayerBlendType.Color )
             {
                 // Make call to set operation
-                device.TextureState[stage].ColorOperation = d3dTexOp;
+                device.TextureState[ stage ].ColorOperation = d3dTexOp;
             }
             else if ( blendMode.blendType == LayerBlendType.Alpha )
             {
                 // Make call to set operation
-                device.TextureState[stage].AlphaOperation = d3dTexOp;
+                device.TextureState[ stage ].AlphaOperation = d3dTexOp;
             }
 
             // Now set up sources
@@ -1655,22 +1669,22 @@ namespace Axiom.RenderSystems.DirectX9
                 {
                     if ( i == 0 )
                     {
-                        device.TextureState[stage].ColorArgument1 = d3dTexArg;
+                        device.TextureState[ stage ].ColorArgument1 = d3dTexArg;
                     }
                     else if ( i == 1 )
                     {
-                        device.TextureState[stage].ColorArgument2 = d3dTexArg;
+                        device.TextureState[ stage ].ColorArgument2 = d3dTexArg;
                     }
                 }
                 else if ( blendMode.blendType == LayerBlendType.Alpha )
                 {
                     if ( i == 0 )
                     {
-                        device.TextureState[stage].AlphaArgument1 = d3dTexArg;
+                        device.TextureState[ stage ].AlphaArgument1 = d3dTexArg;
                     }
                     else if ( i == 1 )
                     {
-                        device.TextureState[stage].AlphaArgument2 = d3dTexArg;
+                        device.TextureState[ stage ].AlphaArgument2 = d3dTexArg;
                     }
                 }
 
@@ -1696,9 +1710,9 @@ namespace Axiom.RenderSystems.DirectX9
         public override void SetTextureCoordSet( int stage, int index )
         {
             // store
-            texStageDesc[stage].coordIndex = index;
+            texStageDesc[ stage ].coordIndex = index;
 
-            device.TextureState[stage].TextureCoordinateIndex = D3DHelper.ConvertEnum( texStageDesc[stage].autoTexCoordType, d3dCaps ) | index;
+            device.TextureState[ stage ].TextureCoordinateIndex = D3DHelper.ConvertEnum( texStageDesc[ stage ].autoTexCoordType, d3dCaps ) | index;
         }
 
         /// <summary>
@@ -1709,21 +1723,21 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="filter"></param>
         public override void SetTextureUnitFiltering( int stage, FilterType type, FilterOptions filter )
         {
-            D3DTexType texType = texStageDesc[stage].texType;
+            D3DTexType texType = texStageDesc[ stage ].texType;
             D3D.TextureFilter texFilter = D3DHelper.ConvertEnum( type, filter, d3dCaps, texType );
 
             switch ( type )
             {
                 case FilterType.Min:
-                    device.SamplerState[stage].MinFilter = texFilter;
+                    device.SamplerState[ stage ].MinFilter = texFilter;
                     break;
 
                 case FilterType.Mag:
-                    device.SamplerState[stage].MagFilter = texFilter;
+                    device.SamplerState[ stage ].MagFilter = texFilter;
                     break;
 
                 case FilterType.Mip:
-                    device.SamplerState[stage].MipFilter = texFilter;
+                    device.SamplerState[ stage ].MipFilter = texFilter;
                     break;
             }
         }
@@ -1743,7 +1757,7 @@ namespace Axiom.RenderSystems.DirectX9
 			reference the envmap properly. This isn't exactly the same as spheremap
 			(it looks nasty on flat areas because the camera space normals are the same)
 			but it's the best approximation we have in the absence of a proper spheremap */
-            if ( texStageDesc[stage].autoTexCoordType == TexCoordCalcMethod.EnvironmentMap )
+            if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.EnvironmentMap )
             {
                 if ( d3dCaps.VertexProcessingCaps.SupportsTextureGenerationSphereMap )
                 {
@@ -1768,7 +1782,7 @@ namespace Axiom.RenderSystems.DirectX9
             }
 
             // If this is a cubic reflection, we need to modify using the view matrix
-            if ( texStageDesc[stage].autoTexCoordType == TexCoordCalcMethod.EnvironmentMapReflection )
+            if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.EnvironmentMapReflection )
             {
                 // get the current view matrix
                 DX.Matrix viewMatrix = device.Transform.View;
@@ -1800,16 +1814,16 @@ namespace Axiom.RenderSystems.DirectX9
                 newMat = newMat * viewTransposed;
             }
 
-            if ( texStageDesc[stage].autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture )
+            if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture )
             {
                 // Derive camera space to projector space transform
                 // To do this, we need to undo the camera view matrix, then 
                 // apply the projector view & projection matrices
                 newMat = viewMatrix.Inverse() * newMat;
-                newMat = texStageDesc[stage].frustum.ViewMatrix * newMat;
-                newMat = texStageDesc[stage].frustum.ProjectionMatrix * newMat;
+                newMat = texStageDesc[ stage ].frustum.ViewMatrix * newMat;
+                newMat = texStageDesc[ stage ].frustum.ProjectionMatrix * newMat;
 
-                if ( texStageDesc[stage].frustum.ProjectionType == Projection.Perspective )
+                if ( texStageDesc[ stage ].frustum.ProjectionType == Projection.Perspective )
                 {
                     newMat = ProjectionClipSpace2DToImageSpacePerspective * newMat;
                 }
@@ -1824,7 +1838,7 @@ namespace Axiom.RenderSystems.DirectX9
             d3dMat = MakeD3DMatrix( newMat );
 
             // need this if texture is a cube map, to invert D3D's z coord
-            if ( texStageDesc[stage].autoTexCoordType != TexCoordCalcMethod.None )
+            if ( texStageDesc[ stage ].autoTexCoordType != TexCoordCalcMethod.None )
             {
                 d3dMat.M13 = -d3dMat.M13;
                 d3dMat.M23 = -d3dMat.M23;
@@ -1839,13 +1853,13 @@ namespace Axiom.RenderSystems.DirectX9
             {
                 // tell D3D the dimension of tex. coord
                 int texCoordDim = 0;
-                if ( texStageDesc[stage].autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture )
+                if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture )
                 {
                     texCoordDim = (int)D3D.TextureTransform.Projected | (int)D3D.TextureTransform.Count3;
                 }
                 else
                 {
-                    switch ( texStageDesc[stage].texType )
+                    switch ( texStageDesc[ stage ].texType )
                     {
                         case D3DTexType.Normal:
                             texCoordDim = (int)D3D.TextureTransform.Count2;
@@ -1859,7 +1873,7 @@ namespace Axiom.RenderSystems.DirectX9
 
                 // note: int values of D3D.TextureTransform correspond directly with tex dimension, so direct conversion is possible
                 // i.e. Count1 = 1, Count2 = 2, etc
-                device.TextureState[stage].TextureTransform = (D3D.TextureTransform)texCoordDim;
+                device.TextureState[ stage ].TextureTransform = (D3D.TextureTransform)texCoordDim;
 
                 // set the manually calculated texture matrix
                 device.SetTransform( d3dTransType, d3dMat );
@@ -1867,7 +1881,7 @@ namespace Axiom.RenderSystems.DirectX9
             else
             {
                 // disable texture transformation
-                device.TextureState[stage].TextureTransform = D3D.TextureTransform.Disable;
+                device.TextureState[ stage ].TextureTransform = D3D.TextureTransform.Disable;
 
                 // set as the identity matrix
                 device.SetTransform( d3dTransType, DX.Matrix.Identity );
@@ -1910,7 +1924,7 @@ namespace Axiom.RenderSystems.DirectX9
             }
 
             // some cards, oddly enough, do not support this
-            if ( d3dCaps.DeclTypes.SupportsUByte4 )
+            if ( d3dCaps.DeclarationTypes.SupportsUByte4 )
             {
                 caps.SetCap( Capabilities.VertexFormatUByte4 );
             }
@@ -1960,10 +1974,10 @@ namespace Axiom.RenderSystems.DirectX9
             // 2 sided stencil
             if ( d3dCaps.StencilCaps.SupportsTwoSided )
             {
-                                caps.SetCap( Capabilities.TwoSidedStencil );
-                        }
+                caps.SetCap( Capabilities.TwoSidedStencil );
+            }
 
-                        // stencil wrap
+            // stencil wrap
             if ( d3dCaps.StencilCaps.SupportsIncrement && d3dCaps.StencilCaps.SupportsDecrement )
             {
                 caps.SetCap( Capabilities.StencilWrap );
@@ -1981,9 +1995,9 @@ namespace Axiom.RenderSystems.DirectX9
             }
             catch
             {
-                                // eat it, this is not supported
-                                // TODO: Isn't there a better way to check for D3D occlusion query support?
-                        }
+                // eat it, this is not supported
+                // TODO: Isn't there a better way to check for D3D occlusion query support?
+            }
 
             if ( d3dCaps.MaxUserClipPlanes > 0 )
             {
@@ -2006,12 +2020,12 @@ namespace Axiom.RenderSystems.DirectX9
 
                 //Driver driver = D3DHelper.GetDriverInfo();
 
-                D3D.AdapterDetails details = D3D.Manager.Adapters[0].Information;
+                D3D.AdapterDetails details = D3D.Manager.Adapters[ 0 ];
 
                 //AdapterDetails details = Manager.Adapters[driver.AdapterNumber].Information;
 
                 // not nVidia or GeForceFX and above
-                if ( details.VendorId != 0x10DE || details.DeviceId >= 0x0301 )
+                if ( details.Information.VendorId != 0x10DE || details.Information.DeviceId >= 0x0301 )
                 {
                     caps.SetCap( Capabilities.InfiniteFarPlane );
                 }
@@ -2101,7 +2115,7 @@ namespace Axiom.RenderSystems.DirectX9
             {
                 gpuProgramMgr.PushSyntaxCode( "ps_2_0" );
 
-                if ( fpMajor > 2 || fpMinor > 0 )
+                if ( fpMinor > 0 )
                 {
                     gpuProgramMgr.PushSyntaxCode( "ps_2_x" );
                 }
