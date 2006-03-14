@@ -24,15 +24,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region Namespace Declarations
+
 using System;
 using System.IO;
 using System.Windows.Forms;
 
 using Axiom;
 
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
+
+#endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
@@ -77,21 +80,20 @@ namespace Axiom.RenderSystems.DirectX9
         public override void Create( string name, int width, int height, int colorDepth, bool isFullScreen, int left, int top, bool depthBuffer, params object[] miscParams )
         {
             // mMiscParams[0] = Direct3D.Device
-            // mMiscParams[1] = D3DRenderSystem.Driver
-            // mMiscParams[2] = Axiom.Core.RenderWindow
+            // mMiscParams[1] = D3DRenderSystem.Device
 
             Control targetControl = null;
 
             /// get the Direct3D.Device params
             if ( miscParams.Length > 0 )
             {
-                targetControl = (System.Windows.Forms.Control)miscParams[ 0 ];
+                targetControl = (System.Windows.Forms.Control)miscParams[0];
             }
 
             // CMH - 4/24/2004 - Start
-            if ( miscParams.Length > 1 && miscParams[ 1 ] != null )
+            if ( miscParams.Length > 1 && miscParams[1] != null )
             {
-                device = (Device)miscParams[ 1 ];
+                device = (D3D.Device)miscParams[1];
             }
             if ( device == null )
             {
@@ -100,6 +102,7 @@ namespace Axiom.RenderSystems.DirectX9
 
             // CMH - End
 
+            device.DeviceLost += new EventHandler( OnDeviceLost );
             device.DeviceReset += new EventHandler( OnResetDevice );
             this.OnResetDevice( device, null );
 
@@ -112,9 +115,9 @@ namespace Axiom.RenderSystems.DirectX9
             // CMH - 4/24/2004 - Start
 
             /* If we're in fullscreen, we can use the device's back and stencil buffers.
- * If we're in windowed mode, we'll want our own.
- * get references to the render target and depth stencil surface
- */
+             * If we're in windowed mode, we'll want our own.
+             * get references to the render target and depth stencil surface
+			 */
             if ( isFullScreen )
             {
                 backBuffer = device.GetRenderTarget( 0 );
@@ -122,22 +125,24 @@ namespace Axiom.RenderSystems.DirectX9
             }
             else
             {
-                PresentParameters presentParams = new PresentParameters( device.PresentationParameters );
-                presentParams.Windowed = true;
-                presentParams.BackBufferCount = 1;
-                presentParams.EnableAutoDepthStencil = depthBuffer;
-                presentParams.SwapEffect = SwapEffect.Discard;
-                presentParams.DeviceWindow = targetControl;
-                presentParams.BackBufferHeight = height;
-                presentParams.BackBufferWidth = width;
-                swapChain = new SwapChain( device, presentParams );
+                //D3D.PresentParameters presentParams = new D3D.PresentParameters();
+                D3D.PresentParameters presentParameters = device.GetSwapChain( 0 ).PresentParameters.Copy();
+
+                presentParameters.IsWindowed = true;
+                presentParameters.BackBufferCount = 1;
+                presentParameters.EnableAutoDepthStencil = depthBuffer;
+                presentParameters.SwapEffect = D3D.SwapEffect.Discard;
+                presentParameters.DeviceWindowHandle = targetControl.Handle;
+                presentParameters.BackBufferHeight = height;
+                presentParameters.BackBufferWidth = width;
+                swapChain = new D3D.SwapChain( device, presentParameters );
                 customAttributes[ "SwapChain" ] = swapChain;
 
                 stencilBuffer = device.CreateDepthStencilSurface(
                     width, height,
-                    device.PresentationParameters.AutoDepthStencilFormat,
-                    device.PresentationParameters.MultiSample,
-                    device.PresentationParameters.MultiSampleQuality,
+                    presentParameters.AutoDepthStencilFormat,
+                    presentParameters.MultiSampleType,
+                    presentParameters.MultiSampleQuality,
                     false );
             }
             // CMH - End
@@ -185,7 +190,7 @@ namespace Axiom.RenderSystems.DirectX9
                     }
                     else
                     {
-                        return swapChain.GetBackBuffer( 0, BackBufferType.Mono );
+                        return swapChain.GetBackBuffer( 0 );
                     }
                 // CMH - End
             }
@@ -208,13 +213,13 @@ namespace Axiom.RenderSystems.DirectX9
             }
 
             // dispopse of our back buffer if need be
-            if ( backBuffer != null && !backBuffer.Disposed )
+            if ( backBuffer != null && !backBuffer.IsDisposed )
             {
                 backBuffer.Dispose();
             }
 
             // dispose of our stencil buffer if need be
-            if ( stencilBuffer != null && !stencilBuffer.Disposed )
+            if ( stencilBuffer != null && !stencilBuffer.IsDisposed )
             {
                 stencilBuffer.Dispose();
             }
@@ -243,20 +248,21 @@ namespace Axiom.RenderSystems.DirectX9
 
             if ( !isFullScreen )
             {
-                PresentParameters p = new PresentParameters( swapChain.PresentParameters );
+
+                D3D.PresentParameters p = swapChain.PresentParameters.Copy();
                 p.BackBufferHeight = height;
                 p.BackBufferWidth = width;
                 swapChain.Dispose();
-                swapChain = new SwapChain( device, p );
+                swapChain = new D3D.SwapChain( device, p );
                 stencilBuffer.Dispose();
                 stencilBuffer = device.CreateDepthStencilSurface(
                     width, height,
-                    device.PresentationParameters.AutoDepthStencilFormat,
-                    device.PresentationParameters.MultiSample,
-                    device.PresentationParameters.MultiSampleQuality,
+                    p.AutoDepthStencilFormat,
+                    p.MultiSampleType,
+                    p.MultiSampleQuality,
                     false );
 
-                customAttributes[ "SwapChain" ] = swapChain;
+                customAttributes["SwapChain"] = swapChain;
             }
             // CMH - End
         }
@@ -270,7 +276,7 @@ namespace Axiom.RenderSystems.DirectX9
             try
             {
                 // tests coop level to make sure we are ok to render
-                device.TestCooperativeLevel();
+                device.CheckCooperativeLevel();
 
                 // swap back buffer to the front
                 // CMH 4/24/2004 - Start
@@ -284,14 +290,14 @@ namespace Axiom.RenderSystems.DirectX9
                 }
                 // CMH - End
             }
-            catch ( DeviceLostException dlx )
+            catch ( D3D.DeviceLostException dlx )
             {
                 Console.WriteLine( dlx.ToString() );
             }
-            catch ( DeviceNotResetException dnrx )
+            catch ( D3D.DeviceNotResetException dnrx )
             {
                 Console.WriteLine( dnrx.ToString() );
-                device.Reset( device.PresentationParameters );
+                device.Reset( device.GetSwapChain(0).PresentParameters );
             }
         }
 
@@ -327,16 +333,16 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="stream">Stream to write the window contents to.</param>
         public override void Save( Stream stream )
         {
-            DisplayMode mode = device.DisplayMode;
+            D3D.DisplayMode mode = device.DisplayMode;
 
-            SurfaceDescription desc = new SurfaceDescription();
+            D3D.SurfaceDescription desc = new D3D.SurfaceDescription();
             desc.Width = mode.Width;
             desc.Height = mode.Height;
-            desc.Format = Format.A8R8G8B8;
+            desc.Format = D3D.Format.A8R8G8B8;
 
             // create a temp surface which will hold the screen image
-            Surface surface = device.CreateOffscreenPlainSurface(
-                mode.Width, mode.Height, Format.A8R8G8B8, Pool.SystemMemory );
+            D3D.Surface surface = device.CreateOffscreenPlainSurface(
+                mode.Width, mode.Height, D3D.Format.A8R8G8B8, D3D.Pool.SystemMemory );
 
             // get the entire front buffer.  This is SLOW!!
             device.GetFrontBufferData( 0, surface );
@@ -353,13 +359,13 @@ namespace Axiom.RenderSystems.DirectX9
 
                 desc.Width = width;
                 desc.Height = height;
-                desc.Format = Format.A8R8G8B8;
+                desc.Format = D3D.Format.A8R8G8B8;
 
                 // create a temp surface that is sized the same as our target control
-                Surface tmpSurface = device.CreateOffscreenPlainSurface( rect.Width, rect.Height, Format.A8R8G8B8, Pool.Default );
+                D3D.Surface tmpSurface = device.CreateOffscreenPlainSurface( rect.Width, rect.Height, D3D.Format.A8R8G8B8, D3D.Pool.Default );
 
                 // copy the data from the front buffer to the window sized surface
-                device.UpdateSurface( surface, rect, tmpSurface );
+                device.UpdateSurface( surface, rect, tmpSurface , null);
 
                 // dispose of the prior surface
                 surface.Dispose();
@@ -367,20 +373,19 @@ namespace Axiom.RenderSystems.DirectX9
                 surface = tmpSurface;
             }
 
-            int pitch;
-
             // lock the surface to grab the data
-            GraphicsStream graphStream = surface.LockRectangle( LockFlags.ReadOnly | LockFlags.NoSystemLock, out pitch );
+            DX.GraphicsBuffer graphStream = surface.Lock(null, D3D.LockFlags.ReadOnly | D3D.LockFlags.NoSystemLock );
 
             // create an RGB buffer
-            byte[] buffer = new byte[ width * height * 3 ];
+            byte[] buffer = new byte[width * height * 3];
 
-            int offset = 0, line = 0, count = 0;
+            int offset = 0, line = 0, count = 0, pitch = 0;
+            pitch = graphStream.Pitch;
 
             // gotta copy that data manually since it is in another format (sheesh!)
             unsafe
             {
-                byte* data = (byte*)graphStream.InternalData;
+                byte* data = (byte*)graphStream.DataBuffer;
 
                 for ( int y = 0; y < desc.Height; y++ )
                 {
@@ -393,14 +398,14 @@ namespace Axiom.RenderSystems.DirectX9
                         int pixel = line + offset;
 
                         // Actual format is BRGA for some reason
-                        buffer[ count++ ] = data[ pixel + 2 ];
-                        buffer[ count++ ] = data[ pixel + 1 ];
-                        buffer[ count++ ] = data[ pixel + 0 ];
+                        buffer[count++] = data[pixel + 2];
+                        buffer[count++] = data[pixel + 1];
+                        buffer[count++] = data[pixel + 0];
                     }
                 }
             }
 
-            surface.UnlockRectangle();
+            surface.Unlock();
 
             // dispose of the surface
             surface.Dispose();
@@ -415,13 +420,18 @@ namespace Axiom.RenderSystems.DirectX9
 
         private void OnResetDevice( object sender, EventArgs e )
         {
-            Device resetDevice = (Device)sender;
+            D3D.Device resetDevice = (D3D.Device)sender;
 
             // Turn off culling, so we see the front and back of the triangle
-            resetDevice.RenderState.CullMode = Cull.None;
+            resetDevice.RenderState.CullMode = D3D.Cull.None;
             // Turn on the ZBuffer
             resetDevice.RenderState.ZBufferEnable = true;
             resetDevice.RenderState.Lighting = true;    //make sure lighting is enabled
+        }
+
+        void OnDeviceLost( object sender, EventArgs e )
+        {
+            //throw new Exception( "The method or operation is not implemented." );
         }
 
         #endregion
