@@ -42,10 +42,22 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AxisAlignedBox.cs" />
     <Compile Include="Degree.cs" />
+    <Compile Include="Intersection.cs" />
     <Compile Include="Matrix3.cs" />
     <Compile Include="Matrix4.cs" />
+    <Compile Include="PositionalSpline.cs" />
+    <Compile Include="Ray.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RotationalSpline.cs" />
+    <Compile Include="Sphere.cs" />
+    <Compile Include="Tuple.cs" />
     <Compile Include="Plane.cs" />
+    <Compile Include="PlaneBoundedVolume.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Quaternion.cs" />
     <Compile Include="Radian.cs" />
     <Compile Include="Utility.cs" />

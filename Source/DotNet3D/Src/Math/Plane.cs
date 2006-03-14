@@ -67,7 +67,7 @@ namespace DotNet3D.Math
             Negative
         }
 
-        #region Fields
+        #region Fields and Properties
 
         /// <summary>
         ///		Direction the plane is facing.
@@ -76,7 +76,7 @@ namespace DotNet3D.Math
         /// <summary>
         ///		Distance from the origin.
         /// </summary>
-        public Real D;
+        public Real Distance;
 
         private static readonly Plane nullPlane = new Plane( Vector3.Zero, 0 );
         public static Plane Null
@@ -87,14 +87,14 @@ namespace DotNet3D.Math
             }
         }
 
-        #endregion Fields
+        #endregion Fields and Properties
 
         #region Constructors
 
         public Plane( Plane plane )
         {
             this.Normal = plane.Normal;
-            this.D = plane.D;
+            this.Distance = plane.Distance;
         }
 
         /// <summary>
@@ -105,13 +105,13 @@ namespace DotNet3D.Math
         public Plane( Vector3 normal, float constant )
         {
             this.Normal = normal;
-            this.D = -constant;
+            this.Distance = -constant;
         }
 
         public Plane( Vector3 normal, Vector3 point )
         {
             this.Normal = normal;
-            this.D = -normal.DotProduct( point );
+            this.Distance = -normal.DotProduct( point );
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace DotNet3D.Math
             Vector3 edge2 = point2 - point0;
             Normal = edge1.CrossProduct( edge2 );
             Normal.Normalize();
-            D = -Normal.DotProduct( point0 );
+            Distance = -Normal.DotProduct( point0 );
         }
 
         #endregion
@@ -163,7 +163,7 @@ namespace DotNet3D.Math
         /// <returns></returns>
         public float GetDistance( Vector3 point )
         {
-            return Normal.DotProduct( point ) + D;
+            return Normal.DotProduct( point ) + Distance;
         }
 
         /// <summary>
@@ -178,7 +178,7 @@ namespace DotNet3D.Math
             Vector3 edge2 = point2 - point0;
             Normal = edge1.CrossProduct( edge2 );
             Normal.Normalize();
-            D = -Normal.DotProduct( point0 );
+            Distance = -Normal.DotProduct( point0 );
         }
 
         #endregion Methods
@@ -201,7 +201,7 @@ namespace DotNet3D.Math
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return D.GetHashCode() ^ Normal.GetHashCode();
+            return Distance.GetHashCode() ^ Normal.GetHashCode();
         }
 
         /// <summary>
@@ -210,7 +210,7 @@ namespace DotNet3D.Math
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Format( "Distance: {0} Normal: {1}", D, Normal.ToString() );
+            return string.Format( "Distance: {0} Normal: {1}", Distance, Normal.ToString() );
         }
 
         #endregion
@@ -225,7 +225,7 @@ namespace DotNet3D.Math
         /// <returns>true if equal, false if not equal.</returns>
         public static bool operator ==( Plane left, Plane right )
         {
-            return ( left.D == right.D ) && ( left.Normal == right.Normal );
+            return ( left.Distance == right.Distance ) && ( left.Normal == right.Normal );
         }
 
         /// <summary>
@@ -236,9 +236,22 @@ namespace DotNet3D.Math
         /// <returns>true if not equal, false if equal.</returns>
         public static bool operator !=( Plane left, Plane right )
         {
-            return ( left.D != right.D ) || ( left.Normal != right.Normal );
+            return ( left.Distance != right.Distance ) || ( left.Normal != right.Normal );
         }
 
         #endregion
+    }
+
+    namespace Collections
+    {
+
+        using System.Collections.Generic;
+
+        /// <summary>
+        /// A Collection of Planes
+        /// </summary>
+        public class PlaneList : List<Plane>
+        {
+        }
     }
 }

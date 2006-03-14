@@ -1003,4 +1003,13 @@ namespace DotNet3D.Math
 
         #endregion ISerializable Implementation
     }
+
+    namespace Collections
+    {
+        using System.Collections.Generic;
+
+        public class Vector3List : List<Vector3>
+        {
+        }
+    }
 }

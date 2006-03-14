@@ -559,7 +559,7 @@ namespace DotNet3D.Math
         /// <returns></returns>
         public bool Equals( Real obj, Real tolerance)
         {
-            return ( obj is Real && ( Utility.Abs( (Real)obj - this ) <= tolerance ) );
+            return (  Utility.Abs( (Real)obj - this ) <= tolerance ) ;
         }
 
         /// <summary>

@@ -1086,6 +1086,17 @@ namespace DotNet3D.Math
 
         #endregion ISerializable Implementation
 
+    }
 
+    namespace Collections
+    {
+        using System.Collections.Generic;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public class QuaternionCollection : List<Quaternion>
+        {
+        }
     }
 }
