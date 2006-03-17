@@ -448,7 +448,7 @@ namespace Axiom
 
             // create a new animation and record it locally
             Animation anim = new Animation( name, length );
-            animationList.Add( anim );
+            animationList.Add( anim.Name, anim );
 
             return anim;
         }
