@@ -51,9 +51,6 @@ namespace Axiom
     /// <ogre name="SubMesh">
     ///     <file name="OgreSubMesh.h"   revision="1.19" lastUpdated="3/23/2005" lastUpdatedBy="DavidClifton" />
     ///     <file name="OgreSubMesh.cpp" revision="1.27" lastUpdated="3/23/2005" lastUpdatedBy="DavidClifton" />
-    ///     <Borrillis>
-    ///			Note: This needs to be worked on a bit more.
-    ///     </Borrillis>
     /// </ogre> 
     public class SubMesh
     {
