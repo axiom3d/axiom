@@ -24,8 +24,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region Namespace Declarations
+
 using System;
 using System.Collections;
+
+#endregion
 
 namespace Axiom
 {
@@ -44,48 +48,119 @@ namespace Axiom
     ///		their material differences on a per-object basis if required.
     ///		See the SubEntity class for more information.
     /// </remarks>
+    /// <ogre name="SubMesh">
+    ///     <file name="OgreSubMesh.h"   revision="1.19" lastUpdated="3/23/2005" lastUpdatedBy="DavidClifton" />
+    ///     <file name="OgreSubMesh.cpp" revision="1.27" lastUpdated="3/23/2005" lastUpdatedBy="DavidClifton" />
+    ///     <Borrillis>
+    ///			Note: This needs to be worked on a bit more.
+    ///     </Borrillis>
+    /// </ogre> 
     public class SubMesh
     {
-        #region Member variables
+        #region Fields and Properties
 
-        /// <summary>The parent mesh that this subMesh belongs to.</summary>
-        protected Mesh parent;
-        /// <summary>Name of the material assigned to this subMesh.</summary>
-        protected string materialName;
+
         /// <summary>Name of this SubMesh.</summary>
         internal string name;
-        /// <summary></summary>
-        protected bool isMaterialInitialized;
+
         /// <summary>Number of faces in this subMesh.</summary>
         protected internal short numFaces;
 
         /// <summary>List of bone assignment for this mesh.</summary>
         protected Map boneAssignmentList = new Map();
+
         /// <summary>Flag indicating that bone assignments need to be recompiled.</summary>
         protected internal bool boneAssignmentsOutOfDate;
 
         /// <summary>Mode used for rendering this submesh.</summary>
         protected internal OperationType operationType;
+
+        /// <summary>Vertex Data for the submesh</summary>
         public VertexData vertexData;
+
+        /// <summary>Index Data for the submesh</summary>
         public IndexData indexData = new IndexData();
+
         /// <summary>Indicates if this submesh shares vertex data with other meshes or whether it has it's own vertices.</summary>
         public bool useSharedVertices;
+
+        /// <summary>Indicates if this submesh shares vertex data with other meshes or whether it has it's own vertices.</summary>
         protected internal ArrayList lodFaceList = new ArrayList();
 
+        #region MaterialName Property
+
+        /// <summary>Name of the material assigned to this subMesh.</summary>
+        protected string materialName;
+
+        /// <summary>
+        ///		Gets/Sets the name of the material this SubMesh will be using.
+        /// </summary>
+        public string MaterialName
+        {
+            get
+            {
+                return materialName;
+            }
+            set
+            {
+                materialName = value;
+                isMaterialInitialized = true;
+            }
+        }
+
         #endregion
+
+        #region Parent Property
+
+        /// <summary>The parent mesh that this subMesh belongs to.</summary>
+        protected Mesh parent;
+
+        /// <summary>
+        ///		Gets/Sets the parent mode of this SubMesh.
+        /// </summary>
+        public Mesh Parent
+        {
+            get
+            {
+                return parent;
+            }
+            set
+            {
+                parent = value;
+            }
+        }
+        #endregion Parent Property
+
+        #region IsMaterialInitialized Property
+
+        /// <summary>Boolean indicating if an appropriate material is applied</summary>
+        protected bool isMaterialInitialized;
+
+        /// <summary>
+        ///		Gets whether or not a material has been set for this subMesh.
+        /// </summary>
+        public bool IsMaterialInitialized
+        {
+            get
+            {
+                return isMaterialInitialized;
+            }
+        }
+
+        #endregion IsMaterialInitialized Property
+
+        #endregion Fields and Properties
 
         #region Constructor
 
         /// <summary>
-        ///		Basic contructor.
+        ///		Basic contructor requiring a name for the submesh
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">Name used to identify the submesh</param>
         public SubMesh( string name )
         {
             this.name = name;
-
             useSharedVertices = true;
-
             operationType = OperationType.TriangleList;
         }
 
@@ -105,6 +180,10 @@ namespace Axiom
         /// <param name="boneAssignment"></param>
         public void AddBoneAssignment( ref VertexBoneAssignment boneAssignment )
         {
+            if ( useSharedVertices )
+            {
+                throw new Exception( "Attempted to assign bones to submesh with shared vertices. Bones must be assigned at the Mesh level when shared vertices are used." );
+            }
             boneAssignmentList.Insert( boneAssignment.vertexIndex, boneAssignment );
             boneAssignmentsOutOfDate = true;
         }
@@ -131,53 +210,17 @@ namespace Axiom
 
             // return if no bone assigments
             if ( maxBones == 0 )
+            {
                 return;
-
+            }
             parent.CompileBoneAssignments( boneAssignmentList, maxBones, vertexData );
-
             boneAssignmentsOutOfDate = false;
         }
 
-        #endregion Methods
-
-        #region Properties
-
         /// <summary>
-        ///		Gets/Sets the name of the material this SubMesh will be using.
+        ///		Fills a RenderOperation structure required to render this mesh, assuming a LOD level of 0
         /// </summary>
-        public string MaterialName
-        {
-            get
-            {
-                return materialName;
-            }
-            set
-            {
-                materialName = value;
-                isMaterialInitialized = true;
-            }
-        }
-
-        /// <summary>
-        ///		Gets/Sets the parent mode of this SubMesh.
-        /// </summary>
-        public Mesh Parent
-        {
-            get
-            {
-                return parent;
-            }
-            set
-            {
-                parent = value;
-            }
-        }
-
-        /// <summary>
-        ///		Overloaded method.
-        /// </summary>
-        /// <param name="op"></param>
-        /// <returns></returns>
+        /// <param name="op">Reference to a RenderOperation structure to populate.</param>
         public void GetRenderOperation( RenderOperation op )
         {
             // call overloaded method with lod index of 0 by default
@@ -198,29 +241,29 @@ namespace Axiom
             if ( lodIndex > 0 && ( lodIndex - 1 ) < lodFaceList.Count )
             {
                 // Use the set of indices defined for this LOD level
-                op.indexData = (IndexData)lodFaceList[lodIndex - 1];
+                op.indexData = ( IndexData )lodFaceList[lodIndex - 1];
             }
             else
+            {
                 op.indexData = indexData;
+            }
 
             // set the operation type
             op.operationType = operationType;
 
             // set the vertex data correctly
-            op.vertexData = useSharedVertices ? parent.SharedVertexData : vertexData;
-        }
-
-        /// <summary>
-        ///		Gets whether or not a material has been set for this subMesh.
-        /// </summary>
-        public bool IsMaterialInitialized
-        {
-            get
+            if ( useSharedVertices )
             {
-                return isMaterialInitialized;
+                op.vertexData = parent.SharedVertexData;
+            }
+            else
+            {
+                op.vertexData = vertexData;
             }
         }
 
-        #endregion
+        #endregion Methods
+
     }
+
 }
