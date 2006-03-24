@@ -129,30 +129,37 @@ namespace Axiom.Demos
 
         public void Run()
         {
-            if ( _configure() )
+            try
             {
-
-                string next = "";
-
-                while ( next != "exit" )
+                if ( _configure() )
                 {
-                    using ( DemoList mainDemo = new DemoList() )
-                    {
-                        next = mainDemo.Start( window );
-                    }
 
-                    if ( next != "exit" )
-                    {
-                        Type demoType = Assembly.GetExecutingAssembly().GetType( "Axiom.Demos." + next );
+                    string next = "";
 
-                        using ( TechDemo demo = ( TechDemo )Assembly.GetExecutingAssembly().CreateInstance( "Axiom.Demos." + next ) )
+                    while ( next != "exit" )
+                    {
+                        using ( DemoList mainDemo = new DemoList() )
                         {
-                            demo.Start( window );//show and start rendering
-                        }//dispose of it when done
+                            next = mainDemo.Start( window );
+                        }
+
+                        if ( next != "exit" )
+                        {
+                            Type demoType = Assembly.GetExecutingAssembly().GetType( "Axiom.Demos." + next );
+
+                            using ( TechDemo demo = ( TechDemo )Assembly.GetExecutingAssembly().CreateInstance( "Axiom.Demos." + next ) )
+                            {
+                                demo.Start( window );//show and start rendering
+                            }//dispose of it when done
+
+                        }
 
                     }
-
                 }
+            }
+            catch ( Exception caughtException )
+            {
+                LogManager.Instance.Write( BuildExceptionString( caughtException ) );
             }
         }
 
