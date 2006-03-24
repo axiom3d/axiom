@@ -145,7 +145,7 @@ namespace Axiom.Demos
                     {
                         Type demoType = Assembly.GetExecutingAssembly().GetType( "Axiom.Demos." + next );
 
-                        using ( TechDemo demo = (TechDemo)Assembly.GetExecutingAssembly().CreateInstance( "Axiom.Demos." + next ) )
+                        using ( TechDemo demo = ( TechDemo )Assembly.GetExecutingAssembly().CreateInstance( "Axiom.Demos." + next ) )
                         {
                             demo.Start( window );//show and start rendering
                         }//dispose of it when done
@@ -178,12 +178,35 @@ namespace Axiom.Demos
             }
             catch ( Exception ex )
             {
-                Console.WriteLine( ex.ToString() );
-                Console.WriteLine( "An exception has occurred.  Press enter to continue..." );
-                Console.ReadLine();
+                MessageBox.Show( BuildExceptionString( ex ) );
             }
         }
-    
 
-}
+        private static string BuildExceptionString( Exception exception )
+        {
+            string errMessage = string.Empty;
+
+            errMessage += exception.Message + Environment.NewLine + exception.StackTrace;
+
+            while ( exception.InnerException != null )
+            {
+                errMessage += BuildInnerExceptionString( exception.InnerException );
+                exception = exception.InnerException;
+            }
+
+            return errMessage;
+        }
+
+        private static string BuildInnerExceptionString( Exception innerException )
+        {
+            string errMessage = string.Empty;
+
+            errMessage += Environment.NewLine + " InnerException ";
+            errMessage += Environment.NewLine + innerException.Message + Environment.NewLine + innerException.StackTrace;
+
+            return errMessage;
+        }
+
+    }
+
 }
