@@ -33,7 +33,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 // The Real datatype is actually one of these under the covers
-#if _REAL_AS_DOUBLE || !( _REAL_AS_SINGLE )
+#if _REAL_AS_SINGLE || !( _REAL_AS_DOUBLE )
 using Numeric = System.Single;
 #else
 using Numeric = System.Double;
@@ -63,6 +63,8 @@ namespace DotNet3D.Math
 
         /// <summary>Internal storage for value</summary>
         private Numeric _value;
+
+        public static Numeric Tolerance = 0.0001f;
 
         #endregion Fields
 
@@ -176,6 +178,12 @@ namespace DotNet3D.Math
             this._value = value;
         }
 
+        /// <param name="value">a long representation of the value to convert</param>
+        public Real( long value )
+        {
+            this._value = value;
+        }
+
         /// <param name="value">a float representation of the value to convert</param>
         public Real( float value )
         {
@@ -236,6 +244,28 @@ namespace DotNet3D.Math
         static public explicit operator int( Real real )
         {
             return (int)real._value;
+        }
+        #endregion Int Conversions
+
+        #region Int Conversions
+        /// <summary>
+        /// Implicit conversion from int to Real
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        static public implicit operator Real( long value )
+        {
+            return new Real( value );
+        }
+
+        /// <summary>
+        /// Explicit conversion from Real to int
+        /// </summary>
+        /// <param name="real"></param>
+        /// <returns></returns>
+        static public explicit operator long( Real real )
+        {
+            return (long)real._value;
         }
         #endregion Int Conversions
 
@@ -345,9 +375,10 @@ namespace DotNet3D.Math
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
+        /// <remarks>The == operator uses the static Tolerance value to determine equality</remarks>
         public static bool operator ==( Real left, Real right )
         {
-            return ( left._value == right._value );
+            return ( Utility.Abs( right._value - left._value ) <= Tolerance );
         }
 
         /// <summary>
@@ -356,9 +387,10 @@ namespace DotNet3D.Math
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
+        /// <remarks>The == operator uses the static Tolerance value to determine equality </remarks>
         public static bool operator !=( Real left, Real right )
         {
-            return ( left._value != right._value );
+            return ( Utility.Abs( right._value - left._value ) >= Tolerance );
         }
         #endregion Equality Operators
 
@@ -530,6 +562,28 @@ namespace DotNet3D.Math
 
         #endregion Operator Overrides
 
+        #region Methods
+
+        /// <summary>
+        /// Returns the samllest integer less than or equal to the current value
+        /// </summary>
+        /// <returns></returns>
+        public Real Floor()
+        {
+            return new Real( System.Math.Floor( _value ) );
+        }
+
+        /// <summary>
+        /// Returns the samllest integer greater than or equal to the current value
+        /// </summary>
+        /// <returns></returns>
+        public Real Ceiling()
+        {
+            return new Real( System.Math.Ceiling( _value ) );
+        }
+
+        #endregion Methods
+
         #region System.Object Overrides
 
         /// <summary>
@@ -554,12 +608,25 @@ namespace DotNet3D.Math
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="lhs"></param>
+        /// <param name="rhs"></param>
+        /// <param name="tolerance"></param>
+        /// <returns></returns>
+        public bool Equals( Real obj )
+        {
+            return this.Equals( obj, Tolerance );
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lhs"></param>
+        /// <param name="rhs"></param>
         /// <param name="tolerance"></param>
         /// <returns></returns>
         public bool Equals( Real obj, Real tolerance)
         {
-            return (  Utility.Abs( (Real)obj - this ) <= tolerance ) ;
+            return ( Utility.Abs( obj - this ) <= tolerance );
         }
 
         /// <summary>

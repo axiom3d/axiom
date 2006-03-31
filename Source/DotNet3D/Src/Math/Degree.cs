@@ -32,6 +32,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+#if _REAL_AS_SINGLE || !( _REAL_AS_DOUBLE )
+using Numeric = System.Single;
+#else
+using Numeric = System.Double;
+#endif
+
 using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
@@ -56,15 +62,20 @@ namespace DotNet3D.Math
 
 		private Real _value;
 
+        public static readonly Degree Zero = new Degree( Real.Zero );
+
 		public Degree ( Real r ) { _value = r; }
 		public Degree ( Degree d ) { _value = d._value; }
 		public Degree ( Radian r ) { _value = r.InDegrees; }
 
-        internal Radian InRadians { get { return _value * _degreesToRadians; } }
+        public Radian InRadians { get { return _value * _degreesToRadians; } }
 
         public static implicit operator Degree( Real value )   { return new Degree( value ); }
-        public static implicit operator Real( Degree value )   { return new Real( value._value ); }
         public static implicit operator Degree( Radian value ) { return new Degree( value ); }
+        public static explicit operator Degree( int value )    { return new Degree( value ); }
+
+        public static implicit operator Real( Degree value )    { return value._value; }
+        public static explicit operator Numeric( Degree value ) { return (Numeric)value._value; }
 
 		public static Degree operator + ( Degree left, Real right )    { return left._value + right; }
 		public static Degree operator + ( Degree left, Degree right )  { return left._value + right._value; }

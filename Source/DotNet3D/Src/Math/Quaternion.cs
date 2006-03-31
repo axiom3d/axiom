@@ -147,7 +147,7 @@ namespace DotNet3D.Math
         {
             get
             {
-                return Utility.Atan( 2 * ( x * y + w * z ), w * w + x * x - y * y - z * z );
+                return Utility.ATan( 2 * ( x * y + w * z ), w * w + x * x - y * y - z * z );
             }
         }
 
@@ -158,7 +158,7 @@ namespace DotNet3D.Math
         {
             get
             {
-                return Utility.Atan( 2 * ( y * z + w * x ), w * w - x * x - y * y + z * z );
+                return Utility.ATan( 2 * ( y * z + w * x ), w * w - x * x - y * y + z * z );
             }
         }
 
@@ -169,7 +169,7 @@ namespace DotNet3D.Math
         {
             get
             {
-                return Utility.Asin( -2 * ( x * z - w * y ) );
+                return Utility.ASin( -2 * ( x * z - w * y ) );
             }
         }
 
@@ -277,7 +277,7 @@ namespace DotNet3D.Math
         {
             Real cos = quatA.Dot( quatB );
 
-            Radian angle = Utility.Acos( cos );
+            Radian angle = Utility.ACos( cos );
 
             if ( Utility.Abs( angle ) < Real.Epsilon )
             {
@@ -318,7 +318,7 @@ namespace DotNet3D.Math
         public static Quaternion SlerpExtraSpins( Real time, Quaternion quatA, Quaternion quatB, int extraSpins )
         {
             Real fCos = quatA.Dot( quatB );
-            Radian fAngle = new Radian( Utility.Acos( fCos ) );
+            Radian fAngle = new Radian( Utility.ACos( fCos ) );
 
             if ( Utility.Abs( fAngle ) < _epsilon )
                 return quatA;
@@ -478,7 +478,7 @@ namespace DotNet3D.Math
         public bool Equals( Quaternion right, Real tolerance )
         {
             Real fCos = Dot( right );
-            Radian angle = Utility.Acos( fCos );
+            Radian angle = Utility.ACos( fCos );
 
             return Utility.Abs( angle ) <= tolerance;
         }
@@ -768,7 +768,7 @@ namespace DotNet3D.Math
 
             if ( Utility.Abs( w ) < 1.0f )
             {
-                Real angle = Utility.Acos( w );
+                Real angle = Utility.ACos( w );
                 Real sin = Utility.Sin( angle );
 
                 if ( Utility.Abs( sin ) >= Real.Epsilon )
@@ -921,15 +921,17 @@ namespace DotNet3D.Math
         /// <param name="angle">Value of an angle in radians.</param>
         /// <param name="axis">Arbitrary axis vector.</param>
         /// <returns></returns>
-        public void FromAngleAxis( Radian angle, Vector3 axis )
+        public static Quaternion FromAngleAxis( Radian angle, Vector3 axis )
         {
+            Quaternion q = new Quaternion();
             Real halfAngle = (Real)0.5f * angle;
             Real sin = Utility.Sin( halfAngle );
 
-            this.w = Utility.Cos( halfAngle );
-            this.x = sin * axis.x;
-            this.y = sin * axis.y;
-            this.z = sin * axis.z;
+            q.w = Utility.Cos( halfAngle );
+            q.x = sin * axis.x;
+            q.y = sin * axis.y;
+            q.z = sin * axis.z;
+            return q;
         }
 
         /// <summary>
@@ -947,7 +949,7 @@ namespace DotNet3D.Math
 
             if ( sqrLength > 0.0f )
             {
-                angle = (Real)2.0f * Utility.Acos( w );
+                angle = (Real)2.0f * Utility.ACos( w );
                 Real invLength = Utility.InvSqrt( sqrLength );
                 axis.x = x * invLength;
                 axis.y = y * invLength;
