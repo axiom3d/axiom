@@ -966,7 +966,7 @@ namespace DotNet3D.Math
         public bool DirectionEquals( Vector3 right, Radian tolerance )
         {
             Real dot = DotProduct( right );
-            Radian angle = Utility.Acos( dot );
+            Radian angle = Utility.ACos( dot );
 
             return Utility.Abs( angle ) <= tolerance;
 

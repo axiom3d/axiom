@@ -32,6 +32,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+#if _REAL_AS_SINGLE || !( _REAL_AS_DOUBLE )
+using Numeric = System.Single;
+#else
+using Numeric = System.Double;
+#endif
+
 using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
@@ -53,25 +59,30 @@ namespace DotNet3D.Math
 	{
         private static readonly Real _radiansToDegrees = 180.0f / Utility.PI;
 
+        public static readonly Radian Zero = new Radian( Real.Zero );
+
         private Real _value;
 
 		public Radian ( Real r ) { _value = r; }
 		public Radian ( Radian r ) { _value = r._value; }
 		public Radian ( Degree d ) { _value = d.InRadians; }
 
-        internal Radian InDegrees { get { return _value * _radiansToDegrees; } }
+        public Degree InDegrees { get { return _value * _radiansToDegrees; } }
 
         public static implicit operator Radian( Real value )   { return new Radian( value ); }
-        public static implicit operator Real( Radian value )   { return new Real( value._value ); }
         public static implicit operator Radian( Degree value ) { return new Radian( value ); }
+        public static explicit operator Radian( int value )    { return new Radian( value ); }
 
-		public static Radian operator + ( Radian left, Real right )    { return left._value + right; }
-		public static Radian operator + ( Radian left, Radian right )  { return left._value + right._value; }
+        public static implicit operator Real( Radian value )    { return new Real( value._value ); }
+        public static explicit operator Numeric( Radian value ) { return (Numeric)value._value; }
+
+        public static Radian operator + ( Radian left, Real right )    { return left._value + right; }
+        public static Radian operator + ( Radian left, Radian right )  { return left._value + right._value; }
 		public static Radian operator + ( Radian left, Degree right )  { return left + right.InRadians; }
 
-		public static Radian operator - ( Radian r )                   { return -r._value; }
-		public static Radian operator - ( Radian left, Real right )    { return left._value - right; }
-		public static Radian operator - ( Radian left, Radian right )  { return left._value - right._value; }
+        public static Radian operator - ( Radian r )                   { return -r._value; }
+        public static Radian operator - ( Radian left, Real right )    { return left._value - right; }
+        public static Radian operator - ( Radian left, Radian right )  { return left._value - right._value; }
 		public static Radian operator - ( Radian left, Degree right )  { return left - right.InRadians; }
 
 		public static Radian operator * ( Radian left, Real right )    { return left._value * right; }
@@ -79,12 +90,12 @@ namespace DotNet3D.Math
         public static Radian operator * ( Radian left, Radian right )  { return left._value * right._value; }
         public static Radian operator * ( Radian left, Degree right )  { return left._value * right.InRadians; }
 
-		public static Radian operator / ( Radian left, Real right )    { return left._value / right; }
+        public static Radian operator / ( Radian left, Real right )    { return left._value / right; }
 
-		public static bool operator <  ( Radian left, Radian right )   { return left._value <  right._value; }
-		public static bool operator == ( Radian left, Radian right )   { return left._value == right._value; }
-		public static bool operator != ( Radian left, Radian right )   { return left._value != right._value; }
-		public static bool operator >  ( Radian left, Radian right )   { return left._value >  right._value; }
+        public static bool operator <  ( Radian left, Radian right )   { return left._value <  right._value; }
+        public static bool operator == ( Radian left, Radian right )   { return left._value == right._value; }
+        public static bool operator != ( Radian left, Radian right )   { return left._value != right._value; }
+        public static bool operator >  ( Radian left, Radian right )   { return left._value >  right._value; }
 
         public override bool Equals(object obj) { return ( obj is Radian && this == (Radian)obj ); }
         public override int GetHashCode() { return _value.GetHashCode(); }

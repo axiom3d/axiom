@@ -450,23 +450,23 @@ namespace DotNet3D.Math
             return new Vector4( right.x * scalar, right.y * scalar, right.z * scalar, right.w * scalar );
         }
 
-        /// <summary>
-        /// Used when a Matrix4 is multiplied by a Vector4.
-        /// </summary>
-        /// <param name="matrix"></param>
-        /// <param name="vector"></param>
-        /// <returns></returns>
-        public static Vector4 operator *( Matrix4 matrix, Vector4 vector )
-        {
-            Vector4 result = new Vector4();
+        ///// <summary>
+        ///// Used when a Matrix4 is multiplied by a Vector4.
+        ///// </summary>
+        ///// <param name="matrix"></param>
+        ///// <param name="vector"></param>
+        ///// <returns></returns>
+        //public static Vector4 operator *( Matrix4 matrix, Vector4 vector )
+        //{
+        //    Vector4 result = new Vector4();
 
-            result.x = vector.x * matrix.m00 + vector.y * matrix.m01 + vector.z * matrix.m02 + vector.w * matrix.m03;
-            result.y = vector.x * matrix.m10 + vector.y * matrix.m11 + vector.z * matrix.m12 + vector.w * matrix.m13;
-            result.z = vector.x * matrix.m20 + vector.y * matrix.m21 + vector.z * matrix.m22 + vector.w * matrix.m23;
-            result.w = vector.x * matrix.m30 + vector.y * matrix.m31 + vector.z * matrix.m32 + vector.w * matrix.m33;
+        //    result.x = vector.x * matrix.m00 + vector.y * matrix.m01 + vector.z * matrix.m02 + vector.w * matrix.m03;
+        //    result.y = vector.x * matrix.m10 + vector.y * matrix.m11 + vector.z * matrix.m12 + vector.w * matrix.m13;
+        //    result.z = vector.x * matrix.m20 + vector.y * matrix.m21 + vector.z * matrix.m22 + vector.w * matrix.m23;
+        //    result.w = vector.x * matrix.m30 + vector.y * matrix.m31 + vector.z * matrix.m32 + vector.w * matrix.m33;
 
-            return result;
-        }
+        //    return result;
+        //}
 
         /// <summary>
         /// Used when a Vector4 is multiplied by a Matrix4.

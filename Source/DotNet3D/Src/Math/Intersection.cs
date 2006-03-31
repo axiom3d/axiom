@@ -51,6 +51,30 @@ namespace DotNet3D.Math
             first = hit;
             second = distance;
         }
+
+        public bool Hit
+        {
+            get
+            {
+                return first;
+            }
+            set
+            {
+                first = value;
+            }
+        }
+
+        public Real Distance
+        {
+            get
+            {
+                return second;
+            }
+            set
+            {
+                second = value;
+            }
+        }
     }
 
 
@@ -61,7 +85,7 @@ namespace DotNet3D.Math
     /// This class is used internally by the other classes, normal usage should be to call the Intersects method on 
     /// the object you want to test.
     /// </remarks>
-    internal sealed class Intersection
+    public sealed class Intersection
     {
         public enum Result
         {

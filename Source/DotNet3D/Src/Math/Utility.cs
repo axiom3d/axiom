@@ -41,9 +41,9 @@ using DotNet3D.Math.Collections;
 
 namespace DotNet3D.Math
 {
-    internal sealed class Utility
+    public sealed class Utility
     {
-        public static readonly Real PI = new Real( new Real( 4.0f ) * (Real)Atan( 1.0f ) );
+        public static readonly Real PI = new Real( new Real( 4.0f ) * (Real)ATan( 1.0f ) );
         public static readonly Real TWO_PI = new Real( 2.0f * PI );
         public static readonly Real HALF_PI = new Real( 0.5f * PI );
 
@@ -54,6 +54,11 @@ namespace DotNet3D.Math
         /// </summary>
         private Utility()
         {
+        }
+
+        public static int Sign( Real number )
+        {
+            return System.Math.Sign( number );
         }
 
         /// <summary>
@@ -67,7 +72,7 @@ namespace DotNet3D.Math
         /// <summary>
         ///	Returns the angle whose cosine is the specified number.
         /// </summary>
-        public static Radian Asin( Real angle )
+        public static Radian ASin( Real angle )
         {
             return new Radian( System.Math.Asin( angle ) );
         }
@@ -83,7 +88,7 @@ namespace DotNet3D.Math
         /// <summary>
         ///	Returns the angle whose cosine is the specified number.
         /// </summary>
-        public static Radian Acos( Real angle )
+        public static Radian ACos( Real angle )
         {
 
             // HACK: Ok, this needs to be looked at.  The decimal precision of float values can sometimes be 
@@ -111,7 +116,7 @@ namespace DotNet3D.Math
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static Radian Atan( Real value )
+        public static Radian ATan( Real value )
         {
             return new Radian( System.Math.Atan( value ) );
         }
@@ -119,7 +124,12 @@ namespace DotNet3D.Math
         /// <summary>
         /// Returns the angle whose tangent is the quotient of the two specified numbers.
         /// </summary>
-        public static Radian Atan( Real y, Real x )
+        public static Radian ATan( Real y, Real x )
+        {
+            return new Radian( System.Math.Atan2( y, x ) );
+        }
+
+        public static Radian ATan2( Real y, Real x )
         {
             return new Radian( System.Math.Atan2( y, x ) );
         }
@@ -175,6 +185,17 @@ namespace DotNet3D.Math
         public static Real Min( Real lhs, Real rhs )
         {
             return lhs < rhs ? lhs : rhs;
+        }
+
+        /// <summary>
+        ///    Returns a random value between the specified min and max values.
+        /// </summary>
+        /// <param name="min">Minimum value.</param>
+        /// <param name="max">Maximum value.</param>
+        /// <returns>A random value in the range [min,max].</returns>
+        public static Real RangeRandom( Real min, Real max )
+        {
+            return ( max - min ) * UnitRandom() + min;
         }
 
         /// <summary>
