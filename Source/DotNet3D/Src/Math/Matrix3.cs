@@ -92,9 +92,9 @@ namespace DotNet3D.Math
         {
             get
             {
-                Real cofactor00 = _matrix[ 4 ] * _matrix[ 8 ] - _matrix[ 5 ] * _matrix[ 7 ];
-                Real cofactor10 = _matrix[ 5 ] * _matrix[ 6 ] - _matrix[ 3 ] * _matrix[ 7 ];
-                Real cofactor20 = _matrix[ 3 ] * _matrix[ 8 ] - _matrix[ 5 ] * _matrix[ 6 ];
+                Real cofactor00 = this[ 1, 1 ] * this[ 2, 2 ] - this[ 1, 2 ] * this[ 2, 1 ];
+                Real cofactor10 = this[ 1, 2 ] * this[ 2, 0 ] - this[ 1, 0 ] * this[ 2, 2 ];
+                Real cofactor20 = this[ 1, 0 ] * this[ 2, 1 ] - this[ 1, 1 ] * this[ 2, 0 ];
 
                 Real result =
                     _matrix[ 0 ] * cofactor00 +

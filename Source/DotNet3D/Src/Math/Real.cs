@@ -40,9 +40,10 @@ using Numeric = System.Double;
 #endif
 
 using System;
+using System.Globalization;
 using System.Runtime.InteropServices;
-using System.Security.Permissions;
 using System.Runtime.Serialization;
+using System.Security.Permissions;
 
 #endregion Namespace Declarations
 
@@ -60,6 +61,10 @@ namespace DotNet3D.Math
     public struct Real : ISerializable, IComparable<Real>
     {
         #region Fields
+        /// <summary>
+        ///		Culture info to use for parsing numeric data.
+        /// </summary>
+        private static CultureInfo englishCulture = new CultureInfo( "en-US" );
 
         /// <summary>Internal storage for value</summary>
         private Numeric _value;
@@ -138,7 +143,7 @@ namespace DotNet3D.Math
         /// </overloads>
         public static Real Parse( string value )
         {
-            return new Real( Numeric.Parse( value ) );
+            return new Real( Numeric.Parse( value, englishCulture ) );
         }
 
         /// <param name="value"></param>
@@ -592,7 +597,7 @@ namespace DotNet3D.Math
         /// <returns></returns>
         public override string ToString()
         {
-            return this._value.ToString();
+            return this._value.ToString( englishCulture );
         }
 
         /// <summary>
