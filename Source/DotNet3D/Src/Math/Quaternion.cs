@@ -275,7 +275,7 @@ namespace DotNet3D.Math
         /// <returns></returns>
         public static Quaternion Slerp( Real time, Quaternion quatA, Quaternion quatB, bool useShortestPath )
         {
-            Real cos = quatA.Dot( quatB );
+            Real cos = quatA.DotProduct( quatB );
 
             Radian angle = Utility.ACos( cos );
 
@@ -317,7 +317,7 @@ namespace DotNet3D.Math
         /// <returns></returns>
         public static Quaternion SlerpExtraSpins( Real time, Quaternion quatA, Quaternion quatB, int extraSpins )
         {
-            Real fCos = quatA.Dot( quatB );
+            Real fCos = quatA.DotProduct( quatB );
             Radian fAngle = new Radian( Utility.ACos( fCos ) );
 
             if ( Utility.Abs( fAngle ) < _epsilon )
@@ -350,7 +350,7 @@ namespace DotNet3D.Math
         public static Quaternion Nlerp( Real fT, Quaternion rkP, Quaternion rkQ, bool shortestPath )
         {
             Quaternion result;
-            Real fCos = rkP.Dot( rkQ );
+            Real fCos = rkP.DotProduct( rkQ );
             if ( fCos < 0.0f && shortestPath )
             {
                 result = rkP + fT * ( ( -rkQ ) - rkP );
@@ -477,7 +477,7 @@ namespace DotNet3D.Math
         /// <returns></returns>
         public bool Equals( Quaternion right, Real tolerance )
         {
-            Real fCos = Dot( right );
+            Real fCos = DotProduct( right );
             Radian angle = Utility.ACos( fCos );
 
             return Utility.Abs( angle ) <= tolerance;
@@ -704,7 +704,7 @@ namespace DotNet3D.Math
         /// </summary>
         /// <param name="quat"></param>
         /// <returns></returns>
-        public Real Dot( Quaternion quat )
+        public Real DotProduct( Quaternion quat )
         {
             return this.w * quat.w + this.x * quat.x + this.y * quat.y + this.z * quat.z;
         }
