@@ -1,0 +1,966 @@
+<?xml version="1.0" ?>
+<project name="Axiom3D" default="build.all">
+
+    <!-- set build.date property to current date in format yyyy-MM-dd -->
+    <tstamp property="build.date" pattern="yyyy-MM-dd" />
+    
+    <!-- global project settings -->
+    <property name="project.name" value="Axiom3D" />
+    <property name="project.version" value="1.06" unless="${property::exists('project.version')}" />
+    <property name="project.release.type" value="dev" unless="${property::exists('project.release.type')}" /> <!-- nightly / dev / alpha / beta# / rc# / release -->
+    <if test="${project.release.type == 'nightly'}">
+        <property name="project.version.full" value="${project.version + '-nightly-' + build.date}" />
+    </if>
+    <if test="${project.release.type != 'nightly'}">
+        <property name="project.version.full" value="${project.version + if(project.release.type == 'release', '', '-' + project.release.type)}" dynamic="true" />
+    </if>
+    
+    
+    <!-- named project configurations -->
+    <!-- 
+        Sets config parameters for build type and dynamically defines top-level 
+        build output directory based on target framework,platform,project name,
+        build type and version.
+        For example, on Linux running mono 1.1, the top-level build dir would be:
+        build/mono-1.0.unix/Axiom3D-1.06-debug
+    -->
+    <target name="debug" description="Perform a 'debug' build">
+        <property name="project.config" value="debug" />
+        <property name="build.debug" value="true" />
+    <!--	<property name="build.dir" value="${project::get-base-directory()}/build/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" /> -->
+        <property name="build.dir" value="${project::get-base-directory()}/../build/${project.config}" />
+        <property name="dist.dir" value="${project::get-base-directory()}/../dist/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" />
+    </target>
+
+    <target name="release" description="Perform a 'release' build">
+        <property name="project.config" value="release" />
+        <property name="build.debug" value="false" />
+    <!--	<property name="build.dir" value="${project::get-base-directory()}/build/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" /> -->
+        <property name="build.dir" value="${project::get-base-directory()}/../build/${project.config}" />
+        <property name="dist.dir" value="${project::get-base-directory()}/../dist/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" />
+    </target>
+    
+    <!-- global build settings -->
+    <!-- Note: build.dir is dynamic and is defined in the named project configuration tasks (eg. debug, release) -->
+    
+    <!-- Settings for the top-level build envirnment -->
+    <property name="build.bin.dir" value="${path::combine(build.dir, 'bin')}" dynamic="true" />
+    <property name="build.lib.dir" value="${path::combine(build.dir, 'lib')}" dynamic="true" />
+    
+    <!-- Aliases for managed and native dependencies -->
+    <!-- NOTE: dynamic should be false for these so nested buildfiles don't change the path-->
+
+    <!-- Define locations of various Axiom dependencies provided by the dev environment -->
+    <property name="dependencies.dir" value="${project::get-base-directory()}/../../Dependencies" dynamic="false" />
+    <property name="dependencies.managed.dir" value="${path::combine(dependencies.dir, 'Managed')}" dynamic="false" />
+    <property name="dependencies.managed.win32.dir" value="${path::combine(dependencies.managed.dir, 'DotNet')}" dynamic="false" />
+    <property name="dependencies.managed.unix.dir" value="${path::combine(dependencies.managed.dir, 'Mono')}" dynamic="false" />
+    <property name="dependencies.native.dir" value="${path::combine(dependencies.dir, 'Native')}" dynamic="false" />
+    <property name="dependencies.native.win32.dir" value="${path::combine(dependencies.native.dir, 'DotNet')}" dynamic="false" />
+    <property name="dependencies.native.unix.dir" value="${path::combine(dependencies.native.dir, 'Mono')}" dynamic="false" />
+    
+    <!-- 
+        OK, here's a bit of cleverness I may regret - define a 'runtime' managed
+        and native dependencies dir based on platform we are executing on.
+    -->
+    <if test="${platform::is-win32()}">
+        <property name="managed.dependencies.dir" value="${dependencies.managed.win32.dir}" dynamic="false"/>
+        <property name="native.dependencies.dir" value="${dependencies.native.win32.dir}" dynamic="false"/>		
+    </if>
+    <if test="${platform::is-unix()}">
+        <property name="managed.dependencies.dir" value="${dependencies.managed.unix.dir}" dynamic="false"/>
+        <property name="native.dependencies.dir" value="${dependencies.native.unix.dir}" dynamic="false"/>
+    </if>
+
+    
+    <!-- Paths for Managed DirectX -->
+    <!-- NOTE: Points to the location of the Managed DirectX assemblies.  If you
+        recieve error messages relating to missing DirectX assemblies, check
+        here first.
+    -->
+    <property name="directx.sdk.dir" value="${environment::get-variable('DXSDK_DIR')}" dynamic="true" />
+    <property name="directx.dir" value="${path::combine(directx.sdk.dir, 'Developer Runtime/Beta/x86/DirectX for Managed Code')}" dynamic="true" />
+    <!-- alternate settings
+    <property name="win.sys.root" value="${environment::get-variable('SystemRoot')}" dynamic="true" />
+    <property name="directx.dir" value="${path::combine(win.sys.root, 'Microsoft.NET/Managed DirectX/v9.02.2904')}" dynamic="true" />
+    -->
+    
+    
+    <!-- default configuration -->
+    <property name="project.config" value="debug" /> <!-- debug|release -->
+    <property name="nant.console.name" value="NAnt" />
+    <property name="build.defines" value="" />
+    <property name="build.number" value="${math::abs(math::floor(timespan::get-total-days(datetime::now() - datetime::parse('01/01/2000'))))}" />
+    
+    <!-- platform specific properties. These are the defaults -->
+    <property name="current.build.defines" value="${build.defines}" />
+    
+    
+    <!-- Buildfile aliases for sub-projects of the solution -->
+    <!-- 
+        Right now one fileset is defined for each buildfile to allow
+        build targets to be fine-grained (one for each project in the
+        overall solution).  Could be combined to reduce complexity (eg. all
+        buildfiles for Axiom plugins or scenemanagers could be treated as a unit)
+    -->
+    <fileset id="realmforge.utility.buildfile">
+        <include name="../RealmForge/Utility/RealmForge.Utility.build" />
+    </fileset>
+    <fileset id="axiom.buildfile">
+        <include name="Engine/Axiom.build" />
+    </fileset>
+    <fileset id="axiom.platforms.win32.buildfile">
+        <include name="Platforms/Win32/Axiom.Platforms.Win32.build" />
+    </fileset>
+    <fileset id="axiom.platforms.sdl.buildfile">
+        <include name="Platforms/SDL/Axiom.Platforms.SDL.build" />
+    </fileset>
+    <fileset id="axiom.plugins.cgprogrammanager.buildfile">
+        <include name="Plugins/CgProgramManager/Axiom.Plugins.CgProgramManager.build" />
+    </fileset>
+    <fileset id="axiom.plugins.particlefx.buildfile">
+        <include name="Plugins/ParticleFX/Axiom.Plugins.ParticleFX.build" />
+    </fileset>
+    <fileset id="axiom.rendersystems.directx9.buildfile">
+        <include name="RenderSystems/DirectX9/Axiom.RenderSystems.DirectX9.build" />
+    </fileset>
+    <fileset id="axiom.rendersystems.opengl.buildfile">
+        <include name="RenderSystems/OpenGL/Axiom.RenderSystems.OpenGL.build" />
+    </fileset>
+    <fileset id="axiom.scenemanagers.bsp.buildfile">
+        <include name="SceneManagers/Bsp/Axiom.SceneManagers.Bsp.build"/>
+    </fileset>
+    <fileset id="axiom.scenemanagers.octree.buildfile">
+        <include name="SceneManagers/Octree/Axiom.SceneManagers.Octree.build"/>
+    </fileset>
+    <fileset id="axiom.scenemanagers.paginglandscape.buildfile">
+        <include name="SceneManagers/PagingLandscape/Axiom.SceneManagers.PagingLandscape.build"/>
+    </fileset>
+    <fileset id="axiom.demos.buildfile">
+        <include name="Demos/Axiom.Demos.build" />
+    </fileset>
+    <!--
+    <fileset id="axiom.samples.yat.buildfile">
+        <include name="Samples/YAT/YAT.build"/>
+    </fileset>
+    -->
+    
+    <!-- BEGIN: General build tasks -->
+    <target name="init" description="Initializes build properties" unless="${target::has-executed('init')}">
+        <call target="${project.config}" />
+        <call target="set-framework-configuration" />
+    </target>
+    
+    <target name="build.clean" depends="init" description="Deletes current build configuration">
+        <delete dir="${build.dir}" if="${directory::exists(build.dir)}" />
+    </target>
+
+    <target name="build.cleanall" description="Deletes every build configuration">
+        <echo message="Deleting all builds from all configurations" />
+        <delete dir="build" if="${directory::exists('build')}" />
+    </target>
+
+    <target name="cleanall" description="Deletes every build and dist configuration" depends="build.cleanall, dist.cleanall"/>
+
+    <target name="build.setup" depends="init, create-common-assemblyinfo" unless="${target::has-executed('build.setup')}" description="Sets up build area">
+        <echo message="Build Directory is ${build.dir}" />
+        <!-- ensure build directory exists -->
+        <mkdir dir="${build.dir}" />
+    </target>
+
+    <target name="build.all" depends="build.axiom3d, build.axiom.demos" description="Build everything"/>
+    
+    <!-- END: General build tasks -->
+    
+    <!-- BEGIN: Axiom3D core build tasks -->
+    <target name="build.axiom3d.setup" depends="build.setup" unless="${target::has-executed('build.axiom3d.setup')}" description="Sets up build area">
+        <!-- 
+            Define build directory for Axiom3D projects - Note: this is all the 
+            assemblies considered 'core' to the Axiom engine. 
+        -->
+        <property name="axiom3d.build.dir" value="${path::combine(build.dir, 'Axiom3D')}" />
+    
+        <!-- ensure Axiom3D build directory exists -->
+        <mkdir dir="${axiom3d.build.dir}" />
+    </target>
+
+    <target name="build.axiom3d" depends="build.axiom3d.setup" description="Builds the Axiom3D engine for the current build configuration">
+        <!-- Call required targets in order -->
+        <!-- 
+            Call targets building Windows-specific assemblies only on 
+            Windows - should really add this logic to the target instead 
+        -->
+        <call target="build.realmforge.utility" />
+        <call target="build.axiom" />
+        <call target="build.axiom.platforms.win32" if="${platform::is-win32()}" />
+        <call target="build.axiom.platforms.sdl" />
+        <call target="build.axiom.plugins.cgprogrammanager" />
+        <call target="build.axiom.plugins.particlefx" />
+        <call target="build.axiom.rendersystems.directx9" if="${platform::is-win32()}" />
+        <call target="build.axiom.rendersystems.opengl" />
+        <call target="build.axiom.scenemanagers.bsp" />
+        <call target="build.axiom.scenemanagers.octree" />
+        <call target="build.axiom.scenemanagers.paginglandscape" />
+    </target>
+    
+    <!-- Build targets for the individual Axiom3D assemblies -->
+    <target name="build.realmforge.utility" description="Build RealmForge.Utility assembly" depends="build.axiom3d.setup" unless="${target::has-executed('build.realmforge.utility')}">
+        <nant target="build">
+            <buildfiles refid="realmforge.utility.buildfile"/>
+        </nant>
+    </target>
+
+    <target name="build.axiom" description="Build Axiom assembly" depends="build.realmforge.utility" unless="${target::has-executed('build.axiom')}">
+        <nant target="build">
+            <buildfiles refid="axiom.buildfile"/>
+        </nant>
+    </target>
+
+    <target name="build.axiom.platforms.win32" description="Build Axiom.Platforms.Win32 assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.platforms.win32')}">
+        <nant target="build">
+            <buildfiles refid="axiom.platforms.win32.buildfile"/>
+        </nant>
+    </target>
+
+    <target name="build.axiom.platforms.sdl" description="Build Axiom.Platforms.SDL assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.platforms.sdl')}">
+        <nant target="build">
+            <buildfiles refid="axiom.platforms.sdl.buildfile"/>
+        </nant>
+    </target>
+
+    <target name="build.axiom.plugins.cgprogrammanager" description="Build Axiom.Plugins.CgProgramManager assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.plugins.cgprogrammanager')}">
+        <nant target="build">
+            <buildfiles refid="axiom.plugins.cgprogrammanager.buildfile"/>
+        </nant>
+    </target>
+
+    <target name="build.axiom.plugins.particlefx" description="Build Axiom.Plugins.ParticleFX assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.plugins.particlefx')}">
+        <nant target="build">
+            <buildfiles refid="axiom.plugins.particlefx.buildfile"/>
+        </nant>
+    </target>
+
+    <target name="build.axiom.rendersystems.directx9" description="Build Axiom.RenderSystems.DirectX9 assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.rendersystems.directx9')}">
+        <nant target="build">
+            <buildfiles refid="axiom.rendersystems.directx9.buildfile"/>
+        </nant>
+    </target>
+
+    <target name="build.axiom.rendersystems.opengl" description="Build Axiom.RenderSystems.OpenGL assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.rendersystems.opengl')}">
+        <nant target="build">
+            <buildfiles refid="axiom.rendersystems.opengl.buildfile"/>
+        </nant>
+    </target>
+
+    <target name="build.axiom.scenemanagers.bsp" description="Build Axiom.SceneManagers.Bsp assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.scenemanagers.bsp')}">
+        <nant target="build">
+            <buildfiles refid="axiom.scenemanagers.bsp.buildfile"/>
+        </nant>
+    </target>
+
+    <target name="build.axiom.scenemanagers.octree" description="Build Axiom.SceneManagers.Octree assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.scenemanagers.octree')}">
+        <nant target="build">
+            <buildfiles refid="axiom.scenemanagers.octree.buildfile"/>
+        </nant>
+    </target>
+
+    <target name="build.axiom.scenemanagers.paginglandscape" description="Build Axiom.SceneManagers.PagingLandscape assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.scenemanagers.paginglandscape')}">
+        <nant target="build">
+            <buildfiles refid="axiom.scenemanagers.paginglandscape.buildfile"/>
+        </nant>
+    </target>
+    <!-- END: Axiom3D core build tasks -->
+
+    <!-- BEGIN:  Axiom Demos tasks -->
+    <!-- Note: This just calls targets in the relevant build file since this
+        app is effectively standalone and has no dependency relationships with
+        other buildfiles, unlike the Axiom core assemblies
+    -->
+    <target name="build.axiom.demos" description="Build the Axiom Demos" depends="build.axiom3d" unless="${target::has-executed('build.axiom.demos')}">
+        <nant target="build">
+            <buildfiles refid="axiom.demos.buildfile"/>
+        </nant>
+    </target>
+
+    <target name="run.axiom.demos" description="Run the Axiom Demos app" depends="build.axiom.demos">
+        <nant target="run">
+            <buildfiles refid="axiom.demos.buildfile"/>
+        </nant>
+    </target>
+    
+    <!-- END: Axiom Demos tasks -->
+
+    <!-- BEGIN: YAT tasks -->
+    <!--
+    <target name="build.axiom.samples.yat" description="Build the YAT sample app" depends="build.axiom3d" unless="${target::has-executed('build.axiom.samples.yat')}">
+        <nant target="build">
+            <buildfiles refid="axiom.samples.yat.buildfile"/>
+        </nant>
+    </target> 
+    -->
+
+    <!--
+    <target name="run.axiom.samples.yat" description="Run the YAT sample app" depends="build.axiom.samples.yat">
+        <nant target="run">
+            <buildfiles refid="axiom.samples.yat.buildfile"/>
+        </nant>
+    </target>  
+    -->
+    <!-- END: YAT tasks -->
+
+    <!-- BEGIN: General Distribution targets -->
+    <target name="dist.setup" description="General setup of the distribution directory" depends="init" unless="${target::has-executed('dist.setup')}">
+        <echo message="dist Directory is ${dist.dir}" />
+        <!-- ensure dist directory exists -->
+        <mkdir dir="${dist.dir}" />
+    </target>
+
+    <target name="dist.clean" description="Cleans the dist dir for the current build configuration" depends="init">
+        <delete dir="${dist.dir}" if="${directory::exists(dist.dir)}" />
+    </target>
+
+    <target name="dist.cleanall" description="Cleans every dist configuration">
+        <delete dir="dist" if="${directory::exists('dist')}" />
+    </target>
+    <!-- END: General Distribution targets -->
+    
+    <!-- BEGIN: Packaging targets -->
+
+    <target name="dist.axiom.demos" description="Deploy the Axiom Demos in preparation for packaging" depends="build.axiom.demos, dist.setup" unless="${target::has-executed('dist.axiom.demos')}">
+        <echo message="Dist Axiom Demos: coming soon!" />
+    </target>
+    
+    <!-- END: Packaging targets -->
+    
+    <!-- BEGIN: Framework support targets -->
+    <target name="set-framework-configuration">
+        <if test="${not(target::exists('set-'+framework::get-target-framework()+'-framework-configuration'))}">
+            <fail message="The '${framework::get-target-framework()}' framework is not supported by this version of NAnt." />
+        </if>
+        <call target="set-${framework::get-target-framework()}-framework-configuration" />
+    </target>
+
+    <target name="set-net-1.0-framework-configuration">
+        <property name="nant.settings.currentframework" value="net-1.0" />
+        <property name="current.build.defines" value="${build.defines}NET,NET_1_0" dynamic="true" />
+        <property name="link.sdkdoc.version" value="SDK_v1_0" />
+        <property name="link.sdkdoc.web" value="true" />
+    </target>
+
+    <target name="set-net-1.1-framework-configuration">
+        <property name="nant.settings.currentframework" value="net-1.1" />
+        <property name="current.build.defines" value="${build.defines}NET,NET_1_1" dynamic="true" />
+        <property name="link.sdkdoc.version" value="SDK_v1_1" />
+        <property name="link.sdkdoc.web" value="true" />
+    </target>
+
+    <target name="set-net-2.0-framework-configuration">
+        <property name="nant.settings.currentframework" value="net-2.0" />
+        <property name="current.build.defines" value="${build.defines}NET,NET_2_0" dynamic="true" />
+        <property name="link.sdkdoc.version" value="SDK_v1_1" />
+        <property name="link.sdkdoc.web" value="true" />
+    </target>
+
+    <target name="set-netcf-1.0-framework-configuration">
+        <property name="nant.settings.currentframework" value="netcf-1.0" />
+        <property name="current.build.defines" value="${build.defines}NETCF,NETCF_1_0" dynamic="true" />
+        <property name="link.sdkdoc.version" value="SDK_v1_1" />
+        <property name="link.sdkdoc.web" value="true" />
+    </target>
+
+    <target name="set-mono-1.0-framework-configuration">
+        <property name="nant.settings.currentframework" value="mono-1.0" />
+        <property name="current.build.defines" value="${build.defines}MONO,MONO_1_0" dynamic="true" />
+        <property name="link.sdkdoc.version" value="SDK_v1_1" />
+        <property name="link.sdkdoc.web" value="true" />
+    </target>
+
+    <target name="set-mono-2.0-framework-configuration">
+        <property name="nant.settings.currentframework" value="mono-2.0" />
+        <property name="current.build.defines" value="${build.defines}MONO,MONO_2_0" dynamic="true" />
+        <property name="link.sdkdoc.version" value="SDK_v1_1" />
+        <property name="link.sdkdoc.web" value="true" />
+    </target>
+
+    <target name="set-sscli-1.0-framework-configuration">
+        <property name="nant.settings.currentframework" value="sscli-1.0" />
+        <property name="current.build.defines" value="${build.defines}SSCLI,SSCLI_1_0" dynamic="true" />
+        <property name="link.sdkdoc.version" value="SDK_v1_0" />
+        <property name="link.sdkdoc.web" value="true" />
+    </target>
+    <!-- END: Framework support targets -->
+    
+    <!-- MATHOMS BELOW -->
+    <!-- The targets below are NOT actively used - just moved here during 
+    transition period while this build system is in active development -->
+    
+    <!-- 
+        specifies whether the CommonAssemblyInfo.cs file should be created.
+        we do not want this for releases (whether they're beta or release) as
+        this would cause the build number to be updated
+        NOTE: disabled at present for Axiom, but left in for future consideration
+    -->
+    <property name="create.assemblyinfo" value="false" />
+
+    <!-- Not used at the moment.  Left here for possible future use -->
+    <target name="create-common-assemblyinfo" if="${create.assemblyinfo}">
+        <!-- ensure CommonAssemblyInfo.cs is writable if it already exists -->
+        <attrib file="Axiom/CommonAssemblyInfo.cs" readonly="false" if="${file::exists('Axiom/CommonAssemblyInfo.cs')}" />
+        <!-- generate the source file holding the common assembly-level attributes -->
+        <asminfo output="Axiom/CommonAssemblyInfo.cs" language="CSharp">
+            <imports>
+                <import namespace="System" />
+                <import namespace="System.Reflection" />
+                <import namespace="System.Runtime.InteropServices" />
+            </imports>
+            <attributes>
+                <attribute type="ComVisibleAttribute" value="false" />
+                <attribute type="CLSCompliantAttribute" value="false" />
+                <attribute type="AssemblyTitleAttribute" value="Axiom3D" />
+                <attribute type="AssemblyDescriptionAttribute" value="A .NET Graphics Engine" />
+                <attribute type="AssemblyConfigurationAttribute" value="${project.release.type}" />
+                <attribute type="AssemblyCompanyAttribute" value="http://axiomengine.sourceforge.net" />
+                <attribute type="AssemblyProductAttribute" value="Axiom3D" />
+                <attribute type="AssemblyCopyrightAttribute" value="Copyright (C) 2005-${datetime::get-year(datetime::now())} The Axiom3D Team" />
+                <attribute type="AssemblyTrademarkAttribute" value="" />
+                <attribute type="AssemblyCultureAttribute" value="" />
+                <attribute type="AssemblyVersionAttribute" value="${project.version}.${build.number}.0" />
+                <attribute type="AssemblyInformationalVersionAttribute" value="${project.version}" />
+            </attributes>
+        </asminfo>
+    </target>
+
+    <target name="userdoc" depends="build.all" description="Builds user documentation">
+        <!-- build the documenter -->
+        <csc target="library" define="${current.build.defines}" warnaserror="true" debug="${build.debug}" output="${build.dir}/bin/NDoc.Documenter.NAnt.dll">
+            <nowarn>
+            <!-- do not report deprecation warnings -->
+                <warning number="0618" />
+            </nowarn>
+            <sources failonempty="true">
+                <include name="src/NDoc.Documenter.NAnt/*.cs" />
+            <!-- common assembly-level attributes -->
+                <include name="src/CommonAssemblyInfo.cs" />
+            </sources>
+            <references failonempty="true">
+                <include name="${build.dir}/bin/NAnt.Core.dll" />
+                <include name="${lib.framework.dir}/NDoc.ExtendedUI.dll" />
+                <include name="${lib.framework.dir}/NDoc.Core.dll" />
+                <include name="System.Web.dll" />
+            </references>
+            <resources basedir="src/NDoc.Documenter.NAnt/Resources" prefix="Documenter.xslt.">
+                <include name="**/*.xslt" />
+            </resources>
+            <resources>
+                <include name="*.resx"/>
+            </resources>
+        </csc>
+        <echo message="Creating task and type documentation from ${build.dir}/bin" />
+        <exec program="${build.dir}/bin/${nant.console.name}.exe" useruntimeengine="true">
+            <arg value="-indent:1" />
+            <arg value="-buildfile:NAnt.build" />
+            <arg value="-D:project.version=${project.version}" />
+            <arg value="-D:project.release.type=${project.release.type}" />
+            <arg value="-targetframework:${framework::get-target-framework()}" />
+            <arg value="${project.config}" />
+            <arg value="self-userdoc" />
+        </exec>
+    </target>
+
+    <target name="self-userdoc" depends="init">
+        <!-- use ndoc and NAnt.Documenter to build user doc if they need it -->
+        <uptodate property="help.uptodate">
+            <targetfiles>
+                <include name="${build.dir}/doc/help/*.html" />
+            </targetfiles>
+            <sourcefiles basedir="${build.dir}/bin">
+            <!-- make sure the tasks/types are not new -->
+                <include name="NAnt.Core.dll" />
+                <include name="*Tasks.dll" />
+                <include name="NAnt.NUnit.dll" />
+            <!-- make sure the documenter is not new -->
+                <include name="NDoc.Documenter.*.dll" />
+            </sourcefiles>
+        </uptodate>
+        <if test="${not(help.uptodate)}">
+            <ndoc>
+                <assemblies basedir="${build.dir}/bin">
+                    <include name="NAnt.Core.dll" />
+                    <include name="*Tasks.dll" />
+                    <include name="NAnt.NUnit.dll" />
+            <!-- never document NAntContrib as part of NAnt -->
+                    <exclude name="NAnt.Contrib.Tasks.dll" />
+                </assemblies>
+                <documenters>
+                    <documenter name="NAnt">
+                        <property name="OutputDirectory" value="${build.dir}/doc/help" />
+                        <property name="SdkDocVersion" value="${link.sdkdoc.version}" />
+                        <property name="SdkLinksOnWeb" value="${link.sdkdoc.web}" />
+                <!-- set base uri used for linking to other NAnt docs -->
+                        <property name="NAntBaseUri" value="../" />
+                <!-- do not filter on namespace -->
+                        <property name="NamespaceFilter" value="" />
+                <!-- set the name and version of the product for which docs are generated -->
+                        <property name="ProductName" value="NAnt" />
+                        <property name="ProductVersion" value="${project.version.full}" />
+                        <property name="ProductUrl" value="http://nant.sourceforge.net" />
+                        <property name="Preliminary" value="${not(project.release.type == 'release')}" />
+                        <property name="DocumentAttributes" value="True" />
+                        <property name="IncludeAssemblyVersion" value="True" />
+                        <property name="ShowMissingParams" value="True" />
+                        <property name="ShowMissingReturns" value="True" />
+                        <property name="ShowMissingValues" value="True" />
+                    </documenter>
+                </documenters>
+            </ndoc>
+        </if>
+        <!-- copy doc files from source-->
+        <copy todir="${build.dir}">
+            <fileset>
+                <include name="doc/**" />
+                <exclude name="**/obj/**" />
+                <exclude name="**/bin/**" />
+            </fileset>
+        </copy>
+        <echo message="User documentation: file://${build.dir}/doc/index.html" />
+    </target>
+
+    <target name="sdkdoc" depends="build.all" description="Builds SDK documentation">
+        <echo message="Creating SDK Documentation for ${build.dir}/bin/${nant.console.name}.exe" />
+        <exec program="${build.dir}/bin/${nant.console.name}.exe" useruntimeengine="true">
+            <arg value="-indent:1" />
+            <arg value="-buildfile:NAnt.build" />
+            <arg value="-D:project.version=${project.version}" />
+            <arg value="-D:project.release.type=${project.release.type}" />
+            <arg value="-targetframework:${framework::get-target-framework()}" />
+            <arg value="${project.config}" />
+            <arg value="self-sdkdoc" />
+        </exec>
+    </target>
+
+    <target name="self-sdkdoc" depends="init">
+        <!-- use ndoc to build sdk doc if they are not uptodate-->
+        <uptodate property="sdk.uptodate">
+            <targetfiles>
+                <include name="${build.dir}/doc/sdk/*.chm" />
+            </targetfiles>
+            <sourcefiles basedir="${build.dir}/bin">
+                <include name="NAnt.Core.dll" />
+                <include name="*Tasks.dll" />
+                <include name="NAnt.NUnit.dll" />
+            <!-- make sure the documenter is not new -->
+                <include name="NDoc.Documenter.*.dll" />
+            </sourcefiles>
+        </uptodate>
+        <if test="${not(sdk.uptodate)}">
+            <ndoc>
+                <assemblies basedir="${build.dir}/bin">
+                    <include name="NAnt.Core.dll" />
+                    <include name="NAnt.*Tasks.dll" />
+                    <include name="NAnt.NUnit.dll" />
+                </assemblies>
+                <documenters>
+                    <documenter name="MSDN">
+                        <property name="OutputDirectory" value="${build.dir}/doc/sdk" />
+                        <property name="OutputTarget" value="HtmlHelpAndWeb" />
+                        <property name="SdkDocVersion" value="${link.sdkdoc.version}" />
+                        <property name="SdkLinksOnWeb" value="${link.sdkdoc.web}" />
+                        <property name="HtmlHelpName" value="NAnt-SDK" />
+                        <property name="IncludeFavorites" value="False" />
+                        <property name="Title" value="NAnt SDK Documentation - v${project.version.full}" />
+                        <property name="SplitTOCs" value="False" />
+                        <property name="DefaulTOC" value="" />
+                        <property name="ShowVisualBasic" value="True" />
+                        <property name="Preliminary" value="${not(project.release.type == 'release')}" />
+                        <property name="ShowMissingSummaries" value="${build.debug}" />
+                        <property name="ShowMissingRemarks" value="${build.debug}" />
+                        <property name="ShowMissingParams" value="${build.debug}" />
+                        <property name="ShowMissingReturns" value="${build.debug}" />
+                        <property name="ShowMissingValues" value="${build.debug}" />
+                        <property name="DocumentAttributes" value="True" />
+                        <property name="ShowTypeIdInAttributes" value="False" />
+                        <property name="DocumentInternals" value="False" />
+                        <property name="DocumentPrivates" value="False" />
+                        <property name="DocumentProtected" value="True" />
+                        <property name="DocumentEmptyNamespaces" value="False" />
+                        <property name="IncludeAssemblyVersion" value="False" />
+                        <property name="CopyrightText" value="Copyright (C) 2001-${datetime::get-year(datetime::now())} Gerry Shaw" />
+                        <property name="CopyrightHref" value="http://nant.sourceforge.net" />
+                        <property name="EditorBrowsableFilter" value="Off" />
+                    </documenter>
+                </documenters>
+            </ndoc>
+        </if>
+    <!-- delete all intermediate build output -->
+        <delete>
+            <fileset basedir="${build.dir}/doc/sdk">
+                <include name="NAnt-SDK.hhc" />
+                <include name="NAnt-SDK.hhk" />
+                <include name="NAnt-SDK.hhp" />
+                <include name="NAnt-SDK.log" />
+            <!-- temporary directory -->
+                <include name="ndoc_msdn_temp" />
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="self-schema" depends="init">
+        <property name="schema.output" value="${build.dir}/schema/${project.name}.xsd" />
+        <!-- ensure schema directory exists -->
+        <mkdir dir="${build.dir}/schema" />
+        <!-- determine target namespace -->
+        <if test="${project.release.type == 'nightly'}">
+            <property name="schema.ns" value="http://nant.sf.net/${project.release.type + '/' + build.date + '-' + project.version + '/nant.xsd'}" />
+        </if>
+        <if test="${project.release.type != 'nightly'}">
+            <property name="schema.ns" value="http://nant.sf.net/release/${project.version.full}/nant.xsd" />
+        </if>
+        <!-- generate schema -->
+        <nantschema output="${schema.output}" target-ns="${schema.ns}" />
+    </target>
+
+    <target name="schema" depends="build.all">
+        <exec program="${build.dir}/bin/${nant.console.name}.exe" useruntimeengine="true">
+            <arg value="-buildfile:NAnt.build" />
+            <arg value="-D:project.version=${project.version}" />
+            <arg value="-D:project.release.type=${project.release.type}" />
+            <arg value="-targetframework:${framework::get-target-framework()}" />
+            <arg value="${project.config}" />
+            <arg value="self-schema" />
+        </exec>
+    </target>
+
+    <target name="changelog" depends="init">
+        <property name="start.date" value="2003/12/26"/>
+        <property name="now" value="${datetime::now()}"/>
+        <property name="end.date" value="${datetime::get-year(now)}/${datetime::get-month(now)}/${datetime::get-day(now)}"/>
+        <property name="changes.name-without-extension" value="changelog_${string::replace(start.date, '/', '-')}_to_${string::replace(end.date, '/', '-')}"/>
+        <cvs-changelog
+                start="${start.date}"
+                end="${end.date}"
+                xmlfile="${build.dir}/${changes.name-without-extension}.xml"
+                destination="${project::get-base-directory()}"
+                module="nant"/>
+        <style
+                in="${build.dir}/${changes.name-without-extension}.xml"
+                out="${build.dir}/${changes.name-without-extension}.html">
+            <parameters>
+                <parameter name="module" value="nant" />
+                <parameter name="title" value="NAnt Changelog (${project.version.full})" />
+                <parameter name="logo" value="doc/logo.gif" />
+                <parameter name="cvsweb" value="http://cvs.sourceforge.net/viewcvs.py/nant/" />
+                <parameter name="start-date" value="${start.date}" />
+                <parameter name="end-date" value="${end.date}" />
+            </parameters>
+        </style>
+        <delete file="${build.dir}/${changes.name-without-extension}.xml" />
+    </target>
+
+    <target name="deploy-schema" depends="schema" description="Deploys the Schema to VS.Net schemas dirs. For now it only copies to 7.0 and 7.1">
+        <!-- retrieve location of VS.NET 2002 schema store -->
+        <readregistry property="vs2002.xml.schemas" key="SOFTWARE\Microsoft\VisualStudio\7.0\InstallDir" hive="LocalMachine" failonerror="false" />
+        <if test="${property::exists('vs2002.xml.schemas')}">
+        <!-- deploy schema to VS.NET 2002 schema store -->
+            <copy file="${schema.output}" todir="${vs2002.xml.schemas}..\\Packages\schemas\xml" />
+        </if>
+        
+        <!-- retrieve location of VS.NET 2003 schema store -->
+        <readregistry property="vs2003.xml.schemas" key="SOFTWARE\Microsoft\VisualStudio\7.1\InstallDir" hive="LocalMachine" failonerror="false" />
+        <if test="${property::exists('vs2003.xml.schemas')}">
+        <!-- deploy schema to VS.NET 2002 schema store -->
+            <copy file="${schema.output}" todir="${vs2003.xml.schemas}..\\Packages\schemas\xml" />
+        </if>
+    </target>
+
+    <target name="package-common" depends="userdoc, sdkdoc, schema">
+        <!-- move config file -->
+        <move file="${build.dir}/bin/NAnt.exe.config" tofile="${build.dir}/bin/${nant.console.name}.exe.config" />
+        <!-- remove non-release files -->
+        <delete>
+            <fileset basedir="${build.dir}/bin">
+                <include name="NAnt.Console.*" />
+            <!-- remove test assemblies -->
+                <include name="*.Tests.*" />
+            </fileset>
+        </delete>
+        <!-- copy project files -->
+        <copy todir="${build.dir}">
+            <fileset>
+                <include name="*" />
+                <include name="doc/**" />
+                <include name="src/**" />
+                <include name="tests/**" />
+                <include name="examples/**" />
+                <include name="schema/**" />
+            <!-- third party assemblies -->
+                <include name="lib/**" />
+            <!-- website -->
+                <include name="web/**" />
+            <!-- docs -->
+                <include name="doc/**" />
+            <!-- exclude static html pages as these will be filter-copied -->
+                <exclude name="doc/**/*.html" />
+            <!-- exclude nighlty build file -->
+                <exclude name="nightly.xml" />
+            <!-- exclude release build file -->
+                <exclude name="release.xml" />
+            <!--exclude VS.Net stuff -->
+                <exclude name="**/*.suo" />
+                <exclude name="**/*j.user" />
+                <exclude name="**/bin/**" />
+                <exclude name="**/obj/**" />
+            </fileset>
+        </copy>
+        <!-- filter-copy static html pages -->
+        <copy todir="${build.dir}" overwrite="true">
+            <fileset>
+                <include name="doc/**/*.html" />
+            </fileset>
+            <filterchain>
+                <replacetokens>
+                    <token key="PRODUCT_VERSION" value="${project.version.full}" />
+                </replacetokens>
+            <!-- when NOT building a release package, add prelimary notice -->
+            from="&lt;!-- @PRELIMINARY_NOTICE@ -->"
+            to="&lt;p class=&quot;topicstatus&quot;>[This is preliminary documentation and subject to change.]&lt;/p>"
+            unless="${project.release.type == 'release'}"/>
+            <!-- when building a release package, remove the placeholder -->
+            from="&lt;!-- @PRELIMINARY_NOTICE@ -->"
+            to=""
+            if="${project.release.type == 'release'}"/>
+            </filterchain>
+                </copy>
+        <!-- determine the zip file prefix directory -->
+                <property name="project.zip.prefix" value="${project.name}-${project.version.full}" />
+            </target>
+    
+        <!-- creates tar for distributing the user manual and SDK to SourceForge -->
+            <target name="package-doc" depends="package-common">
+        <!-- determine name of temporary doc distribution -->
+                <property name="project.gzip-path.doc" value="${project::get-base-directory()}/build/${project.name}-${project.version.full}-doc.tar.gz" />
+        <!-- remove package gzip file if it already exists -->
+                <delete file="${project.gzip-path.doc}" if="${file::exists(project.gzip-path.doc)}" />
+        <!-- create package gzip file -->
+                <tar destfile="${project.gzip-path.doc}" compression="GZip">
+                    <fileset basedir="${build.dir}/doc">
+                        <include name="help/**/*" />
+                        <include name="sdk/*" />
+                        <exclude name="sdk/NAnt-SDK.chm" />
+                    </fileset>
+                </tar>
+                <echo message="Created '${project.config}' doc package at file://${project::get-base-directory()}/build/" />
+            </target>
+
+            <target name="package-src" depends="package-common">
+        <!-- determine name of source zip distribution -->
+                <property name="project.zip-path.src" value="${project::get-base-directory()}/build/${project.name}-${project.version.full}-src.zip" />
+        <!-- remove package zip file if it already exists -->
+                <delete file="${project.zip-path.src}" if="${file::exists(project.zip-path.src)}" />
+        <!-- create package zip file -->
+                <zip zipfile="${project.zip-path.src}" ziplevel="9">
+                    <fileset basedir="${build.dir}" prefix="${project.zip.prefix}">
+                        <include name="Makefile" />
+                        <include name="Makefile.nmake" />
+                        <include name="NAnt.build" />
+                        <include name="NAnt.sln" />
+                        <include name="COPYING.txt" />
+                        <include name="README.txt" />
+            <!-- third party assemblies -->
+                        <include name="lib/**/*" />
+            <!-- license & release notes -->
+                        <include name="doc/*" />
+            <!-- user manual (no SDK) -->
+                        <include name="doc/help/**" />
+            <!-- examples -->
+                        <include name="examples/**/*" />
+            <!-- sources -->
+                        <include name="src/**/*" />
+            <!-- unit tests -->
+                        <include name="tests/**/*" />
+                    </fileset>
+                </zip>
+        <!-- determine name of source gzipped tar distribution -->
+                <property name="project.gzip-path.src" value="${project::get-base-directory()}/build/${project.name}-${project.version.full}-src.tar.gz" />
+        <!-- remove package gzip file if it already exists -->
+                <delete file="${project.gzip-path.src}" if="${file::exists(project.gzip-path.src)}" />
+        <!-- create package gzip file -->
+                <tar destfile="${project.gzip-path.src}" compression="GZip">
+                    <fileset basedir="${build.dir}" prefix="${project.zip.prefix}">
+                        <include name="Makefile" />
+                        <include name="Makefile.nmake" />
+                        <include name="NAnt.build" />
+                        <include name="NAnt.sln" />
+                        <include name="COPYING.txt" />
+                        <include name="README.txt" />
+            <!-- third party assemblies -->
+                        <include name="lib/**/*" />
+            <!-- license & release notes -->
+                        <include name="doc/*" />
+            <!-- user manual (no SDK) -->
+                        <include name="doc/help/**" />
+            <!-- examples -->
+                        <include name="examples/**/*" />
+            <!-- sources -->
+                        <include name="src/**/*" />
+            <!-- unit tests -->
+                        <include name="tests/**/*" />
+                    </fileset>
+                </tar>
+                <echo message="Created '${project.config}' source packages at file://${project::get-base-directory()}/build/" />
+            </target>
+
+            <target name="package-bin" depends="package-common">
+        <!-- determine name of binary zip distribution -->
+                <property name="project.zip-path.bin" value="${project::get-base-directory()}/build/${project.name}-${project.version.full}-bin.zip" />
+        <!-- remove package zip file if it already exists -->
+                <delete file="${project.zip-path.bin}" if="${file::exists(project.zip-path.bin)}" />
+        <!-- create package zip file -->
+                <zip zipfile="${project.zip-path.bin}" ziplevel="9">
+                    <fileset basedir="${build.dir}" prefix="${project.zip.prefix}">
+                        <include name="COPYING.txt" />
+                        <include name="README.txt" />
+                        <include name="bin/**/*" />
+            <!-- license & release notes -->
+                        <include name="doc/*" />
+            <!-- user manual -->
+                        <include name="doc/help/**" />
+            <!-- SDK (in HTML Help format) -->
+                        <include name="doc/sdk/NAnt-SDK.chm" />
+            <!-- examples -->
+                        <include name="examples/**/*" />
+            <!-- XML Schema -->
+                        <include name="schema/**/*" />
+                    </fileset>
+                </zip>
+        <!-- determine name of binary gzipped tar distribution -->
+                <property name="project.gzip-path.bin" value="${project::get-base-directory()}/build/${project.name}-${project.version.full}-bin.tar.gz" />
+        <!-- remove package gzip file if it already exists -->
+                <delete file="${project.gzip-path.bin}" if="${file::exists(project.gzip-path.bin)}" />
+        <!-- create package gzip file -->
+                <tar destfile="${project.gzip-path.bin}" compression="GZip">
+                    <fileset basedir="${build.dir}" prefix="${project.zip.prefix}">
+                        <include name="COPYING.txt" />
+                        <include name="README.txt" />
+                        <include name="bin/**/*" />
+            <!-- license & release notes -->
+                        <include name="doc/*" />
+            <!-- user manual -->
+                        <include name="doc/help/**" />
+            <!-- SDK (in plain HTML format) -->
+                        <include name="doc/sdk/*" />
+                        <exclude name="doc/sdk/NAnt-SDK.chm" />
+            <!-- examples -->
+                        <include name="examples/**/*" />
+            <!-- XML Schema -->
+                        <include name="schema/**/*" />
+                    </fileset>
+                </tar>
+                <echo message="Created '${project.config}' binary packages at file://${project.zip-path.bin}" />
+            </target>
+
+            <target name="package" depends="package-doc, package-src, package-bin" description="Creates a binary and source distribution package." />
+    
+    <!-- Copies files to the bin folder. -->
+            <target name="UpdateBin" depends="build.all" description="Does a release build and copies them to the bin folder.">
+                <delete if="false">
+                    <fileset basedir="bin">
+                        <include name="NAnt*" />
+                        <exclude name="${nant.console.name}.exe" />
+                    </fileset>
+                </delete>
+                <copy todir="bin" overwrite="true">
+                    <fileset basedir="${build.dir}/bin/">
+                        <include name="NAnt*" />
+                        <exclude name="*Test*" />
+                        <exclude name="${nant.console.name}.xml" />
+                        <exclude name="${nant.console.name}.exe" />
+                    </fileset>
+                </copy>
+            </target>
+    
+    
+    <!-- install targets -->
+
+            <target name="install" depends="install-windows, install-linux" />
+    
+    <!--depends="userdoc" -->
+            <target name="install-windows" depends="build.all" if="${platform::is-win32()}">
+        <!-- install to program files directory by default -->
+                <property name="install.realprefix" value="${environment::get-folder-path('ProgramFiles')}" />
+                <if test="${property::exists('install.prefix') and string::get-length(install.prefix) != 0}">
+                    <property name="install.realprefix" value="${install.prefix}" />
+                </if>
+                <property name="install.copylocation" value="${path::combine(install.realprefix, 'NAnt')}"/>
+                <echo message="Installing NAnt to '${install.copylocation}' ..." />
+
+                <copy todir="${install.copylocation}" overwrite="true">
+                    <fileset basedir="${build.dir}">
+                        <include name="bin/**/*" />
+                        <include name="doc/**/*" />
+
+                        <exclude name="bin/nant.tests.config" />
+                        <exclude name="bin/*.Tests.*" />
+                    </fileset>
+                </copy>
+            </target>
+
+            <target name="install-linux" depends="build.all" if="${platform::is-unix()}">
+                <property name="install.realprefix" value="/usr/local" />
+                <if test="${property::exists('install.prefix') and string::get-length(install.prefix) != 0}">
+                    <property name="install.realprefix" value="${install.prefix}" />
+                </if>
+                <property name="install.bindir" value="${path::combine(install.realprefix, 'bin')}"/>
+                <property name="install.share" value="${path::combine(install.realprefix, 'share')}"/>
+                <property name="install.copylocation" value="${path::combine (install.share, 'NAnt')}"/>
+                <property name="prefix" value="${pkg-config::get-variable('mono', 'prefix')}"/>
+                <echo message="Installing NAnt to '${install.copylocation}' ..." />
+
+                <copy todir="${install.copylocation}" overwrite="true">
+                    <fileset basedir="${build.dir}">
+                        <include name="bin/**/*" />
+                        <include name="doc/**/*" />
+
+                        <exclude name="bin/nant.tests.config" />
+                        <exclude name="bin/*.Tests.*" />
+                    </fileset>
+                </copy>
+                <echo message="Installing NAnt wrapper script to '${install.bindir}' ..." />
+        <!-- store filename of wrapper script in property -->
+                <property name="wrapper" value="${path::combine(install.bindir, 'nant')}" />
+        <!-- 
+        create wrapper file using separate echo tasks for each line to ensure
+        the line endings of the generated file match the platform on which 
+        the wrapper is created
+        -->
+                <echo file="${wrapper}" append="false">#!/bin/sh</echo>
+                <echo file="${wrapper}" append="true">exec ${path::combine(prefix, 'bin')}/mono ${path::combine(install.copylocation, 'bin')}/NAnt.exe "$@"</echo>
+                <exec program="chmod" commandline="a+x ${path::combine(install.bindir, 'nant')}"/>
+            </target>
+
+            <target name="rpm" depends="init, build.all">
+                <echo message="Build dir: ${build.dir}"/>
+                <copy todir="${build.dir}">
+                    <fileset>
+                        <include name="NAnt.spec" />
+                    </fileset>
+                </copy>
+
+                <nant buildfile="release.xml" target="prepare-rpm"/>
+                <nant buildfile="release.xml" target="binary-rpm"/>
+            </target>
+
+        <!-- Example: build Microsoft.NET specific assemblies if we are on win32 and targeting a .NET Framework -->
+        <!--
+        <nant target="build" if="${platform::is-win32() and framework::get-family(framework::get-target-framework()) == 'net'}">
+        <buildfiles refid="buildfile_ref_here"/>
+        </nant>
+        -->
+        
+        <!-- Example: build win32 specific assemblies if we are on win32 -->
+        <!--
+        <nant target="build" if="${platform::is-win32()}">
+        <buildfiles refid="buildfile_ref_here" />
+        </nant>
+        -->
+
+        </project>
