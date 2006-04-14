@@ -203,9 +203,8 @@
             <Reference name="System.Xml" />
             <Reference name="Axiom"/>
             <Reference name="RealmForge.Utility"/>
-            <Reference name="Microsoft.DirectX" />
-            <Reference name="Microsoft.DirectX.DirectInput" />
-            <Reference name="Tao.Platform.Windows"/>
+			<Reference name="Microsoft.DirectX, Version=2.0.0.0, Culture=neutral" />
+			<Reference name="Tao.Platform.Windows"/>
             
             <Files>
                 <Match pattern="*.cs" path="." recurse="true"/>
@@ -244,10 +243,8 @@
             <Reference name="System.Xml" />
             <Reference name="Axiom" />
             <Reference name="RealmForge.Utility" />
-            <Reference name="Microsoft.DirectX" />
-            <Reference name="Microsoft.DirectX.Direct3D" />
-            <Reference name="Microsoft.DirectX.Direct3DX" />
-            <Reference name="Tao.Platform.Windows"  />
+			<Reference name="Microsoft.DirectX, Version=2.0.0.0, Culture=neutral" />
+			<Reference name="Tao.Platform.Windows"  />
             
             <Files>
                 <Match pattern="*.cs" path="." recurse="true"/>
