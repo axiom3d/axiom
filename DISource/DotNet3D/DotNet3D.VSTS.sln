@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{912AF745-7004-44D8-92E8-CFF5DF21A4DD}"
+	ProjectSection(SolutionItems) = preProject
+		DotNet3D.VSTS.vsmdi = DotNet3D.VSTS.vsmdi
+		localtestrun.testrunconfig = localtestrun.testrunconfig
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNet3D.Math", "Src\Math\DotNet3D.Math.csproj", "{2E553F58-388B-4975-8BF5-C1C2A8CD02BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNet3D.Math.Tests.VSTS", "Unit Tests\Math\DotNet3D.Math.Tests.VSTS.csproj", "{F36EB200-E517-4FCB-B72C-5AE6DC93C4AC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Math Library", "Math Library", "{0617331B-9CC1-4103-876C-F978AEC3BE94}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DAC971EA-E6D1-4C24-8E87-1E4088902E26}"
+EndProject
+Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = DotNet3D.VSTS.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2E553F58-388B-4975-8BF5-C1C2A8CD02BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E553F58-388B-4975-8BF5-C1C2A8CD02BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E553F58-388B-4975-8BF5-C1C2A8CD02BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E553F58-388B-4975-8BF5-C1C2A8CD02BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F36EB200-E517-4FCB-B72C-5AE6DC93C4AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F36EB200-E517-4FCB-B72C-5AE6DC93C4AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F36EB200-E517-4FCB-B72C-5AE6DC93C4AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F36EB200-E517-4FCB-B72C-5AE6DC93C4AC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2E553F58-388B-4975-8BF5-C1C2A8CD02BF} = {0617331B-9CC1-4103-876C-F978AEC3BE94}
+		{DAC971EA-E6D1-4C24-8E87-1E4088902E26} = {0617331B-9CC1-4103-876C-F978AEC3BE94}
+		{F36EB200-E517-4FCB-B72C-5AE6DC93C4AC} = {DAC971EA-E6D1-4C24-8E87-1E4088902E26}
+	EndGlobalSection
+EndGlobal

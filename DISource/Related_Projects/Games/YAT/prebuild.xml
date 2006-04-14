@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DNPreBuild xmlns="http://dnpb.sourceforge.net/schemas/dnpb-1.4.xsd">
+	<Solution name="YAT" activeConfig="Debug">
+		<Configuration name="Debug">
+			<Options>
+				<CompilerDefines>TRACE;DEBUG</CompilerDefines>
+				<OptimizeCode>false</OptimizeCode>
+				<CheckUnderflowOverflow>false</CheckUnderflowOverflow>
+				<AllowUnsafe>false</AllowUnsafe>
+				<OutputPath>bin\Debug</OutputPath>
+				<WarningLevel>4</WarningLevel>
+				<WarningsAsErrors>false</WarningsAsErrors>
+				<SupressWarnings>1595;1591;219;1573;1572;168;1574;1570;1587</SupressWarnings>
+				<DebugInformation>true</DebugInformation>
+				<RegisterCOMInterop>false</RegisterCOMInterop>
+				<IncrementalBuild>true</IncrementalBuild>
+				<BaseAddress>285212672</BaseAddress>
+				<FileAlignment>4096</FileAlignment>
+				<NoStdLib>false</NoStdLib>
+			</Options>
+		</Configuration>
+		<Configuration name="Release">
+			<Options>
+				<CompilerDefines>TRACE</CompilerDefines>
+				<OptimizeCode>true</OptimizeCode>
+				<CheckUnderflowOverflow>false</CheckUnderflowOverflow>
+				<AllowUnsafe>false</AllowUnsafe>
+				<OutputPath>bin\Release</OutputPath>
+				<WarningLevel>4</WarningLevel>
+				<WarningsAsErrors>false</WarningsAsErrors>
+				<SupressWarnings>1595;1591;219;1573;1572;168;1574;1570;1587</SupressWarnings>
+				<DebugInformation>false</DebugInformation>
+				<RegisterCOMInterop>false</RegisterCOMInterop>
+				<IncrementalBuild>true</IncrementalBuild>
+				<BaseAddress>285212672</BaseAddress>
+				<FileAlignment>4096</FileAlignment>
+				<NoStdLib>false</NoStdLib>
+			</Options>
+		</Configuration>
+
+
+		<Project name="YAT" path="." type="WinExe" rootNamespace="YAT">
+			<Configuration name="Debug">
+				<Options>
+					<OutputPath>../../build/debug/YAT</OutputPath>
+					<AllowUnsafe>true</AllowUnsafe>
+				</Options>
+			</Configuration>
+			<Configuration name="Release">
+				<Options>
+					<OutputPath>../../build/release/YAT</OutputPath>
+					<AllowUnsafe>true</AllowUnsafe>
+				</Options>
+			</Configuration>
+			<?if OS = "Win32" ?>
+			
+			<ReferencePath>../../Dependencies/Managed/Win32</ReferencePath>
+			
+			<?else ?>
+			
+			<ReferencePath>../../Dependencies/Managed/Mono</ReferencePath>
+			
+			<?endif ?>
+			<Reference name="System"/>
+			<Reference name="System.Data"/>
+			<Reference name="System.Drawing"/>
+			<Reference name="System.Xml"/>
+			<Reference name="RealmForge.Utility"/>
+			<Reference name="Axiom"/>
+			
+			<?if OS = "Win32" ?>
+			
+			<Reference name="Axiom.RenderSystems.DirectX9"/>
+			<Reference name="Axiom.Platforms.Win32"/>
+			
+			<?else ?>
+			
+			<Reference name="Axiom.RenderSystems.OpenGL"/>
+			<Reference name="Axiom.Platforms.SDL"/>
+			
+			<?endif ?>
+			
+
+			<Files>
+				<Match pattern="*.cs" recurse="true"/>
+			</Files>
+		</Project>
+		
+	</Solution>
+</DNPreBuild>
+
+	
