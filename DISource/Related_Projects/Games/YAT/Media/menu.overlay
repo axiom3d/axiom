@@ -1,0 +1,446 @@
+// YAT - Yet Another Tetris clone
+// Copyright (C) 2004  Christian Larsen (feedback@dword.dk)
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+#include <overlay_templates.inc>
+
+//////////////
+// MainMenu //
+//////////////
+
+Menu/MainMenu
+{
+	zorder 100
+
+	container Panel(MainMenu/MenuBackground): MenuBackgroundTemplate
+	{
+		container Panel(MainMenu/MenuPanel): MenuPanelTemplate
+		{
+			container Panel(MainMenu/MenuLogo): MenuLogoTemplate
+			{
+			}
+			
+			element TextArea(MainMenu/NewGame): MenuItemTemplate
+			{
+				top 0.10417
+				caption Start Game!
+			}
+
+			element TextArea(MainMenu/Help): MenuItemTemplate
+			{
+				top 0.1875
+				caption Help
+			}
+
+			element TextArea(MainMenu/Highscores): MenuItemTemplate
+			{
+				top 0.27083
+				caption Highscores
+			}
+
+			element TextArea(MainMenu/Quit): MenuItemTemplate
+			{
+				top 0.35417
+				caption Quit
+			}
+		}
+	}
+}
+
+//////////////
+// HelpMenu //
+//////////////
+
+Menu/HelpMenu
+{
+	zorder 100
+
+	container Panel(HelpMenu/MenuBackground): MenuBackgroundTemplate
+	{
+		container Panel(HelpMenu/MenuPanel): MenuPanelTemplate
+		{
+			top -0.3625
+			left -0.4
+			height 0.8
+			width 0.8
+		
+			container Panel(HelpMenu/MenuLogo): MenuLogoTemplate
+			{
+			}
+			
+			element TextArea(HelpMenu/HelpText): MenuItemTemplate
+			{
+				top 0.10417
+				caption Help
+			}
+
+			element TextArea(HelpMenu/Line1): GeneralTextTemplate
+			{
+				top 0.20833
+				left 0.025
+				caption Assemble the falling pieces into horizontal lines to remove
+			}
+
+			element TextArea(HelpMenu/Line2): GeneralTextTemplate
+			{
+				top 0.25
+				left 0.025
+				caption the lines and gain points. The more lines removed with
+			}
+
+			element TextArea(HelpMenu/Line3): GeneralTextTemplate
+			{
+				top 0.29167
+				left 0.025
+				caption one piece the more points you get. As lines are removed
+			}
+
+			element TextArea(HelpMenu/Line4): GeneralTextTemplate
+			{
+				top 0.33333
+				left 0.025
+				caption the level increases making the pieces fall faster.
+			}
+
+//			element TextArea(HelpMenu/Line5): GeneralTextTemplate
+//			{
+//				top 0.375
+//			}
+
+			element TextArea(HelpMenu/Line6a): GeneralTextTemplate
+			{
+				top 0.41667
+				left 0.075
+				caption [LEFT] and [RIGHT]
+			}
+
+			element TextArea(HelpMenu/Line6b): GeneralTextTemplate
+			{
+				horz_align center
+				top 0.41667
+				caption Move piece left/right
+			}
+
+			element TextArea(HelpMenu/Line7a): GeneralTextTemplate
+			{
+				top 0.45833
+				left 0.075
+				caption [UP] or [SPACE]
+			}
+
+			element TextArea(HelpMenu/Line7b): GeneralTextTemplate
+			{
+				horz_align center
+				top 0.45833
+				caption Rotate piece (CCW)
+			}
+
+			element TextArea(HelpMenu/Line8a): GeneralTextTemplate
+			{
+				top 0.5
+				left 0.075
+				caption [DOWN]
+			}
+
+			element TextArea(HelpMenu/Line8b): GeneralTextTemplate
+			{
+				horz_align center
+				top 0.5
+				caption Drop piece faster
+			}
+
+//			element TextArea(HelpMenu/Line9): GeneralTextTemplate
+//			{
+//				top 0.54167
+//			}
+
+			element TextArea(HelpMenu/Line10): GeneralTextTemplate
+			{
+				top 0.58333
+				left 0.025
+				caption NOTE: You can move the mouse to adjust the view angle,
+			}
+
+			element TextArea(HelpMenu/Line11): GeneralTextTemplate
+			{
+				top 0.625
+				left 0.025
+				caption and use the scroll wheel to zoom in and out.
+			}
+
+			element TextArea(HelpMenu/ContinueText): GeneralTextTemplate
+			{
+				horz_align center
+				vert_align bottom
+				top -0.08333
+				alignment center
+				caption Press any key to continue...
+			}
+		}
+	}
+}
+
+////////////////////
+// HighscoresMenu //
+////////////////////
+
+Menu/HighscoresMenu
+{
+	zorder 100
+
+	container Panel(HighscoresMenu/MenuBackground): MenuBackgroundTemplate
+	{
+		container Panel(HighscoresMenu/MenuPanel): MenuPanelTemplate
+		{
+			top -0.35
+			height 0.75
+		
+			container Panel(HighscoresMenu/MenuLogo): MenuLogoTemplate
+			{
+			}
+			
+			element TextArea(HighscoresMenu/HighscoresText): MenuItemTemplate
+			{
+				top 0.10417
+				caption Highscores:
+			}
+
+			element TextArea(HighscoresMenu/Name1): HighscoreNameTemplate
+			{
+				top 0.20833
+				colour_top 1.0 1.0 0.0
+				colour_bottom 0.8 0.8 0.0
+			}
+
+			element TextArea(HighscoresMenu/Points1): HighscorePointsTemplate
+			{
+				top 0.20833
+				colour_top 1.0 1.0 0.0
+				colour_bottom 0.8 0.8 0.0
+			}
+
+			element TextArea(HighscoresMenu/Name2): HighscoreNameTemplate
+			{
+				top 0.25
+			}
+
+			element TextArea(HighscoresMenu/Points2): HighscorePointsTemplate
+			{
+				top 0.25
+			}
+
+			element TextArea(HighscoresMenu/Name3): HighscoreNameTemplate
+			{
+				top 0.29167
+			}
+
+			element TextArea(HighscoresMenu/Points3): HighscorePointsTemplate
+			{
+				top 0.29167
+			}
+
+			element TextArea(HighscoresMenu/Name4): HighscoreNameTemplate
+			{
+				top 0.33333
+			}
+
+			element TextArea(HighscoresMenu/Points4): HighscorePointsTemplate
+			{
+				top 0.33333
+			}
+
+			element TextArea(HighscoresMenu/Name5): HighscoreNameTemplate
+			{
+				top 0.375
+			}
+
+			element TextArea(HighscoresMenu/Points5): HighscorePointsTemplate
+			{
+				top 0.375
+			}
+
+			element TextArea(HighscoresMenu/Name6): HighscoreNameTemplate
+			{
+				top 0.41667
+			}
+
+			element TextArea(HighscoresMenu/Points6): HighscorePointsTemplate
+			{
+				top 0.41667
+			}
+
+			element TextArea(HighscoresMenu/Name7): HighscoreNameTemplate
+			{
+				top 0.45833
+			}
+
+			element TextArea(HighscoresMenu/Points7): HighscorePointsTemplate
+			{
+				top 0.45833
+			}
+
+			element TextArea(HighscoresMenu/Name8): HighscoreNameTemplate
+			{
+				top 0.5
+			}
+
+			element TextArea(HighscoresMenu/Points8): HighscorePointsTemplate
+			{
+				top 0.5
+			}
+
+			element TextArea(HighscoresMenu/Name9): HighscoreNameTemplate
+			{
+				top 0.54167
+			}
+
+			element TextArea(HighscoresMenu/Points9): HighscorePointsTemplate
+			{
+				top 0.54167
+			}
+
+			element TextArea(HighscoresMenu/Name10): HighscoreNameTemplate
+			{
+				top 0.58333
+			}
+
+			element TextArea(HighscoresMenu/Points10): HighscorePointsTemplate
+			{
+				top 0.58333
+			}
+
+			element TextArea(HighscoresMenu/ContinueText): GeneralTextTemplate
+			{
+				horz_align center
+				vert_align bottom
+				top -0.08333
+				alignment center
+				caption Press any key to continue...
+			}
+		}
+	}
+}
+
+//////////////
+// GameMenu //
+//////////////
+
+Menu/GameMenu
+{
+	zorder 100
+
+	container Panel(GameMenu/MenuBackground): MenuBackgroundTemplate
+	{
+		container Panel(GameMenu/MenuPanel): MenuPanelTemplate
+		{
+			container Panel(GameMenu/MenuLogo): MenuLogoTemplate
+			{
+			}
+			
+			element TextArea(GameMenu/ResumeGame): MenuItemTemplate
+			{
+				top 0.16667
+				caption Resume Game
+			}
+
+			element TextArea(GameMenu/AbortGame): MenuItemTemplate
+			{
+				top 0.25
+				caption Abort Game
+			}
+		}
+	}
+}
+
+//////////////////
+// GameOverMenu //
+//////////////////
+
+Menu/GameOverMenu
+{
+	zorder 100
+
+	container Panel(GameOverMenu/MenuPanel): MenuPanelTemplate
+	{
+		top -0.125
+		height 0.25
+		
+		element TextArea(GameOverMenu/GameOverText): MenuItemTemplate
+		{
+			top 0.0625
+			colour_top 1.0 1.0 0.0
+			colour_bottom 0.8 0.8 0.0
+			caption Game Over!
+		}
+
+		element TextArea(GameOverMenu/ContinueText): GeneralTextTemplate
+		{
+			horz_align center
+			vert_align bottom
+			top -0.08333
+			alignment center
+			caption Press any key to continue...
+		}
+	}
+}
+
+//////////////////////
+// NewHighscoreMenu //
+//////////////////////
+
+Menu/NewHighscoreMenu
+{
+	zorder 100
+
+	container Panel(NewHighscoreMenu/MenuPanel): MenuPanelTemplate
+	{
+		top -0.175
+		height 0.35
+		
+		element TextArea(NewHighscoreMenu/NewHighscoreText): MenuItemTemplate
+		{
+			vert_align top
+			top 0.03125
+			colour_top 1.0 1.0 0.0
+			colour_bottom 0.8 0.8 0.0
+			caption New Highscore!
+		}
+
+		element TextArea(NewHighscoreMenu/YouPlacedText): GeneralTextTemplate
+		{
+			horz_align center
+			top 0.11458
+			alignment center
+			caption You placed 1st...
+		}
+
+		element TextArea(NewHighscoreMenu/Name): MenuItemTemplate
+		{
+			vert_align top
+			top 0.15625
+			caption _
+		}
+
+		element TextArea(NewHighscoreMenu/ContinueText): GeneralTextTemplate
+		{
+			horz_align center
+			vert_align bottom
+			top -0.08333
+			alignment center
+			caption Please enter your name...
+		}
+	}
+}
