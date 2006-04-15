@@ -765,7 +765,7 @@ namespace Axiom
                 {
                     // Is It Time To Update Our Calculations?
                     // Calculate New Framerate
-                    currentFPS = (Real)(frameCount / ( time - lastCalculationTime ) * 1000.0f);
+                    currentFPS = (Real)frameCount / (Real)(time - lastCalculationTime) * 1000.0f;
 
                     // calculate the averge framerate
                     if ( averageFPS == 0 )
