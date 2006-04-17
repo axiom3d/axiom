@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DNPreBuild xmlns="http://dnpb.sourceforge.net/schemas/dnpb-1.4.xsd">
+    <Solution name="Axiom3D" activeConfig="Debug">
+        <Configuration name="Debug">
+            <Options>
+                <CompilerDefines>TRACE;DEBUG</CompilerDefines>
+                <OptimizeCode>false</OptimizeCode>
+                <CheckUnderflowOverflow>false</CheckUnderflowOverflow>
+                <AllowUnsafe>false</AllowUnsafe>
+                <OutputPath>bin\Debug</OutputPath>
+                <WarningLevel>4</WarningLevel>
+                <WarningsAsErrors>false</WarningsAsErrors>
+                <SupressWarnings>1595;1591;219;1573;1572;168;1574;1570;1587</SupressWarnings>
+                <DebugInformation>true</DebugInformation>
+                <RegisterCOMInterop>false</RegisterCOMInterop>
+                <IncrementalBuild>true</IncrementalBuild>
+                <BaseAddress>285212672</BaseAddress>
+                <FileAlignment>4096</FileAlignment>
+                <NoStdLib>false</NoStdLib>
+                <XmlDocFile>Docs.xml</XmlDocFile>
+            </Options>
+        </Configuration>
+        <Configuration name="Release">
+            <Options>
+                <CompilerDefines>TRACE</CompilerDefines>
+                <OptimizeCode>true</OptimizeCode>
+                <CheckUnderflowOverflow>false</CheckUnderflowOverflow>
+                <AllowUnsafe>false</AllowUnsafe>
+                <OutputPath>bin\Release</OutputPath>
+                <WarningLevel>4</WarningLevel>
+                <WarningsAsErrors>false</WarningsAsErrors>
+                <SupressWarnings>1595;1591;219;1573;1572;168;1574;1570;1587</SupressWarnings>
+                <DebugInformation>false</DebugInformation>
+                <RegisterCOMInterop>false</RegisterCOMInterop>
+                <IncrementalBuild>true</IncrementalBuild>
+                <BaseAddress>285212672</BaseAddress>
+                <FileAlignment>4096</FileAlignment>
+                <NoStdLib>false</NoStdLib>
+                <XmlDocFile>Docs.xml</XmlDocFile>				
+            </Options>
+        </Configuration>
+        <Files>
+            <Match path="Documentation" pattern="*.*"/>
+            <Match path="." pattern="prebuild.xml" />
+        </Files>
+
+        <Project name="Axiom.Demos" path="Demos" type="WinExe" rootNamespace="Axiom">
+            <Configuration name="Debug">
+                <Options>
+                    <XmlDocFile>SampleBrowser.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                    <OutputPath>../../build/debug/Axiom_Demos</OutputPath>
+                </Options>
+            </Configuration>
+            <Configuration name="Release">
+                <Options>
+                    <XmlDocFile>SampleBrowser.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                    <OutputPath>../../build/release/Axiom_Demos</OutputPath>
+                </Options>
+            </Configuration>
+            
+            <?if OS = "Win32" ?>
+            
+            <ReferencePath>../../../Dependencies/Managed/DotNet</ReferencePath>
+            
+            <?else ?>
+            
+            <ReferencePath>../../../Dependencies/Managed/Mono</ReferencePath>
+            
+            <?endif ?>
+            
+            <Reference name="System"/>
+            <Reference name="System.Drawing"/>
+            <Reference name="System.Windows.Forms"/>
+            <Reference name="System.Xml"/>
+            <Reference name="System.Data"/>
+            <Reference name="RealmForge.Utility"/>
+            <Reference name="Axiom"/>
+
+            <?if OS = "Win32" ?>
+
+            <Reference name="Axiom.RenderSystems.DirectX9"/>
+            <Reference name="Axiom.Platforms.Win32"/>
+
+            <?else ?>
+
+            <Reference name="Axiom.RenderSystems.OpenGL"/>
+            <Reference name="Axiom.Platforms.SDL"/>
+
+            <?endif ?>
+
+            <Reference name="Axiom.Plugins.CgProgramManager"/>
+            <Reference name="Axiom.Plugins.ParticleFX"/>
+            <Reference name="Axiom.SceneManagers.Octree"/>
+            <Reference name="Axiom.SceneManagers.Bsp"/>
+            <Reference name="Axiom.SceneManagers.PagingLandscape"/>
+
+
+            <Files>
+                <Match pattern="*.cs" recurse="true"/>
+            </Files>
+        </Project>
+
+        <Project name="RealmForge.Utility" filterGroups="Axiom|Cegui" path="..\RealmForge\Utility" type="Library" assemblyName="RealmForge.Utility" rootNamespace="RealmForge">
+            <Configuration name="Debug">
+                <Options>
+                    <OutputPath>../../build/debug/Axiom3D</OutputPath>
+                    <XmlDocFile>RealmForge.Utility.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <Configuration name="Release">
+                <Options>
+                    <OutputPath>../../build/release/Axiom3D</OutputPath>
+                    <XmlDocFile>RealmForge.Utility.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <?if OS = "Win32" ?>
+            
+            <ReferencePath>../../../Dependencies/Managed/DotNet</ReferencePath>
+            
+            <?else ?>
+            
+            <ReferencePath>../../../Dependencies/Managed/Mono</ReferencePath>
+            
+            <?endif ?>
+            <Reference name="System"/>
+            <Reference name="System.Drawing"/>
+            <Reference name="System.Xml"/>
+            <Files>
+                <Match pattern="*.cs" recurse="true"/>
+            </Files>
+        </Project>
+        
+        <Project name="Axiom" type="Library" path="Engine" rootNamespace="Axiom" >		
+            <Configuration name="Debug">
+                <Options>
+                    <OutputPath>../../build/debug/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <Configuration name="Release">
+                <Options>
+                    <OutputPath>../../build/release/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <?if OS = "Win32" ?>
+            
+            <ReferencePath>../../../Dependencies/Managed/DotNet</ReferencePath>
+            
+            <?else ?>
+            
+            <ReferencePath>../../../Dependencies/Managed/Mono</ReferencePath>
+            
+            <?endif ?>
+
+            <Reference name="System" />
+            <Reference name="System.Configuration" />
+            <Reference name="System.Data" />
+            <Reference name="System.Drawing" />
+            <Reference name="System.Xml" />
+            <Reference name="RealmForge.Utility"/>
+            <Reference name="Tao.DevIl" />
+            <Reference name="ICSharpCode.SharpZipLib" />
+            
+            <Files>
+                <Match pattern="*.cs" path="." recurse="true"/>
+            </Files>
+        </Project>
+        
+        <Project name="Axiom.Platforms.Win32" type="Library" path="Platforms/Win32" rootNamespace="Axiom">
+            <Configuration name="Debug">
+                <Options>
+                    <OutputPath>../../../build/debug/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.Platforms.Win32.xml</XmlDocFile>
+                </Options>
+            </Configuration>
+            <Configuration name="Release">
+                <Options>
+                    <OutputPath>../../../build/release/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.Platforms.Win32.xml</XmlDocFile>
+                </Options>
+            </Configuration>
+            <?if OS = "Win32" ?>
+            
+            <ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
+            
+            <?else ?>
+            
+            <ReferencePath>../../../../Dependencies/Managed/Mono</ReferencePath>
+            
+            <?endif ?>
+
+            <Reference name="System" />
+            <Reference name="System.Data" />
+            <Reference name="System.Drawing" />
+            <Reference name="System.Windows.Forms" />
+            <Reference name="System.Xml" />
+            <Reference name="Axiom"/>
+            <Reference name="RealmForge.Utility"/>
+			<Reference name="Microsoft.DirectX, Version=2.0.0.0, Culture=neutral" />
+			<Reference name="Tao.Platform.Windows"/>
+            
+            <Files>
+                <Match pattern="*.cs" path="." recurse="true"/>
+            </Files>
+        </Project>
+
+        <Project name="Axiom.RenderSystems.DirectX9" type="Library" path="RenderSystems/DirectX9" rootNamespace="Axiom">
+            <Configuration name="Debug">
+                <Options>
+                    <OutputPath>../../../build/debug/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.RenderSystems.DirectX9.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <Configuration name="Release">
+                <Options>
+                    <OutputPath>../../../build/release/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.RenderSystems.DirectX9.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <?if OS = "Win32" ?>
+            
+            <ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
+            
+            <?else ?>
+            
+            <ReferencePath>../../../../Dependencies/Managed/Mono</ReferencePath>
+            
+            <?endif ?>
+
+            <Reference name="System" />
+            <Reference name="System.Data" />
+            <Reference name="System.Drawing" />
+            <Reference name="System.Windows.Forms" />
+            <Reference name="System.Xml" />
+            <Reference name="Axiom" />
+            <Reference name="RealmForge.Utility" />
+			<Reference name="Microsoft.DirectX, Version=2.0.0.0, Culture=neutral" />
+			<Reference name="Tao.Platform.Windows"  />
+            
+            <Files>
+                <Match pattern="*.cs" path="." recurse="true"/>
+            </Files>
+        </Project>
+
+        <Project name="Axiom.Platforms.SDL" type="Library" path="Platforms/SDL" rootNamespace="Axiom">
+            <Configuration name="Debug">
+                <Options>
+                    <OutputPath>../../../build/debug/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.Platforms.SDL.xml</XmlDocFile>
+                </Options>
+            </Configuration>
+            <Configuration name="Release">
+                <Options>
+                    <OutputPath>../../../build/release/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.Platforms.SDL.xml</XmlDocFile>
+                </Options>
+            </Configuration>
+            
+            <?if OS = "Win32" ?>
+            
+            <ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
+            
+            <?else ?>
+            
+            <ReferencePath>../../../../Dependencies/Managed/Mono</ReferencePath>
+            
+            <?endif ?>
+
+            <Reference name="System" />
+            <Reference name="System.Data" />
+            <Reference name="System.Drawing" />
+            <Reference name="System.Xml" />
+            <Reference name="Axiom" />
+            <Reference name="RealmForge.Utility"/>
+            <Reference name="Tao.Sdl"/>
+            
+            <Files>
+                <Match pattern="*.cs" path="." recurse="true"/>
+            </Files>
+        </Project>
+
+        <Project name="Axiom.RenderSystems.OpenGL" type="Library" path="RenderSystems/OpenGL" rootNamespace="Axiom" >
+            <Configuration name="Debug">
+                <Options>
+                    <OutputPath>../../../build/debug/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.RenderSystems.OpenGL.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <Configuration name="Release">
+                <Options>
+                    <OutputPath>../../../build/release/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.RenderSystems.OpenGL.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <?if OS = "Win32" ?>
+            
+            <ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
+            
+            <?else ?>
+            
+            <ReferencePath>../../../../Dependencies/Managed/Mono</ReferencePath>
+            
+            <?endif ?>
+
+            <Reference name="System" />
+            <Reference name="System.Data" />
+            <Reference name="System.Drawing" />
+            <Reference name="System.Windows.Forms" />
+            <Reference name="System.Xml" />
+            <Reference name="Axiom" />
+            <Reference name="RealmForge.Utility" />
+            <Reference name="Tao.OpenGl" localCopy="false"/>
+            <Reference name="Tao.OpenGl.ExtensionLoader"/>
+            <Reference name="Tao.OpenGl.Glu"/>
+
+            <?if OS = "Win32" ?>
+                <Reference name="Tao.Platform.Windows" />
+            <?else ?>
+                <Reference name="Tao.Sdl" />
+            <?endif ?>
+            
+            <Files>
+                <Match pattern="*.cs" path="." />
+                <Match pattern="*.cs" path="./ATI" />
+                <Match pattern="*.cs" path="./Nvidia" />
+                <Match pattern="*.cs" path="./GLSL" />
+                <?if OS = "Win32" ?>
+                    <Match pattern="*.cs" path="./Win32" />
+                <?else ?>
+                    <Match pattern="*.cs" path="./SDL" />
+                <?endif ?>
+            </Files>
+        </Project>
+        
+        <Project name="Axiom.Plugins.CgProgramManager" type="Library" path="Plugins/CgProgramManager" rootNamespace="Axiom">		
+            <Configuration name="Debug">
+                <Options>
+                    <OutputPath>../../../build/debug/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.Plugins.CgProgramManager.xml</XmlDocFile>
+                </Options>
+            </Configuration>
+            <Configuration name="Release">
+                <Options>
+                    <OutputPath>../../../build/release/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.Plugins.CgProgramManager.xml</XmlDocFile>
+                </Options>
+            </Configuration>
+            <?if OS = "Win32" ?>
+            
+            <ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
+            
+            <?else ?>
+            
+            <ReferencePath>../../../../Dependencies/Managed/Mono</ReferencePath>
+            
+            <?endif ?>
+
+            <Reference name="System" />
+            <Reference name="System.Data" />
+            <Reference name="System.Xml" />
+            <Reference name="Axiom"/>
+            <Reference name="RealmForge.Utility" />
+            <Reference name="Tao.Cg"  />
+            
+            <Files>
+                <Match pattern="*.cs" path="." recurse="true" />
+            </Files>
+        </Project>
+
+        <Project name="Axiom.Plugins.ParticleFX" type="Library" path="Plugins/ParticleFX" rootNamespace="Axiom" >
+            <Configuration name="Debug">
+                <Options>
+                    <OutputPath>../../../build/debug/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.Plugins.ParticleFX.xml</XmlDocFile>
+                </Options>
+            </Configuration>
+            <Configuration name="Release">
+                <Options>
+                    <OutputPath>../../../build/release/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.Plugins.ParticleFX.xml</XmlDocFile>
+                </Options>
+            </Configuration>
+            <?if OS = "Win32" ?>
+            
+            <ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
+            
+            <?else ?>
+            
+            <ReferencePath>../../../../Dependencies/Managed/Mono</ReferencePath>
+            
+            <?endif ?>
+
+            <Reference name="System" />
+            <Reference name="System.Data" />
+            <Reference name="System.Xml" />
+            <Reference name="Axiom" />
+            <Reference name="RealmForge.Utility" />
+            
+            <Files>
+                <Match pattern="*.cs" path="." recurse="true"/>
+            </Files>
+        </Project>
+        
+        <Project name="Axiom.SceneManagers.Octree" type="Library" path="SceneManagers\Octree" rootNamespace="Axiom" >
+            <Configuration name="Debug">
+                <Options>
+                    <OutputPath>../../../build/debug/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.SceneManagers.Octree.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <Configuration name="Release">
+                <Options>
+                    <OutputPath>../../../build/release/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.SceneManagers.Octree.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <?if OS = "Win32" ?>
+            
+            <ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
+            
+            <?else ?>
+            
+            <ReferencePath>../../../../Dependencies/Managed/Mono</ReferencePath>
+            
+            <?endif ?>
+
+            <Reference name="System" />
+            <Reference name="System.Data" />
+            <Reference name="System.Xml" />
+            <Reference name="Axiom"/>
+            <Reference name="RealmForge.Utility"/>
+            
+            <Files>
+                <Match pattern="*.cs" path="." recurse="true"/>
+            </Files>
+        </Project>
+        
+        <Project name="Axiom.SceneManagers.Bsp" type="Library" path="SceneManagers\Bsp" rootNamespace="Axiom" >
+            <Configuration name="Debug">
+                <Options>
+                    <OutputPath>../../../build/debug/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.SceneManagers.Bsp.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <Configuration name="Release">
+                <Options>
+                    <OutputPath>../../../build/release/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.SceneManagers.Bsp.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <?if OS = "Win32" ?>
+            
+            <ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
+            
+            <?else ?>
+            
+            <ReferencePath>../../../../Dependencies/Managed/Mono</ReferencePath>
+            
+            <?endif ?>
+
+            <Reference name="System" />
+            <Reference name="System.Data" />
+            <Reference name="System.Xml" />
+            <Reference name="Axiom" />
+            <Reference name="RealmForge.Utility"/>
+            
+            <Files>
+                <Match pattern="*.cs" path="." recurse="true"/>
+            </Files>
+        </Project>
+
+        <Project name="Axiom.SceneManagers.PagingLandscape" type="Library" path="SceneManagers\PagingLandscape" rootNamespace="Axiom">
+
+            <Configuration name="Debug">
+                <Options>
+                    <OutputPath>../../../build/debug/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.SceneManagers.PagingLandscape.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <Configuration name="Release">
+                <Options>
+                    <OutputPath>../../../build/release/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.SceneManagers.PagingLandscape.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <?if OS = "Win32" ?>
+            
+            <ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
+            
+            <?else ?>
+            
+            <ReferencePath>../../../../Dependencies/Managed/Mono</ReferencePath>
+            
+            <?endif ?>
+            <Reference name="System" />
+            <Reference name="System.Data" />
+            <Reference name="System.Xml" />
+            <Reference name="Axiom"/>
+            <Reference name="RealmForge.Utility"/>
+            
+            <Files>
+                <Match pattern="*.cs" path="." recurse="true"/>
+            </Files>
+        </Project>
+
+    
+    </Solution>
+</DNPreBuild>
+

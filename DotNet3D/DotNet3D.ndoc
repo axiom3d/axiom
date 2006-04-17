@@ -1,0 +1,46 @@
+<project SchemaVersion="1.3">
+    <assemblies>
+        <assembly location=".\build\net-2.0.win32\DotNet3D-0.01-release\lib\DotNet3D.Math.dll" documentation=".\build\net-2.0.win32\DotNet3D-0.01-release\lib\DotNet3D.Math.xml" />
+    </assemblies>
+    <namespaces>
+        <namespace name="DotNet3D.Math">A collection of useful classes for performing 3D calculations and transformations</namespace>
+    </namespaces>
+    <documenters>
+        <documenter name="JavaDoc">
+            <property name="OutputDirectory" value=".\doc\" />
+        </documenter>
+        <documenter name="LaTeX">
+            <property name="OutputDirectory" value=".\doc\" />
+            <property name="TextFileFullName" value="Documentation.tex" />
+            <property name="TexFileBaseName" value="Documentation" />
+            <property name="LatexCompiler" value="latex" />
+            <property name="TexFileFullPath" value=".\doc\Documentation.tex" />
+        </documenter>
+        <documenter name="LinearHtml">
+            <property name="OutputDirectory" value=".\doc\" />
+            <property name="Title" value="An NDoc Documented Class Library" />
+        </documenter>
+        <documenter name="MSDN">
+            <property name="OutputDirectory" value=".\build\net-2.0.win32\DotNet3D-0.01-release\doc\" />
+            <property name="HtmlHelpName" value="Documentation" />
+            <property name="Title" value="DotNet3D Class Library" />
+        </documenter>
+        <documenter name="MSDN 2003">
+            <property name="OutputDirectory" value=".\doc\" />
+            <property name="HtmlHelpName" value="DotNet3D.Math" />
+            <property name="Title" value="An NDoc Documented Class Library" />
+            <property name="AssemblyVersionInfo" value="AssemblyVersion" />
+            <property name="CopyrightText" value="Copyright 2005 DotNet3D Team" />
+            <property name="Preliminary" value="True" />
+            <property name="CleanIntermediates" value="True" />
+        </documenter>
+        <documenter name="VS.NET 2003">
+            <property name="OutputDirectory" value=".\doc\" />
+            <property name="HtmlHelpName" value="Documentation" />
+            <property name="Title" value="An NDoc documented library" />
+        </documenter>
+        <documenter name="XML">
+            <property name="OutputFile" value=".\doc\doc.xml" />
+        </documenter>
+    </documenters>
+</project>
