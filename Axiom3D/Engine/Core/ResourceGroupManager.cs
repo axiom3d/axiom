@@ -38,7 +38,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using DotNet3D.Math;
 
 #endregion Namespace Declarations
 
@@ -71,8 +70,8 @@ namespace Axiom
     /// </ul>
     /// </remarks>
     /// <ogre name="ResourceGroupListener">
-    ///     <file name="ResourceGroupManager.h"   revision="1.12.2.4" lastUpdated="5/14/2006" lastUpdatedBy="Borrillis" />
-    ///     <file name="ResourceGroupManager.cpp" revision="1.16.2.10" lastUpdated="5/14/2006" lastUpdatedBy="Borrillis" />
+    ///     <file name="OgreResourceGroupManager.h"   revision="1.12.2.4" lastUpdated="5/14/2006" lastUpdatedBy="Borrillis" />
+    ///     <file name="OgreResourceGroupManager.cpp" revision="1.16.2.10" lastUpdated="5/14/2006" lastUpdatedBy="Borrillis" />
     ///     <Borrillis>
     ///			Note: This has changed from a Class in OGRE to an interface here to better support derived classes
     ///     </Borrillis>
@@ -196,11 +195,8 @@ namespace Axiom
     ///	<see>ResourceGroupManager.ClearResourceGroup</see>
     ///	</summary>
     /// <ogre name="ResourceGroupListener">
-    ///     <file name="ResourceGroupManager.h"   revision="1.12.2.4" lastUpdated="5/14/2006" lastUpdatedBy="Borrillis" />
-    ///     <file name="ResourceGroupManager.cpp" revision="1.16.2.10" lastUpdated="5/14/2006" lastUpdatedBy="Borrillis" />
-    ///     <Borrillis>
-    ///			Note: This has changed from a Class in OGRE to an Interface here to better support derived classes
-    ///     </Borrillis>
+    ///     <file name="OgreResourceGroupManager.h"   revision="1.12.2.4" lastUpdated="5/14/2006" lastUpdatedBy="Borrillis" />
+    ///     <file name="OgreResourceGroupManager.cpp" revision="1.16.2.10" lastUpdated="5/14/2006" lastUpdatedBy="Borrillis" />
     /// </ogre> 
     public class ResourceGroupManager : Singleton<ResourceGroupManager>
     {
