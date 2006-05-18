@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -34,13 +42,18 @@ using System.IO;
 			
 namespace Axiom
 {
+    #region FileInfo Class and Collection
+
     /// <summary>Information about a file/directory within the archive will be returned using a FileInfo struct.</summary>
     /// <see cref="Archive"/>
-    public struct FileInfo 
+    /// <ogre name="FileInfo">
+    ///     <file name="OgreArchive.h"   revision="1.7" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+    /// </ogre> 
+    public struct FileInfo
     {
-		/// The archive in which the file has been found (for info when performing
-		/// multi-Archive searches, note you should still open through ResourceGroupManager)
-		public Archive Archive;
+        /// The archive in which the file has been found (for info when performing
+        /// multi-Archive searches, note you should still open through ResourceGroupManager)
+        public Archive Archive;
         /// The file's fully qualified name
         public String Filename;
         /// Path name; separated by '/' and ending with '/'
@@ -53,60 +66,251 @@ namespace Axiom
         public uint UncompressedSize;
     };
 
-    public class FileInfoList : List<FileInfo> {}
-
-	public interface IScriptLoader
-	{
-
-        /// <summary>
-        /// Gets the file patterns which should be used to find scripts for this class.
-        /// </summary>
-        /// <remarks>
-        /// This method is called when a resource group is loaded if you use 
-        /// ResourceGroupManager::registerScriptLoader. Returns a list of file 
-        /// patterns, in the order they should be searched in.
-        /// </remarks>
-		List<string> ScriptPatterns { get; }
-
-        /// <summary>
-        /// Parse a script file.
-        /// </summary>
-        /// <param name="stream">reference to a data stream which is the source of the script</param>
-        /// <param name="groupName">
-        /// The name of a resource group which should be used if any resources
-        /// are created during the parse of this script.
-        /// </param>
-		void ParseScript(Stream stream, string groupName);
-
-        /// <summary>
-        /// Gets the relative loading order of scripts of this type.
-        /// </summary>
-        /// <remarks>
-        /// There are dependencies between some kinds of scripts, and to enforce
-        /// this all implementors of this interface must define a loading order. 
-        /// Returns a value representing the relative loading order of these scripts
-        /// compared to other script users, where higher values load later.
-        /// </remarks>
-		float LoadingOrder { get; }
-
-	};
-
-    /// <summary>
-    ///    Summary description for Archive.
-    /// </summary>
-    public abstract class Archive : Resource
+    /// <ogre name="FileInfoList">
+    ///     <file name="OgreArchive.h"   revision="1.7" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+    /// </ogre> 
+    public class FileInfoList : List<FileInfo>
     {
-        public Archive( string archiveName )
+    }
+
+    #endregion FileInfo Class and Collection
+
+    #region Archive Abstract Class and Factory
+
+    /// <summary>Archive-handling class.</summary>
+    /// <remarks>
+    /// An archive is a generic term for a container of files. This may be a
+    /// filesystem folder, it may be a compressed archive, it may even be 
+    /// a remote location shared on the web. This class is designed to be 
+    /// subclassed to provide access to a range of file locations. 
+    /// <para/>
+    /// Instances of this class are never constructed or even handled by end-user
+    /// applications. They are constructed by custom ArchiveFactory classes, 
+    /// which plugins can register new instances of using ArchiveManager. 
+    /// End-user applications will typically use ResourceManager or 
+    /// ResourceGroupManager to manage resources at a higher level, rather than 
+    /// reading files directly through this class. Doing it this way allows you
+    /// to benefit from OGRE's automatic searching of multiple file locations 
+    /// for the resources you are looking for.
+    /// </remarks>
+    /// <ogre name="FileInfo">
+    ///     <file name="OgreArchive.h"   revision="1.7" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+    /// </ogre> 
+    public abstract class Archive
+    {
+        #region Fields and Properties
+
+        #region Name Property
+
+        private string _name;
+        /// Archive name
+        public string Name
         {
-            this.name = archiveName;
+            get
+            {
+                return _name;
+            }
+            protected set
+            {
+                _name = value;
+            }
+        }
+        
+        #endregion Name Property
+
+        #region Type Property
+
+        private string _type;
+        /// Archive type code
+        public string Type
+        {
+            get
+            {
+                return _type;
+            }
+            protected set
+            {
+                _type = value;
+            }
         }
 
+        #endregion Type Property
+			
+        /// Is this archive case sensitive in the way it matches files
+        public abstract bool IsCaseSensitive
+        {
+            get;
+        }
+
+        #endregion Fields and Properties
+
+        #region Constructors
+
         /// <summary>
-        /// 
+        /// Constructor - don't call direct, used by IArchiveFactory.
         /// </summary>
         /// <param name="name"></param>
-        public abstract Stream ReadFile( string fileName );
+        /// <param name="archType"></param>
+        public Archive( string name, string archType )
+        {
+            _name = name;
+            _type = archType;
+        }
 
-        public abstract string[] GetFileNamesLike( string startPath, string pattern );
+        #endregion Constructors
+
+        #region Methods
+
+        /// <summary>
+        /// Loads the archive
+        /// </summary>
+        /// <remarks>
+        /// This initializes all the internal data of the class.
+        /// <para/>
+        /// Do not call this function directly, it is meant to be used
+        /// only by the ArchiveManager class.
+        /// </remarks>
+        public abstract void Load();
+
+        /// <summary>
+        /// Unloads the archive
+        /// </summary>
+        /// <remarks>
+        /// Do not call this function directly, it is meant to be used
+        /// only by the ArchiveManager class.
+        /// </remarks>
+        public abstract void Unload();
+
+        /// <summary>
+        /// Open a stream on a given file. 
+        /// </summary>
+        /// <remarks>
+        /// There is no equivalent 'close' method; the returned stream
+        /// controls the lifecycle of this file operation.
+        /// </remarks>
+        /// <param name="filename">The fully qualified name of the file</param>
+        /// <returns>
+        /// A reference to a DataStream which can be used to read / write
+        ///  the file. If the file is not present, returns null.
+        /// </returns>
+        public abstract Stream Open( string filename );
+
+        #region List Method
+
+        /// <overloads>
+        /// <summary>
+        /// List all file names in the archive.
+        /// </summary>
+        /// <remarks>    
+        /// This method only returns filenames, you can also retrieve other
+        /// information using listFileInfo.
+        /// </remarks>
+        /// <returns>A list of filenames matching the criteria, all are fully qualified</returns>
+        /// </overloads>
+        public List<string> List()
+        {
+            return List( true );
+        }
+
+        /// <param name="recursive">Whether all paths of the archive are searched (if the archive has a concept of that)</param>
+        public abstract List<string> List( bool recursive );
+
+        #endregion List Method
+
+        #region ListFileInfo Method
+
+        /// <summary>
+        /// List all files in the archive with accompanying information.
+        /// </summary>
+        /// <returns>A list of structures detailing quite a lot of information about all the files in the archive.</returns>
+        public FileInfoList ListFileInfo()
+        {
+            return ListFileInfo( true );
+        }
+
+        /// <param name="recursive">Whether all paths of the archive are searched (if the archive has a concept of that)</param>
+        public abstract FileInfoList listFileInfo( bool recursive );
+
+        #endregion ListFileInfo Method
+
+        #region Find Method
+
+        /// <overloads>
+        /// <summary>
+        /// Find all file names matching a given pattern in this archive.
+        /// </summary>
+        /// <remarks> 
+        /// This method only returns filenames, you can also retrieve other
+        /// information using findFileInfo.
+        /// </remarks>
+        /// <param name="pattern">The pattern to search for; wildcards (*) are allowed</param>
+        /// <returns>A list of filenames matching the criteria, all are fully qualified</returns>
+        /// </overloads>
+        public List<string> Find( string pattern )
+        {
+            return Find( true );
+        }
+
+        /// <param name="recursive">Whether all paths of the archive are searched (if the archive has a concept of that)</param>
+        public abstract List<string> Find( string pattern, bool recursive );
+
+        #endregion Find Method
+
+        /// <summary>
+        /// Find out if the named file exists
+        /// </summary>
+        /// <param name="filename">fully qualified filename</param>
+        /// <returns></returns>
+        public abstract bool Exists( string filename );
+
+        #region FindFileInfo Method
+
+        /// <overloads>
+        /// <summary>
+        /// Find all files matching a given pattern in this archive and get 
+        /// some detailed information about them.
+        /// </summary>
+        /// <param name="pattern">The pattern to search for; wildcards (*) are allowed</param>
+        /// <returns>A list of file information structures for all files matching the criteria.</returns>
+        /// </overloads>
+        public FileInfoList FindFileInfo( string pattern )
+        {
+            return FindFileInfo( pattern, true );
+        }
+
+        /// <param name="recursive">Whether all paths of the archive are searched (if the archive has a concept of that)</param>
+        public abstract FileInfoList FindFileInfo( string pattern, bool recursive );
+
+        #endregion FindFileInfo Method
+
+        #endregion Methods
     }
+
+    /// <summary>
+    /// 	Interface for plugin developers to override to create new types of archive to load
+    /// 	resources from.
+    /// </summary>
+    /// <remarks>            
+    /// All access to 'archives' (collections of files, compressed or
+    /// just folders, maybe even remote) is managed via the abstract
+    /// Archive class. Plugins are expected to provide the
+    /// implementation for the actual codec itself, but because a
+    /// subclass of Archive has to be created for every archive, a
+    /// factory class is required to create the appropriate subclass.
+    /// <para/>
+    /// So archive plugins create a subclass of Archive AND a subclass
+    /// of ArchiveFactory which creates instances of the Archive
+    /// subclass. See the 'Zip' and 'FileSystem' plugins for examples.
+    /// Each Archive and ArchiveFactory subclass pair deal with a
+    /// single archive type (identified by a string).
+    /// </remarks>
+    /// <ogre name="ArchiveFactory">
+    ///     <file name="OgreArchiveFactory.h"   revision="1.11" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+    /// </ogre> 
+    public interface IArchiveFactory : AbstractFactory<Archive>
+    {
+    }
+
+    #endregion Archive Abstract Class and Factory
+
 }

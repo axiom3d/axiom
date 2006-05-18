@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="Axiom.ResourceManager">
+    <Position X="15" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Core\ResourceManager.cs</FileName>
+      <HashCode>CAAAgACAomVABCAACEAAXAAAEAEAAUAAIAABAAAxCDA=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+    </Compartments>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Axiom.SkeletonManager">
+    <Position X="7.25" Y="21.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Animating\SkeletonManager.cs</FileName>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAABAAEAAQAAAAAAAAAg=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="Axiom.MeshManager">
+    <Position X="9.5" Y="21.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Core\MeshManager.cs</FileName>
+      <HashCode>AAIkgAAQAAAEAQACCAAEACAAAABAgEAAwAAAABEAAAg=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="Axiom.TextureManager">
+    <Position X="11.75" Y="21.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Core\TextureManager.cs</FileName>
+      <HashCode>AgAEgAIAACAAAAAAAAAAAAAAAABAAEAAQQAAAAAAAAg=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="Axiom.FontManager">
+    <Position X="14" Y="21.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Fonts\FontManager.cs</FileName>
+      <HashCode>AAAAgAAAACEAAAAAAAIAAAAAAABAAEAAQACAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="Axiom.GpuProgramManager">
+    <Position X="16.25" Y="21.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Graphics\GpuProgramManager.cs</FileName>
+      <HashCode>ABIAgIAAACAQAAAAEAAACAAAAABAAEAgQAIAAAAAAAg=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="Axiom.HighLevelGpuProgramManager">
+    <Position X="18.5" Y="21.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Graphics\HighLevelGpuProgramManager.cs</FileName>
+      <HashCode>QBAAAAAQACAQAQAAAAAAAACAAABAAEAAQAEABAAAAAg=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+    </Compartments>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Axiom.MaterialManager">
+    <Position X="20.75" Y="21.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Graphics\MaterialManager.cs</FileName>
+      <HashCode>AAAAgAACICAACUCACBIAAAAAAABAAkAAwgAgAAAAAAg=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="Axiom.MaterialManager.PassAttributeParser" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Graphics\MaterialManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="Axiom.MaterialManager.TextureUnitAttributeParser" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Graphics\MaterialManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+  </Class>
+  <Class Name="Axiom.OverlayManager">
+    <Position X="23" Y="21.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Overlays\OverlayManager.cs</FileName>
+      <HashCode>AIAEAMAAACgCAAQAAAIAAAABCABUBEAAQACAAAAAEAg=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="Axiom.Resource">
+    <Position X="9" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Core\Resource.cs</FileName>
+      <HashCode>EAEBoASAAGAAgAAJAAAAQAQQQAQEAAYACAAQEBoAAAA=</HashCode>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Parent" />
+    </ShowAsAssociation>
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Axiom.Skeleton">
+    <Position X="1.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Animating\Skeleton.cs</FileName>
+      <HashCode>AAALgACAAQAQFhAAAEQAAgAiKABCqAAAAAAEuABABAA=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="Axiom.Mesh">
+    <Position X="3.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Core\Mesh.cs</FileName>
+      <HashCode>YUABojCIhYAJtgAAACwjU4AgGCiAAGAwAAAAlAFAAQI=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="Axiom.Texture">
+    <Position X="5.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Core\Texture.cs</FileName>
+      <HashCode>EAEACAAABCAAAAQASAQASEAEAogIAgEgAQABIBABAwA=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="Axiom.Archive">
+    <Position X="8" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>FileSystem\Archive.cs</FileName>
+      <HashCode>AAAAAAAAAAAAQAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Axiom.Font">
+    <Position X="10.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Fonts\Font.cs</FileName>
+      <HashCode>AEACgAAAAoAAAAYgAYeAgAAAQAAgCAAAA0AAAABAQAI=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="Axiom.GpuProgram">
+    <Position X="12.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Graphics\GpuProgram.cs</FileName>
+      <HashCode>CAIAkIAAAgBBAAIAAAAAAgAAACARAAAgBUAQBAQAAAA=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+  <Class Name="Axiom.Material">
+    <Position X="14.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Graphics\Material.cs</FileName>
+      <HashCode>AIAEgSmABGCACMRMJgwAIQEAAAgQAoAgAAIAwFAAIFA=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Axiom.Overlay">
+    <Position X="17" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Overlays\Overlay.cs</FileName>
+      <HashCode>aOAChACAECABFYQAEnIQAAgCFAAEASACAAAghkhAAAA=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+</ClassDiagram>

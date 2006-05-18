@@ -66,7 +66,7 @@ namespace Axiom
     /// A generic singleton
     /// </summary>
     /// <remarks>
-    /// Although this class will allow it, don't try to do this: Singleton< interface >
+    /// Although this class will allow it, don't try to do this: Singleton&lt; interface &gt;
     /// </remarks>
     /// <typeparam name="T">a class</typeparam>
     public abstract class Singleton<T> where T : class
