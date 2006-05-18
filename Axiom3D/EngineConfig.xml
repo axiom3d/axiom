@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<EngineConfig xmlns="http://tempuri.org/EngineConfig.xsd">
+
+	<FilePath type="Folder" src="../../../../Media/Textures"/>
+	<FilePath type="Folder" src="../../../../Media/Icons"/>
+	<FilePath type="Folder" src="../../../../Media/Sounds"/>
+	<FilePath type="Folder" src="../../../../Media/Fonts"/>
+	<FilePath type="Folder" src="../../../../Media/Meshes"/>
+	<FilePath type="Folder" src="../../../../Media/Skeletons"/>
+	<FilePath type="Folder" src="../../../../Media/Materials"/>
+	<FilePath type="Folder" src="../../../../Media/Materials\Entities"/>
+	<FilePath type="Folder" src="../../../../Media/Overlays"/>
+	<FilePath type="Folder" src="../../../../Media/GpuPrograms"/>
+	<FilePath type="Folder" src="../../../../Media/Terrain"/>
+	<FilePath type="Folder" src="../../../../Media/Terrain\ps_height_1k"/>
+	<FilePath type="Folder" src="../../../../Media/Temp"/>
+	<FilePath type="Folder" src="../../../../Media/Particles"/>
+	<FilePath type="Folder" src="../../../../Media/Logos"/>
+	<FilePath type="Folder" src="../../../../Media/GUI"/>
+	<FilePath type="Folder" src="../../../../Media/Cursors"/>
+	<FilePath type="ZipFile" src="../../../../Media/Archives/chiropteraDM.zip"/>
+	<FilePath type="ZipFile" src="../../../../Media/Archives/TechDemoPreviews.zip"/>
+</EngineConfig>
+ 
