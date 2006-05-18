@@ -72,21 +72,12 @@ namespace Axiom
     /// </remarks>
     /// 
     /// <ogre name="ResourceManager">
-    ///     <file name="ResourceManager.h"   revision="1.17.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-    ///     <file name="ResourceManager.cpp" revision="1.17.2.2" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-    ///     <Borrillis>
-    ///     </Borrillis>
+    ///     <file name="OgreResourceManager.h"   revision="1.17.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+    ///     <file name="OgreResourceManager.cpp" revision="1.17.2.2" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
     /// </ogre> 
     /// 
     public abstract class ResourceManager : IDisposable, IScriptLoader
     {
-
-        #region Delegates
-
-        public delegate void ManualResourceLoader();
-
-        #endregion Delegates
-
         #region Fields and Properties
 
         #region Resources Property
@@ -328,7 +319,7 @@ namespace Axiom
         /// ManualLoader instance is strongly recommended.
         /// </param>
         /// <param name="createParams">If any parameters are required to create an instance, they should be supplied here as name / value pairs</param>
-        public virtual Resource Create( string name, string group, bool isManual, ManualResourceLoader loader, NameValuePairList createParams )
+        public virtual Resource Create( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
         {
 		    // Call creation implementation
 		    Resource ret = createImpl(name, nextHandle(), group, isManual, loader, createParams);
@@ -396,7 +387,7 @@ namespace Axiom
         ///     Optional pointer to a list of name/value pairs 
         ///     containing loading parameters for this type of resource.
         /// </param>
-        public virtual Resource Load( string name, string group, bool isManual, ManualResourceLoader loader, NameValuePairList loadParams )
+        public virtual Resource Load( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
         {
             Resource ret = this[ name ];
             if ( ret == null )
@@ -645,7 +636,7 @@ namespace Axiom
         ///     to differentiate which concrete class is created.
         /// </param>
         /// <returns></returns>
-		protected abstract Resource createImpl(string name, ResourceHandle handle, string group, bool isManual, ManualResourceLoader loader, NameValuePairList createParams);
+		protected abstract Resource createImpl(string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams);
 
 		/// <summary>
 		/// Add a newly created resource to the manager
