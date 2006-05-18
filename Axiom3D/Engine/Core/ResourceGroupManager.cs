@@ -76,7 +76,7 @@ namespace Axiom
     ///			Note: This has changed from a Class in OGRE to an interface here to better support derived classes
     ///     </Borrillis>
     /// </ogre> 
-    public interface ResourceGroupListener
+    public interface IResourceGroupListener
     {
         /// <summary>
         /// This event is fired when a resource group begins parsing scripts.
@@ -301,7 +301,7 @@ namespace Axiom
 
         /// <summary></summary>
         //          typedef std::vector<ResourceGroupListener*> ResourceGroupListenerList;
-        public class ResourceGroupListenerList : List<ResourceGroupListener>
+        public class ResourceGroupListenerList : List<IResourceGroupListener>
         {
         };
 
@@ -1489,7 +1489,7 @@ namespace Axiom
         /// resource loading events. 
         /// </summary>
         /// <param name="rgl"></param>
-        public void AddResourceGroupListener( ResourceGroupListener rgl )
+        public void AddResourceGroupListener( IResourceGroupListener rgl )
         {
             if ( rgl != null )
             {
@@ -1512,7 +1512,7 @@ namespace Axiom
         /// Removes a ResourceGroupListener
         /// </summary>
         /// <param name="rgl"></param>
-        public void RemoveResourceGroupListener( ResourceGroupListener rgl )
+        public void RemoveResourceGroupListener( IResourceGroupListener rgl )
         {
             if ( rgl != null )
             {
