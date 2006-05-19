@@ -193,7 +193,7 @@ namespace Axiom
         /// A reference to a DataStream which can be used to read / write
         ///  the file. If the file is not present, returns null.
         /// </returns>
-        public abstract Stream Open( string filename );
+        public abstract Stream Open( string fileName );
 
         #region List Method
 
@@ -261,7 +261,7 @@ namespace Axiom
         /// </summary>
         /// <param name="filename">fully qualified filename</param>
         /// <returns></returns>
-        public abstract bool Exists( string filename );
+        public abstract bool Exists( string fileName );
 
         #region FindFileInfo Method
 
