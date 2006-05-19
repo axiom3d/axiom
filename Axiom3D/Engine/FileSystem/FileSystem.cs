@@ -41,7 +41,7 @@ using System.Text;
 
 #endregion Namespace Declarations
 			
-namespace Axiom.FileSystem
+namespace Axiom
 {
 
     /// <summary>
@@ -54,14 +54,19 @@ namespace Axiom.FileSystem
     public class FileSystemArchive : Archive
     {
         #region Fields and Properties
-        /// <summary>Base path; actually the same as mName, but for clarity </summary>
+
+        /// <summary>Base path; actually the same as Name, but for clarity </summary>
         private string _basePath;
 
         /// <summary>Directory stack of previous directories </summary>
         private Stack<string> _directoryStack;
+
         #endregion Fields and Properties
 
-        /// <overloads><summary>
+        #region Utility Methods
+
+        /// <overloads>
+        /// <summary>
         /// Utility method to retrieve all files in a directory matching pattern.
         /// </summary>
         /// <param name="pattern">File pattern</param>
@@ -138,6 +143,7 @@ namespace Axiom.FileSystem
             changeDirectory( cwd );
         }
 
+        #endregion Utility Methods
 
         #region Constructors and Destructors
 
@@ -179,12 +185,12 @@ namespace Axiom.FileSystem
             // Nothing to do here.
         }
 
-        public override System.IO.Stream Open( string filename )
+        public override System.IO.Stream Open( string fileName )
         {
 		    pushDirectory(_basePath);
-            if ( File.Exists( _basePath + filename ) )
+            if ( File.Exists( _basePath + fileName ) )
             {
-                System.IO.FileInfo fi = new System.IO.FileInfo( _basePath + filename );
+                System.IO.FileInfo fi = new System.IO.FileInfo( _basePath + fileName );
                 return (Stream)fi.Open( FileMode.Open, FileAccess.Read );
             }
             return null;
@@ -226,11 +232,11 @@ namespace Axiom.FileSystem
             return ret;
         }
 
-        public override bool Exists( string filename )
+        public override bool Exists( string fileName )
         {
             pushDirectory(_basePath);
 
-            bool retVal = File.Exists( _basePath + filename );
+            bool retVal = File.Exists( _basePath + fileName );
 
 		    popDirectory();
 
@@ -264,7 +270,7 @@ namespace Axiom.FileSystem
 
         public Archive CreateInstance( string name )
         {
-            return new FileSystemArchive(name, "FileSystem");
+            return new FileSystemArchive(name, _type);
         }
 
         public void DestroyInstance( Archive obj )

@@ -415,13 +415,13 @@ namespace Axiom
         /// Internal implementation of the 'load' action, only called if this 
         /// resource is not being loaded from a ManualResourceLoader. 
         /// </summary>
-        protected abstract void loadImpl();
+        protected abstract void load();
 
 		/// <summary>
 		/// Internal implementation of the 'unload' action; called regardless of
         /// whether this resource is being loaded from a ManualResourceLoader. 
 		/// </summary>
-		protected abstract void unloadImpl();
+		protected abstract void unload();
 
         /// <summary>
         /// Calculate the size of a resource; this will only be called after 'load'
