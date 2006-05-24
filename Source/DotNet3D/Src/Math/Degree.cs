@@ -106,6 +106,8 @@ namespace DotNet3D.Math
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
         public void GetObjectData( SerializationInfo info, StreamingContext context ) { info.AddValue( "value", _value ); }
 
+        public override string ToString() { return _value.ToString(); }
+
         #region IComparable<T> Members
 
         public int CompareTo( Degree other ) { return this._value.CompareTo( other ); }

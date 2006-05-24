@@ -38,6 +38,11 @@ namespace DotNet3D.Math
     /// </summary>
     public class Tuple< A, B >
     {
+        public Tuple( A first, B second )
+        {
+            this.first = first;
+            this.second = second;
+        }
         /// <summary></summary>
         public A first;
         /// <summary></summary>
