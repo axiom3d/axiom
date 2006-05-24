@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 
-//using DotNet3D.Math.Collections;
+using DotNet3D.Math.Collections;
 
 #endregion Namespace Declarations
 
@@ -43,7 +43,7 @@ namespace DotNet3D.Math
 {
     public sealed class Utility
     {
-        public static readonly Real PI = new Real( new Real( 4.0f ) * (Real)Atan( 1.0f ) );
+        public static readonly Real PI = new Real( new Real( 4.0f ) * (Real)ATan( 1.0f ) );
         public static readonly Real TWO_PI = new Real( 2.0f * PI );
         public static readonly Real HALF_PI = new Real( 0.5f * PI );
 
@@ -216,7 +216,6 @@ namespace DotNet3D.Math
             return new Real( 2.0f * (float)UnitRandom() - 1.0f );
         }
 
-        /*
         /// <summary>
         ///     Builds a reflection matrix for the specified plane.
         /// </summary>
@@ -320,6 +319,5 @@ namespace DotNet3D.Math
 
             return tangent;
         }
-        */
     }
 }
