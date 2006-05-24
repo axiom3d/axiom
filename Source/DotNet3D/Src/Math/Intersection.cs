@@ -46,10 +46,8 @@ namespace DotNet3D.Math
         /// </summary>
         /// <param name="hit"></param>
         /// <param name="distance"></param>
-        public IntersectionResult( bool hit, Real distance )
+        public IntersectionResult( bool hit, Real distance ) : base( hit, distance )
         {
-            first = hit;
-            second = distance;
         }
 
         public bool Hit
