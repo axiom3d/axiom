@@ -20,10 +20,10 @@ namespace Axiom.Demos
         const float FLOW_SPEED = 0.2f;
         RaySceneQuery raySceneQuery = null;
 
-        // move the camera like a human at 3m/sec
+        // move the _camera like a human at 3m/sec
         bool humanSpeed = false;
 
-        // keep camera 2m above the ground
+        // keep _camera 2m above the ground
         bool followTerrain = false;
 
         protected override void ChooseSceneManager()
@@ -35,10 +35,10 @@ namespace Axiom.Demos
         {
             camera = scene.CreateCamera( "PlayerCam" );
 
-            //            camera.Position = new Vector3(128, 25, 128);
-            //            camera.LookAt(new Vector3(0, 0, -300));
-            //            camera.Near = 1;
-            //            camera.Far = 384;
+            //            _camera.Position = new Vector3(128, 25, 128);
+            //            _camera.LookAt(new Vector3(0, 0, -300));
+            //            _camera.Near = 1;
+            //            _camera.Far = 384;
 
             camera.Position = new Vector3( 128, 400, 128 );
             camera.LookAt( new Vector3( 0, 0, -300 ) );
@@ -116,7 +116,7 @@ namespace Axiom.Demos
             // reset acceleration zero
             camAccel = Vector3.Zero;
 
-            // set the scaling of camera motion
+            // set the scaling of _camera motion
             cameraScale = 100 * e.TimeSinceLastFrame;
 
             // TODO Move this into an event queueing mechanism that is processed every frame
@@ -282,7 +282,7 @@ namespace Axiom.Demos
             {
                 camVelocity += ( camAccel * scaleMove * camSpeed );
 
-                // move the camera based on the accumulated movement vector
+                // move the _camera based on the accumulated movement vector
                 camera.MoveRelative( camVelocity * e.TimeSinceLastFrame );
 
                 // Now dampen the Velocity - only if user is not accelerating
@@ -295,7 +295,7 @@ namespace Axiom.Demos
             // update performance stats once per second
             if ( statDelay < 0.0f && showDebugOverlay )
             {
-                UpdateStats();
+                UpdateStats( e.TimeSinceLastFrame );
                 statDelay = 1.0f;
             }
             else
@@ -316,7 +316,7 @@ namespace Axiom.Demos
 
             if ( followTerrain )
             {
-                // adjust new camera position to be a fixed distance above the ground
+                // adjust new _camera position to be a fixed distance above the ground
                 raySceneQuery.Ray = new Ray( camera.Position, Vector3.NegativeUnitY );
                 raySceneQuery.Execute( this );
             }

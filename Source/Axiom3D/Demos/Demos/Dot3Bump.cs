@@ -156,7 +156,7 @@ namespace Axiom.Demos
                 lightFlares[i].Color = diffuseLightColors[i];
                 lightFlareSets[i].IsVisible = lightState[i];
             }
-            // move the camera a bit right and make it look at the knot
+            // move the _camera a bit right and make it look at the knot
             camera.MoveRelative( new Vector3( 50, 0, 20 ) );
             camera.LookAt( new Vector3( 0, 0, 0 ) );
         }

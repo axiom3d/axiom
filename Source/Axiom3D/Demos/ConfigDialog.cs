@@ -253,6 +253,8 @@ namespace Axiom.Demos
                system.ConfigOptions[ opt.Name ] = opt;
             }
 
+            //Root.Instance.RenderSystem = ( (RenderSystemNamespaceExtender)Vfs.Instance[ "/Axiom/RenderSystems/" ] ).GetObject<RenderSystem>( "OpenGL" );
+
             //TODO: Use ConfigurationSectionHandler to save config out to config file.
 
             this.DialogResult = DialogResult.OK;

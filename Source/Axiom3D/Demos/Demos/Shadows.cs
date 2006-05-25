@@ -96,7 +96,7 @@ namespace Axiom.Demos
             Animation anim = scene.CreateAnimation( "LightTrack", 20 );
             // spline it for nice curves
             anim.InterpolationMode = InterpolationMode.Spline;
-            // create a track to animate the camera's node
+            // create a track to animate the _camera's node
             AnimationTrack track = anim.CreateTrack( 0, lightNode );
             // setup keyframes
             KeyFrame key = track.CreateKeyFrame( 0 );

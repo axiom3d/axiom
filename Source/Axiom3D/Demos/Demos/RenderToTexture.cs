@@ -23,7 +23,7 @@ namespace Axiom.Demos
         {
             base.OnFrameStarted( source, e );
 
-            // make sure reflection camera is updated too
+            // make sure reflection _camera is updated too
             reflectCam.Orientation = camera.Orientation;
             reflectCam.Position = camera.Position;
 

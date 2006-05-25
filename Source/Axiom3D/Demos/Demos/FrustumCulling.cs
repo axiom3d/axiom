@@ -76,7 +76,7 @@ namespace Axiom.Demos
             // create a node for the frustum and attach it
             frustumNode = scene.RootSceneNode.CreateChildSceneNode( new Vector3( 0, 0, 200 ), Quaternion.Identity );
 
-            // set the camera in a convenient position
+            // set the _camera in a convenient position
             camera.Position = new Vector3( 0, 759, 680 );
             camera.LookAt( Vector3.Zero );
 

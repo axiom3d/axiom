@@ -47,9 +47,9 @@ namespace Axiom.Demos
             scene.AmbientLight = new ColorEx( 1.0f, 0.5f, 0.5f, 0.5f );
 
             Plane plane = new Plane();
-            // 5000 units from the camera
+            // 5000 units from the _camera
             plane.D = 5000;
-            // above the camera, facing down
+            // above the _camera, facing down
             plane.Normal = -Vector3.UnitY;
 
             // create the skyplace 10000 units wide, tile the texture 3 times
