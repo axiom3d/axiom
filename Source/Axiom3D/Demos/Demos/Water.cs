@@ -73,7 +73,7 @@ namespace Axiom.Demos
             GuiMgr = OverlayElementManager.Instance;
             scene.AmbientLight = new ColorEx( 0.75f, 0.75f, 0.75f ); // default Ambient Light
 
-            // Customize Controls - speed up camera and slow down the input update rate
+            // Customize Controls - speed up _camera and slow down the input update rate
             camSpeed = 5.0f;
             inputInterval = inputTimer = 0.02f;
 
@@ -88,7 +88,7 @@ namespace Axiom.Demos
             Entity ent = scene.CreateEntity( "head", "ogrehead.mesh" );
             headNode.AttachObject( ent );
 
-            // Create the camera node, set its position & attach camera
+            // Create the _camera node, set its position & attach _camera
             camera.Yaw( -45f );
             camera.Move( new Vector3( 1500f, 700f, PLANE_SIZE + 700f ) );
             camera.LookAt( new Vector3( PLANE_SIZE / 2f, 300f, PLANE_SIZE / 2f ) );
@@ -276,7 +276,7 @@ namespace Axiom.Demos
                 //e.TimeSinceLastFrame = this.inputTimer;
                 //base.OnFrameStarted(source, e); // do the normal demo frame processing first
                 input.Capture(); // Read Keyboard and Mouse inputs
-                RapidUpdate(); // Process rapid inputs, like camera motion or settings adjustments
+                RapidUpdate(); // Process rapid inputs, like _camera motion or settings adjustments
 
                 // Process User Requested Mode Changes
                 if ( modeTimer > modeInterval )
@@ -370,7 +370,7 @@ namespace Axiom.Demos
             // Disable Mouse Events if Right-Mouse clicked (control is given to the custom Demo)
             bool mouseEn = ( !input.IsMousePressed( MouseButtons.Right ) );
 
-            // Keys that move camera.  Mouse-Wheel elevates camera
+            // Keys that move _camera.  Mouse-Wheel elevates _camera
             if ( input.IsKeyPressed( KeyCodes.Left ) )
             {
                 camAccel.x = -0.5f;
@@ -388,9 +388,9 @@ namespace Axiom.Demos
                 camAccel.z = 1;
             } // move backward
             if ( mouseEn )
-                camAccel.y += (float)( input.RelativeMouseZ * 0.1 ); // MouseWheel elevates camera
+                camAccel.y += (float)( input.RelativeMouseZ * 0.1 ); // MouseWheel elevates _camera
 
-            // When Mouse button pressed, Motion accelerates instead of turns camera
+            // When Mouse button pressed, Motion accelerates instead of turns _camera
             if ( mouseEn && input.IsMousePressed( MouseButtons.Left ) )
             {
                 camAccel.x += input.RelativeMouseX * 0.3f; // side motion
@@ -407,7 +407,7 @@ namespace Axiom.Demos
                 camVelocity *= ( 1 - ( 4 * inputTimer ) );
             }
 
-            // Keyboard arrows change Yaw/Pitch of camera
+            // Keyboard arrows change Yaw/Pitch of _camera
             if ( input.IsKeyPressed( KeyCodes.Left ) )
             {
                 camera.Yaw( scaleTurn );
@@ -425,7 +425,7 @@ namespace Axiom.Demos
                 camera.Pitch( -scaleTurn );
             }
 
-            // Mouse motion changes Yaw/Pitch of camera
+            // Mouse motion changes Yaw/Pitch of _camera
             if ( mouseEn && !input.IsMousePressed( MouseButtons.Left ) )
             {
                 camera.Yaw( -input.RelativeMouseX * 0.13f );

@@ -19,7 +19,7 @@ namespace Axiom.Demos
             // Load world geometry
             scene.LoadWorldGeometry( "maps/chiropteradm.bsp" );
 
-            // modify camera for close work
+            // modify _camera for close work
             camera.Near = 4;
             camera.Far = 4000;
 

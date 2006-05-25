@@ -51,7 +51,7 @@ namespace Axiom.Demos
             //light.Position = new Vector3(0, 0, -100);
             //light.Diffuse = new ColorEx(1.0f, 0.5f, 1.0f, 0.5f);
 
-            // setup the camera for a nice view of the robot
+            // setup the _camera for a nice view of the robot
             camera.Position = new Vector3( 100, 50, 100 );
             camera.LookAt( new Vector3( 0, 50, 0 ) );
 

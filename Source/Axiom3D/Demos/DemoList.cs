@@ -40,15 +40,15 @@ namespace Axiom.Demos
         private ArrayList demoTypes;
         private string nextDemo;
 
-        //scene creation & semi-auto camera movement 
+        //scene creation & semi-auto _camera movement 
         private float currentAngle;
         private float stepAngle;
-        private int cameraMoveDir; //positive (right) or negative (left) indicates direction which camera is actually moving 
-        private float camAngle; //current camera angle (where currentAngle is only for scene creation) 
-        private float currentAngleStop = 0; //where the camera should stop (facing a statue) 
+        private int cameraMoveDir; //positive (right) or negative (left) indicates direction which _camera is actually moving 
+        private float camAngle; //current _camera angle (where currentAngle is only for scene creation) 
+        private float currentAngleStop = 0; //where the _camera should stop (facing a statue) 
 
-        //make one or another greater (e.g. cam 600, menu 800 looks good with camera facing outwards, cam 1100 menu 900 looking to center) 
-        private const float cameraCircleR = 300; //camera circular path radius 
+        //make one or another greater (e.g. cam 600, menu 800 looks good with _camera facing outwards, cam 1100 menu 900 looking to center) 
+        private const float cameraCircleR = 300; //_camera circular path radius 
         private const float menuCircleR = 800; //where entities representing menu shall be placed (statues) 
 
 
@@ -213,7 +213,7 @@ namespace Axiom.Demos
             // reset acceleration zero 
             camAccel = Vector3.Zero;
 
-            // set the scaling of camera motion 
+            // set the scaling of _camera motion 
             cameraScale = 50 * e.TimeSinceLastFrame;
 
             // TODO Move this into an event queueing mechanism that is processed every frame 
@@ -327,7 +327,7 @@ namespace Axiom.Demos
             // update performance stats once per second 
             if ( statDelay < 0.0f && showDebugOverlay )
             {
-                UpdateStats();
+                UpdateStats( e.TimeSinceLastFrame );
                 statDelay = 1.0f;
             }
             else
@@ -349,7 +349,7 @@ namespace Axiom.Demos
 
 
 
-            // semi-automatic camera movement 
+            // semi-automatic _camera movement 
             float camAngleAccel = stepAngle * e.TimeSinceLastFrame;
 
             //check mouse input 
@@ -371,7 +371,7 @@ namespace Axiom.Demos
                 if ( camAngle >= currentAngleStop + stepAngle )
                 {
                     currentAngleStop += stepAngle;
-                    cameraMoveDir = 0; //stop the camera 
+                    cameraMoveDir = 0; //stop the _camera 
                     camAngle = currentAngleStop; //correct final position 
                 }
             }
@@ -381,13 +381,13 @@ namespace Axiom.Demos
                 if ( camAngle <= currentAngleStop - stepAngle )
                 {
                     currentAngleStop -= stepAngle;
-                    cameraMoveDir = 0; //stop the camera 
+                    cameraMoveDir = 0; //stop the _camera 
                     camAngle = currentAngleStop; //correct final position 
                 }
             }
 
 
-            //update camera 
+            //update _camera 
             //            if (cameraMoveDir != 0 || correctFinalPos) 
             float cX = (float)Math.Sin( camAngle * Math.PI / 180.0f );
             float cZ = (float)Math.Cos( camAngle * Math.PI / 180.0f );
@@ -403,8 +403,8 @@ namespace Axiom.Demos
         {
             bool retVal = base.Setup( win );
 
-            //camera.Position = new Vector3( -500, 0, -250 ); 
-            //camera.LookAt( new Vector3( 300, 0, -250 ) ); 
+            //_camera.Position = new Vector3( -500, 0, -250 ); 
+            //_camera.LookAt( new Vector3( 300, 0, -250 ) ); 
 
             return retVal;
 

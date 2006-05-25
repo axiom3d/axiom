@@ -100,7 +100,7 @@ namespace Axiom.Demos
             ControllerManager.Instance.CreateController( rotate, func );
             ControllerManager.Instance.CreateController( rotate2, func );
 
-            // place the camera in an optimal position
+            // place the _camera in an optimal position
             camera.Position = new Vector3( 30, 30, 220 );
 
             window.DebugText = "Spinning triangle - Using custom built geometry";
@@ -193,7 +193,7 @@ namespace Axiom.Demos
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="camera"></param>
+        /// <param name="_camera"></param>
         /// <returns></returns>
         public override float GetSquaredViewDepth( Camera camera )
         {
@@ -317,7 +317,7 @@ namespace Axiom.Demos
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="camera"></param>
+        /// <param name="_camera"></param>
         /// <returns></returns>
         public override float GetSquaredViewDepth( Camera camera )
         {

@@ -71,7 +71,7 @@ namespace Axiom.Demos
 
         protected virtual void CreateCamera()
         {
-            // create a camera and initialize its position
+            // create a _camera and initialize its position
             camera = scene.CreateCamera( "MainCamera" );
             camera.Position = new Vector3( 0, 0, 500 );
             camera.LookAt( new Vector3( 0, 0, -300 ) );
@@ -217,7 +217,7 @@ namespace Axiom.Demos
             // reset acceleration zero
             camAccel = Vector3.Zero;
 
-            // set the scaling of camera motion
+            // set the scaling of _camera motion
             cameraScale = 100 * e.TimeSinceLastFrame;
 
             // TODO Move this into an event queueing mechanism that is processed every frame
@@ -364,7 +364,7 @@ namespace Axiom.Demos
 
             camVelocity += ( camAccel * scaleMove * camSpeed );
 
-            // move the camera based on the accumulated movement vector
+            // move the _camera based on the accumulated movement vector
             camera.MoveRelative( camVelocity * e.TimeSinceLastFrame );
 
             // Now dampen the Velocity - only if user is not accelerating
@@ -376,7 +376,7 @@ namespace Axiom.Demos
             // update performance stats once per second
             if ( statDelay < 0.0f && showDebugOverlay )
             {
-                UpdateStats();
+                UpdateStats( e.TimeSinceLastFrame );
                 statDelay = 1.0f;
             }
             else
@@ -399,7 +399,7 @@ namespace Axiom.Demos
             element.Text = window.DebugText;
         }
 
-        protected void UpdateStats()
+        protected void UpdateStats( float elpasedTime )
         {
             // TODO Replace with CEGUI
             OverlayElement element = OverlayElementManager.Instance.GetElement( "Core/CurrFps" );
@@ -416,6 +416,7 @@ namespace Axiom.Demos
 
             element = OverlayElementManager.Instance.GetElement( "Core/NumTris" );
             element.Text = string.Format( "Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered );
+            LogManager.Instance.Write( "Engine Statistics: Count: {6}  FPS <C,B,W,A>: {0:#.00} {1} {2} {3}  Trias: {4}  LastFrame: {5} ", Root.Instance.CurrentFPS, Root.Instance.BestFPS, Root.Instance.WorstFPS, Root.Instance.AverageFPS, scene.TargetRenderSystem.FacesRendered, elpasedTime, Root.Instance.CurrentFrameCount );
         }
 
         #endregion Event Handlers
