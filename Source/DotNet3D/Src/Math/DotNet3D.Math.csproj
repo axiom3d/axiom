@@ -4,7 +4,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2E553F58-388B-4975-8BF5-C1C2A8CD02BF}</ProjectGuid>
+    <ProjectGuid>{0954C709-1A8D-4A43-918B-020B473E70F9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DotNet3D.Math</RootNamespace>
@@ -47,27 +47,23 @@
     <Compile Include="Intersection.cs" />
     <Compile Include="Matrix3.cs" />
     <Compile Include="Matrix4.cs" />
-    <Compile Include="PositionalSpline.cs" />
-    <Compile Include="Ray.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="RotationalSpline.cs" />
-    <Compile Include="Sphere.cs" />
-    <Compile Include="Tuple.cs" />
     <Compile Include="Plane.cs" />
-    <Compile Include="PlaneBoundedVolume.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Quaternion.cs" />
-    <Compile Include="Radian.cs" />
-    <Compile Include="Utility.cs" />
+    <Compile Include="PlaneBoundedVolume.cs" />
+    <Compile Include="PositionalSpline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Quaternion.cs" />
+    <Compile Include="Radian.cs" />
+    <Compile Include="Ray.cs" />
     <Compile Include="Real.cs" />
+    <Compile Include="RotationalSpline.cs" />
+    <Compile Include="Sphere.cs" />
+    <Compile Include="Tuple.cs" />
+    <Compile Include="Utility.cs" />
     <Compile Include="Vector2.cs" />
     <Compile Include="Vector3.cs" />
     <Compile Include="Vector4.cs" />

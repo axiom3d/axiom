@@ -43,7 +43,7 @@ namespace DotNet3D.Math
 {
     public sealed class Utility
     {
-        public static readonly Real PI = new Real( new Real( 4.0f ) * (Real)ATan( 1.0f ) );
+        public static readonly Real PI = System.Math.PI;
         public static readonly Real TWO_PI = new Real( 2.0f * PI );
         public static readonly Real HALF_PI = new Real( 0.5f * PI );
 
