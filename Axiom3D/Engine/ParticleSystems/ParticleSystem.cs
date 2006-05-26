@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -31,6 +39,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -167,7 +176,7 @@ namespace Axiom
         ///		This is called automatically every frame by the engine.
         /// </remarks>
         /// <param name="timeElapsed">The amount of time (in seconds) since the last frame.</param>
-        internal void Update( Real timeElapsed )
+        internal void Update( float timeElapsed )
         {
             if ( parentNode != null )
             {
@@ -183,7 +192,7 @@ namespace Axiom
         ///		Overloaded method.
         /// </summary>
         /// <param name="time"></param>
-        public void FastForward( Real time )
+        public void FastForward( float time )
         {
             FastForward( time, 0.1f );
         }
@@ -203,9 +212,9 @@ namespace Axiom
         ///		The sampling interval used to generate particles, apply affectors etc. The lower this
         ///		is the more realistic the fast-forward, but it takes more iterations to do it.
         /// </param>
-        public void FastForward( Real time, Real interval )
+        public void FastForward( float time, float interval )
         {
-            for ( Real t = 0.0f; t < time; t += interval )
+            for ( float t = 0.0f; t < time; t += interval )
             {
                 Update( interval );
             }
@@ -229,8 +238,8 @@ namespace Axiom
                 // but we've already put particles in world space to decouple them from the
                 // node transform, so reverse transform back
 
-                Vector3 min = new Vector3( Real.PositiveInfinity, Real.PositiveInfinity, Real.PositiveInfinity );
-                Vector3 max = new Vector3( Real.NegativeInfinity, Real.NegativeInfinity, Real.NegativeInfinity );
+                Vector3 min = new Vector3( float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity );
+                Vector3 max = new Vector3( float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity );
                 Vector3 temp;
 
                 Vector3[] corners = aab.Corners;
@@ -253,7 +262,7 @@ namespace Axiom
         ///		Used to expire dead particles.
         /// </summary>
         /// <param name="timeElapsed"></param>
-        protected void Expire( Real timeElapsed )
+        protected void Expire( float timeElapsed )
         {
             for ( int i = 0; i < activeBillboards.Count; i++ )
             {
@@ -278,7 +287,7 @@ namespace Axiom
         ///		Spawn new particles based on free quota and emitter requirements.
         /// </summary>
         /// <param name="timeElapsed"></param>
-        protected void TriggerEmitters( Real timeElapsed )
+        protected void TriggerEmitters( float timeElapsed )
         {
             requested.Clear();
 
@@ -304,7 +313,7 @@ namespace Axiom
             // check if the quota will be exceeded, if so, reduce demand
             if ( totalRequested > emissionAllowed )
             {
-                Real ratio = (Real)emissionAllowed / (Real)totalRequested;
+                float ratio = (float)emissionAllowed / (float)totalRequested;
 
                 // modify requested values
                 for ( int i = 0; i < emitterCount; i++ )
@@ -320,8 +329,8 @@ namespace Axiom
                 emitter = (ParticleEmitter)emitterList[i];
 
                 // Reflects OGRE behaviour
-                Real timePoint = 0.0f;
-                Real timeInc = timeElapsed / (int)requested[i];
+                float timePoint = 0.0f;
+                float timeInc = timeElapsed / (int)requested[i];
 
                 for ( int j = 0; j < (int)requested[i]; j++ )
                 {
@@ -355,7 +364,7 @@ namespace Axiom
         ///		Updates existing particles based on their momentum.
         /// </summary>
         /// <param name="timeElapsed"></param>
-        protected void ApplyMotion( Real timeElapsed )
+        protected void ApplyMotion( float timeElapsed )
         {
             Particle p = null;
 
@@ -370,7 +379,7 @@ namespace Axiom
         ///		Applies the effects of particle affectors.
         /// </summary>
         /// <param name="timeElapsed"></param>
-        protected void TriggerAffectors( Real timeElapsed )
+        protected void TriggerAffectors( float timeElapsed )
         {
             for ( int i = 0; i < affectorList.Count; i++ )
             {

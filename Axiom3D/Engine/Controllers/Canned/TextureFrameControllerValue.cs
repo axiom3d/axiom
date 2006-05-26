@@ -24,11 +24,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-
-using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -69,7 +75,7 @@ namespace Axiom
         /// <remarks>
         ///     Value is a parametric value in the range [0,1].
         /// </remarks>
-        public Real Value
+        public float Value
         {
             get
             {

@@ -24,6 +24,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
 
 #region Namespace Declarations
 
@@ -31,6 +38,7 @@ using System;
 using System.Collections;
 
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -51,12 +59,12 @@ namespace Axiom.SceneManagers.Octree
         protected static long white = 0xFFFFFFFF;
         protected ushort[] indexes = { 0, 1, 1, 2, 2, 3, 3, 0, 0, 6, 6, 5, 5, 1, 3, 7, 7, 4, 4, 2, 6, 7, 5, 4 };
         protected long[] colors = { white, white, white, white, white, white, white, white };
-        protected Real[] corners;
+        protected float[] corners;
         protected Matrix4 scaleFactor;
         protected int intersect = 0;
         protected int maxDepth;
         protected bool cullCamera;
-        protected Real worldSize;
+        protected float worldSize;
         protected int numObjects;
         protected bool looseOctree;
         //protected bool showBoxes;
@@ -135,11 +143,11 @@ namespace Axiom.SceneManagers.Octree
         public Intersection Intersect( Sphere sphere, AxisAlignedBox box )
         {
             intersect++;
-            Real Radius = sphere.Radius;
+            float Radius = sphere.Radius;
             Vector3 Center = sphere.Center;
             Vector3[] Corners = box.Corners;
-            Real s = 0;
-            Real d = 0;
+            float s = 0;
+            float d = 0;
             int i;
             bool Partial;
 

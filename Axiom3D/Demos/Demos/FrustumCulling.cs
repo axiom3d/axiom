@@ -1,11 +1,8 @@
 
-#region Namespace Declarations
-
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
-#endregion Namespace Declarations
-			
 namespace Axiom.Demos
 {
     /// <summary>
@@ -53,7 +50,7 @@ namespace Axiom.Demos
             // create a node for the frustum and attach it
             frustumNode = scene.RootSceneNode.CreateChildSceneNode( new Vector3( 0, 0, 200 ), Quaternion.Identity );
 
-            // set the camera in a convenient position
+            // set the _camera in a convenient position
             camera.Position = new Vector3( 0, 759, 680 );
             camera.LookAt( Vector3.Zero );
 
@@ -87,8 +84,8 @@ namespace Axiom.Demos
 
             objectsVisible = 0;
 
-            Real speed = 35 * e.TimeSinceLastFrame;
-            Real change = 15 * e.TimeSinceLastFrame;
+            float speed = 35 * e.TimeSinceLastFrame;
+            float change = 15 * e.TimeSinceLastFrame;
 
             if ( input.IsKeyPressed( KeyCodes.I ) )
             {
@@ -109,7 +106,7 @@ namespace Axiom.Demos
 
             if ( input.IsKeyPressed( KeyCodes.D1 ) )
             {
-                if ( frustum.FOV - change > (Degree)(Real)20 )
+                if ( frustum.FOV - change > 20 )
                 {
                     frustum.FOV -= change;
                 }
@@ -117,7 +114,7 @@ namespace Axiom.Demos
 
             if ( input.IsKeyPressed( KeyCodes.D2 ) )
             {
-                if ( frustum.FOV < (Degree)(Real)90 )
+                if ( frustum.FOV < 90 )
                 {
                     frustum.FOV += change;
                 }

@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -32,6 +40,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Drawing;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -71,7 +80,7 @@ namespace Axiom
         protected string name;
         protected bool isVisible;
         protected bool isCloneable;
-        protected Real left, top, width, height;
+        protected float left, top, width, height;
         protected string materialName;
         protected Material material;
         protected string text;
@@ -83,18 +92,18 @@ namespace Axiom
         protected VerticalAlignment vertAlign;
 
         // Pixel-mode positions, used in GMM_PIXELS mode.
-        protected Real pixelTop;
-        protected Real pixelLeft;
-        protected Real pixelWidth;
-        protected Real pixelHeight;
-		protected Real pixelScaleX;
-		protected Real pixelScaleY;
+        protected float pixelTop;
+        protected float pixelLeft;
+        protected float pixelWidth;
+        protected float pixelHeight;
+		protected float pixelScaleX;
+		protected float pixelScaleY;
         // parent container
         protected OverlayElementContainer parent;
         // overlay this element is attached to
         protected Overlay overlay;
 
-        protected Real derivedLeft, derivedTop;
+        protected float derivedLeft, derivedTop;
         protected bool isDerivedOutOfDate;
         // Flag indicating if the vertex positons need recalculating
         protected bool isGeomPositionsOutOfDate;
@@ -247,10 +256,10 @@ namespace Axiom
 			{
 				case MetricsMode.Pixels:
 				{
-					Real vpWidth, vpHeight;
+					float vpWidth, vpHeight;
 					OverlayManager oMgr = OverlayManager.Instance;
-					vpWidth = (Real) (oMgr.ViewportWidth);
-					vpHeight = (Real) (oMgr.ViewportHeight);
+					vpWidth = (float) (oMgr.ViewportWidth);
+					vpHeight = (float) (oMgr.ViewportHeight);
 
 					pixelScaleX = (int)(1.0 / vpWidth);
 					pixelScaleY = (int)(1.0 / vpHeight);
@@ -259,10 +268,10 @@ namespace Axiom
 
 				case MetricsMode.Relative_Aspect_Adjusted:
 				{
-					Real vpWidth, vpHeight;
+					float vpWidth, vpHeight;
 					OverlayManager oMgr = OverlayManager.Instance;
-					vpWidth = (Real) (oMgr.ViewportWidth);
-					vpHeight = (Real) (oMgr.ViewportHeight);
+					vpWidth = (float) (oMgr.ViewportWidth);
+					vpHeight = (float) (oMgr.ViewportHeight);
 
 					pixelScaleX = (int)(1.0 / (10000.0 * (vpWidth / vpHeight)));
 					pixelScaleY = (int)(1.0 /  10000.0);
@@ -329,7 +338,7 @@ namespace Axiom
         /// </summary>
         /// <param name="width"></param>
         /// <param name="height"></param>
-        public void SetDimensions( Real width, Real height )
+        public void SetDimensions( float width, float height )
         {
             if ( metricsMode != MetricsMode.Relative )
             {
@@ -373,7 +382,7 @@ namespace Axiom
         /// </summary>
         /// <param name="left"></param>
         /// <param name="top"></param>
-        public void SetPosition( Real left, Real top )
+        public void SetPosition( float left, float top )
         {
             if ( metricsMode != MetricsMode.Relative )
             {
@@ -409,10 +418,10 @@ namespace Axiom
 				case MetricsMode.Pixels :
 					if (OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate)
 					{
-						Real vpWidth, vpHeight;
+						float vpWidth, vpHeight;
 						OverlayManager oMgr = OverlayManager.Instance;
-						vpWidth = (Real) (oMgr.ViewportWidth);
-						vpHeight = (Real) (oMgr.ViewportHeight);
+						vpWidth = (float) (oMgr.ViewportWidth);
+						vpHeight = (float) (oMgr.ViewportHeight);
 
 						pixelScaleX = 1.0f / vpWidth;
 						pixelScaleY = 1.0f / vpHeight;
@@ -427,10 +436,10 @@ namespace Axiom
 				case MetricsMode.Relative_Aspect_Adjusted :
 					if (OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate)
 					{
-						Real vpWidth, vpHeight;
+						float vpWidth, vpHeight;
 						OverlayManager oMgr = OverlayManager.Instance;
-						vpWidth = (Real) (oMgr.ViewportWidth);
-						vpHeight = (Real) (oMgr.ViewportHeight);
+						vpWidth = (float) (oMgr.ViewportWidth);
+						vpHeight = (float) (oMgr.ViewportHeight);
 
 						pixelScaleX = 1.0f / (10000.0f * (vpWidth / vpHeight));
 						pixelScaleY = 1.0f /  10000.0f;
@@ -476,7 +485,7 @@ namespace Axiom
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
-		public virtual bool Contains(Real x, Real y)
+		public virtual bool Contains(float x, float y)
 		{
 			return clippingRegion.Contains((int)x, (int)y);
 		}
@@ -487,7 +496,7 @@ namespace Axiom
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
-		public virtual OverlayElement FindElementAt(Real x, Real y)
+		public virtual OverlayElement FindElementAt(float x, float y)
 		{
 			OverlayElement ret = null;
 			if (Contains(x , y ))
@@ -501,7 +510,7 @@ namespace Axiom
         /// </summary>
         public virtual void UpdateFromParent()
         {
-            Real parentLeft, parentTop, parentBottom, parentRight;
+            float parentLeft, parentTop, parentBottom, parentRight;
 
             parentLeft = parentTop = parentBottom = parentRight = 0;
 
@@ -533,8 +542,8 @@ namespace Axiom
 
 				// Calculate offsets required for mapping texel origins to pixel origins in the
 				// current rendersystem
-				Real hOffset = rSys.HorizontalTexelOffset / oMgr.ViewportWidth;
-				Real vOffset = rSys.VerticalTexelOffset / oMgr.ViewportHeight;
+				float hOffset = rSys.HorizontalTexelOffset / oMgr.ViewportWidth;
+				float vOffset = rSys.VerticalTexelOffset / oMgr.ViewportHeight;
 
 				parentLeft = 0.0f + hOffset;
 				parentTop = 0.0f + vOffset;
@@ -611,7 +620,7 @@ namespace Axiom
 		/// </summary>
 		/// <param name="left"></param>
 		/// <ogreequivilent>_setLeft</ogreequivilent>
-		public void ScreenLeft(Real left)
+		public void ScreenLeft(float left)
 		{
 			this.left = left;
 			pixelLeft = left / pixelScaleX;
@@ -625,7 +634,7 @@ namespace Axiom
 		/// </summary>
 		/// <param name="top"></param>
 		/// <ogreequivilent>_setTop</ogreequivilent>
-		public void ScreenTop(Real top)
+		public void ScreenTop(float top)
 		{
 			this.top = top;
 			pixelTop = top / pixelScaleY;
@@ -639,7 +648,7 @@ namespace Axiom
 		/// </summary>
 		/// <param name="width"></param>
 		/// <ogreequivilent>_setWidth</ogreequivilent>
-		public void ScreenWidth(Real width)
+		public void ScreenWidth(float width)
 		{
 			this.width = width;
 			pixelWidth = width / pixelScaleX;
@@ -652,7 +661,7 @@ namespace Axiom
 		/// </summary>
 		/// <param name="height"></param>
 		/// <ogreequivilent>_setHeight</ogreequivilent>
-		public void ScreenHeight(Real height)
+		public void ScreenHeight(float height)
 		{
 			this.height = height;
 			pixelHeight = height / pixelScaleY;
@@ -667,7 +676,7 @@ namespace Axiom
 		/// <param name="left"></param>
 		/// <param name="top"></param>
 		/// <ogreequivilent>_setPosition</ogreequivilent>
-		public void ScreenPosition(Real left, Real top)
+		public void ScreenPosition(float left, float top)
 		{
 			this.left = left;
 			this.top  = top;
@@ -685,7 +694,7 @@ namespace Axiom
 		/// <param name="width"></param>
 		/// <param name="height"></param>
 		/// <ogreequivilent>_setDimensions</ogreequivilent>
-		public void ScreenDimensions(Real width, Real height)
+		public void ScreenDimensions(float width, float height)
 		{
 			this.width  = width;
 			this.height = height;
@@ -754,7 +763,7 @@ namespace Axiom
         /// <summary>
         ///    Gets the 'left' position as derived from own left and that of parents.
         /// </summary>
-        public virtual Real DerivedLeft
+        public virtual float DerivedLeft
         {
             get
             {
@@ -769,7 +778,7 @@ namespace Axiom
         /// <summary>
         ///    Gets the 'top' position as derived from own top and that of parents.
         /// </summary>
-        public virtual Real DerivedTop
+        public virtual float DerivedTop
         {
             get
             {
@@ -799,7 +808,7 @@ namespace Axiom
         /// <summary>
         ///    Gets/Sets the height of this element.
         /// </summary>
-        public Real Height
+        public float Height
         {
             get
             {
@@ -897,7 +906,7 @@ namespace Axiom
         /// <summary>
         ///    Gets/Sets the left position of this element.
         /// </summary>
-        public Real Left
+        public float Left
         {
             get
             {
@@ -976,10 +985,10 @@ namespace Axiom
 				{
 					case MetricsMode.Pixels :
 					{
-						Real vpWidth, vpHeight;
+						float vpWidth, vpHeight;
 						OverlayManager oMgr = OverlayManager.Instance;
-						vpWidth = (Real) (oMgr.ViewportWidth);
-						vpHeight = (Real) (oMgr.ViewportHeight);
+						vpWidth = (float) (oMgr.ViewportWidth);
+						vpHeight = (float) (oMgr.ViewportHeight);
 
 						pixelScaleX = 1.0f / vpWidth;
 						pixelScaleY = 1.0f / vpHeight;
@@ -996,10 +1005,10 @@ namespace Axiom
 
 					case MetricsMode.Relative_Aspect_Adjusted :
 					{
-						Real vpWidth, vpHeight;
+						float vpWidth, vpHeight;
 						OverlayManager oMgr = OverlayManager.Instance;
-						vpWidth = (Real) (oMgr.ViewportWidth);
-						vpHeight = (Real) (oMgr.ViewportHeight);
+						vpWidth = (float) (oMgr.ViewportWidth);
+						vpHeight = (float) (oMgr.ViewportHeight);
 
 						pixelScaleX = 1.0f / (10000.0f * (vpWidth / vpHeight));
 						pixelScaleY = 1.0f /  10000.0f;
@@ -1101,7 +1110,7 @@ namespace Axiom
         /// <summary>
         ///    Gets/Sets the top position of this element.
         /// </summary>
-        public Real Top
+        public float Top
         {
             get
             {
@@ -1163,7 +1172,7 @@ namespace Axiom
         /// <summary>
         ///    Gets/Sets the width of this element.
         /// </summary>
-        public Real Width
+        public float Width
         {
             get
             {
@@ -1315,7 +1324,7 @@ namespace Axiom
         /// </summary>
         /// <param name="camera"></param>
         /// <returns></returns>
-        public Real GetSquaredViewDepth( Camera camera )
+        public float GetSquaredViewDepth( Camera camera )
         {
             return 10000 - this.ZOrder;
         }
@@ -1408,7 +1417,7 @@ namespace Axiom
         {
             OverlayElement element = (OverlayElement)objects[0];
 
-            element.Top = Real.Parse( parms[0] );
+            element.Top = StringConverter.ParseFloat( parms[0] );
         }
 
         [AttributeParser( "left", "OverlayElement" )]
@@ -1416,7 +1425,7 @@ namespace Axiom
         {
             OverlayElement element = (OverlayElement)objects[0];
 
-            element.Left = Real.Parse( parms[0] );
+            element.Left = StringConverter.ParseFloat( parms[0] );
         }
 
         [AttributeParser( "width", "OverlayElement" )]
@@ -1424,7 +1433,7 @@ namespace Axiom
         {
             OverlayElement element = (OverlayElement)objects[0];
 
-            element.Width = Real.Parse( parms[0] );
+            element.Width = StringConverter.ParseFloat( parms[0] );
         }
 
         [AttributeParser( "height", "OverlayElement" )]
@@ -1432,7 +1441,7 @@ namespace Axiom
         {
             OverlayElement element = (OverlayElement)objects[0];
 
-            element.Height = Real.Parse( parms[0] );
+            element.Height = StringConverter.ParseFloat( parms[0] );
         }
 
         [AttributeParser( "caption", "OverlayElement" )]

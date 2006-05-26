@@ -24,26 +24,37 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
-
+			
 using System;
-using System.Collections;
-
-using Axiom;
-using DotNet3D.Math;
-
-using Axiom.SceneManagers.PagingLandscape.Collections;
 
 #endregion Namespace Declarations
 			
+
+
 namespace Axiom.SceneManagers.PagingLandscape.Tile
 {
+
     /// <summary>
+
     /// This class holds the Tile info
+
     /// </summary>
+
     /// <remarks>
+
     /// This will avoid to pass a lot of data to the Renderable class.
+
     /// </remarks>
+
     public class TileInfo
     {
         //This is the Page Index in the Page Array
@@ -55,8 +66,8 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
         public long TileZ;
 
         //This is the spatial position of this Tile
-        public Real PosX;
-        public Real PosZ;
+        public float PosX;
+        public float PosZ;
     }
 
 }

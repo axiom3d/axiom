@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Graphics Engine Library
-Copyright (C) 2003-2006  Axiom Project Team
+Axiom Game Engine Library
+Copyright (C) 2003  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,16 +24,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-#region Namespace Declarations
-
 using System;
 using System.Diagnostics;
 
 using Axiom;
-using DotNet3D.Math;
+using Axiom.MathLib;
 
-#endregion Namespace Declarations
-			
 namespace Axiom.ParticleFX
 {
     /// <summary>
@@ -43,15 +39,15 @@ namespace Axiom.ParticleFX
     {
         #region Fields
 
-        protected Real innerX;
-        protected Real innerY;
-        protected Real innerZ;
+        protected float innerX;
+        protected float innerY;
+        protected float innerZ;
 
         #endregion Fields
 
         #region Properties
 
-        public Real InnerX
+        public float InnerX
         {
             get
             {
@@ -64,7 +60,7 @@ namespace Axiom.ParticleFX
             }
         }
 
-        public Real InnerY
+        public float InnerY
         {
             get
             {
@@ -77,7 +73,7 @@ namespace Axiom.ParticleFX
             }
         }
 
-        public Real InnerZ
+        public float InnerZ
         {
             get
             {
@@ -103,32 +99,32 @@ namespace Axiom.ParticleFX
 
         public override void InitParticle( Particle particle )
         {
-            Real alpha, beta, a, b, c, x, y, z;
+            float alpha, beta, a, b, c, x, y, z;
 
             particle.ResetDimensions();
 
             // create two random angles alpha and beta
             // with these two angles, we are able to select any point on an
             // ellipsoid's surface
-            Utility.RangeRandom( durationMin, durationMax );
+            MathUtil.RangeRandom( durationMin, durationMax );
 
-            alpha = Utility.RangeRandom( 0, Utility.TWO_PI );
-            beta = Utility.RangeRandom( 0, Utility.PI );
+            alpha = MathUtil.RangeRandom( 0, MathUtil.TWO_PI );
+            beta = MathUtil.RangeRandom( 0, MathUtil.PI );
 
             // create three random radius values that are bigger than the inner
             // size, but smaller/equal than/to the outer size 1.0 (inner size is
             // between 0 and 1)
-            a = Utility.RangeRandom( InnerX, 1.0f );
-            b = Utility.RangeRandom( InnerY, 1.0f );
-            c = Utility.RangeRandom( InnerZ, 1.0f );
+            a = MathUtil.RangeRandom( InnerX, 1.0f );
+            b = MathUtil.RangeRandom( InnerY, 1.0f );
+            c = MathUtil.RangeRandom( InnerZ, 1.0f );
 
             // with a,b,c we have defined a random ellipsoid between the inner
             // ellipsoid and the outer sphere (radius 1.0)
             // with alpha and beta we select on point on this random ellipsoid
             // and calculate the 3D coordinates of this point
-            x = a * Utility.Cos( alpha ) * Utility.Sin( beta );
-            y = b * Utility.Sin( alpha ) * Utility.Sin( beta );
-            z = c * Utility.Cos( beta );
+            x = a * MathUtil.Cos( alpha ) * MathUtil.Sin( beta );
+            y = b * MathUtil.Sin( alpha ) * MathUtil.Sin( beta );
+            z = c * MathUtil.Cos( beta );
 
             // scale the found point to the ellipsoid's size and move it
             // relatively to the center of the emitter point
@@ -155,7 +151,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
-                emitter.Width = Real.Parse( val );
+                emitter.Width = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -173,7 +169,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
-                emitter.Height = Real.Parse( val );
+                emitter.Height = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -191,7 +187,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
-                emitter.Depth = Real.Parse( val );
+                emitter.Depth = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -209,7 +205,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
-                emitter.InnerX = Real.Parse( val );
+                emitter.InnerX = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -227,7 +223,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
-                emitter.InnerY = Real.Parse( val );
+                emitter.InnerY = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -245,7 +241,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
-                emitter.InnerZ = Real.Parse( val );
+                emitter.InnerZ = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {

@@ -24,12 +24,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 using System.Diagnostics;
 
+using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -62,7 +72,7 @@ namespace Axiom
         /// <param name="light"></param>
         /// <param name="dirLightExtrusionDist"></param>
         /// <returns></returns>
-        public abstract AxisAlignedBox GetDarkCapBounds( Light light, Real dirLightExtrusionDist );
+        public abstract AxisAlignedBox GetDarkCapBounds( Light light, float dirLightExtrusionDist );
 
         /// <summary>
         ///		Gets details of the edges which might be used to determine a silhouette.
@@ -114,10 +124,10 @@ namespace Axiom
         /// <param name="flags">Technique-specific flags, see <see cref="ShadowRenderableFlags"/></param>
         /// <returns>An iterator that will allow iteration over all renderables for the full shadow volume.</returns>
         public abstract IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light,
-            HardwareIndexBuffer indexBuffer, bool extrudeVertices, Real extrusionDistance, int flags );
+            HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, int flags );
 
         public IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light,
-            HardwareIndexBuffer indexBuffer, Real extrusionDistance, bool extrudeVertices )
+            HardwareIndexBuffer indexBuffer, float extrusionDistance, bool extrudeVertices )
         {
 
             return GetShadowVolumeRenderableEnumerator( technique, light, indexBuffer, extrudeVertices, extrusionDistance, 0 );
@@ -142,7 +152,7 @@ namespace Axiom
         ///		vertex programs) can fix this.
         /// </remarks>
         /// <param name="vertexBuffer">The vertex buffer containing ONLY xyz position
-        /// values, which must be originalVertexCount * 2 * 3 Reals long.</param>
+        /// values, which must be originalVertexCount * 2 * 3 floats long.</param>
         /// <param name="originalVertexCount">The count of the original number of
         /// vertices, ie the number in the mesh, not counting the doubling
         /// which has already been done (by <see cref="VertexData.PrepareForShadowVolume"/>)
@@ -150,7 +160,7 @@ namespace Axiom
         /// <param name="lightPosition"> 4D light position in object space, when w=0.0f this
         /// represents a directional light</param>
         /// <param name="extrudeDistance">The distance to extrude.</param>
-        public static void ExtrudeVertices( HardwareVertexBuffer vertexBuffer, int originalVertexCount, Vector4 lightPosition, Real extrudeDistance )
+        public static void ExtrudeVertices( HardwareVertexBuffer vertexBuffer, int originalVertexCount, Vector4 lightPosition, float extrudeDistance )
         {
             unsafe
             {
@@ -422,7 +432,7 @@ namespace Axiom
         /// <param name="lightPosition">4D light position in object space, when w=0.0f this
         /// represents a directional light</param>
         /// <param name="extrudeDistance">The distance to extrude.</param>
-        protected virtual void ExtrudeBounds( AxisAlignedBox box, Vector4 lightPosition, Real extrudeDistance )
+        protected virtual void ExtrudeBounds( AxisAlignedBox box, Vector4 lightPosition, float extrudeDistance )
         {
             Vector3 extrusionDir = Vector3.Zero;
 
@@ -472,7 +482,7 @@ namespace Axiom
         /// <param name="objectPos"></param>
         /// <param name="light"></param>
         /// <returns></returns>
-        protected Real GetExtrusionDistance( Vector3 objectPos, Light light )
+        protected float GetExtrusionDistance( Vector3 objectPos, Light light )
         {
             Vector3 diff = objectPos - light.DerivedPosition;
             return light.AttenuationRange - diff.Length;
@@ -483,7 +493,7 @@ namespace Axiom
         /// </summary>
         /// <param name="light"></param>
         /// <returns></returns>
-        public abstract Real GetPointExtrusionDistance( Light light );
+        public abstract float GetPointExtrusionDistance( Light light );
 
         #endregion Methods
     }

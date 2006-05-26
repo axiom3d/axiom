@@ -1,9 +1,7 @@
-#region Namespace Declarations
 
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
-
-#endregion Namespace Declarations
 
 namespace Axiom.Demos
 {
@@ -22,7 +20,7 @@ namespace Axiom.Demos
         {
             base.OnFrameStarted( source, e );
 
-            // make sure reflection camera is updated too
+            // make sure reflection _camera is updated too
             reflectCam.Orientation = camera.Orientation;
             reflectCam.Position = camera.Position;
 
@@ -48,7 +46,7 @@ namespace Axiom.Demos
 
             // create a plane
             plane = new MovablePlane( "ReflectPlane" );
-            plane.Distance = 0;
+            plane.D = 0;
             plane.Normal = Vector3.UnitY;
 
             // create another plane to create the mesh.  Ogre's MovablePlane uses multiple inheritance, bah!
@@ -84,7 +82,7 @@ namespace Axiom.Demos
             reflectCam = scene.CreateCamera( "ReflectCam" );
             reflectCam.Near = camera.Near;
             reflectCam.Far = camera.Far;
-            reflectCam.AspectRatio = (Real)window.GetViewport( 0 ).ActualWidth / (Real)window.GetViewport( 0 ).ActualHeight;
+            reflectCam.AspectRatio = (float)window.GetViewport( 0 ).ActualWidth / (float)window.GetViewport( 0 ).ActualHeight;
 
             Viewport viewport = rttTex.AddViewport( reflectCam );
             viewport.ClearEveryFrame = true;
@@ -122,9 +120,9 @@ namespace Axiom.Demos
 
                 // calculate a random position
                 Vector3 nodePosition = new Vector3();
-                nodePosition.x = Utility.SymmetricRandom() * 750.0f;
-                nodePosition.y = Utility.SymmetricRandom() * 100.0f + 25;
-                nodePosition.z = Utility.SymmetricRandom() * 750.0f;
+                nodePosition.x = MathUtil.SymmetricRandom() * 750.0f;
+                nodePosition.y = MathUtil.SymmetricRandom() * 100.0f + 25;
+                nodePosition.z = MathUtil.SymmetricRandom() * 750.0f;
 
                 // set the new position
                 node.Position = nodePosition;

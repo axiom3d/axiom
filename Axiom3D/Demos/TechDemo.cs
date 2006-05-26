@@ -1,14 +1,10 @@
-#region Namespace Declarations
 
 using System;
 using System.Diagnostics;
 using System.IO;
-
 using Axiom;
-
+using Axiom.MathLib;
 using DotNet3D.Math;
-
-#endregion
 
 namespace Axiom.Demos
 {
@@ -29,14 +25,14 @@ namespace Axiom.Demos
         protected SceneManager scene;
         protected InputReader input;
         protected Vector3 cameraVector = Vector3.Zero;
-        protected Real cameraScale;
+        protected float cameraScale;
         protected bool showDebugOverlay = true;
-        protected Real statDelay = 0.0f;
-        protected Real debugTextDelay = 0.0f;
-        protected Real toggleDelay = 1.0f;
+        protected float statDelay = 0.0f;
+        protected float debugTextDelay = 0.0f;
+        protected float toggleDelay = 1.0f;
         protected Vector3 camVelocity = Vector3.Zero;
         protected Vector3 camAccel = Vector3.Zero;
-        protected Real camSpeed = 2.5f;
+        protected float camSpeed = 2.5f;
         protected int aniso = 1;
         protected TextureFiltering filtering = TextureFiltering.Bilinear;
 
@@ -46,7 +42,7 @@ namespace Axiom.Demos
 
         protected virtual void CreateCamera()
         {
-            // create a camera and initialize its position
+            // create a _camera and initialize its position
             camera = scene.CreateCamera( "MainCamera" );
             camera.Position = new Vector3( 0, 0, 500 );
             camera.LookAt( new Vector3( 0, 0, -300 ) );
@@ -156,6 +152,7 @@ namespace Axiom.Demos
             }
             catch ( Exception ex )
             {
+                RealmForge.Log.Write( ex );
                 // try logging the error here first, before Root is disposed of
                 if ( LogManager.Instance != null )
                 {
@@ -186,12 +183,12 @@ namespace Axiom.Demos
 
         protected virtual void OnFrameStarted( Object source, FrameEventArgs e )
         {
-            Real scaleMove = 200 * e.TimeSinceLastFrame;
+            float scaleMove = 200 * e.TimeSinceLastFrame;
 
             // reset acceleration zero
             camAccel = Vector3.Zero;
 
-            // set the scaling of camera motion
+            // set the scaling of _camera motion
             cameraScale = 100 * e.TimeSinceLastFrame;
 
             // TODO Move this into an event queueing mechanism that is processed every frame
@@ -224,7 +221,7 @@ namespace Axiom.Demos
                 camAccel.z = 1.0f;
             }
 
-            camAccel.y += (Real)( input.RelativeMouseZ * 0.1f );
+            camAccel.y += (float)( input.RelativeMouseZ * 0.1f );
 
             if ( input.IsKeyPressed( KeyCodes.Left ) )
             {
@@ -325,8 +322,8 @@ namespace Axiom.Demos
 
             if ( !input.IsMousePressed( MouseButtons.Left ) )
             {
-                Real cameraYaw = -input.RelativeMouseX * .13f;
-                Real cameraPitch = -input.RelativeMouseY * .13f;
+                float cameraYaw = -input.RelativeMouseX * .13f;
+                float cameraPitch = -input.RelativeMouseY * .13f;
 
                 camera.Yaw( cameraYaw );
                 camera.Pitch( cameraPitch );
@@ -338,7 +335,7 @@ namespace Axiom.Demos
 
             camVelocity += ( camAccel * scaleMove * camSpeed );
 
-            // move the camera based on the accumulated movement vector
+            // move the _camera based on the accumulated movement vector
             camera.MoveRelative( camVelocity * e.TimeSinceLastFrame );
 
             // Now dampen the Velocity - only if user is not accelerating
@@ -373,7 +370,7 @@ namespace Axiom.Demos
             element.Text = window.DebugText;
         }
 
-        protected void UpdateStats( Real elpasedTime )
+        protected void UpdateStats( float elpasedTime )
         {
             // TODO Replace with CEGUI
             OverlayElement element = OverlayElementManager.Instance.GetElement( "Core/CurrFps" );
@@ -390,7 +387,7 @@ namespace Axiom.Demos
 
             element = OverlayElementManager.Instance.GetElement( "Core/NumTris" );
             element.Text = string.Format( "Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered );
-            LogManager.Instance.Write( "Engine Statistics: FPS <C,B,W,A>: {0:0.0000} {1:0.0000} {2:0.0000} {3:0.0000}  Trias: {4}  LastFrame: {5} ", Root.Instance.CurrentFPS, Root.Instance.BestFPS, Root.Instance.WorstFPS, Root.Instance.AverageFPS, scene.TargetRenderSystem.FacesRendered, elpasedTime );
+            LogManager.Instance.Write( "Engine Statistics: Count: {6}  FPS <C,B,W,A>: {0:#.00} {1} {2} {3}  Trias: {4}  LastFrame: {5} ", Root.Instance.CurrentFPS, Root.Instance.BestFPS, Root.Instance.WorstFPS, Root.Instance.AverageFPS, scene.TargetRenderSystem.FacesRendered, elpasedTime, Root.Instance.CurrentFrameCount );
         }
 
         #endregion Event Handlers

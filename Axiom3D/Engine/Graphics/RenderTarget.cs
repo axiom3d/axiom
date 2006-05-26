@@ -24,14 +24,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
-
-using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -428,7 +434,7 @@ namespace Axiom
         ///		viewports i.e. picture-in-picture). Higher ZOrders are on top of lower ones. The actual number
         ///		is irrelevant, only the relative ZOrder matters (you can leave gaps in the numbering)</param>
         /// <returns></returns>
-        public virtual Viewport AddViewport( Camera camera, Real left, Real top, Real width, Real height, int zOrder )
+        public virtual Viewport AddViewport( Camera camera, float left, float top, float width, float height, int zOrder )
         {
             // create a new camera and add it to our internal collection
             Viewport viewport = new Viewport( camera, this, left, top, width, height, zOrder );

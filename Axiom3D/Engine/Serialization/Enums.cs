@@ -1,5 +1,43 @@
+#region LGPL License
+/*
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
+
+The overall design, and a majority of the core engine and rendering code 
+contained within this library is a derivative of the open source Object Oriented 
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+#endregion
+
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     /// <summary>
@@ -33,7 +71,7 @@ namespace Axiom
         ///		Optional bone weights (repeating section)
         ///		uint vertexIndex;
         ///		ushort boneIndex;
-        ///		Real weight;
+        ///		float weight;
         /// </summary>
         SubMeshBoneAssignment = 0x4100,
         /// <summary>
@@ -85,7 +123,7 @@ namespace Axiom
         ///		Optional bone weights (repeating section)
         //		uint vertexIndex;
         //		ushort boneIndex;
-        //		Real weight;
+        //		float weight;
         /// </summary>
         MeshBoneAssignment = 0x7000,
         /// <summary>
@@ -97,7 +135,7 @@ namespace Axiom
         /// <summary>
         ///		Repeating section, ordered in increasing depth
         //		LOD 0 (full detail from 0 depth) is omitted
-        //		Real fromSquaredDepth;
+        //		float fromSquaredDepth;
         /// </summary>
         MeshLODUsage = 0x8100,
         /// <summary>
@@ -114,9 +152,9 @@ namespace Axiom
         /// </summary>
         MeshLODGenerated = 0x8120,
         /// <summary>
-        ///		Real minx, miny, minz;
-        //		Real maxx, maxy, maxz;
-        //		Real radius;
+        ///		float minx, miny, minz;
+        //		float maxx, maxy, maxz;
+        //		float radius;
         /// </summary>
         MeshBounds = 0x9000,
         /// <summary>
@@ -145,7 +183,7 @@ namespace Axiom
         //		ulong		vertexSet
         //		ulong		vertIndex[3]
         //		ulong		sharedVertIndex[3] 
-        //		Real		normal[4]
+        //		float		normal[4]
         /// </summary>
         EdgeListLOD = 0xB100,
         /// <summary>

@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -34,8 +42,9 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 
 using Axiom;
+using Axiom.MathLib;
+using Axiom.MathLib.Collections;
 using DotNet3D.Math;
-using DotNet3D.Math.Collections;
 
 #endregion Namespace Declarations
 			
@@ -147,24 +156,24 @@ namespace Axiom.SceneManagers.Bsp
 
                 if ( table.Columns["Scale"] != null )
                 {
-                    optionList["Scale"] = Real.Parse( (string)row["Scale"] );
+                    optionList["Scale"] = StringConverter.ParseFloat( (string)row["Scale"] );
                 }
 
                 Vector3 move = Vector3.Zero;
 
                 if ( table.Columns["MoveX"] != null )
                 {
-                    move.x = Real.Parse( (string)row["MoveX"] );
+                    move.x = StringConverter.ParseFloat( (string)row["MoveX"] );
                 }
 
                 if ( table.Columns["MoveY"] != null )
                 {
-                    move.y = Real.Parse( (string)row["MoveY"] );
+                    move.y = StringConverter.ParseFloat( (string)row["MoveY"] );
                 }
 
                 if ( table.Columns["MoveZ"] != null )
                 {
-                    move.z = Real.Parse( (string)row["MoveZ"] );
+                    move.z = StringConverter.ParseFloat( (string)row["MoveZ"] );
                 }
 
                 optionList["Move"] = move;
@@ -181,7 +190,7 @@ namespace Axiom.SceneManagers.Bsp
 
                 if ( table.Columns["AmbientRatio"] != null )
                 {
-                    optionList["AmbientRatio"] = Real.Parse( (string)row["AmbientRatio"] );
+                    optionList["AmbientRatio"] = StringConverter.ParseFloat( (string)row["AmbientRatio"] );
                 }
             }
             else
@@ -256,7 +265,7 @@ namespace Axiom.SceneManagers.Bsp
             else
             {
                 if ( random )
-                    return level.PlayerStarts[(int)( Utility.UnitRandom() * level.PlayerStarts.Length )];
+                    return level.PlayerStarts[(int)( MathUtil.UnitRandom() * level.PlayerStarts.Length )];
                 else
                     return level.PlayerStarts[0];
 
@@ -289,7 +298,7 @@ namespace Axiom.SceneManagers.Bsp
         /// <param name="position">The position at which to evaluate the list of lights</param>
         /// <param name="radius">The bounding radius to test</param>
         /// <param name="destList">List to be populated with ordered set of lights; will be cleared by this method before population.</param>
-        protected override void PopulateLightList( Vector3 position, Real radius, LightList destList )
+        protected override void PopulateLightList( Vector3 position, float radius, LightList destList )
         {
             BspNode positionNode = level.FindLeaf( position );
             BspNode[] lightNodes = new BspNode[lightList.Count];
@@ -302,7 +311,7 @@ namespace Axiom.SceneManagers.Bsp
 
             // Trawl of the lights that are visible from position, then sort
             destList.Clear();
-            Real squaredRadius = radius * radius;
+            float squaredRadius = radius * radius;
 
             // loop through the scene lights an add ones in range and visible from positionNode
             for ( int i = 0; i < lightList.Count; i++ )
@@ -322,7 +331,7 @@ namespace Axiom.SceneManagers.Bsp
                         light.TempSquaredDist = ( light.DerivedPosition - position ).LengthSquared;
                         light.TempSquaredDist -= squaredRadius;
                         // only add in-range lights
-                        Real range = light.AttenuationRange;
+                        float range = light.AttenuationRange;
                         if ( light.TempSquaredDist <= ( range * range ) )
                         {
                             destList.Add( light );
@@ -745,7 +754,7 @@ namespace Axiom.SceneManagers.Bsp
 
                     if ( cullMode != ManualCullingMode.None )
                     {
-                        Real dist = faceGroup.plane.GetDistance( camera.DerivedPosition );
+                        float dist = faceGroup.plane.GetDistance( camera.DerivedPosition );
 
                         if ( ( ( dist < 0 ) && ( cullMode == ManualCullingMode.Back ) ) ||
                             ( ( dist > 0 ) && ( cullMode == ManualCullingMode.Front ) ) )
@@ -1244,11 +1253,11 @@ namespace Axiom.SceneManagers.Bsp
 
                     for ( int i = 0; i < faceGrp.Length; i++ )
                     {
-                        Real dist = faceGrp[i].plane.GetDistance( camPos );
-                        Real angle = faceGrp[i].plane.Normal.DotProduct( camDir );
+                        float dist = faceGrp[i].plane.GetDistance( camPos );
+                        float angle = faceGrp[i].plane.Normal.DotProduct( camDir );
 
                         if ( ( ( dist < 0 && angle > 0 ) || ( dist > 0 && angle < 0 ) ) &&
-                            Utility.Abs( angle ) >= Utility.Cos( shadowCam.FOV * 0.5f ) )
+                            MathUtil.Abs( angle ) >= MathUtil.Cos( shadowCam.FOV * 0.5f ) )
                         {
                             // face is in shadow's frustum
 
@@ -1419,7 +1428,7 @@ namespace Axiom.SceneManagers.Bsp
                     // Check object against brushes
 
                     /*----This is for bounding sphere-----
-					Real radius = aObj.BoundingRadius;
+					float radius = aObj.BoundingRadius;
 					//-------------------------------------------*/
 
                     for ( int brushPoint = 0; brushPoint < leaf.SolidBrushes.Length; brushPoint++ )
@@ -1436,7 +1445,7 @@ namespace Axiom.SceneManagers.Bsp
 
                         while (planes.MoveNext())
 						{
-							Real dist = ((Plane)planes.Current).GetDistance(pos);
+							float dist = ((Plane)planes.Current).GetDistance(pos);
 							if (dist > radius)
 							{
 								// Definitely excluded
@@ -1502,13 +1511,13 @@ namespace Axiom.SceneManagers.Bsp
         {
             this.listener = listener;
             this.StopRayTracing = false;
-            ProcessNode( ( (BspSceneManager)creator ).Level.RootNode, ray, Real.PositiveInfinity, 0 );
+            ProcessNode( ( (BspSceneManager)creator ).Level.RootNode, ray, float.PositiveInfinity, 0 );
         }
         #endregion
 
         #region Protected methods
 
-        protected virtual void ProcessNode( BspNode node, Ray tracingRay, Real maxDistance, Real traceDistance )
+        protected virtual void ProcessNode( BspNode node, Ray tracingRay, float maxDistance, float traceDistance )
         {
             // check if ray already encountered a solid brush
             if ( StopRayTracing )
@@ -1520,7 +1529,7 @@ namespace Axiom.SceneManagers.Bsp
                 return;
             }
 
-            IntersectionResult result = tracingRay.Intersects( node.SplittingPlane );
+            IntersectResult result = tracingRay.Intersects( node.SplittingPlane );
             if ( result.Hit )
             {
                 if ( result.Distance < maxDistance )
@@ -1545,7 +1554,7 @@ namespace Axiom.SceneManagers.Bsp
                 ProcessNode( node.GetNextNode( tracingRay.Origin ), tracingRay, maxDistance, traceDistance );
         }
 
-        protected virtual void ProcessLeaf( BspNode leaf, Ray tracingRay, Real maxDistance, Real traceDistance )
+        protected virtual void ProcessLeaf( BspNode leaf, Ray tracingRay, float maxDistance, float traceDistance )
         {
             MovableObjectCollection objects = leaf.Objects;
             int numObjects = objects.Count;
@@ -1559,7 +1568,7 @@ namespace Axiom.SceneManagers.Bsp
                     continue;
 
                 //Test object as bounding box
-                IntersectionResult result = tracingRay.Intersects( obj.GetWorldBoundingBox() );
+                IntersectResult result = tracingRay.Intersects( obj.GetWorldBoundingBox() );
                 // if the result came back positive and intersection point is inside
                 // the node, fire the event handler
                 if ( result.Hit && result.Distance <= maxDistance )
@@ -1570,7 +1579,7 @@ namespace Axiom.SceneManagers.Bsp
 
             PlaneBoundedVolume boundedVolume = new PlaneBoundedVolume( Plane.Side.Positive );
             BspBrush intersectBrush = null;
-            Real intersectBrushDist = Real.PositiveInfinity;
+            float intersectBrushDist = float.PositiveInfinity;
 
             // Check ray against brushes
             for ( int brushPoint = 0; brushPoint < leaf.SolidBrushes.Length; brushPoint++ )
@@ -1582,7 +1591,7 @@ namespace Axiom.SceneManagers.Bsp
 
                 boundedVolume.planes = brush.Planes;
 
-                IntersectionResult result = tracingRay.Intersects( boundedVolume );
+                IntersectResult result = tracingRay.Intersects( boundedVolume );
                 // if the result came back positive and intersection point is inside
                 // the node, check if this brush is closer
                 if ( result.Hit && result.Distance <= maxDistance )
@@ -1644,9 +1653,9 @@ namespace Axiom.SceneManagers.Bsp
                 return;
             }
 
-            Real distance = node.GetDistance( sphere.Center );
+            float distance = node.GetDistance( sphere.Center );
 
-            if ( Utility.Abs( distance ) < sphere.Radius )
+            if ( MathUtil.Abs( distance ) < sphere.Radius )
             {
                 // Sphere crosses the plane, do both.
                 ProcessNode( node.BackNode );

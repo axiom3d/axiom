@@ -24,12 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 using System.Diagnostics;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -108,8 +117,8 @@ namespace Axiom
         /// <summary>Origin of each billboard</summary>
         protected BillboardOrigin originType = BillboardOrigin.Center;
         /// <summary>Default width/height of each billboard.</summary>
-        protected Real defaultWidth = 100;
-        protected Real defaultHeight = 100;
+        protected float defaultWidth = 100;
+        protected float defaultHeight = 100;
         /// <summary>Name of the material to use</summary>
         protected string materialName = "BaseWhite";
         /// <summary>Reference to the material to use</summary>
@@ -140,7 +149,7 @@ namespace Axiom
         /// <summary>Common direction for billboard oriented with type Common.</summary>
         protected Vector3 commonDirection;
         /// <summary>The local bounding radius of this object.</summary>
-        protected Real boundingRadius;
+        protected float boundingRadius;
 
         /// <summary> </summary>
         protected int numVisibleBillboards;
@@ -159,13 +168,13 @@ namespace Axiom
         private bool externalData = false;
         
         // Base texCoord Data
-        private Real[] basicTexData = new Real[8] { 0.0F, 1.0F,
+        private float[] basicTexData = new float[8] { 0.0F, 1.0F,
                                                       1.0F, 1.0F,
                                                       0.0F, 0.0F,
                                                       1.0F, 0.0F };
 
         // Template texCoord Data
-        private Real[] texDataBase = new Real[8] {  -0.5F, 0.5F,
+        private float[] texDataBase = new float[8] {  -0.5F, 0.5F,
 				      		    				       0.5F, 0.5F,
 									        	      -0.5F,-0.5F,
 										               0.5F,-0.5F };
@@ -179,7 +188,7 @@ namespace Axiom
         // Final vertex offsets, used where sizes all default to save calcs
         protected Vector3[] vecOffsets = new Vector3[4];
         // Parametric offsets of origin
-        Real leftOffset, rightOffset, topOffset, bottomOffset;
+        float leftOffset, rightOffset, topOffset, bottomOffset;
         
         // Camera axes in billboard space
         protected Vector3 camX = new Vector3();
@@ -257,7 +266,7 @@ namespace Axiom
         ///		all the billboards in the set are the default size. It is possible to alter the size of individual
         ///		billboards at the expense of extra calculation. See the Billboard class for more info.
         /// </remarks>
-        public void SetDefaultDimensions( Real width, Real height )
+        public void SetDefaultDimensions( float width, float height )
         {
             defaultWidth = width;
             defaultHeight = height;
@@ -270,7 +279,7 @@ namespace Axiom
         /// <param name="y"></param>
         /// <param name="z"></param>
         /// <returns></returns>
-        public Billboard CreateBillboard( Real x, Real y, Real z )
+        public Billboard CreateBillboard( float x, float y, float z )
         {
             return CreateBillboard( new Vector3( x, y, z), ColorEx.White );
         }
@@ -283,7 +292,7 @@ namespace Axiom
         /// <param name="z"></param>
         /// <param name="color"></param>
         /// <returns></returns>
-        public Billboard CreateBillboard( Real x, Real y, Real z , ColorEx color)
+        public Billboard CreateBillboard( float x, float y, float z , ColorEx color)
         {
             return CreateBillboard( new Vector3( x, y, z ), color );
         }
@@ -359,9 +368,9 @@ namespace Axiom
             }
             else
             {
-                Real maxSqLen = -1.0f;
-                Vector3 min = new Vector3( Real.PositiveInfinity, Real.PositiveInfinity, Real.PositiveInfinity );
-                Vector3 max = new Vector3( Real.NegativeInfinity, Real.NegativeInfinity, Real.NegativeInfinity );
+                float maxSqLen = -1.0f;
+                Vector3 min = new Vector3( float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity );
+                Vector3 max = new Vector3( float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity );
 
                 for ( int i = 0; i < activeBillboards.Count; i++ )
                 {
@@ -372,11 +381,11 @@ namespace Axiom
                     min.ToFloor( pos );
                     max.ToCeiling( pos );
 
-                    maxSqLen = Utility.Max( maxSqLen, pos.LengthSquared );
+                    maxSqLen = MathUtil.Max( maxSqLen, pos.LengthSquared );
                 }
 
                 // adjust for billboard size
-                Real adjust = Utility.Max( defaultWidth, defaultHeight );
+                float adjust = MathUtil.Max( defaultWidth, defaultHeight );
                 Vector3 vecAdjust = new Vector3( adjust, adjust, adjust );
                 min -= vecAdjust;
                 max += vecAdjust;
@@ -384,7 +393,7 @@ namespace Axiom
                 // update our local aabb
                 aab.SetExtents( min, max );
 
-                boundingRadius = Utility.Sqrt( maxSqLen );
+                boundingRadius = MathUtil.Sqrt( maxSqLen );
 
                 // if we have a parent node, ask it to update us
                 if ( parentNode != null )
@@ -601,7 +610,7 @@ namespace Axiom
         /// <summary>
         /// 
         /// </summary>
-        public Real DefaultWidth
+        public float DefaultWidth
         {
             get
             {
@@ -616,7 +625,7 @@ namespace Axiom
         /// <summary>
         /// 
         /// </summary>
-        public Real DefaultHeight
+        public float DefaultHeight
         {
             get
             {
@@ -690,7 +699,7 @@ namespace Axiom
                 0-----1
             */
 
-            //Real[] texData = new Real[] {
+            //float[] texData = new float[] {
             //             0.0f, 1.0f,
             //             1.0f, 1.0f,
             //             0.0f, 0.0f,
@@ -782,11 +791,11 @@ namespace Axiom
             // calculate the radius of the bounding sphere for the billboard
             if ( billboard.HasOwnDimensions )
             {
-                sphere.Radius = Utility.Max( billboard.Width, billboard.Height );
+                sphere.Radius = MathUtil.Max( billboard.Width, billboard.Height );
             }
             else
             {
-                sphere.Radius = Utility.Max( defaultWidth, defaultHeight );
+                sphere.Radius = MathUtil.Max( defaultWidth, defaultHeight );
             }
 
             // finally, see if the sphere is visible in the camera
@@ -876,7 +885,7 @@ namespace Axiom
         /// <param name="right"></param>
         /// <param name="top"></param>
         /// <param name="bottom"></param>
-        protected void GetParametericOffsets( out Real left, out Real right, out Real top, out Real bottom )
+        protected void GetParametericOffsets( out float left, out float right, out float top, out float bottom )
         {
 
             left = 0.0f;
@@ -959,16 +968,16 @@ namespace Axiom
         protected void GenerateVertices( Vector3[] offsets, Billboard billboard )
         {
             int colorVal = Root.Instance.ConvertColor( billboard.Color );
-            Real[] rotTexData;
+            float[] rotTexData;
             
             unsafe
             {
                 if ( !fixedTextureCoords )
                 {
-                    rotTexData = new Real[8];
-                    Real rotation = billboard.rotationInRadians;
-                    Real cosRot = Utility.Cos( rotation );
-                    Real sinRot = Utility.Sin( rotation );
+                    rotTexData = new float[8];
+                    float rotation = billboard.rotationInRadians;
+                    float cosRot = MathUtil.Cos( rotation );
+                    float sinRot = MathUtil.Sin( rotation );
 
                     rotTexData[0] = ( cosRot * texDataBase[0] ) + ( sinRot * texDataBase[1] ) + 0.5f;
                     rotTexData[1] = ( sinRot * texDataBase[0] ) - ( cosRot * texDataBase[1] ) + 0.5f;
@@ -984,7 +993,7 @@ namespace Axiom
                 }
                 else
                 {
-                    rotTexData = (Real[])basicTexData.Clone();
+                    rotTexData = (float[])basicTexData.Clone();
                 }
 
                 int* colors;
@@ -1026,7 +1035,7 @@ namespace Axiom
         ///		Fills output array of 4 vectors with vector offsets
         ///		from origin for left-top, right-top, left-bottom, right-bottom corners.
         /// </remarks>
-        protected void GenerateVertexOffsets( Real left, Real right, Real top, Real bottom, Real width, Real height, ref Vector3 x, ref Vector3 y, Vector3[] destVec )
+        protected void GenerateVertexOffsets( float left, float right, float top, float bottom, float width, float height, ref Vector3 x, ref Vector3 y, Vector3[] destVec )
         {
             Vector3 vLeftOff, vRightOff, vTopOff, vBottomOff;
             /* Calculate default offsets. Scale the axes by
@@ -1195,7 +1204,7 @@ namespace Axiom
         /// </summary>
         /// <param name="camera"></param>
         /// <returns></returns>
-        public virtual Real GetSquaredViewDepth( Camera camera )
+        public virtual float GetSquaredViewDepth( Camera camera )
         {
             Debug.Assert( parentNode != null, "BillboardSet must have a parent scene node to get the squared view depth." );
 
@@ -1243,7 +1252,7 @@ namespace Axiom
         /// <summary>
         ///    Local bounding radius of this billboard set.
         /// </summary>
-        public override Real BoundingRadius
+        public override float BoundingRadius
         {
             get
             {

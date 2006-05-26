@@ -24,13 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 using System.Data;
 
-using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -122,17 +130,17 @@ namespace Axiom.SceneManagers.Octree
 
             if ( table.Columns["ScaleX"] != null )
             {
-                options.scalex = Real.Parse( (string)row["ScaleX"] );
+                options.scalex = StringConverter.ParseFloat( (string)row["ScaleX"] );
             }
 
             if ( table.Columns["ScaleY"] != null )
             {
-                options.scaley = Real.Parse( (string)row["ScaleY"] );
+                options.scaley = StringConverter.ParseFloat( (string)row["ScaleY"] );
             }
 
             if ( table.Columns["ScaleZ"] != null )
             {
-                options.scalez = Real.Parse( (string)row["ScaleZ"] );
+                options.scalez = StringConverter.ParseFloat( (string)row["ScaleZ"] );
             }
 
             if ( table.Columns["VertexNormals"] != null )
@@ -153,9 +161,9 @@ namespace Axiom.SceneManagers.Octree
 
             options.worldSize = image.Width;
 
-            Real maxx = options.scalex * options.worldSize;
-            Real maxy = 255 * options.scaley;
-            Real maxz = options.scalez * options.worldSize;
+            float maxx = options.scalex * options.worldSize;
+            float maxy = 255 * options.scaley;
+            float maxz = options.scalez * options.worldSize;
 
             Resize( new AxisAlignedBox( Vector3.Zero, new Vector3( maxx, maxy, maxz ) ) );
 
@@ -292,7 +300,7 @@ namespace Axiom.SceneManagers.Octree
         /// rather it returns the y value (height) of a point with the same x and z values 
         /// as thoes passed in, that is on the surface of the terrain. 
         /// To get the Altitude you would do something like 
-        /// Real altitude = thePoint.y - GetHeightAt(thePoint, 0);
+        /// float altitude = thePoint.y - GetHeightAt(thePoint, 0);
         /// 
         /// This has code merged into it from GetTerrainTile() b/c it gives us about 60 fps 
         /// when testing 1000+ points, to inline it here rather than going through the extra function calls
@@ -300,21 +308,21 @@ namespace Axiom.SceneManagers.Octree
         /// <param name="point">The point you would like to know the y value of the terrain at</param>
         /// <param name="defaultheight">value to return if the point is not over/under the terrain</param>
         /// <returns></returns>
-        public Real GetHeightAt( Vector3 point, Real defaultheight )
+        public float GetHeightAt( Vector3 point, float defaultheight )
         {
             if ( terrainOptions == null || tiles == null )
                 return defaultheight;
-            Real worldsize = terrainOptions.worldSize;
-            Real scalex = terrainOptions.scalex;
-            Real scalez = terrainOptions.scalez;
+            float worldsize = terrainOptions.worldSize;
+            float scalex = terrainOptions.scalex;
+            float scalez = terrainOptions.scalez;
 
             int xdim = tiles.GetLength( 0 );
             int zdim = tiles.GetLength( 1 );
 
-            Real maxx = scalex * worldsize;
+            float maxx = scalex * worldsize;
             int xCoordIndex = (int)( ( point.x * ( xdim / maxx ) ) );
 
-            Real maxz = scalez * worldsize;
+            float maxz = scalez * worldsize;
             int zCoordIndex = (int)( ( point.z * zdim / maxx ) );
 
             if ( xCoordIndex >= xdim || zCoordIndex >= zdim || xCoordIndex < 0 || zCoordIndex < 0 )
@@ -333,17 +341,17 @@ namespace Axiom.SceneManagers.Octree
 
             if ( terrainOptions == null || tiles == null )
                 return null;
-            Real worldsize = terrainOptions.worldSize;
-            Real scalex = terrainOptions.scalex;
-            Real scalez = terrainOptions.scalez;
+            float worldsize = terrainOptions.worldSize;
+            float scalex = terrainOptions.scalex;
+            float scalez = terrainOptions.scalez;
 
             int xdim = tiles.GetLength( 0 );
             int zdim = tiles.GetLength( 1 );
 
-            Real maxx = scalex * worldsize;
+            float maxx = scalex * worldsize;
             int xCoordIndex = (int)( ( point.x * ( xdim / maxx ) ) );
 
-            Real maxz = scalez * worldsize;
+            float maxz = scalez * worldsize;
             int zCoordIndex = (int)( ( point.z * zdim / maxx ) );
 
             if ( xCoordIndex >= xdim || zCoordIndex >= zdim || xCoordIndex < 0 || zCoordIndex < 0 )

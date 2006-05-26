@@ -24,10 +24,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-using DotNet3D.Math;
+using Axiom.MathLib;
 
 #endregion Namespace Declarations
 			
@@ -43,16 +51,16 @@ namespace Axiom
         #region Member variables
 
         protected WaveformType type;
-        protected Real baseVal = 0.0f;
-        protected Real frequency = 1.0f;
-        protected Real phase = 0.0f;
-        protected Real amplitude = 1.0f;
+        protected float baseVal = 0.0f;
+        protected float frequency = 1.0f;
+        protected float phase = 0.0f;
+        protected float amplitude = 1.0f;
 
         #endregion
 
         #region Constructors
 
-        public WaveformControllerFunction( WaveformType type, Real baseVal, Real frequency, Real phase, Real amplitude, bool useDelta )
+        public WaveformControllerFunction( WaveformType type, float baseVal, float frequency, float phase, float amplitude, bool useDelta )
             : base( useDelta )
         {
             this.type = type;
@@ -62,14 +70,14 @@ namespace Axiom
             this.amplitude = amplitude;
         }
 
-        public WaveformControllerFunction( WaveformType type, Real baseVal )
+        public WaveformControllerFunction( WaveformType type, float baseVal )
             : base( true )
         {
             this.type = type;
             this.baseVal = baseVal;
         }
 
-        public WaveformControllerFunction( WaveformType type, Real baseVal, Real frequency )
+        public WaveformControllerFunction( WaveformType type, float baseVal, float frequency )
             : base( true )
         {
             this.type = type;
@@ -77,7 +85,7 @@ namespace Axiom
             this.frequency = frequency;
         }
 
-        public WaveformControllerFunction( WaveformType type, Real baseVal, Real frequency, Real phase )
+        public WaveformControllerFunction( WaveformType type, float baseVal, float frequency, float phase )
             : base( true )
         {
             this.type = type;
@@ -86,7 +94,7 @@ namespace Axiom
             this.phase = phase;
         }
 
-        public WaveformControllerFunction( WaveformType type, Real baseVal, Real frequency, Real phase, Real amplitude )
+        public WaveformControllerFunction( WaveformType type, float baseVal, float frequency, float phase, float amplitude )
             : base( true )
         {
             this.type = type;
@@ -106,16 +114,16 @@ namespace Axiom
 
         #region Methods
 
-        public override Real Execute( Real sourceValue )
+        public override float Execute( float sourceValue )
         {
-            Real input = AdjustInput( sourceValue * frequency ) % 1f;
-            Real output = 0.0f;
+            float input = AdjustInput( sourceValue * frequency ) % 1f;
+            float output = 0.0f;
 
             // first, get output in range [-1,1] (typical for waveforms)
             switch ( type )
             {
                 case WaveformType.Sine:
-                    output = Utility.Sin( input * Utility.TWO_PI );
+                    output = MathUtil.Sin( input * MathUtil.TWO_PI );
                     break;
 
                 case WaveformType.Triangle:
@@ -149,9 +157,9 @@ namespace Axiom
             return baseVal + ( ( output + 1.0f ) * 0.5f * amplitude );
         }
 
-        protected override Real AdjustInput( Real input )
+        protected override float AdjustInput( float input )
         {
-            Real adjusted = base.AdjustInput( input );
+            float adjusted = base.AdjustInput( input );
 
             // if not using delta accumulation, adjust by phase value
             if ( !useDeltaInput )

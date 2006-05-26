@@ -24,11 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Diagnostics;
 
+using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -76,7 +86,7 @@ namespace Axiom
             {
                 Triangle tri = (Triangle)triangles[i];
 
-                Real dot = tri.normal.DotProduct( lightPos );
+                float dot = tri.normal.DotProduct( lightPos );
 
                 tri.lightFacing = ( dot > 0 );
             }
@@ -115,7 +125,7 @@ namespace Axiom
                         offset = t.vertIndex[2] * 3;
                         Vector3 v3 = new Vector3( pVert[offset], pVert[offset + 1], pVert[offset + 2] );
 
-                        t.normal = Utility.CalculateFaceNormal( v1, v2, v3 );
+                        t.normal = MathUtil.CalculateFaceNormal( v1, v2, v3 );
                     }
                 }
             }

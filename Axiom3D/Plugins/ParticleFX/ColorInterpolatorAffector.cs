@@ -24,16 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 
 using Axiom;
 
-using DotNet3D.Math;
-
 #endregion Namespace Declarations
-			
 
 namespace Axiom.ParticleFX
 {
@@ -45,7 +50,7 @@ namespace Axiom.ParticleFX
         protected const int MAX_STAGES = 6;
 
         internal ColorEx[] colorAdj = new ColorEx[MAX_STAGES];
-        internal Real[] timeAdj = new Real[MAX_STAGES];
+        internal float[] timeAdj = new float[MAX_STAGES];
 
         public ColorInterpolatorAffector()
         {
@@ -58,15 +63,15 @@ namespace Axiom.ParticleFX
             }
         }
 
-        public override void AffectParticles( ParticleSystem system, Real timeElapsed )
+        public override void AffectParticles( ParticleSystem system, float timeElapsed )
         {
             // loop through the particles
             for ( int i = 0; i < system.Particles.Count; i++ )
             {
                 Particle p = (Particle)system.Particles[i];
 
-                Real lifeTime = p.totalTimeToLive;
-                Real particleTime = 1.0f - ( p.timeToLive / lifeTime );
+                float lifeTime = p.totalTimeToLive;
+                float particleTime = 1.0f - ( p.timeToLive / lifeTime );
 
                 if ( particleTime <= timeAdj[0] )
                 {
@@ -241,7 +246,7 @@ namespace Axiom.ParticleFX
             {
                 ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
-                affector.timeAdj[0] = Real.Parse( val );
+                affector.timeAdj[0] = StringConverter.ParseFloat( val );
             }
 
             #endregion
@@ -262,7 +267,7 @@ namespace Axiom.ParticleFX
             {
                 ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
-                affector.timeAdj[1] = Real.Parse( val );
+                affector.timeAdj[1] = StringConverter.ParseFloat( val );
             }
 
             #endregion
@@ -283,7 +288,7 @@ namespace Axiom.ParticleFX
             {
                 ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
-                affector.timeAdj[2] = Real.Parse( val );
+                affector.timeAdj[2] = StringConverter.ParseFloat( val );
             }
 
             #endregion
@@ -304,7 +309,7 @@ namespace Axiom.ParticleFX
             {
                 ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
-                affector.timeAdj[3] = Real.Parse( val );
+                affector.timeAdj[3] = StringConverter.ParseFloat( val );
             }
 
             #endregion
@@ -325,7 +330,7 @@ namespace Axiom.ParticleFX
             {
                 ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
-                affector.timeAdj[4] = Real.Parse( val );
+                affector.timeAdj[4] = StringConverter.ParseFloat( val );
             }
 
             #endregion
@@ -346,7 +351,7 @@ namespace Axiom.ParticleFX
             {
                 ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
-                affector.timeAdj[5] = Real.Parse( val );
+                affector.timeAdj[5] = StringConverter.ParseFloat( val );
             }
 
             #endregion

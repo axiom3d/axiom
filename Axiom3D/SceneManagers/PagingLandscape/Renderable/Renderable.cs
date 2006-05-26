@@ -24,18 +24,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 
 using Axiom;
-using DotNet3D.Math;
-
+using Axiom.MathLib;
 using Axiom.SceneManagers.PagingLandscape;
-using Axiom.SceneManagers.PagingLandscape.Collections;
 using Axiom.SceneManagers.PagingLandscape.Data2D;
-using Axiom.SceneManagers.PagingLandscape.Tile; 
+using Axiom.SceneManagers.PagingLandscape.Tile;
+using DotNet3D.Math;
 
 #endregion Namespace Declarations
 
@@ -53,13 +59,20 @@ using Axiom.SceneManagers.PagingLandscape.Tile;
 
 #endregion
 
+
+
 namespace Axiom.SceneManagers.PagingLandscape.Renderable
 {
+
     /// <summary>
+
     /// Summary description for Renderable.
+
     /// </summary>
+
     public class Renderable : SimpleRenderable, IDisposable
     {
+
 
         #region Fields
         /// Connection to tiles four neighbours
@@ -77,7 +90,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Renderable
         protected int materialLODIndex;
 
         protected Vector3 coneNormal;
-        protected Real angle;
+        protected float angle;
         protected bool mustRender;
         // for loading
         protected TileInfo info;
@@ -250,16 +263,16 @@ namespace Axiom.SceneManagers.PagingLandscape.Renderable
             bool bShadowed = Options.Instance.Vertex_Shadowed;
             bool bInstant_colored = Options.Instance.Vertex_Instant_Colored;
 
-            Real scale_x = Options.Instance.Scale.x;
-            Real scale_z = Options.Instance.Scale.z;
+            float scale_x = Options.Instance.Scale.x;
+            float scale_z = Options.Instance.Scale.z;
 
             //			VertexDeclaration decl = renderOp.vertexData.vertexDeclaration;
             VertexBufferBinding bind = renderOp.vertexData.vertexBufferBinding;
 
-            //		    Real[] matHeight = new Real[2];
+            //		    float[] matHeight = new float[2];
             //		    matHeight[0] = Options.Instance.MatHeight[0];
             //			matHeight[1] = Options.Instance.MatHeight[1];
-            //			Real absmaxHeight = Data2DManager.Instance.GetMaxHeight();
+            //			float absmaxHeight = Data2DManager.Instance.GetMaxHeight();
 
             // Calculate the offset in the data
             long tileSize = Options.Instance.TileSize;
@@ -271,17 +284,17 @@ namespace Axiom.SceneManagers.PagingLandscape.Renderable
             long endz = offSetZ + tileSize;
 
             //calculate min and max heights;
-            Real min = 99999999.9f;
-            Real max = 0.0f;
+            float min = 99999999.9f;
+            float max = 0.0f;
 
-            Real Aux1 = 1.0f / ( Options.Instance.PageSize - 1.0f );
+            float Aux1 = (float)1.0f / ( Options.Instance.PageSize - 1 );
 
             long pageSize = Options.Instance.PageSize;
-            Real[] HeightData = Data2DManager.Instance.GetData2D( info.PageX, info.PageZ ).HeightData;
+            float[] HeightData = Data2DManager.Instance.GetData2D( info.PageX, info.PageZ ).HeightData;
             //			long HeightDataPos = offSetZ * pageSize;
             long HeightDataPos = ( info.TileZ * tileSize * pageSize ) + ( info.TileX * tileSize );
-            Real Tex1DataPos = info.TileX * tileSize;
-            Real Tex2DataPos = info.TileZ * tileSize;
+            float Tex1DataPos = info.TileX * tileSize;
+            float Tex2DataPos = info.TileZ * tileSize;
 
             HardwareVertexBuffer vVertices = bind.GetBuffer( POSITION );
             //			HardwareVertexBuffer vNormals;
@@ -307,18 +320,18 @@ namespace Axiom.SceneManagers.PagingLandscape.Renderable
 
             unsafe
             {
-                Real* pPos = (Real*)ipPos.ToPointer();
-                //				Real* pNrm = (Real *)ipNrm.ToPointer();
-                //				Real* pTex = (Real *)ipTex.ToPointer();
-                //				Real* pClr = (Real *)ipClr.ToPointer();
+                float* pPos = (float*)ipPos.ToPointer();
+                //				float* pNrm = (float *)ipNrm.ToPointer();
+                //				float* pTex = (float *)ipTex.ToPointer();
+                //				float* pClr = (float *)ipClr.ToPointer();
 
                 for ( long k = offSetZ; k <= endz; k++ )
                 {
-                    Real posZ = (Real)( k - offSetZ ) * scale_z;
+                    float posZ = (float)( k - offSetZ ) * scale_z;
 
                     for ( long i = offSetX; i <= endx; i++ )
                     {
-                        Real height = HeightData[i + HeightDataPos];
+                        float height = HeightData[i + HeightDataPos];
                         //
                         //						min = Math.Min(height, min);  
                         //						max = Math.Max(height, max);  
@@ -326,7 +339,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Renderable
                         max = height > max ? height : max;
                         //
                         //						// Position
-                        pPos[cntPos++] = (Real)( ( i - offSetX ) * scale_x );	//X
+                        pPos[cntPos++] = (float)( ( i - offSetX ) * scale_x );	//X
                         pPos[cntPos++] = height;									//Y
                         pPos[cntPos++] = posZ;										//Z
                         //						
@@ -370,9 +383,9 @@ namespace Axiom.SceneManagers.PagingLandscape.Renderable
             box.SetExtents( new Vector3( 0.0F,
                 min,
                 0.0F ),
-                new Vector3( ( (Real)tileSize ) * scale_x,
+                new Vector3( ( (float)tileSize ) * scale_x,
                 max,
-                ( (Real)tileSize ) * scale_z ) );
+                ( (float)tileSize ) * scale_z ) );
 
             worldBoundingSphere.Center = box.Center;
             worldBoundingSphere.Radius = box.Maximum.Length;
@@ -452,7 +465,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Renderable
 			}
 #endif
 
-            Real d = ( parentNode.DerivedPosition - cam.DerivedPosition ).LengthSquared;
+            float d = ( parentNode.DerivedPosition - cam.DerivedPosition ).LengthSquared;
             // Now adjust it by the camera bias
             d = d * cam.LodBias;
             // Material LOD
@@ -462,8 +475,8 @@ namespace Axiom.SceneManagers.PagingLandscape.Renderable
             //	materialLODIndex = m_pMaterial->getLodIndexSquaredDepth(d);
 
             // Check if we need to decrease the LOD
-            Real factor = Options.Instance.LOD_Factor;
-            Real curr_lod = factor * ( 1 + RenderLevel );
+            float factor = Options.Instance.LOD_Factor;
+            float curr_lod = factor * ( 1 + RenderLevel );
             bool changeLOD = false;
             if ( d < curr_lod )
             {
@@ -516,13 +529,13 @@ namespace Axiom.SceneManagers.PagingLandscape.Renderable
 
         /** Overridden, see Renderable */
 
-        public override Real GetSquaredViewDepth( Axiom.Camera cam )
+        public override float GetSquaredViewDepth( Axiom.Camera cam )
         {
             // Use squared length to avoid square root
             return ( this.ParentNode.DerivedPosition - cam.DerivedPosition ).LengthSquared;
         }
 
-        public override Real BoundingRadius
+        public override float BoundingRadius
         {
             get
             {
@@ -538,7 +551,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Renderable
             }
         }
 
-        public Real MaxHeight
+        public float MaxHeight
         {
             get
             {

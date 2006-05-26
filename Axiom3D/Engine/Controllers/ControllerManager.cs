@@ -24,12 +24,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
-
-using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -128,7 +134,7 @@ namespace Axiom
         /// <param name="texUnit">The texture unit to animate.</param>
         /// <param name="sequenceTime">Length of the animation (in seconds).</param>
         /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-        public Controller CreateTextureAnimator( TextureUnitState texUnit, Real sequenceTime )
+        public Controller CreateTextureAnimator( TextureUnitState texUnit, float sequenceTime )
         {
             IControllerValue val = new TextureFrameControllerValue( texUnit );
             IControllerFunction func = new AnimationControllerFunction( sequenceTime );
@@ -147,16 +153,16 @@ namespace Axiom
         /// <param name="layer">The texture unit to animate.</param>
         /// <param name="speed">Speed of the rotation, in counter-clockwise revolutions per second.</param>
         /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-        public Controller CreateTextureRotator( TextureUnitState layer, Real speed )
+        public Controller CreateTextureRotator( TextureUnitState layer, float speed )
         {
             IControllerValue val = new TexCoordModifierControllerValue( layer, false, false, false, false, true );
-            IControllerFunction func = new MultipyControllerFunction( -speed, true );
+            IControllerFunction func = new MultiplyControllerFunction( -speed, true );
 
             return CreateController( val, func );
         }
 
         /// <summary>
-        ///     Predefined controller value for setting a single Realing-
+        ///     Predefined controller value for setting a single floating-
         ///     point value in a constant paramter of a vertex or fragment program.
         /// </summary>
         /// <remarks>
@@ -169,10 +175,10 @@ namespace Axiom
         /// <param name="index"></param>
         /// <param name="timeFactor"></param>
         /// <returns></returns>
-        public Controller CreateGpuProgramTimerParam( GpuProgramParameters parms, int index, Real timeFactor )
+        public Controller CreateGpuProgramTimerParam( GpuProgramParameters parms, int index, float timeFactor )
         {
-            IControllerValue val = new RealGpuParamControllerValue( parms, index );
-            IControllerFunction func = new MultipyControllerFunction( timeFactor, true );
+            IControllerValue val = new FloatGpuParamControllerValue( parms, index );
+            IControllerFunction func = new MultiplyControllerFunction( timeFactor, true );
 
             return CreateController( val, func );
         }
@@ -189,7 +195,7 @@ namespace Axiom
         /// <param name="speedU">Horizontal speed, in wraps per second.</param>
         /// <param name="speedV">Vertical speed, in wraps per second.</param>
         /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-        public Controller CreateTextureScroller( TextureUnitState layer, Real speedU, Real speedV )
+        public Controller CreateTextureScroller( TextureUnitState layer, float speedU, float speedV )
         {
             IControllerValue val = null;
             IControllerFunction func = null;
@@ -200,7 +206,7 @@ namespace Axiom
             {
                 // create the value and function
                 val = new TexCoordModifierControllerValue( layer, true, true );
-                func = new MultipyControllerFunction( -speedU, true );
+                func = new MultiplyControllerFunction( -speedU, true );
 
                 // create the controller (uses FrameTime for source by default)
                 controller = CreateController( val, func );
@@ -212,7 +218,7 @@ namespace Axiom
                 {
                     // create the value and function
                     val = new TexCoordModifierControllerValue( layer, true, false );
-                    func = new MultipyControllerFunction( -speedU, true );
+                    func = new MultiplyControllerFunction( -speedU, true );
 
                     // create the controller (uses FrameTime for source by default)
                     controller = CreateController( val, func );
@@ -223,7 +229,7 @@ namespace Axiom
                 {
                     // create the value and function
                     val = new TexCoordModifierControllerValue( layer, false, true );
-                    func = new MultipyControllerFunction( -speedV, true );
+                    func = new MultiplyControllerFunction( -speedV, true );
 
                     // create the controller (uses FrameTime for source by default)
                     controller = CreateController( val, func );
@@ -247,7 +253,7 @@ namespace Axiom
         /// <param name="amplitude">Scales the output so that instead of lying within 0..1 it lies within 0..(1 * amplitude) for exaggerated effects</param>
         /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
         public Controller CreateTextureWaveTransformer( TextureUnitState layer, TextureTransform type, WaveformType waveType,
-            Real baseVal, Real frequency, Real phase, Real amplitude )
+            float baseVal, float frequency, float phase, float amplitude )
         {
             IControllerValue val = null;
             IControllerFunction function = null;

@@ -24,11 +24,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-
-using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -43,17 +49,17 @@ namespace Axiom
         #region Member variables
 
         /// <summary>Time (in seconds) before this particle is destroyed.</summary>
-        public Real timeToLive;
+        public float timeToLive;
         /// <summary>Total Time to live, number of seconds of particles natural life</summary>
-        public Real totalTimeToLive;
+        public float totalTimeToLive;
         /// <summary>Speed of rotation in radians</summary>
-        Real rotationSpeed;
+        float rotationSpeed;
 
         #endregion
 
         #region Properties
 
-        public Real RotationSpeed
+        public float RotationSpeed
         {
             get
             {

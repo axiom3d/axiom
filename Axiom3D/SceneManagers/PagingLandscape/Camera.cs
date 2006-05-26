@@ -24,17 +24,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 
-using Axiom;
-
-using DotNet3D.Math;
+using Axiom.MathLib;
 
 #endregion Namespace Declarations
 			
+
+
 #region Versioning Information
 
 /// File								Revision
@@ -49,11 +56,15 @@ using DotNet3D.Math;
 
 #endregion
 
+
+
 namespace Axiom.SceneManagers.PagingLandscape
 {
 
     /// <summary>
+
     /// Summary description for Camera.
+
     /// </summary>
 
     public class Camera : Axiom.Camera
@@ -67,14 +78,13 @@ namespace Axiom.SceneManagers.PagingLandscape
         };
 
         /* Standard Constructor */
-        public Camera( string name, Axiom.SceneManager creator )
-            : base( name, creator )
+        public Camera( string name, Axiom.SceneManager creator ) : base( name, creator )
         {
         }
 
         /** Returns the visibility of the box
 			*/
-        public bool GetVisibility( AxisAlignedBox bound )
+                public bool GetVisibility( AxisAlignedBox bound )
         {
             return this.IsObjectVisible( bound );
         }

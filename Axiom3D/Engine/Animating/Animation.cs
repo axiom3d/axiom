@@ -24,11 +24,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-
-using DotNet3D.Math;
 
 #endregion
 
@@ -38,6 +44,7 @@ using DotNet3D.Math;
 ///     <file name="Animation.cpp" revision="1.16.2.2" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
 /// </ogresynchronization>
 #endregion
+
 
 namespace Axiom
 {
@@ -96,7 +103,7 @@ namespace Axiom
         /// <summary>Name of this animation.</summary>
         protected string name;
         /// <summary>The total length of this animation (sum of the tracks).</summary>
-        protected Real length;
+        protected float length;
         /// <summary>Collection of AnimationTracks.</summary>
         protected AnimationTrackCollection trackList;
         /// <summary>Interpolation mode of this animation.</summary>
@@ -126,7 +133,7 @@ namespace Axiom
         ///		<p/>
         ///		Animations should be created within objects that can own them (skeletons, scene managers, etc).
         /// </summary>
-        internal Animation( string name, Real length )
+        internal Animation( string name, float length )
         {
             this.name = name;
             this.length = length;
@@ -160,7 +167,7 @@ namespace Axiom
         /// <summary>
         ///		Gets the total length of this animation.
         /// </summary>
-        public Real Length
+        public float Length
         {
             get
             {
@@ -368,7 +375,7 @@ namespace Axiom
 		}
 
 
-		public void Apply( Real time, Real weight, bool accumulate, Real scale )
+		public void Apply( float time, float weight, bool accumulate, float scale )
 		{
 			// loop through tracks and update them all with current time
 			foreach ( AnimationTrack track in trackList.Values )
@@ -389,7 +396,7 @@ namespace Axiom
         /// <param name="weight">The influence to give to this track, 1.0 for full influence, less to blend with
         ///		other animations.</param>
         /// <param name="accumulate"></param>
-        public void Apply( Real time, Real weight, bool accumulate )
+        public void Apply( float time, float weight, bool accumulate )
         {
             Apply( time, weight, accumulate, 1.0F, false );
         }
@@ -406,7 +413,7 @@ namespace Axiom
         /// <param name="weight">The influence to give to this track, 1.0 for full influence, less to blend with
         ///		other animations.</param>
         /// <param name="accumulate"></param>
-        public void Apply( Real time, Real weight, bool accumulate, Real scale, bool lookInDirectionOfTranslation )
+        public void Apply( float time, float weight, bool accumulate, float scale, bool lookInDirectionOfTranslation )
         {
             // loop through tracks and update them all with current time
             foreach ( AnimationTrack track in trackList.Values )
@@ -419,7 +426,7 @@ namespace Axiom
             //}
         }
 
-        public void Apply( Skeleton skeleton, Real time, Real weight, bool accumulate, Real scale )
+        public void Apply( Skeleton skeleton, float time, float weight, bool accumulate, float scale )
         {
             // loop through tracks and update them all with current time
             foreach ( AnimationTrack track in trackList.Values )

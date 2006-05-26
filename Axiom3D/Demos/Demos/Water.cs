@@ -1,13 +1,9 @@
-#region Namespace Declarations
 
 using System;
 using System.IO;
-
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
-
-#endregion Namespace Declarations
-
 
 namespace Axiom.Demos
 {
@@ -18,7 +14,7 @@ namespace Axiom.Demos
 
         // Demo Settings (tweak these and the recompile) - can't be adjusted run-time.
         protected static int CMPLX = 64; // watch out - number of polys is 2*ACCURACY*ACCURACY !
-        protected static Real PLANE_SIZE = 3000.0f;
+        protected static float PLANE_SIZE = 3000.0f;
 
         // General Fields
         protected OverlayElementManager GuiMgr;
@@ -31,7 +27,7 @@ namespace Axiom.Demos
         protected WaterMesh waterMesh;
         protected Entity waterEntity;
         protected Entity planeEnt;
-        protected Real animTime;
+        protected float animTime;
         protected AnimationState animState;
         protected Plane reflectionPlane = new Plane();
         protected SceneNode lightNode;
@@ -42,8 +38,8 @@ namespace Axiom.Demos
         // Demo Run-Time settings
         protected int materialNumber = 8;
         protected bool skyBoxOn = false;
-        protected Real headDepth = 2.5f;
-        protected Real headSpeed = 1.0f;
+        protected float headDepth = 2.5f;
+        protected float headSpeed = 1.0f;
         protected bool rainOn = false;
         protected bool trackingOn = false;
         protected int changeSpeed = 0; // scales speed of parameter adjustments
@@ -52,14 +48,14 @@ namespace Axiom.Demos
         protected Random RAND; // random number generator
 
         // fields used by AnimateHead function (najak: were local statics)
-        protected Real[] adds = new Real[4];
-        protected Real[] sines = new Real[4];
+        protected double[] adds = new double[4];
+        protected double[] sines = new double[4];
         protected Vector3 oldPos = Vector3.UnitZ;
 
         // Input/Update Intervals (note: prevents some math rounding errors from extremely high update rates)
-        protected Real inputInterval = 0.01f, inputTimer = 0.01f;
-        protected Real modeInterval = 1f, modeTimer = 1f;
-        protected Real statsInterval = 1f, statsTimer = 1f;
+        protected float inputInterval = 0.01f, inputTimer = 0.01f;
+        protected float modeInterval = 1f, modeTimer = 1f;
+        protected float statsInterval = 1f, statsTimer = 1f;
 
         #endregion Fields
 
@@ -72,7 +68,7 @@ namespace Axiom.Demos
             GuiMgr = OverlayElementManager.Instance;
             scene.AmbientLight = new ColorEx( 0.75f, 0.75f, 0.75f ); // default Ambient Light
 
-            // Customize Controls - speed up camera and slow down the input update rate
+            // Customize Controls - speed up _camera and slow down the input update rate
             camSpeed = 5.0f;
             inputInterval = inputTimer = 0.02f;
 
@@ -87,7 +83,7 @@ namespace Axiom.Demos
             Entity ent = scene.CreateEntity( "head", "ogrehead.mesh" );
             headNode.AttachObject( ent );
 
-            // Create the camera node, set its position & attach camera
+            // Create the _camera node, set its position & attach _camera
             camera.Yaw( -45f );
             camera.Move( new Vector3( 1500f, 700f, PLANE_SIZE + 700f ) );
             camera.LookAt( new Vector3( PLANE_SIZE / 2f, 300f, PLANE_SIZE / 2f ) );
@@ -136,9 +132,9 @@ namespace Axiom.Demos
                 key = track.CreateKeyFrame( ff );
                 Random rand = new Random( 0 );
                 Vector3 lpos = new Vector3(
-                    (Real)rand.NextDouble() % (int)PLANE_SIZE, //- PLANE_SIZE/2,
-                    (Real)rand.NextDouble() % 300 + 100,
-                    (Real)rand.NextDouble() % (int)PLANE_SIZE ); //- PLANE_SIZE/2
+                    (float)rand.NextDouble() % (int)PLANE_SIZE, //- PLANE_SIZE/2,
+                    (float)rand.NextDouble() % 300 + 100,
+                    (float)rand.NextDouble() % (int)PLANE_SIZE ); //- PLANE_SIZE/2
                 key.Translate = lpos;
             }
             key = track.CreateKeyFrame( 20 );
@@ -203,9 +199,9 @@ namespace Axiom.Demos
                     break;
 
                 case "Colors":
-                    Real lightScale = 1f;
-                    Real lightDist = PLANE_SIZE; // / lightScale;
-                    Real lightHeight = 300f / lightScale;
+                    float lightScale = 1f;
+                    float lightDist = PLANE_SIZE; // / lightScale;
+                    float lightHeight = 300f / lightScale;
                     lightNode.Scale( new Vector3( lightScale, lightScale, lightScale ) );
 
                     // Create a Light
@@ -217,7 +213,7 @@ namespace Axiom.Demos
                     // Center Spotlight showing down on center of WaterMesh
                     l = AddLight( "LtMid", new Vector3( 1500f, 1000f, 1500f ), ColorEx.Red, LightType.Spotlight );
                     l.Direction = -1 * Vector3.UnitY;
-                    l.SetSpotlightRange( (Degree)60f, (Degree)70f, 90f );
+                    l.SetSpotlightRange( 60f, 70f, 90f );
 
                     // Add Light to OgreHead coming out his forehead
                     // TODO/BUG: Must alter Light name to avoid Axiom Exception.  Can't re-attach same light object to HeadNode
@@ -225,7 +221,7 @@ namespace Axiom.Demos
                     l = scene.CreateLight( ltName );
                     l.Position = new Vector3( 0, 20f, 0 );
                     l.Type = LightType.Spotlight;
-                    l.SetSpotlightRange( (Degree)40f, (Degree)20f, 20f );
+                    l.SetSpotlightRange( 40f, 20f, 20f );
                     l.Diffuse = ColorEx.Yellow;
                     l.SetAttenuation( 1000000f, 0f, 0, 0.0000001f ); // Make lights go a long way
                     l.Direction = new Vector3( 0, -0.1f, 1f );
@@ -275,7 +271,7 @@ namespace Axiom.Demos
                 //e.TimeSinceLastFrame = this.inputTimer;
                 //base.OnFrameStarted(source, e); // do the normal demo frame processing first
                 input.Capture(); // Read Keyboard and Mouse inputs
-                RapidUpdate(); // Process rapid inputs, like camera motion or settings adjustments
+                RapidUpdate(); // Process rapid inputs, like _camera motion or settings adjustments
 
                 // Process User Requested Mode Changes
                 if ( modeTimer > modeInterval )
@@ -303,7 +299,7 @@ namespace Axiom.Demos
             }
         }
 
-        public void AnimateHead( Real timeSinceLastFrame )
+        public void AnimateHead( float timeSinceLastFrame )
         {
             //animState.AddTime(timeSinceLastFrame);
 
@@ -311,13 +307,13 @@ namespace Axiom.Demos
             {
                 sines[i] += adds[i] * headSpeed * timeSinceLastFrame;
             }
-            Real tx = ( ( Utility.Sin( sines[0] ) + Utility.Sin( sines[1] ) ) / 4 + 0.5 ) * (Real)( CMPLX - 2 ) + 1;
-            Real ty = ( ( Utility.Sin( sines[2] ) + Utility.Sin( sines[3] ) ) / 4 + 0.5 ) * (Real)( CMPLX - 2 ) + 1;
+            float tx = (float)( ( Math.Sin( sines[0] ) + Math.Sin( sines[1] ) ) / 4 + 0.5 ) * (float)( CMPLX - 2 ) + 1;
+            float ty = (float)( ( Math.Sin( sines[2] ) + Math.Sin( sines[3] ) ) / 4 + 0.5 ) * (float)( CMPLX - 2 ) + 1;
 
             // Push water down beneath the Ogre Head
             waterMesh.Push( tx, ty, headDepth, 150f, headSpeed, false );
 
-            Real step = PLANE_SIZE / CMPLX;
+            float step = PLANE_SIZE / CMPLX;
             headNode.ResetToInitialState();
 
             Vector3 newPos = new Vector3( step * tx, 80f - 40f * headDepth, step * ty );
@@ -339,9 +335,9 @@ namespace Axiom.Demos
                     // hits the water!
                     p.timeToLive = 0.0f; // delete particle
                     // push the water
-                    Real x = ppos.x / PLANE_SIZE * CMPLX;
-                    Real y = ppos.z / PLANE_SIZE * CMPLX;
-                    Real h = (Real)RAND.NextDouble() % RAIN_HEIGHT_RANDOM + RAIN_HEIGHT_CONSTANT * 2;
+                    float x = ppos.x / PLANE_SIZE * CMPLX;
+                    float y = ppos.z / PLANE_SIZE * CMPLX;
+                    float h = (float)RAND.NextDouble() % RAIN_HEIGHT_RANDOM + RAIN_HEIGHT_CONSTANT * 2;
                     if ( x < 1 )
                         x = 1;
                     if ( x > CMPLX - 1 )
@@ -363,13 +359,13 @@ namespace Axiom.Demos
                 return; // Give Demo first shot at making the update
 
             camAccel = Vector3.Zero; // reset acceleration zero
-            Real scaleMove = 200 * inputTimer; // motion scalar
-            Real scaleTurn = 100 * inputTimer; // turn rate scalar
+            float scaleMove = 200 * inputTimer; // motion scalar
+            float scaleTurn = 100 * inputTimer; // turn rate scalar
 
             // Disable Mouse Events if Right-Mouse clicked (control is given to the custom Demo)
             bool mouseEn = ( !input.IsMousePressed( MouseButtons.Right ) );
 
-            // Keys that move camera.  Mouse-Wheel elevates camera
+            // Keys that move _camera.  Mouse-Wheel elevates _camera
             if ( input.IsKeyPressed( KeyCodes.Left ) )
             {
                 camAccel.x = -0.5f;
@@ -387,9 +383,9 @@ namespace Axiom.Demos
                 camAccel.z = 1;
             } // move backward
             if ( mouseEn )
-                camAccel.y += (Real)( input.RelativeMouseZ * 0.1 ); // MouseWheel elevates camera
+                camAccel.y += (float)( input.RelativeMouseZ * 0.1 ); // MouseWheel elevates _camera
 
-            // When Mouse button pressed, Motion accelerates instead of turns camera
+            // When Mouse button pressed, Motion accelerates instead of turns _camera
             if ( mouseEn && input.IsMousePressed( MouseButtons.Left ) )
             {
                 camAccel.x += input.RelativeMouseX * 0.3f; // side motion
@@ -406,7 +402,7 @@ namespace Axiom.Demos
                 camVelocity *= ( 1 - ( 4 * inputTimer ) );
             }
 
-            // Keyboard arrows change Yaw/Pitch of camera
+            // Keyboard arrows change Yaw/Pitch of _camera
             if ( input.IsKeyPressed( KeyCodes.Left ) )
             {
                 camera.Yaw( scaleTurn );
@@ -424,7 +420,7 @@ namespace Axiom.Demos
                 camera.Pitch( -scaleTurn );
             }
 
-            // Mouse motion changes Yaw/Pitch of camera
+            // Mouse motion changes Yaw/Pitch of _camera
             if ( mouseEn && !input.IsMousePressed( MouseButtons.Left ) )
             {
                 camera.Yaw( -input.RelativeMouseX * 0.13f );
@@ -563,7 +559,7 @@ namespace Axiom.Demos
         }
 
         // Adjust Demo parameter value ('val')
-        private bool AdjustRange( ref Real val, KeyCodes plus, KeyCodes minus, Real min, Real max, Real chg )
+        private bool AdjustRange( ref float val, KeyCodes plus, KeyCodes minus, float min, float max, float chg )
         {
             if ( input.IsKeyPressed( plus ) )
             {
@@ -714,7 +710,7 @@ namespace Axiom.Demos
             modeTimer = 0f;
         }
 
-        protected new void UpdateStats()
+        protected void UpdateStats()
         {
             statsTimer = 0f; // reset Stats Timer
             OverlayElementManager.Instance.GetElement( "Core/CurrFps" ).Text = string.Format( "Current FPS: {0}", Root.Instance.CurrentFPS );
@@ -734,10 +730,10 @@ namespace Axiom.Demos
     {
         #region Fields
 
-        public Real PARAM_C = 0.3f; // ripple speed
-        public Real PARAM_D = 0.4f; // distance
-        public Real PARAM_U = 0.05f; // viscosity
-        public Real PARAM_T = 0.13f; // time
+        public float PARAM_C = 0.3f; // ripple speed
+        public float PARAM_D = 0.4f; // distance
+        public float PARAM_U = 0.05f; // viscosity
+        public float PARAM_T = 0.13f; // time
         public bool useFakeNormals = true;
 
         protected static HardwareBufferManager HwBufMgr = HardwareBufferManager.Instance;
@@ -749,8 +745,8 @@ namespace Axiom.Demos
         protected Vector3[, ,] fNorms; // Face Normals (for each triangle)
         protected int curBufNum;
         protected int cmplx;
-        protected Real size;
-        protected Real cmplxAdj;
+        protected float size;
+        protected float cmplxAdj;
         protected String meshName;
         protected int numFaces;
         protected int numVertices;
@@ -759,20 +755,20 @@ namespace Axiom.Demos
         protected HardwareVertexBuffer normVBuf; //	HardwareVertexBufferSharedPtr normVertexBuffer ;
         protected HardwareVertexBuffer tcVBuf; //	HardwareVertexBufferSharedPtr texcoordsVertexBuffer ;
 
-        protected Real lastTimeStamp = 0;
-        protected Real lastAnimationTimeStamp = 0;
-        protected Real lastFrameTime = 0;
-        protected Real ANIMATIONS_PER_SECOND = 100.0f;
+        protected float lastTimeStamp = 0;
+        protected float lastAnimationTimeStamp = 0;
+        protected float lastFrameTime = 0;
+        protected float ANIMATIONS_PER_SECOND = 100.0f;
 
         #endregion Fields
 
-        public WaterMesh( String meshName, Real planeSize, int cmplx )
+        public WaterMesh( String meshName, float planeSize, int cmplx )
         { // najak R-F
             // Assign Fields to the Initializer values
             this.meshName = meshName;
             size = planeSize;
             this.cmplx = cmplx;  // Number of Rows/Columns in the Water Grid representation
-            cmplxAdj = (Real)Math.Pow( ( cmplx / 64f ), 1.4f ) * 2;
+            cmplxAdj = (float)Math.Pow( ( cmplx / 64f ), 1.4f ) * 2;
             numFaces = 2 * (int)Math.Pow( cmplx, 2 );  // Each square is split into 2 triangles.
             numVertices = (int)Math.Pow( ( cmplx + 1 ), 2 ); // Vertex grid is (Complexity+1) squared
 
@@ -781,7 +777,7 @@ namespace Axiom.Demos
             fNorms = new Vector3[cmplx, cmplx, 2]; // face Normals for each triangle
 
             // Create mesh and submesh to represent the Water
-            mesh = MeshManager.Instance.CreateManual( meshName );
+            mesh = (Mesh)MeshManager.Instance.CreateManual( meshName );
             subMesh = mesh.CreateSubMesh();
             subMesh.useSharedVertices = false;
 
@@ -818,7 +814,7 @@ namespace Axiom.Demos
             //    (0,0.00), (0.02, 0.00), (0.04, 0.00), ... (1.00,0.00)
             // This construct is simple and is used to calculate the Texture map.
             // TODO Write directly to the buffer, when Axiom supports this in safe manner
-            Real[, ,] tcBufDat = new Real[cmplx + 1, cmplx + 1, 2];
+            float[, ,] tcBufDat = new float[cmplx + 1, cmplx + 1, 2];
             for ( int i = 0; i <= cmplx; i++ )
             {
                 // 2D column iterator for texture map
@@ -826,8 +822,8 @@ namespace Axiom.Demos
                 {
                     // 2D row iterator for texture map
                     // Define the normalized(0..1) X/Y-coordinates for this element of the 2D grid
-                    tcBufDat[i, j, 0] = (Real)i / cmplx;
-                    tcBufDat[i, j, 1] = 1.0f - ( (Real)j / ( cmplx ) );
+                    tcBufDat[i, j, 0] = (float)i / cmplx;
+                    tcBufDat[i, j, 1] = 1.0f - ( (float)j / ( cmplx ) );
                 }
             }
 
@@ -879,9 +875,9 @@ namespace Axiom.Demos
                 {
                     for ( int x = 0; x <= cmplx; x++ )
                     {
-                        vBufs[b][y, x].x = (Real)( x ) / (Real)( cmplx ) * (Real)size;
+                        vBufs[b][y, x].x = (float)( x ) / (float)( cmplx ) * (float)size;
                         vBufs[b][y, x].y = 0;
-                        vBufs[b][y, x].z = (Real)( y ) / (Real)( cmplx ) * (Real)size;
+                        vBufs[b][y, x].z = (float)( y ) / (float)( cmplx ) * (float)size;
                     }
                 }
             }
@@ -898,7 +894,7 @@ namespace Axiom.Demos
 
         } // end WaterMesh Constructor
 
-        public void UpdateMesh( Real timeSinceLastFrame )
+        public void UpdateMesh( float timeSinceLastFrame )
         {
             lastFrameTime = timeSinceLastFrame;
             lastTimeStamp += timeSinceLastFrame;
@@ -917,9 +913,9 @@ namespace Axiom.Demos
                 double D = PARAM_D; // distance
                 double U = PARAM_U; // viscosity
                 double T = PARAM_T; // time
-                Real TERM1 = (Real)( ( 4.0f - 8.0f * C * C * T * T / ( D * D ) ) / ( U * T + 2 ) );
-                Real TERM2 = (Real)( ( U * T - 2.0f ) / ( U * T + 2.0f ) );
-                Real TERM3 = (Real)( ( 2.0f * C * C * T * T / ( D * D ) ) / ( U * T + 2 ) );
+                float TERM1 = (float)( ( 4.0f - 8.0f * C * C * T * T / ( D * D ) ) / ( U * T + 2 ) );
+                float TERM2 = (float)( ( U * T - 2.0f ) / ( U * T + 2.0f ) );
+                float TERM3 = (float)( ( 2.0f * C * C * T * T / ( D * D ) ) / ( U * T + 2 ) );
                 for ( int i = 1; i < cmplx; i++ )
                 {
                     // don't do anything with border values
@@ -1000,8 +996,8 @@ namespace Axiom.Demos
         /// Note: Algorithm from Ogre was improved by Najak to provide same speed improvment with more accurate results.
         public void CalculateFakeNormals()
         {
-            Real d1, d2; // diagonal slopes across 2 grid squares
-            Real ycomp = 6f * size / cmplx; // Fixed y-component of each vertex normal
+            float d1, d2; // diagonal slopes across 2 grid squares
+            float ycomp = 6f * size / cmplx; // Fixed y-component of each vertex normal
 
             for ( int i = 1; i < cmplx; i++ )
             {
@@ -1027,17 +1023,17 @@ namespace Axiom.Demos
         }
 
         /// <summary>Emulates an object pushing water out of its way (usually down)</summary> 
-        public void PushDown( Real fx, Real fy, Real depth )
+        public void PushDown( float fx, float fy, float depth )
         {
             // Ogre Wave Generation Logic - scale pressure according to time passed
             for ( int addx = (int)fx; addx <= (int)fx + 1; addx++ )
             {
                 for ( int addy = (int)fy; addy <= (int)fy + 1; addy++ )
                 {
-                    Real diffy = fy - ( fy + addy ).Floor();
-                    Real diffx = fx - ( fx + addx ).Floor();
-                    Real dist = Utility.Sqrt( diffy * diffy + diffx * diffx );
-                    Real power = 1 - dist;
+                    float diffy = fy - (float)Math.Floor( fy + addy );
+                    float diffx = fx - (float)Math.Floor( fx + addx );
+                    float dist = (float)Math.Sqrt( diffy * diffy + diffx * diffx );
+                    float power = 1 - dist;
 
                     if ( power < 0 )
                     {
@@ -1050,17 +1046,17 @@ namespace Axiom.Demos
         }
 
         /// <summary>Emulates an object pushing water out of its way (usually down)</summary> 
-        public void Push( Real fx, Real fy, Real depth, Real height, Real speed, bool absolute )
+        public void Push( float fx, float fy, float depth, float height, float speed, bool absolute )
         {
             // Ogre Wave Generation Logic - scale pressure according to time passed
             for ( int addx = (int)fx; addx <= (int)fx + 1; addx++ )
             {
                 for ( int addy = (int)fy; addy <= (int)fy + 1; addy++ )
                 {
-                    Real diffy = (fy - addy).Floor();
-                    Real diffx = (fx - addx).Floor();
-                    Real dist = Utility.Sqrt( diffy * diffy + diffx * diffx );
-                    Real power = ( 1 - dist ) * cmplxAdj * speed;
+                    float diffy = fy - (float)Math.Floor( (double)addy );
+                    float diffx = fx - (float)Math.Floor( (double)addx );
+                    float dist = (float)Math.Sqrt( diffy * diffy + diffx * diffx );
+                    float power = ( 1 - dist ) * cmplxAdj * speed;
 
                     if ( power < 0 )
                     {

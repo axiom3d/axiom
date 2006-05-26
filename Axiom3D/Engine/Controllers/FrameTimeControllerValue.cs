@@ -24,11 +24,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-
-using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -42,12 +48,12 @@ namespace Axiom
         /// <summary>
         ///		Stores the value of the time elapsed since the last frame.
         /// </summary>
-        private Real frameTime;
+        private float frameTime;
 
         /// <summary>
-        ///		Real value that should be used to scale controller time.
+        ///		Float value that should be used to scale controller time.
         /// </summary>
-        private Real timeFactor;
+        private float timeFactor;
 
         public FrameTimeControllerValue()
         {
@@ -65,7 +71,7 @@ namespace Axiom
         /// <summary>
         ///		Gets a time scaled value to use for controller functions.
         /// </summary>
-        Real IControllerValue.Value
+        float IControllerValue.Value
         {
             get
             {
@@ -82,11 +88,11 @@ namespace Axiom
         #region Properties
 
         /// <summary>
-        ///		Real value that should be used to scale controller time.  This could be used
+        ///		Float value that should be used to scale controller time.  This could be used
         ///		to either speed up or slow down controller functions independent of slowing
         ///		down the render loop.
         /// </summary>
-        public Real TimeFactor
+        public float TimeFactor
         {
             get
             {

@@ -24,11 +24,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -133,7 +142,7 @@ namespace Axiom
         /// <summary>
         ///		An abstract method required by subclasses to return the bounding box of this object in local coordinates.
         /// </summary>
-        public abstract Real BoundingRadius
+        public abstract float BoundingRadius
         {
             get;
         }
@@ -410,7 +419,7 @@ namespace Axiom
         /// <param name="light"></param>
         /// <param name="extrusionDistance"></param>
         /// <returns></returns>
-        public override AxisAlignedBox GetDarkCapBounds( Light light, Real extrusionDistance )
+        public override AxisAlignedBox GetDarkCapBounds( Light light, float extrusionDistance )
         {
             // Extrude own light cap bounds
             // need a clone to avoid modifying the original bounding box
@@ -430,7 +439,7 @@ namespace Axiom
         }
 
         public override IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light,
-            HardwareIndexBuffer indexBuffer, bool extrudeVertices, Real extrusionDistance, int flags )
+            HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, int flags )
         {
 
             return dummyList.GetEnumerator();
@@ -446,7 +455,7 @@ namespace Axiom
         /// </summary>
         /// <param name="light"></param>
         /// <returns></returns>
-        public override Real GetPointExtrusionDistance( Light light )
+        public override float GetPointExtrusionDistance( Light light )
         {
             if ( parentNode != null )
             {

@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -41,17 +49,17 @@ namespace Axiom.ParticleFX
     /// </summary>
     public class ColorFaderAffector : ParticleAffector
     {
-        protected Real alphaAdjust;
-        protected Real redAdjust;
-        protected Real greenAdjust;
-        protected Real blueAdjust;
+        protected float alphaAdjust;
+        protected float redAdjust;
+        protected float greenAdjust;
+        protected float blueAdjust;
 
         public ColorFaderAffector()
         {
             this.type = "ColourFader";
         }
 
-        public Real AlphaAdjust
+        public float AlphaAdjust
         {
             get
             {
@@ -63,7 +71,7 @@ namespace Axiom.ParticleFX
             }
         }
 
-        public Real RedAdjust
+        public float RedAdjust
         {
             get
             {
@@ -75,7 +83,7 @@ namespace Axiom.ParticleFX
             }
         }
 
-        public Real GreenAdjust
+        public float GreenAdjust
         {
             get
             {
@@ -87,7 +95,7 @@ namespace Axiom.ParticleFX
             }
         }
 
-        public Real BlueAdjust
+        public float BlueAdjust
         {
             get
             {
@@ -99,7 +107,7 @@ namespace Axiom.ParticleFX
             }
         }
 
-        protected void AdjustWithClamp( ref Real component, Real adjust )
+        protected void AdjustWithClamp( Real component, float adjust )
         {
             component += adjust;
 
@@ -114,9 +122,9 @@ namespace Axiom.ParticleFX
         {
         }
 
-        public override void AffectParticles( ParticleSystem system, Real timeElapsed )
+        public override void AffectParticles( ParticleSystem system, float timeElapsed )
         {
-            Real da, dr, dg, db;
+            float da, dr, dg, db;
 
             da = alphaAdjust * timeElapsed;
             dr = redAdjust * timeElapsed;
@@ -130,10 +138,10 @@ namespace Axiom.ParticleFX
                 Particle p = (Particle)system.Particles[i];
 
                 // adjust the values with clamping ([0,1] in this case)
-                AdjustWithClamp( ref p.Color.a, da );
-                AdjustWithClamp( ref p.Color.r, dr );
-                AdjustWithClamp( ref p.Color.g, dg );
-                AdjustWithClamp( ref p.Color.b, db );
+                AdjustWithClamp( p.Color.a, da );
+                AdjustWithClamp( p.Color.r, dr );
+                AdjustWithClamp( p.Color.g, dg );
+                AdjustWithClamp( p.Color.b, db );
 
             }
         }
@@ -153,7 +161,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 ColorFaderAffector affector = target as ColorFaderAffector;
-                affector.RedAdjust = Real.Parse( val );
+                affector.RedAdjust = StringConverter.ParseFloat( val );
             }
 
             #endregion
@@ -172,7 +180,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 ColorFaderAffector affector = target as ColorFaderAffector;
-                affector.GreenAdjust = Real.Parse( val );
+                affector.GreenAdjust = StringConverter.ParseFloat( val );
             }
 
             #endregion
@@ -191,7 +199,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 ColorFaderAffector affector = target as ColorFaderAffector;
-                affector.BlueAdjust = Real.Parse( val );
+                affector.BlueAdjust = StringConverter.ParseFloat( val );
             }
 
             #endregion
@@ -210,7 +218,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 ColorFaderAffector affector = target as ColorFaderAffector;
-                affector.AlphaAdjust = Real.Parse( val );
+                affector.AlphaAdjust = StringConverter.ParseFloat( val );
             }
 
             #endregion

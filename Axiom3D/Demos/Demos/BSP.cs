@@ -1,11 +1,7 @@
-#region Namespace Declarations
 
 using Axiom;
-
-using DotNet3D.Math; 
-
-#endregion Namespace Declarations
-			
+using Axiom.MathLib;
+using DotNet3D.Math;
 
 namespace Axiom.Demos
 {
@@ -24,7 +20,7 @@ namespace Axiom.Demos
             // Load world geometry
             scene.LoadWorldGeometry( "maps/chiropteradm.bsp" );
 
-            // modify camera for close work
+            // modify _camera for close work
             camera.Near = 4;
             camera.Far = 4000;
 

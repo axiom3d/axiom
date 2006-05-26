@@ -24,8 +24,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -64,7 +73,7 @@ namespace Axiom
         #region Member variables
 
         protected bool hasOwnDimensions;
-        protected Real width, height;
+        protected float width, height;
 
         // Intentional public access, since having a property for these for 1,000s of billboards
         // could be too costly
@@ -75,7 +84,7 @@ namespace Axiom
         /// <summary>
         ///		Needed for particle systems
         /// </summary>
-        public Radian rotationInRadians = Real.Zero;
+        public float rotationInRadians = 0;
 
         #endregion
 
@@ -120,7 +129,7 @@ namespace Axiom
         /// <summary>
         ///		Width and height of this billboard, if it has it's own.
         /// </summary>
-        public Real Width
+        public float Width
         {
             get
             {
@@ -137,7 +146,7 @@ namespace Axiom
         /// <summary>
         ///		Width and height of this billboard, if it has it's own.
         /// </summary>
-        public Real Height
+        public float Height
         {
             get
             {
@@ -179,7 +188,7 @@ namespace Axiom
         /// </summary>
         /// <param name="width">Width of the billboard.</param>
         /// <param name="height">Height of the billboard.</param>
-        public virtual void SetDimensions( Real width, Real height )
+        public virtual void SetDimensions( float width, float height )
         {
             hasOwnDimensions = true;
             this.width = width;
@@ -199,17 +208,17 @@ namespace Axiom
         /// <summary>
         ///		Gets/Sets the rotation in degrees.
         /// </summary>
-        public Degree Rotation
+        public float Rotation
         {
             get
             {
-                return rotationInRadians;
+                return rotationInRadians * MathUtil.DEGREES_PER_RADIAN;
             }
             set
             {
-                rotationInRadians = value;
+                rotationInRadians = value * MathUtil.RADIANS_PER_DEGREE;
                 // Hmmm, we don't have a NotifyBillboardTextureCoordsModified?
-                if ( rotationInRadians != new Radian( Real.Zero ) )
+                if ( rotationInRadians != 0 )
                 {
                     ParentSet.NotifyBillboardTextureCoordsModified();
                 }

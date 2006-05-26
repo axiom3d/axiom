@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Graphics Engine Library
-Copyright (C) 2003-2006  Axiom Project Team
+Axiom Game Engine Library
+Copyright (C) 2003  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,16 +24,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-#region Namespace Declarations
-
 using System;
-
 using Axiom;
 
-using DotNet3D.Math;
-
-#endregion Namespace Declarations
-			
 namespace Axiom.ParticleFX
 {
     /// <summary>
@@ -71,7 +64,7 @@ namespace Axiom.ParticleFX
 
         public override void InitParticle( ref Particle particle )
         {
-            Real div_255 = 1.0f / 255.0f;
+            const float div_255 = 1.0f / 255.0f;
 
             particle.Color.r = colorImage.Data[0] * div_255;
             particle.Color.g = colorImage.Data[1] * div_255;
@@ -79,22 +72,22 @@ namespace Axiom.ParticleFX
             particle.Color.a = colorImage.Data[3] * div_255;
         }
 
-        public override void AffectParticles( ParticleSystem system, Real timeElapsed )
+        public override void AffectParticles( ParticleSystem system, float timeElapsed )
         {
-            Real width = colorImage.Width - 1;
-            Real height = colorImage.Height - 1;
-            Real div_255 = 1.0f / 255.0f;
+            float width = colorImage.Width - 1;
+            float height = colorImage.Height - 1;
+            const float div_255 = 1.0f / 255.0f;
 
             // loop through the particles
             for ( int i = 0; i < system.Particles.Count; i++ )
             {
                 Particle p = (Particle)system.Particles[i];
 
-                // life_time, Real_index, index and position are CONST in OGRE, but errors here
+                // life_time, float_index, index and position are CONST in OGRE, but errors here
 
                 // We do not have the concept of a total time to live!
-                Real life_time = p.totalTimeToLive;
-                Real particle_time = 1.0f - ( p.timeToLive / life_time );
+                float life_time = p.totalTimeToLive;
+                float particle_time = 1.0f - ( p.timeToLive / life_time );
 
                 if ( particle_time > 1.0f )
                 {
@@ -105,8 +98,8 @@ namespace Axiom.ParticleFX
                     particle_time = 0.0f;
                 }
 
-                Real Real_index = particle_time * width;
-                int index = (int)Real_index;
+                float float_index = particle_time * width;
+                int index = (int)float_index;
                 int position = index * 4;
 
                 if ( index <= 0 || index >= width )
@@ -119,9 +112,9 @@ namespace Axiom.ParticleFX
                 else
                 {
                     // fract, to_color and from_color are CONST in OGRE, but errors here
-                    Real fract = Real_index - (Real)index;
-                    Real toColor = fract * div_255;
-                    Real fromColor = ( div_255 - toColor );
+                    float fract = float_index - (float)index;
+                    float toColor = fract * div_255;
+                    float fromColor = ( div_255 - toColor );
 
                     p.Color.r = ( colorImage.Data[position + 0] * fromColor ) + ( colorImage.Data[position + 4] * toColor );
                     p.Color.g = ( colorImage.Data[position + 1] * fromColor ) + ( colorImage.Data[position + 5] * toColor );

@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Graphics Engine Library
-Copyright (C) 2003-2006  Axiom Project Team
+Axiom Game Engine Library
+Copyright (C) 2003  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,8 +24,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-#region Namespace Declarations
-
 using System;
 using System.Collections;
 using System.IO;
@@ -34,10 +32,9 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
-#endregion Namespace Declarations
-			
 namespace Axiom.SceneManagers.Bsp
 {
     public enum Quake3LumpType
@@ -434,14 +431,14 @@ namespace Axiom.SceneManagers.Bsp
 
                 faces[i].lmOffset = new int[] { reader.ReadInt32(), reader.ReadInt32() };
                 faces[i].lmSize = new int[] { reader.ReadInt32(), reader.ReadInt32() };
-                faces[i].org = new Real[] { reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle() };
+                faces[i].org = new float[] { reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle() };
 
-                faces[i].bbox = new Real[6];
+                faces[i].bbox = new float[6];
 
                 for ( int j = 0; j < faces[i].bbox.Length; j++ )
                     faces[i].bbox[j] = reader.ReadSingle();
 
-                faces[i].normal = new Real[] { reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle() };
+                faces[i].normal = new float[] { reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle() };
                 faces[i].meshCtrl = new int[] { reader.ReadInt32(), reader.ReadInt32() };
 
                 TransformBoundingBox( faces[i].bbox );
@@ -492,7 +489,7 @@ namespace Axiom.SceneManagers.Bsp
             for ( int i = 0; i < models.Length; i++ )
             {
                 models[i] = new InternalBspModel();
-                models[i].bbox = new Real[6];
+                models[i].bbox = new float[6];
 
                 for ( int j = 0; j < models[i].bbox.Length; j++ )
                     models[i].bbox[j] = reader.ReadSingle();
@@ -534,7 +531,7 @@ namespace Axiom.SceneManagers.Bsp
             for ( int i = 0; i < planes.Length; i++ )
             {
                 planes[i] = new InternalBspPlane();
-                planes[i].normal = new Real[] { reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle() };
+                planes[i].normal = new float[] { reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle() };
                 planes[i].distance = reader.ReadSingle();
 
                 TransformPlane( planes[i].normal, ref planes[i].distance );
@@ -582,10 +579,10 @@ namespace Axiom.SceneManagers.Bsp
             for ( int i = 0; i < vertices.Length; i++ )
             {
                 vertices[i] = new InternalBspVertex();
-                vertices[i].point = new Real[] { reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle() };
-                vertices[i].texture = new Real[] { reader.ReadSingle(), reader.ReadSingle() };
-                vertices[i].lightMap = new Real[] { reader.ReadSingle(), reader.ReadSingle() };
-                vertices[i].normal = new Real[] { reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle() };
+                vertices[i].point = new float[] { reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle() };
+                vertices[i].texture = new float[] { reader.ReadSingle(), reader.ReadSingle() };
+                vertices[i].lightMap = new float[] { reader.ReadSingle(), reader.ReadSingle() };
+                vertices[i].normal = new float[] { reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle() };
                 vertices[i].color = reader.ReadInt32();
 
                 TransformVector( vertices[i].point );
@@ -629,7 +626,7 @@ namespace Axiom.SceneManagers.Bsp
             }
         }
 
-        internal void TransformVector( Real[] v, bool isNormal, int pos )
+        internal void TransformVector( float[] v, bool isNormal, int pos )
         {
             if ( options.setYAxisUp )
             {
@@ -649,22 +646,22 @@ namespace Axiom.SceneManagers.Bsp
             }
         }
 
-        internal void TransformVector( Real[] v, bool isNormal )
+        internal void TransformVector( float[] v, bool isNormal )
         {
             TransformVector( v, isNormal, 0 );
         }
 
-        internal void TransformVector( Real[] v, int pos )
+        internal void TransformVector( float[] v, int pos )
         {
             TransformVector( v, false, pos );
         }
 
-        internal void TransformVector( Real[] v )
+        internal void TransformVector( float[] v )
         {
             TransformVector( v, false, 0 );
         }
 
-        internal void TransformPlane( Real[] norm, ref Real dist )
+        internal void TransformPlane( float[] norm, ref float dist )
         {
             TransformVector( norm, true );
             dist *= options.scale;
@@ -674,7 +671,7 @@ namespace Axiom.SceneManagers.Bsp
             dist = normal.DotProduct( point );
         }
 
-        internal void TransformBoundingBox( Real[] bb )
+        internal void TransformBoundingBox( float[] bb )
         {
             TransformVector( bb, 0 );
             TransformVector( bb, 3 );
@@ -684,19 +681,19 @@ namespace Axiom.SceneManagers.Bsp
 
         internal void TransformBoundingBox( int[] bb )
         {
-            Real[] Realbb = new Real[6];
+            float[] floatbb = new float[6];
             for ( int i = 0; i < 6; i++ )
-                Realbb[i] = (Real)bb[i];
+                floatbb[i] = (float)bb[i];
 
-            TransformBoundingBox( Realbb );
+            TransformBoundingBox( floatbb );
 
             for ( int i = 0; i < 6; i++ )
-                bb[i] = Convert.ToInt32( Realbb[i] );
+                bb[i] = Convert.ToInt32( floatbb[i] );
         }
 
-        private void Swap( ref Real num1, ref Real num2 )
+        private void Swap( ref float num1, ref float num2 )
         {
-            Real tmp = num1;
+            float tmp = num1;
             num1 = num2;
             num2 = tmp;
         }
@@ -714,15 +711,15 @@ namespace Axiom.SceneManagers.Bsp
     public struct InternalBspPlane
     {
         [MarshalAs( UnmanagedType.ByValArray, SizeConst = 3 )]
-        public Real[] normal;
-        public Real distance;
+        public float[] normal;
+        public float distance;
     }
 
     [StructLayout( LayoutKind.Sequential )]
     public struct InternalBspModel
     {
         [MarshalAs( UnmanagedType.ByValArray, SizeConst = 6 )]
-        public Real[] bbox;
+        public float[] bbox;
         public int faceStart;
         public int faceCount;
         public int brushStart;
@@ -771,11 +768,11 @@ namespace Axiom.SceneManagers.Bsp
         [MarshalAs( UnmanagedType.ByValArray, SizeConst = 2 )]
         public int[] lmSize;
         [MarshalAs( UnmanagedType.ByValArray, SizeConst = 3 )]
-        public Real[] org;       // facetype_normal only
+        public float[] org;       // facetype_normal only
         [MarshalAs( UnmanagedType.ByValArray, SizeConst = 6 )]
-        public Real[] bbox;      // facetype_patch only
+        public float[] bbox;      // facetype_patch only
         [MarshalAs( UnmanagedType.ByValArray, SizeConst = 3 )]
-        public Real[] normal;    // facetype_normal only
+        public float[] normal;    // facetype_normal only
         [MarshalAs( UnmanagedType.ByValArray, SizeConst = 2 )]
         public int[] meshCtrl;     // patch control point dims
     }
@@ -796,13 +793,13 @@ namespace Axiom.SceneManagers.Bsp
     public struct InternalBspVertex
     {
         [MarshalAs( UnmanagedType.ByValArray, SizeConst = 3 )]
-        public Real[] point;
+        public float[] point;
         [MarshalAs( UnmanagedType.ByValArray, SizeConst = 2 )]
-        public Real[] texture;
+        public float[] texture;
         [MarshalAs( UnmanagedType.ByValArray, SizeConst = 2 )]
-        public Real[] lightMap;
+        public float[] lightMap;
         [MarshalAs( UnmanagedType.ByValArray, SizeConst = 3 )]
-        public Real[] normal;
+        public float[] normal;
         public int color;
     }
 

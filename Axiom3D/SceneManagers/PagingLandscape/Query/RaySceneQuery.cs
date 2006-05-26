@@ -24,20 +24,27 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 
 using Axiom;
-using DotNet3D.Math;
-
+using Axiom.MathLib;
 using Axiom.SceneManagers.PagingLandscape;
 using Axiom.SceneManagers.PagingLandscape.Query;
 using Axiom.SceneManagers.PagingLandscape.Data2D;
+using DotNet3D.Math;
 
 #endregion Namespace Declarations
-			
 
 namespace Axiom.SceneManagers.PagingLandscape.Query
 {
@@ -108,7 +115,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Query
                 Vector3 origin = this.Ray.Origin;
                 origin.y = 0; // ensure that it's within bounds
                 frag.SingleIntersection = getHeightAt( origin );
-                listener.OnQueryResult( frag, Utility.Abs( frag.SingleIntersection.y - this.Ray.Origin.y ) );
+                listener.OnQueryResult( frag, Math.Abs( frag.SingleIntersection.y - this.Ray.Origin.y ) );
             }
             else
             {
@@ -122,7 +129,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Query
                 {
                     Vector3 ray = Ray.Origin;
                     Vector3 land = getHeightAt( ray );
-                    Real dist = 0, resFactor = 1;
+                    float dist = 0, resFactor = 1;
 
                     // Only bother if the non-default mask has been set
                     if ( ( mask & (ulong)RaySceneQueryType.OnexRes ) != 0 )

@@ -24,12 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.IO;
 using System.Text;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -117,7 +126,7 @@ namespace Axiom
             string name = ReadString( '\n' );
 
             // length in seconds of the animation
-            Real length = ReadSingle();
+            float length = ReadSingle();
 
             // create an animation from the skeleton
             Animation anim = skeleton.CreateAnimation( name, length );
@@ -255,7 +264,7 @@ namespace Axiom
         /// <param name="track"></param>
         protected void ReadKeyFrame( AnimationTrack track )
         {
-            Real time = ReadSingle();
+            float time = ReadSingle();
 
             // create a new keyframe with the specified length
             KeyFrame keyFrame = track.CreateKeyFrame( time );

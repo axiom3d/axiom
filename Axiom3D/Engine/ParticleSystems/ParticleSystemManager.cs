@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Graphics Engine Library
-Copyright (C) 2003-2006  Axiom Project Team
+Axiom Game Engine Library
+Copyright (C) 2003  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -27,13 +27,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Reflection;
 using System.Text;
-
-using DotNet3D.Math;
+using System.Collections.Generic;
 #endregion
 
 #region Versioning Information
@@ -165,7 +163,7 @@ namespace Axiom
         /// <summary>
         ///     Controls time. (1.0 is real time)
         /// </summary>
-        private Real timeFactor = 1.0f;
+        private float timeFactor = 1.0f;
 
         /// <summary>
         ///     Default param constants.
@@ -758,7 +756,7 @@ namespace Axiom
         ///		particle systems are told that the time is passing slower or faster than it
         ///		actually is. Use this to globally speed up / slow down particle systems.
         /// </remarks>
-        public Real TimeFactor
+        public float TimeFactor
         {
             get
             {
@@ -828,7 +826,7 @@ namespace Axiom
         /// <summary>
         ///     Loading Order
         /// </summary>
-        public Real LoadingOrder
+        public float LoadingOrder
         {
             get
             {
@@ -929,7 +927,7 @@ namespace Axiom
                 return;
             }
 
-            system.DefaultHeight = Real.Parse( values[ 0 ] );
+            system.DefaultHeight = StringConverter.ParseFloat( values[ 0 ] );
         }
 
         [AttributeParser( "material", PARTICLE )]
@@ -965,7 +963,7 @@ namespace Axiom
                 return;
             }
 
-            system.DefaultWidth = Real.Parse( values[ 0 ] );
+            system.DefaultWidth = StringConverter.ParseFloat( values[ 0 ] );
         }
 
         #endregion
@@ -981,7 +979,7 @@ namespace Axiom
         private void RenderSystem_FrameStarted( object source, FrameEventArgs e )
         {
             // Apply time factor
-            Real timeSinceLastFrame = timeFactor * e.TimeSinceLastFrame;
+            float timeSinceLastFrame = timeFactor * e.TimeSinceLastFrame;
 
             // loop through and update each particle system
             for ( int i = 0; i < systemList.Count; i++ )
@@ -1002,7 +1000,7 @@ namespace Axiom
         private void RenderSystem_FrameEnded( object source, FrameEventArgs e )
         {
             // Apply time factor
-            Real timeSinceLastFrame = timeFactor * e.TimeSinceLastFrame;
+            float timeSinceLastFrame = timeFactor * e.TimeSinceLastFrame;
 
             // loop through and update each particle system
             for ( int i = 0; i < systemList.Count; i++ )

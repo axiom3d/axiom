@@ -24,11 +24,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections.Specialized;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -162,7 +171,7 @@ namespace Axiom
             return CreatePlane( name, plane, width, height, 1, 1, true, 1, 1.0f, 1.0f, Vector3.UnitY, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, true, true );
         }
 
-        public Mesh CreatePlane( string name, Plane plane, Real width, Real height, int xSegments, int ySegments, bool normals, int numTexCoordSets, Real uTile, Real vTile, Vector3 upVec )
+        public Mesh CreatePlane( string name, Plane plane, float width, float height, int xSegments, int ySegments, bool normals, int numTexCoordSets, float uTile, float vTile, Vector3 upVec )
         {
             return CreatePlane( name, plane, width, height, xSegments, ySegments, normals, numTexCoordSets, uTile, vTile, upVec, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, true, true );
         }
@@ -182,7 +191,7 @@ namespace Axiom
         /// <param name="vTile">Number of times the texture should be repeated in the v direction.</param>
         /// <param name="upVec">The up direction of the plane.</param>
         /// <returns></returns>
-        public Mesh CreatePlane( string name, Plane plane, Real width, Real height, int xSegments, int ySegments, bool normals, int numTexCoordSets, Real uTile, Real vTile, Vector3 upVec,
+        public Mesh CreatePlane( string name, Plane plane, float width, float height, int xSegments, int ySegments, bool normals, int numTexCoordSets, float uTile, float vTile, Vector3 upVec,
             BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer )
         {
             Mesh mesh = CreateManual( name );
@@ -250,16 +259,16 @@ namespace Axiom
 
             transform = translate * rotation;
 
-            Real xSpace = width / xSegments;
-            Real ySpace = height / ySegments;
-            Real halfWidth = width / 2;
-            Real halfHeight = height / 2;
-            Real xTexCoord = ( 1.0f * uTile ) / xSegments;
-            Real yTexCoord = ( 1.0f * vTile ) / ySegments;
+            float xSpace = width / xSegments;
+            float ySpace = height / ySegments;
+            float halfWidth = width / 2;
+            float halfHeight = height / 2;
+            float xTexCoord = ( 1.0f * uTile ) / xSegments;
+            float yTexCoord = ( 1.0f * vTile ) / ySegments;
             Vector3 vec = Vector3.Zero;
             Vector3 min = Vector3.Zero;
             Vector3 max = Vector3.Zero;
-            Real maxSquaredLength = 0;
+            float maxSquaredLength = 0;
             bool firstTime = true;
 
             // generate vertex data
@@ -270,7 +279,7 @@ namespace Axiom
 
             // generate bounds for the mesh
             mesh.BoundingBox = new AxisAlignedBox( min, max );
-            mesh.BoundingSphereRadius = Utility.Sqrt( maxSquaredLength );
+            mesh.BoundingSphereRadius = MathUtil.Sqrt( maxSquaredLength );
 
             mesh.Load();
             mesh.Touch();
@@ -278,7 +287,7 @@ namespace Axiom
             return mesh;
         }
 
-        private static void GeneratePlaneVertexData( HardwareVertexBuffer vbuf, int ySegments, int xSegments, Real xSpace, Real halfWidth, Real ySpace, Real halfHeight, Matrix4 transform, bool firstTime, bool normals, Matrix4 rotation, int numTexCoordSets, Real xTexCoord, Real yTexCoord, SubMesh subMesh, ref Vector3 min, ref Vector3 max, ref Real maxSquaredLength )
+        private static void GeneratePlaneVertexData( HardwareVertexBuffer vbuf, int ySegments, int xSegments, float xSpace, float halfWidth, float ySpace, float halfHeight, Matrix4 transform, bool firstTime, bool normals, Matrix4 rotation, int numTexCoordSets, float xTexCoord, float yTexCoord, SubMesh subMesh, ref Vector3 min, ref Vector3 max, ref float maxSquaredLength )
         {
             Vector3 vec;
             unsafe
@@ -315,7 +324,7 @@ namespace Axiom
                         {
                             min.ToFloor( vec );
                             max.ToCeiling( vec );
-                            maxSquaredLength = Utility.Max( maxSquaredLength, vec.LengthSquared );
+                            maxSquaredLength = MathUtil.Max( maxSquaredLength, vec.LengthSquared );
                         }
 
                         if ( normals )
@@ -398,7 +407,7 @@ namespace Axiom
         /// <param name="vTiles"></param>
         /// <param name="upVector"></param>
         /// <returns></returns>
-        public Mesh CreateCurvedIllusionPlane( string name, Plane plane, Real width, Real height, Real curvature, int xSegments, int ySegments, bool normals, int numberOfTexCoordSets, Real uTiles, Real vTiles, Vector3 upVector )
+        public Mesh CreateCurvedIllusionPlane( string name, Plane plane, float width, float height, float curvature, int xSegments, int ySegments, bool normals, int numberOfTexCoordSets, float uTiles, float vTiles, Vector3 upVector )
         {
             return CreateCurvedIllusionPlane( name, plane, width, height, curvature, xSegments, ySegments, normals, numberOfTexCoordSets, uTiles, vTiles, upVector, Quaternion.Identity, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, true, true );
         }
@@ -424,7 +433,7 @@ namespace Axiom
         /// <param name="vertexShadowBuffer"></param>
         /// <param name="indexShadowBuffer"></param>
         /// <returns></returns>
-        public Mesh CreateCurvedIllusionPlane( string name, Plane plane, Real width, Real height, Real curvature, int xSegments, int ySegments, bool normals, int numberOfTexCoordSets, Real uTiles, Real vTiles, Vector3 upVector, Quaternion orientation, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer )
+        public Mesh CreateCurvedIllusionPlane( string name, Plane plane, float width, float height, float curvature, int xSegments, int ySegments, bool normals, int numberOfTexCoordSets, float uTiles, float vTiles, Vector3 upVector, Quaternion orientation, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer )
         {
             Mesh mesh = CreateManual( name );
             SubMesh subMesh = mesh.CreateSubMesh( name + "SubMesh" );
@@ -493,28 +502,28 @@ namespace Axiom
             // generate vertex data, imagine a large sphere with the camera located near the top,
             // the lower the curvature, the larger the sphere.  use the angle from the viewer to the
             // points on the plane
-            Real cameraPosition;      // camera position relative to the sphere center
+            float cameraPosition;      // camera position relative to the sphere center
 
             // derive sphere radius
-            Real sphereDistance;      // distance from the camera to the sphere along box vertex vector
-            Real sphereRadius;
+            float sphereDistance;      // distance from the camera to the sphere along box vertex vector
+            float sphereRadius;
 
             // actual values irrelevant, it's the relation between the sphere's radius and the camera's position which is important
-            Real SPHERE_RADIUS = 100;
-            Real CAMERA_DISTANCE = 5;
+            float SPHERE_RADIUS = 100;
+            float CAMERA_DISTANCE = 5;
             sphereRadius = SPHERE_RADIUS - curvature;
             cameraPosition = sphereRadius - CAMERA_DISTANCE;
 
             // lock the whole buffer
-            Real xSpace = width / xSegments;
-            Real ySpace = height / ySegments;
-            Real halfWidth = width / 2;
-            Real halfHeight = height / 2;
+            float xSpace = width / xSegments;
+            float ySpace = height / ySegments;
+            float halfWidth = width / 2;
+            float halfHeight = height / 2;
             Vector3 vec = Vector3.Zero;
             Vector3 norm = Vector3.Zero;
             Vector3 min = Vector3.Zero;
             Vector3 max = Vector3.Zero;
-            Real maxSquaredLength = 0;
+            float maxSquaredLength = 0;
             bool firstTime = true;
 
             // generate vertex data
@@ -526,7 +535,7 @@ namespace Axiom
 
             // generate bounds for the mesh
             mesh.BoundingBox = new AxisAlignedBox( min, max );
-            mesh.BoundingSphereRadius = Utility.Sqrt( maxSquaredLength );
+            mesh.BoundingSphereRadius = MathUtil.Sqrt( maxSquaredLength );
 
             mesh.Load();
             mesh.Touch();
@@ -534,11 +543,11 @@ namespace Axiom
             return mesh;
         }
 
-        private static void GenerateCurvedIllusionPlaneVertexData( HardwareVertexBuffer vertexBuffer, int ySegments, int xSegments, Real xSpace, Real halfWidth, Real ySpace, Real halfHeight, Matrix4 xform, bool firstTime, bool normals, Quaternion orientation, Real cameraPosition, Real sphereRadius, Real uTiles, Real vTiles, int numberOfTexCoordSets, ref Vector3 min, ref Vector3 max, ref Real maxSquaredLength )
+        private static void GenerateCurvedIllusionPlaneVertexData( HardwareVertexBuffer vertexBuffer, int ySegments, int xSegments, float xSpace, float halfWidth, float ySpace, float halfHeight, Matrix4 xform, bool firstTime, bool normals, Quaternion orientation, float cameraPosition, float sphereRadius, float uTiles, float vTiles, int numberOfTexCoordSets, ref Vector3 min, ref Vector3 max, ref float maxSquaredLength )
         {
             Vector3 vec;
             Vector3 norm;
-            Real sphereDistance;
+            float sphereDistance;
             unsafe
             {
                 // lock the vertex buffer
@@ -575,7 +584,7 @@ namespace Axiom
                         {
                             min.ToFloor( vec );
                             max.ToCeiling( vec );
-                            maxSquaredLength = Utility.Max( maxSquaredLength, vec.LengthSquared );
+                            maxSquaredLength = MathUtil.Max( maxSquaredLength, vec.LengthSquared );
                         }
 
                         if ( normals )
@@ -593,7 +602,7 @@ namespace Axiom
                         vec.Normalize();
 
                         // find distance to sphere
-                        sphereDistance = Utility.Sqrt( cameraPosition * cameraPosition * ( vec.y * vec.y - 1.0f ) + sphereRadius * sphereRadius ) - cameraPosition * vec.y;
+                        sphereDistance = MathUtil.Sqrt( cameraPosition * cameraPosition * ( vec.y * vec.y - 1.0f ) + sphereRadius * sphereRadius ) - cameraPosition * vec.y;
 
                         vec.x *= sphereDistance;
                         vec.z *= sphereDistance;
@@ -619,7 +628,7 @@ namespace Axiom
             Mesh mesh = (Mesh)Create( "Prefab_Plane" );
             SubMesh subMesh = mesh.CreateSubMesh( "Prefab_Plane_Submesh" );
 
-            Real[] vertices = {
+            float[] vertices = {
                 -100, -100, 0,  // pos
                 0, 0, 1,        // normal
                 0, 1,           // texcoord
@@ -668,7 +677,7 @@ namespace Axiom
             indexBuffer.WriteData( 0, indexBuffer.Size, faces, true );
 
             mesh.BoundingBox = new AxisAlignedBox( new Vector3( -100, -100, 0 ), new Vector3( 100, 100, 0 ) );
-            mesh.BoundingSphereRadius = Utility.Sqrt( 100 * 100 + 100 * 100 );
+            mesh.BoundingSphereRadius = MathUtil.Sqrt( 100 * 100 + 100 * 100 );
 
             resourceList.Add( mesh.Name, mesh );
         }

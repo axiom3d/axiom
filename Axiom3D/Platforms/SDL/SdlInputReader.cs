@@ -24,17 +24,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-using System.Runtime.InteropServices;
 
 using Axiom;
 
 using Tao.Sdl;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.Platforms.SDL
 {
     /// <summary>
@@ -333,7 +340,7 @@ namespace Axiom.Platforms.SDL
             {
                 bool down = ( events[i].type == Sdl.SDL_KEYDOWN );
 
-                Axiom.KeyCodes keyCode = ConvertKeyEnum( events[i].key.keysym.sym );
+                KeyCodes keyCode = ConvertKeyEnum( events[i].key.keysym.sym );
 
                 KeyChanged( keyCode, down );
             }
@@ -346,7 +353,7 @@ namespace Axiom.Platforms.SDL
         #region Keycode Conversions
 
         /// <summary>
-        ///		Used to convert an Axiom.KeyCodes enum val to a Sdl enum val.
+        ///		Used to convert an Axiom.Input.KeyCodes enum val to a Sdl enum val.
         /// </summary>
         /// <param name="key">Axiom keyboard code to query.</param>
         /// <returns>The equivalent enum value in the Sdl enum.</returns>
@@ -606,247 +613,247 @@ namespace Axiom.Platforms.SDL
         }
 
         /// <summary>
-        ///		Used to convert a Sdl enum val to a Axiom.KeyCodes enum val.
+        ///		Used to convert a Sdl enum val to a Axiom.Input.KeyCodes enum val.
         /// </summary>
         /// <param name="key">Sdl code to query.</param>
         /// <returns>The equivalent enum value in the Axiom.KeyCodes enum.</returns>
-        private Axiom.KeyCodes ConvertKeyEnum( int key )
+        private KeyCodes ConvertKeyEnum( int key )
         {
             // TODO Quotes
-            Axiom.KeyCodes axiomKey = 0;
+            KeyCodes axiomKey = 0;
 
             switch ( key )
             {
                 case Sdl.SDLK_a:
-                    axiomKey = Axiom.KeyCodes.A;
+                    axiomKey = KeyCodes.A;
                     break;
                 case Sdl.SDLK_b:
-                    axiomKey = Axiom.KeyCodes.B;
+                    axiomKey = KeyCodes.B;
                     break;
                 case Sdl.SDLK_c:
-                    axiomKey = Axiom.KeyCodes.C;
+                    axiomKey = KeyCodes.C;
                     break;
                 case Sdl.SDLK_d:
-                    axiomKey = Axiom.KeyCodes.D;
+                    axiomKey = KeyCodes.D;
                     break;
                 case Sdl.SDLK_e:
-                    axiomKey = Axiom.KeyCodes.E;
+                    axiomKey = KeyCodes.E;
                     break;
                 case Sdl.SDLK_f:
-                    axiomKey = Axiom.KeyCodes.F;
+                    axiomKey = KeyCodes.F;
                     break;
                 case Sdl.SDLK_g:
-                    axiomKey = Axiom.KeyCodes.G;
+                    axiomKey = KeyCodes.G;
                     break;
                 case Sdl.SDLK_h:
-                    axiomKey = Axiom.KeyCodes.H;
+                    axiomKey = KeyCodes.H;
                     break;
                 case Sdl.SDLK_i:
-                    axiomKey = Axiom.KeyCodes.I;
+                    axiomKey = KeyCodes.I;
                     break;
                 case Sdl.SDLK_j:
-                    axiomKey = Axiom.KeyCodes.J;
+                    axiomKey = KeyCodes.J;
                     break;
                 case Sdl.SDLK_k:
-                    axiomKey = Axiom.KeyCodes.K;
+                    axiomKey = KeyCodes.K;
                     break;
                 case Sdl.SDLK_l:
-                    axiomKey = Axiom.KeyCodes.L;
+                    axiomKey = KeyCodes.L;
                     break;
                 case Sdl.SDLK_m:
-                    axiomKey = Axiom.KeyCodes.M;
+                    axiomKey = KeyCodes.M;
                     break;
                 case Sdl.SDLK_n:
-                    axiomKey = Axiom.KeyCodes.N;
+                    axiomKey = KeyCodes.N;
                     break;
                 case Sdl.SDLK_o:
-                    axiomKey = Axiom.KeyCodes.O;
+                    axiomKey = KeyCodes.O;
                     break;
                 case Sdl.SDLK_p:
-                    axiomKey = Axiom.KeyCodes.P;
+                    axiomKey = KeyCodes.P;
                     break;
                 case Sdl.SDLK_q:
-                    axiomKey = Axiom.KeyCodes.Q;
+                    axiomKey = KeyCodes.Q;
                     break;
                 case Sdl.SDLK_r:
-                    axiomKey = Axiom.KeyCodes.R;
+                    axiomKey = KeyCodes.R;
                     break;
                 case Sdl.SDLK_s:
-                    axiomKey = Axiom.KeyCodes.S;
+                    axiomKey = KeyCodes.S;
                     break;
                 case Sdl.SDLK_t:
-                    axiomKey = Axiom.KeyCodes.T;
+                    axiomKey = KeyCodes.T;
                     break;
                 case Sdl.SDLK_u:
-                    axiomKey = Axiom.KeyCodes.U;
+                    axiomKey = KeyCodes.U;
                     break;
                 case Sdl.SDLK_v:
-                    axiomKey = Axiom.KeyCodes.V;
+                    axiomKey = KeyCodes.V;
                     break;
                 case Sdl.SDLK_w:
-                    axiomKey = Axiom.KeyCodes.W;
+                    axiomKey = KeyCodes.W;
                     break;
                 case Sdl.SDLK_x:
-                    axiomKey = Axiom.KeyCodes.X;
+                    axiomKey = KeyCodes.X;
                     break;
                 case Sdl.SDLK_y:
-                    axiomKey = Axiom.KeyCodes.Y;
+                    axiomKey = KeyCodes.Y;
                     break;
                 case Sdl.SDLK_z:
-                    axiomKey = Axiom.KeyCodes.Z;
+                    axiomKey = KeyCodes.Z;
                     break;
                 case Sdl.SDLK_LEFT:
-                    axiomKey = Axiom.KeyCodes.Left;
+                    axiomKey = KeyCodes.Left;
                     break;
                 case Sdl.SDLK_RIGHT:
-                    axiomKey = Axiom.KeyCodes.Right;
+                    axiomKey = KeyCodes.Right;
                     break;
                 case Sdl.SDLK_UP:
-                    axiomKey = Axiom.KeyCodes.Up;
+                    axiomKey = KeyCodes.Up;
                     break;
                 case Sdl.SDLK_DOWN:
-                    axiomKey = Axiom.KeyCodes.Down;
+                    axiomKey = KeyCodes.Down;
                     break;
                 case Sdl.SDLK_ESCAPE:
-                    axiomKey = Axiom.KeyCodes.Escape;
+                    axiomKey = KeyCodes.Escape;
                     break;
                 case Sdl.SDLK_F1:
-                    axiomKey = Axiom.KeyCodes.F1;
+                    axiomKey = KeyCodes.F1;
                     break;
                 case Sdl.SDLK_F2:
-                    axiomKey = Axiom.KeyCodes.F2;
+                    axiomKey = KeyCodes.F2;
                     break;
                 case Sdl.SDLK_F3:
-                    axiomKey = Axiom.KeyCodes.F3;
+                    axiomKey = KeyCodes.F3;
                     break;
                 case Sdl.SDLK_F4:
-                    axiomKey = Axiom.KeyCodes.F4;
+                    axiomKey = KeyCodes.F4;
                     break;
                 case Sdl.SDLK_F5:
-                    axiomKey = Axiom.KeyCodes.F5;
+                    axiomKey = KeyCodes.F5;
                     break;
                 case Sdl.SDLK_F6:
-                    axiomKey = Axiom.KeyCodes.F6;
+                    axiomKey = KeyCodes.F6;
                     break;
                 case Sdl.SDLK_F7:
-                    axiomKey = Axiom.KeyCodes.F7;
+                    axiomKey = KeyCodes.F7;
                     break;
                 case Sdl.SDLK_F8:
-                    axiomKey = Axiom.KeyCodes.F8;
+                    axiomKey = KeyCodes.F8;
                     break;
                 case Sdl.SDLK_F9:
-                    axiomKey = Axiom.KeyCodes.F9;
+                    axiomKey = KeyCodes.F9;
                     break;
                 case Sdl.SDLK_F10:
-                    axiomKey = Axiom.KeyCodes.F10;
+                    axiomKey = KeyCodes.F10;
                     break;
                 case Sdl.SDLK_0:
-                    axiomKey = Axiom.KeyCodes.D0;
+                    axiomKey = KeyCodes.D0;
                     break;
                 case Sdl.SDLK_1:
-                    axiomKey = Axiom.KeyCodes.D1;
+                    axiomKey = KeyCodes.D1;
                     break;
                 case Sdl.SDLK_2:
-                    axiomKey = Axiom.KeyCodes.D2;
+                    axiomKey = KeyCodes.D2;
                     break;
                 case Sdl.SDLK_3:
-                    axiomKey = Axiom.KeyCodes.D3;
+                    axiomKey = KeyCodes.D3;
                     break;
                 case Sdl.SDLK_4:
-                    axiomKey = Axiom.KeyCodes.D4;
+                    axiomKey = KeyCodes.D4;
                     break;
                 case Sdl.SDLK_5:
-                    axiomKey = Axiom.KeyCodes.D5;
+                    axiomKey = KeyCodes.D5;
                     break;
                 case Sdl.SDLK_6:
-                    axiomKey = Axiom.KeyCodes.D6;
+                    axiomKey = KeyCodes.D6;
                     break;
                 case Sdl.SDLK_7:
-                    axiomKey = Axiom.KeyCodes.D7;
+                    axiomKey = KeyCodes.D7;
                     break;
                 case Sdl.SDLK_8:
-                    axiomKey = Axiom.KeyCodes.D8;
+                    axiomKey = KeyCodes.D8;
                     break;
                 case Sdl.SDLK_9:
-                    axiomKey = Axiom.KeyCodes.D9;
+                    axiomKey = KeyCodes.D9;
                     break;
                 case Sdl.SDLK_F11:
-                    axiomKey = Axiom.KeyCodes.F11;
+                    axiomKey = KeyCodes.F11;
                     break;
                 case Sdl.SDLK_F12:
-                    axiomKey = Axiom.KeyCodes.F12;
+                    axiomKey = KeyCodes.F12;
                     break;
                 case Sdl.SDLK_RETURN:
-                    axiomKey = Axiom.KeyCodes.Enter;
+                    axiomKey = KeyCodes.Enter;
                     break;
                 case Sdl.SDLK_TAB:
-                    axiomKey = Axiom.KeyCodes.Tab;
+                    axiomKey = KeyCodes.Tab;
                     break;
                 case Sdl.SDLK_LSHIFT:
-                    axiomKey = Axiom.KeyCodes.LeftShift;
+                    axiomKey = KeyCodes.LeftShift;
                     break;
                 case Sdl.SDLK_RSHIFT:
-                    axiomKey = Axiom.KeyCodes.RightShift;
+                    axiomKey = KeyCodes.RightShift;
                     break;
                 case Sdl.SDLK_LCTRL:
-                    axiomKey = Axiom.KeyCodes.LeftControl;
+                    axiomKey = KeyCodes.LeftControl;
                     break;
                 case Sdl.SDLK_RCTRL:
-                    axiomKey = Axiom.KeyCodes.RightControl;
+                    axiomKey = KeyCodes.RightControl;
                     break;
                 case Sdl.SDLK_PERIOD:
-                    axiomKey = Axiom.KeyCodes.Period;
+                    axiomKey = KeyCodes.Period;
                     break;
                 case Sdl.SDLK_COMMA:
-                    axiomKey = Axiom.KeyCodes.Comma;
+                    axiomKey = KeyCodes.Comma;
                     break;
                 case Sdl.SDLK_HOME:
-                    axiomKey = Axiom.KeyCodes.Home;
+                    axiomKey = KeyCodes.Home;
                     break;
                 case Sdl.SDLK_PAGEUP:
-                    axiomKey = Axiom.KeyCodes.PageUp;
+                    axiomKey = KeyCodes.PageUp;
                     break;
                 case Sdl.SDLK_PAGEDOWN:
-                    axiomKey = Axiom.KeyCodes.PageDown;
+                    axiomKey = KeyCodes.PageDown;
                     break;
                 case Sdl.SDLK_END:
-                    axiomKey = Axiom.KeyCodes.End;
+                    axiomKey = KeyCodes.End;
                     break;
                 case Sdl.SDLK_SEMICOLON:
-                    axiomKey = Axiom.KeyCodes.Semicolon;
+                    axiomKey = KeyCodes.Semicolon;
                     break;
                 case Sdl.SDLK_MINUS:
-                    axiomKey = Axiom.KeyCodes.Subtract;
+                    axiomKey = KeyCodes.Subtract;
                     break;
                 case Sdl.SDLK_PLUS:
-                    axiomKey = Axiom.KeyCodes.Add;
+                    axiomKey = KeyCodes.Add;
                     break;
                 case Sdl.SDLK_BACKSPACE:
-                    axiomKey = Axiom.KeyCodes.Backspace;
+                    axiomKey = KeyCodes.Backspace;
                     break;
                 case Sdl.SDLK_DELETE:
-                    axiomKey = Axiom.KeyCodes.Delete;
+                    axiomKey = KeyCodes.Delete;
                     break;
                 case Sdl.SDLK_INSERT:
-                    axiomKey = Axiom.KeyCodes.Insert;
+                    axiomKey = KeyCodes.Insert;
                     break;
                 case Sdl.SDLK_LALT:
-                    axiomKey = Axiom.KeyCodes.LeftAlt;
+                    axiomKey = KeyCodes.LeftAlt;
                     break;
                 case Sdl.SDLK_RALT:
-                    axiomKey = Axiom.KeyCodes.RightAlt;
+                    axiomKey = KeyCodes.RightAlt;
                     break;
                 case Sdl.SDLK_SPACE:
-                    axiomKey = Axiom.KeyCodes.Space;
+                    axiomKey = KeyCodes.Space;
                     break;
                 case Sdl.SDLK_BACKQUOTE:
-                    axiomKey = Axiom.KeyCodes.Tilde;
+                    axiomKey = KeyCodes.Tilde;
                     break;
                 case Sdl.SDLK_LEFTBRACKET:
-                    axiomKey = Axiom.KeyCodes.OpenBracket;
+                    axiomKey = KeyCodes.OpenBracket;
                     break;
                 case Sdl.SDLK_RIGHTBRACKET:
-                    axiomKey = Axiom.KeyCodes.CloseBracket;
+                    axiomKey = KeyCodes.CloseBracket;
                     break;
                 case Sdl.SDLK_EQUALS:
                     axiomKey = KeyCodes.Plus;

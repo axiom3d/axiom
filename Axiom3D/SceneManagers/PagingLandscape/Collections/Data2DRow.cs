@@ -2,9 +2,9 @@
 
 /*
 
-Axiom Graphics Engine Library
+Axiom Game Engine Library
 
-Copyright (C) 2003-2006  Axiom Project Team
+Copyright (C) 2003  Axiom Project Team
 
 
 

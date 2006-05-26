@@ -24,12 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
 using System.Text;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -48,8 +57,8 @@ namespace Axiom
 		private bool			_needUpdate;
         private bool            _updateColor;
 
-		private Real			_timeUntilNextToggle;
-		private Real			_radius;
+		private float			_timeUntilNextToggle;
+		private float			_radius;
 
 		private Font			_font;
         private string _fontName;
@@ -227,9 +236,9 @@ namespace Axiom
 
 		    int charlen = _caption.Length;
 
-		    Real largestWidth = 0;
-            Real left = 0f * 2.0f - 1.0f;
-            Real top = -( (0f * 2.0f ) - 1.0f );
+		    float largestWidth = 0;
+            float left = 0f * 2.0f - 1.0f;
+            float top = -( (0f * 2.0f ) - 1.0f );
 
             // Derive space with from a capital A
 		    if ( _spaceWidth == 0 )
@@ -237,7 +246,7 @@ namespace Axiom
 
 		    // for calculation of AABB
 		    Vector3 min, max, currPos;
-		    Real maxSquaredRadius = 0;
+		    float maxSquaredRadius = 0;
 		    bool first = true;
 
             min = max = currPos = Vector3.NegativeUnitY;
@@ -255,7 +264,7 @@ namespace Axiom
                 {
                     if ( newLine )
                     {
-                        Real len = 0.0f;
+                        float len = 0.0f;
                         for ( int j = i; j != charlen && _caption[ j ] != '\n'; j++ )
                         {
                             if ( _caption[ j ] == ' ' )
@@ -283,8 +292,8 @@ namespace Axiom
                         continue;
                     }
 
-                    Real horiz_height = _font.GetGlyphAspectRatio( _caption[ i ] );
-                    Real u1, u2, v1, v2;
+                    float horiz_height = _font.GetGlyphAspectRatio( _caption[ i ] );
+                    float u1, u2, v1, v2;
                     _font.GetGlyphTexCoords( _caption[ i ], out u1, out v1, out u2, out v2 );
 
                     // each vert is (x, y, z, u, v)
@@ -310,7 +319,7 @@ namespace Axiom
                     {
                         min.ToFloor( currPos );
                         max.ToCeiling( currPos );
-                        maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+                        maxSquaredRadius = Math.Max( maxSquaredRadius, currPos.LengthSquared );
                     }
 
                     top -= _characterHeight * 2.0f;
@@ -326,7 +335,7 @@ namespace Axiom
                     currPos = new Vector3( left, top, -1.0f );
                     min.ToFloor( currPos );
                     max.ToCeiling( currPos );
-                    maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+                    maxSquaredRadius = Math.Max( maxSquaredRadius, currPos.LengthSquared );
 
                     top += _characterHeight * 2.0f;
                     left += horiz_height * _characterHeight * 2.0f;
@@ -343,7 +352,7 @@ namespace Axiom
                     currPos = new Vector3( left, top, -1.0f );
                     min.ToFloor( currPos );
                     max.ToCeiling( currPos );
-                    maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+                    maxSquaredRadius = Math.Max( maxSquaredRadius, currPos.LengthSquared );
 
                     //-------------------------------------------------------------------------------------
                     // Second tri
@@ -358,7 +367,7 @@ namespace Axiom
                     currPos = new Vector3( left, top, -1.0f );
                     min.ToFloor( currPos );
                     max.ToCeiling( currPos );
-                    maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+                    maxSquaredRadius = Math.Max( maxSquaredRadius, currPos.LengthSquared );
 
                     top -= _characterHeight * 2.0f;
                     left -= horiz_height * _characterHeight * 2.0f;
@@ -373,7 +382,7 @@ namespace Axiom
                     currPos = new Vector3( left, top, -1.0f );
                     min.ToFloor( currPos );
                     max.ToCeiling( currPos );
-                    maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+                    maxSquaredRadius = Math.Max( maxSquaredRadius, currPos.LengthSquared );
 
                     left += horiz_height * _characterHeight * 2.0f;
 
@@ -388,12 +397,12 @@ namespace Axiom
                     currPos = new Vector3( left, top, -1.0f );
                     min.ToFloor( currPos );
                     max.ToCeiling( currPos );
-                    maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+                    maxSquaredRadius = Math.Max( maxSquaredRadius, currPos.LengthSquared );
 
                     // Go back up with top
                     top += _characterHeight * 2.0f;
 
-                    Real currentWidth = ( left + 1 ) / 2 - 0;
+                    float currentWidth = ( left + 1 ) / 2 - 0;
                     if ( currentWidth > largestWidth )
                         largestWidth = currentWidth;
                 }
@@ -403,7 +412,7 @@ namespace Axiom
 
 		    // update AABB/Sphere radius
 		    this.box = new AxisAlignedBox(min, max);
-		    this._radius = Utility.Sqrt( (double)maxSquaredRadius );
+		    this._radius = (float)Math.Sqrt( (double)maxSquaredRadius );
 
 		    if ( _updateColor )
 			    this._updateColors();
@@ -440,12 +449,12 @@ namespace Axiom
             op.indexData = this._renderOperation.indexData;
         }
 
-        public override Real GetSquaredViewDepth( Camera camera )
+        public override float GetSquaredViewDepth( Camera camera )
         {
             return ( this.ParentNode.DerivedPosition - camera.DerivedPosition ).LengthSquared;
         }
 
-        public override Real BoundingRadius
+        public override float BoundingRadius
         {
             get
             {

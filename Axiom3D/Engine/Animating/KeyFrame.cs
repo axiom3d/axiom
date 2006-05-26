@@ -24,9 +24,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -37,7 +46,6 @@ using DotNet3D.Math;
 ///     <file name="KeyFrame.cpp" revision="1.13" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
 /// </ogresynchronization>
 #endregion
-
 namespace Axiom
 {
     /// <summary>
@@ -55,7 +63,7 @@ namespace Axiom
 		/// <summary>
 		///		Time of this keyframe.
 		/// </summary>
-        protected Real time;
+        protected float time;
 		/// <summary>
 		///		Translation at this keyframe.
 		/// </summary>
@@ -83,7 +91,7 @@ namespace Axiom
         /// </summary>
         /// <param name="parent">Animation track that this keyframe belongs to.</param>
         /// <param name="time">Time at which this keyframe begins.</param>
-        public KeyFrame(AnimationTrack parent, Real time) {
+        public KeyFrame(AnimationTrack parent, float time) {
             this.time = time;
             translate = new Vector3();
             scale = Vector3.Unit;
@@ -153,7 +161,7 @@ namespace Axiom
         /// <summary>
         ///		Gets the time of this keyframe in the animation sequence.
         /// </summary>
-        public Real Time {
+        public float Time {
             get { 
 				return time; 
 			}

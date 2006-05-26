@@ -24,12 +24,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 using System.Diagnostics;
-using DotNet3D.Math.Collections;
+using Axiom.MathLib.Collections;
 
 #endregion Namespace Declarations
 			
@@ -261,7 +269,7 @@ namespace Axiom {
                 get {
                     object key = map.buckets.GetKey(bucketIndex);
                     object val = currentBucket[bucketPos];
-                    return new Pair<object>(key, val);
+                    return new Pair(key, val);
                 }
             }
 

@@ -24,12 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Runtime.InteropServices;
 
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -84,7 +93,7 @@ namespace Axiom.SceneManagers.Bsp
         }
 
         // used in BspSceneManager.PopulateLightList method
-        internal Real TempSquaredDist
+        internal float TempSquaredDist
         {
             get
             {
@@ -122,7 +131,7 @@ namespace Axiom.SceneManagers.Bsp
         public bool AffectsFaceGroup( StaticFaceGroup faceGroup, ManualCullingMode cullMode )
         {
             bool affects = false;
-            Real lightDist = 0, angle;
+            float lightDist = 0, angle;
 
             if ( this.Type == LightType.Directional )
             {
@@ -154,16 +163,16 @@ namespace Axiom.SceneManagers.Bsp
                     break;
 
                 case LightType.Point:
-                    if ( Utility.Abs( lightDist ) < range )
+                    if ( MathUtil.Abs( lightDist ) < range )
                         affects = true;
                     break;
 
                 case LightType.Spotlight:
-                    if ( Utility.Abs( lightDist ) < range )
+                    if ( MathUtil.Abs( lightDist ) < range )
                     {
                         angle = faceGroup.plane.Normal.DotProduct( this.DerivedDirection );
                         if ( ( ( lightDist < 0 && angle > 0 ) || ( lightDist > 0 && angle < 0 ) ) &&
-                            Utility.Abs( angle ) >= Utility.Cos( this.spotOuter * 0.5f ) )
+                            MathUtil.Abs( angle ) >= MathUtil.Cos( this.spotOuter * 0.5f ) )
                             affects = true;
                     }
                     break;
@@ -200,8 +209,8 @@ namespace Axiom.SceneManagers.Bsp
 
             lightPos = this.DerivedPosition;
 
-            Real dist = plane.GetDistance( lightPos );
-            if ( Utility.Abs( dist ) < range )
+            float dist = plane.GetDistance( lightPos );
+            if ( MathUtil.Abs( dist ) < range )
             {
                 // light is visible
 
@@ -213,12 +222,12 @@ namespace Axiom.SceneManagers.Bsp
                 Plane verPlane = new Plane( verAxis, faceLightPos );
                 Plane horPlane = new Plane( horAxis, faceLightPos );
 
-                Real lightRadiusSqr = range * range;
-                Real relRadiusSqr = lightRadiusSqr - dist * dist;
-                Real relRadius = Utility.Sqrt( relRadiusSqr );
-                Real scale = 0.5f / relRadius;
+                float lightRadiusSqr = range * range;
+                float relRadiusSqr = lightRadiusSqr - dist * dist;
+                float relRadius = MathUtil.Sqrt( relRadiusSqr );
+                float scale = 0.5f / relRadius;
 
-                Real brightness = relRadiusSqr / lightRadiusSqr;
+                float brightness = relRadiusSqr / lightRadiusSqr;
                 ColorEx lightCol = new ColorEx( brightness * textureColor.a,
                     textureColor.r, textureColor.g, textureColor.b );
 
@@ -256,7 +265,7 @@ namespace Axiom.SceneManagers.Bsp
             texCoors = new Vector2[vertices.Length];
             colors = new ColorEx[vertices.Length];
 
-            Real angle = Utility.Abs( plane.Normal.DotProduct( this.DerivedDirection ) );
+            float angle = MathUtil.Abs( plane.Normal.DotProduct( this.DerivedDirection ) );
 
             ColorEx lightCol = new ColorEx( textureColor.a * angle,
                 textureColor.r, textureColor.g, textureColor.b );
@@ -279,7 +288,7 @@ namespace Axiom.SceneManagers.Bsp
                     for ( int x = 0; x < 128; x++ )
                     {
                         byte alpha = 0;
-                        Real radius = ( x - 64 ) * ( x - 64 ) + ( y - 64 ) * ( y - 64 );
+                        float radius = ( x - 64 ) * ( x - 64 ) + ( y - 64 ) * ( y - 64 );
                         radius = 4000 - radius;
                         if ( radius > 0 )
                         {
@@ -312,10 +321,10 @@ namespace Axiom.SceneManagers.Bsp
             {
                 diffuse = value;
 
-                Real maxParam = Utility.Max( Utility.Max( diffuse.r, diffuse.g ), diffuse.b );
+                float maxParam = MathUtil.Max( MathUtil.Max( diffuse.r, diffuse.g ), diffuse.b );
                 if ( maxParam > 0f )
                 {
-                    Real inv = 1 / maxParam;
+                    float inv = 1 / maxParam;
                     textureColor.r = diffuse.r * inv;
                     textureColor.g = diffuse.g * inv;
                     textureColor.b = diffuse.b * inv;

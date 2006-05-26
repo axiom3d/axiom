@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -31,6 +39,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -110,7 +119,7 @@ namespace Axiom
         /// <summary>
         ///    Duration (in seconds) of the animated texture (if any).
         /// </summary>
-        private Real animDuration;
+        private float animDuration;
         /// <summary>
         ///    Index of the current frame of animation (always 0 for single texture stages).
         /// </summary>
@@ -127,31 +136,31 @@ namespace Axiom
         /// <summary>
         ///    U coord of the texture transformation.
         /// </summary>
-        private Real transU;
+        private float transU;
         /// <summary>
         ///    V coord of the texture transformation.
         /// </summary>
-        private Real transV;
+        private float transV;
         /// <summary>
         ///    U coord of the texture scroll animation
         /// </summary>
-        private Real scrollU;
+        private float scrollU;
         /// <summary>
         ///    V coord of the texture scroll animation
         /// </summary>
-        private Real scrollV;
+        private float scrollV;
         /// <summary>
         ///    U scale value of the texture transformation.
         /// </summary>
-        private Real scaleU;
+        private float scaleU;
         /// <summary>
         ///    V scale value of the texture transformation.
         /// </summary>
-        private Real scaleV;
+        private float scaleV;
         /// <summary>
         ///    Rotation value of the texture transformation.
         /// </summary>
-        private Degree rotate;
+        private float rotate;
         /// <summary>
         ///    4x4 texture matrix which gets updated based on various transformations made to this stage.
         /// </summary>
@@ -206,7 +215,7 @@ namespace Axiom
         /// </summary>
         private EnvironmentMap environMap;
         private bool envMapEnabled = false;
-        private Real rotationSpeed = 0;
+        private float rotationSpeed = 0;
 
         #endregion Fields
 
@@ -263,7 +272,7 @@ namespace Axiom
             scrollU = scrollV = 0;
             transU = transV = 0;
             scaleU = scaleV = 1;
-            rotate = Degree.Zero;
+            rotate = 0;
             texMatrix = Matrix4.Identity;
             animDuration = 0;
             alphaRejectFunction = CompareFunction.AlwaysPass;
@@ -697,7 +706,7 @@ namespace Axiom
             }
         }
 
-        public Real TextureScrollU
+        public float TextureScrollU
         {
             get
             {
@@ -709,7 +718,7 @@ namespace Axiom
             }
         }
 
-        public Real TextureScrollV
+        public float TextureScrollV
         {
             get
             {
@@ -721,7 +730,7 @@ namespace Axiom
             }
         }
 
-        public Real TextureAnimU
+        public float TextureAnimU
         {
             get
             {
@@ -733,7 +742,7 @@ namespace Axiom
             }
         }
 
-        public Real TextureAnimV
+        public float TextureAnimV
         {
             get
             {
@@ -745,7 +754,7 @@ namespace Axiom
             }
         }
 
-        public Real ScaleU
+        public float ScaleU
         {
             get
             {
@@ -757,7 +766,7 @@ namespace Axiom
             }
         }
 
-        public Real ScaleV
+        public float ScaleV
         {
             get
             {
@@ -769,7 +778,7 @@ namespace Axiom
             }
         }
 
-        public Real RotationSpeed
+        public float RotationSpeed
         {
             get
             {
@@ -1096,7 +1105,7 @@ namespace Axiom
         ///    Manually supplied 'blend' value - only required for operations
         ///    which require manual blend e.g. LayerBlendOperationEx.BlendManual
         /// </param>
-        public void SetColorOperationEx( LayerBlendOperationEx operation, LayerBlendSource source1, LayerBlendSource source2, ColorEx arg1, ColorEx arg2, Real blendFactor )
+        public void SetColorOperationEx( LayerBlendOperationEx operation, LayerBlendSource source1, LayerBlendSource source2, ColorEx arg1, ColorEx arg2, float blendFactor )
         {
             colorBlendMode.operation = operation;
             colorBlendMode.source1 = source1;
@@ -1156,7 +1165,7 @@ namespace Axiom
         /// <param name="blendFactor">Manually supplied 'blend' value - only required for operations
         ///    which require manual blend e.g. LayerBlendOperationEx.BlendManual.
         /// </param>
-        public void SetAlphaOperation( LayerBlendOperationEx operation, LayerBlendSource source1, LayerBlendSource source2, Real arg1, Real arg2, Real blendFactor )
+        public void SetAlphaOperation( LayerBlendOperationEx operation, LayerBlendSource source1, LayerBlendSource source2, float arg1, float arg2, float blendFactor )
         {
             alphaBlendMode.operation = operation;
             alphaBlendMode.source1 = source1;
@@ -1310,7 +1319,7 @@ namespace Axiom
         ///     Total length of the animation sequence.  When set to 0, automatic animation does not occur.
         ///     In that scenario, the values can be changed manually by setting the CurrentFrame property.
         /// </param>
-        public void SetAnimatedTextureName( string name, int numFrames, Real duration )
+        public void SetAnimatedTextureName( string name, int numFrames, float duration )
         {
             string ext, baseName;
 
@@ -1347,7 +1356,7 @@ namespace Axiom
         ///     Total length of the animation sequence.  When set to 0, automatic animation does not occur.
         ///     In that scenario, the values can be changed manually by setting the CurrentFrame property.
         /// </param>
-        public void SetAnimatedTextureName( string[] names, int numFrames, Real duration )
+        public void SetAnimatedTextureName( string[] names, int numFrames, float duration )
         {
             if ( numFrames > MaxAnimationFrames )
             {
@@ -1384,7 +1393,7 @@ namespace Axiom
         /// </remarks>
         /// <param name="u">The amount the texture should be moved horizontally (u direction).</param>
         /// <param name="v">The amount the texture should be moved vertically (v direction).</param>
-        public void SetTextureScroll( Real u, Real v )
+        public void SetTextureScroll( float u, float v )
         {
             transU = u;
             transV = v;
@@ -1398,7 +1407,7 @@ namespace Axiom
         ///    Has no effect in the programmable pipeline.
         /// </remarks>
         /// <param name="u">The amount the texture should be moved horizontally (u direction).</param>
-        public void SetTextureScrollU( Real u )
+        public void SetTextureScrollU( float u )
         {
             transU = u;
             recalcTexMatrix = true;
@@ -1411,7 +1420,7 @@ namespace Axiom
         ///    Has no effect in the programmable pipeline.
         /// </remarks>
         /// <param name="v">The amount the texture should be moved vertically (v direction).</param>
-        public void SetTextureScrollV( Real v )
+        public void SetTextureScrollV( float v )
         {
             transV = v;
             recalcTexMatrix = true;
@@ -1427,7 +1436,7 @@ namespace Axiom
         /// </remarks>
         /// <param name="uSpeed">The number of horizontal loops per second (+ve=moving right, -ve = moving left).</param>
         /// <param name="vSpeed">The number of vertical loops per second (+ve=moving up, -ve= moving down).</param>
-        public void SetScrollAnimation( Real uSpeed, Real vSpeed )
+        public void SetScrollAnimation( float uSpeed, float vSpeed )
         {
             TextureEffect effect = new TextureEffect();
             effect.type = TextureEffectType.Scroll;
@@ -1447,7 +1456,7 @@ namespace Axiom
         ///    This option has no effect in the programmable pipeline.
         /// </remarks>
         /// <param name="speed">The number of complete counter-clockwise revolutions per second (use -ve for clockwise)</param>
-        public void SetRotateAnimation( Real speed )
+        public void SetRotateAnimation( float speed )
         {
             rotationSpeed = speed;
             TextureEffect effect = new TextureEffect();
@@ -1472,7 +1481,7 @@ namespace Axiom
         /// <param name="frequency">The speed of the wave in cycles per second.</param>
         /// <param name="phase">The offset of the start of the wave, e.g. 0.5 to start half-way through the wave.</param>
         /// <param name="amplitude">Scales the output so that instead of lying within [0..1] it lies within [0..(1 * amplitude)] for exaggerated effects.</param>
-        public void SetTransformAnimation( TextureTransform transType, WaveformType waveType, Real baseVal, Real frequency, Real phase, Real amplitude )
+        public void SetTransformAnimation( TextureTransform transType, WaveformType waveType, float baseVal, float frequency, float phase, float amplitude )
         {
             TextureEffect effect = new TextureEffect();
             effect.type = TextureEffectType.Transform;
@@ -1499,7 +1508,7 @@ namespace Axiom
         /// </remarks>
         /// <param name="u">The value by which the texture is to be scaled horizontally.</param>
         /// <param name="v">The value by which the texture is to be scaled vertically.</param>
-        public void SetTextureScale( Real u, Real v )
+        public void SetTextureScale( float u, float v )
         {
             scaleU = u;
             scaleV = v;
@@ -1513,7 +1522,7 @@ namespace Axiom
         ///    Has no effect in the programmable pipeline.
         /// </remarks>
         /// <param name="u">The value by which the texture is to be scaled horizontally.</param>
-        public void SetTextureScaleU( Real u )
+        public void SetTextureScaleU( float u )
         {
             scaleU = u;
             recalcTexMatrix = true;
@@ -1526,7 +1535,7 @@ namespace Axiom
         ///    Has no effect in the programmable pipeline.
         /// </remarks>
         /// <param name="v">The value by which the texture is to be scaled vertically.</param>
-        public void SetTextureScaleV( Real v )
+        public void SetTextureScaleV( float v )
         {
             scaleV = v;
             recalcTexMatrix = true;
@@ -1684,7 +1693,7 @@ namespace Axiom
         ///    Has no effect in the programmable pipeline.
         /// </remarks>
         /// <param name="degrees">The angle of rotation in degrees (counter-clockwise).</param>
-        public void SetTextureRotate( Real degrees )
+        public void SetTextureRotate( float degrees )
         {
             rotate = degrees;
             recalcTexMatrix = true;
@@ -1721,13 +1730,13 @@ namespace Axiom
                 xform = xlate * xform;
             }
 
-            if ( rotate != Degree.Zero )
+            if ( rotate != 0.0f )
             {
                 Matrix3 rotation = Matrix3.Identity;
 
-                Radian theta = rotate;
-                Real cosTheta = Utility.Cos( theta );
-                Real sinTheta = Utility.Sin( theta );
+                float theta = MathUtil.DegreesToRadians( rotate );
+                float cosTheta = MathUtil.Cos( theta );
+                float sinTheta = MathUtil.Sin( theta );
 
                 // set the rotation portion of the matrix
                 rotation[0,0] = cosTheta;
@@ -1736,8 +1745,8 @@ namespace Axiom
                 rotation[1,1] = cosTheta;
 
                 // offset the center of rotation to the center of the texture
-                Real cosThetaOff = cosTheta * -0.5f;
-                Real sinThetaOff = sinTheta * -0.5f;
+                float cosThetaOff = cosTheta * -0.5f;
+                float sinThetaOff = sinTheta * -0.5f;
                 rotation[0,2] = 0.5f + ( ( -0.5f * cosTheta ) - ( -0.5f * sinTheta ) );
                 rotation[1,2] = 0.5f + ( ( -0.5f * sinTheta ) + ( -0.5f * cosTheta ) );
 
@@ -1983,9 +1992,9 @@ namespace Axiom
         public LayerBlendSource source2;
         public ColorEx colorArg1 = ColorEx.White;
         public ColorEx colorArg2 = ColorEx.White;
-        public Real alphaArg1 = 1.0f;
-        public Real alphaArg2 = 1.0f;
-        public Real blendFactor;
+        public float alphaArg1 = 1.0f;
+        public float alphaArg2 = 1.0f;
+        public float blendFactor;
 
         /// <summary>
         ///		Compares to blending modes for equality.
@@ -2110,12 +2119,12 @@ namespace Axiom
     {
         public TextureEffectType type;
         public System.Enum subtype;
-        public Real arg1, arg2;
+        public float arg1, arg2;
         public WaveformType waveType;
-        public Real baseVal;
-        public Real frequency;
-        public Real phase;
-        public Real amplitude;
+        public float baseVal;
+        public float frequency;
+        public float phase;
+        public float amplitude;
         public Controller controller;
         public Frustum frustum;
 

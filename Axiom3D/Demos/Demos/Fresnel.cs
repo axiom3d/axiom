@@ -1,10 +1,8 @@
-#region Namespace Declarations
 
 using System;
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
-
-#endregion Namespace Declarations
 
 namespace Axiom.Demos
 {
@@ -27,7 +25,7 @@ namespace Axiom.Demos
         PositionalSpline[] fishSplines = new PositionalSpline[NUM_FISH];
         Vector3[] fishLastPosition = new Vector3[NUM_FISH];
         SceneNode[] fishNodes = new SceneNode[NUM_FISH];
-        Real animTime;
+        float animTime;
         Plane reflectionPlane = new Plane();
 
         #endregion Fields
@@ -144,14 +142,14 @@ namespace Axiom.Demos
                 belowWaterEnts.Add( ent );
 
                 // Generate a random selection of points for the fish to swim to
-                fishSplines[fishNo].AutoCalculateTangents = false;
+                fishSplines[fishNo].AutoCalculate = false;
 
                 Vector3 lastPos = Vector3.Zero;
 
                 for ( int waypoint = 0; waypoint < NUM_FISH_WAYPOINTS; waypoint++ )
                 {
                     Vector3 pos = new Vector3(
-                        Utility.SymmetricRandom() * 700, -10, Utility.SymmetricRandom() * 700 );
+                        MathUtil.SymmetricRandom() * 700, -10, MathUtil.SymmetricRandom() * 700 );
 
                     if ( waypoint > 0 )
                     {
@@ -161,7 +159,7 @@ namespace Axiom.Demos
                         while ( ( lastPos - pos ).Length > 750 )
                         {
                             pos = new Vector3(
-                                Utility.SymmetricRandom() * 700, -10, Utility.SymmetricRandom() * 700 );
+                                MathUtil.SymmetricRandom() * 700, -10, MathUtil.SymmetricRandom() * 700 );
                         }
                     }
 

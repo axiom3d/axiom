@@ -24,11 +24,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
-using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -50,12 +57,12 @@ namespace Axiom
         }
     }
 
-    public class RealList : List<Real>
+    public class FloatList : List<float>
     {
         public void Resize( int size )
         {
-            Real[] data = this.ToArray();
-            Real[] newData = new Real[size];
+            float[] data = this.ToArray();
+            float[] newData = new float[size];
             Array.Copy( data, 0, newData, 0, size );
             Clear();
             AddRange( newData );

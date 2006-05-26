@@ -1,19 +1,16 @@
-#region Namespace Declarations
 
 using System;
-
+using Axiom.MathLib;
 using Axiom;
 using DotNet3D.Math;
-
-#endregion Namespace Declarations
 
 namespace Axiom.Demos
 {
     public class SkyBox : TechDemo
     {
         #region Fields
-        private Real defaultDimension = 25;
-        private Real defaultVelocity = 50;
+        private float defaultDimension = 25;
+        private float defaultVelocity = 50;
         protected ParticleSystem thrusters = null;
         #endregion Fields
 
@@ -81,7 +78,7 @@ namespace Axiom.Demos
             ParticleEmitter emitter2 = thrusters.AddEmitter( "Point" );
 
             // thruster 1
-            emitter1.Angle = new Real( 3 );
+            emitter1.Angle = 3;
             emitter1.TimeToLive = 0.2f;
             emitter1.EmissionRate = 70;
             emitter1.ParticleVelocity = 50;
@@ -90,7 +87,7 @@ namespace Axiom.Demos
             emitter1.ColorRangeEnd = ColorEx.Red;
 
             // thruster 2
-            emitter2.Angle = new Real( 3 );
+            emitter2.Angle = 3;
             emitter2.TimeToLive = 0.2f;
             emitter2.EmissionRate = 70;
             emitter2.ParticleVelocity = 50;

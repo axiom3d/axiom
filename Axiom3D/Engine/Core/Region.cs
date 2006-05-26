@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -31,11 +39,11 @@ using System.Collections;
 using System.Text;
 using System.IO;
 
-using DotNet3D.Math; 
+using Axiom.MathLib;
+using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
-
 namespace Axiom
 {
 
@@ -107,9 +115,9 @@ namespace Axiom
         protected Vector3 center;
         protected ArrayList lodSquaredDistances = new ArrayList();
         protected AxisAlignedBox aabb;
-        protected Real boundingRadius;
+        protected float boundingRadius;
         protected ushort currentLod;
-        protected Real camDistanceSquared;
+        protected float camDistanceSquared;
         protected LODBucketList LodBucketList;
         protected LightList lightList;
         protected ulong lightListUpdated;
@@ -159,7 +167,7 @@ namespace Axiom
             }
         }
 
-        public override Real BoundingRadius
+        public override float BoundingRadius
         {
             get
             {
@@ -221,15 +229,15 @@ namespace Axiom
             for ( ushort lod = 1; lod < lodLevels; ++lod )
             {
                 MeshLodUsage meshLod = qsm.submesh.Parent.GetLodLevel( lod );
-                lodSquaredDistances[lod] = Utility.Max( (Real)lodSquaredDistances[lod], meshLod.fromSquaredDepth );
+                lodSquaredDistances[lod] = Math.Max( (float)lodSquaredDistances[lod], meshLod.fromSquaredDepth );
             }
 
             // update bounds
             // Transform world bounds relative to our center
             AxisAlignedBox localBounds = new AxisAlignedBox( qsm.worldBounds.Minimum - center, qsm.worldBounds.Maximum - center );
             aabb.Merge( localBounds );
-            boundingRadius = Utility.Max( boundingRadius, localBounds.Minimum.Length );
-            boundingRadius = Utility.Max( boundingRadius, localBounds.Maximum.Length );
+            boundingRadius = Math.Max( boundingRadius, localBounds.Minimum.Length );
+            boundingRadius = Math.Max( boundingRadius, localBounds.Maximum.Length );
         }
 
         public void Build( bool stencilShadows )
@@ -241,7 +249,7 @@ namespace Axiom
             // we encountered in all the meshes queued
             for ( ushort lod = 0; lod < lodSquaredDistances.Count; ++lod )
             {
-                LODBucket lodBucket = new LODBucket( this, lod, (Real)lodSquaredDistances[lod] );
+                LODBucket lodBucket = new LODBucket( this, lod, (float)lodSquaredDistances[lod] );
                 LodBucketList.Add( lodBucket );
                 // Now iterate over the meshes and assign to LODs
                 // LOD bucket will pick the right LOD to use
@@ -309,9 +317,9 @@ namespace Axiom
             // Distance from the edge of the bounding sphere
             camDistanceSquared = diff.LengthSquared - boundingRadius * boundingRadius;
             // Clamp to 0
-            camDistanceSquared = Utility.Max( 0.0f, camDistanceSquared );
+            camDistanceSquared = Math.Max( 0.0f, camDistanceSquared );
 
-            Real maxDist = parent.SquaredRenderingDistance;
+            float maxDist = parent.SquaredRenderingDistance;
             if ( camDistanceSquared > maxDist )
             {
                 beyondFarDistance = true;
@@ -323,7 +331,7 @@ namespace Axiom
                 currentLod = (ushort)( lodSquaredDistances.Count - 1 );
                 for ( ushort i = 0; i < lodSquaredDistances.Count; ++i )
                 {
-                    if ( (Real)lodSquaredDistances[i] > camDistanceSquared )
+                    if ( (float)lodSquaredDistances[i] > camDistanceSquared )
                     {
                         currentLod = (ushort)( i - 1 );
                         break;
@@ -358,7 +366,7 @@ namespace Axiom
         }
 
 
-        public IEnumerator GetShadowVolumeRenderableIterator( ShadowTechnique shadowTechnique, Light light, HardwareIndexBuffer indexBuffer, bool extrudeVertices, Real extrusionDistance, ulong flags )
+        public IEnumerator GetShadowVolumeRenderableIterator( ShadowTechnique shadowTechnique, Light light, HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, ulong flags )
         {
             // TODO Port this from Ogre
             throw new NotImplementedException();

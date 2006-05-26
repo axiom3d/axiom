@@ -24,13 +24,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Drawing;
 using System.Text;
-
-using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -83,11 +89,11 @@ namespace Axiom
         protected Material material;
 
         // arrays for storing texture and display data for each character
-        protected Real[] texCoordU1 = new Real[END_CHAR - START_CHAR];
-        protected Real[] texCoordU2 = new Real[END_CHAR - START_CHAR];
-        protected Real[] texCoordV1 = new Real[END_CHAR - START_CHAR];
-        protected Real[] texCoordV2 = new Real[END_CHAR - START_CHAR];
-        protected Real[] aspectRatio = new Real[END_CHAR - START_CHAR];
+        protected float[] texCoordU1 = new float[END_CHAR - START_CHAR];
+        protected float[] texCoordU2 = new float[END_CHAR - START_CHAR];
+        protected float[] texCoordV1 = new float[END_CHAR - START_CHAR];
+        protected float[] texCoordV2 = new float[END_CHAR - START_CHAR];
+        protected float[] aspectRatio = new float[END_CHAR - START_CHAR];
 
         protected bool showLines = false;
 
@@ -216,10 +222,10 @@ namespace Axiom
             //
             //                // calculate the texture coords for the character
             //                // note: flip the y coords by subtracting from 1
-            //                Real u1 = (Real)x / (Real)BITMAP_WIDTH;
-            //                Real u2 = ((Real)x  + metrics.Width - 4) / (Real)BITMAP_WIDTH;
-            //                Real v1 = 1 - ((Real)y / (Real)BITMAP_HEIGHT);
-            //                Real v2 = 1 - (((Real)y + metrics.Height) / (Real)BITMAP_HEIGHT);
+            //                float u1 = (float)x / (float)BITMAP_WIDTH;
+            //                float u2 = ((float)x  + metrics.Width - 4) / (float)BITMAP_WIDTH;
+            //                float v1 = 1 - ((float)y / (float)BITMAP_HEIGHT);
+            //                float v2 = 1 - (((float)y + metrics.Height) / (float)BITMAP_HEIGHT);
             //                SetCharTexCoords(c, u1, u2, v1, v2);
             //
             //                // increment X by the width of the current char
@@ -260,7 +266,7 @@ namespace Axiom
         /// <param name="u2"></param>
         /// <param name="v1"></param>
         /// <param name="v2"></param>
-        public void GetGlyphTexCoords( char c, out Real u1, out Real u2, out Real v1, out Real v2 )
+        public void GetGlyphTexCoords( char c, out float u1, out float u2, out float v1, out float v2 )
         {
             int idx = (int)c - START_CHAR;
             u1 = texCoordU1[idx];
@@ -274,14 +280,14 @@ namespace Axiom
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
-        public Real GetGlyphAspectRatio( char c )
+        public float GetGlyphAspectRatio( char c )
         {
             int idx = (int)c - START_CHAR;
 
             return aspectRatio[idx];
         }
 
-        public void SetGlyphTexCoords( char c, Real u1, Real v1, Real u2, Real v2 )
+        public void SetGlyphTexCoords( char c, float u1, float v1, float u2, float v2 )
         {
             int idx = (int)c - START_CHAR;
             texCoordU1[idx] = u1;

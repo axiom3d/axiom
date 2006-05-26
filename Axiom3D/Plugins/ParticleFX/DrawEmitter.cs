@@ -24,9 +24,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
+using Axiom.MathLib;
 using Axiom;
 using DotNet3D.Math;
 
@@ -39,7 +48,7 @@ namespace Axiom.ParticleFX
     /// </summary>
     public class DrawEmitter : ParticleEmitter
     {
-        protected Real distance;
+        protected float distance;
 
         #region Constructors
 
@@ -52,7 +61,7 @@ namespace Axiom.ParticleFX
 
         #region Methods
 
-        public override ushort GetEmissionCount( Real timeElapsed )
+        public override ushort GetEmissionCount( float timeElapsed )
         {
             // use basic constant emission
             return GenerateConstantEmissionCount( timeElapsed );
@@ -64,9 +73,9 @@ namespace Axiom.ParticleFX
 
             Vector3 pos = new Vector3();
 
-            pos.x = Utility.SymmetricRandom() * distance;
-            pos.y = Utility.SymmetricRandom() * distance;
-            pos.z = Utility.SymmetricRandom() * distance;
+            pos.x = MathUtil.SymmetricRandom() * distance;
+            pos.y = MathUtil.SymmetricRandom() * distance;
+            pos.z = MathUtil.SymmetricRandom() * distance;
 
             // point emitter emits starting from its own position
             particle.Position = pos + particle.ParentSet.WorldPosition;
@@ -83,7 +92,7 @@ namespace Axiom.ParticleFX
 
         #region Properties
 
-        public Real Distance
+        public float Distance
         {
             get
             {
@@ -112,7 +121,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 DrawEmitter emitter = target as DrawEmitter;
-                emitter.Distance = Real.Parse( val );
+                emitter.Distance = StringConverter.ParseFloat( val );
             }
 
             #endregion

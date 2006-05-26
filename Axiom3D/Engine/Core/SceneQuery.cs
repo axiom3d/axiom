@@ -24,11 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 
+using Axiom.MathLib;
+using Axiom.MathLib.Collections;
 using DotNet3D.Math;
 using DotNet3D.Math.Collections;
 
@@ -492,7 +502,7 @@ namespace Axiom
 
         #region IRaySceneQueryListener Members
 
-        public bool OnQueryResult( MovableObject sceneObject, Real distance )
+        public bool OnQueryResult( MovableObject sceneObject, float distance )
         {
             // create an entry and add it to the cached result list
             RaySceneQueryResultEntry entry = new RaySceneQueryResultEntry();
@@ -505,7 +515,7 @@ namespace Axiom
             return true;
         }
 
-        bool IRaySceneQueryListener.OnQueryResult( SceneQuery.WorldFragment fragment, Real distance )
+        bool IRaySceneQueryListener.OnQueryResult( SceneQuery.WorldFragment fragment, float distance )
         {
             // create an entry and add it to the cached result list
             RaySceneQueryResultEntry entry = new RaySceneQueryResultEntry();
@@ -532,7 +542,7 @@ namespace Axiom
         /// <param name="sceneObject">Reference to the object hit by the ray.</param>
         /// <param name="distance">Distance from the origin of the ray where the intersection took place.</param>
         /// <returns>Should return false to abandon returning additional results, or true to continue.</returns>
-        bool OnQueryResult( MovableObject sceneObject, Real distance );
+        bool OnQueryResult( MovableObject sceneObject, float distance );
 
         /// <summary>
         ///		Called when a world fragment is intersected by the ray.
@@ -540,7 +550,7 @@ namespace Axiom
         /// <param name="fragment">World fragment hit by the ray.</param>
         /// <param name="distance">Distance from the origin of the ray where the intersection took place.</param>
         /// <returns>Should return false to abandon returning additional results, or true to continue.</returns>
-        bool OnQueryResult( SceneQuery.WorldFragment fragment, Real distance );
+        bool OnQueryResult( SceneQuery.WorldFragment fragment, float distance );
     }
 
     /// <summary>
@@ -551,7 +561,7 @@ namespace Axiom
         /// <summary>
         ///		Distance along the ray.
         /// </summary>
-        public Real Distance;
+        public float Distance;
         /// <summary>
         ///		The object, or null if this is not a scene object result.
         /// </summary>

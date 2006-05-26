@@ -24,11 +24,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-
-using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -83,7 +89,7 @@ namespace Axiom
                 PatchSurfaceType.Bezier, uMaxSubdivisionLevel, vMaxSubdivisionLevel, visibleSide );
         }
 
-        public void SetSubdivision( Real factor )
+        public void SetSubdivision( float factor )
         {
             patchSurface.SubdivisionFactor = factor;
             SubMesh sm = GetSubMesh( 0 );

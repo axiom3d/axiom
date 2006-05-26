@@ -24,11 +24,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.IO;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -489,7 +498,7 @@ namespace Axiom
             // read the data from the file
             assignment.vertexIndex = ReadInt( reader );
             assignment.boneIndex = ReadUShort( reader );
-            assignment.weight = ReadReal( reader );
+            assignment.weight = ReadFloat( reader );
 
             // add the assignment to the mesh
             mesh.AddBoneAssignment( ref assignment );
@@ -502,7 +511,7 @@ namespace Axiom
             // read the data from the file
             assignment.vertexIndex = ReadInt( reader );
             assignment.boneIndex = ReadUShort( reader );
-            assignment.weight = ReadReal( reader );
+            assignment.weight = ReadFloat( reader );
 
             // add the assignment to the mesh
             sub.AddBoneAssignment( ref assignment );
@@ -546,7 +555,7 @@ namespace Axiom
 
                 // camera depth
                 MeshLodUsage usage = new MeshLodUsage();
-                usage.fromSquaredDepth = ReadReal( reader );
+                usage.fromSquaredDepth = ReadFloat( reader );
 
                 if ( mesh.isLodManual )
                 {
@@ -658,7 +667,7 @@ namespace Axiom
             mesh.BoundingBox = new AxisAlignedBox( min, max );
 
             // set the bounding sphere radius
-            mesh.BoundingSphereRadius = ReadReal( reader );
+            mesh.BoundingSphereRadius = ReadFloat( reader );
         }
 
         protected virtual void ReadEdgeList( BinaryReader reader )
@@ -883,8 +892,8 @@ namespace Axiom
 
             IntPtr posData = vBuffer.Lock( BufferLocking.Discard );
 
-            // ram the Reals into the buffer data
-            ReadReals( reader, data.vertexCount * 3, posData );
+            // ram the floats into the buffer data
+            ReadFloats( reader, data.vertexCount * 3, posData );
 
             // unlock the buffer
             vBuffer.Unlock();
@@ -907,8 +916,8 @@ namespace Axiom
             // lock the buffer for editing
             IntPtr normals = vBuffer.Lock( BufferLocking.Discard );
 
-            // stuff the Reals into the normal buffer
-            ReadReals( reader, data.vertexCount * 3, normals );
+            // stuff the floats into the normal buffer
+            ReadFloats( reader, data.vertexCount * 3, normals );
 
             // unlock the buffer to commit
             vBuffer.Unlock();
@@ -931,7 +940,7 @@ namespace Axiom
             // lock the buffer for editing
             IntPtr colors = vBuffer.Lock( BufferLocking.Discard );
 
-            // stuff the Reals into the normal buffer
+            // stuff the floats into the normal buffer
             ReadInts( reader, data.vertexCount, colors );
 
             // unlock the buffer to commit
@@ -964,7 +973,7 @@ namespace Axiom
             IntPtr texCoords = vBuffer.Lock( BufferLocking.Discard );
 
             // blast the tex coord data into the buffer
-            ReadReals( reader, data.vertexCount * dim, texCoords );
+            ReadFloats( reader, data.vertexCount * dim, texCoords );
 
             // unlock the buffer to commit
             vBuffer.Unlock();
@@ -1015,7 +1024,7 @@ namespace Axiom
             IntPtr texCoords = vBuffer.Lock( BufferLocking.Discard );
 
             // blast the tex coord data into the buffer
-            ReadReals( reader, data.vertexCount * dim, texCoords );
+            ReadFloats( reader, data.vertexCount * dim, texCoords );
 
             // Adjust individual v values to (1 - v)
             if ( dim == 2 )
@@ -1024,7 +1033,7 @@ namespace Axiom
 
                 unsafe
                 {
-                    Real* pTex = (Real*)texCoords.ToPointer();
+                    float* pTex = (float*)texCoords.ToPointer();
 
                     for ( int i = 0; i < data.vertexCount; i++ )
                     {

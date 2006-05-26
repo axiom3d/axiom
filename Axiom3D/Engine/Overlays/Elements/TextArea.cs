@@ -24,14 +24,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Diagnostics;
 
 using Font = Axiom.Font;
-
-using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -56,12 +62,12 @@ namespace Axiom
 		protected RenderOperation renderOp = new RenderOperation();
 		protected bool isTransparent;
 		protected Font font;
-        protected Real charHeight;
+        protected float charHeight;
         protected int pixelCharHeight;
-        protected Real spaceWidth;
+        protected float spaceWidth;
         protected int pixelSpaceWidth;
         protected int allocSize;
-		protected Real viewportAspectCoef;
+		protected float viewportAspectCoef;
         /// Colors to use for the vertices
         protected ColorEx colorBottom;
         protected ColorEx colorTop;
@@ -195,15 +201,15 @@ namespace Axiom
         /// </summary>
         public override void Update()
         {
-			Real vpWidth = OverlayManager.Instance.ViewportWidth;
-			Real vpHeight = OverlayManager.Instance.ViewportHeight;
+			float vpWidth = OverlayManager.Instance.ViewportWidth;
+			float vpHeight = OverlayManager.Instance.ViewportHeight;
 			viewportAspectCoef = vpHeight/vpWidth;
 
             if ( metricsMode != MetricsMode.Relative &&
                 ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate ) )
             {
-                charHeight = (Real)pixelCharHeight / vpHeight;
-                spaceWidth = (Real)pixelSpaceWidth / vpHeight;
+                charHeight = (float)pixelCharHeight / vpHeight;
+                spaceWidth = (float)pixelSpaceWidth / vpHeight;
 
                 isGeomPositionsOutOfDate = true;
             }
@@ -272,9 +278,9 @@ namespace Axiom
             HardwareVertexBuffer buffer = renderOp.vertexData.vertexBufferBinding.GetBuffer( POSITION_TEXCOORD );
             IntPtr data = buffer.Lock( BufferLocking.Discard );
 
-			Real largestWidth = 0.0f;
-			Real left = this.DerivedLeft * 2.0f - 1.0f;
-			Real top = -( ( this.DerivedTop * 2.0f ) - 1.0f );
+			float largestWidth = 0.0f;
+			float left = this.DerivedLeft * 2.0f - 1.0f;
+			float top = -( ( this.DerivedTop * 2.0f ) - 1.0f );
 
 			// derive space width from the size of a capital A
 			if ( spaceWidth == 0 )
@@ -293,7 +299,7 @@ namespace Axiom
 
                 if ( newLine )
                 {
-                    Real length = 0.0f;
+                    float length = 0.0f;
 
                     // precalc the length of this line
                     for ( int j = i; j < charLength && text[ j ] != '\n'; j++ )
@@ -339,8 +345,8 @@ namespace Axiom
                     continue;
                 }
 
-                Real horizHeight = font.GetGlyphAspectRatio( c ) * viewportAspectCoef;
-                Real u1, u2, v1, v2;
+                float horizHeight = font.GetGlyphAspectRatio( c ) * viewportAspectCoef;
+                float u1, u2, v1, v2;
 
                 // get the texcoords for the specified character
                 font.GetGlyphTexCoords( c, out u1, out v1, out u2, out v2 );
@@ -405,7 +411,7 @@ namespace Axiom
                 // go back up with top
                 top += charHeight * 2.0f;
 
-                Real currentWidth = ( left + 1 ) / 2 - this.DerivedLeft;
+                float currentWidth = ( left + 1 ) / 2 - this.DerivedLeft;
 
                 if ( currentWidth > largestWidth )
                 {
@@ -419,7 +425,7 @@ namespace Axiom
             if ( metricsMode == MetricsMode.Pixels )
             {
                 // Derive parametric version of dimensions
-                Real vpWidth = OverlayManager.Instance.ViewportWidth;
+                float vpWidth = OverlayManager.Instance.ViewportWidth;
 
                 largestWidth *= vpWidth;
             }
@@ -446,13 +452,13 @@ namespace Axiom
         /// <summary>
         /// 
         /// </summary>
-        public Real CharHeight
+        public float CharHeight
         {
             get
             {
 				if ( metricsMode == MetricsMode.Pixels )
 				{
-					return (Real)pixelCharHeight;
+					return (float)pixelCharHeight;
 				}
 				else
 				{
@@ -577,8 +583,8 @@ namespace Axiom
             set
             {
                 
-				Real vpWidth = OverlayManager.Instance.ViewportWidth;
-				Real vpHeight = OverlayManager.Instance.ViewportHeight;
+				float vpWidth = OverlayManager.Instance.ViewportWidth;
+				float vpHeight = OverlayManager.Instance.ViewportHeight;
 				viewportAspectCoef = vpHeight/vpWidth;
 				base.MetricsMode = value;
                 // configure pixel variables based on current viewport
@@ -593,13 +599,13 @@ namespace Axiom
         /// <summary>
         ///    
         /// </summary>
-        public Real SpaceWidth
+        public float SpaceWidth
         {
             get
             {
 				if ( metricsMode == MetricsMode.Pixels )
 				{
-					return (Real)pixelSpaceWidth;
+					return (float)pixelSpaceWidth;
 				}
 				else
 				{
@@ -663,7 +669,7 @@ namespace Axiom
         {
             TextArea textArea = (TextArea)objects[0];
 
-            textArea.CharHeight = Real.Parse( parms[0] );
+            textArea.CharHeight = StringConverter.ParseFloat( parms[0] );
         }
 
         [AttributeParser( "space_width", "TextArea" )]
@@ -671,7 +677,7 @@ namespace Axiom
         {
             TextArea textArea = (TextArea)objects[0];
 
-            textArea.SpaceWidth = Real.Parse( parms[0] );
+            textArea.SpaceWidth = StringConverter.ParseFloat( parms[0] );
         }
 
         [AttributeParser( "font_name", "TextArea" )]

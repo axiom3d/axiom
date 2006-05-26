@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -32,8 +40,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
+using Axiom.MathLib;
+using Axiom.MathLib.Collections;
 using DotNet3D.Math;
-using DotNet3D.Math.Collections;
 
 #endregion Namespace Declarations
 			
@@ -97,7 +106,7 @@ namespace Axiom
         /// <summary>
         ///		Radius of this mesh's bounding sphere.
         /// </summary>
-        protected Real boundingSphereRadius;
+        protected float boundingSphereRadius;
 
         /// <summary>Name of the skeleton bound to this mesh.</summary>
         protected string skeletonName;
@@ -253,18 +262,18 @@ namespace Axiom
             {
                 boundingBox = value;
 
-                Real sqLen1 = boundingBox.Minimum.LengthSquared;
-                Real sqLen2 = boundingBox.Maximum.LengthSquared;
+                float sqLen1 = boundingBox.Minimum.LengthSquared;
+                float sqLen2 = boundingBox.Maximum.LengthSquared;
 
                 // update the bounding sphere radius as well
-                boundingSphereRadius = Utility.Sqrt( Utility.Max( sqLen1, sqLen2 ) );
+                boundingSphereRadius = MathUtil.Sqrt( MathUtil.Max( sqLen1, sqLen2 ) );
             }
         }
 
         /// <summary>
         ///    Bounding spehere radius from this mesh in local coordinates.
         /// </summary>
-        public Real BoundingSphereRadius
+        public float BoundingSphereRadius
         {
             get
             {
@@ -579,8 +588,8 @@ namespace Axiom
             // temp data buffers
             ushort[] vertIdx = new ushort[3];
             Vector3[] vertPos = new Vector3[3];
-            Real[] u = new Real[3];
-            Real[] v = new Real[3];
+            float[] u = new float[3];
+            float[] v = new float[3];
 
             // setup a new 3D texture coord-set buffer for every sub mesh
             int numSubMeshes = this.SubMeshCount;
@@ -724,7 +733,7 @@ namespace Axiom
 
                         // calculate the tangent space vector
                         Vector3 tangent =
-                            Utility.CalculateTangentSpaceVector(
+                            MathUtil.CalculateTangentSpaceVector(
                                 vertPos[0], vertPos[1], vertPos[2],
                                 u[0], v[0], u[1], v[1], u[2], v[2] );
 
@@ -871,7 +880,7 @@ namespace Axiom
             }
 
             int bufferSize = Marshal.SizeOf( typeof( byte ) ) * 4;
-            bufferSize += Marshal.SizeOf( typeof( Real ) ) * numBlendWeightsPerVertex;
+            bufferSize += Marshal.SizeOf( typeof( float ) ) * numBlendWeightsPerVertex;
 
             HardwareVertexBuffer vbuf =
                 HardwareBufferManager.Instance.CreateVertexBuffer(
@@ -929,19 +938,19 @@ namespace Axiom
                 byte* pBase = (byte*)ptr.ToPointer();
 
                 // Iterate by vertex
-                Real* pWeight;
+                float* pWeight;
                 byte* pIndex;
                 bool end = false;
 
                 for ( int v = 0; v < targetVertexData.vertexCount; v++ )
                 {
                     /// Convert to specific pointers
-                    pWeight = (Real*)( (byte*)pBase + weightElem.Offset );
+                    pWeight = (float*)( (byte*)pBase + weightElem.Offset );
                     pIndex = pBase + idxElem.Offset;
 
                     for ( int bone = 0; bone < numBlendWeightsPerVertex; bone++ )
                     {
-                        Pair<object> result = (Pair<object>)i.Current;
+                        Pair result = (Pair)i.Current;
                         VertexBoneAssignment ba = (VertexBoneAssignment)result.second;
 
                         // Do we still have data for this vertex?
@@ -973,7 +982,7 @@ namespace Axiom
         /// </summary>
         /// <param name="depth"></param>
         /// <returns></returns>
-        public int GetLodIndex( Real depth )
+        public int GetLodIndex( float depth )
         {
             return GetLodIndexSquaredDepth( depth * depth );
         }
@@ -1050,7 +1059,7 @@ namespace Axiom
                 // Now create a new buffer, which includes the previous contents
                 // plus extra space for the 3D coords
                 HardwareVertexBuffer newBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-                    origBuffer.VertexSize + ( 3 * Marshal.SizeOf( typeof( Real ) ) ),
+                    origBuffer.VertexSize + ( 3 * Marshal.SizeOf( typeof( float ) ) ),
                     vertexData.vertexCount,
                     origBuffer.Usage,
                     origBuffer.HasShadowBuffer );
@@ -1070,7 +1079,7 @@ namespace Axiom
                 int vertSize = origBuffer.VertexSize;
 
                 // size of the element to skip
-                int elemSize = Marshal.SizeOf( typeof( Real ) ) * 3;
+                int elemSize = Marshal.SizeOf( typeof( float ) ) * 3;
 
                 for ( int i = 0, srcOffset = 0, dstOffset = 0; i < vertexData.vertexCount; i++ )
                 {
@@ -1213,7 +1222,7 @@ namespace Axiom
         /// </remarks>
         /// <param name="squaredDepth"></param>
         /// <returns></returns>
-        public int GetLodIndexSquaredDepth( Real squaredDepth )
+        public int GetLodIndexSquaredDepth( float squaredDepth )
         {
             for ( int i = 0; i < lodUsageList.Count; i++ )
             {
@@ -1396,7 +1405,7 @@ namespace Axiom
                     assignments.TotalCount -= ( currentBones - Config.MaxBlendWeights );
                 }
 
-                Real totalWeight = 0.0f;
+                float totalWeight = 0.0f;
 
                 // Make sure the weights are normalised
                 // Do this irrespective of whether we had to remove assignments or not
@@ -1416,7 +1425,7 @@ namespace Axiom
                 }
 
                 // Now normalise if total weight is outside tolerance
-                if ( totalWeight != 1.0f  )
+                if ( !MathUtil.FloatEqual( totalWeight, 1.0f ) )
                 {
                     IEnumerator normalizeriter = assignments.Find( i );
 
@@ -1947,7 +1956,7 @@ namespace Axiom
         ///	<summary>
         ///		Squared Z value from which this LOD will apply.
         ///	</summary>
-        public Real fromSquaredDepth;
+        public float fromSquaredDepth;
         /// <summary>
         ///	Only relevant if isLodManual is true, the name of the alternative mesh to use.
         /// </summary>

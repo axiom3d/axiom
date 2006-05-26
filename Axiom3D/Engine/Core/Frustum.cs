@@ -24,12 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 using System.Diagnostics;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -49,12 +58,12 @@ namespace Axiom
         /// <summary>
         ///		Small constant used to reduce far plane projection to avoid inaccuracies.
         /// </summary>
-        public static readonly Real InfiniteFarPlaneAdjust = 0.00001f;
+        public const float InfiniteFarPlaneAdjust = 0.00001f;
 
         /// <summary>
         ///		Arbitrary large distance to use for the far plane when set to 0 (infinite far plane).
         /// </summary>
-        public static readonly Real InfiniteFarPlaneDistance = 100000.0f;
+        public const float InfiniteFarPlaneDistance = 100000.0f;
 
         #endregion Constants
 
@@ -66,19 +75,19 @@ namespace Axiom
         /// <summary>
         ///     y-direction field-of-view (default 45).
         /// </summary>
-        protected Degree fieldOfView;
+        protected float fieldOfView;
         /// <summary>
         ///     Far clip distance - default 10000.
         /// </summary>
-        protected Real farDistance;
+        protected float farDistance;
         /// <summary>
         ///     Near clip distance - default 100.
         /// </summary>
-        protected Real nearDistance;
+        protected float nearDistance;
         /// <summary>
         ///     x/y viewport ratio - default 1.3333
         /// </summary>
-        protected Real aspectRatio;
+        protected float aspectRatio;
         /// <summary>
         ///     The 6 main clipping planes.
         /// </summary>
@@ -130,10 +139,10 @@ namespace Axiom
 
         /** Temp coefficient values calculated from a frustum change,
 			used when establishing the frustum planes when the view changes. */
-        protected Real[] coeffL = new Real[2];
-                protected Real[] coeffR = new Real[2];
-        protected Real[] coeffB = new Real[2];
-        protected Real[] coeffT = new Real[2];
+        protected float[] coeffL = new float[2];
+                protected float[] coeffR = new float[2];
+        protected float[] coeffB = new float[2];
+        protected float[] coeffT = new float[2];
 
         /// <summary>
         ///		Is this frustum to act as a reflection of itself?
@@ -193,7 +202,7 @@ namespace Axiom
                 planes[i] = new Plane();
             }
 
-            fieldOfView = new Radian( Utility.PI / 4.0f );
+            fieldOfView = MathUtil.RadiansToDegrees( MathUtil.PI / 4.0f );
             nearDistance = 100.0f;
             farDistance = 100000.0f;
             aspectRatio = 1.33333333333333f;
@@ -238,7 +247,7 @@ namespace Axiom
         ///		This value represents the HORIZONTAL field-of-view. The vertical field of view is calculated from
         ///		this depending on the dimensions of the viewport (they will only be the same if the viewport is square).
         /// </remarks>
-        public virtual Degree FOV
+        public virtual float FOV
         {
             get
             {
@@ -263,7 +272,7 @@ namespace Axiom
         ///		dimensions expressed in pixels. The cameras viewport should have the same aspect ratio as the
         ///		screen viewport it renders into to avoid distortion.
         /// </remarks>
-        public virtual Real Near
+        public virtual float Near
         {
             get
             {
@@ -301,7 +310,7 @@ namespace Axiom
         ///		distance which is useful especially when projecting shadows; but
         ///		be careful not to use a near distance too close.
         /// </value>
-        public virtual Real Far
+        public virtual float Far
         {
             get
             {
@@ -325,7 +334,7 @@ namespace Axiom
         ///		The default for most fullscreen windows is 1.3333f - this is also assumed unless you
         ///		use this property to state otherwise.
         /// </remarks>
-        public virtual Real AspectRatio
+        public virtual float AspectRatio
         {
             get
             {
@@ -452,7 +461,7 @@ namespace Axiom
                 {
 
                     reflectionPlane = linkedReflectionPlane.DerivedPlane;
-                    reflectionMatrix = Utility.BuildReflectionMatrix( reflectionPlane );
+                    reflectionMatrix = MathUtil.BuildReflectionMatrix( reflectionPlane );
                     lastLinkedReflectionPlane = linkedReflectionPlane.DerivedPlane;
                     returnVal = true;
                 }
@@ -613,7 +622,7 @@ namespace Axiom
             isReflected = true;
             reflectionPlane = plane;
             linkedReflectionPlane = null;
-            reflectionMatrix = Utility.BuildReflectionMatrix( plane );
+            reflectionMatrix = MathUtil.BuildReflectionMatrix( plane );
             InvalidateView();
         }
 
@@ -629,7 +638,7 @@ namespace Axiom
             isReflected = true;
             linkedReflectionPlane = plane;
             reflectionPlane = linkedReflectionPlane.DerivedPlane;
-            reflectionMatrix = Utility.BuildReflectionMatrix( reflectionPlane );
+            reflectionMatrix = MathUtil.BuildReflectionMatrix( reflectionPlane );
             lastLinkedReflectionPlane = reflectionPlane;
             InvalidateView();
         }
@@ -819,7 +828,7 @@ namespace Axiom
             return true;
         }
 
-        public virtual bool ProjectSphere( Sphere sphere, out Real left, out Real top, out Real right, out Real bottom )
+        public virtual bool ProjectSphere( Sphere sphere, out float left, out float top, out float right, out float bottom )
         {
             // initialise
             left = bottom = -1.0f;
@@ -830,7 +839,7 @@ namespace Axiom
 
             if ( eyeSpacePos.z < 0 )
             {
-                Real r = sphere.Radius;
+                float r = sphere.Radius;
                 // early-exit
                 if ( eyeSpacePos.LengthSquared <= r * r )
                     return false;
@@ -841,15 +850,15 @@ namespace Axiom
                 Vector3 spheresize = new Vector3( r, r, eyeSpacePos.z );
                 spheresize = this.StandardProjectionMatrix * spheresize;
 
-                Real possLeft = screenSpacePos.x - spheresize.x;
-                Real possRight = screenSpacePos.x + spheresize.x;
-                Real possTop = screenSpacePos.y + spheresize.y;
-                Real possBottom = screenSpacePos.y - spheresize.y;
+                float possLeft = screenSpacePos.x - spheresize.x;
+                float possRight = screenSpacePos.x + spheresize.x;
+                float possTop = screenSpacePos.y + spheresize.y;
+                float possBottom = screenSpacePos.y - spheresize.y;
 
-                left = Utility.Max( -1.0f, possLeft );
-                right = Utility.Min( 1.0f, possRight );
-                top = Utility.Min( 1.0f, possTop );
-                bottom = Utility.Max( -1.0f, possBottom );
+                left = MathUtil.Max( -1.0f, possLeft );
+                right = MathUtil.Min( 1.0f, possRight );
+                top = MathUtil.Min( 1.0f, possTop );
+                bottom = MathUtil.Max( -1.0f, possBottom );
             }
 
             return ( left != -1.0f ) || ( top != 1.0f ) || ( right != 1.0f ) || ( bottom != -1.0f );
@@ -878,13 +887,13 @@ namespace Axiom
         {
             if ( IsFrustumOutOfDate )
             {
-                Radian thetaY = new Degree( fieldOfView * 0.5f );
-                Real tanThetaY = Utility.Tan( thetaY );
-                Real tanThetaX = tanThetaY * aspectRatio;
-                Real vpTop = tanThetaY * nearDistance;
-                Real vpRight = tanThetaX * nearDistance;
-                Real vpBottom = -vpTop;
-                Real vpLeft = -vpRight;
+                float thetaY = MathUtil.DegreesToRadians( fieldOfView * 0.5f );
+                float tanThetaY = MathUtil.Tan( thetaY );
+                float tanThetaX = tanThetaY * aspectRatio;
+                float vpTop = tanThetaY * nearDistance;
+                float vpRight = tanThetaX * nearDistance;
+                float vpBottom = -vpTop;
+                float vpLeft = -vpRight;
 
                 // grab a reference to the current render system
                 RenderSystem renderSystem = Root.Instance.RenderSystem;
@@ -918,11 +927,11 @@ namespace Axiom
                 // Calculate bounding box
                 // Box is from 0, down -Z, max dimensions as determined from far plane
                 // If infinite view frustum, use a far value
-                Real actualFar = ( farDistance == 0 ) ? InfiniteFarPlaneDistance : farDistance;
-                Real farTop = tanThetaY * ( ( projectionType == Projection.Orthographic ) ? nearDistance : actualFar );
-                Real farRight = tanThetaX * ( ( projectionType == Projection.Orthographic ) ? nearDistance : actualFar );
-                Real farBottom = -farTop;
-                Real farLeft = -farRight;
+                float actualFar = ( farDistance == 0 ) ? InfiniteFarPlaneDistance : farDistance;
+                float farTop = tanThetaY * ( ( projectionType == Projection.Orthographic ) ? nearDistance : actualFar );
+                float farRight = tanThetaX * ( ( projectionType == Projection.Orthographic ) ? nearDistance : actualFar );
+                float farBottom = -farTop;
+                float farLeft = -farRight;
                 Vector3 min = new Vector3( -farRight, -farTop, 0 );
                 Vector3 max = new Vector3( farRight, farTop, actualFar );
                 boundingBox.SetExtents( min, max );
@@ -1118,29 +1127,29 @@ namespace Axiom
                 Vector3 camDirection = orientation * -Vector3.UnitZ;
 
                 // calculate distance along direction to our derived position
-                Real distance = camDirection.DotProduct( position );
+                float distance = camDirection.DotProduct( position );
 
                 Matrix4 combo = standardProjMatrix * viewMatrix;
 
                 planes[(int)FrustumPlane.Left].Normal.x = combo.m30 + combo.m00;
                 planes[(int)FrustumPlane.Left].Normal.y = combo.m31 + combo.m01;
                 planes[(int)FrustumPlane.Left].Normal.z = combo.m32 + combo.m02;
-                planes[(int)FrustumPlane.Left].Distance = combo.m33 + combo.m03;
+                planes[ (int)FrustumPlane.Left ].Distance = combo.m33 + combo.m03;
 
                 planes[(int)FrustumPlane.Right].Normal.x = combo.m30 - combo.m00;
                 planes[(int)FrustumPlane.Right].Normal.y = combo.m31 - combo.m01;
                 planes[(int)FrustumPlane.Right].Normal.z = combo.m32 - combo.m02;
-                planes[(int)FrustumPlane.Right].Distance = combo.m33 - combo.m03;
+                planes[ (int)FrustumPlane.Right ].Distance = combo.m33 - combo.m03;
 
                 planes[(int)FrustumPlane.Top].Normal.x = combo.m30 - combo.m10;
                 planes[(int)FrustumPlane.Top].Normal.y = combo.m31 - combo.m11;
                 planes[(int)FrustumPlane.Top].Normal.z = combo.m32 - combo.m12;
-                planes[(int)FrustumPlane.Top].Distance = combo.m33 - combo.m13;
+                planes[ (int)FrustumPlane.Top ].Distance = combo.m33 - combo.m13;
 
                 planes[(int)FrustumPlane.Bottom].Normal.x = combo.m30 + combo.m10;
                 planes[(int)FrustumPlane.Bottom].Normal.y = combo.m31 + combo.m11;
                 planes[(int)FrustumPlane.Bottom].Normal.z = combo.m32 + combo.m12;
-                planes[(int)FrustumPlane.Bottom].Distance = combo.m33 + combo.m13;
+                planes[ (int)FrustumPlane.Bottom ].Distance = combo.m33 + combo.m13;
 
                 planes[(int)FrustumPlane.Near].Normal.x = combo.m30 + combo.m20;
                 planes[(int)FrustumPlane.Near].Normal.y = combo.m31 + combo.m21;
@@ -1155,8 +1164,8 @@ namespace Axiom
                 // renormalize any normals which were not unit length
                 for ( int i = 0; i < 6; i++ )
                 {
-                    Real length = planes[i].Normal.Normalize();
-                    planes[i].Distance /= length;
+                    float length = planes[i].Normal.Normalize();
+                    planes[ i ].Distance /= length;
                 }
 
                 // Update worldspace corners
@@ -1164,13 +1173,13 @@ namespace Axiom
 
                 // Get worldspace frustum corners
                 // treat infinite far distance as some far value
-                Real actualFar = ( farDistance == 0 ) ? InfiniteFarPlaneDistance : farDistance;
-                Real y = Utility.Tan( fieldOfView * 0.5f );
-                Real x = aspectRatio * y;
-                Real neary = y * nearDistance;
-                Real fary = y * ( ( projectionType == Projection.Orthographic ) ? nearDistance : actualFar );
-                Real nearx = x * nearDistance;
-                Real farx = x * ( ( projectionType == Projection.Orthographic ) ? nearDistance : actualFar );
+                float actualFar = ( farDistance == 0 ) ? InfiniteFarPlaneDistance : farDistance;
+                float y = MathUtil.Tan( fieldOfView * 0.5f );
+                float x = aspectRatio * y;
+                float neary = y * nearDistance;
+                float fary = y * ( ( projectionType == Projection.Orthographic ) ? nearDistance : actualFar );
+                float nearx = x * nearDistance;
+                float farx = x * ( ( projectionType == Projection.Orthographic ) ? nearDistance : actualFar );
 
                 // near
                 worldSpaceCorners[0] = eyeToWorld * new Vector3( nearx, neary, -nearDistance );
@@ -1218,7 +1227,7 @@ namespace Axiom
         /// <summary>
         ///    Local bounding radius of this camera.
         /// </summary>
-        public override Real BoundingRadius
+        public override float BoundingRadius
         {
             get
             {
@@ -1401,7 +1410,7 @@ namespace Axiom
             }
         }
 
-        public Real GetSquaredViewDepth( Camera camera )
+        public float GetSquaredViewDepth( Camera camera )
         {
             if ( parentNode != null )
             {

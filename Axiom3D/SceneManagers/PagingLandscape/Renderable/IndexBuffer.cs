@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -31,21 +39,26 @@ using System.Collections;
 using System.Diagnostics;
 
 using Axiom;
-using DotNet3D.Math;
-
-using Axiom.SceneManagers.PagingLandscape.Collections;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.SceneManagers.PagingLandscape.Renderable
 {
+
     enum Stitch_Shift : int
     {
+
         North = 0,
+
         South = 8,
+
         West = 16,
+
         East = 24
+
     }
+
+
 
     enum Stitch_Direction : long
     {
@@ -56,11 +69,17 @@ namespace Axiom.SceneManagers.PagingLandscape.Renderable
         East = 128L << Stitch_Shift.East
     }
 
+
+
     /// <summary>
+
     /// Summary description for IndexBuffer.
+
     /// </summary>
+
     public class IndexBuffer : IDisposable
     {
+
 
         #region Fields
         protected long tileSize;
@@ -133,6 +152,8 @@ namespace Axiom.SceneManagers.PagingLandscape.Renderable
 
         #endregion Singleton Implementation
 
+
+
         #region IDisposable Implementation
 
 
@@ -155,57 +176,59 @@ namespace Axiom.SceneManagers.PagingLandscape.Renderable
 
 
 
-        #endregion IDisposable Implementation
+                #endregion IDisposable Implementation
 
-        //public IndexData GetIndex( int LOD)
-        //{
-        //}
 
-        /** Utility method to generate stitching indexes on the edge of a tile
-@param neighbor The neighbor direction to stitch
-@param hiLOD The LOD of this tile
-@param loLOD The LOD of the neighbor
-@param omitFirstTri Whether the first tri of the stitch (always clockwise
-relative to the centre of this tile) is to be omitted because an 
-adjoining edge is also being stitched
-@param omitLastTri Whether the last tri of the stitch (always clockwise
-relative to the centre of this tile) is to be omitted because an 
-adjoining edge is also being stitched
-@param pIdx Pointer to a pointer to the index buffer to push the results 
-into (this pointer will be updated)
-@returns The number of indexes added
-*/
-        public long StitchEdge( Neighbor neighbor, long hiLOD, long loLOD, bool omitFirstTri, bool omitLastTri, IntPtr Idx, ref long pos )
-        {
-            Debug.Assert( loLOD > hiLOD );
-            /* 
-Now do the stitching; we can stitch from any level to any level.
-The stitch pattern is like this for each pair of vertices in the lower LOD
-(excuse the poor ascii art):
 
-lower LOD
-*-----------*
-|\  \ 3 /  /|
-|1\2 \ / 4/5|
-*--*--*--*--*
-higher LOD
+                //public IndexData GetIndex( int LOD)
+                //{
+                //}
 
-The algorithm is, for each pair of lower LOD vertices:
-1. Iterate over the higher LOD vertices, generating tris connected to the 
-first lower LOD vertex, up to and including 1/2 the span of the lower LOD 
-over the higher LOD (tris 1-2). Skip the first tri if it is on the edge 
-of the tile and that edge is to be stitched itself.
-2. Generate a single tri for the middle using the 2 lower LOD vertices and 
-the middle vertex of the higher LOD (tri 3). 
-3. Iterate over the higher LOD vertices from 1/2 the span of the lower LOD
-to the end, generating tris connected to the second lower LOD vertex 
-(tris 4-5). Skip the last tri if it is on the edge of a tile and that
-edge is to be stitched itself.
+                /** Utility method to generate stitching indexes on the edge of a tile
+        @param neighbor The neighbor direction to stitch
+        @param hiLOD The LOD of this tile
+        @param loLOD The LOD of the neighbor
+		@param omitFirstTri Whether the first tri of the stitch (always clockwise
+		relative to the centre of this tile) is to be omitted because an 
+		adjoining edge is also being stitched
+		@param omitLastTri Whether the last tri of the stitch (always clockwise
+        relative to the centre of this tile) is to be omitted because an 
+        adjoining edge is also being stitched
+        @param pIdx Pointer to a pointer to the index buffer to push the results 
+        into (this pointer will be updated)
+        @returns The number of indexes added
+        */
+                public long StitchEdge( Neighbor neighbor, long hiLOD, long loLOD, bool omitFirstTri, bool omitLastTri, IntPtr Idx, ref long pos )
+                {
+                        Debug.Assert( loLOD > hiLOD );
+                        /* 
+            Now do the stitching; we can stitch from any level to any level.
+            The stitch pattern is like this for each pair of vertices in the lower LOD
+            (excuse the poor ascii art):
 
-The same algorithm works for all edges of the patch; stitching is done
-clockwise so that the origin and steps used change, but the general
-approach does not.
-*/
+            lower LOD
+            *-----------*
+            |\  \ 3 /  /|
+            |1\2 \ / 4/5|
+            *--*--*--*--*
+            higher LOD
+
+            The algorithm is, for each pair of lower LOD vertices:
+            1. Iterate over the higher LOD vertices, generating tris connected to the 
+            first lower LOD vertex, up to and including 1/2 the span of the lower LOD 
+            over the higher LOD (tris 1-2). Skip the first tri if it is on the edge 
+            of the tile and that edge is to be stitched itself.
+            2. Generate a single tri for the middle using the 2 lower LOD vertices and 
+			the middle vertex of the higher LOD (tri 3). 
+			3. Iterate over the higher LOD vertices from 1/2 the span of the lower LOD
+			to the end, generating tris connected to the second lower LOD vertex 
+			(tris 4-5). Skip the last tri if it is on the edge of a tile and that
+			edge is to be stitched itself.
+
+			The same algorithm works for all edges of the patch; stitching is done
+			clockwise so that the origin and steps used change, but the general
+			approach does not.
+			*/
 
             // Work out the steps ie how to increment indexes
             // Step from one vertex to another in the high detail version
@@ -274,20 +297,20 @@ approach does not.
                         {
                             if ( horizontal )
                             {
-                                pIdx[ pos++ ] = index( j, starty );
+                                pIdx[pos++] = index( j, starty );
                                 numStitches++;
-                                pIdx[ pos++ ] = index( jk, starty + rowstep );
+                                pIdx[pos++] = index( jk, starty + rowstep );
                                 numStitches++;
-                                pIdx[ pos++ ] = index( jk + step, starty + rowstep );
+                                pIdx[pos++] = index( jk + step, starty + rowstep );
                                 numStitches++;
                             }
                             else
                             {
-                                pIdx[ pos++ ] = index( starty, j );
+                                pIdx[pos++] = index( starty, j );
                                 numStitches++;
-                                pIdx[ pos++ ] = index( starty + rowstep, jk );
+                                pIdx[pos++] = index( starty + rowstep, jk );
                                 numStitches++;
-                                pIdx[ pos++ ] = index( starty + rowstep, jk + step );
+                                pIdx[pos++] = index( starty + rowstep, jk + step );
                                 numStitches++;
                             }
                         }
@@ -296,20 +319,20 @@ approach does not.
                     // Middle tri
                     if ( horizontal )
                     {
-                        pIdx[ pos++ ] = index( j, starty );
+                        pIdx[pos++] = index( j, starty );
                         numStitches++;
-                        pIdx[ pos++ ] = index( j + halfsuperstep, starty + rowstep );
+                        pIdx[pos++] = index( j + halfsuperstep, starty + rowstep );
                         numStitches++;
-                        pIdx[ pos++ ] = index( j + superstep, starty );
+                        pIdx[pos++] = index( j + superstep, starty );
                         numStitches++;
                     }
                     else
                     {
-                        pIdx[ pos++ ] = index( starty, j );
+                        pIdx[pos++] = index( starty, j );
                         numStitches++;
-                        pIdx[ pos++ ] = index( starty + rowstep, j + halfsuperstep );
+                        pIdx[pos++] = index( starty + rowstep, j + halfsuperstep );
                         numStitches++;
-                        pIdx[ pos++ ] = index( starty, j + superstep );
+                        pIdx[pos++] = index( starty, j + superstep );
                         numStitches++;
                     }
 
@@ -320,20 +343,20 @@ approach does not.
                         {
                             if ( horizontal )
                             {
-                                pIdx[ pos++ ] = index( j + superstep, starty );
+                                pIdx[pos++] = index( j + superstep, starty );
                                 numStitches++;
-                                pIdx[ pos++ ] = index( jk, starty + rowstep );
+                                pIdx[pos++] = index( jk, starty + rowstep );
                                 numStitches++;
-                                pIdx[ pos++ ] = index( jk + step, starty + rowstep );
+                                pIdx[pos++] = index( jk + step, starty + rowstep );
                                 numStitches++;
                             }
                             else
                             {
-                                pIdx[ pos++ ] = index( starty, j + superstep );
+                                pIdx[pos++] = index( starty, j + superstep );
                                 numStitches++;
-                                pIdx[ pos++ ] = index( starty + rowstep, jk );
+                                pIdx[pos++] = index( starty + rowstep, jk );
                                 numStitches++;
-                                pIdx[ pos++ ] = index( starty + rowstep, jk + step );
+                                pIdx[pos++] = index( starty + rowstep, jk + step );
                                 numStitches++;
                             }
                         }
@@ -348,13 +371,13 @@ approach does not.
         /// Gets the index data for this tile based on current settings
         public IndexData GetIndexData( long stitchFlags, long RenderLevel, Renderable[] neighbors )
         {
-            Debug.Assert( levelIndex[ (int)RenderLevel ] != null );
-            IEnumerator ii = ( (Map)( levelIndex[ (int)RenderLevel ] ) ).Find( (long)stitchFlags );
+            Debug.Assert( levelIndex[(int)RenderLevel] != null );
+            IEnumerator ii = ( (Map)( levelIndex[(int)RenderLevel] ) ).Find( (long)stitchFlags );
             if ( ii == null )
             {
                 // Create
                 IndexData indexData = GenerateTriListIndexes( (long)stitchFlags, RenderLevel, neighbors );
-                ( (Map)( levelIndex[ (int)RenderLevel ] ) ).Insert( (long)stitchFlags, indexData );
+                ( (Map)( levelIndex[(int)RenderLevel] ) ).Insert( (long)stitchFlags, indexData );
                 return indexData;
             }
             else
@@ -397,18 +420,18 @@ approach does not.
                     {
                         //triangles
 
-                        pIdx[ pos++ ] = (ushort)( i + height_count );
+                        pIdx[pos++] = (ushort)( i + height_count );
                         numIndexes++;
-                        pIdx[ pos++ ] = (ushort)( i + height_count + step_offset );
+                        pIdx[pos++] = (ushort)( i + height_count + step_offset );
                         numIndexes++;
-                        pIdx[ pos++ ] = (ushort)( i + step + height_count );
+                        pIdx[pos++] = (ushort)( i + step + height_count );
                         numIndexes++;
 
-                        pIdx[ pos++ ] = (ushort)( i + height_count + step_offset );
+                        pIdx[pos++] = (ushort)( i + height_count + step_offset );
                         numIndexes++;
-                        pIdx[ pos++ ] = (ushort)( i + step + height_count + step_offset );
+                        pIdx[pos++] = (ushort)( i + step + height_count + step_offset );
                         numIndexes++;
-                        pIdx[ pos++ ] = (ushort)( i + step + height_count );
+                        pIdx[pos++] = (ushort)( i + step + height_count );
                         numIndexes++;
 
                     }
@@ -420,25 +443,25 @@ approach does not.
             // North stitching
             if ( north != 0 )
             {
-                numIndexes += StitchEdge( Neighbor.North, RenderLevel, neighbors[ (int)Neighbor.North ].RenderLevel,
+                numIndexes += StitchEdge( Neighbor.North, RenderLevel, neighbors[(int)Neighbor.North].RenderLevel,
                     west > 0, east > 0, ipIdx, ref pos );
             }
             // East stitching
             if ( east != 0 )
             {
-                numIndexes += StitchEdge( Neighbor.East, RenderLevel, neighbors[ (int)Neighbor.East ].RenderLevel,
+                numIndexes += StitchEdge( Neighbor.East, RenderLevel, neighbors[(int)Neighbor.East].RenderLevel,
                     north > 0, south > 0, ipIdx, ref pos );
             }
             // South stitching
             if ( south != 0 )
             {
-                numIndexes += StitchEdge( Neighbor.South, RenderLevel, neighbors[ (int)Neighbor.South ].RenderLevel,
+                numIndexes += StitchEdge( Neighbor.South, RenderLevel, neighbors[(int)Neighbor.South].RenderLevel,
                     east > 0, west > 0, ipIdx, ref pos );
             }
             // West stitching
             if ( west != 0 )
             {
-                numIndexes += StitchEdge( Neighbor.West, RenderLevel, neighbors[ (int)Neighbor.West ].RenderLevel,
+                numIndexes += StitchEdge( Neighbor.West, RenderLevel, neighbors[(int)Neighbor.West].RenderLevel,
                     south > 0, north > 0, ipIdx, ref pos );
             }
 

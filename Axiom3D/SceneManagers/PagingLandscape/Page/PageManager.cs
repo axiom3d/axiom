@@ -24,34 +24,48 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Diagnostics;
 
 using Axiom;
+using Axiom.MathLib;
+using Axiom.SceneManagers.PagingLandscape.Collections;
+using Axiom.SceneManagers.PagingLandscape.Data2D;
+using Axiom.SceneManagers.PagingLandscape.Renderable;
 using DotNet3D.Math;
 
-using Axiom.SceneManagers.PagingLandscape.Collections;
-using Axiom.SceneManagers.PagingLandscape.Tile;
-using Axiom.SceneManagers.PagingLandscape.Data2D;
-using Axiom.SceneManagers.PagingLandscape.Renderable; 
 #endregion Namespace Declarations
-			
 
 namespace Axiom.SceneManagers.PagingLandscape.Page
 {
 
     public enum CameraPageState
     {
+
         Inside = 1,
+
         Outside = 2,
+
         Change = 4
+
     }
 
+
+
     /// <summary>
+
     /// Summary description for PageManager.
+
     /// </summary>
 
     public class PageManager
@@ -472,8 +486,8 @@ namespace Axiom.SceneManagers.PagingLandscape.Page
         public Tile.Tile GetTileUnscaled( Vector3 pos )
         {
             long pSize = Options.Instance.PageSize;
-            long w = (long)( (Real)Options.Instance.World_Width * 0.5f );
-            long h = (long)( (Real)Options.Instance.World_Height * 0.5f );
+            long w = (long)( (float)Options.Instance.World_Width * 0.5f );
+            long h = (long)( (float)Options.Instance.World_Height * 0.5f );
 
             Vector3 TileRefPos = pos;
 

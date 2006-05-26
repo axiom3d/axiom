@@ -1,11 +1,7 @@
 
-#region Namespace Declarations
-
 using Axiom;
-
+using Axiom.MathLib;
 using DotNet3D.Math;
-
-#endregion Namespace Declarations
 
 namespace Axiom.Demos
 {
@@ -64,7 +60,7 @@ namespace Axiom.Demos
             NodeRotationControllerValue rotate2 = new NodeRotationControllerValue( lineNode, Vector3.UnitZ );
 
             // the multiply controller function will multiply the source controller value by the specified value each frame.
-            MultipyControllerFunction func = new MultipyControllerFunction( 50 );
+            MultiplyControllerFunction func = new MultiplyControllerFunction( 50 );
 
             // create a new controller, using the rotate and func objects created above.  there are 2 overloads to this method.  the one being
             // used uses an internal FrameTimeControllerValue as the source value by default.  The destination value will be the node, which 
@@ -75,7 +71,7 @@ namespace Axiom.Demos
             ControllerManager.Instance.CreateController( rotate, func );
             ControllerManager.Instance.CreateController( rotate2, func );
 
-            // place the camera in an optimal position
+            // place the _camera in an optimal position
             camera.Position = new Vector3( 30, 30, 220 );
 
             window.DebugText = "Spinning triangle - Using custom built geometry";
@@ -100,7 +96,7 @@ namespace Axiom.Demos
         /// <param name="direction">The direction the vector is heading in.</param>
         /// <param name="length">The length (magnitude) of the line vector.</param>
         /// <param name="color">The color which this line should be.</param>
-        public Line3d( Vector3 startPoint, Vector3 direction, Real length, ColorEx color )
+        public Line3d( Vector3 startPoint, Vector3 direction, float length, ColorEx color )
         {
             // normalize the direction vector to ensure all elements fall in [0,1] range.
             direction.Normalize();
@@ -168,9 +164,9 @@ namespace Axiom.Demos
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="camera"></param>
+        /// <param name="_camera"></param>
         /// <returns></returns>
-        public override Real GetSquaredViewDepth( Camera camera )
+        public override float GetSquaredViewDepth( Camera camera )
         {
             Vector3 min, max, mid, dist;
             min = box.Minimum;
@@ -193,7 +189,7 @@ namespace Axiom.Demos
             op.useIndices = false;
         }
 
-        public override Real BoundingRadius
+        public override float BoundingRadius
         {
             get
             {
@@ -292,9 +288,9 @@ namespace Axiom.Demos
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="camera"></param>
+        /// <param name="_camera"></param>
         /// <returns></returns>
-        public override Real GetSquaredViewDepth( Camera camera )
+        public override float GetSquaredViewDepth( Camera camera )
         {
             Vector3 min, max, mid, dist;
             min = box.Minimum;
@@ -317,7 +313,7 @@ namespace Axiom.Demos
             op.useIndices = false;
         }
 
-        public override Real BoundingRadius
+        public override float BoundingRadius
         {
             get
             {

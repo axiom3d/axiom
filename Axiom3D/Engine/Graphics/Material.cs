@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -32,10 +40,10 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 
-using DotNet3D.Math; 
+using Axiom.MathLib;
+
 #endregion Namespace Declarations
 			
-
 namespace Axiom
 {
     /// <summary>
@@ -104,7 +112,7 @@ namespace Axiom
         /// <summary>
         ///		List of LOD distances specified for this material.
         /// </summary>
-        protected RealList lodDistances = new RealList();
+        protected FloatList lodDistances = new FloatList();
         /// <summary>
         ///		
         /// </summary>
@@ -619,7 +627,7 @@ namespace Axiom
         /// </summary>
         /// <param name="distance"></param>
         /// <returns></returns>
-        public int GetLodIndex( Real distance )
+        public int GetLodIndex( float distance )
         {
             return GetLodIndexSquaredDepth( distance * distance );
         }
@@ -629,11 +637,11 @@ namespace Axiom
         /// </summary>
         /// <param name="squaredDistance"></param>
         /// <returns></returns>
-        public int GetLodIndexSquaredDepth( Real squaredDistance )
+        public int GetLodIndexSquaredDepth( float squaredDistance )
         {
             for ( int i = 0; i < lodDistances.Count; i++ )
             {
-                Real val = lodDistances[i];
+                float val = (float)lodDistances[i];
 
                 if ( val > squaredDistance )
                 {
@@ -705,12 +713,12 @@ namespace Axiom
         ///		and the LOD bias applied to both the current Camera and the current Entity.
         /// </remarks>
         /// <param name="lodDistances">
-        ///		A list of Reals which indicate the distance at which to 
+        ///		A list of floats which indicate the distance at which to 
         ///		switch to lower details. They are listed in LOD index order, starting at index
         ///		1 (ie the first level down from the highest level 0, which automatically applies
         ///		from a distance of 0).
         /// </param>
-        public void SetLodLevels( RealList lodDistanceList )
+        public void SetLodLevels( FloatList lodDistanceList )
         {
             // clear and add the 0 distance entry
             lodDistances.Clear();
@@ -718,7 +726,7 @@ namespace Axiom
 
             for ( int i = 0; i < lodDistanceList.Count; i++ )
             {
-                Real val = lodDistanceList[i];
+                float val = (float)lodDistanceList[i];
 
                 // squared distance
                 lodDistances.Add( val * val );

@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -31,10 +39,11 @@ using System.Collections;
 using System.Data;
 
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
-#endregion Namespace Declarations
-			
+#endregion Namespace Declarations			
+
 #region Versioning Information
 
 /// File								Revision
@@ -73,7 +82,7 @@ namespace Axiom.SceneManagers.PagingLandscape
                 this.MatColor[i] = new ColorEx();
             }
 
-            this.MatHeight = new Real[2];
+            this.MatHeight = new float[2];
             this.MatHeight[0] = 0f;
             this.MatHeight[1] = 0f;
 
@@ -181,22 +190,22 @@ namespace Axiom.SceneManagers.PagingLandscape
         public long World_Height;					//world page height, from 0 to height
         public long World_Width;					//world page width, from 0 to width
 
-        public Real MaxScaledZ = 0;					//world page height, scaled
-        public Real MaxScaledX = 0;					//world page width, scaled
+        public float MaxScaledZ = 0;					//world page height, scaled
+        public float MaxScaledX = 0;					//world page width, scaled
 
-        public Real MaxUnScaledZ = 0;					//world page height, unscaled
-        public Real MaxUnScaledX = 0;					//world page width, unscaled
+        public float MaxUnScaledZ = 0;					//world page height, unscaled
+        public float MaxUnScaledX = 0;					//world page width, unscaled
 
-        public Real Change_Factor;				//Determines the value of the change factor for loading/unloading LandScape Pages
+        public float Change_Factor;				//Determines the value of the change factor for loading/unloading LandScape Pages
         public long Max_Adjacent_Pages;
         public long Max_Preload_Pages;
-        public Real Visible_Renderables;			//Numbers of visible renderables surrounding the camera
-        public Real Renderable_Factor;			//Determines the distance of loading and unloading of renderables in renderable numbers
+        public float Visible_Renderables;			//Numbers of visible renderables surrounding the camera
+        public float Renderable_Factor;			//Determines the distance of loading and unloading of renderables in renderable numbers
 
         public Vector3 Scale;
 
-        public Real DistanceLOD;					//Distance for the LOD change
-        public Real LOD_Factor;
+        public float DistanceLOD;					//Distance for the LOD change
+        public float LOD_Factor;
 
 
         public long Num_Renderables;				//Max number of renderables to use.
@@ -204,13 +213,13 @@ namespace Axiom.SceneManagers.PagingLandscape
         public long Num_Tiles;						//Max number of tiles to use.
         public long Num_Tiles_Increment;			//Number of renderables to add in case we run out of renderables
 
-        public Real CameraThreshold;				//If the last camera position is >= the the scene is transverse again.
-        //public Real VisibilityAngle;				//Angle to discard renderables
+        public float CameraThreshold;				//If the last camera position is >= the the scene is transverse again.
+        //public float VisibilityAngle;				//Angle to discard renderables
         public long Num_Renderables_Loading;		//Max number of renderable to load in a single Frame.
         public long MaxRenderLevel;
 
         public ColorEx[] MatColor; //4
-        public Real[] MatHeight; //2
+        public float[] MatHeight; //2
 
         public bool Lit;
         public bool Colored;
@@ -246,15 +255,15 @@ namespace Axiom.SceneManagers.PagingLandscape
 
             val = this.getSetting( "ScaleX" );
             if ( val != string.Empty )
-                this.Scale.x = Real.Parse( val );
+                this.Scale.x = float.Parse( val );
 
             val = this.getSetting( "ScaleY" );
             if ( val != string.Empty )
-                this.Scale.y = Real.Parse( val );
+                this.Scale.y = float.Parse( val );
 
             val = this.getSetting( "ScaleZ" );
             if ( val != string.Empty )
-                this.Scale.z = Real.Parse( val );
+                this.Scale.z = float.Parse( val );
 
             if ( Data2DFormat.StartsWith( "HeightFieldTC" ) )
             {
@@ -300,15 +309,15 @@ namespace Axiom.SceneManagers.PagingLandscape
             this.MatColor[2] = getAvgColor( this.Splat_Filename_2 );
             this.MatColor[3] = getAvgColor( this.Splat_Filename_3 );
 
-            Real divider = ( MaxValue - MinValue ) / 255.0f;
+            float divider = ( MaxValue - MinValue ) / 255.0f;
 
             // FH 06/17/2005: Got an exception when not supplying these...
             if ( ( val = this.getSetting( "MaterialHeight1" ) ) != string.Empty )
-                this.MatHeight[0] = Real.Parse( val );
+                this.MatHeight[0] = float.Parse( val );
             this.MatHeight[0] = this.MatHeight[0] * divider;
 
             if ( ( val = this.getSetting( "MaterialHeight2" ) ) != string.Empty )
-                this.MatHeight[1] = Real.Parse( val );
+                this.MatHeight[1] = float.Parse( val );
             this.MatHeight[1] = this.MatHeight[1] * divider;
 
 
@@ -331,7 +340,7 @@ namespace Axiom.SceneManagers.PagingLandscape
 
             val = this.getSetting( "CameraThreshold" );
             if ( val != string.Empty )
-                this.CameraThreshold = Real.Parse( val );
+                this.CameraThreshold = float.Parse( val );
 
             // To avoid the use of a square root.
             this.CameraThreshold *= this.CameraThreshold;
@@ -375,18 +384,18 @@ namespace Axiom.SceneManagers.PagingLandscape
 
             val = this.getSetting( "ChangeFactor" );
             if ( val != string.Empty )
-                this.Change_Factor = Real.Parse( val ) * ( this.PageSize / 9 );
+                this.Change_Factor = float.Parse( val ) * ( this.PageSize / 9 );
 
             val = this.getSetting( "VisibleRenderables" );
             if ( val != string.Empty )
-                this.Visible_Renderables = Real.Parse( val );
+                this.Visible_Renderables = float.Parse( val );
             // compute the actual distance as a square
             this.Renderable_Factor = this.Visible_Renderables * ( this.TileSize * this.Scale.x + this.TileSize * this.Scale.z );
             this.Renderable_Factor *= this.Renderable_Factor;
 
             val = this.getSetting( "DistanceLOD" );
             if ( val != string.Empty )
-                this.DistanceLOD = Real.Parse( val );
+                this.DistanceLOD = float.Parse( val );
             // Compute the actual distance as a square
             this.LOD_Factor = this.DistanceLOD * ( this.TileSize * this.Scale.x + this.TileSize * this.Scale.z );
             this.LOD_Factor *= this.LOD_Factor;
@@ -407,7 +416,7 @@ namespace Axiom.SceneManagers.PagingLandscape
             }
             if ( strKey == "DistanceLOD" )
             {
-                DistanceLOD = (Real)( pValue );
+                DistanceLOD = (float)( pValue );
                 // Compute the actual distance as a square
                 LOD_Factor = DistanceLOD * ( TileSize * Scale.x + TileSize * Scale.z );
                 LOD_Factor *= LOD_Factor;
@@ -434,12 +443,12 @@ namespace Axiom.SceneManagers.PagingLandscape
             if ( strKey == "VisibleDistance" )
             {
                 // we need to return the square root of the distance
-                pDestValue = Utility.Sqrt( Renderable_Factor );
+                pDestValue = Math.Sqrt( Renderable_Factor );
             }
             if ( strKey == "VisibleLOD" )
             {
                 // we need to return the square root of the distance
-                pDestValue = Utility.Sqrt( LOD_Factor );
+                pDestValue = Math.Sqrt( LOD_Factor );
             }
             // Some options proposed by Praetor
             if ( strKey == "Width" )

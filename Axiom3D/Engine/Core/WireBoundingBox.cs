@@ -24,15 +24,23 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
-
 namespace Axiom
 {
     /// <summary>
@@ -42,7 +50,7 @@ namespace Axiom
     {
         #region Member variables
 
-        private Real radius;
+        private float radius;
 
         #endregion Member variables
 
@@ -149,16 +157,16 @@ namespace Axiom
             Vector3 min = aab.Minimum;
 
             // set bounding sphere radius
-            Real lengthSquared = Utility.Max( max.LengthSquared, min.LengthSquared );
-            radius = Utility.Sqrt( lengthSquared );
+            float lengthSquared = MathUtil.Max( max.LengthSquared, min.LengthSquared );
+            radius = MathUtil.Sqrt( lengthSquared );
 
-            Real maxx = max.x + 1.0f;
-            Real maxy = max.y + 1.0f;
-            Real maxz = max.z + 1.0f;
+            float maxx = max.x + 1.0f;
+            float maxy = max.y + 1.0f;
+            float maxz = max.z + 1.0f;
 
-            Real minx = min.x - 1.0f;
-            Real miny = min.y - 1.0f;
-            Real minz = min.z - 1.0f;
+            float minx = min.x - 1.0f;
+            float miny = min.y - 1.0f;
+            float minz = min.z - 1.0f;
 
             int i = 0;
 
@@ -267,7 +275,7 @@ namespace Axiom
         /// </summary>
         /// <param name="camera"></param>
         /// <returns></returns>
-        public override Real GetSquaredViewDepth( Camera camera )
+        public override float GetSquaredViewDepth( Camera camera )
         {
             Vector3 min, max, mid, dist;
             min = box.Minimum;
@@ -293,7 +301,7 @@ namespace Axiom
         /// <summary>
         ///    Get the local bounding radius of the wire bounding box.
         /// </summary>
-        public override Real BoundingRadius
+        public override float BoundingRadius
         {
             get
             {

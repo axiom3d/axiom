@@ -1,13 +1,9 @@
-#region Namespace Declarations
 
 using System;
-
 using Axiom;
+using Axiom.MathLib;
+using DotNet3D.Math;
 
-using DotNet3D.Math; 
-
-#endregion Namespace Declarations
-			
 namespace Axiom.Demos
 {
     /// <summary>

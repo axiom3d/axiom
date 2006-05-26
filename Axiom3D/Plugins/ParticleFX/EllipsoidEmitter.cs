@@ -24,14 +24,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
+
 using Axiom;
-using DotNet3D.Math;
+using Axiom.MathLib;
 
 #endregion Namespace Declarations
-			
+
+
 namespace Axiom.ParticleFX
 {
     /// <summary>
@@ -47,7 +57,7 @@ namespace Axiom.ParticleFX
 
         public override void InitParticle( Particle particle )
         {
-            Real xOff, yOff, zOff;
+            float xOff, yOff, zOff;
 
             // First we create a random point inside a bounding sphere with a
             // radius of 1 (this is easy to do). The distance of the point from
@@ -57,9 +67,9 @@ namespace Axiom.ParticleFX
             {
 
                 // three random values for one random point in 3D space
-                xOff = Utility.SymmetricRandom();
-                yOff = Utility.SymmetricRandom();
-                zOff = Utility.SymmetricRandom();
+                xOff = MathUtil.SymmetricRandom();
+                yOff = MathUtil.SymmetricRandom();
+                zOff = MathUtil.SymmetricRandom();
 
                 // the distance of x,y,z from 0,0,0 is sqrt(x*x+y*y+z*z), but
                 // as usual we can omit the sqrt(), since sqrt(1) == 1 and we
@@ -95,7 +105,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 EllipsoidEmitter emitter = target as EllipsoidEmitter;
-                emitter.Width = Real.Parse( val );
+                emitter.Width = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -113,7 +123,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 EllipsoidEmitter emitter = target as EllipsoidEmitter;
-                emitter.Height = Real.Parse( val );
+                emitter.Height = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -131,7 +141,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 EllipsoidEmitter emitter = target as EllipsoidEmitter;
-                emitter.Depth = Real.Parse( val );
+                emitter.Depth = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {

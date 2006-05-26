@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -31,16 +39,18 @@ using System.Collections;
 using System.Diagnostics;
 using System.IO;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
-			
+
 #region Ogre Synchronization Information
 /// <ogresynchronization>
 ///     <file name="Skeleton.h"   revision="" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
 ///     <file name="Skeleton.cpp" revision="" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
 /// </ogresynchronization>
 #endregion
+
 namespace Axiom
 {
     /// <summary>
@@ -132,7 +142,7 @@ namespace Axiom
         /// <param name="name">The name of this animation</param>
         /// <param name="length">The length of the animation in seconds</param>
         /// <returns></returns>
-        public virtual Animation CreateAnimation( string name, Real length )
+        public virtual Animation CreateAnimation( string name, float length )
         {
             Animation anim = new Animation( name, length );
 

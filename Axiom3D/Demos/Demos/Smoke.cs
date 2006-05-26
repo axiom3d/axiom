@@ -1,8 +1,5 @@
-#region Namespace Declarations
 
 using Axiom;
-
-#endregion Namespace Declarations
 
 namespace Axiom.Demos
 {

@@ -24,13 +24,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 using System.Diagnostics;
-
-using DotNet3D.Math;
+using Axiom.MathLib;
 
 #endregion Namespace Declarations
 			
@@ -80,7 +87,7 @@ namespace Axiom
         public virtual void SetBinding( short index, HardwareVertexBuffer buffer )
         {
             bindingMap[index] = buffer;
-            highIndex = (short)Utility.Max( highIndex, index + 1 );
+            highIndex = (short)MathUtil.Max( highIndex, index + 1 );
         }
 
         /// <summary>

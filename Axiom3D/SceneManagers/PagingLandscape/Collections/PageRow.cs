@@ -24,13 +24,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-using System.Collections;
-using System.Diagnostics;
-
-using Axiom;
 
 // used to alias a type in the code for easy copying and pasting.  Come on generics!!
 using T = Axiom.SceneManagers.PagingLandscape.Page.Page;
@@ -38,6 +42,8 @@ using T = Axiom.SceneManagers.PagingLandscape.Page.Page;
 using K = System.String;
 
 #endregion Namespace Declarations
+
+
 
 namespace Axiom.SceneManagers.PagingLandscape.Collections
 {
@@ -63,19 +69,23 @@ namespace Axiom.SceneManagers.PagingLandscape.Collections
 
         /// </summary>
 
-        public PageRow() : base()
+        public PageRow()
+            : base()
         {
         }
 
-        public PageRow( int Capacity ) : base( Capacity )
+        public PageRow( int Capacity )
+            : base( Capacity )
         {
         }
 
-        public PageRow( object Parent ) : base( Parent )
+        public PageRow( object Parent )
+            : base( Parent )
         {
         }
 
-        public PageRow( object Parent, int Capacity ) : base( Parent, Capacity )
+        public PageRow( object Parent, int Capacity )
+            : base( Parent, Capacity )
         {
         }
 
@@ -95,17 +105,17 @@ namespace Axiom.SceneManagers.PagingLandscape.Collections
 
         /// </summary>
 
-        new public T this[int index]
+        new public T this[ int index ]
         {
 
             get
             {
-                return (T)base[index];
+                return (T)base[ index ];
             }
 
             set
             {
-                base[index] = value;
+                base[ index ] = value;
             }
 
         }
@@ -118,17 +128,17 @@ namespace Axiom.SceneManagers.PagingLandscape.Collections
 
         /// </summary>
 
-        public T this[long index]
+        public T this[ long index ]
         {
 
             get
             {
-                return (T)base[(int)index];
+                return (T)base[ (int)index ];
             }
 
             set
             {
-                base[(int)index] = value;
+                base[ (int)index ] = value;
             }
 
         }

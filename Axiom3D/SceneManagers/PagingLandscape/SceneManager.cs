@@ -24,12 +24,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-
+using Axiom.MathLib;
 using DotNet3D.Math;
-
 using IntersectionSceneQuery = Axiom.IntersectionSceneQuery;
 using RaySceneQuery = Axiom.RaySceneQuery;
 
@@ -39,7 +46,7 @@ using Axiom.SceneManagers.PagingLandscape.Renderable;
 using Axiom.SceneManagers.PagingLandscape.Texture;
 using Axiom.SceneManagers.PagingLandscape.Tile;
 
-#endregion Using Directives
+#endregion Namespace Declarations
 
 #region Versioning Information
 /// File								Revision
@@ -313,8 +320,8 @@ namespace Axiom.SceneManagers.PagingLandscape
             {
                 // if you want to be able to intersect from a point outside the canvas
                 int pageSize = (int)optionList["PageSize"] - 1;
-                Real W = (Real)optionList["World_Width"] * 0.5f * pageSize * ( (Vector3)optionList["Scale"] ).x;
-                Real H = (Real)optionList["World_Height"] * 0.5f * pageSize * ( (Vector3)optionList["Scale"] ).z;
+                float W = (float)optionList["World_Width"] * 0.5f * pageSize * ( (Vector3)optionList["Scale"] ).x;
+                float H = (float)optionList["World_Height"] * 0.5f * pageSize * ( (Vector3)optionList["Scale"] ).z;
                 while ( start.y > 0.0f && start.y < 999999.0f &&
                     ( ( start.x < -W || start.x > W ) ||
                     ( start.z < -H || start.z > H ) ) )
@@ -361,8 +368,8 @@ namespace Axiom.SceneManagers.PagingLandscape
 
                 int pageSize = (int)optionList["PageSize"] - 1;
 
-                int W = (int)( (Real)optionList["World_Width"] * 0.5f * pageSize );
-                int H = (int)( (Real)optionList["World_Height"] * 0.5f * pageSize );
+                int W = (int)( (float)optionList["World_Width"] * 0.5f * pageSize );
+                int H = (int)( (float)optionList["World_Height"] * 0.5f * pageSize );
 
                 if ( X < -W || X > W || Z < -H || Z > H )
                     return true;
@@ -388,12 +395,12 @@ namespace Axiom.SceneManagers.PagingLandscape
 
                 for ( int Xcurr = Xmin; Xcurr <= radius; Xcurr++ )
                 {
-                    Real Precalc = ( radius * radius ) - ( Xcurr * Xcurr );
+                    float Precalc = ( radius * radius ) - ( Xcurr * Xcurr );
                     if ( Precalc > 1.0f )
                     {
                         // Determine the minimum and maximum Z value for that 
                         // line in the circle (that X value)
-                        int Zmax = (int)Utility.Sqrt( Precalc );
+                        int Zmax = (int)Math.Sqrt( Precalc );
                         int Zmin = -Zmax;
 
                         // Makes sure the values found are both on the height map
@@ -412,7 +419,7 @@ namespace Axiom.SceneManagers.PagingLandscape
                             if ( p != null && p.IsLoaded )
                             {
                                 // Calculate the new theoretical height for the current point on the circle
-                                Real dY = (Real)Utility.Sqrt( Precalc - ( Zcurr * Zcurr ) ) * 10.0f;//* 0.01f
+                                float dY = (float)Math.Sqrt( Precalc - ( Zcurr * Zcurr ) ) * 10.0f;//* 0.01f
 
                                 impactInfo = p.Info;
                                 data2DManager.DeformHeight( currpoint, dY, p.Info );

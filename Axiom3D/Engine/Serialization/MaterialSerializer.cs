@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -33,11 +41,8 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 
-using DotNet3D.Math;
-
 #endregion Namespace Declarations
 			
-
 namespace Axiom
 {
     /// <summary>
@@ -680,11 +685,11 @@ namespace Axiom
         {
             string[] values = parameters.Split( new char[] { ' ', '\t' } );
 
-            RealList lodDistances = new RealList();
+            FloatList lodDistances = new FloatList();
 
             for ( int i = 0; i < values.Length; i++ )
             {
-                lodDistances.Add( Real.Parse( values[i] ) );
+                lodDistances.Add( StringConverter.ParseFloat( values[i] ) );
             }
 
             context.material.SetLodLevels( lodDistances );
@@ -934,10 +939,10 @@ namespace Axiom
                         context.pass.SetFog(
                             true,
                             mode,
-                            new ColorEx( Real.Parse( values[2] ), Real.Parse( values[3] ), Real.Parse( values[4] ) ),
-                            Real.Parse( values[5] ),
-                            Real.Parse( values[6] ),
-                            Real.Parse( values[7] ) );
+                            new ColorEx( StringConverter.ParseFloat( values[2] ), StringConverter.ParseFloat( values[3] ), StringConverter.ParseFloat( values[4] ) ),
+                            StringConverter.ParseFloat( values[5] ),
+                            StringConverter.ParseFloat( values[6] ),
+                            StringConverter.ParseFloat( values[7] ) );
                     }
                     else
                     {
@@ -1129,7 +1134,7 @@ namespace Axiom
 
                 if ( values.Length == 5 )
                 {
-                    context.pass.Shininess = Real.Parse( values[4] );
+                    context.pass.Shininess = StringConverter.ParseFloat( values[4] );
                 }
             }
 
@@ -1216,8 +1221,8 @@ namespace Axiom
             LayerBlendOperationEx op = 0;
             LayerBlendSource src1 = 0;
             LayerBlendSource src2 = 0;
-            Real manual = 0.0f;
-            Real arg1 = 1.0f, arg2 = 1.0f;
+            float manual = 0.0f;
+            float arg1 = 1.0f, arg2 = 1.0f;
 
             try
             {
@@ -1250,7 +1255,7 @@ namespace Axiom
                         return false;
                     }
 
-                    arg1 = Real.Parse( values[paramIndex] );
+                    arg1 = StringConverter.ParseFloat( values[paramIndex] );
                 }
 
                 if ( src2 == LayerBlendSource.Manual )
@@ -1272,7 +1277,7 @@ namespace Axiom
                         return false;
                     }
 
-                    arg2 = Real.Parse( values[paramIndex] );
+                    arg2 = StringConverter.ParseFloat( values[paramIndex] );
                 }
             }
             catch ( Exception ex )
@@ -1328,12 +1333,12 @@ namespace Axiom
             if ( values.Length == 3 && int.Parse( values[1] ) != 0 )
             {
                 // first form using the base name and number of frames
-                context.textureUnit.SetAnimatedTextureName( values[0], int.Parse( values[1] ), Real.Parse( values[2] ) );
+                context.textureUnit.SetAnimatedTextureName( values[0], int.Parse( values[1] ), StringConverter.ParseFloat( values[2] ) );
             }
             else
             {
                 // second form using individual names
-                context.textureUnit.SetAnimatedTextureName( values, values.Length - 1, Real.Parse( values[values.Length - 1] ) );
+                context.textureUnit.SetAnimatedTextureName( values, values.Length - 1, StringConverter.ParseFloat( values[values.Length - 1] ) );
             }
 
             return false;
@@ -1418,7 +1423,7 @@ namespace Axiom
             LayerBlendOperationEx op = 0;
             LayerBlendSource src1 = 0;
             LayerBlendSource src2 = 0;
-            Real manual = 0.0f;
+            float manual = 0.0f;
             ColorEx colSrc1 = ColorEx.White;
             ColorEx colSrc2 = ColorEx.White;
 
@@ -1453,13 +1458,13 @@ namespace Axiom
                         return false;
                     }
 
-                    colSrc1.r = Real.Parse( values[paramIndex++] );
-                    colSrc1.g = Real.Parse( values[paramIndex++] );
-                    colSrc1.b = Real.Parse( values[paramIndex] );
+                    colSrc1.r = StringConverter.ParseFloat( values[paramIndex++] );
+                    colSrc1.g = StringConverter.ParseFloat( values[paramIndex++] );
+                    colSrc1.b = StringConverter.ParseFloat( values[paramIndex] );
 
                     if ( values.Length > paramIndex )
                     {
-                        colSrc1.a = Real.Parse( values[paramIndex] );
+                        colSrc1.a = StringConverter.ParseFloat( values[paramIndex] );
                     }
                     else
                     {
@@ -1482,13 +1487,13 @@ namespace Axiom
                         return false;
                     }
 
-                    colSrc2.r = Real.Parse( values[paramIndex++] );
-                    colSrc2.g = Real.Parse( values[paramIndex++] );
-                    colSrc2.b = Real.Parse( values[paramIndex++] );
+                    colSrc2.r = StringConverter.ParseFloat( values[paramIndex++] );
+                    colSrc2.g = StringConverter.ParseFloat( values[paramIndex++] );
+                    colSrc2.b = StringConverter.ParseFloat( values[paramIndex++] );
 
                     if ( values.Length > paramIndex )
                     {
-                        colSrc2.a = Real.Parse( values[paramIndex] );
+                        colSrc2.a = StringConverter.ParseFloat( values[paramIndex] );
                     }
                     else
                     {
@@ -1627,14 +1632,14 @@ namespace Axiom
         [MaterialAttributeParser( "rotate", MaterialScriptSection.TextureUnit )]
         protected static bool ParseRotate( string parameters, MaterialScriptContext context )
         {
-            context.textureUnit.SetTextureRotate( Real.Parse( parameters ) );
+            context.textureUnit.SetTextureRotate( StringConverter.ParseFloat( parameters ) );
             return false;
         }
 
         [MaterialAttributeParser( "rotate_anim", MaterialScriptSection.TextureUnit )]
         protected static bool ParseRotateAnim( string parameters, MaterialScriptContext context )
         {
-            context.textureUnit.SetRotateAnimation( Real.Parse( parameters ) );
+            context.textureUnit.SetRotateAnimation( StringConverter.ParseFloat( parameters ) );
             return false;
         }
 
@@ -1649,7 +1654,7 @@ namespace Axiom
             }
             else
             {
-                context.textureUnit.SetTextureScale( Real.Parse( values[0] ), Real.Parse( values[1] ) );
+                context.textureUnit.SetTextureScale( StringConverter.ParseFloat( values[0] ), StringConverter.ParseFloat( values[1] ) );
             }
 
             return false;
@@ -1666,7 +1671,7 @@ namespace Axiom
             }
             else
             {
-                context.textureUnit.SetTextureScroll( Real.Parse( values[0] ), Real.Parse( values[1] ) );
+                context.textureUnit.SetTextureScroll( StringConverter.ParseFloat( values[0] ), StringConverter.ParseFloat( values[1] ) );
             }
 
             return false;
@@ -1683,7 +1688,7 @@ namespace Axiom
             }
             else
             {
-                context.textureUnit.SetScrollAnimation( Real.Parse( values[0] ), Real.Parse( values[1] ) );
+                context.textureUnit.SetScrollAnimation( StringConverter.ParseFloat( values[0] ), StringConverter.ParseFloat( values[1] ) );
             }
 
             return false;
@@ -1795,10 +1800,10 @@ namespace Axiom
             context.textureUnit.SetTransformAnimation(
                 transType,
                 waveType,
-                Real.Parse( values[2] ),
-                Real.Parse( values[3] ),
-                Real.Parse( values[4] ),
-                Real.Parse( values[5] ) );
+                StringConverter.ParseFloat( values[2] ),
+                StringConverter.ParseFloat( values[3] ),
+                StringConverter.ParseFloat( values[4] ),
+                StringConverter.ParseFloat( values[5] ) );
 
             return false;
         }
@@ -2111,7 +2116,7 @@ namespace Axiom
                 // do specified values
                 for ( i = 0; i < dims; i++ )
                 {
-                    buffer[i] = float.Parse( parameters[i + 2] );
+                    buffer[i] = StringConverter.ParseFloat( parameters[i + 2] );
                 }
 
                 // fill up to multiple of 4 with zero
@@ -2176,11 +2181,11 @@ namespace Axiom
                 // time is a special case here
                 if ( constantType == AutoConstants.Time )
                 {
-                    Real factor = 1.0f;
+                    float factor = 1.0f;
 
                     if ( parameters.Length == 3 )
                     {
-                        factor = Real.Parse( parameters[2] );
+                        factor = StringConverter.ParseFloat( parameters[2] );
                     }
 
                     context.programParams.SetConstantFromTime( index, factor );

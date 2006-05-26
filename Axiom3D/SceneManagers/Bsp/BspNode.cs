@@ -24,11 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 
 using Axiom;
+using Axiom.MathLib;
+using Axiom.MathLib.Collections;
 using DotNet3D.Math;
 using DotNet3D.Math.Collections;
 
@@ -393,7 +403,7 @@ namespace Axiom.SceneManagers.Bsp
         /// </summary>
         /// <param name="pos"></param>
         /// <returns></returns>
-        public Real GetDistance( Vector3 pos )
+        public float GetDistance( Vector3 pos )
         {
             if ( IsLeaf )
                 throw new Exception( "This property is not valid on a leaf node." );

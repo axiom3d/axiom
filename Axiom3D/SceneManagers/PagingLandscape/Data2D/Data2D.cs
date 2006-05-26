@@ -22,21 +22,28 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion LGPL License
+#endregion
+
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Collections;
-using System.Diagnostics;
 
 using Axiom;
+using Axiom.MathLib;
+
+using Axiom.SceneManagers.PagingLandscape.Tile;
 using DotNet3D.Math;
 
-using Axiom.SceneManagers.PagingLandscape.Collections;
-using Axiom.SceneManagers.PagingLandscape.Tile;
-
-#endregion Namespace Declarations		
+#endregion Namespace Directives
 
 namespace Axiom.SceneManagers.PagingLandscape.Data2D
 {
@@ -52,7 +59,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		/// <summary>
 		/// computed Height Data  (scaled)
 		/// </summary>
-		protected Real[] heightData;
+		protected float[] heightData;
 
 		/// <summary>
 		/// maximum position in Array
@@ -72,7 +79,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		/// <summary>
 		/// maximum page/data2d height. (scaled)
 		/// </summary>
-		protected Real maxheight;
+		protected float maxheight;
 
 		/// <summary>
 		/// if data loaded or not
@@ -138,7 +145,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		/// </summary>
 		/// <param name="X"></param>
 		/// <param name="Z"></param>
-		public virtual void Load(  Real X,  Real Z)
+		public virtual void Load(  float X,  float Z)
 		{
 			isLoaded = true;
 			load(X, Z);
@@ -180,7 +187,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		/// <param name="modificationHeight">What modification do to terrain</param>
 		/// <param name="info">Give some info on tile to help coordinate system change</param>
 		/// <returns></returns>
-		public Real DeformHeight( Vector3 deformationPoint, Real modificationHeight, TileInfo info)
+		public float DeformHeight( Vector3 deformationPoint, float modificationHeight, TileInfo info)
 		{
 			if ( heightData != null )
 			{
@@ -213,7 +220,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		/// <param name="z">z Position on 2d height grid</param>
 		/// <param name="modificationHeight">What modification do to terrain</param>
 		/// <returns></returns>
-		public Real DeformHeight(long x, long z, Real modificationHeight)
+		public float DeformHeight(long x, long z, float modificationHeight)
 		{
 			if ( heightData != null)
 			{
@@ -237,7 +244,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		/// <param name="mX"></param>
 		/// <param name="mZ"></param>
 		/// <returns></returns>
-		public virtual Vector3 GetNormalAt (Real mX, Real mZ)
+		public virtual Vector3 GetNormalAt (float mX, float mZ)
 
 		{
 
@@ -251,7 +258,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		/// <param name="mX"></param>
 		/// <param name="mZ"></param>
 		/// <returns></returns>
-		public virtual ColorEx GetBase (Real mX, Real mZ)
+		public virtual ColorEx GetBase (float mX, float mZ)
 		{
 			return ColorEx.White;
 		}
@@ -262,7 +269,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		/// <param name="mX"></param>
 		/// <param name="mZ"></param>
 		/// <returns></returns>
-		public virtual ColorEx GetCoverage (Real mX, Real mZ)
+		public virtual ColorEx GetCoverage (float mX, float mZ)
 		{
 			return ColorEx.White;
 		}
@@ -274,7 +281,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		/// <param name="z"></param>
 		/// <param name="info"></param>
 		/// <returns></returns>
-		public Real GetHeightAbsolute(Real x, Real z, TileInfo info)
+		public float GetHeightAbsolute(float x, float z, TileInfo info)
 		{
 			if ( heightData != null)
 			{
@@ -300,7 +307,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		/// <param name="x"></param>
 		/// <param name="z"></param>
 		/// <returns></returns>
-		public virtual Real GetHeight( Real x, Real z )
+		public virtual float GetHeight( float x, float z )
 		{
 			if ( heightData != null )
 			{
@@ -317,7 +324,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		/// <param name="x"></param>
 		/// <param name="z"></param>
 		/// <returns></returns>
-		public virtual Real GetHeight(  long x, long z )
+		public virtual float GetHeight(  long x, long z )
 		{
 			if ( heightData != null)
 			{
@@ -334,7 +341,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		/// <param name="x"></param>
 		/// <param name="z"></param>
 		/// <returns></returns>
-		public virtual Real GetHeight( int x, int z )
+		public virtual float GetHeight( int x, int z )
 		{
 			if ( heightData != null )
 			{
@@ -351,7 +358,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		/// <param name="x"></param>
 		/// <param name="z"></param>
 		/// <param name="h"></param>
-		public void SetHeight( long x, long z, Real h )
+		public void SetHeight( long x, long z, float h )
 		{
 			if ( heightData != null )
 			{
@@ -364,7 +371,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		/// <summary>
 		/// 
 		/// </summary>
-		public Real MaxHeight
+		public float MaxHeight
 		{
 			get
 			{
@@ -380,7 +387,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		/// <summary>
 		/// 
 		/// </summary>
-		public Real[] HeightData
+		public float[] HeightData
 		{
 			get
 			{
@@ -447,7 +454,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		/// </summary>
 		/// <param name="X"></param>
 		/// <param name="Z"></param>
-		protected abstract void load(Real X, Real Z);
+		protected abstract void load(float X, float Z);
 		/// <summary>
 		/// 
 		/// </summary>

@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -31,8 +39,9 @@ using System.Collections;
 using System.Diagnostics;
 using System.IO;
 
+using Axiom.MathLib;
+using Axiom.MathLib.Collections;
 using DotNet3D.Math;
-using DotNet3D.Math.Collections;
 
 #endregion Namespace Declarations
 
@@ -81,7 +90,7 @@ namespace Axiom
     ///	 </remarks>
     /// TODO Thoroughly review node removal/cleanup.
     /// TODO Review of method visibility/virtuality to ensure consistency.
-    /// TODO Review Create...( string name ) methods to verify name is used as key when adding to collection
+	/// TODO Review Create...( string name ) methods to verify name is used as key when adding to collection
     public class SceneManager
     {
         #region Fields
@@ -110,7 +119,7 @@ namespace Axiom
         /// <summary>A list of animation states for easy lookup.</summary>
         protected AnimationStateCollection animationStateList;
 
-        protected Matrix4[] xform = new Matrix4[ 256 ];
+        protected Matrix4[] xform = new Matrix4[256];
 
         /// <summary>A reference to the current camera being used for rendering.</summary>
         protected Camera camInProgress;
@@ -122,8 +131,8 @@ namespace Axiom
         protected AutoParamDataSource autoParamDataSource = new AutoParamDataSource();
 
         protected Entity skyPlaneEntity;
-        protected Entity[] skyDomeEntities = new Entity[ 5 ];
-        protected Entity[] skyBoxEntities = new Entity[ 6 ];
+        protected Entity[] skyDomeEntities = new Entity[5];
+        protected Entity[] skyBoxEntities = new Entity[6];
 
         protected SceneNode skyPlaneNode;
         protected SceneNode skyDomeNode;
@@ -143,9 +152,9 @@ namespace Axiom
         // Fog
         protected FogMode fogMode;
         protected ColorEx fogColor;
-        protected Real fogStart;
-        protected Real fogEnd;
-        protected Real fogDensity;
+        protected float fogStart;
+        protected float fogEnd;
+        protected float fogDensity;
 
         /// <summary>Flag indicating whether SceneNodes will be rendered as a set of 3 axes.</summary>
         protected bool displayNodes;
@@ -173,7 +182,7 @@ namespace Axiom
         // cached fog settings
         protected static FogMode oldFogMode;
         protected static ColorEx oldFogColor;
-        protected static Real oldFogStart, oldFogEnd, oldFogDensity;
+        protected static float oldFogStart, oldFogEnd, oldFogDensity;
         protected bool lastViewWasIdentity, lastProjectionWasIdentity;
         /// <summary>
         ///		Active list of nodes tracking other nodes.
@@ -227,7 +236,7 @@ namespace Axiom
         /// <summary>
         ///		Explicit extrusion distance for directional lights.
         /// </summary>
-        protected Real shadowDirLightExtrudeDist;
+        protected float shadowDirLightExtrudeDist;
         /// <summary>
         ///		Sphere region query to find shadow casters within the attenuation range of a point/spot light.
         /// </summary>
@@ -247,11 +256,11 @@ namespace Axiom
         /// <summary>
         ///		Farthest distance from the camera at which to render shadows.
         /// </summary>
-        protected Real shadowFarDistance;
+        protected float shadowFarDistance;
         /// <summary>
         ///		shadowFarDistance ^ 2
         /// </summary>
-        protected Real shadowFarDistanceSquared;
+        protected float shadowFarDistanceSquared;
         /// <summary>
         ///		The maximum size of the index buffer used to render shadow primitives.
         /// </summary>
@@ -263,15 +272,15 @@ namespace Axiom
         /// <summary>
         ///		Proportion of texture offset in view direction e.g. 0.4
         /// </summary>
-        protected Real shadowTextureOffset;
+        protected float shadowTextureOffset;
         /// <summary>
         ///		As a proportion e.g. 0.6
         /// </summary>
-        protected Real shadowTextureFadeStart;
+        protected float shadowTextureFadeStart;
         /// <summary>
         ///		As a proportion e.g. 0.9
         /// </summary>
-        protected Real shadowTextureFadeEnd;
+        protected float shadowTextureFadeEnd;
         /// <summary>
         /// 
         /// </summary>
@@ -437,7 +446,7 @@ namespace Axiom
         /// <param name="name"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        public virtual Animation CreateAnimation( string name, Real length )
+        public virtual Animation CreateAnimation( string name, float length )
         {
             if ( animationList.ContainsKey( name ) )
             {
@@ -492,7 +501,7 @@ namespace Axiom
             }
 
             // get a reference to the sepcified animation
-            Animation anim = animationList[ animationName ];
+            Animation anim = animationList[animationName];
 
             // create new animation state
             AnimationState animState = new AnimationState( animationName, 0, anim.Length );
@@ -694,18 +703,18 @@ namespace Axiom
         /// <param name="name"></param>
         public virtual void DestroySceneNode( string name )
         {
-            if ( sceneNodeList[ name ] == null )
+            if ( sceneNodeList[name] == null )
             {
                 throw new AxiomException( "SceneNode named '{0}' not found.", name );
             }
 
             // grab the node from the list
-            SceneNode node = (SceneNode)sceneNodeList[ name ];
+            SceneNode node = (SceneNode)sceneNodeList[name];
 
             // Find any scene nodes which are tracking this node, and turn them off.
             for ( int i = 0; i < autoTrackingSceneNodes.Count; i++ )
             {
-                SceneNode autoNode = autoTrackingSceneNodes[ i ];
+                SceneNode autoNode = autoTrackingSceneNodes[i];
 
                 // Tracking this node
                 if ( autoNode.AutoTrackTarget == node )
@@ -757,7 +766,7 @@ namespace Axiom
             // Also destroy any animation states referencing this animation
             for ( int i = 0; i < animationStateList.Count; i++ )
             {
-                AnimationState animState = animationStateList[ i ];
+                AnimationState animState = animationStateList[i];
 
                 if ( animState.Name == name )
                 {
@@ -765,7 +774,7 @@ namespace Axiom
                 }
             }
 
-            Animation animation = animationList[ name ];
+            Animation animation = animationList[name];
             if ( animation == null )
                 throw new AxiomException( "Animation named '{0}' not found.", name );
 
@@ -778,7 +787,7 @@ namespace Axiom
         /// <param name="name"></param>
         public virtual void DestroyAnimationState( string name )
         {
-            AnimationState animationState = animationStateList[ name ];
+            AnimationState animationState = animationStateList[name];
             if ( animationState == null )
                 throw new AxiomException( "AnimationState named '{0}' not found.", name );
 
@@ -831,7 +840,7 @@ namespace Axiom
         /// <returns></returns>
         public virtual Camera GetCamera( string name )
         {
-            Camera camera = cameraList[ name ];
+            Camera camera = cameraList[name];
             if ( camera == null )
             {
                 throw new AxiomException( "Camera named '{0}' not found.", name );
@@ -847,7 +856,7 @@ namespace Axiom
         /// <returns></returns>
         public virtual Light GetLight( string name )
         {
-            Light light = lightList[ name ];
+            Light light = lightList[name];
             if ( light == null )
             {
                 throw new AxiomException( "Light named '{0}' not found.", name );
@@ -863,7 +872,7 @@ namespace Axiom
         /// <returns></returns>
         public virtual BillboardSet GetBillboardSet( string name )
         {
-            BillboardSet billboardSet = billboardSetList[ name ];
+            BillboardSet billboardSet = billboardSetList[name];
             if ( billboardSet == null )
             {
                 throw new AxiomException( "BillboardSet named '{0}' not found.", name );
@@ -879,7 +888,7 @@ namespace Axiom
         /// <returns></returns>
         public virtual Animation GetAnimation( string name )
         {
-            Animation animation = animationList[ name ];
+            Animation animation = animationList[name];
             /*
 			if(animation == null) {
 				throw new AxiomException("Animation named '{0}' not found.", name);
@@ -894,7 +903,7 @@ namespace Axiom
         /// <returns></returns>
         public virtual AnimationState GetAnimationState( string name )
         {
-            AnimationState animationState = animationStateList[ name ];
+            AnimationState animationState = animationStateList[name];
             /*
 			if(animationState == null) {
 				throw new AxiomException("AnimationState named '{0}' not found.", name);
@@ -928,9 +937,9 @@ namespace Axiom
         }
 
         /// <summary>
-        ///     Returns the material with the specified handle.
-        /// </summary>
-        /// <param name="name">Handle of the material to retrieve.</param>
+                ///     Returns the material with the specified handle.
+                /// </summary>
+                /// <param name="name">Handle of the material to retrieve.</param>
         /// <returns>A reference to a Material.</returns>
         public virtual Material GetMaterial( int handle )
         {
@@ -944,11 +953,11 @@ namespace Axiom
         ///		The render queue in use by this scene manager.
         ///		Note: The queue is created if it doesn't already exist.
         /// </returns>
-        protected virtual RenderQueue GetRenderQueue()
+                protected virtual RenderQueue GetRenderQueue()
         {
-            if ( renderQueue == null )
+                        if ( renderQueue == null )
             {
-                InitRenderQueue();
+                                InitRenderQueue();
             }
 
             return renderQueue;
@@ -962,9 +971,9 @@ namespace Axiom
         /// </remarks>
         protected virtual void InitRenderQueue()
         {
-            renderQueue = new RenderQueue();
+                        renderQueue = new RenderQueue();
 
-            // init render queues that do not need shadows
+                        // init render queues that do not need shadows
             renderQueue.GetQueueGroup( RenderQueueGroupID.Background ).ShadowsEnabled = false;
             renderQueue.GetQueueGroup( RenderQueueGroupID.Overlay ).ShadowsEnabled = false;
             renderQueue.GetQueueGroup( RenderQueueGroupID.SkiesEarly ).ShadowsEnabled = false;
@@ -978,7 +987,7 @@ namespace Axiom
         /// <returns></returns>
         public SceneNode GetSceneNode( string name )
         {
-            SceneNode node = sceneNodeList[ name ];
+            SceneNode node = sceneNodeList[name];
             /*
 			 * if(node == null)
 			 *		throw new AxiomException("Scene node '{0}' could not be found.",name);
@@ -996,7 +1005,7 @@ namespace Axiom
             int count = sceneNodeList.Count;
             if ( index > count || index < 0 )
                 throw new ArgumentOutOfRangeException( "Scene node index is invalid." );
-            SceneNode node = sceneNodeList[ index ];
+            SceneNode node = sceneNodeList[index];
             return node;
         }
 
@@ -1009,7 +1018,7 @@ namespace Axiom
         /// <returns></returns>
         public Entity GetEntity( string name )
         {
-            Entity entity = entityList[ name ];
+            Entity entity = entityList[name];
             /*
 			 * if(entity == null)
 			 *		throw new AxiomException("Entity '{0}' could not be found.",name);
@@ -1027,14 +1036,14 @@ namespace Axiom
             int count = entityList.Count;
             if ( index > count || index < 0 )
                 throw new ArgumentOutOfRangeException( "Entity index is invalid." );
-            Entity entity = entityList[ index ];
+            Entity entity = entityList[index];
             return entity;
         }
 
 
-        /// <summary>
-        ///     Asks the SceneManager to provide a suggested viewpoint from which the scene should be viewed.
-        /// </summary>
+                /// <summary>
+                ///     Asks the SceneManager to provide a suggested viewpoint from which the scene should be viewed.
+                /// </summary>
         /// <remarks>
         ///     Typically this method returns the origin unless a) world geometry has been loaded using
         ///     <see cref="SceneManager.LoadWorldGeometry"/> and b) that world geometry has suggested 'start' points.
@@ -1064,9 +1073,9 @@ namespace Axiom
         /// <remarks>
         ///		Depending on the type of SceneManager (subclasses will be specialized
         ///		for particular world geometry types) you have requested via the Root or
-        ///		SceneManagerEnumerator classes, you can pass a filename to this method and it
-        ///		will attempt to load the world-level geometry for use. If you try to load
-        ///		an inappropriate type of world data an exception will be thrown. The default
+                ///		SceneManagerEnumerator classes, you can pass a filename to this method and it
+                ///		will attempt to load the world-level geometry for use. If you try to load
+                ///		an inappropriate type of world data an exception will be thrown. The default
         ///		SceneManager cannot handle any sort of world geometry and so will always
         ///		throw an exception. However subclasses like BspSceneManager can load
         ///		particular types of world geometry e.g. "q3dm1.bsp".
@@ -1159,7 +1168,7 @@ namespace Axiom
 
             for ( int i = 0; i < lightList.Count; i++ )
             {
-                Light light = lightList[ i ];
+                Light light = lightList[i];
 
                 if ( light.Type == LightType.Directional )
                 {
@@ -1203,15 +1212,15 @@ namespace Axiom
                 Vector3 min, max;
                 Vector3 extrude = light.DerivedDirection * -shadowDirLightExtrudeDist;
                 // do first corner
-                min = max = corners[ 0 ];
-                min.ToFloor( corners[ 0 ] + extrude );
-                max.ToCeiling( corners[ 0 ] + extrude );
+                min = max = corners[0];
+                min.ToFloor( corners[0] + extrude );
+                max.ToCeiling( corners[0] + extrude );
                 for ( int c = 1; c < 8; ++c )
                 {
-                    min.ToFloor( corners[ c ] );
-                    max.ToCeiling( corners[ c ] );
-                    min.ToFloor( corners[ c ] + extrude );
-                    max.ToCeiling( corners[ c ] + extrude );
+                    min.ToFloor( corners[c] );
+                    max.ToCeiling( corners[c] );
+                    min.ToFloor( corners[c] + extrude );
+                    max.ToCeiling( corners[c] + extrude );
                 }
                 aabb.SetExtents( min, max );
 
@@ -1608,24 +1617,24 @@ namespace Axiom
             // Set up scissor test (point & spot lights only)
             bool scissored = false;
 
-            if ( light.Type != LightType.Directional &&
-                    targetRenderSystem.Caps.CheckCap( Capabilities.ScissorTest ) )
+                        if ( light.Type != LightType.Directional &&
+                                targetRenderSystem.Caps.CheckCap( Capabilities.ScissorTest ) )
             {
-                // Project the sphere onto the camera
-                Real left, right, top, bottom;
-                Sphere sphere = new Sphere( light.DerivedPosition, light.AttenuationRange );
-                if ( camera.ProjectSphere( sphere, out left, out top, out right, out bottom ) )
+                                // Project the sphere onto the camera
+                                float left, right, top, bottom;
+                                Sphere sphere = new Sphere( light.DerivedPosition, light.AttenuationRange );
+                                if ( camera.ProjectSphere( sphere, out left, out top, out right, out bottom ) )
                 {
-                    scissored = true;
-                    // Turn normalised device coordinates into pixels
-                    int iLeft, iTop, iWidth, iHeight;
-                    currentViewport.GetActualDimensions( out iLeft, out iTop, out iWidth, out iHeight );
-                    int szLeft, szRight, szTop, szBottom;
+                                        scissored = true;
+                                        // Turn normalised device coordinates into pixels
+                                        int iLeft, iTop, iWidth, iHeight;
+                                        currentViewport.GetActualDimensions( out iLeft, out iTop, out iWidth, out iHeight );
+                                        int szLeft, szRight, szTop, szBottom;
 
-                    szLeft = (int)( iLeft + ( ( left + 1 ) * 0.5f * iWidth ) );
-                    szRight = (int)( iLeft + ( ( right + 1 ) * 0.5f * iWidth ) );
-                    szTop = (int)( iTop + ( ( -top + 1 ) * 0.5f * iHeight ) );
-                    szBottom = (int)( iTop + ( ( -bottom + 1 ) * 0.5f * iHeight ) );
+                                        szLeft = (int)( iLeft + ( ( left + 1 ) * 0.5f * iWidth ) );
+                                        szRight = (int)( iLeft + ( ( right + 1 ) * 0.5f * iWidth ) );
+                                        szTop = (int)( iTop + ( ( -top + 1 ) * 0.5f * iHeight ) );
+                                        szBottom = (int)( iTop + ( ( -bottom + 1 ) * 0.5f * iHeight ) );
 
                     targetRenderSystem.SetScissorTest( true, szLeft, szTop, szRight, szBottom );
                 }
@@ -1636,10 +1645,10 @@ namespace Axiom
             // Can we do a 2-sided stencil?
             bool stencil2sided = false;
 
-            if ( targetRenderSystem.Caps.CheckCap( Capabilities.TwoSidedStencil ) &&
-                    targetRenderSystem.Caps.CheckCap( Capabilities.StencilWrap ) )
+                    if ( targetRenderSystem.Caps.CheckCap( Capabilities.TwoSidedStencil ) &&
+                            targetRenderSystem.Caps.CheckCap( Capabilities.StencilWrap ) )
             {
-                // enable
+                            // enable
                 stencil2sided = true;
             }
 
@@ -1669,23 +1678,23 @@ namespace Axiom
             targetRenderSystem.StencilCheckEnabled = true;
             targetRenderSystem.DepthFunction = CompareFunction.Less;
 
-            // Calculate extrusion distance
-            Real extrudeDistance = 0;
-            if ( light.Type == LightType.Directional )
+                        // Calculate extrusion distance
+                        float extrudeDistance = 0;
+                        if ( light.Type == LightType.Directional )
             {
-                extrudeDistance = shadowDirLightExtrudeDist;
-            }
+                                extrudeDistance = shadowDirLightExtrudeDist;
+                        }
 
-            // get the near clip volume
-            PlaneBoundedVolume nearClipVol = light.GetNearClipVolume( camera );
+                        // get the near clip volume
+                        PlaneBoundedVolume nearClipVol = light.GetNearClipVolume( camera );
 
-            // get the shadow caster list
-            IList casters = FindShadowCastersForLight( light, camera );
+                        // get the shadow caster list
+                        IList casters = FindShadowCastersForLight( light, camera );
 
-            // Determine whether zfail is required
-            // We need to use zfail for ALL objects if we find a single object which
-            // requires it
-            bool zfailAlgo = false;
+                        // Determine whether zfail is required
+                        // We need to use zfail for ALL objects if we find a single object which
+                        // requires it
+                        bool zfailAlgo = false;
             int flags = 0;
 
             CheckShadowCasters( casters, nearClipVol, light, extrudeInSoftware, finiteExtrude, zfailAlgo, camera, extrudeDistance, stencil2sided, tmpLightList );
@@ -1696,11 +1705,11 @@ namespace Axiom
 
             targetRenderSystem.StencilCheckEnabled = false;
 
-            targetRenderSystem.UnbindGpuProgram( GpuProgramType.Vertex );
+                    targetRenderSystem.UnbindGpuProgram( GpuProgramType.Vertex );
 
-            if ( scissored )
+                    if ( scissored )
             {
-                // disable scissor test
+                            // disable scissor test
                 targetRenderSystem.SetScissorTest( false );
             }
         }
@@ -1741,12 +1750,12 @@ namespace Axiom
             targetRenderSystem.BindGpuProgram( shadowStencilPass.VertexProgram );
         }
 
-        private void CheckShadowCasters( IList casters, PlaneBoundedVolume nearClipVol, Light light, bool extrudeInSoftware, bool finiteExtrude, bool zfailAlgo, Camera camera, Real extrudeDistance, bool stencil2sided, LightList tmpLightList )
+        private void CheckShadowCasters( IList casters, PlaneBoundedVolume nearClipVol, Light light, bool extrudeInSoftware, bool finiteExtrude, bool zfailAlgo, Camera camera, float extrudeDistance, bool stencil2sided, LightList tmpLightList )
         {
             int flags;
             for ( int i = 0; i < casters.Count; i++ )
             {
-                ShadowCaster caster = (ShadowCaster)casters[ i ];
+                ShadowCaster caster = (ShadowCaster)casters[i];
 
                 if ( nearClipVol.Intersects( caster.GetWorldBoundingBox() ) )
                 {
@@ -1759,7 +1768,7 @@ namespace Axiom
 
             for ( int ci = 0; ci < casters.Count; ci++ )
             {
-                ShadowCaster caster = (ShadowCaster)casters[ ci ];
+                ShadowCaster caster = (ShadowCaster)casters[ci];
                 flags = 0;
 
                 if ( light.Type != LightType.Directional )
@@ -1982,7 +1991,7 @@ namespace Axiom
                 // New fog params can either be from scene or from material
                 ColorEx newFogColor;
                 FogMode newFogMode;
-                Real newFogDensity, newFogStart, newFogEnd;
+                float newFogDensity, newFogStart, newFogEnd;
 
                 // does the pass want to override the fog mode?
                 if ( pass.FogOverride )
@@ -2055,7 +2064,7 @@ namespace Axiom
         /// <param name="distance"></param>
         /// <param name="orientation"></param>
         /// <returns></returns>
-        protected Mesh CreateSkyboxPlane( BoxPlane plane, Real distance, Quaternion orientation )
+        protected Mesh CreateSkyboxPlane( BoxPlane plane, float distance, Quaternion orientation )
         {
             Plane p = new Plane();
             string meshName = "SkyboxPlane_";
@@ -2111,7 +2120,7 @@ namespace Axiom
             if ( planeModel != null )
                 modelMgr.Unload( planeModel );
 
-            Real planeSize = distance * 2;
+            float planeSize = distance * 2;
 
             // create and return the plane mesh
             return modelMgr.CreatePlane( meshName, p, planeSize, planeSize, 1, 1, false, 1, 1, 1, up );
@@ -2126,7 +2135,7 @@ namespace Axiom
         /// <param name="distance"></param>
         /// <param name="orientation"></param>
         /// <returns></returns>
-        protected Mesh CreateSkyDomePlane( BoxPlane plane, Real curvature, Real tiling, Real distance, Quaternion orientation )
+        protected Mesh CreateSkyDomePlane( BoxPlane plane, float curvature, float tiling, float distance, Quaternion orientation )
         {
             Plane p = new Plane();
             Vector3 up = Vector3.Zero;
@@ -2182,7 +2191,7 @@ namespace Axiom
             }
 
             // create new
-            Real planeSize = distance * 2;
+            float planeSize = distance * 2;
             int segments = 16;
             planeMesh =
                 meshManager.CreateCurvedIllusionPlane(
@@ -2269,7 +2278,7 @@ namespace Axiom
 
         public void RekeySceneNode( string oldName, SceneNode node )
         {
-            if ( this.sceneNodeList[ oldName ] == node )
+            if ( this.sceneNodeList[oldName] == node )
             {
                 this.sceneNodeList.Remove( oldName );
                 this.sceneNodeList.Add( node );
@@ -2486,7 +2495,7 @@ namespace Axiom
             // notify the render system of each camera being removed
             for ( int i = 0; i < cameraList.Count; i++ )
             {
-                targetRenderSystem.NotifyCameraRemoved( cameraList[ i ] );
+                targetRenderSystem.NotifyCameraRemoved( cameraList[i] );
             }
 
             // clear the list
@@ -2546,7 +2555,7 @@ namespace Axiom
         {
             Debug.Assert( cameraList.ContainsKey( name ), string.Format( "Camera '{0}' does not exist in the scene.", name ) );
 
-            RemoveCamera( cameraList[ name ] );
+            RemoveCamera( cameraList[name] );
         }
 
         /// <summary>
@@ -2572,7 +2581,7 @@ namespace Axiom
         {
             Debug.Assert( lightList.ContainsKey( name ), string.Format( "Light '{0}' does not exist in the scene.", name ) );
 
-            RemoveLight( lightList[ name ] );
+            RemoveLight( lightList[name] );
         }
 
         /// <summary>
@@ -2598,7 +2607,7 @@ namespace Axiom
         {
             Debug.Assert( billboardSetList.ContainsKey( name ), string.Format( "BillboardSet '{0}' does not exist in the scene.", name ) );
 
-            RemoveBillboardSet( billboardSetList[ name ] );
+            RemoveBillboardSet( billboardSetList[name] );
         }
 
         /// <summary>
@@ -2616,7 +2625,7 @@ namespace Axiom
         /// <param name="entity">Entity to remove from the scene.</param>
         public virtual void RemoveEntity( string name )
         {
-            Entity entity = entityList[ name ];
+            Entity entity = entityList[name];
             if ( entity != null )
             {
                 entityList.Remove( entity );
@@ -2641,7 +2650,7 @@ namespace Axiom
         ///		encroach. Only applicable if mode is</param>
         /// <param name="linearEnd">Distance in world units at which linear fog becomes completely
         ///		opaque. Only applicable if mode is</param>
-        public void SetFog( FogMode mode, ColorEx color, Real density, Real linearStart, Real linearEnd )
+        public void SetFog( FogMode mode, ColorEx color, float density, float linearStart, float linearEnd )
         {
             // set all the fog information
             fogMode = mode;
@@ -2658,7 +2667,7 @@ namespace Axiom
         /// <param name="mode"></param>
         /// <param name="color"></param>
         /// <param name="density"></param>
-        public void SetFog( FogMode mode, ColorEx color, Real density )
+        public void SetFog( FogMode mode, ColorEx color, float density )
         {
             // set all the fog information
             fogMode = mode;
@@ -2674,7 +2683,7 @@ namespace Axiom
         /// <param name="enable"></param>
         /// <param name="materialName"></param>
         /// <param name="distance"></param>
-        public void SetSkyBox( bool enable, string materialName, Real distance )
+        public void SetSkyBox( bool enable, string materialName, float distance )
         {
             SetSkyBox( enable, materialName, distance, true, Quaternion.Identity );
         }
@@ -2717,7 +2726,7 @@ namespace Axiom
         ///		in the +y direction, and the 'front' at the -z direction.
         ///		You can use this parameter to rotate the sky if you want.
         /// </param>
-        public void SetSkyBox( bool enable, string materialName, Real distance, bool drawFirst, Quaternion orientation )
+        public void SetSkyBox( bool enable, string materialName, float distance, bool drawFirst, Quaternion orientation )
         {
             // enable the skybox?
             isSkyBoxEnabled = enable;
@@ -2754,16 +2763,16 @@ namespace Axiom
                     Mesh planeModel = CreateSkyboxPlane( (BoxPlane)i, distance, orientation );
                     string entityName = "SkyBoxPlane" + i;
 
-                    if ( skyBoxEntities[ i ] != null )
+                    if ( skyBoxEntities[i] != null )
                     {
-                        RemoveEntity( skyBoxEntities[ i ] );
+                        RemoveEntity( skyBoxEntities[i] );
                     }
 
                     // create an entity for this plane
-                    skyBoxEntities[ i ] = CreateEntity( entityName, planeModel.Name );
+                    skyBoxEntities[i] = CreateEntity( entityName, planeModel.Name );
 
                     // skyboxes need not cast shadows
-                    skyBoxEntities[ i ].CastShadows = false;
+                    skyBoxEntities[i].CastShadows = false;
 
                     // Have to create 6 materials, one for each frame
                     // Used to use combined material but now we're using queue we can't split to change frame
@@ -2787,10 +2796,10 @@ namespace Axiom
                     // set the current frame
                     boxMaterial.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 ).CurrentFrame = i;
 
-                    skyBoxEntities[ i ].MaterialName = boxMaterial.Name;
+                    skyBoxEntities[i].MaterialName = boxMaterial.Name;
 
                     // Attach to node
-                    skyBoxNode.AttachObject( skyBoxEntities[ i ] );
+                    skyBoxNode.AttachObject( skyBoxEntities[i] );
                 } // for each plane
             }
         }
@@ -2803,7 +2812,7 @@ namespace Axiom
         /// <param name="materialName"></param>
         /// <param name="curvature"></param>
         /// <param name="tiling"></param>
-        public void SetSkyDome( bool isEnabled, string materialName, Real curvature, Real tiling )
+        public void SetSkyDome( bool isEnabled, string materialName, float curvature, float tiling )
         {
             SetSkyDome( isEnabled, materialName, curvature, tiling, 4000, true, Quaternion.Identity );
         }
@@ -2818,7 +2827,7 @@ namespace Axiom
         /// <param name="distance"></param>
         /// <param name="drawFirst"></param>
         /// <param name="orientation"></param>
-        public void SetSkyDome( bool isEnabled, string materialName, Real curvature, Real tiling, Real distance, bool drawFirst, Quaternion orientation )
+        public void SetSkyDome( bool isEnabled, string materialName, float curvature, float tiling, float distance, bool drawFirst, Quaternion orientation )
         {
             isSkyDomeEnabled = isEnabled;
             if ( isEnabled )
@@ -2854,18 +2863,18 @@ namespace Axiom
                     string entityName = String.Format( "SkyDomePlame{0}", i );
 
                     // create entity
-                    if ( skyDomeEntities[ i ] != null )
+                    if ( skyDomeEntities[i] != null )
                     {
-                        RemoveEntity( skyDomeEntities[ i ] );
+                        RemoveEntity( skyDomeEntities[i] );
                     }
 
-                    skyDomeEntities[ i ] = CreateEntity( entityName, planeMesh.Name );
-                    skyDomeEntities[ i ].MaterialName = material.Name;
+                    skyDomeEntities[i] = CreateEntity( entityName, planeMesh.Name );
+                    skyDomeEntities[i].MaterialName = material.Name;
                     // Sky entities need not cast shadows
-                    skyDomeEntities[ i ].CastShadows = false;
+                    skyDomeEntities[i].CastShadows = false;
 
                     // attach to node
-                    skyDomeNode.AttachObject( skyDomeEntities[ i ] );
+                    skyDomeNode.AttachObject( skyDomeEntities[i] );
                 } // for each plane
             }
         }
@@ -3100,7 +3109,7 @@ namespace Axiom
         ///		point lights or spotlights, since they extrude up to their 
         ///		attenuation range.
         /// </remarks>
-        public Real ShadowDirectionalLightExtrusionDistance
+        public float ShadowDirectionalLightExtrusionDistance
         {
             get
             {
@@ -3128,7 +3137,7 @@ namespace Axiom
         ///		You should tweak this value to suit your chosen shadow technique
         ///		and scene setup.
         /// </remarks>
-        public Real ShadowFarDistance
+        public float ShadowFarDistance
         {
             get
             {
@@ -3429,7 +3438,7 @@ namespace Axiom
         /// <summary>
         ///		Gets the fog starting point that was set during the last call to SetFog.
         /// </summary>
-        public Real FogStart
+        public float FogStart
         {
             get
             {
@@ -3440,7 +3449,7 @@ namespace Axiom
         /// <summary>
         ///		Gets the fog ending point that was set during the last call to SetFog.
         /// </summary>
-        public Real FogEnd
+        public float FogEnd
         {
             get
             {
@@ -3451,7 +3460,7 @@ namespace Axiom
         /// <summary>
         ///		Gets the fog density that was set during the last call to SetFog.
         /// </summary>
-        public Real FogDensity
+        public float FogDensity
         {
             get
             {
@@ -3572,7 +3581,7 @@ namespace Axiom
             // Auto-track nodes
             for ( int i = 0; i < autoTrackingSceneNodes.Count; i++ )
             {
-                autoTrackingSceneNodes[ i ].AutoTrack();
+                autoTrackingSceneNodes[i].AutoTrack();
             }
 
             // ask the camera to auto track if it has a target
@@ -3731,15 +3740,15 @@ namespace Axiom
             for ( int i = 0; i < animationStateList.Count; i++ )
             {
                 // get the current animation state
-                AnimationState animState = animationStateList[ i ];
+                AnimationState animState = animationStateList[i];
 
                 // get this states animation
-                Animation anim = animationList[ animState.Name ];
+                Animation anim = animationList[animState.Name];
 
                 // loop through all tracks and reset their nodes initial state
                 for ( int j = 0; j < anim.Tracks.Count; j++ )
                 {
-                    Node node = anim.Tracks[ j ].AssociatedNode;
+                    Node node = anim.Tracks[j].AssociatedNode;
                     node.ResetToInitialState();
                 }
 
@@ -3770,7 +3779,7 @@ namespace Axiom
             // destroy existing
             for ( int i = 0; i < shadowTextures.Count; i++ )
             {
-                RenderTexture shadowTex = (RenderTexture)shadowTextures[ i ];
+                RenderTexture shadowTex = (RenderTexture)shadowTextures[i];
 
                 // remove camera and destroy texture
                 RemoveCamera( shadowTex.GetViewport( 0 ).Camera );
@@ -3843,15 +3852,15 @@ namespace Axiom
             illuminationStage = IlluminationRenderStage.RenderToTexture;
 
             // Determine far shadow distance
-            Real shadowDist = shadowFarDistance;
+            float shadowDist = shadowFarDistance;
             if ( shadowDist == 0.0f )
             {
                 // need a shadow distance, make one up
                 shadowDist = camera.Near * 300;
             }
             // set fogging to hide the shadow edge
-            Real shadowOffset = shadowDist * shadowTextureOffset;
-            Real shadowEnd = shadowDist + shadowOffset;
+            float shadowOffset = shadowDist * shadowTextureOffset;
+            float shadowEnd = shadowDist + shadowOffset;
             shadowReceiverPass.SetFog( true, FogMode.Linear, ColorEx.White,
                 0, shadowEnd * shadowTextureFadeStart, shadowEnd * shadowTextureFadeEnd );
 
@@ -3859,8 +3868,8 @@ namespace Axiom
             for ( int i = 0, sti = 0;
                 i < lightsAffectingFrustum.Count && sti < shadowTextures.Count; i++ )
             {
-                Light light = lightsAffectingFrustum[ i ];
-                RenderTexture shadowTex = (RenderTexture)shadowTextures[ sti ];
+                Light light = lightsAffectingFrustum[i];
+                RenderTexture shadowTex = (RenderTexture)shadowTextures[sti];
                 // Skip non-shadowing lights
                 if ( !light.CastShadows )
                     continue;
@@ -3874,7 +3883,7 @@ namespace Axiom
                     // Set ortho projection
                     texCam.ProjectionType = Projection.Orthographic;
                     // set easy FOV and near dist so that texture covers far dist
-                    texCam.FOV = new Real( 90 );
+                    texCam.FOV = 90;
                     texCam.Near = shadowDist;
 
                     // Set size of projection
@@ -3926,21 +3935,21 @@ namespace Axiom
                     q.FromAxes( left, up, dir );
                     texCam.Orientation = q;
 
-                    // Round local x/y position based on a world-space texel; this helps to reduce
-                    // jittering caused by the projection moving with the camera
-                    // Viewport is 2 * near clip distance across (90 degree fov)
-                    Real worldTexelSize = ( texCam.Near * 20 ) / shadowTextureSize;
-                    pos.x -= pos.x % worldTexelSize;
-                    pos.y -= pos.y % worldTexelSize;
-                    pos.z -= pos.z % worldTexelSize;
-                    // Finally set position
-                    texCam.Position = pos;
+                                        // Round local x/y position based on a world-space texel; this helps to reduce
+                                        // jittering caused by the projection moving with the camera
+                                        // Viewport is 2 * near clip distance across (90 degree fov)
+                                        float worldTexelSize = ( texCam.Near * 20 ) / shadowTextureSize;
+                                        pos.x -= pos.x % worldTexelSize;
+                                        pos.y -= pos.y % worldTexelSize;
+                                        pos.z -= pos.z % worldTexelSize;
+                                        // Finally set position
+                                        texCam.Position = pos;
 
-                    if ( shadowTechnique == ShadowTechnique.TextureModulative )
-                        shadowTex.GetViewport( 0 ).BackgroundColor = ColorEx.White;
+                                        if ( shadowTechnique == ShadowTechnique.TextureModulative )
+                                                shadowTex.GetViewport( 0 ).BackgroundColor = ColorEx.White;
 
-                    // Update target
-                    shadowTex.Update();
+                                        // Update target
+                                        shadowTex.Update();
 
                     ++sti;
                 }
@@ -4026,7 +4035,7 @@ namespace Axiom
             }
             else
             {
-                targetRenderSystem.WorldMatrix = xform[ 0 ];
+                targetRenderSystem.WorldMatrix = xform[0];
             }
 
             // issue view/projection changes (if any)
@@ -4094,13 +4103,13 @@ namespace Axiom
                         localLightList.Clear();
 
                         // check whether we need to filter this one out
-                        if ( pass.RunOnlyOncePerLightType && pass.OnlyLightType != rendLightList[ i ].Type )
+                        if ( pass.RunOnlyOncePerLightType && pass.OnlyLightType != rendLightList[i].Type )
                         {
                             // skip this one
                             continue;
                         }
 
-                        localLightList.Add( rendLightList[ i ] );
+                        localLightList.Add( rendLightList[i] );
                         lightListToUse = localLightList;
                     }
                     else
@@ -4109,12 +4118,12 @@ namespace Axiom
                         lightListToUse = rendLightList;
                     }
 
-                    if ( pass.IsProgrammable )
+                                        if ( pass.IsProgrammable )
                     {
-                        // Update any automatic gpu params for lights
-                        // Other bits of information will have to be looked up
-                        autoParamDataSource.SetCurrentLightList( lightListToUse );
-                        pass.UpdateAutoParamsLightsOnly( autoParamDataSource );
+                                                // Update any automatic gpu params for lights
+                                                // Other bits of information will have to be looked up
+                                                autoParamDataSource.SetCurrentLightList( lightListToUse );
+                                                pass.UpdateAutoParamsLightsOnly( autoParamDataSource );
 
                         // note: parameters must be bound after auto params are updated
                         if ( pass.HasVertexProgram )
@@ -4204,7 +4213,7 @@ namespace Axiom
                 // render each object associated with this rendering pass
                 for ( int r = 0; r < renderables.Count; r++ )
                 {
-                    IRenderable renderable = (IRenderable)renderables[ r ];
+                    IRenderable renderable = (IRenderable)renderables[r];
 
                     // Give SM a chance to eliminate
                     if ( !ValidateRenderableForRendering( pass, renderable ) )
@@ -4228,21 +4237,21 @@ namespace Axiom
         protected virtual void RenderTransparentObjects( ArrayList list, bool doLightIteration,
             LightList manualLightList )
         {
-            // ----- TRANSPARENT LOOP -----
-            // This time we render by Z, not by material
-            // The transparent objects set needs to be ordered first
-            for ( int i = 0; i < list.Count; i++ )
+                        // ----- TRANSPARENT LOOP -----
+                        // This time we render by Z, not by material
+                        // The transparent objects set needs to be ordered first
+                        for ( int i = 0; i < list.Count; i++ )
             {
-                RenderablePass rp = (RenderablePass)list[ i ];
+                                RenderablePass rp = (RenderablePass)list[i];
 
-                // set the pass first
-                SetPass( rp.pass );
+                                // set the pass first
+                                SetPass( rp.pass );
 
-                // render the transparent object
-                RenderSingleObject( rp.renderable, rp.pass, doLightIteration,
-                        manualLightList );
-            }
-        }
+                                // render the transparent object
+                                RenderSingleObject( rp.renderable, rp.pass, doLightIteration,
+                                        manualLightList );
+                        }
+                }
 
         protected void RenderTransparentObjects( ArrayList list, bool doLightIteration )
         {
@@ -4278,7 +4287,7 @@ namespace Axiom
 
                 for ( int li = 0; li < lightsAffectingFrustum.Count; li++ )
                 {
-                    Light light = lightsAffectingFrustum[ li ];
+                    Light light = lightsAffectingFrustum[li];
                     // Set light state
 
                     if ( light.CastShadows )
@@ -4299,7 +4308,7 @@ namespace Axiom
                     }
                     else
                     {
-                        tempLightList[ 0 ] = light;
+                        tempLightList[0] = light;
                     }
 
                     RenderSolidObjects( priorityGroup.solidPassesDiffuseSpecular, false, tempLightList );
@@ -4361,7 +4370,7 @@ namespace Axiom
             // iterate over lights, rendering all volumes to the stencil buffer
             for ( int i = 0; i < lightsAffectingFrustum.Count; i++ )
             {
-                Light light = lightsAffectingFrustum[ i ];
+                Light light = lightsAffectingFrustum[i];
 
                 if ( light.CastShadows )
                 {
@@ -4479,12 +4488,12 @@ namespace Axiom
                 for ( int i = 0, sti = 0;
                     i < lightsAffectingFrustum.Count && sti < shadowTextures.Count; i++ )
                 {
-                    Light light = lightsAffectingFrustum[ i ];
+                    Light light = lightsAffectingFrustum[i];
 
                     if ( !light.CastShadows )
                         continue;
 
-                    RenderTexture shadowTex = (RenderTexture)shadowTextures[ sti ];
+                    RenderTexture shadowTex = (RenderTexture)shadowTextures[sti];
                     // Hook up receiver texture
                     shadowReceiverPass.GetTextureUnitState( 0 ).SetTextureName( shadowTex.Name );
                     // Hook up projection frustum
@@ -4692,7 +4701,7 @@ namespace Axiom
             // ----- TRANSPARENT LOOP as in RenderTransparentObjects, but changed a bit -----
             for ( int i = 0; i < list.Count; i++ )
             {
-                RenderablePass rp = (RenderablePass)list[ i ];
+                RenderablePass rp = (RenderablePass)list[i];
 
                 // only render this pass if it's being forced to cast shadows
                 if ( rp.pass.Parent.Parent.TransparencyCastsShadows )
@@ -4725,13 +4734,13 @@ namespace Axiom
                         continue;
                     }
 
-                    if ( queueGroup.NumPriorityGroups > 0 )
+                                        if ( queueGroup.NumPriorityGroups > 0 )
                     {
-                        // render objects in all groups
-                        RenderQueueGroupObjects( queueGroup );
-                    }
+                                                // render objects in all groups
+                                                RenderQueueGroupObjects( queueGroup );
+                                        }
 
-                    // true if someone requested that we repeat this queue
+                                        // true if someone requested that we repeat this queue
                     repeatQueue = OnRenderQueueEnded( queueID );
 
                 } while ( repeatQueue );
@@ -4777,7 +4786,7 @@ namespace Axiom
 
                 for ( int plane = 0; plane < 6; plane++ )
                 {
-                    GetRenderQueue().AddRenderable( skyBoxEntities[ plane ].GetSubEntity( 0 ), 1, qid );
+                    GetRenderQueue().AddRenderable( skyBoxEntities[plane].GetSubEntity( 0 ), 1, qid );
                 }
             }
 
@@ -4788,7 +4797,7 @@ namespace Axiom
 
                 for ( int plane = 0; plane < 5; ++plane )
                 {
-                    GetRenderQueue().AddRenderable( skyDomeEntities[ plane ].GetSubEntity( 0 ), 1, qid );
+                    GetRenderQueue().AddRenderable( skyDomeEntities[plane].GetSubEntity( 0 ), 1, qid );
                 }
             }
         }
@@ -4816,17 +4825,17 @@ namespace Axiom
         /// <param name="position">The position at which to evaluate the list of lights</param>
         /// <param name="radius">The bounding radius to test</param>
         /// <param name="destList">List to be populated with ordered set of lights; will be cleared by this method before population.</param>
-        protected internal virtual void PopulateLightList( Vector3 position, Real radius, LightList destList )
+        protected internal virtual void PopulateLightList( Vector3 position, float radius, LightList destList )
         {
             // Really basic trawl of the lights, then sort
             // Subclasses could do something smarter
             destList.Clear();
-            Real squaredRadius = radius * radius;
+            float squaredRadius = radius * radius;
 
             // loop through the scene lights an add ones in range
             for ( int i = 0; i < lightList.Count; i++ )
             {
-                Light light = lightList[ i ];
+                Light light = lightList[i];
 
                 if ( light.IsVisible )
                 {
@@ -4841,7 +4850,7 @@ namespace Axiom
                         light.tempSquaredDist = ( light.DerivedPosition - position ).LengthSquared;
                         light.tempSquaredDist -= squaredRadius;
                         // only add in-range lights
-                        Real range = light.AttenuationRange;
+                        float range = light.AttenuationRange;
                         if ( light.tempSquaredDist <= ( range * range ) )
                         {
                             destList.Add( light );
@@ -4850,12 +4859,12 @@ namespace Axiom
                 } // if
             } // for
 
-            // Sort Destination light list.
-            // TODO Not needed yet since the current LightList is a sorted list under the hood already
-            //destList.Sort();
-        }
+                        // Sort Destination light list.
+                        // TODO Not needed yet since the current LightList is a sorted list under the hood already
+                        //destList.Sort();
+                }
 
-        /// <summary>
+                /// <summary>
         ///		Enables / disables a 'sky plane' i.e. a plane at constant
         ///		distance from the camera representing the sky.
         /// </summary>
@@ -4880,7 +4889,7 @@ namespace Axiom
         ///		the sky to appear below camera level.  Curved sky planes are 
         ///		simular to skydomes, but are more compatable with fog.
         /// </param>
-        public virtual void SetSkyPlane( bool enable, Plane plane, string materialName, Real scale, Real tiling, bool drawFirst, Real bow, int xsegments, int ysegments )
+        public virtual void SetSkyPlane( bool enable, Plane plane, string materialName, float scale, float tiling, bool drawFirst, float bow, int xsegments, int ysegments )
         {
             isSkyPlaneEnabled = enable;
 
@@ -5006,7 +5015,7 @@ namespace Axiom
             protected PlaneBoundedVolumeList lightClipVolumeList = new PlaneBoundedVolumeList();
             protected Camera camera;
             protected Light light;
-            protected Real farDistSquared;
+            protected float farDistSquared;
 
             #endregion Fields
 
@@ -5022,7 +5031,7 @@ namespace Axiom
             /// <param name="shadowCasterList"></param>
             /// <param name="farDistSquared"></param>
             public void Prepare( bool lightInFrustum, PlaneBoundedVolumeList lightClipVolumes, Light light,
-                Camera camera, ArrayList shadowCasterList, Real farDistSquared )
+                Camera camera, ArrayList shadowCasterList, float farDistSquared )
             {
 
                 this.casterList = shadowCasterList;
@@ -5045,8 +5054,8 @@ namespace Axiom
                     {
                         // Check object is within the shadow far distance
                         Vector3 toObj = sceneObject.ParentNode.DerivedPosition - camera.DerivedPosition;
-                        Real radius = sceneObject.GetWorldBoundingSphere().Radius;
-                        Real dist = toObj.LengthSquared;
+                        float radius = sceneObject.GetWorldBoundingSphere().Radius;
+                        float dist = toObj.LengthSquared;
 
                         if ( dist - ( radius * radius ) > farDistSquared )
                         {
@@ -5072,7 +5081,7 @@ namespace Axiom
                         // Iterate over volumes
                         for ( int i = 0; i < lightClipVolumeList.Count; i++ )
                         {
-                            PlaneBoundedVolume pbv = (PlaneBoundedVolume)lightClipVolumeList[ i ];
+                            PlaneBoundedVolume pbv = (PlaneBoundedVolume)lightClipVolumeList[i];
 
                             if ( pbv.Intersects( sceneObject.GetWorldBoundingBox() ) )
                             {
@@ -5107,8 +5116,7 @@ namespace Axiom
     /// </summary>
     public class DefaultAxisAlignedBoxRegionSceneQuery : AxisAlignedBoxRegionSceneQuery
     {
-        internal protected DefaultAxisAlignedBoxRegionSceneQuery( SceneManager creator )
-            : base( creator )
+        internal protected DefaultAxisAlignedBoxRegionSceneQuery( SceneManager creator ) : base( creator )
         {
         }
 
@@ -5118,7 +5126,7 @@ namespace Axiom
             // Entities only for now
             for ( int i = 0; i < creator.entityList.Count; i++ )
             {
-                Entity entity = creator.entityList[ i ];
+                Entity entity = creator.entityList[i];
 
                 // skip if unattached or filtered out by query flags
                 if ( !entity.IsAttached || ( entity.QueryFlags & queryMask ) == 0 )
@@ -5139,8 +5147,7 @@ namespace Axiom
     /// </summary>
     public class DefaultRaySceneQuery : RaySceneQuery
     {
-        internal protected DefaultRaySceneQuery( SceneManager creator )
-            : base( creator )
+        internal protected DefaultRaySceneQuery( SceneManager creator ) : base( creator )
         {
         }
 
@@ -5156,7 +5163,7 @@ namespace Axiom
             // Entities only for now
             for ( int i = 0; i < creator.entityList.Count; i++ )
             {
-                Entity entity = creator.entityList[ i ];
+                Entity entity = creator.entityList[i];
 
                 // skip if unattached or filtered out by query flags
                 if ( !entity.IsAttached || ( entity.QueryFlags & queryMask ) == 0 )
@@ -5165,7 +5172,7 @@ namespace Axiom
                 }
 
                 // test the intersection against the world bounding box of the entity
-                IntersectionResult results = ray.Intersects( entity.GetWorldBoundingBox() );
+                IntersectResult results = MathUtil.Intersects( ray, entity.GetWorldBoundingBox() );
 
                 // if the results came back positive, fire the event handler
                 if ( results.Hit == true )
@@ -5181,8 +5188,7 @@ namespace Axiom
     /// </summary>
     public class DefaultSphereRegionSceneQuery : SphereRegionSceneQuery
     {
-        internal protected DefaultSphereRegionSceneQuery( SceneManager creator )
-            : base( creator )
+        internal protected DefaultSphereRegionSceneQuery( SceneManager creator ) : base( creator )
         {
         }
 
@@ -5194,7 +5200,7 @@ namespace Axiom
 
             for ( int i = 0; i < creator.entityList.Count; i++ )
             {
-                Entity entity = creator.entityList[ i ];
+                Entity entity = creator.entityList[i];
 
                 // skip if unattached or filtered out by query flags
                 if ( !entity.IsAttached || ( entity.QueryFlags & queryMask ) == 0 )
@@ -5219,8 +5225,7 @@ namespace Axiom
     /// </summary>
     public class DefaultPlaneBoundedVolumeListSceneQuery : PlaneBoundedVolumeListSceneQuery
     {
-        internal protected DefaultPlaneBoundedVolumeListSceneQuery( SceneManager creator )
-            : base( creator )
+        internal protected DefaultPlaneBoundedVolumeListSceneQuery( SceneManager creator ) : base( creator )
         {
         }
 
@@ -5229,7 +5234,7 @@ namespace Axiom
             // Entities only for now
             for ( int i = 0; i < creator.entityList.Count; i++ )
             {
-                Entity entity = creator.entityList[ i ];
+                Entity entity = creator.entityList[i];
 
                 // skip if unattached or filtered out by query flags
                 if ( !entity.IsAttached || ( entity.QueryFlags & queryMask ) == 0 )
@@ -5239,7 +5244,7 @@ namespace Axiom
 
                 for ( int v = 0; v < volumes.Count; v++ )
                 {
-                    PlaneBoundedVolume volume = (PlaneBoundedVolume)volumes[ v ];
+                    PlaneBoundedVolume volume = (PlaneBoundedVolume)volumes[v];
                     // Do AABB / plane volume test
                     if ( ( entity.QueryFlags & queryMask ) != 0 && volume.Intersects( entity.GetWorldBoundingBox() ) )
                     {
@@ -5270,7 +5275,7 @@ namespace Axiom
             int numEntities = creator.entityList.Count;
             for ( int a = 0; a < ( numEntities - 1 ); a++ )
             {
-                Entity aent = creator.entityList[ a ];
+                Entity aent = creator.entityList[a];
 
                 // skip if unattached or filtered out by query flags
                 if ( !aent.IsAttached || ( aent.QueryFlags & queryMask ) == 0 )
@@ -5282,7 +5287,7 @@ namespace Axiom
                 int b = a;
                 for ( ++b; b != ( numEntities - 1 ); ++b )
                 {
-                    Entity bent = creator.entityList[ b ];
+                    Entity bent = creator.entityList[b];
 
                     // skip if unattached or filtered out by query flags
                     if ( !bent.IsAttached || ( bent.QueryFlags & queryMask ) == 0 )
