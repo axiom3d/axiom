@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Graphics Engine Library
-Copyright (C) 2003-2006  Axiom Project Team
+Axiom Game Engine Library
+Copyright (C) 2003  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,8 +24,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-#region Namespace Declarations
-
 using System;
 using System.IO;
 using System.Text;
@@ -33,11 +31,6 @@ using System.Diagnostics;
 using System.Collections.Specialized;
 
 using Axiom;
-
-using DotNet3D.Math;
-
-#endregion Namespace Declarations
-			
 
 namespace Axiom.SceneManagers.Bsp
 {
@@ -202,7 +195,7 @@ namespace Axiom.SceneManagers.Bsp
                     if ( attribParams[2] == "full" )
                         shader.CloudHeight = 512;
                     else
-                        shader.CloudHeight = Real.Parse( attribParams[2] );
+                        shader.CloudHeight = StringConverter.ParseFloat( attribParams[2] );
                 }
 
                 // nearbox not supported
@@ -227,7 +220,7 @@ namespace Axiom.SceneManagers.Bsp
 
                 /*shader.Fog = true;
 				shader.FogColour = StringConverter.ParseColor(fogValues);
-				shader.FogDistance = Real.Parse(attribParams[4]);*/
+				shader.FogDistance = StringConverter.ParseFloat(attribParams[4]);*/
             }
                 }
 
@@ -269,7 +262,7 @@ namespace Axiom.SceneManagers.Bsp
             // ANIMMAP
             else if ( attribParams[0] == "animmap" )
             {
-                pass.animFps = Real.Parse( attribParams[1] );
+                pass.animFps = StringConverter.ParseFloat( attribParams[1] );
                 pass.animNumFrames = attribParams.Length - 2;
 
                 for ( uint frame = 0; frame < pass.animNumFrames; frame++ )
@@ -343,17 +336,17 @@ namespace Axiom.SceneManagers.Bsp
             {
                 if ( attribParams[1] == "rotate" )
                 {
-                    pass.tcModRotate = -Real.Parse( attribParams[2] ) / 360; // +ve is clockwise degrees in Q3 shader, anticlockwise complete rotations in Ogre
+                    pass.tcModRotate = -StringConverter.ParseFloat( attribParams[2] ) / 360; // +ve is clockwise degrees in Q3 shader, anticlockwise complete rotations in Ogre
                 }
                 else if ( attribParams[1] == "scroll" )
                 {
-                    pass.tcModScroll[0] = Real.Parse( attribParams[2] );
-                    pass.tcModScroll[1] = Real.Parse( attribParams[3] );
+                    pass.tcModScroll[0] = StringConverter.ParseFloat( attribParams[2] );
+                    pass.tcModScroll[1] = StringConverter.ParseFloat( attribParams[3] );
                 }
                 else if ( attribParams[1] == "scale" )
                 {
-                    pass.tcModScale[0] = Real.Parse( attribParams[2] );
-                    pass.tcModScale[1] = Real.Parse( attribParams[3] );
+                    pass.tcModScale[0] = StringConverter.ParseFloat( attribParams[2] );
+                    pass.tcModScale[1] = StringConverter.ParseFloat( attribParams[3] );
                 }
                 else if ( attribParams[1] == "stretch" )
                 {
@@ -368,20 +361,20 @@ namespace Axiom.SceneManagers.Bsp
                     else if ( attribParams[2] == "inversesawtooth" )
                         pass.tcModStretchWave = ShaderWaveType.InverseSawtooth;
 
-                    pass.tcModStretchParams[0] = Real.Parse( attribParams[3] );
-                    pass.tcModStretchParams[1] = Real.Parse( attribParams[4] );
-                    pass.tcModStretchParams[2] = Real.Parse( attribParams[5] );
-                    pass.tcModStretchParams[3] = Real.Parse( attribParams[6] );
+                    pass.tcModStretchParams[0] = StringConverter.ParseFloat( attribParams[3] );
+                    pass.tcModStretchParams[1] = StringConverter.ParseFloat( attribParams[4] );
+                    pass.tcModStretchParams[2] = StringConverter.ParseFloat( attribParams[5] );
+                    pass.tcModStretchParams[3] = StringConverter.ParseFloat( attribParams[6] );
                 }
             }
             // TURB
             else if ( attribParams[0] == "turb" )
             {
                 pass.tcModTurbOn = true;
-                pass.tcModTurb[0] = Real.Parse( attribParams[2] );
-                pass.tcModTurb[1] = Real.Parse( attribParams[3] );
-                pass.tcModTurb[2] = Real.Parse( attribParams[4] );
-                pass.tcModTurb[3] = Real.Parse( attribParams[5] );
+                pass.tcModTurb[0] = StringConverter.ParseFloat( attribParams[2] );
+                pass.tcModTurb[1] = StringConverter.ParseFloat( attribParams[3] );
+                pass.tcModTurb[2] = StringConverter.ParseFloat( attribParams[4] );
+                pass.tcModTurb[3] = StringConverter.ParseFloat( attribParams[5] );
             }
             // DEPTHFUNC
             else if ( attribParams[0] == "depthfunc" )

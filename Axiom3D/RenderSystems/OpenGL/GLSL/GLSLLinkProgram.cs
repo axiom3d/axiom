@@ -22,7 +22,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
             public string name;
             public int type;
             public int location;
-            public bool isReal;
+            public bool isFloat;
             public int elementCount;
         }
 
@@ -162,22 +162,22 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
                         switch ( newUniformReference.type )
                         {
                             case Gl.GL_FLOAT:
-                                newUniformReference.isReal = true;
+                                newUniformReference.isFloat = true;
                                 newUniformReference.elementCount = 1;
                                 break;
 
                             case Gl.GL_FLOAT_VEC2_ARB:
-                                newUniformReference.isReal = true;
+                                newUniformReference.isFloat = true;
                                 newUniformReference.elementCount = 2;
                                 break;
 
                             case Gl.GL_FLOAT_VEC3_ARB:
-                                newUniformReference.isReal = true;
+                                newUniformReference.isFloat = true;
                                 newUniformReference.elementCount = 3;
                                 break;
 
                             case Gl.GL_FLOAT_VEC4_ARB:
-                                newUniformReference.isReal = true;
+                                newUniformReference.isFloat = true;
                                 newUniformReference.elementCount = 4;
                                 break;
 
@@ -186,22 +186,22 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
                             case Gl.GL_SAMPLER_2D_ARB:
                             case Gl.GL_SAMPLER_3D_ARB:
                             case Gl.GL_SAMPLER_CUBE_ARB:
-                                newUniformReference.isReal = false;
+                                newUniformReference.isFloat = false;
                                 newUniformReference.elementCount = 1;
                                 break;
 
                             case Gl.GL_INT_VEC2_ARB:
-                                newUniformReference.isReal = false;
+                                newUniformReference.isFloat = false;
                                 newUniformReference.elementCount = 2;
                                 break;
 
                             case Gl.GL_INT_VEC3_ARB:
-                                newUniformReference.isReal = false;
+                                newUniformReference.isFloat = false;
                                 newUniformReference.elementCount = 3;
                                 break;
 
                             case Gl.GL_INT_VEC4_ARB:
-                                newUniformReference.isReal = false;
+                                newUniformReference.isFloat = false;
                                 newUniformReference.elementCount = 4;
                                 break;
                         } // end switch
@@ -225,33 +225,33 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
             {
                 UniformReference uniformRef = (UniformReference)uniformReferences[i];
 
-                GpuProgramParameters.RealConstantEntry currentRealEntry = null;
+                GpuProgramParameters.FloatConstantEntry currentFloatEntry = null;
                 GpuProgramParameters.IntConstantEntry currentIntEntry = null;
 
-                if ( uniformRef.isReal )
+                if ( uniformRef.isFloat )
                 {
-                    currentRealEntry = parameters.GetNamedRealConstant( uniformRef.name );
+                    currentFloatEntry = parameters.GetNamedFloatConstant( uniformRef.name );
 
-                    if ( currentRealEntry != null )
+                    if ( currentFloatEntry != null )
                     {
-                        if ( currentRealEntry.isSet )
+                        if ( currentFloatEntry.isSet )
                         {
                             switch ( uniformRef.elementCount )
                             {
                                 case 1:
-                                    Gl.glUniform1fvARB( uniformRef.location, 1, currentRealEntry.val );
+                                    Gl.glUniform1fvARB( uniformRef.location, 1, currentFloatEntry.val );
                                     break;
 
                                 case 2:
-                                    Gl.glUniform2fvARB( uniformRef.location, 1, currentRealEntry.val );
+                                    Gl.glUniform2fvARB( uniformRef.location, 1, currentFloatEntry.val );
                                     break;
 
                                 case 3:
-                                    Gl.glUniform3fvARB( uniformRef.location, 1, currentRealEntry.val );
+                                    Gl.glUniform3fvARB( uniformRef.location, 1, currentFloatEntry.val );
                                     break;
 
                                 case 4:
-                                    Gl.glUniform4fvARB( uniformRef.location, 1, currentRealEntry.val );
+                                    Gl.glUniform4fvARB( uniformRef.location, 1, currentFloatEntry.val );
                                     break;
                             } // end switch
                         }

@@ -24,13 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
-using System.Text;
 using System.IO;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -149,7 +157,7 @@ namespace Axiom
         }
 
         //			Real getSquaredViewDepth(const Camera* cam) const;
-        public Real GetSquaredViewDepth( Camera cam )
+        public float GetSquaredViewDepth( Camera cam )
         {
             throw new NotImplementedException();
             //return 0.0f;
@@ -389,8 +397,8 @@ namespace Axiom
 
             byte* pSrc = (byte*)src.ToPointer();
             byte* pDst = (byte*)dst.ToPointer();
-            Real* pSrcReal;
-            Real* pDstReal;
+            float* pSrcReal;
+            float* pDstReal;
             Vector3 temp = Vector3.Zero;
 
             for ( int v = 0; v < geom.geometry.vertexData.vertexCount; ++v )
@@ -400,8 +408,8 @@ namespace Axiom
                 while ( iter.MoveNext() )
                 {
                     VertexElement elem = (VertexElement)iter.Current;
-                    pSrcReal = (Real*)( pSrc + elem.Offset );
-                    pDstReal = (Real*)( pDst + elem.Offset );
+                    pSrcReal = (float*)( pSrc + elem.Offset );
+                    pDstReal = (float*)( pDst + elem.Offset );
 
                     switch ( elem.Semantic )
                     {

@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -33,6 +41,7 @@ using System.Collections.Specialized;
 using System.Runtime.InteropServices;
 
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -816,7 +825,7 @@ namespace Axiom.SceneManagers.Bsp
         protected void LoadEntities( Quake3Level q3lvl )
         {
             Vector3 origin = new Vector3();
-            Degree angle = Real.Zero;
+            float angle = 0;
             bool isPlayerStart = false;
             string[] entities = q3lvl.Entities.Split( '\n' );
 
@@ -832,9 +841,9 @@ namespace Axiom.SceneManagers.Bsp
 
                 if ( paramList[0] == "origin" )
                 {
-                    Real[] vector = new Real[3];
+                    float[] vector = new float[3];
                     for ( int v = 0; v < 3; v++ )
-                        vector[v] = Real.Parse( paramList[v + 1] );
+                        vector[v] = StringConverter.ParseFloat( paramList[v + 1] );
 
                     q3lvl.TransformVector( vector );
 
@@ -842,7 +851,7 @@ namespace Axiom.SceneManagers.Bsp
                 }
 
                 if ( paramList[0] == "angle" )
-                    angle = Real.Parse( paramList[1] );
+                    angle = StringConverter.ParseFloat( paramList[1] );
 
                 if ( ( paramList[0] == "classname" ) && ( paramList[1] == "info_player_deathmatch" ) )
                     isPlayerStart = true;
@@ -855,9 +864,9 @@ namespace Axiom.SceneManagers.Bsp
                         vp.position = origin;
 
                         if ( q3lvl.Options.setYAxisUp )
-                            vp.orientation = Quaternion.FromAngleAxis( angle, Vector3.UnitY );
+                            vp.orientation = Quaternion.FromAngleAxis( (Real)MathUtil.DegreesToRadians( angle ), Vector3.UnitY );
                         else
-                            vp.orientation = Quaternion.FromAngleAxis( angle, Vector3.UnitZ );
+                            vp.orientation = Quaternion.FromAngleAxis( (Real)MathUtil.DegreesToRadians( angle ), Vector3.UnitZ );
 
                         playerStarts.Add( vp );
                     }
@@ -892,10 +901,10 @@ namespace Axiom.SceneManagers.Bsp
             else
             {
                 // Find distance to dividing plane
-                Real dist = node.GetDistance( pos );
+                float dist = node.GetDistance( pos );
 
                 //CHECK: treat obj as bounding box?
-                if ( Utility.Abs( dist ) < obj.BoundingRadius )
+                if ( MathUtil.Abs( dist ) < obj.BoundingRadius )
                 {
                     // Bounding sphere crosses the plane, do both.
                     TagNodesWithObject( node.BackNode, obj, pos );
@@ -995,7 +1004,7 @@ namespace Axiom.SceneManagers.Bsp
                 bspOptions.setYAxisUp = (bool)options["SetYAxisUp"];
 
             if ( options.ContainsKey( "Scale" ) )
-                bspOptions.scale = (Real)options["Scale"];
+                bspOptions.scale = (float)options["Scale"];
 
             if ( options.ContainsKey( "Move" ) )
                 bspOptions.move = (Vector3)options["Move"];
@@ -1007,7 +1016,7 @@ namespace Axiom.SceneManagers.Bsp
                 bspOptions.ambientEnabled = (bool)options["AmbientEnabled"];
 
             if ( options.ContainsKey( "AmbientRatio" ) )
-                bspOptions.ambientRatio = (Real)options["AmbientRatio"];
+                bspOptions.ambientRatio = (float)options["AmbientRatio"];
 
             Quake3Level q3 = new Quake3Level( bspOptions );
 
@@ -1084,11 +1093,11 @@ namespace Axiom.SceneManagers.Bsp
     public class BspOptions
     {
         public bool setYAxisUp;
-        public Real scale;
+        public float scale;
         public Vector3 move;
         public bool useLightmaps;
         public bool ambientEnabled;
-        public Real ambientRatio;
+        public float ambientRatio;
 
         public BspOptions()
         {

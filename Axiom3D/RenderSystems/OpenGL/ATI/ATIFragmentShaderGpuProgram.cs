@@ -67,11 +67,11 @@ namespace Axiom.RenderSystems.OpenGL.ATI
         public override void BindParameters( GpuProgramParameters parms )
         {
             // program constants done internally by compiler for local
-            if ( parms.HasRealConstants )
+            if ( parms.HasFloatConstants )
             {
-                for ( int index = 0; index < parms.RealConstantCount; index++ )
+                for ( int index = 0; index < parms.FloatConstantCount; index++ )
                 {
-                    GpuProgramParameters.RealConstantEntry entry = parms.GetRealConstant( index );
+                    GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
 
                     if ( entry.isSet )
                     {

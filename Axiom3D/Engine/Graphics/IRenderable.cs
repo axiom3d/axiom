@@ -24,9 +24,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
+using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -204,7 +214,7 @@ namespace Axiom
         /// </remarks>
         /// <param name="camera"></param>
         /// <returns></returns>
-        Real GetSquaredViewDepth( Camera camera );
+        float GetSquaredViewDepth( Camera camera );
 
         /// <summary>
         ///		Gets the custom value associated with this Renderable at the given index. 

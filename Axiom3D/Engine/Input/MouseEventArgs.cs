@@ -24,11 +24,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-
-using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -44,32 +50,32 @@ namespace Axiom
         /// <summary>
         ///		X coordinate of the mouse.
         /// </summary>
-        protected Real x;
+        protected float x;
 
         /// <summary>
         ///		Y coordinate of the mouse.
         /// </summary>
-        protected Real y;
+        protected float y;
 
         /// <summary>
         ///		Z coordinate of the mouse.
         /// </summary>
-        protected Real z;
+        protected float z;
 
         /// <summary>
         ///		Relative X coordinate of the mouse.
         /// </summary>
-        protected Real relativeX;
+        protected float relativeX;
 
         /// <summary>
         ///		Relative Y coordinate of the mouse.
         /// </summary>
-        protected Real relativeY;
+        protected float relativeY;
 
         /// <summary>
         ///		Relative Z coordinate of the mouse.
         /// </summary>
-        protected Real relativeZ;
+        protected float relativeZ;
 
         /// <summary>
         ///		Mouse button pressed during this event.
@@ -88,7 +94,7 @@ namespace Axiom
         /// <param name="x">Mouse X position.</param>
         /// <param name="y">Mouse Y position.</param>
         /// <param name="z">Mouse Z position.</param>
-        public MouseEventArgs( MouseButtons button, ModifierKeys modifiers, Real x, Real y, Real z )
+        public MouseEventArgs( MouseButtons button, ModifierKeys modifiers, float x, float y, float z )
             : this( button, modifiers, x, y, z, 0, 0, 0 )
         {
         }
@@ -104,7 +110,7 @@ namespace Axiom
         /// <param name="relX">Relative mouse X position.</param>
         /// <param name="relY">Relative mouse Y position.</param>
         /// <param name="relZ">Relative mouse Z position.</param>
-        public MouseEventArgs( MouseButtons button, ModifierKeys modifiers, Real x, Real y, Real z, Real relX, Real relY, Real relZ )
+        public MouseEventArgs( MouseButtons button, ModifierKeys modifiers, float x, float y, float z, float relX, float relY, float relZ )
             : base( modifiers )
         {
             this.button = button;
@@ -134,7 +140,7 @@ namespace Axiom
         /// <summary>
         ///		Mouse X coordinate.
         /// </summary>
-        public Real X
+        public float X
         {
             get
             {
@@ -145,7 +151,7 @@ namespace Axiom
         /// <summary>
         ///		Mouse Y coordinate.
         /// </summary>
-        public Real Y
+        public float Y
         {
             get
             {
@@ -156,7 +162,7 @@ namespace Axiom
         /// <summary>
         ///		Mouse Z coordinate.
         /// </summary>
-        public Real Z
+        public float Z
         {
             get
             {
@@ -167,7 +173,7 @@ namespace Axiom
         /// <summary>
         ///		Relative mouse X coordinate.
         /// </summary>
-        public Real RelativeX
+        public float RelativeX
         {
             get
             {
@@ -178,7 +184,7 @@ namespace Axiom
         /// <summary>
         ///		Relative mouse Y coordinate.
         /// </summary>
-        public Real RelativeY
+        public float RelativeY
         {
             get
             {
@@ -189,7 +195,7 @@ namespace Axiom
         /// <summary>
         ///		Relative mouse Z coordinate.
         /// </summary>
-        public Real RelativeZ
+        public float RelativeZ
         {
             get
             {

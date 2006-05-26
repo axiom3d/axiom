@@ -1,14 +1,9 @@
 
-#region Namespace Declarations
-
 using System;
-
 using Axiom;
-
+using Axiom.MathLib;
 using DotNet3D.Math;
 
-#endregion Namespace Declarations
-			
 namespace Axiom.Demos
 {
     /// <summary>
@@ -18,33 +13,33 @@ namespace Axiom.Demos
     {
         #region Perlin noise data and algorithms
 
-        private Real Lerp( Real t, Real a, Real b )
+        private float Lerp( float t, float a, float b )
         {
             return ( ( a ) + ( t ) * ( ( b ) - ( a ) ) );
         }
 
-        private Real Fade( Real t )
+        private float Fade( float t )
         {
             return ( t ) * ( t ) * ( t ) * ( t ) * ( ( t ) * ( ( t ) * 6 - 15 ) + 10 );
         }
 
-        private Real Grad( int hash, Real x, Real y, Real z )
+        private float Grad( int hash, float x, float y, float z )
         {
             int h = hash & 15;                      // CONVERT LO 4 BITS OF HASH CODE
-            Real u = h < 8 || h == 12 || h == 13 ? x : y,   // INTO 12 GRADIENT DIRECTIONS.
+            float u = h < 8 || h == 12 || h == 13 ? x : y,   // INTO 12 GRADIENT DIRECTIONS.
                 v = h < 4 || h == 12 || h == 13 ? y : z;
             return ( ( h & 1 ) == 0 ? u : -u ) + ( ( h & 2 ) == 0 ? v : -v );
         }
 
-        private Real Noise3( Real x, Real y, Real z )
+        private float Noise3( float x, float y, float z )
         {
-            int X = ( (int)x.Floor() ) & 255,                  // FIND UNIT CUBE THAT
-                Y = ( (int)y.Floor() ) & 255,                  // CONTAINS POINT.
-                Z = ( (int)z.Floor() ) & 255;
-            x -= (Real)x.Floor();                                // FIND RELATIVE X,Y,Z
-            y -= (Real)y.Floor();                                // OF POINT IN CUBE.
-            z -= (Real)z.Floor();
-            Real u = Fade( x ),                                // COMPUTE FADE CURVES
+            int X = ( (int)Math.Floor( x ) ) & 255,                  // FIND UNIT CUBE THAT
+                Y = ( (int)Math.Floor( y ) ) & 255,                  // CONTAINS POINT.
+                Z = ( (int)Math.Floor( z ) ) & 255;
+            x -= (float)Math.Floor( x );                                // FIND RELATIVE X,Y,Z
+            y -= (float)Math.Floor( y );                                // OF POINT IN CUBE.
+            z -= (float)Math.Floor( z );
+            float u = Fade( x ),                                // COMPUTE FADE CURVES
                 v = Fade( y ),                                // FOR EACH OF X,Y,Z.
                 w = Fade( z );
             int A = p[X] + Y, AA = p[A] + Z, AB = p[A + 1] + Z,      // HASH COORDINATES OF
@@ -96,7 +91,7 @@ namespace Axiom.Demos
         #region Fields
 
         private bool noiseOn;
-        private Real keyDelay = 0.0f;
+        private float keyDelay = 0.0f;
         private string[] meshes = 
             {   "ogrehead.mesh", 
                 "razor.mesh", 
@@ -119,10 +114,10 @@ namespace Axiom.Demos
         private SceneNode objectNode;
         private Material material;
         private MaterialList clonedMaterials = new MaterialList();
-        private Real displacement = 0.1f;
-        private Real density = 50.0f;
-        private Real timeDensity = 5.0f;
-        private Real tm = 0.0f;
+        private float displacement = 0.1f;
+        private float density = 50.0f;
+        private float timeDensity = 5.0f;
+        private float tm = 0.0f;
 
         const string ENTITY_NAME = "CubeMappedEntity";
         const string MESH_NAME = "CubeMappedMesh";
@@ -375,7 +370,7 @@ namespace Axiom.Demos
         /// </summary>
         private unsafe void UpdateNoise()
         {
-            Real* sharedNormals = null;
+            float* sharedNormals = null;
 
             for ( int i = 0; i < clonedMesh.SubMeshCount; i++ )
             {
@@ -397,7 +392,7 @@ namespace Axiom.Demos
                 }
                 else
                 {
-                    Real* normals = NormalsGetCleared( subMesh.vertexData );
+                    float* normals = NormalsGetCleared( subMesh.vertexData );
 
                     UpdateVertexDataNoiseAndNormals(
                         subMesh.vertexData,
@@ -422,7 +417,7 @@ namespace Axiom.Demos
         /// <param name="orgdata"></param>
         /// <param name="indexData"></param>
         /// <param name="normals"></param>
-        private unsafe void UpdateVertexDataNoiseAndNormals( VertexData dstData, VertexData orgData, IndexData indexData, Real* normals )
+        private unsafe void UpdateVertexDataNoiseAndNormals( VertexData dstData, VertexData orgData, IndexData indexData, float* normals )
         {
             // destination vertex buffer
             VertexElement dstPosElement = dstData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
@@ -437,15 +432,15 @@ namespace Axiom.Demos
             IntPtr orgPosData = orgPosBuffer.Lock( BufferLocking.ReadOnly );
 
             // get some raw pointer action goin on
-            Real* dstPosPtr = (Real*)dstPosData.ToPointer();
-            Real* orgPosPtr = (Real*)orgPosData.ToPointer();
+            float* dstPosPtr = (float*)dstPosData.ToPointer();
+            float* orgPosPtr = (float*)orgPosData.ToPointer();
 
             // make noise
             int numVerts = orgPosBuffer.VertexCount;
 
             for ( int i = 0; i < 3 * numVerts; i += 3 )
             {
-                Real n = 1 + displacement *
+                float n = 1 + displacement *
                     Noise3( orgPosPtr[i] / density + tm,
                                 orgPosPtr[i + 1] / density + tm,
                                 orgPosPtr[i + 2] / density + tm );
@@ -504,12 +499,12 @@ namespace Axiom.Demos
         /// </summary>
         /// <param name="vertexData"></param>
         /// <returns></returns>
-        private unsafe Real* NormalsGetCleared( VertexData vertexData )
+        private unsafe float* NormalsGetCleared( VertexData vertexData )
         {
             VertexElement element = vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
             HardwareVertexBuffer buffer = vertexData.vertexBufferBinding.GetBuffer( element.Source );
             IntPtr data = buffer.Lock( BufferLocking.Discard );
-            Real* normPtr = (Real*)data.ToPointer();
+            float* normPtr = (float*)data.ToPointer();
 
             for ( int i = 0; i < buffer.VertexCount; i++ )
             {
@@ -524,7 +519,7 @@ namespace Axiom.Demos
         /// </summary>
         /// <param name="vertexData"></param>
         /// <param name="normals"></param>
-        private unsafe void NormalsSaveNormalized( VertexData vertexData, Real* normals )
+        private unsafe void NormalsSaveNormalized( VertexData vertexData, float* normals )
         {
             VertexElement element = vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
             HardwareVertexBuffer buffer = vertexData.vertexBufferBinding.GetBuffer( element.Source );
@@ -551,11 +546,11 @@ namespace Axiom.Demos
         /// <param name="numVertices"></param>
         /// <param name="dstVertices"></param>
         /// <param name="defaultVertices"></param>
-        private unsafe void UpdatePositionNoise( int numVertices, Real* dstVertices, Real* defaultVertices )
+        private unsafe void UpdatePositionNoise( int numVertices, float* dstVertices, float* defaultVertices )
         {
             for ( int i = 0; i < 3 * numVertices; i++ )
             {
-                Real n = 1 + displacement *
+                float n = 1 + displacement *
                     Noise3( defaultVertices[i] / density + tm,
                                 defaultVertices[i + 1] / density + tm,
                                 defaultVertices[i + 2] / density + tm );

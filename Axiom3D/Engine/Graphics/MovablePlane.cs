@@ -24,15 +24,23 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-
+using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
-
 namespace Axiom
 {
 
@@ -123,7 +131,7 @@ namespace Axiom
         /// <summary>
         ///		The plane's distance from the origin.
         /// </summary>
-        public Real Distance
+        public float D
         {
             get
             {
@@ -193,7 +201,7 @@ namespace Axiom
 
         #region SceneObject Members
 
-        public override AxisAlignedBox BoundingBox
+        public override Axiom.MathLib.AxisAlignedBox BoundingBox
         {
             get
             {
@@ -201,11 +209,11 @@ namespace Axiom
             }
         }
 
-        public override Real BoundingRadius
+        public override float BoundingRadius
         {
             get
             {
-                return Real.PositiveInfinity;
+                return float.PositiveInfinity;
             }
         }
 

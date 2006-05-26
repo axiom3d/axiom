@@ -24,12 +24,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.IO;
 using System.Text;
 
+using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -87,7 +97,7 @@ namespace Axiom
         }
 
         /// <summary>
-        ///		Reads a specified number of Reals and copies them into the destination pointer.
+        ///		Reads a specified number of floats and copies them into the destination pointer.
         /// </summary>
         /// <param name="count">Number of values to read.</param>
         /// <param name="dest">Pointer to copy the values into.</param>
@@ -106,16 +116,16 @@ namespace Axiom
         }
 
         /// <summary>
-        ///		Reads a specified number of Reals and copies them into the destination pointer.
+        ///		Reads a specified number of floats and copies them into the destination pointer.
         /// </summary>
         /// <param name="count">Number of values to read.</param>
         /// <param name="dest">Pointer to copy the values into.</param>
-        protected void ReadReals( BinaryReader reader, int count, IntPtr dest )
+        protected void ReadFloats( BinaryReader reader, int count, IntPtr dest )
         {
             // blast the data into the buffer
             unsafe
             {
-                Real* pointer = (Real*)dest.ToPointer();
+                float* pointer = (float*)dest.ToPointer();
 
                 for ( int i = 0; i < count; i++ )
                 {
@@ -130,17 +140,17 @@ namespace Axiom
         /// <remarks>This overload will also copy the values into the specified destination array.</remarks>
         /// <param name="count">Number of values to read.</param>
         /// <param name="dest">Pointer to copy the values into.</param>
-        /// <param name="destArray">A Real array that is to have the values copied into it at the same time as 'dest'.</param>
-        protected void ReadReals( BinaryReader reader, int count, IntPtr dest, Real[] destArray )
+        /// <param name="destArray">A float array that is to have the values copied into it at the same time as 'dest'.</param>
+        protected void ReadFloats( BinaryReader reader, int count, IntPtr dest, float[] destArray )
         {
             // blast the data into the buffer
             unsafe
             {
-                Real* pointer = (Real*)dest.ToPointer();
+                float* pointer = (float*)dest.ToPointer();
 
                 for ( int i = 0; i < count; i++ )
                 {
-                    Real val = reader.ReadSingle();
+                    float val = reader.ReadSingle();
                     pointer[i] = val;
                     destArray[i] = val;
                 }
@@ -152,7 +162,7 @@ namespace Axiom
             return reader.ReadBoolean();
         }
 
-        protected Real ReadReal( BinaryReader reader )
+        protected float ReadFloat( BinaryReader reader )
         {
             return reader.ReadSingle();
         }
@@ -280,9 +290,9 @@ namespace Axiom
         {
             Vector3 vector = new Vector3();
 
-            vector.x = ReadReal( reader );
-            vector.y = ReadReal( reader );
-            vector.z = ReadReal( reader );
+            vector.x = ReadFloat( reader );
+            vector.y = ReadFloat( reader );
+            vector.z = ReadFloat( reader );
 
             return vector;
         }
@@ -295,10 +305,10 @@ namespace Axiom
         {
             Vector4 vector = new Vector4();
 
-            vector.x = ReadReal( reader );
-            vector.y = ReadReal( reader );
-            vector.z = ReadReal( reader );
-            vector.w = ReadReal( reader );
+            vector.x = ReadFloat( reader );
+            vector.y = ReadFloat( reader );
+            vector.z = ReadFloat( reader );
+            vector.w = ReadFloat( reader );
 
             return vector;
         }

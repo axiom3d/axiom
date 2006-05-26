@@ -24,12 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 using System.Diagnostics;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -116,7 +125,7 @@ namespace Axiom
         /// <summary></summary>
         protected bool inheritsScale;
         /// <summary>Weight of applied animations so far, used for blending.</summary>
-        protected Real accumAnimWeight;
+        protected float accumAnimWeight;
         /// <summary>Cached derived transform as a 4x4 matrix.</summary>
         protected Matrix4 cachedTransform;
         /// <summary>Cached relative transform as a 4x4 matrix.</summary>
@@ -436,7 +445,7 @@ namespace Axiom
         /// Rotate the node around the X-axis.
         /// </summary>
         /// <param name="degrees"></param>
-        public virtual void Pitch( Real degrees, TransformSpace relativeTo )
+        public virtual void Pitch( float degrees, TransformSpace relativeTo )
         {
             Rotate( Vector3.UnitX, degrees, relativeTo );
         }
@@ -445,7 +454,7 @@ namespace Axiom
         /// Rotate the node around the X-axis.
         /// </summary>
         /// <param name="degrees"></param>
-        public virtual void Pitch( Real degrees )
+        public virtual void Pitch( float degrees )
         {
             Rotate( Vector3.UnitX, degrees, TransformSpace.Local );
         }
@@ -454,7 +463,7 @@ namespace Axiom
         /// Rotate the node around the Z-axis.
         /// </summary>
         /// <param name="degrees"></param>
-        public virtual void Roll( Real degrees, TransformSpace relativeTo )
+        public virtual void Roll( float degrees, TransformSpace relativeTo )
         {
             Rotate( Vector3.UnitZ, degrees, relativeTo );
         }
@@ -463,7 +472,7 @@ namespace Axiom
         /// Rotate the node around the Z-axis.
         /// </summary>
         /// <param name="degrees"></param>
-        public virtual void Roll( Real degrees )
+        public virtual void Roll( float degrees )
         {
             Rotate( Vector3.UnitZ, degrees, TransformSpace.Local );
         }
@@ -472,7 +481,7 @@ namespace Axiom
         /// Rotate the node around the Y-axis.
         /// </summary>
         /// <param name="degrees"></param>
-        public virtual void Yaw( Real degrees, TransformSpace relativeTo )
+        public virtual void Yaw( float degrees, TransformSpace relativeTo )
         {
             Rotate( Vector3.UnitY, degrees, relativeTo );
         }
@@ -481,7 +490,7 @@ namespace Axiom
         /// Rotate the node around the Y-axis.
         /// </summary>
         /// <param name="degrees"></param>
-        public virtual void Yaw( Real degrees )
+        public virtual void Yaw( float degrees )
         {
             Rotate( Vector3.UnitY, degrees, TransformSpace.Local );
         }
@@ -489,16 +498,16 @@ namespace Axiom
         /// <summary>
         /// Rotate the node around an arbitrary axis.
         /// </summary>
-        public virtual void Rotate( Vector3 axis, Degree angle, TransformSpace relativeTo )
+        public virtual void Rotate( Vector3 axis, float degrees, TransformSpace relativeTo )
         {
-            Quaternion q = Quaternion.FromAngleAxis( angle, axis );
+            Quaternion q = Quaternion.FromAngleAxis( (Real)MathUtil.DegreesToRadians( degrees ), axis );
             Rotate( q, relativeTo );
         }
 
         /// <summary>
         /// Rotate the node around an arbitrary axis.
         /// </summary>
-        public virtual void Rotate( Vector3 axis, Real degrees )
+        public virtual void Rotate( Vector3 axis, float degrees )
         {
             Rotate( axis, degrees, TransformSpace.Local );
         }
@@ -658,7 +667,7 @@ namespace Axiom
         /// </summary>
         /// <param name="camera"></param>
         /// <returns></returns>
-        public Real GetSquaredViewDepth( Camera camera )
+        public float GetSquaredViewDepth( Camera camera )
         {
             Vector3 difference = this.DerivedPosition - camera.DerivedPosition;
 
@@ -1275,7 +1284,7 @@ namespace Axiom
         /// <param name="translate"></param>
         /// <param name="rotate"></param>
         /// <param name="scale"></param>
-        internal virtual void WeightedTransform( Real weight, Vector3 translate, Quaternion rotate, Vector3 scale )
+        internal virtual void WeightedTransform( float weight, Vector3 translate, Quaternion rotate, Vector3 scale )
         {
             WeightedTransform( weight, translate, rotate, scale, false );
         }
@@ -1291,7 +1300,7 @@ namespace Axiom
         /// <param name="translate"></param>
         /// <param name="rotate"></param>
         /// <param name="scale"></param>
-        internal virtual void WeightedTransform( Real weight, Vector3 translate, Quaternion rotate, Vector3 scale, bool lookInMovementDirection )
+        internal virtual void WeightedTransform( float weight, Vector3 translate, Quaternion rotate, Vector3 scale, bool lookInMovementDirection )
         {
             // If no previous transforms, we can just apply
             if ( accumAnimWeight == 0.0f )
@@ -1304,7 +1313,7 @@ namespace Axiom
             else
             {
                 // Blend with existing
-                Real factor = weight / ( accumAnimWeight + weight );
+                float factor = weight / ( accumAnimWeight + weight );
 
                 translationFromInitial += ( translate - translationFromInitial ) * factor;
                 rotationFromInitial = Quaternion.Slerp( factor, rotationFromInitial, rotate );

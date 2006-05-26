@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Graphics Engine Library
-Copyright (C) 2003-2006  Axiom Project Team
+Axiom Game Engine Library
+Copyright (C) 2003  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,15 +24,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-#region Namespace Declarations
-
 using System;
 
 using Axiom;
-using DotNet3D.Math;
+using Axiom.MathLib;
 
-#endregion Namespace Declarations
-			
 namespace Axiom.ParticleFX
 {
     /// <summary>
@@ -45,19 +41,19 @@ namespace Axiom.ParticleFX
         /// <summary>
         ///		Initial rotation speed of particles (range start).
         /// </summary>
-        Real rotationSpeedRangeStart;
+        float rotationSpeedRangeStart;
         /// <summary>
         ///		Initial rotation speed of particles (range end).
         /// </summary>
-        Real rotationSpeedRangeEnd;
+        float rotationSpeedRangeEnd;
         /// <summary>
         ///		Initial rotation angle of particles (range start).
         /// </summary>
-        Real rotationRangeStart;
+        float rotationRangeStart;
         /// <summary>
         ///		Initial rotation angle of particles (range end)
         /// </summary>
-        Real rotationRangeEnd;
+        float rotationRangeEnd;
 
         #endregion Fields
 
@@ -72,18 +68,18 @@ namespace Axiom.ParticleFX
 
         public override void InitParticle( ref Particle particle )
         {
-            particle.Rotation = rotationRangeStart + ( Utility.UnitRandom() * ( rotationRangeEnd - rotationRangeStart ) );
-            particle.RotationSpeed = rotationSpeedRangeStart + ( Utility.UnitRandom() * ( rotationSpeedRangeEnd - rotationSpeedRangeStart ) );
+            particle.Rotation = rotationRangeStart + ( MathUtil.UnitRandom() * ( rotationRangeEnd - rotationRangeStart ) );
+            particle.RotationSpeed = rotationSpeedRangeStart + ( MathUtil.UnitRandom() * ( rotationSpeedRangeEnd - rotationSpeedRangeStart ) );
         }
 
-        public override void AffectParticles( ParticleSystem system, Real timeElapsed )
+        public override void AffectParticles( ParticleSystem system, float timeElapsed )
         {
-            Real ds;
+            float ds;
 
             // Rotation adjustments by time
             ds = timeElapsed;
 
-            Real newRotation;
+            float newRotation;
 
             // loop through the particles
             for ( int i = 0; i < system.Particles.Count; i++ )
@@ -110,7 +106,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 RotationAffector affector = target as RotationAffector;
-                affector.rotationSpeedRangeStart = Real.Parse( val );
+                affector.rotationSpeedRangeStart = StringConverter.ParseFloat( val );
             }
 
             #endregion
@@ -129,7 +125,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 RotationAffector affector = target as RotationAffector;
-                affector.rotationSpeedRangeEnd = Real.Parse( val );
+                affector.rotationSpeedRangeEnd = StringConverter.ParseFloat( val );
             }
 
             #endregion
@@ -148,7 +144,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 RotationAffector affector = target as RotationAffector;
-                affector.rotationRangeStart = Real.Parse( val );
+                affector.rotationRangeStart = StringConverter.ParseFloat( val );
             }
 
             #endregion
@@ -168,7 +164,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 RotationAffector affector = target as RotationAffector;
-                affector.rotationRangeEnd = Real.Parse( val );
+                affector.rotationRangeEnd = StringConverter.ParseFloat( val );
             }
 
             #endregion

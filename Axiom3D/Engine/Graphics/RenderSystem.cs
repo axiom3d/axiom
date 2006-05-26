@@ -24,11 +24,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Reflection;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -669,7 +678,7 @@ namespace Axiom
         ///		required to map the origin of a texel to the origin of a pixel in
         ///		the horizontal direction.
         /// </remarks>
-        public abstract Real HorizontalTexelOffset
+        public abstract float HorizontalTexelOffset
         {
             get;
         }
@@ -756,7 +765,7 @@ namespace Axiom
         ///		required to map the origin of a texel to the origin of a pixel in
         ///		the vertical direction.
         /// </remarks>
-        public abstract Real VerticalTexelOffset
+        public abstract float VerticalTexelOffset
         {
             get;
         }
@@ -839,7 +848,7 @@ namespace Axiom
         /// <param name="color">The color to clear the color buffer with, if enabled.</param>
         /// <param name="depth">The value to initialize the depth buffer with, if enabled.</param>
         /// <param name="stencil">The value to initialize the stencil buffer with, if enabled.</param>
-        public abstract void ClearFrameBuffer( FrameBuffer buffers, ColorEx color, Real depth, int stencil );
+        public abstract void ClearFrameBuffer( FrameBuffer buffers, ColorEx color, float depth, int stencil );
 
         /// <summary>
         ///		Converts the System.Drawing.Color value to a int.  Each API may need the 
@@ -929,7 +938,7 @@ namespace Axiom
         /// <param name="far">Far clipping plane distance.</param>
         /// <param name="forGpuProgram"></param>
         /// <returns></returns>
-        public abstract Matrix4 MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, bool forGpuPrograms );
+        public abstract Matrix4 MakeOrthoMatrix( float fov, float aspectRatio, float near, float far, bool forGpuPrograms );
 
         /// <summary>
         ///		Builds a perspective projection matrix suitable for this render system.
@@ -945,7 +954,7 @@ namespace Axiom
         /// <param name="far">Far clipping plane distance.</param>
         /// <param name="forGpuProgram"></param>
         /// <returns></returns>
-        public abstract Matrix4 MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, bool forGpuProgram );
+        public abstract Matrix4 MakeProjectionMatrix( float fov, float aspectRatio, float near, float far, bool forGpuProgram );
 
         /// <summary>
         /// 
@@ -999,7 +1008,7 @@ namespace Axiom
         /// <param name="density"></param>
         /// <param name="start"></param>
         /// <param name="end"></param>
-        public abstract void SetFog( FogMode mode, ColorEx color, Real density, Real start, Real end );
+        public abstract void SetFog( FogMode mode, ColorEx color, float density, float start, float end );
 
         /// <summary>
         ///		Sets the global blending factors for combining subsequent renders with the existing frame contents.
@@ -1088,7 +1097,7 @@ namespace Axiom
         /// <param name="specular"></param>
         /// <param name="emissive"></param>
         /// <param name="shininess"></param>
-        public abstract void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, Real shininess );
+        public abstract void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess );
 
         /// <summary>
         ///		Sets the details of a texture stage, to be used for all primitives
@@ -1199,7 +1208,7 @@ namespace Axiom
         /// <param name="near">Near clipping plane distance.</param>
         /// <param name="far">Far clipping plane distance.</param>
         /// <returns></returns>
-        public Matrix4 MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far )
+        public Matrix4 MakeProjectionMatrix( float fov, float aspectRatio, float near, float far )
         {
             // create without consideration for Gpu programs by default
             return MakeProjectionMatrix( fov, aspectRatio, near, far, false );
@@ -1218,7 +1227,7 @@ namespace Axiom
         /// <param name="near">Near clipping plane distance.</param>
         /// <param name="far">Far clipping plane distance.</param>
         /// <returns></returns>
-        public Matrix4 MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far )
+        public Matrix4 MakeOrthoMatrix( float fov, float aspectRatio, float near, float far )
         {
             return MakeOrthoMatrix( fov, aspectRatio, near, far, false );
         }
@@ -1316,7 +1325,7 @@ namespace Axiom
 
         #region ClearFrameBuffer()
 
-        public void ClearFrameBuffer( FrameBuffer buffers, ColorEx color, Real depth )
+        public void ClearFrameBuffer( FrameBuffer buffers, ColorEx color, float depth )
         {
             ClearFrameBuffer( buffers, color, depth, 0 );
         }

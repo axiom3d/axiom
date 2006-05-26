@@ -1,5 +1,30 @@
 #region LGPL License
 /*
+Axiom Game Engine Library
+Copyright (C) 2003  Axiom Project Team
+
+The overall design, and a majority of the core engine and rendering code 
+contained within this library is a derivative of the open source Object Oriented 
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+#endregion LGPL License
+#region LGPL License
+/*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006  Axiom Project Team
 
@@ -24,27 +49,33 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
-using Axiom.SceneManagers.PagingLandscape.Collections;
-
 #endregion Namespace Declarations
-			
+
 namespace Axiom.SceneManagers.PagingLandscape.Data2D
 {
-    public delegate Real[] GenerateHeightField(Real tileX, Real tileZ, long pageSize);
-	public delegate Real GenerateHeightPoint(int x, int z, Real tileX, Real tileZ, long pageSize);
+    public delegate float[] GenerateHeightField(float tileX, float tileZ, long pageSize);
+	public delegate float GenerateHeightPoint(int x, int z, float tileX, float tileZ, long pageSize);
 
     /// <summary>
 	/// A specialized class for loading 2D Data from a HeightField file.
 	/// </summary>
-	public class Data2D_Dynamic: Data2D
+	public class Data2D_ClientGen: Data2D
 	{
 		#region Fields
 
@@ -58,7 +89,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 
 		#region Constructor
 
-		public Data2D_Dynamic(int x, int z) : base()
+		public Data2D_ClientGen(int x, int z) : base()
 		{
             maxheight = 256.0f * Options.Instance.Scale.y;
 			dynamic = true;
@@ -77,7 +108,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 
 		#endregion
 
-		public override Real GetHeight( Real x, Real z ) 
+		public override float GetHeight( float x, float z ) 
 		{
 			if ( ( heightData == null ) && dynamic ) 
 			{
@@ -91,7 +122,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 			}
 		}
 
-		public override Real GetHeight( long x, long z ) 
+		public override float GetHeight( long x, long z ) 
 		{
 			if ( ( heightData == null ) && dynamic ) 
 			{
@@ -105,7 +136,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 			}
 		}
 
-		public override Real GetHeight( int x, int z ) 
+		public override float GetHeight( int x, int z ) 
 		{
 			if ( ( heightData == null ) && dynamic ) 
 			{
@@ -119,10 +150,10 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 			}
 		}
 
-		public override Vector3 GetNormalAt (Real X, Real Z)
+		public override Vector3 GetNormalAt (float X, float Z)
 		{
-			Real X1 = X-1;
-			Real X2 = X+1;
+			float X1 = X-1;
+			float X2 = X+1;
 			if ( X1 < 0 ) 
 
 			{
@@ -134,8 +165,8 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 				X2 = size - 1;
 			}
 
-			Real Z1 = Z-1;
-			Real Z2 = Z+1;
+			float Z1 = Z-1;
+			float Z2 = Z+1;
 			if ( Z1 < 0 ) 
 
 			{
@@ -153,19 +184,19 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		}
 
 
-		public override ColorEx GetBase (Real X, Real Z)
+		public override ColorEx GetBase (float X, float Z)
 		{
 			return ColorEx.White;
 		}
 
 
-		public override ColorEx GetCoverage (Real X, Real Z)
+		public override ColorEx GetCoverage (float X, float Z)
 		{
 			return ColorEx.White;
 		}
 
 
-		protected override void load(Real X, Real Z)
+		protected override void load(float X, float Z)
 		{
 
 			this.size = Options.Instance.PageSize;

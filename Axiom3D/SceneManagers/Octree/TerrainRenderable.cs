@@ -24,6 +24,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
 
 #region Namespace Declarations
 
@@ -31,6 +38,7 @@ using System;
 using System.Collections;
 
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -53,10 +61,10 @@ namespace Axiom.SceneManagers.Octree
         protected IndexData[,] levelIndex = new IndexData[16, 16];
         protected int renderLevel;
         protected int forcedRenderLevel;
-        protected Real currentL;
+        protected float currentL;
         protected int numMipMaps;
         protected int size;
-        protected Real[] minLevelDistSqr;
+        protected float[] minLevelDistSqr;
         protected Hashtable customParams = new Hashtable();
 
         const int POSITION = 0;
@@ -138,7 +146,7 @@ namespace Axiom.SceneManagers.Octree
 
             binding.SetBinding( TEXCOORD, buffer );
 
-            minLevelDistSqr = new Real[numMipMaps];
+            minLevelDistSqr = new float[numMipMaps];
 
             int endx = options.startx + options.size;
             int endz = options.startz + options.size;
@@ -150,12 +158,12 @@ namespace Axiom.SceneManagers.Octree
             HardwareVertexBuffer texBuffer = binding.GetBuffer( TEXCOORD );
             IntPtr tex = texBuffer.Lock( BufferLocking.Discard );
 
-            Real min = 99999999, max = 0;
+            float min = 99999999, max = 0;
 
             unsafe
             {
-                Real* posPtr = (Real*)pos.ToPointer();
-                Real* texPtr = (Real*)tex.ToPointer();
+                float* posPtr = (float*)pos.ToPointer();
+                float* texPtr = (float*)tex.ToPointer();
 
                 int posCount = 0;
                 int texCount = 0;
@@ -164,17 +172,17 @@ namespace Axiom.SceneManagers.Octree
                 {
                     for ( int i = options.startx; i < endx; i++ )
                     {
-                        Real height = options.GetWorldHeight( i, j ) * options.scaley;
+                        float height = options.GetWorldHeight( i, j ) * options.scaley;
 
-                        posPtr[posCount++] = (Real)i * options.scalex;
+                        posPtr[posCount++] = (float)i * options.scalex;
                         posPtr[posCount++] = height;
-                        posPtr[posCount++] = (Real)j * options.scalez;
+                        posPtr[posCount++] = (float)j * options.scalez;
 
-                        texPtr[texCount++] = (Real)i / (Real)options.worldSize;
-                        texPtr[texCount++] = (Real)j / (Real)options.worldSize;
+                        texPtr[texCount++] = (float)i / (float)options.worldSize;
+                        texPtr[texCount++] = (float)j / (float)options.worldSize;
 
-                        texPtr[texCount++] = ( (Real)i / (Real)options.size ) * (Real)options.detailTile;
-                        texPtr[texCount++] = ( (Real)j / (Real)options.size ) * (Real)options.detailTile;
+                        texPtr[texCount++] = ( (float)i / (float)options.size ) * (float)options.detailTile;
+                        texPtr[texCount++] = ( (float)j / (float)options.size ) * (float)options.detailTile;
 
                         if ( height < min )
                         {
@@ -194,20 +202,20 @@ namespace Axiom.SceneManagers.Octree
             texBuffer.Unlock();
 
             box.SetExtents(
-                new Vector3( (Real)options.startx * options.scalex, min, (Real)options.startz * options.scalez ),
-                new Vector3( (Real)( endx - 1 ) * options.scalex, max, (Real)( endz - 1 ) * options.scalez ) );
+                new Vector3( (float)options.startx * options.scalex, min, (float)options.startz * options.scalez ),
+                new Vector3( (float)( endx - 1 ) * options.scalex, max, (float)( endz - 1 ) * options.scalez ) );
 
 
             center = new Vector3( ( options.startx * options.scalex + endx - 1 ) / 2,
                 ( min + max ) / 2,
                 ( options.startz * options.scalez + endz - 1 ) / 2 );
 
-            Real C = CalculateCFactor();
+            float C = CalculateCFactor();
 
             CalculateMinLevelDist2( C );
         }
 
-        public Real GetHeightAt( Real x, Real z )
+        public float GetHeightAt( float x, float z )
         {
             Vector3 start, end;
 
@@ -269,11 +277,11 @@ namespace Axiom.SceneManagers.Octree
                 }
             }
 
-            Real xPct = ( x - start.x ) / ( end.x - start.x );
-            Real zPct = ( z - start.z ) / ( end.z - start.z );
+            float xPct = ( x - start.x ) / ( end.x - start.x );
+            float zPct = ( z - start.z ) / ( end.z - start.z );
 
-            Real xPt = xPct * (Real)( options.size - 1 );
-            Real zPt = zPct * (Real)( options.size - 1 );
+            float xPt = xPct * (float)( options.size - 1 );
+            float zPt = zPct * (float)( options.size - 1 );
 
             int xIndex = (int)xPt;
             int zIndex = (int)zPt;
@@ -282,12 +290,12 @@ namespace Axiom.SceneManagers.Octree
             zPct = zPt - zIndex;
 
             // bilinear interpolcation to find the height
-            Real t1 = GetVertex( xIndex, zIndex, 1 );
-            Real t2 = GetVertex( xIndex + 1, zIndex, 1 );
-            Real b1 = GetVertex( xIndex, zIndex + 1, 1 );
-            Real b2 = GetVertex( xIndex + 1, zIndex + 1, 1 );
+            float t1 = GetVertex( xIndex, zIndex, 1 );
+            float t2 = GetVertex( xIndex + 1, zIndex, 1 );
+            float b1 = GetVertex( xIndex, zIndex + 1, 1 );
+            float b2 = GetVertex( xIndex + 1, zIndex + 1, 1 );
 
-            Real midpoint = ( b1 + b2 ) / 2;
+            float midpoint = ( b1 + b2 ) / 2;
 
             if ( ( xPct + zPct ) <= 1 )
             {
@@ -298,9 +306,9 @@ namespace Axiom.SceneManagers.Octree
                 t1 = midpoint + ( midpoint - b2 );
             }
 
-            Real t = ( t1 * ( 1 - xPct ) ) + ( t2 * ( xPct ) );
-            Real b = ( b1 * ( 1 - xPct ) ) + ( b2 * ( xPct ) );
-            Real h = ( t * ( 1 - zPct ) ) + ( b * ( zPct ) );
+            float t = ( t1 * ( 1 - xPct ) ) + ( t2 * ( xPct ) );
+            float b = ( b1 * ( 1 - xPct ) ) + ( b2 * ( xPct ) );
+            float h = ( t * ( 1 - zPct ) ) + ( b * ( zPct ) );
 
             return h;
         }
@@ -317,13 +325,13 @@ namespace Axiom.SceneManagers.Octree
         /// <param name="z"></param>
         /// <param name="n"></param>
         /// <returns></returns>
-        public Real GetVertex( int x, int z, int n )
+        public float GetVertex( int x, int z, int n )
         {
             try
             {
                 HardwareVertexBuffer buffer = terrain.vertexBufferBinding.GetBuffer( POSITION );
 
-                Real[] vertex = new Real[1];
+                float[] vertex = new float[1];
 
                 IntPtr ptr = System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement( vertex, 0 );
 
@@ -361,18 +369,18 @@ namespace Axiom.SceneManagers.Octree
             }
         }
 
-        public Real CalculateCFactor()
+        public float CalculateCFactor()
         {
-            Real A, T;
+            float A, T;
 
-            A = (Real)options.nearPlane / Utility.Abs( options.topCoord );
+            A = (float)options.nearPlane / Math.Abs( (float)options.topCoord );
 
-            T = 2 * (Real)options.maxPixelError / (Real)options.vertRes;
+            T = 2 * (float)options.maxPixelError / (float)options.vertRes;
 
             return A / T;
         }
 
-        public void CalculateMinLevelDist2( Real C )
+        public void CalculateMinLevelDist2( float C )
         {
             // level 1 has no delta
             minLevelDistSqr[0] = 0;
@@ -388,29 +396,29 @@ namespace Axiom.SceneManagers.Octree
                     for ( int i = 0; i < size - step; i += step )
                     {
                         //check each height inbetween the steps.
-                        Real h1 = GetVertex( i, j, 1 );
-                        Real h2 = GetVertex( i + step, j, 1 );
-                        Real h3 = GetVertex( i + step, j + step, 1 );
-                        Real h4 = GetVertex( i, j + step, 1 );
+                        float h1 = GetVertex( i, j, 1 );
+                        float h2 = GetVertex( i + step, j, 1 );
+                        float h3 = GetVertex( i + step, j + step, 1 );
+                        float h4 = GetVertex( i, j + step, 1 );
 
                         for ( int z = 1; z < step; z++ )
                         {
                             for ( int x = 1; x < step; x++ )
                             {
 
-                                Real zpct = z / step;
-                                Real xpct = x / step;
+                                float zpct = z / step;
+                                float xpct = x / step;
 
                                 //interpolated height
-                                Real top = h3 * ( 1.0f - xpct ) + xpct * h4;
-                                Real bottom = h1 * ( 1.0f - xpct ) + xpct * h2;
+                                float top = h3 * ( 1.0f - xpct ) + xpct * h4;
+                                float bottom = h1 * ( 1.0f - xpct ) + xpct * h2;
 
-                                Real interp_h = top * ( 1.0f - zpct ) + zpct * bottom;
+                                float interp_h = top * ( 1.0f - zpct ) + zpct * bottom;
 
-                                Real actual_h = GetVertex( i + x, j + z, 1 );
-                                Real delta = Utility.Abs( interp_h - actual_h );
+                                float actual_h = GetVertex( i + x, j + z, 1 );
+                                float delta = Math.Abs( interp_h - actual_h );
 
-                                Real D2 = delta * delta * C * C;
+                                float D2 = delta * delta * C * C;
 
                                 if ( minLevelDistSqr[level] < D2 )
                                     minLevelDistSqr[level] = D2;
@@ -446,7 +454,7 @@ namespace Axiom.SceneManagers.Octree
 
             IntPtr norm = buffer.Lock( BufferLocking.Discard );
 
-            Real* normPtr = (Real*)norm.ToPointer();
+            float* normPtr = (float*)norm.ToPointer();
             int count = 0;
 
             for ( int j = 0; j < size; j++ )
@@ -464,7 +472,7 @@ namespace Axiom.SceneManagers.Octree
             buffer.Unlock();
         }
 
-        public void GetNormalAt( Real x, Real z, out Vector3 result )
+        public void GetNormalAt( float x, float z, out Vector3 result )
         {
             Vector3 here, left, down;
             here.x = x;
@@ -502,7 +510,7 @@ namespace Axiom.SceneManagers.Octree
             }
         }
 
-        public override Real BoundingRadius
+        public override float BoundingRadius
         {
             get
             {
@@ -523,7 +531,7 @@ namespace Axiom.SceneManagers.Octree
             Vector3 cpos = camera.Position;
             Vector3 diff = center - cpos;
 
-            Real L = diff.LengthSquared;
+            float L = diff.LengthSquared;
 
             currentL = L;
 
@@ -561,7 +569,7 @@ namespace Axiom.SceneManagers.Octree
             }
         }
 
-        public Real GetSquaredViewDepth( Camera camera )
+        public float GetSquaredViewDepth( Camera camera )
         {
             Vector3 diff = center - camera.DerivedPosition;
 
@@ -963,13 +971,13 @@ namespace Axiom.SceneManagers.Octree
         public int startx;
         public int startz; //starting coords of this block.
         public int maxMipmap;  //max mip_map level
-        public Real scalex, scaley, scalez;
+        public float scalex, scaley, scalez;
 
         public int maxPixelError;
         public int nearPlane;
         public int vertRes;
         public int detailTile;
-        public Real topCoord;
+        public float topCoord;
 
         public bool isLit;
         public bool isColored;

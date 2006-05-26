@@ -1,12 +1,8 @@
-#region Namespace Declarations
 
 using System;
-
 using Axiom;
-
+using Axiom.MathLib;
 using DotNet3D.Math;
-
-#endregion Namespace Declarations
 
 namespace Axiom.Demos
 {
@@ -15,8 +11,8 @@ namespace Axiom.Demos
         // --- Fields ---
         #region Private Fields
         private VertexDeclaration patchDeclaration;
-        private Real timeLapse;
-        private Real factor;
+        private float timeLapse;
+        private float factor;
         private bool isWireframe;
         private PatchMesh patch;
         private Entity patchEntity;
@@ -25,9 +21,9 @@ namespace Axiom.Demos
         #region Private Structs
         private struct PatchVertex
         {
-            public Real X, Y, Z;
-            public Real Nx, Ny, Nz;
-            public Real U, V;
+            public float X, Y, Z;
+            public float Nx, Ny, Nz;
+            public float U, V;
         }
 
         #endregion Private Structs
@@ -180,7 +176,7 @@ namespace Axiom.Demos
                 }
 
                 patch.SetSubdivision( factor );
-                window.DebugText = "Bezier subdivision factor: " + factor.ToString();
+                window.DebugText = "Bezier subdivision factor: " + factor;
                 timeLapse = 0.0f;
             }
 

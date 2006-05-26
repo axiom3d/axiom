@@ -22,7 +22,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion 
+#endregion
+
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
@@ -32,6 +42,8 @@ using System.IO;
 using System.Configuration;
 using System.Collections;
 
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     /// <summary>

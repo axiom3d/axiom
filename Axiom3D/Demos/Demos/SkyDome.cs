@@ -1,21 +1,17 @@
 
-#region Namespace Declarations
-
 using System;
-
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
-
-#endregion Namespace Declarations
 
 namespace Axiom.Demos
 {
     public class SkyDome : TechDemo
     {
         #region Fields
-        private Real curvature = 1;
-        private Real tiling = 15;
-        private Real timeDelay = 0;
+        private float curvature = 1;
+        private float tiling = 15;
+        private float timeDelay = 0;
         private Entity ogre;
 
         #endregion Fields

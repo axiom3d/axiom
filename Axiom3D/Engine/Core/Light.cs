@@ -24,12 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 
+using Axiom.MathLib;
+using Axiom.MathLib.Collections;
 using DotNet3D.Math;
-using DotNet3D.Math.Collections;
 
 #endregion Namespace Declarations
 			
@@ -99,25 +108,25 @@ namespace Axiom
         ///	</summary>
         protected ColorEx specular;
         /// <summary></summary>
-        protected Radian spotOuter;
+        protected float spotOuter;
         /// <summary></summary>
-        protected Radian spotInner;
+        protected float spotInner;
         /// <summary></summary>
-        protected Real spotFalloff;
+        protected float spotFalloff;
         /// <summary></summary>
-        protected Real range;
+        protected float range;
         /// <summary></summary>
-        protected Real attenuationConst;
+        protected float attenuationConst;
         /// <summary></summary>
-        protected Real attenuationLinear;
+        protected float attenuationLinear;
         /// <summary></summary>
-        protected Real attenuationQuad;
+        protected float attenuationQuad;
         /// <summary></summary>
         protected bool localTransformDirty;
         /// <summary>
         ///    Used for sorting.  Internal for "friend" access to SceneManager.
         /// </summary>
-        internal protected Real tempSquaredDist;
+        internal protected float tempSquaredDist;
         /// <summary>
         ///		Stored version of the last near clip volume tested.
         /// </summary>
@@ -162,8 +171,8 @@ namespace Axiom
             direction = Vector3.UnitZ;
 
             // Default some spot values
-            spotInner = new Degree( 30.0f );
-            spotOuter = new Degree( 40.0f );
+            spotInner = 30.0f;
+            spotOuter = 40.0f;
             spotFalloff = 1.0f;
 
             localTransformDirty = false;
@@ -228,7 +237,7 @@ namespace Axiom
         /// <summary>
         ///		Gets the inner angle of the spotlight.
         /// </summary>
-        public Radian SpotlightInnerAngle
+        public float SpotlightInnerAngle
         {
             get
             {
@@ -239,7 +248,7 @@ namespace Axiom
         /// <summary>
         ///		Gets the outer angle of the spotlight.
         /// </summary>
-        public Radian SpotlightOuterAngle
+        public float SpotlightOuterAngle
         {
             get
             {
@@ -250,7 +259,7 @@ namespace Axiom
         /// <summary>
         ///		Gets the spotlight falloff.
         /// </summary>
-        public Real SpotlightFalloff
+        public float SpotlightFalloff
         {
             get
             {
@@ -291,7 +300,7 @@ namespace Axiom
         /// <summary>
         ///		Gets the attenuation range value.
         /// </summary>
-        public Real AttenuationRange
+        public float AttenuationRange
         {
             get
             {
@@ -302,7 +311,7 @@ namespace Axiom
         /// <summary>
         ///		Gets the constant attenuation value.
         /// </summary>
-        public Real AttenuationConstant
+        public float AttenuationConstant
         {
             get
             {
@@ -313,7 +322,7 @@ namespace Axiom
         /// <summary>
         ///		Gets the linear attenuation value.
         /// </summary>
-        public Real AttenuationLinear
+        public float AttenuationLinear
         {
             get
             {
@@ -324,7 +333,7 @@ namespace Axiom
         /// <summary>
         ///		Gets the quadratic attenuation value.
         /// </summary>
-        public Real AttenuationQuadratic
+        public float AttenuationQuadratic
         {
             get
             {
@@ -408,7 +417,7 @@ namespace Axiom
         /// <summary>
         ///    Local bounding radius of this light.
         /// </summary>
-        public override Real BoundingRadius
+        public override float BoundingRadius
         {
             get
             {
@@ -458,7 +467,7 @@ namespace Axiom
         /// </summary>
         /// <param name="innerAngle"></param>
         /// <param name="outerAngle"></param>
-        public void SetSpotlightRange( Radian innerAngle, Radian outerAngle )
+        public void SetSpotlightRange( float innerAngle, float outerAngle )
         {
             SetSpotlightRange( innerAngle, outerAngle, 1.0f );
         }
@@ -469,7 +478,7 @@ namespace Axiom
         /// <param name="innerAngle"></param>
         /// <param name="outerAngle"></param>
         /// <param name="falloff"></param>
-        public void SetSpotlightRange( Radian innerAngle, Radian outerAngle, Real falloff )
+        public void SetSpotlightRange( float innerAngle, float outerAngle, float falloff )
         {
             //allow it to be set ahead of time anyways
             /*if(type != LightType.Spotlight) {
@@ -489,7 +498,7 @@ namespace Axiom
         /// <param name="constant"></param>
         /// <param name="linear"></param>
         /// <param name="quadratic"></param>
-        public void SetAttenuation( Real range, Real constant, Real linear, Real quadratic )
+        public void SetAttenuation( float range, float constant, float linear, float quadratic )
         {
             this.range = range;
             attenuationConst = constant;
@@ -513,9 +522,9 @@ namespace Axiom
         /// <returns></returns>
         internal PlaneBoundedVolume GetNearClipVolume( Camera camera )
         {
-            Real THRESHOLD = -1e-06f;
+            const float THRESHOLD = -1e-06f;
 
-            Real n = camera.Near;
+            float n = camera.Near;
 
             // First check if the light is close to the near plane, since
             // in this case we have to build a degenerate clip volume
@@ -534,7 +543,7 @@ namespace Axiom
             Matrix4 eyeToWorld = camera.ViewMatrix.Inverse();
 
             // Find distance to light, project onto -Z axis
-            Real d = eyeSpaceLight.DotProduct( new Vector4( 0, 0, -1, -n ) );
+            float d = eyeSpaceLight.DotProduct( new Vector4( 0, 0, -1, -n ) );
 
             if ( d > THRESHOLD || d < -THRESHOLD )
             {
@@ -654,7 +663,7 @@ namespace Axiom
                 Vector4 planeVec = new Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.Distance );
 
                 // planes face inwards, we need to know if light is on negative side
-                Real d = planeVec.DotProduct( lightPos );
+                float d = planeVec.DotProduct( lightPos );
 
                 if ( d < -1e-06f )
                 {

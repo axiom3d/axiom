@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -34,8 +42,8 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
-
 using FogMode = Axiom.FogMode;
 using LightType = Axiom.LightType;
 using StencilOperation = Axiom.StencilOperation;
@@ -244,7 +252,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="color"></param>
         /// <param name="depth"></param>
         /// <param name="stencil"></param>
-        public override void ClearFrameBuffer( FrameBuffer buffers, ColorEx color, Real depth, int stencil )
+        public override void ClearFrameBuffer( FrameBuffer buffers, ColorEx color, float depth, int stencil )
         {
             D3D.ClearFlags flags = 0;
 
@@ -438,7 +446,7 @@ namespace Axiom.RenderSystems.DirectX9
                     // doh, check for 32 bit Z buffer then
                     if ( !D3D.Manager.CheckDeviceFormat( 0, D3D.DeviceType.Hardware, presentParams.BackBufferFormat, D3D.Usage.DepthStencil, D3D.ResourceType.Surface, D3D.DepthFormat.D32 ) )
                     {
-                        // Real doh, just use 16 bit Z buffer
+                        // float doh, just use 16 bit Z buffer
                         presentParams.AutoDepthStencilFormat = D3D.DepthFormat.D16;
                     }
                     else
@@ -574,7 +582,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="density"></param>
         /// <param name="start"></param>
         /// <param name="end"></param>
-        public override void SetFog( FogMode mode, ColorEx color, Real density, Real start, Real end )
+        public override void SetFog( FogMode mode, ColorEx color, float density, float start, float end )
         {
             // disable fog if set to none
             if ( mode == FogMode.None )
@@ -688,18 +696,18 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="far"></param>
         /// <param name="forGpuPrograms"></param>
         /// <returns></returns>
-        public override Matrix4 MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, bool forGpuPrograms )
+        public override Matrix4 MakeOrthoMatrix( float fov, float aspectRatio, float near, float far, bool forGpuPrograms )
         {
-            Radian thetaY = fov / 2.0f;
-            Real tanThetaY = Utility.Tan( thetaY );
-            Real tanThetaX = tanThetaY * aspectRatio;
+            float thetaY = MathUtil.DegreesToRadians( fov / 2.0f );
+            float tanThetaY = MathUtil.Tan( thetaY );
+            float tanThetaX = tanThetaY * aspectRatio;
 
-            Real halfW = tanThetaX * near;
-            Real halfH = tanThetaY * near;
+            float halfW = tanThetaX * near;
+            float halfH = tanThetaY * near;
 
-            Real w = 1.0f / ( halfW );
-            Real h = 1.0f / ( halfH );
-            Real q = 0;
+            float w = 1.0f / ( halfW );
+            float h = 1.0f / ( halfH );
+            float q = 0;
 
             if ( far != 0 )
             {
@@ -730,13 +738,13 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="far"></param>
         /// <param name="forGpuProgram"></param>
         /// <returns></returns>
-        public override Matrix4 MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, bool forGpuProgram )
+        public override Matrix4 MakeProjectionMatrix( float fov, float aspectRatio, float near, float far, bool forGpuProgram )
         {
-            Radian theta = fov * 0.5f;
-            Real h = 1 / Utility.Tan( theta );
-            Real w = h / aspectRatio;
-            Real q = 0;
-            Real qn = 0;
+            float theta = MathUtil.DegreesToRadians( fov * 0.5f );
+            float h = 1 / MathUtil.Tan( theta );
+            float w = h / aspectRatio;
+            float q = 0;
+            float qn = 0;
 
             if ( far == 0 )
             {
@@ -784,8 +792,8 @@ namespace Axiom.RenderSystems.DirectX9
 				Vector4(Math::Sign(plane.normal.x), Math::Sign(plane.normal.y), 1.0f, 1.0f);
 			*/
             Vector4 q = new Vector4();
-            q.x = Utility.Sign( plane.Normal.x ) / projMatrix.m00;
-            q.y = Utility.Sign( plane.Normal.y ) / projMatrix.m11;
+            q.x = Math.Sign( plane.Normal.x ) / projMatrix.m00;
+            q.y = Math.Sign( plane.Normal.y ) / projMatrix.m11;
             q.z = 1.0f;
 
             // flip the next bit from Lengyel since we're right-handed
@@ -802,7 +810,7 @@ namespace Axiom.RenderSystems.DirectX9
             Vector4 clipPlane4d =
                 new Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.Distance );
 
-            Vector4 c = clipPlane4d * ( 1.0f / ( clipPlane4d.DotProduct( q ) ) );
+            Vector4 c = clipPlane4d * ( 1.0f / ( clipPlane4d.DotProduct(( q )) ) );
 
             // Replace the third row of the projection matrix
             projMatrix.m20 = c.x;
@@ -1081,7 +1089,7 @@ namespace Axiom.RenderSystems.DirectX9
                 case GpuProgramType.Vertex:
                     if ( parms.HasIntConstants )
                     {
-                        for ( int index = 0; index < parms.RealConstantCount; index++ )
+                        for ( int index = 0; index < parms.FloatConstantCount; index++ )
                         {
                             GpuProgramParameters.IntConstantEntry entry = parms.GetIntConstant( index );
 
@@ -1092,11 +1100,11 @@ namespace Axiom.RenderSystems.DirectX9
                         }
                     }
 
-                    if ( parms.HasRealConstants )
+                    if ( parms.HasFloatConstants )
                     {
-                        for ( int index = 0; index < parms.RealConstantCount; index++ )
+                        for ( int index = 0; index < parms.FloatConstantCount; index++ )
                         {
-                            GpuProgramParameters.RealConstantEntry entry = parms.GetRealConstant( index );
+                            GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
 
                             if ( entry.isSet )
                             {
@@ -1110,7 +1118,7 @@ namespace Axiom.RenderSystems.DirectX9
                 case GpuProgramType.Fragment:
                     if ( parms.HasIntConstants )
                     {
-                        for ( int index = 0; index < parms.RealConstantCount; index++ )
+                        for ( int index = 0; index < parms.FloatConstantCount; index++ )
                         {
                             GpuProgramParameters.IntConstantEntry entry = parms.GetIntConstant( index );
 
@@ -1121,11 +1129,11 @@ namespace Axiom.RenderSystems.DirectX9
                         }
                     }
 
-                    if ( parms.HasRealConstants )
+                    if ( parms.HasFloatConstants )
                     {
-                        for ( int index = 0; index < parms.RealConstantCount; index++ )
+                        for ( int index = 0; index < parms.FloatConstantCount; index++ )
                         {
-                            GpuProgramParameters.RealConstantEntry entry = parms.GetRealConstant( index );
+                            GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
 
                             if ( entry.isSet )
                             {
@@ -1224,7 +1232,7 @@ namespace Axiom.RenderSystems.DirectX9
                 SetD3DLight( i, null );
             }
 
-            numCurrentLights = (int)Utility.Min( limit, lightList.Count );
+            numCurrentLights = (int)MathUtil.Min( limit, lightList.Count );
         }
 
         public override int ConvertColor( ColorEx color )
@@ -1337,7 +1345,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <summary>
         ///		
         /// </summary>
-        public override Real HorizontalTexelOffset
+        public override float HorizontalTexelOffset
         {
             get
             {
@@ -1349,7 +1357,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <summary>
         /// 
         /// </summary>
-        public override Real VerticalTexelOffset
+        public override float VerticalTexelOffset
         {
             get
             {
@@ -1384,8 +1392,8 @@ namespace Axiom.RenderSystems.DirectX9
                     case LightType.Spotlight:
                         device.Lights[ index ].LightType = Microsoft.DirectX.Direct3D.LightType.Spot;
                         device.Lights[ index ].Falloff = light.SpotlightFalloff;
-                        device.Lights[ index ].InnerConeAngle = (float)light.SpotlightInnerAngle;
-                        device.Lights[ index ].OuterConeAngle = (float)light.SpotlightOuterAngle;
+                        device.Lights[ index ].InnerConeAngle = MathUtil.DegreesToRadians( light.SpotlightInnerAngle );
+                        device.Lights[ index ].OuterConeAngle = MathUtil.DegreesToRadians( light.SpotlightOuterAngle );
                         break;
                 } // switch
 
@@ -1586,7 +1594,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="specular"></param>
         /// <param name="emissive"></param>
         /// <param name="shininess"></param>
-        public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, Real shininess )
+        public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess )
         {
             // TODO: Cache color values to prune unneccessary setting
 
@@ -2045,7 +2053,7 @@ namespace Axiom.RenderSystems.DirectX9
                     caps.MaxFragmentProgramVersion = string.Format( "ps_1_{0}", fpMinor );
 
                     caps.FragmentProgramConstantIntCount = 0;
-                    // 8 4d float values, entered as Reals but stored as fixed
+                    // 8 4d float values, entered as floats but stored as fixed
                     caps.FragmentProgramConstantFloatCount = 8;
                     break;
 

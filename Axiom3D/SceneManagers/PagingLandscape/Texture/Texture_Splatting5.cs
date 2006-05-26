@@ -24,34 +24,46 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 
 using Axiom;
-using DotNet3D.Math;
-
-using Axiom.SceneManagers.PagingLandscape.Collections;
-using Axiom.SceneManagers.PagingLandscape.Tile;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.SceneManagers.PagingLandscape.Texture
 {
 
     /// <summary>
+
     /// Summary description for Texture_Image.
+
     /// </summary>
+
     public class Texture_Splatting5 : Texture
     {
+
+
 
         public Texture_Splatting5()
             : base()
         {
+
             //
+
             // TODO Add constructor logic here
+
             //
+
         }
 
         protected override void loadMaterial()

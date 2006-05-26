@@ -24,11 +24,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Diagnostics;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -81,7 +90,7 @@ namespace Axiom
         /// <summary>
         ///		Maximum keyframe time.
         ///	</summary>
-        protected Real maxKeyFrameTime;
+        protected float maxKeyFrameTime;
         /// <summary>
         ///		Collection of key frames in this track.
         ///	</summary>
@@ -204,17 +213,18 @@ namespace Axiom
 				Vector3 trans = kf.Translate;
 				Vector3 scale = kf.Scale;
 				Vector3 axis = new Vector3();
-                Radian angle = new Radian( 0.0f );
+                Radian angle = Radian.Zero;
 				kf.Rotation.ToAngleAxis(ref angle, ref axis);
-				Real tolerance = 1e-3f;
+				float tolerance = 1e-3f;
+				
 
-
-                if ( !trans.PositionEquals( Vector3.Zero, tolerance ) ||
-                     !scale.PositionEquals( Vector3.Unit, tolerance ) ||
-                     !((Real)angle).Equals( 0.0f, tolerance ) )
-                {
-                    return true;
-                }
+				
+				if (!trans.PositionEquals(Vector3.Zero, tolerance) ||
+					!scale.PositionEquals(Vector3.Unit, tolerance) ||
+					!((Real)angle).Equals( Real.Zero, tolerance ) )
+				{
+					return true;
+				}
 
 		
 				
@@ -233,7 +243,7 @@ namespace Axiom
 			Vector3 lastscale = new Vector3();
 			Quaternion lastorientation = new Quaternion();
 
-			Real quatTolerance = 1e-3f;
+			float quatTolerance = 1e-3f;
 
 			System.Collections.ArrayList removeList = new System.Collections.ArrayList();
 
@@ -296,7 +306,7 @@ namespace Axiom
         /// </remarks>
         /// <param name="time">Time within the animation at which this keyframe will lie.</param>
         /// <returns>A new KeyFrame.</returns>
-        public KeyFrame CreateKeyFrame( Real time )
+        public KeyFrame CreateKeyFrame( float time )
         {
             KeyFrame keyFrame = new KeyFrame( this, time );
 
@@ -355,10 +365,10 @@ namespace Axiom
         ///    value is, e.g. 0.0 for exactly at 1, 0.25 for a quarter etc. By definition the range of this 
         ///    value is:  0.0 &lt;= returnValue &lt; 1.0 .
         ///</returns>
-        public Real GetKeyFramesAtTime( Real time, out KeyFrame keyFrame1, out KeyFrame keyFrame2, out ushort firstKeyIndex )
+        public float GetKeyFramesAtTime( float time, out KeyFrame keyFrame1, out KeyFrame keyFrame2, out ushort firstKeyIndex )
         {
             short firstIndex = -1;
-            Real totalLength = parent.Length;
+            float totalLength = parent.Length;
 
             // wrap time
             while ( time > totalLength )
@@ -395,7 +405,7 @@ namespace Axiom
             // parametric time
             // t1 = time of previous keyframe
             // t2 = time of next keyframe
-            Real t1, t2;
+            float t1, t2;
 
             // find first keyframe after the time
             // if no next keyframe, wrap back to first
@@ -439,7 +449,7 @@ namespace Axiom
         ///		position and scaling transforms are linearly interpolated (lerp), whilst the rotation is
         ///		spherically linearly interpolated (slerp) for the most natural result.
         /// </returns>
-        public KeyFrame GetInterpolatedKeyFrame( Real time )
+        public KeyFrame GetInterpolatedKeyFrame( float time )
         {
             // note: this is an un-attached keyframe
             KeyFrame result = new KeyFrame( null, time );
@@ -447,7 +457,7 @@ namespace Axiom
             KeyFrame k1, k2;
             ushort firstKeyIndex;
 
-            Real t = GetKeyFramesAtTime( time, out k1, out k2, out firstKeyIndex );
+            float t = GetKeyFramesAtTime( time, out k1, out k2, out firstKeyIndex );
 
             if ( t == 0.0f )
             {
@@ -520,7 +530,7 @@ namespace Axiom
             // return the resulting keyframe
             return result;
         }
-		public void Apply( Real time, Real weight, bool accumulate, Real scale )
+		public void Apply( float time, float weight, bool accumulate, float scale )
 		{
 			ApplyToNode(targetNode, time, weight, accumulate, scale);
 		}
@@ -529,14 +539,14 @@ namespace Axiom
         ///		Overloaded Apply method.  
         /// </summary>
         /// <param name="time"></param>
-        public void Apply( Real time )
+        public void Apply( float time )
         {
             // call overloaded method
             Apply( time, 1.0f, false, 1.0F );
         }
 
 
-		public void ApplyToNode(Node node, Real timePos, Real weight, bool accumulate, Real scl)
+		public void ApplyToNode(Node node, float timePos, float weight, bool accumulate, float scl)
 		{
 			KeyFrame kf = this.GetInterpolatedKeyFrame(timePos);
 			if (accumulate) 
@@ -621,9 +631,9 @@ namespace Axiom
         protected void BuildInterpolationSplines()
         {
             // dont calculate on the fly, wait till the end when we do it manually
-            positionSpline.AutoCalculateTangents = false;
-            rotationalSpline.AutoCalculateTangents = false;
-            scaleSpline.AutoCalculateTangents = false;
+            positionSpline.AutoCalculate = false;
+            rotationalSpline.AutoCalculate = false;
+            scaleSpline.AutoCalculate = false;
 
             positionSpline.Clear();
             rotationalSpline.Clear();

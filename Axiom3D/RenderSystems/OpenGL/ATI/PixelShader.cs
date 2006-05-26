@@ -1,29 +1,3 @@
-#region LGPL License
-/*
-Axiom Graphics Engine Library
-Copyright (C) 2003-2006  Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-#endregion
-
 /**
  * DX8.1 Pixel Shader to ATI Fragment Shader compiler
  * Original Author: NFZ
@@ -42,18 +16,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 		7. GL_ATI_fragment_shader extension reference
 */
 
-#region Namespace Declarations
-
 using System;
 
 using Axiom;
 
-using DotNet3D.Math;
-
 using Tao.OpenGl;
 
-#endregion Namespace Declarations
-			
 namespace Axiom.RenderSystems.OpenGL.ATI
 {
     /// <summary>
@@ -254,7 +222,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
             new TokenRule(OperationType.And,  Symbol.TEXOPS_PS1_4),
             new TokenRule(OperationType.End),
             new TokenRule(OperationType.Rule,  Symbol.NUMVAL, "<NumVal>"),
-            new TokenRule(OperationType.And,  Symbol.VALUE, "Real Value"),
+            new TokenRule(OperationType.And,  Symbol.VALUE, "Float Value"),
             new TokenRule(OperationType.End),
             new TokenRule(OperationType.Rule,  Symbol.TEXOPS_PS1_1_3, "<TexOps_PS1_1_3>"),
             new TokenRule(OperationType.Repeat,  Symbol.TEXOP_PS1_1_3),
@@ -1340,10 +1308,10 @@ namespace Axiom.RenderSystems.OpenGL.ATI
                         {
                             int start = (int)PassMachineInstructions[instIDX + 2];
                             float[] vals = new float[4];
-                            vals[0] = (Real)constants[start++];
-                            vals[1] = (Real)constants[start++];
-                            vals[2] = (Real)constants[start++];
-                            vals[3] = (Real)constants[start];
+                            vals[0] = (float)constants[start++];
+                            vals[1] = (float)constants[start++];
+                            vals[2] = (float)constants[start++];
+                            vals[3] = (float)constants[start];
 
                             Gl.glSetFragmentShaderConstantATI(
                                 (int)PassMachineInstructions[instIDX + 1], // dst
@@ -1753,13 +1721,13 @@ namespace Axiom.RenderSystems.OpenGL.ATI
             }
         }
 
-        struct TestRealResult
+        struct TestFloatResult
         {
             public string testString;
-            public Real val;
+            public float val;
             public int charSize;
 
-            public TestRealResult( string test, Real val, int charSize )
+            public TestFloatResult( string test, float val, int charSize )
             {
                 this.testString = test;
                 this.val = val;
@@ -1778,14 +1746,14 @@ namespace Axiom.RenderSystems.OpenGL.ATI
             new Test1Result('e', 5)
         };
 
-        TestRealResult[] testRealResults = {
-            new TestRealResult("1 test", 1.0f, 1),
-            new TestRealResult("2.3f test", 2.3f, 3),
-            new TestRealResult("-0.5 test", -0.5f, 4),
-            new TestRealResult(" 23.6 test", 23.6f, 5),
-            new TestRealResult("  -0.021 test", -0.021f, 8),
-            new TestRealResult("12 test", 12.0f, 2),
-            new TestRealResult("3test", 3.0f, 1)
+        TestFloatResult[] testFloatResults = {
+            new TestFloatResult("1 test", 1.0f, 1),
+            new TestFloatResult("2.3f test", 2.3f, 3),
+            new TestFloatResult("-0.5 test", -0.5f, 4),
+            new TestFloatResult(" 23.6 test", 23.6f, 5),
+            new TestFloatResult("  -0.021 test", -0.021f, 8),
+            new TestFloatResult("12 test", 12.0f, 2),
+            new TestFloatResult("3test", 3.0f, 1)
         };
 
         int resultID = 0;
@@ -1850,23 +1818,23 @@ namespace Axiom.RenderSystems.OpenGL.ATI
             Console.WriteLine( "**Finished testing: IsSymbol\n" );
 
             // ***TEST 4***
-            // Does IsRealValue work properly?
-            Console.WriteLine( "**Testing: IsRealValue\n" );
+            // Does IsFloatValue work properly?
+            Console.WriteLine( "**Testing: IsFloatValue\n" );
 
-            Real val = 0;
+            float val = 0;
             int charSize = 0;
             charPos = 0;
 
-            for ( int i = 0; i < testRealResults.Length; i++ )
+            for ( int i = 0; i < testFloatResults.Length; i++ )
             {
-                source = testRealResults[i].testString;
+                source = testFloatResults[i].testString;
                 Console.WriteLine( "     Test string {0}", source );
-                IsRealValue( out val, out charSize );
-                Console.WriteLine( "     Value is: {0}, should be {1}: {2}", val, testRealResults[i].val, ( val == testRealResults[i].val ) ? "Passed" : "Failed" );
-                Console.WriteLine( "     Char size is: {0}, should be {1}: {2}", charSize, testRealResults[i].charSize, ( charSize == testRealResults[i].charSize ) ? "Passed" : "Failed" );
+                IsFloatValue( out val, out charSize );
+                Console.WriteLine( "     Value is: {0}, should be {1}: {2}", val, testFloatResults[i].val, ( val == testFloatResults[i].val ) ? "Passed" : "Failed" );
+                Console.WriteLine( "     Char size is: {0}, should be {1}: {2}", charSize, testFloatResults[i].charSize, ( charSize == testFloatResults[i].charSize ) ? "Passed" : "Failed" );
             }
 
-            Console.WriteLine( "**Finished testing: IsRealValue\n" );
+            Console.WriteLine( "**Finished testing: IsFloatValue\n" );
 
             // ***TEST 5***
             // Simple compile test for ps.1.4
@@ -1997,7 +1965,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
                     Console.WriteLine( "    Constants[{0}] = {1} : {2}",
                         i,
                         constants[i],
-                        ( (Real)constants[i] == ( 1.0f + i ) ) ? passed : failed );
+                        ( (float)constants[i] == ( 1.0f + i ) ) ? passed : failed );
                 }
             }
 

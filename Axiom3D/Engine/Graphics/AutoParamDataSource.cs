@@ -24,12 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 using System.Diagnostics;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -115,7 +124,7 @@ namespace Axiom
         /// <summary>
         ///		Distance to extrude shadow volume vertices.
         /// </summary>
-        protected Real dirLightExtrusionDistance;
+        protected float dirLightExtrusionDistance;
         /// <summary>
         ///    Position of the current camera in object space relative to the current renderable.
         /// </summary>
@@ -207,7 +216,7 @@ namespace Axiom
         ///		Sets the constant extrusion distance for directional lights.
         /// </summary>
         /// <param name="distance"></param>
-        public void SetShadowDirLightExtrusionDistance( Real distance )
+        public void SetShadowDirLightExtrusionDistance( float distance )
         {
             dirLightExtrusionDistance = distance;
         }
@@ -530,7 +539,7 @@ namespace Axiom
         /// <summary>
         ///		Get the extrusion distance for shadow volume vertices.
         /// </summary>
-        public Real ShadowExtrusionDistance
+        public float ShadowExtrusionDistance
         {
             get
             {

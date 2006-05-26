@@ -24,21 +24,26 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 
-using DotNet3D.Math;
-
 #endregion Namespace Declarations
-			
+
 #region Ogre Synchronization Information
 /// <ogresynchronization>
 ///     <file name="AnimationState.h"   revision="1.16" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
 ///     <file name="AnimationState.cpp" revision="1.17" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
 /// </ogresynchronization>
 #endregion
-
 namespace Axiom
 {
     /// <summary>
@@ -56,13 +61,13 @@ namespace Axiom
         /// <summary>Name of this animation track.</summary>
         protected string animationName;
         /// <summary></summary>
-        protected Real time;
+        protected float time;
         /// <summary></summary>
-        protected Real length;
+        protected float length;
         /// <summary></summary>
-        protected Real inverseLength;
+        protected float inverseLength;
         /// <summary></summary>
-        protected Real weight;
+        protected float weight;
         /// <summary></summary>
         protected bool isEnabled;
 		protected bool lookAt = false;
@@ -80,7 +85,7 @@ namespace Axiom
         /// <param name="length"></param>
         /// <param name="weight"></param>
         /// <param name="isEnabled"></param>
-        internal AnimationState(string animationName, Real time, Real length, Real weight, bool isEnabled) {
+        internal AnimationState(string animationName, float time, float length, float weight, bool isEnabled) {
             this.animationName = animationName;
             this.time = time;
             this.weight = weight;
@@ -97,7 +102,7 @@ namespace Axiom
         /// <param name="animationName"></param>
         /// <param name="time"></param>
         /// <param name="length"></param>
-        internal AnimationState(string animationName, Real time, Real length) {
+        internal AnimationState(string animationName, float time, float length) {
             this.animationName = animationName;
             this.time = time;
             this.Length = length;
@@ -123,7 +128,7 @@ namespace Axiom
         /// <summary>
         ///		Gets/Sets the time position for this animation.
         /// </summary>
-        public Real Time {
+        public float Time {
             get { return time; }
             set 
 			{ 
@@ -132,7 +137,7 @@ namespace Axiom
 				{
 					// Wrap
 					//time = time%length;
-					time = (Real)Math.IEEERemainder(time,length);
+					time = (float)Math.IEEERemainder(time,length);
 					if(time < 0)
 						time += length;     
 				}
@@ -150,7 +155,7 @@ namespace Axiom
         /// <summary>
         ///		Gets/Sets the total length of this animation (may be shorter than whole animation)
         /// </summary>
-        public Real Length {
+        public float Length {
             get { return length; }
             set { 
                 length = value; 
@@ -166,7 +171,7 @@ namespace Axiom
         /// <summary>
         /// Gets/Sets the weight (influence) of this animation
         /// </summary>
-        public Real Weight {
+        public float Weight {
             get { return weight; }
             set { weight = value; }
         }
@@ -191,7 +196,7 @@ namespace Axiom
         ///		Modifies the time position, adjusting for animation length.
         /// </summary>
         /// <param name="offset">Offset from the current time position.</param>
-        public void AddTime(Real offset) {
+        public void AddTime(float offset) {
 			this.Time = (time += offset);
         }
 
@@ -237,7 +242,7 @@ namespace Axiom
         /// <summary>
         ///		Gets/Sets the value to be used in a ControllerFunction.
         /// </summary>
-        public Real Value {
+        public float Value {
             get { return time * inverseLength;	}
             set {	time = value * length; }
         }

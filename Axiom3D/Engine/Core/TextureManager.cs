@@ -24,11 +24,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-
-using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -176,7 +182,7 @@ namespace Axiom
         /// <param name="gamma"></param>
         /// <param name="priority"></param>
         /// <returns></returns>
-        public Texture Load( string name, TextureType type, int numMipMaps, Real gamma, int priority )
+        public Texture Load( string name, TextureType type, int numMipMaps, float gamma, int priority )
         {
             // does this texture exist already?
             Texture texture = GetByName( name );
@@ -238,7 +244,7 @@ namespace Axiom
         /// <param name="gamma"></param>
         /// <param name="priority"></param>
         /// <returns></returns>
-        public Texture LoadImage( string name, Image image, TextureType texType, int numMipMaps, Real gamma, int priority )
+        public Texture LoadImage( string name, Image image, TextureType texType, int numMipMaps, float gamma, int priority )
         {
             // create a new texture
             Texture texture = (Texture)Create( name, texType );

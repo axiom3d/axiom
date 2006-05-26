@@ -24,11 +24,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-
-using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -44,12 +50,12 @@ namespace Axiom
         /// <summary>
         ///     The amount of time in seconds it takes to loop through the whole animation sequence.
         /// </summary>
-        protected Real sequenceTime;
+        protected float sequenceTime;
 
         /// <summary>
         ///     The offset in seconds at which to start (default is start at 0).
         /// </summary>
-        protected Real time;
+        protected float time;
 
         #endregion Fields
 
@@ -59,7 +65,7 @@ namespace Axiom
         ///     Constructor.
         /// </summary>
         /// <param name="sequenceTime">The amount of time in seconds it takes to loop through the whole animation sequence.</param>
-        public AnimationControllerFunction( Real sequenceTime ) : this( sequenceTime, 0.0f )
+        public AnimationControllerFunction( float sequenceTime ) : this( sequenceTime, 0.0f )
         {
         }
 
@@ -68,7 +74,7 @@ namespace Axiom
         /// </summary>
         /// <param name="sequenceTime">The amount of time in seconds it takes to loop through the whole animation sequence.</param>
         /// <param name="timeOffset">The offset in seconds at which to start.</param>
-        public AnimationControllerFunction( Real sequenceTime, Real timeOffset )
+        public AnimationControllerFunction( float sequenceTime, float timeOffset )
         {
             this.sequenceTime = sequenceTime;
             this.time = timeOffset;
@@ -83,7 +89,7 @@ namespace Axiom
         /// </summary>
         /// <param name="sourceValue"></param>
         /// <returns></returns>
-        public Real Execute( Real sourceValue )
+        public float Execute( float sourceValue )
         {
             // assuming source if the time since the last update
             time += sourceValue;

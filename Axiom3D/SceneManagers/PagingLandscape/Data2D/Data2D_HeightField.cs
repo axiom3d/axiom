@@ -22,12 +22,22 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion LGPL License
+#endregion
+
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
+
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -107,18 +117,18 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		/// <param name="X">X Coordinate</param>
 		/// <param name="Z">Z Coordinate</param>
 		/// <returns>Normal at (x,z)</returns>
-		public override Vector3 GetNormalAt (Real X, Real Z)
+		public override Vector3 GetNormalAt (float X, float Z)
 		{
 			if ( image != null )
 			{
 				long Pos = (long) (( Z * this.size ) * this.bpp + X * this.bpp);//4 bytes (mImage is RGBA)
 				if ( this.max > Pos )
 				{
-					Real normalscale = 1.0f / 127.0f;
+					const float normalscale = 1.0f / 127.0f;
 					long numVertices = 0;
-//					Real normalVal = ((Real)(image.Data[Pos + 0]) - 128.0f) * normalscale;
+//					float normalVal = ((float)(image.Data[Pos + 0]) - 128.0f) * normalscale;
 
-					Real normalVal = 0;
+					float normalVal = 0;
 					if ( Pos - ( (this.size + 1) * this.bpp ) > 0 ) { normalVal += image.Data[Pos - ( (this.size  +1 )* this.bpp )]; numVertices++; }
 					if ( Pos - ( this.size * this.bpp ) > 0 ) { normalVal += image.Data[Pos - ( this.size * this.bpp )]; numVertices++; }
 					if ( Pos - ( (this.size - 1) * this.bpp ) > 0 ) { normalVal += image.Data[Pos - ( (this.size - 1) * bpp )]; numVertices++; }
@@ -154,14 +164,14 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		/// <param name="X">X Coordinate</param>
 		/// <param name="Z">Z Coordinate</param>
 		/// <returns>base color at (x,z)</returns>
-		public override ColorEx GetBase (Real X, Real Z)
+		public override ColorEx GetBase (float X, float Z)
 		{
 			if ( baseImg != null )
 			{
 				long Pos = (long) (( Z * (baseImg.Width) )*4 + X*4);//4 bytes (mImage is RGBA)
 				if ( baseImg.Size > Pos )
 				{
-					Real divider = 1.0f / 255.0f;
+					float divider = 1.0f / 255.0f;
 					return new ColorEx( baseImg.Data[ Pos + 0] * divider,
 										baseImg.Data[ Pos + 1] * divider,
 										baseImg.Data[ Pos + 2] * divider,
@@ -179,14 +189,14 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		}
 
 
-		public override ColorEx GetCoverage (Real X, Real Z)
+		public override ColorEx GetCoverage (float X, float Z)
 		{
 			if ( coverage != null )
 			{
 				long Pos = (long) (( Z * (coverage.Width) )*4 + X*4);//4 bytes (mImage is RGBA)
 				if ( coverage.Size > Pos )
 				{
-					Real divider = 1.0f / 255.0f;
+					float divider = 1.0f / 255.0f;
 					return new ColorEx( coverage.Data[ Pos + 0] * divider,
 										coverage.Data[ Pos + 1] * divider,
 										coverage.Data[ Pos + 2] * divider,
@@ -204,7 +214,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		}
 
 
-		protected override void load(Real X, Real Z)
+		protected override void load(float X, float Z)
 		{
 			if ( image == null )
 			{
@@ -255,14 +265,14 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 				}
 			    
 				maxArrayPos = size * image.Height;
-				heightData = new Real[maxArrayPos];
+				heightData = new float[maxArrayPos];
 				long j = 0;
-				Real scale = Options.Instance.Scale.y;
+				float scale = Options.Instance.Scale.y;
 				maxheight = 0.0f;
 				for (long i = 0; i < max - 1;  i += bpp )
 				{  
-				Real h = image.Data[ i + (bpp - 1)] * scale;
-					MaxHeight = Utility.Max ( h, MaxHeight);
+				float h = image.Data[ i + (bpp - 1)] * scale;
+					MaxHeight = Math.Max ( h, MaxHeight);
 					heightData[j++] = h;
 				}
 			}
@@ -300,14 +310,14 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 				this.max = (long)(this.size * image.Height * this.bpp + 1);    
 
 				maxArrayPos = (long)(this.size * image.Height);
-				heightData = new Real[maxArrayPos];
+				heightData = new float[maxArrayPos];
 				long j = 0;
-				Real scale = Options.Instance.Scale.y;
+				float scale = Options.Instance.Scale.y;
 				maxheight = 0.0f;
 				for (long i = 0; i < this.max - 1;  i += this.bpp )
 				{  
-					Real h =  (Real) (image.Data[ i + (this.bpp - 1)]) * scale;
-					this.MaxHeight = Utility.Max ( h, MaxHeight);
+					float h =  (float) (image.Data[ i + (this.bpp - 1)]) * scale;
+					this.MaxHeight = Math.Max ( h, MaxHeight);
 					heightData[j++] = h;
 				}
 			}
@@ -346,14 +356,14 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 				this.max = (long)(this.size * image.Height * this.bpp + 1); 
 
 				maxArrayPos = (long)(this.size * image.Height);
-				heightData = new Real[maxArrayPos];
+				heightData = new float[maxArrayPos];
 				long j = 0;
-				Real scale = Options.Instance.Scale.y;
+				float scale = Options.Instance.Scale.y;
 				maxheight = 0.0f;
 				for (long i = 0; i < this.max - 1;  i += this.bpp )
 				{  
-					Real h =  (Real) (image.Data[ i + (this.bpp - 1)]) * scale;
-					this.MaxHeight = Utility.Max ( h, MaxHeight);
+					float h =  (float) (image.Data[ i + (this.bpp - 1)]) * scale;
+					this.MaxHeight = Math.Max ( h, MaxHeight);
 					heightData[j++] = h;
 				}
 			}

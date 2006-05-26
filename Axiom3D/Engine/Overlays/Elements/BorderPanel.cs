@@ -24,12 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -62,10 +71,10 @@ namespace Axiom
     {
         #region Member variables
 
-        protected Real leftBorderSize;
-        protected Real rightBorderSize;
-        protected Real topBorderSize;
-        protected Real bottomBorderSize;
+        protected float leftBorderSize;
+        protected float rightBorderSize;
+        protected float topBorderSize;
+        protected float bottomBorderSize;
 
 		protected CellUV[] borderUV = new CellUV[8];
 
@@ -87,10 +96,10 @@ namespace Axiom
         const int TEXCOORDS = 1;
 
         // temp array for use during position updates, prevents constant memory allocation
-        private Real[] lefts = new Real[8];
-        private Real[] rights = new Real[8];
-        private Real[] tops = new Real[8];
-        private Real[] bottoms = new Real[8];
+        private float[] lefts = new float[8];
+        private float[] rights = new float[8];
+        private float[] tops = new float[8];
+        private float[] bottoms = new float[8];
 
         #endregion
 
@@ -148,7 +157,7 @@ namespace Axiom
 		}
 
 
-		public void SetLeftBorderUV(Real u1, Real v1, Real u2, Real v2)
+		public void SetLeftBorderUV(float u1, float v1, float u2, float v2)
 		{
 			borderUV[(int)BorderCell.Left].u1 = u1; 
 			borderUV[(int)BorderCell.Left].u2 = u2; 
@@ -157,7 +166,7 @@ namespace Axiom
 			isGeomUVsOutOfDate = true;
 		}
 		//---------------------------------------------------------------------
-		public void SetRightBorderUV(Real u1, Real v1, Real u2, Real v2)
+		public void SetRightBorderUV(float u1, float v1, float u2, float v2)
 		{
 			borderUV[(int)BorderCell.Right].u1 = u1; 
 			borderUV[(int)BorderCell.Right].u2 = u2; 
@@ -166,7 +175,7 @@ namespace Axiom
 			isGeomUVsOutOfDate = true;
 		}
 		//---------------------------------------------------------------------
-		public void SetTopBorderUV(Real u1, Real v1, Real u2, Real v2)
+		public void SetTopBorderUV(float u1, float v1, float u2, float v2)
 		{
 			borderUV[(int)BorderCell.Top].u1 = u1; 
 			borderUV[(int)BorderCell.Top].u2 = u2; 
@@ -175,7 +184,7 @@ namespace Axiom
 			isGeomUVsOutOfDate = true;
 		}
 		//---------------------------------------------------------------------
-		public void SetBottomBorderUV(Real u1, Real v1, Real u2, Real v2)
+		public void SetBottomBorderUV(float u1, float v1, float u2, float v2)
 		{
 			borderUV[(int)BorderCell.Bottom].u1 = u1; 
 			borderUV[(int)BorderCell.Bottom].u2 = u2; 
@@ -184,7 +193,7 @@ namespace Axiom
 			isGeomUVsOutOfDate = true;
 		}
 		//---------------------------------------------------------------------
-		public void SetTopLeftBorderUV(Real u1, Real v1, Real u2, Real v2)
+		public void SetTopLeftBorderUV(float u1, float v1, float u2, float v2)
 		{
 			borderUV[(int)BorderCell.TopLeft].u1 = u1; 
 			borderUV[(int)BorderCell.TopLeft].u2 = u2; 
@@ -193,7 +202,7 @@ namespace Axiom
 			isGeomUVsOutOfDate = true;
 		}
 		//---------------------------------------------------------------------
-		public void SetTopRightBorderUV(Real u1, Real v1, Real u2, Real v2)
+		public void SetTopRightBorderUV(float u1, float v1, float u2, float v2)
 		{
 			borderUV[(int)BorderCell.TopRight].u1 = u1; 
 			borderUV[(int)BorderCell.TopRight].u2 = u2; 
@@ -202,7 +211,7 @@ namespace Axiom
 			isGeomUVsOutOfDate = true;
 		}
 		//---------------------------------------------------------------------
-		public void SetBottomLeftBorderUV(Real u1, Real v1, Real u2, Real v2)
+		public void SetBottomLeftBorderUV(float u1, float v1, float u2, float v2)
 		{
 			borderUV[(int)BorderCell.BottomLeft].u1 = u1; 
 			borderUV[(int)BorderCell.BottomLeft].u2 = u2; 
@@ -211,7 +220,7 @@ namespace Axiom
 			isGeomUVsOutOfDate = true;
 		}
 		//---------------------------------------------------------------------
-		public void SetBottomRightBorderUV(Real u1, Real v1, Real u2, Real v2)
+		public void SetBottomRightBorderUV(float u1, float v1, float u2, float v2)
 		{
 			borderUV[(int)BorderCell.BottomRight].u1 = u1; 
 			borderUV[(int)BorderCell.BottomRight].u2 = u2; 
@@ -333,7 +342,7 @@ namespace Axiom
         /// <param name="size">The size of the border as a factor of the screen dimensions ie 0.2 is one-fifth
         ///    of the screen size.
         /// </param>
-        public void SetBorderSize( Real size )
+        public void SetBorderSize( float size )
         {
             if ( metricsMode != MetricsMode.Relative )
             {
@@ -359,7 +368,7 @@ namespace Axiom
         /// <param name="sides">The size of the side borders as a factor of the screen dimensions ie 0.2 is one-fifth
         ///    of the screen size.</param>
         /// <param name="topAndBottom">The size of the top and bottom borders as a factor of the screen dimensions.</param>
-        public void SetBorderSize( Real sides, Real topAndBottom )
+        public void SetBorderSize( float sides, float topAndBottom )
         {
             if ( metricsMode != MetricsMode.Relative )
             {
@@ -389,7 +398,7 @@ namespace Axiom
         /// <param name="right">The size of the right border as a factor of the screen dimensions.</param>
         /// <param name="top">The size of the top border as a factor of the screen dimensions.</param>
         /// <param name="bottom">The size of the bottom border as a factor of the screen dimensions.</param>
-        public void SetBorderSize( Real left, Real right, Real top, Real bottom )
+        public void SetBorderSize( float left, float right, float top, float bottom )
         {
             if ( metricsMode != MetricsMode.Relative )
             {
@@ -425,7 +434,7 @@ namespace Axiom
         /// <param name="v1">Top left v.</param>
         /// <param name="u2">Bottom right u.</param>
         /// <param name="v2">Bottom right v.</param>
-        public void SetCellUV( BorderCell cell, Real u1, Real v1, Real u2, Real v2 )
+        public void SetCellUV( BorderCell cell, float u1, float v1, float u2, float v2 )
         {
             int cellIndex = (int)cell;
 
@@ -435,8 +444,8 @@ namespace Axiom
 
             // can't use discard, or it will discard the whole buffer, wiping out the positions too
             IntPtr data = buffer.Lock(
-                cellIndex * 8 * Marshal.SizeOf( typeof( Real ) ),
-                Marshal.SizeOf( typeof( Real ) ) * 8,
+                cellIndex * 8 * Marshal.SizeOf( typeof( float ) ),
+                Marshal.SizeOf( typeof( float ) ) * 8,
                 BufferLocking.Normal );
 
             int index = 0;
@@ -516,8 +525,8 @@ namespace Axiom
             IntPtr data = buffer.Lock( BufferLocking.Discard );
             int index = 0;
 
-			//Real zValue = Root.Instance.RenderSystem.MaximumDepthInputValue;
-			Real zValue = -1;
+			//float zValue = Root.Instance.RenderSystem.MaximumDepthInputValue;
+			float zValue = -1;
             unsafe
             {
                 float* posPtr = (float*)data.ToPointer();
@@ -604,7 +613,7 @@ namespace Axiom
         /// <summary>
         ///    Gets the size of the left border.
         /// </summary>
-        public Real LeftBorderSize
+        public float LeftBorderSize
         {
             get
             {
@@ -622,7 +631,7 @@ namespace Axiom
         /// <summary>
         ///    Gets the size of the right border.
         /// </summary>
-        public Real RightBorderSize
+        public float RightBorderSize
         {
             get
             {
@@ -640,7 +649,7 @@ namespace Axiom
         /// <summary>
         ///    Gets the size of the top border.
         /// </summary>
-        public Real TopBorderSize
+        public float TopBorderSize
         {
             get
             {
@@ -658,7 +667,7 @@ namespace Axiom
         /// <summary>
         ///    Gets the size of the bottom border.
         /// </summary>
-        public Real BottomBorderSize
+        public float BottomBorderSize
         {
             get
             {
@@ -729,10 +738,10 @@ namespace Axiom
         {
             BorderPanel borderPanel = (BorderPanel)objects[0];
 
-            Real u1 = Real.Parse( parms[0] );
-            Real v1 = Real.Parse( parms[1] );
-            Real u2 = Real.Parse( parms[2] );
-            Real v2 = Real.Parse( parms[3] );
+            float u1 = StringConverter.ParseFloat( parms[0] );
+            float v1 = StringConverter.ParseFloat( parms[1] );
+            float u2 = StringConverter.ParseFloat( parms[2] );
+            float v2 = StringConverter.ParseFloat( parms[3] );
 
             //borderPanel.SetCellUV( BorderCell.Left, u1, v1, u2, v2 );
 			borderPanel.SetLeftBorderUV(u1, v1, u2, v2);
@@ -743,10 +752,10 @@ namespace Axiom
         {
             BorderPanel borderPanel = (BorderPanel)objects[0];
 
-            Real u1 = Real.Parse( parms[0] );
-            Real v1 = Real.Parse( parms[1] );
-            Real u2 = Real.Parse( parms[2] );
-            Real v2 = Real.Parse( parms[3] );
+            float u1 = StringConverter.ParseFloat( parms[0] );
+            float v1 = StringConverter.ParseFloat( parms[1] );
+            float u2 = StringConverter.ParseFloat( parms[2] );
+            float v2 = StringConverter.ParseFloat( parms[3] );
 
             //borderPanel.SetCellUV( BorderCell.Right, u1, v1, u2, v2 );
 			borderPanel.SetRightBorderUV(u1, v1, u2, v2);
@@ -757,10 +766,10 @@ namespace Axiom
         {
             BorderPanel borderPanel = (BorderPanel)objects[0];
 
-            Real u1 = Real.Parse( parms[0] );
-            Real v1 = Real.Parse( parms[1] );
-            Real u2 = Real.Parse( parms[2] );
-            Real v2 = Real.Parse( parms[3] );
+            float u1 = StringConverter.ParseFloat( parms[0] );
+            float v1 = StringConverter.ParseFloat( parms[1] );
+            float u2 = StringConverter.ParseFloat( parms[2] );
+            float v2 = StringConverter.ParseFloat( parms[3] );
 
             //borderPanel.SetCellUV( BorderCell.Top, u1, v1, u2, v2 );
 			borderPanel.SetTopBorderUV(u1, v1, u2, v2);
@@ -771,10 +780,10 @@ namespace Axiom
         {
             BorderPanel borderPanel = (BorderPanel)objects[0];
 
-            Real u1 = Real.Parse( parms[0] );
-            Real v1 = Real.Parse( parms[1] );
-            Real u2 = Real.Parse( parms[2] );
-            Real v2 = Real.Parse( parms[3] );
+            float u1 = StringConverter.ParseFloat( parms[0] );
+            float v1 = StringConverter.ParseFloat( parms[1] );
+            float u2 = StringConverter.ParseFloat( parms[2] );
+            float v2 = StringConverter.ParseFloat( parms[3] );
 
             //borderPanel.SetCellUV( BorderCell.Bottom, u1, v1, u2, v2 );
 			borderPanel.SetBottomBorderUV(u1, v1, u2, v2);
@@ -785,10 +794,10 @@ namespace Axiom
         {
             BorderPanel borderPanel = (BorderPanel)objects[0];
 
-            Real u1 = Real.Parse( parms[0] );
-            Real v1 = Real.Parse( parms[1] );
-            Real u2 = Real.Parse( parms[2] );
-            Real v2 = Real.Parse( parms[3] );
+            float u1 = StringConverter.ParseFloat( parms[0] );
+            float v1 = StringConverter.ParseFloat( parms[1] );
+            float u2 = StringConverter.ParseFloat( parms[2] );
+            float v2 = StringConverter.ParseFloat( parms[3] );
 
             //borderPanel.SetCellUV( BorderCell.TopLeft, u1, v1, u2, v2 );
 			borderPanel.SetTopLeftBorderUV(u1, v1, u2, v2);
@@ -799,10 +808,10 @@ namespace Axiom
         {
             BorderPanel borderPanel = (BorderPanel)objects[0];
 
-            Real u1 = Real.Parse( parms[0] );
-            Real v1 = Real.Parse( parms[1] );
-            Real u2 = Real.Parse( parms[2] );
-            Real v2 = Real.Parse( parms[3] );
+            float u1 = StringConverter.ParseFloat( parms[0] );
+            float v1 = StringConverter.ParseFloat( parms[1] );
+            float u2 = StringConverter.ParseFloat( parms[2] );
+            float v2 = StringConverter.ParseFloat( parms[3] );
 
             //borderPanel.SetCellUV( BorderCell.TopRight, u1, v1, u2, v2 );
 			borderPanel.SetTopRightBorderUV(u1, v1, u2, v2);
@@ -813,10 +822,10 @@ namespace Axiom
         {
             BorderPanel borderPanel = (BorderPanel)objects[0];
 
-            Real u1 = Real.Parse( parms[0] );
-            Real v1 = Real.Parse( parms[1] );
-            Real u2 = Real.Parse( parms[2] );
-            Real v2 = Real.Parse( parms[3] );
+            float u1 = StringConverter.ParseFloat( parms[0] );
+            float v1 = StringConverter.ParseFloat( parms[1] );
+            float u2 = StringConverter.ParseFloat( parms[2] );
+            float v2 = StringConverter.ParseFloat( parms[3] );
 
             //borderPanel.SetCellUV( BorderCell.BottomLeft, u1, v1, u2, v2 );
 			borderPanel.SetBottomLeftBorderUV(u1, v1, u2, v2);
@@ -827,10 +836,10 @@ namespace Axiom
         {
             BorderPanel borderPanel = (BorderPanel)objects[0];
 
-            Real u1 = Real.Parse( parms[0] );
-            Real v1 = Real.Parse( parms[1] );
-            Real u2 = Real.Parse( parms[2] );
-            Real v2 = Real.Parse( parms[3] );
+            float u1 = StringConverter.ParseFloat( parms[0] );
+            float v1 = StringConverter.ParseFloat( parms[1] );
+            float u2 = StringConverter.ParseFloat( parms[2] );
+            float v2 = StringConverter.ParseFloat( parms[3] );
 
             //borderPanel.SetCellUV( BorderCell.BottomRight, u1, v1, u2, v2 );
 			borderPanel.SetBottomRightBorderUV(u1, v1, u2, v2);
@@ -841,10 +850,10 @@ namespace Axiom
         {
             BorderPanel borderPanel = (BorderPanel)objects[0];
 
-            Real left = Real.Parse( parms[0] );
-            Real right = Real.Parse( parms[1] );
-            Real top = Real.Parse( parms[2] );
-            Real bottom = Real.Parse( parms[3] );
+            float left = StringConverter.ParseFloat( parms[0] );
+            float right = StringConverter.ParseFloat( parms[1] );
+            float top = StringConverter.ParseFloat( parms[2] );
+            float bottom = StringConverter.ParseFloat( parms[3] );
 
             borderPanel.SetBorderSize( left, right, top, bottom );
         }
@@ -862,7 +871,7 @@ namespace Axiom
         #endregion
 		public class CellUV 
 		{
-			public Real u1, v1, u2, v2;
+			public float u1, v1, u2, v2;
 		};
         /// <summary>
         ///    Class for rendering the border of a BorderPanel.
@@ -906,7 +915,7 @@ namespace Axiom
                 }
             }
 
-            public Real GetSquaredViewDepth( Camera camera )
+            public float GetSquaredViewDepth( Camera camera )
             {
                 return parent.GetSquaredViewDepth( camera );
             }

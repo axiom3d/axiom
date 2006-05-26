@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -670,7 +678,7 @@ namespace Axiom.Platforms.Win32
         #region Keycode Conversions
 
         /// <summary>
-        ///		Used to convert an Axiom.KeyCodes enum val to a DirectInput.Key enum val.
+        ///		Used to convert an Axiom.Input.KeyCodes enum val to a DirectInput.Key enum val.
         /// </summary>
         /// <param name="key">Axiom keyboard code to query.</param>
         /// <returns>The equivalent enum value in the DXI.Key enum.</returns>
@@ -963,250 +971,250 @@ namespace Axiom.Platforms.Win32
         }
 
         /// <summary>
-        ///		Used to convert a DirectInput.Key enum val to a Axiom.KeyCodes enum val.
+        ///		Used to convert a DirectInput.Key enum val to a Axiom.Input.KeyCodes enum val.
         /// </summary>
         /// <param name="key">DirectInput.Key code to query.</param>
         /// <returns>The equivalent enum value in the Axiom.KeyCodes enum.</returns>
-        private Axiom.KeyCodes ConvertKeyEnum( DXI.Key key )
+        private KeyCodes ConvertKeyEnum( DXI.Key key )
         {
             // TODO Quotes
-            Axiom.KeyCodes axiomKey = 0;
+            KeyCodes axiomKey = 0;
 
             switch ( key )
             {
                 case DXI.Key.SysRq:	//same key as PrintScreen
-                    axiomKey = Axiom.KeyCodes.PrintScreen;
+                    axiomKey = KeyCodes.PrintScreen;
                     break;
                 case DXI.Key.A:
-                    axiomKey = Axiom.KeyCodes.A;
+                    axiomKey = KeyCodes.A;
                     break;
                 case DXI.Key.B:
-                    axiomKey = Axiom.KeyCodes.B;
+                    axiomKey = KeyCodes.B;
                     break;
                 case DXI.Key.C:
-                    axiomKey = Axiom.KeyCodes.C;
+                    axiomKey = KeyCodes.C;
                     break;
                 case DXI.Key.D:
-                    axiomKey = Axiom.KeyCodes.D;
+                    axiomKey = KeyCodes.D;
                     break;
                 case DXI.Key.E:
-                    axiomKey = Axiom.KeyCodes.E;
+                    axiomKey = KeyCodes.E;
                     break;
                 case DXI.Key.F:
-                    axiomKey = Axiom.KeyCodes.F;
+                    axiomKey = KeyCodes.F;
                     break;
                 case DXI.Key.G:
-                    axiomKey = Axiom.KeyCodes.G;
+                    axiomKey = KeyCodes.G;
                     break;
                 case DXI.Key.H:
-                    axiomKey = Axiom.KeyCodes.H;
+                    axiomKey = KeyCodes.H;
                     break;
                 case DXI.Key.I:
-                    axiomKey = Axiom.KeyCodes.I;
+                    axiomKey = KeyCodes.I;
                     break;
                 case DXI.Key.J:
-                    axiomKey = Axiom.KeyCodes.J;
+                    axiomKey = KeyCodes.J;
                     break;
                 case DXI.Key.K:
-                    axiomKey = Axiom.KeyCodes.K;
+                    axiomKey = KeyCodes.K;
                     break;
                 case DXI.Key.L:
-                    axiomKey = Axiom.KeyCodes.L;
+                    axiomKey = KeyCodes.L;
                     break;
                 case DXI.Key.M:
-                    axiomKey = Axiom.KeyCodes.M;
+                    axiomKey = KeyCodes.M;
                     break;
                 case DXI.Key.N:
-                    axiomKey = Axiom.KeyCodes.N;
+                    axiomKey = KeyCodes.N;
                     break;
                 case DXI.Key.O:
-                    axiomKey = Axiom.KeyCodes.O;
+                    axiomKey = KeyCodes.O;
                     break;
                 case DXI.Key.P:
-                    axiomKey = Axiom.KeyCodes.P;
+                    axiomKey = KeyCodes.P;
                     break;
                 case DXI.Key.Q:
-                    axiomKey = Axiom.KeyCodes.Q;
+                    axiomKey = KeyCodes.Q;
                     break;
                 case DXI.Key.R:
-                    axiomKey = Axiom.KeyCodes.R;
+                    axiomKey = KeyCodes.R;
                     break;
                 case DXI.Key.S:
-                    axiomKey = Axiom.KeyCodes.S;
+                    axiomKey = KeyCodes.S;
                     break;
                 case DXI.Key.T:
-                    axiomKey = Axiom.KeyCodes.T;
+                    axiomKey = KeyCodes.T;
                     break;
                 case DXI.Key.U:
-                    axiomKey = Axiom.KeyCodes.U;
+                    axiomKey = KeyCodes.U;
                     break;
                 case DXI.Key.V:
-                    axiomKey = Axiom.KeyCodes.V;
+                    axiomKey = KeyCodes.V;
                     break;
                 case DXI.Key.W:
-                    axiomKey = Axiom.KeyCodes.W;
+                    axiomKey = KeyCodes.W;
                     break;
                 case DXI.Key.X:
-                    axiomKey = Axiom.KeyCodes.X;
+                    axiomKey = KeyCodes.X;
                     break;
                 case DXI.Key.Y:
-                    axiomKey = Axiom.KeyCodes.Y;
+                    axiomKey = KeyCodes.Y;
                     break;
                 case DXI.Key.Z:
-                    axiomKey = Axiom.KeyCodes.Z;
+                    axiomKey = KeyCodes.Z;
                     break;
                 case DXI.Key.LeftArrow:
-                    axiomKey = Axiom.KeyCodes.Left;
+                    axiomKey = KeyCodes.Left;
                     break;
                 case DXI.Key.RightArrow:
-                    axiomKey = Axiom.KeyCodes.Right;
+                    axiomKey = KeyCodes.Right;
                     break;
                 case DXI.Key.UpArrow:
-                    axiomKey = Axiom.KeyCodes.Up;
+                    axiomKey = KeyCodes.Up;
                     break;
                 case DXI.Key.DownArrow:
-                    axiomKey = Axiom.KeyCodes.Down;
+                    axiomKey = KeyCodes.Down;
                     break;
                 case DXI.Key.Escape:
-                    axiomKey = Axiom.KeyCodes.Escape;
+                    axiomKey = KeyCodes.Escape;
                     break;
                 case DXI.Key.F1:
-                    axiomKey = Axiom.KeyCodes.F1;
+                    axiomKey = KeyCodes.F1;
                     break;
                 case DXI.Key.F2:
-                    axiomKey = Axiom.KeyCodes.F2;
+                    axiomKey = KeyCodes.F2;
                     break;
                 case DXI.Key.F3:
-                    axiomKey = Axiom.KeyCodes.F3;
+                    axiomKey = KeyCodes.F3;
                     break;
                 case DXI.Key.F4:
-                    axiomKey = Axiom.KeyCodes.F4;
+                    axiomKey = KeyCodes.F4;
                     break;
                 case DXI.Key.F5:
-                    axiomKey = Axiom.KeyCodes.F5;
+                    axiomKey = KeyCodes.F5;
                     break;
                 case DXI.Key.F6:
-                    axiomKey = Axiom.KeyCodes.F6;
+                    axiomKey = KeyCodes.F6;
                     break;
                 case DXI.Key.F7:
-                    axiomKey = Axiom.KeyCodes.F7;
+                    axiomKey = KeyCodes.F7;
                     break;
                 case DXI.Key.F8:
-                    axiomKey = Axiom.KeyCodes.F8;
+                    axiomKey = KeyCodes.F8;
                     break;
                 case DXI.Key.F9:
-                    axiomKey = Axiom.KeyCodes.F9;
+                    axiomKey = KeyCodes.F9;
                     break;
                 case DXI.Key.F10:
-                    axiomKey = Axiom.KeyCodes.F10;
+                    axiomKey = KeyCodes.F10;
                     break;
                 case DXI.Key.D0:
-                    axiomKey = Axiom.KeyCodes.D0;
+                    axiomKey = KeyCodes.D0;
                     break;
                 case DXI.Key.D1:
-                    axiomKey = Axiom.KeyCodes.D1;
+                    axiomKey = KeyCodes.D1;
                     break;
                 case DXI.Key.D2:
-                    axiomKey = Axiom.KeyCodes.D2;
+                    axiomKey = KeyCodes.D2;
                     break;
                 case DXI.Key.D3:
-                    axiomKey = Axiom.KeyCodes.D3;
+                    axiomKey = KeyCodes.D3;
                     break;
                 case DXI.Key.D4:
-                    axiomKey = Axiom.KeyCodes.D4;
+                    axiomKey = KeyCodes.D4;
                     break;
                 case DXI.Key.D5:
-                    axiomKey = Axiom.KeyCodes.D5;
+                    axiomKey = KeyCodes.D5;
                     break;
                 case DXI.Key.D6:
-                    axiomKey = Axiom.KeyCodes.D6;
+                    axiomKey = KeyCodes.D6;
                     break;
                 case DXI.Key.D7:
-                    axiomKey = Axiom.KeyCodes.D7;
+                    axiomKey = KeyCodes.D7;
                     break;
                 case DXI.Key.D8:
-                    axiomKey = Axiom.KeyCodes.D8;
+                    axiomKey = KeyCodes.D8;
                     break;
                 case DXI.Key.D9:
-                    axiomKey = Axiom.KeyCodes.D9;
+                    axiomKey = KeyCodes.D9;
                     break;
                 case DXI.Key.F11:
-                    axiomKey = Axiom.KeyCodes.F11;
+                    axiomKey = KeyCodes.F11;
                     break;
                 case DXI.Key.F12:
-                    axiomKey = Axiom.KeyCodes.F12;
+                    axiomKey = KeyCodes.F12;
                     break;
                 case DXI.Key.Return:
-                    axiomKey = Axiom.KeyCodes.Enter;
+                    axiomKey = KeyCodes.Enter;
                     break;
                 case DXI.Key.Tab:
-                    axiomKey = Axiom.KeyCodes.Tab;
+                    axiomKey = KeyCodes.Tab;
                     break;
                 case DXI.Key.LeftShift:
-                    axiomKey = Axiom.KeyCodes.LeftShift;
+                    axiomKey = KeyCodes.LeftShift;
                     break;
                 case DXI.Key.RightShift:
-                    axiomKey = Axiom.KeyCodes.RightShift;
+                    axiomKey = KeyCodes.RightShift;
                     break;
                 case DXI.Key.LeftControl:
-                    axiomKey = Axiom.KeyCodes.LeftControl;
+                    axiomKey = KeyCodes.LeftControl;
                     break;
                 case DXI.Key.RightControl:
-                    axiomKey = Axiom.KeyCodes.RightControl;
+                    axiomKey = KeyCodes.RightControl;
                     break;
                 case DXI.Key.Period:
-                    axiomKey = Axiom.KeyCodes.Period;
+                    axiomKey = KeyCodes.Period;
                     break;
                 case DXI.Key.Comma:
-                    axiomKey = Axiom.KeyCodes.Comma;
+                    axiomKey = KeyCodes.Comma;
                     break;
                 case DXI.Key.Home:
-                    axiomKey = Axiom.KeyCodes.Home;
+                    axiomKey = KeyCodes.Home;
                     break;
                 case DXI.Key.PageUp:
-                    axiomKey = Axiom.KeyCodes.PageUp;
+                    axiomKey = KeyCodes.PageUp;
                     break;
                 case DXI.Key.PageDown:
-                    axiomKey = Axiom.KeyCodes.PageDown;
+                    axiomKey = KeyCodes.PageDown;
                     break;
                 case DXI.Key.End:
-                    axiomKey = Axiom.KeyCodes.End;
+                    axiomKey = KeyCodes.End;
                     break;
                 case DXI.Key.SemiColon:
-                    axiomKey = Axiom.KeyCodes.Semicolon;
+                    axiomKey = KeyCodes.Semicolon;
                     break;
                 case DXI.Key.Subtract:
-                    axiomKey = Axiom.KeyCodes.Subtract;
+                    axiomKey = KeyCodes.Subtract;
                     break;
                 case DXI.Key.Add:
-                    axiomKey = Axiom.KeyCodes.Add;
+                    axiomKey = KeyCodes.Add;
                     break;
                 case DXI.Key.BackSpace:
-                    axiomKey = Axiom.KeyCodes.Backspace;
+                    axiomKey = KeyCodes.Backspace;
                     break;
                 case DXI.Key.Delete:
-                    axiomKey = Axiom.KeyCodes.Delete;
+                    axiomKey = KeyCodes.Delete;
                     break;
                 case DXI.Key.Insert:
-                    axiomKey = Axiom.KeyCodes.Insert;
+                    axiomKey = KeyCodes.Insert;
                     break;
                 case DXI.Key.LeftAlt:
-                    axiomKey = Axiom.KeyCodes.LeftAlt;
+                    axiomKey = KeyCodes.LeftAlt;
                     break;
                 case DXI.Key.RightAlt:
-                    axiomKey = Axiom.KeyCodes.RightAlt;
+                    axiomKey = KeyCodes.RightAlt;
                     break;
                 case DXI.Key.Space:
-                    axiomKey = Axiom.KeyCodes.Space;
+                    axiomKey = KeyCodes.Space;
                     break;
                 case DXI.Key.Grave:
-                    axiomKey = Axiom.KeyCodes.Tilde;
+                    axiomKey = KeyCodes.Tilde;
                     break;
                 case DXI.Key.LeftBracket:
-                    axiomKey = Axiom.KeyCodes.OpenBracket;
+                    axiomKey = KeyCodes.OpenBracket;
                     break;
                 case DXI.Key.RightBracket:
-                    axiomKey = Axiom.KeyCodes.CloseBracket;
+                    axiomKey = KeyCodes.CloseBracket;
                     break;
                 case DXI.Key.Equals:
                     axiomKey = KeyCodes.Plus;
@@ -1224,34 +1232,34 @@ namespace Axiom.Platforms.Win32
                     axiomKey = KeyCodes.Backslash;
                     break;
                 case DXI.Key.NumPad0:
-                    axiomKey = Axiom.KeyCodes.NumPad0;
+                    axiomKey = KeyCodes.NumPad0;
                     break;
                 case DXI.Key.NumPad1:
-                    axiomKey = Axiom.KeyCodes.NumPad1;
+                    axiomKey = KeyCodes.NumPad1;
                     break;
                 case DXI.Key.NumPad2:
-                    axiomKey = Axiom.KeyCodes.NumPad2;
+                    axiomKey = KeyCodes.NumPad2;
                     break;
                 case DXI.Key.NumPad3:
-                    axiomKey = Axiom.KeyCodes.NumPad3;
+                    axiomKey = KeyCodes.NumPad3;
                     break;
                 case DXI.Key.NumPad4:
-                    axiomKey = Axiom.KeyCodes.NumPad4;
+                    axiomKey = KeyCodes.NumPad4;
                     break;
                 case DXI.Key.NumPad5:
-                    axiomKey = Axiom.KeyCodes.NumPad5;
+                    axiomKey = KeyCodes.NumPad5;
                     break;
                 case DXI.Key.NumPad6:
-                    axiomKey = Axiom.KeyCodes.NumPad6;
+                    axiomKey = KeyCodes.NumPad6;
                     break;
                 case DXI.Key.NumPad7:
-                    axiomKey = Axiom.KeyCodes.NumPad7;
+                    axiomKey = KeyCodes.NumPad7;
                     break;
                 case DXI.Key.NumPad8:
-                    axiomKey = Axiom.KeyCodes.NumPad8;
+                    axiomKey = KeyCodes.NumPad8;
                     break;
                 case DXI.Key.NumPad9:
-                    axiomKey = Axiom.KeyCodes.NumPad9;
+                    axiomKey = KeyCodes.NumPad9;
                     break;
             }
 

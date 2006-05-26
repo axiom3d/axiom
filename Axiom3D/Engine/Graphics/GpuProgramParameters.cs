@@ -24,11 +24,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -80,7 +89,7 @@ namespace Axiom
         /// <summary>
         ///    Table of Vector4 constants by index.
         /// </summary>
-        protected RealConstantEntryList realConstants = new RealConstantEntryList();
+        protected FloatConstantEntryList floatConstants = new FloatConstantEntryList();
         /// <summary>
         ///    List of automatically updated parameters.
         /// </summary>
@@ -145,14 +154,14 @@ namespace Axiom
         {
             int i = 0;
 
-            RealConstantEntry[] realEntries = new RealConstantEntry[source.realConstants.Count];
+            FloatConstantEntry[] floatEntries = new FloatConstantEntry[source.floatConstants.Count];
             IntConstantEntry[] intEntries = new IntConstantEntry[source.intConstants.Count];
 
-            // copy those Real and int constants right on in
-            source.realConstants.CopyTo( realEntries );
+            // copy those float and int constants right on in
+            source.floatConstants.CopyTo( floatEntries );
             source.intConstants.CopyTo( intEntries );
 
-            realConstants.AddRange( realEntries );
+            floatConstants.AddRange( floatEntries );
             intConstants.AddRange( intEntries );
 
             // Iterate over auto parameters
@@ -174,11 +183,11 @@ namespace Axiom
         /// </summary>
         /// <param name="i"></param>
         /// <returns></returns>
-        public RealConstantEntry GetRealConstant( int i )
+        public FloatConstantEntry GetFloatConstant( int i )
         {
-            if ( i < realConstants.Count )
+            if ( i < floatConstants.Count )
             {
-                return (RealConstantEntry)realConstants[i];
+                return (FloatConstantEntry)floatConstants[i];
             }
 
             return null;
@@ -218,9 +227,9 @@ namespace Axiom
                     // determine index
                     // don't know which Constants list the name is for
                     // so pick the largest index
-                    int index = realConstants.Count > intConstants.Count ? realConstants.Count : intConstants.Count;
+                    int index = floatConstants.Count > intConstants.Count ? floatConstants.Count : intConstants.Count;
 
-                    realConstants.Resize( index + 1 );
+                    floatConstants.Resize( index + 1 );
                     intConstants.Resize( index + 1 );
                     MapParamNameToIndex( name, index );
                     return index;
@@ -253,17 +262,17 @@ namespace Axiom
         }
 
         /// <summary>
-        ///		Gets a Named Real Constant entry if the name is found otherwise returns a null.
+        ///		Gets a Named Float Constant entry if the name is found otherwise returns a null.
         /// </summary>
         /// <param name="name">Name of the constant to retreive.</param>
-        /// <returns>A reference to the Real constant entry with the specified name, else null if not found.</returns>
-        public RealConstantEntry GetNamedRealConstant( string name )
+        /// <returns>A reference to the float constant entry with the specified name, else null if not found.</returns>
+        public FloatConstantEntry GetNamedFloatConstant( string name )
         {
             if ( namedParams[name] != null )
             {
                 int index = (int)namedParams[name];
 
-                return GetRealConstant( index );
+                return GetFloatConstant( index );
             }
 
             return null;
@@ -342,7 +351,7 @@ namespace Axiom
         /// <param name="val">Structure containing 4 packed float values.</param>
         public void SetConstant( int index, Vector4 val )
         {
-            // store the Real4 constant for this index
+            // store the float4 constant for this index
             tmpVals[0] = val.x;
             tmpVals[1] = val.y;
             tmpVals[2] = val.z;
@@ -457,12 +466,12 @@ namespace Axiom
             int srcIndex = 0;
 
             // resize if necessary
-            realConstants.Resize( index + count );
+            floatConstants.Resize( index + count );
 
             // copy in chunks of 4
             while ( count-- > 0 )
             {
-                RealConstantEntry entry = (RealConstantEntry)realConstants[index++];
+                FloatConstantEntry entry = (FloatConstantEntry)floatConstants[index++];
                 entry.isSet = true;
                 Array.Copy( floats, srcIndex, entry.val, 0, 4 );
                 srcIndex += 4;
@@ -750,7 +759,7 @@ namespace Axiom
         ///		prior to the material serializer reading in parameter names in a script then
         ///		an exception is generated.  Set this to true to have names not found
         ///		in the map added to the map.
-        ///		The index of the parameter name will be set to the end of the Real Constant List.
+        ///		The index of the parameter name will be set to the end of the Float Constant List.
         /// </remarks>
         public bool AutoAddParamName
         {
@@ -795,13 +804,13 @@ namespace Axiom
         }
 
         /// <summary>
-        ///    Returns true if Realing-point constants have been set.
+        ///    Returns true if floating-point constants have been set.
         /// </summary>
-        public bool HasRealConstants
+        public bool HasFloatConstants
         {
             get
             {
-                return realConstants.Count > 0;
+                return floatConstants.Count > 0;
             }
         }
 
@@ -830,13 +839,13 @@ namespace Axiom
         }
 
         /// <summary>
-        ///    Gets the number of Realing-point contant values currently set.
+        ///    Gets the number of floating-point contant values currently set.
         /// </summary>
-        public int RealConstantCount
+        public int FloatConstantCount
         {
             get
             {
-                return realConstants.Count;
+                return floatConstants.Count;
             }
         }
 
@@ -909,7 +918,7 @@ namespace Axiom
         ///		filter out constant entries which have not been set by the renderer
         ///		and may actually be being used internally by the program.
         /// </summary>
-        public class RealConstantEntry
+        public class FloatConstantEntry
         {
             public float[] val = new float[4];
             public bool isSet = false;

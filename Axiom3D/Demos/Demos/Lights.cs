@@ -1,11 +1,8 @@
 
-#region Namespace Declarations
-
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
-#endregion Namespace Declarations
-			
 namespace Axiom.Demos
 {
     /// <summary>
@@ -150,7 +147,7 @@ namespace Axiom.Demos
     {
         private Billboard billboard;
         private Light light;
-        private Real intensity;
+        private float intensity;
         private ColorEx maxColor;
 
         public LightFlasherControllerValue( Light light, Billboard billboard, ColorEx maxColor )
@@ -162,7 +159,7 @@ namespace Axiom.Demos
 
         #region IControllerValue Members
 
-        public Real Value
+        public float Value
         {
             get
             {

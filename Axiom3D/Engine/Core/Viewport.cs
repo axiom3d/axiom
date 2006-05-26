@@ -24,15 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Diagnostics;
 
-using DotNet3D.Math;
-
 #endregion Namespace Declarations
-			
+
 namespace Axiom
 {
     /// <summary>
@@ -66,19 +72,19 @@ namespace Axiom
         /// <summary>
         ///		Relative left [0.0, 1.0].
         /// </summary>
-        private Real relativeLeft;
+        private float relativeLeft;
         /// <summary>
         ///		Relative top [0.0, 1.0].
         /// </summary>
-        private Real relativeTop;
+        private float relativeTop;
         /// <summary>
         ///		Relative width [0.0, 1.0].
         /// </summary>
-        private Real relativeWidth;
+        private float relativeWidth;
         /// <summary>
         ///		Relative height [0.0, 1.0].
         /// </summary>
-        private Real relativeHeight;
+        private float relativeHeight;
         /// <summary>
         ///		Absolute left edge of the viewport (in pixels).
         /// </summary>
@@ -133,7 +139,7 @@ namespace Axiom
         /// <param name="width">Width</param>
         /// <param name="height">Height</param>
         /// <param name="zOrder">Relative Z-order on the target. Lower = further to the front.</param>
-        public Viewport( Camera camera, RenderTarget target, Real left, Real top, Real width, Real height, int zOrder )
+        public Viewport( Camera camera, RenderTarget target, float left, float top, float width, float height, int zOrder )
         {
             Debug.Assert( camera != null, "Cannot use a null Camera to create a viewport." );
             Debug.Assert( target != null, "Cannor use a null RenderTarget to create a viewport." );
@@ -176,8 +182,8 @@ namespace Axiom
         ///	</remarks>
         internal void UpdateDimensions()
         {
-            Real height = (Real)target.Height;
-            Real width = (Real)target.Width;
+            float height = (float)target.Height;
+            float width = (float)target.Width;
 
             actualLeft = (int)( relativeLeft * width );
             actualTop = (int)( relativeTop * height );
@@ -251,7 +257,7 @@ namespace Axiom
         /// <summary>
         ///		Gets the relative top edge of the viewport, a value between 0.0 and 1.0.
         /// </summary>
-        public Real Top
+        public float Top
         {
             get
             {
@@ -262,7 +268,7 @@ namespace Axiom
         /// <summary>
         ///		Gets the relative left edge of the viewport, a value between 0.0 and 1.0.
         /// </summary>
-        public Real Left
+        public float Left
         {
             get
             {
@@ -273,7 +279,7 @@ namespace Axiom
         /// <summary>
         ///		Gets the relative width of the viewport, a value between 0.0 and 1.0.
         /// </summary>
-        public Real Width
+        public float Width
         {
             get
             {
@@ -284,7 +290,7 @@ namespace Axiom
         /// <summary>
         ///		Gets the relative height of the viewport, a value between 0.0 and 1.0.
         /// </summary>
-        public Real Height
+        public float Height
         {
             get
             {
@@ -444,7 +450,7 @@ namespace Axiom
         /// <param name="top">Top edge of the viewport ([0.0, 1.0]).</param>
         /// <param name="width">Width of the viewport ([0.0, 1.0]).</param>
         /// <param name="height">Height of the viewport ([0.0, 1.0]).</param>
-        public void SetDimensions( Real left, Real top, Real width, Real height )
+        public void SetDimensions( float left, float top, float width, float height )
         {
             relativeLeft = left;
             relativeTop = top;

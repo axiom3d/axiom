@@ -24,12 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Globalization;
 using System.Text;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -91,10 +100,10 @@ namespace Axiom
         public static ColorEx ParseColor( string[] values )
         {
             ColorEx color = new ColorEx();
-            color.r = Real.Parse( values[0] );
-            color.g = Real.Parse( values[1] );
-            color.b = Real.Parse( values[2] );
-            color.a = ( values.Length > 3 ) ? Real.Parse( values[3] ) : new Real( 1.0f );
+            color.r = ParseFloat( values[0] );
+            color.g = ParseFloat( values[1] );
+            color.b = ParseFloat( values[2] );
+            color.a = ( values.Length > 3 ) ? ParseFloat( values[3] ) : 1.0f;
 
             return color;
         }
@@ -106,12 +115,12 @@ namespace Axiom
         public static ColorEx ParseColor( string val )
         {
             ColorEx color = new ColorEx();
-            string[] values = val.Split( ' ' );
+            string[] vals = val.Split( ' ' );
 
-            color.r = Real.Parse( values[0] );
-            color.g = Real.Parse( values[1] );
-            color.b = Real.Parse( values[2] );
-            color.a = ( values.Length == 4 ) ? Real.Parse( values[ 3 ] ) : new Real( 1.0f );
+            color.r = ParseFloat( vals[0] );
+            color.g = ParseFloat( vals[1] );
+            color.b = ParseFloat( vals[2] );
+            color.a = ( vals.Length == 4 ) ? ParseFloat( vals[3] ) : 1.0f;
 
             return color;
         }
@@ -123,9 +132,9 @@ namespace Axiom
         public static Vector3 ParseVector3( string[] values )
         {
             Vector3 vec = new Vector3();
-            vec.x = Real.Parse( values[0] );
-            vec.y = Real.Parse( values[1] );
-            vec.z = Real.Parse( values[ 2 ] );
+            vec.x = ParseFloat( values[0] );
+            vec.y = ParseFloat( values[1] );
+            vec.z = ParseFloat( values[2] );
 
             return vec;
         }
@@ -139,9 +148,9 @@ namespace Axiom
             string[] values = val.Split( ' ' );
 
             Vector3 vec = new Vector3();
-            vec.x = Real.Parse( values[0] );
-            vec.y = Real.Parse( values[1] );
-            vec.z = Real.Parse( values[2] );
+            vec.x = ParseFloat( values[0] );
+            vec.y = ParseFloat( values[1] );
+            vec.z = ParseFloat( values[2] );
 
             return vec;
         }
@@ -153,27 +162,27 @@ namespace Axiom
         public static Vector4 ParseVector4( string[] values )
         {
             Vector4 vec = new Vector4();
-            vec.x = Real.Parse( values[0] );
-            vec.y = Real.Parse( values[1] );
-            vec.z = Real.Parse( values[2] );
-            vec.w = Real.Parse( values[3] );
+            vec.x = ParseFloat( values[0] );
+            vec.y = ParseFloat( values[1] );
+            vec.z = ParseFloat( values[2] );
+            vec.w = ParseFloat( values[3] );
 
             return vec;
         }
 
-        ///// <summary>
-        /////		Parse a Real value from a string.
-        ///// </summary>
-        ///// <remarks>
-        /////		Since our file formats assume the 'en-US' style format for numbers, we need to
-        /////		let the framework know that where numbers are being parsed.
-        ///// </remarks>
-        ///// <param name="val">String value holding the Real.</param>
-        ///// <returns>A Real representation of the string value.</returns>
-        //public static Real Real.Parse( string val )
-        //{
-        //    return Real.Parse( val, englishCulture );
-        //}
+        /// <summary>
+        ///		Parse a float value from a string.
+        /// </summary>
+        /// <remarks>
+        ///		Since our file formats assume the 'en-US' style format for numbers, we need to
+        ///		let the framework know that where numbers are being parsed.
+        /// </remarks>
+        /// <param name="val">String value holding the float.</param>
+        /// <returns>A float representation of the string value.</returns>
+        public static float ParseFloat( string val )
+        {
+            return float.Parse( val, englishCulture );
+        }
 
         /// <summary>
         ///     
@@ -210,9 +219,9 @@ namespace Axiom
         /// </summary>
         /// <param name="val"></param>
         /// <returns></returns>
-        public static string ToString( Real val )
+        public static string ToString( float val )
         {
-            return val.ToString();
+            return val.ToString( englishCulture );
         }
 
         #endregion Static Methods

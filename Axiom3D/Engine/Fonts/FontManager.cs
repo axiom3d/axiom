@@ -24,12 +24,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.IO;
-
-using DotNet3D.Math;
+using Axiom;
 
 #endregion Namespace Declarations
 			
@@ -212,10 +219,10 @@ namespace Axiom
                     // set the texcoords for this glyph
                     font.SetGlyphTexCoords(
                         glyph,
-                        Real.Parse( parms[2] ),
-                        Real.Parse( parms[3] ),
-                        Real.Parse( parms[4] ),
-                        Real.Parse( parms[5] ) );
+                        StringConverter.ParseFloat( parms[2] ),
+                        StringConverter.ParseFloat( parms[3] ),
+                        StringConverter.ParseFloat( parms[4] ),
+                        StringConverter.ParseFloat( parms[5] ) );
 
                     break;
 

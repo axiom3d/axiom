@@ -24,16 +24,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 using System.Diagnostics;
 
-using DotNet3D.Math;
-
 #endregion Namespace Declarations
-
+			
 namespace Axiom
 {
     /// <summary>
@@ -92,7 +98,7 @@ namespace Axiom
         /// <summary>
         ///    Shininess of the object's surface in fixed function passes.
         /// </summary>
-        protected Real shininess;
+        protected float shininess;
         /// <summary>
         ///    Source blend factor.
         /// </summary>
@@ -172,15 +178,15 @@ namespace Axiom
         /// <summary>
         ///    Starting point of the fog for this pass (if overriding).
         /// </summary>
-        protected Real fogStart;
+        protected float fogStart;
         /// <summary>
         ///    Ending point of the fog for this pass (if overriding).
         /// </summary>
-        protected Real fogEnd;
+        protected float fogEnd;
         /// <summary>
         ///    Density of the fog for this pass (if overriding).
         /// </summary>
-        protected Real fogDensity;
+        protected float fogDensity;
         /// <summary>
         ///    List of fixed function texture unit states for this pass.
         /// </summary>
@@ -581,7 +587,7 @@ namespace Axiom
         ///    Distance in world units at which linear fog becomes completely opaque.
         ///    Only applicable if mode is FogMode.Linear.
         /// </param>
-        public void SetFog( bool overrideScene, FogMode mode, ColorEx color, Real density, Real start, Real end )
+        public void SetFog( bool overrideScene, FogMode mode, ColorEx color, float density, float start, float end )
         {
             fogOverride = overrideScene;
 
@@ -666,7 +672,7 @@ namespace Axiom
         ///    The density of the fog in FogMode.Exp or FogMode.Exp2 mode, as a value between 0 and 1. 
         ///    The default is 0.001.
         /// </param>
-        public void SetFog( bool overrideScene, FogMode mode, ColorEx color, Real density )
+        public void SetFog( bool overrideScene, FogMode mode, ColorEx color, float density )
         {
             SetFog( overrideScene, mode, color, density, 0.0f, 1.0f );
         }
@@ -1268,7 +1274,7 @@ namespace Axiom
         /// <remarks>
         ///    Only valid if FogOverride is true.
         /// </remarks>
-        public Real FogDensity
+        public float FogDensity
         {
             get
             {
@@ -1282,7 +1288,7 @@ namespace Axiom
         /// <remarks>
         ///    Only valid if FogOverride is true.
         /// </remarks>
-        public Real FogEnd
+        public float FogEnd
         {
             get
             {
@@ -1321,7 +1327,7 @@ namespace Axiom
         /// <remarks>
         ///    Only valid if FogOverride is true.
         /// </remarks>
-        public Real FogStart
+        public float FogStart
         {
             get
             {
@@ -1626,7 +1632,7 @@ namespace Axiom
         ///    This setting has no effect if dynamic lighting is disabled (see Pass::setLightingEnabled),
         ///    or if this is a programmable pass.
         /// </remarks>
-        public Real Shininess
+        public float Shininess
         {
             get
             {

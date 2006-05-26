@@ -108,11 +108,11 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
         {
             // Register combiners uses 2 constants per texture stage (0 and 1)
             // We have stored these as (stage * 2) + const_index
-            if ( parms.HasRealConstants )
+            if ( parms.HasFloatConstants )
             {
-                for ( int index = 0; index < parms.RealConstantCount; index++ )
+                for ( int index = 0; index < parms.FloatConstantCount; index++ )
                 {
-                    GpuProgramParameters.RealConstantEntry entry = parms.GetRealConstant( index );
+                    GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
 
                     if ( entry.isSet )
                     {

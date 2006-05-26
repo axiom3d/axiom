@@ -24,12 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 using System.Diagnostics;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -123,7 +132,7 @@ namespace Axiom
         /// <summary>
         ///    LOD bias factor, inverted for optimization when calculating adjusted depth.
         /// </summary>
-        protected Real meshLodFactorInv;
+        protected float meshLodFactorInv;
         /// <summary>
         ///    Index of minimum detail LOD (higher index is lower detail).
         /// </summary>
@@ -175,7 +184,7 @@ namespace Axiom
         /// <summary>
         ///		LOD bias factor, inverted for optimisation when calculating adjusted depth.
         /// </summary>
-        protected Real materialLodFactorInv;
+        protected float materialLodFactorInv;
         /// <summary>
         ///		Index of minimum detail LOD (NB higher index is lower detail).
         /// </summary>
@@ -318,17 +327,17 @@ namespace Axiom
         /// <summary>
         ///    Local bounding radius of this entity.
         /// </summary>
-        public override Real BoundingRadius
+        public override float BoundingRadius
         {
             get
             {
-                Real radius = mesh.BoundingSphereRadius;
+                float radius = mesh.BoundingSphereRadius;
 
                 // scale by the largest scale factor
                 if ( parentNode != null )
                 {
                     Vector3 s = parentNode.DerivedScale;
-                    radius *= Utility.Max( s.x, Utility.Max( s.y, s.z ) );
+                    radius *= MathUtil.Max( s.x, MathUtil.Max( s.y, s.z ) );
                 }
 
                 return radius;
@@ -893,10 +902,10 @@ namespace Axiom
         {
             if ( parentNode != null )
             {
-                Real squaredDepth = parentNode.GetSquaredViewDepth( camera );
+                float squaredDepth = parentNode.GetSquaredViewDepth( camera );
 
                 // Adjust this depth by the entity bias factor
-                Real temp = squaredDepth * meshLodFactorInv;
+                float temp = squaredDepth * meshLodFactorInv;
 
                 // Now adjust it by the camera bias
                 temp = temp * camera.InverseLodBias;
@@ -905,10 +914,10 @@ namespace Axiom
                 meshLodIndex = mesh.GetLodIndexSquaredDepth( temp );
 
                 // Apply maximum detail restriction (remember lower = higher detail)
-                meshLodIndex = (int)Utility.Max( maxMeshLodIndex, meshLodIndex );
+                meshLodIndex = (int)MathUtil.Max( maxMeshLodIndex, meshLodIndex );
 
                 // Apply minimum detail restriction (remember higher = lower detail)
-                meshLodIndex = (int)Utility.Min( minMeshLodIndex, meshLodIndex );
+                meshLodIndex = (int)MathUtil.Min( minMeshLodIndex, meshLodIndex );
 
                 // now do material LOD
                 // adjust this depth by the entity bias factor
@@ -926,9 +935,9 @@ namespace Axiom
                     int idx = subEnt.Material.GetLodIndexSquaredDepth( temp );
 
                     // Apply maximum detail restriction (remember lower = higher detail)
-                    idx = (int)Utility.Max( maxMaterialLodIndex, idx );
+                    idx = (int)MathUtil.Max( maxMaterialLodIndex, idx );
                     // Apply minimum detail restriction (remember higher = lower detail)
-                    subEnt.materialLodIndex = (int)Utility.Min( minMaterialLodIndex, idx );
+                    subEnt.materialLodIndex = (int)MathUtil.Min( minMaterialLodIndex, idx );
                 }
             }
 
@@ -1057,7 +1066,7 @@ namespace Axiom
         /// <param name="minDetailIndex">The index of the minimum LOD this entity is allowed to use (higher
         ///    indexes are lower detail. Use something like 99 if you want unlimited LODs (the actual
         ///    LOD will be limited by the number in the material)</param>
-        public void SetMaterialLodBias( Real factor, int maxDetailIndex, int minDetailIndex )
+        public void SetMaterialLodBias( float factor, int maxDetailIndex, int minDetailIndex )
         {
             Debug.Assert( factor > 0.0f, "Bias factor must be > 0!" );
             materialLodFactorInv = 1.0f / factor;
@@ -1093,7 +1102,7 @@ namespace Axiom
         /// <param name="minDetailIndex">The index of the minimum LOD this entity is allowed to use (higher
         ///    indexes are lower detail. Use something like 99 if you want unlimited LODs (the actual
         ///    LOD will be limited by the number in the Mesh)</param>
-        public void SetMeshLodBias( Real factor, int maxDetailIndex, int minDetailIndex )
+        public void SetMeshLodBias( float factor, int maxDetailIndex, int minDetailIndex )
         {
             Debug.Assert( factor > 0.0f, "Bias factor must be > 0!" );
             meshLodFactorInv = 1.0f / factor;
@@ -1291,7 +1300,7 @@ namespace Axiom
         }
 
         public override IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light,
-            HardwareIndexBuffer indexBuffer, bool extrudeVertices, Real extrusionDistance, int flags )
+            HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, int flags )
         {
 
             Debug.Assert( indexBuffer != null, "Only external index buffers are supported right now" );

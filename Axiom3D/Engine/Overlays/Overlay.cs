@@ -24,14 +24,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
+			
 
 #region Ogre Synchronization Information
 /// <ogresynchronization>
@@ -80,11 +90,11 @@ namespace Axiom
         protected ArrayList elementList = new ArrayList();
         protected Hashtable elementLookup = new Hashtable();
         /// <summary>Degrees of rotation around center.</summary>
-        protected Degree rotate;
+        protected float rotate;
         /// <summary>Scroll values, offsets.</summary>
-        protected Real scrollX, scrollY;
+        protected float scrollX, scrollY;
         /// <summary>Scale values.</summary>
-        protected Real scaleX, scaleY;
+        protected float scaleX, scaleY;
         protected Matrix4 transform = Matrix4.Identity;
         protected bool isTransformOutOfDate;
 		protected bool isTransformUpdated;
@@ -262,7 +272,7 @@ namespace Axiom
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
-		public virtual OverlayElement FindElementAt(Real x, Real y)
+		public virtual OverlayElement FindElementAt(float x, float y)
 		{
 			OverlayElement ret = null;
 			int currZ = -1;
@@ -332,7 +342,7 @@ namespace Axiom
         ///    Adds the passed in angle to the rotation applied to this overlay.
         /// </summary>
         /// <param name="degress"></param>
-        public void Rotate( Real degrees )
+        public void Rotate( float degrees )
         {
             this.Rotation = ( rotate += degrees );
         }
@@ -347,7 +357,7 @@ namespace Axiom
         /// </remarks>
         /// <param name="xOffset"></param>
         /// <param name="yOffset"></param>
-        public void Scroll( Real xOffset, Real yOffset )
+        public void Scroll( float xOffset, float yOffset )
         {
             scrollX += xOffset;
             scrollY += yOffset;
@@ -363,7 +373,7 @@ namespace Axiom
         /// </remarks>
         /// <param name="x">Horizontal scale value, where 1.0 = normal, 0.5 = half size etc</param>
         /// <param name="y">Vertical scale value, where 1.0 = normal, 0.5 = half size etc</param>
-        public void SetScale( Real x, Real y )
+        public void SetScale( float x, float y )
         {
             scaleX = x;
             scaleY = y;
@@ -386,7 +396,7 @@ namespace Axiom
         ///    Vertical scroll value, where 0 = normal, 0.5 = scroll down by half 
         ///    a screen etc.
         /// </param>
-        public void SetScroll( Real x, Real y )
+        public void SetScroll( float x, float y )
         {
             scrollX = x;
             scrollY = y;
@@ -428,14 +438,14 @@ namespace Axiom
             Matrix3 rot3x3 = Matrix3.Identity;
             Matrix3 scale3x3 = Matrix3.Zero;
 
-            rot3x3.FromEulerAnglesXYZ( Radian.Zero, Radian.Zero, rotate );
+            rot3x3.FromEulerAnglesXYZ( Real.Zero, Real.Zero, (Real)MathUtil.DegreesToRadians( rotate ) );
             scale3x3[0,0] = scaleX;
             scale3x3[1,1] = scaleY;
             scale3x3[2,2] = 1.0f;
 
             transform = Matrix4.Identity;
             transform = rot3x3 * scale3x3;
-            transform.Translation = new Vector3( scrollX, scrollY, Real.Zero );
+            transform.Translation = new Vector3( scrollX, scrollY, 0 );
 
             isTransformOutOfDate = false;
         }
@@ -485,7 +495,7 @@ namespace Axiom
         /// <summary>
         ///    Gets/Sets the rotation applied to this overlay, in degrees.
         /// </summary>
-        public Real Rotation
+        public float Rotation
         {
             get
             {
@@ -502,7 +512,7 @@ namespace Axiom
         /// <summary>
         ///    Gets the current x scale value.
         /// </summary>
-        public Real ScaleX
+        public float ScaleX
         {
             get
             {
@@ -513,7 +523,7 @@ namespace Axiom
         /// <summary>
         ///    Gets the current y scale value.
         /// </summary>
-        public Real ScaleY
+        public float ScaleY
         {
             get
             {
@@ -524,7 +534,7 @@ namespace Axiom
         /// <summary>
         ///    Gets the current x scroll value.
         /// </summary>
-        public Real ScrollX
+        public float ScrollX
         {
             get
             {
@@ -535,7 +545,7 @@ namespace Axiom
         /// <summary>
         ///    Gets the  current y scroll value.
         /// </summary>
-        public Real ScrollY
+        public float ScrollY
         {
             get
             {

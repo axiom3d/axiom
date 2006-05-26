@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using Axiom;
@@ -131,7 +139,7 @@ namespace Axiom
         ///		Swaps the frame buffers to display the next frame.
         /// </summary>
         /// <remarks>
-        ///		All render windows are Real-buffered so that no
+        ///		All render windows are float-buffered so that no
         ///     'in-progress' versions of the scene are displayed
         ///      during rendering. Once rendering has completed (to
         ///		an off-screen version of the window) the buffers

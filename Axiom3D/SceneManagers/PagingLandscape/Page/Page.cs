@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -31,25 +39,27 @@ using System.Collections;
 using System.Diagnostics;
 
 using Axiom;
-using DotNet3D.Math;
-
+using Axiom.MathLib;
 using Axiom.SceneManagers.PagingLandscape;
 using Axiom.SceneManagers.PagingLandscape.Collections;
 using Axiom.SceneManagers.PagingLandscape.Data2D;
 using Axiom.SceneManagers.PagingLandscape.Tile;
-using Axiom.SceneManagers.PagingLandscape.Texture;
+using DotNet3D.Math;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.SceneManagers.PagingLandscape.Page
 {
 
     /// <summary>
+
     /// Summary description for Page.
+
     /// </summary>
 
     public class Page : IDisposable
     {
+
 
         #region Fields
         protected SceneNode pageNode;
@@ -64,8 +74,8 @@ namespace Axiom.SceneManagers.PagingLandscape.Page
 
         protected long numTiles;
 
-        protected Real iniX;	//, mEndX;	// Max and Min values of the terrain
-        protected Real iniZ;	//, mEndZ;
+        protected float iniX;	//, mEndX;	// Max and Min values of the terrain
+        protected float iniZ;	//, mEndZ;
 
         protected Page[] neighbors;
 
@@ -85,35 +95,35 @@ namespace Axiom.SceneManagers.PagingLandscape.Page
             tableX = TableX;
             tableZ = TableZ;
 
-            numTiles = (long)( (Real)Options.Instance.PageSize / Options.Instance.TileSize );
+            numTiles = (long)( (float)Options.Instance.PageSize / Options.Instance.TileSize );
             pageNode = null;
 
             long size = Options.Instance.PageSize - 1;
             // Boundaries of this page
             // the middle page is at world coordinates 0,0
-            Real factorX = size * Options.Instance.Scale.x;
-            Real factorZ = size * Options.Instance.Scale.z;
+            float factorX = size * Options.Instance.Scale.x;
+            float factorZ = size * Options.Instance.Scale.z;
             iniX = ( tableX + tableX - Options.Instance.World_Width ) / 2.0f * factorX;
             iniZ = ( tableZ + tableZ - Options.Instance.World_Height ) / 2.0f * factorZ;
-            Real EndX = iniX + factorX;
-            Real EndZ = iniZ + factorZ;
-            Real MaxHeight = Data2DManager.Instance.GetMaxHeight( tableX, tableZ );
-            Real chgfactor = Options.Instance.Change_Factor;
+            float EndX = iniX + factorX;
+            float EndZ = iniZ + factorZ;
+            float MaxHeight = Data2DManager.Instance.GetMaxHeight( tableX, tableZ );
+            float chgfactor = Options.Instance.Change_Factor;
             boundsExt = new AxisAlignedBox();
-            boundsExt.SetExtents( new Vector3( (Real)( iniX ),
+            boundsExt.SetExtents( new Vector3( (float)( iniX ),
                                     0,
-                                (Real)( iniZ ) ),
-                                new Vector3( (Real)( EndX ),
+                                (float)( iniZ ) ),
+                                new Vector3( (float)( EndX ),
                                 MaxHeight,
-                                (Real)( EndZ ) ) );
+                                (float)( EndZ ) ) );
             //Change Zone of this page
             boundsInt = new AxisAlignedBox();
-            boundsInt.SetExtents( new Vector3( (Real)( iniX + chgfactor ),
+            boundsInt.SetExtents( new Vector3( (float)( iniX + chgfactor ),
                                     0,
-                                (Real)( iniZ + chgfactor ) ),
-                                new Vector3( (Real)( EndX - chgfactor ),
+                                (float)( iniZ + chgfactor ) ),
+                                new Vector3( (float)( EndX - chgfactor ),
                                     MaxHeight,
-                                    (Real)( EndZ - chgfactor ) ) );
+                                    (float)( EndZ - chgfactor ) ) );
 
             neighbors = new Page[4];
             for ( long i = 0; i < 4; i++ )
@@ -220,7 +230,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Page
             //create a root landscape node.
             pageNode = RootNode.CreateChildSceneNode( "Page." + tableX.ToString() + "." + tableZ.ToString() );
             // Set node position
-            pageNode.Position = new Vector3( (Real)iniX, 0.0f, (Real)iniZ );
+            pageNode.Position = new Vector3( (float)iniX, 0.0f, (float)iniZ );
 
             tiles = new Tiles();
             for ( long i = 0; i < numTiles; i++ )
@@ -473,7 +483,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Page
         /// Gets all the patches within an AABB in world coordinates as GeometryData structs
         public virtual void GetRenderOpsInBox( AxisAlignedBox box, ArrayList opList )
         {
-            if ( Intersection.Test( box, boundsExt ) != Intersection.Result.None )
+            if ( MathUtil.Intersects( box, boundsExt ) != Intersection.None )
             {
                 for ( long i = 0; i < numTiles; i++ )
                 {
@@ -484,6 +494,9 @@ namespace Axiom.SceneManagers.PagingLandscape.Page
                 }
             }
         }
+
+
+
 
     }
 

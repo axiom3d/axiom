@@ -24,12 +24,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.IO;
-
-using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -75,7 +81,7 @@ namespace Axiom
         /// <summary>Number of mipmaps present in this texture.</summary>
         protected int numMipMaps;
         /// <summary>Gamma setting for this texture.</summary>
-        protected Real gamma;
+        protected float gamma;
 
         #endregion
 
@@ -182,7 +188,7 @@ namespace Axiom
         /// <remarks>
         ///    Must be called before any variation of Load.
         /// </remarks>
-        public Real Gamma
+        public float Gamma
         {
             get
             {

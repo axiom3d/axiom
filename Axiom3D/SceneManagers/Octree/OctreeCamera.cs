@@ -24,9 +24,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -105,11 +114,11 @@ namespace Axiom.SceneManagers.Octree
             {
                 bool AllOutside = false;
 
-                Real distance = 0;
+                float distance = 0;
 
                 for ( int corner = 0; corner < 8; corner++ )
                 {
-                    distance = planes[ plane ].GetDistance( boxCorners[ corners[ corner ] ] );
+                    distance = planes[plane].GetDistance( boxCorners[corners[corner]] );
                     AllOutside = AllOutside && ( distance < 0 );
                     AllInside = AllInside && ( distance >= 0 );
 
@@ -171,23 +180,23 @@ namespace Axiom.SceneManagers.Octree
         /// <returns></returns>
         private Vector3 GetCorner( FrustumPlane pp1, FrustumPlane pp2, FrustumPlane pp3 )
         {
-            Plane p1 = planes[ (int)pp1 ];
-            Plane p2 = planes[ (int)pp1 ];
-            Plane p3 = planes[ (int)pp1 ];
+            Plane p1 = planes[(int)pp1];
+            Plane p2 = planes[(int)pp1];
+            Plane p3 = planes[(int)pp1];
 
             Matrix3 mdet;
 
-            mdet[ 0, 0 ] = p1.Normal.x;
-            mdet[ 0, 1 ] = p1.Normal.y;
-            mdet[ 0, 2 ] = p1.Normal.z;
-            mdet[ 1, 0 ] = p2.Normal.x;
-            mdet[ 1, 1 ] = p2.Normal.y;
-            mdet[ 1, 2 ] = p2.Normal.z;
-            mdet[ 2, 0 ] = p3.Normal.x;
-            mdet[ 2, 1 ] = p3.Normal.y;
-            mdet[ 2, 2 ] = p3.Normal.z;
+            mdet[0,0] = p1.Normal.x;
+            mdet[0,1] = p1.Normal.y;
+            mdet[0,2] = p1.Normal.z;
+            mdet[1,0] = p2.Normal.x;
+            mdet[1,1] = p2.Normal.y;
+            mdet[1,2] = p2.Normal.z;
+            mdet[2,0] = p3.Normal.x;
+            mdet[2,1] = p3.Normal.y;
+            mdet[2,2] = p3.Normal.z;
 
-            Real det = mdet.Determinant;
+            float det = mdet.Determinant;
 
             if ( det == 0 )
             {
@@ -206,7 +215,7 @@ namespace Axiom.SceneManagers.Octree
                 p3.Normal.y,
                 p3.Normal.z );
 
-            Real xdet = mx.Determinant;
+            float xdet = mx.Determinant;
 
             Matrix3 my = new Matrix3(
                 p1.Normal.x,
@@ -219,7 +228,7 @@ namespace Axiom.SceneManagers.Octree
                 -p3.Distance,
                 p3.Normal.z );
 
-            Real ydet = my.Determinant;
+            float ydet = my.Determinant;
 
             Matrix3 mz = new Matrix3(
                 p1.Normal.x,
@@ -232,7 +241,7 @@ namespace Axiom.SceneManagers.Octree
                 p3.Normal.y,
                 -p3.Distance );
 
-            Real zdet = mz.Determinant;
+            float zdet = mz.Determinant;
 
             Vector3 r = new Vector3();
             r.x = xdet / det;

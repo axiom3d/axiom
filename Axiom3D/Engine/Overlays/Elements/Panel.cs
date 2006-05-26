@@ -24,12 +24,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Diagnostics;
-
-using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -63,8 +69,8 @@ namespace Axiom
     {
         #region Member variables
 
-        protected Real[] tileX = new Real[Config.MaxTextureLayers];
-        protected Real[] tileY = new Real[Config.MaxTextureLayers];
+        protected float[] tileX = new float[Config.MaxTextureLayers];
+        protected float[] tileY = new float[Config.MaxTextureLayers];
         protected bool isTransparent;
         protected int numTexCoordsInBuffer;
         protected RenderOperation renderOp = new RenderOperation();
@@ -149,7 +155,7 @@ namespace Axiom
         /// <param name="tileX"></param>
         /// <param name="tileY"></param>
         /// <param name="layer"></param>
-        public void SetTiling( Real x, Real y, int layer )
+        public void SetTiling( float x, float y, int layer )
         {
             Debug.Assert( layer < Config.MaxTextureLayers, "layer < Config.MaxTextureLayers" );
             Debug.Assert( x != 0 && y != 0, "tileX != 0 && tileY != 0" );
@@ -160,12 +166,12 @@ namespace Axiom
             isGeomUVsOutOfDate = true;
         }
 
-		public Real GetTileX(int layer )
+		public float GetTileX(int layer )
 		{
 			return tileX[layer];
 
 		}
-		public Real GetTileY(int layer )
+		public float GetTileY(int layer )
 		{
 			return tileY[layer];
 
@@ -183,7 +189,7 @@ namespace Axiom
                 |/    |
                 1-----3
             */
-            Real left, right, top, bottom;
+            float left, right, top, bottom;
             left = right = top = bottom = 0.0f;
 
             /* Convert positions into -1, 1 coordinate space (homogenous clip space).
@@ -209,8 +215,8 @@ namespace Axiom
 
 			// Use the furthest away depth value, since materials should have depth-check off
 			// This initialised the depth buffer for any 3D objects in front
-			//Real zValue = Root.Instance.RenderSystem.MaximumDepthInputValue;
-			Real zValue = -1;
+			//float zValue = Root.Instance.RenderSystem.MaximumDepthInputValue;
+			float zValue = -1;
             unsafe
             {
                 float* posPtr = (float*)data.ToPointer();
@@ -402,7 +408,7 @@ namespace Axiom
         {
             Panel panel = (Panel)objects[0];
 
-            panel.SetTiling( Real.Parse( parms[0] ), Real.Parse( parms[1] ), int.Parse( parms[2] ) );
+            panel.SetTiling( StringConverter.ParseFloat( parms[0] ), StringConverter.ParseFloat( parms[1] ), int.Parse( parms[2] ) );
         }
 
         [AttributeParser( "transparent", "Panel" )]

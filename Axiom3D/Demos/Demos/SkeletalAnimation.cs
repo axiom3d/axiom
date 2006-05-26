@@ -1,9 +1,7 @@
-#region Namespace Declarations
 
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
-
-#endregion Namespace Declarations
 
 namespace Axiom.Demos
 {
@@ -16,7 +14,7 @@ namespace Axiom.Demos
 
         const int NumRobots = 10;
         AnimationState[] animState = new AnimationState[NumRobots];
-        Real[] animationSpeed = new Real[NumRobots];
+        float[] animationSpeed = new float[NumRobots];
 
         #endregion Fields
 
@@ -39,7 +37,7 @@ namespace Axiom.Demos
                     new Vector3( 0, 0, ( i * 50 ) - ( NumRobots * 50 / 2 ) ) ).AttachObject( entity );
                 animState[i] = entity.GetAnimationState( "Walk" );
                 animState[i].IsEnabled = true;
-                animationSpeed[i] = Utility.RangeRandom( 0.5f, 1.5f );
+                animationSpeed[i] = MathUtil.RangeRandom( 0.5f, 1.5f );
             }
 
             Light light = scene.CreateLight( "BlueLight" );
@@ -50,7 +48,7 @@ namespace Axiom.Demos
             //light.Position = new Vector3(0, 0, -100);
             //light.Diffuse = new ColorEx(1.0f, 0.5f, 1.0f, 0.5f);
 
-            // setup the camera for a nice view of the robot
+            // setup the _camera for a nice view of the robot
             camera.Position = new Vector3( 100, 50, 100 );
             camera.LookAt( new Vector3( 0, 50, 0 ) );
 

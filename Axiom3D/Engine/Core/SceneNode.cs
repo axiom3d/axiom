@@ -24,12 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 using System.Diagnostics;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -595,7 +604,7 @@ namespace Axiom
             // reset bounds
             worldAABB.IsNull = true;
             worldBoundingSphere.Center = this.DerivedPosition;
-            Real radius = worldBoundingSphere.Radius = 0;
+            float radius = worldBoundingSphere.Radius = 0;
 
             // update bounds from attached objects
             for ( int i = 0; i < objectList.Count; i++ )
@@ -605,7 +614,7 @@ namespace Axiom
                 // update
                 worldAABB.Merge( obj.GetWorldBoundingBox( true ) );
 
-                radius = Utility.Max( obj.BoundingRadius, radius );
+                radius = MathUtil.Max( obj.BoundingRadius, radius );
             }
 
             // merge with Children
@@ -615,7 +624,7 @@ namespace Axiom
 
                 // merge our bounding box with that of the child node
                 worldAABB.Merge( child.worldAABB );
-                radius = Utility.Max( child.worldBoundingSphere.Radius, radius );
+                radius = MathUtil.Max( child.worldBoundingSphere.Radius, radius );
             }
             worldBoundingSphere.Radius = radius;
 
@@ -656,7 +665,7 @@ namespace Axiom
         ///		Overridden to apply fixed yaw axis behavior.
         /// </summary>
         /// <param name="degrees"></param>
-        public override void Yaw( Real degrees )
+        public override void Yaw( float degrees )
         {
             Vector3 yAxis;
 
@@ -855,7 +864,7 @@ namespace Axiom
         /// <param name="radius">Parameter to specify lights intersecting a given radius of
         ///		this SceneNode's centre</param>
         /// <returns></returns>
-        public virtual LightList FindLights( Real radius )
+        public virtual LightList FindLights( float radius )
         {
             // TEMP FIX
             // If a scene node is static and lights have moved, light list won't change

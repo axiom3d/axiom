@@ -123,11 +123,11 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
         /// <param name="parms"></param>
         public override void BindParameters( GpuProgramParameters parms )
         {
-            if ( parms.HasRealConstants )
+            if ( parms.HasFloatConstants )
             {
-                for ( int index = 0; index < parms.RealConstantCount; index++ )
+                for ( int index = 0; index < parms.FloatConstantCount; index++ )
                 {
-                    GpuProgramParameters.RealConstantEntry entry = parms.GetRealConstant( index );
+                    GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
 
                     if ( entry.isSet )
                     {
@@ -176,15 +176,15 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
         /// <param name="parms"></param>
         public override void BindParameters( GpuProgramParameters parms )
         {
-            if ( parms.HasRealConstants )
+            if ( parms.HasFloatConstants )
             {
-                for ( int index = 0; index < parms.RealConstantCount; index++ )
+                for ( int index = 0; index < parms.FloatConstantCount; index++ )
                 {
                     string name = parms.GetNameByIndex( index );
 
                     if ( name != null )
                     {
-                        GpuProgramParameters.RealConstantEntry entry = parms.GetRealConstant( index );
+                        GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
 
                         // send the params 4 at a time
                         Gl.glProgramNamedParameter4fvNV( programId, name.Length, name, entry.val );

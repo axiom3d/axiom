@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -32,8 +40,9 @@ using System.Collections;
 using System.Runtime.InteropServices;
 
 using Axiom;
-using DotNet3D.Math;
+using Axiom.MathLib;
 using Axiom.SceneManagers.Bsp.Collections;
+using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -58,14 +67,14 @@ namespace Axiom.SceneManagers.Bsp
         protected bool farBox;            // Skybox
         protected string farBoxName;
         protected bool skyDome;
-        protected Real cloudHeight;       // Skydome
+        protected float cloudHeight;       // Skydome
         protected ShaderDeformFunc deformFunc;
-        protected Real[] deformParams;
+        protected float[] deformParams;
         protected ManualCullingMode cullMode;
 
         protected bool fog;
         protected ColorEx fogColour;
-        protected Real fogDistance;
+        protected float fogDistance;
         #endregion
 
         #region Properties
@@ -137,7 +146,7 @@ namespace Axiom.SceneManagers.Bsp
             }
         }
 
-        public Real CloudHeight
+        public float CloudHeight
         {
             get
             {
@@ -161,7 +170,7 @@ namespace Axiom.SceneManagers.Bsp
             }
         }
 
-        public Real[] DeformParams
+        public float[] DeformParams
         {
             get
             {
@@ -209,7 +218,7 @@ namespace Axiom.SceneManagers.Bsp
             }
         }
 
-        public Real FogDistance
+        public float FogDistance
         {
             get
             {
@@ -231,7 +240,7 @@ namespace Axiom.SceneManagers.Bsp
         {
             this.name = name;
             deformFunc = ShaderDeformFunc.None;
-            deformParams = new Real[5];
+            deformParams = new float[5];
             cullMode = ManualCullingMode.Back;
             pass = new ShaderPassCollection();
         }
@@ -330,12 +339,12 @@ namespace Axiom.SceneManagers.Bsp
             // Do skydome (use this material)
             if ( skyDome )
             {
-                Real halfAngle = 0.5f * ( 0.5f * ( 4.0f * Utility.ATan( 1.0f ) ) );
-                Real sin = Utility.Sin( halfAngle );
+                float halfAngle = 0.5f * ( 0.5f * ( 4.0f * (float)Math.Atan( 1.0f ) ) );
+                float sin = (float)Math.Sin( halfAngle );
 
                 // Quake3 is always aligned with Z upwards
                 Quaternion q = new Quaternion(
-                    Utility.Cos( halfAngle ),
+                    (float)Math.Cos( halfAngle ),
                     sin * Vector3.UnitX.x,
                     sin * Vector3.UnitY.y,
                     sin * Vector3.UnitX.z
@@ -428,7 +437,7 @@ namespace Axiom.SceneManagers.Bsp
             // Animated texture support
             else if ( pass[p].animNumFrames > 0 )
             {
-                Real sequenceTime = pass[p].animNumFrames / pass[p].animFps;
+                float sequenceTime = pass[p].animNumFrames / pass[p].animFps;
 
                 /* Pre-load textures
 					We need to know if each one was loaded OK since extensions may change for each
@@ -532,19 +541,19 @@ namespace Axiom.SceneManagers.Bsp
         // TODO - alphaFunc
         public ShaderGen rgbGenFunc;
         public ShaderWaveType rgbGenWave;
-        public Real[] rgbGenParams = new Real[4]; // base, amplitude, phase, frequency
-        public Real[] tcModScale = new Real[2];
-        public Real tcModRotate;
-        public Real[] tcModScroll = new Real[2];
-        public Real[] tcModTransform = new Real[6];
+        public float[] rgbGenParams = new float[4]; // base, amplitude, phase, frequency
+        public float[] tcModScale = new float[2];
+        public float tcModRotate;
+        public float[] tcModScroll = new float[2];
+        public float[] tcModTransform = new float[6];
         public bool tcModTurbOn;
-        public Real[] tcModTurb = new Real[4];
+        public float[] tcModTurb = new float[4];
         public ShaderWaveType tcModStretchWave;
-        public Real[] tcModStretchParams = new Real[4];    // base, amplitude, phase, frequency
+        public float[] tcModStretchParams = new float[4];    // base, amplitude, phase, frequency
         public CompareFunction alphaFunc;
         public byte alphaVal;
 
-        public Real animFps;
+        public float animFps;
         public int animNumFrames;
         public string[] frames = new string[32];
     };

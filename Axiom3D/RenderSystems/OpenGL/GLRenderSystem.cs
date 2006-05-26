@@ -24,16 +24,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Diagnostics;
 
 using Axiom;
-using DotNet3D.Math;
-
+using Axiom.MathLib;
 using Axiom.RenderSystems.OpenGL.ARB;
 using Axiom.RenderSystems.OpenGL.Nvidia;
+using DotNet3D.Math;
 using ATIFragmentShaderFactory = Axiom.RenderSystems.OpenGL.ATI.ATIFragmentShaderFactory;
 
 using Tao.OpenGl;
@@ -94,7 +102,7 @@ namespace Axiom.RenderSystems.OpenGL
         // render state redundency reduction settings
         protected SceneDetailLevel lastRasterizationMode;
         protected ColorEx lastDiffuse, lastAmbient, lastSpecular, lastEmissive;
-        protected Real lastShininess;
+        protected float lastShininess;
         protected TexCoordCalcMethod[] lastTexCalMethods = new TexCoordCalcMethod[Config.MaxTextureLayers];
         protected bool fogEnabled;
         protected bool lightingEnabled;
@@ -114,7 +122,7 @@ namespace Axiom.RenderSystems.OpenGL
         protected float[] tempMatrix = new float[16];
         protected float[] tempColorVals = new float[4];
         protected float[] tempLightVals = new float[4];
-        protected Real[] tempProgramReals = new Real[4];
+        protected float[] tempProgramFloats = new float[4];
         protected int[] colorWrite = new int[4];
 
         protected GLGpuProgramManager gpuProgramMgr;
@@ -167,7 +175,7 @@ namespace Axiom.RenderSystems.OpenGL
             }
         }
 
-        public override void ClearFrameBuffer( FrameBuffer buffers, ColorEx color, Real depth, int stencil )
+        public override void ClearFrameBuffer( FrameBuffer buffers, ColorEx color, float depth, int stencil )
         {
             int flags = 0;
 
@@ -451,18 +459,18 @@ namespace Axiom.RenderSystems.OpenGL
             }
         }
 
-        public override Matrix4 MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, bool forGpuPrograms )
+        public override Matrix4 MakeOrthoMatrix( float fov, float aspectRatio, float near, float far, bool forGpuPrograms )
         {
-            Radian thetaY =  fov / 2.0f ;
-            Real tanThetaY = Utility.Tan( thetaY );
-            Real tanThetaX = tanThetaY * aspectRatio;
+            float thetaY = MathUtil.DegreesToRadians( fov / 2.0f );
+            float tanThetaY = MathUtil.Tan( thetaY );
+            float tanThetaX = tanThetaY * aspectRatio;
 
-            Real halfW = tanThetaX * near;
-            Real halfH = tanThetaY * near;
+            float halfW = tanThetaX * near;
+            float halfH = tanThetaY * near;
 
-            Real w = 1.0f / halfW;
-            Real h = 1.0f / halfH;
-            Real q = 0;
+            float w = 1.0f / halfW;
+            float h = 1.0f / halfH;
+            float q = 0;
 
             if ( far != 0 )
             {
@@ -490,17 +498,17 @@ namespace Axiom.RenderSystems.OpenGL
         /// <param name="near"></param>
         /// <param name="far"></param>
         /// <returns></returns>
-        public override Matrix4 MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, bool forGpuProgram )
+        public override Matrix4 MakeProjectionMatrix( float fov, float aspectRatio, float near, float far, bool forGpuProgram )
         {
             Matrix4 matrix = new Matrix4();
 
-            Radian thetaY = fov * 0.5f;
-            Real tanThetaY = Utility.Tan( thetaY );
+            float thetaY = MathUtil.DegreesToRadians( fov * 0.5f );
+            float tanThetaY = MathUtil.Tan( thetaY );
 
-            Real w = ( 1.0f / tanThetaY ) / aspectRatio;
-            Real h = 1.0f / tanThetaY;
-            Real q = 0;
-            Real qn = 0;
+            float w = ( 1.0f / tanThetaY ) / aspectRatio;
+            float h = 1.0f / tanThetaY;
+            float q = 0;
+            float qn = 0;
 
             if ( far == 0 )
             {
@@ -539,8 +547,8 @@ namespace Axiom.RenderSystems.OpenGL
             // by the inverse of the projection matrix
 
             Vector4 q = new Vector4();
-            q.x = ( Utility.Sign( plane.Normal.x ) + projMatrix.m02 ) / projMatrix.m00;
-            q.y = ( Utility.Sign( plane.Normal.y ) + projMatrix.m12 ) / projMatrix.m11;
+            q.x = ( Math.Sign( plane.Normal.x ) + projMatrix.m02 ) / projMatrix.m00;
+            q.y = ( Math.Sign( plane.Normal.y ) + projMatrix.m12 ) / projMatrix.m11;
             q.z = -1.0f;
             q.w = ( 1.0f + projMatrix.m22 ) / projMatrix.m23;
 
@@ -668,7 +676,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// <param name="specular"></param>
         /// <param name="emissive"></param>
         /// <param name="shininess"></param>
-        public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, Real shininess )
+        public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess )
         {
             float[] vals = tempColorVals;
 
@@ -789,7 +797,7 @@ namespace Axiom.RenderSystems.OpenGL
 
             if ( currentAnisotropy != maxAnisotropy )
             {
-                Gl.glTexParameterf( textureTypes[stage], Gl.GL_TEXTURE_MAX_ANISOTROPY_EXT, (Real)maxAnisotropy );
+                Gl.glTexParameterf( textureTypes[stage], Gl.GL_TEXTURE_MAX_ANISOTROPY_EXT, (float)maxAnisotropy );
             }
         }
 
@@ -1451,7 +1459,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// <param name="density"></param>
         /// <param name="start"></param>
         /// <param name="end"></param>
-        public override void SetFog( FogMode mode, ColorEx color, Real density, Real start, Real end )
+        public override void SetFog( FogMode mode, ColorEx color, float density, float start, float end )
         {
             int fogMode;
 
@@ -1752,7 +1760,7 @@ namespace Axiom.RenderSystems.OpenGL
             }
             set
             {
-                // create a Real[16] from our Matrix4
+                // create a float[16] from our Matrix4
                 MakeGLMatrix( ref value, tempMatrix );
 
                 // invert the Y if need be
@@ -1764,7 +1772,7 @@ namespace Axiom.RenderSystems.OpenGL
                 // set the matrix mode to Projection
                 Gl.glMatrixMode( Gl.GL_PROJECTION );
 
-                // load the Real array into the projection matrix
+                // load the float array into the projection matrix
                 Gl.glLoadMatrixf( tempMatrix );
 
                 // set the matrix mode back to ModelView
@@ -1785,13 +1793,13 @@ namespace Axiom.RenderSystems.OpenGL
             {
                 viewMatrix = value;
 
-                // create a Real[16] from our Matrix4
+                // create a float[16] from our Matrix4
                 MakeGLMatrix( ref viewMatrix, tempMatrix );
 
                 // set the matrix mode to ModelView
                 Gl.glMatrixMode( Gl.GL_MODELVIEW );
 
-                // load the Real array into the ModelView matrix
+                // load the float array into the ModelView matrix
                 Gl.glLoadMatrixf( tempMatrix );
 
                 // convert the internal world matrix
@@ -1855,7 +1863,7 @@ namespace Axiom.RenderSystems.OpenGL
                 lights[i] = null;
             }
 
-            numCurrentLights = (int)Utility.Min( limit, lightList.Count );
+            numCurrentLights = (int)MathUtil.Min( limit, lightList.Count );
 
             SetLights();
 
@@ -2067,7 +2075,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// <summary>
         ///		
         /// </summary>
-        public override Real HorizontalTexelOffset
+        public override float HorizontalTexelOffset
         {
             get
             {
@@ -2079,7 +2087,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// <summary>
         /// 
         /// </summary>
-        public override Real VerticalTexelOffset
+        public override float VerticalTexelOffset
         {
             get
             {
@@ -2212,7 +2220,7 @@ namespace Axiom.RenderSystems.OpenGL
         }
 
         /// <summary>
-        ///		Converts a Matrix4 object to a Real[16] that contains the matrix
+        ///		Converts a Matrix4 object to a float[16] that contains the matrix
         ///		in top to bottom, left to right order.
         ///		i.e.	glMatrix[0] = matrix[0,0]
         ///				glMatrix[1] = matrix[1,0]
@@ -2220,11 +2228,11 @@ namespace Axiom.RenderSystems.OpenGL
         /// </summary>
         /// <param name="matrix"></param>
         /// <returns></returns>
-        private void MakeGLMatrix( ref Matrix4 matrix, float[] Reals )
+        private void MakeGLMatrix( ref Matrix4 matrix, float[] floats )
         {
             Matrix4 mat = matrix.Transpose();
 
-            Reals = mat.ToArray<float>();
+            floats = mat.ToArray<float>();
         }
 
         /// <summary>
@@ -2247,7 +2255,7 @@ namespace Axiom.RenderSystems.OpenGL
                 switch ( light.Type )
                 {
                     case LightType.Spotlight:
-                        Gl.glLightf( lightIndex, Gl.GL_SPOT_CUTOFF, (float)light.SpotlightOuterAngle );
+                        Gl.glLightf( lightIndex, Gl.GL_SPOT_CUTOFF, light.SpotlightOuterAngle );
                         break;
                     default:
                         Gl.glLightf( lightIndex, Gl.GL_SPOT_CUTOFF, 180.0f );
@@ -2467,10 +2475,10 @@ namespace Axiom.RenderSystems.OpenGL
                 caps.SetCap( Capabilities.VertexPrograms );
                 caps.MaxVertexProgramVersion = "arbvp1";
                 caps.VertexProgramConstantIntCount = 0;
-                // TODO Fix constant Real count calcs, glGetIntegerv doesn't work
-                //int maxReals;
-                //Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxReals);
-                //caps.VertexProgramConstantRealCount = maxReals;
+                // TODO Fix constant float count calcs, glGetIntegerv doesn't work
+                //int maxFloats;
+                //Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
+                //caps.VertexProgramConstantFloatCount = maxFloats;
 
                 // register support for arbvp1
                 gpuProgramMgr.PushSyntaxCode( "arbvp1" );
@@ -2483,10 +2491,10 @@ namespace Axiom.RenderSystems.OpenGL
                 caps.SetCap( Capabilities.FragmentPrograms );
                 caps.MaxFragmentProgramVersion = "arbfp1";
                 caps.FragmentProgramConstantIntCount = 0;
-                // TODO Fix constant Real count calcs, glGetIntegerv doesn't work
-                //int maxReals;
-                //Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxReals);
-                //caps.FragmentProgramConstantRealCount = maxReals;
+                // TODO Fix constant float count calcs, glGetIntegerv doesn't work
+                //int maxFloats;
+                //Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
+                //caps.FragmentProgramConstantFloatCount = maxFloats;
 
                 // register support for arbfp1
                 gpuProgramMgr.PushSyntaxCode( "arbfp1" );
@@ -2499,10 +2507,10 @@ namespace Axiom.RenderSystems.OpenGL
                 caps.SetCap( Capabilities.FragmentPrograms );
                 caps.MaxFragmentProgramVersion = "ps_1_4";
                 caps.FragmentProgramConstantIntCount = 0;
-                // TODO Fix constant Real count calcs, glGetIntegerv doesn't work
-                //int maxReals;
-                //Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxReals);
-                //caps.FragmentProgramConstantRealCount = maxReals;
+                // TODO Fix constant float count calcs, glGetIntegerv doesn't work
+                //int maxFloats;
+                //Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
+                //caps.FragmentProgramConstantFloatCount = maxFloats;
 
                 // register support for ps1.1 - ps1.4
                 gpuProgramMgr.PushSyntaxCode( "ps_1_1" );

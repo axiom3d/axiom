@@ -24,10 +24,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -35,7 +44,7 @@ using DotNet3D.Math;
 namespace Axiom
 {
     /// <summary>
-    ///     Predefined controller value for setting a single Realing-
+    ///     Predefined controller value for setting a single floating-
     ///     point value in a constant paramter of a vertex or fragment program.
     /// </summary>
     /// <remarks>
@@ -48,7 +57,7 @@ namespace Axiom
     ///     supported, therefore do not use this controller value as a source,
     ///     only as a target.
     /// </remarks>
-    public class RealGpuParamControllerValue : IControllerValue
+    public class FloatGpuParamControllerValue : IControllerValue
     {
         #region Fields
 
@@ -74,7 +83,7 @@ namespace Axiom
         /// </summary>
         /// <param name="parms">Params to set.</param>
         /// <param name="index">Index of the parameter to set.</param>
-        public RealGpuParamControllerValue( GpuProgramParameters parms, int index )
+        public FloatGpuParamControllerValue( GpuProgramParameters parms, int index )
         {
             this.parms = parms;
             this.index = index;
@@ -87,11 +96,11 @@ namespace Axiom
         /// <summary>
         /// Gets or Sets the value of the GPU parameter
         /// </summary>
-        public Real Value
+        public float Value
         {
             get
             {
-                return parms.GetRealConstant( index ).val[0];
+                return parms.GetFloatConstant( index ).val[0];
             }
             set
             {

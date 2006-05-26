@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Graphics Engine Library
-Copyright (C) 2003-2006  Axiom Project Team
+Axiom Game Engine Library
+Copyright (C) 2003  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,16 +24,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-#region Namespace Declarations
-
 using System;
 using System.Diagnostics;
 
 using Axiom;
-using DotNet3D.Math;
+using Axiom.MathLib;
 
-#endregion Namespace Declarations
-			
 namespace Axiom.ParticleFX
 {
     /// <summary>
@@ -43,14 +39,14 @@ namespace Axiom.ParticleFX
     {
         #region Fields
 
-        protected Real innerX;
-        protected Real innerY;
+        protected float innerX;
+        protected float innerY;
 
         #endregion Fields
 
         #region Properties
 
-        public Real InnerX
+        public float InnerX
         {
             get
             {
@@ -63,7 +59,7 @@ namespace Axiom.ParticleFX
             }
         }
 
-        public Real InnerY
+        public float InnerY
         {
             get
             {
@@ -88,23 +84,23 @@ namespace Axiom.ParticleFX
 
         public override void InitParticle( Particle particle )
         {
-            Real alpha, a, b, x, y, z;
+            float alpha, a, b, x, y, z;
 
             // create a random angle from 0 .. PI*2
-            alpha = Utility.RangeRandom( 0, Utility.TWO_PI );
+            alpha = MathUtil.RangeRandom( 0, MathUtil.TWO_PI );
 
             // create two random radius values that are bigger than the inner size
-            a = Utility.RangeRandom( InnerX, 1.0f );
-            b = Utility.RangeRandom( InnerY, 1.0f );
+            a = MathUtil.RangeRandom( InnerX, 1.0f );
+            b = MathUtil.RangeRandom( InnerY, 1.0f );
 
             // with a and b we have defined a random ellipse inside the inner
             // ellipse and the outer circle (radius 1.0)
             // with alpha, and a and b we select a random point on this ellipse
             // and calculate it's coordinates
-            x = a * Utility.Sin( alpha );
-            y = b * Utility.Cos( alpha );
+            x = a * MathUtil.Sin( alpha );
+            y = b * MathUtil.Cos( alpha );
             // the height is simple running from 0 to 1
-            z = Utility.UnitRandom();     // 0..1
+            z = MathUtil.UnitRandom();     // 0..1
 
             // scale the found point to the ring's size and move it
             // relatively to the center of the emitter point
@@ -131,7 +127,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 RingEmitter emitter = target as RingEmitter;
-                emitter.Width = Real.Parse( val );
+                emitter.Width = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -149,7 +145,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 RingEmitter emitter = target as RingEmitter;
-                emitter.Height = Real.Parse( val );
+                emitter.Height = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -167,7 +163,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 RingEmitter emitter = target as RingEmitter;
-                emitter.Depth = Real.Parse( val );
+                emitter.Depth = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -185,7 +181,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 RingEmitter emitter = target as RingEmitter;
-                emitter.InnerX = Real.Parse( val );
+                emitter.InnerX = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -203,7 +199,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 RingEmitter emitter = target as RingEmitter;
-                emitter.InnerY = Real.Parse( val );
+                emitter.InnerY = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {

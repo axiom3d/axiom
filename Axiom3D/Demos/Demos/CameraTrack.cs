@@ -1,16 +1,12 @@
 
-#region Namespace Declarations
-
 using Axiom;
-
+using Axiom.MathLib;
 using DotNet3D.Math;
 
-#endregion Namespace Declarations
-			
 namespace Axiom.Demos
 {
     /// <summary>
-    ///     Spline pathed camera tracking sample.
+    ///     Spline pathed _camera tracking sample.
     /// </summary>
     public class CameraTrack : TechDemo
     {
@@ -55,10 +51,10 @@ namespace Axiom.Demos
             headNode = scene.RootSceneNode.CreateChildSceneNode( "OgreHeadNode", Vector3.Zero, Quaternion.Identity );
             headNode.AttachObject( ogreHead );
 
-            // make sure the camera tracks this node
+            // make sure the _camera tracks this node
             camera.SetAutoTracking( true, headNode, Vector3.Zero );
 
-            // create a scene node to attach the camera to
+            // create a scene node to attach the _camera to
             SceneNode cameraNode = scene.RootSceneNode.CreateChildSceneNode( "CameraNode" );
             cameraNode.AttachObject( camera );
 
@@ -71,7 +67,7 @@ namespace Axiom.Demos
             // create the main animation track
             AnimationTrack track = animation.CreateTrack( 0, cameraNode );
 
-            // create a few keyframes to move the camera around
+            // create a few keyframes to move the _camera around
             KeyFrame frame = track.CreateKeyFrame( 0.0f );
 
             frame = track.CreateKeyFrame( 2.5f );

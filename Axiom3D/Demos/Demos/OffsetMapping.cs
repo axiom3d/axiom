@@ -1,11 +1,8 @@
 
-#region Namespace Declarations
-
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
-#endregion Namespace Declarations
-			
 namespace Axiom.Demos
 {
     /// <summary>
@@ -22,7 +19,7 @@ namespace Axiom.Demos
 
         const int NUM_LIGHTS = 3;
 
-        Real timeDelay = 0.0f;
+        float timeDelay = 0.0f;
 
         Entity[] entities = new Entity[NUM_LIGHTS];
         string[] entityMeshes = new string[] { "knot.mesh", "ogrehead.mesh" };
@@ -35,7 +32,7 @@ namespace Axiom.Demos
                                                      new Vector3(0, -300, -100)
                                                  };
 
-        Real[] lightRotationAngles = new Real[] { 0, 30, 75 };
+        float[] lightRotationAngles = new float[] { 0, 30, 75 };
 
         Vector3[] lightRotationAxes = new Vector3[] {
                                                         Vector3.UnitX,
@@ -43,7 +40,7 @@ namespace Axiom.Demos
                                                         Vector3.UnitY
                                                     };
 
-        Real[] lightSpeeds = new Real[] { 30, 10, 50 };
+        float[] lightSpeeds = new float[] { 30, 10, 50 };
 
         ColorEx[] diffuseLightColors = new ColorEx[] {
                                                          new ColorEx(1, 1, 1, 1),
@@ -134,7 +131,7 @@ namespace Axiom.Demos
                 lightFlares[i].Color = diffuseLightColors[i];
                 lightFlareSets[i].IsVisible = lightState[i];
             }
-            // move the camera a bit right and make it look at the knot
+            // move the _camera a bit right and make it look at the knot
             camera.MoveRelative( new Vector3( 50, 0, 20 ) );
             camera.LookAt( new Vector3( 0, 0, 0 ) );
         }

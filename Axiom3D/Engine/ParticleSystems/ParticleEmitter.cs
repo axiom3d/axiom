@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -31,6 +39,7 @@ using System.Collections;
 using System.Drawing;
 using System.Reflection;
 
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -72,7 +81,7 @@ namespace Axiom
         ///<summary>
         ///    Rate in particles per second at which this emitter wishes to emit particles.
         /// </summary>
-        protected Real emissionRate;
+        protected float emissionRate;
         /// <summary>
         ///    Name of the type of emitter, MUST be initialized by subclasses.
         /// </summary>
@@ -88,23 +97,23 @@ namespace Axiom
         /// <summary>
         ///    Angle around direction which particles may be emitted, internally radians but degrees for interface.
         /// </summary>
-        protected Radian angle;
+        protected float angle;
         /// <summary>
         ///    Min speed of particles.
         /// </summary>
-        protected Real minSpeed;
+        protected float minSpeed;
         /// <summary>
         ///    Max speed of particles.
         /// </summary>
-        protected Real maxSpeed;
+        protected float maxSpeed;
         /// <summary>
         ///    Initial time-to-live of particles (min).
         /// </summary>
-        protected Real minTTL;
+        protected float minTTL;
         /// <summary>
         ///    Initial time-to-live of particles (max).
         /// </summary>
-        protected Real maxTTL;
+        protected float maxTTL;
         /// <summary>
         ///    Initial color of particles (range start).
         /// </summary>
@@ -120,33 +129,33 @@ namespace Axiom
         /// <summary>
         ///    Start time (in seconds from start of first call to ParticleSystem to update).
         /// </summary>
-        protected Real startTime;
+        protected float startTime;
         /// <summary>
         ///    Minimum length of time emitter will run for (0 = forever).
         /// </summary>
-        protected Real durationMin;
+        protected float durationMin;
         /// <summary>
         ///    Maximum length of time the emitter will run for (0 = forever).
         /// </summary>
-        protected Real durationMax;
+        protected float durationMax;
         /// <summary>
         ///    Current duration remainder.
         /// </summary>
-        protected Real durationRemain;
+        protected float durationRemain;
         /// <summary>
         ///    Minimum time between each repeat.
         /// </summary>
-        protected Real repeatDelayMin;
+        protected float repeatDelayMin;
         /// <summary>
         ///    Maximum time between each repeat.
         /// </summary>
-        protected Real repeatDelayMax;
+        protected float repeatDelayMax;
         /// <summary>
         ///    Repeat delay left.
         /// </summary>
-        protected Real repeatDelayRemain;
+        protected float repeatDelayRemain;
 
-        protected Real remainder = 0;
+        protected float remainder = 0;
 
         protected Hashtable commandTable = new Hashtable();
 
@@ -160,7 +169,7 @@ namespace Axiom
         public ParticleEmitter()
         {
             // set defaults
-            angle = Radian.Zero;
+            angle = 0.0f;
             this.Direction = Vector3.UnitX;
             emissionRate = 10;
             maxSpeed = minSpeed = 1;
@@ -228,15 +237,15 @@ namespace Axiom
         ///		exactly along the emitters direction vector, wheras if you set it to 180 or more, particles
         ///		will be emitted in a sphere, i.e. in all directions.
         /// </remarks>
-        public virtual Degree Angle
+        public virtual float Angle
         {
             get
             {
-                return angle;
+                return MathUtil.RadiansToDegrees( angle );
             }
             set
             {
-                angle = value;
+                angle = MathUtil.DegreesToRadians( value );
             }
         }
 
@@ -248,7 +257,7 @@ namespace Axiom
         ///		See the alternate Min/Max properties for velocities.  This emitter will randomly 
         ///		choose a speed between the minimum and maximum for each particle.
         /// </remarks>
-        public virtual Real ParticleVelocity
+        public virtual float ParticleVelocity
         {
             get
             {
@@ -263,7 +272,7 @@ namespace Axiom
         /// <summary>
         ///		Gets/Sets the minimum velocity of particles emitted.
         /// </summary>
-        public virtual Real MinParticleVelocity
+        public virtual float MinParticleVelocity
         {
             get
             {
@@ -278,7 +287,7 @@ namespace Axiom
         /// <summary>
         ///		Gets/Sets the maximum velocity of particles emitted.
         /// </summary>
-        public virtual Real MaxParticleVelocity
+        public virtual float MaxParticleVelocity
         {
             get
             {
@@ -299,7 +308,7 @@ namespace Axiom
         ///		and the emitter may choose to emit all of the second's worth of particles every half-second
         ///		for example. This is controlled by the emitter's EmissionCount property.
         /// </remarks>
-        public virtual Real EmissionRate
+        public virtual float EmissionRate
         {
             get
             {
@@ -322,7 +331,7 @@ namespace Axiom
         ///		Also see the alternate Min/Max versions of this property which takes a min and max TTL in order to 
         ///		have the TTL vary per particle.
         /// </remarks>
-        public virtual Real TimeToLive
+        public virtual float TimeToLive
         {
             get
             {
@@ -337,7 +346,7 @@ namespace Axiom
         /// <summary>
         ///		Gets/Sets the minimum time each particle will live for.
         /// </summary>
-        public virtual Real MinTimeToLive
+        public virtual float MinTimeToLive
         {
             get
             {
@@ -352,7 +361,7 @@ namespace Axiom
         /// <summary>
         ///		Gets/Sets the maximum time each particle will live for.
         /// </summary>
-        public virtual Real MaxTimeToLive
+        public virtual float MaxTimeToLive
         {
             get
             {
@@ -456,7 +465,7 @@ namespace Axiom
         ///		or also just after it is re-enabled. This parameter allows you to set a time delay so
         ///		that the emitter does not 'kick in' until later.
         /// </remarks>
-        public virtual Real StartTime
+        public virtual float StartTime
         {
             get
             {
@@ -481,7 +490,7 @@ namespace Axiom
         ///		Also see the alternative Min/Max versions of this property which allows you to set a min and max duration for
         ///		a random variable duration.
         /// </remarks>
-        public virtual Real Duration
+        public virtual float Duration
         {
             get
             {
@@ -496,7 +505,7 @@ namespace Axiom
         /// <summary>
         ///		Gets/Sets the minimum running time of this emitter.
         /// </summary>
-        public virtual Real MinDuration
+        public virtual float MinDuration
         {
             get
             {
@@ -512,7 +521,7 @@ namespace Axiom
         /// <summary>
         ///		Gets/Sets the maximum running time of this emitter.
         /// </summary>
-        public virtual Real MaxDuration
+        public virtual float MaxDuration
         {
             get
             {
@@ -528,7 +537,7 @@ namespace Axiom
         /// <summary>
         ///		Gets/Sets the maximum repeat delay for the emitter.
         /// </summary>
-        public virtual Real MaxRepeatDelay
+        public virtual float MaxRepeatDelay
         {
             get
             {
@@ -544,7 +553,7 @@ namespace Axiom
         /// <summary>
         ///		Gets/Sets the minimum repeat delay for the emitter.
         /// </summary>
-        public virtual Real MinRepeatDelay
+        public virtual float MinRepeatDelay
         {
             get
             {
@@ -560,7 +569,7 @@ namespace Axiom
         /// <summary>
         ///		Gets/Sets the time between repeats of the emitter.
         /// </summary>
-        public virtual Real RepeatDelay
+        public virtual float RepeatDelay
         {
             get
             {
@@ -577,12 +586,12 @@ namespace Axiom
 
         #region Methods
 
-        public void Move( Real x, Real y, Real z )
+        public void Move( float x, float y, float z )
         {
             this.Position += new Vector3( x, y, z );
         }
 
-        public void MoveTo( Real x, Real y, Real z )
+        public void MoveTo( float x, float y, float z )
         {
             this.Position = new Vector3( x, y, z );
         }
@@ -603,7 +612,7 @@ namespace Axiom
         ///	 </remarks>
         /// <param name="timeElapsed"></param>
         /// <returns></returns>
-        public abstract ushort GetEmissionCount( Real timeElapsed );
+        public abstract ushort GetEmissionCount( float timeElapsed );
 
         /// <summary>
         ///		Initializes a particle based on the emitter's approach and parameters.
@@ -624,9 +633,9 @@ namespace Axiom
         /// <param name="dest">Normalized vector dictating new direction.</param>
         protected virtual void GenerateEmissionDirection( ref Vector3 dest )
         {
-            if ( angle != Radian.Zero )
+            if ( angle != 0.0f )
             {
-                Real tempAngle = Utility.UnitRandom() * angle;
+                Radian tempAngle = (Real) (MathUtil.UnitRandom() * angle);
 
                 // randomize direction
                 dest = direction.RandomDeviant( tempAngle, up );
@@ -644,11 +653,11 @@ namespace Axiom
         /// <param name="dest">The normalized vector to scale by a randomly generated scale between min and max speed.</param>
         protected virtual void GenerateEmissionVelocity( ref Vector3 dest )
         {
-            Real scalar;
+            float scalar;
 
             if ( minSpeed != maxSpeed )
             {
-                scalar = minSpeed + ( Utility.UnitRandom() * ( maxSpeed - minSpeed ) );
+                scalar = minSpeed + ( MathUtil.UnitRandom() * ( maxSpeed - minSpeed ) );
             }
             else
             {
@@ -662,11 +671,11 @@ namespace Axiom
         ///		Utility method for generating a time-to-live for a particle.
         /// </summary>
         /// <returns></returns>
-        protected virtual Real GenerateEmissionTTL()
+        protected virtual float GenerateEmissionTTL()
         {
             if ( maxTTL != minTTL )
             {
-                return minTTL + ( Utility.UnitRandom() * ( maxTTL - minTTL ) );
+                return minTTL + ( MathUtil.UnitRandom() * ( maxTTL - minTTL ) );
             }
             else
             {
@@ -679,7 +688,7 @@ namespace Axiom
         /// </summary>
         /// <param name="timeElapsed"></param>
         /// <returns></returns>
-        public virtual ushort GenerateConstantEmissionCount( Real timeElapsed )
+        public virtual ushort GenerateConstantEmissionCount( float timeElapsed )
         {
 
             ushort intRequest;
@@ -740,10 +749,10 @@ namespace Axiom
         {
             if ( colorRangeStart.CompareTo( colorRangeEnd ) != 0 )
             {
-                color.r = colorRangeStart.r + Utility.UnitRandom() * ( colorRangeEnd.r - colorRangeStart.r );
-                color.g = colorRangeStart.g + Utility.UnitRandom() * ( colorRangeEnd.g - colorRangeStart.g );
-                color.b = colorRangeStart.b + Utility.UnitRandom() * ( colorRangeEnd.b - colorRangeStart.b );
-                color.a = colorRangeStart.a + Utility.UnitRandom() * ( colorRangeEnd.a - colorRangeStart.a );
+                color.r = colorRangeStart.r + MathUtil.UnitRandom() * ( colorRangeEnd.r - colorRangeStart.r );
+                color.g = colorRangeStart.g + MathUtil.UnitRandom() * ( colorRangeEnd.g - colorRangeStart.g );
+                color.b = colorRangeStart.b + MathUtil.UnitRandom() * ( colorRangeEnd.b - colorRangeStart.b );
+                color.a = colorRangeStart.a + MathUtil.UnitRandom() * ( colorRangeEnd.a - colorRangeStart.a );
             }
             else
             {
@@ -767,7 +776,7 @@ namespace Axiom
                 }
                 else
                 {
-                    durationRemain = Utility.RangeRandom( durationMin, durationMax );
+                    durationRemain = MathUtil.RangeRandom( durationMin, durationMax );
                 }
             }
             else
@@ -779,7 +788,7 @@ namespace Axiom
                 }
                 else
                 {
-                    repeatDelayRemain = Utility.RangeRandom( repeatDelayMin, repeatDelayMax );
+                    repeatDelayRemain = MathUtil.RangeRandom( repeatDelayMin, repeatDelayMax );
                 }
             }
         }
@@ -789,7 +798,7 @@ namespace Axiom
         /// </summary>
         /// <param name="min"></param>
         /// <param name="max"></param>
-        public void SetDuration( Real min, Real max )
+        public void SetDuration( float min, float max )
         {
             durationMin = min;
             durationMax = max;
@@ -892,7 +901,7 @@ namespace Axiom
             public void Set( object target, string val )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.Angle = Real.Parse( val );
+                emitter.Angle = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -928,7 +937,7 @@ namespace Axiom
             public void Set( object target, string val )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.EmissionRate = Real.Parse( val );
+                emitter.EmissionRate = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -946,7 +955,7 @@ namespace Axiom
             public void Set( object target, string val )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.TimeToLive = Real.Parse( val );
+                emitter.TimeToLive = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -964,7 +973,7 @@ namespace Axiom
             public void Set( object target, string val )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MinTimeToLive = Real.Parse( val );
+                emitter.MinTimeToLive = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -982,7 +991,7 @@ namespace Axiom
             public void Set( object target, string val )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MaxTimeToLive = Real.Parse( val );
+                emitter.MaxTimeToLive = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -1018,7 +1027,7 @@ namespace Axiom
             public void Set( object target, string val )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.Duration = Real.Parse( val );
+                emitter.Duration = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -1036,7 +1045,7 @@ namespace Axiom
             public void Set( object target, string val )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MinDuration = Real.Parse( val );
+                emitter.MinDuration = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -1054,7 +1063,7 @@ namespace Axiom
             public void Set( object target, string val )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MaxDuration = Real.Parse( val );
+                emitter.MaxDuration = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -1072,7 +1081,7 @@ namespace Axiom
             public void Set( object target, string val )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.RepeatDelay = Real.Parse( val );
+                emitter.RepeatDelay = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -1090,7 +1099,7 @@ namespace Axiom
             public void Set( object target, string val )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MinRepeatDelay = Real.Parse( val );
+                emitter.MinRepeatDelay = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -1108,7 +1117,7 @@ namespace Axiom
             public void Set( object target, string val )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MaxRepeatDelay = Real.Parse( val );
+                emitter.MaxRepeatDelay = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -1126,7 +1135,7 @@ namespace Axiom
             public void Set( object target, string val )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.ParticleVelocity = Real.Parse( val );
+                emitter.ParticleVelocity = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -1144,7 +1153,7 @@ namespace Axiom
             public void Set( object target, string val )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MinParticleVelocity = Real.Parse( val );
+                emitter.MinParticleVelocity = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -1162,7 +1171,7 @@ namespace Axiom
             public void Set( object target, string val )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MaxParticleVelocity = Real.Parse( val );
+                emitter.MaxParticleVelocity = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {

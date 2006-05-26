@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -31,23 +39,25 @@ using System.Collections;
 using System.Diagnostics;
 
 using Axiom;
-using DotNet3D.Math;
-
+using Axiom.MathLib;
 using Axiom.SceneManagers.PagingLandscape;
 using Axiom.SceneManagers.PagingLandscape.Tile;
 using Axiom.SceneManagers.PagingLandscape.Page;
-using Axiom.SceneManagers.PagingLandscape.Collections;
 using Axiom.SceneManagers.PagingLandscape.Data2D;
 using Axiom.SceneManagers.PagingLandscape.Renderable;
-using Axiom.SceneManagers.PagingLandscape.Texture;
+using DotNet3D.Math;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.SceneManagers.PagingLandscape.Tile
 {
+
     /// <summary>
+
     /// Summary description for Tile.
+
     /// </summary>
+
     public class Tile : MovableObject
     {
 
@@ -74,6 +84,8 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
 
 
         #endregion Fields
+
+
 
         #region Constructor
 
@@ -109,6 +121,8 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
 
 
         #endregion
+
+
 
         public TileInfo Info
         {
@@ -169,7 +183,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
             }
             else
             {
-                Real pageMax = 0f;
+                float pageMax = 0f;
                 if ( renderable != null )
                 {
                     if ( renderable.IsLoaded )
@@ -325,8 +339,8 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
             // Calculate the offset from the parent for this tile
 
             Vector3 scale = Options.Instance.Scale;
-            Real endx = Options.Instance.TileSize * scale.x;
-            Real endz = Options.Instance.TileSize * scale.z;
+            float endx = Options.Instance.TileSize * scale.x;
+            float endz = Options.Instance.TileSize * scale.z;
             info.PosX = info.TileX * endx;
             info.PosZ = info.TileZ * endz;
 
@@ -338,17 +352,17 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
 
             tileSceneNode.AttachObject( this );
 
-            Real MaxHeight = Data2DManager.Instance.GetMaxHeight( info.PageX, info.PageZ );
+            float MaxHeight = Data2DManager.Instance.GetMaxHeight( info.PageX, info.PageZ );
 
-            bounds.SetExtents( new Vector3( 0, 0, 0 ), new Vector3( (Real)( endx ), MaxHeight, (Real)( endz ) ) );
+            bounds.SetExtents( new Vector3( 0, 0, 0 ), new Vector3( (float)( endx ), MaxHeight, (float)( endz ) ) );
 
             //Change Zone of this page
             boundsExt.SetExtents( new Vector3( -endx * 0.5f, -MaxHeight * 0.5f, -endz * 0.5f ), new Vector3( endx * 1.5f, MaxHeight * 1.5f, endz * 1.5f ) );
 
             //Change Zone of this page
 
-            this.worldAABB.SetExtents( new Vector3( info.PosX + ParentPos.x, 0, info.PosZ + ParentPos.z ), new Vector3( (Real)( info.PosX + ParentPos.x + endx ), MaxHeight, (Real)( info.PosZ + ParentPos.z + endz ) ) );
-            //this.worldBounds.SetExtents( new Vector3(info.PosX + ParentPos.x ,0, info.PosZ + ParentPos.z), new Vector3((Real)( info.PosX + ParentPos.x + endx), MaxHeight, (Real)( info.PosZ + ParentPos.z + endz) ));
+            this.worldAABB.SetExtents( new Vector3( info.PosX + ParentPos.x, 0, info.PosZ + ParentPos.z ), new Vector3( (float)( info.PosX + ParentPos.x + endx ), MaxHeight, (float)( info.PosZ + ParentPos.z + endz ) ) );
+            //this.worldBounds.SetExtents( new Vector3(info.PosX + ParentPos.x ,0, info.PosZ + ParentPos.z), new Vector3((float)( info.PosX + ParentPos.x + endx), MaxHeight, (float)( info.PosZ + ParentPos.z + endz) ));
 
             for ( long i = 0; i < 4; i++ )
             {
@@ -447,7 +461,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
         }
 
         /** Overridden from SceneObject */
-        public override Real BoundingRadius
+        public override float BoundingRadius
         {
             get
             {
@@ -528,7 +542,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
         /// Gets all the patches within an AABB in world coordinates as GeometryData structs
         public virtual void GetRenderOpsInBox( AxisAlignedBox box, ArrayList opList )
         {
-            if ( Intersection.Test( box, bounds ) != Intersection.Result.None )
+            if ( MathUtil.Intersects( box, bounds ) != Intersection.None )
             {
                 RenderOperation rend = new RenderOperation();
                 renderable.GetRenderOperation( rend );

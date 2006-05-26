@@ -24,13 +24,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 using System.Reflection;
-
-using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -111,7 +117,7 @@ namespace Axiom
         /// </remarks>
         /// <param name="system">Reference to a ParticleSystem to affect.</param>
         /// <param name="timeElapsed">The number of seconds which have elapsed since the last call.</param>
-        public abstract void AffectParticles( ParticleSystem system, Real timeElapsed );
+        public abstract void AffectParticles( ParticleSystem system, float timeElapsed );
 
         /// <summary>
         /// 

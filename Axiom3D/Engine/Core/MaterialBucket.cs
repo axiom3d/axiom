@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -31,10 +39,10 @@ using System.Collections;
 using System.Text;
 using System.IO;
 
-using DotNet3D.Math; 
+using Axiom.MathLib;
 
 #endregion Namespace Declarations
-
+			
 namespace Axiom
 {
 
@@ -162,7 +170,7 @@ namespace Axiom
             }
         }
 
-        public void AddRenderables( RenderQueue queue, RenderQueueGroupID group, Real camDistanceSquared )
+        public void AddRenderables( RenderQueue queue, RenderQueueGroupID group, float camDistanceSquared )
         {
             // determine the current material technique
             technique = material.GetTechnique( material.GetLodIndexSquaredDepth( camDistanceSquared ) );

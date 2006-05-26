@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Graphics Engine Library
-Copyright (C) 2003-2006  Axiom Project Team
+Axiom Game Engine Library
+Copyright (C) 2003  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,16 +24,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-#region Namespace Declarations
-
 using System;
-
 using Axiom;
 
-using DotNet3D.Math;
-
-#endregion Namespace Declarations
-			
 namespace Axiom.ParticleFX
 {
     /// <summary>
@@ -41,7 +34,7 @@ namespace Axiom.ParticleFX
     /// </summary>
     public class ScaleAffector : ParticleAffector
     {
-        protected Real scaleAdjust;
+        protected float scaleAdjust;
 
         public ScaleAffector()
         {
@@ -49,7 +42,7 @@ namespace Axiom.ParticleFX
             scaleAdjust = 0;
         }
 
-        public Real ScaleAdjust
+        public float ScaleAdjust
         {
             get
             {
@@ -61,14 +54,14 @@ namespace Axiom.ParticleFX
             }
         }
 
-        public override void AffectParticles( ParticleSystem system, Real timeElapsed )
+        public override void AffectParticles( ParticleSystem system, float timeElapsed )
         {
-            Real ds;
+            float ds;
 
             // Scale adjustments by time
             ds = scaleAdjust * timeElapsed;
 
-            Real newWide, newHigh;
+            float newWide, newHigh;
 
             // loop through the particles
 
@@ -106,7 +99,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 ScaleAffector affector = target as ScaleAffector;
-                affector.ScaleAdjust = Real.Parse( val );
+                affector.ScaleAdjust = StringConverter.ParseFloat( val );
             }
 
             #endregion

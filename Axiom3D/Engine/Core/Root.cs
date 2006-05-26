@@ -24,16 +24,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using System.Threading;
 using System.Text;
 
-using DotNet3D.Math;
 
 #endregion Namespace Declarations
 
@@ -195,19 +201,19 @@ namespace Axiom
         /// <summary>
         ///     Current frames per second.
         /// </summary>
-        private Real currentFPS;
+        private float currentFPS;
         /// <summary>
         ///     Highest recorded frames per second.
         /// </summary>
-        private Real highestFPS;
+        private float highestFPS;
         /// <summary>
         ///     Lowest recorded frames per second.
         /// </summary>
-        private Real lowestFPS = 9999;
+        private float lowestFPS = 9999;
         /// <summary>
         ///     Average frames per second.
         /// </summary>
-        private Real averageFPS;
+        private float averageFPS;
 
         /// <summary>
         ///		Global frame count since startup.
@@ -744,13 +750,13 @@ namespace Axiom
         /// <param name="time">The current time in milliseconds.</param>
         /// <param name="type">The type event to calculate.</param>
         /// <returns>Average time since last event of the same type.</returns>
-        private Real CalculateEventTime( long time, FrameEventType type )
+        private float CalculateEventTime( long time, FrameEventType type )
         {
-            Real result = 0;
+            float result = 0;
 
             if ( type == FrameEventType.Start )
             {
-                result = (Real)( (time - lastStartTime ) / 1000.0f);
+                result = (float)( time - lastStartTime ) / 1000;
 
                 // update the last start time before the render targets are rendered
                 lastStartTime = time;
@@ -765,7 +771,7 @@ namespace Axiom
                 {
                     // Is It Time To Update Our Calculations?
                     // Calculate New Framerate
-                    currentFPS = (Real)frameCount / (Real)(time - lastCalculationTime) * 1000.0f;
+                    currentFPS = (float)frameCount / (float)( time - lastCalculationTime ) * 1000;
 
                     // calculate the averge framerate
                     if ( averageFPS == 0 )
@@ -794,7 +800,7 @@ namespace Axiom
                     frameCount = 0;
                 }
 
-                result = (Real)(( time - lastEndTime ) / 1000.0f);
+                result = (float)( time - lastEndTime ) / 1000;
 
                 lastEndTime = time;
             }
@@ -933,12 +939,12 @@ namespace Axiom
         /// <summary>
         ///    Time elapsed (in milliseconds) since the last frame event.
         /// </summary>
-        public Real TimeSinceLastEvent;
+        public float TimeSinceLastEvent;
 
         /// <summary>
         ///    Time elapsed (in milliseconds) since the last frame.
         /// </summary>
-        public Real TimeSinceLastFrame;
+        public float TimeSinceLastFrame;
     }
 
     public enum FrameEventType

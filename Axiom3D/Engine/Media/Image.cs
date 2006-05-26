@@ -24,12 +24,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.IO;
-
-using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -104,7 +110,7 @@ namespace Axiom
         /// <param name="gamma"></param>
         /// <param name="size"></param>
         /// <param name="bpp"></param>
-        public static void ApplyGamma( byte[] buffer, Real gamma, int size, int bpp )
+        public static void ApplyGamma( byte[] buffer, float gamma, int size, int bpp )
         {
             if ( gamma == 1.0f )
                 return;
@@ -117,17 +123,17 @@ namespace Axiom
 
             for ( int i = 0, j = size / stride, p = 0; i < j; i++, p += stride )
             {
-                Real r, g, b;
+                float r, g, b;
 
-                r = (Real)buffer[p + 0];
-                g = (Real)buffer[p + 1];
-                b = (Real)buffer[p + 2];
+                r = (float)buffer[p + 0];
+                g = (float)buffer[p + 1];
+                b = (float)buffer[p + 2];
 
                 r = r * gamma;
                 g = g * gamma;
                 b = b * gamma;
 
-                Real scale = 1.0f, tmp;
+                float scale = 1.0f, tmp;
 
                 if ( r > 255.0f && ( tmp = ( 255.0f / r ) ) < scale )
                     scale = tmp;

@@ -24,18 +24,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Text;
 
+using Axiom.MathLib;
+using Axiom.MathLib.Collections;
 using DotNet3D.Math;
-using DotNet3D.Math.Collections;
 
 #endregion Namespace Declarations
 
@@ -90,7 +96,7 @@ namespace Axiom
     {
     }
 
-    public class IndexRemap : List< Tuple<int,int> >
+    public class IndexRemap : List< Pair<int> >
     {
     }
     #endregion
@@ -220,8 +226,8 @@ namespace Axiom
         protected SceneManager owner;
         protected string name;
         protected bool built;
-        protected Real upperDistance;
-        protected Real squaredUpperDistance;
+        protected float upperDistance;
+        protected float squaredUpperDistance;
         protected bool castShadows;
         protected bool visible = true;
         protected RenderQueueGroupID renderQueueID = RenderQueueGroupID.Main;
@@ -295,7 +301,7 @@ namespace Axiom
 
         #endregion Origin Property
 
-        public Real SquaredRenderingDistance
+        public float SquaredRenderingDistance
         {
             get
             {
@@ -617,20 +623,20 @@ namespace Axiom
             Vector3 min = Vector3.Zero, max = Vector3.Zero;
             unsafe
             {
-                float* pReal = (float*)vertexPtr.ToPointer();
+                float* pFloat = (float*)vertexPtr.ToPointer();
 
                 bool first = true;
 
                 for ( int j = 0; j < vertexData.vertexCount; ++j )
                 {
-                    //posElem.baseVertexPointerToElement(vertexPtr, &pReal);
+                    //posElem.baseVertexPointerToElement(vertexPtr, &pFloat);
                     ;
 
                     Vector3 pt = Vector3.Zero;
 
-                    pt.x = ( *pReal++ );
-                    pt.y = ( *pReal++ );
-                    pt.z = ( *pReal++ );
+                    pt.x = ( *pFloat++ );
+                    pt.y = ( *pFloat++ );
+                    pt.z = ( *pFloat++ );
 
                     // Transform to world (scale, rotate, translate)
                     pt = ( orientation * ( pt * scale ) ) + position;
@@ -645,7 +651,7 @@ namespace Axiom
                         max.ToCeiling( pt );
                     }
 
-                    pReal += vbuf.VertexSize;
+                    pFloat += vbuf.VertexSize;
                 }
             }
             vbuf.Unlock();

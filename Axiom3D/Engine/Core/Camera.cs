@@ -24,11 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Diagnostics;
 
+using Axiom.MathLib;
+using Axiom.MathLib.Collections;
 using DotNet3D.Math;
 using DotNet3D.Math.Collections;
 
@@ -117,27 +127,27 @@ namespace Axiom
         /// <summary>
         ///		Scene LOD factor used to adjust overall LOD.
         /// </summary>
-        protected Real sceneLodFactor;
+        protected float sceneLodFactor;
         /// <summary>
         ///		Inverted scene LOD factor, can be used by Renderables to adjust their LOD.
         /// </summary>
-        protected Real invSceneLodFactor;
+        protected float invSceneLodFactor;
         /// <summary>
         ///		Left window edge (window clip planes).
         /// </summary>
-        protected Real windowLeft;
+        protected float windowLeft;
         /// <summary>
         ///		Right window edge (window clip planes).
         /// </summary>
-        protected Real windowRight;
+        protected float windowRight;
         /// <summary>
         ///		Top window edge (window clip planes).
         /// </summary>
-        protected Real windowTop;
+        protected float windowTop;
         /// <summary>
         ///		Bottom window edge (window clip planes).
         /// </summary>
-        protected Real windowBottom;
+        protected float windowBottom;
         /// <summary>
         ///		Is viewing window used.
         /// </summary>
@@ -175,7 +185,7 @@ namespace Axiom
             orientation = Quaternion.Identity;
             derivedOrientation = Quaternion.Identity;
 
-            fieldOfView = new Radian( Utility.PI / 4.0f );
+            fieldOfView = MathUtil.RadiansToDegrees( MathUtil.PI / 4.0f );
             nearDistance = 100.0f;
             farDistance = 100000.0f;
             aspectRatio = 1.33333333333333f;
@@ -306,7 +316,7 @@ namespace Axiom
                 {
 
                     reflectionPlane = linkedReflectionPlane.DerivedPlane;
-                    reflectionMatrix = Utility.BuildReflectionMatrix( reflectionPlane );
+                    reflectionMatrix = MathUtil.BuildReflectionMatrix( reflectionPlane );
                     lastLinkedReflectionPlane = linkedReflectionPlane.DerivedPlane;
                     returnVal = true;
                 }
@@ -337,7 +347,7 @@ namespace Axiom
         /// <summary>
         ///		Overridden to return a proper bounding radius for the camera.
         /// </summary>
-        public override Real BoundingRadius
+        public override float BoundingRadius
         {
             get
             {
@@ -629,7 +639,7 @@ namespace Axiom
         ///     <p/>
         ///     Higher values increase the detail, so 2.0 doubles the normal detail and 0.5 halves it.
         /// </remarks>
-        public Real LodBias
+        public float LodBias
         {
             get
             {
@@ -646,7 +656,7 @@ namespace Axiom
         /// <summary>
         ///     Used for internal Lod calculations.
         /// </summary>
-        public Real InverseLodBias
+        public float InverseLodBias
         {
             get
             {
@@ -768,7 +778,7 @@ namespace Axiom
         ///		Pitches the camera up/down counter-clockwise around it's local x axis.
         /// </summary>
         /// <param name="degrees"></param>
-        public void Pitch( Real degrees )
+        public void Pitch( float degrees )
         {
             Vector3 xAxis = orientation * Vector3.UnitX;
             Rotate( xAxis, degrees );
@@ -780,7 +790,7 @@ namespace Axiom
         ///		Rolls the camera counter-clockwise, in degrees, around its local y axis.
         /// </summary>
         /// <param name="degrees"></param>
-        public void Yaw( Real degrees )
+        public void Yaw( float degrees )
         {
             Vector3 yAxis;
 
@@ -804,7 +814,7 @@ namespace Axiom
         ///		Rolls the camera counter-clockwise, in degrees, around its local z axis.
         /// </summary>
         /// <param name="degrees"></param>
-        public void Roll( Real degrees )
+        public void Roll( float degrees )
         {
             // Rotate around local Z axis
             Vector3 zAxis = orientation * Vector3.UnitZ;
@@ -830,9 +840,9 @@ namespace Axiom
         /// </summary>
         /// <param name="axis"></param>
         /// <param name="degrees"></param>
-        public void Rotate( Vector3 axis, Degree angle )
+        public void Rotate( Vector3 axis, float degrees )
         {
-            Quaternion q = Quaternion.FromAngleAxis( angle , axis );
+            Quaternion q = Quaternion.FromAngleAxis( (Real)MathUtil.DegreesToRadians( degrees ), axis );
             Rotate( q );
         }
 
@@ -933,7 +943,7 @@ namespace Axiom
         /// <param name="top">Relative to Viewport - 0 corresponds to top edge, 1 - to bottom edge (default - 0).</param>
         /// <param name="right">Relative to Viewport - 0 corresponds to left edge, 1 - to right edge (default - 1).</param>
         /// <param name="bottom">Relative to Viewport - 0 corresponds to top edge, 1 - to bottom edge (default - 1).</param>
-        public virtual void SetWindow( Real left, Real top, Real right, Real bottom )
+        public virtual void SetWindow( float left, float top, float right, float bottom )
         {
             windowLeft = left;
             windowTop = top;
@@ -957,19 +967,19 @@ namespace Axiom
                 return;
             }
 
-            Radian thetaY = fieldOfView * 0.5f ;
-            Real tanThetaY = Utility.Tan( thetaY );
-            Real tanThetaX = tanThetaY * aspectRatio;
+            float thetaY = MathUtil.DegreesToRadians( fieldOfView * 0.5f );
+            float tanThetaY = MathUtil.Tan( thetaY );
+            float tanThetaX = tanThetaY * aspectRatio;
 
-            Real vpTop = tanThetaY * nearDistance;
-            Real vpLeft = -tanThetaX * nearDistance;
-            Real vpWidth = -2 * vpLeft;
-            Real vpHeight = -2 * vpTop;
+            float vpTop = tanThetaY * nearDistance;
+            float vpLeft = -tanThetaX * nearDistance;
+            float vpWidth = -2 * vpLeft;
+            float vpHeight = -2 * vpTop;
 
-            Real wvpLeft = vpLeft + windowLeft * vpWidth;
-            Real wvpRight = vpLeft + windowRight * vpWidth;
-            Real wvpTop = vpTop - windowTop * vpHeight;
-            Real wvpBottom = vpTop - windowBottom * vpHeight;
+            float wvpLeft = vpLeft + windowLeft * vpWidth;
+            float wvpRight = vpLeft + windowRight * vpWidth;
+            float wvpTop = vpTop - windowTop * vpHeight;
+            float wvpBottom = vpTop - windowBottom * vpHeight;
 
             Vector3 vpUpLeft = new Vector3( wvpLeft, wvpTop, -nearDistance );
             Vector3 vpUpRight = new Vector3( wvpRight, wvpTop, -nearDistance );
@@ -1029,14 +1039,14 @@ namespace Axiom
         ///     in normalised screen coordinates [0,1].
         /// </param>
         /// <returns></returns>
-        public Ray GetCameraToViewportRay( Real screenX, Real screenY )
+        public Ray GetCameraToViewportRay( float screenX, float screenY )
         {
-            Real centeredScreenX = ( screenX - 0.5f );
-            Real centeredScreenY = ( 0.5f - screenY );
+            float centeredScreenX = ( screenX - 0.5f );
+            float centeredScreenY = ( 0.5f - screenY );
 
-            Real normalizedSlope = Utility.Tan( fieldOfView * 0.5f );
-            Real viewportYToWorldY = normalizedSlope * nearDistance * 2;
-            Real viewportXToWorldX = viewportYToWorldY * aspectRatio;
+            float normalizedSlope = MathUtil.Tan( MathUtil.DegreesToRadians( fieldOfView * 0.5f ) );
+            float viewportYToWorldY = normalizedSlope * nearDistance * 2;
+            float viewportXToWorldX = viewportYToWorldY * aspectRatio;
 
             Vector3 rayDirection =
                 new Vector3(

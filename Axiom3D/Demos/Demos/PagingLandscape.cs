@@ -1,13 +1,10 @@
-#region Namespace Declarations
 
 using System;
 using System.IO;
-
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
-#endregion Namespace Declarations
-			
 namespace Axiom.Demos
 {
     /// <summary>
@@ -17,16 +14,16 @@ namespace Axiom.Demos
     {
 
         SceneNode waterNode;
-        Real flowAmount;
+        float flowAmount;
         bool flowUp = true;
-        public static readonly Real FLOW_HEIGHT = 0.8f;
-        public static readonly Real FLOW_SPEED = 0.2f;
+        const float FLOW_HEIGHT = 0.8f;
+        const float FLOW_SPEED = 0.2f;
         RaySceneQuery raySceneQuery = null;
 
-        // move the camera like a human at 3m/sec
+        // move the _camera like a human at 3m/sec
         bool humanSpeed = false;
 
-        // keep camera 2m above the ground
+        // keep _camera 2m above the ground
         bool followTerrain = false;
 
         protected override void ChooseSceneManager()
@@ -38,10 +35,10 @@ namespace Axiom.Demos
         {
             camera = scene.CreateCamera( "PlayerCam" );
 
-            //            camera.Position = new Vector3(128, 25, 128);
-            //            camera.LookAt(new Vector3(0, 0, -300));
-            //            camera.Near = 1;
-            //            camera.Far = 384;
+            //            _camera.Position = new Vector3(128, 25, 128);
+            //            _camera.LookAt(new Vector3(0, 0, -300));
+            //            _camera.Near = 1;
+            //            _camera.Far = 384;
 
             camera.Position = new Vector3( 128, 400, 128 );
             camera.LookAt( new Vector3( 0, 0, -300 ) );
@@ -87,7 +84,7 @@ namespace Axiom.Demos
 
         protected override void OnFrameStarted( object source, FrameEventArgs e )
         {
-            Real waterFlow;
+            float waterFlow;
 
             waterFlow = FLOW_SPEED * e.TimeSinceLastFrame;
 
@@ -114,12 +111,12 @@ namespace Axiom.Demos
                 waterNode.Translate( new Vector3( 0, flowUp ? waterFlow : -waterFlow, 0 ) );
             }
 
-            Real scaleMove = 200 * e.TimeSinceLastFrame;
+            float scaleMove = 200 * e.TimeSinceLastFrame;
 
             // reset acceleration zero
             camAccel = Vector3.Zero;
 
-            // set the scaling of camera motion
+            // set the scaling of _camera motion
             cameraScale = 100 * e.TimeSinceLastFrame;
 
             // TODO Move this into an event queueing mechanism that is processed every frame
@@ -264,8 +261,8 @@ namespace Axiom.Demos
 
             if ( !input.IsMousePressed( MouseButtons.Left ) )
             {
-                Real cameraYaw = -input.RelativeMouseX * .13f;
-                Real cameraPitch = -input.RelativeMouseY * .13f;
+                float cameraYaw = -input.RelativeMouseX * .13f;
+                float cameraPitch = -input.RelativeMouseY * .13f;
 
                 camera.Yaw( cameraYaw );
                 camera.Pitch( cameraPitch );
@@ -285,7 +282,7 @@ namespace Axiom.Demos
             {
                 camVelocity += ( camAccel * scaleMove * camSpeed );
 
-                // move the camera based on the accumulated movement vector
+                // move the _camera based on the accumulated movement vector
                 camera.MoveRelative( camVelocity * e.TimeSinceLastFrame );
 
                 // Now dampen the Velocity - only if user is not accelerating
@@ -319,19 +316,19 @@ namespace Axiom.Demos
 
             if ( followTerrain )
             {
-                // adjust new camera position to be a fixed distance above the ground
+                // adjust new _camera position to be a fixed distance above the ground
                 raySceneQuery.Ray = new Ray( camera.Position, Vector3.NegativeUnitY );
                 raySceneQuery.Execute( this );
             }
         }
 
-        public bool OnQueryResult( SceneQuery.WorldFragment fragment, Real distance )
+        public bool OnQueryResult( SceneQuery.WorldFragment fragment, float distance )
         {
             camera.Position = new Vector3( camera.Position.x, fragment.SingleIntersection.y + 2.0f, camera.Position.z );
             return false;
         }
 
-        public bool OnQueryResult( MovableObject sceneObject, Real distance )
+        public bool OnQueryResult( MovableObject sceneObject, float distance )
         {
             return true;
         }

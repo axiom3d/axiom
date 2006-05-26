@@ -1,9 +1,7 @@
-#region Namespace Declarations
 
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
-
-#endregion Namespace Declarations
 
 namespace Axiom.Demos
 {
@@ -19,8 +17,8 @@ namespace Axiom.Demos
         SceneNode lightNode;
         ColorEx minLightColor = new ColorEx( 0.3f, 0, 0 );
         ColorEx maxLightColor = new ColorEx( 0.5f, 0.3f, 0.1f );
-        Real minFlareSize = 40;
-        Real maxFlareSize = 80;
+        float minFlareSize = 40;
+        float maxFlareSize = 80;
 
         string[] atheneMaterials = new string[] { 
 			"Examples/Athene/NormalMapped",
@@ -57,7 +55,7 @@ namespace Axiom.Demos
             sunLight = scene.CreateLight( "SunLight" );
             sunLight.Type = LightType.Spotlight;
             sunLight.Position = new Vector3( 1000, 1250, 500 );
-            sunLight.SetSpotlightRange( (Degree)30, (Degree)50 );
+            sunLight.SetSpotlightRange( 30, 50 );
             Vector3 dir = -sunLight.Position;
             dir.Normalize();
             sunLight.Direction = dir;
@@ -94,7 +92,7 @@ namespace Axiom.Demos
             Animation anim = scene.CreateAnimation( "LightTrack", 20 );
             // spline it for nice curves
             anim.InterpolationMode = InterpolationMode.Spline;
-            // create a track to animate the camera's node
+            // create a track to animate the _camera's node
             AnimationTrack track = anim.CreateTrack( 0, lightNode );
             // setup keyframes
             KeyFrame key = track.CreateKeyFrame( 0 );
@@ -263,7 +261,7 @@ namespace Axiom.Demos
                     light.Diffuse = minLightColor;
                     light.Specular = ColorEx.White;
                     light.SetAttenuation( 8000, 1, 0.0005f, 0 );
-                    light.SetSpotlightRange( (Degree)80, (Degree)90 );
+                    light.SetSpotlightRange( 80, 90 );
 
                     break;
             }
@@ -281,16 +279,16 @@ namespace Axiom.Demos
         protected Billboard billboard;
         protected ColorEx colorRange = new ColorEx();
         protected ColorEx minColor;
-        protected Real minSize;
-        protected Real sizeRange;
-        protected Real intensity;
+        protected float minSize;
+        protected float sizeRange;
+        protected float intensity;
 
         #endregion Fields
 
         #region Constructor
 
         public LightWibbler( Light light, Billboard billboard, ColorEx minColor,
-            ColorEx maxColor, Real minSize, Real maxSize )
+            ColorEx maxColor, float minSize, float maxSize )
         {
 
             this.light = light;
@@ -307,7 +305,7 @@ namespace Axiom.Demos
 
         #region IControllerValue Members
 
-        public Real Value
+        public float Value
         {
             get
             {
@@ -328,7 +326,7 @@ namespace Axiom.Demos
                 billboard.Color = newColor;
 
                 // set billboard size
-                Real newSize = minSize + ( intensity * sizeRange );
+                float newSize = minSize + ( intensity * sizeRange );
                 billboard.SetDimensions( newSize, newSize );
             }
         }

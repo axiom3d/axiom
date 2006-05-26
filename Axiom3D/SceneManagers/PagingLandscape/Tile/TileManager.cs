@@ -24,23 +24,31 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-using System.Collections;
-
-using Axiom;
-using DotNet3D.Math;
 
 using Axiom.SceneManagers.PagingLandscape.Collections;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.SceneManagers.PagingLandscape.Tile
 {
+
     /// <summary>
+
     /// Summary description for TileManager.
+
     /// </summary>
+
     public class TileManager
     {
 
@@ -93,6 +101,8 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
 
         #endregion Singleton Implementation
 
+
+
         #region IDisposable Implementation
 
 
@@ -115,6 +125,8 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
 
         #endregion IDisposable Implementation
 
+
+
         #region Fields
 
         protected TileRow tiles;
@@ -126,9 +138,13 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
 
         #endregion Fields
 
+
         /// <summary>
+
         /// Retrieve a free Tile
+
         /// </summary>
+
         /// <returns>free tile</returns>
         public Tile GetTile()
         {
@@ -144,8 +160,11 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
 
 
         /// <summary>
+
         /// Marks a tile as free
+
         /// </summary>
+
         /// <param name="tile">Tile to free</param>
         public void FreeTile( Tile tile )
         {

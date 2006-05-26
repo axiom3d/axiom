@@ -24,14 +24,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
+
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.ParticleFX
 {
     /// <summary>
@@ -49,9 +59,9 @@ namespace Axiom.ParticleFX
         {
             Vector3 xOff, yOff, zOff;
 
-            xOff = Utility.SymmetricRandom() * xRange;
-            yOff = Utility.SymmetricRandom() * yRange;
-            zOff = Utility.SymmetricRandom() * zRange;
+            xOff = MathUtil.SymmetricRandom() * xRange;
+            yOff = MathUtil.SymmetricRandom() * yRange;
+            zOff = MathUtil.SymmetricRandom() * zRange;
 
             particle.Position = position + xOff + yOff + zOff;
 
@@ -75,7 +85,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 BoxEmitter emitter = target as BoxEmitter;
-                emitter.Width = Real.Parse( val );
+                emitter.Width = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -93,7 +103,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 BoxEmitter emitter = target as BoxEmitter;
-                emitter.Height = Real.Parse( val );
+                emitter.Height = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {
@@ -111,7 +121,7 @@ namespace Axiom.ParticleFX
             public void Set( object target, string val )
             {
                 BoxEmitter emitter = target as BoxEmitter;
-                emitter.Depth = Real.Parse( val );
+                emitter.Depth = StringConverter.ParseFloat( val );
             }
             public string Get( object target )
             {

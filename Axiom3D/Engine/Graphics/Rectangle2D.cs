@@ -24,13 +24,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
+
+using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
-
+			
 namespace Axiom
 {
     /// <summary>
@@ -46,7 +57,7 @@ namespace Axiom
         const int POSITION = 0;
         const int TEXCOORD = 1;
 
-        static Real[] texCoords = new Real[] { 0, 0, 0, 1, 1, 0, 1, 1 };
+        static float[] texCoords = new float[] { 0, 0, 0, 1, 1, 0, 1, 1 };
 
         public Rectangle2D() : this( false )
         {
@@ -93,7 +104,7 @@ namespace Axiom
 
         #region SimpleRenderable Members
 
-        public override Real BoundingRadius
+        public override float BoundingRadius
         {
             get
             {
@@ -101,7 +112,7 @@ namespace Axiom
             }
         }
 
-        public override Real GetSquaredViewDepth( Camera camera )
+        public override float GetSquaredViewDepth( Camera camera )
         {
             return 0;
         }
@@ -164,9 +175,9 @@ namespace Axiom
         /// <param name="top">Top position in screen relative coordinates, 1 = top edge, -1 = bottom edge.</param>
         /// <param name="right">Position in screen relative coordinates.</param>
         /// <param name="bottom">Position in screen relative coordinates.</param>
-        public void SetCorners( Real left, Real top, Real right, Real bottom )
+        public void SetCorners( float left, float top, float right, float bottom )
         {
-            Real[] data = new Real[] {
+            float[] data = new float[] {
 				left, top, -1,
 				left, bottom, -1,
 				right, top, -1, // Fix for Issue #1187096

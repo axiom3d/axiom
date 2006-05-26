@@ -1,9 +1,7 @@
-#region Namespace Declarations
 
 using Axiom;
+using Axiom.MathLib;
 using DotNet3D.Math;
-
-#endregion Namespace Declarations
 
 namespace Axiom.Demos
 {
@@ -14,10 +12,10 @@ namespace Axiom.Demos
     {
 
         SceneNode waterNode;
-        Real flowAmount;
+        float flowAmount;
         bool flowUp = true;
-        public static readonly Real FLOW_HEIGHT = 0.8f;
-        public static readonly Real FLOW_SPEED = 0.2f;
+        const float FLOW_HEIGHT = 0.8f;
+        const float FLOW_SPEED = 0.2f;
 
         protected override void ChooseSceneManager()
         {
@@ -70,8 +68,8 @@ namespace Axiom.Demos
 
         protected override void OnFrameStarted( object source, FrameEventArgs e )
         {
-            Real moveScale;
-            Real waterFlow;
+            float moveScale;
+            float waterFlow;
 
             moveScale = 10 * e.TimeSinceLastFrame;
             waterFlow = FLOW_SPEED * e.TimeSinceLastFrame;

@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -31,10 +39,10 @@ using System.Collections;
 using System.Text;
 using System.IO;
 
-using DotNet3D.Math; 
+using Axiom.MathLib;
+
 #endregion Namespace Declarations
 			
-
 namespace Axiom
 {
 
@@ -43,7 +51,7 @@ namespace Axiom
         #region Fields and Properties
         protected Region parent;
         protected ushort lod;
-        protected Real squaredDistance;
+        protected float squaredDistance;
         protected MaterialBucketMap materialBucketMap;
         protected QueuedGeometryList queuedGeometryList;
 
@@ -63,7 +71,7 @@ namespace Axiom
             }
         }
 
-        Real SquaredDistance
+        float SquaredDistance
         {
             get
             {
@@ -74,7 +82,7 @@ namespace Axiom
         #endregion
 
         #region Constructors
-        public LODBucket( Region parent, ushort lod, Real lodDist )
+        public LODBucket( Region parent, ushort lod, float lodDist )
         {
             this.parent = parent;
             this.lod = lod;
@@ -126,7 +134,7 @@ namespace Axiom
             }
         }
 
-        public void AddRenderables( RenderQueue queue, RenderQueueGroupID group, Real camSquaredDistance )
+        public void AddRenderables( RenderQueue queue, RenderQueueGroupID group, float camSquaredDistance )
         {
             // Just pass this on to child buckets
             IDictionaryEnumerator iter = materialBucketMap.GetEnumerator();
@@ -146,7 +154,7 @@ namespace Axiom
         {
             output.WriteLine( "LOD Bucket {0}", lod );
             output.WriteLine( "------------------" );
-            output.WriteLine( "Distance: {0}", Utility.Sqrt( squaredDistance ) );
+            output.WriteLine( "Distance: {0}", Math.Sqrt( squaredDistance ) );
             output.WriteLine( "Number of Materials: {0}", materialBucketMap.Count );
             IDictionaryEnumerator iter = materialBucketMap.GetEnumerator();
             while ( iter.MoveNext() )

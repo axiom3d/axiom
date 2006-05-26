@@ -24,12 +24,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
+using Axiom.MathLib;
+using Axiom.MathLib.Collections;
 using DotNet3D.Math;
 using DotNet3D.Math.Collections;
 
@@ -104,7 +114,7 @@ namespace Axiom
         /// <summary>
         ///     Mesh subdivision factor.
         /// </summary>
-        protected Real subdivisionFactor;
+        protected float subdivisionFactor;
         /// <summary>
         ///     List of control points.
         /// </summary>
@@ -118,7 +128,7 @@ namespace Axiom
         protected int requiredIndexCount;
         protected int currentIndexCount;
         protected AxisAlignedBox aabb = AxisAlignedBox.Null;
-        protected Real boundingSphereRadius;
+        protected float boundingSphereRadius;
 
 
         /// <summary>
@@ -238,7 +248,7 @@ namespace Axiom
             // Calculate bounds based on control points
             Vector3 min = Vector3.Zero;
             Vector3 max = Vector3.Zero;
-            Real maxSqRadius = 0.0f;
+            float maxSqRadius = 0.0f;
             bool first = true;
 
             for ( int i = 0; i < controlPoints.Count; i++ )
@@ -254,13 +264,13 @@ namespace Axiom
                 {
                     min.ToFloor( vec );
                     max.ToCeiling( vec );
-                    maxSqRadius = Utility.Max( vec.LengthSquared, maxSqRadius );
+                    maxSqRadius = MathUtil.Max( vec.LengthSquared, maxSqRadius );
                 }
             }
 
             // set the bounds of the patch
             aabb.SetExtents( min, max );
-            boundingSphereRadius = Utility.Sqrt( maxSqRadius );
+            boundingSphereRadius = MathUtil.Sqrt( maxSqRadius );
         }
 
         /// <summary>
@@ -372,10 +382,10 @@ namespace Axiom
             // Apart from I think I fixed a bug - see below
             // I also commented the code, the only thing wrong with rogl is almost no comments!!
             const int maxLevels = 5;
-            Real subdiv = new Real( 10 );
+            const float subdiv = 10;
             int level;
 
-            Real test = subdiv * subdiv;
+            float test = subdiv * subdiv;
 
             Vector3 s = Vector3.Zero;
             Vector3 t = Vector3.Zero;
@@ -952,7 +962,7 @@ namespace Axiom
         ///     Gets the radius of the bounding sphere for this patch, only valid after <see cref="DefineSurface"/> 
         ///     has been called.
         /// </summary>
-        public Real BoundingSphereRadius
+        public float BoundingSphereRadius
         {
             get
             {
@@ -966,11 +976,11 @@ namespace Axiom
         /// <remarks>
         ///     This method changes the proportionate detail level of the patch; since
         ///     the U and V directions can have different subdivision levels, this property
-        ///     takes a single Real value where 0 is the minimum detail (the control points)
+        ///     takes a single float value where 0 is the minimum detail (the control points)
         ///     and 1 is the maximum detail level as supplied to the original call to 
         ///     <see cref="DefineSurface"/>.
         /// </remarks>
-        public Real SubdivisionFactor
+        public float SubdivisionFactor
         {
             get
             {
