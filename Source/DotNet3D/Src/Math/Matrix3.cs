@@ -299,7 +299,7 @@ namespace DotNet3D.Math
         public static Matrix3 operator *( Matrix3 left, Matrix3 right )
         {
 
-            Matrix3 result = Matrix3.Zero;
+            Matrix3 result = new Matrix3();
 
             for ( int row = 0; row < 3; row++ )
             {
