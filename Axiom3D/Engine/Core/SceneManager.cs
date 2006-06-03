@@ -39,9 +39,10 @@ using System.Collections;
 using System.Diagnostics;
 using System.IO;
 
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
+
+
 using DotNet3D.Math;
+using DotNet3D.Math.Collections;
 
 #endregion Namespace Declarations
 
@@ -5172,7 +5173,7 @@ namespace Axiom
                 }
 
                 // test the intersection against the world bounding box of the entity
-                IntersectResult results = MathUtil.Intersects( ray, entity.GetWorldBoundingBox() );
+                IntersectionResult results = ray.Intersects( entity.GetWorldBoundingBox() );
 
                 // if the results came back positive, fire the event handler
                 if ( results.Hit == true )

@@ -38,7 +38,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -202,7 +202,7 @@ namespace Axiom
                 planes[i] = new Plane();
             }
 
-            fieldOfView = MathUtil.RadiansToDegrees( MathUtil.PI / 4.0f );
+            fieldOfView = (Real)(new Radian( Utility.PI / 4.0f ).InDegrees);
             nearDistance = 100.0f;
             farDistance = 100000.0f;
             aspectRatio = 1.33333333333333f;
@@ -461,7 +461,7 @@ namespace Axiom
                 {
 
                     reflectionPlane = linkedReflectionPlane.DerivedPlane;
-                    reflectionMatrix = MathUtil.BuildReflectionMatrix( reflectionPlane );
+                    reflectionMatrix = Utility.BuildReflectionMatrix( reflectionPlane );
                     lastLinkedReflectionPlane = linkedReflectionPlane.DerivedPlane;
                     returnVal = true;
                 }
@@ -622,7 +622,7 @@ namespace Axiom
             isReflected = true;
             reflectionPlane = plane;
             linkedReflectionPlane = null;
-            reflectionMatrix = MathUtil.BuildReflectionMatrix( plane );
+            reflectionMatrix = Utility.BuildReflectionMatrix( plane );
             InvalidateView();
         }
 
@@ -638,7 +638,7 @@ namespace Axiom
             isReflected = true;
             linkedReflectionPlane = plane;
             reflectionPlane = linkedReflectionPlane.DerivedPlane;
-            reflectionMatrix = MathUtil.BuildReflectionMatrix( reflectionPlane );
+            reflectionMatrix = Utility.BuildReflectionMatrix( reflectionPlane );
             lastLinkedReflectionPlane = reflectionPlane;
             InvalidateView();
         }
@@ -855,10 +855,10 @@ namespace Axiom
                 float possTop = screenSpacePos.y + spheresize.y;
                 float possBottom = screenSpacePos.y - spheresize.y;
 
-                left = MathUtil.Max( -1.0f, possLeft );
-                right = MathUtil.Min( 1.0f, possRight );
-                top = MathUtil.Min( 1.0f, possTop );
-                bottom = MathUtil.Max( -1.0f, possBottom );
+                left = Utility.Max( -1.0f, possLeft );
+                right = Utility.Min( 1.0f, possRight );
+                top = Utility.Min( 1.0f, possTop );
+                bottom = Utility.Max( -1.0f, possBottom );
             }
 
             return ( left != -1.0f ) || ( top != 1.0f ) || ( right != 1.0f ) || ( bottom != -1.0f );
@@ -887,8 +887,8 @@ namespace Axiom
         {
             if ( IsFrustumOutOfDate )
             {
-                float thetaY = MathUtil.DegreesToRadians( fieldOfView * 0.5f );
-                float tanThetaY = MathUtil.Tan( thetaY );
+                float thetaY = (Real)(new Degree( new Real(fieldOfView * 0.5f) ).InRadians);
+                float tanThetaY = Utility.Tan( (Real)thetaY );
                 float tanThetaX = tanThetaY * aspectRatio;
                 float vpTop = tanThetaY * nearDistance;
                 float vpRight = tanThetaX * nearDistance;
@@ -1174,7 +1174,7 @@ namespace Axiom
                 // Get worldspace frustum corners
                 // treat infinite far distance as some far value
                 float actualFar = ( farDistance == 0 ) ? InfiniteFarPlaneDistance : farDistance;
-                float y = MathUtil.Tan( fieldOfView * 0.5f );
+                float y = Utility.Tan( new Real(fieldOfView * 0.5f) );
                 float x = aspectRatio * y;
                 float neary = y * nearDistance;
                 float fary = y * ( ( projectionType == Projection.Orthographic ) ? nearDistance : actualFar );

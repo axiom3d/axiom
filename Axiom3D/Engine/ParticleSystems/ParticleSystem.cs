@@ -39,7 +39,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
 
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 
 #endregion Namespace Declarations

@@ -38,7 +38,7 @@ using System;
 using System.Collections;
 
 using Axiom;
-using Axiom.MathLib;
+
 
 using Axiom.SceneManagers.PagingLandscape.Tile;
 using DotNet3D.Math;

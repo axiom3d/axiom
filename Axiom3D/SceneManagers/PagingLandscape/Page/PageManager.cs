@@ -38,7 +38,7 @@ using System;
 using System.Diagnostics;
 
 using Axiom;
-using Axiom.MathLib;
+
 using Axiom.SceneManagers.PagingLandscape.Collections;
 using Axiom.SceneManagers.PagingLandscape.Data2D;
 using Axiom.SceneManagers.PagingLandscape.Renderable;

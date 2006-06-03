@@ -37,7 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -438,7 +438,7 @@ namespace Axiom
             Matrix3 rot3x3 = Matrix3.Identity;
             Matrix3 scale3x3 = Matrix3.Zero;
 
-            rot3x3.FromEulerAnglesXYZ( Real.Zero, Real.Zero, (Real)MathUtil.DegreesToRadians( rotate ) );
+            rot3x3.FromEulerAnglesXYZ( Real.Zero, Real.Zero, (Real)(new Degree( (Real)rotate ).InRadians ) );
             scale3x3[0,0] = scaleX;
             scale3x3[1,1] = scaleY;
             scale3x3[2,2] = 1.0f;

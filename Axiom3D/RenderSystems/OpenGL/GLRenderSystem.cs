@@ -38,7 +38,7 @@ using System;
 using System.Diagnostics;
 
 using Axiom;
-using Axiom.MathLib;
+
 using Axiom.RenderSystems.OpenGL.ARB;
 using Axiom.RenderSystems.OpenGL.Nvidia;
 using DotNet3D.Math;
@@ -461,8 +461,9 @@ namespace Axiom.RenderSystems.OpenGL
 
         public override Matrix4 MakeOrthoMatrix( float fov, float aspectRatio, float near, float far, bool forGpuPrograms )
         {
-            float thetaY = MathUtil.DegreesToRadians( fov / 2.0f );
-            float tanThetaY = MathUtil.Tan( thetaY );
+            float thetaY = (Real)( new Degree( new Real( fov / 2.0f ) ).InRadians );
+            //MathUtil.DegreesToRadians( fov / 2.0f );
+            float tanThetaY = Utility.Tan( (Real)thetaY );
             float tanThetaX = tanThetaY * aspectRatio;
 
             float halfW = tanThetaX * near;
@@ -502,8 +503,9 @@ namespace Axiom.RenderSystems.OpenGL
         {
             Matrix4 matrix = new Matrix4();
 
-            float thetaY = MathUtil.DegreesToRadians( fov * 0.5f );
-            float tanThetaY = MathUtil.Tan( thetaY );
+            float thetaY = (Real)( new Degree( new Real( fov * 0.5f ) ).InRadians );
+            //MathUtil.DegreesToRadians( fov * 0.5f );
+            float tanThetaY = Utility.Tan( (Real)thetaY );
 
             float w = ( 1.0f / tanThetaY ) / aspectRatio;
             float h = 1.0f / tanThetaY;
@@ -1863,7 +1865,7 @@ namespace Axiom.RenderSystems.OpenGL
                 lights[i] = null;
             }
 
-            numCurrentLights = (int)MathUtil.Min( limit, lightList.Count );
+            numCurrentLights = (int)Utility.Min( limit, lightList.Count );
 
             SetLights();
 

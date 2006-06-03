@@ -38,7 +38,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -614,7 +614,7 @@ namespace Axiom
                 // update
                 worldAABB.Merge( obj.GetWorldBoundingBox( true ) );
 
-                radius = MathUtil.Max( obj.BoundingRadius, radius );
+                radius = Utility.Max( obj.BoundingRadius, radius );
             }
 
             // merge with Children
@@ -624,7 +624,7 @@ namespace Axiom
 
                 // merge our bounding box with that of the child node
                 worldAABB.Merge( child.worldAABB );
-                radius = MathUtil.Max( child.worldBoundingSphere.Radius, radius );
+                radius = Utility.Max( child.worldBoundingSphere.Radius, radius );
             }
             worldBoundingSphere.Radius = radius;
 

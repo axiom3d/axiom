@@ -38,7 +38,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -381,11 +381,11 @@ namespace Axiom
                     min.ToFloor( pos );
                     max.ToCeiling( pos );
 
-                    maxSqLen = MathUtil.Max( maxSqLen, pos.LengthSquared );
+                    maxSqLen = Utility.Max( maxSqLen, pos.LengthSquared );
                 }
 
                 // adjust for billboard size
-                float adjust = MathUtil.Max( defaultWidth, defaultHeight );
+                float adjust = Utility.Max( defaultWidth, defaultHeight );
                 Vector3 vecAdjust = new Vector3( adjust, adjust, adjust );
                 min -= vecAdjust;
                 max += vecAdjust;
@@ -393,7 +393,7 @@ namespace Axiom
                 // update our local aabb
                 aab.SetExtents( min, max );
 
-                boundingRadius = MathUtil.Sqrt( maxSqLen );
+                boundingRadius = Utility.Sqrt( maxSqLen );
 
                 // if we have a parent node, ask it to update us
                 if ( parentNode != null )
@@ -791,11 +791,11 @@ namespace Axiom
             // calculate the radius of the bounding sphere for the billboard
             if ( billboard.HasOwnDimensions )
             {
-                sphere.Radius = MathUtil.Max( billboard.Width, billboard.Height );
+                sphere.Radius = Utility.Max( billboard.Width, billboard.Height );
             }
             else
             {
-                sphere.Radius = MathUtil.Max( defaultWidth, defaultHeight );
+                sphere.Radius = Utility.Max( defaultWidth, defaultHeight );
             }
 
             // finally, see if the sphere is visible in the camera
@@ -976,8 +976,8 @@ namespace Axiom
                 {
                     rotTexData = new float[8];
                     float rotation = billboard.rotationInRadians;
-                    float cosRot = MathUtil.Cos( rotation );
-                    float sinRot = MathUtil.Sin( rotation );
+                    float cosRot = Utility.Cos( (Real)rotation );
+                    float sinRot = Utility.Sin( (Real)rotation );
 
                     rotTexData[0] = ( cosRot * texDataBase[0] ) + ( sinRot * texDataBase[1] ) + 0.5f;
                     rotTexData[1] = ( sinRot * texDataBase[0] ) - ( cosRot * texDataBase[1] ) + 0.5f;

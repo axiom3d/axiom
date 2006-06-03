@@ -1,6 +1,6 @@
 
 using System;
-using Axiom.MathLib;
+
 using Axiom;
 using DotNet3D.Math;
 

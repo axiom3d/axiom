@@ -37,7 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Axiom.MathLib;
+
+using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -87,7 +88,7 @@ namespace Axiom
         public virtual void SetBinding( short index, HardwareVertexBuffer buffer )
         {
             bindingMap[index] = buffer;
-            highIndex = (short)MathUtil.Max( highIndex, index + 1 );
+            highIndex = (short)Utility.Max( highIndex, index + 1 );
         }
 
         /// <summary>

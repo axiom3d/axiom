@@ -1,6 +1,0 @@
-obj\Debug\ResolveAssemblyReference.cache
-..\..\build\debug\Axiom3D\RealmForge.Utility.dll
-..\..\build\debug\Axiom3D\RealmForge.Utility.pdb
-..\..\build\debug\Axiom3D\RealmForge.Utility.xml
-obj\Debug\RealmForge.Utility.dll
-obj\Debug\RealmForge.Utility.pdb

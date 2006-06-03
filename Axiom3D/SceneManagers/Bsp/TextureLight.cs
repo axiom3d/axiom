@@ -38,7 +38,7 @@ using System;
 using System.Runtime.InteropServices;
 
 using Axiom;
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -163,16 +163,16 @@ namespace Axiom.SceneManagers.Bsp
                     break;
 
                 case LightType.Point:
-                    if ( MathUtil.Abs( lightDist ) < range )
+                    if ( Utility.Abs( lightDist ) < range )
                         affects = true;
                     break;
 
                 case LightType.Spotlight:
-                    if ( MathUtil.Abs( lightDist ) < range )
+                    if ( Utility.Abs( lightDist ) < range )
                     {
                         angle = faceGroup.plane.Normal.DotProduct( this.DerivedDirection );
                         if ( ( ( lightDist < 0 && angle > 0 ) || ( lightDist > 0 && angle < 0 ) ) &&
-                            MathUtil.Abs( angle ) >= MathUtil.Cos( this.spotOuter * 0.5f ) )
+                            Utility.Abs( angle ) >= Utility.Cos( new Real( this.spotOuter * 0.5f ) ) )
                             affects = true;
                     }
                     break;
@@ -210,7 +210,7 @@ namespace Axiom.SceneManagers.Bsp
             lightPos = this.DerivedPosition;
 
             float dist = plane.GetDistance( lightPos );
-            if ( MathUtil.Abs( dist ) < range )
+            if ( Utility.Abs( dist ) < range )
             {
                 // light is visible
 
@@ -224,7 +224,7 @@ namespace Axiom.SceneManagers.Bsp
 
                 float lightRadiusSqr = range * range;
                 float relRadiusSqr = lightRadiusSqr - dist * dist;
-                float relRadius = MathUtil.Sqrt( relRadiusSqr );
+                float relRadius = Utility.Sqrt( relRadiusSqr );
                 float scale = 0.5f / relRadius;
 
                 float brightness = relRadiusSqr / lightRadiusSqr;
@@ -265,7 +265,7 @@ namespace Axiom.SceneManagers.Bsp
             texCoors = new Vector2[vertices.Length];
             colors = new ColorEx[vertices.Length];
 
-            float angle = MathUtil.Abs( plane.Normal.DotProduct( this.DerivedDirection ) );
+            float angle = Utility.Abs( plane.Normal.DotProduct( this.DerivedDirection ) );
 
             ColorEx lightCol = new ColorEx( textureColor.a * angle,
                 textureColor.r, textureColor.g, textureColor.b );
@@ -321,7 +321,7 @@ namespace Axiom.SceneManagers.Bsp
             {
                 diffuse = value;
 
-                float maxParam = MathUtil.Max( MathUtil.Max( diffuse.r, diffuse.g ), diffuse.b );
+                float maxParam = Utility.Max( Utility.Max( diffuse.r, diffuse.g ), diffuse.b );
                 if ( maxParam > 0f )
                 {
                     float inv = 1 / maxParam;

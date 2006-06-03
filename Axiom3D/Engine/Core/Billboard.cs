@@ -34,7 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -212,11 +212,13 @@ namespace Axiom
         {
             get
             {
-                return rotationInRadians * MathUtil.DEGREES_PER_RADIAN;
+                return (Real)(new Radian( (Real)rotationInRadians ).InDegrees);
+                //rotationInRadians * MathUtil.DEGREES_PER_RADIAN;
             }
             set
             {
-                rotationInRadians = value * MathUtil.RADIANS_PER_DEGREE;
+                //rotationInRadians = value * MathUtil.RADIANS_PER_DEGREE;
+                rotationInRadians = (Real)(new Degree( (Real)value ).InRadians);
                 // Hmmm, we don't have a NotifyBillboardTextureCoordsModified?
                 if ( rotationInRadians != 0 )
                 {

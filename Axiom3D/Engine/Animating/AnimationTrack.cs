@@ -37,7 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -631,9 +631,9 @@ namespace Axiom
         protected void BuildInterpolationSplines()
         {
             // dont calculate on the fly, wait till the end when we do it manually
-            positionSpline.AutoCalculate = false;
-            rotationalSpline.AutoCalculate = false;
-            scaleSpline.AutoCalculate = false;
+            positionSpline.AutoCalculateTangents = false;
+            rotationalSpline.AutoCalculateTangents = false;
+            scaleSpline.AutoCalculateTangents = false;
 
             positionSpline.Clear();
             rotationalSpline.Clear();

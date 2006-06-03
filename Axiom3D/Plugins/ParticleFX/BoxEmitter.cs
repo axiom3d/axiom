@@ -37,7 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 
 using Axiom;
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -59,9 +59,9 @@ namespace Axiom.ParticleFX
         {
             Vector3 xOff, yOff, zOff;
 
-            xOff = MathUtil.SymmetricRandom() * xRange;
-            yOff = MathUtil.SymmetricRandom() * yRange;
-            zOff = MathUtil.SymmetricRandom() * zRange;
+            xOff = Utility.SymmetricRandom() * xRange;
+            yOff = Utility.SymmetricRandom() * yRange;
+            zOff = Utility.SymmetricRandom() * zRange;
 
             particle.Position = position + xOff + yOff + zOff;
 

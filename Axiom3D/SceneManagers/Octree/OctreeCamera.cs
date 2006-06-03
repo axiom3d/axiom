@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using Axiom;
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -184,7 +184,7 @@ namespace Axiom.SceneManagers.Octree
             Plane p2 = planes[(int)pp1];
             Plane p3 = planes[(int)pp1];
 
-            Matrix3 mdet;
+            Matrix3 mdet = new Matrix3();
 
             mdet[0,0] = p1.Normal.x;
             mdet[0,1] = p1.Normal.y;

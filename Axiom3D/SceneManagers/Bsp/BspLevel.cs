@@ -41,7 +41,7 @@ using System.Collections.Specialized;
 using System.Runtime.InteropServices;
 
 using Axiom;
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -864,9 +864,9 @@ namespace Axiom.SceneManagers.Bsp
                         vp.position = origin;
 
                         if ( q3lvl.Options.setYAxisUp )
-                            vp.orientation = Quaternion.FromAngleAxis( (Real)MathUtil.DegreesToRadians( angle ), Vector3.UnitY );
+                            vp.orientation = Quaternion.FromAngleAxis( (Real)( new Degree( angle ).InRadians ), Vector3.UnitY ); //MathUtil.DegreesToRadians( angle )
                         else
-                            vp.orientation = Quaternion.FromAngleAxis( (Real)MathUtil.DegreesToRadians( angle ), Vector3.UnitZ );
+                            vp.orientation = Quaternion.FromAngleAxis( (Real)( new Degree( angle ).InRadians ), Vector3.UnitZ ); //MathUtil.DegreesToRadians( angle )
 
                         playerStarts.Add( vp );
                     }
@@ -904,7 +904,7 @@ namespace Axiom.SceneManagers.Bsp
                 float dist = node.GetDistance( pos );
 
                 //CHECK: treat obj as bounding box?
-                if ( MathUtil.Abs( dist ) < obj.BoundingRadius )
+                if ( Utility.Abs( dist ) < obj.BoundingRadius )
                 {
                     // Bounding sphere crosses the plane, do both.
                     TagNodesWithObject( node.BackNode, obj, pos );

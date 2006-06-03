@@ -42,8 +42,8 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 
 using Axiom;
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
+
+
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -265,7 +265,7 @@ namespace Axiom.SceneManagers.Bsp
             else
             {
                 if ( random )
-                    return level.PlayerStarts[(int)( MathUtil.UnitRandom() * level.PlayerStarts.Length )];
+                    return level.PlayerStarts[ (int)( Utility.UnitRandom() * level.PlayerStarts.Length ) ];
                 else
                     return level.PlayerStarts[0];
 
@@ -1257,7 +1257,7 @@ namespace Axiom.SceneManagers.Bsp
                         float angle = faceGrp[i].plane.Normal.DotProduct( camDir );
 
                         if ( ( ( dist < 0 && angle > 0 ) || ( dist > 0 && angle < 0 ) ) &&
-                            MathUtil.Abs( angle ) >= MathUtil.Cos( shadowCam.FOV * 0.5f ) )
+                            Utility.Abs( angle ) >= Utility.Cos( new Real( shadowCam.FOV * 0.5f ) ) )
                         {
                             // face is in shadow's frustum
 
@@ -1529,7 +1529,7 @@ namespace Axiom.SceneManagers.Bsp
                 return;
             }
 
-            IntersectResult result = tracingRay.Intersects( node.SplittingPlane );
+            IntersectionResult result = tracingRay.Intersects( node.SplittingPlane );
             if ( result.Hit )
             {
                 if ( result.Distance < maxDistance )
@@ -1568,7 +1568,7 @@ namespace Axiom.SceneManagers.Bsp
                     continue;
 
                 //Test object as bounding box
-                IntersectResult result = tracingRay.Intersects( obj.GetWorldBoundingBox() );
+                IntersectionResult result = tracingRay.Intersects( obj.GetWorldBoundingBox() );
                 // if the result came back positive and intersection point is inside
                 // the node, fire the event handler
                 if ( result.Hit && result.Distance <= maxDistance )
@@ -1591,7 +1591,7 @@ namespace Axiom.SceneManagers.Bsp
 
                 boundedVolume.planes = brush.Planes;
 
-                IntersectResult result = tracingRay.Intersects( boundedVolume );
+                IntersectionResult result = tracingRay.Intersects( boundedVolume );
                 // if the result came back positive and intersection point is inside
                 // the node, check if this brush is closer
                 if ( result.Hit && result.Distance <= maxDistance )
@@ -1655,7 +1655,7 @@ namespace Axiom.SceneManagers.Bsp
 
             float distance = node.GetDistance( sphere.Center );
 
-            if ( MathUtil.Abs( distance ) < sphere.Radius )
+            if ( Utility.Abs( distance ) < sphere.Radius )
             {
                 // Sphere crosses the plane, do both.
                 ProcessNode( node.BackNode );

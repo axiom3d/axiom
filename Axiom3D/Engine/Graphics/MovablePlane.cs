@@ -36,7 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using Axiom;
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -201,7 +201,7 @@ namespace Axiom
 
         #region SceneObject Members
 
-        public override Axiom.MathLib.AxisAlignedBox BoundingBox
+        public override AxisAlignedBox BoundingBox
         {
             get
             {

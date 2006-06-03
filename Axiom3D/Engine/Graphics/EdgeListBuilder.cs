@@ -39,8 +39,8 @@ using System.Collections;
 using System.Diagnostics;
 
 using Axiom;
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
+
+
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -469,7 +469,7 @@ namespace Axiom
 
                     // Calculate triangle normal (NB will require recalculation for 
                     // skeletally animated meshes)
-                    tri.normal = MathUtil.CalculateFaceNormal( v[0], v[1], v[2] );
+                    tri.normal = Utility.CalculateFaceNormal( v[ 0 ], v[ 1 ], v[ 2 ] );
 
                     // Add triangle to list
                     edgeData.triangles.Add( tri );
@@ -636,9 +636,15 @@ namespace Axiom
             {
                 CommonVertex commonVec = (CommonVertex)vertices[index];
 
-                if ( MathUtil.FloatEqual( vec.x, commonVec.position.x, 1e-04f ) &&
-                    MathUtil.FloatEqual( vec.y, commonVec.position.y, 1e-04f ) &&
-                    MathUtil.FloatEqual( vec.z, commonVec.position.z, 1e-04f ) &&
+                //if ( MathUtil.FloatEqual( vec.x, commonVec.position.x, 1e-04f ) &&
+                //    MathUtil.FloatEqual( vec.y, commonVec.position.y, 1e-04f ) &&
+                //    MathUtil.FloatEqual( vec.z, commonVec.position.z, 1e-04f ) &&
+                //    ( commonVec.vertexSet == vertexSet || weldVerticesAcrossVertexSets ) &&
+                //    ( commonVec.indexSet == indexSet || weldVerticesAcrossIndexSets ) &&
+                //    ( commonVec.originalIndex == originalIndex || weldVertices ) )
+                if ( vec.x.Equals( commonVec.position.x, 1e-04f ) &&
+                     vec.y.Equals( commonVec.position.y, 1e-04f ) &&
+                     vec.z.Equals( commonVec.position.z, 1e-04f ) &&
                     ( commonVec.vertexSet == vertexSet || weldVerticesAcrossVertexSets ) &&
                     ( commonVec.indexSet == indexSet || weldVerticesAcrossIndexSets ) &&
                     ( commonVec.originalIndex == originalIndex || weldVertices ) )

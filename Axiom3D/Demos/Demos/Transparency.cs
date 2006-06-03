@@ -1,6 +1,6 @@
 
 using Axiom;
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 
 namespace Axiom.Demos
@@ -43,9 +43,9 @@ namespace Axiom.Demos
 
                 // calculate a random position
                 Vector3 nodePosition = new Vector3();
-                nodePosition.x = MathUtil.SymmetricRandom() * 500.0f;
-                nodePosition.y = MathUtil.SymmetricRandom() * 500.0f;
-                nodePosition.z = MathUtil.SymmetricRandom() * 500.0f;
+                nodePosition.x = Utility.SymmetricRandom() * 500.0f;
+                nodePosition.y = Utility.SymmetricRandom() * 500.0f;
+                nodePosition.z = Utility.SymmetricRandom() * 500.0f;
 
                 // set the new position
                 node.Position = nodePosition;
