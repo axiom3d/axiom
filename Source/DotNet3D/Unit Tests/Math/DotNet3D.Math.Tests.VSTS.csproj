@@ -36,7 +36,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Matrix3Fixture.cs" />
+    <Compile Include="PoorlyBehavedStaticInitializationFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuaternionFixture.cs" />
     <Compile Include="RealFixture.cs" />
     <Compile Include="Vector2Fixture.cs" />
   </ItemGroup>

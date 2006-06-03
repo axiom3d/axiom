@@ -4,7 +4,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{0954C709-1A8D-4A43-918B-020B473E70F9}</ProjectGuid>
+    <ProjectGuid>{2E553F58-388B-4975-8BF5-C1C2A8CD02BF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DotNet3D.Math</RootNamespace>
@@ -33,6 +33,10 @@
     <DocumentationFile>..\..\build\net-2.0.win32\DotNet3D-0.01-release\lib\DotNet3D.Math.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\WINDOWS\assembly\GAC_MSIL\Microsoft.VisualStudio.QualityTools.UnitTestFramework\8.0.0.0__b03f5f7f11d50a3a\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
@@ -60,6 +64,7 @@
     <Compile Include="Radian.cs" />
     <Compile Include="Ray.cs" />
     <Compile Include="Real.cs" />
+    <Compile Include="RFMatrix3.cs" />
     <Compile Include="RotationalSpline.cs" />
     <Compile Include="Sphere.cs" />
     <Compile Include="Tuple.cs" />

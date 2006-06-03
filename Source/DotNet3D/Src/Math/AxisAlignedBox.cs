@@ -49,9 +49,6 @@ namespace DotNet3D.Math
     {
         #region Fields and Properties
 
-        #region Null Static Property
-
-        private static readonly AxisAlignedBox _nullBox = new AxisAlignedBox();
         /// <summary>
         ///		Returns a null box
         /// </summary>
@@ -59,11 +56,9 @@ namespace DotNet3D.Math
         {
             get
             {
-                return _nullBox;
+                return new AxisAlignedBox();
             }
         }
-
-        #endregion Null Static Property
 			
         /// <summary>
         /// 

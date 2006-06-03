@@ -73,7 +73,7 @@ namespace DotNet3D.Math.Tests
 	/// many places Utility.PI is accessed, which is not unexpected given
 	/// we are dealing with static variables.
     ///</summary>
-    [TestFixture]
+    [TestClass]
     public class PoorlyBehavedStaticInitializationFixture
     {
 		// Uncomment only this version of the statement to cause the test(s) to fail.
