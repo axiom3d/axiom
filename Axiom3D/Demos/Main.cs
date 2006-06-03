@@ -136,10 +136,9 @@ namespace Axiom.Demos
 
                     while ( next != "exit" )
                     {
-                        using ( Renderer mainDemo = new Renderer() )
+                        using ( DemoList mainDemo = new DemoList() )
                         {
-                            //next = mainDemo.Start( window );
-                            mainDemo.Start( window );
+                            next = mainDemo.Start( window );
                         }
 
                         if ( next != "exit" )
