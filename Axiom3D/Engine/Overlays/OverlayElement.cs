@@ -40,7 +40,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Drawing;
 
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 
 #endregion Namespace Declarations

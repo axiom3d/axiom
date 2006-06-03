@@ -38,7 +38,7 @@ using System;
 using System.Collections;
 using System.Runtime.InteropServices;
 
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 
 #endregion Namespace Declarations

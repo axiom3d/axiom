@@ -40,7 +40,7 @@ using System.Collections;
 using System.Runtime.InteropServices;
 
 using Axiom;
-using Axiom.MathLib;
+
 using Axiom.SceneManagers.Bsp.Collections;
 using DotNet3D.Math;
 

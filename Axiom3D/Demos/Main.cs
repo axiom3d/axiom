@@ -28,8 +28,6 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 
-using RealmForge;
-
 using Axiom;
 
 #endregion Namespace Declarations
@@ -138,9 +136,10 @@ namespace Axiom.Demos
 
                     while ( next != "exit" )
                     {
-                        using ( DemoList mainDemo = new DemoList() )
+                        using ( Renderer mainDemo = new Renderer() )
                         {
-                            next = mainDemo.Start( window );
+                            //next = mainDemo.Start( window );
+                            mainDemo.Start( window );
                         }
 
                         if ( next != "exit" )

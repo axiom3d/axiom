@@ -37,8 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
+
+
 using DotNet3D.Math;
 using DotNet3D.Math.Collections;
 
@@ -185,7 +185,8 @@ namespace Axiom
             orientation = Quaternion.Identity;
             derivedOrientation = Quaternion.Identity;
 
-            fieldOfView = MathUtil.RadiansToDegrees( MathUtil.PI / 4.0f );
+//            fieldOfView = MathUtil.RadiansToDegrees( MathUtil.PI / 4.0f );
+            fieldOfView = (Real)(new Radian( new Real( Utility.PI / 4.0f ) ).InDegrees);
             nearDistance = 100.0f;
             farDistance = 100000.0f;
             aspectRatio = 1.33333333333333f;
@@ -316,7 +317,7 @@ namespace Axiom
                 {
 
                     reflectionPlane = linkedReflectionPlane.DerivedPlane;
-                    reflectionMatrix = MathUtil.BuildReflectionMatrix( reflectionPlane );
+                    reflectionMatrix = Utility.BuildReflectionMatrix( reflectionPlane );
                     lastLinkedReflectionPlane = linkedReflectionPlane.DerivedPlane;
                     returnVal = true;
                 }
@@ -842,7 +843,7 @@ namespace Axiom
         /// <param name="degrees"></param>
         public void Rotate( Vector3 axis, float degrees )
         {
-            Quaternion q = Quaternion.FromAngleAxis( (Real)MathUtil.DegreesToRadians( degrees ), axis );
+            Quaternion q = Quaternion.FromAngleAxis( (Real)(new Degree( (Real)degrees ).InRadians), axis );
             Rotate( q );
         }
 
@@ -967,8 +968,9 @@ namespace Axiom
                 return;
             }
 
-            float thetaY = MathUtil.DegreesToRadians( fieldOfView * 0.5f );
-            float tanThetaY = MathUtil.Tan( thetaY );
+            float thetaY = (Real)( new Degree( new Real( fieldOfView * 0.5f ) ).InRadians );
+            //MathUtil.DegreesToRadians( fieldOfView * 0.5f );
+            float tanThetaY = Utility.Tan( (Real)thetaY );
             float tanThetaX = tanThetaY * aspectRatio;
 
             float vpTop = tanThetaY * nearDistance;
@@ -1044,7 +1046,8 @@ namespace Axiom
             float centeredScreenX = ( screenX - 0.5f );
             float centeredScreenY = ( 0.5f - screenY );
 
-            float normalizedSlope = MathUtil.Tan( MathUtil.DegreesToRadians( fieldOfView * 0.5f ) );
+            float normalizedSlope = Utility.Tan( (Real)(new Degree( new Real( fieldOfView * 0.5f ) ).InRadians ) );
+            //MathUtil.DegreesToRadians( fieldOfView * 0.5f ) );
             float viewportYToWorldY = normalizedSlope * nearDistance * 2;
             float viewportXToWorldX = viewportYToWorldY * aspectRatio;
 

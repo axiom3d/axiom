@@ -42,7 +42,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using Axiom;
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 using FogMode = Axiom.FogMode;
 using LightType = Axiom.LightType;
@@ -698,8 +698,9 @@ namespace Axiom.RenderSystems.DirectX9
         /// <returns></returns>
         public override Matrix4 MakeOrthoMatrix( float fov, float aspectRatio, float near, float far, bool forGpuPrograms )
         {
-            float thetaY = MathUtil.DegreesToRadians( fov / 2.0f );
-            float tanThetaY = MathUtil.Tan( thetaY );
+            float thetaY = (Real)( new Degree( new Real( fov / 2.0f ) ).InRadians );
+            //MathUtil.DegreesToRadians( fov / 2.0f );
+            float tanThetaY = Utility.Tan( (Real)thetaY );
             float tanThetaX = tanThetaY * aspectRatio;
 
             float halfW = tanThetaX * near;
@@ -740,8 +741,9 @@ namespace Axiom.RenderSystems.DirectX9
         /// <returns></returns>
         public override Matrix4 MakeProjectionMatrix( float fov, float aspectRatio, float near, float far, bool forGpuProgram )
         {
-            float theta = MathUtil.DegreesToRadians( fov * 0.5f );
-            float h = 1 / MathUtil.Tan( theta );
+            float theta = (Real)( new Degree( new Real( fov * 0.5f ) ).InRadians );
+            //MathUtil.DegreesToRadians( fov * 0.5f );
+            float h = 1 / Utility.Tan( (Real)theta );
             float w = h / aspectRatio;
             float q = 0;
             float qn = 0;
@@ -1232,7 +1234,7 @@ namespace Axiom.RenderSystems.DirectX9
                 SetD3DLight( i, null );
             }
 
-            numCurrentLights = (int)MathUtil.Min( limit, lightList.Count );
+            numCurrentLights = (int)Utility.Min( limit, lightList.Count );
         }
 
         public override int ConvertColor( ColorEx color )
@@ -1392,8 +1394,10 @@ namespace Axiom.RenderSystems.DirectX9
                     case LightType.Spotlight:
                         device.Lights[ index ].LightType = Microsoft.DirectX.Direct3D.LightType.Spot;
                         device.Lights[ index ].Falloff = light.SpotlightFalloff;
-                        device.Lights[ index ].InnerConeAngle = MathUtil.DegreesToRadians( light.SpotlightInnerAngle );
-                        device.Lights[ index ].OuterConeAngle = MathUtil.DegreesToRadians( light.SpotlightOuterAngle );
+                        device.Lights[ index ].InnerConeAngle = (Real)( new Degree( light.SpotlightInnerAngle ).InRadians );
+                        //MathUtil.DegreesToRadians( light.SpotlightInnerAngle );
+                        device.Lights[ index ].OuterConeAngle = (Real)( new Degree( light.SpotlightOuterAngle ).InRadians );
+                        //MathUtil.DegreesToRadians( light.SpotlightOuterAngle );
                         break;
                 } // switch
 
@@ -1433,7 +1437,7 @@ namespace Axiom.RenderSystems.DirectX9
         {
             ConfigOption optDevice = new ConfigOption( "Rendering Device", "", false );
             ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit colour", false );
-            ConfigOption optFullScreen = new ConfigOption( "Full Screen", "Yes", false );
+            ConfigOption optFullScreen = new ConfigOption( "Full Screen", "No", false );
             ConfigOption optVSync = new ConfigOption( "VSync", "No", false );
             ConfigOption optAA = new ConfigOption( "Anti aliasing", "None", false );
             ConfigOption optFPUMode = new ConfigOption( "Floating-point mode", "Fastest", false );

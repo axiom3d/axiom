@@ -38,8 +38,8 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
+
+
 using DotNet3D.Math;
 using DotNet3D.Math.Collections;
 
@@ -264,13 +264,13 @@ namespace Axiom
                 {
                     min.ToFloor( vec );
                     max.ToCeiling( vec );
-                    maxSqRadius = MathUtil.Max( vec.LengthSquared, maxSqRadius );
+                    maxSqRadius = Utility.Max( vec.LengthSquared, maxSqRadius );
                 }
             }
 
             // set the bounds of the patch
             aabb.SetExtents( min, max );
-            boundingSphereRadius = MathUtil.Sqrt( maxSqRadius );
+            boundingSphereRadius = Utility.Sqrt( maxSqRadius );
         }
 
         /// <summary>

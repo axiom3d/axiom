@@ -5,7 +5,7 @@ using System.IO;
 using System.Reflection;
 
 using Axiom.Demos;
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 
 namespace Axiom.Demos
@@ -74,7 +74,6 @@ namespace Axiom.Demos
             }
             catch ( Exception ex )
             {
-                RealmForge.Log.Write( ex );
                 // try logging the error here first, before Root is disposed of 
                 if ( LogManager.Instance != null )
                 {

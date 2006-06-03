@@ -41,7 +41,7 @@ using System.IO;
 
 #endregion Namespace Declarations
 			
-using Axiom.MathLib;
+
 using System.Collections.Generic;
 
 namespace Axiom

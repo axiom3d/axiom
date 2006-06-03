@@ -38,7 +38,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -337,7 +337,7 @@ namespace Axiom
                 if ( parentNode != null )
                 {
                     Vector3 s = parentNode.DerivedScale;
-                    radius *= MathUtil.Max( s.x, MathUtil.Max( s.y, s.z ) );
+                    radius *= Utility.Max( s.x, Utility.Max( s.y, s.z ) );
                 }
 
                 return radius;
@@ -914,10 +914,10 @@ namespace Axiom
                 meshLodIndex = mesh.GetLodIndexSquaredDepth( temp );
 
                 // Apply maximum detail restriction (remember lower = higher detail)
-                meshLodIndex = (int)MathUtil.Max( maxMeshLodIndex, meshLodIndex );
+                meshLodIndex = (int)Utility.Max( maxMeshLodIndex, meshLodIndex );
 
                 // Apply minimum detail restriction (remember higher = lower detail)
-                meshLodIndex = (int)MathUtil.Min( minMeshLodIndex, meshLodIndex );
+                meshLodIndex = (int)Utility.Min( minMeshLodIndex, meshLodIndex );
 
                 // now do material LOD
                 // adjust this depth by the entity bias factor
@@ -935,9 +935,9 @@ namespace Axiom
                     int idx = subEnt.Material.GetLodIndexSquaredDepth( temp );
 
                     // Apply maximum detail restriction (remember lower = higher detail)
-                    idx = (int)MathUtil.Max( maxMaterialLodIndex, idx );
+                    idx = (int)Utility.Max( maxMaterialLodIndex, idx );
                     // Apply minimum detail restriction (remember higher = lower detail)
-                    subEnt.materialLodIndex = (int)MathUtil.Min( minMaterialLodIndex, idx );
+                    subEnt.materialLodIndex = (int)Utility.Min( minMaterialLodIndex, idx );
                 }
             }
 

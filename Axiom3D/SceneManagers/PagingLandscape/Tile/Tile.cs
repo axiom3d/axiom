@@ -39,7 +39,7 @@ using System.Collections;
 using System.Diagnostics;
 
 using Axiom;
-using Axiom.MathLib;
+
 using Axiom.SceneManagers.PagingLandscape;
 using Axiom.SceneManagers.PagingLandscape.Tile;
 using Axiom.SceneManagers.PagingLandscape.Page;
@@ -542,7 +542,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
         /// Gets all the patches within an AABB in world coordinates as GeometryData structs
         public virtual void GetRenderOpsInBox( AxisAlignedBox box, ArrayList opList )
         {
-            if ( MathUtil.Intersects( box, bounds ) != Intersection.None )
+            if ( Intersection.Test( box, bounds ) != Intersection.Result.None )
             {
                 RenderOperation rend = new RenderOperation();
                 renderable.GetRenderOperation( rend );

@@ -42,7 +42,7 @@ using System.Reflection;
 
 #endregion Namespace Declarations
 			
-using Axiom.MathLib;
+
 
 namespace Axiom
 {

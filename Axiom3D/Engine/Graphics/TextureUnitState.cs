@@ -39,7 +39,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
 
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -1734,9 +1734,10 @@ namespace Axiom
             {
                 Matrix3 rotation = Matrix3.Identity;
 
-                float theta = MathUtil.DegreesToRadians( rotate );
-                float cosTheta = MathUtil.Cos( theta );
-                float sinTheta = MathUtil.Sin( theta );
+                float theta = (Real)( new Degree( rotate ).InRadians );
+                //MathUtil.DegreesToRadians( rotate );
+                float cosTheta = Utility.Cos( (Real)theta );
+                float sinTheta = Utility.Sin( (Real)theta );
 
                 // set the rotation portion of the matrix
                 rotation[0,0] = cosTheta;

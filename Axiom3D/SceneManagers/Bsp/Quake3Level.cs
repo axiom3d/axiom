@@ -32,7 +32,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 using Axiom;
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 
 namespace Axiom.SceneManagers.Bsp

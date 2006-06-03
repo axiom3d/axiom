@@ -36,7 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.IO;
-using Axiom.MathLib.Collections;
+
 using Tao.DevIl;
 
 #endregion Namespace Declarations
@@ -80,7 +80,7 @@ namespace Axiom
             input.Read( buffer, 0, buffer.Length );
 
             ImageData data = (ImageData)codecData;
-            Pair formatBpp = ConvertToILFormat( data.format );
+            Pair<int> formatBpp = ConvertToILFormat( data.format );
 
             int format = (int)formatBpp.first;
             byte bytesPerPixel = (byte)( (int)formatBpp.second );
@@ -187,32 +187,32 @@ namespace Axiom
         /// </summary>
         /// <param name="format"></param>
         /// <returns></returns>
-        public Pair ConvertToILFormat( PixelFormat format )
+        public Pair<int> ConvertToILFormat( PixelFormat format )
         {
             switch ( format )
             {
                 case PixelFormat.L8:
                 case PixelFormat.A8:
-                    return new Pair( Il.IL_LUMINANCE, 1 );
+                    return new Pair<int>( Il.IL_LUMINANCE, 1 );
                 case PixelFormat.R5G6B5:
-                    return new Pair( Il.IL_RGB, 2 );
+                    return new Pair<int>( Il.IL_RGB, 2 );
                 case PixelFormat.B5G6R5:
-                    return new Pair( Il.IL_BGR, 2 );
+                    return new Pair<int>( Il.IL_BGR, 2 );
                 case PixelFormat.A4R4G4B4:
-                    return new Pair( Il.IL_RGBA, 2 );
+                    return new Pair<int>( Il.IL_RGBA, 2 );
                 case PixelFormat.B4G4R4A4:
-                    return new Pair( Il.IL_BGRA, 2 );
+                    return new Pair<int>( Il.IL_BGRA, 2 );
                 case PixelFormat.R8G8B8:
-                    return new Pair( Il.IL_RGB, 3 );
+                    return new Pair<int>( Il.IL_RGB, 3 );
                 case PixelFormat.B8G8R8:
-                    return new Pair( Il.IL_BGR, 3 );
+                    return new Pair<int>( Il.IL_BGR, 3 );
                 case PixelFormat.A8R8G8B8:
-                    return new Pair( Il.IL_RGBA, 4 );
+                    return new Pair<int>( Il.IL_RGBA, 4 );
                 case PixelFormat.B8G8R8A8:
-                    return new Pair( Il.IL_BGRA, 4 );
+                    return new Pair<int>( Il.IL_BGRA, 4 );
             }
 
-            return new Pair( -1, -1 );
+            return new Pair<int>( -1, -1 );
         }
 
         /// <summary>

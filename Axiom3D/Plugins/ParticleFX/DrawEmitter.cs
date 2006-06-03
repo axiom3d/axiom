@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using Axiom.MathLib;
+
 using Axiom;
 using DotNet3D.Math;
 
@@ -73,9 +73,9 @@ namespace Axiom.ParticleFX
 
             Vector3 pos = new Vector3();
 
-            pos.x = MathUtil.SymmetricRandom() * distance;
-            pos.y = MathUtil.SymmetricRandom() * distance;
-            pos.z = MathUtil.SymmetricRandom() * distance;
+            pos.x = Utility.SymmetricRandom() * distance;
+            pos.y = Utility.SymmetricRandom() * distance;
+            pos.z = Utility.SymmetricRandom() * distance;
 
             // point emitter emits starting from its own position
             particle.Position = pos + particle.ParentSet.WorldPosition;

@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 using Axiom;
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 
 namespace Axiom.Demos

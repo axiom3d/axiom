@@ -37,7 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Axiom.MathLib.Collections;
+
 
 #endregion Namespace Declarations
 			
@@ -269,7 +269,7 @@ namespace Axiom {
                 get {
                     object key = map.buckets.GetKey(bucketIndex);
                     object val = currentBucket[bucketPos];
-                    return new Pair(key, val);
+                    return new Pair<object>(key, val);
                 }
             }
 

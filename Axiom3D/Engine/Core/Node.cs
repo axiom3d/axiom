@@ -38,7 +38,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom.MathLib;
+
 using DotNet3D.Math;
 
 #endregion Namespace Declarations
@@ -500,7 +500,7 @@ namespace Axiom
         /// </summary>
         public virtual void Rotate( Vector3 axis, float degrees, TransformSpace relativeTo )
         {
-            Quaternion q = Quaternion.FromAngleAxis( (Real)MathUtil.DegreesToRadians( degrees ), axis );
+            Quaternion q = Quaternion.FromAngleAxis( new Degree( (Real) degrees), axis );
             Rotate( q, relativeTo );
         }
 

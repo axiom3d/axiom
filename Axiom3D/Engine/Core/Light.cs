@@ -36,9 +36,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
+
+
 using DotNet3D.Math;
+using DotNet3D.Math.Collections;
 
 #endregion Namespace Declarations
 			
