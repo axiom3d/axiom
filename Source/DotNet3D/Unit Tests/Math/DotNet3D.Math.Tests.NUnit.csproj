@@ -39,6 +39,7 @@
   <Target Name="AfterBuild">
   </Target>
   <ItemGroup>
+    <Compile Include="Matrix3Fixture.cs" />
     <Compile Include="PoorlyBehavedStaticInitializationFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuaternionFixture.cs" />
