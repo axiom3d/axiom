@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,12 +24,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom.MathLib;
 
+using DotNet3D.Math;
+
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     #region Delegates
@@ -156,7 +169,7 @@ namespace Axiom
             // initialize objects
             orientation = initialOrientation = derivedOrientation = Quaternion.Identity;
             position = initialPosition = derivedPosition = Vector3.Zero;
-            scale = initialScale = derivedScale = Vector3.UnitScale;
+            scale = initialScale = derivedScale = Vector3.Unit;
             cachedTransform = Matrix4.Identity;
 
             inheritsScale = true;
@@ -180,7 +193,7 @@ namespace Axiom
             // initialize objects
             orientation = initialOrientation = derivedOrientation = Quaternion.Identity;
             position = initialPosition = derivedPosition = Vector3.Zero;
-            scale = initialScale = derivedScale = Vector3.UnitScale;
+            scale = initialScale = derivedScale = Vector3.Unit;
             cachedTransform = Matrix4.Identity;
 
             inheritsScale = true;
@@ -487,7 +500,7 @@ namespace Axiom
         /// </summary>
         public virtual void Rotate( Vector3 axis, float degrees, TransformSpace relativeTo )
         {
-            Quaternion q = Quaternion.FromAngleAxis( MathUtil.DegreesToRadians( degrees ), axis );
+            Quaternion q = Quaternion.FromAngleAxis( new Degree( (Real) degrees), axis );
             Rotate( q, relativeTo );
         }
 
@@ -554,7 +567,7 @@ namespace Axiom
             accumAnimWeight = 0.0f;
             translationFromInitial = Vector3.Zero;
             rotationFromInitial = Quaternion.Identity;
-            scaleFromInitial = Vector3.UnitScale;
+            scaleFromInitial = Vector3.Unit;
 
             NeedUpdate();
         }
@@ -1007,9 +1020,9 @@ namespace Axiom
             Matrix3 scale3x3;
             rot3x3 = orientation.ToRotationMatrix();
             scale3x3 = Matrix3.Zero;
-            scale3x3.m00 = scale.x;
-            scale3x3.m11 = scale.y;
-            scale3x3.m22 = scale.z;
+            scale3x3[0,0] = scale.x;
+            scale3x3[1,1] = scale.y;
+            scale3x3[2,2] = scale.z;
 
             destMatrix = rot3x3 * scale3x3;
             destMatrix.Translation = position;
@@ -1051,9 +1064,9 @@ namespace Axiom
             Matrix3 rot3x3 = invRot.ToRotationMatrix();
             Matrix3 scale3x3 = Matrix3.Zero;
 
-            scale3x3.m00 = invScale.x;
-            scale3x3.m11 = invScale.y;
-            scale3x3.m22 = invScale.z;
+            scale3x3[0,0] = invScale.x;
+            scale3x3[1,1] = invScale.y;
+            scale3x3[2,2] = invScale.z;
 
             // Set up final matrix with scale & rotation
             destMatrix = scale3x3 * rot3x3;
@@ -1306,8 +1319,8 @@ namespace Axiom
                 rotationFromInitial = Quaternion.Slerp( factor, rotationFromInitial, rotate );
 
                 // For scale, find delta from 1.0, factor then add back before applying
-                Vector3 scaleDiff = ( scale - Vector3.UnitScale ) * factor;
-                scaleFromInitial = scaleFromInitial * ( scaleDiff + Vector3.UnitScale );
+                Vector3 scaleDiff = ( scale - Vector3.Unit ) * factor;
+                scaleFromInitial = scaleFromInitial * ( scaleDiff + Vector3.Unit );
                 accumAnimWeight += weight;
 
             }

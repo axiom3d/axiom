@@ -1,94 +1,139 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2E553F58-388B-4975-8BF5-C1C2A8CD02BF}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DotNet3D.Math</RootNamespace>
-    <AssemblyName>DotNet3D.Math</AssemblyName>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\build\net-2.0.win32\DotNet3D-0.01-dev\lib\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;_REAL_AS_SINGLE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <DocumentationFile>..\..\build\net-2.0.win32\DotNet3D-0.01-dev\lib\DotNet3D.Math.XML</DocumentationFile>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\build\net-2.0.win32\DotNet3D-0.01-release\lib\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\build\net-2.0.win32\DotNet3D-0.01-release\lib\DotNet3D.Math.XML</DocumentationFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\WINDOWS\assembly\GAC_MSIL\Microsoft.VisualStudio.QualityTools.UnitTestFramework\8.0.0.0__b03f5f7f11d50a3a\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.configuration" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\GlobalAssemblyInfo.cs">
-      <Link>GlobalAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="AxisAlignedBox.cs" />
-    <Compile Include="Degree.cs" />
-    <Compile Include="Intersection.cs" />
-    <Compile Include="Matrix3.cs" />
-    <Compile Include="Matrix4.cs" />
-    <Compile Include="Plane.cs" />
-    <Compile Include="PlaneBoundedVolume.cs" />
-    <Compile Include="PositionalSpline.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Quaternion.cs" />
-    <Compile Include="Radian.cs" />
-    <Compile Include="Ray.cs" />
-    <Compile Include="Real.cs" />
-    <Compile Include="RFMatrix3.cs" />
-    <Compile Include="RotationalSpline.cs" />
-    <Compile Include="Sphere.cs" />
-    <Compile Include="Tuple.cs" />
-    <Compile Include="Utility.cs" />
-    <Compile Include="Vector2.cs" />
-    <Compile Include="Vector3.cs" />
-    <Compile Include="Vector4.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DotNet3D.Math.cd" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  -->
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<ProjectType>Local</ProjectType>
+		<ProductVersion>8.0.50727</ProductVersion>
+		<SchemaVersion>2.0</SchemaVersion>
+		<ProjectGuid>{8763515F-082E-461C-AFE5-C7327DC7DC5F}</ProjectGuid>
+		<Configuration Condition = " '$(Configuration)' == '' ">Debug</Configuration>
+		<Platform Condition = " '$(Platform)' == '' ">AnyCPU</Platform>
+		<ApplicationIcon></ApplicationIcon>
+		<AssemblyKeyContainerName></AssemblyKeyContainerName>
+		<AssemblyName>DotNet3D.Math</AssemblyName>
+		<AssemblyOriginatorKeyFile></AssemblyOriginatorKeyFile>
+		<DefaultClientScript>JScript</DefaultClientScript>
+		<DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+		<DefaultTargetSchema>IE50</DefaultTargetSchema>
+		<DelaySign>false</DelaySign>
+		<OutputType>Library</OutputType>
+		<RootNamespace>DotNet3D.Math</RootNamespace>
+		<StartupObject></StartupObject>
+		<FileUpgradeFlags></FileUpgradeFlags>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<BaseAddress>285212672</BaseAddress>
+		<CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+		<ConfigurationOverrideFile></ConfigurationOverrideFile>
+		<DefineConstants>TRACE;DEBUG</DefineConstants>
+		<DocumentationFile>DotNet3D.Math.xml</DocumentationFile>
+		<DebugSymbols>True</DebugSymbols>
+		<FileAlignment>4096</FileAlignment>
+		<Optimize>False</Optimize>
+		<OutputPath>..\..\build\debug\Axiom3D\</OutputPath>
+		<RegisterForComInterop>False</RegisterForComInterop>
+		<RemoveIntegerChecks></RemoveIntegerChecks>
+		<TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+		<WarningLevel>4</WarningLevel>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<BaseAddress>285212672</BaseAddress>
+		<CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+		<ConfigurationOverrideFile></ConfigurationOverrideFile>
+		<DefineConstants>TRACE</DefineConstants>
+		<DocumentationFile>DotNet3D.Math.xml</DocumentationFile>
+		<DebugSymbols>False</DebugSymbols>
+		<FileAlignment>4096</FileAlignment>
+		<Optimize>True</Optimize>
+		<OutputPath>..\..\build\release\Axiom3D\</OutputPath>
+		<RegisterForComInterop>False</RegisterForComInterop>
+		<RemoveIntegerChecks></RemoveIntegerChecks>
+		<TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+		<WarningLevel>4</WarningLevel>
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include = "System">
+			<Name>System</Name>
+		</Reference>
+		<Reference Include = "System.Drawing">
+			<Name>System.Drawing</Name>
+		</Reference>
+		<Reference Include = "System.Xml">
+			<Name>System.Xml</Name>
+		</Reference>
+	</ItemGroup>
+	<ItemGroup>
+	</ItemGroup>
+	<ItemGroup>
+		<Compile  Include ="AxisAlignedBox.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile  Include ="Degree.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile  Include ="Intersection.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile  Include ="Matrix3.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile  Include ="Matrix4.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile  Include ="Plane.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile  Include ="PlaneBoundedVolume.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile  Include ="PositionalSpline.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile  Include ="Quaternion.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile  Include ="Radian.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile  Include ="Ray.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile  Include ="Real.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile  Include ="RotationalSpline.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile  Include ="Sphere.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile  Include ="Tuple.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile  Include ="Utility.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile  Include ="Vector2.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile  Include ="Vector3.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile  Include ="Vector4.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile  Include ="Properties\AssemblyInfo.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile  Include ="Properties\Resources.Designer.cs">
+			<SubType>Code</SubType>
+		</Compile>
+	</ItemGroup>
+	<Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+	<PropertyGroup>
+		<PreBuildEvent>
+		</PreBuildEvent>
+		<PostBuildEvent>
+		</PostBuildEvent>
+	</PropertyGroup>
 </Project>

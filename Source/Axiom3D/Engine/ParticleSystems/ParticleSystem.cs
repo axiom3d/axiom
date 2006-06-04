@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,13 +24,26 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
 
-using Axiom.MathLib;
 
+using DotNet3D.Math;
+
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     /// <summary>
@@ -237,8 +250,8 @@ namespace Axiom
                 {
                     // reverse transform corner
                     temp = invQ * ( corners[i] - t );
-                    min.Floor( temp );
-                    max.Ceil( temp );
+                    min.ToFloor( temp );
+                    max.ToCeiling( temp );
                 }
 
                 aab.SetExtents( min, max );
@@ -412,7 +425,7 @@ namespace Axiom
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="billboard"></param>
-        protected override void GenerateBillboardAxes( Camera camera, ref Axiom.MathLib.Vector3 x, ref Axiom.MathLib.Vector3 y, Billboard billboard )
+        protected override void GenerateBillboardAxes( Camera camera, ref Vector3 x, ref Vector3 y, Billboard billboard )
         {
             // Orientation different from BillboardSet
             // Billboards are in world space (to decouple them from emitters in node space)

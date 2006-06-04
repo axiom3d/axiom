@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,6 +24,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Data;
 using System.IO;
@@ -31,11 +41,13 @@ using System.Collections;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 
-using Axiom.Core;
 using Axiom;
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
 
+
+using DotNet3D.Math;
+
+#endregion Namespace Declarations
+			
 namespace Axiom.SceneManagers.Bsp
 {
     /// <summary>
@@ -253,7 +265,7 @@ namespace Axiom.SceneManagers.Bsp
             else
             {
                 if ( random )
-                    return level.PlayerStarts[(int)( MathUtil.UnitRandom() * level.PlayerStarts.Length )];
+                    return level.PlayerStarts[ (int)( Utility.UnitRandom() * level.PlayerStarts.Length ) ];
                 else
                     return level.PlayerStarts[0];
 
@@ -1245,7 +1257,7 @@ namespace Axiom.SceneManagers.Bsp
                         float angle = faceGrp[i].plane.Normal.DotProduct( camDir );
 
                         if ( ( ( dist < 0 && angle > 0 ) || ( dist > 0 && angle < 0 ) ) &&
-                            MathUtil.Abs( angle ) >= MathUtil.Cos( shadowCam.FOV * 0.5f ) )
+                            Utility.Abs( angle ) >= Utility.Cos( new Real( shadowCam.FOV * 0.5f ) ) )
                         {
                             // face is in shadow's frustum
 
@@ -1367,7 +1379,7 @@ namespace Axiom.SceneManagers.Bsp
             int numLeaves = lvl.NumLeaves;
 
             Bsp.Collections.Map objIntersections = new Bsp.Collections.Map();
-            PlaneBoundedVolume boundedVolume = new PlaneBoundedVolume( PlaneSide.Positive );
+            PlaneBoundedVolume boundedVolume = new PlaneBoundedVolume( Plane.Side.Positive );
 
             while ( ( numLeaves-- ) != 0 )
             {
@@ -1517,12 +1529,12 @@ namespace Axiom.SceneManagers.Bsp
                 return;
             }
 
-            IntersectResult result = tracingRay.Intersects( node.SplittingPlane );
+            IntersectionResult result = tracingRay.Intersects( node.SplittingPlane );
             if ( result.Hit )
             {
                 if ( result.Distance < maxDistance )
                 {
-                    if ( node.GetSide( tracingRay.Origin ) == PlaneSide.Negative )
+                    if ( node.GetSide( tracingRay.Origin ) == Plane.Side.Negative )
                     {
                         ProcessNode( node.BackNode, tracingRay, result.Distance, traceDistance );
                         Vector3 splitPoint = tracingRay.Origin + tracingRay.Direction * result.Distance;
@@ -1556,7 +1568,7 @@ namespace Axiom.SceneManagers.Bsp
                     continue;
 
                 //Test object as bounding box
-                IntersectResult result = tracingRay.Intersects( obj.GetWorldBoundingBox() );
+                IntersectionResult result = tracingRay.Intersects( obj.GetWorldBoundingBox() );
                 // if the result came back positive and intersection point is inside
                 // the node, fire the event handler
                 if ( result.Hit && result.Distance <= maxDistance )
@@ -1565,7 +1577,7 @@ namespace Axiom.SceneManagers.Bsp
                 }
             }
 
-            PlaneBoundedVolume boundedVolume = new PlaneBoundedVolume( PlaneSide.Positive );
+            PlaneBoundedVolume boundedVolume = new PlaneBoundedVolume( Plane.Side.Positive );
             BspBrush intersectBrush = null;
             float intersectBrushDist = float.PositiveInfinity;
 
@@ -1579,7 +1591,7 @@ namespace Axiom.SceneManagers.Bsp
 
                 boundedVolume.planes = brush.Planes;
 
-                IntersectResult result = tracingRay.Intersects( boundedVolume );
+                IntersectionResult result = tracingRay.Intersects( boundedVolume );
                 // if the result came back positive and intersection point is inside
                 // the node, check if this brush is closer
                 if ( result.Hit && result.Distance <= maxDistance )
@@ -1643,7 +1655,7 @@ namespace Axiom.SceneManagers.Bsp
 
             float distance = node.GetDistance( sphere.Center );
 
-            if ( MathUtil.Abs( distance ) < sphere.Radius )
+            if ( Utility.Abs( distance ) < sphere.Radius )
             {
                 // Sphere crosses the plane, do both.
                 ProcessNode( node.BackNode );
@@ -1685,7 +1697,7 @@ namespace Axiom.SceneManagers.Bsp
                 }
             }
 
-            PlaneBoundedVolume boundedVolume = new PlaneBoundedVolume( PlaneSide.Positive );
+            PlaneBoundedVolume boundedVolume = new PlaneBoundedVolume( Plane.Side.Positive );
 
             // Check ray against brushes
             for ( int brushPoint = 0; brushPoint < leaf.SolidBrushes.Length; brushPoint++ )

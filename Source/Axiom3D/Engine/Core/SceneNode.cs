@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,12 +24,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom.MathLib;
 
+using DotNet3D.Math;
+
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     /// <summary>
@@ -601,7 +614,7 @@ namespace Axiom
                 // update
                 worldAABB.Merge( obj.GetWorldBoundingBox( true ) );
 
-                radius = MathUtil.Max( obj.BoundingRadius, radius );
+                radius = Utility.Max( obj.BoundingRadius, radius );
             }
 
             // merge with Children
@@ -611,7 +624,7 @@ namespace Axiom
 
                 // merge our bounding box with that of the child node
                 worldAABB.Merge( child.worldAABB );
-                radius = MathUtil.Max( child.worldBoundingSphere.Radius, radius );
+                radius = Utility.Max( child.worldBoundingSphere.Radius, radius );
             }
             worldBoundingSphere.Radius = radius;
 
@@ -811,7 +824,7 @@ namespace Axiom
                 {
                     // Oops, a 180 degree turn (infinite possible rotation axes)
                     // Default to yaw i.e. use current UP
-                    rotationQuat = Quaternion.FromAngleAxis( MathUtil.PI, yAxis );
+                    rotationQuat = Quaternion.FromAngleAxis( Utility.PI, yAxis );
                 }
                 else
                 {

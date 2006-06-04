@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,13 +24,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
-// This is coming from RealmForge.Utility
-using Axiom.Core;
 
+
+using DotNet3D.Math;
+using DotNet3D.Math.Collections;
+
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     /// <summary>
@@ -518,7 +530,7 @@ namespace Axiom
             // First check if the light is close to the near plane, since
             // in this case we have to build a degenerate clip volume
             nearClipVolume.planes.Clear();
-            nearClipVolume.outside = PlaneSide.Negative;
+            nearClipVolume.outside = Plane.Side.Negative;
 
             // Homogenous position
             Vector4 lightPos = GetAs4DVector();
@@ -532,7 +544,7 @@ namespace Axiom
             Matrix4 eyeToWorld = camera.ViewMatrix.Inverse();
 
             // Find distance to light, project onto -Z axis
-            float d = eyeSpaceLight.Dot( new Vector4( 0, 0, -1, -n ) );
+            float d = eyeSpaceLight.DotProduct( new Vector4( 0, 0, -1, -n ) );
 
             if ( d > THRESHOLD || d < -THRESHOLD )
             {
@@ -649,10 +661,10 @@ namespace Axiom
 
                 Plane plane = camera[frustumPlane];
 
-                Vector4 planeVec = new Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D );
+                Vector4 planeVec = new Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.Distance );
 
                 // planes face inwards, we need to know if light is on negative side
-                float d = planeVec.Dot( lightPos );
+                float d = planeVec.DotProduct( lightPos );
 
                 if ( d < -1e-06f )
                 {
@@ -726,7 +738,7 @@ namespace Axiom
 
                     // Now do the near plane (this is the plane of the side we're 
                     // talking about, with the normal inverted (d is already interpreted as -ve)
-                    vol.planes.Add( new Plane( -plane.Normal, plane.D ) );
+                    vol.planes.Add( new Plane( -plane.Normal, plane.Distance ) );
 
                     // Finally, for a point/spot light we can add a sixth plane
                     // This prevents false positives from behind the light

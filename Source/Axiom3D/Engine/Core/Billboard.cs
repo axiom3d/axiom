@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,11 +24,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
-using Axiom.MathLib;
-// This is coming from RealmForge.Utility
-using Axiom.Core;
+
+using DotNet3D.Math;
 
 #endregion Namespace Declarations
 
@@ -205,11 +212,13 @@ namespace Axiom
         {
             get
             {
-                return rotationInRadians * MathUtil.DEGREES_PER_RADIAN;
+                return (Real)(new Radian( (Real)rotationInRadians ).InDegrees);
+                //rotationInRadians * MathUtil.DEGREES_PER_RADIAN;
             }
             set
             {
-                rotationInRadians = value * MathUtil.RADIANS_PER_DEGREE;
+                //rotationInRadians = value * MathUtil.RADIANS_PER_DEGREE;
+                rotationInRadians = (Real)(new Degree( (Real)value ).InRadians);
                 // Hmmm, we don't have a NotifyBillboardTextureCoordsModified?
                 if ( rotationInRadians != 0 )
                 {

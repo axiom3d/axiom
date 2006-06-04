@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,21 +24,27 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Diagnostics;
 
-using Axiom.Core;
-
 using Axiom;
-using Axiom.MathLib;
+
 using Axiom.RenderSystems.OpenGL.ARB;
 using Axiom.RenderSystems.OpenGL.Nvidia;
+using DotNet3D.Math;
 using ATIFragmentShaderFactory = Axiom.RenderSystems.OpenGL.ATI.ATIFragmentShaderFactory;
 
 using Tao.OpenGl;
-
 
 #endregion Namespace Declarations
 
@@ -455,8 +461,9 @@ namespace Axiom.RenderSystems.OpenGL
 
         public override Matrix4 MakeOrthoMatrix( float fov, float aspectRatio, float near, float far, bool forGpuPrograms )
         {
-            float thetaY = MathUtil.DegreesToRadians( fov / 2.0f );
-            float tanThetaY = MathUtil.Tan( thetaY );
+            float thetaY = (Real)( new Degree( new Real( fov / 2.0f ) ).InRadians );
+            //MathUtil.DegreesToRadians( fov / 2.0f );
+            float tanThetaY = Utility.Tan( (Real)thetaY );
             float tanThetaX = tanThetaY * aspectRatio;
 
             float halfW = tanThetaX * near;
@@ -496,8 +503,9 @@ namespace Axiom.RenderSystems.OpenGL
         {
             Matrix4 matrix = new Matrix4();
 
-            float thetaY = MathUtil.DegreesToRadians( fov * 0.5f );
-            float tanThetaY = MathUtil.Tan( thetaY );
+            float thetaY = (Real)( new Degree( new Real( fov * 0.5f ) ).InRadians );
+            //MathUtil.DegreesToRadians( fov * 0.5f );
+            float tanThetaY = Utility.Tan( (Real)thetaY );
 
             float w = ( 1.0f / tanThetaY ) / aspectRatio;
             float h = 1.0f / tanThetaY;
@@ -547,8 +555,8 @@ namespace Axiom.RenderSystems.OpenGL
             q.w = ( 1.0f + projMatrix.m22 ) / projMatrix.m23;
 
             // Calculate the scaled plane vector
-            Vector4 clipPlane4d = new Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D );
-            Vector4 c = clipPlane4d * ( 2.0f / ( clipPlane4d.Dot( q ) ) );
+            Vector4 clipPlane4d = new Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.Distance );
+            Vector4 c = clipPlane4d * ( 2.0f / ( clipPlane4d.DotProduct( q ) ) );
 
             // Replace the third row of the projection matrix
             projMatrix.m20 = c.x;
@@ -1857,7 +1865,7 @@ namespace Axiom.RenderSystems.OpenGL
                 lights[i] = null;
             }
 
-            numCurrentLights = (int)MathUtil.Min( limit, lightList.Count );
+            numCurrentLights = (int)Utility.Min( limit, lightList.Count );
 
             SetLights();
 
@@ -2226,7 +2234,7 @@ namespace Axiom.RenderSystems.OpenGL
         {
             Matrix4 mat = matrix.Transpose();
 
-            mat.MakeFloatArray( floats );
+            floats = mat.ToArray<float>();
         }
 
         /// <summary>
