@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,14 +24,28 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
 
+
+
+using DotNet3D.Math;
+
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     /// <summary>
@@ -252,7 +266,7 @@ namespace Axiom
                 float sqLen2 = boundingBox.Maximum.LengthSquared;
 
                 // update the bounding sphere radius as well
-                boundingSphereRadius = MathUtil.Sqrt( MathUtil.Max( sqLen1, sqLen2 ) );
+                boundingSphereRadius = Utility.Sqrt( Utility.Max( sqLen1, sqLen2 ) );
             }
         }
 
@@ -719,7 +733,7 @@ namespace Axiom
 
                         // calculate the tangent space vector
                         Vector3 tangent =
-                            MathUtil.CalculateTangentSpaceVector(
+                            Utility.CalculateTangentSpaceVector(
                                 vertPos[0], vertPos[1], vertPos[2],
                                 u[0], v[0], u[1], v[1], u[2], v[2] );
 
@@ -936,7 +950,7 @@ namespace Axiom
 
                     for ( int bone = 0; bone < numBlendWeightsPerVertex; bone++ )
                     {
-                        Pair result = (Pair)i.Current;
+                        Pair<object> result = (Pair<object>)i.Current;
                         VertexBoneAssignment ba = (VertexBoneAssignment)result.second;
 
                         // Do we still have data for this vertex?
@@ -1411,7 +1425,7 @@ namespace Axiom
                 }
 
                 // Now normalise if total weight is outside tolerance
-                if ( !MathUtil.FloatEqual( totalWeight, 1.0f ) )
+                if ( !((Real)totalWeight).Equals( 1.0f ) )
                 {
                     IEnumerator normalizeriter = assignments.Find( i );
 

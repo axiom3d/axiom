@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,14 +24,23 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Diagnostics;
 
-using Axiom.MathLib;
 
-#endregion
+using DotNet3D.Math;
+
+#endregion Namespace Declarations
 
 #region Ogre Synchronization Information
 /// <ogresynchronization>
@@ -204,15 +213,15 @@ namespace Axiom
 				Vector3 trans = kf.Translate;
 				Vector3 scale = kf.Scale;
 				Vector3 axis = new Vector3();
-				float angle = 0f;
+                Radian angle = Radian.Zero;
 				kf.Rotation.ToAngleAxis(ref angle, ref axis);
 				float tolerance = 1e-3f;
 				
 
 				
 				if (!trans.PositionEquals(Vector3.Zero, tolerance) ||
-					!scale.PositionEquals(Vector3.UnitScale, tolerance) ||
-					!Axiom.MathLib.MathUtil.RealEqual(angle, 0.0f, tolerance))
+					!scale.PositionEquals(Vector3.Unit, tolerance) ||
+					!((Real)angle).Equals( Real.Zero, tolerance ) )
 				{
 					return true;
 				}
@@ -562,9 +571,9 @@ namespace Axiom
 				Vector3 scale = kf.Scale;
 				// Not sure how to modify scale for cumulative anims... leave it alone
 				//scale = ((Vector3.UNIT_SCALE - kf.getScale()) * weight) + Vector3.UNIT_SCALE;
-				if (scl != 1.0f && scale != Vector3.UnitScale)
+				if (scl != 1.0f && scale != Vector3.Unit)
 				{
-					scale = Vector3.UnitScale + (scale - Vector3.UnitScale) * scl;
+					scale = Vector3.Unit + (scale - Vector3.Unit) * scl;
 				}
 				node.Scale(scale);
 			} 
@@ -572,9 +581,9 @@ namespace Axiom
 			{
 				// apply using weighted transform method
 				Vector3 scale = kf.Scale;
-				if (scl != 1.0f && scale != Vector3.UnitScale)
+				if (scl != 1.0f && scale != Vector3.Unit)
 				{
-					scale = Vector3.UnitScale + (scale - Vector3.UnitScale) * scl;
+					scale = Vector3.Unit + (scale - Vector3.Unit) * scl;
 				}
 				node.WeightedTransform(weight, kf.Translate * scl, kf.Rotation,scale);
 			}
@@ -622,9 +631,9 @@ namespace Axiom
         protected void BuildInterpolationSplines()
         {
             // dont calculate on the fly, wait till the end when we do it manually
-            positionSpline.AutoCalculate = false;
-            rotationalSpline.AutoCalculate = false;
-            scaleSpline.AutoCalculate = false;
+            positionSpline.AutoCalculateTangents = false;
+            rotationalSpline.AutoCalculateTangents = false;
+            scaleSpline.AutoCalculateTangents = false;
 
             positionSpline.Clear();
             rotationalSpline.Clear();

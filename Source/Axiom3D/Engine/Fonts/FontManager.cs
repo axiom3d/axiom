@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,10 +24,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.IO;
 using Axiom;
 
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     /// <summary>

@@ -1,9 +1,9 @@
+
 using System;
 using System.IO;
-using Axiom.Core;
 using Axiom;
-using Axiom.Input;
-using Axiom.MathLib;
+
+using DotNet3D.Math;
 
 namespace Axiom.Demos
 {
