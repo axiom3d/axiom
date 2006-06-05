@@ -202,6 +202,20 @@ namespace DotNet3D.Math
         #endregion Fields and Properties
 
         #region Constructors
+        /// <summary>
+        /// Empty static constructor
+        /// DO NOT DELETE.  It needs to be here because:
+        /// 
+        ///     # The presence of a static constructor suppresses beforeFieldInit.
+        ///     # Static field variables are initialized before the static constructor is called.
+        ///     # Having a static constructor is the only way to ensure that all resources are 
+        ///       initialized before other static functions are called.
+        /// 
+        /// (from "Static Constructors Demystified" by Satya Komatineni
+        ///  http://www.ondotnet.com/pub/a/dotnet/2003/07/07/staticxtor.html)
+        /// </summary>
+        static Vector2() { }
+
         //NOTE: ISerializable Constructor in ISerializable Implementation
 
         /// <overloads>
