@@ -55,15 +55,30 @@ namespace DotNet3D.Math
     /// will be done automatically between them.
     /// </remarks>
     [StructLayout( LayoutKind.Sequential )]
+    [Serializable]
 	public struct Radian : ISerializable, IComparable< Radian>, IComparable< Degree >, IComparable< Real >
 	{
-        private static readonly Real _radiansToDegrees = 180.0f / Utility.PI;
-
-        public static readonly Radian Zero = new Radian( Real.Zero );
+        private static readonly Real _radiansToDegrees = (180.0f / Utility.PI);
 
         private Real _value;
 
-		public Radian ( Real r ) { _value = r; }
+        public static readonly Radian Zero = new Radian( Real.Zero );
+
+        /// <summary>
+        /// Empty static constructor
+        /// DO NOT DELETE.  It needs to be here because:
+        /// 
+        ///     # The presence of a static constructor suppresses beforeFieldInit.
+        ///     # Static field variables are initialized before the static constructor is called.
+        ///     # Having a static constructor is the only way to ensure that all resources are 
+        ///       initialized before other static functions are called.
+        /// 
+        /// (from "Static Constructors Demystified" by Satya Komatineni
+        ///  http://www.ondotnet.com/pub/a/dotnet/2003/07/07/staticxtor.html)
+        /// </summary>
+        static Radian() { }
+
+        public Radian ( Real r ) { _value = r; }
 		public Radian ( Radian r ) { _value = r._value; }
 		public Radian ( Degree d ) { _value = d.InRadians; }
 
@@ -110,7 +125,7 @@ namespace DotNet3D.Math
         #region IComparable<T> Members
 
         public int CompareTo( Radian other ) { return this._value.CompareTo( other._value ); }
-        public int CompareTo( Degree other ) { return this._value.CompareTo( other.InRadians ); }
+        public int CompareTo( Degree other ) { return this._value.CompareTo( other.InRadians._value ); }
         public int CompareTo( Real other )   { return this._value.CompareTo( other ); }
 
         #endregion

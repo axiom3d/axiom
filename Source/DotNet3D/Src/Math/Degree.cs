@@ -48,7 +48,7 @@ using System.Security.Permissions;
 namespace DotNet3D.Math
 {
     /// <summary>
-    /// Wrapper class which indicates a given angle value is in Radian.
+    /// Wrapper class which indicates a given angle value is in Degrees.
     /// </summary>
     /// <remarks>
     /// Degree values are interchangeable with Radian values, and conversions
@@ -56,15 +56,29 @@ namespace DotNet3D.Math
     /// </remarks>
     [StructLayout( LayoutKind.Sequential )]
     [Serializable]
-    public struct Degree : ISerializable, IComparable<Degree>, IComparable<Radian>, IComparable<Real>
+    public struct Degree : ISerializable, IComparable< Degree >, IComparable< Radian >, IComparable< Real >
 	{
-        private static readonly Real _degreesToRadians = Utility.PI / 180.0f;
+        private static readonly Real _degreesToRadians = (Utility.PI / 180.0f);
 
 		private Real _value;
 
         public static readonly Degree Zero = new Degree( Real.Zero );
 
-		public Degree ( Real r ) { _value = r; }
+        /// <summary>
+        /// Empty static constructor
+        /// DO NOT DELETE.  It needs to be here because:
+        /// 
+        ///     # The presence of a static constructor suppresses beforeFieldInit.
+        ///     # Static field variables are initialized before the static constructor is called.
+        ///     # Having a static constructor is the only way to ensure that all resources are 
+        ///       initialized before other static functions are called.
+        /// 
+        /// (from "Static Constructors Demystified" by Satya Komatineni
+        ///  http://www.ondotnet.com/pub/a/dotnet/2003/07/07/staticxtor.html)
+        /// </summary>
+        static Degree() { }
+
+        public Degree ( Real d ) { _value = d; }
 		public Degree ( Degree d ) { _value = d._value; }
 		public Degree ( Radian r ) { _value = r.InDegrees; }
 
@@ -74,7 +88,7 @@ namespace DotNet3D.Math
         public static implicit operator Degree( Radian value ) { return new Degree( value ); }
         public static explicit operator Degree( int value )    { return new Degree( value ); }
 
-        public static implicit operator Real( Degree value )    { return value._value; }
+        public static implicit operator Real( Degree value )    { return new Real( value._value ); }
         public static explicit operator Numeric( Degree value ) { return (Numeric)value._value; }
 
 		public static Degree operator + ( Degree left, Real right )    { return left._value + right; }
@@ -110,8 +124,8 @@ namespace DotNet3D.Math
 
         #region IComparable<T> Members
 
-        public int CompareTo( Degree other ) { return this._value.CompareTo( other ); }
-        public int CompareTo( Radian other ) { return this._value.CompareTo( other.InDegrees ); }
+        public int CompareTo( Degree other ) { return this._value.CompareTo( other._value ); }
+        public int CompareTo( Radian other ) { return this._value.CompareTo( other.InDegrees._value ); }
         public int CompareTo( Real other )   { return this._value.CompareTo( other ); }
 
         #endregion
