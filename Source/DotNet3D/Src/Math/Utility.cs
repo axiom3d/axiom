@@ -218,7 +218,7 @@ namespace DotNet3D.Math
         /// <returns></returns>
         public static Real UnitRandom()
         {
-            return new Real( random.Next( Int32.MaxValue ) / Int32.MaxValue );
+            return (Real)random.Next( Int32.MaxValue ) / (Real)Int32.MaxValue ;
         }
 
         /// <summary>
@@ -227,7 +227,7 @@ namespace DotNet3D.Math
         /// <returns></returns>
         public static Real SymmetricRandom()
         {
-            return new Real( 2.0f * (float)UnitRandom() - 1.0f );
+            return new Real( 2.0f * UnitRandom() - 1.0f );
         }
 
         /// <summary>
