@@ -14,9 +14,10 @@
 		<property name="unsafe" value="true" />
 		<property name="warnaserror" value="false"/>
 		<property name="warninglevel" value="1"/>
+		<property name="verbose" value="false" />
 	 
 		<!-- build it -->
-		<csc target="library" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" output="${axiom3d.build.dir}/${nant.project.name}.dll" doc="${axiom3d.build.dir}/${nant.project.name}.xml">
+		<csc target="library" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" verbose="${verbose}" output="${axiom3d.build.dir}/${nant.project.name}.dll" doc="${axiom3d.build.dir}/${nant.project.name}.xml">
 			<nowarn>
 				<!-- do not report warnings for missing XML comments -->
 				<warning number="1591" />
@@ -37,7 +38,7 @@
 		-->
 			<references>
 				<include name="${axiom3d.build.dir}/Axiom.dll"/>
-				<include name="${axiom3d.build.dir}/RealmForge.Utility.dll"/>
+				<include name="${axiom3d.build.dir}/DotNet3D.Math.dll"/>
 				<include name="System.dll"/>
 				<include name="System.Data.dll"/>
 				<include name="System.Xml.dll"/>
