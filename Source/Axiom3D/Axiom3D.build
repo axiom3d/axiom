@@ -102,9 +102,14 @@
         build targets to be fine-grained (one for each project in the
         overall solution).  Could be combined to reduce complexity (eg. all
         buildfiles for Axiom plugins or scenemanagers could be treated as a unit)
-    -->
+	-->
+	<!--
     <fileset id="realmforge.utility.buildfile">
         <include name="../RealmForge/Utility/RealmForge.Utility.build" />
+	</fileset>
+	-->
+    <fileset id="dotnet3d.math.buildfile">
+		<include name="../DotNet3D/Src/Math/DotNet3d.Math.build" />
     </fileset>
     <fileset id="axiom.buildfile">
         <include name="Engine/Axiom.build" />
@@ -190,7 +195,7 @@
             Call targets building Windows-specific assemblies only on 
             Windows - should really add this logic to the target instead 
         -->
-        <call target="build.realmforge.utility" />
+        <call target="build.dotnet3d.math" />
         <call target="build.axiom" />
         <call target="build.axiom.platforms.win32" if="${platform::is-win32()}" />
         <call target="build.axiom.platforms.sdl" />
@@ -203,14 +208,20 @@
         <call target="build.axiom.scenemanagers.paginglandscape" />
     </target>
     
-    <!-- Build targets for the individual Axiom3D assemblies -->
+	<!-- Build targets for the individual Axiom3D assemblies -->
+	<!--
     <target name="build.realmforge.utility" description="Build RealmForge.Utility assembly" depends="build.axiom3d.setup" unless="${target::has-executed('build.realmforge.utility')}">
         <nant target="build">
             <buildfiles refid="realmforge.utility.buildfile"/>
         </nant>
     </target>
-
-    <target name="build.axiom" description="Build Axiom assembly" depends="build.realmforge.utility" unless="${target::has-executed('build.axiom')}">
+	-->
+    <target name="build.dotnet3d.math" description="Build DotNet3D math library" depends="build.axiom3d.setup" unless="${target::has-executed('build.dotnet3d.math')}">
+        <nant target="build">
+            <buildfiles refid="dotnet3d.math.buildfile"/>
+		</nant>
+	</target>
+    <target name="build.axiom" description="Build Axiom assembly" depends="build.dotnet3d.math" unless="${target::has-executed('build.axiom')}">
         <nant target="build">
             <buildfiles refid="axiom.buildfile"/>
         </nant>

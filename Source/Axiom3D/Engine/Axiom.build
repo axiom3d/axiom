@@ -18,9 +18,8 @@
 		<property name="verbose" value="false"/>
 	 
 		<!-- build it -->
-	<!-- Temporarily disabling doc generation due to a known mono bug (77183). Has been patched in SVN but not in latest Mono release (1.1.13.1) -->
-<!--		<csc target="library" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" output="${axiom3d.build.dir}/${nant.project.name}.dll" doc="${axiom3d.build.dir}/${nant.project.name}.xml"> -->
-		<csc target="library" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" verbose="${verbose}" output="${axiom3d.build.dir}/${nant.project.name}.dll">
+	<!-- Mono 1.1.13.1 and earlier have a known bug (77183) in doc generation.  Please use a later version. -->
+	<csc target="library" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" verbose="${verbose}" output="${axiom3d.build.dir}/${nant.project.name}.dll" doc="${axiom3d.build.dir}/${nant.project.name}.xml">
 			<nowarn>
 				<!-- do not report warnings for missing XML comments -->
 				<warning number="1591" />
@@ -38,7 +37,7 @@
 			</resources>
 			-->
 			<references>
-				<include name="${axiom3d.build.dir}/RealmForge.Utility.dll"/>
+				<include name="${axiom3d.build.dir}/DotNet3D.Math.dll"/>
 				<include name="System.dll"/>
 				<include name="System.Configuration.dll"/>
 				<include name="System.Data.dll"/>
