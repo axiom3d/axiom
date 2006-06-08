@@ -35,13 +35,17 @@
 				<include name="Resources/**/*" />
 			</resources>
 			-->
-			<!-- FIXME: Needs updating to use beta MDX -->
+			<!-- Note: Updated to use beta MDX - only uses a single dll, not 3 -->
+			<!-- Pre-beta-2.0 MDX dlls 
+				<include name="${directx.dir}/Microsoft.DirectX.Direct3D.dll"/>
+				<include name="${directx.dir}/Microsoft.DirectX.Direct3DX.dll"/>
+				<include name="${directx.dir}/Microsoft.DirectX.dll"/>
+			-->
+
 			<references>
 				<include name="${axiom3d.build.dir}/Axiom.dll"/>
 				<include name="${axiom3d.build.dir}/DotNet3D.Math.dll"/>
 				<include name="${directx.dir}/Microsoft.DirectX.dll"/>
-				<include name="${directx.dir}/Microsoft.DirectX.Direct3D.dll"/>
-				<include name="${directx.dir}/Microsoft.DirectX.Direct3DX.dll"/>
 				<include name="System.dll"/>
 				<include name="System.Data.dll"/>
 				<include name="System.Drawing.dll"/>
