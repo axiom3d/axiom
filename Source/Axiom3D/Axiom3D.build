@@ -16,7 +16,12 @@
     </if>
     
     
-    <!-- named project configurations -->
+	<!-- named project configurations -->
+
+	<!-- Master build and dist output dirs -->
+	<property name="top.build.dir" value="${project::get-base-directory()}/../build" dynamic="true" />
+	<property name="top.dist.dir" value="${project::get-base-directory()}/../dist" dynamic="true" />
+
     <!-- 
         Sets config parameters for build type and dynamically defines top-level 
         build output directory based on target framework,platform,project name,
@@ -28,16 +33,16 @@
         <property name="project.config" value="debug" />
         <property name="build.debug" value="true" />
     <!--	<property name="build.dir" value="${project::get-base-directory()}/build/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" /> -->
-        <property name="build.dir" value="${project::get-base-directory()}/../build/${project.config}" />
-        <property name="dist.dir" value="${project::get-base-directory()}/../dist/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" />
+        <property name="build.dir" value="${top.build.dir}/${project.config}" />
+		<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" />
     </target>
 
     <target name="release" description="Perform a 'release' build">
         <property name="project.config" value="release" />
         <property name="build.debug" value="false" />
     <!--	<property name="build.dir" value="${project::get-base-directory()}/build/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" /> -->
-        <property name="build.dir" value="${project::get-base-directory()}/../build/${project.config}" />
-        <property name="dist.dir" value="${project::get-base-directory()}/../dist/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" />
+	<property name="build.dir" value="${top.build.dir}/${project.config}" />
+	<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" />
     </target>
     
     <!-- global build settings -->
@@ -162,7 +167,7 @@
 
     <target name="build.cleanall" description="Deletes every build configuration">
         <echo message="Deleting all builds from all configurations" />
-        <delete dir="build" if="${directory::exists('build')}" />
+		<delete dir="${top.build.dir}" if="${directory::exists(top.build.dir)}" />
     </target>
 
     <target name="cleanall" description="Deletes every build and dist configuration" depends="build.cleanall, dist.cleanall"/>
@@ -331,7 +336,7 @@
     </target>
 
     <target name="dist.cleanall" description="Cleans every dist configuration">
-        <delete dir="dist" if="${directory::exists('dist')}" />
+		<delete dir="${top.dist.dir}" if="${directory::exists(top.dist.dir)}" />
     </target>
     <!-- END: General Distribution targets -->
     
