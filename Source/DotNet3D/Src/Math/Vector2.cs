@@ -326,9 +326,7 @@ namespace DotNet3D.Math
 
             format = format.PadLeft( decimalPlaces, '#' );
             format = "({0:0." + format + "}, {1:0." + format + "})";
-            //NOTE: Explicit conversion used here to get proper behavior, for some reason it left as Real it will always 
-            //      display all decimal places
-            return string.Format( format, (float)this.x, (float)this.y );
+            return string.Format( format, this.x, this.y );
         }
 
         /// <summary>
@@ -811,8 +809,8 @@ namespace DotNet3D.Math
         [SecurityPermission( SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter )]
         public void GetObjectData( SerializationInfo info, StreamingContext context )
         {
-            info.AddValue( "x", x );
-            info.AddValue( "y", y );
+            info.AddValue( "x", x, typeof( Real ) );
+            info.AddValue( "y", y, typeof( Real ) );
         }
 
         #endregion ISerializable Implementation

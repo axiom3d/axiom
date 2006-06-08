@@ -170,7 +170,15 @@ namespace DotNet3D.Math
         public Matrix3( Real[,] matrix )
         {
             _matrix = new Real[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            //TODO
+            _matrix[ 0 ] = matrix[ 0, 0 ];
+            _matrix[ 1 ] = matrix[ 0, 1 ];
+            _matrix[ 2 ] = matrix[ 0, 2 ];
+            _matrix[ 3 ] = matrix[ 1, 0 ];
+            _matrix[ 4 ] = matrix[ 1, 1 ];
+            _matrix[ 5 ] = matrix[ 1, 2 ];
+            _matrix[ 6 ] = matrix[ 2, 0 ];
+            _matrix[ 7 ] = matrix[ 2, 1 ];
+            _matrix[ 8 ] = matrix[ 2, 2 ];
         }
 
         /// <summary>

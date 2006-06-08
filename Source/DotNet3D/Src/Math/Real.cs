@@ -58,17 +58,14 @@ namespace DotNet3D.Math
     /// </remarks>
     [StructLayout( LayoutKind.Sequential )]
     [Serializable]
-    public struct Real : ISerializable, IComparable<Real>, IConvertible
+    public struct Real : ISerializable, IComparable<Real>, IConvertible, IFormattable
     {
         #region Fields
-        /// <summary>
-        ///		Culture info to use for parsing numeric data.
-        /// </summary>
-        private static CultureInfo englishCulture = new CultureInfo( "en-US" );
 
         /// <summary>Internal storage for value</summary>
         private Numeric _value;
 
+        /// <summary></summary>
         public static Numeric Tolerance = 0.0001f;
 
         #endregion Fields
@@ -89,6 +86,8 @@ namespace DotNet3D.Math
         public readonly static Real MaxValue = Numeric.MaxValue;
         /// <summary>The minimum possible value</summary>
         public readonly static Real MinValue = Numeric.MinValue;
+        /// <summary>Default number format</summary>
+        public readonly static IFormatProvider NumberFormat = CultureInfo.InvariantCulture;
 
         /// <summary>
         /// Returns a value indicating whether the specified number evaluates to positive infinity
@@ -143,7 +142,7 @@ namespace DotNet3D.Math
         /// </overloads>
         public static Real Parse( string value )
         {
-            return new Real( Numeric.Parse( value, englishCulture ) );
+            return new Real( Numeric.Parse( value, NumberFormat ) );
         }
 
         /// <param name="value"></param>
@@ -165,7 +164,7 @@ namespace DotNet3D.Math
         /// <param name="style"></param>
         public static Real Parse( string value, System.Globalization.NumberStyles style )
         {
-            return new Real( Numeric.Parse( value, style) );
+            return new Real( Numeric.Parse( value, style ) );
         }
 
         #endregion Static Interface
@@ -210,7 +209,7 @@ namespace DotNet3D.Math
         /// <param name="value">a string representation of the value to convert</param>
         public Real( string value )
         {
-            this._value = Numeric.Parse( value );
+            this._value = Numeric.Parse( value, NumberStyles.Float, NumberFormat );
         }
 
         /// <summary>
@@ -611,7 +610,7 @@ namespace DotNet3D.Math
         /// <returns></returns>
         public override string ToString()
         {
-            return this._value.ToString( englishCulture );
+            return ToString( null, null );
         }
 
         /// <summary>
@@ -627,8 +626,7 @@ namespace DotNet3D.Math
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="lhs"></param>
-        /// <param name="rhs"></param>
+        /// <param name="obj"></param>
         /// <param name="tolerance"></param>
         /// <returns></returns>
         public bool Equals( Real obj )
@@ -639,8 +637,7 @@ namespace DotNet3D.Math
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="lhs"></param>
-        /// <param name="rhs"></param>
+        /// <param name="obj"></param>
         /// <param name="tolerance"></param>
         /// <returns></returns>
         public bool Equals( Real obj, Real tolerance)
@@ -783,6 +780,24 @@ namespace DotNet3D.Math
         public ulong ToUInt64( IFormatProvider provider )
         {
             throw new Exception( "The method or operation is not implemented." );
+        }
+
+        #endregion
+
+        #region IFormattable Members
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="format"></param>
+        /// <param name="formatProvider"></param>
+        /// <returns></returns>
+        public string ToString( string format, IFormatProvider formatProvider )
+        {
+            if ( format == null )
+                return _value.ToString( Real.NumberFormat );
+
+            return _value.ToString( format, Real.NumberFormat );
         }
 
         #endregion
