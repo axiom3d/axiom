@@ -454,8 +454,6 @@ namespace DotNet3D.Math
 
             format = format.PadLeft( decimalPlaces, '#' );
             format = "({0:0." + format + "}, {1:0." + format + "}, {2:0." + format + "}, {3:0." + format + "})";
-            //NOTE: Explicit conversion used here to get proper behavior, for some reason it left as Real it will always 
-            //      display all decimal places
             return string.Format( format, this.x, this.y, this.z, this.w );
         }
 
