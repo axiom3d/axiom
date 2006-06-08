@@ -235,7 +235,7 @@ namespace DotNet3D.Math
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="m4"></param>
+        /// <param name="matrix4x4"></param>
         internal Matrix4( Matrix4 matrix4x4 )
         {
             this = matrix4x4;
@@ -244,7 +244,7 @@ namespace DotNet3D.Math
         /// <summary>
         /// Creates a standard 4x4 transformation matrix with a zero translation part from a rotation/scaling 3x3 matrix.
         /// </summary>
-        /// <param name="m3x3"></param>
+        /// <param name="matrix3x3"></param>
         public Matrix4( Matrix3 matrix3x3 )
             : this( Identity )
         {

@@ -118,7 +118,7 @@ namespace DotNet3D.Math
         private Radian( SerializationInfo info, StreamingContext context ) { _value = (Real)info.GetValue( "value", typeof( Real ) ); }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
-        public void GetObjectData( SerializationInfo info, StreamingContext context ) { info.AddValue( "value", _value ); }
+        public void GetObjectData( SerializationInfo info, StreamingContext context ) { info.AddValue( "value", _value, typeof( Real ) ); }
 
         public override string ToString() { return _value.ToString(); }
 

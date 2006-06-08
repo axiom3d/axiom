@@ -384,7 +384,7 @@ namespace DotNet3D.Math
         /// <param name="rkQ0"></param>
         /// <param name="rkQ1"></param>
         /// <param name="rkQ2"></param>
-        /// <param name="rka"></param>
+        /// <param name="rkA"></param>
         /// <param name="rkB"></param>
         public static void Intermediate( Quaternion rkQ0, Quaternion rkQ1, Quaternion rkQ2, out Quaternion rkA, out Quaternion rkB )
         {
@@ -456,7 +456,7 @@ namespace DotNet3D.Math
             format = "({0:0." + format + "}, {1:0." + format + "}, {2:0." + format + "}, {3:0." + format + "})";
             //NOTE: Explicit conversion used here to get proper behavior, for some reason it left as Real it will always 
             //      display all decimal places
-            return string.Format( format, (float)this.x, (float)this.y, (float)this.z, (float)this.w );
+            return string.Format( format, this.x, this.y, this.z, this.w );
         }
 
         /// <summary>
@@ -1094,10 +1094,10 @@ namespace DotNet3D.Math
         [SecurityPermission( SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter )]
         public void GetObjectData( SerializationInfo info, StreamingContext context )
         {
-            info.AddValue( "w", w );
-            info.AddValue( "x", x );
-            info.AddValue( "y", y );
-            info.AddValue( "z", z );
+            info.AddValue( "w", w, typeof( Real ) );
+            info.AddValue( "x", x, typeof( Real ) );
+            info.AddValue( "y", y, typeof( Real ) );
+            info.AddValue( "z", z, typeof( Real ) );
         }
 
         #endregion ISerializable Implementation
