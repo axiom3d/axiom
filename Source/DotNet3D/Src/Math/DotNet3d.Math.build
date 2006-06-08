@@ -10,13 +10,14 @@
     -->
     <target name="build">
 
-        <property name="unsafe" value="false" />
+        <property name="unsafe" value="true" />
         <property name="warnaserror" value="false"/>
         <property name="warninglevel" value="1"/>
         <property name="verbose" value="false"/>
 
+	<!-- Mono 1.1.13.1 and earlier have a known bug (77813) in doc generation.  Please use a later version or disable doc gen below -->
         <!-- build it -->
-        <csc target="library" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" output="${build.lib.dir}/${nant.project.name}.dll" doc="${build.lib.dir}/${nant.project.name}.xml"> 
+        <csc target="library" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" output="${axiom3d.build.dir}/${nant.project.name}.dll" doc="${axiom3d.build.dir}/${nant.project.name}.xml"> 
             <nowarn>
                 <!-- do not report warnings for missing XML comments 
                 <warning number="1591" />-->
@@ -24,10 +25,7 @@
                 <warning number="0618" />-->
             </nowarn>
             <sources failonempty="true">
-                <!-- include name="**/*.cs" /-->
-                <include name="Real.cs" />
-                <include name="Vector2.cs" />
-				<include name="Utility.cs" />
+                <include name="**/*.cs" />
                 <!-- common assembly-level attributes -->
                 <include name="../GlobalAssemblyInfo.cs" />
             </sources>
