@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,11 +24,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Diagnostics;
-using Axiom;
-using Axiom.MathLib;
 
+using Axiom;
+
+using DotNet3D.Math;
+
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     /// <summary>
@@ -72,7 +86,7 @@ namespace Axiom
             {
                 Triangle tri = (Triangle)triangles[i];
 
-                float dot = tri.normal.Dot( lightPos );
+                float dot = tri.normal.DotProduct( lightPos );
 
                 tri.lightFacing = ( dot > 0 );
             }
@@ -111,7 +125,7 @@ namespace Axiom
                         offset = t.vertIndex[2] * 3;
                         Vector3 v3 = new Vector3( pVert[offset], pVert[offset + 1], pVert[offset + 2] );
 
-                        t.normal = MathUtil.CalculateFaceNormal( v1, v2, v3 );
+                        t.normal = Utility.CalculateFaceNormal( v1, v2, v3 );
                     }
                 }
             }

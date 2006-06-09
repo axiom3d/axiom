@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -22,7 +22,15 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion LGPL License
+#endregion
+
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
 
 #region Namespace Declarations
 
@@ -30,11 +38,11 @@ using System;
 using System.Collections;
 using System.Data;
 
-using Axiom.Core;
-using Axiom.MathLib;
 using Axiom;
 
-#endregion;
+using DotNet3D.Math;
+
+#endregion Namespace Declarations			
 
 #region Versioning Information
 
@@ -191,7 +199,7 @@ namespace Axiom.SceneManagers.PagingLandscape
         public float Change_Factor;				//Determines the value of the change factor for loading/unloading LandScape Pages
         public long Max_Adjacent_Pages;
         public long Max_Preload_Pages;
-        public float Visible_Renderables;			//Number of visible renderables surrounding the camera
+        public float Visible_Renderables;			//Numbers of visible renderables surrounding the camera
         public float Renderable_Factor;			//Determines the distance of loading and unloading of renderables in renderable numbers
 
         public Vector3 Scale;

@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,11 +24,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
-using Axiom.Core;
 using Axiom;
-using Axiom.MathLib;
+
+using DotNet3D.Math;
 
 #endregion Namespace Declarations
 
@@ -176,17 +184,17 @@ namespace Axiom.SceneManagers.Octree
             Plane p2 = planes[(int)pp1];
             Plane p3 = planes[(int)pp1];
 
-            Matrix3 mdet;
+            Matrix3 mdet = new Matrix3();
 
-            mdet.m00 = p1.Normal.x;
-            mdet.m01 = p1.Normal.y;
-            mdet.m02 = p1.Normal.z;
-            mdet.m10 = p2.Normal.x;
-            mdet.m11 = p2.Normal.y;
-            mdet.m12 = p2.Normal.z;
-            mdet.m20 = p3.Normal.x;
-            mdet.m21 = p3.Normal.y;
-            mdet.m22 = p3.Normal.z;
+            mdet[0,0] = p1.Normal.x;
+            mdet[0,1] = p1.Normal.y;
+            mdet[0,2] = p1.Normal.z;
+            mdet[1,0] = p2.Normal.x;
+            mdet[1,1] = p2.Normal.y;
+            mdet[1,2] = p2.Normal.z;
+            mdet[2,0] = p3.Normal.x;
+            mdet[2,1] = p3.Normal.y;
+            mdet[2,2] = p3.Normal.z;
 
             float det = mdet.Determinant;
 
@@ -197,13 +205,13 @@ namespace Axiom.SceneManagers.Octree
             }
 
             Matrix3 mx = new Matrix3(
-                -p1.D,
+                -p1.Distance,
                 p1.Normal.y,
                 p1.Normal.z,
-                -p2.D,
+                -p2.Distance,
                 p2.Normal.y,
                 p2.Normal.z,
-                -p3.D,
+                -p3.Distance,
                 p3.Normal.y,
                 p3.Normal.z );
 
@@ -211,13 +219,13 @@ namespace Axiom.SceneManagers.Octree
 
             Matrix3 my = new Matrix3(
                 p1.Normal.x,
-                -p1.D,
+                -p1.Distance,
                 p1.Normal.z,
                 p2.Normal.x,
-                -p2.D,
+                -p2.Distance,
                 p2.Normal.z,
                 p3.Normal.x,
-                -p3.D,
+                -p3.Distance,
                 p3.Normal.z );
 
             float ydet = my.Determinant;
@@ -225,13 +233,13 @@ namespace Axiom.SceneManagers.Octree
             Matrix3 mz = new Matrix3(
                 p1.Normal.x,
                 p1.Normal.y,
-                -p1.D,
+                -p1.Distance,
                 p2.Normal.x,
                 p2.Normal.y,
-                -p2.D,
+                -p2.Distance,
                 p3.Normal.x,
                 p3.Normal.y,
-                -p3.D );
+                -p3.Distance );
 
             float zdet = mz.Determinant;
 

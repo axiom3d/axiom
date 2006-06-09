@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,9 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     /// <summary>
@@ -144,7 +156,7 @@ namespace Axiom
         public Controller CreateTextureRotator( TextureUnitState layer, float speed )
         {
             IControllerValue val = new TexCoordModifierControllerValue( layer, false, false, false, false, true );
-            IControllerFunction func = new MultipyControllerFunction( -speed, true );
+            IControllerFunction func = new MultiplyControllerFunction( -speed, true );
 
             return CreateController( val, func );
         }
@@ -166,7 +178,7 @@ namespace Axiom
         public Controller CreateGpuProgramTimerParam( GpuProgramParameters parms, int index, float timeFactor )
         {
             IControllerValue val = new FloatGpuParamControllerValue( parms, index );
-            IControllerFunction func = new MultipyControllerFunction( timeFactor, true );
+            IControllerFunction func = new MultiplyControllerFunction( timeFactor, true );
 
             return CreateController( val, func );
         }
@@ -194,7 +206,7 @@ namespace Axiom
             {
                 // create the value and function
                 val = new TexCoordModifierControllerValue( layer, true, true );
-                func = new MultipyControllerFunction( -speedU, true );
+                func = new MultiplyControllerFunction( -speedU, true );
 
                 // create the controller (uses FrameTime for source by default)
                 controller = CreateController( val, func );
@@ -206,7 +218,7 @@ namespace Axiom
                 {
                     // create the value and function
                     val = new TexCoordModifierControllerValue( layer, true, false );
-                    func = new MultipyControllerFunction( -speedU, true );
+                    func = new MultiplyControllerFunction( -speedU, true );
 
                     // create the controller (uses FrameTime for source by default)
                     controller = CreateController( val, func );
@@ -217,7 +229,7 @@ namespace Axiom
                 {
                     // create the value and function
                     val = new TexCoordModifierControllerValue( layer, false, true );
-                    func = new MultipyControllerFunction( -speedV, true );
+                    func = new MultiplyControllerFunction( -speedV, true );
 
                     // create the controller (uses FrameTime for source by default)
                     controller = CreateController( val, func );

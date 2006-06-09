@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,12 +24,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom.MathLib;
 
+using DotNet3D.Math;
+
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     /// <summary>
@@ -324,7 +337,7 @@ namespace Axiom
                 if ( parentNode != null )
                 {
                     Vector3 s = parentNode.DerivedScale;
-                    radius *= MathUtil.Max( s.x, MathUtil.Max( s.y, s.z ) );
+                    radius *= Utility.Max( s.x, Utility.Max( s.y, s.z ) );
                 }
 
                 return radius;
@@ -527,7 +540,7 @@ namespace Axiom
         /// <param name="offsetOrientation">An adjustment to the orientation of the attached object, relative to the bone.</param>
         public TagPoint AttachObjectToBone( string boneName, MovableObject sceneObject, Quaternion offsetOrientation )
         {
-            return AttachObjectToBone( boneName, sceneObject, Quaternion.Identity, Vector3.UnitScale );
+            return AttachObjectToBone( boneName, sceneObject, Quaternion.Identity, Vector3.Unit );
         }
 
         /// <summary>
@@ -901,10 +914,10 @@ namespace Axiom
                 meshLodIndex = mesh.GetLodIndexSquaredDepth( temp );
 
                 // Apply maximum detail restriction (remember lower = higher detail)
-                meshLodIndex = (int)MathUtil.Max( maxMeshLodIndex, meshLodIndex );
+                meshLodIndex = (int)Utility.Max( maxMeshLodIndex, meshLodIndex );
 
                 // Apply minimum detail restriction (remember higher = lower detail)
-                meshLodIndex = (int)MathUtil.Min( minMeshLodIndex, meshLodIndex );
+                meshLodIndex = (int)Utility.Min( minMeshLodIndex, meshLodIndex );
 
                 // now do material LOD
                 // adjust this depth by the entity bias factor
@@ -922,9 +935,9 @@ namespace Axiom
                     int idx = subEnt.Material.GetLodIndexSquaredDepth( temp );
 
                     // Apply maximum detail restriction (remember lower = higher detail)
-                    idx = (int)MathUtil.Max( maxMaterialLodIndex, idx );
+                    idx = (int)Utility.Max( maxMaterialLodIndex, idx );
                     // Apply minimum detail restriction (remember higher = lower detail)
-                    subEnt.materialLodIndex = (int)MathUtil.Min( minMaterialLodIndex, idx );
+                    subEnt.materialLodIndex = (int)Utility.Min( minMaterialLodIndex, idx );
                 }
             }
 

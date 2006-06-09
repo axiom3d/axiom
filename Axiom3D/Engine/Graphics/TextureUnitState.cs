@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,15 +24,26 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
 
-using Axiom.MathLib;
-// This is coming from RealmForge.Utility
-using Axiom.Core;
 
+using DotNet3D.Math;
+
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     /// <summary>
@@ -1699,12 +1710,12 @@ namespace Axiom
             if ( scaleU != 0 || scaleV != 0 )
             {
                 // offset to the center of the texture
-                xform.m00 = 1 / scaleU;
-                xform.m11 = 1 / scaleV;
+                xform[0,0] = 1 / scaleU;
+                xform[1,1] = 1 / scaleV;
 
                 // skip matrix mult since first matrix update
-                xform.m02 = ( -0.5f * xform.m00 ) + 0.5f;
-                xform.m12 = ( -0.5f * xform.m11 ) + 0.5f;
+                xform[0,2] = ( -0.5f * xform[0,0] ) + 0.5f;
+                xform[1,2] = ( -0.5f * xform[1,1] ) + 0.5f;
             }
 
             // texture translation
@@ -1712,8 +1723,8 @@ namespace Axiom
             {
                 Matrix3 xlate = Matrix3.Identity;
 
-                xlate.m02 = transU;
-                xlate.m12 = transV;
+                xlate[0,2] = transU;
+                xlate[1,2] = transV;
 
                 // multiplt the transform by the translation
                 xform = xlate * xform;
@@ -1723,21 +1734,22 @@ namespace Axiom
             {
                 Matrix3 rotation = Matrix3.Identity;
 
-                float theta = MathUtil.DegreesToRadians( rotate );
-                float cosTheta = MathUtil.Cos( theta );
-                float sinTheta = MathUtil.Sin( theta );
+                float theta = (Real)( new Degree( rotate ).InRadians );
+                //MathUtil.DegreesToRadians( rotate );
+                float cosTheta = Utility.Cos( (Real)theta );
+                float sinTheta = Utility.Sin( (Real)theta );
 
                 // set the rotation portion of the matrix
-                rotation.m00 = cosTheta;
-                rotation.m01 = -sinTheta;
-                rotation.m10 = sinTheta;
-                rotation.m11 = cosTheta;
+                rotation[0,0] = cosTheta;
+                rotation[0,1] = -sinTheta;
+                rotation[1,0] = sinTheta;
+                rotation[1,1] = cosTheta;
 
                 // offset the center of rotation to the center of the texture
                 float cosThetaOff = cosTheta * -0.5f;
                 float sinThetaOff = sinTheta * -0.5f;
-                rotation.m02 = 0.5f + ( ( -0.5f * cosTheta ) - ( -0.5f * sinTheta ) );
-                rotation.m12 = 0.5f + ( ( -0.5f * sinTheta ) + ( -0.5f * cosTheta ) );
+                rotation[0,2] = 0.5f + ( ( -0.5f * cosTheta ) - ( -0.5f * sinTheta ) );
+                rotation[1,2] = 0.5f + ( ( -0.5f * sinTheta ) + ( -0.5f * cosTheta ) );
 
                 // multiply the rotation and transformation matrices
                 xform = xform * rotation;

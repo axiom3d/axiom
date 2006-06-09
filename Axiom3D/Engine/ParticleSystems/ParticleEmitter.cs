@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,15 +24,26 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Drawing;
 using System.Reflection;
 
-using Axiom.MathLib;
-// This is coming from RealmForge.Utility
-using Axiom.Core;
 
+using DotNet3D.Math;
+
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     /// <summary>
@@ -230,11 +241,13 @@ namespace Axiom
         {
             get
             {
-                return MathUtil.RadiansToDegrees( angle );
+                return (Real)(new Radian( (Real)angle ).InDegrees);
+                //MathUtil.RadiansToDegrees( angle );
             }
             set
             {
-                angle = MathUtil.DegreesToRadians( value );
+                angle = (Real)(new Degree( (Real)value ).InRadians);
+                //MathUtil.DegreesToRadians( value );
             }
         }
 
@@ -624,7 +637,7 @@ namespace Axiom
         {
             if ( angle != 0.0f )
             {
-                float tempAngle = MathUtil.UnitRandom() * angle;
+                Radian tempAngle = (Real) (Utility.UnitRandom() * angle);
 
                 // randomize direction
                 dest = direction.RandomDeviant( tempAngle, up );
@@ -646,7 +659,7 @@ namespace Axiom
 
             if ( minSpeed != maxSpeed )
             {
-                scalar = minSpeed + ( MathUtil.UnitRandom() * ( maxSpeed - minSpeed ) );
+                scalar = minSpeed + ( Utility.UnitRandom() * ( maxSpeed - minSpeed ) );
             }
             else
             {
@@ -664,7 +677,7 @@ namespace Axiom
         {
             if ( maxTTL != minTTL )
             {
-                return minTTL + ( MathUtil.UnitRandom() * ( maxTTL - minTTL ) );
+                return minTTL + ( Utility.UnitRandom() * ( maxTTL - minTTL ) );
             }
             else
             {
@@ -738,10 +751,10 @@ namespace Axiom
         {
             if ( colorRangeStart.CompareTo( colorRangeEnd ) != 0 )
             {
-                color.r = colorRangeStart.r + MathUtil.UnitRandom() * ( colorRangeEnd.r - colorRangeStart.r );
-                color.g = colorRangeStart.g + MathUtil.UnitRandom() * ( colorRangeEnd.g - colorRangeStart.g );
-                color.b = colorRangeStart.b + MathUtil.UnitRandom() * ( colorRangeEnd.b - colorRangeStart.b );
-                color.a = colorRangeStart.a + MathUtil.UnitRandom() * ( colorRangeEnd.a - colorRangeStart.a );
+                color.r = colorRangeStart.r + Utility.UnitRandom() * ( colorRangeEnd.r - colorRangeStart.r );
+                color.g = colorRangeStart.g + Utility.UnitRandom() * ( colorRangeEnd.g - colorRangeStart.g );
+                color.b = colorRangeStart.b + Utility.UnitRandom() * ( colorRangeEnd.b - colorRangeStart.b );
+                color.a = colorRangeStart.a + Utility.UnitRandom() * ( colorRangeEnd.a - colorRangeStart.a );
             }
             else
             {
@@ -765,7 +778,7 @@ namespace Axiom
                 }
                 else
                 {
-                    durationRemain = MathUtil.RangeRandom( durationMin, durationMax );
+                    durationRemain = Utility.RangeRandom( durationMin, durationMax );
                 }
             }
             else
@@ -777,7 +790,7 @@ namespace Axiom
                 }
                 else
                 {
-                    repeatDelayRemain = MathUtil.RangeRandom( repeatDelayMin, repeatDelayMax );
+                    repeatDelayRemain = Utility.RangeRandom( repeatDelayMin, repeatDelayMax );
                 }
             }
         }

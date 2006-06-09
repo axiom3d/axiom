@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,12 +24,26 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Diagnostics;
 
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
 
+
+using DotNet3D.Math;
+using DotNet3D.Math.Collections;
+
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     /// <summary>
@@ -171,7 +185,8 @@ namespace Axiom
             orientation = Quaternion.Identity;
             derivedOrientation = Quaternion.Identity;
 
-            fieldOfView = MathUtil.RadiansToDegrees( MathUtil.PI / 4.0f );
+//            fieldOfView = MathUtil.RadiansToDegrees( MathUtil.PI / 4.0f );
+            fieldOfView = (Real)(new Radian( new Real( Utility.PI / 4.0f ) ).InDegrees);
             nearDistance = 100.0f;
             farDistance = 100000.0f;
             aspectRatio = 1.33333333333333f;
@@ -302,7 +317,7 @@ namespace Axiom
                 {
 
                     reflectionPlane = linkedReflectionPlane.DerivedPlane;
-                    reflectionMatrix = MathUtil.BuildReflectionMatrix( reflectionPlane );
+                    reflectionMatrix = Utility.BuildReflectionMatrix( reflectionPlane );
                     lastLinkedReflectionPlane = linkedReflectionPlane.DerivedPlane;
                     returnVal = true;
                 }
@@ -527,7 +542,7 @@ namespace Axiom
                     {
                         // Oops, a 180 degree turn (infinite possible rotation axes)
                         // Default to yaw i.e. use current UP
-                        rotationQuat = Quaternion.FromAngleAxis( MathUtil.PI, yAxis );
+                        rotationQuat = Quaternion.FromAngleAxis( Utility.PI, yAxis );
                     }
                     else
                     {
@@ -828,7 +843,7 @@ namespace Axiom
         /// <param name="degrees"></param>
         public void Rotate( Vector3 axis, float degrees )
         {
-            Quaternion q = Quaternion.FromAngleAxis( MathUtil.DegreesToRadians( degrees ), axis );
+            Quaternion q = Quaternion.FromAngleAxis( (Real)(new Degree( (Real)degrees ).InRadians), axis );
             Rotate( q );
         }
 
@@ -953,8 +968,9 @@ namespace Axiom
                 return;
             }
 
-            float thetaY = MathUtil.DegreesToRadians( fieldOfView * 0.5f );
-            float tanThetaY = MathUtil.Tan( thetaY );
+            float thetaY = (Real)( new Degree( new Real( fieldOfView * 0.5f ) ).InRadians );
+            //MathUtil.DegreesToRadians( fieldOfView * 0.5f );
+            float tanThetaY = Utility.Tan( (Real)thetaY );
             float tanThetaX = tanThetaY * aspectRatio;
 
             float vpTop = tanThetaY * nearDistance;
@@ -1030,7 +1046,8 @@ namespace Axiom
             float centeredScreenX = ( screenX - 0.5f );
             float centeredScreenY = ( 0.5f - screenY );
 
-            float normalizedSlope = MathUtil.Tan( MathUtil.DegreesToRadians( fieldOfView * 0.5f ) );
+            float normalizedSlope = Utility.Tan( (Real)(new Degree( new Real( fieldOfView * 0.5f ) ).InRadians ) );
+            //MathUtil.DegreesToRadians( fieldOfView * 0.5f ) );
             float viewportYToWorldY = normalizedSlope * nearDistance * 2;
             float viewportXToWorldX = viewportYToWorldY * aspectRatio;
 

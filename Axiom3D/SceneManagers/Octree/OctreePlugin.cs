@@ -30,7 +30,6 @@ using Axiom;
 
 namespace Axiom.SceneManagers.Octree
 {
-    [PluginMetadata( Name = "OctreeSceneManager", Subsystem = typeof( SceneManagerEnumerator ) )]
     public class OctreePlugin : IPlugin
     {
         private bool _isStarted = false;

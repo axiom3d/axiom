@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -34,9 +42,8 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using Axiom;
-using Axiom.Core;
-using Axiom.MathLib;
 
+using DotNet3D.Math;
 using FogMode = Axiom.FogMode;
 using LightType = Axiom.LightType;
 using StencilOperation = Axiom.StencilOperation;
@@ -691,8 +698,9 @@ namespace Axiom.RenderSystems.DirectX9
         /// <returns></returns>
         public override Matrix4 MakeOrthoMatrix( float fov, float aspectRatio, float near, float far, bool forGpuPrograms )
         {
-            float thetaY = MathUtil.DegreesToRadians( fov / 2.0f );
-            float tanThetaY = MathUtil.Tan( thetaY );
+            float thetaY = (Real)( new Degree( new Real( fov / 2.0f ) ).InRadians );
+            //MathUtil.DegreesToRadians( fov / 2.0f );
+            float tanThetaY = Utility.Tan( (Real)thetaY );
             float tanThetaX = tanThetaY * aspectRatio;
 
             float halfW = tanThetaX * near;
@@ -733,8 +741,9 @@ namespace Axiom.RenderSystems.DirectX9
         /// <returns></returns>
         public override Matrix4 MakeProjectionMatrix( float fov, float aspectRatio, float near, float far, bool forGpuProgram )
         {
-            float theta = MathUtil.DegreesToRadians( fov * 0.5f );
-            float h = 1 / MathUtil.Tan( theta );
+            float theta = (Real)( new Degree( new Real( fov * 0.5f ) ).InRadians );
+            //MathUtil.DegreesToRadians( fov * 0.5f );
+            float h = 1 / Utility.Tan( (Real)theta );
             float w = h / aspectRatio;
             float q = 0;
             float qn = 0;
@@ -771,7 +780,7 @@ namespace Axiom.RenderSystems.DirectX9
             return dest;
         }
 
-        public override void ApplyObliqueDepthProjection( ref Matrix4 projMatrix, Axiom.MathLib.Plane plane, bool forGpuProgram )
+        public override void ApplyObliqueDepthProjection( ref Matrix4 projMatrix, Plane plane, bool forGpuProgram )
         {
             // Thanks to Eric Lenyel for posting this calculation at www.terathon.com
 
@@ -784,7 +793,7 @@ namespace Axiom.RenderSystems.DirectX9
 			Vector4 q = matrix.inverse() * 
 				Vector4(Math::Sign(plane.normal.x), Math::Sign(plane.normal.y), 1.0f, 1.0f);
 			*/
-            MathLib.Vector4 q = new MathLib.Vector4();
+            Vector4 q = new Vector4();
             q.x = Math.Sign( plane.Normal.x ) / projMatrix.m00;
             q.y = Math.Sign( plane.Normal.y ) / projMatrix.m11;
             q.z = 1.0f;
@@ -800,10 +809,10 @@ namespace Axiom.RenderSystems.DirectX9
             }
 
             // Calculate the scaled plane vector
-            MathLib.Vector4 clipPlane4d =
-                new MathLib.Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D );
+            Vector4 clipPlane4d =
+                new Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.Distance );
 
-            MathLib.Vector4 c = clipPlane4d * ( 1.0f / ( clipPlane4d.Dot( q ) ) );
+            Vector4 c = clipPlane4d * ( 1.0f / ( clipPlane4d.DotProduct(( q )) ) );
 
             // Replace the third row of the projection matrix
             projMatrix.m20 = c.x;
@@ -1225,7 +1234,7 @@ namespace Axiom.RenderSystems.DirectX9
                 SetD3DLight( i, null );
             }
 
-            numCurrentLights = (int)MathUtil.Min( limit, lightList.Count );
+            numCurrentLights = (int)Utility.Min( limit, lightList.Count );
         }
 
         public override int ConvertColor( ColorEx color )
@@ -1385,8 +1394,10 @@ namespace Axiom.RenderSystems.DirectX9
                     case LightType.Spotlight:
                         device.Lights[ index ].LightType = Microsoft.DirectX.Direct3D.LightType.Spot;
                         device.Lights[ index ].Falloff = light.SpotlightFalloff;
-                        device.Lights[ index ].InnerConeAngle = MathUtil.DegreesToRadians( light.SpotlightInnerAngle );
-                        device.Lights[ index ].OuterConeAngle = MathUtil.DegreesToRadians( light.SpotlightOuterAngle );
+                        device.Lights[ index ].InnerConeAngle = (Real)( new Degree( light.SpotlightInnerAngle ).InRadians );
+                        //MathUtil.DegreesToRadians( light.SpotlightInnerAngle );
+                        device.Lights[ index ].OuterConeAngle = (Real)( new Degree( light.SpotlightOuterAngle ).InRadians );
+                        //MathUtil.DegreesToRadians( light.SpotlightOuterAngle );
                         break;
                 } // switch
 
@@ -1426,7 +1437,7 @@ namespace Axiom.RenderSystems.DirectX9
         {
             ConfigOption optDevice = new ConfigOption( "Rendering Device", "", false );
             ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit colour", false );
-            ConfigOption optFullScreen = new ConfigOption( "Full Screen", "Yes", false );
+            ConfigOption optFullScreen = new ConfigOption( "Full Screen", "No", false );
             ConfigOption optVSync = new ConfigOption( "VSync", "No", false );
             ConfigOption optAA = new ConfigOption( "Anti aliasing", "None", false );
             ConfigOption optFPUMode = new ConfigOption( "Floating-point mode", "Fastest", false );

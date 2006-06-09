@@ -24,15 +24,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
-using System.Text;
 using System.IO;
 
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
+
+using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -48,15 +55,6 @@ namespace Axiom
         protected IndexData indexData;
         protected IndexType indexType;
         protected int maxVertexIndex;
-        protected bool renderDetailOverrideable = true;
-
-        /// <summary>
-        ///     Dummy list for IRenderable.Lights since we wont be lit.
-        /// </summary>
-        protected LightList dummyLightList = new LightList();
-
-        protected PlaneList dummyPlaneList = new PlaneList();
-
 
         public MaterialBucket Parent
         {
@@ -94,7 +92,6 @@ namespace Axiom
         #endregion
 
         #region TODO Port from Ogre
-        // TODO Complete port from OGRE
         public Material Material
         {
             get
@@ -102,7 +99,7 @@ namespace Axiom
                 throw new NotImplementedException();
             }
         }
-        // TODO Complete port from OGRE
+
         public Technique Technique
         {
             get
@@ -111,7 +108,6 @@ namespace Axiom
             }
         }
 
-        // TODO Complete port from OGRE
         //			bool getCastsShadows(void) const;
         public bool CastsShadows
         {
@@ -121,21 +117,18 @@ namespace Axiom
             }
         }
 
-        // TODO Complete port from OGRE
         //			void getRenderOperation(RenderOperation& op);
         public void GetRenderOperation( RenderOperation op )
         {
             throw new NotImplementedException();
         }
 
-        // TODO Complete port from OGRE
         //	        void getWorldTransforms(Matrix4* xform) const;
         public void GetWorldTransforms( Matrix4[] transforms )
         {
             throw new NotImplementedException();
         }
 
-        // TODO Complete port from OGRE
         //	        const LightList& getLights(void) const;
         public LightList Lights
         {
@@ -145,7 +138,6 @@ namespace Axiom
             }
         }
 
-        // TODO Complete port from OGRE
         //	        const Quaternion& getWorldOrientation(void) const;
         public Quaternion WorldOrientation
         {
@@ -155,7 +147,6 @@ namespace Axiom
             }
         }
 
-        // TODO Complete port from OGRE
         //	        const Vector3& getWorldPosition(void) const;
         public Vector3 WorldPosition
         {
@@ -165,7 +156,6 @@ namespace Axiom
             }
         }
 
-        // TODO Complete port from OGRE
         //			Real getSquaredViewDepth(const Camera* cam) const;
         public float GetSquaredViewDepth( Camera cam )
         {
@@ -210,28 +200,6 @@ namespace Axiom
                 throw new NotImplementedException();
             }
         }
-
-        public bool RenderDetailOverrideable
-        {
-            get
-            {
-                return renderDetailOverrideable;
-            }
-            set
-            {
-                renderDetailOverrideable = value;
-            }
-        }
-
-        public PlaneList ClipPlanes
-        {
-            get
-            {
-                return dummyPlaneList;
-            }
-        }
-
-
         public Vector4 GetCustomParameter( int index )
         {
             throw new NotImplementedException();

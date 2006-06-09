@@ -24,17 +24,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
 
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
 
-#endregion Namespace Declarations		
+using DotNet3D.Math;
 
+#endregion Namespace Declarations
+			
 #region Ogre Synchronization Information
 /// <ogresynchronization>
 ///     <file name="OgreBorderPanelOverlayElement.h"   revision="1.6.2.3" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
@@ -878,8 +886,6 @@ namespace Axiom
 
             protected BorderPanel parent;
 
-            protected bool renderDetailOverrideable = true;
-            protected PlaneList dummyPlaneList = new PlaneList();
             private LightList emptyLightList = new LightList();
 
             protected Hashtable customParams = new Hashtable();
@@ -946,7 +952,7 @@ namespace Axiom
                 op.operationType = parent.renderOp2.operationType;
             }
 
-            public void GetWorldTransforms( Axiom.MathLib.Matrix4[] matrices )
+            public void GetWorldTransforms( Matrix4[] matrices )
             {
                 parent.GetWorldTransforms( matrices );
             }
@@ -996,26 +1002,6 @@ namespace Axiom
                 get
                 {
                     return Vector3.Zero;
-                }
-            }
-
-            public bool RenderDetailOverrideable
-            {
-                get
-                {
-                    return renderDetailOverrideable;
-                }
-                set
-                {
-                    renderDetailOverrideable = value;
-                }
-            }
-
-            public PlaneList ClipPlanes
-            {
-                get
-                {
-                    return dummyPlaneList;
                 }
             }
 

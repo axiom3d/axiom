@@ -65,15 +65,25 @@ namespace Axiom
     ///		then be created easily through the CreateParticleSystem method.
     /// </remarks>
     [Subsystem( "ParticleSystemManager" )]
-    public sealed class ParticleSystemManager : Singleton<ParticleSystemManager>, IScriptLoader, IDisposable
+    public sealed class ParticleSystemManager : IDisposable
     {
-        #region Constructors and Destructors
+        #region Singleton implementation
+
+        /// <summary>
+        ///     Singleton instance of this class.
+        /// </summary>
+        private static ParticleSystemManager instance;
 
         /// <summary>
         ///     Internal constructor.  This class cannot be instantiated externally.
         /// </summary>
-        private ParticleSystemManager()
+        internal ParticleSystemManager()
         {
+            if ( instance == null )
+            {
+                instance = this;
+            }
+
             scriptPatterns.Add( "*.particle" );
             ResourceGroupManager.Instance.RegisterScriptLoader( this );
             
@@ -92,7 +102,18 @@ namespace Axiom
             }
         }
 
-        #endregion Constructors and Destructors
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
+        public static ParticleSystemManager Instance
+        {
+            get
+            {
+                return instance;
+            }
+        }
+
+        #endregion Singleton implementation
 
         #region Delegates
 
@@ -1003,23 +1024,7 @@ namespace Axiom
             //clear all the collections
             Clear();
             ResourceGroupManager.Instance.UnregisterScriptLoader( this );
-        }
-
-        #endregion
-
-        #region IScriptLoader Members
-
-        List<string> IScriptLoader.ScriptPatterns
-        {
-            get
-            {
-                throw new Exception( "The method or operation is not implemented." );
-            }
-        }
-
-        public void ParseScript( Stream stream, string groupName )
-        {
-            throw new Exception( "The method or operation is not implemented." );
+            instance = null;
         }
 
         #endregion

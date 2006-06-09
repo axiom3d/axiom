@@ -1,10 +1,7 @@
-#region Namespace Declarations
 
-using Axiom.Core;
 using Axiom;
-using Axiom.MathLib;
 
-#endregion Namespace Declarations
+using DotNet3D.Math;
 
 namespace Axiom.Demos
 {
@@ -54,7 +51,7 @@ namespace Axiom.Demos
 
             // create another plane to create the mesh.  Ogre's MovablePlane uses multiple inheritance, bah!
             Plane tmpPlane = new Plane();
-            tmpPlane.D = 0;
+            tmpPlane.Distance = 0;
             tmpPlane.Normal = Vector3.UnitY;
 
             MeshManager.Instance.CreatePlane( "ReflectionPlane", tmpPlane, 2000, 2000, 1, 1, true, 1, 1, 1, Vector3.UnitZ );
@@ -123,9 +120,9 @@ namespace Axiom.Demos
 
                 // calculate a random position
                 Vector3 nodePosition = new Vector3();
-                nodePosition.x = MathUtil.SymmetricRandom() * 750.0f;
-                nodePosition.y = MathUtil.SymmetricRandom() * 100.0f + 25;
-                nodePosition.z = MathUtil.SymmetricRandom() * 750.0f;
+                nodePosition.x = Utility.SymmetricRandom() * 750.0f;
+                nodePosition.y = Utility.SymmetricRandom() * 100.0f + 25;
+                nodePosition.z = Utility.SymmetricRandom() * 750.0f;
 
                 // set the new position
                 node.Position = nodePosition;

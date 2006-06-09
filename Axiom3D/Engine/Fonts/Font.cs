@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,12 +24,37 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Drawing;
-using System.Text;
+using DotNet3D.Math.Collections;
 
+using ResourceHandle = System.UInt64;
+
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
+    /// <summary>
+    ///		Possible font sources for use in the engine.
+    /// </summary>
+    public enum FontType
+    {
+        /// <summary>System truetype fonts, as well as supplementary .ttf files.</summary>
+        TrueType,
+        /// <summary>Character image map created by an artist.</summary>
+        Image
+    }
+
     /// <summary>
     ///		This class is simply a way of getting a font texture into the engine and
     ///		to easily retrieve the texture coordinates required to accurately render them.
@@ -38,7 +63,18 @@ namespace Axiom
     ///		can use an XML font script to define it (probably more practical since you can reuse
     ///		the definition more easily)
     /// </summary>
-    public class Font : Axiom.Resource
+    /// <remarks>	
+    /// This class extends both Resource and ManualResourceLoader since it is
+    /// both a resource in it's own right, but it also provides the manual load
+    /// implementation for the Texture it creates.
+    /// </remarks>
+    /// 
+    /// <ogre name="Font">
+    ///     <file name="OgreFont.h"   revision="1.14" lastUpdated="5/22/2006" lastUpdatedBy="Borrillis" />
+    ///     <file name="OgreFont.cpp" revision="1.32.2.2" lastUpdated="5/22/2006" lastUpdatedBy="Borrillis" />
+    /// </ogre> 
+    /// 
+    public class Font : Resource, IManualResourceLoader
     {
         #region Constants
 
@@ -49,246 +85,152 @@ namespace Axiom
 
         #endregion
 
-        #region Member variables
+        #region Fields and Properties
+
+        #region FontType Property
 
         /// <summary>
         ///    Type of font, either imag based or TrueType.
         /// </summary>
-        protected FontType fontType;
+        private FontType _fontType;
         /// <summary>
-        ///    Source of the font (either an image name or a TrueType font).
+        ///    Type of font.
         /// </summary>
-        protected string source;
-        /// <summary>
-        ///    Size of the truetype font, in points.
-        /// </summary>
-        protected int ttfSize;
-        /// <summary>
-        ///    Resolution (dpi) of truetype font.
-        /// </summary>
-        protected int ttfResolution;
-        /// <summary>
-        ///    For TrueType fonts only.
-        /// </summary>
-        protected bool antialiasColor;
-        /// <summary>
-        ///    Material create for use on entities by this font.
-        /// </summary>
-        protected Material material;
-
-        // arrays for storing texture and display data for each character
-        protected float[] texCoordU1 = new float[END_CHAR - START_CHAR];
-        protected float[] texCoordU2 = new float[END_CHAR - START_CHAR];
-        protected float[] texCoordV1 = new float[END_CHAR - START_CHAR];
-        protected float[] texCoordV2 = new float[END_CHAR - START_CHAR];
-        protected float[] aspectRatio = new float[END_CHAR - START_CHAR];
-
-        protected bool showLines = false;
-
-        #endregion
-
-        #region Constructor
-
-        /// <summary>
-        ///		Constructor, should be called through FontManager.Create.
-        /// </summary>
-        public Font( string name )
+        public FontType Type
         {
-            this.name = name;
-        }
-
-        #endregion Constructor
-
-        #region Implementation of Resource
-
-        /// <summary>
-        ///    Loads either an image based font, or creates one on the fly from a TrueType font file.
-        /// </summary>
-        public override void Load()
-        {
-            // dont load more than once
-            if ( !isLoaded )
+            get
             {
-                // create a material for this font
-                material = (Material)MaterialManager.Instance.Create( "Fonts/" + name );
-
-                TextureUnitState unitState = null;
-                bool blendByAlpha = false;
-
-                if ( fontType == FontType.TrueType )
-                {
-                    // create the font bitmap on the fly
-                    CreateTexture();
-
-                    // a texture layer was added in CreateTexture
-                    unitState = material.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 );
-
-                    blendByAlpha = true;
-                }
-                else
-                {
-                    // pre-created font images
-                    unitState = material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( source );
-
-                    // load this texture
-                    // TODO In general, modify any methods like this that throw their own exception rather than returning null, so the caller can decide how to handle a missing resource.
-                    Texture texture = TextureManager.Instance.Load( source );
-
-                    blendByAlpha = texture.HasAlpha;
-                }
-
-                // set texture addressing mode to Clamp to eliminate fuzzy edges
-                unitState.TextureAddressing = TextureAddressing.Clamp;
-
-                // set up blending mode
-                if ( blendByAlpha )
-                {
-                    material.SetSceneBlending( SceneBlendType.TransparentAlpha );
-                }
-                else
-                {
-                    // assume black background here
-                    material.SetSceneBlending( SceneBlendType.Add );
-                }
-
-                isLoaded = true;
+                return _fontType;
+            }
+            set
+            {
+                _fontType = value;
             }
         }
 
-        #endregion Implementation of Resource
-
-        #region Methods
-
-        protected void CreateTexture()
-        {
-            // TODO Revisit after checking current Imaging support in Mono.
-            //            // create a new bitamp with the size defined
-            //            Bitmap bitmap = new Bitmap(BITMAP_WIDTH, BITMAP_HEIGHT, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-            //
-            //            // get a handles to the graphics context of the bitmap
-            //            System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bitmap);
-            //
-            //            // get a font object for the specified font
-            //            System.Drawing.Font font = new System.Drawing.Font(name, 18);
-            //			
-            //            // create a pen for the grid lines
-            //            Pen linePen = new Pen(Color.Red);
-            //
-            //            // clear the image to transparent
-            //            g.Clear(Color.Transparent);
-            //
-            //            // nice smooth text
-            //            //g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-            //            //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            //
-            //            // used for calculating position in the image for rendering the characters
-            //            int x, y, maxHeight;
-            //            x = y = maxHeight = 0;
-            //
-            //            // loop through each character in the glyph string and draw it to the bitmap
-            //            for(int i = START_CHAR; i < END_CHAR; i++) {
-            //                char c = (char)i;
-            //
-            //                // are we gonna wrap?
-            //                if(x + font.Size > BITMAP_WIDTH - 5) {
-            //                    // increment the y coord and reset x to move to the beginning of next line
-            //                    y += maxHeight;
-            //                    x = 0;
-            //                    maxHeight = 0;
-            //
-            //                    if(showLines) {
-            //                        // draw a horizontal line underneath this row
-            //                        g.DrawLine(linePen, 0, y, BITMAP_WIDTH, y);
-            //                    }
-            //                }
-            //
-            //                // draw the character
-            //                g.DrawString(c.ToString(), font, Brushes.White, x - 3, y);
-            //
-            //                // measure the width and height of the character
-            //                SizeF metrics = g.MeasureString(c.ToString(), font);
-            //
-            //                // calculate the texture coords for the character
-            //                // note: flip the y coords by subtracting from 1
-            //                float u1 = (float)x / (float)BITMAP_WIDTH;
-            //                float u2 = ((float)x  + metrics.Width - 4) / (float)BITMAP_WIDTH;
-            //                float v1 = 1 - ((float)y / (float)BITMAP_HEIGHT);
-            //                float v2 = 1 - (((float)y + metrics.Height) / (float)BITMAP_HEIGHT);
-            //                SetCharTexCoords(c, u1, u2, v1, v2);
-            //
-            //                // increment X by the width of the current char
-            //                x += (int)metrics.Width - 3;
-            //
-            //                // keep track of the tallest character on this line
-            //                if(maxHeight < (int)metrics.Height)
-            //                    maxHeight = (int)metrics.Height;
-            //
-            //                if(showLines) {
-            //                    // draw a vertical line after this char
-            //                    g.DrawLine(linePen, x, y, x, y + font.Height);
-            //                }
-            //            }  // for
-            //
-            //            if(showLines) {
-            //                // draw the last horizontal line
-            //                g.DrawLine(linePen, 0, y + font.Height, BITMAP_WIDTH, y + font.Height);
-            //            }
-            //
-            //            string textureName = name + "FontTexture";
-            //
-            //            // load the created image using the texture manager
-            //            //TextureManager.Instance.LoadImage(textureName, bitmap); 
-            //
-            //            // add a texture layer with the name of the texture
-            //            TextureUnitState unitState = material.GetTechnique(0).GetPass(0).CreateTextureUnitState(textureName);
-            //
-            //            // use min/mag filter, but no mipmapping
-            //            unitState.SetTextureFiltering(FilterOptions.Linear, FilterOptions.Linear, FilterOptions.None);
-        }
+        #endregion FontType Property
+			
+        #region Source Property
 
         /// <summary>
-        ///		Retreives the texture coordinates for the specifed character in this font.
+        ///    Source of the font (either an image name or a TrueType font).
         /// </summary>
-        /// <param name="c"></param>
-        /// <param name="u1"></param>
-        /// <param name="u2"></param>
-        /// <param name="v1"></param>
-        /// <param name="v2"></param>
-        public void GetGlyphTexCoords( char c, out float u1, out float u2, out float v1, out float v2 )
+        private string _source;
+        /// <summary>
+        ///    Source of the font (either an image name or a truetype font)
+        /// </summary>
+        public string Source
         {
-            int idx = (int)c - START_CHAR;
-            u1 = texCoordU1[idx];
-            u2 = texCoordU2[idx];
-            v1 = texCoordV1[idx];
-            v2 = texCoordV2[idx];
+            get
+            {
+                return _source;
+            }
+            set
+            {
+                _source = value;
+            }
         }
+
+        #endregion Source Property
+			
+        #region TrueTypeSize Property
 
         /// <summary>
-        ///		Finds the aspect ratio of the specified character in this font.
+        ///    Size of the truetype font, in points.
         /// </summary>
-        /// <param name="c"></param>
-        /// <returns></returns>
-        public float GetGlyphAspectRatio( char c )
+        private int _ttfSize;
+        /// <summary>
+        ///    Size of the truetype font, in points.
+        /// </summary>
+        public int TrueTypeSize
         {
-            int idx = (int)c - START_CHAR;
-
-            return aspectRatio[idx];
+            get
+            {
+                return _ttfSize;
+            }
+            set
+            {
+                _ttfSize = value;
+            }
         }
 
-        public void SetGlyphTexCoords( char c, float u1, float v1, float u2, float v2 )
+        #endregion TrueTypeSize Property
+			
+        #region TrueTypeResolution Property
+
+        /// <summary>
+        ///    Resolution (dpi) of truetype font.
+        /// </summary>
+        private int _ttfResolution;
+        /// <summary>
+        ///    Resolution (dpi) of truetype font.
+        /// </summary>
+        public int TrueTypeResolution
         {
-            int idx = (int)c - START_CHAR;
-            texCoordU1[idx] = u1;
-            texCoordU2[idx] = v1;
-            texCoordV1[idx] = u2;
-            texCoordV2[idx] = v2;
-            aspectRatio[idx] = ( u2 - u1 ) / ( v2 - v1 );
+            get
+            {
+                return _ttfResolution;
+            }
+            set
+            {
+                _ttfResolution = value;
+            }
         }
 
-        #endregion Methods
+        #endregion TrueTypeResolution Property
+			
+        #region Material Property
 
-        #region Properties
+        /// <summary>
+        ///    Material create for use on entities by this font.
+        /// </summary>
+        private Material _material;
+        /// <summary>
+        ///    Gets a reference to the material being used for this font.
+        /// </summary>
+        public Material Material
+        {
+            get
+            {
+                return _material;
+            }
+            protected set
+            {
+                _material = value;
+            }
+        }
 
+        #endregion Material Property
+
+        #region texture Property
+
+        /// <summary>
+        ///    Material create for use on entities by this font.
+        /// </summary>
+        private Texture _texture;
+        /// <summary>
+        ///    Gets a reference to the material being used for this font.
+        /// </summary>
+        protected Texture texture
+        {
+            get
+            {
+                return _texture;
+            }
+            set
+            {
+                _texture = value;
+            }
+        }
+
+        #endregion texture Property
+
+        #region AntiAliasColor Property
+
+        /// <summary>
+        ///    For TrueType fonts only.
+        /// </summary>
+        private bool _antialiasColor;
         /// <summary>
         ///    Sets whether or not the color of this font is antialiased as it is generated
         ///    from a TrueType font.
@@ -306,85 +248,385 @@ namespace Axiom
         {
             get
             {
-                return antialiasColor;
+                return _antialiasColor;
             }
             set
             {
-                antialiasColor = value;
+                _antialiasColor = value;
             }
         }
 
-        /// <summary>
-        ///    Gets a reference to the material being used for this font.
-        /// </summary>
-        public Material Material
-        {
-            get
-            {
-                return material;
-            }
-        }
+        #endregion AntiAliasColor Property
 
-        /// <summary>
-        ///    Source of the font (either an image name or a truetype font)
-        /// </summary>
-        public string Source
+        // arrays for storing texture and display data for each character
+        #region texCoordU1 Property
+
+        private float[] _texCoordU1 = new float[ END_CHAR - START_CHAR ];
+        protected float[] texCoordU1
         {
             get
             {
-                return source;
+                return _texCoordU1;
             }
             set
             {
-                source = value;
+                _texCoordU1 = value;
             }
         }
 
-        /// <summary>
-        ///    Resolution (dpi) of truetype font.
-        /// </summary>
-        public int TrueTypeResolution
+        #endregion texCoordU1 Property
+			
+        #region texCoordU2 Property
+
+        private float[] _texCoordU2 = new float[ END_CHAR - START_CHAR ];
+        protected float[] texCoordU2
         {
             get
             {
-                return ttfResolution;
+                return _texCoordU2;
             }
             set
             {
-                ttfResolution = value;
+                _texCoordU2 = value;
             }
         }
 
-        /// <summary>
-        ///    Size of the truetype font, in points.
-        /// </summary>
-        public int TrueTypeSize
+        #endregion texCoordU2 Property
+			
+        #region texCoordV2 Property
+
+        private float[] _texCoordV1 = new float[ END_CHAR - START_CHAR ];
+        protected float[] texCoordV1
         {
             get
             {
-                return ttfSize;
+                return _texCoordV1;
             }
             set
             {
-                ttfSize = value;
+                _texCoordV1 = value;
             }
         }
 
-        /// <summary>
-        ///    Type of font.
-        /// </summary>
-        public FontType Type
+        #endregion texCoordV2 Property
+			
+        #region texCoordV2 Property
+
+        private float[] _texCoordV2 = new float[ END_CHAR - START_CHAR ];
+        protected float[] texCoordV2
         {
             get
             {
-                return fontType;
+                return _texCoordV2;
             }
             set
             {
-                fontType = value;
+                _texCoordV2 = value;
             }
         }
 
-        #endregion Properties
+        #endregion texCoordV2 Property
+			
+        #region aspectRatio Property
+
+        private float[] _aspectRatio = new float[ END_CHAR - START_CHAR ];
+        protected float[] aspectRatio
+        {
+            get
+            {
+                return _aspectRatio;
+            }
+            set
+            {
+                _aspectRatio = value;
+            }
+        }
+
+        #endregion aspectRatio Property
+			
+        #region showLines Property
+
+        private bool _showLines = false;
+        protected bool showLines
+        {
+            get
+            {
+                return _showLines;
+            }
+            set
+            {
+                _showLines = value;
+            }
+        }
+
+        #endregion showLines Property
+			
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        ///		Constructor, should be called through FontManager.Create.
+        /// </summary>
+        public Font( ResourceManager parent, string name, ResourceHandle handle, string group )
+            : this( parent, name, handle, group, false, null )
+        {
+        }
+
+        public Font( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+            : base( parent, name, handle, group, isManual, loader )
+        {
+        }
+
+        ~Font()
+        {
+            Unload();
+        }
+
+        #endregion Constructor
+
+        #region Implementation of Resource
+
+        protected override void load()
+        {
+            // create a material for this font
+            Material = (Material)MaterialManager.Instance.Create( "Fonts/" + Name, Group );
+
+            TextureUnitState texLayer = null;
+            bool blendByAlpha = false;
+
+            if ( _fontType == FontType.TrueType )
+            {
+                // create the font bitmap on the fly
+                createTexture();
+
+                // a texture layer was added in CreateTexture
+                texLayer = Material.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 );
+
+                blendByAlpha = true;
+            }
+            else
+            {
+
+                // load this texture
+                // TODO In general, modify any methods like this that throw their own exception rather than returning null, so the caller can decide how to handle a missing resource.
+                Texture texture = TextureManager.Instance.Load( Source, Group, TextureType.TwoD, null );
+
+                blendByAlpha = texture.HasAlpha;
+                // pre-created font images
+                texLayer = Material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( Source );
+            }
+
+            // set texture addressing mode to Clamp to eliminate fuzzy edges
+            texLayer.TextureAddressing = TextureAddressing.Clamp;
+            // Allow min/mag filter, but no mip
+            texLayer.SetTextureFiltering( FilterOptions.Linear, FilterOptions.Linear, FilterOptions.None );
+
+            // set up blending mode
+            if ( blendByAlpha )
+            {
+                Material.SetSceneBlending( SceneBlendType.TransparentAlpha );
+            }
+            else
+            {
+                // assume black background here
+                Material.SetSceneBlending( SceneBlendType.Add );
+            }
+
+        }
+
+        protected override void unload()
+        {
+            _texture.Unload();
+        }
+
+        protected override int calculateSize()
+        {
+            // permanent resource is in the texture 
+            return 0;
+        }
+
+        #endregion Implementation of Resource
+
+        #region Methods
+
+        protected void createTexture()
+        {
+		    // Just create the texture here, and point it at ourselves for when
+		    // it wants to (re)load for real
+		    String texName = Name + "FontTexture";
+		    // Create, setting isManual to true and passing self as loader
+		    texture = TextureManager.Instance.Create( texName, Group, true, this);
+            texture.TextureType = TextureType.TwoD;
+            texture.NumMipMaps = 0;
+            texture.Load();
+
+		    TextureUnitState t = Material.GetTechnique(0).GetPass(0).CreateTextureUnitState( texName );
+		    // Allow min/mag filter, but no mip
+		    t.SetTextureFiltering( FilterOptions.Linear, FilterOptions.Linear, FilterOptions.None );
+        }
+
+        /// <summary>Returns the size in pixels of a box that could contain the whole string.</summary>
+        Pair<int> StrBBox( string text, float char_height, RenderWindow window )
+        {
+            Pair< int > ret = new Pair<int>( 0, 0 );
+            float vsX, vsY, veX, veY;
+            int w, h;
+
+            w = window.Width;
+            h = window.Height;
+
+            for( int i = 0; i < text.Length; i++ )
+            {
+                GetGlyphTexCoords( text[ i ], out vsX, out vsY, out veX, out veY );
+
+                // Calculate view-space width and height of char
+                vsY = char_height;
+                vsX = GetGlyphAspectRatio( text[ i ] ) * char_height;
+
+                ret.second += (int)(vsX * w);
+                if ( vsY * h > ret.first || ( ( i == 0 ) && text[ i - 1 ] == '\n' ) )
+                    ret.first += (int)( vsY * h );
+            }
+
+            return ret;
+        }
+
+        /// <summary>
+        ///		Retreives the texture coordinates for the specifed character in this font.
+        /// </summary>
+        /// <param name="c"></param>
+        /// <param name="u1"></param>
+        /// <param name="u2"></param>
+        /// <param name="v1"></param>
+        /// <param name="v2"></param>
+        public void GetGlyphTexCoords( char c, out float u1, out float u2, out float v1, out float v2 )
+        {
+            int idx = c - START_CHAR;
+            u1 = texCoordU1[idx];
+            u2 = texCoordU2[idx];
+            v1 = texCoordV1[idx];
+            v2 = texCoordV2[idx];
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="c"></param>
+        /// <param name="u1"></param>
+        /// <param name="v1"></param>
+        /// <param name="u2"></param>
+        /// <param name="v2"></param>
+        public void SetGlyphTexCoords( char c, float u1, float v1, float u2, float v2 )
+        {
+            int idx = c - START_CHAR;
+            texCoordU1[idx] = u1;
+            texCoordU2[idx] = v1;
+            texCoordV1[idx] = u2;
+            texCoordV2[idx] = v2;
+            aspectRatio[idx] = ( u2 - u1 ) / ( v2 - v1 );
+        }
+
+        /// <summary>
+        ///		Finds the aspect ratio of the specified character in this font.
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public float GetGlyphAspectRatio( char c )
+        {
+            int idx = c - START_CHAR;
+
+            return aspectRatio[idx];
+        }
+
+
+        #endregion Methods
+
+        #region IManualResourceLoader Members
+
+        public void LoadResource( Resource resource )
+        {
+            // TODO Revisit after checking current Imaging support in Mono.
+
+            // create a new bitamp with the size defined
+            Bitmap bitmap = new Bitmap( BITMAP_WIDTH, BITMAP_HEIGHT, System.Drawing.Imaging.PixelFormat.Format24bppRgb );
+
+            // get a handles to the graphics context of the bitmap
+            System.Drawing.Graphics g = System.Drawing.Graphics.FromImage( bitmap );
+
+            // get a font object for the specified font
+            System.Drawing.Font font = new System.Drawing.Font( Name, 18 );
+
+            // create a pen for the grid lines
+            Pen linePen = new Pen( Color.Red );
+
+            // clear the image to transparent
+            g.Clear( Color.Transparent );
+
+            // nice smooth text
+            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+            // used for calculating position in the image for rendering the characters
+            int x, y, maxHeight;
+            x = y = maxHeight = 0;
+
+            // loop through each character in the glyph string and draw it to the bitmap
+            for ( int i = START_CHAR; i < END_CHAR; i++ )
+            {
+                char c = (char)i;
+
+                // are we gonna wrap?
+                if ( x + font.Size > BITMAP_WIDTH - 5 )
+                {
+                    // increment the y coord and reset x to move to the beginning of next line
+                    y += maxHeight;
+                    x = 0;
+                    maxHeight = 0;
+
+                    if ( showLines )
+                    {
+                        // draw a horizontal line underneath this row
+                        g.DrawLine( linePen, 0, y, BITMAP_WIDTH, y );
+                    }
+                }
+
+                // draw the character
+                g.DrawString( c.ToString(), font, Brushes.White, x - 3, y );
+
+                // measure the width and height of the character
+                SizeF metrics = g.MeasureString( c.ToString(), font );
+
+                // calculate the texture coords for the character
+                // note: flip the y coords by subtracting from 1
+                float u1 = (float)x / (float)BITMAP_WIDTH;
+                float u2 = ( (float)x + metrics.Width - 4 ) / (float)BITMAP_WIDTH;
+                float v1 = 1 - ( (float)y / (float)BITMAP_HEIGHT );
+                float v2 = 1 - ( ( (float)y + metrics.Height ) / (float)BITMAP_HEIGHT );
+                SetGlyphTexCoords( c, u1, u2, v1, v2 );
+
+                // increment X by the width of the current char
+                x += (int)metrics.Width - 3;
+
+                // keep track of the tallest character on this line
+                if ( maxHeight < (int)metrics.Height )
+                    maxHeight = (int)metrics.Height;
+
+                if ( showLines )
+                {
+                    // draw a vertical line after this char
+                    g.DrawLine( linePen, x, y, x, y + font.Height );
+                }
+            }  // for
+
+            if ( showLines )
+            {
+                // draw the last horizontal line
+                g.DrawLine( linePen, 0, y + font.Height, BITMAP_WIDTH, y + font.Height );
+            }
+
+        }
+
+        #endregion
     }
 }

@@ -24,13 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
+
+using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -42,7 +50,6 @@ namespace Axiom
     public abstract class SimpleRenderable : MovableObject, IRenderable
     {
         #region Fields
-        static protected long nextAutoGenName;
 
         protected Matrix4 worldTransform = Matrix4.Identity;
         protected AxisAlignedBox box;
@@ -50,16 +57,16 @@ namespace Axiom
         protected Material material;
         protected SceneManager sceneMgr;
         protected Camera camera;
+        static protected long nextAutoGenName;
 
         protected VertexData vertexData;
         protected IndexData indexData;
 
-        protected bool renderDetailOverideable;
         /// <summary>
-        /// Empty light list to use when there is no parent for this renderable.
+        ///    Empty light list to use when there is no parent for this renderable.
         /// </summary>
         protected LightList dummyLightList = new LightList();
-        protected PlaneList dummyPlaneList = new PlaneList();
+
         protected SortedList customParams = new SortedList();
 
         #endregion Fields
@@ -214,18 +221,6 @@ namespace Axiom
             }
         }
 
-        public virtual bool RenderDetailOverrideable
-        {
-            get
-            {
-                return renderDetailOverideable;
-            }
-            set
-            {
-                renderDetailOverideable = value;
-            }
-        }
-
         /// <summary>
         /// 
         /// </summary>
@@ -267,14 +262,6 @@ namespace Axiom
                 {
                     return dummyLightList;
                 }
-            }
-        }
-
-        public PlaneList ClipPlanes
-        {
-            get
-            {
-                return dummyPlaneList;
             }
         }
 

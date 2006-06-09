@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -31,10 +39,10 @@ using System.Collections;
 using System.Diagnostics;
 using System.IO;
 
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
-// This is coming from RealmForge.Utility
-using Axiom.Core;
+
+
+using DotNet3D.Math;
+using DotNet3D.Math.Collections;
 
 #endregion Namespace Declarations
 
@@ -675,7 +683,7 @@ namespace Axiom
             sceneNodeList.Clear();
             autoTrackingSceneNodes.Clear();
 
-            rootSceneNode.Clear();
+            rootSceneNode.RemoveAllChildren();
             rootSceneNode.DetachAllObjects();
 
             RemoveAllEntities();
@@ -1206,14 +1214,14 @@ namespace Axiom
                 Vector3 extrude = light.DerivedDirection * -shadowDirLightExtrudeDist;
                 // do first corner
                 min = max = corners[0];
-                min.Floor( corners[0] + extrude );
-                max.Ceil( corners[0] + extrude );
+                min.ToFloor( corners[0] + extrude );
+                max.ToCeiling( corners[0] + extrude );
                 for ( int c = 1; c < 8; ++c )
                 {
-                    min.Floor( corners[c] );
-                    max.Ceil( corners[c] );
-                    min.Floor( corners[c] + extrude );
-                    max.Ceil( corners[c] + extrude );
+                    min.ToFloor( corners[c] );
+                    max.ToCeiling( corners[c] );
+                    min.ToFloor( corners[c] + extrude );
+                    max.ToCeiling( corners[c] + extrude );
                 }
                 aabb.SetExtents( min, max );
 
@@ -2064,7 +2072,7 @@ namespace Axiom
             Vector3 up = Vector3.Zero;
 
             // set the distance of the plane
-            p.D = distance;
+            p.Distance = distance;
 
             switch ( plane )
             {
@@ -2135,7 +2143,7 @@ namespace Axiom
             string meshName = "SkyDomePlane_";
 
             // set up plane equation
-            p.D = distance;
+            p.Distance = distance;
 
             switch ( plane )
             {
@@ -3627,9 +3635,9 @@ namespace Axiom
             {
                 // TODO Add ClipPlanes to RenderSystem.cs
                 /*
-				if (_camera.IsWindowSet)  
+				if (camera.IsWindowSet)  
 				{
-					PlaneList planeList = _camera.WindowPlanes;
+					PlaneList planeList = camera.WindowPlanes;
 					for (ushort i = 0; i < 4; ++i)
 					{
 						targetRenderSystem.EnableClipPlane(i, true);
@@ -5165,7 +5173,7 @@ namespace Axiom
                 }
 
                 // test the intersection against the world bounding box of the entity
-                IntersectResult results = MathUtil.Intersects( ray, entity.GetWorldBoundingBox() );
+                IntersectionResult results = ray.Intersects( entity.GetWorldBoundingBox() );
 
                 // if the results came back positive, fire the event handler
                 if ( results.Hit == true )

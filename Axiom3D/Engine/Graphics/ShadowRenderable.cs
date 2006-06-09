@@ -24,13 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
+
+using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -52,13 +60,11 @@ namespace Axiom
 
         protected Material material;
         protected RenderOperation renderOp = new RenderOperation();
-        protected bool renderDetailOverrideable = true;
         /// <summary>
         ///		Used only if IsLightCapSeparate == true.
         /// </summary>
         protected ShadowRenderable lightCap;
         protected LightList dummyLightList = new LightList();
-        protected PlaneList dummyPlaneList = new PlaneList();
         protected Hashtable customParams = new Hashtable();
 
         #endregion Fields
@@ -171,28 +177,7 @@ namespace Axiom
             op.vertexData = renderOp.vertexData;
         }
 
-        public abstract void GetWorldTransforms( Axiom.MathLib.Matrix4[] matrices );
-
-        public bool RenderDetailOverrideable
-        {
-            get
-            {
-                return renderDetailOverrideable;
-            }
-            set
-            {
-                renderDetailOverrideable = value;
-            }
-        }
-
-        public PlaneList ClipPlanes
-        {
-            get
-            {
-                return dummyPlaneList;
-            }
-        }
-
+        public abstract void GetWorldTransforms( Matrix4[] matrices );
 
         public LightList Lights
         {
@@ -242,12 +227,12 @@ namespace Axiom
             }
         }
 
-        public abstract Axiom.MathLib.Quaternion WorldOrientation
+        public abstract Quaternion WorldOrientation
         {
             get;
         }
 
-        public abstract Axiom.MathLib.Vector3 WorldPosition
+        public abstract Vector3 WorldPosition
         {
             get;
         }

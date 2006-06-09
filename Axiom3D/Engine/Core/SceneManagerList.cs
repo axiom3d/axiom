@@ -24,15 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
 using System.Collections;
 
 #endregion Namespace Declarations
-
-
+			
 namespace Axiom
 {
     /// <summary>
@@ -53,8 +59,7 @@ namespace Axiom
     ///     (and it may be restricted access in the future).
     /// </remarks>
     // TODO Class name no longer matches file name.
-    [Subsystem( "SceneManagers" )]
-    public sealed class SceneManagerEnumerator : ISubsystem
+    public sealed class SceneManagerEnumerator
     {
         #region Singleton implementation
 
@@ -108,11 +113,11 @@ namespace Axiom
         /// </summary>
         private Hashtable sceneManagers = new Hashtable();
 
-        public SceneManager this[ SceneType type ]
+        public SceneManager this[SceneType type]
         {
             set
             {
-                sceneManagers[ type ] = value;
+                sceneManagers[type] = value;
 
                 // Set rendersystem, incase this is set after the rendersystem has already been selected
                 value.TargetRenderSystem = Root.Instance.RenderSystem;
@@ -120,12 +125,12 @@ namespace Axiom
             get
             {
 
-                if ( sceneManagers[ type ] == null )
+                if ( sceneManagers[type] == null )
                 {
                     throw new AxiomException( "Cannot find scene manager for type '{0}'", type );
                 }
 
-                return (SceneManager)sceneManagers[ type ];
+                return (SceneManager)sceneManagers[type];
             }
         }
 
@@ -140,7 +145,7 @@ namespace Axiom
         /// <returns>A reference to the scene manager of the specified type.</returns>
         public SceneManager GetSceneManager( SceneType type )
         {
-            return this[ type ];
+            return this[type];
         }
 
         /// <summary>
@@ -163,7 +168,7 @@ namespace Axiom
         /// <param name="manager">Reference to the scene manager.</param>
         public void SetSceneManager( SceneType type, SceneManager manager )
         {
-            this[ type ] = manager;
+            this[type] = manager;
         }
 
         /// <summary>
@@ -175,41 +180,6 @@ namespace Axiom
             foreach ( SceneManager manager in sceneManagers.Values )
             {
                 manager.ClearScene();
-            }
-        }
-
-        #endregion
-
-        #region ISubsystem Members
-
-        public bool Initialize()
-        {
-            // prevent double init
-            if ( isInitialized )
-                return true;
-
-            Vfs.Instance.RegisterNamespace( new SceneManagerNamespaceExtender() );
-
-            List<PluginMetadataAttribute> plugins = PluginManager.Instance.RequestSubsystemPlugins( this );
-
-            foreach ( PluginMetadataAttribute pluginInfo in plugins )
-            {
-                IPlugin plugin = PluginManager.Instance.GetPlugin( pluginInfo.Name );
-
-                if ( !plugin.IsStarted ) plugin.Start();
-            }
-
-            isInitialized = true;
-
-            return true;
-        }
-
-        private bool isInitialized = false;
-        public bool IsInitialized
-        {
-            get
-            {
-                return isInitialized;
             }
         }
 

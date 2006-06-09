@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,11 +24,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections.Specialized;
 
-using Axiom.MathLib;
 
+using DotNet3D.Math;
+
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     /// <summary>
@@ -242,7 +255,7 @@ namespace Axiom
             rotation = rot3x3;
 
             // set up transform from origin
-            translate.Translation = plane.Normal * -plane.D;
+            translate.Translation = plane.Normal * -plane.Distance;
 
             transform = translate * rotation;
 
@@ -266,7 +279,7 @@ namespace Axiom
 
             // generate bounds for the mesh
             mesh.BoundingBox = new AxisAlignedBox( min, max );
-            mesh.BoundingSphereRadius = MathUtil.Sqrt( maxSquaredLength );
+            mesh.BoundingSphereRadius = Utility.Sqrt( maxSquaredLength );
 
             mesh.Load();
             mesh.Touch();
@@ -309,9 +322,9 @@ namespace Axiom
                         }
                         else
                         {
-                            min.Floor( vec );
-                            max.Ceil( vec );
-                            maxSquaredLength = MathUtil.Max( maxSquaredLength, vec.LengthSquared );
+                            min.ToFloor( vec );
+                            max.ToCeiling( vec );
+                            maxSquaredLength = Utility.Max( maxSquaredLength, vec.LengthSquared );
                         }
 
                         if ( normals )
@@ -481,7 +494,7 @@ namespace Axiom
             rot = rot3;
 
             // set up standard xform from origin
-            xlate.Translation = plane.Normal * -plane.D;
+            xlate.Translation = plane.Normal * -plane.Distance;
 
             // concatenate
             xform = xlate * rot;
@@ -522,7 +535,7 @@ namespace Axiom
 
             // generate bounds for the mesh
             mesh.BoundingBox = new AxisAlignedBox( min, max );
-            mesh.BoundingSphereRadius = MathUtil.Sqrt( maxSquaredLength );
+            mesh.BoundingSphereRadius = Utility.Sqrt( maxSquaredLength );
 
             mesh.Load();
             mesh.Touch();
@@ -569,9 +582,9 @@ namespace Axiom
                         }
                         else
                         {
-                            min.Floor( vec );
-                            max.Ceil( vec );
-                            maxSquaredLength = MathUtil.Max( maxSquaredLength, vec.LengthSquared );
+                            min.ToFloor( vec );
+                            max.ToCeiling( vec );
+                            maxSquaredLength = Utility.Max( maxSquaredLength, vec.LengthSquared );
                         }
 
                         if ( normals )
@@ -589,7 +602,7 @@ namespace Axiom
                         vec.Normalize();
 
                         // find distance to sphere
-                        sphereDistance = MathUtil.Sqrt( cameraPosition * cameraPosition * ( vec.y * vec.y - 1.0f ) + sphereRadius * sphereRadius ) - cameraPosition * vec.y;
+                        sphereDistance = Utility.Sqrt( cameraPosition * cameraPosition * ( vec.y * vec.y - 1.0f ) + sphereRadius * sphereRadius ) - cameraPosition * vec.y;
 
                         vec.x *= sphereDistance;
                         vec.z *= sphereDistance;
@@ -664,7 +677,7 @@ namespace Axiom
             indexBuffer.WriteData( 0, indexBuffer.Size, faces, true );
 
             mesh.BoundingBox = new AxisAlignedBox( new Vector3( -100, -100, 0 ), new Vector3( 100, 100, 0 ) );
-            mesh.BoundingSphereRadius = MathUtil.Sqrt( 100 * 100 + 100 * 100 );
+            mesh.BoundingSphereRadius = Utility.Sqrt( 100 * 100 + 100 * 100 );
 
             resourceList.Add( mesh.Name, mesh );
         }
