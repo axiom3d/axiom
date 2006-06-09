@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006  Axiom Project Team
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,15 +24,23 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>     
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-using Axiom;
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
+
+using DotNet3D.Math;
+using DotNet3D.Math.Collections;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom
 {
     /// <summary>
@@ -43,11 +51,14 @@ namespace Axiom
     ///		grouped by material. Classes implementing this interface must be based on a single material, a single
     ///		world matrix (or a collection of world matrices which are blended by weights), and must be 
     ///		renderable via a single render operation.
-    ///		<p/>
+    ///		<para />
     ///		Note that deciding whether to put these objects in the rendering pipeline is done from the more specific
     ///		classes e.g. entities. Only once it is decided that the specific class is to be rendered is the abstract version
     ///		created (could be more than one per visible object) and pushed onto the rendering queue.
     /// </remarks>
+    /// <ogre name="Renderable">
+    ///     <file name="OgreRenderable.h" revison="1.27.2.1" lastUpdated="6/5/06" lastUpdatedBy="Lehuvyterz" />
+    /// </ogre>
     public interface IRenderable
     {
         #region Properties
@@ -55,6 +66,7 @@ namespace Axiom
         /// <summary>
         ///		Gets whether this renderable would normally cast a shadow. 
         /// </summary>
+        /// <ogre name="getCastsShadows" />
         bool CastsShadows
         {
             get;
@@ -63,6 +75,7 @@ namespace Axiom
         /// <summary>
         ///    Get the material associated with this renderable object.
         /// </summary>
+        /// <ogre name="getMaterial" />
         Material Material
         {
             get;
@@ -75,11 +88,13 @@ namespace Axiom
         ///    This is to allow Renderables to use a chosen Technique if they wish, otherwise
         ///    they will use the best Technique available for the Material they are using.
         /// </remarks>
+        /// <ogre name="getTechnique" />
         Technique Technique
         {
             get;
         }
 
+        /// <ogre name="getClipPlanes" />
         PlaneList ClipPlanes
         {
             get;
@@ -91,6 +106,7 @@ namespace Axiom
         /// <remarks>
         ///    Directional lights, which have no position, will always be first on this list.
         /// </remarks>
+        /// <ogre name="getLights" />
         LightList Lights
         {
             get;
@@ -99,6 +115,7 @@ namespace Axiom
         /// <summary>
         ///    Returns whether or not this Renderable wishes the hardware to normalize normals.
         /// </summary>
+        /// <ogre name="getNormaliseNormalse" />
         bool NormalizeNormals
         {
             get;
@@ -114,8 +131,8 @@ namespace Axiom
         ///    If a renderable does not use vertex blending this method returns 1, which is the default for 
         ///    simplicity.
         /// </remarks>
-
-        ushort NumWorldTransforms
+        /// <ogre name="getNumWorldTransforms" />
+        int WorldTransformCount
         {
             get;
         }
@@ -130,6 +147,7 @@ namespace Axiom
         ///    a {-1, 1} view space. Useful for overlay rendering. Normal renderables need
         ///    not override this.
         /// </remarks>
+        /// <ogre name="useIdentityProjection" />
         bool UseIdentityProjection
         {
             get;
@@ -145,6 +163,7 @@ namespace Axiom
         ///    to be relative to camera space already. Useful for overlay rendering. 
         ///    Normal renderables need not override this.
         /// </remarks>
+        /// <ogre name="useIdentityView" />
         bool UseIdentityView
         {
             get;
@@ -153,6 +172,7 @@ namespace Axiom
         /// <summary>
         ///		Will allow for setting per renderable scene detail levels.
         /// </summary>
+        /// <ogre name="getRenderDetail" />
         SceneDetailLevel RenderDetail
         {
             get;
@@ -161,9 +181,12 @@ namespace Axiom
         /// <summary>
         /// Sets whether this renderable's chosen detail level can be overridden (downgraded) by the _camera setting. 
         /// </summary>
+        /// <ogre name="getRenderDetailOverrideable" />
+        /// <ogre name="setRenderDetailoverrideable" />
         bool RenderDetailOverrideable
         {
             get;
+            set;
         }
 
         /// <summary>
@@ -173,6 +196,7 @@ namespace Axiom
         ///    lights is much more efficient than inverting a complete 4x4 matrix, and also 
         ///    eliminates problems introduced by scaling.
         /// </summary>
+        /// <ogre name="getWorldOrientation" />
         Quaternion WorldOrientation
         {
             get;
@@ -185,6 +209,7 @@ namespace Axiom
         ///    lights is much more efficient than inverting a complete 4x4 matrix, and also 
         ///    eliminates problems introduced by scaling.
         /// </summary>
+        /// <ogre name="getWorldPosition" />
         Vector3 WorldPosition
         {
             get;
@@ -195,9 +220,10 @@ namespace Axiom
         #region Public Methods
 
         /// <summary>
-        /// Gets the render operation required to send this object to the frame buffer.
+        ///		Returns the camera-relative squared depth of this renderable.
         /// </summary>
         /// <param name="op">The RenderOperation to populate.</param>
+        /// <ogre name="getRenderOperation" />
         void GetRenderOperation( RenderOperation op );
 
         /// <summary>
@@ -207,8 +233,9 @@ namespace Axiom
         ///    If the object has any derived transforms, these are expected to be up to date as long as
         ///    all the SceneNode structures have been updated before this is called.
         ///  <p/>
-        ///    This will populate the parameter array with 1 matrix if it does not use vertex blending or otherwise with NumWorldTransforms matrices.
+        ///    This will populate the parameter array with 1 matrix if it does not use vertex blending or otherwise with WorldTransformsCount matrices.
         /// </remarks>
+        /// <ogre name="getWorldTransforms" />
         void GetWorldTransforms( Matrix4[] matrices );
 
         /// <summary>
@@ -220,13 +247,15 @@ namespace Axiom
         /// </remarks>
         /// <param name="camera"></param>
         /// <returns></returns>
-        float GetSquaredViewDepth( Camera camera );
+        /// <ogre name="getSquaredViewDepth" />
+        Real GetSquaredViewDepth( Camera camera );
 
         /// <summary>
         ///		Gets the custom value associated with this Renderable at the given index. 
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
+        /// <ogre name="setCustomParameter" />
         Vector4 GetCustomParameter( int index );
 
         /// <summary>
@@ -248,6 +277,7 @@ namespace Axiom
         ///		two is performed by the AutoConstant.Custom entry, if that is used.
         /// </param>
         /// <param name="val">The value to associate.</param>
+        /// <ogre name="setCustomparameter" />
         void SetCustomParameter( int index, Vector4 val );
 
         /// <summary>
@@ -267,6 +297,7 @@ namespace Axiom
         /// </remarks>
         /// <param name="constant">The auto constant entry referring to the parameter being updated.</param>
         /// <param name="parameters">The parameters object which this method should call to set the updated parameters.</param>
+        /// <ogre name="_updateCustomGpuParameter" />
         void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry constant, GpuProgramParameters parameters );
 
         #endregion

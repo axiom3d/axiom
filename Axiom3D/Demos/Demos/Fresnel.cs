@@ -1,7 +1,8 @@
+
 using System;
 using Axiom;
-using Axiom.Core;
-using Axiom.MathLib;
+
+using DotNet3D.Math;
 
 namespace Axiom.Demos
 {
@@ -89,7 +90,7 @@ namespace Axiom.Demos
             }
 
             reflectionPlane.Normal = Vector3.UnitY;
-            reflectionPlane.D = 0;
+            reflectionPlane.Distance = 0;
             MeshManager.Instance.CreatePlane(
                 "ReflectionPlane", reflectionPlane, 1500, 1500, 10, 10, true, 1, 5, 5, Vector3.UnitZ );
 
@@ -141,14 +142,14 @@ namespace Axiom.Demos
                 belowWaterEnts.Add( ent );
 
                 // Generate a random selection of points for the fish to swim to
-                fishSplines[fishNo].AutoCalculate = false;
+                fishSplines[ fishNo ].AutoCalculateTangents = false;
 
                 Vector3 lastPos = Vector3.Zero;
 
                 for ( int waypoint = 0; waypoint < NUM_FISH_WAYPOINTS; waypoint++ )
                 {
                     Vector3 pos = new Vector3(
-                        MathUtil.SymmetricRandom() * 700, -10, MathUtil.SymmetricRandom() * 700 );
+                        Utility.SymmetricRandom() * 700, -10, Utility.SymmetricRandom() * 700 );
 
                     if ( waypoint > 0 )
                     {
@@ -158,7 +159,7 @@ namespace Axiom.Demos
                         while ( ( lastPos - pos ).Length > 750 )
                         {
                             pos = new Vector3(
-                                MathUtil.SymmetricRandom() * 700, -10, MathUtil.SymmetricRandom() * 700 );
+                                Utility.SymmetricRandom() * 700, -10, Utility.SymmetricRandom() * 700 );
                         }
                     }
 

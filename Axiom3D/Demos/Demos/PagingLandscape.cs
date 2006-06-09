@@ -1,9 +1,9 @@
+
 using System;
 using System.IO;
-using Axiom.Core;
 using Axiom;
-using Axiom.Input;
-using Axiom.MathLib;
+
+using DotNet3D.Math;
 
 namespace Axiom.Demos
 {
@@ -295,7 +295,7 @@ namespace Axiom.Demos
             // update performance stats once per second
             if ( statDelay < 0.0f && showDebugOverlay )
             {
-                UpdateStats();
+                UpdateStats( e.TimeSinceLastFrame );
                 statDelay = 1.0f;
             }
             else

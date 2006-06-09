@@ -1,14 +1,9 @@
-#region Namespace Declarations
 
 using System;
 using System.IO;
 using Axiom;
-using Axiom.Core;
-using Axiom.Input;
-using Axiom.MathLib;
 
-#endregion Namespace Declarations
-
+using DotNet3D.Math;
 
 namespace Axiom.Demos
 {
@@ -715,7 +710,7 @@ namespace Axiom.Demos
             modeTimer = 0f;
         }
 
-        protected new void UpdateStats()
+        protected void UpdateStats()
         {
             statsTimer = 0f; // reset Stats Timer
             OverlayElementManager.Instance.GetElement( "Core/CurrFps" ).Text = string.Format( "Current FPS: {0}", Root.Instance.CurrentFPS );

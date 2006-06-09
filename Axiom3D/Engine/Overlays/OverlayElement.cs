@@ -24,6 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -32,13 +40,11 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Drawing;
 
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
-// This is coming from RealmForge.Utility
-using Axiom.Core;
 
-#endregion Namespace Declarations	
+using DotNet3D.Math;
 
+#endregion Namespace Declarations
+			
 #region Ogre Synchronization Information
 /// <ogresynchronization>
 ///     <file name="OgreOverlayElement.h"   revision="1.8" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
@@ -97,8 +103,6 @@ namespace Axiom
         // overlay this element is attached to
         protected Overlay overlay;
 
-        protected bool renderDetailOverrideable = true;
-
         protected float derivedLeft, derivedTop;
         protected bool isDerivedOutOfDate;
         // Flag indicating if the vertex positons need recalculating
@@ -122,7 +126,6 @@ namespace Axiom
         /// <summary>Parser method lookup for script parameters.</summary>
         protected Hashtable attribParsers = new Hashtable();
         protected LightList emptyLightList = new LightList();
-        protected PlaneList dummyPlaneList = new PlaneList();
         protected Hashtable customParams = new Hashtable();
 
         #endregion
@@ -729,28 +732,7 @@ namespace Axiom
         #endregion
 
         #region Properties
-
-        public bool RenderDetailOverrideable
-        {
-            get
-            {
-                return renderDetailOverrideable;
-            }
-            set
-            {
-                renderDetailOverrideable = value;
-            }
-        }
-
-        public PlaneList ClipPlanes
-        {
-            get
-            {
-                return dummyPlaneList;
-            }
-        }
-
-        /// <summary>
+		/// <summary>
 		/// Gets the SourceTemplate for this element
 		/// </summary>
 		public OverlayElement SourceTemplate
@@ -1231,6 +1213,179 @@ namespace Axiom
 
         #endregion
 
+        #region IRenderable Members
+
+        public bool CastsShadows
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        public Material Material
+        {
+            get
+            {
+                return material;
+            }
+        }
+
+        public bool NormalizeNormals
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        public Technique Technique
+        {
+            get
+            {
+                return material.GetBestTechnique();
+            }
+        }
+
+        /// <summary>
+        ///    Abstract.  Force subclasses to implement this.
+        /// </summary>
+        /// <param name="op"></param>
+        public abstract void GetRenderOperation( RenderOperation op );
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="matrices"></param>
+        public void GetWorldTransforms( Matrix4[] matrices )
+        {
+            overlay.GetWorldTransforms( matrices );
+        }
+			
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		public Quaternion GetWorldOrientation()
+		{
+			return overlay.GetWorldOrientation();
+		}
+
+		public Vector3 GetWorldPosition()
+		{
+			return overlay.GetWorldPosition();
+		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public ushort NumWorldTransforms
+        {
+            get
+            {
+                return 1;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool UseIdentityProjection
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool UseIdentityView
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public SceneDetailLevel RenderDetail
+        {
+            get
+            {
+                return SceneDetailLevel.Solid;
+            }
+        }
+
+        /// <summary>
+        ///    Implementation of IRenderable.
+        /// </summary>
+        /// <param name="camera"></param>
+        /// <returns></returns>
+        public float GetSquaredViewDepth( Camera camera )
+        {
+            return 10000 - this.ZOrder;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Quaternion WorldOrientation
+        {
+            get
+            {
+                return overlay.DerivedOrientation;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Vector3 WorldPosition
+        {
+            get
+            {
+                return overlay.DerivedPosition;
+            }
+        }
+
+        public LightList Lights
+        {
+            get
+            {
+                return emptyLightList;
+            }
+        }
+
+        public Vector4 GetCustomParameter( int index )
+        {
+            if ( customParams[index] == null )
+            {
+                throw new Exception( "A parameter was not found at the given index" );
+            }
+            else
+            {
+                return (Vector4)customParams[index];
+            }
+        }
+
+        public void SetCustomParameter( int index, Vector4 val )
+        {
+            customParams[index] = val;
+        }
+
+        public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
+        {
+            if ( customParams[entry.data] != null )
+            {
+                gpuParams.SetConstant( entry.index, (Vector4)customParams[entry.data] );
+            }
+        }
+
+        #endregion
+
         #region Script parser methods
 
         [AttributeParser( "metrics_mode", "OverlayElement" )]
@@ -1318,178 +1473,5 @@ namespace Axiom
         }
 
         #endregion Script parser methods
-
-        #region IRenderable Members
-
-        public bool CastsShadows
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public Material Material
-        {
-            get
-            {
-                return material;
-            }
-        }
-
-        public bool NormalizeNormals
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public Technique Technique
-        {
-            get
-            {
-                return material.GetBestTechnique();
-            }
-        }
-
-        /// <summary>
-        ///    Abstract.  Force subclasses to implement this.
-        /// </summary>
-        /// <param name="op"></param>
-        public abstract void GetRenderOperation( RenderOperation op );
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="matrices"></param>
-        public void GetWorldTransforms( Axiom.MathLib.Matrix4[] matrices )
-        {
-            overlay.GetWorldTransforms( matrices );
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public Quaternion GetWorldOrientation()
-        {
-            return overlay.GetWorldOrientation();
-        }
-
-        public Vector3 GetWorldPosition()
-        {
-            return overlay.GetWorldPosition();
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public ushort NumWorldTransforms
-        {
-            get
-            {
-                return 1;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool UseIdentityProjection
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool UseIdentityView
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public SceneDetailLevel RenderDetail
-        {
-            get
-            {
-                return SceneDetailLevel.Solid;
-            }
-        }
-
-        /// <summary>
-        ///    Implementation of IRenderable.
-        /// </summary>
-        /// <param name="camera"></param>
-        /// <returns></returns>
-        public float GetSquaredViewDepth( Camera camera )
-        {
-            return 10000 - this.ZOrder;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Quaternion WorldOrientation
-        {
-            get
-            {
-                return overlay.DerivedOrientation;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Vector3 WorldPosition
-        {
-            get
-            {
-                return overlay.DerivedPosition;
-            }
-        }
-
-        public LightList Lights
-        {
-            get
-            {
-                return emptyLightList;
-            }
-        }
-
-        public Vector4 GetCustomParameter( int index )
-        {
-            if ( customParams[ index ] == null )
-            {
-                throw new Exception( "A parameter was not found at the given index" );
-            }
-            else
-            {
-                return (Vector4)customParams[ index ];
-            }
-        }
-
-        public void SetCustomParameter( int index, Vector4 val )
-        {
-            customParams[ index ] = val;
-        }
-
-        public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
-        {
-            if ( customParams[ entry.data ] != null )
-            {
-                gpuParams.SetConstant( entry.index, (Vector4)customParams[ entry.data ] );
-            }
-        }
-
-        #endregion
     }
 }

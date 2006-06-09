@@ -24,10 +24,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-using System.Reflection;
 
 #endregion Namespace Declarations
 			
@@ -66,23 +73,22 @@ namespace Axiom
     /// A generic singleton
     /// </summary>
     /// <remarks>
-    /// Although this class will allow it, don't try to do this: Singleton&lt; interface &gt;
+    /// Although this class will allow it, don't try to do this: Singleton< interface >
     /// </remarks>
     /// <typeparam name="T">a class</typeparam>
-    public abstract class Singleton<T> where T : class
+    public abstract class Singleton<T> : IDisposable where T : class
     {
-        static Singleton()
+        public Singleton()
         {
+            if (!IntPtr.ReferenceEquals(this, SingletonFactory.instance))
+                throw new Exception(String.Format("Cannot create instances of the {0} class. Use the static Instance property instead.", this.GetType().Name));
         }
 
         public virtual bool Initialize( params object[] args )
         {
-            return true; 
+            return true;
         }
 
-        /// <summary>
-        /// The one and only instance
-        /// </summary>
         public static T Instance
         {
             get
@@ -95,12 +101,22 @@ namespace Axiom
         {
             static SingletonFactory()
             {
+                
             }
 
-            internal static readonly T instance = (T)typeof( T ).InvokeMember( typeof( T ).Name,
+            internal static T instance = (T)typeof( T ).InvokeMember( typeof( T ).Name,
                                                                                BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.NonPublic,
                                                                                null, null, null );
         }
-          
+
+
+        #region IDisposable Members
+
+        public virtual void Dispose()
+        {
+            SingletonFactory.instance = null;
+        }
+
+        #endregion
     }
 }

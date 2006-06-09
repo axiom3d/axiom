@@ -24,14 +24,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
+
+using DotNet3D.Math;
 
 #endregion Namespace Declarations
 			
@@ -173,14 +181,10 @@ namespace Axiom
         /// </summary>
         protected Plane lastLinkedObliqueProjPlane;
 
-        protected bool renderDetailOverrideable = true;
-
         /// <summary>
         ///     Dummy list for IRenderable.Lights since we wont be lit.
         /// </summary>
         protected LightList dummyLightList = new LightList();
-
-        protected PlaneList dummyPlaneList = new PlaneList();
 
         protected Hashtable customParams = new Hashtable();
 
@@ -198,7 +202,7 @@ namespace Axiom
                 planes[i] = new Plane();
             }
 
-            fieldOfView = MathUtil.RadiansToDegrees( MathUtil.PI / 4.0f );
+            fieldOfView = (Real)(new Radian( Utility.PI / 4.0f ).InDegrees);
             nearDistance = 100.0f;
             farDistance = 100000.0f;
             aspectRatio = 1.33333333333333f;
@@ -289,7 +293,7 @@ namespace Axiom
         ///	 </summary>
         ///	 <remarks>
         ///		The view frustrum is a pyramid created from the camera position and the edges of the viewport.
-        ///		This frustrum does not extend to infinity - it is cropped near to the _camera and there is a far
+        ///		This frustrum does not extend to infinity - it is cropped near to the camera and there is a far
         ///		plane beyond which nothing is displayed. This method sets the distance for the far plane. Different
         ///		applications need different values: e.g. a flight sim needs a much further far clipping plane than
         ///		a first-person shooter. An important point here is that the larger the gap between near and far
@@ -457,7 +461,7 @@ namespace Axiom
                 {
 
                     reflectionPlane = linkedReflectionPlane.DerivedPlane;
-                    reflectionMatrix = MathUtil.BuildReflectionMatrix( reflectionPlane );
+                    reflectionMatrix = Utility.BuildReflectionMatrix( reflectionPlane );
                     lastLinkedReflectionPlane = linkedReflectionPlane.DerivedPlane;
                     returnVal = true;
                 }
@@ -618,7 +622,7 @@ namespace Axiom
             isReflected = true;
             reflectionPlane = plane;
             linkedReflectionPlane = null;
-            reflectionMatrix = MathUtil.BuildReflectionMatrix( plane );
+            reflectionMatrix = Utility.BuildReflectionMatrix( plane );
             InvalidateView();
         }
 
@@ -634,7 +638,7 @@ namespace Axiom
             isReflected = true;
             linkedReflectionPlane = plane;
             reflectionPlane = linkedReflectionPlane.DerivedPlane;
-            reflectionMatrix = MathUtil.BuildReflectionMatrix( reflectionPlane );
+            reflectionMatrix = Utility.BuildReflectionMatrix( reflectionPlane );
             lastLinkedReflectionPlane = reflectionPlane;
             InvalidateView();
         }
@@ -704,14 +708,14 @@ namespace Axiom
                     continue;
                 }
 
-                if ( planes[plane].GetSide( corners[0] ) == PlaneSide.Negative &&
-                    planes[plane].GetSide( corners[1] ) == PlaneSide.Negative &&
-                    planes[plane].GetSide( corners[2] ) == PlaneSide.Negative &&
-                    planes[plane].GetSide( corners[3] ) == PlaneSide.Negative &&
-                    planes[plane].GetSide( corners[4] ) == PlaneSide.Negative &&
-                    planes[plane].GetSide( corners[5] ) == PlaneSide.Negative &&
-                    planes[plane].GetSide( corners[6] ) == PlaneSide.Negative &&
-                    planes[plane].GetSide( corners[7] ) == PlaneSide.Negative )
+                if ( planes[plane].GetSide( corners[0] ) == Plane.Side.Negative &&
+                    planes[plane].GetSide( corners[1] ) == Plane.Side.Negative &&
+                    planes[plane].GetSide( corners[2] ) == Plane.Side.Negative &&
+                    planes[plane].GetSide( corners[3] ) == Plane.Side.Negative &&
+                    planes[plane].GetSide( corners[4] ) == Plane.Side.Negative &&
+                    planes[plane].GetSide( corners[5] ) == Plane.Side.Negative &&
+                    planes[plane].GetSide( corners[6] ) == Plane.Side.Negative &&
+                    planes[plane].GetSide( corners[7] ) == Plane.Side.Negative )
                 {
                     // ALL corners on negative side therefore out of view
                     culledBy = (FrustumPlane)plane;
@@ -811,7 +815,7 @@ namespace Axiom
                     continue;
                 }
 
-                if ( planes[plane].GetSide( vertex ) == PlaneSide.Negative )
+                if ( planes[plane].GetSide( vertex ) == Plane.Side.Negative )
                 {
                     // ALL corners on negative side therefore out of view
                     culledBy = (FrustumPlane)plane;
@@ -851,10 +855,10 @@ namespace Axiom
                 float possTop = screenSpacePos.y + spheresize.y;
                 float possBottom = screenSpacePos.y - spheresize.y;
 
-                left = MathUtil.Max( -1.0f, possLeft );
-                right = MathUtil.Min( 1.0f, possRight );
-                top = MathUtil.Min( 1.0f, possTop );
-                bottom = MathUtil.Max( -1.0f, possBottom );
+                left = Utility.Max( -1.0f, possLeft );
+                right = Utility.Min( 1.0f, possRight );
+                top = Utility.Min( 1.0f, possTop );
+                bottom = Utility.Max( -1.0f, possBottom );
             }
 
             return ( left != -1.0f ) || ( top != 1.0f ) || ( right != 1.0f ) || ( bottom != -1.0f );
@@ -883,8 +887,8 @@ namespace Axiom
         {
             if ( IsFrustumOutOfDate )
             {
-                float thetaY = MathUtil.DegreesToRadians( fieldOfView * 0.5f );
-                float tanThetaY = MathUtil.Tan( thetaY );
+                float thetaY = (Real)(new Degree( new Real(fieldOfView * 0.5f) ).InRadians);
+                float tanThetaY = Utility.Tan( (Real)thetaY );
                 float tanThetaX = tanThetaY * aspectRatio;
                 float vpTop = tanThetaY * nearDistance;
                 float vpRight = tanThetaX * nearDistance;
@@ -1130,38 +1134,38 @@ namespace Axiom
                 planes[(int)FrustumPlane.Left].Normal.x = combo.m30 + combo.m00;
                 planes[(int)FrustumPlane.Left].Normal.y = combo.m31 + combo.m01;
                 planes[(int)FrustumPlane.Left].Normal.z = combo.m32 + combo.m02;
-                planes[(int)FrustumPlane.Left].D = combo.m33 + combo.m03;
+                planes[ (int)FrustumPlane.Left ].Distance = combo.m33 + combo.m03;
 
                 planes[(int)FrustumPlane.Right].Normal.x = combo.m30 - combo.m00;
                 planes[(int)FrustumPlane.Right].Normal.y = combo.m31 - combo.m01;
                 planes[(int)FrustumPlane.Right].Normal.z = combo.m32 - combo.m02;
-                planes[(int)FrustumPlane.Right].D = combo.m33 - combo.m03;
+                planes[ (int)FrustumPlane.Right ].Distance = combo.m33 - combo.m03;
 
                 planes[(int)FrustumPlane.Top].Normal.x = combo.m30 - combo.m10;
                 planes[(int)FrustumPlane.Top].Normal.y = combo.m31 - combo.m11;
                 planes[(int)FrustumPlane.Top].Normal.z = combo.m32 - combo.m12;
-                planes[(int)FrustumPlane.Top].D = combo.m33 - combo.m13;
+                planes[ (int)FrustumPlane.Top ].Distance = combo.m33 - combo.m13;
 
                 planes[(int)FrustumPlane.Bottom].Normal.x = combo.m30 + combo.m10;
                 planes[(int)FrustumPlane.Bottom].Normal.y = combo.m31 + combo.m11;
                 planes[(int)FrustumPlane.Bottom].Normal.z = combo.m32 + combo.m12;
-                planes[(int)FrustumPlane.Bottom].D = combo.m33 + combo.m13;
+                planes[ (int)FrustumPlane.Bottom ].Distance = combo.m33 + combo.m13;
 
                 planes[(int)FrustumPlane.Near].Normal.x = combo.m30 + combo.m20;
                 planes[(int)FrustumPlane.Near].Normal.y = combo.m31 + combo.m21;
                 planes[(int)FrustumPlane.Near].Normal.z = combo.m32 + combo.m22;
-                planes[(int)FrustumPlane.Near].D = combo.m33 + combo.m23;
+                planes[(int)FrustumPlane.Near].Distance = combo.m33 + combo.m23;
 
                 planes[(int)FrustumPlane.Far].Normal.x = combo.m30 - combo.m20;
                 planes[(int)FrustumPlane.Far].Normal.y = combo.m31 - combo.m21;
                 planes[(int)FrustumPlane.Far].Normal.z = combo.m32 - combo.m22;
-                planes[(int)FrustumPlane.Far].D = combo.m33 - combo.m23;
+                planes[(int)FrustumPlane.Far].Distance = combo.m33 - combo.m23;
 
                 // renormalize any normals which were not unit length
                 for ( int i = 0; i < 6; i++ )
                 {
                     float length = planes[i].Normal.Normalize();
-                    planes[i].D /= length;
+                    planes[ i ].Distance /= length;
                 }
 
                 // Update worldspace corners
@@ -1170,7 +1174,7 @@ namespace Axiom
                 // Get worldspace frustum corners
                 // treat infinite far distance as some far value
                 float actualFar = ( farDistance == 0 ) ? InfiniteFarPlaneDistance : farDistance;
-                float y = MathUtil.Tan( fieldOfView * 0.5f );
+                float y = Utility.Tan( new Real(fieldOfView * 0.5f) );
                 float x = aspectRatio * y;
                 float neary = y * nearDistance;
                 float fary = y * ( ( projectionType == Projection.Orthographic ) ? nearDistance : actualFar );
@@ -1365,27 +1369,6 @@ namespace Axiom
                 return SceneDetailLevel.Solid;
             }
         }
-
-        public bool RenderDetailOverrideable
-        {
-            get
-            {
-                return renderDetailOverrideable;
-            }
-            set
-            {
-                renderDetailOverrideable = value;
-            }
-        }
-
-        public PlaneList ClipPlanes
-        {
-            get
-            {
-                return dummyPlaneList;
-            }
-        }
-
 
         public Quaternion WorldOrientation
         {

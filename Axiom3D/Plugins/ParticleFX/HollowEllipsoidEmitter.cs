@@ -28,7 +28,8 @@ using System;
 using System.Diagnostics;
 
 using Axiom;
-using Axiom.MathLib;
+
+using DotNet3D.Math;
 
 namespace Axiom.ParticleFX
 {
@@ -106,25 +107,25 @@ namespace Axiom.ParticleFX
             // create two random angles alpha and beta
             // with these two angles, we are able to select any point on an
             // ellipsoid's surface
-            MathUtil.RangeRandom( durationMin, durationMax );
+            Utility.RangeRandom( durationMin, durationMax );
 
-            alpha = MathUtil.RangeRandom( 0, MathUtil.TWO_PI );
-            beta = MathUtil.RangeRandom( 0, MathUtil.PI );
+            alpha = Utility.RangeRandom( 0, Utility.TWO_PI );
+            beta = Utility.RangeRandom( 0, Utility.PI );
 
             // create three random radius values that are bigger than the inner
             // size, but smaller/equal than/to the outer size 1.0 (inner size is
             // between 0 and 1)
-            a = MathUtil.RangeRandom( InnerX, 1.0f );
-            b = MathUtil.RangeRandom( InnerY, 1.0f );
-            c = MathUtil.RangeRandom( InnerZ, 1.0f );
+            a = Utility.RangeRandom( InnerX, 1.0f );
+            b = Utility.RangeRandom( InnerY, 1.0f );
+            c = Utility.RangeRandom( InnerZ, 1.0f );
 
             // with a,b,c we have defined a random ellipsoid between the inner
             // ellipsoid and the outer sphere (radius 1.0)
             // with alpha and beta we select on point on this random ellipsoid
             // and calculate the 3D coordinates of this point
-            x = a * MathUtil.Cos( alpha ) * MathUtil.Sin( beta );
-            y = b * MathUtil.Sin( alpha ) * MathUtil.Sin( beta );
-            z = c * MathUtil.Cos( beta );
+            x = a * Utility.Cos( (Real)alpha ) * Utility.Sin( (Real)beta );
+            y = b * Utility.Sin( (Real)alpha ) * Utility.Sin( (Real)beta );
+            z = c * Utility.Cos( (Real)beta );
 
             // scale the found point to the ellipsoid's size and move it
             // relatively to the center of the emitter point

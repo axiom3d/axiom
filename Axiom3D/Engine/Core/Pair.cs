@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,33 +24,48 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
-using System.Collections;
 
-using Axiom.MathLib;
+using DotNet3D.Math;
 
+#endregion Namespace Declarations
+			
 namespace Axiom
 {
     /// <summary>
-    ///		Abstract class definining a movable object in a scene.
+    /// 	A simple container class for returning a pair of objects from a method call 
+    /// 	(similar to std::pair, minus the templates).
     /// </summary>
     /// <remarks>
-    ///		Instances of this class are discrete, relatively small, movable objects
-    ///		which are attached to SceneNode objects to define their position.						  
     /// </remarks>
-    [Obsolete( "Please use Axiom.Core.MovableObject." )]
-    public abstract class SceneObject : MovableObject
+    //public class Pair : Pair<object>
+    //{
+    //    public Pair( object first, object second )
+    //    {
+    //        this.first = first;
+    //        this.second = second;
+    //    }
+    //}
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class Pair<T> : Tuple< T, T >
     {
-
-        #region Constructors
-
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public SceneObject() : base()
+        public Pair( T first, T second ): base (first, second )
         {
         }
 
-        #endregion Constructors
     }
 }

@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,17 +24,40 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
-using Axiom;
-using Axiom.MathLib;
+
+using DotNet3D.Math;
+
+#endregion Namespace Declarations
 
 namespace Axiom
 {
     /// <summary>
     ///		This class defines the interface that must be implemented by shadow casters.
     /// </summary>
+    /// <remarks>
+    ///     Note that for casters comprised of more than one set of vertex buffers (e.g. SubMeshes each
+    ///     using their own geometry), it will take more than one ShadowRenderable to render the
+    ///     shadow volume. Therefore for shadow caster geometry, it is best to stick to one set of
+    ///     vertex buffers (not necessarily one buffer, but the positions for the entire geometry
+    ///     should come from one buffer if possible)
+    /// <ogre name="ShadowCaster">
+    ///     <file name="OgreShadowCaster.h" revision="1.23.2.1" lastUpdated="6/5/06" lastUpdatedBy="Lehuvyterz" />
+    ///     <file name="OgreShadowCaster.cpp" revision="1.24" lastUpdated="6/5/06" lastUpdatedBy="Lehuvyterz" />
+    /// </ogre>
     public abstract class ShadowCaster
     {
         #region Properties
@@ -42,7 +65,8 @@ namespace Axiom
         /// <summary>
         ///		Gets/Sets whether or not this object currently casts a shadow.
         /// </summary>
-        public abstract bool CastShadows
+        /// <ogre name="getCastShadows" />
+        public abstract bool CastsShadows
         {
             get;
             set;
@@ -51,14 +75,15 @@ namespace Axiom
         #endregion Properties
 
         #region Methods
-
+        
         /// <summary>
         ///		Gets the world space bounding box of the dark cap, as extruded using the light provided.
         /// </summary>
         /// <param name="light"></param>
         /// <param name="dirLightExtrusionDist"></param>
         /// <returns></returns>
-        public abstract AxisAlignedBox GetDarkCapBounds( Light light, float dirLightExtrusionDist );
+        /// <ogre name="getDarkCapBounds" />
+        public abstract AxisAlignedBox GetDarkCapBounds( Light light, Real extrusionDistance );
 
         /// <summary>
         ///		Gets details of the edges which might be used to determine a silhouette.
@@ -78,6 +103,7 @@ namespace Axiom
         ///		Gets the world space bounding box of the light cap.
         /// </summary>
         /// <returns></returns>
+        /// <ogre name="getLightcapBounds" />
         public abstract AxisAlignedBox GetLightCapBounds();
 
         /// <summary>
@@ -85,8 +111,10 @@ namespace Axiom
         /// </summary>
         /// <param name="derive"></param>
         /// <returns></returns>
+        /// <ogre name="getWorldBoundingBox" />
         public abstract AxisAlignedBox GetWorldBoundingBox( bool derive );
-
+        
+        /// <ogre name="getWorldBoundingBox" />
         public AxisAlignedBox GetWorldBoundingBox()
         {
             return GetWorldBoundingBox( false );
@@ -109,11 +137,13 @@ namespace Axiom
         /// will not be done (a vertex program is assumed).</param>
         /// <param name="flags">Technique-specific flags, see <see cref="ShadowRenderableFlags"/></param>
         /// <returns>An iterator that will allow iteration over all renderables for the full shadow volume.</returns>
+        /// <ogre name="ShadowRenderableListIterator" />
         public abstract IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light,
-            HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, int flags );
-
+            HardwareIndexBuffer indexBuffer, bool extrudeVertices, Real extrusionDistance, int flags );
+        
+        /// <ogre name="ShadowRenderableListIterator" />
         public IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light,
-            HardwareIndexBuffer indexBuffer, float extrusionDistance, bool extrudeVertices )
+            HardwareIndexBuffer indexBuffer, bool extrudeVertices, Real extrusionDistance )
         {
 
             return GetShadowVolumeRenderableEnumerator( technique, light, indexBuffer, extrudeVertices, extrusionDistance, 0 );
@@ -123,6 +153,7 @@ namespace Axiom
         ///		Return the last calculated shadow renderables.
         /// </summary>
         /// <returns></returns>
+        /// <ogre name="ShadowRenderableListIterator" />
         public abstract IEnumerator GetLastShadowVolumeRenderableEnumerator();
 
         /// <summary>
@@ -146,7 +177,8 @@ namespace Axiom
         /// <param name="lightPosition"> 4D light position in object space, when w=0.0f this
         /// represents a directional light</param>
         /// <param name="extrudeDistance">The distance to extrude.</param>
-        public static void ExtrudeVertices( HardwareVertexBuffer vertexBuffer, int originalVertexCount, Vector4 lightPosition, float extrudeDistance )
+        /// <ogre name=extrudeVertices" />
+        public static void ExtrudeVertices( HardwareVertexBuffer vertexBuffer, int originalVertexCount, Vector4 lightPosition, Real extrudeDistance )
         {
             unsafe
             {
@@ -196,6 +228,7 @@ namespace Axiom
         /// </summary>
         /// <param name="edgeData">The edge information to update.</param>
         /// <param name="lightPosition">4D vector representing the light, a directional light has w=0.0.</param>
+        /// <ogre name="updateEdgeListLightFacing" />
         protected virtual void UpdateEdgeListLightFacing( EdgeData edgeData, Vector4 lightPosition )
         {
             edgeData.UpdateTriangleLightFacing( lightPosition );
@@ -214,6 +247,7 @@ namespace Axiom
         /// already been constructed but will need populating with details of
         /// the index ranges to be used.</param>
         /// <param name="flags">Additional controller flags, see <see cref="ShadowRenderableFlags"/>.</param>
+        /// <ogre name="generateShadowVolume" />
         protected virtual void GenerateShadowVolume( EdgeData edgeData, HardwareIndexBuffer indexBuffer, Light light,
             ShadowRenderableList shadowRenderables, int flags )
         {
@@ -418,7 +452,8 @@ namespace Axiom
         /// <param name="lightPosition">4D light position in object space, when w=0.0f this
         /// represents a directional light</param>
         /// <param name="extrudeDistance">The distance to extrude.</param>
-        protected virtual void ExtrudeBounds( AxisAlignedBox box, Vector4 lightPosition, float extrudeDistance )
+        /// <ogre name="extrudeBounds" />
+        protected virtual void ExtrudeBounds( AxisAlignedBox box, Vector4 lightPosition, Real extrudeDistance )
         {
             Vector3 extrusionDir = Vector3.Zero;
 
@@ -453,8 +488,8 @@ namespace Axiom
                     }
                     else
                     {
-                        vmin.Floor( res );
-                        vmax.Ceil( res );
+                        vmin.ToFloor( res );
+                        vmax.ToCeiling( res );
                     }
                 }
 
@@ -468,7 +503,8 @@ namespace Axiom
         /// <param name="objectPos"></param>
         /// <param name="light"></param>
         /// <returns></returns>
-        protected float GetExtrusionDistance( Vector3 objectPos, Light light )
+        /// <ogre name="getExtrusionDistance" />
+        protected Real GetExtrusionDistance( Vector3 objectPos, Light light )
         {
             Vector3 diff = objectPos - light.DerivedPosition;
             return light.AttenuationRange - diff.Length;
@@ -479,7 +515,8 @@ namespace Axiom
         /// </summary>
         /// <param name="light"></param>
         /// <returns></returns>
-        public abstract float GetPointExtrusionDistance( Light light );
+        /// <ogre name="getPointExtrusionDistance" />
+        public abstract Real GetPointExtrusionDistance( Light light );
 
         #endregion Methods
     }

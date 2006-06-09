@@ -1,10 +1,7 @@
-#region Namespace Declarations
 
-using Axiom.Core;
 using Axiom;
-using Axiom.MathLib;
 
-#endregion Namespace Declarations
+using DotNet3D.Math;
 
 namespace Axiom.Demos
 {

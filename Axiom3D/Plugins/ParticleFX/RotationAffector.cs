@@ -27,7 +27,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 
 using Axiom;
-using Axiom.MathLib;
+
+using DotNet3D.Math;
 
 namespace Axiom.ParticleFX
 {
@@ -68,8 +69,8 @@ namespace Axiom.ParticleFX
 
         public override void InitParticle( ref Particle particle )
         {
-            particle.Rotation = rotationRangeStart + ( MathUtil.UnitRandom() * ( rotationRangeEnd - rotationRangeStart ) );
-            particle.RotationSpeed = rotationSpeedRangeStart + ( MathUtil.UnitRandom() * ( rotationSpeedRangeEnd - rotationSpeedRangeStart ) );
+            particle.Rotation = rotationRangeStart + ( Utility.UnitRandom() * ( rotationRangeEnd - rotationRangeStart ) );
+            particle.RotationSpeed = rotationSpeedRangeStart + ( Utility.UnitRandom() * ( rotationSpeedRangeEnd - rotationSpeedRangeStart ) );
         }
 
         public override void AffectParticles( ParticleSystem system, float timeElapsed )

@@ -1,36 +1,7 @@
-#region LGPL License
-/*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-#endregion
-
-#region Namespace Declarations
 
 using Axiom;
-using Axiom.Core;
-using Axiom.MathLib;
 
-#endregion Namespace Declarations
+using DotNet3D.Math;
 
 namespace Axiom.Demos
 {
@@ -89,7 +60,7 @@ namespace Axiom.Demos
             NodeRotationControllerValue rotate2 = new NodeRotationControllerValue( lineNode, Vector3.UnitZ );
 
             // the multiply controller function will multiply the source controller value by the specified value each frame.
-            MultipyControllerFunction func = new MultipyControllerFunction( 50 );
+            MultiplyControllerFunction func = new MultiplyControllerFunction( 50 );
 
             // create a new controller, using the rotate and func objects created above.  there are 2 overloads to this method.  the one being
             // used uses an internal FrameTimeControllerValue as the source value by default.  The destination value will be the node, which 

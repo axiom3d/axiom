@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,6 +24,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.IO;
 using System.Collections;
@@ -31,8 +41,11 @@ using System.Collections.Specialized;
 using System.Runtime.InteropServices;
 
 using Axiom;
-using Axiom.MathLib;
 
+using DotNet3D.Math;
+
+#endregion Namespace Declarations
+			
 namespace Axiom.SceneManagers.Bsp
 {
     /// <summary>
@@ -474,7 +487,7 @@ namespace Axiom.SceneManagers.Bsp
                     q3lvl.Planes[q3node.plane].normal[1],
                     q3lvl.Planes[q3node.plane].normal[2]
                     );
-                splitPlane.D = -q3lvl.Planes[q3node.plane].distance;
+                splitPlane.Distance = -q3lvl.Planes[q3node.plane].distance;
 
                 node.SplittingPlane = splitPlane;
 
@@ -640,7 +653,7 @@ namespace Axiom.SceneManagers.Bsp
                     src.normal[1],
                     src.normal[2]
                     );
-                dest.plane.D = -dest.plane.Normal.DotProduct(
+                dest.plane.Distance = -dest.plane.Normal.DotProduct(
                                 new Vector3(
                                     src.org[0],
                                     src.org[1],
@@ -677,7 +690,7 @@ namespace Axiom.SceneManagers.Bsp
 
                 // Assign plane
                 dest.plane.Normal = new Vector3( src.normal[0], src.normal[1], src.normal[2] );
-                dest.plane.D = -dest.plane.Normal.DotProduct( new Vector3( src.org[0], src.org[1], src.org[2] ) );
+                dest.plane.Distance = -dest.plane.Normal.DotProduct( new Vector3( src.org[0], src.org[1], src.org[2] ) );
             }
             else
             {
@@ -851,9 +864,9 @@ namespace Axiom.SceneManagers.Bsp
                         vp.position = origin;
 
                         if ( q3lvl.Options.setYAxisUp )
-                            vp.orientation = Quaternion.FromAngleAxis( MathUtil.DegreesToRadians( angle ), Vector3.UnitY );
+                            vp.orientation = Quaternion.FromAngleAxis( (Real)( new Degree( angle ).InRadians ), Vector3.UnitY ); //MathUtil.DegreesToRadians( angle )
                         else
-                            vp.orientation = Quaternion.FromAngleAxis( MathUtil.DegreesToRadians( angle ), Vector3.UnitZ );
+                            vp.orientation = Quaternion.FromAngleAxis( (Real)( new Degree( angle ).InRadians ), Vector3.UnitZ ); //MathUtil.DegreesToRadians( angle )
 
                         playerStarts.Add( vp );
                     }
@@ -891,7 +904,7 @@ namespace Axiom.SceneManagers.Bsp
                 float dist = node.GetDistance( pos );
 
                 //CHECK: treat obj as bounding box?
-                if ( MathUtil.Abs( dist ) < obj.BoundingRadius )
+                if ( Utility.Abs( dist ) < obj.BoundingRadius )
                 {
                     // Bounding sphere crosses the plane, do both.
                     TagNodesWithObject( node.BackNode, obj, pos );
