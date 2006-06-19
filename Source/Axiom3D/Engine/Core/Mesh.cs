@@ -42,7 +42,7 @@ using System.Runtime.InteropServices;
 
 
 
-using DotNet3D.Math;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 			

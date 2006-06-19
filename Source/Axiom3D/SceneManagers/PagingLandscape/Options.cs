@@ -40,7 +40,7 @@ using System.Data;
 
 using Axiom;
 
-using DotNet3D.Math;
+using Axiom.Math;
 
 #endregion Namespace Declarations			
 
@@ -443,12 +443,12 @@ namespace Axiom.SceneManagers.PagingLandscape
             if ( strKey == "VisibleDistance" )
             {
                 // we need to return the square root of the distance
-                pDestValue = Math.Sqrt( Renderable_Factor );
+                pDestValue = Utility.Sqrt( Renderable_Factor );
             }
             if ( strKey == "VisibleLOD" )
             {
                 // we need to return the square root of the distance
-                pDestValue = Math.Sqrt( LOD_Factor );
+                pDestValue = Utility.Sqrt( LOD_Factor );
             }
             // Some options proposed by Praetor
             if ( strKey == "Width" )

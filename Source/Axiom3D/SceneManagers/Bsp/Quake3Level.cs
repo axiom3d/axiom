@@ -33,7 +33,7 @@ using System.Runtime.InteropServices;
 
 using Axiom;
 
-using DotNet3D.Math;
+using Axiom.Math;
 
 namespace Axiom.SceneManagers.Bsp
 {

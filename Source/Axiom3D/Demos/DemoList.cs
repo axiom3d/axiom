@@ -6,7 +6,7 @@ using System.Reflection;
 
 using Axiom.Demos;
 
-using DotNet3D.Math;
+using Axiom.Math;
 
 namespace Axiom.Demos
 {
@@ -16,8 +16,8 @@ namespace Axiom.Demos
         private string nextDemo;
 
         //scene creation & semi-auto _camera movement 
-        private float currentAngle;
-        private float stepAngle;
+        private Degree currentAngle;
+        private Degree stepAngle;
         private int cameraMoveDir; //positive (right) or negative (left) indicates direction which _camera is actually moving 
         private float camAngle; //current _camera angle (where currentAngle is only for scene creation) 
         private float currentAngleStop = 0; //where the _camera should stop (facing a statue) 
@@ -115,8 +115,8 @@ namespace Axiom.Demos
             }
             SceneNode node;
 
-            stepAngle = ( 360.0f / (float)demoTypes.Count ); // * ((float)Math.PI / 180.0f); 
-            currentAngle = 0;
+            stepAngle = new Degree( 360.0f / (float)demoTypes.Count ); // * ((float)Utility.PI / 180.0f); 
+            currentAngle = Degree.Zero;
 
 
             for ( int i = 0; i < demoTypes.Count; i++ )
@@ -134,10 +134,10 @@ namespace Axiom.Demos
                 node.AttachObject( ent );
 
                 //get our point on outer circle 
-                float cX = (float)Math.Sin( currentAngle * ( (float)Math.PI / 180.0f ) );
-                float cZ = (float)Math.Cos( currentAngle * ( (float)Math.PI / 180.0f ) );
+                Real cX = Utility.Sin( currentAngle );
+                Real cZ = Utility.Cos( currentAngle );
                 node.Translate( new Vector3( menuCircleR * cX, 0, menuCircleR * cZ ) );
-                node.Rotate( Vector3.UnitY, currentAngle );
+                node.Rotate( Vector3.UnitY, (Real)currentAngle );
                 if ( cameraCircleR < menuCircleR )
                     node.Rotate( Vector3.UnitY, -180.0f );
 
@@ -324,7 +324,7 @@ namespace Axiom.Demos
 
 
             // semi-automatic _camera movement 
-            float camAngleAccel = stepAngle * e.TimeSinceLastFrame;
+            float camAngleAccel = (Real)stepAngle * e.TimeSinceLastFrame;
 
             //check mouse input 
             //if (cameraMoveDir == 0) //only if not currently moving 
@@ -342,9 +342,9 @@ namespace Axiom.Demos
             if ( cameraMoveDir < 0 ) //left 
             {
                 camAngle += camAngleAccel;
-                if ( camAngle >= currentAngleStop + stepAngle )
+                if ( camAngle >= currentAngleStop + (Real)stepAngle )
                 {
-                    currentAngleStop += stepAngle;
+                    currentAngleStop += (Real)stepAngle;
                     cameraMoveDir = 0; //stop the _camera 
                     camAngle = currentAngleStop; //correct final position 
                 }
@@ -352,9 +352,9 @@ namespace Axiom.Demos
             else if ( cameraMoveDir > 0 ) //right 
             {
                 camAngle -= camAngleAccel;
-                if ( camAngle <= currentAngleStop - stepAngle )
+                if ( camAngle <= currentAngleStop - (Real)stepAngle )
                 {
-                    currentAngleStop -= stepAngle;
+                    currentAngleStop -= (Real)stepAngle;
                     cameraMoveDir = 0; //stop the _camera 
                     camAngle = currentAngleStop; //correct final position 
                 }
@@ -363,8 +363,8 @@ namespace Axiom.Demos
 
             //update _camera 
             //            if (cameraMoveDir != 0 || correctFinalPos) 
-            float cX = (float)Math.Sin( camAngle * Math.PI / 180.0f );
-            float cZ = (float)Math.Cos( camAngle * Math.PI / 180.0f );
+            float cX = (float)Utility.Sin( camAngle * Utility.PI / 180.0f );
+            float cZ = (float)Utility.Cos( camAngle * Utility.PI / 180.0f );
             camera.Position = new Vector3( cameraCircleR * cX, 0, cameraCircleR * cZ );
             camera.LookAt( new Vector3( menuCircleR * cX, 0, menuCircleR * cZ ) );
 

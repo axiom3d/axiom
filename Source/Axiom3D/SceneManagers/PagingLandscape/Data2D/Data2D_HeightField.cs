@@ -38,7 +38,7 @@ using System;
 
 using Axiom;
 
-using DotNet3D.Math;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -272,7 +272,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 				for (long i = 0; i < max - 1;  i += bpp )
 				{  
 				float h = image.Data[ i + (bpp - 1)] * scale;
-					MaxHeight = Math.Max ( h, MaxHeight);
+					MaxHeight = Utility.Max ( h, MaxHeight);
 					heightData[j++] = h;
 				}
 			}
@@ -317,7 +317,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 				for (long i = 0; i < this.max - 1;  i += this.bpp )
 				{  
 					float h =  (float) (image.Data[ i + (this.bpp - 1)]) * scale;
-					this.MaxHeight = Math.Max ( h, MaxHeight);
+					this.MaxHeight = Utility.Max ( h, MaxHeight);
 					heightData[j++] = h;
 				}
 			}
@@ -363,7 +363,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 				for (long i = 0; i < this.max - 1;  i += this.bpp )
 				{  
 					float h =  (float) (image.Data[ i + (this.bpp - 1)]) * scale;
-					this.MaxHeight = Math.Max ( h, MaxHeight);
+					this.MaxHeight = Utility.Max ( h, MaxHeight);
 					heightData[j++] = h;
 				}
 			}

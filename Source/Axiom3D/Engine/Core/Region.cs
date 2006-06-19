@@ -40,7 +40,7 @@ using System.Text;
 using System.IO;
 
 
-using DotNet3D.Math;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 			
@@ -229,15 +229,15 @@ namespace Axiom
             for ( ushort lod = 1; lod < lodLevels; ++lod )
             {
                 MeshLodUsage meshLod = qsm.submesh.Parent.GetLodLevel( lod );
-                lodSquaredDistances[lod] = Math.Max( (float)lodSquaredDistances[lod], meshLod.fromSquaredDepth );
+                lodSquaredDistances[lod] = Utility.Max( (float)lodSquaredDistances[lod], meshLod.fromSquaredDepth );
             }
 
             // update bounds
             // Transform world bounds relative to our center
             AxisAlignedBox localBounds = new AxisAlignedBox( qsm.worldBounds.Minimum - center, qsm.worldBounds.Maximum - center );
             aabb.Merge( localBounds );
-            boundingRadius = Math.Max( boundingRadius, localBounds.Minimum.Length );
-            boundingRadius = Math.Max( boundingRadius, localBounds.Maximum.Length );
+            boundingRadius = Utility.Max( boundingRadius, localBounds.Minimum.Length );
+            boundingRadius = Utility.Max( boundingRadius, localBounds.Maximum.Length );
         }
 
         public void Build( bool stencilShadows )
@@ -317,7 +317,7 @@ namespace Axiom
             // Distance from the edge of the bounding sphere
             camDistanceSquared = diff.LengthSquared - boundingRadius * boundingRadius;
             // Clamp to 0
-            camDistanceSquared = Math.Max( 0.0f, camDistanceSquared );
+            camDistanceSquared = Utility.Max( 0.0f, camDistanceSquared );
 
             float maxDist = parent.SquaredRenderingDistance;
             if ( camDistanceSquared > maxDist )

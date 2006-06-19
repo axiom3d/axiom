@@ -42,7 +42,7 @@ using Axiom;
 using Axiom.SceneManagers.PagingLandscape.Collections;
 using Axiom.SceneManagers.PagingLandscape.Data2D;
 using Axiom.SceneManagers.PagingLandscape.Renderable;
-using DotNet3D.Math;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 

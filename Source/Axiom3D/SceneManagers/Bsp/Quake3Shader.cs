@@ -42,7 +42,7 @@ using System.Runtime.InteropServices;
 using Axiom;
 
 using Axiom.SceneManagers.Bsp.Collections;
-using DotNet3D.Math;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 			
@@ -339,12 +339,12 @@ namespace Axiom.SceneManagers.Bsp
             // Do skydome (use this material)
             if ( skyDome )
             {
-                float halfAngle = 0.5f * ( 0.5f * ( 4.0f * (float)Math.Atan( 1.0f ) ) );
-                float sin = (float)Math.Sin( halfAngle );
+                float halfAngle = 0.5f * ( 0.5f * ( 4.0f * (float)Utility.ATan( (Real)1.0f ) ) );
+                float sin = (float)Utility.Sin( (Real)halfAngle );
 
                 // Quake3 is always aligned with Z upwards
                 Quaternion q = new Quaternion(
-                    (float)Math.Cos( halfAngle ),
+                    (float)Utility.Cos( (Real)halfAngle ),
                     sin * Vector3.UnitX.x,
                     sin * Vector3.UnitY.y,
                     sin * Vector3.UnitX.z

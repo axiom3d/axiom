@@ -38,10 +38,10 @@ using System;
 using System.Diagnostics;
 
 using Axiom;
+using Axiom.Math;
 
 using Axiom.RenderSystems.OpenGL.ARB;
 using Axiom.RenderSystems.OpenGL.Nvidia;
-using DotNet3D.Math;
 using ATIFragmentShaderFactory = Axiom.RenderSystems.OpenGL.ATI.ATIFragmentShaderFactory;
 
 using Tao.OpenGl;
@@ -549,8 +549,8 @@ namespace Axiom.RenderSystems.OpenGL
             // by the inverse of the projection matrix
 
             Vector4 q = new Vector4();
-            q.x = ( Math.Sign( plane.Normal.x ) + projMatrix.m02 ) / projMatrix.m00;
-            q.y = ( Math.Sign( plane.Normal.y ) + projMatrix.m12 ) / projMatrix.m11;
+            q.x = ( Utility.Sign( plane.Normal.x ) + projMatrix.m02 ) / projMatrix.m00;
+            q.y = ( Utility.Sign( plane.Normal.y ) + projMatrix.m12 ) / projMatrix.m11;
             q.z = -1.0f;
             q.w = ( 1.0f + projMatrix.m22 ) / projMatrix.m23;
 

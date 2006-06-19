@@ -38,8 +38,8 @@ using System;
 
 
 
-using DotNet3D.Math;
-using DotNet3D.Math.Collections;
+using Axiom.Math;
+using Axiom.Math.Collections;
 
 #endregion Namespace Declarations
 			

@@ -42,8 +42,8 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using Axiom;
+using Axiom.Math;
 
-using DotNet3D.Math;
 using FogMode = Axiom.FogMode;
 using LightType = Axiom.LightType;
 using StencilOperation = Axiom.StencilOperation;
@@ -794,8 +794,8 @@ namespace Axiom.RenderSystems.DirectX9
 				Vector4(Math::Sign(plane.normal.x), Math::Sign(plane.normal.y), 1.0f, 1.0f);
 			*/
             Vector4 q = new Vector4();
-            q.x = Math.Sign( plane.Normal.x ) / projMatrix.m00;
-            q.y = Math.Sign( plane.Normal.y ) / projMatrix.m11;
+            q.x = Utility.Sign( plane.Normal.x ) / projMatrix.m00;
+            q.y = Utility.Sign( plane.Normal.y ) / projMatrix.m11;
             q.z = 1.0f;
 
             // flip the next bit from Lengyel since we're right-handed

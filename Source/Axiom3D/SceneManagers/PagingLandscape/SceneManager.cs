@@ -36,7 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-using DotNet3D.Math;
+using Axiom.Math;
 using IntersectionSceneQuery = Axiom.IntersectionSceneQuery;
 using RaySceneQuery = Axiom.RaySceneQuery;
 
@@ -400,7 +400,7 @@ namespace Axiom.SceneManagers.PagingLandscape
                     {
                         // Determine the minimum and maximum Z value for that 
                         // line in the circle (that X value)
-                        int Zmax = (int)Math.Sqrt( Precalc );
+                        int Zmax = (int)Utility.Sqrt( Precalc );
                         int Zmin = -Zmax;
 
                         // Makes sure the values found are both on the height map
@@ -419,7 +419,7 @@ namespace Axiom.SceneManagers.PagingLandscape
                             if ( p != null && p.IsLoaded )
                             {
                                 // Calculate the new theoretical height for the current point on the circle
-                                float dY = (float)Math.Sqrt( Precalc - ( Zcurr * Zcurr ) ) * 10.0f;//* 0.01f
+                                float dY = (float)Utility.Sqrt( Precalc - ( Zcurr * Zcurr ) ) * 10.0f;//* 0.01f
 
                                 impactInfo = p.Info;
                                 data2DManager.DeformHeight( currpoint, dY, p.Info );
