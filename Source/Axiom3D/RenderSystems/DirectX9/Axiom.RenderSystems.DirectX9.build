@@ -44,7 +44,6 @@
 
 			<references>
 				<include name="${axiom3d.build.dir}/Axiom.dll"/>
-				<include name="${axiom3d.build.dir}/DotNet3D.Math.dll"/>
 				<include name="${directx.dir}/Microsoft.DirectX.dll"/>
 				<include name="System.dll"/>
 				<include name="System.Data.dll"/>

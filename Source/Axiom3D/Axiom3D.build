@@ -112,11 +112,12 @@
     <fileset id="realmforge.utility.buildfile">
         <include name="../RealmForge/Utility/RealmForge.Utility.build" />
 	</fileset>
-	-->
+
     <fileset id="dotnet3d.math.buildfile">
 		<include name="../DotNet3D/Src/Math/DotNet3d.Math.build" />
     </fileset>
-    <fileset id="axiom.buildfile">
+	-->
+	<fileset id="axiom.buildfile">
         <include name="Engine/Axiom.build" />
     </fileset>
     <fileset id="axiom.platforms.win32.buildfile">
@@ -200,7 +201,7 @@
             Call targets building Windows-specific assemblies only on 
             Windows - should really add this logic to the target instead 
         -->
-        <call target="build.dotnet3d.math" />
+        <!--call target="build.dotnet3d.math" /-->
         <call target="build.axiom" />
         <call target="build.axiom.platforms.win32" if="${platform::is-win32()}" />
         <call target="build.axiom.platforms.sdl" />
@@ -220,13 +221,13 @@
             <buildfiles refid="realmforge.utility.buildfile"/>
         </nant>
     </target>
-	-->
     <target name="build.dotnet3d.math" description="Build DotNet3D math library" depends="build.axiom3d.setup" unless="${target::has-executed('build.dotnet3d.math')}">
         <nant target="build">
             <buildfiles refid="dotnet3d.math.buildfile"/>
 		</nant>
 	</target>
-    <target name="build.axiom" description="Build Axiom assembly" depends="build.dotnet3d.math" unless="${target::has-executed('build.axiom')}">
+	-->
+    <target name="build.axiom" description="Build Axiom assembly" unless="${target::has-executed('build.axiom')}">
         <nant target="build">
             <buildfiles refid="axiom.buildfile"/>
         </nant>

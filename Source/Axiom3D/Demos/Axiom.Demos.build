@@ -12,7 +12,6 @@
 
 	<target name="references.setup" description="Sets up file references for projects tasks" unless="${target::has-executed('references.setup')}">
 			<fileset id="axiom.demos.build.references">
-				<include name="${axiom3d.build.dir}/DotNet3D.Math.dll"/>
 				<include name="${axiom3d.build.dir}/Axiom.dll"/>
 				<include name="${axiom3d.build.dir}/Axiom.Plugins.CgProgramManager.dll"/>
 				<include name="${axiom3d.build.dir}/Axiom.Plugins.ParticleFX.dll"/>
@@ -33,7 +32,6 @@
 			</fileset>
 			
 			<fileset id="axiom.demos.runtime.references">
-				<include name="${axiom3d.build.dir}/DotNet3D.Math.dll"/>
 				<include name="${axiom3d.build.dir}/Axiom.dll"/>
 				<include name="${axiom3d.build.dir}/Axiom.Plugins.CgProgramManager.dll"/>
 				<include name="${axiom3d.build.dir}/Axiom.Plugins.ParticleFX.dll"/>
