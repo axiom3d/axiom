@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using Axiom;
 
-using DotNet3D.Math;
+using Axiom.Math;
 
 namespace Axiom.Demos
 {
@@ -307,8 +307,8 @@ namespace Axiom.Demos
             {
                 sines[i] += adds[i] * headSpeed * timeSinceLastFrame;
             }
-            float tx = (float)( ( Math.Sin( sines[0] ) + Math.Sin( sines[1] ) ) / 4 + 0.5 ) * (float)( CMPLX - 2 ) + 1;
-            float ty = (float)( ( Math.Sin( sines[2] ) + Math.Sin( sines[3] ) ) / 4 + 0.5 ) * (float)( CMPLX - 2 ) + 1;
+            float tx = (float)( ( Utility.Sin( (Real)sines[ 0 ] ) + Utility.Sin( (Real)sines[ 1 ] ) ) / 4 + 0.5 ) * (float)( CMPLX - 2 ) + 1;
+            float ty = (float)( ( Utility.Sin( (Real)sines[ 2 ] ) + Utility.Sin( (Real)sines[ 3 ] ) ) / 4 + 0.5 ) * (float)( CMPLX - 2 ) + 1;
 
             // Push water down beneath the Ogre Head
             waterMesh.Push( tx, ty, headDepth, 150f, headSpeed, false );
@@ -768,9 +768,9 @@ namespace Axiom.Demos
             this.meshName = meshName;
             size = planeSize;
             this.cmplx = cmplx;  // Number of Rows/Columns in the Water Grid representation
-            cmplxAdj = (float)Math.Pow( ( cmplx / 64f ), 1.4f ) * 2;
-            numFaces = 2 * (int)Math.Pow( cmplx, 2 );  // Each square is split into 2 triangles.
-            numVertices = (int)Math.Pow( ( cmplx + 1 ), 2 ); // Vertex grid is (Complexity+1) squared
+            cmplxAdj = (float)System.Math.Pow( ( cmplx / 64f ), 1.4f ) * 2;
+            numFaces = 2 * (int)System.Math.Pow( cmplx, 2 );  // Each square is split into 2 triangles.
+            numVertices = (int)System.Math.Pow( ( cmplx + 1 ), 2 ); // Vertex grid is (Complexity+1) squared
 
             // Allocate and initialize space for calculated Normals
             vNorms = new Vector3[cmplx + 1, cmplx + 1]; // vertex Normals for each grid point
@@ -1030,9 +1030,9 @@ namespace Axiom.Demos
             {
                 for ( int addy = (int)fy; addy <= (int)fy + 1; addy++ )
                 {
-                    float diffy = fy - (float)Math.Floor( fy + addy );
-                    float diffx = fx - (float)Math.Floor( fx + addx );
-                    float dist = (float)Math.Sqrt( diffy * diffy + diffx * diffx );
+                    float diffy = fy - (float)System.Math.Floor( fy + addy );
+                    float diffx = fx - (float)System.Math.Floor( fx + addx );
+                    float dist = (float)System.Math.Sqrt( diffy * diffy + diffx * diffx );
                     float power = 1 - dist;
 
                     if ( power < 0 )
@@ -1053,9 +1053,9 @@ namespace Axiom.Demos
             {
                 for ( int addy = (int)fy; addy <= (int)fy + 1; addy++ )
                 {
-                    float diffy = fy - (float)Math.Floor( (double)addy );
-                    float diffx = fx - (float)Math.Floor( (double)addx );
-                    float dist = (float)Math.Sqrt( diffy * diffy + diffx * diffx );
+                    float diffy = fy - (float)System.Math.Floor( (double)addy );
+                    float diffx = fx - (float)System.Math.Floor( (double)addx );
+                    float dist = (float)Utility.Sqrt( diffy * diffy + diffx * diffx );
                     float power = ( 1 - dist ) * cmplxAdj * speed;
 
                     if ( power < 0 )

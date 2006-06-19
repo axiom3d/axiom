@@ -75,7 +75,6 @@
             <Reference name="System.Windows.Forms"/>
             <Reference name="System.Xml"/>
             <Reference name="System.Data"/>
-            <Reference name="DotNet3D.Math"/>
             <Reference name="Axiom"/>
 
             <?if OS = "Win32" ?>
@@ -97,38 +96,6 @@
             <Reference name="Axiom.SceneManagers.PagingLandscape"/>
 
 
-            <Files>
-                <Match pattern="*.cs" recurse="true"/>
-            </Files>
-        </Project>
-
-        <Project name="DotNet3D.Math" filterGroups="Axiom|Cegui" path="..\DotNet3D\src\Math" type="Library" assemblyName="DotNet3D.Math" rootNamespace="DotNet3D.Math">
-            <Configuration name="Debug">
-                <Options>
-                    <OutputPath>../../build/debug/Axiom3D</OutputPath>
-                    <XmlDocFile>DotNet3D.Math.xml</XmlDocFile>
-                    <AllowUnsafe>true</AllowUnsafe>
-                </Options>
-            </Configuration>
-            <Configuration name="Release">
-                <Options>
-                    <OutputPath>../../build/release/Axiom3D</OutputPath>
-                    <XmlDocFile>DotNet3D.Math.xml</XmlDocFile>
-                    <AllowUnsafe>true</AllowUnsafe>
-                </Options>
-            </Configuration>
-            <?if OS = "Win32" ?>
-            
-	            <ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
-            
-            <?else ?>
-            
-	            <ReferencePath>../../../../Dependencies/Managed/Mono</ReferencePath>
-            
-            <?endif ?>
-            <Reference name="System"/>
-            <Reference name="System.Drawing"/>
-            <Reference name="System.Xml"/>
             <Files>
                 <Match pattern="*.cs" recurse="true"/>
             </Files>
@@ -164,7 +131,6 @@
             <Reference name="System.Data" />
             <Reference name="System.Drawing" />
             <Reference name="System.Xml" />
-            <Reference name="DotNet3D.Math"/>
             <Reference name="Tao.DevIl" />
             <Reference name="ICSharpCode.SharpZipLib" />
             
@@ -202,7 +168,6 @@
             <Reference name="System.Windows.Forms" />
             <Reference name="System.Xml" />
             <Reference name="Axiom"/>
-            <Reference name="DotNet3D.Math"/>
 			<Reference name="Microsoft.DirectX, Version=2.0.0.0, Culture=neutral" />
 			<Reference name="Tao.Platform.Windows"/>
             
@@ -242,7 +207,6 @@
             <Reference name="System.Windows.Forms" />
             <Reference name="System.Xml" />
             <Reference name="Axiom" />
-            <Reference name="DotNet3D.Math" />
 			<Reference name="Microsoft.DirectX, Version=2.0.0.0, Culture=neutral" />
 			<Reference name="Tao.Platform.Windows"  />
             
@@ -280,7 +244,6 @@
             <Reference name="System.Drawing" />
             <Reference name="System.Xml" />
             <Reference name="Axiom" />
-            <Reference name="DotNet3D.Math"/>
             <Reference name="Tao.Sdl"/>
             
             <Files>
@@ -319,7 +282,6 @@
             <Reference name="System.Windows.Forms" />
             <Reference name="System.Xml" />
             <Reference name="Axiom" />
-            <Reference name="DotNet3D.Math" />
             <Reference name="Tao.OpenGl" localCopy="false"/>
             <Reference name="Tao.OpenGl.ExtensionLoader"/>
             <Reference name="Tao.OpenGl.Glu"/>
@@ -370,7 +332,6 @@
             <Reference name="System.Data" />
             <Reference name="System.Xml" />
             <Reference name="Axiom"/>
-            <Reference name="DotNet3D.Math" />
             <Reference name="Tao.Cg"  />
             
             <Files>
@@ -405,7 +366,6 @@
             <Reference name="System.Data" />
             <Reference name="System.Xml" />
             <Reference name="Axiom" />
-            <Reference name="DotNet3D.Math" />
             
             <Files>
                 <Match pattern="*.cs" path="." recurse="true"/>
@@ -441,7 +401,6 @@
             <Reference name="System.Data" />
             <Reference name="System.Xml" />
             <Reference name="Axiom"/>
-            <Reference name="DotNet3D.Math"/>
             
             <Files>
                 <Match pattern="*.cs" path="." recurse="true"/>
@@ -477,7 +436,6 @@
             <Reference name="System.Data" />
             <Reference name="System.Xml" />
             <Reference name="Axiom" />
-            <Reference name="DotNet3D.Math"/>
             
             <Files>
                 <Match pattern="*.cs" path="." recurse="true"/>
@@ -513,7 +471,6 @@
             <Reference name="System.Data" />
             <Reference name="System.Xml" />
             <Reference name="Axiom"/>
-            <Reference name="DotNet3D.Math"/>
             
             <Files>
                 <Match pattern="*.cs" path="." recurse="true"/>

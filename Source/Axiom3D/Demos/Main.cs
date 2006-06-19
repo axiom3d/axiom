@@ -127,12 +127,12 @@ namespace Axiom.Demos
 
         public void Run()
         {
+            string next = "";
             try
             {
                 if ( _configure() )
                 {
 
-                    string next = "";
 
                     while ( next != "exit" )
                     {
@@ -158,6 +158,7 @@ namespace Axiom.Demos
             catch ( Exception caughtException )
             {
                 LogManager.Instance.Write( BuildExceptionString( caughtException ) );
+                next = "exit";
             }
         }
 

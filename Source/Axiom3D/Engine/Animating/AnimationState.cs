@@ -137,7 +137,7 @@ namespace Axiom
 				{
 					// Wrap
 					//time = time%length;
-					time = (float)Math.IEEERemainder(time,length);
+					time = (float)System.Math.IEEERemainder(time,length);
 					if(time < 0)
 						time += length;     
 				}

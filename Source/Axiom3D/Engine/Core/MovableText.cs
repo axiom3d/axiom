@@ -39,7 +39,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-using DotNet3D.Math;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 			
@@ -319,7 +319,7 @@ namespace Axiom
                     {
                         min.ToFloor( currPos );
                         max.ToCeiling( currPos );
-                        maxSquaredRadius = Math.Max( maxSquaredRadius, currPos.LengthSquared );
+                        maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
                     }
 
                     top -= _characterHeight * 2.0f;
@@ -335,7 +335,7 @@ namespace Axiom
                     currPos = new Vector3( left, top, -1.0f );
                     min.ToFloor( currPos );
                     max.ToCeiling( currPos );
-                    maxSquaredRadius = Math.Max( maxSquaredRadius, currPos.LengthSquared );
+                    maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
 
                     top += _characterHeight * 2.0f;
                     left += horiz_height * _characterHeight * 2.0f;
@@ -352,7 +352,7 @@ namespace Axiom
                     currPos = new Vector3( left, top, -1.0f );
                     min.ToFloor( currPos );
                     max.ToCeiling( currPos );
-                    maxSquaredRadius = Math.Max( maxSquaredRadius, currPos.LengthSquared );
+                    maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
 
                     //-------------------------------------------------------------------------------------
                     // Second tri
@@ -367,7 +367,7 @@ namespace Axiom
                     currPos = new Vector3( left, top, -1.0f );
                     min.ToFloor( currPos );
                     max.ToCeiling( currPos );
-                    maxSquaredRadius = Math.Max( maxSquaredRadius, currPos.LengthSquared );
+                    maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
 
                     top -= _characterHeight * 2.0f;
                     left -= horiz_height * _characterHeight * 2.0f;
@@ -382,7 +382,7 @@ namespace Axiom
                     currPos = new Vector3( left, top, -1.0f );
                     min.ToFloor( currPos );
                     max.ToCeiling( currPos );
-                    maxSquaredRadius = Math.Max( maxSquaredRadius, currPos.LengthSquared );
+                    maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
 
                     left += horiz_height * _characterHeight * 2.0f;
 
@@ -397,7 +397,7 @@ namespace Axiom
                     currPos = new Vector3( left, top, -1.0f );
                     min.ToFloor( currPos );
                     max.ToCeiling( currPos );
-                    maxSquaredRadius = Math.Max( maxSquaredRadius, currPos.LengthSquared );
+                    maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
 
                     // Go back up with top
                     top += _characterHeight * 2.0f;
@@ -412,7 +412,7 @@ namespace Axiom
 
 		    // update AABB/Sphere radius
 		    this.box = new AxisAlignedBox(min, max);
-		    this._radius = (float)Math.Sqrt( (double)maxSquaredRadius );
+		    this._radius = (float)Utility.Sqrt( (double)maxSquaredRadius );
 
 		    if ( _updateColor )
 			    this._updateColors();

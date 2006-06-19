@@ -38,8 +38,7 @@ using System;
 using System.Collections;
 
 using Axiom;
-
-using DotNet3D.Math;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 			
@@ -373,7 +372,7 @@ namespace Axiom.SceneManagers.Octree
         {
             float A, T;
 
-            A = (float)options.nearPlane / Math.Abs( (float)options.topCoord );
+            A = (float)options.nearPlane / Utility.Abs( (float)options.topCoord );
 
             T = 2 * (float)options.maxPixelError / (float)options.vertRes;
 
@@ -416,7 +415,7 @@ namespace Axiom.SceneManagers.Octree
                                 float interp_h = top * ( 1.0f - zpct ) + zpct * bottom;
 
                                 float actual_h = GetVertex( i + x, j + z, 1 );
-                                float delta = Math.Abs( interp_h - actual_h );
+                                float delta = Utility.Abs( interp_h - actual_h );
 
                                 float D2 = delta * delta * C * C;
 

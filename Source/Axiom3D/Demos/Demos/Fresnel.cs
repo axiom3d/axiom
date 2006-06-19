@@ -1,8 +1,8 @@
 
 using System;
-using Axiom;
 
-using DotNet3D.Math;
+using Axiom;
+using Axiom.Math;
 
 namespace Axiom.Demos
 {

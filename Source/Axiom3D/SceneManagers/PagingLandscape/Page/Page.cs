@@ -44,7 +44,7 @@ using Axiom.SceneManagers.PagingLandscape;
 using Axiom.SceneManagers.PagingLandscape.Collections;
 using Axiom.SceneManagers.PagingLandscape.Data2D;
 using Axiom.SceneManagers.PagingLandscape.Tile;
-using DotNet3D.Math;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 

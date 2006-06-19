@@ -42,7 +42,7 @@ using Axiom;
 using Axiom.SceneManagers.PagingLandscape;
 using Axiom.SceneManagers.PagingLandscape.Query;
 using Axiom.SceneManagers.PagingLandscape.Data2D;
-using DotNet3D.Math;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -115,7 +115,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Query
                 Vector3 origin = this.Ray.Origin;
                 origin.y = 0; // ensure that it's within bounds
                 frag.SingleIntersection = getHeightAt( origin );
-                listener.OnQueryResult( frag, Math.Abs( frag.SingleIntersection.y - this.Ray.Origin.y ) );
+                listener.OnQueryResult( frag, Utility.Abs( frag.SingleIntersection.y - this.Ray.Origin.y ) );
             }
             else
             {

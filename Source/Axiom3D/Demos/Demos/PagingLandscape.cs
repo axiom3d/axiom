@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using Axiom;
 
-using DotNet3D.Math;
+using Axiom.Math;
 
 namespace Axiom.Demos
 {

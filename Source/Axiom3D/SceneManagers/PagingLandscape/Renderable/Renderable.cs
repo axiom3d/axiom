@@ -41,7 +41,7 @@ using Axiom;
 using Axiom.SceneManagers.PagingLandscape;
 using Axiom.SceneManagers.PagingLandscape.Data2D;
 using Axiom.SceneManagers.PagingLandscape.Tile;
-using DotNet3D.Math;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -333,8 +333,8 @@ namespace Axiom.SceneManagers.PagingLandscape.Renderable
                     {
                         float height = HeightData[i + HeightDataPos];
                         //
-                        //						min = Math.Min(height, min);  
-                        //						max = Math.Max(height, max);  
+                        //						min = Utility.Min(height, min);  
+                        //						max = Utility.Max(height, max);  
                         min = height < min ? height : min;
                         max = height > max ? height : max;
                         //

@@ -39,7 +39,7 @@ using System.Collections;
 using System.Text;
 using System.IO;
 
-
+using Axiom.Math;
 
 #endregion Namespace Declarations
 			
@@ -154,7 +154,7 @@ namespace Axiom
         {
             output.WriteLine( "LOD Bucket {0}", lod );
             output.WriteLine( "------------------" );
-            output.WriteLine( "Distance: {0}", Math.Sqrt( squaredDistance ) );
+            output.WriteLine( "Distance: {0}", Utility.Sqrt( squaredDistance ) );
             output.WriteLine( "Number of Materials: {0}", materialBucketMap.Count );
             IDictionaryEnumerator iter = materialBucketMap.GetEnumerator();
             while ( iter.MoveNext() )
