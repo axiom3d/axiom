@@ -135,7 +135,7 @@
             <Reference name="ICSharpCode.SharpZipLib" />
             
             <Files>
-                <Match pattern="*.cs" path="." recurse="true"/>
+                <Match pattern="*.c?" path="." recurse="true"/>
             </Files>
         </Project>
         
@@ -172,7 +172,7 @@
 			<Reference name="Tao.Platform.Windows"/>
             
             <Files>
-                <Match pattern="*.cs" path="." recurse="true"/>
+                <Match pattern="*.c?" path="." recurse="true"/>
             </Files>
         </Project>
 
@@ -211,7 +211,7 @@
 			<Reference name="Tao.Platform.Windows"  />
             
             <Files>
-                <Match pattern="*.cs" path="." recurse="true"/>
+                <Match pattern="*.c?" path="." recurse="true"/>
             </Files>
         </Project>
 
@@ -247,7 +247,7 @@
             <Reference name="Tao.Sdl"/>
             
             <Files>
-                <Match pattern="*.cs" path="." recurse="true"/>
+                <Match pattern="*.c?" path="." recurse="true"/>
             </Files>
         </Project>
 
@@ -293,14 +293,14 @@
             <?endif ?>
             
             <Files>
-                <Match pattern="*.cs" path="." />
-                <Match pattern="*.cs" path="./ATI" />
-                <Match pattern="*.cs" path="./Nvidia" />
-                <Match pattern="*.cs" path="./GLSL" />
+                <Match pattern="*.c?" path="." />
+                <Match pattern="*.c?" path="./ATI" />
+                <Match pattern="*.c?" path="./Nvidia" />
+                <Match pattern="*.c?" path="./GLSL" />
                 <?if OS = "Win32" ?>
-                    <Match pattern="*.cs" path="./Win32" />
+                    <Match pattern="*.c?" path="./Win32" />
                 <?else ?>
-                    <Match pattern="*.cs" path="./SDL" />
+                    <Match pattern="*.c?" path="./SDL" />
                 <?endif ?>
             </Files>
         </Project>
@@ -335,7 +335,7 @@
             <Reference name="Tao.Cg"  />
             
             <Files>
-                <Match pattern="*.cs" path="." recurse="true" />
+                <Match pattern="*.c?" path="." recurse="true" />
             </Files>
         </Project>
 
@@ -368,7 +368,7 @@
             <Reference name="Axiom" />
             
             <Files>
-                <Match pattern="*.cs" path="." recurse="true"/>
+                <Match pattern="*.c?" path="." recurse="true"/>
             </Files>
         </Project>
         
@@ -403,7 +403,7 @@
             <Reference name="Axiom"/>
             
             <Files>
-                <Match pattern="*.cs" path="." recurse="true"/>
+                <Match pattern="*.c?" path="." recurse="true"/>
             </Files>
         </Project>
         
@@ -438,7 +438,7 @@
             <Reference name="Axiom" />
             
             <Files>
-                <Match pattern="*.cs" path="." recurse="true"/>
+                <Match pattern="*.c?" path="." recurse="true"/>
             </Files>
         </Project>
 
@@ -473,7 +473,7 @@
             <Reference name="Axiom"/>
             
             <Files>
-                <Match pattern="*.cs" path="." recurse="true"/>
+                <Match pattern="*.c?" path="." recurse="true"/>
             </Files>
         </Project>
 
