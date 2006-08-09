@@ -95,10 +95,11 @@
             <Reference name="Axiom.SceneManagers.Bsp"/>
             <Reference name="Axiom.SceneManagers.PagingLandscape"/>
 
-
             <Files>
-                <Match pattern="*.cs" recurse="true"/>
+                <Match pattern="*.cs" path="." recurse="true" buildAction="Compile"/>
+		<Match pattern="*.cd" path="." recurse="true" buildAction="None"/>
             </Files>
+ 
         </Project>
         
         <Project name="Axiom" type="Library" path="Engine" rootNamespace="Axiom" >		
@@ -135,7 +136,8 @@
             <Reference name="ICSharpCode.SharpZipLib" />
             
             <Files>
-                <Match pattern="*.c?" path="." recurse="true"/>
+                <Match pattern="*.cs" path="." recurse="true" buildAction="Compile"/>
+		<Match pattern="*.cd" path="." recurse="true" buildAction="None"/>
             </Files>
         </Project>
         
@@ -172,7 +174,8 @@
 			<Reference name="Tao.Platform.Windows"/>
             
             <Files>
-                <Match pattern="*.c?" path="." recurse="true"/>
+                <Match pattern="*.cs" path="." recurse="true" buildAction="Compile"/>
+		<Match pattern="*.cd" path="." recurse="true" buildAction="None"/>
             </Files>
         </Project>
 
@@ -211,7 +214,8 @@
 			<Reference name="Tao.Platform.Windows"  />
             
             <Files>
-                <Match pattern="*.c?" path="." recurse="true"/>
+                <Match pattern="*.cs" path="." recurse="true" buildAction="Compile"/>
+		<Match pattern="*.cd" path="." recurse="true" buildAction="None"/>
             </Files>
         </Project>
 
@@ -247,7 +251,8 @@
             <Reference name="Tao.Sdl"/>
             
             <Files>
-                <Match pattern="*.c?" path="." recurse="true"/>
+                <Match pattern="*.cs" path="." recurse="true" buildAction="Compile"/>
+		<Match pattern="*.cd" path="." recurse="true" buildAction="None"/>
             </Files>
         </Project>
 
@@ -335,7 +340,8 @@
             <Reference name="Tao.Cg"  />
             
             <Files>
-                <Match pattern="*.c?" path="." recurse="true" />
+                <Match pattern="*.cs" path="." recurse="true" buildAction="Compile"/>
+		<Match pattern="*.cd" path="." recurse="true" buildAction="None"/>
             </Files>
         </Project>
 
@@ -368,7 +374,8 @@
             <Reference name="Axiom" />
             
             <Files>
-                <Match pattern="*.c?" path="." recurse="true"/>
+                <Match pattern="*.cs" path="." recurse="true" buildAction="Compile"/>
+		<Match pattern="*.cd" path="." recurse="true" buildAction="None"/>
             </Files>
         </Project>
         
@@ -403,7 +410,8 @@
             <Reference name="Axiom"/>
             
             <Files>
-                <Match pattern="*.c?" path="." recurse="true"/>
+                <Match pattern="*.cs" path="." recurse="true" buildAction="Compile"/>
+		<Match pattern="*.cd" path="." recurse="true" buildAction="None"/>
             </Files>
         </Project>
         
@@ -438,7 +446,8 @@
             <Reference name="Axiom" />
             
             <Files>
-                <Match pattern="*.c?" path="." recurse="true"/>
+                <Match pattern="*.cs" path="." recurse="true" buildAction="Compile"/>
+		<Match pattern="*.cd" path="." recurse="true" buildAction="None"/>
             </Files>
         </Project>
 
@@ -473,7 +482,8 @@
             <Reference name="Axiom"/>
             
             <Files>
-                <Match pattern="*.c?" path="." recurse="true"/>
+                <Match pattern="*.cs" path="." recurse="true" buildAction="Compile"/>
+		<Match pattern="*.cd" path="." recurse="true" buildAction="None"/>
             </Files>
         </Project>
 
