@@ -233,13 +233,19 @@ namespace Axiom.Platforms.SDL {
 			}
 		}
 
+		public override void Dispose()
+		{
+
+		}
+
 		#endregion Methods
 		
 		#endregion InputReader Members
 
 		#region Methods
 
-		private void ProcessBufferedKeyboard() {
+		private void ProcessBufferedKeyboard() 
+		{
 			int count = Sdl.SDL_PeepEvents(
 				events, BufferSize, Sdl.SDL_GETEVENT, 
 				(Sdl.SDL_KEYDOWNMASK | Sdl.SDL_KEYUPMASK));

@@ -52,5 +52,16 @@ namespace Axiom.Platforms.SDL
 		}
 
 		#endregion
+
+		#region IDisposable Members
+		public void Dispose()
+		{
+			timer.Reset();
+			timer = null;
+
+			inputReader.Dispose();
+			inputReader = null;
+		}
+		#endregion
 	}
 }
