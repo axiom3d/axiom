@@ -6,7 +6,7 @@
 				<CompilerDefines>TRACE;DEBUG</CompilerDefines>
 				<OptimizeCode>false</OptimizeCode>
 				<AllowUnsafe>true</AllowUnsafe>
-				<OutputPath>bin\Debug</OutputPath>
+				<OutputPath>..\..\Build\Debug</OutputPath>
 				<DebugInformation>true</DebugInformation>
 				<WarningLevel>0</WarningLevel>
 			</Options>
@@ -16,19 +16,19 @@
 				<CompilerDefines>TRACE</CompilerDefines>
 				<OptimizeCode>true</OptimizeCode>
 				<AllowUnsafe>true</AllowUnsafe>
-				<OutputPath>bin\Release</OutputPath>
+				<OutputPath>..\..\Build\Release</OutputPath>
 				<DebugInformation>false</DebugInformation>
 				<WarningLevel>0</WarningLevel>
 			</Options>
 		</Configuration>
 		<Project 
-			name="Demos" 
+			name="Axiom.Demos" 
 			type="Exe" 
-			path="DemoTest" 
+			path="Axiom.Demos" 
 			language="C#" 
 			runtime="Microsoft" >
 				
-			<ReferencePath>..\Dependencies\Managed</ReferencePath>
+			<ReferencePath>..\..\Dependencies\Managed\DotNet</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -74,7 +74,7 @@
 			language="C#" 
 			runtime="Microsoft" >		
 			
-			<ReferencePath>..\Dependencies\Managed</ReferencePath>
+			<ReferencePath>..\..\Dependencies\Managed\DotNet</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -97,7 +97,7 @@
 			language="C#" 
 			runtime="Microsoft" >
 			
-			<ReferencePath>..\..\Dependencies\Managed</ReferencePath>
+			<ReferencePath>..\..\..\Dependencies\Managed\DotNet</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -115,7 +115,7 @@
 			</Files>
 		</Project>
 
-		<?else ?>
+		<?endif ?>
 
 		<Project 
 			name="Axiom.Platforms.SDL" 
@@ -124,7 +124,7 @@
 			language="C#" 
 			runtime="Microsoft" >
 			
-			<ReferencePath>..\..\Dependencies\Managed</ReferencePath>
+			<ReferencePath>..\..\..\Dependencies\Managed\DotNet</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -140,7 +140,6 @@
 			</Files>
 		</Project>
 
-		<?endif ?>
 
 		<?if OS = "Win32" ?>
 		
@@ -151,7 +150,7 @@
 			language="C#" 
 			runtime="Microsoft" >
 			
-			<ReferencePath>..\..\Dependencies\Managed</ReferencePath>
+			<ReferencePath>..\..\..\Dependencies\Managed\DotNet</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -179,7 +178,7 @@
 			language="C#" 
 			runtime="Microsoft" >
 			
-			<ReferencePath>..\..\Dependencies\Managed</ReferencePath>
+			<ReferencePath>..\..\..\Dependencies\Managed\DotNet</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -215,7 +214,7 @@
 			language="C#" 
 			runtime="Microsoft" >		
 			
-			<ReferencePath>..\..\Dependencies\Managed</ReferencePath>
+			<ReferencePath>..\..\..\Dependencies\Managed\DotNet</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -235,8 +234,6 @@
 			language="C#" 
 			runtime="Microsoft" >
 			
-			<ReferencePath>..\..\Dependencies\Managed</ReferencePath>
-
 			<Reference name="System" />
 			<Reference name="System.Data" />
 			<Reference name="System.Xml" />
