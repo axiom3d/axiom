@@ -3,12 +3,13 @@
 	<Solution name="Axiom" path=".">
 		<Configuration name="Debug">
 			<Options>
+                <IncrementalBuild>true</IncrementalBuild>
 				<CompilerDefines>TRACE;DEBUG</CompilerDefines>
 				<OptimizeCode>false</OptimizeCode>
 				<AllowUnsafe>true</AllowUnsafe>
-				<OutputPath>..\..\Build\Debug</OutputPath>
 				<DebugInformation>true</DebugInformation>
 				<WarningLevel>0</WarningLevel>
+                <BaseAddress>285212672</BaseAddress>
 			</Options>
 		</Configuration>
 		<Configuration name="Release">
@@ -16,25 +17,33 @@
 				<CompilerDefines>TRACE</CompilerDefines>
 				<OptimizeCode>true</OptimizeCode>
 				<AllowUnsafe>true</AllowUnsafe>
-				<OutputPath>..\..\Build\Release</OutputPath>
 				<DebugInformation>false</DebugInformation>
 				<WarningLevel>0</WarningLevel>
 			</Options>
 		</Configuration>
-		<Project 
-			name="Axiom.Demos" 
-			type="Exe" 
-			path="Axiom.Demos" 
-			language="C#" 
-			runtime="Microsoft" >
+		
+		
+		<Project name="Axiom.Demos" type="Exe" path="Demos" language="C#" runtime="Microsoft" >
+            <Configuration name="Debug">
+                <Options>
+                    <AllowUnsafe>true</AllowUnsafe>
+                    <OutputPath>../../build/debug/Axiom_Demos</OutputPath>
+                </Options>
+            </Configuration>
+            <Configuration name="Release">
+                <Options>
+                    <AllowUnsafe>true</AllowUnsafe>
+                    <OutputPath>../../build/release/Axiom_Demos</OutputPath>
+                </Options>
+            </Configuration>
 				
-			<ReferencePath>..\..\Dependencies\Managed\DotNet</ReferencePath>
+			<ReferencePath>..\..\..\Dependencies\Managed\DotNet</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
 			<Reference name="System.Drawing" />
 			<Reference name="System.Xml" />
-			<Reference name="Axiom.Engine" localCopy="true"/>
+			<Reference name="Axiom" localCopy="true"/>
 			<Reference name="Axiom.MathLib" localCopy="true"/>
 			<Reference name="Axiom.Plugins.ParticleFX" localCopy="true"/>
 			<Reference name="Axiom.Plugins.CgProgramManager" localCopy="true"/>
@@ -52,14 +61,27 @@
 			<Files>
 				<Match pattern="*.cs" path="."/>
 				<Match pattern="*.cs" path="Demos"/>
+				<Match pattern="EngineConfig.xml" path="" buildAction="None" />
+				<Match pattern="Terrain.xml" path="" buildAction="None" />
 			</Files>
 		</Project>
-		<Project 
-			name="Axiom.MathLib" 
-			type="Library" 
-			path="MathLib"
-			language="C#" 
-			runtime="Microsoft" >
+		
+		
+		<Project name="Axiom.MathLib" type="Library" path="MathLib"	language="C#" runtime="Microsoft" >
+            <Configuration name="Debug">
+                <Options>
+                    <OutputPath>../../build/debug/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <Configuration name="Release">
+                <Options>
+                    <OutputPath>../../build/release/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
 
 			<Reference name="System" />
 			
@@ -67,14 +89,25 @@
 				<Match pattern="*.cs" path="." recurse="true"/>
 			</Files>
 		</Project>
-		<Project 
-			name="Axiom.Engine" 
-			type="Library" 
-			path="Engine" 
-			language="C#" 
-			runtime="Microsoft" >		
+		
+		
+		<Project name="Axiom" type="Library" path="Engine" language="C#" runtime="Microsoft" >		
+            <Configuration name="Debug">
+                <Options>
+                    <OutputPath>../../build/debug/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <Configuration name="Release">
+                <Options>
+                    <OutputPath>../../build/release/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
 			
-			<ReferencePath>..\..\Dependencies\Managed\DotNet</ReferencePath>
+			<ReferencePath>..\..\..\Dependencies\Managed\DotNet</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -89,48 +122,106 @@
 			</Files>
 		</Project>
 
-		<?if OS = "Win32" ?>
-		<Project 
-			name="Axiom.Platforms.Win32" 
-			type="Library" 
-			path="Platforms/Win32" 
-			language="C#" 
-			runtime="Microsoft" >
-			
-			<ReferencePath>..\..\..\Dependencies\Managed\DotNet</ReferencePath>
 
-			<Reference name="System" />
-			<Reference name="System.Data" />
-			<Reference name="System.Drawing" />
-			<Reference name="System.Windows.Forms" />
-			<Reference name="System.Xml" />
-			<Reference name="Axiom.Engine" localCopy="true"/>
-			<Reference name="Axiom.MathLib" localCopy="true"/>
-			<Reference name="Microsoft.DirectX" />
-			<Reference name="Microsoft.DirectX.DirectInput" />
-			<Reference name="Tao.Platform.Windows" localCopy="true" />
-			
-			<Files>
-				<Match pattern="*.cs" path="." recurse="true"/>
-			</Files>
-		</Project>
+		<?if OS = "Win32" ?>
+		
+		
+			<Project name="Axiom.Platforms.Win32" type="Library" path="Platforms/Win32" language="C#" runtime="Microsoft" >
+
+				<Configuration name="Debug">
+					<Options>
+						<OutputPath>../../../build/debug/Axiom3D</OutputPath>
+						<XmlDocFile>Axiom.xml</XmlDocFile>
+						<AllowUnsafe>true</AllowUnsafe>
+					</Options>
+				</Configuration>
+				<Configuration name="Release">
+					<Options>
+						<OutputPath>../../../build/release/Axiom3D</OutputPath>
+						<XmlDocFile>Axiom.xml</XmlDocFile>
+						<AllowUnsafe>true</AllowUnsafe>
+					</Options>
+				</Configuration>
+
+				<ReferencePath>..\..\..\..\Dependencies\Managed\DotNet</ReferencePath>
+
+				<Reference name="System" />
+				<Reference name="System.Data" />
+				<Reference name="System.Drawing" />
+				<Reference name="System.Windows.Forms" />
+				<Reference name="System.Xml" />
+				<Reference name="Axiom" localCopy="true"/>
+				<Reference name="Axiom.MathLib" localCopy="true"/>
+				<Reference name="Microsoft.DirectX, Version=1.0.2902.0, Culture=neutral" />
+				<Reference name="Microsoft.DirectX.DirectInput, Version=1.0.2902.0, Culture=neutral" />
+				<Reference name="Tao.Platform.Windows" localCopy="true" />
+
+				<Files>
+					<Match pattern="*.cs" path="." recurse="true"/>
+				</Files>
+			</Project>
+
+			<Project name="Axiom.RenderSystems.DirectX9" type="Library" path="RenderSystems/DirectX9" language="C#" runtime="Microsoft" >
+				<Configuration name="Debug">
+					<Options>
+						<OutputPath>../../../build/debug/Axiom3D</OutputPath>
+						<XmlDocFile>Axiom.xml</XmlDocFile>
+						<AllowUnsafe>true</AllowUnsafe>
+					</Options>
+				</Configuration>
+				<Configuration name="Release">
+					<Options>
+						<OutputPath>../../../build/release/Axiom3D</OutputPath>
+						<XmlDocFile>Axiom.xml</XmlDocFile>
+						<AllowUnsafe>true</AllowUnsafe>
+					</Options>
+				</Configuration>
+
+				<ReferencePath>..\..\..\..\Dependencies\Managed\DotNet</ReferencePath>
+
+				<Reference name="System" />
+				<Reference name="System.Data" />
+				<Reference name="System.Drawing" />
+				<Reference name="System.Windows.Forms" />
+				<Reference name="System.Xml" />
+				<Reference name="Axiom" localCopy="true"/>
+				<Reference name="Axiom.MathLib" localCopy="true"/>
+				<Reference name="Microsoft.DirectX, Version=1.0.2902.0, Culture=neutral" />
+				<Reference name="Microsoft.DirectX.Direct3D, Version=1.0.2902.0, Culture=neutral" />
+				<Reference name="Microsoft.DirectX.Direct3DX, Version=1.0.2911.0, Culture=neutral" />
+				<Reference name="Tao.Platform.Windows" localCopy="true" />
+
+				<Files>
+					<Match pattern="*.cs" path="." recurse="true"/>
+				</Files>
+			</Project>
 
 		<?endif ?>
 
-		<Project 
-			name="Axiom.Platforms.SDL" 
-			type="Library" 
-			path="Platforms/SDL" 
-			language="C#" 
-			runtime="Microsoft" >
+
+		<Project name="Axiom.Platforms.SDL" type="Library" path="Platforms/SDL" language="C#" runtime="Microsoft" >
+            <Configuration name="Debug">
+                <Options>
+                    <OutputPath>../../../build/debug/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <Configuration name="Release">
+                <Options>
+                    <OutputPath>../../../build/release/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
 			
-			<ReferencePath>..\..\..\Dependencies\Managed\DotNet</ReferencePath>
+			<ReferencePath>..\..\..\..\Dependencies\Managed\DotNet</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
 			<Reference name="System.Drawing" />
 			<Reference name="System.Xml" />
-			<Reference name="Axiom.Engine" localCopy="true"/>
+			<Reference name="Axiom" localCopy="true"/>
 			<Reference name="Axiom.MathLib" localCopy="true"/>
 			<Reference name="Tao.Platform.Windows" localCopy="true" />
 			<Reference name="Tao.Sdl" localCopy="true" />
@@ -141,53 +232,34 @@
 		</Project>
 
 
-		<?if OS = "Win32" ?>
-		
-		<Project 
-			name="Axiom.RenderSystems.DirectX9" 
-			type="Library" 
-			path="RenderSystems/DirectX9" 
-			language="C#" 
-			runtime="Microsoft" >
+		<Project name="Axiom.RenderSystems.OpenGL" type="Library" path="RenderSystems/OpenGL" language="C#" runtime="Microsoft" >
+            <Configuration name="Debug">
+                <Options>
+                    <OutputPath>../../../build/debug/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <Configuration name="Release">
+                <Options>
+                    <OutputPath>../../../build/release/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
 			
-			<ReferencePath>..\..\..\Dependencies\Managed\DotNet</ReferencePath>
+			<ReferencePath>..\..\..\..\Dependencies\Managed\DotNet</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
 			<Reference name="System.Drawing" />
 			<Reference name="System.Windows.Forms" />
 			<Reference name="System.Xml" />
-			<Reference name="Axiom.Engine" localCopy="true"/>
-			<Reference name="Axiom.MathLib" localCopy="true"/>
-			<Reference name="Microsoft.DirectX" />
-			<Reference name="Microsoft.DirectX.Direct3D" />
-			<Reference name="Microsoft.DirectX.Direct3DX" />
-			<Reference name="Tao.Platform.Windows" localCopy="true" />
-			
-			<Files>
-				<Match pattern="*.cs" path="." recurse="true"/>
-			</Files>
-		</Project>
-
-		<?endif ?>
-
-		<Project 
-			name="Axiom.RenderSystems.OpenGL" 
-			type="Library" 
-			path="RenderSystems/OpenGL" 
-			language="C#" 
-			runtime="Microsoft" >
-			
-			<ReferencePath>..\..\..\Dependencies\Managed\DotNet</ReferencePath>
-
-			<Reference name="System" />
-			<Reference name="System.Data" />
-			<Reference name="System.Drawing" />
-			<Reference name="System.Windows.Forms" />
-			<Reference name="System.Xml" />
-			<Reference name="Axiom.Engine" localCopy="true"/>
+			<Reference name="Axiom" localCopy="true"/>
 			<Reference name="Axiom.MathLib" localCopy="true"/>
 			<Reference name="Tao.OpenGl" localCopy="true" />
+			<Reference name="Tao.OpenGl.Glu" localCopy="true" />
+			<Reference name="Tao.OpenGl.ExtensionLoader" localCopy="true" />
 
 			<?if OS = "Win32" ?>
 				<Reference name="Tao.Platform.Windows" localCopy="true" />
@@ -207,19 +279,29 @@
 				<?endif ?>
 			</Files>
 		</Project>
-		<Project 
-			name="Axiom.Plugins.CgProgramManager" 
-			type="Library" 
-			path="Plugins/CgProgramManager" 
-			language="C#" 
-			runtime="Microsoft" >		
+		
+		<Project name="Axiom.Plugins.CgProgramManager" type="Library" path="Plugins/CgProgramManager" language="C#" runtime="Microsoft" >		
+            <Configuration name="Debug">
+                <Options>
+                    <OutputPath>../../../build/debug/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <Configuration name="Release">
+                <Options>
+                    <OutputPath>../../../build/release/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
 			
-			<ReferencePath>..\..\..\Dependencies\Managed\DotNet</ReferencePath>
+			<ReferencePath>..\..\..\..\Dependencies\Managed\DotNet</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
 			<Reference name="System.Xml" />
-			<Reference name="Axiom.Engine" localCopy="true"/>
+			<Reference name="Axiom" localCopy="true"/>
 			<Reference name="Axiom.MathLib" localCopy="true"/>
 			<Reference name="Tao.Cg" localCopy="true" />
 			
@@ -227,57 +309,93 @@
 				<Match pattern="*.cs" path="." />
 			</Files>
 		</Project>
-		<Project 
-			name="Axiom.Plugins.ParticleFX" 
-			type="Library" 
-			path="Plugins/ParticleFX" 
-			language="C#" 
-			runtime="Microsoft" >
+		
+		
+		<Project name="Axiom.Plugins.ParticleFX" type="Library" path="Plugins/ParticleFX" language="C#" runtime="Microsoft" >
+            <Configuration name="Debug">
+                <Options>
+                    <OutputPath>../../../build/debug/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <Configuration name="Release">
+                <Options>
+                    <OutputPath>../../../build/release/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
 			
 			<Reference name="System" />
 			<Reference name="System.Data" />
 			<Reference name="System.Xml" />
-			<Reference name="Axiom.Engine" localCopy="true"/>
+			<Reference name="Axiom" localCopy="true"/>
 			<Reference name="Axiom.MathLib" localCopy="true"/>
 			
 			<Files>
 				<Match pattern="*.cs" path="." recurse="true"/>
 			</Files>
 		</Project>
-		<Project 
-			name="Axiom.SceneManagers.Octree" 
-			type="Library" 
-			path="SceneManagers\Octree" 
-			language="C#" 
-			runtime="Microsoft" >
+		
+		
+		<Project name="Axiom.SceneManagers.Octree" type="Library" path="SceneManagers\Octree" language="C#" runtime="Microsoft" >
+            <Configuration name="Debug">
+                <Options>
+                    <OutputPath>../../../build/debug/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <Configuration name="Release">
+                <Options>
+                    <OutputPath>../../../build/release/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
 			<Reference name="System.Xml" />
-			<Reference name="Axiom.Engine" localCopy="true"/>
+			<Reference name="Axiom" localCopy="true"/>
 			<Reference name="Axiom.MathLib" localCopy="true"/>
 			
 			<Files>
 				<Match pattern="*.cs" path="." recurse="true"/>
 			</Files>
 		</Project>
-		<Project 
-			name="Axiom.SceneManagers.Bsp" 
-			type="Library" 
-			path="SceneManagers\Bsp" 
-			language="C#" 
-			runtime="Microsoft" >
+		
+		
+		<Project name="Axiom.SceneManagers.Bsp" type="Library" path="SceneManagers\Bsp" language="C#" runtime="Microsoft" >
+            <Configuration name="Debug">
+                <Options>
+                    <OutputPath>../../../build/debug/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
+            <Configuration name="Release">
+                <Options>
+                    <OutputPath>../../../build/release/Axiom3D</OutputPath>
+                    <XmlDocFile>Axiom.xml</XmlDocFile>
+                    <AllowUnsafe>true</AllowUnsafe>
+                </Options>
+            </Configuration>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
 			<Reference name="System.Xml" />
-			<Reference name="Axiom.Engine" localCopy="true"/>
+			<Reference name="Axiom" localCopy="true"/>
 			<Reference name="Axiom.MathLib" localCopy="true"/>
 			
 			<Files>
 				<Match pattern="*.cs" path="." recurse="true"/>
 			</Files>
 		</Project>
+		
+		
 	</Solution>
+	
 </DNPreBuild>
  
