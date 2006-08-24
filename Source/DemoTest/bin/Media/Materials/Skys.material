@@ -1,0 +1,104 @@
+
+material Skybox/CloudyHills
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+
+			texture_unit
+			{
+				cubic_texture CloudyHills_fr.png CloudyHills_bk.png CloudyHills_lf.png CloudyHills_rt.png CloudyHills_up.png CloudyHills_dn.png separateUV
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+material Skybox/Space
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+
+			texture_unit
+			{
+				cubic_texture stevecube_fr.jpg stevecube_bk.jpg stevecube_lf.jpg stevecube_rt.jpg stevecube_up.jpg stevecube_dn.jpg separateUV
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+material Skyplane/Space
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+
+			texture_unit
+			{
+				texture spacesky.jpg
+			}
+		}
+	}
+}
+material Examples/CloudySky
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+
+			texture_unit
+			{
+				texture clouds.jpg
+				scroll_anim 0.15 0
+			}
+		}
+	}
+}
+
+material Skybox/Stormy
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+
+			texture_unit
+			{
+				cubic_texture stormy.jpg separateUV
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material Skybox/Morning
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+
+			texture_unit
+			{
+				cubic_texture morning.jpg separateUV
+				tex_address_mode clamp
+			}
+		}
+	}
+}
