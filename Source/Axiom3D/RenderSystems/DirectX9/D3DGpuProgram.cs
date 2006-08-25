@@ -91,7 +91,7 @@ namespace Axiom.RenderSystems.DirectX9 {
             // load the shader from the source string
             GraphicsStream microcode = ShaderLoader.FromString(source, null, 0, out errors);
 
-            if(errors != null) {
+            if(errors != null && errors.Length != 0) {
                 string msg = string.Format("Error while compiling pixel shader '{0}':\n {1}", name, errors);
                 throw new AxiomException(msg);
             }
