@@ -189,26 +189,38 @@ namespace Axiom.Platforms.Win32
 		///		Captures the state of all active input controllers.
 		/// </summary>
 		public override void Capture() {
-			if(VerifyInputAcquired()) {
-				if(useKeyboard) {
-					if(useKeyboardEvents) {
-						ReadBufferedKeyboardData();
-					}
-					else {
-						// TODO: Grab keyboard modifiers
-						CaptureKeyboard();
-					}
-				}
+            this.control.BringToFront();
+            this.control.Select();
+            this.control.Show();
 
-				if(useMouse) {
-					if(useMouseEvents) {
-					}
-					else {
-						CaptureMouse();
-					}
-				}
-			}
-		}
+            if ( window.IsActive )
+            {
+                try
+                {
+                    CaptureInput();
+                }
+                catch ( Exception )
+                {
+                    try
+                    {
+                        // try to acquire device and try again
+                        if ( useKeyboard )
+                        {
+                            keyboardDevice.Acquire();
+                        }
+                        if ( useMouse )
+                        {
+                            mouseDevice.Acquire();
+                        }
+                        CaptureInput();
+                    }
+                    catch ( Exception )
+                    {
+                        ClearInput(); //not to appear as something would be pressed or whatever.
+                    }
+                }
+            }
+        }
 
 		/// <summary>
 		///		Intializes DirectInput for use on Win32 platforms.
@@ -308,6 +320,48 @@ namespace Axiom.Platforms.Win32
 		#endregion InputReader implementation
 
 		#region Helper Methods
+
+        /// <summary>
+        ///     Clear this class input buffers (those accesible to client through one of the public methods)
+        /// </summary>
+        private void ClearInput()
+        {
+            keyboardState = null;
+            mouseRelX = mouseRelY = mouseRelZ = 0;
+            mouseButtons = 0;
+        }
+
+        /// <summary>
+        ///     Capture buffered or unbuffered mouse and/or keyboard input.
+        /// </summary>
+        private void CaptureInput()
+        {
+
+            if ( useKeyboard )
+            {
+                if ( useKeyboardEvents )
+                {
+                    ReadBufferedKeyboardData();
+                }
+                else
+                {
+                    // TODO Grab keyboard modifiers
+                    CaptureKeyboard();
+                }
+            }
+
+            if ( useMouse )
+            {
+                if ( useMouseEvents )
+                {
+                    //TODO: implement
+                }
+                else
+                {
+                    CaptureMouse();
+                }
+            }
+        }
 
 		/// <summary>
 		///		Initializes the keyboard using either immediate mode or event based input.
