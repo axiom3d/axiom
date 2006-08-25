@@ -67,6 +67,9 @@
 				
 				<include unless="${platform::is-win32()}" name="${managed.dependencies.dir}/Tao.Sdl.dll"/>
 				<include unless="${platform::is-win32()}" name="${managed.dependencies.dir}/Tao.Sdl.dll.config"/>
+
+				<!-- Dump all the native dependencies into the build directory if on Windows -->
+				<include if="${platform::is-win32()}" name="${native.dependencies.dir}/*.dll"/>
 			</fileset>
 			
 	</target>
