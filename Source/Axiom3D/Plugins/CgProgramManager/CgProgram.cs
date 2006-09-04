@@ -85,7 +85,7 @@ namespace Axiom.CgPrograms {
             string[] args = null;
 
             if(selectedCgProfile == Cg.CG_PROFILE_VS_1_1) {
-                //args = new string[] {"-profileopts dcls", null};
+                args = new string[] { "-profileopts", "dcls", null };
             }
 
             // create the Cg program
