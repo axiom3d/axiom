@@ -54,7 +54,7 @@ namespace Demos {
 			scene.AmbientLight = ColorEx.Black;
 
 			// TODO: Check based on caps
-			int currentAtheneMaterial = 0;
+			int currentAtheneMaterial = 1;
 
 			// fixed light, dim
 			sunLight = scene.CreateLight("SunLight");
