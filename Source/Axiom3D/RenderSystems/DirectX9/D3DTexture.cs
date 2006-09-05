@@ -38,6 +38,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 	/// <summary>
 	/// Summary description for D3DTexture.
 	/// </summary>
+	/// <remarks>When loading a cubic texture, the image with the texture base name plus the "_rt", "_lf", "_up", "_dn", "_fr", "_bk" suffixes will automaticaly be loaded to construct it.</remarks>
 	public class D3DTexture : Axiom.Core.Texture {
 		#region Fields
 

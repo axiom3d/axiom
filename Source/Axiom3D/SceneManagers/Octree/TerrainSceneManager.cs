@@ -46,6 +46,7 @@ namespace Axiom.SceneManagers.Octree {
         protected Vector3 scale;
         protected Material terrainMaterial;
         protected SceneNode terrainRoot;
+		protected TerrainOptions options; //needed for get HeightAt
 
         #endregion Fields
         
@@ -54,8 +55,19 @@ namespace Axiom.SceneManagers.Octree {
 
         #region SceneManager members
 
-        public override void LoadWorldGeometry(string fileName) {
-            TerrainOptions options = new TerrainOptions();
+		public override void ClearScene()
+		{
+			base.ClearScene();
+
+			tiles = null;
+			terrainMaterial = null;
+			terrainRoot = null;
+		}
+
+
+		public override void LoadWorldGeometry(string fileName) 
+		{
+            options = new TerrainOptions();
 
             DataSet optionData = new DataSet();
             optionData.ReadXml(fileName);
@@ -233,13 +245,67 @@ namespace Axiom.SceneManagers.Octree {
         }
 
         /// <summary>
+		/// Get the height of a a point on the terrain under/over a givin 3d point. This is
+		/// very useful terrain collision testing, since you can simply select 
+		/// a few locations you would like to test and see if the y value matches the one returned
+		/// by this function.
+		/// 
+		/// Just to clarify this does not return the altitude of a generic xyz point, 
+		/// rather it returns the y value (height) of a point with the same x and z values 
+		/// as thoes passed in, that is on the surface of the terrain. 
+		/// To get the Altitude you would do something like 
+		/// float altitude = thePoint.y - GetHeightAt(thePoint, 0);
+		/// 
+		/// This has code merged into it from GetTerrainTile() b/c it gives us about 60 fps 
+		/// when testing 1000+ points, to inline it here rather than going through the extra function calls
+		/// </summary>
+		/// <param name="point">The point you would like to know the y value of the terrain at</param>
+		/// <param name="defaultheight">value to return if the point is not over/under the terrain</param>
+		/// <returns></returns>
+		public float GetHeightAt(Vector3 point, float defaultheight)
+		{			
+			if (options == null || tiles == null) return defaultheight;
+            float worldsize = options.worldSize;
+            float scalex = options.scalex;
+            float scalez = options.scalez;
+
+			int xdim = tiles.GetLength(0);
+			int zdim = tiles.GetLength(1);			
+						
+			float maxx = scalex * worldsize;													
+			int xCoordIndex = (int) ((point.x* (xdim/maxx)));	
+
+			float maxz = scalez *worldsize;			
+			int zCoordIndex = (int) ((point.z* zdim/maxx));
+			
+			if (xCoordIndex >= xdim || zCoordIndex >= zdim || xCoordIndex < 0 || zCoordIndex <0 ) return defaultheight; //point is not over a tile			
+			return tiles[xCoordIndex, zCoordIndex].GetHeightAt(point.x, point.z);			
+		}
+
+        /// <summary>
         ///     Returns the TerrainRenderable that contains the given pt.
         //      If no tile exists at the point, it returns 0
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
         public TerrainRenderable GetTerrainTile(Vector3 point) {
-            return null;
+
+            if ( options == null || tiles == null ) return null;
+            float worldsize = options.worldSize;
+            float scalex = options.scalex;
+            float scalez = options.scalez;
+
+			int xdim = tiles.GetLength(0);
+			int zdim = tiles.GetLength(1);			
+						
+			float maxx = scalex * worldsize;													
+			int xCoordIndex = (int) ((point.x* (xdim/maxx)));	
+
+			float maxz = scalez *worldsize;			
+			int zCoordIndex = (int) ((point.z* zdim/maxx));
+			
+			if (xCoordIndex >= xdim || zCoordIndex >= zdim || xCoordIndex < 0 || zCoordIndex <0 ) return null; //point is not over a tile			
+			else return tiles[xCoordIndex, zCoordIndex];            
         }
 
         #endregion SceneManager members

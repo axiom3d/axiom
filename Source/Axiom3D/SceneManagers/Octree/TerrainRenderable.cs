@@ -82,7 +82,11 @@ namespace Axiom.SceneManagers.Octree {
 
             terrain = new VertexData();
             terrain.vertexStart = 0;
-            terrain.vertexCount = options.size * options.size;
+		// Turbo: appended factor 3
+			//        Not sure about that, but without that the terrain manager seems
+			//        to mess up memory because of buffer overruns
+			//terrain.vertexCount = options.size * options.size;
+			terrain.vertexCount = options.size * options.size * 3;
 
             VertexDeclaration decl = terrain.vertexDeclaration;
             VertexBufferBinding binding = terrain.vertexBufferBinding;

@@ -447,6 +447,8 @@ namespace Demos {
             // unlock the original position buffer
             orgPosBuffer.Unlock();
 
+            dstPosData = dstPosBuffer.Lock( BufferLocking.Discard );
+
             // calculate normals
             HardwareIndexBuffer indexBuffer = indexData.indexBuffer;
 
@@ -501,7 +503,7 @@ namespace Demos {
             for(int i = 0; i < buffer.VertexCount; i++) {
                 normPtr[i] = 0.0f;
             }
-
+            buffer.Unlock();
             return normPtr;
         }
 
@@ -513,6 +515,8 @@ namespace Demos {
         private unsafe void NormalsSaveNormalized(VertexData vertexData, float* normals) {
             VertexElement element = vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Normal);
             HardwareVertexBuffer buffer = vertexData.vertexBufferBinding.GetBuffer(element.Source);
+
+			IntPtr temp = buffer.Lock(BufferLocking.Normal);
 
             int numVerts = buffer.VertexCount;
 
