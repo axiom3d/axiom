@@ -54,10 +54,9 @@ namespace Axiom.RenderSystems.DirectX9 {
 
                 case GpuProgramType.Fragment:
                     return new D3DFragmentProgram(name, device, syntaxCode);
+				default:
+					throw new NotSupportedException("The program type is not supported.");
             }
-
-            // if this line is ever reached, I will eat a plate of shit.
-            return null;
         }
 
         /// <summary>

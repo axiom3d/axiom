@@ -9,5 +9,5 @@
 	<ScaleY>0.2</ScaleY>
 	<ScaleZ>1</ScaleZ>
 	<MaxMipMapLevel>5</MaxMipMapLevel>
-	<VertexNormals>yes</VertexNormals>
+	<VertexNormals>no</VertexNormals>
 </TerrainConfig>

@@ -29,7 +29,8 @@ using System.Runtime.InteropServices;
 
 namespace Axiom.Graphics {
     /// <summary>
-    /// Summary description for IIndexBuffer.
+	///		Describes the graphics API independent functionality required by a hardware
+	///		index buffer.  
     /// </summary>
     public abstract class HardwareIndexBuffer : HardwareBuffer {
         #region Fields
