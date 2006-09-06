@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <EngineConfig xmlns="http://tempuri.org/EngineConfig.xsd">
-	<FilePath type="Folder" src="../../../Games/YAT/Media"/>
+	<FilePath type="Folder" src="../../../Related_Projects/Games/YAT/Media"/>
 	
 	<!-- Axiom Media -->
-	<FilePath type="Folder" src="../../../../../Media/Icons"/>	
-	<FilePath type="Folder" src="../../../../../Media/Fonts"/>
-	<FilePath type="Folder" src="../../../../../Media/Textures"/>
+	<FilePath type="Folder" src="../../../../Media/Icons"/>	
+	<FilePath type="Folder" src="../../../../Media/Fonts"/>
+	<FilePath type="Folder" src="../../../../Media/Textures"/>
 	
 </EngineConfig>
  
