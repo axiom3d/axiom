@@ -42,13 +42,13 @@
 		<Project name="YAT" path="." type="WinExe" rootNamespace="YAT">
 			<Configuration name="Debug">
 				<Options>
-					<OutputPath>../../build/debug/YAT</OutputPath>
+					<OutputPath>../../../build/debug/YAT</OutputPath>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
-					<OutputPath>../../build/release/YAT</OutputPath>
+					<OutputPath>../../../build/release/YAT</OutputPath>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
@@ -84,6 +84,7 @@
 
 			<Files>
 				<Match pattern="*.cs" recurse="true"/>
+				<Match pattern="EngineConfig.xml" path="" buildAction="None" />
 			</Files>
 		</Project>
 		
