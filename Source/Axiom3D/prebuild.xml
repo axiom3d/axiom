@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Prebuild xmlns="http://dnpb.sourceforge.net/schemas/prebuild-1.6.xsd" version="1.6">
 	<Solution name="Axiom" path=".">
-	<Configuration name="Debug">
-		<Options>
-		<IncrementalBuild>true</IncrementalBuild>
-		<CompilerDefines>DEBUG;TRACE</CompilerDefines>
-		<OptimizeCode>false</OptimizeCode>
-		<AllowUnsafe>true</AllowUnsafe>
-		<DebugInformation>true</DebugInformation>
-		<WarningLevel>0</WarningLevel>
-		</Options>
-	</Configuration>
-	<Configuration name="Release">
-		<Options>
-		<CompilerDefines>TRACE</CompilerDefines>
-		<OptimizeCode>true</OptimizeCode>
-		<AllowUnsafe>true</AllowUnsafe>
-		<DebugInformation>false</DebugInformation>
-		<WarningLevel>0</WarningLevel>
-		</Options>
-	</Configuration>
-	<Project name="Axiom.Demos" path="Demos" language="C#" type="Library">
+		<Configuration name="Debug">
+			<Options>
+			<IncrementalBuild>true</IncrementalBuild>
+			<CompilerDefines>DEBUG;TRACE</CompilerDefines>
+			<OptimizeCode>false</OptimizeCode>
+			<AllowUnsafe>true</AllowUnsafe>
+			<DebugInformation>true</DebugInformation>
+			<WarningLevel>0</WarningLevel>
+			</Options>
+		</Configuration>
+		<Configuration name="Release">
+			<Options>
+			<CompilerDefines>TRACE</CompilerDefines>
+			<OptimizeCode>true</OptimizeCode>
+			<AllowUnsafe>true</AllowUnsafe>
+			<DebugInformation>false</DebugInformation>
+			<WarningLevel>0</WarningLevel>
+			</Options>
+		</Configuration>
+		
+		<Project name="Axiom.Demos" path="Demos" language="C#" type="Exe">
 			<Configuration name="Debug">
 				<Options>
 					<AllowUnsafe>true</AllowUnsafe>
@@ -60,7 +61,7 @@
 				<Match pattern="EngineConfig.xml" path="" buildAction="None" />
 				<Match pattern="Terrain.xml" path="" buildAction="None" />
 			</Files>
-	</Project>		
+		</Project>		
 		
 		<Project name="Axiom" type="Library" path="Engine" language="C#" runtime="Microsoft" >		
 			<Configuration name="Debug">
@@ -89,6 +90,7 @@
 			
 			<Files>
 				<Match pattern="*.cs" path="." recurse="true"/>
+				<Match pattern="GlobalAssemblyInfo.cs" path="../" link="true" />
 			</Files>
 		</Project>
 
@@ -127,6 +129,7 @@
 
 				<Files>
 					<Match pattern="*.cs" path="." recurse="true"/>
+					<Match pattern="GlobalAssemblyInfo.cs" path="../../" link="true" />
 				</Files>
 			</Project>
 
@@ -161,6 +164,7 @@
 
 				<Files>
 					<Match pattern="*.cs" path="." recurse="true"/>
+					<Match pattern="GlobalAssemblyInfo.cs" path="../../" link="true" />
 				</Files>
 			</Project>
 
@@ -195,6 +199,7 @@
 			
 			<Files>
 				<Match pattern="*.cs" path="." recurse="true"/>
+				<Match pattern="GlobalAssemblyInfo.cs" path="../../" link="true" />
 			</Files>
 		</Project>
 
@@ -243,6 +248,7 @@
 				<?else ?>
 					<Match pattern="*.cs" path="./SDL" />
 				<?endif ?>
+				<Match pattern="GlobalAssemblyInfo.cs" path="../../" link="true" />
 			</Files>
 		</Project>
 		
@@ -272,6 +278,7 @@
 			
 			<Files>
 				<Match pattern="*.cs" path="." />
+				<Match pattern="GlobalAssemblyInfo.cs" path="../../" link="true" />
 			</Files>
 		</Project>
 		
@@ -299,6 +306,7 @@
 			
 			<Files>
 				<Match pattern="*.cs" path="." recurse="true"/>
+				<Match pattern="GlobalAssemblyInfo.cs" path="../../" link="true" />
 			</Files>
 		</Project>
 		
@@ -326,6 +334,7 @@
 			
 			<Files>
 				<Match pattern="*.cs" path="." recurse="true"/>
+				<Match pattern="GlobalAssemblyInfo.cs" path="../../" link="true" />
 			</Files>
 		</Project>
 		
@@ -353,6 +362,7 @@
 			
 			<Files>
 				<Match pattern="*.cs" path="." recurse="true"/>
+				<Match pattern="GlobalAssemblyInfo.cs" path="../../" link="true" />
 			</Files>
 		</Project>
 		
