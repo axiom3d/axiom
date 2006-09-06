@@ -1,0 +1,195 @@
+
+material Brick1
+{
+	technique
+	{
+		pass
+		{
+			diffuse 0.8 0.1 0.1 1.0
+			ambient 0.8 0.1 0.1 1.0
+
+		}
+	}
+}
+
+
+material Brick2
+{
+	technique
+	{
+		pass
+		{
+			diffuse 0.1 0.1 0.8 1.0
+			ambient 0.1 0.1 0.8 1.0
+
+		}
+	}
+}
+
+
+material Brick3
+{
+	technique
+	{
+		pass
+		{
+			diffuse 0.8 0.8 0.1 1.0
+			ambient 0.8 0.8 0.1 1.0
+
+		}
+	}
+}
+
+
+material Brick4
+{
+	technique
+	{
+		pass
+		{
+			diffuse 0.8 0.1 0.8 1.0
+			ambient 0.8 0.1 0.8 1.0
+
+		}
+	}
+}
+
+
+material Brick5
+{
+	technique
+	{
+		pass
+		{
+			diffuse 0.1 0.8 0.8 1.0
+			ambient 0.1 0.8 0.8 1.0
+
+		}
+	}
+}
+
+
+material Brick6
+{
+	technique
+	{
+		pass
+		{
+			diffuse 0.1 0.8 0.1 1.0
+			ambient 0.1 0.8 0.1 1.0
+
+		}
+	}
+}
+
+
+material Brick7
+{
+	technique
+	{
+		pass
+		{
+			diffuse 0.8 0.5 0.1 1.0
+			ambient 0.8 0.5 0.1 1.0
+
+		}
+	}
+}
+
+
+material BrickHighlight1
+{
+	technique
+	{
+		pass
+		{
+			diffuse 0.8 0.1 0.1 1.0
+			ambient 0.8 0.1 0.1 1.0
+
+		}
+	}
+}
+
+
+material BrickHighlight2
+{
+	technique
+	{
+		pass
+		{
+			diffuse 0.8 0.1 0.1 1.0
+			ambient 0.8 0.1 0.1 1.0
+
+		}
+	}
+}
+
+
+material BrickHighlight3
+{
+	technique
+	{
+		pass
+		{
+			diffuse 0.8 0.1 0.1 1.0
+			ambient 0.8 0.1 0.1 1.0
+
+		}
+	}
+}
+
+
+material BrickHighlight4
+{
+	technique
+	{
+		pass
+		{
+			diffuse 0.8 0.1 0.1 1.0
+			ambient 0.8 0.1 0.1 1.0
+
+		}
+	}
+}
+
+
+material BrickHighlight5
+{
+	technique
+	{
+		pass
+		{
+			diffuse 0.8 0.1 0.1 1.0
+			ambient 0.8 0.1 0.1 1.0
+
+		}
+	}
+}
+
+
+material BrickHighlight6
+{
+	technique
+	{
+		pass
+		{
+			diffuse 0.8 0.1 0.1 1.0
+			ambient 0.8 0.1 0.1 1.0
+
+		}
+	}
+}
+
+
+material BrickHighlight7
+{
+	technique
+	{
+		pass
+		{
+			diffuse 0.8 0.1 0.1 1.0
+			ambient 0.8 0.1 0.1 1.0
+
+		}
+	}
+}
