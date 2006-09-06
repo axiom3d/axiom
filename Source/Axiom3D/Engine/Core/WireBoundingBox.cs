@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Graphics;
 
 namespace Axiom.Core {
@@ -136,8 +136,8 @@ namespace Axiom.Core {
             Vector3 min = aab.Minimum;
 
             // set bounding sphere radius
-            float lengthSquared = MathUtil.Max(max.LengthSquared, min.LengthSquared);
-            radius = MathUtil.Sqrt(lengthSquared);
+            float lengthSquared = Utility.Max(max.LengthSquared, min.LengthSquared);
+            radius = Utility.Sqrt(lengthSquared);
 
             float maxx = max.x + 1.0f;
             float maxy = max.y + 1.0f;

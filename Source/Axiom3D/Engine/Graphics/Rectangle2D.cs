@@ -1,7 +1,7 @@
 using System;
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.MathLib;
+using Axiom.Math;
 
 namespace Axiom.Graphics
 {
@@ -76,7 +76,7 @@ namespace Axiom.Graphics
 			op.operationType = OperationType.TriangleStrip;
 		}
 
-		public override void GetWorldTransforms(Axiom.MathLib.Matrix4[] matrices) {
+		public override void GetWorldTransforms(Axiom.Math.Matrix4[] matrices) {
 			// return identity matrix to prevent parent transforms
 			matrices[0] = Matrix4.Identity;
 		}

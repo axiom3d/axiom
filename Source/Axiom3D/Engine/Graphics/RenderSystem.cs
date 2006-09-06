@@ -31,8 +31,8 @@ using Axiom.Core;
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Graphics;
-using Axiom.Utility;
-using Axiom.MathLib;
+//using Axiom.Utility;
+using Axiom.Math;
 
 namespace Axiom.Graphics {
 	/// <summary>

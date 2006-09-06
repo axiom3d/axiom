@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Drawing;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 
 namespace Axiom.Core {
     /// <summary>
@@ -176,10 +176,10 @@ namespace Axiom.Core {
 		/// </summary>
 		public float Rotation {
 			get {
-				return rotationInRadians * MathUtil.DEGREES_PER_RADIAN;
+				return rotationInRadians * Utility.DEGREES_PER_RADIAN;
 			}
 			set {
-				rotationInRadians = value * MathUtil.RADIANS_PER_DEGREE;
+				rotationInRadians = value * Utility.RADIANS_PER_DEGREE;
 				// Hmmm, we don't have a NotifyBillboardTextureCoordsModified?
 				if(rotationInRadians != 0) {
 					ParentSet.NotifyBillboardTextureCoordsModified();

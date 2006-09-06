@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -23,12 +23,25 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
+
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+
 using Axiom.Collections;
 using Axiom.Core;
 
+#endregion Namespace Declarations
 
-namespace Axiom.Animating {
+namespace Axiom.Animating
+{
     /// <summary>
     ///		An animation sequence. 
     /// </summary>
@@ -41,9 +54,10 @@ namespace Axiom.Animating {
     ///		You should not create these animations directly. They will be created via a parent
     ///		object which owns the animation, e.g. Skeleton, SceneManager, etc.
     /// </remarks>
-    public class Animation {
+    public class Animation
+    {
         #region Member variables
-		
+
         /// <summary>Name of this animation.</summary>
         protected string name;
         /// <summary>The total length of this animation (sum of the tracks).</summary>
@@ -60,7 +74,8 @@ namespace Axiom.Animating {
         #region Constructors
 
         /// <summary>Static constructor.</summary>
-        static Animation() {
+        static Animation()
+        {
             // set default interpolation mode to Spline (mmm....spline)
             defaultInterpolationMode = InterpolationMode.Spline;
         }
@@ -70,7 +85,8 @@ namespace Axiom.Animating {
         ///		<p/>
         ///		Animations should be created within objects that can own them (skeletons, scene managers, etc).
         /// </summary>
-        internal Animation(string name, float length) {
+        internal Animation( string name, float length )
+        {
             this.name = name;
             this.length = length;
 
@@ -88,39 +104,65 @@ namespace Axiom.Animating {
         /// <summary>
         ///		Gets the name of this animation.
         /// </summary>
-        public string Name {
-            get { return name; }
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
         }
 
         /// <summary>
         ///		Gets the total length of this animation.
         /// </summary>
-        public float Length {
-            get { return length; }
+        public float Length
+        {
+            get
+            {
+                return length;
+            }
         }
 
         /// <summary>
         ///		Gets/Sets the current interpolation mode for this animation.
         /// </summary>
-        public InterpolationMode InterpolationMode {
-            get { return interpolationMode; }
-            set { interpolationMode = value; }
+        public InterpolationMode InterpolationMode
+        {
+            get
+            {
+                return interpolationMode;
+            }
+            set
+            {
+                interpolationMode = value;
+            }
         }
 
         /// <summary>
         ///		A collection of the tracks in this animation.
         /// </summary>
         // TODO: See if we can ensure that the track list is not modified somehow.
-        public AnimationTrackCollection Tracks {
-            get { return trackList; }
+        public AnimationTrackCollection Tracks
+        {
+            get
+            {
+                return trackList;
+            }
         }
 
         /// <summary>
         ///		Gets/Sets the default interpolation mode to be used for all animations.
         /// </summary>
-        public static InterpolationMode DefaultInterpolationMode {
-            get { return defaultInterpolationMode; }
-            set { defaultInterpolationMode = value; }
+        public static InterpolationMode DefaultInterpolationMode
+        {
+            get
+            {
+                return defaultInterpolationMode;
+            }
+            set
+            {
+                defaultInterpolationMode = value;
+            }
         }
 
         #endregion
@@ -132,12 +174,13 @@ namespace Axiom.Animating {
         /// </summary>
         /// <param name="handle">Numeric handle to give the track, used for accessing the track later.</param>
         /// <returns></returns>
-        public AnimationTrack CreateTrack(short handle) {
-            AnimationTrack track = new AnimationTrack(this);
+        public AnimationTrack CreateTrack( short handle )
+        {
+            AnimationTrack track = new AnimationTrack( this );
             track.Handle = handle;
 
             // add the track to the list
-            trackList.Add(track);
+            trackList.Add( track );
 
             return track;
         }
@@ -148,9 +191,10 @@ namespace Axiom.Animating {
         /// <param name="index">Numeric handle to give the track, used for accessing the track later.</param>
         /// <param name="target">Node object which will be affected by this track.</param>
         /// <returns></returns>
-        public AnimationTrack CreateTrack(short handle, Node target) {
+        public AnimationTrack CreateTrack( short handle, Node target )
+        {
             // create a new track and set it's target
-            AnimationTrack track = CreateTrack(handle);
+            AnimationTrack track = CreateTrack( handle );
             track.TargetNode = target;
             track.Handle = handle;
 
@@ -168,31 +212,37 @@ namespace Axiom.Animating {
         /// <param name="weight">The influence to give to this track, 1.0 for full influence, less to blend with
         ///		other animations.</param>
         /// <param name="accumulate"></param>
-        public void Apply(float time, float weight, bool accumulate) {
+        public void Apply( float time, float weight, bool accumulate )
+        {
             // loop through tracks and update them all with current time
-			for(int i = 0; i < trackList.Count; i++) {
-				trackList[i].Apply(time, weight, accumulate);
-			}
+            for ( int i = 0; i < trackList.Count; i++ )
+            {
+                trackList[ i ].Apply( time, weight, accumulate );
+            }
         }
 
-		public void Apply(Skeleton skeleton, float time, float weight, bool accumulate) {
-			// loop through tracks and update them all with current time
-			for(int i = 0; i < trackList.Count; i++) {
-				AnimationTrack track = trackList[i];
-				Bone bone = skeleton.GetBone((ushort)track.Handle);
-				track.ApplyToNode(bone, time, weight, accumulate);
-			}
-		}
+        public void Apply( Skeleton skeleton, float time, float weight, bool accumulate )
+        {
+            // loop through tracks and update them all with current time
+            for ( int i = 0; i < trackList.Count; i++ )
+            {
+                AnimationTrack track = trackList[ i ];
+                Bone bone = skeleton.GetBone( (ushort)track.Handle );
+                track.ApplyToNode( bone, time, weight, accumulate );
+            }
+        }
 
         #endregion
 
         #region Event handlers
 
-        private void TrackAdded(object source, System.EventArgs e) {
-			
+        private void TrackAdded( object source, System.EventArgs e )
+        {
+
         }
 
-        private void TracksCleared(object source, System.EventArgs e) {
+        private void TracksCleared( object source, System.EventArgs e )
+        {
             // clear the tangents list when the points are cleared
             //tangentList.Clear();
         }

@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,16 +24,29 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
 
 using System;
+
 using Axiom.Controllers;
 using Axiom.Graphics;
 
-namespace Axiom.Controllers.Canned {
-	/// <summary>
-	///     Predefined controller value for getting/setting the frame number of a texture unit.
-	/// </summary>
-	public class TextureFrameControllerValue : IControllerValue {
+#endregion Namespace Declarations
+
+namespace Axiom.Controllers.Canned
+{
+    /// <summary>
+    ///     Predefined controller value for getting/setting the frame number of a texture unit.
+    /// </summary>
+    public class TextureFrameControllerValue : IControllerValue
+    {
         #region Fields
 
         /// <summary>
@@ -49,9 +62,10 @@ namespace Axiom.Controllers.Canned {
         ///     Constructor.
         /// </summary>
         /// <param name="textureUnit">Reference to the texture unit state to target for the animation.</param>
-		public TextureFrameControllerValue(TextureUnitState textureUnit) {
+        public TextureFrameControllerValue( TextureUnitState textureUnit )
+        {
             this.texUnit = textureUnit;
-		}
+        }
 
         #endregion Constructor
 
@@ -63,16 +77,19 @@ namespace Axiom.Controllers.Canned {
         /// <remarks>
         ///     Value is a parametric value in the range [0,1].
         /// </remarks>
-        public float Value {
-            get {
+        public float Value
+        {
+            get
+            {
                 return texUnit.CurrentFrame / texUnit.NumFrames;
             }
-            set {
-                texUnit.CurrentFrame = (int)(value * texUnit.NumFrames);
+            set
+            {
+                texUnit.CurrentFrame = (int)( value * texUnit.NumFrames );
             }
         }
-        
+
 
         #endregion IControllerValue Members
-	}
+    }
 }

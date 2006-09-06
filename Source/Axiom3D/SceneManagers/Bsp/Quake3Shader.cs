@@ -30,7 +30,7 @@ using System.Collections;
 using System.Runtime.InteropServices;
 
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Controllers;
 
@@ -393,12 +393,12 @@ namespace Axiom.SceneManagers.Bsp
 			// Do skydome (use this material)
 			if(skyDome)
 			{
-				float halfAngle = 0.5f * (0.5f * (4.0f * (float) Math.Atan(1.0f)));
-				float sin = (float) Math.Sin(halfAngle);
+				float halfAngle = 0.5f * (0.5f * (4.0f * (float) System.Math.Atan(1.0f)));
+				float sin = (float) Utility.Sin(halfAngle);
 
 				// Quake3 is always aligned with Z upwards
 				Quaternion q = new Quaternion(
-					(float) Math.Cos(halfAngle),
+					(float) Utility.Cos(halfAngle),
 					sin * Vector3.UnitX.x,
 					sin * Vector3.UnitY.y,
 					sin * Vector3.UnitX.z

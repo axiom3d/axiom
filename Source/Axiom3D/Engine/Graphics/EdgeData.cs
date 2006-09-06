@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 
 namespace Axiom.Graphics {
 	/// <summary>
@@ -103,7 +103,7 @@ namespace Axiom.Graphics {
 						offset = t.vertIndex[2] * 3;
 						Vector3 v3 = new Vector3(pVert[offset], pVert[offset + 1], pVert[offset + 2]);
 
-						t.normal = MathUtil.CalculateFaceNormal(v1, v2, v3);
+						t.normal = Utility.CalculateFaceNormal(v1, v2, v3);
 					}
 				}
 			}

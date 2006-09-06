@@ -2,7 +2,7 @@ using System;
 using Axiom.Core;
 using Axiom.Collections;
 using Axiom.Graphics;
-using Axiom.MathLib;
+using Axiom.Math;
 
 namespace Axiom.SceneManagers.Bsp
 {

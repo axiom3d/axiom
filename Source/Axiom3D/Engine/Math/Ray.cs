@@ -31,9 +31,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 using System;
-using Axiom.MathLib.Collections;
+using Axiom.Math.Collections;
 
-namespace Axiom.MathLib {
+namespace Axiom.Math {
 	/// <summary>
 	/// 	Representation of a ray in space, ie a line with an origin and direction.
 	/// </summary>
@@ -78,7 +78,7 @@ namespace Axiom.MathLib {
 		///		origin of this ray where the intersect happened.
 		///	</returns>
 		public IntersectResult Intersects(AxisAlignedBox box) {
-			return MathUtil.Intersects(this, box);
+			return Utility.Intersects(this, box);
 		}
 
 		/// <summary>
@@ -90,7 +90,7 @@ namespace Axiom.MathLib {
 		///		origin of this ray where the intersect happened.
 		///	</returns>
 		public IntersectResult Intersects(Plane plane) {
-			return MathUtil.Intersects(this, plane);
+			return Utility.Intersects(this, plane);
 		}
 
 		/// <summary>
@@ -102,7 +102,7 @@ namespace Axiom.MathLib {
 		///		origin of this ray where the intersect happened.
 		///	</returns>
 		public IntersectResult Intersects(Sphere sphere) {
-			return MathUtil.Intersects(this, sphere);
+			return Utility.Intersects(this, sphere);
 		}
 
 		/// <summary>
@@ -114,7 +114,7 @@ namespace Axiom.MathLib {
 		///		origin of this ray where the intersect happened.
 		///	</returns>
 		public IntersectResult Intersects(PlaneBoundedVolume volume) {
-			return MathUtil.Intersects(this, volume);
+			return Utility.Intersects(this, volume);
 		}
 
 		#endregion Intersection Methods

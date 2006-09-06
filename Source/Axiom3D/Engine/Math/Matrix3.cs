@@ -50,7 +50,7 @@ using System.Text;
 //           0       0       1
 // where t > 0 indicates a counterclockwise rotation in the xy-plane.
 
-namespace Axiom.MathLib {
+namespace Axiom.Math {
     /// <summary>
     /// A 3x3 matrix which can represent rotations around axes.
     /// </summary>
@@ -183,16 +183,16 @@ namespace Axiom.MathLib {
         /// <param name="pitch"></param>
         /// <param name="roll"></param>
         public void FromEulerAnglesXYZ(float yaw, float pitch, float roll) {
-            float cos = MathUtil.Cos(yaw);
-            float sin = MathUtil.Sin(yaw);
+            float cos = Utility.Cos(yaw);
+            float sin = Utility.Sin(yaw);
             Matrix3 xMat = new Matrix3(1, 0, 0, 0, cos, -sin, 0, sin, cos);
 
-            cos = MathUtil.Cos(pitch);
-            sin = MathUtil.Sin(pitch);
+            cos = Utility.Cos(pitch);
+            sin = Utility.Sin(pitch);
             Matrix3 yMat = new Matrix3(cos, 0, sin, 0, 1, 0, -sin, 0, cos);
 
-            cos = MathUtil.Cos(roll);
-            sin = MathUtil.Sin(roll);
+            cos = Utility.Cos(roll);
+            sin = Utility.Sin(roll);
             Matrix3 zMat = new Matrix3(cos, -sin, 0, sin, cos, 0, 0, 0, 1);
 
             this = xMat * (yMat * zMat);

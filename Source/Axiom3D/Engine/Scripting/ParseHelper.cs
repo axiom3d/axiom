@@ -3,7 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 
 namespace Axiom.Scripting {
     /// <summary>

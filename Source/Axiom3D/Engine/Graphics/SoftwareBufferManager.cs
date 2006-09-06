@@ -103,7 +103,8 @@ namespace Axiom.Graphics {
         ///     Holds the buffer data.
         /// </summary>
         protected byte[] data;
-		
+        protected GCHandle handle;
+
         #endregion Fields
 
         #region Constructors
@@ -127,23 +128,21 @@ namespace Axiom.Graphics {
 
         #region Methods
 
-        public override IntPtr Lock(int offset, int length, BufferLocking locking) {
+        public override IntPtr Lock( int offset, int length, BufferLocking locking )
+        {
+            Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." );
+
             isLocked = true;
 
-            // return the offset into the array as a pointer
-            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
-
-			//handle = GCHandle.Alloc(data, GCHandleType.Pinned);
-			//return handle.AddrOfPinnedObject();
+            return LockImpl( offset, length, locking);
         }
 
         protected override IntPtr LockImpl(int offset, int length, BufferLocking locking) {
-            isLocked = true;
 
             // return the offset into the array as a pointer
-            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
-			//handle = GCHandle.Alloc(data, GCHandleType.Pinned);
-			//return handle.AddrOfPinnedObject();
+            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+			handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+			return handle.AddrOfPinnedObject();
         }
 
         public override void ReadData(int offset, int length, IntPtr dest) {
@@ -160,16 +159,16 @@ namespace Axiom.Graphics {
             }
         }
 
-        public override void Unlock() {
+        public override void Unlock()
+        {
             isLocked = false;
 
-			//handle.Free();
+            UnlockImpl();
         }
 
         public override void UnlockImpl() {
-            isLocked = false;
 
-			//handle.Free();
+		    handle.Free();
         }
 
         public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer) {
@@ -191,10 +190,16 @@ namespace Axiom.Graphics {
         ///		buffer is software and not hardware.
         /// </summary>
         public IntPtr GetDataPointer(int offset) {
-            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
-			//return handle.AddrOfPinnedObject();
+            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+			return handle.AddrOfPinnedObject();
         }
 
+        public override void Dispose()
+        {
+            if ( isLocked )
+                Unlock();
+            data = null;
+        }
         #endregion
     }
 
@@ -208,7 +213,8 @@ namespace Axiom.Graphics {
         ///     Holds the buffer data.
         /// </summary>
         protected byte[] data;
-		
+        protected GCHandle handle;
+
         #endregion
 
         #region Constructors
@@ -232,19 +238,24 @@ namespace Axiom.Graphics {
 
         #region Methods
 
-        public override IntPtr Lock(int offset, int length, BufferLocking locking) {
+        public override IntPtr Lock( int offset, int length, BufferLocking locking )
+        {
+            Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." );
+
             isLocked = true;
 
-            // return the offset into the array as a pointer
-            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+            return LockImpl( offset, length, locking );
         }
 
 
         protected override IntPtr LockImpl(int offset, int length, BufferLocking locking) {
-            isLocked = true;
+            //isLocked = true;
 
             // return the offset into the array as a pointer
-            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+
+            handle = GCHandle.Alloc( data, GCHandleType.Pinned );
+            return handle.AddrOfPinnedObject();
         }
 
         public override void ReadData(int offset, int length, IntPtr dest) {
@@ -261,12 +272,16 @@ namespace Axiom.Graphics {
             }
         }
 
-        public override void Unlock() {
+        public override void Unlock()
+        {
             isLocked = false;
+
+            UnlockImpl();
         }
 
         public override void UnlockImpl() {
-            isLocked = false;
+
+            handle.Free();
         }
 
         public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer) {
@@ -288,7 +303,15 @@ namespace Axiom.Graphics {
         ///		buffer is software and not hardware.
         /// </summary>
         public IntPtr GetDataPointer(int offset) {
-            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+            return handle.AddrOfPinnedObject();
+        }
+
+        public override void Dispose()
+        {
+            if ( isLocked )
+                Unlock();
+            data = null;
         }
 
         #endregion

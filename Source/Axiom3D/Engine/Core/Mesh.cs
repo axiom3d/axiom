@@ -32,8 +32,8 @@ using System.Runtime.InteropServices;
 using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Configuration;
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
+using Axiom.Math;
+using Axiom.Math.Collections;
 using Axiom.Serialization;
 using Axiom.Graphics;
 
@@ -243,7 +243,7 @@ namespace Axiom.Core {
 				float sqLen2 = boundingBox.Maximum.LengthSquared;
 
 				// update the bounding sphere radius as well
-				boundingSphereRadius = MathUtil.Sqrt(MathUtil.Max(sqLen1, sqLen2));
+				boundingSphereRadius = Utility.Sqrt(Utility.Max(sqLen1, sqLen2));
 			}
 		}
 
@@ -647,7 +647,7 @@ namespace Axiom.Core {
 
                         // calculate the tangent space vector
                         Vector3 tangent = 
-                            MathUtil.CalculateTangentSpaceVector(
+                            Utility.CalculateTangentSpaceVector(
                                 vertPos[0], vertPos[1], vertPos[2],
                                 u[0], v[0], u[1], v[1], u[2], v[2]);
 
@@ -1273,7 +1273,7 @@ namespace Axiom.Core {
                 }
 
                 // Now normalise if total weight is outside tolerance
-                if(!MathUtil.FloatEqual(totalWeight, 1.0f)) {
+                if(!Utility.FloatEqual(totalWeight, 1.0f)) {
                     IEnumerator normalizeriter = assignments.Find(i);
 
                     while (normalizeriter.MoveNext()) {

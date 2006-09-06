@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.MathLib;
+using Axiom.Math;
 
 namespace Axiom.SceneManagers.Bsp
 {
@@ -129,7 +129,7 @@ namespace Axiom.SceneManagers.Bsp
 			{
 				// Oops, a 180 degree turn (infinite possible rotation axes)
 				// Default to yaw i.e. use current UP
-				rotationQuat = Quaternion.FromAngleAxis(MathUtil.PI, yAxis);
+				rotationQuat = Quaternion.FromAngleAxis(Utility.PI, yAxis);
 			}
 			else 
 			{

@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,13 +24,26 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 
-namespace Axiom.Animating {
+#endregion Namespace Declarations
+
+namespace Axiom.Animating
+{
     /// <summary>
     ///		Types of interpolation used in animation.
     /// </summary>
-    public enum InterpolationMode {
+    public enum InterpolationMode
+    {
         /// <summary>
         ///		More robotic movement, not as realistic.
         ///	 </summary>
@@ -44,7 +57,8 @@ namespace Axiom.Animating {
     /// <summary>
     ///		Used to specify how animations are applied to a skeleton.
     /// </summary>
-    public enum SkeletalAnimBlendMode {
+    public enum SkeletalAnimBlendMode
+    {
         /// <summary>
         ///		Animations are applied by calculating a weighted average of all animations.
         ///	 </summary>

@@ -33,7 +33,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 
-namespace Axiom.MathLib {
+namespace Axiom.Math {
     /// <summary>
     ///		Summary description for Quaternion.
     /// </summary>
@@ -333,16 +333,16 @@ namespace Axiom.MathLib {
         public static Quaternion Slerp(float time, Quaternion quatA, Quaternion quatB, bool useShortestPath) {
             float cos = quatA.Dot(quatB);
 
-            float angle = MathUtil.ACos(cos);
+            float angle = Utility.ACos(cos);
 
-			if(MathUtil.Abs(angle) < EPSILON) {
+			if(Utility.Abs(angle) < EPSILON) {
 				return quatA;
 			}
 
-            float sin = MathUtil.Sin(angle);
+            float sin = Utility.Sin(angle);
             float inverseSin = 1.0f / sin;
-            float coeff0 = MathUtil.Sin((1.0f - time) * angle) * inverseSin;
-            float coeff1 = MathUtil.Sin(time * angle) * inverseSin;
+            float coeff0 = Utility.Sin((1.0f - time) * angle) * inverseSin;
+            float coeff1 = Utility.Sin(time * angle) * inverseSin;
 
 			Quaternion result;
 
@@ -370,9 +370,9 @@ namespace Axiom.MathLib {
             Quaternion quat = new Quaternion();
 
             float halfAngle = 0.5f * angle;
-            float sin = MathUtil.Sin(halfAngle);
+            float sin = Utility.Sin(halfAngle);
 
-            quat.w = MathUtil.Cos(halfAngle);
+            quat.w = Utility.Cos(halfAngle);
             quat.x = sin * axis.x; 
             quat.y = sin * axis.y; 
             quat.z = sin * axis.z; 
@@ -421,7 +421,7 @@ namespace Axiom.MathLib {
 		///		Normalizes elements of this quaterion to the range [0,1].
 		/// </summary>
 		public void Normalize() {
-			float factor = 1.0f / MathUtil.Sqrt(this.Norm);
+			float factor = 1.0f / Utility.Sqrt(this.Norm);
 
 			w = w * factor;
 			x = x * factor;
@@ -442,8 +442,8 @@ namespace Axiom.MathLib {
             float sqrLength = x * x + y * y + z * z;
 
             if(sqrLength >0.0f) {
-                angle = 2.0f * MathUtil.ACos(w);
-                float invLength = MathUtil.InvSqrt(sqrLength);
+                angle = 2.0f * Utility.ACos(w);
+                float invLength = Utility.InvSqrt(sqrLength);
                 axis.x = x * invLength;
                 axis.y = y * invLength;
                 axis.z = z * invLength;
@@ -570,7 +570,7 @@ namespace Axiom.MathLib {
 
             if ( trace > 0.0f ) {
                 // |this.w| > 1/2, may as well choose this.w > 1/2
-                root = MathUtil.Sqrt(trace + 1.0f);  // 2w
+                root = Utility.Sqrt(trace + 1.0f);  // 2w
                 this.w = 0.5f * root;
 				
                 root = 0.5f / root;  // 1/(4w)
@@ -591,7 +591,7 @@ namespace Axiom.MathLib {
                 int j = next[i];
                 int k = next[j];
 
-                root = MathUtil.Sqrt(matrix[i,i] - matrix[j,j] - matrix[k,k] + 1.0f);
+                root = Utility.Sqrt(matrix[i,i] - matrix[j,j] - matrix[k,k] + 1.0f);
 
                 unsafe {
                     fixed(float* apkQuat = &this.x) {
@@ -620,11 +620,11 @@ namespace Axiom.MathLib {
             // start off with a zero quat
             Quaternion result = Quaternion.Zero;
 
-            if(MathUtil.Abs(w) < 1.0f) {
-                float angle = MathUtil.ACos(w);
-                float sin = MathUtil.Sin(angle);
+            if(Utility.Abs(w) < 1.0f) {
+                float angle = Utility.ACos(w);
+                float sin = Utility.Sin(angle);
 
-                if(MathUtil.Abs(sin) >= EPSILON) {
+                if(Utility.Abs(sin) >= EPSILON) {
                     float coeff = angle / sin;
                     result.x = coeff * x;
                     result.y = coeff * y;
@@ -649,15 +649,15 @@ namespace Axiom.MathLib {
             // exp(q) = cos(A)+sin(A)*(x*i+y*j+z*k).  If sin(A) is near zero,
             // use exp(q) = cos(A)+A*(x*i+y*j+z*k) since A/sin(A) has limit 1.
 
-            float angle = MathUtil.Sqrt(x * x + y * y + z * z);
-            float sin = MathUtil.Sin(angle);
+            float angle = Utility.Sqrt(x * x + y * y + z * z);
+            float sin = Utility.Sin(angle);
 
             // start off with a zero quat
             Quaternion result = Quaternion.Zero;
 
-            result.w = MathUtil.Cos(angle);
+            result.w = Utility.Cos(angle);
 
-            if ( MathUtil.Abs(sin) >= EPSILON ) {
+            if ( Utility.Abs(sin) >= EPSILON ) {
                 float coeff = sin / angle;
 
                 result.x = coeff * x;

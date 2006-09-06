@@ -30,7 +30,7 @@ using System.Diagnostics;
 using System.Drawing;
 using Axiom.Collections;
 using Axiom.Graphics;
-using Axiom.MathLib;
+using Axiom.Math;
 
 namespace Axiom.Core {
     /// <summary>
@@ -49,7 +49,7 @@ namespace Axiom.Core {
     ///		A BillboardSet can be created using the SceneManager.CreateBillboardSet method. They can also be used internally
     ///		by other classes to create effects.
     /// </remarks>
-    public class BillboardSet : SceneObject, IRenderable {
+    public class BillboardSet : MovableObject, IRenderable {
         #region Fields
 
         /// <summary>Bounds of all billboards in this set</summary>
@@ -182,10 +182,10 @@ namespace Axiom.Core {
 
             // calculate the radius of the bounding sphere for the billboard
             if(billboard.HasOwnDimensions) {
-                sphere.Radius = MathUtil.Max(billboard.Width, billboard.Height);
+                sphere.Radius = Utility.Max(billboard.Width, billboard.Height);
             }
             else {
-                sphere.Radius = MathUtil.Max(defaultParticleWidth, defaultParticleHeight);
+                sphere.Radius = Utility.Max(defaultParticleWidth, defaultParticleHeight);
             }
 
             // finally, see if the sphere is visible in the camera
@@ -343,8 +343,8 @@ namespace Axiom.Core {
 					float* pTex = (float*)texPtr.ToPointer();
 
 					float rotation = billboard.rotationInRadians;
-					float cosRot = MathUtil.Cos(rotation);
-					float sinRot = MathUtil.Sin(rotation);
+					float cosRot = Utility.Cos(rotation);
+					float sinRot = Utility.Sin(rotation);
 				
 					pTex[texIndex++] = (cosRot * texData[0]) + (sinRot * texData[1]) + 0.5f;
 					pTex[texIndex++] = (sinRot * texData[0]) - (cosRot * texData[1]) + 0.5f;
@@ -503,11 +503,11 @@ namespace Axiom.Core {
                     min.Floor(pos);
                     max.Ceil(pos);
 
-                    maxSqLen = MathUtil.Max(maxSqLen, pos.LengthSquared);
+                    maxSqLen = Utility.Max(maxSqLen, pos.LengthSquared);
                 }
 
                 // adjust for billboard size
-                float adjust = MathUtil.Max(defaultParticleWidth, defaultParticleHeight);
+                float adjust = Utility.Max(defaultParticleWidth, defaultParticleHeight);
                 Vector3 vecAdjust = new Vector3(adjust, adjust, adjust);
                 min -= vecAdjust;
                 max += vecAdjust;
@@ -515,7 +515,7 @@ namespace Axiom.Core {
                 // update our local aabb
                 aab.SetExtents(min, max);
 
-                boundingRadius = MathUtil.Sqrt(maxSqLen);
+                boundingRadius = Utility.Sqrt(maxSqLen);
 
                 // if we have a parent node, ask it to update us
                 if (parentNode != null) {

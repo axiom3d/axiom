@@ -2,7 +2,7 @@ using System;
 using Axiom.Animating;
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Utility;
 using Axiom.Input;
 using Axiom.Collections;

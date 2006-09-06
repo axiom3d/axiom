@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using System.Runtime.InteropServices;
 
 namespace Axiom.Graphics {

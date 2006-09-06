@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using Axiom.MathLib.Collections;
+using Axiom.Math.Collections;
 
 namespace Axiom.SceneManagers.Bsp.Collections {
     /// <summary>

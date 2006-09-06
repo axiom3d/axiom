@@ -28,7 +28,7 @@ using System;
 using System.Collections;
 using System.Drawing;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Scripting;
 using System.Reflection;
 
@@ -218,10 +218,10 @@ namespace Axiom.ParticleSystems {
         /// </remarks>
         public virtual float Angle {
             get { 
-                return MathUtil.RadiansToDegrees(angle); 
+                return Utility.RadiansToDegrees(angle); 
             }
             set { 
-                angle = MathUtil.DegreesToRadians(value); 
+                angle = Utility.DegreesToRadians(value); 
             }
         }
 
@@ -540,7 +540,7 @@ namespace Axiom.ParticleSystems {
         /// <param name="dest">Normalized vector dictating new direction.</param>
         protected virtual void GenerateEmissionDirection(ref Vector3 dest) {
             if(angle != 0.0f) {
-                float tempAngle = MathUtil.UnitRandom() * angle;
+                float tempAngle = Utility.UnitRandom() * angle;
 
                 // randomize direction
                 dest = direction.RandomDeviant(tempAngle, up);
@@ -559,7 +559,7 @@ namespace Axiom.ParticleSystems {
             float scalar;
 
             if (minSpeed != maxSpeed) {
-                scalar = minSpeed + (MathUtil.UnitRandom() * (maxSpeed - minSpeed));
+                scalar = minSpeed + (Utility.UnitRandom() * (maxSpeed - minSpeed));
             }
             else {
                 scalar = minSpeed;
@@ -574,7 +574,7 @@ namespace Axiom.ParticleSystems {
         /// <returns></returns>
         protected virtual float GenerateEmissionTTL() {
             if (maxTTL != minTTL) {
-                return minTTL + (MathUtil.UnitRandom() * (maxTTL - minTTL));
+                return minTTL + (Utility.UnitRandom() * (maxTTL - minTTL));
             }
             else {
                 return minTTL;
@@ -636,10 +636,10 @@ namespace Axiom.ParticleSystems {
         /// </param>
         protected virtual void GenerateEmissionColor(ColorEx color) {
             if (colorRangeStart.CompareTo(colorRangeEnd) != 0) {
-                color.r = colorRangeStart.r + MathUtil.UnitRandom() * (colorRangeEnd.r - colorRangeStart.r);
-                color.g = colorRangeStart.g + MathUtil.UnitRandom() * (colorRangeEnd.g - colorRangeStart.g);
-                color.b = colorRangeStart.b + MathUtil.UnitRandom() * (colorRangeEnd.b - colorRangeStart.b);
-                color.a = colorRangeStart.a + MathUtil.UnitRandom() * (colorRangeEnd.a - colorRangeStart.a);
+                color.r = colorRangeStart.r + Utility.UnitRandom() * (colorRangeEnd.r - colorRangeStart.r);
+                color.g = colorRangeStart.g + Utility.UnitRandom() * (colorRangeEnd.g - colorRangeStart.g);
+                color.b = colorRangeStart.b + Utility.UnitRandom() * (colorRangeEnd.b - colorRangeStart.b);
+                color.a = colorRangeStart.a + Utility.UnitRandom() * (colorRangeEnd.a - colorRangeStart.a);
             }
             else {
                 color.r = colorRangeStart.r;
@@ -658,7 +658,7 @@ namespace Axiom.ParticleSystems {
                     durationRemain = durationMin;
                 }
                 else {
-                    durationRemain = MathUtil.RangeRandom(durationMin, durationMax);
+                    durationRemain = Utility.RangeRandom(durationMin, durationMax);
                 }
             }
             else {
@@ -667,7 +667,7 @@ namespace Axiom.ParticleSystems {
                     repeatDelayRemain = repeatDelayMin;
                 }
                 else {
-                    repeatDelayRemain = MathUtil.RangeRandom(repeatDelayMin, repeatDelayMax);
+                    repeatDelayRemain = Utility.RangeRandom(repeatDelayMin, repeatDelayMax);
                 }
             }
         }

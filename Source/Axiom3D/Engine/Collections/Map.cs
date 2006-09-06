@@ -1,9 +1,48 @@
+#region LGPL License
+/*
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
+
+The overall design, and a majority of the core engine and rendering code 
+contained within this library is a derivative of the open source Object Oriented 
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+#endregion
+
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Axiom.MathLib.Collections;
 
-namespace Axiom.Collections {
+using Axiom.Math.Collections;
+
+#endregion Namespace Declarations
+
+namespace Axiom.Collections
+{
     /// <summary>
     ///     The Map is a C# conversion of the std::map container from the C++ 
     ///     standard library.  
@@ -27,7 +66,8 @@ namespace Axiom.Collections {
     ///     that inserting and iterating through 100,000 items, the Inserts took ~260ms and a full
     ///     enumeration of them all (with unboxing of the value type stored in the map) took between 16-30ms.
     /// </remarks>
-    public class Map : IEnumerable {
+    public class Map : IEnumerable
+    {
         #region Fields
 
         /// <summary>
@@ -47,7 +87,8 @@ namespace Axiom.Collections {
         /// <summary>
         ///     Default constructor.
         /// </summary>
-        public Map() {
+        public Map()
+        {
             buckets = new SortedList();
         }
 
@@ -55,8 +96,9 @@ namespace Axiom.Collections {
         ///     Constructor, takes the comparer to use for the bucket list.
         /// </summary>
         /// <param name="comparer">Custom <see cref="IComparable"/>implmentation to use to sort.</param>
-        public Map(IComparer comparer) {
-            buckets = new SortedList(comparer);
+        public Map( IComparer comparer )
+        {
+            buckets = new SortedList( comparer );
         }
 
         #endregion Constructor
@@ -64,16 +106,18 @@ namespace Axiom.Collections {
         /// <summary>
         ///     Clears this map of all contained objects.
         /// </summary>
-        public void Clear() {
+        public void Clear()
+        {
             buckets.Clear();
-			count = 0;
+            count = 0;
         }
 
-		public object GetKey(int index) {
-			Debug.Assert(index < buckets.Keys.Count);
+        public object GetKey( int index )
+        {
+            Debug.Assert( index < buckets.Keys.Count );
 
-			return buckets.GetKey(index);
-		}
+            return buckets.GetKey( index );
+        }
 
         /// <summary>
         ///     Given a key, Find will return an IEnumerator that allows
@@ -82,32 +126,40 @@ namespace Axiom.Collections {
         /// </summary>
         /// <param name="key">Key for look for.</param>
         /// <returns>IEnumerator to go through the items assigned to the key.</returns>
-        public IEnumerator Find(object key) {
-            if(buckets[key] == null) {
+        public IEnumerator Find( object key )
+        {
+            if ( buckets[ key ] == null )
+            {
                 return null;
             }
-            else {
-                return ((ArrayList)buckets[key]).GetEnumerator();
+            else
+            {
+                return ( (ArrayList)buckets[ key ] ).GetEnumerator();
             }
         }
 
-		public IList FindBucket(object key) {
-			if(buckets[key] == null) {
-				return null;
-			}
-			else {
-				return (ArrayList)buckets[key];
-			}
-		}
+        public IList FindBucket( object key )
+        {
+            if ( buckets[ key ] == null )
+            {
+                return null;
+            }
+            else
+            {
+                return (ArrayList)buckets[ key ];
+            }
+        }
 
         /// <summary>
         ///     Gets the count of objects mapped to the specified key.
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public int Count(object key) {
-            if(buckets[key] != null) {
-                return ((ArrayList)buckets[key]).Count;
+        public int Count( object key )
+        {
+            if ( buckets[ key ] != null )
+            {
+                return ( (ArrayList)buckets[ key ] ).Count;
             }
 
             return 0;
@@ -119,20 +171,23 @@ namespace Axiom.Collections {
         /// </summary>
         /// <param name="key"></param>
         /// <param name="val"></param>
-        public void Insert(object key, object val) {
+        public void Insert( object key, object val )
+        {
             ArrayList container = null;
 
-            if(buckets[key] == null) {
+            if ( buckets[ key ] == null )
+            {
                 container = new ArrayList();
-                buckets.Add(key, container);
+                buckets.Add( key, container );
             }
-            else {
-                container = (ArrayList)buckets[key];
+            else
+            {
+                container = (ArrayList)buckets[ key ];
             }
 
             // TODO: Doing the contains check is extremely slow, so for now duplicate items are allowed
             //if(!container.Contains(val)) {
-            container.Add(val);
+            container.Add( val );
             count++;
             //}
         }
@@ -140,23 +195,28 @@ namespace Axiom.Collections {
         /// <summary>
         ///     Gets the total count of all items contained within the map.
         /// </summary>
-        public int TotalCount {
-            get {
+        public int TotalCount
+        {
+            get
+            {
                 return count;
             }
-            set {
+            set
+            {
                 count = value;
             }
         }
 
-		/// <summary>
-		///		Gets the number of keys in this map.
-		/// </summary>
-		public int KeyCount {
-			get {
-				return buckets.Count;
-			}
-		}
+        /// <summary>
+        ///		Gets the number of keys in this map.
+        /// </summary>
+        public int KeyCount
+        {
+            get
+            {
+                return buckets.Count;
+            }
+        }
 
         #region IEnumerable Members
 
@@ -166,15 +226,17 @@ namespace Axiom.Collections {
         ///     value.
         /// </summary>
         /// <returns></returns>
-        public IEnumerator GetEnumerator() {
-            return new MapEnumerator(this);
+        public IEnumerator GetEnumerator()
+        {
+            return new MapEnumerator( this );
         }
 
         /// <summary>
         ///     Private class serving as the custom Enumerator for the map
         ///     collection.
         /// </summary>
-        private class MapEnumerator : IEnumerator {
+        private class MapEnumerator : IEnumerator
+        {
             #region Fields
 
             /// <summary>
@@ -208,7 +270,8 @@ namespace Axiom.Collections {
             ///     Constructor.
             /// </summary>
             /// <param name="map">The map this enumerator will enumerate over.</param>
-            public MapEnumerator(Map map) {
+            public MapEnumerator( Map map )
+            {
                 this.map = map;
             }
 
@@ -217,7 +280,8 @@ namespace Axiom.Collections {
             /// <summary>
             ///     Resets all current state of the enumeration process.
             /// </summary>
-            public void Reset() {
+            public void Reset()
+            {
                 totalPos = 0;
                 bucketIndex = 0;
                 bucketPos = 0;
@@ -227,11 +291,13 @@ namespace Axiom.Collections {
             ///     Gets a Pair containing the key and value at the current state
             ///     of the enumeration.
             /// </summary>
-            public object Current {
-                get {
-                    object key = map.buckets.GetKey(bucketIndex);
-                    object val = currentBucket[bucketPos];
-                    return new Pair(key, val);
+            public object Current
+            {
+                get
+                {
+                    object key = map.buckets.GetKey( bucketIndex );
+                    object val = currentBucket[ bucketPos ];
+                    return new Pair( key, val );
                 }
             }
 
@@ -239,25 +305,31 @@ namespace Axiom.Collections {
             ///     Moves to the next position in the enumeration.
             /// </summary>
             /// <returns></returns>
-            public bool MoveNext() {
-				if(map.buckets.Count == 0) {
-					return false;
-				}
+            public bool MoveNext()
+            {
+                if ( map.buckets.Count == 0 )
+                {
+                    return false;
+                }
 
                 // we've reached the end
-                if((totalPos + 1) == map.count) {
+                if ( ( totalPos + 1 ) == map.count )
+                {
                     return false;
                 }
 
                 // if there is a current bucket
-                if(currentBucket != null) {
+                if ( currentBucket != null )
+                {
                     // if we have reached the end of the current bucket, get the next
                     // and reset the bucket position
-                    if(bucketPos == (currentBucket.Count - 1)) {
-                        currentBucket = (ArrayList)map.buckets.GetByIndex(++bucketIndex);
+                    if ( bucketPos == ( currentBucket.Count - 1 ) )
+                    {
+                        currentBucket = (ArrayList)map.buckets.GetByIndex( ++bucketIndex );
                         bucketPos = 0;
                     }
-                    else {
+                    else
+                    {
                         // increment the position within the current bucket
                         bucketPos++;
                     }
@@ -265,9 +337,10 @@ namespace Axiom.Collections {
                     // increment the total overall position
                     totalPos++;
                 }
-                else {
+                else
+                {
                     // should only happen the first time
-                    currentBucket = (ArrayList)map.buckets.GetByIndex(bucketIndex);
+                    currentBucket = (ArrayList)map.buckets.GetByIndex( bucketIndex );
                 }
 
                 return true;

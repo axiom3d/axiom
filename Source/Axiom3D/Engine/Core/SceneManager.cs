@@ -32,8 +32,8 @@ using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Controllers;
 using Axiom.Overlays;
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
+using Axiom.Math;
+using Axiom.Math.Collections;
 using Axiom.Graphics;
 
 namespace Axiom.Core {
@@ -677,7 +677,7 @@ namespace Axiom.Core {
 			}
 
 			for(int j=0; j<node.ObjectCount; j++) {
-				SceneObject obj = node.GetObject(j);
+				MovableObject obj = node.GetObject(j);
 				if(obj is Camera)
 					cameraList.Remove(obj);
 				else if(obj is Light)
@@ -4418,7 +4418,7 @@ namespace Axiom.Core {
 
 			#region ISceneQueryListener Members
 
-			public bool OnQueryResult(SceneObject sceneObject) {
+			public bool OnQueryResult(MovableObject sceneObject) {
 				if (sceneObject.CastShadows && sceneObject.IsVisible) {
 					if (farDistSquared > 0) {
 						// Check object is within the shadow far distance
@@ -4522,7 +4522,7 @@ namespace Axiom.Core {
                 }
 
                 // test the intersection against the world bounding box of the entity
-				IntersectResult results = MathUtil.Intersects(ray, entity.GetWorldBoundingBox());
+				IntersectResult results = Utility.Intersects(ray, entity.GetWorldBoundingBox());
 
 				// if the results came back positive, fire the event handler
 				if(results.Hit == true) {

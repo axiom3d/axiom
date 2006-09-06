@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.MathLib {
+namespace Axiom.Math {
     /// <summary>
     ///		A standard sphere, used mostly for bounds checking.
     /// </summary>
@@ -110,7 +110,7 @@ namespace Axiom.MathLib {
 		/// <param name="box"></param>
 		/// <returns>True if the box intersects, false otherwise.</returns>
 		public bool Intersects(AxisAlignedBox box) {
-			return MathUtil.Intersects(this, box);
+			return Utility.Intersects(this, box);
 		}
 
 		/// <summary>
@@ -119,7 +119,7 @@ namespace Axiom.MathLib {
 		/// <param name="plane"></param>
 		/// <returns>True if the plane intersects, false otherwise.</returns>
 		public bool Intersects(Plane plane) {
-			return MathUtil.Intersects(this, plane);
+			return Utility.Intersects(this, plane);
 		}
 
 		/// <summary>

@@ -26,8 +26,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
+using Axiom.Math;
+using Axiom.Math.Collections;
 using Axiom.Graphics;
 
 namespace Axiom.Core {
@@ -168,7 +168,7 @@ namespace Axiom.Core {
 			orientation = Quaternion.Identity;
 			derivedOrientation = Quaternion.Identity;
 
-			fieldOfView = MathUtil.RadiansToDegrees(MathUtil.PI / 4.0f);
+			fieldOfView = Utility.RadiansToDegrees(Utility.PI / 4.0f);
 			nearDistance = 100.0f;
 			farDistance = 100000.0f;
 			aspectRatio = 1.33333333333333f;
@@ -284,7 +284,7 @@ namespace Axiom.Core {
 					!(lastLinkedReflectionPlane == linkedReflectionPlane.DerivedPlane)) {
 
 					reflectionPlane = linkedReflectionPlane.DerivedPlane;
-					reflectionMatrix = MathUtil.BuildReflectionMatrix(reflectionPlane);
+					reflectionMatrix = Utility.BuildReflectionMatrix(reflectionPlane);
 					lastLinkedReflectionPlane = linkedReflectionPlane.DerivedPlane;
 					returnVal = true;
 				}
@@ -453,7 +453,7 @@ namespace Axiom.Core {
 					if (-zAdjustVector == zAxis) {
 						// Oops, a 180 degree turn (infinite possible rotation axes)
 						// Default to yaw i.e. use current UP
-						rotationQuat = Quaternion.FromAngleAxis(MathUtil.PI, yAxis);
+						rotationQuat = Quaternion.FromAngleAxis(Utility.PI, yAxis);
 					}
 					else {
 						// Derive shortest arc to new direction
@@ -715,7 +715,7 @@ namespace Axiom.Core {
 		/// <param name="axis"></param>
 		/// <param name="degrees"></param>
 		public void Rotate(Vector3 axis, float degrees) {
-			Quaternion q = Quaternion.FromAngleAxis(MathUtil.DegreesToRadians(degrees), axis);
+			Quaternion q = Quaternion.FromAngleAxis(Utility.DegreesToRadians(degrees), axis);
 			Rotate(q);
 		}
 
@@ -737,7 +737,7 @@ namespace Axiom.Core {
 		///		remain in it's current orientation.
 		///	 </param> 
 		/// <param name="target">The SceneObject which this Camera will track.</param>
-		public void SetAutoTracking(bool enabled, SceneObject target) {
+		public void SetAutoTracking(bool enabled, MovableObject target) {
 			SetAutoTracking(enabled, (SceneNode)target.ParentNode, Vector3.Zero);
 		}
 
@@ -832,8 +832,8 @@ namespace Axiom.Core {
 				return;
 			}
 
-			float thetaY  = MathUtil.DegreesToRadians(fieldOfView * 0.5f);
-			float tanThetaY = MathUtil.Tan(thetaY);
+			float thetaY  = Utility.DegreesToRadians(fieldOfView * 0.5f);
+			float tanThetaY = Utility.Tan(thetaY);
 			float tanThetaX = tanThetaY * aspectRatio;
 
 			float vpTop = tanThetaY * nearDistance;
@@ -906,7 +906,7 @@ namespace Axiom.Core {
 			float centeredScreenX = (screenX - 0.5f);
 			float centeredScreenY = (0.5f - screenY);
      
-			float normalizedSlope = MathUtil.Tan(MathUtil.DegreesToRadians(fieldOfView * 0.5f));
+			float normalizedSlope = Utility.Tan(Utility.DegreesToRadians(fieldOfView * 0.5f));
 			float viewportYToWorldY = normalizedSlope * nearDistance * 2;
 			float viewportXToWorldX = viewportYToWorldY * aspectRatio;
      

@@ -414,9 +414,7 @@ namespace Axiom.Graphics {
         /// <summary>
         ///     Called to destroy resources used by this hardware buffer.
         /// </summary>
-        public virtual void Dispose() {
-            // do nothing by default
-        }
+        public abstract void Dispose();
 
         #endregion IDisposable Implementation
     }

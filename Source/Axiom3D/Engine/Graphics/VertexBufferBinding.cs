@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Axiom.MathLib;
+using Axiom.Math;
 
 namespace Axiom.Graphics {
     /// <summary>
@@ -72,7 +72,7 @@ namespace Axiom.Graphics {
         /// <param name="buffer">Vertex buffer to bind.</param>
         public virtual void SetBinding(short index, HardwareVertexBuffer buffer) {
             bindingMap[index] = buffer;
-            highIndex = (short)MathUtil.Max(highIndex, index + 1);
+            highIndex = (short)Utility.Max(highIndex, index + 1);
         }
 
         /// <summary>

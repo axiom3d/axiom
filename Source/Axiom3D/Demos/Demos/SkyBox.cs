@@ -28,7 +28,7 @@ using System;
 using System.Drawing;
 using Axiom.Core;
 using Axiom.Input;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.ParticleSystems;
 using Axiom.Utility;
 

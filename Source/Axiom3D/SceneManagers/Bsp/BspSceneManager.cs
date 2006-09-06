@@ -32,10 +32,10 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Collections;
-using Axiom.MathLib.Collections;
+using Axiom.Math.Collections;
 
 namespace Axiom.SceneManagers.Bsp
 {
@@ -74,7 +74,7 @@ namespace Axiom.SceneManagers.Bsp
 		protected RenderOperation aaBGeometry = new RenderOperation();
 
 		protected Bsp.Collections.Map matFaceGroupMap = new Bsp.Collections.Map();
-		protected SceneObjectCollection objectsForRendering = new SceneObjectCollection();
+		protected MovableObjectCollection objectsForRendering = new MovableObjectCollection();
 		protected BspGeometry bspGeometry = new BspGeometry();
 		protected SpotlightFrustum spotlightFrustum;
 		protected Material textureLightMaterial;
@@ -245,7 +245,7 @@ namespace Axiom.SceneManagers.Bsp
 			else
 			{
 				if(random)
-					return level.PlayerStarts[(int) (MathUtil.UnitRandom() * level.PlayerStarts.Length)];
+					return level.PlayerStarts[(int) (Utility.UnitRandom() * level.PlayerStarts.Length)];
 				else
 					return level.PlayerStarts[0];
 
@@ -378,7 +378,7 @@ namespace Axiom.SceneManagers.Bsp
 
 			for (int i = 0; i < casters.Count; i++)
 			{
-				if(!objectsForRendering.ContainsKey(((SceneObject)casters[i]).Name))
+				if(!objectsForRendering.ContainsKey(((MovableObject)casters[i]).Name))
 				{
 					// this shadow caster is not visible, remove it
 					casters.RemoveAt(i);
@@ -469,7 +469,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// <summary>
 		///		Internal method for tagging <see cref="Plugin_BSPSceneManager.BspNode"/'s with objects which intersect them.
 		/// </summary>
-		internal void NotifyObjectMoved(SceneObject obj, Vector3 pos)
+		internal void NotifyObjectMoved(MovableObject obj, Vector3 pos)
 		{
 			level.NotifyObjectMoved(obj, pos);
 		}
@@ -477,7 +477,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// <summary>
 		///		Internal method for notifying the level that an object has been detached from a node.
 		/// </summary>
-		internal void NotifyObjectDetached(SceneObject obj)
+		internal void NotifyObjectDetached(MovableObject obj)
 		{
 			level.NotifyObjectDetached(obj);
 		}
@@ -749,9 +749,9 @@ namespace Axiom.SceneManagers.Bsp
 			// Add movables to render queue, provided it hasn't been seen already.			
 			for(int i = 0; i < leaf.Objects.Count; i++)
 			{
-				if(!objectsForRendering.ContainsKey(((SceneObject)leaf.Objects[i]).Name))
+				if(!objectsForRendering.ContainsKey(((MovableObject)leaf.Objects[i]).Name))
 				{
-					SceneObject obj = leaf.Objects[i];
+					MovableObject obj = leaf.Objects[i];
 
 					if(obj.IsVisible && 
 						(!onlyShadowCasters || obj.CastShadows) &&
@@ -1236,7 +1236,7 @@ namespace Axiom.SceneManagers.Bsp
 						float angle = faceGrp[i].plane.Normal.Dot(camDir);
 
 						if (((dist < 0 && angle > 0) || (dist > 0 && angle < 0)) &&
-							MathUtil.Abs(angle) >= MathUtil.Cos(shadowCam.FOV * 0.5f))
+							Utility.Abs(angle) >= Utility.Cos(shadowCam.FOV * 0.5f))
 						{
 							// face is in shadow's frustum
 
@@ -1360,12 +1360,12 @@ namespace Axiom.SceneManagers.Bsp
 			while ((numLeaves--) != 0)
 			{
 				BspNode leaf = lvl.Nodes[leafPoint];
-				SceneObjectCollection objects = leaf.Objects;
+				MovableObjectCollection objects = leaf.Objects;
 				int numObjects = objects.Count;
 
 				for(int a = 0; a < numObjects; a++)
 				{
-					SceneObject aObj = objects[a];
+					MovableObject aObj = objects[a];
 					// Skip this object if collision not enabled
 					if((aObj.QueryFlags & queryMask) == 0)
 						continue;
@@ -1376,7 +1376,7 @@ namespace Axiom.SceneManagers.Bsp
 						int b = a;
 						for (++b; b < numObjects; ++b)
 						{
-							SceneObject bObj = objects[b];
+							MovableObject bObj = objects[b];
 							// Apply mask to b (both must pass)
 							if ((bObj.QueryFlags & queryMask) != 0)
 							{
@@ -1529,13 +1529,13 @@ namespace Axiom.SceneManagers.Bsp
 
 		protected virtual void ProcessLeaf(BspNode leaf, Ray tracingRay, float maxDistance, float traceDistance)
 		{
-			SceneObjectCollection objects = leaf.Objects;
+			MovableObjectCollection objects = leaf.Objects;
 			int numObjects = objects.Count;
 
 			//Check ray against objects
 			for(int a = 0; a < numObjects; a++)
 			{
-				SceneObject obj = objects[a];
+				MovableObject obj = objects[a];
 				// Skip this object if collision not enabled
 				if((obj.QueryFlags & queryMask) == 0)
 					continue;
@@ -1626,7 +1626,7 @@ namespace Axiom.SceneManagers.Bsp
 
 			float distance = node.GetDistance(sphere.Center);
 
-			if(MathUtil.Abs(distance) < sphere.Radius)
+			if(Utility.Abs(distance) < sphere.Radius)
 			{
 				// Sphere crosses the plane, do both.
 				ProcessNode(node.BackNode);
@@ -1646,13 +1646,13 @@ namespace Axiom.SceneManagers.Bsp
 
 		protected virtual void ProcessLeaf(BspNode leaf)
 		{
-			SceneObjectCollection objects = leaf.Objects;
+			MovableObjectCollection objects = leaf.Objects;
 			int numObjects = objects.Count;
 
 			//Check sphere against objects
 			for(int a = 0; a < numObjects; a++)
 			{
-				SceneObject obj = objects[a];
+				MovableObject obj = objects[a];
 				// Skip this object if collision not enabled
 				if((obj.QueryFlags & queryMask) == 0)
 					continue;

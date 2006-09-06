@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,6 +24,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Diagnostics;
@@ -35,62 +44,84 @@ using T = Axiom.Core.Node;
 // used to alias a key value in the code for easy copying and pasting.  Come on generics!!
 using K = System.String;
 
-namespace Axiom.Collections {
-	/// <summary>
-	///		A strongly-typed collection of <see cref="Node"/> objects.
-	/// </summary>
-	[Serializable]
-	public class NodeCollection : AxiomCollection {
-		#region Constructors
+#endregion Namespace Declarations
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		public NodeCollection() : base() {}
+namespace Axiom.Collections
+{
+    /// <summary>
+    ///		A strongly-typed collection of <see cref="Node"/> objects.
+    /// </summary>
+    [Serializable]
+    public class NodeCollection : AxiomCollection
+    {
+        #region Constructors
 
-		/// <summary>
-		///		Constructor that takes a parent object to, and calls the base class constructor to 
-		/// </summary>
-		/// <param name="entity"></param>
-		//public SceneNodeCollection(P parent) : base(parent) {}
+        /// <summary>
+        ///		Default constructor.
+        /// </summary>
+        public NodeCollection() : base()
+        {
+        }
 
-		#endregion
+        /// <summary>
+        ///		Constructor that takes a parent object to, and calls the base class constructor to 
+        /// </summary>
+        /// <param name="entity"></param>
+        //public SceneNodeCollection(P parent) : base(parent) {}
 
-		#region Strongly typed methods and indexers
+        #endregion
 
-		/// <summary>
-		///		Get/Set indexer that allows access to the collection by index.
-		/// </summary>
-		new public T this[int index] {
-			get { return (T)base[index]; }
-			set { base[index] = value; }
-		}
+        #region Strongly typed methods and indexers
 
-		/// <summary>
-		///		Get/Set indexer that allows access to the collection by key value.
-		/// </summary>
-		public T this[string key] {
-			get { return (T)base[key]; }
-			set { base[key] = value; }
-		}
+        /// <summary>
+        ///		Get/Set indexer that allows access to the collection by index.
+        /// </summary>
+        new public T this[ int index ]
+        {
+            get
+            {
+                return (T)base[ index ];
+            }
+            set
+            {
+                base[ index ] = value;
+            }
+        }
 
-		/// <summary>
-		///		Adds an object to the collection.
-		/// </summary>
-		/// <param name="item"></param>
-		public void Add(T item) {
-			Add(item.Name, item);
-		}
+        /// <summary>
+        ///		Get/Set indexer that allows access to the collection by key value.
+        /// </summary>
+        public T this[ string key ]
+        {
+            get
+            {
+                return (T)base[ key ];
+            }
+            set
+            {
+                base[ key ] = value;
+            }
+        }
 
-		/// <summary>
-		///		Adds a named object to the collection.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="item"></param>
-		public void Add(K key, T item) {
-			base.Add(key, item);
-		}
+        /// <summary>
+        ///		Adds an object to the collection.
+        /// </summary>
+        /// <param name="item"></param>
+        public void Add( T item )
+        {
+            Add( item.Name, item );
+        }
 
-		#endregion
-	}
+        /// <summary>
+        ///		Adds a named object to the collection.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="item"></param>
+        public void Add( K key, T item )
+        {
+            base.Add( key, item );
+        }
+
+        #endregion
+    }
 }

@@ -1,7 +1,7 @@
 using System;
-using Axiom.MathLib.Collections;
+using Axiom.Math.Collections;
 
-namespace Axiom.MathLib {
+namespace Axiom.Math {
 	/// <summary>
 	///		Represents a convex volume bounded by planes.
 	/// </summary>

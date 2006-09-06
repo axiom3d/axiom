@@ -2,12 +2,12 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom.MathLib;
+using Axiom.Math;
 
 // used to alias a type in the code for easy copying and pasting.  Come on generics!!
-using T = Axiom.MathLib.Quaternion;
+using T = Axiom.Math.Quaternion;
 
-namespace Axiom.MathLib.Collections {
+namespace Axiom.Math.Collections {
     /*
     /// <summary>
     /// Summary description for QuaternionCollection.

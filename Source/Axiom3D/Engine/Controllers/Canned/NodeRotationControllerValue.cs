@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,31 +24,51 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+
 using Axiom.Controllers;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 
-namespace Axiom.Controllers.Canned {
+#endregion Namespace Declarations
+
+namespace Axiom.Controllers.Canned
+{
     /// <summary>
     /// Summary description for NodeRotationControllerValue.
     /// </summary>
-    public class NodeRotationControllerValue : IControllerValue {
+    public class NodeRotationControllerValue : IControllerValue
+    {
         private float radians = 0;
         private Node node;
         private Vector3 axis;
 
-        public NodeRotationControllerValue(Node node, Vector3 axis) {
+        public NodeRotationControllerValue( Node node, Vector3 axis )
+        {
             this.node = node;
             this.axis = axis;
         }
 
         #region IControllerValue Members
 
-        public float Value {
-            get { return radians; }
-            set {
-                node.Rotate(axis, value);
+        public float Value
+        {
+            get
+            {
+                return radians;
+            }
+            set
+            {
+                node.Rotate( axis, value );
             }
         }
 

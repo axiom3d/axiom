@@ -32,7 +32,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Media;
 using Axiom.Graphics;
 

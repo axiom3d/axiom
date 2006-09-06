@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-namespace Axiom.MathLib {
+namespace Axiom.Math {
     /// <summary>
     /// Defines a plane in 3D space.
     /// </summary>

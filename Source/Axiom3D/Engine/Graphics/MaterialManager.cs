@@ -32,7 +32,7 @@ using System.Reflection;
 using Axiom.Controllers;
 using Axiom.Core;
 using Axiom.FileSystem;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Scripting;
 using Axiom.Serialization;
 

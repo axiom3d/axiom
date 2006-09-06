@@ -35,7 +35,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Axiom.MathLib {
+namespace Axiom.Math {
     /// <summary>
     ///		Class encapsulating a standard 4x4 homogenous matrix.
     /// </summary>

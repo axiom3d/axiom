@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,6 +24,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Diagnostics;
@@ -35,17 +44,23 @@ using T = Axiom.Animating.Bone;
 // used to alias a key value in the code for easy copying and pasting.  Come on generics!!
 using K = System.UInt16;
 
-namespace Axiom.Collections {
+#endregion Namespace Declarations
+
+namespace Axiom.Collections
+{
     /// <summary>
     /// Summary description for AnimationCollection.
     /// </summary>
-    public class BoneCollection : AxiomCollection {
+    public class BoneCollection : AxiomCollection
+    {
         #region Constructors
 
         /// <summary>
         ///		Default constructor.
         /// </summary>
-        public BoneCollection() : base() {}
+        public BoneCollection() : base()
+        {
+        }
 
         #endregion
 
@@ -54,25 +69,40 @@ namespace Axiom.Collections {
         /// <summary>
         ///		Get/Set indexer that allows access to the collection by index.
         /// </summary>
-        new public T this[int index] {
-            get { return (T)base[index]; }
-            set { base[index] = value; }
+        new public T this[ int index ]
+        {
+            get
+            {
+                return (T)base[ index ];
+            }
+            set
+            {
+                base[ index ] = value;
+            }
         }
 
         /// <summary>
         ///		Get/Set indexer that allows access to the collection by key value.
         /// </summary>
-        public T this[string key] {
-            get { return (T)base[key]; }
-            set { base[key] = value; }
+        public T this[ string key ]
+        {
+            get
+            {
+                return (T)base[ key ];
+            }
+            set
+            {
+                base[ key ] = value;
+            }
         }
 
         /// <summary>
         ///		Adds an object to the collection.
         /// </summary>
         /// <param name="item"></param>
-        public void Add(T item) {
-            Add(item.Name, item);
+        public void Add( T item )
+        {
+            Add( item.Name, item );
         }
 
         /// <summary>
@@ -80,23 +110,28 @@ namespace Axiom.Collections {
         /// </summary>
         /// <param name="name"></param>
         /// <param name="item"></param>
-        public void Add(K key, T item) {
-            base.Add(key, item);
+        public void Add( K key, T item )
+        {
+            base.Add( key, item );
         }
 
         #endregion
 
     }
 
-	public class BoneList : ArrayList {
-		public void Add(Bone bone) {
-			base.Add(bone);
-		}
+    public class BoneList : ArrayList
+    {
+        public void Add( Bone bone )
+        {
+            base.Add( bone );
+        }
 
-		public new Bone this[int index] {
-			get {
-				return (Bone)base[index];
-			}
-		}
-	}
+        public new Bone this[ int index ]
+        {
+            get
+            {
+                return (Bone)base[ index ];
+            }
+        }
+    }
 }

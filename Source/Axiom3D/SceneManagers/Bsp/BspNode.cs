@@ -28,9 +28,9 @@ using System;
 
 using Axiom;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Collections;
-using Axiom.MathLib.Collections;
+using Axiom.Math.Collections;
 
 namespace Axiom.SceneManagers.Bsp
 {
@@ -59,7 +59,7 @@ namespace Axiom.SceneManagers.Bsp
 
 		protected Plane splittingPlane = new Plane();
 		protected AxisAlignedBox boundingBox = new AxisAlignedBox();
-		protected SceneObjectCollection objectList = new SceneObjectCollection();
+		protected MovableObjectCollection objectList = new MovableObjectCollection();
 		
 		protected int numFaceGroups;
 		protected int faceGroupStart;
@@ -251,7 +251,7 @@ namespace Axiom.SceneManagers.Bsp
 			}
 		}
 
-		public SceneObjectCollection Objects
+		public MovableObjectCollection Objects
 		{
 			get { return objectList; }
 		}
@@ -346,7 +346,7 @@ namespace Axiom.SceneManagers.Bsp
 		///		Internal method for telling the node that a movable intersects it.
 		/// </summary>
 		/// <param name="?"></param>
-		public void AddObject(SceneObject obj)
+		public void AddObject(MovableObject obj)
 		{
 			objectList.Add(obj);
 		}
@@ -354,7 +354,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// <summary>
 		///		Internal method for telling the node that a movable no longer intersects it.
 		///	</summary>
-		public void RemoveObject(SceneObject obj)
+		public void RemoveObject(MovableObject obj)
 		{
 			objectList.Remove(obj);
 		}

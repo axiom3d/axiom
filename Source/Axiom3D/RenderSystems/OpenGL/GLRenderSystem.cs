@@ -30,9 +30,8 @@ using System.Diagnostics;
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Graphics;
-using Axiom.Utility;
 using Tao.OpenGl;
 
 // TODO: Cache property values and implement property getters
@@ -401,8 +400,8 @@ namespace Axiom.RenderSystems.OpenGL {
 		}
 
 		public override Matrix4 MakeOrthoMatrix(float fov, float aspectRatio, float near, float far, bool forGpuPrograms) {
-			float thetaY = MathUtil.DegreesToRadians(fov / 2.0f);
-			float tanThetaY = MathUtil.Tan(thetaY);
+			float thetaY = Utility.DegreesToRadians(fov / 2.0f);
+			float tanThetaY = Utility.Tan(thetaY);
 			float tanThetaX = tanThetaY * aspectRatio;
 
 			float halfW = tanThetaX * near;
@@ -437,11 +436,11 @@ namespace Axiom.RenderSystems.OpenGL {
 		/// <param name="near"></param>
 		/// <param name="far"></param>
 		/// <returns></returns>
-		public override Axiom.MathLib.Matrix4 MakeProjectionMatrix(float fov, float aspectRatio, float near, float far, bool forGpuProgram) {
+		public override Axiom.Math.Matrix4 MakeProjectionMatrix(float fov, float aspectRatio, float near, float far, bool forGpuProgram) {
 			Matrix4 matrix = new Matrix4();
 
-			float thetaY = MathUtil.DegreesToRadians(fov * 0.5f);
-			float tanThetaY = MathUtil.Tan(thetaY);
+			float thetaY = Utility.DegreesToRadians(fov * 0.5f);
+			float tanThetaY = Utility.Tan(thetaY);
 
 			float w = (1.0f / tanThetaY) / aspectRatio;
 			float h = 1.0f / tanThetaY;
@@ -473,7 +472,7 @@ namespace Axiom.RenderSystems.OpenGL {
 			return matrix;
 		}
 
-		public override void ApplyObliqueDepthProjection(ref Axiom.MathLib.Matrix4 projMatrix, Axiom.MathLib.Plane plane, bool forGpuProgram) {
+		public override void ApplyObliqueDepthProjection(ref Axiom.Math.Matrix4 projMatrix, Axiom.Math.Plane plane, bool forGpuProgram) {
 			// Thanks to Eric Lenyel for posting this calculation at www.terathon.com
 
 			// Calculate the clip-space corner point opposite the clipping plane
@@ -482,8 +481,8 @@ namespace Axiom.RenderSystems.OpenGL {
 			// by the inverse of the projection matrix
 
 			Vector4 q = new Vector4();
-			q.x = (Math.Sign(plane.Normal.x) + projMatrix.m02) / projMatrix.m00;
-			q.y = (Math.Sign(plane.Normal.y) + projMatrix.m12) / projMatrix.m11;
+			q.x = (System.Math.Sign(plane.Normal.x) + projMatrix.m02) / projMatrix.m00;
+			q.y = (System.Math.Sign(plane.Normal.y) + projMatrix.m12) / projMatrix.m11;
 			q.z = -1.0f;
 			q.w = (1.0f + projMatrix.m22) / projMatrix.m23;
 
@@ -502,7 +501,7 @@ namespace Axiom.RenderSystems.OpenGL {
 		///		Executes right before each frame is rendered.
 		/// </summary>
 		public override void BeginFrame() {
-			Debug.Assert(activeViewport != null, "BeingFrame cannot run without an active viewport.");
+			Debug.Assert(activeViewport != null, "BeginFrame cannot run without an active viewport.");
 
 			// clear the viewport if required
 			if(activeViewport.ClearEveryFrame) {
@@ -1674,7 +1673,7 @@ namespace Axiom.RenderSystems.OpenGL {
 				lights[i] = null;
 			}
 
-			numCurrentLights = (int)MathUtil.Min(limit, lightList.Count);
+			numCurrentLights = (int)Utility.Min(limit, lightList.Count);
 
 			SetLights();
 

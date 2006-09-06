@@ -69,7 +69,7 @@
         and native dependencies dir based on platform we are executing on.
     -->
     <if test="${platform::is-win32()}">
-        <property name="managed.dependencies.dir" value="${dependencies.managed.win32.dir}" dynamic="false"/>
+        <property name="managed.dependencies.dir" value="${dependencies.managed.unix.dir}" dynamic="false"/>
         <property name="native.dependencies.dir" value="${dependencies.native.win32.dir}" dynamic="false"/>		
     </if>
     <if test="${platform::is-unix()}">

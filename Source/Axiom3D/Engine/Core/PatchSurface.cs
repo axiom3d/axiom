@@ -29,8 +29,8 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
+using Axiom.Math;
+using Axiom.Math.Collections;
 
 namespace Axiom.Core {
 	/// <summary>
@@ -245,13 +245,13 @@ namespace Axiom.Core {
                 else {
                     min.Floor(vec);
                     max.Ceil(vec);
-                    maxSqRadius = MathUtil.Max(vec.LengthSquared, maxSqRadius);
+                    maxSqRadius = Utility.Max(vec.LengthSquared, maxSqRadius);
                 }
             }
 
             // set the bounds of the patch
             aabb.SetExtents(min, max);
-            boundingSphereRadius = MathUtil.Sqrt(maxSqRadius);            
+            boundingSphereRadius = Utility.Sqrt(maxSqRadius);            
         }
 
         /// <summary>

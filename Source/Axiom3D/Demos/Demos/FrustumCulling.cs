@@ -31,7 +31,7 @@ using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Input;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Utility;
 

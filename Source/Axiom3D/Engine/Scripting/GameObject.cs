@@ -26,7 +26,7 @@
 //
 //using System;
 //using Axiom.Core;
-//using Axiom.MathLib;
+//using Axiom.Math;
 //
 //namespace Axiom.Scripting {
 //    /// <summary>
@@ -134,7 +134,7 @@
 //                if (-zAdjustVector == zAxis) {
 //                    // Oops, a 180 degree turn (infinite possible rotation axes)
 //                    // Default to yaw i.e. use current UP
-//                    rotationQuat = Quaternion.FromAngleAxis(MathUtil.PI, yAxis);
+//                    rotationQuat = Quaternion.FromAngleAxis(Utility.PI, yAxis);
 //                }
 //                else {
 //                    // Derive shortest arc to new direction

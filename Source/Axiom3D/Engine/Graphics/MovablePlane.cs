@@ -1,6 +1,6 @@
 using System;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 
 namespace Axiom.Graphics {
 	/// <summary>
@@ -13,7 +13,7 @@ namespace Axiom.Graphics {
 	///		own, which is useful if you're using the plane for some kind of calculation,
 	///		e.g. reflection.
 	/// </remarks>
-	public class MovablePlane : SceneObject {
+	public class MovablePlane : MovableObject {
 		#region Fields
 
 		/// <summary>
@@ -126,7 +126,7 @@ namespace Axiom.Graphics {
 
 		#region SceneObject Members
 
-		public override Axiom.MathLib.AxisAlignedBox BoundingBox {
+		public override Axiom.Math.AxisAlignedBox BoundingBox {
 			get {
 				return nullBB;
 			}

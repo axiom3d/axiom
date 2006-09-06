@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,6 +24,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Diagnostics;
@@ -37,23 +46,31 @@ using K = System.Int32;
 // type of parent of this collection (if any)
 using P = Axiom.Graphics.RenderTarget;
 
-namespace Axiom.Collections {
+#endregion Namespace Declarations
+
+namespace Axiom.Collections
+{
     /// <summary>
     /// Summary description for ViewportCollection.
     /// </summary>
-    public class ViewportCollection : AxiomCollection {
+    public class ViewportCollection : AxiomCollection
+    {
         #region Constructors
 
         /// <summary>
         ///		Default constructor.
         /// </summary>
-        public ViewportCollection() : base() {}
+        public ViewportCollection() : base()
+        {
+        }
 
         /// <summary>
         ///		Constructor that takes a parent object to, and calls the base class constructor to 
         /// </summary>
         /// <param name="entity"></param>
-        public ViewportCollection(P parent) : base(parent) {}
+        public ViewportCollection( P parent ) : base( parent )
+        {
+        }
 
         #endregion
 
@@ -62,23 +79,31 @@ namespace Axiom.Collections {
         /// <summary>
         ///		Get/Set indexer that allows access to the collection by index.
         /// </summary>
-        new public T this[int index] {
-            get { return (T)base[index]; }
-            set { base[index] = value; }
+        new public T this[ int index ]
+        {
+            get
+            {
+                return (T)base[ index ];
+            }
+            set
+            {
+                base[ index ] = value;
+            }
         }
 
         /// <summary>
         ///		Adds an object to the collection.
         /// </summary>
         /// <param name="item"></param>
-        public void Add(T item) {
-            Debug.Assert(!objectList.ContainsKey(item.ZOrder), "A viewport with the specified ZOrder " + item.ZOrder + " already exists.");
+        public void Add( T item )
+        {
+            Debug.Assert( !objectList.ContainsKey( item.ZOrder ), "A viewport with the specified ZOrder " + item.ZOrder + " already exists." );
 
             // assign this viewport to the parent RenderTarget
             item.Target = (P)parent;
 
             // add the viewport
-            base.Add(item.ZOrder, item);
+            base.Add( item.ZOrder, item );
         }
 
         /// <summary>

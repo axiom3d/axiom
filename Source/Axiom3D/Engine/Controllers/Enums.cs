@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,28 +24,42 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+
 using Axiom.Scripting;
 
-namespace Axiom.Controllers {
+#endregion Namespace Declarations
+
+namespace Axiom.Controllers
+{
     /// <summary>
     /// Enumerates the wave types usable with the engine.
     /// </summary>
-    public enum WaveformType {
+    public enum WaveformType
+    {
         /// <summary>Standard sine wave which smoothly changes from low to high and back again.</summary>
-        [ScriptEnum("sine")]
+        [ScriptEnum( "sine" )]
         Sine,
         /// <summary>An angular wave with a constant increase / decrease speed with pointed peaks.</summary>
-        [ScriptEnum("triangle")]
+        [ScriptEnum( "triangle" )]
         Triangle,
         /// <summary>Half of the time is spent at the min, half at the max with instant transition between. </summary>
-        [ScriptEnum("square")]
+        [ScriptEnum( "square" )]
         Square,
         /// <summary>Gradual steady increase from min to max over the period with an instant return to min at the end. </summary>
-        [ScriptEnum("sawtooth")]
+        [ScriptEnum( "sawtooth" )]
         Sawtooth,
         /// <summary>Gradual steady decrease from max to min over the period, with an instant return to max at the end. </summary>
-        [ScriptEnum("inverse_sawtooth")]
+        [ScriptEnum( "inverse_sawtooth" )]
         InverseSawtooth
     };
 }

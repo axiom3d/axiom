@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 
-namespace Axiom.MathLib {
+namespace Axiom.Math {
     /// <summary>
     ///		A 3D box aligned with the x/y/z axes.
     /// </summary>
@@ -187,7 +187,7 @@ namespace Axiom.MathLib {
 		/// <param name="sphere"></param>
 		/// <returns>True if the sphere intersects, false otherwise.</returns>
 		public bool Intersects(Sphere sphere) {
-			return MathUtil.Intersects(sphere, this);
+			return Utility.Intersects(sphere, this);
 		}
 
 		/// <summary>
@@ -196,7 +196,7 @@ namespace Axiom.MathLib {
 		/// <param name="plane"></param>
 		/// <returns>True if the plane intersects, false otherwise.</returns>
 		public bool Intersects(Plane plane) {
-			return MathUtil.Intersects(plane, this);
+			return Utility.Intersects(plane, this);
 		}
 
 		/// <summary>

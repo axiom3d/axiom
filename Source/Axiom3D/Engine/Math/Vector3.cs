@@ -34,7 +34,7 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Axiom.MathLib {
+namespace Axiom.Math {
     /// <summary>
     ///    Standard 3-dimensional vector.
     /// </summary>
@@ -383,7 +383,7 @@ namespace Axiom.MathLib {
                 newUp = up;
 
             // rotate up vector by random amount around this
-            Quaternion q = Quaternion.FromAngleAxis(MathUtil.UnitRandom() * MathUtil.TWO_PI, this);
+            Quaternion q = Quaternion.FromAngleAxis(Utility.UnitRandom() * Utility.TWO_PI, this);
             newUp = q * newUp;
 
             // finally, rotate this by given angle around randomized up vector
@@ -460,7 +460,7 @@ namespace Axiom.MathLib {
                 return Quaternion.Identity;
             }
 
-            float s = MathUtil.Sqrt( (1+d) * 2 );
+            float s = Utility.Sqrt( (1+d) * 2 );
             float inverse = 1 / s;
 
             q.x = c.x * inverse;
@@ -483,7 +483,7 @@ namespace Axiom.MathLib {
         ///	</remarks>
         ///	<returns>The previous length of the vector.</returns>
         public float Normalize() {
-            float length = MathUtil.Sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
+            float length = Utility.Sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
 
             // Will also work for zero-sized vectors, but will change nothing
             if ( length > float.Epsilon ) {
@@ -520,7 +520,7 @@ namespace Axiom.MathLib {
         /// </summary>
         public float Length {
             get { 
-                return MathUtil.Sqrt(this.x * this.x + this.y * this.y + this.z * this.z); 
+                return Utility.Sqrt(this.x * this.x + this.y * this.y + this.z * this.z); 
             }
         }
 

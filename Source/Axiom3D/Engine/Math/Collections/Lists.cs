@@ -27,7 +27,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-namespace Axiom.MathLib.Collections {
+namespace Axiom.Math.Collections {
 	public class PlaneList : ArrayList {
 		public void Add(Plane plane) {
 			base.Add(plane);

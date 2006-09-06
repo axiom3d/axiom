@@ -30,7 +30,7 @@ using System.Collections;
 using Axiom;
 using Axiom.Collections;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Graphics;
 
 namespace Axiom.SceneManagers.Octree {

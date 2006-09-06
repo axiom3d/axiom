@@ -34,7 +34,7 @@ using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Input;
 using Axiom.Overlays;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Graphics;
 using MouseButtons = Axiom.Input.MouseButtons;
 

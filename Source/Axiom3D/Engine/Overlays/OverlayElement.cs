@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Reflection;
 using Axiom.Collections;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Scripting;
 using Axiom.Graphics;
 
@@ -738,7 +738,7 @@ namespace Axiom.Overlays {
         /// 
         /// </summary>
         /// <param name="matrices"></param>
-        public void GetWorldTransforms(Axiom.MathLib.Matrix4[] matrices) {
+        public void GetWorldTransforms(Axiom.Math.Matrix4[] matrices) {
             overlay.GetWorldTransforms(matrices);
         }
 

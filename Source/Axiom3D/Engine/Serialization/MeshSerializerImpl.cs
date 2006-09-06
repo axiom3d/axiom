@@ -3,7 +3,7 @@ using System.IO;
 using Axiom.Animating;
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.MathLib;
+using Axiom.Math;
 
 namespace Axiom.Serialization {
 	/// <summary>
