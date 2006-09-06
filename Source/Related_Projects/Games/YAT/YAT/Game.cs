@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 
 using Axiom;
-using Axiom.MathLib;
+using Axiom.Math;
+using Axiom.Core;
+using Axiom.Overlays;
 
 namespace YAT 
 {
@@ -29,7 +31,7 @@ namespace YAT
 		public int mLines;
 		public int mLevel;
 		public float dropDelay;
-		public Axiom.MathLib.Vector3 mCameraTarget;
+		public Vector3 mCameraTarget;
 		public float cameraWantedYaw;
 		public float mCameraWantedPitch;
 		public float mCameraWantedDistance;
@@ -74,8 +76,8 @@ namespace YAT
 				mCameraCorrection = 15.0f;
 
 					
-				camera.Orientation = (Quaternion.FromAngleAxis(Axiom.MathLib.MathUtil.DegreesToRadians(cameraWantedYaw), Vector3.UnitY) 
-					* Quaternion.FromAngleAxis(Axiom.MathLib.MathUtil.DegreesToRadians(mCameraWantedPitch), Vector3.UnitX));
+				camera.Orientation = (Quaternion.FromAngleAxis(Utility.DegreesToRadians(cameraWantedYaw), Vector3.UnitY) 
+					* Quaternion.FromAngleAxis(Utility.DegreesToRadians(mCameraWantedPitch), Vector3.UnitX));
 				camera.Position = (mCameraTarget - (mCameraWantedDistance*camera.Direction));
 
 				// Create highscores object
@@ -442,8 +444,8 @@ namespace YAT
 					t = 1.0f;
 
 				// Create quaternion describing wanted orientation
-				wantedOrientation = Quaternion.FromAngleAxis(Axiom.MathLib.MathUtil.DegreesToRadians(cameraWantedYaw), Vector3.UnitY) 
-					* Quaternion.FromAngleAxis(Axiom.MathLib.MathUtil.DegreesToRadians(mCameraWantedPitch), Vector3.UnitX);
+				wantedOrientation = Quaternion.FromAngleAxis(Utility.DegreesToRadians(cameraWantedYaw), Vector3.UnitY) 
+					* Quaternion.FromAngleAxis(Utility.DegreesToRadians(mCameraWantedPitch), Vector3.UnitX);
 
 
 				Vector3 v = (camera.Position - mCameraTarget);

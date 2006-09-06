@@ -40,7 +40,7 @@ namespace YAT
 			game.cameraWantedYaw = savedCameraYaw;
 			game.mCameraWantedPitch = savedCameraPitch;
 		}
-		public override void KeyPressed(Axiom.KeyEventArgs e)
+		public override void KeyPressed(KeyEventArgs e)
 		{
 			// Handle keys common to all game states
 			switch (e.Key)
@@ -55,7 +55,7 @@ namespace YAT
 				break;
 			}
 		}
-		public override void MouseMoved(Axiom.MouseEventArgs e)
+		public override void MouseMoved(MouseEventArgs e)
 		{
 			float maxYaw = 0.4f*(float)System.Math.PI;
 			float maxPitch = 0.45f*(float)System.Math.PI;

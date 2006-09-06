@@ -2,7 +2,8 @@ using System;
 
 using Axiom;
 
-using Axiom.MathLib;
+using Axiom.Math;
+using Axiom.Core;
 
 
 namespace YAT 

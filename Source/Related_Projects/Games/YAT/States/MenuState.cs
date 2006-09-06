@@ -2,6 +2,9 @@ using System;
 using System.Collections;
 
 using Axiom;
+using Axiom.Input;
+using Axiom.Overlays;
+using Axiom.Math;
 
 namespace YAT 
 {
@@ -44,13 +47,13 @@ namespace YAT
 			// Slowly rotate level
 			// Slowly rotate level
 			float Pi = (float)System.Math.PI;
-			game.cameraWantedYaw += Axiom.MathLib.MathUtil.RadiansToDegrees(0.25f*dt);
+			game.cameraWantedYaw += Utility.RadiansToDegrees(0.25f*dt);
 			while (game.cameraWantedYaw > (2.0f*Pi))
-				game.cameraWantedYaw -= Axiom.MathLib.MathUtil.RadiansToDegrees(2.0f*Pi);
+				game.cameraWantedYaw -= Utility.RadiansToDegrees(2.0f*Pi);
 
 			base.FrameStarted(dt);
 		}
-		public override void KeyPressed(Axiom.KeyEventArgs e)
+		public override void KeyPressed(KeyEventArgs e)
 		{
 			switch (e.Key)
 			{

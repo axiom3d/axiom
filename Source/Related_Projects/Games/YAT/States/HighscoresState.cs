@@ -1,6 +1,8 @@
 using System;
 
 using Axiom;
+using Axiom.Input;
+using Axiom.Overlays;
 
 namespace YAT 
 {
@@ -48,7 +50,7 @@ namespace YAT
 			}
 		}
 
-		public override void KeyPressed(Axiom.KeyEventArgs e)
+		public override void KeyPressed(KeyEventArgs e)
 		{
 			base.KeyPressed(e);
 

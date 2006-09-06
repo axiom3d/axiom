@@ -33,8 +33,11 @@ using System.Threading;
 using Axiom;
 using Axiom.Core;
 using Axiom.Input;
-using Axiom.MathLib;
+using Axiom.Math;
 using MouseButtons = Axiom.Input.MouseButtons;
+using Axiom.Graphics;
+using Axiom.Overlays;
+using Axiom.Configuration;
 
 namespace YAT
 {
@@ -94,13 +97,13 @@ namespace YAT
 			// HACK: Temporary
 			RenderSystem renderSystem = Root.Instance.RenderSystems[0];
 			Root.Instance.RenderSystem = renderSystem;
-//			EngineConfig.DisplayModeRow mode = renderSystem.ConfigOptions.DisplayMode[0];
-//			mode.FullScreen = false;
-//			mode.Selected = true;
+            EngineConfig.DisplayModeRow mode = renderSystem.ConfigOptions.DisplayMode[ 0 ];
+            mode.FullScreen = false;
+            mode.Selected = true;
 
-            ConfigOption opt = Root.Instance.RenderSystem.ConfigOptions[ "Full Screen" ];
-            opt.Value = "No";
-            Root.Instance.RenderSystem.ConfigOptions[ "Full Screen" ] = opt;
+            //ConfigOption opt = Root.Instance.RenderSystem.ConfigOptions[ "Full Screen" ];
+            //opt.Value = "No";
+            //Root.Instance.RenderSystem.ConfigOptions[ "Full Screen" ] = opt;
 
 			window = Root.Instance.Initialize(true, "YAT in Axiom");
 
@@ -422,7 +425,7 @@ namespace YAT
 				viewport.OverlaysEnabled = !viewport.OverlaysEnabled;
 			}
 
-			if(!input.IsMousePressed(MouseButtons.Left)) 
+			if(!input.IsMousePressed(MouseButtons.Button1)) 
 			{
 				float cameraYaw = -input.RelativeMouseX * .13f;
 				float cameraPitch = -input.RelativeMouseY * .13f;
