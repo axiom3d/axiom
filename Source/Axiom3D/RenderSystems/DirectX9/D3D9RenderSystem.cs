@@ -31,9 +31,8 @@ using System.Windows.Forms;
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Graphics;
-using Axiom.Utility;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using DX = Microsoft.DirectX;
@@ -569,8 +568,8 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// <param name="forGpuPrograms"></param>
 		/// <returns></returns>
 		public override Matrix4 MakeOrthoMatrix(float fov, float aspectRatio, float near, float far, bool forGpuPrograms) {
-			float thetaY = MathUtil.DegreesToRadians(fov / 2.0f);
-			float tanThetaY = MathUtil.Tan(thetaY);
+			float thetaY = Utility.DegreesToRadians(fov / 2.0f);
+			float tanThetaY = Utility.Tan(thetaY);
 			float tanThetaX = tanThetaY * aspectRatio;
 
 			float halfW = tanThetaX * near;
@@ -607,9 +606,9 @@ namespace Axiom.RenderSystems.DirectX9 {
 		/// <param name="far"></param>
 		/// <param name="forGpuProgram"></param>
 		/// <returns></returns>
-		public override Axiom.MathLib.Matrix4 MakeProjectionMatrix(float fov, float aspectRatio, float near, float far, bool forGpuProgram) {
-			float theta = MathUtil.DegreesToRadians(fov * 0.5f);
-			float h = 1 / MathUtil.Tan(theta);
+		public override Axiom.Math.Matrix4 MakeProjectionMatrix(float fov, float aspectRatio, float near, float far, bool forGpuProgram) {
+			float theta = Utility.DegreesToRadians(fov * 0.5f);
+			float h = 1 / Utility.Tan(theta);
 			float w = h / aspectRatio;
 			float q = 0;
 			float qn = 0;
@@ -642,7 +641,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 			return dest;
 		}
 
-		public override void ApplyObliqueDepthProjection(ref Axiom.MathLib.Matrix4 projMatrix, Axiom.MathLib.Plane plane, bool forGpuProgram) {
+		public override void ApplyObliqueDepthProjection(ref Axiom.Math.Matrix4 projMatrix, Axiom.Math.Plane plane, bool forGpuProgram) {
 			// Thanks to Eric Lenyel for posting this calculation at www.terathon.com
 
 			// Calculate the clip-space corner point opposite the clipping plane
@@ -654,9 +653,9 @@ namespace Axiom.RenderSystems.DirectX9 {
 			Vector4 q = matrix.inverse() * 
 				Vector4(Math::Sign(plane.normal.x), Math::Sign(plane.normal.y), 1.0f, 1.0f);
 			*/
-			Axiom.MathLib.Vector4 q = new Axiom.MathLib.Vector4();
-			q.x = Math.Sign(plane.Normal.x) / projMatrix.m00;
-			q.y = Math.Sign(plane.Normal.y) / projMatrix.m11;
+			Axiom.Math.Vector4 q = new Axiom.Math.Vector4();
+			q.x = System.Math.Sign(plane.Normal.x) / projMatrix.m00;
+			q.y = System.Math.Sign(plane.Normal.y) / projMatrix.m11;
 			q.z = 1.0f;
  
 			// flip the next bit from Lengyel since we're right-handed
@@ -668,10 +667,10 @@ namespace Axiom.RenderSystems.DirectX9 {
 			}
 
 			// Calculate the scaled plane vector
-			Axiom.MathLib.Vector4 clipPlane4d = 
-				new Axiom.MathLib.Vector4(plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D);
+			Axiom.Math.Vector4 clipPlane4d = 
+				new Axiom.Math.Vector4(plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D);
 
-			Axiom.MathLib.Vector4 c = clipPlane4d * (1.0f / (clipPlane4d.Dot(q)));
+			Axiom.Math.Vector4 c = clipPlane4d * (1.0f / (clipPlane4d.Dot(q)));
 
 			// Replace the third row of the projection matrix
 			projMatrix.m20 = c.x;
@@ -980,7 +979,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 
 		#endregion
 
-		public override Axiom.MathLib.Matrix4 WorldMatrix {
+		public override Axiom.Math.Matrix4 WorldMatrix {
 			get {
 				throw new NotImplementedException();
 			}
@@ -989,7 +988,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 			}
 		}
 
-		public override Axiom.MathLib.Matrix4 ViewMatrix {
+		public override Axiom.Math.Matrix4 ViewMatrix {
 			get {
 				throw new NotImplementedException();
 			}
@@ -1007,7 +1006,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 			}
 		}
 
-		public override Axiom.MathLib.Matrix4 ProjectionMatrix {
+		public override Axiom.Math.Matrix4 ProjectionMatrix {
 			get {
 				throw new NotImplementedException();
 			}
@@ -1038,7 +1037,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 				SetD3DLight(i, null);
 			}
 
-			numCurrentLights = (int)MathUtil.Min(limit, lightList.Count);
+			numCurrentLights = (int)Utility.Min(limit, lightList.Count);
 		}
 
 		public override int ConvertColor(ColorEx color) {
@@ -1169,8 +1168,8 @@ namespace Axiom.RenderSystems.DirectX9 {
 					case LightType.Spotlight:
 						device.Lights[index].Type = D3D.LightType.Spot;
 						device.Lights[index].Falloff = light.SpotlightFalloff;
-						device.Lights[index].InnerConeAngle = MathUtil.DegreesToRadians(light.SpotlightInnerAngle);
-						device.Lights[index].OuterConeAngle = MathUtil.DegreesToRadians(light.SpotlightOuterAngle);
+						device.Lights[index].InnerConeAngle = Utility.DegreesToRadians(light.SpotlightInnerAngle);
+						device.Lights[index].OuterConeAngle = Utility.DegreesToRadians(light.SpotlightOuterAngle);
 						break;
 				} // switch
 
@@ -1178,7 +1177,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 				device.Lights[index].Diffuse = light.Diffuse.ToColor();
 				device.Lights[index].Specular = light.Specular.ToColor();
 
-				Axiom.MathLib.Vector3 vec;
+				Axiom.Math.Vector3 vec;
 				
 				if(light.Type != LightType.Directional) {
 					vec = light.DerivedPosition;
@@ -1213,7 +1212,7 @@ namespace Axiom.RenderSystems.DirectX9 {
 			}
 		}
 
-		private DX.Matrix MakeD3DMatrix(Axiom.MathLib.Matrix4 matrix) {
+		private DX.Matrix MakeD3DMatrix(Axiom.Math.Matrix4 matrix) {
 			DX.Matrix dxMat = new DX.Matrix();
 
 			// set it to a transposed matrix since DX uses row vectors

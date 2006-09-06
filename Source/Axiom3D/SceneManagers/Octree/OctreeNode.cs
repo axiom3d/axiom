@@ -29,7 +29,7 @@ using System;
 using Axiom;
 using Axiom.Collections;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Graphics;
 
 namespace Axiom.SceneManagers.Octree {
@@ -142,7 +142,7 @@ namespace Axiom.SceneManagers.Octree {
 			
             int i;
             for(i=0;i<objectList.Count;i++) {
-                SceneObject obj = (SceneObject)objectList[i];
+                MovableObject obj = (MovableObject)objectList[i];
                 obj.NotifyCurrentCamera(cam);
 			
                 if(obj.IsVisible) {
@@ -157,7 +157,7 @@ namespace Axiom.SceneManagers.Octree {
         protected override void UpdateBounds() {
             //update bounds from attached objects
             for(int i=0;i<objectList.Count;i++) {
-                SceneObject obj = objectList[i];
+                MovableObject obj = objectList[i];
 
                 localAABB.Merge(obj.BoundingBox);
 

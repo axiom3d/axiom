@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,200 +24,233 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
 
 using System;
 using System.Collections;
-using Axiom.MathLib;
 
-namespace Axiom.Animating {
-	/// <summary>
-	///		A SkeletonInstance is a single instance of a Skeleton used by a world object.
-	/// </summary>
-	/// <remarks>
-	///		The difference between a Skeleton and a SkeletonInstance is that the
-	///		Skeleton is the 'master' version much like Mesh is a 'master' version of
-	///		Entity. Many SkeletonInstance objects can be based on a single Skeleton, 
-	///		and are copies of it when created. Any changes made to this are not
-	///		reflected in the master copy. The exception is animations; these are
-	///		shared on the Skeleton itself and may not be modified here.
-	/// </remarks>
-	public class SkeletonInstance : Skeleton {
+using Axiom.Math;
 
-		#region Fields
+#endregion Namespace Declarations
 
-		/// <summary>
-		///		Reference to the master Skeleton.
-		/// </summary>
-		protected Skeleton skeleton;
-		/// <summary>
-		///		Used for auto generated tag point handles to ensure they are unique.
-		///	</summary>
-		protected internal ushort nextTagPointAutoHandle;
-		protected Hashtable tagPointList = new Hashtable();
+namespace Axiom.Animating
+{
+    /// <summary>
+    ///		A SkeletonInstance is a single instance of a Skeleton used by a world object.
+    /// </summary>
+    /// <remarks>
+    ///		The difference between a Skeleton and a SkeletonInstance is that the
+    ///		Skeleton is the 'master' version much like Mesh is a 'master' version of
+    ///		Entity. Many SkeletonInstance objects can be based on a single Skeleton, 
+    ///		and are copies of it when created. Any changes made to this are not
+    ///		reflected in the master copy. The exception is animations; these are
+    ///		shared on the Skeleton itself and may not be modified here.
+    /// </remarks>
+    public class SkeletonInstance : Skeleton
+    {
 
-		#endregion Fields
+        #region Fields
 
-		#region Constructor
+        /// <summary>
+        ///		Reference to the master Skeleton.
+        /// </summary>
+        protected Skeleton skeleton;
+        /// <summary>
+        ///		Used for auto generated tag point handles to ensure they are unique.
+        ///	</summary>
+        protected internal ushort nextTagPointAutoHandle;
+        protected Hashtable tagPointList = new Hashtable();
 
-		/// <summary>
-		///		Constructor, don't call directly, this will be created automatically
-		///		when you create an <see cref="Entity"/> based on a skeletally animated Mesh.
-		/// </summary>
-		/// <param name="masterCopy"></param>
-		public SkeletonInstance(Skeleton masterCopy) : base("") {
-			this.skeleton = masterCopy;
-		}
+        #endregion Fields
 
-		#endregion Constructor
+        #region Constructor
 
-		#region Properties
+        /// <summary>
+        ///		Constructor, don't call directly, this will be created automatically
+        ///		when you create an <see cref="Entity"/> based on a skeletally animated Mesh.
+        /// </summary>
+        /// <param name="masterCopy"></param>
+        public SkeletonInstance( Skeleton masterCopy )
+            : base( "" )
+        {
+            this.skeleton = masterCopy;
+        }
 
-		/// <summary>
-		///		Gets the number of animations on this skeleton.
-		/// </summary>
-		public override int AnimationCount {
-			get {
-				return skeleton.AnimationCount;
-			}
-		}
+        #endregion Constructor
 
-		#endregion Properties
+        #region Properties
 
-		#region Methods
+        /// <summary>
+        ///		Gets the number of animations on this skeleton.
+        /// </summary>
+        public override int AnimationCount
+        {
+            get
+            {
+                return skeleton.AnimationCount;
+            }
+        }
 
-		/// <summary>
-		///		Clones bones, for use in cloning the master skeleton to make this a unique 
-		///		skeleton instance.
-		/// </summary>
-		/// <param name="source"></param>
-		/// <param name="parent"></param>
-		protected void CloneBoneAndChildren(Bone source, Bone parent) {
-			Bone newBone;
+        #endregion Properties
 
-			if(source.Name == "") {
-				newBone = CreateBone(source.Handle);
-			}
-			else {
-				newBone = CreateBone(source.Name, source.Handle);
-			}
+        #region Methods
 
-			newBone.Orientation = source.Orientation;
-			newBone.Position = source.Position;
-			newBone.ScaleFactor = source.ScaleFactor;
+        /// <summary>
+        ///		Clones bones, for use in cloning the master skeleton to make this a unique 
+        ///		skeleton instance.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="parent"></param>
+        protected void CloneBoneAndChildren( Bone source, Bone parent )
+        {
+            Bone newBone;
 
-			if(parent == null) {
-				rootBones.Add(newBone);
-			}
-			else {
-				parent.AddChild(newBone);
-			}
+            if ( source.Name == "" )
+            {
+                newBone = CreateBone( source.Handle );
+            }
+            else
+            {
+                newBone = CreateBone( source.Name, source.Handle );
+            }
 
-			// process children
-			for(int i = 0; i < source.ChildCount; i++) {
-				Bone child = (Bone)source.GetChild(i);
+            newBone.Orientation = source.Orientation;
+            newBone.Position = source.Position;
+            newBone.ScaleFactor = source.ScaleFactor;
 
-				CloneBoneAndChildren(child, newBone);
-			}
-		}
+            if ( parent == null )
+            {
+                rootBones.Add( newBone );
+            }
+            else
+            {
+                parent.AddChild( newBone );
+            }
 
-		public TagPoint CreateTagPointOnBone(Bone bone) {
-			return CreateTagPointOnBone(bone, Quaternion.Identity);
-		}
+            // process children
+            for ( int i = 0; i < source.ChildCount; i++ )
+            {
+                Bone child = (Bone)source.GetChild( i );
 
-		public TagPoint CreateTagPointOnBone(Bone bone, Quaternion offsetOrientation) {
-			return CreateTagPointOnBone(bone, Quaternion.Identity, Vector3.UnitScale);
-		}
+                CloneBoneAndChildren( child, newBone );
+            }
+        }
 
-		public TagPoint CreateTagPointOnBone(Bone bone, Quaternion offsetOrientation, Vector3 offsetPosition) {
-			TagPoint tagPoint = new TagPoint(++nextTagPointAutoHandle, this);
-			tagPointList[nextTagPointAutoHandle] = tagPoint;
+        public TagPoint CreateTagPointOnBone( Bone bone )
+        {
+            return CreateTagPointOnBone( bone, Quaternion.Identity );
+        }
 
-			tagPoint.Translate(offsetPosition);
-			tagPoint.Rotate(offsetOrientation);
-			tagPoint.SetBindingPose();
-			bone.AddChild(tagPoint);
+        public TagPoint CreateTagPointOnBone( Bone bone, Quaternion offsetOrientation )
+        {
+            return CreateTagPointOnBone( bone, Quaternion.Identity, Vector3.UnitScale );
+        }
 
-			return tagPoint;
-		}
+        public TagPoint CreateTagPointOnBone( Bone bone, Quaternion offsetOrientation, Vector3 offsetPosition )
+        {
+            TagPoint tagPoint = new TagPoint( ++nextTagPointAutoHandle, this );
+            tagPointList[ nextTagPointAutoHandle ] = tagPoint;
 
-		#endregion Methods
+            tagPoint.Translate( offsetPosition );
+            tagPoint.Rotate( offsetOrientation );
+            tagPoint.SetBindingPose();
+            bone.AddChild( tagPoint );
 
-		#region Skeleton Members
+            return tagPoint;
+        }
 
-		/// <summary>
-		///		Creates a new Animation object for animating this skeleton.
-		/// </summary
-		/// <remarks>
-		///		This method updates the reference skeleton, not just this instance!
-		/// </remarks>
-		/// <param name="name">The name of this animation.</param>
-		/// <param name="length">The length of the animation in seconds.</param>
-		/// <returns></returns>
-		public override Animation CreateAnimation(string name, float length) {
-			return skeleton.CreateAnimation(name, length);
-		}
+        #endregion Methods
 
-		/// <summary>
-		///		Returns the <see cref="Animation"/> object with the specified name.
-		/// </summary>
-		/// <param name="name">Name of the animation to retrieve.</param>
-		/// <returns>Animation with the specified name, or null if none exists.</returns>
-		public override Animation GetAnimation(string name) {
-			return skeleton.GetAnimation(name);
-		}
+        #region Skeleton Members
 
-		/// <summary>
-		///		Returns the <see cref="Animation"/> object at the specified index.
-		/// </summary>
-		/// <param name="index">Index of the animation to retrieve.</param>
-		/// <returns>Animation at the specified index, or null if none exists.</returns>
-		public override Animation GetAnimation(int index) {
-			return skeleton.GetAnimation(index);
-		}
+        /// <summary>
+        ///		Creates a new Animation object for animating this skeleton.
+        /// </summary
+        /// <remarks>
+        ///		This method updates the reference skeleton, not just this instance!
+        /// </remarks>
+        /// <param name="name">The name of this animation.</param>
+        /// <param name="length">The length of the animation in seconds.</param>
+        /// <returns></returns>
+        public override Animation CreateAnimation( string name, float length )
+        {
+            return skeleton.CreateAnimation( name, length );
+        }
 
-		/// <summary>
-		///		Removes an <see cref="Animation"/> from this skeleton.
-		/// </summary>
-		/// <param name="name">Name of the animation to remove.</param>
-		public override void RemoveAnimation(string name) {
-			skeleton.RemoveAnimation(name);
-		}
+        /// <summary>
+        ///		Returns the <see cref="Animation"/> object with the specified name.
+        /// </summary>
+        /// <param name="name">Name of the animation to retrieve.</param>
+        /// <returns>Animation with the specified name, or null if none exists.</returns>
+        public override Animation GetAnimation( string name )
+        {
+            return skeleton.GetAnimation( name );
+        }
 
-		#endregion Methods
+        /// <summary>
+        ///		Returns the <see cref="Animation"/> object at the specified index.
+        /// </summary>
+        /// <param name="index">Index of the animation to retrieve.</param>
+        /// <returns>Animation at the specified index, or null if none exists.</returns>
+        public override Animation GetAnimation( int index )
+        {
+            return skeleton.GetAnimation( index );
+        }
 
-		#region Resource Members
+        /// <summary>
+        ///		Removes an <see cref="Animation"/> from this skeleton.
+        /// </summary>
+        /// <param name="name">Name of the animation to remove.</param>
+        public override void RemoveAnimation( string name )
+        {
+            skeleton.RemoveAnimation( name );
+        }
 
-		/// <summary>
-		///		Overriden to copy/clone the bones of the master skeleton.
-		/// </summary>
-		public override void Load() {
-			nextAutoHandle = skeleton.nextAutoHandle;
-			nextTagPointAutoHandle = 0;
+        #endregion Methods
 
-			this.blendMode = skeleton.BlendMode;
+        #region Resource Members
 
-			// copy bones starting at the roots
-			for(int i = 0; i < skeleton.RootBoneCount; i++) {
-				Bone rootBone = skeleton.GetRootBone(i);
-				CloneBoneAndChildren(rootBone, null);
-				rootBone.Update(true, false);
-			}
+        /// <summary>
+        ///		Overriden to copy/clone the bones of the master skeleton.
+        /// </summary>
+        public override void Load()
+        {
+            nextAutoHandle = skeleton.nextAutoHandle;
+            nextTagPointAutoHandle = 0;
 
-			SetBindingPose();
+            this.blendMode = skeleton.BlendMode;
 
-			isLoaded = true;
-		}
+            // copy bones starting at the roots
+            for ( int i = 0; i < skeleton.RootBoneCount; i++ )
+            {
+                Bone rootBone = skeleton.GetRootBone( i );
+                CloneBoneAndChildren( rootBone, null );
+                rootBone.Update( true, false );
+            }
 
-		/// <summary>
-		///		Overriden to unload the skeleton and clear the tagpoint list.
-		/// </summary>
-		public override void Unload() {
-			base.Unload();
+            SetBindingPose();
 
-			// clear all tag points
-			tagPointList.Clear();
-		}
+            isLoaded = true;
+        }
 
-		#endregion Resource Members
-	}
+        /// <summary>
+        ///		Overriden to unload the skeleton and clear the tagpoint list.
+        /// </summary>
+        public override void Unload()
+        {
+            base.Unload();
+
+            // clear all tag points
+            tagPointList.Clear();
+        }
+
+        #endregion Resource Members
+    }
 }

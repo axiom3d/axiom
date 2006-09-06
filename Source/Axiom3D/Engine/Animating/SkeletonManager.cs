@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,15 +24,28 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
-using Axiom.Animating;
+
 using Axiom.Core;
 
-namespace Axiom.Animating {
+#endregion Namespace Declarations
+
+namespace Axiom.Animating
+{
     /// <summary>
     /// Summary description for SkeletonManager.
     /// </summary>
-    public sealed class SkeletonManager : ResourceManager {
+    public sealed class SkeletonManager : ResourceManager
+    {
         #region Singleton implementation
 
         /// <summary>
@@ -43,8 +56,10 @@ namespace Axiom.Animating {
         /// <summary>
         ///     Internal constructor.  This class cannot be instantiated externally.
         /// </summary>
-        internal SkeletonManager() {
-            if (instance == null) {
+        internal SkeletonManager()
+        {
+            if ( instance == null )
+            {
                 instance = this;
             }
         }
@@ -52,9 +67,11 @@ namespace Axiom.Animating {
         /// <summary>
         ///     Gets the singleton instance of this class.
         /// </summary>
-        public static SkeletonManager Instance {
-            get { 
-                return instance; 
+        public static SkeletonManager Instance
+        {
+            get
+            {
+                return instance;
             }
         }
 
@@ -67,16 +84,18 @@ namespace Axiom.Animating {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public override Resource Create(string name) {
-            return new Skeleton(name);
+        public override Resource Create( string name )
+        {
+            return new Skeleton( name );
         }
 
         /// <summary>
         ///    Overloaded method.  Call overload with default of priority 1.
         /// </summary>
         /// <param name="fileName">Name of the skeleton file to load.</param>
-        public Skeleton Load(string fileName) {
-            return Load(fileName, 1);
+        public Skeleton Load( string fileName )
+        {
+            return Load( fileName, 1 );
         }
 
         /// <summary>
@@ -87,20 +106,23 @@ namespace Axiom.Animating {
         /// </remarks>
         /// <param name="fileName"></param>
         /// <param name="priority"></param>
-        public Skeleton Load(string fileName, int priority) {
-            Skeleton skeleton = GetByName(fileName);
+        public Skeleton Load( string fileName, int priority )
+        {
+            Skeleton skeleton = GetByName( fileName );
 
-            if(skeleton == null) {
+            if ( skeleton == null )
+            {
                 // create and load the skeleton
-                skeleton = (Skeleton)Create(fileName);
-                base.Load (skeleton, priority);
+                skeleton = (Skeleton)Create( fileName );
+                base.Load( skeleton, priority );
             }
 
             return skeleton;
         }
 
-        public new Skeleton GetByName(string name) {
-            return (Skeleton)base.GetByName(name);
+        public new Skeleton GetByName( string name )
+        {
+            return (Skeleton)base.GetByName( name );
         }
 
         #endregion ResourceManager Implementation

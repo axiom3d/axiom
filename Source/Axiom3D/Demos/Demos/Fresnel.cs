@@ -4,7 +4,7 @@ using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Utility;
 
 namespace Demos {
@@ -144,7 +144,7 @@ namespace Demos {
 
                 for (int waypoint = 0; waypoint < NUM_FISH_WAYPOINTS; waypoint++){
                     Vector3 pos = new Vector3(
-                        MathUtil.SymmetricRandom() * 700, -10, MathUtil.SymmetricRandom() * 700);
+                        Utility.SymmetricRandom() * 700, -10, Utility.SymmetricRandom() * 700);
 
                     if (waypoint > 0)
                     {
@@ -154,7 +154,7 @@ namespace Demos {
                         while ((lastPos - pos).Length > 750)
                         {
                             pos = new Vector3(
-                                MathUtil.SymmetricRandom() * 700, -10, MathUtil.SymmetricRandom() * 700);
+                                Utility.SymmetricRandom() * 700, -10, Utility.SymmetricRandom() * 700);
                         }
                     }
 

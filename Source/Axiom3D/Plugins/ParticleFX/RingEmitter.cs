@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom.Core;
 using Axiom.ParticleSystems;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Scripting;
 using System.Diagnostics;
 
@@ -67,20 +67,20 @@ namespace Axiom.ParticleFX {
 			float alpha, a, b, x, y, z;
 
 			// create a random angle from 0 .. PI*2
-			alpha = MathUtil.RangeRandom(0,MathUtil.TWO_PI);
+			alpha = Utility.RangeRandom(0,Utility.TWO_PI);
 	  
 			// create two random radius values that are bigger than the inner size
-			a = MathUtil.RangeRandom(InnerX,1.0f);
-			b = MathUtil.RangeRandom(InnerY,1.0f);
+			a = Utility.RangeRandom(InnerX,1.0f);
+			b = Utility.RangeRandom(InnerY,1.0f);
 
 			// with a and b we have defined a random ellipse inside the inner
 			// ellipse and the outer circle (radius 1.0)
 			// with alpha, and a and b we select a random point on this ellipse
 			// and calculate it's coordinates
-			x = a * MathUtil.Sin(alpha);
-			y = b * MathUtil.Cos(alpha);
+			x = a * Utility.Sin(alpha);
+			y = b * Utility.Cos(alpha);
 			// the height is simple running from 0 to 1
-			z = MathUtil.UnitRandom();     // 0..1
+			z = Utility.UnitRandom();     // 0..1
 
 			// scale the found point to the ring's size and move it
 			// relatively to the center of the emitter point

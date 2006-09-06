@@ -7,7 +7,7 @@ using Axiom.Controllers.Canned;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Input;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.ParticleSystems;
 using Axiom.Utility;
 

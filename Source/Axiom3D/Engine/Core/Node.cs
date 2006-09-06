@@ -29,7 +29,7 @@ using System.Collections;
 using System.Diagnostics;
 using Axiom.Collections;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Graphics;
 
 namespace Axiom.Core {
@@ -430,7 +430,7 @@ namespace Axiom.Core {
 		/// Rotate the node around an arbitrary axis.
 		/// </summary>
 		public virtual void Rotate(Vector3 axis, float degrees, TransformSpace relativeTo) {
-			Quaternion q = Quaternion.FromAngleAxis(MathUtil.DegreesToRadians(degrees), axis);
+			Quaternion q = Quaternion.FromAngleAxis(Utility.DegreesToRadians(degrees), axis);
 			Rotate(q, relativeTo);
 		}
 

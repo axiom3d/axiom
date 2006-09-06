@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,9 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 
-namespace Axiom.Controllers {
+#endregion Namespace Declarations
+
+namespace Axiom.Controllers
+{
     /// <summary>
     ///		Subclasses of this class are responsible for performing a function on an input value for a Controller.
     ///	 </summary>
@@ -38,9 +50,10 @@ namespace Axiom.Controllers {
     ///		<p/>
     ///		This base class implements IControllerFunction, but leaves the implementation up to the subclasses.
     /// </remarks>
-    public abstract class BaseControllerFunction : IControllerFunction {
+    public abstract class BaseControllerFunction : IControllerFunction
+    {
         #region Member variables
-		
+
         /// <summary>
         ///		If true, function will add input values together and wrap at 1.0 before evaluating.
         /// </summary>
@@ -50,12 +63,13 @@ namespace Axiom.Controllers {
         ///		Value to be added during evaluation.
         /// </summary>
         protected float deltaCount;
-		
+
         #endregion
 
         #region Constructors
 
-        public BaseControllerFunction(bool useDeltaInput) {
+        public BaseControllerFunction( bool useDeltaInput )
+        {
             this.useDeltaInput = useDeltaInput;
             deltaCount = 0;
         }
@@ -69,18 +83,21 @@ namespace Axiom.Controllers {
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        protected virtual float AdjustInput(float input) {
-            if(useDeltaInput) {
+        protected virtual float AdjustInput( float input )
+        {
+            if ( useDeltaInput )
+            {
                 deltaCount += input;
 
                 // wrap the value if it went past 1
-                while(deltaCount >= 1.0f)
+                while ( deltaCount >= 1.0f )
                     deltaCount -= 1.0f;
 
                 // return the adjusted input value
                 return deltaCount;
             }
-            else {
+            else
+            {
                 // return the input value as is
                 return input;
             }
@@ -90,7 +107,7 @@ namespace Axiom.Controllers {
 
         #region IControllerFunction methods
 
-        public abstract float Execute(float sourceValue);
+        public abstract float Execute( float sourceValue );
 
         #endregion
     }

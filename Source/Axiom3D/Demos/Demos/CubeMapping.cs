@@ -30,7 +30,7 @@ using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Overlays;
 using Axiom.Input;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Utility;
 

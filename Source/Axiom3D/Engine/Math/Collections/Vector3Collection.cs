@@ -2,12 +2,12 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Axiom.MathLib;
+using Axiom.Math;
 
 // used to alias a type in the code for easy copying and pasting.  Come on generics!!
-using T = Axiom.MathLib.Vector3;
+using T = Axiom.Math.Vector3;
 
-namespace Axiom.MathLib.Collections {
+namespace Axiom.Math.Collections {
     /// <summary>
     /// Summary description for Vector3List.
     /// </summary>

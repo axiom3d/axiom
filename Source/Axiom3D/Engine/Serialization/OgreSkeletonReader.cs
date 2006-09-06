@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using Axiom.Animating;
-using Axiom.MathLib;
+using Axiom.Math;
 
 namespace Axiom.Serialization {
     /// <summary>

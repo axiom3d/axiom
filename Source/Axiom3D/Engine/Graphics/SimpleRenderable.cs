@@ -28,14 +28,14 @@ using System;
 using System.Collections;
 using Axiom.Collections;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Graphics;
 
 namespace Axiom.Graphics {
 	/// <summary>
 	/// Summary description for SimpleRenderable.
 	/// </summary>
-	public abstract class SimpleRenderable : SceneObject, IRenderable {
+	public abstract class SimpleRenderable : MovableObject, IRenderable {
 		#region Fields
 
 		protected Matrix4 worldTransform = Matrix4.Identity;

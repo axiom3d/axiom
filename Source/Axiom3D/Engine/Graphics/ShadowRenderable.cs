@@ -28,7 +28,7 @@ using System;
 using System.Collections;
 using Axiom.Collections;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 
 namespace Axiom.Graphics {
 	/// <summary>
@@ -148,7 +148,7 @@ namespace Axiom.Graphics {
 			op.vertexData = renderOp.vertexData;
         }
 
-        public abstract void GetWorldTransforms(Axiom.MathLib.Matrix4[] matrices);
+        public abstract void GetWorldTransforms(Axiom.Math.Matrix4[] matrices);
 
         public LightList Lights {
             get {
@@ -186,9 +186,9 @@ namespace Axiom.Graphics {
             }
         }
 
-        public abstract Axiom.MathLib.Quaternion WorldOrientation { get; }
+        public abstract Axiom.Math.Quaternion WorldOrientation { get; }
 
-        public abstract Axiom.MathLib.Vector3 WorldPosition { get; }
+        public abstract Axiom.Math.Vector3 WorldPosition { get; }
 
         public virtual float GetSquaredViewDepth(Camera camera) {
             return 0;

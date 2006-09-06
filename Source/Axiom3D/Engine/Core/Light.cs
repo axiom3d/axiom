@@ -26,8 +26,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
+using Axiom.Math;
+using Axiom.Math.Collections;
 using Axiom.Graphics;
 
 namespace Axiom.Core {
@@ -53,7 +53,7 @@ namespace Axiom.Core {
 	///    object being lit has a fair level of tesselation and the normals are properly set. This is particularly
 	///    true for the spotlight which will only look right on highly tesselated models.
 	/// </remarks>
-	public class Light : SceneObject, IComparable {
+	public class Light : MovableObject, IComparable {
 		#region Fields
 
 		/// <summary>

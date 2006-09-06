@@ -40,7 +40,7 @@ using System.Diagnostics;
 using Axiom.Core;
 
 // used to alias a type in the code for easy copying and pasting.  Come on generics!!
-using T = Axiom.Graphics.RenderSystem;
+using T = Axiom.Core.MovableObject;
 // used to alias a key value in the code for easy copying and pasting.  Come on generics!!
 using K = System.String;
 // used to alias a parent type in the code for easy copying and pasting.  Come on generics!!
@@ -51,24 +51,18 @@ using K = System.String;
 namespace Axiom.Collections
 {
     /// <summary>
-    /// Summary description for RenderSystemCollection.
+    /// Summary description for MovableObjectCollection.
     /// </summary>
-    public class RenderSystemCollection : AxiomCollection
+    public class MovableObjectCollection : AxiomCollection
     {
         #region Constructors
 
         /// <summary>
         ///		Default constructor.
         /// </summary>
-        public RenderSystemCollection() : base()
+        public MovableObjectCollection() : base()
         {
         }
-
-        /// <summary>
-        ///		Constructor that takes a parent object to, and calls the base class constructor to 
-        /// </summary>
-        /// <param name="entity"></param>
-        //public RenderSystemCollection(P parent) : base(parent) {}
 
         #endregion
 

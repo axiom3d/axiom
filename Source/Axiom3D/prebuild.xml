@@ -41,7 +41,6 @@
 			<Reference name="System.Drawing" />
 			<Reference name="System.Xml" />
 			<Reference name="Axiom" localCopy="true"/>
-			<Reference name="Axiom.MathLib" localCopy="true"/>
 			<Reference name="Axiom.Plugins.ParticleFX" localCopy="true"/>
 			<Reference name="Axiom.Plugins.CgProgramManager" localCopy="true"/>
 			<Reference name="Axiom.RenderSystems.OpenGL" localCopy="true"/>
@@ -61,31 +60,7 @@
 				<Match pattern="EngineConfig.xml" path="" buildAction="None" />
 				<Match pattern="Terrain.xml" path="" buildAction="None" />
 			</Files>
-	</Project>
-	
-			<Project name="Axiom.MathLib" type="Library" path="MathLib"	language="C#" runtime="Microsoft" >
-			<Configuration name="Debug">
-				<Options>
-					<OutputPath>../../build/debug/Axiom3D</OutputPath>
-					<XmlDocFile>Axiom.xml</XmlDocFile>
-					<AllowUnsafe>true</AllowUnsafe>
-				</Options>
-			</Configuration>
-			<Configuration name="Release">
-				<Options>
-					<OutputPath>../../build/release/Axiom3D</OutputPath>
-					<XmlDocFile>Axiom.xml</XmlDocFile>
-					<AllowUnsafe>true</AllowUnsafe>
-				</Options>
-			</Configuration>
-
-			<Reference name="System" />
-			
-			<Files>
-				<Match pattern="*.cs" path="." recurse="true"/>
-			</Files>
-		</Project>
-		
+	</Project>		
 		
 		<Project name="Axiom" type="Library" path="Engine" language="C#" runtime="Microsoft" >		
 			<Configuration name="Debug">
@@ -109,7 +84,6 @@
 			<Reference name="System.Data" />
 			<Reference name="System.Drawing" />
 			<Reference name="System.Xml" />
-			<Reference name="Axiom.MathLib" localCopy="true"/>
 			<Reference name="Tao.DevIl" localCopy="true" />
 			<Reference name="ICSharpCode.SharpZipLib" localCopy="true" />
 			
@@ -147,7 +121,6 @@
 				<Reference name="System.Windows.Forms" />
 				<Reference name="System.Xml" />
 				<Reference name="Axiom" localCopy="true"/>
-				<Reference name="Axiom.MathLib" localCopy="true"/>
 				<Reference name="Microsoft.DirectX, Version=1.0.2902.0, Culture=neutral" />
 				<Reference name="Microsoft.DirectX.DirectInput, Version=1.0.2902.0, Culture=neutral" />
 				<Reference name="Tao.Platform.Windows" localCopy="true" />
@@ -181,7 +154,6 @@
 				<Reference name="System.Windows.Forms" />
 				<Reference name="System.Xml" />
 				<Reference name="Axiom" localCopy="true"/>
-				<Reference name="Axiom.MathLib" localCopy="true"/>
 				<Reference name="Microsoft.DirectX, Version=1.0.2902.0, Culture=neutral" />
 				<Reference name="Microsoft.DirectX.Direct3D, Version=1.0.2902.0, Culture=neutral" />
 				<Reference name="Microsoft.DirectX.Direct3DX, Version=1.0.2911.0, Culture=neutral" />
@@ -218,7 +190,6 @@
 			<Reference name="System.Drawing" />
 			<Reference name="System.Xml" />
 			<Reference name="Axiom" localCopy="true"/>
-			<Reference name="Axiom.MathLib" localCopy="true"/>
 			<Reference name="Tao.Platform.Windows" localCopy="true" />
 			<Reference name="Tao.Sdl" localCopy="true" />
 			
@@ -252,7 +223,6 @@
 			<Reference name="System.Windows.Forms" />
 			<Reference name="System.Xml" />
 			<Reference name="Axiom" localCopy="true"/>
-			<Reference name="Axiom.MathLib" localCopy="true"/>
 			<Reference name="Tao.OpenGl" localCopy="true" />
 			<Reference name="Tao.OpenGl.Glu" localCopy="true" />
 			<Reference name="Tao.OpenGl.ExtensionLoader" localCopy="true" />
@@ -298,7 +268,6 @@
 			<Reference name="System.Data" />
 			<Reference name="System.Xml" />
 			<Reference name="Axiom" localCopy="true"/>
-			<Reference name="Axiom.MathLib" localCopy="true"/>
 			<Reference name="Tao.Cg" localCopy="true" />
 			
 			<Files>
@@ -327,7 +296,6 @@
 			<Reference name="System.Data" />
 			<Reference name="System.Xml" />
 			<Reference name="Axiom" localCopy="true"/>
-			<Reference name="Axiom.MathLib" localCopy="true"/>
 			
 			<Files>
 				<Match pattern="*.cs" path="." recurse="true"/>
@@ -355,7 +323,6 @@
 			<Reference name="System.Data" />
 			<Reference name="System.Xml" />
 			<Reference name="Axiom" localCopy="true"/>
-			<Reference name="Axiom.MathLib" localCopy="true"/>
 			
 			<Files>
 				<Match pattern="*.cs" path="." recurse="true"/>
@@ -383,7 +350,6 @@
 			<Reference name="System.Data" />
 			<Reference name="System.Xml" />
 			<Reference name="Axiom" localCopy="true"/>
-			<Reference name="Axiom.MathLib" localCopy="true"/>
 			
 			<Files>
 				<Match pattern="*.cs" path="." recurse="true"/>

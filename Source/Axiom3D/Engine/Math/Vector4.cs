@@ -34,7 +34,7 @@ using System;
 using System.Diagnostics;	
 using System.Runtime.InteropServices;
 
-namespace Axiom.MathLib {
+namespace Axiom.Math {
     /// <summary>
     /// 4D homogeneous vector.
     /// </summary>

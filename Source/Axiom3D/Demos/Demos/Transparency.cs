@@ -29,7 +29,7 @@ using Axiom.Animating;
 using Axiom.Controllers;
 using Axiom.Core;
 
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Utility;
 
 namespace Demos {
@@ -68,9 +68,9 @@ namespace Demos {
 
                 // calculate a random position
                 Vector3 nodePosition = new Vector3();
-                nodePosition.x = MathUtil.SymmetricRandom() * 500.0f;
-                nodePosition.y = MathUtil.SymmetricRandom() * 500.0f;
-                nodePosition.z = MathUtil.SymmetricRandom() * 500.0f;
+                nodePosition.x = Utility.SymmetricRandom() * 500.0f;
+                nodePosition.y = Utility.SymmetricRandom() * 500.0f;
+                nodePosition.z = Utility.SymmetricRandom() * 500.0f;
 
                 // set the new position
                 node.Position = nodePosition;

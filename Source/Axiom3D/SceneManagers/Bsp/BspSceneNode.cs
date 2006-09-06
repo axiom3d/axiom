@@ -28,7 +28,7 @@ using System;
 
 using Axiom;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 
 namespace Axiom.SceneManagers.Bsp
 {
@@ -75,7 +75,7 @@ namespace Axiom.SceneManagers.Bsp
 			{
 				for(int i = 0; i < this.objectList.Count; i++)
 				{
-					SceneObject obj = this.objectList[i];
+					MovableObject obj = this.objectList[i];
 					if (obj is TextureLight)
 					{
 						// the notification of BspSceneManager when the position of
@@ -94,9 +94,9 @@ namespace Axiom.SceneManagers.Bsp
 		///		Detaches by index, see the alternate version to detach by name. Object indexes
 		///		may change as other objects are added / removed.
 		/// </remarks>
-		public override SceneObject DetachObject(int index)
+		public override MovableObject DetachObject(int index)
 		{
-			SceneObject obj = base.DetachObject(index);
+			MovableObject obj = base.DetachObject(index);
 
 			// TextureLights are detached only when removed at the BspSceneManager
 			if (!(obj is TextureLight))
@@ -105,7 +105,7 @@ namespace Axiom.SceneManagers.Bsp
 			return obj;
 		}
 
-		public override void DetachObject(SceneObject obj)
+		public override void DetachObject(MovableObject obj)
 		{
 			// TextureLights are detached only when removed at the BspSceneManager
 			if (!(obj is TextureLight))

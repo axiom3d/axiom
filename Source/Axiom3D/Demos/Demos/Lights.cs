@@ -30,7 +30,7 @@ using Axiom.Animating;
 using Axiom.Controllers;
 using Axiom.Controllers.Canned;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Utility;
 

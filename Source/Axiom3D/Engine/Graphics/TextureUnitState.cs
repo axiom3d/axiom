@@ -30,7 +30,7 @@ using System.Diagnostics;
 using System.Reflection;
 using Axiom.Controllers;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 
 namespace Axiom.Graphics {
 	/// <summary>
@@ -1536,9 +1536,9 @@ namespace Axiom.Graphics {
 			if(rotate != 0.0f) {
 				Matrix3 rotation = Matrix3.Identity;
 
-				float theta = MathUtil.DegreesToRadians(rotate);
-				float cosTheta = MathUtil.Cos(theta);
-				float sinTheta = MathUtil.Sin(theta);
+				float theta = Utility.DegreesToRadians(rotate);
+				float cosTheta = Utility.Cos(theta);
+				float sinTheta = Utility.Sin(theta);
 
 				// set the rotation portion of the matrix
 				rotation.m00 = cosTheta;

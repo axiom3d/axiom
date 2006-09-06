@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,9 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 
-namespace Axiom.Controllers {
+#endregion Namespace Declarations
+
+namespace Axiom.Controllers
+{
     /// <summary>
     ///		Instances of this class 'control' the value of another object in the system.
     ///	</summary>
@@ -46,9 +58,10 @@ namespace Axiom.Controllers {
     ///		While this is very flexible, it can be a little bit confusing so to make it simpler the most often used
     ///		controller setups are available by calling methods on the ControllerManager object.
     /// </remarks>
-    public class Controller {
+    public class Controller
+    {
         #region Member variables
-		
+
         /// <summary>
         /// 
         /// </summary>
@@ -68,7 +81,7 @@ namespace Axiom.Controllers {
         ///		States whether or not this controller is enabled.
         /// </summary>
         protected bool isEnabled;
-		
+
         #endregion
 
         #region Constructors
@@ -80,7 +93,8 @@ namespace Axiom.Controllers {
         /// <param name="source"></param>
         /// <param name="destination"></param>
         /// <param name="function"></param>
-        internal Controller(IControllerValue source, IControllerValue destination, IControllerFunction function) {
+        internal Controller( IControllerValue source, IControllerValue destination, IControllerFunction function )
+        {
             this.source = source;
             this.destination = destination;
             this.function = function;
@@ -97,11 +111,12 @@ namespace Axiom.Controllers {
         ///		Called to update the destination value for this controller.  Will be called during
         ///		the render loop by ControllerManager.
         /// </summary>
-        public void Update() {
+        public void Update()
+        {
             // if we are enabled, set the destination value based on the return value of the
             // controller function ran using the source value
-            if(isEnabled)
-                destination.Value = function.Execute(source.Value);
+            if ( isEnabled )
+                destination.Value = function.Execute( source.Value );
         }
 
         #endregion
@@ -111,33 +126,61 @@ namespace Axiom.Controllers {
         /// <summary>
         ///		The value that returns the source data for this controller.
         /// </summary>
-        public IControllerValue Source {
-            get { return source; }
-            set { source = value; }
+        public IControllerValue Source
+        {
+            get
+            {
+                return source;
+            }
+            set
+            {
+                source = value;
+            }
         }
 
         /// <summary>
         ///		The object the sets the destination objects value.
         /// </summary>
-        public IControllerValue Destination {
-            get { return destination; }
-            set { destination = value; }
+        public IControllerValue Destination
+        {
+            get
+            {
+                return destination;
+            }
+            set
+            {
+                destination = value;
+            }
         }
 
         /// <summary>
         ///		Gets/Sets the eference to the function to be used for this controller.
         /// </summary>
-        public IControllerFunction Function {
-            get { return function; }
-            set { function = value; }
+        public IControllerFunction Function
+        {
+            get
+            {
+                return function;
+            }
+            set
+            {
+                function = value;
+            }
         }
 
         /// <summary>
         ///		Gets/Sets whether this controller is active or not.
         /// </summary>
-        public bool IsEnabled {
-            get { return isEnabled; }
-            set { isEnabled = value; }
+        public bool IsEnabled
+        {
+            get
+            {
+                return isEnabled;
+            }
+            set
+            {
+                isEnabled = value;
+            }
         }
 
         #endregion

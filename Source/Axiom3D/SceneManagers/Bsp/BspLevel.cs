@@ -31,7 +31,7 @@ using System.Collections.Specialized;
 using System.Runtime.InteropServices;
 using Axiom;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Collections;
 using Axiom.Scripting;
@@ -240,7 +240,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// <summary>
 		///		Ensures that the <see cref="Axiom.Core.SceneObject"/> is attached to the right leaves of the BSP tree.
 		/// </summary>
-		internal void NotifyObjectMoved(SceneObject obj, Vector3 pos)
+		internal void NotifyObjectMoved(MovableObject obj, Vector3 pos)
 		{
 			IEnumerator objnodes = objectToNodeMap.Find(obj);
 			
@@ -258,7 +258,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// <summary>
 		///		Internal method, makes sure an object is removed from the leaves when detached from a node.
 		/// </summary>
-		internal void NotifyObjectDetached(SceneObject obj)
+		internal void NotifyObjectDetached(MovableObject obj)
 		{
 			IEnumerator objnodes = objectToNodeMap.Find(obj);
 			
@@ -782,9 +782,9 @@ namespace Axiom.SceneManagers.Bsp
 						vp.position = origin;
 
 						if (q3lvl.Options.setYAxisUp)
-							vp.orientation = Quaternion.FromAngleAxis(MathUtil.DegreesToRadians(angle), Vector3.UnitY);
+							vp.orientation = Quaternion.FromAngleAxis(Utility.DegreesToRadians(angle), Vector3.UnitY);
 						else
-							vp.orientation = Quaternion.FromAngleAxis(MathUtil.DegreesToRadians(angle), Vector3.UnitZ);
+							vp.orientation = Quaternion.FromAngleAxis(Utility.DegreesToRadians(angle), Vector3.UnitZ);
 
 						playerStarts.Add(vp);
 					}
@@ -807,7 +807,7 @@ namespace Axiom.SceneManagers.Bsp
 			texLightMap.color = src.color;
 		}
 
-		protected void TagNodesWithObject(BspNode node, SceneObject obj, Vector3 pos)
+		protected void TagNodesWithObject(BspNode node, MovableObject obj, Vector3 pos)
 		{
 			if(node.IsLeaf)
 			{
@@ -822,7 +822,7 @@ namespace Axiom.SceneManagers.Bsp
 				float dist = node.GetDistance(pos);
 
 				//CHECK: treat obj as bounding box?
-				if(MathUtil.Abs(dist) < obj.BoundingRadius)
+				if(Utility.Abs(dist) < obj.BoundingRadius)
 				{
 					// Bounding sphere crosses the plane, do both.
 					TagNodesWithObject(node.BackNode, obj, pos);

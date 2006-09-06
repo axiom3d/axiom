@@ -31,7 +31,7 @@ using System.IO;
 using Axiom.Core;
 using Axiom.FileSystem;
 using Axiom.Scripting;
-using Axiom.MathLib;
+using Axiom.Math;
 
 namespace Axiom.Graphics {
 	/// <summary>

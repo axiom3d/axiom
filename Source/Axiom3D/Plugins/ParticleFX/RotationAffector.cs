@@ -28,7 +28,7 @@ using System;
 using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.Scripting;
-using Axiom.MathLib;
+using Axiom.Math;
 
 namespace Axiom.ParticleFX {
 	/// <summary>
@@ -65,8 +65,8 @@ namespace Axiom.ParticleFX {
 		}
 
 		public override void InitParticle(ref Particle particle) {
-			particle.Rotation = rotationRangeStart + (MathUtil.UnitRandom() * (rotationRangeEnd - rotationRangeStart));
-			particle.RotationSpeed = rotationSpeedRangeStart + (MathUtil.UnitRandom() * (rotationSpeedRangeEnd - rotationSpeedRangeStart));
+			particle.Rotation = rotationRangeStart + (Utility.UnitRandom() * (rotationRangeEnd - rotationRangeStart));
+			particle.RotationSpeed = rotationSpeedRangeStart + (Utility.UnitRandom() * (rotationSpeedRangeEnd - rotationSpeedRangeStart));
 		}
 
 		public override void AffectParticles(ParticleSystem system, float timeElapsed) {

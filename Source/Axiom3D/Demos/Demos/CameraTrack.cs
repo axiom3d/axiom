@@ -28,7 +28,7 @@ using System;
 using System.Drawing;
 using Axiom.Animating;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Utility;
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Text;
-using Axiom.MathLib;
+using Axiom.Math;
 
 namespace Axiom.Core {
     /// <summary>

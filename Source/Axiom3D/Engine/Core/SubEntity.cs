@@ -28,7 +28,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using Axiom.Collections;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Graphics;
 
 namespace Axiom.Core {

@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,81 +24,108 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 
-namespace Axiom.Collections {
+#endregion Namespace Declarations
+
+namespace Axiom.Collections
+{
     /// <summary>
     /// 	Summary description for HashList.
     /// </summary>
-    public class HashList {
+    public class HashList
+    {
         Hashtable itemTable = new Hashtable();
         SortedList itemList = new SortedList();
         ArrayList itemKeys = new ArrayList();
 
         #region Member variables
-		
+
         #endregion
-		
+
         #region Constructors
-		
-        public HashList() {
+
+        public HashList()
+        {
             //
             // TODO: Add constructor logic here
             //
         }
-		
+
         #endregion
-		
+
         #region Methods
-		
-        public void Add(object key, object item) {
-            itemTable.Add(key, item);
-            itemList.Add(key, item);
-            itemKeys.Add(key);
+
+        public void Add( object key, object item )
+        {
+            itemTable.Add( key, item );
+            itemList.Add( key, item );
+            itemKeys.Add( key );
         }
 
-        public object GetKeyAt(int index) {
-            return itemList.GetKey(index);
+        public object GetKeyAt( int index )
+        {
+            return itemList.GetKey( index );
         }
 
-        public object GetByKey(object key) {
-            return itemTable[key];
+        public object GetByKey( object key )
+        {
+            return itemTable[ key ];
         }
 
-        public bool ContainsKey(object key) {
-            return itemTable.ContainsKey(key);
+        public bool ContainsKey( object key )
+        {
+            return itemTable.ContainsKey( key );
         }
 
-        public void Clear() {
+        public void Clear()
+        {
             itemTable.Clear();
             itemList.Clear();
             itemKeys.Clear();
         }
 
         #endregion
-		
+
         #region Properties
-		
-        public int Count {
-            get { return itemList.Count; }
+
+        public int Count
+        {
+            get
+            {
+                return itemList.Count;
+            }
         }
 
         #endregion
 
         #region Operators
 
-        public object this[int index] {
-            get { 
-				return itemList.GetByIndex(index); 
-			}
+        public object this[ int index ]
+        {
+            get
+            {
+                return itemList.GetByIndex( index );
+            }
         }
 
-        public object this[object key] {
-            get { 
-				return itemList[key];
-				//return itemTable[key]; 
-			}
+        public object this[ object key ]
+        {
+            get
+            {
+                return itemList[ key ];
+                //return itemTable[key]; 
+            }
         }
 
         #endregion

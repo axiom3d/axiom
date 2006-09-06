@@ -1,6 +1,6 @@
 using System;
 
-namespace Axiom.MathLib {
+namespace Axiom.Math {
 	/// <summary>
 	///    Type of intersection detected between 2 object.
 	/// </summary>

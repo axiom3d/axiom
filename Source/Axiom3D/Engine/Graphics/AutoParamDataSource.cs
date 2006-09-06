@@ -29,7 +29,7 @@ using System.Collections;
 using System.Diagnostics;
 using Axiom.Collections;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 
 namespace Axiom.Graphics {
 	/// <summary>

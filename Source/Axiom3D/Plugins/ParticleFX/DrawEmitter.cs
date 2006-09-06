@@ -1,6 +1,6 @@
 using System;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.ParticleSystems;
 using Axiom.Scripting;
 
@@ -31,9 +31,9 @@ namespace Axiom.ParticleFX {
 
             Vector3 pos = new Vector3();
 
-            pos.x = MathUtil.SymmetricRandom() * distance;
-            pos.y = MathUtil.SymmetricRandom() * distance;
-            pos.z = MathUtil.SymmetricRandom() * distance;
+            pos.x = Utility.SymmetricRandom() * distance;
+            pos.y = Utility.SymmetricRandom() * distance;
+            pos.z = Utility.SymmetricRandom() * distance;
 
             // point emitter emits starting from its own position
             particle.Position = pos + particle.ParentSet.WorldPosition;

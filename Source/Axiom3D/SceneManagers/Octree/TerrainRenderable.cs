@@ -29,13 +29,13 @@ using System;
 using System.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.MathLib;
+using Axiom.Math;
 
 namespace Axiom.SceneManagers.Octree {
 	/// <summary>
 	/// Summary description for TerrainRenderable.
 	/// </summary>
-    public class TerrainRenderable : SceneObject, IRenderable {
+    public class TerrainRenderable : MovableObject, IRenderable {
         #region Fields
 
         protected Vector3 center;
@@ -321,7 +321,7 @@ namespace Axiom.SceneManagers.Octree {
         public float CalculateCFactor() {
             float A, T;
 
-            A = (float)options.nearPlane / Math.Abs((float)options.topCoord);
+            A = (float)options.nearPlane / Utility.Abs((float)options.topCoord);
 
             T = 2 * (float)options.maxPixelError / (float)options.vertRes;
 
@@ -358,7 +358,7 @@ namespace Axiom.SceneManagers.Octree {
                                 float interp_h = top * ( 1.0f - zpct ) + zpct * bottom;
 
                                 float actual_h = GetVertex( i + x, j + z, 1 );
-                                float delta = Math.Abs(interp_h - actual_h);
+                                float delta = Utility.Abs(interp_h - actual_h);
 
                                 float D2 = delta * delta * C * C;
 
@@ -503,7 +503,7 @@ namespace Axiom.SceneManagers.Octree {
             }
         }
 
-        public Axiom.MathLib.Vector3 WorldPosition {
+        public Axiom.Math.Vector3 WorldPosition {
             get {
                 return parentNode.DerivedPosition;
             }
@@ -685,12 +685,12 @@ namespace Axiom.SceneManagers.Octree {
             return (short)(x + z * options.size);
         }
 
-        public void GetWorldTransforms(Axiom.MathLib.Matrix4[] matrices) {
+        public void GetWorldTransforms(Axiom.Math.Matrix4[] matrices) {
             // TODO: Add Node.FullTransform?
             parentNode.GetWorldTransforms(matrices);
         }
 
-        public Axiom.MathLib.Quaternion WorldOrientation {
+        public Axiom.Math.Quaternion WorldOrientation {
             get {
                 return parentNode.DerivedOrientation;
             }

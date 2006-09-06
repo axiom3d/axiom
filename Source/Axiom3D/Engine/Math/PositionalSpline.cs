@@ -32,9 +32,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
-using Axiom.MathLib.Collections;
+using Axiom.Math.Collections;
 
-namespace Axiom.MathLib {
+namespace Axiom.Math {
     /// <summary>
     ///		A Catmull-Rom spline that can be used for interpolating translation movements.
     /// </summary>

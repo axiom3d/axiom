@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 using Axiom.Collections;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Graphics;
 
 namespace Axiom.Core {
@@ -48,7 +48,7 @@ namespace Axiom.Core {
 		/// <summary>
 		///		A collection of all objects attached to this scene node.
 		///	</summary>
-		protected SceneObjectCollection objectList = new SceneObjectCollection();
+		protected MovableObjectCollection objectList = new MovableObjectCollection();
 		/// <summary>
 		///		Reference to the scene manager who created me.
 		///	</summary>
@@ -227,7 +227,7 @@ namespace Axiom.Core {
 		///    A SceneObject will not show up in the scene until it is attached to a SceneNode.
 		/// </remarks>
 		/// <param name="obj"></param>
-		public virtual void AttachObject(SceneObject obj) {
+		public virtual void AttachObject(MovableObject obj) {
 			Debug.Assert(obj != null, "obj != null");
 
 			objectList.Add(obj);
@@ -323,10 +323,10 @@ namespace Axiom.Core {
 		///    Bounds for this SceneNode are also updated.
 		/// </remarks>
 		/// <param name="index">Index of the object to remove.</param>
-		public virtual SceneObject DetachObject(int index) {
+		public virtual MovableObject DetachObject(int index) {
 			Debug.Assert(index < objectList.Count, "index < objectList.Count");
 
-			SceneObject obj = objectList[index];
+			MovableObject obj = objectList[index];
 
 			objectList.Remove(obj);
 
@@ -346,7 +346,7 @@ namespace Axiom.Core {
 		///    Bounds for this SceneNode are also updated.
 		/// </remarks>
 		/// <param name="obj">Reference to the object to remove.</param>
-		public virtual void DetachObject(SceneObject obj) 
+		public virtual void DetachObject(MovableObject obj) 
 		{
 			Debug.Assert(obj != null, "obj != null");
 
@@ -366,15 +366,15 @@ namespace Axiom.Core {
 		/// </summary>
 		/// <param name="name">The name of the object to return.</param>
 		/// <returns>SceneObject if found. Throws exception of not found.</returns>
-		public SceneObject GetObject(string name) {
-			foreach(SceneObject obj in this.objectList) {
+		public MovableObject GetObject(string name) {
+			foreach(MovableObject obj in this.objectList) {
 				if(obj.Name == name)
 					return obj;
 			}
 			throw new IndexOutOfRangeException("Invalid key specified.");
 		}
 
-		public SceneObject GetObject(int index) {
+		public MovableObject GetObject(int index) {
 			if(objectList.Count <= index) return null;
 			return objectList[index];
 		}
@@ -435,7 +435,7 @@ namespace Axiom.Core {
 
 			// add visible objects to the render queue
 			for(int i = 0; i < objectList.Count; i++) {
-				SceneObject obj = objectList[i];
+				MovableObject obj = objectList[i];
 
 				// tell attached object about current camera in case it wants to know
 				obj.NotifyCurrentCamera(camera);
@@ -493,12 +493,12 @@ namespace Axiom.Core {
 
 			// update bounds from attached objects
 			for(int i = 0; i < objectList.Count; i++) {
-				SceneObject obj = objectList[i];
+				MovableObject obj = objectList[i];
 
 				// update
 				worldAABB.Merge(obj.GetWorldBoundingBox(true));
 				worldBoundingSphere.Radius = 
-					MathUtil.Max(worldBoundingSphere.Radius, obj.BoundingRadius);
+					Utility.Max(worldBoundingSphere.Radius, obj.BoundingRadius);
 			}
 
 			// merge with Children
@@ -508,7 +508,7 @@ namespace Axiom.Core {
 				// merge our bounding box with that of the child node
 				worldAABB.Merge(child.worldAABB);
 				worldBoundingSphere.Radius = 
-					MathUtil.Max(worldBoundingSphere.Radius, child.worldBoundingSphere.Radius);
+					Utility.Max(worldBoundingSphere.Radius, child.worldBoundingSphere.Radius);
 			}
 		}
 
@@ -685,7 +685,7 @@ namespace Axiom.Core {
 				if ((zAxis + zAdjustVec).LengthSquared < 0.00000001f) {
 					// Oops, a 180 degree turn (infinite possible rotation axes)
 					// Default to yaw i.e. use current UP
-					rotationQuat = Quaternion.FromAngleAxis(MathUtil.PI, yAxis);
+					rotationQuat = Quaternion.FromAngleAxis(Utility.PI, yAxis);
 				}
 				else {
 					// Derive shortest arc to new direction

@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Graphics;
 
 namespace Axiom.Overlays {
@@ -301,7 +301,7 @@ namespace Axiom.Overlays {
             Matrix3 rot3x3 = Matrix3.Identity;
             Matrix3 scale3x3 = Matrix3.Zero;
 
-            rot3x3.FromEulerAnglesXYZ(0, 0, MathUtil.DegreesToRadians(rotate));
+            rot3x3.FromEulerAnglesXYZ(0, 0, Utility.DegreesToRadians(rotate));
             scale3x3.m00 = scaleX;
             scale3x3.m11 = scaleY;
             scale3x3.m22 = 1.0f;

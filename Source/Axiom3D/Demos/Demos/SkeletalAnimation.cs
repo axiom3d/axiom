@@ -2,7 +2,7 @@ using System;
 using Axiom.Animating;
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Utility;
 
 namespace Demos {
@@ -35,7 +35,7 @@ namespace Demos {
 					new Vector3(0, 0, (i * 50) - (NumRobots * 50 / 2))).AttachObject(entity);
 				animState[i] = entity.GetAnimationState("Walk");
 				animState[i].IsEnabled = true;
-				animationSpeed[i] = MathUtil.RangeRandom(0.5f, 1.5f);
+				animationSpeed[i] = Utility.RangeRandom(0.5f, 1.5f);
 			}
 
             Light light = scene.CreateLight("BlueLight");

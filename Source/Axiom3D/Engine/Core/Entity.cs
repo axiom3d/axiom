@@ -29,7 +29,7 @@ using System.Collections;
 using System.Diagnostics;
 using Axiom.Animating;
 using Axiom.Collections;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Graphics;
 
 namespace Axiom.Core {
@@ -66,7 +66,7 @@ namespace Axiom.Core {
 	///		to associate them with a scene node.
 	///		</para>
 	/// </remarks>
-	public class Entity : SceneObject, IDisposable {
+	public class Entity : MovableObject, IDisposable {
 		#region Fields
 
 		/// <summary>
@@ -156,7 +156,7 @@ namespace Axiom.Core {
 		/// <summary>
 		///		List of child objects attached to this entity.
 		/// </summary>
-		protected SceneObjectCollection childObjectList = new SceneObjectCollection();
+		protected MovableObjectCollection childObjectList = new MovableObjectCollection();
 		/// <summary>
 		///		List of shadow renderables for this entity.
 		/// </summary>
@@ -259,7 +259,7 @@ namespace Axiom.Core {
 				// scale by the largest scale factor
 				if(parentNode != null) {
 					Vector3 s = parentNode.DerivedScale;
-					radius *= MathUtil.Max(s.x, MathUtil.Max(s.y, s.z));
+					radius *= Utility.Max(s.x, Utility.Max(s.y, s.z));
 				}
 
 				return radius;
@@ -276,7 +276,7 @@ namespace Axiom.Core {
 				AxisAlignedBox fullBox = AxisAlignedBox.Null;
 
 				for(int i = 0; i < childObjectList.Count; i++) {
-					SceneObject child = childObjectList[i];
+					MovableObject child = childObjectList[i];
 					box = child.BoundingBox;
 					TagPoint tagPoint = (TagPoint)child.ParentNode;
 
@@ -404,7 +404,7 @@ namespace Axiom.Core {
 		/// </remarks>
 		/// <param name="boneName">The name of the bone (in the skeleton) to attach this object.</param>
 		/// <param name="sceneObject">Reference to the object to attach.</param>
-		public TagPoint AttachObjectToBone(string boneName, SceneObject sceneObject) {
+		public TagPoint AttachObjectToBone(string boneName, MovableObject sceneObject) {
 			return AttachObjectToBone(boneName, sceneObject, Quaternion.Identity);
 		}
 
@@ -414,7 +414,7 @@ namespace Axiom.Core {
 		/// <param name="boneName">The name of the bone (in the skeleton) to attach this object.</param>
 		/// <param name="sceneObject">Reference to the object to attach.</param>
 		/// <param name="offsetOrientation">An adjustment to the orientation of the attached object, relative to the bone.</param>
-		public TagPoint AttachObjectToBone(string boneName, SceneObject sceneObject, Quaternion offsetOrientation) {
+		public TagPoint AttachObjectToBone(string boneName, MovableObject sceneObject, Quaternion offsetOrientation) {
 			return AttachObjectToBone(boneName, sceneObject, Quaternion.Identity, Vector3.UnitScale);
 		}
 
@@ -425,7 +425,7 @@ namespace Axiom.Core {
 		/// <param name="sceneObject">Reference to the object to attach.</param>
 		/// <param name="offsetOrientation">An adjustment to the orientation of the attached object, relative to the bone.</param>
 		/// <param name="offsetPosition">An adjustment to the position of the attached object, relative to the bone.</param>
-		public TagPoint AttachObjectToBone(string boneName, SceneObject sceneObject, Quaternion offsetOrientation, Vector3 offsetPosition) {
+		public TagPoint AttachObjectToBone(string boneName, MovableObject sceneObject, Quaternion offsetOrientation, Vector3 offsetPosition) {
 			if(sceneObject.IsAttached) {
 				throw new AxiomException("SceneObject '{0}' is already attached to '{1}'", sceneObject.Name, sceneObject.ParentNode.Name);
 			}
@@ -457,7 +457,7 @@ namespace Axiom.Core {
 		/// </summary>
 		/// <param name="sceneObject">Object to attach.</param>
 		/// <param name="tagPoint">TagPoint to attach the object to.</param>
-		protected void AttachObjectImpl(SceneObject sceneObject, TagPoint tagPoint) {
+		protected void AttachObjectImpl(MovableObject sceneObject, TagPoint tagPoint) {
 			childObjectList[sceneObject.Name] = sceneObject;
 			sceneObject.NotifyAttached(tagPoint, true);
 		}
@@ -516,7 +516,7 @@ namespace Axiom.Core {
 
 			// update the child object's transforms
 			for(int i = 0; i < childObjectList.Count; i++) {
-				SceneObject child = childObjectList[i];
+				MovableObject child = childObjectList[i];
 				child.ParentNode.Update(true, true);
 			}
 
@@ -689,10 +689,10 @@ namespace Axiom.Core {
 				meshLodIndex = mesh.GetLodIndexSquaredDepth(temp);
                 
 				// Apply maximum detail restriction (remember lower = higher detail)
-				meshLodIndex = (int)MathUtil.Max(maxMeshLodIndex, meshLodIndex);
+				meshLodIndex = (int)Utility.Max(maxMeshLodIndex, meshLodIndex);
                 
 				// Apply minimum detail restriction (remember higher = lower detail)
-				meshLodIndex = (int)MathUtil.Min(minMeshLodIndex, meshLodIndex);
+				meshLodIndex = (int)Utility.Min(minMeshLodIndex, meshLodIndex);
 
 				// now do material LOD
 				// adjust this depth by the entity bias factor
@@ -709,15 +709,15 @@ namespace Axiom.Core {
 					int idx = subEnt.Material.GetLodIndexSquaredDepth(temp);
 
 					// Apply maximum detail restriction (remember lower = higher detail)
-					idx = (int)MathUtil.Max(maxMaterialLodIndex, idx);
+					idx = (int)Utility.Max(maxMaterialLodIndex, idx);
 					// Apply minimum detail restriction (remember higher = lower detail)
-					subEnt.materialLodIndex = (int)MathUtil.Min(minMaterialLodIndex, idx);
+					subEnt.materialLodIndex = (int)Utility.Min(minMaterialLodIndex, idx);
 				}
 			}
 
 			// Notify child objects (tag points)
 			for(int i = 0; i < childObjectList.Count; i++) {
-				SceneObject child = childObjectList[i];
+				MovableObject child = childObjectList[i];
 				child.NotifyCurrentCamera(camera);
 			}
 		}
@@ -929,7 +929,7 @@ namespace Axiom.Core {
 
 				// Update render queue with child objects (tag points)
 				for(int i = 0; i < childObjectList.Count; i++) {
-					SceneObject child = childObjectList[i];
+					MovableObject child = childObjectList[i];
 
                     if (child.IsVisible) {
                         child.UpdateRenderQueue(queue);

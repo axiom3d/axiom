@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom.Core;
 using Axiom.ParticleSystems;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Scripting;
 
 namespace Axiom.ParticleFX {
@@ -42,9 +42,9 @@ namespace Axiom.ParticleFX {
         public override void InitParticle(Particle particle) {
             Vector3 xOff, yOff, zOff;
 
-            xOff = MathUtil.SymmetricRandom() * xRange;
-            yOff = MathUtil.SymmetricRandom() * yRange;
-            zOff = MathUtil.SymmetricRandom() * zRange;
+            xOff = Utility.SymmetricRandom() * xRange;
+            yOff = Utility.SymmetricRandom() * yRange;
+            zOff = Utility.SymmetricRandom() * zRange;
 
             particle.Position = position + xOff + yOff + zOff;
 	        

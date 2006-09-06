@@ -28,8 +28,8 @@ using System;
 using System.Collections;
 using Axiom.Collections;
 using Axiom.Graphics;
-using Axiom.MathLib;
-using Axiom.MathLib.Collections;
+using Axiom.Math;
+using Axiom.Math.Collections;
 
 namespace Axiom.Core {
 	#region Base Query Implementation
@@ -244,7 +244,7 @@ namespace Axiom.Core {
 		/// </summary>
 		/// <param name="sceneObject"></param>
 		/// <returns></returns>
-		public bool OnQueryResult(SceneObject sceneObject) {
+		public bool OnQueryResult(MovableObject sceneObject) {
 			lastResult.objects.Add(sceneObject);
 
 			// continue
@@ -273,7 +273,7 @@ namespace Axiom.Core {
 		/// <summary>
 		///		List of scene objects in the query (entities, particle systems etc).
 		/// </summary>
-		public SceneObjectCollection objects = new SceneObjectCollection();
+		public MovableObjectCollection objects = new MovableObjectCollection();
 		/// <summary>
 		///		List of world fragments.
 		/// </summary>
@@ -294,7 +294,7 @@ namespace Axiom.Core {
 		/// </remarks>
 		/// <param name="sceneObject">Object found by the query.</param>
 		/// <returns></returns>
-		bool OnQueryResult(SceneObject sceneObject);
+		bool OnQueryResult(MovableObject sceneObject);
 
 		/// <summary>
 		///		Called when a <see cref="SceneQuery.WorldFragment"/> is returned by a query.
@@ -456,7 +456,7 @@ namespace Axiom.Core {
 
 		#region IRaySceneQueryListener Members
 
-		public bool OnQueryResult(SceneObject sceneObject, float distance) {
+		public bool OnQueryResult(MovableObject sceneObject, float distance) {
 			// create an entry and add it to the cached result list
 			RaySceneQueryResultEntry entry = new RaySceneQueryResultEntry();
 			entry.Distance = distance;
@@ -493,7 +493,7 @@ namespace Axiom.Core {
 		/// <param name="sceneObject">Reference to the object hit by the ray.</param>
 		/// <param name="distance">Distance from the origin of the ray where the intersection took place.</param>
 		/// <returns>Should return false to abandon returning additional results, or true to continue.</returns>
-		bool OnQueryResult(SceneObject sceneObject, float distance);
+		bool OnQueryResult(MovableObject sceneObject, float distance);
 
 		/// <summary>
 		///		Called when a world fragment is intersected by the ray.
@@ -515,7 +515,7 @@ namespace Axiom.Core {
 		/// <summary>
 		///		The object, or null if this is not a scene object result.
 		/// </summary>
-		public SceneObject SceneObject;
+		public MovableObject SceneObject;
 		/// <summary>
 		///		The world fragment, or null if this is not a fragment result.
 		/// </summary>
@@ -758,17 +758,17 @@ namespace Axiom.Core {
 
 		#region IIntersectionSceneQueryListener Members
 
-		bool Axiom.Core.IIntersectionSceneQueryListener.OnQueryResult(SceneObject first, SceneObject second) {
+		bool Axiom.Core.IIntersectionSceneQueryListener.OnQueryResult(MovableObject first, MovableObject second) {
 			// create an entry and add it to the cached result list
-			lastResults.Objects2Objects.Add(new SceneQuerySceneObjectPair(first,second));
+			lastResults.Objects2Objects.Add(new SceneQueryMovableObjectPair(first,second));
 
 			// continue gathering results
 			return true;
 		}
 
-		bool Axiom.Core.IIntersectionSceneQueryListener.OnQueryResult(SceneObject obj, SceneQuery.WorldFragment fragment) {
+		bool Axiom.Core.IIntersectionSceneQueryListener.OnQueryResult(MovableObject obj, SceneQuery.WorldFragment fragment) {
 			// create an entry and add it to the cached result list
-			lastResults.Objects2World.Add(new SceneQuerySceneObjectWorldFragmentPair(obj,fragment));
+			lastResults.Objects2World.Add(new SceneQueryMovableObjectWorldFragmentPair(obj,fragment));
 
 			// continue gathering results
 			return true;
@@ -791,7 +791,7 @@ namespace Axiom.Core {
 		/// <param name="first">Reference to the first intersecting object.</param>
 		/// <param name="second">Reference to the second intersecting object.</param>
 		/// <returns>Should return false to abandon returning additional results, or true to continue.</returns>
-		bool OnQueryResult(SceneObject first, SceneObject second);
+		bool OnQueryResult(MovableObject first, MovableObject second);
 
 		/// <summary>
 		///		Called when a movable intersects a world fragment.
@@ -799,21 +799,21 @@ namespace Axiom.Core {
 		/// <param name="obj">Intersecting object.</param>
 		/// <param name="fragment">Intersecting world fragment.</param>
 		/// <returns>Should return false to abandon returning additional results, or true to continue.</returns>
-		bool OnQueryResult(SceneObject obj, SceneQuery.WorldFragment fragment);
+		bool OnQueryResult(MovableObject obj, SceneQuery.WorldFragment fragment);
 	}
 
 	/// <summary>Holds the results of an intersection scene query (pair values).</summary>
 	public class IntersectionSceneQueryResult {
-		protected SceneQuerySceneObjectIntersectionList objects2Objects = new SceneQuerySceneObjectIntersectionList();
-		protected SceneQuerySceneObjectWorldFragmentIntersectionList objects2World = new SceneQuerySceneObjectWorldFragmentIntersectionList();
+		protected SceneQueryMovableObjectIntersectionList objects2Objects = new SceneQueryMovableObjectIntersectionList();
+		protected SceneQueryMovableObjectWorldFragmentIntersectionList objects2World = new SceneQueryMovableObjectWorldFragmentIntersectionList();
 
-		public SceneQuerySceneObjectIntersectionList Objects2Objects {
+		public SceneQueryMovableObjectIntersectionList Objects2Objects {
 			get {
 				return objects2Objects;
 			}
 		}
 
-		public SceneQuerySceneObjectWorldFragmentIntersectionList Objects2World {
+		public SceneQueryMovableObjectWorldFragmentIntersectionList Objects2World {
 			get {
 				return objects2World;
 			}

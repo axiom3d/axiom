@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,14 +24,28 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+
 using Axiom.Core;
 
-namespace Axiom.Controllers {
+#endregion Namespace Declarations
+
+namespace Axiom.Controllers
+{
     /// <summary>
     /// Summary description for FrameTimeControllerValue.
     /// </summary>
-    public sealed class FrameTimeControllerValue : IControllerValue {
+    public sealed class FrameTimeControllerValue : IControllerValue
+    {
         /// <summary>
         ///		Stores the value of the time elapsed since the last frame.
         /// </summary>
@@ -42,9 +56,10 @@ namespace Axiom.Controllers {
         /// </summary>
         private float timeFactor;
 
-        public FrameTimeControllerValue() {
+        public FrameTimeControllerValue()
+        {
             // add a frame started event handler
-            Root.Instance.FrameStarted += new FrameEvent(RenderSystem_FrameStarted);
+            Root.Instance.FrameStarted += new FrameEvent( RenderSystem_FrameStarted );
 
             frameTime = 0;
 
@@ -57,11 +72,14 @@ namespace Axiom.Controllers {
         /// <summary>
         ///		Gets a time scaled value to use for controller functions.
         /// </summary>
-        float IControllerValue.Value {
-            get {
+        float IControllerValue.Value
+        {
+            get
+            {
                 return frameTime;
             }
-            set { 
+            set
+            {
                 // Do nothing			
             }
         }
@@ -75,9 +93,16 @@ namespace Axiom.Controllers {
         ///		to either speed up or slow down controller functions independent of slowing
         ///		down the render loop.
         /// </summary>
-        public float TimeFactor {
-            get { return timeFactor; }
-            set { timeFactor = value; }
+        public float TimeFactor
+        {
+            get
+            {
+                return timeFactor;
+            }
+            set
+            {
+                timeFactor = value;
+            }
         }
 
         #endregion
@@ -89,7 +114,8 @@ namespace Axiom.Controllers {
         /// <param name="source"></param>
         /// <param name="e"></param>
         /// <returns></returns>
-        private void RenderSystem_FrameStarted(object source, FrameEventArgs e) {
+        private void RenderSystem_FrameStarted( object source, FrameEventArgs e )
+        {
             // apply the time factor to the time since last frame and save it
             frameTime = timeFactor * e.TimeSinceLastFrame;
         }

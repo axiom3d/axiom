@@ -29,7 +29,7 @@ using System.Collections;
 using System.Runtime.InteropServices;
 using Axiom.Collections;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Scripting;
 using Axiom.Graphics;
 
@@ -705,7 +705,7 @@ namespace Axiom.Overlays.Elements {
                 op.operationType = parent.renderOp2.operationType;
             }
 
-            public void GetWorldTransforms(Axiom.MathLib.Matrix4[] matrices) {
+            public void GetWorldTransforms(Axiom.Math.Matrix4[] matrices) {
                 parent.GetWorldTransforms(matrices);
             }
 

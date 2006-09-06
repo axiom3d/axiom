@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace Axiom.MathLib.Collections {
+namespace Axiom.Math.Collections {
     /// <summary>
     ///		Serves as a basis for strongly typed collections in the math lib.
     /// </summary>

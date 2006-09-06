@@ -39,7 +39,7 @@ using Axiom.Media;
 using Axiom.Overlays;
 using Axiom.Input;
 using Axiom.ParticleSystems;
-using Axiom.Utility;
+//using Axiom.Utility;
 using Axiom.Graphics;
 
 namespace Axiom.Core {

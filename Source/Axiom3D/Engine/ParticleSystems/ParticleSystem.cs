@@ -31,7 +31,7 @@ using System.Drawing;
 using Axiom.Collections;
 using Axiom.Core;
 
-using Axiom.MathLib;
+using Axiom.Math;
 
 namespace Axiom.ParticleSystems {
     /// <summary>
@@ -379,7 +379,7 @@ namespace Axiom.ParticleSystems {
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="billboard"></param>
-        protected override void GenerateBillboardAxes(Camera camera, ref Axiom.MathLib.Vector3 x, ref Axiom.MathLib.Vector3 y, Billboard billboard) {
+        protected override void GenerateBillboardAxes(Camera camera, ref Axiom.Math.Vector3 x, ref Axiom.Math.Vector3 y, Billboard billboard) {
             // Orientation different from BillboardSet
             // Billboards are in world space (to decouple them from emitters in node space)
             Quaternion camQ = Quaternion.Zero;

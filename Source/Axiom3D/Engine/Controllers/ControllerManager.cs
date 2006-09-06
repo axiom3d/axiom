@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,18 +24,32 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
+
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Controllers.Canned;
 using Axiom.Graphics;
 
-namespace Axiom.Controllers {
+#endregion Namespace Declarations
+
+namespace Axiom.Controllers
+{
     /// <summary>
     /// Summary description for ControllerManager.
     /// </summary>
-    public sealed class ControllerManager : IDisposable {
+    public sealed class ControllerManager : IDisposable
+    {
         #region Singleton implementation
 
         /// <summary>
@@ -46,8 +60,10 @@ namespace Axiom.Controllers {
         /// <summary>
         ///     Internal constructor.  This class cannot be instantiated externally.
         /// </summary>
-        internal ControllerManager() {
-            if (instance == null) {
+        internal ControllerManager()
+        {
+            if ( instance == null )
+            {
                 instance = this;
             }
         }
@@ -55,9 +71,11 @@ namespace Axiom.Controllers {
         /// <summary>
         ///     Gets the singleton instance of this class.
         /// </summary>
-        public static ControllerManager Instance {
-            get { 
-                return instance; 
+        public static ControllerManager Instance
+        {
+            get
+            {
+                return instance;
             }
         }
 
@@ -86,9 +104,10 @@ namespace Axiom.Controllers {
         /// <param name="destination">Controller value to use as the destination.</param>
         /// <param name="function">Controller funcion that will use the source value to set the destination.</param>
         /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-        public Controller CreateController(IControllerValue destination, IControllerFunction function) {
+        public Controller CreateController( IControllerValue destination, IControllerFunction function )
+        {
             // call the overloaded method passing in our precreated frame time controller value as the source
-            return CreateController(frameTimeController, destination, function);
+            return CreateController( frameTimeController, destination, function );
         }
 
         /// <summary>
@@ -98,12 +117,13 @@ namespace Axiom.Controllers {
         /// <param name="destination">Controller value to use as the destination.</param>
         /// <param name="function">Controller funcion that will use the source value to set the destination.</param>
         /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-        public Controller CreateController(IControllerValue source, IControllerValue destination, IControllerFunction function) {
+        public Controller CreateController( IControllerValue source, IControllerValue destination, IControllerFunction function )
+        {
             // create a new controller object
-            Controller controller = new Controller(source, destination, function);
+            Controller controller = new Controller( source, destination, function );
 
             // add the new controller to our list
-            controllers.Add(controller);
+            controllers.Add( controller );
 
             return controller;
         }
@@ -118,11 +138,12 @@ namespace Axiom.Controllers {
         /// <param name="texUnit">The texture unit to animate.</param>
         /// <param name="sequenceTime">Length of the animation (in seconds).</param>
         /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-        public Controller CreateTextureAnimator(TextureUnitState texUnit, float sequenceTime) {
-            IControllerValue val = new TextureFrameControllerValue(texUnit);
-            IControllerFunction func = new AnimationControllerFunction(sequenceTime);
+        public Controller CreateTextureAnimator( TextureUnitState texUnit, float sequenceTime )
+        {
+            IControllerValue val = new TextureFrameControllerValue( texUnit );
+            IControllerFunction func = new AnimationControllerFunction( sequenceTime );
 
-            return CreateController(val, func);
+            return CreateController( val, func );
         }
 
         /// <summary>
@@ -136,11 +157,12 @@ namespace Axiom.Controllers {
         /// <param name="layer">The texture unit to animate.</param>
         /// <param name="speed">Speed of the rotation, in counter-clockwise revolutions per second.</param>
         /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-        public Controller CreateTextureRotator(TextureUnitState layer, float speed) {
-            IControllerValue val = new TexCoordModifierControllerValue(layer, false, false, false, false, true);
-            IControllerFunction func = new MultipyControllerFunction(-speed, true);
+        public Controller CreateTextureRotator( TextureUnitState layer, float speed )
+        {
+            IControllerValue val = new TexCoordModifierControllerValue( layer, false, false, false, false, true );
+            IControllerFunction func = new MultipyControllerFunction( -speed, true );
 
-            return CreateController(val, func);
+            return CreateController( val, func );
         }
 
         /// <summary>
@@ -157,11 +179,12 @@ namespace Axiom.Controllers {
         /// <param name="index"></param>
         /// <param name="timeFactor"></param>
         /// <returns></returns>
-        public Controller CreateGpuProgramTimerParam(GpuProgramParameters parms, int index, float timeFactor) {
-            IControllerValue val = new FloatGpuParamControllerValue(parms, index);
-            IControllerFunction func = new MultipyControllerFunction(timeFactor, true);
+        public Controller CreateGpuProgramTimerParam( GpuProgramParameters parms, int index, float timeFactor )
+        {
+            IControllerValue val = new FloatGpuParamControllerValue( parms, index );
+            IControllerFunction func = new MultipyControllerFunction( timeFactor, true );
 
-            return CreateController(val, func);
+            return CreateController( val, func );
         }
 
         /// <summary>
@@ -176,39 +199,44 @@ namespace Axiom.Controllers {
         /// <param name="speedU">Horizontal speed, in wraps per second.</param>
         /// <param name="speedV">Vertical speed, in wraps per second.</param>
         /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-        public Controller CreateTextureScroller(TextureUnitState layer, float speedU, float speedV) {
+        public Controller CreateTextureScroller( TextureUnitState layer, float speedU, float speedV )
+        {
             IControllerValue val = null;
             IControllerFunction func = null;
             Controller controller = null;
 
             // if both u and v speeds are the same, we can use a single controller for it
-            if(speedU != 0 && (speedU == speedV)) {
+            if ( speedU != 0 && ( speedU == speedV ) )
+            {
                 // create the value and function
-                val = new TexCoordModifierControllerValue(layer, true, true);
-                func = new MultipyControllerFunction(-speedU, true);
+                val = new TexCoordModifierControllerValue( layer, true, true );
+                func = new MultipyControllerFunction( -speedU, true );
 
                 // create the controller (uses FrameTime for source by default)
-                controller = CreateController(val, func);
+                controller = CreateController( val, func );
             }
-            else {
+            else
+            {
                 // create seperate for U
-                if(speedU != 0) {
+                if ( speedU != 0 )
+                {
                     // create the value and function
-                    val = new TexCoordModifierControllerValue(layer, true, false);
-                    func = new MultipyControllerFunction(-speedU, true);
+                    val = new TexCoordModifierControllerValue( layer, true, false );
+                    func = new MultipyControllerFunction( -speedU, true );
 
                     // create the controller (uses FrameTime for source by default)
-                    controller = CreateController(val, func);
+                    controller = CreateController( val, func );
                 }
 
                 // create seperate for V
-                if(speedV != 0) {
+                if ( speedV != 0 )
+                {
                     // create the value and function
-                    val = new TexCoordModifierControllerValue(layer, false, true);
-                    func = new MultipyControllerFunction(-speedV, true);
+                    val = new TexCoordModifierControllerValue( layer, false, true );
+                    func = new MultipyControllerFunction( -speedV, true );
 
                     // create the controller (uses FrameTime for source by default)
-                    controller = CreateController(val, func);
+                    controller = CreateController( val, func );
                 }
             }
 
@@ -228,49 +256,53 @@ namespace Axiom.Controllers {
         /// <param name="phase">The offset of the start of the wave, e.g. 0.5 to start half-way through the wave.</param>
         /// <param name="amplitude">Scales the output so that instead of lying within 0..1 it lies within 0..(1 * amplitude) for exaggerated effects</param>
         /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-        public Controller CreateTextureWaveTransformer(TextureUnitState layer, TextureTransform type, WaveformType waveType, 
-            float baseVal, float frequency, float phase, float amplitude) {
+        public Controller CreateTextureWaveTransformer( TextureUnitState layer, TextureTransform type, WaveformType waveType,
+            float baseVal, float frequency, float phase, float amplitude )
+        {
             IControllerValue val = null;
             IControllerFunction function = null;
 
             // determine which type of controller value this layer needs
-            switch(type) {
+            switch ( type )
+            {
                 case TextureTransform.TranslateU:
-                    val = new TexCoordModifierControllerValue(layer, true, false);
+                    val = new TexCoordModifierControllerValue( layer, true, false );
                     break;
 
                 case TextureTransform.TranslateV:
-                    val = new TexCoordModifierControllerValue(layer, false, true);
+                    val = new TexCoordModifierControllerValue( layer, false, true );
                     break;
 
                 case TextureTransform.ScaleU:
-                    val = new TexCoordModifierControllerValue(layer, false, false, true, false, false);
+                    val = new TexCoordModifierControllerValue( layer, false, false, true, false, false );
                     break;
 
                 case TextureTransform.ScaleV:
-                    val = new TexCoordModifierControllerValue(layer, false, false, false, true, false);
+                    val = new TexCoordModifierControllerValue( layer, false, false, false, true, false );
                     break;
 
                 case TextureTransform.Rotate:
-                    val = new TexCoordModifierControllerValue(layer, false, false, false, false, true);
+                    val = new TexCoordModifierControllerValue( layer, false, false, false, false, true );
                     break;
             } // switch
 
             // create a new waveform controller function
-            function = new WaveformControllerFunction(waveType, baseVal, frequency, phase, amplitude, true);
+            function = new WaveformControllerFunction( waveType, baseVal, frequency, phase, amplitude, true );
 
             // finally, create the controller using frame time as the source value
-            return CreateController(frameTimeController, val, function);
+            return CreateController( frameTimeController, val, function );
         }
 
         /// <summary>
         ///		Causes all registered controllers to execute.  This will depend on RenderSystem.BeginScene already
         ///		being called so that the time since last frame can be obtained for calculations.
         /// </summary>
-        public void UpdateAll() {
+        public void UpdateAll()
+        {
             // loop through each controller and tell it to update
-            for(int i = 0; i < controllers.Count; i++) {
-                Controller controller = (Controller)controllers[i];
+            for ( int i = 0; i < controllers.Count; i++ )
+            {
+                Controller controller = (Controller)controllers[ i ];
                 controller.Update();
             }
         }
@@ -282,7 +314,8 @@ namespace Axiom.Controllers {
         /// <summary>
         ///     Called when the engine is shutting down.
         /// </summary>
-        public void Dispose() {
+        public void Dispose()
+        {
             controllers.Clear();
 
             instance = null;
