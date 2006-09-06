@@ -1,6 +1,7 @@
 using System;
 
 using Axiom;
+using Axiom.Input;
 
 
 
@@ -75,7 +76,7 @@ namespace YAT
 			// Merge piece into level data
 			game.MergePiece();
 		}
-		public override void KeyPressed(Axiom.KeyEventArgs e)
+		public override void KeyPressed(KeyEventArgs e)
 		{
 			switch (e.Key)
 			{

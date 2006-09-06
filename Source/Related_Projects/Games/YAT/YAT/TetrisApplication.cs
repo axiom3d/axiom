@@ -31,14 +31,12 @@ using System.Collections;
 
 using Axiom;
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Input;
-
-
-
+using Axiom.Overlays;
+using Axiom.Graphics;
 
 using MouseButtons = Axiom.Input.MouseButtons;
-
 
 namespace YAT 
 {

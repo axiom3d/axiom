@@ -1,6 +1,7 @@
 using System;
 
 using Axiom;
+using Axiom.Input;
 
 
 namespace YAT 
@@ -38,7 +39,7 @@ namespace YAT
 		{
 				game = Game.Instance;
 		}
-		public override void KeyPressed(Axiom.KeyEventArgs e)
+		public override void KeyPressed(KeyEventArgs e)
 		{
 			// Handle keys common to all game states
 			switch (e.Key)

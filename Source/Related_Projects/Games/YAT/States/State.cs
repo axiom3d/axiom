@@ -56,15 +56,15 @@ namespace YAT
 		}
 
 		#region Keyboard Input Methods
-		public virtual void KeyClicked(Axiom.KeyEventArgs e)
+		public virtual void KeyClicked(KeyEventArgs e)
 		{
 
 		}
-		public virtual void KeyPressed(Axiom.KeyEventArgs e)
+		public virtual void KeyPressed(KeyEventArgs e)
 		{
 
 		}
-		public virtual void KeyReleased(Axiom.KeyEventArgs e)
+		public virtual void KeyReleased(KeyEventArgs e)
 		{
 
 		}
@@ -82,11 +82,11 @@ namespace YAT
 
 		
 		#region Mouse Input Methods
-		public virtual void MouseMoved(Axiom.MouseEventArgs e)
+		public virtual void MouseMoved(MouseEventArgs e)
 		{
 
 		}
-		public virtual void MouseDragged(Axiom.MouseEventArgs e)
+		public virtual void MouseDragged(MouseEventArgs e)
 		{
 
 		}

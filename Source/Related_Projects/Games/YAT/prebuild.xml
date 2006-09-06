@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<DNPreBuild xmlns="http://dnpb.sourceforge.net/schemas/dnpb-1.4.xsd">
+<DNPreBuild xmlns="http://dnpb.sourceforge.net/schemas/dnpb-1.7.xsd">
 	<Solution name="YAT" activeConfig="Debug">
 		<Configuration name="Debug">
 			<Options>
@@ -54,18 +54,19 @@
 			</Configuration>
 			<?if OS = "Win32" ?>
 			
-			<ReferencePath>../../Dependencies/Managed/Win32</ReferencePath>
+			<ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
+			<ReferencePath>../../../../Dependencies/Managed/DotNet/Axiom3D</ReferencePath>
 			
 			<?else ?>
 			
-			<ReferencePath>../../Dependencies/Managed/Mono</ReferencePath>
+			<ReferencePath>../../../../Dependencies/Managed/Mono</ReferencePath>
+			<ReferencePath>../../../../Dependencies/Managed/Mono/Axiom3D</ReferencePath>
 			
 			<?endif ?>
 			<Reference name="System"/>
 			<Reference name="System.Data"/>
 			<Reference name="System.Drawing"/>
 			<Reference name="System.Xml"/>
-			<Reference name="RealmForge.Utility"/>
 			<Reference name="Axiom"/>
 			
 			<?if OS = "Win32" ?>

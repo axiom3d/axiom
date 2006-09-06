@@ -1,6 +1,8 @@
 using System;
 
 using Axiom;
+using Axiom.Input;
+using Axiom.Overlays;
 
 
 namespace YAT 
@@ -39,7 +41,7 @@ namespace YAT
 			base.FrameStarted(dt);
 		}
 
-		public override void KeyPressed(Axiom.KeyEventArgs e)
+		public override void KeyPressed(KeyEventArgs e)
 		{
 			if (e.Key == Axiom.Input.KeyCodes.Escape)
 				StateManager.Instance.RemoveCurrentState();

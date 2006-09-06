@@ -3,6 +3,8 @@ using System.Collections;
 
 using Axiom;
 using Axiom.Input;
+using Axiom.Graphics;
+using Axiom.Core;
 
 namespace YAT 
 {
@@ -180,12 +182,12 @@ namespace YAT
 
 		
 		#region KeyListener overrides
-		public virtual void KeyClicked(Axiom.KeyEventArgs e)
+		public virtual void KeyClicked(KeyEventArgs e)
 		{
 			State state = (State)stateStack[stateStack.Count-1];
 			state.KeyClicked(e);
 		}
-		public virtual void KeyPressed(Axiom.KeyEventArgs e)
+		public virtual void KeyPressed(KeyEventArgs e)
 		{
 
 			State state = (State)stateStack[stateStack.Count-1];
@@ -196,7 +198,7 @@ namespace YAT
 			mRepeatKeyDelay = mInitialRepeatKeyDelay;
 			state.KeyRepeated(mRepeatKey);
 		}
-		public virtual void KeyReleased(Axiom.KeyEventArgs e)
+		public virtual void KeyReleased(KeyEventArgs e)
 		{
 
 			State state = (State)stateStack[stateStack.Count-1];
@@ -220,12 +222,12 @@ namespace YAT
 		#endregion
 
 		#region MouseMotionListener overrides
-		public virtual void MouseMoved(Axiom.MouseEventArgs e)
+		public virtual void MouseMoved(MouseEventArgs e)
 		{
 			State state = (State)stateStack[stateStack.Count-1];
 			state.MouseMoved(e);
 		}
-		public virtual void MouseDragged(Axiom.MouseEventArgs e)
+		public virtual void MouseDragged(MouseEventArgs e)
 		{
 			State state = (State)stateStack[stateStack.Count-1];
 			state.MouseDragged(e);

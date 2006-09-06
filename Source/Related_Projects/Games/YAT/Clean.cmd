@@ -1,1 +1,1 @@
-..\..\Tools\Prebuild\Prebuild /clean /pause
+..\..\..\..\Build_Tools\Prebuild\Prebuild /clean /pause
