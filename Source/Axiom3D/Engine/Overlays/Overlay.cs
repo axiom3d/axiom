@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,13 +24,33 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
+
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
 
-namespace Axiom.Overlays {
+#endregion Namespace Declarations
+
+#region Ogre Synchronization Information
+/// <ogresynchronization>
+///     <file name="OgreOverlay.h"   revision="1.26.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+///     <file name="OgreOverlay.cpp" revision="1.31" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
+#endregion
+
+namespace Axiom.Overlays
+{
     /// <summary>
     ///    Represents a layer which is rendered on top of the 'normal' scene contents.
     /// </summary>
@@ -50,19 +70,21 @@ namespace Axiom.Overlays {
     ///    overlays predefined (menus etc) which you make visible only when you want.
     ///    It is possible to have multiple overlays enabled at once; in this case the
     ///    relative ZOrder parameter of the overlays determine which one is displayed
-     ///    on top.
-     ///    <p/>
-     ///    By default overlays are rendered into all viewports. This is fine when you only
-     ///    have fullscreen viewports, but if you have picture-in-picture views, you probably
-     ///    don't want the overlay displayed in the smaller viewports. You turn this off for 
-     ///    a specific viewport by calling the Viewport.DisplayOverlays property.
+    ///    on top.
+    ///    <p/>
+    ///    By default overlays are rendered into all viewports. This is fine when you only
+    ///    have fullscreen viewports, but if you have picture-in-picture views, you probably
+    ///    don't want the overlay displayed in the smaller viewports. You turn this off for 
+    ///    a specific viewport by calling the Viewport.DisplayOverlays property.
     /// </remarks>
-    public class Overlay : Resource {
+    public class Overlay : Resource
+    {
         #region Member variables
-
-        protected int zOrder;
-        protected bool isVisible;
+        /// <summary>
+        /// Internal root node, used as parent for 3D objects
+        /// </summary>
         protected SceneNode rootNode;
+
         /// <summary>2D element list.</summary>
         protected ArrayList elementList = new ArrayList();
         protected Hashtable elementLookup = new Hashtable();
@@ -74,22 +96,31 @@ namespace Axiom.Overlays {
         protected float scaleX, scaleY;
         protected Matrix4 transform = Matrix4.Identity;
         protected bool isTransformOutOfDate;
-   
+        protected bool isTransformUpdated;
+
+        protected int zOrder;
+        protected bool isVisible;
+        protected bool isInitialised;
+        protected string origin;
+
         #endregion Member variables
 
         #region Constructors
-        
+
         /// <summary>
         ///    Constructor: do not call direct, use SceneManager.CreateOverlay
         /// </summary>
         /// <param name="name"></param>
-        internal Overlay(string name) {
+        internal Overlay( string name )
+        {
             this.name = name;
             this.scaleX = 1.0f;
             this.scaleY = 1.0f;
             this.isTransformOutOfDate = true;
+            this.isTransformUpdated = true;
             this.zOrder = 100;
-            rootNode = new SceneNode(null);
+            this.isInitialised = false;
+            rootNode = new SceneNode( null );
         }
 
         #endregion Constructors
@@ -108,16 +139,25 @@ namespace Axiom.Overlays {
         ///    a container.
         /// </remarks>
         /// <param name="element"></param>
-        public void AddElement(OverlayElementContainer element) {
-            elementList.Add(element);
-            elementLookup.Add(element.Name, element);
+        public void AddElement( OverlayElementContainer element )
+        {
+            elementList.Add( element );
+            elementLookup.Add( element.Name, element );
 
             // notify the parent
-            element.NotifyParent(null, this);
+            element.NotifyParent( null, this );
 
             // Set Z order, scaled to separate overlays
             // max 100 container levels per overlay, should be plenty
-            element.NotifyZOrder(zOrder * 100);
+            element.NotifyZOrder( zOrder * 100 );
+
+            Matrix4[] xform = new Matrix4[ 256 ];
+            GetWorldTransforms( xform );
+
+            element.NotifyWorldTransforms( xform );
+            element.NotifyViewport();
+
+
         }
 
         /// <summary>
@@ -131,7 +171,7 @@ namespace Axiom.Overlays {
         ///    cockpit, and one with the HUD elements attached (the zorder of the HUD 
         ///    overlay would be higher than the cockpit to ensure it was always on top).
         ///    <p/>
-        ///    A SceneNode can have nay number of 3D objects attached to it. SceneNodes
+        ///    A SceneNode can have any number of 3D objects attached to it. SceneNodes
         ///    are created using SceneManager.CreateSceneNode, and are normally attached 
         ///    (directly or indirectly) to the root node of the scene. By attaching them
         ///    to an overlay, you indicate that:<OL>
@@ -146,20 +186,22 @@ namespace Axiom.Overlays {
         ///    that their contents are always displayed on top of the main scene (to do 
         ///    otherwise would result in objects 'poking through' the overlay). The problem
         ///    with using 3D objects is that if they are concave, or self-overlap, then you
-        ///    can get artefacts because of the lack of depth buffer checking. So you should 
-        ///    ensure that any 3D objects you us in the overlay are convex, and don't overlap
+        ///    can get artifacts because of the lack of depth buffer checking. So you should 
+        ///    ensure that any 3D objects you us in the overlay are convex and don't overlap
         ///    each other. If they must overlap, split them up and put them in 2 overlays.
         /// </remarks>
         /// <param name="node"></param>
-        public void AddElement(SceneNode node) {
+        public void AddElement( SceneNode node )
+        {
             // add the scene node as a child of the root node
-            rootNode.AddChild(node);
+            rootNode.AddChild( node );
         }
 
         /// <summary>
         ///    Clears the overlay of all attached items.
         /// </summary>
-        public void Clear() {
+        public void Clear()
+        {
             rootNode.Clear();
             elementList.Clear();
         }
@@ -169,38 +211,95 @@ namespace Axiom.Overlays {
         /// </summary>
         /// <param name="camera">Current camera being used in the render loop.</param>
         /// <param name="queue">Current render queue.</param>
-        public void FindVisibleObjects(Camera camera, RenderQueue queue) {
-            if(!isVisible) {
-                return;
+        public void FindVisibleObjects( Camera camera, RenderQueue queue )
+        {
+
+            if ( OverlayManager.Instance.HasViewportChanged )
+            {
+
+                for ( int i = 0; i < elementList.Count; i++ )
+                {
+                    OverlayElementContainer container = (OverlayElementContainer)elementList[ i ];
+                    container.NotifyViewport();
+                }
+            }
+            // update elements
+            if ( isTransformUpdated )
+            {
+                Matrix4[] xform = new Matrix4[ 256 ];
+                GetWorldTransforms( xform );
+                for ( int i = 0; i < elementList.Count; i++ )
+                {
+                    OverlayElementContainer container = (OverlayElementContainer)elementList[ i ];
+                    container.NotifyWorldTransforms( xform );
+                }
+                isTransformUpdated = false;
             }
 
-            // add 3d elements
-            rootNode.Position = camera.DerivedPosition;
-            rootNode.Orientation = camera.DerivedOrientation;
-            rootNode.Update(true, false);
+            if ( isVisible )
+            {
+                // add 3d elements
+                rootNode.Position = camera.DerivedPosition;
+                rootNode.Orientation = camera.DerivedOrientation;
+                rootNode.Update( true, false );
 
-            // set up the default queue group for the objects about to be added
-            RenderQueueGroupID oldGroupID = queue.DefaultRenderGroup;
-            queue.DefaultRenderGroup = RenderQueueGroupID.Overlay;
-            rootNode.FindVisibleObjects(camera, queue, true, false);
-            // reset the group
-            queue.DefaultRenderGroup = oldGroupID;
+                // set up the default queue group for the objects about to be added
+                RenderQueueGroupID oldGroupID = queue.DefaultRenderGroup;
+                //ushort oldPriority = queue.DefaultRenderablePriority;
+                queue.DefaultRenderGroup = RenderQueueGroupID.Overlay;
+                //queue.DefaultRenderablePriority = (ushort)( ( zOrder * 100 ) - 1 );
 
-            // add 2d elements
-            for(int i = 0; i < elementList.Count; i++) {
-                OverlayElementContainer container = (OverlayElementContainer)elementList[i];
-                container.Update();
-                container.UpdateRenderQueue(queue);
+                rootNode.FindVisibleObjects( camera, queue, true, false );
+                // reset the group
+                queue.DefaultRenderGroup = oldGroupID;
+                //queue.DefaultRenderablePriority = (oldPriority);
+
+
+                // add 2d elements
+                for ( int i = 0; i < elementList.Count; i++ )
+                {
+                    OverlayElementContainer container = (OverlayElementContainer)elementList[ i ];
+                    container.Update();
+                    container.UpdateRenderQueue( queue );
+                }
             }
         }
 
+        /// <summary>
+        /// This returns a OverlayElement at position x,y.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public virtual OverlayElement FindElementAt( float x, float y )
+        {
+            OverlayElement ret = null;
+            int currZ = -1;
+
+            for ( int i = 0; i < elementList.Count; i++ )
+            {
+                OverlayElementContainer container = (OverlayElementContainer)elementList[ i ];
+                int z = container.ZOrder;
+                if ( z > currZ )
+                {
+                    OverlayElement elementFound = container.FindElementAt( x, y );
+                    if ( elementFound != null )
+                    {
+                        currZ = elementFound.ZOrder;
+                        ret = elementFound;
+                    }
+                }
+            }
+            return ret;
+        }
         /// <summary>
         ///    Gets a child container of this overlay by name.
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public OverlayElementContainer GetChild(string name) {
-            return (OverlayElementContainer)elementLookup[name];
+        public OverlayElementContainer GetChild( string name )
+        {
+            return (OverlayElementContainer)elementLookup[ name ];
         }
 
         /// <summary>
@@ -209,18 +308,32 @@ namespace Axiom.Overlays {
         /// <param name="xform">Array of Matrix4s to populate with the world 
         ///    transforms of this overlay.
         /// </param>
-        public void GetWorldTransforms(Matrix4[] xform) {
-            if(isTransformOutOfDate) {
+        public void GetWorldTransforms( Matrix4[] xform )
+        {
+            if ( isTransformOutOfDate )
+            {
                 UpdateTransforms();
             }
 
-            xform[0] = transform;
+            xform[ 0 ] = transform;
         }
 
+        public Quaternion GetWorldOrientation()
+        {
+            // n/a
+            return Quaternion.Identity;
+        }
+
+        public Vector3 GetWorldPosition()
+        {
+            // n/a
+            return Vector3.Zero;
+        }
         /// <summary>
         ///    Hides this overlay if it is currently being displayed.
         /// </summary>
-        public void Hide() {
+        public void Hide()
+        {
             isVisible = false;
         }
 
@@ -228,8 +341,9 @@ namespace Axiom.Overlays {
         ///    Adds the passed in angle to the rotation applied to this overlay.
         /// </summary>
         /// <param name="degress"></param>
-        public void Rotate(float degrees) {
-            this.Rotation = (rotate += degrees);
+        public void Rotate( float degrees )
+        {
+            this.Rotation = ( rotate += degrees );
         }
 
         /// <summary>
@@ -242,10 +356,12 @@ namespace Axiom.Overlays {
         /// </remarks>
         /// <param name="xOffset"></param>
         /// <param name="yOffset"></param>
-        public void Scroll(float xOffset, float yOffset) {
+        public void Scroll( float xOffset, float yOffset )
+        {
             scrollX += xOffset;
             scrollY += yOffset;
             isTransformOutOfDate = true;
+            isTransformUpdated = true;
         }
 
         /// <summary>
@@ -256,10 +372,12 @@ namespace Axiom.Overlays {
         /// </remarks>
         /// <param name="x">Horizontal scale value, where 1.0 = normal, 0.5 = half size etc</param>
         /// <param name="y">Vertical scale value, where 1.0 = normal, 0.5 = half size etc</param>
-        public void SetScale(float x, float y) {
+        public void SetScale( float x, float y )
+        {
             scaleX = x;
             scaleY = y;
             isTransformOutOfDate = true;
+            isTransformUpdated = true;
         }
 
         /// <summary>
@@ -277,23 +395,41 @@ namespace Axiom.Overlays {
         ///    Vertical scroll value, where 0 = normal, 0.5 = scroll down by half 
         ///    a screen etc.
         /// </param>
-        public void SetScroll(float x, float y) {
+        public void SetScroll( float x, float y )
+        {
             scrollX = x;
             scrollY = y;
             isTransformOutOfDate = true;
+            isTransformUpdated = true;
         }
 
         /// <summary>
         ///    Shows this overlay if it is not already visible.
         /// </summary>
-        public void Show() {
+        public void Show()
+        {
             isVisible = true;
+            if ( !isInitialised )
+            {
+                Initialize();
+            }
         }
+        protected void Initialize()
+        {
 
+            // add 2d elements
+            for ( int i = 0; i < elementList.Count; i++ )
+            {
+                OverlayElementContainer container = (OverlayElementContainer)elementList[ i ];
+                container.Initialize();
+            }
+            this.isInitialised = true;
+        }
         /// <summary>
         ///    Internal lazy update method.
         /// </summary>
-        protected void UpdateTransforms() {
+        protected void UpdateTransforms()
+        {
             // Ordering:
             //    1. Scale
             //    2. Rotate
@@ -301,14 +437,14 @@ namespace Axiom.Overlays {
             Matrix3 rot3x3 = Matrix3.Identity;
             Matrix3 scale3x3 = Matrix3.Zero;
 
-            rot3x3.FromEulerAnglesXYZ(0, 0, Utility.DegreesToRadians(rotate));
-            scale3x3.m00 = scaleX;
-            scale3x3.m11 = scaleY;
-            scale3x3.m22 = 1.0f;
+            rot3x3.FromEulerAnglesXYZ( 0.0f, 0.0f, Utility.DegreesToRadians( rotate ) );
+            scale3x3[ 0, 0 ] = scaleX;
+            scale3x3[ 1, 1 ] = scaleY;
+            scale3x3[ 2, 2 ] = 1.0f;
 
             transform = Matrix4.Identity;
             transform = rot3x3 * scale3x3;
-            transform.Translation = new Vector3(scrollX, scrollY, 0);
+            transform.Translation = new Vector3( scrollX, scrollY, 0 );
 
             isTransformOutOfDate = false;
         }
@@ -320,30 +456,65 @@ namespace Axiom.Overlays {
         /// <summary>
         ///    Gets whether this overlay is being displayed or not.
         /// </summary>
-        public bool IsVisible {
-            get {
+        public bool IsVisible
+        {
+            get
+            {
                 return isVisible;
             }
         }
 
+        public bool IsInitialized
+        {
+            get
+            {
+                return isInitialised;
+            }
+        }
+
+        /// <summary>
+        /// Get the origin of this overlay, e.g. a script file name.
+        /// </summary>
+        /// <remarks>
+        /// This property will only contain something if the creator of
+        /// this overlay chose to populate it. Script loaders are advised
+        /// to populate it.
+        ///</remarks>
+        public string Origin
+        {
+            get
+            {
+                return origin;
+            }
+            set
+            {
+                origin = value;
+            }
+        }
         /// <summary>
         ///    Gets/Sets the rotation applied to this overlay, in degrees.
         /// </summary>
-        public float Rotation {
-            get {
+        public float Rotation
+        {
+            get
+            {
                 return rotate;
             }
-            set {
+            set
+            {
                 rotate = value;
                 isTransformOutOfDate = true;
+                isTransformUpdated = true;
             }
         }
 
         /// <summary>
         ///    Gets the current x scale value.
         /// </summary>
-        public float ScaleX {
-            get {
+        public float ScaleX
+        {
+            get
+            {
                 return scaleX;
             }
         }
@@ -351,8 +522,10 @@ namespace Axiom.Overlays {
         /// <summary>
         ///    Gets the current y scale value.
         /// </summary>
-        public float ScaleY {
-            get {
+        public float ScaleY
+        {
+            get
+            {
                 return scaleY;
             }
         }
@@ -360,8 +533,10 @@ namespace Axiom.Overlays {
         /// <summary>
         ///    Gets the current x scroll value.
         /// </summary>
-        public float ScrollX {
-            get {
+        public float ScrollX
+        {
+            get
+            {
                 return scrollX;
             }
         }
@@ -369,8 +544,10 @@ namespace Axiom.Overlays {
         /// <summary>
         ///    Gets the  current y scroll value.
         /// </summary>
-        public float ScrollY {
-            get {
+        public float ScrollY
+        {
+            get
+            {
                 return scrollY;
             }
         }
@@ -378,28 +555,36 @@ namespace Axiom.Overlays {
         /// <summary>
         ///    Z ordering of this overlay. Valid values are between 0 and 600.
         /// </summary>
-        public int ZOrder {
-            get {
+        public int ZOrder
+        {
+            get
+            {
                 return zOrder;
             }
-            set {
+            set
+            {
                 zOrder = value;
 
                 // notify attached 2d elements
-                for(int i = 0; i < elementList.Count; i++) {
-                    ((OverlayElementContainer)elementList[i]).NotifyZOrder(zOrder);
+                for ( int i = 0; i < elementList.Count; i++ )
+                {
+                    ( (OverlayElementContainer)elementList[ i ] ).NotifyZOrder( zOrder );
                 }
             }
         }
 
-        public Quaternion DerivedOrientation {
-            get {
+        public Quaternion DerivedOrientation
+        {
+            get
+            {
                 return Quaternion.Identity;
             }
         }
 
-        public Vector3 DerivedPosition {
-            get {
+        public Vector3 DerivedPosition
+        {
+            get
+            {
                 return Vector3.Zero;
             }
         }
@@ -411,21 +596,24 @@ namespace Axiom.Overlays {
         /// <summary>
         ///		
         /// </summary>
-        public override void Load() {
-		    // do nothing
+        public override void Load()
+        {
+            // do nothing
         }
 
         /// <summary>
         ///		
         /// </summary>
-        public override void Unload() {
-		    // do nothing
+        public override void Unload()
+        {
+            // do nothing
         }
 
         /// <summary>
         ///		
         /// </summary>
-        public override void Dispose() {
+        public override void Dispose()
+        {
             // do nothing
         }
 

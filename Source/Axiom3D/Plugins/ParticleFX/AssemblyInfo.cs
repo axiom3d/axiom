@@ -46,5 +46,5 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("Axiom ParticleFX Plugin")]
-[assembly: AssemblyDescription("Plugin that extends the available Particle FX in Axiom.")]
+[assembly: AssemblyTitle( "Axiom ParticleFX Plugin" )]
+[assembly: AssemblyDescription( "Plugin that extends the available Particle FX in Axiom." )]

@@ -46,5 +46,5 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("Axiom BSP Scene Manager Plugin")]
-[assembly: AssemblyDescription("A SceneManager Plugin that can render BSP scenes.")]
+[assembly: AssemblyTitle( "Axiom BSP Scene Manager Plugin" )]
+[assembly: AssemblyDescription( "A SceneManager Plugin that can render BSP scenes." )]

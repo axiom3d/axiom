@@ -46,5 +46,5 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("Axiom DirectX9 (Managed DX) Renderer")]
-[assembly: AssemblyDescription("DirectX9 Renderer Implementation")]
+[assembly: AssemblyTitle( "Axiom DirectX9 (Managed DX) Renderer" )]
+[assembly: AssemblyDescription( "DirectX9 Renderer Implementation" )]

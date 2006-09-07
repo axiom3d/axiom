@@ -9,7 +9,7 @@ using System.Security.Permissions;
 #endregion Namespace Declarations
 
 #if DEBUG
-[assembly: AssemblyConfiguration("Debug")]
+[assembly: AssemblyConfiguration( "Debug" )]
 #else
 [assembly: AssemblyConfiguration("Release")]
 #endif
@@ -23,7 +23,7 @@ using System.Security.Permissions;
 [assembly: AssemblyCompany( "Axiom Rendering Engine Project Team." )]
 [assembly: AssemblyCopyright( "© 2003-2006 Axiom Rendering Engine Project Team." )]
 [assembly: AssemblyTrademark( "" )]
-[assembly: AssemblyCulture( "" )]		
+[assembly: AssemblyCulture( "" )]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -42,7 +42,7 @@ using System.Security.Permissions;
 [assembly: AssemblyFileVersion( "0.7.1.0" )]
 #endif
 
-[assembly: SecurityPermission(SecurityAction.RequestMinimum)]
+[assembly: SecurityPermission( SecurityAction.RequestMinimum )]
 
 [assembly: AssemblyDelaySign( false )]
 [assembly: AssemblyKeyFile( "" )]
