@@ -47,4 +47,4 @@ using System.Runtime.CompilerServices;
 // associated with an assembly.
 //
 [assembly: AssemblyTitle( "Axiom nVidia Cg Plugin" )]
-[assembly: AssemblyDescription("Plugin capable of loading and compiling Cg programs into low level ASM programs.")]
+[assembly: AssemblyDescription( "Plugin capable of loading and compiling Cg programs into low level ASM programs." )]

@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,12 +24,33 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-using Axiom.Core;
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Diagnostics;
 
-namespace Axiom.Overlays {
+using Axiom.Core;
+using Axiom.Overlays.Elements;
+
+#endregion Namespace Declarations
+
+#region Ogre Synchronization Information
+/// <ogresynchronization>
+///     <file name="OgreOverlayManager.h"   revision="1.23.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+///     <file name="OgreOverlayManager.cpp" revision="1.39.2.3" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
+#endregion
+
+namespace Axiom.Overlays
+{
     /// <summary>
     ///    This class acts as a repository and regitrar of overlay components.
     /// </summary>
@@ -37,7 +58,8 @@ namespace Axiom.Overlays {
     ///    OverlayElementManager's job is to manage the lifecycle of OverlayElement (subclass)
     ///    instances, and also to register plugin suppliers of new components.
     /// </remarks>
-    public sealed class OverlayElementManager : IDisposable {
+    public sealed class OverlayElementManager : IDisposable
+    {
         #region Singleton implementation
 
         /// <summary>
@@ -48,23 +70,27 @@ namespace Axiom.Overlays {
         /// <summary>
         ///     Internal constructor.  This class cannot be instantiated externally.
         /// </summary>
-        internal OverlayElementManager() {
-            if (instance == null) {
+        internal OverlayElementManager()
+        {
+            if ( instance == null )
+            {
                 instance = this;
 
                 // register the default overlay element factories
-			    instance.AddElementFactory(new Elements.BorderPanelFactory());
-			    instance.AddElementFactory(new Elements.TextAreaFactory());
-			    instance.AddElementFactory(new Elements.PanelFactory());
+                instance.AddElementFactory( new BorderPanelFactory() );
+                instance.AddElementFactory( new TextAreaFactory() );
+                instance.AddElementFactory( new PanelFactory() );
             }
         }
 
         /// <summary>
         ///     Gets the singleton instance of this class.
         /// </summary>
-        public static OverlayElementManager Instance {
-            get { 
-                return instance; 
+        public static OverlayElementManager Instance
+        {
+            get
+            {
+                return instance;
             }
         }
 
@@ -97,10 +123,11 @@ namespace Axiom.Overlays {
         ///    a new OverlayElement subclass.
         /// </remarks>
         /// <param name="factory"></param>
-        public void AddElementFactory(IOverlayElementFactory factory) {
-            factories.Add(factory.Type, factory);
+        public void AddElementFactory( IOverlayElementFactory factory )
+        {
+            factories.Add( factory.Type, factory );
 
-            LogManager.Instance.Write("OverlayElementFactory for type '{0}' registered.", factory.Type);
+            LogManager.Instance.Write( "OverlayElementFactory for type '{0}' registered.", factory.Type );
         }
 
         /// <summary>
@@ -110,8 +137,9 @@ namespace Axiom.Overlays {
         ///    allows plugins to register new types of component.</param>
         /// <param name="instanceName">The type of element to create.</param>
         /// <returns></returns>
-        public OverlayElement CreateElement(string typeName, string instanceName) {
-            return CreateElement(typeName, instanceName, false);
+        public OverlayElement CreateElement( string typeName, string instanceName )
+        {
+            return CreateElement( typeName, instanceName, false );
         }
 
         /// <summary>
@@ -122,20 +150,22 @@ namespace Axiom.Overlays {
         /// <param name="instanceName">The type of element to create.</param>
         /// <param name="isTemplate"></param>
         /// <returns></returns>
-        public OverlayElement CreateElement(string typeName, string instanceName, bool isTemplate) {
-            Hashtable elements = GetElementTable(isTemplate);
+        public OverlayElement CreateElement( string typeName, string instanceName, bool isTemplate )
+        {
+            Hashtable elements = GetElementTable( isTemplate );
 
-            if(elements.ContainsKey(instanceName)) {
-                throw new AxiomException("OverlayElement with the name '{0}' already exists.", instanceName);
+            if ( elements.ContainsKey( instanceName ) )
+            {
+                //throw new AxiomException( "OverlayElement with the name '{0}' already exists.", instanceName );
+                return (OverlayElement)elements[ instanceName ];
             }
 
-            OverlayElement element = CreateElementFromFactory(typeName, instanceName);
-            element.Initialize();
+            OverlayElement element = CreateElementFromFactory( typeName, instanceName );
 
             // register
-            elements.Add(instanceName, element);
-    
-            return element;        
+            elements.Add( instanceName, element );
+
+            return element;
         }
 
         /// <summary>
@@ -147,13 +177,15 @@ namespace Axiom.Overlays {
         /// <param name="typeName"></param>
         /// <param name="instanceName"></param>
         /// <returns></returns>
-        public OverlayElement CreateElementFromFactory(string typeName, string instanceName) {
-            if(!factories.ContainsKey(typeName)) {
-                throw new AxiomException("Cannot locate factory for element type '{0}'", typeName);
+        public OverlayElement CreateElementFromFactory( string typeName, string instanceName )
+        {
+            if ( !factories.ContainsKey( typeName ) )
+            {
+                throw new AxiomException( "Cannot locate factory for element type '{0}'", typeName );
             }
 
             // create the element
-            return ((IOverlayElementFactory)factories[typeName]).Create(instanceName);
+            return ( (IOverlayElementFactory)factories[ typeName ] ).Create( instanceName );
         }
 
         /// <summary>
@@ -164,27 +196,32 @@ namespace Axiom.Overlays {
         /// <param name="instanceName"></param>
         /// <param name="isTemplate"></param>
         /// <returns></returns>
-        public OverlayElement CreateElementFromTemplate(string templateName, string typeName, string instanceName, bool isTemplate) {
+        public OverlayElement CreateElementFromTemplate( string templateName, string typeName, string instanceName, bool isTemplate )
+        {
             OverlayElement element = null;
 
-            if(templateName.Length == 0) {
-                element = CreateElement(typeName, instanceName, isTemplate);
+            if ( templateName.Length == 0 )
+            {
+                element = CreateElement( typeName, instanceName, isTemplate );
             }
-            else {
-                OverlayElement template = GetElement(templateName, true);
+            else
+            {
+                OverlayElement template = GetElement( templateName, true );
 
                 string typeToCreate = "";
-                if(typeName.Length == 0) {
-                    typeToCreate = template.Type;
+                if ( typeName.Length == 0 )
+                {
+                    typeToCreate = template.GetType().Name;
                 }
-                else {
+                else
+                {
                     typeToCreate = typeName;
                 }
 
-                element = CreateElement(typeToCreate, instanceName, isTemplate);
+                element = CreateElement( typeToCreate, instanceName, isTemplate );
 
                 // Copy settings from template
-                ((OverlayElementContainer)element).CopyFromTemplate(template);
+                element.CopyFromTemplate( template );
             }
 
             return element;
@@ -196,12 +233,13 @@ namespace Axiom.Overlays {
         /// <param name="name">Name of the element to retrieve.</param>
         /// <param name="isTemplate"></param>
         /// <returns></returns>
-        public OverlayElement GetElement(string name) {
-            Hashtable elements = GetElementTable(false);
+        public OverlayElement GetElement( string name )
+        {
+            Hashtable elements = GetElementTable( false );
 
-            Debug.Assert(elements[name] != null, string.Format("OverlayElement with the name'{0}' was not found.", name));
+            Debug.Assert( elements[ name ] != null, string.Format( "OverlayElement with the name'{0}' was not found.", name ) );
 
-            return (OverlayElement)elements[name];
+            return (OverlayElement)elements[ name ];
         }
 
         /// <summary>
@@ -210,12 +248,13 @@ namespace Axiom.Overlays {
         /// <param name="name">Name of the element to retrieve.</param>
         /// <param name="isTemplate"></param>
         /// <returns></returns>
-        public OverlayElement GetElement(string name, bool isTemplate) {
-            Hashtable elements = GetElementTable(isTemplate);
+        public OverlayElement GetElement( string name, bool isTemplate )
+        {
+            Hashtable elements = GetElementTable( isTemplate );
 
-            Debug.Assert(elements[name] != null, string.Format("OverlayElement with the name'{0}' was not found.", name));
+            Debug.Assert( elements[ name ] != null, string.Format( "OverlayElement with the name'{0}' was not found.", name ) );
 
-            return (OverlayElement)elements[name];
+            return (OverlayElement)elements[ name ];
         }
 
         /// <summary>
@@ -223,7 +262,8 @@ namespace Axiom.Overlays {
         /// </summary>
         /// <param name="isTemplate"></param>
         /// <returns></returns>
-        private Hashtable GetElementTable(bool isTemplate) {
+        private Hashtable GetElementTable( bool isTemplate )
+        {
             return isTemplate ? templates : instances;
         }
 
@@ -234,7 +274,8 @@ namespace Axiom.Overlays {
         /// <summary>
         ///     Called when the engine is shutting down.
         /// </summary>
-        public void Dispose() {
+        public void Dispose()
+        {
             instance = null;
         }
 

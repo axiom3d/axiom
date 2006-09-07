@@ -46,5 +46,5 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("Axiom Octree SceneManager Plugin")]
-[assembly: AssemblyDescription("A SceneManager Plugin that can render OcTree based scenes. Also includes a Terrain Scene Manager.")]
+[assembly: AssemblyTitle( "Axiom Octree SceneManager Plugin" )]
+[assembly: AssemblyDescription( "A SceneManager Plugin that can render OcTree based scenes. Also includes a Terrain Scene Manager." )]
