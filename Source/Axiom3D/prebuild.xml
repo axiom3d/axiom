@@ -58,8 +58,8 @@
 			<Files>
 				<Match pattern="*.cs" path="."/>
 				<Match pattern="*.cs" path="Demos"/>
-				<Match pattern="EngineConfig.xml" path="" buildAction="None" />
-				<Match pattern="Terrain.xml" path="" buildAction="None" />
+				<Match pattern="EngineConfig.xml" path="" buildAction="None" copyToOutput="Always" />
+				<Match pattern="Terrain.xml" path="" buildAction="None" copyToOutput="Always" />
 			</Files>
 		</Project>		
 		
