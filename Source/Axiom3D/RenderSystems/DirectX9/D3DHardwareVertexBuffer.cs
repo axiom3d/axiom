@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,44 +24,59 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Runtime.InteropServices;
-using Microsoft.DirectX.Direct3D;
-using D3D = Microsoft.DirectX.Direct3D;
+
 using Axiom.Core;
 using Axiom.Graphics;
 
-namespace Axiom.RenderSystems.DirectX9 {
+using D3D = Microsoft.DirectX.Direct3D;
+
+#endregion Namespace Declarations
+
+namespace Axiom.RenderSystems.DirectX9
+{
     /// <summary>
     /// 	Summary description for D3DHardwareVertexBuffer.
     /// </summary>
-    public class D3DHardwareVertexBuffer : HardwareVertexBuffer {
+    public class D3DHardwareVertexBuffer : HardwareVertexBuffer
+    {
         #region Member variables
 
         protected D3D.VertexBuffer d3dBuffer;
         protected System.Array data;
 
         #endregion
-		
+
         #region Constructors
-		
-        public D3DHardwareVertexBuffer(int vertexSize, int numVertices, BufferUsage usage, 
-            D3D.Device device, bool useSystemMemory, bool useShadowBuffer) 
-            : base(vertexSize, numVertices, usage, useSystemMemory, useShadowBuffer) {
+
+        public D3DHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage,
+            D3D.Device device, bool useSystemMemory, bool useShadowBuffer )
+            : base( vertexSize, numVertices, usage, useSystemMemory, useShadowBuffer )
+        {
             // Create the d3d vertex buffer
             d3dBuffer = new D3D.VertexBuffer(
-                typeof(byte), 
-                sizeInBytes, 
+                typeof( byte ),
+                sizeInBytes,
                 device,
-                D3DHelper.ConvertEnum(usage), 
-                0, 
-                useSystemMemory ? Pool.SystemMemory : Pool.Default);
+                D3DHelper.ConvertEnum( usage ),
+                0,
+                useSystemMemory ? D3D.Pool.SystemMemory : D3D.Pool.Default );
         }
-		
+
         #endregion
-		
+
         #region Methods
-		
+
         /// <summary>
         /// 
         /// </summary>
@@ -70,29 +85,33 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// <param name="locking"></param>
         /// <returns></returns>
         /// DOC
-        protected override IntPtr LockImpl(int offset, int length, BufferLocking locking) {
+        protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
+        {
             D3D.LockFlags d3dLocking = 0;
 
-            if((usage != BufferUsage.Dynamic &&
-                usage != BufferUsage.DynamicWriteOnly) &&
-                (locking == BufferLocking.Discard || locking == BufferLocking.NoOverwrite)) {
-             
+            if ( ( usage != BufferUsage.Dynamic &&
+                usage != BufferUsage.DynamicWriteOnly ) &&
+                ( locking == BufferLocking.Discard || locking == BufferLocking.NoOverwrite ) )
+            {
+
                 // lock flags already 0 by default
             }
-            else {
+            else
+            {
                 // D3D doesnt like discard or no overrwrite on non dynamic buffers
-                d3dLocking = D3DHelper.ConvertEnum(locking);
+                d3dLocking = D3DHelper.ConvertEnum( locking );
             }
 
-			Microsoft.DirectX.GraphicsStream s = d3dBuffer.Lock(offset, length, d3dLocking);
-			return s.InternalData;
+            Microsoft.DirectX.GraphicsStream s = d3dBuffer.Lock( offset, length, d3dLocking );
+            return s.InternalData;
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// DOC
-        public override void UnlockImpl() {
+        public override void UnlockImpl()
+        {
             // unlock the buffer
             d3dBuffer.Unlock();
         }
@@ -104,12 +123,13 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// <param name="length"></param>
         /// <param name="dest"></param>
         /// DOC
-        public override void ReadData(int offset, int length, IntPtr dest) {
+        public override void ReadData( int offset, int length, IntPtr dest )
+        {
             // lock the buffer for reading
-            IntPtr src = this.Lock(offset, length, BufferLocking.ReadOnly);
-			
+            IntPtr src = this.Lock( offset, length, BufferLocking.ReadOnly );
+
             // copy that data in there
-            Memory.Copy(src, dest, length);
+            Memory.Copy( src, dest, length );
 
             // unlock the buffer
             this.Unlock();
@@ -123,35 +143,39 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// <param name="src"></param>
         /// <param name="discardWholeBuffer"></param>
         /// DOC
-        public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer) {
+        public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
+        {
             // lock the buffer real quick
-            IntPtr dest = this.Lock(offset, length, 
-                discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal);
-			
+            IntPtr dest = this.Lock( offset, length,
+                discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
+
             // copy that data in there
-            Memory.Copy(src, dest, length);
+            Memory.Copy( src, dest, length );
 
             // unlock the buffer
             this.Unlock();
         }
 
-        public override void Dispose() {
+        public override void Dispose()
+        {
             d3dBuffer.Dispose();
         }
 
         #endregion
-		
+
         #region Properties
 
         /// <summary>
         ///		Gets the underlying D3D Vertex Buffer object.
         /// </summary>
-        public D3D.VertexBuffer D3DVertexBuffer {
-            get { 
-                return d3dBuffer; 
+        public D3D.VertexBuffer D3DVertexBuffer
+        {
+            get
+            {
+                return d3dBuffer;
             }
         }
-		
+
         #endregion
 
     }

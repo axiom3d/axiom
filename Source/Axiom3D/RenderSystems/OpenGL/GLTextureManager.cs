@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,23 +24,39 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+
 using Axiom.Core;
 using Axiom.Graphics;
 
-namespace Axiom.RenderSystems.OpenGL {
+#endregion Namespace Declarations
+
+namespace Axiom.RenderSystems.OpenGL
+{
     /// <summary>
     /// Summary description for GLTextureManager.
     /// </summary>
-    public class GLTextureManager : TextureManager {
-        public GLTextureManager() {
-			is32Bit = true;
+    public class GLTextureManager : TextureManager
+    {
+        public GLTextureManager()
+        {
+            is32Bit = true;
         }
-	
-        public override Texture Create(string name, TextureType type) {
-            GLTexture texture = new GLTexture(name, type);
-            
-            texture.Enable32Bit(is32Bit);
+
+        public override Texture Create( string name, TextureType type )
+        {
+            GLTexture texture = new GLTexture( name, type );
+
+            texture.Enable32Bit( is32Bit );
 
             return texture;
         }
@@ -56,15 +72,17 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="format"></param>
         /// <param name="usage"></param>
         /// <returns></returns>
-        public override Texture CreateManual(string name, TextureType type, int width, int height, int numMipMaps, Axiom.Media.PixelFormat format, TextureUsage usage) {
-            GLTexture texture = new GLTexture(name, type, width, height, numMipMaps, format, usage);
-            texture.Enable32Bit(is32Bit);
+        public override Texture CreateManual( string name, TextureType type, int width, int height, int numMipMaps, Axiom.Media.PixelFormat format, TextureUsage usage )
+        {
+            GLTexture texture = new GLTexture( name, type, width, height, numMipMaps, format, usage );
+            texture.Enable32Bit( is32Bit );
             return texture;
         }
 
         // TODO: Finish
-        public override void UnloadAndDestroyAll() {
-            base.UnloadAndDestroyAll ();
+        public override void UnloadAndDestroyAll()
+        {
+            base.UnloadAndDestroyAll();
         }
     }
 }

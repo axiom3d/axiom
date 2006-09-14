@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,15 +24,27 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
+
 using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Configuration;
-
 using Axiom.Graphics;
 
-namespace Axiom.Core {
+#endregion Namespace Declarations
+
+namespace Axiom.Core
+{
     /// <summary>
     ///		Defines a part of a complete 3D mesh.
     /// </summary>
@@ -48,7 +60,8 @@ namespace Axiom.Core {
     ///		their material differences on a per-object basis if required.
     ///		See the SubEntity class for more information.
     /// </remarks>
-    public class SubMesh {
+    public class SubMesh
+    {
         #region Member variables
 
         /// <summary>The parent mesh that this subMesh belongs to.</summary>
@@ -61,7 +74,7 @@ namespace Axiom.Core {
         protected bool isMaterialInitialized;
         /// <summary>Number of faces in this subMesh.</summary>
         protected internal short numFaces;
-		
+
         /// <summary>List of bone assignment for this mesh.</summary>
         protected Map boneAssignmentList = new Map();
         /// <summary>Flag indicating that bone assignments need to be recompiled.</summary>
@@ -76,14 +89,15 @@ namespace Axiom.Core {
         protected internal ArrayList lodFaceList = new ArrayList();
 
         #endregion
-		
+
         #region Constructor
 
         /// <summary>
         ///		Basic contructor.
         /// </summary>
         /// <param name="name"></param>
-        public SubMesh(string name) {
+        public SubMesh( string name )
+        {
             this.name = name;
 
             useSharedVertices = true;
@@ -105,8 +119,9 @@ namespace Axiom.Core {
         ///    depending on render system requirements.
         /// </remarks>
         /// <param name="boneAssignment"></param>
-        public void AddBoneAssignment(ref VertexBoneAssignment boneAssignment) {
-            boneAssignmentList.Insert(boneAssignment.vertexIndex, boneAssignment);
+        public void AddBoneAssignment( ref VertexBoneAssignment boneAssignment )
+        {
+            boneAssignmentList.Insert( boneAssignment.vertexIndex, boneAssignment );
             boneAssignmentsOutOfDate = true;
         }
 
@@ -117,7 +132,8 @@ namespace Axiom.Core {
         ///    This method is for modifying weights to the shared geometry of the Mesh. To assign
         ///    weights to the per-SubMesh geometry, see the equivalent methods on SubMesh.
         /// </remarks>
-        public void ClearBoneAssignments() {
+        public void ClearBoneAssignments()
+        {
             boneAssignmentList.Clear();
             boneAssignmentsOutOfDate = true;
         }
@@ -125,15 +141,17 @@ namespace Axiom.Core {
         /// <summary>
         ///    Must be called once to compile bone assignments into geometry buffer.
         /// </summary>
-        protected internal void CompileBoneAssignments() {
-            int maxBones = parent.RationalizeBoneAssignments(vertexData.vertexCount, boneAssignmentList);
+        protected internal void CompileBoneAssignments()
+        {
+            int maxBones = parent.RationalizeBoneAssignments( vertexData.vertexCount, boneAssignmentList );
 
             // no bone assignments?  get outta here
-            if(maxBones == 0) {
+            if ( maxBones == 0 )
+            {
                 return;
             }
 
-			parent.CompileBoneAssignments(boneAssignmentList, maxBones, vertexData);
+            parent.CompileBoneAssignments( boneAssignmentList, maxBones, vertexData );
 
             boneAssignmentsOutOfDate = false;
         }
@@ -145,17 +163,32 @@ namespace Axiom.Core {
         /// <summary>
         ///		Gets/Sets the name of the material this SubMesh will be using.
         /// </summary>
-        public string MaterialName {
-            get { return materialName; }
-            set { materialName = value; isMaterialInitialized = true; }
+        public string MaterialName
+        {
+            get
+            {
+                return materialName;
+            }
+            set
+            {
+                materialName = value;
+                isMaterialInitialized = true;
+            }
         }
 
         /// <summary>
         ///		Gets/Sets the parent mode of this SubMesh.
         /// </summary>
-        public Mesh Parent {
-            get { return parent; }
-            set { parent = value; }
+        public Mesh Parent
+        {
+            get
+            {
+                return parent;
+            }
+            set
+            {
+                parent = value;
+            }
         }
 
         /// <summary>
@@ -163,9 +196,10 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="op"></param>
         /// <returns></returns>
-        public void GetRenderOperation(RenderOperation op) {
+        public void GetRenderOperation( RenderOperation op )
+        {
             // call overloaded method with lod index of 0 by default
-            GetRenderOperation(op, 0);
+            GetRenderOperation( op, 0 );
         }
 
         /// <summary>
@@ -173,30 +207,36 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="op">Reference to a RenderOperation structure to populate.</param>
         /// <param name="lodIndex">The index of the LOD to use.</param>
-        public void GetRenderOperation(RenderOperation op, int lodIndex) {
+        public void GetRenderOperation( RenderOperation op, int lodIndex )
+        {
             // meshes always use indices
             op.useIndices = true;
 
             // use lod face list if requested, else pass the normal face list
-            if(lodIndex > 0 && (lodIndex - 1) < lodFaceList.Count) {
+            if ( lodIndex > 0 && ( lodIndex - 1 ) < lodFaceList.Count )
+            {
                 // Use the set of indices defined for this LOD level
-                op.indexData = (IndexData)lodFaceList[lodIndex - 1];
+                op.indexData = (IndexData)lodFaceList[ lodIndex - 1 ];
             }
             else
                 op.indexData = indexData;
-			
+
             // set the operation type
             op.operationType = operationType;
 
             // set the vertex data correctly
-            op.vertexData = useSharedVertices? parent.SharedVertexData : vertexData;
+            op.vertexData = useSharedVertices ? parent.SharedVertexData : vertexData;
         }
 
         /// <summary>
         ///		Gets whether or not a material has been set for this subMesh.
         /// </summary>
-        public bool IsMaterialInitialized {
-            get { return isMaterialInitialized; }
+        public bool IsMaterialInitialized
+        {
+            get
+            {
+                return isMaterialInitialized;
+            }
         }
 
         #endregion

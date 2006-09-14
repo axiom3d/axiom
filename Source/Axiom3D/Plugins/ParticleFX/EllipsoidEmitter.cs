@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,104 +24,132 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+
 using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.Math;
 using Axiom.Scripting;
 
-namespace Axiom.ParticleFX {
-	/// <summary>
-	/// Summary description for EllipsoidEmitter.
-	/// </summary>
-	public class EllipsoidEmitter : AreaEmitter {
-		public EllipsoidEmitter() : base() {
-			InitDefaults("Ellipsoid");
-		}
+#endregion Namespace Declarations
 
-		public override void InitParticle(Particle particle) {
-			float xOff, yOff, zOff;
+namespace Axiom.ParticleFX
+{
+    /// <summary>
+    /// Summary description for EllipsoidEmitter.
+    /// </summary>
+    public class EllipsoidEmitter : AreaEmitter
+    {
+        public EllipsoidEmitter()
+            : base()
+        {
+            InitDefaults( "Ellipsoid" );
+        }
 
-			// First we create a random point inside a bounding sphere with a
-			// radius of 1 (this is easy to do). The distance of the point from
-			// 0,0,0 must be <= 1 (== 1 means on the surface and we count this as
-			// inside, too).
-			while(true) {
+        public override void InitParticle( Particle particle )
+        {
+            float xOff, yOff, zOff;
 
-				// three random values for one random point in 3D space
-				xOff = Utility.SymmetricRandom();
-				yOff = Utility.SymmetricRandom();
-				zOff = Utility.SymmetricRandom();
+            // First we create a random point inside a bounding sphere with a
+            // radius of 1 (this is easy to do). The distance of the point from
+            // 0,0,0 must be <= 1 (== 1 means on the surface and we count this as
+            // inside, too).
+            while ( true )
+            {
 
-				// the distance of x,y,z from 0,0,0 is sqrt(x*x+y*y+z*z), but
-				// as usual we can omit the sqrt(), since sqrt(1) == 1 and we
-				// use the 1 as boundary:
-				if ( xOff * xOff + yOff * yOff + zOff * zOff <= 1 ) {
-					// found one valid point inside
-					break;
-				}
-			}
+                // three random values for one random point in 3D space
+                xOff = Utility.SymmetricRandom();
+                yOff = Utility.SymmetricRandom();
+                zOff = Utility.SymmetricRandom();
 
-			// scale the found point to the cylinder's size and move it
-			// relatively to the center of the emitter point
-			particle.Position = position + xOff * xRange + yOff * yRange * zOff * zRange;
+                // the distance of x,y,z from 0,0,0 is sqrt(x*x+y*y+z*z), but
+                // as usual we can omit the sqrt(), since sqrt(1) == 1 and we
+                // use the 1 as boundary:
+                if ( xOff * xOff + yOff * yOff + zOff * zOff <= 1 )
+                {
+                    // found one valid point inside
+                    break;
+                }
+            }
 
-			// Generate complex data by reference
-			GenerateEmissionColor(particle.Color);
-			GenerateEmissionDirection(ref particle.Direction);
-			GenerateEmissionVelocity(ref particle.Direction);
+            // scale the found point to the cylinder's size and move it
+            // relatively to the center of the emitter point
+            particle.Position = position + xOff * xRange + yOff * yRange * zOff * zRange;
 
-			// Generate simpler data
-			particle.timeToLive = GenerateEmissionTTL();
-		}
+            // Generate complex data by reference
+            GenerateEmissionColor( particle.Color );
+            GenerateEmissionDirection( ref particle.Direction );
+            GenerateEmissionVelocity( ref particle.Direction );
 
-		#region Command definition classes
+            // Generate simpler data
+            particle.timeToLive = GenerateEmissionTTL();
+        }
 
-		/// <summary>
-		///    
-		/// </summary>
-		[Command("width", "Width of the ellipsoidal emitter.", typeof(ParticleEmitter))]
-			class WidthCommand: ICommand {
-			public void Set(object target, string val) {
-				EllipsoidEmitter emitter = target as EllipsoidEmitter;
-				emitter.Width = StringConverter.ParseFloat(val);
-			}
-			public string Get(object target) {
-				EllipsoidEmitter emitter = target as EllipsoidEmitter;
-				return StringConverter.ToString(emitter.Width);
-			}
-		}
+        #region Command definition classes
 
-		/// <summary>
-		///    
-		/// </summary>
-		[Command("height", "Height of the ellipsoidal emitter.", typeof(ParticleEmitter))]
-			class HeightCommand: ICommand {
-			public void Set(object target, string val) {
-				EllipsoidEmitter emitter = target as EllipsoidEmitter;
-				emitter.Height = StringConverter.ParseFloat(val);
-			}
-			public string Get(object target) {
-				EllipsoidEmitter emitter = target as EllipsoidEmitter;
-				return StringConverter.ToString(emitter.Height);
-			}
-		}
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command( "width", "Width of the ellipsoidal emitter.", typeof( ParticleEmitter ) )]
+        class WidthCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
+                EllipsoidEmitter emitter = target as EllipsoidEmitter;
+                emitter.Width = StringConverter.ParseFloat( val );
+            }
+            public string Get( object target )
+            {
+                EllipsoidEmitter emitter = target as EllipsoidEmitter;
+                return StringConverter.ToString( emitter.Width );
+            }
+        }
 
-		/// <summary>
-		///    
-		/// </summary>
-		[Command("depth", "Depth of the ellipsoidal emitter.", typeof(ParticleEmitter))]
-			class DepthCommand: ICommand {
-			public void Set(object target, string val) {
-				EllipsoidEmitter emitter = target as EllipsoidEmitter;
-				emitter.Depth = StringConverter.ParseFloat(val);
-			}
-			public string Get(object target) {
-				EllipsoidEmitter emitter = target as EllipsoidEmitter;
-				return StringConverter.ToString(emitter.Depth);
-			}
-		}
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command( "height", "Height of the ellipsoidal emitter.", typeof( ParticleEmitter ) )]
+        class HeightCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
+                EllipsoidEmitter emitter = target as EllipsoidEmitter;
+                emitter.Height = StringConverter.ParseFloat( val );
+            }
+            public string Get( object target )
+            {
+                EllipsoidEmitter emitter = target as EllipsoidEmitter;
+                return StringConverter.ToString( emitter.Height );
+            }
+        }
 
-		#endregion Command definition classes
-	}
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command( "depth", "Depth of the ellipsoidal emitter.", typeof( ParticleEmitter ) )]
+        class DepthCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
+                EllipsoidEmitter emitter = target as EllipsoidEmitter;
+                emitter.Depth = StringConverter.ParseFloat( val );
+            }
+            public string Get( object target )
+            {
+                EllipsoidEmitter emitter = target as EllipsoidEmitter;
+                return StringConverter.ToString( emitter.Depth );
+            }
+        }
+
+        #endregion Command definition classes
+    }
 }

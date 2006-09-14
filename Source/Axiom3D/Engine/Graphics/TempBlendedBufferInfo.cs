@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,13 +24,26 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 
-namespace Axiom.Graphics {
-	/// <summary>
-	///     Records the use of temporary blend buffers.
-	/// </summary>
-	public class TempBlendedBufferInfo : IHardwareBufferLicensee {
+#endregion Namespace Declarations
+
+namespace Axiom.Graphics
+{
+    /// <summary>
+    ///     Records the use of temporary blend buffers.
+    /// </summary>
+    public class TempBlendedBufferInfo : IHardwareBufferLicensee
+    {
         #region Fields
 
         /// <summary>
@@ -61,60 +74,66 @@ namespace Axiom.Graphics {
         ///     Index at which the normals are bound in the buffer.
         /// </summary>
         public short normBindIndex;
-		/// <summary>
-		///		
-		/// </summary>
-		public bool bindPositions;
-		/// <summary>
-		///		
-		/// </summary>
-		public bool bindNormals;
+        /// <summary>
+        ///		
+        /// </summary>
+        public bool bindPositions;
+        /// <summary>
+        ///		
+        /// </summary>
+        public bool bindNormals;
 
         #endregion Fields
 
         #region Methods
 
-		/// <summary>
-		///     Utility method, checks out temporary copies of src into dest.
-		/// </summary>
-		public void CheckoutTempCopies(bool positions, bool normals) {
-			bindPositions = positions;
-			bindNormals = normals;
+        /// <summary>
+        ///     Utility method, checks out temporary copies of src into dest.
+        /// </summary>
+        public void CheckoutTempCopies( bool positions, bool normals )
+        {
+            bindPositions = positions;
+            bindNormals = normals;
 
-			if(bindPositions) {
-				destPositionBuffer = 
-					HardwareBufferManager.Instance.AllocateVertexBufferCopy(
-					srcPositionBuffer,
-					BufferLicenseRelease.Automatic,
-					this);
-			}
+            if ( bindPositions )
+            {
+                destPositionBuffer =
+                    HardwareBufferManager.Instance.AllocateVertexBufferCopy(
+                    srcPositionBuffer,
+                    BufferLicenseRelease.Automatic,
+                    this );
+            }
 
-			if(bindNormals && srcNormalBuffer != null && !posNormalShareBuffer) {
-				destNormalBuffer = 
-					HardwareBufferManager.Instance.AllocateVertexBufferCopy(
-					srcNormalBuffer,
-					BufferLicenseRelease.Automatic,
-					this);
-			}
-		}
+            if ( bindNormals && srcNormalBuffer != null && !posNormalShareBuffer )
+            {
+                destNormalBuffer =
+                    HardwareBufferManager.Instance.AllocateVertexBufferCopy(
+                    srcNormalBuffer,
+                    BufferLicenseRelease.Automatic,
+                    this );
+            }
+        }
 
-		public void CheckoutTempCopies() {
-			CheckoutTempCopies(true, true);
-		}
+        public void CheckoutTempCopies()
+        {
+            CheckoutTempCopies( true, true );
+        }
 
         /// <summary>
         ///     Utility method, binds dest copies into a given VertexData.
         /// </summary>
         /// <param name="targetData">VertexData object to bind the temp buffers into.</param>
         /// <param name="suppressHardwareUpload"></param>
-        public void BindTempCopies(VertexData targetData, bool suppressHardwareUpload) {
-            destPositionBuffer.SuppressHardwareUpdate(suppressHardwareUpload);
-			targetData.vertexBufferBinding.SetBinding(posBindIndex, destPositionBuffer);
+        public void BindTempCopies( VertexData targetData, bool suppressHardwareUpload )
+        {
+            destPositionBuffer.SuppressHardwareUpdate( suppressHardwareUpload );
+            targetData.vertexBufferBinding.SetBinding( posBindIndex, destPositionBuffer );
 
-			if(bindNormals && !posNormalShareBuffer) {
-				destNormalBuffer.SuppressHardwareUpdate(suppressHardwareUpload);
-				targetData.vertexBufferBinding.SetBinding(normBindIndex, destNormalBuffer);
-			}
+            if ( bindNormals && !posNormalShareBuffer )
+            {
+                destNormalBuffer.SuppressHardwareUpdate( suppressHardwareUpload );
+                targetData.vertexBufferBinding.SetBinding( normBindIndex, destNormalBuffer );
+            }
         }
 
         #endregion Methods
@@ -125,13 +144,16 @@ namespace Axiom.Graphics {
         ///     Implementation of LicenseExpired.
         /// </summary>
         /// <param name="buffer"></param>
-        public void LicenseExpired(HardwareBuffer buffer) {
-			if(buffer == destPositionBuffer) {
-				destPositionBuffer = null;
-			}
-			if(buffer == destNormalBuffer) {
-				destNormalBuffer = null;
-			}
+        public void LicenseExpired( HardwareBuffer buffer )
+        {
+            if ( buffer == destPositionBuffer )
+            {
+                destPositionBuffer = null;
+            }
+            if ( buffer == destNormalBuffer )
+            {
+                destNormalBuffer = null;
+            }
         }
 
         #endregion

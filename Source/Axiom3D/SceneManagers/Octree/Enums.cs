@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,15 +24,27 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
 
 using System;
 
-namespace Axiom.SceneManagers.Octree {
+#endregion Namespace Declarations
+
+namespace Axiom.SceneManagers.Octree
+{
     /// <summary>
     ///     Direction of a tile in reference to another tile.
     /// </summary>
     [Flags]
-    public enum Tile {
+    public enum Tile
+    {
         North = 1,
         South = 2,
         West = 4,
@@ -42,7 +54,8 @@ namespace Axiom.SceneManagers.Octree {
     /// <summary>
     /// 
     /// </summary>
-    public enum Neighbor {
+    public enum Neighbor
+    {
         North,
         South,
         East,

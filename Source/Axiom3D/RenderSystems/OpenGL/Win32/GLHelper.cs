@@ -1,136 +1,190 @@
+#region LGPL License
+/*
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
+
+The overall design, and a majority of the core engine and rendering code 
+contained within this library is a derivative of the open source Object Oriented 
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+#endregion
+
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Windows.Forms;
+
 using Axiom.Configuration;
 using Axiom.Graphics;
+
 using Tao.Platform.Windows;
 
-namespace Axiom.RenderSystems.OpenGL {
-	/// <summary>
-	/// Summary description for GLSupport.
-	/// </summary>
-	public class GLSupport : BaseGLSupport {
+#endregion Namespace Declarations
 
-		public GLSupport() : base() {
-		}
+namespace Axiom.RenderSystems.OpenGL
+{
+    /// <summary>
+    /// Summary description for GLSupport.
+    /// </summary>
+    public class GLSupport : BaseGLSupport
+    {
 
-		/// <summary>
-		///		Uses Wgl to return the procedure address for an extension function.
-		/// </summary>
-		/// <param name="extension"></param>
-		/// <returns></returns>
-		public override IntPtr GetProcAddress(string extension) {
-			return Wgl.wglGetProcAddress(extension);
-		}
+        public GLSupport()
+            : base()
+        {
+        }
 
-		/// <summary>
-		///		Query the display modes and deal with any other config options.
-		/// </summary>
-		public override void AddConfig() {
-			Gdi.DEVMODE setting;
-			int i = 0;
-			int width, height, bpp, freq;
-            
-			bool more = User.EnumDisplaySettings(null, i++, out setting);
+        /// <summary>
+        ///		Uses Wgl to return the procedure address for an extension function.
+        /// </summary>
+        /// <param name="extension"></param>
+        /// <returns></returns>
+        public override IntPtr GetProcAddress( string extension )
+        {
+            return Wgl.wglGetProcAddress( extension );
+        }
 
-			while(more) {
-				width = setting.dmPelsWidth;
-				height = setting.dmPelsHeight;
-				bpp = setting.dmBitsPerPel;
-				freq = setting.dmDisplayFrequency;
-			
-				// filter out the lower resolutions and dupe frequencies
-				if(width >= 640 && height >= 480 && bpp >= 16) {
-					string query = string.Format("Width = {0} AND Height= {1} AND Bpp = {2}", width, height, bpp);
+        /// <summary>
+        ///		Query the display modes and deal with any other config options.
+        /// </summary>
+        public override void AddConfig()
+        {
+            Gdi.DEVMODE setting;
+            int i = 0;
+            int width, height, bpp, freq;
 
-					if(engineConfig.DisplayMode.Select(query).Length == 0) {
-						// add a new row to the display settings table
-						engineConfig.DisplayMode.AddDisplayModeRow(width, height, bpp, false, false);
-					}
-				}
+            bool more = User.EnumDisplaySettings( null, i++, out setting );
 
-				// grab the current display settings
-				more = User.EnumDisplaySettings(null, i++, out setting);
-			}
-		}
+            while ( more )
+            {
+                width = setting.dmPelsWidth;
+                height = setting.dmPelsHeight;
+                bpp = setting.dmBitsPerPel;
+                freq = setting.dmDisplayFrequency;
 
-		public override Axiom.Graphics.RenderWindow CreateWindow(bool autoCreateWindow, GLRenderSystem renderSystem, string windowTitle) {
-			RenderWindow autoWindow = null;
+                // filter out the lower resolutions and dupe frequencies
+                if ( width >= 640 && height >= 480 && bpp >= 16 )
+                {
+                    string query = string.Format( "Width = {0} AND Height= {1} AND Bpp = {2}", width, height, bpp );
 
-			if(autoCreateWindow) {
-				EngineConfig.DisplayModeRow[] modes = 
-					(EngineConfig.DisplayModeRow[])engineConfig.DisplayMode.Select("Selected = true");
+                    if ( engineConfig.DisplayMode.Select( query ).Length == 0 )
+                    {
+                        // add a new row to the display settings table
+                        engineConfig.DisplayMode.AddDisplayModeRow( width, height, bpp, false, false );
+                    }
+                }
 
-				EngineConfig.DisplayModeRow mode = modes[0];
+                // grab the current display settings
+                more = User.EnumDisplaySettings( null, i++, out setting );
+            }
+        }
 
-				int width = mode.Width;
-				int height = mode.Height;
-				int bpp = mode.Bpp;
-				bool fullscreen = mode.FullScreen;
+        public override Axiom.Graphics.RenderWindow CreateWindow( bool autoCreateWindow, GLRenderSystem renderSystem, string windowTitle )
+        {
+            RenderWindow autoWindow = null;
 
-				// create a default form to use for a rendering target
-				DefaultForm form = CreateDefaultForm(windowTitle, 0, 0, width, height, fullscreen);
+            if ( autoCreateWindow )
+            {
+                EngineConfig.DisplayModeRow[] modes =
+                    (EngineConfig.DisplayModeRow[])engineConfig.DisplayMode.Select( "Selected = true" );
 
-				// create the window with the default form as the target
-				autoWindow = renderSystem.CreateRenderWindow(windowTitle, width, height, bpp, fullscreen, 0, 0, true, false, form.Target);
+                EngineConfig.DisplayModeRow mode = modes[ 0 ];
 
-				// set the default form's renderwindow so it can access it internally
-				form.RenderWindow = autoWindow;
+                int width = mode.Width;
+                int height = mode.Height;
+                int bpp = mode.Bpp;
+                bool fullscreen = mode.FullScreen;
 
-				// show the window
-				form.Show();
-			}
+                // create a default form to use for a rendering target
+                DefaultForm form = CreateDefaultForm( windowTitle, 0, 0, width, height, fullscreen );
 
-			return autoWindow;
-		}
+                // create the window with the default form as the target
+                autoWindow = renderSystem.CreateRenderWindow( windowTitle, width, height, bpp, fullscreen, 0, 0, true, false, form.Target );
 
-		public override Axiom.Graphics.RenderWindow NewWindow(string name, int width, int height, int colorDepth, bool fullScreen, int left, int top, bool depthBuffer, bool vsync, object target) {
-			Win32Window window = new Win32Window();
+                // set the default form's renderwindow so it can access it internally
+                form.RenderWindow = autoWindow;
 
-			window.Handle = target;
+                // show the window
+                form.Show();
+            }
 
-			window.Create(name, width, height, colorDepth, fullScreen, left, top, depthBuffer, vsync);
+            return autoWindow;
+        }
 
-			return window;
-		}
+        public override Axiom.Graphics.RenderWindow NewWindow( string name, int width, int height, int colorDepth, bool fullScreen, int left, int top, bool depthBuffer, bool vsync, object target )
+        {
+            Win32Window window = new Win32Window();
 
-		/// <summary>
-		///		Creates a default form to use for a rendering target.
-		/// </summary>
-		/// <remarks>
-		///		This is used internally whenever <see cref="Initialize"/> is called and autoCreateWindow is set to true.
-		/// </remarks>
-		/// <param name="windowTitle">Title of the window.</param>
-		/// <param name="top">Top position of the window.</param>
-		/// <param name="left">Left position of the window.</param>
-		/// <param name="width">Width of the window.</param>
-		/// <param name="height">Height of the window</param>
-		/// <param name="fullScreen">Prepare the form for fullscreen mode?</param>
-		/// <returns>A form suitable for using as a rendering target.</returns>
-		private DefaultForm CreateDefaultForm(string windowTitle, int top, int left, int width, int height, bool fullScreen) {
-			DefaultForm form = new DefaultForm();
+            window.Handle = target;
 
-			form.ClientSize = new System.Drawing.Size(width,height);
-			form.MaximizeBox = false;
-			form.MinimizeBox = false;
-			form.StartPosition = FormStartPosition.CenterScreen;
+            window.Create( name, width, height, colorDepth, fullScreen, left, top, depthBuffer, vsync );
 
-			if(fullScreen) {
-				form.Top = 0;
-				form.Left = 0;
-				form.FormBorderStyle = FormBorderStyle.None;
-				form.WindowState = FormWindowState.Maximized;
-				form.TopMost = true;
-				form.TopLevel = true;
-			}
-			else {
-				form.Top = top;
-				form.Left = left;
-				form.FormBorderStyle = FormBorderStyle.FixedSingle;
-				form.WindowState = FormWindowState.Normal;
-				form.Text = windowTitle;
-			}
+            return window;
+        }
 
-			return form;
-		}
-	}
+        /// <summary>
+        ///		Creates a default form to use for a rendering target.
+        /// </summary>
+        /// <remarks>
+        ///		This is used internally whenever <see cref="Initialize"/> is called and autoCreateWindow is set to true.
+        /// </remarks>
+        /// <param name="windowTitle">Title of the window.</param>
+        /// <param name="top">Top position of the window.</param>
+        /// <param name="left">Left position of the window.</param>
+        /// <param name="width">Width of the window.</param>
+        /// <param name="height">Height of the window</param>
+        /// <param name="fullScreen">Prepare the form for fullscreen mode?</param>
+        /// <returns>A form suitable for using as a rendering target.</returns>
+        private DefaultForm CreateDefaultForm( string windowTitle, int top, int left, int width, int height, bool fullScreen )
+        {
+            DefaultForm form = new DefaultForm();
+
+            form.ClientSize = new System.Drawing.Size( width, height );
+            form.MaximizeBox = false;
+            form.MinimizeBox = false;
+            form.StartPosition = FormStartPosition.CenterScreen;
+
+            if ( fullScreen )
+            {
+                form.Top = 0;
+                form.Left = 0;
+                form.FormBorderStyle = FormBorderStyle.None;
+                form.WindowState = FormWindowState.Maximized;
+                form.TopMost = true;
+                form.TopLevel = true;
+            }
+            else
+            {
+                form.Top = top;
+                form.Left = left;
+                form.FormBorderStyle = FormBorderStyle.FixedSingle;
+                form.WindowState = FormWindowState.Normal;
+                form.Text = windowTitle;
+            }
+
+            return form;
+        }
+    }
 }

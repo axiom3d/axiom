@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,45 +24,65 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 
-namespace Axiom.Graphics {
-	/// <summary>
-	///		Interface specification for hardware queries that can be used to find the number
-	///		of fragments rendered by the last render operation.
-	/// </summary>
-	/// Original Author: Lee Sandberg.
-	public interface IHardwareOcclusionQuery {
-		/// <summary>
-		///		Begins the query.
-		/// </summary>
-		void Begin();
+#endregion Namespace Declarations
 
-		/// <summary>
-		///		Ends the current active occlusion test.
-		/// </summary>
-		void End();
+namespace Axiom.Graphics
+{
+    /// <summary>
+    ///		Interface specification for hardware queries that can be used to find the number
+    ///		of fragments rendered by the last render operation.
+    /// </summary>
+    /// Original Author: Lee Sandberg.
+    public interface IHardwareOcclusionQuery
+    {
+        /// <summary>
+        ///		Begins the query.
+        /// </summary>
+        void Begin();
 
-		/// <summary>
-		///		Checks to see if there are results returned from the most recent execution
-		///		of this query.
-		/// </summary>
-		/// <param name="flush">
-		///		True if currently batched API calls should be processed.
-		///		Note: Only D3D uses this parameter at this time.
-		/// </param>
-		/// <returns>The number of fragment returned by the query.</returns>
-		int PullResults(bool flush);
+        /// <summary>
+        ///		Ends the current active occlusion test.
+        /// </summary>
+        void End();
 
-		/// <summary>
-		///		Gets the fragment count from the last execution of this query.
-		/// </summary>
-		int LastFragmentCount { get; }
+        /// <summary>
+        ///		Checks to see if there are results returned from the most recent execution
+        ///		of this query.
+        /// </summary>
+        /// <param name="flush">
+        ///		True if currently batched API calls should be processed.
+        ///		Note: Only D3D uses this parameter at this time.
+        /// </param>
+        /// <returns>The number of fragment returned by the query.</returns>
+        int PullResults( bool flush );
 
-		/// <summary>
-		///		Gets/Sets the number of frames that are skipped between each execution of the
-		///		query.
-		/// </summary>
-		int SkipRate { get; set; }
-	}
+        /// <summary>
+        ///		Gets the fragment count from the last execution of this query.
+        /// </summary>
+        int LastFragmentCount
+        {
+            get;
+        }
+
+        /// <summary>
+        ///		Gets/Sets the number of frames that are skipped between each execution of the
+        ///		query.
+        /// </summary>
+        int SkipRate
+        {
+            get;
+            set;
+        }
+    }
 }

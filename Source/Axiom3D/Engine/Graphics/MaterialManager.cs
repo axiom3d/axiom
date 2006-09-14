@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,11 +24,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.IO;
 using System.Reflection;
+
 using Axiom.Controllers;
 using Axiom.Core;
 using Axiom.FileSystem;
@@ -36,7 +46,10 @@ using Axiom.Math;
 using Axiom.Scripting;
 using Axiom.Serialization;
 
-namespace Axiom.Graphics {
+#endregion Namespace Declarations
+
+namespace Axiom.Graphics
+{
     /// <summary>
     ///     Class for managing Material settings.
     /// </summary>
@@ -54,7 +67,8 @@ namespace Axiom.Graphics {
     ///     <p/>
     ///     For a definition of the material script format, see http://www.ogre3d.org/docs/manual/manual_16.html#SEC25.
     /// </summary>
-    public class MaterialManager : ResourceManager {
+    public class MaterialManager : ResourceManager
+    {
         #region Singleton implementation
 
         /// <summary>
@@ -65,8 +79,10 @@ namespace Axiom.Graphics {
         /// <summary>
         ///     Internal constructor.  This class cannot be instantiated externally.
         /// </summary>
-        internal MaterialManager() {
-            if (instance == null) {
+        internal MaterialManager()
+        {
+            if ( instance == null )
+            {
                 instance = this;
 
                 defaultMinFilter = FilterOptions.Linear;
@@ -79,9 +95,11 @@ namespace Axiom.Graphics {
         /// <summary>
         ///     Gets the singleton instance of this class.
         /// </summary>
-        public static MaterialManager Instance {
-            get { 
-                return instance; 
+        public static MaterialManager Instance
+        {
+            get
+            {
+                return instance;
             }
         }
 
@@ -89,8 +107,8 @@ namespace Axiom.Graphics {
 
         #region Delegates
 
-        delegate void PassAttributeParser(string[] values, Pass pass);
-        delegate void TextureUnitAttributeParser(string[] values, TextureUnitState texUnit);
+        delegate void PassAttributeParser( string[] values, Pass pass );
+        delegate void TextureUnitAttributeParser( string[] values, TextureUnitState texUnit );
 
         #endregion
 
@@ -112,10 +130,10 @@ namespace Axiom.Graphics {
         ///     Default Texture anisotropy.
         /// </summary>
         protected int defaultMaxAniso;
-		/// <summary>
-		///		Used for parsing material scripts.
-		/// </summary>
-		protected MaterialSerializer serializer = new MaterialSerializer();
+        /// <summary>
+        ///		Used for parsing material scripts.
+        /// </summary>
+        protected MaterialSerializer serializer = new MaterialSerializer();
 
         #endregion Fields
 
@@ -126,11 +144,14 @@ namespace Axiom.Graphics {
         ///    loaded automatically (e.g. by Material class) or when 'Load' is called with the default
         ///    parameters by the application.
         /// </summary>
-        public int DefaultAnisotropy {
-            get {
+        public int DefaultAnisotropy
+        {
+            get
+            {
                 return defaultMaxAniso;
             }
-            set {
+            set
+            {
                 defaultMaxAniso = value;
             }
         }
@@ -142,21 +163,22 @@ namespace Axiom.Graphics {
         /// <summary>
         ///     Sets up default materials and parses all material scripts.
         /// </summary>
-        public void Initialize() {
+        public void Initialize()
+        {
             // Set up default material - don't use name contructor as we want to avoid applying defaults
             Material.defaultSettings = new Material();
-            Material.defaultSettings.SetName("DefaultSettings");
+            Material.defaultSettings.SetName( "DefaultSettings" );
             // Add a single technique and pass, non-programmable
             Material.defaultSettings.CreateTechnique().CreatePass();
 
             // just create the default BaseWhite material
-            Material baseWhite = (Material)instance.Create("BaseWhite");
+            Material baseWhite = (Material)instance.Create( "BaseWhite" );
             baseWhite.Lighting = false;
 
             // parse all material scripts.
             // programs are parsed first since they may be referenced by materials
-            ParseAllSources(".program");
-            ParseAllSources(".material");
+            ParseAllSources( ".program" );
+            ParseAllSources( ".material" );
         }
 
         /// <summary>
@@ -165,23 +187,25 @@ namespace Axiom.Graphics {
         ///     parameters by the application.
         /// </summary>
         /// <param name="options">Default options to use.</param>
-        public virtual void SetDefaultTextureFiltering(TextureFiltering filtering) {
-            switch (filtering) {
+        public virtual void SetDefaultTextureFiltering( TextureFiltering filtering )
+        {
+            switch ( filtering )
+            {
                 case TextureFiltering.None:
-                    SetDefaultTextureFiltering(FilterOptions.Point, FilterOptions.Point, FilterOptions.None);
+                    SetDefaultTextureFiltering( FilterOptions.Point, FilterOptions.Point, FilterOptions.None );
                     break;
                 case TextureFiltering.Bilinear:
-                    SetDefaultTextureFiltering(FilterOptions.Linear, FilterOptions.Linear, FilterOptions.Point);
+                    SetDefaultTextureFiltering( FilterOptions.Linear, FilterOptions.Linear, FilterOptions.Point );
                     break;
                 case TextureFiltering.Trilinear:
-                    SetDefaultTextureFiltering(FilterOptions.Linear, FilterOptions.Linear, FilterOptions.Linear);
+                    SetDefaultTextureFiltering( FilterOptions.Linear, FilterOptions.Linear, FilterOptions.Linear );
                     break;
                 case TextureFiltering.Anisotropic:
-                    SetDefaultTextureFiltering(FilterOptions.Anisotropic, FilterOptions.Anisotropic, FilterOptions.Linear);
+                    SetDefaultTextureFiltering( FilterOptions.Anisotropic, FilterOptions.Anisotropic, FilterOptions.Linear );
                     break;
             }
         }
-    
+
         /// <summary>
         ///     Sets the default texture filtering to be used for loaded textures, for when textures are
         ///     loaded automatically (e.g. by Material class) or when 'load' is called with the default
@@ -189,8 +213,10 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="type">Type to configure.</param>
         /// <param name="options">Options to set for the specified type.</param>
-        public virtual void SetDefaultTextureFiltering(FilterType type, FilterOptions options) {
-            switch(type) {
+        public virtual void SetDefaultTextureFiltering( FilterType type, FilterOptions options )
+        {
+            switch ( type )
+            {
                 case FilterType.Min:
                     defaultMinFilter = options;
                     break;
@@ -213,7 +239,8 @@ namespace Axiom.Graphics {
         /// <param name="minFilter">Minification filter.</param>
         /// <param name="magFilter">Magnification filter.</param>
         /// <param name="mipFilter">Map filter.</param>
-        public virtual void SetDefaultTextureFiltering(FilterOptions minFilter, FilterOptions magFilter, FilterOptions mipFilter) {
+        public virtual void SetDefaultTextureFiltering( FilterOptions minFilter, FilterOptions magFilter, FilterOptions mipFilter )
+        {
             defaultMinFilter = minFilter;
             defaultMagFilter = magFilter;
             defaultMipFilter = mipFilter;
@@ -224,8 +251,10 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="type">Filter type to get options for.</param>
         /// <returns></returns>
-        public virtual FilterOptions GetDefaultTextureFiltering(FilterType type) {
-            switch(type) {
+        public virtual FilterOptions GetDefaultTextureFiltering( FilterType type )
+        {
+            switch ( type )
+            {
                 case FilterType.Min:
                     return defaultMinFilter;
 
@@ -244,30 +273,35 @@ namespace Axiom.Graphics {
         ///		Look for material scripts in all known sources and parse them.
         /// </summary>
         /// <param name="extension">Extension to parse (i.e. ".material").</param>
-        public void ParseAllSources(string extension) {
+        public void ParseAllSources( string extension )
+        {
             // search archives
-            for (int i = 0; i < archives.Count; i++) {
-                Archive archive = (Archive)archives[i];
-                string[] files = archive.GetFileNamesLike("", extension);
+            for ( int i = 0; i < archives.Count; i++ )
+            {
+                Archive archive = (Archive)archives[ i ];
+                string[] files = archive.GetFileNamesLike( "", extension );
 
-                for (int j = 0; j < files.Length; j++) {
-                    Stream data = archive.ReadFile(files[j]);
+                for ( int j = 0; j < files.Length; j++ )
+                {
+                    Stream data = archive.ReadFile( files[ j ] );
 
                     // parse the materials
-                    serializer.ParseScript(data, files[j]);
+                    serializer.ParseScript( data, files[ j ] );
                 }
             }
 
             // search common archives
-            for (int i = 0; i < commonArchives.Count; i++) {
-                Archive archive = (Archive)commonArchives[i];
-                string[] files = archive.GetFileNamesLike("", extension);
+            for ( int i = 0; i < commonArchives.Count; i++ )
+            {
+                Archive archive = (Archive)commonArchives[ i ];
+                string[] files = archive.GetFileNamesLike( "", extension );
 
-                for (int j = 0; j < files.Length; j++) {
-                    Stream data = archive.ReadFile(files[j]);
+                for ( int j = 0; j < files.Length; j++ )
+                {
+                    Stream data = archive.ReadFile( files[ j ] );
 
                     // parse the materials
-                    serializer.ParseScript(data, files[j]);
+                    serializer.ParseScript( data, files[ j ] );
                 }
             }
         }
@@ -276,13 +310,14 @@ namespace Axiom.Graphics {
 
         #region ResourceManager Implementation
 
-		/// <summary>
-		///		Gets a material with the specified name.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
-        public new Material GetByName(string name) {
-            return (Material)base.GetByName(name);
+        /// <summary>
+        ///		Gets a material with the specified name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public new Material GetByName( string name )
+        {
+            return (Material)base.GetByName( name );
         }
 
         /// <summary>
@@ -290,7 +325,8 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public override Resource Create(string name) {
+        public override Resource Create( string name )
+        {
             if ( resourceList[ name ] != null )
             {
                 //TODO: Add Logging - Instead of throwing an exception, log an warning
@@ -300,10 +336,10 @@ namespace Axiom.Graphics {
 
 
             // create a material
-            Material material = new Material(name);
+            Material material = new Material( name );
 
-            Add(material);
-				
+            Add( material );
+
             return material;
         }
 
@@ -313,17 +349,20 @@ namespace Axiom.Graphics {
         /// <param name="name"></param>
         /// <param name="priority"></param>
         /// <returns></returns>
-        public Material Load(string name, int priority) {
+        public Material Load( string name, int priority )
+        {
             Material material = null;
 
             // if the resource isn't cached, create it
-            if(!resourceList.ContainsKey(name)) {
-                material = (Material)Create(name);
-                base.Load(material, priority);
+            if ( !resourceList.ContainsKey( name ) )
+            {
+                material = (Material)Create( name );
+                base.Load( material, priority );
             }
-            else {
+            else
+            {
                 // get the cached version
-                material = (Material)resourceList[name];
+                material = (Material)resourceList[ name ];
             }
 
             return material;
@@ -332,10 +371,12 @@ namespace Axiom.Graphics {
         /// <summary>
         ///     Called when the engine is shutting down.
         /// </summary>
-        public override void Dispose() {
+        public override void Dispose()
+        {
             base.Dispose();
 
-            if (instance == this) {
+            if ( instance == this )
+            {
                 instance = null;
             }
         }

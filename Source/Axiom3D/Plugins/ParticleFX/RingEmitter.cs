@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,155 +24,203 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+using System.Diagnostics;
+
 using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.Math;
 using Axiom.Scripting;
-using System.Diagnostics;
 
-namespace Axiom.ParticleFX {
-	/// <summary>
-	/// Summary description for RingEmitter.
-	/// </summary>
-	public class RingEmitter : AreaEmitter {
-		#region Fields
+#endregion Namespace Declarations
 
-		protected float innerX;
-		protected float innerY;
+namespace Axiom.ParticleFX
+{
+    /// <summary>
+    /// Summary description for RingEmitter.
+    /// </summary>
+    public class RingEmitter : AreaEmitter
+    {
+        #region Fields
 
-		#endregion Fields
+        protected float innerX;
+        protected float innerY;
 
-		#region Properties
+        #endregion Fields
 
-		public float InnerX { 
-			get { return innerX;	}
-			set { Debug.Assert( value > 0.0f && value < 1.0f ); innerX = value;	}
-		}
+        #region Properties
 
-		public float InnerY { 
-			get { return innerY;	}
-			set { Debug.Assert( value > 0.0f && value < 1.0f ); innerY = value;	}
-		}
+        public float InnerX
+        {
+            get
+            {
+                return innerX;
+            }
+            set
+            {
+                Debug.Assert( value > 0.0f && value < 1.0f );
+                innerX = value;
+            }
+        }
 
-		#endregion Properties
+        public float InnerY
+        {
+            get
+            {
+                return innerY;
+            }
+            set
+            {
+                Debug.Assert( value > 0.0f && value < 1.0f );
+                innerY = value;
+            }
+        }
 
-		public RingEmitter() : base() {
-			InitDefaults("Ring");
-			innerX = 0.5f;
-			innerY = 0.5f;
-		}
+        #endregion Properties
 
-		public override void InitParticle(Particle particle) {
-			float alpha, a, b, x, y, z;
+        public RingEmitter()
+            : base()
+        {
+            InitDefaults( "Ring" );
+            innerX = 0.5f;
+            innerY = 0.5f;
+        }
 
-			// create a random angle from 0 .. PI*2
-			alpha = Utility.RangeRandom(0,Utility.TWO_PI);
-	  
-			// create two random radius values that are bigger than the inner size
-			a = Utility.RangeRandom(InnerX,1.0f);
-			b = Utility.RangeRandom(InnerY,1.0f);
+        public override void InitParticle( Particle particle )
+        {
+            float alpha, a, b, x, y, z;
 
-			// with a and b we have defined a random ellipse inside the inner
-			// ellipse and the outer circle (radius 1.0)
-			// with alpha, and a and b we select a random point on this ellipse
-			// and calculate it's coordinates
-			x = a * Utility.Sin(alpha);
-			y = b * Utility.Cos(alpha);
-			// the height is simple running from 0 to 1
-			z = Utility.UnitRandom();     // 0..1
+            // create a random angle from 0 .. PI*2
+            alpha = Utility.RangeRandom( 0, Utility.TWO_PI );
 
-			// scale the found point to the ring's size and move it
-			// relatively to the center of the emitter point
+            // create two random radius values that are bigger than the inner size
+            a = Utility.RangeRandom( InnerX, 1.0f );
+            b = Utility.RangeRandom( InnerY, 1.0f );
 
-			particle.Position = position + x * xRange + y * yRange + z * zRange;
+            // with a and b we have defined a random ellipse inside the inner
+            // ellipse and the outer circle (radius 1.0)
+            // with alpha, and a and b we select a random point on this ellipse
+            // and calculate it's coordinates
+            x = a * Utility.Sin( alpha );
+            y = b * Utility.Cos( alpha );
+            // the height is simple running from 0 to 1
+            z = Utility.UnitRandom();     // 0..1
 
-			// Generate complex data by reference
-			GenerateEmissionColor(particle.Color);
-			GenerateEmissionDirection(ref particle.Direction);
-			GenerateEmissionVelocity(ref particle.Direction);
+            // scale the found point to the ring's size and move it
+            // relatively to the center of the emitter point
 
-			// Generate simpler data
-			particle.timeToLive = GenerateEmissionTTL();
-		}
+            particle.Position = position + x * xRange + y * yRange + z * zRange;
 
-		#region Command definition classes
+            // Generate complex data by reference
+            GenerateEmissionColor( particle.Color );
+            GenerateEmissionDirection( ref particle.Direction );
+            GenerateEmissionVelocity( ref particle.Direction );
 
-		/// <summary>
-		///    
-		/// </summary>
-		[Command("width", "Width of the hollow ellipsoidal emitter.", typeof(ParticleEmitter))]
-			class WidthCommand: ICommand {
-			public void Set(object target, string val) {
-				RingEmitter emitter = target as RingEmitter;
-				emitter.Width = StringConverter.ParseFloat(val);
-			}
-			public string Get(object target) {
-				RingEmitter emitter = target as RingEmitter;
-				return StringConverter.ToString(emitter.Width);
-			}
-		}
+            // Generate simpler data
+            particle.timeToLive = GenerateEmissionTTL();
+        }
 
-		/// <summary>
-		///    
-		/// </summary>
-		[Command("height", "Height of the hollow ellipsoidal emitter.", typeof(ParticleEmitter))]
-			class HeightCommand: ICommand {
-			public void Set(object target, string val) {
-				RingEmitter emitter = target as RingEmitter;
-				emitter.Height = StringConverter.ParseFloat(val);
-			}
-			public string Get(object target) {
-				RingEmitter emitter = target as RingEmitter;
-				return StringConverter.ToString(emitter.Height);
-			}
-		}
+        #region Command definition classes
 
-		/// <summary>
-		///    
-		/// </summary>
-		[Command("depth", "Depth of the hollow ellipsoidal emitter.", typeof(ParticleEmitter))]
-			class DepthCommand: ICommand {
-			public void Set(object target, string val) {
-				RingEmitter emitter = target as RingEmitter;
-				emitter.Depth = StringConverter.ParseFloat(val);
-			}
-			public string Get(object target) {
-				RingEmitter emitter = target as RingEmitter;
-				return StringConverter.ToString(emitter.Depth);
-			}
-		}
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command( "width", "Width of the hollow ellipsoidal emitter.", typeof( ParticleEmitter ) )]
+        class WidthCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
+                RingEmitter emitter = target as RingEmitter;
+                emitter.Width = StringConverter.ParseFloat( val );
+            }
+            public string Get( object target )
+            {
+                RingEmitter emitter = target as RingEmitter;
+                return StringConverter.ToString( emitter.Width );
+            }
+        }
 
-		/// <summary>
-		///    
-		/// </summary>
-		[Command("inner_width", "Parametric value describing the proportion of the shape which is hollow.", typeof(ParticleEmitter))]
-			class InnerWidthCommand: ICommand {
-			public void Set(object target, string val) {
-				RingEmitter emitter = target as RingEmitter;
-				emitter.InnerX = StringConverter.ParseFloat(val);
-			}
-			public string Get(object target) {
-				RingEmitter emitter = target as RingEmitter;
-				return StringConverter.ToString(emitter.InnerX);
-			}
-		}
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command( "height", "Height of the hollow ellipsoidal emitter.", typeof( ParticleEmitter ) )]
+        class HeightCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
+                RingEmitter emitter = target as RingEmitter;
+                emitter.Height = StringConverter.ParseFloat( val );
+            }
+            public string Get( object target )
+            {
+                RingEmitter emitter = target as RingEmitter;
+                return StringConverter.ToString( emitter.Height );
+            }
+        }
 
-		/// <summary>
-		///    
-		/// </summary>
-		[Command("inner_height", "Parametric value describing the proportion of the shape which is hollow.", typeof(ParticleEmitter))]
-			class InnerHeightCommand: ICommand {
-			public void Set(object target, string val) {
-				RingEmitter emitter = target as RingEmitter;
-				emitter.InnerY = StringConverter.ParseFloat(val);
-			}
-			public string Get(object target) {
-				RingEmitter emitter = target as RingEmitter;
-				return StringConverter.ToString(emitter.InnerY);
-			}
-		}
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command( "depth", "Depth of the hollow ellipsoidal emitter.", typeof( ParticleEmitter ) )]
+        class DepthCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
+                RingEmitter emitter = target as RingEmitter;
+                emitter.Depth = StringConverter.ParseFloat( val );
+            }
+            public string Get( object target )
+            {
+                RingEmitter emitter = target as RingEmitter;
+                return StringConverter.ToString( emitter.Depth );
+            }
+        }
 
-		#endregion Command definition classes
-	}
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command( "inner_width", "Parametric value describing the proportion of the shape which is hollow.", typeof( ParticleEmitter ) )]
+        class InnerWidthCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
+                RingEmitter emitter = target as RingEmitter;
+                emitter.InnerX = StringConverter.ParseFloat( val );
+            }
+            public string Get( object target )
+            {
+                RingEmitter emitter = target as RingEmitter;
+                return StringConverter.ToString( emitter.InnerX );
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command( "inner_height", "Parametric value describing the proportion of the shape which is hollow.", typeof( ParticleEmitter ) )]
+        class InnerHeightCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
+                RingEmitter emitter = target as RingEmitter;
+                emitter.InnerY = StringConverter.ParseFloat( val );
+            }
+            public string Get( object target )
+            {
+                RingEmitter emitter = target as RingEmitter;
+                return StringConverter.ToString( emitter.InnerY );
+            }
+        }
+
+        #endregion Command definition classes
+    }
 }

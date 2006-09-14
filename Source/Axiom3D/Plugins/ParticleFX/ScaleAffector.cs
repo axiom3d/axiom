@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,76 +24,102 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+
 using Axiom.Core;
 using Axiom.ParticleSystems;
+using Axiom.Math;
 using Axiom.Scripting;
 
-namespace Axiom.ParticleFX {
-	/// <summary>
-	/// Summary description for ScaleAffector.
-	/// </summary>
-	public class ScaleAffector : ParticleAffector {
-		protected float scaleAdjust;
+#endregion Namespace Declarations
 
-		public ScaleAffector() {
-			this.type	= "Scaler";
-			scaleAdjust	= 0;
-		}
+namespace Axiom.ParticleFX
+{
+    /// <summary>
+    /// Summary description for ScaleAffector.
+    /// </summary>
+    public class ScaleAffector : ParticleAffector
+    {
+        protected float scaleAdjust;
 
-		public float ScaleAdjust {
-			get { 
-				return scaleAdjust; 
-			}
-			set { 
-				scaleAdjust = value; 
-			}
-		}
+        public ScaleAffector()
+        {
+            this.type = "Scaler";
+            scaleAdjust = 0;
+        }
 
-		public override void AffectParticles(ParticleSystem system, float timeElapsed) {
-			float ds;
+        public float ScaleAdjust
+        {
+            get
+            {
+                return scaleAdjust;
+            }
+            set
+            {
+                scaleAdjust = value;
+            }
+        }
 
-			// Scale adjustments by time
-			ds = scaleAdjust * timeElapsed;
+        public override void AffectParticles( ParticleSystem system, float timeElapsed )
+        {
+            float ds;
 
-			float newWide, newHigh;
+            // Scale adjustments by time
+            ds = scaleAdjust * timeElapsed;
 
-			// loop through the particles
+            float newWide, newHigh;
 
-			for(int i = 0; i < system.Particles.Count; i++) {
-				Particle p = (Particle)system.Particles[i];
+            // loop through the particles
 
-				if( p.HasOwnDimensions == false ) {
-					p.Height = system.DefaultHeight;
-					p.Width = system.DefaultWidth;
-				}
-				else {
-					newWide	= p.Width + ds;
-					newHigh	= p.Height + ds;
-					p.Width	= newWide;
-					p.Height= newHigh;
-				}
-			}
-		}
+            for ( int i = 0; i < system.Particles.Count; i++ )
+            {
+                Particle p = (Particle)system.Particles[ i ];
 
-		#region Command definition classes
+                if ( p.HasOwnDimensions == false )
+                {
+                    p.Height = system.DefaultHeight;
+                    p.Width = system.DefaultWidth;
+                }
+                else
+                {
+                    newWide = p.Width + ds;
+                    newHigh = p.Height + ds;
+                    p.Width = newWide;
+                    p.Height = newHigh;
+                }
+            }
+        }
 
-		[Command("rate", "Rate of particle scaling.", typeof(ParticleAffector))]
-		class RateCommand : ICommand {
-			#region ICommand Members
+        #region Command definition classes
 
-			public string Get(object target) {
-				ScaleAffector affector = target as ScaleAffector;
-				return StringConverter.ToString(affector.ScaleAdjust);
-			}
-			public void Set(object target, string val) {
-				ScaleAffector affector = target as ScaleAffector;
-				affector.ScaleAdjust = StringConverter.ParseFloat(val);
-			}
+        [Command( "rate", "Rate of particle scaling.", typeof( ParticleAffector ) )]
+        class RateCommand : ICommand
+        {
+            #region ICommand Members
 
-			#endregion
-		}
+            public string Get( object target )
+            {
+                ScaleAffector affector = target as ScaleAffector;
+                return StringConverter.ToString( affector.ScaleAdjust );
+            }
+            public void Set( object target, string val )
+            {
+                ScaleAffector affector = target as ScaleAffector;
+                affector.ScaleAdjust = StringConverter.ParseFloat( val );
+            }
 
-		#endregion Command definition classes
-	}
+            #endregion
+        }
+
+        #endregion Command definition classes
+    }
 }

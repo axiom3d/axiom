@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,20 +24,36 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
+
 using Axiom.Core;
 using Axiom.Graphics;
 
-namespace Axiom.RenderSystems.OpenGL {
-	/// <summary>
-	/// 	Summary description for GLGpuProgramManager.
-	/// </summary>
-	public class GLGpuProgramManager : GpuProgramManager {	
+#endregion Namespace Declarations
+
+namespace Axiom.RenderSystems.OpenGL
+{
+    /// <summary>
+    /// 	Summary description for GLGpuProgramManager.
+    /// </summary>
+    public class GLGpuProgramManager : GpuProgramManager
+    {
         protected Hashtable factories = new Hashtable();
 
-		public GLGpuProgramManager() : base() {
-		}
+        public GLGpuProgramManager()
+            : base()
+        {
+        }
 
         /// <summary>
         ///    Create the specified type of GpuProgram.
@@ -45,26 +61,29 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="name"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public override GpuProgram Create(string name, GpuProgramType type, string syntaxCode) {
+        public override GpuProgram Create( string name, GpuProgramType type, string syntaxCode )
+        {
             // if there is none, this syntax code must not be supported
             // just return the base GL program since it won't be doing anything anyway
-            if(factories[syntaxCode] == null) {
-                return new GLGpuProgram(name, type, syntaxCode);
+            if ( factories[ syntaxCode ] == null )
+            {
+                return new GLGpuProgram( name, type, syntaxCode );
             }
 
             // get a reference to the factory for this syntax code
-            IOpenGLGpuProgramFactory factory = 
-                (IOpenGLGpuProgramFactory)factories[syntaxCode];
+            IOpenGLGpuProgramFactory factory =
+                (IOpenGLGpuProgramFactory)factories[ syntaxCode ];
 
             // create the gpu program
-            return factory.Create(name, type, syntaxCode);
+            return factory.Create( name, type, syntaxCode );
         }
 
         /// <summary>
         ///    Returns a specialized version of GpuProgramParameters.
         /// </summary>
         /// <returns></returns>
-        public override GpuProgramParameters CreateParameters() {
+        public override GpuProgramParameters CreateParameters()
+        {
             return new GpuProgramParameters();
         }
 
@@ -73,9 +92,10 @@ namespace Axiom.RenderSystems.OpenGL {
         ///     gpu porgrams based on the syntax code.
         /// </summary>
         /// <param name="factory"></param>
-        public void RegisterProgramFactory(string syntaxCode, IOpenGLGpuProgramFactory factory) {
+        public void RegisterProgramFactory( string syntaxCode, IOpenGLGpuProgramFactory factory )
+        {
             // store this factory for the specified syntax code
-            factories[syntaxCode] = factory;
+            factories[ syntaxCode ] = factory;
         }
-	}
+    }
 }

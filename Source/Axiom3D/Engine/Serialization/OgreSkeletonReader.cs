@@ -1,16 +1,56 @@
+#region LGPL License
+/*
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
+
+The overall design, and a majority of the core engine and rendering code 
+contained within this library is a derivative of the open source Object Oriented 
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+#endregion
+
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.IO;
 using System.Text;
+
 using Axiom.Animating;
 using Axiom.Math;
 
-namespace Axiom.Serialization {
+#endregion Namespace Declarations
+
+namespace Axiom.Serialization
+{
     /// <summary>
     /// 	Summary description for OgreSkeletonReader.
     /// </summary>
-    public class OgreSkeletonReader : BinaryReader {
+    public class OgreSkeletonReader : BinaryReader
+    {
         #region Member variables
-		
+
         const int CHUNK_OVERHEAD_SIZE = 6;
         const string VERSION = "[Serializer_v1.10]";
 
@@ -18,32 +58,38 @@ namespace Axiom.Serialization {
         private int currentChunkLength;
 
         #endregion
-		
+
         #region Constructors
-		
-        public OgreSkeletonReader(Stream data) : base(data) {
+
+        public OgreSkeletonReader( Stream data )
+            : base( data )
+        {
         }
-		
+
         #endregion
-		
+
         #region Methods
-		
-        public void Import(Skeleton skeleton) {
+
+        public void Import( Skeleton skeleton )
+        {
             // store a local reference to the mesh for modification
             this.skeleton = skeleton;
 
             // start off by taking a look at the header
             ReadFileHeader();
 
-            try {
+            try
+            {
                 SkeletonChunkID chunkID = 0;
 
                 bool parse = true;
-				
-                while(parse) {
+
+                while ( parse )
+                {
                     chunkID = ReadChunk();
 
-                    switch(chunkID) {
+                    switch ( chunkID )
+                    {
                         case SkeletonChunkID.Bone:
                             ReadBone();
                             break;
@@ -57,13 +103,14 @@ namespace Axiom.Serialization {
                             break;
 
                         default:
-                            System.Diagnostics.Trace.Write("Can only parse bones, parents, and animations at the top level during skeleton loading.");
+                            System.Diagnostics.Trace.Write( "Can only parse bones, parents, and animations at the top level during skeleton loading." );
                             parse = false;
                             break;
                     } // switch
                 } // while
             }
-            catch(EndOfStreamException) {
+            catch ( EndOfStreamException )
+            {
                 // assume bones are stored in binding pose
                 skeleton.SetBindingPose();
             }
@@ -72,72 +119,77 @@ namespace Axiom.Serialization {
         /// <summary>
         ///    Reads animation information from the file.
         /// </summary>
-        protected void ReadAnimation() {
+        protected void ReadAnimation()
+        {
             // name of the animation
-            string name = ReadString('\n');
+            string name = ReadString( '\n' );
 
             // length in seconds of the animation
             float length = ReadSingle();
 
             // create an animation from the skeleton
-            Animation anim = skeleton.CreateAnimation(name, length);
+            Animation anim = skeleton.CreateAnimation( name, length );
 
             // read the first chunk
             SkeletonChunkID chunkId = ReadChunk();
 
             // continue while we still have animation tracks to read
-            while(chunkId == SkeletonChunkID.AnimationTrack) {
+            while ( chunkId == SkeletonChunkID.AnimationTrack )
+            {
                 // read the animation track
-                ReadAnimationTrack(anim);
+                ReadAnimationTrack( anim );
 
                 // read the next chunk id
                 chunkId = ReadChunk();
             } // while
 
             // move back to the beginning of last chunk read so it can be read by the calling method
-            Seek(-CHUNK_OVERHEAD_SIZE);
+            Seek( -CHUNK_OVERHEAD_SIZE );
         }
 
         /// <summary>
         ///    Reads an animation track.
         /// </summary>
-        protected void ReadAnimationTrack(Animation anim) {
+        protected void ReadAnimationTrack( Animation anim )
+        {
             // read the bone handle to apply this track to
             short boneHandle = ReadInt16();
 
             // get a reference to the target bone
-            Bone targetBone = skeleton.GetBone((ushort)boneHandle);
+            Bone targetBone = skeleton.GetBone( (ushort)boneHandle );
 
             // create an animation track for this bone
-            AnimationTrack track = anim.CreateTrack(boneHandle, targetBone);
+            AnimationTrack track = anim.CreateTrack( boneHandle, targetBone );
 
             // read the first chunkId
             SkeletonChunkID chunkId = ReadChunk();
 
             // keep reading all keyframes for this track
-            while(chunkId == SkeletonChunkID.KeyFrame) {
+            while ( chunkId == SkeletonChunkID.KeyFrame )
+            {
                 // read the key frame
-                ReadKeyFrame(track);
+                ReadKeyFrame( track );
 
                 // read the next chunk id
                 chunkId = ReadChunk();
             }
 
             // move back to the beginning of last chunk read so it can be read by the calling method
-            Seek(-CHUNK_OVERHEAD_SIZE);
+            Seek( -CHUNK_OVERHEAD_SIZE );
         }
 
         /// <summary>
         ///    Reads bone information from the file.
         /// </summary>
-        protected void ReadBone() {
+        protected void ReadBone()
+        {
             // bone name
-            string name = ReadString('\n');
+            string name = ReadString( '\n' );
 
             short handle = ReadInt16();
 
             // create a new bone
-            Bone bone = skeleton.CreateBone(name, (ushort)handle);
+            Bone bone = skeleton.CreateBone( name, (ushort)handle );
 
             // read and set the position of the bone
             Vector3 position = ReadVector3();
@@ -151,7 +203,8 @@ namespace Axiom.Serialization {
         /// <summary>
         ///    Reads bone information from the file.
         /// </summary>
-        protected void ReadBoneParent() {
+        protected void ReadBoneParent()
+        {
             // all bones should have been created by this point, so this establishes the heirarchy
             Bone child, parent;
             short childHandle, parentHandle;
@@ -163,18 +216,19 @@ namespace Axiom.Serialization {
             parentHandle = ReadInt16();
 
             // get references to father and son bones
-            parent = skeleton.GetBone((ushort)parentHandle);
-            child = skeleton.GetBone((ushort)childHandle);
+            parent = skeleton.GetBone( (ushort)parentHandle );
+            child = skeleton.GetBone( (ushort)childHandle );
 
             // attach the child to the parent
-            parent.AddChild(child);
+            parent.AddChild( child );
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        protected SkeletonChunkID ReadChunk() {
+        protected SkeletonChunkID ReadChunk()
+        {
             // get the chunk id
             short id = ReadInt16();
 
@@ -187,29 +241,32 @@ namespace Axiom.Serialization {
         /// <summary>
         /// 
         /// </summary>
-        protected void ReadFileHeader() {
+        protected void ReadFileHeader()
+        {
             short headerID = 0;
 
             // read the header ID
             headerID = ReadInt16();
 
             // better hope this is the header
-            if(headerID == (short)SkeletonChunkID.Header) {
-                string version = this.ReadString('\n');
+            if ( headerID == (short)SkeletonChunkID.Header )
+            {
+                string version = this.ReadString( '\n' );
             }
             else
-                throw new Exception("Invalid skeleton file, no header found.");
+                throw new Exception( "Invalid skeleton file, no header found." );
         }
 
         /// <summary>
         ///    Reads an animation track section.
         /// </summary>
         /// <param name="track"></param>
-        protected void ReadKeyFrame(AnimationTrack track) {
+        protected void ReadKeyFrame( AnimationTrack track )
+        {
             float time = ReadSingle();
 
             // create a new keyframe with the specified length
-            KeyFrame keyFrame = track.CreateKeyFrame(time);
+            KeyFrame keyFrame = track.CreateKeyFrame( time );
 
             // read orientation
             Quaternion rotate = ReadQuat();
@@ -220,14 +277,15 @@ namespace Axiom.Serialization {
             keyFrame.Translate = translate;
         }
 
-        protected string ReadString(char delimiter) {
+        protected string ReadString( char delimiter )
+        {
             StringBuilder sb = new StringBuilder();
 
             char c;
 
             // sift through each character until we hit the delimiter
-            while((c = base.ReadChar()) != delimiter)
-                sb.Append(c);
+            while ( ( c = base.ReadChar() ) != delimiter )
+                sb.Append( c );
 
             // return the accumulated string
             return sb.ToString();
@@ -237,7 +295,8 @@ namespace Axiom.Serialization {
         ///    Reads and returns a Quaternion.
         /// </summary>
         /// <returns></returns>
-        protected Quaternion ReadQuat() {
+        protected Quaternion ReadQuat()
+        {
             Quaternion quat = new Quaternion();
 
             quat.x = ReadSingle();
@@ -252,7 +311,8 @@ namespace Axiom.Serialization {
         ///    Reads and returns a Vector3 structure.
         /// </summary>
         /// <returns></returns>
-        protected Vector3 ReadVector3() {
+        protected Vector3 ReadVector3()
+        {
             Vector3 vector = new Vector3();
 
             vector.x = ReadSingle();
@@ -266,19 +326,22 @@ namespace Axiom.Serialization {
         ///    Moves forward (or backward if negative length is supplied) in the file.
         /// </summary>
         /// <param name="length"></param>
-        protected void Seek(long length) {
-            if(base.BaseStream is FileStream) {
+        protected void Seek( long length )
+        {
+            if ( base.BaseStream is FileStream )
+            {
                 FileStream fs = base.BaseStream as FileStream;
- 
-                fs.Seek(length, SeekOrigin.Current);
+
+                fs.Seek( length, SeekOrigin.Current );
             }
-            else if(base.BaseStream is MemoryStream) {
+            else if ( base.BaseStream is MemoryStream )
+            {
                 MemoryStream ms = base.BaseStream as MemoryStream;
 
-                ms.Seek(length, SeekOrigin.Current);
+                ms.Seek( length, SeekOrigin.Current );
             }
             else
-                throw new Exception("Unsupported stream type used to load a mesh.");
+                throw new Exception( "Unsupported stream type used to load a mesh." );
         }
 
         #endregion Methods
@@ -287,12 +350,13 @@ namespace Axiom.Serialization {
     /// <summary>
     ///    Chunk ID's that can be found within the Ogre .skeleton format.
     /// </summary>
-    public enum SkeletonChunkID {
-        Header                    = 0x1000,
-        Bone                        = 0x2000,
-        BoneParent             = 0x3000,
-        Animation              = 0x4000,
-        AnimationTrack     = 0x4100,
-        KeyFrame               = 0x4110,
+    public enum SkeletonChunkID
+    {
+        Header = 0x1000,
+        Bone = 0x2000,
+        BoneParent = 0x3000,
+        Animation = 0x4000,
+        AnimationTrack = 0x4100,
+        KeyFrame = 0x4110,
     }
 }

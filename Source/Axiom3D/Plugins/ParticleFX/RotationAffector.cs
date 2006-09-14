@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,135 +24,165 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+
 using Axiom.Core;
 using Axiom.ParticleSystems;
-using Axiom.Scripting;
 using Axiom.Math;
+using Axiom.Scripting;
 
-namespace Axiom.ParticleFX {
-	/// <summary>
-	/// Summary description for ScaleAffector.
-	/// </summary>
-	public class RotationAffector : ParticleAffector {
-		#region Fields
+#endregion Namespace Declarations
 
-		/// <summary>
-		///		Initial rotation speed of particles (range start).
-		/// </summary>
-		float rotationSpeedRangeStart;
-		/// <summary>
-		///		Initial rotation speed of particles (range end).
-		/// </summary>
-		float rotationSpeedRangeEnd;
-		/// <summary>
-		///		Initial rotation angle of particles (range start).
-		/// </summary>
-		float rotationRangeStart;
-		/// <summary>
-		///		Initial rotation angle of particles (range end)
-		/// </summary>
-		float rotationRangeEnd;
+namespace Axiom.ParticleFX
+{
+    /// <summary>
+    /// Summary description for ScaleAffector.
+    /// </summary>
+    public class RotationAffector : ParticleAffector
+    {
+        #region Fields
 
-		#endregion Fields
+        /// <summary>
+        ///		Initial rotation speed of particles (range start).
+        /// </summary>
+        float rotationSpeedRangeStart;
+        /// <summary>
+        ///		Initial rotation speed of particles (range end).
+        /// </summary>
+        float rotationSpeedRangeEnd;
+        /// <summary>
+        ///		Initial rotation angle of particles (range start).
+        /// </summary>
+        float rotationRangeStart;
+        /// <summary>
+        ///		Initial rotation angle of particles (range end)
+        /// </summary>
+        float rotationRangeEnd;
 
-		public RotationAffector() {
-			this.type = "Rotator";
-			rotationSpeedRangeStart = 0;
-			rotationSpeedRangeEnd = 0;
-			rotationRangeStart = 0;
-			rotationRangeEnd = 0;
-		}
+        #endregion Fields
 
-		public override void InitParticle(ref Particle particle) {
-			particle.Rotation = rotationRangeStart + (Utility.UnitRandom() * (rotationRangeEnd - rotationRangeStart));
-			particle.RotationSpeed = rotationSpeedRangeStart + (Utility.UnitRandom() * (rotationSpeedRangeEnd - rotationSpeedRangeStart));
-		}
+        public RotationAffector()
+        {
+            this.type = "Rotator";
+            rotationSpeedRangeStart = 0;
+            rotationSpeedRangeEnd = 0;
+            rotationRangeStart = 0;
+            rotationRangeEnd = 0;
+        }
 
-		public override void AffectParticles(ParticleSystem system, float timeElapsed) {
-			float ds;
+        public override void InitParticle( ref Particle particle )
+        {
+            particle.Rotation = rotationRangeStart + ( Utility.UnitRandom() * ( rotationRangeEnd - rotationRangeStart ) );
+            particle.RotationSpeed = rotationSpeedRangeStart + ( Utility.UnitRandom() * ( rotationSpeedRangeEnd - rotationSpeedRangeStart ) );
+        }
 
-			// Rotation adjustments by time
-			ds = timeElapsed;
+        public override void AffectParticles( ParticleSystem system, float timeElapsed )
+        {
+            float ds;
 
-			float newRotation;
+            // Rotation adjustments by time
+            ds = timeElapsed;
 
-			// loop through the particles
-			for(int i = 0; i < system.Particles.Count; i++) {
-				Particle p = (Particle)system.Particles[i];
+            float newRotation;
 
-				newRotation = p.Rotation + (ds * p.RotationSpeed);
-				p.Rotation = newRotation;
-			}
-		}
+            // loop through the particles
+            for ( int i = 0; i < system.Particles.Count; i++ )
+            {
+                Particle p = (Particle)system.Particles[ i ];
 
-		#region Command definition classes
+                newRotation = p.Rotation + ( ds * p.RotationSpeed );
+                p.Rotation = newRotation;
+            }
+        }
 
-		[Command("rotation_speed_range_start", "Start range of particle rotation speed.", typeof(ParticleAffector))]
-			class RotationSpeedRangeStartCommand : ICommand {
-			#region ICommand Members
+        #region Command definition classes
 
-			public string Get(object target) {
-				RotationAffector affector = target as RotationAffector;
-				return StringConverter.ToString(affector.rotationSpeedRangeStart);
-			}
-			public void Set(object target, string val) {
-				RotationAffector affector = target as RotationAffector;
-				affector.rotationSpeedRangeStart = StringConverter.ParseFloat(val);
-			}
+        [Command( "rotation_speed_range_start", "Start range of particle rotation speed.", typeof( ParticleAffector ) )]
+        class RotationSpeedRangeStartCommand : ICommand
+        {
+            #region ICommand Members
 
-			#endregion
-		}
+            public string Get( object target )
+            {
+                RotationAffector affector = target as RotationAffector;
+                return StringConverter.ToString( affector.rotationSpeedRangeStart );
+            }
+            public void Set( object target, string val )
+            {
+                RotationAffector affector = target as RotationAffector;
+                affector.rotationSpeedRangeStart = StringConverter.ParseFloat( val );
+            }
 
-		[Command("rotation_speed_range_end", "End range of particle rotation speed.", typeof(ParticleAffector))]
-		class RotationSpeedRangeEndCommand : ICommand {
-			#region ICommand Members
+            #endregion
+        }
 
-			public string Get(object target) {
-				RotationAffector affector = target as RotationAffector;
-				return StringConverter.ToString(affector.rotationSpeedRangeEnd);
-			}
-			public void Set(object target, string val) {
-				RotationAffector affector = target as RotationAffector;
-				affector.rotationSpeedRangeEnd = StringConverter.ParseFloat(val);
-			}
+        [Command( "rotation_speed_range_end", "End range of particle rotation speed.", typeof( ParticleAffector ) )]
+        class RotationSpeedRangeEndCommand : ICommand
+        {
+            #region ICommand Members
 
-			#endregion
-		}
+            public string Get( object target )
+            {
+                RotationAffector affector = target as RotationAffector;
+                return StringConverter.ToString( affector.rotationSpeedRangeEnd );
+            }
+            public void Set( object target, string val )
+            {
+                RotationAffector affector = target as RotationAffector;
+                affector.rotationSpeedRangeEnd = StringConverter.ParseFloat( val );
+            }
 
-		[Command("rotation_range_start", "Start range of particle rotation.", typeof(ParticleAffector))]
-		class RotationRangeStartCommand : ICommand {
-			#region ICommand Members
+            #endregion
+        }
 
-			public string Get(object target) {
-				RotationAffector affector = target as RotationAffector;
-				return StringConverter.ToString(affector.rotationRangeStart);
-			}
-			public void Set(object target, string val) {
-				RotationAffector affector = target as RotationAffector;
-				affector.rotationRangeStart = StringConverter.ParseFloat(val);
-			}
+        [Command( "rotation_range_start", "Start range of particle rotation.", typeof( ParticleAffector ) )]
+        class RotationRangeStartCommand : ICommand
+        {
+            #region ICommand Members
 
-			#endregion
-		}
+            public string Get( object target )
+            {
+                RotationAffector affector = target as RotationAffector;
+                return StringConverter.ToString( affector.rotationRangeStart );
+            }
+            public void Set( object target, string val )
+            {
+                RotationAffector affector = target as RotationAffector;
+                affector.rotationRangeStart = StringConverter.ParseFloat( val );
+            }
+
+            #endregion
+        }
 
 
-		[Command("rotation_range_end", "End range of particle rotation.", typeof(ParticleAffector))]
-		class RotationRangeEndCommand : ICommand {
-			#region ICommand Members
+        [Command( "rotation_range_end", "End range of particle rotation.", typeof( ParticleAffector ) )]
+        class RotationRangeEndCommand : ICommand
+        {
+            #region ICommand Members
 
-			public string Get(object target) {
-				RotationAffector affector = target as RotationAffector;
-				return StringConverter.ToString(affector.rotationRangeEnd);
-			}
-			public void Set(object target, string val) {
-				RotationAffector affector = target as RotationAffector;
-				affector.rotationRangeEnd = StringConverter.ParseFloat(val);
-			}
+            public string Get( object target )
+            {
+                RotationAffector affector = target as RotationAffector;
+                return StringConverter.ToString( affector.rotationRangeEnd );
+            }
+            public void Set( object target, string val )
+            {
+                RotationAffector affector = target as RotationAffector;
+                affector.rotationRangeEnd = StringConverter.ParseFloat( val );
+            }
 
-			#endregion
-		}
+            #endregion
+        }
 
-		#endregion Command definition classes
-	}
+        #endregion Command definition classes
+    }
 }

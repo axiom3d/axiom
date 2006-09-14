@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,15 +24,28 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Drawing;
+
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Scripting;
 using System.Reflection;
 
-namespace Axiom.ParticleSystems {
+#endregion Namespace Declarations
+
+namespace Axiom.ParticleSystems
+{
     /// <summary>
     ///		Abstract class defining the interface to be implemented by particle emitters.
     /// </summary>
@@ -57,7 +70,8 @@ namespace Axiom.ParticleSystems {
     ///		with literally infinite combinations of emitter and affector types, and parameters within those
     ///		types.
     /// </remarks>
-    public abstract class ParticleEmitter : IConfigurable {
+    public abstract class ParticleEmitter : IConfigurable
+    {
         #region Fields
 
         /// <summary>
@@ -152,7 +166,8 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         ///		Default constructor.
         /// </summary>
-        public ParticleEmitter() {
+        public ParticleEmitter()
+        {
             // set defaults
             angle = 0.0f;
             this.Direction = Vector3.UnitX;
@@ -174,12 +189,15 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         ///		Gets/Sets the position of this emitter relative to the center of the particle system.
         /// </summary>
-        public virtual Vector3 Position {
-            get { 
-                return position; 
+        public virtual Vector3 Position
+        {
+            get
+            {
+                return position;
             }
-            set { 
-                position = value; 
+            set
+            {
+                position = value;
             }
         }
 
@@ -192,11 +210,14 @@ namespace Axiom.ParticleSystems {
         ///		vector for every particle, many will introduce a random scatter around this vector using 
         ///		the angle property.
         /// </remarks>
-        public virtual Vector3 Direction {
-            get { 
-                return direction; 
+        public virtual Vector3 Direction
+        {
+            get
+            {
+                return direction;
             }
-            set {
+            set
+            {
                 direction = value;
                 direction.Normalize();
 
@@ -216,12 +237,15 @@ namespace Axiom.ParticleSystems {
         ///		exactly along the emitters direction vector, wheras if you set it to 180 or more, particles
         ///		will be emitted in a sphere, i.e. in all directions.
         /// </remarks>
-        public virtual float Angle {
-            get { 
-                return Utility.RadiansToDegrees(angle); 
+        public virtual float Angle
+        {
+            get
+            {
+                return Utility.RadiansToDegrees( angle );
             }
-            set { 
-                angle = Utility.DegreesToRadians(value); 
+            set
+            {
+                angle = Utility.DegreesToRadians( value );
             }
         }
 
@@ -233,36 +257,45 @@ namespace Axiom.ParticleSystems {
         ///		See the alternate Min/Max properties for velocities.  This emitter will randomly 
         ///		choose a speed between the minimum and maximum for each particle.
         /// </remarks>
-        public virtual float ParticleVelocity {
-            get { 
-                return minSpeed; 
+        public virtual float ParticleVelocity
+        {
+            get
+            {
+                return minSpeed;
             }
-            set { 
-                minSpeed = maxSpeed = value; 
+            set
+            {
+                minSpeed = maxSpeed = value;
             }
         }
 
         /// <summary>
         ///		Gets/Sets the minimum velocity of particles emitted.
         /// </summary>
-        public virtual float MinParticleVelocity {
-            get { 
-                return minSpeed; 
+        public virtual float MinParticleVelocity
+        {
+            get
+            {
+                return minSpeed;
             }
-            set { 
-                minSpeed = value; 
+            set
+            {
+                minSpeed = value;
             }
         }
 
         /// <summary>
         ///		Gets/Sets the maximum velocity of particles emitted.
         /// </summary>
-        public virtual float MaxParticleVelocity {
-            get { 
-                return maxSpeed; 
+        public virtual float MaxParticleVelocity
+        {
+            get
+            {
+                return maxSpeed;
             }
-            set { 
-                maxSpeed = value; 
+            set
+            {
+                maxSpeed = value;
             }
         }
 
@@ -275,12 +308,15 @@ namespace Axiom.ParticleSystems {
         ///		and the emitter may choose to emit all of the second's worth of particles every half-second
         ///		for example. This is controlled by the emitter's EmissionCount property.
         /// </remarks>
-        public virtual float EmissionRate {
-            get { 
-                return emissionRate; 
+        public virtual float EmissionRate
+        {
+            get
+            {
+                return emissionRate;
             }
-            set { 
-                emissionRate = value; 
+            set
+            {
+                emissionRate = value;
             }
         }
 
@@ -295,35 +331,45 @@ namespace Axiom.ParticleSystems {
         ///		Also see the alternate Min/Max versions of this property which takes a min and max TTL in order to 
         ///		have the TTL vary per particle.
         /// </remarks>
-        public virtual float TimeToLive {
-            get { 
-                return minTTL; }
-            set { 
-                minTTL = maxTTL = value; 
+        public virtual float TimeToLive
+        {
+            get
+            {
+                return minTTL;
+            }
+            set
+            {
+                minTTL = maxTTL = value;
             }
         }
 
         /// <summary>
         ///		Gets/Sets the minimum time each particle will live for.
         /// </summary>
-        public virtual float MinTimeToLive {
-            get { 
-                return minTTL; 
+        public virtual float MinTimeToLive
+        {
+            get
+            {
+                return minTTL;
             }
-            set { 
-                minTTL = value; 
+            set
+            {
+                minTTL = value;
             }
         }
 
         /// <summary>
         ///		Gets/Sets the maximum time each particle will live for.
         /// </summary>
-        public virtual float MaxTimeToLive {
-            get { 
-                return maxTTL; 
+        public virtual float MaxTimeToLive
+        {
+            get
+            {
+                return maxTTL;
             }
-            set { 
-                maxTTL = value; 
+            set
+            {
+                maxTTL = value;
             }
         }
 
@@ -335,48 +381,60 @@ namespace Axiom.ParticleSystems {
         ///		this color. See the alternate Start/End versions of this property which takes 2 colous in order to establish 
         ///		a range of colors to be assigned to particles.
         /// </remarks>
-        public virtual ColorEx Color {
-            get { 
-                return colorRangeStart; 
+        public virtual ColorEx Color
+        {
+            get
+            {
+                return colorRangeStart;
             }
-            set { 
-                colorRangeStart = colorRangeEnd = value; 
+            set
+            {
+                colorRangeStart = colorRangeEnd = value;
             }
         }
 
         /// <summary>
         ///		Gets/Sets the color that a particle starts out when it is created.
         /// </summary>
-        public virtual ColorEx ColorRangeStart {
-            get { 
-                return colorRangeStart; 
+        public virtual ColorEx ColorRangeStart
+        {
+            get
+            {
+                return colorRangeStart;
             }
-            set { 
-                colorRangeStart = value; 
+            set
+            {
+                colorRangeStart = value;
             }
         }
 
         /// <summary>
         ///		Gets/Sets the color that a particle ends at just before it's TTL expires.
         /// </summary>
-        public virtual ColorEx ColorRangeEnd {
-            get { 
-                return colorRangeEnd; 
+        public virtual ColorEx ColorRangeEnd
+        {
+            get
+            {
+                return colorRangeEnd;
             }
-            set { 
-                colorRangeEnd = value; 
+            set
+            {
+                colorRangeEnd = value;
             }
         }
 
         /// <summary>
         ///		Gets the name of the type of emitter. 
         /// </summary>
-        public string Type {
-            get { 
-                return type; 
+        public string Type
+        {
+            get
+            {
+                return type;
             }
-            set { 
-                type = value; 
+            set
+            {
+                type = value;
             }
         }
 
@@ -386,12 +444,15 @@ namespace Axiom.ParticleSystems {
         /// <remarks>
         ///		Setting this property to false will turn the emitter off completely.
         /// </remarks>
-        public virtual bool IsEnabled {
-            get { 
-                return isEnabled; 
+        public virtual bool IsEnabled
+        {
+            get
+            {
+                return isEnabled;
             }
-            set { 
-                isEnabled = value; 
+            set
+            {
+                isEnabled = value;
                 InitDurationRepeat();
             }
         }
@@ -404,13 +465,16 @@ namespace Axiom.ParticleSystems {
         ///		or also just after it is re-enabled. This parameter allows you to set a time delay so
         ///		that the emitter does not 'kick in' until later.
         /// </remarks>
-        public virtual float StartTime {
-            get { 
-                return startTime; 
+        public virtual float StartTime
+        {
+            get
+            {
+                return startTime;
             }
-            set { 
+            set
+            {
                 this.IsEnabled = false;
-                startTime = value; 
+                startTime = value;
             }
         }
 
@@ -426,24 +490,30 @@ namespace Axiom.ParticleSystems {
         ///		Also see the alternative Min/Max versions of this property which allows you to set a min and max duration for
         ///		a random variable duration.
         /// </remarks>
-        public virtual float Duration {
-            get { 
-                return durationMin; 
+        public virtual float Duration
+        {
+            get
+            {
+                return durationMin;
             }
-            set { 
-                SetDuration(value, value);
+            set
+            {
+                SetDuration( value, value );
             }
         }
 
         /// <summary>
         ///		Gets/Sets the minimum running time of this emitter.
         /// </summary>
-        public virtual float MinDuration {
-            get { 
-                return durationMin; 
+        public virtual float MinDuration
+        {
+            get
+            {
+                return durationMin;
             }
-            set { 
-                durationMin = value; 
+            set
+            {
+                durationMin = value;
                 InitDurationRepeat();
             }
         }
@@ -451,11 +521,14 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         ///		Gets/Sets the maximum running time of this emitter.
         /// </summary>
-        public virtual float MaxDuration {
-            get { 
-                return durationMax; 
+        public virtual float MaxDuration
+        {
+            get
+            {
+                return durationMax;
             }
-            set { 
+            set
+            {
                 durationMax = value;
                 InitDurationRepeat();
             }
@@ -464,11 +537,14 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         ///		Gets/Sets the maximum repeat delay for the emitter.
         /// </summary>
-        public virtual float MaxRepeatDelay {
-            get { 
-                return repeatDelayMax; 
+        public virtual float MaxRepeatDelay
+        {
+            get
+            {
+                return repeatDelayMax;
             }
-            set { 
+            set
+            {
                 repeatDelayMax = value;
                 InitDurationRepeat();
             }
@@ -477,12 +553,15 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         ///		Gets/Sets the minimum repeat delay for the emitter.
         /// </summary>
-        public virtual float MinRepeatDelay {
-            get { 
-                return repeatDelayMin; 
+        public virtual float MinRepeatDelay
+        {
+            get
+            {
+                return repeatDelayMin;
             }
-            set { 
-                repeatDelayMin = value; 
+            set
+            {
+                repeatDelayMin = value;
                 InitDurationRepeat();
             }
         }
@@ -490,11 +569,14 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         ///		Gets/Sets the time between repeats of the emitter.
         /// </summary>
-        public virtual float RepeatDelay {
-            get { 
-                return repeatDelayMin; 
+        public virtual float RepeatDelay
+        {
+            get
+            {
+                return repeatDelayMin;
             }
-            set { 
+            set
+            {
                 repeatDelayMin = repeatDelayMax = value;
                 InitDurationRepeat();
             }
@@ -520,7 +602,7 @@ namespace Axiom.ParticleSystems {
         ///	 </remarks>
         /// <param name="timeElapsed"></param>
         /// <returns></returns>
-        public abstract ushort GetEmissionCount(float timeElapsed);
+        public abstract ushort GetEmissionCount( float timeElapsed );
 
         /// <summary>
         ///		Initializes a particle based on the emitter's approach and parameters.
@@ -530,7 +612,8 @@ namespace Axiom.ParticleSystems {
         ///		'requested' emissions and actual initialized particles.
         /// </remarks>
         /// <param name="particle">Reference to a particle which must be initialized based on how this emitter starts particles</param>
-        public virtual void InitParticle(Particle particle) {
+        public virtual void InitParticle( Particle particle )
+        {
             particle.ResetDimensions();
         }
 
@@ -538,14 +621,17 @@ namespace Axiom.ParticleSystems {
         ///		Utility method for generating particle exit direction
         /// </summary>
         /// <param name="dest">Normalized vector dictating new direction.</param>
-        protected virtual void GenerateEmissionDirection(ref Vector3 dest) {
-            if(angle != 0.0f) {
+        protected virtual void GenerateEmissionDirection( ref Vector3 dest )
+        {
+            if ( angle != 0.0f )
+            {
                 float tempAngle = Utility.UnitRandom() * angle;
 
                 // randomize direction
-                dest = direction.RandomDeviant(tempAngle, up);
+                dest = direction.RandomDeviant( tempAngle, up );
             }
-            else {
+            else
+            {
                 // constant angle
                 dest = direction;
             }
@@ -555,13 +641,16 @@ namespace Axiom.ParticleSystems {
         ///		Utility method to apply velocity to a particle direction.
         /// </summary>
         /// <param name="dest">The normalized vector to scale by a randomly generated scale between min and max speed.</param>
-        protected virtual void GenerateEmissionVelocity(ref Vector3 dest) {
+        protected virtual void GenerateEmissionVelocity( ref Vector3 dest )
+        {
             float scalar;
 
-            if (minSpeed != maxSpeed) {
-                scalar = minSpeed + (Utility.UnitRandom() * (maxSpeed - minSpeed));
+            if ( minSpeed != maxSpeed )
+            {
+                scalar = minSpeed + ( Utility.UnitRandom() * ( maxSpeed - minSpeed ) );
             }
-            else {
+            else
+            {
                 scalar = minSpeed;
             }
 
@@ -572,11 +661,14 @@ namespace Axiom.ParticleSystems {
         ///		Utility method for generating a time-to-live for a particle.
         /// </summary>
         /// <returns></returns>
-        protected virtual float GenerateEmissionTTL() {
-            if (maxTTL != minTTL) {
-                return minTTL + (Utility.UnitRandom() * (maxTTL - minTTL));
+        protected virtual float GenerateEmissionTTL()
+        {
+            if ( maxTTL != minTTL )
+            {
+                return minTTL + ( Utility.UnitRandom() * ( maxTTL - minTTL ) );
             }
-            else {
+            else
+            {
                 return minTTL;
             }
         }
@@ -586,39 +678,48 @@ namespace Axiom.ParticleSystems {
         /// </summary>
         /// <param name="timeElapsed"></param>
         /// <returns></returns>
-        public virtual ushort GenerateConstantEmissionCount(float timeElapsed) {
+        public virtual ushort GenerateConstantEmissionCount( float timeElapsed )
+        {
 
             ushort intRequest;
-	        
-            if (isEnabled) {
+
+            if ( isEnabled )
+            {
                 // Keep fractions, otherwise a high frame rate will result in zero emissions!
                 remainder += emissionRate * timeElapsed;
                 intRequest = (ushort)remainder;
                 remainder -= intRequest;
 
                 // Check duration
-                if (durationMax > 0.0f) {
+                if ( durationMax > 0.0f )
+                {
                     durationRemain -= timeElapsed;
-                    if (durationRemain <= 0.0f) {
+                    if ( durationRemain <= 0.0f )
+                    {
                         // Disable, duration is out (takes effect next time)
-                        this.IsEnabled =false;
+                        this.IsEnabled = false;
                     }
                 }
                 return intRequest;
             }
-            else {
+            else
+            {
                 // Check repeat
-                if (repeatDelayMax > 0.0f) {
+                if ( repeatDelayMax > 0.0f )
+                {
                     repeatDelayRemain -= timeElapsed;
-                    if (repeatDelayRemain <= 0.0f) {
+                    if ( repeatDelayRemain <= 0.0f )
+                    {
                         // Enable, repeat delay is out (takes effect next time)
                         this.IsEnabled = true;
                     }
                 }
-                if(startTime > 0.0f) {
+                if ( startTime > 0.0f )
+                {
                     startTime -= timeElapsed;
 
-                    if(startTime <= 0.0f) {
+                    if ( startTime <= 0.0f )
+                    {
                         this.IsEnabled = true;
                         startTime = 0;
                     }
@@ -627,21 +728,24 @@ namespace Axiom.ParticleSystems {
                 return 0;
             }
         }
-		
+
         /// <summary>
         ///		Internal method for generating a color for a particle.
         /// </summary>
         /// <param name="color">
         ///    The color object that will be altered depending on the method of generating the particle color.
         /// </param>
-        protected virtual void GenerateEmissionColor(ColorEx color) {
-            if (colorRangeStart.CompareTo(colorRangeEnd) != 0) {
-                color.r = colorRangeStart.r + Utility.UnitRandom() * (colorRangeEnd.r - colorRangeStart.r);
-                color.g = colorRangeStart.g + Utility.UnitRandom() * (colorRangeEnd.g - colorRangeStart.g);
-                color.b = colorRangeStart.b + Utility.UnitRandom() * (colorRangeEnd.b - colorRangeStart.b);
-                color.a = colorRangeStart.a + Utility.UnitRandom() * (colorRangeEnd.a - colorRangeStart.a);
+        protected virtual void GenerateEmissionColor( ColorEx color )
+        {
+            if ( colorRangeStart.CompareTo( colorRangeEnd ) != 0 )
+            {
+                color.r = colorRangeStart.r + Utility.UnitRandom() * ( colorRangeEnd.r - colorRangeStart.r );
+                color.g = colorRangeStart.g + Utility.UnitRandom() * ( colorRangeEnd.g - colorRangeStart.g );
+                color.b = colorRangeStart.b + Utility.UnitRandom() * ( colorRangeEnd.b - colorRangeStart.b );
+                color.a = colorRangeStart.a + Utility.UnitRandom() * ( colorRangeEnd.a - colorRangeStart.a );
             }
-            else {
+            else
+            {
                 color.r = colorRangeStart.r;
                 color.g = colorRangeStart.g;
                 color.b = colorRangeStart.b;
@@ -652,32 +756,40 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         /// 
         /// </summary>
-        protected void InitDurationRepeat() {
-            if(isEnabled) {
-                if(durationMin == durationMax) {
+        protected void InitDurationRepeat()
+        {
+            if ( isEnabled )
+            {
+                if ( durationMin == durationMax )
+                {
                     durationRemain = durationMin;
                 }
-                else {
-                    durationRemain = Utility.RangeRandom(durationMin, durationMax);
+                else
+                {
+                    durationRemain = Utility.RangeRandom( durationMin, durationMax );
                 }
             }
-            else {
+            else
+            {
                 // reset repeat
-                if(repeatDelayMin == repeatDelayMax) {
+                if ( repeatDelayMin == repeatDelayMax )
+                {
                     repeatDelayRemain = repeatDelayMin;
                 }
-                else {
-                    repeatDelayRemain = Utility.RangeRandom(repeatDelayMin, repeatDelayMax);
+                else
+                {
+                    repeatDelayRemain = Utility.RangeRandom( repeatDelayMin, repeatDelayMax );
                 }
             }
         }
-    
+
         /// <summary>
         ///    Sets the min/max duration range for this emitter.
         /// </summary>
         /// <param name="min"></param>
         /// <param name="max"></param>
-        public void SetDuration(float min, float max) {
+        public void SetDuration( float min, float max )
+        {
             durationMin = min;
             durationMax = max;
             InitDurationRepeat();
@@ -687,16 +799,18 @@ namespace Axiom.ParticleSystems {
         /// 
         /// </summary>
         /// <param name="emitter"></param>
-        public virtual void CopyTo(ParticleEmitter emitter) {
+        public virtual void CopyTo( ParticleEmitter emitter )
+        {
             // loop through all registered commands and copy from this instance to the target instance
-            foreach(DictionaryEntry entry in commandTable) {
+            foreach ( DictionaryEntry entry in commandTable )
+            {
                 string name = (string)entry.Key;
 
                 // get the value of the param from this instance
-                string val = ((ICommand)entry.Value).Get(this);
+                string val = ( (ICommand)entry.Value ).Get( this );
 
                 // set the param on the target instance
-                emitter.SetParam(name, val);
+                emitter.SetParam( name, val );
             }
         }
 
@@ -709,15 +823,18 @@ namespace Axiom.ParticleSystems {
         /// </summary>
         /// <param name="name"></param>
         /// <param name="value"></param>
-        public bool SetParam(string name, string val) {
-            if(commandTable.ContainsKey(name)) {
-                ICommand command = (ICommand)commandTable[name];
+        public bool SetParam( string name, string val )
+        {
+            if ( commandTable.ContainsKey( name ) )
+            {
+                ICommand command = (ICommand)commandTable[ name ];
 
-                command.Set(this, val);
- 
+                command.Set( this, val );
+
                 return true;
             }
-            else {
+            else
+            {
                 return false;
             }
         }
@@ -728,33 +845,37 @@ namespace Axiom.ParticleSystems {
         /// <remarks>
         ///		Methods meant to serve as attribute parsers should use a method attribute to 
         /// </remarks>
-        protected void RegisterCommands() {
+        protected void RegisterCommands()
+        {
             Type baseType = GetType();
 
-            do {
-                Type[] types = baseType.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Public);
-			
+            do
+            {
+                Type[] types = baseType.GetNestedTypes( BindingFlags.NonPublic | BindingFlags.Public );
+
                 // loop through all methods and look for ones marked with attributes
-                for(int i = 0; i < types.Length; i++) {
+                for ( int i = 0; i < types.Length; i++ )
+                {
                     // get the current method in the loop
-                    Type type = types[i];
-				
+                    Type type = types[ i ];
+
                     // get as many command attributes as there are on this type
-                    CommandAttribute[] commandAtts = 
-                        (CommandAttribute[])type.GetCustomAttributes(typeof(CommandAttribute), true);
+                    CommandAttribute[] commandAtts =
+                        (CommandAttribute[])type.GetCustomAttributes( typeof( CommandAttribute ), true );
 
                     // loop through each one we found and register its command
-                    for(int j = 0; j < commandAtts.Length; j++) {
-                        CommandAttribute commandAtt = commandAtts[j];
+                    for ( int j = 0; j < commandAtts.Length; j++ )
+                    {
+                        CommandAttribute commandAtt = commandAtts[ j ];
 
-                        commandTable.Add(commandAtt.Name, Activator.CreateInstance(type));
+                        commandTable.Add( commandAtt.Name, Activator.CreateInstance( type ) );
                     } // for
                 } // for
 
                 // get the base type of the current type
                 baseType = baseType.BaseType;
 
-            } while(baseType != typeof(object));
+            } while ( baseType != typeof( object ) );
         }
 
         #endregion Script parser methods
@@ -764,255 +885,306 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         ///    
         /// </summary>
-        [Command("angle", "Angle to emit the particles at.", typeof(ParticleEmitter))]
-        class AngleCommand: ICommand {
-            public void Set(object target, string val) {
+        [Command( "angle", "Angle to emit the particles at.", typeof( ParticleEmitter ) )]
+        class AngleCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.Angle = StringConverter.ParseFloat(val);
+                emitter.Angle = StringConverter.ParseFloat( val );
             }
-            public string Get(object target) {
+            public string Get( object target )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                return StringConverter.ToString(emitter.Angle);
-            }
-        }
-
-        /// <summary>
-        ///    
-        /// </summary>
-        [Command("position", "Particle emitter position.", typeof(ParticleEmitter))]
-        class PositionCommand : ICommand {
-            public void Set(object target, string val) {
-                ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.Position = StringConverter.ParseVector3(val);
-            }
-            public string Get(object target) {
-                ParticleEmitter emitter = target as ParticleEmitter;
-                return StringConverter.ToString(emitter.Position);
+                return StringConverter.ToString( emitter.Angle );
             }
         }
 
         /// <summary>
         ///    
         /// </summary>
-        [Command("emission_rate", "Rate of particle emission.", typeof(ParticleEmitter))]
-        class EmissionRateCommand: ICommand {
-            public void Set(object target, string val) {
+        [Command( "position", "Particle emitter position.", typeof( ParticleEmitter ) )]
+        class PositionCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.EmissionRate = StringConverter.ParseFloat(val);
+                emitter.Position = StringConverter.ParseVector3( val );
             }
-            public string Get(object target) {
+            public string Get( object target )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                return StringConverter.ToString(emitter.EmissionRate);
-            }
-        }
-
-        /// <summary>
-        ///    
-        /// </summary>
-        [Command("time_to_live", "Constant lifespan of a particle.", typeof(ParticleEmitter))]
-        class TtlCommand: ICommand {
-            public void Set(object target, string val) {
-                ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.TimeToLive = StringConverter.ParseFloat(val);
-            }
-            public string Get(object target) {
-                ParticleEmitter emitter = target as ParticleEmitter;
-                return StringConverter.ToString(emitter.TimeToLive);
+                return StringConverter.ToString( emitter.Position );
             }
         }
 
         /// <summary>
         ///    
         /// </summary>
-        [Command("time_to_live_min", "Minimum lifespan of a particle.", typeof(ParticleEmitter))]
-        class TtlMinCommand: ICommand {
-            public void Set(object target, string val) {
+        [Command( "emission_rate", "Rate of particle emission.", typeof( ParticleEmitter ) )]
+        class EmissionRateCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MinTimeToLive = StringConverter.ParseFloat(val);
+                emitter.EmissionRate = StringConverter.ParseFloat( val );
             }
-            public string Get(object target) {
+            public string Get( object target )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                return StringConverter.ToString(emitter.MinTimeToLive);
-            }
-        }
-
-        /// <summary>
-        ///    
-        /// </summary>
-        [Command("time_to_live_max", "Maximum lifespan of a particle.", typeof(ParticleEmitter))]
-        class TtlMaxCommand: ICommand {
-            public void Set(object target, string val) {
-                ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MaxTimeToLive = StringConverter.ParseFloat(val);
-            }
-            public string Get(object target) {
-                ParticleEmitter emitter = target as ParticleEmitter;
-                return StringConverter.ToString(emitter.MaxTimeToLive);
+                return StringConverter.ToString( emitter.EmissionRate );
             }
         }
 
         /// <summary>
         ///    
         /// </summary>
-        [Command("direction", "Particle direction.", typeof(ParticleEmitter))]
-        class DirectionCommand : ICommand {
-            public void Set(object target, string val) {
+        [Command( "time_to_live", "Constant lifespan of a particle.", typeof( ParticleEmitter ) )]
+        class TtlCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.Direction = StringConverter.ParseVector3(val);
+                emitter.TimeToLive = StringConverter.ParseFloat( val );
             }
-            public string Get(object target) {
+            public string Get( object target )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                return StringConverter.ToString(emitter.Direction);
-            }
-        }
-
-        /// <summary>
-        ///    
-        /// </summary>
-        [Command("duration", "Constant duration.", typeof(ParticleEmitter))]
-        class DurationCommand : ICommand {
-            public void Set(object target, string val) {
-                ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.Duration = StringConverter.ParseFloat(val);
-            }
-            public string Get(object target) {
-                ParticleEmitter emitter = target as ParticleEmitter;
-                return StringConverter.ToString(emitter.Duration);
+                return StringConverter.ToString( emitter.TimeToLive );
             }
         }
 
         /// <summary>
         ///    
         /// </summary>
-        [Command("duration_min", "Minimum duration.", typeof(ParticleEmitter))]
-        class MinDurationCommand : ICommand {
-            public void Set(object target, string val) {
+        [Command( "time_to_live_min", "Minimum lifespan of a particle.", typeof( ParticleEmitter ) )]
+        class TtlMinCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MinDuration = StringConverter.ParseFloat(val);
+                emitter.MinTimeToLive = StringConverter.ParseFloat( val );
             }
-            public string Get(object target) {
+            public string Get( object target )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                return StringConverter.ToString(emitter.MinDuration);
-            }
-        }
-
-        /// <summary>
-        ///    
-        /// </summary>
-        [Command("duration_max", "Maximum duration.", typeof(ParticleEmitter))]
-        class MaxDurationCommand : ICommand {
-            public void Set(object target, string val) {
-                ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MaxDuration = StringConverter.ParseFloat(val);
-            }
-            public string Get(object target) {
-                ParticleEmitter emitter = target as ParticleEmitter;
-                return StringConverter.ToString(emitter.MaxDuration);
+                return StringConverter.ToString( emitter.MinTimeToLive );
             }
         }
 
         /// <summary>
         ///    
         /// </summary>
-        [Command("repeat_delay", "Constant delay between repeating durations.", typeof(ParticleEmitter))]
-        class RepeatDelayCommand : ICommand {
-            public void Set(object target, string val) {
+        [Command( "time_to_live_max", "Maximum lifespan of a particle.", typeof( ParticleEmitter ) )]
+        class TtlMaxCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.RepeatDelay = StringConverter.ParseFloat(val);
+                emitter.MaxTimeToLive = StringConverter.ParseFloat( val );
             }
-            public string Get(object target) {
+            public string Get( object target )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                return StringConverter.ToString(emitter.RepeatDelay);
-            }
-        }
-
-        /// <summary>
-        ///    
-        /// </summary>
-        [Command("repeat_delay_min", "Minimum delay between repeating durations.", typeof(ParticleEmitter))]
-        class RepeatDelayMinCommand : ICommand {
-            public void Set(object target, string val) {
-                ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MinRepeatDelay = StringConverter.ParseFloat(val);
-            }
-            public string Get(object target) {
-                ParticleEmitter emitter = target as ParticleEmitter;
-                return StringConverter.ToString(emitter.MinRepeatDelay);
+                return StringConverter.ToString( emitter.MaxTimeToLive );
             }
         }
 
         /// <summary>
         ///    
         /// </summary>
-        [Command("repeat_delay_max", "Maximum delay between repeating durations.", typeof(ParticleEmitter))]
-        class RepeatDelayMaxCommand : ICommand {
-            public void Set(object target, string val) {
+        [Command( "direction", "Particle direction.", typeof( ParticleEmitter ) )]
+        class DirectionCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MaxRepeatDelay = StringConverter.ParseFloat(val);
+                emitter.Direction = StringConverter.ParseVector3( val );
             }
-            public string Get(object target) {
+            public string Get( object target )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                return StringConverter.ToString(emitter.MaxRepeatDelay);
-            }
-        }
-
-        /// <summary>
-        ///    
-        /// </summary>
-        [Command("velocity", "Constant particle velocity.", typeof(ParticleEmitter))]
-        class VelocityCommand : ICommand {
-            public void Set(object target, string val) {
-                ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.ParticleVelocity = StringConverter.ParseFloat(val);
-            }
-            public string Get(object target) {
-                ParticleEmitter emitter = target as ParticleEmitter;
-                return StringConverter.ToString(emitter.ParticleVelocity);
+                return StringConverter.ToString( emitter.Direction );
             }
         }
 
         /// <summary>
         ///    
         /// </summary>
-        [Command("velocity_min", "Minimum particle velocity.", typeof(ParticleEmitter))]
-        class VelocityMinCommand : ICommand {
-            public void Set(object target, string val) {
+        [Command( "duration", "Constant duration.", typeof( ParticleEmitter ) )]
+        class DurationCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MinParticleVelocity = StringConverter.ParseFloat(val);
+                emitter.Duration = StringConverter.ParseFloat( val );
             }
-            public string Get(object target) {
+            public string Get( object target )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                return StringConverter.ToString(emitter.MinParticleVelocity);
+                return StringConverter.ToString( emitter.Duration );
             }
         }
 
         /// <summary>
         ///    
         /// </summary>
-        [Command("velocity_max", "Maximum particle velocity.", typeof(ParticleEmitter))]
-        class VelocityMaxCommand : ICommand {
-            public void Set(object target, string val) {
+        [Command( "duration_min", "Minimum duration.", typeof( ParticleEmitter ) )]
+        class MinDurationCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.MaxParticleVelocity = StringConverter.ParseFloat(val);
+                emitter.MinDuration = StringConverter.ParseFloat( val );
             }
-            public string Get(object target) {
+            public string Get( object target )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                return StringConverter.ToString(emitter.MaxParticleVelocity);
+                return StringConverter.ToString( emitter.MinDuration );
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command( "duration_max", "Maximum duration.", typeof( ParticleEmitter ) )]
+        class MaxDurationCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.MaxDuration = StringConverter.ParseFloat( val );
+            }
+            public string Get( object target )
+            {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return StringConverter.ToString( emitter.MaxDuration );
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command( "repeat_delay", "Constant delay between repeating durations.", typeof( ParticleEmitter ) )]
+        class RepeatDelayCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.RepeatDelay = StringConverter.ParseFloat( val );
+            }
+            public string Get( object target )
+            {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return StringConverter.ToString( emitter.RepeatDelay );
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command( "repeat_delay_min", "Minimum delay between repeating durations.", typeof( ParticleEmitter ) )]
+        class RepeatDelayMinCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.MinRepeatDelay = StringConverter.ParseFloat( val );
+            }
+            public string Get( object target )
+            {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return StringConverter.ToString( emitter.MinRepeatDelay );
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command( "repeat_delay_max", "Maximum delay between repeating durations.", typeof( ParticleEmitter ) )]
+        class RepeatDelayMaxCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.MaxRepeatDelay = StringConverter.ParseFloat( val );
+            }
+            public string Get( object target )
+            {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return StringConverter.ToString( emitter.MaxRepeatDelay );
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command( "velocity", "Constant particle velocity.", typeof( ParticleEmitter ) )]
+        class VelocityCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.ParticleVelocity = StringConverter.ParseFloat( val );
+            }
+            public string Get( object target )
+            {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return StringConverter.ToString( emitter.ParticleVelocity );
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command( "velocity_min", "Minimum particle velocity.", typeof( ParticleEmitter ) )]
+        class VelocityMinCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.MinParticleVelocity = StringConverter.ParseFloat( val );
+            }
+            public string Get( object target )
+            {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return StringConverter.ToString( emitter.MinParticleVelocity );
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command( "velocity_max", "Maximum particle velocity.", typeof( ParticleEmitter ) )]
+        class VelocityMaxCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                emitter.MaxParticleVelocity = StringConverter.ParseFloat( val );
+            }
+            public string Get( object target )
+            {
+                ParticleEmitter emitter = target as ParticleEmitter;
+                return StringConverter.ToString( emitter.MaxParticleVelocity );
             }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        [Command("colour_range_start", "Color range start.", typeof(ParticleEmitter))]
-        class ColorRangeStartCommand : ICommand {
-            public void Set(object target, string val) {
+        [Command( "colour_range_start", "Color range start.", typeof( ParticleEmitter ) )]
+        class ColorRangeStartCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.ColorRangeStart = StringConverter.ParseColor(val);
+                emitter.ColorRangeStart = StringConverter.ParseColor( val );
             }
-            public string Get(object target) {
+            public string Get( object target )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                return StringConverter.ToString(emitter.ColorRangeStart);
+                return StringConverter.ToString( emitter.ColorRangeStart );
             }
         }
 
@@ -1020,15 +1192,18 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         /// 
         /// </summary>
-        [Command("colour_range_end", "Color range end.", typeof(ParticleEmitter))]
-        class ColorRangeEndCommand : ICommand {
-            public void Set(object target, string val) {
+        [Command( "colour_range_end", "Color range end.", typeof( ParticleEmitter ) )]
+        class ColorRangeEndCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.ColorRangeEnd = StringConverter.ParseColor(val);
+                emitter.ColorRangeEnd = StringConverter.ParseColor( val );
             }
-            public string Get(object target) {
+            public string Get( object target )
+            {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                return StringConverter.ToString(emitter.ColorRangeEnd);
+                return StringConverter.ToString( emitter.ColorRangeEnd );
             }
         }
 

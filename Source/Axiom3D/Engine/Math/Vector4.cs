@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -30,19 +30,32 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
-using System.Diagnostics;	
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Axiom.Math {
+#endregion Namespace Declarations
+
+namespace Axiom.Math
+{
     /// <summary>
     /// 4D homogeneous vector.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public struct Vector4 {
+    [StructLayout( LayoutKind.Sequential )]
+    public struct Vector4
+    {
         #region Member variables
 
-        public float x, y, z ,w;
+        public float x, y, z, w;
 
         #endregion
 
@@ -51,7 +64,8 @@ namespace Axiom.Math {
         /// <summary>
         ///		Creates a new 4 dimensional Vector.
         /// </summary>
-        public Vector4(float x, float y, float z, float w) {
+        public Vector4( float x, float y, float z, float w )
+        {
             this.x = x;
             this.y = y;
             this.z = z;
@@ -69,7 +83,8 @@ namespace Axiom.Math {
         ///     Vector with which to calculate the dot product (together with this one).
         /// </param>
         /// <returns>A float representing the dot product value.</returns>
-        public float Dot(Vector4 vec) {
+        public float Dot( Vector4 vec )
+        {
             return x * vec.x + y * vec.y + z * vec.z + w * vec.w;
         }
 
@@ -83,8 +98,9 @@ namespace Axiom.Math {
         /// <param name="vector"></param>
         /// <param name="matrix"></param>
         /// <returns></returns>
-        public static Vector4 Multiply (Vector4 vector, Matrix4 matrix) {
-        	return vector * matrix;
+        public static Vector4 Multiply( Vector4 vector, Matrix4 matrix )
+        {
+            return vector * matrix;
         }
         /// <summary>
         ///		
@@ -92,45 +108,48 @@ namespace Axiom.Math {
         /// <param name="vector"></param>
         /// <param name="matrix"></param>
         /// <returns></returns>
-		public static Vector4 operator * (Matrix4 matrix, Vector4 vector) {
-			Vector4 result = new Vector4();
-			
-			result.x = vector.x * matrix.m00 + vector.y * matrix.m01 + vector.z * matrix.m02 + vector.w * matrix.m03;
-			result.y = vector.x * matrix.m10 + vector.y * matrix.m11 + vector.z * matrix.m12 + vector.w * matrix.m13;
-			result.z = vector.x * matrix.m20 + vector.y * matrix.m21 + vector.z * matrix.m22 + vector.w * matrix.m23;
-			result.w = vector.x * matrix.m30 + vector.y * matrix.m31 + vector.z * matrix.m32 + vector.w * matrix.m33;
+        public static Vector4 operator *( Matrix4 matrix, Vector4 vector )
+        {
+            Vector4 result = new Vector4();
 
-			return result;
-		}
+            result.x = vector.x * matrix.m00 + vector.y * matrix.m01 + vector.z * matrix.m02 + vector.w * matrix.m03;
+            result.y = vector.x * matrix.m10 + vector.y * matrix.m11 + vector.z * matrix.m12 + vector.w * matrix.m13;
+            result.z = vector.x * matrix.m20 + vector.y * matrix.m21 + vector.z * matrix.m22 + vector.w * matrix.m23;
+            result.w = vector.x * matrix.m30 + vector.y * matrix.m31 + vector.z * matrix.m32 + vector.w * matrix.m33;
 
-		// TODO: Find the signifance of having 2 overloads with opposite param lists that do transposed operations
-		public static Vector4 operator * (Vector4 vector, Matrix4 matrix) {
-			Vector4 result = new Vector4();
-			
-			result.x = vector.x * matrix.m00 + vector.y * matrix.m10 + vector.z * matrix.m20 + vector.w * matrix.m30;
-			result.y = vector.x * matrix.m01 + vector.y * matrix.m11 + vector.z * matrix.m21 + vector.w * matrix.m31;
-			result.z = vector.x * matrix.m02 + vector.y * matrix.m12 + vector.z * matrix.m22 + vector.w * matrix.m32;
-			result.w = vector.x * matrix.m03 + vector.y * matrix.m13 + vector.z * matrix.m23 + vector.w * matrix.m33;
+            return result;
+        }
 
-			return result;
-		}
+        // TODO: Find the signifance of having 2 overloads with opposite param lists that do transposed operations
+        public static Vector4 operator *( Vector4 vector, Matrix4 matrix )
+        {
+            Vector4 result = new Vector4();
 
-		/// <summary>
-		///		Multiplies a Vector4 by a scalar value.
-		/// </summary>
-		/// <param name="vector"></param>
-		/// <param name="scalar"></param>
-		/// <returns></returns>
-		public static Vector4 operator * (Vector4 vector, float scalar) {
-			Vector4 result = new Vector4();
+            result.x = vector.x * matrix.m00 + vector.y * matrix.m10 + vector.z * matrix.m20 + vector.w * matrix.m30;
+            result.y = vector.x * matrix.m01 + vector.y * matrix.m11 + vector.z * matrix.m21 + vector.w * matrix.m31;
+            result.z = vector.x * matrix.m02 + vector.y * matrix.m12 + vector.z * matrix.m22 + vector.w * matrix.m32;
+            result.w = vector.x * matrix.m03 + vector.y * matrix.m13 + vector.z * matrix.m23 + vector.w * matrix.m33;
 
-			result.x = vector.x * scalar;
-			result.y = vector.y * scalar;
-			result.z = vector.z * scalar;
-			result.w = vector.w * scalar;
+            return result;
+        }
 
-			return result;
-		}
+        /// <summary>
+        ///		Multiplies a Vector4 by a scalar value.
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <param name="scalar"></param>
+        /// <returns></returns>
+        public static Vector4 operator *( Vector4 vector, float scalar )
+        {
+            Vector4 result = new Vector4();
+
+            result.x = vector.x * scalar;
+            result.y = vector.y * scalar;
+            result.z = vector.z * scalar;
+            result.w = vector.w * scalar;
+
+            return result;
+        }
 
         /// <summary>
         ///		User to compare two Vector4 instances for equality.
@@ -138,21 +157,23 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns>true or false</returns>
-        public static bool operator == (Vector4 left, Vector4 right) {
-            return (left.x == right.x && 
-                left.y == right.y && 
-                left.z == right.z && 
-                left.w == right.w);
+        public static bool operator ==( Vector4 left, Vector4 right )
+        {
+            return ( left.x == right.x &&
+                left.y == right.y &&
+                left.z == right.z &&
+                left.w == right.w );
         }
 
-		/// <summary>
-		///		Used to negate the elements of a vector.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <returns></returns>
-		public static Vector4 operator - (Vector4 left) {
-			return new Vector4(-left.x, -left.y, -left.z, -left.w);
-		}
+        /// <summary>
+        ///		Used to negate the elements of a vector.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <returns></returns>
+        public static Vector4 operator -( Vector4 left )
+        {
+            return new Vector4( -left.x, -left.y, -left.z, -left.w );
+        }
 
         /// <summary>
         ///		User to compare two Vector4 instances for inequality.
@@ -160,11 +181,12 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns>true or false</returns>
-        public static bool operator != (Vector4 left, Vector4 right) {
-            return (left.x != right.x || 
-                left.y != right.y || 
+        public static bool operator !=( Vector4 left, Vector4 right )
+        {
+            return ( left.x != right.x ||
+                left.y != right.y ||
                 left.z != right.z ||
-                left.w != right.w);
+                left.w != right.w );
         }
 
         /// <summary>
@@ -173,23 +195,28 @@ namespace Axiom.Math {
         /// <remarks>
         ///		Uses unsafe pointer arithmetic to reduce the code required.
         ///	</remarks>
-        public float this[int index] {
-            get {
-                Debug.Assert(index >= 0 && index < 4, "Indexer boundaries overrun in Vector4.");
-				
-                // using pointer arithmetic here for less code.  Otherwise, we'd have a big switch statement.
-                unsafe {
-                    fixed(float* pX = &x)
-                        return *(pX + index);
-                }
-            }
-            set {
-                Debug.Assert(index >= 0 && index < 4, "Indexer boundaries overrun in Vector4.");
+        public float this[ int index ]
+        {
+            get
+            {
+                Debug.Assert( index >= 0 && index < 4, "Indexer boundaries overrun in Vector4." );
 
                 // using pointer arithmetic here for less code.  Otherwise, we'd have a big switch statement.
-                unsafe {
-                    fixed(float* pX = &x)
-                        *(pX + index) = value;
+                unsafe
+                {
+                    fixed ( float* pX = &x )
+                        return *( pX + index );
+                }
+            }
+            set
+            {
+                Debug.Assert( index >= 0 && index < 4, "Indexer boundaries overrun in Vector4." );
+
+                // using pointer arithmetic here for less code.  Otherwise, we'd have a big switch statement.
+                unsafe
+                {
+                    fixed ( float* pX = &x )
+                        *( pX + index ) = value;
                 }
             }
         }
@@ -203,8 +230,9 @@ namespace Axiom.Math {
         ///		a Vector4.
         /// </summary>
         /// <returns>A string representation of a Vector4.</returns>
-        public override string ToString() {
-            return string.Format("<{0},{1},{2},{3}>", this.x, this.y, this.z, this.w);
+        public override string ToString()
+        {
+            return string.Format( "<{0},{1},{2},{3}>", this.x, this.y, this.z, this.w );
         }
 
         /// <summary>
@@ -216,7 +244,8 @@ namespace Axiom.Math {
         ///		member variables.
         /// </summary>
         /// <returns></returns>
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
             return (int)this.x ^ (int)this.y ^ (int)this.z ^ (int)this.w;
         }
 
@@ -226,9 +255,10 @@ namespace Axiom.Math {
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override bool Equals(object obj) {
-            if(obj is Vector4)
-                return (this == (Vector4)obj);
+        public override bool Equals( object obj )
+        {
+            if ( obj is Vector4 )
+                return ( this == (Vector4)obj );
             else
                 return false;
         }

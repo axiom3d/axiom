@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,162 +24,206 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+
 using Axiom.Core;
 using Axiom.ParticleSystems;
+using Axiom.Math;
 using Axiom.Scripting;
 
-namespace Axiom.ParticleFX {
-	/// <summary>
-	/// Summary description for ColorFaderAffector.
-	/// </summary>
-	public class ColorFaderAffector : ParticleAffector {
-		protected float alphaAdjust;
-		protected float redAdjust;
-		protected float greenAdjust;
-		protected float blueAdjust;
+#endregion Namespace Declarations
 
-		public ColorFaderAffector() {
-			this.type = "ColourFader";
-		}
+namespace Axiom.ParticleFX
+{
+    /// <summary>
+    /// Summary description for ColorFaderAffector.
+    /// </summary>
+    public class ColorFaderAffector : ParticleAffector
+    {
+        protected float alphaAdjust;
+        protected float redAdjust;
+        protected float greenAdjust;
+        protected float blueAdjust;
 
-		public float AlphaAdjust {
-			get { 
-				return alphaAdjust; 
-			}
-			set { 
-				alphaAdjust = value; 
-			}
-		}
+        public ColorFaderAffector()
+        {
+            this.type = "ColourFader";
+        }
 
-		public float RedAdjust {
-			get { 
-				return redAdjust; 
-			}
-			set { 
-				redAdjust = value; 
-			}
-		}
+        public float AlphaAdjust
+        {
+            get
+            {
+                return alphaAdjust;
+            }
+            set
+            {
+                alphaAdjust = value;
+            }
+        }
 
-		public float GreenAdjust {
-			get { 
-				return greenAdjust; 
-			}
-			set { 
-				greenAdjust = value; 
-			}
-		}
+        public float RedAdjust
+        {
+            get
+            {
+                return redAdjust;
+            }
+            set
+            {
+                redAdjust = value;
+            }
+        }
 
-		public float BlueAdjust {
-			get { 
-				return blueAdjust; 
-			}
-			set { 
-				blueAdjust = value; 
-			}
-		}
+        public float GreenAdjust
+        {
+            get
+            {
+                return greenAdjust;
+            }
+            set
+            {
+                greenAdjust = value;
+            }
+        }
 
-		protected void AdjustWithClamp(ref float component, float adjust) {
-			component += adjust;
+        public float BlueAdjust
+        {
+            get
+            {
+                return blueAdjust;
+            }
+            set
+            {
+                blueAdjust = value;
+            }
+        }
 
-			// limit to range [0,1]
-			if(component < 0.0f)
-				component = 0.0f;
-			else if(component > 1.0f)
-				component = 1.0f;
-		}
+        protected void AdjustWithClamp( ref float component, float adjust )
+        {
+            component += adjust;
 
-		public override void InitParticle(ref Particle particle) {
-		}
+            // limit to range [0,1]
+            if ( component < 0.0f )
+                component = 0.0f;
+            else if ( component > 1.0f )
+                component = 1.0f;
+        }
 
-		public override void AffectParticles(ParticleSystem system, float timeElapsed) {
-			float da, dr, dg, db;
+        public override void InitParticle( ref Particle particle )
+        {
+        }
 
-			da = alphaAdjust * timeElapsed;
-			dr = redAdjust * timeElapsed;
-			dg = greenAdjust * timeElapsed;
-			db = blueAdjust * timeElapsed;
+        public override void AffectParticles( ParticleSystem system, float timeElapsed )
+        {
+            float da, dr, dg, db;
 
-			// loop through the particles
+            da = alphaAdjust * timeElapsed;
+            dr = redAdjust * timeElapsed;
+            dg = greenAdjust * timeElapsed;
+            db = blueAdjust * timeElapsed;
 
-			for(int i = 0; i < system.Particles.Count; i++) {
-				Particle p = (Particle)system.Particles[i];
+            // loop through the particles
 
-				// adjust the values with clamping ([0,1] in this case)
-				AdjustWithClamp(ref p.Color.a, da);
-				AdjustWithClamp(ref p.Color.r, dr);
-				AdjustWithClamp(ref p.Color.g, dg);
-				AdjustWithClamp(ref p.Color.b, db);
+            for ( int i = 0; i < system.Particles.Count; i++ )
+            {
+                Particle p = (Particle)system.Particles[ i ];
 
-			}
-		}
+                // adjust the values with clamping ([0,1] in this case)
+                AdjustWithClamp( ref p.Color.a, da );
+                AdjustWithClamp( ref p.Color.r, dr );
+                AdjustWithClamp( ref p.Color.g, dg );
+                AdjustWithClamp( ref p.Color.b, db );
 
-		#region Command definition classes
+            }
+        }
 
-		[Command("red", "Red component.", typeof(ParticleAffector))]
-		class RedCommand : ICommand {
-			#region ICommand Members
+        #region Command definition classes
 
-			public string Get(object target) {
-				ColorFaderAffector affector = target as ColorFaderAffector;
-				return StringConverter.ToString(affector.RedAdjust);
-			}
-			public void Set(object target, string val) {
-				ColorFaderAffector affector = target as ColorFaderAffector;
-				affector.RedAdjust = StringConverter.ParseFloat(val);
-			}
+        [Command( "red", "Red component.", typeof( ParticleAffector ) )]
+        class RedCommand : ICommand
+        {
+            #region ICommand Members
 
-			#endregion
-		}
+            public string Get( object target )
+            {
+                ColorFaderAffector affector = target as ColorFaderAffector;
+                return StringConverter.ToString( affector.RedAdjust );
+            }
+            public void Set( object target, string val )
+            {
+                ColorFaderAffector affector = target as ColorFaderAffector;
+                affector.RedAdjust = StringConverter.ParseFloat( val );
+            }
 
-		[Command("green", "Green component.", typeof(ParticleAffector))]
-		class GreenCommand : ICommand {
-			#region ICommand Members
+            #endregion
+        }
 
-			public string Get(object target) {
-				ColorFaderAffector affector = target as ColorFaderAffector;
-				return StringConverter.ToString(affector.GreenAdjust);
-			}
-			public void Set(object target, string val) {
-				ColorFaderAffector affector = target as ColorFaderAffector;
-				affector.GreenAdjust = StringConverter.ParseFloat(val);
-			}
+        [Command( "green", "Green component.", typeof( ParticleAffector ) )]
+        class GreenCommand : ICommand
+        {
+            #region ICommand Members
 
-			#endregion
-		}
+            public string Get( object target )
+            {
+                ColorFaderAffector affector = target as ColorFaderAffector;
+                return StringConverter.ToString( affector.GreenAdjust );
+            }
+            public void Set( object target, string val )
+            {
+                ColorFaderAffector affector = target as ColorFaderAffector;
+                affector.GreenAdjust = StringConverter.ParseFloat( val );
+            }
 
-		[Command("blue", "Blue component.", typeof(ParticleAffector))]
-		class BlueCommand : ICommand {
-			#region ICommand Members
+            #endregion
+        }
 
-			public string Get(object target) {
-				ColorFaderAffector affector = target as ColorFaderAffector;
-				return StringConverter.ToString(affector.BlueAdjust);
-			}
-			public void Set(object target, string val) {
-				ColorFaderAffector affector = target as ColorFaderAffector;
-				affector.BlueAdjust = StringConverter.ParseFloat(val);
-			}
+        [Command( "blue", "Blue component.", typeof( ParticleAffector ) )]
+        class BlueCommand : ICommand
+        {
+            #region ICommand Members
 
-			#endregion
-		}
+            public string Get( object target )
+            {
+                ColorFaderAffector affector = target as ColorFaderAffector;
+                return StringConverter.ToString( affector.BlueAdjust );
+            }
+            public void Set( object target, string val )
+            {
+                ColorFaderAffector affector = target as ColorFaderAffector;
+                affector.BlueAdjust = StringConverter.ParseFloat( val );
+            }
 
-		[Command("alpha", "Alpha component.", typeof(ParticleAffector))]
-		class AlphaCommand : ICommand {
-			#region ICommand Members
+            #endregion
+        }
 
-			public string Get(object target) {
-				ColorFaderAffector affector = target as ColorFaderAffector;
-				return StringConverter.ToString(affector.AlphaAdjust);
-			}
-			public void Set(object target, string val) {
-				ColorFaderAffector affector = target as ColorFaderAffector;
-				affector.AlphaAdjust = StringConverter.ParseFloat(val);
-			}
+        [Command( "alpha", "Alpha component.", typeof( ParticleAffector ) )]
+        class AlphaCommand : ICommand
+        {
+            #region ICommand Members
 
-			#endregion
-		}
+            public string Get( object target )
+            {
+                ColorFaderAffector affector = target as ColorFaderAffector;
+                return StringConverter.ToString( affector.AlphaAdjust );
+            }
+            public void Set( object target, string val )
+            {
+                ColorFaderAffector affector = target as ColorFaderAffector;
+                affector.AlphaAdjust = StringConverter.ParseFloat( val );
+            }
 
-		#endregion Command definition classes
-	}
+            #endregion
+        }
+
+        #endregion Command definition classes
+    }
 }

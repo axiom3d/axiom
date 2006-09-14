@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,32 +24,46 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+
 using Axiom.Core;
 using Axiom.Math;
 
-namespace Axiom.Graphics {
-	/// <summary>
-	///     Collects a group of static ie immovable faces together which have common
+#endregion Namespace Declarations
+
+namespace Axiom.Graphics
+{
+    /// <summary>
+    ///     Collects a group of static ie immovable faces together which have common
     ///     properties like the material they use, the plane they lie on.
     /// </summary>
     /// <remarks>
-	///     Whilst for discrete geometry (i.e. movable/scene objects) groups of faces are
-	///     held in the SubMesh class, for immovable objects like scenery there
-	///     needs to ba little more flexibility in the grouping since the group is
-	///     likely to be a small part of a huge set of geometry. In addition, because
-	///     the faces are unmoving certain optimisations can be performed, e.g.
-	///     precalculating a world-coordinate bounding box and normal.
-	///     <p/>
-	///     Exactly how this class is used depends on the format of the large
-	///     static geometry used in the level. An example would be the use of this
-	///     class in the BspNode class for indoor levels.
-	///     For flexibility and efficiency, it is not assumed that this class holds
-	///     details of the vertices itself, or in fact that it holds the vertex indices
-	///     itself. Everything is manipulated via pointers so if you want this
-	///     class to point into a block of geometry data it can.
-	/// </summary>
-	public class StaticFaceGroup {
+    ///     Whilst for discrete geometry (i.e. movable/scene objects) groups of faces are
+    ///     held in the SubMesh class, for immovable objects like scenery there
+    ///     needs to ba little more flexibility in the grouping since the group is
+    ///     likely to be a small part of a huge set of geometry. In addition, because
+    ///     the faces are unmoving certain optimisations can be performed, e.g.
+    ///     precalculating a world-coordinate bounding box and normal.
+    ///     <p/>
+    ///     Exactly how this class is used depends on the format of the large
+    ///     static geometry used in the level. An example would be the use of this
+    ///     class in the BspNode class for indoor levels.
+    ///     For flexibility and efficiency, it is not assumed that this class holds
+    ///     details of the vertices itself, or in fact that it holds the vertex indices
+    ///     itself. Everything is manipulated via pointers so if you want this
+    ///     class to point into a block of geometry data it can.
+    /// </summary>
+    public class StaticFaceGroup
+    {
         /// <summary>
         ///     Type of face group.
         /// </summary>
@@ -102,5 +116,5 @@ namespace Axiom.Graphics {
         ///     Patch surface (only applicable when type == FaceGroup.Patch)
         /// </remarks>
         public PatchSurface patchSurf;
-	}
+    }
 }

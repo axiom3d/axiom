@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,16 +24,31 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
-using Microsoft.DirectX.Direct3D;
-using D3D = Microsoft.DirectX.Direct3D;
+
 using Axiom.Graphics;
 
-namespace Axiom.RenderSystems.DirectX9 {
+using D3D = Microsoft.DirectX.Direct3D;
+
+#endregion Namespace Declarations
+
+
+namespace Axiom.RenderSystems.DirectX9
+{
     /// <summary>
     /// 	Summary description for D3DVertexDeclaration.
     /// </summary>
-    public class D3DVertexDeclaration : Axiom.Graphics.VertexDeclaration {
+    public class D3DVertexDeclaration : VertexDeclaration
+    {
         #region Member variables
 
         protected D3D.Device device;
@@ -41,115 +56,124 @@ namespace Axiom.RenderSystems.DirectX9 {
         protected bool needsRebuild;
 
         #endregion
-		
+
         #region Constructors
-		
-        public D3DVertexDeclaration(D3D.Device device) {
+
+        public D3DVertexDeclaration( D3D.Device device )
+        {
             this.device = device;
         }
-		
+
         #endregion
-		
+
         #region Methods
 
-        public override Axiom.Graphics.VertexElement AddElement(short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index) {
-            Axiom.Graphics.VertexElement element = base.AddElement(source, offset, type, semantic, index);
+        public override Axiom.Graphics.VertexElement AddElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+        {
+            Axiom.Graphics.VertexElement element = base.AddElement( source, offset, type, semantic, index );
 
             needsRebuild = true;
 
             return element;
         }
 
-		public override Axiom.Graphics.VertexElement InsertElement(int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index)
-		{
-			Axiom.Graphics.VertexElement element = base.InsertElement(position, source, offset, type, semantic, index);
+        public override Axiom.Graphics.VertexElement InsertElement( int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+        {
+            Axiom.Graphics.VertexElement element = base.InsertElement( position, source, offset, type, semantic, index );
 
-			needsRebuild = true;
+            needsRebuild = true;
 
-			return element;
-		}
+            return element;
+        }
 
-		public override void ModifyElement(int elemIndex, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index) {
-			base.ModifyElement (elemIndex, source, offset, type, semantic, index);
+        public override void ModifyElement( int elemIndex, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+        {
+            base.ModifyElement( elemIndex, source, offset, type, semantic, index );
 
-			needsRebuild = true;
-		}
+            needsRebuild = true;
+        }
 
 
-		public override void RemoveElement(VertexElementSemantic semantic, int index) {
-			base.RemoveElement(semantic, index);
+        public override void RemoveElement( VertexElementSemantic semantic, int index )
+        {
+            base.RemoveElement( semantic, index );
 
-			needsRebuild = true;
-		}
+            needsRebuild = true;
+        }
 
-		public override void RemoveElement(int index) {
-			base.RemoveElement(index);
+        public override void RemoveElement( int index )
+        {
+            base.RemoveElement( index );
 
-			needsRebuild = true;
-		}
+            needsRebuild = true;
+        }
 
 
         #endregion
-		
+
         #region Properties
 
         /// <summary>
         /// 
         /// </summary>
         /// DOC
-        public D3D.VertexDeclaration D3DVertexDecl 
-		{
-            get {
+        public D3D.VertexDeclaration D3DVertexDecl
+        {
+            get
+            {
                 // rebuild declaration if things have changed
-                if(needsRebuild) {
-                    if(d3dVertexDecl != null)
+                if ( needsRebuild )
+                {
+                    if ( d3dVertexDecl != null )
                         d3dVertexDecl.Dispose();
 
                     // create elements array
-                    D3D.VertexElement[] d3dElements = new D3D.VertexElement[elements.Count + 1];
-	
-                    // loop through and configure each element for D3D
-                    for(int i = 0; i < elements.Count; i++) {
-                        Axiom.Graphics.VertexElement element = 
-                            (Axiom.Graphics.VertexElement)elements[i];
+                    D3D.VertexElement[] d3dElements = new D3D.VertexElement[ elements.Count + 1 ];
 
-                        d3dElements[i].DeclarationMethod = D3D.DeclarationMethod.Default;
-                        d3dElements[i].Offset = (short)element.Offset;
-                        d3dElements[i].Stream = (short)element.Source;
-                        d3dElements[i].DeclarationType = D3DHelper.ConvertEnum(element.Type);
-                        d3dElements[i].DeclarationUsage = D3DHelper.ConvertEnum(element.Semantic);
+                    // loop through and configure each element for D3D
+                    for ( int i = 0; i < elements.Count; i++ )
+                    {
+                        Axiom.Graphics.VertexElement element =
+                            (Axiom.Graphics.VertexElement)elements[ i ];
+
+                        d3dElements[ i ].DeclarationMethod = D3D.DeclarationMethod.Default;
+                        d3dElements[ i ].Offset = (short)element.Offset;
+                        d3dElements[ i ].Stream = (short)element.Source;
+                        d3dElements[ i ].DeclarationType = D3DHelper.ConvertEnum( element.Type );
+                        d3dElements[ i ].DeclarationUsage = D3DHelper.ConvertEnum( element.Semantic );
 
                         // set usage index explicitly for diffuse and specular, use index for the rest (i.e. texture coord sets)
-                        switch(element.Semantic) {
+                        switch ( element.Semantic )
+                        {
                             case VertexElementSemantic.Diffuse:
-                                d3dElements[i].UsageIndex = 0;
+                                d3dElements[ i ].UsageIndex = 0;
                                 break;
 
                             case VertexElementSemantic.Specular:
-                                d3dElements[i].UsageIndex = 1;
+                                d3dElements[ i ].UsageIndex = 1;
                                 break;
 
                             default:
-                                d3dElements[i].UsageIndex = (byte)element.Index;
+                                d3dElements[ i ].UsageIndex = (byte)element.Index;
                                 break;
                         } //  switch
 
                     } // for
 
                     // configure the last element to be the end
-                    d3dElements[elements.Count] = D3D.VertexElement.VertexDeclarationEnd;
+                    d3dElements[ elements.Count ] = D3D.VertexElement.VertexDeclarationEnd;
 
                     // create the new declaration
-                    d3dVertexDecl = new D3D.VertexDeclaration(device, d3dElements);
+                    d3dVertexDecl = new D3D.VertexDeclaration( device, d3dElements );
 
                     // reset the flag
                     needsRebuild = false;
                 }
 
-                return d3dVertexDecl; 
+                return d3dVertexDecl;
             }
         }
-		
+
         #endregion
 
     }

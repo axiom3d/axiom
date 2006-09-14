@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,14 +24,27 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using Axiom.Scripting;
 
-namespace Axiom.Core {
+#endregion Namespace Declarations
+
+namespace Axiom.Core
+{
     /// <summary>
     ///		Covers what a billboards position means.
     /// </summary>
-    public enum BillboardOrigin {
+    public enum BillboardOrigin
+    {
         TopLeft,
         TopCenter,
         TopRight,
@@ -46,22 +59,24 @@ namespace Axiom.Core {
     /// <summary>
     ///		Type of billboard to use for a BillboardSet.
     /// </summary>
-    public enum BillboardType {
+    public enum BillboardType
+    {
         /// <summary>Standard point billboard (default), always faces the camera completely and is always upright</summary>
-        [ScriptEnum("point")]
+        [ScriptEnum( "point" )]
         Point,
         /// <summary>Billboards are oriented around a shared direction vector (used as Y axis) and only rotate around this to face the camera</summary>
-        [ScriptEnum("oriented_common")]
+        [ScriptEnum( "oriented_common" )]
         OrientedCommon,
         /// <summary>Billboards are oriented around their own direction vector (their own Y axis) and only rotate around this to face the camera</summary>
-        [ScriptEnum("oriented_self")]
+        [ScriptEnum( "oriented_self" )]
         OrientedSelf
     }
 
     /// <summary>
     ///		Specifying the side of a box, used for things like skyboxes, etc.
     /// </summary>
-    public enum BoxPlane {
+    public enum BoxPlane
+    {
         Front,
         Back,
         Left,
@@ -73,7 +88,8 @@ namespace Axiom.Core {
     /// <summary>
     /// Defines the 6 planes the make up a frustum.  
     /// </summary>
-    public enum FrustumPlane {
+    public enum FrustumPlane
+    {
         Near = 0,
         Far,
         Left,
@@ -87,7 +103,8 @@ namespace Axiom.Core {
     /// <summary>
     ///     The level of detail in which the log will go into.
     /// </summary>
-    public enum LoggingLevel {
+    public enum LoggingLevel
+    {
         Low = 1,
         Normal,
         BoreMe
@@ -96,7 +113,8 @@ namespace Axiom.Core {
     /// <summary>
     ///     The importance of a logged message.
     /// </summary>
-    public enum LogMessageLevel {
+    public enum LogMessageLevel
+    {
         Trivial = 1,
         Normal,
         Critical
@@ -105,7 +123,8 @@ namespace Axiom.Core {
     /// <summary>
     ///		Canned entities that can be created on demand.
     /// </summary>
-    public enum PrefabEntity {
+    public enum PrefabEntity
+    {
         /// <summary>A flat plane.</summary>
         Plane,
         /// <summary>The obligatory teapot.</summary>
@@ -119,15 +138,16 @@ namespace Axiom.Core {
     /// <summary>
     ///		Priorities that can be assigned to renderable objects for sorting.
     /// </summary>
-    public enum RenderQueueGroupID {
+    public enum RenderQueueGroupID
+    {
         /// <summary>
         ///		Objects that must be rendered first (like backgrounds).
         ///	</summary>
         Background = 0,
-		/// <summary>
-		///		First queue (after backgrounds), used for skyboxes if rendered first.
-		/// </summary>
-		SkiesEarly = 5,
+        /// <summary>
+        ///		First queue (after backgrounds), used for skyboxes if rendered first.
+        /// </summary>
+        SkiesEarly = 5,
         /// <summary>All purpose queue.</summary>
         One = 10,
         /// <summary>All purpose queue.</summary>
@@ -146,10 +166,10 @@ namespace Axiom.Core {
         Eight = 80,
         /// <summary>All purpose queue.</summary>
         Nine = 90,
-		/// <summary>
-		///		Last queue before overlays, used for skyboxes if rendered last.
-		/// </summary>
-		SkiesLate = 95,
+        /// <summary>
+        ///		Last queue before overlays, used for skyboxes if rendered last.
+        /// </summary>
+        SkiesLate = 95,
         /// <summary>
         ///		Use this queue for objects which must be rendered last e.g. overlays.
         ///	</summary>
@@ -160,7 +180,8 @@ namespace Axiom.Core {
     ///    The different types of scenes types that can be handled by the engine.  The various types can
     ///    be altered by plugin functionality (i.e. BSP for interior, Octree for Exterior, etc).
     /// </summary>
-    public enum SceneType {
+    public enum SceneType
+    {
         Generic,
         ExteriorClose,
         ExteriorFar,
@@ -171,7 +192,8 @@ namespace Axiom.Core {
     /// <summary>
     ///     Denotes the spaces which a transform can be relative to.
     /// </summary>
-    public enum TransformSpace {
+    public enum TransformSpace
+    {
         /// <summary>
         ///     Transform is relative to the local space.
         /// </summary>
@@ -194,26 +216,27 @@ namespace Axiom.Core {
     ///    it will know which type of world geometry abstraction is available to it.
     /// </summary>
     [Flags]
-    public enum WorldFragmentType {
+    public enum WorldFragmentType
+    {
         /// <summary>
         ///    Return no world geometry hits at all.
         /// </summary>
-        None				= 0x01,
+        None = 0x01,
         /// <summary>
         ///    Return references to convex plane-bounded regions.
         /// </summary>
-        PlaneBoundedRegion	= 0x02,
+        PlaneBoundedRegion = 0x02,
         /// <summary>
         ///    Return a single intersection point (typically RaySceneQuery only)
         /// </summary>
-        SingleIntersection	= 0x04,
+        SingleIntersection = 0x04,
         /// <summary>
         ///    Custom geometry as defined by the SceneManger.
         /// </summary>
-        CustomGeometry		= 0x08,
+        CustomGeometry = 0x08,
         /// <summary>
         ///    General RenderOperation structure.
         /// </summary>
-        RenderOperation		= 0x10
+        RenderOperation = 0x10
     }
 }

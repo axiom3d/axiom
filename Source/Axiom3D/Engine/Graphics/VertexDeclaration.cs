@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,11 +24,23 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Diagnostics;
 
-namespace Axiom.Graphics {
+#endregion Namespace Declarations
+
+namespace Axiom.Graphics
+{
     /// <summary>
     /// 	This class declares the format of a set of vertex inputs, which
     /// 	can be issued to the rendering API through a <see cref="RenderOperation"/>. 
@@ -53,7 +65,8 @@ namespace Axiom.Graphics {
     ///		Like the other classes in this functional area, these declarations should be created and
     ///		destroyed using the <see cref="HardwareBufferManager"/>.
     /// </remarks>
-    public class VertexDeclaration : ICloneable {
+    public class VertexDeclaration : ICloneable
+    {
         #region Fields
 
         /// <summary>
@@ -79,8 +92,9 @@ namespace Axiom.Graphics {
         /// <param name="offset">The offset in bytes where this element is located in the buffer.</param>
         /// <param name="type">The data format of the element (3 floats, a color etc).</param>
         /// <param name="semantic">The meaning of the data (position, normal, diffuse color etc).</param>
-        public VertexElement AddElement(short source, int offset, VertexElementType type, VertexElementSemantic semantic) {
-            return AddElement(source, offset, type, semantic, 0);
+        public VertexElement AddElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic )
+        {
+            return AddElement( source, offset, type, semantic, 0 );
         }
 
         /// <summary>
@@ -98,9 +112,10 @@ namespace Axiom.Graphics {
         /// <param name="type">The data format of the element (3 floats, a color etc).</param>
         /// <param name="semantic">The meaning of the data (position, normal, diffuse color etc).</param>
         /// <param name="index">Optional index for multi-input elements like texture coordinates.</param>
-        public virtual VertexElement AddElement(short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index) {
-            VertexElement element = new VertexElement(source, offset, type, semantic, index);
-            elements.Add(element);
+        public virtual VertexElement AddElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+        {
+            VertexElement element = new VertexElement( source, offset, type, semantic, index );
+            elements.Add( element );
             return element;
         }
 
@@ -110,9 +125,10 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="semantic">Semantic to search for.</param>
         /// <returns>If the element is not found, this method returns null.</returns>
-        public VertexElement FindElementBySemantic(VertexElementSemantic semantic) {
+        public VertexElement FindElementBySemantic( VertexElementSemantic semantic )
+        {
             // call overload with a default of index 0
-            return FindElementBySemantic(semantic, 0);
+            return FindElementBySemantic( semantic, 0 );
         }
 
         /// <summary>
@@ -122,12 +138,14 @@ namespace Axiom.Graphics {
         /// <param name="semantic">Semantic to search for.</param>
         /// <param name="index">Index of item to looks for using the supplied semantic (applicable to tex coords and colors).</param>
         /// <returns>If the element is not found, this method returns null.</returns>
-        public virtual VertexElement FindElementBySemantic(VertexElementSemantic semantic, short index) {
-            for(int i = 0; i < elements.Count; i++) {
-                VertexElement element = (VertexElement)elements[i];
+        public virtual VertexElement FindElementBySemantic( VertexElementSemantic semantic, short index )
+        {
+            for ( int i = 0; i < elements.Count; i++ )
+            {
+                VertexElement element = (VertexElement)elements[ i ];
 
                 // do they match?
-                if(element.Semantic == semantic && element.Index == index)
+                if ( element.Semantic == semantic && element.Index == index )
                     return element;
             }
 
@@ -138,44 +156,49 @@ namespace Axiom.Graphics {
         /// <summary>
         ///     Gets a list of elements which use a given source.
         /// </summary>
-        public virtual VertexElementList FindElementBySource(ushort source) {
+        public virtual VertexElementList FindElementBySource( ushort source )
+        {
             VertexElementList elements = new VertexElementList();
 
-            for(int i = 0; i < elements.Count; i++) {
-                VertexElement element = (VertexElement)elements[i];
+            for ( int i = 0; i < elements.Count; i++ )
+            {
+                VertexElement element = (VertexElement)elements[ i ];
 
                 // do they match?
-                if(element.Source == source)
-                    elements.Add(element);
+                if ( element.Source == source )
+                    elements.Add( element );
             }
 
             // return the list
             return elements;
         }
 
-		/// <summary>
-		///		Gets the <see cref="VertexElement"/> at the specified index.
-		/// </summary>
-		/// <param name="index">Index of the element to retrieve.</param>
-		/// <returns>Element at the requested index.</returns>
-		public VertexElement GetElement(int index) {
-			Debug.Assert(index < elements.Count && index >= 0, "Element index out of bounds.");
+        /// <summary>
+        ///		Gets the <see cref="VertexElement"/> at the specified index.
+        /// </summary>
+        /// <param name="index">Index of the element to retrieve.</param>
+        /// <returns>Element at the requested index.</returns>
+        public VertexElement GetElement( int index )
+        {
+            Debug.Assert( index < elements.Count && index >= 0, "Element index out of bounds." );
 
-			return (VertexElement)elements[index];
-		}
+            return (VertexElement)elements[ index ];
+        }
 
         /// <summary>
         ///     Gets the vertex size defined by this declaration for a given source.
         /// </summary>
         /// <param name="source">The buffer binding index for which to get the vertex size.</param>
-        public virtual int GetVertexSize(short source) {
+        public virtual int GetVertexSize( short source )
+        {
             int size = 0;
 
-            for(int i = 0; i < elements.Count; i++) {
-                VertexElement element = (VertexElement)elements[i];
+            for ( int i = 0; i < elements.Count; i++ )
+            {
+                VertexElement element = (VertexElement)elements[ i ];
 
                 // do they match?
-                if(element.Source == source)
+                if ( element.Source == source )
                     size += element.Size;
             }
 
@@ -183,113 +206,123 @@ namespace Axiom.Graphics {
             return size;
         }
 
-		/// <summary>
-		///		Inserts a new <see cref="VertexElement"/> at a given position in this declaration.
-		/// </summary>
-		/// <remarks>
-		///		This method adds a single element (positions, normals etc) at a given position in this
-		///		vertex declaration. <b>Please read the information in VertexDeclaration about
-		///		the importance of ordering and structure for compatibility with older D3D drivers</b>.
-		/// </remarks>
-		/// <param name="position">Position to insert into.</param>
-		/// <param name="source">The binding index of HardwareVertexBuffer which will provide the source for this element.</param>
-		/// <param name="offset">The offset in bytes where this element is located in the buffer.</param>
-		/// <param name="type">The data format of the element (3 floats, a color, etc).</param>
-		/// <param name="semantic">The meaning of the data (position, normal, diffuse color etc).</param>
-		/// <returns>A reference to the newly created element.</returns>
-		public VertexElement InsertElement(int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic) {
-			return InsertElement(position, source, offset, type, semantic, 0);
-		}
+        /// <summary>
+        ///		Inserts a new <see cref="VertexElement"/> at a given position in this declaration.
+        /// </summary>
+        /// <remarks>
+        ///		This method adds a single element (positions, normals etc) at a given position in this
+        ///		vertex declaration. <b>Please read the information in VertexDeclaration about
+        ///		the importance of ordering and structure for compatibility with older D3D drivers</b>.
+        /// </remarks>
+        /// <param name="position">Position to insert into.</param>
+        /// <param name="source">The binding index of HardwareVertexBuffer which will provide the source for this element.</param>
+        /// <param name="offset">The offset in bytes where this element is located in the buffer.</param>
+        /// <param name="type">The data format of the element (3 floats, a color, etc).</param>
+        /// <param name="semantic">The meaning of the data (position, normal, diffuse color etc).</param>
+        /// <returns>A reference to the newly created element.</returns>
+        public VertexElement InsertElement( int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic )
+        {
+            return InsertElement( position, source, offset, type, semantic, 0 );
+        }
 
-		/// <summary>
-		///		Inserts a new <see cref="VertexElement"/> at a given position in this declaration.
-		/// </summary>
-		/// <remarks>
-		///		This method adds a single element (positions, normals etc) at a given position in this
-		///		vertex declaration. <b>Please read the information in VertexDeclaration about
-		///		the importance of ordering and structure for compatibility with older D3D drivers</b>.
-		/// </remarks>
-		/// <param name="position">Position to insert into.</param>
-		/// <param name="source">The binding index of HardwareVertexBuffer which will provide the source for this element.</param>
-		/// <param name="offset">The offset in bytes where this element is located in the buffer.</param>
-		/// <param name="type">The data format of the element (3 floats, a color, etc).</param>
-		/// <param name="semantic">The meaning of the data (position, normal, diffuse color etc).</param>
-		/// <param name="index">Optional index for multi-input elements like texture coordinates.</param>
-		/// <returns>A reference to the newly created element.</returns>
-		public virtual VertexElement InsertElement(int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index) {
-			if(position >= elements.Count) {
-				return AddElement(source, offset, type, semantic, index);
-			}
+        /// <summary>
+        ///		Inserts a new <see cref="VertexElement"/> at a given position in this declaration.
+        /// </summary>
+        /// <remarks>
+        ///		This method adds a single element (positions, normals etc) at a given position in this
+        ///		vertex declaration. <b>Please read the information in VertexDeclaration about
+        ///		the importance of ordering and structure for compatibility with older D3D drivers</b>.
+        /// </remarks>
+        /// <param name="position">Position to insert into.</param>
+        /// <param name="source">The binding index of HardwareVertexBuffer which will provide the source for this element.</param>
+        /// <param name="offset">The offset in bytes where this element is located in the buffer.</param>
+        /// <param name="type">The data format of the element (3 floats, a color, etc).</param>
+        /// <param name="semantic">The meaning of the data (position, normal, diffuse color etc).</param>
+        /// <param name="index">Optional index for multi-input elements like texture coordinates.</param>
+        /// <returns>A reference to the newly created element.</returns>
+        public virtual VertexElement InsertElement( int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+        {
+            if ( position >= elements.Count )
+            {
+                return AddElement( source, offset, type, semantic, index );
+            }
 
-			VertexElement element = new VertexElement(source, offset, type, semantic, index);
+            VertexElement element = new VertexElement( source, offset, type, semantic, index );
 
-			elements.Insert(position, element);
+            elements.Insert( position, element );
 
-			return element;
-		}
+            return element;
+        }
 
-		/// <summary>
-		///		Gets the <see cref="VertexElement"/> at the specified index.
-		/// </summary>
-		/// <param name="index">Index of the element to retrieve.</param>
-		/// <returns>Element at the requested index.</returns>
-		public virtual void RemoveElement(int index) {
-			Debug.Assert(index < elements.Count && index >= 0, "Element index out of bounds.");
+        /// <summary>
+        ///		Gets the <see cref="VertexElement"/> at the specified index.
+        /// </summary>
+        /// <param name="index">Index of the element to retrieve.</param>
+        /// <returns>Element at the requested index.</returns>
+        public virtual void RemoveElement( int index )
+        {
+            Debug.Assert( index < elements.Count && index >= 0, "Element index out of bounds." );
 
-			elements.RemoveAt(index);
-		}
+            elements.RemoveAt( index );
+        }
 
-		/// <summary>
-		///		Modifies the definition of a <see cref="VertexElement"/>.
-		/// </summary>
-		/// <param name="elemIndex">Index of the element to modify.</param>
-		/// <param name="source">Source of the element.</param>
-		/// <param name="offset">Offset of the element.</param>
-		/// <param name="type">Type of the element.</param>
-		/// <param name="semantic">Semantic of the element.</param>
-		public void ModifyElement(int elemIndex, short source, int offset, VertexElementType type, VertexElementSemantic semantic) {
-			ModifyElement(elemIndex, source, offset, type, semantic, 0);
-		}
+        /// <summary>
+        ///		Modifies the definition of a <see cref="VertexElement"/>.
+        /// </summary>
+        /// <param name="elemIndex">Index of the element to modify.</param>
+        /// <param name="source">Source of the element.</param>
+        /// <param name="offset">Offset of the element.</param>
+        /// <param name="type">Type of the element.</param>
+        /// <param name="semantic">Semantic of the element.</param>
+        public void ModifyElement( int elemIndex, short source, int offset, VertexElementType type, VertexElementSemantic semantic )
+        {
+            ModifyElement( elemIndex, source, offset, type, semantic, 0 );
+        }
 
-		/// <summary>
-		///		Modifies the definition of a <see cref="VertexElement"/>.
-		/// </summary>
-		/// <param name="elemIndex">Index of the element to modify.</param>
-		/// <param name="source">Source of the element.</param>
-		/// <param name="offset">Offset of the element.</param>
-		/// <param name="type">Type of the element.</param>
-		/// <param name="semantic">Semantic of the element.</param>
-		/// <param name="index">Usage index of the element.</param>
-		public virtual void ModifyElement(int elemIndex, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index) {
-			elements[elemIndex] = new VertexElement(source, offset, type, semantic, index);
-		}
+        /// <summary>
+        ///		Modifies the definition of a <see cref="VertexElement"/>.
+        /// </summary>
+        /// <param name="elemIndex">Index of the element to modify.</param>
+        /// <param name="source">Source of the element.</param>
+        /// <param name="offset">Offset of the element.</param>
+        /// <param name="type">Type of the element.</param>
+        /// <param name="semantic">Semantic of the element.</param>
+        /// <param name="index">Usage index of the element.</param>
+        public virtual void ModifyElement( int elemIndex, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+        {
+            elements[ elemIndex ] = new VertexElement( source, offset, type, semantic, index );
+        }
 
-		/// <summary>
-		///		Remove the element with the given semantic.
-		/// </summary>
-		/// <remarks>
-		///		For elements that have usage indexes, the default of 0 is used.
-		/// </remarks>
-		/// <param name="semantic">Semantic to remove.</param>
-		public void RemoveElement(VertexElementSemantic semantic) {
-			RemoveElement(semantic, 0);
-		}
+        /// <summary>
+        ///		Remove the element with the given semantic.
+        /// </summary>
+        /// <remarks>
+        ///		For elements that have usage indexes, the default of 0 is used.
+        /// </remarks>
+        /// <param name="semantic">Semantic to remove.</param>
+        public void RemoveElement( VertexElementSemantic semantic )
+        {
+            RemoveElement( semantic, 0 );
+        }
 
-		/// <summary>
-		///		Remove the element with the given semantic and usage index.
-		/// </summary>
-		/// <param name="semantic">Semantic to remove.</param>
-		/// <param name="index">Usage index to remove, typically only applies to tex coords.</param>
-		public virtual void RemoveElement(VertexElementSemantic semantic, int index) {
-			for(int i = elements.Count - 1; i >= 0; i--) {
-				VertexElement element = (VertexElement)elements[i];
+        /// <summary>
+        ///		Remove the element with the given semantic and usage index.
+        /// </summary>
+        /// <param name="semantic">Semantic to remove.</param>
+        /// <param name="index">Usage index to remove, typically only applies to tex coords.</param>
+        public virtual void RemoveElement( VertexElementSemantic semantic, int index )
+        {
+            for ( int i = elements.Count - 1; i >= 0; i-- )
+            {
+                VertexElement element = (VertexElement)elements[ i ];
 
-				if(element.Semantic == semantic && element.Index == index) {
-					// we have a winner!
-					elements.RemoveAt(i);
-				}
-			}
-		}
+                if ( element.Semantic == semantic && element.Index == index )
+                {
+                    // we have a winner!
+                    elements.RemoveAt( i );
+                }
+            }
+        }
 
         /// <summary>
         ///     Tests equality of 2 <see cref="VertexElement"/> objects.
@@ -297,17 +330,19 @@ namespace Axiom.Graphics {
         /// <param name="left">A <see cref="VertexElement"/></param>
         /// <param name="right">A <see cref="VertexElement"/></param>
         /// <returns>true if equal, false otherwise.</returns>
-        public static bool operator == (VertexDeclaration left, VertexDeclaration right) {
+        public static bool operator ==( VertexDeclaration left, VertexDeclaration right )
+        {
             // if element lists are different sizes, they can't be equal
-            if(left.elements.Count != right.elements.Count)
+            if ( left.elements.Count != right.elements.Count )
                 return false;
 
-            for(int i = 0; i < right.elements.Count; i++) {
-                VertexDeclaration a = (VertexDeclaration)left.elements[i];
-                VertexDeclaration b = (VertexDeclaration)right.elements[i];
+            for ( int i = 0; i < right.elements.Count; i++ )
+            {
+                VertexDeclaration a = (VertexDeclaration)left.elements[ i ];
+                VertexDeclaration b = (VertexDeclaration)right.elements[ i ];
 
                 // if they are not equal, this declaration differs
-                if(!(a == b))
+                if ( !( a == b ) )
                     return false;
             }
 
@@ -321,19 +356,22 @@ namespace Axiom.Graphics {
         /// <param name="left">A <see cref="VertexElement"/></param>
         /// <param name="right">A <see cref="VertexElement"/></param>
         /// <returns>true if not equal, false otherwise.</returns>
-        public static bool operator != (VertexDeclaration left, VertexDeclaration right) {
-            return !(left == right);
+        public static bool operator !=( VertexDeclaration left, VertexDeclaration right )
+        {
+            return !( left == right );
         }
 
         #endregion
-		
+
         #region Properties
-		
+
         /// <summary>
         ///     Gets the number of elements in the declaration.
         /// </summary>
-        public int ElementCount {
-            get { 
+        public int ElementCount
+        {
+            get
+            {
                 return elements.Count;
             }
         }
@@ -347,10 +385,11 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override bool Equals(object obj) {
+        public override bool Equals( object obj )
+        {
             VertexDeclaration decl = obj as VertexDeclaration;
 
-            return (decl == this);
+            return ( decl == this );
         }
 
         /// <summary>
@@ -361,7 +400,8 @@ namespace Axiom.Graphics {
         /// </remarks>
         /// <returns></returns>
         // TODO: Does this need to be implemented, dont think we are stuffing these into hashtables.
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
             return 0;
         }
 
@@ -373,12 +413,14 @@ namespace Axiom.Graphics {
         ///     Clonses this declaration, including a copy of all <see cref="VertexElement"/> objects this declaration holds.
         /// </summary>
         /// <returns></returns>
-        public object Clone() {
+        public object Clone()
+        {
             VertexDeclaration clone = HardwareBufferManager.Instance.CreateVertexDeclaration();
 
-            for(int i = 0; i < elements.Count; i++) {
-                VertexElement element = (VertexElement)elements[i];
-                clone.AddElement(element.Source, element.Offset, element.Type, element.Semantic, element.Index);
+            for ( int i = 0; i < elements.Count; i++ )
+            {
+                VertexElement element = (VertexElement)elements[ i ];
+                clone.AddElement( element.Source, element.Offset, element.Type, element.Semantic, element.Index );
             }
 
             return clone;

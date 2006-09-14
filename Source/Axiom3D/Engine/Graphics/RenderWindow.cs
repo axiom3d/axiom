@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,11 +24,23 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
-using System;
-using Axiom.Core;
-//using Axiom.Utility;
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
 
-namespace Axiom.Graphics {
+#region Namespace Declarations
+
+using System;
+
+using Axiom.Core;
+
+#endregion Namespace Declarations
+
+namespace Axiom.Graphics
+{
     /// <summary>
     ///		Manages the target rendering window.
     /// </summary>
@@ -48,18 +60,20 @@ namespace Axiom.Graphics {
     ///		in the window for effects like rear-view mirrors and
     ///		picture-in-picture views (see Viewport and Camera).
     ///	</remarks>
-    public abstract class RenderWindow : RenderTarget {
+    public abstract class RenderWindow : RenderTarget
+    {
         #region Protected member variables
-		
+
         protected int top, left;
         protected bool isFullScreen;
         protected object targetHandle;
-		
+
         #endregion
 
         #region Constructor
 
-        protected RenderWindow() {
+        protected RenderWindow()
+        {
             // render windows are low priority
             this.priority = RenderTargetPriority.Low;
         }
@@ -82,22 +96,22 @@ namespace Axiom.Graphics {
         /// <param name="pDepthBuffer">Specify true to include a depth-buffer.</param>
         /// <param name="pMiscParams">A variable number of pointers to platform-specific arguments. 
         /// The actual requirements must be defined by the implementing subclasses.</param>
-        public abstract void Create(string name, int width, int height, int colorDepth, bool fullScreen, 
-            int left, int top, bool depthBuffer, params object[] miscParams);
+        public abstract void Create( string name, int width, int height, int colorDepth, bool fullScreen,
+            int left, int top, bool depthBuffer, params object[] miscParams );
 
         /// <summary>
         ///		Alter the size of the window.
         /// </summary>
         /// <param name="pWidth"></param>
         /// <param name="pHeight"></param>
-        public abstract void Resize(int width, int height);
+        public abstract void Resize( int width, int height );
 
         /// <summary>
         ///		Reposition the window.
         /// </summary>
         /// <param name="pLeft"></param>
         /// <param name="pRight"></param>
-        public abstract void Reposition(int left, int right);
+        public abstract void Reposition( int left, int right );
 
         /// <summary>
         ///		Swaps the frame buffers to display the next frame.
@@ -121,7 +135,7 @@ namespace Axiom.Graphics {
         ///		resulting from flipping buffers when the beam is
         ///		in the progress of drawing the last frame). 
         ///</param>
-        public abstract void SwapBuffers(bool waitForVSync);
+        public abstract void SwapBuffers( bool waitForVSync );
 
         #endregion
 
@@ -135,7 +149,8 @@ namespace Axiom.Graphics {
         ///		to render into this window to render it's view, and then
         ///		the window buffers are swapped via SwapBuffers()
         ///	</remarks>
-        public override void Update() {
+        public override void Update()
+        {
             // call base class Update method
             base.Update();
 
@@ -143,25 +158,30 @@ namespace Axiom.Graphics {
             // Update statistics (always on top)
             //UpdateStats();
 
-            SwapBuffers(Root.Instance.RenderSystem.IsVSync);
+            SwapBuffers( Root.Instance.RenderSystem.IsVSync );
         }
 
         /// <summary>
         /// Returns true if window is running in fullscreen mode.
         /// </summary>
-        public virtual bool IsFullScreen {
-            get {
+        public virtual bool IsFullScreen
+        {
+            get
+            {
                 return isFullScreen;
             }
         }
 
-        public object Handle {
-            get { 
-				return targetHandle; 
-			}
-			set {
-				targetHandle = value;
-			}
+        public object Handle
+        {
+            get
+            {
+                return targetHandle;
+            }
+            set
+            {
+                targetHandle = value;
+            }
         }
 
         #endregion

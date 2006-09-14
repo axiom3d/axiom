@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,10 +24,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 
-namespace Axiom.ParticleSystems {
+#endregion Namespace Declarations
+
+namespace Axiom.ParticleSystems
+{
     /// <summary>
     ///		Abstract class defining the interface to be implemented by creators of ParticleAffector subclasses.
     /// </summary>
@@ -41,7 +53,8 @@ namespace Axiom.ParticleSystems {
     ///		a name which identifies them, examples might be 'ForceVector', 'Attractor', or 'Fader', and these can be 
     ///		also be used from particle system scripts.
     /// </remarks>
-    public abstract class ParticleAffectorFactory {
+    public abstract class ParticleAffectorFactory
+    {
         #region Member variables
 
         protected AffectorList affectorList = new AffectorList();
@@ -53,7 +66,9 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         ///		Default constructor.
         /// </summary>
-        public ParticleAffectorFactory() { }
+        public ParticleAffectorFactory()
+        {
+        }
 
         #endregion
 
@@ -62,7 +77,10 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         ///		Returns the name of the factory, which identifies the affector type this factory creates.
         /// </summary>
-        public abstract string Name { 	get; 	}
+        public abstract string Name
+        {
+            get;
+        }
 
         /// <summary>
         ///		Creates a new affector instance.
@@ -77,9 +95,10 @@ namespace Axiom.ParticleSystems {
         ///		Destroys the affector referenced by the parameter.
         /// </summary>
         /// <param name="e">The Affector to destroy.</param>
-        public virtual void Destroy(ParticleAffector e) {
+        public virtual void Destroy( ParticleAffector e )
+        {
             // remove the affector from the list
-            affectorList.Remove(e);
+            affectorList.Remove( e );
         }
 
         #endregion

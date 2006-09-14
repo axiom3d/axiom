@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,12 +24,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
 
-namespace Axiom.Graphics {
+#endregion Namespace Declarations
+
+namespace Axiom.Graphics
+{
     /// <summary>
     ///		Interface defining the interface all renderable objects must implement.
     /// </summary>
@@ -43,20 +56,23 @@ namespace Axiom.Graphics {
     ///		classes e.g. entities. Only once it is decided that the specific class is to be rendered is the abstract version
     ///		created (could be more than one per visible object) and pushed onto the rendering queue.
     /// </remarks>
-    public interface IRenderable {	
+    public interface IRenderable
+    {
         #region Properties
 
-		/// <summary>
-		///		Gets whether this renderable would normally cast a shadow. 
-		/// </summary>
-		bool CastsShadows {
-			get;
-		}
+        /// <summary>
+        ///		Gets whether this renderable would normally cast a shadow. 
+        /// </summary>
+        bool CastsShadows
+        {
+            get;
+        }
 
         /// <summary>
         ///    Get the material associated with this renderable object.
         /// </summary>
-        Material Material {
+        Material Material
+        {
             get;
         }
 
@@ -67,14 +83,15 @@ namespace Axiom.Graphics {
         ///    This is to allow Renderables to use a chosen Technique if they wish, otherwise
         ///    they will use the best Technique available for the Material they are using.
         /// </remarks>
-        Technique Technique {
+        Technique Technique
+        {
             get;
         }
 
         /// <summary>
         ///    Gets the render operation required to send this object to the frame buffer.
         /// </summary>
-        void GetRenderOperation(RenderOperation op);
+        void GetRenderOperation( RenderOperation op );
 
         /// <summary>
         ///    Gets the world transform matrix / matrices for this renderable object.
@@ -87,7 +104,7 @@ namespace Axiom.Graphics {
         ///    does use vertex blending it will fill the passed in pointer with an array of matrices,
         ///    the length being the value returned from getNumWorldTransforms.
         /// </remarks>
-        void GetWorldTransforms(Matrix4[] matrices);
+        void GetWorldTransforms( Matrix4[] matrices );
 
         /// <summary>
         ///    Gets a list of lights, ordered relative to how close they are to this renderable.
@@ -95,14 +112,16 @@ namespace Axiom.Graphics {
         /// <remarks>
         ///    Directional lights, which have no position, will always be first on this list.
         /// </remarks>
-        LightList Lights {
+        LightList Lights
+        {
             get;
         }
 
         /// <summary>
         ///    Returns whether or not this Renderable wishes the hardware to normalize normals.
         /// </summary>
-        bool NormalizeNormals {
+        bool NormalizeNormals
+        {
             get;
         }
 
@@ -117,7 +136,8 @@ namespace Axiom.Graphics {
         ///    simplicity.
         /// </remarks>
 
-        ushort NumWorldTransforms {
+        ushort NumWorldTransforms
+        {
             get;
         }
 
@@ -131,7 +151,8 @@ namespace Axiom.Graphics {
         ///    a {-1, 1} view space. Useful for overlay rendering. Normal renderables need
         ///    not override this.
         /// </remarks>
-        bool UseIdentityProjection {
+        bool UseIdentityProjection
+        {
             get;
         }
 
@@ -145,14 +166,16 @@ namespace Axiom.Graphics {
         ///    to be relative to camera space already. Useful for overlay rendering. 
         ///    Normal renderables need not override this.
         /// </remarks>
-        bool UseIdentityView {
+        bool UseIdentityView
+        {
             get;
         }
 
         /// <summary>
         ///		Will allow for setting per renderable scene detail levels.
         /// </summary>
-        SceneDetailLevel RenderDetail {
+        SceneDetailLevel RenderDetail
+        {
             get;
         }
 
@@ -163,7 +186,8 @@ namespace Axiom.Graphics {
         ///    lights is much more efficient than inverting a complete 4x4 matrix, and also 
         ///    eliminates problems introduced by scaling.
         /// </summary>
-        Quaternion WorldOrientation {
+        Quaternion WorldOrientation
+        {
             get;
         }
 
@@ -174,7 +198,8 @@ namespace Axiom.Graphics {
         ///    lights is much more efficient than inverting a complete 4x4 matrix, and also 
         ///    eliminates problems introduced by scaling.
         /// </summary>
-        Vector3 WorldPosition {
+        Vector3 WorldPosition
+        {
             get;
         }
 
@@ -191,54 +216,54 @@ namespace Axiom.Graphics {
         /// </remarks>
         /// <param name="camera"></param>
         /// <returns></returns>
-        float GetSquaredViewDepth(Camera camera);
+        float GetSquaredViewDepth( Camera camera );
 
-		/// <summary>
-		///		Gets the custom value associated with this Renderable at the given index. 
-		/// </summary>
-		/// <param name="index"></param>
-		/// <returns></returns>
-		Vector4 GetCustomParameter(int index);
+        /// <summary>
+        ///		Gets the custom value associated with this Renderable at the given index. 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        Vector4 GetCustomParameter( int index );
 
-		/// <summary>
-		///		Sets a custom parameter for this Renderable, which may be used to 
-		///		drive calculations for this specific Renderable, like GPU program parameters.
-		/// </summary>
-		/// <remarks>
-		///		Calling this method simply associates a numeric index with a 4-dimensional
-		///		value for this specific Renderable. This is most useful if the material
-		///		which this Renderable uses a vertex or fragment program, and has an 
-		///		AutoConstant.Custom parameter entry. This parameter entry can refer to the
-		///		index you specify as part of this call, thereby mapping a custom
-		///		parameter for this renderable to a program parameter.
-		/// </remarks>
-		/// <param name="index">
-		///		The index with which to associate the value. Note that this
-		///		does not have to start at 0, and can include gaps. It also has no direct
-		///		correlation with a GPU program parameter index - the mapping between the
-		///		two is performed by the AutoConstant.Custom entry, if that is used.
-		/// </param>
-		/// <param name="val">The value to associate.</param>
-		void SetCustomParameter(int index, Vector4 val);
+        /// <summary>
+        ///		Sets a custom parameter for this Renderable, which may be used to 
+        ///		drive calculations for this specific Renderable, like GPU program parameters.
+        /// </summary>
+        /// <remarks>
+        ///		Calling this method simply associates a numeric index with a 4-dimensional
+        ///		value for this specific Renderable. This is most useful if the material
+        ///		which this Renderable uses a vertex or fragment program, and has an 
+        ///		AutoConstant.Custom parameter entry. This parameter entry can refer to the
+        ///		index you specify as part of this call, thereby mapping a custom
+        ///		parameter for this renderable to a program parameter.
+        /// </remarks>
+        /// <param name="index">
+        ///		The index with which to associate the value. Note that this
+        ///		does not have to start at 0, and can include gaps. It also has no direct
+        ///		correlation with a GPU program parameter index - the mapping between the
+        ///		two is performed by the AutoConstant.Custom entry, if that is used.
+        /// </param>
+        /// <param name="val">The value to associate.</param>
+        void SetCustomParameter( int index, Vector4 val );
 
-		/// <summary>
-		///		Update a custom GpuProgramParameters constant which is derived from 
-		///		information only this Renderable knows.
-		/// </summary>
-		/// <remarks>
-		///		This method allows a Renderable to map in a custom GPU program parameter
-		///		based on it's own data. This is represented by a GPU auto parameter
-		///		of AutoConstants.Custom, and to allow there to be more than one of these per
-		///		Renderable, the 'data' field on the auto parameter will identify
-		///		which parameter is being updated. The implementation of this method
-		///		must identify the parameter being updated, and call a 'SetConstant' 
-		///		method on the passed in <see cref="GpuProgramParameters"/> object, using the details
-		///		provided in the incoming auto constant setting to identify the index
-		///		at which to set the parameter.
-		/// </remarks>
-		/// <param name="constant">The auto constant entry referring to the parameter being updated.</param>
-		/// <param name="parameters">The parameters object which this method should call to set the updated parameters.</param>
-		void UpdateCustomGpuParameter(GpuProgramParameters.AutoConstantEntry constant, GpuProgramParameters parameters);
+        /// <summary>
+        ///		Update a custom GpuProgramParameters constant which is derived from 
+        ///		information only this Renderable knows.
+        /// </summary>
+        /// <remarks>
+        ///		This method allows a Renderable to map in a custom GPU program parameter
+        ///		based on it's own data. This is represented by a GPU auto parameter
+        ///		of AutoConstants.Custom, and to allow there to be more than one of these per
+        ///		Renderable, the 'data' field on the auto parameter will identify
+        ///		which parameter is being updated. The implementation of this method
+        ///		must identify the parameter being updated, and call a 'SetConstant' 
+        ///		method on the passed in <see cref="GpuProgramParameters"/> object, using the details
+        ///		provided in the incoming auto constant setting to identify the index
+        ///		at which to set the parameter.
+        /// </remarks>
+        /// <param name="constant">The auto constant entry referring to the parameter being updated.</param>
+        /// <param name="parameters">The parameters object which this method should call to set the updated parameters.</param>
+        void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry constant, GpuProgramParameters parameters );
 
         #endregion
     }

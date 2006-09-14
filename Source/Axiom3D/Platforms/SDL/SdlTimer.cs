@@ -35,9 +35,21 @@ are met:
  */
 #endregion BSD License
 
+#region SVN Version Information
+// <file>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Runtime.InteropServices;
-using Axiom.Core;
+
+using Axiom.Core; 
+
+#endregion Namespace Declarations
+			
 
 namespace Axiom.Platforms.SDL
 {

@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,15 +24,28 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
+
 using Axiom.Configuration;
 using Axiom.FileSystem;
 
-namespace Axiom.Core {
+#endregion Namespace Declarations
+
+namespace Axiom.Core
+{
     /// <summary>
     ///		Defines a generic resource handler.
     /// </summary>
@@ -47,7 +60,8 @@ namespace Axiom.Core {
     ///		be unloaded, and a Least Recently Used (LRU) policy within
     ///		resources of the same priority.
     /// </remarks>
-    public abstract class ResourceManager : IDisposable {
+    public abstract class ResourceManager : IDisposable
+    {
         #region Fields
 
         protected long memoryBudget;
@@ -56,7 +70,7 @@ namespace Axiom.Core {
         ///		A cached list of all resources in memory.
         ///	</summary>
         protected Hashtable resourceList = System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
-		protected Hashtable resourceHandleMap = new Hashtable();
+        protected Hashtable resourceHandleMap = new Hashtable();
         /// <summary>
         ///		A lookup table used to find a common archive associated with a filename.
         ///	</summary>
@@ -73,10 +87,10 @@ namespace Axiom.Core {
         ///		A cached list of archives common to all resource types.
         ///	</summary>
         static protected ArrayList commonArchives = new ArrayList();
-		/// <summary>
-		///		Next available handle to assign to a new resource.
-		/// </summary>
-		static protected int nextHandle;
+        /// <summary>
+        ///		Next available handle to assign to a new resource.
+        /// </summary>
+        static protected int nextHandle;
 
         #endregion Fields
 
@@ -85,7 +99,8 @@ namespace Axiom.Core {
         /// <summary>
         ///		Default constructor
         /// </summary>
-        public ResourceManager() {
+        public ResourceManager()
+        {
             memoryBudget = Int64.MaxValue;
             memoryUsage = 0;
         }
@@ -103,9 +118,11 @@ namespace Axiom.Core {
         ///		is not permanent and the Resource is not destroyed; it simply needs to be reloaded when
         ///		next used.
         /// </remarks>
-        public long MemoryBudget {
+        public long MemoryBudget
+        {
             //get { return memoryBudget; }
-            set { 
+            set
+            {
                 memoryBudget = value;
 
                 CheckUsage();
@@ -115,12 +132,15 @@ namespace Axiom.Core {
         /// <summary>
         ///		Gets/Sets the current memory usages by all resource managers.
         /// </summary>
-        public long MemoryUsage {
-            get { 
-                return memoryUsage; 
+        public long MemoryUsage
+        {
+            get
+            {
+                return memoryUsage;
             }
-            set { 
-                memoryUsage = value; 
+            set
+            {
+                memoryUsage = value;
             }
         }
 
@@ -128,17 +148,18 @@ namespace Axiom.Core {
 
         #region Virtual/Abstract methods
 
-		/// <summary>
-		///		Add a resource to this manager; normally only done by subclasses.
-		/// </summary>
-		/// <param name="resource">Resource to add.</param>
-		public virtual void Add(Resource resource) {
-			resource.Handle = GetNextHandle();
+        /// <summary>
+        ///		Add a resource to this manager; normally only done by subclasses.
+        /// </summary>
+        /// <param name="resource">Resource to add.</param>
+        public virtual void Add( Resource resource )
+        {
+            resource.Handle = GetNextHandle();
 
-			// note: just overwriting existing for now
-			resourceList[resource.Name] = resource;
-			resourceHandleMap[resource.Handle] = resource;
-		}
+            // note: just overwriting existing for now
+            resourceList[ resource.Name ] = resource;
+            resourceHandleMap[ resource.Handle ] = resource;
+        }
 
         /// <summary>
         ///		Creates a new blank resource, compatible with this manager.
@@ -152,28 +173,30 @@ namespace Axiom.Core {
         /// </remarks>
         /// <param name="name"></param>
         /// <returns></returns>
-        public abstract Resource Create(string name);
+        public abstract Resource Create( string name );
 
         /// <summary>
         ///     Gets the next available unique resource handle.
         /// </summary>
         /// <returns></returns>
-        protected int GetNextHandle() {
-			return nextHandle++;
-		}
+        protected int GetNextHandle()
+        {
+            return nextHandle++;
+        }
 
         /// <summary>
         ///		Loads a resource.  Resource will be subclasses of Resource.
         /// </summary>
         /// <param name="resource">Resource to load.</param>
         /// <param name="priority"></param>
-        public virtual void Load(Resource resource, int priority) {
+        public virtual void Load( Resource resource, int priority )
+        {
             // load and touch the resource
             resource.Load();
             resource.Touch();
 
             // cache the resource
-			Add(resource);
+            Add( resource );
         }
 
         /// <summary>
@@ -185,12 +208,13 @@ namespace Axiom.Core {
         ///		freed up. This would allow you to reload the resource again if you wished. 
         /// </remarks>
         /// <param name="resource"></param>
-        public virtual void Unload(Resource resource) {
+        public virtual void Unload( Resource resource )
+        {
             // unload the resource
             resource.Unload();
 
             // remove the resource 
-            resourceList.Remove(resource.Name);
+            resourceList.Remove( resource.Name );
 
             // update memory usage
             memoryUsage -= resource.Size;
@@ -199,8 +223,10 @@ namespace Axiom.Core {
         /// <summary>
         ///		
         /// </summary>
-        public virtual void UnloadAndDestroyAll() {
-            foreach(Resource resource in resourceList.Values) {
+        public virtual void UnloadAndDestroyAll()
+        {
+            foreach ( Resource resource in resourceList.Values )
+            {
                 // unload and dispose of resource
                 resource.Unload();
                 resource.Dispose();
@@ -215,7 +241,7 @@ namespace Axiom.Core {
         }
 
         #endregion
-		
+
         #region Public methods
 
         /// <summary>
@@ -227,8 +253,9 @@ namespace Axiom.Core {
         ///		specific subpaths, which it will append to the current path as it searches for matching files.
         /// </remarks>
         /// <param name="path"></param>
-        public void AddSearchPath(string path) {
-            AddArchive(path, "Folder");
+        public void AddSearchPath( string path )
+        {
+            AddArchive( path, "Folder" );
         }
 
         /// <summary>
@@ -239,39 +266,45 @@ namespace Axiom.Core {
         ///		applies to ALL resources, not just the one managed by the subclass in question.
         /// </remarks>
         /// <param name="path"></param>
-        public static void AddCommonSearchPath(string path) {
+        public static void AddCommonSearchPath( string path )
+        {
             // record the common file path
-            AddCommonArchive(path, "Folder");
+            AddCommonArchive( path, "Folder" );
         }
 
-        public static StringCollection GetAllCommonNamesLike(string startPath, string extension) {
+        public static StringCollection GetAllCommonNamesLike( string startPath, string extension )
+        {
             StringCollection allFiles = new StringCollection();
 
-            for(int i = 0; i < commonArchives.Count; i++) {
-                Archive archive = (Archive)commonArchives[i];
-                string[] files = archive.GetFileNamesLike(startPath, extension);
+            for ( int i = 0; i < commonArchives.Count; i++ )
+            {
+                Archive archive = (Archive)commonArchives[ i ];
+                string[] files = archive.GetFileNamesLike( startPath, extension );
 
                 // add each one to the final list
-                foreach(string fileName in files) {
-                    allFiles.Add(fileName);
+                foreach ( string fileName in files )
+                {
+                    allFiles.Add( fileName );
                 }
             }
 
             return allFiles;
         }
 
-        private static Archive CreateArchive(string name, string type) {
-            IArchiveFactory factory = ArchiveManager.Instance.GetArchiveFactory(type);
+        private static Archive CreateArchive( string name, string type )
+        {
+            IArchiveFactory factory = ArchiveManager.Instance.GetArchiveFactory( type );
 
-            if (factory == null) {
-                throw new AxiomException(string.Format("Archive type {0} is not a valid archive type.", type));
+            if ( factory == null )
+            {
+                throw new AxiomException( string.Format( "Archive type {0} is not a valid archive type.", type ) );
             }
-			
-			Archive archive = factory.CreateArchive(name);
 
-			// TODO: Shouldn't be calling this manually here, but good enough until the resource loading is rewritten
-			archive.Load();
-			archive.Touch();
+            Archive archive = factory.CreateArchive( name );
+
+            // TODO: Shouldn't be calling this manually here, but good enough until the resource loading is rewritten
+            archive.Load();
+            archive.Touch();
 
             return archive;
         }
@@ -281,70 +314,78 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="name"></param>
         /// <param name="type"></param>
-        public void AddArchive(string name, string type) {
-            Archive archive = CreateArchive(name, type);
+        public void AddArchive( string name, string type )
+        {
+            Archive archive = CreateArchive( name, type );
 
             // add a lookup for all these files so they know what archive they are in
-            foreach (string file in archive.GetFileNamesLike("", "")) {
-                filePaths[file] = archive;
+            foreach ( string file in archive.GetFileNamesLike( "", "" ) )
+            {
+                filePaths[ file ] = archive;
             }
 
             // add the archive to the common archives
-            archives.Add(archive);
-		}
+            archives.Add( archive );
+        }
 
         /// <summary>
         ///		Adds an archive to 
         /// </summary>
         /// <param name="name"></param>
         /// <param name="type"></param>
-        public static void AddCommonArchive(string name, string type) {
-            Archive archive = CreateArchive(name, type);
+        public static void AddCommonArchive( string name, string type )
+        {
+            Archive archive = CreateArchive( name, type );
 
             // add a lookup for all these files so they know what archive they are in
-            foreach (string file in archive.GetFileNamesLike("", "")) {
-                commonFilePaths[file] = archive;
+            foreach ( string file in archive.GetFileNamesLike( "", "" ) )
+            {
+                commonFilePaths[ file ] = archive;
             }
 
             // add the archive to the common archives
-            commonArchives.Add(archive);
-		}
+            commonArchives.Add( archive );
+        }
 
-		/// <summary>
-		///		Gets a resource with the given handle.
-		/// </summary>
-		/// <param name="handle">Handle of the resource to retrieve.</param>
-		/// <returns>A reference to a Resource with the given handle.</returns>
-		public virtual Resource GetByHandle(int handle) {
-			Debug.Assert(resourceHandleMap != null, "A resource was being retreived, but the list of Resources is null.", "");
+        /// <summary>
+        ///		Gets a resource with the given handle.
+        /// </summary>
+        /// <param name="handle">Handle of the resource to retrieve.</param>
+        /// <returns>A reference to a Resource with the given handle.</returns>
+        public virtual Resource GetByHandle( int handle )
+        {
+            Debug.Assert( resourceHandleMap != null, "A resource was being retreived, but the list of Resources is null.", "" );
 
-			Resource resource = null;
+            Resource resource = null;
 
-			// find the resource in the Hashtable and return it
-			if(resourceHandleMap[handle] != null) {
-				resource = (Resource)resourceHandleMap[handle];
-				resource.Touch();
-			}
+            // find the resource in the Hashtable and return it
+            if ( resourceHandleMap[ handle ] != null )
+            {
+                resource = (Resource)resourceHandleMap[ handle ];
+                resource.Touch();
+            }
 
-			return resource;
-		}
+            return resource;
+        }
 
         /// <summary>
         ///    Gets a reference to the specified named resource.
         /// </summary>
         /// <param name="name">Name of the resource to retreive.</param>
         /// <returns></returns>
-        public virtual Resource GetByName(string name) {
-            Debug.Assert(resourceList != null, "A resource was being retreived, but the list of Resources is null.", "");
+        public virtual Resource GetByName( string name )
+        {
+            Debug.Assert( resourceList != null, "A resource was being retreived, but the list of Resources is null.", "" );
 
-			Resource resource = null;
+            Resource resource = null;
 
             // find the resource in the Hashtable and return it
-			if(resourceList[name] != null) {
-				resource = (Resource)resourceList[name];
-			}
+            if ( resourceList[ name ] != null )
+            {
+                resource = (Resource)resourceList[ name ];
+            }
 
-			return resource;
+            return resource;
         }
 
         #endregion
@@ -354,7 +395,8 @@ namespace Axiom.Core {
         /// <summary>
         ///		Makes sure we are still within budget.
         /// </summary>
-        protected void CheckUsage() {
+        protected void CheckUsage()
+        {
             // TODO: Implementation of CheckUsage.
             // Keep a sorted list of resource by LastAccessed for easy removal of oldest?
         }
@@ -364,23 +406,26 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public Stream FindResourceData(string fileName) {
+        public Stream FindResourceData( string fileName )
+        {
             // look in local file cache first
-            if(filePaths.ContainsKey(fileName)) {
-                Archive archive = (Archive)filePaths[fileName];
-                return archive.ReadFile(fileName);
+            if ( filePaths.ContainsKey( fileName ) )
+            {
+                Archive archive = (Archive)filePaths[ fileName ];
+                return archive.ReadFile( fileName );
             }
 
             // search common file cache			
-            if(commonFilePaths.ContainsKey(fileName)) {
-                Archive archive = (Archive)commonFilePaths[fileName];
-                return archive.ReadFile(fileName);
+            if ( commonFilePaths.ContainsKey( fileName ) )
+            {
+                Archive archive = (Archive)commonFilePaths[ fileName ];
+                return archive.ReadFile( fileName );
             }
 
             // not found in the cache, load the resource manually
-			
+
             // TODO: Load resources manually
-            throw new AxiomException(string.Format("Resource '{0}' could not be found.  Be sure it is located in a known directory.", fileName));
+            throw new AxiomException( string.Format( "Resource '{0}' could not be found.  Be sure it is located in a known directory.", fileName ) );
         }
 
         /// <summary>
@@ -388,18 +433,20 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static Stream FindCommonResourceData(string fileName) {
+        public static Stream FindCommonResourceData( string fileName )
+        {
 
             // search common file cache			
-            if(commonFilePaths.ContainsKey(fileName)) {
-                Archive archive = (Archive)commonFilePaths[fileName];
-                return archive.ReadFile(fileName);
+            if ( commonFilePaths.ContainsKey( fileName ) )
+            {
+                Archive archive = (Archive)commonFilePaths[ fileName ];
+                return archive.ReadFile( fileName );
             }
 
             // not found in the cache, load the resource manually
-			
+
             // TODO: Load resources manually
-            throw new AxiomException(string.Format("Resource '{0}' could not be found.  Be sure it is located in a known directory.", fileName));
+            throw new AxiomException( string.Format( "Resource '{0}' could not be found.  Be sure it is located in a known directory.", fileName ) );
         }
 
         #endregion
@@ -409,7 +456,8 @@ namespace Axiom.Core {
         /// <summary>
         ///     Called when the engine is shutting down.
         /// </summary>
-        public virtual void Dispose() {
+        public virtual void Dispose()
+        {
             // unload and destroy all resources
             UnloadAndDestroyAll();
         }

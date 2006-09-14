@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,12 +24,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+
 using Axiom.Core;
 
-namespace Axiom.Graphics {
+#endregion Namespace Declarations
+
+namespace Axiom.Graphics
+{
     /// <summary>
     ///     Abstract class defining common features of hardware buffers.
     /// </summary>
@@ -64,9 +77,10 @@ namespace Axiom.Graphics {
     ///     the buffer of the type you require (see <see cref="HardwareBufferManager"/>) to enable this feature.
     ///     <seealso cref="HardwareBufferManager"/>
     /// </remarks>
-    public abstract class HardwareBuffer : IDisposable {
+    public abstract class HardwareBuffer : IDisposable
+    {
         #region Fields
-		
+
         /// <summary>
         ///     Total size (in bytes) of the buffer.
         /// </summary>
@@ -107,12 +121,12 @@ namespace Axiom.Graphics {
         ///     Flag indicating whether hardware updates from shadow buffer should be supressed.
         /// </summary>
         protected bool suppressHardwareUpdate;
-		/// <summary>
-		///		Unique id for this buffer.
-		/// </summary>
-		public int ID;
-		protected static int nextID;
-		
+        /// <summary>
+        ///		Unique id for this buffer.
+        /// </summary>
+        public int ID;
+        protected static int nextID;
+
         #endregion Fields
 
         #region Constructors
@@ -123,19 +137,21 @@ namespace Axiom.Graphics {
         /// <param name="usage">Usage type.</param>
         /// <param name="useSystemMemory"></param>
         /// <param name="useShadowBuffer">Use a software shadow buffer?</param>
-        internal HardwareBuffer(BufferUsage usage, bool useSystemMemory, bool useShadowBuffer) {
+        internal HardwareBuffer( BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
+        {
             this.usage = usage;
             this.useSystemMemory = useSystemMemory;
             this.useShadowBuffer = useShadowBuffer;
-			ID = nextID++;
+            ID = nextID++;
         }
 
         #endregion
-			
+
         #region Methods
 
-        public BufferStream LockStream(BufferLocking locking) {
-            return new BufferStream(this, Lock(locking));
+        public BufferStream LockStream( BufferLocking locking )
+        {
+            return new BufferStream( this, Lock( locking ) );
         }
 
         /// <summary>
@@ -144,8 +160,9 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="locking">Locking options.</param>
         /// <returns>IntPtr to the beginning of the locked region of buffer memory.</returns>
-        public IntPtr Lock(BufferLocking locking) {
-            return Lock(0, sizeInBytes, locking);
+        public IntPtr Lock( BufferLocking locking )
+        {
+            return Lock( 0, sizeInBytes, locking );
         }
 
         /// <summary>
@@ -155,23 +172,27 @@ namespace Axiom.Graphics {
         /// <param name="length">Nunber of bytes to lock after the offset.</param>
         /// <param name="locking">Specifies how to lock the buffer.</param>
         /// <returns>An array of the <code>System.Type</code> associated with this VertexBuffer.</returns>
-        public virtual IntPtr Lock(int offset, int length, BufferLocking locking) {
-            Debug.Assert(!isLocked, "Cannot lock this buffer because it is already locked.");
+        public virtual IntPtr Lock( int offset, int length, BufferLocking locking )
+        {
+            Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." );
 
             IntPtr data = IntPtr.Zero;
 
-            if(useShadowBuffer) {
-                if(locking != BufferLocking.ReadOnly) {
+            if ( useShadowBuffer )
+            {
+                if ( locking != BufferLocking.ReadOnly )
+                {
                     // we have to assume a read / write lock so we use the shadow buffer
                     // and tag for sync on Unlock()
                     shadowUpdated = true;
                 }
 
-                data = shadowBuffer.Lock(offset, length, locking);
+                data = shadowBuffer.Lock( offset, length, locking );
             }
-            else {
+            else
+            {
                 // lock the real deal and flag it as locked
-                data = this.LockImpl(offset, length, locking);
+                data = this.LockImpl( offset, length, locking );
                 isLocked = true;
             }
 
@@ -189,22 +210,25 @@ namespace Axiom.Graphics {
         /// <param name="length">Length of the portion of the buffer (int bytes) to lock.</param>
         /// <param name="locking">Locking type.</param>
         /// <returns>IntPtr to the beginning of the locked portion of the buffer.</returns>
-        protected abstract IntPtr LockImpl(int offset, int length, BufferLocking locking);
+        protected abstract IntPtr LockImpl( int offset, int length, BufferLocking locking );
 
         /// <summary>
         ///		Must be called after a call to <code>Lock</code>.  Unlocks the vertex buffer in the hardware
         ///		memory.
         /// </summary>
-        public virtual void Unlock() {
-            Debug.Assert(this.IsLocked, "Cannot unlock this buffer if it isn't locked to begin with.");
+        public virtual void Unlock()
+        {
+            Debug.Assert( this.IsLocked, "Cannot unlock this buffer if it isn't locked to begin with." );
 
-            if(useShadowBuffer && shadowBuffer.IsLocked) {
+            if ( useShadowBuffer && shadowBuffer.IsLocked )
+            {
                 shadowBuffer.Unlock();
 
                 // potentially update the real buffer from the shadow buffer
                 UpdateFromShadow();
             }
-            else {
+            else
+            {
                 // unlock the real deal
                 this.UnlockImpl();
 
@@ -220,19 +244,21 @@ namespace Axiom.Graphics {
         /// <summary>
         ///     Updates the real buffer from the shadow buffer, if required.
         /// </summary>
-        protected void UpdateFromShadow() {
-            if(useShadowBuffer && shadowUpdated && !suppressHardwareUpdate) {
+        protected void UpdateFromShadow()
+        {
+            if ( useShadowBuffer && shadowUpdated && !suppressHardwareUpdate )
+            {
                 // do this manually to avoid locking problems
-                IntPtr src = shadowBuffer.LockImpl(lockStart, lockSize, BufferLocking.ReadOnly);
+                IntPtr src = shadowBuffer.LockImpl( lockStart, lockSize, BufferLocking.ReadOnly );
 
                 // Lock with discard if the whole buffer was locked, otherwise normal
-                BufferLocking locking = 
-                    (lockStart == 0 && lockSize == sizeInBytes) ? BufferLocking.Discard : BufferLocking.Normal;
+                BufferLocking locking =
+                    ( lockStart == 0 && lockSize == sizeInBytes ) ? BufferLocking.Discard : BufferLocking.Normal;
 
-                IntPtr dest = this.LockImpl(lockStart, lockSize, locking);
+                IntPtr dest = this.LockImpl( lockStart, lockSize, locking );
 
                 // copy the data in directly
-                Memory.Copy(src, dest, lockSize);
+                Memory.Copy( src, dest, lockSize );
 
                 // unlock both buffers to commit the write
                 this.UnlockImpl();
@@ -251,7 +277,7 @@ namespace Axiom.Graphics {
         ///     The area of memory in which to place the data, must be large enough to 
         ///     accommodate the data!
         /// </param>
-        public abstract void ReadData(int offset, int length, IntPtr dest);
+        public abstract void ReadData( int offset, int length, IntPtr dest );
 
         /// <summary>
         ///     Writes data to the buffer from an area of system memory; note that you must
@@ -260,8 +286,9 @@ namespace Axiom.Graphics {
         /// <param name="offset">The byte offset from the start of the buffer to start writing.</param>
         /// <param name="length">The size of the data to write to, in bytes.</param>
         /// <param name="src">The source of the data to be written.</param>
-        public void WriteData(int offset, int length, IntPtr src) {
-            WriteData(offset, length, src, false);
+        public void WriteData( int offset, int length, IntPtr src )
+        {
+            WriteData( offset, length, src, false );
         }
 
         /// <summary>
@@ -275,7 +302,7 @@ namespace Axiom.Graphics {
         ///     If true, this allows the driver to discard the entire buffer when writing,
         ///     such that DMA stalls can be avoided; use if you can.
         /// </param>
-        public abstract void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer);
+        public abstract void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer );
 
         /// <summary>
         ///    Allows passing in a managed array of data to fill the vertex buffer.
@@ -287,10 +314,11 @@ namespace Axiom.Graphics {
         ///     position, normal, etc data.  The size of the struct *must* match the vertex size of the buffer,
         ///     so use with care.
         /// </param>
-        public void WriteData(int offset, int length, System.Array data) {
-            IntPtr dataPtr = Marshal.UnsafeAddrOfPinnedArrayElement(data, 0);
+        public void WriteData( int offset, int length, System.Array data )
+        {
+            IntPtr dataPtr = Marshal.UnsafeAddrOfPinnedArrayElement( data, 0 );
 
-            WriteData(offset, length, dataPtr);
+            WriteData( offset, length, dataPtr );
         }
 
         /// <summary>
@@ -307,10 +335,11 @@ namespace Axiom.Graphics {
         ///     If true, this allows the driver to discard the entire buffer when writing,
         ///     such that DMA stalls can be avoided; use if you can.
         /// </param>
-        public void WriteData(int offset, int length, System.Array data, bool discardWholeBuffer) {
-            IntPtr dataPtr = Marshal.UnsafeAddrOfPinnedArrayElement(data, 0);
+        public void WriteData( int offset, int length, System.Array data, bool discardWholeBuffer )
+        {
+            IntPtr dataPtr = Marshal.UnsafeAddrOfPinnedArrayElement( data, 0 );
 
-            WriteData(offset, length, dataPtr, discardWholeBuffer);
+            WriteData( offset, length, dataPtr, discardWholeBuffer );
         }
 
         /// <summary>
@@ -320,9 +349,10 @@ namespace Axiom.Graphics {
         /// <param name="srcOffset">Offset in the source buffer at which to start reading.</param>
         /// <param name="destOffset">Offset in the destination buffer to start writing.</param>
         /// <param name="length">Length of the data to copy, in bytes.</param>
-        public virtual void CopyData(HardwareBuffer srcBuffer, int srcOffset, int destOffset, int length) {
+        public virtual void CopyData( HardwareBuffer srcBuffer, int srcOffset, int destOffset, int length )
+        {
             // call the overloaded method
-            CopyData(srcBuffer, srcOffset, destOffset, length, false);
+            CopyData( srcBuffer, srcOffset, destOffset, length, false );
         }
 
         /// <summary>
@@ -333,12 +363,13 @@ namespace Axiom.Graphics {
         /// <param name="destOffset">Offset in the destination buffer to start writing.</param>
         /// <param name="length">Length of the data to copy, in bytes.</param>
         /// <param name="discardWholeBuffer">If true, will discard the entire contents of this buffer before copying.</param>
-        public virtual void CopyData(HardwareBuffer srcBuffer, int srcOffset, int destOffset, int length, bool discardWholeBuffer) {
+        public virtual void CopyData( HardwareBuffer srcBuffer, int srcOffset, int destOffset, int length, bool discardWholeBuffer )
+        {
             // lock the source buffer
-            IntPtr srcData = srcBuffer.Lock(srcOffset, length, BufferLocking.ReadOnly);
+            IntPtr srcData = srcBuffer.Lock( srcOffset, length, BufferLocking.ReadOnly );
 
             // write the data to this buffer
-            this.WriteData(destOffset, length, srcData, discardWholeBuffer);
+            this.WriteData( destOffset, length, srcData, discardWholeBuffer );
 
             // unlock the source buffer
             srcBuffer.Unlock();
@@ -348,14 +379,16 @@ namespace Axiom.Graphics {
         ///     Pass true to suppress hardware upload of shadow buffer changes.
         /// </summary>
         /// <param name="suppress">If true, shadow buffer updates won't be uploaded to hardware.</param>
-        public void SuppressHardwareUpdate(bool suppress) {
+        public void SuppressHardwareUpdate( bool suppress )
+        {
             suppressHardwareUpdate = suppress;
 
-			// if disabling future shadow updates, then update from what is current in the buffer now
-			// this is needed for shadow volumes
-			if(!suppress) {
-				UpdateFromShadow();
-			}
+            // if disabling future shadow updates, then update from what is current in the buffer now
+            // this is needed for shadow volumes
+            if ( !suppress )
+            {
+                UpdateFromShadow();
+            }
         }
 
         #endregion
@@ -365,44 +398,54 @@ namespace Axiom.Graphics {
         /// <summary>
         ///		Gets whether or not this buffer is currently locked.
         /// </summary>
-        public bool IsLocked { 
-            get { 
-                return isLocked || (useShadowBuffer && shadowBuffer.IsLocked); 
-            } 
+        public bool IsLocked
+        {
+            get
+            {
+                return isLocked || ( useShadowBuffer && shadowBuffer.IsLocked );
+            }
         }
 
         /// <summary>
         ///		Gets whether this buffer is held in system memory.
         /// </summary>
-        public bool IsSystemMemory {
-            get { 
-                return useSystemMemory; 
+        public bool IsSystemMemory
+        {
+            get
+            {
+                return useSystemMemory;
             }
         }
 
         /// <summary>
         ///		Gets the size (in bytes) for this buffer.
         /// </summary>
-        public int Size { 
-            get { 
-                return sizeInBytes; 
-            } 
+        public int Size
+        {
+            get
+            {
+                return sizeInBytes;
+            }
         }
 
         /// <summary>
         ///		Gets the usage of this buffer.
         /// </summary>
-        public BufferUsage Usage { 
-            get { 
-                return usage; 
-            } 
+        public BufferUsage Usage
+        {
+            get
+            {
+                return usage;
+            }
         }
 
         /// <summary>
         ///     Gets a bool that specifies whether this buffer has a software shadow buffer.
         /// </summary>
-        public bool HasShadowBuffer {
-            get {
+        public bool HasShadowBuffer
+        {
+            get
+            {
                 return useShadowBuffer;
             }
         }

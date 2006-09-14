@@ -1,34 +1,73 @@
+#region LGPL License
+/*
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
+
+The overall design, and a majority of the core engine and rendering code 
+contained within this library is a derivative of the open source Object Oriented 
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+#endregion
+
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 
-namespace Axiom.Input {
+#endregion Namespace Declarations
+
+namespace Axiom.Input
+{
     /// <summary>
     ///    Enum containing all the possible keyboard codes.
     /// </summary>
-    public enum KeyCodes {
+    public enum KeyCodes
+    {
         /// <summary>
         ///		The keyboard code for LButton.
         /// </summary>
-        LButton ,
+        LButton,
         /// <summary>
         ///		The keyboard code for RButton.
         /// </summary>
-        RButton ,
+        RButton,
         /// <summary>
         ///		The keyboard code for Cancel.
         /// </summary>
-        Cancel ,
+        Cancel,
         /// <summary>
         ///		The keyboard code for MButton.
         /// </summary>
-        MButton ,
+        MButton,
         /// <summary>
         ///		The keyboard code for XButton1.
         /// </summary>
-        XButton1 ,
+        XButton1,
         /// <summary>
         ///		The keyboard code for XButton2.
         /// </summary>
-        XButton2 ,
+        XButton2,
         /// <summary>
         ///		The keyboard code for Backspace.
         /// </summary>
@@ -36,647 +75,647 @@ namespace Axiom.Input {
         /// <summary>
         ///		The keyboard code for Tab.
         /// </summary>
-        Tab ,
+        Tab,
         /// <summary>
         ///		The keyboard code for LineFeed.
         /// </summary>
-        LineFeed ,
+        LineFeed,
         /// <summary>
         ///		The keyboard code for Clear.
         /// </summary>
-        Clear ,
+        Clear,
         /// <summary>
         ///		The keyboard code for Return.
         /// </summary>
-        Return ,
+        Return,
         /// <summary>
         ///		The keyboard code for Enter.
         /// </summary>
-        Enter ,
+        Enter,
         /// <summary>
         ///		The keyboard code for ShiftKey.
         /// </summary>
-        ShiftKey ,
+        ShiftKey,
         /// <summary>
         ///		The keyboard code for ControlKey.
         /// </summary>
-        ControlKey ,
+        ControlKey,
         /// <summary>
         ///		The keyboard code for Menu.
         /// </summary>
-        Menu ,
+        Menu,
         /// <summary>
         ///		The keyboard code for Pause.
         /// </summary>
-        Pause ,
+        Pause,
         /// <summary>
         ///		The keyboard code for Capital.
         /// </summary>
-        Capital ,
+        Capital,
         /// <summary>
         ///		The keyboard code for CapsLock.
         /// </summary>
-        CapsLock ,
+        CapsLock,
         /// <summary>
         ///		The keyboard code for Escape.
         /// </summary>
-        Escape ,
+        Escape,
         /// <summary>
         ///		The keyboard code for Space.
         /// </summary>
-        Space ,
+        Space,
         /// <summary>
         ///		The keyboard code for Prior.
         /// </summary>
-        Prior ,
+        Prior,
         /// <summary>
         ///		The keyboard code for PageUp.
         /// </summary>
-        PageUp ,
+        PageUp,
         /// <summary>
         ///		The keyboard code for Next.
         /// </summary>
-        Next ,
+        Next,
         /// <summary>
         ///		The keyboard code for PageDown.
         /// </summary>
-        PageDown ,
+        PageDown,
         /// <summary>
         ///		The keyboard code for End.
         /// </summary>
-        End ,
+        End,
         /// <summary>
         ///		The keyboard code for Home.
         /// </summary>
-        Home ,
+        Home,
         /// <summary>
         ///		The keyboard code for Left.
         /// </summary>
-        Left ,
+        Left,
         /// <summary>
         ///		The keyboard code for Up.
         /// </summary>
-        Up ,
+        Up,
         /// <summary>
         ///		The keyboard code for Right.
         /// </summary>
-        Right ,
+        Right,
         /// <summary>
         ///		The keyboard code for Down.
         /// </summary>
-        Down ,
+        Down,
         /// <summary>
         ///		The keyboard code for Select.
         /// </summary>
-        Select ,
+        Select,
         /// <summary>
         ///		The keyboard code for Print.
         /// </summary>
-        Print ,
+        Print,
         /// <summary>
         ///		The keyboard code for Execute.
         /// </summary>
-        Execute ,
+        Execute,
         /// <summary>
         ///		The keyboard code for Snapshot.
         /// </summary>
-        Snapshot ,
+        Snapshot,
         /// <summary>
         ///		The keyboard code for PrintScreen.
         /// </summary>
-        PrintScreen ,
+        PrintScreen,
         /// <summary>
         ///		The keyboard code for Insert.
         /// </summary>
-        Insert ,
+        Insert,
         /// <summary>
         ///		The keyboard code for Delete.
         /// </summary>
-        Delete ,
+        Delete,
         /// <summary>
         ///		The keyboard code for Help.
         /// </summary>
-        Help ,
+        Help,
         /// <summary>
         ///		The keyboard code for D0.
         /// </summary>
-        D0 ,
+        D0,
         /// <summary>
         ///		The keyboard code for D1.
         /// </summary>
-        D1 ,
+        D1,
         /// <summary>
         ///		The keyboard code for D2.
         /// </summary>
-        D2 ,
+        D2,
         /// <summary>
         ///		The keyboard code for D3.
         /// </summary>
-        D3 ,
+        D3,
         /// <summary>
         ///		The keyboard code for D4.
         /// </summary>
-        D4 ,
+        D4,
         /// <summary>
         ///		The keyboard code for D5.
         /// </summary>
-        D5 ,
+        D5,
         /// <summary>
         ///		The keyboard code for D6.
         /// </summary>
-        D6 ,
+        D6,
         /// <summary>
         ///		The keyboard code for D7.
         /// </summary>
-        D7 ,
+        D7,
         /// <summary>
         ///		The keyboard code for D8.
         /// </summary>
-        D8 ,
+        D8,
         /// <summary>
         ///		The keyboard code for D9.
         /// </summary>
-        D9 ,
+        D9,
         /// <summary>
         ///		The keyboard code for A.
         /// </summary>
-        A ,
+        A,
         /// <summary>
         ///		The keyboard code for B.
         /// </summary>
-        B ,
+        B,
         /// <summary>
         ///		The keyboard code for C.
         /// </summary>
-        C ,
+        C,
         /// <summary>
         ///		The keyboard code for D.
         /// </summary>
-        D ,
+        D,
         /// <summary>
         ///		The keyboard code for E.
         /// </summary>
-        E ,
+        E,
         /// <summary>
         ///		The keyboard code for F.
         /// </summary>
-        F ,
+        F,
         /// <summary>
         ///		The keyboard code for G.
         /// </summary>
-        G ,
+        G,
         /// <summary>
         ///		The keyboard code for H.
         /// </summary>
-        H ,
+        H,
         /// <summary>
         ///		The keyboard code for I.
         /// </summary>
-        I ,
+        I,
         /// <summary>
         ///		The keyboard code for J.
         /// </summary>
-        J ,
+        J,
         /// <summary>
         ///		The keyboard code for K.
         /// </summary>
-        K ,
+        K,
         /// <summary>
         ///		The keyboard code for L.
         /// </summary>
-        L ,
+        L,
         /// <summary>
         ///		The keyboard code for M.
         /// </summary>
-        M ,
+        M,
         /// <summary>
         ///		The keyboard code for N.
         /// </summary>
-        N ,
+        N,
         /// <summary>
         ///		The keyboard code for O.
         /// </summary>
-        O ,
+        O,
         /// <summary>
         ///		The keyboard code for P.
         /// </summary>
-        P ,
+        P,
         /// <summary>
         ///		The keyboard code for Q.
         /// </summary>
-        Q ,
+        Q,
         /// <summary>
         ///		The keyboard code for R.
         /// </summary>
-        R ,
+        R,
         /// <summary>
         ///		The keyboard code for S.
         /// </summary>
-        S ,
+        S,
         /// <summary>
         ///		The keyboard code for T.
         /// </summary>
-        T ,
+        T,
         /// <summary>
         ///		The keyboard code for U.
         /// </summary>
-        U ,
+        U,
         /// <summary>
         ///		The keyboard code for V.
         /// </summary>
-        V ,
+        V,
         /// <summary>
         ///		The keyboard code for W.
         /// </summary>
-        W ,
+        W,
         /// <summary>
         ///		The keyboard code for X.
         /// </summary>
-        X ,
+        X,
         /// <summary>
         ///		The keyboard code for Y.
         /// </summary>
-        Y ,
+        Y,
         /// <summary>
         ///		The keyboard code for Z.
         /// </summary>
-        Z ,
+        Z,
         /// <summary>
         ///		The keyboard code for LWin.
         /// </summary>
-        LWin ,
+        LWin,
         /// <summary>
         ///		The keyboard code for RWin.
         /// </summary>
-        RWin ,
+        RWin,
         /// <summary>
         ///		The keyboard code for Apps.
         /// </summary>
-        Apps ,
+        Apps,
         /// <summary>
         ///		The keyboard code for NumPad0.
         /// </summary>
-        NumPad0 ,
+        NumPad0,
         /// <summary>
         ///		The keyboard code for NumPad1.
         /// </summary>
-        NumPad1 ,
+        NumPad1,
         /// <summary>
         ///		The keyboard code for NumPad2.
         /// </summary>
-        NumPad2 ,
+        NumPad2,
         /// <summary>
         ///		The keyboard code for NumPad3.
         /// </summary>
-        NumPad3 ,
+        NumPad3,
         /// <summary>
         ///		The keyboard code for NumPad4.
         /// </summary>
-        NumPad4 ,
+        NumPad4,
         /// <summary>
         ///		The keyboard code for NumPad5.
         /// </summary>
-        NumPad5 ,
+        NumPad5,
         /// <summary>
         ///		The keyboard code for NumPad6.
         /// </summary>
-        NumPad6 ,
+        NumPad6,
         /// <summary>
         ///		The keyboard code for NumPad7.
         /// </summary>
-        NumPad7 ,
+        NumPad7,
         /// <summary>
         ///		The keyboard code for NumPad8.
         /// </summary>
-        NumPad8 ,
+        NumPad8,
         /// <summary>
         ///		The keyboard code for NumPad9.
         /// </summary>
-        NumPad9 ,
+        NumPad9,
         /// <summary>
         ///		The keyboard code for Multiply.
         /// </summary>
-        Multiply ,
+        Multiply,
         /// <summary>
         ///		The keyboard code for Add.
         /// </summary>
-        Add ,
+        Add,
         /// <summary>
         ///		The keyboard code for Separator.
         /// </summary>
-        Separator ,
+        Separator,
         /// <summary>
         ///		The keyboard code for Subtract.
         /// </summary>
-        Subtract ,
+        Subtract,
         /// <summary>
         ///		The keyboard code for Decimal.
         /// </summary>
-        Decimal ,
+        Decimal,
         /// <summary>
         ///		The keyboard code for Divide.
         /// </summary>
-        Divide ,
+        Divide,
         /// <summary>
         ///		The keyboard code for F1.
         /// </summary>
-        F1 ,
+        F1,
         /// <summary>
         ///		The keyboard code for F2.
         /// </summary>
-        F2 ,
+        F2,
         /// <summary>
         ///		The keyboard code for F3.
         /// </summary>
-        F3 ,
+        F3,
         /// <summary>
         ///		The keyboard code for F4.
         /// </summary>
-        F4 ,
+        F4,
         /// <summary>
         ///		The keyboard code for F5.
         /// </summary>
-        F5 ,
+        F5,
         /// <summary>
         ///		The keyboard code for F6.
         /// </summary>
-        F6 ,
+        F6,
         /// <summary>
         ///		The keyboard code for F7.
         /// </summary>
-        F7 ,
+        F7,
         /// <summary>
         ///		The keyboard code for F8.
         /// </summary>
-        F8 ,
+        F8,
         /// <summary>
         ///		The keyboard code for F9.
         /// </summary>
-        F9 ,
+        F9,
         /// <summary>
         ///		The keyboard code for F10.
         /// </summary>
-        F10 ,
+        F10,
         /// <summary>
         ///		The keyboard code for F11.
         /// </summary>
-        F11 ,
+        F11,
         /// <summary>
         ///		The keyboard code for F12.
         /// </summary>
-        F12 ,
+        F12,
         /// <summary>
         ///		The keyboard code for F13.
         /// </summary>
-        F13 ,
+        F13,
         /// <summary>
         ///		The keyboard code for F14.
         /// </summary>
-        F14 ,
+        F14,
         /// <summary>
         ///		The keyboard code for F15.
         /// </summary>
-        F15 ,
+        F15,
         /// <summary>
         ///		The keyboard code for F16.
         /// </summary>
-        F16 ,
+        F16,
         /// <summary>
         ///		The keyboard code for F17.
         /// </summary>
-        F17 ,
+        F17,
         /// <summary>
         ///		The keyboard code for F18.
         /// </summary>
-        F18 ,
+        F18,
         /// <summary>
         ///		The keyboard code for F19.
         /// </summary>
-        F19 ,
+        F19,
         /// <summary>
         ///		The keyboard code for F20.
         /// </summary>
-        F20 ,
+        F20,
         /// <summary>
         ///		The keyboard code for F21.
         /// </summary>
-        F21 ,
+        F21,
         /// <summary>
         ///		The keyboard code for F22.
         /// </summary>
-        F22 ,
+        F22,
         /// <summary>
         ///		The keyboard code for F23.
         /// </summary>
-        F23 ,
+        F23,
         /// <summary>
         ///		The keyboard code for F24.
         /// </summary>
-        F24 ,
+        F24,
         /// <summary>
         ///		The keyboard code for NumLock.
         /// </summary>
-        NumLock ,
+        NumLock,
         /// <summary>
         ///		The keyboard code for Scroll.
         /// </summary>
-        Scroll ,
+        Scroll,
         /// <summary>
         ///		The keyboard code for LeftShift.
         /// </summary>
-        LeftShift ,
+        LeftShift,
         /// <summary>
         ///		The keyboard code for RightShift.
         /// </summary>
-        RightShift ,
+        RightShift,
         /// <summary>
         ///		The keyboard code for LeftControl.
         /// </summary>
-        LeftControl ,
+        LeftControl,
         /// <summary>
         ///		The keyboard code for RightControl.
         /// </summary>
-        RightControl ,
+        RightControl,
         /// <summary>
         ///		The keyboard code for LMenu.
         /// </summary>
-        LMenu ,
+        LMenu,
         /// <summary>
         ///		The keyboard code for RMenu.
         /// </summary>
-        RMenu ,
+        RMenu,
         /// <summary>
         ///		The keyboard code for ProcessKey.
         /// </summary>
-        ProcessKey ,
+        ProcessKey,
         /// <summary>
         ///		The keyboard code for Attn.
         /// </summary>
-        Attn ,
+        Attn,
         /// <summary>
         ///		The keyboard code for EraseEof.
         /// </summary>
-        EraseEof ,
+        EraseEof,
         /// <summary>
         ///		The keyboard code for Play.
         /// </summary>
-        Play ,
+        Play,
         /// <summary>
         ///		The keyboard code for Zoom.
         /// </summary>
-        Zoom ,
+        Zoom,
         /// <summary>
         ///		The keyboard code for NoName.
         /// </summary>
-        NoName ,
+        NoName,
         /// <summary>
         ///		The keyboard code for KanaMode.
         /// </summary>
-        KanaMode ,
+        KanaMode,
         /// <summary>
         ///		The keyboard code for HanguelMode.
         /// </summary>
-        HanguelMode ,
+        HanguelMode,
         /// <summary>
         ///		The keyboard code for HangulMode.
         /// </summary>
-        HangulMode ,
+        HangulMode,
         /// <summary>
         ///		The keyboard code for JunjaMode.
         /// </summary>
-        JunjaMode ,
+        JunjaMode,
         /// <summary>
         ///		The keyboard code for FinalMode.
         /// </summary>
-        FinalMode ,
+        FinalMode,
         /// <summary>
         ///		The keyboard code for HanjaMode.
         /// </summary>
-        HanjaMode ,
+        HanjaMode,
         /// <summary>
         ///		The keyboard code for KanjiMode.
         /// </summary>
-        KanjiMode ,
+        KanjiMode,
         /// <summary>
         ///		The keyboard code for IMEConvert.
         /// </summary>
-        IMEConvert ,
+        IMEConvert,
         /// <summary>
         ///		The keyboard code for IMENonconvert.
         /// </summary>
-        IMENonconvert ,
+        IMENonconvert,
         /// <summary>
         ///		The keyboard code for IMEAceept.
         /// </summary>
-        IMEAceept ,
+        IMEAceept,
         /// <summary>
         ///		The keyboard code for IMEModeChange.
         /// </summary>
-        IMEModeChange ,
+        IMEModeChange,
         /// <summary>
         ///		The keyboard code for BrowserBack.
         /// </summary>
-        BrowserBack ,
+        BrowserBack,
         /// <summary>
         ///		The keyboard code for BrowserForward.
         /// </summary>
-        BrowserForward ,
+        BrowserForward,
         /// <summary>
         ///		The keyboard code for BrowserRefresh.
         /// </summary>
-        BrowserRefresh ,
+        BrowserRefresh,
         /// <summary>
         ///		The keyboard code for BrowserStop.
         /// </summary>
-        BrowserStop ,
+        BrowserStop,
         /// <summary>
         ///		The keyboard code for BrowserSearch.
         /// </summary>
-        BrowserSearch ,
+        BrowserSearch,
         /// <summary>
         ///		The keyboard code for BrowserFavorites.
         /// </summary>
-        BrowserFavorites ,
+        BrowserFavorites,
         /// <summary>
         ///		The keyboard code for BrowserHome.
         /// </summary>
-        BrowserHome ,
+        BrowserHome,
         /// <summary>
         ///		The keyboard code for VolumeMute.
         /// </summary>
-        VolumeMute ,
+        VolumeMute,
         /// <summary>
         ///		The keyboard code for VolumeDown.
         /// </summary>
-        VolumeDown ,
+        VolumeDown,
         /// <summary>
         ///		The keyboard code for VolumeUp.
         /// </summary>
-        VolumeUp ,
+        VolumeUp,
         /// <summary>
         ///		The keyboard code for MediaNextTrack.
         /// </summary>
-        MediaNextTrack ,
+        MediaNextTrack,
         /// <summary>
         ///		The keyboard code for MediaPreviousTrack.
         /// </summary>
-        MediaPreviousTrack ,
+        MediaPreviousTrack,
         /// <summary>
         ///		The keyboard code for MediaStop.
         /// </summary>
-        MediaStop ,
+        MediaStop,
         /// <summary>
         ///		The keyboard code for MediaPlayPause.
         /// </summary>
-        MediaPlayPause ,
+        MediaPlayPause,
         /// <summary>
         ///		The keyboard code for LaunchMail.
         /// </summary>
-        LaunchMail ,
+        LaunchMail,
         /// <summary>
         ///		The keyboard code for SelectMedia.
         /// </summary>
-        SelectMedia ,
+        SelectMedia,
         /// <summary>
         ///		The keyboard code for LaunchApplication1.
         /// </summary>
-        LaunchApplication1 ,
+        LaunchApplication1,
         /// <summary>
         ///		The keyboard code for LaunchApplication2.
         /// </summary>
-        LaunchApplication2 ,
+        LaunchApplication2,
         /// <summary>
         ///		The keyboard code for Semicolon.
         /// </summary>
-        Semicolon ,
+        Semicolon,
         /// <summary>
         ///		The keyboard code for Plus.
         /// </summary>
-        Plus ,
+        Plus,
         /// <summary>
         ///		The keyboard code for Comma.
         /// </summary>
-        Comma ,
+        Comma,
         /// <summary>
         ///		The keyboard code for Period.
         /// </summary>
-        Period ,
+        Period,
         /// <summary>
         ///		The keyboard code for QuestionMark.
         /// </summary>
-        QuestionMark ,
+        QuestionMark,
         /// <summary>
         ///		The keyboard code for Tilde.
         /// </summary>
-        Tilde ,
+        Tilde,
         /// <summary>
         ///		The keyboard code for OpenBracket.
         /// </summary>
-        OpenBracket ,
+        OpenBracket,
         /// <summary>
         ///		The keyboard code for Pipe.
         /// </summary>
-        Pipe ,
+        Pipe,
         /// <summary>
         ///		The keyboard code for CloseBracket.
         /// </summary>
@@ -688,15 +727,15 @@ namespace Axiom.Input {
         /// <summary>
         ///		The keyboard code for Backslash.
         /// </summary>
-        Backslash ,
+        Backslash,
         /// <summary>
         ///		The keyboard code for Shift.
         /// </summary>
-        Shift ,
+        Shift,
         /// <summary>
         ///		The keyboard code for Control.
         /// </summary>
-        Control ,
+        Control,
         /// <summary>
         ///		The keyboard code for LeftAlt.
         /// </summary>
@@ -711,7 +750,8 @@ namespace Axiom.Input {
     ///    Possible buttons that can be found on a mouse.
     /// </summary>
     [Flags]
-    public enum MouseButtons {
+    public enum MouseButtons
+    {
         /// <summary>
         ///    Typically the left button.
         /// </summary>
@@ -726,17 +766,18 @@ namespace Axiom.Input {
         Button2 = 4
     }
 
-	/// <summary>
-	///		Special keys that can alter input behavior when down.
-	/// </summary>
-	[Flags]
-	public enum ModifierKeys {
-		None			= 0,
-		Shift			= 1,
-		Control			= 2,
-		Alt				= 4,
-		MouseButton0	= 8,
-		MouseButton1	= 16,
-		MouseButton2	= 32
-	}
+    /// <summary>
+    ///		Special keys that can alter input behavior when down.
+    /// </summary>
+    [Flags]
+    public enum ModifierKeys
+    {
+        None = 0,
+        Shift = 1,
+        Control = 2,
+        Alt = 4,
+        MouseButton0 = 8,
+        MouseButton1 = 16,
+        MouseButton2 = 32
+    }
 }

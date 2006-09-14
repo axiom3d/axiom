@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,22 +24,35 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 
-namespace Axiom.Graphics {
-	/// <summary>
+#endregion Namespace Declarations
+
+namespace Axiom.Graphics
+{
+    /// <summary>
     ///     Interface representing a 'licensee' of a hardware buffer copy.
-	/// </summary>
-	/// <remarks>
-	///     Often it's useful to have temporary buffers which are used for working
-	///     but are not necessarily needed permanently. However, creating and 
-	///     destroying buffers is expensive, so we need a way to share these 
-	///     working areas, especially those based on existing fixed buffers. 
-	///     Classes implementing this interface represent a licensee of one of those 
-	///     temporary buffers, and must be implemented by any user of a temporary buffer 
-	///     if they wish to be notified when the license is expired. 
-	/// </remarks>
-	public interface IHardwareBufferLicensee {
+    /// </summary>
+    /// <remarks>
+    ///     Often it's useful to have temporary buffers which are used for working
+    ///     but are not necessarily needed permanently. However, creating and 
+    ///     destroying buffers is expensive, so we need a way to share these 
+    ///     working areas, especially those based on existing fixed buffers. 
+    ///     Classes implementing this interface represent a licensee of one of those 
+    ///     temporary buffers, and must be implemented by any user of a temporary buffer 
+    ///     if they wish to be notified when the license is expired. 
+    /// </remarks>
+    public interface IHardwareBufferLicensee
+    {
         #region Methods
 
         /// <summary>
@@ -47,8 +60,8 @@ namespace Axiom.Graphics {
         ///     to be returned to the shared pool.
         /// </summary>
         /// <param name="buffer"></param>
-        void LicenseExpired(HardwareBuffer buffer);
+        void LicenseExpired( HardwareBuffer buffer );
 
         #endregion Methods
-	}
+    }
 }

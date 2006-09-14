@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -30,10 +30,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
-using System.Diagnostics;	
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+
+#endregion Namespace Declarations
 
 // NOTE.  The (x,y,z) coordinate system is assumed to be right-handed.
 // Coordinate axis rotation matrices are of the form
@@ -50,12 +61,14 @@ using System.Text;
 //           0       0       1
 // where t > 0 indicates a counterclockwise rotation in the xy-plane.
 
-namespace Axiom.Math {
+namespace Axiom.Math
+{
     /// <summary>
     /// A 3x3 matrix which can represent rotations around axes.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public struct Matrix3 {
+    [StructLayout( LayoutKind.Sequential )]
+    public struct Matrix3
+    {
         #region Member variables and constants
 
         /// <summary>
@@ -65,13 +78,13 @@ namespace Axiom.Math {
         public float m10, m11, m12;
         public float m20, m21, m22;
 
-        private static readonly Matrix3 identityMatrix = new Matrix3(	1,0,0,
-            0,1,0,
-            0,0,1);
+        private static readonly Matrix3 identityMatrix = new Matrix3( 1, 0, 0,
+            0, 1, 0,
+            0, 0, 1 );
 
-        private static readonly Matrix3 zeroMatrix = new Matrix3(0,0,0,
-            0,0,0,
-            0,0,0);
+        private static readonly Matrix3 zeroMatrix = new Matrix3( 0, 0, 0,
+            0, 0, 0,
+            0, 0, 0 );
 
         #endregion
 
@@ -80,12 +93,19 @@ namespace Axiom.Math {
         /// <summary>
         ///		Creates a new Matrix3 with all the specified parameters.
         /// </summary>
-        public Matrix3(	float m00, float m01, float m02,
+        public Matrix3( float m00, float m01, float m02,
             float m10, float m11, float m12,
-            float m20, float m21, float m22) {
-            this.m00 = m00; this.m01 = m01; this.m02 = m02;
-            this.m10 = m10; this.m11 = m11; this.m12 = m12;
-            this.m20 = m20; this.m21 = m21; this.m22 = m22;
+            float m20, float m21, float m22 )
+        {
+            this.m00 = m00;
+            this.m01 = m01;
+            this.m02 = m02;
+            this.m10 = m10;
+            this.m11 = m11;
+            this.m12 = m12;
+            this.m20 = m20;
+            this.m21 = m21;
+            this.m22 = m22;
         }
 
         /// <summary>
@@ -94,10 +114,17 @@ namespace Axiom.Math {
         /// <param name="xAxis"></param>
         /// <param name="yAxis"></param>
         /// <param name="zAxis"></param>
-        public Matrix3(Vector3 xAxis, Vector3 yAxis, Vector3 zAxis) {
-            m00 = xAxis.x; m01 = yAxis.x; m02 = zAxis.x;
-            m10 = xAxis.y; m11 = yAxis.y; m12 = zAxis.y;
-            m20 = xAxis.z; m21 = yAxis.z; m22 = zAxis.z;
+        public Matrix3( Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
+        {
+            m00 = xAxis.x;
+            m01 = yAxis.x;
+            m02 = zAxis.x;
+            m10 = xAxis.y;
+            m11 = yAxis.y;
+            m12 = zAxis.y;
+            m20 = xAxis.z;
+            m21 = yAxis.z;
+            m22 = zAxis.z;
         }
 
         #endregion
@@ -107,31 +134,38 @@ namespace Axiom.Math {
         /// <summary>
         /// Identity Matrix
         /// </summary>
-        public static Matrix3 Identity {
-            get { 
-                return identityMatrix; 
+        public static Matrix3 Identity
+        {
+            get
+            {
+                return identityMatrix;
             }
         }
 
         /// <summary>
         /// Zero matrix.
         /// </summary>
-        public static Matrix3 Zero {
-            get{ return zeroMatrix; }
+        public static Matrix3 Zero
+        {
+            get
+            {
+                return zeroMatrix;
+            }
         }
 
         #endregion
 
         #region Public methods
-		
+
         /// <summary>
         /// Swap the rows of the matrix with the columns.
         /// </summary>
         /// <returns>A transposed Matrix.</returns>
-        public Matrix3 Transpose() {
-            return new Matrix3(m00, m10, m20,
+        public Matrix3 Transpose()
+        {
+            return new Matrix3( m00, m10, m20,
                 m01, m11, m21,
-                m02, m12, m22);
+                m02, m12, m22 );
         }
 
         /// <summary>
@@ -139,14 +173,16 @@ namespace Axiom.Math {
         /// </summary>
         /// <param name="col"></param>
         /// <returns>A Vector3 representing one of the Matrix columns.</returns>
-        public Vector3 GetColumn(int col) {
-            Debug.Assert(col >= 0 && col < 3, "Attempt to retreive a column of a Matrix3 greater than 2.");
-			
-            unsafe {
-                fixed(float* pM = &m00)
-                    return new Vector3(	*(pM + col),   //m[0,col], 
-                        *(pM + 3 + col),   //m[1,col], 
-                        *(pM + 6 + col));  //m[2,col]);
+        public Vector3 GetColumn( int col )
+        {
+            Debug.Assert( col >= 0 && col < 3, "Attempt to retreive a column of a Matrix3 greater than 2." );
+
+            unsafe
+            {
+                fixed ( float* pM = &m00 )
+                    return new Vector3( *( pM + col ),   //m[0,col], 
+                        *( pM + 3 + col ),   //m[1,col], 
+                        *( pM + 6 + col ) );  //m[2,col]);
             }
         }
 
@@ -156,12 +192,13 @@ namespace Axiom.Math {
         /// <param name="col"></param>
         /// <param name="vector"></param>
         /// <returns></returns>
-        public void SetColumn(int col, Vector3 vector) {
-            Debug.Assert(col >= 0 && col < 3, "Attempt to set a column of a Matrix3 greater than 2.");
-			
-            this[0, col] = vector.x;
-            this[1, col] = vector.y;
-            this[2, col] = vector.z;
+        public void SetColumn( int col, Vector3 vector )
+        {
+            Debug.Assert( col >= 0 && col < 3, "Attempt to set a column of a Matrix3 greater than 2." );
+
+            this[ 0, col ] = vector.x;
+            this[ 1, col ] = vector.y;
+            this[ 2, col ] = vector.z;
         }
 
         /// <summary>
@@ -170,10 +207,11 @@ namespace Axiom.Math {
         /// <param name="xAxis"></param>
         /// <param name="yAxis"></param>
         /// <param name="zAxis"></param>
-        public void FromAxes(Vector3 xAxis, Vector3 yAxis, Vector3 zAxis) {
-            SetColumn(0, xAxis);
-            SetColumn(1, yAxis);
-            SetColumn(2, zAxis);
+        public void FromAxes( Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
+        {
+            SetColumn( 0, xAxis );
+            SetColumn( 1, yAxis );
+            SetColumn( 2, zAxis );
         }
 
         /// <summary>
@@ -182,20 +220,21 @@ namespace Axiom.Math {
         /// <param name="yaw"></param>
         /// <param name="pitch"></param>
         /// <param name="roll"></param>
-        public void FromEulerAnglesXYZ(float yaw, float pitch, float roll) {
-            float cos = Utility.Cos(yaw);
-            float sin = Utility.Sin(yaw);
-            Matrix3 xMat = new Matrix3(1, 0, 0, 0, cos, -sin, 0, sin, cos);
+        public void FromEulerAnglesXYZ( float yaw, float pitch, float roll )
+        {
+            float cos = Utility.Cos( yaw );
+            float sin = Utility.Sin( yaw );
+            Matrix3 xMat = new Matrix3( 1, 0, 0, 0, cos, -sin, 0, sin, cos );
 
-            cos = Utility.Cos(pitch);
-            sin = Utility.Sin(pitch);
-            Matrix3 yMat = new Matrix3(cos, 0, sin, 0, 1, 0, -sin, 0, cos);
+            cos = Utility.Cos( pitch );
+            sin = Utility.Sin( pitch );
+            Matrix3 yMat = new Matrix3( cos, 0, sin, 0, 1, 0, -sin, 0, cos );
 
-            cos = Utility.Cos(roll);
-            sin = Utility.Sin(roll);
-            Matrix3 zMat = new Matrix3(cos, -sin, 0, sin, cos, 0, 0, 0, 1);
+            cos = Utility.Cos( roll );
+            sin = Utility.Sin( roll );
+            Matrix3 zMat = new Matrix3( cos, -sin, 0, sin, cos, 0, 0, 0, 1 );
 
-            this = xMat * (yMat * zMat);
+            this = xMat * ( yMat * zMat );
         }
 
         #endregion
@@ -208,18 +247,20 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Matrix3 Multiply (Matrix3 left, Matrix3 right) {
-        	return left * right;
+        public static Matrix3 Multiply( Matrix3 left, Matrix3 right )
+        {
+            return left * right;
         }
-        
+
         /// <summary>
         /// Multiply (concatenate) two Matrix3 instances together.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Matrix3 operator * (Matrix3 left, Matrix3 right) {
-        
+        public static Matrix3 operator *( Matrix3 left, Matrix3 right )
+        {
+
             Matrix3 result = new Matrix3();
 
             result.m00 = left.m00 * right.m00 + left.m01 * right.m10 + left.m02 * right.m20;
@@ -243,17 +284,19 @@ namespace Axiom.Math {
         /// <param name="vector"></param>
         /// <param name="matrix"></param>
         /// <returns></returns>
-        public static Vector3  Multiply (Vector3 vector, Matrix3 matrix) {
-			return vector * matrix;
+        public static Vector3 Multiply( Vector3 vector, Matrix3 matrix )
+        {
+            return vector * matrix;
         }
-        
+
         /// <summary>
         ///		vector * matrix [1x3 * 3x3 = 1x3]
         /// </summary>
         /// <param name="vector"></param>
         /// <param name="matrix"></param>
         /// <returns></returns>
-        public static Vector3 operator * (Vector3 vector, Matrix3 matrix) {
+        public static Vector3 operator *( Vector3 vector, Matrix3 matrix )
+        {
             Vector3 product = new Vector3();
 
             product.x = matrix.m00 * vector.x + matrix.m01 * vector.y + matrix.m02 * vector.z;
@@ -269,17 +312,19 @@ namespace Axiom.Math {
         /// <param name="vector"></param>
         /// <param name="matrix"></param>
         /// <returns></returns>
-        public static Vector3 Multiply (Matrix3 matrix, Vector3 vector) {
-        	return matrix * vector;
+        public static Vector3 Multiply( Matrix3 matrix, Vector3 vector )
+        {
+            return matrix * vector;
         }
-        
+
         /// <summary>
         ///		matrix * vector [3x3 * 3x1 = 3x1]
         /// </summary>
         /// <param name="vector"></param>
         /// <param name="matrix"></param>
         /// <returns></returns>
-        public static Vector3  operator * (Matrix3 matrix, Vector3 vector) {
+        public static Vector3 operator *( Matrix3 matrix, Vector3 vector )
+        {
             Vector3 product = new Vector3();
 
             product.x = matrix.m00 * vector.x + matrix.m01 * vector.y + matrix.m02 * vector.z;
@@ -295,17 +340,19 @@ namespace Axiom.Math {
         /// <param name="matrix"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public static Matrix3 Multiply (Matrix3 matrix, float scalar) {
-        	return matrix * scalar;
+        public static Matrix3 Multiply( Matrix3 matrix, float scalar )
+        {
+            return matrix * scalar;
         }
-        
+
         /// <summary>
         /// Multiplies all the items in the Matrix3 by a scalar value.
         /// </summary>
         /// <param name="matrix"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public static Matrix3 operator * (Matrix3 matrix, float scalar) {
+        public static Matrix3 operator *( Matrix3 matrix, float scalar )
+        {
             Matrix3 result = new Matrix3();
 
             result.m00 = matrix.m00 * scalar;
@@ -327,17 +374,19 @@ namespace Axiom.Math {
         /// <param name="matrix"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public static Matrix3 Multiply (float scalar, Matrix3 matrix) {
-        	return scalar * matrix;
+        public static Matrix3 Multiply( float scalar, Matrix3 matrix )
+        {
+            return scalar * matrix;
         }
-        
+
         /// <summary>
         /// Multiplies all the items in the Matrix3 by a scalar value.
         /// </summary>
         /// <param name="matrix"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public static Matrix3 operator * (float scalar, Matrix3 matrix) {
+        public static Matrix3 operator *( float scalar, Matrix3 matrix )
+        {
             Matrix3 result = new Matrix3();
 
             result.m00 = matrix.m00 * scalar;
@@ -359,22 +408,26 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Matrix3 Add ( Matrix3 left, Matrix3 right ) {
-        	return left + right;
+        public static Matrix3 Add( Matrix3 left, Matrix3 right )
+        {
+            return left + right;
         }
-        
+
         /// <summary>
         ///		Used to add two matrices together.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Matrix3 operator + ( Matrix3 left, Matrix3 right ) {
+        public static Matrix3 operator +( Matrix3 left, Matrix3 right )
+        {
             Matrix3 result = new Matrix3();
 
-            for (int row = 0; row < 3; row++) {
-                for (int col = 0; col < 3; col++) {
-                    result[row,col] = left[row,col] + right[row,col];
+            for ( int row = 0; row < 3; row++ )
+            {
+                for ( int col = 0; col < 3; col++ )
+                {
+                    result[ row, col ] = left[ row, col ] + right[ row, col ];
                 }
             }
 
@@ -387,22 +440,26 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Matrix3 Subtract ( Matrix3 left, Matrix3 right ) {
-        	return left - right;
+        public static Matrix3 Subtract( Matrix3 left, Matrix3 right )
+        {
+            return left - right;
         }
-        
+
         /// <summary>
         ///		Used to subtract two matrices.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Matrix3 operator - ( Matrix3 left, Matrix3 right ) {
+        public static Matrix3 operator -( Matrix3 left, Matrix3 right )
+        {
             Matrix3 result = new Matrix3();
 
-            for (int row = 0; row < 3; row++) {
-                for (int col = 0; col < 3; col++) {
-                    result[row,col] = left[row,col] - right[row,col];
+            for ( int row = 0; row < 3; row++ )
+            {
+                for ( int col = 0; col < 3; col++ )
+                {
+                    result[ row, col ] = left[ row, col ] - right[ row, col ];
                 }
             }
 
@@ -414,16 +471,18 @@ namespace Axiom.Math {
         /// </summary>
         /// <param name="matrix"></param>
         /// <returns></returns>
-        public static Matrix3 Negate (Matrix3 matrix) {
-        	return -matrix;
+        public static Matrix3 Negate( Matrix3 matrix )
+        {
+            return -matrix;
         }
-        
+
         /// <summary>
         /// Negates all the items in the Matrix.
         /// </summary>
         /// <param name="matrix"></param>
         /// <returns></returns>
-        public static Matrix3 operator - (Matrix3 matrix) {
+        public static Matrix3 operator -( Matrix3 matrix )
+        {
             Matrix3 result = new Matrix3();
 
             result.m00 = -matrix.m00;
@@ -445,11 +504,13 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static bool operator == (Matrix3 left, Matrix3 right) {
+        public static bool operator ==( Matrix3 left, Matrix3 right )
+        {
             if (
                 left.m00 == right.m00 && left.m01 == right.m01 && left.m02 == right.m02 &&
                 left.m10 == right.m10 && left.m11 == right.m11 && left.m12 == right.m12 &&
-                left.m20 == right.m20 && left.m21 == right.m21 && left.m22 == right.m22) {
+                left.m20 == right.m20 && left.m21 == right.m21 && left.m22 == right.m22 )
+            {
 
                 return true;
             }
@@ -457,28 +518,34 @@ namespace Axiom.Math {
             return false;
         }
 
-        public static bool operator != (Matrix3 left, Matrix3 right) {
-            return !(left == right);
+        public static bool operator !=( Matrix3 left, Matrix3 right )
+        {
+            return !( left == right );
         }
 
         /// <summary>
         /// Indexer for accessing the matrix like a 2d array (i.e. matrix[2,3]).
         /// </summary>
-        public float this[int row, int col] {
-            get {
+        public float this[ int row, int col ]
+        {
+            get
+            {
                 //Debug.Assert((row >= 0 && row < 3) && (col >= 0 && col < 3), "Attempt to access Matrix3 indexer out of bounds.");
 
-                unsafe {
-                    fixed(float* pM = &m00)
-                        return *(pM + ((3*row) + col)); 
+                unsafe
+                {
+                    fixed ( float* pM = &m00 )
+                        return *( pM + ( ( 3 * row ) + col ) );
                 }
             }
-            set { 	
+            set
+            {
                 //Debug.Assert((row >= 0 && row < 3) && (col >= 0 && col < 3), "Attempt to access Matrix3 indexer out of bounds.");
 
-                unsafe {
-                    fixed(float* pM = &m00)
-                        *(pM + ((3*row) + col)) = value;
+                unsafe
+                {
+                    fixed ( float* pM = &m00 )
+                        *( pM + ( ( 3 * row ) + col ) ) = value;
                 }
             }
         }
@@ -486,46 +553,55 @@ namespace Axiom.Math {
         /// <summary>
         ///		Allows the Matrix to be accessed linearly (m[0] -> m[8]).  
         /// </summary>
-        public float this[int index] {
-            get {
+        public float this[ int index ]
+        {
+            get
+            {
                 //Debug.Assert(index >= 0 && index <= 8, "Attempt to access Matrix4 linear indexer out of bounds.");
 
-                unsafe {
-                    fixed(float* pMatrix = &m00) {			
-                        return *(pMatrix + index);
+                unsafe
+                {
+                    fixed ( float* pMatrix = &m00 )
+                    {
+                        return *( pMatrix + index );
                     }
                 }
             }
-            set {
+            set
+            {
                 //Debug.Assert(index >= 0 && index <= 8, "Attempt to access Matrix4 linear indexer out of bounds.");
 
-                unsafe {
-                    fixed(float* pMatrix = &m00) {			
-                        *(pMatrix + index) = value;
+                unsafe
+                {
+                    fixed ( float* pMatrix = &m00 )
+                    {
+                        *( pMatrix + index ) = value;
                     }
                 }
             }
-        } 
+        }
 
         #endregion
-        
+
         #region Properties
-        
-        public float Determinant {
-		    get {
-			    float cofactor00 = m11 * m22 - m12 * m21;
-			    float cofactor10 = m12 * m20 - m10 * m22;
-			    float cofactor20 = m10 * m21 - m11 * m20;
 
-			    float result =
-			        m00 * cofactor00 +
-			        m01 * cofactor10 +
-			        m02 * cofactor20;
+        public float Determinant
+        {
+            get
+            {
+                float cofactor00 = m11 * m22 - m12 * m21;
+                float cofactor10 = m12 * m20 - m10 * m22;
+                float cofactor20 = m10 * m21 - m11 * m20;
 
-			    return result;
-		    }
-	    }
-        
+                float result =
+                    m00 * cofactor00 +
+                    m01 * cofactor10 +
+                    m02 * cofactor20;
+
+                return result;
+            }
+        }
+
         #endregion Properties
 
         #region Object overloads
@@ -535,12 +611,13 @@ namespace Axiom.Math {
         ///		a Matrix4.
         /// </summary>
         /// <returns>A string representation of a vector3.</returns>
-        public override string ToString() {
+        public override string ToString()
+        {
             StringBuilder builder = new StringBuilder();
-			
-            builder.AppendFormat(" | {0} {1} {2} |\n", m00, m01, m02);
-            builder.AppendFormat(" | {0} {1} {2} |\n", m10, m11, m12);
-            builder.AppendFormat(" | {0} {1} {2} |", m20, m21, m22);
+
+            builder.AppendFormat( " | {0} {1} {2} |\n", m00, m01, m02 );
+            builder.AppendFormat( " | {0} {1} {2} |\n", m10, m11, m12 );
+            builder.AppendFormat( " | {0} {1} {2} |", m20, m21, m22 );
 
             return builder.ToString();
         }
@@ -554,15 +631,18 @@ namespace Axiom.Math {
         ///		member variables.
         /// </summary>
         /// <returns></returns>
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
             int hashCode = 0;
 
-            unsafe {
-                fixed(float* pM = &m00) {
-                    for(int i = 0; i < 9; i++)
-                        hashCode ^= (int)(*(pM + i));
+            unsafe
+            {
+                fixed ( float* pM = &m00 )
+                {
+                    for ( int i = 0; i < 9; i++ )
+                        hashCode ^= (int)( *( pM + i ) );
                 }
-		
+
                 return hashCode;
             }
         }
@@ -573,9 +653,10 @@ namespace Axiom.Math {
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override bool Equals(object obj) {
-            if(obj is Matrix3)
-                return (this == (Matrix3)obj);
+        public override bool Equals( object obj )
+        {
+            if ( obj is Matrix3 )
+                return ( this == (Matrix3)obj );
             else
                 return false;
         }

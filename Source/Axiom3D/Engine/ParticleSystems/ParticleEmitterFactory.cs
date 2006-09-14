@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,11 +24,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
+
 using Axiom.Collections;
 
-namespace Axiom.ParticleSystems {
+#endregion Namespace Declarations
+
+namespace Axiom.ParticleSystems
+{
     /// <summary>
     ///		Abstract class defining the interface to be implemented by creators of ParticleEmitter subclasses.
     ///	 </summary>
@@ -42,11 +55,12 @@ namespace Axiom.ParticleSystems {
     ///		a name which identifies them, examples might be 'Point', 'Cone', or 'Box', and these can be 
     ///		also be used from XML particle system scripts.
     /// </summary>
-    public abstract class ParticleEmitterFactory {
+    public abstract class ParticleEmitterFactory
+    {
         #region Member variables
 
         protected EmitterList emitterList = new EmitterList();
-			
+
         #endregion
 
         #region Constructors
@@ -54,7 +68,9 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         ///		Default constructor
         /// </summary>
-        public ParticleEmitterFactory() { }
+        public ParticleEmitterFactory()
+        {
+        }
 
         #endregion
 
@@ -63,7 +79,10 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         ///		Returns the name of the factory, which identifies which type of emitter this factory creates.
         /// </summary>
-        public abstract string Name { get; }
+        public abstract string Name
+        {
+            get;
+        }
 
         #endregion
 
@@ -82,9 +101,10 @@ namespace Axiom.ParticleSystems {
         ///		Destroys the emitter referenced by the parameter.
         /// </summary>
         /// <param name="emitter"></param>
-        public virtual void Destroy(ParticleEmitter emitter) {
+        public virtual void Destroy( ParticleEmitter emitter )
+        {
             // remove the emitter from the list
-            emitterList.Remove(emitter);
+            emitterList.Remove( emitter );
         }
 
         #endregion

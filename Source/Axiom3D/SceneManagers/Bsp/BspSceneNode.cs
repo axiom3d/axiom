@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,111 +24,124 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 
 using Axiom;
 using Axiom.Core;
 using Axiom.Math;
 
+#endregion Namespace Declarations
+
 namespace Axiom.SceneManagers.Bsp
 {
-	/// <summary>
-	///		Specialisation of <see cref="Axiom.Core.SceneNode"/> for the <see cref="Plugin_BSPSceneManager.BspSceneManager"/>.
-	///	</summarny>
-	/// <remarks>
-	///		This specialisation of <see cref="Axiom.Core.SceneNode"/> is to enable information about the
-	///		leaf node in which any attached objects are held is stored for
-	///		use in the visibility determination. 
-	///		<p/>
-	///		Do not confuse this class with <see cref="Plugin_BSPSceneManager.BspNode"/>, which reflects nodes in the
-	///		BSP tree itself. This class is just like a regular <see cref="Axiom.Core.SceneNode"/>, except that
-	///		it should be locating <see cref="Plugin_BSPSceneManager.BspNode"/> leaf elements which objects should be included
-	///		in. Note that because objects are movable, and thus may very well be overlapping
-	///		the boundaries of more than one leaf, that it is possible that an object attached
-	///		to one <see cref="Plugin_BSPSceneManager.BspSceneNode"/> may actually be associated with more than one BspNode.
-	/// </remarks>
-	public class BspSceneNode : SceneNode
-	{
-		#region Constructors
-		public BspSceneNode(SceneManager creator) : base(creator)
-		{
-		}
+    /// <summary>
+    ///		Specialisation of <see cref="Axiom.Core.SceneNode"/> for the <see cref="Plugin_BSPSceneManager.BspSceneManager"/>.
+    ///	</summarny>
+    /// <remarks>
+    ///		This specialisation of <see cref="Axiom.Core.SceneNode"/> is to enable information about the
+    ///		leaf node in which any attached objects are held is stored for
+    ///		use in the visibility determination. 
+    ///		<p/>
+    ///		Do not confuse this class with <see cref="Plugin_BSPSceneManager.BspNode"/>, which reflects nodes in the
+    ///		BSP tree itself. This class is just like a regular <see cref="Axiom.Core.SceneNode"/>, except that
+    ///		it should be locating <see cref="Plugin_BSPSceneManager.BspNode"/> leaf elements which objects should be included
+    ///		in. Note that because objects are movable, and thus may very well be overlapping
+    ///		the boundaries of more than one leaf, that it is possible that an object attached
+    ///		to one <see cref="Plugin_BSPSceneManager.BspSceneNode"/> may actually be associated with more than one BspNode.
+    /// </remarks>
+    public class BspSceneNode : SceneNode
+    {
+        #region Constructors
+        public BspSceneNode( SceneManager creator )
+            : base( creator )
+        {
+        }
 
-		public BspSceneNode(SceneManager creator, string name) : base(creator, name)
-		{
-		}
-		#endregion
+        public BspSceneNode( SceneManager creator, string name )
+            : base( creator, name )
+        {
+        }
+        #endregion
 
-		#region Methods
-		protected override void Update(bool updateChildren, bool parentHasChanged)
-		{
-			bool checkMovables = false;
-	
-			//needChildUpdate is more appropriate than needParentUpdate. needParentUpdate
-			//is set to false when there is a DerivedPosition/DerivedOrientation.
-			if(this.needChildUpdate || parentHasChanged)
-				checkMovables = true;
+        #region Methods
+        protected override void Update( bool updateChildren, bool parentHasChanged )
+        {
+            bool checkMovables = false;
 
-			base.Update(updateChildren, parentHasChanged);
+            //needChildUpdate is more appropriate than needParentUpdate. needParentUpdate
+            //is set to false when there is a DerivedPosition/DerivedOrientation.
+            if ( this.needChildUpdate || parentHasChanged )
+                checkMovables = true;
 
-			if(checkMovables)
-			{
-				for(int i = 0; i < this.objectList.Count; i++)
-				{
-					MovableObject obj = this.objectList[i];
-					if (obj is TextureLight)
-					{
-						// the notification of BspSceneManager when the position of
-						// the light is changed, is taken care of at TextureLight.Update()
-						continue;
-					}
-					((BspSceneManager) this.Creator).NotifyObjectMoved(obj, this.DerivedPosition);
-				}
-			}
-		}
+            base.Update( updateChildren, parentHasChanged );
 
-		/// <summary>
-		///		Detaches the indexed object from this scene node.
-		///	</summary>
-		///	<remarks>
-		///		Detaches by index, see the alternate version to detach by name. Object indexes
-		///		may change as other objects are added / removed.
-		/// </remarks>
-		public override MovableObject DetachObject(int index)
-		{
-			MovableObject obj = base.DetachObject(index);
+            if ( checkMovables )
+            {
+                for ( int i = 0; i < this.objectList.Count; i++ )
+                {
+                    MovableObject obj = this.objectList[ i ];
+                    if ( obj is TextureLight )
+                    {
+                        // the notification of BspSceneManager when the position of
+                        // the light is changed, is taken care of at TextureLight.Update()
+                        continue;
+                    }
+                    ( (BspSceneManager)this.Creator ).NotifyObjectMoved( obj, this.DerivedPosition );
+                }
+            }
+        }
 
-			// TextureLights are detached only when removed at the BspSceneManager
-			if (!(obj is TextureLight))
-				((BspSceneManager) this.Creator).NotifyObjectDetached(obj);
+        /// <summary>
+        ///		Detaches the indexed object from this scene node.
+        ///	</summary>
+        ///	<remarks>
+        ///		Detaches by index, see the alternate version to detach by name. Object indexes
+        ///		may change as other objects are added / removed.
+        /// </remarks>
+        public override MovableObject DetachObject( int index )
+        {
+            MovableObject obj = base.DetachObject( index );
 
-			return obj;
-		}
+            // TextureLights are detached only when removed at the BspSceneManager
+            if ( !( obj is TextureLight ) )
+                ( (BspSceneManager)this.Creator ).NotifyObjectDetached( obj );
 
-		public override void DetachObject(MovableObject obj)
-		{
-			// TextureLights are detached only when removed at the BspSceneManager
-			if (!(obj is TextureLight))
-				((BspSceneManager) this.Creator).NotifyObjectDetached(obj);
+            return obj;
+        }
 
-			base.DetachObject(obj);
-		}
+        public override void DetachObject( MovableObject obj )
+        {
+            // TextureLights are detached only when removed at the BspSceneManager
+            if ( !( obj is TextureLight ) )
+                ( (BspSceneManager)this.Creator ).NotifyObjectDetached( obj );
 
-		public override void DetachAllObjects()
-		{
-			BspSceneManager mgr = (BspSceneManager) this.Creator;
+            base.DetachObject( obj );
+        }
 
-			for(int i = 0; i < this.objectList.Count; i++)
-			{
-				// TextureLights are detached only when removed at the BspSceneManager
-				if (this.objectList[i] is TextureLight)
-					continue;
+        public override void DetachAllObjects()
+        {
+            BspSceneManager mgr = (BspSceneManager)this.Creator;
 
-				mgr.NotifyObjectDetached(this.objectList[i]);
-			}
+            for ( int i = 0; i < this.objectList.Count; i++ )
+            {
+                // TextureLights are detached only when removed at the BspSceneManager
+                if ( this.objectList[ i ] is TextureLight )
+                    continue;
 
-			base.DetachAllObjects();
-		}
-		#endregion
-	}
+                mgr.NotifyObjectDetached( this.objectList[ i ] );
+            }
+
+            base.DetachAllObjects();
+        }
+        #endregion
+    }
 }

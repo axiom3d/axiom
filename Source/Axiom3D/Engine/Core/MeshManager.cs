@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,16 +24,29 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 
 using Axiom.Math;
 using Axiom.Graphics;
 
-namespace Axiom.Core {
+#endregion Namespace Declarations
+
+namespace Axiom.Core
+{
     /// <summary>
     ///		Handles the management of mesh resources.
     /// </summary>
-    public sealed class MeshManager : ResourceManager {
+    public sealed class MeshManager : ResourceManager
+    {
         #region Singleton implementation
 
         /// <summary>
@@ -44,8 +57,10 @@ namespace Axiom.Core {
         /// <summary>
         ///     Internal constructor.  This class cannot be instantiated externally.
         /// </summary>
-        internal MeshManager() {
-            if (instance == null) {
+        internal MeshManager()
+        {
+            if ( instance == null )
+            {
                 instance = this;
             }
         }
@@ -53,55 +68,62 @@ namespace Axiom.Core {
         /// <summary>
         ///     Gets the singleton instance of this class.
         /// </summary>
-        public static MeshManager Instance {
-            get { 
-                return instance; 
+        public static MeshManager Instance
+        {
+            get
+            {
+                return instance;
             }
         }
 
         #endregion Singleton implementation
 
-		#region Fields
+        #region Fields
 
-		/// <summary>
-		///		Flag indicating whether newly loaded meshes should also be prepared for 
-		///		shadow volumes.
-		/// </summary>
+        /// <summary>
+        ///		Flag indicating whether newly loaded meshes should also be prepared for 
+        ///		shadow volumes.
+        /// </summary>
         private bool prepAllMeshesForShadowVolumes;
 
-		#endregion Fields
+        #endregion Fields
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		///		Tells the mesh manager that all future meshes should prepare themselves for
-		///		shadow volumes on loading.
-		/// </summary>
-		public bool PrepareAllMeshesForShadowVolumes {
-			get {
-				return prepAllMeshesForShadowVolumes;
-			}
-			set {
-				prepAllMeshesForShadowVolumes = value;
-			}
-		}
+        /// <summary>
+        ///		Tells the mesh manager that all future meshes should prepare themselves for
+        ///		shadow volumes on loading.
+        /// </summary>
+        public bool PrepareAllMeshesForShadowVolumes
+        {
+            get
+            {
+                return prepAllMeshesForShadowVolumes;
+            }
+            set
+            {
+                prepAllMeshesForShadowVolumes = value;
+            }
+        }
 
-		#endregion Properties
+        #endregion Properties
 
         /// <summary>
         ///		Called internally to initialize this manager.
         /// </summary>
-        public void Initialize() {
+        public void Initialize()
+        {
             CreatePrefabPlane();
         }
-	
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public override Resource Create(string name) {
-            return new Mesh(name);
+        public override Resource Create( string name )
+        {
+            return new Mesh( name );
         }
 
         /// <summary>
@@ -109,13 +131,15 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public Mesh CreateManual(string name) {
-            Mesh mesh = MeshManager.Instance.GetByName(name);
+        public Mesh CreateManual( string name )
+        {
+            Mesh mesh = MeshManager.Instance.GetByName( name );
 
-            if(mesh == null) {
-                mesh = (Mesh)Create(name);
+            if ( mesh == null )
+            {
+                mesh = (Mesh)Create( name );
                 mesh.IsManuallyDefined = true;
-                Add(mesh);
+                Add( mesh );
             }
 
             return mesh;
@@ -129,12 +153,14 @@ namespace Axiom.Core {
         /// <param name="width">Width in world coordinates.</param>
         /// <param name="height">Height in world coordinates.</param>
         /// <returns></returns>
-        public Mesh CreatePlane(string name, Plane plane, int width, int height) {
-            return CreatePlane(name, plane, width, height, 1, 1, true, 1, 1.0f, 1.0f, Vector3.UnitY, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, true, true);
+        public Mesh CreatePlane( string name, Plane plane, int width, int height )
+        {
+            return CreatePlane( name, plane, width, height, 1, 1, true, 1, 1.0f, 1.0f, Vector3.UnitY, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, true, true );
         }
 
-        public Mesh CreatePlane(string name, Plane plane, float width, float height, int xSegments, int ySegments, bool normals, int numTexCoordSets, float uTile, float vTile, Vector3 upVec) {
-            return CreatePlane(name, plane, width, height, xSegments, ySegments, normals, numTexCoordSets, uTile, vTile, upVec, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, true, true);
+        public Mesh CreatePlane( string name, Plane plane, float width, float height, int xSegments, int ySegments, bool normals, int numTexCoordSets, float uTile, float vTile, Vector3 upVec )
+        {
+            return CreatePlane( name, plane, width, height, xSegments, ySegments, normals, numTexCoordSets, uTile, vTile, upVec, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, true, true );
         }
 
         /// <summary>
@@ -152,10 +178,11 @@ namespace Axiom.Core {
         /// <param name="vTile">Number of times the texture should be repeated in the v direction.</param>
         /// <param name="upVec">The up direction of the plane.</param>
         /// <returns></returns>
-        public Mesh CreatePlane(string name, Plane plane, float width, float height, int xSegments, int ySegments, bool normals, int numTexCoordSets, float uTile, float vTile, Vector3 upVec,
-            BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer ) {
-            Mesh mesh = CreateManual(name);
-            SubMesh subMesh = mesh.CreateSubMesh(name + "SubMesh");
+        public Mesh CreatePlane( string name, Plane plane, float width, float height, int xSegments, int ySegments, bool normals, int numTexCoordSets, float uTile, float vTile, Vector3 upVec,
+            BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer )
+        {
+            Mesh mesh = CreateManual( name );
+            SubMesh subMesh = mesh.CreateSubMesh( name + "SubMesh" );
 
             mesh.SharedVertexData = new VertexData();
             VertexData vertexData = mesh.SharedVertexData;
@@ -164,32 +191,34 @@ namespace Axiom.Core {
             int currOffset = 0;
 
             // add position data
-            decl.AddElement(0, currOffset, VertexElementType.Float3, VertexElementSemantic.Position);
-            currOffset += VertexElement.GetTypeSize(VertexElementType.Float3);
+            decl.AddElement( 0, currOffset, VertexElementType.Float3, VertexElementSemantic.Position );
+            currOffset += VertexElement.GetTypeSize( VertexElementType.Float3 );
 
             // normals are optional
-            if(normals) {
-                decl.AddElement(0, currOffset, VertexElementType.Float3, VertexElementSemantic.Normal);
-                currOffset += VertexElement.GetTypeSize(VertexElementType.Float3);
+            if ( normals )
+            {
+                decl.AddElement( 0, currOffset, VertexElementType.Float3, VertexElementSemantic.Normal );
+                currOffset += VertexElement.GetTypeSize( VertexElementType.Float3 );
             }
 
             // add texture coords
-            for(ushort i = 0; i < numTexCoordSets; i++) {
-                decl.AddElement(0, currOffset, VertexElementType.Float2, VertexElementSemantic.TexCoords, i);
-                currOffset += VertexElement.GetTypeSize(VertexElementType.Float2);
+            for ( ushort i = 0; i < numTexCoordSets; i++ )
+            {
+                decl.AddElement( 0, currOffset, VertexElementType.Float2, VertexElementSemantic.TexCoords, i );
+                currOffset += VertexElement.GetTypeSize( VertexElementType.Float2 );
             }
 
-            vertexData.vertexCount = (xSegments + 1) * (ySegments + 1);
+            vertexData.vertexCount = ( xSegments + 1 ) * ( ySegments + 1 );
 
             // create a new vertex buffer (based on current API)
-            HardwareVertexBuffer vbuf = 
-                HardwareBufferManager.Instance.CreateVertexBuffer(decl.GetVertexSize(0), vertexData.vertexCount, vertexBufferUsage, vertexShadowBuffer);
-			
+            HardwareVertexBuffer vbuf =
+                HardwareBufferManager.Instance.CreateVertexBuffer( decl.GetVertexSize( 0 ), vertexData.vertexCount, vertexBufferUsage, vertexShadowBuffer );
+
             // get a reference to the vertex buffer binding
             VertexBufferBinding binding = vertexData.vertexBufferBinding;
 
             // bind the first vertex buffer
-            binding.SetBinding(0, vbuf);
+            binding.SetBinding( 0, vbuf );
 
             // transform the plane based on its plane def
             Matrix4 translate = Matrix4.Identity;
@@ -202,13 +231,14 @@ namespace Axiom.Core {
             zAxis.Normalize();
             yAxis = upVec;
             yAxis.Normalize();
-            xAxis = yAxis.Cross(zAxis);
+            xAxis = yAxis.Cross( zAxis );
 
-            if (xAxis.Length == 0) {
-                throw new AxiomException("The up vector for a plane cannot be parallel to the planes normal.");
+            if ( xAxis.Length == 0 )
+            {
+                throw new AxiomException( "The up vector for a plane cannot be parallel to the planes normal." );
             }
 
-            rot3x3.FromAxes(xAxis, yAxis, zAxis);
+            rot3x3.FromAxes( xAxis, yAxis, zAxis );
             rotation = rot3x3;
 
             // set up transform from origin
@@ -220,8 +250,8 @@ namespace Axiom.Core {
             float ySpace = height / ySegments;
             float halfWidth = width / 2;
             float halfHeight = height / 2;
-            float xTexCoord = (1.0f * uTile) / xSegments;
-            float yTexCoord = (1.0f * vTile) / ySegments;
+            float xTexCoord = ( 1.0f * uTile ) / xSegments;
+            float yTexCoord = ( 1.0f * vTile ) / ySegments;
             Vector3 vec = Vector3.Zero;
             Vector3 min = Vector3.Zero;
             Vector3 max = Vector3.Zero;
@@ -229,17 +259,20 @@ namespace Axiom.Core {
             bool firstTime = true;
 
             // generate vertex data
-            unsafe {
+            unsafe
+            {
                 // lock the vertex buffer
-                IntPtr data = vbuf.Lock(BufferLocking.Discard);
+                IntPtr data = vbuf.Lock( BufferLocking.Discard );
 
                 float* pData = (float*)data.ToPointer();
 
-                for(int y = 0; y <= ySegments; y++) {
-                    for(int x = 0; x <= xSegments; x++) {
+                for ( int y = 0; y <= ySegments; y++ )
+                {
+                    for ( int x = 0; x <= xSegments; x++ )
+                    {
                         // centered on origin
-                        vec.x = (x * xSpace) - halfWidth;
-                        vec.y = (y * ySpace) - halfHeight;
+                        vec.x = ( x * xSpace ) - halfWidth;
+                        vec.y = ( y * ySpace ) - halfHeight;
                         vec.z = 0.0f;
 
                         vec = transform * vec;
@@ -249,19 +282,22 @@ namespace Axiom.Core {
                         *pData++ = vec.z;
 
                         // Build bounds as we go
-                        if (firstTime) {
+                        if ( firstTime )
+                        {
                             min = vec;
                             max = vec;
                             maxSquaredLength = vec.LengthSquared;
                             firstTime = false;
                         }
-                        else {
-                            min.Floor(vec);
-                            max.Ceil(vec);
-                            maxSquaredLength = Utility.Max(maxSquaredLength, vec.LengthSquared);
+                        else
+                        {
+                            min.Floor( vec );
+                            max.Ceil( vec );
+                            maxSquaredLength = Utility.Max( maxSquaredLength, vec.LengthSquared );
                         }
 
-                        if(normals) {
+                        if ( normals )
+                        {
                             vec = Vector3.UnitZ;
                             vec = rotation * vec;
 
@@ -270,9 +306,10 @@ namespace Axiom.Core {
                             *pData++ = vec.z;
                         }
 
-                        for(int i = 0; i < numTexCoordSets; i++) {
+                        for ( int i = 0; i < numTexCoordSets; i++ )
+                        {
                             *pData++ = x * xTexCoord;
-                            *pData++ = 1 - (y * yTexCoord);
+                            *pData++ = 1 - ( y * yTexCoord );
                         } // for texCoords
                     } // for x
                 } // for y
@@ -285,14 +322,14 @@ namespace Axiom.Core {
             } // unsafe
 
             // generate face list
-            Tesselate2DMesh(subMesh, xSegments + 1, ySegments + 1, false, indexBufferUsage, indexShadowBuffer);
+            Tesselate2DMesh( subMesh, xSegments + 1, ySegments + 1, false, indexBufferUsage, indexShadowBuffer );
 
             // generate bounds for the mesh
-            mesh.BoundingBox = new AxisAlignedBox(min, max);
-            mesh.BoundingSphereRadius = Utility.Sqrt(maxSquaredLength);
+            mesh.BoundingBox = new AxisAlignedBox( min, max );
+            mesh.BoundingSphereRadius = Utility.Sqrt( maxSquaredLength );
 
-			mesh.Load();
-			mesh.Touch();
+            mesh.Load();
+            mesh.Touch();
 
             return mesh;
         }
@@ -313,22 +350,24 @@ namespace Axiom.Core {
         /// <param name="vbUseShadow"></param>
         /// <param name="ibUseShadow"></param>
         /// <returns></returns>
-        public PatchMesh CreateBezierPatch(string name, System.Array controlPointBuffer, VertexDeclaration declaration,
+        public PatchMesh CreateBezierPatch( string name, System.Array controlPointBuffer, VertexDeclaration declaration,
             int width, int height, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide,
-            BufferUsage vbUsage, BufferUsage ibUsage, bool vbUseShadow, bool ibUseShadow) {
+            BufferUsage vbUsage, BufferUsage ibUsage, bool vbUseShadow, bool ibUseShadow )
+        {
 
-            PatchMesh mesh = (PatchMesh)GetByName(name);
+            PatchMesh mesh = (PatchMesh)GetByName( name );
 
-            if(mesh != null) {
-                throw new AxiomException("A mesh with the name {0} already exists!", name);
+            if ( mesh != null )
+            {
+                throw new AxiomException( "A mesh with the name {0} already exists!", name );
             }
 
-            mesh = new PatchMesh(name, controlPointBuffer, declaration, width, height, 
-                uMaxSubdivisionLevel, vMaxSubdivisionLevel, visibleSide, vbUsage, ibUsage, vbUseShadow, ibUseShadow);
+            mesh = new PatchMesh( name, controlPointBuffer, declaration, width, height,
+                uMaxSubdivisionLevel, vMaxSubdivisionLevel, visibleSide, vbUsage, ibUsage, vbUseShadow, ibUseShadow );
 
             mesh.IsManuallyDefined = true;
 
-            base.Load(mesh, 0);
+            base.Load( mesh, 0 );
 
             return mesh;
         }
@@ -349,8 +388,9 @@ namespace Axiom.Core {
         /// <param name="vTiles"></param>
         /// <param name="upVector"></param>
         /// <returns></returns>
-        public Mesh CreateCurvedIllusionPlane(string name, Plane plane, float width, float height, float curvature, int xSegments, int ySegments, bool normals, int numberOfTexCoordSets, float uTiles, float vTiles, Vector3 upVector) {
-            return CreateCurvedIllusionPlane(name, plane, width, height, curvature, xSegments, ySegments, normals, numberOfTexCoordSets, uTiles, vTiles, upVector, Quaternion.Identity, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, true, true);
+        public Mesh CreateCurvedIllusionPlane( string name, Plane plane, float width, float height, float curvature, int xSegments, int ySegments, bool normals, int numberOfTexCoordSets, float uTiles, float vTiles, Vector3 upVector )
+        {
+            return CreateCurvedIllusionPlane( name, plane, width, height, curvature, xSegments, ySegments, normals, numberOfTexCoordSets, uTiles, vTiles, upVector, Quaternion.Identity, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, true, true );
         }
 
         /// <summary>
@@ -374,9 +414,10 @@ namespace Axiom.Core {
         /// <param name="vertexShadowBuffer"></param>
         /// <param name="indexShadowBuffer"></param>
         /// <returns></returns>
-        public Mesh CreateCurvedIllusionPlane(string name, Plane plane, float width, float height, float curvature, int xSegments, int ySegments, bool normals, int numberOfTexCoordSets, float uTiles, float vTiles, Vector3 upVector, Quaternion orientation, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer) {
-            Mesh mesh = CreateManual(name);
-            SubMesh subMesh = mesh.CreateSubMesh(name + "SubMesh");
+        public Mesh CreateCurvedIllusionPlane( string name, Plane plane, float width, float height, float curvature, int xSegments, int ySegments, bool normals, int numberOfTexCoordSets, float uTiles, float vTiles, Vector3 upVector, Quaternion orientation, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer )
+        {
+            Mesh mesh = CreateManual( name );
+            SubMesh subMesh = mesh.CreateSubMesh( name + "SubMesh" );
 
             // set up vertex data, use a single shared buffer
             mesh.SharedVertexData = new VertexData();
@@ -387,29 +428,31 @@ namespace Axiom.Core {
             int currentOffset = 0;
 
             // always need positions
-            vertexDeclaration.AddElement(0, currentOffset, VertexElementType.Float3, VertexElementSemantic.Position);
-            currentOffset += VertexElement.GetTypeSize(VertexElementType.Float3);
+            vertexDeclaration.AddElement( 0, currentOffset, VertexElementType.Float3, VertexElementSemantic.Position );
+            currentOffset += VertexElement.GetTypeSize( VertexElementType.Float3 );
 
             // optional normals
-            if(normals) {
-                vertexDeclaration.AddElement(0, currentOffset, VertexElementType.Float3, VertexElementSemantic.Normal);
-                currentOffset += VertexElement.GetTypeSize(VertexElementType.Float3);
+            if ( normals )
+            {
+                vertexDeclaration.AddElement( 0, currentOffset, VertexElementType.Float3, VertexElementSemantic.Normal );
+                currentOffset += VertexElement.GetTypeSize( VertexElementType.Float3 );
             }
 
-            for(ushort i = 0; i < numberOfTexCoordSets; i++) {
+            for ( ushort i = 0; i < numberOfTexCoordSets; i++ )
+            {
                 // assumes 2d texture coordinates
-                vertexDeclaration.AddElement(0, currentOffset, VertexElementType.Float2, VertexElementSemantic.TexCoords, i);
-                currentOffset += VertexElement.GetTypeSize(VertexElementType.Float2);
+                vertexDeclaration.AddElement( 0, currentOffset, VertexElementType.Float2, VertexElementSemantic.TexCoords, i );
+                currentOffset += VertexElement.GetTypeSize( VertexElementType.Float2 );
             }
 
-            vertexData.vertexCount = (xSegments + 1) * (ySegments + 1);
+            vertexData.vertexCount = ( xSegments + 1 ) * ( ySegments + 1 );
 
             // allocate vertex buffer
-            HardwareVertexBuffer vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(vertexDeclaration.GetVertexSize(0), vertexData.vertexCount, vertexBufferUsage, vertexShadowBuffer);
+            HardwareVertexBuffer vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( vertexDeclaration.GetVertexSize( 0 ), vertexData.vertexCount, vertexBufferUsage, vertexShadowBuffer );
 
             // set up the binding, one source only
             VertexBufferBinding binding = vertexData.vertexBufferBinding;
-            binding.SetBinding(0, vertexBuffer);
+            binding.SetBinding( 0, vertexBuffer );
 
             // work out the transform required, default orientation of plane is normal along +z, distance 0
             Matrix4 xlate, xform, rot;
@@ -422,12 +465,13 @@ namespace Axiom.Core {
             zAxis.Normalize();
             yAxis = upVector;
             yAxis.Normalize();
-            xAxis = yAxis.Cross(zAxis);
-            if(xAxis.Length == 0) {
-                throw new AxiomException("The up vector for a plane cannot be parallel to the planes normal.");
+            xAxis = yAxis.Cross( zAxis );
+            if ( xAxis.Length == 0 )
+            {
+                throw new AxiomException( "The up vector for a plane cannot be parallel to the planes normal." );
             }
 
-            rot3.FromAxes(xAxis, yAxis, zAxis);
+            rot3.FromAxes( xAxis, yAxis, zAxis );
             rot = rot3;
 
             // set up standard xform from origin
@@ -464,17 +508,20 @@ namespace Axiom.Core {
             bool firstTime = true;
 
             // generate vertex data
-            unsafe {
+            unsafe
+            {
                 // lock the vertex buffer
-                IntPtr data = vertexBuffer.Lock(BufferLocking.Discard);
+                IntPtr data = vertexBuffer.Lock( BufferLocking.Discard );
 
-                float* pData = (float*) data.ToPointer();
+                float* pData = (float*)data.ToPointer();
 
-                for(int y = 0; y < ySegments + 1; ++y) {
-                    for(int x = 0; x < xSegments + 1; ++x) {
+                for ( int y = 0; y < ySegments + 1; ++y )
+                {
+                    for ( int x = 0; x < xSegments + 1; ++x )
+                    {
                         // centered on origin
-                        vec.x = (x * xSpace) - halfWidth;
-                        vec.y = (y * ySpace) - halfHeight;
+                        vec.x = ( x * xSpace ) - halfWidth;
+                        vec.y = ( y * ySpace ) - halfHeight;
                         vec.z = 0.0f;
 
                         // transform by orientation and distance
@@ -486,19 +533,22 @@ namespace Axiom.Core {
                         *pData++ = vec.z;
 
                         // build bounds as we go
-                        if(firstTime) {
+                        if ( firstTime )
+                        {
                             min = vec;
                             max = vec;
                             maxSquaredLength = vec.LengthSquared;
                             firstTime = false;
                         }
-                        else {
-                            min.Floor(vec);
-                            max.Ceil(vec);
-                            maxSquaredLength = Utility.Max(maxSquaredLength, vec.LengthSquared);
+                        else
+                        {
+                            min.Floor( vec );
+                            max.Ceil( vec );
+                            maxSquaredLength = Utility.Max( maxSquaredLength, vec.LengthSquared );
                         }
 
-                        if(normals) {
+                        if ( normals )
+                        {
                             norm = Vector3.UnitZ;
                             norm = orientation * norm;
 
@@ -512,17 +562,18 @@ namespace Axiom.Core {
                         vec.Normalize();
 
                         // find distance to sphere
-                        sphereDistance = Utility.Sqrt(cameraPosition * cameraPosition * (vec.y * vec.y - 1.0f) + sphereRadius * sphereRadius) - cameraPosition * vec.y;
+                        sphereDistance = Utility.Sqrt( cameraPosition * cameraPosition * ( vec.y * vec.y - 1.0f ) + sphereRadius * sphereRadius ) - cameraPosition * vec.y;
 
                         vec.x *= sphereDistance;
                         vec.z *= sphereDistance;
 
                         // use x and y on sphere as texture coordinates, tiled
-                        float s = vec.x * (0.01f * uTiles);
-                        float t = vec.z * (0.01f * vTiles);
-                        for(int i = 0; i < numberOfTexCoordSets; i++) {
+                        float s = vec.x * ( 0.01f * uTiles );
+                        float t = vec.z * ( 0.01f * vTiles );
+                        for ( int i = 0; i < numberOfTexCoordSets; i++ )
+                        {
                             *pData++ = s;
-                            *pData++ = (1 - t);
+                            *pData++ = ( 1 - t );
                         }
                     } // x
                 } // y
@@ -533,21 +584,22 @@ namespace Axiom.Core {
 
             // generate face list
             subMesh.useSharedVertices = true;
-            Tesselate2DMesh(subMesh, xSegments + 1, ySegments + 1, false, indexBufferUsage, indexShadowBuffer);
+            Tesselate2DMesh( subMesh, xSegments + 1, ySegments + 1, false, indexBufferUsage, indexShadowBuffer );
 
             // generate bounds for the mesh
-            mesh.BoundingBox = new AxisAlignedBox(min, max);
-            mesh.BoundingSphereRadius = Utility.Sqrt(maxSquaredLength);
+            mesh.BoundingBox = new AxisAlignedBox( min, max );
+            mesh.BoundingSphereRadius = Utility.Sqrt( maxSquaredLength );
 
-			mesh.Load();
-			mesh.Touch();
+            mesh.Load();
+            mesh.Touch();
 
             return mesh;
         }
 
-        private void CreatePrefabPlane() {
-            Mesh mesh = (Mesh) Create("Prefab_Plane");
-            SubMesh subMesh = mesh.CreateSubMesh("Prefab_Plane_Submesh");
+        private void CreatePrefabPlane()
+        {
+            Mesh mesh = (Mesh)Create( "Prefab_Plane" );
+            SubMesh subMesh = mesh.CreateSubMesh( "Prefab_Plane_Submesh" );
 
             float[] vertices = {
                 -100, -100, 0,  // pos
@@ -571,36 +623,36 @@ namespace Axiom.Core {
 
             int offset = 0;
 
-            vertexDeclaration.AddElement(0, offset, VertexElementType.Float3, VertexElementSemantic.Position);
-            offset += VertexElement.GetTypeSize(VertexElementType.Float3);
+            vertexDeclaration.AddElement( 0, offset, VertexElementType.Float3, VertexElementSemantic.Position );
+            offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
 
-            vertexDeclaration.AddElement(0, offset, VertexElementType.Float3, VertexElementSemantic.Normal);
-            offset += VertexElement.GetTypeSize(VertexElementType.Float3);
+            vertexDeclaration.AddElement( 0, offset, VertexElementType.Float3, VertexElementSemantic.Normal );
+            offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
 
-            vertexDeclaration.AddElement(0, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0);
-            offset += VertexElement.GetTypeSize(VertexElementType.Float2);
+            vertexDeclaration.AddElement( 0, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
+            offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
 
             // allocate vertex buffer
-            HardwareVertexBuffer vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(offset, 4, BufferUsage.StaticWriteOnly);
+            HardwareVertexBuffer vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( offset, 4, BufferUsage.StaticWriteOnly );
 
             // set up the binding, one source only
-            binding.SetBinding(0, vertexBuffer);
+            binding.SetBinding( 0, vertexBuffer );
 
-            vertexBuffer.WriteData(0, vertexBuffer.Size, vertices, true);
+            vertexBuffer.WriteData( 0, vertexBuffer.Size, vertices, true );
 
             subMesh.useSharedVertices = true;
 
-            HardwareIndexBuffer indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer(IndexType.Size16, 6, BufferUsage.StaticWriteOnly);
-            short[] faces = {0, 1, 2, 0, 2, 3};
+            HardwareIndexBuffer indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, 6, BufferUsage.StaticWriteOnly );
+            short[] faces = { 0, 1, 2, 0, 2, 3 };
             subMesh.indexData.indexBuffer = indexBuffer;
             subMesh.indexData.indexCount = 6;
             subMesh.indexData.indexStart = 0;
-            indexBuffer.WriteData(0, indexBuffer.Size, faces, true);
+            indexBuffer.WriteData( 0, indexBuffer.Size, faces, true );
 
-            mesh.BoundingBox = new AxisAlignedBox(new Vector3(-100, -100, 0), new Vector3(100, 100, 0));
-            mesh.BoundingSphereRadius = Utility.Sqrt(100 * 100 + 100 * 100);
+            mesh.BoundingBox = new AxisAlignedBox( new Vector3( -100, -100, 0 ), new Vector3( 100, 100, 0 ) );
+            mesh.BoundingSphereRadius = Utility.Sqrt( 100 * 100 + 100 * 100 );
 
-            resourceList.Add(mesh.Name, mesh);
+            resourceList.Add( mesh.Name, mesh );
         }
 
         /// <summary>
@@ -608,8 +660,9 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="name"></param>
         /// <param name="priority"></param>
-        public Mesh Load(string name) {
-            return Load(name, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, true, true, 1);
+        public Mesh Load( string name )
+        {
+            return Load( name, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, true, true, 1 );
         }
 
         /// <summary>
@@ -617,23 +670,27 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="name"></param>
         /// <param name="priority"></param>
-        public Mesh Load(string name, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage) {
-            return Load(name, vertexBufferUsage, indexBufferUsage, true, true, 1);
+        public Mesh Load( string name, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage )
+        {
+            return Load( name, vertexBufferUsage, indexBufferUsage, true, true, 1 );
         }
 
-        public Mesh Load(string name, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexBufferShadowed, bool indexBufferShadowed, int priority) {
+        public Mesh Load( string name, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexBufferShadowed, bool indexBufferShadowed, int priority )
+        {
             Mesh mesh = null;
 
             // if the resource isn't cached, create it
-            if(!resourceList.ContainsKey(name)) {
-                mesh = (Mesh)Create(name);
-                mesh.SetVertexBufferPolicy(vertexBufferUsage, vertexBufferShadowed);
-                mesh.SetIndexBufferPolicy(indexBufferUsage, indexBufferShadowed);
-                base.Load(mesh, priority);
+            if ( !resourceList.ContainsKey( name ) )
+            {
+                mesh = (Mesh)Create( name );
+                mesh.SetVertexBufferPolicy( vertexBufferUsage, vertexBufferShadowed );
+                mesh.SetIndexBufferPolicy( indexBufferUsage, indexBufferShadowed );
+                base.Load( mesh, priority );
             }
-            else {
+            else
+            {
                 // get the cached version
-                mesh = (Mesh)resourceList[name];
+                mesh = (Mesh)resourceList[ name ];
             }
 
             return mesh;
@@ -646,7 +703,8 @@ namespace Axiom.Core {
         /// <param name="xSegments"></param>
         /// <param name="ySegments"></param>
         /// <param name="doubleSided"></param>
-        private void Tesselate2DMesh(SubMesh subMesh, int width, int height, bool doubleSided, BufferUsage indexBufferUsage, bool indexShadowBuffer) {
+        private void Tesselate2DMesh( SubMesh subMesh, int width, int height, bool doubleSided, BufferUsage indexBufferUsage, bool indexShadowBuffer )
+        {
             int vInc, uInc, v, u, iterations;
             int vCount, uCount;
 
@@ -656,11 +714,11 @@ namespace Axiom.Core {
             iterations = doubleSided ? 2 : 1;
 
             // setup index count
-            subMesh.indexData.indexCount = (width - 1) * (height - 1) * 2 * iterations * 3;
+            subMesh.indexData.indexCount = ( width - 1 ) * ( height - 1 ) * 2 * iterations * 3;
 
             // create the index buffer using the current API
-            subMesh.indexData.indexBuffer = 
-                HardwareBufferManager.Instance.CreateIndexBuffer(IndexType.Size16, subMesh.indexData.indexCount, indexBufferUsage, indexShadowBuffer);
+            subMesh.indexData.indexBuffer =
+                HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, subMesh.indexData.indexCount, indexBufferUsage, indexShadowBuffer );
 
             short v1, v2, v3;
 
@@ -668,36 +726,40 @@ namespace Axiom.Core {
             HardwareIndexBuffer idxBuffer = subMesh.indexData.indexBuffer;
 
             // lock the whole index buffer
-            IntPtr data = idxBuffer.Lock(BufferLocking.Discard);
+            IntPtr data = idxBuffer.Lock( BufferLocking.Discard );
 
-            unsafe {
+            unsafe
+            {
                 short* pIndex = (short*)data.ToPointer();
 
-                while(0 < iterations--) {
+                while ( 0 < iterations-- )
+                {
                     // make tris in a zigzag pattern (strip compatible)
                     u = 0;
                     uInc = 1;
 
                     vCount = height - 1;
 
-                    while(0 < vCount--) {
+                    while ( 0 < vCount-- )
+                    {
                         uCount = width - 1;
 
-                        while(0 < uCount--) {
+                        while ( 0 < uCount-- )
+                        {
                             // First Tri in cell
                             // -----------------
-                            v1 = (short)(((v + vInc) * width) + u);
-                            v2 = (short)((v * width) + u);
-                            v3 = (short)(((v + vInc) * width) + (u + uInc));
+                            v1 = (short)( ( ( v + vInc ) * width ) + u );
+                            v2 = (short)( ( v * width ) + u );
+                            v3 = (short)( ( ( v + vInc ) * width ) + ( u + uInc ) );
                             // Output indexes
                             *pIndex++ = v1;
                             *pIndex++ = v2;
                             *pIndex++ = v3;
                             // Second Tri in cell
                             // ------------------
-                            v1 = (short)(((v + vInc) * width) + (u + uInc));
-                            v2 = (short)((v * width) + u);
-                            v3 = (short)((v * width) + (u + uInc));
+                            v1 = (short)( ( ( v + vInc ) * width ) + ( u + uInc ) );
+                            v2 = (short)( ( v * width ) + u );
+                            v3 = (short)( ( v * width ) + ( u + uInc ) );
                             // Output indexes
                             *pIndex++ = v1;
                             *pIndex++ = v2;
@@ -714,7 +776,7 @@ namespace Axiom.Core {
                     } // while vCount
 
                     v = height - 1;
-                    vInc = - vInc;
+                    vInc = -vInc;
                 } // while iterations
             }// unsafe
 
@@ -722,8 +784,9 @@ namespace Axiom.Core {
             idxBuffer.Unlock();
         }
 
-        public new Mesh GetByName(string name) {
-            return (Mesh)base.GetByName(name);
+        public new Mesh GetByName( string name )
+        {
+            return (Mesh)base.GetByName( name );
         }
     }
 }

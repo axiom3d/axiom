@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,12 +24,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.IO;
+
 using Axiom.Graphics;
 using Axiom.Media;
 
-namespace Axiom.Core {
+#endregion Namespace Declarations
+
+namespace Axiom.Core
+{
     /// <summary>
     ///		Abstract class representing a Texture resource.
     /// </summary>
@@ -41,9 +54,10 @@ namespace Axiom.Core {
     ///		different in reality. Texture objects are created through
     ///		the 'Create' method of the TextureManager concrete subclass.
     /// </remarks>
-    public abstract class Texture : Resource {
+    public abstract class Texture : Resource
+    {
         #region Member variables
-	
+
         /// <summary>Width of this texture.</summary>
         protected int width;
         /// <summary>Height of this texture.</summary>
@@ -83,8 +97,9 @@ namespace Axiom.Core {
         ///    Specifies whether this texture should use 32 bit color or not.
         /// </summary>
         /// <param name="enable">true if this should be treated as 32-bit, false if it should be 16-bit.</param>
-        public void Enable32Bit(bool enable) {
-            finalBpp = (enable == true) ? 32 : 16;
+        public void Enable32Bit( bool enable )
+        {
+            finalBpp = ( enable == true ) ? 32 : 16;
         }
 
 
@@ -92,7 +107,7 @@ namespace Axiom.Core {
         ///    Loads data from an Image directly into this texture.
         /// </summary>
         /// <param name="image"></param>
-        public abstract void LoadImage(Image image);
+        public abstract void LoadImage( Image image );
 
         /// <summary>
         ///    Loads raw image data from the stream into this texture.
@@ -101,12 +116,13 @@ namespace Axiom.Core {
         /// <param name="width">Width of the texture data.</param>
         /// <param name="height">Height of the texture data.</param>
         /// <param name="format">Format of the supplied image data.</param>
-        public void LoadRawData(Stream data, int width, int height, PixelFormat format) {
+        public void LoadRawData( Stream data, int width, int height, PixelFormat format )
+        {
             // load the raw data
-            Image image = Image.FromRawStream(data, width, height, format);
+            Image image = Image.FromRawStream( data, width, height, format );
 
             // call the polymorphic LoadImage implementation
-            LoadImage(image);
+            LoadImage( image );
         }
 
         #endregion
@@ -116,8 +132,10 @@ namespace Axiom.Core {
         /// <summary>
         ///    Gets the width (in pixels) of this texture.
         /// </summary>
-        public int Width {
-            get {
+        public int Width
+        {
+            get
+            {
                 return width;
             }
         }
@@ -125,8 +143,10 @@ namespace Axiom.Core {
         /// <summary>
         ///    Gets the height (in pixels) of this texture.
         /// </summary>
-        public int Height {
-            get {
+        public int Height
+        {
+            get
+            {
                 return height;
             }
         }
@@ -134,8 +154,10 @@ namespace Axiom.Core {
         /// <summary>
         ///    Gets the depth of this texture (for volume textures).
         /// </summary>
-        public int Depth {
-            get {
+        public int Depth
+        {
+            get
+            {
                 return depth;
             }
         }
@@ -143,8 +165,10 @@ namespace Axiom.Core {
         /// <summary>
         ///    Gets the bits per pixel found within this texture data.
         /// </summary>
-        public int Bpp {
-            get {
+        public int Bpp
+        {
+            get
+            {
                 return finalBpp;
             }
         }
@@ -152,8 +176,10 @@ namespace Axiom.Core {
         /// <summary>
         ///    Gets whether or not the PixelFormat of this texture contains an alpha component.
         /// </summary>
-        public bool HasAlpha {
-            get {
+        public bool HasAlpha
+        {
+            get
+            {
                 return hasAlpha;
             }
         }
@@ -164,11 +190,14 @@ namespace Axiom.Core {
         /// <remarks>
         ///    Must be called before any variation of Load.
         /// </remarks>
-        public float Gamma {
-            get {
+        public float Gamma
+        {
+            get
+            {
                 return gamma;
             }
-            set {
+            set
+            {
                 gamma = value;
             }
         }
@@ -176,8 +205,10 @@ namespace Axiom.Core {
         /// <summary>
         ///    Gets the PixelFormat of this texture.
         /// </summary>
-        public PixelFormat Format {
-            get {
+        public PixelFormat Format
+        {
+            get
+            {
                 return format;
             }
         }
@@ -185,20 +216,25 @@ namespace Axiom.Core {
         /// <summary>
         ///    Number of mipmaps present in this texture.
         /// </summary>
-        public int NumMipMaps {
-            get { 
-                return numMipMaps; 
+        public int NumMipMaps
+        {
+            get
+            {
+                return numMipMaps;
             }
-            set { 
-                numMipMaps = value; 
+            set
+            {
+                numMipMaps = value;
             }
         }
 
         /// <summary>
         ///    Type of texture, i.e. 2d, 3d, cubemap.
         /// </summary>
-        public TextureType TextureType {
-            get {
+        public TextureType TextureType
+        {
+            get
+            {
                 return textureType;
             }
         }
@@ -207,8 +243,10 @@ namespace Axiom.Core {
         ///     Gets the intended usage of this texture, whether for standard usage
         ///     or as a render target.
         /// </summary>
-        public TextureUsage Usage {
-            get {
+        public TextureUsage Usage
+        {
+            get
+            {
                 return usage;
             }
         }
@@ -220,7 +258,8 @@ namespace Axiom.Core {
         /// <summary>
         ///		Implementation of IDisposable to determine how resources are disposed of.
         /// </summary>
-        public override void Dispose() {
+        public override void Dispose()
+        {
             // call polymorphic Unload method
             Unload();
         }

@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,34 +24,47 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
 
 using System;
 using System.Collections;
+
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 
-namespace Axiom.SceneManagers.Octree {
-	/// <summary>
-	/// Summary description for TerrainRenderable.
-	/// </summary>
-    public class TerrainRenderable : MovableObject, IRenderable {
+#endregion Namespace Declarations
+
+namespace Axiom.SceneManagers.Octree
+{
+    /// <summary>
+    /// Summary description for TerrainRenderable.
+    /// </summary>
+    public class TerrainRenderable : MovableObject, IRenderable
+    {
         #region Fields
 
         protected Vector3 center;
         protected Material material;
-        protected TerrainRenderable[] neighbors = new TerrainRenderable[4];
+        protected TerrainRenderable[] neighbors = new TerrainRenderable[ 4 ];
         protected AxisAlignedBox box = new AxisAlignedBox();
         protected TerrainOptions options;
         protected VertexData terrain;
-        protected IndexData[,] levelIndex = new IndexData[16,16];
+        protected IndexData[ , ] levelIndex = new IndexData[ 16, 16 ];
         protected int renderLevel;
         protected int forcedRenderLevel;
         protected float currentL;
         protected int numMipMaps;
         protected int size;
         protected float[] minLevelDistSqr;
-		protected Hashtable customParams = new Hashtable();
+        protected Hashtable customParams = new Hashtable();
 
         const int POSITION = 0;
         const int NORMAL = 1;
@@ -63,18 +76,21 @@ namespace Axiom.SceneManagers.Octree {
         /// <summary>
         ///     Default constructor.
         /// </summary>
-        public TerrainRenderable() {
+        public TerrainRenderable()
+        {
             renderLevel = 1;
             forcedRenderLevel = -1;
         }
 
         #region Methods
 
-        public void SetMaterial(Material mat) {
+        public void SetMaterial( Material mat )
+        {
             this.material = mat;
         }
 
-        public void Init(TerrainOptions options) {
+        public void Init( TerrainOptions options )
+        {
             this.options = options;
 
             numMipMaps = options.maxMipmap;
@@ -82,11 +98,11 @@ namespace Axiom.SceneManagers.Octree {
 
             terrain = new VertexData();
             terrain.vertexStart = 0;
-		// Turbo: appended factor 3
-			//        Not sure about that, but without that the terrain manager seems
-			//        to mess up memory because of buffer overruns
-			//terrain.vertexCount = options.size * options.size;
-			terrain.vertexCount = options.size * options.size * 3;
+            // Turbo: appended factor 3
+            //        Not sure about that, but without that the terrain manager seems
+            //        to mess up memory because of buffer overruns
+            //terrain.vertexCount = options.size * options.size;
+            terrain.vertexCount = options.size * options.size * 3;
 
             VertexDeclaration decl = terrain.vertexDeclaration;
             VertexBufferBinding binding = terrain.vertexBufferBinding;
@@ -94,81 +110,86 @@ namespace Axiom.SceneManagers.Octree {
             int offset = 0;
 
             // Position/Normal
-            decl.AddElement(POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position);
-            decl.AddElement(NORMAL, 0, VertexElementType.Float3, VertexElementSemantic.Normal);
+            decl.AddElement( POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position );
+            decl.AddElement( NORMAL, 0, VertexElementType.Float3, VertexElementSemantic.Normal );
 
             // TexCoords
-            decl.AddElement(TEXCOORD, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0);
-            offset += VertexElement.GetTypeSize(VertexElementType.Float2);
-            decl.AddElement(TEXCOORD, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 1);
-            offset += VertexElement.GetTypeSize(VertexElementType.Float2);
+            decl.AddElement( TEXCOORD, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
+            offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
+            decl.AddElement( TEXCOORD, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 1 );
+            offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
             // TODO: Color
 
-            HardwareVertexBuffer buffer = 
+            HardwareVertexBuffer buffer =
                 HardwareBufferManager.Instance.CreateVertexBuffer(
-                decl.GetVertexSize(POSITION),
+                decl.GetVertexSize( POSITION ),
                 terrain.vertexCount,
-                BufferUsage.StaticWriteOnly, true);
+                BufferUsage.StaticWriteOnly, true );
 
-            binding.SetBinding(POSITION, buffer);
+            binding.SetBinding( POSITION, buffer );
 
-            
-            buffer = 
+
+            buffer =
                 HardwareBufferManager.Instance.CreateVertexBuffer(
-                decl.GetVertexSize(NORMAL),
+                decl.GetVertexSize( NORMAL ),
                 terrain.vertexCount,
-                BufferUsage.StaticWriteOnly, true);
+                BufferUsage.StaticWriteOnly, true );
 
-            binding.SetBinding(NORMAL, buffer);
+            binding.SetBinding( NORMAL, buffer );
 
-            buffer = 
+            buffer =
                 HardwareBufferManager.Instance.CreateVertexBuffer(
                 offset,
                 terrain.vertexCount,
-                BufferUsage.StaticWriteOnly, true);
+                BufferUsage.StaticWriteOnly, true );
 
-            binding.SetBinding(TEXCOORD, buffer);
+            binding.SetBinding( TEXCOORD, buffer );
 
-            minLevelDistSqr = new float[numMipMaps];
+            minLevelDistSqr = new float[ numMipMaps ];
 
             int endx = options.startx + options.size;
             int endz = options.startz + options.size;
 
             // TODO: name buffers different so we can unlock
-            HardwareVertexBuffer posBuffer = binding.GetBuffer(POSITION);
-            IntPtr pos = posBuffer.Lock(BufferLocking.Discard);
+            HardwareVertexBuffer posBuffer = binding.GetBuffer( POSITION );
+            IntPtr pos = posBuffer.Lock( BufferLocking.Discard );
 
-            HardwareVertexBuffer texBuffer = binding.GetBuffer(TEXCOORD);
-            IntPtr tex = texBuffer.Lock(BufferLocking.Discard);
+            HardwareVertexBuffer texBuffer = binding.GetBuffer( TEXCOORD );
+            IntPtr tex = texBuffer.Lock( BufferLocking.Discard );
 
             float min = 99999999, max = 0;
 
-            unsafe {
+            unsafe
+            {
                 float* posPtr = (float*)pos.ToPointer();
                 float* texPtr = (float*)tex.ToPointer();
 
                 int posCount = 0;
                 int texCount = 0;
 
-                for(int j = options.startz; j < endz; j++) {
-                    for(int i = options.startx; i < endx; i++) {
-                        float height = options.GetWorldHeight(i, j) * options.scaley;
+                for ( int j = options.startz; j < endz; j++ )
+                {
+                    for ( int i = options.startx; i < endx; i++ )
+                    {
+                        float height = options.GetWorldHeight( i, j ) * options.scaley;
 
-                        posPtr[posCount++] = (float)i * options.scalex;
-                        posPtr[posCount++] = height;
-                        posPtr[posCount++] = (float)j * options.scalez;
+                        posPtr[ posCount++ ] = (float)i * options.scalex;
+                        posPtr[ posCount++ ] = height;
+                        posPtr[ posCount++ ] = (float)j * options.scalez;
 
-                        texPtr[texCount++] = (float)i / (float)options.worldSize;
-                        texPtr[texCount++] = (float)j / (float)options.worldSize;
+                        texPtr[ texCount++ ] = (float)i / (float)options.worldSize;
+                        texPtr[ texCount++ ] = (float)j / (float)options.worldSize;
 
-                        texPtr[texCount++] = ((float)i / (float)options.size) * (float)options.detailTile;
-                        texPtr[texCount++] = ((float)j / (float)options.size) * (float)options.detailTile;
+                        texPtr[ texCount++ ] = ( (float)i / (float)options.size ) * (float)options.detailTile;
+                        texPtr[ texCount++ ] = ( (float)j / (float)options.size ) * (float)options.detailTile;
 
-                        if(height < min) {
+                        if ( height < min )
+                        {
                             min = height;
                         }
 
-                        if(height > max) {
+                        if ( height > max )
+                        {
                             max = height;
                         }
                     } // for i
@@ -180,73 +201,86 @@ namespace Axiom.SceneManagers.Octree {
             texBuffer.Unlock();
 
             box.SetExtents(
-                new Vector3((float) options.startx * options.scalex, min, (float)options.startz * options.scalez),
-                new Vector3((float)(endx - 1) * options.scalex, max, (float)(endz - 1) * options.scalez));
+                new Vector3( (float)options.startx * options.scalex, min, (float)options.startz * options.scalez ),
+                new Vector3( (float)( endx - 1 ) * options.scalex, max, (float)( endz - 1 ) * options.scalez ) );
 
 
-            center = new Vector3((options.startx * options.scalex + endx - 1) / 2,
-                (min + max) / 2,
-                (options.startz * options.scalez + endz - 1) / 2);
+            center = new Vector3( ( options.startx * options.scalex + endx - 1 ) / 2,
+                ( min + max ) / 2,
+                ( options.startz * options.scalez + endz - 1 ) / 2 );
 
             float C = CalculateCFactor();
 
-            CalculateMinLevelDist2(C);
+            CalculateMinLevelDist2( C );
         }
 
-        public float GetHeightAt(float x, float z) {
+        public float GetHeightAt( float x, float z )
+        {
             Vector3 start, end;
 
-            start.x = GetVertex(0, 0, 0);
-            start.y = GetVertex(0, 0, 1);
-            start.z = GetVertex(0, 0, 2);
+            start.x = GetVertex( 0, 0, 0 );
+            start.y = GetVertex( 0, 0, 1 );
+            start.z = GetVertex( 0, 0, 2 );
 
-            end.x = GetVertex(options.size - 1, options.size - 1, 0);
-            end.y = GetVertex(options.size - 1, options.size - 1, 1);
-            end.z = GetVertex(options.size - 1, options.size - 1, 2);
+            end.x = GetVertex( options.size - 1, options.size - 1, 0 );
+            end.y = GetVertex( options.size - 1, options.size - 1, 1 );
+            end.z = GetVertex( options.size - 1, options.size - 1, 2 );
 
             // safety catch.  if the point asked for is outside of this tile, ask a neighbor
 
-            if(x < start.x) {
-                if(GetNeighbor(Neighbor.West) != null) {
-                    return GetNeighbor(Neighbor.West).GetHeightAt(x, z);
+            if ( x < start.x )
+            {
+                if ( GetNeighbor( Neighbor.West ) != null )
+                {
+                    return GetNeighbor( Neighbor.West ).GetHeightAt( x, z );
                 }
-                else {
+                else
+                {
                     x = start.x;
                 }
             }
 
-            if(x > end.x) {
-                if(GetNeighbor(Neighbor.East) != null) {
-                    return GetNeighbor(Neighbor.East).GetHeightAt(x, z);
+            if ( x > end.x )
+            {
+                if ( GetNeighbor( Neighbor.East ) != null )
+                {
+                    return GetNeighbor( Neighbor.East ).GetHeightAt( x, z );
                 }
-                else {
+                else
+                {
                     x = end.x;
                 }
-            }        
-        
-            if(z < start.z) {
-                if(GetNeighbor(Neighbor.North) != null) {
-                    return GetNeighbor(Neighbor.North).GetHeightAt(x, z);
+            }
+
+            if ( z < start.z )
+            {
+                if ( GetNeighbor( Neighbor.North ) != null )
+                {
+                    return GetNeighbor( Neighbor.North ).GetHeightAt( x, z );
                 }
-                else {
+                else
+                {
                     z = start.z;
                 }
             }
 
-            if(z > end.z) {
-                if(GetNeighbor(Neighbor.South) != null) {
-                    return GetNeighbor(Neighbor.South).GetHeightAt(x, z);
+            if ( z > end.z )
+            {
+                if ( GetNeighbor( Neighbor.South ) != null )
+                {
+                    return GetNeighbor( Neighbor.South ).GetHeightAt( x, z );
                 }
-                else {
+                else
+                {
                     z = end.z;
                 }
             }
 
-            float xPct = (x - start.x) / (end.x - start.x);
-            float zPct = (z - start.z) / (end.z - start.z);
+            float xPct = ( x - start.x ) / ( end.x - start.x );
+            float zPct = ( z - start.z ) / ( end.z - start.z );
 
-            float xPt = xPct * (float)(options.size - 1);
-            float zPt = zPct * (float)(options.size - 1);
+            float xPt = xPct * (float)( options.size - 1 );
+            float zPt = zPct * (float)( options.size - 1 );
 
             int xIndex = (int)xPt;
             int zIndex = (int)zPt;
@@ -255,29 +289,32 @@ namespace Axiom.SceneManagers.Octree {
             zPct = zPt - zIndex;
 
             // bilinear interpolcation to find the height
-            float t1 = GetVertex(xIndex, zIndex, 1);
-            float t2 = GetVertex(xIndex + 1, zIndex, 1);
-            float b1 = GetVertex(xIndex, zIndex + 1, 1);
-            float b2 = GetVertex(xIndex + 1, zIndex + 1, 1);
+            float t1 = GetVertex( xIndex, zIndex, 1 );
+            float t2 = GetVertex( xIndex + 1, zIndex, 1 );
+            float b1 = GetVertex( xIndex, zIndex + 1, 1 );
+            float b2 = GetVertex( xIndex + 1, zIndex + 1, 1 );
 
-            float midpoint = (b1 + b2) / 2;
+            float midpoint = ( b1 + b2 ) / 2;
 
-            if((xPct + zPct) <= 1) {
-                b2 = midpoint + (midpoint - t1);
+            if ( ( xPct + zPct ) <= 1 )
+            {
+                b2 = midpoint + ( midpoint - t1 );
             }
-            else {
-                t1 = midpoint + (midpoint - b2);
+            else
+            {
+                t1 = midpoint + ( midpoint - b2 );
             }
 
-            float t = (t1 * (1 - xPct)) + (t2 * (xPct));
-            float b = (b1 * (1 - xPct)) + (b2 * (xPct));
-            float h = (t * (1 - zPct)) + (b * (zPct));
+            float t = ( t1 * ( 1 - xPct ) ) + ( t2 * ( xPct ) );
+            float b = ( b1 * ( 1 - xPct ) ) + ( b2 * ( xPct ) );
+            float h = ( t * ( 1 - zPct ) ) + ( b * ( zPct ) );
 
             return h;
         }
 
-        public TerrainRenderable GetNeighbor(Neighbor n) {
-            return neighbors[(int)n];
+        public TerrainRenderable GetNeighbor( Neighbor n )
+        {
+            return neighbors[ (int)n ];
         }
 
         /// <summary>
@@ -287,66 +324,78 @@ namespace Axiom.SceneManagers.Octree {
         /// <param name="z"></param>
         /// <param name="n"></param>
         /// <returns></returns>
-        public float GetVertex(int x, int z, int n) {
-            HardwareVertexBuffer buffer = terrain.vertexBufferBinding.GetBuffer(POSITION);
+        public float GetVertex( int x, int z, int n )
+        {
+            HardwareVertexBuffer buffer = terrain.vertexBufferBinding.GetBuffer( POSITION );
 
-            float[] vertex = new float[1];
+            float[] vertex = new float[ 1 ];
 
-            IntPtr ptr = System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(vertex, 0);
+            IntPtr ptr = System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement( vertex, 0 );
 
-            int offset = (x * 3 + z * options.size * 3 + n) * 4;
+            int offset = ( x * 3 + z * options.size * 3 + n ) * 4;
 
-            buffer.ReadData(offset, 4, ptr);
+            buffer.ReadData( offset, 4, ptr );
 
-            return vertex[0];
+            return vertex[ 0 ];
         }
 
-        public void SetNeighbor(Neighbor n, TerrainRenderable t) {
-            neighbors[(int)n] = t;
+        public void SetNeighbor( Neighbor n, TerrainRenderable t )
+        {
+            neighbors[ (int)n ] = t;
         }
 
-        public void AdjustRenderLevel(int i) {
+        public void AdjustRenderLevel( int i )
+        {
             renderLevel = i;
             AlignNeighbors();
         }
 
-        public void AlignNeighbors() {
+        public void AlignNeighbors()
+        {
             //ensure that there aren't any gaps...
-            for (int i = 0; i < 4; i++) {
-                if ( neighbors[i] != null && neighbors[i].renderLevel + 1 < renderLevel )
-                    neighbors[i].AdjustRenderLevel(renderLevel - 1);
+            for ( int i = 0; i < 4; i++ )
+            {
+                if ( neighbors[ i ] != null && neighbors[ i ].renderLevel + 1 < renderLevel )
+                    neighbors[ i ].AdjustRenderLevel( renderLevel - 1 );
             }
         }
 
-        public float CalculateCFactor() {
+        public float CalculateCFactor()
+        {
             float A, T;
 
-            A = (float)options.nearPlane / Utility.Abs((float)options.topCoord);
+            A = (float)options.nearPlane / Utility.Abs( (float)options.topCoord );
 
             T = 2 * (float)options.maxPixelError / (float)options.vertRes;
 
             return A / T;
         }
 
-        public void CalculateMinLevelDist2(float C) {
+        public void CalculateMinLevelDist2( float C )
+        {
             // level 1 has no delta
-            minLevelDistSqr[0] = 0;
+            minLevelDistSqr[ 0 ] = 0;
 
-            for ( int level = 1; level < numMipMaps; level++ ) {
+            for ( int level = 1; level < numMipMaps; level++ )
+            {
                 minLevelDistSqr[ level ] = 0;
 
                 int step = 1 << level;
 
-                for ( int j = 0; j < size - step; j += step ) {
-                    for ( int i = 0; i < size - step; i += step ) {
+                for ( int j = 0; j < size - step; j += step )
+                {
+                    for ( int i = 0; i < size - step; i += step )
+                    {
                         //check each height inbetween the steps.
                         float h1 = GetVertex( i, j, 1 );
                         float h2 = GetVertex( i + step, j, 1 );
                         float h3 = GetVertex( i + step, j + step, 1 );
                         float h4 = GetVertex( i, j + step, 1 );
 
-                        for ( int z = 1; z < step; z++ ) {
-                            for ( int x = 1; x < step; x++ ) {
+                        for ( int z = 1; z < step; z++ )
+                        {
+                            for ( int x = 1; x < step; x++ )
+                            {
 
                                 float zpct = z / step;
                                 float xpct = x / step;
@@ -358,7 +407,7 @@ namespace Axiom.SceneManagers.Octree {
                                 float interp_h = top * ( 1.0f - zpct ) + zpct * bottom;
 
                                 float actual_h = GetVertex( i + x, j + z, 1 );
-                                float delta = Utility.Abs(interp_h - actual_h);
+                                float delta = Utility.Abs( interp_h - actual_h );
 
                                 float D2 = delta * delta * C * C;
 
@@ -371,37 +420,42 @@ namespace Axiom.SceneManagers.Octree {
             }
 
             //make sure the levels are increasing...
-            for ( int i = 1; i < numMipMaps; i++ ) {
+            for ( int i = 1; i < numMipMaps; i++ )
+            {
                 if ( minLevelDistSqr[ i ] < minLevelDistSqr[ i - 1 ] )
                     minLevelDistSqr[ i ] = minLevelDistSqr[ i - 1 ] + 1;
             }
         }
 
-        public unsafe void CalculateNormals() {
+        public unsafe void CalculateNormals()
+        {
             Vector3 normal;
 
             HardwareVertexBuffer buffer =
-                terrain.vertexBufferBinding.GetBuffer(NORMAL);
+                terrain.vertexBufferBinding.GetBuffer( NORMAL );
 
-            IntPtr norm = buffer.Lock(BufferLocking.Discard);
+            IntPtr norm = buffer.Lock( BufferLocking.Discard );
 
             float* normPtr = (float*)norm.ToPointer();
             int count = 0;
 
-            for(int j = 0; j < size; j++) {
-                for(int i = 0; i < size; i++) {
-                    GetNormalAt(GetVertex(i, j, 0), GetVertex(i, j, 2), out normal);
+            for ( int j = 0; j < size; j++ )
+            {
+                for ( int i = 0; i < size; i++ )
+                {
+                    GetNormalAt( GetVertex( i, j, 0 ), GetVertex( i, j, 2 ), out normal );
 
-                    normPtr[count++] = normal.x;
-                    normPtr[count++] = normal.y;
-                    normPtr[count++] = normal.z;
+                    normPtr[ count++ ] = normal.x;
+                    normPtr[ count++ ] = normal.y;
+                    normPtr[ count++ ] = normal.z;
                 }
             }
 
             buffer.Unlock();
         }
 
-        public void GetNormalAt(float x, float z, out Vector3 result) {
+        public void GetNormalAt( float x, float z, out Vector3 result )
+        {
             Vector3 here, left, down;
             here.x = x;
             here.y = GetHeightAt( x, z );
@@ -422,7 +476,7 @@ namespace Axiom.SceneManagers.Octree {
             left.Normalize();
             down.Normalize();
 
-            result = left.Cross(down);
+            result = left.Cross( down );
             result.Normalize();
         }
 
@@ -430,20 +484,26 @@ namespace Axiom.SceneManagers.Octree {
 
         #region SceneObject Members
 
-        public override AxisAlignedBox BoundingBox {
-            get {
+        public override AxisAlignedBox BoundingBox
+        {
+            get
+            {
                 return box;
             }
         }
 
-        public override float BoundingRadius {
-            get {
+        public override float BoundingRadius
+        {
+            get
+            {
                 return 0;
             }
         }
 
-        public override void NotifyCurrentCamera(Camera camera) {
-            if(forcedRenderLevel >= 0) {
+        public override void NotifyCurrentCamera( Camera camera )
+        {
+            if ( forcedRenderLevel >= 0 )
+            {
                 renderLevel = forcedRenderLevel;
                 return;
             }
@@ -459,57 +519,71 @@ namespace Axiom.SceneManagers.Octree {
 
             renderLevel = -1;
 
-            for(int i = 0; i < numMipMaps; i++) {
-                if(minLevelDistSqr[i] > L) {
+            for ( int i = 0; i < numMipMaps; i++ )
+            {
+                if ( minLevelDistSqr[ i ] > L )
+                {
                     renderLevel = i - 1;
                     break;
                 }
             }
 
-            if(renderLevel < 0) {
+            if ( renderLevel < 0 )
+            {
                 renderLevel = numMipMaps - 1;
             }
         }
 
-        public override void UpdateRenderQueue(RenderQueue queue) {
-            queue.AddRenderable(this);
+        public override void UpdateRenderQueue( RenderQueue queue )
+        {
+            queue.AddRenderable( this );
         }
 
         #endregion SceneObject Members
 
         #region IRenderable Members
 
-		public bool CastsShadows {
-			get {
-				return false;
-			}
-		}
+        public bool CastsShadows
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-        public float GetSquaredViewDepth(Camera camera) {
+        public float GetSquaredViewDepth( Camera camera )
+        {
             Vector3 diff = center - camera.DerivedPosition;
 
             return diff.LengthSquared;
         }
 
-        public bool UseIdentityView {
-            get {
+        public bool UseIdentityView
+        {
+            get
+            {
                 return false;
             }
         }
 
-        public bool UseIdentityProjection {
-            get {
+        public bool UseIdentityProjection
+        {
+            get
+            {
                 return false;
             }
         }
 
-        public Axiom.Math.Vector3 WorldPosition {
-            get {
+        public Axiom.Math.Vector3 WorldPosition
+        {
+            get
+            {
                 return parentNode.DerivedPosition;
             }
         }
 
-        public unsafe void GetRenderOperation(RenderOperation op) {
+        public unsafe void GetRenderOperation( RenderOperation op )
+        {
             int east = 0, west = 0, north = 0, south = 0;
 
             int step = 1 << renderLevel;
@@ -518,147 +592,217 @@ namespace Axiom.SceneManagers.Octree {
 
             int numIndexes = 0;
 
-            if (neighbors[(int)Neighbor.East] != null && neighbors[(int)Neighbor.East].renderLevel > renderLevel) {
-                east = step; indexArray |= (int)Tile.East;
+            if ( neighbors[ (int)Neighbor.East ] != null && neighbors[ (int)Neighbor.East ].renderLevel > renderLevel )
+            {
+                east = step;
+                indexArray |= (int)Tile.East;
             }
 
-            if (neighbors[(int)Neighbor.West] != null && neighbors[(int)Neighbor.West].renderLevel > renderLevel) {
-                west = step; indexArray |= (int)Tile.West;
+            if ( neighbors[ (int)Neighbor.West ] != null && neighbors[ (int)Neighbor.West ].renderLevel > renderLevel )
+            {
+                west = step;
+                indexArray |= (int)Tile.West;
             }
 
-            if (neighbors[(int)Neighbor.North] != null && neighbors[(int)Neighbor.North].renderLevel > renderLevel) {
-                north = step; indexArray |= (int)Tile.North;
+            if ( neighbors[ (int)Neighbor.North ] != null && neighbors[ (int)Neighbor.North ].renderLevel > renderLevel )
+            {
+                north = step;
+                indexArray |= (int)Tile.North;
             }
 
-            if (neighbors[(int)Neighbor.South] != null && neighbors[(int)Neighbor.South].renderLevel > renderLevel) {
-                south = step; indexArray |= (int)Tile.South;
+            if ( neighbors[ (int)Neighbor.South ] != null && neighbors[ (int)Neighbor.South ].renderLevel > renderLevel )
+            {
+                south = step;
+                indexArray |= (int)Tile.South;
             }
 
             IndexData indexData = null;
 
-            if (levelIndex[renderLevel,indexArray] != null) {
-                indexData = levelIndex[renderLevel,indexArray];
+            if ( levelIndex[ renderLevel, indexArray ] != null )
+            {
+                indexData = levelIndex[ renderLevel, indexArray ];
             }
-            else {
-                int newLength = (size / step) * (size / step) * 2 * 2 * 2 ;
+            else
+            {
+                int newLength = ( size / step ) * ( size / step ) * 2 * 2 * 2;
                 //this is the maximum for a level.  It wastes a little, but shouldn't be a problem.
-        
+
                 indexData = new IndexData();
-                indexData.indexBuffer = 
+                indexData.indexBuffer =
                 HardwareBufferManager.Instance.CreateIndexBuffer(
                     IndexType.Size16,
-                    newLength, 
-                    BufferUsage.StaticWriteOnly);
+                    newLength,
+                    BufferUsage.StaticWriteOnly );
 
                 //indexCache.Add(indexData);
 
                 numIndexes = 0;
 
-                IntPtr idx = indexData.indexBuffer.Lock(BufferLocking.Discard);
+                IntPtr idx = indexData.indexBuffer.Lock( BufferLocking.Discard );
 
-                short* idxPtr = (short*)idx.ToPointer();  
+                short* idxPtr = (short*)idx.ToPointer();
                 int count = 0;
 
-                for ( int j = north; j < size - 1 - south; j += step ) {
-                    for ( int i = west; i < size - 1 - east; i += step ) {
+                for ( int j = north; j < size - 1 - south; j += step )
+                {
+                    for ( int i = west; i < size - 1 - east; i += step )
+                    {
                         //triangles
-                        idxPtr[count++] = GetIndex( i, j ); numIndexes++;
-                        idxPtr[count++] = GetIndex( i, j + step ); numIndexes++;
-                        idxPtr[count++] = GetIndex( i + step, j ); numIndexes++;
+                        idxPtr[ count++ ] = GetIndex( i, j );
+                        numIndexes++;
+                        idxPtr[ count++ ] = GetIndex( i, j + step );
+                        numIndexes++;
+                        idxPtr[ count++ ] = GetIndex( i + step, j );
+                        numIndexes++;
 
-                        idxPtr[count++] = GetIndex( i, j + step ); numIndexes++;
-                        idxPtr[count++] = GetIndex( i + step, j + step ); numIndexes++;
-                        idxPtr[count++] = GetIndex( i + step, j ); numIndexes++;
+                        idxPtr[ count++ ] = GetIndex( i, j + step );
+                        numIndexes++;
+                        idxPtr[ count++ ] = GetIndex( i + step, j + step );
+                        numIndexes++;
+                        idxPtr[ count++ ] = GetIndex( i + step, j );
+                        numIndexes++;
                     }
                 }
 
                 int substep = step << 1;
 
-                if ( west > 0 ) {
+                if ( west > 0 )
+                {
 
-                    for ( int j = 0; j < size - 1; j += substep ) {
+                    for ( int j = 0; j < size - 1; j += substep )
+                    {
                         //skip the first bit of the corner if the north side is a different level as well.
-                        if ( j > 0 || north == 0 ) {
-                            idxPtr[count++] = GetIndex( 0, j ); numIndexes++;
-                            idxPtr[count++] = GetIndex( step, j + step ); numIndexes++;
-                            idxPtr[count++] = GetIndex( step, j ); numIndexes++;
+                        if ( j > 0 || north == 0 )
+                        {
+                            idxPtr[ count++ ] = GetIndex( 0, j );
+                            numIndexes++;
+                            idxPtr[ count++ ] = GetIndex( step, j + step );
+                            numIndexes++;
+                            idxPtr[ count++ ] = GetIndex( step, j );
+                            numIndexes++;
                         }
 
-                        idxPtr[count++] = GetIndex( step, j + step ); numIndexes++;
-                        idxPtr[count++] = GetIndex( 0, j ); numIndexes++;
-                        idxPtr[count++] = GetIndex( 0, j + step + step ); numIndexes++;
+                        idxPtr[ count++ ] = GetIndex( step, j + step );
+                        numIndexes++;
+                        idxPtr[ count++ ] = GetIndex( 0, j );
+                        numIndexes++;
+                        idxPtr[ count++ ] = GetIndex( 0, j + step + step );
+                        numIndexes++;
 
-                        if ( j < options.size - 1 - substep || south == 0 ) {
-                            idxPtr[count++] = GetIndex( step, j + step ); numIndexes++;
-                            idxPtr[count++] = GetIndex( 0, j + step + step ); numIndexes++;
-                            idxPtr[count++] = GetIndex( step, j + step + step ); numIndexes++;
+                        if ( j < options.size - 1 - substep || south == 0 )
+                        {
+                            idxPtr[ count++ ] = GetIndex( step, j + step );
+                            numIndexes++;
+                            idxPtr[ count++ ] = GetIndex( 0, j + step + step );
+                            numIndexes++;
+                            idxPtr[ count++ ] = GetIndex( step, j + step + step );
+                            numIndexes++;
                         }
                     }
                 }
 
-                if ( east > 0 ) {
+                if ( east > 0 )
+                {
                     int x = options.size - 1;
 
-                    for ( int j = 0; j < size - 1; j += substep ) {
+                    for ( int j = 0; j < size - 1; j += substep )
+                    {
                         //skip the first bit of the corner if the north side is a different level as well.
-                        if ( j > 0 || north == 0 ) {
-                            idxPtr[count++] = GetIndex( x, j ); numIndexes++;
-                            idxPtr[count++] = GetIndex( x - step, j ); numIndexes++;
-                            idxPtr[count++] = GetIndex( x - step, j + step ); numIndexes++;
+                        if ( j > 0 || north == 0 )
+                        {
+                            idxPtr[ count++ ] = GetIndex( x, j );
+                            numIndexes++;
+                            idxPtr[ count++ ] = GetIndex( x - step, j );
+                            numIndexes++;
+                            idxPtr[ count++ ] = GetIndex( x - step, j + step );
+                            numIndexes++;
                         }
 
-                        idxPtr[count++] = GetIndex( x, j ); numIndexes++;
-                        idxPtr[count++] = GetIndex( x - step, j + step ); numIndexes++;
-                        idxPtr[count++] = GetIndex( x, j + step + step ); numIndexes++;
+                        idxPtr[ count++ ] = GetIndex( x, j );
+                        numIndexes++;
+                        idxPtr[ count++ ] = GetIndex( x - step, j + step );
+                        numIndexes++;
+                        idxPtr[ count++ ] = GetIndex( x, j + step + step );
+                        numIndexes++;
 
-                        if ( j < options.size - 1 - substep || south == 0 ) {
-                            idxPtr[count++] = GetIndex( x, j + step + step ); numIndexes++;
-                            idxPtr[count++] = GetIndex( x - step, j + step ); numIndexes++;
-                            idxPtr[count++] = GetIndex( x - step, j + step + step ); numIndexes++;
+                        if ( j < options.size - 1 - substep || south == 0 )
+                        {
+                            idxPtr[ count++ ] = GetIndex( x, j + step + step );
+                            numIndexes++;
+                            idxPtr[ count++ ] = GetIndex( x - step, j + step );
+                            numIndexes++;
+                            idxPtr[ count++ ] = GetIndex( x - step, j + step + step );
+                            numIndexes++;
                         }
                     }
                 }
 
-                if ( south > 0 ) {
+                if ( south > 0 )
+                {
                     int x = options.size - 1;
 
-                    for ( int j = 0; j < size - 1; j += substep ) {
+                    for ( int j = 0; j < size - 1; j += substep )
+                    {
                         //skip the first bit of the corner if the north side is a different level as well.
-                        if ( j > 0 || west == 0 ) {
-                            idxPtr[count++] = GetIndex( j, x - step ); numIndexes++;
-                            idxPtr[count++] = GetIndex( j, x ); numIndexes++;
-                            idxPtr[count++] = GetIndex( j + step, x - step ); numIndexes++;
+                        if ( j > 0 || west == 0 )
+                        {
+                            idxPtr[ count++ ] = GetIndex( j, x - step );
+                            numIndexes++;
+                            idxPtr[ count++ ] = GetIndex( j, x );
+                            numIndexes++;
+                            idxPtr[ count++ ] = GetIndex( j + step, x - step );
+                            numIndexes++;
                         }
 
-                        idxPtr[count++] = GetIndex( j + step, x - step ); numIndexes++;
-                        idxPtr[count++] = GetIndex( j, x ); numIndexes++;
-                        idxPtr[count++] = GetIndex( j + step + step, x ); numIndexes++;
+                        idxPtr[ count++ ] = GetIndex( j + step, x - step );
+                        numIndexes++;
+                        idxPtr[ count++ ] = GetIndex( j, x );
+                        numIndexes++;
+                        idxPtr[ count++ ] = GetIndex( j + step + step, x );
+                        numIndexes++;
 
-                        if ( j < options.size - 1 - substep || east == 0 ) {
-                            idxPtr[count++] = GetIndex( j + step, x - step ); numIndexes++;
-                            idxPtr[count++] = GetIndex( j + step + step, x ); numIndexes++;
-                            idxPtr[count++] = GetIndex( j + step + step, x - step ); numIndexes++;
+                        if ( j < options.size - 1 - substep || east == 0 )
+                        {
+                            idxPtr[ count++ ] = GetIndex( j + step, x - step );
+                            numIndexes++;
+                            idxPtr[ count++ ] = GetIndex( j + step + step, x );
+                            numIndexes++;
+                            idxPtr[ count++ ] = GetIndex( j + step + step, x - step );
+                            numIndexes++;
                         }
                     }
                 }
 
-                if ( north > 0 ) {
-                    for ( int j = 0; j < size - 1; j += substep ) {
+                if ( north > 0 )
+                {
+                    for ( int j = 0; j < size - 1; j += substep )
+                    {
                         //skip the first bit of the corner if the north side is a different level as well.
-                        if ( j > 0 || west == 0 ) {
-                            idxPtr[count++] = GetIndex( j, 0 ); numIndexes++;
-                            idxPtr[count++] = GetIndex( j, step ); numIndexes++;
-                            idxPtr[count++] = GetIndex( j + step, step ); numIndexes++;
+                        if ( j > 0 || west == 0 )
+                        {
+                            idxPtr[ count++ ] = GetIndex( j, 0 );
+                            numIndexes++;
+                            idxPtr[ count++ ] = GetIndex( j, step );
+                            numIndexes++;
+                            idxPtr[ count++ ] = GetIndex( j + step, step );
+                            numIndexes++;
                         }
 
-                        idxPtr[count++] = GetIndex( j, 0 ); numIndexes++;
-                        idxPtr[count++] = GetIndex( j + step, step ); numIndexes++;
-                        idxPtr[count++] = GetIndex( j + step + step, 0 ); numIndexes++;
+                        idxPtr[ count++ ] = GetIndex( j, 0 );
+                        numIndexes++;
+                        idxPtr[ count++ ] = GetIndex( j + step, step );
+                        numIndexes++;
+                        idxPtr[ count++ ] = GetIndex( j + step + step, 0 );
+                        numIndexes++;
 
-                        if ( j < options.size - 1 - substep || east == 0 ) {
-                            idxPtr[count++] = GetIndex( j + step + step, 0 ); numIndexes++;
-                            idxPtr[count++] = GetIndex( j + step, step ); numIndexes++;
-                            idxPtr[count++] = GetIndex( j + step + step, step ); numIndexes++;
+                        if ( j < options.size - 1 - substep || east == 0 )
+                        {
+                            idxPtr[ count++ ] = GetIndex( j + step + step, 0 );
+                            numIndexes++;
+                            idxPtr[ count++ ] = GetIndex( j + step, step );
+                            numIndexes++;
+                            idxPtr[ count++ ] = GetIndex( j + step + step, step );
+                            numIndexes++;
                         }
                     }
 
@@ -668,7 +812,7 @@ namespace Axiom.SceneManagers.Octree {
                 indexData.indexCount = numIndexes;
                 indexData.indexStart = 0;
 
-                levelIndex[renderLevel,indexArray] = indexData;
+                levelIndex[ renderLevel, indexArray ] = indexData;
             }
 
             op.useIndices = true;
@@ -681,81 +825,105 @@ namespace Axiom.SceneManagers.Octree {
             //mRenderLevelChanged = false;
         }
 
-        public short GetIndex(int x, int z) {
-            return (short)(x + z * options.size);
+        public short GetIndex( int x, int z )
+        {
+            return (short)( x + z * options.size );
         }
 
-        public void GetWorldTransforms(Axiom.Math.Matrix4[] matrices) {
+        public void GetWorldTransforms( Axiom.Math.Matrix4[] matrices )
+        {
             // TODO: Add Node.FullTransform?
-            parentNode.GetWorldTransforms(matrices);
+            parentNode.GetWorldTransforms( matrices );
         }
 
-        public Axiom.Math.Quaternion WorldOrientation {
-            get {
+        public Axiom.Math.Quaternion WorldOrientation
+        {
+            get
+            {
                 return parentNode.DerivedOrientation;
             }
         }
 
-        public Axiom.Graphics.SceneDetailLevel RenderDetail {
-            get {
+        public Axiom.Graphics.SceneDetailLevel RenderDetail
+        {
+            get
+            {
                 return SceneDetailLevel.Solid;
             }
         }
 
-        public Material Material {
-            get {
+        public Material Material
+        {
+            get
+            {
                 return material;
             }
         }
 
-        public Axiom.Collections.LightList Lights {
-            get {
+        public Axiom.Collections.LightList Lights
+        {
+            get
+            {
                 return parentNode.Lights;
             }
         }
 
-        public Technique Technique {
-            get {
+        public Technique Technique
+        {
+            get
+            {
                 return material.GetBestTechnique();
             }
         }
 
-        public bool NormalizeNormals {
-            get {
+        public bool NormalizeNormals
+        {
+            get
+            {
                 return false;
             }
         }
 
-        public ushort NumWorldTransforms {
-            get {
+        public ushort NumWorldTransforms
+        {
+            get
+            {
                 return 1;
             }
         }
 
-		public Vector4 GetCustomParameter(int index) {
-			if(customParams[index] == null) {
-				throw new Exception("A parameter was not found at the given index");
-			}
-			else {
-				return (Vector4)customParams[index];
-			}
-		}
+        public Vector4 GetCustomParameter( int index )
+        {
+            if ( customParams[ index ] == null )
+            {
+                throw new Exception( "A parameter was not found at the given index" );
+            }
+            else
+            {
+                return (Vector4)customParams[ index ];
+            }
+        }
 
-		public void SetCustomParameter(int index, Vector4 val) {
-			customParams[index] = val;
-		}
+        public void SetCustomParameter( int index, Vector4 val )
+        {
+            customParams[ index ] = val;
+        }
 
-		public void UpdateCustomGpuParameter(GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams) {
-			if(customParams[entry.data] != null) {
-				gpuParams.SetConstant(entry.index, (Vector4)customParams[entry.data]);
-			}
-		}
+        public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
+        {
+            if ( customParams[ entry.data ] != null )
+            {
+                gpuParams.SetConstant( entry.index, (Vector4)customParams[ entry.data ] );
+            }
+        }
 
         #endregion
     }
 
-    public class TerrainOptions {
-        public TerrainOptions() {
+    public class TerrainOptions
+    {
+        public TerrainOptions()
+        {
             size = 0;
             worldSize = 0;
             startx = 0;
@@ -774,8 +942,9 @@ namespace Axiom.SceneManagers.Octree {
         }
 
 
-        public int GetWorldHeight(int x, int z) {
-            return data[((z * worldSize) + x)];
+        public int GetWorldHeight( int x, int z )
+        {
+            return data[ ( ( z * worldSize ) + x ) ];
         }
 
         public byte[] data;     //pointer to the world 2D data.

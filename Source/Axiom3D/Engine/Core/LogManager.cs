@@ -1,11 +1,50 @@
+#region LGPL License
+/*
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
+
+The overall design, and a majority of the core engine and rendering code 
+contained within this library is a derivative of the open source Object Oriented 
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+#endregion
+
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 
-namespace Axiom.Core {
-	/// <summary>
-	/// Summary description for LogManager.
-	/// </summary>
-	public sealed class LogManager : IDisposable {
+#endregion Namespace Declarations
+
+namespace Axiom.Core
+{
+    /// <summary>
+    /// Summary description for LogManager.
+    /// </summary>
+    public sealed class LogManager : IDisposable
+    {
         #region Singleton implementation
 
         /// <summary>
@@ -16,8 +55,10 @@ namespace Axiom.Core {
         /// <summary>
         ///     Internal constructor.  This class cannot be instantiated externally.
         /// </summary>
-        internal LogManager() {
-            if (instance == null) {
+        internal LogManager()
+        {
+            if ( instance == null )
+            {
                 instance = this;
             }
         }
@@ -25,9 +66,11 @@ namespace Axiom.Core {
         /// <summary>
         ///     Gets the singleton instance of this class.
         /// </summary>
-        public static LogManager Instance {
-            get { 
-                return instance; 
+        public static LogManager Instance
+        {
+            get
+            {
+                return instance;
             }
         }
 
@@ -52,15 +95,19 @@ namespace Axiom.Core {
         ///     Gets/Sets the default log to use for writing.
         /// </summary>
         /// <value></value>
-        public Log DefaultLog {
-            get {
-                if (defaultLog == null) {
-                    throw new AxiomException("No logs have been created yet.");
+        public Log DefaultLog
+        {
+            get
+            {
+                if ( defaultLog == null )
+                {
+                    throw new AxiomException( "No logs have been created yet." );
                 }
 
                 return defaultLog;
             }
-            set {
+            set
+            {
                 defaultLog = value;
             }
         }
@@ -68,11 +115,14 @@ namespace Axiom.Core {
         /// <summary>
         ///     Sets the level of detail of the default log.
         /// </summary>
-        public LoggingLevel LogDetail {
-            get {
+        public LoggingLevel LogDetail
+        {
+            get
+            {
                 return DefaultLog.LogDetail;
             }
-            set {
+            set
+            {
                 DefaultLog.LogDetail = value;
             }
         }
@@ -86,8 +136,9 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="name">Name to give to the log, i.e. "Axiom.log"</param>
         /// <returns>A newly created Log object, opened and ready to go.</returns>
-        public Log CreateLog(string name) {
-            return CreateLog(name, false, true);
+        public Log CreateLog( string name )
+        {
+            return CreateLog( name, false, true );
         }
 
         /// <summary>
@@ -101,8 +152,9 @@ namespace Axiom.Core {
         ///     this parameter is set.
         /// </param>
         /// <returns>A newly created Log object, opened and ready to go.</returns>
-        public Log CreateLog(string name, bool isDefaultLog) {
-            return CreateLog(name, isDefaultLog, true);
+        public Log CreateLog( string name, bool isDefaultLog )
+        {
+            return CreateLog( name, isDefaultLog, true );
         }
 
         /// <summary>
@@ -121,15 +173,17 @@ namespace Axiom.Core {
         ///     it using a custom TraceListener to receive message notification wherever you want.
         /// </param>
         /// <returns>A newly created Log object, opened and ready to go.</returns>
-        public Log CreateLog(string name, bool isDefaultLog, bool debuggerOutput) {
-            Log newLog = new Log(name, debuggerOutput);
+        public Log CreateLog( string name, bool isDefaultLog, bool debuggerOutput )
+        {
+            Log newLog = new Log( name, debuggerOutput );
 
             // set as the default log if need be
-            if (defaultLog == null || isDefaultLog) {
+            if ( defaultLog == null || isDefaultLog )
+            {
                 defaultLog = newLog;
             }
 
-            logList.Add(name, newLog);
+            logList.Add( name, newLog );
 
             return newLog;
         }
@@ -139,12 +193,14 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="name">Name of the log to retrieve.</param>
         /// <returns>Log with the specified name.</returns>
-        public Log GetLog(string name) {
-            if (logList[name] == null) {
-                throw new AxiomException("Log with the name '{0}' not found.", name);
+        public Log GetLog( string name )
+        {
+            if ( logList[ name ] == null )
+            {
+                throw new AxiomException( "Log with the name '{0}' not found.", name );
             }
 
-            return (Log)logList[name];
+            return (Log)logList[ name ];
         }
 
         /// <summary>
@@ -158,8 +214,9 @@ namespace Axiom.Core {
         ///     When message includes string formatting tokens, these are the values to 
         ///     inject into the formatted string.
         /// </param>
-        public void Write(string message, params object[] substitutions) {
-            Write(LogMessageLevel.Normal, false, message, substitutions);
+        public void Write( string message, params object[] substitutions )
+        {
+            Write( LogMessageLevel.Normal, false, message, substitutions );
         }
 
         /// <summary>
@@ -174,8 +231,9 @@ namespace Axiom.Core {
         ///     When message includes string formatting tokens, these are the values to 
         ///     inject into the formatted string.
         /// </param>
-        public void Write(bool maskDebug, string message, params object[] substitutions) {
-            Write(LogMessageLevel.Normal, maskDebug, message, substitutions);
+        public void Write( bool maskDebug, string message, params object[] substitutions )
+        {
+            Write( LogMessageLevel.Normal, maskDebug, message, substitutions );
         }
 
         /// <summary>
@@ -188,8 +246,9 @@ namespace Axiom.Core {
         ///     When message includes string formatting tokens, these are the values to 
         ///     inject into the formatted string.
         /// </param>
-        public void Write(LogMessageLevel level, bool maskDebug, string message, params object[] substitutions) {
-            DefaultLog.Write(level, maskDebug, message, substitutions);
+        public void Write( LogMessageLevel level, bool maskDebug, string message, params object[] substitutions )
+        {
+            DefaultLog.Write( level, maskDebug, message, substitutions );
         }
 
         #endregion Methods
@@ -199,15 +258,17 @@ namespace Axiom.Core {
         /// <summary>
         ///     Destroys all the logs owned by the log manager.
         /// </summary>
-        public void Dispose() {
+        public void Dispose()
+        {
             // dispose of all the logs
-            foreach (IDisposable o in logList.Values) {
+            foreach ( IDisposable o in logList.Values )
+            {
                 o.Dispose();
             }
 
             logList.Clear();
         }
 
-#endregion
+        #endregion
     }
 }

@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,13 +24,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 
-
 using Axiom.Graphics;
 
-namespace Axiom.Core {
+#endregion Namespace Declarations
+
+namespace Axiom.Core
+{
     /// <summary>
     ///     Enumerates the SceneManager classes available to applications.
     /// </summary>
@@ -49,7 +60,8 @@ namespace Axiom.Core {
     ///     (and it may be restricted access in the future).
     /// </remarks>
     // TODO: Class name no longer matches file name.
-    public sealed class SceneManagerEnumerator {
+    public sealed class SceneManagerEnumerator
+    {
         #region Singleton implementation
 
         /// <summary>
@@ -60,28 +72,32 @@ namespace Axiom.Core {
         /// <summary>
         ///     Internal constructor.  This class cannot be instantiated externally.
         /// </summary>
-        internal SceneManagerEnumerator() {
-            if (instance == null) {
+        internal SceneManagerEnumerator()
+        {
+            if ( instance == null )
+            {
                 instance = this;
 
                 // by default, use the standard scene manager.
                 defaultSceneManager = new SceneManager();
 
                 // by default, all scenetypes use the default Scene Manager.  Note: These can be overridden by plugins.
-                SetSceneManager(SceneType.Generic, defaultSceneManager);
-                SetSceneManager(SceneType.ExteriorClose, defaultSceneManager);
-                SetSceneManager(SceneType.ExteriorFar, defaultSceneManager);
-                SetSceneManager(SceneType.Interior, defaultSceneManager);
-                SetSceneManager(SceneType.Overhead, defaultSceneManager);
+                SetSceneManager( SceneType.Generic, defaultSceneManager );
+                SetSceneManager( SceneType.ExteriorClose, defaultSceneManager );
+                SetSceneManager( SceneType.ExteriorFar, defaultSceneManager );
+                SetSceneManager( SceneType.Interior, defaultSceneManager );
+                SetSceneManager( SceneType.Overhead, defaultSceneManager );
             }
         }
 
         /// <summary>
         ///     Gets the singleton instance of this class.
         /// </summary>
-        public static SceneManagerEnumerator Instance {
-            get { 
-                return instance; 
+        public static SceneManagerEnumerator Instance
+        {
+            get
+            {
+                return instance;
             }
         }
 
@@ -107,21 +123,25 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="type">Type of scene manager to retrieve.</param>
         /// <returns>A reference to the scene manager of the specified type.</returns>
-        public SceneManager GetSceneManager(SceneType type) {
-            if (sceneManagers[type] == null) {
-                throw new AxiomException("Cannot find scene manager for type '{0}'", type);
+        public SceneManager GetSceneManager( SceneType type )
+        {
+            if ( sceneManagers[ type ] == null )
+            {
+                throw new AxiomException( "Cannot find scene manager for type '{0}'", type );
             }
 
-            return (SceneManager)sceneManagers[type];
+            return (SceneManager)sceneManagers[ type ];
         }
 
         /// <summary>
         ///     Notifies all SceneManagers of the destination rendering system.
         /// </summary>
         /// <param name="system">Current destination render system.</param>
-        public void SetRenderSystem(RenderSystem system) {
+        public void SetRenderSystem( RenderSystem system )
+        {
             // loop through each scene manager and set the new render system
-            foreach(SceneManager sceneManager in sceneManagers.Values) {
+            foreach ( SceneManager sceneManager in sceneManagers.Values )
+            {
                 sceneManager.TargetRenderSystem = system;
             }
         }
@@ -131,8 +151,9 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="type">Type of scene this manager implements.</param>
         /// <param name="manager">Reference to the scene manager.</param>
-        public void SetSceneManager(SceneType type, SceneManager manager) {
-            sceneManagers[type] = manager;
+        public void SetSceneManager( SceneType type, SceneManager manager )
+        {
+            sceneManagers[ type ] = manager;
 
             // Set rendersystem, incase this one is late & rendersystem already picked
             manager.TargetRenderSystem = Root.Instance.RenderSystem;
@@ -141,9 +162,11 @@ namespace Axiom.Core {
         /// <summary>
         ///     Shuts down all registered scene managers.
         /// </summary>
-        public void ShutdownAll() {
+        public void ShutdownAll()
+        {
             // clear the scene of each registered scene manager
-            foreach (SceneManager manager in sceneManagers.Values) {
+            foreach ( SceneManager manager in sceneManagers.Values )
+            {
                 manager.ClearScene();
             }
         }

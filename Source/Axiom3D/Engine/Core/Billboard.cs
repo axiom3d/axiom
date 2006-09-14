@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,12 +24,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Drawing;
+
 using Axiom.Core;
 using Axiom.Math;
 
-namespace Axiom.Core {
+#endregion Namespace Declarations
+
+namespace Axiom.Core
+{
     /// <summary>
     ///		A billboard is a primitive which always faces the camera in every frame.
     /// </summary>
@@ -49,7 +62,8 @@ namespace Axiom.Core {
     ///		Billboards are just the mechanism for rendering a range of effects such as particles. It is other classes
     ///		which use billboards to create their individual effects, so the methods here are quite generic.
     /// </remarks>
-    public class Billboard {
+    public class Billboard
+    {
         #region Member variables
 
         protected bool hasOwnDimensions;
@@ -61,10 +75,10 @@ namespace Axiom.Core {
         public Vector3 Direction = Vector3.Zero;
         public BillboardSet ParentSet;
         public ColorEx Color = ColorEx.White;
-		/// <summary>
-		///		Needed for particle systems
-		/// </summary>
-		public float rotationInRadians = 0;
+        /// <summary>
+        ///		Needed for particle systems
+        /// </summary>
+        public float rotationInRadians = 0;
 
         #endregion
 
@@ -73,7 +87,8 @@ namespace Axiom.Core {
         /// <summary>
         ///		Default constructor.
         /// </summary>
-        public Billboard() {
+        public Billboard()
+        {
         }
 
         /// <summary>
@@ -81,7 +96,8 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="position"></param>
         /// <param name="owner"></param>
-        public Billboard(Vector3 position, BillboardSet owner) {
+        public Billboard( Vector3 position, BillboardSet owner )
+        {
             this.Position = position;
             this.ParentSet = owner;
             this.Color = ColorEx.White;
@@ -93,7 +109,8 @@ namespace Axiom.Core {
         /// <param name="position"></param>
         /// <param name="owner"></param>
         /// <param name="color"></param>
-        public Billboard(Vector3 position, BillboardSet owner, ColorEx color) {
+        public Billboard( Vector3 position, BillboardSet owner, ColorEx color )
+        {
             this.Color = color;
             this.Position = position;
             this.ParentSet = owner;
@@ -106,13 +123,16 @@ namespace Axiom.Core {
         /// <summary>
         ///		Width and height of this billboard, if it has it's own.
         /// </summary>
-        public float Width {
-            get { 
-				return width; 
-			}
-            set {
+        public float Width
+        {
+            get
+            {
+                return width;
+            }
+            set
+            {
                 hasOwnDimensions = true;
-                width = value; 
+                width = value;
                 ParentSet.NotifyBillboardResized();
             }
         }
@@ -120,13 +140,16 @@ namespace Axiom.Core {
         /// <summary>
         ///		Width and height of this billboard, if it has it's own.
         /// </summary>
-        public float Height {
-            get { 
-				return height; 
-			}
-            set {
+        public float Height
+        {
+            get
+            {
+                return height;
+            }
+            set
+            {
                 hasOwnDimensions = true;
-                height = value; 
+                height = value;
                 ParentSet.NotifyBillboardResized();
             }
         }
@@ -134,10 +157,12 @@ namespace Axiom.Core {
         /// <summary>
         ///		Sepcifies whether or not this billboard has different dimensions than the rest in the set.
         /// </summary>
-        public bool HasOwnDimensions {
-            get { 
-				return hasOwnDimensions; 
-			}
+        public bool HasOwnDimensions
+        {
+            get
+            {
+                return hasOwnDimensions;
+            }
         }
 
         #endregion
@@ -147,46 +172,53 @@ namespace Axiom.Core {
         /// <summary>
         ///		Resets this billboard to use the parent BillboardSet's dimensions instead of it's own.
         /// </summary>
-        public virtual void ResetDimensions() {
+        public virtual void ResetDimensions()
+        {
             hasOwnDimensions = false;
         }
 
-		/// <summary>
-		///		Sets the width and height for this billboard.
-		/// </summary>
-		/// <param name="width">Width of the billboard.</param>
-		/// <param name="height">Height of the billboard.</param>
-		public virtual void SetDimensions(float width, float height) {
-			hasOwnDimensions = true;
-			this.width = width;
-			this.height = height;
-			ParentSet.NotifyBillboardResized();
-		}
+        /// <summary>
+        ///		Sets the width and height for this billboard.
+        /// </summary>
+        /// <param name="width">Width of the billboard.</param>
+        /// <param name="height">Height of the billboard.</param>
+        public virtual void SetDimensions( float width, float height )
+        {
+            hasOwnDimensions = true;
+            this.width = width;
+            this.height = height;
+            ParentSet.NotifyBillboardResized();
+        }
 
         /// <summary>
         ///		Internal method for notifying a billboard of it's owner.
         /// </summary>
         /// <param name="owner"></param>
-        internal void NotifyOwner(BillboardSet owner) {
+        internal void NotifyOwner( BillboardSet owner )
+        {
             ParentSet = owner;
         }
 
-		/// <summary>
-		///		Gets/Sets the rotation in degrees.
-		/// </summary>
-		public float Rotation {
-			get {
-				return rotationInRadians * Utility.DEGREES_PER_RADIAN;
-			}
-			set {
-				rotationInRadians = value * Utility.RADIANS_PER_DEGREE;
-				// Hmmm, we don't have a NotifyBillboardTextureCoordsModified?
-				if(rotationInRadians != 0) {
-					ParentSet.NotifyBillboardTextureCoordsModified();
-				}
-			}
-		}
+        /// <summary>
+        ///		Gets/Sets the rotation in degrees.
+        /// </summary>
+        public float Rotation
+        {
+            get
+            {
+                return rotationInRadians * Utility.DEGREES_PER_RADIAN;
+            }
+            set
+            {
+                rotationInRadians = value * Utility.RADIANS_PER_DEGREE;
+                // Hmmm, we don't have a NotifyBillboardTextureCoordsModified?
+                if ( rotationInRadians != 0 )
+                {
+                    ParentSet.NotifyBillboardTextureCoordsModified();
+                }
+            }
+        }
 
-		#endregion
+        #endregion
     }
 }

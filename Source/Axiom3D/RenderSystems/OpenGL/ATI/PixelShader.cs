@@ -1,3 +1,46 @@
+#region LGPL License
+/*
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
+
+The overall design, and a majority of the core engine and rendering code 
+contained within this library is a derivative of the open source Object Oriented 
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+#endregion
+
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
+using System;
+
+using Axiom.Core;
+
+using Tao.OpenGl;
+
+#endregion Namespace Declarations
+
 /**
  * DX8.1 Pixel Shader to ATI Fragment Shader compiler
  * Original Author: NFZ
@@ -16,26 +59,24 @@
 		7. GL_ATI_fragment_shader extension reference
 */
 
-using System;
-using Axiom.Core;
-using Tao.OpenGl;
-
-namespace Axiom.RenderSystems.OpenGL.ATI {
-	/// <summary>
+namespace Axiom.RenderSystems.OpenGL.ATI
+{
+    /// <summary>
     ///     Subclasses Compiler2Pass to provide a ps_1_x compiler that takes DirectX pixel shader assembly
     ///     and converts it to a form that can be used by ATI_fragment_shader OpenGL API.
-	/// </summary>
-	/// <remarks>
-	///     All ps_1_1, ps_1_2, ps_1_3, ps_1_4 assembly instructions are recognized but not all are passed
-	///     on to ATI_fragment_shader.	ATI_fragment_shader does not have an equivelant directive for
-	///     texkill or texdepth instructions.
-	///     <p/>
-	///     The user must provide the GL binding interfaces.
-	///     <p/>
-	///     A Test method is provided to verify the basic operation of the compiler which outputs the test
-	///     results to a file.
-	/// </remarks>
-	public class PixelShader : Compiler2Pass {
+    /// </summary>
+    /// <remarks>
+    ///     All ps_1_1, ps_1_2, ps_1_3, ps_1_4 assembly instructions are recognized but not all are passed
+    ///     on to ATI_fragment_shader.	ATI_fragment_shader does not have an equivelant directive for
+    ///     texkill or texdepth instructions.
+    ///     <p/>
+    ///     The user must provide the GL binding interfaces.
+    ///     <p/>
+    ///     A Test method is provided to verify the basic operation of the compiler which outputs the test
+    ///     results to a file.
+    /// </remarks>
+    public class PixelShader : Compiler2Pass
+    {
         #region Static Fields
 
         static bool libInitialized = false;
@@ -520,8 +561,8 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             new RegModOffset(10, Symbol.R_BASE, 1),
         };
 
-        static MacroRegModify texreg2ar_MacroMods = 
-            new MacroRegModify(texreg2ar, texreg2xx_RegMods);
+        static MacroRegModify texreg2ar_MacroMods =
+            new MacroRegModify( texreg2ar, texreg2xx_RegMods );
 
         /// <summary>
         ///     Macro token expansion for ps_1_2 instruction: texreg2gb
@@ -547,8 +588,8 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             new TokenInstruction(Symbol.REG_PS1_4,Symbol.R1)
         };
 
-        static MacroRegModify texreg2gb_MacroMods = 
-            new MacroRegModify(texreg2gb, texreg2xx_RegMods);
+        static MacroRegModify texreg2gb_MacroMods =
+            new MacroRegModify( texreg2gb, texreg2xx_RegMods );
 
         /// <summary>
         ///     Macro token expansion for ps_1_1 instruction: texdp3
@@ -573,8 +614,8 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             new RegModOffset(7, Symbol.R_BASE, 1)
         };
 
-        static MacroRegModify texdp3_MacroMods = 
-            new MacroRegModify(texdp3, texdp3_RegMods);
+        static MacroRegModify texdp3_MacroMods =
+            new MacroRegModify( texdp3, texdp3_RegMods );
 
         /// <summary>
         ///     Macro token expansion for ps_1_1 instruction: texdp3
@@ -607,7 +648,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         };
 
         static MacroRegModify texdp3tex_MacroMods =
-            new MacroRegModify(texdp3tex, texdp3tex_RegMods);
+            new MacroRegModify( texdp3tex, texdp3tex_RegMods );
 
         static TokenInstruction[] texm3x2pad = {
             // texcoord t(x)
@@ -630,7 +671,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         };
 
         static MacroRegModify texm3x2pad_MacroMods =
-            new MacroRegModify(texm3x2pad, texm3xxpad_RegMods);
+            new MacroRegModify( texm3x2pad, texm3xxpad_RegMods );
 
         /// <summary>
         ///     Macro token expansion for ps_1_1 instruction: texm3x2tex
@@ -661,8 +702,8 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             new RegModOffset(10, Symbol.R_BASE, 0)
         };
 
-        static MacroRegModify texm3x2tex_MacroMods = 
-            new MacroRegModify(texm3x2tex, texm3xxtex_RegMods);
+        static MacroRegModify texm3x2tex_MacroMods =
+            new MacroRegModify( texm3x2tex, texm3xxtex_RegMods );
 
         /// <summary>
         ///     Macro token expansion for ps_1_1 instruction: texm3x3tex
@@ -682,7 +723,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         };
 
         static MacroRegModify texm3x3pad_MacroMods =
-            new MacroRegModify(texm3x3pad, texm3xxpad_RegMods);
+            new MacroRegModify( texm3x3pad, texm3xxpad_RegMods );
 
         /// <summary>
         ///     Macro token expansion for ps_1_1 instruction: texm3x3pad
@@ -707,7 +748,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         };
 
         static MacroRegModify texm3x3tex_MacroMods =
-            new MacroRegModify(texm3x3tex, texm3xxtex_RegMods);
+            new MacroRegModify( texm3x3tex, texm3xxtex_RegMods );
 
         /// <summary>
         ///     Macro token expansion for ps_1_1 instruction: texm3x3spec
@@ -779,7 +820,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         };
 
         static MacroRegModify texm3x3spec_MacroMods =
-            new MacroRegModify(texm3x3spec, texm3x3spec_RegMods);
+            new MacroRegModify( texm3x3spec, texm3x3spec_RegMods );
 
         #endregion Static Fields
 
@@ -811,8 +852,8 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         int constantsPos;
 
         const int MAXOPPARRAMS = 5; // max number of parrams bound to an instruction
-	
-        OpParam[] opParams = new OpParam[MAXOPPARRAMS];
+
+        OpParam[] opParams = new OpParam[ MAXOPPARRAMS ];
 
         /// keeps track of which registers are written to in each phase
         /// if a register is read from but has not been written to in phase 2
@@ -821,7 +862,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         /// NB: check ALU and TEX section of phase 1 and phase 2
         /// there are 6 temp registers r0 to r5 to keep track off
         /// checks are performed in pass 2 when building machine instructions
-        RegisterUsage[] Phase_RegisterUsage = new RegisterUsage[6];
+        RegisterUsage[] Phase_RegisterUsage = new RegisterUsage[ 6 ];
 
         bool macroOn; // if true then put all ALU instructions in phase 1
 
@@ -831,13 +872,14 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         int secondLastInstructionPos;
 
         // keep track if phase marker found: determines which phase the ALU instructions go into
-        bool phaseMarkerFound; 
+        bool phaseMarkerFound;
 
         #endregion Fields
 
         #region Constructor
 
-		public PixelShader() {
+        public PixelShader()
+        {
             symbolTypeLib = PS_1_4_SymbolTypeLib;
             symbolTypeLibCount = PS_1_4_SymbolTypeLib.Length;
 
@@ -848,14 +890,15 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             valueID = Symbol.VALUE;
 
             // only need to initialize the rule database once
-            if(!libInitialized) {
+            if ( !libInitialized )
+            {
                 InitSymbolTypeLib();
                 libInitialized = true;
             }
 
             // set initial context to recognize PS base instructions
             activeContexts = (uint)ContextKeyPattern.PS_BASE;
-		}
+        }
 
         #endregion Constructor
 
@@ -865,7 +908,8 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             determines what phase machine insturction should be in and if an Alpha Op is required
             calls expandMachineInstruction() to expand the token into machine instructions
         */
-        bool BuildMachineInst() {
+        bool BuildMachineInst()
+        {
             // check the states to see if a machine instruction can be assembled
 
             // // assume everything will go okay untill proven otherwise
@@ -876,8 +920,9 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             // determine which MachineInstID is required based on the op instruction
             opType = MachineInstruction.Nop;
 
-            switch((Symbol)opInst) {
-                    // ALU operations
+            switch ( (Symbol)opInst )
+            {
+                // ALU operations
                 case Symbol.ADD:
                 case Symbol.SUB:
                 case Symbol.MUL:
@@ -889,26 +934,31 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
                 case Symbol.DP2ADD:
                 case Symbol.DP3:
                 case Symbol.DP4:
-                    opType = (MachineInstruction)((int)MachineInstruction.ColorOp1 + argCnt - 1);
+                    opType = (MachineInstruction)( (int)MachineInstruction.ColorOp1 + argCnt - 1 );
 
                     // if context is ps.1.x and Macro not on or a phase marker was found then put all ALU ops in phase 2 ALU container
-                    if ((((activeContexts & (uint)ContextKeyPattern.PS_1_1) > 0) && !macroOn) || phaseMarkerFound) {
+                    if ( ( ( ( activeContexts & (uint)ContextKeyPattern.PS_1_1 ) > 0 ) && !macroOn ) || phaseMarkerFound )
+                    {
                         instructionPhase = PhaseType.PHASE2ALU;
                     }
-                    else {
+                    else
+                    {
                         instructionPhase = PhaseType.PHASE1ALU;
                     }
 
                     // check for alpha op in destination register which is OpParrams[0]
                     // if no Mask for destination then make it .rgba
-                    if(opParams[0].MaskRep == 0) {
-                        opParams[0].MaskRep = Gl.GL_RED_BIT_ATI | Gl.GL_GREEN_BIT_ATI | Gl.GL_BLUE_BIT_ATI | ALPHA_BIT;
+                    if ( opParams[ 0 ].MaskRep == 0 )
+                    {
+                        opParams[ 0 ].MaskRep = Gl.GL_RED_BIT_ATI | Gl.GL_GREEN_BIT_ATI | Gl.GL_BLUE_BIT_ATI | ALPHA_BIT;
                     }
 
-                    if ((opParams[0].MaskRep & ALPHA_BIT) > 0) {
+                    if ( ( opParams[ 0 ].MaskRep & ALPHA_BIT ) > 0 )
+                    {
                         do_Alpha = true;
-                        opParams[0].MaskRep -= ALPHA_BIT;
-                        if(opParams[0].MaskRep == 0) {
+                        opParams[ 0 ].MaskRep -= ALPHA_BIT;
+                        if ( opParams[ 0 ].MaskRep == 0 )
+                        {
                             opType = MachineInstruction.Nop; // only do alpha op
                         }
                     }
@@ -916,20 +966,24 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
                 case Symbol.TEXCRD:
                     opType = MachineInstruction.PassTexCoord;
-                    if (phaseMarkerFound) {
+                    if ( phaseMarkerFound )
+                    {
                         instructionPhase = PhaseType.PHASE2TEX;
                     }
-                    else {
+                    else
+                    {
                         instructionPhase = PhaseType.PHASE1TEX;
                     }
                     break;
 
                 case Symbol.TEXLD:
                     opType = MachineInstruction.SampleMap;
-                    if (phaseMarkerFound) {
+                    if ( phaseMarkerFound )
+                    {
                         instructionPhase = PhaseType.PHASE2TEX;
                     }
-                    else {
+                    else
+                    {
                         instructionPhase = PhaseType.PHASE1TEX;
                     }
                     break;
@@ -945,45 +999,47 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
                     break;
 
                 case Symbol.TEXREG2AR:
-                    passed = ExpandMacro(texreg2ar_MacroMods);
+                    passed = ExpandMacro( texreg2ar_MacroMods );
                     break;
 
                 case Symbol.TEXREG2GB:
-                    passed = ExpandMacro(texreg2gb_MacroMods);
+                    passed = ExpandMacro( texreg2gb_MacroMods );
                     break;
 
                 case Symbol.TEXDP3:
-                    passed = ExpandMacro(texdp3_MacroMods);
+                    passed = ExpandMacro( texdp3_MacroMods );
                     break;
 
                 case Symbol.TEXDP3TEX:
-                    passed = ExpandMacro(texdp3tex_MacroMods);
+                    passed = ExpandMacro( texdp3tex_MacroMods );
                     break;
 
                 case Symbol.TEXM3X2PAD:
-                    passed = ExpandMacro(texm3x2pad_MacroMods);
+                    passed = ExpandMacro( texm3x2pad_MacroMods );
                     break;
 
                 case Symbol.TEXM3X2TEX:
-                    passed = ExpandMacro(texm3x2tex_MacroMods);
+                    passed = ExpandMacro( texm3x2tex_MacroMods );
                     break;
 
                 case Symbol.TEXM3X3PAD:
                     // only 2 texm3x3pad instructions allowed
                     // use count to modify macro to select which mask to use
-                    if(texm3x3padCount < 2) {
-                        texm3x3pad[4].ID = (Symbol)((int)Symbol.R + texm3x3padCount);
+                    if ( texm3x3padCount < 2 )
+                    {
+                        texm3x3pad[ 4 ].ID = (Symbol)( (int)Symbol.R + texm3x3padCount );
                         texm3x3padCount++;
-                        passed = ExpandMacro(texm3x3pad_MacroMods);
+                        passed = ExpandMacro( texm3x3pad_MacroMods );
                     }
-                    else {
+                    else
+                    {
                         passed = false;
                     }
 
                     break;
 
                 case Symbol.TEXM3X3TEX:
-                    passed = ExpandMacro(texm3x3tex_MacroMods);
+                    passed = ExpandMacro( texm3x3tex_MacroMods );
                     break;
 
                 case Symbol.DEF:
@@ -997,42 +1053,50 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
             } // end of switch
 
-            if(passed) {
+            if ( passed )
+            {
                 passed = ExpandMachineInstruction();
             }
 
             return passed;
         }
-	
-        void ClearMachineInstState() {
+
+        void ClearMachineInstState()
+        {
             // set current Machine Instruction State to baseline
             opType = MachineInstruction.Nop;
             opInst = Symbol.Invalid;
             do_Alpha = false;
             argCnt = 0;
 
-            for(int i = 0; i < MAXOPPARRAMS; i++) {
-                opParams[i].Arg = Gl.GL_NONE;
-                opParams[i].Filled = false;
-                opParams[i].MaskRep = Gl.GL_NONE;
-                opParams[i].Mod = Gl.GL_NONE;
+            for ( int i = 0; i < MAXOPPARRAMS; i++ )
+            {
+                opParams[ i ].Arg = Gl.GL_NONE;
+                opParams[ i ].Filled = false;
+                opParams[ i ].MaskRep = Gl.GL_NONE;
+                opParams[ i ].Mod = Gl.GL_NONE;
             }
         }
 
-        bool SetOpParam(SymbolDef symboldef) {
+        bool SetOpParam( SymbolDef symboldef )
+        {
             bool success = true;
 
-            if(argCnt < MAXOPPARRAMS) {
-                if(opParams[argCnt].Filled) {
+            if ( argCnt < MAXOPPARRAMS )
+            {
+                if ( opParams[ argCnt ].Filled )
+                {
                     argCnt++;
                 }
             }
 
-            if (argCnt < MAXOPPARRAMS) {
-                opParams[argCnt].Filled = true;
-                opParams[argCnt].Arg = symboldef.pass2Data;
+            if ( argCnt < MAXOPPARRAMS )
+            {
+                opParams[ argCnt ].Filled = true;
+                opParams[ argCnt ].Arg = symboldef.pass2Data;
             }
-            else {
+            else
+            {
                 success = false;
             }
 
@@ -1043,28 +1107,33 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             only applies to ps.1.1 ps.1.2 and ps.1.3 since they use CISC instructions
             that must be transformed into RISC instructions
         */
-        void Optimize() {
+        void Optimize()
+        {
             // perform some optimizations on ps.1.1 machine instructions
-            if ((activeContexts & (int)ContextKeyPattern.PS_1_1) > 0) {
+            if ( ( activeContexts & (int)ContextKeyPattern.PS_1_1 ) > 0 )
+            {
                 // need to check last few instructions to make sure r0 is set
                 // ps.1.1 emulation uses r4 for r0 so last couple of instructions will probably require
                 // changine destination register back to r0
-                if (lastInstructionPos < phase2ALU_mi.Count) {
+                if ( lastInstructionPos < phase2ALU_mi.Count )
+                {
                     // first argument at mLastInstructionPos + 2 is destination register for all ps.1.1 ALU instructions
-                    phase2ALU_mi[lastInstructionPos + 2] = Gl.GL_REG_0_ATI; 
+                    phase2ALU_mi[ lastInstructionPos + 2 ] = Gl.GL_REG_0_ATI;
                     // if was an alpha op only then modify second last instruction destination register
-                    if (((MachineInstruction)phase2ALU_mi[lastInstructionPos] == MachineInstruction.AlphaOp1) ||
-                        ((MachineInstruction)phase2ALU_mi[lastInstructionPos] == MachineInstruction.AlphaOp2) ||
-                        ((MachineInstruction)phase2ALU_mi[lastInstructionPos] == MachineInstruction.AlphaOp3)) {
+                    if ( ( (MachineInstruction)phase2ALU_mi[ lastInstructionPos ] == MachineInstruction.AlphaOp1 ) ||
+                        ( (MachineInstruction)phase2ALU_mi[ lastInstructionPos ] == MachineInstruction.AlphaOp2 ) ||
+                        ( (MachineInstruction)phase2ALU_mi[ lastInstructionPos ] == MachineInstruction.AlphaOp3 ) )
+                    {
 
-                        phase2ALU_mi[secondLastInstructionPos + 2] = Gl.GL_REG_0_ATI; 
+                        phase2ALU_mi[ secondLastInstructionPos + 2 ] = Gl.GL_REG_0_ATI;
                     }
                 }// end if (mLastInstructionPos < mMachineInstructions.size())
             }// end if (mActiveContexts & ckp_PS_1_1)
         }
 
         // the method is expected to be recursive to allow for inline expansion of instructions if required
-        bool Pass2scan(TokenInstruction[] Tokens, int size) {
+        bool Pass2scan( TokenInstruction[] Tokens, int size )
+        {
             // execute TokenInstructions to build MachineInstructions
             bool passed = true;
             SymbolDef cursymboldef;
@@ -1074,14 +1143,16 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
             // iterate through all the tokens and build machine instruction
             // for each machine instruction need: optype, opinst, and up to 5 parameters
-            for(int i = 0; i < size; i++) {
+            for ( int i = 0; i < size; i++ )
+            {
                 // lookup instruction type in library
-                cursymboldef = symbolTypeLib[(int)Tokens[i].ID];
-                ActiveNTTRuleID = (Symbol)Tokens[i].NTTRuleID;
-                currentLine = Tokens[i].line;
-                charPos = Tokens[i].pos;
+                cursymboldef = symbolTypeLib[ (int)Tokens[ i ].ID ];
+                ActiveNTTRuleID = (Symbol)Tokens[ i ].NTTRuleID;
+                currentLine = Tokens[ i ].line;
+                charPos = Tokens[ i ].pos;
 
-                switch(ActiveNTTRuleID) {
+                switch ( ActiveNTTRuleID )
+                {
                     case Symbol.CONSTANT:
                     case Symbol.COLOR:
                     case Symbol.REG_PS1_4:
@@ -1089,7 +1160,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
                     case Symbol.REG_PS1_1_3:
                     case Symbol.TEX_PS1_1_3:
                         // registars can be used for read and write so they can be used for dst and arg
-                        passed = SetOpParam(cursymboldef);
+                        passed = SetOpParam( cursymboldef );
                         break;
 
                     case Symbol.DEFCONST:
@@ -1103,10 +1174,12 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
                         // if the last instruction has not been passed on then do it now
                         // make sure the pipe is clear for a new instruction
                         BuildMachineInst();
-                        if(opInst == Symbol.Invalid) {
+                        if ( opInst == Symbol.Invalid )
+                        {
                             opInst = cursymboldef.ID;
                         }
-                        else {
+                        else
+                        {
                             passed = false;
                         }
                         break;
@@ -1116,18 +1189,18 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
                     case Symbol.TEXSWIZZLE:
                         // could be a dst mask or a arg replicator
                         // if dst mask and alpha included then make up a alpha instruction: maybe best to wait until instruction args completed
-                        opParams[argCnt].MaskRep = (uint)cursymboldef.pass2Data;
+                        opParams[ argCnt ].MaskRep = (uint)cursymboldef.pass2Data;
                         break;
 
                     case Symbol.DSTMOD:
                     case Symbol.DSTSAT:
                     case Symbol.PRESRCMOD:
                     case Symbol.POSTSRCMOD:
-                        opParams[argCnt].Mod |= cursymboldef.pass2Data;
+                        opParams[ argCnt ].Mod |= cursymboldef.pass2Data;
                         break;
 
                     case Symbol.NUMVAL:
-                        passed = SetOpParam(cursymboldef);
+                        passed = SetOpParam( cursymboldef );
                         // keep track of how many values are used
                         // update Constants array position
                         constantsPos++;
@@ -1138,16 +1211,19 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
                         break;
                 } // end of switch
 
-                if(!passed) {
+                if ( !passed )
+                {
                     break;
                 }
             }// end of for: i<TokenInstCnt
 
             // check to see if there is still an instruction left in the pipe
-            if(passed) {
+            if ( passed )
+            {
                 BuildMachineInst();
                 // if there are no more instructions in the pipe than OpInst should be invalid
-                if(opInst != Symbol.Invalid) {
+                if ( opInst != Symbol.Invalid )
+                {
                     passed = false;
                 }
             }
@@ -1160,151 +1236,155 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             will expand CISC tokens using macro database
 
         */
-        bool BindMachineInstInPassToFragmentShader(IntList PassMachineInstructions) {
+        bool BindMachineInstInPassToFragmentShader( IntList PassMachineInstructions )
+        {
             int instIDX = 0;
             int instCount = PassMachineInstructions.Count;
             bool error = false;
 
-            while ((instIDX < instCount) && !error) {
-                switch((MachineInstruction)PassMachineInstructions[instIDX]) {
+            while ( ( instIDX < instCount ) && !error )
+            {
+                switch ( (MachineInstruction)PassMachineInstructions[ instIDX ] )
+                {
                     case MachineInstruction.ColorOp1:
-                        if((instIDX+7) < instCount)
+                        if ( ( instIDX + 7 ) < instCount )
                             Gl.glColorFragmentOp1ATI(
-                                (int)PassMachineInstructions[instIDX+1], // op
-                                (int)PassMachineInstructions[instIDX+2], // dst
-                                (int)PassMachineInstructions[instIDX+3], // dstMask
-                                (int)PassMachineInstructions[instIDX+4], // dstMod
-                                (int)PassMachineInstructions[instIDX+5], // arg1
-                                (int)PassMachineInstructions[instIDX+6], // arg1Rep
-                                (int)PassMachineInstructions[instIDX+7]);// arg1Mod
+                                (int)PassMachineInstructions[ instIDX + 1 ], // op
+                                (int)PassMachineInstructions[ instIDX + 2 ], // dst
+                                (int)PassMachineInstructions[ instIDX + 3 ], // dstMask
+                                (int)PassMachineInstructions[ instIDX + 4 ], // dstMod
+                                (int)PassMachineInstructions[ instIDX + 5 ], // arg1
+                                (int)PassMachineInstructions[ instIDX + 6 ], // arg1Rep
+                                (int)PassMachineInstructions[ instIDX + 7 ] );// arg1Mod
                         instIDX += 8;
                         break;
 
                     case MachineInstruction.ColorOp2:
-                        if((instIDX+10) < instCount)
+                        if ( ( instIDX + 10 ) < instCount )
                             Gl.glColorFragmentOp2ATI(
-                                (int)PassMachineInstructions[instIDX+1], // op
-                                (int)PassMachineInstructions[instIDX+2], // dst
-                                (int)PassMachineInstructions[instIDX+3], // dstMask
-                                (int)PassMachineInstructions[instIDX+4], // dstMod
-                                (int)PassMachineInstructions[instIDX+5], // arg1
-                                (int)PassMachineInstructions[instIDX+6], // arg1Rep
-                                (int)PassMachineInstructions[instIDX+7], // arg1Mod
-                                (int)PassMachineInstructions[instIDX+8], // arg2
-                                (int)PassMachineInstructions[instIDX+9], // arg2Rep
-                                (int)PassMachineInstructions[instIDX+10]);// arg2Mod
+                                (int)PassMachineInstructions[ instIDX + 1 ], // op
+                                (int)PassMachineInstructions[ instIDX + 2 ], // dst
+                                (int)PassMachineInstructions[ instIDX + 3 ], // dstMask
+                                (int)PassMachineInstructions[ instIDX + 4 ], // dstMod
+                                (int)PassMachineInstructions[ instIDX + 5 ], // arg1
+                                (int)PassMachineInstructions[ instIDX + 6 ], // arg1Rep
+                                (int)PassMachineInstructions[ instIDX + 7 ], // arg1Mod
+                                (int)PassMachineInstructions[ instIDX + 8 ], // arg2
+                                (int)PassMachineInstructions[ instIDX + 9 ], // arg2Rep
+                                (int)PassMachineInstructions[ instIDX + 10 ] );// arg2Mod
                         instIDX += 11;
                         break;
 
                     case MachineInstruction.ColorOp3:
-                        if((instIDX+13) < instCount)
+                        if ( ( instIDX + 13 ) < instCount )
                             Gl.glColorFragmentOp3ATI(
-                                (int)PassMachineInstructions[instIDX+1], // op
-                                (int)PassMachineInstructions[instIDX+2],  // dst
-                                (int)PassMachineInstructions[instIDX+3],  // dstMask
-                                (int)PassMachineInstructions[instIDX+4],  // dstMod
-                                (int)PassMachineInstructions[instIDX+5],  // arg1
-                                (int)PassMachineInstructions[instIDX+6],  // arg1Rep
-                                (int)PassMachineInstructions[instIDX+7],  // arg1Mod
-                                (int)PassMachineInstructions[instIDX+8],  // arg2
-                                (int)PassMachineInstructions[instIDX+9],  // arg2Rep
-                                (int)PassMachineInstructions[instIDX+10], // arg2Mod
-                                (int)PassMachineInstructions[instIDX+11], // arg2
-                                (int)PassMachineInstructions[instIDX+12], // arg2Rep
-                                (int)PassMachineInstructions[instIDX+13]);// arg2Mod
+                                (int)PassMachineInstructions[ instIDX + 1 ], // op
+                                (int)PassMachineInstructions[ instIDX + 2 ],  // dst
+                                (int)PassMachineInstructions[ instIDX + 3 ],  // dstMask
+                                (int)PassMachineInstructions[ instIDX + 4 ],  // dstMod
+                                (int)PassMachineInstructions[ instIDX + 5 ],  // arg1
+                                (int)PassMachineInstructions[ instIDX + 6 ],  // arg1Rep
+                                (int)PassMachineInstructions[ instIDX + 7 ],  // arg1Mod
+                                (int)PassMachineInstructions[ instIDX + 8 ],  // arg2
+                                (int)PassMachineInstructions[ instIDX + 9 ],  // arg2Rep
+                                (int)PassMachineInstructions[ instIDX + 10 ], // arg2Mod
+                                (int)PassMachineInstructions[ instIDX + 11 ], // arg2
+                                (int)PassMachineInstructions[ instIDX + 12 ], // arg2Rep
+                                (int)PassMachineInstructions[ instIDX + 13 ] );// arg2Mod
                         instIDX += 14;
                         break;
 
                     case MachineInstruction.AlphaOp1:
-                        if((instIDX+6) < instCount)
+                        if ( ( instIDX + 6 ) < instCount )
                             Gl.glAlphaFragmentOp1ATI(
-                                (int)PassMachineInstructions[instIDX+1], // op
-                                (int)PassMachineInstructions[instIDX+2],   // dst
-                                (int)PassMachineInstructions[instIDX+3],   // dstMod
-                                (int)PassMachineInstructions[instIDX+4],   // arg1
-                                (int)PassMachineInstructions[instIDX+5],   // arg1Rep
-                                (int)PassMachineInstructions[instIDX+6]);  // arg1Mod
+                                (int)PassMachineInstructions[ instIDX + 1 ], // op
+                                (int)PassMachineInstructions[ instIDX + 2 ],   // dst
+                                (int)PassMachineInstructions[ instIDX + 3 ],   // dstMod
+                                (int)PassMachineInstructions[ instIDX + 4 ],   // arg1
+                                (int)PassMachineInstructions[ instIDX + 5 ],   // arg1Rep
+                                (int)PassMachineInstructions[ instIDX + 6 ] );  // arg1Mod
                         instIDX += 7;
                         break;
 
                     case MachineInstruction.AlphaOp2:
-                        if((instIDX+9) < instCount)
+                        if ( ( instIDX + 9 ) < instCount )
                             Gl.glAlphaFragmentOp2ATI(
-                                (int)PassMachineInstructions[instIDX+1], // op
-                                (int)PassMachineInstructions[instIDX+2],   // dst
-                                (int)PassMachineInstructions[instIDX+3],   // dstMod
-                                (int)PassMachineInstructions[instIDX+4],   // arg1
-                                (int)PassMachineInstructions[instIDX+5],   // arg1Rep
-                                (int)PassMachineInstructions[instIDX+6],   // arg1Mod
-                                (int)PassMachineInstructions[instIDX+7],   // arg2
-                                (int)PassMachineInstructions[instIDX+8],   // arg2Rep
-                                (int)PassMachineInstructions[instIDX+9]);  // arg2Mod
+                                (int)PassMachineInstructions[ instIDX + 1 ], // op
+                                (int)PassMachineInstructions[ instIDX + 2 ],   // dst
+                                (int)PassMachineInstructions[ instIDX + 3 ],   // dstMod
+                                (int)PassMachineInstructions[ instIDX + 4 ],   // arg1
+                                (int)PassMachineInstructions[ instIDX + 5 ],   // arg1Rep
+                                (int)PassMachineInstructions[ instIDX + 6 ],   // arg1Mod
+                                (int)PassMachineInstructions[ instIDX + 7 ],   // arg2
+                                (int)PassMachineInstructions[ instIDX + 8 ],   // arg2Rep
+                                (int)PassMachineInstructions[ instIDX + 9 ] );  // arg2Mod
                         instIDX += 10;
                         break;
 
                     case MachineInstruction.AlphaOp3:
-                        if((instIDX+12) < instCount)
+                        if ( ( instIDX + 12 ) < instCount )
                             Gl.glAlphaFragmentOp3ATI(
-                                (int)PassMachineInstructions[instIDX+1], // op
-                                (int)PassMachineInstructions[instIDX+2],   // dst
-                                (int)PassMachineInstructions[instIDX+3],   // dstMod
-                                (int)PassMachineInstructions[instIDX+4],   // arg1
-                                (int)PassMachineInstructions[instIDX+5],   // arg1Rep
-                                (int)PassMachineInstructions[instIDX+6],   // arg1Mod
-                                (int)PassMachineInstructions[instIDX+7],   // arg2
-                                (int)PassMachineInstructions[instIDX+8],   // arg2Rep
-                                (int)PassMachineInstructions[instIDX+9],   // arg2Mod
-                                (int)PassMachineInstructions[instIDX+10],  // arg2
-                                (int)PassMachineInstructions[instIDX+11],  // arg2Rep
-                                (int)PassMachineInstructions[instIDX+12]); // arg2Mod
+                                (int)PassMachineInstructions[ instIDX + 1 ], // op
+                                (int)PassMachineInstructions[ instIDX + 2 ],   // dst
+                                (int)PassMachineInstructions[ instIDX + 3 ],   // dstMod
+                                (int)PassMachineInstructions[ instIDX + 4 ],   // arg1
+                                (int)PassMachineInstructions[ instIDX + 5 ],   // arg1Rep
+                                (int)PassMachineInstructions[ instIDX + 6 ],   // arg1Mod
+                                (int)PassMachineInstructions[ instIDX + 7 ],   // arg2
+                                (int)PassMachineInstructions[ instIDX + 8 ],   // arg2Rep
+                                (int)PassMachineInstructions[ instIDX + 9 ],   // arg2Mod
+                                (int)PassMachineInstructions[ instIDX + 10 ],  // arg2
+                                (int)PassMachineInstructions[ instIDX + 11 ],  // arg2Rep
+                                (int)PassMachineInstructions[ instIDX + 12 ] ); // arg2Mod
                         instIDX += 13;
                         break;
 
                     case MachineInstruction.SetConstants:
 
-                        if((instIDX+2) < instCount) {
-                            int start = (int)PassMachineInstructions[instIDX+2];
-                            float[] vals = new float[4];
-                            vals[0] = (float)constants[start++];
-                            vals[1] = (float)constants[start++];
-                            vals[2] = (float)constants[start++];
-                            vals[3] = (float)constants[start];
+                        if ( ( instIDX + 2 ) < instCount )
+                        {
+                            int start = (int)PassMachineInstructions[ instIDX + 2 ];
+                            float[] vals = new float[ 4 ];
+                            vals[ 0 ] = (float)constants[ start++ ];
+                            vals[ 1 ] = (float)constants[ start++ ];
+                            vals[ 2 ] = (float)constants[ start++ ];
+                            vals[ 3 ] = (float)constants[ start ];
 
                             Gl.glSetFragmentShaderConstantATI(
-                                (int)PassMachineInstructions[instIDX+1], // dst
-                                vals);
+                                (int)PassMachineInstructions[ instIDX + 1 ], // dst
+                                vals );
                         }
                         instIDX += 3;
                         break;
 
                     case MachineInstruction.PassTexCoord:
-                        if((instIDX+3) < instCount)
+                        if ( ( instIDX + 3 ) < instCount )
                             Gl.glPassTexCoordATI(
-                                (int)PassMachineInstructions[instIDX+1], // dst
-                                (int)PassMachineInstructions[instIDX+2], // coord
-                                (int)PassMachineInstructions[instIDX+3]); // swizzle
+                                (int)PassMachineInstructions[ instIDX + 1 ], // dst
+                                (int)PassMachineInstructions[ instIDX + 2 ], // coord
+                                (int)PassMachineInstructions[ instIDX + 3 ] ); // swizzle
                         instIDX += 4;
                         break;
 
                     case MachineInstruction.SampleMap:
-                        if((instIDX+3) < instCount)
+                        if ( ( instIDX + 3 ) < instCount )
                             Gl.glSampleMapATI(
-                                (int)PassMachineInstructions[instIDX+1], // dst
-                                (int)PassMachineInstructions[instIDX+2], // interp
-                                (int)PassMachineInstructions[instIDX+3]); // swizzle
+                                (int)PassMachineInstructions[ instIDX + 1 ], // dst
+                                (int)PassMachineInstructions[ instIDX + 2 ], // interp
+                                (int)PassMachineInstructions[ instIDX + 3 ] ); // swizzle
                         instIDX += 4;
                         break;
 
                     default:
                         instIDX = instCount;
                         break;
-                        // should generate an error since an unknown instruction was found
-                        // instead for now the bind process is terminated and the fragment program may still function
-                        // but its output may not be what was programmed
+                    // should generate an error since an unknown instruction was found
+                    // instead for now the bind process is terminated and the fragment program may still function
+                    // but its output may not be what was programmed
 
                 } // end of switch
 
-                error = (Gl.glGetError() != Gl.GL_NO_ERROR);
+                error = ( Gl.glGetError() != Gl.GL_NO_ERROR );
             }// end of while
 
             return !error;
@@ -1313,13 +1393,15 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         /** Expand CISC tokens into PS1_4 token equivalents
 
         */
-        bool ExpandMacro(MacroRegModify MacroMod) {
+        bool ExpandMacro( MacroRegModify MacroMod )
+        {
             RegModOffset regmod;
 
             // set source and destination registers in macro expansion
-            for (int i = 0; i < MacroMod.RegModSize; i++) {
-                regmod = MacroMod.RegMods[i];
-                MacroMod.Macro[regmod.MacroOffset].ID = (Symbol)(regmod.RegisterBase + opParams[regmod.OpParamsIndex].Arg);
+            for ( int i = 0; i < MacroMod.RegModSize; i++ )
+            {
+                regmod = MacroMod.RegMods[ i ];
+                MacroMod.Macro[ regmod.MacroOffset ].ID = (Symbol)( regmod.RegisterBase + opParams[ regmod.OpParamsIndex ].Arg );
             }
 
             // turn macro support on so that ps.1.4 ALU instructions get put in phase 1 alu instruction sequence container
@@ -1327,7 +1409,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
             // pass macro tokens on to be turned into machine instructions
             // expand macro to ps.1.4 by doing recursive call to doPass2
-            bool passed = Pass2scan(MacroMod.Macro, MacroMod.MacroSize);
+            bool passed = Pass2scan( MacroMod.Macro, MacroMod.MacroSize );
 
             macroOn = false;
 
@@ -1339,119 +1421,130 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             also expands scaler alpha machine instructions if required
 
         */
-        bool ExpandMachineInstruction() {
+        bool ExpandMachineInstruction()
+        {
             // now push instructions onto MachineInstructions container
             // assume that an instruction will be expanded
             bool passed = true;
 
-            if (opType != MachineInstruction.Nop) {
+            if ( opType != MachineInstruction.Nop )
+            {
                 // a machine instruction will be built
                 // this is currently the last one being built so keep track of it
-                if (instructionPhase == PhaseType.PHASE2ALU) { 
+                if ( instructionPhase == PhaseType.PHASE2ALU )
+                {
                     secondLastInstructionPos = lastInstructionPos;
                     lastInstructionPos = phase2ALU_mi.Count;
                 }
 
-                switch (opType) {
+                switch ( opType )
+                {
                     case MachineInstruction.ColorOp1:
                     case MachineInstruction.ColorOp2:
-                    case MachineInstruction.ColorOp3: {
-                        AddMachineInst(instructionPhase, (int)opType);
-                        AddMachineInst(instructionPhase, symbolTypeLib[(int)opInst].pass2Data);
-                        // send all parameters to machine inst container
-                        for(int i=0; i <= argCnt; i++) {
-                            AddMachineInst(instructionPhase, opParams[i].Arg);
-                            AddMachineInst(instructionPhase, (int)opParams[i].MaskRep);
-                            AddMachineInst(instructionPhase, opParams[i].Mod);
-                            // check if source register read is valid in this phase
-                            passed &= IsRegisterReadValid(instructionPhase, i);
+                    case MachineInstruction.ColorOp3:
+                        {
+                            AddMachineInst( instructionPhase, (int)opType );
+                            AddMachineInst( instructionPhase, symbolTypeLib[ (int)opInst ].pass2Data );
+                            // send all parameters to machine inst container
+                            for ( int i = 0; i <= argCnt; i++ )
+                            {
+                                AddMachineInst( instructionPhase, opParams[ i ].Arg );
+                                AddMachineInst( instructionPhase, (int)opParams[ i ].MaskRep );
+                                AddMachineInst( instructionPhase, opParams[ i ].Mod );
+                                // check if source register read is valid in this phase
+                                passed &= IsRegisterReadValid( instructionPhase, i );
+                            }
+
+                            // record which registers were written to and in which phase
+                            // opParams[0].Arg is always the destination register r0 -> r5
+                            UpdateRegisterWriteState( instructionPhase );
+
                         }
-
-                        // record which registers were written to and in which phase
-                        // opParams[0].Arg is always the destination register r0 -> r5
-                        UpdateRegisterWriteState(instructionPhase);
-
-                    }
                         break;
 
                     case MachineInstruction.SetConstants:
-                        AddMachineInst(instructionPhase, (int)opType);
-                        AddMachineInst(instructionPhase, opParams[0].Arg); // dst
-                        AddMachineInst(instructionPhase, constantsPos); // index into constants array
+                        AddMachineInst( instructionPhase, (int)opType );
+                        AddMachineInst( instructionPhase, opParams[ 0 ].Arg ); // dst
+                        AddMachineInst( instructionPhase, constantsPos ); // index into constants array
                         break;
 
                     case MachineInstruction.PassTexCoord:
                     case MachineInstruction.SampleMap:
                         // if source is a temp register than place instruction in phase 2 Texture ops
-                        if ((opParams[1].Arg >= Gl.GL_REG_0_ATI) && (opParams[1].Arg <= Gl.GL_REG_5_ATI)) {
+                        if ( ( opParams[ 1 ].Arg >= Gl.GL_REG_0_ATI ) && ( opParams[ 1 ].Arg <= Gl.GL_REG_5_ATI ) )
+                        {
                             instructionPhase = PhaseType.PHASE2TEX;
                         }
 
-                        AddMachineInst(instructionPhase, (int)opType);
-                        AddMachineInst(instructionPhase, opParams[0].Arg); // dst
-                        AddMachineInst(instructionPhase, opParams[1].Arg); // coord
-                        AddMachineInst(instructionPhase, (int)opParams[1].MaskRep + Gl.GL_SWIZZLE_STR_ATI); // swizzle
+                        AddMachineInst( instructionPhase, (int)opType );
+                        AddMachineInst( instructionPhase, opParams[ 0 ].Arg ); // dst
+                        AddMachineInst( instructionPhase, opParams[ 1 ].Arg ); // coord
+                        AddMachineInst( instructionPhase, (int)opParams[ 1 ].MaskRep + Gl.GL_SWIZZLE_STR_ATI ); // swizzle
                         // record which registers were written to and in which phase
                         // opParams[0].Arg is always the destination register r0 -> r5
-                        UpdateRegisterWriteState(instructionPhase);
+                        UpdateRegisterWriteState( instructionPhase );
                         break;
 
                     case MachineInstruction.Tex: // PS_1_1 emulation - turn CISC into RISC - phase 1
-                        AddMachineInst(instructionPhase, (int)MachineInstruction.SampleMap);
-                        AddMachineInst(instructionPhase, opParams[0].Arg); // dst
+                        AddMachineInst( instructionPhase, (int)MachineInstruction.SampleMap );
+                        AddMachineInst( instructionPhase, opParams[ 0 ].Arg ); // dst
                         // tex tx becomes texld rx, tx with x: 0 - 3
-                        AddMachineInst(instructionPhase, opParams[0].Arg - Gl.GL_REG_0_ATI + Gl.GL_TEXTURE0_ARB); // interp
+                        AddMachineInst( instructionPhase, opParams[ 0 ].Arg - Gl.GL_REG_0_ATI + Gl.GL_TEXTURE0_ARB ); // interp
                         // default to str which fills rgb of destination register
-                        AddMachineInst(instructionPhase, Gl.GL_SWIZZLE_STR_ATI); // swizzle
+                        AddMachineInst( instructionPhase, Gl.GL_SWIZZLE_STR_ATI ); // swizzle
                         // record which registers were written to and in which phase
                         // opParams[0].Arg is always the destination register r0 -> r5
-                        UpdateRegisterWriteState(instructionPhase);
+                        UpdateRegisterWriteState( instructionPhase );
                         break;
 
                     case MachineInstruction.TexCoord: // PS_1_1 emulation - turn CISC into RISC - phase 1
-                        AddMachineInst(instructionPhase, (int)MachineInstruction.PassTexCoord);
-                        AddMachineInst(instructionPhase, opParams[0].Arg); // dst
+                        AddMachineInst( instructionPhase, (int)MachineInstruction.PassTexCoord );
+                        AddMachineInst( instructionPhase, opParams[ 0 ].Arg ); // dst
                         // texcoord tx becomes texcrd rx, tx with x: 0 - 3
-                        AddMachineInst(instructionPhase, opParams[0].Arg - Gl.GL_REG_0_ATI + Gl.GL_TEXTURE0_ARB); // interp
+                        AddMachineInst( instructionPhase, opParams[ 0 ].Arg - Gl.GL_REG_0_ATI + Gl.GL_TEXTURE0_ARB ); // interp
                         // default to str which fills rgb of destination register
-                        AddMachineInst(instructionPhase, Gl.GL_SWIZZLE_STR_ATI); // swizzle
+                        AddMachineInst( instructionPhase, Gl.GL_SWIZZLE_STR_ATI ); // swizzle
                         // record which registers were written to and in which phase
                         // opParams[0].Arg is always the destination register r0 -> r5
-                        UpdateRegisterWriteState(instructionPhase);
+                        UpdateRegisterWriteState( instructionPhase );
                         break;
 
                 } // end of switch (opType)
             } // end of if (opType != mi_NOP)
 
-            if(do_Alpha) {
+            if ( do_Alpha )
+            {
                 // process alpha channel
                 //
                 // a scaler machine instruction will be built
                 // this is currently the last one being built so keep track of it
-                if (instructionPhase == PhaseType.PHASE2ALU) { 
+                if ( instructionPhase == PhaseType.PHASE2ALU )
+                {
                     secondLastInstructionPos = lastInstructionPos;
                     lastInstructionPos = phase2ALU_mi.Count;
                 }
 
-                MachineInstruction alphaoptype = (MachineInstruction)(MachineInstruction.AlphaOp1 + argCnt - 1);
-                AddMachineInst(instructionPhase, (int)alphaoptype);
-                AddMachineInst(instructionPhase, symbolTypeLib[(int)opInst].pass2Data);
+                MachineInstruction alphaoptype = (MachineInstruction)( MachineInstruction.AlphaOp1 + argCnt - 1 );
+                AddMachineInst( instructionPhase, (int)alphaoptype );
+                AddMachineInst( instructionPhase, symbolTypeLib[ (int)opInst ].pass2Data );
 
                 // put all parameters in instruction que
-                for(int i = 0; i <= argCnt; i++) {
-                    AddMachineInst(instructionPhase, opParams[i].Arg);
+                for ( int i = 0; i <= argCnt; i++ )
+                {
+                    AddMachineInst( instructionPhase, opParams[ i ].Arg );
                     // destination parameter has no mask since it is the alpha channel
                     // don't push mask for parrameter 0 (dst)
-                    if(i > 0) {
-                        AddMachineInst(instructionPhase, (int)opParams[i].MaskRep);
+                    if ( i > 0 )
+                    {
+                        AddMachineInst( instructionPhase, (int)opParams[ i ].MaskRep );
                     }
 
-                    AddMachineInst(instructionPhase, opParams[i].Mod);
+                    AddMachineInst( instructionPhase, opParams[ i ].Mod );
                     // check if source register read is valid in this phase
-                    passed &= IsRegisterReadValid(instructionPhase, i);
+                    passed &= IsRegisterReadValid( instructionPhase, i );
                 }
 
-                UpdateRegisterWriteState(instructionPhase);
+                UpdateRegisterWriteState( instructionPhase );
             }
 
             // instruction passed on to machine instruction so clear the pipe
@@ -1461,24 +1554,32 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         }
 
         // mainly used by tests - too slow for use in binding
-        int GetMachineInst(int Idx) {
-            if (Idx < phase1TEX_mi.Count) {
-                return (int)phase1TEX_mi[Idx];
+        int GetMachineInst( int Idx )
+        {
+            if ( Idx < phase1TEX_mi.Count )
+            {
+                return (int)phase1TEX_mi[ Idx ];
             }
-            else {
+            else
+            {
                 Idx -= phase1TEX_mi.Count;
-                if (Idx < phase1ALU_mi.Count) {
-                    return (int)phase1ALU_mi[Idx];
+                if ( Idx < phase1ALU_mi.Count )
+                {
+                    return (int)phase1ALU_mi[ Idx ];
                 }
-                else {
+                else
+                {
                     Idx -= phase1ALU_mi.Count;
-                    if (Idx < phase2TEX_mi.Count) {
-                        return (int)phase2TEX_mi[Idx];
+                    if ( Idx < phase2TEX_mi.Count )
+                    {
+                        return (int)phase2TEX_mi[ Idx ];
                     }
-                    else {
+                    else
+                    {
                         Idx -= phase2TEX_mi.Count;
-                        if (Idx < phase2ALU_mi.Count) {
-                            return (int)phase2ALU_mi[Idx];
+                        if ( Idx < phase2ALU_mi.Count )
+                        {
+                            return (int)phase2ALU_mi[ Idx ];
                         }
                     }
                 }
@@ -1487,41 +1588,46 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             return 0;
         }
 
-        int GetMachineInstCount() {
-            return (phase1TEX_mi.Count + phase1ALU_mi.Count + phase2TEX_mi.Count + phase2ALU_mi.Count);
+        int GetMachineInstCount()
+        {
+            return ( phase1TEX_mi.Count + phase1ALU_mi.Count + phase2TEX_mi.Count + phase2ALU_mi.Count );
         }
 
-        void AddMachineInst(PhaseType phase, int inst) {
-            switch(phase) {
+        void AddMachineInst( PhaseType phase, int inst )
+        {
+            switch ( phase )
+            {
                 case PhaseType.PHASE1TEX:
-                    phase1TEX_mi.Add(inst);
+                    phase1TEX_mi.Add( inst );
                     break;
 
                 case PhaseType.PHASE1ALU:
-                    phase1ALU_mi.Add(inst);
+                    phase1ALU_mi.Add( inst );
                     break;
 
                 case PhaseType.PHASE2TEX:
-                    phase2TEX_mi.Add(inst);
+                    phase2TEX_mi.Add( inst );
 
                     break;
 
                 case PhaseType.PHASE2ALU:
-                    phase2ALU_mi.Add(inst);
+                    phase2ALU_mi.Add( inst );
                     break;
             } // end switch(phase)
         }
 
-        void ClearAllMachineInst() {
+        void ClearAllMachineInst()
+        {
             phase1TEX_mi.Clear();
             phase1ALU_mi.Clear();
             phase2TEX_mi.Clear();
             phase2ALU_mi.Clear();
 
             // reset write state for all registers
-            for(int i = 0; i < 6; i++) {
-                Phase_RegisterUsage[i].Phase1Write = false;
-                Phase_RegisterUsage[i].Phase2Write = false;
+            for ( int i = 0; i < 6; i++ )
+            {
+                Phase_RegisterUsage[ i ].Phase1Write = false;
+                Phase_RegisterUsage[ i ].Phase2Write = false;
             }
 
             phaseMarkerFound = false;
@@ -1535,50 +1641,58 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             texm3x3padCount = 0;
         }
 
-        void UpdateRegisterWriteState(PhaseType phase) {
-            int reg_offset = opParams[0].Arg - Gl.GL_REG_0_ATI;
+        void UpdateRegisterWriteState( PhaseType phase )
+        {
+            int reg_offset = opParams[ 0 ].Arg - Gl.GL_REG_0_ATI;
 
-            switch(phase) {
+            switch ( phase )
+            {
 
                 case PhaseType.PHASE1TEX:
                 case PhaseType.PHASE1ALU:
-                    Phase_RegisterUsage[reg_offset].Phase1Write = true;
+                    Phase_RegisterUsage[ reg_offset ].Phase1Write = true;
                     break;
 
                 case PhaseType.PHASE2TEX:
                 case PhaseType.PHASE2ALU:
-                    Phase_RegisterUsage[reg_offset].Phase2Write = true;
+                    Phase_RegisterUsage[ reg_offset ].Phase2Write = true;
                     break;
 
             } // end switch(phase)
         }
 
-        bool IsRegisterReadValid(PhaseType phase, int param) {
+        bool IsRegisterReadValid( PhaseType phase, int param )
+        {
             bool passed = true; // assume everything will go alright
 
             // if in phase 2 ALU and argument is a source
-            if((phase == PhaseType.PHASE2ALU) && (param > 0)) {
+            if ( ( phase == PhaseType.PHASE2ALU ) && ( param > 0 ) )
+            {
                 // is source argument a temp register r0 - r5?
-                if((opParams[param].Arg >= Gl.GL_REG_0_ATI) && (opParams[param].Arg <= Gl.GL_REG_5_ATI)) {
-                    int reg_offset = opParams[param].Arg - Gl.GL_REG_0_ATI;
+                if ( ( opParams[ param ].Arg >= Gl.GL_REG_0_ATI ) && ( opParams[ param ].Arg <= Gl.GL_REG_5_ATI ) )
+                {
+                    int reg_offset = opParams[ param ].Arg - Gl.GL_REG_0_ATI;
                     // if register was not written to in phase 2 but was in phase 1
-                    if((Phase_RegisterUsage[reg_offset].Phase2Write == false) && Phase_RegisterUsage[reg_offset].Phase1Write) {
+                    if ( ( Phase_RegisterUsage[ reg_offset ].Phase2Write == false ) && Phase_RegisterUsage[ reg_offset ].Phase1Write )
+                    {
                         // only perform register pass if there are ALU instructions in phase 1
-                        if(phase1ALU_mi.Count > 0) {
+                        if ( phase1ALU_mi.Count > 0 )
+                        {
                             // build machine instructions for passing a register from phase 1 to phase 2
                             // NB: only rgb components of register will get passed
 
-                            AddMachineInst(PhaseType.PHASE2TEX, (int)MachineInstruction.PassTexCoord);
-                            AddMachineInst(PhaseType.PHASE2TEX, opParams[param].Arg); // dst
-                            AddMachineInst(PhaseType.PHASE2TEX, opParams[param].Arg); // coord
-                            AddMachineInst(PhaseType.PHASE2TEX, Gl.GL_SWIZZLE_STR_ATI); // swizzle
+                            AddMachineInst( PhaseType.PHASE2TEX, (int)MachineInstruction.PassTexCoord );
+                            AddMachineInst( PhaseType.PHASE2TEX, opParams[ param ].Arg ); // dst
+                            AddMachineInst( PhaseType.PHASE2TEX, opParams[ param ].Arg ); // coord
+                            AddMachineInst( PhaseType.PHASE2TEX, Gl.GL_SWIZZLE_STR_ATI ); // swizzle
 
                             // mark register as being written to
-                            Phase_RegisterUsage[reg_offset].Phase2Write = true;
+                            Phase_RegisterUsage[ reg_offset ].Phase2Write = true;
                         }
                     }
-                        // register can not be used because it has not been written to previously
-                    else {
+                    // register can not be used because it has not been written to previously
+                    else
+                    {
                         passed = false;
                     }
                 }
@@ -1592,14 +1706,15 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         ///     Binds machine instructions generated in Pass 2 to the ATI GL fragment shader.
         /// </summary>
         /// <returns></returns>
-        public bool BindAllMachineInstToFragmentShader() {
+        public bool BindAllMachineInstToFragmentShader()
+        {
             bool passed;
 
             // there are 4 machine instruction queues to pass to the ATI fragment shader
-            passed = BindMachineInstInPassToFragmentShader(phase1TEX_mi);
-            passed &= BindMachineInstInPassToFragmentShader(phase1ALU_mi);
-            passed &= BindMachineInstInPassToFragmentShader(phase2TEX_mi);
-            passed &= BindMachineInstInPassToFragmentShader(phase2ALU_mi);
+            passed = BindMachineInstInPassToFragmentShader( phase1TEX_mi );
+            passed &= BindMachineInstInPassToFragmentShader( phase1ALU_mi );
+            passed &= BindMachineInstInPassToFragmentShader( phase2TEX_mi );
+            passed &= BindMachineInstInPassToFragmentShader( phase2ALU_mi );
 
             return passed;
         }
@@ -1612,14 +1727,16 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         ///     Pass 1 is completed so now take tokens generated and build machine instructions.
         /// </summary>
         /// <returns></returns>
-        protected override bool DoPass2() {
+        protected override bool DoPass2()
+        {
             ClearAllMachineInst();
 
             // if pass 2 was successful, optimize the machine instructions
-            bool passed = Pass2scan((TokenInstruction[])tokenInstructions.ToArray((typeof(TokenInstruction))), tokenInstructions.Count);
+            bool passed = Pass2scan( (TokenInstruction[])tokenInstructions.ToArray( ( typeof( TokenInstruction ) ) ), tokenInstructions.Count );
 
-            if (passed) {
-                Optimize();  
+            if ( passed )
+            {
+                Optimize();
             }
 
             return passed;
@@ -1629,22 +1746,26 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
         #region Test Cases
 
-        struct Test1Result {
+        struct Test1Result
+        {
             public char character;
             public int line;
 
-            public Test1Result(char c, int line) {
+            public Test1Result( char c, int line )
+            {
                 this.character = c;
                 this.line = line;
             }
         }
 
-        struct TestFloatResult{
+        struct TestFloatResult
+        {
             public string testString;
             public float val;
             public int charSize;
 
-            public TestFloatResult(string test, float val, int charSize) {
+            public TestFloatResult( string test, float val, int charSize )
+            {
                 this.testString = test;
                 this.val = val;
                 this.charSize = charSize;
@@ -1674,88 +1795,95 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 
         int resultID = 0;
 
-        public bool RunTests() {
+        public bool RunTests()
+        {
 
             // ***TEST 1***
             // See if PositionToNextSymbol can find a valid symbol
-            Console.WriteLine("**Testing: PositionToNextSymbol\n");
+            Console.WriteLine( "**Testing: PositionToNextSymbol\n" );
 
             source = testString1;
             charPos = 0;
             currentLine = 1;
             endOfSource = source.Length;
-            while (PositionToNextSymbol()) {
-                Console.WriteLine("  Character found: {0}   Line:{1}  : " , source[charPos], currentLine);
-                if((source[charPos] == test1results[resultID].character) && 
-                    (currentLine == test1results[resultID].line)) {
-                    Console.WriteLine("Passed!");
+            while ( PositionToNextSymbol() )
+            {
+                Console.WriteLine( "  Character found: {0}   Line:{1}  : ", source[ charPos ], currentLine );
+                if ( ( source[ charPos ] == test1results[ resultID ].character ) &&
+                    ( currentLine == test1results[ resultID ].line ) )
+                {
+                    Console.WriteLine( "Passed!" );
                 }
-                else {
-                    Console.WriteLine("FAILED!");
+                else
+                {
+                    Console.WriteLine( "FAILED!" );
                 }
 
                 resultID++;
                 charPos++;
             }
 
-            Console.WriteLine("**Finished testing: PositionToNextSymbol\n");
+            Console.WriteLine( "**Finished testing: PositionToNextSymbol\n" );
 
             // ***TEST 2***
             // Did the type lib get initialized properly with a default name index
-            Console.WriteLine("**Testing: GetTypeDefText\n");
-            string resultStr = GetTypeDefText(Symbol.MOV);
-            Console.WriteLine(" Default name of mov is {0}", resultStr);
-            Console.WriteLine("**Finished testing: GetTypeDefText\n");
+            Console.WriteLine( "**Testing: GetTypeDefText\n" );
+            string resultStr = GetTypeDefText( Symbol.MOV );
+            Console.WriteLine( " Default name of mov is {0}", resultStr );
+            Console.WriteLine( "**Finished testing: GetTypeDefText\n" );
 
             // ***TEST 3***
             // Does IsSymbol work properly?
-            Console.WriteLine("**Testing: IsSymbol\n");
+            Console.WriteLine( "**Testing: IsSymbol\n" );
 
             source = testString3;
             charPos = 0;
-            Console.WriteLine("  Before: {0}", source);
-            Console.WriteLine("  Symbol to find: {0}", testSymbols);
+            Console.WriteLine( "  Before: {0}", source );
+            Console.WriteLine( "  Symbol to find: {0}", testSymbols );
 
-            if(IsSymbol(testSymbols, out resultID)) {
-                Console.WriteLine("  After: {0} : {1}", source.Substring(resultID + 1), (source[resultID + 1] == 'r')? "Passed." : "Failed!");
+            if ( IsSymbol( testSymbols, out resultID ) )
+            {
+                Console.WriteLine( "  After: {0} : {1}", source.Substring( resultID + 1 ), ( source[ resultID + 1 ] == 'r' ) ? "Passed." : "Failed!" );
             }
-            else {
-                Console.WriteLine("Failed!");
+            else
+            {
+                Console.WriteLine( "Failed!" );
             }
 
-            Console.WriteLine("  Symbol size: {0}", resultID);
+            Console.WriteLine( "  Symbol size: {0}", resultID );
 
-            Console.WriteLine("**Finished testing: IsSymbol\n");
+            Console.WriteLine( "**Finished testing: IsSymbol\n" );
 
             // ***TEST 4***
             // Does IsFloatValue work properly?
-            Console.WriteLine("**Testing: IsFloatValue\n");
+            Console.WriteLine( "**Testing: IsFloatValue\n" );
 
             float val = 0;
             int charSize = 0;
             charPos = 0;
 
-            for(int i = 0; i < testFloatResults.Length; i++) {
-                source = testFloatResults[i].testString;
-                Console.WriteLine("     Test string {0}", source);
-                IsFloatValue(out val, out charSize);
-                Console.WriteLine("     Value is: {0}, should be {1}: {2}", val, testFloatResults[i].val, (val == testFloatResults[i].val) ? "Passed" : "Failed");
-                Console.WriteLine("     Char size is: {0}, should be {1}: {2}", charSize, testFloatResults[i].charSize, (charSize == testFloatResults[i].charSize) ? "Passed" : "Failed");
+            for ( int i = 0; i < testFloatResults.Length; i++ )
+            {
+                source = testFloatResults[ i ].testString;
+                Console.WriteLine( "     Test string {0}", source );
+                IsFloatValue( out val, out charSize );
+                Console.WriteLine( "     Value is: {0}, should be {1}: {2}", val, testFloatResults[ i ].val, ( val == testFloatResults[ i ].val ) ? "Passed" : "Failed" );
+                Console.WriteLine( "     Char size is: {0}, should be {1}: {2}", charSize, testFloatResults[ i ].charSize, ( charSize == testFloatResults[ i ].charSize ) ? "Passed" : "Failed" );
             }
 
-            Console.WriteLine("**Finished testing: IsFloatValue\n");
+            Console.WriteLine( "**Finished testing: IsFloatValue\n" );
 
             // ***TEST 5***
             // Simple compile test for ps.1.4
             string CompileTest1src = "ps.1.4\n";
-            Symbol[] CompileTest1result = {Symbol.PS_1_4};
-            TestCompile("Basic PS_1_4", CompileTest1src, CompileTest1result);
+            Symbol[] CompileTest1result = { Symbol.PS_1_4 };
+            TestCompile( "Basic PS_1_4", CompileTest1src, CompileTest1result );
 
             // ***TEST 6***
             // Simple compile test for ps1.1
             string CompileTest2src = "ps.1.1\n";
-            Symbol[] CompileTest2result = {Symbol.PS_1_1};
-            TestCompile("Basic PS_1_1", CompileTest2src, CompileTest2result);
+            Symbol[] CompileTest2result = { Symbol.PS_1_1 };
+            TestCompile( "Basic PS_1_1", CompileTest2src, CompileTest2result );
 
             // ***TEST 7***
             // Simple compile test, ps.1.4 with defines
@@ -1763,7 +1891,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             Symbol[] CompileTest3result = {Symbol.PS_1_4, Symbol.DEF, Symbol.C0, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA,
 		        Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE};
 
-            TestCompile("PS_1_4 with defines", CompileTest3src, CompileTest3result);
+            TestCompile( "PS_1_4 with defines", CompileTest3src, CompileTest3result );
 
             // ***TEST 8***
             // Simple compile test, ps.1.4 with 2 defines
@@ -1772,33 +1900,33 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 		        Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE,Symbol.DEF, Symbol.C3, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA,
 		        Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE};
 
-            TestCompile("PS_1_4 with 2 defines", CompileTest4src, CompileTest4result);
+            TestCompile( "PS_1_4 with 2 defines", CompileTest4src, CompileTest4result );
 
             // ***TEST 9***
             // Simple compile test, checking machine instructions
-            int[] CompileTest5MachinInstResults = {(int)MachineInstruction.SetConstants, Gl.GL_CON_0_ATI, 0};
+            int[] CompileTest5MachinInstResults = { (int)MachineInstruction.SetConstants, Gl.GL_CON_0_ATI, 0 };
 
-            TestCompile("PS_1_4 with defines", CompileTest3src, CompileTest3result, CompileTest5MachinInstResults);
+            TestCompile( "PS_1_4 with defines", CompileTest3src, CompileTest3result, CompileTest5MachinInstResults );
 
             // ***TEST 10***
             // Simple compile test, checking ALU instructions
             string CompileTest6Src = "ps.1.4\nmov r0.xzw, c1 \nmul r3, r2, c3";
             Symbol[] CompileTest6result = {Symbol.PS_1_4, Symbol.MOV, Symbol.R0, Symbol.RBA, Symbol.COMMA, Symbol.C1,
 	            Symbol.MUL, Symbol.R3, Symbol.COMMA, Symbol.R2, Symbol.COMMA, Symbol.C3};
-              
-            TestCompile("PS_1_4 ALU simple", CompileTest6Src, CompileTest6result);
+
+            TestCompile( "PS_1_4 ALU simple", CompileTest6Src, CompileTest6result );
 
 
             // test to see if PS_1_4 compile pass 2 generates the proper machine instructions
-	        string CompileTest7Src = "ps.1.4\ndef c0,1.0,2.0,3.0,4.0\nmov_x8 r1,v0\nmov r0,r1.g";
+            string CompileTest7Src = "ps.1.4\ndef c0,1.0,2.0,3.0,4.0\nmov_x8 r1,v0\nmov r0,r1.g";
 
-	        Symbol[] CompileTest7result = {
+            Symbol[] CompileTest7result = {
 		        Symbol.PS_1_4, Symbol.DEF, Symbol.C0, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA,
 		        Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.MOV, Symbol.X8, Symbol.R1, Symbol.COMMA,
 		        Symbol.V0, Symbol.MOV, Symbol.R0, Symbol.COMMA, Symbol.R1, Symbol.GGGG
 	        };
 
-	        int[] CompileTest7MachinInstResults = {
+            int[] CompileTest7MachinInstResults = {
 		        (int)MachineInstruction.SetConstants, Gl.GL_CON_0_ATI, 0,
 		        (int)MachineInstruction.ColorOp1, Gl.GL_MOV_ATI, Gl.GL_REG_1_ATI, RGB_BITS, Gl.GL_8X_BIT_ATI,	Gl.GL_PRIMARY_COLOR_ARB, Gl.GL_NONE, Gl.GL_NONE,
 		        (int)MachineInstruction.AlphaOp1, Gl.GL_MOV_ATI, Gl.GL_REG_1_ATI, Gl.GL_8X_BIT_ATI, Gl.GL_PRIMARY_COLOR_ARB, Gl.GL_NONE, Gl.GL_NONE,
@@ -1806,81 +1934,88 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
 		        (int)MachineInstruction.AlphaOp1, Gl.GL_MOV_ATI, Gl.GL_REG_0_ATI, Gl.GL_NONE, Gl.GL_REG_1_ATI, Gl.GL_GREEN, Gl.GL_NONE,
 	        };
 
-	        TestCompile("PS_1_4 ALU simple modifier", CompileTest7Src, CompileTest7result, CompileTest7MachinInstResults);
+            TestCompile( "PS_1_4 ALU simple modifier", CompileTest7Src, CompileTest7result, CompileTest7MachinInstResults );
 
             return true;
         }
 
-        private void TestCompile(string testName, string snippet, Symbol[] expectedResults) {
-            TestCompile(testName, snippet, expectedResults, null);
+        private void TestCompile( string testName, string snippet, Symbol[] expectedResults )
+        {
+            TestCompile( testName, snippet, expectedResults, null );
         }
 
-        private void TestCompile(string testName, string snippet, Symbol[] expectedResults, int[] machineInstResults) {
+        private void TestCompile( string testName, string snippet, Symbol[] expectedResults, int[] machineInstResults )
+        {
             string passed = "PASSED";
             string failed = "***** FAILED ****";
 
-            SetActiveContexts((uint)ContextKeyPattern.PS_BASE);
+            SetActiveContexts( (uint)ContextKeyPattern.PS_BASE );
 
-            Console.WriteLine("*** TESTING: {0} Compile: Check Pass 1 and 2\n", testName);
-            Console.WriteLine("  Source to compile:\n[\n{0}\n]", snippet);
+            Console.WriteLine( "*** TESTING: {0} Compile: Check Pass 1 and 2\n", testName );
+            Console.WriteLine( "  Source to compile:\n[\n{0}\n]", snippet );
 
-            bool compiled = Compile(snippet);
+            bool compiled = Compile( snippet );
 
-            Console.WriteLine("  Pass 1 Lines scanned: {0}, Tokens produced: {1} out of {2}: {3}",
+            Console.WriteLine( "  Pass 1 Lines scanned: {0}, Tokens produced: {1} out of {2}: {3}",
                 currentLine, tokenInstructions.Count, expectedResults.Length,
-                (tokenInstructions.Count == expectedResults.Length) ? passed : failed);
+                ( tokenInstructions.Count == expectedResults.Length ) ? passed : failed );
 
-            Console.WriteLine("    Validating Pass 1:");
+            Console.WriteLine( "    Validating Pass 1:" );
 
-            Console.WriteLine("\n  Tokens:");
-            for(int i = 0; i < tokenInstructions.Count; i++) {
-                Console.WriteLine("    Token[{0}] [{1}] {2}: [{3}] {4}: {5}", 
-                    i, 
-                    GetTypeDefText(((TokenInstruction)tokenInstructions[i]).ID),
-                    ((TokenInstruction)tokenInstructions[i]).ID, 
-                    GetTypeDefText(expectedResults[i]), 
-                    expectedResults[i],
-                    (((TokenInstruction)tokenInstructions[i]).ID == expectedResults[i]) ? passed : failed);
+            Console.WriteLine( "\n  Tokens:" );
+            for ( int i = 0; i < tokenInstructions.Count; i++ )
+            {
+                Console.WriteLine( "    Token[{0}] [{1}] {2}: [{3}] {4}: {5}",
+                    i,
+                    GetTypeDefText( ( (TokenInstruction)tokenInstructions[ i ] ).ID ),
+                    ( (TokenInstruction)tokenInstructions[ i ] ).ID,
+                    GetTypeDefText( expectedResults[ i ] ),
+                    expectedResults[ i ],
+                    ( ( (TokenInstruction)tokenInstructions[ i ] ).ID == expectedResults[ i ] ) ? passed : failed );
             }
 
-            if(machineInstResults != null) {
-                Console.WriteLine("\n  Machine Instructions:");
+            if ( machineInstResults != null )
+            {
+                Console.WriteLine( "\n  Machine Instructions:" );
 
                 int MIcount = GetMachineInstCount();
 
-                Console.WriteLine("  Pass 2 Machine Instructions generated: {0} out of {1}: {2}", 
+                Console.WriteLine( "  Pass 2 Machine Instructions generated: {0} out of {1}: {2}",
                     MIcount,
-                    machineInstResults.Length, 
-                    (MIcount == machineInstResults.Length) ? passed : failed);
+                    machineInstResults.Length,
+                    ( MIcount == machineInstResults.Length ) ? passed : failed );
 
-                Console.WriteLine("    Validating Pass 2:");
+                Console.WriteLine( "    Validating Pass 2:" );
 
-                for(int i = 0; i < MIcount; i++) {
-                    Console.WriteLine("    instruction[{0}] = {1} : {2} : {3}", i, 
-                        GetMachineInst(i), 
-                        machineInstResults[i], 
-                        (GetMachineInst(i) == machineInstResults[i]) ? passed : failed);
+                for ( int i = 0; i < MIcount; i++ )
+                {
+                    Console.WriteLine( "    instruction[{0}] = {1} : {2} : {3}", i,
+                        GetMachineInst( i ),
+                        machineInstResults[ i ],
+                        ( GetMachineInst( i ) == machineInstResults[ i ] ) ? passed : failed );
                 }
 
-                Console.WriteLine("    Constants:");
+                Console.WriteLine( "    Constants:" );
 
-                for(int i=0; i < 4; i++) {
-                    Console.WriteLine("    Constants[{0}] = {1} : {2}", 
-                        i, 
-                        constants[i], 
-                        ((float)constants[i] == (1.0f + i)) ? passed : failed);
+                for ( int i = 0; i < 4; i++ )
+                {
+                    Console.WriteLine( "    Constants[{0}] = {1} : {2}",
+                        i,
+                        constants[ i ],
+                        ( (float)constants[ i ] == ( 1.0f + i ) ) ? passed : failed );
                 }
             }
 
-            if(!compiled) {
-                Console.WriteLine(failed);
+            if ( !compiled )
+            {
+                Console.WriteLine( failed );
             }
 
-            Console.WriteLine("\nFinished testing: {0} Compile: Check Pass 2\n\n", testName);
+            Console.WriteLine( "\nFinished testing: {0} Compile: Check Pass 2\n\n", testName );
 
-            SetActiveContexts((uint)ContextKeyPattern.PS_BASE);
+            SetActiveContexts( (uint)ContextKeyPattern.PS_BASE );
         }
 
         #endregion Test Cases
-	}
+    }
 }

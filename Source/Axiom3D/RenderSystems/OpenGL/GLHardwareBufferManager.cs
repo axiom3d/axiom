@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,26 +24,42 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+
 using Axiom.Graphics;
+
 using Tao.OpenGl;
 
-namespace Axiom.RenderSystems.OpenGL {
+#endregion Namespace Declarations
+
+namespace Axiom.RenderSystems.OpenGL
+{
     /// <summary>
     /// 	Summary description for GLHardwareBufferManager.
     /// </summary>
-    public class GLHardwareBufferManager : HardwareBufferManager {
+    public class GLHardwareBufferManager : HardwareBufferManager
+    {
         #region Member variables
-		
+
         #endregion
-		
+
         #region Constructors
-		
-        public GLHardwareBufferManager() {
+
+        public GLHardwareBufferManager()
+        {
         }
-		
+
         #endregion
-		
+
         #region Methods
 
         /// <summary>
@@ -53,8 +69,9 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="numIndices"></param>
         /// <param name="usage"></param>
         /// <returns></returns>
-        public override HardwareIndexBuffer CreateIndexBuffer(IndexType type, int numIndices, BufferUsage usage) {
-            return CreateIndexBuffer(type, numIndices, usage, false);
+        public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
+        {
+            return CreateIndexBuffer( type, numIndices, usage, false );
         }
 
         /// <summary>
@@ -65,9 +82,10 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="usage"></param>
         /// <param name="useShadowBuffer"></param>
         /// <returns></returns>
-        public override HardwareIndexBuffer CreateIndexBuffer(IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer) {
-            GLHardwareIndexBuffer buffer = new GLHardwareIndexBuffer(type, numIndices, usage, useShadowBuffer);
-            indexBuffers.Add(buffer);
+        public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
+        {
+            GLHardwareIndexBuffer buffer = new GLHardwareIndexBuffer( type, numIndices, usage, useShadowBuffer );
+            indexBuffers.Add( buffer );
             return buffer;
         }
 
@@ -78,8 +96,9 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="numVerts"></param>
         /// <param name="usage"></param>
         /// <returns></returns>
-        public override HardwareVertexBuffer CreateVertexBuffer(int vertexSize, int numVerts, BufferUsage usage) {
-            return CreateVertexBuffer(vertexSize, numVerts, usage, false);
+        public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage )
+        {
+            return CreateVertexBuffer( vertexSize, numVerts, usage, false );
         }
 
         /// <summary>
@@ -90,16 +109,18 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="usage"></param>
         /// <param name="useShadowBuffer"></param>
         /// <returns></returns>
-        public override HardwareVertexBuffer CreateVertexBuffer(int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer) {
-            GLHardwareVertexBuffer buffer = new GLHardwareVertexBuffer(vertexSize, numVerts, usage, useShadowBuffer);
-            vertexBuffers.Add(buffer);
+        public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
+        {
+            GLHardwareVertexBuffer buffer = new GLHardwareVertexBuffer( vertexSize, numVerts, usage, useShadowBuffer );
+            vertexBuffers.Add( buffer );
             return buffer;
         }
 
-		
+
         #endregion
     }
 
-    public class GLSoftwareBufferManager : SoftwareBufferManager {
+    public class GLSoftwareBufferManager : SoftwareBufferManager
+    {
     }
 }

@@ -1,12 +1,50 @@
+#region LGPL License
+/*
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
+
+The overall design, and a majority of the core engine and rendering code 
+contained within this library is a derivative of the open source Object Oriented 
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+#endregion
+
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+
+#endregion Namespace Declarations
 
 namespace Axiom.Scripting
 {
-	/// <summary>
-	/// 	Summary description for CommandAttribute.
-	/// </summary>
-	[AttributeUsage(AttributeTargets.Class)]
-	public sealed class CommandAttribute : Attribute {
+    /// <summary>
+    /// 	Summary description for CommandAttribute.
+    /// </summary>
+    [AttributeUsage( AttributeTargets.Class )]
+    public sealed class CommandAttribute : Attribute
+    {
 
         #region Fields
 
@@ -33,7 +71,8 @@ namespace Axiom.Scripting
         /// <param name="name"></param>
         /// <param name="description"></param>
         /// <param name="target"></param>
-        public CommandAttribute(string name, string description, Type target) {
+        public CommandAttribute( string name, string description, Type target )
+        {
             this.name = name;
             this.description = description;
             this.target = target;
@@ -44,7 +83,8 @@ namespace Axiom.Scripting
         /// </summary>
         /// <param name="name"></param>
         /// <param name="description"></param>
-        public CommandAttribute(string name, string description) {
+        public CommandAttribute( string name, string description )
+        {
             this.name = name;
             this.description = description;
         }
@@ -53,7 +93,8 @@ namespace Axiom.Scripting
         ///    Constructor.
         /// </summary>
         /// <param name="name"></param>
-        public CommandAttribute(string name) {
+        public CommandAttribute( string name )
+        {
             this.name = name;
         }
 
@@ -64,8 +105,10 @@ namespace Axiom.Scripting
         /// <summary>
         ///    Name of this command.
         /// </summary>
-        public string Name {
-            get {
+        public string Name
+        {
+            get
+            {
                 return name;
             }
         }
@@ -73,8 +116,10 @@ namespace Axiom.Scripting
         /// <summary>
         ///    Optional description of what this command does.
         /// </summary>
-        public string Description {
-            get {
+        public string Description
+        {
+            get
+            {
                 return description;
             }
         }
@@ -82,12 +127,14 @@ namespace Axiom.Scripting
         /// <summary>
         ///    Optional target to specify what object type this command affects.
         /// </summary>
-        public Type Target {
-            get {
+        public Type Target
+        {
+            get
+            {
                 return target;
             }
         }
 
         #endregion
-	}
+    }
 }

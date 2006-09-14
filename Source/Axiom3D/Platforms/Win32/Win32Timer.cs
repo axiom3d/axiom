@@ -35,240 +35,282 @@ are met:
  */
 #endregion BSD License
 
+#region SVN Version Information
+// <file>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Runtime.InteropServices;
+
 using Axiom.Core;
+
+#endregion Namespace Declarations
 
 namespace Axiom.Platforms.Win32
 {
-	/// <summary>
-	///		Encapsulates the functionality of the platform's highest resolution timer available.
-	/// </summary>
-	/// <remarks>
-	///		On Windows this will be a QueryPerformanceCounter (if available), otherwise tt will be TimeGetTime().  
-	/// </remarks>
-	public class Win32Timer : ITimer
-	{
-		#region Private Fields
+    /// <summary>
+    ///		Encapsulates the functionality of the platform's highest resolution timer available.
+    /// </summary>
+    /// <remarks>
+    ///		On Windows this will be a QueryPerformanceCounter (if available), otherwise tt will be TimeGetTime().  
+    /// </remarks>
+    public class Win32Timer : ITimer
+    {
+        #region Private Fields
 
-		/// <summary>
-		///		The Type Of Timer Supported On This System
-		/// </summary>
-		private TimerType timerType = TimerType.None;			
-		/// <summary>
-		///		The Frequency Of The Timer
-		/// </summary>
-		private ulong timerFrequency = 0;
-		/// <summary>
-		///		Is This Timer Running?
-		/// </summary>
-		private bool timerIsRunning = false;
-		/// <summary>
-		///		The Timer Start Count.
-		/// </summary>
-		private ulong timerStartCount = 0;
+        /// <summary>
+        ///		The Type Of Timer Supported On This System
+        /// </summary>
+        private TimerType timerType = TimerType.None;
+        /// <summary>
+        ///		The Frequency Of The Timer
+        /// </summary>
+        private ulong timerFrequency = 0;
+        /// <summary>
+        ///		Is This Timer Running?
+        /// </summary>
+        private bool timerIsRunning = false;
+        /// <summary>
+        ///		The Timer Start Count.
+        /// </summary>
+        private ulong timerStartCount = 0;
 
-		#endregion Private Fields
+        #endregion Private Fields
 
-		#region Enums
+        #region Enums
 
-		/// <summary>
-		/// The type of timer supported by this platform.
-		/// </summary>
-		public enum TimerType {
-			/// <summary>
-			/// No timer available.
-			/// </summary>
-			None,
-			/// <summary>
-			/// The timer is a Query Performance Counter.
-			/// </summary>
-			QueryPerformanceCounter,
-			/// <summary>
-			/// The timer will use TimeGetTime.
-			/// </summary>
-			TimeGetTime
-		}
+        /// <summary>
+        /// The type of timer supported by this platform.
+        /// </summary>
+        public enum TimerType
+        {
+            /// <summary>
+            /// No timer available.
+            /// </summary>
+            None,
+            /// <summary>
+            /// The timer is a Query Performance Counter.
+            /// </summary>
+            QueryPerformanceCounter,
+            /// <summary>
+            /// The timer will use TimeGetTime.
+            /// </summary>
+            TimeGetTime
+        }
 
-		#endregion Enums
+        #endregion Enums
 
-		#region Constructor
+        #region Constructor
 
-		/// <summary>
-		/// This static constructor determines which platform timer to use
-		/// and populates the timer's <see cref="Frequency" />
-		/// and <see cref="TimerType" />.
-		/// </summary>
-		internal Win32Timer() {
-			bool test = false;
-			ulong testTime = 0;
+        /// <summary>
+        /// This static constructor determines which platform timer to use
+        /// and populates the timer's <see cref="Frequency" />
+        /// and <see cref="TimerType" />.
+        /// </summary>
+        internal Win32Timer()
+        {
+            bool test = false;
+            ulong testTime = 0;
 
-			// Try The Windows QueryPerformanceCounter.
-			try {
-				test = QueryPerformanceFrequency(ref timerFrequency);
-			}
-			catch(DllNotFoundException e) {
-				Console.WriteLine(e.ToString());
-				test = false;
-			}
-			catch(EntryPointNotFoundException e) {
-				Console.WriteLine(e.ToString());
-				test = false;
-			}
+            // Try The Windows QueryPerformanceCounter.
+            try
+            {
+                test = QueryPerformanceFrequency( ref timerFrequency );
+            }
+            catch ( DllNotFoundException e )
+            {
+                Console.WriteLine( e.ToString() );
+                test = false;
+            }
+            catch ( EntryPointNotFoundException e )
+            {
+                Console.WriteLine( e.ToString() );
+                test = false;
+            }
 
-			// If The QueryPerformanceCounter Is Supported
-			if(test && timerFrequency != 0) {			
-				// Let's Use It				
-				timerType = TimerType.QueryPerformanceCounter;							
-			}
-			else {			
-				// Otherwise, lets try TimeGetTime()											
-				try {
-					test = true;
-					testTime = timeGetTime();
-				}
-				catch(DllNotFoundException e) {
-					Console.WriteLine(e.ToString());
-					test = false;
-				}
-				catch(EntryPointNotFoundException e) {
-					Console.WriteLine(e.ToString());
-					test = false;
-				}
+            // If The QueryPerformanceCounter Is Supported
+            if ( test && timerFrequency != 0 )
+            {
+                // Let's Use It				
+                timerType = TimerType.QueryPerformanceCounter;
+            }
+            else
+            {
+                // Otherwise, lets try TimeGetTime()											
+                try
+                {
+                    test = true;
+                    testTime = timeGetTime();
+                }
+                catch ( DllNotFoundException e )
+                {
+                    Console.WriteLine( e.ToString() );
+                    test = false;
+                }
+                catch ( EntryPointNotFoundException e )
+                {
+                    Console.WriteLine( e.ToString() );
+                    test = false;
+                }
 
-				// If TimeGetTime Is Supported
-				if(test && testTime != 0) {
-					// Let's Use It
-					timerType = TimerType.TimeGetTime;
-					timerFrequency = 1000;
-				}
-			}
-		}
+                // If TimeGetTime Is Supported
+                if ( test && testTime != 0 )
+                {
+                    // Let's Use It
+                    timerType = TimerType.TimeGetTime;
+                    timerFrequency = 1000;
+                }
+            }
+        }
 
-		#endregion Constructor
+        #endregion Constructor
 
-		#region Methods
+        #region Methods
 
-		/// <summary>
-		/// Gets the current tick count.
-		/// </summary>
-		/// <returns>
-		/// Number Of Ticks (ulong).
-		/// </returns>
-		private ulong GetCurrentCount() {
-			ulong tmp = 0;
+        /// <summary>
+        /// Gets the current tick count.
+        /// </summary>
+        /// <returns>
+        /// Number Of Ticks (ulong).
+        /// </returns>
+        private ulong GetCurrentCount()
+        {
+            ulong tmp = 0;
 
-			if(timerType == TimerType.QueryPerformanceCounter) {
-				QueryPerformanceCounter(ref tmp);
-				return tmp;
-			}
-			else if(timerType == TimerType.TimeGetTime) {
-				tmp = timeGetTime();
-				return tmp;	
-			}
-			else {
-				return 0;
-			}
-		}
+            if ( timerType == TimerType.QueryPerformanceCounter )
+            {
+                QueryPerformanceCounter( ref tmp );
+                return tmp;
+            }
+            else if ( timerType == TimerType.TimeGetTime )
+            {
+                tmp = timeGetTime();
+                return tmp;
+            }
+            else
+            {
+                return 0;
+            }
+        }
 
-		/// <summary>
-		/// Start this instance's timer.
-		/// </summary>
-		public void Start() {
-			// get new start count
-			timerStartCount = GetCurrentCount();	
-			// mark that the timer is running
-			timerIsRunning = true;
-		}
+        /// <summary>
+        /// Start this instance's timer.
+        /// </summary>
+        public void Start()
+        {
+            // get new start count
+            timerStartCount = GetCurrentCount();
+            // mark that the timer is running
+            timerIsRunning = true;
+        }
 
-		#endregion Methods
+        #endregion Methods
 
-		#region Public Properties
-		/// <summary>
-		/// Gets a <see cref="System.UInt64" /> representing the 
-		/// current tick count of the timer.
-		/// </summary>
-		public ulong Count {
-			get { 
-				return GetCurrentCount();
-			}
-		}
+        #region Public Properties
+        /// <summary>
+        /// Gets a <see cref="System.UInt64" /> representing the 
+        /// current tick count of the timer.
+        /// </summary>
+        public ulong Count
+        {
+            get
+            {
+                return GetCurrentCount();
+            }
+        }
 
-		/// <summary>
-		/// Gets a <see cref="System.UInt64" /> representing the 
-		/// frequency of the counter in ticks-per-second.
-		/// </summary>
-		public ulong Frequency {
-			get {
-				return timerFrequency;
-			}
-		}
+        /// <summary>
+        /// Gets a <see cref="System.UInt64" /> representing the 
+        /// frequency of the counter in ticks-per-second.
+        /// </summary>
+        public ulong Frequency
+        {
+            get
+            {
+                return timerFrequency;
+            }
+        }
 
-		/// <summary>
-		/// Gets a <see cref="System.Boolean" /> representing whether the 
-		/// timer has been started and is currently running.
-		/// </summary>
-		public bool IsRunning {
-			get {
-				return timerIsRunning;
-			}
-		}
+        /// <summary>
+        /// Gets a <see cref="System.Boolean" /> representing whether the 
+        /// timer has been started and is currently running.
+        /// </summary>
+        public bool IsRunning
+        {
+            get
+            {
+                return timerIsRunning;
+            }
+        }
 
-		/// <summary>
-		/// Gets a <see cref="System.Double" /> representing the 
-		/// resolution of the timer in seconds.
-		/// </summary>
-		public float Resolution {
-			get {
-				return ((float) 1.0 / (float) timerFrequency);
-			}
-		}
+        /// <summary>
+        /// Gets a <see cref="System.Double" /> representing the 
+        /// resolution of the timer in seconds.
+        /// </summary>
+        public float Resolution
+        {
+            get
+            {
+                return ( (float)1.0 / (float)timerFrequency );
+            }
+        }
 
-		/// <summary>
-		/// Gets a <see cref="System.UInt64" /> representing the 
-		/// tick count at the start of the timer's run.
-		/// </summary>
-		public ulong StartCount {
-			get {
-				return timerStartCount;
-			}
-		}
+        /// <summary>
+        /// Gets a <see cref="System.UInt64" /> representing the 
+        /// tick count at the start of the timer's run.
+        /// </summary>
+        public ulong StartCount
+        {
+            get
+            {
+                return timerStartCount;
+            }
+        }
 
-		#endregion Public Properties
+        #endregion Public Properties
 
-		#region Externs
+        #region Externs
 
-		[DllImport("kernel32.dll")]
-		private static extern bool QueryPerformanceFrequency(ref ulong frequencyCount);
+        [DllImport( "kernel32.dll" )]
+        private static extern bool QueryPerformanceFrequency( ref ulong frequencyCount );
 
-		[DllImport("kernel32.dll")]
-		private static extern bool QueryPerformanceCounter(ref ulong performanceCount);
+        [DllImport( "kernel32.dll" )]
+        private static extern bool QueryPerformanceCounter( ref ulong performanceCount );
 
-		[DllImport("winmm.dll")]
-		private static extern ulong timeGetTime();
+        [DllImport( "winmm.dll" )]
+        private static extern ulong timeGetTime();
 
-		#endregion Externs
+        #endregion Externs
 
         #region ITimer Members
 
         /// <summary>
         ///		Reset this instance's timer.
         /// </summary>
-        public void Reset() {
+        public void Reset()
+        {
             // reset by restarting the timer
-            Start();																	
+            Start();
         }
 
-        public long Microseconds {
-            get {
+        public long Microseconds
+        {
+            get
+            {
                 // TODO:  Add Win32Timer.Microseconds getter implementation
                 return 0;
             }
         }
 
-        public long Milliseconds {
-            get {
-                long ticks = (long)(Count - StartCount);
+        public long Milliseconds
+        {
+            get
+            {
+                long ticks = (long)( Count - StartCount );
                 ticks *= 1000;
                 ticks /= (long)Frequency;
 
@@ -277,5 +319,5 @@ namespace Axiom.Platforms.Win32
         }
 
         #endregion
-	}
+    }
 }
