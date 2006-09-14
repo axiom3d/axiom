@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,109 +24,135 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Data;
+
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Media;
 
-namespace Axiom.SceneManagers.Octree {
-	/// <summary>
-	/// Summary description for TerrainSceneManager.
-	/// </summary>
-	public class TerrainSceneManager : OctreeSceneManager {
+#endregion Namespace Declarations
+
+namespace Axiom.SceneManagers.Octree
+{
+    /// <summary>
+    /// Summary description for TerrainSceneManager.
+    /// </summary>
+    public class TerrainSceneManager : OctreeSceneManager
+    {
 
         #region Fields
 
-        protected TerrainRenderable[,] tiles;
+        protected TerrainRenderable[ , ] tiles;
         protected int tileSize;
         protected int numTiles;
         protected Vector3 scale;
         protected Material terrainMaterial;
         protected SceneNode terrainRoot;
-		protected TerrainOptions options; //needed for get HeightAt
+        protected TerrainOptions options; //needed for get HeightAt
 
         #endregion Fields
-        
-        public TerrainSceneManager() {
-		}
+
+        public TerrainSceneManager()
+        {
+        }
 
         #region SceneManager members
 
-		public override void ClearScene()
-		{
-			base.ClearScene();
+        public override void ClearScene()
+        {
+            base.ClearScene();
 
-			tiles = null;
-			terrainMaterial = null;
-			terrainRoot = null;
-		}
+            tiles = null;
+            terrainMaterial = null;
+            terrainRoot = null;
+        }
 
 
-		public override void LoadWorldGeometry(string fileName) 
-		{
+        public override void LoadWorldGeometry( string fileName )
+        {
             options = new TerrainOptions();
 
             DataSet optionData = new DataSet();
-            optionData.ReadXml(fileName);
-            DataTable table = optionData.Tables[0];
-            DataRow row = table.Rows[0];
+            optionData.ReadXml( fileName );
+            DataTable table = optionData.Tables[ 0 ];
+            DataRow row = table.Rows[ 0 ];
 
             string terrainFileName = "";
             string detailTexture = "";
             string worldTexture = "";
 
-            if(table.Columns["Terrain"] != null) {
-                terrainFileName = (string)row["Terrain"];
+            if ( table.Columns[ "Terrain" ] != null )
+            {
+                terrainFileName = (string)row[ "Terrain" ];
             }
 
-            if(table.Columns["DetailTexture"] != null) {
-                detailTexture = (string)row["DetailTexture"];
+            if ( table.Columns[ "DetailTexture" ] != null )
+            {
+                detailTexture = (string)row[ "DetailTexture" ];
             }
 
-            if(table.Columns["WorldTexture"] != null) {
-                worldTexture = (string)row["WorldTexture"];
+            if ( table.Columns[ "WorldTexture" ] != null )
+            {
+                worldTexture = (string)row[ "WorldTexture" ];
             }
 
-            if(table.Columns["MaxMipMapLevel"] != null) {
-                options.maxMipmap = Convert.ToInt32(row["MaxMipMapLevel"]);
+            if ( table.Columns[ "MaxMipMapLevel" ] != null )
+            {
+                options.maxMipmap = Convert.ToInt32( row[ "MaxMipMapLevel" ] );
             }
 
-            if(table.Columns["DetailTile"] != null) {
-                options.detailTile = Convert.ToInt32(row["DetailTile"]);
+            if ( table.Columns[ "DetailTile" ] != null )
+            {
+                options.detailTile = Convert.ToInt32( row[ "DetailTile" ] );
             }
 
-            if(table.Columns["MaxPixelError"] != null) {
-                options.maxPixelError = Convert.ToInt32(row["MaxPixelError"]);
+            if ( table.Columns[ "MaxPixelError" ] != null )
+            {
+                options.maxPixelError = Convert.ToInt32( row[ "MaxPixelError" ] );
             }
 
-            if(table.Columns["TileSize"] != null) {
-                options.size = Convert.ToInt32(row["TileSize"]);
+            if ( table.Columns[ "TileSize" ] != null )
+            {
+                options.size = Convert.ToInt32( row[ "TileSize" ] );
             }
 
-            if(table.Columns["ScaleX"] != null) {
-                options.scalex = StringConverter.ParseFloat((string)row["ScaleX"]);
+            if ( table.Columns[ "ScaleX" ] != null )
+            {
+                options.scalex = StringConverter.ParseFloat( (string)row[ "ScaleX" ] );
             }
 
-            if(table.Columns["ScaleY"] != null) {
-                options.scaley = StringConverter.ParseFloat((string)row["ScaleY"]);
+            if ( table.Columns[ "ScaleY" ] != null )
+            {
+                options.scaley = StringConverter.ParseFloat( (string)row[ "ScaleY" ] );
             }
 
-            if(table.Columns["ScaleZ"] != null) {
-                options.scalez = StringConverter.ParseFloat((string)row["ScaleZ"]);
+            if ( table.Columns[ "ScaleZ" ] != null )
+            {
+                options.scalez = StringConverter.ParseFloat( (string)row[ "ScaleZ" ] );
             }
 
-            if(table.Columns["VertexNormals"] != null) {
-                options.isLit = ((string)row["VertexNormals"]) == "yes" ? true : false;
+            if ( table.Columns[ "VertexNormals" ] != null )
+            {
+                options.isLit = ( (string)row[ "VertexNormals" ] ) == "yes" ? true : false;
             }
-            
-            scale = new Vector3(options.scalex, options.scaley, options.scalez);
+
+            scale = new Vector3( options.scalex, options.scaley, options.scalez );
             tileSize = options.size;
 
             // load the heightmap
-            Image image = Image.FromFile(terrainFileName);
+            Image image = Image.FromFile( terrainFileName );
 
             // TODO: Check terrain size for 2^n + 1
 
@@ -139,48 +165,52 @@ namespace Axiom.SceneManagers.Octree {
             float maxy = 255 * options.scaley;
             float maxz = options.scalez * options.worldSize;
 
-            Resize(new AxisAlignedBox(Vector3.Zero, new Vector3(maxx, maxy, maxz)));
+            Resize( new AxisAlignedBox( Vector3.Zero, new Vector3( maxx, maxy, maxz ) ) );
 
-            terrainMaterial = CreateMaterial("Terrain");
+            terrainMaterial = CreateMaterial( "Terrain" );
 
-            if(worldTexture != "") {
-                terrainMaterial.GetTechnique(0).GetPass(0).CreateTextureUnitState(worldTexture, 0);
+            if ( worldTexture != "" )
+            {
+                terrainMaterial.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( worldTexture, 0 );
             }
 
-            if(detailTexture != "") {
-                terrainMaterial.GetTechnique(0).GetPass(0).CreateTextureUnitState(detailTexture, 1);
+            if ( detailTexture != "" )
+            {
+                terrainMaterial.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( detailTexture, 1 );
             }
 
             terrainMaterial.Lighting = options.isLit;
             terrainMaterial.Load();
 
-            terrainRoot = (SceneNode)RootSceneNode.CreateChild("TerrainRoot");
+            terrainRoot = (SceneNode)RootSceneNode.CreateChild( "TerrainRoot" );
 
-            numTiles = (options.worldSize - 1) / (options.size - 1);
+            numTiles = ( options.worldSize - 1 ) / ( options.size - 1 );
 
-            tiles = new TerrainRenderable[numTiles, numTiles]; 
+            tiles = new TerrainRenderable[ numTiles, numTiles ];
 
             int p = 0, q = 0;
 
-            for(int j = 0; j < options.worldSize - 1; j += (options.size - 1)) {
+            for ( int j = 0; j < options.worldSize - 1; j += ( options.size - 1 ) )
+            {
                 p = 0;
 
-                for(int i = 0; i < options.worldSize - 1; i += (options.size - 1)) {
+                for ( int i = 0; i < options.worldSize - 1; i += ( options.size - 1 ) )
+                {
                     options.startx = i;
                     options.startz = j;
 
-                    string name = string.Format("Tile[{0},{1}]", p, q);
+                    string name = string.Format( "Tile[{0},{1}]", p, q );
 
-                    SceneNode node = (SceneNode)terrainRoot.CreateChild(name);
+                    SceneNode node = (SceneNode)terrainRoot.CreateChild( name );
                     TerrainRenderable tile = new TerrainRenderable();
                     tile.Name = name;
-                    
-                    tile.SetMaterial(terrainMaterial);
-                    tile.Init(options);
 
-                    tiles[p,q] = tile;
+                    tile.SetMaterial( terrainMaterial );
+                    tile.Init( options );
 
-                    node.AttachObject(tile);
+                    tiles[ p, q ] = tile;
+
+                    node.AttachObject( tile );
 
                     p++;
                 }
@@ -188,27 +218,34 @@ namespace Axiom.SceneManagers.Octree {
                 q++;
             }
 
-            int size1 = tiles.GetLength(0);
-            int size2 = tiles.GetLength(1);
+            int size1 = tiles.GetLength( 0 );
+            int size2 = tiles.GetLength( 1 );
 
-            for(int j = 0; j < size1; j++) {
-                for(int i = 0; i < size2; i++) {
-                    if(j != size1 - 1) {
-                        ((TerrainRenderable)tiles[i,j]).SetNeighbor(Neighbor.South, (TerrainRenderable)tiles[i, j + 1]);
-                        ((TerrainRenderable)tiles[i,j + 1]).SetNeighbor(Neighbor.North, (TerrainRenderable)tiles[i, j]);
+            for ( int j = 0; j < size1; j++ )
+            {
+                for ( int i = 0; i < size2; i++ )
+                {
+                    if ( j != size1 - 1 )
+                    {
+                        ( (TerrainRenderable)tiles[ i, j ] ).SetNeighbor( Neighbor.South, (TerrainRenderable)tiles[ i, j + 1 ] );
+                        ( (TerrainRenderable)tiles[ i, j + 1 ] ).SetNeighbor( Neighbor.North, (TerrainRenderable)tiles[ i, j ] );
                     }
 
-                    if(i != size2 - 1) {
-                        ((TerrainRenderable)tiles[i,j]).SetNeighbor(Neighbor.East, (TerrainRenderable)tiles[i + 1, j]);
-                        ((TerrainRenderable)tiles[i + 1,j]).SetNeighbor(Neighbor.West, (TerrainRenderable)tiles[i, j]);
+                    if ( i != size2 - 1 )
+                    {
+                        ( (TerrainRenderable)tiles[ i, j ] ).SetNeighbor( Neighbor.East, (TerrainRenderable)tiles[ i + 1, j ] );
+                        ( (TerrainRenderable)tiles[ i + 1, j ] ).SetNeighbor( Neighbor.West, (TerrainRenderable)tiles[ i, j ] );
                     }
                 }
             }
 
-            if(options.isLit) {
-                for(int j = 0; j < size1; j++) {
-                    for(int i = 0; i < size2; i++) {
-                        ((TerrainRenderable)tiles[i,j]).CalculateNormals();
+            if ( options.isLit )
+            {
+                for ( int j = 0; j < size1; j++ )
+                {
+                    for ( int i = 0; i < size2; i++ )
+                    {
+                        ( (TerrainRenderable)tiles[ i, j ] ).CalculateNormals();
                     }
                 }
             }
@@ -218,69 +255,76 @@ namespace Axiom.SceneManagers.Octree {
         ///     Updates all the TerrainRenderables LOD.
         /// </summary>
         /// <param name="camera"></param>
-        protected override void UpdateSceneGraph(Camera camera) {
-            base.UpdateSceneGraph (camera);
+        protected override void UpdateSceneGraph( Camera camera )
+        {
+            base.UpdateSceneGraph( camera );
         }
 
         /// <summary>
         ///     Aligns TerrainRenderable neighbors, and renders them.
         /// </summary>
-        protected override void RenderVisibleObjects() {
+        protected override void RenderVisibleObjects()
+        {
 
-            for(int i = 0; i < tiles.GetLength(0); i++) {
-                for(int j = 0; j < tiles.GetLength(1); j++) {
-                    tiles[i, j].AlignNeighbors();
+            for ( int i = 0; i < tiles.GetLength( 0 ); i++ )
+            {
+                for ( int j = 0; j < tiles.GetLength( 1 ); j++ )
+                {
+                    tiles[ i, j ].AlignNeighbors();
                 }
             }
 
-            base.RenderVisibleObjects ();
+            base.RenderVisibleObjects();
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="camera"></param>
-        public override void FindVisibleObjects(Camera camera, bool onlyShadowCasters) {
-            base.FindVisibleObjects (camera, onlyShadowCasters);
+        public override void FindVisibleObjects( Camera camera, bool onlyShadowCasters )
+        {
+            base.FindVisibleObjects( camera, onlyShadowCasters );
         }
 
         /// <summary>
-		/// Get the height of a a point on the terrain under/over a givin 3d point. This is
-		/// very useful terrain collision testing, since you can simply select 
-		/// a few locations you would like to test and see if the y value matches the one returned
-		/// by this function.
-		/// 
-		/// Just to clarify this does not return the altitude of a generic xyz point, 
-		/// rather it returns the y value (height) of a point with the same x and z values 
-		/// as thoes passed in, that is on the surface of the terrain. 
-		/// To get the Altitude you would do something like 
-		/// float altitude = thePoint.y - GetHeightAt(thePoint, 0);
-		/// 
-		/// This has code merged into it from GetTerrainTile() b/c it gives us about 60 fps 
-		/// when testing 1000+ points, to inline it here rather than going through the extra function calls
-		/// </summary>
-		/// <param name="point">The point you would like to know the y value of the terrain at</param>
-		/// <param name="defaultheight">value to return if the point is not over/under the terrain</param>
-		/// <returns></returns>
-		public float GetHeightAt(Vector3 point, float defaultheight)
-		{			
-			if (options == null || tiles == null) return defaultheight;
+        /// Get the height of a a point on the terrain under/over a givin 3d point. This is
+        /// very useful terrain collision testing, since you can simply select 
+        /// a few locations you would like to test and see if the y value matches the one returned
+        /// by this function.
+        /// 
+        /// Just to clarify this does not return the altitude of a generic xyz point, 
+        /// rather it returns the y value (height) of a point with the same x and z values 
+        /// as thoes passed in, that is on the surface of the terrain. 
+        /// To get the Altitude you would do something like 
+        /// float altitude = thePoint.y - GetHeightAt(thePoint, 0);
+        /// 
+        /// This has code merged into it from GetTerrainTile() b/c it gives us about 60 fps 
+        /// when testing 1000+ points, to inline it here rather than going through the extra function calls
+        /// </summary>
+        /// <param name="point">The point you would like to know the y value of the terrain at</param>
+        /// <param name="defaultheight">value to return if the point is not over/under the terrain</param>
+        /// <returns></returns>
+        public float GetHeightAt( Vector3 point, float defaultheight )
+        {
+            if ( options == null || tiles == null )
+                return defaultheight;
             float worldsize = options.worldSize;
             float scalex = options.scalex;
             float scalez = options.scalez;
 
-			int xdim = tiles.GetLength(0);
-			int zdim = tiles.GetLength(1);			
-						
-			float maxx = scalex * worldsize;													
-			int xCoordIndex = (int) ((point.x* (xdim/maxx)));	
+            int xdim = tiles.GetLength( 0 );
+            int zdim = tiles.GetLength( 1 );
 
-			float maxz = scalez *worldsize;			
-			int zCoordIndex = (int) ((point.z* zdim/maxx));
-			
-			if (xCoordIndex >= xdim || zCoordIndex >= zdim || xCoordIndex < 0 || zCoordIndex <0 ) return defaultheight; //point is not over a tile			
-			return tiles[xCoordIndex, zCoordIndex].GetHeightAt(point.x, point.z);			
-		}
+            float maxx = scalex * worldsize;
+            int xCoordIndex = (int)( ( point.x * ( xdim / maxx ) ) );
+
+            float maxz = scalez * worldsize;
+            int zCoordIndex = (int)( ( point.z * zdim / maxx ) );
+
+            if ( xCoordIndex >= xdim || zCoordIndex >= zdim || xCoordIndex < 0 || zCoordIndex < 0 )
+                return defaultheight; //point is not over a tile			
+            return tiles[ xCoordIndex, zCoordIndex ].GetHeightAt( point.x, point.z );
+        }
 
         /// <summary>
         ///     Returns the TerrainRenderable that contains the given pt.
@@ -288,26 +332,30 @@ namespace Axiom.SceneManagers.Octree {
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        public TerrainRenderable GetTerrainTile(Vector3 point) {
+        public TerrainRenderable GetTerrainTile( Vector3 point )
+        {
 
-            if ( options == null || tiles == null ) return null;
+            if ( options == null || tiles == null )
+                return null;
             float worldsize = options.worldSize;
             float scalex = options.scalex;
             float scalez = options.scalez;
 
-			int xdim = tiles.GetLength(0);
-			int zdim = tiles.GetLength(1);			
-						
-			float maxx = scalex * worldsize;													
-			int xCoordIndex = (int) ((point.x* (xdim/maxx)));	
+            int xdim = tiles.GetLength( 0 );
+            int zdim = tiles.GetLength( 1 );
 
-			float maxz = scalez *worldsize;			
-			int zCoordIndex = (int) ((point.z* zdim/maxx));
-			
-			if (xCoordIndex >= xdim || zCoordIndex >= zdim || xCoordIndex < 0 || zCoordIndex <0 ) return null; //point is not over a tile			
-			else return tiles[xCoordIndex, zCoordIndex];            
+            float maxx = scalex * worldsize;
+            int xCoordIndex = (int)( ( point.x * ( xdim / maxx ) ) );
+
+            float maxz = scalez * worldsize;
+            int zCoordIndex = (int)( ( point.z * zdim / maxx ) );
+
+            if ( xCoordIndex >= xdim || zCoordIndex >= zdim || xCoordIndex < 0 || zCoordIndex < 0 )
+                return null; //point is not over a tile			
+            else
+                return tiles[ xCoordIndex, zCoordIndex ];
         }
 
         #endregion SceneManager members
-	}
+    }
 }

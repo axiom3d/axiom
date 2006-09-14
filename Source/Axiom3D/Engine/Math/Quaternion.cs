@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -30,24 +30,37 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Diagnostics;
 
-namespace Axiom.Math {
+#endregion Namespace Declarations
+
+namespace Axiom.Math
+{
     /// <summary>
     ///		Summary description for Quaternion.
     /// </summary>
-    public struct Quaternion {
+    public struct Quaternion
+    {
         #region Private member variables and constants
 
         const float EPSILON = 1e-03f;
 
         public float w, x, y, z;
 
-        private static readonly Quaternion identityQuat = new Quaternion(1.0f, 0.0f, 0.0f, 0.0f);
-        private static readonly Quaternion zeroQuat = new Quaternion(0.0f, 0.0f, 0.0f, 0.0f);
-        private static readonly int[] next = new int[3]{ 1, 2, 0 };
-		
+        private static readonly Quaternion identityQuat = new Quaternion( 1.0f, 0.0f, 0.0f, 0.0f );
+        private static readonly Quaternion zeroQuat = new Quaternion( 0.0f, 0.0f, 0.0f, 0.0f );
+        private static readonly int[] next = new int[ 3 ] { 1, 2, 0 };
+
         #endregion
 
         #region Constructors
@@ -60,7 +73,8 @@ namespace Axiom.Math {
         /// <summary>
         ///		Creates a new Quaternion.
         /// </summary>
-        public Quaternion(float w, float x, float y, float z) {
+        public Quaternion( float w, float x, float y, float z )
+        {
             this.w = w;
             this.x = x;
             this.y = y;
@@ -81,8 +95,9 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Quaternion Multiply (Quaternion left, Quaternion right) {
-        	return left * right;
+        public static Quaternion Multiply( Quaternion left, Quaternion right )
+        {
+            return left * right;
         }
 
         /// <summary>
@@ -95,7 +110,8 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Quaternion operator * (Quaternion left, Quaternion right) {
+        public static Quaternion operator *( Quaternion left, Quaternion right )
+        {
             Quaternion q = new Quaternion();
 
             q.w = left.w * right.w - left.x * right.x - left.y * right.y - left.z * right.z;
@@ -122,26 +138,28 @@ namespace Axiom.Math {
         /// <param name="quat"></param>
         /// <param name="vector"></param>
         /// <returns></returns>
-        public static Vector3 Multiply (Quaternion quat, Vector3 vector) {
-			return quat * vector;
+        public static Vector3 Multiply( Quaternion quat, Vector3 vector )
+        {
+            return quat * vector;
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="quat"></param>
         /// <param name="vector"></param>
         /// <returns></returns>
-        public static Vector3 operator*(Quaternion quat, Vector3 vector) {
+        public static Vector3 operator *( Quaternion quat, Vector3 vector )
+        {
             // nVidia SDK implementation
             Vector3 uv, uuv;
-            Vector3 qvec = new Vector3(quat.x, quat.y, quat.z);
+            Vector3 qvec = new Vector3( quat.x, quat.y, quat.z );
 
-            uv = qvec.Cross(vector); 
-            uuv = qvec.Cross(uv); 
-            uv *= (2.0f * quat.w); 
-            uuv *= 2.0f; 
-		
+            uv = qvec.Cross( vector );
+            uuv = qvec.Cross( uv );
+            uv *= ( 2.0f * quat.w );
+            uuv *= 2.0f;
+
             return vector + uv + uuv;
 
             // get the rotation matrix of the Quaternion and multiply it times the vector
@@ -154,18 +172,20 @@ namespace Axiom.Math {
         /// <param name="scalar"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Quaternion Multiply (float scalar, Quaternion right) {
-        	return scalar * right;
+        public static Quaternion Multiply( float scalar, Quaternion right )
+        {
+            return scalar * right;
         }
-        
+
         /// <summary>
         /// Used when a float value is multiplied by a Quaternion.
         /// </summary>
         /// <param name="scalar"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Quaternion operator*(float scalar, Quaternion right) {
-            return new Quaternion(scalar * right.w, scalar * right.x, scalar * right.y, scalar * right.z);
+        public static Quaternion operator *( float scalar, Quaternion right )
+        {
+            return new Quaternion( scalar * right.w, scalar * right.x, scalar * right.y, scalar * right.z );
         }
 
         /// <summary>
@@ -174,18 +194,20 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public static Quaternion Multiply (Quaternion left, float scalar) {
-        	return left * scalar;
+        public static Quaternion Multiply( Quaternion left, float scalar )
+        {
+            return left * scalar;
         }
-        
+
         /// <summary>
         /// Used when a Quaternion is multiplied by a float value.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public static Quaternion operator*(Quaternion left, float scalar) {
-            return new Quaternion(scalar * left.w, scalar * left.x, scalar * left.y, scalar * left.z);
+        public static Quaternion operator *( Quaternion left, float scalar )
+        {
+            return new Quaternion( scalar * left.w, scalar * left.x, scalar * left.y, scalar * left.z );
         }
 
         /// <summary>
@@ -194,18 +216,20 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Quaternion Add (Quaternion left, Quaternion right) {
-        	return left + right;
+        public static Quaternion Add( Quaternion left, Quaternion right )
+        {
+            return left + right;
         }
-        
+
         /// <summary>
         /// Used when a Quaternion is added to another Quaternion.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Quaternion operator+(Quaternion left, Quaternion right) {
-            return new Quaternion(left.w + right.w, left.x + right.x, left.y + right.y, left.z + right.z);
+        public static Quaternion operator +( Quaternion left, Quaternion right )
+        {
+            return new Quaternion( left.w + right.w, left.x + right.x, left.y + right.y, left.z + right.z );
         }
 
         /// <summary>
@@ -214,16 +238,19 @@ namespace Axiom.Math {
         /// </summary>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Quaternion operator - (Quaternion right) {
-            return new Quaternion(-right.w, -right.x, -right.y, -right.z);
+        public static Quaternion operator -( Quaternion right )
+        {
+            return new Quaternion( -right.w, -right.x, -right.y, -right.z );
         }
 
-        public static bool operator == (Quaternion left, Quaternion right) {
-            return (left.w == right.w && left.x == right.x && left.y == right.y && left.z == right.z);
+        public static bool operator ==( Quaternion left, Quaternion right )
+        {
+            return ( left.w == right.w && left.x == right.x && left.y == right.y && left.z == right.z );
         }
 
-        public static bool operator != (Quaternion left, Quaternion right) {
-            return !(left == right);
+        public static bool operator !=( Quaternion left, Quaternion right )
+        {
+            return !( left == right );
         }
 
         #endregion
@@ -233,38 +260,46 @@ namespace Axiom.Math {
         /// <summary>
         ///    An Identity Quaternion.
         /// </summary>
-        public static Quaternion Identity {
-            get { 
-                return identityQuat; 
+        public static Quaternion Identity
+        {
+            get
+            {
+                return identityQuat;
             }
         }
 
         /// <summary>
         ///    A Quaternion with all elements set to 0.0f;
         /// </summary>
-        public static Quaternion Zero {
-            get { 
-                return zeroQuat; 
+        public static Quaternion Zero
+        {
+            get
+            {
+                return zeroQuat;
             }
         }
 
-		/// <summary>
-		///		Squared 'length' of this quaternion.
-		/// </summary>
-		public float Norm {
-			get {
-				return x * x + y * y + z * z + w * w;
-			}
-		}
+        /// <summary>
+        ///		Squared 'length' of this quaternion.
+        /// </summary>
+        public float Norm
+        {
+            get
+            {
+                return x * x + y * y + z * z + w * w;
+            }
+        }
 
         /// <summary>
         ///    Local X-axis portion of this rotation.
         /// </summary>
-        public Vector3 XAxis {
-            get {
-                float fTx  = 2.0f * x;
-                float fTy  = 2.0f * y;
-                float fTz  = 2.0f * z;
+        public Vector3 XAxis
+        {
+            get
+            {
+                float fTx = 2.0f * x;
+                float fTy = 2.0f * y;
+                float fTz = 2.0f * z;
                 float fTwy = fTy * w;
                 float fTwz = fTz * w;
                 float fTxy = fTy * x;
@@ -272,18 +307,20 @@ namespace Axiom.Math {
                 float fTyy = fTy * y;
                 float fTzz = fTz * z;
 
-                return new Vector3(1.0f - (fTyy + fTzz), fTxy + fTwz, fTxz - fTwy);
+                return new Vector3( 1.0f - ( fTyy + fTzz ), fTxy + fTwz, fTxz - fTwy );
             }
         }
 
         /// <summary>
         ///    Local Y-axis portion of this rotation.
         /// </summary>
-        public Vector3 YAxis {
-            get {
-                float fTx  = 2.0f * x;
-                float fTy  = 2.0f * y;
-                float fTz  = 2.0f * z;
+        public Vector3 YAxis
+        {
+            get
+            {
+                float fTx = 2.0f * x;
+                float fTy = 2.0f * y;
+                float fTz = 2.0f * z;
                 float fTwx = fTx * w;
                 float fTwz = fTz * w;
                 float fTxx = fTx * x;
@@ -291,18 +328,20 @@ namespace Axiom.Math {
                 float fTyz = fTz * y;
                 float fTzz = fTz * z;
 
-                return new Vector3(fTxy - fTwz, 1.0f - (fTxx + fTzz), fTyz + fTwx);
+                return new Vector3( fTxy - fTwz, 1.0f - ( fTxx + fTzz ), fTyz + fTwx );
             }
         }
 
         /// <summary>
         ///    Local Z-axis portion of this rotation.
         /// </summary>
-        public Vector3 ZAxis {
-            get {
-                float fTx  = 2.0f * x;
-                float fTy  = 2.0f * y;
-                float fTz  = 2.0f * z;
+        public Vector3 ZAxis
+        {
+            get
+            {
+                float fTx = 2.0f * x;
+                float fTy = 2.0f * y;
+                float fTz = 2.0f * z;
                 float fTwx = fTx * w;
                 float fTwy = fTy * w;
                 float fTxx = fTx * x;
@@ -310,7 +349,7 @@ namespace Axiom.Math {
                 float fTyy = fTy * y;
                 float fTyz = fTz * y;
 
-                return new Vector3(fTxz + fTwy, fTyz - fTwx, 1.0f - (fTxx+fTyy));
+                return new Vector3( fTxz + fTwy, fTyz - fTwx, 1.0f - ( fTxx + fTyy ) );
             }
         }
 
@@ -318,9 +357,10 @@ namespace Axiom.Math {
 
         #region Static methods
 
-		public static Quaternion Slerp(float time, Quaternion quatA, Quaternion quatB) {
-			return Slerp(time, quatA, quatB, false);
-		}
+        public static Quaternion Slerp( float time, Quaternion quatA, Quaternion quatB )
+        {
+            return Slerp( time, quatA, quatB, false );
+        }
 
         /// <summary>
         /// 
@@ -330,34 +370,38 @@ namespace Axiom.Math {
         /// <param name="quatB"></param>
         /// <param name="useShortestPath"></param>
         /// <returns></returns>
-        public static Quaternion Slerp(float time, Quaternion quatA, Quaternion quatB, bool useShortestPath) {
-            float cos = quatA.Dot(quatB);
+        public static Quaternion Slerp( float time, Quaternion quatA, Quaternion quatB, bool useShortestPath )
+        {
+            float cos = quatA.Dot( quatB );
 
-            float angle = Utility.ACos(cos);
+            float angle = Utility.ACos( cos );
 
-			if(Utility.Abs(angle) < EPSILON) {
-				return quatA;
-			}
+            if ( Utility.Abs( angle ) < EPSILON )
+            {
+                return quatA;
+            }
 
-            float sin = Utility.Sin(angle);
+            float sin = Utility.Sin( angle );
             float inverseSin = 1.0f / sin;
-            float coeff0 = Utility.Sin((1.0f - time) * angle) * inverseSin;
-            float coeff1 = Utility.Sin(time * angle) * inverseSin;
+            float coeff0 = Utility.Sin( ( 1.0f - time ) * angle ) * inverseSin;
+            float coeff1 = Utility.Sin( time * angle ) * inverseSin;
 
-			Quaternion result;
+            Quaternion result;
 
-			if(cos < 0.0f && useShortestPath) {
-				coeff0 = -coeff0;
-				// taking the complement requires renormalisation
-				Quaternion t = coeff0 * quatA + coeff1 * quatB;
-				t.Normalize();
-				result = t;
-			}
-			else {
-				result = (coeff0 * quatA + coeff1 * quatB);
-			}
+            if ( cos < 0.0f && useShortestPath )
+            {
+                coeff0 = -coeff0;
+                // taking the complement requires renormalisation
+                Quaternion t = coeff0 * quatA + coeff1 * quatB;
+                t.Normalize();
+                result = t;
+            }
+            else
+            {
+                result = ( coeff0 * quatA + coeff1 * quatB );
+            }
 
-			return result;
+            return result;
         }
 
         /// <summary>
@@ -366,23 +410,25 @@ namespace Axiom.Math {
         /// <param name="angle">Value of an angle in radians.</param>
         /// <param name="axis">Arbitrary axis vector.</param>
         /// <returns></returns>
-        public static Quaternion FromAngleAxis(float angle, Vector3 axis) {
+        public static Quaternion FromAngleAxis( float angle, Vector3 axis )
+        {
             Quaternion quat = new Quaternion();
 
             float halfAngle = 0.5f * angle;
-            float sin = Utility.Sin(halfAngle);
+            float sin = Utility.Sin( halfAngle );
 
-            quat.w = Utility.Cos(halfAngle);
-            quat.x = sin * axis.x; 
-            quat.y = sin * axis.y; 
-            quat.z = sin * axis.z; 
+            quat.w = Utility.Cos( halfAngle );
+            quat.x = sin * axis.x;
+            quat.y = sin * axis.y;
+            quat.z = sin * axis.z;
 
             return quat;
         }
 
-		public static Quaternion Squad(float t, Quaternion p, Quaternion a, Quaternion b, Quaternion q) {
-			return Squad(t, p, a, b, q, false);
-		}
+        public static Quaternion Squad( float t, Quaternion p, Quaternion a, Quaternion b, Quaternion q )
+        {
+            return Squad( t, p, a, b, q, false );
+        }
 
         /// <summary>
         ///		Performs spherical quadratic interpolation.
@@ -393,41 +439,44 @@ namespace Axiom.Math {
         /// <param name="b"></param>
         /// <param name="q"></param>
         /// <returns></returns>
-        public static Quaternion Squad(float t, Quaternion p, Quaternion a, Quaternion b, Quaternion q, bool useShortestPath) {
-            float slerpT = 2.0f * t * (1.0f - t);
+        public static Quaternion Squad( float t, Quaternion p, Quaternion a, Quaternion b, Quaternion q, bool useShortestPath )
+        {
+            float slerpT = 2.0f * t * ( 1.0f - t );
 
             // use spherical linear interpolation
-            Quaternion slerpP = Slerp(t, p, q, useShortestPath);
-            Quaternion slerpQ = Slerp(t, a, b);
+            Quaternion slerpP = Slerp( t, p, q, useShortestPath );
+            Quaternion slerpQ = Slerp( t, a, b );
 
             // run another Slerp on the results of the first 2, and return the results
-            return Slerp(slerpT, slerpP, slerpQ);
+            return Slerp( slerpT, slerpP, slerpQ );
         }
 
         #endregion
 
         #region Public methods
-		
+
         /// <summary>
         /// Performs a Dot Product operation on 2 Quaternions.
         /// </summary>
         /// <param name="quat"></param>
         /// <returns></returns>
-        public float Dot(Quaternion quat) {
+        public float Dot( Quaternion quat )
+        {
             return this.w * quat.w + this.x * quat.x + this.y * quat.y + this.z * quat.z;
         }
 
-		/// <summary>
-		///		Normalizes elements of this quaterion to the range [0,1].
-		/// </summary>
-		public void Normalize() {
-			float factor = 1.0f / Utility.Sqrt(this.Norm);
+        /// <summary>
+        ///		Normalizes elements of this quaterion to the range [0,1].
+        /// </summary>
+        public void Normalize()
+        {
+            float factor = 1.0f / Utility.Sqrt( this.Norm );
 
-			w = w * factor;
-			x = x * factor;
-			y = y * factor;
-			z = z * factor;
-		}
+            w = w * factor;
+            x = x * factor;
+            y = y * factor;
+            z = z * factor;
+        }
 
         /// <summary>
         ///    
@@ -435,20 +484,23 @@ namespace Axiom.Math {
         /// <param name="angle"></param>
         /// <param name="axis"></param>
         /// <returns></returns>
-        public void ToAngleAxis(ref float angle, ref Vector3 axis) {
+        public void ToAngleAxis( ref float angle, ref Vector3 axis )
+        {
             // The quaternion representing the rotation is
             //   q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k)
 
             float sqrLength = x * x + y * y + z * z;
 
-            if(sqrLength >0.0f) {
-                angle = 2.0f * Utility.ACos(w);
-                float invLength = Utility.InvSqrt(sqrLength);
+            if ( sqrLength > 0.0f )
+            {
+                angle = 2.0f * Utility.ACos( w );
+                float invLength = Utility.InvSqrt( sqrLength );
                 axis.x = x * invLength;
                 axis.y = y * invLength;
                 axis.z = z * invLength;
             }
-            else {
+            else
+            {
                 angle = 0.0f;
                 axis.x = 1.0f;
                 axis.y = 0.0f;
@@ -460,12 +512,13 @@ namespace Axiom.Math {
         /// Gets a 3x3 rotation matrix from this Quaternion.
         /// </summary>
         /// <returns></returns>
-        public Matrix3 ToRotationMatrix() {
+        public Matrix3 ToRotationMatrix()
+        {
             Matrix3 rotation = new Matrix3();
 
-            float tx  = 2.0f * this.x;
-            float ty  = 2.0f * this.y;
-            float tz  = 2.0f * this.z;
+            float tx = 2.0f * this.x;
+            float ty = 2.0f * this.y;
+            float tz = 2.0f * this.z;
             float twx = tx * this.w;
             float twy = ty * this.w;
             float twz = tz * this.w;
@@ -476,15 +529,15 @@ namespace Axiom.Math {
             float tyz = tz * this.y;
             float tzz = tz * this.z;
 
-            rotation.m00 = 1.0f-(tyy+tzz);
-            rotation.m01 = txy-twz;
-            rotation.m02 = txz+twy;
-            rotation.m10 = txy+twz;
-            rotation.m11 = 1.0f-(txx+tzz);
-            rotation.m12 = tyz-twx;
-            rotation.m20 = txz-twy;
-            rotation.m21 = tyz+twx;
-            rotation.m22 = 1.0f-(txx+tyy);
+            rotation.m00 = 1.0f - ( tyy + tzz );
+            rotation.m01 = txy - twz;
+            rotation.m02 = txz + twy;
+            rotation.m10 = txy + twz;
+            rotation.m11 = 1.0f - ( txx + tzz );
+            rotation.m12 = tyz - twx;
+            rotation.m20 = txz - twy;
+            rotation.m21 = tyz + twx;
+            rotation.m22 = 1.0f - ( txx + tyy );
 
             return rotation;
         }
@@ -493,13 +546,16 @@ namespace Axiom.Math {
         /// Computes the inverse of a Quaternion.
         /// </summary>
         /// <returns></returns>
-        public Quaternion Inverse() {
+        public Quaternion Inverse()
+        {
             float norm = this.w * this.w + this.x * this.x + this.y * this.y + this.z * this.z;
-            if ( norm > 0.0f ) {
+            if ( norm > 0.0f )
+            {
                 float inverseNorm = 1.0f / norm;
-                return new Quaternion(this.w * inverseNorm, -this.x * inverseNorm, -this.y * inverseNorm, -this.z * inverseNorm);
+                return new Quaternion( this.w * inverseNorm, -this.x * inverseNorm, -this.y * inverseNorm, -this.z * inverseNorm );
             }
-            else {
+            else
+            {
                 // return an invalid result to flag the error
                 return Quaternion.Zero;
             }
@@ -511,7 +567,8 @@ namespace Axiom.Math {
         /// <param name="xAxis"></param>
         /// <param name="yAxis"></param>
         /// <param name="zAxis"></param>
-        public void ToAxes (out Vector3 xAxis, out Vector3 yAxis, out Vector3 zAxis) {
+        public void ToAxes( out Vector3 xAxis, out Vector3 yAxis, out Vector3 zAxis )
+        {
             xAxis = new Vector3();
             yAxis = new Vector3();
             zAxis = new Vector3();
@@ -537,11 +594,12 @@ namespace Axiom.Math {
         /// <param name="xAxis"></param>
         /// <param name="yAxis"></param>
         /// <param name="zAxis"></param>
-        public void FromAxes(Vector3 xAxis, Vector3 yAxis, Vector3 zAxis) {
+        public void FromAxes( Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
+        {
             Matrix3 rotation = new Matrix3();
 
             rotation.m00 = xAxis.x;
-            rotation.m10= xAxis.y;
+            rotation.m10 = xAxis.y;
             rotation.m20 = xAxis.z;
 
             rotation.m01 = yAxis.x;
@@ -552,15 +610,16 @@ namespace Axiom.Math {
             rotation.m12 = zAxis.y;
             rotation.m22 = zAxis.z;
 
-			// set this quaternions values from the rotation matrix built
-            FromRotationMatrix(rotation);
+            // set this quaternions values from the rotation matrix built
+            FromRotationMatrix( rotation );
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="matrix"></param>
-        public void FromRotationMatrix(Matrix3 matrix) {
+        public void FromRotationMatrix( Matrix3 matrix )
+        {
             // Algorithm in Ken Shoemake's article in 1987 SIGGRAPH course notes
             // article "Quaternion Calculus and Fast Animation".
 
@@ -568,40 +627,44 @@ namespace Axiom.Math {
 
             float root = 0.0f;
 
-            if ( trace > 0.0f ) {
+            if ( trace > 0.0f )
+            {
                 // |this.w| > 1/2, may as well choose this.w > 1/2
-                root = Utility.Sqrt(trace + 1.0f);  // 2w
+                root = Utility.Sqrt( trace + 1.0f );  // 2w
                 this.w = 0.5f * root;
-				
+
                 root = 0.5f / root;  // 1/(4w)
 
-                this.x = (matrix.m21 - matrix.m12) * root;
-                this.y = (matrix.m02 - matrix.m20) * root;
-                this.z = (matrix.m10 - matrix.m01) * root;
+                this.x = ( matrix.m21 - matrix.m12 ) * root;
+                this.y = ( matrix.m02 - matrix.m20 ) * root;
+                this.z = ( matrix.m10 - matrix.m01 ) * root;
             }
-            else {
+            else
+            {
                 // |this.w| <= 1/2
 
                 int i = 0;
                 if ( matrix.m11 > matrix.m00 )
                     i = 1;
-                if ( matrix.m22 > matrix[i,i] )
+                if ( matrix.m22 > matrix[ i, i ] )
                     i = 2;
 
-                int j = next[i];
-                int k = next[j];
+                int j = next[ i ];
+                int k = next[ j ];
 
-                root = Utility.Sqrt(matrix[i,i] - matrix[j,j] - matrix[k,k] + 1.0f);
+                root = Utility.Sqrt( matrix[ i, i ] - matrix[ j, j ] - matrix[ k, k ] + 1.0f );
 
-                unsafe {
-                    fixed(float* apkQuat = &this.x) {
-                        apkQuat[i] = 0.5f * root;
+                unsafe
+                {
+                    fixed ( float* apkQuat = &this.x )
+                    {
+                        apkQuat[ i ] = 0.5f * root;
                         root = 0.5f / root;
-					
-                        this.w = (matrix[k,j] - matrix[j,k]) * root;
-					
-                        apkQuat[j] = (matrix[j,i] + matrix[i,j]) * root;
-                        apkQuat[k] = (matrix[k,i] + matrix[i,k]) * root;
+
+                        this.w = ( matrix[ k, j ] - matrix[ j, k ] ) * root;
+
+                        apkQuat[ j ] = ( matrix[ j, i ] + matrix[ i, j ] ) * root;
+                        apkQuat[ k ] = ( matrix[ k, i ] + matrix[ i, k ] ) * root;
                     }
                 }
             }
@@ -611,7 +674,8 @@ namespace Axiom.Math {
         ///		Calculates the logarithm of a Quaternion.
         /// </summary>
         /// <returns></returns>
-        public Quaternion Log() {
+        public Quaternion Log()
+        {
             // BLACKBOX: Learn this
             // If q = cos(A)+sin(A)*(x*i+y*j+z*k) where (x,y,z) is unit length, then
             // log(q) = A*(x*i+y*j+z*k).  If sin(A) is near zero, use log(q) =
@@ -620,17 +684,20 @@ namespace Axiom.Math {
             // start off with a zero quat
             Quaternion result = Quaternion.Zero;
 
-            if(Utility.Abs(w) < 1.0f) {
-                float angle = Utility.ACos(w);
-                float sin = Utility.Sin(angle);
+            if ( Utility.Abs( w ) < 1.0f )
+            {
+                float angle = Utility.ACos( w );
+                float sin = Utility.Sin( angle );
 
-                if(Utility.Abs(sin) >= EPSILON) {
+                if ( Utility.Abs( sin ) >= EPSILON )
+                {
                     float coeff = angle / sin;
                     result.x = coeff * x;
                     result.y = coeff * y;
                     result.z = coeff * z;
                 }
-                else {
+                else
+                {
                     result.x = x;
                     result.y = y;
                     result.z = z;
@@ -644,27 +711,30 @@ namespace Axiom.Math {
         ///		Calculates the Exponent of a Quaternion.
         /// </summary>
         /// <returns></returns>
-        public Quaternion Exp() {
+        public Quaternion Exp()
+        {
             // If q = A*(x*i+y*j+z*k) where (x,y,z) is unit length, then
             // exp(q) = cos(A)+sin(A)*(x*i+y*j+z*k).  If sin(A) is near zero,
             // use exp(q) = cos(A)+A*(x*i+y*j+z*k) since A/sin(A) has limit 1.
 
-            float angle = Utility.Sqrt(x * x + y * y + z * z);
-            float sin = Utility.Sin(angle);
+            float angle = Utility.Sqrt( x * x + y * y + z * z );
+            float sin = Utility.Sin( angle );
 
             // start off with a zero quat
             Quaternion result = Quaternion.Zero;
 
-            result.w = Utility.Cos(angle);
+            result.w = Utility.Cos( angle );
 
-            if ( Utility.Abs(sin) >= EPSILON ) {
+            if ( Utility.Abs( sin ) >= EPSILON )
+            {
                 float coeff = sin / angle;
 
                 result.x = coeff * x;
                 result.y = coeff * y;
                 result.z = coeff * z;
             }
-            else {
+            else
+            {
                 result.x = x;
                 result.y = y;
                 result.z = z;
@@ -682,20 +752,23 @@ namespace Axiom.Math {
         ///		a Quaternion.
         /// </summary>
         /// <returns>A string representation of a Quaternion.</returns>
-        public override string ToString() {
-            return string.Format("Quaternion({0}, {1}, {2}, {3})", this.x, this.y, this.z, this.w);
+        public override string ToString()
+        {
+            return string.Format( "Quaternion({0}, {1}, {2}, {3})", this.x, this.y, this.z, this.w );
         }
-		
-        public override int GetHashCode() {
+
+        public override int GetHashCode()
+        {
             return (int)x ^ (int)y ^ (int)z ^ (int)w;
         }
-        public override bool Equals(object obj) {
+        public override bool Equals( object obj )
+        {
             Quaternion quat = (Quaternion)obj;
-			
+
             return quat == this;
         }
-		
 
-        #endregion	
+
+        #endregion
     }
 }

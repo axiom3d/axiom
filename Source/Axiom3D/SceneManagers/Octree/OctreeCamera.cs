@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,8 +24,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
 
 using System;
+
 using Axiom;
 using Axiom.Core;
 using Axiom.Math;
@@ -35,10 +44,14 @@ using Axiom.Input;
 using Axiom.Graphics;
 using Axiom.Collections;
 
+#endregion Namespace Declarations
+
 // TODO: Update with infinite far plane and such.
 
-namespace Axiom.SceneManagers.Octree {
-    public enum Visibility {
+namespace Axiom.SceneManagers.Octree
+{
+    public enum Visibility
+    {
         None,
         Partial,
         Full
@@ -52,8 +65,9 @@ namespace Axiom.SceneManagers.Octree {
     ///for debuggin purposes. It also implements a visibility function that is more granular
     ///than the default.
     /// </summary>
-    public class OctreeCamera : Camera {
-        #region Fields	
+    public class OctreeCamera : Camera
+    {
+        #region Fields
 
         protected bool useIdentityProj;
         protected bool useIdentityView;
@@ -65,15 +79,17 @@ namespace Axiom.SceneManagers.Octree {
         short[] indexes = {0, 1, 1, 2, 2, 3, 3, 0,       //back
                               0, 6, 6, 5, 5, 1,             //left
                               3, 7, 7, 4, 4, 2,             //right
-                              6, 7, 5, 4 }; 
-        long[] colors = {red, red, red, red, red, red, red, red};
+                              6, 7, 5, 4 };
+        long[] colors = { red, red, red, red, red, red, red, red };
 
-        int[] corners = {0, 4, 3, 5, 2, 6, 1, 7};
+        int[] corners = { 0, 4, 3, 5, 2, 6, 1, 7 };
 
         #endregion Fields
 
-        public OctreeCamera(string name, SceneManager scene) : base(name, scene) {
-            material = MaterialManager.Instance.GetByName("BaseWhite");
+        public OctreeCamera( string name, SceneManager scene )
+            : base( name, scene )
+        {
+            material = MaterialManager.Instance.GetByName( "BaseWhite" );
         }
 
         /// <summary>
@@ -81,9 +97,11 @@ namespace Axiom.SceneManagers.Octree {
         /// </summary>
         /// <param name="bound"></param>
         /// <returns></returns>
-        
-        public Visibility GetVisibility(AxisAlignedBox bound) {
-            if(bound.IsNull) {
+
+        public Visibility GetVisibility( AxisAlignedBox bound )
+        {
+            if ( bound.IsNull )
+            {
                 return Visibility.None;
             }
 
@@ -98,60 +116,66 @@ namespace Axiom.SceneManagers.Octree {
 
             bool AllInside = true;
 
-            for(int plane = 0; plane < 6; plane++) {
+            for ( int plane = 0; plane < 6; plane++ )
+            {
                 bool AllOutside = false;
-				
+
                 float distance = 0;
 
-                for(int corner=0;corner<8;corner++) {
-                    distance = planes[plane].GetDistance(boxCorners[corners[corner]]);
-                    AllOutside = AllOutside && (distance < 0);
-                    AllInside = AllInside && (distance >= 0);
+                for ( int corner = 0; corner < 8; corner++ )
+                {
+                    distance = planes[ plane ].GetDistance( boxCorners[ corners[ corner ] ] );
+                    AllOutside = AllOutside && ( distance < 0 );
+                    AllInside = AllInside && ( distance >= 0 );
 
-                    if(!AllOutside && !AllInside) {
+                    if ( !AllOutside && !AllInside )
+                    {
                         break;
                     }
                 }
 
-                if(AllOutside) {
+                if ( AllOutside )
+                {
                     return Visibility.None;
                 }
             }
 
-            if(AllInside) {
+            if ( AllInside )
+            {
                 return Visibility.Full;
             }
-            else {
+            else
+            {
                 return Visibility.Partial;
             }
 
         }
-		
-//        /// <summary>
-//        /// 
-//        /// </summary>
-//        /// <param name="op"></param>
-//        public override void GetRenderOperation(RenderOperation op) {
-//            Vector3[] r = new Vector3[8];
-//
-//            r = this.Corners;
-//
-//            r[0] = GetCorner(FrustumPlane.Far,FrustumPlane.Left,FrustumPlane.Bottom);
-//            r[1] = GetCorner(FrustumPlane.Far,FrustumPlane.Left,FrustumPlane.Top);
-//            r[2] = GetCorner(FrustumPlane.Far,FrustumPlane.Right,FrustumPlane.Top);
-//            r[3] = GetCorner(FrustumPlane.Far,FrustumPlane.Right,FrustumPlane.Bottom);
-//
-//            r[4] = GetCorner(FrustumPlane.Near,FrustumPlane.Right,FrustumPlane.Top);
-//            r[5] = GetCorner(FrustumPlane.Near,FrustumPlane.Left,FrustumPlane.Top);
-//            r[6] = GetCorner(FrustumPlane.Near,FrustumPlane.Left,FrustumPlane.Bottom);
-//            r[7] = GetCorner(FrustumPlane.Near,FrustumPlane.Right,FrustumPlane.Bottom);
-//
-//            this.Corners = r;
-//
-//            UpdateView();
-//			
-//            //TODO: VERTEX BUFFER STUFF
-//        }
+
+        //        /// <summary>
+        //        /// 
+        //        /// </summary>
+        //        /// <param name="op"></param>
+        //        public override void GetRenderOperation(RenderOperation op) {
+        //            Vector3[] r = new Vector3[8];
+        //
+        //            r = this.Corners;
+        //
+        //            r[0] = GetCorner(FrustumPlane.Far,FrustumPlane.Left,FrustumPlane.Bottom);
+        //            r[1] = GetCorner(FrustumPlane.Far,FrustumPlane.Left,FrustumPlane.Top);
+        //            r[2] = GetCorner(FrustumPlane.Far,FrustumPlane.Right,FrustumPlane.Top);
+        //            r[3] = GetCorner(FrustumPlane.Far,FrustumPlane.Right,FrustumPlane.Bottom);
+        //
+        //            r[4] = GetCorner(FrustumPlane.Near,FrustumPlane.Right,FrustumPlane.Top);
+        //            r[5] = GetCorner(FrustumPlane.Near,FrustumPlane.Left,FrustumPlane.Top);
+        //            r[6] = GetCorner(FrustumPlane.Near,FrustumPlane.Left,FrustumPlane.Bottom);
+        //            r[7] = GetCorner(FrustumPlane.Near,FrustumPlane.Right,FrustumPlane.Bottom);
+        //
+        //            this.Corners = r;
+        //
+        //            UpdateView();
+        //			
+        //            //TODO: VERTEX BUFFER STUFF
+        //        }
 
         /// <summary>
         /// 
@@ -160,13 +184,14 @@ namespace Axiom.SceneManagers.Octree {
         /// <param name="pp2"></param>
         /// <param name="pp3"></param>
         /// <returns></returns>
-        private Vector3 GetCorner(FrustumPlane pp1, FrustumPlane pp2, FrustumPlane pp3) {
-            Plane p1 = planes[(int)pp1];
-            Plane p2 = planes[(int)pp1];
-            Plane p3 = planes[(int)pp1];
+        private Vector3 GetCorner( FrustumPlane pp1, FrustumPlane pp2, FrustumPlane pp3 )
+        {
+            Plane p1 = planes[ (int)pp1 ];
+            Plane p2 = planes[ (int)pp1 ];
+            Plane p3 = planes[ (int)pp1 ];
 
             Matrix3 mdet;
-			
+
             mdet.m00 = p1.Normal.x;
             mdet.m01 = p1.Normal.y;
             mdet.m02 = p1.Normal.z;
@@ -179,7 +204,8 @@ namespace Axiom.SceneManagers.Octree {
 
             float det = mdet.Determinant;
 
-            if(det == 0) {
+            if ( det == 0 )
+            {
                 //TODO: Unsure. The C++ just returned
                 return Vector3.Zero; //some planes are parallel.
             }
@@ -193,11 +219,11 @@ namespace Axiom.SceneManagers.Octree {
                 p2.Normal.z,
                 -p3.D,
                 p3.Normal.y,
-                p3.Normal.z);
+                p3.Normal.z );
 
             float xdet = mx.Determinant;
-			
-            Matrix3 my = new Matrix3(		
+
+            Matrix3 my = new Matrix3(
                 p1.Normal.x,
                 -p1.D,
                 p1.Normal.z,
@@ -206,7 +232,7 @@ namespace Axiom.SceneManagers.Octree {
                 p2.Normal.z,
                 p3.Normal.x,
                 -p3.D,
-                p3.Normal.z);
+                p3.Normal.z );
 
             float ydet = my.Determinant;
 
@@ -219,12 +245,12 @@ namespace Axiom.SceneManagers.Octree {
                 -p2.D,
                 p3.Normal.x,
                 p3.Normal.y,
-                -p3.D);
-	
+                -p3.D );
+
             float zdet = mz.Determinant;
 
             Vector3 r = new Vector3();
-            r.x	= xdet / det;
+            r.x = xdet / det;
             r.y = ydet / det;
             r.z = zdet / det;
 

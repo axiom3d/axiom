@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -30,138 +30,165 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+
 using Axiom.Math.Collections;
 
-namespace Axiom.Math {
-	/// <summary>
-	/// 	Representation of a ray in space, ie a line with an origin and direction.
-	/// </summary>
-	public class Ray {
-		#region Fields
-		
-		internal Vector3 origin;
-		internal Vector3 direction;
+#endregion Namespace Declarations
 
-		#endregion
-		
-		#region Constructors
-		
-		/// <summary>
-		///    Default constructor.
-		/// </summary>
-		public Ray() {
-			origin = Vector3.Zero;
-			direction = Vector3.UnitZ;
-		}
+namespace Axiom.Math
+{
+    /// <summary>
+    /// 	Representation of a ray in space, ie a line with an origin and direction.
+    /// </summary>
+    public class Ray
+    {
+        #region Fields
 
-		/// <summary>
-		///    Constructor.
-		/// </summary>
-		/// <param name="origin">Starting point of the ray.</param>
-		/// <param name="direction">Direction the ray is pointing.</param>
-		public Ray(Vector3 origin, Vector3 direction) {
-			this.origin = origin;
-			this.direction = direction;
-		}
-		
-		#endregion
-		
-		#region Intersection Methods
+        internal Vector3 origin;
+        internal Vector3 direction;
 
-		/// <summary>
-		///    Tests whether this ray intersects the given box.
-		/// </summary>
-		/// <param name="box"></param>
-		/// <returns>
-		///		Struct containing info on whether there was a hit, and the distance from the 
-		///		origin of this ray where the intersect happened.
-		///	</returns>
-		public IntersectResult Intersects(AxisAlignedBox box) {
-			return Utility.Intersects(this, box);
-		}
+        #endregion
 
-		/// <summary>
-		///		Tests whether this ray intersects the given plane. 
-		/// </summary>
-		/// <param name="plane"></param>
-		/// <returns>
-		///		Struct containing info on whether there was a hit, and the distance from the 
-		///		origin of this ray where the intersect happened.
-		///	</returns>
-		public IntersectResult Intersects(Plane plane) {
-			return Utility.Intersects(this, plane);
-		}
+        #region Constructors
 
-		/// <summary>
-		///		Tests whether this ray intersects the given sphere. 
-		/// </summary>
-		/// <param name="sphere"></param>
-		/// <returns>
-		///		Struct containing info on whether there was a hit, and the distance from the 
-		///		origin of this ray where the intersect happened.
-		///	</returns>
-		public IntersectResult Intersects(Sphere sphere) {
-			return Utility.Intersects(this, sphere);
-		}
+        /// <summary>
+        ///    Default constructor.
+        /// </summary>
+        public Ray()
+        {
+            origin = Vector3.Zero;
+            direction = Vector3.UnitZ;
+        }
 
-		/// <summary>
-		///		Tests whether this ray intersects the given PlaneBoundedVolume. 
-		/// </summary>
-		/// <param name="volume"></param>
-		/// <returns>
-		///		Struct containing info on whether there was a hit, and the distance from the 
-		///		origin of this ray where the intersect happened.
-		///	</returns>
-		public IntersectResult Intersects(PlaneBoundedVolume volume) {
-			return Utility.Intersects(this, volume);
-		}
+        /// <summary>
+        ///    Constructor.
+        /// </summary>
+        /// <param name="origin">Starting point of the ray.</param>
+        /// <param name="direction">Direction the ray is pointing.</param>
+        public Ray( Vector3 origin, Vector3 direction )
+        {
+            this.origin = origin;
+            this.direction = direction;
+        }
 
-		#endregion Intersection Methods
+        #endregion
 
-		#region Operator Overloads
+        #region Intersection Methods
 
-		/// <summary>
-		///    Gets the position of a point t units along the ray.
-		/// </summary>
-		/// <param name="ray"></param>
-		/// <param name="t"></param>
-		/// <returns></returns>
-		public static Vector3 operator * (Ray ray, float t) {
-			return ray.origin + (ray.direction * t);
-		}
+        /// <summary>
+        ///    Tests whether this ray intersects the given box.
+        /// </summary>
+        /// <param name="box"></param>
+        /// <returns>
+        ///		Struct containing info on whether there was a hit, and the distance from the 
+        ///		origin of this ray where the intersect happened.
+        ///	</returns>
+        public IntersectResult Intersects( AxisAlignedBox box )
+        {
+            return Utility.Intersects( this, box );
+        }
 
-		#endregion Operator Overloads
-		
-		#region Properties
-		
-		/// <summary>
-		///    Gets/Sets the origin of the ray.
-		/// </summary>
-		public Vector3 Origin {
-			get {
-				return origin;
-			}
-			set {
-				origin = value;
-			}
-		}
+        /// <summary>
+        ///		Tests whether this ray intersects the given plane. 
+        /// </summary>
+        /// <param name="plane"></param>
+        /// <returns>
+        ///		Struct containing info on whether there was a hit, and the distance from the 
+        ///		origin of this ray where the intersect happened.
+        ///	</returns>
+        public IntersectResult Intersects( Plane plane )
+        {
+            return Utility.Intersects( this, plane );
+        }
 
-		/// <summary>
-		///    Gets/Sets the direction this ray is pointing.
-		/// </summary>
-		/// <remarks>
-		///    A ray has no length, so the direction goes to infinity.
-		/// </remarks>
-		public Vector3 Direction {
-			get {
-				return direction;
-			}
-			set {
-				direction = value;
-			}
-		}
+        /// <summary>
+        ///		Tests whether this ray intersects the given sphere. 
+        /// </summary>
+        /// <param name="sphere"></param>
+        /// <returns>
+        ///		Struct containing info on whether there was a hit, and the distance from the 
+        ///		origin of this ray where the intersect happened.
+        ///	</returns>
+        public IntersectResult Intersects( Sphere sphere )
+        {
+            return Utility.Intersects( this, sphere );
+        }
 
-		#endregion
-	}
+        /// <summary>
+        ///		Tests whether this ray intersects the given PlaneBoundedVolume. 
+        /// </summary>
+        /// <param name="volume"></param>
+        /// <returns>
+        ///		Struct containing info on whether there was a hit, and the distance from the 
+        ///		origin of this ray where the intersect happened.
+        ///	</returns>
+        public IntersectResult Intersects( PlaneBoundedVolume volume )
+        {
+            return Utility.Intersects( this, volume );
+        }
+
+        #endregion Intersection Methods
+
+        #region Operator Overloads
+
+        /// <summary>
+        ///    Gets the position of a point t units along the ray.
+        /// </summary>
+        /// <param name="ray"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public static Vector3 operator *( Ray ray, float t )
+        {
+            return ray.origin + ( ray.direction * t );
+        }
+
+        #endregion Operator Overloads
+
+        #region Properties
+
+        /// <summary>
+        ///    Gets/Sets the origin of the ray.
+        /// </summary>
+        public Vector3 Origin
+        {
+            get
+            {
+                return origin;
+            }
+            set
+            {
+                origin = value;
+            }
+        }
+
+        /// <summary>
+        ///    Gets/Sets the direction this ray is pointing.
+        /// </summary>
+        /// <remarks>
+        ///    A ray has no length, so the direction goes to infinity.
+        /// </remarks>
+        public Vector3 Direction
+        {
+            get
+            {
+                return direction;
+            }
+            set
+            {
+                direction = value;
+            }
+        }
+
+        #endregion
+    }
 }

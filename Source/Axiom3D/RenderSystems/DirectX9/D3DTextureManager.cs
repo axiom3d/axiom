@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,32 +24,48 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+
 using Axiom.Core;
 using Axiom.Graphics;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+
+using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
 
-namespace Axiom.RenderSystems.DirectX9 {
+#endregion Namespace Declarations
+
+namespace Axiom.RenderSystems.DirectX9
+{
     /// <summary>
     ///     Summary description for D3DTextureManager.
     /// </summary>
-    public class D3DTextureManager : TextureManager {
+    public class D3DTextureManager : TextureManager
+    {
         /// <summary>Reference to the D3D device.</summary>
         private D3D.Device device;
 
-        public D3DTextureManager(D3D.Device device) {
+        public D3DTextureManager( D3D.Device device )
+        {
             this.device = device;
 
-			is32Bit = true;
+            is32Bit = true;
         }
-	       
-        public override Axiom.Core.Texture Create(string name, TextureType type) {
-            D3DTexture texture = new D3DTexture(name, device, TextureUsage.Default, type);
-			
+
+        public override Axiom.Core.Texture Create( string name, TextureType type )
+        {
+            D3DTexture texture = new D3DTexture( name, device, TextureUsage.Default, type );
+
             // Handle 32-bit texture settings
-            texture.Enable32Bit(is32Bit);
+            texture.Enable32Bit( is32Bit );
 
             return texture;
         }
@@ -65,9 +81,10 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// <param name="format"></param>
         /// <param name="usage"></param>
         /// <returns></returns>
-        public override Axiom.Core.Texture CreateManual(string name, TextureType type, int width, int height, int numMipMaps, Axiom.Media.PixelFormat format, TextureUsage usage) {
-            D3DTexture texture = new D3DTexture(name, device, type, width, height, numMipMaps, format, usage);
-            texture.Enable32Bit(is32Bit);
+        public override Axiom.Core.Texture CreateManual( string name, TextureType type, int width, int height, int numMipMaps, Axiom.Media.PixelFormat format, TextureUsage usage )
+        {
+            D3DTexture texture = new D3DTexture( name, device, type, width, height, numMipMaps, format, usage );
+            texture.Enable32Bit( is32Bit );
             return texture;
         }
     }

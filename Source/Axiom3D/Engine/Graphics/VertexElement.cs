@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,17 +24,30 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Runtime.InteropServices;
 
-namespace Axiom.Graphics {
+#endregion Namespace Declarations
+
+namespace Axiom.Graphics
+{
     /// <summary>
     /// 	This class declares the usage of a single vertex buffer as a component
     /// 	of a complete <see cref="VertexDeclaration"/>. 
     /// </summary>
-    public class VertexElement : ICloneable {
+    public class VertexElement : ICloneable
+    {
         #region Fields
-		
+
         /// <summary>
         ///     The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding"/>.
         /// </summary>
@@ -57,9 +70,9 @@ namespace Axiom.Graphics {
         protected int index;
 
         #endregion Fields
-		
+
         #region Constructors
-		
+
         /// <summary>
         ///     Constructor.
         /// </summary>
@@ -67,8 +80,10 @@ namespace Axiom.Graphics {
         /// <param name="offset">The offset in the buffer that this element starts at.</param>
         /// <param name="type">The type of element.</param>
         /// <param name="semantic">The meaning of the element.</param>
-        public VertexElement(short source, int offset, VertexElementType type, VertexElementSemantic semantic) 
-            : this(source, offset, type, semantic, 0) {}
+        public VertexElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic )
+            : this( source, offset, type, semantic, 0 )
+        {
+        }
 
         /// <summary>
         ///     Constructor.
@@ -78,53 +93,56 @@ namespace Axiom.Graphics {
         /// <param name="type">The type of element.</param>
         /// <param name="semantic">The meaning of the element.</param>
         /// <param name="index">Index of the item, only applicable for some elements like texture coords.</param>
-        public VertexElement(short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index) {
+        public VertexElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+        {
             this.source = source;
             this.offset = offset;
             this.type = type;
             this.semantic = semantic;
-            this.index = index;			
+            this.index = index;
         }
-		
+
         #endregion
-		
+
         #region Methods
-		
+
         /// <summary>
         ///     Utility method for helping to calculate offsets.
         /// </summary>
-        public static int GetTypeSize(VertexElementType type) {
+        public static int GetTypeSize( VertexElementType type )
+        {
 
-            switch(type) {
+            switch ( type )
+            {
                 case VertexElementType.Color:
-                    return Marshal.SizeOf(typeof(int));
+                    return Marshal.SizeOf( typeof( int ) );
 
                 case VertexElementType.Float1:
-                    return Marshal.SizeOf(typeof(float));						
+                    return Marshal.SizeOf( typeof( float ) );
 
                 case VertexElementType.Float2:
-                    return Marshal.SizeOf(typeof(float)) * 2;
+                    return Marshal.SizeOf( typeof( float ) ) * 2;
 
                 case VertexElementType.Float3:
-                    return Marshal.SizeOf(typeof(float)) * 3;
+                    return Marshal.SizeOf( typeof( float ) ) * 3;
 
                 case VertexElementType.Float4:
-                    return Marshal.SizeOf(typeof(float)) * 4;
+                    return Marshal.SizeOf( typeof( float ) ) * 4;
 
                 case VertexElementType.Short1:
-                    return Marshal.SizeOf(typeof(short));
+                    return Marshal.SizeOf( typeof( short ) );
 
                 case VertexElementType.Short2:
-                    return Marshal.SizeOf(typeof(short)) * 2;
+                    return Marshal.SizeOf( typeof( short ) ) * 2;
 
                 case VertexElementType.Short3:
-                    return Marshal.SizeOf(typeof(short)) * 3;
+                    return Marshal.SizeOf( typeof( short ) ) * 3;
 
                 case VertexElementType.Short4:
-                    return Marshal.SizeOf(typeof(short)) * 4;
+                    return Marshal.SizeOf( typeof( short ) ) * 4;
 
                 case VertexElementType.UByte4:
-                    return Marshal.SizeOf(typeof(byte)) * 4;
+                    return Marshal.SizeOf( typeof( byte ) ) * 4;
             } // end switch
 
             // keep the compiler happy
@@ -134,13 +152,15 @@ namespace Axiom.Graphics {
         /// <summary>
         ///     Utility method which returns the count of values in a given type.
         /// </summary>
-        public static int GetTypeCount(VertexElementType type) {
-            switch(type) {
+        public static int GetTypeCount( VertexElementType type )
+        {
+            switch ( type )
+            {
                 case VertexElementType.Color:
                     return 1;
 
                 case VertexElementType.Float1:
-                    return 1;						
+                    return 1;
 
                 case VertexElementType.Float2:
                     return 2;
@@ -185,93 +205,109 @@ namespace Axiom.Graphics {
         /// <example>
         ///     MultiplyTypeCount(VertexElementType.Float1, 3) returns VertexElementType.Float3.
         /// </example>
-        public static VertexElementType MultiplyTypeCount(VertexElementType type, int count) {
-            switch(type) {
+        public static VertexElementType MultiplyTypeCount( VertexElementType type, int count )
+        {
+            switch ( type )
+            {
                 case VertexElementType.Float1:
-					switch(count) {
-						case 1:
-							return VertexElementType.Float1;
-						case 2:
-							return VertexElementType.Float2;
-						case 3:
-							return VertexElementType.Float3;
-						case 4:
-							return VertexElementType.Float4;
-					}
-					break;
+                    switch ( count )
+                    {
+                        case 1:
+                            return VertexElementType.Float1;
+                        case 2:
+                            return VertexElementType.Float2;
+                        case 3:
+                            return VertexElementType.Float3;
+                        case 4:
+                            return VertexElementType.Float4;
+                    }
+                    break;
 
                 case VertexElementType.Short1:
-					switch(count) {
-						case 1:
-							return VertexElementType.Short1;
-						case 2:
-							return VertexElementType.Short2;
-						case 3:
-							return VertexElementType.Short3;
-						case 4:
-							return VertexElementType.Short4;
-					}
-					break;
+                    switch ( count )
+                    {
+                        case 1:
+                            return VertexElementType.Short1;
+                        case 2:
+                            return VertexElementType.Short2;
+                        case 3:
+                            return VertexElementType.Short3;
+                        case 4:
+                            return VertexElementType.Short4;
+                    }
+                    break;
             }
 
-            throw new Exception("Cannot multiply base vertex element type: " + type.ToString());
+            throw new Exception( "Cannot multiply base vertex element type: " + type.ToString() );
         }
 
         #endregion
-		
+
         #region Properties
 
         /// <summary>
         /// 
         /// </summary>
-        public short Source {
-            get { 
-                return source; 
+        public short Source
+        {
+            get
+            {
+                return source;
             }
         }
 
         /// <summary>
         ///     Gets the offset into the buffer where this element starts.
         /// </summary>
-        public int Offset {
-            get { 
-                return offset; 
+        public int Offset
+        {
+            get
+            {
+                return offset;
             }
         }
 
         /// <summary>
         ///     Gets the data format of this element.
         /// </summary>
-        public VertexElementType Type {
-            get { 
-                return type; 
+        public VertexElementType Type
+        {
+            get
+            {
+                return type;
             }
         }
 
         /// <summary>
         ///     Gets the meaning of this element.
         /// </summary>
-        public VertexElementSemantic Semantic {
-            get { 
-                return semantic; 
+        public VertexElementSemantic Semantic
+        {
+            get
+            {
+                return semantic;
             }
         }
 
         /// <summary>
         ///     Gets the index of this element, only applicable for repeating elements (like texcoords).
         /// </summary>
-        public int Index {
-            get { 
-                return index; 
+        public int Index
+        {
+            get
+            {
+                return index;
             }
         }
 
         /// <summary>
         ///     Gets the size of this element in bytes.
         /// </summary>
-        public int Size {
-            get { 
-                return GetTypeSize(type); 
+        public int Size
+        {
+            get
+            {
+                return GetTypeSize( type );
             }
         }
 
@@ -283,7 +319,8 @@ namespace Axiom.Graphics {
         ///     Simple memberwise clone since all local fields are value types.
         /// </summary>
         /// <returns></returns>
-        public object Clone() {
+        public object Clone()
+        {
             return this.MemberwiseClone();
         }
 

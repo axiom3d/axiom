@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -30,12 +30,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Axiom.Math {
+#endregion Namespace Declarations
+
+namespace Axiom.Math
+{
     /// <summary>
     ///		Class encapsulating a standard 4x4 homogenous matrix.
     /// </summary>
@@ -70,8 +82,9 @@ namespace Axiom.Math {
     ///		| m[3][0]  m[3][1]  m[3][2]  m[3][3] |   {1}
     ///	</remarks>
     ///	<ogre headerVersion="1.18" sourceVersion="1.8" />
-    [StructLayout(LayoutKind.Sequential)]
-    public struct Matrix4 {
+    [StructLayout( LayoutKind.Sequential )]
+    public struct Matrix4
+    {
         #region Member variables
 
         public float m00, m01, m02, m03;
@@ -79,22 +92,22 @@ namespace Axiom.Math {
         public float m20, m21, m22, m23;
         public float m30, m31, m32, m33;
 
-        private readonly static Matrix4 zeroMatrix = new Matrix4(	
-			0,0,0,0,
-            0,0,0,0,
-            0,0,0,0,
-            0,0,0,0);
-        private readonly static Matrix4 identityMatrix = new Matrix4(	
-			1,0,0,0,
-            0,1,0,0,
-            0,0,1,0,
-            0,0,0,1);
+        private readonly static Matrix4 zeroMatrix = new Matrix4(
+            0, 0, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0 );
+        private readonly static Matrix4 identityMatrix = new Matrix4(
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1 );
 
-		private readonly static Matrix4 clipSpace2dToImageSpace = new Matrix4( 
-			0.5f,		0,		0,		0.5f, 
-			0,		-0.5f,		0,		0.5f, 
-			0,			0,		1,		0,
-			0,			0,		0,		1);
+        private readonly static Matrix4 clipSpace2dToImageSpace = new Matrix4(
+            0.5f, 0, 0, 0.5f,
+            0, -0.5f, 0, 0.5f,
+            0, 0, 1, 0,
+            0, 0, 0, 1 );
 
         #endregion
 
@@ -103,14 +116,27 @@ namespace Axiom.Math {
         /// <summary>
         ///		Creates a new Matrix4 with all the specified parameters.
         /// </summary>
-        public Matrix4(	float m00, float m01, float m02, float m03, 
+        public Matrix4( float m00, float m01, float m02, float m03,
             float m10, float m11, float m12, float m13,
             float m20, float m21, float m22, float m23,
-            float m30, float m31, float m32, float m33) {
-            this.m00 = m00; this.m01 = m01; this.m02 = m02; this.m03 = m03;
-            this.m10 = m10; this.m11 = m11; this.m12 = m12; this.m13 = m13;
-            this.m20 = m20; this.m21 = m21; this.m22 = m22; this.m23 = m23;
-            this.m30 = m30; this.m31 = m31; this.m32 = m32; this.m33 = m33;
+            float m30, float m31, float m32, float m33 )
+        {
+            this.m00 = m00;
+            this.m01 = m01;
+            this.m02 = m02;
+            this.m03 = m03;
+            this.m10 = m10;
+            this.m11 = m11;
+            this.m12 = m12;
+            this.m13 = m13;
+            this.m20 = m20;
+            this.m21 = m21;
+            this.m22 = m22;
+            this.m23 = m23;
+            this.m30 = m30;
+            this.m31 = m31;
+            this.m32 = m32;
+            this.m33 = m33;
         }
 
         #endregion
@@ -123,26 +149,32 @@ namespace Axiom.Math {
         ///    | 0,0,1,0 |
         ///    | 0,0,0,1 |
         /// </summary>
-        public static Matrix4 Identity {
-            get { 
-				return identityMatrix; 
-			}
+        public static Matrix4 Identity
+        {
+            get
+            {
+                return identityMatrix;
+            }
         }
 
         /// <summary>
         ///    Returns a matrix with all elements set to 0.
         /// </summary>
-        public static Matrix4 Zero {
-            get { 
-				return zeroMatrix; 
-			}
+        public static Matrix4 Zero
+        {
+            get
+            {
+                return zeroMatrix;
+            }
         }
 
-		public static Matrix4 ClipSpace2DToImageSpace {
-			get {
-				return clipSpace2dToImageSpace;
-			}
-		}
+        public static Matrix4 ClipSpace2DToImageSpace
+        {
+            get
+            {
+                return clipSpace2dToImageSpace;
+            }
+        }
 
         #endregion
 
@@ -155,11 +187,14 @@ namespace Axiom.Math {
         ///		| 0 0 0 Tz|
         ///		| 0 0 0  1 |
         /// </summary>
-        public Vector3 Translation {
-            get {
-                return new Vector3(this.m03, this.m13, this.m23);
+        public Vector3 Translation
+        {
+            get
+            {
+                return new Vector3( this.m03, this.m13, this.m23 );
             }
-            set {
+            set
+            {
                 this.m03 = value.x;
                 this.m13 = value.y;
                 this.m23 = value.z;
@@ -173,11 +208,14 @@ namespace Axiom.Math {
         ///		| 0  0 Sz 0 |
         ///		| 0  0  0  0 |
         /// </summary>
-        public Vector3 Scale {
-            get {
-                return new Vector3(this.m00, this.m11, this.m22);
+        public Vector3 Scale
+        {
+            get
+            {
+                return new Vector3( this.m00, this.m11, this.m22 );
             }
-            set {
+            set
+            {
                 this.m00 = value.x;
                 this.m11 = value.y;
                 this.m22 = value.z;
@@ -192,31 +230,34 @@ namespace Axiom.Math {
         ///    Returns a 3x3 portion of this 4x4 matrix.
         /// </summary>
         /// <returns></returns>
-        public Matrix3 GetMatrix3() {
+        public Matrix3 GetMatrix3()
+        {
             return
                 new Matrix3(
                     this.m00, this.m01, this.m02,
                     this.m10, this.m11, this.m12,
-                    this.m20, this.m21, this.m22);
+                    this.m20, this.m21, this.m22 );
         }
 
         /// <summary>
         ///    Returns an inverted 4d matrix.
         /// </summary>
         /// <returns></returns>
-        public Matrix4 Inverse() {
-            return Adjoint() * (1.0f / this.Determinant);
+        public Matrix4 Inverse()
+        {
+            return Adjoint() * ( 1.0f / this.Determinant );
         }
 
         /// <summary>
         ///    Swap the rows of the matrix with the columns.
         /// </summary>
         /// <returns>A transposed Matrix.</returns>
-        public Matrix4 Transpose() {
-            return new Matrix4(this.m00, this.m10, this.m20, this.m30,
+        public Matrix4 Transpose()
+        {
+            return new Matrix4( this.m00, this.m10, this.m20, this.m30,
                 this.m01, this.m11, this.m21, this.m31,
                 this.m02, this.m12, this.m22, this.m32,
-                this.m03, this.m13, this.m23, this.m33);
+                this.m03, this.m13, this.m23, this.m33 );
         }
 
         #endregion
@@ -229,17 +270,19 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Matrix4 Multiply (Matrix4 left, Matrix4 right) {
-        	return left * right;
+        public static Matrix4 Multiply( Matrix4 left, Matrix4 right )
+        {
+            return left * right;
         }
-        
+
         /// <summary>
         ///		Used to multiply (concatenate) two 4x4 Matrices.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Matrix4 operator * (Matrix4 left, Matrix4 right) {
+        public static Matrix4 operator *( Matrix4 left, Matrix4 right )
+        {
             Matrix4 result = new Matrix4();
 
             result.m00 = left.m00 * right.m00 + left.m01 * right.m10 + left.m02 * right.m20 + left.m03 * right.m30;
@@ -276,20 +319,22 @@ namespace Axiom.Math {
         /// <param name="matrix">A Matrix4.</param>
         /// <param name="vector">A Vector3.</param>
         /// <returns>A new vector.</returns>
-        public static Vector3 Multiply (Matrix4 matrix, Vector3 vector) {
-        	return matrix * vector;
+        public static Vector3 Multiply( Matrix4 matrix, Vector3 vector )
+        {
+            return matrix * vector;
         }
 
-		/// <summary>
-		///		Transforms a plane using the specified transform.
-		/// </summary>
-		/// <param name="matrix">Transformation matrix.</param>
-		/// <param name="plane">Plane to transform.</param>
-		/// <returns>A transformed plane.</returns>
-		public static Plane Multiply(Matrix4 matrix, Plane plane) {
-			return matrix * plane;
-		}
-        
+        /// <summary>
+        ///		Transforms a plane using the specified transform.
+        /// </summary>
+        /// <param name="matrix">Transformation matrix.</param>
+        /// <param name="plane">Plane to transform.</param>
+        /// <returns>A transformed plane.</returns>
+        public static Plane Multiply( Matrix4 matrix, Plane plane )
+        {
+            return matrix * plane;
+        }
+
         /// <summary>
         ///		Transforms the given 3-D vector by the matrix, projecting the 
         ///		result back into <i>w</i> = 1.
@@ -301,14 +346,15 @@ namespace Axiom.Math {
         /// <param name="matrix">A Matrix4.</param>
         /// <param name="vector">A Vector3.</param>
         /// <returns>A new vector.</returns>
-        public static Vector3 operator * (Matrix4 matrix, Vector3 vector) {
+        public static Vector3 operator *( Matrix4 matrix, Vector3 vector )
+        {
             Vector3 result = new Vector3();
 
             float inverseW = 1.0f / ( matrix.m30 + matrix.m31 + matrix.m32 + matrix.m33 );
 
-            result.x = ( (matrix.m00 * vector.x) + (matrix.m01 * vector.y) + (matrix.m02 * vector.z) + matrix.m03 ) * inverseW;
-            result.y = ( (matrix.m10 * vector.x) + (matrix.m11 * vector.y) + (matrix.m12 * vector.z) + matrix.m13 ) * inverseW;
-            result.z = ( (matrix.m20 * vector.x) + (matrix.m21 * vector.y) + (matrix.m22 * vector.z) + matrix.m23 ) * inverseW;
+            result.x = ( ( matrix.m00 * vector.x ) + ( matrix.m01 * vector.y ) + ( matrix.m02 * vector.z ) + matrix.m03 ) * inverseW;
+            result.y = ( ( matrix.m10 * vector.x ) + ( matrix.m11 * vector.y ) + ( matrix.m12 * vector.z ) + matrix.m13 ) * inverseW;
+            result.z = ( ( matrix.m20 * vector.x ) + ( matrix.m21 * vector.y ) + ( matrix.m22 * vector.z ) + matrix.m23 ) * inverseW;
 
             return result;
         }
@@ -319,7 +365,8 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Matrix4 operator * ( Matrix4 left, float scalar) {
+        public static Matrix4 operator *( Matrix4 left, float scalar )
+        {
             Matrix4 result = new Matrix4();
 
             result.m00 = left.m00 * scalar;
@@ -345,47 +392,50 @@ namespace Axiom.Math {
             return result;
         }
 
-		/// <summary>
-		///		Used to multiply a transformation to a Plane.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="plane"></param>
-		/// <returns></returns>
-		public static Plane operator * (Matrix4 left, Plane plane) {
-			Plane result = new Plane();
-
-			Vector3 planeNormal = plane.Normal;
-
-			result.Normal = new Vector3(
-				left.m00 * planeNormal.x + left.m01 * planeNormal.y + left.m02 * planeNormal.z,
-				left.m10 * planeNormal.x + left.m11 * planeNormal.y + left.m12 * planeNormal.z,
-				left.m20 * planeNormal.x + left.m21 * planeNormal.y + left.m22 * planeNormal.z);
-
-			Vector3 pt = planeNormal * -plane.D;
-			pt = left * pt;
-
-			result.D = -pt.Dot(result.Normal);
-
-			return result;
-		}
-
         /// <summary>
-        ///		Used to add two matrices together.
+        ///		Used to multiply a transformation to a Plane.
         /// </summary>
         /// <param name="left"></param>
-        /// <param name="right"></param>
+        /// <param name="plane"></param>
         /// <returns></returns>
-        public static Matrix4 Add ( Matrix4 left, Matrix4 right ) {
-        	return left + right;
+        public static Plane operator *( Matrix4 left, Plane plane )
+        {
+            Plane result = new Plane();
+
+            Vector3 planeNormal = plane.Normal;
+
+            result.Normal = new Vector3(
+                left.m00 * planeNormal.x + left.m01 * planeNormal.y + left.m02 * planeNormal.z,
+                left.m10 * planeNormal.x + left.m11 * planeNormal.y + left.m12 * planeNormal.z,
+                left.m20 * planeNormal.x + left.m21 * planeNormal.y + left.m22 * planeNormal.z );
+
+            Vector3 pt = planeNormal * -plane.D;
+            pt = left * pt;
+
+            result.D = -pt.Dot( result.Normal );
+
+            return result;
         }
-        
+
         /// <summary>
         ///		Used to add two matrices together.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Matrix4 operator + ( Matrix4 left, Matrix4 right ) {
+        public static Matrix4 Add( Matrix4 left, Matrix4 right )
+        {
+            return left + right;
+        }
+
+        /// <summary>
+        ///		Used to add two matrices together.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Matrix4 operator +( Matrix4 left, Matrix4 right )
+        {
             Matrix4 result = new Matrix4();
 
             result.m00 = left.m00 + right.m00;
@@ -417,17 +467,19 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Matrix4 Subtract ( Matrix4 left, Matrix4 right ) {
-        	return left - right;
+        public static Matrix4 Subtract( Matrix4 left, Matrix4 right )
+        {
+            return left - right;
         }
-        
+
         /// <summary>
         ///		Used to subtract two matrices.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Matrix4 operator - ( Matrix4 left, Matrix4 right ) {
+        public static Matrix4 operator -( Matrix4 left, Matrix4 right )
+        {
             Matrix4 result = new Matrix4();
 
             result.m00 = left.m00 - right.m00;
@@ -459,8 +511,9 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns>true if the Matrix 4 instances are equal, false otherwise.</returns>
-        public static bool operator == (Matrix4 left, Matrix4 right) {
-            if( 
+        public static bool operator ==( Matrix4 left, Matrix4 right )
+        {
+            if (
                 left.m00 == right.m00 && left.m01 == right.m01 && left.m02 == right.m02 && left.m03 == right.m03 &&
                 left.m10 == right.m10 && left.m11 == right.m11 && left.m12 == right.m12 && left.m13 == right.m13 &&
                 left.m20 == right.m20 && left.m21 == right.m21 && left.m22 == right.m22 && left.m23 == right.m23 &&
@@ -476,8 +529,9 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns>true if the Matrix 4 instances are not equal, false otherwise.</returns>
-        public static bool operator != (Matrix4 left, Matrix4 right) {
-            return !(left == right);
+        public static bool operator !=( Matrix4 left, Matrix4 right )
+        {
+            return !( left == right );
         }
 
         /// <summary>
@@ -485,21 +539,29 @@ namespace Axiom.Math {
         /// </summary>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Matrix4 FromMatrix3(Matrix3 right) {
-        	return right;
+        public static Matrix4 FromMatrix3( Matrix3 right )
+        {
+            return right;
         }
-        
+
         /// <summary>
         ///		Used to allow assignment from a Matrix3 to a Matrix4 object.
         /// </summary>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static implicit operator Matrix4(Matrix3 right) {
+        public static implicit operator Matrix4( Matrix3 right )
+        {
             Matrix4 result = Matrix4.Identity;
 
-            result.m00 = right.m00; result.m01 = right.m01; result.m02 = right.m02;
-            result.m10 = right.m10; result.m11 = right.m11; result.m12 = right.m12;
-            result.m20 = right.m20; result.m21 = right.m21; result.m22 = right.m22;	
+            result.m00 = right.m00;
+            result.m01 = right.m01;
+            result.m02 = right.m02;
+            result.m10 = right.m10;
+            result.m11 = right.m11;
+            result.m12 = right.m12;
+            result.m20 = right.m20;
+            result.m21 = right.m21;
+            result.m22 = right.m22;
 
             return result;
         }
@@ -511,21 +573,26 @@ namespace Axiom.Math {
         ///    This indexer is only provided as a convenience, and is <b>not</b> recommended for use in
         ///    intensive applications.  
         /// </remarks>
-        public float this[int row, int col] {
-            get {
+        public float this[ int row, int col ]
+        {
+            get
+            {
                 //Debug.Assert((row >= 0 && row < 4) && (col >= 0 && col < 4), "Attempt to access Matrix4 indexer out of bounds.");
 
-                unsafe {
-                    fixed(float* pM = &m00)
-                        return *(pM + ((4*row) + col)); 
+                unsafe
+                {
+                    fixed ( float* pM = &m00 )
+                        return *( pM + ( ( 4 * row ) + col ) );
                 }
             }
-            set { 	
+            set
+            {
                 //Debug.Assert((row >= 0 && row < 4) && (col >= 0 && col < 4), "Attempt to access Matrix4 indexer out of bounds.");
 
-                unsafe {
-                    fixed(float* pM = &m00)
-                        *(pM + ((4*row) + col)) = value;
+                unsafe
+                {
+                    fixed ( float* pM = &m00 )
+                        *( pM + ( ( 4 * row ) + col ) ) = value;
                 }
             }
         }
@@ -537,36 +604,46 @@ namespace Axiom.Math {
         ///    This indexer is only provided as a convenience, and is <b>not</b> recommended for use in
         ///    intensive applications.  
         /// </remarks>
-        public float this[int index] {
-            get {
+        public float this[ int index ]
+        {
+            get
+            {
                 //Debug.Assert(index >= 0 && index < 16, "Attempt to access Matrix4 linear indexer out of bounds.");
 
-                unsafe {
-                    fixed(float* pMatrix = &this.m00) {			
-                        return *(pMatrix + index);
+                unsafe
+                {
+                    fixed ( float* pMatrix = &this.m00 )
+                    {
+                        return *( pMatrix + index );
                     }
                 }
             }
-            set {
+            set
+            {
                 //Debug.Assert(index >= 0 && index < 16, "Attempt to access Matrix4 linear indexer out of bounds.");
 
-                unsafe {
-                    fixed(float* pMatrix = &this.m00) {			
-                        *(pMatrix + index) = value;
+                unsafe
+                {
+                    fixed ( float* pMatrix = &this.m00 )
+                    {
+                        *( pMatrix + index ) = value;
                     }
                 }
             }
-        } 
+        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public void MakeFloatArray(float[] floats) {
-            unsafe {
-                fixed(float* p = &m00) {
-                    for(int i = 0; i < 16; i++)
-                        floats[i] = *(p + i);
+        public void MakeFloatArray( float[] floats )
+        {
+            unsafe
+            {
+                fixed ( float* p = &m00 )
+                {
+                    for ( int i = 0; i < 16; i++ )
+                        floats[ i ] = *( p + i );
                 }
             }
         }
@@ -574,13 +651,15 @@ namespace Axiom.Math {
         /// <summary>
         ///    Gets the determinant of this matrix.
         /// </summary>
-        public float Determinant {
-            get {
-				// note: this is an expanded version of the Ogre determinant() method, to give better performance in C#. Generated using a script
-                float result = m00 * (m11 * (m22 * m33 - m32 * m23) - m12 * (m21 * m33 - m31 * m23) + m13 * (m21 * m32 - m31 * m22)) - 
-	                m01 * (m10 * (m22 * m33 - m32 * m23) - m12 * (m20 * m33 - m30 * m23) + m13 * (m20 * m32 - m30 * m22)) + 
-	                m02 * (m10 * (m21 * m33 - m31 * m23) - m11 * (m20 * m33 - m30 * m23) + m13 * (m20 * m31 - m30 * m21)) - 
-	                m03 * (m10 * (m21 * m32 - m31 * m22) - m11 * (m20 * m32 - m30 * m22) + m12 * (m20 * m31 - m30 * m21));
+        public float Determinant
+        {
+            get
+            {
+                // note: this is an expanded version of the Ogre determinant() method, to give better performance in C#. Generated using a script
+                float result = m00 * ( m11 * ( m22 * m33 - m32 * m23 ) - m12 * ( m21 * m33 - m31 * m23 ) + m13 * ( m21 * m32 - m31 * m22 ) ) -
+                    m01 * ( m10 * ( m22 * m33 - m32 * m23 ) - m12 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m32 - m30 * m22 ) ) +
+                    m02 * ( m10 * ( m21 * m33 - m31 * m23 ) - m11 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m31 - m30 * m21 ) ) -
+                    m03 * ( m10 * ( m21 * m32 - m31 * m22 ) - m11 * ( m20 * m32 - m30 * m22 ) + m12 * ( m20 * m31 - m30 * m21 ) );
 
                 return result;
             }
@@ -590,26 +669,27 @@ namespace Axiom.Math {
         ///    Used to generate the adjoint of this matrix.  Used internally for <see cref="Inverse"/>.
         /// </summary>
         /// <returns>The adjoint matrix of the current instance.</returns>
-        private Matrix4 Adjoint() {
+        private Matrix4 Adjoint()
+        {
             // note: this is an expanded version of the Ogre adjoint() method, to give better performance in C#. Generated using a script
-            float val0 = m11 * (m22 * m33 - m32 * m23) - m12 * (m21 * m33 - m31 * m23) + m13 * (m21 * m32 - m31 * m22);
-            float val1 = -(m01 * (m22 * m33 - m32 * m23) - m02 * (m21 * m33 - m31 * m23) + m03 * (m21 * m32 - m31 * m22));
-            float val2 = m01 * (m12 * m33 - m32 * m13) - m02 * (m11 * m33 - m31 * m13) + m03 * (m11 * m32 - m31 * m12);
-            float val3 = -(m01 * (m12 * m23 - m22 * m13) - m02 * (m11 * m23 - m21 * m13) + m03 * (m11 * m22 - m21 * m12));
-            float val4 = -(m10 * (m22 * m33 - m32 * m23) - m12 * (m20 * m33 - m30 * m23) + m13 * (m20 * m32 - m30 * m22));
-            float val5 = m00 * (m22 * m33 - m32 * m23) - m02 * (m20 * m33 - m30 * m23) + m03 * (m20 * m32 - m30 * m22);
-            float val6 = -(m00 * (m12 * m33 - m32 * m13) - m02 * (m10 * m33 - m30 * m13) + m03 * (m10 * m32 - m30 * m12));
-            float val7 = m00 * (m12 * m23 - m22 * m13) - m02 * (m10 * m23 - m20 * m13) + m03 * (m10 * m22 - m20 * m12);
-            float val8 = m10 * (m21 * m33 - m31 * m23) - m11 * (m20 * m33 - m30 * m23) + m13 * (m20 * m31 - m30 * m21);
-            float val9 = -(m00 * (m21 * m33 - m31 * m23) - m01 * (m20 * m33 - m30 * m23) + m03 * (m20 * m31 - m30 * m21));
-            float val10 = m00 * (m11 * m33 - m31 * m13) - m01 * (m10 * m33 - m30 * m13) + m03 * (m10 * m31 - m30 * m11);
-            float val11 = -(m00 * (m11 * m23 - m21 * m13) - m01 * (m10 * m23 - m20 * m13) + m03 * (m10 * m21 - m20 * m11));
-            float val12 = -(m10 * (m21 * m32 - m31 * m22) - m11 * (m20 * m32 - m30 * m22) + m12 * (m20 * m31 - m30 * m21));
-            float val13 = m00 * (m21 * m32 - m31 * m22) - m01 * (m20 * m32 - m30 * m22) + m02 * (m20 * m31 - m30 * m21);
-            float val14 = -(m00 * (m11 * m32 - m31 * m12) - m01 * (m10 * m32 - m30 * m12) + m02 * (m10 * m31 - m30 * m11));
-            float val15 = m00 * (m11 * m22 - m21 * m12) - m01 * (m10 * m22 - m20 * m12) + m02 * (m10 * m21 - m20 * m11);
+            float val0 = m11 * ( m22 * m33 - m32 * m23 ) - m12 * ( m21 * m33 - m31 * m23 ) + m13 * ( m21 * m32 - m31 * m22 );
+            float val1 = -( m01 * ( m22 * m33 - m32 * m23 ) - m02 * ( m21 * m33 - m31 * m23 ) + m03 * ( m21 * m32 - m31 * m22 ) );
+            float val2 = m01 * ( m12 * m33 - m32 * m13 ) - m02 * ( m11 * m33 - m31 * m13 ) + m03 * ( m11 * m32 - m31 * m12 );
+            float val3 = -( m01 * ( m12 * m23 - m22 * m13 ) - m02 * ( m11 * m23 - m21 * m13 ) + m03 * ( m11 * m22 - m21 * m12 ) );
+            float val4 = -( m10 * ( m22 * m33 - m32 * m23 ) - m12 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m32 - m30 * m22 ) );
+            float val5 = m00 * ( m22 * m33 - m32 * m23 ) - m02 * ( m20 * m33 - m30 * m23 ) + m03 * ( m20 * m32 - m30 * m22 );
+            float val6 = -( m00 * ( m12 * m33 - m32 * m13 ) - m02 * ( m10 * m33 - m30 * m13 ) + m03 * ( m10 * m32 - m30 * m12 ) );
+            float val7 = m00 * ( m12 * m23 - m22 * m13 ) - m02 * ( m10 * m23 - m20 * m13 ) + m03 * ( m10 * m22 - m20 * m12 );
+            float val8 = m10 * ( m21 * m33 - m31 * m23 ) - m11 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m31 - m30 * m21 );
+            float val9 = -( m00 * ( m21 * m33 - m31 * m23 ) - m01 * ( m20 * m33 - m30 * m23 ) + m03 * ( m20 * m31 - m30 * m21 ) );
+            float val10 = m00 * ( m11 * m33 - m31 * m13 ) - m01 * ( m10 * m33 - m30 * m13 ) + m03 * ( m10 * m31 - m30 * m11 );
+            float val11 = -( m00 * ( m11 * m23 - m21 * m13 ) - m01 * ( m10 * m23 - m20 * m13 ) + m03 * ( m10 * m21 - m20 * m11 ) );
+            float val12 = -( m10 * ( m21 * m32 - m31 * m22 ) - m11 * ( m20 * m32 - m30 * m22 ) + m12 * ( m20 * m31 - m30 * m21 ) );
+            float val13 = m00 * ( m21 * m32 - m31 * m22 ) - m01 * ( m20 * m32 - m30 * m22 ) + m02 * ( m20 * m31 - m30 * m21 );
+            float val14 = -( m00 * ( m11 * m32 - m31 * m12 ) - m01 * ( m10 * m32 - m30 * m12 ) + m02 * ( m10 * m31 - m30 * m11 ) );
+            float val15 = m00 * ( m11 * m22 - m21 * m12 ) - m01 * ( m10 * m22 - m20 * m12 ) + m02 * ( m10 * m21 - m20 * m11 );
 
-            return new Matrix4(val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14, val15);
+            return new Matrix4( val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14, val15 );
         }
 
         #endregion
@@ -621,13 +701,14 @@ namespace Axiom.Math {
         ///		a Matrix4.
         /// </summary>
         /// <returns>A string representation of a vector3.</returns>
-        public override string ToString() {
+        public override string ToString()
+        {
             StringBuilder sb = new StringBuilder();
-			
-            sb.AppendFormat(" | {0} {1} {2} {3} |\n", this.m00, this.m01, this.m02, this.m03);
-            sb.AppendFormat(" | {0} {1} {2} {3} |\n", this.m10, this.m11, this.m12, this.m13);
-            sb.AppendFormat(" | {0} {1} {2} {3} |\n", this.m20, this.m21, this.m22, this.m23);
-            sb.AppendFormat(" | {0} {1} {2} {3} |\n", this.m30, this.m31, this.m32, this.m33);
+
+            sb.AppendFormat( " | {0} {1} {2} {3} |\n", this.m00, this.m01, this.m02, this.m03 );
+            sb.AppendFormat( " | {0} {1} {2} {3} |\n", this.m10, this.m11, this.m12, this.m13 );
+            sb.AppendFormat( " | {0} {1} {2} {3} |\n", this.m20, this.m21, this.m22, this.m23 );
+            sb.AppendFormat( " | {0} {1} {2} {3} |\n", this.m30, this.m31, this.m32, this.m33 );
 
             return sb.ToString();
         }
@@ -641,16 +722,19 @@ namespace Axiom.Math {
         ///		member variables.
         /// </summary>
         /// <returns></returns>
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
             int hashCode = 0;
 
-            unsafe {
-                fixed(float* pM = &m00) {
-                    for(int i = 0; i < 16; i++)
-                        hashCode ^= (int)(*(pM + i));
+            unsafe
+            {
+                fixed ( float* pM = &m00 )
+                {
+                    for ( int i = 0; i < 16; i++ )
+                        hashCode ^= (int)( *( pM + i ) );
                 }
             }
-					
+
             return hashCode;
         }
 
@@ -660,9 +744,10 @@ namespace Axiom.Math {
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override bool Equals(object obj) {
-            if(obj is Matrix4)
-                return (this == (Matrix4)obj);
+        public override bool Equals( object obj )
+        {
+            if ( obj is Matrix4 )
+                return ( this == (Matrix4)obj );
             else
                 return false;
         }

@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,194 +24,248 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
+
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
 
-namespace Axiom.Graphics {
-	/// <summary>
-	///		Class which represents the renderable aspects of a set of shadow volume faces.
-	/// </summary>
-	/// <remarks>
-	///		Note that for casters comprised of more than one set of vertex buffers (e.g. SubMeshes each
-	///		using their own geometry), it will take more than one <see cref="ShadowRenderable"/> to render the 
-	///		shadow volume. Therefore for shadow caster geometry, it is best to stick to one set of
-	///		vertex buffers (not necessarily one buffer, but the positions for the entire geometry 
-	///		should come from one buffer if possible)
-	/// </remarks>
-	public abstract class ShadowRenderable : IRenderable {
-		#region Fields
+#endregion Namespace Declarations
 
-		protected Material material;
-		protected RenderOperation renderOp = new RenderOperation();
-		/// <summary>
-		///		Used only if IsLightCapSeparate == true.
-		/// </summary>
-		protected ShadowRenderable lightCap;
-		protected LightList dummyLightList = new LightList();
-		protected Hashtable customParams = new Hashtable();
+namespace Axiom.Graphics
+{
+    /// <summary>
+    ///		Class which represents the renderable aspects of a set of shadow volume faces.
+    /// </summary>
+    /// <remarks>
+    ///		Note that for casters comprised of more than one set of vertex buffers (e.g. SubMeshes each
+    ///		using their own geometry), it will take more than one <see cref="ShadowRenderable"/> to render the 
+    ///		shadow volume. Therefore for shadow caster geometry, it is best to stick to one set of
+    ///		vertex buffers (not necessarily one buffer, but the positions for the entire geometry 
+    ///		should come from one buffer if possible)
+    /// </remarks>
+    public abstract class ShadowRenderable : IRenderable
+    {
+        #region Fields
 
-		#endregion Fields
+        protected Material material;
+        protected RenderOperation renderOp = new RenderOperation();
+        /// <summary>
+        ///		Used only if IsLightCapSeparate == true.
+        /// </summary>
+        protected ShadowRenderable lightCap;
+        protected LightList dummyLightList = new LightList();
+        protected Hashtable customParams = new Hashtable();
 
-		#region Properties
+        #endregion Fields
 
-		/// <summary>
-		///		Does this renderable require a separate light cap?
-		/// </summary>
-		/// <remarks>
-		///		If possible, the light cap (when required) should be contained in the
-		///		usual geometry of the shadow renderable. However, if for some reason
-		///		the normal depth function (less than) could cause artefacts, then a
-		///		separate light cap with a depth function of 'always fail' can be used 
-		///		instead. The primary example of this is when there are floating point
-		///		inaccuracies caused by calculating the shadow geometry separately from
-		///		the real geometry. 
-		/// </remarks>
-		public bool IsLightCapSeperate {
-			get {
-				return lightCap != null;
-			}
-		}
+        #region Properties
 
-		/// <summary>
-		///		Get the light cap version of this renderable.
-		/// </summary>
-		public ShadowRenderable LightCapRenderable {
-			get {
-				return lightCap;
-			}
-		}
+        /// <summary>
+        ///		Does this renderable require a separate light cap?
+        /// </summary>
+        /// <remarks>
+        ///		If possible, the light cap (when required) should be contained in the
+        ///		usual geometry of the shadow renderable. However, if for some reason
+        ///		the normal depth function (less than) could cause artefacts, then a
+        ///		separate light cap with a depth function of 'always fail' can be used 
+        ///		instead. The primary example of this is when there are floating point
+        ///		inaccuracies caused by calculating the shadow geometry separately from
+        ///		the real geometry. 
+        /// </remarks>
+        public bool IsLightCapSeperate
+        {
+            get
+            {
+                return lightCap != null;
+            }
+        }
 
-		/// <summary>
-		///		Should this ShadowRenderable be treated as visible?
-		/// </summary>
-		public virtual bool IsVisible {
-			get {
-				return true;
-			}
-		}
+        /// <summary>
+        ///		Get the light cap version of this renderable.
+        /// </summary>
+        public ShadowRenderable LightCapRenderable
+        {
+            get
+            {
+                return lightCap;
+            }
+        }
 
-		#endregion Properties
+        /// <summary>
+        ///		Should this ShadowRenderable be treated as visible?
+        /// </summary>
+        public virtual bool IsVisible
+        {
+            get
+            {
+                return true;
+            }
+        }
 
-		#region Methods
+        #endregion Properties
 
-		/// <summary>
-		///		Gets the internal render operation for setup.
-		/// </summary>
-		/// <returns></returns>
-		public RenderOperation GetRenderOperationForUpdate() {
-			return renderOp;
-		}
+        #region Methods
 
-		#endregion Methods
+        /// <summary>
+        ///		Gets the internal render operation for setup.
+        /// </summary>
+        /// <returns></returns>
+        public RenderOperation GetRenderOperationForUpdate()
+        {
+            return renderOp;
+        }
+
+        #endregion Methods
 
         #region IRenderable Members
 
-		public bool CastsShadows {
-			get {
-				return false;
-			}
-		}
-
-		/// <summary>
-		///		Gets/Sets the material to use for this shadow renderable.
-		/// </summary>
-		/// <remarks>
-		///		Should be set by the caller before adding to a render queue.
-		/// </remarks>
-        public Material Material {
-            get {
-                return material;
+        public bool CastsShadows
+        {
+            get
+            {
+                return false;
             }
-			set {
-				material = value;
-			}
         }
 
-        public Technique Technique {
-            get {
+        /// <summary>
+        ///		Gets/Sets the material to use for this shadow renderable.
+        /// </summary>
+        /// <remarks>
+        ///		Should be set by the caller before adding to a render queue.
+        /// </remarks>
+        public Material Material
+        {
+            get
+            {
+                return material;
+            }
+            set
+            {
+                material = value;
+            }
+        }
+
+        public Technique Technique
+        {
+            get
+            {
                 return this.Material.GetBestTechnique();
             }
         }
 
-		/// <summary>
-		///		Gets the render operation for this shadow renderable.
-		/// </summary>
-		/// <param name="op"></param>
-        public void GetRenderOperation(RenderOperation op) {
-			// TODO: Ensure all other places throughout the engine set these properly
+        /// <summary>
+        ///		Gets the render operation for this shadow renderable.
+        /// </summary>
+        /// <param name="op"></param>
+        public void GetRenderOperation( RenderOperation op )
+        {
+            // TODO: Ensure all other places throughout the engine set these properly
             op.indexData = renderOp.indexData;
-			op.useIndices = true;
-			op.operationType = OperationType.TriangleList;
-			op.vertexData = renderOp.vertexData;
+            op.useIndices = true;
+            op.operationType = OperationType.TriangleList;
+            op.vertexData = renderOp.vertexData;
         }
 
-        public abstract void GetWorldTransforms(Axiom.Math.Matrix4[] matrices);
+        public abstract void GetWorldTransforms( Axiom.Math.Matrix4[] matrices );
 
-        public LightList Lights {
-            get {
+        public LightList Lights
+        {
+            get
+            {
                 return dummyLightList;
             }
         }
 
-        public bool NormalizeNormals {
-            get {
+        public bool NormalizeNormals
+        {
+            get
+            {
                 return false;
             }
         }
 
-        public virtual ushort NumWorldTransforms {
-            get {
+        public virtual ushort NumWorldTransforms
+        {
+            get
+            {
                 return 1;
             }
         }
 
-        public virtual bool UseIdentityProjection {
-            get {
+        public virtual bool UseIdentityProjection
+        {
+            get
+            {
                 return false;
             }
         }
 
-        public virtual bool UseIdentityView {
-            get {
+        public virtual bool UseIdentityView
+        {
+            get
+            {
                 return false;
             }
         }
 
-        public virtual SceneDetailLevel RenderDetail {
-            get {
+        public virtual SceneDetailLevel RenderDetail
+        {
+            get
+            {
                 return SceneDetailLevel.Solid;
             }
         }
 
-        public abstract Axiom.Math.Quaternion WorldOrientation { get; }
+        public abstract Axiom.Math.Quaternion WorldOrientation
+        {
+            get;
+        }
 
-        public abstract Axiom.Math.Vector3 WorldPosition { get; }
+        public abstract Axiom.Math.Vector3 WorldPosition
+        {
+            get;
+        }
 
-        public virtual float GetSquaredViewDepth(Camera camera) {
+        public virtual float GetSquaredViewDepth( Camera camera )
+        {
             return 0;
         }
 
-		public Vector4 GetCustomParameter(int index) {
-			if(customParams[index] == null) {
-				throw new Exception("A parameter was not found at the given index");
-			}
-			else {
-				return (Vector4)customParams[index];
-			}
-		}
+        public Vector4 GetCustomParameter( int index )
+        {
+            if ( customParams[ index ] == null )
+            {
+                throw new Exception( "A parameter was not found at the given index" );
+            }
+            else
+            {
+                return (Vector4)customParams[ index ];
+            }
+        }
 
-		public void SetCustomParameter(int index, Vector4 val) {
-			customParams[index] = val;
-		}
+        public void SetCustomParameter( int index, Vector4 val )
+        {
+            customParams[ index ] = val;
+        }
 
-		public void UpdateCustomGpuParameter(GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams) {
-			if(customParams[entry.data] != null) {
-				gpuParams.SetConstant(entry.index, (Vector4)customParams[entry.data]);
-			}
-		}
+        public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
+        {
+            if ( customParams[ entry.data ] != null )
+            {
+                gpuParams.SetConstant( entry.index, (Vector4)customParams[ entry.data ] );
+            }
+        }
 
         #endregion
     }

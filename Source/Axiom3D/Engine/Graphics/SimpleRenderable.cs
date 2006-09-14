@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,222 +24,273 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
+
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
 
-namespace Axiom.Graphics {
-	/// <summary>
-	/// Summary description for SimpleRenderable.
-	/// </summary>
-	public abstract class SimpleRenderable : MovableObject, IRenderable {
-		#region Fields
+#endregion Namespace Declarations
 
-		protected Matrix4 worldTransform = Matrix4.Identity;
-		protected AxisAlignedBox box;
-		protected string materialName;
-		protected Material material;
-		protected SceneManager sceneMgr;
-		protected Camera camera;
-		static protected long nextAutoGenName;
+namespace Axiom.Graphics
+{
+    /// <summary>
+    /// Summary description for SimpleRenderable.
+    /// </summary>
+    public abstract class SimpleRenderable : MovableObject, IRenderable
+    {
+        #region Fields
 
-		protected VertexData vertexData;
-		protected IndexData indexData;
+        protected Matrix4 worldTransform = Matrix4.Identity;
+        protected AxisAlignedBox box;
+        protected string materialName;
+        protected Material material;
+        protected SceneManager sceneMgr;
+        protected Camera camera;
+        static protected long nextAutoGenName;
 
-		/// <summary>
-		///    Empty light list to use when there is no parent for this renderable.
-		/// </summary>
-		protected LightList dummyLightList = new LightList();
+        protected VertexData vertexData;
+        protected IndexData indexData;
 
-		protected Hashtable customParams = new Hashtable();
+        /// <summary>
+        ///    Empty light list to use when there is no parent for this renderable.
+        /// </summary>
+        protected LightList dummyLightList = new LightList();
 
-		#endregion Fields
+        protected Hashtable customParams = new Hashtable();
 
-		#region Constructor
+        #endregion Fields
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		public SimpleRenderable() {
-			materialName = "BaseWhite";
-			material = MaterialManager.Instance.GetByName("BaseWhite");
-			name = "SimpleRenderable" + nextAutoGenName++;
+        #region Constructor
 
-			material.Load();
-		}
+        /// <summary>
+        ///		Default constructor.
+        /// </summary>
+        public SimpleRenderable()
+        {
+            materialName = "BaseWhite";
+            material = MaterialManager.Instance.GetByName( "BaseWhite" );
+            name = "SimpleRenderable" + nextAutoGenName++;
 
-		#endregion
+            material.Load();
+        }
 
-		#region Implementation of SceneObject
+        #endregion
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public override AxisAlignedBox BoundingBox {
-			get {
-				return (AxisAlignedBox)box.Clone();
-			}
-		}
+        #region Implementation of SceneObject
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="camera"></param>
-		public override void NotifyCurrentCamera(Camera camera) {
-			this.camera = camera;
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public override AxisAlignedBox BoundingBox
+        {
+            get
+            {
+                return (AxisAlignedBox)box.Clone();
+            }
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="queue"></param>
-		public override void UpdateRenderQueue(RenderQueue queue) {
-			// add ourself to the render queue
-			queue.AddRenderable(this);
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="camera"></param>
+        public override void NotifyCurrentCamera( Camera camera )
+        {
+            this.camera = camera;
+        }
 
-		#endregion
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="queue"></param>
+        public override void UpdateRenderQueue( RenderQueue queue )
+        {
+            // add ourself to the render queue
+            queue.AddRenderable( this );
+        }
 
-		#region IRenderable Members
+        #endregion
 
-		public bool CastsShadows {
-			get {
-				return false;
-			}
-		}
+        #region IRenderable Members
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public Material Material {
-			get { 
-				return material; 
-			}
-			set {
-				material = value;
-			}
-		}
+        public bool CastsShadows
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-		public Technique Technique {
-			get {
-				return material.GetBestTechnique();
-			}
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public Material Material
+        {
+            get
+            {
+                return material;
+            }
+            set
+            {
+                material = value;
+            }
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="op"></param>
-		public abstract void GetRenderOperation(RenderOperation op);
+        public Technique Technique
+        {
+            get
+            {
+                return material.GetBestTechnique();
+            }
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="matrices"></param>
-		public virtual void GetWorldTransforms(Matrix4[] matrices) {
-			matrices[0] = worldTransform * parentNode.FullTransform;
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="op"></param>
+        public abstract void GetRenderOperation( RenderOperation op );
 
-		public bool NormalizeNormals {
-			get {
-				return false;
-			}
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="matrices"></param>
+        public virtual void GetWorldTransforms( Matrix4[] matrices )
+        {
+            matrices[ 0 ] = worldTransform * parentNode.FullTransform;
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public ushort NumWorldTransforms {
-			get {
-				return 1;
-			}
-		}
+        public bool NormalizeNormals
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public virtual bool UseIdentityProjection {
-			get {
-				return false;
-			}
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public ushort NumWorldTransforms
+        {
+            get
+            {
+                return 1;
+            }
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public virtual bool UseIdentityView {
-			get {
-				return false;
-			}
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual bool UseIdentityProjection
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public SceneDetailLevel RenderDetail {
-			get {
-				return SceneDetailLevel.Solid;
-			}
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual bool UseIdentityView
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="camera"></param>
-		/// <returns></returns>
-		public abstract float GetSquaredViewDepth(Camera camera);
+        /// <summary>
+        /// 
+        /// </summary>
+        public SceneDetailLevel RenderDetail
+        {
+            get
+            {
+                return SceneDetailLevel.Solid;
+            }
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public virtual Quaternion WorldOrientation {
-			get {
-				return parentNode.DerivedOrientation;
-			}
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="camera"></param>
+        /// <returns></returns>
+        public abstract float GetSquaredViewDepth( Camera camera );
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public virtual Vector3 WorldPosition {
-			get {
-				return parentNode.DerivedPosition;
-			}
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual Quaternion WorldOrientation
+        {
+            get
+            {
+                return parentNode.DerivedOrientation;
+            }
+        }
 
-		public LightList Lights {
-			get {
-				if(parentNode != null) {
-					return parentNode.Lights;
-				}
-				else {
-					return dummyLightList;
-				}
-			}
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual Vector3 WorldPosition
+        {
+            get
+            {
+                return parentNode.DerivedPosition;
+            }
+        }
 
-		public Vector4 GetCustomParameter(int index) {
-			if(customParams[index] == null) {
-				throw new Exception("A parameter was not found at the given index");
-			}
-			else {
-				return (Vector4)customParams[index];
-			}
-		}
+        public LightList Lights
+        {
+            get
+            {
+                if ( parentNode != null )
+                {
+                    return parentNode.Lights;
+                }
+                else
+                {
+                    return dummyLightList;
+                }
+            }
+        }
 
-		public void SetCustomParameter(int index, Vector4 val) {
-			customParams[index] = val;
-		}
+        public Vector4 GetCustomParameter( int index )
+        {
+            if ( customParams[ index ] == null )
+            {
+                throw new Exception( "A parameter was not found at the given index" );
+            }
+            else
+            {
+                return (Vector4)customParams[ index ];
+            }
+        }
 
-		public void UpdateCustomGpuParameter(GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams) {
-			if(customParams[entry.data] != null) {
-				gpuParams.SetConstant(entry.index, (Vector4)customParams[entry.data]);
-			}
-		}
+        public void SetCustomParameter( int index, Vector4 val )
+        {
+            customParams[ index ] = val;
+        }
 
-		#endregion
-	}
+        public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
+        {
+            if ( customParams[ entry.data ] != null )
+            {
+                gpuParams.SetConstant( entry.index, (Vector4)customParams[ entry.data ] );
+            }
+        }
+
+        #endregion
+    }
 }

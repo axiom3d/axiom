@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,126 +24,156 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+
 using Axiom.Core;
 using Axiom.Graphics;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+
+using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
 
-namespace Axiom.RenderSystems.DirectX9 {
-	/// <summary>
-	///		Direct3D implementation of a hardware occlusion query.
-	/// </summary>
-	// Original Author: Lee Sandberg
-	public class D3DHardwareOcclusionQuery : IHardwareOcclusionQuery {
-		#region Fields
+#endregion Namespace Declarations
 
-		/// <summary>
-		///		Reference to the current Direct3D device object.
-		/// </summary>
-		private D3D.Device device;
-		/// <summary>
-		///		Reference to the query object being used.
-		/// </summary>
-		private D3D.Query query;
-		/// <summary>
-		///		Number of fragments returned from the last query.
-		/// </summary>
-		private int lastFragmentCount;
-		/// <summary>
-		///		Flag that indicates whether hardware queries are supported
-		/// </summary>
-		private bool isSupported;
-		/// <summary>
-		///		Rate at which queries are skipped (in frames).
-		/// </summary>
-		private int skipRate;
-		/// <summary>
-		///		Current count of number of skipped frames since query last ran.
-		/// </summary>
-		private int skipCounter;
+namespace Axiom.RenderSystems.DirectX9
+{
+    /// <summary>
+    ///		Direct3D implementation of a hardware occlusion query.
+    /// </summary>
+    // Original Author: Lee Sandberg
+    public class D3DHardwareOcclusionQuery : IHardwareOcclusionQuery
+    {
+        #region Fields
 
-		#endregion Fields
+        /// <summary>
+        ///		Reference to the current Direct3D device object.
+        /// </summary>
+        private D3D.Device device;
+        /// <summary>
+        ///		Reference to the query object being used.
+        /// </summary>
+        private D3D.Query query;
+        /// <summary>
+        ///		Number of fragments returned from the last query.
+        /// </summary>
+        private int lastFragmentCount;
+        /// <summary>
+        ///		Flag that indicates whether hardware queries are supported
+        /// </summary>
+        private bool isSupported;
+        /// <summary>
+        ///		Rate at which queries are skipped (in frames).
+        /// </summary>
+        private int skipRate;
+        /// <summary>
+        ///		Current count of number of skipped frames since query last ran.
+        /// </summary>
+        private int skipCounter;
 
-		#region Constructor
+        #endregion Fields
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		/// <param name="device">Reference to a Direct3D device.</param>
-		public D3DHardwareOcclusionQuery(D3D.Device device) {
-			this.device = device;
+        #region Constructor
 
-			// check if queries are supported
-			isSupported = Root.Instance.RenderSystem.Caps.CheckCap(Capabilities.HardwareOcculusion);
+        /// <summary>
+        ///		Default constructor.
+        /// </summary>
+        /// <param name="device">Reference to a Direct3D device.</param>
+        public D3DHardwareOcclusionQuery( D3D.Device device )
+        {
+            this.device = device;
 
-			if(isSupported) {
-				// attempt to create an occlusion query
-				query = new D3D.Query(device, QueryType.Occlusion);
-			}
-		}
+            // check if queries are supported
+            isSupported = Root.Instance.RenderSystem.Caps.CheckCap( Capabilities.HardwareOcculusion );
 
-		#endregion Constructor
+            if ( isSupported )
+            {
+                // attempt to create an occlusion query
+                query = new D3D.Query( device, D3D.QueryType.Occlusion );
+            }
+        }
 
-		#region IHardwareOcclusionQuery Members
+        #endregion Constructor
 
-		public void Begin() {
-			// proceed if supported, or silently fail otherwise
-			if(isSupported) {
-				if(skipCounter == skipRate) {
-					skipCounter = 0;
-				}
+        #region IHardwareOcclusionQuery Members
 
-				if(skipCounter == 0) { // && lastFragmentCount != 0) {
-					query.Issue(IssueFlags.Begin);
-				}
-			}
-		}
+        public void Begin()
+        {
+            // proceed if supported, or silently fail otherwise
+            if ( isSupported )
+            {
+                if ( skipCounter == skipRate )
+                {
+                    skipCounter = 0;
+                }
 
-		public int PullResults(bool flush) {
-			// default to returning a high count.  will be set otherwise if the query runs
-			lastFragmentCount = 100000;
+                if ( skipCounter == 0 )
+                { // && lastFragmentCount != 0) {
+                    query.Issue( D3D.IssueFlags.Begin );
+                }
+            }
+        }
 
-			if(isSupported) {
-				lastFragmentCount = (int)query.GetData(typeof(int), flush);
-			}
+        public int PullResults( bool flush )
+        {
+            // default to returning a high count.  will be set otherwise if the query runs
+            lastFragmentCount = 100000;
 
-			return lastFragmentCount;
-		}
+            if ( isSupported )
+            {
+                lastFragmentCount = (int)query.GetData( typeof( int ), flush );
+            }
 
-		public void End() {
-			// proceed if supported, or silently fail otherwise
-			if(isSupported) {
-				if(skipCounter == 0) { // && lastFragmentCount != 0) {
-					query.Issue(IssueFlags.End);
-				}
+            return lastFragmentCount;
+        }
 
-				skipCounter++;
-			}
-		}
+        public void End()
+        {
+            // proceed if supported, or silently fail otherwise
+            if ( isSupported )
+            {
+                if ( skipCounter == 0 )
+                { // && lastFragmentCount != 0) {
+                    query.Issue( D3D.IssueFlags.End );
+                }
 
-		/// <summary>
-		///		Rate (in frames) at which queries are skipped.
-		/// </summary>
-		public int SkipRate {
-			get {
-				return skipRate;
-			}
-			set {
-				skipRate = value;
-			}
-		}
+                skipCounter++;
+            }
+        }
 
-		/// <summary>
-		///		Gets the number of fragments returned from the last execution of this query.
-		/// </summary>
-		public int LastFragmentCount {
-			get {
-				return lastFragmentCount;
-			}
-		}
+        /// <summary>
+        ///		Rate (in frames) at which queries are skipped.
+        /// </summary>
+        public int SkipRate
+        {
+            get
+            {
+                return skipRate;
+            }
+            set
+            {
+                skipRate = value;
+            }
+        }
 
-		#endregion
-	}
+        /// <summary>
+        ///		Gets the number of fragments returned from the last execution of this query.
+        /// </summary>
+        public int LastFragmentCount
+        {
+            get
+            {
+                return lastFragmentCount;
+            }
+        }
+
+        #endregion
+    }
 }

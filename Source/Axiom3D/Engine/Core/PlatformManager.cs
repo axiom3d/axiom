@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,16 +24,29 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Configuration;
 using System.IO;
 using System.Reflection;
 
-namespace Axiom.Core {
-	/// <summary>
-	///		Class which manages the platform settings required to run.
-	/// </summary>
-	public sealed class PlatformManager {
+#endregion Namespace Declarations
+
+namespace Axiom.Core
+{
+    /// <summary>
+    ///		Class which manages the platform settings required to run.
+    /// </summary>
+    public sealed class PlatformManager
+    {
         #region Singleton implementation
 
         /// <summary>
@@ -44,45 +57,53 @@ namespace Axiom.Core {
         /// <summary>
         ///     Internal constructor.  This class cannot be instantiated externally.
         /// </summary>
-        internal PlatformManager() {
-            if (instance == null) {
+        internal PlatformManager()
+        {
+            if ( instance == null )
+            {
                 // find and load a platform manager assembly
-                string[] files = Directory.GetFiles(".", "Axiom.Platforms.*.dll");
+                string[] files = Directory.GetFiles( ".", "Axiom.Platforms.*.dll" );
 
                 // make sure there is 1 platform manager available
-                if (files.Length == 0) {
-                    throw new PluginException("A PlatformManager was not found in the execution path, and is required.");
+                if ( files.Length == 0 )
+                {
+                    throw new PluginException( "A PlatformManager was not found in the execution path, and is required." );
                 }
-                else if (files.Length > 1) {
-                    throw new PluginException("Only 1 PlatformManager can exist in the execution path.");
+                else if ( files.Length > 1 )
+                {
+                    throw new PluginException( "Only 1 PlatformManager can exist in the execution path." );
                 }
 
-                string path = Path.Combine(Environment.CurrentDirectory, files[0]);
+                string path = Path.Combine( Environment.CurrentDirectory, files[ 0 ] );
 
                 // TODO: AssemblyManager?
-                Assembly assembly = Assembly.LoadFile(path);
+                Assembly assembly = Assembly.LoadFile( path );
 
                 // look for the type in the loaded assembly that implements IPlatformManager
-                foreach (Type type in assembly.GetTypes()) {
-                    if (type.GetInterface("IPlatformManager") != null) {
-                        instance = (IPlatformManager)assembly.CreateInstance(type.FullName);
+                foreach ( Type type in assembly.GetTypes() )
+                {
+                    if ( type.GetInterface( "IPlatformManager" ) != null )
+                    {
+                        instance = (IPlatformManager)assembly.CreateInstance( type.FullName );
                         return;
                     }
                 }
 
-                throw new PluginException("The available Platform assembly did not contain any subclasses of PlatformManager, which is required.");
+                throw new PluginException( "The available Platform assembly did not contain any subclasses of PlatformManager, which is required." );
             }
         }
 
         /// <summary>
         ///     Gets the singleton instance of this class.
         /// </summary>
-        public static IPlatformManager Instance {
-            get { 
-                return instance; 
+        public static IPlatformManager Instance
+        {
+            get
+            {
+                return instance;
             }
         }
 
         #endregion Singleton implementation
-	}
+    }
 }

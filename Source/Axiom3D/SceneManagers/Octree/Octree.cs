@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,19 +24,32 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
 
 using System;
 using System.Collections;
+
 using Axiom;
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
 
-namespace Axiom.SceneManagers.Octree {
+#endregion Namespace Declarations
+
+namespace Axiom.SceneManagers.Octree
+{
     /// <summary>
     /// Summary description for Octree.
     /// </summary>
-    public class Octree {
+    public class Octree
+    {
         #region Member Variables
 
         /** Returns the number of scene nodes attached to this octree
@@ -55,7 +68,7 @@ namespace Axiom.SceneManagers.Octree {
         /** Creates the wire frame bounding box for this octant
         */
         protected WireBoundingBox wireBoundingBox;
-		
+
         /** Vector containing the dimensions of this octree / 2
         */
         protected Vector3 halfSize;
@@ -65,49 +78,81 @@ namespace Axiom.SceneManagers.Octree {
         Children are dynamically created as needed when nodes are inserted in the Octree.
         If, later, the all the nodes are removed from the child, it is still kept arround.
         */
-        public Octree[,,] Children = new Octree[8,8,8];
+        public Octree[ , , ] Children = new Octree[ 8, 8, 8 ];
 
         protected Octree parent = null;
-		
+
         #endregion
 
         #region Properties
-        public int NumNodes {
-            get{return numNodes;}
-            set{numNodes = value;}
+        public int NumNodes
+        {
+            get
+            {
+                return numNodes;
+            }
+            set
+            {
+                numNodes = value;
+            }
         }
 
-        public NodeCollection NodeList {
-            get{return nodeList;}
+        public NodeCollection NodeList
+        {
+            get
+            {
+                return nodeList;
+            }
             //set{nodeList = value;}
         }
 
-        public WireBoundingBox BoundingBox {
-            get{
+        public WireBoundingBox BoundingBox
+        {
+            get
+            {
                 // Create a WireBoundingBox if needed
-                if(this.wireBoundingBox == null) {
+                if ( this.wireBoundingBox == null )
+                {
                     this.wireBoundingBox = new WireBoundingBox();
                 }
-					
-                this.wireBoundingBox.InitAABB(this.box);
+
+                this.wireBoundingBox.InitAABB( this.box );
                 return this.wireBoundingBox;
             }
 
-            set{wireBoundingBox = value;}
+            set
+            {
+                wireBoundingBox = value;
+            }
         }
 
-        public Vector3 HalfSize {
-            get{return halfSize;}
-            set{halfSize = value;}
+        public Vector3 HalfSize
+        {
+            get
+            {
+                return halfSize;
+            }
+            set
+            {
+                halfSize = value;
+            }
         }
 
-        public AxisAlignedBox Box {
-            get{return box;}
-            set{box = value;}
+        public AxisAlignedBox Box
+        {
+            get
+            {
+                return box;
+            }
+            set
+            {
+                box = value;
+            }
         }
 
-        #endregion 
-        public Octree(Octree parent) {
+        #endregion
+        public Octree( Octree parent )
+        {
             this.wireBoundingBox = null;
             this.HalfSize = new Vector3();
 
@@ -115,26 +160,30 @@ namespace Axiom.SceneManagers.Octree {
             this.NumNodes = 0;
         }
 
-        public void AddNode(OctreeNode node) {
-			// TODO: Att some points, some nodes seemed to be added if they already existed.  Investigate.
-            nodeList[node.Name] = node;
+        public void AddNode( OctreeNode node )
+        {
+            // TODO: Att some points, some nodes seemed to be added if they already existed.  Investigate.
+            nodeList[ node.Name ] = node;
             node.Octant = this;
             Ref();
         }
 
-        public void RemoveNode(OctreeNode node) {
+        public void RemoveNode( OctreeNode node )
+        {
             OctreeNode check;
             int i;
             int Index;
 
             Index = NodeList.Count - 1;
 
-            for(i=Index;i>0;i--) {
-                check = (OctreeNode)NodeList[i];
+            for ( i = Index; i > 0; i-- )
+            {
+                check = (OctreeNode)NodeList[ i ];
 
-                if(check == node) {
+                if ( check == node )
+                {
                     node.Octant = null;
-                    NodeList.RemoveAt(i);
+                    NodeList.RemoveAt( i );
                     UnRef();
                 }
             }
@@ -147,13 +196,14 @@ namespace Axiom.SceneManagers.Octree {
         ///	box will fit into a child of this octree.
         /// </summary>
 
-        public bool IsTwiceSize(AxisAlignedBox box) {
+        public bool IsTwiceSize( AxisAlignedBox box )
+        {
             Vector3[] pts1 = this.box.Corners;
             Vector3[] pts2 = box.Corners;
 
-            return ( ( pts2[4].x -pts2[0].x ) <= ( pts1[4].x - pts1[0].x ) / 2 ) &&
-                ( ( pts2[4].y - pts2[0].y ) <= ( pts1[4].y - pts1[0].y ) / 2 ) &&
-                ( ( pts2[4].z - pts2[0].z ) <= ( pts1[4].z - pts1[0].z ) / 2 ) ;
+            return ( ( pts2[ 4 ].x - pts2[ 0 ].x ) <= ( pts1[ 4 ].x - pts1[ 0 ].x ) / 2 ) &&
+                ( ( pts2[ 4 ].y - pts2[ 0 ].y ) <= ( pts1[ 4 ].y - pts1[ 0 ].y ) / 2 ) &&
+                ( ( pts2[ 4 ].z - pts2[ 0 ].z ) <= ( pts1[ 4 ].z - pts1[ 0 ].z ) / 2 );
 
         }
 
@@ -164,34 +214,41 @@ namespace Axiom.SceneManagers.Octree {
         ///finding the appropriate octree to insert the box.  Since it is a loose octree, only the
         ///center of the box is checked to determine the octant.
         /// </summary>
-        public void GetChildIndexes(AxisAlignedBox aabox, out int x, out int y, out int z) {
+        public void GetChildIndexes( AxisAlignedBox aabox, out int x, out int y, out int z )
+        {
 
             Vector3 max = this.box.Maximum;
             Vector3 min = aabox.Minimum;
 
-            Vector3 Center = this.box.Maximum.MidPoint(this.box.Minimum);
-            Vector3 CheckCenter = aabox.Maximum.MidPoint(aabox.Minimum);
+            Vector3 Center = this.box.Maximum.MidPoint( this.box.Minimum );
+            Vector3 CheckCenter = aabox.Maximum.MidPoint( aabox.Minimum );
 
-            if(CheckCenter.x > Center.x) {
+            if ( CheckCenter.x > Center.x )
+            {
                 x = 1;
             }
-            else {
+            else
+            {
                 x = 0;
             }
 
-			
-            if(CheckCenter.y > Center.y) {
+
+            if ( CheckCenter.y > Center.y )
+            {
                 y = 1;
             }
-            else {
+            else
+            {
                 y = 0;
             }
 
-			
-            if(CheckCenter.z > Center.z) {
+
+            if ( CheckCenter.z > Center.z )
+            {
                 z = 1;
             }
-            else {
+            else
+            {
                 z = 0;
             }
         }
@@ -202,27 +259,33 @@ namespace Axiom.SceneManagers.Octree {
         /// <remarks>
         ///     Since it's a loose octree, the culling bounds can be different than the actual bounds of the octree.
         /// </remarks>
-        public AxisAlignedBox CullBounds {
-            get {
+        public AxisAlignedBox CullBounds
+        {
+            get
+            {
                 Vector3[] Corners = this.box.Corners;
-                box.SetExtents(Corners[0] - this.HalfSize, Corners[4] + this.HalfSize);
+                box.SetExtents( Corners[ 0 ] - this.HalfSize, Corners[ 4 ] + this.HalfSize );
 
                 return box;
             }
         }
 
-        public void Ref() {
+        public void Ref()
+        {
             numNodes++;
 
-            if(parent != null) {
+            if ( parent != null )
+            {
                 parent.Ref();
             }
         }
 
-        public void UnRef() {
+        public void UnRef()
+        {
             numNodes--;
 
-            if(parent != null) {
+            if ( parent != null )
+            {
                 parent.UnRef();
             }
         }

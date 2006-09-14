@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,22 +24,39 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+
 using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.Math;
 using Axiom.Scripting;
 
-namespace Axiom.ParticleFX {
+#endregion Namespace Declarations
+
+namespace Axiom.ParticleFX
+{
     /// <summary>
     /// Summary description for BoxEmitter.
     /// </summary>
-    public class BoxEmitter : AreaEmitter {
-        public BoxEmitter() : base() {
-            InitDefaults("Box");
+    public class BoxEmitter : AreaEmitter
+    {
+        public BoxEmitter()
+            : base()
+        {
+            InitDefaults( "Box" );
         }
 
-        public override void InitParticle(Particle particle) {
+        public override void InitParticle( Particle particle )
+        {
             Vector3 xOff, yOff, zOff;
 
             xOff = Utility.SymmetricRandom() * xRange;
@@ -47,11 +64,11 @@ namespace Axiom.ParticleFX {
             zOff = Utility.SymmetricRandom() * zRange;
 
             particle.Position = position + xOff + yOff + zOff;
-	        
+
             // Generate complex data by reference
-            GenerateEmissionColor(particle.Color);
-            GenerateEmissionDirection(ref particle.Direction);
-            GenerateEmissionVelocity(ref particle.Direction);
+            GenerateEmissionColor( particle.Color );
+            GenerateEmissionDirection( ref particle.Direction );
+            GenerateEmissionVelocity( ref particle.Direction );
 
             // Generate simpler data
             particle.timeToLive = particle.totalTimeToLive = GenerateEmissionTTL();
@@ -62,45 +79,54 @@ namespace Axiom.ParticleFX {
         /// <summary>
         ///    
         /// </summary>
-        [Command("width", "Width of the box emitter.", typeof(ParticleEmitter))]
-            class WidthCommand: ICommand {
-            public void Set(object target, string val) {
+        [Command( "width", "Width of the box emitter.", typeof( ParticleEmitter ) )]
+        class WidthCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
                 BoxEmitter emitter = target as BoxEmitter;
-                emitter.Width = StringConverter.ParseFloat(val);
+                emitter.Width = StringConverter.ParseFloat( val );
             }
-            public string Get(object target) {
+            public string Get( object target )
+            {
                 BoxEmitter emitter = target as BoxEmitter;
-                return StringConverter.ToString(emitter.Width);
-            }
-        }
-
-        /// <summary>
-        ///    
-        /// </summary>
-        [Command("height", "Height of the box emitter.", typeof(ParticleEmitter))]
-            class HeightCommand: ICommand {
-            public void Set(object target, string val) {
-                BoxEmitter emitter = target as BoxEmitter;
-                emitter.Height = StringConverter.ParseFloat(val);
-            }
-            public string Get(object target) {
-                BoxEmitter emitter = target as BoxEmitter;
-                return StringConverter.ToString(emitter.Height);
+                return StringConverter.ToString( emitter.Width );
             }
         }
 
         /// <summary>
         ///    
         /// </summary>
-        [Command("depth", "Depth of the box emitter.", typeof(ParticleEmitter))]
-            class DepthCommand: ICommand {
-            public void Set(object target, string val) {
+        [Command( "height", "Height of the box emitter.", typeof( ParticleEmitter ) )]
+        class HeightCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
                 BoxEmitter emitter = target as BoxEmitter;
-                emitter.Depth = StringConverter.ParseFloat(val);
+                emitter.Height = StringConverter.ParseFloat( val );
             }
-            public string Get(object target) {
+            public string Get( object target )
+            {
                 BoxEmitter emitter = target as BoxEmitter;
-                return StringConverter.ToString(emitter.Depth);
+                return StringConverter.ToString( emitter.Height );
+            }
+        }
+
+        /// <summary>
+        ///    
+        /// </summary>
+        [Command( "depth", "Depth of the box emitter.", typeof( ParticleEmitter ) )]
+        class DepthCommand : ICommand
+        {
+            public void Set( object target, string val )
+            {
+                BoxEmitter emitter = target as BoxEmitter;
+                emitter.Depth = StringConverter.ParseFloat( val );
+            }
+            public string Get( object target )
+            {
+                BoxEmitter emitter = target as BoxEmitter;
+                return StringConverter.ToString( emitter.Depth );
             }
         }
 

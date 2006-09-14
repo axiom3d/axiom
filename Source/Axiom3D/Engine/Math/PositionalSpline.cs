@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -30,11 +30,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Diagnostics;
+
 using Axiom.Math.Collections;
 
-namespace Axiom.Math {
+#endregion Namespace Declarations
+
+namespace Axiom.Math
+{
     /// <summary>
     ///		A Catmull-Rom spline that can be used for interpolating translation movements.
     /// </summary>
@@ -46,14 +59,15 @@ namespace Axiom.Math {
     ///		Derivation of the hermite polynomial can be found here: 
     ///		<a href="http://www.cs.unc.edu/~hoff/projects/comp236/curves/papers/hermite.html">Hermite splines.</a>
     /// </remarks>
-    public sealed class PositionalSpline {
+    public sealed class PositionalSpline
+    {
         #region Member variables
 
-        readonly private Matrix4 hermitePoly = new Matrix4(	
-			2, -2,  1,  1,
-            -3,  3, -2, -1,
-            0,  0,  1,  0,
-            1,  0,  0,  0);
+        readonly private Matrix4 hermitePoly = new Matrix4(
+            2, -2, 1, 1,
+            -3, 3, -2, -1,
+            0, 0, 1, 0,
+            1, 0, 0, 0 );
 
         /// <summary>Collection of control points.</summary>
         private Vector3List pointList;
@@ -69,7 +83,8 @@ namespace Axiom.Math {
         /// <summary>
         ///		Creates a new Positional Spline.
         /// </summary>
-        public PositionalSpline() {
+        public PositionalSpline()
+        {
             // intialize the vector collections
             pointList = new Vector3List();
             tangentList = new Vector3List();
@@ -85,20 +100,25 @@ namespace Axiom.Math {
         /// <summary>
         ///		Specifies whether or not to recalculate tangents as each control point is added.
         /// </summary>
-        public bool AutoCalculate {
-            get { 
-                return autoCalculateTangents; 
+        public bool AutoCalculate
+        {
+            get
+            {
+                return autoCalculateTangents;
             }
-            set { 
-                autoCalculateTangents = value; 
+            set
+            {
+                autoCalculateTangents = value;
             }
         }
 
         /// <summary>
         ///    Gets the number of control points in this spline.
         /// </summary>
-        public int PointCount {
-            get {
+        public int PointCount
+        {
+            get
+            {
                 return pointList.Count;
             }
         }
@@ -111,18 +131,20 @@ namespace Axiom.Math {
         ///    Adds a new control point to the end of this spline.
         /// </summary>
         /// <param name="point"></param>
-        public void AddPoint(Vector3 point) {
-            pointList.Add(point);
+        public void AddPoint( Vector3 point )
+        {
+            pointList.Add( point );
 
             // recalc tangents if necessary
-            if(autoCalculateTangents)
+            if ( autoCalculateTangents )
                 RecalculateTangents();
         }
 
         /// <summary>
         ///    Removes all current control points from this spline.
         /// </summary>
-        public void Clear() {
+        public void Clear()
+        {
             pointList.Clear();
             tangentList.Clear();
         }
@@ -132,10 +154,11 @@ namespace Axiom.Math {
         /// </summary>
         /// <param name="index">Index at which to retreive a point.</param>
         /// <returns>Vector3 containing the point data.</returns>
-        public Vector3 GetPoint(int index) {
-            Debug.Assert(index < pointList.Count);
+        public Vector3 GetPoint( int index )
+        {
+            Debug.Assert( index < pointList.Count );
 
-            return pointList[index];
+            return pointList[ index ];
         }
 
         /// <summary>
@@ -147,7 +170,8 @@ namespace Axiom.Math {
         /// </remarks>
         /// <param name="t">Parametric value.</param>
         /// <returns>An interpolated point along the spline.</returns>
-        public Vector3 Interpolate(float t) {
+        public Vector3 Interpolate( float t )
+        {
             // This does not take into account that points may not be evenly spaced.
             // This will cause a change in velocity for interpolation.
 
@@ -159,7 +183,7 @@ namespace Axiom.Math {
             t = segment - segIndex;
 
             // call the overloaded method
-            return Interpolate(segIndex, t);
+            return Interpolate( segIndex, t );
         }
 
         /// <summary>
@@ -168,35 +192,37 @@ namespace Axiom.Math {
         /// <param name="index">The point index to treat as t=0. index + 1 is deemed to be t=1</param>
         /// <param name="t">Parametric value</param>
         /// <returns>An interpolated point along the spline.</returns>
-        public Vector3 Interpolate(int index, float t) {
-            Debug.Assert(index >= 0 && index < pointList.Count, "Spline point index overrun.");
+        public Vector3 Interpolate( int index, float t )
+        {
+            Debug.Assert( index >= 0 && index < pointList.Count, "Spline point index overrun." );
 
-            if((index + 1) == pointList.Count) {
+            if ( ( index + 1 ) == pointList.Count )
+            {
                 // cant interpolate past the end of the list, just return the last point
-                return pointList[index];
+                return pointList[ index ];
             }
 
             // quick special cases
-            if(t == 0.0f)
-                return pointList[index];
-            else if(t == 1.0f)
-                return pointList[index + 1];
+            if ( t == 0.0f )
+                return pointList[ index ];
+            else if ( t == 1.0f )
+                return pointList[ index + 1 ];
 
             // Time for real interpolation
             // Construct a Vector4 of powers of 2
             float t2, t3;
             // t^2
-            t2 = t * t; 
+            t2 = t * t;
             // t^3
             t3 = t2 * t;
 
-            Vector4 powers = new Vector4(t3, t2, t, 1);
+            Vector4 powers = new Vector4( t3, t2, t, 1 );
 
             // Algorithm is result = powers * hermitePoly * Matrix4(point1, point2, tangent1, tangent2)
-            Vector3 point1 = pointList[index];
-            Vector3 point2 = pointList[index + 1];
-            Vector3 tangent1 = tangentList[index];
-            Vector3 tangent2 = tangentList[index + 1];
+            Vector3 point1 = pointList[ index ];
+            Vector3 point2 = pointList[ index + 1 ];
+            Vector3 tangent1 = tangentList[ index ];
+            Vector3 tangent2 = tangentList[ index + 1 ];
             Matrix4 point = new Matrix4();
 
             // create the matrix 4 with the 2 point and tangent values
@@ -221,7 +247,7 @@ namespace Axiom.Math {
             Vector4 result = powers * hermitePoly * point;
 
             // return the final result
-            return new Vector3(result.x, result.y, result.z);
+            return new Vector3( result.x, result.y, result.z );
         }
 
         /// <summary>
@@ -231,12 +257,13 @@ namespace Axiom.Math {
         ///		If you tell the spline not to update on demand by setting AutoCalculate to false,
         ///		then you must call this after completing your updates to the spline points.
         /// </remarks>
-        public void RecalculateTangents() {
+        public void RecalculateTangents()
+        {
             // Catmull-Rom approach
             // tangent[i] = 0.5 * (point[i+1] - point[i-1])
 
             // TODO: Resize tangent list and use existing elements rather than clear/readd every time.
- 
+
             tangentList.Clear();
 
             int i, numPoints;
@@ -245,36 +272,41 @@ namespace Axiom.Math {
             numPoints = pointList.Count;
 
             // if there arent at least 2 points, there is nothing to inerpolate
-            if(numPoints < 2)
+            if ( numPoints < 2 )
                 return;
 
             // closed or open?
-            if(pointList[0] == pointList[numPoints - 1])
+            if ( pointList[ 0 ] == pointList[ numPoints - 1 ] )
                 isClosed = true;
             else
                 isClosed = false;
 
             // loop through the points and generate the tangents
-            for(i = 0; i < numPoints; i++) {
+            for ( i = 0; i < numPoints; i++ )
+            {
                 // special cases for first and last point in list
-                if(i ==0) {
-                    if(isClosed) {
+                if ( i == 0 )
+                {
+                    if ( isClosed )
+                    {
                         // Use numPoints-2 since numPoints-1 is the last point and == [0]
-                        tangentList.Add(0.5f * (pointList[1] - pointList[numPoints - 2]));
+                        tangentList.Add( 0.5f * ( pointList[ 1 ] - pointList[ numPoints - 2 ] ) );
                     }
                     else
-                        tangentList.Add(0.5f * (pointList[1] - pointList[0]));
+                        tangentList.Add( 0.5f * ( pointList[ 1 ] - pointList[ 0 ] ) );
                 }
-                else if(i == numPoints - 1) {
-                    if(isClosed) {
+                else if ( i == numPoints - 1 )
+                {
+                    if ( isClosed )
+                    {
                         // Use same tangent as already calculated for [0]
-                        tangentList.Add(tangentList[0]);
+                        tangentList.Add( tangentList[ 0 ] );
                     }
                     else
-                        tangentList.Add(0.5f * (pointList[i] - pointList[i - 1]));
+                        tangentList.Add( 0.5f * ( pointList[ i ] - pointList[ i - 1 ] ) );
                 }
                 else
-                    tangentList.Add(0.5f * (pointList[i + 1] - pointList[i - 1]));
+                    tangentList.Add( 0.5f * ( pointList[ i + 1 ] - pointList[ i - 1 ] ) );
             }
         }
 

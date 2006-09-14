@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -30,11 +30,23 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Axiom.Math {
+#endregion Namespace Declarations
+
+namespace Axiom.Math
+{
     /// <summary>
     ///    Standard 3-dimensional vector.
     /// </summary>
@@ -44,8 +56,9 @@ namespace Axiom.Math {
     ///	    scaling factors can be represented by a vector, depending on how
     ///	    you interpret the values.
     /// </remarks>
-    [StructLayout(LayoutKind.Sequential)]
-    public struct Vector3 {
+    [StructLayout( LayoutKind.Sequential )]
+    public struct Vector3
+    {
         #region Fields
 
         /// <summary>X component.</summary>
@@ -55,14 +68,14 @@ namespace Axiom.Math {
         /// <summary>Z component.</summary>
         public float z;
 
-        private static readonly Vector3 zeroVector = new Vector3(0.0f, 0.0f, 0.0f);
-        private static readonly Vector3 unitX = new Vector3(1.0f, 0.0f, 0.0f);
-        private static readonly Vector3 unitY = new Vector3(0.0f, 1.0f, 0.0f);
-        private static readonly Vector3 unitZ = new Vector3(0.0f, 0.0f, 1.0f);
-		private static readonly Vector3 negativeUnitX = new Vector3(-1.0f, 0.0f, 0.0f);
-		private static readonly Vector3 negativeUnitY = new Vector3(0.0f, -1.0f, 0.0f);
-		private static readonly Vector3 negativeUnitZ = new Vector3(0.0f, 0.0f, -1.0f);
-        private static readonly Vector3 unitVector = new Vector3(1.0f, 1.0f, 1.0f);
+        private static readonly Vector3 zeroVector = new Vector3( 0.0f, 0.0f, 0.0f );
+        private static readonly Vector3 unitX = new Vector3( 1.0f, 0.0f, 0.0f );
+        private static readonly Vector3 unitY = new Vector3( 0.0f, 1.0f, 0.0f );
+        private static readonly Vector3 unitZ = new Vector3( 0.0f, 0.0f, 1.0f );
+        private static readonly Vector3 negativeUnitX = new Vector3( -1.0f, 0.0f, 0.0f );
+        private static readonly Vector3 negativeUnitY = new Vector3( 0.0f, -1.0f, 0.0f );
+        private static readonly Vector3 negativeUnitZ = new Vector3( 0.0f, 0.0f, -1.0f );
+        private static readonly Vector3 unitVector = new Vector3( 1.0f, 1.0f, 1.0f );
 
         #endregion
 
@@ -71,7 +84,8 @@ namespace Axiom.Math {
         /// <summary>
         ///		Creates a new 3 dimensional Vector.
         /// </summary>
-        public Vector3(float x, float y, float z) {
+        public Vector3( float x, float y, float z )
+        {
             this.x = x;
             this.y = y;
             this.z = z;
@@ -87,8 +101,9 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns>true or false</returns>
-        public static bool operator == (Vector3 left, Vector3 right) {
-            return (left.x == right.x && left.y == right.y && left.z == right.z);
+        public static bool operator ==( Vector3 left, Vector3 right )
+        {
+            return ( left.x == right.x && left.y == right.y && left.z == right.z );
         }
 
         /// <summary>
@@ -97,8 +112,9 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns>true or false</returns>
-        public static bool operator != (Vector3 left, Vector3 right) {
-            return (left.x != right.x || left.y != right.y || left.z != right.z);
+        public static bool operator !=( Vector3 left, Vector3 right )
+        {
+            return ( left.x != right.x || left.y != right.y || left.z != right.z );
         }
 
         /// <summary>
@@ -107,18 +123,20 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 Multiply (Vector3 left, Vector3 right) {
+        public static Vector3 Multiply( Vector3 left, Vector3 right )
+        {
             return left * right;
         }
-        
+
         /// <summary>
         ///		Used when a Vector3 is multiplied by another vector.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 operator * (Vector3 left, Vector3 right) {
-            return new Vector3(left.x * right.x, left.y * right.y, left.z * right.z);
+        public static Vector3 operator *( Vector3 left, Vector3 right )
+        {
+            return new Vector3( left.x * right.x, left.y * right.y, left.z * right.z );
         }
 
         /// <summary>
@@ -127,18 +145,20 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public static Vector3 Divide (Vector3 left, float scalar) {
+        public static Vector3 Divide( Vector3 left, float scalar )
+        {
             return left / scalar;
         }
-        
+
         /// <summary>
         /// Used to divide a vector by a scalar value.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public static Vector3 operator / (Vector3 left, float scalar) {
-            Debug.Assert(scalar != 0.0f, "Cannot divide a Vector3 by zero.");
+        public static Vector3 operator /( Vector3 left, float scalar )
+        {
+            Debug.Assert( scalar != 0.0f, "Cannot divide a Vector3 by zero." );
 
             Vector3 vector = new Vector3();
 
@@ -158,18 +178,20 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 Add (Vector3 left, Vector3 right) {
+        public static Vector3 Add( Vector3 left, Vector3 right )
+        {
             return left + right;
         }
-        
+
         /// <summary>
         ///		Used when a Vector3 is added to another Vector3.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 operator + (Vector3 left, Vector3 right) {
-            return new Vector3(left.x + right.x, left.y + right.y, left.z + right.z);
+        public static Vector3 operator +( Vector3 left, Vector3 right )
+        {
+            return new Vector3( left.x + right.x, left.y + right.y, left.z + right.z );
         }
 
         /// <summary>
@@ -178,18 +200,20 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public static Vector3 Multiply (Vector3 left, float scalar) {
+        public static Vector3 Multiply( Vector3 left, float scalar )
+        {
             return left * scalar;
         }
-        
+
         /// <summary>
         ///		Used when a Vector3 is multiplied by a scalar value.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public static Vector3 operator * (Vector3 left, float scalar) {
-            return new Vector3(left.x * scalar, left.y * scalar, left.z * scalar);
+        public static Vector3 operator *( Vector3 left, float scalar )
+        {
+            return new Vector3( left.x * scalar, left.y * scalar, left.z * scalar );
         }
 
         /// <summary>
@@ -198,18 +222,20 @@ namespace Axiom.Math {
         /// <param name="scalar"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 Multiply (float scalar, Vector3 right) {
+        public static Vector3 Multiply( float scalar, Vector3 right )
+        {
             return scalar * right;
         }
-        
+
         /// <summary>
         ///		Used when a scalar value is multiplied by a Vector3.
         /// </summary>
         /// <param name="scalar"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 operator * (float scalar, Vector3 right) {
-            return new Vector3(right.x * scalar, right.y * scalar, right.z * scalar);
+        public static Vector3 operator *( float scalar, Vector3 right )
+        {
+            return new Vector3( right.x * scalar, right.y * scalar, right.z * scalar );
         }
 
         /// <summary>
@@ -218,18 +244,20 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 Subtract (Vector3 left, Vector3 right) {
+        public static Vector3 Subtract( Vector3 left, Vector3 right )
+        {
             return left - right;
         }
-        
+
         /// <summary>
         ///		Used to subtract a Vector3 from another Vector3.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 operator - (Vector3 left, Vector3 right) {
-            return new Vector3(left.x - right.x, left.y - right.y, left.z - right.z);
+        public static Vector3 operator -( Vector3 left, Vector3 right )
+        {
+            return new Vector3( left.x - right.x, left.y - right.y, left.z - right.z );
         }
 
 
@@ -238,17 +266,19 @@ namespace Axiom.Math {
         /// </summary>
         /// <param name="left"></param>
         /// <returns></returns>
-        public static Vector3 Negate (Vector3 left) {
+        public static Vector3 Negate( Vector3 left )
+        {
             return -left;
         }
-        
+
         /// <summary>
         ///		Used to negate the elements of a vector.
         /// </summary>
         /// <param name="left"></param>
         /// <returns></returns>
-        public static Vector3 operator - (Vector3 left) {
-            return new Vector3(-left.x, -left.y, -left.z);
+        public static Vector3 operator -( Vector3 left )
+        {
+            return new Vector3( -left.x, -left.y, -left.z );
         }
 
         /// <summary>
@@ -258,8 +288,10 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static bool operator > (Vector3 left, Vector3 right) {
-            if(left.x > right.x && left.y > right.y && left.z > right.z) {
+        public static bool operator >( Vector3 left, Vector3 right )
+        {
+            if ( left.x > right.x && left.y > right.y && left.z > right.z )
+            {
                 return true;
             }
 
@@ -273,8 +305,10 @@ namespace Axiom.Math {
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static bool operator < (Vector3 left, Vector3 right) {
-            if(left.x < right.x && left.y < right.y && left.z < right.z) {
+        public static bool operator <( Vector3 left, Vector3 right )
+        {
+            if ( left.x < right.x && left.y < right.y && left.z < right.z )
+            {
                 return true;
             }
 
@@ -286,8 +320,9 @@ namespace Axiom.Math {
         /// </summary>
         /// <param name="vec3"></param>
         /// <returns></returns>
-        public static explicit operator Vector4 (Vector3 vec3) {
-            return new Vector4(vec3.x, vec3.y, vec3.z, 1.0f);
+        public static explicit operator Vector4( Vector3 vec3 )
+        {
+            return new Vector4( vec3.x, vec3.y, vec3.z, 1.0f );
         }
 
         /// <summary>
@@ -296,23 +331,28 @@ namespace Axiom.Math {
         /// <remarks>
         ///		Uses unsafe pointer arithmetic to reduce the code required.
         ///	</remarks>
-        public float this[int index] {
-            get {
-                Debug.Assert(index >= 0 && index < 3, "Indexer boundaries overrun in Vector3.");
-				
-                // using pointer arithmetic here for less code.  Otherwise, we'd have a big switch statement.
-                unsafe {
-                    fixed(float* pX = &x)
-                        return *(pX + index);
-                }
-            }
-            set {
-                Debug.Assert(index >= 0 && index < 3, "Indexer boundaries overrun in Vector3.");
+        public float this[ int index ]
+        {
+            get
+            {
+                Debug.Assert( index >= 0 && index < 3, "Indexer boundaries overrun in Vector3." );
 
                 // using pointer arithmetic here for less code.  Otherwise, we'd have a big switch statement.
-                unsafe {
-                    fixed(float* pX = &x)
-                        *(pX + index) = value;
+                unsafe
+                {
+                    fixed ( float* pX = &x )
+                        return *( pX + index );
+                }
+            }
+            set
+            {
+                Debug.Assert( index >= 0 && index < 3, "Indexer boundaries overrun in Vector3." );
+
+                // using pointer arithmetic here for less code.  Otherwise, we'd have a big switch statement.
+                unsafe
+                {
+                    fixed ( float* pX = &x )
+                        *( pX + index ) = value;
                 }
             }
         }
@@ -326,7 +366,8 @@ namespace Axiom.Math {
         /// </summary>
         /// <param name="vector">The vector to perform the Dot Product against.</param>
         /// <returns>The angle between the 2 vectors.</returns>
-        public float Dot(Vector3 vector) {
+        public float Dot( Vector3 vector )
+        {
             double dotProduct = 0.0f;
 
             dotProduct += this.x * vector.x;
@@ -342,12 +383,13 @@ namespace Axiom.Math {
         /// </summary>
         /// <param name="vector">A vector to perform the Cross Product against.</param>
         /// <returns>A new Vector3 perpedicular to the 2 original vectors.</returns>
-        public Vector3 Cross(Vector3 vector) {
+        public Vector3 Cross( Vector3 vector )
+        {
             Vector3 cross = new Vector3();
 
-            cross.x = (this.y * vector.z) - (this.z * vector.y);
-            cross.y = (this.z * vector.x) - (this.x * vector.z);
-            cross.z = (this.x * vector.y) - (this.y * vector.x);
+            cross.x = ( this.y * vector.z ) - ( this.z * vector.y );
+            cross.y = ( this.z * vector.x ) - ( this.x * vector.z );
+            cross.z = ( this.x * vector.y ) - ( this.y * vector.x );
 
             return cross;
         }
@@ -356,13 +398,15 @@ namespace Axiom.Math {
         ///		Finds a vector perpendicular to this one.
         /// </summary>
         /// <returns></returns>
-        public Vector3 Perpendicular() {
-            Vector3 result = this.Cross(Vector3.UnitX);
+        public Vector3 Perpendicular()
+        {
+            Vector3 result = this.Cross( Vector3.UnitX );
 
             // check length
-            if(result.LengthSquared < float.Epsilon) {
+            if ( result.LengthSquared < float.Epsilon )
+            {
                 // This vector is the Y axis multiplied by a scalar, so we have to use another axis
-                result = this.Cross(Vector3.UnitY);
+                result = this.Cross( Vector3.UnitY );
             }
 
             return result;
@@ -374,20 +418,21 @@ namespace Axiom.Math {
         /// <param name="angle"></param>
         /// <param name="up"></param>
         /// <returns></returns>
-        public Vector3 RandomDeviant(float angle, Vector3 up) {
+        public Vector3 RandomDeviant( float angle, Vector3 up )
+        {
             Vector3 newUp = Vector3.Zero;
 
-            if(up == Vector3.Zero)
+            if ( up == Vector3.Zero )
                 newUp = this.Perpendicular();
             else
                 newUp = up;
 
             // rotate up vector by random amount around this
-            Quaternion q = Quaternion.FromAngleAxis(Utility.UnitRandom() * Utility.TWO_PI, this);
+            Quaternion q = Quaternion.FromAngleAxis( Utility.UnitRandom() * Utility.TWO_PI, this );
             newUp = q * newUp;
 
             // finally, rotate this by given angle around randomized up vector
-            q = Quaternion.FromAngleAxis(angle, newUp);
+            q = Quaternion.FromAngleAxis( angle, newUp );
 
             return q * this;
         }
@@ -397,22 +442,24 @@ namespace Axiom.Math {
         /// </summary>
         /// <param name="vector"></param>
         /// <returns></returns>
-        public Vector3 MidPoint(Vector3 vector) {
-            return new Vector3(	(this.x + vector.x) * 0.5f, 
-                (this.y + vector.y) * 0.5f, 
-                (this.z + vector.z) * 0.5f);
+        public Vector3 MidPoint( Vector3 vector )
+        {
+            return new Vector3( ( this.x + vector.x ) * 0.5f,
+                ( this.y + vector.y ) * 0.5f,
+                ( this.z + vector.z ) * 0.5f );
         }
 
         /// <summary>
         ///		Compares the supplied vector and updates it's x/y/z components of they are higher in value.
         /// </summary>
         /// <param name="compare"></param>
-        public void Ceil(Vector3 compare) {
-            if(compare.x >  x) 
+        public void Ceil( Vector3 compare )
+        {
+            if ( compare.x > x )
                 x = compare.x;
-            if(compare.y >  y) 
+            if ( compare.y > y )
                 y = compare.y;
-            if(compare.z >  z) 
+            if ( compare.z > z )
                 z = compare.z;
         }
 
@@ -421,12 +468,13 @@ namespace Axiom.Math {
         /// </summary>
         /// <param name="compare"></param>
         /// <returns></returns>
-        public void Floor(Vector3 compare) {
-            if(compare.x <  x) 
+        public void Floor( Vector3 compare )
+        {
+            if ( compare.x < x )
                 x = compare.x;
-            if(compare.y <  y) 
+            if ( compare.y < y )
                 y = compare.y;
-            if(compare.z <  z) 
+            if ( compare.z < z )
                 z = compare.z;
         }
 
@@ -437,11 +485,12 @@ namespace Axiom.Math {
         ///		Don't call this if you think the dest vector can be close to the inverse
         ///		of this vector, since then ANY axis of rotation is ok.
         ///	</remarks>
-        public Quaternion GetRotationTo(Vector3 destination) {
+        public Quaternion GetRotationTo( Vector3 destination )
+        {
             // Based on Stan Melax's article in Game Programming Gems
             Quaternion q = new Quaternion();
 
-            Vector3 v0 = new Vector3(this.x, this.y, this.z);
+            Vector3 v0 = new Vector3( this.x, this.y, this.z );
             Vector3 v1 = destination;
 
             // normalize both vectors 
@@ -449,18 +498,19 @@ namespace Axiom.Math {
             v1.Normalize();
 
             // get the cross product of the vectors
-            Vector3 c = v0.Cross(v1);
+            Vector3 c = v0.Cross( v1 );
 
             // If the cross product approaches zero, we get unstable because ANY axis will do
             // when v0 == -v1
-            float d = v0.Dot(v1);
+            float d = v0.Dot( v1 );
 
             // If dot == 1, vectors are the same
-            if (d >= 1.0f) {
+            if ( d >= 1.0f )
+            {
                 return Quaternion.Identity;
             }
 
-            float s = Utility.Sqrt( (1+d) * 2 );
+            float s = Utility.Sqrt( ( 1 + d ) * 2 );
             float inverse = 1 / s;
 
             q.x = c.x * inverse;
@@ -482,11 +532,13 @@ namespace Axiom.Math {
         ///		will be no changes made to their components.
         ///	</remarks>
         ///	<returns>The previous length of the vector.</returns>
-        public float Normalize() {
+        public float Normalize()
+        {
             float length = Utility.Sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
 
             // Will also work for zero-sized vectors, but will change nothing
-            if ( length > float.Epsilon ) {
+            if ( length > float.Epsilon )
+            {
                 float inverseLength = 1.0f / length;
 
                 this.x *= inverseLength;
@@ -494,7 +546,7 @@ namespace Axiom.Math {
                 this.z *= inverseLength;
             }
 
-			return length;
+            return length;
         }
 
         /// <summary>
@@ -505,8 +557,9 @@ namespace Axiom.Math {
         /// </remarks>
         /// <param name="normal">Normal vector on which this vector will be reflected.</param>
         /// <returns></returns>
-        public Vector3 Reflect(Vector3 normal) {
-            return this - (2 * this.Dot(normal) * normal);
+        public Vector3 Reflect( Vector3 normal )
+        {
+            return this - ( 2 * this.Dot( normal ) * normal );
         }
 
         #endregion
@@ -518,18 +571,22 @@ namespace Axiom.Math {
         ///    only use this if you need the exact length of the Vector.  If vector lengths are only going
         ///    to be compared, use LengthSquared instead.
         /// </summary>
-        public float Length {
-            get { 
-                return Utility.Sqrt(this.x * this.x + this.y * this.y + this.z * this.z); 
+        public float Length
+        {
+            get
+            {
+                return Utility.Sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
             }
         }
 
         /// <summary>
         ///    Returns the length (magnitude) of the vector squared.
         /// </summary>
-        public float LengthSquared {
-            get { 
-                return (this.x * this.x + this.y * this.y + this.z * this.z); 
+        public float LengthSquared
+        {
+            get
+            {
+                return ( this.x * this.x + this.y * this.y + this.z * this.z );
             }
         }
 
@@ -540,74 +597,90 @@ namespace Axiom.Math {
         /// <summary>
         ///		Gets a Vector3 with all components set to 0.
         /// </summary>
-        public static Vector3 Zero {
-            get { 
-                return zeroVector; 
+        public static Vector3 Zero
+        {
+            get
+            {
+                return zeroVector;
             }
         }
-		
+
         /// <summary>
         ///		Gets a Vector3 with all components set to 1.
         /// </summary>
-        public static Vector3 UnitScale {
-            get { 
-                return unitVector; 
+        public static Vector3 UnitScale
+        {
+            get
+            {
+                return unitVector;
             }
         }
 
         /// <summary>
         ///		Gets a Vector3 with the X set to 1, and the others set to 0.
         /// </summary>
-        public static Vector3 UnitX {
-            get { 
-                return unitX; 
+        public static Vector3 UnitX
+        {
+            get
+            {
+                return unitX;
             }
         }
 
         /// <summary>
         ///		Gets a Vector3 with the Y set to 1, and the others set to 0.
         /// </summary>
-        public static Vector3 UnitY {
-            get { 
-                return unitY; 
+        public static Vector3 UnitY
+        {
+            get
+            {
+                return unitY;
             }
         }
 
         /// <summary>
         ///		Gets a Vector3 with the Z set to 1, and the others set to 0.
         /// </summary>
-        public static Vector3 UnitZ {
-            get { 
-                return unitZ; 
+        public static Vector3 UnitZ
+        {
+            get
+            {
+                return unitZ;
             }
         }
 
-		/// <summary>
-		///		Gets a Vector3 with the X set to -1, and the others set to 0.
-		/// </summary>
-		public static Vector3 NegativeUnitX {
-			get { 
-				return negativeUnitX; 
-			}
-		}
+        /// <summary>
+        ///		Gets a Vector3 with the X set to -1, and the others set to 0.
+        /// </summary>
+        public static Vector3 NegativeUnitX
+        {
+            get
+            {
+                return negativeUnitX;
+            }
+        }
 
-		/// <summary>
-		///		Gets a Vector3 with the Y set to -1, and the others set to 0.
-		/// </summary>
-		public static Vector3 NegativeUnitY {
-			get { 
-				return negativeUnitY; 
-			}
-		}
+        /// <summary>
+        ///		Gets a Vector3 with the Y set to -1, and the others set to 0.
+        /// </summary>
+        public static Vector3 NegativeUnitY
+        {
+            get
+            {
+                return negativeUnitY;
+            }
+        }
 
-		/// <summary>
-		///		Gets a Vector3 with the Z set to -1, and the others set to 0.
-		/// </summary>
-		public static Vector3 NegativeUnitZ {
-			get { 
-				return negativeUnitZ; 
-			}
-		}
+        /// <summary>
+        ///		Gets a Vector3 with the Z set to -1, and the others set to 0.
+        /// </summary>
+        public static Vector3 NegativeUnitZ
+        {
+            get
+            {
+                return negativeUnitZ;
+            }
+        }
 
         #endregion
 
@@ -618,8 +691,9 @@ namespace Axiom.Math {
         ///		a Vector3.
         /// </summary>
         /// <returns>A string representation of a vector3.</returns>
-        public override string ToString() {
-            return string.Format("Vector3({0}, {1}, {2})", this.x, this.y, this.z);
+        public override string ToString()
+        {
+            return string.Format( "Vector3({0}, {1}, {2})", this.x, this.y, this.z );
         }
 
         /// <summary>
@@ -631,9 +705,10 @@ namespace Axiom.Math {
         ///		member variables.
         /// </summary>
         /// <returns></returns>
-        public override int GetHashCode() { 
-            return x.GetHashCode() ^ (y.GetHashCode() ^ (~z.GetHashCode())); 
-        } 
+        public override int GetHashCode()
+        {
+            return x.GetHashCode() ^ ( y.GetHashCode() ^ ( ~z.GetHashCode() ) );
+        }
 
         /// <summary>
         ///		Compares this Vector to another object.  This should be done because the 
@@ -641,9 +716,10 @@ namespace Axiom.Math {
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override bool Equals(object obj) {
-            if(obj is Vector3)
-                return (this == (Vector3)obj);
+        public override bool Equals( object obj )
+        {
+            if ( obj is Vector3 )
+                return ( this == (Vector3)obj );
             else
                 return false;
         }

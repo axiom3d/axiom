@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,16 +24,31 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+
 using Axiom.Core;
 using Axiom.Graphics;
+
 using Tao.OpenGl;
 
-namespace Axiom.RenderSystems.OpenGL {
-	/// <summary>
-	/// 	Specialization of vertex/fragment programs for OpenGL.
-	/// </summary>
-	public class GLGpuProgram : GpuProgram {
+#endregion Namespace Declarations
+
+namespace Axiom.RenderSystems.OpenGL
+{
+    /// <summary>
+    /// 	Specialization of vertex/fragment programs for OpenGL.
+    /// </summary>
+    public class GLGpuProgram : GpuProgram
+    {
         #region Fields
 
         /// <summary>
@@ -49,7 +64,7 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <summary>
         ///     For use internally to store temp values for passing constants, etc.
         /// </summary>
-        protected float[] tempProgramFloats = new float[4];
+        protected float[] tempProgramFloats = new float[ 4 ];
 
         #endregion Fields
 
@@ -61,8 +76,10 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <param name="name">Name of the program.</param>
         /// <param name="type">Type of program (vertex or fragment).</param>
         /// <param name="syntaxCode">Syntax code (i.e. arbvp1, etc).</param>
-        internal GLGpuProgram(string name, GpuProgramType type, string syntaxCode) 
-            : base(name, type, syntaxCode) {}
+        internal GLGpuProgram( string name, GpuProgramType type, string syntaxCode )
+            : base( name, type, syntaxCode )
+        {
+        }
 
         #endregion Constructors
 
@@ -71,21 +88,24 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <summary>
         ///     Called when a program needs to be bound.
         /// </summary>
-        public virtual void Bind() {
+        public virtual void Bind()
+        {
             // do nothing
         }
 
         /// <summary>
         ///     Called when a program needs to be unbound.
         /// </summary>
-        public virtual void Unbind() {
+        public virtual void Unbind()
+        {
             // do nothing
         }
 
         /// <summary>
         ///     Called to create the program from source.
         /// </summary>
-        protected override void LoadFromSource() {
+        protected override void LoadFromSource()
+        {
             // do nothing
         }
 
@@ -93,7 +113,8 @@ namespace Axiom.RenderSystems.OpenGL {
         ///     Called when a program needs to bind the supplied parameters.
         /// </summary>
         /// <param name="parms"></param>
-        public virtual void BindParameters(GpuProgramParameters parms) {
+        public virtual void BindParameters( GpuProgramParameters parms )
+        {
             // do nothing
         }
 
@@ -104,8 +125,10 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <summary>
         ///    Access to the internal program id.
         /// </summary>
-        public int ProgramID {
-            get {
+        public int ProgramID
+        {
+            get
+            {
                 return programId;
             }
         }
@@ -113,12 +136,14 @@ namespace Axiom.RenderSystems.OpenGL {
         /// <summary>
         ///    Gets the program type (GL_VERTEX_PROGRAM_ARB, GL_FRAGMENT_PROGRAM_ARB, etc);
         /// </summary>
-        public int GLProgramType {
-            get {
+        public int GLProgramType
+        {
+            get
+            {
                 return programType;
             }
         }
 
         #endregion Properties
-	}
+    }
 }

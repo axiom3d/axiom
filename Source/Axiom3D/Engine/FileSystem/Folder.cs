@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,18 +24,34 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.IO;
 using System.Collections;
+
 using Axiom.Core;
 
-namespace Axiom.FileSystem {
+#endregion Namespace Declarations
+
+namespace Axiom.FileSystem
+{
     /// <summary>
     /// Represents a file system folder.
     /// </summary>
-    public class Folder : Archive {
-		
-        internal Folder(string archiveName) : base(archiveName) {
+    public class Folder : Archive
+    {
+
+        internal Folder( string archiveName )
+            : base( archiveName )
+        {
             // So that the substring will work out right, we definitely want this string
             // to end with the directory separator char.
             //if (!name.EndsWith(Path.DirectorySeparatorChar.ToString())) {
@@ -43,58 +59,68 @@ namespace Axiom.FileSystem {
             ///}
         }
 
-        public override void Load() {
-			LogManager.Instance.Write("FileSystem codec for {0} created.", name);
+        public override void Load()
+        {
+            LogManager.Instance.Write( "FileSystem codec for {0} created.", name );
 
-			isLoaded = true;
+            isLoaded = true;
         }
 
-        public override Stream ReadFile(string fileName) {
-            FileStream file = File.OpenRead(name + Path.DirectorySeparatorChar + fileName);
+        public override Stream ReadFile( string fileName )
+        {
+            FileStream file = File.OpenRead( name + Path.DirectorySeparatorChar + fileName );
 
             return file;
         }
 
-        public override string[] GetFileNamesLike(string startPath, string pattern) {
+        public override string[] GetFileNamesLike( string startPath, string pattern )
+        {
             // replace with wildcard if empty
-			if(pattern.Length == 0) {
-				pattern = "*.*";
-			}
-				// otherwise prefix with a star as a wildcard
-			else if(pattern.IndexOf("*") == -1) {
-				pattern = "*" + pattern;
-			}
+            if ( pattern.Length == 0 )
+            {
+                pattern = "*.*";
+            }
+            // otherwise prefix with a star as a wildcard
+            else if ( pattern.IndexOf( "*" ) == -1 )
+            {
+                pattern = "*" + pattern;
+            }
 
             // Append the start path if there is one
-            string path = Path.Combine(name, startPath);
+            string path = Path.Combine( name, startPath );
 
             // Get the list of files, recursively, into an ArrayList
             ArrayList files = new ArrayList();
-            GetFilesRecursive(path, pattern, files);
+            GetFilesRecursive( path, pattern, files );
 
             // Copy the ArrayList into a string[] array suitable for returning.
-            string[] retval = new string[files.Count];
+            string[] retval = new string[ files.Count ];
 
-            for (int i=0; i < files.Count; i++) {
-                retval[i] = ((string)files[i]).Replace('\\', '/');
+            for ( int i = 0; i < files.Count; i++ )
+            {
+                retval[ i ] = ( (string)files[ i ] ).Replace( '\\', '/' );
             }
 
             return retval;
         }
 
-        private void GetFilesRecursive(string path, string pattern, ArrayList files) {
-            string[] newFiles = Directory.GetFiles(path, pattern);
+        private void GetFilesRecursive( string path, string pattern, ArrayList files )
+        {
+            string[] newFiles = Directory.GetFiles( path, pattern );
 
-            foreach (string newFile in newFiles) {
-                if (!newFile.StartsWith(name)) {
-                    throw new AxiomException("Directory {0} unexpectedly does not start from path {1}", newFile, name);
+            foreach ( string newFile in newFiles )
+            {
+                if ( !newFile.StartsWith( name ) )
+                {
+                    throw new AxiomException( "Directory {0} unexpectedly does not start from path {1}", newFile, name );
                 }
 
-                files.Add(newFile.Substring(name.Length + 1));
+                files.Add( newFile.Substring( name.Length + 1 ) );
             }
 
-            foreach (string directory in Directory.GetDirectories(path)) {
-                GetFilesRecursive(directory, pattern, files);
+            foreach ( string directory in Directory.GetDirectories( path ) )
+            {
+                GetFilesRecursive( directory, pattern, files );
             }
         }
     }

@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,20 +24,34 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Diagnostics;
+
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+
+using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
 
-namespace Axiom.RenderSystems.DirectX9 {
-	/// <summary>
-	/// 	Direct3D implementation of a few things common to low-level vertex & fragment programs
-	/// </summary>
-	public abstract class D3DGpuProgram : GpuProgram {
+#endregion Namespace Declarations
+
+namespace Axiom.RenderSystems.DirectX9
+{
+    /// <summary>
+    /// 	Direct3D implementation of a few things common to low-level vertex & fragment programs
+    /// </summary>
+    public abstract class D3DGpuProgram : GpuProgram
+    {
         #region Fields
 
         /// <summary>
@@ -52,10 +66,12 @@ namespace Axiom.RenderSystems.DirectX9 {
         #endregion Fields
 
         #region Constructor
-		
-		public D3DGpuProgram(string name, GpuProgramType type, D3D.Device device, string syntaxCode) : base(name, type, syntaxCode) {
+
+        public D3DGpuProgram( string name, GpuProgramType type, D3D.Device device, string syntaxCode )
+            : base( name, type, syntaxCode )
+        {
             this.device = device;
-		}
+        }
 
         #endregion Constructor
 
@@ -64,19 +80,23 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// <summary>
         ///     Overridden to allow for loading microcode from external sources.
         /// </summary>
-        public override void Load() {
-            if(externalMicrocode != null) {
+        public override void Load()
+        {
+            if ( externalMicrocode != null )
+            {
                 // unload if needed
-                if(isLoaded) {
+                if ( isLoaded )
+                {
                     Unload();
                 }
 
                 // creates the shader from an external microcode source
                 // for example, a compiled HLSL program
-                LoadFromMicrocode(externalMicrocode);
+                LoadFromMicrocode( externalMicrocode );
                 isLoaded = true;
             }
-            else {
+            else
+            {
                 // call base implementation
                 base.Load();
             }
@@ -85,19 +105,21 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// <summary>
         ///     Loads a D3D shader from the assembler source.
         /// </summary>
-        protected override void LoadFromSource() {
+        protected override void LoadFromSource()
+        {
             string errors;
 
             // load the shader from the source string
-            GraphicsStream microcode = ShaderLoader.FromString(source, null, 0, out errors);
+            DX.GraphicsStream microcode = D3D.ShaderLoader.FromString( source, null, 0, out errors );
 
-            if(errors != null && errors.Length != 0) {
+            if ( errors != null && errors.Length != 0 )
+            {
                 LogManager.Instance.Write( "Error while compiling pixel shader '{0}':\n {1}", name, errors );
                 return;
             }
 
             // load the code into a shader object (polymorphic)
-            LoadFromMicrocode(microcode);
+            LoadFromMicrocode( microcode );
         }
 
         #endregion GpuProgram Members
@@ -110,7 +132,7 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// <param name="microcode">
         ///     GraphicsStream that contains the assembler instructions for the program.
         /// </param>
-        protected abstract void LoadFromMicrocode(Microsoft.DirectX.GraphicsStream microcode);
+        protected abstract void LoadFromMicrocode( Microsoft.DirectX.GraphicsStream microcode );
 
         #endregion Methods
 
@@ -125,22 +147,26 @@ namespace Axiom.RenderSystems.DirectX9 {
         ///     level microcode, which can then be loaded into a low level GPU
         ///     program.
         /// </remarks>
-        internal Microsoft.DirectX.GraphicsStream ExternalMicrocode {
-            get {
+        internal Microsoft.DirectX.GraphicsStream ExternalMicrocode
+        {
+            get
+            {
                 return externalMicrocode;
             }
-            set {
+            set
+            {
                 externalMicrocode = value;
             }
         }
 
         #endregion Properties
-	}
+    }
 
     /// <summary>
     ///    Direct3D implementation of low-level vertex programs.
     /// </summary>
-    public class D3DVertexProgram : D3DGpuProgram {
+    public class D3DVertexProgram : D3DGpuProgram
+    {
         #region Fields
 
         /// <summary>
@@ -152,15 +178,18 @@ namespace Axiom.RenderSystems.DirectX9 {
 
         #region Constructor
 
-        internal D3DVertexProgram(string name, D3D.Device device, string syntaxCode) : base(name, GpuProgramType.Vertex, device, syntaxCode) {}
+        internal D3DVertexProgram( string name, D3D.Device device, string syntaxCode ) : base( name, GpuProgramType.Vertex, device, syntaxCode )
+        {
+        }
 
         #endregion Constructor
 
         #region D3DGpuProgram Memebers
 
-        protected override void LoadFromMicrocode(GraphicsStream microcode) {
+        protected override void LoadFromMicrocode( DX.GraphicsStream microcode )
+        {
             // create the new vertex shader
-            vertexShader = new VertexShader(device, microcode);
+            vertexShader = new D3D.VertexShader( device, microcode );
         }
 
         #endregion D3DGpuProgram Memebers
@@ -170,10 +199,12 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// <summary>
         ///     Unloads the VertexShader object.
         /// </summary>
-        public override void Unload() {
-            base.Unload ();
+        public override void Unload()
+        {
+            base.Unload();
 
-            if(vertexShader != null) {
+            if ( vertexShader != null )
+            {
                 vertexShader.Dispose();
             }
         }
@@ -186,8 +217,10 @@ namespace Axiom.RenderSystems.DirectX9 {
         ///    Used internally by the D3DRenderSystem to get a reference to the underlying
         ///    VertexShader object.
         /// </summary>
-        internal D3D.VertexShader VertexShader {
-            get {
+        internal D3D.VertexShader VertexShader
+        {
+            get
+            {
                 return vertexShader;
             }
         }
@@ -198,7 +231,8 @@ namespace Axiom.RenderSystems.DirectX9 {
     /// <summary>
     ///    Direct3D implementation of low-level vertex programs.
     /// </summary>
-    public class D3DFragmentProgram : D3DGpuProgram {
+    public class D3DFragmentProgram : D3DGpuProgram
+    {
         #region Fields
 
         /// <summary>
@@ -210,15 +244,18 @@ namespace Axiom.RenderSystems.DirectX9 {
 
         #region Constructors
 
-        internal D3DFragmentProgram(string name, D3D.Device device, string syntaxCode) : base(name, GpuProgramType.Fragment, device, syntaxCode) {}
+        internal D3DFragmentProgram( string name, D3D.Device device, string syntaxCode ) : base( name, GpuProgramType.Fragment, device, syntaxCode )
+        {
+        }
 
         #endregion Constructors
 
         #region D3DGpuProgram Memebers
 
-        protected override void LoadFromMicrocode(GraphicsStream microcode) {
+        protected override void LoadFromMicrocode( DX.GraphicsStream microcode )
+        {
             // create a new pixel shader
-            pixelShader = new PixelShader(device, microcode);
+            pixelShader = new D3D.PixelShader( device, microcode );
         }
 
         #endregion D3DGpuProgram Members
@@ -228,10 +265,12 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// <summary>
         ///     Unloads the PixelShader object.
         /// </summary>
-        public override void Unload() {
+        public override void Unload()
+        {
             base.Unload();
 
-            if(pixelShader != null) {
+            if ( pixelShader != null )
+            {
                 pixelShader.Dispose();
             }
         }
@@ -244,8 +283,10 @@ namespace Axiom.RenderSystems.DirectX9 {
         ///    Used internally by the D3DRenderSystem to get a reference to the underlying
         ///    PixelShader object.
         /// </summary>
-        internal D3D.PixelShader PixelShader {
-            get {
+        internal D3D.PixelShader PixelShader
+        {
+            get
+            {
                 return pixelShader;
             }
         }

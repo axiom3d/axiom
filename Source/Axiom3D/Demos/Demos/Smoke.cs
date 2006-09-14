@@ -1,22 +1,29 @@
+#region Namespace Declarations
+
 using System;
+
 using Axiom.Core;
 using Axiom.ParticleSystems;
-using Axiom.Utility;
 
-namespace Demos {
-	/// <summary>
-	/// Summary description for Smoke.
-	/// </summary>
-	public class Smoke : TechDemo {
-		protected override void CreateScene() {
-			scene.AmbientLight = new ColorEx(0.5f, 0.5f, 0.5f);
+#endregion Namespace Declarations
 
-			scene.SetSkyDome(true, "Examples/CloudySky", 5, 8);
+namespace Demos
+{
+    /// <summary>
+    /// Summary description for Smoke.
+    /// </summary>
+    public class Smoke : TechDemo
+    {
+        protected override void CreateScene()
+        {
+            scene.AmbientLight = new ColorEx( 0.5f, 0.5f, 0.5f );
 
-			ParticleSystem smokeSystem = 
-				ParticleSystemManager.Instance.CreateSystem("SmokeSystem", "Examples/Smoke");
+            scene.SetSkyDome( true, "Examples/CloudySky", 5, 8 );
 
-			scene.RootSceneNode.CreateChildSceneNode().AttachObject(smokeSystem);
-		}
-	}
+            ParticleSystem smokeSystem =
+                ParticleSystemManager.Instance.CreateSystem( "SmokeSystem", "Examples/Smoke" );
+
+            scene.RootSceneNode.CreateChildSceneNode().AttachObject( smokeSystem );
+        }
+    }
 }

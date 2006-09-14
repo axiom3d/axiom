@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,17 +24,30 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.IO;
 using System.Reflection;
 using System.Text;
+
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Scripting;
 
-namespace Axiom.ParticleSystems {
+#endregion Namespace Declarations
+
+namespace Axiom.ParticleSystems
+{
     /// <summary>
     ///		Manages particle systems, particle system scripts (templates) and the available emitter & affector factories.
     ///	 </summary>
@@ -55,7 +68,8 @@ namespace Axiom.ParticleSystems {
     ///		describing named particle system templates. Instances of particle systems using these templates can
     ///		then be created easily through the CreateParticleSystem method.
     /// </remarks>
-    public sealed class ParticleSystemManager : IDisposable {
+    public sealed class ParticleSystemManager : IDisposable
+    {
         #region Singleton implementation
 
         /// <summary>
@@ -66,8 +80,10 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         ///     Internal constructor.  This class cannot be instantiated externally.
         /// </summary>
-        internal ParticleSystemManager() {
-            if (instance == null) {
+        internal ParticleSystemManager()
+        {
+            if ( instance == null )
+            {
                 instance = this;
             }
         }
@@ -75,9 +91,11 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         ///     Gets the singleton instance of this class.
         /// </summary>
-        public static ParticleSystemManager Instance {
-            get { 
-                return instance; 
+        public static ParticleSystemManager Instance
+        {
+            get
+            {
+                return instance;
             }
         }
 
@@ -90,8 +108,8 @@ namespace Axiom.ParticleSystems {
         /// </summary>
         /// <param name="values">Attribute values.</param>
         /// <param name="system">Target particle system.</param>
-        delegate void ParticleSystemAttributeParser(string[] values, ParticleSystem system);
- 
+        delegate void ParticleSystemAttributeParser( string[] values, ParticleSystem system );
+
         #endregion
 
         #region Fields
@@ -150,10 +168,11 @@ namespace Axiom.ParticleSystems {
         ///		type. This must be unique.
         /// </remarks>
         /// <param name="factory"></param>
-        public void AddEmitterFactory(ParticleEmitterFactory factory) {
-            emitterFactoryList.Add(factory.Name, factory);
+        public void AddEmitterFactory( ParticleEmitterFactory factory )
+        {
+            emitterFactoryList.Add( factory.Name, factory );
 
-            LogManager.Instance.Write("Particle Emitter type '{0}' registered.", factory.Name);
+            LogManager.Instance.Write( "Particle Emitter type '{0}' registered.", factory.Name );
         }
 
         /// <summary>
@@ -170,10 +189,11 @@ namespace Axiom.ParticleSystems {
         ///		type. This must be unique.
         /// </remarks>
         /// <param name="factory"></param>
-        public void AddAffectorFactory(ParticleAffectorFactory factory) {
-            affectorFactoryList.Add(factory.Name, factory);
+        public void AddAffectorFactory( ParticleAffectorFactory factory )
+        {
+            affectorFactoryList.Add( factory.Name, factory );
 
-            LogManager.Instance.Write("Particle Affector type '{0}' registered.", factory.Name);
+            LogManager.Instance.Write( "Particle Affector type '{0}' registered.", factory.Name );
         }
 
         /// <summary>
@@ -190,8 +210,9 @@ namespace Axiom.ParticleSystems {
         /// </remarks>
         /// <param name="name">The name of the template. Must be unique across all templates.</param>
         /// <param name="system">A reference to a particle system to be used as a template.</param>
-        public void AddTemplate(string name, ParticleSystem system) {
-            systemTemplateList.Add(name, system);
+        public void AddTemplate( string name, ParticleSystem system )
+        {
+            systemTemplateList.Add( name, system );
         }
 
         /// <summary>
@@ -204,9 +225,10 @@ namespace Axiom.ParticleSystems {
         /// </remarks>
         /// <param name="name"></param>
         /// <returns></returns>
-        public ParticleSystem CreateTemplate(string name) {
-            ParticleSystem system = new ParticleSystem(name);
-            AddTemplate(name, system);
+        public ParticleSystem CreateTemplate( string name )
+        {
+            ParticleSystem system = new ParticleSystem( name );
+            AddTemplate( name, system );
 
             return system;
         }
@@ -216,13 +238,15 @@ namespace Axiom.ParticleSystems {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public ParticleSystem CreateSystem(string name) {
+        public ParticleSystem CreateSystem( string name )
+        {
             // create a system with a default quota
-            return CreateSystem(name, DefaultQuota);
+            return CreateSystem( name, DefaultQuota );
         }
 
-        public ParticleSystem CreateSystem(string name, string templateName) {
-            return CreateSystem(name, templateName, DefaultQuota);
+        public ParticleSystem CreateSystem( string name, string templateName )
+        {
+            return CreateSystem( name, templateName, DefaultQuota );
         }
 
         /// <summary>
@@ -241,10 +265,11 @@ namespace Axiom.ParticleSystems {
         /// <param name="name">The name to give the ParticleSystem.</param>
         /// <param name="quota">The maximum number of particles to allow in this system.</param>
         /// <returns></returns>
-        public ParticleSystem CreateSystem(string name, int quota) {
-            ParticleSystem system = new ParticleSystem(name);
+        public ParticleSystem CreateSystem( string name, int quota )
+        {
+            ParticleSystem system = new ParticleSystem( name );
             system.ParticleQuota = quota;
-            systemList.Add(name, system);
+            systemList.Add( name, system );
 
             return system;
         }
@@ -269,17 +294,19 @@ namespace Axiom.ParticleSystems {
         /// <param name="templateName">The name of the template to base the new instance on.</param>
         /// <param name="quota">The maximum number of particles to allow in this system (can be changed later).</param>
         /// <returns></returns>
-        public ParticleSystem CreateSystem(string name, string templateName, int quota) {
-            if (!systemTemplateList.ContainsKey(templateName)) {
-                throw new AxiomException("Cannot create a particle system with template '{0}' because it does not exist.", templateName);
+        public ParticleSystem CreateSystem( string name, string templateName, int quota )
+        {
+            if ( !systemTemplateList.ContainsKey( templateName ) )
+            {
+                throw new AxiomException( "Cannot create a particle system with template '{0}' because it does not exist.", templateName );
             }
 
-            ParticleSystem templateSystem = (ParticleSystem)systemTemplateList[templateName];
+            ParticleSystem templateSystem = (ParticleSystem)systemTemplateList[ templateName ];
 
-            ParticleSystem system = CreateSystem(name, quota);
+            ParticleSystem system = CreateSystem( name, quota );
 
             // copy template settings to the new system (do not return the template itself)
-            templateSystem.CopyTo(system);
+            templateSystem.CopyTo( system );
 
             return system;
         }
@@ -293,11 +320,13 @@ namespace Axiom.ParticleSystems {
         ///		which calls this method to create an instance.
         /// </remarks>
         /// <param name="emitterType">string name of the emitter type to be created. A factory of this type must have been registered.</param>
-        internal ParticleEmitter CreateEmitter(string emitterType) {
-            ParticleEmitterFactory factory = (ParticleEmitterFactory)emitterFactoryList[emitterType];
+        internal ParticleEmitter CreateEmitter( string emitterType )
+        {
+            ParticleEmitterFactory factory = (ParticleEmitterFactory)emitterFactoryList[ emitterType ];
 
-            if (factory == null) {
-                throw new AxiomException("Cannot find requested emitter '{0}'.", emitterType);
+            if ( factory == null )
+            {
+                throw new AxiomException( "Cannot find requested emitter '{0}'.", emitterType );
             }
 
             return factory.Create();
@@ -312,11 +341,13 @@ namespace Axiom.ParticleSystems {
         ///		which calls this method to create an instance.
         /// </remarks>
         /// <param name="emitterType">string name of the affector type to be created. A factory of this type must have been registered.</param>
-        internal ParticleAffector CreateAffector(string affectorType) {
-            ParticleAffectorFactory factory = (ParticleAffectorFactory)affectorFactoryList[affectorType];
+        internal ParticleAffector CreateAffector( string affectorType )
+        {
+            ParticleAffectorFactory factory = (ParticleAffectorFactory)affectorFactoryList[ affectorType ];
 
-            if (factory == null) {
-                throw new AxiomException("Cannot find requested affector '{0}'.", affectorType);
+            if ( factory == null )
+            {
+                throw new AxiomException( "Cannot find requested affector '{0}'.", affectorType );
             }
 
             return factory.Create();
@@ -329,9 +360,10 @@ namespace Axiom.ParticleSystems {
         ///		Since this method is dependent on other engine systems being started, this method will be called by the
         ///		engine when the render system is initialized.
         /// </remarks>
-        internal void Initialize() {
+        internal void Initialize()
+        {
             // add ourself as a listener for the frame started event
-            Root.Instance.FrameStarted += new FrameEvent(RenderSystem_FrameStarted);
+            Root.Instance.FrameStarted += new FrameEvent( RenderSystem_FrameStarted );
 
             // discover and register local attribute parsers
             RegisterParsers();
@@ -342,13 +374,15 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         ///		Parses all particle system script files in resource folders and archives.
         /// </summary>
-        private void ParseAllSources() {
-            StringCollection particleFiles = ResourceManager.GetAllCommonNamesLike("", ".particle");
+        private void ParseAllSources()
+        {
+            StringCollection particleFiles = ResourceManager.GetAllCommonNamesLike( "", ".particle" );
 
-            foreach(string file in particleFiles) {
-                Stream data = ResourceManager.FindCommonResourceData(file);
-				
-                ParseScript(data);
+            foreach ( string file in particleFiles )
+            {
+                Stream data = ResourceManager.FindCommonResourceData( file );
+
+                ParseScript( data );
             }
         }
 
@@ -356,46 +390,54 @@ namespace Axiom.ParticleSystems {
         ///		Starts parsing an individual script file.
         /// </summary>
         /// <param name="data">Stream containing the script data.</param>
-        private void ParseScript(Stream data) {
-            StreamReader script = new StreamReader(data, System.Text.Encoding.ASCII);
+        private void ParseScript( Stream data )
+        {
+            StreamReader script = new StreamReader( data, System.Text.Encoding.ASCII );
 
             string line = "";
             ParticleSystem system = null;
 
             // parse through the data to the end
-            while((line = ParseHelper.ReadLine(script)) != null) 	{
+            while ( ( line = ParseHelper.ReadLine( script ) ) != null )
+            {
                 // ignore blank lines and comments
-                if(!(line.Length == 0 || line.StartsWith("//"))) {
-                    if(system == null) {
-                        system = CreateTemplate(line);
+                if ( !( line.Length == 0 || line.StartsWith( "//" ) ) )
+                {
+                    if ( system == null )
+                    {
+                        system = CreateTemplate( line );
 
                         // read another line to skip the beginning brace of the current particle system
                         script.ReadLine();
                     }
-                    else if(line == "}") {
+                    else if ( line == "}" )
+                    {
                         // end of current particle template
                         system = null;
                     }
-                    else if (line.StartsWith("emitter")) {
-                        string[] values = line.Split(' ');
+                    else if ( line.StartsWith( "emitter" ) )
+                    {
+                        string[] values = line.Split( ' ' );
 
                         // read another line to skip the brace on the next line
                         script.ReadLine();
 
                         // new emitter
-                        ParseEmitter(values[1], script, system);
+                        ParseEmitter( values[ 1 ], script, system );
                     }
-                    else if(line.StartsWith("affector")) 	{
-                        string[] values = line.Split(' ');
+                    else if ( line.StartsWith( "affector" ) )
+                    {
+                        string[] values = line.Split( ' ' );
 
                         // read another line to skip the brace on the next line
                         script.ReadLine();
 
-                        ParseAffector(values[1], script, system);
+                        ParseAffector( values[ 1 ], script, system );
                     }
-                    else {
+                    else
+                    {
                         // attribute line
-                        ParseAttrib(line.ToLower(), system);
+                        ParseAttrib( line.ToLower(), system );
                     } // if
                 } // if
             } // while
@@ -406,23 +448,26 @@ namespace Axiom.ParticleSystems {
         /// </summary>
         /// <param name="line"></param>
         /// <param name="system"></param>
-        private void ParseAttrib(string line, ParticleSystem system) {
+        private void ParseAttrib( string line, ParticleSystem system )
+        {
             // split attribute line by spaces
-            string[] values = line.Split(' ');
+            string[] values = line.Split( ' ' );
 
             // make sure this attribute exists
-            if(!attribParsers.ContainsKey(values[0])) {
-                LogManager.Instance.Write("Unknown particle system attribute: {0}", values[0]);
+            if ( !attribParsers.ContainsKey( values[ 0 ] ) )
+            {
+                LogManager.Instance.Write( "Unknown particle system attribute: {0}", values[ 0 ] );
             }
-            else {
-                ParticleSystemAttributeParser parser = 
-                    (ParticleSystemAttributeParser)attribParsers[values[0]];
+            else
+            {
+                ParticleSystemAttributeParser parser =
+                    (ParticleSystemAttributeParser)attribParsers[ values[ 0 ] ];
 
                 // create a seperate parm list that has the command removed
-                string[] parms = ParseHelper.GetParams(values);
+                string[] parms = ParseHelper.GetParams( values );
 
                 // call the parser method
-                parser(parms, system);
+                parser( parms, system );
             }
         }
 
@@ -431,21 +476,26 @@ namespace Axiom.ParticleSystems {
         /// </summary>
         /// <param name="line"></param>
         /// <param name="system"></param>
-        private void ParseEmitter(string type, TextReader script, ParticleSystem system) {
-            ParticleEmitter emitter = system.AddEmitter(type);
+        private void ParseEmitter( string type, TextReader script, ParticleSystem system )
+        {
+            ParticleEmitter emitter = system.AddEmitter( type );
 
             string line = "";
 
-            while(line != null) {
-                line = ParseHelper.ReadLine(script);
+            while ( line != null )
+            {
+                line = ParseHelper.ReadLine( script );
 
-                if(!(line.Length == 0 || line.StartsWith("//"))) {
-                    if(line == "}") {
+                if ( !( line.Length == 0 || line.StartsWith( "//" ) ) )
+                {
+                    if ( line == "}" )
+                    {
                         // finished with this emitter
                         break;
                     }
-                    else {
-                        ParseEmitterAttrib(line.ToLower(), emitter);
+                    else
+                    {
+                        ParseEmitterAttrib( line.ToLower(), emitter );
                     }
                 } // if
             } // while
@@ -456,21 +506,26 @@ namespace Axiom.ParticleSystems {
         /// </summary>
         /// <param name="line"></param>
         /// <param name="system"></param>
-        private void ParseAffector(string type, TextReader script, ParticleSystem system) {
-            ParticleAffector affector = system.AddAffector(type);
+        private void ParseAffector( string type, TextReader script, ParticleSystem system )
+        {
+            ParticleAffector affector = system.AddAffector( type );
 
             string line = "";
 
-            while(line != null) {
-                line = ParseHelper.ReadLine(script);
+            while ( line != null )
+            {
+                line = ParseHelper.ReadLine( script );
 
-                if(!(line.Length == 0 || line.StartsWith("//"))) {
-                    if(line == "}") {
+                if ( !( line.Length == 0 || line.StartsWith( "//" ) ) )
+                {
+                    if ( line == "}" )
+                    {
                         // finished with this affector
                         break;
                     }
-                    else {
-                        ParseAffectorAttrib(line.ToLower(), affector);
+                    else
+                    {
+                        ParseAffectorAttrib( line.ToLower(), affector );
                     }
                 } // if
             } // while
@@ -481,11 +536,13 @@ namespace Axiom.ParticleSystems {
         /// </summary>
         /// <param name="line"></param>
         /// <param name="emitter"></param>
-        private void ParseEmitterAttrib(string line, ParticleEmitter emitter) {
-            string[] values = line.Split(new char[] {' '}, 2);
+        private void ParseEmitterAttrib( string line, ParticleEmitter emitter )
+        {
+            string[] values = line.Split( new char[] { ' ' }, 2 );
 
-            if(!(emitter.SetParam(values[0], values[1]))) {
-                ParseHelper.LogParserError(values[0], emitter.Type, "Command not found.");
+            if ( !( emitter.SetParam( values[ 0 ], values[ 1 ] ) ) )
+            {
+                ParseHelper.LogParserError( values[ 0 ], emitter.Type, "Command not found." );
             }
         }
 
@@ -495,11 +552,13 @@ namespace Axiom.ParticleSystems {
         /// </summary>
         /// <param name="line"></param>
         /// <param name="affector"></param>
-        private void ParseAffectorAttrib(string line, ParticleAffector affector) {
-            string[] values = line.Split(new char[] {' '}, 2);
+        private void ParseAffectorAttrib( string line, ParticleAffector affector )
+        {
+            string[] values = line.Split( new char[] { ' ' }, 2 );
 
-            if(!(affector.SetParam(values[0], values[1]))) {
-                ParseHelper.LogParserError(values[0], affector.Type, "Command not found.");
+            if ( !( affector.SetParam( values[ 0 ], values[ 1 ] ) ) )
+            {
+                ParseHelper.LogParserError( values[ 0 ], affector.Type, "Command not found." );
             }
         }
 
@@ -516,39 +575,48 @@ namespace Axiom.ParticleSystems {
         ///		particle systems are told that the time is passing slower or faster than it
         ///		actually is. Use this to globally speed up / slow down particle systems.
         /// </remarks>
-        public float TimeFactor {
-            get { 
-                return timeFactor; 
+        public float TimeFactor
+        {
+            get
+            {
+                return timeFactor;
             }
-            set { 
-                timeFactor = value; 
+            set
+            {
+                timeFactor = value;
             }
         }
-	
+
         /// <summary>
         ///		List of available particle systems.
         /// </summary>
-        public HashList ParticleSystems {
-            get { 
-                return systemList; 
+        public HashList ParticleSystems
+        {
+            get
+            {
+                return systemList;
             }
         }
 
         /// <summary>
         ///     List of available affector factories.
         /// </summary>
-        public Hashtable Affectors {
-            get { 
-                return affectorFactoryList; 
+        public Hashtable Affectors
+        {
+            get
+            {
+                return affectorFactoryList;
             }
         }
 
         /// <summary>
         ///     List of available emitter factories.
         /// </summary>
-        public Hashtable Emitters {
-            get { 
-                return emitterFactoryList; 
+        public Hashtable Emitters
+        {
+            get
+            {
+                return emitterFactoryList;
             }
         }
 
@@ -562,26 +630,30 @@ namespace Axiom.ParticleSystems {
         /// <remarks>
         ///		Methods meant to serve as attribute parsers should use a method attribute to 
         /// </remarks>
-        private void RegisterParsers() {
+        private void RegisterParsers()
+        {
             MethodInfo[] methods = this.GetType().GetMethods();
-			
+
             // loop through all methods and look for ones marked with attributes
-            for(int i = 0; i < methods.Length; i++) {
+            for ( int i = 0; i < methods.Length; i++ )
+            {
                 // get the current method in the loop
-                MethodInfo method = methods[i];
-				
+                MethodInfo method = methods[ i ];
+
                 // see if the method should be used to parse one or more material attributes
-                AttributeParserAttribute[] parserAtts = 
-                    (AttributeParserAttribute[])method.GetCustomAttributes(typeof(AttributeParserAttribute), true);
+                AttributeParserAttribute[] parserAtts =
+                    (AttributeParserAttribute[])method.GetCustomAttributes( typeof( AttributeParserAttribute ), true );
 
                 // loop through each one we found and register its parser
-                for(int j = 0; j < parserAtts.Length; j++) {
-                    AttributeParserAttribute parserAtt = parserAtts[j];
+                for ( int j = 0; j < parserAtts.Length; j++ )
+                {
+                    AttributeParserAttribute parserAtt = parserAtts[ j ];
 
-                    switch(parserAtt.ParserType) {
-                            // this method should parse a material attribute
+                    switch ( parserAtt.ParserType )
+                    {
+                        // this method should parse a material attribute
                         case PARTICLE:
-                            attribParsers.Add(parserAtt.Name, Delegate.CreateDelegate(typeof(ParticleSystemAttributeParser), method));
+                            attribParsers.Add( parserAtt.Name, Delegate.CreateDelegate( typeof( ParticleSystemAttributeParser ), method ) );
                             break;
 
                     } // switch
@@ -589,81 +661,95 @@ namespace Axiom.ParticleSystems {
             } // for
         }
 
-        [AttributeParser("billboard_type", PARTICLE)]
-        public static void ParseBillboardType(string[] values, ParticleSystem system) {
-            if(values.Length != 1) {
-                ParseHelper.LogParserError("billboard_type", system.Name, "Wrong number of parameters.");
+        [AttributeParser( "billboard_type", PARTICLE )]
+        public static void ParseBillboardType( string[] values, ParticleSystem system )
+        {
+            if ( values.Length != 1 )
+            {
+                ParseHelper.LogParserError( "billboard_type", system.Name, "Wrong number of parameters." );
                 return;
             }
 
             // lookup the real enum equivalent to the script value
-            object val = ScriptEnumAttribute.Lookup(values[0], typeof(BillboardType));
+            object val = ScriptEnumAttribute.Lookup( values[ 0 ], typeof( BillboardType ) );
 
             // if a value was found, assign it
-            if(val != null)
+            if ( val != null )
                 system.BillboardType = (BillboardType)val;
             else
-                ParseHelper.LogParserError("billboard_type", system.Name, "Invalid enum value");
+                ParseHelper.LogParserError( "billboard_type", system.Name, "Invalid enum value" );
         }
 
-        [AttributeParser("common_direction", PARTICLE)]
-        public static void ParseCommonDirection(string[] values, ParticleSystem system) {
-            if(values.Length != 3) {
-                ParseHelper.LogParserError("common_direction", system.Name, "Wrong number of parameters.");
+        [AttributeParser( "common_direction", PARTICLE )]
+        public static void ParseCommonDirection( string[] values, ParticleSystem system )
+        {
+            if ( values.Length != 3 )
+            {
+                ParseHelper.LogParserError( "common_direction", system.Name, "Wrong number of parameters." );
                 return;
             }
 
-            system.CommonDirection = StringConverter.ParseVector3(values);
+            system.CommonDirection = StringConverter.ParseVector3( values );
         }
 
-        [AttributeParser("cull_each", PARTICLE)]
-        public static void ParseCullEach(string[] values, ParticleSystem system) {
-            if(values.Length != 1) {
-                ParseHelper.LogParserError("cull_each", system.Name, "Wrong number of parameters.");
-                return;
-            }
-			
-            system.CullIndividual = StringConverter.ParseBool(values[0]);
-        }
-
-        [AttributeParser("particle_height", PARTICLE)]
-        public static void ParseHeight(string[] values, ParticleSystem system) {
-            if(values.Length != 1) 	{
-                ParseHelper.LogParserError("particle_height", system.Name, "Wrong number of parameters.");
+        [AttributeParser( "cull_each", PARTICLE )]
+        public static void ParseCullEach( string[] values, ParticleSystem system )
+        {
+            if ( values.Length != 1 )
+            {
+                ParseHelper.LogParserError( "cull_each", system.Name, "Wrong number of parameters." );
                 return;
             }
 
-            system.DefaultHeight = StringConverter.ParseFloat(values[0]);
+            system.CullIndividual = StringConverter.ParseBool( values[ 0 ] );
         }
 
-        [AttributeParser("material", PARTICLE)]
-        public static void ParseMaterial(string[] values, ParticleSystem system) {
-            if(values.Length != 1) {
-                ParseHelper.LogParserError("material", system.Name, "Wrong number of parameters.");
+        [AttributeParser( "particle_height", PARTICLE )]
+        public static void ParseHeight( string[] values, ParticleSystem system )
+        {
+            if ( values.Length != 1 )
+            {
+                ParseHelper.LogParserError( "particle_height", system.Name, "Wrong number of parameters." );
                 return;
             }
 
-            system.MaterialName = values[0];
+            system.DefaultHeight = StringConverter.ParseFloat( values[ 0 ] );
         }
 
-        [AttributeParser("quota", PARTICLE)]
-        public static void ParseQuota(string[] values, ParticleSystem system) {
-            if(values.Length != 1) {
-                ParseHelper.LogParserError("quota", system.Name, "Wrong number of parameters.");
+        [AttributeParser( "material", PARTICLE )]
+        public static void ParseMaterial( string[] values, ParticleSystem system )
+        {
+            if ( values.Length != 1 )
+            {
+                ParseHelper.LogParserError( "material", system.Name, "Wrong number of parameters." );
                 return;
             }
 
-            system.ParticleQuota = int.Parse(values[0]);
+            system.MaterialName = values[ 0 ];
         }
 
-        [AttributeParser("particle_width", PARTICLE)]
-        public static void ParseWidth(string[] values, ParticleSystem system) {
-            if(values.Length != 1) {
-                ParseHelper.LogParserError("particle_width", system.Name, "Wrong number of parameters.");
+        [AttributeParser( "quota", PARTICLE )]
+        public static void ParseQuota( string[] values, ParticleSystem system )
+        {
+            if ( values.Length != 1 )
+            {
+                ParseHelper.LogParserError( "quota", system.Name, "Wrong number of parameters." );
                 return;
             }
 
-            system.DefaultWidth = StringConverter.ParseFloat(values[0]);
+            system.ParticleQuota = int.Parse( values[ 0 ] );
+        }
+
+        [AttributeParser( "particle_width", PARTICLE )]
+        public static void ParseWidth( string[] values, ParticleSystem system )
+        {
+            if ( values.Length != 1 )
+            {
+                ParseHelper.LogParserError( "particle_width", system.Name, "Wrong number of parameters." );
+                return;
+            }
+
+            system.DefaultWidth = StringConverter.ParseFloat( values[ 0 ] );
         }
 
         #endregion
@@ -676,16 +762,18 @@ namespace Axiom.ParticleSystems {
         /// <param name="source"></param>
         /// <param name="e"></param>
         /// <returns></returns>
-        private void RenderSystem_FrameStarted(object source, FrameEventArgs e) {
+        private void RenderSystem_FrameStarted( object source, FrameEventArgs e )
+        {
             // Apply time factor
             float timeSinceLastFrame = timeFactor * e.TimeSinceLastFrame;
 
             // loop through and update each particle system
-            for(int i = 0; i < systemList.Count; i++) {
-                ParticleSystem system = (ParticleSystem)systemList[i];
+            for ( int i = 0; i < systemList.Count; i++ )
+            {
+                ParticleSystem system = (ParticleSystem)systemList[ i ];
 
                 // ask the particle system to update itself based on the frame time
-                system.Update(timeSinceLastFrame);
+                system.Update( timeSinceLastFrame );
             }
         }
 
@@ -696,7 +784,8 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         ///     Called when the engine is shutting down.
         /// </summary>
-        public void Dispose() {
+        public void Dispose()
+        {
             // clear all collections
             emitterFactoryList.Clear();
             affectorFactoryList.Clear();

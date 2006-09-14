@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,11 +24,23 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using Axiom.Graphics;
 using Axiom.Media;
 
-namespace Axiom.Core {
+#endregion Namespace Declarations
+
+namespace Axiom.Core
+{
     /// <summary>
     ///    Class for loading & managing textures.
     /// </summary>
@@ -39,7 +51,8 @@ namespace Axiom.Core {
     ///		Note: This will not take place until the RenderSystem is initialized and at least one RenderWindow
     ///		has been created.
     /// </remarks>
-    public abstract class TextureManager : ResourceManager {
+    public abstract class TextureManager : ResourceManager
+    {
         #region Singleton implementation
 
         /// <summary>
@@ -54,8 +67,10 @@ namespace Axiom.Core {
         ///     Protected internal because this singleton will actually hold the instance of a subclass
         ///     created by a render system plugin.
         /// </remarks>
-        protected internal TextureManager() {
-            if (instance == null) {
+        protected internal TextureManager()
+        {
+            if ( instance == null )
+            {
                 instance = this;
             }
         }
@@ -63,9 +78,11 @@ namespace Axiom.Core {
         /// <summary>
         ///     Gets the singleton instance of this class.
         /// </summary>
-        public static TextureManager Instance {
-            get { 
-                return instance; 
+        public static TextureManager Instance
+        {
+            get
+            {
+                return instance;
             }
         }
 
@@ -90,17 +107,20 @@ namespace Axiom.Core {
         /// <summary>
         ///    Gets/Sets the default number of mipmaps to be used for loaded textures.
         /// </summary>
-        public int DefaultNumMipMaps {
-            get { 
-                return defaultNumMipMaps; 
+        public int DefaultNumMipMaps
+        {
+            get
+            {
+                return defaultNumMipMaps;
             }
-            set { 
-                defaultNumMipMaps = value; 
+            set
+            {
+                defaultNumMipMaps = value;
             }
         }
 
         #endregion Properties
-        
+
         #region Methods
 
         /// <summary>
@@ -108,8 +128,9 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="name">Name of the texture to create, which is the filename.</param>
         /// <returns>A newly created texture object, API dependent.</returns>
-        public override Resource Create(string name) {
-            return Create(name, TextureType.TwoD);
+        public override Resource Create( string name )
+        {
+            return Create( name, TextureType.TwoD );
         }
 
         /// <summary>
@@ -118,7 +139,7 @@ namespace Axiom.Core {
         /// <param name="name"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public abstract Texture Create(string name, TextureType type);
+        public abstract Texture Create( string name, TextureType type );
 
         /// <summary>
         ///    Method for creating a new blank texture.
@@ -131,15 +152,16 @@ namespace Axiom.Core {
         /// <param name="format"></param>
         /// <param name="usage"></param>
         /// <returns></returns>
-        public abstract Texture CreateManual(string name, TextureType type, int width, int height, int numMipMaps, PixelFormat format, TextureUsage usage);
+        public abstract Texture CreateManual( string name, TextureType type, int width, int height, int numMipMaps, PixelFormat format, TextureUsage usage );
 
         /// <summary>
         ///    Loads a texture with the specified name.
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public Texture Load(string name) {
-            return Load(name, TextureType.TwoD);
+        public Texture Load( string name )
+        {
+            return Load( name, TextureType.TwoD );
         }
 
         /// <summary>
@@ -147,9 +169,10 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public Texture Load(string name, TextureType type) {
+        public Texture Load( string name, TextureType type )
+        {
             // load the texture by default with -1 mipmaps (uses default), gamma of 1, priority of 1
-            return Load(name, type, -1, 1.0f, 1);
+            return Load( name, type, -1, 1.0f, 1 );
         }
 
         /// <summary>
@@ -160,53 +183,57 @@ namespace Axiom.Core {
         /// <param name="gamma"></param>
         /// <param name="priority"></param>
         /// <returns></returns>
-        public Texture Load(string name, TextureType type, int numMipMaps, float gamma, int priority) {
+        public Texture Load( string name, TextureType type, int numMipMaps, float gamma, int priority )
+        {
             // does this texture exist already?
-            Texture texture = GetByName(name);
+            Texture texture = GetByName( name );
 
-            if(texture == null) {
+            if ( texture == null )
+            {
                 // create a new texture
-                texture = (Texture)Create(name, type);
+                texture = (Texture)Create( name, type );
 
-                if (numMipMaps == -1) {
+                if ( numMipMaps == -1 )
+                {
                     texture.NumMipMaps = defaultNumMipMaps;
                 }
-                else {
+                else
+                {
                     texture.NumMipMaps = numMipMaps;
                 }
 
                 // set bit depth and gamma
                 texture.Gamma = gamma;
-                texture.Enable32Bit(is32Bit);
+                texture.Enable32Bit( is32Bit );
 
                 // call the base class load method
-                base.Load(texture, priority);
+                base.Load( texture, priority );
             }
 
             return texture;
         }
-
-		/// <summary>
-		///		Overloaded method.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="image"></param>
-		/// <returns></returns>
-		public Texture LoadImage(string name, Image image) 
-		{
-			return LoadImage(name, image, TextureType.TwoD, -1, 1.0f, 1);
-		}
 
         /// <summary>
         ///		Overloaded method.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="image"></param>
-		/// <param name="texType"></param>
-		/// <returns></returns>
-        public Texture LoadImage(string name, Image image, TextureType texType) 
-		{
-            return LoadImage(name, image, texType, -1, 1.0f, 1);
+        /// <returns></returns>
+        public Texture LoadImage( string name, Image image )
+        {
+            return LoadImage( name, image, TextureType.TwoD, -1, 1.0f, 1 );
+        }
+
+        /// <summary>
+        ///		Overloaded method.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="image"></param>
+        /// <param name="texType"></param>
+        /// <returns></returns>
+        public Texture LoadImage( string name, Image image, TextureType texType )
+        {
+            return LoadImage( name, image, texType, -1, 1.0f, 1 );
         }
 
         /// <summary>
@@ -218,27 +245,30 @@ namespace Axiom.Core {
         /// <param name="gamma"></param>
         /// <param name="priority"></param>
         /// <returns></returns>
-        public Texture LoadImage(string name, Image image, TextureType texType, int numMipMaps, float gamma, int priority) {
+        public Texture LoadImage( string name, Image image, TextureType texType, int numMipMaps, float gamma, int priority )
+        {
             // create a new texture
-            Texture texture = (Texture)Create(name, texType);
+            Texture texture = (Texture)Create( name, texType );
 
             // set the number of mipmaps to use for this texture
-            if(numMipMaps == -1) {
+            if ( numMipMaps == -1 )
+            {
                 texture.NumMipMaps = defaultNumMipMaps;
             }
-            else {
+            else
+            {
                 texture.NumMipMaps = numMipMaps;
             }
 
             // set bit depth and gamma
             texture.Gamma = gamma;
-            texture.Enable32Bit(is32Bit);
+            texture.Enable32Bit( is32Bit );
 
             // load image data
-            texture.LoadImage(image);
+            texture.LoadImage( image );
 
             // add the texture to the resource list
-            resourceList[texture.Name] = texture;
+            resourceList[ texture.Name ] = texture;
 
             return texture;
         }
@@ -248,17 +278,20 @@ namespace Axiom.Core {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public new Texture GetByName(string name) {
-            return (Texture)base.GetByName(name);
+        public new Texture GetByName( string name )
+        {
+            return (Texture)base.GetByName( name );
         }
 
         /// <summary>
         ///     Called when the engine is shutting down.    
         /// </summary>
-        public override void Dispose() {
+        public override void Dispose()
+        {
             base.Dispose();
 
-            if (this == instance) {
+            if ( this == instance )
+            {
                 instance = null;
             }
         }

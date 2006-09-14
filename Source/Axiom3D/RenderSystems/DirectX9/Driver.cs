@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,16 +24,29 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+
+using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
 
-namespace Axiom.RenderSystems.DirectX9 {
+#endregion Namespace Declarations
+
+namespace Axiom.RenderSystems.DirectX9
+{
     /// <summary>
     ///		Helper class for dealing with D3D Drivers.
     /// </summary>
-    public class Driver {
+    public class Driver
+    {
         #region Member variables
 
         private int adapterNum;
@@ -49,7 +62,8 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// <summary>
         ///		Default constructor.
         /// </summary>
-        public Driver(D3D.AdapterInformation adapterInfo) {
+        public Driver( D3D.AdapterInformation adapterInfo )
+        {
             this.desktopMode = adapterInfo.CurrentDisplayMode;
             this.name = adapterInfo.Information.DriverName;
             this.description = adapterInfo.Information.Description;
@@ -65,36 +79,56 @@ namespace Axiom.RenderSystems.DirectX9 {
         /// <summary>
         /// 
         /// </summary>
-        public string Name {
-            get { return name; }
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public string Description {
-            get { return description; }
+        public string Description
+        {
+            get
+            {
+                return description;
+            }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public int AdapterNumber {
-            get { return adapterNum; }
+        public int AdapterNumber
+        {
+            get
+            {
+                return adapterNum;
+            }
         }
 
         /// <summary>
         ///		
         /// </summary>
-        public D3D.DisplayMode DesktopMode {
-            get { return desktopMode; }
+        public D3D.DisplayMode DesktopMode
+        {
+            get
+            {
+                return desktopMode;
+            }
         }
 
         /// <summary>
         ///		
         /// </summary>
-        public VideoModeCollection VideoModes {
-            get { return videoModeList; } 
+        public VideoModeCollection VideoModes
+        {
+            get
+            {
+                return videoModeList;
+            }
         }
 
         #endregion

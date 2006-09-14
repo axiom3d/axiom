@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,15 +24,28 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Diagnostics;
 using System.IO;
 
-namespace Axiom.Core {
+#endregion Namespace Declarations
+
+namespace Axiom.Core
+{
     /// <summary>
     ///     Log class for writing debug/log data to files.
     /// </summary>
-    public sealed class Log : IDisposable {
+    public sealed class Log : IDisposable
+    {
         #region Fields
 
         /// <summary>
@@ -65,22 +78,25 @@ namespace Axiom.Core {
         ///     Constructor.  Creates a log file that also logs debug output.
         /// </summary>
         /// <param name="fileName">Name of the log file to open.</param>
-        public Log(string fileName) : this(fileName, true) {}
+        public Log( string fileName ) : this( fileName, true )
+        {
+        }
 
         /// <summary>
         ///     Constructor.
         /// </summary>
         /// <param name="fileName">Name of the log file to open.</param>
         /// <param name="debugOutput">Write log messages to the debug output?</param>
-        public Log(string fileName, bool debugOutput) {
+        public Log( string fileName, bool debugOutput )
+        {
             this.debugOutput = debugOutput;
             logLevel = LoggingLevel.Normal;
 
             // create the log file, or ope
-            log = File.Open(fileName, FileMode.Create);
+            log = File.Open( fileName, FileMode.Create );
 
             // get a stream writer using the file stream
-            writer = new StreamWriter(log);
+            writer = new StreamWriter( log );
         }
 
         #endregion Constructors
@@ -91,18 +107,21 @@ namespace Axiom.Core {
         ///     Gets/Sets the level of the detail for this log.
         /// </summary>
         /// <value></value>
-        public LoggingLevel LogDetail {
-            get {
+        public LoggingLevel LogDetail
+        {
+            get
+            {
                 return logLevel;
             }
-            set {
+            set
+            {
                 logLevel = value;
             }
         }
 
         #endregion Properties
 
-        #region Methods 
+        #region Methods
 
         /// <summary>
         ///     Write a message to the log.
@@ -115,8 +134,9 @@ namespace Axiom.Core {
         ///     When message includes string formatting tokens, these are the values to 
         ///     inject into the formatted string.
         /// </param>
-        public void Write(string message, params object[] substitutions) {
-            Write(LogMessageLevel.Normal, false, message, substitutions);
+        public void Write( string message, params object[] substitutions )
+        {
+            Write( LogMessageLevel.Normal, false, message, substitutions );
         }
 
         /// <summary>
@@ -131,8 +151,9 @@ namespace Axiom.Core {
         ///     When message includes string formatting tokens, these are the values to 
         ///     inject into the formatted string.
         /// </param>
-        public void Write(bool maskDebug, string message, params object[] substitutions) {
-            Write(LogMessageLevel.Normal, maskDebug, message, substitutions);
+        public void Write( bool maskDebug, string message, params object[] substitutions )
+        {
+            Write( LogMessageLevel.Normal, maskDebug, message, substitutions );
         }
 
         /// <summary>
@@ -145,25 +166,29 @@ namespace Axiom.Core {
         ///     When message includes string formatting tokens, these are the values to 
         ///     inject into the formatted string.
         /// </param>
-        public void Write(LogMessageLevel level, bool maskDebug, string message, params object[] substitutions) {
-			if(writer.BaseStream != null && (((int)logLevel + (int)level) >= LogThreshold)) {
+        public void Write( LogMessageLevel level, bool maskDebug, string message, params object[] substitutions )
+        {
+            if ( writer.BaseStream != null && ( ( (int)logLevel + (int)level ) >= LogThreshold ) )
+            {
                 // construct the log message
-                if (substitutions != null && substitutions.Length > 0) {
-                    message = string.Format(message, substitutions);
+                if ( substitutions != null && substitutions.Length > 0 )
+                {
+                    message = string.Format( message, substitutions );
                 }
 
                 // write the the debug output if requested
-                if (debugOutput && !maskDebug) {
-                    System.Diagnostics.Debug.WriteLine(message);
+                if ( debugOutput && !maskDebug )
+                {
+                    System.Diagnostics.Debug.WriteLine( message );
                 }
 
                 // prepend the current time to the message
-                message = string.Format("[{0}] {1}", DateTime.Now.ToString("hh:mm:ss"), message);
+                message = string.Format( "[{0}] {1}", DateTime.Now.ToString( "hh:mm:ss" ), message );
 
                 // write the message and flush the buffer
-                writer.WriteLine(message);
+                writer.WriteLine( message );
                 writer.Flush();
-			}
+            }
         }
 
         #endregion Methods
@@ -176,7 +201,8 @@ namespace Axiom.Core {
         /// <remarks>
         ///     For the log, closes any open file streams and file writers.
         /// </remarks>
-        public void Dispose() {
+        public void Dispose()
+        {
             writer.Close();
             log.Close();
         }

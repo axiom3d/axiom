@@ -1,12 +1,18 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
 Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
 Many thanks to the OGRE team for maintaining such a high quality project.
+
+The math library included in this project, in addition to being a derivative of
+the works of Ogre, also include derivative work of the free portion of the 
+Wild Magic mathematics source code that is distributed with the excellent
+book Game Engine Design.
+http://www.wild-magic.com/
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -24,9 +30,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 
-namespace Axiom.Math {
+#endregion Namespace Declarations
+
+namespace Axiom.Math
+{
     /// <summary>
     ///		A standard sphere, used mostly for bounds checking.
     /// </summary>
@@ -35,7 +53,8 @@ namespace Axiom.Math {
     ///		x^2 + y^2 + z^2 = r^2 (for sphere's centered on the origin). We store spheres
     ///		simply as a center point and a radius.
     /// </remarks>
-    public sealed class Sphere {
+    public sealed class Sphere
+    {
         #region Protected member variables
 
         private float radius;
@@ -48,7 +67,8 @@ namespace Axiom.Math {
         /// <summary>
         ///		Creates a unit sphere centered at the origin.
         /// </summary>
-        public Sphere() {	
+        public Sphere()
+        {
             radius = 1.0f;
             center = Vector3.Zero;
         }
@@ -58,7 +78,8 @@ namespace Axiom.Math {
         /// </summary>
         /// <param name="center">Center point of the sphere.</param>
         /// <param name="radius">Radius of the sphere.</param>
-        public Sphere(Vector3 center, float radius) {
+        public Sphere( Vector3 center, float radius )
+        {
             this.center = center;
             this.radius = radius;
         }
@@ -70,67 +91,77 @@ namespace Axiom.Math {
         /// <summary>
         ///		Gets/Sets the center of the sphere.
         /// </summary>
-        public Vector3 Center {
-            get { 
-				return center; 
-			}
-            set { 
-				center = value; 
-			}
+        public Vector3 Center
+        {
+            get
+            {
+                return center;
+            }
+            set
+            {
+                center = value;
+            }
         }
 
         /// <summary>
         ///		Gets/Sets the radius of the sphere.
         /// </summary>
-        public float Radius {
-            get { 
-				return radius; 
-			}
-            set { 
-				radius = value; 
-			}
+        public float Radius
+        {
+            get
+            {
+                return radius;
+            }
+            set
+            {
+                radius = value;
+            }
         }
 
         #endregion
 
-		#region Intersection methods
+        #region Intersection methods
 
-		/// <summary>
-		///		Tests for intersection between this sphere and another sphere.
-		/// </summary>
-		/// <param name="sphere">Other sphere.</param>
-		/// <returns>True if the spheres intersect, false otherwise.</returns>
-		public bool Intersects(Sphere sphere) {
-			return ((sphere.center - center).Length <= (sphere.radius + radius));
-		}
+        /// <summary>
+        ///		Tests for intersection between this sphere and another sphere.
+        /// </summary>
+        /// <param name="sphere">Other sphere.</param>
+        /// <returns>True if the spheres intersect, false otherwise.</returns>
+        public bool Intersects( Sphere sphere )
+        {
+            return ( ( sphere.center - center ).Length <= ( sphere.radius + radius ) );
+        }
 
-		/// <summary>
-		///		Returns whether or not this sphere interects a box.
-		/// </summary>
-		/// <param name="box"></param>
-		/// <returns>True if the box intersects, false otherwise.</returns>
-		public bool Intersects(AxisAlignedBox box) {
-			return Utility.Intersects(this, box);
-		}
+        /// <summary>
+        ///		Returns whether or not this sphere interects a box.
+        /// </summary>
+        /// <param name="box"></param>
+        /// <returns>True if the box intersects, false otherwise.</returns>
+        public bool Intersects( AxisAlignedBox box )
+        {
+            return Utility.Intersects( this, box );
+        }
 
-		/// <summary>
-		///		Returns whether or not this sphere interects a plane.
-		/// </summary>
-		/// <param name="plane"></param>
-		/// <returns>True if the plane intersects, false otherwise.</returns>
-		public bool Intersects(Plane plane) {
-			return Utility.Intersects(this, plane);
-		}
+        /// <summary>
+        ///		Returns whether or not this sphere interects a plane.
+        /// </summary>
+        /// <param name="plane"></param>
+        /// <returns>True if the plane intersects, false otherwise.</returns>
+        public bool Intersects( Plane plane )
+        {
+            return Utility.Intersects( this, plane );
+        }
 
-		/// <summary>
-		///		Returns whether or not this sphere interects a Vector3.
-		/// </summary>
-		/// <param name="vector"></param>
-		/// <returns>True if the vector intersects, false otherwise.</returns>
-		public bool Intersects(Vector3 vector) {
-			return (vector - center).Length <= radius;
-		}
+        /// <summary>
+        ///		Returns whether or not this sphere interects a Vector3.
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <returns>True if the vector intersects, false otherwise.</returns>
+        public bool Intersects( Vector3 vector )
+        {
+            return ( vector - center ).Length <= radius;
+        }
 
-		#endregion Intersection methods
+        #endregion Intersection methods
     }
 }

@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,10 +24,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.IO;
 
-namespace Axiom.Core {
+#endregion Namespace Declarations
+
+namespace Axiom.Core
+{
     /// <summary>
     ///		Abstract class reprensenting a loadable resource (e.g. textures, sounds etc)
     /// </summary>
@@ -45,29 +57,30 @@ namespace Axiom.Core {
     ///		2. The Load() and Unload() methods - size must be set after Load()
     ///			Each must check & update the isLoaded flag.
     /// </remarks>
-    public abstract class Resource : IDisposable {
+    public abstract class Resource : IDisposable
+    {
         #region Fields
 
-		/// <summary>
-		///		Name of this resource.
-		/// </summary>
+        /// <summary>
+        ///		Name of this resource.
+        /// </summary>
         protected string name;
-		/// <summary>
-		///		Has this resource been loaded yet?
-		/// </summary>
+        /// <summary>
+        ///		Has this resource been loaded yet?
+        /// </summary>
         protected bool isLoaded;
-		/// <summary>
-		///		 Size (in bytes) that this resource takes up in memory.
-		/// </summary>
+        /// <summary>
+        ///		 Size (in bytes) that this resource takes up in memory.
+        /// </summary>
         protected long size;
-		/// <summary>
-		///		Timestamp of the last time this resource was accessed.
-		/// </summary>
+        /// <summary>
+        ///		Timestamp of the last time this resource was accessed.
+        /// </summary>
         protected long lastAccessed;
-		/// <summary>
-		///		Unique handle of this resource.
-		/// </summary>
-		protected int handle;
+        /// <summary>
+        ///		Unique handle of this resource.
+        /// </summary>
+        protected int handle;
 
         #endregion Fields
 
@@ -77,7 +90,8 @@ namespace Axiom.Core {
         ///		Default constructor.
         /// </summary>
         /// <remarks>Subclasses must initialize name and size.</remarks>
-        public Resource() {
+        public Resource()
+        {
             isLoaded = false;
             size = 0;
         }
@@ -95,7 +109,9 @@ namespace Axiom.Core {
         ///		Unloads the resource data, but retains enough info. to be able to recreate it
         ///		on demand.
         /// </summary>
-        public virtual void Unload() {}
+        public virtual void Unload()
+        {
+        }
 
         #endregion
 
@@ -104,50 +120,61 @@ namespace Axiom.Core {
         /// <summary>
         ///		Size of this resource.
         /// </summary>
-        public long Size {
-            get { 
-                return size; 
+        public long Size
+        {
+            get
+            {
+                return size;
             }
         }
 
         /// <summary>
         ///		Name of this resource.
         /// </summary>
-        public string Name {
-            get { 
-                return name; 
+        public string Name
+        {
+            get
+            {
+                return name;
             }
         }
 
         /// <summary>
         ///		Is this resource loaded?
         /// </summary>
-        public bool IsLoaded {
-            get { 
-                return isLoaded; 
+        public bool IsLoaded
+        {
+            get
+            {
+                return isLoaded;
             }
         }
 
         /// <summary>
         ///		The time the resource was last touched.
         /// </summary>
-        public long LastAccessed {
-            get { 
-                return lastAccessed; 
+        public long LastAccessed
+        {
+            get
+            {
+                return lastAccessed;
             }
         }
 
-		/// <summary>
-		///		Gets/Sets the unique handle of this resource.
-		/// </summary>
-		public int Handle {
-			get {
-				return handle;
-			}
-			set {
-				handle = value;
-			}
-		}
+        /// <summary>
+        ///		Gets/Sets the unique handle of this resource.
+        /// </summary>
+        public int Handle
+        {
+            get
+            {
+                return handle;
+            }
+            set
+            {
+                handle = value;
+            }
+        }
 
         #endregion
 
@@ -156,12 +183,14 @@ namespace Axiom.Core {
         /// <summary>
         ///		Indicates this resource has been used.
         /// </summary>
-        public virtual void Touch() {
+        public virtual void Touch()
+        {
             lastAccessed = Root.Instance.Timer.Milliseconds;
 
-			if(!isLoaded) {
-				Load();
-			}
+            if ( !isLoaded )
+            {
+                Load();
+            }
         }
 
         #endregion
@@ -171,8 +200,10 @@ namespace Axiom.Core {
         /// <summary>
         ///		Dispose method.  Made virtual to allow subclasses to destroy resources their own way.
         /// </summary>
-        public virtual void Dispose() {
-            if(isLoaded) {
+        public virtual void Dispose()
+        {
+            if ( isLoaded )
+            {
                 // unload this resource
                 Unload();
             }

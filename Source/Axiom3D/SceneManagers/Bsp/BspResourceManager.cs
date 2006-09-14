@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,76 +24,91 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+
 using Axiom.Core;
+
+#endregion Namespace Declarations
 
 namespace Axiom.SceneManagers.Bsp
 {
-	/// <summary>
-	///		Manages the locating and loading of BSP-based indoor levels.
-	/// </summary>
-	/// <remarks>
-	///		Like other ResourceManager specialisations it manages the location and loading
-	///		of a specific type of resource, in this case files containing Binary
-	///		Space Partition (BSP) based level files e.g. Quake3 levels.</p>
-	///		However, note that unlike other ResourceManager implementations,
-	///		only 1 BspLevel resource is allowed to be loaded at one time. Loading
-	///		another automatically unloads the currently loaded level if any.
-	/// </remarks>
-	public class BspResourceManager : ResourceManager 
-	{
-		#region Singleton implementation
-		protected static BspResourceManager instance;
+    /// <summary>
+    ///		Manages the locating and loading of BSP-based indoor levels.
+    /// </summary>
+    /// <remarks>
+    ///		Like other ResourceManager specialisations it manages the location and loading
+    ///		of a specific type of resource, in this case files containing Binary
+    ///		Space Partition (BSP) based level files e.g. Quake3 levels.</p>
+    ///		However, note that unlike other ResourceManager implementations,
+    ///		only 1 BspLevel resource is allowed to be loaded at one time. Loading
+    ///		another automatically unloads the currently loaded level if any.
+    /// </remarks>
+    public class BspResourceManager : ResourceManager
+    {
+        #region Singleton implementation
+        protected static BspResourceManager instance;
 
-		public static BspResourceManager Instance 
-		{
-			get { return instance; }
-		}
+        public static BspResourceManager Instance
+        {
+            get
+            {
+                return instance;
+            }
+        }
 
-		static BspResourceManager() 
-		{ 
-			instance = new BspResourceManager();
-		}
+        static BspResourceManager()
+        {
+            instance = new BspResourceManager();
+        }
 
-		protected BspResourceManager() 
-		{ 
-		}
+        protected BspResourceManager()
+        {
+        }
         #endregion
 
-		#region Protected members
-		protected Quake3ShaderManager shaderManager;
-		#endregion
+        #region Protected members
+        protected Quake3ShaderManager shaderManager;
+        #endregion
 
-		#region Methods
-		/// <summary>
-		///		Loads a BSP-based level from the named file.  Currently only supports loading of Quake3 .bsp files.
-		/// </summary>
-		public BspLevel Load(string fileName)
-		{
-			return Load(fileName, 1);
-		}
+        #region Methods
+        /// <summary>
+        ///		Loads a BSP-based level from the named file.  Currently only supports loading of Quake3 .bsp files.
+        /// </summary>
+        public BspLevel Load( string fileName )
+        {
+            return Load( fileName, 1 );
+        }
 
-		/// <summary>
-		///		Loads a BSP-based level from the named file.  Currently only supports loading of Quake3 .bsp files.
-		/// </summary>
-		public BspLevel Load(string fileName, int priority)
-		{
-			// TODO: Bleh?!
-			// UnloadAndDestroyAll();
+        /// <summary>
+        ///		Loads a BSP-based level from the named file.  Currently only supports loading of Quake3 .bsp files.
+        /// </summary>
+        public BspLevel Load( string fileName, int priority )
+        {
+            // TODO: Bleh?!
+            // UnloadAndDestroyAll();
 
-			BspLevel bsp = (BspLevel) Create(fileName);
-			base.Load(bsp, priority);
+            BspLevel bsp = (BspLevel)Create( fileName );
+            base.Load( bsp, priority );
 
-			return bsp;
-		}
-		
-		/// <summary>
-		///		Creates a BspLevel resource - mainly used internally.
-		/// </summary>
-		public override Resource Create(string name)
-		{
-			return new BspLevel(name);
-		}
-		#endregion
-	}
+            return bsp;
+        }
+
+        /// <summary>
+        ///		Creates a BspLevel resource - mainly used internally.
+        /// </summary>
+        public override Resource Create( string name )
+        {
+            return new BspLevel( name );
+        }
+        #endregion
+    }
 }

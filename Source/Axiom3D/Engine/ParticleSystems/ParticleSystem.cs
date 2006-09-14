@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,16 +24,28 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
+
 using Axiom.Collections;
 using Axiom.Core;
-
 using Axiom.Math;
 
-namespace Axiom.ParticleSystems {
+#endregion Namespace Declarations
+
+namespace Axiom.ParticleSystems
+{
     /// <summary>
     ///		Class defining particle system based special effects.
     /// </summary>
@@ -50,7 +62,8 @@ namespace Axiom.ParticleSystems {
     ///		In addition, like all subclasses of SceneObject, the ParticleSystem will only be considered for
     ///		rendering once it has been attached to a SceneNode. 
     /// </summary>
-    public class ParticleSystem : BillboardSet {
+    public class ParticleSystem : BillboardSet
+    {
         #region Member variables
 
         /// <summary>List of emitters for this system.</summary>
@@ -71,7 +84,9 @@ namespace Axiom.ParticleSystems {
         ///		You should use the ParticleSystemManager to create systems, rather than doing it directly.
         /// </remarks>
         /// <param name="name"></param>
-        public ParticleSystem(string name) : base(name, 10)  {
+        public ParticleSystem( string name )
+            : base( name, 10 )
+        {
             autoExtendPool = true;
             allDefaultSize = true;
             originType = BillboardOrigin.Center;
@@ -94,9 +109,10 @@ namespace Axiom.ParticleSystems {
         ///		Emitter types can be extended by plugin authors.
         /// </param>
         /// <returns></returns>
-        public ParticleEmitter AddEmitter(string emitterType) {
-            ParticleEmitter emitter = ParticleSystemManager.Instance.CreateEmitter(emitterType);
-            emitterList.Add(emitter);
+        public ParticleEmitter AddEmitter( string emitterType )
+        {
+            ParticleEmitter emitter = ParticleSystemManager.Instance.CreateEmitter( emitterType );
+            emitterList.Add( emitter );
 
             return emitter;
         }
@@ -114,9 +130,10 @@ namespace Axiom.ParticleSystems {
         ///		Affector types can be extended by plugin authors.
         /// </param>
         /// <returns></returns>
-        public ParticleAffector AddAffector(string affectorType) {
-            ParticleAffector affector = ParticleSystemManager.Instance.CreateAffector(affectorType);
-            affectorList.Add(affector);
+        public ParticleAffector AddAffector( string affectorType )
+        {
+            ParticleAffector affector = ParticleSystemManager.Instance.CreateAffector( affectorType );
+            affectorList.Add( affector );
 
             return affector;
         }
@@ -126,10 +143,11 @@ namespace Axiom.ParticleSystems {
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public ParticleAffector GetAffector(int index) {
-            Debug.Assert(index < affectorList.Count, "index < affectorList.Count");
+        public ParticleAffector GetAffector( int index )
+        {
+            Debug.Assert( index < affectorList.Count, "index < affectorList.Count" );
 
-            return (ParticleAffector)affectorList[index];
+            return (ParticleAffector)affectorList[ index ];
         }
 
         /// <summary>
@@ -137,10 +155,11 @@ namespace Axiom.ParticleSystems {
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public ParticleEmitter GetEmitter(int index) {
-            Debug.Assert(index < emitterList.Count, "index < emitterList.Count");
+        public ParticleEmitter GetEmitter( int index )
+        {
+            Debug.Assert( index < emitterList.Count, "index < emitterList.Count" );
 
-            return (ParticleEmitter)emitterList[index];
+            return (ParticleEmitter)emitterList[ index ];
         }
 
         #endregion
@@ -154,12 +173,14 @@ namespace Axiom.ParticleSystems {
         ///		This is called automatically every frame by the engine.
         /// </remarks>
         /// <param name="timeElapsed">The amount of time (in seconds) since the last frame.</param>
-        internal void Update(float timeElapsed) {
-            if(parentNode != null) {
-                Expire(timeElapsed);
-                TriggerAffectors(timeElapsed);
-                ApplyMotion(timeElapsed);
-                TriggerEmitters(timeElapsed);
+        internal void Update( float timeElapsed )
+        {
+            if ( parentNode != null )
+            {
+                Expire( timeElapsed );
+                TriggerAffectors( timeElapsed );
+                ApplyMotion( timeElapsed );
+                TriggerEmitters( timeElapsed );
                 UpdateBounds();
             }
         }
@@ -168,8 +189,9 @@ namespace Axiom.ParticleSystems {
         ///		Overloaded method.
         /// </summary>
         /// <param name="time"></param>
-        public void FastForward(float time) {
-            FastForward(time, 0.1f);
+        public void FastForward( float time )
+        {
+            FastForward( time, 0.1f );
         }
 
         /// <summary>
@@ -187,43 +209,49 @@ namespace Axiom.ParticleSystems {
         ///		The sampling interval used to generate particles, apply affectors etc. The lower this
         ///		is the more realistic the fast-forward, but it takes more iterations to do it.
         /// </param>
-        public void FastForward(float time, float interval) {
-			for(float t = 0.0f; t < time; t += interval) {
-				Update(interval);
-			}
+        public void FastForward( float time, float interval )
+        {
+            for ( float t = 0.0f; t < time; t += interval )
+            {
+                Update( interval );
+            }
         }
 
-        public override void GetWorldTransforms(Matrix4[] matrices) {
-            matrices[0] = Matrix4.Identity;
+        public override void GetWorldTransforms( Matrix4[] matrices )
+        {
+            matrices[ 0 ] = Matrix4.Identity;
         }
 
         /// <summary>
         ///		Overriden.
         /// </summary>
-        public override void UpdateBounds() {
+        public override void UpdateBounds()
+        {
             base.UpdateBounds();
 
-            if(parentNode != null && !aab.IsNull) {
+            if ( parentNode != null && !aab.IsNull )
+            {
                 // Have to override because bounds are supposed to be in local node space
                 // but we've already put particles in world space to decouple them from the
                 // node transform, so reverse transform back
 
-                Vector3 min = new Vector3(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
-                Vector3 max = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+                Vector3 min = new Vector3( float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity );
+                Vector3 max = new Vector3( float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity );
                 Vector3 temp;
 
                 Vector3[] corners = aab.Corners;
                 Quaternion invQ = parentNode.DerivedOrientation.Inverse();
                 Vector3 t = parentNode.DerivedPosition;
 
-                for(int i = 0; i < 8; i++) {
+                for ( int i = 0; i < 8; i++ )
+                {
                     // reverse transform corner
-                    temp = invQ * (corners[i] - t);
-                    min.Floor(temp);
-                    max.Ceil(temp);
+                    temp = invQ * ( corners[ i ] - t );
+                    min.Floor( temp );
+                    max.Ceil( temp );
                 }
 
-                aab.SetExtents(min, max);
+                aab.SetExtents( min, max );
             }
         }
 
@@ -231,17 +259,21 @@ namespace Axiom.ParticleSystems {
         ///		Used to expire dead particles.
         /// </summary>
         /// <param name="timeElapsed"></param>
-        protected void Expire(float timeElapsed) {
-            for(int i = 0; i < activeBillboards.Count; i++) {
-                Particle particle = (Particle)activeBillboards[i];
+        protected void Expire( float timeElapsed )
+        {
+            for ( int i = 0; i < activeBillboards.Count; i++ )
+            {
+                Particle particle = (Particle)activeBillboards[ i ];
 
                 // is this particle dead?
-                if(particle.timeToLive < timeElapsed) {
+                if ( particle.timeToLive < timeElapsed )
+                {
                     // add back to the free queue and remove from active list
-                    freeBillboards.Enqueue(particle);
-                    activeBillboards.Remove(particle);
+                    freeBillboards.Enqueue( particle );
+                    activeBillboards.Remove( particle );
                 }
-                else {
+                else
+                {
                     // decrement TTL
                     particle.timeToLive -= timeElapsed;
                 }
@@ -252,7 +284,8 @@ namespace Axiom.ParticleSystems {
         ///		Spawn new particles based on free quota and emitter requirements.
         /// </summary>
         /// <param name="timeElapsed"></param>
-        protected void TriggerEmitters(float timeElapsed) {
+        protected void TriggerEmitters( float timeElapsed )
+        {
             requested.Clear();
 
             ParticleEmitter emitter = null;
@@ -265,58 +298,62 @@ namespace Axiom.ParticleSystems {
             totalRequested = 0;
 
             // count up the total requested emissions
-            for(int i = 0; i < emitterCount; i++) {
-                emitter = (ParticleEmitter)emitterList[i];
-                int emissionCount = emitter.GetEmissionCount(timeElapsed);
-                requested.Insert(i, emissionCount);
-				
+            for ( int i = 0; i < emitterCount; i++ )
+            {
+                emitter = (ParticleEmitter)emitterList[ i ];
+                int emissionCount = emitter.GetEmissionCount( timeElapsed );
+                requested.Insert( i, emissionCount );
+
                 totalRequested += emissionCount;
             }
 
             // check if the quota will be exceeded, if so, reduce demand
-            if(totalRequested > emissionAllowed) {
+            if ( totalRequested > emissionAllowed )
+            {
                 float ratio = (float)emissionAllowed / (float)totalRequested;
 
                 // modify requested values
-				for(int i = 0; i < emitterCount; i++) {
-					requested[i] = (int)requested[i] * (int)ratio;
-				}
+                for ( int i = 0; i < emitterCount; i++ )
+                {
+                    requested[ i ] = (int)requested[ i ] * (int)ratio;
+                }
             }
 
             // emission time
-            for(int i = 0; i < emitterCount; i++) {
+            for ( int i = 0; i < emitterCount; i++ )
+            {
                 // get a reference to the current emitter
-                emitter = (ParticleEmitter)emitterList[i];
+                emitter = (ParticleEmitter)emitterList[ i ];
 
-				// Reflects OGRE behaviour
-				float timePoint = 0.0f;
-				float timeInc	= timeElapsed / (int)requested[i];
+                // Reflects OGRE behaviour
+                float timePoint = 0.0f;
+                float timeInc = timeElapsed / (int)requested[ i ];
 
-                for(int j = 0; j < (int)requested[i]; j++) 
-				{
+                for ( int j = 0; j < (int)requested[ i ]; j++ )
+                {
                     // create a new particle and initialize it with the current emitter
                     Particle p = AddParticle();
-                    emitter.InitParticle(p);
+                    emitter.InitParticle( p );
 
                     // translate position and direction into world space
-                    p.Position = (parentNode.DerivedOrientation * p.Position) + parentNode.DerivedPosition;
+                    p.Position = ( parentNode.DerivedOrientation * p.Position ) + parentNode.DerivedPosition;
                     p.Direction = parentNode.DerivedOrientation * p.Direction;
 
-					// The following is OGRE behaviour
+                    // The following is OGRE behaviour
 
-					// apply partial frame motion to this particle
-					p.Position += (p.Direction * timePoint);
+                    // apply partial frame motion to this particle
+                    p.Position += ( p.Direction * timePoint );
 
-					// apply particle initialization by the affectors
-					for(int k = 0; k < affectorList.Count; k++) 
-					{
-						ParticleAffector affector = (ParticleAffector)affectorList[k];
-						affector.InitParticle(ref p);
-					}
+                    // apply particle initialization by the affectors
+                    for ( int k = 0; k < affectorList.Count; k++ )
+                    {
+                        ParticleAffector affector = (ParticleAffector)affectorList[ k ];
+                        affector.InitParticle( ref p );
+                    }
 
-					// Increment time fragment
-					timePoint += timeInc;
-				}
+                    // Increment time fragment
+                    timePoint += timeInc;
+                }
             }
         }
 
@@ -324,11 +361,13 @@ namespace Axiom.ParticleSystems {
         ///		Updates existing particles based on their momentum.
         /// </summary>
         /// <param name="timeElapsed"></param>
-        protected void ApplyMotion(float timeElapsed) {
+        protected void ApplyMotion( float timeElapsed )
+        {
             Particle p = null;
 
-            for(int i = 0; i < activeBillboards.Count; i++) {
-                p = (Particle)activeBillboards[i];
+            for ( int i = 0; i < activeBillboards.Count; i++ )
+            {
+                p = (Particle)activeBillboards[ i ];
                 p.Position += p.Direction * timeElapsed;
             }
         }
@@ -337,10 +376,12 @@ namespace Axiom.ParticleSystems {
         ///		Applies the effects of particle affectors.
         /// </summary>
         /// <param name="timeElapsed"></param>
-        protected void TriggerAffectors(float timeElapsed) {
-            for(int i = 0; i < affectorList.Count; i++) {
-                ParticleAffector affector = (ParticleAffector)affectorList[i];
-                affector.AffectParticles(this, timeElapsed);
+        protected void TriggerAffectors( float timeElapsed )
+        {
+            for ( int i = 0; i < affectorList.Count; i++ )
+            {
+                ParticleAffector affector = (ParticleAffector)affectorList[ i ];
+                affector.AffectParticles( this, timeElapsed );
             }
         }
 
@@ -348,7 +389,8 @@ namespace Axiom.ParticleSystems {
         ///		Overriden from BillboardSet to create Particles instead of Billboards.
         /// </summary>
         /// <param name="size"></param>
-        protected override void IncreasePool(int size) {
+        protected override void IncreasePool( int size )
+        {
             // do NOT use the base class method.  want to ensure Particles get added to the pool, not Billboards
             int oldSize = billboardPool.Count;
 
@@ -356,18 +398,19 @@ namespace Axiom.ParticleSystems {
             billboardPool.Capacity += size;
 
             // add fresh Billboard objects to the new slots
-            for(int i = oldSize; i < size; i++)
-                billboardPool.Add(new Particle());
+            for ( int i = oldSize; i < size; i++ )
+                billboardPool.Add( new Particle() );
         }
 
         /// <summary>
         ///		Used internally for adding a new active particle.
         /// </summary>
         /// <returns></returns>
-        protected Particle AddParticle() {
+        protected Particle AddParticle()
+        {
             Billboard billboard = (Billboard)freeBillboards.Dequeue();
-            activeBillboards.Add(billboard);
-            billboard.NotifyOwner(this);
+            activeBillboards.Add( billboard );
+            billboard.NotifyOwner( this );
 
             return (Particle)billboard;
         }
@@ -379,34 +422,36 @@ namespace Axiom.ParticleSystems {
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="billboard"></param>
-        protected override void GenerateBillboardAxes(Camera camera, ref Axiom.Math.Vector3 x, ref Axiom.Math.Vector3 y, Billboard billboard) {
+        protected override void GenerateBillboardAxes( Camera camera, ref Axiom.Math.Vector3 x, ref Axiom.Math.Vector3 y, Billboard billboard )
+        {
             // Orientation different from BillboardSet
             // Billboards are in world space (to decouple them from emitters in node space)
             Quaternion camQ = Quaternion.Zero;
 
-            switch (billboardType) {
+            switch ( billboardType )
+            {
                 case BillboardType.Point:
                     // Get camera world axes for X and Y (depth is irrelevant)
                     // No inverse transform
                     camQ = camera.DerivedOrientation;
                     x = camQ * Vector3.UnitX;
                     y = camQ * Vector3.UnitY;
-		           
+
                     break;
                 case BillboardType.OrientedCommon:
                     // Y-axis is common direction
                     // X-axis is cross with camera direction 
                     y = commonDirection;
-                    x = camQ * camera.DerivedDirection.Cross(y);
-		           
+                    x = camQ * camera.DerivedDirection.Cross( y );
+
                     break;
                 case BillboardType.OrientedSelf:
                     // Y-axis is direction
                     // X-axis is cross with camera direction 
 
                     // Scale direction first
-                    y = (billboard.Direction * 0.01f);
-                    x = camQ * camera.DerivedDirection.Cross(y);
+                    y = ( billboard.Direction * 0.01f );
+                    x = camQ * camera.DerivedDirection.Cross( y );
 
                     break;
             }
@@ -419,11 +464,14 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         /// 
         /// </summary>
-        public float DefaultHeight {
-            get {
+        public float DefaultHeight
+        {
+            get
+            {
                 return defaultParticleHeight;
             }
-            set {
+            set
+            {
                 defaultParticleHeight = value;
             }
         }
@@ -431,11 +479,14 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         /// 
         /// </summary>
-        public float DefaultWidth {
-            get {
+        public float DefaultWidth
+        {
+            get
+            {
                 return defaultParticleWidth;
             }
-            set {
+            set
+            {
                 defaultParticleWidth = value;
             }
         }
@@ -443,10 +494,12 @@ namespace Axiom.ParticleSystems {
         /// <summary>
         ///		Gets the count of active particles currently in the system.
         /// </summary>
-        public int ParticleCount {
-            get { 
-				return activeBillboards.Count; 
-			}
+        public int ParticleCount
+        {
+            get
+            {
+                return activeBillboards.Count;
+            }
         }
 
         /// <summary>
@@ -460,21 +513,26 @@ namespace Axiom.ParticleSystems {
         ///		emit any more particles. As existing particles die, the spare capacity will be allocated
         ///		equally across all emitters to be as consistent to the origina particle system style as possible.
         /// </remarks>
-        public int ParticleQuota {
-            get { 
-                return this.PoolSize; 
+        public int ParticleQuota
+        {
+            get
+            {
+                return this.PoolSize;
             }
-            set { 
-                this.PoolSize = value; 
+            set
+            {
+                this.PoolSize = value;
             }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public BillboardList Particles {
-            get { 
-                return activeBillboards; 
+        public BillboardList Particles
+        {
+            get
+            {
+                return activeBillboards;
             }
         }
 
@@ -485,22 +543,25 @@ namespace Axiom.ParticleSystems {
         ///		system's name is also not copied.
         /// </summary>
         /// <returns></returns>
-        public void CopyTo(ParticleSystem system) {
+        public void CopyTo( ParticleSystem system )
+        {
             // remove the target's emitters and affectors
             system.emitterList.Clear();
             system.affectorList.Clear();
 
             // loop through emitter and affector lists and copy them over
-            for(int i = 0; i < emitterList.Count; i++) {
-                ParticleEmitter emitter = (ParticleEmitter)emitterList[i];
-                ParticleEmitter newEmitter = system.AddEmitter(emitter.Type);
-                emitter.CopyTo(newEmitter);
+            for ( int i = 0; i < emitterList.Count; i++ )
+            {
+                ParticleEmitter emitter = (ParticleEmitter)emitterList[ i ];
+                ParticleEmitter newEmitter = system.AddEmitter( emitter.Type );
+                emitter.CopyTo( newEmitter );
             }
 
-            for(int i = 0; i < affectorList.Count; i++) {
-                ParticleAffector affector = (ParticleAffector)affectorList[i];
-                ParticleAffector newAffector = system.AddAffector(affector.Type);
-                affector.CopyTo(newAffector);
+            for ( int i = 0; i < affectorList.Count; i++ )
+            {
+                ParticleAffector affector = (ParticleAffector)affectorList[ i ];
+                ParticleAffector newAffector = system.AddAffector( affector.Type );
+                affector.CopyTo( newAffector );
             }
 
             system.PoolSize = this.PoolSize;

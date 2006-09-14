@@ -1,30 +1,72 @@
+#region LGPL License
+/*
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
+
+The overall design, and a majority of the core engine and rendering code 
+contained within this library is a derivative of the open source Object Oriented 
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+#endregion
+
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 
-namespace Axiom.RenderSystems.OpenGL.ATI {
+#endregion Namespace Declarations
+
+namespace Axiom.RenderSystems.OpenGL.ATI
+{
     /// <summary>
     ///     Structure used to build rule paths.
     /// </summary>
-    public struct TokenRule {
+    public struct TokenRule
+    {
         public OperationType operation;
         public Symbol tokenID;
         public string symbol;
         public int errorID;
 
-        public TokenRule(OperationType op) {
+        public TokenRule( OperationType op )
+        {
             this.operation = op;
             tokenID = 0;
             symbol = "";
             errorID = 0;
         }
 
-        public TokenRule(OperationType op, Symbol tokenID) {
+        public TokenRule( OperationType op, Symbol tokenID )
+        {
             this.operation = op;
             this.tokenID = tokenID;
             symbol = "";
             errorID = 0;
         }
 
-        public TokenRule(OperationType op, Symbol tokenID, string symbol) {
+        public TokenRule( OperationType op, Symbol tokenID, string symbol )
+        {
             this.operation = op;
             this.tokenID = tokenID;
             this.symbol = symbol;
@@ -35,7 +77,8 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
     /// <summary>
     ///     Structure used to build Symbol Type library.
     /// </summary>
-    public struct SymbolDef {
+    public struct SymbolDef
+    {
         /// <summary>
         ///     Token ID which is the index into the Token Type library.
         /// </summary>
@@ -66,7 +109,8 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         /// </summary>
         public int ruleID;
 
-        public SymbolDef(Symbol symbol, int glEnum, ContextKeyPattern ckp) {
+        public SymbolDef( Symbol symbol, int glEnum, ContextKeyPattern ckp )
+        {
             this.ID = symbol;
             this.pass2Data = glEnum;
             this.contextKey = (uint)ckp;
@@ -76,7 +120,8 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             ruleID = 0;
         }
 
-        public SymbolDef(Symbol symbol, int glEnum, ContextKeyPattern ckp, uint cps) {
+        public SymbolDef( Symbol symbol, int glEnum, ContextKeyPattern ckp, uint cps )
+        {
             this.ID = symbol;
             this.pass2Data = glEnum;
             this.contextKey = (uint)ckp;
@@ -86,7 +131,8 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
             ruleID = 0;
         }
 
-        public SymbolDef(Symbol symbol, int glEnum, ContextKeyPattern ckp, ContextKeyPattern cps) {
+        public SymbolDef( Symbol symbol, int glEnum, ContextKeyPattern ckp, ContextKeyPattern cps )
+        {
             this.ID = symbol;
             this.pass2Data = glEnum;
             this.contextKey = (uint)ckp;
@@ -100,7 +146,8 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
     /// <summary>
     ///     Structure for Token instructions.
     /// </summary>
-    public struct TokenInstruction {
+    public struct TokenInstruction
+    {
         /// <summary>
         ///     Non-Terminal Token Rule ID that generated Token.
         /// </summary>
@@ -118,7 +165,8 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         /// </summary>
         public int pos;
 
-        public TokenInstruction(Symbol symbol, Symbol ID) {
+        public TokenInstruction( Symbol symbol, Symbol ID )
+        {
             this.NTTRuleID = symbol;
             this.ID = ID;
             line = 0;
@@ -126,13 +174,15 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
         }
     }
 
-    public struct TokenInstType{
+    public struct TokenInstType
+    {
         public string Name;
         public int ID;
 
     }
 
-    public struct RegisterUsage {
+    public struct RegisterUsage
+    {
         public bool Phase1Write;
         public bool Phase2Write;
     }
@@ -140,32 +190,37 @@ namespace Axiom.RenderSystems.OpenGL.ATI {
     /// <summary>
     ///     Structure used to keep track of arguments and instruction parameters.
     /// </summary>
-    struct OpParam {
+    struct OpParam
+    {
         public int Arg;		// type of argument
         public bool Filled;		// has it been filled yet
         public uint MaskRep;	// Mask/Replicator flags
         public int Mod;		// argument modifier
     }
 
-    struct RegModOffset {
+    struct RegModOffset
+    {
         public int MacroOffset;
         public int RegisterBase;
         public int OpParamsIndex;
 
-        public RegModOffset(int offset, Symbol regBase, int index) {
+        public RegModOffset( int offset, Symbol regBase, int index )
+        {
             this.MacroOffset = offset;
             this.RegisterBase = (int)regBase;
             this.OpParamsIndex = index;
         }
     }
 
-    struct MacroRegModify {
+    struct MacroRegModify
+    {
         public TokenInstruction[] Macro;
         public int MacroSize;
         public RegModOffset[] RegMods;
         public int RegModSize;
 
-        public MacroRegModify(TokenInstruction[] tokens, RegModOffset[] offsets) {
+        public MacroRegModify( TokenInstruction[] tokens, RegModOffset[] offsets )
+        {
             this.Macro = tokens;
             this.MacroSize = tokens.Length;
             this.RegMods = offsets;

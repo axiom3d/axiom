@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,16 +24,31 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+
 using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.Math;
+using Axiom.Scripting;
 
-namespace Axiom.ParticleFX {
+#endregion Namespace Declarations
+
+namespace Axiom.ParticleFX
+{
     /// <summary>
     /// Summary description for AreaEmitter.
     /// </summary>
-    public abstract class AreaEmitter : ParticleEmitter {
+    public abstract class AreaEmitter : ParticleEmitter
+    {
         #region Fields
 
         protected Vector3 size = Vector3.Zero;
@@ -43,15 +58,20 @@ namespace Axiom.ParticleFX {
 
         #endregion Fields
 
-        public AreaEmitter() : base() { }
+        public AreaEmitter() : base()
+        {
+        }
 
         #region Properties
 
-        public override Axiom.Math.Vector3 Direction {
-            get { 
-				return base.Direction; 
-			}
-            set {
+        public override Axiom.Math.Vector3 Direction
+        {
+            get
+            {
+                return base.Direction;
+            }
+            set
+            {
                 base.Direction = value;
 
                 // update the ranges
@@ -59,63 +79,77 @@ namespace Axiom.ParticleFX {
             }
         }
 
-        public Vector3 Size {
-            get { 
-				return size; 
-			}
-            set { 
-				size = value; 
-				GenerateAreaAxes(); 
-			}
+        public Vector3 Size
+        {
+            get
+            {
+                return size;
+            }
+            set
+            {
+                size = value;
+                GenerateAreaAxes();
+            }
         }
 
-        public float Width { 
-            get { 
-				return size.x; 
-			}
-            set { 
-				size.x = value; 
-				GenerateAreaAxes(); 
-			}
+        public float Width
+        {
+            get
+            {
+                return size.x;
+            }
+            set
+            {
+                size.x = value;
+                GenerateAreaAxes();
+            }
         }
 
-        public float Height { 
-            get { 
-				return size.y; 
-			}
-            set { 
-				size.y = value; 
-				GenerateAreaAxes(); 
-			}
+        public float Height
+        {
+            get
+            {
+                return size.y;
+            }
+            set
+            {
+                size.y = value;
+                GenerateAreaAxes();
+            }
         }
 
-        public float Depth { 
-            get { 
-				return size.z; 
-			}
-            set { 
-				size.z = value; 
-				GenerateAreaAxes(); 
-			}
+        public float Depth
+        {
+            get
+            {
+                return size.z;
+            }
+            set
+            {
+                size.z = value;
+                GenerateAreaAxes();
+            }
         }
 
         #endregion
 
         #region Methods
 
-        protected void GenerateAreaAxes() {
-            Vector3 left = up.Cross(direction);
+        protected void GenerateAreaAxes()
+        {
+            Vector3 left = up.Cross( direction );
 
-            xRange = left * (size.x * 0.5f);
-            yRange = up * (size.y * 0.5f);
-            zRange = direction * (size.z * 0.5f);
+            xRange = left * ( size.x * 0.5f );
+            yRange = up * ( size.y * 0.5f );
+            zRange = direction * ( size.z * 0.5f );
         }
 
-        protected void InitDefaults(string type) {
+        protected void InitDefaults( string type )
+        {
             // TODO: Revisit this
             direction = Vector3.UnitZ;
             up = Vector3.UnitZ;
-            this.Size = new Vector3(50, 50, 0);
+            this.Size = new Vector3( 50, 50, 0 );
             this.type = type;
         }
 
@@ -123,9 +157,10 @@ namespace Axiom.ParticleFX {
 
         #region Implementation of ParticleEmitter
 
-        public override ushort GetEmissionCount(float timeElapsed) {
+        public override ushort GetEmissionCount( float timeElapsed )
+        {
             // use basic constant emission
-            return GenerateConstantEmissionCount(timeElapsed);
+            return GenerateConstantEmissionCount( timeElapsed );
         }
 
         #endregion

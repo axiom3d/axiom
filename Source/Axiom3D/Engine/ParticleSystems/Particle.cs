@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,44 +24,64 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
+
 using Axiom.Core;
 
-namespace Axiom.ParticleSystems {
+#endregion Namespace Declarations
+
+namespace Axiom.ParticleSystems
+{
     /// <summary>
     ///		An extension of Billboard that allows for each particle to have particle system specific info.
     /// </summary>
-    public class Particle : Billboard {
+    public class Particle : Billboard
+    {
 
-		#region Member variables
+        #region Member variables
 
         /// <summary>Time (in seconds) before this particle is destroyed.</summary>
         public float timeToLive;
-		/// <summary>Total Time to live, number of seconds of particles natural life</summary>
-		public float totalTimeToLive;
-		/// <summary>Speed of rotation in radians</summary>
-		float rotationSpeed;
+        /// <summary>Total Time to live, number of seconds of particles natural life</summary>
+        public float totalTimeToLive;
+        /// <summary>Speed of rotation in radians</summary>
+        float rotationSpeed;
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		public float RotationSpeed
-		{
-			get { return rotationSpeed; }
-			set { rotationSpeed = value; }
-		}
+        public float RotationSpeed
+        {
+            get
+            {
+                return rotationSpeed;
+            }
+            set
+            {
+                rotationSpeed = value;
+            }
+        }
 
-		#endregion
-		
-		/// <summary>
+        #endregion
+
+        /// <summary>
         ///		Default constructor.
         /// </summary>
-        public Particle() 
-		{
-            timeToLive		= 10;
-			totalTimeToLive = 10;
-			rotationSpeed	= 0;
+        public Particle()
+        {
+            timeToLive = 10;
+            totalTimeToLive = 10;
+            rotationSpeed = 0;
         }
     }
 }

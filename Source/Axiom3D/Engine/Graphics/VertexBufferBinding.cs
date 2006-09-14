@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,12 +24,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Diagnostics;
+
 using Axiom.Math;
 
-namespace Axiom.Graphics {
+#endregion Namespace Declarations
+
+namespace Axiom.Graphics
+{
     /// <summary>
     ///		Records the state of all the vertex buffer bindings required to provide a vertex declaration
     ///		with the input data it needs for the vertex elements.
@@ -42,22 +55,23 @@ namespace Axiom.Graphics {
     ///		the list of vertex buffer bindings, it becomes possible to reuse bindings between declarations
     ///		and vice versa, giving opportunities to reduce the state changes required to perform rendering.
     /// </remarks>
-    public class VertexBufferBinding {
+    public class VertexBufferBinding
+    {
         #region Fields
 
-		/// <summary>
-		///		Defines the vertex buffer bindings used as source for vertex declarations.
-		/// </summary>
+        /// <summary>
+        ///		Defines the vertex buffer bindings used as source for vertex declarations.
+        /// </summary>
         protected Hashtable bindingMap = new Hashtable();
-		/// <summary>
-		///		The highest index in use for this binding.
-		/// </summary>
+        /// <summary>
+        ///		The highest index in use for this binding.
+        /// </summary>
         protected short highIndex;
-		
+
         #endregion Fields
 
         #region Methods
-		
+
         /// <summary>
         ///		Set a binding, associating a vertex buffer with a given index.
         /// </summary>
@@ -70,25 +84,28 @@ namespace Axiom.Graphics {
         /// </remarks>
         /// <param name="index">Index at which to bind the buffer.</param>
         /// <param name="buffer">Vertex buffer to bind.</param>
-        public virtual void SetBinding(short index, HardwareVertexBuffer buffer) {
-            bindingMap[index] = buffer;
-            highIndex = (short)Utility.Max(highIndex, index + 1);
+        public virtual void SetBinding( short index, HardwareVertexBuffer buffer )
+        {
+            bindingMap[ index ] = buffer;
+            highIndex = (short)Utility.Max( highIndex, index + 1 );
         }
 
         /// <summary>
         ///		Removes an existing binding.
         /// </summary>
         /// <param name="index">Index of the buffer binding to remove.</param>
-        public virtual void UnsetBinding(short index) {
-            Debug.Assert(bindingMap.ContainsKey(index), "Cannot find buffer for index" + index);
+        public virtual void UnsetBinding( short index )
+        {
+            Debug.Assert( bindingMap.ContainsKey( index ), "Cannot find buffer for index" + index );
 
-            bindingMap.Remove(index);
+            bindingMap.Remove( index );
         }
 
         /// <summary>
         ///		Removes all current buffer bindings.
         /// </summary>
-        public virtual void UnsetAllBindings() {
+        public virtual void UnsetAllBindings()
+        {
             bindingMap.Clear();
         }
 
@@ -97,47 +114,54 @@ namespace Axiom.Graphics {
         /// </summary>
         /// <param name="index">Index of the binding to retreive the buffer for.</param>
         /// <returns>Buffer at the specified index.</returns>
-        public virtual HardwareVertexBuffer GetBuffer(short index) {
-            Debug.Assert(bindingMap.ContainsKey(index), "No buffer is bound to index " + index);
+        public virtual HardwareVertexBuffer GetBuffer( short index )
+        {
+            Debug.Assert( bindingMap.ContainsKey( index ), "No buffer is bound to index " + index );
 
-			HardwareVertexBuffer buf = (HardwareVertexBuffer)bindingMap[index];
+            HardwareVertexBuffer buf = (HardwareVertexBuffer)bindingMap[ index ];
 
             return buf;
         }
 
         #endregion
-		
+
         #region Properties
-		
+
         /// <summary>
         ///		Gets an enumerator to iterate through the buffer bindings.
         /// </summary>
         /// TODO: Change this to strongly typed later on
-        public virtual IEnumerator Bindings {
-            get { 
-                return bindingMap.GetEnumerator(); 
+        public virtual IEnumerator Bindings
+        {
+            get
+            {
+                return bindingMap.GetEnumerator();
             }
         }
 
-		/// <summary>
-		///		Gets the number of bindings.
-		/// </summary>
-		public int BindingCount {
-			get {
-				return bindingMap.Count;
-			}
-		}
+        /// <summary>
+        ///		Gets the number of bindings.
+        /// </summary>
+        public int BindingCount
+        {
+            get
+            {
+                return bindingMap.Count;
+            }
+        }
 
         /// <summary>
         ///		Gets the highest index which has already been set, plus 1.
         /// </summary>
         /// <remarks>
-		///		This is to assist in binding the vertex buffers such that there are
-		///		not gaps in the list.
+        ///		This is to assist in binding the vertex buffers such that there are
+        ///		not gaps in the list.
         /// </remarks>
-        public virtual short NextIndex {
-            get { 
-                return highIndex++; 
+        public virtual short NextIndex
+        {
+            get
+            {
+                return highIndex++;
             }
         }
 

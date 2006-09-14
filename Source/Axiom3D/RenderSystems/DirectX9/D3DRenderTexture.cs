@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,62 +24,86 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Diagnostics;
+
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 
-namespace Axiom.RenderSystems.DirectX9 {
-	/// <summary>
-	///     Summary description for D3DRenderTexture.
-	/// </summary>
-	public class D3DRenderTexture : RenderTexture {
+#endregion Namespace Declarations
+
+namespace Axiom.RenderSystems.DirectX9
+{
+    /// <summary>
+    ///     Summary description for D3DRenderTexture.
+    /// </summary>
+    public class D3DRenderTexture : RenderTexture
+    {
 
         private D3DTexture privateTex;
 
-        public D3DRenderTexture(string name, int width, int height)
-            :this(name, width, height, TextureType.TwoD) {}
+        public D3DRenderTexture( string name, int width, int height )
+            : this( name, width, height, TextureType.TwoD )
+        {
+        }
 
-		public D3DRenderTexture(string name, int width, int height, TextureType type)
-            :base(name, width, height) {
+        public D3DRenderTexture( string name, int width, int height, TextureType type )
+            : base( name, width, height )
+        {
 
-            privateTex = (D3DTexture)TextureManager.Instance.CreateManual(name + "_PRIVATE##", type, width, height, 0, PixelFormat.R8G8B8, TextureUsage.RenderTarget);
+            privateTex = (D3DTexture)TextureManager.Instance.CreateManual( name + "_PRIVATE##", type, width, height, 0, PixelFormat.R8G8B8, TextureUsage.RenderTarget );
 
         }
 
-        protected override void CopyToTexture() {
-            privateTex.CopyToTexture(texture);
+        protected override void CopyToTexture()
+        {
+            privateTex.CopyToTexture( texture );
         }
 
-        public override object GetCustomAttribute(string attribute) {
-            switch(attribute) {
+        public override object GetCustomAttribute( string attribute )
+        {
+            switch ( attribute )
+            {
                 case "D3DZBUFFER":
                     return privateTex.DepthStencil;
                 case "D3DBACKBUFFER":
-                    return privateTex.NormalTexture.GetSurfaceLevel(0);
+                    return privateTex.NormalTexture.GetSurfaceLevel( 0 );
             }
 
-            return new NotSupportedException("There is no D3D RenderWindow custom attribute named " + attribute);
+            return new NotSupportedException( "There is no D3D RenderWindow custom attribute named " + attribute );
 
         }
 
-		public override bool RequiresTextureFlipping {
-			get {
-				return false;
-			}
-		}
+        public override bool RequiresTextureFlipping
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-        public override void Dispose() {
+        public override void Dispose()
+        {
             base.Dispose();
 
             privateTex.Dispose();
         }
 
-		public override void Save(System.IO.Stream stream) {
-			// TODO: Implement me
-			throw new NotImplementedException("Saving RenderTextures is not yet implemented.");
-		}
+        public override void Save( System.IO.Stream stream )
+        {
+            // TODO: Implement me
+            throw new NotImplementedException( "Saving RenderTextures is not yet implemented." );
+        }
 
-	}
+    }
 }
