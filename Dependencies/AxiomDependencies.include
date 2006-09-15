@@ -1,0 +1,125 @@
+<?xml version="1.0" ?>
+<project name="AxiomDependencies">
+	<!-- Aliases for Axiom managed and native dependencies -->
+	<!-- Include this in your build file(s) using the "include" NAnt task -->
+    <!-- NOTE: dynamic should be false for these so nested buildfiles don't change the path-->
+
+	<!-- 
+	IMPORTANT NOTE:  All paths are defined relative to the 'dependencies.topdir'
+	property, which *must* be defined.
+
+	This property should point to the top-level dependencies dir (where this 
+	file is located).
+
+	Places this property can be defined:
+	
+	1. In the top-level build file (where this file is included).
+	2. Explicitly, by uncommenting the property below.
+
+	If you choose the latter, the path should be an absolute path - relative paths are defined relative to the
+	top level build file, not this file.
+	-->
+	<!--    <property name="dependencies.topdir" value="${project::get-base-directory()}/../../Dependencies" dynamic="false" /> -->
+
+
+	<!-- Define directory aliases for managed dependencies relative to the top-level dependencies dir -->
+    <property name="managed.dependencies.topdir" value="${path::combine(dependencies.topdir, 'Managed')}" dynamic="false" />
+    <property name="managed.dependencies.win32.dir" value="${path::combine(managed.dependencies.topdir, 'DotNet')}" dynamic="false" />
+	<property name="managed.dependencies.unix.dir" value="${path::combine(managed.dependencies.topdir, 'Mono')}" dynamic="false" />
+	<!-- FIXME: This should point to a directory containing portable assemblies, but I want to preserve the directory structure for now -->
+    <property name="managed.dependencies.portable.dir" value="${path::combine(managed.dependencies.topdir, 'DotNet')}" dynamic="false" />
+
+	<!-- Define directory aliases for native dependencies relative to the top-level dependencies dir -->
+    <property name="native.dependencies.topdir" value="${path::combine(dependencies.topdir, 'Native')}" dynamic="false" />
+    <property name="native.dependencies.win32.dir" value="${path::combine(native.dependencies.topdir, 'Win32')}" dynamic="false" />
+	<property name="native.dependencies.unix.dir" value="${path::combine(native.dependencies.topdir, 'Mono')}" dynamic="false" />
+    
+    <!-- 
+		Here's a bit of cleverness I may regret - define generic aliases for 
+		managed and native dependencies dirs based on platform we are executing on.
+		This makes it easier to automatically reference the appropriate assemblies and
+		libraries, but precludes easy cross-compiling of assemblies for targets other than
+		the one the build is currently running on.
+
+		This could be controlled by a property setting rather than direct detection of platform, should more control be needed.
+
+		Note that there are no unix native dependencies, since they vary by platform or linux distribution and cannot all
+		be included here.  
+		I'm not sure of the situation for OSX.
+	-->
+	<!--
+    <if test="${platform::is-win32()}">
+        <property name="managed.dependencies.dir" value="${managed.dependencies.win32.dir}" dynamic="false"/>
+        <property name="native.dependencies.dir" value="${native.dependencies.win32.dir}" dynamic="false"/>		
+    </if>
+    <if test="${platform::is-unix()}">
+        <property name="managed.dependencies.dir" value="${managed.dependencies.unix.dir}" dynamic="false"/>
+        <property name="native.dependencies.dir" value="${native.dependencies.unix.dir}" dynamic="false"/>
+	</if>
+    -->
+
+	<!-- TODO:  Define something for OSX here -->
+
+	<!-- 
+	Aliases for assembly and library file names.
+	This is for convenience so build targets don't have to know the path details.
+	An alias can be anything.  Here we follow the convention of using the full file name as the alias name.
+	-->
+
+	<!-- Windows only managed assemblies --> 
+	<property name="Tao.Platform.Windows.dll" value="${managed.dependencies.win32.dir}/Tao.Platform.Windows.dll" dynamic="false" />
+
+	<!-- Portable managed assemblies -->
+	<property name="ICSharpCode.SharpZipLib.dll" value="${managed.dependencies.portable.dir}/ICSharpCode.SharpZipLib.dll" dynamic="false" />
+	<property name="Tao.Cg.dll" value="${managed.dependencies.portable.dir}/Tao.Cg.dll" dynamic="false" />
+	<property name="Tao.DevIl.dll"  value="${managed.dependencies.portable.dir}/Tao.DevIl.dll" dynamic="false" />
+	<property name="Tao.OpenGl.dll" value="${managed.dependencies.portable.dir}/Tao.OpenGl.dll" dynamic="false" />
+	<property name="Tao.OpenGl.ExtensionLoader.dll" value="${managed.dependencies.portable.dir}/Tao.OpenGl.ExtensionLoader.dll" dynamic="false" />
+	<property name="Tao.OpenGl.Glu.dll" value="${managed.dependencies.portable.dir}/Tao.OpenGl.Glu.dll" dynamic="false" />
+	<property name="Tao.Sdl.dll" value="${managed.dependencies.portable.dir}/Tao.Sdl.dll" dynamic="false" />
+
+	<!-- DLL-mapping config files for Mono.  
+	Defined as wildcards to catch all of them for each managed assembly, since they differ per linux distro 
+	Meant to be used inside a fileset directive. -->
+	<property name="Tao.Cg.dll.configs" value="${managed.dependencies.unix.dir}/Tao.Cg.dll.config*" />
+	<property name="Tao.DevIl.dll.configs" value="${managed.dependencies.unix.dir}/Tao.DevIl.dll.config*" />
+	<property name="Tao.OpenGl.dll.configs" value="${managed.dependencies.unix.dir}/Tao.OpenGl.dll.config*" />
+	<property name="Tao.OpenGl.ExtensionLoader.dll.configs" value="${managed.dependencies.unix.dir}/Tao.OpenGl.ExtensionLoader.dll.config*" />
+	<property name="Tao.OpenGl.Glu.dll.configs" value="${managed.dependencies.unix.dir}/Tao.OpenGl.Glu.dll.config*" />
+	<property name="Tao.Sdl.dll.configs" value="${managed.dependencies.unix.dir}/Tao.Sdl.dll.config*" />
+
+	<!-- Windows native libraries -->
+	<property name="cg.dll" value="${native.dependencies.win32.dir}/cg.dll" dynamic="false" />
+	<property name="cgGL.dll" value="${native.dependencies.win32.dir}/cgGL.dll" dynamic="false" />
+	<property name="DevIL.dll" value="${native.dependencies.win32.dir}/DevIL.dll" dynamic="false" />
+	<property name="freeglut.dll" value="${native.dependencies.win32.dir}/freeglut.dll" dynamic="false" />
+	<property name="glfw.dll" value="${native.dependencies.win32.dir}/glfw.dll" dynamic="false" />
+	<property name="ILU.dll" value="${native.dependencies.win32.dir}/ILU.dll" dynamic="false" />
+	<property name="ILUT.dll" value="${native.dependencies.win32.dir}/ILUT.dll" dynamic="false" />
+	<property name="jpeg.dll" value="${native.dependencies.win32.dir}/jpeg.dll" dynamic="false" />
+	<property name="libpng12.dll" value="${native.dependencies.win32.dir}/libpng12.dll" dynamic="false" />
+	<property name="nvparse.dll" value="${native.dependencies.win32.dir}/nvparse.dll" dynamic="false" />
+	<property name="OpenAL32.dll" value="${native.dependencies.win32.dir}/OpenAL32.dll" dynamic="false" />
+	<property name="SDL.dll" value="${native.dependencies.win32.dir}/SDL.dll" dynamic="false" />
+	<property name="SDL_gfx.dll" value="${native.dependencies.win32.dir}/SDL_gfx.dll" dynamic="false" />
+	<property name="SDL_image.dll" value="${native.dependencies.win32.dir}/SDL_image.dll" dynamic="false" />
+	<property name="SDL_mixer.dll" value="${native.dependencies.win32.dir}/SDL_mixer.dll" dynamic="false" />
+	<property name="SDL_net.dll" value="${native.dependencies.win32.dir}/SDL_net.dll" dynamic="false" />
+	<property name="SDL_ttf.dll" value="${native.dependencies.win32.dir}/SDL_ttf.dll" dynamic="false" />
+	<property name="smpeg.dll" value="${native.dependencies.win32.dir}/smpeg.dll" dynamic="false" />
+	<property name="wrap_oal.dll" value="${native.dependencies.win32.dir}/wrap_oal.dll" dynamic="false" />
+	<property name="zlib1.dll" value="${native.dependencies.win32.dir}/zlib1.dll" dynamic="false" />
+
+    <!-- Paths for Managed DirectX -->
+    <!-- NOTE: Points to the location of the Managed DirectX assemblies.  If you
+		 receive error messages relating to missing DirectX assemblies, check
+		 here first.
+		 This requires the DirectX SDK to be installed
+    -->
+    <property name="directx.sdk.dir" value="${environment::get-variable('DXSDK_DIR')}" dynamic="true" />
+    <property name="managed.directx.dir" value="${path::combine(directx.sdk.dir, 'Developer Runtime/x86/DirectX for Managed Code')}" dynamic="true" />
+    <!-- alternate settings
+    <property name="win.sys.root" value="${environment::get-variable('SystemRoot')}" dynamic="true" />
+    <property name="directx.dir" value="${path::combine(win.sys.root, 'Microsoft.NET/Managed DirectX/v9.02.2904')}" dynamic="true" />
+    -->
+</project>

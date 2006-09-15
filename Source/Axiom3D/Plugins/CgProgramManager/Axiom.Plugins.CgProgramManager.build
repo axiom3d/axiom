@@ -41,7 +41,7 @@
 				<include name="System.dll"/>
 				<include name="System.Data.dll"/>
 				<include name="System.Xml.dll"/>
-				<include name="${managed.dependencies.dir}/Tao.Cg.dll"/>
+				<include name="${Tao.Cg.dll}"/>
 			</references>
 		</csc>
 	</target>

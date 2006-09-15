@@ -6,8 +6,6 @@
 	
 	Required properties:
 		* axiom3d.build.dir			- (path) root level to build to
-		* managed.dependencies.dir	- (path) dynamically defined path to 
-									  managed dependencies
 		* build.debug				- (true|false) debug build?
 		* current.build.defines 	- framework-specific build defines
 -->
@@ -45,8 +43,8 @@
 				<include name="System.Drawing.dll"/>
 				<include name="System.Xml.dll"/>
 				<include name="${axiom3d.build.dir}/Axiom.MathLib.dll"/>
-				<include name="${managed.dependencies.dir}/ICSharpCode.SharpZipLib.dll"/>
-				<include name="${managed.dependencies.dir}/Tao.DevIl.dll"/>
+				<include name="${ICSharpCode.SharpZipLib.dll}"/>
+				<include name="${Tao.DevIl.dll}"/>
 			</references>
 		</csc>
 	</target>

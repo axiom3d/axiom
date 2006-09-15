@@ -43,7 +43,7 @@
 				<include name="System.Data.dll"/>
 				<include name="System.Drawing.dll"/>
 				<include name="System.Xml.dll"/>
-				<include name="${managed.dependencies.dir}/Tao.Sdl.dll"/>
+				<include name="${Tao.Sdl.dll}"/>
 			</references>
 		</csc>
 	</target>
