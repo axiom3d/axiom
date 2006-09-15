@@ -46,30 +46,30 @@
 				<include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.RenderSystems.DirectX9.dll"/>
 				<include unless="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.SDL.dll"/>
 
-				<include name="${managed.dependencies.dir}/ICSharpCode.SharpZipLib.dll"/>
+				<include name="${ICSharpCode.SharpZipLib.dll}"/>
 				
-				<include name="${managed.dependencies.dir}/Tao.DevIl.dll"/>
-				<include if="${platform::is-unix()}" name="${managed.dependencies.dir}/Tao.DevIl.dll.config"/>
+				<include name="${Tao.DevIl.dll}"/>
+				<include if="${platform::is-unix()}" name="${Tao.DevIl.dll.configs}"/>
 				
-				<include name="${managed.dependencies.dir}/Tao.Cg.dll"/>
-				<include if="${platform::is-unix()}" name="${managed.dependencies.dir}/Tao.Cg.dll.config"/>
+				<include name="${Tao.Cg.dll}"/>
+				<include if="${platform::is-unix()}" name="${Tao.Cg.dll.configs}"/>
 				
-				<include name="${managed.dependencies.dir}/Tao.OpenGl.dll"/>
-				<include if="${platform::is-unix()}" name="${managed.dependencies.dir}/Tao.OpenGl.dll.config"/>
+				<include name="${Tao.OpenGl.dll}"/>
+				<include if="${platform::is-unix()}" name="${Tao.OpenGl.dll.configs}"/>
 				
-				<include name="${managed.dependencies.dir}/Tao.OpenGl.ExtensionLoader.dll"/>
-				<include if="${platform::is-unix()}" name="${managed.dependencies.dir}/Tao.OpenGl.ExtensionLoader.dll.config"/>
+				<include name="${Tao.OpenGl.ExtensionLoader.dll}"/>
+				<include if="${platform::is-unix()}" name="${Tao.OpenGl.ExtensionLoader.dll.configs}"/>
 				
-				<include name="${managed.dependencies.dir}/Tao.OpenGl.Glu.dll"/>
-				<include if="${platform::is-unix()}" name="${managed.dependencies.dir}/Tao.OpenGl.Glu.dll.config"/>
+				<include name="${Tao.OpenGl.Glu.dll}"/>
+				<include if="${platform::is-unix()}" name="${Tao.OpenGl.Glu.dll.configs}"/>
 				
-				<include if="${platform::is-win32()}" name="${managed.dependencies.dir}/Tao.Platform.Windows.dll"/>
+				<include if="${platform::is-win32()}" name="${Tao.Platform.Windows.dll}"/>
 				
-				<include unless="${platform::is-win32()}" name="${managed.dependencies.dir}/Tao.Sdl.dll"/>
-				<include unless="${platform::is-win32()}" name="${managed.dependencies.dir}/Tao.Sdl.dll.config"/>
+				<include unless="${platform::is-win32()}" name="${Tao.Sdl.dll}"/>
+				<include unless="${platform::is-win32()}" name="${Tao.Sdl.dll.configs}"/>
 
 				<!-- Dump all the native dependencies into the build directory if on Windows -->
-				<include if="${platform::is-win32()}" name="${native.dependencies.dir}/*.dll"/>
+				<include if="${platform::is-win32()}" name="${native.dependencies.win32.dir}/*.dll"/>
 			</fileset>
 			
 	</target>
@@ -88,6 +88,7 @@
 			<fileset>
 				<include name="App.config" />
 				<include name="EngineConfig.xml" />
+				<include name="Terrain.xml" />
 			</fileset>
 		</copy>
 		<copy todir="${axiom.demos.build.dir}">

@@ -15,7 +15,13 @@
         <property name="project.version.full" value="${project.version + if(project.release.type == 'release', '', '-' + project.release.type)}" dynamic="true" />
     </if>
     
-    
+
+	<!-- Axiom build and run-time dependencies -->
+    <!-- Define locations of Axiom dependencies top-level directory.  Required. -->
+    <property name="dependencies.topdir" value="${project::get-base-directory()}/../../Dependencies" dynamic="false" />
+	<!-- Load aliases for managed and native dependencies -->
+	<include verbose="true" buildfile="${path::combine(dependencies.topdir, 'AxiomDependencies.include')}" />
+
 	<!-- named project configurations -->
 
 	<!-- Master build and dist output dirs -->
@@ -51,46 +57,7 @@
     <!-- Settings for the top-level build envirnment -->
     <property name="build.bin.dir" value="${path::combine(build.dir, 'bin')}" dynamic="true" />
     <property name="build.lib.dir" value="${path::combine(build.dir, 'lib')}" dynamic="true" />
-    
-    <!-- Aliases for managed and native dependencies -->
-    <!-- NOTE: dynamic should be false for these so nested buildfiles don't change the path-->
-
-    <!-- Define locations of various Axiom dependencies provided by the dev environment -->
-    <property name="dependencies.dir" value="${project::get-base-directory()}/../../Dependencies" dynamic="false" />
-    <property name="dependencies.managed.dir" value="${path::combine(dependencies.dir, 'Managed')}" dynamic="false" />
-    <property name="dependencies.managed.win32.dir" value="${path::combine(dependencies.managed.dir, 'DotNet')}" dynamic="false" />
-    <property name="dependencies.managed.unix.dir" value="${path::combine(dependencies.managed.dir, 'Mono')}" dynamic="false" />
-    <property name="dependencies.native.dir" value="${path::combine(dependencies.dir, 'Native')}" dynamic="false" />
-    <property name="dependencies.native.win32.dir" value="${path::combine(dependencies.native.dir, 'Win32')}" dynamic="false" />
-    <property name="dependencies.native.unix.dir" value="${path::combine(dependencies.native.dir, 'Mono')}" dynamic="false" />
-    
-    <!-- 
-        OK, here's a bit of cleverness I may regret - define a 'runtime' managed
-        and native dependencies dir based on platform we are executing on.
-    -->
-    <if test="${platform::is-win32()}">
-        <property name="managed.dependencies.dir" value="${dependencies.managed.unix.dir}" dynamic="false"/>
-        <property name="native.dependencies.dir" value="${dependencies.native.win32.dir}" dynamic="false"/>		
-    </if>
-    <if test="${platform::is-unix()}">
-        <property name="managed.dependencies.dir" value="${dependencies.managed.unix.dir}" dynamic="false"/>
-        <property name="native.dependencies.dir" value="${dependencies.native.unix.dir}" dynamic="false"/>
-    </if>
-
-    
-    <!-- Paths for Managed DirectX -->
-    <!-- NOTE: Points to the location of the Managed DirectX assemblies.  If you
-        recieve error messages relating to missing DirectX assemblies, check
-        here first.
-    -->
-    <property name="directx.sdk.dir" value="${environment::get-variable('DXSDK_DIR')}" dynamic="true" />
-    <property name="managed.directx.dir" value="${path::combine(directx.sdk.dir, 'Developer Runtime/x86/DirectX for Managed Code')}" dynamic="true" />
-    <!-- alternate settings
-    <property name="win.sys.root" value="${environment::get-variable('SystemRoot')}" dynamic="true" />
-    <property name="directx.dir" value="${path::combine(win.sys.root, 'Microsoft.NET/Managed DirectX/v9.02.2904')}" dynamic="true" />
-    -->
-    
-    
+        
     <!-- default configuration -->
     <property name="project.config" value="debug" /> <!-- debug|release -->
     <property name="nant.console.name" value="NAnt" />

@@ -46,12 +46,12 @@
 				<include name="System.Data.dll"/>
 				<include name="System.Drawing.dll"/>
 				<include name="System.Xml.dll"/>
-				<include name="${managed.dependencies.dir}/Tao.OpenGl.dll"/>
-				<include name="${managed.dependencies.dir}/Tao.OpenGl.ExtensionLoader.dll"/>
-				<include name="${managed.dependencies.dir}/Tao.OpenGl.Glu.dll"/>
+				<include name="${Tao.OpenGl.dll}"/>
+				<include name="${Tao.OpenGl.ExtensionLoader.dll}"/>
+				<include name="${Tao.OpenGl.Glu.dll}"/>
 				<include if="${platform::is-win32()}" name="System.Windows.Forms.dll"/>
-				<include if="${platform::is-win32()}" name="${managed.dependencies.dir}/Tao.Platform.Windows.dll"/>
-				<include unless="${platform::is-win32()}" name="${managed.dependencies.dir}/Tao.Sdl.dll"/>
+				<include if="${platform::is-win32()}" name="${Tao.Platform.Windows.dll}"/>
+				<include unless="${platform::is-win32()}" name="${Tao.Sdl.dll}"/>
 			 </references>
 		</csc>
 	</target>
