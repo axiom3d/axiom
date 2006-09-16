@@ -21,6 +21,10 @@
 			</Options>
 		</Configuration>
 		
+		<Files>
+			<Match pattern="*.build" path="." recurse="true" />
+		</Files>
+		
 		<Project name="Axiom.Demos" path="Demos" language="C#" type="Exe">
 			<Configuration name="Debug">
 				<Options>
