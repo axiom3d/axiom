@@ -25,27 +25,55 @@
 			<Match pattern="*.build" path="." recurse="true" />
 		</Files>
 		
-		<Project name="Axiom.Demos" path="Demos" language="C#" type="Exe">
+		<Project name="Axiom.Demos" path="Demos/Demos" language="C#" type="Library">
 			<Configuration name="Debug">
 				<Options>
 					<AllowUnsafe>true</AllowUnsafe>
-					<OutputPath>../../build/debug/Axiom_Demos</OutputPath>
+					<OutputPath>../../../build/debug/Axiom_Demos</OutputPath>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
 					<AllowUnsafe>true</AllowUnsafe>
-					<OutputPath>../../build/release/Axiom_Demos</OutputPath>
+					<OutputPath>../../../build/release/Axiom_Demos</OutputPath>
 				</Options>
 			</Configuration>
 				
-			<ReferencePath>..\..\..\Dependencies\Managed\DotNet</ReferencePath>
+			<ReferencePath>..\..\..\..\Dependencies\Managed\DotNet</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
 			<Reference name="System.Drawing" />
 			<Reference name="System.Xml" />
 			<Reference name="Axiom" localCopy="true"/>
+			
+			<Files>
+				<Match pattern="*.cs" path="."/>
+			</Files>
+		</Project>		
+
+		<Project name="Axiom.Demos.Browser.CommandLine" path="Demos/Browser/CommandLine" language="C#" type="Exe">
+			<Configuration name="Debug">
+				<Options>
+					<AllowUnsafe>true</AllowUnsafe>
+					<OutputPath>../../../../build/debug/Axiom_Demos</OutputPath>
+				</Options>
+			</Configuration>
+			<Configuration name="Release">
+				<Options>
+					<AllowUnsafe>true</AllowUnsafe>
+					<OutputPath>../../../../build/release/Axiom_Demos</OutputPath>
+				</Options>
+			</Configuration>
+				
+			<ReferencePath>..\..\..\..\..\Dependencies\Managed\DotNet</ReferencePath>
+
+			<Reference name="System" />
+			<Reference name="System.Data" />
+			<Reference name="System.Drawing" />
+			<Reference name="System.Xml" />
+			<Reference name="Axiom" localCopy="true"/>
+			<Reference name="Axiom.Demos" localcopy="true" />
 			<Reference name="Axiom.Plugins.ParticleFX" localCopy="true"/>
 			<Reference name="Axiom.Plugins.CgProgramManager" localCopy="true"/>
 			<Reference name="Axiom.RenderSystems.OpenGL" localCopy="true"/>
@@ -61,11 +89,10 @@
 			
 			<Files>
 				<Match pattern="*.cs" path="."/>
-				<Match pattern="*.cs" path="Demos"/>
 				<Match pattern="EngineConfig.xml" path="" buildAction="None" copyToOutput="Always" />
 				<Match pattern="Terrain.xml" path="" buildAction="None" copyToOutput="Always" />
 			</Files>
-		</Project>		
+		</Project>
 		
 		<Project name="Axiom" type="Library" path="Engine" language="C#" runtime="Microsoft" >		
 			<Configuration name="Debug">

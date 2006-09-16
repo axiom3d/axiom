@@ -13,7 +13,7 @@ using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
-namespace Demos
+namespace Axiom.Demos
 {
     /// <summary>
     ///     Demo allowing you to visualize a viewing frustom and bounding box culling.

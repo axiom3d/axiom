@@ -573,20 +573,24 @@ namespace Axiom.RenderSystems.DirectX9
 
             if ( autoCreateWindow )
             {
-                System.Data.DataRow[] modes = engineConfig.DisplayMode.Select( "Selected = true" );
+                int width = 640;
+                int height = 480;
+                int bpp = 32;
+                bool fullScreen = false;
 
-                if ( modes == null || modes.Length == 0 )
-                {
-                    throw new Exception( "No video mode is selected" );
-                }
+                ConfigOption optVM = ConfigOptions[ "Video Mode" ];
+                string vm = optVM.Value;
+                width = int.Parse( vm.Substring( 0, vm.IndexOf( "x" ) ) );
+                height = int.Parse( vm.Substring( vm.IndexOf( "x" ) + 1, vm.IndexOf( "@" ) - ( vm.IndexOf( "x" ) + 1 ) ) );
+                bpp = int.Parse( vm.Substring( vm.IndexOf( "@" ) + 1, vm.IndexOf( "-" ) - ( vm.IndexOf( "@" ) + 1 ) ) );
 
-                EngineConfig.DisplayModeRow mode = (EngineConfig.DisplayModeRow)modes[ 0 ];
+                fullScreen = ( ConfigOptions[ "Full Screen" ].Value == "Yes" );
 
                 // create a default form window
-                DefaultForm newWindow = CreateDefaultForm( windowTitle, 0, 0, mode.Width, mode.Height, mode.FullScreen );
+                DefaultForm newWindow = CreateDefaultForm( windowTitle, 0, 0, width, height, fullScreen );
 
                 // create the render window
-                renderWindow = CreateRenderWindow( "Main Window", mode.Width, mode.Height, mode.Bpp, mode.FullScreen, 0, 0, true, false, newWindow );
+                renderWindow = CreateRenderWindow( "Main Window", width, height, bpp, fullScreen, 0, 0, true, false, newWindow );
 
                 // use W buffer when in 16 bit color mode
                 useWBuffer = ( renderWindow.ColorDepth == 16 );
@@ -1389,13 +1393,76 @@ namespace Axiom.RenderSystems.DirectX9
         /// </summary>
         private void InitConfigOptions()
         {
+            //Driver driver = D3DHelper.GetDriverInfo();
+
+            //foreach ( VideoMode mode in driver.VideoModes )
+            //{
+            //    // add a new row to the display settings table
+            //    engineConfig.DisplayMode.AddDisplayModeRow( mode.Width, mode.Height, mode.ColorDepth, false, false );
+            //}
+
+            ConfigOption optDevice = new ConfigOption( "Rendering Device", "", false );
+            ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit colour", false );
+            ConfigOption optFullScreen = new ConfigOption( "Full Screen", "No", false );
+            ConfigOption optVSync = new ConfigOption( "VSync", "No", false );
+            ConfigOption optAA = new ConfigOption( "Anti aliasing", "None", false );
+            ConfigOption optFPUMode = new ConfigOption( "Floating-point mode", "Fastest", false );
+
+            //driverList = this->getDirect3DDrivers();
+
+            optDevice.PossibleValues.Clear();
             Driver driver = D3DHelper.GetDriverInfo();
 
             foreach ( VideoMode mode in driver.VideoModes )
             {
+                string query = string.Format( "{0} x {1} @ {2}-bit colour", mode.Width, mode.Height, mode.ColorDepth.ToString() );
                 // add a new row to the display settings table
-                engineConfig.DisplayMode.AddDisplayModeRow( mode.Width, mode.Height, mode.ColorDepth, false, false );
+                optVideoMode.PossibleValues.Add( query );
             }
+
+            //DriverCollection driverList = D3DHelper.GetDriverInfo();
+            //foreach ( Driver driver in driverList )
+            //{
+            //    //string query = string.Format( "{0} x {1} @ {2}-bit colour", mode.Width, mode.Height, mode.ColorDepth.ToString );
+            //    // add a new row to the display settings table
+            //    optDevice.PossibleValues.Add( driver.Description );
+            //    foreach ( VideoMode mode in driver.VideoModes )
+            //    {
+            //        string query = string.Format( "{0} x {1} @ {2}-bit colour", mode.Width, mode.Height, mode.ColorDepth.ToString() );
+            //        // add a new row to the display settings table
+            //        optVideoMode.PossibleValues.Add( query );
+            //    }
+            //}
+
+
+            optFullScreen.PossibleValues.Add( "Yes" );
+            optFullScreen.PossibleValues.Add( "No" );
+
+            //for ( unsigned j = 0; j < driverList->count(); j++ )
+            //{
+            //    driver = driverList->item( j );
+            //    optDevice.PossibleValues.push_back( driver->DriverDescription() );
+            //    // Make first one default
+            //    if ( j == 0 )
+            //        optDevice.Value = driver->DriverDescription();
+            //}
+
+            optVSync.PossibleValues.Add( "Yes" );
+            optVSync.PossibleValues.Add( "No" );
+
+            optAA.PossibleValues.Add( "None" );
+
+            optFPUMode.PossibleValues.Clear();
+            optFPUMode.PossibleValues.Add( "Fastest" );
+            optFPUMode.PossibleValues.Add( "Consistent" );
+
+            ConfigOptions.Add( optDevice );
+            ConfigOptions.Add( optVideoMode );
+            ConfigOptions.Add( optFullScreen );
+            ConfigOptions.Add( optVSync );
+            ConfigOptions.Add( optAA );
+            ConfigOptions.Add( optFPUMode );
+
         }
 
         private DX.Matrix MakeD3DMatrix( Axiom.Math.Matrix4 matrix )

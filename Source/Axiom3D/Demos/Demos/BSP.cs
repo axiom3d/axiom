@@ -9,11 +9,10 @@ using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Input;
 using Axiom.Collections;
-using Axiom.SceneManagers.Bsp;
 
 #endregion Namespace Declarations
 
-namespace Demos
+namespace Axiom.Demos
 {
     /// <summary>
     /// Summary description for BspDemo.

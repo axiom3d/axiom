@@ -13,7 +13,7 @@ using Axiom.Graphics;
 #endregion Namespace Declarations
 
 
-namespace Demos
+namespace Axiom.Demos
 {
     /// <summary>
     /// 	Summary description for EnvMapping.
@@ -42,12 +42,12 @@ namespace Demos
 
         private float Noise3( float x, float y, float z )
         {
-            int X = ( (int)Math.Floor( x ) ) & 255,                  // FIND UNIT CUBE THAT
-                Y = ( (int)Math.Floor( y ) ) & 255,                  // CONTAINS POINT.
-                Z = ( (int)Math.Floor( z ) ) & 255;
-            x -= (float)Math.Floor( x );                                // FIND RELATIVE X,Y,Z
-            y -= (float)Math.Floor( y );                                // OF POINT IN CUBE.
-            z -= (float)Math.Floor( z );
+            int X = ( (int)System.Math.Floor( x ) ) & 255,                  // FIND UNIT CUBE THAT
+                Y = ( (int)System.Math.Floor( y ) ) & 255,                  // CONTAINS POINT.
+                Z = ( (int)System.Math.Floor( z ) ) & 255;
+            x -= (float)System.Math.Floor( x );                                // FIND RELATIVE X,Y,Z
+            y -= (float)System.Math.Floor( y );                                // OF POINT IN CUBE.
+            z -= (float)System.Math.Floor( z );
             float u = Fade( x ),                                // COMPUTE FADE CURVES
                 v = Fade( y ),                                // FOR EACH OF X,Y,Z.
                 w = Fade( z );

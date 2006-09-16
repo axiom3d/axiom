@@ -12,7 +12,7 @@ using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
-namespace Demos
+namespace Axiom.Demos
 {
     /// <summary>
     /// 	Summary description for Controllers.

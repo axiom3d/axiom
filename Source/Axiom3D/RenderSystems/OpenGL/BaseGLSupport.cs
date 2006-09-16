@@ -41,6 +41,7 @@ using Axiom.Configuration;
 using Axiom.Graphics;
 
 using Tao.OpenGl;
+using Axiom.Collections;
 
 #endregion Namespace Declarations
 
@@ -72,7 +73,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// <summary>
         ///		Config options.
         /// </summary>
-        protected EngineConfig engineConfig = new EngineConfig();
+        protected ConfigOptionCollection engineConfig = new ConfigOptionCollection();
 
         #endregion Fields
 
@@ -83,7 +84,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// <summary>
         ///		Gets the options currently set by the current GL implementation.
         /// </summary>
-        public EngineConfig ConfigOptions
+        public ConfigOptionCollection ConfigOptions
         {
             get
             {
