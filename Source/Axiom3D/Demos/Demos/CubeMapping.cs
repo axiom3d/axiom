@@ -359,11 +359,19 @@ namespace Demos
 
                     // copy and bind the new dynamic buffer
                     newBuffer.CopyData( orgBuffer, 0, 0, orgBuffer.Size, true );
+                    if ( newBinding.BindingCount > 0 && newBinding.GetBuffer( source ) != null )
+                    {
+                        source = (short)newBinding.BindingCount;
+                    }
                     newBinding.SetBinding( source, newBuffer );
                 }
                 else
                 {
                     // use the existing buffer
+                    if ( newBinding.BindingCount > 0 && newBinding.GetBuffer( source ) != null )
+                    {
+                        source = (short)newBinding.BindingCount;
+                    }
                     newBinding.SetBinding( source, orgBuffer );
                 }
 
@@ -462,7 +470,7 @@ namespace Demos
             // unlock the original position buffer
             orgPosBuffer.Unlock();
 
-            dstPosData = dstPosBuffer.Lock( BufferLocking.Discard );
+            //dstPosData = dstPosBuffer.Lock( BufferLocking.Discard );
 
             // calculate normals
             HardwareIndexBuffer indexBuffer = indexData.indexBuffer;
@@ -553,26 +561,6 @@ namespace Demos
             buffer.Unlock();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="numVertices"></param>
-        /// <param name="dstVertices"></param>
-        /// <param name="defaultVertices"></param>
-        private unsafe void UpdatePositionNoise( int numVertices, float* dstVertices, float* defaultVertices )
-        {
-            for ( int i = 0; i < 3 * numVertices; i++ )
-            {
-                float n = 1 + displacement *
-                    Noise3( defaultVertices[ i ] / density + tm,
-                                defaultVertices[ i + 1 ] / density + tm,
-                                defaultVertices[ i + 2 ] / density + tm );
-
-                dstVertices[ i + 0 ] = defaultVertices[ i + 0 ] * n;
-                dstVertices[ i + 1 ] = defaultVertices[ i + 1 ] * n;
-                dstVertices[ i + 2 ] = defaultVertices[ i + 2 ] * n;
-            }
-        }
 
         /// <summary>
         ///    
@@ -671,6 +659,19 @@ namespace Demos
                 string.Format( "[O] Object: {0}", meshName );
         }
 
+        void updateInfoDisplacement()
+        {
+            OverlayElementManager.Instance.GetElement( "Example/CubeMapping/Displacement" ).Text = string.Format( "[1/2] Displacement: {0}", displacement );
+        }
+        void updateInfoDensity()
+        {
+            OverlayElementManager.Instance.GetElement( "Example/CubeMapping/Density" ).Text = string.Format( "[3/4] Noise density: {0}", density );
+        }
+        void updateInfoTimeDensity()
+        {
+            OverlayElementManager.Instance.GetElement( "Example/CubeMapping/TimeDensity" ).Text = string.Format( "[5/6] Time density: {0}", timeDensity );
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -701,6 +702,54 @@ namespace Demos
             // only check key input if the delay is not active
             if ( keyDelay == 0.0f )
             {
+                // Adjust Density
+                if ( input.IsKeyPressed(KeyCodes.D3 ) )
+                {
+                    density += 0.1f * e.TimeSinceLastFrame;
+                    if ( density >= 2 )
+                        density = 2;
+                    updateInfoDensity(); 
+                }
+                if ( input.IsKeyPressed( KeyCodes.D4 ) )
+                {
+                    density -= 0.1f * e.TimeSinceLastFrame;
+                    if ( density <= -2 )
+                        density = -2;
+                    updateInfoDensity();
+                }
+
+                // Adjust Displacement
+                if ( input.IsKeyPressed( KeyCodes.D1 ) )
+                {
+                    displacement += 10.0f * e.TimeSinceLastFrame;
+                    if ( displacement >= 500f )
+                        displacement = 500f;
+                    updateInfoDisplacement();
+                }
+                if ( input.IsKeyPressed( KeyCodes.D2 ) )
+                {
+                    displacement -= 10.0f * e.TimeSinceLastFrame;
+                    if ( displacement <= 0.1f )
+                        displacement = 0.1f;
+                    updateInfoDisplacement();
+                }
+
+                // Adjust TimeDensity
+                if ( input.IsKeyPressed( KeyCodes.D5 ) )
+                {
+                    timeDensity += 10.0f * e.TimeSinceLastFrame;
+                    if ( timeDensity >= 10.0f )
+                        timeDensity = 10.0f;
+                    updateInfoTimeDensity();
+                }
+                if ( input.IsKeyPressed( KeyCodes.D6 ) )
+                {
+                    timeDensity -= 10.0f * e.TimeSinceLastFrame;
+                    if ( timeDensity <= 1.0f )
+                        timeDensity = 1.0f;
+                    updateInfoTimeDensity();
+                }
+                
                 // toggle noise
                 if ( input.IsKeyPressed( KeyCodes.N ) )
                 {
@@ -726,6 +775,9 @@ namespace Demos
                     keyDelay = 0.3f;
                 }
             }
+            updateInfoDensity();
+            updateInfoDisplacement();
+            updateInfoTimeDensity();
         }
 
         /// <summary>
@@ -742,7 +794,8 @@ namespace Demos
                 ToggleNoise();
                 ToggleMesh();
                 ToggleBlending();
-
+                OverlayElementManager.Instance.GetElement( "Example/CubeMapping/CubeMap" ).Text =
+                                string.Format( "[C] CubeMap: {0}", cubeMaps[ currentCubeIndex ] );
                 return true;
             }
 
