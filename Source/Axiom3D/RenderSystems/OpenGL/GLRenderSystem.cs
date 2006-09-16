@@ -166,7 +166,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region Implementation of RenderSystem
 
-        public override EngineConfig ConfigOptions
+        public override ConfigOptionCollection ConfigOptions
         {
             get
             {

@@ -74,9 +74,20 @@ namespace Axiom.RenderSystems.OpenGL
             Gdi.DEVMODE setting;
             int i = 0;
             int width, height, bpp, freq;
+            ConfigOption option;
 
+            // Full Screen
+            option = new ConfigOption( "Full Screen", "Yes", false );
+            option.PossibleValues.Add( "Yes" );
+            option.PossibleValues.Add( "No" );
+            ConfigOptions.Add( option );
+
+            // Video Mode
+            // get the available OpenGL resolutions
             bool more = User.EnumDisplaySettings( null, i++, out setting );
 
+            option = new ConfigOption( "Video Mode", "", false );
+            // add the resolutions to the config
             while ( more )
             {
                 width = setting.dmPelsWidth;
@@ -87,18 +98,29 @@ namespace Axiom.RenderSystems.OpenGL
                 // filter out the lower resolutions and dupe frequencies
                 if ( width >= 640 && height >= 480 && bpp >= 16 )
                 {
-                    string query = string.Format( "Width = {0} AND Height= {1} AND Bpp = {2}", width, height, bpp );
+                    string query = string.Format( "{0} x {1} @ {2}-bit colour", width, height, bpp );
 
-                    if ( engineConfig.DisplayMode.Select( query ).Length == 0 )
+                    if ( !option.PossibleValues.Contains( query ) )
                     {
                         // add a new row to the display settings table
-                        engineConfig.DisplayMode.AddDisplayModeRow( width, height, bpp, false, false );
+                        option.PossibleValues.Add( query );
+                    }
+                    if ( option.PossibleValues.Count == 1 )
+                    {
+                        option.Value = query;
                     }
                 }
-
                 // grab the current display settings
                 more = User.EnumDisplaySettings( null, i++, out setting );
             }
+            ConfigOptions.Add( option );
+
+            option = new ConfigOption( "FSAA", "0", false );
+            option.PossibleValues.Add( "0" );
+            option.PossibleValues.Add( "2" );
+            option.PossibleValues.Add( "4" );
+            option.PossibleValues.Add( "6" );
+            ConfigOptions.Add( option );
         }
 
         public override Axiom.Graphics.RenderWindow CreateWindow( bool autoCreateWindow, GLRenderSystem renderSystem, string windowTitle )
@@ -107,15 +129,19 @@ namespace Axiom.RenderSystems.OpenGL
 
             if ( autoCreateWindow )
             {
-                EngineConfig.DisplayModeRow[] modes =
-                    (EngineConfig.DisplayModeRow[])engineConfig.DisplayMode.Select( "Selected = true" );
+                int width = 640;
+                int height = 480;
+                int bpp = 32;
+                bool fullscreen = false;
 
-                EngineConfig.DisplayModeRow mode = modes[ 0 ];
+                ConfigOption optVM = ConfigOptions[ "Video Mode" ];
+                string vm = optVM.Value;
+                width = int.Parse( vm.Substring( 0, vm.IndexOf( "x" ) ) );
+                height = int.Parse( vm.Substring( vm.IndexOf( "x" ) + 1, vm.IndexOf( "@" ) - ( vm.IndexOf( "x" ) + 1 ) ) );
+                bpp = int.Parse( vm.Substring( vm.IndexOf( "@" ) + 1, vm.IndexOf( "-" ) - ( vm.IndexOf( "@" ) + 1 ) ) );
 
-                int width = mode.Width;
-                int height = mode.Height;
-                int bpp = mode.Bpp;
-                bool fullscreen = mode.FullScreen;
+                fullscreen = ( ConfigOptions[ "Full Screen" ].Value == "Yes" );
+
 
                 // create a default form to use for a rendering target
                 DefaultForm form = CreateDefaultForm( windowTitle, 0, 0, width, height, fullscreen );

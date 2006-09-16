@@ -17,7 +17,7 @@ using MouseButtons = Axiom.Input.MouseButtons;
 
 #endregion Namespace Declarations
 
-namespace Demos
+namespace Axiom.Demos
 {
     /// <summary>
     ///     Base class for Axiom examples.
@@ -48,21 +48,21 @@ namespace Demos
 
         #region Protected Methods
 
-        protected bool Configure()
-        {
-            // HACK: Temporary
-            RenderSystem renderSystem = Root.Instance.RenderSystems[ 0 ];
-            Root.Instance.RenderSystem = renderSystem;
-            EngineConfig.DisplayModeRow mode = renderSystem.ConfigOptions.DisplayMode[ 0 ];
-            //mode.FullScreen = true;
-            mode.Selected = true;
+        //protected bool Configure()
+        //{
+        //    // HACK: Temporary
+        //    //RenderSystem renderSystem = Root.Instance.RenderSystems[ 0 ];
+        //    //Root.Instance.RenderSystem = renderSystem;
+        //    //EngineConfig.DisplayModeRow mode = renderSystem.ConfigOptions.DisplayMode[ 0 ];
+        //    //mode.FullScreen = true;
+        //    //mode.Selected = true;
 
-            window = Root.Instance.Initialize( true, "Axiom Engine Window" );
+        //    window = Root.Instance.Initialize( true, "Axiom Engine Window" );
 
-            ShowDebugOverlay( showDebugOverlay );
+        //    ShowDebugOverlay( showDebugOverlay );
 
-            return true;
-        }
+        //    return true;
+        //}
 
         protected virtual void CreateCamera()
         {
@@ -111,6 +111,7 @@ namespace Demos
         {
             // Get the SceneManager, a generic one by default
             scene = engine.SceneManagers.GetSceneManager( SceneType.Generic );
+            scene.ClearScene();
         }
 
         protected virtual void CreateViewports()
@@ -125,23 +126,27 @@ namespace Demos
         protected virtual bool Setup()
         {
             // instantiate the Root singleton
-            engine = new Root( "EngineConfig.xml", "AxiomEngine.log" );
+            //engine = new Root( "EngineConfig.xml", "AxiomEngine.log" );
+            engine = Root.Instance;
 
             // add event handlers for frame events
             engine.FrameStarted += new FrameEvent( OnFrameStarted );
             engine.FrameEnded += new FrameEvent( OnFrameEnded );
 
             // allow for setting up resource gathering
-            SetupResources();
+            //SetupResources();
 
             //show the config dialog and collect options
-            if ( !Configure() )
-            {
-                // shutting right back down
-                engine.Shutdown();
+            //if ( !Configure() )
+            //{
+            //    // shutting right back down
+            //    engine.Shutdown();
 
-                return false;
-            }
+            //    return false;
+            //}
+            window = Root.Instance.Initialize( true, "Axiom Engine Demo Window" );
+
+            ShowDebugOverlay( showDebugOverlay );
 
             ChooseSceneManager();
             CreateCamera();
@@ -163,25 +168,25 @@ namespace Demos
         /// <summary>
         ///		Loads default resource configuration if one exists.
         /// </summary>
-        protected virtual void SetupResources()
-        {
-            string resourceConfigPath = Path.GetFullPath( "EngineConfig.xml" );
+        //protected virtual void SetupResources()
+        //{
+        //    string resourceConfigPath = Path.GetFullPath( "EngineConfig.xml" );
 
-            if ( File.Exists( resourceConfigPath ) )
-            {
-                EngineConfig config = new EngineConfig();
+        //    if ( File.Exists( resourceConfigPath ) )
+        //    {
+        //        EngineConfig config = new EngineConfig();
 
-                // load the config file
-                // relative from the location of debug and releases executables
-                config.ReadXml( "EngineConfig.xml" );
+        //        // load the config file
+        //        // relative from the location of debug and releases executables
+        //        config.ReadXml( "EngineConfig.xml" );
 
-                // interrogate the available resource paths
-                foreach ( EngineConfig.FilePathRow row in config.FilePath )
-                {
-                    ResourceManager.AddCommonArchive( row.src, row.type );
-                }
-            }
-        }
+        //        // interrogate the available resource paths
+        //        foreach ( EngineConfig.FilePathRow row in config.FilePath )
+        //        {
+        //            ResourceManager.AddCommonArchive( row.src, row.type );
+        //        }
+        //    }
+        //}
 
         #endregion Protected Virtual Methods
 
@@ -224,8 +229,9 @@ namespace Demos
                 engine.FrameStarted -= new FrameEvent( OnFrameStarted );
                 engine.FrameEnded -= new FrameEvent( OnFrameEnded );
 
-                engine.Dispose();
+                //engine.Dispose();
             }
+            
         }
 
         #endregion Public Methods

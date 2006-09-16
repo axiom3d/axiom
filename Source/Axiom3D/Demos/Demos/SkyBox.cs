@@ -10,7 +10,7 @@ using Axiom.ParticleSystems;
 
 #endregion Namespace Declarations
 
-namespace Demos
+namespace Axiom.Demos
 {
     public class SkyBox : TechDemo
     {

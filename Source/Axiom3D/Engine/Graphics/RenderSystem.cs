@@ -110,7 +110,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Reference to the config options for the graphics engine.
         /// </summary>
-        protected EngineConfig engineConfig = new EngineConfig();
+        protected ConfigOptionCollection engineConfig = new ConfigOptionCollection();
         /// <summary>
         ///		Active viewport (dest for future rendering operations) and target.
         /// </summary>
@@ -180,7 +180,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// Gets a dataset with the options set for the rendering system.
         /// </summary>
-        public virtual EngineConfig ConfigOptions
+        public virtual ConfigOptionCollection ConfigOptions
         {
             get
             {

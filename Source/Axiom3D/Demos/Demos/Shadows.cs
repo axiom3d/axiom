@@ -15,7 +15,7 @@ using Axiom.ParticleSystems;
 
 #endregion Namespace Declarations
 
-namespace Demos
+namespace Axiom.Demos
 {
     /// <summary>
     /// Summary description for Shadows.

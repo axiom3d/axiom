@@ -8,7 +8,7 @@ using Axiom.Math;
 
 #endregion Namespace Declarations
 
-namespace Demos
+namespace Axiom.Demos
 {
     /// <summary>
     /// 	Sample application for how to use the Hardware Occlusion feature to determine

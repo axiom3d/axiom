@@ -10,7 +10,7 @@ using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
-namespace Demos
+namespace Axiom.Demos
 {
     /// <summary>
     ///     Spline pathed camera tracking sample.

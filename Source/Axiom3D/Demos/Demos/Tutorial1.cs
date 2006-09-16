@@ -11,7 +11,7 @@ using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
-namespace Demos
+namespace Axiom.Demos
 {
     /// <summary>
     /// 	Sample class which shows the classic spinning triangle, done in the Axiom engine.

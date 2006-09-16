@@ -328,7 +328,7 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        /// The list of available render systems for the engine to use (made available via plugins.
+        /// The list of available render systems for the engine to use (made available via plugins).
         /// </summary>
         public RenderSystemCollection RenderSystems
         {
