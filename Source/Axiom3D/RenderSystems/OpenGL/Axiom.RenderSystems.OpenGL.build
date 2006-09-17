@@ -32,8 +32,8 @@
 				<exclude unless="${platform::is-win32()}" name="Win32/*"/>
 				<exclude unless="${platform::is-unix()}" name="SDL/*"/>
 				<!-- common assembly-level attributes -->
-				<!-- <include name="../CommonAssemblyInfo.cs" /> -->
-			</sources>
+                <include name="../../GlobalAssemblyInfo.cs" />
+            </sources>
 		<!--
 			<resources prefix="Axiom.RenderSystems.OpenGL" dynamicprefix="true">
 				<include name="Resources/**/*" />

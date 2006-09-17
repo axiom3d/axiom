@@ -28,8 +28,8 @@
 			<sources failonempty="true">
 				<include name="**/*.cs" />
 				<!-- common assembly-level attributes -->
-				<!-- <include name="../CommonAssemblyInfo.cs" /> -->
-			</sources>
+                <include name="../../GlobalAssemblyInfo.cs" />
+            </sources>
 		<!--
 			<resources prefix="Axiom.RenderSystems.DirectX9" dynamicprefix="true">
 				<include name="Resources/**/*" />

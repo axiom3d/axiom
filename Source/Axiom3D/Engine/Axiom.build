@@ -29,7 +29,7 @@
 			<sources failonempty="true">
 				<include name="**/*.cs" />
 				<!-- common assembly-level attributes -->
-				<!-- <include name="../CommonAssemblyInfo.cs" /> -->
+				<include name="../GlobalAssemblyInfo.cs" /> -->
 			</sources>
 			<!--
 			<resources prefix="Axiom.Engine" dynamicprefix="true">
@@ -42,7 +42,6 @@
 				<include name="System.Data.dll"/>
 				<include name="System.Drawing.dll"/>
 				<include name="System.Xml.dll"/>
-				<include name="${axiom3d.build.dir}/Axiom.MathLib.dll"/>
 				<include name="${ICSharpCode.SharpZipLib.dll}"/>
 				<include name="${Tao.DevIl.dll}"/>
 			</references>
