@@ -5,8 +5,8 @@
     <tstamp property="build.date" pattern="yyyy-MM-dd" />
 
     <!-- global project settings -->
-    <property name="project.name" value="Axiom3D" />
-    <property name="project.version" value="1.06" unless="${property::exists('project.version')}" />
+    <property name="project.name" value="Axiom" />
+    <property name="project.version" value="0.7.1.0" unless="${property::exists('project.version')}" />
     <property name="project.release.type" value="dev" unless="${property::exists('project.release.type')}" />
     <!-- nightly / dev / alpha / beta# / rc# / release -->
     <if test="${project.release.type == 'nightly'}">
@@ -311,7 +311,7 @@
     
 	<target name="dist.all" description="Prepares all targets for distribution" depends="build.all, dist.setup" unless="${target::has-executed('dist.all')}">
 		<call target="dist.axiom.all" />
-		<call target="dist.aximo.demos.all" />
+		<call target="dist.axiom.demos.all" />
 	</target>
 	
 	<target name="dist.binary" >
@@ -330,7 +330,6 @@
 	</target>
 	
 	<target name="dist.axiom.demos.all" description="" >
-		<call target="dist.axiom.demos.source" />
 		<call target="dist.axiom.demos.binary" />
 	</target>
 
@@ -354,10 +353,7 @@
 	
 	<target name="dist.axiom.binary" >
 	</target>
-	
-	<target name="dist.axiom.demos.source" >
-	</target>
-	
+		
 	<target name="dist.axiom.demos.binary" >
 	</target>
 
