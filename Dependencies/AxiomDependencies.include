@@ -122,4 +122,12 @@
     <property name="win.sys.root" value="${environment::get-variable('SystemRoot')}" dynamic="true" />
     <property name="directx.dir" value="${path::combine(win.sys.root, 'Microsoft.NET/Managed DirectX/v9.02.2904')}" dynamic="true" />
     -->
+    
+    <!-- Paths for XNA Assemblies -->
+    <!-- NOTE: Points to the location of the Managed DirectX assemblies.  If you
+		 receive error messages relating to missing DirectX assemblies, check
+		 here first.
+		 This requires the DirectX SDK to be installed
+    -->
+    <property name="xna.dir" value="C:\Program Files\Microsoft XNA\XNA Game Studio Express\v1.0\References\Windows\x86" dynamic="true" />
 </project>

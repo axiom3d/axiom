@@ -29,8 +29,8 @@
 			<sources failonempty="true">
 				<include name="**/*.cs" />
 				<!-- common assembly-level attributes -->
-				<!-- <include name="../CommonAssemblyInfo.cs" /> -->
-			</sources>
+                <include name="../../GlobalAssemblyInfo.cs" /> 
+            </sources>
 		<!--
 			<resources prefix="Axiom.Plugins.CgProgramManager" dynamicprefix="true">
 				<include name="Resources/**/*" />

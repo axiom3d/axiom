@@ -12,7 +12,6 @@
 
 	<target name="references.setup" description="Sets up file references for the project's tasks" unless="${target::has-executed('references.setup')}">
 			<fileset id="axiom.demos.build.references">
-				<include name="${axiom3d.build.dir}/Axiom.MathLib.dll"/>
 				<include name="${axiom3d.build.dir}/Axiom.dll"/>
 				<include name="${axiom3d.build.dir}/Axiom.Plugins.CgProgramManager.dll"/>
 				<include name="${axiom3d.build.dir}/Axiom.Plugins.ParticleFX.dll"/>
@@ -31,47 +30,7 @@
 				<include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.RenderSystems.DirectX9.dll"/>
 				<include unless="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.SDL.dll"/>
 			</fileset>
-			
-			<fileset id="axiom.demos.runtime.references">
-				<include name="${axiom3d.build.dir}/Axiom.MathLib.dll"/>
-				<include name="${axiom3d.build.dir}/Axiom.dll"/>
-				<include name="${axiom3d.build.dir}/Axiom.Plugins.CgProgramManager.dll"/>
-				<include name="${axiom3d.build.dir}/Axiom.Plugins.ParticleFX.dll"/>
-				<include name="${axiom3d.build.dir}/Axiom.SceneManagers.Bsp.dll"/>
-				<include name="${axiom3d.build.dir}/Axiom.SceneManagers.Octree.dll"/>
-				<!-- <include name="${axiom3d.build.dir}/Axiom.SceneManagers.PagingLandscape.dll"/> -->
-				<include name="${axiom3d.build.dir}/Axiom.RenderSystems.OpenGL.dll"/>
-
-				<include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.Win32.dll"/>
-				<include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.RenderSystems.DirectX9.dll"/>
-				<include unless="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.SDL.dll"/>
-
-				<include name="${ICSharpCode.SharpZipLib.dll}"/>
-				
-				<include name="${Tao.DevIl.dll}"/>
-				<include if="${platform::is-unix()}" name="${Tao.DevIl.dll.configs}"/>
-				
-				<include name="${Tao.Cg.dll}"/>
-				<include if="${platform::is-unix()}" name="${Tao.Cg.dll.configs}"/>
-				
-				<include name="${Tao.OpenGl.dll}"/>
-				<include if="${platform::is-unix()}" name="${Tao.OpenGl.dll.configs}"/>
-				
-				<include name="${Tao.OpenGl.ExtensionLoader.dll}"/>
-				<include if="${platform::is-unix()}" name="${Tao.OpenGl.ExtensionLoader.dll.configs}"/>
-				
-				<include name="${Tao.OpenGl.Glu.dll}"/>
-				<include if="${platform::is-unix()}" name="${Tao.OpenGl.Glu.dll.configs}"/>
-				
-				<include if="${platform::is-win32()}" name="${Tao.Platform.Windows.dll}"/>
-				
-				<include unless="${platform::is-win32()}" name="${Tao.Sdl.dll}"/>
-				<include unless="${platform::is-win32()}" name="${Tao.Sdl.dll.configs}"/>
-
-				<!-- Dump all the native dependencies into the build directory if on Windows -->
-				<include if="${platform::is-win32()}" name="${native.dependencies.win32.dir}/*.dll"/>
-			</fileset>
-			
+						
 	</target>
 
 	<target name="build.setup" description="Sets up the build directory for debugging and running" depends="references.setup" unless="${target::has-executed('build.setup')}">
@@ -82,20 +41,7 @@
 	
 		<!-- ensure build directory exists -->
 		<mkdir dir="${axiom.demos.build.dir}" />
-		
-		<!-- Copy any essential files over -->
-		<copy todir="${axiom.demos.build.dir}">
-			<fileset>
-				<include name="App.config" />
-				<include name="EngineConfig.xml" />
-				<include name="Terrain.xml" />
-			</fileset>
-		</copy>
-		<copy todir="${axiom.demos.build.dir}">
-			<!-- Copy references - we'll need these at runtime -->
-			<fileset refid="axiom.demos.runtime.references" />
-		</copy>
-		
+				
 	</target>
 	
 	<target name="build" depends="build.setup, references.setup" unless="${target::has-executed('build')}">
@@ -106,7 +52,7 @@
 		<property name="verbose" value="false" />
 	
 		<!-- build it -->
-		<csc target="winexe" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" verbose="${verbose}" output="${axiom.demos.build.dir}/${project::get-name()}.exe" doc="${axiom.demos.build.dir}/${project::get-name()}.xml">
+		<csc target="library" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" verbose="${verbose}" output="${axiom.demos.build.dir}/${project::get-name()}.dll" doc="${axiom.demos.build.dir}/${project::get-name()}.xml">
 			<nowarn>
 				<!-- do not report warnings for missing XML comments -->
 				<warning number="1591" />
@@ -132,9 +78,4 @@
 		</csc>
 	</target>
 	
-	<target name="run" description="Run the Axiom Demos" depends="build">
-		<echo message="Running Axiom Demos!"/>
-		<exec program="${axiom.demos.build.dir}/Axiom.Demos.exe" useruntimeengine="true" workingdir="${axiom.demos.build.dir}" />
-	</target>
-
 </project>

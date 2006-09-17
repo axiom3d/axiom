@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="Axiom.Demos" default="build">
+<project name="Axiom.Demos.Browser.CommandLine" default="build">
 
 	<!--
 		Required properties:
@@ -11,8 +11,11 @@
 
 
 	<target name="references.setup" description="Sets up file references for the project's tasks" unless="${target::has-executed('references.setup')}">
+		<!-- 
+			Define build directory for Axiom3D demos 
+		-->
+		<property name="axiom.demos.build.dir" value="${path::combine(build.dir, 'Axiom_Demos')}" />
 			<fileset id="axiom.demos.build.references">
-				<include name="${axiom3d.build.dir}/Axiom.MathLib.dll"/>
 				<include name="${axiom3d.build.dir}/Axiom.dll"/>
 				<include name="${axiom3d.build.dir}/Axiom.Plugins.CgProgramManager.dll"/>
 				<include name="${axiom3d.build.dir}/Axiom.Plugins.ParticleFX.dll"/>
@@ -21,19 +24,16 @@
 				<!-- <include name="${axiom3d.build.dir}/Axiom.SceneManagers.PagingLandscape.dll"/> -->
 				<include name="${axiom3d.build.dir}/Axiom.RenderSystems.OpenGL.dll"/>
 
+                <include name="${axiom.demos.build.dir}/Axiom.Demos.dll"/>
 				<include name="System.dll"/>
 				<include name="System.Data.dll"/>
 				<include name="System.Drawing.dll"/>
 				<include name="System.Windows.Forms.dll"/>
 				<include name="System.Xml.dll"/>
 		
-				<include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.Win32.dll"/>
-				<include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.RenderSystems.DirectX9.dll"/>
-				<include unless="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.SDL.dll"/>
 			</fileset>
 			
 			<fileset id="axiom.demos.runtime.references">
-				<include name="${axiom3d.build.dir}/Axiom.MathLib.dll"/>
 				<include name="${axiom3d.build.dir}/Axiom.dll"/>
 				<include name="${axiom3d.build.dir}/Axiom.Plugins.CgProgramManager.dll"/>
 				<include name="${axiom3d.build.dir}/Axiom.Plugins.ParticleFX.dll"/>
@@ -42,7 +42,9 @@
 				<!-- <include name="${axiom3d.build.dir}/Axiom.SceneManagers.PagingLandscape.dll"/> -->
 				<include name="${axiom3d.build.dir}/Axiom.RenderSystems.OpenGL.dll"/>
 
-				<include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.Win32.dll"/>
+                <include name="${axiom.demos.build.dir}/Axiom.Demos.dll"/>
+
+                <include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.Win32.dll"/>
 				<include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.RenderSystems.DirectX9.dll"/>
 				<include unless="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.SDL.dll"/>
 
@@ -75,10 +77,6 @@
 	</target>
 
 	<target name="build.setup" description="Sets up the build directory for debugging and running" depends="references.setup" unless="${target::has-executed('build.setup')}">
-		<!-- 
-			Define build directory for Axiom3D demos 
-		-->
-		<property name="axiom.demos.build.dir" value="${path::combine(build.dir, 'Axiom_Demos')}" />
 	
 		<!-- ensure build directory exists -->
 		<mkdir dir="${axiom.demos.build.dir}" />
@@ -106,7 +104,7 @@
 		<property name="verbose" value="false" />
 	
 		<!-- build it -->
-		<csc target="winexe" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" verbose="${verbose}" output="${axiom.demos.build.dir}/${project::get-name()}.exe" doc="${axiom.demos.build.dir}/${project::get-name()}.xml">
+		<csc target="exe" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" verbose="${verbose}" output="${axiom.demos.build.dir}/${project::get-name()}.exe" doc="${axiom.demos.build.dir}/${project::get-name()}.xml">
 			<nowarn>
 				<!-- do not report warnings for missing XML comments -->
 				<warning number="1591" />
@@ -134,7 +132,7 @@
 	
 	<target name="run" description="Run the Axiom Demos" depends="build">
 		<echo message="Running Axiom Demos!"/>
-		<exec program="${axiom.demos.build.dir}/Axiom.Demos.exe" useruntimeengine="true" workingdir="${axiom.demos.build.dir}" />
+		<exec program="${axiom.demos.build.dir}/${project::get-name()}.exe" useruntimeengine="true" workingdir="${axiom.demos.build.dir}" />
 	</target>
 
 </project>
