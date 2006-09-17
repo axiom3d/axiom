@@ -10,6 +10,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Configuration;
 using System.Reflection;
+using System.Collections;
 
 #endregion Namespace Declarations
 
@@ -69,25 +70,62 @@ namespace Axiom.Demos.Browser.CommandLine
 
         public void Run( )
         {
+            ArrayList demoList = new ArrayList();
             try
             {
                 if ( _configure( ) )
                 {
 
-                    // TODO: Display list of available demos and allow the user to select one, or exit.
-                    string next = "EnvMapping";
+                    Assembly demos = Assembly.LoadFrom( "Axiom.Demos.dll" );
+                    Type[]  demoTypes = demos.GetTypes();
+                    Type techDemo = demos.GetType( "Axiom.Demos.TechDemo" );
 
-                    if ( next != "exit" )
+                    foreach ( Type demoType in demoTypes )
                     {
-                        Assembly demos = Assembly.LoadFrom( "Axiom.Demos.dll" );
-                        Type demoType = demos.GetType( "Axiom.Demos." + next );
-
-                        using ( TechDemo demo = (TechDemo)Activator.CreateInstance( demoType ) )
+                        if ( demoType.IsSubclassOf( techDemo ) )
                         {
-                            demo.Start( );//show and start rendering
-                        }//dispose of it when done
-
+                            demoList.Add( demoType.Name );
+                        }
                     }
+
+                    // TODO: Display list of available demos and allow the user to select one, or exit.
+                    string next = "";
+
+                    //while ( next != "exit" )
+                    //{
+                        int i = 1;
+                        foreach ( string typeName in demoList)
+                        {
+                            Console.WriteLine( "{0}) {1}", i++,  typeName );
+                        }
+                        Console.WriteLine( "Enter the number of the demo that you want to run and press enter." );
+                        while ( true )
+                        {
+                            string line = Console.ReadLine();
+                            int number = -1;
+                            if ( line != string.Empty )
+                            {
+                                number = int.Parse( line.Trim() );
+                            }
+                            if ( number < 1 || number > demoList.Count )
+                                Console.WriteLine( "The number of the demo game must be between 1 and {0}, the number of demos games available.", demoList.Count );
+                            else
+                            {
+                                next = (string)demoList[ number - 1 ];
+                                break;
+                            }
+                        }
+
+                        Type type = demos.GetType( "Axiom.Demos." + next );
+
+                        if ( type != null )
+                        {
+                            using ( TechDemo demo = (TechDemo)Activator.CreateInstance( type ) )
+                            {
+                                demo.Start();//show and start rendering
+                            }//dispose of it when done
+                        }
+                    //}
 
                 }
             }

@@ -231,7 +231,11 @@ namespace Axiom.Demos
 
                 //engine.Dispose();
             }
-            
+            scene.RemoveAllCameras();
+            scene.RemoveCamera( camera );
+            camera = null;
+            Root.Instance.RenderSystem.DetachRenderTarget( window );
+            window.Dispose();
         }
 
         #endregion Public Methods
