@@ -15,64 +15,64 @@
 			Define build directory for Axiom3D demos 
 		-->
 		<property name="axiom.demos.build.dir" value="${path::combine(build.dir, 'Axiom_Demos')}" />
-			<fileset id="axiom.demos.build.references">
-				<include name="${axiom3d.build.dir}/Axiom.dll"/>
-				<include name="${axiom3d.build.dir}/Axiom.Plugins.CgProgramManager.dll"/>
-				<include name="${axiom3d.build.dir}/Axiom.Plugins.ParticleFX.dll"/>
-				<include name="${axiom3d.build.dir}/Axiom.SceneManagers.Bsp.dll"/>
-				<include name="${axiom3d.build.dir}/Axiom.SceneManagers.Octree.dll"/>
-				<!-- <include name="${axiom3d.build.dir}/Axiom.SceneManagers.PagingLandscape.dll"/> -->
-				<include name="${axiom3d.build.dir}/Axiom.RenderSystems.OpenGL.dll"/>
+		<fileset id="axiom.demos.build.references">
+			<include name="${axiom3d.build.dir}/Axiom.dll"/>
+			<include name="${axiom3d.build.dir}/Axiom.Plugins.CgProgramManager.dll"/>
+			<include name="${axiom3d.build.dir}/Axiom.Plugins.ParticleFX.dll"/>
+			<include name="${axiom3d.build.dir}/Axiom.SceneManagers.Bsp.dll"/>
+			<include name="${axiom3d.build.dir}/Axiom.SceneManagers.Octree.dll"/>
+			<!-- <include name="${axiom3d.build.dir}/Axiom.SceneManagers.PagingLandscape.dll"/> -->
+			<include name="${axiom3d.build.dir}/Axiom.RenderSystems.OpenGL.dll"/>
 
-                <include name="${axiom.demos.build.dir}/Axiom.Demos.dll"/>
-				<include name="System.dll"/>
-				<include name="System.Data.dll"/>
-				<include name="System.Drawing.dll"/>
-				<include name="System.Windows.Forms.dll"/>
-				<include name="System.Xml.dll"/>
-		
-			</fileset>
-			
-			<fileset id="axiom.demos.runtime.references">
-				<include name="${axiom3d.build.dir}/Axiom.dll"/>
-				<include name="${axiom3d.build.dir}/Axiom.Plugins.CgProgramManager.dll"/>
-				<include name="${axiom3d.build.dir}/Axiom.Plugins.ParticleFX.dll"/>
-				<include name="${axiom3d.build.dir}/Axiom.SceneManagers.Bsp.dll"/>
-				<include name="${axiom3d.build.dir}/Axiom.SceneManagers.Octree.dll"/>
-				<!-- <include name="${axiom3d.build.dir}/Axiom.SceneManagers.PagingLandscape.dll"/> -->
-				<include name="${axiom3d.build.dir}/Axiom.RenderSystems.OpenGL.dll"/>
+			<include name="${axiom.demos.build.dir}/Axiom.Demos.dll"/>
+			<include name="System.dll"/>
+			<include name="System.Data.dll"/>
+			<include name="System.Drawing.dll"/>
+			<include name="System.Windows.Forms.dll"/>
+			<include name="System.Xml.dll"/>
 
-                <include name="${axiom.demos.build.dir}/Axiom.Demos.dll"/>
+		</fileset>
 
-                <include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.Win32.dll"/>
-				<include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.RenderSystems.DirectX9.dll"/>
-				<include unless="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.SDL.dll"/>
+		<fileset id="axiom.demos.runtime.references">
+			<include name="${axiom3d.build.dir}/Axiom.dll"/>
+			<include name="${axiom3d.build.dir}/Axiom.Plugins.CgProgramManager.dll"/>
+			<include name="${axiom3d.build.dir}/Axiom.Plugins.ParticleFX.dll"/>
+			<include name="${axiom3d.build.dir}/Axiom.SceneManagers.Bsp.dll"/>
+			<include name="${axiom3d.build.dir}/Axiom.SceneManagers.Octree.dll"/>
+			<!-- <include name="${axiom3d.build.dir}/Axiom.SceneManagers.PagingLandscape.dll"/> -->
+			<include name="${axiom3d.build.dir}/Axiom.RenderSystems.OpenGL.dll"/>
 
-				<include name="${ICSharpCode.SharpZipLib.dll}"/>
-				
-				<include name="${Tao.DevIl.dll}"/>
-				<include if="${platform::is-unix()}" name="${Tao.DevIl.dll.configs}"/>
-				
-				<include name="${Tao.Cg.dll}"/>
-				<include if="${platform::is-unix()}" name="${Tao.Cg.dll.configs}"/>
-				
-				<include name="${Tao.OpenGl.dll}"/>
-				<include if="${platform::is-unix()}" name="${Tao.OpenGl.dll.configs}"/>
-				
-				<include name="${Tao.OpenGl.ExtensionLoader.dll}"/>
-				<include if="${platform::is-unix()}" name="${Tao.OpenGl.ExtensionLoader.dll.configs}"/>
-				
-				<include name="${Tao.OpenGl.Glu.dll}"/>
-				<include if="${platform::is-unix()}" name="${Tao.OpenGl.Glu.dll.configs}"/>
-				
-				<include if="${platform::is-win32()}" name="${Tao.Platform.Windows.dll}"/>
-				
-				<include unless="${platform::is-win32()}" name="${Tao.Sdl.dll}"/>
-				<include unless="${platform::is-win32()}" name="${Tao.Sdl.dll.configs}"/>
+			<include name="${axiom.demos.build.dir}/Axiom.Demos.dll"/>
 
-				<!-- Dump all the native dependencies into the build directory if on Windows -->
-				<include if="${platform::is-win32()}" name="${native.dependencies.win32.dir}/*.dll"/>
-			</fileset>
+			<include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.Win32.dll"/>
+			<include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.RenderSystems.DirectX9.dll"/>
+			<include unless="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.SDL.dll"/>
+
+			<include name="${ICSharpCode.SharpZipLib.dll}"/>
+
+			<include name="${Tao.DevIl.dll}"/>
+			<include if="${platform::is-unix()}" name="${Tao.DevIl.dll.configs}"/>
+
+			<include name="${Tao.Cg.dll}"/>
+			<include if="${platform::is-unix()}" name="${Tao.Cg.dll.configs}"/>
+
+			<include name="${Tao.OpenGl.dll}"/>
+			<include if="${platform::is-unix()}" name="${Tao.OpenGl.dll.configs}"/>
+
+			<include name="${Tao.OpenGl.ExtensionLoader.dll}"/>
+			<include if="${platform::is-unix()}" name="${Tao.OpenGl.ExtensionLoader.dll.configs}"/>
+
+			<include name="${Tao.OpenGl.Glu.dll}"/>
+			<include if="${platform::is-unix()}" name="${Tao.OpenGl.Glu.dll.configs}"/>
+
+			<include if="${platform::is-win32()}" name="${Tao.Platform.Windows.dll}"/>
+
+			<include unless="${platform::is-win32()}" name="${Tao.Sdl.dll}"/>
+			<include unless="${platform::is-win32()}" name="${Tao.Sdl.dll.configs}"/>
+
+			<!-- Dump all the native dependencies into the build directory if on Windows -->
+			<include if="${platform::is-win32()}" name="${native.dependencies.win32.dir}/*.dll"/>
+		</fileset>
 			
 	</target>
 
