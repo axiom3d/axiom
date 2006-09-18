@@ -154,19 +154,21 @@ namespace Axiom.RenderSystems.OpenGL
 
             if ( autoCreateWindow )
             {
-                // MONO: Could not cast result of Select to strongly typed data row
-                DataRow[] modes =
-                    (DataRow[])engineConfig.DisplayMode.Select( "Selected = true" );
+                int width = 640;
+                int height = 480;
+                int bpp = 32;
+                bool fullScreen = false;
 
-                DataRow mode = modes[ 0 ];
+                ConfigOption optVM = ConfigOptions[ "Video Mode" ];
+                string vm = optVM.Value;
+                width = int.Parse( vm.Substring( 0, vm.IndexOf( "x" ) ) );
+                height = int.Parse( vm.Substring( vm.IndexOf( "x" ) + 1, vm.IndexOf( "@" ) - ( vm.IndexOf( "x" ) + 1 ) ) );
+                bpp = int.Parse( vm.Substring( vm.IndexOf( "@" ) + 1, vm.IndexOf( "-" ) - ( vm.IndexOf( "@" ) + 1 ) ) );
 
-                int width = (int)mode[ "Width" ];
-                int height = (int)mode[ "Height" ];
-                int bpp = (int)mode[ "Bpp" ];
-                bool fullscreen = (bool)mode[ "FullScreen" ];
+                fullScreen = ( ConfigOptions[ "Full Screen" ].Value == "Yes" );
 
                 // create the window with the default form as the target
-                autoWindow = renderSystem.CreateRenderWindow( windowTitle, width, height, 32, fullscreen, 0, 0, true, false, null );
+                autoWindow = renderSystem.CreateRenderWindow( windowTitle, width, height, 32, fullScreen, 0, 0, true, false, null );
             }
 
             return autoWindow;
