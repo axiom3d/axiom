@@ -328,7 +328,7 @@
 		<include name="Source/Axiom3D/**/*.xml" />			
 	</zipfileset>
 	
-	<zipfileset id="fileset.axiom.buildtools" basedir="../.." prefix="Axiom/bin">
+	<zipfileset id="fileset.axiom.buildtools" basedir="../.." prefix="Axiom">
 		<include name="Build_Tools/**" />
 		<exclude name="Build_Tools/**/.svn/**" />
 	</zipfileset>
