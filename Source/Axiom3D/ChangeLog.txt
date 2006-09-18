@@ -1,3 +1,56 @@
+9-16-2006 - Borrillis
+- Fixed most of the problems with the CubeMapping demo, more remain.
+- Updated Renderer Configuration handling
+- Seperated Demo code from Browser
+- Created commandline demo Browser
+- Added configuration screens to allow changing renderer and setting renderer properties
+
+9-15-2006 - c0deg33k
+Step 1 of build system revisions: extract dependencies definitions into a separate include file and colocate with the deps.  Tested and seems to work on both Windows and Linux.
+
+9-13-2006 - Borrillis
+- Removed GameObject.cs as it wasn't being used.
+
+9-7-2006 - Borrillis
+- Updated Overlays so YAT will run
+- Changed behavior of Material Manager on Add, instead of throwing Exception on duplicate names, returns the existing object.
+- Updated Prebuild to allow for Copy to Output Directory functionality
+- Updated Axiom Demos Prebuild.xml to take advantage of this functionality.
+
+9-6-2006 - Borrillis
+- Relocated MathLib into Core assembly.
+- Added MovableText
+- Renamed SceneObject to MovableObject and Associated Collections
+- Moved Axiom.MathLib into the Axiom project and changed the namespace to Axiom.Math
+- Renamed Axiom.Math.MathUtil to Axiom.Math.Utility
+- Moved TechDemo class into Axiom.Demos project
+- Removed TextureLayerCollection as it wasn't used.
+- Added batch file to build using Mono on Windows.
+- Updated Prebuild to custom built version that allows linked files in the project ( for GlobalAssemblyInfo.cs)
+- Updated AssemblyInfo for each project, located common assembly attributes into GlobalAssemblyInfo.cs
+
+9-5-2006 - Borrillis
+- Updates for TerrainSceneManager
+- Changed DXRenderer to log Error instead of throwing exception when a GPUProgram fails compilation
+- Added Shading Enum conversion from DX equivilent
+- D3DGPUProgramManager.Create() nows throws NotSupportedException if program type isn't supported instead of just returning null
+
+9-4-2006 - Borrillis
+- Fix Athene Mesh not having any material
+
+9-3-2006 - Borrillis
+- Fixed cg Programs on DirectX9 
+
+8-24-2006 - c0d3g33k
+- Updated Prebuild to 1.3.1 
+
+8-25-2006 - Borrillis
+- Applied Fix for Platforms/Win32/Win32InputReader.cs to aquire devices properly
+- Fixed D3DGpuProgram::LoadFromSource() was only checking for null string, not empty string.
+
+8-24-2006 - c0d3g33k
+- Added NAnt files and changes necessary for building and running under Mono on Linux (Mono 1.1.16.1)
+
 1-8-2005
 - Fixed OpenGL problem where ARB programs were being created by default, even through they were not supported.
 - Added StringConverter class for parsing back and forth between strings and other types (float, etc).

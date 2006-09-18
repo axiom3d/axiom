@@ -309,52 +309,75 @@
         <delete dir="${top.dist.dir}" if="${directory::exists(top.dist.dir)}" />
     </target>
     
-	<target name="dist.all" description="Prepares all targets for distribution" depends="build.all, dist.setup" unless="${target::has-executed('dist.all')}">
-		<call target="dist.axiom.all" />
-		<call target="dist.axiom.demos.all" />
-	</target>
-	
-	<target name="dist.binary" >
-		<call target="dist.axiom.binary" />
-		<call target="dist.axiom.demos.binary" />
-	</target>
-	
-	<target name="dist.source" >
+	<target name="dist.all" description="Prepares all targets for distribution" depends="build.all, release, build.all, dist.setup" unless="${target::has-executed('dist.all')}">
+		<call target="dist.axiom.full" />
 		<call target="dist.axiom.source" />
-		<call target="dist.axiom.demos.source" />
-	</target>
-	
-	<target name="dist.axiom.all" description="" >
-		<call target="dist.axiom.source" />
+		<call target="dist.axiom.media" />
 		<call target="dist.axiom.binary" />
 	</target>
 	
-	<target name="dist.axiom.demos.all" description="" >
-		<call target="dist.axiom.demos.binary" />
-	</target>
-
     <!-- END: General Distribution targets -->
 
     <!-- BEGIN: Packaging targets -->
 
+	<zipfileset id="fileset.axiom.source" basedir="../.." prefix="Axiom"> 
+		<include name="Source/Axiom3D/**/*.cs" />
+		<include name="Source/Axiom3D/**/*.build" />
+		<include name="Source/Axiom3D/**/*.cmd" />
+		<include name="Source/Axiom3D/**/*.txt" />
+		<include name="Source/Axiom3D/**/*.xml" />			
+	</zipfileset>
+	
+	<zipfileset id="fileset.axiom.buildtools" basedir="../.." prefix="Axiom/bin">
+		<include name="Build_Tools/**" />
+		<exclude name="Build_Tools/**/.svn/**" />
+	</zipfileset>
+	
+	<zipfileset id="fileset.axiom.dependencies" basedir="../.." prefix="Axiom">
+		<include name="Dependencies/**" />
+		<exclude name="Dependencies/**/.svn/**" />
+	</zipfileset>
+	
+	<zipfileset id="fileset.axiom.media" basedir="../../" prefix="Axiom">
+		<include name="Media/**" />
+		<exclude name="Media/**/.svn/**" />
+	</zipfileset>
+
+	<zipfileset id="fileset.axiom.binary" basedir="../../Source/Build/" prefix="Axiom/bin">
+		<include name="**" />
+		<exclude name="**/.svn/**" />
+	</zipfileset>
+	
 	<target name="dist.axiom.source" >
-		<fileset id="fileset.axiom.source">
-			<include name="**/*.cs" />
-			<include name="**/*.build" />
-			<include name="**/*.cmd" />
-			<include name="**/*.txt" />
-			<include name="**/*.xml" />			
-		</fileset>
-		<copy todir="${dist.dir}">
+		
+		<zip zipfile="${dist.dir + '/axiom-' + project.version + '-src.zip'}">
 			<fileset refid="fileset.axiom.source" />
-		</copy>
+			<fileset refid="fileset.axiom.buildtools" />
+			<fileset refid="fileset.axiom.dependencies" />
+		</zip>
 
 	</target>
-	
+
 	<target name="dist.axiom.binary" >
+		<zip zipfile="${dist.dir + '/axiom-' + project.version + '-bin.zip'}">
+			<fileset refid="fileset.axiom.binary" prefix="bin"/>
+		</zip>
 	</target>
 		
-	<target name="dist.axiom.demos.binary" >
+	<target name="dist.axiom.media" >
+		<zip zipfile="${dist.dir + '/axiom-' + project.version + '-media.zip'}">
+			<fileset refid="fileset.axiom.media" />
+		</zip>
+	</target>
+	
+	<target name="dist.axiom.full" >
+		<zip zipfile="${dist.dir + '/axiom-' + project.version + '-full.zip'}">
+			<fileset refid="fileset.axiom.source" />
+			<fileset refid="fileset.axiom.buildtools" />
+			<fileset refid="fileset.axiom.dependencies" />
+			<fileset refid="fileset.axiom.media" />
+			<fileset refid="fileset.axiom.binary" />
+		</zip>
 	</target>
 
     <!-- END: Packaging targets -->

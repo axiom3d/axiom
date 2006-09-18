@@ -10,6 +10,7 @@ All people who ever contirbuted code to Ogre, especially the ones who have done 
 		  
 Axiom Community
 __________________________________________________________________________________________________________
+Leedgitar			- Original conversion and Maintainer
 Ridge (Randy Ridge) 		- Various OpenGL related items, performance analysis, optimizations, demo development.
 judas (Mike Barker) 		- Octree plugin, extensive testing through many hours of actual usage.
 Antiarc (Chris Heald) 		- Assorted patches/bug fixes.
@@ -20,5 +21,8 @@ orospakr (Andrew Clunis)	- Tolerating my endless barrage of Linux related questi
 theTurbo			- Full ODE physics library, with Ragdolls, Trimesh collisions, various joints/hinges, and more!  
 				  Contributions to the David Walkers ODE wrapper.
 Jock				- BSP scene manager port.
+c0d3g33k			- NAnt Build system.
+Borrillis			- PagingLandscapeSceneManager
+
 
 Just cuz you aren't listed doesn't mean you haven't done anything useful.  I know there are more, I just didn't have time to comb the forums and find em all, and my memory is terrible.  So if you aren't on the list and you should be, please let me know ASAP via email or private message on the forums and you will be added ASAP.
