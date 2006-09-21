@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<Prebuild xmlns="http://dnpb.sourceforge.net/schemas/prebuild-1.6.xsd" version="1.6">
+<Prebuild xmlns="http://dnpb.sourceforge.net/schemas/prebuild-1.7.xsd" version="1.7">
 	<Solution name="Axiom" path=".">
 		<Configuration name="Debug">
 			<Options>
@@ -39,7 +39,7 @@
 				</Options>
 			</Configuration>
 				
-			<ReferencePath>..\..\..\..\Dependencies\Managed\DotNet</ReferencePath>
+			<ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -66,14 +66,14 @@
 				</Options>
 			</Configuration>
 				
-			<ReferencePath>..\..\..\..\..\Dependencies\Managed\DotNet</ReferencePath>
+			<ReferencePath>../../../../../Dependencies/Managed/DotNet</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
 			<Reference name="System.Drawing" />
 			<Reference name="System.Xml" />
 			<Reference name="Axiom" localCopy="true"/>
-			<Reference name="Axiom.Demos" localcopy="true" />
+			<Reference name="Axiom.Demos" localCopy="true" />
 			<Reference name="Axiom.Plugins.ParticleFX" localCopy="true"/>
 			<Reference name="Axiom.Plugins.CgProgramManager" localCopy="true"/>
 			<Reference name="Axiom.RenderSystems.OpenGL" localCopy="true"/>
@@ -110,7 +110,7 @@
 				</Options>
 			</Configuration>
 			
-			<ReferencePath>..\..\..\Dependencies\Managed\DotNet</ReferencePath>
+			<ReferencePath>../../../Dependencies/Managed/DotNet</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -146,7 +146,7 @@
 					</Options>
 				</Configuration>
 
-				<ReferencePath>..\..\..\..\Dependencies\Managed\DotNet</ReferencePath>
+				<ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
 
 				<Reference name="System" />
 				<Reference name="System.Data" />
@@ -180,7 +180,7 @@
 					</Options>
 				</Configuration>
 
-				<ReferencePath>..\..\..\..\Dependencies\Managed\DotNet</ReferencePath>
+				<ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
 
 				<Reference name="System" />
 				<Reference name="System.Data" />
@@ -218,7 +218,7 @@
 				</Options>
 			</Configuration>
 			
-			<ReferencePath>..\..\..\..\Dependencies\Managed\DotNet</ReferencePath>
+			<ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -251,7 +251,7 @@
 				</Options>
 			</Configuration>
 			
-			<ReferencePath>..\..\..\..\Dependencies\Managed\DotNet</ReferencePath>
+			<ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -299,7 +299,7 @@
 				</Options>
 			</Configuration>
 			
-			<ReferencePath>..\..\..\..\Dependencies\Managed\DotNet</ReferencePath>
+			<ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -342,7 +342,7 @@
 		</Project>
 		
 		
-		<Project name="Axiom.SceneManagers.Octree" type="Library" path="SceneManagers\Octree" language="C#" runtime="Microsoft" >
+		<Project name="Axiom.SceneManagers.Octree" type="Library" path="SceneManagers/Octree" language="C#" runtime="Microsoft" >
 			<Configuration name="Debug">
 				<Options>
 					<OutputPath>../../../build/debug/Axiom3D</OutputPath>
@@ -370,7 +370,7 @@
 		</Project>
 		
 		
-		<Project name="Axiom.SceneManagers.Bsp" type="Library" path="SceneManagers\Bsp" language="C#" runtime="Microsoft" >
+		<Project name="Axiom.SceneManagers.Bsp" type="Library" path="SceneManagers/Bsp" language="C#" runtime="Microsoft" >
 			<Configuration name="Debug">
 				<Options>
 					<OutputPath>../../../build/debug/Axiom3D</OutputPath>
