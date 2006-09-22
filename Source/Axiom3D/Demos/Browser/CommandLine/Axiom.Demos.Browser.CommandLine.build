@@ -71,7 +71,11 @@
 			<include unless="${platform::is-win32()}" name="${Tao.Sdl.dll.configs}"/>
 
 			<!-- Dump all the native dependencies into the build directory if on Windows -->
+			<!-- NOTE: This is a little sloppy - should really only reference the deps we need -->
 			<include if="${platform::is-win32()}" name="${native.dependencies.win32.dir}/*.dll"/>
+			
+			<!-- Note that all the Linux native deps should be installed by the distribution, 
+			so they aren't handled here.  We just assume they are there -->
 		</fileset>
 			
 	</target>
@@ -131,7 +135,7 @@
 	</target>
 	
 	<target name="run" description="Run the Axiom Demos" depends="build">
-		<echo message="Running Axiom Demos!"/>
+		<echo message="Running Axiom Demos commandline browser!"/>
 		<exec program="${axiom.demos.build.dir}/${project::get-name()}.exe" useruntimeengine="true" workingdir="${axiom.demos.build.dir}" />
 	</target>
 
