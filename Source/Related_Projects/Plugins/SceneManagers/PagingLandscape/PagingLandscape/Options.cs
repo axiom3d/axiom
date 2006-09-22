@@ -26,7 +26,7 @@ using System.Collections;
 using System.Data;
 
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Media;
 
 #endregion;
@@ -470,12 +470,12 @@ namespace Axiom.SceneManagers.PagingLandscape
 			if ( strKey == "VisibleDistance" )
 			{
 				// we need to return the square root of the distance
-				pDestValue =  Math.Sqrt (Renderable_Factor);
+                pDestValue = System.Math.Sqrt(Renderable_Factor);
 			}
 			if ( strKey == "VisibleLOD" )
 			{
 				// we need to return the square root of the distance
-				pDestValue =  Math.Sqrt (LOD_Factor);
+                pDestValue = System.Math.Sqrt(LOD_Factor);
 			}
 			// Some options proposed by Praetor
 			if ( strKey == "Width" )

@@ -31,7 +31,7 @@ using System.Collections;
 using System.Diagnostics;
 
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Collections;
 using Axiom.Media;
 using Axiom.Graphics;
@@ -51,7 +51,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
 	/// <summary>
 	/// Summary description for Tile.
 	/// </summary>
-	public class Tile : SceneObject
+	public class Tile : MovableObject
 	{
 		#region Fields
 
@@ -420,7 +420,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
 				if ( renderable != null)
 					if (renderable.IsLoaded)
 				{
-					tileSceneNode.AttachObject( (SceneObject) renderable );
+					tileSceneNode.AttachObject( (MovableObject) renderable );
 				}
 				tileSceneNode.NeedUpdate();
 			}
@@ -505,7 +505,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
 		/// Gets all the patches within an AABB in world coordinates as GeometryData structs
 		public virtual void GetRenderOpsInBox( AxisAlignedBox box, ArrayList opList)
 		{
-			if ( MathUtil.Intersects(box, bounds ) != Intersection.None )
+			if ( Axiom.Math.Utility.Intersects(box, bounds ) != Intersection.None )
 			{
 				RenderOperation rend = new RenderOperation();
 				renderable.GetRenderOperation( rend );

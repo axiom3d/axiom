@@ -6,7 +6,7 @@
 				<CompilerDefines>TRACE;DEBUG</CompilerDefines>
 				<OptimizeCode>false</OptimizeCode>
 				<AllowUnsafe>true</AllowUnsafe>
-				<OutputPath>bin/Debug</OutputPath>
+				<OutputPath>../../../../../../build/debug/PLSM</OutputPath>
 				<DebugInformation>true</DebugInformation>
 			</Options>
 		</Configuration>
@@ -15,7 +15,7 @@
 				<CompilerDefines>TRACE</CompilerDefines>
 				<OptimizeCode>true</OptimizeCode>
 				<AllowUnsafe>true</AllowUnsafe>
-				<OutputPath>bin/Release</OutputPath>
+				<OutputPath>../../../../../../build/release/PLSM</OutputPath>
 				<DebugInformation>false</DebugInformation>
 			</Options>
 		</Configuration>

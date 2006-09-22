@@ -30,7 +30,7 @@ using System;
 using System.Collections;
 
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Graphics;
 
 using Axiom.SceneManagers.PagingLandscape;

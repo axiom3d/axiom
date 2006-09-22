@@ -30,7 +30,7 @@ using System;
 using System.Collections;
 
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Graphics;
 
 using Axiom.SceneManagers.PagingLandscape;
@@ -106,7 +106,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Query
 				Vector3 origin = this.Ray.Origin;
 				origin.y = 0; // ensure that it's within bounds
 				frag.SingleIntersection = getHeightAt( origin );
-				listener.OnQueryResult( frag, Math.Abs(frag.SingleIntersection.y - this.Ray.Origin.y) );
+                listener.OnQueryResult(frag, System.Math.Abs(frag.SingleIntersection.y - this.Ray.Origin.y));
 			}
 			else
 			{

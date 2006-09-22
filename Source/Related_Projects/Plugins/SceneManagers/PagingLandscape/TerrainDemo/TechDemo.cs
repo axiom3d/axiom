@@ -123,18 +123,44 @@ namespace TerrainDemo
             viewport.BackgroundColor = ColorEx.Black;
         }
 
+        /// <summary>
+        ///		Loads default resource configuration if one exists.
+        /// </summary>
+        protected virtual void SetupResources()
+        {
+            string resourceConfigPath = Path.GetFullPath("EngineConfig.xml");
+
+            if (File.Exists(resourceConfigPath))
+            {
+                EngineConfig config = new EngineConfig();
+
+                // load the config file
+                // relative from the location of debug and releases executables
+                config.ReadXml("EngineConfig.xml");
+
+                // interrogate the available resource paths
+                foreach (EngineConfig.FilePathRow row in config.FilePath)
+                {
+                    ResourceManager.AddCommonArchive(row.src, row.type);
+                }
+            }
+        }
+
+        protected const string CONFIG_FILE = @"EngineConfig.xml";
+
         protected virtual bool Setup()
         {
             // instantiate the Root singleton
-            engine = new Root( "EngineConfig.xml", "AxiomEngine.log" );
+            engine = new Root(CONFIG_FILE, "AxiomEngine.log");
             //engine = Root.Instance;
+            Root.Instance.RenderSystem = Root.Instance.RenderSystems[0];
 
             // add event handlers for frame events
             engine.FrameStarted += new FrameEvent( OnFrameStarted );
             engine.FrameEnded += new FrameEvent( OnFrameEnded );
 
             // allow for setting up resource gathering
-            //SetupResources();
+            SetupResources();
 
             //show the config dialog and collect options
             //if ( !Configure() )
