@@ -52,7 +52,7 @@ namespace TerrainDemo {
             light.Position = new Vector3(20, 80, 50);
             light.Diffuse = ColorEx.Blue;
 
-            scene.LoadWorldGeometry("landscape.xml");
+            scene.LoadWorldGeometry("Landscape.xml");
             
             // scene.SetFog(FogMode.Exp2, ColorEx.White, .008f, 0, 250);
 
