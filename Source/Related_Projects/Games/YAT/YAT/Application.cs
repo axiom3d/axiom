@@ -65,6 +65,7 @@ namespace YAT
 		protected float camSpeed = 2.5f;
 		protected int aniso = 1;
 		protected TextureFiltering filtering = TextureFiltering.Bilinear;
+        protected const string CONFIG_FILE = "EngineConfig.xml";
 
 		#endregion Protected Fields
 
@@ -77,11 +78,28 @@ namespace YAT
 
 
 		#region Properties
-		public bool ShowDebugOverlay
-		{
-			get {return showDebugOverlay;}
-			set {showDebugOverlay = value;}
-		}
+        /// <summary>
+        ///    Shows the debug overlay, which displays performance statistics.
+        /// </summary>
+        public void ShowDebugOverlay(bool show)
+        {
+            // gets a reference to the default overlay
+            Overlay o = OverlayManager.Instance.GetByName("Core/DebugOverlay");
+
+            if (o == null)
+            {
+                throw new Exception(string.Format("Could not find overlay named '{0}'.", "Core/DebugOverlay"));
+            }
+
+            if (show)
+            {
+                o.Show();
+            }
+            else
+            {
+                o.Hide();
+            }
+        }
 		#endregion
 
 		#region Protected Methods
@@ -92,26 +110,26 @@ namespace YAT
 				return scene;
 			}
 		}
-		protected bool Configure() 
-		{
-			// HACK: Temporary
-			RenderSystem renderSystem = Root.Instance.RenderSystems[0];
-			Root.Instance.RenderSystem = renderSystem;
-            EngineConfig.DisplayModeRow mode = renderSystem.ConfigOptions.DisplayMode[ 0 ];
-            mode.FullScreen = false;
-            mode.Selected = true;
+        //protected bool Configure() 
+        //{
+        //    // HACK: Temporary
+        //    RenderSystem renderSystem = Root.Instance.RenderSystems[0];
+        //    Root.Instance.RenderSystem = renderSystem;
+        //    EngineConfig.DisplayModeRow mode = renderSystem.ConfigOptions.;
+        //    mode.FullScreen = false;
+        //    mode.Selected = true;
 
-            //ConfigOption opt = Root.Instance.RenderSystem.ConfigOptions[ "Full Screen" ];
-            //opt.Value = "No";
-            //Root.Instance.RenderSystem.ConfigOptions[ "Full Screen" ] = opt;
+        //    //ConfigOption opt = Root.Instance.RenderSystem.ConfigOptions[ "Full Screen" ];
+        //    //opt.Value = "No";
+        //    //Root.Instance.RenderSystem.ConfigOptions[ "Full Screen" ] = opt;
 
-			window = Root.Instance.Initialize(true, "YAT in Axiom");
+        //    window = Root.Instance.Initialize(true, "YAT in Axiom");
 
 
-			RenderDebugOverlay(showDebugOverlay);
+        //    RenderDebugOverlay(showDebugOverlay);
 			
-			return true;
-		}
+        //    return true;
+        //}
 
 		protected virtual void CreateCamera() 
 		{
@@ -174,7 +192,10 @@ namespace YAT
 		protected virtual bool Setup() 
 		{
 			// instantiate the Root singleton
-			engine = new Root("EngineConfig.xml", "AxiomEngine.log");
+            engine = new Root("EngineConfig.xml", "AxiomEngine.log");
+           
+            //engine = Root.Instance;
+            Root.Instance.RenderSystem = Root.Instance.RenderSystems[0];
 
 			// add event handlers for frame events
 			engine.FrameStarted += new FrameEvent(OnFrameStarted);
@@ -182,15 +203,19 @@ namespace YAT
 
 			// allow for setting up resource gathering
 			SetupResources();
+            window = Root.Instance.Initialize(true, "Axiom Engine Tetris Window");
+
 
 			//show the config dialog and collect options
-			if(!Configure()) 
-			{
-				// shutting right back down
-				engine.Shutdown();
+            //if(!Configure()) 
+            //{
+            //    // shutting right back down
+            //    engine.Shutdown();
                 
-				return false;
-			}
+            //    return false;
+            //}
+
+            ShowDebugOverlay(showDebugOverlay);
 
 			ChooseSceneManager();
 			CreateCamera();
@@ -215,7 +240,7 @@ namespace YAT
 		/// </summary>
 		protected virtual void SetupResources() 
 		{
-			string resourceConfigPath = Path.GetFullPath("EngineConfig.xml");
+            string resourceConfigPath = Path.GetFullPath("EngineConfig.xml");
 
 			if(File.Exists(resourceConfigPath)) 
 			{
@@ -223,7 +248,7 @@ namespace YAT
 
 				// load the config file
 				// relative from the location of debug and releases executables
-				config.ReadXml("EngineConfig.xml");
+                config.ReadXml("EngineConfig.xml");
 
 				// interrogate the available resource paths
 				foreach(EngineConfig.FilePathRow row in config.FilePath) 

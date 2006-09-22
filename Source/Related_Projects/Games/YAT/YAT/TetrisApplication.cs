@@ -213,7 +213,7 @@ namespace YAT
 
 			if(input.IsKeyPressed(Axiom.Input.KeyCodes.F12)) 
 			{
-				TetrisApplication.Instance.ShowDebugOverlay = !TetrisApplication.Instance.ShowDebugOverlay;
+				//TetrisApplication.Instance.ShowDebugOverlay = !TetrisApplication.Instance.ShowDebugOverlay;
 			}
 
 			#region Update performance stats once per second
