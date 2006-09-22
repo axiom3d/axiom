@@ -46,7 +46,7 @@ namespace YAT
 			{
 			case Axiom.Input.KeyCodes.F12:
 				{
-					TetrisApplication.Instance.ShowDebugOverlay = !TetrisApplication.Instance.ShowDebugOverlay;
+					//TetrisApplication.Instance.ShowDebugOverlay = !TetrisApplication.Instance.ShowDebugOverlay;
 				}
 				break;
 			}

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<DNPreBuild xmlns="http://dnpb.sourceforge.net/schemas/dnpb-1.7.xsd">
+<Prebuild xmlns="http://dnpb.sourceforge.net/schemas/prebuild-1.7.xsd" version="1.7">
 	<Solution name="YAT" activeConfig="Debug">
 		<Configuration name="Debug">
 			<Options>
@@ -7,12 +7,12 @@
 				<OptimizeCode>false</OptimizeCode>
 				<CheckUnderflowOverflow>false</CheckUnderflowOverflow>
 				<AllowUnsafe>false</AllowUnsafe>
-				<OutputPath>bin\Debug</OutputPath>
+				<OutputPath>bin/Debug</OutputPath>
 				<WarningLevel>4</WarningLevel>
 				<WarningsAsErrors>false</WarningsAsErrors>
-				<SupressWarnings>1595;1591;219;1573;1572;168;1574;1570;1587</SupressWarnings>
+				<SuppressWarnings>1595;1591;219;1573;1572;168;1574;1570;1587</SuppressWarnings>
 				<DebugInformation>true</DebugInformation>
-				<RegisterCOMInterop>false</RegisterCOMInterop>
+				<RegisterComInterop>false</RegisterComInterop>
 				<IncrementalBuild>true</IncrementalBuild>
 				<BaseAddress>285212672</BaseAddress>
 				<FileAlignment>4096</FileAlignment>
@@ -25,12 +25,12 @@
 				<OptimizeCode>true</OptimizeCode>
 				<CheckUnderflowOverflow>false</CheckUnderflowOverflow>
 				<AllowUnsafe>false</AllowUnsafe>
-				<OutputPath>bin\Release</OutputPath>
+				<OutputPath>bin/Release</OutputPath>
 				<WarningLevel>4</WarningLevel>
 				<WarningsAsErrors>false</WarningsAsErrors>
-				<SupressWarnings>1595;1591;219;1573;1572;168;1574;1570;1587</SupressWarnings>
+				<SuppressWarnings>1595;1591;219;1573;1572;168;1574;1570;1587</SuppressWarnings>
 				<DebugInformation>false</DebugInformation>
-				<RegisterCOMInterop>false</RegisterCOMInterop>
+				<RegisterComInterop>false</RegisterComInterop>
 				<IncrementalBuild>true</IncrementalBuild>
 				<BaseAddress>285212672</BaseAddress>
 				<FileAlignment>4096</FileAlignment>
@@ -42,13 +42,13 @@
 		<Project name="YAT" path="." type="WinExe" rootNamespace="YAT">
 			<Configuration name="Debug">
 				<Options>
-					<OutputPath>../../../build/debug/YAT</OutputPath>
+				    <OutputPath>../../../../build/debug/YAT</OutputPath>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
-					<OutputPath>../../../build/release/YAT</OutputPath>
+				    <OutputPath>../../../../build/release/YAT</OutputPath>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
@@ -84,11 +84,9 @@
 
 			<Files>
 				<Match pattern="*.cs" recurse="true"/>
-				<Match pattern="EngineConfig.xml" path="" buildAction="None" />
+				<Match pattern="EngineConfig.xml" path="" buildAction="None" copyToOutput="Always" />
 			</Files>
 		</Project>
 		
 	</Solution>
-</DNPreBuild>
-
-	
+</Prebuild>
