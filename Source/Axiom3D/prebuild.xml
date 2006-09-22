@@ -29,13 +29,13 @@
 			<Configuration name="Debug">
 				<Options>
 					<AllowUnsafe>true</AllowUnsafe>
-					<OutputPath>../../../build/debug/Axiom_Demos</OutputPath>
+					<OutputPath>../../../../build/debug/Axiom_Demos</OutputPath>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
 					<AllowUnsafe>true</AllowUnsafe>
-					<OutputPath>../../../build/release/Axiom_Demos</OutputPath>
+					<OutputPath>../../../../build/release/Axiom_Demos</OutputPath>
 				</Options>
 			</Configuration>
 				
@@ -56,13 +56,13 @@
 			<Configuration name="Debug">
 				<Options>
 					<AllowUnsafe>true</AllowUnsafe>
-					<OutputPath>../../../../build/debug/Axiom_Demos</OutputPath>
+					<OutputPath>../../../../../build/debug/Axiom_Demos</OutputPath>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
 					<AllowUnsafe>true</AllowUnsafe>
-					<OutputPath>../../../../build/release/Axiom_Demos</OutputPath>
+					<OutputPath>../../../../../build/release/Axiom_Demos</OutputPath>
 				</Options>
 			</Configuration>
 				
@@ -97,14 +97,14 @@
 		<Project name="Axiom" type="Library" path="Engine" language="C#" runtime="Microsoft" >		
 			<Configuration name="Debug">
 				<Options>
-					<OutputPath>../../build/debug/Axiom3D</OutputPath>
+					<OutputPath>../../../build/debug/Axiom3D</OutputPath>
 					<XmlDocFile>Axiom.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
-					<OutputPath>../../build/release/Axiom3D</OutputPath>
+					<OutputPath>../../../build/release/Axiom3D</OutputPath>
 					<XmlDocFile>Axiom.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
@@ -133,14 +133,14 @@
 
 				<Configuration name="Debug">
 					<Options>
-						<OutputPath>../../../build/debug/Axiom3D</OutputPath>
+						<OutputPath>../../../../build/debug/Axiom3D</OutputPath>
 						<XmlDocFile>Axiom.xml</XmlDocFile>
 						<AllowUnsafe>true</AllowUnsafe>
 					</Options>
 				</Configuration>
 				<Configuration name="Release">
 					<Options>
-						<OutputPath>../../../build/release/Axiom3D</OutputPath>
+						<OutputPath>../../../../build/release/Axiom3D</OutputPath>
 						<XmlDocFile>Axiom.xml</XmlDocFile>
 						<AllowUnsafe>true</AllowUnsafe>
 					</Options>
@@ -167,14 +167,14 @@
 			<Project name="Axiom.RenderSystems.DirectX9" type="Library" path="RenderSystems/DirectX9" language="C#" runtime="Microsoft" >
 				<Configuration name="Debug">
 					<Options>
-						<OutputPath>../../../build/debug/Axiom3D</OutputPath>
+						<OutputPath>../../../../build/debug/Axiom3D</OutputPath>
 						<XmlDocFile>Axiom.xml</XmlDocFile>
 						<AllowUnsafe>true</AllowUnsafe>
 					</Options>
 				</Configuration>
 				<Configuration name="Release">
 					<Options>
-						<OutputPath>../../../build/release/Axiom3D</OutputPath>
+						<OutputPath>../../../../build/release/Axiom3D</OutputPath>
 						<XmlDocFile>Axiom.xml</XmlDocFile>
 						<AllowUnsafe>true</AllowUnsafe>
 					</Options>
@@ -205,14 +205,14 @@
 		<Project name="Axiom.Platforms.SDL" type="Library" path="Platforms/SDL" language="C#" runtime="Microsoft" >
 			<Configuration name="Debug">
 				<Options>
-					<OutputPath>../../../build/debug/Axiom3D</OutputPath>
+					<OutputPath>../../../../build/debug/Axiom3D</OutputPath>
 					<XmlDocFile>Axiom.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
-					<OutputPath>../../../build/release/Axiom3D</OutputPath>
+					<OutputPath>../../../../build/release/Axiom3D</OutputPath>
 					<XmlDocFile>Axiom.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
@@ -238,14 +238,14 @@
 		<Project name="Axiom.RenderSystems.OpenGL" type="Library" path="RenderSystems/OpenGL" language="C#" runtime="Microsoft" >
 			<Configuration name="Debug">
 				<Options>
-					<OutputPath>../../../build/debug/Axiom3D</OutputPath>
+					<OutputPath>../../../../build/debug/Axiom3D</OutputPath>
 					<XmlDocFile>Axiom.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
-					<OutputPath>../../../build/release/Axiom3D</OutputPath>
+					<OutputPath>../../../../build/release/Axiom3D</OutputPath>
 					<XmlDocFile>Axiom.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
@@ -286,14 +286,14 @@
 		<Project name="Axiom.Plugins.CgProgramManager" type="Library" path="Plugins/CgProgramManager" language="C#" runtime="Microsoft" >		
 			<Configuration name="Debug">
 				<Options>
-					<OutputPath>../../../build/debug/Axiom3D</OutputPath>
+					<OutputPath>../../../../build/debug/Axiom3D</OutputPath>
 					<XmlDocFile>Axiom.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
-					<OutputPath>../../../build/release/Axiom3D</OutputPath>
+					<OutputPath>../../../../build/release/Axiom3D</OutputPath>
 					<XmlDocFile>Axiom.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
@@ -317,14 +317,14 @@
 		<Project name="Axiom.Plugins.ParticleFX" type="Library" path="Plugins/ParticleFX" language="C#" runtime="Microsoft" >
 			<Configuration name="Debug">
 				<Options>
-					<OutputPath>../../../build/debug/Axiom3D</OutputPath>
+					<OutputPath>../../../../build/debug/Axiom3D</OutputPath>
 					<XmlDocFile>Axiom.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
-					<OutputPath>../../../build/release/Axiom3D</OutputPath>
+					<OutputPath>../../../../build/release/Axiom3D</OutputPath>
 					<XmlDocFile>Axiom.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
@@ -345,14 +345,14 @@
 		<Project name="Axiom.SceneManagers.Octree" type="Library" path="SceneManagers/Octree" language="C#" runtime="Microsoft" >
 			<Configuration name="Debug">
 				<Options>
-					<OutputPath>../../../build/debug/Axiom3D</OutputPath>
+					<OutputPath>../../../../build/debug/Axiom3D</OutputPath>
 					<XmlDocFile>Axiom.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
-					<OutputPath>../../../build/release/Axiom3D</OutputPath>
+					<OutputPath>../../../../build/release/Axiom3D</OutputPath>
 					<XmlDocFile>Axiom.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
@@ -373,14 +373,14 @@
 		<Project name="Axiom.SceneManagers.Bsp" type="Library" path="SceneManagers/Bsp" language="C#" runtime="Microsoft" >
 			<Configuration name="Debug">
 				<Options>
-					<OutputPath>../../../build/debug/Axiom3D</OutputPath>
+					<OutputPath>../../../../build/debug/Axiom3D</OutputPath>
 					<XmlDocFile>Axiom.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
-					<OutputPath>../../../build/release/Axiom3D</OutputPath>
+					<OutputPath>../../../../build/release/Axiom3D</OutputPath>
 					<XmlDocFile>Axiom.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
