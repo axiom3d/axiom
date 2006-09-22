@@ -2,8 +2,8 @@ using System;
 using System.IO;
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.MathLib;
-using Axiom.Utility;
+using Axiom.Math;
+//using Axiom.Utility;
 using Axiom.Input;
 
 namespace TerrainDemo {
@@ -79,7 +79,7 @@ namespace TerrainDemo {
         }
 
         protected override void OnFrameStarted(object source, FrameEventArgs e) {
-            float moveScale;
+            //float moveScale;
             float waterFlow;
 
             waterFlow = FLOW_SPEED * e.TimeSinceLastFrame;
@@ -318,7 +318,7 @@ namespace TerrainDemo {
 			camera.Position = new Vector3(camera.Position.x, fragment.SingleIntersection.y + 2.0f, camera.Position.z);
 			return false;
 		}
-		public bool OnQueryResult(SceneObject sceneObject, float distance) 
+		public bool OnQueryResult(MovableObject sceneObject, float distance) 
 		{
 			return true;
 		}

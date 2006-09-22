@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<DNPreBuild xmlns="http://dnpb.sourceforge.net/schemas/dnpb-1.7.xsd" version="1.2">
+<Prebuild xmlns="http://dnpb.sourceforge.net/schemas/prebuild-1.7.xsd" version="1.7">
 	<Solution name="PLSM" path=".">
 		<Configuration name="Debug">
 			<Options>
 				<CompilerDefines>TRACE;DEBUG</CompilerDefines>
 				<OptimizeCode>false</OptimizeCode>
 				<AllowUnsafe>true</AllowUnsafe>
-				<OutputPath>bin\Debug</OutputPath>
+				<OutputPath>bin/Debug</OutputPath>
 				<DebugInformation>true</DebugInformation>
 			</Options>
 		</Configuration>
@@ -15,7 +15,7 @@
 				<CompilerDefines>TRACE</CompilerDefines>
 				<OptimizeCode>true</OptimizeCode>
 				<AllowUnsafe>true</AllowUnsafe>
-				<OutputPath>bin\Release</OutputPath>
+				<OutputPath>bin/Release</OutputPath>
 				<DebugInformation>false</DebugInformation>
 			</Options>
 		</Configuration>
@@ -23,11 +23,11 @@
 		<Project name="TerrainDemo" type="Exe" path="." language="C#" runtime="Microsoft" >
 				
 			<?if OS = "Win32" ?>
-				<ReferencePath>..\..\..\..\Dependencies\Managed\DotNet</ReferencePath>
-				<ReferencePath>..\..\..\..\Dependencies\Managed\DotNet\Axiom3D</ReferencePath>
+			<ReferencePath>../../../../../../Dependencies/Managed/DotNet</ReferencePath>
+			<ReferencePath>../../../../../../Dependencies/Managed/DotNet/Axiom3D</ReferencePath>
 			<?else ?>
-				<ReferencePath>..\..\..\..\Dependencies\Managed\Mono</ReferencePath>
-				<ReferencePath>..\..\..\..\Dependencies\Managed\Mono\Axiom3D</ReferencePath>
+			<ReferencePath>../../../../../../Dependencies/Managed/Mono</ReferencePath>
+			<ReferencePath>../../../../../../Dependencies/Managed/Mono/Axiom3D</ReferencePath>
 			<?endif ?>
 
 			<Reference name="System" />
@@ -35,7 +35,7 @@
 			<Reference name="System.Drawing" />
 			<Reference name="System.Windows.Forms" />
 			<Reference name="System.Xml" />
-			<Reference name="Axiom.Engine" localCopy="true"/>
+			<Reference name="Axiom" localCopy="true"/>
 			
 			<?if OS = "Win32" ?>
 				<Reference name="Axiom.Platforms.Win32" localCopy="true"/>
@@ -49,6 +49,8 @@
 			
 			<Files>
 				<Match pattern="*.cs" path="." recurse="true"/>
+				<Match pattern="EngineConfig.xml" path="" buildAction="None" copyToOutput="Always" />
+				<Match pattern="Landscape.xml" path="" buildAction="None" copyToOutput="Always" />
 			</Files>
 			
 		</Project>
@@ -56,19 +58,27 @@
 		<Project 
 			name="Axiom.SceneManagers.PagingLandscape" 
 			type="Library" 
-			path="..\PagingLandscape" 
+			path="../PagingLandscape" 
 			language="C#" 
 			runtime="Microsoft" >
+
+			<?if OS = "Win32" ?>
+			<ReferencePath>../../../../../../Dependencies/Managed/DotNet</ReferencePath>
+			<ReferencePath>../../../../../../Dependencies/Managed/DotNet/Axiom3D</ReferencePath>
+			<?else ?>
+			<ReferencePath>../../../../../../Dependencies/Managed/Mono</ReferencePath>
+			<ReferencePath>../../../../../../Dependencies/Managed/Mono/Axiom3D</ReferencePath>
+			<?endif ?>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
 			<Reference name="System.Xml" />
-			<Reference name="Axiom.Engine" localCopy="true"/>
+			<Reference name="Axiom" localCopy="true"/>
 			
 			<Files>
-				<Match pattern="*.cs" path="." recurse="true"/>
+			    <Match pattern="*.cs" path="." recurse="true"/>
 			</Files>
 		</Project>
 		
 	</Solution>
-</DNPreBuild>
+</Prebuild>

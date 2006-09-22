@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Globalization;
 using System.Threading;
-using Axiom.Utility;
+//using Axiom.Utility;
 
 namespace TerrainDemo {
 
@@ -40,7 +40,7 @@ namespace TerrainDemo {
 				}
             }
             catch(Exception ex) {
-				Console.WriteLine("");
+				Console.WriteLine(ex);
 				Console.WriteLine("Press enter to continue...");
 				Console.ReadLine();
             }
