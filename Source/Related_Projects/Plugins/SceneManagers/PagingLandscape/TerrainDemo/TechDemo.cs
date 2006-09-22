@@ -170,7 +170,7 @@ namespace TerrainDemo
 
             //    return false;
             //}
-            window = Root.Instance.Initialize( true, "Axiom Engine Demo Window" );
+            window = Root.Instance.Initialize( true, "Axiom TerrainDemo Window" );
 
             ShowDebugOverlay( showDebugOverlay );
 
