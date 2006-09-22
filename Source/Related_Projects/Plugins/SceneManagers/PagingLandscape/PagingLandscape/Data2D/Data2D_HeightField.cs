@@ -31,7 +31,7 @@ using System.Collections;
 
 using Axiom.Core;
 using Axiom.Collections;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Media;
 
 //using Axiom.SceneManagers.IPLSceneManager.Page;
@@ -236,7 +236,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 				for (long i = 0; i < this.max - 1;  i += this.bpp )
 				{  
 				float h =  (float) (image.Data[ i + (this.bpp - 1)]) * scale;
-					this.MaxHeight = Math.Max ( h, MaxHeight);
+					this.MaxHeight = System.Math.Max ( h, MaxHeight);
 					heightData[j++] = h;
 				}
 			}
@@ -281,7 +281,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 				for (long i = 0; i < this.max - 1;  i += this.bpp )
 				{  
 					float h =  (float) (image.Data[ i + (this.bpp - 1)]) * scale;
-					this.MaxHeight = Math.Max ( h, MaxHeight);
+					this.MaxHeight = System.Math.Max ( h, MaxHeight);
 					heightData[j++] = h;
 				}
 			}
@@ -327,7 +327,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 				for (long i = 0; i < this.max - 1;  i += this.bpp )
 				{  
 					float h =  (float) (image.Data[ i + (this.bpp - 1)]) * scale;
-					this.MaxHeight = Math.Max ( h, MaxHeight);
+					this.MaxHeight = System.Math.Max ( h, MaxHeight);
 					heightData[j++] = h;
 				}
 			}

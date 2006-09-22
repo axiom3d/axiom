@@ -31,7 +31,7 @@ using System.Collections;
 
 using Axiom.Core;
 using Axiom.Collections;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Media;
 
 //using Axiom.SceneManagers.IPLSceneManager.Page;
@@ -177,7 +177,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		protected override void load()
 		{
             throw new AxiomException("Error: load()");
-            load(0, 0);
+            //load(0, 0);
 		}
 
 

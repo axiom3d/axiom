@@ -31,7 +31,7 @@ using System.Collections;
 using System.Diagnostics;
 
 using Axiom.Core;
-using Axiom.MathLib;
+using Axiom.Math;
 using Axiom.Collections;
 using Axiom.Media;
 using Axiom.Graphics;
