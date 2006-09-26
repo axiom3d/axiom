@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -38,10 +38,53 @@ using System;
 using Axiom.Collections;
 using Axiom.Core;
 
-#endregion Namespace Declarations
+#endregion
+
+#region Ogre Synchronization Information
+/// <ogresynchronization>
+///     <file name="Animation.h"   revision="1.15.2.2" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+///     <file name="Animation.cpp" revision="1.16.2.2" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
+#endregion
 
 namespace Axiom.Animating
 {
+    /// <summary>
+    ///		Types of interpolation used in animation.
+    /// </summary>
+    public enum InterpolationMode
+    {
+        /// <summary>
+        ///		Values are interpolated along straight lines.  
+        ///		More robotic movement, not as realistic.
+        ///	 </summary>
+        Linear,
+
+        /// <summary>
+        ///		Values are interpolated along a spline, resulting in smoother changes in direction.  
+        ///		Smooth movement between keyframes.
+        ///	 </summary>
+        Spline
+    }
+
+    /// <summary>
+    /// The types of rotational interpolation available.
+    /// </summary>
+    public enum RotationInterpolationMode
+    {
+        /// <summary>
+        /// Values are interpolated linearly. This is faster but does not 
+        ///    necessarily give a completely accurate result.
+        /// </summary>
+        Linear,
+
+        /// <summary>
+        ///  Values are interpolated spherically. This is more accurate but
+        ///    has a higher cost.
+        /// </summary>
+        Spherical
+    };
+
     /// <summary>
     ///		An animation sequence. 
     /// </summary>
@@ -66,8 +109,13 @@ namespace Axiom.Animating
         protected AnimationTrackCollection trackList;
         /// <summary>Interpolation mode of this animation.</summary>
         protected InterpolationMode interpolationMode;
+        /// <summary>Rotation Interpolation mode of this animation.</summary>
+        protected RotationInterpolationMode rotationInterpolationMode;
+
         /// <summary>Default interpolation mode of any animations.</summary>
         static protected InterpolationMode defaultInterpolationMode;
+        /// <summary>Default rotation interpolation mode of any animations.</summary>
+        static protected RotationInterpolationMode defaultRotationInterpolationMode;
 
         #endregion
 
@@ -77,7 +125,8 @@ namespace Axiom.Animating
         static Animation()
         {
             // set default interpolation mode to Spline (mmm....spline)
-            defaultInterpolationMode = InterpolationMode.Spline;
+            defaultInterpolationMode = InterpolationMode.Linear;
+            defaultRotationInterpolationMode = RotationInterpolationMode.Linear;
         }
 
         /// <summary>
@@ -93,6 +142,9 @@ namespace Axiom.Animating
             // use the default interpolation mode
             this.interpolationMode = Animation.DefaultInterpolationMode;
 
+            // use the default rotation interpolation mode
+            this.rotationInterpolationMode = Animation.DefaultRotationInterpolationMode;
+
             // initialize the collection
             this.trackList = new AnimationTrackCollection();
         }
@@ -100,6 +152,7 @@ namespace Axiom.Animating
         #endregion
 
         #region Properties
+
 
         /// <summary>
         ///		Gets the name of this animation.
@@ -124,8 +177,16 @@ namespace Axiom.Animating
         }
 
         /// <summary>
-        ///		Gets/Sets the current interpolation mode for this animation.
+        ///		Tells the animation how to interpolate between keyframes.
         /// </summary>
+        /// <remarks>
+		///		By default, animations normally interpolate linearly between keyframes. 
+		///		This is fast, but when animations include quick changes in direction it can look a little
+		///		unnatural because directions change instantly at keyframes. An alternative is to 
+		///		tell the animation to interpolate along a spline, which is more expensive in terms
+		///		of calculation time, but looks smoother because major changes in direction are 
+		///		distributed around the keyframes rather than just at the keyframe.
+		///</remarks>
         public InterpolationMode InterpolationMode
         {
             get
@@ -138,10 +199,31 @@ namespace Axiom.Animating
             }
         }
 
+
+		/// <summary>
+		/// Tells the animation how to interpolate rotations
+		/// </summary>
+		/// <remarks>
+		/// By default, animations interpolate lieanrly between rotations. This
+		/// is fast but not necessarily completely accurate. If you want more 
+		/// accurate interpolation, use spherical interpolation, but be aware 
+		/// that it will incur a higher cost.
+		///</remarks>
+		public RotationInterpolationMode RotationInterpolationMode
+		{
+			get
+			{
+				return rotationInterpolationMode;
+			}
+			set
+			{
+				rotationInterpolationMode = value;
+			}
+		}
         /// <summary>
         ///		A collection of the tracks in this animation.
         /// </summary>
-        // TODO: See if we can ensure that the track list is not modified somehow.
+        // TODO See if we can ensure that the track list is not modified somehow.
         public AnimationTrackCollection Tracks
         {
             get
@@ -165,6 +247,21 @@ namespace Axiom.Animating
             }
         }
 
+        /// <summary>
+        ///		Gets/Sets the default rotation interpolation mode to be used for all animations.
+        /// </summary>
+        public static RotationInterpolationMode DefaultRotationInterpolationMode
+        {
+            get
+            {
+                return defaultRotationInterpolationMode;
+            }
+            set
+            {
+                defaultRotationInterpolationMode = value;
+            }
+        }
+
         #endregion
 
         #region Public methods
@@ -185,9 +282,48 @@ namespace Axiom.Animating
             return track;
         }
 
+		/// <summary>
+		/// Optimise an animation by removing unnecessary tracks and keyframes.
+		/// </summary>
+		/// <remarks>
+		/// 			When you export an animation, it is possible that certain tracks
+		/// 			have been keyfamed but actually don't include anything useful - the
+		/// 			keyframes include no transformation. These tracks can be completely
+		/// 			eliminated from the animation and thus speed up the animation. 
+		/// 			In addition, if several keyframes in a row have the same value, 
+		/// 			then they are just adding overhead and can be removed.
+		/// </remarks>
+		public void Optimise()
+		{
+			// Iterate over the tracks and identify those with no useful keyframes
+			AnimationTrackCollection tracksToDestroy = new AnimationTrackCollection();
+			// loop through tracks and update them all with current time
+			foreach ( AnimationTrack track in trackList )
+			{
+				if (!track.HasNonZeroKeyFrames())
+				{
+					// mark the entire track for destruction
+					tracksToDestroy.Add(track);
+				}
+				else
+				{
+					track.Optimise();
+				}
+			}
+
+			// Now destroy the tracks we marked for death
+			foreach ( AnimationTrack track in trackList )
+			{
+				DestroyTrack(track.Handle);
+			}
+		}
         /// <summary>
         ///		Creates a new AnimationTrack automatically associated with a Node. 
         /// </summary>
+		///<remarks>
+		///		This method creates a standard AnimationTrack, but also associates it with a
+		///		target Node which will receive all keyframe effects.
+		///	</remarks>
         /// <param name="index">Numeric handle to give the track, used for accessing the track later.</param>
         /// <param name="target">Node object which will be affected by this track.</param>
         /// <returns></returns>
@@ -195,11 +331,60 @@ namespace Axiom.Animating
         {
             // create a new track and set it's target
             AnimationTrack track = CreateTrack( handle );
-            track.TargetNode = target;
+            track.AssociatedNode = target;
             track.Handle = handle;
 
             return track;
         }
+
+		/// <summary>
+		/// Gets a track by it's handle
+		/// </summary>
+		/// <param name="handle"></param>
+		/// <returns></returns>
+		public AnimationTrack GetTrack( short handle )
+		{
+			if(!trackList.ContainsKey(handle)) 
+			{
+				throw new Exception("Track with the handle " + handle + " not found.");
+			}
+
+			return (AnimationTrack)trackList[handle];
+		}
+
+		/// <summary>
+		/// Destroys the track with the given handle
+		/// </summary>
+		/// <param name="handle"></param>
+		public void DestroyTrack( short handle )
+		{
+			if(!trackList.ContainsKey(handle)) 
+			{
+				throw new Exception("Track with the handle " + handle + " not found.");
+			}
+
+			trackList.Remove(handle);
+		}
+
+		/// <summary>
+		/// Removes and destroys all tracks making up this animation.
+		/// </summary>
+		/// <param name="handle"></param>
+		public void DestroyAllTracks( short handle )
+		{
+			trackList.Clear();
+		}
+
+
+		public void Apply( float time, float weight, bool accumulate, float scale )
+		{
+			// loop through tracks and update them all with current time
+			foreach ( AnimationTrack track in trackList )
+			{
+				track.Apply(time, weight, accumulate, scale);
+			}
+		}
+
 
         /// <summary>
         ///		Applies an animation given a specific time point and weight.
@@ -214,21 +399,41 @@ namespace Axiom.Animating
         /// <param name="accumulate"></param>
         public void Apply( float time, float weight, bool accumulate )
         {
-            // loop through tracks and update them all with current time
-            for ( int i = 0; i < trackList.Count; i++ )
-            {
-                trackList[ i ].Apply( time, weight, accumulate );
-            }
+            Apply( time, weight, accumulate, 1.0F, false );
         }
 
-        public void Apply( Skeleton skeleton, float time, float weight, bool accumulate )
+
+        /// <summary>
+        ///		Applies an animation given a specific time point and weight.
+        /// </summary>
+        /// <remarks>
+        ///		Where you have associated animation tracks with Node objects, you can eaily apply
+        ///		an animation to those nodes by calling this method.
+        /// </remarks>
+        /// <param name="time">The time position in the animation to apply.</param>
+        /// <param name="weight">The influence to give to this track, 1.0 for full influence, less to blend with
+        ///		other animations.</param>
+        /// <param name="accumulate"></param>
+        public void Apply( float time, float weight, bool accumulate, float scale, bool lookInDirectionOfTranslation )
         {
             // loop through tracks and update them all with current time
-            for ( int i = 0; i < trackList.Count; i++ )
+            foreach ( AnimationTrack track in trackList )
             {
-                AnimationTrack track = trackList[ i ];
+                track.Apply( time, weight, accumulate, scale);
+            }
+            //for ( int i = 0; i < trackList.Count; i++ )
+            //{
+            //    trackList[i].Apply( time, weight, accumulate, scale, lookInDirectionOfTranslation );
+            //}
+        }
+
+        public void Apply( Skeleton skeleton, float time, float weight, bool accumulate, float scale )
+        {
+            // loop through tracks and update them all with current time
+            foreach ( AnimationTrack track in trackList )
+            {
                 Bone bone = skeleton.GetBone( (ushort)track.Handle );
-                track.ApplyToNode( bone, time, weight, accumulate );
+                track.ApplyToNode( bone, time, weight, accumulate, scale);
             }
         }
 

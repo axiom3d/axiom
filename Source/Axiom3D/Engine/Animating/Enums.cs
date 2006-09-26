@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -35,24 +35,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-#endregion Namespace Declarations
+#endregion
 
 namespace Axiom.Animating
 {
-    /// <summary>
-    ///		Types of interpolation used in animation.
-    /// </summary>
-    public enum InterpolationMode
-    {
-        /// <summary>
-        ///		More robotic movement, not as realistic.
-        ///	 </summary>
-        Linear,
-        /// <summary>
-        ///		Smooth movement between keyframes.
-        ///	 </summary>
-        Spline
-    }
 
     /// <summary>
     ///		Used to specify how animations are applied to a skeleton.

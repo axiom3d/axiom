@@ -241,9 +241,9 @@ namespace Axiom.Platforms.SDL
                     } // if count...
                 } // if mouse focus
 
-                mouseButtons = ( mouseKeys & Sdl.SDL_BUTTON_LMASK ) != 0 ? MouseButtons.Button0 : 0; // left
-                mouseButtons |= ( mouseKeys & Sdl.SDL_BUTTON_RMASK ) != 0 ? MouseButtons.Button1 : 0; // right
-                mouseButtons |= ( mouseKeys & Sdl.SDL_BUTTON_MMASK ) != 0 ? MouseButtons.Button2 : 0; // middle
+                mouseButtons = ( mouseKeys & Sdl.SDL_BUTTON_LMASK ) != 0 ? MouseButtons.Left : 0; // left
+                mouseButtons |= ( mouseKeys & Sdl.SDL_BUTTON_RMASK ) != 0 ? MouseButtons.Right : 0; // right
+                mouseButtons |= ( mouseKeys & Sdl.SDL_BUTTON_MMASK ) != 0 ? MouseButtons.Middle : 0; // middle
             } // if not using mouse events
         }
 

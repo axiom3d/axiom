@@ -160,7 +160,7 @@ namespace Axiom.Demos
 
             // retreive and initialize the input system
             input = PlatformManager.Instance.CreateInputReader();
-            input.Initialize( window, true, true, false, true );
+            input.Initialize( window, true, true, false, false );
 
             return true;
         }
@@ -385,7 +385,7 @@ namespace Axiom.Demos
                 viewport.OverlaysEnabled = !viewport.OverlaysEnabled;
             }
 
-            if ( !input.IsMousePressed( MouseButtons.Button0 ) )
+            if ( !input.IsMousePressed( MouseButtons.Left ) )
             {
                 float cameraYaw = -input.RelativeMouseX * .13f;
                 float cameraPitch = -input.RelativeMouseY * .13f;

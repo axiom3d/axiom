@@ -1,0 +1,42 @@
+MagicWand
+{
+	quota	400
+	material	Chess/lensflare
+	particle_width	5	
+	particle_height	5
+	cull_each	false
+	renderer	billboard
+	billboard_type	point
+
+	emitter Ellipsoid
+	{
+		angle	0
+		colour	0.5 0.5 0.5 1
+		colour_range_start	0 0 0 0
+		colour_range_end	1 1 1 1
+		direction	0 1 0
+		emission_rate	150
+		position	0 0 0
+		velocity	0
+		velocity_min	0
+		velocity_max	0
+		time_to_live	0.5
+		time_to_live_min	0.25
+		time_to_live_max	0.75
+		duration	0
+		duration_min	0
+		duration_max	0
+		repeat_delay	0
+		repeat_delay_min	0
+		repeat_delay_max	0
+		width	30
+		height	30
+		depth	30
+	}
+
+	affector LinearForce
+	{
+		force_vector	0 -50 0
+		force_application	add
+	}
+}

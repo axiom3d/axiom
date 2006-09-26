@@ -221,6 +221,11 @@ namespace Axiom.Math
             return left + right;
         }
 
+        public static Quaternion Subtract( Quaternion left, Quaternion right )
+        {
+            return left - right;
+        }
+
         /// <summary>
         /// Used when a Quaternion is added to another Quaternion.
         /// </summary>
@@ -230,6 +235,11 @@ namespace Axiom.Math
         public static Quaternion operator +( Quaternion left, Quaternion right )
         {
             return new Quaternion( left.w + right.w, left.x + right.x, left.y + right.y, left.z + right.z );
+        }
+
+        public static Quaternion operator -( Quaternion left, Quaternion right )
+        {
+            return new Quaternion( left.w - right.w, left.x - right.x, left.y - right.y, left.z - right.z );
         }
 
         /// <summary>
@@ -401,6 +411,38 @@ namespace Axiom.Math
                 result = ( coeff0 * quatA + coeff1 * quatB );
             }
 
+            return result;
+        }
+
+        /// <overloads><summary>
+        /// normalised linear interpolation - faster but less accurate (non-constant rotation velocity)
+        /// </summary>
+        /// <param name="fT"></param>
+        /// <param name="rkP"></param>
+        /// <param name="rkQ"></param>
+        /// <returns></returns>
+        /// </overloads>
+        public static Quaternion Nlerp( float fT, Quaternion rkP, Quaternion rkQ )
+        {
+            return Nlerp( fT, rkP, rkQ, false );
+        }
+
+
+        /// <param name="shortestPath"></param>
+        public static Quaternion Nlerp( float fT, Quaternion rkP, Quaternion rkQ, bool shortestPath )
+        {
+            Quaternion result;
+            float fCos = rkP.Dot( rkQ );
+            if ( fCos < 0.0f && shortestPath )
+            {
+                result = rkP + fT * ( ( -rkQ ) - rkP );
+            }
+            else
+            {
+                result = rkP + fT * ( rkQ - rkP );
+
+            }
+            result.Normalize();
             return result;
         }
 
@@ -766,6 +808,13 @@ namespace Axiom.Math
             Quaternion quat = (Quaternion)obj;
 
             return quat == this;
+        }
+        public bool Equals( Quaternion rhs, float tolerance )
+        {
+            float fCos = Dot( rhs );
+            float angle = Utility.ACos( fCos );
+
+            return Utility.Abs( angle ) <= tolerance;
         }
 
 

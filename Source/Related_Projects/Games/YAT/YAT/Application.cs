@@ -30,6 +30,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading;
+using SWF = System.Windows.Forms;
 using Axiom;
 using Axiom.Core;
 using Axiom.Input;
@@ -110,26 +111,16 @@ namespace YAT
 				return scene;
 			}
 		}
-        //protected bool Configure() 
-        //{
-        //    // HACK: Temporary
-        //    RenderSystem renderSystem = Root.Instance.RenderSystems[0];
-        //    Root.Instance.RenderSystem = renderSystem;
-        //    EngineConfig.DisplayModeRow mode = renderSystem.ConfigOptions.;
-        //    mode.FullScreen = false;
-        //    mode.Selected = true;
-
-        //    //ConfigOption opt = Root.Instance.RenderSystem.ConfigOptions[ "Full Screen" ];
-        //    //opt.Value = "No";
-        //    //Root.Instance.RenderSystem.ConfigOptions[ "Full Screen" ] = opt;
-
-        //    window = Root.Instance.Initialize(true, "YAT in Axiom");
-
-
-        //    RenderDebugOverlay(showDebugOverlay);
+        protected bool Configure() 
+        {
+            // HACK: Temporary
+            ConfigDialog dlg = new ConfigDialog();
+            SWF.DialogResult result = dlg.ShowDialog();
+            if ( result == SWF.DialogResult.Cancel )
+                return false;
 			
-        //    return true;
-        //}
+            return true;
+        }
 
 		protected virtual void CreateCamera() 
 		{
@@ -207,13 +198,13 @@ namespace YAT
 
 
 			//show the config dialog and collect options
-            //if(!Configure()) 
-            //{
-            //    // shutting right back down
-            //    engine.Shutdown();
-                
-            //    return false;
-            //}
+            if ( !Configure() )
+            {
+                // shutting right back down
+                engine.Shutdown();
+
+                return false;
+            }
 
             ShowDebugOverlay(showDebugOverlay);
 

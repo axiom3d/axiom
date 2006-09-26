@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -38,12 +38,20 @@ using System.Collections;
 using System.Diagnostics;
 using System.IO;
 
-using Axiom.Collections;
-using Axiom.Core;
+
 using Axiom.Math;
+using Axiom.Core;
+using Axiom.Collections;
 using Axiom.Serialization;
 
 #endregion Namespace Declarations
+
+#region Ogre Synchronization Information
+/// <ogresynchronization>
+///     <file name="Skeleton.h"   revision="" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+///     <file name="Skeleton.cpp" revision="" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
+#endregion
 
 namespace Axiom.Animating
 {
@@ -95,6 +103,14 @@ namespace Axiom.Animating
         protected AnimationCollection animationList = new AnimationCollection();
         /// <summary>Saved version of the last animation.</summary>
         protected AnimationStateCollection lastAnimationState = new AnimationStateCollection();
+
+        public BoneCollection Bones
+        {
+            get
+            {
+                return boneList;
+            }
+        }
 
         #endregion Member variables
 
@@ -484,7 +500,7 @@ namespace Axiom.Animating
                 if ( animState.IsEnabled )
                 {
                     Animation anim = GetAnimation( animState.Name );
-                    anim.Apply( this, animState.Time, animState.Weight, blendMode == SkeletalAnimBlendMode.Cumulative );
+                    anim.Apply( this, animState.Time, animState.Weight, blendMode == SkeletalAnimBlendMode.Cumulative, 1.0F );
                 } // if
             } // for
 
@@ -689,7 +705,7 @@ namespace Axiom.Animating
             writer.WriteLine( "Number of bones: {0}", boneList.Count );
 
             Quaternion q = new Quaternion();
-            float angle = 0;
+            float angle = 0.0f;
             Vector3 axis = new Vector3();
 
             // write each bone out
@@ -718,7 +734,7 @@ namespace Axiom.Animating
                 foreach ( AnimationTrack track in anim.Tracks )
                 {
                     writer.WriteLine( "  -- AnimationTrack {0} --", track.Handle );
-                    writer.WriteLine( "  Affects bone: {0}", ( (Bone)track.TargetNode ).Handle );
+                    writer.WriteLine( "  Affects bone: {0}", ( (Bone)track.AssociatedNode ).Handle );
                     writer.WriteLine( "  Number of keyframes: {0}", track.KeyFrames.Count );
 
                     // key frames

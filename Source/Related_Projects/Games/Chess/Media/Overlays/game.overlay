@@ -1,0 +1,20 @@
+#include <overlay_templates.inc>
+
+/////////////////////
+// Game/Statistics //
+/////////////////////
+
+Game/Statistics
+{
+	zorder 100	
+	
+	container BorderPanel(Game/LogoPanel)
+	{
+		left -0.25
+		top -0.16667
+		width 0.25
+		height 0.16667
+		horz_align right
+		vert_align bottom		
+	}
+}

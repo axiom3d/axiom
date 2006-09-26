@@ -3547,7 +3547,7 @@ namespace Axiom.Core
                 // loop through all tracks and reset their nodes initial state
                 for ( int j = 0; j < anim.Tracks.Count; j++ )
                 {
-                    Node node = anim.Tracks[ j ].TargetNode;
+                    Node node = anim.Tracks[ j ].AssociatedNode;
                     node.ResetToInitialState();
                 }
 

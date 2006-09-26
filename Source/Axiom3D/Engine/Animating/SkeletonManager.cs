@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -58,7 +58,7 @@ namespace Axiom.Animating
         /// </summary>
         internal SkeletonManager()
         {
-            if ( instance == null )
+            if (instance == null)
             {
                 instance = this;
             }
@@ -84,18 +84,18 @@ namespace Axiom.Animating
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public override Resource Create( string name )
+        public override Resource Create(string name)
         {
-            return new Skeleton( name );
+            return new Skeleton(name);
         }
 
         /// <summary>
         ///    Overloaded method.  Call overload with default of priority 1.
         /// </summary>
         /// <param name="fileName">Name of the skeleton file to load.</param>
-        public Skeleton Load( string fileName )
+        public Skeleton Load(string fileName)
         {
-            return Load( fileName, 1 );
+            return Load(fileName, 1);
         }
 
         /// <summary>
@@ -106,23 +106,23 @@ namespace Axiom.Animating
         /// </remarks>
         /// <param name="fileName"></param>
         /// <param name="priority"></param>
-        public Skeleton Load( string fileName, int priority )
+        public Skeleton Load(string fileName, int priority)
         {
-            Skeleton skeleton = GetByName( fileName );
+            Skeleton skeleton = GetByName(fileName);
 
-            if ( skeleton == null )
+            if (skeleton == null)
             {
                 // create and load the skeleton
-                skeleton = (Skeleton)Create( fileName );
-                base.Load( skeleton, priority );
+                skeleton = (Skeleton)Create(fileName);
+                base.Load(skeleton, priority);
             }
 
             return skeleton;
         }
 
-        public new Skeleton GetByName( string name )
+        public new Skeleton GetByName(string name)
         {
-            return (Skeleton)base.GetByName( name );
+            return (Skeleton)base.GetByName(name);
         }
 
         #endregion ResourceManager Implementation

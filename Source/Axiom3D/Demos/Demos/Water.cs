@@ -376,7 +376,7 @@ namespace Axiom.Demos
             float scaleTurn = 100 * inputTimer; // turn rate scalar
 
             // Disable Mouse Events if Right-Mouse clicked (control is given to the custom Demo)
-            bool mouseEn = ( !input.IsMousePressed( MouseButtons.Button1 ) );
+            bool mouseEn = ( !input.IsMousePressed( MouseButtons.Right ) );
 
             // Keys that move camera.  Mouse-Wheel elevates camera
             if ( input.IsKeyPressed( KeyCodes.Left ) )
@@ -399,7 +399,7 @@ namespace Axiom.Demos
                 camAccel.y += (float)( input.RelativeMouseZ * 0.1 ); // MouseWheel elevates camera
 
             // When Mouse button pressed, Motion accelerates instead of turns camera
-            if ( mouseEn && input.IsMousePressed( MouseButtons.Button0 ) )
+            if ( mouseEn && input.IsMousePressed( MouseButtons.Left ) )
             {
                 camAccel.x += input.RelativeMouseX * 0.3f; // side motion
                 camAccel.z += input.RelativeMouseY * 0.5f; // forward motion
@@ -434,7 +434,7 @@ namespace Axiom.Demos
             }
 
             // Mouse motion changes Yaw/Pitch of camera
-            if ( mouseEn && !input.IsMousePressed( MouseButtons.Button0 ) )
+            if ( mouseEn && !input.IsMousePressed( MouseButtons.Left ) )
             {
                 camera.Yaw( -input.RelativeMouseX * 0.13f );
                 camera.Pitch( -input.RelativeMouseY * 0.13f );
