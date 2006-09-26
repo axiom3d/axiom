@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -35,10 +35,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-using Axiom.Core;
 using Axiom.Math;
+using Axiom.Core;
+using Axiom.Collections;
 
 #endregion Namespace Declarations
+			
+#region Ogre Synchronization Information
+/// <ogresynchronization>
+///     <file name="TagPoint.h"   revision="1.10.2.2" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+///     <file name="TagPoint.cpp" revision="1.12" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
+#endregion
 
 namespace Axiom.Animating
 {
@@ -84,15 +92,26 @@ namespace Axiom.Animating
         /// </summary>
         /// <param name="handle">Handle to use.</param>
         /// <param name="creator">Skeleton who created this tagpoint.</param>
-        public TagPoint( ushort handle, Skeleton creator )
-            : base( handle, creator )
+        public TagPoint(ushort handle, Skeleton creator)
+            : base(handle, creator)
         {
         }
 
         #endregion Constructor
 
-        #region Properties
+        #region Methods
 
+        #endregion
+
+
+        #region Properties
+        public override LightList Lights
+        {
+            get
+            {
+                return null;               // parentEntity.ParentNode.FindLights( parentEntity.BoundingRadius );
+            }
+        }
         /// <summary>
         ///		Gets/Sets the object attached to this tagpoint.
         /// </summary>
@@ -150,27 +169,16 @@ namespace Axiom.Animating
         #region Bone Members
 
         /// <summary>
-        ///		Gets the transform of this node including the parent entity and skeleton.
-        /// </summary>
-        internal override Matrix4 FullTransform
-        {
-            get
-            {
-                return base.FullTransform;
-            }
-        }
-
-        /// <summary>
         ///		Overridden to update parent entity.
         /// </summary>
         public override void NeedUpdate()
         {
             // // We need to tell parent entities node
-            if ( parentEntity != null )
+            if (parentEntity != null)
             {
                 Node n = parentEntity.ParentNode;
 
-                if ( n != null )
+                if (n != null)
                 {
                     n.NeedUpdate();
                 }
@@ -182,13 +190,13 @@ namespace Axiom.Animating
             base.UpdateFromParent();
 
             // Save transform for local skeleton
-            MakeTransform( derivedPosition, derivedScale, derivedOrientation, ref fullLocalTransform );
+            MakeTransform(derivedPosition, derivedScale, derivedOrientation, ref fullLocalTransform);
 
             // Include Entity transform
-            if ( parentEntity != null )
+            if (parentEntity != null)
             {
                 Node entityParentNode = parentEntity.ParentNode;
-                if ( entityParentNode != null )
+                if (entityParentNode != null)
                 {
                     Quaternion parentQ = entityParentNode.DerivedOrientation;
                     derivedOrientation = parentQ * derivedOrientation;

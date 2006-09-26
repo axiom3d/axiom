@@ -755,15 +755,15 @@ namespace Axiom.Input
         /// <summary>
         ///    Typically the left button.
         /// </summary>
-        Button0 = 1,
+        Left = 1,
         /// <summary>
         ///    Typically the right button.
         /// </summary>
-        Button1 = 2,
+        Right = 2,
         /// <summary>
         ///    Typically the middle button (pressing the scroll wheel).
         /// </summary>
-        Button2 = 4
+        Middle = 4
     }
 
     /// <summary>

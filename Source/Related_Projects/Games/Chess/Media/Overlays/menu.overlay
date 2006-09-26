@@ -1,0 +1,530 @@
+Menu/MainMenu
+{
+	zorder 100
+	container BorderPanel(MainMenu/MenuBackground)
+	{
+		left 0.0
+		top 0.0
+		width 1.0
+		height 1.0
+		material Menu/MenuBackground
+		container Panel(MainMenu/MenuPanel)
+		{
+			horz_align center
+			vert_align center
+			left -0.25
+			top -0.30
+			width 0.5
+			height 0.65		
+			material Menu/MenuPanel
+			container Panel(MainMenu/MenuLogo)
+			{
+				horz_align center
+				left -0.25
+				top -0.16667
+				width 0.5
+				height 0.33333
+				material Menu/MenuLogo
+			}
+			element TextArea(MainMenu/PvCPU)
+			{
+				horz_align center
+				font_name BerlinSans64
+				char_height 0.08333
+				alignment center
+				colour_top 1.0 1.0 1.0
+				colour_bottom 0.8 0.8 0.8
+				top 0.1
+				caption 1P v CPU
+			}
+			element TextArea(MainMenu/PvP)
+			{
+				horz_align center
+				font_name BerlinSans64
+				char_height 0.08333
+				alignment center
+				colour_top 1.0 1.0 1.0
+				colour_bottom 0.8 0.8 0.8
+				top 0.2
+				caption 1P v 2P
+			}
+			element TextArea(MainMenu/Options)
+			{
+				horz_align center
+				font_name BerlinSans64
+				char_height 0.08333
+				alignment center
+				colour_top 1.0 1.0 1.0
+				colour_bottom 0.8 0.8 0.8
+				top 0.3
+				caption Difficulty
+			}
+			element TextArea(MainMenu/Help)
+			{
+				horz_align center
+				font_name BerlinSans64
+				char_height 0.08333
+				alignment center
+				colour_top 1.0 1.0 1.0
+				colour_bottom 0.8 0.8 0.8
+				top 0.4
+				caption Help 
+			}
+			element TextArea(MainMenu/Quit)
+			{
+				horz_align center
+				font_name BerlinSans64
+				char_height 0.08333
+				alignment center
+				colour_top 1.0 1.0 1.0
+				colour_bottom 0.8 0.8 0.8
+				top 0.5
+				caption Quit
+			}
+		}
+	}
+}
+
+Menu/HelpMenu
+{
+	zorder 100
+	container BorderPanel(HelpMenu/MenuBackground)
+	{
+		left 0.0
+		top 0.0
+		width 1.0
+		height 1.0
+		material Menu/MenuBackground
+		container Panel(HelpMenu/MenuPanel)
+		{
+			horz_align center
+			vert_align center
+			material Menu/MenuPanel
+			top -0.3625
+			left -0.4
+			height 0.8
+			width 0.8
+			container Panel(HelpMenu/MenuLogo)
+			{
+				horz_align center
+				left -0.25
+				top -0.16667
+				width 0.5
+				height 0.33333
+				material Menu/MenuLogo
+			}
+			element TextArea(HelpMenu/HelpText) 
+			{
+				horz_align center
+				font_name BerlinSans64
+				char_height 0.08333
+				colour_top 1.0 1.0 1.0
+				colour_bottom 0.8 0.8 0.8
+				top 0.10417
+				caption Help
+			}
+			element TextArea(HelpMenu/Line1)
+			{
+				horz_align center
+				font_name BerlinSans32	
+				char_height 0.04167
+				colour_top 1.0 1.0 1.0
+				colour_bottom 0.8 0.8 0.8
+				top 0.25				
+				caption LMB - pick up piece / put piece down
+			}
+			element TextArea(HelpMenu/Line2)
+			{
+				horz_align center
+				font_name BerlinSans32	
+				char_height 0.04167
+				colour_top 1.0 1.0 1.0
+				colour_bottom 0.8 0.8 0.8
+				top 0.3				
+				caption RMB and drag - rotate board
+			}
+			element TextArea(HelpMenu/Line3)
+			{
+				horz_align center
+				font_name BerlinSans32	
+				char_height 0.04167
+				colour_top 1.0 1.0 1.0
+				colour_bottom 0.8 0.8 0.8
+				top 0.35
+				caption Scroll mouse wheel to zoom in and out.
+			}						
+			element TextArea(HelpMenu/Line4)
+			{
+				horz_align center
+				font_name BerlinSans32	
+				char_height 0.04167
+				colour_top 1.0 1.0 1.0
+				colour_bottom 0.8 0.8 0.8
+				top 0.45
+				caption Props to everyone working on/with the OGRE engine!
+			}
+			element TextArea(HelpMenu/Line5)
+			{
+				horz_align center
+				font_name BerlinSans32	
+				char_height 0.04167
+				colour_top 1.0 1.0 1.0
+				colour_bottom 0.8 0.8 0.8
+				top 0.5
+				caption Check readme for credits of bits I've pilfered.
+			}						
+			element TextArea(HelpMenu/Line6)
+			{
+				horz_align center
+				font_name BerlinSans32	
+				char_height 0.04167
+				colour_top 1.0 1.0 1.0
+				colour_bottom 0.8 0.8 0.8
+				top 0.6
+				caption Email: steviedisco@gmail.com
+			}						
+			element TextArea(HelpMenu/ContinueText)
+			{
+				horz_align center
+				font_name BerlinSans32	
+				char_height 0.04167
+				colour_top 1.0 1.0 1.0
+				colour_bottom 0.8 0.8 0.8
+				horz_align center
+				vert_align bottom
+				top -0.08333
+				alignment center
+				caption Press any key to continue...
+			}
+		}
+	}
+}
+
+Menu/OptionMenu
+{
+	zorder 100
+	container BorderPanel(OptionMenu/MenuBackground)
+	{
+		left 0.0
+		top 0.0
+		width 1.0
+		height 1.0
+		material Menu/MenuBackground
+		container Panel(OptionMenu/MenuPanel)
+		{
+			horz_align center
+			vert_align center
+			left -0.25
+			top -0.30
+			width 0.5
+			height 0.5
+			material Menu/MenuPanel	
+			height 0.65
+			width 0.8
+			left -0.4
+			horz_align center
+			container Panel(OptionMenu/MenuLogo)
+			{
+			horz_align center
+			left -0.25
+			top -0.16667
+			width 0.5
+			height 0.33333
+			material Menu/MenuLogo
+			}		
+			element TextArea(OptionMenu/OptionText)
+			{
+				horz_align center
+				font_name BerlinSans64
+				char_height 0.08333
+				colour_top 1.0 1.0 1.0
+				colour_bottom 0.8 0.8 0.8
+				top 0.1
+				caption Difficulty
+			}
+			element TextArea(OptionMenu/Easy)
+			{
+				horz_align center
+				font_name BerlinSans64
+				char_height 0.08333
+				colour_top 1.0 1.0 1.0
+				colour_bottom 0.8 0.8 0.8
+				top 0.25
+				caption Normal
+			}
+			element TextArea(OptionMenu/Medium)
+			{
+				horz_align center
+				font_name BerlinSans64
+				char_height 0.08333
+				colour_top 1.0 1.0 1.0
+				colour_bottom 0.8 0.8 0.8
+				top 0.35
+				caption Challenging
+			}
+			element TextArea(OptionMenu/Hard)
+			{
+				horz_align center
+				font_name BerlinSans64
+				char_height 0.08333
+				colour_top 1.0 1.0 1.0
+				colour_bottom 0.8 0.8 0.8
+				top 0.45
+				caption Hard
+			}
+		}
+	}
+}
+
+Menu/ColourMenu
+{
+	zorder 100
+	container BorderPanel(ColourMenu/MenuBackground)
+	{
+		left 0.0
+		top 0.0
+		width 1.0
+		height 1.0
+		material Menu/MenuBackground
+		container Panel(ColourMenu/MenuPanel)
+		{			
+			horz_align center
+			vert_align center
+			left -0.25
+			top -0.30
+			width 0.5
+			height 0.5
+			material Menu/MenuPanel						
+			container Panel(ColourMenu/MenuLogo)
+			{
+			horz_align center
+			left -0.25
+			top -0.16667
+			width 0.5
+			height 0.33333
+			material Menu/MenuLogo
+			}		
+			element TextArea(ColourMenu/OptionText)
+			{
+				horz_align center
+				font_name BerlinSans64
+				char_height 0.08333
+				colour_top 1.0 1.0 1.0
+				colour_bottom 0.8 0.8 0.8
+				top 0.1
+				caption Who plays White?
+			}
+			element TextArea(ColourMenu/1P)
+			{
+				horz_align center
+				font_name BerlinSans64
+				char_height 0.08333
+				colour_top 1.0 1.0 1.0
+				colour_bottom 0.8 0.8 0.8
+				top 0.25
+			}
+			element TextArea(ColourMenu/2P)
+			{
+				horz_align center
+				font_name BerlinSans64
+				char_height 0.08333
+				colour_top 1.0 1.0 1.0
+				colour_bottom 0.8 0.8 0.8
+				top 0.35
+			}								
+		}
+	}
+}
+
+Menu/GameMenu
+{
+	zorder 100
+	container BorderPanel(GameMenu/MenuBackground)
+	{
+		left 0.0
+		top 0.0
+		width 1.0
+		height 1.0
+		material Menu/MenuBackground
+		container Panel(GameMenu/MenuPanel)
+		{			
+			horz_align center
+			vert_align center
+			left -0.25
+			top -0.30
+			width 0.5
+			height 0.5
+			material Menu/MenuPanel		
+			container Panel(GameMenu/MenuLogo)
+			{
+			horz_align center
+			left -0.25
+			top -0.16667
+			width 0.5
+			height 0.33333
+			material Menu/MenuLogo
+			}
+			element TextArea(GameMenu/ResumeGame)
+			{
+				horz_align center
+				font_name BerlinSans64
+				char_height 0.08333
+				colour_top 1.0 1.0 1.0
+				colour_bottom 0.8 0.8 0.8
+				top 0.15
+				caption Resume Game
+			}
+			element TextArea(GameMenu/Resign)
+			{
+			horz_align center
+			font_name BerlinSans64
+			char_height 0.08333
+			colour_top 1.0 1.0 1.0
+			colour_bottom 0.8 0.8 0.8
+				top 0.25
+				caption Resign
+			}
+		}
+	}
+}
+
+Menu/PromotionMenu
+{
+	zorder 100
+	container BorderPanel(PromotionMenu/MenuBackground)
+	{
+		left 0.0
+		top 0.0
+		width 1.0
+		height 1.0
+		material Menu/MenuBackground
+		container Panel(PromotionMenu/MenuPanel)
+		{
+			horz_align center
+			vert_align center
+			left -0.25
+			top -0.30
+			width 0.5
+			height 0.5
+			material Menu/MenuPanel	
+			height 0.65		
+			container Panel(PromotionMenu/MenuLogo)
+			{
+			horz_align center
+			left -0.25
+			top -0.16667
+			width 0.5
+			height 0.33333
+			material Menu/MenuLogo
+			}		
+			element TextArea(PromotionMenu/PromotionText)
+			{
+			horz_align center
+			font_name BerlinSans64
+			char_height 0.08333
+			colour_top 1.0 1.0 1.0
+			colour_bottom 0.8 0.8 0.8
+				top 0.1
+				caption Promotion
+			}
+			element TextArea(PromotionMenu/Queen)
+			{
+			horz_align center
+			font_name BerlinSans64
+			char_height 0.08333
+			colour_top 1.0 1.0 1.0
+			colour_bottom 0.8 0.8 0.8
+				top 0.22
+				caption Queen
+			}
+			element TextArea(PromotionMenu/Rook)
+			{
+			horz_align center
+			font_name BerlinSans64
+			char_height 0.08333
+			colour_top 1.0 1.0 1.0
+			colour_bottom 0.8 0.8 0.8
+				top 0.32
+				caption Rook
+			}	
+			element TextArea(PromotionMenu/Bishop)
+			{
+			horz_align center
+			font_name BerlinSans64
+			char_height 0.08333
+			colour_top 1.0 1.0 1.0
+			colour_bottom 0.8 0.8 0.8
+				top 0.42
+				caption Bishop
+			}	
+			element TextArea(PromotionMenu/Knight)
+			{
+			horz_align center
+			font_name BerlinSans64
+			char_height 0.08333
+			colour_top 1.0 1.0 1.0
+			colour_bottom 0.8 0.8 0.8
+				top 0.52
+				caption Knight
+			}												
+		}
+	}
+}
+
+Menu/GameOverMenu
+{
+	zorder 100
+	container BorderPanel(GameOverMenu/MenuPanel)
+	{		
+		horz_align center
+		vert_align center
+		left -0.25
+		top -0.30
+		width 0.5
+		height 0.5
+		material Menu/MenuPanel	
+		container Panel(GameOverMenu/MenuLogo)
+		{
+			horz_align center
+			left -0.25
+			top -0.16667
+			width 0.5
+			height 0.33333
+			material Menu/MenuLogo
+		}
+		element TextArea(GameOverMenu/Outcome)
+		{
+			horz_align center
+			font_name BerlinSans64
+			char_height 0.08333
+			colour_top 1.0 1.0 1.0
+			colour_bottom 0.8 0.8 0.8
+			top 0.15
+			colour_top 1.0 1.0 0.0
+			colour_bottom 0.8 0.8 0.0
+		}
+		element TextArea(GameOverMenu/Winner)
+		{
+			horz_align center
+			font_name BerlinSans64
+			char_height 0.08333
+			colour_top 1.0 1.0 1.0
+			colour_bottom 0.8 0.8 0.8
+			top 0.25
+			colour_top 1.0 1.0 0.0
+			colour_bottom 0.8 0.8 0.0			
+		}		
+		element TextArea(GameOverMenu/ContinueText)
+		{
+			horz_align center
+			font_name BerlinSans32	
+			char_height 0.04167
+			colour_top 1.0 1.0 1.0
+			colour_bottom 0.8 0.8 0.8
+			horz_align center
+			vert_align bottom
+			top -0.08333
+			caption Press any key to continue...
+		}
+	}
+}

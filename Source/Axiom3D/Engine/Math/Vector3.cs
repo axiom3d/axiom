@@ -437,6 +437,24 @@ namespace Axiom.Math
             return q * this;
         }
 
+        ///<overloads>
+        ///<summary>Returns wether this vector is within a positional tolerance of another vector</summary>
+        ///<param name="right">The vector to compare with</param>
+        ///</overloads>
+        ///<remarks>Uses a defalut tolerance of 1E-03</remarks>
+        public bool PositionEquals( Vector3 right )
+        {
+            return PositionEquals( right, 1e-03f );
+        }
+
+        /// <param name="tolerance">The amount that each element of the vector may vary by and still be considered equal.</param>
+        public bool PositionEquals( Vector3 right, float tolerance )
+        {
+            return Utility.FloatEqual( x, right.x, tolerance ) &&
+                   Utility.FloatEqual( y, right.y, tolerance ) &&
+                   Utility.FloatEqual( z, right.z, tolerance );
+        }
+
         /// <summary>
         ///		Finds the midpoint between the supplied Vector and this vector.
         /// </summary>

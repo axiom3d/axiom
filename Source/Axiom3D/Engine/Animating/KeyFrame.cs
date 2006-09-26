@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -38,6 +38,13 @@ using System;
 using Axiom.Math;
 
 #endregion Namespace Declarations
+			
+#region Ogre Synchronization Information
+/// <ogresynchronization>
+///     <file name="KeyFrame.h"   revision="1.9" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+///     <file name="KeyFrame.cpp" revision="1.13" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
+#endregion
 
 namespace Axiom.Animating
 {
@@ -50,30 +57,29 @@ namespace Axiom.Animating
     ///		animation sequence, with the exact state of the animation being an 
     ///		interpolation between these key frames.
     /// </remarks>
-    public class KeyFrame
-    {
+    public class KeyFrame {
         #region Protected member variables
 
-        /// <summary>
-        ///		Time of this keyframe.
-        /// </summary>
+		/// <summary>
+		///		Time of this keyframe.
+		/// </summary>
         protected float time;
-        /// <summary>
-        ///		Translation at this keyframe.
-        /// </summary>
+		/// <summary>
+		///		Translation at this keyframe.
+		/// </summary>
         protected Vector3 translate;
-        /// <summary>
-        ///		Scale factor at this keyframe.
-        /// </summary>
+		/// <summary>
+		///		Scale factor at this keyframe.
+		/// </summary>
         protected Vector3 scale;
-        /// <summary>
-        ///		Rotation at this keyframe.
-        /// </summary>
+		/// <summary>
+		///		Rotation at this keyframe.
+		/// </summary>
         protected Quaternion rotation;
-        /// <summary>
-        ///		Animation track that this key frame belongs to.
-        /// </summary>
-        protected AnimationTrack parentTrack;
+		/// <summary>
+		///		Animation track that this key frame belongs to.
+		/// </summary>
+		protected AnimationTrack parentTrack;
 
         #endregion
 
@@ -85,8 +91,7 @@ namespace Axiom.Animating
         /// </summary>
         /// <param name="parent">Animation track that this keyframe belongs to.</param>
         /// <param name="time">Time at which this keyframe begins.</param>
-        public KeyFrame( AnimationTrack parent, float time )
-        {
+        public KeyFrame(AnimationTrack parent, float time) {
             this.time = time;
             translate = new Vector3();
             scale = Vector3.UnitScale;
@@ -102,21 +107,17 @@ namespace Axiom.Animating
         ///		Use Quaternion methods to convert from angle/axis or Matrix3 if
         ///		you don't like using Quaternions directly.
         /// </summary>
-        public Quaternion Rotation
-        {
-            get
-            {
-                return rotation;
-            }
-            set
-            {
-                rotation = value;
+        public Quaternion Rotation {
+            get { 
+				return rotation; 
+			}
+            set { 
+				rotation = value;
 
-                if ( parentTrack != null )
-                {
-                    parentTrack.OnKeyFrameDataChanged();
-                }
-            }
+				if(parentTrack != null) {
+					parentTrack.OnKeyFrameDataChanged();
+				}
+			}
         }
         /// <summary>
         ///		Sets the scaling factor applied by this keyframe to the animable
@@ -124,21 +125,17 @@ namespace Axiom.Animating
         ///		beware of supplying zero values for any component of this
         ///		vector, it will scale the object to zero dimensions.
         /// </summary>
-        public Vector3 Scale
-        {
-            get
-            {
-                return scale;
-            }
-            set
-            {
-                scale = value;
+        public Vector3 Scale {
+            get { 
+				return scale; 
+			}
+            set { 
+				scale = value;
 
-                if ( parentTrack != null )
-                {
-                    parentTrack.OnKeyFrameDataChanged();
-                }
-            }
+				if(parentTrack != null) {
+					parentTrack.OnKeyFrameDataChanged();
+				}
+			}
         }
 
         /// <summary>
@@ -148,32 +145,26 @@ namespace Axiom.Animating
         ///		The translation factor affects how much the keyframe translates (moves) it's animable
         ///		object at it's time index.
         ///	</remarks>
-        public Vector3 Translate
-        {
-            get
-            {
-                return translate;
-            }
-            set
-            {
-                translate = value;
+        public Vector3 Translate {
+            get { 
+				return translate; 
+			}
+            set { 
+				translate = value;
 
-                if ( parentTrack != null )
-                {
-                    parentTrack.OnKeyFrameDataChanged();
-                }
-            }
+				if(parentTrack != null) {
+					parentTrack.OnKeyFrameDataChanged();
+				}
+			}
         }
 
         /// <summary>
         ///		Gets the time of this keyframe in the animation sequence.
         /// </summary>
-        public float Time
-        {
-            get
-            {
-                return time;
-            }
+        public float Time {
+            get { 
+				return time; 
+			}
         }
 
         #endregion

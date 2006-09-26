@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -35,10 +35,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-using Axiom.Core;
 using Axiom.Math;
+using Axiom.Core;
 
 #endregion Namespace Declarations
+			
+#region Ogre Synchronization Information
+/// <ogresynchronization>
+///     <file name="Bone.h"   revision="1.17" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+///     <file name="Bone.cpp" revision="1.22" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
+/// </ogresynchronization>
+#endregion
 
 namespace Axiom.Animating
 {
@@ -50,8 +57,7 @@ namespace Axiom.Animating
     ///    This class is a node in the joint hierarchy. Mesh vertices also have assignments
     ///    to bones to define how they move in relation to the skeleton.
     /// </remarks>
-    public class Bone : Node
-    {
+    public class Bone : Node {
         #region Fields
 
         /// <summary>Numeric handle of this bone.</summary>
@@ -70,9 +76,7 @@ namespace Axiom.Animating
         /// <summary>
         ///    Constructor, not to be used directly (use Bone.CreateChild or Skeleton.CreateBone)
         /// </summary>
-        public Bone( ushort handle, Skeleton creator )
-            : base()
-        {
+        public Bone(ushort handle, Skeleton creator) : base() {
             this.handle = handle;
             this.isManuallyControlled = false;
             this.creator = creator;
@@ -81,9 +85,7 @@ namespace Axiom.Animating
         /// <summary>
         ///    Constructor, not to be used directly (use Bone.CreateChild or Skeleton.CreateBone)
         /// </summary>
-        public Bone( string name, ushort handle, Skeleton creator )
-            : base( name )
-        {
+        public Bone(string name, ushort handle, Skeleton creator) : base(name) {
             this.handle = handle;
             this.isManuallyControlled = false;
             this.creator = creator;
@@ -97,8 +99,7 @@ namespace Axiom.Animating
         ///    Creates a new Bone as a child of this bone.
         /// </summary>
         /// <returns></returns>
-        protected override Node CreateChildImpl()
-        {
+        protected override Node CreateChildImpl() {
             return creator.CreateBone();
         }
 
@@ -107,9 +108,8 @@ namespace Axiom.Animating
         /// </summary>
         /// <param name="name">Name of the bone to create.</param>
         /// <returns></returns>
-        protected override Node CreateChildImpl( string name )
-        {
-            return creator.CreateBone( name );
+        protected override Node CreateChildImpl(string name) {
+            return creator.CreateBone(name);
         }
 
         /// <summary>
@@ -117,9 +117,8 @@ namespace Axiom.Animating
         /// </summary>
         /// <param name="handle">The numeric handle to give the new bone; must be unique within the Skeleton.</param>
         /// <returns></returns>
-        public Bone CreateChild( ushort handle )
-        {
-            return CreateChild( handle, Vector3.Zero, Quaternion.Identity );
+        public Bone CreateChild(ushort handle) {
+            return CreateChild(handle, Vector3.Zero, Quaternion.Identity);
         }
 
         /// <summary>
@@ -129,12 +128,11 @@ namespace Axiom.Animating
         /// <param name="translate">Initial translation offset of child relative to parent.</param>
         /// <param name="rotate">Initial rotation relative to parent.</param>
         /// <returns></returns>
-        public Bone CreateChild( ushort handle, Vector3 translate, Quaternion rotate )
-        {
-            Bone bone = creator.CreateBone( handle );
-            bone.Translate( translate );
-            bone.Rotate( rotate );
-            this.AddChild( bone );
+        public Bone CreateChild(ushort handle, Vector3 translate, Quaternion rotate) {
+            Bone bone = creator.CreateBone(handle);
+            bone.Translate(translate);
+            bone.Rotate(rotate);
+            this.AddChild(bone);
 
             return bone;
         }
@@ -147,8 +145,7 @@ namespace Axiom.Animating
         ///    position during animation. This method returns the bone to it's original position and
         ///    orientation.
         /// </remarks>
-        public void Reset()
-        {
+        public void Reset() {
             ResetToInitialState();
         }
 
@@ -156,16 +153,15 @@ namespace Axiom.Animating
         ///    Sets the current position / orientation to be the 'binding pose' ie the layout in which 
         ///    bones were originally bound to a mesh.
         /// </summary>
-        public void SetBindingPose()
-        {
+        public void SetBindingPose() {
             SetInitialState();
 
             // save inverse derived, used for mesh transform later (assumes Update has been called by Skeleton
             MakeInverseTransform(
-                this.DerivedPosition,
-                Vector3.UnitScale,
-                this.DerivedOrientation,
-                ref bindDerivedInverseTransform );
+                this.DerivedPosition, 
+                Vector3.UnitScale, 
+                this.DerivedOrientation, 
+                ref bindDerivedInverseTransform);
         }
 
         #endregion
@@ -175,14 +171,9 @@ namespace Axiom.Animating
         /// <summary>
         ///		Determines whether this bone is controlled at runtime.
         /// </summary>
-        public bool IsManuallyControlled
-        {
-            get
-            {
-                return isManuallyControlled;
-            }
-            set
-            {
+        public bool IsManuallyControlled {
+            get { return isManuallyControlled; }
+            set {
                 isManuallyControlled = value;
             }
         }
@@ -190,10 +181,8 @@ namespace Axiom.Animating
         /// <summary>
         ///    Gets the inverse transform which takes bone space to origin from the binding pose. 
         /// </summary>
-        public Matrix4 BindDerivedInverseTransform
-        {
-            get
-            {
+        public Matrix4 BindDerivedInverseTransform {
+            get {
                 return bindDerivedInverseTransform;
             }
         }
@@ -201,10 +190,8 @@ namespace Axiom.Animating
         /// <summary>
         ///    Gets the numeric handle of this bone.
         /// </summary>
-        public ushort Handle
-        {
-            get
-            {
+        public ushort Handle {
+            get {
                 return handle;
             }
         }
@@ -222,10 +209,38 @@ namespace Axiom.Animating
     ///		This is a class because we need it as a reference type to allow for modification
     ///		in places where we would only have a copy of the data if it were a struct. 
     /// </remarks>
-    public class VertexBoneAssignment
+    public class VertexBoneAssignment  : IComparable
     {
         public int vertexIndex;
         public ushort boneIndex;
         public float weight;
-    }
+
+
+        #region IComparable Members
+
+        public int CompareTo( object obj )
+        {
+            if ( obj is VertexBoneAssignment )
+            {
+                VertexBoneAssignment v = (VertexBoneAssignment)obj;
+
+                if ( weight > v.weight )
+                    return 1;
+                if ( weight < v.weight )
+                    return -1;
+
+                if ( vertexIndex != v.vertexIndex )
+                    return vertexIndex - v.vertexIndex;
+
+                if ( boneIndex != v.boneIndex )
+                    return boneIndex - v.boneIndex;
+
+                return 0;
+            }
+            return 0;
+        }
+
+        #endregion
+
+}
 }

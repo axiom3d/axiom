@@ -60,8 +60,7 @@ namespace Axiom.Overlays.Elements
     {
         #region Member variables
 
-
-        protected HorizontalAlignment alignment;
+        protected HorizontalAlignment textAlign;
         protected RenderOperation renderOp = new RenderOperation();
         protected bool isTransparent;
         protected Font font;
@@ -92,7 +91,7 @@ namespace Axiom.Overlays.Elements
             : base( name )
         {
             isTransparent = false;
-            alignment = HorizontalAlignment.Center;
+            textAlign = HorizontalAlignment.Center;
 
 
             colorTop = ColorEx.White;
@@ -317,13 +316,13 @@ namespace Axiom.Overlays.Elements
                         }
                     } // for j
 
-                    if ( alignment == HorizontalAlignment.Right )
+                    if ( this.horzAlign == HorizontalAlignment.Right )
                     {
                         left -= length;
                     }
-                    else if ( alignment == HorizontalAlignment.Center )
+                    else if ( this.horzAlign == HorizontalAlignment.Center )
                     {
-                        //left -= length * 0.5f;
+                        left -= length * 0.5f;
                     }
 
                     newLine = false;
@@ -637,11 +636,11 @@ namespace Axiom.Overlays.Elements
         {
             get
             {
-                return alignment;
+                return textAlign;
             }
             set
             {
-                alignment = value;
+                textAlign = value;
                 isGeomPositionsOutOfDate = true;
             }
         }

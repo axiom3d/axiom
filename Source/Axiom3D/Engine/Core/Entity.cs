@@ -269,6 +269,14 @@ namespace Axiom.Core
 
         #region Properties
 
+        public SkeletonInstance Skeleton
+        {
+            get
+            {
+                return this.skeletonInstance;
+            }
+        }
+
         /// <summary>
         ///    Local bounding radius of this entity.
         /// </summary>
@@ -514,6 +522,57 @@ namespace Axiom.Core
         {
             childObjectList[ sceneObject.Name ] = sceneObject;
             sceneObject.NotifyAttached( tagPoint, true );
+        }
+
+        public void DetachObjectFromBone( MovableObject obj )
+        {
+            for ( int i = 0; i < childObjectList.Count; i++ )
+            {
+                MovableObject child = childObjectList[ i ];
+                if ( child == obj )
+                {
+                    DetachObjectImpl( obj );
+                    childObjectList.Remove( obj );
+
+                    // Trigger update of bounding box if necessary
+                    if ( this.parentNode != null )
+                        parentNode.NeedUpdate();
+                    break;
+                }
+            }
+        }
+
+        public void DetachAllObjectsFromBone()
+        {
+            DetachAllObjectsImpl();
+
+            // Trigger update of bounding box if necessary
+            if ( this.parentNode != null )
+                parentNode.NeedUpdate();
+        }
+
+        public void DetachObjectImpl( MovableObject pObject )
+        {
+            TagPoint tagPoint = (TagPoint)pObject.ParentNode;
+
+
+            // free the TagPoint so we can reuse it later
+            //TODO: NO idea what this does!
+            //skeletonInstance.freeTagPoint(tp);
+
+            pObject.NotifyAttached( tagPoint, true );
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DetachAllObjectsImpl()
+        {
+            for ( int i = 0; i < childObjectList.Count; i++ )
+            {
+                MovableObject child = childObjectList[ i ];
+                DetachObjectImpl( child );
+            }
+            childObjectList.Clear();
         }
 
         /// <summary>

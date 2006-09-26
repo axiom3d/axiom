@@ -105,6 +105,14 @@ namespace Axiom.Graphics
 
         #region Properties
 
+        public Plane Plane
+        {
+            get
+            {
+                return containedPlane;
+            }
+        }
+
         /// <summary>
         ///		The plane's distance from the origin.
         /// </summary>

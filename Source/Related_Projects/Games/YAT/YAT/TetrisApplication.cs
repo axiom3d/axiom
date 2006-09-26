@@ -83,6 +83,7 @@ namespace YAT
 				return input;
 			}
 		}
+
 		#region Methods
 
 		protected override bool Setup() 
@@ -94,8 +95,6 @@ namespace YAT
 				input.UseKeyboardEvents = false;
 			}
 
-
-			
 			return flag;
 		}
 
@@ -103,6 +102,7 @@ namespace YAT
 		{
 			OnFrameStart(e);
 		}
+
 		private void OnFrameStart(FrameEventArgs e)
 		{
 
