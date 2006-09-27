@@ -98,14 +98,14 @@
 			<Configuration name="Debug">
 				<Options>
 					<OutputPath>../../../build/debug/Axiom3D</OutputPath>
-					<XmlDocFile>Axiom.xml</XmlDocFile>
+					<XmlDocFile>../../../build/debug/Axiom3D/Axiom.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
 					<OutputPath>../../../build/release/Axiom3D</OutputPath>
-					<XmlDocFile>Axiom.xml</XmlDocFile>
+					<XmlDocFile>../../../build/release/Axiom3D/Axiom.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
@@ -134,14 +134,14 @@
 				<Configuration name="Debug">
 					<Options>
 						<OutputPath>../../../../build/debug/Axiom3D</OutputPath>
-						<XmlDocFile>Axiom.xml</XmlDocFile>
+						<XmlDocFile>../../../../build/debug/Axiom3D/Axiom.Platforms.Win32.xml</XmlDocFile>
 						<AllowUnsafe>true</AllowUnsafe>
 					</Options>
 				</Configuration>
 				<Configuration name="Release">
 					<Options>
 						<OutputPath>../../../../build/release/Axiom3D</OutputPath>
-						<XmlDocFile>Axiom.xml</XmlDocFile>
+						<XmlDocFile>../../../../build/release/Axiom3D/Axiom.Platforms.Win32.xml</XmlDocFile>
 						<AllowUnsafe>true</AllowUnsafe>
 					</Options>
 				</Configuration>
@@ -168,14 +168,14 @@
 				<Configuration name="Debug">
 					<Options>
 						<OutputPath>../../../../build/debug/Axiom3D</OutputPath>
-						<XmlDocFile>Axiom.xml</XmlDocFile>
+						<XmlDocFile>../../../../build/debug/Axiom3D/Axiom.RenderSystems.DirectX9.xml</XmlDocFile>
 						<AllowUnsafe>true</AllowUnsafe>
 					</Options>
 				</Configuration>
 				<Configuration name="Release">
 					<Options>
 						<OutputPath>../../../../build/release/Axiom3D</OutputPath>
-						<XmlDocFile>Axiom.xml</XmlDocFile>
+						<XmlDocFile>../../../../build/release/Axiom3D/Axiom.RenderSystems.DirectX9.xml</XmlDocFile>
 						<AllowUnsafe>true</AllowUnsafe>
 					</Options>
 				</Configuration>
@@ -206,14 +206,14 @@
 			<Configuration name="Debug">
 				<Options>
 					<OutputPath>../../../../build/debug/Axiom3D</OutputPath>
-					<XmlDocFile>Axiom.xml</XmlDocFile>
+					<XmlDocFile>../../../../build/debug/Axiom3D/Axiom.Platforms.SDL.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
 					<OutputPath>../../../../build/release/Axiom3D</OutputPath>
-					<XmlDocFile>Axiom.xml</XmlDocFile>
+					<XmlDocFile>../../../../build/release/Axiom3D/Axiom.Platforms.SDL.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
@@ -239,14 +239,14 @@
 			<Configuration name="Debug">
 				<Options>
 					<OutputPath>../../../../build/debug/Axiom3D</OutputPath>
-					<XmlDocFile>Axiom.xml</XmlDocFile>
+					<XmlDocFile>../../../../build/debug/Axiom3D/Axiom.RenderSystems.OpenGL.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
 					<OutputPath>../../../../build/release/Axiom3D</OutputPath>
-					<XmlDocFile>Axiom.xml</XmlDocFile>
+					<XmlDocFile>../../../../build/release/Axiom3D/Axiom.RenderSystems.OpenGL.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
@@ -287,14 +287,14 @@
 			<Configuration name="Debug">
 				<Options>
 					<OutputPath>../../../../build/debug/Axiom3D</OutputPath>
-					<XmlDocFile>Axiom.xml</XmlDocFile>
+					<XmlDocFile>../../../../build/debug/Axiom3D/Axiom.Plugins.CgProgramManager.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
 					<OutputPath>../../../../build/release/Axiom3D</OutputPath>
-					<XmlDocFile>Axiom.xml</XmlDocFile>
+					<XmlDocFile>../../../../build/release/Axiom3D/Axiom.Plugins.CgProgramManager.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
@@ -318,14 +318,14 @@
 			<Configuration name="Debug">
 				<Options>
 					<OutputPath>../../../../build/debug/Axiom3D</OutputPath>
-					<XmlDocFile>Axiom.xml</XmlDocFile>
+					<XmlDocFile>../../../../build/debug/Axiom3D/Axiom.Plugins.ParticleFX.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
 					<OutputPath>../../../../build/release/Axiom3D</OutputPath>
-					<XmlDocFile>Axiom.xml</XmlDocFile>
+					<XmlDocFile>../../../../build/release/Axiom3D/Axiom.Plugins.ParticleFX.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
@@ -346,14 +346,14 @@
 			<Configuration name="Debug">
 				<Options>
 					<OutputPath>../../../../build/debug/Axiom3D</OutputPath>
-					<XmlDocFile>Axiom.xml</XmlDocFile>
+					<XmlDocFile>../../../../build/debug/Axiom3D/Axiom.SceneManagers.Octree.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
 					<OutputPath>../../../../build/release/Axiom3D</OutputPath>
-					<XmlDocFile>Axiom.xml</XmlDocFile>
+					<XmlDocFile>../../../../build/release/Axiom3D/Axiom.SceneManagers.Octree.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
@@ -374,14 +374,14 @@
 			<Configuration name="Debug">
 				<Options>
 					<OutputPath>../../../../build/debug/Axiom3D</OutputPath>
-					<XmlDocFile>Axiom.xml</XmlDocFile>
+					<XmlDocFile>../../../../build/debug/Axiom3D/Axiom.SceneManagers.Bsp.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
 					<OutputPath>../../../../build/release/Axiom3D</OutputPath>
-					<XmlDocFile>Axiom.xml</XmlDocFile>
+					<XmlDocFile>../../../../build/release/Axiom3D/Axiom.SceneManagers.Bsp.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
