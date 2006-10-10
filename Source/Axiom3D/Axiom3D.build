@@ -17,7 +17,7 @@
 	</if>
 
 	<!-- Define location of build include files useful for any project.  Required (if you want to use any) -->
-	<property name="build.includes.dir" value="${project::get-base-directory()}" dynamic="false" />
+	<property name="build.includes.dir" value="${path::combine(project::get-base-directory(), '../../BuildSupport/NAntIncludes') }" dynamic="false" />
 	
 	<!-- Framework support targets  -->
 	<include verbose="false" buildfile="${path::combine(build.includes.dir, 'frameworksupport.include')}" />
@@ -31,7 +31,8 @@
 	<!-- named project configurations -->
 
 	<!-- Master build and dist output dirs -->
-	<property name="top.build.dir" value="${project::get-base-directory()}/../build" dynamic="true" />
+	<!-- <property name="top.build.dir" value="${project::get-base-directory()}/../build" dynamic="true" /> -->
+	<property name="top.build.dir" value="${path::combine(dependencies.topdir, 'Managed/Axiom3D')}" />
 	<property name="top.dist.dir" value="${project::get-base-directory()}/../dist" dynamic="true" />
 
 	<!-- 
@@ -82,8 +83,8 @@
 		overall solution).  Could be combined to reduce complexity (eg. all
 		buildfiles for Axiom plugins or scenemanagers could be treated as a unit)
 	-->
-	<fileset id="axiom.buildfile">
-		<include name="Engine/Axiom.build" />
+	<fileset id="axiom.engine.buildfile">
+		<include name="Engine/Axiom.Engine.build" />
 	</fileset>
 	<fileset id="axiom.platforms.win32.buildfile">
 		<include name="Platforms/Win32/Axiom.Platforms.Win32.build" />
@@ -109,22 +110,6 @@
 	<fileset id="axiom.scenemanagers.octree.buildfile">
 		<include name="SceneManagers/Octree/Axiom.SceneManagers.Octree.build"/>
 	</fileset>
-	<!--
-	<fileset id="axiom.scenemanagers.paginglandscape.buildfile">
-		<include name="SceneManagers/PagingLandscape/Axiom.SceneManagers.PagingLandscape.build"/>
-	</fileset>
-	-->
-	<fileset id="axiom.demos.buildfile">
-		<include name="Demos/Demos/Axiom.Demos.build" />
-	</fileset>
-	<fileset id="axiom.demos.browser.commandline.buildfile">
-		<include name="Demos/Browser/CommandLine/Axiom.Demos.Browser.CommandLine.build" />
-	</fileset>
-	<!--
-	<fileset id="axiom.samples.yat.buildfile">
-		<include name="Samples/YAT/YAT.build"/>
-	</fileset>
-	-->
 
 	<!-- BEGIN: General build tasks -->
 	<target name="init" description="Initializes build properties" unless="${target::has-executed('init')}">
@@ -149,11 +134,11 @@
 		<mkdir dir="${build.dir}" />
 	</target>
 
-	<target name="build.all" depends="build.axiom3d, build.axiom.demos" description="Build everything"/>
+	<target name="build.all" depends="build.axiom3d" description="Build everything"/>
 
 	<!-- END: General build tasks -->
 
-		<!-- 
+	<!-- 
 		specifies whether the CommonAssemblyInfo.cs file should be created.
 		we do not want this for releases (whether they're beta or release) as
 		this would cause the build number to be updated
@@ -192,9 +177,11 @@
 	<target name="build.axiom3d.setup" depends="build.setup" unless="${target::has-executed('build.axiom3d.setup')}" description="Sets up build area">
 		<!-- 
 			Define build directory for Axiom3D projects - Note: this is all the 
-			assemblies considered 'core' to the Axiom engine. 
+			assemblies considered 'core' to the Axiom engine.
+			Note 2: This is left over from the original single master build file and is redundant.
 		-->
-		<property name="axiom3d.build.dir" value="${path::combine(build.dir, 'Axiom3D')}" />
+		<!-- <property name="axiom3d.build.dir" value="${path::combine(build.dir, 'Axiom3D')}" /> -->
+		<property name="axiom3d.build.dir" value="${build.dir}" />
 
 		<!-- ensure Axiom3D build directory exists -->
 		<mkdir dir="${axiom3d.build.dir}" />
@@ -216,13 +203,12 @@
 		<call target="build.axiom.scenemanagers.bsp" />
 		<call target="build.axiom.scenemanagers.octree" />
 
-		<!-- <call target="build.axiom.scenemanagers.paginglandscape" /> -->
 	</target>
 
 	<!-- Build targets for the individual Axiom3D assemblies -->
 	<target name="build.axiom" description="Build Axiom assembly"  unless="${target::has-executed('build.axiom')}">
 		<nant target="build">
-			<buildfiles refid="axiom.buildfile"/>
+			<buildfiles refid="axiom.engine.buildfile"/>
 		</nant>
 	</target>
 
@@ -281,51 +267,6 @@
 	</target>
 	<!-- END: Axiom3D core build tasks -->
 
-	<!-- BEGIN:  Axiom Demos tasks -->
-	<target name="build.axiom.demos" depends="build.axiom3d.setup" description="Builds the Axiom3D engine demos for the current build configuration">
-		<!-- Call required targets in order -->
-		<call target="build.axiom.demos.base" />
-		<call target="build.axiom.demos.browser.commandline" />
-	</target>
-
-	<target name="build.axiom.demos.base" description="Build the Axiom Demos" depends="build.axiom3d" unless="${target::has-executed('build.axiom.demos.base')}">
-		<nant target="build">
-			<buildfiles refid="axiom.demos.buildfile"/>
-		</nant>
-	</target>
-	
-	<target name="build.axiom.demos.browser.commandline" description="Build the Axiom Demos CommandLine Browser" depends="build.axiom.demos.base" unless="${target::has-executed('build.axiom.demos.browser.commandline')}">
-		<nant target="build">
-			<buildfiles refid="axiom.demos.browser.commandline.buildfile"/>
-		</nant>
-	</target>
-
-	<target name="run.axiom.demos" description="Run the Axiom Demos app" depends="build.axiom.demos">
-		<nant target="run">
-			<buildfiles refid="axiom.demos.browser.commandline.buildfile"/>
-		</nant>
-	</target>
-
-	<!-- END: Axiom Demos tasks -->
-
-	<!-- BEGIN: YAT tasks -->
-	<!--
-	<target name="build.axiom.samples.yat" description="Build the YAT sample app" depends="build.axiom3d" unless="${target::has-executed('build.axiom.samples.yat')}">
-		<nant target="build">
-			<buildfiles refid="axiom.samples.yat.buildfile"/>
-		</nant>
-	</target> 
-	-->
-
-	<!--
-	<target name="run.axiom.samples.yat" description="Run the YAT sample app" depends="build.axiom.samples.yat">
-		<nant target="run">
-			<buildfiles refid="axiom.samples.yat.buildfile"/>
-		</nant>
-	</target>  
-	-->
-	<!-- END: YAT tasks -->
-
 	<!-- BEGIN: General Distribution targets -->
 	
 	<target name="dist.setup" description="General setup of the distribution directory" depends="init" unless="${target::has-executed('dist.setup')}">
@@ -362,8 +303,8 @@
 	</zipfileset>
 	
 	<zipfileset id="fileset.axiom.buildtools" basedir="../.." prefix="Axiom">
-		<include name="Build_Tools/**" />
-		<exclude name="Build_Tools/**/.svn/**" />
+		<include name="BuildSupport/**" />
+		<exclude name="BuildSupport/**/.svn/**" />
 	</zipfileset>
 	
 	<zipfileset id="fileset.axiom.dependencies" basedir="../.." prefix="Axiom">
