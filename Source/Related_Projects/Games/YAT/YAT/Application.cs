@@ -3,9 +3,9 @@
 Axiom Game Engine Library
 Copyright (C) 2003  Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -45,14 +45,14 @@ namespace YAT
 	/// <summary>
 	///     Base class for Axiom examples.
 	/// </summary>
-	public abstract class Application : IDisposable 
+	public abstract class Application : IDisposable
 	{
 		#region Protected Fields
 
 		protected Root engine;
 		protected Camera camera;
 		protected Viewport viewport;
-		protected SceneManager scene; 
+		protected SceneManager scene;
 		protected RenderWindow window;
 		protected InputReader input;
 		protected Vector3 cameraVector = Vector3.Zero;
@@ -104,14 +104,14 @@ namespace YAT
 		#endregion
 
 		#region Protected Methods
-		public SceneManager SceneManager 
+		public SceneManager SceneManager
 		{
-			get 
+			get
 			{
 				return scene;
 			}
 		}
-        protected bool Configure() 
+        protected bool Configure()
         {
             // HACK: Temporary
             ConfigDialog dlg = new ConfigDialog();
@@ -122,7 +122,7 @@ namespace YAT
             return true;
         }
 
-		protected virtual void CreateCamera() 
+		protected virtual void CreateCamera()
 		{
 			// Create a camera and Initialize its position
 			camera = scene.CreateCamera("MainCamera");
@@ -136,27 +136,27 @@ namespace YAT
 		/// <summary>
 		///    Shows the debug overlay, which displays performance statistics.
 		/// </summary>
-		protected virtual void RenderDebugOverlay(bool show) 
+		protected virtual void RenderDebugOverlay(bool show)
 		{
 			// gets a reference to the default overlay
 			Overlay o = OverlayManager.Instance.GetByName("Core/DebugOverlay");
 
-			if(o == null) 
+			if(o == null)
 			{
 				throw new Exception(string.Format("Could not find overlay named '{0}'.", "Core/DebugOverlay"));
 			}
 
-			if(show) 
+			if(show)
 			{
 				o.Show();
 			}
-			else 
+			else
 			{
 				o.Hide();
 			}
 		}
 
-		public void TakeScreenshot(string fileName) 
+		public void TakeScreenshot(string fileName)
 		{
 			window.Save(fileName);
 		}
@@ -165,13 +165,13 @@ namespace YAT
 
 		#region Protected Virtual Methods
 
-		protected virtual void ChooseSceneManager() 
+		protected virtual void ChooseSceneManager()
 		{
 			// Get the SceneManager, a generic one by default
 			scene = engine.SceneManagers.GetSceneManager(SceneType.Generic);
 		}
 
-		protected virtual void CreateViewports() 
+		protected virtual void CreateViewports()
 		{
 			Debug.Assert(window != null, "Attempting to use a null RenderWindow.");
 
@@ -180,7 +180,7 @@ namespace YAT
 			viewport.BackgroundColor = ColorEx.Black;
 		}
 
-		protected virtual bool Setup() 
+		protected virtual bool Setup()
 		{
 			// instantiate the Root singleton
             engine = new Root("EngineConfig.xml", "AxiomEngine.log");
@@ -229,11 +229,11 @@ namespace YAT
 		/// <summary>
 		///		Loads default resource configuration if one exists.
 		/// </summary>
-		protected virtual void SetupResources() 
+		protected virtual void SetupResources()
 		{
             string resourceConfigPath = Path.GetFullPath("EngineConfig.xml");
 
-			if(File.Exists(resourceConfigPath)) 
+			if(File.Exists(resourceConfigPath))
 			{
 				EngineConfig config = new EngineConfig();
 
@@ -242,7 +242,7 @@ namespace YAT
                 config.ReadXml("EngineConfig.xml");
 
 				// interrogate the available resource paths
-				foreach(EngineConfig.FilePathRow row in config.FilePath) 
+				foreach(EngineConfig.FilePathRow row in config.FilePath)
 				{
 					ResourceManager.AddCommonArchive(row.src, row.type);
 				}
@@ -254,7 +254,7 @@ namespace YAT
 		#region Protected Abstract Methods
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		protected abstract void CreateScene();
 
@@ -262,29 +262,29 @@ namespace YAT
 
 		#region Public Methods
 
-		public void Start() 
+		public void Start()
 		{
-			try 
+			try
 			{
-				if (Setup()) 
+				if (Setup())
 				{
 					// start the engines rendering loop
 					engine.StartRendering();
 				}
 			}
-			catch (Exception ex) 
+			catch (Exception ex)
 			{
 				// try logging the error here first, before Root is disposed of
-				if (LogManager.Instance != null) 
+				if (LogManager.Instance != null)
 				{
 					LogManager.Instance.Write(ex.ToString());
 				}
 			}
 		}
 
-		public void Dispose() 
+		public void Dispose()
 		{
-			if(engine != null) 
+			if(engine != null)
 			{
 				// remove event handlers
 				engine.FrameStarted -= new FrameEvent(OnFrameStarted);
@@ -298,11 +298,11 @@ namespace YAT
 
 		#region Event Handlers
 
-		protected virtual void OnFrameEnded(Object source, FrameEventArgs e) 
+		protected virtual void OnFrameEnded(Object source, FrameEventArgs e)
 		{
 		}
 
-		protected virtual void OnFrameStarted(Object source, FrameEventArgs e) 
+		protected virtual void OnFrameStarted(Object source, FrameEventArgs e)
 		{
 			float scaleMove = 200 * e.TimeSinceLastFrame;
 
@@ -315,51 +315,51 @@ namespace YAT
 			// TODO: Move this into an event queueing mechanism that is processed every frame
 			input.Capture();
 
-			if(input.IsKeyPressed(KeyCodes.Escape)) 
+			if(input.IsKeyPressed(KeyCodes.Escape))
 			{
 				Root.Instance.QueueEndRendering();
 
 				return;
 			}
 
-			if(input.IsKeyPressed(KeyCodes.A)) 
+			if(input.IsKeyPressed(KeyCodes.A))
 			{
 				camAccel.x = -0.5f;
 			}
 
-			if(input.IsKeyPressed(KeyCodes.D)) 
+			if(input.IsKeyPressed(KeyCodes.D))
 			{
 				camAccel.x = 0.5f;
 			}
 
-			if(input.IsKeyPressed(KeyCodes.W)) 
+			if(input.IsKeyPressed(KeyCodes.W))
 			{
 				camAccel.z = -1.0f;
 			}
 
-			if(input.IsKeyPressed(KeyCodes.S)) 
+			if(input.IsKeyPressed(KeyCodes.S))
 			{
 				camAccel.z = 1.0f;
 			}
 
 			camAccel.y += (float)(input.RelativeMouseZ * 0.1f);
 
-			if(input.IsKeyPressed(KeyCodes.Left)) 
+			if(input.IsKeyPressed(KeyCodes.Left))
 			{
 				camera.Yaw(cameraScale);
 			}
 
-			if(input.IsKeyPressed(KeyCodes.Right)) 
+			if(input.IsKeyPressed(KeyCodes.Right))
 			{
 				camera.Yaw(-cameraScale);
 			}
 
-			if(input.IsKeyPressed(KeyCodes.Up)) 
+			if(input.IsKeyPressed(KeyCodes.Up))
 			{
 				camera.Pitch(cameraScale);
 			}
 
-			if(input.IsKeyPressed(KeyCodes.Down)) 
+			if(input.IsKeyPressed(KeyCodes.Down))
 			{
 				camera.Pitch(-cameraScale);
 			}
@@ -368,17 +368,17 @@ namespace YAT
 			toggleDelay -= e.TimeSinceLastFrame;
 
 			// toggle rendering mode
-			if(input.IsKeyPressed(KeyCodes.R) && toggleDelay < 0) 
+			if(input.IsKeyPressed(KeyCodes.R) && toggleDelay < 0)
 			{
-				if(camera.SceneDetail == SceneDetailLevel.Points) 
+				if(camera.SceneDetail == SceneDetailLevel.Points)
 				{
 					camera.SceneDetail = SceneDetailLevel.Solid;
 				}
-				else if(camera.SceneDetail == SceneDetailLevel.Solid) 
+				else if(camera.SceneDetail == SceneDetailLevel.Solid)
 				{
 					camera.SceneDetail = SceneDetailLevel.Wireframe;
 				}
-				else 
+				else
 				{
 					camera.SceneDetail = SceneDetailLevel.Points;
 				}
@@ -388,10 +388,10 @@ namespace YAT
 				toggleDelay = 1;
 			}
 
-			if(input.IsKeyPressed(KeyCodes.T) && toggleDelay < 0) 
+			if(input.IsKeyPressed(KeyCodes.T) && toggleDelay < 0)
 			{
 				// toggle the texture settings
-				switch(filtering) 
+				switch(filtering)
 				{
 					case TextureFiltering.Bilinear:
 						filtering = TextureFiltering.Trilinear;
@@ -416,7 +416,7 @@ namespace YAT
 				toggleDelay = 1;
 			}
 
-			if(input.IsKeyPressed(KeyCodes.P)) 
+			if(input.IsKeyPressed(KeyCodes.P))
 			{
 				string[] temp = Directory.GetFiles(Environment.CurrentDirectory, "screenshot*.jpg");
 				string fileName = string.Format("screenshot{0}.jpg", temp.Length + 1);
@@ -430,26 +430,26 @@ namespace YAT
 				debugTextDelay = 2.0f;
 			}
 
-			if(input.IsKeyPressed(KeyCodes.B)) 
+			if(input.IsKeyPressed(KeyCodes.B))
 			{
 				scene.ShowBoundingBoxes = !scene.ShowBoundingBoxes;
 			}
 
-			if(input.IsKeyPressed(KeyCodes.F)) 
+			if(input.IsKeyPressed(KeyCodes.F))
 			{
 				// hide all overlays, includes ones besides the debug overlay
 				viewport.OverlaysEnabled = !viewport.OverlaysEnabled;
 			}
 
-			if(!input.IsMousePressed(MouseButtons.Button1)) 
+			if(!input.IsMousePressed(MouseButtons.Left))
 			{
 				float cameraYaw = -input.RelativeMouseX * .13f;
 				float cameraPitch = -input.RelativeMouseY * .13f;
                 
 				camera.Yaw(cameraYaw);
 				camera.Pitch(cameraPitch);
-			} 
-			else 
+			}
+			else
 			{
 				cameraVector.x += input.RelativeMouseX * 0.13f;
 			}
@@ -460,29 +460,29 @@ namespace YAT
 			camera.MoveRelative(camVelocity * e.TimeSinceLastFrame);
 
 			// Now dampen the Velocity - only if user is not accelerating
-			if (camAccel == Vector3.Zero) 
-			{ 
-				camVelocity *= (1 - (6 * e.TimeSinceLastFrame)); 
+			if (camAccel == Vector3.Zero)
+			{
+				camVelocity *= (1 - (6 * e.TimeSinceLastFrame));
 			}
 
 			// Update performance stats once per second
-			if(statDelay < 0.0f && showDebugOverlay) 
+			if(statDelay < 0.0f && showDebugOverlay)
 			{
 				//UpdateStats();
 				statDelay = 1.0f;
 			}
-			else 
+			else
 			{
 				statDelay -= e.TimeSinceLastFrame;
 			}
 
 			// turn off debug text when delay ends
-			if(debugTextDelay < 0.0f) 
+			if(debugTextDelay < 0.0f)
 			{
 				debugTextDelay = 0.0f;
 				window.DebugText = "";
 			}
-			else if(debugTextDelay > 0.0f) 
+			else if(debugTextDelay > 0.0f)
 			{
 				debugTextDelay -= e.TimeSinceLastFrame;
 			}
@@ -491,7 +491,7 @@ namespace YAT
 			element.Text = window.DebugText;
 		}
 
-		public virtual void UpdateStats() 
+		public virtual void UpdateStats()
 		{
 			// TODO: Replace with CEGUI
 			OverlayElement element = OverlayElementManager.Instance.GetElement("Core/CurrFps");
