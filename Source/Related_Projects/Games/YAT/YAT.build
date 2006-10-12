@@ -198,7 +198,7 @@
 				<include name="../../../../Media/Overlays/Debug.overlay" />
 				<include name="../../../../Media/Fonts/*" />
 				<include name="../../../../Media/Icons/AxiomIcon.ico" />
-				<include name="../../../../Media/Textures/AxiomLogo.png" />
+				<include name="../../../../Media/Logos/AxiomLogoSmall.png" />
 			</fileset>
 		</copy>
 
