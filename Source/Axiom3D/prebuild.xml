@@ -56,33 +56,6 @@
 	    </Files>
 	</Project>
 
-	<Project name="Axiom.Demos" path="Demos/Demos" language="C#" type="Library">
-	    <Configuration name="Debug">
-		<Options>
-		    <AllowUnsafe>true</AllowUnsafe>
-		    <OutputPath>../../../../build/debug/Axiom_Demos</OutputPath>
-		</Options>
-	    </Configuration>
-	    <Configuration name="Release">
-		<Options>
-		    <AllowUnsafe>true</AllowUnsafe>
-		    <OutputPath>../../../../build/release/Axiom_Demos</OutputPath>
-		</Options>
-	    </Configuration>
-
-	    <ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
-
-	    <Reference name="System" />
-	    <Reference name="System.Data" />
-	    <Reference name="System.Drawing" />
-	    <Reference name="System.Xml" />
-	    <Reference name="Axiom" localCopy="true"/>
-
-	    <Files>
-		<Match pattern="*.cs" path="."/>
-	    </Files>
-	</Project>		
-
 	<?if OS = "Win32" ?>
 
 
@@ -350,46 +323,5 @@
 
 	</Project>
 
-	<Project name="Axiom.Demos.Browser.CommandLine" path="Demos/Browser/CommandLine" language="C#" type="Exe">
-	    <Configuration name="Debug">
-		<Options>
-		    <AllowUnsafe>true</AllowUnsafe>
-		    <OutputPath>../../../../../build/debug/Axiom_Demos</OutputPath>
-		</Options>
-	    </Configuration>
-	    <Configuration name="Release">
-		<Options>
-		    <AllowUnsafe>true</AllowUnsafe>
-		    <OutputPath>../../../../../build/release/Axiom_Demos</OutputPath>
-		</Options>
-	    </Configuration>
-
-	    <ReferencePath>../../../../../Dependencies/Managed/DotNet</ReferencePath>
-
-	    <Reference name="System" />
-	    <Reference name="System.Data" />
-	    <Reference name="System.Drawing" />
-	    <Reference name="System.Xml" />
-	    <Reference name="Axiom" localCopy="true"/>
-	    <Reference name="Axiom.Demos" localCopy="true" />
-	    <Reference name="Axiom.Plugins.ParticleFX" localCopy="true"/>
-	    <Reference name="Axiom.Plugins.CgProgramManager" localCopy="true"/>
-	    <Reference name="Axiom.RenderSystems.OpenGL" localCopy="true"/>
-	    <Reference name="Axiom.SceneManagers.Bsp" localCopy="true"/>
-	    <Reference name="Axiom.SceneManagers.Octree" localCopy="true"/>
-
-	    <?if OS = "Win32" ?>
-	    <Reference name="Axiom.Platforms.Win32" localCopy="true"/>
-	    <Reference name="Axiom.RenderSystems.DirectX9" localCopy="true"/>
-	    <?else ?>
-	    <Reference name="Axiom.Platforms.SDL" localCopy="true"/>
-	    <?endif ?>
-
-	    <Files>
-		<Match pattern="*.cs" path="."/>
-		<Match pattern="EngineConfig.xml" path="" buildAction="None" copyToOutput="Always" />
-		<Match pattern="Terrain.xml" path="" buildAction="None" copyToOutput="Always" />
-	    </Files>
-	</Project>	
     </Solution>
 </Prebuild>
