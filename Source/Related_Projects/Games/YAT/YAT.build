@@ -4,11 +4,13 @@
 	<!-- set build.date property to current date in format yyyy-MM-dd -->
 	<tstamp property="build.date" pattern="yyyy-MM-dd" />
 
-	<!-- global project settings -->
+	<!-- BEGIN: global project settings -->
 	<property name="project.name" value="YAT" />
 	<property name="project.version" value="1.0" unless="${property::exists('project.version')}" />
-	<property name="project.release.type" value="dev" unless="${property::exists('project.release.type')}" />
+
 	<!-- nightly / dev / alpha / beta# / rc# / release -->
+	<!-- Set this via local build settings or at the NAnt commandline with -D:project.release.type="foo" -->
+	<property name="project.release.type" value="dev" unless="${property::exists('project.release.type')}" />
 	<if test="${project.release.type == 'nightly'}">
 		<property name="project.version.full" value="${project.version + '-nightly-' + build.date}" />
 	</if>
@@ -31,11 +33,26 @@
 	<!-- Load aliases for compiled Axiom assemblies -->
 	<include verbose="true" buildfile="${path::combine(dependencies.topdir, 'AxiomAssemblies.include')}" />
 
-	<!-- named project configurations -->
-
 	<!-- Master build and dist output dirs -->
 	<property name="top.build.dir" value="${project::get-base-directory()}/build" dynamic="true" />
 	<property name="top.dist.dir" value="${project::get-base-directory()}/dist" dynamic="true" />
+
+	<!-- END: global project settings -->
+
+	<!-- START: global build settings -->
+
+	<!-- default configuration: debug|release -->
+	<property name="project.config" value="debug" />
+	<property name="build.defines" value="" />
+	<property name="build.number" value="${math::abs(math::floor(timespan::get-total-days(datetime::now() - datetime::parse('01/01/2000'))))}" />
+
+	<!-- platform specific properties. These are the defaults -->
+	<property name="current.build.defines" value="${build.defines}" />
+
+	<!-- END: global build settings -->
+
+
+	<!-- START: named project configurations -->
 
 	<!-- 
 		Sets config parameters for build type and dynamically defines top-level 
@@ -47,7 +64,6 @@
 	<target name="debug" description="Perform a 'debug' build">
 		<property name="project.config" value="debug" />
 		<property name="build.debug" value="true" />
-		<!--	<property name="build.dir" value="${project::get-base-directory()}/build/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" /> -->
 		<property name="build.dir" value="${top.build.dir}/${project.config}" />
 		<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" />
 		<property name="axiom3d.assemblies.dir" value="${axiom3d.assemblies.topdir}/${project.config}" />
@@ -56,30 +72,12 @@
 	<target name="release" description="Perform a 'release' build">
 		<property name="project.config" value="release" />
 		<property name="build.debug" value="false" />
-		<!--	<property name="build.dir" value="${project::get-base-directory()}/build/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" /> -->
 		<property name="build.dir" value="${top.build.dir}/${project.config}" />
 		<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" />
 		<property name="axiom3d.assemblies.dir" value="${axiom3d.assemblies.topdir}/${project.config}" />
 	</target>
 
-	<!-- global build settings -->
-	<!-- Note: build.dir is dynamic and is defined in the named project configuration tasks (eg. debug, release) -->
-
-	<!-- Settings for the top-level build envirnment -->
-	<property name="build.bin.dir" value="${path::combine(build.dir, 'bin')}" dynamic="true" />
-	<property name="build.lib.dir" value="${path::combine(build.dir, 'lib')}" dynamic="true" />
-
-	<!-- default configuration -->
-	<property name="project.config" value="debug" />
-	<!-- debug|release -->
-	<property name="build.defines" value="" />
-	<property name="build.number" value="${math::abs(math::floor(timespan::get-total-days(datetime::now() - datetime::parse('01/01/2000'))))}" />
-
-	<!-- platform specific properties. These are the defaults -->
-	<property name="current.build.defines" value="${build.defines}" />
-
-
-	<target name="cleanall" description="Deletes every build and dist configuration" depends="build.cleanall, dist.cleanall"/>
+	<!-- END: named project configurations -->
 
 
 	<!-- BEGIN: General build tasks -->
@@ -104,6 +102,8 @@
 	</target>
 
 	<target name="build.all" depends="build.yat" description="Build everything"/>
+
+	<target name="cleanall" description="Deletes every build and dist configuration" depends="build.cleanall, dist.cleanall"/>
 
 	<!-- END: General build tasks -->
 
@@ -283,6 +283,7 @@
 	</target>
 
 	<target name="dist" description="Prepares YAT for distribution and packages it into a zip file" depends="dist.zip" unless="${target::has-executed('dist')}" />
-<!-- END: General Distribution targets -->
+
+	<!-- END: Distribution targets -->
 
 </project>
