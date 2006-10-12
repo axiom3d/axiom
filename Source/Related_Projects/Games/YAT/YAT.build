@@ -276,7 +276,7 @@
 
 	<target name="dist.zip" description="Package the distribution files for the current build configuration into a zip file" unless="${target::has-executed('dist.zip')}" depends="dist.yat" >
 		<zip zipfile="${top.dist.dir}/${project.name}-${project.version.full}-${framework::get-target-framework()}.${platform::get-name()}.zip" >
-			<fileset basedir="${dist.dir}" >
+			<fileset basedir="${dist.dir}" prefix="${project.name}-${project.version.full}-${framework::get-target-framework()}.${platform::get-name()}">
 				<include name="**/*" />
 			</fileset>
 		</zip>
