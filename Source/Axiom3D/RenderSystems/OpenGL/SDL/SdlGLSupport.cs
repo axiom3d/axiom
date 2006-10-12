@@ -3,9 +3,9 @@
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+The overall design, and a majority of the core engine and rendering code
+contained within this library is a derivative of the open source Object Oriented
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
 Many thanks to the OGRE team for maintaining such a high quality project.
 
 This library is free software; you can redistribute it and/or
@@ -71,7 +71,7 @@ namespace Axiom.RenderSystems.OpenGL
         }
 
         /// <summary>
-        ///		
+        ///
         /// </summary>
         public override void AddConfig()
         {
@@ -121,7 +121,7 @@ namespace Axiom.RenderSystems.OpenGL
         }
 
         /// <summary>
-        ///		
+        ///
         /// </summary>
         /// <param name="name"></param>
         /// <param name="width"></param>
@@ -142,7 +142,7 @@ namespace Axiom.RenderSystems.OpenGL
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="autoCreateWindow"></param>
         /// <param name="renderSystem"></param>
@@ -165,7 +165,7 @@ namespace Axiom.RenderSystems.OpenGL
                 height = int.Parse( vm.Substring( vm.IndexOf( "x" ) + 1, vm.IndexOf( "@" ) - ( vm.IndexOf( "x" ) + 1 ) ) );
                 bpp = int.Parse( vm.Substring( vm.IndexOf( "@" ) + 1, vm.IndexOf( "-" ) - ( vm.IndexOf( "@" ) + 1 ) ) );
 
-                fullScreen = ( ConfigOptions[ "Full Screen" ].Value == "Yes" );
+                fullScreen = ( ConfigOptions[ "Full Screen" ].Value == "No" );
 
                 // create the window with the default form as the target
                 autoWindow = renderSystem.CreateRenderWindow( windowTitle, width, height, 32, fullScreen, 0, 0, true, false, null );
