@@ -142,19 +142,10 @@
 		</fileset>
 
 		<fileset id="terraindemo.runtime.references">
-			<include name="${build.dir}/PagingLandscape/${project::get-name()}.dll" />
-
-			<include name="System.dll"/>
-			<include name="System.Data.dll"/>
-			<include name="System.Drawing.dll"/>
-			<include name="System.Windows.Forms.dll"/>
-			<include name="System.Xml.dll"/>
 
 			<include name="${axiom3d.assemblies.dir}/Axiom.dll"/>
 			<include name="${axiom3d.assemblies.dir}/Axiom.Plugins.CgProgramManager.dll"/>
 			<include name="${axiom3d.assemblies.dir}/Axiom.Plugins.ParticleFX.dll"/>
-			<include name="${axiom3d.assemblies.dir}/Axiom.SceneManagers.Bsp.dll"/>
-			<include name="${axiom3d.assemblies.dir}/Axiom.SceneManagers.Octree.dll"/>
 			<include name="${axiom3d.assemblies.dir}/Axiom.RenderSystems.OpenGL.dll"/>
 
 			<include if="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.Platforms.Win32.dll"/>
@@ -198,7 +189,7 @@
 		<mkdir dir="${build.dir}/PagingLandscape" />
 	</target>
 
-	<target name="build.terraindemo.setup" depends="build.setup, references.setup" unless="${target::has-executed('build.terraindemo.setup')}" description="Sets up build area for terrain demo">
+	<target name="build.terraindemo.setup" depends="build.setup, references.setup, build.paginglandscape" unless="${target::has-executed('build.terraindemo.setup')}" description="Sets up build area for terrain demo">
 
 		<!-- ensure build directory exists -->
 		<mkdir dir="${build.dir}/TerrainDemo" />
@@ -234,6 +225,13 @@
 			<fileset refid="terraindemo.runtime.references" />
 		</copy>
 
+		<echo message="Copying PagingLandscape assemblies" />
+		<copy todir="${build.dir}/TerrainDemo">
+			<fileset basedir="${build.dir}/PagingLandscape">
+				<include name="*/**"/>
+			</fileset>
+		</copy>
+
 	</target>
 
 	<target name="build.paginglandscape" depends="build.paginglandscape.setup" description="Builds the PagingLandscape SceneManager for the current build configuration" unless="${target::has-executed('build.paginglandscape')}">
@@ -249,8 +247,10 @@
 				<warning number="1591" />
 				<!-- do not report deprecation warnings -->
 				<warning number="0618" />
+				<warning number="1570" />
 				<warning number="1572" />
 				<warning number="1573" />
+				<warning number="1574" />
 				<warning number="219"/>
 				<warning number="168"/>
 				<warning number="414"/>
@@ -267,7 +267,7 @@
 		</csc>
 	</target>
 
-	<target name="build.terraindemo" depends="build.terraindemo.setup, build.paginglandscape" description="Builds the PagingLandscape SceneManager Terrain Demo for the current build configuration" unless="${target::has-executed('build.terraindemo')}">
+	<target name="build.terraindemo" depends="build.terraindemo.setup" description="Builds the PagingLandscape SceneManager Terrain Demo for the current build configuration" unless="${target::has-executed('build.terraindemo')}">
 		<property name="unsafe" value="true" />
 		<property name="warnaserror" value="false"/>
 		<property name="warninglevel" value="1" />
