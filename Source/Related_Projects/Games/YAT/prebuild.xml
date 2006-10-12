@@ -42,25 +42,25 @@
 		<Project name="YAT" path="." type="WinExe" rootNamespace="YAT">
 			<Configuration name="Debug">
 				<Options>
-				    <OutputPath>../../../../build/debug/YAT</OutputPath>
+				    <OutputPath>build/debug/YAT</OutputPath>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
-				    <OutputPath>../../../../build/release/YAT</OutputPath>
+				    <OutputPath>build/release/YAT</OutputPath>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<?if OS = "Win32" ?>
 			
 			<ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
-			<ReferencePath>../../../../Dependencies/Managed/DotNet/Axiom3D</ReferencePath>
+			<ReferencePath>../../../../Dependencies/Managed/Axiom3D</ReferencePath>
 			
 			<?else ?>
 			
 			<ReferencePath>../../../../Dependencies/Managed/Mono</ReferencePath>
-			<ReferencePath>../../../../Dependencies/Managed/Mono/Axiom3D</ReferencePath>
+			<ReferencePath>../../../../Dependencies/Managed/Axiom3D</ReferencePath>
 			
 			<?endif ?>
 			<Reference name="System"/>
