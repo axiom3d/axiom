@@ -251,7 +251,7 @@ namespace TerrainDemo {
 				viewport.OverlaysEnabled = !viewport.OverlaysEnabled;
 			}
 
-			if(!input.IsMousePressed(MouseButtons.Button0)) 
+			if(!input.IsMousePressed(MouseButtons.Left)) 
 			{
 				float cameraYaw = -input.RelativeMouseX * .13f;
 				float cameraPitch = -input.RelativeMouseY * .13f;
