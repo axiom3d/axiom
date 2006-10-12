@@ -194,17 +194,17 @@ namespace YAT
 
 			// allow for setting up resource gathering
 			SetupResources();
-            window = Root.Instance.Initialize(true, "Axiom Engine Tetris Window");
-
 
 			//show the config dialog and collect options
             if ( !Configure() )
             {
                 // shutting right back down
                 engine.Shutdown();
-
+				
                 return false;
             }
+
+            window = Root.Instance.Initialize(true, "Axiom Engine Tetris Window");
 
             ShowDebugOverlay(showDebugOverlay);
 
