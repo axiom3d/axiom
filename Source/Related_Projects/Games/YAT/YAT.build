@@ -79,6 +79,9 @@
 	<property name="current.build.defines" value="${build.defines}" />
 
 
+	<target name="cleanall" description="Deletes every build and dist configuration" depends="build.cleanall, dist.cleanall"/>
+
+
 	<!-- BEGIN: General build tasks -->
 	<target name="init" description="Initializes build properties" unless="${target::has-executed('init')}">
 		<call target="${project.config}" />
@@ -93,8 +96,6 @@
 		<echo message="Deleting all builds from all configurations" />
 		<delete dir="${top.build.dir}" if="${directory::exists(top.build.dir)}" />
 	</target>
-
-	<target name="cleanall" description="Deletes every build and dist configuration" depends="build.cleanall"/>
 
 	<target name="build.setup" depends="init" unless="${target::has-executed('build.setup')}" description="Sets up build area">
 		<echo message="Build Directory is ${build.dir}" />
@@ -246,5 +247,42 @@
 		<echo message="Running YAT!"/>
 		<exec program="${build.dir}/${project::get-name()}.exe" useruntimeengine="true" workingdir="${build.dir}" />
 	</target>
+
+	<!-- BEGIN: Distribution targets -->
+	
+	<target name="dist.setup" description="General setup of the distribution directory" depends="init" unless="${target::has-executed('dist.setup')}">
+		<echo message="dist Directory is ${dist.dir}" />
+		<!-- ensure dist directory exists -->
+		<mkdir dir="${dist.dir}" />
+	</target>
+
+	<target name="dist.clean" description="Cleans the dist dir for the current build configuration" depends="init">
+		<delete dir="${dist.dir}" if="${directory::exists(dist.dir)}" />
+	</target>
+
+	<target name="dist.cleanall" description="Cleans every dist configuration">
+		<delete dir="${top.dist.dir}" if="${directory::exists(top.dist.dir)}" />
+	</target>
+
+	<target name="dist.yat" description="Prepares YAT for distribution for the current build configuration" depends="build.yat, dist.setup" unless="${target::has-executed('dist.yat')}" >
+		<!-- Take the simple approach for now: copy everything in the build directory to the dist directory -->
+		<copy todir="${dist.dir}">
+			<fileset basedir="${build.dir}">
+				<include name="**" />
+				<exclude name="*.log" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="dist.zip" description="Package the distribution files for the current build configuration into a zip file" unless="${target::has-executed('dist.zip')}" depends="dist.yat" >
+		<zip zipfile="${top.dist.dir}/${project.name}-${project.version.full}-${framework::get-target-framework()}.${platform::get-name()}.zip" >
+			<fileset basedir="${dist.dir}" >
+				<include name="**/*" />
+			</fileset>
+		</zip>
+	</target>
+
+	<target name="dist" description="Prepares YAT for distribution and packages it into a zip file" depends="dist.zip" unless="${target::has-executed('dist')}" />
+<!-- END: General Distribution targets -->
 
 </project>
