@@ -84,6 +84,8 @@
 	<target name="init" description="Initializes build properties" unless="${target::has-executed('init')}">
 		<call target="${project.config}" />
 		<call target="set-framework-configuration" />
+		<property name="paginglandscape.build.dir" value="${build.dir}/PagingLandscape" />
+		<property name="terraindemo.build.dir" value="${build.dir}/TerrainDemo" />
 	</target>
 
 	<target name="build.clean" depends="init" description="Deletes current build configuration">
@@ -186,16 +188,16 @@
 
 	<target name="build.paginglandscape.setup" depends="build.setup, references.setup" unless="${target::has-executed('build.paginglandscape.setup')}" description="Sets up build area">
 		<!-- ensure build directory exists -->
-		<mkdir dir="${build.dir}/PagingLandscape" />
+		<mkdir dir="${paginglandscape.build.dir}" />
 	</target>
 
 	<target name="build.terraindemo.setup" depends="build.setup, references.setup, build.paginglandscape" unless="${target::has-executed('build.terraindemo.setup')}" description="Sets up build area for terrain demo">
 
 		<!-- ensure build directory exists -->
-		<mkdir dir="${build.dir}/TerrainDemo" />
+		<mkdir dir="${terraindemo.build.dir}" />
 		
 		<!-- Copy any essential files over -->
-		<copy todir="${build.dir}/TerrainDemo">
+		<copy todir="${terraindemo.build.dir}">
 			<fileset basedir="TerrainDemo">
 				<include name="EngineConfig.xml" />
 				<include name="Landscape.xml" />
@@ -204,30 +206,34 @@
 		</copy>
 
 		<!-- Copy the media over to the build dir -->
-		<copy todir="${build.dir}/TerrainDemo" >
+		<copy todir="${terraindemo.build.dir}" >
 			<fileset>
 				<include name="SampleData/**" />
 			</fileset>
 		</copy>
 
 		<!-- Grab some stuff from the global Axiom Media folder -->
-		<copy todir="${build.dir}/TerrainDemo/Media" >
+		<copy todir="${terraindemo.build.dir}/Media" >
 			<fileset>
-				<include name="../../../../Media/Overlays/Debug.overlay" />
-				<include name="../../../../Media/Fonts/*" />
-				<include name="../../../../Media/Icons/AxiomIcon.ico" />
-				<include name="../../../../Media/Logos/AxiomLogoSmall.png" />
+				<include name="../../../../../Media/Overlays/Debug.overlay" />
+				<include name="../../../../../Media/Fonts/*" />
+				<include name="../../../../../Media/Materials/Core.material" />
+				<include name="../../../../../Media/Materials/Terrain.material" />
+				<include name="../../../../../Media/Textures/Border*" />
+				<include name="../../../../../Media/Textures/Water*" />
+				<include name="../../../../../Media/Icons/AxiomIcon.ico" />
+				<include name="../../../../../Media/Logos/AxiomLogo.png" />
 			</fileset>
 		</copy>
 
-		<copy todir="${build.dir}/TerrainDemo">
+		<copy todir="${terraindemo.build.dir}">
 			<!-- Copy references - we'll need these at runtime -->
 			<fileset refid="terraindemo.runtime.references" />
 		</copy>
 
 		<echo message="Copying PagingLandscape assemblies" />
-		<copy todir="${build.dir}/TerrainDemo">
-			<fileset basedir="${build.dir}/PagingLandscape">
+		<copy todir="${terraindemo.build.dir}">
+			<fileset basedir="${paginglandscape.build.dir}">
 				<include name="*/**"/>
 			</fileset>
 		</copy>
@@ -241,7 +247,7 @@
 		<property name="verbose" value="false" />
 	
 		<!-- build it -->
-		<csc target="library" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" verbose="${verbose}" output="${build.dir}/PagingLandscape/${project::get-name()}.dll" doc="${build.dir}/PagingLandscape/${project::get-name()}.xml">
+		<csc target="library" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" verbose="${verbose}" output="${paginglandscape.build.dir}/${project::get-name()}.dll" doc="${paginglandscape.build.dir}/${project::get-name()}.xml">
 			<nowarn>
 				<!-- do not report warnings for missing XML comments -->
 				<warning number="1591" />
@@ -274,7 +280,7 @@
 		<property name="verbose" value="false" />
 	
 		<!-- build it -->
-		<csc target="exe" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" verbose="${verbose}" output="${build.dir}/TerrainDemo/TerrainDemo.exe" >
+		<csc target="exe" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" verbose="${verbose}" output="${terraindemo.build.dir}/TerrainDemo.exe" >
 			<nowarn>
 				<!-- do not report warnings for missing XML comments -->
 				<warning number="1591" />
@@ -290,11 +296,6 @@
 			<sources failonempty="true">
 				<include name="TerrainDemo/**/*.cs" />
 			</sources>
-			<!--
-			<resources prefix="yat" dynamicprefix="true">
-				<include name="Resources/**/*" />
-			</resources>
-			-->
 			<references refid="terraindemo.build.references" />
 		</csc>
 	</target>
@@ -303,7 +304,7 @@
 
 	<target name="run.terraindemo" description="Run the terrain demo app" depends="build.terraindemo">
 		<echo message="Running PagingLandscape Terrain Demo!"/>
-		<exec program="${build.dir}/TerrainDemo/TerrainDemo.exe" useruntimeengine="true" workingdir="${build.dir}/TerrainDemo" />
+		<exec program="${terraindemo.build.dir}/TerrainDemo.exe" useruntimeengine="true" workingdir="${terraindemo.build.dir}" />
 	</target>
 
 	<!-- BEGIN: Distribution targets -->
@@ -325,16 +326,16 @@
 	<target name="dist.paginglandscape" description="Prepares PagingLandscape for distribution for the current build configuration" depends="build.paginglandscape, dist.setup" unless="${target::has-executed('dist.paginglandscape')}" >
 		<!-- Take the simple approach for now: copy everything in the build directory to the dist directory -->
 		<copy todir="${dist.dir}">
-			<fileset basedir="${build.dir}/PagingLandscape">
+			<fileset basedir="${paginglandscape.build.dir}">
 				<include name="**" />
 			</fileset>
 		</copy>
 	</target>
 
-	<target name="dist.terraindemo" description="Prepares the terrain demo for distribution for the current build configuration" depends="build.terraindemo, dist.setup" unless="${target::has-executed('dist.paginglandscape')}" >
+	<target name="dist.terraindemo" description="Prepares the terrain demo for distribution for the current build configuration" depends="build.terraindemo, dist.setup" unless="${target::has-executed('dist.terraindemo')}" >
 		<!-- Take the simple approach for now: copy everything in the build directory to the dist directory -->
 		<copy todir="${dist.dir}">
-			<fileset basedir="${build.dir}/TerrainDemo">
+			<fileset basedir="${terraindemo.build.dir}">
 				<include name="**" />
 			</fileset>
 		</copy>
