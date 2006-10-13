@@ -24,11 +24,11 @@
 	
 	<!-- Axiom build and run-time dependencies -->
 	<!-- Define locations of Axiom dependencies top-level directory.  Required. -->
-	<property name="dependencies.topdir" value="${project::get-base-directory()}/../../Dependencies" dynamic="false" />
+	<property name="libs.topdir" value="${project::get-base-directory()}/../../Lib" dynamic="false" />
 	<!-- Load aliases for managed and native dependencies -->
-	<include verbose="true" buildfile="${path::combine(dependencies.topdir, 'AxiomDependencies.include')}" />
+	<include verbose="true" buildfile="${path::combine(libs.topdir, 'AxiomDependencies.include')}" />
 	<!-- Load aliases for compiled Axiom assemblies -->
-	<include verbose="true" buildfile="${path::combine(dependencies.topdir, 'AxiomAssemblies.include')}" />
+	<include verbose="true" buildfile="${path::combine(libs.topdir, 'AxiomAssemblies.include')}" />
 
 	<!-- named project configurations -->
 

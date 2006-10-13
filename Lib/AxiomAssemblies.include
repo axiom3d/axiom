@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<project name="AxiomDependencies">
+<project name="AxiomAssemblies">
 	<!-- Aliases for compiled Axiom binaries -->
 	<!-- Include this in your build file(s) using the "include" NAnt task -->
     <!-- NOTE: dynamic should be false for these aliases so nested buildfiles don't change the path-->
@@ -23,7 +23,7 @@
 
 
 	<!-- Define directory aliases for Axiom3D assemblies relative to the top-level dependencies dir -->
-	<property name="axiom3d.assemblies.topdir" value="${path::combine(dependencies.topdir, 'Managed/Axiom3D')}" dynamic="false" />
+	<property name="axiom3d.assemblies.topdir" value="${path::combine(libs.topdir, 'Managed/Axiom3D')}" dynamic="false" />
 	
 	<!-- 
 		Debug and Release dirs can be explicitly defined here if you need this.
