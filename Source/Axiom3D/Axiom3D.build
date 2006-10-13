@@ -22,17 +22,17 @@
 	<!-- Framework support targets  -->
 	<include verbose="false" buildfile="${path::combine(build.includes.dir, 'frameworksupport.include')}" />
 	
-	<!-- Axiom build and run-time dependencies -->
-	<!-- Define locations of Axiom dependencies top-level directory.  Required. -->
-	<property name="dependencies.topdir" value="${project::get-base-directory()}/../../Dependencies" dynamic="false" />
-	<!-- Load aliases for managed and native dependencies -->
-	<include verbose="true" buildfile="${path::combine(dependencies.topdir, 'AxiomDependencies.include')}" />
+	<!-- Axiom build and run-time libs -->
+	<!-- Define locations of Axiom libs top-level directory.  Required. -->
+	<property name="libs.topdir" value="${project::get-base-directory()}/../../Lib" dynamic="false" />
+	<!-- Load aliases for managed and native libs -->
+	<include verbose="true" buildfile="${path::combine(libs.topdir, 'AxiomDependencies.include')}" />
 
 	<!-- named project configurations -->
 
 	<!-- Master build and dist output dirs -->
 	<!-- <property name="top.build.dir" value="${project::get-base-directory()}/../build" dynamic="true" /> -->
-	<property name="top.build.dir" value="${path::combine(dependencies.topdir, 'Managed/Axiom3D')}" />
+	<property name="top.build.dir" value="${path::combine(libs.topdir, 'Managed/Axiom3D')}" />
 	<property name="top.dist.dir" value="${project::get-base-directory()}/../dist" dynamic="true" />
 
 	<!-- 
@@ -307,9 +307,9 @@
 		<exclude name="BuildSupport/**/.svn/**" />
 	</zipfileset>
 	
-	<zipfileset id="fileset.axiom.dependencies" basedir="../.." prefix="Axiom">
-		<include name="Dependencies/**" />
-		<exclude name="Dependencies/**/.svn/**" />
+	<zipfileset id="fileset.axiom.libs" basedir="../.." prefix="Axiom">
+		<include name="Lib/**" />
+		<exclude name="Lib/**/.svn/**" />
 	</zipfileset>
 	
 	<zipfileset id="fileset.axiom.media" basedir="../../" prefix="Axiom">
@@ -327,7 +327,7 @@
 		<zip zipfile="${dist.dir + '/axiom-' + project.version + '-src.zip'}">
 			<fileset refid="fileset.axiom.source" />
 			<fileset refid="fileset.axiom.buildtools" />
-			<fileset refid="fileset.axiom.dependencies" />
+			<fileset refid="fileset.axiom.libs" />
 		</zip>
 
 	</target>
@@ -348,7 +348,7 @@
 		<zip zipfile="${dist.dir + '/axiom-' + project.version + '-full.zip'}">
 			<fileset refid="fileset.axiom.source" />
 			<fileset refid="fileset.axiom.buildtools" />
-			<fileset refid="fileset.axiom.dependencies" />
+			<fileset refid="fileset.axiom.libs" />
 			<fileset refid="fileset.axiom.media" />
 			<fileset refid="fileset.axiom.binary" />
 		</zip>

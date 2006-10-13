@@ -26,12 +26,12 @@
 	
 	<!-- Axiom build and run-time dependencies -->
 	<!-- Define locations of Axiom dependencies top-level directory.  Required. -->
-	<property name="dependencies.topdir" value="${project::get-base-directory()}/../../../../../Dependencies" dynamic="false" />
+	<property name="libs.topdir" value="${project::get-base-directory()}/../../../../../Lib" dynamic="false" />
 
 	<!-- Load aliases for managed and native dependencies -->
-	<include verbose="true" buildfile="${path::combine(dependencies.topdir, 'AxiomDependencies.include')}" />
+	<include verbose="true" buildfile="${path::combine(libs.topdir, 'AxiomDependencies.include')}" />
 	<!-- Load aliases for compiled Axiom assemblies -->
-	<include verbose="true" buildfile="${path::combine(dependencies.topdir, 'AxiomAssemblies.include')}" />
+	<include verbose="true" buildfile="${path::combine(libs.topdir, 'AxiomAssemblies.include')}" />
 
 	<!-- Master build and dist output dirs -->
 	<property name="top.build.dir" value="${project::get-base-directory()}/build" dynamic="true" />
@@ -178,7 +178,7 @@
 
 			<!-- Dump all the native dependencies into the build directory if on Windows -->
 			<!-- NOTE: This is a little sloppy - should really only reference the deps we need -->
-			<include if="${platform::is-win32()}" name="${native.dependencies.win32.dir}/*.dll"/>
+			<include if="${platform::is-win32()}" name="${native.libs.win32.dir}/*.dll"/>
 			
 			<!-- Note that all the Linux native deps should be installed by the distribution, 
 			so they aren't handled here.  We just assume they are there -->
