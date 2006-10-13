@@ -325,7 +325,7 @@
 
 	<target name="dist.paginglandscape" description="Prepares PagingLandscape for distribution for the current build configuration" depends="build.paginglandscape, dist.setup" unless="${target::has-executed('dist.paginglandscape')}" >
 		<!-- Take the simple approach for now: copy everything in the build directory to the dist directory -->
-		<copy todir="${dist.dir}">
+		<copy todir="${dist.dir}/PagingLandscape">
 			<fileset basedir="${paginglandscape.build.dir}">
 				<include name="**" />
 			</fileset>
@@ -334,7 +334,7 @@
 
 	<target name="dist.terraindemo" description="Prepares the terrain demo for distribution for the current build configuration" depends="build.terraindemo, dist.setup" unless="${target::has-executed('dist.terraindemo')}" >
 		<!-- Take the simple approach for now: copy everything in the build directory to the dist directory -->
-		<copy todir="${dist.dir}">
+		<copy todir="${dist.dir}/TerrainDemo">
 			<fileset basedir="${terraindemo.build.dir}">
 				<include name="**" />
 			</fileset>
