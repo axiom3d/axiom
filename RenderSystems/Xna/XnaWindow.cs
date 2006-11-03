@@ -38,7 +38,7 @@ using D3D = Microsoft.Xna.Framework;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.Xna
+namespace Axiom.RenderSystems.XNA
 {
     /// <summary>
     /// The Direct3D implementation of the RenderWindow class.

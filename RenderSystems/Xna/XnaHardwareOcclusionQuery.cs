@@ -36,13 +36,13 @@ using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.DirectX9
+namespace Axiom.RenderSystems.XNA
 {
     /// <summary>
     ///		Direct3D implementation of a hardware occlusion query.
     /// </summary>
     // Original Author: Lee Sandberg
-    public class D3DHardwareOcclusionQuery : IHardwareOcclusionQuery
+    public class XNAHardwareOcclusionQuery : IHardwareOcclusionQuery
     {
         #region Fields
 
@@ -79,7 +79,7 @@ namespace Axiom.RenderSystems.DirectX9
         ///		Default constructor.
         /// </summary>
         /// <param name="device">Reference to a Direct3D device.</param>
-        public D3DHardwareOcclusionQuery( D3D.Graphics.GraphicsDevice device )
+        public XNAHardwareOcclusionQuery( D3D.Graphics.GraphicsDevice device )
         {
             this.device = device;
 

@@ -57,12 +57,12 @@ using Axiom.Configuration;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.Xna
+namespace Axiom.RenderSystems.XNA
 {
     /// <summary>
     /// DirectX9 Render System implementation.
     /// </summary>
-    public class D3D9RenderSystem : RenderSystem
+    public class XNARenderSystem : RenderSystem
     {
 
         public static readonly Matrix4 ProjectionClipSpace2DToImageSpacePerspective = new Matrix4(
@@ -95,7 +95,7 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         ///		Should we use the W buffer? (16 bit color only).
         /// </summary>
-        protected bool useWBuffer;
+        //protected bool useWBuffer;
 
         /// <summary>
         ///    Number of streams used last frame, used to unbind any buffers not used during the current operation.
@@ -103,7 +103,7 @@ namespace Axiom.RenderSystems.Xna
         protected int numLastStreams;
 
         // stores texture stage info locally for convenience
-        internal D3DTextureStageDesc[] texStageDesc = new D3DTextureStageDesc[ Config.MaxTextureLayers ];
+        internal XNATextureStageDesc[] texStageDesc = new XNATextureStageDesc[ Config.MaxTextureLayers ];
 
         protected int primCount;
         protected int renderCount = 0;
@@ -114,7 +114,7 @@ namespace Axiom.RenderSystems.Xna
         const int MAX_LIGHTS = 8;
         protected Axiom.Core.Light[] lights = new Axiom.Core.Light[ MAX_LIGHTS ];
 
-        protected D3DGpuProgramManager gpuProgramMgr;
+        protected XNAGpuProgramManager gpuProgramMgr;
 
         /// Saved last view matrix
         protected Matrix4 viewMatrix = Matrix4.Identity;
@@ -124,7 +124,7 @@ namespace Axiom.RenderSystems.Xna
         /// </summary>
         private Microsoft.Xna.Framework.Vector4 tempVec = new Microsoft.Xna.Framework.Vector4();
 
-        public D3D9RenderSystem()
+        public XNARenderSystem()
         {
             InitConfigOptions();
 
@@ -133,7 +133,7 @@ namespace Axiom.RenderSystems.Xna
             {
                 texStageDesc[ i ].autoTexCoordType = TexCoordCalcMethod.None;
                 texStageDesc[ i ].coordIndex = 0;
-                texStageDesc[ i ].texType = D3DTexType.Normal;
+                texStageDesc[ i ].texType = XNATextureType.Normal;
                 texStageDesc[ i ].tex = null;
             }
         }
@@ -221,8 +221,8 @@ namespace Axiom.RenderSystems.Xna
             while ( e.MoveNext() )
             {
                 DictionaryEntry entry = (DictionaryEntry)e.Current;
-                D3DHardwareVertexBuffer buffer =
-                    (D3DHardwareVertexBuffer)entry.Value;
+                XNAHardwareVertexBuffer buffer =
+                    (XNAHardwareVertexBuffer)entry.Value;
 
                 short stream = (short)entry.Key;
 
@@ -246,7 +246,7 @@ namespace Axiom.RenderSystems.Xna
         protected void SetVertexDeclaration( VertexDeclaration decl )
         {
             // TODO: Check for duplicate setting and avoid setting if dupe
-            D3DVertexDeclaration d3dVertDecl = (D3DVertexDeclaration)decl;
+            XNAVertexDeclaration d3dVertDecl = (XNAVertexDeclaration)decl;
 
             device.VertexDeclaration = d3dVertDecl.D3DVertexDecl;
         }
@@ -291,7 +291,7 @@ namespace Axiom.RenderSystems.Xna
         /// <returns></returns>
         public override RenderTexture CreateRenderTexture( string name, int width, int height )
         {
-            D3DRenderTexture renderTexture = new D3DRenderTexture( name, width, height );
+            XNARenderTexture renderTexture = new XNARenderTexture( name, width, height );
             AttachRenderTarget( renderTexture );
             return renderTexture;
         }
@@ -399,13 +399,13 @@ namespace Axiom.RenderSystems.Xna
             d3dCaps = newDevice.GraphicsDeviceCapabilities;
 
             // by creating our texture manager, singleton TextureManager will hold our implementation
-            textureMgr = new D3DTextureManager( newDevice );
+            textureMgr = new XNATextureManager( newDevice );
 
             // by creating our Gpu program manager, singleton GpuProgramManager will hold our implementation
-            gpuProgramMgr = new D3DGpuProgramManager( newDevice );
+            gpuProgramMgr = new XNAGpuProgramManager( newDevice );
 
             // intializes the HardwareBufferManager singleton
-            hardwareBufferManager = new D3DHardwareBufferManager( newDevice );
+            hardwareBufferManager = new XNAHardwareBufferManager( newDevice );
 
             CheckCaps( newDevice );
 
@@ -555,7 +555,7 @@ namespace Axiom.RenderSystems.Xna
         public override void SetAlphaRejectSettings( int stage, CompareFunction func, byte val )
         {
             device.RenderState.AlphaTestEnable = ( func != CompareFunction.AlwaysPass );
-            device.RenderState.AlphaFunction = D3DHelper.ConvertEnum( func );
+            device.RenderState.AlphaFunction = XNAHelper.ConvertEnum( func );
             device.RenderState.ReferenceAlpha = val;
         }
 
@@ -603,7 +603,7 @@ namespace Axiom.RenderSystems.Xna
             else
             {
                 // enable fog
-                D3D.Graphics.FogMode d3dFogMode = D3DHelper.ConvertEnum( mode );
+                D3D.Graphics.FogMode d3dFogMode = XNAHelper.ConvertEnum( mode );
                 device.RenderState.FogEnable = true;
                 device.RenderState.FogVertexMode = d3dFogMode;
                 device.RenderState.FogTableMode = D3D.Graphics.FogMode.None;
@@ -640,7 +640,7 @@ namespace Axiom.RenderSystems.Xna
                 renderWindow = CreateRenderWindow( "Main Window", width, height, bpp, fullScreen, 0, 0, true, false, newWindow );
 
                 // use W buffer when in 16 bit color mode
-                useWBuffer = ( renderWindow.ColorDepth == 16 );
+                //useWBuffer = ( renderWindow.ColorDepth == 16 );
 
                 newWindow.Target.Visible = false;
 
@@ -994,8 +994,8 @@ namespace Axiom.RenderSystems.Xna
             // are we gonna use indices?
             if ( op.useIndices )
             {
-                D3DHardwareIndexBuffer idxBuffer =
-                    (D3DHardwareIndexBuffer)op.indexData.indexBuffer;
+                XNAHardwareIndexBuffer idxBuffer =
+                    (XNAHardwareIndexBuffer)op.indexData.indexBuffer;
 
                 // set the index buffer on the device
                 device.Indices = idxBuffer.D3DIndexBuffer;
@@ -1020,7 +1020,7 @@ namespace Axiom.RenderSystems.Xna
         /// <param name="textureName"></param>
         public override void SetTexture( int stage, bool enabled, string textureName )
         {
-            D3DTexture texture = (D3DTexture)TextureManager.Instance.GetByName( textureName );
+            XNATexture texture = (XNATexture)TextureManager.Instance.GetByName( textureName );
 
             if ( enabled && texture != null )
             {
@@ -1028,7 +1028,7 @@ namespace Axiom.RenderSystems.Xna
 
                 // set stage description
                 texStageDesc[ stage ].tex = texture.DXTexture;
-                texStageDesc[ stage ].texType = D3DHelper.ConvertEnum( texture.TextureType );
+                texStageDesc[ stage ].texType = XNAHelper.ConvertEnum( texture.TextureType );
             }
             else
             {
@@ -1042,7 +1042,7 @@ namespace Axiom.RenderSystems.Xna
                 texStageDesc[ stage ].tex = null;
                 texStageDesc[ stage ].autoTexCoordType = TexCoordCalcMethod.None;
                 texStageDesc[ stage ].coordIndex = 0;
-                texStageDesc[ stage ].texType = D3DTexType.Normal;
+                texStageDesc[ stage ].texType = XNATextureType.Normal;
             }
         }
 
@@ -1083,11 +1083,11 @@ namespace Axiom.RenderSystems.Xna
             switch ( program.Type )
             {
                 case GpuProgramType.Vertex:
-                    device.VertexShader = ( (D3DVertexProgram)program ).VertexShader;
+                    device.VertexShader = ( (XNAVertexProgram)program ).VertexShader;
                     break;
 
                 case GpuProgramType.Fragment:
-                    device.PixelShader = ( (D3DFragmentProgram)program ).PixelShader;
+                    device.PixelShader = ( (XNAFragmentProgram)program ).PixelShader;
                     break;
             }
         }
@@ -1253,8 +1253,8 @@ namespace Axiom.RenderSystems.Xna
         public override void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
         {
             // set the render states after converting the incoming values to D3D.Blend
-            device.RenderState.SourceBlend = D3DHelper.ConvertEnum( src );
-            device.RenderState.DestinationBlend = D3DHelper.ConvertEnum( dest );
+            device.RenderState.SourceBlend = XNAHelper.ConvertEnum( src );
+            device.RenderState.DestinationBlend = XNAHelper.ConvertEnum( dest );
         }
 
         /// <summary>
@@ -1272,7 +1272,7 @@ namespace Axiom.RenderSystems.Xna
 
                 bool flip = activeRenderTarget.RequiresTextureFlipping ^ invertVertexWinding;
 
-                device.RenderState.CullMode = D3DHelper.ConvertEnum( value, flip );
+                device.RenderState.CullMode = XNAHelper.ConvertEnum( value, flip );
             }
         }
 
@@ -1306,14 +1306,14 @@ namespace Axiom.RenderSystems.Xna
                 if ( value )
                 {
                     // use w-buffer if available
-                    if ( useWBuffer && d3dCaps.RasterCaps.SupportsWBuffer )
-                    {
-                        device.RenderState.UseWBuffer = true;
-                    }
-                    else
-                    {
+                    //if ( useWBuffer && d3dCaps.RasterCaps.SupportsWBuffer )
+                    //{
+                    //    device.RenderState.UseWBuffer = true;
+                    //}
+                    //else
+                    //{
                         device.RenderState.DepthBufferEnable = true;
-                    }
+                    //}
                 }
                 else
                 {
@@ -1333,7 +1333,7 @@ namespace Axiom.RenderSystems.Xna
             }
             set
             {
-                device.RenderState.DepthBufferFunction = D3DHelper.ConvertEnum( value );
+                device.RenderState.DepthBufferFunction = XNAHelper.ConvertEnum( value );
             }
         }
 
@@ -1454,7 +1454,7 @@ namespace Axiom.RenderSystems.Xna
 
             optDevice.PossibleValues.Clear();
 
-            DriverCollection driverList = D3DHelper.GetDriverInfo();
+            DriverCollection driverList = XNAHelper.GetDriverInfo();
             foreach ( Driver driver in driverList )
             {
                 //string query = string.Format( "{0} x {1} @ {2}-bit colour", mode.Width, mode.Height, mode.ColorDepth.ToString );
@@ -1579,9 +1579,9 @@ namespace Axiom.RenderSystems.Xna
                 device.RenderState.TwoSidedStencilMode = true;
 
                 // use CCW version of the operations
-                device.RenderState.CounterClockwiseStencilFail = D3DHelper.ConvertEnum( stencilFailOp, true );
-                device.RenderState.CounterClockwiseStencilDepthBufferFail = D3DHelper.ConvertEnum( depthFailOp, true );
-                device.RenderState.CounterClockwiseStencilPass = D3DHelper.ConvertEnum( passOp, true );
+                device.RenderState.CounterClockwiseStencilFail = XNAHelper.ConvertEnum( stencilFailOp, true );
+                device.RenderState.CounterClockwiseStencilDepthBufferFail = XNAHelper.ConvertEnum( depthFailOp, true );
+                device.RenderState.CounterClockwiseStencilPass = XNAHelper.ConvertEnum( passOp, true );
             }
             else
             {
@@ -1589,12 +1589,12 @@ namespace Axiom.RenderSystems.Xna
             }
 
             // configure standard version of the stencil operations
-            device.RenderState.StencilFunction = D3DHelper.ConvertEnum( function );
+            device.RenderState.StencilFunction = XNAHelper.ConvertEnum( function );
             device.RenderState.ReferenceStencil = refValue;
             device.RenderState.StencilMask = mask;
-            device.RenderState.StencilFail = D3DHelper.ConvertEnum( stencilFailOp );
-            device.RenderState.StencilDepthBufferFail = D3DHelper.ConvertEnum( depthFailOp );
-            device.RenderState.StencilPass = D3DHelper.ConvertEnum( passOp );
+            device.RenderState.StencilFail = XNAHelper.ConvertEnum( stencilFailOp );
+            device.RenderState.StencilDepthBufferFail = XNAHelper.ConvertEnum( depthFailOp );
+            device.RenderState.StencilPass = XNAHelper.ConvertEnum( passOp );
         }
 
 
@@ -1629,17 +1629,17 @@ namespace Axiom.RenderSystems.Xna
         /// <param name="texAddressingMode"></param>
         public override void SetTextureAddressingMode( int stage, TextureAddressing texAddressingMode )
         {
-            D3D.TextureAddress d3dMode = D3DHelper.ConvertEnum( texAddressingMode );
+            D3D.Graphics.TextureAddressMode d3dMode = XNAHelper.ConvertEnum( texAddressingMode );
 
             // set the device sampler states accordingly
-            device.SamplerState[ stage ].AddressU = d3dMode;
-            device.SamplerState[ stage ].AddressV = d3dMode;
-            device.SamplerState[ stage ].AddressW = d3dMode;
+            device.SamplerStates[ stage ].AddressU = d3dMode;
+            device.SamplerStates[ stage ].AddressV = d3dMode;
+            device.SamplerStates[ stage ].AddressW = d3dMode;
         }
 
         public override void SetTextureBlendMode( int stage, LayerBlendModeEx blendMode )
         {
-            D3D.TextureOperation d3dTexOp = D3DHelper.ConvertEnum( blendMode.operation );
+            D3D.Graphics.TextureArgument d3dTexOp = XNAHelper.ConvertEnum( blendMode );
 
             // TODO: Verify byte ordering
             if ( blendMode.operation == LayerBlendOperationEx.BlendManual )
@@ -1650,12 +1650,12 @@ namespace Axiom.RenderSystems.Xna
             if ( blendMode.blendType == LayerBlendType.Color )
             {
                 // Make call to set operation
-                device.TextureState[ stage ].ColorOperation = d3dTexOp;
+                device.TextureStates[ stage ].ColorOperation = d3dTexOp;
             }
             else if ( blendMode.blendType == LayerBlendType.Alpha )
             {
                 // Make call to set operation
-                device.TextureState[ stage ].AlphaOperation = d3dTexOp;
+                device.TextureStates[ stage ].AlphaOperation = d3dTexOp;
             }
 
             // Now set up sources
@@ -1675,7 +1675,7 @@ namespace Axiom.RenderSystems.Xna
 
             for ( int i = 0; i < 2; i++ )
             {
-                D3D.TextureArgument d3dTexArg = D3DHelper.ConvertEnum( blendSource );
+                D3D.Graphics.TextureArgument d3dTexArg = XNAHelper.ConvertEnum( blendSource );
 
                 // set the texture blend factor if this is manual blending
                 if ( blendSource == LayerBlendSource.Manual )
@@ -1688,22 +1688,22 @@ namespace Axiom.RenderSystems.Xna
                 {
                     if ( i == 0 )
                     {
-                        device.TextureState[ stage ].ColorArgument1 = d3dTexArg;
+                        device.TextureStates[ stage ].ColorArgument1 = d3dTexArg;
                     }
                     else if ( i == 1 )
                     {
-                        device.TextureState[ stage ].ColorArgument2 = d3dTexArg;
+                        device.TextureStates[ stage ].ColorArgument2 = d3dTexArg;
                     }
                 }
                 else if ( blendMode.blendType == LayerBlendType.Alpha )
                 {
                     if ( i == 0 )
                     {
-                        device.TextureState[ stage ].AlphaArgument1 = d3dTexArg;
+                        device.TextureStates[ stage ].AlphaArgument1 = d3dTexArg;
                     }
                     else if ( i == 1 )
                     {
-                        device.TextureState[ stage ].AlphaArgument2 = d3dTexArg;
+                        device.TextureStates[ stage ].AlphaArgument2 = d3dTexArg;
                     }
                 }
 
@@ -1731,7 +1731,7 @@ namespace Axiom.RenderSystems.Xna
             // store
             texStageDesc[ stage ].coordIndex = index;
 
-            device.TextureState[ stage ].TextureCoordinateIndex = D3DHelper.ConvertEnum( texStageDesc[ stage ].autoTexCoordType, d3dCaps ) | index;
+            device.TextureState[ stage ].TextureCoordinateIndex = XNAHelper.ConvertEnum( texStageDesc[ stage ].autoTexCoordType, d3dCaps ) | index;
         }
 
         /// <summary>
@@ -1742,8 +1742,8 @@ namespace Axiom.RenderSystems.Xna
         /// <param name="filter"></param>
         public override void SetTextureUnitFiltering( int stage, FilterType type, FilterOptions filter )
         {
-            D3DTexType texType = texStageDesc[ stage ].texType;
-            D3D.TextureFilter texFilter = D3DHelper.ConvertEnum( type, filter, d3dCaps, texType );
+            XNATextureType texType = texStageDesc[ stage ].texType;
+            D3D.TextureFilter texFilter = XNAHelper.ConvertEnum( type, filter, d3dCaps, texType );
 
             switch ( type )
             {
@@ -1868,7 +1868,7 @@ namespace Axiom.RenderSystems.Xna
             D3D.TransformType d3dTransType = (D3D.TransformType)( (int)( D3D.TransformType.Texture0 ) + stage );
 
             // set the matrix if it is not the identity
-            if ( !D3DHelper.IsIdentity( ref d3dMat ) )
+            if ( !XNAHelper.IsIdentity( ref d3dMat ) )
             {
                 // tell D3D the dimension of tex. coord
                 int texCoordDim = 0;
@@ -1880,11 +1880,11 @@ namespace Axiom.RenderSystems.Xna
                 {
                     switch ( texStageDesc[ stage ].texType )
                     {
-                        case D3DTexType.Normal:
+                        case XNATextureType.Normal:
                             texCoordDim = (int)D3D.TextureTransform.Count2;
                             break;
-                        case D3DTexType.Cube:
-                        case D3DTexType.Volume:
+                        case XNATextureType.Cube:
+                        case XNATextureType.Volume:
                             texCoordDim = (int)D3D.TextureTransform.Count3;
                             break;
                     }
@@ -1931,11 +1931,9 @@ namespace Axiom.RenderSystems.Xna
             // max active lights
             caps.MaxLights = d3dCaps.MaxActiveLights;
 
-            D3D.Surface surface = device.DepthStencilSurface;
-            D3D.SurfaceDescription surfaceDesc = surface.Description;
-            surface.Dispose();
+            D3D.Graphics.Surface surface = device.DepthStencilSurface;
 
-            if ( surfaceDesc.Format == D3D.Graphics.SurfaceFormat.Depth24Stencil8 || surfaceDesc.Format == D3D.Graphics.SurfaceFormat.Depth24Stencil8Single )
+            if ( surface.Format == D3D.Graphics.SurfaceFormat.Depth24Stencil8 || surface.Format == D3D.Graphics.SurfaceFormat.Depth24Stencil8Single )
             {
                 caps.SetCap( Capabilities.StencilBuffer );
                 // always 8 here
@@ -2253,10 +2251,10 @@ namespace Axiom.RenderSystems.Xna
     /// <summary>
     ///		Structure holding texture unit settings for every stage
     /// </summary>
-    internal struct D3DTextureStageDesc
+    internal struct XNATextureStageDesc
     {
         /// the type of the texture
-        public D3DTexType texType;
+        public XNATextureType texType;
         /// wich texCoordIndex to use
         public int coordIndex;
         /// type of auto tex. calc. used
@@ -2268,9 +2266,9 @@ namespace Axiom.RenderSystems.Xna
     }
 
     /// <summary>
-    ///		D3D texture types
+    ///		XNA texture types
     /// </summary>
-    public enum D3DTexType
+    public enum XNATextureType
     {
         Normal,
         Cube,

@@ -3,7 +3,7 @@ using System;
 using Axiom;
 using Axiom.Graphics;
 
-namespace Axiom.RenderSystems.Xna.HLSL
+namespace Axiom.RenderSystems.XNA.HLSL
 {
     /// <summary>
     /// Summary description for HLSLProgramFactory.

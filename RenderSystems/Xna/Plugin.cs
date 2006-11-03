@@ -39,7 +39,7 @@ using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.Xna
+namespace Axiom.RenderSystems.XNA
 {
     /// <summary>
     /// Summary description for Plugin.
@@ -51,11 +51,12 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         ///     Factory for HLSL programs.
         /// </summary>
-        private HLSL.HLSLProgramFactory factory = new HLSL.HLSLProgramFactory();
+        //private HLSL.HLSLProgramFactory factory = new HLSL.HLSLProgramFactory();
+
         /// <summary>
         ///     Reference to the render system instance.
         /// </summary>
-        private RenderSystem renderSystem = new D3D9RenderSystem();
+        private RenderSystem renderSystem = new XNARenderSystem();
 
         #endregion Fields
 
@@ -67,12 +68,12 @@ namespace Axiom.RenderSystems.Xna
             Root.Instance.RenderSystems.Add( "Xna", renderSystem );
 
             // register the HLSL program manager
-            HighLevelGpuProgramManager.Instance.AddFactory( factory );
+            //HighLevelGpuProgramManager.Instance.AddFactory( factory );
         }
 
         public void Stop()
         {
-            // nothiing at the moment
+            // nothing at the moment
             renderSystem.Shutdown();
         }
 

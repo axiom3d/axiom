@@ -38,12 +38,12 @@ using Axiom.Core;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.Xna
+namespace Axiom.RenderSystems.XNA
 {
     /// <summary>
     /// 	Summary description for D3DHardwareVertexBuffer.
     /// </summary>
-    public class D3DHardwareVertexBuffer : HardwareVertexBuffer
+    public class XNAHardwareVertexBuffer : HardwareVertexBuffer
     {
         #region Member variables
 
@@ -54,7 +54,7 @@ namespace Axiom.RenderSystems.Xna
 
         #region Constructors
 
-        public D3DHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage,
+        public XNAHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage,
             D3D.Graphics.GraphicsDevice device, bool useSystemMemory, bool useShadowBuffer )
             : base( vertexSize, numVertices, usage, useSystemMemory, useShadowBuffer )
         {
@@ -62,7 +62,7 @@ namespace Axiom.RenderSystems.Xna
             d3dBuffer = new D3D.Graphics.VertexBuffer(
                 device,
                 sizeInBytes,
-                D3DHelper.ConvertEnum( usage ),
+                XNAHelper.ConvertEnum( usage ),
                 useSystemMemory ? D3D.Graphics.ResourcePool.SystemMemory : D3D.Graphics.ResourcePool.Default );
         }
 

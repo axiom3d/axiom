@@ -38,7 +38,7 @@ using Axiom.Core;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.Xna {
+namespace Axiom.RenderSystems.XNA {
 	
 	public class DefaultForm : System.Windows.Forms.Form {
 		private System.Windows.Forms.PictureBox pictureBox1;

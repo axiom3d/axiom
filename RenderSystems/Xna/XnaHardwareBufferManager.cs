@@ -37,12 +37,12 @@ using D3D = Microsoft.Xna.Framework;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.Xna
+namespace Axiom.RenderSystems.XNA
 {
     /// <summary>
     /// 	Summary description for D3DHardwareBufferManager.
     /// </summary>
-    public class D3DHardwareBufferManager : HardwareBufferManager
+    public class XNAHardwareBufferManager : HardwareBufferManager
     {
         #region Member variables
 
@@ -56,7 +56,7 @@ namespace Axiom.RenderSystems.Xna
         ///		
         /// </summary>
         /// <param name="device"></param>
-        public D3DHardwareBufferManager( D3D.Graphics.GraphicsDevice device )
+        public XNAHardwareBufferManager( D3D.Graphics.GraphicsDevice device )
         {
             this.device = device;
         }
@@ -73,7 +73,7 @@ namespace Axiom.RenderSystems.Xna
 
         public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
         {
-            D3DHardwareIndexBuffer buffer = new D3DHardwareIndexBuffer( type, numIndices, usage, device, false, useShadowBuffer );
+            XNAHardwareIndexBuffer buffer = new XNAHardwareIndexBuffer( type, numIndices, usage, device, false, useShadowBuffer );
             indexBuffers.Add( buffer );
             return buffer;
         }
@@ -86,14 +86,14 @@ namespace Axiom.RenderSystems.Xna
 
         public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
         {
-            D3DHardwareVertexBuffer buffer = new D3DHardwareVertexBuffer( vertexSize, numVerts, usage, device, false, useShadowBuffer );
+            XNAHardwareVertexBuffer buffer = new XNAHardwareVertexBuffer( vertexSize, numVerts, usage, device, false, useShadowBuffer );
             vertexBuffers.Add( buffer );
             return buffer;
         }
 
         public override VertexDeclaration CreateVertexDeclaration()
         {
-            VertexDeclaration decl = new D3DVertexDeclaration( device );
+            VertexDeclaration decl = new XNAVertexDeclaration( device );
             vertexDeclarations.Add( decl );
             return decl;
         }

@@ -38,12 +38,12 @@ using Axiom.Core;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.Xna
+namespace Axiom.RenderSystems.XNA
 {
     /// <summary>
     /// 	Summary description for D3DHardwareIndexBuffer.
     /// </summary>
-    public class D3DHardwareIndexBuffer : HardwareIndexBuffer
+    public class XNAHardwareIndexBuffer : HardwareIndexBuffer
     {
         #region Member variables
 
@@ -55,7 +55,7 @@ namespace Axiom.RenderSystems.Xna
 
         #region Constructors
 
-        public D3DHardwareIndexBuffer( IndexType type, int numIndices, BufferUsage usage,
+        public XNAHardwareIndexBuffer( IndexType type, int numIndices, BufferUsage usage,
             D3D.Graphics.GraphicsDevice device, bool useSystemMemory, bool useShadowBuffer )
             : base( type, numIndices, usage, useSystemMemory, useShadowBuffer )
         {
@@ -66,7 +66,7 @@ namespace Axiom.RenderSystems.Xna
             d3dBuffer = new D3D.Graphics.IndexBuffer(
                 device,
                 sizeInBytes,
-                D3DHelper.ConvertEnum( usage ),
+                XNAHelper.ConvertEnum( usage ),
                 useSystemMemory ? D3D.Graphics.ResourcePool.SystemMemory : D3D.Graphics.ResourcePool.Default,
                 
                 is16bitbuffer? D3D.Graphics.IndexElementSize.SixteenBits : D3D.Graphics.IndexElementSize.ThirtyTwoBits);

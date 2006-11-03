@@ -44,7 +44,7 @@ using D3D = Microsoft.Xna.Framework;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.Xna.HLSL
+namespace Axiom.RenderSystems.XNA.HLSL
 {
     /// <summary>
     /// Summary description for HLSLProgram.

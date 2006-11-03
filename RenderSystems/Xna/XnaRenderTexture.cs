@@ -39,22 +39,22 @@ using Axiom.Media;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.Xna
+namespace Axiom.RenderSystems.XNA
 {
     /// <summary>
     ///     Summary description for D3DRenderTexture.
     /// </summary>
-    public class D3DRenderTexture : RenderTexture
+    public class XNARenderTexture : RenderTexture
     {
 
-        private D3DTexture privateTex;
+        private XNATexture privateTex;
 
-        public D3DRenderTexture( string name, int width, int height )
+        public XNARenderTexture( string name, int width, int height )
             : this( name, width, height, TextureType.TwoD )
         {
         }
 
-        public D3DRenderTexture( string name, int width, int height, TextureType type )
+        public XNARenderTexture( string name, int width, int height, TextureType type )
             : base( name, width, height )
         {
 
