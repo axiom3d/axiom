@@ -38,12 +38,12 @@ using Axiom.Core;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.Xna
+namespace Axiom.RenderSystems.XNA
 {
     /// <summary>
-    /// 	Direct3D implementation of a few things common to low-level vertex & fragment programs
+    /// 	XNA implementation of a few things common to low-level vertex & fragment programs
     /// </summary>
-    public abstract class D3DGpuProgram : GpuProgram
+    public abstract class XNAGpuProgram : GpuProgram
     {
         #region Fields
 
@@ -60,7 +60,7 @@ namespace Axiom.RenderSystems.Xna
 
         #region Constructor
 
-        public D3DGpuProgram( string name, GpuProgramType type, D3D.Graphics.GraphicsDevice device, string syntaxCode )
+        public XNAGpuProgram( string name, GpuProgramType type, D3D.Graphics.GraphicsDevice device, string syntaxCode )
             : base( name, type, syntaxCode )
         {
             this.device = device;
@@ -156,9 +156,9 @@ namespace Axiom.RenderSystems.Xna
     }
 
     /// <summary>
-    ///    Direct3D implementation of low-level vertex programs.
+    ///    XNA implementation of low-level vertex programs.
     /// </summary>
-    public class D3DVertexProgram : D3DGpuProgram
+    public class XNAVertexProgram : XNAGpuProgram
     {
         #region Fields
 
@@ -171,7 +171,7 @@ namespace Axiom.RenderSystems.Xna
 
         #region Constructor
 
-        internal D3DVertexProgram( string name, D3D.Graphics.GraphicsDevice device, string syntaxCode )
+        internal XNAVertexProgram( string name, D3D.Graphics.GraphicsDevice device, string syntaxCode )
             : base( name, GpuProgramType.Vertex, device, syntaxCode )
         {
         }
@@ -223,9 +223,9 @@ namespace Axiom.RenderSystems.Xna
     }
 
     /// <summary>
-    ///    Direct3D implementation of low-level vertex programs.
+    ///    XNA implementation of low-level vertex programs.
     /// </summary>
-    public class D3DFragmentProgram : D3DGpuProgram
+    public class XNAFragmentProgram : XNAGpuProgram
     {
         #region Fields
 
@@ -238,7 +238,7 @@ namespace Axiom.RenderSystems.Xna
 
         #region Constructors
 
-        internal D3DFragmentProgram( string name, D3D.Graphics.GraphicsDevice device, string syntaxCode )
+        internal XNAFragmentProgram( string name, D3D.Graphics.GraphicsDevice device, string syntaxCode )
             : base( name, GpuProgramType.Fragment, device, syntaxCode )
         {
         }

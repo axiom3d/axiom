@@ -37,15 +37,15 @@ using D3D = Microsoft.Xna.Framework;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.Xna
+namespace Axiom.RenderSystems.XNA
 {
     /// <summary>
     ///		Helper class for Direct3D that includes conversion functions and things that are
     ///		specific to D3D.
     /// </summary>
-    public class D3DHelper
+    public class XNAHelper
     {
-        public D3DHelper()
+        public XNAHelper()
         {
         }
 
@@ -93,20 +93,20 @@ namespace Axiom.RenderSystems.Xna
         /// <param name="caps"></param>
         /// <param name="texType"></param>
         /// <returns></returns>
-        public static D3D.Graphics.TextureFilter ConvertEnum( FilterType type, FilterOptions options, D3D.Graphics.GraphicsDeviceCapabilities devCaps, D3DTexType texType )
+        public static D3D.Graphics.TextureFilter ConvertEnum( FilterType type, FilterOptions options, D3D.Graphics.GraphicsDeviceCapabilities devCaps, XNATextureType texType )
         {
             // setting a default val here to keep compiler from complaining about using unassigned value types
             D3D.Graphics.GraphicsDeviceCapabilities.FilterCapabilities filterCaps = devCaps.TextureFilterCapabilities;
 
             switch ( texType )
             {
-                case D3DTexType.Normal:
+                case XNATextureType.Normal:
                     filterCaps = devCaps.TextureFilterCapabilities;
                     break;
-                case D3DTexType.Cube:
+                case XNATextureType.Cube:
                     filterCaps = devCaps.CubeTextureFilterCapabilities;
                     break;
-                case D3DTexType.Volume:
+                case XNATextureType.Volume:
                     filterCaps = devCaps.VolumeTextureFilterCapabilities;
                     break;
             }
@@ -545,20 +545,20 @@ namespace Axiom.RenderSystems.Xna
             return 0;
         }
 
-        public static D3DTexType ConvertEnum( TextureType type )
+        public static XNATextureType ConvertEnum( TextureType type )
         {
             switch ( type )
             {
                 case TextureType.OneD:
                 case TextureType.TwoD:
-                    return D3DTexType.Normal;
+                    return XNATextureType.Normal;
                 case TextureType.CubeMap:
-                    return D3DTexType.Cube;
+                    return XNATextureType.Cube;
                 case TextureType.ThreeD:
-                    return D3DTexType.Volume;
+                    return XNATextureType.Volume;
             }
 
-            return D3DTexType.None;
+            return XNATextureType.None;
         }
 
         public static D3D.Graphics.TextureAddressMode ConvertEnum( TextureAddressing type )

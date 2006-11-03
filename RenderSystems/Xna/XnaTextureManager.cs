@@ -37,17 +37,17 @@ using D3D = Microsoft.Xna.Framework;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.Xna
+namespace Axiom.RenderSystems.XNA
 {
     /// <summary>
     ///     Summary description for D3DTextureManager.
     /// </summary>
-    public class D3DTextureManager : TextureManager
+    public class XNATextureManager : TextureManager
     {
         /// <summary>Reference to the D3D device.</summary>
         private D3D.Graphics.GraphicsDevice device;
 
-        public D3DTextureManager( D3D.Graphics.GraphicsDevice device )
+        public XNATextureManager( D3D.Graphics.GraphicsDevice device )
         {
             this.device = device;
 
@@ -56,7 +56,7 @@ namespace Axiom.RenderSystems.Xna
 
         public override Texture Create( string name, TextureType type )
         {
-            D3DTexture texture = new D3DTexture( name, device, TextureUsage.Default, type );
+            XNATexture texture = new XNATexture( name, device, TextureUsage.Default, type );
 
             // Handle 32-bit texture settings
             texture.Enable32Bit( is32Bit );
@@ -77,7 +77,7 @@ namespace Axiom.RenderSystems.Xna
         /// <returns></returns>
         public override Texture CreateManual( string name, TextureType type, int width, int height, int numMipMaps, Axiom.Media.PixelFormat format, TextureUsage usage )
         {
-            D3DTexture texture = new D3DTexture( name, device, type, width, height, numMipMaps, format, usage );
+            XNATexture texture = new XNATexture( name, device, type, width, height, numMipMaps, format, usage );
             texture.Enable32Bit( is32Bit );
             return texture;
         }

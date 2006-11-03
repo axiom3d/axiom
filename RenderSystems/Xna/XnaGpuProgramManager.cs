@@ -36,16 +36,16 @@ using D3D = Microsoft.Xna.Framework;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.Xna
+namespace Axiom.RenderSystems.XNA
 {
     /// <summary>
     /// 	Summary description for D3DGpuProgramManager.
     /// </summary>
-    public class D3DGpuProgramManager : GpuProgramManager
+    public class XNAGpuProgramManager : GpuProgramManager
     {
         protected D3D.Graphics.GraphicsDevice device;
 
-        internal D3DGpuProgramManager( D3D.Graphics.GraphicsDevice device )
+        internal XNAGpuProgramManager( D3D.Graphics.GraphicsDevice device )
         {
             this.device = device;
         }
@@ -61,10 +61,10 @@ namespace Axiom.RenderSystems.Xna
             switch ( type )
             {
                 case GpuProgramType.Vertex:
-                    return new D3DVertexProgram( name, device, syntaxCode );
+                    return new XNAVertexProgram( name, device, syntaxCode );
 
                 case GpuProgramType.Fragment:
-                    return new D3DFragmentProgram( name, device, syntaxCode );
+                    return new XNAFragmentProgram( name, device, syntaxCode );
                 default:
                     throw new NotSupportedException( "The program type is not supported." );
             }

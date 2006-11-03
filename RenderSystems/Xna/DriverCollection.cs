@@ -31,7 +31,7 @@ using System.Collections;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.Xna
+namespace Axiom.RenderSystems.XNA
 {
     /// <summary>
     /// Summary description for D3DDriverCollection.

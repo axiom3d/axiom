@@ -40,13 +40,13 @@ using Axiom.Core;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.Xna
+namespace Axiom.RenderSystems.XNA
 {
     /// <summary>
     /// Summary description for D3DTexture.
     /// </summary>
     /// <remarks>When loading a cubic texture, the image with the texture base name plus the "_rt", "_lf", "_up", "_dn", "_fr", "_bk" suffixes will automaticaly be loaded to construct it.</remarks>
-    public class D3DTexture : Axiom.Core.Texture
+    public class XNATexture : Axiom.Core.Texture
     {
         #region Fields
 
@@ -101,14 +101,14 @@ namespace Axiom.RenderSystems.Xna
 
         #endregion Fields
 
-        public D3DTexture( string name, D3D.Graphics.GraphicsDevice device, TextureUsage usage, TextureType type )
+        public XNATexture( string name, D3D.Graphics.GraphicsDevice device, TextureUsage usage, TextureType type )
             : this( name, device, type, 0, 0, 0, PixelFormat.Unknown, usage )
         {
         }
 
-        public D3DTexture( string name, D3D.Graphics.GraphicsDevice device, TextureType type, int width, int height, int numMipMaps, PixelFormat format, TextureUsage usage )
+        public XNATexture( string name, D3D.Graphics.GraphicsDevice device, TextureType type, int width, int height, int numMipMaps, PixelFormat format, TextureUsage usage )
         {
-            Debug.Assert( device != null, "Cannot create a texture without a valid D3D Device." );
+            Debug.Assert( device != null, "Cannot create a texture without a valid XNA Device." );
 
             this.name = name;
             this.usage = usage;
@@ -203,7 +203,7 @@ namespace Axiom.RenderSystems.Xna
                 }
 
                 // log a quick message
-                LogManager.Instance.Write( "D3DTexture: Loading {0} with {1} mipmaps from an Image.", name, numMipMaps );
+                LogManager.Instance.Write( "XNATexture: Loading {0} with {1} mipmaps from an Image.", name, numMipMaps );
 
                 // create a render texture if need be
                 if ( usage == TextureUsage.RenderTarget )
@@ -239,7 +239,7 @@ namespace Axiom.RenderSystems.Xna
             {
                 if ( e.Message.StartsWith( "File or assembly" ) && e.Message.IndexOf( "DirectX" ) != -1 )
                 {
-                    string message = "You do not have the correct release version of DirectX 9.0c or else Managed DirectX is not installed. "
+                    string message = "You do not have the correct release version of DirectX 9.0c or else XNA is not installed. "
                         + "See the README.txt file for more information on the version required and a link to download it "
                         + "or to recompile the Axiom.RenderSystems.Xna project against the version that you do have installed.";
                     System.Windows.Forms.MessageBox.Show( message );
@@ -302,8 +302,8 @@ namespace Axiom.RenderSystems.Xna
             Stream stream = TextureManager.Instance.FindResourceData( name );
 
             // use D3DX to load the image directly from the stream
-            normTexture = new D3D.Graphics.Texture2D( device, stream );
-
+            normTexture = (D3D.Graphics.Texture2D)D3D.Graphics.Texture2D.FromFile( device, stream );
+            
             // store a ref for the base texture interface
             texture = normTexture;
 
@@ -327,13 +327,13 @@ namespace Axiom.RenderSystems.Xna
                 Stream stream = TextureManager.Instance.FindResourceData( name );
 
                 // load the cube texture from the image data stream directly
-                cubeTexture = new D3D.Graphics.TextureCube( device, stream );
+                cubeTexture = (D3D.Graphics.TextureCube)D3D.Graphics.TextureCube.FromFile( device, stream );
 
                 // store off a base reference
                 texture = cubeTexture;
 
                 // set src and dest attributes to the same, we can't know
-                D3D.Graphics.Surface desc = cubeTexture.GetSurfaceLevel( 0 );
+                D3D.Graphics.Surface desc = cubeTexture.GetCubeMapSurface(Microsoft.Xna.Framework.Graphics.CubeMapFace.PositiveX,0 );
                 SetSrcAttributes( desc.Width, desc.Height, 1, ConvertFormat( desc.Format ) );
                 SetFinalAttributes( desc.Width, desc.Height, 1, ConvertFormat( desc.Format ) );
             }
@@ -373,7 +373,7 @@ namespace Axiom.RenderSystems.Xna
             Stream stream = TextureManager.Instance.FindResourceData( name );
 
             // load the cube texture from the image data stream directly
-            volumeTexture = new D3D.Graphics.Texture3D( device, stream );
+            volumeTexture = (D3D.Graphics.Texture3D)D3D.Graphics.Texture3D.FromFile( device, stream );
 
             // store off a base reference
             texture = volumeTexture;
@@ -425,7 +425,7 @@ namespace Axiom.RenderSystems.Xna
             }
 
             // create the cube texture
-            cubeTexture = new D3D.CubeTexture(
+            cubeTexture = new D3D.Graphics.TextureCube(
                 device,
                 SrcWidth,
                 numMips,
@@ -890,7 +890,7 @@ namespace Axiom.RenderSystems.Xna
         {
             // TODO: Check usage and format, need Usage property on Texture
 
-            D3DTexture texture = (D3DTexture)target;
+            XNATexture texture = (XNATexture)target;
 
             if ( target.TextureType == TextureType.TwoD )
             {

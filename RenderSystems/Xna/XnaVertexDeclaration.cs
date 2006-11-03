@@ -43,12 +43,12 @@ using D3D = Microsoft.Xna.Framework;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.Xna
+namespace Axiom.RenderSystems.XNA
 {
     /// <summary>
     /// 	Summary description for D3DVertexDeclaration.
     /// </summary>
-    public class D3DVertexDeclaration : VertexDeclaration
+    public class XNAVertexDeclaration : VertexDeclaration
     {
         #region Member variables
 
@@ -60,7 +60,7 @@ namespace Axiom.RenderSystems.Xna
 
         #region Constructors
 
-        public D3DVertexDeclaration( D3D.Graphics.GraphicsDevice device )
+        public XNAVertexDeclaration( D3D.Graphics.GraphicsDevice device )
         {
             this.device = device;
         }
@@ -140,8 +140,8 @@ namespace Axiom.RenderSystems.Xna
                         d3dElements[ i ].VertexElementMethod = D3D.Graphics.VertexElementMethod.Default;
                         d3dElements[i].Offset = (short)element.Offset;
                         d3dElements[i].Stream = (short)element.Source;
-                        d3dElements[i].VertexElementFormat = D3DHelper.ConvertEnum( element.Type );
-                        d3dElements[i].VertexElementUsage = D3DHelper.ConvertEnum( element.Semantic );
+                        d3dElements[i].VertexElementFormat = XNAHelper.ConvertEnum( element.Type );
+                        d3dElements[i].VertexElementUsage = XNAHelper.ConvertEnum( element.Semantic );
 
                         // set usage index explicitly for diffuse and specular, use index for the rest (i.e. texture coord sets)
                         switch ( element.Semantic )
