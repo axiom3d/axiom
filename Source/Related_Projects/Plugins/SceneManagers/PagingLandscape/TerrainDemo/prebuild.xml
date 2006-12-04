@@ -24,7 +24,7 @@
 				
 			<?if OS = "Win32" ?>
 			<ReferencePath>../../../../../../Dependencies/Managed/DotNet</ReferencePath>
-			<ReferencePath>../../../../../../Dependencies/Managed/DotNet/Axiom3D</ReferencePath>
+			<ReferencePath>../../../../../../Dependencies/Managed/Axiom3D</ReferencePath>
 			<?else ?>
 			<ReferencePath>../../../../../../Dependencies/Managed/Mono</ReferencePath>
 			<ReferencePath>../../../../../../Dependencies/Managed/Mono/Axiom3D</ReferencePath>
@@ -64,7 +64,7 @@
 
 			<?if OS = "Win32" ?>
 			<ReferencePath>../../../../../../Dependencies/Managed/DotNet</ReferencePath>
-			<ReferencePath>../../../../../../Dependencies/Managed/DotNet/Axiom3D</ReferencePath>
+			<ReferencePath>../../../../../../Dependencies/Managed/Axiom3D</ReferencePath>
 			<?else ?>
 			<ReferencePath>../../../../../../Dependencies/Managed/Mono</ReferencePath>
 			<ReferencePath>../../../../../../Dependencies/Managed/Mono/Axiom3D</ReferencePath>
