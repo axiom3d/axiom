@@ -48,5 +48,9 @@ namespace Axiom.Core
             : base( string.Format( message, args ) )
         {
         }
+        public AxiomException( string message, Exception innerException, params object[] args )
+            : base( string.Format( message, args ), innerException )
+        {
+        }
     }
 }

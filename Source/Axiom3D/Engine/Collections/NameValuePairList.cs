@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -32,58 +32,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
 using System;
-using System.Collections;
-
 #endregion Namespace Declarations
 
-namespace Axiom.Graphics
+namespace Axiom.Collections
 {
     /// <summary>
-    ///		Contains all the information required to render a set of vertices.  This includes
-    ///		a list of VertexBuffers. 
+    /// Summary for NewClass
     /// </summary>
-    /// <remarks>
-    ///		This class contains
-    /// </remarks>
-    public class RenderOperation
+    public class NameValuePairList : System.Collections.Specialized.NameValueCollection
     {
-        #region Member variables
-
         /// <summary>
-        ///		Type of operation to perform.
+        /// Default Constructor
         /// </summary>
-        public OperationType operationType;
-
-        /// <summary>
-        ///		Contains a list of hardware vertex buffers for this complete render operation.
-        /// </summary>
-        public VertexData vertexData;
-
-        /// <summary>
-        ///		When <code>useIndices</code> is set to true, this must hold a reference to an index
-        ///		buffer containing indices into the vertices stored here. 
-        /// </summary>
-        public IndexData indexData;
-
-        /// <summary>
-        ///		Specifies whether or not a list of indices should be used when rendering the vertices in
-        ///		the buffers.
-        /// </summary>
-        public bool useIndices;
-
-        #endregion
-
-        #region Constructors
-
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public RenderOperation()
+        public NameValuePairList()
         {
         }
-
-        #endregion
-    }
+    };
 }

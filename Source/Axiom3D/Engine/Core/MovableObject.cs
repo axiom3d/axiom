@@ -38,6 +38,7 @@ using System.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Scripting;
+using Axiom.Animating;
 
 #endregion NAmespace Declarations
 
@@ -70,6 +71,10 @@ namespace Axiom.Core
         ///    The render queue to use when rendering this object.
         /// </summary>
         protected RenderQueueGroupID renderQueueID;
+        /// <summary>
+        ///    Flags whether the RenderQueue's default should be used.
+        /// </summary>
+        protected bool renderQueueIDSet = false;
         /// <summary>
         ///    Flags determining whether this object is included/excluded from scene queries.
         /// </summary>
@@ -165,6 +170,23 @@ namespace Axiom.Core
             get
             {
                 return parentNode;
+            }
+        }
+
+
+        public SceneNode ParentSceneNode
+        {
+            get
+            {
+                if ( parentIsTagPoint )
+                {
+                    TagPoint tp = (TagPoint)parentNode;
+                    return tp.ParentEntity.ParentSceneNode;
+                }
+                else
+                {
+                    return (SceneNode)parentNode;
+                }
             }
         }
 
@@ -300,6 +322,7 @@ namespace Axiom.Core
             set
             {
                 renderQueueID = value;
+                renderQueueIDSet = true;
             }
         }
 

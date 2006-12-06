@@ -47,6 +47,27 @@ namespace Axiom.Core
     /// </summary>
     public sealed class PlatformManager
     {
+        /// <summary>
+        /// Gets if the operating system that this is running on is Windows (as opposed to a Unix-based one such as Linux or Mac OS X)
+        /// </summary>
+        /// <remarks>
+        /// The Windows version strings start with "Microsoft Windows" followed by CE, NT, or 98 and the version number,
+        /// however Microsoft Win32S is used with the 32-bit simulation layer on 16-bit systems so we should just check for the presence of Microsoft
+        /// Unix-based operating systems start with Unix
+        /// The Environment.OSVersion.Platform is 128 for Unix-based platforms (an additional enum value added that by the name Unix),
+        /// however under .NET 2.0 Unix is supposed to be 3 but may still be 128 under Mono
+        /// Additionally, GNU Portable .NET likely doesn't provide this same value, so just check for the presence of Windows in the string name
+        /// </remarks>
+        public static bool IsWindowsOS
+        {
+            get
+            {
+                //return ((int)Environment.OSVersion.Platform) == 128;	//if is a unix-based operating system (running Mono), not sure if this will work for GNU Portable .NET
+                string os = Environment.OSVersion.ToString();
+                return os.IndexOf( "Microsoft" ) != -1;
+            }
+        }
+
         #region Singleton implementation
 
         /// <summary>
@@ -63,18 +84,37 @@ namespace Axiom.Core
             {
                 // find and load a platform manager assembly
                 string[] files = Directory.GetFiles( ".", "Axiom.Platforms.*.dll" );
+                string file = "";
 
                 // make sure there is 1 platform manager available
                 if ( files.Length == 0 )
                 {
                     throw new PluginException( "A PlatformManager was not found in the execution path, and is required." );
                 }
-                else if ( files.Length > 1 )
+                else 
                 {
-                    throw new PluginException( "Only 1 PlatformManager can exist in the execution path." );
+                    bool isWindows = IsWindowsOS;
+                    string platform = IsWindowsOS ? "Win32" : "SDL";
+
+                    if ( files.Length == 1 )
+                    {
+                        file = files[ 0 ];
+                    }
+                    else
+                    {
+                        for ( int i = 0; i < files.Length; i++ )
+                        {
+                            if ( ( files[ i ].IndexOf( platform ) != -1 ) == true )
+                            {
+                                file = files[ i ];
+                            }
+                        }
+                    }
+
+                    System.Diagnostics.Debug.WriteLine( String.Format( "Selected the PlatformManager contained in {0}.", file ) );
                 }
 
-                string path = Path.Combine( Environment.CurrentDirectory, files[ 0 ] );
+                string path = Path.Combine( Environment.CurrentDirectory, file );
 
                 // TODO: AssemblyManager?
                 Assembly assembly = Assembly.LoadFile( path );

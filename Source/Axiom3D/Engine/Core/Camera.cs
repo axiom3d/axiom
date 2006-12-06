@@ -371,6 +371,32 @@ namespace Axiom.Core
 
         #region Public Properties
 
+
+        public SceneNode AutoTrackingTarget
+        {
+            get
+            {
+                return autoTrackTarget;
+            }
+            set
+            {
+                autoTrackTarget = value;
+            }
+        }
+
+
+        public Vector3 AutoTrackingOffset
+        {
+            get
+            {
+                return autoTrackOffset;
+            }
+            set
+            {
+                autoTrackOffset = value;
+            }
+        }
+
         /// <summary>
         ///		If set to true a vieport that owns this frustum will be able to 
         ///		recalculate the aspect ratio whenever the frustum is resized.
@@ -388,7 +414,7 @@ namespace Axiom.Core
             }
             set
             {
-                autoAspectRatio = true;
+                autoAspectRatio = value;	//FIXED: From true to value
             }
         }
 

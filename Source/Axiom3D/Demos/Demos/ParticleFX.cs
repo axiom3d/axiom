@@ -58,7 +58,10 @@ namespace Axiom.Demos
 
             // create a rainstorm
             ParticleSystem rain = ParticleSystemManager.Instance.CreateSystem( "Rain", "ParticleSystems/Rain" );
-            scene.RootSceneNode.CreateChildSceneNode( new Vector3( 0, 1000, 0 ), Quaternion.Identity ).AttachObject( rain );
+            node = scene.RootSceneNode.CreateChildSceneNode();
+            node.Translate( new Vector3( 0, 1000, 0 ) );
+            node.Rotate( Quaternion.Identity );
+            node.AttachObject( rain );
             rain.FastForward( 5.0f );
         }
 

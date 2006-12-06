@@ -87,11 +87,8 @@ namespace Axiom.Controllers
         {
             if ( useDeltaInput )
             {
-                deltaCount += input;
-
                 // wrap the value if it went past 1
-                while ( deltaCount >= 1.0f )
-                    deltaCount -= 1.0f;
+                deltaCount = ( deltaCount + input ) % 1.0f;
 
                 // return the adjusted input value
                 return deltaCount;

@@ -611,44 +611,44 @@ namespace Axiom.Core
         /// <summary>
         ///		Exposes FPS stats to anyone who cares.
         /// </summary>
-        public int CurrentFPS
+        public float CurrentFPS
         {
             get
             {
-                return (int)currentFPS;
+                return currentFPS;
             }
         }
 
         /// <summary>
         ///		Exposes FPS stats to anyone who cares.
         /// </summary>
-        public int BestFPS
+        public float BestFPS
         {
             get
             {
-                return (int)highestFPS;
+                return highestFPS;
             }
         }
 
         /// <summary>
         ///		Exposes FPS stats to anyone who cares.
         /// </summary>
-        public int WorstFPS
+        public float WorstFPS
         {
             get
             {
-                return (int)lowestFPS;
+                return lowestFPS;
             }
         }
 
         /// <summary>
         ///		Exposes FPS stats to anyone who cares.
         /// </summary>
-        public int AverageFPS
+        public float AverageFPS
         {
             get
             {
-                return (int)averageFPS;
+                return averageFPS;
             }
         }
 
@@ -686,6 +686,7 @@ namespace Axiom.Core
             {
                 MeshManager.Instance.Dispose();
             }
+
             if ( ParticleSystemManager.Instance != null )
             {
                 ParticleSystemManager.Instance.Dispose();
@@ -713,6 +714,8 @@ namespace Axiom.Core
             {
                 LogManager.Instance.Dispose();
             }
+
+            instance = null;
         }
 
         #endregion

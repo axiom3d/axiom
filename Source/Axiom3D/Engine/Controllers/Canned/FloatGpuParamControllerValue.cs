@@ -100,8 +100,7 @@ namespace Axiom.Controllers.Canned
         {
             get
             {
-                // Return 0, no reason to read this value back
-                return 0;
+                return parms.GetFloatConstant( index ).val[0];
             }
             set
             {

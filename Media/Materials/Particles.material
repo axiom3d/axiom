@@ -39,7 +39,7 @@ material Particles/Rain
 	{
 		pass
 		{
-			scene_blend modulate
+			scene_blend add
 			depth_write off
 
 			texture_unit

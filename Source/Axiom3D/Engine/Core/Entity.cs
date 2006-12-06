@@ -91,6 +91,13 @@ namespace Axiom.Core
         ///    List of sub entities.
         /// </summary>
         protected SubEntityCollection subEntityList = new SubEntityCollection();
+        public SubEntityCollection SubEntities
+        {
+            get
+            {
+                return subEntityList;
+            }
+        }
         /// <summary>
         ///    SceneManager responsible for creating this entity.
         /// </summary>
@@ -198,6 +205,30 @@ namespace Axiom.Core
         ///     List of entities with various levels of detail.
         /// </summary>
         protected EntityList lodEntityList = new EntityList();
+        public ICollection SubEntityMaterials
+        {
+            get
+            {
+                Material[] materials = new Material[subEntityList.Count];
+                for ( int i = 0; i < subEntityList.Count; i++ )
+                {
+                    materials[i] = subEntityList[i].Material;
+                }
+                return materials;
+            }
+        }
+        public ICollection SubEntityMaterialNames
+        {
+            get
+            {
+                string[] materials = new string[subEntityList.Count];
+                for ( int i = 0; i < subEntityList.Count; i++ )
+                {
+                    materials[i] = subEntityList[i].MaterialName;
+                }
+                return materials;
+            }
+        }
 
         #endregion Fields
 
@@ -212,17 +243,32 @@ namespace Axiom.Core
         internal Entity( string name, Mesh mesh, SceneManager creator )
         {
             this.name = name;
-            this.mesh = mesh;
             this.sceneMgr = creator;
+            //defaults to Points if not set
+            this.renderDetail = SceneDetailLevel.Solid;
+
+            SetMesh( mesh );
+
+
+        }
+
+        protected void SetMesh( Mesh mesh )
+        {
+            this.mesh = mesh;
+
 
             if ( mesh.HasSkeleton && mesh.Skeleton != null )
             {
                 skeletonInstance = new SkeletonInstance( mesh.Skeleton );
                 skeletonInstance.Load();
             }
+            else
+                skeletonInstance = null;
 
+            this.subEntityList.Clear();
             BuildSubEntities();
 
+            lodEntityList.Clear();
             // Check if mesh is using manual LOD
             if ( mesh.IsLodManual )
             {
@@ -231,11 +277,12 @@ namespace Axiom.Core
                     MeshLodUsage usage = mesh.GetLodLevel( i );
 
                     // manually create entity
-                    Entity lodEnt = new Entity( string.Format( "{0}Lod{1}", name, i ), usage.manualMesh, creator );
+                    Entity lodEnt = new Entity( string.Format( "{0}Lod{1}", name, i ), usage.manualMesh, sceneMgr );
                     lodEntityList.Add( lodEnt );
                 }
             }
 
+            animationState.Clear();
             // init the AnimationState, if the mesh is animated
             if ( mesh.HasSkeleton )
             {
@@ -246,6 +293,7 @@ namespace Axiom.Core
             }
 
             ReevaluateVertexProcessing();
+
 
             // LOD default settings
             meshLodFactorInv = 1.0f;
@@ -394,6 +442,10 @@ namespace Axiom.Core
             {
                 return mesh;
             }
+            set
+            {
+                SetMesh( value );
+            }
         }
 
         /// <summary>
@@ -401,14 +453,31 @@ namespace Axiom.Core
         /// </summary>
         public string MaterialName
         {
+            get
+            {
+                return materialName;
+            }
             set
             {
                 materialName = value;
-
-                // assign the material name to all sub entities
-                for ( int i = 0; i < subEntityList.Count; i++ )
+                //if null or empty string then reset the material to that defined by the mesh
+                if ( value == null || value == string.Empty )
                 {
-                    subEntityList[ i ].MaterialName = materialName;
+                    foreach ( SubEntity ent in subEntityList )
+                    {
+                        string defaultMaterial = ent.SubMesh.MaterialName;
+                        if ( defaultMaterial != null && defaultMaterial != string.Empty )
+                            ent.MaterialName = defaultMaterial;
+                    }
+                }
+                else
+                {
+
+                    // assign the material name to all sub entities
+                    for ( int i = 0; i < subEntityList.Count; i++ )
+                    {
+                        subEntityList[ i ].MaterialName = materialName;
+                    }
                 }
             }
         }
@@ -523,8 +592,22 @@ namespace Axiom.Core
             childObjectList[ sceneObject.Name ] = sceneObject;
             sceneObject.NotifyAttached( tagPoint, true );
         }
+		public MovableObject DetachObjectFromBone(string name)
+		{
 
-        public void DetachObjectFromBone( MovableObject obj )
+			MovableObject obj = childObjectList[name];
+			if (obj == null)
+			{
+				throw new AxiomException("Child object named '{0}' not found.  Entity.DetachObjectFromBone", name);
+			}
+
+			DetachObjectImpl(obj);
+			childObjectList.Remove(obj);
+
+			return obj;
+		}
+		//-----------------------------------------------------------------------
+		public void DetachObjectFromBone(MovableObject obj)
         {
             for ( int i = 0; i < childObjectList.Count; i++ )
             {
@@ -772,7 +855,6 @@ namespace Axiom.Core
         ///    current state of each animation available to the entity. The AnimationState objects are
         ///    initialized from the Mesh object.
         /// </remarks>
-        /// <param name="name"></param>
         /// <returns></returns>
         public AnimationStateCollection GetAllAnimationStates()
         {

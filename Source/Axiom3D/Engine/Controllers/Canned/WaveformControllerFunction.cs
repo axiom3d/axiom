@@ -114,12 +114,9 @@ namespace Axiom.Controllers.Canned
 
         public override float Execute( float sourceValue )
         {
-            float input = AdjustInput( sourceValue * frequency );
-            float output = 0.0f;
-
             // factor down to ensure [0,1] 
-            while ( input >= 1.0f )
-                input -= 1.0f;
+            float input = AdjustInput( sourceValue * frequency ) % 1.0f;
+            float output = 0.0f;
 
             // first, get output in range [-1,1] (typical for waveforms)
             switch ( type )

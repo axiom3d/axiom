@@ -47,4 +47,9 @@ namespace Axiom.ParticleSystems
     public class AffectorList : ArrayList
     {
     }
+
+    public class ParticleList : ArrayList
+    {
+    }
+
 }

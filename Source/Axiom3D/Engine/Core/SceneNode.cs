@@ -64,6 +64,27 @@ namespace Axiom.Core
         ///	</summary>
         protected MovableObjectCollection objectList = new MovableObjectCollection();
         /// <summary>
+        ///    Gets the number of SceneObjects currently attached to this node.
+        /// </summary>
+        public int ObjectCount
+        {
+            get
+            {
+                return objectList.Count;
+            }
+        }
+        /// <summary>
+        /// Gets the list of scene objects attached to this scene node
+        /// </summary>
+        public MovableObjectCollection Objects
+        {
+            get
+            {
+                return objectList;
+            }
+        }
+
+        /// <summary>
         ///		Reference to the scene manager who created me.
         ///	</summary>
         protected SceneManager creator;
@@ -83,6 +104,13 @@ namespace Axiom.Core
         ///		Word bounding sphere surrounding this node.
         /// </summary>
         protected Sphere worldBoundingSphere = new Sphere();
+        public Sphere WorldBoundingSphere
+        {
+            get
+            {
+                return worldBoundingSphere;
+            }
+        }
         /// <summary>
         ///    List of lights within range of this node.
         /// </summary>
@@ -110,7 +138,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Local 'normal' direction vector.
         /// </summary>
-        protected Vector3 autoTrackLocalDirection = Vector3.NegativeUnitZ;
+        protected Vector3 autoTrackLocalDirection = Vector3.NegativeUnitY;
         /// <summary>
         ///		Determines whether node and children are visible or not.
         /// </summary>
@@ -156,16 +184,16 @@ namespace Axiom.Core
 
         #region Properties
 
-        /// <summary>
-        ///    Gets the number of SceneObjects currently attached to this node.
-        /// </summary>
-        public int ObjectCount
-        {
-            get
-            {
-                return objectList.Count;
-            }
-        }
+
+
+
+
+
+
+
+
+
+
 
         /// <summary>
         ///		Gets/Sets whether or not to display the bounding box for this node.
@@ -217,6 +245,10 @@ namespace Axiom.Core
             {
                 return autoTrackOffset;
             }
+            set
+            {
+                autoTrackOffset = value;
+            }
         }
 
         /// <summary>
@@ -228,6 +260,10 @@ namespace Axiom.Core
             {
                 return autoTrackLocalDirection;
             }
+            set
+            {
+                autoTrackLocalDirection = value;
+            }
         }
 
         /// <summary>
@@ -238,6 +274,11 @@ namespace Axiom.Core
             get
             {
                 return autoTrackTarget;
+            }
+            set
+            {
+                autoTrackTarget = value;
+                creator.NotifyAutoTrackingSceneNode( this, value != null );
             }
         }
 
@@ -261,10 +302,10 @@ namespace Axiom.Core
         #region Methods
 
         /// <summary>
-        ///    Attaches a SceneObject to this scene node.
+        ///    Attaches a MovableObject to this scene node.
         /// </summary>
         /// <remarks>
-        ///    A SceneObject will not show up in the scene until it is attached to a SceneNode.
+        ///    A MovableObject will not show up in the scene until it is attached to a SceneNode.
         /// </remarks>
         /// <param name="obj"></param>
         public virtual void AttachObject( MovableObject obj )
@@ -390,6 +431,16 @@ namespace Axiom.Core
         }
 
         /// <summary>
+        /// Rekeys the scene object using its new Name
+        /// </summary>
+        /// <param name="obj"></param>
+        public virtual void NotifyAttachedObjectNameChanged( MovableObject obj )
+        {
+            objectList.Remove( obj );
+            objectList.Add( obj );
+        }
+
+        /// <summary>
         ///    Removes the specifed object from this scene node.
         /// </summary>
         /// <remarks>
@@ -410,12 +461,12 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        /// Returns a scene object attached to this node by name. Node that this method
+        /// Returns a movable object attached to this node by name. Node that this method
         /// is O(n), whereas the integer overload of this method is O(1). Use the integer
         /// version of this method if speed is important.
         /// </summary>
         /// <param name="name">The name of the object to return.</param>
-        /// <returns>SceneObject if found. Throws exception of not found.</returns>
+        /// <returns>MovableObject if found. Throws exception of not found.</returns>
         public MovableObject GetObject( string name )
         {
             foreach ( MovableObject obj in this.objectList )
@@ -555,7 +606,7 @@ namespace Axiom.Core
             // reset bounds
             worldAABB.IsNull = true;
             worldBoundingSphere.Center = this.DerivedPosition;
-            worldBoundingSphere.Radius = 0;
+            float radius = worldBoundingSphere.Radius = 0;
 
             // update bounds from attached objects
             for ( int i = 0; i < objectList.Count; i++ )
@@ -564,8 +615,7 @@ namespace Axiom.Core
 
                 // update
                 worldAABB.Merge( obj.GetWorldBoundingBox( true ) );
-                worldBoundingSphere.Radius =
-                    Utility.Max( worldBoundingSphere.Radius, obj.BoundingRadius );
+                radius = Utility.Max( obj.BoundingRadius, radius );
             }
 
             // merge with Children
@@ -575,9 +625,10 @@ namespace Axiom.Core
 
                 // merge our bounding box with that of the child node
                 worldAABB.Merge( child.worldAABB );
-                worldBoundingSphere.Radius =
-                    Utility.Max( worldBoundingSphere.Radius, child.worldBoundingSphere.Radius );
+                radius = Utility.Max( child.worldBoundingSphere.Radius, radius );
             }
+            worldBoundingSphere.Radius = radius;
+
         }
 
         /// <summary>
