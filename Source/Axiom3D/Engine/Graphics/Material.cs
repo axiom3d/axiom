@@ -778,14 +778,24 @@ namespace Axiom.Graphics
         /// <param name="target">Material which will receive this material's settings.</param>
         public void CopyTo( Material target )
         {
+            CopyTo( target, true );
+        }
+
+        /// <summary>
+        ///		Copies the details of this material into another, preserving the target's handle and name
+        ///		(unlike operator=) but copying everything else.
+        /// </summary>
+        /// <param name="target">Material which will receive this material's settings.</param>
+        public void CopyTo( Material target, bool copyUniqueInfo )
+        {
+
+            if ( copyUniqueInfo )
+            {
+                target.name = name;
+                target.handle = handle;
+                target.isLoaded = isLoaded;
+            }
             // copy basic data
-
-            /* Commented these two out, since we don't want to overwrite the target's
-             * name and handle!!
-             * -- CMH 6/21/05 */
-            //target.name = name;
-            //target.handle = handle;
-
             target.size = size;
             target.lastAccessed = lastAccessed;
             target.receiveShadows = receiveShadows;

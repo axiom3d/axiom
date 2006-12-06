@@ -258,6 +258,7 @@ namespace Axiom.Core
             {
                 fieldOfView = value;
                 InvalidateFrustum();
+                InvalidateView();	//XEONX FIX: Now the IsObjectVisible() will work properly
             }
         }
 
@@ -284,6 +285,7 @@ namespace Axiom.Core
 
                 nearDistance = value;
                 InvalidateFrustum();
+                InvalidateView();	//XEONX FIX: Now the IsObjectVisible() will work properly
             }
         }
 
@@ -319,6 +321,7 @@ namespace Axiom.Core
             {
                 farDistance = value;
                 InvalidateFrustum();
+                InvalidateView();	//XEONX FIX: Now the IsObjectVisible() will work properly
             }
         }
 
@@ -1320,7 +1323,7 @@ namespace Axiom.Core
         /// <summary>
         ///     Returns a dummy list since we won't be lit.
         /// </summary>
-        public Axiom.Collections.LightList Lights
+        public LightList Lights
         {
             get
             {
@@ -1360,7 +1363,7 @@ namespace Axiom.Core
             }
         }
 
-        public Axiom.Graphics.SceneDetailLevel RenderDetail
+        public SceneDetailLevel RenderDetail
         {
             get
             {

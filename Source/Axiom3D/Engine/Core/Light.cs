@@ -68,6 +68,7 @@ namespace Axiom.Core
     public class Light : MovableObject, IComparable
     {
         #region Fields
+        public static Vector3 DefaultDirection = new Vector3( 0, -1, 0 );
 
         /// <summary>
         ///    Type of light.
@@ -80,7 +81,7 @@ namespace Axiom.Core
         /// <summary>
         ///    Direction of this light.
         /// </summary>
-        protected Vector3 direction = Vector3.UnitZ;
+        protected Vector3 direction = DefaultDirection;
         /// <summary>
         ///		Derived position of this light.
         ///	</summary>
@@ -222,7 +223,12 @@ namespace Axiom.Core
             }
             set
             {
+                // default to down, as Zero may cause the meshes to be rendered as white
+                //if ( value.IsZero )
+                //    value = DefaultDirection;
+
                 direction = value;
+                direction.Normalize();
                 localTransformDirty = true;
             }
         }
@@ -473,10 +479,11 @@ namespace Axiom.Core
         /// <param name="falloff"></param>
         public void SetSpotlightRange( float innerAngle, float outerAngle, float falloff )
         {
-            if ( type != LightType.Spotlight )
-            {
-                throw new Exception( "Setting the spotlight range is only valid for spotlights." );
-            }
+            //allow it to be set ahead of time anyways
+            /*if(type != LightType.Spotlight) {
+				throw new Exception("Setting the spotlight range is only valid for spotlights.");
+			}*/
+
 
             spotInner = innerAngle;
             spotOuter = outerAngle;

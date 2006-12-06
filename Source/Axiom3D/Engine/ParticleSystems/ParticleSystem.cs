@@ -61,10 +61,10 @@ namespace Axiom.ParticleSystems
     ///		Particle systems are created using the ParticleSystemManager.CreateParticleSystem method, never directly.
     ///		In addition, like all subclasses of SceneObject, the ParticleSystem will only be considered for
     ///		rendering once it has been attached to a SceneNode. 
-    /// </summary>
+    /// </remarks>
     public class ParticleSystem : BillboardSet
     {
-        #region Member variables
+        #region Fields and Properties
 
         /// <summary>List of emitters for this system.</summary>
         protected EmitterList emitterList = new EmitterList();
@@ -72,6 +72,8 @@ namespace Axiom.ParticleSystems
         protected AffectorList affectorList = new AffectorList();
         /// <summary>Cached for less memory usage during emitter processing.</summary>
         protected EmitterList requested = new EmitterList();
+
+        protected string resourceGroupName;
 
         #endregion
 
@@ -84,16 +86,17 @@ namespace Axiom.ParticleSystems
         ///		You should use the ParticleSystemManager to create systems, rather than doing it directly.
         /// </remarks>
         /// <param name="name"></param>
-        public ParticleSystem( string name )
+        internal ParticleSystem( string name, string resourceGroup )
             : base( name, 10 )
         {
             autoExtendPool = true;
             allDefaultSize = true;
             originType = BillboardOrigin.Center;
-            cullIndividual = true;
-            defaultParticleWidth = 100;
-            defaultParticleHeight = 100;
-            this.MaterialName = "BaseWhite";
+            cullIndividually = true;
+            defaultWidth = 100;
+            defaultHeight = 100;
+            MaterialName = "BaseWhite";
+            resourceGroupName = resourceGroup;
         }
 
         /// <summary>
@@ -294,7 +297,7 @@ namespace Axiom.ParticleSystems
 
             emitterCount = emitterList.Count;
             // get the difference between quota and current active count
-            emissionAllowed = this.ParticleQuota - activeBillboards.Count;
+            emissionAllowed = this.Quota - activeBillboards.Count;
             totalRequested = 0;
 
             // count up the total requested emissions
@@ -422,7 +425,7 @@ namespace Axiom.ParticleSystems
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="billboard"></param>
-        protected override void GenerateBillboardAxes( Camera camera, ref Axiom.Math.Vector3 x, ref Axiom.Math.Vector3 y, Billboard billboard )
+        protected override void GenerateBillboardAxes( Camera camera, ref Vector3 x, ref Vector3 y, Billboard billboard )
         {
             // Orientation different from BillboardSet
             // Billboards are in world space (to decouple them from emitters in node space)
@@ -461,33 +464,19 @@ namespace Axiom.ParticleSystems
 
         #region Properties
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public float DefaultHeight
+        public AffectorList Affectors
         {
             get
             {
-                return defaultParticleHeight;
-            }
-            set
-            {
-                defaultParticleHeight = value;
+                return affectorList;
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public float DefaultWidth
+        public EmitterList Emitters
         {
             get
             {
-                return defaultParticleWidth;
-            }
-            set
-            {
-                defaultParticleWidth = value;
+                return emitterList;
             }
         }
 
@@ -513,7 +502,7 @@ namespace Axiom.ParticleSystems
         ///		emit any more particles. As existing particles die, the spare capacity will be allocated
         ///		equally across all emitters to be as consistent to the origina particle system style as possible.
         /// </remarks>
-        public int ParticleQuota
+        public int Quota
         {
             get
             {
@@ -533,6 +522,17 @@ namespace Axiom.ParticleSystems
             get
             {
                 return activeBillboards;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string ResourceGroup
+        {
+            get
+            {
+                return resourceGroupName;
             }
         }
 
@@ -567,9 +567,9 @@ namespace Axiom.ParticleSystems
             system.PoolSize = this.PoolSize;
             system.MaterialName = this.MaterialName;
             system.originType = this.originType;
-            system.defaultParticleWidth = this.defaultParticleWidth;
-            system.defaultParticleHeight = this.defaultParticleHeight;
-            system.cullIndividual = this.cullIndividual;
+            system.defaultWidth = this.defaultWidth;
+            system.defaultHeight = this.defaultHeight;
+            system.cullIndividually = this.cullIndividually;
             system.billboardType = this.billboardType;
             system.commonDirection = this.commonDirection;
         }

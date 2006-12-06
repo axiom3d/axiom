@@ -46,6 +46,13 @@ using Axiom.Graphics;
 
 namespace Axiom.Core
 {
+    #region Delegates
+    /// <summary>
+    /// Signature for the Node.UpdatedFromParent event which provides the newly-updated derived properties for syncronization in a physics engine for instance
+    /// </summary>
+    public delegate void NodeUpdateHandler( Vector3 derivedPosition, Quaternion derivedOrientation, Vector3 derivedScale );
+
+    #endregion
     /// <summary>
     ///		Class representing a general-purpose node an articulated scene graph.
     /// </summary>
@@ -61,6 +68,13 @@ namespace Axiom.Core
     ///	<ogre headerVersion="1.39" sourceVersion="1.53" />
     public abstract class Node : IRenderable
     {
+        #region Events
+        /// <summary>
+        /// Event which provides the newly-updated derived properties for syncronization in a physics engine for instance
+        /// </summary>
+        public event NodeUpdateHandler UpdatedFromParent;
+        #endregion
+
         #region Protected member variables
 
         /// <summary>Name of this node.</summary>
@@ -69,6 +83,13 @@ namespace Axiom.Core
         protected Node parent;
         /// <summary>Collection of this nodes child nodes.</summary>
         protected NodeCollection childNodes;
+        public NodeCollection Children
+        {
+            get
+            {
+                return childNodes;
+            }
+        }
         /// <summary>Collection of this nodes child nodes.</summary>
         protected NodeCollection childrenToUpdate;
         /// <summary>Flag to indicate own transform from parent is out of date.</summary>
@@ -107,8 +128,12 @@ namespace Axiom.Core
         protected float accumAnimWeight;
         /// <summary>Cached derived transform as a 4x4 matrix.</summary>
         protected Matrix4 cachedTransform;
+        /// <summary>Cached relative transform as a 4x4 matrix.</summary>
+        protected Matrix4 cachedRelativeTransform;
         /// <summary></summary>
-        protected bool isCachedTransformOutOfDate;
+        protected bool needTransformUpdate;
+        /// <summary></summary>
+        protected bool needRelativeTransformUpdate;
         /// <summary>Material to be used is this node itself will be rendered (axes, or bones).</summary>
         protected Material nodeMaterial;
         /// <summary>SubMesh to be used is this node itself will be rendered (axes, or bones).</summary>
@@ -185,6 +210,11 @@ namespace Axiom.Core
         #endregion
 
         #region Public methods
+        public void RemoveFromParent()
+        {
+            if ( parent != null )
+                parent.RemoveChild( name );//if this errors, then the parent is out of sync with the child
+        }
 
         /// <summary>
         ///    Adds a node to the list of children of this node.
@@ -192,9 +222,16 @@ namespace Axiom.Core
         /// <param name="node"></param>
         public void AddChild( Node child )
         {
-            childNodes.Add( child );
+            string childName = child.Name;
+            if ( child == this )
+                throw new ArgumentException( string.Format( "Node '{0}' cannot be added as a child of itself.", childName ) );
+            if ( childNodes.ContainsKey( childName ) )
+                throw new ArgumentException( string.Format( "Node '{0}' already has a child node with the name '{1}'.", this.name, childName ) );
 
-            child.Parent = this;
+            child.RemoveFromParent();
+            childNodes.Add( childName, child );
+
+            child.NotifyOfNewParent( this );
         }
 
         /// <summary>
@@ -203,6 +240,15 @@ namespace Axiom.Core
         public virtual void Clear()
         {
             childNodes.Clear();
+        }
+
+
+        /// <summary>
+        ///		Removes all child Nodes attached to this node.
+        /// </summary>
+        public virtual void RemoveAllChildren()
+        {
+            Clear();
         }
 
         /// <summary>
@@ -221,26 +267,7 @@ namespace Axiom.Core
         /// <returns></returns>
         public Node GetChild( string name )
         {
-            // TODO: optimize
-
-            Node node = null;
-
-            for ( int i = 0; i < childNodes.Count; i++ )
-            {
-                Node child = childNodes[ i ];
-                if ( child.name == name )
-                {
-                    node = child;
-                    break;
-                }
-            }
-
-            if ( node == null )
-            {
-                throw new AxiomException( "Node named '{0}' not found.!", name );
-            }
-
-            return node;
+            return childNodes[name];
         }
 
         /// <summary>
@@ -271,7 +298,7 @@ namespace Axiom.Core
             {
                 child = childNodes[ i ];
                 if ( child.name == name )
-                {
+            {
                     break;
                 }
             }
@@ -283,8 +310,8 @@ namespace Axiom.Core
 
             CancelUpdate( child );
             childNodes.Remove( child );
-            return child;
-        }
+                return child;
+                }
 
         /// <summary>
         /// 
@@ -293,19 +320,19 @@ namespace Axiom.Core
         /// <returns></returns>
         public virtual Node RemoveChild( int index )
         {
-            Node child = childNodes[ index ];
-
-            CancelUpdate( child );
-            childNodes.Remove( child );
+            if ( index < 0 || index >= childNodes.Count )
+                throw new ArgumentOutOfRangeException( string.Format( "The index must be greater then or equal to 0 and less then {0}, the number of items.", childNodes.Count ) );
+            Node child = childNodes[index];
+            RemoveChild( child, index );
             return child;
         }
 
-        /// <summary>
-        ///		Removes all child Nodes attached to this node.
-        /// </summary>
-        public virtual void RemoveAllChildren()
+
+        protected virtual void RemoveChild( Node child, int index )
         {
-            childNodes.Clear();
+            CancelUpdate( child );
+            child.NotifyOfNewParent( null );
+            childNodes.RemoveAt( index );
         }
 
         /// <summary>
@@ -670,7 +697,8 @@ namespace Axiom.Core
         {
             needParentUpdate = true;
             needChildUpdate = true;
-            isCachedTransformOutOfDate = true;
+            needTransformUpdate = true;
+            needRelativeTransformUpdate = true;
 
             // make sure we are not the root node
             if ( parent != null && !isParentNotified )
@@ -682,6 +710,7 @@ namespace Axiom.Core
             // all children will be updated shortly
             childrenToUpdate.Clear();
         }
+
 
         /// <summary>
         ///		Called by children to notify their parent that they need an update.
@@ -738,8 +767,9 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        /// The name of this Node object.  It is autogenerated initially, so setting it is optional.
+        /// Gets or sets the name of this Node object.
         /// </summary>
+        /// <remarks>This is autogenerated initially, so setting it is optional.</remarks>
         public string Name
         {
             get
@@ -748,8 +778,27 @@ namespace Axiom.Core
             }
             set
             {
+                if ( value == name )
+                    return;
+                string oldName = name;
                 name = value;
+                if ( parent != null )
+                {
+                    //ensure that it is keyed under this new name in its parent's collection
+                    parent.RemoveChild( oldName );
+                    parent.AddChild( this );
             }
+                OnRename( oldName );
+
+            }
+        }
+
+        /// <summary>
+        /// Can be overriden in derived classes to fire an event or rekey this node in the collections which contain it
+        /// </summary>
+        /// <param name="oldName"></param>
+        protected virtual void OnRename( string oldName )
+        {
         }
 
         /// <summary>
@@ -763,11 +812,22 @@ namespace Axiom.Core
             }
             set
             {
-                parent = value;
+                if ( parent != value )
+                {
+                    if ( parent != null )
+                        parent.RemoveChild( this );
+                    if ( value != null )
+                        value.AddChild( this );
+                }
+            }
+        }
+
+        protected virtual void NotifyOfNewParent( Node newParent )
+        {
+            parent = newParent;
                 isParentNotified = false;
                 NeedUpdate();
             }
-        }
 
         /// <summary>
         ///    A Quaternion representing the nodes orientation.
@@ -889,7 +949,7 @@ namespace Axiom.Core
         ///	to update it's complete transformation based on it's parents
         ///	derived transform.
         /// </summary>
-        // TODO: This was previously protected.  Was made internal to allow access to custom collections.
+        // TODO This was previously protected.  Was made internal to allow access to custom collections.
         virtual internal void UpdateFromParent()
         {
             if ( parent != null )
@@ -928,7 +988,10 @@ namespace Axiom.Core
                 derivedScale = scale;
             }
 
-            isCachedTransformOutOfDate = true;
+            needTransformUpdate = true;
+            needRelativeTransformUpdate = true;
+            if ( UpdatedFromParent != null )
+                UpdatedFromParent( derivedPosition, derivedOrientation, derivedScale );
         }
 
         /// <summary>
@@ -1063,6 +1126,29 @@ namespace Axiom.Core
             }
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        Quaternion IRenderable.WorldOrientation
+        {
+            get
+            {
+                return this.DerivedOrientation;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        Vector3 IRenderable.WorldPosition
+        {
+            get
+            {
+                return this.DerivedPosition;
+            }
+        }
+
         /// <summary>
         /// Gets the scaling factor of the node as derived from all parents.
         /// </summary>
@@ -1080,22 +1166,55 @@ namespace Axiom.Core
         /// <remarks>
         /// This method returns the full transformation matrix
         /// for this node, including the effect of any parent node
-        /// transformations, provided they have been updated using the Node::Update method.
+        /// transformations, provided they have been updated using the Node.Update() method.
         /// This should only be called by a SceneManager which knows the
         /// derived transforms have been updated before calling this method.
         /// Applications using the engine should just use the relative transforms.
         /// </remarks>
-        internal virtual Matrix4 FullTransform
+        public virtual Matrix4 FullTransform
         {
             get
             {
-                if ( isCachedTransformOutOfDate )
+                //if needs an update from parent or it has been updated from parent
+                //yet this hasn't been called after that yet
+                if ( needTransformUpdate )
                 {
+                    //derived properties may call Update() if needsParentUpdate is true and this will set needTransformUpdate to true
                     MakeTransform( this.DerivedPosition, this.DerivedScale, this.DerivedOrientation, ref cachedTransform );
-                    isCachedTransformOutOfDate = false;
+                    //dont need to update this again until next invalidation
+                    needTransformUpdate = false;
                 }
 
                 return cachedTransform;
+            }
+        }
+
+        /// <summary>
+        ///	Gets the full transformation matrix for this node.
+        /// </summary>
+        /// <remarks>
+        /// This method returns the full transformation matrix
+        /// for this node, including the effect of any parent node
+        /// transformations, provided they have been updated using the Node.Update() method.
+        /// This should only be called by a SceneManager which knows the
+        /// derived transforms have been updated before calling this method.
+        /// Applications using the engine should just use the relative transforms.
+        /// </remarks>
+        public virtual Matrix4 RelativeTransform
+        {
+            get
+            {
+                //if needs an update from parent or it has been updated from parent
+                //yet this hasn't been called after that yet
+                if ( needRelativeTransformUpdate )
+                {
+                    //derived properties may call Update() if needsParentUpdate is true and this will set needTransformUpdate to true
+                    MakeTransform( this.Position, this.ScaleFactor, this.Orientation, ref cachedRelativeTransform );
+                    //dont need to update this again until next invalidation
+                    needRelativeTransformUpdate = false;
+                }
+
+                return cachedRelativeTransform;
             }
         }
 
@@ -1109,11 +1228,12 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="updateChildren">If true, the update cascades down to all children. Specify false if you wish to
         /// update children separately, e.g. because of a more selective SceneManager implementation.</param>
+        /// <param name="hasParentChanged">if true then this will update its derived properties (scale, orientation, position) accoarding to the parent's</param>
         protected internal virtual void Update( bool updateChildren, bool hasParentChanged )
         {
             isParentNotified = false;
 
-            // nothin to see here folks, move on
+            // skip update if not needed
             if ( !updateChildren && !needParentUpdate && !needChildUpdate && !hasParentChanged )
                 return;
 
@@ -1128,9 +1248,6 @@ namespace Axiom.Core
             // see if we need to process all
             if ( needChildUpdate || hasParentChanged )
             {
-                // update from parent
-                //UpdateFromParent();
-
                 // update all children
                 for ( int i = 0; i < childNodes.Count; i++ )
                 {
@@ -1145,7 +1262,7 @@ namespace Axiom.Core
                 // just update selected children
                 for ( int i = 0; i < childrenToUpdate.Count; i++ )
                 {
-                    Node child = (Node)childrenToUpdate[ i ];
+                    Node child = childrenToUpdate[i];
                     child.Update( true, false );
                 }
 
@@ -1156,7 +1273,6 @@ namespace Axiom.Core
             // reset the flag
             needChildUpdate = false;
         }
-
 
         /// <summary>
         /// This method transforms a Node by a weighted amount from it's
@@ -1274,27 +1390,6 @@ namespace Axiom.Core
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public Quaternion WorldOrientation
-        {
-            get
-            {
-                return this.DerivedOrientation;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Vector3 WorldPosition
-        {
-            get
-            {
-                return this.DerivedPosition;
-            }
-        }
 
         /// <summary>
         /// 
