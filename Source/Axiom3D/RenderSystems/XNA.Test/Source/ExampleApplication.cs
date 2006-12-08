@@ -427,7 +427,7 @@ namespace ExampleApplication
             CreateViewports();
 
             // Set default mipmap level (NB some APIs ignore this)
-            TextureManager.Instance.DefaultNumMipMaps = 5;
+            //TextureManager.Instance.DefaultNumMipMaps = 5;
 
             // Create any resource listeners (for loading screens)
             CreateResourceListener();
@@ -522,7 +522,7 @@ namespace ExampleApplication
         protected virtual void RegisterEventHandlers()
         {
             m_root.FrameStarted += UpdateInput;
-            m_root.FrameStarted += UpdateOverlay;
+            //m_root.FrameStarted += UpdateOverlay;
             m_root.FrameStarted += FrameStarted;
             m_root.FrameEnded += FrameEnded;
 
