@@ -1,0 +1,331 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Axiom.RenderSystems.Xna</name>
+    </assembly>
+    <members>
+        <member name="T:Axiom.RenderSystems.Xna.VideoMode">
+            <summary>
+            Summary description for VideoMode.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.VideoMode.#ctor">
+            <summary>
+            	Default constructor.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.VideoMode.#ctor(Axiom.RenderSystems.Xna.VideoMode)">
+            <summary>
+            	Accepts a existing XNAVideoMode object.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.VideoMode.#ctor(Microsoft.Xna.Framework.Graphics.DisplayMode)">
+            <summary>
+            	Accepts a existing Direct3D.DisplayMode object.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.VideoMode.Finalize">
+            <summary>
+            	Destructor.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.VideoMode.ToString">
+            <summary>
+            	Returns a string representation of this video mode.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Axiom.RenderSystems.Xna.VideoMode.Width">
+            <summary>
+            	Width of this video mode.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.Xna.VideoMode.Height">
+            <summary>
+            	Height of this video mode.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.Xna.VideoMode.Format">
+            <summary>
+            	Format of this video mode.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.Xna.VideoMode.RefreshRate">
+            <summary>
+            	Refresh rate of this video mode.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.Xna.VideoMode.ColorDepth">
+            <summary>
+            	Color depth of this video mode.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.Xna.VideoMode.DisplayMode">
+            <summary>
+            	Gets the Direct3D.DisplayMode object associated with this video mode.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.Xna.DriverCollection">
+            <summary>
+            Summary description for DriverCollection.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.Xna.Driver">
+            <summary>
+            	Helper class for dealing with XNA Drivers.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.Driver.#ctor(Microsoft.Xna.Framework.Graphics.GraphicsAdapter)">
+            <summary>
+            	Default constructor.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.Xna.Driver.Name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.Xna.Driver.Description">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.Xna.Driver.AdapterNumber">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.Xna.Driver.DesktopMode">
+            <summary>
+            	
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.Xna.Driver.VideoModes">
+            <summary>
+            	
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.Xna.RenderSystem._device">
+            <summary>
+               Reference to the Xna device.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.RenderSystem._createDefaultForm(System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            	Creates a default form to use for a rendering target.
+            </summary>
+            <remarks>
+            	This is used internally whenever <see cref="M:Axiom.RenderSystems.Xna.RenderSystem.Initialize(System.Boolean,System.String)"/> is called and autoCreateWindow is set to true.
+            </remarks>
+            <param name="windowTitle">Title of the window.</param>
+            <param name="top">Top position of the window.</param>
+            <param name="left">Left position of the window.</param>
+            <param name="width">Width of the window.</param>
+            <param name="height">Height of the window</param>
+            <param name="fullScreen">Prepare the form for fullscreen mode?</param>
+            <returns>A form suitable for using as a rendering target.</returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.RenderSystem.Render(Axiom.Graphics.RenderOperation)">
+            <summary>
+            	Renders the current render operation in D3D's own special way.
+            </summary>
+            <param name="op"></param>
+        </member>
+        <member name="T:Axiom.RenderSystems.Xna.VideoModeCollection">
+            <summary>
+            Summary description for VideoModeCollection.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.Xna.Plugin">
+            <summary>
+            Summary description for Plugin.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.Xna.Plugin.renderSystem">
+            <summary>
+                Reference to the render system instance.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.XnaHelper.GetDriverInfo">
+            <summary>
+            	Enumerates driver information and their supported display modes.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.DefaultForm.DefaultForm_Deactivate(System.Object,System.EventArgs)">
+            <summary>
+            
+            </summary>
+            <param name="source"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.DefaultForm.DefaultForm_Activated(System.Object,System.EventArgs)">
+            <summary>
+            
+            </summary>
+            <param name="source"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.DefaultForm.DefaultForm_Close(System.Object,System.ComponentModel.CancelEventArgs)">
+            <summary>
+            
+            </summary>
+            <param name="source"></param>
+            <param name="e"></param>
+        </member>
+        <member name="P:Axiom.RenderSystems.Xna.DefaultForm.RenderWindow">
+            <summary>
+            	Get/Set the RenderWindow associated with this form.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.Xna.DefaultForm.Target">
+            <summary>
+            	
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.Xna.XnaWindow">
+            <summary>
+            The Xna implementation of the RenderWindow class.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.Xna.XnaWindow.device">
+            <summary>A handle to the Xna device of the XnaRenderSystem.</summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.Xna.XnaWindow.backBuffer">
+            <summary>Used to provide support for multiple RenderWindows per device.</summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.XnaWindow.Create(System.String,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Int32,System.Boolean,System.Object[])">
+            <summary>
+            
+            </summary>
+            <param name="name"></param>
+            <param name="width"></param>
+            <param name="height"></param>
+            <param name="colorDepth"></param>
+            <param name="isFullScreen"></param>
+            <param name="left"></param>
+            <param name="top"></param>
+            <param name="depthBuffer"></param>height
+            <param name="miscParams"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.XnaWindow.Dispose">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.XnaWindow.Resize(System.Int32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="width"></param>
+            <param name="height"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.XnaWindow.SwapBuffers(System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="waitForVSync"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.XnaWindow.Save(System.IO.Stream)">
+            <summary>
+                Saves the window contents to a stream.
+            </summary>
+            <param name="stream">Stream to write the window contents to.</param>
+        </member>
+        <member name="T:Axiom.RenderSystems.Xna.XnaWindow.CustomAttribute">
+            <summary>
+            Specifies the custom attribute by converting this to a string and passing to GetCustomAttribute()
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.XnaHardwareBufferManager.#ctor(Microsoft.Xna.Framework.Graphics.GraphicsDevice)">
+            <summary>
+            	
+            </summary>
+            <param name="device"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.XnaHardwareIndexBuffer.LockImpl(System.Int32,System.Int32,Axiom.Graphics.BufferLocking)">
+            <summary>
+            
+            </summary>
+            <param name="offset"></param>
+            <param name="length"></param>
+            <param name="locking"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.XnaHardwareIndexBuffer.UnlockImpl">
+            <summary>
+            
+            </summary>
+            DOC
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.XnaHardwareIndexBuffer.ReadData(System.Int32,System.Int32,System.IntPtr)">
+            <summary>
+            
+            </summary>
+            <param name="offset"></param>
+            <param name="length"></param>
+            <param name="dest"></param>
+            DOC
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.XnaHardwareIndexBuffer.WriteData(System.Int32,System.Int32,System.IntPtr,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="offset"></param>
+            <param name="length"></param>
+            <param name="src"></param>
+            <param name="discardWholeBuffer"></param>
+            DOC
+        </member>
+        <member name="P:Axiom.RenderSystems.Xna.XnaHardwareIndexBuffer.XnaIndexBuffer">
+            <summary>
+            	Gets the underlying XNA Vertex Buffer object.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.XnaHardwareVertexBuffer.LockImpl(System.Int32,System.Int32,Axiom.Graphics.BufferLocking)">
+            <summary>
+            
+            </summary>
+            <param name="offset"></param>
+            <param name="length"></param>
+            <param name="locking"></param>
+            <returns></returns>
+            DOC
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.XnaHardwareVertexBuffer.UnlockImpl">
+            <summary>
+            
+            </summary>
+            DOC
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.XnaHardwareVertexBuffer.ReadData(System.Int32,System.Int32,System.IntPtr)">
+            <summary>
+            
+            </summary>
+            <param name="offset"></param>
+            <param name="length"></param>
+            <param name="dest"></param>
+            DOC
+        </member>
+        <member name="M:Axiom.RenderSystems.Xna.XnaHardwareVertexBuffer.WriteData(System.Int32,System.Int32,System.IntPtr,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="offset"></param>
+            <param name="length"></param>
+            <param name="src"></param>
+            <param name="discardWholeBuffer"></param>
+            DOC
+        </member>
+        <member name="P:Axiom.RenderSystems.Xna.XnaHardwareVertexBuffer.XnaVertexBuffer">
+            <summary>
+            	Gets the underlying D3D Vertex Buffer object.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.Xna.XnaVertexDeclaration.XnaVertexDecl">
+            <summary>
+            
+            </summary>
+            DOC
+        </member>
+    </members>
+</doc>
