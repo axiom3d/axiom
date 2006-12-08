@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.Xna", "Axiom3D\RenderSystems\XNA\Axiom.RenderSystems.Xna.csproj", "{DD053894-35C8-4F38-9E47-3A2B1E0C26FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.Xna.Test", "Axiom3D\RenderSystems\XNA.Test\Axiom.RenderSystems.Xna.Test.csproj", "{2140B840-B135-4FDE-BF5B-A0EB464FEEC5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.DirectX9", "..\..\bree\Axiom3D\RenderSystems\DirectX9\Axiom.RenderSystems.DirectX9.csproj", "{C1146933-2FCD-42E2-8BD9-6E018C744240}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DD053894-35C8-4F38-9E47-3A2B1E0C26FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD053894-35C8-4F38-9E47-3A2B1E0C26FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD053894-35C8-4F38-9E47-3A2B1E0C26FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD053894-35C8-4F38-9E47-3A2B1E0C26FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2140B840-B135-4FDE-BF5B-A0EB464FEEC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2140B840-B135-4FDE-BF5B-A0EB464FEEC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2140B840-B135-4FDE-BF5B-A0EB464FEEC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2140B840-B135-4FDE-BF5B-A0EB464FEEC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1146933-2FCD-42E2-8BD9-6E018C744240}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1146933-2FCD-42E2-8BD9-6E018C744240}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
