@@ -83,6 +83,7 @@ namespace Axiom.RenderSystems.Xna
         {
             _buffer = new Byte[ length ];
             xnaBuffer.GetData<Byte>( _buffer );
+            return Marshal.UnsafeAddrOfPinnedArrayElement( _buffer, 0 );
             _gcHandle = GCHandle.Alloc( xnaBuffer, GCHandleType.Weak );
             return GCHandle.ToIntPtr( _gcHandle );
         }
