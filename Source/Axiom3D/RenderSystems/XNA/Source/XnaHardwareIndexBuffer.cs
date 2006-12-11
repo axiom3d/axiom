@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
-//     <id value="$Id: $"/>
+//     <id value="$Id:"/>
 // </file>
 #endregion SVN Version Information
 
@@ -94,8 +94,11 @@ namespace Axiom.RenderSystems.Xna
         /// DOC
         public override void UnlockImpl()
         {
-            _gcHandle.Free();
-            //_buffer = null;
+            if ( this.isLocked &&  _gcHandle.IsAllocated )
+            {
+                _gcHandle.Free();
+                //_buffer = null;
+            }
         }
 
         /// <summary>

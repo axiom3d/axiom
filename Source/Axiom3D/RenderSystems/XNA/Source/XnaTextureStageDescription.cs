@@ -34,47 +34,37 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Diagnostics;
+using SWF = System.Windows.Forms;
+
+using Axiom.Graphics;
+using Axiom.Core;
+using Axiom.Configuration;
+using Axiom.Media;
+using XnaF = Microsoft.Xna.Framework;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna
 {
     /// <summary>
-    /// Summary description for Plugin.
+    ///		Structure holding texture unit settings for every stage
     /// </summary>
-    public sealed class Plugin : Axiom.Core.IPlugin
+    internal struct XnaTextureStageDescription
     {
-        #region Fields
-
-        /// <summary>
-        ///     Factory for HLSL programs.
-        /// </summary>
-        //private HLSL.HLSLProgramFactory factory = new HLSL.HLSLProgramFactory();
-
-        /// <summary>
-        ///     Reference to the render system instance.
-        /// </summary>
-        private Axiom.Graphics.RenderSystem renderSystem = new RenderSystem();
-
-        #endregion Fields
-
-        #region Implementation of IPlugin
-
-        public void Start()
-        {
-            // add an instance of this plugin to the list of available RenderSystems
-            Axiom.Core.Root.Instance.RenderSystems.Add( "Xna", renderSystem );
-
-            // register the HLSL program manager
-            //HighLevelGpuProgramManager.Instance.AddFactory( factory );
-        }
-
-        public void Stop()
-        {
-            // nothing at the moment
-            renderSystem.Shutdown();
-        }
-
-        #endregion
+        /// the type of the texture
+        public XnaTextureType texType;
+        /// wich texCoordIndex to use
+        public int coordIndex;
+        /// type of auto tex. calc. used
+        public TexCoordCalcMethod autoTexCoordType;
+        /// Frustum, used if the above is projection
+        public Frustum frustum;
+        /// texture 
+        public XnaF.Graphics.Texture tex;
     }
+
 }

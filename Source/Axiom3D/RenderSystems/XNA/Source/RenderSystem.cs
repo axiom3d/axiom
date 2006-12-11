@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
-//     <id value="$Id: $"/>
+//     <id value="$Id:"/>
 // </file>
 #endregion SVN Version Information
 
@@ -42,6 +42,7 @@ using SWF = System.Windows.Forms;
 using Axiom.Configuration;
 using XnaF = Microsoft.Xna.Framework;
 using Axiom.Graphics;
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -56,16 +57,30 @@ namespace Axiom.RenderSystems.Xna
 
         private XnaF.Graphics.GraphicsDeviceCapabilities _capabilities;
 
+        protected bool lightingEnabled;
+
+        // stores texture stage info locally for convenience
+        internal XnaTextureStageDescription[] texStageDesc = new XnaTextureStageDescription[ Config.MaxTextureLayers ];
+
         public RenderSystem()
         {
             _initConfigOptions();
+
+            // init the texture stage descriptions
+            for ( int i = 0; i < Config.MaxTextureLayers; i++ )
+            {
+                texStageDesc[ i ].autoTexCoordType = TexCoordCalcMethod.None;
+                texStageDesc[ i ].coordIndex = 0;
+                texStageDesc[ i ].texType = XnaTextureType.Normal;
+                texStageDesc[ i ].tex = null;
+            }
         }
 
         private void _initConfigOptions()
         {
             ConfigOption optDevice = new ConfigOption( "Rendering Device", "", false );
             ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit colour", false );
-            ConfigOption optFullScreen = new ConfigOption( "Full Screen", "Yes", false );
+            ConfigOption optFullScreen = new ConfigOption( "Full Screen", "No", false );
             ConfigOption optVSync = new ConfigOption( "VSync", "No", false );
             ConfigOption optAA = new ConfigOption( "Anti aliasing", "None", false );
             ConfigOption optFPUMode = new ConfigOption( "Floating-point mode", "Fastest", false );
@@ -210,6 +225,140 @@ namespace Axiom.RenderSystems.Xna
             return presentParams;
         }
 
+        /// <summary>
+        ///		Helper method to go through and interrogate hardware capabilities.
+        /// </summary>
+        private void _checkCaps( XnaF.Graphics.GraphicsDevice device )
+        {
+            // get the number of possible texture units
+            caps.TextureUnitCount = _capabilities.MaxSimultaneousTextures;
+
+            // max active lights
+            //caps.MaxLights = d3dCaps.MaxActiveLights;
+
+            //D3D.Surface surface = device.DepthStencilSurface;
+            //D3D.SurfaceDescription surfaceDesc = surface.Description;
+            //surface.Dispose();
+
+            //if ( surfaceDesc.Format == D3D.Format.D24S8 || surfaceDesc.Format == D3D.Format.D24X8 )
+            //{
+            //    caps.SetCap( Capabilities.StencilBuffer );
+            //    // always 8 here
+            //    caps.StencilBufferBits = 8;
+            //}
+
+            //// some cards, oddly enough, do not support this
+            //if ( d3dCaps.DeclarationTypes.SupportsUByte4 )
+            //{
+            //    caps.SetCap( Capabilities.VertexFormatUByte4 );
+            //}
+
+            //// Anisotropy?
+            //if ( d3dCaps.MaxAnisotropy > 1 )
+            //{
+            //    caps.SetCap( Capabilities.AnisotropicFiltering );
+            //}
+
+            //// Hardware mipmapping?
+            //if ( d3dCaps.DriverCaps.CanAutoGenerateMipMap )
+            //{
+            //    caps.SetCap( Capabilities.HardwareMipMaps );
+            //}
+
+            //// blending between stages is definately supported
+            //caps.SetCap( Capabilities.TextureBlending );
+            //caps.SetCap( Capabilities.MultiTexturing );
+
+            //// Dot3 bump mapping?
+            //if ( d3dCaps.TextureOperationCaps.SupportsDotProduct3 )
+            //{
+            //    caps.SetCap( Capabilities.Dot3 );
+            //}
+
+            //// Cube mapping?
+            //if ( d3dCaps.TextureCaps.SupportsCubeMap )
+            //{
+            //    caps.SetCap( Capabilities.CubeMapping );
+            //}
+
+            //// Texture Compression
+            //// We always support compression, D3DX will decompress if device does not support
+            //caps.SetCap( Capabilities.TextureCompression );
+            //caps.SetCap( Capabilities.TextureCompressionDXT );
+
+            //// D3D uses vertex buffers for everything
+            //caps.SetCap( Capabilities.VertexBuffer );
+
+            //// Scissor test
+            //if ( d3dCaps.RasterCaps.SupportsScissorTest )
+            //{
+            //    caps.SetCap( Capabilities.ScissorTest );
+            //}
+
+            //// 2 sided stencil
+            //if ( d3dCaps.StencilCaps.SupportsTwoSided )
+            //{
+            //    caps.SetCap( Capabilities.TwoSidedStencil );
+            //}
+
+            //// stencil wrap
+            //if ( d3dCaps.StencilCaps.SupportsIncrement && d3dCaps.StencilCaps.SupportsDecrement )
+            //{
+            //    caps.SetCap( Capabilities.StencilWrap );
+            //}
+
+            //// Hardware Occlusion
+            //try
+            //{
+            //    D3D.Query test = new D3D.Query( device, D3D.QueryType.Occlusion );
+
+            //    // if we made it this far, it is supported
+            //    caps.SetCap( Capabilities.HardwareOcculusion );
+
+            //    test.Dispose();
+            //}
+            //catch
+            //{
+            //    // eat it, this is not supported
+            //    // TODO: Isn't there a better way to check for D3D occlusion query support?
+            //}
+
+            //if ( d3dCaps.MaxUserClipPlanes > 0 )
+            //{
+            //    caps.SetCap( Capabilities.UserClipPlanes );
+            //}
+
+            //CheckVertexProgramCaps();
+
+            //CheckFragmentProgramCaps();
+
+            //// Infinite projection?
+            //// We have no capability for this, so we have to base this on our
+            //// experience and reports from users
+            //// Non-vertex program capable hardware does not appear to support it
+            //if ( caps.CheckCap( Capabilities.VertexPrograms ) )
+            //{
+            //    // GeForce4 Ti (and presumably GeForce3) does not
+            //    // render infinite projection properly, even though it does in GL
+            //    // So exclude all cards prior to the FX range from doing infinite
+
+            //    //Driver driver = D3DHelper.GetDriverInfo();
+
+            //    D3D.AdapterDetails details = D3D.Manager.Adapters[ 0 ];
+
+            //    //AdapterDetails details = Manager.Adapters[driver.AdapterNumber].Information;
+
+            //    // not nVidia or GeForceFX and above
+            //    if ( details.Information.VendorId != 0x10DE || details.Information.DeviceId >= 0x0301 )
+            //    {
+            //        caps.SetCap( Capabilities.InfiniteFarPlane );
+            //    }
+            //}
+
+            // write hardware capabilities to registered log listeners
+            caps.Log();
+        }
+
         private XnaF.Graphics.GraphicsDevice _initDevice( bool isFullscreen, bool depthBuffer, int width, int height, int colorDepth, SWF.Control target )
         {
             if ( _device != null )
@@ -259,7 +408,7 @@ namespace Axiom.RenderSystems.Xna
             _capabilities = newDevice.GraphicsDeviceCapabilities;
 
             // by creating our texture manager, singleton TextureManager will hold our implementation
-            //textureMgr = new D3DTextureManager( newDevice );
+            textureMgr = new XnaTextureManager( newDevice );
 
             // by creating our Gpu program manager, singleton GpuProgramManager will hold our implementation
             //gpuProgramMgr = new D3DGpuProgramManager( newDevice );
@@ -267,7 +416,7 @@ namespace Axiom.RenderSystems.Xna
             // intializes the HardwareBufferManager singleton
             hardwareBufferManager = new XnaHardwareBufferManager( newDevice );
 
-            //CheckCaps( newDevice );
+            _checkCaps( newDevice );
 
             return newDevice;
         }
@@ -282,7 +431,8 @@ namespace Axiom.RenderSystems.Xna
             }
             set
             {
-                throw new NotImplementedException();
+                // ToDo:
+                // throw new NotImplementedException();
             }
         }
 
@@ -290,7 +440,8 @@ namespace Axiom.RenderSystems.Xna
         {
             get
             {
-                throw new NotImplementedException();
+                // Xna considers the origin to be in the center of a pixel
+                return -0.5f;
             }
         }
 
@@ -302,7 +453,8 @@ namespace Axiom.RenderSystems.Xna
             }
             set
             {
-                throw new NotImplementedException();
+                // ToDo:
+                // throw new NotImplementedException();
             }
         }
 
@@ -314,7 +466,8 @@ namespace Axiom.RenderSystems.Xna
             }
             set
             {
-                throw new NotImplementedException();
+                // ToDo:
+                // throw new NotImplementedException();
             }
         }
 
@@ -326,7 +479,8 @@ namespace Axiom.RenderSystems.Xna
             }
             set
             {
-                throw new NotImplementedException();
+                // ToDo:
+                // throw new NotImplementedException();
             }
         }
 
@@ -338,7 +492,8 @@ namespace Axiom.RenderSystems.Xna
             }
             set
             {
-                throw new NotImplementedException();
+                // ToDo:
+                // throw new NotImplementedException();
             }
         }
 
@@ -350,7 +505,8 @@ namespace Axiom.RenderSystems.Xna
             }
             set
             {
-                throw new NotImplementedException();
+                // ToDo:
+                // throw new NotImplementedException();
             }
         }
 
@@ -362,7 +518,8 @@ namespace Axiom.RenderSystems.Xna
             }
             set
             {
-                throw new NotImplementedException();
+                // ToDo:
+                // throw new NotImplementedException();
             }
         }
 
@@ -374,7 +531,8 @@ namespace Axiom.RenderSystems.Xna
             }
             set
             {
-                throw new NotImplementedException();
+                // ToDo:
+                // throw new NotImplementedException();
             }
         }
 
@@ -382,7 +540,8 @@ namespace Axiom.RenderSystems.Xna
         {
             get
             {
-                throw new NotImplementedException();
+                // Xna considers the origin to be in the center of a pixel
+                return -0.5f;
             }
         }
 
@@ -390,11 +549,11 @@ namespace Axiom.RenderSystems.Xna
         {
             get
             {
-                throw new NotImplementedException();
+                return lightingEnabled;
             }
             set
             {
-                throw new NotImplementedException();
+                lightingEnabled = value;
             }
         }
 
@@ -406,7 +565,8 @@ namespace Axiom.RenderSystems.Xna
             }
             set
             {
-                throw new NotImplementedException();
+                // ToDo:
+                // throw new NotImplementedException();
             }
         }
 
@@ -418,7 +578,8 @@ namespace Axiom.RenderSystems.Xna
             }
             set
             {
-                throw new NotImplementedException();
+                // ToDo:
+                // throw new NotImplementedException();
             }
         }
 
@@ -430,7 +591,8 @@ namespace Axiom.RenderSystems.Xna
             }
             set
             {
-                throw new NotImplementedException();
+                //ToDo: Need to Implement
+                //throw new NotImplementedException();
             }
         }
 
@@ -442,7 +604,8 @@ namespace Axiom.RenderSystems.Xna
             }
             set
             {
-                throw new NotImplementedException();
+                // ToDo:
+                // throw new NotImplementedException();
             }
         }
 
@@ -501,10 +664,12 @@ namespace Axiom.RenderSystems.Xna
 
         public override void BeginFrame()
         {
+            _device.Clear( XnaF.Graphics.Color.CornflowerBlue );
         }
 
         public override void EndFrame()
         {
+            _device.Present();
         }
 
         /// <summary>
@@ -539,7 +704,7 @@ namespace Axiom.RenderSystems.Xna
 
         public override int ConvertColor( Axiom.Core.ColorEx color )
         {
-            throw new NotImplementedException();
+            return color.ToARGB();
         }
 
         public override Axiom.Graphics.IHardwareOcclusionQuery CreateHardwareOcclusionQuery()
@@ -627,12 +792,14 @@ namespace Axiom.RenderSystems.Xna
 
         public override void SetAlphaRejectSettings( int stage, Axiom.Graphics.CompareFunction func, byte val )
         {
-            throw new NotImplementedException();
+            // ToDo:
+            // throw new NotImplementedException();
         }
 
         public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
         {
-            throw new NotImplementedException();
+            // ToDo:
+            // throw new NotImplementedException();
         }
 
         public override void SetDepthBufferParams( bool depthTest, bool depthWrite, Axiom.Graphics.CompareFunction depthFunction )
@@ -642,12 +809,12 @@ namespace Axiom.RenderSystems.Xna
 
         public override void SetFog( Axiom.Graphics.FogMode mode, Axiom.Core.ColorEx color, float density, float start, float end )
         {
-            throw new NotImplementedException();
+            // ToDo: 
         }
 
         public override void SetSceneBlending( Axiom.Graphics.SceneBlendFactor src, Axiom.Graphics.SceneBlendFactor dest )
         {
-            throw new NotImplementedException();
+            // ToDo:
         }
 
         public override void SetScissorTest( bool enable, int left, int top, int right, int bottom )
@@ -667,47 +834,81 @@ namespace Axiom.RenderSystems.Xna
 
         public override void SetTexture( int stage, bool enabled, string textureName )
         {
-            throw new NotImplementedException();
+            XnaTexture texture = (XnaTexture)TextureManager.Instance.GetByName( textureName );
+
+            if ( enabled && texture != null )
+            {
+                _device.Textures[ stage ] = texture.Texture;
+
+                // set stage description
+                texStageDesc[ stage ].tex = texture.Texture;
+                texStageDesc[ stage ].texType = XnaHelper.ConvertEnum( texture.TextureType );
+            }
+            else
+            {
+                if ( texStageDesc[ stage ].tex != null )
+                {
+                    _device.Textures[ stage ] = null;
+                    //device.TextureStates[ stage ].ColorOperation = D3D.TextureOperation.Disable;
+                }
+
+                // set stage description to defaults
+                texStageDesc[ stage ].tex = null;
+                texStageDesc[ stage ].autoTexCoordType = TexCoordCalcMethod.None;
+                texStageDesc[ stage ].coordIndex = 0;
+                texStageDesc[ stage ].texType = XnaTextureType.Normal;
+            }
         }
 
         public override void SetTextureAddressingMode( int stage, Axiom.Graphics.TextureAddressing texAddressingMode )
         {
-            throw new NotImplementedException();
+            // ToDo:
+            // throw new NotImplementedException();
         }
 
         public override void SetTextureBlendMode( int stage, Axiom.Graphics.LayerBlendModeEx blendMode )
         {
-            throw new NotImplementedException();
+            // ToDo:
+            // throw new NotImplementedException();
         }
 
         public override void SetTextureCoordCalculation( int stage, Axiom.Graphics.TexCoordCalcMethod method, Axiom.Core.Frustum frustum )
         {
-            throw new NotImplementedException();
+            // ToDo:
+            // throw new NotImplementedException();
         }
 
         public override void SetTextureCoordSet( int stage, int index )
         {
-            throw new NotImplementedException();
+            // store
+            texStageDesc[ stage ].coordIndex = index;
+
+            // ToDo:
+           // _device.Textures[ stage ].TextureCoordinateIndex = D3DHelper.ConvertEnum( texStageDesc[ stage ].autoTexCoordType, d3dCaps ) | index;
         }
 
         public override void SetTextureLayerAnisotropy( int stage, int maxAnisotropy )
         {
-            throw new NotImplementedException();
+            // ToDo:
+            // throw new NotImplementedException();
         }
 
         public override void SetTextureMatrix( int stage, Axiom.Math.Matrix4 xform )
         {
-            throw new NotImplementedException();
+            // ToDo:
+            // throw new NotImplementedException();
         }
 
         public override void SetTextureUnitFiltering( int stage, Axiom.Graphics.FilterType type, Axiom.Graphics.FilterOptions filter )
         {
-            throw new NotImplementedException();
+            // ToDo:
+            // throw new NotImplementedException();
         }
 
         public override void SetViewport( Axiom.Core.Viewport viewport )
         {
-            throw new NotImplementedException();
+            //ToDo: Need to Implement
+            //throw new NotImplementedException();
         }
 
         public override void UseLights( Axiom.Collections.LightList lightList, int limit )

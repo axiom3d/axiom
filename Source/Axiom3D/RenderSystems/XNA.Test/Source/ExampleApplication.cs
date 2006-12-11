@@ -416,7 +416,7 @@ namespace ExampleApplication
             if ( !Configure() )
                 return false;
             else
-                m_renderWindow = Root.Instance.Initialize( true );
+                m_renderWindow = Root.Instance.Initialize( true , "Axoim Xna Render Window");
 
             // Initalize input
             m_inputReader = PlatformManager.Instance.CreateInputReader();
@@ -449,6 +449,8 @@ namespace ExampleApplication
             EngineConfig config = new EngineConfig();
 
             config.ReadXml( ConfigFile );
+
+            ResourceManager.AddCommonArchive( "../../../Media", "Folder" );
 
             foreach ( EngineConfig.FilePathRow row in config.FilePath )
                 ResourceManager.AddCommonArchive( row.src, row.type );
@@ -522,12 +524,12 @@ namespace ExampleApplication
         protected virtual void RegisterEventHandlers()
         {
             m_root.FrameStarted += UpdateInput;
-            //m_root.FrameStarted += UpdateOverlay;
+            m_root.FrameStarted += UpdateOverlay;
             m_root.FrameStarted += FrameStarted;
             m_root.FrameEnded += FrameEnded;
 
             // Create debug overlay
-            //InitOverlay();
+            InitOverlay();
         }
 
         /// <summary>
@@ -675,19 +677,20 @@ namespace ExampleApplication
                 element.Text = m_renderWindow.DebugText;
 
                 element = OverlayElementManager.Instance.GetElement( "Core/CurrFps" );
-                element.Text = string.Format( "Current FPS: {0}", Root.Instance.CurrentFPS );
+                element.Text = string.Format( "Current FPS: {0:#.00}", Root.Instance.CurrentFPS );
 
                 element = OverlayElementManager.Instance.GetElement( "Core/BestFps" );
-                element.Text = string.Format( "Best FPS: {0}", Root.Instance.BestFPS );
+                element.Text = string.Format( "Best FPS: {0:#.00}", Root.Instance.BestFPS );
 
                 element = OverlayElementManager.Instance.GetElement( "Core/WorstFps" );
-                element.Text = string.Format( "Worst FPS: {0}", Root.Instance.WorstFPS );
+                element.Text = string.Format( "Worst FPS: {0:#.00}", Root.Instance.WorstFPS );
 
                 element = OverlayElementManager.Instance.GetElement( "Core/AverageFps" );
-                element.Text = string.Format( "Average FPS: {0}", Root.Instance.AverageFPS );
+                element.Text = string.Format( "Average FPS: {0:#.00}", Root.Instance.AverageFPS );
 
                 element = OverlayElementManager.Instance.GetElement( "Core/NumTris" );
                 element.Text = string.Format( "Triangle Count: {0}", m_sceneManager.TargetRenderSystem.FacesRendered );
+                LogManager.Instance.Write( "Engine Statistics: Count: {5}  FPS <C,B,W,A>: {0:#.00} {1:#.00} {2:#.00} {3:#.00}  Trias: {4} ", Root.Instance.CurrentFPS, Root.Instance.BestFPS, Root.Instance.WorstFPS, Root.Instance.AverageFPS, m_sceneManager.TargetRenderSystem.FacesRendered, Root.Instance.CurrentFrameCount );
             }
         }
         #endregion Events
