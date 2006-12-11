@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
-//     <id value="$Id: $"/>
+//     <id value="$Id:"/>
 // </file>
 #endregion SVN Version Information
 
@@ -123,11 +123,11 @@ namespace Axiom.RenderSystems.Xna
         {
             XnaF.Graphics.ResourceUsage xnaUsage = 0;
 
-            if ( usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly )
-                xnaUsage |= XnaF.Graphics.ResourceUsage.Dynamic;
+            //if ( usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly )
+            //    xnaUsage |= XnaF.Graphics.ResourceUsage.ResolveTarget;
 
-            if ( usage == BufferUsage.WriteOnly || usage == BufferUsage.StaticWriteOnly || usage == BufferUsage.DynamicWriteOnly )
-                xnaUsage |= XnaF.Graphics.ResourceUsage.WriteOnly;
+            //if ( usage == BufferUsage.WriteOnly || usage == BufferUsage.StaticWriteOnly || usage == BufferUsage.DynamicWriteOnly )
+            //    xnaUsage |= XnaF.Graphics.ResourceUsage.WriteOnly;
 
             return xnaUsage;
         }
@@ -168,6 +168,22 @@ namespace Axiom.RenderSystems.Xna
 
             // keep the compiler happy
             return XnaF.Graphics.VertexElementUsage.Position;
+        }
+
+        public static XnaTextureType ConvertEnum( TextureType type )
+        {
+            switch ( type )
+            {
+                case TextureType.OneD:
+                case TextureType.TwoD:
+                    return XnaTextureType.Normal;
+                case TextureType.CubeMap:
+                    return XnaTextureType.Cube;
+                case TextureType.ThreeD:
+                    return XnaTextureType.Volume;
+            }
+
+            return XnaTextureType.None;
         }
 
         #endregion

@@ -81,6 +81,7 @@
     </Compile>
     <Compile Include="Configuration\AssemblyInfo.cs" />
     <Compile Include="Source\XnaHardwareIndexBuffer.cs" />
+    <Compile Include="Source\XnaTextureStageDescription.cs" />
     <Compile Include="Source\XnaWindow.cs" />
     <Compile Include="Source\DefaultForm.cs">
       <SubType>Form</SubType>
@@ -95,6 +96,10 @@
     <Compile Include="Source\XnaHardwareBufferManager.cs" />
     <Compile Include="Source\XnaHardwareVertexBuffer.cs" />
     <Compile Include="Source\XnaVertexDeclaration.cs" />
+    <Compile Include="Source\XnaTextureManager.cs" />
+    <Compile Include="XnaTexture.cs" />
+    <Compile Include="Source\XnaTextureType.cs" />
+    <None Include="XnaTexture.cs.new" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Diagrams\Axiom.RenderSystems.Xna.cd" />

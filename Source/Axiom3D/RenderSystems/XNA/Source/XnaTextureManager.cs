@@ -36,52 +36,57 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using SWF = System.Windows.Forms;
+
+using Axiom.Configuration;
+using Axiom.Media;
+using Axiom.Graphics;
+using Axiom.Core;
+
+using XnaF = Microsoft.Xna.Framework;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna
 {
-    /// <summary>
-    /// Summary description for DriverCollection.
-    /// </summary>
-    public class DriverCollection : IEnumerable<Driver>
+    class XnaTextureManager: TextureManager
     {
-        private List<Driver> drivers;
+        /// <summary>Reference to the Xna GraphicsDevice.</summary>
+        private XnaF.Graphics.GraphicsDevice device;
 
-        public DriverCollection()
+        public XnaTextureManager( XnaF.Graphics.GraphicsDevice device )
         {
-            drivers = new List<Driver>();
+            this.device = device;
+
+            is32Bit = true;
         }
 
-        public void Add( Driver drv )
+        public override Texture Create( string name, TextureType type )
         {
-            drivers.Add( drv );
+            XnaTexture texture = new XnaTexture( name, device, TextureUsage.Default, type );
+
+            // Handle 32-bit texture settings
+            texture.Enable32Bit( is32Bit );
+
+            return texture;
         }
 
-        public Driver this[ int index ]
+        /// <summary>
+        ///    Used to create a blank Xna texture.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="numMipMaps"></param>
+        /// <param name="format"></param>
+        /// <param name="usage"></param>
+        /// <returns></returns>
+        public override Texture CreateManual( string name, TextureType type, int width, int height, int numMipMaps, PixelFormat format, TextureUsage usage )
         {
-            get
-            {
-                return drivers[ index ];
-            }
+            XnaTexture texture = new XnaTexture( name, device, type, width, height, numMipMaps, format, usage );
+            texture.Enable32Bit( is32Bit );
+            return texture;
         }
-
-        #region IEnumerable<Driver> Members
-
-        public IEnumerator<Driver> GetEnumerator()
-        {
-            return drivers.GetEnumerator();
-        }
-
-        #endregion
-
-        #region IEnumerable Members
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return drivers.GetEnumerator();
-        }
-
-        #endregion
     }
 }
