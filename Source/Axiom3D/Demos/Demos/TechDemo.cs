@@ -439,19 +439,20 @@ namespace Axiom.Demos
         {
             // TODO: Replace with CEGUI
             OverlayElement element = OverlayElementManager.Instance.GetElement( "Core/CurrFps" );
-            element.Text = string.Format( "Current FPS: {0}", Root.Instance.CurrentFPS );
+            element.Text = string.Format( "Current FPS: {0:#.00}", Root.Instance.CurrentFPS );
 
             element = OverlayElementManager.Instance.GetElement( "Core/BestFps" );
-            element.Text = string.Format( "Best FPS: {0}", Root.Instance.BestFPS );
+            element.Text = string.Format( "Best FPS: {0:#.00}", Root.Instance.BestFPS );
 
             element = OverlayElementManager.Instance.GetElement( "Core/WorstFps" );
-            element.Text = string.Format( "Worst FPS: {0}", Root.Instance.WorstFPS );
+            element.Text = string.Format( "Worst FPS: {0:#.00}", Root.Instance.WorstFPS );
 
             element = OverlayElementManager.Instance.GetElement( "Core/AverageFps" );
-            element.Text = string.Format( "Average FPS: {0}", Root.Instance.AverageFPS );
+            element.Text = string.Format( "Average FPS: {0:#.00}", Root.Instance.AverageFPS );
 
             element = OverlayElementManager.Instance.GetElement( "Core/NumTris" );
             element.Text = string.Format( "Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered );
+            LogManager.Instance.Write( "Engine Statistics: Count: {5}  FPS <C,B,W,A>: {0:#.00} {1:#.00} {2:#.00} {3:#.00}  Trias: {4} ", Root.Instance.CurrentFPS, Root.Instance.BestFPS, Root.Instance.WorstFPS, Root.Instance.AverageFPS, scene.TargetRenderSystem.FacesRendered, Root.Instance.CurrentFrameCount );
         }
 
         #endregion Event Handlers
