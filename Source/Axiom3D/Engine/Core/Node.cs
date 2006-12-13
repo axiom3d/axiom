@@ -267,7 +267,7 @@ namespace Axiom.Core
         /// <returns></returns>
         public Node GetChild( string name )
         {
-            return childNodes[name];
+            return childNodes[ name ];
         }
 
         /// <summary>
@@ -276,6 +276,8 @@ namespace Axiom.Core
         /// <param name="child"></param>
         public void RemoveChild( Node child )
         {
+            Debug.Assert( child != this );
+
             // cancel any pending updates to this child
             CancelUpdate( child );
 
@@ -298,7 +300,7 @@ namespace Axiom.Core
             {
                 child = childNodes[ i ];
                 if ( child.name == name )
-            {
+                {
                     break;
                 }
             }
@@ -310,8 +312,8 @@ namespace Axiom.Core
 
             CancelUpdate( child );
             childNodes.Remove( child );
-                return child;
-                }
+            return child;
+        }
 
         /// <summary>
         /// 
@@ -322,7 +324,7 @@ namespace Axiom.Core
         {
             if ( index < 0 || index >= childNodes.Count )
                 throw new ArgumentOutOfRangeException( string.Format( "The index must be greater then or equal to 0 and less then {0}, the number of items.", childNodes.Count ) );
-            Node child = childNodes[index];
+            Node child = childNodes[ index ];
             RemoveChild( child, index );
             return child;
         }
@@ -787,7 +789,7 @@ namespace Axiom.Core
                     //ensure that it is keyed under this new name in its parent's collection
                     parent.RemoveChild( oldName );
                     parent.AddChild( this );
-            }
+                }
                 OnRename( oldName );
 
             }
@@ -814,6 +816,7 @@ namespace Axiom.Core
             {
                 if ( parent != value )
                 {
+                    parent = value;
                     if ( parent != null )
                         parent.RemoveChild( this );
                     if ( value != null )
@@ -825,9 +828,9 @@ namespace Axiom.Core
         protected virtual void NotifyOfNewParent( Node newParent )
         {
             parent = newParent;
-                isParentNotified = false;
-                NeedUpdate();
-            }
+            isParentNotified = false;
+            NeedUpdate();
+        }
 
         /// <summary>
         ///    A Quaternion representing the nodes orientation.
@@ -1262,7 +1265,7 @@ namespace Axiom.Core
                 // just update selected children
                 for ( int i = 0; i < childrenToUpdate.Count; i++ )
                 {
-                    Node child = childrenToUpdate[i];
+                    Node child = childrenToUpdate[ i ];
                     child.Update( true, false );
                 }
 

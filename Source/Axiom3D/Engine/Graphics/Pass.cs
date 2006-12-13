@@ -1380,6 +1380,10 @@ namespace Axiom.Graphics
                     return String.Empty;
                 }
             }
+            set
+            {
+                SetFragmentProgram( value );
+            }
         }
 
         /// <summary>
@@ -1764,6 +1768,10 @@ namespace Axiom.Graphics
                 {
                     return String.Empty;
                 }
+            }
+            set
+            {
+                SetVertexProgram( value );
             }
         }
 

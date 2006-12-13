@@ -3937,7 +3937,7 @@ namespace Axiom.Core
 
                     // Do we need to update light states? 
                     // Only do this if fixed-function vertex lighting applies
-                    if ( pass.LightingEnabled && !pass.HasVertexProgram )
+                    if ( lightListToUse != null && pass.LightingEnabled && !pass.HasVertexProgram )
                     {
                         targetRenderSystem.UseLights( lightListToUse, pass.MaxLights );
                     }

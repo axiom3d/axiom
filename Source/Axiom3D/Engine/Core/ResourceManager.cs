@@ -446,7 +446,8 @@ namespace Axiom.Core
             // not found in the cache, load the resource manually
 
             // TODO: Load resources manually
-            throw new AxiomException( string.Format( "Resource '{0}' could not be found.  Be sure it is located in a known directory.", fileName ) );
+            return null;
+            //throw new AxiomException( string.Format( "Resource '{0}' could not be found.  Be sure it is located in a known directory.", fileName ) );
         }
 
         #endregion
