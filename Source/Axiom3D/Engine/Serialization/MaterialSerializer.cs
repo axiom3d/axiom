@@ -56,6 +56,9 @@ namespace Axiom.Serialization
     {
         #region Fields
 
+
+        public static Hashtable materialSourceFiles = new Hashtable();
+
         /// <summary>
         ///		Represents the current parsing context.
         /// </summary>
@@ -210,40 +213,45 @@ namespace Axiom.Serialization
                     LogManager.Instance.Write( "Could not create GPU program '{0}'. error reported was: {1}.", def.name, ex.Message );
                 }
             }
-
-            // set skeletal animation option
-            gp.IsSkeletalAnimationIncluded = def.supportsSkeletalAnimation;
-
-            // set up to receive default parameters
-            if ( gp.IsSupported && scriptContext.defaultParamLines.Count > 0 )
+            if (gp != null)
             {
-                scriptContext.programParams = gp.DefaultParameters;
-                scriptContext.program = gp;
+                //   throw new NotSupportedException( string.Format( "Failed to create {0} {1} GPU program named '{2}' using syntax {3}.  This is likely due to your hardware not supporting advanced high-level shaders.",
+                //     def.language, def.progType, def.name, def.syntax ) );
 
-                for ( int i = 0; i < scriptContext.defaultParamLines.Count; i++ )
-                {
-                    // find & invoke a parser
-                    // do this manually because we want to call a custom
-                    // routine when the parser is not found
-                    // First, split line on first divisor only
-                    string[] splitCmd = scriptContext.defaultParamLines[ i ].Split( new char[] { ' ', '\t' }, 2 );
-
-                    // find attribute parser
-                    if ( programDefaultParamAttribParsers.ContainsKey( splitCmd[ 0 ] ) )
-                    {
-                        string cmd = splitCmd.Length >= 2 ? splitCmd[ 1 ] : string.Empty;
-
-                        MaterialAttributeParserHandler handler = (MaterialAttributeParserHandler)programDefaultParamAttribParsers[ splitCmd[ 0 ] ];
-
-                        // Use parser, make sure we have 2 params before using splitCmd[1]
-                        handler( cmd, scriptContext );
-                    }
-                }
-
-                // reset
-                scriptContext.program = null;
-                scriptContext.programParams = null;
-            }
+	            // set skeletal animation option
+	            gp.IsSkeletalAnimationIncluded = def.supportsSkeletalAnimation;
+	
+	            // set up to receive default parameters
+	            if ( gp.IsSupported && scriptContext.defaultParamLines.Count > 0 )
+	            {
+	                scriptContext.programParams = gp.DefaultParameters;
+	                scriptContext.program = gp;
+	
+	                for ( int i = 0; i < scriptContext.defaultParamLines.Count; i++ )
+	                {
+	                    // find & invoke a parser
+	                    // do this manually because we want to call a custom
+	                    // routine when the parser is not found
+	                    // First, split line on first divisor only
+	                    string[] splitCmd = scriptContext.defaultParamLines[ i ].Split( new char[] { ' ', '\t' }, 2 );
+	
+	                    // find attribute parser
+	                    if ( programDefaultParamAttribParsers.ContainsKey( splitCmd[ 0 ] ) )
+	                    {
+	                        string cmd = splitCmd.Length >= 2 ? splitCmd[ 1 ] : string.Empty;
+	
+	                        MaterialAttributeParserHandler handler = (MaterialAttributeParserHandler)programDefaultParamAttribParsers[ splitCmd[ 0 ] ];
+	
+	                        // Use parser, make sure we have 2 params before using splitCmd[1]
+	                        handler( cmd, scriptContext );
+	                    }
+	                }
+	
+	                // reset
+	                scriptContext.program = null;
+	                scriptContext.programParams = null;
+	            }
+	        }
         }
 
         /// <summary>
@@ -545,7 +553,16 @@ namespace Axiom.Serialization
         protected static bool ParseMaterial( string parameters, MaterialScriptContext context )
         {
             // create a brand new material
-            context.material = (Material)MaterialManager.Instance.Create( parameters );
+            string materialName = parameters;
+            string sourceFileForAlreadyExistingMaterial = (string)materialSourceFiles[materialName];
+            if ( sourceFileForAlreadyExistingMaterial != null )
+            {//if a material by this name was already created
+                throw new ArgumentException( string.Format( "A material with name {0} was already created from material script file {1} and a duplicate from {2} cannot be created. "
+                    + "You may need to qualify the material names to prevent this name collision", materialName, sourceFileForAlreadyExistingMaterial, context.filename ) );
+            }
+            context.material = (Material)MaterialManager.Instance.Create( materialName );
+            materialSourceFiles.Add( materialName, context.filename );
+
 
             // remove pre-created technique from defaults
             context.material.RemoveAllTechniques();
@@ -1959,6 +1976,8 @@ namespace Axiom.Serialization
 
         #endregion Parser Methods
 
+        #region Public Methods
+
         /// <summary>
         ///		Parses a Material script file passed in the specified stream.
         /// </summary>
@@ -2015,7 +2034,10 @@ namespace Axiom.Serialization
                 LogParseError( scriptContext, "Unexpected end of file." );
             }
         }
+        #endregion
 
+
+        #region Static Methods
         /// <summary>
         ///		
         /// </summary>
@@ -2197,13 +2219,11 @@ namespace Axiom.Serialization
             }
         }
 
-        #region Exporting
-
-        //public void WriteMaterial
-
-        #endregion Exporting
+        #endregion
     }
 
+
+    #region Utility Types
     /// <summary>
     ///		Enum to identify material sections.
     /// </summary>
@@ -2288,4 +2308,5 @@ namespace Axiom.Serialization
             }
         }
     }
+    #endregion
 }
