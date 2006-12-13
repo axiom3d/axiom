@@ -251,6 +251,31 @@ namespace Axiom.Core
             DefaultLog.Write( level, maskDebug, message, substitutions );
         }
 
+        public static string BuildExceptionString( Exception exception )
+        {
+            string errMessage = string.Empty;
+
+            errMessage += exception.Message + Environment.NewLine + exception.StackTrace;
+
+            while ( exception.InnerException != null )
+            {
+                errMessage += BuildInnerExceptionString( exception.InnerException );
+                exception = exception.InnerException;
+            }
+
+            return errMessage;
+        }
+
+        private static string BuildInnerExceptionString( Exception innerException )
+        {
+            string errMessage = string.Empty;
+
+            errMessage += Environment.NewLine + " InnerException ";
+            errMessage += Environment.NewLine + innerException.Message + Environment.NewLine + innerException.StackTrace;
+
+            return errMessage;
+        }
+
         #endregion Methods
 
         #region IDisposable Members

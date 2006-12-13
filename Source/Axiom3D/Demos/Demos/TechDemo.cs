@@ -216,7 +216,7 @@ namespace Axiom.Demos
                 // try logging the error here first, before Root is disposed of
                 if ( LogManager.Instance != null )
                 {
-                    LogManager.Instance.Write( ex.ToString() );
+                    LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
                 }
             }
         }
