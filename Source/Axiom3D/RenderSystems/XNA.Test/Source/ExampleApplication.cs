@@ -427,7 +427,7 @@ namespace ExampleApplication
             CreateViewports();
 
             // Set default mipmap level (NB some APIs ignore this)
-            //TextureManager.Instance.DefaultNumMipMaps = 5;
+            TextureManager.Instance.DefaultNumMipMaps = 5;
 
             // Create any resource listeners (for loading screens)
             CreateResourceListener();
@@ -647,8 +647,10 @@ namespace ExampleApplication
                 if ( m_root != null )
                 {
                     // remove event handlers
-                    //  engine.FrameStarted -= new FrameEvent( OnFrameStarted );
-                    // engine.FrameEnded -= new FrameEvent( OnFrameEnded );
+                    m_root.FrameStarted -= UpdateInput;
+                    m_root.FrameStarted -= UpdateOverlay;
+                    m_root.FrameStarted -= FrameStarted;
+                    m_root.FrameEnded -= FrameEnded;
 
                     m_root.Dispose();
                 }
@@ -672,8 +674,7 @@ namespace ExampleApplication
             {
                 m_lastOverlayUpdate = Root.Instance.Timer.Milliseconds;
 
-                OverlayElement element =
-                        OverlayElementManager.Instance.GetElement( "Core/DebugText" );
+                OverlayElement element = OverlayElementManager.Instance.GetElement( "Core/DebugText" );
                 element.Text = m_renderWindow.DebugText;
 
                 element = OverlayElementManager.Instance.GetElement( "Core/CurrFps" );

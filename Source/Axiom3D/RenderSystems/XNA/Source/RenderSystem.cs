@@ -40,9 +40,10 @@ using System.Drawing;
 using SWF = System.Windows.Forms;
 
 using Axiom.Configuration;
-using XnaF = Microsoft.Xna.Framework;
 using Axiom.Graphics;
 using Axiom.Core;
+
+using XnaF = Microsoft.Xna.Framework;
 
 #endregion Namespace Declarations
 
@@ -56,8 +57,6 @@ namespace Axiom.RenderSystems.Xna
         private XnaF.Graphics.GraphicsDevice _device;
 
         private XnaF.Graphics.GraphicsDeviceCapabilities _capabilities;
-
-        protected bool lightingEnabled;
 
         // stores texture stage info locally for convenience
         internal XnaTextureStageDescription[] texStageDesc = new XnaTextureStageDescription[ Config.MaxTextureLayers ];
@@ -138,6 +137,8 @@ namespace Axiom.RenderSystems.Xna
             form.MinimizeBox = false;
             form.StartPosition = SWF.FormStartPosition.CenterScreen;
             form.BringToFront();
+            form.TopLevel = true;
+            form.TopMost = true;
 
             if ( fullScreen )
             {
@@ -146,7 +147,6 @@ namespace Axiom.RenderSystems.Xna
                 form.FormBorderStyle = SWF.FormBorderStyle.None;
                 form.WindowState = SWF.FormWindowState.Maximized;
                 form.TopMost = true;
-                form.TopLevel = true;
             }
             else
             {
@@ -423,27 +423,24 @@ namespace Axiom.RenderSystems.Xna
 
         #region Axiom.Graphics.RenderSystem Implementation
 
+        #region Fields & Properties
+
+        #region AmbientLight Property
+
+        private Axiom.Core.ColorEx _ambientLight;
         public override Axiom.Core.ColorEx AmbientLight
         {
             get
             {
-                throw new NotImplementedException();
+                return _ambientLight;
             }
             set
             {
-                // ToDo:
-                // throw new NotImplementedException();
+                _ambientLight = value;
             }
         }
 
-        public override float VerticalTexelOffset
-        {
-            get
-            {
-                // Xna considers the origin to be in the center of a pixel
-                return -0.5f;
-            }
-        }
+        #endregion AmbientLight Property
 
         public override Axiom.Math.Matrix4 ViewMatrix
         {
@@ -536,26 +533,22 @@ namespace Axiom.RenderSystems.Xna
             }
         }
 
-        public override float HorizontalTexelOffset
-        {
-            get
-            {
-                // Xna considers the origin to be in the center of a pixel
-                return -0.5f;
-            }
-        }
+        #region LightingEnabled Property
 
+        private bool _lightingEnabled;
         public override bool LightingEnabled
         {
             get
             {
-                return lightingEnabled;
+                return _lightingEnabled;
             }
             set
             {
-                lightingEnabled = value;
+                _lightingEnabled = value;
             }
         }
+
+        #endregion LightingEnabled Property
 
         public override bool NormalizeNormals
         {
@@ -621,6 +614,37 @@ namespace Axiom.RenderSystems.Xna
             }
         }
 
+        #region HorizontalTexelOffset Property
+
+        public override float HorizontalTexelOffset
+        {
+            get
+            {
+                // Xna considers the origin to be in the center of a pixel
+                return -0.5f;
+            }
+        }
+
+        #endregion HorizontalTexelOffset Property
+
+        #region VerticleTexelOffset Property
+
+        public override float VerticalTexelOffset
+        {
+            get
+            {
+                // Xna considers the origin to be in the center of a pixel
+                return -0.5f;
+            }
+        }
+
+        #endregion VerticleTexelOffset Property
+
+
+        #endregion Fields & Properties
+
+        #region Methods 
+
         public override Axiom.Graphics.RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
         {
             Axiom.Graphics.RenderWindow renderWindow = null;
@@ -678,8 +702,6 @@ namespace Axiom.RenderSystems.Xna
         /// <param name="op"></param>
         public override void Render( RenderOperation op )
         {
-            _device.Clear( XnaF.Graphics.Color.CornflowerBlue );
-            _device.Present();
         }
 
         public override void BindGpuProgram( Axiom.Graphics.GpuProgram program )
@@ -884,7 +906,7 @@ namespace Axiom.RenderSystems.Xna
             texStageDesc[ stage ].coordIndex = index;
 
             // ToDo:
-           // _device.Textures[ stage ].TextureCoordinateIndex = D3DHelper.ConvertEnum( texStageDesc[ stage ].autoTexCoordType, d3dCaps ) | index;
+            // _device.Textures[ stage ].TextureCoordinateIndex = D3DHelper.ConvertEnum( texStageDesc[ stage ].autoTexCoordType, d3dCaps ) | index;
         }
 
         public override void SetTextureLayerAnisotropy( int stage, int maxAnisotropy )
@@ -895,8 +917,143 @@ namespace Axiom.RenderSystems.Xna
 
         public override void SetTextureMatrix( int stage, Axiom.Math.Matrix4 xform )
         {
-            // ToDo:
-            // throw new NotImplementedException();
+            XnaF.Matrix xnaMatrix = XnaF.Matrix.Identity;
+            Axiom.Math.Matrix4 newMatrix = xform;
+
+            /* If envmap is applied, but device doesn't support spheremap,
+            then we have to use texture transform to make the camera space normal
+            reference the envmap properly. This isn't exactly the same as spheremap
+            (it looks nasty on flat areas because the camera space normals are the same)
+            but it's the best approximation we have in the absence of a proper spheremap */
+            if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.EnvironmentMap )
+            {
+                if ( _capabilities.VertexProcessingCapabilities.SupportsTextureGenerationSphereMap )
+                {
+                    // inverts the texture for a spheremap
+                    Axiom.Math.Matrix4 matEnvMap = Axiom.Math.Matrix4.Identity;
+                    matEnvMap.m11 = -1.0f;
+
+                    // concatenate 
+                    newMatrix = newMatrix * matEnvMap;
+                }
+                else
+                {
+                    /* If envmap is applied, but device doesn't support spheremap,
+                    then we have to use texture transform to make the camera space normal
+                    reference the envmap properly. This isn't exactly the same as spheremap
+                    (it looks nasty on flat areas because the camera space normals are the same)
+                    but it's the best approximation we have in the absence of a proper spheremap */
+
+                    // concatenate with the xForm
+                    newMatrix = newMatrix * Axiom.Math.Matrix4.ClipSpace2DToImageSpace;
+                }
+            }
+
+            // If this is a cubic reflection, we need to modify using the view matrix
+            if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.EnvironmentMapReflection )
+            {
+                // get the current view matrix
+                XnaF.Matrix viewMatrix = _device.Transform.View;
+                
+                // Get transposed 3x3, ie since D3D is transposed just copy
+                // We want to transpose since that will invert an orthonormal matrix ie rotation
+                Axiom.Math.Matrix4 viewTransposed = Axiom.Math.Matrix4.Identity;
+                viewTransposed.m00 = viewMatrix.M11;
+                viewTransposed.m01 = viewMatrix.M12;
+                viewTransposed.m02 = viewMatrix.M13;
+                viewTransposed.m03 = 0.0f;
+
+                viewTransposed.m10 = viewMatrix.M21;
+                viewTransposed.m11 = viewMatrix.M22;
+                viewTransposed.m12 = viewMatrix.M23;
+                viewTransposed.m13 = 0.0f;
+
+                viewTransposed.m20 = viewMatrix.M31;
+                viewTransposed.m21 = viewMatrix.M32;
+                viewTransposed.m22 = viewMatrix.M33;
+                viewTransposed.m23 = 0.0f;
+
+                viewTransposed.m30 = viewMatrix.M41;
+                viewTransposed.m31 = viewMatrix.M42;
+                viewTransposed.m32 = viewMatrix.M43;
+                viewTransposed.m33 = 1.0f;
+
+                // concatenate
+                newMatrix = newMatrix * viewTransposed;
+            }
+
+            if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture )
+            {
+                // Derive camera space to projector space transform
+                // To do this, we need to undo the camera view matrix, then 
+                // apply the projector view & projection matrices
+                newMatrix = viewMatrix.Inverse() * newMatrix;
+                newMatrix = texStageDesc[ stage ].frustum.ViewMatrix * newMatrix;
+                newMatrix = texStageDesc[ stage ].frustum.ProjectionMatrix * newMatrix;
+
+                if ( texStageDesc[ stage ].frustum.ProjectionType == Projection.Perspective )
+                {
+                    newMatrix = ProjectionClipSpace2DToImageSpacePerspective * newMatrix;
+                }
+                else
+                {
+                    newMatrix = ProjectionClipSpace2DToImageSpaceOrtho * newMatrix;
+                }
+
+            }
+
+            // convert to Xna format
+            xnaMatrix = MakeXnaMatrix( newMatrix );
+
+            // need this if texture is a cube map, to invert Xna's z coord
+            if ( texStageDesc[ stage ].autoTexCoordType != TexCoordCalcMethod.None )
+            {
+                xnaMatrix.M13 = -xnaMatrix.M13;
+                xnaMatrix.M23 = -xnaMatrix.M23;
+                xnaMatrix.M33 = -xnaMatrix.M33;
+                xnaMatrix.M43 = -xnaMatrix.M43;
+            }
+
+            //XnaF.Graphics..TransformType d3dTransType = (D3D.TransformType)( (int)( D3D.TransformType.Texture0 ) + stage );
+
+            // set the matrix if it is not the identity
+            if ( !XnaHelper.IsIdentity( ref xnaMatrix ) )
+            {
+                // tell Xna the dimension of tex. coord
+                int texCoordDim = 0;
+                if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture )
+                {
+                    texCoordDim = (int)D3D.TextureTransform.Projected | (int)D3D.TextureTransform.Count3;
+                }
+                else
+                {
+                    switch ( texStageDesc[ stage ].texType )
+                    {
+                        case D3DTexType.Normal:
+                            texCoordDim = (int)D3D.TextureTransform.Count2;
+                            break;
+                        case D3DTexType.Cube:
+                        case D3DTexType.Volume:
+                            texCoordDim = (int)D3D.TextureTransform.Count3;
+                            break;
+                    }
+                }
+
+                // note: int values of D3D.TextureTransform correspond directly with tex dimension, so direct conversion is possible
+                // i.e. Count1 = 1, Count2 = 2, etc
+                device.TextureState[ stage ].TextureTransform = (D3D.TextureTransform)texCoordDim;
+
+                // set the manually calculated texture matrix
+                device.SetTransform( d3dTransType, d3dMat );
+            }
+            else
+            {
+                // disable texture transformation
+                device.TextureState[ stage ].TextureTransform = D3D.TextureTransform.Disable;
+
+                // set as the identity matrix
+                device.SetTransform( d3dTransType, DX.Matrix.Identity );
+            }
         }
 
         public override void SetTextureUnitFiltering( int stage, Axiom.Graphics.FilterType type, Axiom.Graphics.FilterOptions filter )
@@ -916,6 +1073,8 @@ namespace Axiom.RenderSystems.Xna
             throw new NotImplementedException();
         }
 
+        #endregion Methods
+			
         #endregion Axiom.Graphics.RenderSystem Implementation
     }
 }

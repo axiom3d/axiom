@@ -169,10 +169,10 @@ namespace Axiom.RenderSystems.Xna
         {
             switch ( attribute )
             {
-                case "D3DDEVICE":
+                case "XNADEVICE":
                     return device;
 
-                case "D3DZBUFFER":
+                case "XNAZBUFFER":
                     return stencilBuffer;
 
             }

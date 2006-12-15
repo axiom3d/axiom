@@ -65,7 +65,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Lib\Managed\Axiom3D\Axiom.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Xna.Framework, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f48fa5f25d27e8ff, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Xna.Framework, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=x86" />
     <Reference Include="System">
       <Name>System</Name>
       <HintPath>\System.dll</HintPath>
@@ -97,9 +97,8 @@
     <Compile Include="Source\XnaHardwareVertexBuffer.cs" />
     <Compile Include="Source\XnaVertexDeclaration.cs" />
     <Compile Include="Source\XnaTextureManager.cs" />
-    <Compile Include="XnaTexture.cs" />
+    <Compile Include="Source\XnaTexture.cs" />
     <Compile Include="Source\XnaTextureType.cs" />
-    <None Include="XnaTexture.cs.new" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Diagrams\Axiom.RenderSystems.Xna.cd" />
