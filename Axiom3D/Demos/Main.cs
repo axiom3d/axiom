@@ -22,13 +22,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.IO;
 using System.Reflection;
-using System.Threading;
 using System.Windows.Forms;
-
-using RealmForge;
+using System.Configuration;
 
 using Axiom;
 
@@ -47,10 +44,12 @@ namespace Axiom.Demos
         private RenderWindow window;
         private Root engine;
 
-        private bool _configure()
+        private bool _configure( ConfigurationSectionGroup sectionGroup )
         {
             // instantiate the Root singleton
-            engine = new Root( CONFIG_FILE, "AxiomEngine.log" );
+            engine = new Root( sectionGroup );
+            // instantiate the Root singleton
+            //engine = new Root( CONFIG_FILE, "AxiomEngine.log" );
 
             _setupResources();
 
@@ -127,11 +126,11 @@ namespace Axiom.Demos
         //    }
         //}
 
-        public void Run()
+        public void Run( ConfigurationSectionGroup sectionGroup )
         {
             try
             {
-                if ( _configure() )
+                if ( _configure( sectionGroup ) )
                 {
 
                     string next = "";
@@ -178,9 +177,11 @@ namespace Axiom.Demos
 
             try
             {
+                System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration( ConfigurationUserLevel.None );
+
                 using ( Program main = new Program() )
                 {
-                    main.Run();//show and start rendering
+                    main.Run( config.GetSectionGroup( "Axiom" ) );//show and start rendering
                 }//dispose of it when done
             }
             catch ( Exception ex )

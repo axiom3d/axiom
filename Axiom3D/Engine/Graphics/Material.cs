@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,15 +24,27 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 
-using Axiom.MathLib;
-// This is coming from RealmForge.Utility
-using Axiom.Core;
+using DotNet3D.Math;
+
+using ResourceHandle = System.UInt64;
+
+#endregion Namespace Declarations
 
 namespace Axiom
 {
@@ -74,241 +86,84 @@ namespace Axiom
     ///    SceneManager.DefaultMaterialSettings. Any changes you make to the 
     ///    Material returned from this method will apply to any materials created 
     ///    from this point onward.
-    /// </summary>
+    /// </remarks>
     public class Material : Resource, IComparable
     {
-        #region Member variables
-
-        /// <summary>
-        ///    A list of techniques that exist within this Material.
-        /// </summary>
-        protected TechniqueList techniques = new TechniqueList();
-        /// <summary>
-        ///    A list of the techniques of this material that are supported by the current hardware.
-        /// </summary>
-        protected TechniqueList supportedTechniques = new TechniqueList();
-        /// <summary>
-        ///    Flag noting whether or not this Material needs to be re-compiled.
-        /// </summary>
-        protected bool compilationRequired;
-        /// <summary>
-        ///		Should objects using this material receive shadows?
-        /// </summary>
-        protected bool receiveShadows;
-        /// <summary>
-        ///		Do transparent objects casts shadows?
-        /// </summary>
-        protected bool transparencyCastsShadows;
-        /// <summary>
-        ///		List of LOD distances specified for this material.
-        /// </summary>
-        protected FloatList lodDistances = new FloatList();
-        /// <summary>
-        ///		
-        /// </summary>
-        protected Hashtable bestTechniqueList = new Hashtable();
+        #region Fields and Properties
 
         /// <summary>
         ///    A reference to a precreated Material that contains all the default settings.
         /// </summary>
+        /// <ogre name="" />
         static internal protected Material defaultSettings;
+
         /// <summary>
         ///    Auto incrementing number for creating unique names.
         /// </summary>
+        /// <ogre name="" />
         static protected int autoNumber;
 
-        #endregion
+        #region techniques Property
 
-        #region Constructors
-
+        private TechniqueList _techniques = new TechniqueList();
         /// <summary>
-        ///    Constructor.  Creates an auto generated name for the material.
+        ///    A list of techniques that exist within this Material.
         /// </summary>
-        /// <remarks>
-        ///    Normally you create materials by calling the relevant SceneManager since that is responsible for
-        ///    managing all scene state including materials.
-        /// </remarks>
-        public Material()
-        {
-            this.name = String.Format( "_Material{0}", autoNumber++ );
-            compilationRequired = true;
-            lodDistances.Add( 0.0f );
-            receiveShadows = true;
-        }
-
-        /// <summary>
-        ///    Contructor, taking the name of the material.
-        /// </summary>
-        /// <remarks>
-        ///    Normally you create materials by calling the relevant SceneManager since that is responsible for
-        ///    managing all scene state including materials.
-        /// </remarks>
-        /// <param name="name">Unique name of this material.</param>
-        public Material( string name )
-        {
-            // apply default material settings to this new material
-            ApplyDefaults();
-
-            this.name = name;
-            compilationRequired = true;
-            isLoaded = false;
-            receiveShadows = true;
-        }
-
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public ColorEx Ambient
-        {
-            set
-            {
-                for ( int i = 0; i < techniques.Count; i++ )
-                {
-                    ( (Technique)techniques[i] ).Ambient = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public CullingMode CullingMode
-        {
-            set
-            {
-                for ( int i = 0; i < techniques.Count; i++ )
-                {
-                    ( (Technique)techniques[i] ).CullingMode = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool DepthCheck
-        {
-            set
-            {
-                for ( int i = 0; i < techniques.Count; i++ )
-                {
-                    ( (Technique)techniques[i] ).DepthCheck = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool DepthWrite
-        {
-            set
-            {
-                for ( int i = 0; i < techniques.Count; i++ )
-                {
-                    ( (Technique)techniques[i] ).DepthWrite = value;
-                }
-            }
-        }
-
-        public ColorEx Diffuse
-        {
-            set
-            {
-                for ( int i = 0; i < techniques.Count; i++ )
-                {
-                    ( (Technique)techniques[i] ).Diffuse = value;
-                }
-            }
-        }
-
-        /// <summary>
-        ///		Determines if the material has any transparency with the rest of the scene (derived from 
-        ///    whether any Techniques say they involve transparency).
-        /// </summary>
-        public bool IsTransparent
+        /// <ogre name="mTechniques" />
+        protected TechniqueList techniques
         {
             get
             {
-                // check each technique to see if it is transparent
-                for ( int i = 0; i < techniques.Count; i++ )
-                {
-                    if ( ( (Technique)techniques[i] ).IsTransparent )
-                    {
-                        return true;
-                    }
-                }
-
-                // if we got this far, there are no transparent techniques
-                return false;
+                return _techniques;
             }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool Lighting
-        {
             set
             {
-                for ( int i = 0; i < techniques.Count; i++ )
-                {
-                    ( (Technique)techniques[i] ).Lighting = value;
-                }
+                _techniques = value;
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public ManualCullingMode ManualCullMode
-        {
-            set
-            {
-                for ( int i = 0; i < techniques.Count; i++ )
-                {
-                    ( (Technique)techniques[i] ).ManualCullMode = value;
-                }
-            }
-        }
+        #endregion techniques Property
 
+        #region supportedTechniques Property
+
+        private TechniqueList _supportedTechniques = new TechniqueList();
         /// <summary>
-        ///    Gets the number of techniques within this Material.
+        ///    A list of the techniques of this material that are supported by the current hardware.
         /// </summary>
-        public int NumTechniques
+        /// <ogre name="mSupportedTechniques" />
+        protected TechniqueList supportedTechniques
         {
             get
             {
-                return techniques.Count;
+                return _supportedTechniques;
             }
         }
 
+        #endregion supportedTechniques Property
+
+        #region compilationRequired Property
+
+        private bool _compilationRequired;
         /// <summary>
-        ///		Gets the number of levels-of-detail this material has.
+        ///    Flag noting whether or not this Material needs to be re-compiled.
         /// </summary>
-        public int NumLodLevels
+        /// <ogre name="mCompilationRequired" />
+        protected bool compilationRequired
         {
             get
             {
-                return bestTechniqueList.Count;
+                return _compilationRequired;
             }
         }
 
-        public TextureFiltering TextureFiltering
-        {
-            set
-            {
-                for ( int i = 0; i < techniques.Count; i++ )
-                {
-                    ( (Technique)techniques[i] ).TextureFiltering = value;
-                }
-            }
-        }
+        #endregion compilationRequired Property
 
+        #region ReceiveShadows Property
+
+        /// <summary>
+        ///		Should objects using this material receive shadows?
+        /// </summary>
+        private bool _receiveShadows;
         /// <summary>
         ///		Sets whether objects using this material will receive shadows.
         /// </summary>
@@ -322,6 +177,8 @@ namespace Axiom
         ///		The default is to receive shadows.
         ///		<seealso cref="SceneManager.ShadowTechnique"/>
         /// </remarks>
+        /// <ogre name="setRecieveShadows" />
+        /// <ogre name="getRecieveShadows" />
         public bool ReceiveShadows
         {
             get
@@ -334,6 +191,14 @@ namespace Axiom
             }
         }
 
+        #endregion ReceiveShadows Property
+
+        #region TransparencyCastsShadows Property
+
+        /// <summary>
+        ///		Do transparent objects casts shadows?
+        /// </summary>
+        private bool _transparencyCastsShadows;
         /// <summary>
         ///		Gets/Sets whether objects using this material be classified as opaque to the shadow caster system.
         /// </summary>
@@ -344,6 +209,8 @@ namespace Axiom
         ///		<seealso cref="SceneManager.ShadowTechnique"/>, and not all techniques cast
         ///		shadows on all objects.
         /// </remarks>
+        /// <ogre name="setTransparentCastsShadows" />
+        /// <ogre name="getTransparentCastsShadows" />
         public bool TransparencyCastsShadows
         {
             get
@@ -356,9 +223,561 @@ namespace Axiom
             }
         }
 
-        #endregion
+        #endregion TransparencyCastsShadows Property
 
-        #region Implementation of IComparable
+        #region lodDistances Property
+
+        private FloatList _lodDistances = new FloatList();
+        /// <summary>
+        ///		List of LOD distances specified for this material.
+        /// </summary>
+        /// <ogre name="mLodDistances" />
+        protected FloatList lodDistances
+        {
+            get
+            {
+                return _lodDistances;
+            }
+            set
+            {
+                _lodDistances = value;
+            }
+        }
+
+        #endregion lodDistances Property
+
+        #region bestTechniqueList Property
+
+        private Hashtable _bestTechniqueList = new Hashtable();
+        /// <summary>
+        ///		
+        /// </summary>
+        /// <ogre name="mBestTechniqueList" />
+        protected Hashtable bestTechniqueList
+        {
+            get
+            {
+                return _bestTechniqueList;
+            }
+        }
+
+        #endregion bestTechniqueList Property
+
+        /// <summary>
+        ///		Determines if the material has any transparency with the rest of the scene (derived from 
+        ///    whether any Techniques say they involve transparency).
+        /// </summary>
+        /// <ogre name="isTransparent" />
+        public bool IsTransparent
+        {
+            get
+            {
+                // check each technique to see if it is transparent
+                for ( int i = 0; i < techniques.Count; i++ )
+                {
+                    if ( ( (Technique)techniques[ i ] ).IsTransparent )
+                    {
+                        return true;
+                    }
+                }
+
+                // if we got this far, there are no transparent techniques
+                return false;
+            }
+        }
+
+        /// <summary>
+        ///    Gets the number of techniques within this Material.
+        /// </summary>
+        /// <ogre name="getNumTechniques" />
+        public int TechniqueCount
+        {
+            get
+            {
+                return techniques.Count;
+            }
+        }
+
+        /// <summary>
+        ///		Gets the number of levels-of-detail this material has.
+        /// </summary>
+        /// <ogre name="getNumLodLevels" />
+        public int LodLevelsCount
+        {
+            get
+            {
+                return bestTechniqueList.Count;
+            }
+        }
+
+        #region Convience Properties
+        // -------------------------------------------------------------------------------
+        // The following methods are to make migration from previous versions simpler
+        // and to make code easier to write when dealing with simple materials
+        // They set the properties which have been moved to Pass for all Techniques and all Passes
+
+        /// <summary>Sets the ambient colour reflectance properties for every Pass in every Technique.</summary>
+        /// <remarks>
+        /// This property has been moved to the Pass class, which is accessible via the 
+        /// Technique. For simplicity, this method allows you to set these properties for 
+        /// every current Technique, and for every current Pass within those Techniques. If 
+        /// you need more precision, retrieve the Technique and Pass instances and set the
+        /// property there.
+        /// <see ref="Pass.Ambient"></see>
+        /// </remarks>
+        /// <ogre name="setAmbient" />
+        public ColorEx Ambient
+        {
+            set
+            {
+                for ( int i = 0; i < techniques.Count; i++ )
+                {
+                    ( (Technique)techniques[ i ] ).Ambient = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the diffuse colour reflectance properties of every Pass in every Technique.
+        /// </summary>
+        /// <remarks>
+        /// This property has been moved to the Pass class, which is accessible via the 
+        /// Technique. For simplicity, this method allows you to set these properties for 
+        /// every current Technique, and for every current Pass within those Techniques. If 
+        /// you need more precision, retrieve the Technique and Pass instances and set the
+        /// property there.
+        /// <see ref="Pass.Diffuse"></see>
+        /// </remarks>
+        /// <ogre name="setDiffuse" />
+        public ColorEx Diffuse
+        {
+            set
+            {
+                for ( int i = 0; i < techniques.Count; i++ )
+                {
+                    ( (Technique)techniques[ i ] ).Diffuse = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the specular colour reflectance properties of every Pass in every Technique.
+        /// </summary>
+        /// <remarks>
+        /// This property has been moved to the Pass class, which is accessible via the 
+        /// Technique. For simplicity, this method allows you to set these properties for 
+        /// every current Technique, and for every current Pass within those Techniques. If 
+        /// you need more precision, retrieve the Technique and Pass instances and set the
+        /// property there.
+        /// <see ref="Pass.Specular"></see>
+        /// </remarks>
+        /// <ogre name="setSpecular" />
+        public ColorEx Specular
+        {
+            set
+            {
+                for ( int i = 0; i < techniques.Count; i++ )
+                {
+                    ( (Technique)techniques[ i ] ).Specular = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the shininess properties of every Pass in every Technique.
+        /// </summary>
+        /// <remarks>
+        /// This property has been moved to the Pass class, which is accessible via the 
+        /// Technique. For simplicity, this method allows you to set these properties for 
+        /// every current Technique, and for every current Pass within those Techniques. If 
+        /// you need more precision, retrieve the Technique and Pass instances and set the
+        /// property there.
+        /// <see ref="Pass.Shininess"></see>
+        /// </remarks>
+        /// <ogre name="setShininess" />
+        public Real Shininess
+        {
+            set
+            {
+                for ( int i = 0; i < techniques.Count; i++ )
+                {
+                    ( (Technique)techniques[ i ] ).Shininess = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the amount of self-illumination of every Pass in every Technique.
+        /// </summary>
+        /// <remarks>
+        /// This property has been moved to the Pass class, which is accessible via the 
+        /// Technique. For simplicity, this method allows you to set these properties for 
+        /// every current Technique, and for every current Pass within those Techniques. If 
+        /// you need more precision, retrieve the Technique and Pass instances and set the
+        /// property there.
+        /// <see ref="Pass.SelfIllumination"></see>
+        /// </remarks>
+        /// <ogre name="setSelfIllumination" />
+        public ColorEx SelfIllumination
+        {
+            set
+            {
+                for ( int i = 0; i < techniques.Count; i++ )
+                {
+                    ( (Technique)techniques[ i ] ).SelfIllumination = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets whether or not each Pass renders with depth-buffer checking on or not.
+        /// </summary>
+        /// <remarks>
+        /// This property has been moved to the Pass class, which is accessible via the 
+        /// Technique. For simplicity, this method allows you to set these properties for 
+        /// every current Technique, and for every current Pass within those Techniques. If 
+        /// you need more precision, retrieve the Technique and Pass instances and set the
+        /// property there.
+        /// <see ref="Pass.DepthCheck"></see>
+        /// </remarks>
+        /// <ogre name="setDepthCheckEnabled" />
+        public bool DepthCheck
+        {
+            set
+            {
+                for ( int i = 0; i < techniques.Count; i++ )
+                {
+                    ( (Technique)techniques[ i ] ).DepthCheck = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the function used to compare depth values when depth checking is on.
+        /// </summary>
+        /// <remarks>
+        /// This property has been moved to the Pass class, which is accessible via the 
+        /// Technique. For simplicity, this method allows you to set these properties for 
+        /// every current Technique, and for every current Pass within those Techniques. If 
+        /// you need more precision, retrieve the Technique and Pass instances and set the
+        /// property there.
+        /// <see ref="Pass.DepthFunction"></see>
+        /// </remarks>
+        /// <ogre name="setDepthFunction" />
+        public CompareFunction DepthFunction
+        {
+            set
+            {
+                for ( int i = 0; i < techniques.Count; i++ )
+                {
+                    ( (Technique)techniques[ i ] ).DepthFunction = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets whether or not each Pass renders with depth-buffer writing on or not.
+        /// </summary>
+        /// <remarks>
+        /// This property has been moved to the Pass class, which is accessible via the 
+        /// Technique. For simplicity, this method allows you to set these properties for 
+        /// every current Technique, and for every current Pass within those Techniques. If 
+        /// you need more precision, retrieve the Technique and Pass instances and set the
+        /// property there.
+        /// <see ref="Pass.DepthWrite"></see>
+        /// </remarks>
+        /// <ogre name="setDepthWriteEnabled" />
+        public bool DepthWrite
+        {
+            set
+            {
+                for ( int i = 0; i < techniques.Count; i++ )
+                {
+                    ( (Technique)techniques[ i ] ).DepthWrite = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets whether or not colour buffer writing is enabled for each Pass.
+        /// </summary>
+        /// <remarks>
+        /// This property has been moved to the Pass class, which is accessible via the 
+        /// Technique. For simplicity, this method allows you to set these properties for 
+        /// every current Technique, and for every current Pass within those Techniques. If 
+        /// you need more precision, retrieve the Technique and Pass instances and set the
+        /// property there.
+        /// <see ref="Pass.ColorWrite"></see>
+        /// </remarks>
+        /// <ogre name="setColourWriteEnabled" />
+        public bool ColorWrite
+        {
+            set
+            {
+                for ( int i = 0; i < techniques.Count; i++ )
+                {
+                    ( (Technique)techniques[ i ] ).ColorWrite = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the culling mode for each pass  based on the 'vertex winding'.
+        /// </summary>
+        /// <remarks>
+        /// This property has been moved to the Pass class, which is accessible via the 
+        /// Technique. For simplicity, this method allows you to set these properties for 
+        /// every current Technique, and for every current Pass within those Techniques. If 
+        /// you need more precision, retrieve the Technique and Pass instances and set the
+        /// property there.
+        /// <see ref="Pass.CullingMode"></see>
+        /// </remarks>
+        /// <ogre name="setCullingMode" />
+        public CullingMode CullingMode
+        {
+            set
+            {
+                for ( int i = 0; i < techniques.Count; i++ )
+                {
+                    ( (Technique)techniques[ i ] ).CullingMode = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the manual culling mode, performed by CPU rather than hardware.
+        /// </summary>
+        /// <remarks>
+        /// This property has been moved to the Pass class, which is accessible via the 
+        /// Technique. For simplicity, this method allows you to set these properties for 
+        /// every current Technique, and for every current Pass within those Techniques. If 
+        /// you need more precision, retrieve the Technique and Pass instances and set the
+        /// property there.
+        /// <see ref="Pass.ManualCullingMode"></see>
+        /// </remarks>
+        /// <ogre name="setManualCullingMode" />
+        public ManualCullingMode ManualCullingMode
+        {
+            set
+            {
+                for ( int i = 0; i < techniques.Count; i++ )
+                {
+                    ( (Technique)techniques[ i ] ).CullingMode = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets whether or not dynamic lighting is enabled for every Pass.
+        /// </summary>
+        /// <remarks>
+        /// This property has been moved to the Pass class, which is accessible via the 
+        /// Technique. For simplicity, this method allows you to set these properties for 
+        /// every current Technique, and for every current Pass within those Techniques. If 
+        /// you need more precision, retrieve the Technique and Pass instances and set the
+        /// property there.
+        /// <see ref="Pass.Lighting"></see>
+        /// </remarks>
+        /// <ogre name="setLighting" />
+        public bool Lighting
+        {
+            set
+            {
+                for ( int i = 0; i < techniques.Count; i++ )
+                {
+                    ( (Technique)techniques[ i ] ).Lighting = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the depth bias to be used for each Pass.
+        /// </summary>
+        /// <remarks>
+        /// This property has been moved to the Pass class, which is accessible via the 
+        /// Technique. For simplicity, this method allows you to set these properties for 
+        /// every current Technique, and for every current Pass within those Techniques. If 
+        /// you need more precision, retrieve the Technique and Pass instances and set the
+        /// property there.
+        /// <see ref="Pass.DepthBias"></see>
+        /// </remarks>
+        /// <ogre name="setDepthBias" />
+        public int DepthBias
+        {
+            set
+            {
+                for ( int i = 0; i < techniques.Count; i++ )
+                {
+                    ( (Technique)techniques[ i ] ).DepthBias = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Set texture filtering for every texture unit in every Technique and Pass
+        /// </summary>
+        /// <remarks>
+        /// This property has been moved to the Pass class, which is accessible via the 
+        /// Technique. For simplicity, this method allows you to set these properties for 
+        /// every current Technique, and for every current Pass within those Techniques. If 
+        /// you need more precision, retrieve the Technique and Pass instances and set the
+        /// property there.
+        /// <see ref="Pass.TextureFiltering"></see>
+        /// </remarks>
+        /// <ogre name="setTextureFiltering" />
+        public TextureFiltering TextureFiltering
+        {
+            set
+            {
+                for ( int i = 0; i < techniques.Count; i++ )
+                {
+                    ( (Technique)techniques[ i ] ).TextureFiltering = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the anisotropy level to be used for all textures.
+        /// </summary>
+        /// <remarks>
+        /// This property has been moved to the Pass class, which is accessible via the 
+        /// Technique. For simplicity, this method allows you to set these properties for 
+        /// every current Technique, and for every current Pass within those Techniques. If 
+        /// you need more precision, retrieve the Technique and Pass instances and set the
+        /// property there.
+        /// <see ref="Pass.TextureAnisotropy"></see>
+        /// </remarks>
+        /// <ogre name="setTextureAnisotropy" />
+        public int TextureAnisotropy
+        {
+            set
+            {
+                for ( int i = 0; i < techniques.Count; i++ )
+                {
+                    ( (Technique)techniques[ i ] ).TextureAnisotropy = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the type of light shading required
+        /// </summary>
+        /// <remarks>
+        /// This property has been moved to the Pass class, which is accessible via the 
+        /// Technique. For simplicity, this method allows you to set these properties for 
+        /// every current Technique, and for every current Pass within those Techniques. If 
+        /// you need more precision, retrieve the Technique and Pass instances and set the
+        /// property there.
+        /// <see ref="Pass.ShadingMode"></see>
+        /// </remarks>
+        /// <ogre name="" />
+        //void setShadingMode( ShadeOptions mode );
+
+        void SetFog( bool overrideScene )
+        {
+            setFog( overrideScene, FogMode.None, ColorEx.White, 0.001f, 0.0f, 1.0f );
+        }
+        /// <summary>
+        /// Sets the fogging mode applied to each pass.
+        /// </summary>
+        /// <remarks>
+        /// This property has been moved to the Pass class, which is accessible via the 
+        /// Technique. For simplicity, this method allows you to set these properties for 
+        /// every current Technique, and for every current Pass within those Techniques. If 
+        /// you need more precision, retrieve the Technique and Pass instances and set the
+        /// property there.
+        /// <see ref="Pass.SetFog"></see>
+        /// </remarks>
+        /// <ogre name="" />
+        void SetFog( bool overrideScene, FogMode mode, ColorEx color, Real expDensity, Real linearStart, Real linearEnd )
+        {
+            // load each technique
+            for ( int i = 0; i < techniques.Count; i++ )
+            {
+                ( (Technique)techniques[ i ] ).SetFog( overrideScene, mode, color, expDensity, linearStart, linearEnd );
+            }
+        }
+
+        /// <summary>
+        /// Sets the kind of blending every pass has with the existing contents of the scene.
+        /// </summary>
+        /// <remarks>
+        /// This property has been moved to the Pass class, which is accessible via the 
+        /// Technique. For simplicity, this method allows you to set these properties for 
+        /// every current Technique, and for every current Pass within those Techniques. If 
+        /// you need more precision, retrieve the Technique and Pass instances and set the
+        /// property there.
+        /// <see ref="Pass.SetSceneBlending"></see>
+        /// </remarks>
+        /// <ogre name="" />
+        public void SetSceneBlending( SceneBlendType blendType )
+        {
+            // load each technique
+            for ( int i = 0; i < techniques.Count; i++ )
+            {
+                ( (Technique)techniques[ i ] ).SetSceneBlending( blendType );
+            }
+        }
+
+
+        /// <summary>
+        /// Allows very fine control of blending every Pass with the existing contents of the scene.
+        /// </summary>
+        /// <remarks>
+        /// This property has been moved to the Pass class, which is accessible via the 
+        /// Technique. For simplicity, this method allows you to set these properties for 
+        /// every current Technique, and for every current Pass within those Techniques. If 
+        /// you need more precision, retrieve the Technique and Pass instances and set the
+        /// property there.
+        /// <see ref="Pass.SetSceneBlending"></see>
+        /// </remarks>
+        /// <ogre name="" />
+        public void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
+        {
+            // load each technique
+            for ( int i = 0; i < techniques.Count; i++ )
+            {
+                ( (Technique)techniques[ i ] ).SetSceneBlending( src, dest );
+            }
+        }
+
+        #endregion Convienence Properties
+
+        #endregion Fields and Properties
+
+        #region Constructors and Destructor
+
+        public Material( ResourceManager creator, string name, ResourceHandle handle, string group )
+            : this( parent, name, handle, group, false, null )
+        {
+        }
+
+        public Material( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+        {
+            ReceiveShadows = true;
+            TransparencyCastsShadows = false;
+            compilationRequired = true;
+
+            // Override isManual, not applicable for Material (we always want to call loadImpl)
+            if ( isManual )
+            {
+                this.IsManuallyLoaded = false;
+                LogManager.Instance.Write( "Material {0} was requested with isManual=true, but this is not applicable for materials; the flag has been reset to false", name );
+            }
+
+            _lodDistances.Add( 0.0f );
+
+            applyDefaults();
+        }
+
+        ~Material()
+        {
+            Dispose();
+        }
+
+        #endregion Constructors and Destructor
+
+        #region IComparable Implementation
 
         /// <summary>
         ///		Used for comparing 2 Material objects.
@@ -385,9 +804,9 @@ namespace Axiom
                 return 0;
         }
 
-        #endregion
+        #endregion IComparable Implementation
 
-        #region Implementation of Resource
+        #region Resource Implementation
 
         /// <summary>
         ///		Overridden from Resource.
@@ -398,23 +817,19 @@ namespace Axiom
         ///		are not already), GPU programs are created if applicable, and Controllers are instantiated.
         ///		Once a material has been loaded, all changes made to it are immediately loaded too
         /// </remarks>
-        public override void Load()
+        /// <ogre name="loadImpl" />
+        protected override void load()
         {
-            if ( !isLoaded )
+            // compile if needed
+            if ( compilationRequired )
             {
-                // compile if needed
-                if ( compilationRequired )
-                {
-                    Compile();
-                }
+                Compile();
+            }
 
-                // load all the supported techniques
-                for ( int i = 0; i < supportedTechniques.Count; i++ )
-                {
-                    ( (Technique)supportedTechniques[i] ).Load();
-                }
-
-                isLoaded = true;
+            // load all the supported techniques
+            for ( int i = 0; i < supportedTechniques.Count; i++ )
+            {
+                ( (Technique)supportedTechniques[ i ] ).Load();
             }
         }
 
@@ -422,29 +837,24 @@ namespace Axiom
         ///		Unloads the material, frees resources etc.
         ///		<see cref="Resource"/>
         /// </summary>
-        public override void Unload()
+        /// <ogre name="unloadImpl" />
+        protected override void unload()
         {
-            if ( isLoaded )
+            // unload unsupported techniques
+            for ( int i = 0; i < supportedTechniques.Count; i++ )
             {
-                // unload unsupported techniques
-                for ( int i = 0; i < supportedTechniques.Count; i++ )
-                {
-                    ( (Technique)supportedTechniques[i] ).Unload();
-                }
-
-                isLoaded = false;
+                ( (Technique)supportedTechniques[ i ] ).Unload();
             }
         }
 
         /// <summary>
-        ///	    Disposes of any resources used by this object.	
+        /// Calculate the size of a material; this will only be called after 'load'
         /// </summary>
-        public override void Dispose()
+        /// <returns></returns>
+        /// <ogre name="calculateSize" />
+        protected override int calculateSize()
         {
-            if ( isLoaded )
-            {
-                Unload();
-            }
+            return 0;
         }
 
         /// <summary>
@@ -461,19 +871,22 @@ namespace Axiom
             base.Touch();
         }
 
-        #endregion
+        /// <summary>
+        ///    Overridden to ensure a release of techniques.
+        /// </summary>
+        public override void Dispose()
+        {
+            RemoveAllTechniques();
+            base.Dispose();
+        }
+
+        #endregion Resource Implementation
 
         #region Methods
 
-        /// <summary>
-        ///		Only to be used by MaterialManager.Init.
-        /// </summary>
-        /// <param name="name"></param>
-        internal void SetName( string name )
-        {
-            this.name = name;
-        }
+        #region Compile Method
 
+        /// <overloads>
         /// <summary>
         ///    'Compiles' this Material.
         /// </summary>
@@ -485,7 +898,10 @@ namespace Axiom
         ///    <p/>
         ///    This process is automatically done when the Material is loaded, but may be
         ///    repeated if you make some procedural changes.
-        ///    <p/>
+        /// </remarks>
+        /// <ogre name="compile" />
+        /// </overloads>
+        /// <remarks>
         ///    By default, the engine will automatically split texture unit operations into multiple
         ///    passes when the target hardware does not have enough texture units.
         /// </remarks>
@@ -494,18 +910,6 @@ namespace Axiom
             Compile( true );
         }
 
-        /// <summary>
-        ///    'Compiles' this Material.
-        /// </summary>
-        /// <remarks>
-        ///    Compiling a material involves determining which Techniques are supported on the
-        ///    card on which the engine is currently running, and for fixed-function Passes within those
-        ///    Techniques, splitting the passes down where they contain more TextureUnitState 
-        ///    instances than the curren card has texture units.
-        ///    <p/>
-        ///    This process is automatically done when the Material is loaded, but may be
-        ///    repeated if you make some procedural changes.
-        /// </remarks>
         /// <param name="autoManageTextureUnits">
         ///    If true, when a fixed function pass has too many TextureUnitState
         ///    entries than the card has texture units, the Pass in question will be split into
@@ -521,7 +925,7 @@ namespace Axiom
             // compile each technique, adding supported ones to the list of supported techniques
             for ( int i = 0; i < techniques.Count; i++ )
             {
-                Technique t = (Technique)techniques[i];
+                Technique t = (Technique)techniques[ i ];
 
                 // compile the technique, splitting texture passes if required
                 t.Compile( autoManageTextureUnits );
@@ -532,14 +936,15 @@ namespace Axiom
                     supportedTechniques.Add( t );
 
                     // don't wanna insert if it is already present
-                    if ( bestTechniqueList[t.LodIndex] == null )
+                    if ( bestTechniqueList[ t.LodIndex ] == null )
                     {
-                        bestTechniqueList[t.LodIndex] = t;
+                        bestTechniqueList[ t.LodIndex ] = t;
                     }
                 }
             }
 
             // TODO Order best techniques
+            fixupBestTechniqueList();
 
             compilationRequired = false;
 
@@ -549,6 +954,8 @@ namespace Axiom
                 LogManager.Instance.Write( "Warning: Material '{0}' has no supportable Techniques on this hardware.  Will be rendered blank.", name );
             }
         }
+
+        #endregion Compile Method
 
         /// <summary>
         ///    Creates a new Technique for this Material.
@@ -567,6 +974,7 @@ namespace Axiom
         ///    return the first one in the technique list which is supported by the hardware.
         /// </remarks>
         /// <returns></returns>
+        /// <ogre name="createTechnique" />
         public Technique CreateTechnique()
         {
             Technique t = new Technique( this );
@@ -575,11 +983,9 @@ namespace Axiom
             return t;
         }
 
-        public Technique GetBestTechnique()
-        {
-            return GetBestTechnique( 0 );
-        }
+        #region GetBestTechnique Method
 
+        /// <overloads>
         /// <summary>
         ///    Gets the best supported technique. 
         /// </summary>
@@ -592,18 +998,25 @@ namespace Axiom
         ///    which typically happens on loading the material. Therefore, if this method returns
         ///    null, try calling Material.Load.
         /// </remarks>
-        /// </summary>
+        /// <ogre name="getBestTechnique" />
+        /// </overloads>
+        public Technique GetBestTechnique()
+        {
+            return GetBestTechnique( 0 );
+        }
+
+        /// <param name="lodIndex"></param>
         public Technique GetBestTechnique( int lodIndex )
         {
             if ( supportedTechniques.Count > 0 )
             {
-                if ( bestTechniqueList[lodIndex] == null )
+                if ( bestTechniqueList[ lodIndex ] == null )
                 {
-                    throw new AxiomException( "Lod index {0} not found for material '{1}'", lodIndex, name );
+                    throw new AxiomException( "LOD index {0} not found for material '{1}'", lodIndex, name );
                 }
                 else
                 {
-                    return (Technique)bestTechniqueList[lodIndex];
+                    return (Technique)bestTechniqueList[ lodIndex ];
                 }
             }
             else
@@ -612,11 +1025,40 @@ namespace Axiom
             }
         }
 
+        #endregion GetBestTechnique Method
+
+        /// <summary>
+        ///  Fixup the best technique list guarantees no gaps inside
+        /// </summary>
+        private void _fixupBestTechniqueList()
+        {
+            int lastIndex = 0;
+            Technique lastTechnique = null;
+
+            foreach ( DictionaryEntry de in bestTechniqueList )
+            {
+                if ( lastIndex < (int)de.Key )
+                {
+                    if ( !lastTechnique ) // hmm, index 0 is missing, use the first one we have
+                        lastTechnique = (Technique)de.Value;
+
+                    do
+                    {
+                        bestTechniqueList.Add( lastIndex, lastTechnique );
+                    } while ( ++lastIndex < (int)de.Key );
+                }
+
+                ++lastIndex;
+                lastTechnique = (Technique)de.Value;
+            }
+        }
+
         /// <summary>
         ///		Gets the LOD index to use at the given distance.
         /// </summary>
         /// <param name="distance"></param>
         /// <returns></returns>
+        /// <ogre name="getLodIndex" />
         public int GetLodIndex( float distance )
         {
             return GetLodIndexSquaredDepth( distance * distance );
@@ -627,11 +1069,12 @@ namespace Axiom
         /// </summary>
         /// <param name="squaredDistance"></param>
         /// <returns></returns>
+        /// <ogre name="getLodIndexSquaredDepth" />
         public int GetLodIndexSquaredDepth( float squaredDistance )
         {
             for ( int i = 0; i < lodDistances.Count; i++ )
             {
-                float val = (float)lodDistances[i];
+                float val = (float)lodDistances[ i ];
 
                 if ( val > squaredDistance )
                 {
@@ -648,28 +1091,31 @@ namespace Axiom
         /// </summary>
         /// <param name="index">Index of the technique to return.</param>
         /// <returns></returns>
+        /// <ogre name="getTechnique" />
         public Technique GetTechnique( int index )
         {
             Debug.Assert( index < techniques.Count, "index < techniques.Count" );
 
-            return (Technique)techniques[index];
+            return (Technique)techniques[ index ];
         }
 
         /// <summary>
         ///    Tells the material that it needs recompilation.
         /// </summary>
+        /// <ogre name="_notifyNeedsRecompile" />
         internal void NotifyNeedsRecompile()
         {
             compilationRequired = true;
 
             // force reload of any new resources
-            isLoaded = false;
+            unload();
         }
 
         /// <summary>
         ///    Removes the specified Technique from this material.
         /// </summary>
         /// <param name="t">A reference to the technique to remove</param>
+        /// <ogre name="removeTechnique" />
         public void RemoveTechnique( Technique t )
         {
             Debug.Assert( t != null, "t != null" );
@@ -684,6 +1130,7 @@ namespace Axiom
         /// <summary>
         ///		Removes all techniques from this material.
         /// </summary>
+        /// <ogre name="removeAllTechniques" />
         public void RemoveAllTechniques()
         {
             techniques.Clear();
@@ -708,6 +1155,7 @@ namespace Axiom
         ///		1 (ie the first level down from the highest level 0, which automatically applies
         ///		from a distance of 0).
         /// </param>
+        /// <ogre name="setLoadLevels" />
         public void SetLodLevels( FloatList lodDistanceList )
         {
             // clear and add the 0 distance entry
@@ -716,87 +1164,79 @@ namespace Axiom
 
             for ( int i = 0; i < lodDistanceList.Count; i++ )
             {
-                float val = (float)lodDistanceList[i];
+                float val = (float)lodDistanceList[ i ];
 
                 // squared distance
                 lodDistances.Add( val * val );
             }
         }
 
-        public void SetSceneBlending( SceneBlendType blendType )
-        {
-            // load each technique
-            for ( int i = 0; i < techniques.Count; i++ )
-            {
-                ( (Technique)techniques[i] ).SetSceneBlending( blendType );
-            }
-        }
-
-        public void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
-        {
-            // load each technique
-            for ( int i = 0; i < techniques.Count; i++ )
-            {
-                ( (Technique)techniques[i] ).SetSceneBlending( src, dest );
-            }
-        }
 
         /// <summary>
         ///    Creates a copy of this Material with the specified name (must be unique).
         /// </summary>
         /// <param name="newName">The name that the cloned material will be known as.</param>
         /// <returns></returns>
-        public Material Clone( string newName )
+        /// <ogre name="clone" />
+        public Material Clone( string newName, bool changeGroup, string newGroup )
         {
-            Material newMaterial = (Material)MaterialManager.Instance.Create( newName );
+            Material newMaterial;
+            if ( changeGroup )
+            {
+                newMaterial = (Material)MaterialManager.Instance.Create( newName, newGroup );
+            }
+            else
+            {
+                newMaterial = (Material)MaterialManager.Instance.Create( newName, this.Group );
+            }
 
-            int handle = newMaterial.handle;
-
-            CopyTo( newMaterial );
-
-            newMaterial.isLoaded = isLoaded;
-            newMaterial.name = newName;
-            newMaterial.handle = handle;
+            // Copy material preserving name, group and handle.
+            this.CopyTo( newMaterial, false );
 
             return newMaterial;
         }
 
+        #region CopyTo Method
 
+        /// <overload>
         /// <summary>
-        ///		Copies the details of this material into another, preserving the target's handle and name
-        ///		(unlike operator=) but copying everything else.
+        ///		Copies the details of this material into another.
         /// </summary>
         /// <param name="target">Material which will receive this material's settings.</param>
+        /// <ogre name="copyDetailsTo" />
+        /// <ogre name="operator =" />
+        /// </overload>
         public void CopyTo( Material target )
         {
             CopyTo( target, true );
         }
 
-        /// <summary>
-        ///		Copies the details of this material into another, preserving the target's handle and name
-        ///		(unlike operator=) but copying everything else.
-        /// </summary>
-        /// <param name="target">Material which will receive this material's settings.</param>
+        /// <param name="copyUniqueInfo">preserves the target's handle, group, name, and loading properties (unlike operator=) but copying everything else.</param>
         public void CopyTo( Material target, bool copyUniqueInfo )
         {
 
             if ( copyUniqueInfo )
             {
-                target.name = name;
-                target.handle = handle;
-                target.isLoaded = isLoaded;
+                target.Name = Name;
+                target.Handle = Handle;
+                target.Group = Group;
+                target.IsLoaded = IsLoaded;
+                target.IsManuallyLoaded = IsManuallyLoaded;
+                target.loader = loader;
             }
+
             // copy basic data
-            target.size = size;
-            target.lastAccessed = lastAccessed;
-            target.receiveShadows = receiveShadows;
+            target.Size = Size;
+            target.LastAccessed = LastAccessed;
+            target.ReceiveShadows = ReceiveShadows;
+            target.TransparencyCastsShadows = TransparencyCastsShadows;
 
             target.RemoveAllTechniques();
 
             // clone a copy of all the techniques
             for ( int i = 0; i < techniques.Count; i++ )
             {
-                Technique technique = (Technique)techniques[i];
+                Technique technique = (Technique)techniques[ i ];
                 Technique newTechnique = target.CreateTechnique();
                 technique.CopyTo( newTechnique );
 
@@ -805,9 +1245,9 @@ namespace Axiom
                 {
                     target.supportedTechniques.Add( newTechnique );
 
-                    if ( target.bestTechniqueList[technique.LodIndex] == null )
+                    if ( target.bestTechniqueList[ technique.LodIndex ] == null )
                     {
-                        target.bestTechniqueList[technique.LodIndex] = newTechnique;
+                        target.bestTechniqueList[ technique.LodIndex ] = newTechnique;
                     }
                 }
             }
@@ -818,19 +1258,27 @@ namespace Axiom
             // copy LOD distances
             for ( int i = 0; i < lodDistances.Count; i++ )
             {
-                target.lodDistances.Add( lodDistances[i] );
+                target.lodDistances.Add( lodDistances[ i ] );
             }
 
             target.compilationRequired = compilationRequired;
+            target.IsLoaded = this.IsLoaded;
         }
 
+        #endregion CopyTo Method
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <ogre name="applyDefaults" />
         public void ApplyDefaults()
         {
-            // copy properties from the default materials
-            //defaultSettings.CopyTo(this);
-            CreateTechnique().CreatePass();
-
-            //compilationRequired = true;
+            if ( defaultSettings != null )
+            {
+                // copy properties from the default materials
+                defaultSettings.CopyTo( this );
+            }
+            compilationRequired = true;
         }
 
         #endregion
@@ -856,5 +1304,6 @@ namespace Axiom
         }
 
         #endregion Object overloads
+
     }
 }

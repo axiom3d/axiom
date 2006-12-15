@@ -36,8 +36,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-
-
 using DotNet3D.Math;
 using DotNet3D.Math.Collections;
 
@@ -67,86 +65,37 @@ namespace Axiom
     ///    object being lit has a fair level of tesselation and the normals are properly set. This is particularly
     ///    true for the spotlight which will only look right on highly tesselated models.
     /// </remarks>
+    /// <ogre name="OgreLight">
+    ///     <file name="OgreLight.h"   revision="1.24.2.1" lastUpdated="6/15/2006" lastUpdatedBy="Skyrapper" />
+    ///     <file name="OgreLight.cpp" revision="1.32" lastUpdated="6/15/2005" lastUpdatedBy="Skyrapper" />
+    /// </ogre>
+
     public class Light : MovableObject, IComparable
     {
-        #region Fields
-        public static Vector3 DefaultDirection = new Vector3( 0, -1, 0 );
 
-        /// <summary>
-        ///    Type of light.
-        /// </summary>
-        protected LightType type;
-        /// <summary>
-        ///    Position of this light.
-        /// </summary>
-        protected Vector3 position = Vector3.Zero;
-        /// <summary>
-        ///    Direction of this light.
-        /// </summary>
-        protected Vector3 direction = DefaultDirection;
-        /// <summary>
-        ///		Derived position of this light.
-        ///	</summary>
-        protected Vector3 derivedPosition = Vector3.Zero;
-        /// <summary>
-        ///		Derived direction of this light.
-        ///	</summary>
-        protected Vector3 derivedDirection = Vector3.Zero;
-        /// <summary>
-        ///		Stored version of parent orientation.
-        ///	</summary>
-        protected Quaternion lastParentOrientation = Quaternion.Identity;
-        /// <summary>
-        ///		Stored version of parent position.
-        ///	</summary>
-        protected Vector3 lastParentPosition = Vector3.Zero;
-        /// <summary>
-        ///		Diffuse color.
-        ///	</summary>
-        protected ColorEx diffuse;
-        /// <summary>
-        ///		Specular color.
-        ///	</summary>
-        protected ColorEx specular;
-        /// <summary></summary>
-        protected float spotOuter;
-        /// <summary></summary>
-        protected float spotInner;
-        /// <summary></summary>
-        protected float spotFalloff;
-        /// <summary></summary>
-        protected float range;
-        /// <summary></summary>
-        protected float attenuationConst;
-        /// <summary></summary>
-        protected float attenuationLinear;
-        /// <summary></summary>
-        protected float attenuationQuad;
-        /// <summary></summary>
-        protected bool localTransformDirty;
-        /// <summary>
-        ///    Used for sorting.  Internal for "friend" access to SceneManager.
-        /// </summary>
-        internal protected float tempSquaredDist;
-        /// <summary>
-        ///		Stored version of the last near clip volume tested.
-        /// </summary>
-        protected PlaneBoundedVolume nearClipVolume = new PlaneBoundedVolume();
-        /// <summary>
-        ///		
-        /// </summary>
-        protected PlaneBoundedVolumeList frustumClipVolumes = new PlaneBoundedVolumeList();
-
-        #endregion
-
-        #region Constructors
+        #region Constructors/Destructor
 
         /// <summary>
         ///		Default constructor.
         /// </summary>
         public Light()
-            : this( "" )
         {
+            // Default to point light, white diffuse light, linear attenuation, fair range
+            _type = LightType.Point;
+            _diffuse = ColorEx.White;
+            _specular = ColorEx.Black;
+            _range = 5000;
+            _attenuationConst = 1.0f;
+            _attenuationLinear = 0.0f;
+            _attenuationQuad = 0.0f;
+
+            // Center in world, direction irrelevant but set anyway
+            _position = _derivedPosition = Vector3.Zero;
+            _direction = _derivedDirection = Vector3.UnitZ;
+            ParentNode = null;
+
+            _localTransformDirty = false;
+
         }
 
         /// <summary>
@@ -156,252 +105,349 @@ namespace Axiom
         public Light( string name )
         {
 
-            this.name = name;
+            base.Name = name;
 
             // Default to point light, white diffuse light, linear attenuation, fair range
-            type = LightType.Point;
-            diffuse = ColorEx.White;
-            specular = ColorEx.Black;
-            range = 100000;
-            attenuationConst = 1.0f;
-            attenuationLinear = 0.0f;
-            attenuationQuad = 0.0f;
+            _type = LightType.Point;
+            _diffuse = ColorEx.White;
+            _specular = ColorEx.Black;
+            _range = 100000;
+            _attenuationConst = 1.0f;
+            _attenuationLinear = 0.0f;
+            _attenuationQuad = 0.0f;
 
             // Center in world, direction irrelevant but set anyway
-            position = Vector3.Zero;
-            direction = Vector3.UnitZ;
+            _position = Vector3.Zero;
+            _direction = Vector3.UnitZ;
 
             // Default some spot values
-            spotInner = 30.0f;
-            spotOuter = 40.0f;
-            spotFalloff = 1.0f;
+            _spotInner = new Degree(30.0f);
+            _spotOuter = new Degree(40.0f);
+            _spotFalloff = 1.0f;
+            ParentNode = null;
 
-            localTransformDirty = false;
+            _localTransformDirty = false;
         }
 
         #endregion
 
         #region Properties
 
+        #region DefaultDirection
+
+        private static Vector3 _defaultDirection = new Vector3(0, -1, 0);
+        
+        protected static Vector3 DefaultDirection
+        {
+            get { return _defaultDirection; }
+            set { _defaultDirection = value; }
+        }
+
+        #endregion
+
+        #region Type
+
+        /// <summary>
+        ///    Type of light.
+        /// </summary>
+        private LightType _type;
+
         /// <summary>
         ///		Gets/Sets the type of light this is.
         /// </summary>
-        public LightType Type
+        protected LightType Type
         {
             get
             {
-                return type;
+                return _type;
             }
             set
             {
-                type = value;
+                _type = value;
             }
         }
+
+        #endregion
+
+        #region Position
+
+        /// <summary>
+        ///    Position of this light.
+        /// </summary>
+        private Vector3 _position = Vector3.Zero;
 
         /// <summary>
         ///		Gets/Sets the position of the light.
         /// </summary>
-        public Vector3 Position
+        protected Vector3 Position
         {
             get
             {
-                return position;
+                return _position;
             }
             set
             {
-                position = value;
-                localTransformDirty = true;
+                _position = value;
+                _localTransformDirty = true;
             }
         }
+
+        #endregion
+
+        #region Direction
+
+        /// <summary>
+        ///    Direction of this light.
+        /// </summary>
+        private Vector3 _direction = _defaultDirection;
 
         /// <summary>
         ///		Gets/Sets the direction of the light.
         /// </summary>
-        public Vector3 Direction
+        protected Vector3 Direction
         {
             get
             {
-                return direction;
+                return _direction;
             }
             set
             {
                 //defualt to down, as Zero may cause the meshes to be rendered as white
                 if ( value.IsZero )
-                    value = DefaultDirection;
+                    value = _defaultDirection;
 
-                direction = value;
-                direction.Normalize();
-                localTransformDirty = true;
+                _direction = value;
+                _direction.Normalize();
+                _localTransformDirty = true;
             }
         }
+
+        #endregion
+
+        #region SpotlightInnerAngle
+
+        /// <summary>Inner angle of the spotlight</summary>
+        private Radian _spotInner;
 
         /// <summary>
         ///		Gets the inner angle of the spotlight.
         /// </summary>
-        public float SpotlightInnerAngle
+        protected Radian SpotlightInnerAngle
         {
             get
             {
-                return spotInner;
+                return _spotInner;
             }
         }
+
+        #endregion
+
+        #region SpotlightOuterAngle
+
+        /// <summary>Outer angle of the spotlight</summary>
+        private Radian _spotOuter;
 
         /// <summary>
         ///		Gets the outer angle of the spotlight.
         /// </summary>
-        public float SpotlightOuterAngle
+        protected Radian SpotlightOuterAngle
         {
             get
             {
-                return spotOuter;
+                return _spotOuter;
             }
         }
 
+        #endregion
+
+        #region SpotlightFalloff
+
+        /// <summary>Spotlight falloff</summary>
+        private Real _spotFalloff;
+
         /// <summary>
-        ///		Gets the spotlight falloff.
+        ///		Gets the spotlight falloff between the inner and the outer cones of the spotlight.
         /// </summary>
-        public float SpotlightFalloff
+        protected Real SpotlightFalloff
         {
             get
             {
-                return spotFalloff;
+                return _spotFalloff;
             }
         }
+
+        #endregion
+
+        #region Diffuse
+
+        /// <summary>
+        ///		Diffuse color.
+        ///	</summary>
+        private ColorEx _diffuse;
 
         /// <summary>
         ///		Gets/Sets the diffuse color of the light.
         /// </summary>
-        public virtual ColorEx Diffuse
+        protected virtual ColorEx Diffuse
         {
             get
             {
-                return diffuse;
+                return _diffuse;
             }
             set
             {
-                diffuse = value;
+                _diffuse = value;
             }
         }
+
+        #endregion
+
+        #region Specular
+
+        /// <summary>
+        ///		Specular color.
+        ///	</summary>
+        private ColorEx _specular;
 
         /// <summary>
         ///		Gets/Sets the diffuse color of the light.
         /// </summary>
-        public virtual ColorEx Specular
+        protected virtual ColorEx Specular
         {
             get
             {
-                return specular;
+                return _specular;
             }
             set
             {
-                specular = value;
+                _specular = value;
             }
         }
+
+        #endregion
+
+        #region AttenuationRange
+
+        /// <summary>Attenuation range value</summary>
+        private Real _range;
 
         /// <summary>
         ///		Gets the attenuation range value.
         /// </summary>
-        public float AttenuationRange
+        protected Real AttenuationRange
         {
             get
             {
-                return range;
+                return _range;
             }
         }
+
+        #endregion
+
+        #region AttenuationConstant
+
+        /// <summary>Constant attenuation value</summary>
+        private Real _attenuationConst;
 
         /// <summary>
         ///		Gets the constant attenuation value.
         /// </summary>
-        public float AttenuationConstant
+        protected Real AttenuationConstant
         {
             get
             {
-                return attenuationConst;
+                return _attenuationConst;
             }
         }
+
+        #endregion
+
+        #region AttenuationLinear
+
+        /// <summary>Linear attenuation value</summary>
+        private Real _attenuationLinear;
 
         /// <summary>
         ///		Gets the linear attenuation value.
         /// </summary>
-        public float AttenuationLinear
+        protected Real AttenuationLinear
         {
             get
             {
-                return attenuationLinear;
+                return _attenuationLinear;
             }
         }
+
+        #endregion
+
+        #region AttenuationQuadratic
+
+        /// <summary>Quadratic attenuation value</summary>
+        private Real _attenuationQuad;
 
         /// <summary>
         ///		Gets the quadratic attenuation value.
         /// </summary>
-        public float AttenuationQuadratic
+        protected Real AttenuationQuadratic
         {
             get
             {
-                return attenuationQuad;
+                return _attenuationQuad;
             }
         }
 
-        /// <summary>
-        ///		Updates this lights position.
-        /// </summary>
-        public virtual void Update()
-        {
-            if ( parentNode != null )
-            {
-                if ( !localTransformDirty
-                    && parentNode.DerivedOrientation == lastParentOrientation
-                    && parentNode.DerivedPosition == lastParentPosition )
-                {
-                }
-                else
-                {
-                    // we are out of date with the scene node we are attached to
-                    lastParentOrientation = parentNode.DerivedOrientation;
-                    lastParentPosition = parentNode.DerivedPosition;
-                    derivedDirection = lastParentOrientation * direction;
-                    derivedPosition = ( lastParentOrientation * position ) + lastParentPosition;
-                }
-            }
-            else
-            {
-                derivedPosition = position;
-                derivedDirection = direction;
-            }
+        #endregion
 
-            localTransformDirty = false;
-        }
+        #region DerivedPosition
 
         /// <summary>
-        ///		Gets the derived position of this light.
+        ///		Derived position of this light.
+        ///	</summary>
+        private Vector3 _derivedPosition = Vector3.Zero;
+
+        /// <summary>
+        ///		Gets the derived position of this light including any transforms from nodes it is attached to.
         /// </summary>
-        public Vector3 DerivedPosition
+        protected Vector3 DerivedPosition
         {
             get
             {
                 // this is called to force an update
                 Update();
 
-                return derivedPosition;
+                return _derivedPosition;
             }
         }
 
+        #endregion
+
+        #region DerivedDirection
+
         /// <summary>
-        ///		Gets the derived position of this light.
+        ///		Derived direction of this light.
+        ///	</summary>
+        private Vector3 _derivedDirection = Vector3.Zero;
+
+        /// <summary>
+        ///		Gets the derived position of this light including any transforms from nodes it is attached to.
         /// </summary>
-        public Vector3 DerivedDirection
+        protected Vector3 DerivedDirection
         {
             get
             {
                 // this is called to force an update
                 Update();
 
-                return derivedDirection;
+                return _derivedDirection;
             }
         }
 
+        #endregion
+
+        #region IsVisible
+
         /// <summary>
-        ///		Override IsVisible to ensure we are updated when this changes.
+        ///		Override IsVisible to ensure we are updated when this changes. Altough lights are not visible themselves, setting a light to invisible means it no longer affects the scene.
         /// </summary>
         public override bool IsVisible
         {
@@ -415,10 +461,14 @@ namespace Axiom
             }
         }
 
+        #endregion
+
+        #region BoundingRadius
+
         /// <summary>
         ///    Local bounding radius of this light.
         /// </summary>
-        public override float BoundingRadius
+        public override Real BoundingRadius
         {
             get
             {
@@ -429,7 +479,163 @@ namespace Axiom
 
         #endregion
 
+        #region LastParentOrientation
+
+        /// <summary>
+        ///		Stored version of parent orientation.
+        ///	</summary>
+        private Quaternion _lastParentOrientation = Quaternion.Identity;
+
+        /// <summary>
+        ///		Stored version of parent orientation.
+        ///	</summary>
+        protected Quaternion LastParentOrientation
+        {
+            get { return _lastParentOrientation; }
+            set { _lastParentOrientation = value; }
+        }
+
+        #endregion
+
+        #region LastParentPosition
+
+        /// <summary>
+        ///		Stored version of parent position.
+        ///	</summary>
+        private Vector3 _lastParentPosition = Vector3.Zero;
+
+        /// <summary>
+        ///		Stored version of parent position.
+        ///	</summary>
+        protected Quaternion LastParentPosition
+        {
+            get { return _lastParentPosition; }
+            set { _lastParentPosition = value; }
+        }
+
+        #endregion
+
+        #region LocalTransformDirty
+
+        /// <summary></summary>
+        private bool _localTransformDirty;
+
+        /// <summary>
+        ///		Stored version of parent position.
+        ///	</summary>
+        protected bool LocalTransformDirty
+        {
+            get { return _localTransformDirty; }
+            set { _localTransformDirty = value; }
+        }
+
+        #endregion
+
+        #region TempSquaredDist
+
+        /// <summary>
+        ///    Used for sorting.
+        /// </summary>
+        private float _tempSquaredDist;
+
+        /// <summary>
+        ///    Used for sorting.  Internal for "friend" access to SceneManager.
+        /// </summary>
+        internal protected float TempSquaredDist
+        {
+            get { return _tempSquaredDist; }
+            set { _tempSquaredDist = value; }
+        }
+
+        #endregion
+
+        #region NearClipVolume
+
+        /// <summary>
+        ///		Stored version of the last near clip volume tested.
+        /// </summary>
+        private PlaneBoundedVolume _nearClipVolume = new PlaneBoundedVolume();
+
+        /// <summary>
+        ///		Stored version of the last near clip volume tested.
+        /// </summary>
+        protected PlaneBoundedVolume NearClipVolume
+        {
+            get { return _nearClipVolume; }
+            set { _nearClipVolume = value; }
+        }
+
+        #endregion
+
+        #region FrustumClipVolumes
+
+        /// <summary>
+        ///		
+        /// </summary>
+        private PlaneBoundedVolumeList _frustumClipVolumes = new PlaneBoundedVolumeList();
+
+        /// <summary>
+        ///		
+        /// </summary>
+        protected PlaneBoundedVolumeList FrustumClipVolumes
+        {
+            get { return _frustumClipVolumes; }
+            set { _frustumClipVolumes = value; }
+        }
+
+        #endregion
+
+        #endregion
+
         #region Methods
+
+        /// <summary>
+        /// Sets the diffuse color of the light.
+        /// </summary>
+        protected void SetDiffuse(Real red, Real green, Real blue)
+        {
+            _diffuse.r = red;
+            _diffuse.g = green;
+            _diffuse.b = blue;
+        }
+
+        /// <summary>
+        /// Sets the specular color of the light.
+        /// </summary>
+        protected void SetSpecular(Real red, Real green, Real blue)
+        {
+            _specular.r = red;
+            _specular.g = green;
+            _specular.b = blue;
+        }
+
+        /// <summary>
+        ///		Updates this lights position.
+        /// </summary>
+        private void Update()
+        {
+            Node parentNode = ParentNode;
+            if (parentNode != null)
+            {
+                if (_localTransformDirty
+                    || parentNode.DerivedOrientation != _lastParentOrientation
+                    || parentNode.DerivedPosition != _lastParentPosition)
+                {
+                    // we are out of date with the scene node we are attached to
+                    _lastParentOrientation = parentNode.DerivedOrientation;
+                    _lastParentPosition = parentNode.DerivedPosition;
+                    _derivedDirection = _lastParentOrientation * _direction;
+                    _derivedPosition = (_lastParentOrientation * _position) + _lastParentPosition;
+                }
+            }
+            else
+            {
+                _derivedPosition = _position;
+                _derivedDirection = _direction;
+            }
+
+            _localTransformDirty = false;
+        }
 
         /// <summary>
         ///		Gets the details of this light as a 4D vector.
@@ -446,7 +652,7 @@ namespace Axiom
         {
             Vector4 vec;
 
-            if ( type == LightType.Directional )
+            if ( _type == LightType.Directional )
             {
                 // negate direction as 'position'
                 vec = -(Vector4)this.DerivedDirection;
@@ -463,33 +669,38 @@ namespace Axiom
             return vec;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="innerAngle"></param>
-        /// <param name="outerAngle"></param>
-        public void SetSpotlightRange( float innerAngle, float outerAngle )
-        {
-            SetSpotlightRange( innerAngle, outerAngle, 1.0f );
-        }
-
-        /// <summary>
-        ///		Sets the spotlight parameters in a single call.
-        /// </summary>
+        /// <overload>
+        /// Sets the spotlight parameters in a single call.
+        /// </overload>
         /// <param name="innerAngle"></param>
         /// <param name="outerAngle"></param>
         /// <param name="falloff"></param>
-        public void SetSpotlightRange( float innerAngle, float outerAngle, float falloff )
+        public void SetSpotlightRange(Real innerAngle, Real outerAngle)
+        {
+            SetSpotlightRange(new Radian(innerAngle), new Radian(outerAngle), 1.0f);
+        }
+
+        /// <param name="innerAngle"></param>
+        /// <param name="outerAngle"></param>
+        /// <param name="falloff"></param>
+        public void SetSpotlightRange(Real innerAngle, Real outerAngle, Real falloff)
+        {
+            SetSpotlightRange(new Radian(innerAngle), new Radian(outerAngle), falloff);
+        }
+
+        /// <param name="innerAngle"></param>
+        /// <param name="outerAngle"></param>
+        /// <param name="falloff"></param>
+        public void SetSpotlightRange(Radian innerAngle, Radian outerAngle, Real falloff)
         {
             //allow it to be set ahead of time anyways
-            /*if(type != LightType.Spotlight) {
-				throw new Exception("Setting the spotlight range is only valid for spotlights.");
-			}*/
+            //if (_type != LightType.Spotlight)
+            //  throw new AxiomException("SetSpotlightRange is only valid for spotlights");
 
+            _spotInner = innerAngle;
+            _spotOuter = outerAngle;
+            _spotFalloff = falloff;
 
-            spotInner = innerAngle;
-            spotOuter = outerAngle;
-            spotFalloff = falloff;
         }
 
         /// <summary>
@@ -499,12 +710,42 @@ namespace Axiom
         /// <param name="constant"></param>
         /// <param name="linear"></param>
         /// <param name="quadratic"></param>
-        public void SetAttenuation( float range, float constant, float linear, float quadratic )
+        protected void SetAttenuation(Real range, Real constant, Real linear, Real quadratic)
         {
-            this.range = range;
-            attenuationConst = constant;
-            attenuationLinear = linear;
-            attenuationQuad = quadratic;
+            _range = range;
+            _attenuationConst = constant;
+            _attenuationLinear = linear;
+            _attenuationQuad = quadratic;
+        }
+
+        /// <summary>
+        /// Sets the direction of the light.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        protected void SetDirection(Real x, Real y, Real z)
+        {
+            _direction.x = x;
+            _direction.y = y;
+            _direction.z = z;
+            _direction.Normalize();
+
+            _localTransformDirty = true;
+        }
+
+        /// <summary>
+        /// Sets the position of the light.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        protected void SetPosition(Real x, Real y, Real z)
+        {
+            _position.x = x;
+            _position.y = y;
+            _position.z = z;
+            _localTransformDirty = true;
         }
 
         /// <summary>
@@ -525,32 +766,31 @@ namespace Axiom
         {
             const float THRESHOLD = -1e-06f;
 
-            float n = camera.Near;
-
             // First check if the light is close to the near plane, since
             // in this case we have to build a degenerate clip volume
-            nearClipVolume.planes.Clear();
-            nearClipVolume.outside = Plane.Side.Negative;
+            _nearClipVolume.planes.Clear();
+            _nearClipVolume.outside = Plane.Side.Negative;
 
+            Real n = camera.Near;
             // Homogenous position
             Vector4 lightPos = GetAs4DVector();
             // 3D version (not the same as DerivedPosition, is -direction for
             // directional lights)
             Vector3 lightPos3 = new Vector3( lightPos.x, lightPos.y, lightPos.z );
 
-                        // Get eye-space light position
-                        // use 4D vector so directional lights still work
+            // Get eye-space light position
+            // use 4D vector so directional lights still work
             Vector4 eyeSpaceLight = camera.ViewMatrix * lightPos;
-            Matrix4 eyeToWorld = camera.ViewMatrix.Inverse();
 
             // Find distance to light, project onto -Z axis
-            float d = eyeSpaceLight.DotProduct( new Vector4( 0, 0, -1, -n ) );
+            Real d = eyeSpaceLight.DotProduct( new Vector4( 0, 0, -1, -n ) );
 
             if ( d > THRESHOLD || d < -THRESHOLD )
             {
                 // light is not too close to the near plane
                 // First find the worldspace positions of the corners of the viewport
                 Vector3[] corners = camera.WorldSpaceCorners;
+                int winding = (d < 0) ^ camera.IsReflected ? +1 : -1;
 
                 // Iterate over world points and form side planes
                 Vector3 normal = Vector3.Zero;
@@ -561,48 +801,38 @@ namespace Axiom
                     // Figure out light dir
                     lightDir = lightPos3 - ( corners[i] * lightPos.w );
                     // Cross with anticlockwise corner, therefore normal points in
-                    // Note: C++ mod returns 3 for the first case where C# returns -1
-                    int test = i > 0 ? ( ( i - 1 ) % 4 ) : 3;
+                    // Note: C++ mod returns 3 for the first case (i==0 && winding==-1) where C# returns -1
+                    int test = i > 0 || winding==1 ? ((i + winding ) % 4) : 3;
 
                     normal = ( corners[i] - corners[test] ).CrossProduct( lightDir );
                     normal.Normalize();
 
-                    if ( d < THRESHOLD )
-                    {
-                        // invert normal
-                        normal = -normal;
-                    }
-                    // NB last param to Plane constructor is negated because it's -d
-                    nearClipVolume.planes.Add( new Plane( normal, normal.DotProduct( corners[i] ) ) );
+                    _nearClipVolume.planes.Add( new Plane( normal, corners[i] ) );
                 }
 
                 // Now do the near plane plane
-                if ( d > THRESHOLD )
+                normal = camera[FrustumPlane.Near].Normal;
+                if (d < 0)
                 {
-                    // In front of near plane
-                    // remember the -d negation in plane constructor
-                    normal = eyeToWorld * -Vector3.UnitZ;
-                    normal.Normalize();
-                    nearClipVolume.planes.Add( new Plane( normal, -normal.DotProduct( camera.DerivedPosition ) ) );
+                    //Behind near plane
+                    normal = -normal;
                 }
-                else
+
+                //Hack: There bug in Camera.GetDerivedPosition which should be take reflection into account.
+                Vector3 cameraPos = camera.DerivedPosition;
+                if (camera.IsReflected)
                 {
-                    // Behind near plane
-                    // remember the -d negation in plane constructor
-                    normal = eyeToWorld * Vector3.UnitZ;
-                    normal.Normalize();
-                    nearClipVolume.planes.Add( new Plane( normal, -normal.DotProduct( camera.DerivedPosition ) ) );
+                    //Camera is reflected, used the reflect of derived position as world position
+                    cameraPos = camera.ReflectionMatrix * cameraPos;
                 }
+                _nearClipVolume.planes.Add(new Plane(normal, cameraPos));
 
                 // Finally, for a point/spot light we can add a sixth plane
                 // This prevents false positives from behind the light
-                if ( type != LightType.Directional )
+                if ( _type != LightType.Directional )
                 {
-                    // Direction from light to centre point of viewport 
-                    normal = ( eyeToWorld * new Vector3( 0, 0, -n ) ) - lightPos3;
-                    normal.Normalize();
-                    // remember the -d negation in plane constructor
-                    nearClipVolume.planes.Add( new Plane( normal, normal.DotProduct( lightPos3 ) ) );
+                    // Direction from the light perpendicular to near plane
+                    _nearClipVolume.planes.Add(new Plane(-normal, lightPos3));
                 }
             }
             else
@@ -610,11 +840,11 @@ namespace Axiom
                 // light is close to being on the near plane
                 // degenerate volume including the entire scene 
                 // we will always require light / dark caps
-                nearClipVolume.planes.Add( new Plane( Vector3.UnitZ, -n ) );
-                nearClipVolume.planes.Add( new Plane( -Vector3.UnitZ, n ) );
+                _nearClipVolume.planes.Add( new Plane( Vector3.UnitZ, -n ) );
+                _nearClipVolume.planes.Add( new Plane( -Vector3.UnitZ, n ) );
             }
 
-            return nearClipVolume;
+            return _nearClipVolume;
         }
 
         /// <summary>
@@ -636,18 +866,16 @@ namespace Axiom
             // 3D version (not the same as DerivedPosition, is -direction for
             // directional lights)
             Vector3 lightPos3 = new Vector3( lightPos.x, lightPos.y, lightPos.z );
-            Vector3 lightDir;
 
             Vector3[] clockwiseVerts = new Vector3[4];
 
-            Matrix4 eyeToWorld = camera.ViewMatrix.Inverse();
-
             // Get worldspace frustum corners
             Vector3[] corners = camera.WorldSpaceCorners;
+            int winding = camera.IsReflected ? +1 : -1;
 
             bool infiniteViewDistance = ( camera.Far == 0 );
 
-            frustumClipVolumes.Clear();
+            _frustumClipVolumes.Clear();
 
             for ( int n = 0; n < 6; n++ )
             {
@@ -664,16 +892,15 @@ namespace Axiom
                 Vector4 planeVec = new Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.Distance );
 
                 // planes face inwards, we need to know if light is on negative side
-                float d = planeVec.DotProduct( lightPos );
+                Real d = planeVec.DotProduct( lightPos );
 
                 if ( d < -1e-06f )
                 {
                     // Ok, this is a valid one
                     // clockwise verts mean we can cross-product and always get normals
                     // facing into the volume we create
-                    frustumClipVolumes.Add( new PlaneBoundedVolume() );
-                    PlaneBoundedVolume vol =
-                        (PlaneBoundedVolume)frustumClipVolumes[frustumClipVolumes.Count - 1];
+                    PlaneBoundedVolume vol = new PlaneBoundedVolume();
+                    _frustumClipVolumes.Add(vol);
 
                     switch ( frustumPlane )
                     {
@@ -718,6 +945,7 @@ namespace Axiom
                     // Build a volume
                     // Iterate over world points and form side planes
                     Vector3 normal;
+                    Vector3 lightDir;
 
                     for ( int i = 0; i < 4; i++ )
                     {
@@ -725,15 +953,16 @@ namespace Axiom
                         lightDir = lightPos3 - ( clockwiseVerts[i] * lightPos.w );
 
                         // Cross with anticlockwise corner, therefore normal points in
-                        // Note: C++ mod returns 3 for the first case where C# returns -1
-                        int test = i > 0 ? ( ( i - 1 ) % 4 ) : 3;
+                        // Note: C++ mod returns 3 for the first case (i==0 && winding==-1) where C# returns -1
+                        int test = i > 0 || winding == 1 ? ((i + winding) % 4) : 3;
 
                         // Cross with anticlockwise corner, therefore normal points in
-                        normal = ( clockwiseVerts[i] - clockwiseVerts[test] ).CrossProduct( lightDir );
+                        Vector3 edgeDir = ( clockwiseVerts[i] - clockwiseVerts[test] );
+                        normal=edgeDir.CrossProduct( lightDir );
                         normal.Normalize();
 
                         // NB last param to Plane constructor is negated because it's -d
-                        vol.planes.Add( new Plane( normal, normal.DotProduct( clockwiseVerts[i] ) ) );
+                        vol.planes.Add( new Plane( normal, clockwiseVerts[i] ) );
                     }
 
                     // Now do the near plane (this is the plane of the side we're 
@@ -742,16 +971,16 @@ namespace Axiom
 
                     // Finally, for a point/spot light we can add a sixth plane
                     // This prevents false positives from behind the light
-                    if ( type != LightType.Directional )
+                    if ( _type != LightType.Directional )
                     {
                         // re-use our own plane normal
                         // remember the -d negation in plane constructor
-                        vol.planes.Add( new Plane( plane.Normal, plane.Normal.DotProduct( lightPos3 ) ) );
+                        vol.planes.Add( new Plane( plane.Normal, lightPos3 ) );
                     }
                 }
             }
 
-            return frustumClipVolumes;
+            return _frustumClipVolumes;
         }
 
         #endregion
@@ -792,7 +1021,7 @@ namespace Axiom
         {
             Light other = obj as Light;
 
-            if ( other.tempSquaredDist > this.tempSquaredDist )
+            if ( other._tempSquaredDist > this._tempSquaredDist )
             {
                 return 1;
             }

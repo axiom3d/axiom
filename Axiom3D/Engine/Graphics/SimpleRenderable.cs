@@ -180,7 +180,7 @@ namespace Axiom
         /// <summary>
         /// 
         /// </summary>
-        public ushort NumWorldTransforms
+        public ushort WorldTransformCount
         {
             get
             {

@@ -75,10 +75,10 @@ namespace Axiom.RenderSystems.OpenGL
         {
             this.name = name;
             this.textureType = type;
-            this.srcWidth = width;
-            this.srcHeight = height;
-            this.width = srcWidth;
-            this.height = srcHeight;
+            this.SrcWidth = width;
+            this.SrcHeight = height;
+            this.width = SrcWidth;
+            this.height = SrcHeight;
             this.depth = 1;
             this.numMipMaps = numMipMaps;
             this.usage = usage;
@@ -219,12 +219,12 @@ namespace Axiom.RenderSystems.OpenGL
                 hasAlpha = image.HasAlpha;
 
                 // get dimensions
-                srcWidth = image.Width;
-                srcHeight = image.Height;
+                SrcWidth = image.Width;
+                SrcHeight = image.Height;
 
                 // same destination dimensions for GL
-                width = srcWidth;
-                height = srcHeight;
+                width = SrcWidth;
+                height = SrcHeight;
                 depth = image.Depth;
 
                 // only oiverride global mipmap setting if the image itself has at least 1 already
@@ -379,7 +379,7 @@ namespace Axiom.RenderSystems.OpenGL
                         type,
                         0,
                         hasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8,
-                        srcWidth, srcHeight, depth, 0, this.GLFormat,
+                        SrcWidth, SrcHeight, depth, 0, this.GLFormat,
                         Gl.GL_UNSIGNED_BYTE,
                         data );
                 }
@@ -416,7 +416,7 @@ namespace Axiom.RenderSystems.OpenGL
                         type,
                         0,
                         hasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8,
-                        srcWidth, srcHeight, depth, 0, this.GLFormat,
+                        SrcWidth, SrcHeight, depth, 0, this.GLFormat,
                         Gl.GL_UNSIGNED_BYTE,
                         data );
                 }
@@ -432,8 +432,8 @@ namespace Axiom.RenderSystems.OpenGL
                             type,
                             0,
                             this.GLFormat,
-                            srcWidth,
-                            srcHeight,
+                            SrcWidth,
+                            SrcHeight,
                             0,
                             size,
                             data );
@@ -486,28 +486,28 @@ namespace Axiom.RenderSystems.OpenGL
         private byte[] RescaleNPower2( Image src )
         {
             // Scale image to n^2 dimensions
-            int newWidth = ( 1 << MostSignificantBitSet( srcWidth ) );
+            int newWidth = ( 1 << MostSignificantBitSet( SrcWidth ) );
 
-            if ( newWidth != srcWidth )
+            if ( newWidth != SrcWidth )
             {
                 newWidth <<= 1;
             }
 
-            int newHeight = ( 1 << MostSignificantBitSet( srcHeight ) );
-            if ( newHeight != srcHeight )
+            int newHeight = ( 1 << MostSignificantBitSet( SrcHeight ) );
+            if ( newHeight != SrcHeight )
             {
                 newHeight <<= 1;
             }
 
             byte[] tempData;
 
-            if ( newWidth != srcWidth || newHeight != srcHeight )
+            if ( newWidth != SrcWidth || newHeight != SrcHeight )
             {
                 int newImageSize = newWidth * newHeight * ( hasAlpha ? 4 : 3 );
 
                 tempData = new byte[newImageSize];
 
-                if ( Glu.gluScaleImage( this.GLFormat, srcWidth, srcHeight,
+                if ( Glu.gluScaleImage( this.GLFormat, SrcWidth, SrcHeight,
                     Gl.GL_UNSIGNED_BYTE, src.Data, newWidth, newHeight,
                     Gl.GL_UNSIGNED_BYTE, tempData ) != 0 )
                 {
@@ -517,8 +517,8 @@ namespace Axiom.RenderSystems.OpenGL
 
                 Image.ApplyGamma( tempData, gamma, newImageSize, srcBpp );
 
-                srcWidth = width = newWidth;
-                srcHeight = height = newHeight;
+                SrcWidth = width = newWidth;
+                SrcHeight = height = newHeight;
             }
             else
             {

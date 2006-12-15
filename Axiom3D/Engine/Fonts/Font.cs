@@ -360,13 +360,13 @@ namespace Axiom
         }
 
         #endregion showLines Property
-			
-        #endregion
 
-        #region Constructor
+        #endregion Fields and Properties
+
+        #region Constructors and Destructor
 
         /// <summary>
-        ///		Constructor, should be called through FontManager.Create.
+        ///		Constructor, should be called through FontManager.Create().
         /// </summary>
         public Font( ResourceManager parent, string name, ResourceHandle handle, string group )
             : this( parent, name, handle, group, false, null )
@@ -378,75 +378,7 @@ namespace Axiom
         {
         }
 
-        ~Font()
-        {
-            Unload();
-        }
-
-        #endregion Constructor
-
-        #region Implementation of Resource
-
-        protected override void load()
-        {
-            // create a material for this font
-            Material = (Material)MaterialManager.Instance.Create( "Fonts/" + Name, Group );
-
-            TextureUnitState texLayer = null;
-            bool blendByAlpha = false;
-
-            if ( _fontType == FontType.TrueType )
-            {
-                // create the font bitmap on the fly
-                createTexture();
-
-                // a texture layer was added in CreateTexture
-                texLayer = Material.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 );
-
-                blendByAlpha = true;
-            }
-            else
-            {
-
-                // load this texture
-                // TODO In general, modify any methods like this that throw their own exception rather than returning null, so the caller can decide how to handle a missing resource.
-                Texture texture = TextureManager.Instance.Load( Source, Group, TextureType.TwoD, null );
-
-                blendByAlpha = texture.HasAlpha;
-                // pre-created font images
-                texLayer = Material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( Source );
-            }
-
-            // set texture addressing mode to Clamp to eliminate fuzzy edges
-            texLayer.TextureAddressing = TextureAddressing.Clamp;
-            // Allow min/mag filter, but no mip
-            texLayer.SetTextureFiltering( FilterOptions.Linear, FilterOptions.Linear, FilterOptions.None );
-
-            // set up blending mode
-            if ( blendByAlpha )
-            {
-                Material.SetSceneBlending( SceneBlendType.TransparentAlpha );
-            }
-            else
-            {
-                // assume black background here
-                Material.SetSceneBlending( SceneBlendType.Add );
-            }
-
-        }
-
-        protected override void unload()
-        {
-            _texture.Unload();
-        }
-
-        protected override int calculateSize()
-        {
-            // permanent resource is in the texture 
-            return 0;
-        }
-
-        #endregion Implementation of Resource
+        #endregion Constructors and Destructor
 
         #region Methods
 
@@ -542,7 +474,70 @@ namespace Axiom
 
         #endregion Methods
 
-        #region IManualResourceLoader Members
+        #region Implementation of Resource
+
+        protected override void load()
+        {
+            // create a material for this font
+            Material = (Material)MaterialManager.Instance.Create( "Fonts/" + Name, Group );
+
+            TextureUnitState texLayer = null;
+            bool blendByAlpha = false;
+
+            if ( _fontType == FontType.TrueType )
+            {
+                // create the font bitmap on the fly
+                createTexture();
+
+                // a texture layer was added in CreateTexture
+                texLayer = Material.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 );
+
+                blendByAlpha = true;
+            }
+            else
+            {
+
+                // load this texture
+                // TODO In general, modify any methods like this that throw their own exception rather than returning null, so the caller can decide how to handle a missing resource.
+                _texture = TextureManager.Instance.Load( Source, Group, TextureType.TwoD, 0 );
+
+                blendByAlpha = texture.HasAlpha;
+                // pre-created font images
+                texLayer = Material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( Source );
+            }
+
+            // set texture addressing mode to Clamp to eliminate fuzzy edges
+            texLayer.TextureAddressing = TextureAddressing.Clamp;
+            // Allow min/mag filter, but no mip
+            texLayer.SetTextureFiltering( FilterOptions.Linear, FilterOptions.Linear, FilterOptions.None );
+
+            // set up blending mode
+            if ( blendByAlpha )
+            {
+                Material.SetSceneBlending( SceneBlendType.TransparentAlpha );
+            }
+            else
+            {
+                // assume black background here
+                Material.SetSceneBlending( SceneBlendType.Add );
+            }
+
+        }
+
+        protected override void unload()
+        {
+            _texture.Unload();
+        }
+
+        protected override int calculateSize()
+        {
+            // permanent resource is in the texture 
+            return 0;
+        }
+
+        #endregion Implementation of Resource
+
+        #region Implementation of IManualResourceLoader
 
         public void LoadResource( Resource resource )
         {
@@ -627,6 +622,6 @@ namespace Axiom
 
         }
 
-        #endregion
+        #endregion Implementation of IManualResourceLoader
     }
 }

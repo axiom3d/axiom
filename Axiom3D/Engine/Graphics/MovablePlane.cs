@@ -209,7 +209,7 @@ namespace Axiom
             }
         }
 
-        public override float BoundingRadius
+        public override Real BoundingRadius
         {
             get
             {

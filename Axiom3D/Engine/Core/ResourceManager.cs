@@ -43,8 +43,10 @@ using System.Collections.Generic;
 
 using ResourceHandle = System.UInt64;
 
+using DotNet3D.Math;
+
 #endregion Namespace Declarations
-			
+
 namespace Axiom
 {
     /// <summary>
@@ -72,8 +74,8 @@ namespace Axiom
     /// </remarks>
     /// 
     /// <ogre name="ResourceManager">
-    ///     <file name="OgreResourceManager.h"   revision="1.17.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-    ///     <file name="OgreResourceManager.cpp" revision="1.17.2.2" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+    ///     <file name="OgreResourceManager.h"   revision="1.17.2.1" lastUpdated="6/19/2006" lastUpdatedBy="Borrillis" />
+    ///     <file name="OgreResourceManager.cpp" revision="1.17.2.2" lastUpdated="6/19/2006" lastUpdatedBy="Borrillis" />
     /// </ogre> 
     /// 
     public abstract class ResourceManager : IDisposable, IScriptLoader
@@ -185,7 +187,7 @@ namespace Axiom
 
         #region ResourceType Property
 
-        private string _resourceType; 
+        private string _resourceType;
         /// <summary>
         /// Gets/Sets a string identifying the type of resource this manager handles.
         /// </summary>
@@ -210,6 +212,7 @@ namespace Axiom
         /// </summary>
         /// <param name="name">Name of the resource to retreive.</param>
         /// <returns></returns>
+        /// <ogre name="getByName" />
         public Resource this[ string name ]
         {
             get
@@ -233,6 +236,7 @@ namespace Axiom
         /// </summary>
         /// <param name="handle">Handle of the resource to retrieve.</param>
         /// <returns>A reference to a Resource with the given handle.</returns>
+        /// <ogre name="getByHandle" />
         public Resource this[ ResourceHandle handle ]
         {
             get
@@ -305,6 +309,7 @@ namespace Axiom
         {
             return Create( name, group, false, null, createParams );
         }
+
         /// <param name="isManual">
         /// Is this resource manually loaded? If so, you should really
         /// populate the loader parameter in order that the load process
@@ -321,21 +326,23 @@ namespace Axiom
         /// <param name="createParams">If any parameters are required to create an instance, they should be supplied here as name / value pairs</param>
         public virtual Resource Create( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
         {
-		    // Call creation implementation
-		    Resource ret = createImpl(name, nextHandle(), group, isManual, loader, createParams);
-            if (createParams) ret.Parameters = createParams;
+            // Call creation implementation
+            Resource ret = create( name, nextHandle(), group, isManual, loader, createParams );
+            if ( createParams )
+                ret.Parameters = createParams;
 
-            addImpl( ret );
+            add( ret );
 
-		    // Tell resource group manager
+            // Tell resource group manager
             ResourceGroupManager.Instance.notifyResourceCreated( ret );
 
-		    return ret;
+            return ret;
         }
 
         #endregion Create Method
 
         #region Load Method
+        //TODO : Look at generics method for implementing this.
 
         /// <overloads>
         /// <summary>
@@ -360,7 +367,7 @@ namespace Axiom
         /// </param>
         /// <returns></returns>
         /// </overloads>
-		public virtual Resource Load(string name, string group)
+        public virtual Resource Load( string name, string group )
         {
             return Load( name, group, null );
         }
@@ -424,7 +431,7 @@ namespace Axiom
                 res.Unload();
             }
         }
-		
+
         /// <param name="handle">Handle of the resource</param>
         public virtual void Unload( ResourceHandle handle )
         {
@@ -484,7 +491,7 @@ namespace Axiom
         /// as much as they can and wait to be reloaded.
         /// <see>ResourceGroupManager</see> for unloading of resource groups.
         /// </remarks>
-		public virtual void ReloadAll()
+        public virtual void ReloadAll()
         {
             foreach ( Resource res in _resources )
             {
@@ -531,7 +538,7 @@ namespace Axiom
             }
         }
 
-		/// <param name="handle">The Handle of the resource to remove</param>
+        /// <param name="handle">The Handle of the resource to remove</param>
         public virtual void Remove( ResourceHandle handle )
         {
             Resource resource = this[ handle ];
@@ -575,15 +582,15 @@ namespace Axiom
 
         /// <summary>Returns whether the named resource exists in this manager</summary>
         /// <param name="name">name of the resource</param>
-		public virtual bool ResourceExists(string name)
-		{
-			return !getByName(name).isNull();
-		}
+        public virtual bool ResourceExists( string name )
+        {
+            return !getByName( name ).isNull();
+        }
         /// <summary>Returns whether a resource with the given handle exists in this manager</summary>
         /// <param name="handle">handle of the resource</param>
-		public virtual bool ResourceExists(ResourceHandle handle)
-		{
-			return !getByHandle(handle).isNull();
+        public virtual bool ResourceExists( ResourceHandle handle )
+        {
+            return !getByHandle( handle ).isNull();
         }
 
         #endregion ResourceExists Method
@@ -636,26 +643,26 @@ namespace Axiom
         ///     to differentiate which concrete class is created.
         /// </param>
         /// <returns></returns>
-		protected abstract Resource createImpl(string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams);
+        protected abstract Resource create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams );
 
-		/// <summary>
-		/// Add a newly created resource to the manager
-		/// </summary>
-		/// <param name="res"></param>
-        protected virtual void addImpl( Resource res )
+        /// <summary>
+        /// Add a newly created resource to the manager
+        /// </summary>
+        /// <param name="res"></param>
+        protected virtual void add( Resource res )
         {
             if ( !_resources.ContainsKey( res.Name ) )
             {
-                _resources.Add( res.Name, res);
+                _resources.Add( res.Name, res );
             }
             else
             {
                 throw new AxiomException( String.Format( "Resource with the name {0} already exists.", res.Name ) );
             }
 
-            if( !_resourceHandleMap.ContainsKey( res.Handle ) )
+            if ( !_resourceHandleMap.ContainsKey( res.Handle ) )
             {
-                _resourceHandleMap.Add( res.Handle, res);
+                _resourceHandleMap.Add( res.Handle, res );
             }
             else
             {
@@ -663,11 +670,11 @@ namespace Axiom
             }
         }
 
-		/// <summary>
-		/// Remove a resource from this manager; remove it from the lists.
-		/// </summary>
-		/// <param name="res"></param>
-        protected virtual void removeImpl( Resource res )
+        /// <summary>
+        /// Remove a resource from this manager; remove it from the lists.
+        /// </summary>
+        /// <param name="res"></param>
+        protected virtual void remove( Resource res )
         {
             if ( _resources.ContainsKey( res.Name ) )
             {
@@ -740,13 +747,12 @@ namespace Axiom
         /// The name of a resource group which should be used if any resources
         /// are created during the parse of this script.
         /// </param>
-        public virtual void ParseScript( Stream stream, string groupName )
-        {
-        }
+        public abstract void ParseScript( Stream stream, string groupName );
+
         #endregion ParseScript Method
 
         #region LoadingOrder Property
-        private float _loadingOrder;
+        private Real _loadingOrder;
         /// <summary>
         /// Gets the relative loading order of scripts of this type.
         /// </summary>
@@ -756,7 +762,7 @@ namespace Axiom
         /// Returns a value representing the relative loading order of these scripts
         /// compared to other script users, where higher values load later.
         /// </remarks>
-        public virtual float LoadingOrder
+        public virtual Real LoadingOrder
         {
             get
             {

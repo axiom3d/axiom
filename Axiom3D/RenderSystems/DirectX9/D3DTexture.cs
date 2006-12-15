@@ -386,7 +386,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// </summary>
         private void CreateCubeTexture()
         {
-            Debug.Assert( srcWidth > 0 && srcHeight > 0 );
+            Debug.Assert( SrcWidth > 0 && SrcHeight > 0 );
 
             // use current back buffer format for render textures, else use the one
             // defined by this texture format
@@ -424,7 +424,7 @@ namespace Axiom.RenderSystems.DirectX9
             // create the cube texture
             cubeTexture = new D3D.CubeTexture(
                 device,
-                srcWidth,
+                SrcWidth,
                 numMips,
                 d3dUsage,
                 d3dPixelFormat,
@@ -455,8 +455,8 @@ namespace Axiom.RenderSystems.DirectX9
             // Create a depth buffer for our render target, it must be of
             // the same format as other targets !!!
             depthBuffer = device.CreateDepthStencilSurface(
-                srcWidth,
-                srcHeight,
+                SrcWidth,
+                SrcHeight,
                 // TODO: Verify this goes through, this is ridiculous
                 (D3D.DepthFormat)desc.Format,
                 desc.MultiSampleType,
@@ -466,7 +466,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         private void CreateNormalTexture()
         {
-            Debug.Assert( srcWidth > 0 && srcHeight > 0 );
+            Debug.Assert( SrcWidth > 0 && SrcHeight > 0 );
 
             // use current back buffer format for render textures, else use the one
             // defined by this texture format
@@ -481,8 +481,8 @@ namespace Axiom.RenderSystems.DirectX9
             int numMips = ( numMipMaps > 0 ) ? numMipMaps : 1;
 
             D3D.TextureRequirements texRequire = new D3D.TextureRequirements();
-            texRequire.Width = srcWidth;
-            texRequire.Height = srcHeight;
+            texRequire.Width = SrcWidth;
+            texRequire.Height = SrcHeight;
 
             if ( devCaps.TextureCaps.SupportsMipMap && numMipMaps > 0 )
             {
@@ -505,8 +505,8 @@ namespace Axiom.RenderSystems.DirectX9
                         // we must create a temp. texture in SYSTEM MEMORY if no auto gen. mip map is present
                         tempNormTexture = new D3D.Texture(
                             device,
-                            srcWidth,
-                            srcHeight,
+                            SrcWidth,
+                            SrcHeight,
                             numMips,
                             d3dUsage,
                             d3dPixelFormat,
@@ -531,8 +531,8 @@ namespace Axiom.RenderSystems.DirectX9
             // create the texture
             normTexture = new D3D.Texture(
                 device,
-                srcWidth,
-                srcHeight,
+                SrcWidth,
+                SrcHeight,
                 numMips,
                 d3dUsage,
                 d3dPixelFormat,
@@ -636,10 +636,10 @@ namespace Axiom.RenderSystems.DirectX9
 
             // loop through data and do conv.
             pBuf8 = 0;
-            for ( iRow = 0; iRow < srcHeight; iRow++ )
+            for ( iRow = 0; iRow < SrcHeight; iRow++ )
             {
                 stream.Position = iRow * pitch;
-                for ( iCol = 0; iCol < srcWidth; iCol++ )
+                for ( iCol = 0; iCol < SrcWidth; iCol++ )
                 {
                     // Read RGBA values from buffer
                     data32 = 0;
@@ -918,7 +918,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// </summary>
         private void CreateTexture()
         {
-            Debug.Assert( srcWidth > 0 && srcHeight > 0 );
+            Debug.Assert( SrcWidth > 0 && SrcHeight > 0 );
 
             switch ( this.TextureType )
             {
@@ -1037,8 +1037,8 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="format"></param>
         private void SetSrcAttributes( int width, int height, int depth, PixelFormat format )
         {
-            srcWidth = width;
-            srcHeight = height;
+            SrcWidth = width;
+            SrcHeight = height;
             srcBpp = Image.GetNumElemBits( format );
             hasAlpha = Image.FormatHasAlpha( format );
         }

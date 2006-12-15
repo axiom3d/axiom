@@ -39,6 +39,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
+using DotNet3D.Math;
+
 #endregion Namespace Declarations
 			
 namespace Axiom
@@ -61,7 +63,7 @@ namespace Axiom
     /// the pattern returned from ScriptPatterns.
     /// </remarks>
     /// <ogre name="ScriptLoader">
-    ///     <file name="OgreScriptLoader.h"   revision="1.4" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+    ///     <file name="OgreScriptLoader.h" revision="1.4" lastUpdated="6/20/2006" lastUpdatedBy="Borrillis" />
     /// </ogre> 
     public interface IScriptLoader
     {
@@ -98,7 +100,7 @@ namespace Axiom
         /// Returns a value representing the relative loading order of these scripts
         /// compared to other script users, where higher values load later.
         /// </remarks>
-        float LoadingOrder
+        Real LoadingOrder
         {
             get;
         }

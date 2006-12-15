@@ -62,112 +62,578 @@ namespace Axiom
     ///		one camera can point at a single render target if required,
     ///		each rendering to a subset of the target, allowing split screen
     ///		and picture-in-picture views.
-    ///		<p/>
+    ///		<para/>
     ///		Cameras maintain their own aspect ratios, field of view, and frustrum,
     ///		and project co-ordinates into a space measured from -1 to 1 in x and y,
     ///		and 0 to 1 in z. At render time, the camera will be rendering to a
     ///		Viewport which will translate these parametric co-ordinates into real screen
     ///		co-ordinates. Obviously it is advisable that the viewport has the same
     ///		aspect ratio as the camera to avoid distortion (unless you want it!).
-    ///		<p/>
+    ///		<para/>
     ///		Note that a Camera can be attached to a SceneNode, using the method
     ///		SceneNode.AttachObject. If this is done the Camera will combine it's own
     ///		position/orientation settings with it's parent SceneNode. 
     ///		This is useful for implementing more complex Camera / object
     ///		relationships i.e. having a camera attached to a world object.
     /// </remarks>
+    /// <ogre name="Camera">
+    ///     <file name="OgreCamera.h" revision="1.36.2.1" lastUpdated="6/16/06" lastUpdatedBy="Lehuvyterz" />
+    ///     <file name="OgreCamera.cpp" revision="1.54" lastUpdated="6/16/06" lastUpdatedBy="Lehuvyterz" />
+    /// </ogre>
     public class Camera : Frustum
     {
         #region Fields
 
+        #region SceneManager Property
+
         /// <summary>
         ///		Parent scene manager.
         /// </summary>
-        protected SceneManager sceneManager;
+        /// <ogre name="mSceneMgr" />
+        private SceneManager _sceneManager;
+        /// <summary>
+        ///    Returns the current SceneManager that this camera is using.
+        /// </summary>
+        /// <ogre name="getSceneManager" />
+        public SceneManager SceneManager
+        {
+            get
+            {
+                return _sceneManager;
+            }
+            protected set
+            {
+                _sceneManager = value;
+            }
+        }
+
+        #endregion SceneManager Property
+
+        #region Orientation Property
+
         /// <summary>
         ///		Camera orientation.
         /// </summary>
-        protected Quaternion orientation;
+        /// <ogre name="mOrientation" />
+        private Quaternion _orientation;
+        /// <summary>
+        ///     Gets/Sets the camera's orientation.
+        /// </summary>
+        /// <ogre name="getOrientation" />
+        /// <ogre name="setOrientation" />
+        public Quaternion Orientation
+        {
+            get
+            {
+                return _orientation;
+            }
+            set
+            {
+                _orientation = value;
+                InvalidateView();
+            }
+        }
+
+        #endregion Orientation Property
+
+        #region Position Property
+
         /// <summary>
         ///		Camera position.
         /// </summary>
-        protected Vector3 position;
+        /// <ogre name="mPosition" />
+        private Vector3 _position;
+        /// <summary>
+        ///     Gets/Sets the camera's position.
+        /// </summary>
+        /// <ogre name="getPosition" />
+        /// <ogre name="setPosition" />
+        public Vector3 Position
+        {
+            get
+            {
+                return _position;
+            }
+            set
+            {
+                _position = value;
+                InvalidateView();
+            }
+        }
+
+        #endregion Position Property
+
+        #region DerivedOrientation Property
+
         /// <summary>
         ///		Orientation dervied from parent.
         /// </summary>
-        protected Quaternion derivedOrientation;
+        /// </ogre name="mDerivedOrientation" />
+        private Quaternion _derivedOrientation;
+        /// <summary>
+        ///		Gets the derived orientation of the camera.
+        /// </summary>
+        /// <ogre name="getDerivedOrientation" />
+        public Quaternion DerivedOrientation
+        {
+            get
+            {
+                UpdateView();
+                return _derivedOrientation;
+            }
+            protected set
+            {
+                _derivedOrientation = value;
+            }
+        }
+
+        #endregion DerivedOrientation Property
+
+        #region DerivedPosition Property
+
         /// <summary>
         ///		Position dervied from parent.
         /// </summary>
-        protected Vector3 derivedPosition;
+        /// <ogre name="mDerivedPosition" />
+        private Vector3 _derivedPosition;
+        /// <summary>
+        ///		Gets the derived position of the camera.
+        /// </summary>
+        /// <ogre name="getDerivedPosition" />
+        public Vector3 DerivedPosition
+        {
+            get
+            {
+                UpdateView();
+                return _derivedPosition;
+            }
+            protected set
+            {
+                _derivedPosition = value;
+            }
+        }
+
+        #endregion DerivedPosition Property
+
+        #region FixedYawAxis Property
+
         /// <summary>
         ///		Whether to yaw around a fixed axis.
         /// </summary>
-        protected bool isYawFixed;
+        /// <ogre name="mYawFixed" />
+        private bool _isYawFixed;
         /// <summary>
         ///		Fixed axis to yaw around.
         /// </summary>
-        protected Vector3 yawFixedAxis;
+        /// <ogre name="mYawFixedAxis" />
+        private Vector3 _yawFixedAxis;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <ogre name="setFixedYawAxis" />
+        public Vector3 FixedYawAxis
+        {
+            get
+            {
+                return _yawFixedAxis;
+            }
+            set
+            {
+                _yawFixedAxis = value;
+
+                if ( _yawFixedAxis != Vector3.Zero )
+                {
+                    _isYawFixed = true;
+                }
+                else
+                {
+                    _isYawFixed = false;
+                }
+            }
+        }
+
+        #endregion FixedYawAxis Property
+
+        #region SceneDetail Property
+
         /// <summary>
         ///		Rendering type (wireframe, solid, point).
         /// </summary>
-        protected SceneDetailLevel sceneDetail;
+        /// <ogre name="mSceneDetail" />
+        private SceneDetailLevel _sceneDetail;
+        /// <summary>
+        ///		Sets the level of rendering detail required from this camera.
+        /// </summary>
+        /// <remarks>
+        ///		Each camera is set to render at full detail by default, that is
+        ///		with full texturing, lighting etc. This method lets you change
+        ///		that behavior, allowing you to make the camera just render a
+        ///		wireframe view, for example.
+        /// </remarks>
+        /// <ogre name="getDetailLevel" />
+        /// <ogre name="setDetailLevel" />
+        public SceneDetailLevel SceneDetail
+        {
+            get
+            {
+                return _sceneDetail;
+            }
+            set
+            {
+                _sceneDetail = value;
+            }
+        }
+
+        #endregion SceneDetail Property
+
+        #region RenderFaceCount Property
+        
         /// <summary>
         ///		Stored number of visible faces in the last render.
         /// </summary>
-        protected int numFacesRenderedLastFrame;
+        /// <ogre name="mVisFacesLastRender" />
+        private int _numFacesRenderedLastFrame;
+        /// <summary>
+        /// Gets the last count of triangles visible in the view of this camera.
+        /// </summary>
+        /// <Ogre name="_getNumRenderedFaces" />
+        public int RenderedFaceCount
+        {
+            get
+            {
+                return _numFacesRenderedLastFrame;
+            }
+            protected set
+            {
+                _numFacesRenderedLastFrame = value;
+            }
+        }
+
+        #endregion RenderFaceCount Property
+
+        #region AutoTrackingTarget Property
+
         /// <summary>
         ///		SceneNode which this Camera will automatically track.
         /// </summary>
-        protected SceneNode autoTrackTarget;
+        /// <ogre name="mAutoTrackTarget" />
+        private SceneNode _autoTrackTarget;
+        /// <Ogre name="getAutoTrackTarget" />
+        public SceneNode AutoTrackingTarget
+        {
+            get
+            {
+                return _autoTrackTarget;
+            }
+            protected set
+            {
+                _autoTrackTarget = value;
+            }
+        }
+
+        #endregion AutoTrackingTarget Property
+
+        #region AutoTrackingOffset Property
+
         /// <summary>
         ///		Tracking offset for fine tuning.
         /// </summary>
-        protected Vector3 autoTrackOffset;
+        /// <ogre name="mAutoTrackOffset" />
+        private Vector3 _autoTrackOffset;
+        /// <ogre name="getAutoTrackOffset" />
+        public Vector3 AutoTrackingOffset
+        {
+            get
+            {
+                return _autoTrackOffset;
+            }
+            protected set
+            {
+                _autoTrackOffset = value;
+            }
+        }
+
+        #endregion AutoTrackingOffset Property
+
+        #region LodBias Property
+
         /// <summary>
         ///		Scene LOD factor used to adjust overall LOD.
         /// </summary>
-        protected float sceneLodFactor;
+        /// <ogre name="mSceneLodFactor" />
+        private Real _sceneLodFactor;
+        /// <summary>
+        ///     Sets the level-of-detail factor for this Camera.
+        /// </summary>
+        /// <remarks>
+        ///     This method can be used to influence the overall level of detail of the scenes 
+        ///     rendered using this camera. Various elements of the scene have level-of-detail
+        ///     reductions to improve rendering speed at distance; this method allows you 
+        ///     to hint to those elements that you would like to adjust the level of detail that
+        ///     they would normally use (up or down). 
+        ///     <p/>
+        ///     The most common use for this method is to reduce the overall level of detail used
+        ///     for a secondary camera used for sub viewports like rear-view mirrors etc.
+        ///     Note that scene elements are at liberty to ignore this setting if they choose,
+        ///     this is merely a hint.
+        ///     <p/>
+        ///     Higher values increase the detail, so 2.0 doubles the normal detail and 0.5 halves it.
+        /// </remarks>
+        /// <ogre name="getLodBias" />
+        /// <ogre name="setLodBias" />
+        public Real LodBias
+        {
+            get
+            {
+                return _sceneLodFactor;
+            }
+            set
+            {
+                Debug.Assert(value > 0.0f, "Lod bias must be greater than 0");
+                _sceneLodFactor = value;
+                _invSceneLodFactor = 1.0f / _sceneLodFactor;
+            }
+        }
+        #endregion LodBias Property
+
+        #region InverseLodBias Property
+
         /// <summary>
         ///		Inverted scene LOD factor, can be used by Renderables to adjust their LOD.
         /// </summary>
-        protected float invSceneLodFactor;
+        /// <ogre name="mSceneLodFactorInv" />
+        protected Real _invSceneLodFactor;
+        /// <summary>
+        ///     Used for internal Lod calculations.
+        /// </summary>
+        /// <ogre name="_getLodBiasInverse" />
+        public Real InverseLodBias
+        {
+            get
+            {
+                return _invSceneLodFactor;
+            }
+            protected set
+            {
+                _invSceneLodFactor = value;
+            }
+        }
+
+        #endregion InverseLodBias Property
+
+        #region windowLeft Property
+
         /// <summary>
         ///		Left window edge (window clip planes).
         /// </summary>
-        protected float windowLeft;
+        /// <ogre name="mWLeft" />
+        private Real _windowLeft;
+        protected Real windowLeft
+        {
+            get
+            {
+                return _windowLeft;
+            }
+            set
+            {
+                _windowLeft = value;
+            }
+        }
+
+        #endregion windowLeft Property
+
+        #region windowRight Property
+
         /// <summary>
         ///		Right window edge (window clip planes).
         /// </summary>
-        protected float windowRight;
+        /// <ogre name="mWRigh" />
+        private Real _windowRight;
+        protected Real windowRight
+        {
+            get
+            {
+                return _windowRight;
+            }
+            set
+            {
+                _windowRight = value;
+            }
+        }
+
+        #endregion windowRight Property
+
+        #region windowTop Property
+
         /// <summary>
         ///		Top window edge (window clip planes).
         /// </summary>
-        protected float windowTop;
+        /// <ogre name="mWTop" />
+        private Real _windowTop;
+        protected Real windowTop
+        {
+            get
+            {
+                return _windowTop;
+            }
+            set
+            {
+                _windowTop = value;
+            }
+        }
+
+        #endregion windowTop Property
+
+        #region windowBottom Property
+
         /// <summary>
         ///		Bottom window edge (window clip planes).
         /// </summary>
-        protected float windowBottom;
+        /// <ogre name="mWBottom" />
+        private Real _windowBottom;
+        protected Real windowBottom
+        {
+            get
+            {
+                return _windowBottom;
+            }
+            set
+            {
+                _windowBottom = value;
+            }
+        }
+
+        #endregion windowBottom Property
+
+        #region IsWindowSet Property
+
         /// <summary>
         ///		Is viewing window used.
         /// </summary>
-        protected bool isWindowSet;
+        /// <ogre name="mWindowSet" />
+        private bool _isWindowSet;
+        /// <summary>
+        ///		Gets the flag specifying if a viewport window is being used.
+        /// </summary>
+        /// <ogre name="isWindowSet" />
+        public virtual bool IsWindowSet
+        {
+            get
+            {
+                return _isWindowSet;
+            }
+            protected set
+            {
+                _isWindowSet = value;
+            }
+        }
+
+        #endregion IsWindowSet Property
+
+        #region windowClipPlanes Property
+
         /// <summary>
         ///		Windowed viewport clip planes.
         /// </summary>
-        protected PlaneList windowClipPlanes = new PlaneList();
+        /// <ogre name="mWindowClipPlanes" />
+        private PlaneList _windowClipPlanes = new PlaneList();
+        /// <Ogre name=getWindowPlanes" />
+        protected PlaneList windowClipPlanes
+        {
+            get
+            {
+                return _windowClipPlanes;
+            }
+            protected set
+            {
+                _windowClipPlanes = value;
+            }
+        }
+
+        #endregion windowClipPlanes Property
+
+        #region recalculateWindow Property
+
         /// <summary>
         ///		Was viewing window changed?
         /// </summary>
-        protected bool recalculateWindow;
+        /// <ogre name="mRecalcWindow" />
+        private bool _recalculateWindow;
+        protected bool recalculateWindow
+        {
+            get
+            {
+                return _recalculateWindow;
+            }
+            set
+            {
+                _recalculateWindow = value;
+            }
+        }
+
+        #endregion recalculateWindow Property
+
+        #region Viewport Property
+
         /// <summary>
         ///		The last viewport to be added using this camera.
         /// </summary>
-        protected Viewport lastViewport;
+        /// <ogre name="mLastViewport" />
+        private Viewport _lastViewport;
+        /// <summary>
+        ///		Get the last viewport which was attached to this camera. 
+        /// </summary>
+        /// <remarks>
+        ///		This is not guaranteed to be the only viewport which is
+        ///		using this camera, just the last once which was created referring
+        ///		to it.
+        /// </remarks>
+        /// <ogre name="getViewport" />
+        public Viewport Viewport
+        {
+            get
+            {
+                return _lastViewport;
+            }
+            protected set
+            {
+                _lastViewport = value;
+            }
+        }
+
+        #endregion Viewport Property
+
+        #region AutoAspectRatio Property
+
         /// <summary>
         ///		Whether aspect ratio will automaticaally be recalculated when a vieport changes its size.
         /// </summary>
-        protected bool autoAspectRatio;
+        /// <ogre name="mAutoAspectRatio" />
+        private bool _autoAspectRatio;
+        /// <summary>
+        ///		If set to true a vieport that owns this frustum will be able to 
+        ///		recalculate the aspect ratio whenever the frustum is resized.
+        /// </summary>
+        /// <remarks>
+        ///		You should set this to true only if the frustum / camera is used by 
+        ///		one viewport at the same time. Otherwise the aspect ratio for other 
+        ///		viewports may be wrong.
+        /// </remarks>
+        /// <ogre name="getAutoAspectRatio" />
+        /// <ogre name="setAutoAspectRatio" />
+        public bool AutoAspectRatio
+        {
+            get
+            {
+                return _autoAspectRatio;
+            }
+            set
+            {
+                _autoAspectRatio = value;
+            }
+        }
+
+        #endregion AutoAspectRatio Property
 
         #endregion Fields
 
@@ -178,25 +644,25 @@ namespace Axiom
             // Init camera location & direction
 
             // Locate at (0,0,0)
-            position = Vector3.Zero;
+            _position = Vector3.Zero;
             derivedPosition = Vector3.Zero;
 
             // Point down -Z axis
-            orientation = Quaternion.Identity;
+            _orientation = Quaternion.Identity;
             derivedOrientation = Quaternion.Identity;
 
 //            fieldOfView = MathUtil.RadiansToDegrees( MathUtil.PI / 4.0f );
-            fieldOfView = (Real)(new Radian( new Real( Utility.PI / 4.0f ) ).InDegrees);
-            nearDistance = 100.0f;
-            farDistance = 100000.0f;
-            aspectRatio = 1.33333333333333f;
-            projectionType = Projection.Perspective;
+            this.FOV = (Real)(new Radian( new Real( Utility.PI / 4.0f ) ).InDegrees);
+            _nearDistance = 100.0f;
+            _farDistance = 100000.0f;
+            _aspectRatio = 1.33333333333333f;
+            _projectionType = Projection.Perspective;
 
-            viewMatrix = Matrix4.Zero;
-            projectionMatrix = Matrix4.Zero;
+            ViewMatrix = Matrix4.Zero;
+            ProjectionMatrix = Matrix4.Zero;
 
             // Reasonable defaults to camera params
-            sceneDetail = SceneDetailLevel.Solid;
+            _sceneDetail = SceneDetailLevel.Solid;
 
             // Default to fixed yaw (freelook)
             this.FixedYawAxis = Vector3.UnitY;
@@ -214,6 +680,13 @@ namespace Axiom
 
             // default these to 1 so Lod default to normal
             sceneLodFactor = this.invSceneLodFactor = 1.0f;
+
+            // no reflection
+            IsReflected = false;
+            IsVisible = false;
+
+            _isWindowSet = false;
+            _autoAspectRatio = false;
         }
 
         #endregion
@@ -225,24 +698,26 @@ namespace Axiom
         ///		Get the derived orientation of this frustum.
         /// </summary>
         /// <returns></returns>
+        /// <ogre name="getOrientationForViewUpdate" />
         protected override Quaternion GetOrientationForViewUpdate()
         {
-            return derivedOrientation;
+            return _derivedOrientation;
         }
-
 
         /// <summary>
         ///		Get the derived position of this frustum.
         /// </summary>
         /// <returns></returns>
+        /// <ogre name="getPositionForViewUpdate" />
         protected override Vector3 GetPositionForViewUpdate()
         {
-            return derivedPosition;
+            return _derivedPosition;
         }
 
         /// <summary>
         ///		Signal to update view information.
         /// </summary>
+        /// <ogre name="invalidateView" />
         protected override void InvalidateView()
         {
             recalculateView = true;
@@ -252,6 +727,7 @@ namespace Axiom
         /// <summary>
         ///		Signal to update frustum information.
         /// </summary>
+        /// <ogre name="invalidateFrustum" />
         protected override void InvalidateFrustum()
         {
             recalculateFrustum = true;
@@ -261,25 +737,29 @@ namespace Axiom
         /// <summary>
         ///		Updates the frustum data.
         /// </summary>
+        /// <ogre name="updateFrustum" />
         protected override void UpdateFrustum()
         {
             base.UpdateFrustum();
-            SetWindowImpl();
+            // Set the clipping planes
+            setWindow();
         }
 
         /// <summary>
         ///		Updates the view matrix.
         /// </summary>
+        /// <ogre name="updateView" />
         protected override void UpdateView()
         {
             base.UpdateView();
-            SetWindowImpl();
+            setWindow();
         }
 
         /// <summary>
         ///		Evaluates whether or not the view matrix is out of date.
         /// </summary>
         /// <returns></returns>
+        /// <ogre name="isViewOutOfDate" />
         protected override bool IsViewOutOfDate
         {
             get
@@ -300,24 +780,24 @@ namespace Axiom
                         // we are out of date with the parent scene node
                         lastParentOrientation = parentNode.DerivedOrientation;
                         lastParentPosition = parentNode.DerivedPosition;
-                        derivedOrientation = lastParentOrientation * orientation;
-                        derivedPosition = ( lastParentOrientation * position ) + lastParentPosition;
+                        derivedOrientation = lastParentOrientation * _orientation;
+                        derivedPosition = ( lastParentOrientation * _position ) + lastParentPosition;
                         returnVal = true;
                     }
                 }
                 else
                 {
                     // rely on own updates
-                    derivedOrientation = orientation;
-                    derivedPosition = position;
+                    _derivedOrientation = _orientation;
+                    _derivedPosition = _position;
                 }
 
-                if ( isReflected && linkedReflectionPlane != null &&
+                if ( IsReflected && linkedReflectionPlane != null &&
                     !( lastLinkedReflectionPlane == linkedReflectionPlane.DerivedPlane ) )
                 {
 
-                    reflectionPlane = linkedReflectionPlane.DerivedPlane;
-                    reflectionMatrix = Utility.BuildReflectionMatrix( reflectionPlane );
+                    ReflectionPlane = linkedReflectionPlane.DerivedPlane;
+                    ReflectionMatrix = Utility.BuildReflectionMatrix( ReflectionPlane );
                     lastLinkedReflectionPlane = linkedReflectionPlane.DerivedPlane;
                     returnVal = true;
                 }
@@ -348,13 +828,14 @@ namespace Axiom
         /// <summary>
         ///		Overridden to return a proper bounding radius for the camera.
         /// </summary>
-        public override float BoundingRadius
+        /// <ogre name="getBoundingRadius" />
+        public override Real BoundingRadius
         {
             get
             {
                 // return a little bigger than the near distance
                 // just to keep things just outside
-                return nearDistance * 1.5f;
+                return Near * 1.5f;
             }
         }
 
@@ -370,135 +851,27 @@ namespace Axiom
         ///    view of this camera every frame.
         /// </summary>
         /// <param name="renderedFaceCount"></param>
+        /// <ogre name="_notifyRenderedFaces" />
         internal void NotifyRenderedFaces( int renderedFaceCount )
         {
-            numFacesRenderedLastFrame = renderedFaceCount;
+            _numFacesRenderedLastFrame = renderedFaceCount;
         }
 
         #endregion
 
         #region Public Properties
 
-
-        public SceneNode AutoTrackingTarget
-        {
-            get
-            {
-                return autoTrackTarget;
-            }
-            set
-            {
-                autoTrackTarget = value;
-            }
-        }
-
-
-        public Vector3 AutoTrackingOffset
-        {
-            get
-            {
-                return autoTrackOffset;
-            }
-            set
-            {
-                autoTrackOffset = value;
-            }
-        }
-
-        /// <summary>
-        ///		If set to true a vieport that owns this frustum will be able to 
-        ///		recalculate the aspect ratio whenever the frustum is resized.
-        /// </summary>
-        /// <remarks>
-        ///		You should set this to true only if the frustum / camera is used by 
-        ///		one viewport at the same time. Otherwise the aspect ratio for other 
-        ///		viewports may be wrong.
-        /// </remarks>
-        public bool AutoAspectRatio
-        {
-            get
-            {
-                return autoAspectRatio;
-            }
-            set
-            {
-                autoAspectRatio = value;	//FIXED: From true to value
-            }
-        }
-
-        /// <summary>
-        ///    Returns the current SceneManager that this camera is using.
-        /// </summary>
-        public SceneManager SceneManager
-        {
-            get
-            {
-                return sceneManager;
-            }
-        }
-
-        /// <summary>
-        ///		Sets the level of rendering detail required from this camera.
-        /// </summary>
-        /// <remarks>
-        ///		Each camera is set to render at full detail by default, that is
-        ///		with full texturing, lighting etc. This method lets you change
-        ///		that behavior, allowing you to make the camera just render a
-        ///		wireframe view, for example.
-        /// </remarks>
-        public SceneDetailLevel SceneDetail
-        {
-            get
-            {
-                return sceneDetail;
-            }
-            set
-            {
-                sceneDetail = value;
-            }
-        }
-
-        /// <summary>
-        ///     Gets/Sets the camera's orientation.
-        /// </summary>
-        public Quaternion Orientation
-        {
-            get
-            {
-                return orientation;
-            }
-            set
-            {
-                orientation = value;
-                InvalidateView();
-            }
-        }
-
-        /// <summary>
-        ///     Gets/Sets the camera's position.
-        /// </summary>
-        public Vector3 Position
-        {
-            get
-            {
-                return position;
-            }
-            set
-            {
-                position = value;
-                InvalidateView();
-            }
-        }
-
         /// <summary>
         ///		Gets/Sets the camera's direction vector.
         /// </summary>
+        /// <ogre name="getDirection" />
+        /// <ogre name="setDirection" />
         public Vector3 Direction
         {
             // Direction points down the negatize Z axis by default.
             get
             {
-                return orientation * -Vector3.UnitZ;
+                return _orientation * -Vector3.UnitZ;
             }
             set
             {
@@ -515,15 +888,15 @@ namespace Axiom
                 Vector3 zAdjustVector = -direction;
                 zAdjustVector.Normalize();
 
-                if ( isYawFixed )
+                if ( _isYawFixed )
                 {
-                    Vector3 xVector = yawFixedAxis.CrossProduct( zAdjustVector );
+                    Vector3 xVector = _yawFixedAxis.CrossProduct( zAdjustVector );
                     xVector.Normalize();
 
                     Vector3 yVector = zAdjustVector.CrossProduct( xVector );
                     yVector.Normalize();
 
-                    orientation.FromAxes( xVector, yVector, zAdjustVector );
+                    _orientation.FromAxes( xVector, yVector, zAdjustVector );
                 }
                 else
                 {
@@ -550,7 +923,7 @@ namespace Axiom
                         rotationQuat = zAxis.GetRotationTo( zAdjustVector );
                     }
 
-                    orientation = rotationQuat * orientation;
+                    _orientation = rotationQuat * _orientation;
                 }
 
                 // TODO If we have a fixed yaw axis, we musn't break it by using the
@@ -564,145 +937,32 @@ namespace Axiom
         /// <summary>
         ///		Gets camera's 'right' vector.
         /// </summary>
+        /// <ogre name="getRight" />
         public Vector3 Right
         {
             get
             {
-                return orientation * Vector3.UnitX;
+                return _orientation * Vector3.UnitX;
             }
         }
 
         /// <summary>
         ///		Gets camera's 'up' vector.
         /// </summary>
+        /// <ogre name="getUp" />
         public Vector3 Up
         {
             get
             {
-                return orientation * Vector3.UnitY;
+                return _orientation * Vector3.UnitY;
             }
         }
 
-        /// <summary>
-        ///		Get the last viewport which was attached to this camera. 
-        /// </summary>
-        /// <remarks>
-        ///		This is not guaranteed to be the only viewport which is
-        ///		using this camera, just the last once which was created referring
-        ///		to it.
-        /// </remarks>
-        public Viewport Viewport
-        {
-            get
-            {
-                return lastViewport;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Vector3 FixedYawAxis
-        {
-            get
-            {
-                return yawFixedAxis;
-            }
-            set
-            {
-                yawFixedAxis = value;
-
-                if ( yawFixedAxis != Vector3.Zero )
-                {
-                    isYawFixed = true;
-                }
-                else
-                {
-                    isYawFixed = false;
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Sets the level-of-detail factor for this Camera.
-        /// </summary>
-        /// <remarks>
-        ///     This method can be used to influence the overall level of detail of the scenes 
-        ///     rendered using this camera. Various elements of the scene have level-of-detail
-        ///     reductions to improve rendering speed at distance; this method allows you 
-        ///     to hint to those elements that you would like to adjust the level of detail that
-        ///     they would normally use (up or down). 
-        ///     <p/>
-        ///     The most common use for this method is to reduce the overall level of detail used
-        ///     for a secondary camera used for sub viewports like rear-view mirrors etc.
-        ///     Note that scene elements are at liberty to ignore this setting if they choose,
-        ///     this is merely a hint.
-        ///     <p/>
-        ///     Higher values increase the detail, so 2.0 doubles the normal detail and 0.5 halves it.
-        /// </remarks>
-        public float LodBias
-        {
-            get
-            {
-                return sceneLodFactor;
-            }
-            set
-            {
-                Debug.Assert( value > 0.0f, "Lod bias must be greater than 0" );
-                sceneLodFactor = value;
-                invSceneLodFactor = 1.0f / sceneLodFactor;
-            }
-        }
-
-        /// <summary>
-        ///     Used for internal Lod calculations.
-        /// </summary>
-        public float InverseLodBias
-        {
-            get
-            {
-                return invSceneLodFactor;
-            }
-        }
-
-        /// <summary>
-        /// Gets the last count of triangles visible in the view of this camera.
-        /// </summary>
-        public int RenderedFaceCount
-        {
-            get
-            {
-                return numFacesRenderedLastFrame;
-            }
-        }
-
-        /// <summary>
-        ///		Gets the derived orientation of the camera.
-        /// </summary>
-        public Quaternion DerivedOrientation
-        {
-            get
-            {
-                UpdateView();
-                return derivedOrientation;
-            }
-        }
-
-        /// <summary>
-        ///		Gets the derived position of the camera.
-        /// </summary>
-        public Vector3 DerivedPosition
-        {
-            get
-            {
-                UpdateView();
-                return derivedPosition;
-            }
-        }
 
         /// <summary>
         ///		Gets the derived direction of the camera.
         /// </summary>
+        /// <ogre name="getDerivedDirection" />
         public Vector3 DerivedDirection
         {
             get
@@ -710,20 +970,11 @@ namespace Axiom
                 UpdateView();
 
                 // RH coords, direction points down -Z by default
-                return derivedOrientation * -Vector3.UnitZ;
+                return _derivedOrientation * -Vector3.UnitZ;
             }
         }
 
-        /// <summary>
-        ///		Gets the flag specifying if a viewport window is being used.
-        /// </summary>
-        public virtual bool IsWindowSet
-        {
-            get
-            {
-                return isWindowSet;
-            }
-        }
+
 
         /// <summary>
         ///		Gets the number of window clip planes for this camera.
@@ -746,9 +997,10 @@ namespace Axiom
         /// Moves the camera's position by the vector offset provided along world axes.
         /// </summary>
         /// <param name="offset"></param>
+        /// <ogre name="move" />
         public void Move( Vector3 offset )
         {
-            position = position + offset;
+            _position = _position + offset;
             InvalidateView();
         }
 
@@ -756,30 +1008,55 @@ namespace Axiom
         /// Moves the camera's position by the vector offset provided along it's own axes (relative to orientation).
         /// </summary>
         /// <param name="offset"></param>
+        /// <ogre name="moveRelative" />
         public void MoveRelative( Vector3 offset )
         {
             // Transform the axes of the relative vector by camera's local axes
-            Vector3 transform = orientation * offset;
+            Vector3 transform = _orientation * offset;
 
-            position = position + transform;
+            _position = _position + transform;
             InvalidateView();
         }
 
         /// <summary>
         ///		Specifies a target that the camera should look at.
         /// </summary>
-        /// <param name="target"></param>
+        /// <remarks>
+        ///     This is a helper method to automatically generatee the
+        ///     direction vector for the camera, based on it's current position
+        ///     and the supplied look-at point.
+        /// </remarks>
+        /// <param name="target">A vector specifying the look at point.</param>
+        /// <ogre name="lookAt" />
         public void LookAt( Vector3 target )
         {
             UpdateView();
-            this.Direction = ( target - derivedPosition );
+            this.Direction = ( target - _derivedPosition );
         }
 
+        /// <summary>
+        ///     Points the camera at a location in worldspace.
+        /// </summary>
+        /// <remarks>
+        ///     This is a helper method to automatically generate the
+        ///     direction vector for the camera, based on it's current position
+        ///     and the supplied look-at point.
+        /// </remarks>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        /// <ogre name="lookAt" />
+        public void LookAt(Real x, Real y, Real z)
+        {
+            Vector3 vTemp = new Vector3(x, y, z);
+            this.LookAt(vTemp);
+        }
         /// <summary>
         ///		Pitches the camera up/down counter-clockwise around it's local x axis.
         /// </summary>
         /// <param name="degrees"></param>
-        public void Pitch( float degrees )
+        /// <ogre name="pitch" />
+        public void Pitch( Real degrees )
         {
             Vector3 xAxis = orientation * Vector3.UnitX;
             Rotate( xAxis, degrees );
@@ -791,19 +1068,20 @@ namespace Axiom
         ///		Rolls the camera counter-clockwise, in degrees, around its local y axis.
         /// </summary>
         /// <param name="degrees"></param>
-        public void Yaw( float degrees )
+        /// <ogre name="yaw" />
+        public void Yaw( Real degrees )
         {
             Vector3 yAxis;
 
-            if ( isYawFixed )
+            if ( _isYawFixed )
             {
                 // Rotate around fixed yaw axis
-                yAxis = yawFixedAxis;
+                yAxis = _yawFixedAxis;
             }
             else
             {
                 // Rotate around local Y axis
-                yAxis = orientation * Vector3.UnitY;
+                yAxis = _orientation * Vector3.UnitY;
             }
 
             Rotate( yAxis, degrees );
@@ -815,10 +1093,11 @@ namespace Axiom
         ///		Rolls the camera counter-clockwise, in degrees, around its local z axis.
         /// </summary>
         /// <param name="degrees"></param>
-        public void Roll( float degrees )
+        /// <ogre name="roll" />
+        public void Roll( Real degrees )
         {
             // Rotate around local Z axis
-            Vector3 zAxis = orientation * Vector3.UnitZ;
+            Vector3 zAxis = _orientation * Vector3.UnitZ;
             Rotate( zAxis, degrees );
 
             InvalidateView();
@@ -828,10 +1107,11 @@ namespace Axiom
         ///		Rotates the camera about an arbitrary axis.
         /// </summary>
         /// <param name="quat"></param>
+        /// <ogre name="rotate" />
         public void Rotate( Quaternion quat )
         {
             // Note the order of the multiplication
-            orientation = quat * orientation;
+            _orientation = quat * _orientation;
 
             InvalidateView();
         }
@@ -841,7 +1121,8 @@ namespace Axiom
         /// </summary>
         /// <param name="axis"></param>
         /// <param name="degrees"></param>
-        public void Rotate( Vector3 axis, float degrees )
+        /// <ogre name="rotate" />
+        public void Rotate( Vector3 axis, Real degrees )
         {
             Quaternion q = Quaternion.FromAngleAxis( (Real)(new Degree( (Real)degrees ).InRadians), axis );
             Rotate( q );
@@ -865,6 +1146,7 @@ namespace Axiom
         ///		remain in it's current orientation.
         ///	 </param> 
         /// <param name="target">The SceneObject which this Camera will track.</param>
+        /// <ogre name="setAutoTracking" />
         public void SetAutoTracking( bool enabled, MovableObject target )
         {
             SetAutoTracking( enabled, (SceneNode)target.ParentNode, Vector3.Zero );
@@ -891,6 +1173,7 @@ namespace Axiom
         ///		delete this SceneNode before turning off tracking (e.g. SceneManager.ClearScene will
         ///		delete it so be careful of this). Can be null if and only if the enabled param is false.
         ///	</param>
+        ///	<ogre name="setAutoTracking" />
         public void SetAutoTracking( bool enabled, SceneNode target )
         {
             SetAutoTracking( enabled, target, Vector3.Zero );
@@ -920,17 +1203,18 @@ namespace Axiom
         /// <param name="offset">If supplied, the camera targets this point in local space of the target node
         ///		instead of the origin of the target node. Good for fine tuning the look at point.
         ///	</param>
+        ///	<ogre name="setAutoTracking" />
         public void SetAutoTracking( bool enabled, SceneNode target, Vector3 offset )
         {
             if ( enabled )
             {
                 Debug.Assert( target != null, "A camera's auto track target cannot be null." );
-                autoTrackTarget = target;
-                autoTrackOffset = offset;
+                _autoTrackTarget = target;
+                _autoTrackOffset = offset;
             }
             else
             {
-                autoTrackTarget = null;
+                _autoTrackTarget = null;
             }
         }
 
@@ -944,15 +1228,16 @@ namespace Axiom
         /// <param name="top">Relative to Viewport - 0 corresponds to top edge, 1 - to bottom edge (default - 0).</param>
         /// <param name="right">Relative to Viewport - 0 corresponds to left edge, 1 - to right edge (default - 1).</param>
         /// <param name="bottom">Relative to Viewport - 0 corresponds to top edge, 1 - to bottom edge (default - 1).</param>
-        public virtual void SetWindow( float left, float top, float right, float bottom )
+        /// <ogre name="setWindow" />
+        public virtual void SetWindow( Real left, Real top, Real right, Real bottom )
         {
-            windowLeft = left;
-            windowTop = top;
-            windowRight = right;
-            windowBottom = bottom;
+            _windowLeft = left;
+            _windowTop = top;
+            _windowRight = right;
+            _windowBottom = bottom;
 
-            isWindowSet = true;
-            recalculateWindow = true;
+            _isWindowSet = true;
+            _recalculateWindow = true;
 
             InvalidateView();
         }
@@ -961,34 +1246,35 @@ namespace Axiom
         ///		Do actual window setting, using parameters set in <see cref="SetWindow"/> call.
         /// </summary>
         /// <remarks>The method is called after projection matrix each change.</remarks>
-        protected void SetWindowImpl()
+        /// <ogre name="setWindowImpl" />
+        protected void setWindow()
         {
-            if ( !isWindowSet || !recalculateWindow )
+            if ( !_isWindowSet || !_recalculateWindow )
             {
                 return;
             }
 
-            float thetaY = (Real)( new Degree( new Real( fieldOfView * 0.5f ) ).InRadians );
+            Real thetaY = (Real)( new Degree( new Real( FOV * 0.5f ) ).InRadians );
             //MathUtil.DegreesToRadians( fieldOfView * 0.5f );
-            float tanThetaY = Utility.Tan( (Real)thetaY );
-            float tanThetaX = tanThetaY * aspectRatio;
+            Real tanThetaY = Utility.Tan( (Real)thetaY );
+            Real tanThetaX = tanThetaY * AspectRatio;
 
-            float vpTop = tanThetaY * nearDistance;
-            float vpLeft = -tanThetaX * nearDistance;
-            float vpWidth = -2 * vpLeft;
-            float vpHeight = -2 * vpTop;
+            Real vpTop = tanThetaY * Near;
+            Real vpLeft = -tanThetaX * Near;
+            Real vpWidth = -2 * vpLeft;
+            Real vpHeight = -2 * vpTop;
 
-            float wvpLeft = vpLeft + windowLeft * vpWidth;
-            float wvpRight = vpLeft + windowRight * vpWidth;
-            float wvpTop = vpTop - windowTop * vpHeight;
-            float wvpBottom = vpTop - windowBottom * vpHeight;
+            Real wvpLeft = vpLeft + _windowLeft * vpWidth;
+            Real wvpRight = vpLeft + _windowRight * vpWidth;
+            Real wvpTop = vpTop - _windowTop * vpHeight;
+            Real wvpBottom = vpTop - _windowBottom * vpHeight;
 
-            Vector3 vpUpLeft = new Vector3( wvpLeft, wvpTop, -nearDistance );
-            Vector3 vpUpRight = new Vector3( wvpRight, wvpTop, -nearDistance );
-            Vector3 vpBottomLeft = new Vector3( wvpLeft, wvpBottom, -nearDistance );
-            Vector3 vpBottomRight = new Vector3( wvpRight, wvpBottom, -nearDistance );
+            Vector3 vpUpLeft = new Vector3( wvpLeft, wvpTop, -Near );
+            Vector3 vpUpRight = new Vector3( wvpRight, wvpTop, -Near );
+            Vector3 vpBottomLeft = new Vector3( wvpLeft, wvpBottom, -Near );
+            Vector3 vpBottomRight = new Vector3( wvpRight, wvpBottom, -Near );
 
-            Matrix4 inv = viewMatrix.Inverse();
+            Matrix4 inv = ViewMatrix.Inverse();
 
             Vector3 vwUpLeft = inv * vpUpLeft;
             Vector3 vwUpRight = inv * vpUpRight;
@@ -1003,15 +1289,16 @@ namespace Axiom
             windowClipPlanes.Add( new Plane( pos, vwUpRight, vwBottomRight ) );
             windowClipPlanes.Add( new Plane( pos, vwBottomRight, vwBottomLeft ) );
 
-            recalculateWindow = false;
+            _recalculateWindow = false;
         }
 
         /// <summary>
         ///		Cancel view window.
         /// </summary>
+        /// <ogre name="resetWindow" />
         public virtual void ResetWindow()
         {
-            isWindowSet = false;
+            _isWindowSet = false;
         }
 
         /// <summary>
@@ -1019,12 +1306,13 @@ namespace Axiom
         /// </summary>
         /// <param name="index">Index of the plane to get.</param>
         /// <returns>The window plane at the specified index.</returns>
+        /// <ogre name="getWindowPlanes" />
         public Plane GetWindowPlane( int index )
         {
             Debug.Assert( index < windowClipPlanes.Count, "Window clip plane index out of bounds." );
 
             // ensure the window is recalced
-            SetWindowImpl();
+            setWindow();
 
             return (Plane)windowClipPlanes[index];
         }
@@ -1041,32 +1329,49 @@ namespace Axiom
         ///     in normalised screen coordinates [0,1].
         /// </param>
         /// <returns></returns>
-        public Ray GetCameraToViewportRay( float screenX, float screenY )
+        /// <ogre name="getCameraToViewportRay" />
+        public Ray GetCameraToViewportRay( Real screenX, Real screenY )
         {
-            float centeredScreenX = ( screenX - 0.5f );
-            float centeredScreenY = ( 0.5f - screenY );
+            Real centeredScreenX = ( screenX - 0.5f );
+            Real centeredScreenY = ( 0.5f - screenY );
 
-            float normalizedSlope = Utility.Tan( (Real)(new Degree( new Real( fieldOfView * 0.5f ) ).InRadians ) );
+            Real normalizedSlope = Utility.Tan( (Real)(new Degree( new Real( FOV * 0.5f ) ).InRadians ) );
             //MathUtil.DegreesToRadians( fieldOfView * 0.5f ) );
-            float viewportYToWorldY = normalizedSlope * nearDistance * 2;
-            float viewportXToWorldX = viewportYToWorldY * aspectRatio;
+            Real viewportYToWorldY = normalizedSlope * _nearDistance * 2;
+            Real viewportXToWorldX = viewportYToWorldY * _aspectRatio;
 
-            Vector3 rayDirection =
-                new Vector3(
-                centeredScreenX * viewportXToWorldX,
-                centeredScreenY * viewportYToWorldY,
-                -nearDistance );
+            Vector3 rayDirection, rayOrigin;
 
-            rayDirection = this.DerivedOrientation * rayDirection;
-            rayDirection.Normalize();
+            if (ProjectionType == Projection.Perspective)
+            {
+                // From camer center
+                rayOrigin = DerivedPosition;
+                // Point to perspective projected position
+                rayDirection.x = centeredScreenX * viewportXToWorldX;
+                rayDirection.y = centeredScreenY * viewportYToWorldY;
+                rayDirection.z = -Near;
+                rayDirection = DerivedOrientation * rayDirection;
+                rayDirection.Normalize();
+            }
+            else
+            {
+                // Ortho always parallel to point on screen
+                rayOrigin.x = centeredScreenX * viewportXToWorldX;
+                rayOrigin.y = centeredScreenY * viewportYToWorldY;
+                rayOrigin.z = 0.0f;
+                rayOrigin = DerivedOrientation * rayOrigin;
+                rayOrigin = DerivedPosition + rayOrigin;
+                rayDirection = DerivedDirection;
+            }
 
-            return new Ray( this.DerivedPosition, rayDirection );
+            return new Ray(rayOrigin, rayDirection);
         }
 
         /// <summary>
         ///		Notifies this camera that a viewport is using it.
         /// </summary>
         /// <param name="viewport">Viewport that is using this camera.</param>
+        /// <ogre name="_notifyViewport" />
         public void NotifyViewport( Viewport viewport )
         {
             lastViewport = viewport;
@@ -1079,22 +1384,24 @@ namespace Axiom
         /// <summary>
         ///		Called to ask a camera to render the scene into the given viewport.
         /// </summary>
-        /// <param name="viewport"></param>
-        /// <param name="showOverlays"></param>
+        /// <param name="viewport">The viewport to render to</param>
+        /// <param name="showOverlays">Whether or not any overlay objects should be included</param>
+        /// <ogre name="_renderScene" />
         internal void RenderScene( Viewport viewport, bool showOverlays )
         {
-            sceneManager.RenderScene( this, viewport, showOverlays );
+            _sceneManager.RenderScene( this, viewport, showOverlays );
         }
 
         /// <summary>
         ///		Updates an auto-tracking camera.
         /// </summary>
+        /// <ogre name="_autoTrack" />
         internal void AutoTrack()
         {
             // assumes all scene nodes have been updated
-            if ( autoTrackTarget != null )
+            if ( _autoTrackTarget != null )
             {
-                LookAt( autoTrackTarget.DerivedPosition + autoTrackOffset );
+                LookAt( _autoTrackTarget.DerivedPosition + _autoTrackOffset );
             }
         }
 

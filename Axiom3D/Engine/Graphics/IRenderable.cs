@@ -220,7 +220,7 @@ namespace Axiom
         #region Public Methods
 
         /// <summary>
-        ///		Returns the camera-relative squared depth of this renderable.
+        ///		Gets the render operation required to send this object to the frame buffer.
         /// </summary>
         /// <param name="op">The RenderOperation to populate.</param>
         /// <ogre name="getRenderOperation" />
@@ -239,7 +239,7 @@ namespace Axiom
         void GetWorldTransforms( Matrix4[] matrices );
 
         /// <summary>
-        ///		Returns the _camera-relative squared depth of this renderable.
+        ///		Returns the camera-relative squared depth of this renderable.
         /// </summary>
         /// <remarks>
         ///		Used to sort transparent objects. Squared depth is used rather than

@@ -1252,7 +1252,7 @@ namespace Axiom
         /// <summary>
         ///    Local bounding radius of this billboard set.
         /// </summary>
-        public override float BoundingRadius
+        public override Real BoundingRadius
         {
             get
             {
