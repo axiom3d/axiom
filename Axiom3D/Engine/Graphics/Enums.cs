@@ -243,7 +243,11 @@ namespace Axiom
         /// <summary>
         /// 
         /// </summary>
-        DynamicWriteOnly = 6
+        DynamicWriteOnly = 6,
+        /// <summary>
+        /// 
+        /// </summary>
+        DynamicWriteOnlyDiscardable = 7
     }
 
     /// <summary>
@@ -1222,48 +1226,6 @@ namespace Axiom
 		Rotate
     }
 
-    /// <summary>
-    ///    Enum identifying the texture type.
-    /// </summary>
-    public enum TextureType
-    {
-        /// <summary>
-        ///    1D texture, used in combination with 1D texture coordinates.
-        /// </summary>
-        [ScriptEnum( "1d" )]
-		OneD = 1,
-        /// <summary>
-        ///    2D texture, used in combination with 2D texture coordinates (default).
-        /// </summary>
-        [ScriptEnum( "2d" )]
-		TwoD = 2,
-        /// <summary>
-        ///    3D volume texture, used in combination with 3D texture coordinates.
-        /// </summary>
-        [ScriptEnum( "3d" )]
-		ThreeD = 3,
-        /// <summary>
-        ///    3D cube map, used in combination with 3D texture coordinates.
-        /// </summary>
-        [ScriptEnum( "cubic" )]
-		CubeMap = 4
-    }
-
-    /// <summary>
-    ///		Specifies how a texture is to be used in the engine.
-    /// </summary>
-    public enum TextureUsage
-    {
-        /// <summary>
-        ///		Standard usage.
-        ///	 </summary>
-        Default,
-        /// <summary>
-        ///		Target of rendering.  Example would be a billboard in a wrestling or sports game, or rendering a 
-        ///		movie to a texture.
-        ///	 </summary>
-        RenderTarget
-    }
 
     /// <summary>
     ///		Types for definings what information a vertex will hold.

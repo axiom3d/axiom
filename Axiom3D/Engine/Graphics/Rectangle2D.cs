@@ -104,7 +104,7 @@ namespace Axiom
 
         #region SimpleRenderable Members
 
-        public override float BoundingRadius
+        public override Real BoundingRadius
         {
             get
             {

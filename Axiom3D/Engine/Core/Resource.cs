@@ -44,7 +44,7 @@ using ResourceHandle = System.UInt64;
 namespace Axiom
 {
     /// <summary>
-    ///		Abstract class reprensenting a loadable resource (e.g. textures, sounds etc)
+    ///		Abstract class representing a loadable resource (e.g. textures, sounds etc)
     /// </summary>
     /// <remarks>
     ///		Resources are generally passive constructs, handled through the
@@ -147,7 +147,7 @@ namespace Axiom
         }
 
         #endregion IsManual Property
-			
+
         #region Size Property
 
         private long _size;
@@ -255,10 +255,10 @@ namespace Axiom
                 return _isManual || ( _loader != null );
             }
         }
-							
+
         #endregion Fields and Properties
 
-        #region Constructors and Destructors
+        #region Constructors and Destructor
 
         /// <summary>
         ///	Protected unnamed constructor to prevent default construction. 
@@ -283,7 +283,7 @@ namespace Axiom
         /// <param name="handle"></param>
         /// <param name="group">The name of the resource group to which this resource belongs</param>
         /// </overloads>
-        Resource( ResourceManager parent, string name, ResourceHandle handle, string group )
+        protected Resource( ResourceManager parent, string name, ResourceHandle handle, string group )
             : this( parent, name, handle, group, false, null )
         {
         }
@@ -301,7 +301,7 @@ namespace Axiom
         ///     anything ever causes it to unload. Therefore provision of a proper
         ///     IManualResourceLoader instance is strongly recommended.
         /// </param>
-        Resource( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+        protected Resource( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
         {
             _parent = parent;
             _name = name;
@@ -312,7 +312,12 @@ namespace Axiom
             _loader = loader;
         }
 
-        #endregion
+        ~Resource()
+        {
+            Dispose();
+        }
+
+        #endregion Constructors and Destructor
 
         #region Methods
 
@@ -345,7 +350,7 @@ namespace Axiom
                 }
                 else
                 {
-                    loadImpl();
+                    load();
                 }
 
                 // Calculate resource size
@@ -355,7 +360,8 @@ namespace Axiom
                 _isLoaded = true;
 
                 // Notify manager
-                if ( _parent != null ) _parent.NotifyResourceLoaded( this );
+                if ( _parent != null )
+                    _parent.NotifyResourceLoaded( this );
             }
         }
 
@@ -367,7 +373,7 @@ namespace Axiom
         {
             if ( _isLoaded )
             {
-                unloadImpl();
+                unload();
                 _isLoaded = false;
 
                 // Notify manager
@@ -387,8 +393,8 @@ namespace Axiom
         {
             if ( _isLoaded )
             {
-                unload();
-                load();
+                Unload();
+                Load();
             }
         }
 
@@ -417,19 +423,19 @@ namespace Axiom
         /// </summary>
         protected abstract void load();
 
-		/// <summary>
-		/// Internal implementation of the 'unload' action; called regardless of
+        /// <summary>
+        /// Internal implementation of the 'unload' action; called regardless of
         /// whether this resource is being loaded from a ManualResourceLoader. 
-		/// </summary>
-		protected abstract void unload();
+        /// </summary>
+        protected abstract void unload();
 
         /// <summary>
         /// Calculate the size of a resource; this will only be called after 'load'
         /// </summary>
         /// <returns></returns>
-		protected abstract int calculateSize();
+        protected abstract int calculateSize();
 
-        #endregion Abstract Implementation Methods
+        #endregion Abstract Load/Unload Implementation Methods
 
         #endregion Methods
 
@@ -482,6 +488,6 @@ namespace Axiom
         /// Called when a resource wishes to load.
         /// </summary>
         /// <param name="resource">The resource which wishes to load</param>
-		void LoadResource(Resource resource);
+        void LoadResource( Resource resource );
     }
 }

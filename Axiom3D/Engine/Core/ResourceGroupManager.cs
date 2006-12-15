@@ -262,7 +262,7 @@ namespace Axiom
         /// <param name="description">Text description of what was just loaded</param>
         private delegate void WorldGeometryStageStarted( string description );
         private WorldGeometryStageStarted _worldGeometryStageStarted;
-        
+
         /// <summary>
         /// This event is fired when a stage of loading linked world geometry 
         /// has been completed. The number of stages required will have been 
@@ -271,7 +271,7 @@ namespace Axiom
         /// <param name="description">Text description of what was just loaded</param>
         private delegate void WorldGeometryStageEnded();
         private WorldGeometryStageEnded _worldGeometryStageEnded;
-        
+
         /// <summary>
         /// This event is fired when a resource group finished loading.
         /// </summary>
@@ -575,7 +575,7 @@ namespace Axiom
         ~ResourceGroupManager()
         {
             // delete all resource groups
-            foreach ( KeyValuePair<string,ResourceGroup> pair in resourceGroupMap )
+            foreach ( KeyValuePair<string, ResourceGroup> pair in resourceGroupMap )
             {
                 ResourceGroup rg = pair.Value;
                 _deleteGroup( rg );
@@ -826,7 +826,7 @@ namespace Axiom
             int resourceCount = 0;
             if ( loadMainResources )
             {
-                foreach ( KeyValuePair<float,LoadUnloadResourceList> pair in grp.LoadResourceOrderMap )
+                foreach ( KeyValuePair<float, LoadUnloadResourceList> pair in grp.LoadResourceOrderMap )
                 {
                     LoadUnloadResourceList lurl = pair.Value;
                     resourceCount += lurl.Count;
@@ -895,7 +895,7 @@ namespace Axiom
             // Set current group
             _currentGroup = grp;
 
-            foreach ( KeyValuePair<float,LoadUnloadResourceList> pair in grp.LoadResourceOrderMap )
+            foreach ( KeyValuePair<float, LoadUnloadResourceList> pair in grp.LoadResourceOrderMap )
             {
                 LoadUnloadResourceList lurl = pair.Value;
                 foreach ( Resource res in lurl )
@@ -960,7 +960,7 @@ namespace Axiom
             _currentGroup = null;
         }
 
-        #region AddResourceLocation Method 
+        #region AddResourceLocation Method
 
         /// <overloads>
         /// <summary>Method to add a resource location to for a given resource group.</summary>
@@ -1481,7 +1481,7 @@ namespace Axiom
                 vec.AddRange( lst );
             }
 
-            return vec;        
+            return vec;
         }
 
         /// <summary>
@@ -1599,7 +1599,7 @@ namespace Axiom
         {
             List<string> vec = new List<string>();
 
-            foreach ( KeyValuePair<string,ResourceGroup> pair in _resourceGroupMap )
+            foreach ( KeyValuePair<string, ResourceGroup> pair in _resourceGroupMap )
             {
                 ResourceGroup rg = pair.Value;
                 vec.Add( rg.Name );
@@ -1626,7 +1626,7 @@ namespace Axiom
             return grp.ResourceDeclarations.ToArray();
         }
 
-#endregion Public Methods
+        #endregion Public Methods
 
         #region Internal Methods
 

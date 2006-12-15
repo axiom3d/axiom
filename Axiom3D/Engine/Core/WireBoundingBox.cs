@@ -301,7 +301,7 @@ namespace Axiom
         /// <summary>
         ///    Get the local bounding radius of the wire bounding box.
         /// </summary>
-        public override float BoundingRadius
+        public override Real BoundingRadius
         {
             get
             {

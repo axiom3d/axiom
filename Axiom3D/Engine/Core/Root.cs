@@ -1,7 +1,7 @@
 #region LGPL License
 /*
-Axiom Game Engine Library
-Copyright (C) 2003  Axiom Project Team
+Axiom Graphics Engine Library
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -24,17 +24,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+#region SVN Version Information
+// <file>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Reflection;
-using System.Threading;
 using System.Text;
-
-// This is coming from RealmForge.Utility
-using Axiom.Core;
-using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -96,13 +101,80 @@ namespace Axiom
 
                 logMgr.Write( info.ToString() );
                 logMgr.Write( "*-*-* Axiom Intializing" );
+                
+                Vfs.Instance.Initialize();
+                
+                new PluginManager();
+                ArchiveManager.Instance.Initialize();
+                FontManager.Instance.Initialize();
+                new OverlayManager();
+                new OverlayElementManager();
+                new MaterialManager();
+                new MeshManager();
+                new SkeletonManager();
+                new HighLevelGpuProgramManager();
+                new CodecManager();
+
+                // register all build in codecs
+                CodecManager.Instance.RegisterCodecs();
+
+                sceneManagerList = SceneManagerEnumerator.Instance;
+
+                new ParticleSystemManager();
+                
+                PlatformManager.LoadInstance();
+                
+                // init the rendersystem manager
+                new RenderSystemManager();
+
+                // create a new timer
+                timer = PlatformManager.Instance.CreateTimer();
+
+                ArchiveManager.Instance.AddArchiveFactory( new FileSystemArchiveFactory() );
+                ArchiveManager.Instance.AddArchiveFactory( new ZipArchiveFactory() );
+
+                // load the still unloaded but specified plugins
+                // (third-party?)
+                // PluginManager.Instance.LoadPlugins();
+            }
+        }
+        
+        /// <summary>
+        ///     Constructor.
+        /// </summary>
+        /// <remarks>
+        ///     This public contructor is intended for the user to decide when the Root object gets instantiated.
+        ///     This is a critical step in preparing the engine for use.
+        /// </remarks>
+        /// <param name="sectionGroup"><see >System.Configuration.ConfigurationContext</see> used to load the configuration for the engine.</param>
+        public Root( ConfigurationSectionGroup sectionGroup )
+        {
+            if ( instance == null )
+            {
+                instance = this;
+
+                this.configFileName = "";
+
+                StringBuilder info = new StringBuilder();
+
+                // write the initial info at the top of the log
+                info.AppendFormat( "*********Axiom 3D Engine Log *************{0}", Environment.NewLine );
+                info.AppendFormat( "Copyright {0}{1}", this.Copyright, Environment.NewLine );
+                info.AppendFormat( "Version: {0}{1}", this.Version, Environment.NewLine );
+                info.AppendFormat( "Operating System: {0}{1}", Environment.OSVersion.ToString(), Environment.NewLine );
+                info.AppendFormat( ".Net Framework: {0}{1}", Environment.Version.ToString(), Environment.NewLine );
+
+                // Initializes the Log Manager singleton
+                LogManager logMgr = new LogManager( (Axiom.Configuration.LogSettings)sectionGroup.Sections[ "Logging" ] );
+
+                logMgr.Write( info.ToString() );
+                logMgr.Write( "*-*-* Axiom Intializing" );
 
                 Vfs.Instance.Initialize();
 
                 new PluginManager();
-                new ArchiveManager();
-                new ZipArchiveFactory();
-                new FontManager();
+                ArchiveManager.Instance.Initialize();
+                FontManager.Instance.Initialize();
                 new OverlayManager();
                 new OverlayElementManager();
                 new MaterialManager();
@@ -125,6 +197,9 @@ namespace Axiom
 
                 // create a new timer
                 timer = PlatformManager.Instance.CreateTimer();
+
+                ArchiveManager.Instance.AddArchiveFactory( new FileSystemArchiveFactory() );
+                ArchiveManager.Instance.AddArchiveFactory( new ZipArchiveFactory() );
 
                 // load the still unloaded but specified plugins
                 // (third-party?)
@@ -336,7 +411,8 @@ namespace Axiom
         {
             get
             {
-                return ( (INamespaceExtender)Vfs.Instance[ "/Axiom/RenderSystems/" ] ).Subtree<RenderSystem>();
+                return ((INamespaceExtender)
+                    Vfs.Instance["/Axiom/RenderSystems/"]).Subtree<RenderSystem>();
 
                 //return renderSystemList;
             }
@@ -376,7 +452,7 @@ namespace Axiom
 
         public SceneManager SetSceneManager( SceneType type )
         {
-            return this.SceneManager = sceneManagerList[ type ];
+            return this.SceneManager = sceneManagerList[type];
         }
 
         /// <summary>
@@ -620,44 +696,44 @@ namespace Axiom
         /// <summary>
         ///		Exposes FPS stats to anyone who cares.
         /// </summary>
-        public float CurrentFPS
+        public int CurrentFPS
         {
             get
             {
-                return currentFPS;
+                return (int)currentFPS;
             }
         }
 
         /// <summary>
         ///		Exposes FPS stats to anyone who cares.
         /// </summary>
-        public float BestFPS
+        public int BestFPS
         {
             get
             {
-                return highestFPS;
+                return (int)highestFPS;
             }
         }
 
         /// <summary>
         ///		Exposes FPS stats to anyone who cares.
         /// </summary>
-        public float WorstFPS
+        public int WorstFPS
         {
             get
             {
-                return lowestFPS;
+                return (int)lowestFPS;
             }
         }
 
         /// <summary>
         ///		Exposes FPS stats to anyone who cares.
         /// </summary>
-        public float AverageFPS
+        public int AverageFPS
         {
             get
             {
-                return averageFPS;
+                return (int)averageFPS;
             }
         }
 

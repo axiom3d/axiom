@@ -327,7 +327,7 @@ namespace Axiom
         /// <summary>
         ///    Local bounding radius of this entity.
         /// </summary>
-        public override float BoundingRadius
+        public override Real BoundingRadius
         {
             get
             {

@@ -454,7 +454,7 @@ namespace Axiom
             return ( this.ParentNode.DerivedPosition - camera.DerivedPosition ).LengthSquared;
         }
 
-        public override float BoundingRadius
+        public override Real BoundingRadius
         {
             get
             {
