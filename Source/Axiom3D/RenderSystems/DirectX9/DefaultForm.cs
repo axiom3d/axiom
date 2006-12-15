@@ -130,7 +130,11 @@ namespace Axiom.RenderSystems.DirectX9
 
         private void DefaultForm_Load( object sender, System.EventArgs e )
         {
-            this.Icon = new System.Drawing.Icon( Axiom.Core.ResourceManager.FindCommonResourceData( "AxiomIcon.ico" ) );
+            System.IO.Stream strm = Axiom.Core.ResourceManager.FindCommonResourceData( "AxiomIcon.ico" );
+            if ( strm != null )
+            {
+                this.Icon = new System.Drawing.Icon( strm );
+            }
         }
 
         /// <summary>
