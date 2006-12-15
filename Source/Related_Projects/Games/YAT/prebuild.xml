@@ -42,50 +42,52 @@
 		<Project name="YAT" path="." type="WinExe" rootNamespace="YAT">
 			<Configuration name="Debug">
 				<Options>
-				    <OutputPath>../../../../build/debug/YAT</OutputPath>
+				    <OutputPath>build/debug</OutputPath>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
-				    <OutputPath>../../../../build/release/YAT</OutputPath>
+				    <OutputPath>build/release</OutputPath>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
-			<?if OS = "Win32" ?>
-			
-			<ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
-			<ReferencePath>../../../../Dependencies/Managed/DotNet/Axiom3D</ReferencePath>
-			
-			<?else ?>
-			
-			<ReferencePath>../../../../Dependencies/Managed/Mono</ReferencePath>
-			<ReferencePath>../../../../Dependencies/Managed/Mono/Axiom3D</ReferencePath>
-			
-			<?endif ?>
+            
+<?if OS = "Win32" ?>
+		    <ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
+		    <ReferencePath>../../../../Dependencies/Managed/DotNet/Axiom3D</ReferencePath>
+<?else ?>
+		    <ReferencePath>../../../../Dependencies/Managed/Mono</ReferencePath>
+		    <ReferencePath>../../../../Dependencies/Managed/Mono/Axiom3D</ReferencePath>			
+<?endif ?>
+            
 			<Reference name="System"/>
 			<Reference name="System.Data"/>
 			<Reference name="System.Drawing"/>
 			<Reference name="System.Xml"/>
-			<Reference name="Axiom"/>
+            <Reference name="System.Windows.Forms"/>
+            <Reference name="Axiom"/>
 			
-			<?if OS = "Win32" ?>
-			
+<?if OS = "Win32" ?>
 			<Reference name="Axiom.RenderSystems.DirectX9"/>
 			<Reference name="Axiom.Platforms.Win32"/>
-			
-			<?else ?>
-			
+<?else ?>
 			<Reference name="Axiom.RenderSystems.OpenGL"/>
 			<Reference name="Axiom.Platforms.SDL"/>
-			
-			<?endif ?>
-			
+<?endif ?>
 
-			<Files>
-				<Match pattern="*.cs" recurse="true"/>
-				<Match pattern="EngineConfig.xml" path="" buildAction="None" copyToOutput="Always" />
-			</Files>
+
+            <Files>
+				<Match pattern="EngineConfig.xml" path="" buildAction="None" copyToOutput="Never" />
+				<Match pattern="Prebuild.xml" path="" buildAction="None" copyToOutput="Never" />
+				<Match pattern="Yat.build" path="" buildAction="None" copyToOutput="Never" />
+				<Match pattern="*.*" path="Media" buildAction="None" copyToOutput="PreserveNewest" recurse="true" >
+					<Exclude pattern=".svn" />
+					<Exclude pattern="Thumbs.db" />
+				</Match>
+				<Match pattern="*.cs" path="Source" recurse="true"/>
+                <Match pattern="devil.dll" path="../../../../Dependencies/Native/" buildAction="None" link="true" recurse="true" copyToOutput="PreserveNewest" />
+            </Files>
 		</Project>
 		
 	</Solution>
