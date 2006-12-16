@@ -93,9 +93,9 @@ namespace Chess.States
 		public override void MouseMoved(object sender, Axiom.Input.MouseEventArgs e)
 		{
 			// Update CeGui with the mouse motion  
-            int deltaX = (int)400;//e.RelativeX; //(int)( e.RelativeX * application.GUIRenderer.Width );
-            int deltaY = (int)300;//e.RelativeY; //(int)( e.RelativeY * application.GUIRenderer.Height );
-            CeGui.GuiSystem.Instance.InjectMouseMove( deltaX, deltaY );
+            int deltaX = (int)e.RelativeX; //(int)( e.RelativeX * application.GUIRenderer.Width );
+            int deltaY = (int)e.RelativeY; //(int)( e.RelativeY * application.GUIRenderer.Height );
+            //CeGui.GuiSystem.Instance.InjectMouseMove( deltaX, deltaY );
 
 		}
 	

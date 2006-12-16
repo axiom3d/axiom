@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <EngineConfig xmlns="http://tempuri.org/EngineConfig.xsd">
-    <FilePath type="Folder" src="../../../Media/Textures"/>
-	<FilePath type="Folder" src="../../../Media/Icons"/>
-	<FilePath type="Folder" src="../../../Media/Fonts"/>
+    <FilePath type="Folder" src="../../../../../../../Media/Textures"/>
+	<FilePath type="Folder" src="../../../../../../../Media/Icons"/>
+	<FilePath type="Folder" src="../../../../../../../Media/Fonts"/>
 
 
-    <FilePath type="Folder" src="../../../Source/Related_Projects/Games/Chess/Media/Fonts"/>
-    <FilePath type="Folder" src="../../../Source/Related_Projects/Games/Chess/Media/Overlays"/>
-    <FilePath type="Folder" src="../../../Source/Related_Projects/Games/Chess/Media/Models"/>
-    <FilePath type="Folder" src="../../../Source/Related_Projects/Games/Chess/Media/Gui"/>
-    <FilePath type="Folder" src="../../../Source/Related_Projects/Games/Chess/Media/Materials"/>
-    <FilePath type="Folder" src="../../../Source/Related_Projects/Games/Chess/Media/Materials/Textures"/>
+    <FilePath type="Folder" src="../../Media/Fonts"/>
+    <FilePath type="Folder" src="../../Media/Overlays"/>
+    <FilePath type="Folder" src="../../Media/Models"/>
+    <FilePath type="Folder" src="../../Media/Gui"/>
+    <FilePath type="Folder" src="../../Media/Materials"/>
+    <FilePath type="Folder" src="../../Media/Materials/Textures"/>
 </EngineConfig>
  

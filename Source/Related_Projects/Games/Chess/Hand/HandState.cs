@@ -279,6 +279,7 @@ Start 	End 	Secs 	Name
 
 
 			moveAnimationState = sceneManager.CreateAnimationState(animationName);
+            moveAnimationState.Loop = false;
 			moveAnimationState.Time = 0;
 			moveAnimationState.IsEnabled = (true);
 //			moveAnimationState.setLoop(false);

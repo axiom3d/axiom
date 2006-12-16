@@ -253,8 +253,8 @@ namespace Chess.States
 			#region MouseMoved event
 			if (mouseMoved)
 			{
-				Axiom.Input.MouseEventArgs e1 = new Axiom.Input.MouseEventArgs(MouseButtons.Right,Axiom.Input.ModifierKeys.None,input.AbsoluteMouseX,input.AbsoluteMouseY,input.AbsoluteMouseZ,input.RelativeMouseX,input.RelativeMouseY,input.RelativeMouseZ);
-				this.MouseMoved(this,e1);
+                Axiom.Input.MouseEventArgs e1 = new Axiom.Input.MouseEventArgs(MouseButtons.Right,Axiom.Input.ModifierKeys.None,input.AbsoluteMouseX,input.AbsoluteMouseY,input.AbsoluteMouseZ,input.RelativeMouseX,input.RelativeMouseY,input.RelativeMouseZ);
+                this.MouseMoved(this,e1);
 			}
 			#endregion
 
