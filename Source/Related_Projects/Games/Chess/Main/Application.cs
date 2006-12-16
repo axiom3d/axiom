@@ -231,25 +231,17 @@ namespace Chess
 		private void CreateCeGui()
 		{
 			// Create Axiom Renderer
-			guiRenderer = new CeGui.Renderers.Axiom.AxiomRenderer(window, RenderQueueGroupID.Overlay, false);
+			guiRenderer = new CeGui.Renderers.Axiom.Renderer(window, RenderQueueGroupID.Overlay, false);
 
 			// init the subsystem singleton
 			guiSystem = new CeGui.GuiSystem(guiRenderer);
 
 			CeGui.Logger.Instance.LoggingLevel = CeGui.LoggingLevel.Errors;
 
-			// compile the TaharezLook widgets
-			if(!CeGui.WindowManager.Instance.CompileScripts("TaharezLookWidgets", @"..\..\..\Source\Related_Projects\Games\Chess\WidgetSets\TaharezLook", true)) 
-			{
-				window.DebugText = "Script compilation failed, see log for details.";
-				return;
-			}
+            loadCeGuiResources();
 
             // max window size, based on the size of the Axiom window
 			Size maxSize = new Size(window.Width, window.Height);
-
-			// init the imagesets
-			CeGui.ImagesetManager.Instance.CreateImageset("../../../Source/Related_Projects/Games/Chess/Media/Gui/TaharezLook.imageset");
 
 			// configure the default mouse cursor
 			CeGui.GuiSystem.Instance.SetDefaultMouseCursor("TaharezLook", "MouseArrow");
@@ -261,11 +253,48 @@ namespace Chess
 			CeGui.GuiSystem.Instance.SetDefaultFont(defaultFont);
 
 			// Create a root window, and set it as the current gui sheet.
-			CeGui.GuiSystem.Instance.GuiSheet = CeGui.WindowManager.Instance.CreateWindow(GuiSheetType, "root_wnd");
+            CeGui.GuiSystem.Instance.GuiSheet = CeGui.WindowManager.Instance.CreateWindow( "DefaultWindow", "root_wnd" );
 
             CeGui.MouseCursor.Instance.SetImage( "TaharezLook", "MouseArrow" );
             CeGui.MouseCursor.Instance.Show();
 		}
+
+        /// <summary>Loads dynamic resources</summary>
+        private static void loadCeGuiResources()
+        {
+
+            // Widget sets are collections of widgets that provide the widget classes defined
+            // in CeGui (like PushButton, CheckBox and so on) with their own distinctive look
+            // (like a theme) and possibly even custom behavior.
+            //
+            // Here we load all compiled widget sets we can find in the current directory. This
+            // is done to demonstrate how you could add widget set dynamically to your
+            // application. Other possibilities would be to hardcode the widget set an
+            // application uses or determining the assemblies to load from a configuration file.
+            string[] assemblyFiles = System.IO.Directory.GetFiles(
+              System.IO.Directory.GetCurrentDirectory(), "CeGui.WidgetSets.*.dll"
+            );
+            foreach ( string assemblyFile in assemblyFiles )
+            {
+                CeGui.WindowManager.Instance.AttachAssembly(
+                  System.Reflection.Assembly.LoadFile( assemblyFile )
+                );
+            }
+
+            // Imagesets are a collection of named areas within a texture or image file. Each
+            // area becomes an Image, and has a unique name by which it can be referenced. Note
+            // that an Imageset would normally be specified as part of a scheme file, although
+            // as this example is demonstrating, it is not a requirement.
+            //
+            // Again, we load all image sets we can find, this time searching the resources folder.
+            string[] imageSetFiles = System.IO.Directory.GetFiles(
+              System.IO.Directory.GetCurrentDirectory() + @"\..\..\Media\Gui", "*.imageset"
+            );
+            foreach ( string imageSetFile in imageSetFiles )
+                CeGui.ImagesetManager.Instance.CreateImageset( imageSetFile );
+
+        }
+
 		/// <summary>
 		///		Loads default resource configuration if one exists.
 		/// </summary>
@@ -313,6 +342,7 @@ namespace Chess
 		{
 
 		}
+
 		public void Run() 
 		{
 			try 

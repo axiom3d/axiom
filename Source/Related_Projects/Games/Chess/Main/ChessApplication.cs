@@ -374,7 +374,7 @@ namespace Chess.Main
             {
                 OverlayElement element;
                 element = OverlayElementManager.Instance.GetElement( "Core/CurrentFPS" );
-                element.Text = string.Format( "Current FPS: {0}", Root.Instance.CurrentFPS );
+                element.Text = string.Format( "Current FPS: {0:#.00}", Root.Instance.CurrentFPS );
 
                 element = OverlayElementManager.Instance.GetElement( "Core/Triangles" );
                 element.Text = string.Format( "Triangles: {0}", sceneManager.TargetRenderSystem.FacesRendered );

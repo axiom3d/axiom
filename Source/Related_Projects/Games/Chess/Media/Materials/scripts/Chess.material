@@ -30,9 +30,22 @@ material Chess/Black
         {
             ambient 0.05 0.05 0.05
             diffuse 0.0 0.0 0.0
-            specular 1 1 1 .2			
+            specular .1 .1 .1 .7			
 	    	shading phong
         }             
+    }
+}
+
+material Hand
+{
+    technique
+    {
+        pass
+        {
+            ambient 0.1 0.1 0.1
+            diffuse 0.92549 0.698039 0.588235			
+	    	shading phong
+        }
     }
 }
 
