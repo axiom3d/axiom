@@ -1,0 +1,58 @@
+World Tree
+-----------------
+- Possible objects on tree
+	- Scene Node
+	- Entity
+	- Subentity
+	- Material
+	- Light
+	- Plugin entity (TBD by plugin)
+	- Zone flag
+
+- Hierarchy
+	- Scene Node
+		- Zone flag
+		- Renderable
+			- Zone flag
+			- Material
+				- Zone flag
+		- Entity
+			- Zone flag
+			- Subentity	
+				- Zone flag
+				- Material
+					- Zone flag
+		- Light
+		- Renderable
+			- Zone flag
+		- Plugin Entity
+			- Renderable
+				- Material
+			- Entity
+				- Subentity
+					- Material
+Node zero is an empty Scene Node.
+
+Buttons on toolbar:
+	- Add empty Scene Node
+	- Delete branch
+	
+Functionality
+	- Add empty scene node
+	- Add entity (and therefore submeshes and materials) to scene node
+	- Add light to scene node
+	- Add light to scene node
+	
+Tree hierarchy
+
+Root Node
+	Objects
+		Entity
+			Subentity
+				Material
+		Light
+		Renderable
+	Children
+		Node
+			...
+		Plugin data

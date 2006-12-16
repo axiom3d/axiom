@@ -1,0 +1,5 @@
+<SyntaxModes version="1.0">
+	<Mode file       = "material.xshd"
+	      name       = "Material Files"
+	      extensions = ".material"/>
+</SyntaxModes>
