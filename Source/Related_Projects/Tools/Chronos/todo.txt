@@ -1,0 +1,73 @@
+Editor Outline
+---------------
+Editor Start
+	Project select
+		Project load
+			Open project file
+			Iterate scenes, load scenes into tree
+			Load last scene with viewport
+		Project create
+			Create directory
+			Create project file
+			Create default scene
+	Scene select
+		Prompt to save current scene (if applicable)
+		Clear scene
+		Perform .scene file deserialization
+		
+	Import resources [Plugins only?]
+		Select resource
+			Select class
+				Copy material to data/{class}
+
+	Create resources
+		Material
+			Select class
+				Select pack
+					Enter name
+					Define material
+					Save (serialize to data/{class}/{pack}.material)
+
+	Place tool items
+		(Taken care of)
+
+	Manipulate tool items
+		(Taken care of)
+	
+	Serialize
+		Serialize project class
+		Iterate down scene class, serialize to XML, export
+		
+	Deserialize
+		Deserialize project file
+		Open .scene XML file
+			Iterate file
+				Foreach node, get owner
+					If owner available, pass data to owner for deserialization.
+		
+	Default resources should be available to all projects.
+		{AppDir}/data/ChronosEditor
+			editor.material
+		{AppDir}/data/Terrain
+			terrain.material
+			grass.jpg
+			
+Resources
+
+/data/media
+	Terrain
+		terrain.material
+		grass.jpg
+		stone.jpg
+		dirt.jpg
+	Interiors
+		house1.material
+		house2.material
+		metalwall.jpg
+		tile.jpg
+
+terrain.material:
+
+material terrainpatch -> Terrain/terrain/terrainpatch {
+	...
+}

@@ -1,0 +1,8 @@
+Todo:
+- Camera autotrack switch button
+- Relative movement switch button
+- Light support
+- Particle support
+- Re-implement node deletion
+- Tweak camera rotating
+- Add a second window for material preview support. Maybe model preview?

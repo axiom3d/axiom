@@ -1,0 +1,44 @@
+Index: Engine/Graphics/MaterialManager.cs
+===================================================================
+RCS file: /cvsroot/axiomengine/Axiom/Engine/Graphics/MaterialManager.cs,v
+retrieving revision 1.13
+diff -u -r1.13 MaterialManager.cs
+--- Engine/Graphics/MaterialManager.cs	8 Apr 2004 02:33:46 -0000	1.13
++++ Engine/Graphics/MaterialManager.cs	26 May 2004 07:43:34 -0000
+@@ -295,8 +295,16 @@
+         /// <param name="name"></param>
+         /// <returns></returns>
+         public override Resource Create(string name) {
+-            if(resourceList[name] != null)
+-                throw new Axiom.Exceptions.AxiomException(string.Format("Cananot create a duplicate material named '{0}'.", name));
++			if(resourceList[name] != null) {
++				System.Diagnostics.Trace.WriteLine("Overwriting material " + name);
++				Material exMat = (Material)resourceList[name];
++				for(int i=0;i<exMat.NumTechniques;i++) {
++					exMat.RemoveTechnique(exMat.GetTechnique(0));
++				}
++				exMat.Compile();
++				return exMat;
++			}
++			//throw new Axiom.Exceptions.AxiomException(string.Format("Cannot create a duplicate material named '{0}'.", name));
+ 
+             // create a material
+             Material material = new Material(name);
+@@ -343,7 +351,7 @@
+                 Archive archive = (Archive)archives[i];
+                 string[] files = archive.GetFileNamesLike("", extension);
+ 
+-                for(int j = 0; j < files.Length; j++) {
++				for(int j = 0; j < files.Length; j++) {
+                     Stream data = archive.ReadFile(files[j]);
+ 
+                     // parse the materials
+@@ -370,7 +378,7 @@
+         /// <summary>
+         ///		
+         /// </summary>
+-        protected void ParseScript(Stream stream) {
++        public void ParseScript(Stream stream) {
+             StreamReader script = new StreamReader(stream, System.Text.Encoding.ASCII);
+ 
+             string line = "";

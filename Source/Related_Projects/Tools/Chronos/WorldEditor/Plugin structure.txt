@@ -1,0 +1,23 @@
+Plugin Structure
+------------------
+Plugins must implement IPlugin, or a derivative thereof.
+
+IPlugin
+	string Register();
+	void Unregister();
+	
+ISceneManagerPlugin : Axiom.Core.IPlugin
+	void Start();
+	void Stop();
+	
+IRenderablePlugin() : IPlugin
+	void LoadData(string datafile);
+	ToolHandle[] RegisterTools();
+		This needs to return a list of tools, with each tool containing:
+			A name
+			An optional icon
+			A callback method for the tool handler to set an event against
+	
+IIOPlugin : IPlugin
+	void Serialize(XmlTextReader);
+	void Deserialize(XmlTextReader);
