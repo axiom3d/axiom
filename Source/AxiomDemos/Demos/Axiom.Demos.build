@@ -4,7 +4,7 @@
 	<!--
 		Required properties:
 			* axiom.demos.build.dir - (path) root level to build to
-			* axiom3d.build.dir     - (path) location of Axiom assemblies
+			* axiom3d.assemblies.dir     - (path) location of Axiom assemblies
 			* build.debug           - (true|false) debug build?
 			* current.build.defines - framework-specific build defines
 	-->
@@ -12,13 +12,12 @@
 
 	<target name="references.setup" description="Sets up file references for the project's tasks" unless="${target::has-executed('references.setup')}">
 			<fileset id="axiom.demos.build.references">
-				<include name="${axiom3d.build.dir}/Axiom.dll"/>
-				<include name="${axiom3d.build.dir}/Axiom.Plugins.CgProgramManager.dll"/>
-				<include name="${axiom3d.build.dir}/Axiom.Plugins.ParticleFX.dll"/>
-				<include name="${axiom3d.build.dir}/Axiom.SceneManagers.Bsp.dll"/>
-				<include name="${axiom3d.build.dir}/Axiom.SceneManagers.Octree.dll"/>
-				<!-- <include name="${axiom3d.build.dir}/Axiom.SceneManagers.PagingLandscape.dll"/> -->
-				<include name="${axiom3d.build.dir}/Axiom.RenderSystems.OpenGL.dll"/>
+				<include name="${axiom3d.assemblies.dir}/Axiom.dll"/>
+				<include name="${axiom3d.assemblies.dir}/Axiom.Plugins.CgProgramManager.dll"/>
+				<include name="${axiom3d.assemblies.dir}/Axiom.Plugins.ParticleFX.dll"/>
+				<include name="${axiom3d.assemblies.dir}/Axiom.SceneManagers.Bsp.dll"/>
+				<include name="${axiom3d.assemblies.dir}/Axiom.SceneManagers.Octree.dll"/>
+				<include name="${axiom3d.assemblies.dir}/Axiom.RenderSystems.OpenGL.dll"/>
 
 				<include name="System.dll"/>
 				<include name="System.Data.dll"/>
@@ -26,9 +25,9 @@
 				<include name="System.Windows.Forms.dll"/>
 				<include name="System.Xml.dll"/>
 		
-				<include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.Win32.dll"/>
-				<include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.RenderSystems.DirectX9.dll"/>
-				<include unless="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.SDL.dll"/>
+				<include if="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.Platforms.Win32.dll"/>
+				<include if="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.RenderSystems.DirectX9.dll"/>
+				<include unless="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.Platforms.SDL.dll"/>
 			</fileset>
 						
 	</target>
@@ -37,7 +36,7 @@
 		<!-- 
 			Define build directory for Axiom3D demos 
 		-->
-		<property name="axiom.demos.build.dir" value="${path::combine(build.dir, 'Axiom_Demos')}" />
+		<property name="axiom.demos.build.dir" value="${path::combine(build.dir, 'AxiomDemos')}" />
 	
 		<!-- ensure build directory exists -->
 		<mkdir dir="${axiom.demos.build.dir}" />

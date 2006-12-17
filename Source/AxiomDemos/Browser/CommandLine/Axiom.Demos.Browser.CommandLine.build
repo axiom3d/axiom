@@ -4,7 +4,7 @@
 	<!--
 		Required properties:
 			* axiom.demos.build.dir - (path) root level to build to
-			* axiom3d.build.dir     - (path) location of Axiom assemblies
+			* axiom3d.assemblies.dir     - (path) location of Axiom assemblies
 			* build.debug           - (true|false) debug build?
 			* current.build.defines - framework-specific build defines
 	-->
@@ -14,15 +14,14 @@
 		<!-- 
 			Define build directory for Axiom3D demos 
 		-->
-		<property name="axiom.demos.build.dir" value="${path::combine(build.dir, 'Axiom_Demos')}" />
+		<property name="axiom.demos.build.dir" value="${path::combine(build.dir, 'AxiomDemos')}" />
 		<fileset id="axiom.demos.build.references">
-			<include name="${axiom3d.build.dir}/Axiom.dll"/>
-			<include name="${axiom3d.build.dir}/Axiom.Plugins.CgProgramManager.dll"/>
-			<include name="${axiom3d.build.dir}/Axiom.Plugins.ParticleFX.dll"/>
-			<include name="${axiom3d.build.dir}/Axiom.SceneManagers.Bsp.dll"/>
-			<include name="${axiom3d.build.dir}/Axiom.SceneManagers.Octree.dll"/>
-			<!-- <include name="${axiom3d.build.dir}/Axiom.SceneManagers.PagingLandscape.dll"/> -->
-			<include name="${axiom3d.build.dir}/Axiom.RenderSystems.OpenGL.dll"/>
+			<include name="${axiom3d.assemblies.dir}/Axiom.dll"/>
+			<include name="${axiom3d.assemblies.dir}/Axiom.Plugins.CgProgramManager.dll"/>
+			<include name="${axiom3d.assemblies.dir}/Axiom.Plugins.ParticleFX.dll"/>
+			<include name="${axiom3d.assemblies.dir}/Axiom.SceneManagers.Bsp.dll"/>
+			<include name="${axiom3d.assemblies.dir}/Axiom.SceneManagers.Octree.dll"/>
+			<include name="${axiom3d.assemblies.dir}/Axiom.RenderSystems.OpenGL.dll"/>
 
 			<include name="${axiom.demos.build.dir}/Axiom.Demos.dll"/>
 			<include name="System.dll"/>
@@ -34,19 +33,18 @@
 		</fileset>
 
 		<fileset id="axiom.demos.runtime.references">
-			<include name="${axiom3d.build.dir}/Axiom.dll"/>
-			<include name="${axiom3d.build.dir}/Axiom.Plugins.CgProgramManager.dll"/>
-			<include name="${axiom3d.build.dir}/Axiom.Plugins.ParticleFX.dll"/>
-			<include name="${axiom3d.build.dir}/Axiom.SceneManagers.Bsp.dll"/>
-			<include name="${axiom3d.build.dir}/Axiom.SceneManagers.Octree.dll"/>
-			<!-- <include name="${axiom3d.build.dir}/Axiom.SceneManagers.PagingLandscape.dll"/> -->
-			<include name="${axiom3d.build.dir}/Axiom.RenderSystems.OpenGL.dll"/>
+			<include name="${axiom3d.assemblies.dir}/Axiom.dll"/>
+			<include name="${axiom3d.assemblies.dir}/Axiom.Plugins.CgProgramManager.dll"/>
+			<include name="${axiom3d.assemblies.dir}/Axiom.Plugins.ParticleFX.dll"/>
+			<include name="${axiom3d.assemblies.dir}/Axiom.SceneManagers.Bsp.dll"/>
+			<include name="${axiom3d.assemblies.dir}/Axiom.SceneManagers.Octree.dll"/>
+			<include name="${axiom3d.assemblies.dir}/Axiom.RenderSystems.OpenGL.dll"/>
 
 			<include name="${axiom.demos.build.dir}/Axiom.Demos.dll"/>
 
-			<include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.Win32.dll"/>
-			<include if="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.RenderSystems.DirectX9.dll"/>
-			<include unless="${platform::is-win32()}" name="${axiom3d.build.dir}/Axiom.Platforms.SDL.dll"/>
+			<include if="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.Platforms.Win32.dll"/>
+			<include if="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.RenderSystems.DirectX9.dll"/>
+			<include unless="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.Platforms.SDL.dll"/>
 
 			<include name="${ICSharpCode.SharpZipLib.dll}"/>
 
@@ -72,7 +70,7 @@
 
 			<!-- Dump all the native dependencies into the build directory if on Windows -->
 			<!-- NOTE: This is a little sloppy - should really only reference the deps we need -->
-			<include if="${platform::is-win32()}" name="${native.dependencies.win32.dir}/*.dll"/>
+			<include if="${platform::is-win32()}" name="${native.libs.win32.dir}/*.dll"/>
 			
 			<!-- Note that all the Linux native deps should be installed by the distribution, 
 			so they aren't handled here.  We just assume they are there -->
