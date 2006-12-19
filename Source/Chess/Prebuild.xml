@@ -69,14 +69,15 @@
 			<Reference name="System.Xml" />
 
 			<Files>
-				<Match pattern="./AI/*.cs" path="." recurse="true"/>
-				<Match pattern="./ColDet/*.cs" path="." recurse="true"/>
-				<Match pattern="./Main/*.cs" path="." recurse="true"/>
-				<Match pattern="./Hand/*.cs" path="." recurse="true"/>
-				<Match pattern="./States/*.cs" path="." recurse="true"/>
-				<Match pattern="Main.cs" path="." />
-				<Match pattern="AssemblyInfo.cs" path="." />
+				<Match pattern="*.cs" path="Source" recurse="true"/>
+				<Match pattern="*.*" path="Media" buildAction="None" copyToOutput="PreserveNewest" recurse="true" >
+					<Exclude pattern=".svn" />
+					<Exclude pattern="Thumbs.db" />
+				</Match>
 				<Match pattern="EngineConfig.xml" path="" buildAction="None" copyToOutput="Always" />
+				<Match pattern="Prebuild.xml" path="" buildAction="None" copyToOutput="Never" />
+				<Match pattern="Yat.build" path="" buildAction="None" copyToOutput="Never" />
+                <Match pattern="devil.dll" path="../../../../Dependencies/Native/" buildAction="None" link="true" recurse="true" copyToOutput="PreserveNewest" />
 			</Files>
 		</Project>
 
