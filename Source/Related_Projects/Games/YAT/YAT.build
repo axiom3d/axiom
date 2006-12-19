@@ -19,14 +19,14 @@
 	</if>
 
 	<!-- Define location of build include files useful for any project.  Required (if you want to use any) -->
-	<property name="build.includes.dir" value="${path::combine(project::get-base-directory(), '../../../../BuildSupport/NAntIncludes') }" dynamic="false" />
+	<property name="build.includes.dir" value="${path::combine(project::get-base-directory(), '../../BuildSupport/NAntIncludes') }" dynamic="false" />
 	
 	<!-- Framework support targets  -->
 	<include verbose="false" buildfile="${path::combine(build.includes.dir, 'frameworksupport.include')}" />
 	
 	<!-- Axiom build and run-time libs -->
 	<!-- Define locations of Axiom libs top-level directory.  Required. -->
-	<property name="libs.topdir" value="${project::get-base-directory()}/../../../../Lib" dynamic="false" />
+	<property name="libs.topdir" value="${project::get-base-directory()}/../../Lib" dynamic="false" />
 
 	<!-- Load aliases for managed and native libs -->
 	<include verbose="true" buildfile="${path::combine(libs.topdir, 'AxiomDependencies.include')}" />
@@ -110,31 +110,21 @@
 
 	<!-- BEGIN: YAT build tasks -->
 	<target name="references.setup" description="Sets up file references for the project's tasks" unless="${target::has-executed('references.setup')}">
-			<fileset id="yat.build.references">
-				<include name="${axiom3d.assemblies.dir}/Axiom.dll"/>
-				<include name="${axiom3d.assemblies.dir}/Axiom.Plugins.CgProgramManager.dll"/>
-				<include name="${axiom3d.assemblies.dir}/Axiom.Plugins.ParticleFX.dll"/>
-				<include name="${axiom3d.assemblies.dir}/Axiom.SceneManagers.Bsp.dll"/>
-				<include name="${axiom3d.assemblies.dir}/Axiom.SceneManagers.Octree.dll"/>
-				<include name="${axiom3d.assemblies.dir}/Axiom.RenderSystems.OpenGL.dll"/>
+		<fileset id="yat.build.references">
+			<include name="${axiom3d.assemblies.dir}/Axiom.dll"/>
 
-				<include name="System.dll"/>
-				<include name="System.Data.dll"/>
-				<include name="System.Drawing.dll"/>
-				<include name="System.Windows.Forms.dll"/>
-				<include name="System.Xml.dll"/>
-		
-				<include if="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.Platforms.Win32.dll"/>
-				<include if="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.RenderSystems.DirectX9.dll"/>
-				<include unless="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.Platforms.SDL.dll"/>
-			</fileset>
+			<include name="System.dll"/>
+			<include name="System.Data.dll"/>
+			<include name="System.Drawing.dll"/>
+			<include name="System.Windows.Forms.dll"/>
+			<include name="System.Xml.dll"/>
+
+		</fileset>
 
 		<fileset id="yat.runtime.references">
 			<include name="${axiom3d.assemblies.dir}/Axiom.dll"/>
 			<include name="${axiom3d.assemblies.dir}/Axiom.Plugins.CgProgramManager.dll"/>
 			<include name="${axiom3d.assemblies.dir}/Axiom.Plugins.ParticleFX.dll"/>
-			<include name="${axiom3d.assemblies.dir}/Axiom.SceneManagers.Bsp.dll"/>
-			<include name="${axiom3d.assemblies.dir}/Axiom.SceneManagers.Octree.dll"/>
 			<include name="${axiom3d.assemblies.dir}/Axiom.RenderSystems.OpenGL.dll"/>
 
 			<include if="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.Platforms.Win32.dll"/>
@@ -192,18 +182,6 @@
 				<include name="Media/**" />
 			</fileset>
 		</copy>
-
-		<!-- Grab some stuff from the global Axiom Media folder -->
-		<!--
-		<copy todir="${build.dir}/Media" >
-			<fileset>
-				<include name="../../../../Media/Overlays/Debug.overlay" />
-				<include name="../../../../Media/Fonts/*" />
-				<include name="../../../../Media/Icons/AxiomIcon.ico" />
-				<include name="../../../../Media/Logos/AxiomLogoSmall.png" />
-			</fileset>
-		</copy>
-		-->
 
 		<copy todir="${build.dir}">
 			<!-- Copy references - we'll need these at runtime -->
