@@ -32,7 +32,7 @@
 
 	<!-- Master build and dist output dirs -->
 	<!-- <property name="top.build.dir" value="${project::get-base-directory()}/../build" dynamic="true" /> -->
-	<property name="top.build.dir" value="${path::combine(libs.topdir, 'Managed/Axiom3D')}" />
+	<property name="top.build.dir" value="${path::combine(managed.libs.portable.dir, 'Axiom3D')}" />
 	<property name="top.dist.dir" value="${project::get-base-directory()}/../dist" dynamic="true" />
 
 	<!-- 

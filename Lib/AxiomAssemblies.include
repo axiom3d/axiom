@@ -5,25 +5,25 @@
     <!-- NOTE: dynamic should be false for these aliases so nested buildfiles don't change the path-->
 
 	<!-- 
-	IMPORTANT NOTE:  All paths are defined relative to the 'dependencies.topdir'
-	property, which *must* be defined.
+	  IMPORTANT NOTE:  All paths are defined relative to the 'dependencies.topdir'
+	  property, which *must* be defined.
 
-	This property should point to the top-level dependencies dir (where this 
-	file is located).
+	  This property should point to the top-level dependencies dir (where this 
+	  file is located).
 
-	Places this property can be defined:
+	  Places this property can be defined:
 	
-	1. In the top-level build file (where this file is included).
-	2. Explicitly, by uncommenting the property below.
+	  1. In the top-level build file (where this file is included).
+	  2. Explicitly, by uncommenting the property below.
 
-	If you choose the latter, the path should be an absolute path - relative paths are defined relative to the
-	top level build file, not this file.
+	  If you choose the latter, the path should be an absolute path - relative paths are defined relative to the
+	  top level build file, not this file.
 	-->
 	<!--    <property name="dependencies.topdir" value="${project::get-base-directory()}/../../Dependencies" dynamic="false" /> -->
 
 
 	<!-- Define directory aliases for Axiom3D assemblies relative to the top-level dependencies dir -->
-	<property name="axiom3d.assemblies.topdir" value="${path::combine(libs.topdir, 'Managed/Axiom3D')}" dynamic="false" />
+	<property name="axiom3d.assemblies.topdir" value="${path::combine(libs.managed.portable.dir, 'Axiom3D')}" dynamic="false" />
 	
 	<!-- 
 		Debug and Release dirs can be explicitly defined here if you need this.
