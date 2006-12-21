@@ -17,7 +17,7 @@
 	 
 		<!-- build it -->
 	<!-- Mono 1.1.13.1 and earlier have a known bug (77183) in doc generation.  Please use a later version. -->
-	<csc target="library" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" verbose="${verbose}" output="${axiom3d.build.dir}/${project::get-name()}.dll" doc="${axiom3d.build.dir}/${project::get-name()}.xml">
+	<csc target="library" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" verbose="${verbose}" output="${axiom.build.dir}/${project::get-name()}.dll" doc="${axiom.build.dir}/${project::get-name()}.xml">
 			<nowarn>
 				<warning number="1570" />
 				<warning number="1574" />

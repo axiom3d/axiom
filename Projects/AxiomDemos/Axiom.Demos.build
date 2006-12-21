@@ -49,7 +49,7 @@
 		<!--	<property name="build.dir" value="${project::get-base-directory()}/build/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" /> -->
 		<property name="build.dir" value="${top.build.dir}/${project.config}" />
 		<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" />
-		<property name="axiom3d.assemblies.dir" value="${axiom3d.assemblies.topdir}/${project.config}" />
+		<property name="axiom.assemblies.dir" value="${axiom.assemblies.topdir}/${project.config}" />
 	</target>
 
 	<target name="release" description="Perform a 'release' build">
@@ -58,7 +58,7 @@
 		<!--	<property name="build.dir" value="${project::get-base-directory()}/build/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" /> -->
 		<property name="build.dir" value="${top.build.dir}/${project.config}" />
 		<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" />
-		<property name="axiom3d.assemblies.dir" value="${axiom3d.assemblies.topdir}/${project.config}" />
+		<property name="axiom.assemblies.dir" value="${axiom.assemblies.topdir}/${project.config}" />
 	</target>
 
 	<!-- global build settings -->
@@ -86,10 +86,10 @@
 		buildfiles for Axiom plugins or scenemanagers could be treated as a unit)
 	-->
 	<fileset id="axiom.demos.buildfile">
-		<include name="Demos/Axiom.Demos.build" />
+		<include name="Source/Demos/Axiom.Demos.build" />
 	</fileset>
 	<fileset id="axiom.demos.browser.commandline.buildfile">
-		<include name="Browser/CommandLine/Axiom.Demos.Browser.CommandLine.build" />
+		<include name="Source/Browser/CommandLine/Axiom.Demos.Browser.CommandLine.build" />
 	</fileset>
 
 	<!-- BEGIN: General build tasks -->
