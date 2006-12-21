@@ -32,7 +32,7 @@
 
 	<!-- Master build and dist output dirs -->
 	<!-- <property name="top.build.dir" value="${project::get-base-directory()}/../build" dynamic="true" /> -->
-	<property name="top.build.dir" value="${path::combine(libs.managed.portable.dir, 'Axiom3D')}" />
+	<property name="top.build.dir" value="${path::combine(libs.managed.portable.dir, 'Axiom')}" />
 	<property name="top.dist.dir" value="${project::get-base-directory()}/../dist" dynamic="true" />
 
 	<!-- 
@@ -84,31 +84,31 @@
 		buildfiles for Axiom plugins or scenemanagers could be treated as a unit)
 	-->
 	<fileset id="axiom.engine.buildfile">
-		<include name="Engine/Axiom.Engine.build" />
+		<include name="Source/Engine/Axiom.Engine.build" />
 	</fileset>
 	<fileset id="axiom.platforms.win32.buildfile">
-		<include name="Platforms/Win32/Axiom.Platforms.Win32.build" />
+		<include name="Source/Platforms/Win32/Axiom.Platforms.Win32.build" />
 	</fileset>
 	<fileset id="axiom.platforms.sdl.buildfile">
-		<include name="Platforms/SDL/Axiom.Platforms.SDL.build" />
+		<include name="Source/Platforms/SDL/Axiom.Platforms.SDL.build" />
 	</fileset>
 	<fileset id="axiom.plugins.cgprogrammanager.buildfile">
-		<include name="Plugins/CgProgramManager/Axiom.Plugins.CgProgramManager.build" />
+		<include name="Source/Plugins/CgProgramManager/Axiom.Plugins.CgProgramManager.build" />
 	</fileset>
 	<fileset id="axiom.plugins.particlefx.buildfile">
-		<include name="Plugins/ParticleFX/Axiom.Plugins.ParticleFX.build" />
+		<include name="Source/Plugins/ParticleFX/Axiom.Plugins.ParticleFX.build" />
 	</fileset>
 	<fileset id="axiom.rendersystems.directx9.buildfile">
-		<include name="RenderSystems/DirectX9/Axiom.RenderSystems.DirectX9.build" />
+		<include name="Source/RenderSystems/DirectX9/Axiom.RenderSystems.DirectX9.build" />
 	</fileset>
 	<fileset id="axiom.rendersystems.opengl.buildfile">
-		<include name="RenderSystems/OpenGL/Axiom.RenderSystems.OpenGL.build" />
+		<include name="Source/RenderSystems/OpenGL/Axiom.RenderSystems.OpenGL.build" />
 	</fileset>
 	<fileset id="axiom.scenemanagers.bsp.buildfile">
-		<include name="SceneManagers/Bsp/Axiom.SceneManagers.Bsp.build"/>
+		<include name="Source/SceneManagers/Bsp/Axiom.SceneManagers.Bsp.build"/>
 	</fileset>
 	<fileset id="axiom.scenemanagers.octree.buildfile">
-		<include name="SceneManagers/Octree/Axiom.SceneManagers.Octree.build"/>
+		<include name="Source/SceneManagers/Octree/Axiom.SceneManagers.Octree.build"/>
 	</fileset>
 
 	<!-- BEGIN: General build tasks -->

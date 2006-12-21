@@ -45,9 +45,9 @@
 			<references>
 				<include name="${axiom3d.build.dir}/Axiom.MathLib.dll"/>
 				<include name="${axiom3d.build.dir}/Axiom.dll"/>
-				<include name="${managed.directx.dir}/Microsoft.DirectX.dll"/>
-				<include name="${managed.directx.dir}/Microsoft.DirectX.Direct3D.dll"/>
-				<include name="${managed.directx.dir}/Microsoft.DirectX.Direct3DX.dll"/>
+				<include name="${Microsoft.DirectX.dll}"/>
+				<include name="${Microsoft.DirectX.Direct3D.dll}"/>
+				<include name="${Microsoft.DirectX.Direct3DX.dll}"/>
 				<include name="System.dll"/>
 				<include name="System.Data.dll"/>
 				<include name="System.Drawing.dll"/>
