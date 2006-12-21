@@ -22,42 +22,25 @@
 	<!--    <property name="libs.topdir" value="${project::get-base-directory()}/../../Dependencies" dynamic="false" /> -->
 
 
-	<!-- Define directory aliases for managed dependencies relative to the top-level dependencies dir -->
-    <property name="managed.libs.topdir" value="${path::combine(libs.topdir, 'Managed')}" dynamic="false" />
-    <property name="managed.dependencies.win32.dir" value="${path::combine(managed.libs.topdir, 'DotNet')}" dynamic="false" />
-	<property name="managed.dependencies.unix.dir" value="${path::combine(managed.libs.topdir, 'Mono')}" dynamic="false" />
-	<!-- FIXME: This should point to a directory containing portable assemblies, but I want to preserve the directory structure for now -->
-    <property name="managed.dependencies.portable.dir" value="${path::combine(managed.libs.topdir, 'DotNet')}" dynamic="false" />
-
-	<!-- Define directory aliases for native dependencies relative to the top-level dependencies dir -->
-    <property name="native.libs.topdir" value="${path::combine(libs.topdir, 'Native')}" dynamic="false" />
-    <property name="native.libs.win32.dir" value="${path::combine(native.libs.topdir, 'Win32')}" dynamic="false" />
-	<property name="native.libs.unix.dir" value="${path::combine(native.libs.topdir, 'Mono')}" dynamic="false" />
+	<!-- 
+	  Define directory aliases for managed assemblies relative to the top-level libs dir 
+	  -->
     
-    <!-- 
-		Here's a bit of cleverness I may regret - define generic aliases for 
-		managed and native dependencies dirs based on platform we are executing on.
-		This makes it easier to automatically reference the appropriate assemblies and
-		libraries, but precludes easy cross-compiling of assemblies for targets other than
-		the one the build is currently running on.
+    <property name="managed.libs.topdir"		value="${path::combine(libs.topdir, 'Managed')}" 			dynamic="false" />
+    <property name="managed.libs.win32.dir" 	value="${path::combine(managed.libs.topdir, 'DotNet')}" 	dynamic="false" />
+	<property name="managed.libs.unix.dir" 		value="${path::combine(managed.libs.topdir, 'Mono')}" 		dynamic="false" />
+	
+    <property name="managed.libs.portable.dir" 	value="${path::combine(managed.libs.topdir, 'XPlatform')}" 	dynamic="false" />
 
-		This could be controlled by a property setting rather than direct detection of platform, should more control be needed.
-
-		Note that there are no unix native dependencies, since they vary by platform or linux distribution and cannot all
-		be included here.  
-		I'm not sure of the situation for OSX.
-	-->
-	<!--
-    <if test="${platform::is-win32()}">
-        <property name="managed.dependencies.dir" value="${managed.dependencies.win32.dir}" dynamic="false"/>
-        <property name="native.dependencies.dir" value="${native.dependencies.win32.dir}" dynamic="false"/>		
-    </if>
-    <if test="${platform::is-unix()}">
-        <property name="managed.dependencies.dir" value="${managed.dependencies.unix.dir}" dynamic="false"/>
-        <property name="native.dependencies.dir" value="${native.dependencies.unix.dir}" dynamic="false"/>
-	</if>
-    -->
-
+	<!-- 
+	  Define directory aliases for native dependencies relative to the top-level libs dir
+	  -->
+	
+    <property name="native.libs.topdir" 		value="${path::combine(libs.topdir, 'Native')}" 			dynamic="false" />
+    <property name="native.libs.win32.dir" 		value="${path::combine(native.libs.topdir, 'Win32')}" 		dynamic="false" />
+	<property name="native.libs.unix.dir" 		value="${path::combine(native.libs.topdir, 'Linux')}" 		dynamic="false" />
+	<property name="native.libs.osx.dir" 		value="${path::combine(native.libs.topdir, 'OSX')}" 		dynamic="false" />
+    
 	<!-- TODO:  Define something for OSX here -->
 
 	<!-- 
@@ -66,27 +49,36 @@
 	An alias can be anything.  Here we follow the convention of using the full file name as the alias name.
 	-->
 
+	<!--
+	  The following section is used to easily modify the version of the dependency used.
+	  -->
+	<property name="version.ICSharpCode.SharpZipLib" value="0.84.0.0" dynamic="false" />
+	<property name="version.Tao" 					 value="1.5.0.3"  dynamic="false" />
+	
+	<property name="managed.libs.ICSharpCode.SharpZipLib.dir"			value="${managed.libs.portable.dir}/ICSharpCode.SharpZipLib/${version.ICSharpCode.SharpZipLib}"	/>
+	<property name="managed.libs.Tao.dir"			 					value="${managed.libs.portable.dir}/Tao/${version.Tao}" />
+	
 	<!-- Windows only managed assemblies --> 
-	<property name="Tao.Platform.Windows.dll" value="${managed.dependencies.win32.dir}/Tao.Platform.Windows.dll" dynamic="false" />
+	<property name="Tao.Platform.Windows.dll" value="${managed.libs.Tao.dir}/Tao.Platform.Windows.dll" dynamic="false" />
 
 	<!-- Portable managed assemblies -->
-	<property name="ICSharpCode.SharpZipLib.dll" value="${managed.dependencies.portable.dir}/ICSharpCode.SharpZipLib.dll" dynamic="false" />
-	<property name="Tao.Cg.dll" value="${managed.dependencies.portable.dir}/Tao.Cg.dll" dynamic="false" />
-	<property name="Tao.DevIl.dll"  value="${managed.dependencies.portable.dir}/Tao.DevIl.dll" dynamic="false" />
-	<property name="Tao.OpenGl.dll" value="${managed.dependencies.portable.dir}/Tao.OpenGl.dll" dynamic="false" />
-	<property name="Tao.OpenGl.ExtensionLoader.dll" value="${managed.dependencies.portable.dir}/Tao.OpenGl.ExtensionLoader.dll" dynamic="false" />
-	<property name="Tao.OpenGl.Glu.dll" value="${managed.dependencies.portable.dir}/Tao.OpenGl.Glu.dll" dynamic="false" />
-	<property name="Tao.Sdl.dll" value="${managed.dependencies.portable.dir}/Tao.Sdl.dll" dynamic="false" />
+	<property name="ICSharpCode.SharpZipLib.dll" value="${managed.libs.ICSharpCode.SharpZipLib.dir}/ICSharpCode.SharpZipLib.dll" dynamic="false" />
+	<property name="Tao.Cg.dll" value="${managed.libs.Tao.dir}/Tao.Cg.dll" dynamic="false" />
+	<property name="Tao.DevIl.dll"  value="${managed.libs.Tao.dir}/Tao.DevIl.dll" dynamic="false" />
+	<property name="Tao.OpenGl.dll" value="${managed.libs.Tao.dir}/Tao.OpenGl.dll" dynamic="false" />
+	<property name="Tao.OpenGl.ExtensionLoader.dll" value="${managed.libs.Tao.dir}/Tao.OpenGl.ExtensionLoader.dll" dynamic="false" />
+	<property name="Tao.OpenGl.Glu.dll" value="${managed.libs.Tao.dir}/Tao.OpenGl.Glu.dll" dynamic="false" />
+	<property name="Tao.Sdl.dll" value="${managed.libs.Tao.dir}/Tao.Sdl.dll" dynamic="false" />
 
 	<!-- DLL-mapping config files for Mono.  
 	Defined as wildcards to catch all of them for each managed assembly, since they differ per linux distro 
 	Meant to be used inside a fileset directive. -->
-	<property name="Tao.Cg.dll.configs" value="${managed.dependencies.unix.dir}/Tao.Cg.dll.config*" />
-	<property name="Tao.DevIl.dll.configs" value="${managed.dependencies.unix.dir}/Tao.DevIl.dll.config*" />
-	<property name="Tao.OpenGl.dll.configs" value="${managed.dependencies.unix.dir}/Tao.OpenGl.dll.config*" />
-	<property name="Tao.OpenGl.ExtensionLoader.dll.configs" value="${managed.dependencies.unix.dir}/Tao.OpenGl.ExtensionLoader.dll.config*" />
-	<property name="Tao.OpenGl.Glu.dll.configs" value="${managed.dependencies.unix.dir}/Tao.OpenGl.Glu.dll.config*" />
-	<property name="Tao.Sdl.dll.configs" value="${managed.dependencies.unix.dir}/Tao.Sdl.dll.config*" />
+	<property name="Tao.Cg.dll.configs" value="${managed.libs.Tao.dir}/Tao.Cg.dll.config*" />
+	<property name="Tao.DevIl.dll.configs" value="${managed.libs.Tao.dir}/Tao.DevIl.dll.config*" />
+	<property name="Tao.OpenGl.dll.configs" value="${managed.libs.Tao.dir}/Tao.OpenGl.dll.config*" />
+	<property name="Tao.OpenGl.ExtensionLoader.dll.configs" value="${managed.libs.Tao.dir}/Tao.OpenGl.ExtensionLoader.dll.config*" />
+	<property name="Tao.OpenGl.Glu.dll.configs" value="${managed.libs.Tao.dir}/Tao.OpenGl.Glu.dll.config*" />
+	<property name="Tao.Sdl.dll.configs" value="${managed.libs.Tao.dir}/Tao.Sdl.dll.config*" />
 
 	<!-- Windows native libraries -->
 	<property name="cg.dll" value="${native.libs.win32.dir}/cg.dll" dynamic="false" />
