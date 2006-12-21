@@ -68,11 +68,11 @@ using System.Security.Permissions;
 // by using the '*' as shown below:
 #if DEBUG
 [assembly: AssemblyVersion( "0.7.1.*" )]
-[assembly: AssemblyFileVersion( "0.7.1.*" )]
 #else
 [assembly: AssemblyVersion( "0.7.1.0" )]
-[assembly: AssemblyFileVersion( "0.7.1.0" )]
 #endif
+
+[assembly: AssemblyFileVersion( "0.7.1.0" )]
 
 [assembly: SecurityPermission( SecurityAction.RequestMinimum )]
 
