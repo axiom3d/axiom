@@ -155,7 +155,7 @@
 
 			<!-- Dump all the native libs into the build directory if on Windows -->
 			<!-- NOTE: This is a little sloppy - should really only reference the deps we need -->
-			<include if="${platform::is-win32()}" name="${native.libs.win32.dir}/*.dll"/>
+			<include if="${platform::is-win32()}" name="${libs.native.win32.dir}/*.dll"/>
 			
 			<!-- Note that all the Linux native deps should be installed by the distribution, 
 			so they aren't handled here.  We just assume they are there -->

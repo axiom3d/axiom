@@ -38,8 +38,8 @@
 			-->
 			<references>
 				<include name="${axiom3d.build.dir}/Axiom.dll"/>
-				<include name="${managed.directx.dir}/Microsoft.DirectX.dll"/>
-				<include name="${managed.directx.dir}/Microsoft.DirectX.DirectInput.dll"/>
+				<include name="${Microsoft.DirectX.dll}"/>
+				<include name="${Microsoft.DirectX.DirectInput.dll}"/>
 				<include name="System.dll"/>
 				<include name="System.Data.dll"/>
 				<include name="System.Drawing.dll"/>

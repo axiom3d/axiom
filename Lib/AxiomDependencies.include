@@ -26,20 +26,20 @@
 	  Define directory aliases for managed assemblies relative to the top-level libs dir 
 	  -->
     
-    <property name="managed.libs.topdir"		value="${path::combine(libs.topdir, 'Managed')}" 			dynamic="false" />
-    <property name="managed.libs.win32.dir" 	value="${path::combine(managed.libs.topdir, 'DotNet')}" 	dynamic="false" />
-	<property name="managed.libs.unix.dir" 		value="${path::combine(managed.libs.topdir, 'Mono')}" 		dynamic="false" />
+    <property name="libs.managed.topdir"		value="${path::combine(libs.topdir, 'Managed')}" 			dynamic="false" />
+    <property name="libs.managed.win32.dir" 	value="${path::combine(libs.managed.topdir, 'DotNet')}" 	dynamic="false" />
+	<property name="libs.managed.unix.dir" 		value="${path::combine(libs.managed.topdir, 'Mono')}" 		dynamic="false" />
 	
-    <property name="managed.libs.portable.dir" 	value="${path::combine(managed.libs.topdir, 'XPlatform')}" 	dynamic="false" />
+    <property name="libs.managed.portable.dir" 	value="${path::combine(libs.managed.topdir, 'XPlatform')}" 	dynamic="false" />
 
 	<!-- 
 	  Define directory aliases for native dependencies relative to the top-level libs dir
 	  -->
 	
-    <property name="native.libs.topdir" 		value="${path::combine(libs.topdir, 'Native')}" 			dynamic="false" />
-    <property name="native.libs.win32.dir" 		value="${path::combine(native.libs.topdir, 'Win32')}" 		dynamic="false" />
-	<property name="native.libs.unix.dir" 		value="${path::combine(native.libs.topdir, 'Linux')}" 		dynamic="false" />
-	<property name="native.libs.osx.dir" 		value="${path::combine(native.libs.topdir, 'OSX')}" 		dynamic="false" />
+    <property name="libs.native.topdir" 		value="${path::combine(libs.topdir, 'Native')}" 			dynamic="false" />
+    <property name="libs.native.win32.dir" 		value="${path::combine(libs.native.topdir, 'Win32')}" 		dynamic="false" />
+	<property name="libs.native.unix.dir" 		value="${path::combine(libs.native.topdir, 'Linux')}" 		dynamic="false" />
+	<property name="libs.native.osx.dir" 		value="${path::combine(libs.native.topdir, 'OSX')}" 		dynamic="false" />
     
 	<!-- TODO:  Define something for OSX here -->
 
@@ -52,74 +52,83 @@
 	<!--
 	  The following section is used to easily modify the version of the dependency used.
 	  -->
-	<property name="version.ICSharpCode.SharpZipLib" value="0.84.0.0" dynamic="false" />
-	<property name="version.Tao" 					 value="1.5.0.3"  dynamic="false" />
+	<property name="version.ICSharpCode.SharpZipLib" value="0.84.0.0"  dynamic="false" />
+	<property name="version.Tao" 					 value="1.5.0.3"   dynamic="false" />
+	<property name="version.ManagedDX"				 value="1.0.2902.0" dynamic="false" />
 	
-	<property name="managed.libs.ICSharpCode.SharpZipLib.dir"			value="${managed.libs.portable.dir}/ICSharpCode.SharpZipLib/${version.ICSharpCode.SharpZipLib}"	/>
-	<property name="managed.libs.Tao.dir"			 					value="${managed.libs.portable.dir}/Tao/${version.Tao}" />
+	<property name="libs.managed.ICSharpCode.SharpZipLib.dir"			value="${libs.managed.portable.dir}/ICSharpCode.SharpZipLib/${version.ICSharpCode.SharpZipLib}"	/>
+	<property name="libs.managed.Tao.dir"			 					value="${libs.managed.portable.dir}/Tao/${version.Tao}" />
 	
 	<!-- Windows only managed assemblies --> 
-	<property name="Tao.Platform.Windows.dll" value="${managed.libs.Tao.dir}/Tao.Platform.Windows.dll" dynamic="false" />
+	<property name="Tao.Platform.Windows.dll" value="${libs.managed.Tao.dir}/Tao.Platform.Windows.dll" dynamic="false" />
 
 	<!-- Portable managed assemblies -->
-	<property name="ICSharpCode.SharpZipLib.dll" value="${managed.libs.ICSharpCode.SharpZipLib.dir}/ICSharpCode.SharpZipLib.dll" dynamic="false" />
-	<property name="Tao.Cg.dll" value="${managed.libs.Tao.dir}/Tao.Cg.dll" dynamic="false" />
-	<property name="Tao.DevIl.dll"  value="${managed.libs.Tao.dir}/Tao.DevIl.dll" dynamic="false" />
-	<property name="Tao.OpenGl.dll" value="${managed.libs.Tao.dir}/Tao.OpenGl.dll" dynamic="false" />
-	<property name="Tao.OpenGl.ExtensionLoader.dll" value="${managed.libs.Tao.dir}/Tao.OpenGl.ExtensionLoader.dll" dynamic="false" />
-	<property name="Tao.OpenGl.Glu.dll" value="${managed.libs.Tao.dir}/Tao.OpenGl.Glu.dll" dynamic="false" />
-	<property name="Tao.Sdl.dll" value="${managed.libs.Tao.dir}/Tao.Sdl.dll" dynamic="false" />
+	<property name="ICSharpCode.SharpZipLib.dll" value="${libs.managed.ICSharpCode.SharpZipLib.dir}/ICSharpCode.SharpZipLib.dll" dynamic="false" />
+	<property name="Tao.Cg.dll" value="${libs.managed.Tao.dir}/Tao.Cg.dll" dynamic="false" />
+	<property name="Tao.DevIl.dll"  value="${libs.managed.Tao.dir}/Tao.DevIl.dll" dynamic="false" />
+	<property name="Tao.OpenGl.dll" value="${libs.managed.Tao.dir}/Tao.OpenGl.dll" dynamic="false" />
+	<property name="Tao.OpenGl.ExtensionLoader.dll" value="${libs.managed.Tao.dir}/Tao.OpenGl.ExtensionLoader.dll" dynamic="false" />
+	<property name="Tao.OpenGl.Glu.dll" value="${libs.managed.Tao.dir}/Tao.OpenGl.Glu.dll" dynamic="false" />
+	<property name="Tao.Sdl.dll" value="${libs.managed.Tao.dir}/Tao.Sdl.dll" dynamic="false" />
 
 	<!-- DLL-mapping config files for Mono.  
 	Defined as wildcards to catch all of them for each managed assembly, since they differ per linux distro 
 	Meant to be used inside a fileset directive. -->
-	<property name="Tao.Cg.dll.configs" value="${managed.libs.Tao.dir}/Tao.Cg.dll.config*" />
-	<property name="Tao.DevIl.dll.configs" value="${managed.libs.Tao.dir}/Tao.DevIl.dll.config*" />
-	<property name="Tao.OpenGl.dll.configs" value="${managed.libs.Tao.dir}/Tao.OpenGl.dll.config*" />
-	<property name="Tao.OpenGl.ExtensionLoader.dll.configs" value="${managed.libs.Tao.dir}/Tao.OpenGl.ExtensionLoader.dll.config*" />
-	<property name="Tao.OpenGl.Glu.dll.configs" value="${managed.libs.Tao.dir}/Tao.OpenGl.Glu.dll.config*" />
-	<property name="Tao.Sdl.dll.configs" value="${managed.libs.Tao.dir}/Tao.Sdl.dll.config*" />
+	<property name="Tao.Cg.dll.configs" value="${libs.managed.Tao.dir}/Tao.Cg.dll.config*" />
+	<property name="Tao.DevIl.dll.configs" value="${libs.managed.Tao.dir}/Tao.DevIl.dll.config*" />
+	<property name="Tao.OpenGl.dll.configs" value="${libs.managed.Tao.dir}/Tao.OpenGl.dll.config*" />
+	<property name="Tao.OpenGl.ExtensionLoader.dll.configs" value="${libs.managed.Tao.dir}/Tao.OpenGl.ExtensionLoader.dll.config*" />
+	<property name="Tao.OpenGl.Glu.dll.configs" value="${libs.managed.Tao.dir}/Tao.OpenGl.Glu.dll.config*" />
+	<property name="Tao.Sdl.dll.configs" value="${libs.managed.Tao.dir}/Tao.Sdl.dll.config*" />
 
 	<!-- Windows native libraries -->
-	<property name="cg.dll" value="${native.libs.win32.dir}/cg.dll" dynamic="false" />
-	<property name="cgGL.dll" value="${native.libs.win32.dir}/cgGL.dll" dynamic="false" />
-	<property name="DevIL.dll" value="${native.libs.win32.dir}/DevIL.dll" dynamic="false" />
-	<property name="freeglut.dll" value="${native.libs.win32.dir}/freeglut.dll" dynamic="false" />
-	<property name="glfw.dll" value="${native.libs.win32.dir}/glfw.dll" dynamic="false" />
-	<property name="ILU.dll" value="${native.libs.win32.dir}/ILU.dll" dynamic="false" />
-	<property name="ILUT.dll" value="${native.libs.win32.dir}/ILUT.dll" dynamic="false" />
-	<property name="jpeg.dll" value="${native.libs.win32.dir}/jpeg.dll" dynamic="false" />
-	<property name="libpng12.dll" value="${native.libs.win32.dir}/libpng12.dll" dynamic="false" />
-	<property name="nvparse.dll" value="${native.libs.win32.dir}/nvparse.dll" dynamic="false" />
-	<property name="OpenAL32.dll" value="${native.libs.win32.dir}/OpenAL32.dll" dynamic="false" />
-	<property name="SDL.dll" value="${native.libs.win32.dir}/SDL.dll" dynamic="false" />
-	<property name="SDL_gfx.dll" value="${native.libs.win32.dir}/SDL_gfx.dll" dynamic="false" />
-	<property name="SDL_image.dll" value="${native.libs.win32.dir}/SDL_image.dll" dynamic="false" />
-	<property name="SDL_mixer.dll" value="${native.libs.win32.dir}/SDL_mixer.dll" dynamic="false" />
-	<property name="SDL_net.dll" value="${native.libs.win32.dir}/SDL_net.dll" dynamic="false" />
-	<property name="SDL_ttf.dll" value="${native.libs.win32.dir}/SDL_ttf.dll" dynamic="false" />
-	<property name="smpeg.dll" value="${native.libs.win32.dir}/smpeg.dll" dynamic="false" />
-	<property name="wrap_oal.dll" value="${native.libs.win32.dir}/wrap_oal.dll" dynamic="false" />
-	<property name="zlib1.dll" value="${native.libs.win32.dir}/zlib1.dll" dynamic="false" />
+	<property name="cg.dll" value="${libs.native.win32.dir}/cg.dll" dynamic="false" />
+	<property name="cgGL.dll" value="${libs.native.win32.dir}/cgGL.dll" dynamic="false" />
+	<property name="DevIL.dll" value="${libs.native.win32.dir}/DevIL.dll" dynamic="false" />
+	<property name="freeglut.dll" value="${libs.native.win32.dir}/freeglut.dll" dynamic="false" />
+	<property name="glfw.dll" value="${libs.native.win32.dir}/glfw.dll" dynamic="false" />
+	<property name="ILU.dll" value="${libs.native.win32.dir}/ILU.dll" dynamic="false" />
+	<property name="ILUT.dll" value="${libs.native.win32.dir}/ILUT.dll" dynamic="false" />
+	<property name="jpeg.dll" value="${libs.native.win32.dir}/jpeg.dll" dynamic="false" />
+	<property name="libpng12.dll" value="${libs.native.win32.dir}/libpng12.dll" dynamic="false" />
+	<property name="nvparse.dll" value="${libs.native.win32.dir}/nvparse.dll" dynamic="false" />
+	<property name="OpenAL32.dll" value="${libs.native.win32.dir}/OpenAL32.dll" dynamic="false" />
+	<property name="SDL.dll" value="${libs.native.win32.dir}/SDL.dll" dynamic="false" />
+	<property name="SDL_gfx.dll" value="${libs.native.win32.dir}/SDL_gfx.dll" dynamic="false" />
+	<property name="SDL_image.dll" value="${libs.native.win32.dir}/SDL_image.dll" dynamic="false" />
+	<property name="SDL_mixer.dll" value="${libs.native.win32.dir}/SDL_mixer.dll" dynamic="false" />
+	<property name="SDL_net.dll" value="${libs.native.win32.dir}/SDL_net.dll" dynamic="false" />
+	<property name="SDL_ttf.dll" value="${libs.native.win32.dir}/SDL_ttf.dll" dynamic="false" />
+	<property name="smpeg.dll" value="${libs.native.win32.dir}/smpeg.dll" dynamic="false" />
+	<property name="wrap_oal.dll" value="${libs.native.win32.dir}/wrap_oal.dll" dynamic="false" />
+	<property name="zlib1.dll" value="${libs.native.win32.dir}/zlib1.dll" dynamic="false" />
 
     <!-- Paths for Managed DirectX -->
     <!-- NOTE: Points to the location of the Managed DirectX assemblies.  If you
 		 receive error messages relating to missing DirectX assemblies, check
 		 here first.
-		 This requires the DirectX SDK to be installed
     -->
-    <property name="directx.sdk.dir" value="${environment::get-variable('DXSDK_DIR')}" dynamic="true" />
-    <property name="managed.directx.dir" value="${path::combine(directx.sdk.dir, 'Developer Runtime/x86/DirectX for Managed Code')}" dynamic="true" />
-    <!-- alternate settings
-    <property name="win.sys.root" value="${environment::get-variable('SystemRoot')}" dynamic="true" />
-    <property name="directx.dir" value="${path::combine(win.sys.root, 'Microsoft.NET/Managed DirectX/v9.02.2904')}" dynamic="true" />
-    -->
-    
-    <!-- Paths for XNA Assemblies -->
-    <!-- NOTE: Points to the location of the Managed DirectX assemblies.  If you
-		 receive error messages relating to missing DirectX assemblies, check
+	
+	<!-- Location of the assemblies if the SDK is installed -->
+	<if test="${environment::variable-exists('DXSDK_DIR')}">
+		<property name="directx.sdk.dir" value="${environment::get-variable('DXSDK_DIR')}" dynamic="false" />
+		<property name="libs.managed.directx.dir" value="${path::combine(directx.sdk.dir, 'Developer Runtime/x86/DirectX for Managed Code')}" dynamic="false" />
+	</if>
+   
+	<!-- Location of the assemblies if just the runtime is installed -->
+	<ifnot test="${environment::variable-exists('DXSDK_DIR')}">
+		<property name="win.sys.root" value="${environment::get-variable('SystemRoot')}" dynamic="true" />
+		<property name="libs.managed.directx.dir" value="${path::combine(win.sys.root, 'Microsoft.NET/Managed DirectX/${version.ManagedDX}')}" dynamic="true" />
+	</ifnot>
+
+	<property name="Microsoft.DirectX.dll" value="${libs.managed.directx.dir}/Microsoft.DirectX.dll" dynamic="false"/>
+	<property name="Microsoft.DirectX.DirectInput.dll" value="${libs.managed.directx.dir}/Microsoft.DirectX.DirectInput.dll" dynamic="false"/>
+	<property name="Microsoft.DirectX.Direct3D.dll" value="${libs.managed.directx.dir}/Microsoft.DirectX.Direct3D.dll" dynamic="false"/>
+		   
+	<!-- Paths for XNA Assemblies -->
+    <!-- NOTE: Points to the location of the XNA assemblies.  If you
+		 receive error messages relating to missing XNA assemblies, check
 		 here first.
-		 This requires the DirectX SDK to be installed
     -->
-    <property name="xna.dir" value="C:\Program Files\Microsoft XNA\XNA Game Studio Express\v1.0\References\Windows\x86" dynamic="true" />
+    <property name="libs.managed.xna.dir" value="C:\Program Files\Microsoft XNA\XNA Game Studio Express\v1.0\References\Windows\x86" dynamic="true" />
 </project>
