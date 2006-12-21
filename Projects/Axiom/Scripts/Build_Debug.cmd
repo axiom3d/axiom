@@ -1,1 +1,1 @@
-..\..\..\BuildSupport\NAnt\bin\NAnt -buildfile:..\Axiom3D.build debug build.axiom3d 
+..\..\..\BuildSupport\NAnt\bin\NAnt -buildfile:..\Axiom.build debug build.axiom 

@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<project name="Axiom3D" default="build.all">
+<project name="Axiom" default="build.all">
 
 	<!-- set build.date property to current date in format yyyy-MM-dd -->
 	<tstamp property="build.date" pattern="yyyy-MM-dd" />
@@ -134,7 +134,7 @@
 		<mkdir dir="${build.dir}" />
 	</target>
 
-	<target name="build.all" depends="build.axiom3d" description="Build everything"/>
+	<target name="build.all" depends="build.axiom" description="Build everything"/>
 
 	<!-- END: General build tasks -->
 
@@ -174,26 +174,25 @@
 	</target>
 
 	<!-- BEGIN: Axiom3D core build tasks -->
-	<target name="build.axiom3d.setup" depends="build.setup" unless="${target::has-executed('build.axiom3d.setup')}" description="Sets up build area">
+	<target name="build.axiom.setup" depends="build.setup" unless="${target::has-executed('build.axiom.setup')}" description="Sets up build area">
 		<!-- 
 			Define build directory for Axiom3D projects - Note: this is all the 
 			assemblies considered 'core' to the Axiom engine.
 			Note 2: This is left over from the original single master build file and is redundant.
 		-->
-		<!-- <property name="axiom3d.build.dir" value="${path::combine(build.dir, 'Axiom3D')}" /> -->
-		<property name="axiom3d.build.dir" value="${build.dir}" />
+		<property name="axiom.build.dir" value="${build.dir}" />
 
 		<!-- ensure Axiom3D build directory exists -->
-		<mkdir dir="${axiom3d.build.dir}" />
+		<mkdir dir="${axiom.build.dir}" />
 	</target>
 
-	<target name="build.axiom3d" depends="build.axiom3d.setup" description="Builds the Axiom3D engine for the current build configuration">
+	<target name="build.axiom" depends="build.axiom.setup" description="Builds the Axiom3D engine for the current build configuration">
 		<!-- Call required targets in order -->
 		<!-- 
 			Call targets building Windows-specific assemblies only on 
 			Windows - should really add this logic to the target instead 
 		-->
-		<call target="build.axiom" />
+		<call target="build.axiom.engine" />
 		<call target="build.axiom.platforms.win32" if="${platform::is-win32()}" />
 		<call target="build.axiom.platforms.sdl" />
 		<call target="build.axiom.plugins.cgprogrammanager" />
@@ -206,61 +205,61 @@
 	</target>
 
 	<!-- Build targets for the individual Axiom3D assemblies -->
-	<target name="build.axiom" description="Build Axiom assembly"  unless="${target::has-executed('build.axiom')}">
+	<target name="build.axiom.engine" description="Build Axiom Main assembly"  unless="${target::has-executed('build.axiom.engine')}">
 		<nant target="build">
 			<buildfiles refid="axiom.engine.buildfile"/>
 		</nant>
 	</target>
 
-	<target name="build.axiom.platforms.win32" description="Build Axiom.Platforms.Win32 assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.platforms.win32')}">
+	<target name="build.axiom.platforms.win32" description="Build Axiom.Platforms.Win32 assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.platforms.win32')}">
 		<nant target="build">
 			<buildfiles refid="axiom.platforms.win32.buildfile"/>
 		</nant>
 	</target>
 
-	<target name="build.axiom.platforms.sdl" description="Build Axiom.Platforms.SDL assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.platforms.sdl')}">
+	<target name="build.axiom.platforms.sdl" description="Build Axiom.Platforms.SDL assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.platforms.sdl')}">
 		<nant target="build">
 			<buildfiles refid="axiom.platforms.sdl.buildfile"/>
 		</nant>
 	</target>
 
-	<target name="build.axiom.plugins.cgprogrammanager" description="Build Axiom.Plugins.CgProgramManager assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.plugins.cgprogrammanager')}">
+	<target name="build.axiom.plugins.cgprogrammanager" description="Build Axiom.Plugins.CgProgramManager assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.plugins.cgprogrammanager')}">
 		<nant target="build">
 			<buildfiles refid="axiom.plugins.cgprogrammanager.buildfile"/>
 		</nant>
 	</target>
 
-	<target name="build.axiom.plugins.particlefx" description="Build Axiom.Plugins.ParticleFX assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.plugins.particlefx')}">
+	<target name="build.axiom.plugins.particlefx" description="Build Axiom.Plugins.ParticleFX assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.plugins.particlefx')}">
 		<nant target="build">
 			<buildfiles refid="axiom.plugins.particlefx.buildfile"/>
 		</nant>
 	</target>
 
-	<target name="build.axiom.rendersystems.directx9" description="Build Axiom.RenderSystems.DirectX9 assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.rendersystems.directx9')}">
+	<target name="build.axiom.rendersystems.directx9" description="Build Axiom.RenderSystems.DirectX9 assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.rendersystems.directx9')}">
 		<nant target="build">
 			<buildfiles refid="axiom.rendersystems.directx9.buildfile"/>
 		</nant>
 	</target>
 
-	<target name="build.axiom.rendersystems.opengl" description="Build Axiom.RenderSystems.OpenGL assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.rendersystems.opengl')}">
+	<target name="build.axiom.rendersystems.opengl" description="Build Axiom.RenderSystems.OpenGL assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.rendersystems.opengl')}">
 		<nant target="build">
 			<buildfiles refid="axiom.rendersystems.opengl.buildfile"/>
 		</nant>
 	</target>
 
-	<target name="build.axiom.scenemanagers.bsp" description="Build Axiom.SceneManagers.Bsp assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.scenemanagers.bsp')}">
+	<target name="build.axiom.scenemanagers.bsp" description="Build Axiom.SceneManagers.Bsp assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.scenemanagers.bsp')}">
 		<nant target="build">
 			<buildfiles refid="axiom.scenemanagers.bsp.buildfile"/>
 		</nant>
 	</target>
 
-	<target name="build.axiom.scenemanagers.octree" description="Build Axiom.SceneManagers.Octree assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.scenemanagers.octree')}">
+	<target name="build.axiom.scenemanagers.octree" description="Build Axiom.SceneManagers.Octree assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.scenemanagers.octree')}">
 		<nant target="build">
 			<buildfiles refid="axiom.scenemanagers.octree.buildfile"/>
 		</nant>
 	</target>
 
-	<target name="build.axiom.scenemanagers.paginglandscape" description="Build Axiom.SceneManagers.PagingLandscape assembly" depends="build.axiom" unless="${target::has-executed('build.axiom.scenemanagers.paginglandscape')}">
+	<target name="build.axiom.scenemanagers.paginglandscape" description="Build Axiom.SceneManagers.PagingLandscape assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.scenemanagers.paginglandscape')}">
 		<nant target="build">
 			<buildfiles refid="axiom.scenemanagers.paginglandscape.buildfile"/>
 		</nant>

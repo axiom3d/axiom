@@ -19,7 +19,7 @@
 		<property name="verbose" value="false" />
 	 
 		<!-- build -->
-		<csc target="library" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" verbose="${verbose}" output="${axiom3d.build.dir}/${project::get-name()}.dll" doc="${axiom3d.build.dir}/${project::get-name()}.xml">
+		<csc target="library" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" verbose="${verbose}" output="${axiom.build.dir}/${project::get-name()}.dll" doc="${axiom.build.dir}/${project::get-name()}.xml">
 			<nowarn>
 				<!-- do not report warnings for missing XML comments -->
 				<warning number="1591" />
@@ -37,7 +37,7 @@
 			</resources>
 		-->
 			<references>
-				<include name="${axiom3d.build.dir}/Axiom.dll"/>
+				<include name="${axiom.build.dir}/Axiom.dll"/>
 				<include name="System.dll"/>
 				<include name="System.Data.dll"/>
 				<include name="System.Xml.dll"/>
