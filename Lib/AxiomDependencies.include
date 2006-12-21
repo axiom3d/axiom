@@ -110,20 +110,21 @@
     -->
 	
 	<!-- Location of the assemblies if the SDK is installed -->
-	<if test="${environment::variable-exists('DXSDK_DIR')}">
+	<if test="${environment::variable-exists('DXSDK_DIR') == true}">
 		<property name="directx.sdk.dir" value="${environment::get-variable('DXSDK_DIR')}" dynamic="false" />
 		<property name="libs.managed.directx.dir" value="${path::combine(directx.sdk.dir, 'Developer Runtime/x86/DirectX for Managed Code')}" dynamic="false" />
 	</if>
    
 	<!-- Location of the assemblies if just the runtime is installed -->
-	<ifnot test="${environment::variable-exists('DXSDK_DIR')}">
+	<if test="${environment::variable-exists('DXSDK_DIR') != true}">
 		<property name="win.sys.root" value="${environment::get-variable('SystemRoot')}" dynamic="true" />
 		<property name="libs.managed.directx.dir" value="${path::combine(win.sys.root, 'Microsoft.NET/Managed DirectX/${version.ManagedDX}')}" dynamic="true" />
-	</ifnot>
+	</if>
 
 	<property name="Microsoft.DirectX.dll" value="${libs.managed.directx.dir}/Microsoft.DirectX.dll" dynamic="false"/>
 	<property name="Microsoft.DirectX.DirectInput.dll" value="${libs.managed.directx.dir}/Microsoft.DirectX.DirectInput.dll" dynamic="false"/>
 	<property name="Microsoft.DirectX.Direct3D.dll" value="${libs.managed.directx.dir}/Microsoft.DirectX.Direct3D.dll" dynamic="false"/>
+	<property name="Microsoft.DirectX.Direct3DX.dll" value="${libs.managed.directx.dir}/Microsoft.DirectX.Direct3DX.dll" dynamic="false"/>
 		   
 	<!-- Paths for XNA Assemblies -->
     <!-- NOTE: Points to the location of the XNA assemblies.  If you
