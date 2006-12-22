@@ -33,33 +33,8 @@
 	<!-- named project configurations -->
 
 	<!-- Master build and dist output dirs -->
-	<property name="top.build.dir" value="${project::get-base-directory()}/../build" dynamic="true" />
-	<property name="top.dist.dir" value="${project::get-base-directory()}/../dist" dynamic="true" />
-
-	<!-- 
-		Sets config parameters for build type and dynamically defines top-level 
-		build output directory based on target framework,platform,project name,
-		build type and version.
-		For example, on Linux running mono 1.1, the top-level build dir would be:
-		build/mono-1.0.unix/Axiom3D-1.06-debug
-	-->
-	<target name="debug" description="Perform a 'debug' build">
-		<property name="project.config" value="debug" />
-		<property name="build.debug" value="true" />
-		<!--	<property name="build.dir" value="${project::get-base-directory()}/build/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" /> -->
-		<property name="build.dir" value="${top.build.dir}/${project.config}" />
-		<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" />
-		<property name="axiom.assemblies.dir" value="${axiom.assemblies.topdir}/${project.config}" />
-	</target>
-
-	<target name="release" description="Perform a 'release' build">
-		<property name="project.config" value="release" />
-		<property name="build.debug" value="false" />
-		<!--	<property name="build.dir" value="${project::get-base-directory()}/build/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" /> -->
-		<property name="build.dir" value="${top.build.dir}/${project.config}" />
-		<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" />
-		<property name="axiom.assemblies.dir" value="${axiom.assemblies.topdir}/${project.config}" />
-	</target>
+	<property name="top.build.dir" value="${project::get-base-directory()}/build" dynamic="true" />
+	<property name="top.dist.dir" value="${project::get-base-directory()}/dist" dynamic="true" />
 
 	<!-- global build settings -->
 	<!-- Note: build.dir is dynamic and is defined in the named project configuration tasks (eg. debug, release) -->
@@ -77,6 +52,23 @@
 	<!-- platform specific properties. These are the defaults -->
 	<property name="current.build.defines" value="${build.defines}" />
 
+	<property name="build.dir" value="${top.build.dir}/${project.config}" />
+	<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" />
+	<property name="axiom.assemblies.dir" value="${axiom.assemblies.topdir}/${project.config}" />
+	<!-- 
+		Sets config parameters for build type and dynamically defines top-level 
+		build output directory based on target framework,platform,project name,
+		build type and version.
+	-->
+	<target name="debug" description="Perform a 'debug' build">
+		<property name="project.config" value="debug" />
+		<property name="build.debug" value="true" />
+	</target>
+
+	<target name="release" description="Perform a 'release' build">
+		<property name="project.config" value="release" />
+		<property name="build.debug" value="false" />
+	</target>
 
 	<!-- Buildfile aliases for sub-projects of the solution -->
 	<!-- 
@@ -159,7 +151,7 @@
 		<!-- 
 			Define build directory for Axiom Demos
 		-->
-		<property name="axiom.demos.build.dir" value="${path::combine(build.dir, 'AxiomDemos')}" />
+		<property name="axiom.demos.build.dir" value="${build.dir}" />
 
 		<!-- ensure Axiom Demos build directory exists -->
 		<mkdir dir="${axiom.demos.build.dir}" />

@@ -22,8 +22,8 @@
 		</Configuration>
 
 		<Files>
-			<Match pattern="Axiom.build" path="." recurse="true" />
-			<Match pattern="Prebuild.xml" path="" />
+			<Match pattern="Axiom.build" path="" />
+			<Match pattern="Axiom.prebuild" path="" />
 		</Files>
 
 		<Project name="Axiom" type="Library" path="Source/Engine" language="C#" runtime="Microsoft" >		
