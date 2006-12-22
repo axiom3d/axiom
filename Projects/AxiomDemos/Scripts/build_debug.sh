@@ -1,3 +1,3 @@
 #!/bin/sh
 
-mono ../../../BuildSupport/nAnt/bin/NAnt.exe -buildfile:../Axiom.build debug build.axiom3d
+mono ../../../BuildSupport/nAnt/bin/NAnt.exe -buildfile:../Axiom.Demos.build debug build.all

@@ -1,4 +1,4 @@
 #!/bin/sh
 
-mono ../../../BuildSupport/nAnt/bin/NAnt.exe -buildfile:../Axiom.build debug build.clean
+mono ../../../BuildSupport/nAnt/bin/NAnt.exe -buildfile:../Axiom.Demos.build debug build.clean
 

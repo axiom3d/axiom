@@ -1,1 +1,1 @@
-..\..\..\BuildSupport\NAnt\bin\NAnt -buildfile:..\Axiom.build release build.clean
+..\..\..\BuildSupport\NAnt\bin\NAnt -buildfile:..\Axiom.Demos.build release build.clean

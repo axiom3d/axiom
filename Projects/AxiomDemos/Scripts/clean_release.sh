@@ -1,3 +1,3 @@
 #!/bin/sh
 
-mono ../../../BuildSupport/nAnt/bin/NAnt.exe -buildfile:../Axiom.build release build.clean
+mono ../../../BuildSupport/nAnt/bin/NAnt.exe -buildfile:../Axiom.Demos.build release build.clean
