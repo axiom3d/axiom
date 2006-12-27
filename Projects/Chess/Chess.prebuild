@@ -21,6 +21,10 @@
 			</Options>
 		</Configuration>
 
+		<Files>
+			<Match pattern="*.build" path="." recurse="true" />
+		</Files>
+
 		<Project name="Axiom_Chess" type="Exe" path="Source" language="C#" runtime="Microsoft" >		
 			<Configuration name="Debug">
 				<Options>
@@ -66,8 +70,7 @@
 
 			<Files>
 				<Match pattern="EngineConfig.xml" path="" buildAction="None" copyToOutput="PreserveNewest" />
-                <Match pattern="imageset.xsd" path="" buildAction="None" copyToOutput="PreserveNewest" />
-                <Match pattern="Chess.prebuild" path=".." buildAction="None" copyToOutput="Never" />
+				<Match pattern="Chess.prebuild" path=".." buildAction="None" copyToOutput="Never" />
 				<Match pattern="Chess.build" path=".." buildAction="None" copyToOutput="Never" />
 				<Match pattern="*.*" path="../Media" buildAction="None" copyToOutput="PreserveNewest" recurse="true" link="true" preservePath="true">
 					<Exclude pattern=".svn" />
