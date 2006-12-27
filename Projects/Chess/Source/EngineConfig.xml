@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<EngineConfig xmlns="http://tempuri.org/EngineConfig.xsd">
+    <FilePath type="Folder" src="Media/Fonts"/>
+    <FilePath type="Folder" src="Media/Overlays"/>
+    <FilePath type="Folder" src="Media/Models"/>
+    <FilePath type="Folder" src="Media/Gui"/>
+    <FilePath type="Folder" src="Media/Materials"/>
+    <FilePath type="Folder" src="Media/Materials/Textures"/>
+</EngineConfig>
+ 

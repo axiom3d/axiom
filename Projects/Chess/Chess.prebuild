@@ -21,11 +21,7 @@
 			</Options>
 		</Configuration>
 
-		<Files>
-			<Match pattern="*.build" path="." recurse="true" />
-		</Files>
-
-		<Project name="Axiom_Chess" type="Exe" path="." language="C#" runtime="Microsoft" >		
+		<Project name="Axiom_Chess" type="Exe" path="Source" language="C#" runtime="Microsoft" >		
 			<Configuration name="Debug">
 				<Options>
 					<OutputPath>build/debug</OutputPath>
@@ -39,10 +35,10 @@
 				</Options>
 			</Configuration>
 
-			<ReferencePath>Dependencies/Axiom3D</ReferencePath>
-			<ReferencePath>Dependencies/CeGui#</ReferencePath>
-			<ReferencePath>Dependencies/Tao</ReferencePath>
-			<ReferencePath>Dependencies/ICSharpCode</ReferencePath>
+			<ReferencePath>../../../Lib/Managed/XPlatform/Axiom/debug</ReferencePath>
+			<ReferencePath>../../../Lib/Managed/XPlatform/ICSharpCode.SharpZipLib/0.84.0.0</ReferencePath>
+			<ReferencePath>../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
+			<ReferencePath>../../../Lib/Managed/XPlatform/CeGui#/1.0.2458.0</ReferencePath>
 
 			<Reference name="Axiom" />
 			<Reference name="Axiom.Plugins.ParticleFX" />
@@ -69,15 +65,17 @@
 			<Reference name="System.Xml" />
 
 			<Files>
-				<Match pattern="*.cs" path="Source" recurse="true"/>
-				<Match pattern="*.*" path="Media" buildAction="None" copyToOutput="PreserveNewest" recurse="true" >
+				<Match pattern="EngineConfig.xml" path="" buildAction="None" copyToOutput="PreserveNewest" />
+                <Match pattern="imageset.xsd" path="" buildAction="None" copyToOutput="PreserveNewest" />
+                <Match pattern="Chess.prebuild" path=".." buildAction="None" copyToOutput="Never" />
+				<Match pattern="Chess.build" path=".." buildAction="None" copyToOutput="Never" />
+				<Match pattern="*.*" path="../Media" buildAction="None" copyToOutput="PreserveNewest" recurse="true" link="true" preservePath="true">
 					<Exclude pattern=".svn" />
 					<Exclude pattern="Thumbs.db" />
 				</Match>
-				<Match pattern="EngineConfig.xml" path="" buildAction="None" copyToOutput="Always" />
-				<Match pattern="Prebuild.xml" path="" buildAction="None" copyToOutput="Never" />
-				<Match pattern="Yat.build" path="" buildAction="None" copyToOutput="Never" />
-                <Match pattern="devil.dll" path="../../../../Dependencies/Native/" buildAction="None" link="true" recurse="true" copyToOutput="PreserveNewest" />
+				<Match pattern="*.cs" path="" recurse="true"/>
+                <Match pattern="devil.dll" path="../../../Lib/Native/" buildAction="None" link="true" recurse="true" copyToOutput="PreserveNewest" />
+                <Match pattern="cg.dll" path="../../../Lib/Native/" buildAction="None" link="true" recurse="true" copyToOutput="PreserveNewest" />
 			</Files>
 		</Project>
 

@@ -88,6 +88,12 @@ namespace Chess
 		protected float camSpeed = 2.5f;
 		protected int aniso = 1;
 		protected TextureFiltering filtering = TextureFiltering.Bilinear;
+        protected string configFile = "EngineConfig.xml";
+        protected string logFile = "Engine.log";
+        protected string configTitle = ConfigDialog.DefaultTitle;
+        protected string configImage = ConfigDialog.DefaultImage;
+        protected string renderWindowTitle = "Axiom Render Window";
+
 
 		#endregion Protected Fields
 
@@ -131,7 +137,7 @@ namespace Chess
 		protected bool Configure() 
 		{
 			// HACK: Temporary
-            ConfigDialog dlg = new ConfigDialog();
+            ConfigDialog dlg = new ConfigDialog( configTitle, configImage );
             SWF.DialogResult result = dlg.ShowDialog();
             if ( result == SWF.DialogResult.Cancel )
                 return false;
@@ -190,7 +196,7 @@ namespace Chess
 		protected virtual bool Initialize() 
 		{
 			// instantiate the Root singleton
-			root = new Root("EngineConfig.xml", "AxiomEngine.log");
+			root = new Root( configFile, logFile );
 
 			// add event handlers for frame events
 			root.FrameStarted += new FrameEvent(OnFrameStarted);
@@ -207,7 +213,7 @@ namespace Chess
                 
 				return false;
 			}
-            window = Root.Instance.Initialize( true, "Chess in Axiom" );
+            window = Root.Instance.Initialize( true, renderWindowTitle );
 
 			ChooseSceneManager();
 
@@ -288,7 +294,7 @@ namespace Chess
             //
             // Again, we load all image sets we can find, this time searching the resources folder.
             string[] imageSetFiles = System.IO.Directory.GetFiles(
-              System.IO.Directory.GetCurrentDirectory() + @"\..\..\Media\Gui", "*.imageset"
+              System.IO.Directory.GetCurrentDirectory() + @"\Media\Gui", "*.imageset"
             );
             foreach ( string imageSetFile in imageSetFiles )
                 CeGui.ImagesetManager.Instance.CreateImageset( imageSetFile );

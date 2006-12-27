@@ -13,6 +13,9 @@ namespace Chess
 {
     public class ConfigDialog : SWF.Form
     {
+        public static string DefaultTitle = "Axiom Rendering Engine Config";
+        public static string DefaultImage = "AxiomLogoSmall.png";
+
         private Container components = null;
         private SWF.PictureBox picLogo;
         private SWF.GroupBox grpVideoOptions;
@@ -25,25 +28,29 @@ namespace Chess
         private SWF.Panel pnlBackground;
         private SWF.ComboBox cboRenderSystems;
 
-        public ConfigDialog()
+        public ConfigDialog(): this( DefaultTitle )
+        {
+        }
+
+        public ConfigDialog( string title ): this ( title, DefaultImage )
+        {
+        }
+
+        public ConfigDialog( string title, string imageResource )
         {
             this.SetStyle( SWF.ControlStyles.DoubleBuffer, true );
             InitializeComponent();
 
             try
             {
-                Stream image = ResourceManager.FindCommonResourceData( "AxiomLogo.png" );
-                Stream icon = ResourceManager.FindCommonResourceData( "AxiomIcon.ico" );
+                Stream image = ResourceManager.FindCommonResourceData( imageResource );
 
                 if ( image != null )
                 {
                     this.picLogo.Image = System.Drawing.Image.FromStream( image, true );
                 }
 
-                if ( icon != null )
-                {
-                    this.Icon = new Icon( icon );
-                }
+                this.Text = title;
             }
             catch ( Exception )
             {
@@ -252,6 +259,7 @@ namespace Chess
             lstOptions.Items.Clear();
             cboOptionValues.Items.Clear();
             RenderSystem system = (RenderSystem)cboRenderSystems.SelectedItem;
+            ConfigOption optVideoMode;
 
             // Load Render Subsystem Options
             foreach ( ConfigOption option in system.ConfigOptions )

@@ -153,6 +153,12 @@ namespace Chess.Main
 
         protected override bool Initialize()
         {
+            this.configImage = "menu_logo.png";
+            this.configTitle = "Chess Configuration";
+            this.logFile = "Chess.log";
+            this.configFile = "EngineConfig.xml";
+            this.renderWindowTitle = "Chess for Axiom";
+        
             bool flag = base.Initialize();
 
             if ( flag )
