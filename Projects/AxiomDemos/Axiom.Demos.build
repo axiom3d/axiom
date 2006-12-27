@@ -63,11 +63,17 @@
 	<target name="debug" description="Perform a 'debug' build">
 		<property name="project.config" value="debug" />
 		<property name="build.debug" value="true" />
+		<property name="build.dir" value="${top.build.dir}/${project.config}" />
+		<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" />
+		<property name="axiom.assemblies.dir" value="${axiom.assemblies.topdir}/${project.config}" />
 	</target>
 
 	<target name="release" description="Perform a 'release' build">
 		<property name="project.config" value="release" />
 		<property name="build.debug" value="false" />
+		<property name="build.dir" value="${top.build.dir}/${project.config}" />
+		<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" />
+		<property name="axiom.assemblies.dir" value="${axiom.assemblies.topdir}/${project.config}" />
 	</target>
 
 	<!-- Buildfile aliases for sub-projects of the solution -->
