@@ -55,15 +55,19 @@
 	<property name="version.ICSharpCode.SharpZipLib" value="0.84.0.0"  dynamic="false" />
 	<property name="version.Tao" 					 value="1.5.0.3"   dynamic="false" />
 	<property name="version.ManagedDX"				 value="1.0.2902.0" dynamic="false" />
+	<property name="version.CeGui"					 value="1.0.2458.0" dynamic="false" />
 	
 	<property name="libs.managed.ICSharpCode.SharpZipLib.dir"			value="${libs.managed.portable.dir}/ICSharpCode.SharpZipLib/${version.ICSharpCode.SharpZipLib}"	/>
 	<property name="libs.managed.Tao.dir"			 					value="${libs.managed.portable.dir}/Tao/${version.Tao}" />
+	<property name="libs.managed.CeGui.dir"			 				value="${libs.managed.portable.dir}/CeGui#/${version.CeGui}" />
 	
 	<!-- Windows only managed assemblies --> 
 	<property name="Tao.Platform.Windows.dll" value="${libs.managed.Tao.dir}/Tao.Platform.Windows.dll" dynamic="false" />
 
 	<!-- Portable managed assemblies -->
+	
 	<property name="ICSharpCode.SharpZipLib.dll" value="${libs.managed.ICSharpCode.SharpZipLib.dir}/ICSharpCode.SharpZipLib.dll" dynamic="false" />
+	
 	<property name="Tao.Cg.dll" value="${libs.managed.Tao.dir}/Tao.Cg.dll" dynamic="false" />
 	<property name="Tao.DevIl.dll"  value="${libs.managed.Tao.dir}/Tao.DevIl.dll" dynamic="false" />
 	<property name="Tao.OpenGl.dll" value="${libs.managed.Tao.dir}/Tao.OpenGl.dll" dynamic="false" />
@@ -71,6 +75,12 @@
 	<property name="Tao.OpenGl.Glu.dll" value="${libs.managed.Tao.dir}/Tao.OpenGl.Glu.dll" dynamic="false" />
 	<property name="Tao.Sdl.dll" value="${libs.managed.Tao.dir}/Tao.Sdl.dll" dynamic="false" />
 
+	<property name="CeGui.dll"						value="${libs.managed.CeGui.dir}/CeGui.dll" dynamic="false" />
+	<property name="CeGui.Renderers.Axiom.dll"		value="${libs.managed.CeGui.dir}/CeGui.Renderers.Axiom.dll" dynamic="false" />
+	<property name="CeGui.WidgetSets.Suave.dll"		value="${libs.managed.CeGui.dir}/CeGui.WidgetSets.Suave.dll" dynamic="false" />
+	<property name="CeGui.WidgetSets.Windows.dll"	value="${libs.managed.CeGui.dir}/CeGui.WidgetSets.Windows.dll" dynamic="false" />
+	<property name="CeGui.WidgetSets.Taharez.dll"	value="${libs.managed.CeGui.dir}/CeGui.WidgetSets.Taharez.dll" dynamic="false" />
+	
 	<!-- DLL-mapping config files for Mono.  
 	Defined as wildcards to catch all of them for each managed assembly, since they differ per linux distro 
 	Meant to be used inside a fileset directive. -->
