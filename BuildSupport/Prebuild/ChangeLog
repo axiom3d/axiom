@@ -1,0 +1,17 @@
+2006-11-04T00:38  C.J. Adams-Collier <cjcollier@colliertech.org>
+	* placing AssemblyInfo.cs into Properties/
+	* Fixed double-mention of the package name
+
+2006-11-03T15:23  C.J. Adams-Collier <cjcollier@colliertech.org>
+	* corrected a problem in the Include.am generation code
+	* created the new .exe
+	* copied it to the root of the build
+	
+2006-11-03T14:57  C.J. Adams-Collier <cjcollier@colliertech.org>
+	* Updated the .exe file
+
+2006-11-03  C.J. Adams-Collier  <cjcollier@colliertech.org>
+	* Added a TODO file
+	* Added a ChangeLog file
+	* applied some fixes for autotools gac and pkg-config installation
+	problems
