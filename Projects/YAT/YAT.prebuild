@@ -7,7 +7,6 @@
 				<OptimizeCode>false</OptimizeCode>
 				<CheckUnderflowOverflow>false</CheckUnderflowOverflow>
 				<AllowUnsafe>false</AllowUnsafe>
-				<OutputPath>bin/Debug</OutputPath>
 				<WarningLevel>4</WarningLevel>
 				<WarningsAsErrors>false</WarningsAsErrors>
 				<SuppressWarnings>1595;1591;219;1573;1572;168;1574;1570;1587</SuppressWarnings>
@@ -25,7 +24,6 @@
 				<OptimizeCode>true</OptimizeCode>
 				<CheckUnderflowOverflow>false</CheckUnderflowOverflow>
 				<AllowUnsafe>false</AllowUnsafe>
-				<OutputPath>bin/Release</OutputPath>
 				<WarningLevel>4</WarningLevel>
 				<WarningsAsErrors>false</WarningsAsErrors>
 				<SuppressWarnings>1595;1591;219;1573;1572;168;1574;1570;1587</SuppressWarnings>
@@ -39,27 +37,23 @@
 		</Configuration>
 
 
-		<Project name="YAT" path="." type="WinExe" rootNamespace="YAT">
+		<Project name="YAT" path="Source" type="WinExe" rootNamespace="YAT">
 			<Configuration name="Debug">
 				<Options>
-				    <OutputPath>build/debug</OutputPath>
+				    <OutputPath>../../build/debug</OutputPath>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
 			<Configuration name="Release">
 				<Options>
-				    <OutputPath>build/release</OutputPath>
+				    <OutputPath>../../build/release</OutputPath>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
             
-<?if OS = "Win32" ?>
-		    <ReferencePath>../../../../Dependencies/Managed/DotNet</ReferencePath>
-		    <ReferencePath>../../../../Dependencies/Managed/DotNet/Axiom3D</ReferencePath>
-<?else ?>
-		    <ReferencePath>../../../../Dependencies/Managed/Mono</ReferencePath>
-		    <ReferencePath>../../../../Dependencies/Managed/Mono/Axiom3D</ReferencePath>			
-<?endif ?>
+			<ReferencePath>../../../Lib/Managed/XPlatform/Axiom/debug</ReferencePath>
+			<ReferencePath>../../../Lib/Managed/XPlatform/ICSharpCode.SharpZipLib/0.84.0.0</ReferencePath>
+			<ReferencePath>../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
             
 			<Reference name="System"/>
 			<Reference name="System.Data"/>
@@ -78,15 +72,15 @@
 
 
             <Files>
-				<Match pattern="EngineConfig.xml" path="" buildAction="None" copyToOutput="Never" />
-				<Match pattern="Prebuild.xml" path="" buildAction="None" copyToOutput="Never" />
-				<Match pattern="Yat.build" path="" buildAction="None" copyToOutput="Never" />
-				<Match pattern="*.*" path="Media" buildAction="None" copyToOutput="PreserveNewest" recurse="true" >
+				<Match pattern="EngineConfig.xml" path="" buildAction="None" copyToOutput="PreserveNewest" />
+				<Match pattern="YAT.Prebuild" path=".." buildAction="None" copyToOutput="Never" />
+				<Match pattern="Yat.build" path=".." buildAction="None" copyToOutput="Never" />
+				<Match pattern="*.*" path="../Media" buildAction="None" copyToOutput="PreserveNewest" recurse="true" link="true" preservePath="true">
 					<Exclude pattern=".svn" />
 					<Exclude pattern="Thumbs.db" />
 				</Match>
-				<Match pattern="*.cs" path="Source" recurse="true"/>
-                <Match pattern="devil.dll" path="../../../../Dependencies/Native/" buildAction="None" link="true" recurse="true" copyToOutput="PreserveNewest" />
+				<Match pattern="*.cs" path="" recurse="true"/>
+                <Match pattern="devil.dll" path="../../../Lib/Native/" buildAction="None" link="true" recurse="true" copyToOutput="PreserveNewest" />
             </Files>
 		</Project>
 		
