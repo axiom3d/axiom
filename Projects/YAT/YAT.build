@@ -49,6 +49,9 @@
 	<!-- platform specific properties. These are the defaults -->
 	<property name="current.build.defines" value="${build.defines}" />
 
+	<property name="build.dir" value="${top.build.dir}/${project.config}" />
+	<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" />
+	<property name="axiom.assemblies.dir" value="${axiom.assemblies.topdir}/${project.config}" />
 	<!-- END: global build settings -->
 
 
@@ -64,17 +67,11 @@
 	<target name="debug" description="Perform a 'debug' build">
 		<property name="project.config" value="debug" />
 		<property name="build.debug" value="true" />
-		<property name="build.dir" value="${top.build.dir}/${project.config}" />
-		<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" />
-		<property name="axiom3d.assemblies.dir" value="${axiom3d.assemblies.topdir}/${project.config}" />
 	</target>
 
 	<target name="release" description="Perform a 'release' build">
 		<property name="project.config" value="release" />
 		<property name="build.debug" value="false" />
-		<property name="build.dir" value="${top.build.dir}/${project.config}" />
-		<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" />
-		<property name="axiom3d.assemblies.dir" value="${axiom3d.assemblies.topdir}/${project.config}" />
 	</target>
 
 	<!-- END: named project configurations -->
@@ -111,7 +108,7 @@
 	<!-- BEGIN: YAT build tasks -->
 	<target name="references.setup" description="Sets up file references for the project's tasks" unless="${target::has-executed('references.setup')}">
 		<fileset id="yat.build.references">
-			<include name="${axiom3d.assemblies.dir}/Axiom.dll"/>
+			<include name="${axiom.assemblies.dir}/Axiom.dll"/>
 
 			<include name="System.dll"/>
 			<include name="System.Data.dll"/>
@@ -122,14 +119,14 @@
 		</fileset>
 
 		<fileset id="yat.runtime.references">
-			<include name="${axiom3d.assemblies.dir}/Axiom.dll"/>
-			<include name="${axiom3d.assemblies.dir}/Axiom.Plugins.CgProgramManager.dll"/>
-			<include name="${axiom3d.assemblies.dir}/Axiom.Plugins.ParticleFX.dll"/>
-			<include name="${axiom3d.assemblies.dir}/Axiom.RenderSystems.OpenGL.dll"/>
+			<include name="${axiom.assemblies.dir}/Axiom.dll"/>
+			<include name="${axiom.assemblies.dir}/Axiom.Plugins.CgProgramManager.dll"/>
+			<include name="${axiom.assemblies.dir}/Axiom.Plugins.ParticleFX.dll"/>
+			<include name="${axiom.assemblies.dir}/Axiom.RenderSystems.OpenGL.dll"/>
 
-			<include if="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.Platforms.Win32.dll"/>
-			<include if="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.RenderSystems.DirectX9.dll"/>
-			<include unless="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.Platforms.SDL.dll"/>
+			<include if="${platform::is-win32()}" name="${axiom.assemblies.dir}/Axiom.Platforms.Win32.dll"/>
+			<include if="${platform::is-win32()}" name="${axiom.assemblies.dir}/Axiom.RenderSystems.DirectX9.dll"/>
+			<include unless="${platform::is-win32()}" name="${axiom.assemblies.dir}/Axiom.Platforms.SDL.dll"/>
 
 			<include name="${ICSharpCode.SharpZipLib.dll}"/>
 
