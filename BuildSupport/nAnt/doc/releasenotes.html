@@ -54,6 +54,109 @@
             </tr>
         </table>
         <h2>
+            0.85 (October 14, 2006)</h2>
+        <h3>
+            Bug fixes</h3>
+        <h4>Framework&nbsp;support</h4>
+        <div style="margin-left: 20px;">
+            <h5>
+                <a class="heading" >.NET Compact Framework 2.0</a></h5>
+            <ul>
+                <li>
+                    Embedded resource files cannot be compiled when targeting 
+                    .NET Compact Framework 2.0 (bug <a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1533924&amp;group_id=31650&amp;atid=402868">#1533924</a>).
+                </li>
+            </ul>
+        </div>
+        <h4>Functions</h4>
+        <div style="margin-left: 20px;">
+            <h5>
+                <a class="heading" href="help/functions/file.is-assembly.html">file::is-assembly</a></h5>
+            <ul>
+                <li>
+                    Function call fails when a file name that does not correspond
+                    with an assembly is specified as argument.
+                </li>
+            </ul>
+        </div>
+        <h4>Tasks</h4>
+        <div style="margin-left: 20px;">
+            <h5>
+                <a class="heading" href="help/tasks/aximp.html">&lt;aximp&gt;</a></h5>
+            <ul>
+                <li>
+                    The value of the &quot;rcw&quot; attribute should be ignored when
+                    targeting .NET 1.0.
+                </li>
+            </ul>
+            <h5>
+                <a class="heading" href="help/tasks/csc.html">&lt;csc&gt;</a></h5>
+            <ul>
+                <li>
+                    Output is always rebuilt when &quot;keyfile&quot; attribute is set
+                    (bug <a href="https://sourceforge.net/tracker/?func=detail&amp;atid=402868&amp;aid=1550736&amp;group_id=31650">#1550736</a>).
+                </li>
+            </ul>
+            <h5>
+                <a class="heading" href="help/tasks/resgen.html">&lt;regen&gt;</a></h5>
+            <ul>
+                <li>
+                    Assembly reference are not taken into account to determine
+                    if the maximum length of the command line is exceeded
+                    (bug <a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1415272&amp;group_id=31650&amp;atid=402868">#1415272</a>).
+                </li>
+            </ul>
+            <h5>
+                <a class="heading" href="help/tasks/solution.html">&lt;solution&gt;</a></h5>
+            <ul>
+                <li>
+                    Runtime callable wrapper is not used when generating Windows 
+                    Forms control for ActiveX component that has no Primary 
+                    Interop Assembly.
+                </li>
+                <li>
+                    When importing a type library, [out, retval] parameters of 
+                    methods on dispatch-only interfaces (dispinterfaces) are
+                    not transformed into return values (bug <a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1527210&amp;group_id=31650&amp;atid=402868">#1527210</a>).
+                </li>
+                <li>
+                    Dependencies are not handled properly for Enterprise Template
+                    projects in Visual Studio .NET 2003 solutions (bug <a href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1534864&amp;group_id=31650&amp;atid=402868">#1534864</a>).
+                </li>
+            </ul>
+            <h5>
+                <a class="heading" href="help/tasks/unzip.html">&lt;unzip&gt;</a></h5>
+            <ul>
+                <li>
+                    Zip file containing zero-length files fails to extract
+                    (bug <a href="http://sourceforge.net/tracker/index.php?func=detail&aid=1503678&group_id=31650&atid=402868">#1503678</a>).
+                </li>
+            </ul>
+        </div>
+        <h3>Changes</h3>
+        <h4>Tasks</h4>
+        <div style="margin-left: 20px;">
+            <h5>
+                <a class="heading" href="help/tasks/tlbimp.html">&lt;tlbimp&gt;</a></h5>
+            <ul>
+                <li>
+                    Added &quot;transform&quot; attribute which sets the name
+                    of transform to use for transforming the metadata. [.NET 1.1 or higher]
+                </li>
+            </ul>
+        </div>
+        <div style="margin-left: 20px;">
+            <h5>
+                <a class="heading" href="help/tasks/vbc.html">&lt;vbc&gt;</a></h5>
+            <ul>
+                <li>
+                    Added &quot;nostdlib&quot; attribute which can be used to 
+                    instruct the compiler not to reference standard libraries
+                    (system.dll and VBC.RSP). [.NET 2.0 or higher]
+                </li>
+            </ul>
+        </div>
+        <h2>
             0.85-rc 4 (June 2, 2006)</h2>
         <h3>
             Framework&nbsp;support</h3>
@@ -301,6 +404,10 @@
                     commandline options of the C# compiler are now exposed as 
                     attributes.
                 </li>
+                <li>
+                    Added support for <code>/keycontainer</code> and <code>/keyfile</code>
+                    commandline options [Mono / .NET 2.0 or higher].
+                </li>
             </ul>
         </div>
         <div style="margin-left: 20px;">
@@ -308,7 +415,7 @@
                 <a class="heading" href="help/tasks/jsc.html">&lt;jsc&gt;</a></h5>
             <ul>
                 <li>
-                    The <code>/platform</code> commandline options of the JScript.NET
+                    The <code>/platform</code> commandline option of the JScript.NET
                     compiler is now exposed using the "platform" attribute.
                 </li>
             </ul>
@@ -347,8 +454,22 @@
                 <a class="heading" href="help/tasks/vbc.html">&lt;vbc&gt;</a></h5>
             <ul>
                 <li>
-                    The <code>/platform</code> commandline options of the VB.NET
-                    compiler is now exposed using the "platform" attribute.
+                    The <code>/platform</code> commandline option of the VB.NET
+                    compiler is now exposed using the "platform" attribute. [.NET 2.0 or higher]
+                </li>
+                <li>
+                    Added support for <code>/keycontainer</code> and <code>/keyfile</code>
+                    commandline options. [.NET 2.0 or higher]
+                </li>
+            </ul>
+        </div>
+        <div style="margin-left: 20px;">
+            <h5>
+                <a class="heading" href="help/tasks/vjc.html">&lt;vjc&gt;</a></h5>
+            <ul>
+                <li>
+                    Added support for <code>/keycontainer</code> and <code>/keyfile</code>
+                    commandline options.
                 </li>
             </ul>
         </div>

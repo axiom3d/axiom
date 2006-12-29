@@ -2708,7 +2708,6 @@
             <exception cref="T:System.ArgumentException"><paramref name="assemblyFile"/> is an empty <see cref="T:System.String"/>.</exception>
             <exception cref="T:System.IO.FileNotFoundException"><paramref name="assemblyFile"/> is not found, or the file you are trying to check does not specify a filename extension.</exception>
             <exception cref="T:System.Security.SecurityException">The caller does not have path discovery permission.</exception>
-            <exception cref="T:System.IO.FileLoadException">The file could not be loaded for some reason.</exception>
         </member>
         <member name="T:NAnt.Core.Functions.FileVersionInfoFunctions">
             <summary>
@@ -12351,6 +12350,778 @@
             The column coordinate of the position.
             </summary>
         </member>
+        <member name="T:NAnt.Core.Level">
+            <summary>
+            Defines the set of levels recognised by the NAnt logging system.
+            </summary>
+        </member>
+        <member name="F:NAnt.Core.Level.Debug">
+            <summary>
+            Designates fine-grained informational events that are most useful 
+            to debug a build process.
+            </summary>
+        </member>
+        <member name="F:NAnt.Core.Level.Verbose">
+            <summary>
+            Designates events that offer a more detailed view of the build 
+            process.
+            </summary>
+        </member>
+        <member name="F:NAnt.Core.Level.Info">
+            <summary>
+            Designates informational events that are useful for getting a 
+            high-level view of the build process.
+            </summary>
+        </member>
+        <member name="F:NAnt.Core.Level.Warning">
+            <summary>
+            Designates potentionally harmful events.
+            </summary>
+        </member>
+        <member name="F:NAnt.Core.Level.Error">
+            <summary>
+            Designates error events.
+            </summary>
+        </member>
+        <member name="F:NAnt.Core.Level.None">
+            <summary>
+            Can be used to suppress all messages.
+            </summary>
+            <remarks>
+            No events should be logged with this <see cref="T:NAnt.Core.Level"/>.
+            </remarks>
+        </member>
+        <member name="T:NAnt.Core.BuildEventArgs">
+            <summary>
+            Class representing an event occurring during a build.
+            </summary>
+            <remarks>
+            <para>
+            An event is built by specifying either a project, a task or a target.
+            </para>
+            <para>
+            A <see cref="P:NAnt.Core.BuildEventArgs.Project"/> level event will only have a <see cref="P:NAnt.Core.BuildEventArgs.Project"/> 
+            reference.
+            </para>
+            <para>
+            A <see cref="P:NAnt.Core.BuildEventArgs.Target"/> level event will have <see cref="P:NAnt.Core.BuildEventArgs.Project"/> and 
+            <see cref="P:NAnt.Core.BuildEventArgs.Target"/> references.
+            </para>
+            <para>
+            A <see cref="P:NAnt.Core.BuildEventArgs.Task"/> level event will have <see cref="P:NAnt.Core.BuildEventArgs.Project"/>, 
+            <see cref="P:NAnt.Core.BuildEventArgs.Target"/> and <see cref="P:NAnt.Core.BuildEventArgs.Task"/> references.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:NAnt.Core.BuildEventArgs.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.Core.BuildEventArgs"/> 
+            class.
+            </summary>
+        </member>
+        <member name="M:NAnt.Core.BuildEventArgs.#ctor(NAnt.Core.Project)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.Core.BuildEventArgs"/>
+            class for a <see cref="P:NAnt.Core.BuildEventArgs.Project"/> level event.
+            </summary>
+            <param name="project">The <see cref="P:NAnt.Core.BuildEventArgs.Project"/> that emitted the event.</param>
+        </member>
+        <member name="M:NAnt.Core.BuildEventArgs.#ctor(NAnt.Core.Target)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.Core.BuildEventArgs"/>
+            class for a <see cref="P:NAnt.Core.BuildEventArgs.Target"/> level event.
+            </summary>
+            <param name="target">The <see cref="P:NAnt.Core.BuildEventArgs.Target"/> that emitted the event.</param>
+        </member>
+        <member name="M:NAnt.Core.BuildEventArgs.#ctor(NAnt.Core.Task)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.Core.BuildEventArgs"/>
+            class for a <see cref="P:NAnt.Core.BuildEventArgs.Task"/> level event.
+            </summary>
+            <param name="task">The <see cref="P:NAnt.Core.BuildEventArgs.Task"/> that emitted the event.</param>
+        </member>
+        <member name="P:NAnt.Core.BuildEventArgs.Message">
+            <summary>
+            Gets or sets the message associated with this event.
+            </summary>
+            <value>
+            The message associated with this event.
+            </value>
+        </member>
+        <member name="P:NAnt.Core.BuildEventArgs.MessageLevel">
+            <summary>
+            Gets or sets the priority level associated with this event.
+            </summary>
+            <value>
+            The priority level associated with this event.
+            </value>
+        </member>
+        <member name="P:NAnt.Core.BuildEventArgs.Exception">
+            <summary>
+            Gets or sets the <see cref="P:NAnt.Core.BuildEventArgs.Exception"/> associated with this event.
+            </summary>
+            <value>
+            The <see cref="P:NAnt.Core.BuildEventArgs.Exception"/> associated with this event.
+            </value>
+        </member>
+        <member name="P:NAnt.Core.BuildEventArgs.Project">
+            <summary>
+            Gets the <see cref="P:NAnt.Core.BuildEventArgs.Project"/> that fired this event.
+            </summary>
+            <value>
+            The <see cref="P:NAnt.Core.BuildEventArgs.Project"/> that fired this event.
+            </value>
+        </member>
+        <member name="P:NAnt.Core.BuildEventArgs.Target">
+            <summary>
+            Gets the <see cref="P:NAnt.Core.BuildEventArgs.Target"/> that fired this event.
+            </summary>
+            <value>
+            The <see cref="P:NAnt.Core.BuildEventArgs.Target"/> that fired this event, or a null reference 
+            if this is a <see cref="P:NAnt.Core.BuildEventArgs.Project"/> level event.
+            </value>
+        </member>
+        <member name="P:NAnt.Core.BuildEventArgs.Task">
+            <summary>
+            Gets the <see cref="P:NAnt.Core.BuildEventArgs.Task"/> that fired this event.
+            </summary>
+            <value>
+            The <see cref="P:NAnt.Core.BuildEventArgs.Task"/> that fired this event, or <see langword="null"/>
+            if this is a <see cref="P:NAnt.Core.BuildEventArgs.Project"/> or <see cref="P:NAnt.Core.BuildEventArgs.Target"/> level 
+            event.
+            </value>
+        </member>
+        <member name="T:NAnt.Core.BuildEventHandler">
+            <summary>
+            Represents the method that handles the build events.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> that contains the event data.</param>
+        </member>
+        <member name="T:NAnt.Core.IBuildListener">
+            <summary>
+            Instances of classes that implement this interface can register to be 
+            notified when things happen during a build.
+            </summary>
+        </member>
+        <member name="M:NAnt.Core.IBuildListener.BuildStarted(System.Object,NAnt.Core.BuildEventArgs)">
+            <summary>
+            Signals that a build has started.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
+            <remarks>
+            This event is fired before any targets have started.
+            </remarks>
+        </member>
+        <member name="M:NAnt.Core.IBuildListener.BuildFinished(System.Object,NAnt.Core.BuildEventArgs)">
+            <summary>
+            Signals that the last target has finished.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
+            <remarks>
+            This event will still be fired if an error occurred during the build.
+            </remarks>
+        </member>
+        <member name="M:NAnt.Core.IBuildListener.TargetStarted(System.Object,NAnt.Core.BuildEventArgs)">
+            <summary>
+            Signals that a target has started.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
+        </member>
+        <member name="M:NAnt.Core.IBuildListener.TargetFinished(System.Object,NAnt.Core.BuildEventArgs)">
+            <summary>
+            Signals that a target has finished.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
+            <remarks>
+            This event will still be fired if an error occurred during the build.
+            </remarks>
+        </member>
+        <member name="M:NAnt.Core.IBuildListener.TaskStarted(System.Object,NAnt.Core.BuildEventArgs)">
+            <summary>
+            Signals that a task has started.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
+        </member>
+        <member name="M:NAnt.Core.IBuildListener.TaskFinished(System.Object,NAnt.Core.BuildEventArgs)">
+            <summary>
+            Signals that a task has finished.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
+            <remarks>
+            This event will still be fired if an error occurred during the build.
+            </remarks>
+        </member>
+        <member name="M:NAnt.Core.IBuildListener.MessageLogged(System.Object,NAnt.Core.BuildEventArgs)">
+            <summary>
+            Signals that a message has been logged.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
+        </member>
+        <member name="T:NAnt.Core.IBuildLogger">
+            <summary>
+            Interface used by NAnt to log the build output. 
+            </summary>
+            <remarks>
+            Depending on the supplied command-line arguments, NAnt will set the
+            <see cref="P:NAnt.Core.IBuildLogger.OutputWriter"/> to <see cref="P:System.Console.Out"/> or a
+            <see cref="T:System.IO.StreamWriter"/>  with a file as backend store.
+            </remarks>
+        </member>
+        <member name="M:NAnt.Core.IBuildLogger.Flush">
+            <summary>
+            Flushes buffered build events or messages to the underlying storage.
+            </summary>
+        </member>
+        <member name="P:NAnt.Core.IBuildLogger.Threshold">
+            <summary>
+            Gets or sets the highest level of message this logger should respond 
+            to.
+            </summary>
+            <value>The highest level of message this logger should respond to.</value>
+            <remarks>
+            Only messages with a message level higher than or equal to the given 
+            level should actually be written to the log.
+            </remarks>
+        </member>
+        <member name="P:NAnt.Core.IBuildLogger.EmacsMode">
+            <summary>
+            Gets or sets a value indicating whether to produce emacs (and other
+            editor) friendly output.
+            </summary>
+            <value>
+            <see langword="true" /> if output is to be unadorned so that emacs 
+            and other editors can parse files names, etc.
+            </value>
+        </member>
+        <member name="P:NAnt.Core.IBuildLogger.OutputWriter">
+            <summary>
+            Gets or sets the <see cref="T:System.IO.TextWriter"/> to which the logger is 
+            to send its output.
+            </summary>
+        </member>
+        <member name="M:NAnt.Core.DefaultLogger.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.Core.DefaultLogger"/> 
+            class.
+            </summary>
+        </member>
+        <member name="M:NAnt.Core.DefaultLogger.Flush">
+            <summary>
+            Flushes buffered build events or messages to the underlying storage.
+            </summary>
+        </member>
+        <member name="M:NAnt.Core.DefaultLogger.BuildStarted(System.Object,NAnt.Core.BuildEventArgs)">
+            <summary>
+            Signals that a build has started.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
+            <remarks>
+            This event is fired before any targets have started.
+            </remarks>
+        </member>
+        <member name="M:NAnt.Core.DefaultLogger.BuildFinished(System.Object,NAnt.Core.BuildEventArgs)">
+            <summary>
+            Signals that the last target has finished.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
+            <remarks>
+            This event will still be fired if an error occurred during the build.
+            </remarks>
+        </member>
+        <member name="M:NAnt.Core.DefaultLogger.TargetStarted(System.Object,NAnt.Core.BuildEventArgs)">
+            <summary>
+            Signals that a target has started.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
+        </member>
+        <member name="M:NAnt.Core.DefaultLogger.TargetFinished(System.Object,NAnt.Core.BuildEventArgs)">
+            <summary>
+            Signals that a task has finished.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
+            <remarks>
+            This event will still be fired if an error occurred during the build.
+            </remarks>
+        </member>
+        <member name="M:NAnt.Core.DefaultLogger.TaskStarted(System.Object,NAnt.Core.BuildEventArgs)">
+            <summary>
+            Signals that a task has started.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
+        </member>
+        <member name="M:NAnt.Core.DefaultLogger.TaskFinished(System.Object,NAnt.Core.BuildEventArgs)">
+            <summary>
+            Signals that a task has finished.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
+            <remarks>
+            This event will still be fired if an error occurred during the build.
+            </remarks>
+        </member>
+        <member name="M:NAnt.Core.DefaultLogger.MessageLogged(System.Object,NAnt.Core.BuildEventArgs)">
+            <summary>
+            Signals that a message has been logged.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
+            <remarks>
+            Only messages with a priority higher or equal to the threshold of 
+            the logger will actually be output in the build log.
+            </remarks>
+        </member>
+        <member name="M:NAnt.Core.DefaultLogger.Log(System.String)">
+            <summary>
+            Empty implementation which allows derived classes to receive the
+            output that is generated in this logger.
+            </summary>
+            <param name="message">The message being logged.</param>
+        </member>
+        <member name="M:NAnt.Core.DefaultLogger.OutputMessage(NAnt.Core.Level,System.String,System.Int32)">
+            <summary>
+            Outputs an indented message to the build log if its priority is 
+            greather than or equal to the <see cref="P:NAnt.Core.DefaultLogger.Threshold"/> of the 
+            logger.
+            </summary>
+            <param name="messageLevel">The priority of the message to output.</param>
+            <param name="message">The message to output.</param>
+            <param name="indentationLength">The number of characters that the message should be indented.</param>
+        </member>
+        <member name="M:NAnt.Core.DefaultLogger.OutputMessage(NAnt.Core.BuildEventArgs)">
+            <summary>
+            Outputs an indented message to the build log if its priority is 
+            greather than or equal to the <see cref="P:NAnt.Core.DefaultLogger.Threshold"/> of the 
+            logger.
+            </summary>
+            <param name="e">The event to output.</param>
+        </member>
+        <member name="M:NAnt.Core.DefaultLogger.OutputMessage(NAnt.Core.BuildEventArgs,System.Int32)">
+            <summary>
+            Outputs an indented message to the build log if its priority is 
+            greather than or equal to the <see cref="P:NAnt.Core.DefaultLogger.Threshold"/> of the 
+            logger.
+            </summary>
+            <param name="e">The event to output.</param>
+            <param name="indentationLength">TODO</param>
+        </member>
+        <member name="F:NAnt.Core.DefaultLogger._buildReports">
+            <summary>
+            Holds a stack of reports for all running builds.
+            </summary>
+        </member>
+        <member name="P:NAnt.Core.DefaultLogger.Threshold">
+            <summary>
+            Gets or sets the highest level of message this logger should respond 
+            to.
+            </summary>
+            <value>
+            The highest level of message this logger should respond to.
+            </value>
+            <remarks>
+            Only messages with a message level higher than or equal to the given 
+            level should be written to the log.
+            </remarks>
+        </member>
+        <member name="P:NAnt.Core.DefaultLogger.EmacsMode">
+            <summary>
+            Gets or sets a value indicating whether to produce emacs (and other
+            editor) friendly output.
+            </summary>
+            <value>
+            <see langword="true" /> if output is to be unadorned so that emacs 
+            and other editors can parse files names, etc. The default is
+            <see langword="false" />.
+            </value>
+        </member>
+        <member name="P:NAnt.Core.DefaultLogger.OutputWriter">
+            <summary>
+            Gets or sets the <see cref="T:System.IO.TextWriter"/> to which the logger is 
+            to send its output.
+            </summary>
+            <value>
+            The <see cref="T:System.IO.TextWriter"/> to which the logger sends its output.
+            </value>
+        </member>
+        <member name="T:NAnt.Core.BuildReport">
+            <summary>
+            Used to store information about a build, to allow better reporting to 
+            the user.
+            </summary>
+        </member>
+        <member name="F:NAnt.Core.BuildReport.Errors">
+            <summary>
+            Errors encountered so far.
+            </summary>
+        </member>
+        <member name="F:NAnt.Core.BuildReport.Warnings">
+            <summary>
+            Warnings encountered so far.
+            </summary>
+        </member>
+        <member name="F:NAnt.Core.BuildReport.StartTime">
+            <summary>
+            The start time of the build process.
+            </summary>
+        </member>
+        <member name="T:NAnt.Core.MailLogger">
+            <summary>
+            Buffers log messages from DefaultLogger, and sends an e-mail with the
+            results.
+            </summary>
+            <remarks>
+            The following properties are used to send the mail :
+            <list type="table">
+                <listheader>
+                    <term>Property</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>MailLogger.mailhost</term>
+                    <description>Mail server to use. [default: localhost]</description>
+                </item>
+                <item>
+                    <term>MailLogger.from</term>
+                    <description>The address of the e-mail sender.</description>
+                </item>
+                <item>
+                    <term>MailLogger.failure.notify</term>
+                    <description>Send build failure e-mails ? [default: true]</description>
+                </item>
+                <item>
+                    <term>MailLogger.success.notify</term>
+                    <description>Send build success e-mails ? [default: true]</description>
+                </item>
+                <item>
+                    <term>MailLogger.failure.to</term>
+                    <description>The address to send build failure messages to.</description>
+                </item>
+                <item>
+                    <term>MailLogger.success.to</term>
+                    <description>The address to send build success messages to.</description>
+                </item>
+                <item>
+                    <term>MailLogger.failure.subject</term>
+                    <description>The subject of build failure messages. [default: "Build Failure"]</description>
+                </item>
+                <item>
+                    <term>MailLogger.success.subject</term>
+                    <description>The subject of build success messages. [default: "Build Success"]</description>
+                </item>
+                <item>
+                    <term>MailLogger.success.attachments</term>
+                    <description>The ID of a fileset holdng set of files to attach when the build is successful.</description>
+                </item>
+                <item>
+                    <term>MailLogger.failure.attachments</term>
+                    <description>The ID of a fileset holdng set of files to attach when the build fails.</description>
+                </item>
+                <item>
+                    <term>MailLogger.body.encoding</term>
+                    <description>The encoding type of the body of the e-mail message. [default: system's ANSI code page]</description>
+                </item>
+                <item>
+                    <term>MailLogger.smtp.username</term>
+                    <description>The name of the user to login to the SMTP server.</description>
+                </item>
+                <item>
+                    <term>MailLogger.smtp.password</term>
+                    <description>The password of the specified user.</description>
+                </item>
+                <item>
+                    <term>MailLogger.smtp.enablessl</term>
+                    <description>Specifies whether to use SSL to encrypt the connection. [default: false]</description>
+                </item>
+                <item>
+                    <term>MailLogger.smtp.port</term>
+                    <description>The SMTP server port to connect to. [default: 25]</description>
+                </item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:NAnt.Core.MailLogger.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.Core.MailLogger"/> 
+            class.
+            </summary>
+        </member>
+        <member name="M:NAnt.Core.MailLogger.BuildStarted(System.Object,NAnt.Core.BuildEventArgs)">
+            <summary>
+            Signals that a build has started.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
+            <remarks>
+            This event is fired before any targets have started.
+            </remarks>
+        </member>
+        <member name="M:NAnt.Core.MailLogger.BuildFinished(System.Object,NAnt.Core.BuildEventArgs)">
+            <summary>
+            Signals that the last target has finished, and send an e-mail with 
+            the build results.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
+        </member>
+        <member name="M:NAnt.Core.MailLogger.Log(System.String)">
+            <summary>
+            Receives and buffers log messages.
+            </summary>
+            <param name="message">The message being logged.</param>
+        </member>
+        <member name="M:NAnt.Core.MailLogger.GetPropertyValue(NAnt.Core.PropertyDictionary,System.String,System.String,System.Boolean)">
+            <summary>
+            Gets the value of the specified property.
+            </summary>
+            <param name="properties">Properties to obtain value from.</param>
+            <param name="name">Suffix of property name.  "MailLogger" will be prepended internally.</param>
+            <param name="defaultValue">Value returned if property is not present in <paramref name="properties"/>.</param>
+            <param name="required">Value indicating whether the property should exist, or have a default value set.</param>
+            <returns>
+            The value of the specified property; or the default value if the 
+            property is not present in <paramref name="properties"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="required"/> is <see langword="true"/>, and the specified property is not present and no default value has been given.</exception>
+        </member>
+        <member name="F:NAnt.Core.MailLogger._buffer">
+            <summary>
+            Buffer in which the message is constructed prior to sending.
+            </summary>
+        </member>
+        <member name="F:NAnt.Core.MailLogger._projectStack">
+            <summary>
+            Holds the stack of currently executing projects.
+            </summary>
+        </member>
+        <member name="T:NAnt.Core.BuildListenerCollection">
+            <summary>
+            Contains a strongly typed collection of <see cref="T:NAnt.Core.IBuildListener"/> 
+            objects.
+            </summary>
+        </member>
+        <member name="M:NAnt.Core.BuildListenerCollection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.Core.BuildListenerCollection"/> 
+            class.
+            </summary>
+        </member>
+        <member name="M:NAnt.Core.BuildListenerCollection.#ctor(NAnt.Core.BuildListenerCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.Core.BuildListenerCollection"/> 
+            class with the specified <see cref="T:NAnt.Core.BuildListenerCollection"/> instance.
+            </summary>
+        </member>
+        <member name="M:NAnt.Core.BuildListenerCollection.#ctor(NAnt.Core.IBuildListener[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.Core.BuildListenerCollection"/> 
+            class with the specified array of <see cref="T:NAnt.Core.IBuildListener"/> instances.
+            </summary>
+        </member>
+        <member name="M:NAnt.Core.BuildListenerCollection.Add(NAnt.Core.IBuildListener)">
+            <summary>
+            Adds a <see cref="T:NAnt.Core.IBuildListener"/> to the end of the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.Core.IBuildListener"/> to be added to the end of the collection.</param> 
+            <returns>The position into which the new element was inserted.</returns>
+        </member>
+        <member name="M:NAnt.Core.BuildListenerCollection.AddRange(NAnt.Core.IBuildListener[])">
+            <summary>
+            Adds the elements of a <see cref="T:NAnt.Core.IBuildListener"/> array to the end of the collection.
+            </summary>
+            <param name="items">The array of <see cref="T:NAnt.Core.IBuildListener"/> elements to be added to the end of the collection.</param> 
+        </member>
+        <member name="M:NAnt.Core.BuildListenerCollection.AddRange(NAnt.Core.BuildListenerCollection)">
+            <summary>
+            Adds the elements of a <see cref="T:NAnt.Core.BuildListenerCollection"/> to the end of the collection.
+            </summary>
+            <param name="items">The <see cref="T:NAnt.Core.BuildListenerCollection"/> to be added to the end of the collection.</param> 
+        </member>
+        <member name="M:NAnt.Core.BuildListenerCollection.Contains(NAnt.Core.IBuildListener)">
+            <summary>
+            Determines whether a <see cref="T:NAnt.Core.IBuildListener"/> is in the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.Core.IBuildListener"/> to locate in the collection.</param> 
+            <returns>
+            <see langword="true"/> if <paramref name="item"/> is found in the 
+            collection; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:NAnt.Core.BuildListenerCollection.CopyTo(NAnt.Core.IBuildListener[],System.Int32)">
+            <summary>
+            Copies the entire collection to a compatible one-dimensional array, starting at the specified index of the target array.        
+            </summary>
+            <param name="array">The one-dimensional array that is the destination of the elements copied from the collection. The array must have zero-based indexing.</param> 
+            <param name="index">The zero-based index in <paramref name="array"/> at which copying begins.</param>
+        </member>
+        <member name="M:NAnt.Core.BuildListenerCollection.IndexOf(NAnt.Core.IBuildListener)">
+            <summary>
+            Retrieves the index of a specified <see cref="T:NAnt.Core.IBuildListener"/> object in the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.Core.IBuildListener"/> object for which the index is returned.</param> 
+            <returns>
+            The index of the specified <see cref="T:NAnt.Core.IBuildListener"/>. If the <see cref="T:NAnt.Core.IBuildListener"/> is not currently a member of the collection, it returns -1.
+            </returns>
+        </member>
+        <member name="M:NAnt.Core.BuildListenerCollection.Insert(System.Int32,NAnt.Core.IBuildListener)">
+            <summary>
+            Inserts a <see cref="T:NAnt.Core.IBuildListener"/> into the collection at the specified index.
+            </summary>
+            <param name="index">The zero-based index at which <paramref name="item"/> should be inserted.</param>
+            <param name="item">The <see cref="T:NAnt.Core.IBuildListener"/> to insert.</param>
+        </member>
+        <member name="M:NAnt.Core.BuildListenerCollection.GetEnumerator">
+            <summary>
+            Returns an enumerator that can iterate through the collection.
+            </summary>
+            <returns>
+            A <see cref="T:NAnt.Core.BuildListenerEnumerator"/> for the entire collection.
+            </returns>
+        </member>
+        <member name="M:NAnt.Core.BuildListenerCollection.Remove(NAnt.Core.IBuildListener)">
+            <summary>
+            Removes a member from the collection.
+            </summary>
+            <param name="item">The <see cref="T:NAnt.Core.IBuildListener"/> to remove from the collection.</param>
+        </member>
+        <member name="P:NAnt.Core.BuildListenerCollection.Item(System.Int32)">
+            <summary>
+            Gets or sets the element at the specified index.
+            </summary>
+            <param name="index">The zero-based index of the element to get or set.</param>
+        </member>
+        <member name="T:NAnt.Core.BuildListenerEnumerator">
+            <summary>
+            Enumerates the <see cref="T:NAnt.Core.IBuildListener"/> elements of a <see cref="T:NAnt.Core.BuildListenerCollection"/>.
+            </summary>
+        </member>
+        <member name="M:NAnt.Core.BuildListenerEnumerator.#ctor(NAnt.Core.BuildListenerCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.Core.BuildListenerEnumerator"/> class
+            with the specified <see cref="T:NAnt.Core.BuildListenerCollection"/>.
+            </summary>
+            <param name="arguments">The collection that should be enumerated.</param>
+        </member>
+        <member name="M:NAnt.Core.BuildListenerEnumerator.MoveNext">
+            <summary>
+            Advances the enumerator to the next element of the collection.
+            </summary>
+            <returns>
+            <see langword="true" /> if the enumerator was successfully advanced 
+            to the next element; <see langword="false" /> if the enumerator has 
+            passed the end of the collection.
+            </returns>
+        </member>
+        <member name="M:NAnt.Core.BuildListenerEnumerator.Reset">
+            <summary>
+            Sets the enumerator to its initial position, which is before the 
+            first element in the collection.
+            </summary>
+        </member>
+        <member name="P:NAnt.Core.BuildListenerEnumerator.Current">
+            <summary>
+            Gets the current element in the collection.
+            </summary>
+            <returns>
+            The current element in the collection.
+            </returns>
+        </member>
+        <member name="T:NAnt.Core.LogWriter">
+            <summary>
+            Implements a <see cref="T:System.IO.TextWriter"/> for writing information to 
+            the NAnt logging infrastructure.
+            </summary>
+        </member>
+        <member name="M:NAnt.Core.LogWriter.#ctor(NAnt.Core.Task,NAnt.Core.Level,System.IFormatProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NAnt.Core.LogWriter"/> class 
+            for the specified <see cref="T:NAnt.Core.Task"/> with the specified output 
+            level and format provider.
+            </summary>
+            <param name="task">Determines the indentation level.</param>
+            <param name="outputLevel">The <see cref="T:NAnt.Core.Level"/> with which messages will be output to the build log.</param>
+            <param name="formatProvider">An <see cref="T:System.IFormatProvider"/> object that controls formatting.</param>
+        </member>
+        <member name="M:NAnt.Core.LogWriter.Write(System.Char[])">
+            <summary>
+            Writes a character array to the buffer.
+            </summary>
+            <param name="chars">The character array to write to the text stream.</param>
+        </member>
+        <member name="M:NAnt.Core.LogWriter.Write(System.String)">
+            <summary>
+            Writes a string to the buffer.
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:NAnt.Core.LogWriter.WriteLine">
+            <summary>
+            Writes an empty string to the logging infrastructure.
+            </summary>
+        </member>
+        <member name="M:NAnt.Core.LogWriter.WriteLine(System.String)">
+            <summary>
+            Writes a string to the logging infrastructure.
+            </summary>
+            <param name="value">The string to write. If <paramref name="value" /> is a null reference, only the line termination characters are written.</param>
+        </member>
+        <member name="M:NAnt.Core.LogWriter.WriteLine(System.String,System.Object[])">
+            <summary>
+            Writes out a formatted string using the same semantics as 
+            <see cref="M:System.String.Format(System.String,System.Object[])"/>.
+            </summary>
+            <param name="line">The formatting string.</param>
+            <param name="args">The object array to write into format string.</param>
+        </member>
+        <member name="M:NAnt.Core.LogWriter.Flush">
+            <summary>
+            Causes any buffered data to be written to the logging infrastructure.
+            </summary>
+        </member>
+        <member name="M:NAnt.Core.LogWriter.Close">
+            <summary>
+            Closes the current writer and releases any system resources 
+            associated with the writer.
+            </summary>
+        </member>
+        <member name="M:NAnt.Core.LogWriter.InitializeLifetimeService">
+            <summary>
+            Obtains a lifetime service object to control the lifetime policy for 
+            this instance.
+            </summary>
+            <returns>
+            An object of type <see cref="T:System.Runtime.Remoting.Lifetime.ILease"/> used to control the lifetime 
+            policy for this instance. This is the current lifetime service object 
+            for this instance if one exists; otherwise, a new lifetime service 
+            object initialized with a lease that will never time out.
+            </returns>
+        </member>
+        <member name="P:NAnt.Core.LogWriter.Encoding">
+            <summary>
+            Gets the <see cref="P:NAnt.Core.LogWriter.Encoding"/> in which the output is written.
+            </summary>
+            <value>
+            The <see cref="T:NAnt.Core.LogWriter"/> always writes output in UTF8 
+            encoding.
+            </value>
+        </member>
+        <member name="P:NAnt.Core.LogWriter.OutputLevel">
+            <summary>
+            Gets the <see cref="T:NAnt.Core.Level"/> with which messages will be output to
+            the build log.
+            </summary>
+        </member>
         <member name="T:NAnt.Core.PathScanner">
             <summary>
             Used to search for files on the PATH. 
@@ -13247,6 +14018,14 @@
             <param name="key">The key of the element to insert.</param>
             <param name="value">The value of the element to insert.</param>
         </member>
+        <member name="M:NAnt.Core.PropertyDictionary.OnRemove(System.Object,System.Object)">
+            <summary>
+            Performs additional custom processes before removing an element
+            from the <see cref="T:System.Collections.DictionaryBase"/> instance.
+            </summary>
+            <param name="key">The key of the element to remove.</param>
+            <param name="value">The value of the element to remove.</param>
+        </member>
         <member name="M:NAnt.Core.PropertyDictionary.OnValidate(System.Object,System.Object)">
             <summary>
             Performs additional custom processes when validating the element 
@@ -13968,115 +14747,6 @@
             Used to wrap log messages in xml &lt;message/&gt; elements.
             </summary>
         </member>
-        <member name="T:NAnt.Core.IBuildLogger">
-            <summary>
-            Interface used by NAnt to log the build output. 
-            </summary>
-            <remarks>
-            Depending on the supplied command-line arguments, NAnt will set the
-            <see cref="P:NAnt.Core.IBuildLogger.OutputWriter"/> to <see cref="P:System.Console.Out"/> or a
-            <see cref="T:System.IO.StreamWriter"/>  with a file as backend store.
-            </remarks>
-        </member>
-        <member name="T:NAnt.Core.IBuildListener">
-            <summary>
-            Instances of classes that implement this interface can register to be 
-            notified when things happen during a build.
-            </summary>
-        </member>
-        <member name="M:NAnt.Core.IBuildListener.BuildStarted(System.Object,NAnt.Core.BuildEventArgs)">
-            <summary>
-            Signals that a build has started.
-            </summary>
-            <param name="sender">The source of the event.</param>
-            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
-            <remarks>
-            This event is fired before any targets have started.
-            </remarks>
-        </member>
-        <member name="M:NAnt.Core.IBuildListener.BuildFinished(System.Object,NAnt.Core.BuildEventArgs)">
-            <summary>
-            Signals that the last target has finished.
-            </summary>
-            <param name="sender">The source of the event.</param>
-            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
-            <remarks>
-            This event will still be fired if an error occurred during the build.
-            </remarks>
-        </member>
-        <member name="M:NAnt.Core.IBuildListener.TargetStarted(System.Object,NAnt.Core.BuildEventArgs)">
-            <summary>
-            Signals that a target has started.
-            </summary>
-            <param name="sender">The source of the event.</param>
-            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
-        </member>
-        <member name="M:NAnt.Core.IBuildListener.TargetFinished(System.Object,NAnt.Core.BuildEventArgs)">
-            <summary>
-            Signals that a target has finished.
-            </summary>
-            <param name="sender">The source of the event.</param>
-            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
-            <remarks>
-            This event will still be fired if an error occurred during the build.
-            </remarks>
-        </member>
-        <member name="M:NAnt.Core.IBuildListener.TaskStarted(System.Object,NAnt.Core.BuildEventArgs)">
-            <summary>
-            Signals that a task has started.
-            </summary>
-            <param name="sender">The source of the event.</param>
-            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
-        </member>
-        <member name="M:NAnt.Core.IBuildListener.TaskFinished(System.Object,NAnt.Core.BuildEventArgs)">
-            <summary>
-            Signals that a task has finished.
-            </summary>
-            <param name="sender">The source of the event.</param>
-            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
-            <remarks>
-            This event will still be fired if an error occurred during the build.
-            </remarks>
-        </member>
-        <member name="M:NAnt.Core.IBuildListener.MessageLogged(System.Object,NAnt.Core.BuildEventArgs)">
-            <summary>
-            Signals that a message has been logged.
-            </summary>
-            <param name="sender">The source of the event.</param>
-            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
-        </member>
-        <member name="M:NAnt.Core.IBuildLogger.Flush">
-            <summary>
-            Flushes buffered build events or messages to the underlying storage.
-            </summary>
-        </member>
-        <member name="P:NAnt.Core.IBuildLogger.Threshold">
-            <summary>
-            Gets or sets the highest level of message this logger should respond 
-            to.
-            </summary>
-            <value>The highest level of message this logger should respond to.</value>
-            <remarks>
-            Only messages with a message level higher than or equal to the given 
-            level should actually be written to the log.
-            </remarks>
-        </member>
-        <member name="P:NAnt.Core.IBuildLogger.EmacsMode">
-            <summary>
-            Gets or sets a value indicating whether to produce emacs (and other
-            editor) friendly output.
-            </summary>
-            <value>
-            <see langword="true" /> if output is to be unadorned so that emacs 
-            and other editors can parse files names, etc.
-            </value>
-        </member>
-        <member name="P:NAnt.Core.IBuildLogger.OutputWriter">
-            <summary>
-            Gets or sets the <see cref="T:System.IO.TextWriter"/> to which the logger is 
-            to send its output.
-            </summary>
-        </member>
         <member name="F:NAnt.Core.XmlLogger._projectStack">
             <summary>
             Holds the stack of currently executing projects.
@@ -14204,669 +14874,6 @@
             <summary>
             Gets or sets the <see cref="T:System.IO.TextWriter"/> to which the logger is 
             to send its output.
-            </summary>
-        </member>
-        <member name="T:NAnt.Core.Level">
-            <summary>
-            Defines the set of levels recognised by the NAnt logging system.
-            </summary>
-        </member>
-        <member name="F:NAnt.Core.Level.Debug">
-            <summary>
-            Designates fine-grained informational events that are most useful 
-            to debug a build process.
-            </summary>
-        </member>
-        <member name="F:NAnt.Core.Level.Verbose">
-            <summary>
-            Designates events that offer a more detailed view of the build 
-            process.
-            </summary>
-        </member>
-        <member name="F:NAnt.Core.Level.Info">
-            <summary>
-            Designates informational events that are useful for getting a 
-            high-level view of the build process.
-            </summary>
-        </member>
-        <member name="F:NAnt.Core.Level.Warning">
-            <summary>
-            Designates potentionally harmful events.
-            </summary>
-        </member>
-        <member name="F:NAnt.Core.Level.Error">
-            <summary>
-            Designates error events.
-            </summary>
-        </member>
-        <member name="F:NAnt.Core.Level.None">
-            <summary>
-            Can be used to suppress all messages.
-            </summary>
-            <remarks>
-            No events should be logged with this <see cref="T:NAnt.Core.Level"/>.
-            </remarks>
-        </member>
-        <member name="T:NAnt.Core.BuildEventArgs">
-            <summary>
-            Class representing an event occurring during a build.
-            </summary>
-            <remarks>
-            <para>
-            An event is built by specifying either a project, a task or a target.
-            </para>
-            <para>
-            A <see cref="P:NAnt.Core.BuildEventArgs.Project"/> level event will only have a <see cref="P:NAnt.Core.BuildEventArgs.Project"/> 
-            reference.
-            </para>
-            <para>
-            A <see cref="P:NAnt.Core.BuildEventArgs.Target"/> level event will have <see cref="P:NAnt.Core.BuildEventArgs.Project"/> and 
-            <see cref="P:NAnt.Core.BuildEventArgs.Target"/> references.
-            </para>
-            <para>
-            A <see cref="P:NAnt.Core.BuildEventArgs.Task"/> level event will have <see cref="P:NAnt.Core.BuildEventArgs.Project"/>, 
-            <see cref="P:NAnt.Core.BuildEventArgs.Target"/> and <see cref="P:NAnt.Core.BuildEventArgs.Task"/> references.
-            </para>
-            </remarks>
-        </member>
-        <member name="M:NAnt.Core.BuildEventArgs.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:NAnt.Core.BuildEventArgs"/> 
-            class.
-            </summary>
-        </member>
-        <member name="M:NAnt.Core.BuildEventArgs.#ctor(NAnt.Core.Project)">
-            <summary>
-            Initializes a new instance of the <see cref="T:NAnt.Core.BuildEventArgs"/>
-            class for a <see cref="P:NAnt.Core.BuildEventArgs.Project"/> level event.
-            </summary>
-            <param name="project">The <see cref="P:NAnt.Core.BuildEventArgs.Project"/> that emitted the event.</param>
-        </member>
-        <member name="M:NAnt.Core.BuildEventArgs.#ctor(NAnt.Core.Target)">
-            <summary>
-            Initializes a new instance of the <see cref="T:NAnt.Core.BuildEventArgs"/>
-            class for a <see cref="P:NAnt.Core.BuildEventArgs.Target"/> level event.
-            </summary>
-            <param name="target">The <see cref="P:NAnt.Core.BuildEventArgs.Target"/> that emitted the event.</param>
-        </member>
-        <member name="M:NAnt.Core.BuildEventArgs.#ctor(NAnt.Core.Task)">
-            <summary>
-            Initializes a new instance of the <see cref="T:NAnt.Core.BuildEventArgs"/>
-            class for a <see cref="P:NAnt.Core.BuildEventArgs.Task"/> level event.
-            </summary>
-            <param name="task">The <see cref="P:NAnt.Core.BuildEventArgs.Task"/> that emitted the event.</param>
-        </member>
-        <member name="P:NAnt.Core.BuildEventArgs.Message">
-            <summary>
-            Gets or sets the message associated with this event.
-            </summary>
-            <value>
-            The message associated with this event.
-            </value>
-        </member>
-        <member name="P:NAnt.Core.BuildEventArgs.MessageLevel">
-            <summary>
-            Gets or sets the priority level associated with this event.
-            </summary>
-            <value>
-            The priority level associated with this event.
-            </value>
-        </member>
-        <member name="P:NAnt.Core.BuildEventArgs.Exception">
-            <summary>
-            Gets or sets the <see cref="P:NAnt.Core.BuildEventArgs.Exception"/> associated with this event.
-            </summary>
-            <value>
-            The <see cref="P:NAnt.Core.BuildEventArgs.Exception"/> associated with this event.
-            </value>
-        </member>
-        <member name="P:NAnt.Core.BuildEventArgs.Project">
-            <summary>
-            Gets the <see cref="P:NAnt.Core.BuildEventArgs.Project"/> that fired this event.
-            </summary>
-            <value>
-            The <see cref="P:NAnt.Core.BuildEventArgs.Project"/> that fired this event.
-            </value>
-        </member>
-        <member name="P:NAnt.Core.BuildEventArgs.Target">
-            <summary>
-            Gets the <see cref="P:NAnt.Core.BuildEventArgs.Target"/> that fired this event.
-            </summary>
-            <value>
-            The <see cref="P:NAnt.Core.BuildEventArgs.Target"/> that fired this event, or a null reference 
-            if this is a <see cref="P:NAnt.Core.BuildEventArgs.Project"/> level event.
-            </value>
-        </member>
-        <member name="P:NAnt.Core.BuildEventArgs.Task">
-            <summary>
-            Gets the <see cref="P:NAnt.Core.BuildEventArgs.Task"/> that fired this event.
-            </summary>
-            <value>
-            The <see cref="P:NAnt.Core.BuildEventArgs.Task"/> that fired this event, or <see langword="null"/>
-            if this is a <see cref="P:NAnt.Core.BuildEventArgs.Project"/> or <see cref="P:NAnt.Core.BuildEventArgs.Target"/> level 
-            event.
-            </value>
-        </member>
-        <member name="T:NAnt.Core.BuildEventHandler">
-            <summary>
-            Represents the method that handles the build events.
-            </summary>
-            <param name="sender">The source of the event.</param>
-            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> that contains the event data.</param>
-        </member>
-        <member name="M:NAnt.Core.DefaultLogger.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:NAnt.Core.DefaultLogger"/> 
-            class.
-            </summary>
-        </member>
-        <member name="M:NAnt.Core.DefaultLogger.Flush">
-            <summary>
-            Flushes buffered build events or messages to the underlying storage.
-            </summary>
-        </member>
-        <member name="M:NAnt.Core.DefaultLogger.BuildStarted(System.Object,NAnt.Core.BuildEventArgs)">
-            <summary>
-            Signals that a build has started.
-            </summary>
-            <param name="sender">The source of the event.</param>
-            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
-            <remarks>
-            This event is fired before any targets have started.
-            </remarks>
-        </member>
-        <member name="M:NAnt.Core.DefaultLogger.BuildFinished(System.Object,NAnt.Core.BuildEventArgs)">
-            <summary>
-            Signals that the last target has finished.
-            </summary>
-            <param name="sender">The source of the event.</param>
-            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
-            <remarks>
-            This event will still be fired if an error occurred during the build.
-            </remarks>
-        </member>
-        <member name="M:NAnt.Core.DefaultLogger.TargetStarted(System.Object,NAnt.Core.BuildEventArgs)">
-            <summary>
-            Signals that a target has started.
-            </summary>
-            <param name="sender">The source of the event.</param>
-            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
-        </member>
-        <member name="M:NAnt.Core.DefaultLogger.TargetFinished(System.Object,NAnt.Core.BuildEventArgs)">
-            <summary>
-            Signals that a task has finished.
-            </summary>
-            <param name="sender">The source of the event.</param>
-            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
-            <remarks>
-            This event will still be fired if an error occurred during the build.
-            </remarks>
-        </member>
-        <member name="M:NAnt.Core.DefaultLogger.TaskStarted(System.Object,NAnt.Core.BuildEventArgs)">
-            <summary>
-            Signals that a task has started.
-            </summary>
-            <param name="sender">The source of the event.</param>
-            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
-        </member>
-        <member name="M:NAnt.Core.DefaultLogger.TaskFinished(System.Object,NAnt.Core.BuildEventArgs)">
-            <summary>
-            Signals that a task has finished.
-            </summary>
-            <param name="sender">The source of the event.</param>
-            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
-            <remarks>
-            This event will still be fired if an error occurred during the build.
-            </remarks>
-        </member>
-        <member name="M:NAnt.Core.DefaultLogger.MessageLogged(System.Object,NAnt.Core.BuildEventArgs)">
-            <summary>
-            Signals that a message has been logged.
-            </summary>
-            <param name="sender">The source of the event.</param>
-            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
-            <remarks>
-            Only messages with a priority higher or equal to the threshold of 
-            the logger will actually be output in the build log.
-            </remarks>
-        </member>
-        <member name="M:NAnt.Core.DefaultLogger.Log(System.String)">
-            <summary>
-            Empty implementation which allows derived classes to receive the
-            output that is generated in this logger.
-            </summary>
-            <param name="message">The message being logged.</param>
-        </member>
-        <member name="M:NAnt.Core.DefaultLogger.OutputMessage(NAnt.Core.Level,System.String,System.Int32)">
-            <summary>
-            Outputs an indented message to the build log if its priority is 
-            greather than or equal to the <see cref="P:NAnt.Core.DefaultLogger.Threshold"/> of the 
-            logger.
-            </summary>
-            <param name="messageLevel">The priority of the message to output.</param>
-            <param name="message">The message to output.</param>
-            <param name="indentationLength">The number of characters that the message should be indented.</param>
-        </member>
-        <member name="M:NAnt.Core.DefaultLogger.OutputMessage(NAnt.Core.BuildEventArgs)">
-            <summary>
-            Outputs an indented message to the build log if its priority is 
-            greather than or equal to the <see cref="P:NAnt.Core.DefaultLogger.Threshold"/> of the 
-            logger.
-            </summary>
-            <param name="e">The event to output.</param>
-        </member>
-        <member name="M:NAnt.Core.DefaultLogger.OutputMessage(NAnt.Core.BuildEventArgs,System.Int32)">
-            <summary>
-            Outputs an indented message to the build log if its priority is 
-            greather than or equal to the <see cref="P:NAnt.Core.DefaultLogger.Threshold"/> of the 
-            logger.
-            </summary>
-            <param name="e">The event to output.</param>
-            <param name="indentationLength">TODO</param>
-        </member>
-        <member name="F:NAnt.Core.DefaultLogger._buildReports">
-            <summary>
-            Holds a stack of reports for all running builds.
-            </summary>
-        </member>
-        <member name="P:NAnt.Core.DefaultLogger.Threshold">
-            <summary>
-            Gets or sets the highest level of message this logger should respond 
-            to.
-            </summary>
-            <value>
-            The highest level of message this logger should respond to.
-            </value>
-            <remarks>
-            Only messages with a message level higher than or equal to the given 
-            level should be written to the log.
-            </remarks>
-        </member>
-        <member name="P:NAnt.Core.DefaultLogger.EmacsMode">
-            <summary>
-            Gets or sets a value indicating whether to produce emacs (and other
-            editor) friendly output.
-            </summary>
-            <value>
-            <see langword="true" /> if output is to be unadorned so that emacs 
-            and other editors can parse files names, etc. The default is
-            <see langword="false" />.
-            </value>
-        </member>
-        <member name="P:NAnt.Core.DefaultLogger.OutputWriter">
-            <summary>
-            Gets or sets the <see cref="T:System.IO.TextWriter"/> to which the logger is 
-            to send its output.
-            </summary>
-            <value>
-            The <see cref="T:System.IO.TextWriter"/> to which the logger sends its output.
-            </value>
-        </member>
-        <member name="T:NAnt.Core.BuildReport">
-            <summary>
-            Used to store information about a build, to allow better reporting to 
-            the user.
-            </summary>
-        </member>
-        <member name="F:NAnt.Core.BuildReport.Errors">
-            <summary>
-            Errors encountered so far.
-            </summary>
-        </member>
-        <member name="F:NAnt.Core.BuildReport.Warnings">
-            <summary>
-            Warnings encountered so far.
-            </summary>
-        </member>
-        <member name="F:NAnt.Core.BuildReport.StartTime">
-            <summary>
-            The start time of the build process.
-            </summary>
-        </member>
-        <member name="T:NAnt.Core.MailLogger">
-            <summary>
-            Buffers log messages from DefaultLogger, and sends an e-mail with the
-            results.
-            </summary>
-            <remarks>
-            The following properties are used to send the mail :
-            <list type="table">
-                <listheader>
-                    <term>Property</term>
-                    <description>Description</description>
-                </listheader>
-                <item>
-                    <term>MailLogger.mailhost</term>
-                    <description>Mail server to use. [default: localhost]</description>
-                </item>
-                <item>
-                    <term>MailLogger.from</term>
-                    <description>The address of the e-mail sender.</description>
-                </item>
-                <item>
-                    <term>MailLogger.failure.notify</term>
-                    <description>Send build failure e-mails ? [default: true]</description>
-                </item>
-                <item>
-                    <term>MailLogger.success.notify</term>
-                    <description>Send build success e-mails ? [default: true]</description>
-                </item>
-                <item>
-                    <term>MailLogger.failure.to</term>
-                    <description>The address to send build failure messages to.</description>
-                </item>
-                <item>
-                    <term>MailLogger.success.to</term>
-                    <description>The address to send build success messages to.</description>
-                </item>
-                <item>
-                    <term>MailLogger.failure.subject</term>
-                    <description>The subject of build failure messages. [default: "Build Failure"]</description>
-                </item>
-                <item>
-                    <term>MailLogger.success.subject</term>
-                    <description>The subject of build success messages. [default: "Build Success"]</description>
-                </item>
-                <item>
-                    <term>MailLogger.success.attachments</term>
-                    <description>The ID of a fileset holdng set of files to attach when the build is successful.</description>
-                </item>
-                <item>
-                    <term>MailLogger.failure.attachments</term>
-                    <description>The ID of a fileset holdng set of files to attach when the build fails.</description>
-                </item>
-                <item>
-                    <term>MailLogger.body.encoding</term>
-                    <description>The encoding type of the body of the e-mail message. [default: system's ANSI code page]</description>
-                </item>
-                <item>
-                    <term>MailLogger.smtp.username</term>
-                    <description>The name of the user to login to the SMTP server.</description>
-                </item>
-                <item>
-                    <term>MailLogger.smtp.password</term>
-                    <description>The password of the specified user.</description>
-                </item>
-                <item>
-                    <term>MailLogger.smtp.enablessl</term>
-                    <description>Specifies whether to use SSL to encrypt the connection. [default: false]</description>
-                </item>
-                <item>
-                    <term>MailLogger.smtp.port</term>
-                    <description>The SMTP server port to connect to. [default: 25]</description>
-                </item>
-            </list>
-            </remarks>
-        </member>
-        <member name="M:NAnt.Core.MailLogger.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:NAnt.Core.MailLogger"/> 
-            class.
-            </summary>
-        </member>
-        <member name="M:NAnt.Core.MailLogger.BuildStarted(System.Object,NAnt.Core.BuildEventArgs)">
-            <summary>
-            Signals that a build has started.
-            </summary>
-            <param name="sender">The source of the event.</param>
-            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
-            <remarks>
-            This event is fired before any targets have started.
-            </remarks>
-        </member>
-        <member name="M:NAnt.Core.MailLogger.BuildFinished(System.Object,NAnt.Core.BuildEventArgs)">
-            <summary>
-            Signals that the last target has finished, and send an e-mail with 
-            the build results.
-            </summary>
-            <param name="sender">The source of the event.</param>
-            <param name="e">A <see cref="T:NAnt.Core.BuildEventArgs"/> object that contains the event data.</param>
-        </member>
-        <member name="M:NAnt.Core.MailLogger.Log(System.String)">
-            <summary>
-            Receives and buffers log messages.
-            </summary>
-            <param name="message">The message being logged.</param>
-        </member>
-        <member name="M:NAnt.Core.MailLogger.GetPropertyValue(NAnt.Core.PropertyDictionary,System.String,System.String,System.Boolean)">
-            <summary>
-            Gets the value of the specified property.
-            </summary>
-            <param name="properties">Properties to obtain value from.</param>
-            <param name="name">Suffix of property name.  "MailLogger" will be prepended internally.</param>
-            <param name="defaultValue">Value returned if property is not present in <paramref name="properties"/>.</param>
-            <param name="required">Value indicating whether the property should exist, or have a default value set.</param>
-            <returns>
-            The value of the specified property; or the default value if the 
-            property is not present in <paramref name="properties"/>.
-            </returns>
-            <exception cref="T:System.ArgumentNullException"><paramref name="required"/> is <see langword="true"/>, and the specified property is not present and no default value has been given.</exception>
-        </member>
-        <member name="F:NAnt.Core.MailLogger._buffer">
-            <summary>
-            Buffer in which the message is constructed prior to sending.
-            </summary>
-        </member>
-        <member name="F:NAnt.Core.MailLogger._projectStack">
-            <summary>
-            Holds the stack of currently executing projects.
-            </summary>
-        </member>
-        <member name="T:NAnt.Core.BuildListenerCollection">
-            <summary>
-            Contains a strongly typed collection of <see cref="T:NAnt.Core.IBuildListener"/> 
-            objects.
-            </summary>
-        </member>
-        <member name="M:NAnt.Core.BuildListenerCollection.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:NAnt.Core.BuildListenerCollection"/> 
-            class.
-            </summary>
-        </member>
-        <member name="M:NAnt.Core.BuildListenerCollection.#ctor(NAnt.Core.BuildListenerCollection)">
-            <summary>
-            Initializes a new instance of the <see cref="T:NAnt.Core.BuildListenerCollection"/> 
-            class with the specified <see cref="T:NAnt.Core.BuildListenerCollection"/> instance.
-            </summary>
-        </member>
-        <member name="M:NAnt.Core.BuildListenerCollection.#ctor(NAnt.Core.IBuildListener[])">
-            <summary>
-            Initializes a new instance of the <see cref="T:NAnt.Core.BuildListenerCollection"/> 
-            class with the specified array of <see cref="T:NAnt.Core.IBuildListener"/> instances.
-            </summary>
-        </member>
-        <member name="M:NAnt.Core.BuildListenerCollection.Add(NAnt.Core.IBuildListener)">
-            <summary>
-            Adds a <see cref="T:NAnt.Core.IBuildListener"/> to the end of the collection.
-            </summary>
-            <param name="item">The <see cref="T:NAnt.Core.IBuildListener"/> to be added to the end of the collection.</param> 
-            <returns>The position into which the new element was inserted.</returns>
-        </member>
-        <member name="M:NAnt.Core.BuildListenerCollection.AddRange(NAnt.Core.IBuildListener[])">
-            <summary>
-            Adds the elements of a <see cref="T:NAnt.Core.IBuildListener"/> array to the end of the collection.
-            </summary>
-            <param name="items">The array of <see cref="T:NAnt.Core.IBuildListener"/> elements to be added to the end of the collection.</param> 
-        </member>
-        <member name="M:NAnt.Core.BuildListenerCollection.AddRange(NAnt.Core.BuildListenerCollection)">
-            <summary>
-            Adds the elements of a <see cref="T:NAnt.Core.BuildListenerCollection"/> to the end of the collection.
-            </summary>
-            <param name="items">The <see cref="T:NAnt.Core.BuildListenerCollection"/> to be added to the end of the collection.</param> 
-        </member>
-        <member name="M:NAnt.Core.BuildListenerCollection.Contains(NAnt.Core.IBuildListener)">
-            <summary>
-            Determines whether a <see cref="T:NAnt.Core.IBuildListener"/> is in the collection.
-            </summary>
-            <param name="item">The <see cref="T:NAnt.Core.IBuildListener"/> to locate in the collection.</param> 
-            <returns>
-            <see langword="true"/> if <paramref name="item"/> is found in the 
-            collection; otherwise, <see langword="false"/>.
-            </returns>
-        </member>
-        <member name="M:NAnt.Core.BuildListenerCollection.CopyTo(NAnt.Core.IBuildListener[],System.Int32)">
-            <summary>
-            Copies the entire collection to a compatible one-dimensional array, starting at the specified index of the target array.        
-            </summary>
-            <param name="array">The one-dimensional array that is the destination of the elements copied from the collection. The array must have zero-based indexing.</param> 
-            <param name="index">The zero-based index in <paramref name="array"/> at which copying begins.</param>
-        </member>
-        <member name="M:NAnt.Core.BuildListenerCollection.IndexOf(NAnt.Core.IBuildListener)">
-            <summary>
-            Retrieves the index of a specified <see cref="T:NAnt.Core.IBuildListener"/> object in the collection.
-            </summary>
-            <param name="item">The <see cref="T:NAnt.Core.IBuildListener"/> object for which the index is returned.</param> 
-            <returns>
-            The index of the specified <see cref="T:NAnt.Core.IBuildListener"/>. If the <see cref="T:NAnt.Core.IBuildListener"/> is not currently a member of the collection, it returns -1.
-            </returns>
-        </member>
-        <member name="M:NAnt.Core.BuildListenerCollection.Insert(System.Int32,NAnt.Core.IBuildListener)">
-            <summary>
-            Inserts a <see cref="T:NAnt.Core.IBuildListener"/> into the collection at the specified index.
-            </summary>
-            <param name="index">The zero-based index at which <paramref name="item"/> should be inserted.</param>
-            <param name="item">The <see cref="T:NAnt.Core.IBuildListener"/> to insert.</param>
-        </member>
-        <member name="M:NAnt.Core.BuildListenerCollection.GetEnumerator">
-            <summary>
-            Returns an enumerator that can iterate through the collection.
-            </summary>
-            <returns>
-            A <see cref="T:NAnt.Core.BuildListenerEnumerator"/> for the entire collection.
-            </returns>
-        </member>
-        <member name="M:NAnt.Core.BuildListenerCollection.Remove(NAnt.Core.IBuildListener)">
-            <summary>
-            Removes a member from the collection.
-            </summary>
-            <param name="item">The <see cref="T:NAnt.Core.IBuildListener"/> to remove from the collection.</param>
-        </member>
-        <member name="P:NAnt.Core.BuildListenerCollection.Item(System.Int32)">
-            <summary>
-            Gets or sets the element at the specified index.
-            </summary>
-            <param name="index">The zero-based index of the element to get or set.</param>
-        </member>
-        <member name="T:NAnt.Core.BuildListenerEnumerator">
-            <summary>
-            Enumerates the <see cref="T:NAnt.Core.IBuildListener"/> elements of a <see cref="T:NAnt.Core.BuildListenerCollection"/>.
-            </summary>
-        </member>
-        <member name="M:NAnt.Core.BuildListenerEnumerator.#ctor(NAnt.Core.BuildListenerCollection)">
-            <summary>
-            Initializes a new instance of the <see cref="T:NAnt.Core.BuildListenerEnumerator"/> class
-            with the specified <see cref="T:NAnt.Core.BuildListenerCollection"/>.
-            </summary>
-            <param name="arguments">The collection that should be enumerated.</param>
-        </member>
-        <member name="M:NAnt.Core.BuildListenerEnumerator.MoveNext">
-            <summary>
-            Advances the enumerator to the next element of the collection.
-            </summary>
-            <returns>
-            <see langword="true" /> if the enumerator was successfully advanced 
-            to the next element; <see langword="false" /> if the enumerator has 
-            passed the end of the collection.
-            </returns>
-        </member>
-        <member name="M:NAnt.Core.BuildListenerEnumerator.Reset">
-            <summary>
-            Sets the enumerator to its initial position, which is before the 
-            first element in the collection.
-            </summary>
-        </member>
-        <member name="P:NAnt.Core.BuildListenerEnumerator.Current">
-            <summary>
-            Gets the current element in the collection.
-            </summary>
-            <returns>
-            The current element in the collection.
-            </returns>
-        </member>
-        <member name="T:NAnt.Core.LogWriter">
-            <summary>
-            Implements a <see cref="T:System.IO.TextWriter"/> for writing information to 
-            the NAnt logging infrastructure.
-            </summary>
-        </member>
-        <member name="M:NAnt.Core.LogWriter.#ctor(NAnt.Core.Task,NAnt.Core.Level,System.IFormatProvider)">
-            <summary>
-            Initializes a new instance of the <see cref="T:NAnt.Core.LogWriter"/> class 
-            for the specified <see cref="T:NAnt.Core.Task"/> with the specified output 
-            level and format provider.
-            </summary>
-            <param name="task">Determines the indentation level.</param>
-            <param name="outputLevel">The <see cref="T:NAnt.Core.Level"/> with which messages will be output to the build log.</param>
-            <param name="formatProvider">An <see cref="T:System.IFormatProvider"/> object that controls formatting.</param>
-        </member>
-        <member name="M:NAnt.Core.LogWriter.Write(System.Char[])">
-            <summary>
-            Writes a character array to the buffer.
-            </summary>
-            <param name="chars">The character array to write to the text stream.</param>
-        </member>
-        <member name="M:NAnt.Core.LogWriter.Write(System.String)">
-            <summary>
-            Writes a string to the buffer.
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:NAnt.Core.LogWriter.WriteLine">
-            <summary>
-            Writes an empty string to the logging infrastructure.
-            </summary>
-        </member>
-        <member name="M:NAnt.Core.LogWriter.WriteLine(System.String)">
-            <summary>
-            Writes a string to the logging infrastructure.
-            </summary>
-            <param name="value">The string to write. If <paramref name="value" /> is a null reference, only the line termination characters are written.</param>
-        </member>
-        <member name="M:NAnt.Core.LogWriter.WriteLine(System.String,System.Object[])">
-            <summary>
-            Writes out a formatted string using the same semantics as 
-            <see cref="M:System.String.Format(System.String,System.Object[])"/>.
-            </summary>
-            <param name="line">The formatting string.</param>
-            <param name="args">The object array to write into format string.</param>
-        </member>
-        <member name="M:NAnt.Core.LogWriter.Flush">
-            <summary>
-            Causes any buffered data to be written to the logging infrastructure.
-            </summary>
-        </member>
-        <member name="M:NAnt.Core.LogWriter.Close">
-            <summary>
-            Closes the current writer and releases any system resources 
-            associated with the writer.
-            </summary>
-        </member>
-        <member name="M:NAnt.Core.LogWriter.InitializeLifetimeService">
-            <summary>
-            Obtains a lifetime service object to control the lifetime policy for 
-            this instance.
-            </summary>
-            <returns>
-            An object of type <see cref="T:System.Runtime.Remoting.Lifetime.ILease"/> used to control the lifetime 
-            policy for this instance. This is the current lifetime service object 
-            for this instance if one exists; otherwise, a new lifetime service 
-            object initialized with a lease that will never time out.
-            </returns>
-        </member>
-        <member name="P:NAnt.Core.LogWriter.Encoding">
-            <summary>
-            Gets the <see cref="P:NAnt.Core.LogWriter.Encoding"/> in which the output is written.
-            </summary>
-            <value>
-            The <see cref="T:NAnt.Core.LogWriter"/> always writes output in UTF8 
-            encoding.
-            </value>
-        </member>
-        <member name="P:NAnt.Core.LogWriter.OutputLevel">
-            <summary>
-            Gets the <see cref="T:NAnt.Core.Level"/> with which messages will be output to
-            the build log.
             </summary>
         </member>
     </members>

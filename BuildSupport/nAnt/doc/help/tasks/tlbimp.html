@@ -20,11 +20,10 @@
           <a href="../tasks/index.html">Task Reference</a>
           <img alt="-&gt;" src="../images/arrow.gif" /> &lt;tlbimp&gt;</td>
         <td class="NavBar-Cell" align="right">
-                        v0.85-rc4</td>
+                        v0.85</td>
       </tr>
     </table>
     <h1>&lt;tlbimp&gt;</h1>
-    <p class="topicstatus">[This is preliminary documentation and subject to change.]</p>
     <p> Imports a type library to a .NET assembly (wraps Microsoft's <code>tlbimp.exe</code>). </p>
     <p> This task lets you easily create interop assemblies. By default, it will not reimport if the underlying COM TypeLib or reference has not changed. </p>
     <p>
@@ -106,6 +105,12 @@
           <td style="text-align: center;">False</td>
         </tr>
         <tr>
+          <td valign="top">transform</td>
+          <td style="text-align: center;">string</td>
+          <td> Specifies how to transform the metadata [.NET 1.1 or higher]. </td>
+          <td style="text-align: center;">False</td>
+        </tr>
+        <tr>
           <td valign="top">unsafe</td>
           <td style="text-align: center;">bool</td>
           <td> Specifies whether interfaces should be produced without .NET Framework security checks. The default is <b>false</b>. </td>
@@ -156,6 +161,12 @@
           <td valign="top">exename</td>
           <td style="text-align: center;">string</td>
           <td> The name of the executable that should be used to launch the external program. </td>
+          <td style="text-align: center;">False</td>
+        </tr>
+        <tr>
+          <td valign="top">supportstransform</td>
+          <td style="text-align: center;">bool</td>
+          <td> Indicates whether <code>tlbimp</code> supports transforming metadata for a given target framework. The default is <b>true</b>. </td>
           <td style="text-align: center;">False</td>
         </tr>
         <tr>
@@ -210,10 +221,20 @@
 &lt;tlbimp typelib="LegacyCOM.dll" output="DotNetAssembly.dll" /&gt;
     </pre>
       </li>
+      <li>
+        <p> Generate an assembly named "Interop.MSVidCtlLib.dll" for the MS Video Control 1.0 Type Library, transforming any [out, retval] parameters of methods on dispinterfaces in the type library into return values in the managed library. </p>
+        <pre class="code">
+&lt;tlbimp typelib="msvidctl.dll" output="Interop.MSVidCtlLib.dll" transform="dispret"&gt;
+    &lt;references basedir="Interop"&gt;
+        &lt;include name="Interop.TunerLib.dll" /&gt;
+    &lt;/references&gt;
+&lt;/tlbimp&gt;
+    </pre>
+      </li>
     </ul>
     <h3>Requirements</h3>
     <div style="margin-left: 20px;">
-      <b>Assembly:</b> NAnt.Win32Tasks (0.85.2344.0)
+      <b>Assembly:</b> NAnt.Win32Tasks (0.85.2478.0)
             </div>
   </body>
 </html>
