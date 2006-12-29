@@ -527,7 +527,7 @@
             Helper class called when an assembly resolve event is raised.
             </summary>
         </member>
-        <member name="M:NAnt.NUnit2.Tasks.NUnit2TestDomain.AssemblyResolveHandler.#ctor(System.Collections.Specialized.StringCollection)">
+        <member name="M:NAnt.NUnit2.Tasks.NUnit2TestDomain.AssemblyResolveHandler.#ctor(System.String[])">
             <summary> 
             Initializes an instanse of the <see cref="T:NAnt.NUnit2.Tasks.NUnit2TestDomain.AssemblyResolveHandler"/> 
             class.

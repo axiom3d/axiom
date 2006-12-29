@@ -2830,6 +2830,18 @@
             The namespaces to import.
             </summary>
         </member>
+        <member name="P:NAnt.DotNet.Tasks.VbcTask.NoStdLib">
+            <summary>
+            Instructs the compiler not to reference standard libraries
+            (system.dll and VBC.RSP). The default is <see langword="false" />.
+            Only supported when targeting .NET 2.0 (or higher).
+            </summary>
+            <remarks>
+            <para>
+            Corresponds with the <c>/nostdlib</c> flag.
+            </para>
+            </remarks>
+        </member>
         <member name="P:NAnt.DotNet.Tasks.VbcTask.OptionCompare">
             <summary>
             Specifies whether <c>/optioncompare</c> option gets passed to the 
@@ -2917,6 +2929,13 @@
             Specifies whether the compiler for the active target framework
             supports generation of XML Documentation file. The default is 
             <see langword="false" />.
+            </summary>
+        </member>
+        <member name="P:NAnt.DotNet.Tasks.VbcTask.SupportsNoStdLib">
+            <summary>
+            Specifies whether the compiler for the active target framework
+            supports NOT referencing standard libraries (system.dll and VBC.RSP).
+            The default is <see langword="false" />.
             </summary>
         </member>
         <member name="P:NAnt.DotNet.Tasks.VbcTask.SupportsPlatform">
@@ -3727,7 +3746,7 @@
                   <description>DEBUG</description>
                 </item>
                 <item>
-                  <description>TRUE</description>
+                  <description>TRACE</description>
                 </item>
               </list>
             </remarks>

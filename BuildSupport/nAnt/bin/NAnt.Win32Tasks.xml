@@ -155,7 +155,14 @@
         <member name="P:NAnt.Win32.Tasks.AxImpTask.RcwFile">
             <summary>
             Assembly to use for Runtime Callable Wrapper rather than generating 
-            new one. Only supported on .NET 1.1 or higher.
+            new one [.NET 1.1 or higher].
+            </summary>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.AxImpTask.SupportsRcw">
+            <summary>
+            Indicates whether <c>aximp</c> supports using an existing Runtime
+            Callable Wrapper for a given target framework. The default is 
+            <see langword="true" />.
             </summary>
         </member>
         <member name="P:NAnt.Win32.Tasks.AxImpTask.ProgramArguments">
@@ -467,6 +474,23 @@
                 ]]>
               </code>
             </example>
+            <example>
+              <para>
+              Generate an assembly named &quot;Interop.MSVidCtlLib.dll&quot; for the
+              MS Video Control 1.0 Type Library, transforming any [out, retval]
+              parameters of methods on dispinterfaces in the type library into 
+              return values in the managed library.
+              </para>
+              <code>
+                <![CDATA[
+            <tlbimp typelib="msvidctl.dll" output="Interop.MSVidCtlLib.dll" transform="dispret">
+                <references basedir="Interop">
+                    <include name="Interop.TunerLib.dll" />
+                </references>
+            </tlbimp>
+                ]]>
+              </code>
+            </example>
         </member>
         <member name="M:NAnt.Win32.Tasks.TlbImpTask.ExecuteTask">
             <summary>
@@ -621,6 +645,11 @@
             </value>
             <remarks><a href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryimportertlbimpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</a></remarks>
         </member>
+        <member name="P:NAnt.Win32.Tasks.TlbImpTask.Transform">
+            <summary>
+            Specifies how to transform the metadata [.NET 1.1 or higher].
+            </summary>
+        </member>
         <member name="P:NAnt.Win32.Tasks.TlbImpTask.TypeLib">
             <summary>
             Specifies the source type library that gets passed to the type 
@@ -642,6 +671,12 @@
             checks should be produced; otherwise, <see langword="false" />.
             </value>
             <remarks><a href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryimportertlbimpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</a></remarks>
+        </member>
+        <member name="P:NAnt.Win32.Tasks.TlbImpTask.SupportsTransform">
+            <summary>
+            Indicates whether <c>tlbimp</c> supports transforming metadata for
+            a given target framework. The default is <see langword="true" />.
+            </summary>
         </member>
         <member name="P:NAnt.Win32.Tasks.TlbImpTask.ProgramArguments">
             <summary>
