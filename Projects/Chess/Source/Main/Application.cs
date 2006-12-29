@@ -294,7 +294,7 @@ namespace Chess
             //
             // Again, we load all image sets we can find, this time searching the resources folder.
             string[] imageSetFiles = System.IO.Directory.GetFiles(
-              System.IO.Directory.GetCurrentDirectory() + @"\Media\Gui", "*.imageset"
+              System.IO.Directory.GetCurrentDirectory() + @"\Media\Gui\Imagesets", "*.imageset"
             );
             foreach ( string imageSetFile in imageSetFiles )
                 CeGui.ImagesetManager.Instance.CreateImageset( imageSetFile );

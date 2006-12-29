@@ -4,6 +4,7 @@
     <FilePath type="Folder" src="Media/Overlays"/>
     <FilePath type="Folder" src="Media/Models"/>
     <FilePath type="Folder" src="Media/Gui"/>
+    <FilePath type="Folder" src="Media/Gui/Imagesets"/>
     <FilePath type="Folder" src="Media/Materials"/>
     <FilePath type="Folder" src="Media/Materials/Textures"/>
 </EngineConfig>

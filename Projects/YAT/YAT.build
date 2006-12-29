@@ -174,7 +174,7 @@
 		
 		<!-- Copy any essential files over -->
 		<copy todir="${build.dir}">
-			<fileset>
+			<fileset basedir="Source">
 				<include name="EngineConfig.xml" />
 				<!-- <include name="App.ico" /> -->
 			</fileset>
