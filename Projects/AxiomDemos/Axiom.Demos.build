@@ -190,4 +190,85 @@
 
 	<!-- END: Axiom Demos tasks -->
 
+	<!-- BEGIN: Axiom Demos Dist Tasks -->
+
+	<target name="dist.setup" description="General setup of the distribution directory" depends="init" unless="${target::has-executed('dist.setup')}">
+		<echo message="dist Directory is ${dist.dir}" />
+		<!-- ensure dist directory exists -->
+		<mkdir dir="${dist.dir}" />
+	</target>
+
+	<target name="dist.clean" description="Cleans the dist dir for the current build configuration" depends="init">
+		<delete dir="${dist.dir}" if="${directory::exists(dist.dir)}" />
+	</target>
+
+	<target name="dist.clean.all" description="Cleans every dist configuration">
+		<delete dir="${top.dist.dir}" if="${directory::exists(top.dist.dir)}" />
+	</target>
+
+	<target name="dist.all" description="Prepares all targets for distribution" depends="build.all, release, build.all, dist.setup" unless="${target::has-executed('dist.all')}">
+		<call target="dist.full" />
+		<call target="dist.source" />
+		<call target="dist.media" />
+		<call target="dist.binary" />
+	</target>
+
+	<zipfileset id="dist.fileset.source" basedir="../.." prefix="Axiom">
+		<include name="Projects/AxiomDemos/**/*" />
+	</zipfileset>
+
+	<zipfileset id="dist.fileset.buildtools" basedir="../.." prefix="Axiom">
+		<include name="BuildSupport/**" />
+		<exclude name="BuildSupport/**/.svn/**" />
+	</zipfileset>
+
+	<zipfileset id="dist.fileset.libs" basedir="../.." prefix="Axiom">
+		<include name="Lib/**" />
+		<exclude name="Lib/**/.svn/**" />
+	</zipfileset>
+
+	<zipfileset id="dist.fileset.media" basedir="../../" prefix="Axiom">
+		<include name="Media/**" />
+		<exclude name="Media/**/.svn/**" />
+	</zipfileset>
+
+	<zipfileset id="dist.fileset.binary" basedir="build/release" prefix="Axiom/bin">
+		<include name="**" />
+		<exclude name="**/.svn/**" />
+	</zipfileset>
+
+	<target name="dist.source" >
+
+		<zip zipfile="${dist.dir + '/axiomdemos-' + project.version + '-src.zip'}">
+			<fileset refid="dist.fileset.source" />
+			<fileset refid="dist.fileset.buildtools" />
+			<fileset refid="dist.fileset.libs" />
+		</zip>
+
+	</target>
+
+	<target name="dist.binary" >
+		<zip zipfile="${dist.dir + '/axiomdemos-' + project.version + '-bin.zip'}">
+			<fileset refid="dist.fileset.binary" prefix="bin"/>
+		</zip>
+	</target>
+
+	<target name="dist.media" >
+		<zip zipfile="${dist.dir + '/axiomdemos-' + project.version + '-media.zip'}">
+			<fileset refid="dist.fileset.media" />
+		</zip>
+	</target>
+
+	<target name="dist.full" >
+		<zip zipfile="${dist.dir + '/axiomdemos-' + project.version + '-full.zip'}">
+			<fileset refid="dist.fileset.source" />
+			<fileset refid="dist.fileset.buildtools" />
+			<fileset refid="dist.fileset.libs" />
+			<fileset refid="dist.fileset.media" />
+			<fileset refid="dist.fileset.binary" />
+		</zip>
+	</target>
+
+	<!-- END: Axiom Demos Dist Tasks -->
+
 </project>
