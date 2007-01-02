@@ -1,0 +1,19 @@
+material Terrain/WaterPlane
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.3 0.3 0.3
+			scene_blend modulate
+			cull_hardware none
+			cull_software none
+
+			texture_unit
+			{
+				texture Water02.jpg
+				scroll_anim 0.01 0.01
+			}
+		}
+	}
+}
