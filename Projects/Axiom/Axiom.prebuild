@@ -253,8 +253,8 @@
 		<Project name="Axiom.Plugins.ParticleFX" type="Library" path="Source/Plugins/ParticleFX" language="C#" runtime="Microsoft" >
 			<Configuration name="Debug">
 				<Options>
-					<OutputPath>../../../../build/debug/Axiom3D</OutputPath>
-					<XmlDocFile>../../../../build/debug/Axiom3D/Axiom.Plugins.ParticleFX.xml</XmlDocFile>
+					<OutputPath>../../../../../Lib/Managed/XPlatform/Axiom/debug</OutputPath>
+					<XmlDocFile>../../../../../Lib/Managed/XPlatform/Axiom/debug/Axiom.Plugins.ParticleFX.xml</XmlDocFile>
 					<AllowUnsafe>true</AllowUnsafe>
 				</Options>
 			</Configuration>
