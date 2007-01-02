@@ -1,0 +1,28 @@
+Camera behavior
+
+Camera control consists of a camera "focus" node (F) and a camera node (C). Focus will be
+on an object (O).
+
+
+F--->O
+^
+|
+|
+|
+|
+C
+
+Rotating the focus node will cause a constant rotation of the camera. So long as the 
+camera is set to autotrack the focus node, rotation will be smooth and constant.
+
+Moving focus:
+
+When shifting focus to another node, the following behavior should occur:
+
+The focus node should shift to the new focus object's position. The camera node
+will remain stationary, but will track the focus node.
+
+If enabled, the camera node will concurrently zoom to the focus node. At the end of the
+zoom operation, it should have the focus object filling the viewport (2xDistance)
+
+Camera "y" should be the focus object's "y" after shift.

@@ -1,1 +1,0 @@
-..\..\Tools\Prebuild\Prebuild /clean /pause

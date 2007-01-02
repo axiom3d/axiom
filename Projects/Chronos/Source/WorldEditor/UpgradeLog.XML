@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="ChronosMain">
+</Property><Property Name="Solution File" Value="E:\Development\Axiom3D Graphics Engine\branches\hobbiton\Source\Related_Projects\Tools\Chronos\trunk\WorldEditor\ChronosMain.sln">
+</Property><Property Name="Date" Value="Tuesday, December 05, 2006">
+</Property><Property Name="Time" Value="20:52 PM">
+</Property></Properties><Event ErrorLevel="0" Project="ChronosMain" Source="ChronosMain.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="ChronosMain" Source="ChronosMain.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="MeshPlugin" Source="..\MeshPlugin\MeshPlugin.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="MeshPlugin" Source="..\MeshPlugin\MeshPlugin.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="BackgroundPlugin" Source="..\BackgroundPlugin\BackgroundPlugin.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="BackgroundPlugin" Source="..\BackgroundPlugin\BackgroundPlugin.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="LightPlugin" Source="..\LightPlugin\LightPlugin.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="LightPlugin" Source="..\LightPlugin\LightPlugin.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="MaterialLibraryPlugin" Source="..\MaterialLibraryPlugin\MaterialLibraryPlugin.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="MaterialLibraryPlugin" Source="..\MaterialLibraryPlugin\MaterialLibraryPlugin.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="Common" Source="..\Common\Common.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="Common" Source="..\Common\Common.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="ChronosMain.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="ChronosMain.sln" Description="Converted">
+</Event><Event ErrorLevel="0" Project="ChronosMain" Source="app.config" Description="File converted successfully. All &lt;supportedRuntime&gt; and &lt;requiredRuntime&gt; tags were removed to enable the project to build and run with Visual Studio 2005.">
+</Event><Event ErrorLevel="3" Project="ChronosMain" Source="app.config" Description="Converted">
+</Event><Event ErrorLevel="0" Project="MeshPlugin" Source="..\MeshPlugin\MeshPlugin.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="BackgroundPlugin" Source="..\BackgroundPlugin\BackgroundPlugin.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="LightPlugin" Source="..\LightPlugin\LightPlugin.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="MaterialLibraryPlugin" Source="..\MaterialLibraryPlugin\MaterialLibraryPlugin.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="Common" Source="..\Common\Common.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event></UpgradeLog>

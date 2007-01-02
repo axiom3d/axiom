@@ -1,0 +1,13 @@
+Start 	End 	Secs 	Name
+0	25	1	Pickup
+25	35	0.5	Move
+35	60	1	SimpleReturn
+85	100	1	Capture1
+100	115	1	Capture2
+115	140	1	Remove
+140	170	1	CaptureReturn
+170	187	1	Tap1
+187	214	1	Tap2
+213	250	1	Tap3
+250	340	3	Thumb Up  <--includes movement
+340	480	4	Promotion    neither used
