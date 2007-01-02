@@ -1,0 +1,290 @@
+<?xml version="1.0" ?>
+<project name="Chess" default="build.all">
+
+	<!-- set build.date property to current date in format yyyy-MM-dd -->
+	<tstamp property="build.date" pattern="yyyy-MM-dd" />
+
+	<!-- BEGIN: global project settings -->
+	<property name="project.name" value="YAT" />
+	<property name="project.version" value="1.0" unless="${property::exists('project.version')}" />
+
+	<!-- nightly / dev / alpha / beta# / rc# / release -->
+	<!-- Set this via local build settings or at the NAnt commandline with -D:project.release.type="foo" -->
+	<property name="project.release.type" value="dev" unless="${property::exists('project.release.type')}" />
+	<if test="${project.release.type == 'nightly'}">
+		<property name="project.version.full" value="${project.version + '-nightly-' + build.date}" />
+	</if>
+	<if test="${project.release.type != 'nightly'}">
+		<property name="project.version.full" value="${project.version + if(project.release.type == 'release', '', '-' + project.release.type)}" dynamic="true" />
+	</if>
+
+	<!-- Define location of build include files useful for any project.  Required (if you want to use any) -->
+	<property name="build.includes.dir" value="${path::combine(project::get-base-directory(), '../../BuildSupport/NAntIncludes') }" dynamic="false" />
+	
+	<!-- Framework support targets  -->
+	<include verbose="false" buildfile="${path::combine(build.includes.dir, 'frameworksupport.include')}" />
+	
+	<!-- Axiom build and run-time libs -->
+	<!-- Define locations of Axiom libs top-level directory.  Required. -->
+	<property name="libs.topdir" value="${project::get-base-directory()}/../../Lib" dynamic="false" />
+
+	<!-- Load aliases for managed and native libs -->
+	<include verbose="true" buildfile="${path::combine(libs.topdir, 'AxiomDependencies.include')}" />
+	<include verbose="true" buildfile="${path::combine(libs.topdir, 'cegui.include')}" />
+	
+	<!-- Load aliases for compiled Axiom assemblies -->
+	<include verbose="true" buildfile="${path::combine(libs.topdir, 'AxiomAssemblies.include')}" />
+
+	<!-- Master build and dist output dirs -->
+	<property name="top.build.dir" value="${project::get-base-directory()}/build" dynamic="true" />
+	<property name="top.dist.dir" value="${project::get-base-directory()}/dist" dynamic="true" />
+
+	<!-- END: global project settings -->
+
+	<!-- START: global build settings -->
+
+	<!-- default configuration: debug|release -->
+	<property name="project.config" value="debug" />
+	<property name="build.defines" value="" />
+	<property name="build.number" value="${math::abs(math::floor(timespan::get-total-days(datetime::now() - datetime::parse('01/01/2000'))))}" />
+
+	<property name="build.dir" value="${top.build.dir}/${project.config}" />
+	<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" />
+	<property name="axiom.assemblies.dir" value="${axiom.assemblies.topdir}/${project.config}" />
+
+	<!-- platform specific properties. These are the defaults -->
+	<property name="current.build.defines" value="${build.defines}" />
+
+	<!-- END: global build settings -->
+
+
+	<!-- START: named project configurations -->
+
+	<!-- 
+		Sets config parameters for build type and dynamically defines top-level 
+		build output directory based on target framework,platform,project name,
+		build type and version.
+		For example, on Linux running mono 1.1, the top-level build dir would be:
+		build/mono-1.0.unix/Axiom3D-1.06-debug
+	-->
+	<target name="debug" description="Perform a 'debug' build">
+		<property name="project.config" value="debug" />
+		<property name="build.debug" value="true" />
+		<property name="build.dir" value="${top.build.dir}/${project.config}" />
+		<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" />
+		<property name="axiom.assemblies.dir" value="${axiom.assemblies.topdir}/${project.config}" />
+	</target>
+
+	<target name="release" description="Perform a 'release' build">
+		<property name="project.config" value="release" />
+		<property name="build.debug" value="false" />
+		<property name="build.dir" value="${top.build.dir}/${project.config}" />
+		<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" />
+		<property name="axiom.assemblies.dir" value="${axiom.assemblies.topdir}/${project.config}" />
+	</target>
+
+	<!-- END: named project configurations -->
+
+
+	<!-- BEGIN: General build tasks -->
+	<target name="init" description="Initializes build properties" unless="${target::has-executed('init')}">
+		<call target="${project.config}" />
+		<call target="set-framework-configuration" />
+	</target>
+
+	<target name="build.clean" depends="init" description="Deletes current build configuration">
+		<delete dir="${build.dir}" if="${directory::exists(build.dir)}" />
+	</target>
+
+	<target name="build.cleanall" description="Deletes every build configuration">
+		<echo message="Deleting all builds from all configurations" />
+		<delete dir="${top.build.dir}" if="${directory::exists(top.build.dir)}" />
+	</target>
+
+	<target name="build.setup" depends="init" unless="${target::has-executed('build.setup')}" description="Sets up build area">
+		<echo message="Build Directory is ${build.dir}" />
+		<!-- ensure build directory exists -->
+		<mkdir dir="${build.dir}" />
+	</target>
+
+	<target name="build.all" depends="build.chess" description="Build everything"/>
+
+	<target name="cleanall" description="Deletes every build and dist configuration" depends="build.cleanall, dist.cleanall"/>
+
+	<!-- END: General build tasks -->
+
+
+	<!-- BEGIN: Chess build tasks -->
+	<target name="references.setup" description="Sets up file references for the project's tasks" unless="${target::has-executed('references.setup')}">
+		<fileset id="chess.build.references">
+			<include name="${axiom.assemblies.dir}/Axiom.dll"/>
+			
+			<include name="${CeGui.dll}" />
+			<include name="${CeGui.Renderers.Axiom.dll}" />
+
+			<include name="System.dll"/>
+			<include name="System.Data.dll"/>
+			<include name="System.Drawing.dll"/>
+			<include name="System.Windows.Forms.dll"/>
+			<include name="System.Xml.dll"/>
+
+		</fileset>
+
+		<fileset id="chess.runtime.references">
+			<include name="${axiom.assemblies.dir}/Axiom.dll"/>
+			<include name="${axiom.assemblies.dir}/Axiom.Plugins.CgProgramManager.dll"/>
+			<include name="${axiom.assemblies.dir}/Axiom.Plugins.ParticleFX.dll"/>
+			<include name="${axiom.assemblies.dir}/Axiom.RenderSystems.OpenGL.dll"/>
+
+			<include if="${platform::is-win32()}" name="${axiom.assemblies.dir}/Axiom.Platforms.Win32.dll"/>
+			<include if="${platform::is-win32()}" name="${axiom.assemblies.dir}/Axiom.RenderSystems.DirectX9.dll"/>
+			<include unless="${platform::is-win32()}" name="${axiom.assemblies.dir}/Axiom.Platforms.SDL.dll"/>
+
+			<include name="${CeGui.dll}" />
+			<include name="${CeGui.Imageset.xsd}" />
+			<include name="${CeGui.Renderers.Axiom.dll}" />
+			<include name="${CeGui.WidgetSets.Suave.dll}" />
+			<include name="${CeGui.WidgetSets.Taharez.dll}" />
+			<include name="${CeGui.WidgetSets.Windows.dll}" />
+
+			<include name="${ICSharpCode.SharpZipLib.dll}"/>
+
+			<include name="${Tao.DevIl.dll}"/>
+			<include if="${platform::is-unix()}" name="${Tao.DevIl.dll.configs}"/>
+
+			<include name="${Tao.Cg.dll}"/>
+			<include if="${platform::is-unix()}" name="${Tao.Cg.dll.configs}"/>
+
+			<include name="${Tao.OpenGl.dll}"/>
+			<include if="${platform::is-unix()}" name="${Tao.OpenGl.dll.configs}"/>
+
+			<include name="${Tao.OpenGl.ExtensionLoader.dll}"/>
+			<include if="${platform::is-unix()}" name="${Tao.OpenGl.ExtensionLoader.dll.configs}"/>
+
+			<include name="${Tao.OpenGl.Glu.dll}"/>
+			<include if="${platform::is-unix()}" name="${Tao.OpenGl.Glu.dll.configs}"/>
+
+			<include if="${platform::is-win32()}" name="${Tao.Platform.Windows.dll}"/>
+
+			<include unless="${platform::is-win32()}" name="${Tao.Sdl.dll}"/>
+			<include unless="${platform::is-win32()}" name="${Tao.Sdl.dll.configs}"/>
+
+			<!-- Dump all the native libs into the build directory if on Windows -->
+			<!-- NOTE: This is a little sloppy - should really only reference the deps we need -->
+			<include if="${platform::is-win32()}" name="${libs.native.win32.dir}/*.dll"/>
+			
+			<!-- Note that all the Linux native deps should be installed by the distribution, 
+			so they aren't handled here.  We just assume they are there -->
+		</fileset>
+
+	</target>
+
+	<target name="build.chess.setup" depends="build.setup, references.setup" unless="${target::has-executed('build.chess.setup')}" description="Sets up build area">
+
+		<!-- ensure build directory exists -->
+		<mkdir dir="${build.dir}" />
+		
+		<!-- Copy any essential files over -->
+		<copy todir="${build.dir}">
+			<fileset basedir="Source">
+				<include name="EngineConfig.xml" />
+				<!-- <include name="App.ico" /> -->
+			</fileset>
+		</copy>
+
+		<!-- Copy the media over to the build dir -->
+		<copy todir="${build.dir}" >
+			<fileset>
+				<include name="Media/**" />
+			</fileset>
+		</copy>
+
+		<copy todir="${build.dir}/Media/Gui" flatten="false">
+			<!-- Copy references - we'll need these at runtime -->
+			<fileset refid="CeGuiRelatedFiles" />
+		</copy>
+
+		<copy todir="${build.dir}">
+			<!-- Copy references - we'll need these at runtime -->
+			<fileset refid="chess.runtime.references" />
+		</copy>
+
+	</target>
+
+	<target name="build.chess" depends="build.chess.setup" description="Builds the YAT application for the current build configuration" unless="${target::has-executed('build.chess')}">
+		<property name="unsafe" value="true" />
+		<property name="warnaserror" value="false"/>
+		<property name="warninglevel" value="1" />
+		<property name="verbose" value="false" />
+	
+		<!-- build it -->
+		<csc target="winexe" define="${current.build.defines}" warnaserror="${warnaserror}" warninglevel="${warninglevel}" debug="${build.debug}" unsafe="${unsafe}" verbose="${verbose}" output="${build.dir}/${project::get-name()}.exe" doc="${build.dir}/${project::get-name()}.xml">
+			<nowarn>
+				<!-- do not report warnings for missing XML comments -->
+				<warning number="1591" />
+				<!-- do not report deprecation warnings -->
+				<warning number="0618" />
+				<warning number="1572" />
+				<warning number="1573" />
+				<warning number="219"/>
+				<warning number="168"/>
+				<warning number="414"/>
+			</nowarn>
+			<sources failonempty="true">
+				<include name="Source/**/*.cs" />
+			</sources>
+			<!--
+			<resources prefix="yat" dynamicprefix="true">
+				<include name="Resources/**/*" />
+			</resources>
+			-->
+			<references refid="chess.build.references" />
+		</csc>
+	</target>
+
+	<!-- END: Chess build tasks -->
+
+	<target name="run.chess" description="Run the Chess app" depends="build.chess">
+		<echo message="Running Chess!"/>
+		<exec program="${build.dir}/${project::get-name()}.exe" useruntimeengine="true" workingdir="${build.dir}" />
+	</target>
+
+	<!-- BEGIN: Distribution targets -->
+	
+	<target name="dist.setup" description="General setup of the distribution directory" depends="init" unless="${target::has-executed('dist.setup')}">
+		<echo message="dist Directory is ${dist.dir}" />
+		<!-- ensure dist directory exists -->
+		<mkdir dir="${dist.dir}" />
+	</target>
+
+	<target name="dist.clean" description="Cleans the dist dir for the current build configuration" depends="init">
+		<delete dir="${dist.dir}" if="${directory::exists(dist.dir)}" />
+	</target>
+
+	<target name="dist.cleanall" description="Cleans every dist configuration">
+		<delete dir="${top.dist.dir}" if="${directory::exists(top.dist.dir)}" />
+	</target>
+
+	<target name="dist.chess" description="Prepares YAT for distribution for the current build configuration" depends="build.chess, dist.setup" unless="${target::has-executed('dist.chess')}" >
+		<!-- Take the simple approach for now: copy everything in the build directory to the dist directory -->
+		<copy todir="${dist.dir}">
+			<fileset basedir="${build.dir}">
+				<include name="**" />
+				<exclude name="*.log" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="dist.zip" description="Package the distribution files for the current build configuration into a zip file" unless="${target::has-executed('dist.zip')}" depends="dist.chess" >
+		<zip zipfile="${top.dist.dir}/${project.name}-${project.version.full}-${framework::get-target-framework()}.${platform::get-name()}.zip" >
+			<fileset basedir="${dist.dir}" prefix="${project.name}-${project.version.full}-${framework::get-target-framework()}.${platform::get-name()}">
+				<include name="**/*" />
+			</fileset>
+		</zip>
+	</target>
+
+	<target name="dist" description="Prepares Chess for distribution and packages it into a zip file" depends="dist.zip" unless="${target::has-executed('dist')}" />
+
+	<!-- END: Distribution targets -->
+
+</project>

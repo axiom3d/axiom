@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Prebuild xmlns="http://dnpb.sourceforge.net/schemas/prebuild-1.7.xsd" version="1.7">
+    <Solution name="Axiom_Chess" path=".">
+		<Configuration name="Debug">
+			<Options>
+				<IncrementalBuild>true</IncrementalBuild>
+				<CompilerDefines>DEBUG;TRACE</CompilerDefines>
+				<OptimizeCode>false</OptimizeCode>
+				<AllowUnsafe>true</AllowUnsafe>
+				<DebugInformation>true</DebugInformation>
+				<WarningLevel>0</WarningLevel>
+			</Options>
+		</Configuration>
+		<Configuration name="Release">
+			<Options>
+				<CompilerDefines>TRACE</CompilerDefines>
+				<OptimizeCode>true</OptimizeCode>
+				<AllowUnsafe>true</AllowUnsafe>
+				<DebugInformation>false</DebugInformation>
+				<WarningLevel>0</WarningLevel>
+			</Options>
+		</Configuration>
+
+		<Files>
+			<Match pattern="*.build" path="." recurse="true" />
+		</Files>
+
+		<Project name="Axiom_Chess" type="Exe" path="Source" language="C#" runtime="Microsoft" >		
+			<Configuration name="Debug">
+				<Options>
+					<OutputPath>build/debug</OutputPath>
+					<AllowUnsafe>true</AllowUnsafe>
+				</Options>
+			</Configuration>
+			<Configuration name="Release">
+				<Options>
+					<OutputPath>build/release</OutputPath>
+					<AllowUnsafe>true</AllowUnsafe>
+				</Options>
+			</Configuration>
+
+			<ReferencePath>../../../Lib/Managed/XPlatform/Axiom/debug</ReferencePath>
+			<ReferencePath>../../../Lib/Managed/XPlatform/ICSharpCode.SharpZipLib/0.84.0.0</ReferencePath>
+			<ReferencePath>../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
+			<ReferencePath>../../../Lib/Managed/XPlatform/CeGui#/1.0.2458.0</ReferencePath>
+
+			<Reference name="Axiom" />
+			<Reference name="Axiom.Plugins.ParticleFX" />
+			<Reference name="Axiom.Plugins.CgProgramManager" />
+			<Reference name="Axiom.RenderSystems.OpenGL" />
+
+			<?if OS = "Win32" ?>
+				<Reference name="Axiom.Platforms.Win32" />
+				<Reference name="Axiom.RenderSystems.DirectX9" />
+			<?else ?>
+				<Reference name="Axiom.Platforms.SDL" />
+			<?endif ?>
+
+			<Reference name="CeGui" />
+			<Reference name="CeGui.Renderers.Axiom" />
+			<Reference name="CeGui.WidgetSets.Taharez" />
+			<Reference name="CeGui.WidgetSets.Windows" />
+			<Reference name="CeGui.WidgetSets.Suave" />
+
+			<Reference name="System" />
+			<Reference name="System.Data" />
+			<Reference name="System.Windows.Forms" />
+			<Reference name="System.Drawing" />
+			<Reference name="System.Xml" />
+
+			<Files>
+				<Match pattern="EngineConfig.xml" path="" buildAction="None" copyToOutput="PreserveNewest" />
+				<Match pattern="Chess.prebuild" path=".." buildAction="None" copyToOutput="Never" />
+				<Match pattern="Chess.build" path=".." buildAction="None" copyToOutput="Never" />
+				<Match pattern="*.*" path="../Media" buildAction="None" copyToOutput="PreserveNewest" recurse="true" link="true" preservePath="true">
+					<Exclude pattern=".svn" />
+					<Exclude pattern="Thumbs.db" />
+				</Match>
+				<Match pattern="*.cs" path="" recurse="true"/>
+                <Match pattern="devil.dll" path="../../../Lib/Native/" buildAction="None" link="true" recurse="true" copyToOutput="PreserveNewest" />
+                <Match pattern="cg.dll" path="../../../Lib/Native/" buildAction="None" link="true" recurse="true" copyToOutput="PreserveNewest" />
+			</Files>
+		</Project>
+
+
+    </Solution>
+</Prebuild>

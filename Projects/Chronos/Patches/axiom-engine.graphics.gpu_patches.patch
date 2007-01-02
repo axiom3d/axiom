@@ -1,0 +1,140 @@
+Index: Engine/Graphics/GpuProgramParameters.cs
+===================================================================
+RCS file: /cvsroot/axiomengine/Axiom/Engine/Graphics/GpuProgramParameters.cs,v
+retrieving revision 1.10
+diff -u -r1.10 GpuProgramParameters.cs
+--- Engine/Graphics/GpuProgramParameters.cs	9 Apr 2004 21:28:46 -0000	1.10
++++ Engine/Graphics/GpuProgramParameters.cs	25 Jun 2004 08:27:16 -0000
+@@ -82,6 +82,11 @@
+         /// </summary>
+         protected bool transposeMatrices;
+ 
++		/// <summary>
++		///    Lookup of # of indexes per parameter.
++		/// </summary>
++		protected Hashtable paramIndexTypes = new Hashtable();
++
+ 		#endregion
+ 		
+ 		#region Constructors
+@@ -100,6 +105,17 @@
+             autoConstantList.Clear();
+         }
+ 
++		public int AutoConstantCount {
++			get { return this.autoConstantList.Count; }
++		}
++
++		public AutoConstantEntry GetAutoConstant(int n) {
++			foreach(AutoConstantEntry e in this.autoConstantList) {
++				if(e.index == n)
++					return e;
++			}
++			return null;
++		}
+         /// <summary>
+         /// 
+         /// </summary>
+@@ -155,6 +171,10 @@
+             namedParams[name] = index;
+         }
+ 
++		public void SetIndexType(int index, int type) {
++			this.paramIndexTypes[index] = type;
++		}
++
+         /// <summary>
+         ///    Sets up a constant which will automatically be updated by the engine.
+         /// </summary>
+@@ -255,7 +275,8 @@
+                 mat = val;
+             }
+ 
+-            SetConstant(index++, new Vector4(mat.m00, mat.m01, mat.m02, mat.m03));
++			
++			SetConstant(index++, new Vector4(mat.m00, mat.m01, mat.m02, mat.m03));
+             SetConstant(index++, new Vector4(mat.m10, mat.m11, mat.m12, mat.m13));
+             SetConstant(index++, new Vector4(mat.m20, mat.m21, mat.m22, mat.m23));
+             SetConstant(index, new Vector4(mat.m30, mat.m31, mat.m32, mat.m33));
+@@ -590,6 +611,14 @@
+             }
+         }
+ 
++		public Hashtable ParamIndexTypes {
++			get { return this.paramIndexTypes; }
++		}
++
++		public int NamedParamCount {
++			get { return this.namedParams.Count; }
++		}
++
+ 		#endregion Properties
+ 
+         #region Inner classes
+@@ -597,7 +626,7 @@
+         /// <summary>
+         ///    A structure for recording the use of automatic parameters.
+         /// </summary>
+-        class AutoConstantEntry {
++        public class AutoConstantEntry {
+             /// <summary>
+             ///    The type of the parameter.
+             /// </summary>
+@@ -617,7 +646,7 @@
+             /// <param name="type">Type of auto param (i.e. WorldViewMatrix, etc)</param>
+             /// <param name="index">Index of the param.</param>
+             /// <param name="data">Any additional info to go with the parameter.</param>
+-            public AutoConstantEntry(AutoConstants type, int index, int data) {
++            public AutoConstantEntry(AutoConstants type, int	 index, int data) {
+                 this.type = type;
+                 this.index = index;
+                 this.data = data;
+Index: Engine/Graphics/GpuProgram.cs
+===================================================================
+RCS file: /cvsroot/axiomengine/Axiom/Engine/Graphics/GpuProgram.cs,v
+retrieving revision 1.6
+diff -u -r1.6 GpuProgram.cs
+--- Engine/Graphics/GpuProgram.cs	31 Mar 2004 03:07:45 -0000	1.6
++++ Engine/Graphics/GpuProgram.cs	25 Jun 2004 08:27:16 -0000
+@@ -28,6 +28,7 @@
+ using System.IO;
+ using Axiom.Core;
+ 
++
+ namespace Axiom.Graphics
+ {
+ 	/// <summary>
+Index: Engine/Graphics/GpuProgramManager.cs
+===================================================================
+RCS file: /cvsroot/axiomengine/Axiom/Engine/Graphics/GpuProgramManager.cs,v
+retrieving revision 1.12
+diff -u -r1.12 GpuProgramManager.cs
+--- Engine/Graphics/GpuProgramManager.cs	2 May 2004 19:39:47 -0000	1.12
++++ Engine/Graphics/GpuProgramManager.cs	25 Jun 2004 08:27:16 -0000
+@@ -73,6 +73,8 @@
+ 		///    Collection of syntax codes that this program manager supports.
+ 		/// </summary>
+ 		protected StringCollection syntaxCodes = new StringCollection();
++		protected ArrayList vertexProgramNames = new ArrayList();
++		protected ArrayList fragmentProgramNames = new ArrayList();
+ 
+ 		#endregion
+ 				
+@@ -384,6 +386,17 @@
+ 		#endregion
+ 		
+ 		#region Properties
++
++		public string[] ProgramNames {
++			get {
++				string[] sl = new string[resourceList.Count];
++				int count = 0;
++				foreach(string s in resourceList.Keys) {
++					sl[count++] = s;
++				}
++				return sl;
++			}
++		}
+ 		
+ 		#endregion
+ 

@@ -1,0 +1,190 @@
+material Colour
+{
+    technique
+    {
+        pass
+        { 
+	    	shading phong
+        }
+    }
+}
+
+material Chess/White
+{
+    technique
+    {
+        pass
+        {
+            ambient 0.1 0.1 0.1
+            diffuse 0.9 0.85 0.55
+	    	shading phong
+        }
+    }
+}
+
+material Chess/Black
+{
+    technique
+    {
+        pass
+        {
+            ambient 0.05 0.05 0.05
+            diffuse 0.0 0.0 0.0
+            specular .1 .1 .1 .7			
+	    	shading phong
+        }             
+    }
+}
+
+material Hand
+{
+    technique
+    {
+        pass
+        {
+            ambient 0.1 0.1 0.1
+            diffuse 0.92549 0.698039 0.588235			
+	    	shading phong
+        }
+    }
+}
+
+material Chess/Hand
+{
+    technique
+    {
+        pass
+        {
+            ambient 0.1 0.1 0.1
+            diffuse 0.92549 0.698039 0.588235			
+	    	shading phong
+        }
+    }
+}
+
+material Chess/lensflare
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+			scene_blend add
+			texture_unit
+			{
+				texture flare.png
+			}
+		}
+	}
+}
+
+material Chess/Sunset
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+
+			texture_unit
+			{
+				cubic_texture sky_fr.tga sky_bk.tga sky_rt.tga sky_lt.tga sky_up.tga sky_dn.tga separateUV
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+
+material Chess/BoardTopMat
+{
+    technique
+    {
+        pass
+        {            
+            ambient 0.992157 0.862745 0.466667 
+            diffuse 0.992157 0.862745 0.466667
+            specular 0.7 0.7 0.7 .64
+			texture_unit
+            {
+                texture Board.png 
+            }
+        }
+    }
+}
+
+material Chess/BoardSideMat
+{
+    technique
+    {
+        pass
+        {
+
+            ambient 0.992157 0.862745 0.466667
+            diffuse 0.992157 0.862745 0.466667
+			texture_unit
+            {
+                texture Oak.png 
+            }
+        }
+    }
+}
+
+material Chess/SelectionMat
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            cull_hardware none 
+            cull_software none
+			depth_write off
+			scene_blend alpha_blend
+            texture_unit
+            {
+                texture GreenArrow.png 
+            }
+        }
+    }
+}
+
+material Chess/GreenSel
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            cull_hardware none 
+            cull_software none
+			depth_write off
+			scene_blend alpha_blend
+            texture_unit
+            {
+                texture GreenSel.png 
+            }
+        }
+    }
+}
+
+material Chess/RedSel
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            cull_hardware none 
+            cull_software none
+			depth_write off
+			scene_blend alpha_blend
+            texture_unit
+            {
+                texture RedSel.png 
+            }
+        }
+    }
+}

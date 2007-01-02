@@ -1,0 +1,120 @@
+Index: Engine/Graphics/GpuProgramParameters.cs
+===================================================================
+RCS file: /cvsroot/axiomengine/Axiom/Engine/Graphics/GpuProgramParameters.cs,v
+retrieving revision 1.10
+diff -u -r1.10 GpuProgramParameters.cs
+--- Engine/Graphics/GpuProgramParameters.cs	9 Apr 2004 21:28:46 -0000	1.10
++++ Engine/Graphics/GpuProgramParameters.cs	24 Jun 2004 08:41:43 -0000
+@@ -82,6 +82,11 @@
+         /// </summary>
+         protected bool transposeMatrices;
+ 
++		/// <summary>
++		///    Lookup of # of indexes per parameter.
++		/// </summary>
++		protected Hashtable paramSizes = new Hashtable();
++
+ 		#endregion
+ 		
+ 		#region Constructors
+@@ -100,6 +105,17 @@
+             autoConstantList.Clear();
+         }
+ 
++		public int AutoConstantCount {
++			get { return this.autoConstantList.Count; }
++		}
++
++		public AutoConstantEntry GetAutoConstant(int n) {
++			foreach(AutoConstantEntry e in this.autoConstantList) {
++				if(e.index == n)
++					return e;
++			}
++			return null;
++		}
+         /// <summary>
+         /// 
+         /// </summary>
+@@ -196,6 +212,7 @@
+         /// <param name="index">Index of the contant register.</param>
+         /// <param name="val">Single value to set.</param>
+         public void SetConstant(int index, int val) {
++			paramSizes[index] = 1;
+             if(index >= intConstants.Count) {
+                 intConstants.Insert(index, val);
+             }
+@@ -212,6 +229,7 @@
+         public void SetConstant(int index, Vector4 val) {
+             // store the float4 constant for this index
+             floatConstants[index] = val;
++			paramSizes[index] = 1;
+         }
+ 
+         /// <summary>
+@@ -255,10 +273,12 @@
+                 mat = val;
+             }
+ 
+-            SetConstant(index++, new Vector4(mat.m00, mat.m01, mat.m02, mat.m03));
++			
++			SetConstant(index++, new Vector4(mat.m00, mat.m01, mat.m02, mat.m03));
+             SetConstant(index++, new Vector4(mat.m10, mat.m11, mat.m12, mat.m13));
+             SetConstant(index++, new Vector4(mat.m20, mat.m21, mat.m22, mat.m23));
+             SetConstant(index, new Vector4(mat.m30, mat.m31, mat.m32, mat.m33));
++			paramSizes[index-3] = 4;
+         }
+ 
+ 		/// <summary>
+@@ -270,6 +290,7 @@
+ 			for(int i = 0; i < count; i++) {
+ 				SetConstant(index++, matrices[i]);
+ 			}
++			paramSizes[index] = 4 * count;
+ 		}
+ 
+         /// <summary>
+@@ -281,6 +302,7 @@
+             for(int i = index; i < ints.Length; i++) {
+                 SetConstant(i, ints[i]);
+             }
++			paramSizes[index] = ints.Length;
+         }
+ 
+         /// <summary>
+@@ -290,6 +312,7 @@
+         /// <param name="factor"></param>
+         public void SetConstantFromTime(int index, float factor) {
+             ControllerManager.Instance.CreateGpuProgramTimerParam(this, index, factor);
++			paramSizes[index] = 1;
+         }
+ 
+         #region Named parameters
+@@ -590,6 +613,10 @@
+             }
+         }
+ 
++		public Hashtable ParamSizes {
++			get { return this.paramSizes; }
++		}
++
+ 		#endregion Properties
+ 
+         #region Inner classes
+@@ -597,7 +624,7 @@
+         /// <summary>
+         ///    A structure for recording the use of automatic parameters.
+         /// </summary>
+-        class AutoConstantEntry {
++        public class AutoConstantEntry {
+             /// <summary>
+             ///    The type of the parameter.
+             /// </summary>
+@@ -617,7 +644,7 @@
+             /// <param name="type">Type of auto param (i.e. WorldViewMatrix, etc)</param>
+             /// <param name="index">Index of the param.</param>
+             /// <param name="data">Any additional info to go with the parameter.</param>
+-            public AutoConstantEntry(AutoConstants type, int index, int data) {
++            public AutoConstantEntry(AutoConstants type, int	 index, int data) {
+                 this.type = type;
+                 this.index = index;
+                 this.data = data;

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Prebuild xmlns="http://dnpb.sourceforge.net/schemas/prebuild-1.7.xsd" version="1.7">
+	<Solution name="YAT" activeConfig="Debug">
+		<Configuration name="Debug">
+			<Options>
+				<CompilerDefines>TRACE;DEBUG</CompilerDefines>
+				<OptimizeCode>false</OptimizeCode>
+				<CheckUnderflowOverflow>false</CheckUnderflowOverflow>
+				<AllowUnsafe>false</AllowUnsafe>
+				<WarningLevel>4</WarningLevel>
+				<WarningsAsErrors>false</WarningsAsErrors>
+				<SuppressWarnings>1595;1591;219;1573;1572;168;1574;1570;1587</SuppressWarnings>
+				<DebugInformation>true</DebugInformation>
+				<RegisterComInterop>false</RegisterComInterop>
+				<IncrementalBuild>true</IncrementalBuild>
+				<BaseAddress>285212672</BaseAddress>
+				<FileAlignment>4096</FileAlignment>
+				<NoStdLib>false</NoStdLib>
+			</Options>
+		</Configuration>
+		<Configuration name="Release">
+			<Options>
+				<CompilerDefines>TRACE</CompilerDefines>
+				<OptimizeCode>true</OptimizeCode>
+				<CheckUnderflowOverflow>false</CheckUnderflowOverflow>
+				<AllowUnsafe>false</AllowUnsafe>
+				<WarningLevel>4</WarningLevel>
+				<WarningsAsErrors>false</WarningsAsErrors>
+				<SuppressWarnings>1595;1591;219;1573;1572;168;1574;1570;1587</SuppressWarnings>
+				<DebugInformation>false</DebugInformation>
+				<RegisterComInterop>false</RegisterComInterop>
+				<IncrementalBuild>true</IncrementalBuild>
+				<BaseAddress>285212672</BaseAddress>
+				<FileAlignment>4096</FileAlignment>
+				<NoStdLib>false</NoStdLib>
+			</Options>
+		</Configuration>
+
+
+		<Project name="YAT" path="Source" type="WinExe" rootNamespace="YAT">
+			<Configuration name="Debug">
+				<Options>
+				    <OutputPath>../../build/debug</OutputPath>
+					<AllowUnsafe>true</AllowUnsafe>
+				</Options>
+			</Configuration>
+			<Configuration name="Release">
+				<Options>
+				    <OutputPath>../../build/release</OutputPath>
+					<AllowUnsafe>true</AllowUnsafe>
+				</Options>
+			</Configuration>
+            
+			<ReferencePath>../../../Lib/Managed/XPlatform/Axiom/debug</ReferencePath>
+			<ReferencePath>../../../Lib/Managed/XPlatform/ICSharpCode.SharpZipLib/0.84.0.0</ReferencePath>
+			<ReferencePath>../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
+            
+			<Reference name="System"/>
+			<Reference name="System.Data"/>
+			<Reference name="System.Drawing"/>
+			<Reference name="System.Xml"/>
+            <Reference name="System.Windows.Forms"/>
+            <Reference name="Axiom"/>
+			
+<?if OS = "Win32" ?>
+			<Reference name="Axiom.RenderSystems.DirectX9"/>
+			<Reference name="Axiom.Platforms.Win32"/>
+<?else ?>
+			<Reference name="Axiom.RenderSystems.OpenGL"/>
+			<Reference name="Axiom.Platforms.SDL"/>
+<?endif ?>
+
+
+            <Files>
+				<Match pattern="EngineConfig.xml" path="" buildAction="None" copyToOutput="PreserveNewest" />
+				<Match pattern="YAT.Prebuild" path=".." buildAction="None" copyToOutput="Never" />
+				<Match pattern="Yat.build" path=".." buildAction="None" copyToOutput="Never" />
+				<Match pattern="*.*" path="../Media" buildAction="None" copyToOutput="PreserveNewest" recurse="true" link="true" preservePath="true">
+					<Exclude pattern=".svn" />
+					<Exclude pattern="Thumbs.db" />
+				</Match>
+				<Match pattern="*.cs" path="" recurse="true"/>
+                <Match pattern="devil.dll" path="../../../Lib/Native/" buildAction="None" link="true" recurse="true" copyToOutput="PreserveNewest" />
+            </Files>
+		</Project>
+		
+	</Solution>
+</Prebuild>
