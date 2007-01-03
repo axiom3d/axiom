@@ -112,7 +112,6 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         /// 
         /// </summary>
-        /// DOC
         public XnaF.Graphics.VertexDeclaration XnaVertexDecl
         {
             get
@@ -124,12 +123,12 @@ namespace Axiom.RenderSystems.Xna
                         xnaVertexDecl.Dispose();
 
                     // create elements array
-                    XnaF.Graphics.VertexElement[] xnaElements = new XnaF.Graphics.VertexElement[elements.Count + 1];
+                    XnaF.Graphics.VertexElement[] xnaElements = new XnaF.Graphics.VertexElement[ elements.Count ];
 
                     // loop through and configure each element for XnaF.Graphics
                     for ( int i = 0; i < elements.Count; i++ )
                     {
-                        VertexElement element = (VertexElement)elements[i];
+                        VertexElement element = (VertexElement)elements[ i ];
 
                         xnaElements[i].Offset = (short)element.Offset;
                         xnaElements[i].Stream = (short)element.Source;
@@ -141,15 +140,15 @@ namespace Axiom.RenderSystems.Xna
                         switch ( element.Semantic )
                         {
                             case VertexElementSemantic.Diffuse:
-                                xnaElements[i].UsageIndex = 0;
+                                xnaElements[ i ].UsageIndex = 0;
                                 break;
 
                             case VertexElementSemantic.Specular:
-                                xnaElements[i].UsageIndex = 1;
+                                xnaElements[ i ].UsageIndex = 1;
                                 break;
 
                             default:
-                                xnaElements[i].UsageIndex = (byte)element.Index;
+                                xnaElements[ i ].UsageIndex = (byte)element.Index;
                                 break;
                         } //  switch
 
