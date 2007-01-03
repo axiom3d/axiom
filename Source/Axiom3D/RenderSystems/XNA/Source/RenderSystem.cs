@@ -61,6 +61,14 @@ namespace Axiom.RenderSystems.Xna
         // stores texture stage info locally for convenience
         internal XnaTextureStageDescription[] texStageDesc = new XnaTextureStageDescription[ Config.MaxTextureLayers ];
 
+        /// <summary>
+        ///    Number of streams used last frame, used to unbind any buffers not used during the current operation.
+        /// </summary>
+        protected int numLastStreams;
+
+        protected int primCount;
+        protected int renderCount = 0;
+        
         public RenderSystem()
         {
             _initConfigOptions();
@@ -421,6 +429,46 @@ namespace Axiom.RenderSystems.Xna
             return newDevice;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        protected void SetVertexBufferBinding( VertexBufferBinding binding )
+        {
+            IEnumerator e = binding.Bindings;
+
+            // TODO: Optimize to remove enumeration if possible, although with so few iterations it may never make a difference
+            while ( e.MoveNext() )
+            {
+                DictionaryEntry entry = (DictionaryEntry)e.Current;
+                XnaHardwareVertexBuffer buffer = (XnaHardwareVertexBuffer)entry.Value;
+
+                short stream = (short)entry.Key;
+
+                //_device.SetStreamSource( stream, buffer.XnaVertexBuffer, 0, buffer.VertexSize );
+
+                numLastStreams++;
+            }
+
+            // Unbind any unused sources
+            for ( int i = binding.BindingCount; i < numLastStreams; i++ )
+            {
+                //_device.SetStreamSource( i, null, 0, 0 );
+            }
+
+            numLastStreams = binding.BindingCount;
+        }
+
+        /// <summary>
+        ///		Helper method for setting the current vertex declaration.
+        /// </summary>
+        protected void SetVertexDeclaration( VertexDeclaration decl )
+        {
+            // TODO: Check for duplicate setting and avoid setting if dupe
+            XnaVertexDeclaration vertDecl = (XnaVertexDeclaration)decl;
+
+            _device.VertexDeclaration = vertDecl.XnaVertexDecl;
+        }
+
         #region Axiom.Graphics.RenderSystem Implementation
 
         #region Fields & Properties
@@ -697,11 +745,71 @@ namespace Axiom.RenderSystems.Xna
         }
 
         /// <summary>
-        ///		Renders the current render operation in D3D's own special way.
+        ///		Renders the current render operation in XNA's own special way.
         /// </summary>
         /// <param name="op"></param>
         public override void Render( RenderOperation op )
         {
+            // don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
+            if (op.vertexData.vertexCount == 0)
+            {
+                return;
+            }
+
+            // class base implementation first
+            base.Render( op );
+
+            // set the vertex declaration and buffer binding
+            SetVertexDeclaration( op.vertexData.vertexDeclaration );
+            SetVertexBufferBinding( op.vertexData.vertexBufferBinding );
+
+            XnaF.Graphics.PrimitiveType primType = XnaF.Graphics.PrimitiveType.TriangleStrip;
+
+            switch ( op.operationType )
+            {
+                case OperationType.PointList:
+                    primType = XnaF.Graphics.PrimitiveType.PointList;
+                    primCount = op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount;
+                    break;
+                case OperationType.LineList:
+                    primType = XnaF.Graphics.PrimitiveType.LineList;
+                    primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) / 2;
+                    break;
+                case OperationType.LineStrip:
+                    primType = XnaF.Graphics.PrimitiveType.LineStrip;
+                    primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) - 1;
+                    break;
+                case OperationType.TriangleList:
+                    primType = XnaF.Graphics.PrimitiveType.TriangleList;
+                    primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) / 3;
+                    break;
+                case OperationType.TriangleStrip:
+                    primType = XnaF.Graphics.PrimitiveType.TriangleStrip;
+                    primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) - 2;
+                    break;
+                case OperationType.TriangleFan:
+                    primType = XnaF.Graphics.PrimitiveType.TriangleFan;
+                    primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) - 2;
+                    break;
+            } // switch(primType)
+
+            // are we gonna use indices?
+            if ( op.useIndices )
+            {
+                XnaHardwareIndexBuffer idxBuffer = (XnaHardwareIndexBuffer)op.indexData.indexBuffer;
+
+                // set the index buffer on the device
+                _device.Indices = idxBuffer.XnaIndexBuffer;
+
+                // draw the indexed primitives
+                _device.DrawIndexedPrimitives( primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, op.indexData.indexStart, primCount );
+            }
+            else
+            {
+                // draw vertices without indices
+                _device.DrawPrimitives( primType, op.vertexData.vertexStart, primCount );
+            }
+
         }
 
         public override void BindGpuProgram( Axiom.Graphics.GpuProgram program )
@@ -950,6 +1058,7 @@ namespace Axiom.RenderSystems.Xna
             }
 
             // If this is a cubic reflection, we need to modify using the view matrix
+            /*
             if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.EnvironmentMapReflection )
             {
                 // get the current view matrix
@@ -981,7 +1090,6 @@ namespace Axiom.RenderSystems.Xna
                 // concatenate
                 newMatrix = newMatrix * viewTransposed;
             }
-
             if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture )
             {
                 // Derive camera space to projector space transform
@@ -1054,6 +1162,8 @@ namespace Axiom.RenderSystems.Xna
                 // set as the identity matrix
                 device.SetTransform( d3dTransType, DX.Matrix.Identity );
             }
+                        */
+
         }
 
         public override void SetTextureUnitFiltering( int stage, Axiom.Graphics.FilterType type, Axiom.Graphics.FilterOptions filter )
