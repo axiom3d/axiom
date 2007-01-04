@@ -55,10 +55,10 @@ namespace Axiom.RenderSystems.Xna
         #region Fields
 
         /// <summary>A handle to the Xna device of the XnaRenderSystem.</summary>
-        private XnaF.Graphics.GraphicsDevice device;
+        private XnaF.Graphics.GraphicsDevice _device;
         /// <summary>Used to provide support for multiple RenderWindows per device.</summary>
-        private XnaF.Graphics.RenderTarget backBuffer;
-        private XnaF.Graphics.DepthStencilBuffer stencilBuffer;
+        private XnaF.Graphics.Texture2D _backBuffer;
+        private XnaF.Graphics.DepthStencilBuffer _stencilBuffer;
         //private XnaF.Graphics.SwapChain swapChain;
 
         #endregion Fields
@@ -100,16 +100,16 @@ namespace Axiom.RenderSystems.Xna
 
             if ( miscParams.Length > 1 && miscParams[ 1 ] != null )
             {
-                device = (XnaF.Graphics.GraphicsDevice)miscParams[ 1 ];
+                _device = (XnaF.Graphics.GraphicsDevice)miscParams[ 1 ];
             }
-            if ( device == null )
+            if ( _device == null )
             {
                 throw new Exception( "Error creating Xna window: device is null." );
             }
 
-            device.DeviceLost += new EventHandler( OnDeviceLost );
-            device.DeviceReset += new EventHandler( OnResetDevice );
-            this.OnResetDevice( device, null );
+            _device.DeviceLost += new EventHandler( OnDeviceLost );
+            _device.DeviceReset += new EventHandler( OnResetDevice );
+            this.OnResetDevice( _device, null );
 
             /* If we're in fullscreen, we can use the device's back and stencil buffers.
              * If we're in windowed mode, we'll want our own.
@@ -117,8 +117,9 @@ namespace Axiom.RenderSystems.Xna
 			 */
             //if ( isFullScreen )
             //{
-                backBuffer = device.GetRenderTarget( 0 );
-                stencilBuffer = device.DepthStencilBuffer;
+                //_backBuffer = _device.GetRenderTarget( 0 );
+                //_backBuffer = new XnaF.Graphics.Texture2D( _device, width, height, 1, XnaF.Graphics.ResourceUsage.ResolveTarget, XnaF.Graphics.SurfaceFormat.Depth24 );
+                _stencilBuffer = _device.DepthStencilBuffer;
             //}
             //else
             //{
@@ -169,11 +170,14 @@ namespace Axiom.RenderSystems.Xna
         {
             switch ( attribute )
             {
-                case "XNADEVICE":
-                    return device;
+                case "DEVICE":
+                    return _device;
 
-                case "XNAZBUFFER":
-                    return stencilBuffer;
+                case "DEPTHBUFFER":
+                    return _stencilBuffer;
+
+                case "BACKBUFFER":
+                    return _device.GetRenderTarget( 0 );
 
             }
 
@@ -195,15 +199,15 @@ namespace Axiom.RenderSystems.Xna
             }
 
             // dispopse of our back buffer if need be
-            if ( backBuffer != null && !backBuffer.IsDisposed )
+            if ( _backBuffer != null && !_backBuffer.IsDisposed )
             {
-                backBuffer.Dispose();
+                _backBuffer.Dispose();
             }
 
             // dispose of our stencil buffer if need be
-            if ( stencilBuffer != null && !stencilBuffer.IsDisposed )
+            if ( _stencilBuffer != null && !_stencilBuffer.IsDisposed )
             {
-                stencilBuffer.Dispose();
+                _stencilBuffer.Dispose();
             }
 
             // make sure this window is no longer active
@@ -237,12 +241,12 @@ namespace Axiom.RenderSystems.Xna
             try
             {
                 // tests coop level to make sure we are ok to render
-                //device.CheckCooperativeLevel();
+                //_device.CheckCooperativeLevel();
 
                 // swap back buffer to the front
                 //if ( this.isFullScreen )
                 //{
-                    device.Present( ((SWF.Control)targetHandle).Handle );
+                    //_device.Present( ((SWF.Control)targetHandle).Handle );
                 //}
                 //else
                 //{
@@ -256,7 +260,7 @@ namespace Axiom.RenderSystems.Xna
             catch ( XnaF.Graphics.DeviceNotResetException dnrx )
             {
                 Console.WriteLine( dnrx.ToString() );
-                device.Reset( device.PresentationParameters );
+                _device.Reset( _device.PresentationParameters );
             }
         }
 

@@ -444,7 +444,7 @@ namespace Axiom.RenderSystems.Xna
 
                 short stream = (short)entry.Key;
 
-                //_device.SetStreamSource( stream, buffer.XnaVertexBuffer, 0, buffer.VertexSize );
+                _device.Vertices[ stream ].SetSource( buffer.XnaVertexBuffer, 0, buffer.VertexSize );
 
                 numLastStreams++;
             }
@@ -452,7 +452,7 @@ namespace Axiom.RenderSystems.Xna
             // Unbind any unused sources
             for ( int i = binding.BindingCount; i < numLastStreams; i++ )
             {
-                //_device.SetStreamSource( i, null, 0, 0 );
+                _device.Vertices[ i ].SetSource( null, 0, 0 );
             }
 
             numLastStreams = binding.BindingCount;
@@ -793,22 +793,41 @@ namespace Axiom.RenderSystems.Xna
                     break;
             } // switch(primType)
 
-            // are we gonna use indices?
-            if ( op.useIndices )
+            XnaF.Graphics.BasicEffect effect = new XnaF.Graphics.BasicEffect( _device, null );
+            effect.DiffuseColor = new XnaF.Vector3( 1.0f, 1.0f, 1.0f );
+            effect.View = XnaF.Matrix.CreateLookAt( new XnaF.Vector3( 0, 0, 100 ), XnaF.Vector3.Zero, XnaF.Vector3.Up );
+            effect.Projection = XnaF.Matrix.CreatePerspectiveFieldOfView(
+                                    XnaF.MathHelper.ToRadians( 179 ),
+                                    (float)_device.Viewport.Width /
+                                    (float)_device.Viewport.Height,
+                                    1.0f, 100.0f );
+            effect.Begin( XnaF.Graphics.SaveStateMode.None );
+            foreach ( XnaF.Graphics.EffectPass pass in effect.CurrentTechnique.Passes )
             {
-                XnaHardwareIndexBuffer idxBuffer = (XnaHardwareIndexBuffer)op.indexData.indexBuffer;
+                pass.Begin();
 
-                // set the index buffer on the device
-                _device.Indices = idxBuffer.XnaIndexBuffer;
+                // are we gonna use indices?
+                if ( op.useIndices )
+                {
+                    XnaHardwareIndexBuffer idxBuffer = (XnaHardwareIndexBuffer)op.indexData.indexBuffer;
 
-                // draw the indexed primitives
-                _device.DrawIndexedPrimitives( primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, op.indexData.indexStart, primCount );
+                    // set the index buffer on the device
+                    _device.Indices = idxBuffer.XnaIndexBuffer;
+
+                    // draw the indexed primitives
+                    _device.DrawIndexedPrimitives( primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, op.indexData.indexStart, primCount );
+                }
+                else
+                {
+
+                    // draw vertices without indices
+                    _device.DrawPrimitives( primType, op.vertexData.vertexStart, primCount );
+                }
+
+
+                pass.End();
             }
-            else
-            {
-                // draw vertices without indices
-                _device.DrawPrimitives( primType, op.vertexData.vertexStart, primCount );
-            }
+            effect.End();
 
         }
 
@@ -1014,7 +1033,7 @@ namespace Axiom.RenderSystems.Xna
             texStageDesc[ stage ].coordIndex = index;
 
             // ToDo:
-            // _device.Textures[ stage ].TextureCoordinateIndex = D3DHelper.ConvertEnum( texStageDesc[ stage ].autoTexCoordType, d3dCaps ) | index;
+            //_device.Textures[ stage ].TextureCoordinateIndex = D3DHelper.ConvertEnum( texStageDesc[ stage ].autoTexCoordType, d3dCaps ) | index;
         }
 
         public override void SetTextureLayerAnisotropy( int stage, int maxAnisotropy )
@@ -1174,8 +1193,63 @@ namespace Axiom.RenderSystems.Xna
 
         public override void SetViewport( Axiom.Core.Viewport viewport )
         {
-            //ToDo: Need to Implement
-            //throw new NotImplementedException();
+            if ( activeViewport != viewport || viewport.IsUpdated )
+            {
+                // store this viewport and it's target
+                activeViewport = viewport;
+                activeRenderTarget = viewport.Target;
+
+                // get the back buffer surface for this viewport
+                XnaF.Graphics.RenderTarget2D back = (XnaF.Graphics.RenderTarget2D)activeRenderTarget.GetCustomAttribute( "BACKBUFFER" );
+                _device.SetRenderTarget( 0, back );
+
+                // we cannot dipose of the back buffer in fullscreen mode, since we have a direct reference to
+                // the main back buffer.  all other surfaces are safe to dispose
+                bool disposeBackBuffer = true;
+
+                if ( activeRenderTarget is XnaWindow )
+                {
+                    XnaWindow window = activeRenderTarget as XnaWindow;
+
+                    if ( window.IsFullScreen )
+                    {
+                        disposeBackBuffer = false;
+                    }
+                }
+
+                // be sure to destroy the surface we had
+                if ( disposeBackBuffer )
+                {
+                    //back.Dispose();
+                }
+
+                XnaF.Graphics.DepthStencilBuffer depth = (XnaF.Graphics.DepthStencilBuffer)activeRenderTarget.GetCustomAttribute( "DEPTHBUFFER" );
+
+                // set the render target and depth stencil for the surfaces beloning to the viewport
+                _device.DepthStencilBuffer = depth;
+
+                // set the culling mode, to make adjustments required for viewports
+                // that may need inverted vertex winding or texture flipping
+                this.CullingMode = cullingMode;
+
+                XnaF.Graphics.Viewport vp = new XnaF.Graphics.Viewport();
+
+                // set viewport dimensions
+                vp.X = viewport.ActualLeft;
+                vp.Y = viewport.ActualTop;
+                vp.Width = viewport.ActualWidth;
+                vp.Height = viewport.ActualHeight;
+
+                // Z-values from 0.0 to 1.0 (TODO: standardize with OpenGL)
+                vp.MinDepth = 0.0f;
+                vp.MaxDepth = 1.0f;
+
+                // set the current XNA viewport
+                _device.Viewport = vp;
+
+                // clear the updated flag
+                viewport.IsUpdated = false;
+            }
         }
 
         public override void UseLights( Axiom.Collections.LightList lightList, int limit )
