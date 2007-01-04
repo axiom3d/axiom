@@ -469,6 +469,31 @@ namespace Axiom.RenderSystems.Xna
             _device.VertexDeclaration = vertDecl.XnaVertexDecl;
         }
 
+        private XnaF.Matrix _makeXnaMatrix( Axiom.Math.Matrix4 matrix )
+        {
+            XnaF.Matrix xna = new XnaF.Matrix();
+
+            // set it to a transposed matrix since Xna uses row vectors
+            xna.M11 = matrix.m00;
+            xna.M12 = matrix.m10;
+            xna.M13 = matrix.m20;
+            xna.M14 = matrix.m30;
+            xna.M21 = matrix.m01;
+            xna.M22 = matrix.m11;
+            xna.M23 = matrix.m21;
+            xna.M24 = matrix.m31;
+            xna.M31 = matrix.m02;
+            xna.M32 = matrix.m12;
+            xna.M33 = matrix.m22;
+            xna.M34 = matrix.m32;
+            xna.M41 = matrix.m03;
+            xna.M42 = matrix.m13;
+            xna.M43 = matrix.m23;
+            xna.M44 = matrix.m33;
+
+            return xna;
+        }
+
         #region Axiom.Graphics.RenderSystem Implementation
 
         #region Fields & Properties
@@ -489,7 +514,8 @@ namespace Axiom.RenderSystems.Xna
         }
 
         #endregion AmbientLight Property
-
+        /// Saved last view matrix
+        private XnaF.Matrix _viewMatrix = XnaF.Matrix.Identity;
         public override Axiom.Math.Matrix4 ViewMatrix
         {
             get
@@ -498,11 +524,20 @@ namespace Axiom.RenderSystems.Xna
             }
             set
             {
-                // ToDo:
-                // throw new NotImplementedException();
+                Axiom.Math.Matrix4 viewMatrix;
+                // flip the transform portion of the matrix for DX and its left-handed coord system
+                // save latest view matrix
+                viewMatrix = value;
+                viewMatrix.m20 = -viewMatrix.m20;
+                viewMatrix.m21 = -viewMatrix.m21;
+                viewMatrix.m22 = -viewMatrix.m22;
+                viewMatrix.m23 = -viewMatrix.m23;
+
+                _viewMatrix = _makeXnaMatrix( viewMatrix );
             }
         }
 
+        private XnaF.Matrix _worldMatrix = XnaF.Matrix.Identity;
         public override Axiom.Math.Matrix4 WorldMatrix
         {
             get
@@ -511,8 +546,7 @@ namespace Axiom.RenderSystems.Xna
             }
             set
             {
-                // ToDo:
-                // throw new NotImplementedException();
+                _worldMatrix = _makeXnaMatrix( value );
             }
         }
 
@@ -795,7 +829,8 @@ namespace Axiom.RenderSystems.Xna
 
             XnaF.Graphics.BasicEffect effect = new XnaF.Graphics.BasicEffect( _device, null );
             effect.DiffuseColor = new XnaF.Vector3( 1.0f, 1.0f, 1.0f );
-            effect.View = XnaF.Matrix.CreateLookAt( new XnaF.Vector3( 0, 0, 100 ), XnaF.Vector3.Zero, XnaF.Vector3.Up );
+            effect.View = _viewMatrix;
+            effect.World = _worldMatrix;
             effect.Projection = XnaF.Matrix.CreatePerspectiveFieldOfView(
                                     XnaF.MathHelper.ToRadians( 179 ),
                                     (float)_device.Viewport.Width /
@@ -1077,11 +1112,10 @@ namespace Axiom.RenderSystems.Xna
             }
 
             // If this is a cubic reflection, we need to modify using the view matrix
-            /*
             if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.EnvironmentMapReflection )
             {
                 // get the current view matrix
-                XnaF.Matrix viewMatrix = _device.Transform.View;
+                XnaF.Matrix viewMatrix = _viewMatrix;
                 
                 // Get transposed 3x3, ie since D3D is transposed just copy
                 // We want to transpose since that will invert an orthonormal matrix ie rotation
@@ -1109,6 +1143,7 @@ namespace Axiom.RenderSystems.Xna
                 // concatenate
                 newMatrix = newMatrix * viewTransposed;
             }
+            /*
             if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture )
             {
                 // Derive camera space to projector space transform
@@ -1128,9 +1163,10 @@ namespace Axiom.RenderSystems.Xna
                 }
 
             }
+            */
 
             // convert to Xna format
-            xnaMatrix = MakeXnaMatrix( newMatrix );
+            xnaMatrix = _makeXnaMatrix( newMatrix );
 
             // need this if texture is a cube map, to invert Xna's z coord
             if ( texStageDesc[ stage ].autoTexCoordType != TexCoordCalcMethod.None )
@@ -1142,7 +1178,7 @@ namespace Axiom.RenderSystems.Xna
             }
 
             //XnaF.Graphics..TransformType d3dTransType = (D3D.TransformType)( (int)( D3D.TransformType.Texture0 ) + stage );
-
+            /*
             // set the matrix if it is not the identity
             if ( !XnaHelper.IsIdentity( ref xnaMatrix ) )
             {
@@ -1156,11 +1192,11 @@ namespace Axiom.RenderSystems.Xna
                 {
                     switch ( texStageDesc[ stage ].texType )
                     {
-                        case D3DTexType.Normal:
+                        case XnaTextureType.Normal:
                             texCoordDim = (int)D3D.TextureTransform.Count2;
                             break;
-                        case D3DTexType.Cube:
-                        case D3DTexType.Volume:
+                        case XnaTextureType.Cube:
+                        case XnaTextureType.Volume:
                             texCoordDim = (int)D3D.TextureTransform.Count3;
                             break;
                     }
@@ -1181,8 +1217,7 @@ namespace Axiom.RenderSystems.Xna
                 // set as the identity matrix
                 device.SetTransform( d3dTransType, DX.Matrix.Identity );
             }
-                        */
-
+            */
         }
 
         public override void SetTextureUnitFiltering( int stage, Axiom.Graphics.FilterType type, Axiom.Graphics.FilterOptions filter )
