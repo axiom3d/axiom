@@ -1,0 +1,129 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2140B840-B135-4FDE-BF5B-A0EB464FEEC5}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Axiom.RenderSystems.Xna.Test</RootNamespace>
+    <AssemblyName>Axiom.RenderSystems.Xna.Test</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\..\build\debug\Xna.Test\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\..\..\build\release\Xna.Test\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Source\ExampleApplication.cs" />
+    <Compile Include="Source\Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Source\XnaTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\Lib\Native\Win32\DevIL.dll">
+      <Link>DevIL.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\Lib\Managed\Axiom3D\Axiom.Platforms.Win32.dll">
+      <Link>Axiom.Platforms.Win32.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\Lib\Managed\Axiom3D\ICSharpCode.SharpZipLib.dll">
+      <Link>ICSharpCode.SharpZipLib.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\Lib\Managed\Axiom3D\Tao.DevIl.dll">
+      <Link>Tao.DevIl.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="..\..\..\..\Media\axes.png">
+      <Link>Media\axes.png</Link>
+    </Content>
+    <Content Include="EngineConfig.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\Media\Core.material">
+      <Link>Media\Core.material</Link>
+    </None>
+    <None Include="..\..\..\..\Media\core.program">
+      <Link>Media\core.program</Link>
+    </None>
+    <None Include="..\..\..\..\Media\Debug.overlay">
+      <Link>Media\Debug.overlay</Link>
+    </None>
+    <None Include="..\..\..\..\Media\Example_Basic.hlsl">
+      <Link>Media\Example_Basic.hlsl</Link>
+    </None>
+    <None Include="..\..\..\..\Media\Garamond.fontdef">
+      <Link>Media\Garamond.fontdef</Link>
+    </None>
+    <None Include="..\..\..\..\Media\Overlay.hlsl">
+      <Link>Media\Overlay.hlsl</Link>
+    </None>
+    <None Include="..\..\..\..\Media\SimpleShaderFP.hlsl">
+      <Link>Media\SimpleShaderFP.hlsl</Link>
+    </None>
+    <None Include="..\..\..\..\Media\SimpleShaderVP.hlsl">
+      <Link>Media\SimpleShaderVP.hlsl</Link>
+    </None>
+    <None Include="..\..\..\..\Media\AxiomLogo.png">
+      <Link>Media\AxiomLogo.png</Link>
+    </None>
+    <None Include="..\..\..\..\Media\Border.png">
+      <Link>Media\Border.png</Link>
+    </None>
+    <None Include="..\..\..\..\Media\Border_Break.png">
+      <Link>Media\Border_Break.png</Link>
+    </None>
+    <None Include="..\..\..\..\Media\Border_Center.png">
+      <Link>Media\Border_Center.png</Link>
+    </None>
+    <None Include="..\..\..\..\Media\Garamond.png">
+      <Link>Media\Garamond.png</Link>
+    </None>
+    <None Include="..\..\..\..\Media\Triangle.hlsl">
+      <Link>Media\Triangle.hlsl</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XNA\Axiom.RenderSystems.Xna.csproj">
+      <Project>{DD053894-35C8-4F38-9E47-3A2B1E0C26FB}</Project>
+      <Name>Axiom.RenderSystems.Xna</Name>
+    </ProjectReference>
+    <ProjectReference Include="E:\Development\Axiom3D Graphics Engine\trunk\Projects\Axiom\Source\Engine\Axiom.csproj">
+      <Project>{F1839A5A-40B4-41B0-950C-369DCC0A5914}</Project>
+      <Name>Axiom</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

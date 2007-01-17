@@ -11,13 +11,17 @@ material Core/NodeMaterial
 			depth_write off
 			cull_hardware none
 
-			texture_unit
+			vertex_program_ref Examples/SimpleVP 
 			{
-				texture axes.png
 			}
+
+ 			fragment_program_ref Examples/SimpleFP
+ 			{
+ 			} 
 		}
 	}
 }
+
 material Core/AxiomLogo
 {
 	technique
@@ -32,9 +36,18 @@ material Core/AxiomLogo
 			{
 				texture AxiomLogo.png
 			}
+
+			vertex_program_ref Examples/OverlayVP 
+			{
+			}
+
+ 			fragment_program_ref Examples/OverlayFP
+ 			{
+ 			} 
 		}
 	}
 }
+
 material Core/StatsBlockBorder
 {
 	technique
@@ -49,9 +62,18 @@ material Core/StatsBlockBorder
 			{
 				texture Border.png
 			}
-		}
+
+			vertex_program_ref Examples/SimpleShaderVP 
+			{
+			}
+
+ 			fragment_program_ref Examples/SimpleShaderFP
+ 			{
+ 			} 
+ 		}
 	}
 }
+
 material Core/StatsBlockCenter
 {
 	technique
@@ -66,9 +88,18 @@ material Core/StatsBlockCenter
 			{
 				texture Border_Center.png
 			}
+
+			vertex_program_ref Examples/SimpleShaderVP 
+			{
+			}
+
+ 			fragment_program_ref Examples/SimpleShaderFP
+ 			{
+ 			} 
 		}
 	}
 }
+
 material Core/StatsBreak
 {
 	technique
@@ -83,6 +114,14 @@ material Core/StatsBreak
 			{
 				texture Border_Break.png
 			}
+
+			vertex_program_ref Examples/SimpleShaderVP 
+			{
+			}
+
+ 			fragment_program_ref Examples/SimpleShaderFP
+ 			{
+ 			} 
 		}
 	}
 }
