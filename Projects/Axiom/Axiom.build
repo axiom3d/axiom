@@ -1,0 +1,358 @@
+<?xml version="1.0" ?>
+<project name="Axiom" default="build.all">
+
+	<!-- set build.date property to current date in format yyyy-MM-dd -->
+	<tstamp property="build.date" pattern="yyyy-MM-dd" />
+
+	<!-- global project settings -->
+	<property name="project.name" value="Axiom" />
+	<property name="project.version" value="0.7.1.0" unless="${property::exists('project.version')}" />
+	<property name="project.release.type" value="dev" unless="${property::exists('project.release.type')}" />
+	<!-- nightly / dev / alpha / beta# / rc# / release -->
+	<if test="${project.release.type == 'nightly'}">
+		<property name="project.version.full" value="${project.version + '-nightly-' + build.date}" />
+	</if>
+	<if test="${project.release.type != 'nightly'}">
+		<property name="project.version.full" value="${project.version + if(project.release.type == 'release', '', '-' + project.release.type)}" dynamic="true" />
+	</if>
+
+	<!-- Define location of build include files useful for any project.  Required (if you want to use any) -->
+	<property name="build.includes.dir" value="${path::combine(project::get-base-directory(), '../../BuildSupport/NAntIncludes') }" dynamic="false" />
+	
+	<!-- Framework support targets  -->
+	<include verbose="false" buildfile="${path::combine(build.includes.dir, 'frameworksupport.include')}" />
+	
+	<!-- Axiom build and run-time libs -->
+	<!-- Define locations of Axiom libs top-level directory.  Required. -->
+	<property name="libs.topdir" value="${project::get-base-directory()}/../../Lib" dynamic="false" />
+	<!-- Load aliases for managed and native libs -->
+	<include verbose="true" buildfile="${path::combine(libs.topdir, 'AxiomDependencies.include')}" />
+
+	<!-- named project configurations -->
+
+	<!-- Master build and dist output dirs -->
+	<!-- <property name="top.build.dir" value="${project::get-base-directory()}/../build" dynamic="true" /> -->
+	<property name="top.build.dir" value="${path::combine(libs.managed.portable.dir, 'Axiom')}" />
+	<property name="top.dist.dir" value="${project::get-base-directory()}/../dist" dynamic="true" />
+
+	<!-- 
+		Sets config parameters for build type and dynamically defines top-level 
+		build output directory based on target framework,platform,project name,
+		build type and version.
+		For example, on Linux running mono 1.1, the top-level build dir would be:
+		build/mono-1.0.unix/Axiom3D-1.06-debug
+	-->
+	<target name="debug" description="Perform a 'debug' build">
+		<property name="project.config" value="debug" />
+		<property name="build.debug" value="true" />
+		<!--	<property name="build.dir" value="${project::get-base-directory()}/build/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" /> -->
+		<property name="build.dir" value="${top.build.dir}/${project.config}" />
+		<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" />
+	</target>
+
+	<target name="release" description="Perform a 'release' build">
+		<property name="project.config" value="release" />
+		<property name="build.debug" value="false" />
+		<!--	<property name="build.dir" value="${project::get-base-directory()}/build/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" /> -->
+		<property name="build.dir" value="${top.build.dir}/${project.config}" />
+		<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" />
+	</target>
+
+	<!-- global build settings -->
+	<!-- Note: build.dir is dynamic and is defined in the named project configuration tasks (eg. debug, release) -->
+
+	<!-- Settings for the top-level build envirnment -->
+	<property name="build.bin.dir" value="${path::combine(build.dir, 'bin')}" dynamic="true" />
+	<property name="build.lib.dir" value="${path::combine(build.dir, 'lib')}" dynamic="true" />
+
+	<!-- default configuration -->
+	<property name="project.config" value="debug" />
+	<!-- debug|release -->
+	<property name="nant.console.name" value="NAnt" />
+	<property name="build.defines" value="" />
+	<property name="build.number" value="${math::abs(math::floor(timespan::get-total-days(datetime::now() - datetime::parse('01/01/2000'))))}" />
+
+	<!-- platform specific properties. These are the defaults -->
+	<property name="current.build.defines" value="${build.defines}" />
+
+
+	<!-- Buildfile aliases for sub-projects of the solution -->
+	<!-- 
+		Right now one fileset is defined for each buildfile to allow
+		build targets to be fine-grained (one for each project in the
+		overall solution).  Could be combined to reduce complexity (eg. all
+		buildfiles for Axiom plugins or scenemanagers could be treated as a unit)
+	-->
+	<fileset id="axiom.engine.buildfile">
+		<include name="Source/Engine/Axiom.Engine.build" />
+	</fileset>
+	<fileset id="axiom.platforms.win32.buildfile">
+		<include name="Source/Platforms/Win32/Axiom.Platforms.Win32.build" />
+	</fileset>
+	<fileset id="axiom.platforms.sdl.buildfile">
+		<include name="Source/Platforms/SDL/Axiom.Platforms.SDL.build" />
+	</fileset>
+	<fileset id="axiom.plugins.cgprogrammanager.buildfile">
+		<include name="Source/Plugins/CgProgramManager/Axiom.Plugins.CgProgramManager.build" />
+	</fileset>
+	<fileset id="axiom.plugins.particlefx.buildfile">
+		<include name="Source/Plugins/ParticleFX/Axiom.Plugins.ParticleFX.build" />
+	</fileset>
+	<fileset id="axiom.rendersystems.directx9.buildfile">
+		<include name="Source/RenderSystems/DirectX9/Axiom.RenderSystems.DirectX9.build" />
+	</fileset>
+	<fileset id="axiom.rendersystems.opengl.buildfile">
+		<include name="Source/RenderSystems/OpenGL/Axiom.RenderSystems.OpenGL.build" />
+	</fileset>
+	<fileset id="axiom.scenemanagers.bsp.buildfile">
+		<include name="Source/SceneManagers/Bsp/Axiom.SceneManagers.Bsp.build"/>
+	</fileset>
+	<fileset id="axiom.scenemanagers.octree.buildfile">
+		<include name="Source/SceneManagers/Octree/Axiom.SceneManagers.Octree.build"/>
+	</fileset>
+
+	<!-- BEGIN: General build tasks -->
+	<target name="init" description="Initializes build properties" unless="${target::has-executed('init')}">
+		<call target="${project.config}" />
+		<call target="set-framework-configuration" />
+	</target>
+
+	<target name="build.clean" depends="init" description="Deletes current build configuration">
+		<delete dir="${build.dir}" if="${directory::exists(build.dir)}" />
+	</target>
+
+	<target name="build.cleanall" description="Deletes every build configuration">
+		<echo message="Deleting all builds from all configurations" />
+		<delete dir="${top.build.dir}" if="${directory::exists(top.build.dir)}" />
+	</target>
+
+	<target name="cleanall" description="Deletes every build and dist configuration" depends="build.cleanall, dist.cleanall"/>
+
+	<target name="build.setup" depends="init, create-common-assemblyinfo" unless="${target::has-executed('build.setup')}" description="Sets up build area">
+		<echo message="Build Directory is ${build.dir}" />
+		<!-- ensure build directory exists -->
+		<mkdir dir="${build.dir}" />
+	</target>
+
+	<target name="build.all" depends="build.axiom" description="Build everything"/>
+
+	<!-- END: General build tasks -->
+
+	<!-- 
+		specifies whether the CommonAssemblyInfo.cs file should be created.
+		we do not want this for releases (whether they're beta or release) as
+		this would cause the build number to be updated
+		NOTE: disabled at present for Axiom, but left in for future consideration
+	-->
+	<property name="create.assemblyinfo" value="false" />
+
+	<target name="create-common-assemblyinfo" if="${create.assemblyinfo}">
+		<!-- ensure CommonAssemblyInfo.cs is writable if it already exists -->
+		<attrib file="Axiom/GlobalAssemblyInfo.cs" readonly="false" if="${file::exists('Axiom/GlobalAssemblyInfo.cs')}" />
+		<!-- generate the source file holding the common assembly-level attributes -->
+		<asminfo output="Axiom/GlobalAssemblyInfo.cs" language="CSharp">
+			<imports>
+				<import namespace="System" />
+				<import namespace="System.Reflection" />
+				<import namespace="System.Runtime.InteropServices" />
+			</imports>
+			<attributes>
+				<attribute type="ComVisibleAttribute" value="false" />
+				<attribute type="CLSCompliantAttribute" value="false" />
+				<attribute type="AssemblyTitleAttribute" value="Axiom3D" />
+				<attribute type="AssemblyDescriptionAttribute" value="A .NET Graphics Engine" />
+				<attribute type="AssemblyConfigurationAttribute" value="${project.release.type}" />
+				<attribute type="AssemblyCompanyAttribute" value="http://axiomengine.sourceforge.net" />
+				<attribute type="AssemblyProductAttribute" value="Axiom" />
+				<attribute type="AssemblyCopyrightAttribute" value="Copyright (C) 2005-${datetime::get-year(datetime::now())} The Axiom Team" />
+				<attribute type="AssemblyTrademarkAttribute" value="" />
+				<attribute type="AssemblyCultureAttribute" value="" />
+				<attribute type="AssemblyVersionAttribute" value="${project.version}.${build.number}.0" />
+				<attribute type="AssemblyInformationalVersionAttribute" value="${project.version}" />
+			</attributes>
+		</asminfo>
+	</target>
+
+	<!-- BEGIN: Axiom3D core build tasks -->
+	<target name="build.axiom.setup" depends="build.setup" unless="${target::has-executed('build.axiom.setup')}" description="Sets up build area">
+		<!-- 
+			Define build directory for Axiom3D projects - Note: this is all the 
+			assemblies considered 'core' to the Axiom engine.
+			Note 2: This is left over from the original single master build file and is redundant.
+		-->
+		<property name="axiom.build.dir" value="${build.dir}" />
+
+		<!-- ensure Axiom3D build directory exists -->
+		<mkdir dir="${axiom.build.dir}" />
+	</target>
+
+	<target name="build.axiom" depends="build.axiom.setup" description="Builds the Axiom3D engine for the current build configuration">
+		<!-- Call required targets in order -->
+		<!-- 
+			Call targets building Windows-specific assemblies only on 
+			Windows - should really add this logic to the target instead 
+		-->
+		<call target="build.axiom.engine" />
+		<call target="build.axiom.platforms.win32" if="${platform::is-win32()}" />
+		<call target="build.axiom.platforms.sdl" />
+		<call target="build.axiom.plugins.cgprogrammanager" />
+		<call target="build.axiom.plugins.particlefx" />
+		<call target="build.axiom.rendersystems.directx9" if="${platform::is-win32()}" />
+		<call target="build.axiom.rendersystems.opengl" />
+		<call target="build.axiom.scenemanagers.bsp" />
+		<call target="build.axiom.scenemanagers.octree" />
+
+	</target>
+
+	<!-- Build targets for the individual Axiom3D assemblies -->
+	<target name="build.axiom.engine" description="Build Axiom Main assembly"  unless="${target::has-executed('build.axiom.engine')}">
+		<nant target="build">
+			<buildfiles refid="axiom.engine.buildfile"/>
+		</nant>
+	</target>
+
+	<target name="build.axiom.platforms.win32" description="Build Axiom.Platforms.Win32 assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.platforms.win32')}">
+		<nant target="build">
+			<buildfiles refid="axiom.platforms.win32.buildfile"/>
+		</nant>
+	</target>
+
+	<target name="build.axiom.platforms.sdl" description="Build Axiom.Platforms.SDL assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.platforms.sdl')}">
+		<nant target="build">
+			<buildfiles refid="axiom.platforms.sdl.buildfile"/>
+		</nant>
+	</target>
+
+	<target name="build.axiom.plugins.cgprogrammanager" description="Build Axiom.Plugins.CgProgramManager assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.plugins.cgprogrammanager')}">
+		<nant target="build">
+			<buildfiles refid="axiom.plugins.cgprogrammanager.buildfile"/>
+		</nant>
+	</target>
+
+	<target name="build.axiom.plugins.particlefx" description="Build Axiom.Plugins.ParticleFX assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.plugins.particlefx')}">
+		<nant target="build">
+			<buildfiles refid="axiom.plugins.particlefx.buildfile"/>
+		</nant>
+	</target>
+
+	<target name="build.axiom.rendersystems.directx9" description="Build Axiom.RenderSystems.DirectX9 assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.rendersystems.directx9')}">
+		<nant target="build">
+			<buildfiles refid="axiom.rendersystems.directx9.buildfile"/>
+		</nant>
+	</target>
+
+	<target name="build.axiom.rendersystems.opengl" description="Build Axiom.RenderSystems.OpenGL assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.rendersystems.opengl')}">
+		<nant target="build">
+			<buildfiles refid="axiom.rendersystems.opengl.buildfile"/>
+		</nant>
+	</target>
+
+	<target name="build.axiom.scenemanagers.bsp" description="Build Axiom.SceneManagers.Bsp assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.scenemanagers.bsp')}">
+		<nant target="build">
+			<buildfiles refid="axiom.scenemanagers.bsp.buildfile"/>
+		</nant>
+	</target>
+
+	<target name="build.axiom.scenemanagers.octree" description="Build Axiom.SceneManagers.Octree assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.scenemanagers.octree')}">
+		<nant target="build">
+			<buildfiles refid="axiom.scenemanagers.octree.buildfile"/>
+		</nant>
+	</target>
+
+	<target name="build.axiom.scenemanagers.paginglandscape" description="Build Axiom.SceneManagers.PagingLandscape assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.scenemanagers.paginglandscape')}">
+		<nant target="build">
+			<buildfiles refid="axiom.scenemanagers.paginglandscape.buildfile"/>
+		</nant>
+	</target>
+	<!-- END: Axiom3D core build tasks -->
+
+	<!-- BEGIN: General Distribution targets -->
+	
+	<target name="dist.setup" description="General setup of the distribution directory" depends="init" unless="${target::has-executed('dist.setup')}">
+		<echo message="dist Directory is ${dist.dir}" />
+		<!-- ensure dist directory exists -->
+		<mkdir dir="${dist.dir}" />
+	</target>
+
+	<target name="dist.clean" description="Cleans the dist dir for the current build configuration" depends="init">
+		<delete dir="${dist.dir}" if="${directory::exists(dist.dir)}" />
+	</target>
+
+	<target name="dist.cleanall" description="Cleans every dist configuration">
+		<delete dir="${top.dist.dir}" if="${directory::exists(top.dist.dir)}" />
+	</target>
+	
+	<target name="dist.all" description="Prepares all targets for distribution" depends="build.all, release, build.all, dist.setup" unless="${target::has-executed('dist.all')}">
+		<call target="dist.axiom.full" />
+		<call target="dist.axiom.source" />
+		<call target="dist.axiom.media" />
+		<call target="dist.axiom.binary" />
+	</target>
+	
+	<!-- END: General Distribution targets -->
+
+	<!-- BEGIN: Packaging targets -->
+
+	<zipfileset id="fileset.axiom.source" basedir="../.." prefix="Axiom"> 
+		<include name="Source/Axiom3D/**/*.cs" />
+		<include name="Source/Axiom3D/**/*.build" />
+		<include name="Source/Axiom3D/**/*.cmd" />
+		<include name="Source/Axiom3D/**/*.txt" />
+		<include name="Source/Axiom3D/**/*.xml" />			
+	</zipfileset>
+	
+	<zipfileset id="fileset.axiom.buildtools" basedir="../.." prefix="Axiom">
+		<include name="BuildSupport/**" />
+		<exclude name="BuildSupport/**/.svn/**" />
+	</zipfileset>
+	
+	<zipfileset id="fileset.axiom.libs" basedir="../.." prefix="Axiom">
+		<include name="Lib/**" />
+		<exclude name="Lib/**/.svn/**" />
+	</zipfileset>
+	
+	<zipfileset id="fileset.axiom.media" basedir="../../" prefix="Axiom">
+		<include name="Media/**" />
+		<exclude name="Media/**/.svn/**" />
+	</zipfileset>
+
+	<zipfileset id="fileset.axiom.binary" basedir="../../Source/Build/" prefix="Axiom/bin">
+		<include name="**" />
+		<exclude name="**/.svn/**" />
+	</zipfileset>
+	
+	<target name="dist.axiom.source" >
+		
+		<zip zipfile="${dist.dir + '/axiom-' + project.version + '-src.zip'}">
+			<fileset refid="fileset.axiom.source" />
+			<fileset refid="fileset.axiom.buildtools" />
+			<fileset refid="fileset.axiom.libs" />
+		</zip>
+
+	</target>
+
+	<target name="dist.axiom.binary" >
+		<zip zipfile="${dist.dir + '/axiom-' + project.version + '-bin.zip'}">
+			<fileset refid="fileset.axiom.binary" prefix="bin"/>
+		</zip>
+	</target>
+		
+	<target name="dist.axiom.media" >
+		<zip zipfile="${dist.dir + '/axiom-' + project.version + '-media.zip'}">
+			<fileset refid="fileset.axiom.media" />
+		</zip>
+	</target>
+	
+	<target name="dist.axiom.full" >
+		<zip zipfile="${dist.dir + '/axiom-' + project.version + '-full.zip'}">
+			<fileset refid="fileset.axiom.source" />
+			<fileset refid="fileset.axiom.buildtools" />
+			<fileset refid="fileset.axiom.libs" />
+			<fileset refid="fileset.axiom.media" />
+			<fileset refid="fileset.axiom.binary" />
+		</zip>
+	</target>
+
+	<!-- END: Packaging targets -->
+
+</project>
