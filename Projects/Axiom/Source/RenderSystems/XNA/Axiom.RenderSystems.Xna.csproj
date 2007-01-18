@@ -3,6 +3,7 @@
     <ProjectType>Local</ProjectType>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4F5F18D2-7F78-47CB-AF12-CD6FD5117585}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ApplicationIcon>
@@ -15,12 +16,13 @@
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
     <DelaySign>false</DelaySign>
     <OutputType>Library</OutputType>
+    <AppDesignerFolder>
+    </AppDesignerFolder>
     <RootNamespace>Axiom.RenderSystems.Xna</RootNamespace>
     <StartupObject>
     </StartupObject>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <ProjectGuid>{DD053894-35C8-4F38-9E47-3A2B1E0C26FB}</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
@@ -29,11 +31,11 @@
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DocumentationFile>Axiom.xml</DocumentationFile>
+    <DocumentationFile>../../../../../Lib/Managed/XPlatform/Axiom/debug/Axiom.RenderSystems.Xna.xml</DocumentationFile>
     <DebugSymbols>True</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <Optimize>False</Optimize>
-    <OutputPath>..\..\..\..\build\debug\Axiom3D\</OutputPath>
+    <OutputPath>..\..\..\..\..\Lib\Managed\XPlatform\Axiom\debug\</OutputPath>
     <RegisterForComInterop>False</RegisterForComInterop>
     <RemoveIntegerChecks>False</RemoveIntegerChecks>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
@@ -48,11 +50,11 @@
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>Axiom.xml</DocumentationFile>
+    <DocumentationFile>../../../../../Lib/Managed/XPlatform/Axiom/release/Axiom.RenderSystems.Xna.xml</DocumentationFile>
     <DebugSymbols>False</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <Optimize>True</Optimize>
-    <OutputPath>..\..\..\..\build\release\Axiom3D\</OutputPath>
+    <OutputPath>..\..\..\..\..\Lib\Managed\XPlatform\Axiom\release\</OutputPath>
     <RegisterForComInterop>False</RegisterForComInterop>
     <RemoveIntegerChecks>False</RemoveIntegerChecks>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
@@ -61,54 +63,110 @@
     </NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Xna.Framework, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=x86" />
     <Reference Include="System">
       <Name>System</Name>
       <HintPath>\System.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+      <HintPath>\System.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+      <HintPath>\System.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+      <HintPath>\System.Windows.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.Xml</Name>
+      <HintPath>\System.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework">
+      <Name>Microsoft.Xna.Framework</Name>
+      <HintPath>\Microsoft.Xna.Framework.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\AssemblyInfo.cs" />
-    <Compile Include="Configuration\GlobalAssemblyInfo.cs" />
-    <Compile Include="Source\HLSL\HLSLProgram.cs" />
-    <Compile Include="Source\HLSL\HLSLProgramFactory.cs" />
-    <Compile Include="Source\XnaGpuProgramManager.cs" />
-    <Compile Include="Source\XnaHardwareIndexBuffer.cs" />
-    <Compile Include="Source\XnaTextureStageDescription.cs" />
-    <Compile Include="Source\XnaWindow.cs" />
-    <Compile Include="Source\DefaultForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Source\Driver.cs" />
-    <Compile Include="Source\DriverCollection.cs" />
-    <Compile Include="Source\Plugin.cs" />
-    <Compile Include="Source\RenderSystem.cs" />
-    <Compile Include="Source\VideoMode.cs" />
-    <Compile Include="Source\VideoModeCollection.cs" />
-    <Compile Include="Source\XnaHelper.cs" />
-    <Compile Include="Source\XnaHardwareBufferManager.cs" />
-    <Compile Include="Source\XnaHardwareVertexBuffer.cs" />
-    <Compile Include="Source\XnaVertexDeclaration.cs" />
-    <Compile Include="Source\XnaTextureManager.cs" />
-    <Compile Include="Source\XnaTexture.cs" />
-    <Compile Include="Source\XnaTextureType.cs" />
-    <Compile Include="Source\XnaGpuProgram.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Diagrams\Axiom.RenderSystems.Xna.cd" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="E:\Development\Axiom3D Graphics Engine\trunk\Projects\Axiom\Source\Engine\Axiom.csproj">
-      <Project>{F1839A5A-40B4-41B0-950C-369DCC0A5914}</Project>
+    <ProjectReference Include="..\..\Engine\Axiom.csproj">
       <Name>Axiom</Name>
+      <Project>{ACE34EAD-1855-43B1-BD4E-A6DB64713EDF}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Build Files\" />
+    <Compile Include="Configuration\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\DefaultForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Source\Driver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\DriverCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\Plugin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\RenderSystem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\VideoMode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\VideoModeCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\XnaGpuProgram.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\XnaGpuProgramManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\XnaHardwareBufferManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\XnaHardwareIndexBuffer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\XnaHardwareVertexBuffer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\XnaHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\XnaTexture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\XnaTextureManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\XnaTextureStageDescription.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\XnaTextureType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\XnaVertexDeclaration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\XnaWindow.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\HLSL\HLSLProgram.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\HLSL\HLSLProgramFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="..\..\GlobalAssemblyInfo.cs">
+      <Link>GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <None Include="Axiom.RenderSystems.Xna.build">
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>
